@@ -237,22 +237,21 @@ calendar_day_selected (GtkCalendar           *calendar,
 
   now = g_date_time_new_now_local ();
 
-  gtk_calendar_get_date (calendar,
-                         &year,
-                         &month,
-                         &day);
+  gtk_calendar_get_date (calendar, &year, &month, &day);
 
   dt = g_date_time_new_local (year, month + 1, day, 0, 0, 0);
 
-  if (g_date_time_compare (dt, now) < 1) {
-    guint days;
+  if (g_date_time_compare (dt, now) < 1)
+    {
+      guint days;
 
-    days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
+      days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
 
-    if (days > 0) {
-      update_date_label (popover, days);
-      emit_date_changes_for_day (popover, days);
-    }
+      if (days > 0)
+        {
+          update_date_label (popover, days);
+          emit_date_changes_for_day (popover, days);
+        }
   }
 
   g_date_time_unref (now);
@@ -270,26 +269,28 @@ setup_date (NautilusSearchPopover *popover,
   dt = nautilus_query_get_date (query);
 
   /* Update date */
-  if (dt && g_date_time_compare (dt, now) < 1) {
-    guint days;
+  if (dt && g_date_time_compare (dt, now) < 1)
+    {
+      guint days;
 
-    days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
+      days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
 
-    if (days > 0) {
-      g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
+      if (days > 0)
+        {
+          g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
 
-      gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
-                                 g_date_time_get_month (dt) - 1,
-                                 g_date_time_get_year (dt));
+          gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
+                                     g_date_time_get_month (dt) - 1,
+                                     g_date_time_get_year (dt));
 
-      gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
-                               g_date_time_get_day_of_month (dt));
+          gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
+                                   g_date_time_get_day_of_month (dt));
 
-      update_date_label (popover, days);
+          update_date_label (popover, days);
 
-      g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
+          g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
+        }
     }
-  }
 
   g_clear_pointer (&now, g_date_time_unref);
 }
@@ -315,46 +316,47 @@ static void
 date_entry_activate (GtkEntry              *entry,
                      NautilusSearchPopover *popover)
 {
-  if (gtk_entry_get_text_length (entry) > 0) {
-    GDateTime *now;
-    GDateTime *dt;
-    guint days;
-    GDate *date;
+  if (gtk_entry_get_text_length (entry) > 0)
+    {
+      GDateTime *now;
+      GDateTime *dt;
+      guint days;
+      GDate *date;
 
-    date = g_date_new ();
-    g_date_set_parse (date, gtk_entry_get_text (entry));
+      date = g_date_new ();
+      g_date_set_parse (date, gtk_entry_get_text (entry));
 
-    /* Invalid date silently does nothing */
-    if (!g_date_valid (date)) {
+      /* Invalid date silently does nothing */
+      if (!g_date_valid (date))
+        {
+          g_date_free (date);
+          return;
+        }
+
+      now = g_date_time_new_now_local ();
+      dt = g_date_time_new_local (g_date_get_year (date),
+                                  g_date_get_month (date),
+                                  g_date_get_day (date),
+                                  0,
+                                  0,
+                                  0);
+
+      /* Future dates also silently fails */
+      if (g_date_time_compare (dt, now) != 1)
+        {
+          days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
+          if (days > 0)
+            {
+              update_date_label (popover, days);
+              show_date_selection_widgets (popover, FALSE);
+              emit_date_changes_for_day (popover, days);
+            }
+        }
+
+      g_date_time_unref (now);
+      g_date_time_unref (dt);
       g_date_free (date);
-      return;
     }
-
-    now = g_date_time_new_now_local ();
-    dt = g_date_time_new_local (g_date_get_year (date),
-                                g_date_get_month (date),
-                                g_date_get_day (date),
-                                0,
-                                0,
-                                0);
-
-    /* Future dates also silently fails */
-    if (g_date_time_compare (dt, now) == 1)
-      goto out;
-
-    days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
-
-    if (days > 0) {
-      update_date_label (popover, days);
-      show_date_selection_widgets (popover, FALSE);
-      emit_date_changes_for_day (popover, days);
-    }
-
-out:
-    g_date_time_unref (now);
-    g_date_time_unref (dt);
-    g_date_free (date);
-  }
 }
 
 static void
@@ -380,14 +382,15 @@ listbox_header_func (GtkListBoxRow         *row,
 
   show_separator = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "show-separator"));
 
-  if (show_separator) {
-    GtkWidget *separator;
+  if (show_separator)
+    {
+      GtkWidget *separator;
 
-    separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-    gtk_widget_show (separator);
+      separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
+      gtk_widget_show (separator);
 
-    gtk_list_box_row_set_header (row, separator);
-  }
+      gtk_list_box_row_set_header (row, separator);
+    }
 }
 
 static void
@@ -428,15 +431,18 @@ toggle_calendar_icon_clicked (GtkEntry              *entry,
 
   current_visible_child = gtk_stack_get_visible_child_name (GTK_STACK (popover->around_stack));
 
-  if (g_strcmp0 (current_visible_child, "date-list") == 0) {
-    child = "date-calendar";
-    icon_name = "view-list-symbolic";
-    tooltip = _("Show a list to select the date");
-  } else {
-    child = "date-list";
-    icon_name = "x-office-calendar-symbolic";
-    tooltip = _("Show a calendar to select the date");
-  }
+  if (g_strcmp0 (current_visible_child, "date-list") == 0)
+    {
+      child = "date-calendar";
+      icon_name = "view-list-symbolic";
+      tooltip = _("Show a list to select the date");
+    }
+  else
+    {
+      child = "date-list";
+      icon_name = "x-office-calendar-symbolic";
+      tooltip = _("Show a calendar to select the date");
+    }
 
   gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), child);
   gtk_entry_set_icon_from_icon_name (entry, GTK_ENTRY_ICON_SECONDARY, icon_name);
@@ -455,26 +461,29 @@ types_listbox_row_activated (GtkListBox            *listbox,
   /* The -1 group stands for the "Other Types" group, for which
    * we should show the mimetype dialog.
    */
-  if (group == -1) {
-    show_other_types_dialog (popover);
-  }
-  else {
-    GList *mimetypes;
-    gint i;
-
-    mimetypes = NULL;
-
-    /* Setup the new mimetypes set */
-    for (i = 0; mimetype_groups[group].mimetypes[i]; i++) {
-      mimetypes = g_list_append (mimetypes, mimetype_groups[group].mimetypes[i]);
+  if (group == -1)
+    {
+      show_other_types_dialog (popover);
     }
+  else
+    {
+      GList *mimetypes;
+      gint i;
 
-    gtk_label_set_label (GTK_LABEL (popover->type_label), gettext (mimetype_groups[group].name));
+      mimetypes = NULL;
 
-    g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
+      /* Setup the new mimetypes set */
+      for (i = 0; mimetype_groups[group].mimetypes[i]; i++)
+        {
+          mimetypes = g_list_append (mimetypes, mimetype_groups[group].mimetypes[i]);
+        }
 
-    g_list_free (mimetypes);
-  }
+      gtk_label_set_label (GTK_LABEL (popover->type_label), gettext (mimetype_groups[group].name));
+
+      g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
+
+      g_list_free (mimetypes);
+    }
 
   gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
 }
@@ -513,14 +522,15 @@ emit_date_changes_for_day (NautilusSearchPopover *popover,
 
   dt = NULL;
 
-  if (days > 0) {
-    GDateTime *now;
+  if (days > 0)
+    {
+      GDateTime *now;
 
-    now = g_date_time_new_now_local ();
-    dt = g_date_time_add_days (now, -days);
+      now = g_date_time_new_now_local ();
+      dt = g_date_time_add_days (now, -days);
 
-    g_date_time_unref (now);
-  }
+      g_date_time_unref (now);
+    }
 
   g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_DATE, dt);
 
@@ -544,46 +554,58 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
    * timeslice (day, week, month) have 2 or 3 entries. Years,
    * however, are exceptions and should show many entries.
    */
-  while (days < max_days) {
-    gchar *label;
-    gint n, step;
+  while (days < max_days)
+    {
+      gchar *label;
+      gint n, step;
 
-    if (days == 0) {
-      n = 0;
-      step = 1;
-    } else if (days < 7) {
-      /* days */
-      n = days;
-      step = 2;
-    } else if (days < 30) {
-      /* weeks */
-      n = days / 7;
-      step = 7;
-    } else if (days < 365) {
-      /* months */
-      n = days / 30;
-      step = 84;
-    } else if (days < 1825) {
-      /* years */
-      n = days / 365;
-      step = 365;
-    } else {
-      /* after the first 5 years, jump at a 5-year pace */
-      n = days / 365;
-      step = 1825;
+      if (days == 0)
+        {
+          n = 0;
+          step = 1;
+        }
+      else if (days < 7)
+        {
+          /* days */
+          n = days;
+          step = 2;
+        }
+      else if (days < 30)
+        {
+          /* weeks */
+          n = days / 7;
+          step = 7;
+        }
+      else if (days < 365)
+        {
+          /* months */
+          n = days / 30;
+          step = 84;
+        }
+      else if (days < 1825)
+        {
+          /* years */
+          n = days / 365;
+          step = 365;
+        }
+      else
+        {
+          /* after the first 5 years, jump at a 5-year pace */
+          n = days / 365;
+          step = 1825;
+        }
+
+      label = g_strdup_printf (get_text_for_day (days), n);
+
+      row = create_row_for_label (label, n == 1);
+      g_object_set_data (G_OBJECT (row), "days", GINT_TO_POINTER (days));
+
+      gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
+
+      g_free (label);
+
+      days += step;
     }
-
-    label = g_strdup_printf (get_text_for_day (days), n);
-
-    row = create_row_for_label (label, n == 1);
-    g_object_set_data (G_OBJECT (row), "days", GINT_TO_POINTER (days));
-
-    gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
-
-    g_free (label);
-
-    days += step;
-  }
 
   g_date_time_unref (maximum_dt);
   g_date_time_unref (now);
@@ -596,16 +618,17 @@ fill_types_listbox (NautilusSearchPopover *popover)
   int i;
 
   /* Mimetypes */
-  for (i = 0; i < G_N_ELEMENTS (mimetype_groups); i++) {
+  for (i = 0; i < G_N_ELEMENTS (mimetype_groups); i++)
+    {
 
-    /* On the third row, which is right below "Folders", there should be an
-     * separator to logically group the types.
-     */
-    row = create_row_for_label (gettext (mimetype_groups[i].name), i == 3);
-    g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (i));
+      /* On the third row, which is right below "Folders", there should be an
+       * separator to logically group the types.
+       */
+      row = create_row_for_label (gettext (mimetype_groups[i].name), i == 3);
+      g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (i));
 
-    gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
-  }
+      gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
+    }
 
   /* Other types */
   row = create_row_for_label (_("Other Type…"), TRUE);
@@ -616,18 +639,27 @@ fill_types_listbox (NautilusSearchPopover *popover)
 const gchar*
 get_text_for_day (gint days)
 {
-  if (days == 0) {
+  if (days == 0)
+    {
       return _("Any time");
-    } else if (days < 7) {
+    }
+  else if (days < 7)
+    {
       /* days */
       return ngettext ("%d day ago", "%d days ago", days);
-    } else if (days < 30) {
+    }
+   else if (days < 30)
+    {
       /* weeks */
       return ngettext ("Last week", "%d weeks ago", days / 7);
-    } else if (days < 365) {
+    }
+  else if (days < 365)
+    {
       /* months */
       return ngettext ("Last month", "%d months ago", days / 30);
-    } else {
+    }
+  else
+    {
       /* years */
       return ngettext ("Last year", "%d years ago", days / 365);
     }
@@ -637,7 +669,8 @@ static void
 show_date_selection_widgets (NautilusSearchPopover *popover,
                              gboolean               visible)
 {
-  gtk_stack_set_visible_child_name (GTK_STACK (popover->date_stack), visible ? "date-entry" : "date-button");
+  gtk_stack_set_visible_child_name (GTK_STACK (popover->date_stack),
+                                    visible ? "date-entry" : "date-button");
   gtk_stack_set_visible_child_name (GTK_STACK (popover->around_stack), "date-list");
   gtk_entry_set_icon_from_icon_name (GTK_ENTRY (popover->date_entry),
                                      GTK_ENTRY_ICON_SECONDARY,
@@ -670,34 +703,36 @@ show_other_types_dialog (NautilusSearchPopover *popover)
   mime_infos = g_content_types_get_registered ();
 
   store = gtk_list_store_new (2, G_TYPE_STRING, G_TYPE_STRING);
-  for (l = mime_infos; l != NULL; l = l->next) {
-    GtkTreeIter iter;
-    char *mime_type = l->data;
-    char *description;
+  for (l = mime_infos; l != NULL; l = l->next)
+    {
+      GtkTreeIter iter;
+      char *mime_type = l->data;
+      char *description;
 
-    description = g_content_type_get_description (mime_type);
-    if (description == NULL) {
-      description = g_strdup (mime_type);
+      description = g_content_type_get_description (mime_type);
+      if (description == NULL)
+        {
+          description = g_strdup (mime_type);
+        }
+
+      gtk_list_store_append (store, &iter);
+      gtk_list_store_set (store, &iter,
+              0, description,
+              1, mime_type,
+              -1);
+
+      g_free (mime_type);
+      g_free (description);
     }
-
-    gtk_list_store_append (store, &iter);
-    gtk_list_store_set (store, &iter,
-            0, description,
-            1, mime_type,
-            -1);
-
-    g_free (mime_type);
-    g_free (description);
-  }
   g_list_free (mime_infos);
 
   toplevel = gtk_widget_get_toplevel (GTK_WIDGET (popover));
   dialog = gtk_dialog_new_with_buttons (_("Select type"),
-                GTK_WINDOW (toplevel),
-                GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                _("_Cancel"), GTK_RESPONSE_CANCEL,
-                _("Select"), GTK_RESPONSE_OK,
-                NULL);
+                                        GTK_WINDOW (toplevel),
+                                        GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
+                                        _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                        _("Select"), GTK_RESPONSE_OK,
+                                        NULL);
   gtk_window_set_default_size (GTK_WINDOW (dialog), 400, 600);
 
   scrolled = gtk_scrolled_window_new (NULL, NULL);
@@ -729,25 +764,26 @@ show_other_types_dialog (NautilusSearchPopover *popover)
   gtk_widget_show (treeview);
   gtk_container_add (GTK_CONTAINER (scrolled), treeview);
 
-  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK) {
-    GtkTreeIter iter;
-    GList *mimetypes;
-    char *mimetype, *description;
+  if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
+    {
+      GtkTreeIter iter;
+      GList *mimetypes;
+      char *mimetype, *description;
 
-    gtk_tree_selection_get_selected (selection, NULL, &iter);
-    gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
-            0, &description,
-            1, &mimetype,
-            -1);
+      gtk_tree_selection_get_selected (selection, NULL, &iter);
+      gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
+              0, &description,
+              1, &mimetype,
+              -1);
 
-    mimetypes = g_list_append (NULL, mimetype);
+      mimetypes = g_list_append (NULL, mimetype);
 
-    gtk_label_set_label (GTK_LABEL (popover->type_label), description);
+      gtk_label_set_label (GTK_LABEL (popover->type_label), description);
 
-    g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
+      g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
 
-    gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
-  }
+      gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
+    }
 
   gtk_widget_destroy (dialog);
 }
@@ -756,45 +792,54 @@ static void
 update_date_label (NautilusSearchPopover *popover,
                    guint                  days)
 {
-  if (days > 0) {
-    GDateTime *now;
-    GDateTime *dt;
-    gchar *formatted_date;
-    gchar *label;
-    guint n;
+  if (days > 0)
+    {
+      GDateTime *now;
+      GDateTime *dt;
+      gchar *formatted_date;
+      gchar *label;
+      guint n;
 
-    if (days < 7) {
-      n = days;
-    } else if (days < 30) {
-      n = days / 7;
-    } else if (days < 365) {
-      n = days / 30;
-    } else {
-      n = days / 365;
+      if (days < 7)
+        {
+          n = days;
+        }
+      else if (days < 30)
+        {
+          n = days / 7;
+        }
+      else if (days < 365)
+        {
+          n = days / 30;
+        }
+      else
+        {
+          n = days / 365;
+        }
+
+      label = g_strdup_printf (get_text_for_day (days), n);
+
+      now = g_date_time_new_now_local ();
+      dt = g_date_time_add_days (now, -days);
+      formatted_date = g_date_time_format (dt, "%x");
+
+      gtk_entry_set_text (GTK_ENTRY (popover->date_entry), formatted_date);
+
+      gtk_widget_show (popover->clear_date_button);
+      gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
+
+      g_date_time_unref (now);
+      g_date_time_unref (dt);
+      g_free (formatted_date);
+      g_free (label);
     }
-
-    label = g_strdup_printf (get_text_for_day (days), n);
-
-    now = g_date_time_new_now_local ();
-    dt = g_date_time_add_days (now, -days);
-    formatted_date = g_date_time_format (dt, "%x");
-
-    gtk_entry_set_text (GTK_ENTRY (popover->date_entry), formatted_date);
-
-    gtk_widget_show (popover->clear_date_button);
-    gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
-
-    g_date_time_unref (now);
-    g_date_time_unref (dt);
-    g_free (formatted_date);
-    g_free (label);
-  } else {
-    gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), _("Select Dates..."));
-    gtk_widget_hide (popover->clear_date_button);
-  }
+  else
+    {
+      gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
+                           _("Select Dates..."));
+      gtk_widget_hide (popover->clear_date_button);
+    }
 }
-
-/* Overrides */
 
 static void
 nautilus_search_popover_closed (GtkPopover *popover)
@@ -839,16 +884,16 @@ nautilus_search_popover_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_LOCATION:
-      g_value_set_object (value, self->location);
-      break;
+      case PROP_LOCATION:
+        g_value_set_object (value, self->location);
+        break;
 
-    case PROP_QUERY:
-      g_value_set_object (value, self->query);
-      break;
+      case PROP_QUERY:
+        g_value_set_object (value, self->query);
+        break;
 
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
 
@@ -858,23 +903,23 @@ nautilus_search_popover_set_property (GObject      *object,
                                       const GValue *value,
                                       GParamSpec   *pspec)
 {
-        NautilusSearchPopover  *self;
+  NautilusSearchPopover  *self;
 
-        self = NAUTILUS_SEARCH_POPOVER (object);
+  self = NAUTILUS_SEARCH_POPOVER (object);
 
-        switch (prop_id)
-        {
-        case PROP_LOCATION:
-                nautilus_search_popover_set_location (self, g_value_get_object (value));
-                break;
+  switch (prop_id)
+    {
+      case PROP_LOCATION:
+        nautilus_search_popover_set_location (self, g_value_get_object (value));
+        break;
 
-        case PROP_QUERY:
-                nautilus_search_popover_set_query (self, g_value_get_object (value));
-                break;
+      case PROP_QUERY:
+        nautilus_search_popover_set_query (self, g_value_get_object (value));
+        break;
 
-        default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
+      default:
+        G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 
@@ -962,14 +1007,16 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
   /* Fuzzy dates listbox */
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->dates_listbox),
                                 (GtkListBoxUpdateHeaderFunc) listbox_header_func,
-                                self, NULL);
+                                self,
+                                NULL);
 
   fill_fuzzy_dates_listbox (self);
 
   /* Types listbox */
   gtk_list_box_set_header_func (GTK_LIST_BOX (self->type_listbox),
                                 (GtkListBoxUpdateHeaderFunc) listbox_header_func,
-                                self, NULL);
+                                self,
+                                NULL);
 
   fill_types_listbox (self);
 }
@@ -1071,35 +1118,40 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
 
   previous_query = popover->query;
 
-  if (popover->query != query) {
+  if (popover->query != query)
+    {
       /* Disconnect signals and bindings from the old query */
-      if (previous_query) {
-        g_signal_handlers_disconnect_by_func (query, query_date_changed, popover);
-        g_clear_pointer (&popover->recursive_binding, g_binding_unbind);
-      }
+      if (previous_query)
+        {
+          g_signal_handlers_disconnect_by_func (query, query_date_changed, popover);
+          g_clear_pointer (&popover->recursive_binding, g_binding_unbind);
+        }
 
       g_set_object (&popover->query, query);
 
-      if (query) {
-        /* Date */
-        setup_date (popover, query);
+      if (query)
+        {
+          /* Date */
+          setup_date (popover, query);
 
-        g_signal_connect (query,
-                          "notify::date",
-                          G_CALLBACK (query_date_changed),
-                          popover);
-        /* Recursive */
-        gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch),
-                               nautilus_query_get_recursive (query));
+          g_signal_connect (query,
+                            "notify::date",
+                            G_CALLBACK (query_date_changed),
+                            popover);
+          /* Recursive */
+          gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch),
+                                 nautilus_query_get_recursive (query));
 
-        popover->recursive_binding = g_object_bind_property (query,
-                                                             "recursive",
-                                                             popover->recursive_switch,
-                                                             "active",
-                                                             G_BINDING_BIDIRECTIONAL);
-      } else {
-        update_date_label (popover, 0);
-        gtk_label_set_label (GTK_LABEL (popover->type_label), _("Anything"));
-      }
-  }
+          popover->recursive_binding = g_object_bind_property (query,
+                                                               "recursive",
+                                                               popover->recursive_switch,
+                                                               "active",
+                                                               G_BINDING_BIDIRECTIONAL);
+        }
+      else
+        {
+          update_date_label (popover, 0);
+          gtk_label_set_label (GTK_LABEL (popover->type_label), _("Anything"));
+        }
+    }
 }
