@@ -39,10 +39,7 @@ typedef struct {
 	GtkWidget *entry;
         GtkWidget *popover;
         GtkWidget *label;
-        GtkWidget *spinner;
 	gboolean change_frozen;
-
-        GBinding *spinner_active_binding;
 
 	GFile *location;
 
@@ -402,14 +399,6 @@ setup_widgets (NautilusQueryEditor *editor)
 
         priv = nautilus_query_editor_get_instance_private (editor);
 
-        /* Spinner for when the search is happening */
-        priv->spinner = gtk_spinner_new ();
-        gtk_widget_set_margin_end (priv->spinner, 18);
-        gtk_widget_show (priv->spinner);
-
-        /* HACK: we're invasively adding the spinner to GtkSearchBar > GtkRevealer > GtkBox */
-        gtk_box_pack_end (GTK_BOX (gtk_bin_get_child (GTK_BIN (gtk_bin_get_child (GTK_BIN (editor))))), priv->spinner, FALSE, TRUE, 0);
-
         /* vertical box that holds the search entry and the label below */
 	vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 6);
 	gtk_container_add (GTK_CONTAINER (editor), vbox);
@@ -595,16 +584,7 @@ nautilus_query_editor_set_query (NautilusQueryEditor	*editor,
 	}
 	g_free (current_text);
 
-        /* Clear bindings */
-        g_clear_pointer (&priv->spinner_active_binding, g_binding_unbind);
-
         if (g_set_object (&priv->query, query)) {
-                if (query) {
-		        priv->spinner_active_binding = g_object_bind_property (query, "searching",
-                                                                               priv->spinner, "active",
-                                                                               G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
-		}
-
                 g_object_notify (G_OBJECT (editor), "query");
         }
 
