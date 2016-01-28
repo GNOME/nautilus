@@ -158,42 +158,25 @@ model_directory_ready_cb (NautilusDirectory	*directory,
                 if (found && date != NULL) {
                         NautilusQuerySearchType type;
                         guint64 query_time, current_file_time;
-                        const gchar *attrib;
-                        GFileInfo *info;
-                        GError *error;
-                        GFile *location;
 
-			g_message ("searching for date %s", g_date_time_format (date, "%X"));
 
                         type = nautilus_query_get_search_type (model->details->query);
-                        location = nautilus_file_get_location (file);
-		        error = NULL;
 
                         if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                                attrib = G_FILE_ATTRIBUTE_TIME_ACCESS;
+                                current_file_time = nautilus_file_get_atime (file);
                         } else {
-                                attrib = G_FILE_ATTRIBUTE_TIME_MODIFIED;
+                                current_file_time = nautilus_file_get_mtime (file);
                         }
+
 
                         query_time = g_date_time_to_unix (date);
 
-                        /* Query current file's attribute */
-                        info = g_file_query_info (location,
-                                                  attrib,
-                                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                  NULL,
-                                                  &error);
-
-                        if (error) {
+                        if (current_file_time == 0) {
                                 /* Silently ignore errors */
-                                g_clear_error (&error);
                                 found = FALSE;
                         } else {
-                                current_file_time = g_file_info_get_attribute_uint64 (info, attrib);
                                 found = (query_time <= current_file_time);
                         }
-
-                        g_clear_object (&location);
                 }
 
 		if (found) {

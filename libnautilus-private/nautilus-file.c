@@ -5057,6 +5057,12 @@ nautilus_file_get_mtime (NautilusFile *file)
 	return file->details->mtime;
 }
 
+time_t
+nautilus_file_get_atime (NautilusFile *file)
+{
+        return file->details->atime;
+}
+
 
 static void
 set_attributes_get_info_callback (GObject *source_object,

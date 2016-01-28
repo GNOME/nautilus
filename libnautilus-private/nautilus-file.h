@@ -170,6 +170,7 @@ char *                  nautilus_file_get_thumbnail_path                (Nautilu
 gboolean                nautilus_file_can_get_size                      (NautilusFile                   *file);
 goffset                 nautilus_file_get_size                          (NautilusFile                   *file);
 time_t                  nautilus_file_get_mtime                         (NautilusFile                   *file);
+time_t                  nautilus_file_get_atime                         (NautilusFile                   *file);
 GFileType               nautilus_file_get_file_type                     (NautilusFile                   *file);
 char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
 char *                  nautilus_file_get_extension                     (NautilusFile                   *file);

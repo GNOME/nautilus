@@ -211,6 +211,8 @@ visit_directory (GFile *dir, SearchThreadData *data)
 	GList *l;
 	const char *id;
 	gboolean visited;
+	guint64 atime;
+	guint64 mtime;
 
 	enumerator = g_file_enumerate_children (dir,
 						data->mime_types != NULL ?
@@ -253,30 +255,29 @@ visit_directory (GFile *dir, SearchThreadData *data)
 			}
 		}
 
+		mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
+		atime = g_file_info_get_attribute_uint64 (info, "time::access");
                 if (found && nautilus_query_get_date (data->query) != NULL) {
                         NautilusQuerySearchType type;
-                        GDateTime *date;
                         guint64 current_file_time, query_time;
-                        const gchar *attrib;
+			GDateTime *date;
 
                         type = nautilus_query_get_search_type (data->query);
 
                         if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                                attrib = G_FILE_ATTRIBUTE_TIME_ACCESS;
+                                current_file_time = atime;
                         } else {
-                                attrib = G_FILE_ATTRIBUTE_TIME_MODIFIED;
+                                current_file_time = mtime;
                         }
 
                         date = nautilus_query_get_date (data->query);
                         query_time = g_date_time_to_unix (date);
-                        current_file_time = g_file_info_get_attribute_uint64 (info, attrib);
 
                         found = (query_time <= current_file_time);
                 }
 		
 		if (found) {
 			NautilusSearchHit *hit;
-			GTimeVal tv;
 			GDateTime *date;
 			char *uri;
 
@@ -284,8 +285,7 @@ visit_directory (GFile *dir, SearchThreadData *data)
 			hit = nautilus_search_hit_new (uri);
 			g_free (uri);
 			nautilus_search_hit_set_fts_rank (hit, match);
-			g_file_info_get_modification_time (info, &tv);
-			date = g_date_time_new_from_timeval_local (&tv);
+			date = g_date_time_new_from_unix_local (mtime);
 			nautilus_search_hit_set_modification_time (hit, date);
 			g_date_time_unref (date);
 
