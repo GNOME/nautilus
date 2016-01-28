@@ -384,6 +384,10 @@ search_popover_changed_cb (NautilusSearchPopover *popover,
                 nautilus_query_set_mime_types (query, data);
                 break;
 
+        case NAUTILUS_SEARCH_FILTER_LAST:
+                nautilus_query_set_search_type (query, GPOINTER_TO_INT (data));
+                break;
+
         default:
                 g_warning ("Search filter type not valid");
                 break;

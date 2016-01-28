@@ -40,6 +40,8 @@ struct _NautilusSearchPopover
   GtkWidget          *type_label;
   GtkWidget          *type_listbox;
   GtkWidget          *type_stack;
+  GtkWidget          *last_used_button;
+  GtkWidget          *last_modified_button;
 
   GFile              *location;
   NautilusQuery      *query;
@@ -481,6 +483,24 @@ types_listbox_row_activated (GtkListBox            *listbox,
     }
 
   gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
+}
+
+static void
+search_time_type_changed (GtkToggleButton       *button,
+                          NautilusSearchPopover *popover)
+{
+  NautilusQuerySearchType type = -1;
+
+  if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->last_modified_button)))
+    {
+      type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
+    }
+  else
+    {
+      type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
+    }
+
+  g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_LAST, type);
 }
 
 /* Auxiliary methods */
@@ -976,6 +996,8 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_listbox);
   gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_stack);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_used_button);
+  gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_modified_button);
 
   gtk_widget_class_bind_template_callback (widget_class, calendar_day_selected);
   gtk_widget_class_bind_template_callback (widget_class, clear_date_button_clicked);
@@ -985,6 +1007,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, select_type_button_clicked);
   gtk_widget_class_bind_template_callback (widget_class, toggle_calendar_icon_clicked);
   gtk_widget_class_bind_template_callback (widget_class, types_listbox_row_activated);
+  gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
 }
 
 static void
