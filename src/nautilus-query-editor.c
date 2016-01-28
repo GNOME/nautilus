@@ -385,6 +385,7 @@ search_popover_changed_cb (NautilusSearchPopover *popover,
                 break;
 
         default:
+                g_warning ("Search filter type not valid");
                 break;
         }
 
