@@ -216,11 +216,6 @@ struct {
       "video/x-real-video",
       NULL
     }
-  },
-  { NULL,
-    {
-      NULL
-    }
   }
 };
 
