@@ -129,11 +129,11 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 	gdouble match;
 	gboolean found;
 	NautilusSearchHit *hit;
-        GDateTime *dt;
+        GDateTime *date;
 
 	files = nautilus_directory_get_file_list (directory);
 	mime_types = nautilus_query_get_mime_types (model->details->query);
-        dt = nautilus_query_get_date (model->details->query);
+        date = nautilus_query_get_date (model->details->query);
 	hits = NULL;
 
 	for (l = files; l != NULL; l = l->next) {
@@ -148,13 +148,14 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 
 			for (m = mime_types; m != NULL; m = m->next) {
 				if (nautilus_file_is_mime_type (file, m->data)) {
+					g_print ("Mime type matched %s\n", m->data);
 					found = TRUE;
 					break;
 				}
 			}
 		}
 
-                if (found && dt != NULL) {
+                if (found && date != NULL) {
                         NautilusQuerySearchType type;
                         guint64 query_time, current_file_time;
                         const gchar *attrib;
@@ -162,7 +163,7 @@ model_directory_ready_cb (NautilusDirectory	*directory,
                         GError *error;
                         GFile *location;
 
-			g_message ("searching for date %s", g_date_time_format (dt, "%X"));
+			g_message ("searching for date %s", g_date_time_format (date, "%X"));
 
                         type = nautilus_query_get_search_type (model->details->query);
                         location = nautilus_file_get_location (file);
@@ -174,7 +175,7 @@ model_directory_ready_cb (NautilusDirectory	*directory,
                                 attrib = G_FILE_ATTRIBUTE_TIME_MODIFIED;
                         }
 
-                        query_time = g_date_time_to_unix (dt);
+                        query_time = g_date_time_to_unix (date);
 
                         /* Query current file's attribute */
                         info = g_file_query_info (location,

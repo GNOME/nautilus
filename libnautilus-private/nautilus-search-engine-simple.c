@@ -277,7 +277,7 @@ visit_directory (GFile *dir, SearchThreadData *data)
 		if (found) {
 			NautilusSearchHit *hit;
 			GTimeVal tv;
-			GDateTime *dt;
+			GDateTime *date;
 			char *uri;
 
 			uri = g_file_get_uri (child);
@@ -285,9 +285,9 @@ visit_directory (GFile *dir, SearchThreadData *data)
 			g_free (uri);
 			nautilus_search_hit_set_fts_rank (hit, match);
 			g_file_info_get_modification_time (info, &tv);
-			dt = g_date_time_new_from_timeval_local (&tv);
-			nautilus_search_hit_set_modification_time (hit, dt);
-			g_date_time_unref (dt);
+			date = g_date_time_new_from_timeval_local (&tv);
+			nautilus_search_hit_set_modification_time (hit, date);
+			g_date_time_unref (date);
 
 			data->hits = g_list_prepend (data->hits, hit);
 		}

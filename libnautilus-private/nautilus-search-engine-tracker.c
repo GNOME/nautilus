@@ -193,18 +193,18 @@ cursor_callback (GObject      *object,
 	g_free (basename);
 
 	if (g_time_val_from_iso8601 (mtime_str, &tv)) {
-		GDateTime *dt;
-		dt = g_date_time_new_from_timeval_local (&tv);
-		nautilus_search_hit_set_modification_time (hit, dt);
-		g_date_time_unref (dt);
+		GDateTime *date;
+		date = g_date_time_new_from_timeval_local (&tv);
+		nautilus_search_hit_set_modification_time (hit, date);
+		g_date_time_unref (date);
 	} else {
 		g_warning ("unable to parse mtime: %s", mtime_str);
 	}
 	if (g_time_val_from_iso8601 (atime_str, &tv)) {
-		GDateTime *dt;
-		dt = g_date_time_new_from_timeval_local (&tv);
-		nautilus_search_hit_set_access_time (hit, dt);
-		g_date_time_unref (dt);
+		GDateTime *date;
+		date = g_date_time_new_from_timeval_local (&tv);
+		nautilus_search_hit_set_access_time (hit, date);
+		g_date_time_unref (date);
 	} else {
 		g_warning ("unable to parse atime: %s", atime_str);
 	}
@@ -263,7 +263,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	GList *mimetypes, *l;
 	gint mime_count;
 	gboolean recursive;
-        GDateTime *dt;
+        GDateTime *date;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -294,7 +294,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         location = nautilus_query_get_location (tracker->details->query);
 	location_uri = location ? g_file_get_uri (location) : NULL;
 	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
-        dt = nautilus_query_get_date (tracker->details->query);
+        date = nautilus_query_get_date (tracker->details->query);
 
 	mime_count = g_list_length (mimetypes);
 
@@ -321,22 +321,22 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
 	g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
 
-        if (dt != NULL) {
+        if (date != NULL) {
                 NautilusQuerySearchType type;
-                gchar *dt_format;
+                gchar *date_format;
 
                 type = nautilus_query_get_search_type (tracker->details->query);
-                dt_format = g_date_time_format (dt, "%Y-%m-%dT%H:%M:%S");
+                date_format = g_date_time_format (date, "%Y-%m-%dT%H:%M:%S");
 
                 g_string_append (sparql, " && ");
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                        g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", dt_format);
+                        g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", date_format);
                 } else {
-                        g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", dt_format);
+                        g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", date_format);
                 }
 
-                g_free (dt_format);
+                g_free (date_format);
         }
 
 	if (mime_count > 0) {
