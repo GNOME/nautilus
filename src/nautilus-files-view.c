@@ -127,7 +127,7 @@
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
 /* Delay to show the Loading... floating bar */
-#define FLOATING_BAR_LOADING_DELAY 500 /* ms */
+#define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
 enum {
         ADD_FILE,
