@@ -527,8 +527,8 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                 should_notify = g_set_object (&priv->location, location);
         }
 
-        if (priv->query)
-            nautilus_query_set_location (priv->query, priv->location);
+        create_and_get_query (editor);
+        nautilus_query_set_location (priv->query, priv->location);
 
         /* Update label if needed */
         if (priv->location) {
