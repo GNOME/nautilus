@@ -26,6 +26,8 @@
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 
+#include <libnautilus-private/nautilus-global-preferences.h>
+
 #include "nautilus-file-utilities.h"
 #include "nautilus-query.h"
 #include "nautilus-private-enum-types.h"
@@ -298,7 +300,7 @@ nautilus_query_init (NautilusQuery *query)
 {
         query->show_hidden = TRUE;
         query->location = g_file_new_for_path (g_get_home_dir ());
-        query->search_type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED;
+        query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
         query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
 }
 

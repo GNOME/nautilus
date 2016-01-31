@@ -49,6 +49,11 @@
     <value value="1" nick="end"/>
   </enum>
 
+  <enum id="org.gnome.nautilus.SearchFilterTimeType">
+    <value value="0" nick="last_modified"/>
+    <value value="1" nick="last_used"/>
+  </enum>
+
   <schema path="/org/gnome/nautilus/" id="org.gnome.nautilus" gettext-domain="nautilus">
     <child schema="org.gnome.nautilus.preferences" name="preferences"/>
     <child schema="org.gnome.nautilus.icon-view" name="icon-view"/>
@@ -80,6 +85,11 @@
       <default>false</default>
       <summary>Whether to enable recursive search or not on remote locations</summary>
       <description>Enables or disables recursive search on remote locations in Nautilus.</description>
+    </key>
+    <key name="search-filter-time-type" enum="org.gnome.nautilus.SearchFilterTimeType">
+      <default>'last_modified'</default>
+      <summary>Filter the search dates using either last used or last modified</summary>
+      <description>Filter the search dates using either last used or last modified.</description>
     </key>
     <key type="b" name="show-delete-permanently">
       <default>false</default>

@@ -536,6 +536,8 @@ search_time_type_changed (GtkToggleButton       *button,
       type = NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS;
     }
 
+  g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
+
   g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_LAST, type);
 }
 
@@ -1028,6 +1030,8 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 static void
 nautilus_search_popover_init (NautilusSearchPopover *self)
 {
+  NautilusQuerySearchType filter_time_type;
+
   gtk_widget_init_template (GTK_WIDGET (self));
 
   /* Fuzzy dates listbox */
@@ -1045,6 +1049,18 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
                                 NULL);
 
   fill_types_listbox (self);
+
+  filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
+  if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), TRUE);
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), FALSE);
+    }
+  else
+    {
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
+      gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
+    }
 }
 
 GtkWidget*
