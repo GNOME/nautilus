@@ -170,7 +170,6 @@ struct NautilusFilesViewDetails
 {
         /* Main components */
         GtkWidget *overlay;
-        GtkWidget *remote_warning_bar;
 
         NautilusWindowSlot *slot;
         NautilusDirectory *model;
@@ -7163,20 +7162,6 @@ load_directory (NautilusFilesView *view,
 }
 
 static void
-check_remote_warning_bar (NautilusFilesView *view)
-{
-        if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
-                if (showing_remote_directory (view))
-                        gtk_widget_show_all (view->details->remote_warning_bar);
-                else
-                        gtk_widget_hide (view->details->remote_warning_bar);
-        } else {
-                        gtk_widget_hide (view->details->remote_warning_bar);
-        }
-}
-
-
-static void
 finish_loading (NautilusFilesView *view)
 {
         NautilusFileAttributes attributes;
@@ -7191,7 +7176,6 @@ finish_loading (NautilusFilesView *view)
         nautilus_profile_end ("BEGIN_LOADING");
 
         check_empty_states (view);
-        check_remote_warning_bar (view);
 
         if (nautilus_directory_are_all_files_seen (view->details->model)) {
                 /* Unschedule a pending update and schedule a new one with the minimal
@@ -7904,7 +7888,6 @@ set_search_query_internal (NautilusFilesView *files_view,
                         nautilus_view_set_location (NAUTILUS_VIEW (files_view), location);
                 }
         }
-        check_remote_warning_bar (files_view);
         g_clear_object (&location);
 }
 
@@ -8137,13 +8120,8 @@ nautilus_files_view_init (NautilusFilesView *view)
         view->details->overlay = gtk_overlay_new ();
         gtk_widget_set_vexpand (view->details->overlay, TRUE);
         gtk_widget_set_hexpand (view->details->overlay, TRUE);
-        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-remote-warning-bar.ui");
-        view->details->remote_warning_bar = GTK_WIDGET (gtk_builder_get_object (builder, "remote_warning_bar"));
         gtk_container_add (GTK_CONTAINER (view), view->details->overlay);
-        gtk_container_add (GTK_CONTAINER (view), view->details->remote_warning_bar);
         gtk_widget_show (view->details->overlay);
-
-        g_object_unref (builder);
 
         /* NautilusFloatingBar listen to its parent's 'enter-notify-event' signal
          * and GtkOverlay doesn't have it enabled by default, so we have to add them
