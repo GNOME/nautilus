@@ -95,6 +95,8 @@ query_recursive_changed (GObject             *object,
         g_settings_set_boolean (nautilus_preferences,
                                 key,
                                 nautilus_query_get_recursive (NAUTILUS_QUERY (object)));
+
+	nautilus_query_editor_changed (editor);
 }
 
 
