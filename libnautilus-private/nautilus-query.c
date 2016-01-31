@@ -470,7 +470,7 @@ nautilus_query_to_readable_string (NautilusQuery *query)
 NautilusQuerySearchContent
 nautilus_query_get_search_content (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE);
+        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
         return query->search_content;
 }
@@ -490,7 +490,7 @@ nautilus_query_set_search_content (NautilusQuery              *query,
 NautilusQuerySearchType
 nautilus_query_get_search_type (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED);
+        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
         return query->search_type;
 }
