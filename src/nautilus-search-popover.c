@@ -302,7 +302,7 @@ static void
 update_recursive_switch (NautilusSearchPopover *popover,
                          GFile                 *location)
 {
-  if (!popover->query && location)
+  if (location)
     {
       NautilusFile *file;
       gboolean active;
