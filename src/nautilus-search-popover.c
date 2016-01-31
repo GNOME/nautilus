@@ -43,7 +43,6 @@ struct _NautilusSearchPopover
   GtkWidget          *last_used_button;
   GtkWidget          *last_modified_button;
 
-  GFile              *location;
   NautilusQuery      *query;
   GBinding           *recursive_binding;
 };
@@ -65,7 +64,6 @@ G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
 
 enum {
   PROP_0,
-  PROP_LOCATION,
   PROP_QUERY,
   LAST_PROP
 };
@@ -298,6 +296,44 @@ query_date_changed (GObject               *object,
                     NautilusSearchPopover *popover)
 {
   setup_date (popover, NAUTILUS_QUERY (object));
+}
+
+static void
+update_recursive_switch (NautilusSearchPopover *popover,
+                         GFile                 *location)
+{
+  if (!popover->query && location)
+    {
+      NautilusFile *file;
+      gboolean active;
+
+      file = nautilus_file_get (location);
+
+      if (!nautilus_file_is_local (file))
+        {
+          active = g_settings_get_boolean (nautilus_preferences,
+                                           "enable-remote-recursive-search");
+        }
+      else
+        {
+          active = g_settings_get_boolean (nautilus_preferences,
+                                           "enable-recursive-search");
+        }
+
+      gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch), active);
+    }
+
+}
+
+static void
+query_location_changed (GObject               *object,
+                        GParamSpec            *pspec,
+                        NautilusSearchPopover *popover)
+{
+  GFile *location;
+
+  location = nautilus_query_get_location (popover->query);
+  update_recursive_switch (popover, location);
 }
 
 static void
@@ -892,10 +928,6 @@ nautilus_search_popover_get_property (GObject    *object,
 
   switch (prop_id)
     {
-      case PROP_LOCATION:
-        g_value_set_object (value, self->location);
-        break;
-
       case PROP_QUERY:
         g_value_set_object (value, self->query);
         break;
@@ -917,10 +949,6 @@ nautilus_search_popover_set_property (GObject      *object,
 
   switch (prop_id)
     {
-      case PROP_LOCATION:
-        nautilus_search_popover_set_location (self, g_value_get_object (value));
-        break;
-
       case PROP_QUERY:
         nautilus_search_popover_set_query (self, g_value_get_object (value));
         break;
@@ -954,19 +982,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                    2,
                                    NAUTILUS_TYPE_SEARCH_FILTER,
                                    G_TYPE_POINTER);
-
-  /**
-   * NautilusSearchPopover::location:
-   *
-   * The current location of the search.
-   */
-  g_object_class_install_property (object_class,
-                                   PROP_LOCATION,
-                                   g_param_spec_object ("location",
-                                                        "Location of the popover",
-                                                        "The current location of the search",
-                                                        G_TYPE_FILE,
-                                                        G_PARAM_READWRITE));
 
   /**
    * NautilusSearchPopover::query:
@@ -1039,62 +1054,6 @@ nautilus_search_popover_new (void)
 }
 
 /**
- * nautilus_search_popover_get_location:
- *
- * Retrieves the current directory as a #GFile.
- *
- * Returns: (transfer none): a #GFile.
- */
-GFile*
-nautilus_search_popover_get_location (NautilusSearchPopover *popover)
-{
-  g_return_val_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover), NULL);
-
-  return popover->location;
-}
-
-/**
- * nautilus_search_popover_set_location:
- *
- * Sets the current location that the search is being
- * performed on.
- *
- * Returns:
- */
-void
-nautilus_search_popover_set_location (NautilusSearchPopover *popover,
-                                      GFile                 *location)
-{
-  g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
-
-  if (g_set_object (&popover->location, location))
-    {
-      if (!popover->query && location)
-        {
-          NautilusFile *file;
-          gboolean active;
-
-          file = nautilus_file_get (location);
-
-          if (!nautilus_file_is_local (file))
-            {
-              active = g_settings_get_boolean (nautilus_preferences,
-                                               "enable-remote-recursive-search");
-            }
-          else
-            {
-              active = g_settings_get_boolean (nautilus_preferences,
-                                               "enable-recursive-search");
-            }
-
-          gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch), active);
-        }
-
-      g_object_notify (G_OBJECT (popover), "location");
-    }
-}
-
-/**
  * nautilus_search_popover_get_query:
  * @popover: a #NautilusSearchPopover
  *
@@ -1135,6 +1094,7 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
       if (previous_query)
         {
           g_signal_handlers_disconnect_by_func (query, query_date_changed, popover);
+          g_signal_handlers_disconnect_by_func (query, query_location_changed, popover);
           g_clear_pointer (&popover->recursive_binding, g_binding_unbind);
         }
 
@@ -1149,6 +1109,13 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
                             "notify::date",
                             G_CALLBACK (query_date_changed),
                             popover);
+
+          g_signal_connect (query,
+                            "notify::location",
+                            G_CALLBACK (query_location_changed),
+                            popover);
+
+          update_recursive_switch (popover, nautilus_query_get_location (query));
           /* Recursive */
           gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch),
                                  nautilus_query_get_recursive (query));

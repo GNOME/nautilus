@@ -39,11 +39,6 @@ G_DECLARE_FINAL_TYPE (NautilusSearchPopover, nautilus_search_popover, NAUTILUS, 
 
 GtkWidget*           nautilus_search_popover_new                 (void);
 
-GFile*               nautilus_search_popover_get_location        (NautilusSearchPopover *popover);
-
-void                 nautilus_search_popover_set_location        (NautilusSearchPopover *popover,
-                                                                  GFile                 *location);
-
 NautilusQuery*       nautilus_search_popover_get_query           (NautilusSearchPopover *popover);
 
 void                 nautilus_search_popover_set_query           (NautilusSearchPopover *popover,

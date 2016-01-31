@@ -430,10 +430,6 @@ setup_widgets (NautilusQueryEditor *editor)
         /* setup the search popover */
         priv->popover = nautilus_search_popover_new ();
 
-        g_object_bind_property (editor, "location",
-                                priv->popover, "location",
-                                G_BINDING_DEFAULT);
-
         g_object_bind_property (editor, "query",
                                 priv->popover, "query",
                                 G_BINDING_DEFAULT);
