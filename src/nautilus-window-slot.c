@@ -252,7 +252,6 @@ update_search_visible (NautilusWindowSlot *slot)
 {
         NautilusQuery *query;
         NautilusView *view;
-        gchar *text;
         GAction *action;
 
         action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group),
@@ -273,13 +272,11 @@ update_search_visible (NautilusWindowSlot *slot)
 
         query = nautilus_query_editor_get_query (slot->details->query_editor);
         if (query) {
-                text = nautilus_query_get_text (query);
                 /* If the view is not searching, but search is visible, and the
                  * query is empty, we don't hide it. Some users enable the search
                  * and then change locations, then they search. */
-                if (strlen (text) != 0)
+                 if (!nautilus_query_is_empty (query))
                         nautilus_window_slot_set_search_visible (slot, FALSE);
-                g_free (text);
                 g_object_unref (query);
         }
 }
