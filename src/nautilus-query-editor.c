@@ -365,6 +365,22 @@ search_mode_changed_cb (GObject    *editor,
 }
 
 static void
+search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
+                                      GPtrArray             *data,
+                                      NautilusQueryEditor   *editor)
+{
+        NautilusQueryEditorPrivate *priv;
+
+        priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
+        if (!priv->query)
+                create_query (editor);
+
+        nautilus_query_set_date_range (priv->query, data);
+
+        nautilus_query_editor_changed (editor);
+}
+
+static void
 search_popover_changed_cb (NautilusSearchPopover *popover,
                            NautilusSearchFilter   filter,
                            gpointer               data,
@@ -377,10 +393,6 @@ search_popover_changed_cb (NautilusSearchPopover *popover,
                 create_query (editor);
 
         switch (filter) {
-        case NAUTILUS_SEARCH_FILTER_DATE:
-                nautilus_query_set_date (priv->query, data);
-                break;
-
         case NAUTILUS_SEARCH_FILTER_TYPE:
                 nautilus_query_set_mime_types (priv->query, data);
                 break;
@@ -452,6 +464,8 @@ setup_widgets (NautilusQueryEditor *editor)
                           G_CALLBACK (nautilus_query_editor_on_stop_search), editor);
         g_signal_connect (priv->popover, "changed",
                           G_CALLBACK (search_popover_changed_cb), editor);
+        g_signal_connect (priv->popover, "date-range",
+                          G_CALLBACK (search_popover_date_range_changed_cb), editor);
 
 	/* show everything */
 	gtk_widget_show_all (vbox);

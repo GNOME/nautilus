@@ -64,9 +64,9 @@ NautilusQuerySearchType nautilus_query_get_search_type (NautilusQuery *query);
 void                    nautilus_query_set_search_type (NautilusQuery           *query,
                                                         NautilusQuerySearchType  type);
 
-GDateTime*     nautilus_query_get_date           (NautilusQuery *query);
-void           nautilus_query_set_date           (NautilusQuery *query,
-                                                  GDateTime     *date);
+GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
+void           nautilus_query_set_date_range     (NautilusQuery *query,
+                                                  GPtrArray     *date_range);
 
 gboolean       nautilus_query_get_recursive      (NautilusQuery *query);
 

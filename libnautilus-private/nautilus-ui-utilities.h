@@ -47,4 +47,8 @@ char * nautilus_escape_action_name                 (const char        *action_na
 void   nautilus_ui_frame_image                     (GdkPixbuf        **pixbuf);
 void   nautilus_ui_frame_video                     (GdkPixbuf        **pixbuf);
 
+gboolean   nautilus_file_date_in_between           (guint64           file_unix_time,
+                                                    GDateTime         *initial_date,
+                                                    GDateTime         *end_date);
+
 #endif /* NAUTILUS_UI_UTILITIES_H */

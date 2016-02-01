@@ -213,6 +213,10 @@ visit_directory (GFile *dir, SearchThreadData *data)
 	gboolean visited;
 	guint64 atime;
 	guint64 mtime;
+        GPtrArray *date_range;
+        GDateTime *initial_date;
+        GDateTime *end_date;
+
 
 	enumerator = g_file_enumerate_children (dir,
 						data->mime_types != NULL ?
@@ -257,11 +261,14 @@ visit_directory (GFile *dir, SearchThreadData *data)
 
 		mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
 		atime = g_file_info_get_attribute_uint64 (info, "time::access");
-                if (found && nautilus_query_get_date (data->query) != NULL) {
-                        NautilusQuerySearchType type;
-                        guint64 current_file_time, query_time;
-			GDateTime *date;
 
+                date_range = nautilus_query_get_date_range (data->query);
+                if (found && date_range != NULL) {
+                        NautilusQuerySearchType type;
+                        guint64 current_file_time;
+
+                        initial_date = g_ptr_array_index (date_range, 0);
+                        end_date = g_ptr_array_index (date_range, 1);
                         type = nautilus_query_get_search_type (data->query);
 
                         if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
@@ -269,13 +276,11 @@ visit_directory (GFile *dir, SearchThreadData *data)
                         } else {
                                 current_file_time = mtime;
                         }
-
-                        date = nautilus_query_get_date (data->query);
-                        query_time = g_date_time_to_unix (date);
-
-                        found = (query_time <= current_file_time);
+                        found = nautilus_file_date_in_between (current_file_time,
+                                                               initial_date,
+                                                               end_date);
                 }
-		
+
 		if (found) {
 			NautilusSearchHit *hit;
 			GDateTime *date;

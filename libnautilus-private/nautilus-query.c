@@ -39,7 +39,7 @@ struct _NautilusQuery {
 	GFile *location;
 	GList *mime_types;
 	gboolean show_hidden;
-        GDateTime *datetime;
+        GPtrArray *date_range;
         NautilusQuerySearchType search_type;
         NautilusQuerySearchContent search_content;
 
@@ -55,7 +55,7 @@ G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
 enum {
         PROP_0,
-        PROP_DATE,
+        PROP_DATE_RANGE,
         PROP_LOCATION,
         PROP_MIMETYPES,
         PROP_RECURSIVE,
@@ -76,7 +76,7 @@ finalize (GObject *object)
         g_free (query->text);
         g_strfreev (query->prepared_words);
         g_clear_object (&query->location);
-        g_clear_pointer (&query->datetime, g_date_time_unref);
+        g_clear_pointer (&query->date_range, g_ptr_array_unref);
 
 	G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
@@ -90,8 +90,8 @@ nautilus_query_get_property (GObject    *object,
         NautilusQuery *self = NAUTILUS_QUERY (object);
 
         switch (prop_id) {
-        case PROP_DATE:
-                g_value_set_boxed (value, self->datetime);
+        case PROP_DATE_RANGE:
+                g_value_set_pointer (value, self->date_range);
                 break;
 
         case PROP_LOCATION:
@@ -102,9 +102,9 @@ nautilus_query_get_property (GObject    *object,
                 g_value_set_pointer (value, self->mime_types);
                 break;
 
-	case PROP_RECURSIVE:
-		g_value_set_boolean (value, self->recursive);
-		break;
+        case PROP_RECURSIVE:
+                g_value_set_boolean (value, self->recursive);
+                break;
 
         case PROP_SEARCH_TYPE:
                 g_value_set_enum (value, self->search_type);
@@ -136,8 +136,8 @@ nautilus_query_set_property (GObject      *object,
         NautilusQuery *self = NAUTILUS_QUERY (object);
 
         switch (prop_id) {
-        case PROP_DATE:
-                nautilus_query_set_date (self, g_value_get_boxed (value));
+        case PROP_DATE_RANGE:
+                nautilus_query_set_date_range (self, g_value_get_pointer (value));
                 break;
 
         case PROP_LOCATION:
@@ -148,9 +148,9 @@ nautilus_query_set_property (GObject      *object,
                 nautilus_query_set_mime_types (self, g_value_get_pointer (value));
                 break;
 
-	case PROP_RECURSIVE:
-		nautilus_query_set_recursive (self, g_value_get_boolean (value));
-		break;
+        case PROP_RECURSIVE:
+                nautilus_query_set_recursive (self, g_value_get_boolean (value));
+                break;
 
         case PROP_SEARCH_TYPE:
                 nautilus_query_set_search_type (self, g_value_get_enum (value));
@@ -183,18 +183,17 @@ nautilus_query_class_init (NautilusQueryClass *class)
         gobject_class->set_property = nautilus_query_set_property;
 
         /**
-         * NautilusQuery::date:
+         * NautilusQuery::date-range:
          *
-         * The initial date of the query.
+         * The date range of the query.
          *
          */
         g_object_class_install_property (gobject_class,
-                                         PROP_DATE,
-                                         g_param_spec_boxed ("date",
-                                                             "Date of the query",
-                                                             "The initial date of the query",
-                                                             G_TYPE_DATE_TIME,
-                                                             G_PARAM_READWRITE));
+                                         PROP_DATE_RANGE,
+                                         g_param_spec_pointer ("date-range",
+                                                               "Date range of the query",
+                                                               "The range date of the query",
+                                                               G_PARAM_READWRITE));
 
         /**
          * NautilusQuery::location:
@@ -507,28 +506,26 @@ nautilus_query_set_search_type (NautilusQuery           *query,
         }
 }
 
-GDateTime*
-nautilus_query_get_date (NautilusQuery *query)
+GPtrArray*
+nautilus_query_get_date_range (NautilusQuery *query)
 {
         g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-        return query->datetime;
+        return query->date_range;
 }
 
 void
-nautilus_query_set_date (NautilusQuery *query,
-                         GDateTime     *date)
+nautilus_query_set_date_range (NautilusQuery *query,
+                               GPtrArray     *date_range)
 {
         g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        if (query->datetime != date) {
-                g_clear_pointer (&query->datetime, g_date_time_unref);
-                if (date) {
-                        query->datetime = g_date_time_ref (date);
-                }
-
-                g_object_notify (G_OBJECT (query), "date");
+        g_clear_pointer (&query->date_range, g_ptr_array_unref);
+        if (date_range) {
+                query->date_range = g_ptr_array_ref (date_range);
         }
+
+        g_object_notify (G_OBJECT (query), "date-range");
 }
 
 gboolean
@@ -585,7 +582,7 @@ nautilus_query_is_empty (NautilusQuery *query)
 
         }
 
-        if (!query->datetime &&
+        if (!query->date_range &&
             (!query->text || (query->text && query->text[0] == '\0')) &&
             !query->mime_types) {
                 return TRUE;

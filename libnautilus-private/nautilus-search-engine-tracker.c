@@ -263,7 +263,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 	GList *mimetypes, *l;
 	gint mime_count;
 	gboolean recursive;
-        GDateTime *date;
+        GPtrArray *date_range;
 
 	tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -294,8 +294,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         location = nautilus_query_get_location (tracker->details->query);
 	location_uri = location ? g_file_get_uri (location) : NULL;
 	mimetypes = nautilus_query_get_mime_types (tracker->details->query);
-        date = nautilus_query_get_date (tracker->details->query);
-
 	mime_count = g_list_length (mimetypes);
 
 	sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)\n"
@@ -321,22 +319,38 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
 	g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
 
-        if (date != NULL) {
+        date_range = nautilus_query_get_date_range (tracker->details->query);
+        if (date_range) {
                 NautilusQuerySearchType type;
-                gchar *date_format;
+                gchar *initial_date_format;
+                gchar *end_date_format;
+                GDateTime *initial_date;
+                GDateTime *end_date;
+                GDateTime *shifted_end_date;
+
+                initial_date = g_ptr_array_index (date_range, 0);
+                end_date = g_ptr_array_index (date_range, 1);
+                /* As we do for other searches, we want to make the end date inclusive.
+                 * For that, add a day to it */
+                shifted_end_date = g_date_time_add_days (end_date, 1);
 
                 type = nautilus_query_get_search_type (tracker->details->query);
-                date_format = g_date_time_format (date, "%Y-%m-%dT%H:%M:%S");
+                initial_date_format = g_date_time_format (initial_date, "%Y-%m-%dT%H:%M:%S");
+                end_date_format = g_date_time_format (shifted_end_date, "%Y-%m-%dT%H:%M:%S");
 
                 g_string_append (sparql, " && ");
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                        g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", date_format);
+                        g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", initial_date_format);
+                        g_string_append_printf (sparql, " && ?atime <= \"%s\"^^xsd:dateTime", end_date_format);
                 } else {
-                        g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", date_format);
+                        g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", initial_date_format);
+                        g_string_append_printf (sparql, " && ?mtime <= \"%s\"^^xsd:dateTime", end_date_format);
                 }
 
-                g_free (date_format);
+
+                g_free (initial_date_format);
+                g_free (end_date_format);
         }
 
 	if (mime_count > 0) {

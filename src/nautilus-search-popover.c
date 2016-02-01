@@ -50,7 +50,7 @@ struct _NautilusSearchPopover
 const gchar*         get_text_for_day                            (gint                   days);
 
 static void          emit_date_changes_for_day                   (NautilusSearchPopover *popover,
-                                                                  gint                   days);
+                                                                  GPtrArray             *date_range);
 
 static void          show_date_selection_widgets                 (NautilusSearchPopover *popover,
                                                                   gboolean               visible);
@@ -58,7 +58,7 @@ static void          show_date_selection_widgets                 (NautilusSearch
 static void          show_other_types_dialog                     (NautilusSearchPopover *popover);
 
 static void          update_date_label                           (NautilusSearchPopover *popover,
-                                                                  guint                  days);
+                                                                  GPtrArray             *date_range);
 
 G_DEFINE_TYPE (NautilusSearchPopover, nautilus_search_popover, GTK_TYPE_POPOVER)
 
@@ -70,6 +70,7 @@ enum {
 
 enum {
   CHANGED,
+  DATE_RANGE,
   LAST_SIGNAL
 };
 
@@ -226,68 +227,52 @@ static void
 calendar_day_selected (GtkCalendar           *calendar,
                        NautilusSearchPopover *popover)
 {
-  GDateTime *now;
-  GDateTime *dt;
+  GDateTime *date;
   guint year, month, day;
-
-  now = g_date_time_new_now_local ();
+  GPtrArray *date_range;
 
   gtk_calendar_get_date (calendar, &year, &month, &day);
 
-  dt = g_date_time_new_local (year, month + 1, day, 0, 0, 0);
+  date = g_date_time_new_local (year, month + 1, day, 0, 0, 0);
 
-  if (g_date_time_compare (dt, now) < 1)
-    {
-      guint days;
+  date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
+  g_ptr_array_add (date_range, g_date_time_ref (date));
+  g_ptr_array_add (date_range, g_date_time_ref (date));
+  update_date_label (popover, date_range);
+  emit_date_changes_for_day (popover, date_range);
 
-      days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
-
-      if (days > 0)
-        {
-          update_date_label (popover, days);
-          emit_date_changes_for_day (popover, days);
-        }
-  }
-
-  g_date_time_unref (now);
-  g_date_time_unref (dt);
+  g_ptr_array_unref (date_range);
+  g_date_time_unref (date);
 }
 
+/* Range on dates are partially implemented. For now just use it for differentation
+ * between a exact day or a range of a first day until now.
+ */
 static void
 setup_date (NautilusSearchPopover *popover,
             NautilusQuery         *query)
 {
-  GDateTime *dt;
-  GDateTime *now;
+  GPtrArray *date_range;
+  GDateTime *date_initial;
 
-  now = g_date_time_new_now_local ();
-  dt = nautilus_query_get_date (query);
+  date_range = nautilus_query_get_date_range (query);
 
-  /* Update date */
-  if (dt && g_date_time_compare (dt, now) < 1)
-    {
-      guint days;
+  if (date_range) {
+      date_initial = g_ptr_array_index (date_range, 0);
 
-      days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
+      g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
 
-      if (days > 0)
-        {
-          g_signal_handlers_block_by_func (popover->calendar, calendar_day_selected, popover);
+      gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
+                                 g_date_time_get_month (date_initial) - 1,
+                                 g_date_time_get_year (date_initial));
 
-          gtk_calendar_select_month (GTK_CALENDAR (popover->calendar),
-                                     g_date_time_get_month (dt) - 1,
-                                     g_date_time_get_year (dt));
+      gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
+                               g_date_time_get_day_of_month (date_initial));
 
-          gtk_calendar_select_day (GTK_CALENDAR (popover->calendar),
-                                   g_date_time_get_day_of_month (dt));
+      update_date_label (popover, date_range);
 
-          update_date_label (popover, days);
-
-          g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
-        }
-    }
-
-  g_clear_pointer (&now, g_date_time_unref);
+      g_signal_handlers_unblock_by_func (popover->calendar, calendar_day_selected, popover);
+  }
 }
 
 static void
@@ -352,8 +337,7 @@ date_entry_activate (GtkEntry              *entry,
   if (gtk_entry_get_text_length (entry) > 0)
     {
       GDateTime *now;
-      GDateTime *dt;
-      guint days;
+      GDateTime *date_time;
       GDate *date;
 
       date = g_date_new ();
@@ -367,7 +351,7 @@ date_entry_activate (GtkEntry              *entry,
         }
 
       now = g_date_time_new_now_local ();
-      dt = g_date_time_new_local (g_date_get_year (date),
+      date_time = g_date_time_new_local (g_date_get_year (date),
                                   g_date_get_month (date),
                                   g_date_get_day (date),
                                   0,
@@ -375,19 +359,22 @@ date_entry_activate (GtkEntry              *entry,
                                   0);
 
       /* Future dates also silently fails */
-      if (g_date_time_compare (dt, now) != 1)
+      if (g_date_time_compare (date_time, now) != 1)
         {
-          days = g_date_time_difference (now, dt) / G_TIME_SPAN_DAY;
-          if (days > 0)
-            {
-              update_date_label (popover, days);
-              show_date_selection_widgets (popover, FALSE);
-              emit_date_changes_for_day (popover, days);
-            }
+          GPtrArray *date_range;
+
+          date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
+          g_ptr_array_add (date_range, g_date_time_ref (date_time));
+          g_ptr_array_add (date_range, g_date_time_ref (date_time));
+          update_date_label (popover, date_range);
+          show_date_selection_widgets (popover, FALSE);
+          emit_date_changes_for_day (popover, date_range);
+
+          g_ptr_array_unref (date_range);
         }
 
       g_date_time_unref (now);
-      g_date_time_unref (dt);
+      g_date_time_unref (date_time);
       g_date_free (date);
     }
 }
@@ -397,13 +384,25 @@ dates_listbox_row_activated (GtkListBox            *listbox,
                              GtkListBoxRow         *row,
                              NautilusSearchPopover *popover)
 {
-  gint days;
+  GDateTime *date;
+  GDateTime *now;
+  GPtrArray *date_range = NULL;
 
-  days = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "days"));
-
-  update_date_label (popover, days);
+  now = g_date_time_new_now_local ();
+  date = g_object_get_data (G_OBJECT (row), "date");
+  if (date)
+    {
+      date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
+      g_ptr_array_add (date_range, g_date_time_ref (date));
+      g_ptr_array_add (date_range, g_date_time_ref (now));
+    }
+  update_date_label (popover, date_range);
   show_date_selection_widgets (popover, FALSE);
-  emit_date_changes_for_day (popover, days);
+  emit_date_changes_for_day (popover, date_range);
+
+  if (date_range)
+    g_ptr_array_unref (date_range);
+  g_date_time_unref (now);
 }
 
 static void
@@ -569,25 +568,9 @@ create_row_for_label (const gchar *text,
 
 static void
 emit_date_changes_for_day (NautilusSearchPopover *popover,
-                           gint                   days)
+                           GPtrArray             *date_range)
 {
-  GDateTime *dt;
-
-  dt = NULL;
-
-  if (days > 0)
-    {
-      GDateTime *now;
-
-      now = g_date_time_new_now_local ();
-      dt = g_date_time_add_days (now, -days);
-
-      g_date_time_unref (now);
-    }
-
-  g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_DATE, dt);
-
-  g_clear_pointer (&dt, g_date_time_unref);
+  g_signal_emit_by_name (popover, "date-range", date_range, NULL);
 }
 
 static void
@@ -595,6 +578,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
 {
   GDateTime *maximum_dt, *now;
   GtkWidget *row;
+  GDateTime *current_date;
   gint days, max_days;
 
   days = 0;
@@ -602,6 +586,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   maximum_dt = g_date_time_new_from_unix_local (0);
   now = g_date_time_new_now_local ();
   max_days = (g_date_time_get_year (now) - g_date_time_get_year (maximum_dt)) * 365;
+  current_date = g_date_time_new_now_local ();
 
   /* This is a tricky loop. The main intention here is that each
    * timeslice (day, week, month) have 2 or 3 entries. Years,
@@ -650,12 +635,21 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
 
       label = g_strdup_printf (get_text_for_day (days), normalized);
 
-      g_object_set_data (G_OBJECT (row), "days", GINT_TO_POINTER (days));
       row = create_row_for_label (label, normalized == 1);
+      if (days != 0)
+        {
+          current_date = g_date_time_add_days (now, -days);
+          g_object_set_data (G_OBJECT (row), "date", g_date_time_ref (current_date));
+        }
+      else
+        {
+          g_object_set_data (G_OBJECT (row), "date", NULL);
+        }
 
       gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
       g_free (label);
+      g_date_time_unref (current_date);
 
       days += step;
     }
@@ -836,38 +830,49 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
 static void
 update_date_label (NautilusSearchPopover *popover,
-                   guint                  days)
+                   GPtrArray             *date_range)
 {
-  if (days > 0)
+  if (date_range)
     {
+      gint days;
+      GDateTime *initial_date;
+      GDateTime *end_date;
       GDateTime *now;
-      GDateTime *dt;
       gchar *formatted_date;
       gchar *label;
-      guint n;
+      guint normalized;
 
-      if (days < 7)
+      now = g_date_time_new_now_local ();
+      initial_date = g_ptr_array_index (date_range, 0);
+      end_date = g_ptr_array_index (date_range, 1);
+      days = g_date_time_difference (end_date, initial_date) / G_TIME_SPAN_DAY;
+      formatted_date = g_date_time_format (initial_date, "%x");
+
+      if (days < 1)
         {
-          n = days;
-        }
-      else if (days < 30)
-        {
-          n = days / 7;
-        }
-      else if (days < 365)
-        {
-          n = days / 30;
+          label = g_strdup (formatted_date);
         }
       else
         {
-          n = days / 365;
+          if (days < 7)
+            {
+             normalized = days;
+            }
+          else if (days < 30)
+            {
+              normalized = days / 7;
+            }
+          else if (days < 365)
+            {
+              normalized = days / 30;
+            }
+          else
+            {
+              normalized = days / 365;
+            }
+
+          label = g_strdup_printf (get_text_for_day (days), normalized);
         }
-
-      label = g_strdup_printf (get_text_for_day (days), n);
-
-      now = g_date_time_new_now_local ();
-      dt = g_date_time_add_days (now, -days);
-      formatted_date = g_date_time_format (dt, "%x");
 
       gtk_entry_set_text (GTK_ENTRY (popover->date_entry), formatted_date);
 
@@ -875,7 +880,6 @@ update_date_label (NautilusSearchPopover *popover,
       gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
 
       g_date_time_unref (now);
-      g_date_time_unref (dt);
       g_free (formatted_date);
       g_free (label);
     }
@@ -984,6 +988,17 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                    2,
                                    NAUTILUS_TYPE_SEARCH_FILTER,
                                    G_TYPE_POINTER);
+
+  signals[DATE_RANGE] = g_signal_new ("date-range",
+                                      NAUTILUS_TYPE_SEARCH_POPOVER,
+                                      G_SIGNAL_RUN_LAST,
+                                      0,
+                                      NULL,
+                                      NULL,
+                                      g_cclosure_marshal_generic,
+                                      G_TYPE_NONE,
+                                      1,
+                                      G_TYPE_POINTER);
 
   /**
    * NautilusSearchPopover::query:

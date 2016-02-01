@@ -129,11 +129,12 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 	gdouble match;
 	gboolean found;
 	NautilusSearchHit *hit;
-        GDateTime *date;
+        GDateTime *initial_date;
+        GDateTime *end_date;
+        GPtrArray *date_range;
 
 	files = nautilus_directory_get_file_list (directory);
 	mime_types = nautilus_query_get_mime_types (model->details->query);
-        date = nautilus_query_get_date (model->details->query);
 	hits = NULL;
 
 	for (l = files; l != NULL; l = l->next) {
@@ -155,28 +156,24 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 			}
 		}
 
-                if (found && date != NULL) {
+                date_range = nautilus_query_get_date_range (model->details->query);
+                if (found && date_range != NULL) {
                         NautilusQuerySearchType type;
-                        guint64 query_time, current_file_time;
-
+                        guint64 current_file_unix_time;
 
                         type = nautilus_query_get_search_type (model->details->query);
+                        initial_date = g_ptr_array_index (date_range, 0);
+                        end_date = g_ptr_array_index (date_range, 1);
 
                         if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                                current_file_time = nautilus_file_get_atime (file);
+                                current_file_unix_time = nautilus_file_get_atime (file);
                         } else {
-                                current_file_time = nautilus_file_get_mtime (file);
+                                current_file_unix_time = nautilus_file_get_mtime (file);
                         }
 
-
-                        query_time = g_date_time_to_unix (date);
-
-                        if (current_file_time == 0) {
-                                /* Silently ignore errors */
-                                found = FALSE;
-                        } else {
-                                found = (query_time <= current_file_time);
-                        }
+                        found = nautilus_file_date_in_between (current_file_unix_time,
+                                                               initial_date,
+                                                               end_date);
                 }
 
 		if (found) {
