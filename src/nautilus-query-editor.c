@@ -85,7 +85,7 @@ query_recursive_changed (GObject             *object,
 
                 file = nautilus_file_get (priv->location);
 
-                if (!nautilus_file_is_local (file)) {
+                if (nautilus_file_is_remote (file)) {
                         key = "enable-remote-recursive-search";
 		}
 
@@ -546,7 +546,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                         label = _("Searching devices only");
                 } else if (g_str_has_prefix (uri, "network://")) {
                         label = _("Searching network locations only");
-                } else if (!nautilus_file_is_local (file)) {
+                } else if (nautilus_file_is_remote (file)) {
                         label = _("Remote location - only searching the current folder");
                 }
 
