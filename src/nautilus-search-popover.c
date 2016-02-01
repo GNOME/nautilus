@@ -610,48 +610,48 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   while (days < max_days)
     {
       gchar *label;
-      gint n, step;
+      gint normalized, step;
 
       if (days == 0)
         {
-          n = 0;
+          normalized = 0;
           step = 1;
         }
       else if (days < 7)
         {
           /* days */
-          n = days;
+          normalized = days;
           step = 2;
         }
       else if (days < 30)
         {
           /* weeks */
-          n = days / 7;
+          normalized = days / 7;
           step = 7;
         }
       else if (days < 365)
         {
           /* months */
-          n = days / 30;
+          normalized = days / 30;
           step = 84;
         }
       else if (days < 1825)
         {
           /* years */
-          n = days / 365;
+          normalized = days / 365;
           step = 365;
         }
       else
         {
           /* after the first 5 years, jump at a 5-year pace */
-          n = days / 365;
+          normalized = days / 365;
           step = 1825;
         }
 
-      label = g_strdup_printf (get_text_for_day (days), n);
+      label = g_strdup_printf (get_text_for_day (days), normalized);
 
-      row = create_row_for_label (label, n == 1);
       g_object_set_data (G_OBJECT (row), "days", GINT_TO_POINTER (days));
+      row = create_row_for_label (label, normalized == 1);
 
       gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
