@@ -458,8 +458,12 @@ real_floating_bar_set_short_status (NautilusFilesView *view,
 {
         gboolean disable_chrome;
 
+        if (view->details->loading)
+          return;
+
         nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (view->details->floating_bar));
-        nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar), view->details->loading);
+        nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (view->details->floating_bar),
+                                                FALSE);
 
         g_object_get (nautilus_files_view_get_window (view),
                       "disable-chrome", &disable_chrome,
