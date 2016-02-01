@@ -258,45 +258,42 @@ nautilus_query_editor_get_location (NautilusQueryEditor *editor)
         return g_object_ref (priv->location);
 }
 
-static NautilusQuery*
-create_and_get_query (NautilusQueryEditor *editor)
+static void
+create_query (NautilusQueryEditor *editor)
 {
         NautilusQueryEditorPrivate *priv;
+        NautilusQuery *query;
+        NautilusFile *file;
+        gboolean recursive;
 
         priv = nautilus_query_editor_get_instance_private (editor);
 
-        if (!priv->query) {
-                NautilusQuery *query;
-                NautilusFile *file;
-                gboolean recursive;
+        g_return_if_fail (!priv->query);
 
-                file = nautilus_file_get (priv->location);
-                query = nautilus_query_new ();
+        file = nautilus_file_get (priv->location);
+        query = nautilus_query_new ();
 
-                if (nautilus_file_is_remote (file)) {
-                        recursive = g_settings_get_boolean (nautilus_preferences,
-                                                            "enable-remote-recursive-search");
-                } else {
-                        recursive = g_settings_get_boolean (nautilus_preferences,
-                                                            "enable-recursive-search");
-                }
-
-                nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (priv->entry)));
-                nautilus_query_set_location (query, priv->location);
-                nautilus_query_set_recursive (query, recursive);
-
-                nautilus_query_editor_set_query (editor, query);
-
-                g_signal_connect (query,
-                                  "notify::recursive",
-                                  G_CALLBACK (query_recursive_changed),
-                                  editor);
-
-
-                nautilus_file_unref (file);
+        if (nautilus_file_is_remote (file)) {
+                recursive = g_settings_get_boolean (nautilus_preferences,
+                                                    "enable-remote-recursive-search");
+        } else {
+                recursive = g_settings_get_boolean (nautilus_preferences,
+                                                    "enable-recursive-search");
         }
 
-        return priv->query;
+        nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (priv->entry)));
+        nautilus_query_set_location (query, priv->location);
+        nautilus_query_set_recursive (query, recursive);
+
+        nautilus_query_editor_set_query (editor, query);
+
+        g_signal_connect (query,
+                          "notify::recursive",
+                          G_CALLBACK (query_recursive_changed),
+                          editor);
+
+
+        nautilus_file_unref (file);
 }
 
 static void
@@ -309,7 +306,6 @@ static void
 entry_changed_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 {
         NautilusQueryEditorPrivate *priv;
-        NautilusQuery *query;
         gchar *text;
 
         priv = nautilus_query_editor_get_instance_private (editor);
@@ -318,10 +314,11 @@ entry_changed_cb (GtkWidget *entry, NautilusQueryEditor *editor)
 		return;
 	}
 
+        if (!priv->query)
+                create_query (editor);
         text = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->entry))));
-        query = create_and_get_query (editor);
 
-        nautilus_query_set_text (query, text);
+        nautilus_query_set_text (priv->query, text);
 	nautilus_query_editor_changed (editor);
 
         g_free (text);
@@ -373,21 +370,23 @@ search_popover_changed_cb (NautilusSearchPopover *popover,
                            gpointer               data,
                            NautilusQueryEditor   *editor)
 {
-        NautilusQuery *query;
+        NautilusQueryEditorPrivate *priv;
 
-        query = create_and_get_query (editor);
+        priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
+        if (!priv->query)
+                create_query (editor);
 
         switch (filter) {
         case NAUTILUS_SEARCH_FILTER_DATE:
-                nautilus_query_set_date (query, data);
+                nautilus_query_set_date (priv->query, data);
                 break;
 
         case NAUTILUS_SEARCH_FILTER_TYPE:
-                nautilus_query_set_mime_types (query, data);
+                nautilus_query_set_mime_types (priv->query, data);
                 break;
 
         case NAUTILUS_SEARCH_FILTER_LAST:
-                nautilus_query_set_search_type (query, GPOINTER_TO_INT (data));
+                nautilus_query_set_search_type (priv->query, GPOINTER_TO_INT (data));
                 break;
 
         default:
@@ -527,7 +526,8 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                 should_notify = g_set_object (&priv->location, location);
         }
 
-        create_and_get_query (editor);
+        if (!priv->query)
+                create_query (editor);
         nautilus_query_set_location (priv->query, priv->location);
 
         /* Update label if needed */
