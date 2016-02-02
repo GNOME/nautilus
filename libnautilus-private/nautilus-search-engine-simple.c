@@ -279,6 +279,7 @@ visit_directory (GFile *dir, SearchThreadData *data)
                         found = nautilus_file_date_in_between (current_file_time,
                                                                initial_date,
                                                                end_date);
+                        g_ptr_array_unref (date_range);
                 }
 
 		if (found) {

@@ -351,6 +351,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
                 g_free (initial_date_format);
                 g_free (end_date_format);
+                g_ptr_array_unref (date_range);
         }
 
 	if (mime_count > 0) {

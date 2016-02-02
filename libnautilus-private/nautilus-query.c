@@ -506,10 +506,26 @@ nautilus_query_set_search_type (NautilusQuery           *query,
         }
 }
 
+/**
+ * nautilus_query_get_date_range:
+ * @query: a #NautilusQuery
+ *
+ * Retrieves the #GptrArray composed of #GDateTime representing the date range.
+ * This function is thread safe.
+ *
+ * Returns: (transfer full): the #GptrArray composed of #GDateTime representing the date range.
+ */
 GPtrArray*
 nautilus_query_get_date_range (NautilusQuery *query)
 {
+        static GMutex mutex;
+
         g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+
+        g_mutex_lock (&mutex);
+        if (query->date_range)
+                g_ptr_array_ref (query->date_range);
+        g_mutex_unlock (&mutex);
 
         return query->date_range;
 }

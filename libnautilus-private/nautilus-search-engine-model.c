@@ -174,6 +174,7 @@ model_directory_ready_cb (NautilusDirectory	*directory,
                         found = nautilus_file_date_in_between (current_file_unix_time,
                                                                initial_date,
                                                                end_date);
+                        g_ptr_array_unref (date_range);
                 }
 
 		if (found) {
