@@ -1135,8 +1135,8 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
       /* Disconnect signals and bindings from the old query */
       if (previous_query)
         {
-          g_signal_handlers_disconnect_by_func (query, query_date_changed, popover);
-          g_signal_handlers_disconnect_by_func (query, query_location_changed, popover);
+          g_signal_handlers_disconnect_by_func (previous_query, query_date_changed, popover);
+          g_signal_handlers_disconnect_by_func (previous_query, query_location_changed, popover);
           g_clear_pointer (&popover->recursive_binding, g_binding_unbind);
         }
 
