@@ -298,16 +298,20 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
 	mime_count = g_list_length (mimetypes);
 
-	sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) tracker:coalesce(nfo:fileLastModified(?urn), nie:contentLastModified(?urn)) AS ?mtime tracker:coalesce(nfo:fileLastAccessed(?urn), nie:contentAccessed(?urn)) AS ?atime \n"
+	sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)\n"
 			       "WHERE {"
-			       "  ?urn a nfo:FileDataObject ;"
-			       "  tracker:available true ; ");
+			       "  ?urn a nfo:FileDataObject;"
+                               "  nfo:fileLastModified ?mtime;"
+                               "  nfo:fileLastAccessed ?atime;"
+			       "  tracker:available true;");
+
+        g_string_append_printf (sparql, " fts:match '\"%s*\"'", search_text);
 
 	if (mime_count > 0) {
-		g_string_append (sparql, "nie:mimeType ?mime ;");
+		g_string_append (sparql, "; nie:mimeType ?mime");
 	}
 
-	g_string_append_printf (sparql, " fts:match '\"%s*\"' . FILTER ( ", search_text);
+        g_string_append_printf (sparql, " . FILTER( ");
 
 	if (!tracker->details->recursive) {
 		g_string_append_printf (sparql, "tracker:uri-is-parent('%s', nie:url(?urn)) && ", location_uri);
