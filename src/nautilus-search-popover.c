@@ -69,7 +69,8 @@ enum {
 };
 
 enum {
-  CHANGED,
+  MIME_TYPE,
+  TIME_TYPE,
   DATE_RANGE,
   LAST_SIGNAL
 };
@@ -512,7 +513,7 @@ types_listbox_row_activated (GtkListBox            *listbox,
 
       gtk_label_set_label (GTK_LABEL (popover->type_label), gettext (mimetype_groups[group].name));
 
-      g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
+      g_signal_emit_by_name (popover, "mime-type", mimetypes, NULL);
 
       g_list_free (mimetypes);
     }
@@ -537,7 +538,7 @@ search_time_type_changed (GtkToggleButton       *button,
 
   g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
 
-  g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_LAST, type);
+  g_signal_emit_by_name (popover, "time-type", type, NULL);
 }
 
 /* Auxiliary methods */
@@ -820,7 +821,7 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
       gtk_label_set_label (GTK_LABEL (popover->type_label), description);
 
-      g_signal_emit (popover, signals[CHANGED], 0, NAUTILUS_SEARCH_FILTER_TYPE, mimetypes);
+      g_signal_emit_by_name (popover, "mime-type", mimetypes, NULL);
 
       gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
     }
@@ -977,18 +978,6 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
 
   popover_class->closed = nautilus_search_popover_closed;
 
-  signals[CHANGED] = g_signal_new ("changed",
-                                   NAUTILUS_TYPE_SEARCH_POPOVER,
-                                   G_SIGNAL_RUN_LAST,
-                                   0,
-                                   NULL,
-                                   NULL,
-                                   g_cclosure_marshal_generic,
-                                   G_TYPE_NONE,
-                                   2,
-                                   NAUTILUS_TYPE_SEARCH_FILTER,
-                                   G_TYPE_POINTER);
-
   signals[DATE_RANGE] = g_signal_new ("date-range",
                                       NAUTILUS_TYPE_SEARCH_POPOVER,
                                       G_SIGNAL_RUN_LAST,
@@ -999,6 +988,28 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                       G_TYPE_NONE,
                                       1,
                                       G_TYPE_POINTER);
+
+  signals[MIME_TYPE] = g_signal_new ("mime-type",
+                                      NAUTILUS_TYPE_SEARCH_POPOVER,
+                                      G_SIGNAL_RUN_LAST,
+                                      0,
+                                      NULL,
+                                      NULL,
+                                      g_cclosure_marshal_generic,
+                                      G_TYPE_NONE,
+                                      1,
+                                      G_TYPE_POINTER);
+
+  signals[TIME_TYPE] = g_signal_new ("time-type",
+                                      NAUTILUS_TYPE_SEARCH_POPOVER,
+                                      G_SIGNAL_RUN_LAST,
+                                      0,
+                                      NULL,
+                                      NULL,
+                                      g_cclosure_marshal_generic,
+                                      G_TYPE_NONE,
+                                      1,
+                                      G_TYPE_INT);
 
   /**
    * NautilusSearchPopover::query:

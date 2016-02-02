@@ -381,10 +381,9 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
 }
 
 static void
-search_popover_changed_cb (NautilusSearchPopover *popover,
-                           NautilusSearchFilter   filter,
-                           gpointer               data,
-                           NautilusQueryEditor   *editor)
+search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
+                                     GList                 *data,
+                                     NautilusQueryEditor   *editor)
 {
         NautilusQueryEditorPrivate *priv;
 
@@ -392,19 +391,23 @@ search_popover_changed_cb (NautilusSearchPopover *popover,
         if (!priv->query)
                 create_query (editor);
 
-        switch (filter) {
-        case NAUTILUS_SEARCH_FILTER_TYPE:
-                nautilus_query_set_mime_types (priv->query, data);
-                break;
+        nautilus_query_set_mime_types (priv->query, data);
 
-        case NAUTILUS_SEARCH_FILTER_LAST:
-                nautilus_query_set_search_type (priv->query, GPOINTER_TO_INT (data));
-                break;
+        nautilus_query_editor_changed (editor);
+}
 
-        default:
-                g_warning ("Search filter type not valid");
-                break;
-        }
+static void
+search_popover_time_type_changed_cb (NautilusSearchPopover   *popover,
+                                     NautilusQuerySearchType  data,
+                                     NautilusQueryEditor     *editor)
+{
+        NautilusQueryEditorPrivate *priv;
+
+        priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
+        if (!priv->query)
+                create_query (editor);
+
+        nautilus_query_set_search_type (priv->query, data);
 
         nautilus_query_editor_changed (editor);
 }
@@ -462,10 +465,12 @@ setup_widgets (NautilusQueryEditor *editor)
 			  G_CALLBACK (entry_changed_cb), editor);
 	g_signal_connect (priv->entry, "stop-search",
                           G_CALLBACK (nautilus_query_editor_on_stop_search), editor);
-        g_signal_connect (priv->popover, "changed",
-                          G_CALLBACK (search_popover_changed_cb), editor);
         g_signal_connect (priv->popover, "date-range",
                           G_CALLBACK (search_popover_date_range_changed_cb), editor);
+        g_signal_connect (priv->popover, "mime-type",
+                          G_CALLBACK (search_popover_mime_type_changed_cb), editor);
+        g_signal_connect (priv->popover, "time-type",
+                          G_CALLBACK (search_popover_time_type_changed_cb), editor);
 
 	/* show everything */
 	gtk_widget_show_all (vbox);
