@@ -149,7 +149,6 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 
 			for (m = mime_types; m != NULL; m = m->next) {
 				if (nautilus_file_is_mime_type (file, m->data)) {
-					g_print ("Mime type matched %s\n", m->data);
 					found = TRUE;
 					break;
 				}
@@ -180,9 +179,6 @@ model_directory_ready_cb (NautilusDirectory	*directory,
 		if (found) {
 			uri = nautilus_file_get_uri (file);
 			hit = nautilus_search_hit_new (uri);
-
-			g_message ("found in model engine - %s", uri);
-
 			nautilus_search_hit_set_fts_rank (hit, match);
 			hits = g_list_prepend (hits, hit);
 			g_free (uri);
