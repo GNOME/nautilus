@@ -298,12 +298,12 @@ update_recursive_switch (NautilusSearchPopover *popover,
       if (!nautilus_file_is_local (file))
         {
           active = g_settings_get_boolean (nautilus_preferences,
-                                           "enable-remote-recursive-search");
+                                           "remote-recursive-search");
         }
       else
         {
           active = g_settings_get_boolean (nautilus_preferences,
-                                           "enable-recursive-search");
+                                           "local-recursive-search");
         }
 
       gtk_switch_set_active (GTK_SWITCH (popover->recursive_switch), active);

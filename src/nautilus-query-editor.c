@@ -78,7 +78,7 @@ query_recursive_changed (GObject             *object,
         gchar *key;
 
         priv = nautilus_query_editor_get_instance_private (editor);
-        key = "enable-recursive-search";
+        key = "local-recursive-search";
 
         if (priv->location) {
                 NautilusFile *file;
@@ -86,7 +86,7 @@ query_recursive_changed (GObject             *object,
                 file = nautilus_file_get (priv->location);
 
                 if (nautilus_file_is_remote (file)) {
-                        key = "enable-remote-recursive-search";
+                        key = "remote-recursive-search";
 		}
 
                 nautilus_file_unref (file);
@@ -275,10 +275,10 @@ create_query (NautilusQueryEditor *editor)
 
         if (nautilus_file_is_remote (file)) {
                 recursive = g_settings_get_boolean (nautilus_preferences,
-                                                    "enable-remote-recursive-search");
+                                                    "remote-recursive-search");
         } else {
                 recursive = g_settings_get_boolean (nautilus_preferences,
-                                                    "enable-recursive-search");
+                                                    "local-recursive-search");
         }
 
         nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (priv->entry)));
