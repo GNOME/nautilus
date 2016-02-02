@@ -327,9 +327,9 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                 g_string_append (sparql, " && ");
 
                 if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) {
-                        g_string_append_printf (sparql, "?atime <= \"%s\"^^xsd:dateTime", dt_format);
+                        g_string_append_printf (sparql, "?atime >= \"%s\"^^xsd:dateTime", dt_format);
                 } else {
-                        g_string_append_printf (sparql, "?mtime <= \"%s\"^^xsd:dateTime", dt_format);
+                        g_string_append_printf (sparql, "?mtime >= \"%s\"^^xsd:dateTime", dt_format);
                 }
 
                 g_free (dt_format);
