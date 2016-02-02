@@ -70,33 +70,35 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE
 
 
 static void
-query_recursive_changed (GObject             *object,
-                         GParamSpec          *pspec,
-                         NautilusQueryEditor *editor)
+recursive_search_preferences_changed (GSettings           *settings,
+                                      gchar               *key,
+                                      NautilusQueryEditor *editor)
 {
         NautilusQueryEditorPrivate *priv;
-        gchar *key;
+        NautilusFile *file;
+        gchar *recursive_search_key;
+        gboolean recursive;
+
 
         priv = nautilus_query_editor_get_instance_private (editor);
-        key = "local-recursive-search";
 
-        if (priv->location) {
-                NautilusFile *file;
+        if (!priv->location || !priv->query)
+                return;
 
-                file = nautilus_file_get (priv->location);
+        file = nautilus_file_get (priv->location);
 
-                if (nautilus_file_is_remote (file)) {
-                        key = "remote-recursive-search";
-		}
-
-                nautilus_file_unref (file);
+        if (nautilus_file_is_remote (file)) {
+                recursive_search_key = "remote-recursive-search";
+        } else {
+                recursive_search_key = "local-recursive-search";
         }
 
-        g_settings_set_boolean (nautilus_preferences,
-                                key,
-                                nautilus_query_get_recursive (NAUTILUS_QUERY (object)));
-
-	nautilus_query_editor_changed (editor);
+        nautilus_file_unref (file);
+        recursive = g_settings_get_boolean (nautilus_preferences, recursive_search_key);
+        if (recursive != nautilus_query_get_recursive (priv->query)) {
+                nautilus_query_set_recursive (priv->query, recursive);
+                nautilus_query_editor_changed (editor);
+        }
 }
 
 
@@ -109,6 +111,10 @@ nautilus_query_editor_dispose (GObject *object)
 
         g_clear_object (&priv->location);
         g_clear_object (&priv->query);
+
+        g_signal_handlers_disconnect_by_func (nautilus_preferences,
+                                              recursive_search_preferences_changed,
+                                              object);
 
 	G_OBJECT_CLASS (nautilus_query_editor_parent_class)->dispose (object);
 }
@@ -287,12 +293,6 @@ create_query (NautilusQueryEditor *editor)
 
         nautilus_query_editor_set_query (editor, query);
 
-        g_signal_connect (query,
-                          "notify::recursive",
-                          G_CALLBACK (query_recursive_changed),
-                          editor);
-
-
         nautilus_file_unref (file);
 }
 
@@ -336,6 +336,15 @@ nautilus_query_editor_on_stop_search (GtkWidget           *entry,
 static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
+        g_signal_connect (nautilus_preferences,
+                          "changed::remote-recursive-search",
+                          G_CALLBACK (recursive_search_preferences_changed),
+                          editor);
+
+        g_signal_connect (nautilus_preferences,
+                          "changed::local-recursive-search",
+                          G_CALLBACK (recursive_search_preferences_changed),
+                          editor);
 }
 
 static gboolean

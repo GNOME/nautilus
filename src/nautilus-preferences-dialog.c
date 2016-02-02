@@ -59,6 +59,10 @@
   "use_tree_view_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
   "trash_confirm_checkbutton"
+#define NAUTILUS_PREFERENCES_DIALOG_LOCAL_RECURSIVE_SEARCH_WIDGET              \
+  "local_recursive_search_checkbutton"
+#define NAUTILUS_PREFERENCES_DIALOG_REMOTE_RECURSIVE_SEARCH_WIDGET              \
+  "remote_recursive_search_checkbutton"
 
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
@@ -493,6 +497,12 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
   bind_builder_bool(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
+  bind_builder_bool(builder, nautilus_preferences,
+                    NAUTILUS_PREFERENCES_DIALOG_LOCAL_RECURSIVE_SEARCH_WIDGET,
+                    NAUTILUS_PREFERENCES_LOCAL_RECURSIVE_SEARCH);
+  bind_builder_bool(builder, nautilus_preferences,
+                    NAUTILUS_PREFERENCES_DIALOG_REMOTE_RECURSIVE_SEARCH_WIDGET,
+                    NAUTILUS_PREFERENCES_REMOTE_RECURSIVE_SEARCH);
 
   bind_builder_enum(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_SORT_ORDER_WIDGET,

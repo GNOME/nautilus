@@ -162,6 +162,10 @@ typedef enum
 /* Switch to list view while searching */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH "list-view-on-search"
 
+/* Search behaviour */
+#define NAUTILUS_PREFERENCES_LOCAL_RECURSIVE_SEARCH "local-recursive-search"
+#define NAUTILUS_PREFERENCES_REMOTE_RECURSIVE_SEARCH "remote-recursive-search"
+
 /* Context menu options */
 #define NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY "show-delete-permanently"
 #define NAUTILUS_PREFERENCES_SHOW_CREATE_LINK "show-create-link"

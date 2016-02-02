@@ -1,23 +1,184 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.19.0 -->
 <interface>
-  <!-- interface-requires gtk+ 3.0 -->
+  <requires lib="gtk+" version="3.0"/>
+  <object class="GtkListStore" id="icon_view_zoom_levels">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="list_view_zoom_levels">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Small</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Standard</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Large</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Icon View</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">List View</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model10">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">By Name</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Size</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Type</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Modification Date</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Access Date</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Trashed Date</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Small</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Standard</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Large</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model7">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model8">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">100 KB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">500 KB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1 MB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">3 MB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">5 MB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">10 MB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">100 MB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">1 GB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">2 GB</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">4 GB</col>
+      </row>
+    </data>
+  </object>
   <object class="GtkDialog" id="preferences_dialog">
     <property name="can_focus">False</property>
     <property name="border_width">0</property>
+    <property name="title" translatable="yes">Files Preferences</property>
     <property name="window_position">center</property>
     <property name="type_hint">dialog</property>
-    <property name="title" translatable="yes">Files Preferences</property>
-    <property name="use_header_bar">1</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="dialog-vbox1">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="orientation">vertical</property>
         <property name="spacing">2</property>
-        <property name="border_width">0</property>
         <child internal-child="action_area">
           <object class="GtkButtonBox" id="dialog-action_area1">
-            <property name="visible">False</property>
             <property name="can_focus">False</property>
             <property name="layout_style">end</property>
           </object>
@@ -51,8 +212,8 @@
                       <object class="GtkLabel" id="label4">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Default View</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -83,10 +244,10 @@
                                   <object class="GtkLabel" id="views_label_1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_Arrange items:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">sort_order_combobox</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -120,29 +281,14 @@
                               </packing>
                             </child>
                             <child>
-                              <object class="GtkCheckButton" id="sort_folders_first_checkbutton">
-                                <property name="label" translatable="yes">Sort _folders before files</property>
-                                <property name="visible">True</property>
-                                <property name="can_focus">True</property>
-                                <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
-                                <property name="use_underline">True</property>
-                                <property name="draw_indicator">True</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">2</property>
-                              </packing>
-                            </child>
-                            <child>
                               <object class="GtkCheckButton" id="show_delete_permanently_checkbutton">
                                 <property name="label" translatable="yes">Show context menu item to delete files permanently</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -154,11 +300,29 @@
                             <child>
                               <object class="GtkCheckButton" id="show_create_link_checkbutton">
                                 <property name="label" translatable="yes">Show context menu item to create links from copied files</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">2</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkCheckButton" id="sort_folders_first_checkbutton">
+                                <property name="label" translatable="yes">Sort _folders before files</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -215,8 +379,8 @@
                       <object class="GtkLabel" id="label10">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Behavior</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -240,11 +404,12 @@
                             <child>
                               <object class="GtkRadioButton" id="single_click_radiobutton">
                                 <property name="label" translatable="yes">_Single click to open items</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -256,11 +421,12 @@
                             <child>
                               <object class="GtkRadioButton" id="double_click_radiobutton">
                                 <property name="label" translatable="yes">_Double click to open items</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">single_click_radiobutton</property>
                               </object>
@@ -297,8 +463,8 @@
                       <object class="GtkLabel" id="label12">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Executable Text Files</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -323,11 +489,12 @@
                             <child>
                               <object class="GtkRadioButton" id="scripts_execute_radiobutton">
                                 <property name="label" translatable="yes">_Run executable text files when they are opened</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -339,11 +506,12 @@
                             <child>
                               <object class="GtkRadioButton" id="scripts_view_radiobutton">
                                 <property name="label" translatable="yes">_View executable text files when they are opened</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scripts_execute_radiobutton</property>
                               </object>
@@ -356,11 +524,12 @@
                             <child>
                               <object class="GtkRadioButton" id="scripts_confirm_radiobutton">
                                 <property name="label" translatable="yes">_Ask each time</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                                 <property name="group">scripts_execute_radiobutton</property>
                               </object>
@@ -396,8 +565,8 @@
                       <object class="GtkLabel" id="label14">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Trash</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -422,11 +591,12 @@
                             <child>
                               <object class="GtkCheckButton" id="trash_confirm_checkbutton">
                                 <property name="label" translatable="yes">Ask before _emptying the Trash or deleting files</property>
+                                <property name="use_action_appearance">False</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">False</property>
-                                <property name="use_action_appearance">False</property>
                                 <property name="use_underline">True</property>
+                                <property name="xalign">0.5</property>
                                 <property name="draw_indicator">True</property>
                               </object>
                               <packing>
@@ -449,6 +619,109 @@
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
+                  </packing>
+                </child>
+                <child>
+                  <object class="GtkBox" id="vbox3">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <property name="spacing">6</property>
+                    <child>
+                      <object class="GtkLabel" id="label5">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="label" translatable="yes">Search</property>
+                        <property name="xalign">0</property>
+                        <attributes>
+                          <attribute name="weight" value="bold"/>
+                        </attributes>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">0</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="alignment1">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkBox" id="vbox4">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkCheckButton" id="local_recursive_search_checkbutton">
+                                <property name="label" translatable="yes">Search subfolders on local file systems</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">1</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkAlignment" id="alignment3">
+                        <property name="visible">True</property>
+                        <property name="can_focus">False</property>
+                        <property name="left_padding">12</property>
+                        <child>
+                          <object class="GtkBox" id="vbox10">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="orientation">vertical</property>
+                            <property name="spacing">6</property>
+                            <child>
+                              <object class="GtkCheckButton" id="remote_recursive_search_checkbutton">
+                                <property name="label" translatable="yes">Search subfolders on remote file systems</property>
+                                <property name="use_action_appearance">False</property>
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                                <property name="receives_default">False</property>
+                                <property name="use_underline">True</property>
+                                <property name="xalign">0</property>
+                                <property name="draw_indicator">True</property>
+                              </object>
+                              <packing>
+                                <property name="expand">False</property>
+                                <property name="fill">False</property>
+                                <property name="position">0</property>
+                              </packing>
+                            </child>
+                          </object>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="expand">False</property>
+                        <property name="fill">False</property>
+                        <property name="position">2</property>
+                      </packing>
+                    </child>
+                  </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
                   </packing>
                 </child>
               </object>
@@ -485,8 +758,8 @@
                       <object class="GtkLabel" id="label28">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Icon Captions</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -512,11 +785,10 @@
                               <object class="GtkLabel" id="label29">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="xalign">0</property>
-                                <property name="wrap">True</property>
-                                <property name="max-width-chars">65</property>
                                 <property name="label" translatable="yes">Choose the order of information to appear beneath icon names. More information will appear when zooming in closer.</property>
                                 <property name="wrap">True</property>
+                                <property name="max_width_chars">65</property>
+                                <property name="xalign">0</property>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -543,7 +815,6 @@
                                   <object class="GtkComboBoxText" id="captions_0_combobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="entry_text_column">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -578,7 +849,6 @@
                                   <object class="GtkComboBoxText" id="captions_1_combobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="entry_text_column">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -612,7 +882,6 @@
                                   <object class="GtkComboBoxText" id="captions_2_combobox">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="entry_text_column">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -652,8 +921,8 @@
                       <object class="GtkLabel" id="label7">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">List View</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -733,11 +1002,10 @@
                           <object class="GtkLabel" id="label33">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="xalign">0</property>
-                            <property name="wrap">True</property>
-                            <property name="max-width-chars">65</property>
                             <property name="label" translatable="yes">Choose the order of information to appear in the list view.</property>
                             <property name="wrap">True</property>
+                            <property name="max_width_chars">65</property>
+                            <property name="xalign">0</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -796,8 +1064,8 @@
                       <object class="GtkLabel" id="label18">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Files</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -828,10 +1096,10 @@
                                   <object class="GtkLabel" id="preview_label_0">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Show _thumbnails:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">preview_image_combobox</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -873,10 +1141,10 @@
                                   <object class="GtkLabel" id="preview_label_1">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">_Only for files smaller than:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">preview_image_size_combobox</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -935,8 +1203,8 @@
                       <object class="GtkLabel" id="label22">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="xalign">0</property>
                         <property name="label" translatable="yes">Folders</property>
+                        <property name="xalign">0</property>
                         <attributes>
                           <attribute name="weight" value="bold"/>
                         </attributes>
@@ -967,10 +1235,10 @@
                                   <object class="GtkLabel" id="preview_label_2">
                                     <property name="visible">True</property>
                                     <property name="can_focus">False</property>
-                                    <property name="xalign">0</property>
                                     <property name="label" translatable="yes">Count _number of items:</property>
                                     <property name="use_underline">True</property>
                                     <property name="mnemonic_widget">preview_folder_combobox</property>
+                                    <property name="xalign">0</property>
                                   </object>
                                   <packing>
                                     <property name="expand">False</property>
@@ -1045,169 +1313,6 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkListStore" id="model1">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Icon View</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">List View</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model10">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">By Name</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Size</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Type</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Modification Date</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Access Date</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Trashed Date</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Small</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Large</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="list_view_zoom_levels">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Small</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Large</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="icon_view_zoom_levels">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model7">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model8">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">100 KB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">500 KB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">1 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">3 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">5 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">10 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">100 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">1 GB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">2 GB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">4 GB</col>
-      </row>
-    </data>
   </object>
   <object class="GtkListStore" id="model9">
     <columns>
