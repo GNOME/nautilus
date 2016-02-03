@@ -297,6 +297,7 @@ LIBGD_INIT([
   notification
   static
   _view-common
+  tagged-entry
 ])
 
 AC_CONFIG_FILES([
