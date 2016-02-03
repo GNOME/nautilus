@@ -47,9 +47,6 @@ struct _NautilusSearchPopover
   NautilusQuery      *query;
 };
 
-static void          emit_date_changes_for_day                   (NautilusSearchPopover *popover,
-                                                                  GPtrArray             *date_range);
-
 static void          show_date_selection_widgets                 (NautilusSearchPopover *popover,
                                                                   gboolean               visible);
 
@@ -94,7 +91,7 @@ calendar_day_selected (GtkCalendar           *calendar,
   g_ptr_array_add (date_range, g_date_time_ref (date));
   g_ptr_array_add (date_range, g_date_time_ref (date));
   update_date_label (popover, date_range);
-  emit_date_changes_for_day (popover, date_range);
+  g_signal_emit_by_name (popover, "date-range", date_range);
 
   g_ptr_array_unref (date_range);
   g_date_time_unref (date);
@@ -142,9 +139,7 @@ static void
 clear_date_button_clicked (GtkButton             *button,
                            NautilusSearchPopover *popover)
 {
-  gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), _("Select Dates..."));
-  gtk_widget_hide (popover->clear_date_button);
-  emit_date_changes_for_day (popover, 0);
+  nautilus_search_popover_reset_date_range (popover);
 }
 
 static void
@@ -185,7 +180,7 @@ date_entry_activate (GtkEntry              *entry,
           g_ptr_array_add (date_range, g_date_time_ref (date_time));
           update_date_label (popover, date_range);
           show_date_selection_widgets (popover, FALSE);
-          emit_date_changes_for_day (popover, date_range);
+          g_signal_emit_by_name (popover, "date-range", date_range);
 
           g_ptr_array_unref (date_range);
         }
@@ -215,7 +210,7 @@ dates_listbox_row_activated (GtkListBox            *listbox,
     }
   update_date_label (popover, date_range);
   show_date_selection_widgets (popover, FALSE);
-  emit_date_changes_for_day (popover, date_range);
+  g_signal_emit_by_name (popover, "date-range", date_range);
 
   if (date_range)
     g_ptr_array_unref (date_range);
@@ -369,13 +364,6 @@ create_row_for_label (const gchar *text,
   gtk_widget_show_all (row);
 
   return row;
-}
-
-static void
-emit_date_changes_for_day (NautilusSearchPopover *popover,
-                           GPtrArray             *date_range)
-{
-  g_signal_emit_by_name (popover, "date-range", date_range, NULL);
 }
 
 static void
@@ -896,8 +884,35 @@ nautilus_search_popover_set_query (NautilusSearchPopover *popover,
         }
       else
         {
-          update_date_label (popover, 0);
-          gtk_label_set_label (GTK_LABEL (popover->type_label), _("Anything"));
+          nautilus_search_popover_reset_mime_types (popover);
+          nautilus_search_popover_reset_date_range (popover);
         }
     }
+}
+
+void
+nautilus_search_popover_reset_mime_types (NautilusSearchPopover *popover)
+{
+  g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
+
+  gtk_list_box_select_row (GTK_LIST_BOX (popover->type_listbox),
+                           gtk_list_box_get_row_at_index (GTK_LIST_BOX (popover->type_listbox), 0));
+
+  gtk_label_set_label (GTK_LABEL (popover->type_label),
+                       nautilus_mime_types_group_get_name (0));
+  g_signal_emit_by_name (popover, "mime-type", 0, NULL);
+  gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
+}
+
+void
+nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
+{
+  g_return_if_fail (NAUTILUS_IS_SEARCH_POPOVER (popover));
+
+  gtk_list_box_select_row (GTK_LIST_BOX (popover->dates_listbox),
+                           gtk_list_box_get_row_at_index (GTK_LIST_BOX (popover->dates_listbox), 0));
+
+  update_date_label (popover, NULL);
+  show_date_selection_widgets (popover, FALSE);
+  g_signal_emit_by_name (popover, "date-range", NULL);
 }
