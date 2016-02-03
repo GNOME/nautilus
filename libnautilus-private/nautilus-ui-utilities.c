@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
 /* nautilus-ui-utilities.c - helper functions for GtkUIManager stuff
 
@@ -31,6 +31,7 @@
 #include <gtk/gtk.h>
 #include <libgd/gd.h>
 #include <string.h>
+#include <glib/gi18n.h>
 
 static GMenuModel *
 find_gmenu_model (GMenuModel  *model,
@@ -332,23 +333,109 @@ nautilus_file_date_in_between (guint64    unix_file_time,
                                GDateTime *initial_date,
                                GDateTime *end_date)
 {
-        GDateTime *date;
-        gboolean in_between;
+  GDateTime *date;
+  gboolean in_between;
 
-        /* Silently ignore errors */
-        if (unix_file_time == 0)
-                return FALSE;
+  /* Silently ignore errors */
+  if (unix_file_time == 0)
+    {
+      return FALSE;
+    }
 
-        date = g_date_time_new_from_unix_local (unix_file_time);
+  date = g_date_time_new_from_unix_local (unix_file_time);
 
-        /* For the end date, we want to make end_date inclusive,
-         * for that the difference between the start of the day and the in_between
-         * has to be more than -1 day
-         */
-        in_between = g_date_time_difference (date, initial_date) > 0 &&
-                     g_date_time_difference (end_date, date) / G_TIME_SPAN_DAY > -1;
+  /* For the end date, we want to make end_date inclusive,
+   * for that the difference between the start of the day and the in_between
+   * has to be more than -1 day
+   */
+  in_between = g_date_time_difference (date, initial_date) > 0 &&
+               g_date_time_difference (end_date, date) / G_TIME_SPAN_DAY > -1;
 
-        g_date_time_unref (date);
+  g_date_time_unref (date);
 
-        return in_between;
+  return in_between;
 }
+
+static const gchar*
+get_text_for_days_ago (gint days)
+{
+  if (days < 7)
+    {
+      /* days */
+      return ngettext ("%d day ago", "%d days ago", days);
+    }
+   else if (days < 30)
+    {
+      /* weeks */
+      return ngettext ("Last week", "%d weeks ago", days / 7);
+    }
+  else if (days < 365)
+    {
+      /* months */
+      return ngettext ("Last month", "%d months ago", days / 30);
+    }
+  else
+    {
+      /* years */
+      return ngettext ("Last year", "%d years ago", days / 365);
+    }
+}
+
+gchar*
+get_text_for_date_range (GPtrArray *date_range)
+{
+  gint days;
+  gint normalized;
+  GDateTime *initial_date;
+  GDateTime *end_date;
+  gchar *formatted_date;
+  gchar *label;
+
+  if (!date_range)
+    return NULL;
+
+  initial_date = g_ptr_array_index (date_range, 0);
+  end_date = g_ptr_array_index (date_range, 1);
+  days = g_date_time_difference (end_date, initial_date) / G_TIME_SPAN_DAY;
+  formatted_date = g_date_time_format (initial_date, "%x");
+
+  if (days < 1)
+    {
+      label = g_strdup (formatted_date);
+    }
+  else
+    {
+      if (days < 7)
+        {
+          /* days */
+          normalized = days;
+        }
+      else if (days < 30)
+        {
+          /* weeks */
+          normalized = days / 7;
+        }
+      else if (days < 365)
+        {
+          /* months */
+          normalized = days / 30;
+        }
+      else if (days < 1825)
+        {
+          /* years */
+          normalized = days / 365;
+        }
+      else
+        {
+          /* after the first 5 years, jump at a 5-year pace */
+          normalized = days / 365;
+        }
+
+      label = g_strdup_printf (get_text_for_days_ago (days), normalized);
+    }
+
+    g_free (formatted_date);
+
+  return label;
+}
+

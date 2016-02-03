@@ -50,5 +50,6 @@ void   nautilus_ui_frame_video                     (GdkPixbuf        **pixbuf);
 gboolean   nautilus_file_date_in_between           (guint64           file_unix_time,
                                                     GDateTime         *initial_date,
                                                     GDateTime         *end_date);
+gchar*     get_text_for_date_range                 (GPtrArray         *date_range);
 
 #endif /* NAUTILUS_UI_UTILITIES_H */

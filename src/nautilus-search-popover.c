@@ -21,6 +21,7 @@
 
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
 struct _NautilusSearchPopover
@@ -44,8 +45,6 @@ struct _NautilusSearchPopover
 
   NautilusQuery      *query;
 };
-
-const gchar*         get_text_for_day                            (gint                   days);
 
 static void          emit_date_changes_for_day                   (NautilusSearchPopover *popover,
                                                                   GPtrArray             *date_range);
@@ -540,14 +539,18 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   GDateTime *maximum_dt, *now;
   GtkWidget *row;
   GDateTime *current_date;
+  GPtrArray *date_range;
   gint days, max_days;
 
-  days = 0;
-
+  days = 1;
   maximum_dt = g_date_time_new_from_unix_local (0);
   now = g_date_time_new_now_local ();
   max_days = (g_date_time_get_year (now) - g_date_time_get_year (maximum_dt)) * 365;
   current_date = g_date_time_new_now_local ();
+
+  /* Add the no date filter element first */
+  row = create_row_for_label ("Any time", TRUE);
+  gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
   /* This is a tricky loop. The main intention here is that each
    * timeslice (day, week, month) have 2 or 3 entries. Years,
@@ -556,14 +559,10 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   while (days < max_days)
     {
       gchar *label;
-      gint normalized, step;
+      gint normalized;
+      gint step;
 
-      if (days == 0)
-        {
-          normalized = 0;
-          step = 1;
-        }
-      else if (days < 7)
+      if (days < 7)
         {
           /* days */
           normalized = days;
@@ -594,23 +593,19 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
           step = 1825;
         }
 
-      label = g_strdup_printf (get_text_for_day (days), normalized);
-
+      current_date = g_date_time_add_days (now, -days);
+      date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
+      g_ptr_array_add (date_range, g_date_time_ref (current_date));
+      g_ptr_array_add (date_range, g_date_time_ref (now));
+      label = get_text_for_date_range (date_range);
       row = create_row_for_label (label, normalized == 1);
-      if (days != 0)
-        {
-          current_date = g_date_time_add_days (now, -days);
-          g_object_set_data (G_OBJECT (row), "date", g_date_time_ref (current_date));
-        }
-      else
-        {
-          g_object_set_data (G_OBJECT (row), "date", NULL);
-        }
+      g_object_set_data (G_OBJECT (row), "date", g_date_time_ref (current_date));
 
       gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
       g_free (label);
       g_date_time_unref (current_date);
+      g_ptr_array_unref (date_range);
 
       days += step;
     }
@@ -642,35 +637,6 @@ fill_types_listbox (NautilusSearchPopover *popover)
   row = create_row_for_label (_("Other Type…"), TRUE);
   g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (-1));
   gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
-}
-
-const gchar*
-get_text_for_day (gint days)
-{
-  if (days == 0)
-    {
-      return _("Any time");
-    }
-  else if (days < 7)
-    {
-      /* days */
-      return ngettext ("%d day ago", "%d days ago", days);
-    }
-   else if (days < 30)
-    {
-      /* weeks */
-      return ngettext ("Last week", "%d weeks ago", days / 7);
-    }
-  else if (days < 365)
-    {
-      /* months */
-      return ngettext ("Last month", "%d months ago", days / 30);
-    }
-  else
-    {
-      /* years */
-      return ngettext ("Last year", "%d years ago", days / 365);
-    }
 }
 
 static void
@@ -799,55 +765,28 @@ update_date_label (NautilusSearchPopover *popover,
       GDateTime *initial_date;
       GDateTime *end_date;
       GDateTime *now;
-      gchar *formatted_date;
       gchar *label;
-      guint normalized;
 
       now = g_date_time_new_now_local ();
       initial_date = g_ptr_array_index (date_range, 0);
-      end_date = g_ptr_array_index (date_range, 1);
+      end_date = g_ptr_array_index (date_range, 0);
       days = g_date_time_difference (end_date, initial_date) / G_TIME_SPAN_DAY;
-      formatted_date = g_date_time_format (initial_date, "%x");
 
-      if (days < 1)
-        {
-          label = g_strdup (formatted_date);
-        }
-      else
-        {
-          if (days < 7)
-            {
-             normalized = days;
-            }
-          else if (days < 30)
-            {
-              normalized = days / 7;
-            }
-          else if (days < 365)
-            {
-              normalized = days / 30;
-            }
-          else
-            {
-              normalized = days / 365;
-            }
+      label = get_text_for_date_range (date_range);
 
-          label = g_strdup_printf (get_text_for_day (days), normalized);
-        }
-
-      gtk_entry_set_text (GTK_ENTRY (popover->date_entry), formatted_date);
+      gtk_entry_set_text (GTK_ENTRY (popover->date_entry), days < 1 ? label : "");
 
       gtk_widget_show (popover->clear_date_button);
       gtk_label_set_label (GTK_LABEL (popover->select_date_button_label), label);
 
       g_date_time_unref (now);
-      g_free (formatted_date);
       g_free (label);
     }
   else
     {
       gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
                            _("Select Dates..."));
+      gtk_entry_set_text (GTK_ENTRY (popover->date_entry), "");
       gtk_widget_hide (popover->clear_date_button);
     }
 }
