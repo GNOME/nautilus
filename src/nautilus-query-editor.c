@@ -24,6 +24,7 @@
 #include <config.h>
 #include "nautilus-query-editor.h"
 #include "nautilus-search-popover.h"
+#include "nautilus-mime-actions.h"
 
 #include <string.h>
 #include <glib/gi18n.h>
@@ -443,18 +444,27 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
 
 static void
 search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
-                                     GList                 *data,
+                                     gint                   mimetype_group,
+                                     const gchar           *mimetype,
                                      NautilusQueryEditor   *editor)
 {
         NautilusQueryEditorPrivate *priv;
+        GList *mimetypes;
 
         priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
         if (!priv->query)
                 create_query (editor);
 
-        nautilus_query_set_mime_types (priv->query, data);
+        if (mimetype_group >= 0) {
+                mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
+        } else {
+                mimetypes = g_list_append (NULL, (gpointer) mimetype);
+        }
+        nautilus_query_set_mime_types (priv->query, mimetypes);
 
         nautilus_query_editor_changed (editor);
+
+        g_list_free (mimetypes);
 }
 
 static void

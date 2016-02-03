@@ -25,6 +25,7 @@
 #define NAUTILUS_MIME_ACTIONS_H
 
 #include <gio/gio.h>
+#include <glib/gi18n.h>
 
 #include <libnautilus-private/nautilus-file.h>
 
@@ -51,6 +52,9 @@ void                   nautilus_mime_activate_file                        (GtkWi
 									   NautilusFile            *file,
 									   const char              *launch_directory,
 									   NautilusWindowOpenFlags  flags);
+gint                   nautilus_mime_types_get_number_of_groups           (void);
+const gchar*           nautilus_mime_types_group_get_name                 (gint                     group_index);
+GList*                 nautilus_mime_types_group_get_mimetypes            (gint                     group_index);
 
 
 #endif /* NAUTILUS_MIME_ACTIONS_H */

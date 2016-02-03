@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
 /* nautilus-mime-actions.c - uri-specific versions of mime action functions
 
@@ -31,6 +31,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <string.h>
@@ -85,6 +86,150 @@ typedef struct {
 	char *activation_directory;
 	gboolean user_confirmation;
 } ActivateParameters;
+
+struct {
+  char *name;
+  char *mimetypes[20];
+} mimetype_groups[] = {
+  {
+    N_("Anything"),
+    { NULL }
+  },
+  {
+    N_("Files"),
+    { "application/octet-stream",
+      "text/plain",
+      NULL
+    }
+  },
+  {
+    N_("Folders"),
+    { "inode/directory",
+      NULL
+    }
+  },
+  { N_("Documents"),
+    { "application/rtf",
+      "application/msword",
+      "application/vnd.sun.xml.writer",
+      "application/vnd.sun.xml.writer.global",
+      "application/vnd.sun.xml.writer.template",
+      "application/vnd.oasis.opendocument.text",
+      "application/vnd.oasis.opendocument.text-template",
+      "application/x-abiword",
+      "application/x-applix-word",
+      "application/x-mswrite",
+      "application/docbook+xml",
+      "application/x-kword",
+      "application/x-kword-crypt",
+      "application/x-lyx",
+      NULL
+    }
+  },
+  { N_("Illustration"),
+    { "application/illustrator",
+      "application/vnd.corel-draw",
+      "application/vnd.stardivision.draw",
+      "application/vnd.oasis.opendocument.graphics",
+      "application/x-dia-diagram",
+      "application/x-karbon",
+      "application/x-killustrator",
+      "application/x-kivio",
+      "application/x-kontour",
+      "application/x-wpg",
+      NULL
+    }
+  },
+  { N_("Music"),
+    { "application/ogg",
+      "audio/x-vorbis+ogg",
+      "audio/ac3",
+      "audio/basic",
+      "audio/midi",
+      "audio/x-flac",
+      "audio/mp4",
+      "audio/mpeg",
+      "audio/x-mpeg",
+      "audio/x-ms-asx",
+      "audio/x-pn-realaudio",
+      NULL
+    }
+  },
+  { N_("PDF / Postscript"),
+    { "application/pdf",
+      "application/postscript",
+      "application/x-dvi",
+      "image/x-eps",
+      NULL
+    }
+  },
+  { N_("Picture"),
+    { "application/vnd.oasis.opendocument.image",
+      "application/x-krita",
+      "image/bmp",
+      "image/cgm",
+      "image/gif",
+      "image/jpeg",
+      "image/jpeg2000",
+      "image/png",
+      "image/svg+xml",
+      "image/tiff",
+      "image/x-compressed-xcf",
+      "image/x-pcx",
+      "image/x-photo-cd",
+      "image/x-psd",
+      "image/x-tga",
+      "image/x-xcf",
+      NULL
+    }
+  },
+  { N_("Presentation"),
+    { "application/vnd.ms-powerpoint",
+      "application/vnd.sun.xml.impress",
+      "application/vnd.oasis.opendocument.presentation",
+      "application/x-magicpoint",
+      "application/x-kpresenter",
+      NULL
+    }
+  },
+  { N_("Spreadsheet"),
+    { "application/vnd.lotus-1-2-3",
+      "application/vnd.ms-excel",
+      "application/vnd.stardivision.calc",
+      "application/vnd.sun.xml.calc",
+      "application/vnd.oasis.opendocument.spreadsheet",
+      "application/x-applix-spreadsheet",
+      "application/x-gnumeric",
+      "application/x-kspread",
+      "application/x-kspread-crypt",
+      "application/x-quattropro",
+      "application/x-sc",
+      "application/x-siag",
+      NULL
+    }
+  },
+  { N_("Text File"),
+    { "text/plain",
+      NULL
+    }
+  },
+  { N_("Video"),
+    { "video/mp4",
+      "video/3gpp",
+      "video/mpeg",
+      "video/quicktime",
+      "video/vivo",
+      "video/x-avi",
+      "video/x-mng",
+      "video/x-ms-asf",
+      "video/x-ms-wmv",
+      "video/x-msvideo",
+      "video/x-nsv",
+      "video/x-real-video",
+      NULL
+    }
+  }
+};
 
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
@@ -2130,4 +2275,37 @@ nautilus_mime_activate_file (GtkWindow *parent_window,
 	files = g_list_prepend (NULL, file);
 	nautilus_mime_activate_files (parent_window, slot, files, launch_directory, flags, FALSE);
 	g_list_free (files);
+}
+
+gint
+nautilus_mime_types_get_number_of_groups (void)
+{
+  return G_N_ELEMENTS (mimetype_groups);
+}
+
+const gchar*
+nautilus_mime_types_group_get_name (gint group_index)
+{
+  g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
+
+  return gettext (mimetype_groups[group_index].name);
+}
+
+GList*
+nautilus_mime_types_group_get_mimetypes (gint group_index)
+{
+  GList *mimetypes;
+  gint i;
+
+  g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
+
+  mimetypes = NULL;
+
+  /* Setup the new mimetypes set */
+  for (i = 0; mimetype_groups[group_index].mimetypes[i]; i++)
+  {
+    mimetypes = g_list_append (mimetypes, mimetype_groups[group_index].mimetypes[i]);
+  }
+
+  return mimetypes;
 }

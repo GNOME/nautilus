@@ -18,6 +18,7 @@
 
 #include "nautilus-enum-types.h"
 #include "nautilus-search-popover.h"
+#include "nautilus-mime-actions.h"
 
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-file.h>
@@ -73,150 +74,6 @@ enum {
 };
 
 static guint signals[LAST_SIGNAL];
-
-struct {
-  char *name;
-  char *mimetypes[20];
-} mimetype_groups[] = {
-  {
-    N_("Anything"),
-    { NULL }
-  },
-  {
-    N_("Files"),
-    { "application/octet-stream",
-      "text/plain",
-      NULL
-    }
-  },
-  {
-    N_("Folders"),
-    { "inode/directory",
-      NULL
-    }
-  },
-  { N_("Documents"),
-    { "application/rtf",
-      "application/msword",
-      "application/vnd.sun.xml.writer",
-      "application/vnd.sun.xml.writer.global",
-      "application/vnd.sun.xml.writer.template",
-      "application/vnd.oasis.opendocument.text",
-      "application/vnd.oasis.opendocument.text-template",
-      "application/x-abiword",
-      "application/x-applix-word",
-      "application/x-mswrite",
-      "application/docbook+xml",
-      "application/x-kword",
-      "application/x-kword-crypt",
-      "application/x-lyx",
-      NULL
-    }
-  },
-  { N_("Illustration"),
-    { "application/illustrator",
-      "application/vnd.corel-draw",
-      "application/vnd.stardivision.draw",
-      "application/vnd.oasis.opendocument.graphics",
-      "application/x-dia-diagram",
-      "application/x-karbon",
-      "application/x-killustrator",
-      "application/x-kivio",
-      "application/x-kontour",
-      "application/x-wpg",
-      NULL
-    }
-  },
-  { N_("Music"),
-    { "application/ogg",
-      "audio/x-vorbis+ogg",
-      "audio/ac3",
-      "audio/basic",
-      "audio/midi",
-      "audio/x-flac",
-      "audio/mp4",
-      "audio/mpeg",
-      "audio/x-mpeg",
-      "audio/x-ms-asx",
-      "audio/x-pn-realaudio",
-      NULL
-    }
-  },
-  { N_("PDF / Postscript"),
-    { "application/pdf",
-      "application/postscript",
-      "application/x-dvi",
-      "image/x-eps",
-      NULL
-    }
-  },
-  { N_("Picture"),
-    { "application/vnd.oasis.opendocument.image",
-      "application/x-krita",
-      "image/bmp",
-      "image/cgm",
-      "image/gif",
-      "image/jpeg",
-      "image/jpeg2000",
-      "image/png",
-      "image/svg+xml",
-      "image/tiff",
-      "image/x-compressed-xcf",
-      "image/x-pcx",
-      "image/x-photo-cd",
-      "image/x-psd",
-      "image/x-tga",
-      "image/x-xcf",
-      NULL
-    }
-  },
-  { N_("Presentation"),
-    { "application/vnd.ms-powerpoint",
-      "application/vnd.sun.xml.impress",
-      "application/vnd.oasis.opendocument.presentation",
-      "application/x-magicpoint",
-      "application/x-kpresenter",
-      NULL
-    }
-  },
-  { N_("Spreadsheet"),
-    { "application/vnd.lotus-1-2-3",
-      "application/vnd.ms-excel",
-      "application/vnd.stardivision.calc",
-      "application/vnd.sun.xml.calc",
-      "application/vnd.oasis.opendocument.spreadsheet",
-      "application/x-applix-spreadsheet",
-      "application/x-gnumeric",
-      "application/x-kspread",
-      "application/x-kspread-crypt",
-      "application/x-quattropro",
-      "application/x-sc",
-      "application/x-siag",
-      NULL
-    }
-  },
-  { N_("Text File"),
-    { "text/plain",
-      NULL
-    }
-  },
-  { N_("Video"),
-    { "video/mp4",
-      "video/3gpp",
-      "video/mpeg",
-      "video/quicktime",
-      "video/vivo",
-      "video/x-avi",
-      "video/x-mng",
-      "video/x-ms-asf",
-      "video/x-ms-wmv",
-      "video/x-msvideo",
-      "video/x-nsv",
-      "video/x-real-video",
-      NULL
-    }
-  }
-};
 
 
 /* Callbacks */
@@ -459,22 +316,10 @@ types_listbox_row_activated (GtkListBox            *listbox,
     }
   else
     {
-      GList *mimetypes;
-      gint i;
+      gtk_label_set_label (GTK_LABEL (popover->type_label),
+                           nautilus_mime_types_group_get_name (group));
 
-      mimetypes = NULL;
-
-      /* Setup the new mimetypes set */
-      for (i = 0; mimetype_groups[group].mimetypes[i]; i++)
-        {
-          mimetypes = g_list_append (mimetypes, mimetype_groups[group].mimetypes[i]);
-        }
-
-      gtk_label_set_label (GTK_LABEL (popover->type_label), gettext (mimetype_groups[group].name));
-
-      g_signal_emit_by_name (popover, "mime-type", mimetypes, NULL);
-
-      g_list_free (mimetypes);
+      g_signal_emit_by_name (popover, "mime-type", group, NULL);
     }
 
   gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
@@ -619,15 +464,17 @@ fill_types_listbox (NautilusSearchPopover *popover)
 {
   GtkWidget *row;
   int i;
+  gint n_groups;
 
+  n_groups = nautilus_mime_types_get_number_of_groups ();
   /* Mimetypes */
-  for (i = 0; i < G_N_ELEMENTS (mimetype_groups); i++)
+  for (i = 0; i < n_groups; i++)
     {
 
       /* On the third row, which is right below "Folders", there should be an
        * separator to logically group the types.
        */
-      row = create_row_for_label (gettext (mimetype_groups[i].name), i == 3);
+      row = create_row_for_label (nautilus_mime_types_group_get_name (i), i == 3);
       g_object_set_data (G_OBJECT (row), "mimetype-group", GINT_TO_POINTER (i));
 
       gtk_container_add (GTK_CONTAINER (popover->type_listbox), row);
@@ -734,8 +581,8 @@ show_other_types_dialog (NautilusSearchPopover *popover)
   if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
     {
       GtkTreeIter iter;
-      GList *mimetypes;
-      char *mimetype, *description;
+      char *mimetype;
+      char *description;
 
       gtk_tree_selection_get_selected (selection, NULL, &iter);
       gtk_tree_model_get (GTK_TREE_MODEL (store), &iter,
@@ -743,11 +590,9 @@ show_other_types_dialog (NautilusSearchPopover *popover)
               1, &mimetype,
               -1);
 
-      mimetypes = g_list_append (NULL, mimetype);
-
       gtk_label_set_label (GTK_LABEL (popover->type_label), description);
 
-      g_signal_emit_by_name (popover, "mime-type", mimetypes, NULL);
+      g_signal_emit_by_name (popover, "mime-type", -1, mimetype);
 
       gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-button");
     }
@@ -889,26 +734,27 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                       G_TYPE_POINTER);
 
   signals[MIME_TYPE] = g_signal_new ("mime-type",
-                                      NAUTILUS_TYPE_SEARCH_POPOVER,
-                                      G_SIGNAL_RUN_LAST,
-                                      0,
-                                      NULL,
-                                      NULL,
-                                      g_cclosure_marshal_generic,
-                                      G_TYPE_NONE,
-                                      1,
-                                      G_TYPE_POINTER);
+                                     NAUTILUS_TYPE_SEARCH_POPOVER,
+                                     G_SIGNAL_RUN_LAST,
+                                     0,
+                                     NULL,
+                                     NULL,
+                                     g_cclosure_marshal_generic,
+                                     G_TYPE_NONE,
+                                     2,
+                                     G_TYPE_INT,
+                                     G_TYPE_POINTER);
 
   signals[TIME_TYPE] = g_signal_new ("time-type",
-                                      NAUTILUS_TYPE_SEARCH_POPOVER,
-                                      G_SIGNAL_RUN_LAST,
-                                      0,
-                                      NULL,
-                                      NULL,
-                                      g_cclosure_marshal_generic,
-                                      G_TYPE_NONE,
-                                      1,
-                                      G_TYPE_INT);
+                                     NAUTILUS_TYPE_SEARCH_POPOVER,
+                                     G_SIGNAL_RUN_LAST,
+                                     0,
+                                     NULL,
+                                     NULL,
+                                     g_cclosure_marshal_generic,
+                                     G_TYPE_NONE,
+                                     1,
+                                     G_TYPE_INT);
 
   /**
    * NautilusSearchPopover::query:
