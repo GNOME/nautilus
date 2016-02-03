@@ -68,22 +68,18 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_SEARCH_BAR);
 
-
-static void
-recursive_search_preferences_changed (GSettings           *settings,
-                                      gchar               *key,
-                                      NautilusQueryEditor *editor)
+static gboolean
+settings_search_is_recursive (NautilusQueryEditor *editor)
 {
         NautilusQueryEditorPrivate *priv;
         NautilusFile *file;
         gchar *recursive_search_key;
         gboolean recursive;
 
-
         priv = nautilus_query_editor_get_instance_private (editor);
 
-        if (!priv->location || !priv->query)
-                return;
+        if (!priv->location)
+                return TRUE;
 
         file = nautilus_file_get (priv->location);
 
@@ -95,10 +91,66 @@ recursive_search_preferences_changed (GSettings           *settings,
 
         nautilus_file_unref (file);
         recursive = g_settings_get_boolean (nautilus_preferences, recursive_search_key);
+
+        return recursive;
+}
+
+static void
+update_information_label (NautilusQueryEditor *editor)
+{
+        NautilusQueryEditorPrivate *priv;
+
+        priv = nautilus_query_editor_get_instance_private (editor);
+
+        if (priv->location) {
+                NautilusFile *file;
+                gchar *label;
+                gchar *uri;
+
+                file = nautilus_file_get (priv->location);
+                label = NULL;
+                uri = g_file_get_uri (priv->location);
+
+                if (nautilus_file_is_other_locations (file)) {
+                        label = _("Searching locations only");
+                } else if (g_str_has_prefix (uri, "computer://")) {
+                        label = _("Searching devices only");
+                } else if (g_str_has_prefix (uri, "network://")) {
+                        label = _("Searching network locations only");
+                } else if (nautilus_file_is_remote (file) &&
+                           !settings_search_is_recursive (editor)) {
+                        label = _("Remote location - only searching the current folder");
+                } else if (!settings_search_is_recursive (editor)) {
+                        label = _("Only searching the current folder");
+                }
+
+                gtk_widget_set_visible (priv->label, label != NULL);
+                gtk_label_set_label (GTK_LABEL (priv->label), label);
+
+                g_free (uri);
+        }
+}
+
+static void
+recursive_search_preferences_changed (GSettings           *settings,
+                                      gchar               *key,
+                                      NautilusQueryEditor *editor)
+{
+        NautilusQueryEditorPrivate *priv;
+        gboolean recursive;
+
+        priv = nautilus_query_editor_get_instance_private (editor);
+
+        if (!priv->location || !priv->query)
+                return;
+
+        recursive = settings_search_is_recursive (editor);
         if (recursive != nautilus_query_get_recursive (priv->query)) {
                 nautilus_query_set_recursive (priv->query, recursive);
                 nautilus_query_editor_changed (editor);
         }
+
+        update_information_label (editor);
 }
 
 
@@ -558,31 +610,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                 create_query (editor);
         nautilus_query_set_location (priv->query, priv->location);
 
-        /* Update label if needed */
-        if (priv->location) {
-                NautilusFile *file;
-                gchar *label;
-                gchar *uri;
-
-                file = nautilus_file_get (priv->location);
-                label = NULL;
-                uri = g_file_get_uri (priv->location);
-
-                if (nautilus_file_is_other_locations (file)) {
-                        label = _("Searching locations only");
-                } else if (g_str_has_prefix (uri, "computer://")) {
-                        label = _("Searching devices only");
-                } else if (g_str_has_prefix (uri, "network://")) {
-                        label = _("Searching network locations only");
-                } else if (nautilus_file_is_remote (file)) {
-                        label = _("Remote location - only searching the current folder");
-                }
-
-		gtk_widget_set_visible (priv->label, label != NULL);
-		gtk_label_set_label (GTK_LABEL (priv->label), label);
-
-      		g_free (uri);
-        }
+        update_information_label (editor);
 
         if (should_notify) {
                 g_object_notify (G_OBJECT (editor), "location");
