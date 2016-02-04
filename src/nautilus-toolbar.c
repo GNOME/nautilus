@@ -31,6 +31,7 @@
 #include "nautilus-window.h"
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-application.h"
+#include "nautilus-desktop-window.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
@@ -601,8 +602,10 @@ update_operations (NautilusToolbar *self)
                 gtk_widget_queue_draw (self->priv->operations_icon);
 
                 /* Show the popover at start to increase visibility */
-                gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->operations_button),
-                                              TRUE);
+                if (!NAUTILUS_IS_DESKTOP_WINDOW (self->priv->window)) {
+                        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->operations_button),
+                                                      TRUE);
+                }
         }
 }
 
