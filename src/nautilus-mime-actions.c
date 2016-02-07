@@ -155,7 +155,7 @@ struct {
       NULL
     }
   },
-  { N_("PDF / Postscript"),
+  { N_("PDF / PostScript"),
     { "application/pdf",
       "application/postscript",
       "application/x-dvi",

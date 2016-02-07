@@ -618,7 +618,7 @@ update_date_label (NautilusSearchPopover *popover,
   else
     {
       gtk_label_set_label (GTK_LABEL (popover->select_date_button_label),
-                           _("Select Dates..."));
+                           _("Select Dates…"));
       gtk_entry_set_text (GTK_ENTRY (popover->date_entry), "");
       gtk_widget_hide (popover->clear_date_button);
     }
