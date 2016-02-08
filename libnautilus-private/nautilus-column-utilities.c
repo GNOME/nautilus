@@ -119,7 +119,7 @@ get_builtin_columns (void)
 					       "name", "mime_type",
 					       "attribute", "mime_type",
 					       "label", _("MIME Type"),
-					       "description", _("The mime type of the file."),
+					       "description", _("The MIME type of the file."),
 					       NULL));
 
 	columns = g_list_append (columns,
