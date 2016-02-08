@@ -1061,8 +1061,13 @@ typedef struct {
 	const char *details_text;
 	const char **button_titles;
 	gboolean show_all;
-	
 	int result;
+	/* Dialogs are ran from operation threads, which need to be blocked until
+	 * the user gives a valid response
+	 */
+	gboolean completed;
+	GMutex mutex;
+	GCond cond;
 } RunSimpleDialogData;
 
 static gboolean
@@ -1073,6 +1078,8 @@ do_run_simple_dialog (gpointer _data)
         GtkWidget *dialog;
 	int result;
 	int response_id;
+
+	g_mutex_lock (&data->mutex);
 
 	/* Create the dialog. */
 	dialog = gtk_message_dialog_new (*data->parent_window,
@@ -1113,6 +1120,10 @@ do_run_simple_dialog (gpointer _data)
 	gtk_widget_destroy (dialog);
 
 	data->result = result;
+	data->completed = TRUE;
+
+	g_cond_signal (&data->cond);
+	g_mutex_unlock (&data->mutex);
 	
 	return FALSE;
 }
@@ -1145,6 +1156,9 @@ run_simple_dialog_va (CommonJob *job,
 	data->secondary_text = secondary_text;
 	data->details_text = details_text;
 	data->show_all = show_all;
+	data->completed = FALSE;
+	g_mutex_init (&data->mutex);
+	g_cond_init (&data->cond);
 
 	ptr_array = g_ptr_array_new ();
 	while ((button_title = va_arg (varargs, const char *)) != NULL) {
@@ -1154,12 +1168,23 @@ run_simple_dialog_va (CommonJob *job,
 	data->button_titles = (const char **)g_ptr_array_free (ptr_array, FALSE);
 
 	nautilus_progress_info_pause (job->progress);
-	g_io_scheduler_job_send_to_mainloop (job->io_job,
-					     do_run_simple_dialog,
-					     data,
-					     NULL);
+
+	g_mutex_lock (&data->mutex);
+
+	g_main_context_invoke (NULL,
+	                       do_run_simple_dialog,
+	                       data);
+
+	while (!data->completed) {
+		g_cond_wait (&data->cond, &data->mutex);
+	}
+
 	nautilus_progress_info_resume (job->progress);
 	res = data->result;
+
+	g_mutex_unlock (&data->mutex);
+	g_mutex_clear (&data->mutex);
+	g_cond_clear (&data->cond);
 
 	g_free (data->button_titles);
 	g_free (data);
@@ -4374,6 +4399,12 @@ typedef struct {
 	GFile *dest_dir;
 	GtkWindow *parent;
 	ConflictResponseData *resp_data;
+	/* Dialogs are ran from operation threads, which need to be blocked until
+	 * the user gives a valid response
+	 */
+	gboolean completed;
+	GMutex mutex;
+	GCond cond;
 } ConflictDialogData;
 
 static gboolean
@@ -4382,6 +4413,8 @@ do_run_conflict_dialog (gpointer _data)
 	ConflictDialogData *data = _data;
 	GtkWidget *dialog;
 	int response;
+
+	g_mutex_lock (&data->mutex);
 
 	dialog = nautilus_file_conflict_dialog_new (data->parent,
 						    data->src,
@@ -4400,8 +4433,12 @@ do_run_conflict_dialog (gpointer _data)
 	}
 
 	data->resp_data->id = response;
+	data->completed = TRUE;
 
 	gtk_widget_destroy (dialog);
+
+	g_cond_signal (&data->cond);
+	g_mutex_unlock (&data->mutex);
 
 	return FALSE;
 }
@@ -4427,12 +4464,27 @@ run_conflict_dialog (CommonJob *job,
 	resp_data->new_name = NULL;
 	data->resp_data = resp_data;
 
+	data->completed = FALSE;
+	g_mutex_init (&data->mutex);
+	g_cond_init (&data->cond);
+
 	nautilus_progress_info_pause (job->progress);
-	g_io_scheduler_job_send_to_mainloop (job->io_job,
-					     do_run_conflict_dialog,
-					     data,
-					     NULL);
+
+	g_mutex_lock (&data->mutex);
+
+	g_main_context_invoke (NULL,
+	                       do_run_conflict_dialog,
+	                       data);
+
+	while (!data->completed) {
+		g_cond_wait (&data->cond, &data->mutex);
+	}
+
 	nautilus_progress_info_resume (job->progress);
+
+	g_mutex_unlock (&data->mutex);
+	g_mutex_clear (&data->mutex);
+	g_cond_clear (&data->cond);
 
 	g_slice_free (ConflictDialogData, data);
 
