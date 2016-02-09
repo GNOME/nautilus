@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-02-07 12:22+0000\n"
-"PO-Revision-Date: 2016-02-07 13:32+0100\n"
+"POT-Creation-Date: 2016-02-09 01:51+0000\n"
+"PO-Revision-Date: 2016-02-09 07:32+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: slovenčina <>\n"
 "Language: sk\n"
@@ -24,7 +24,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n==1) ? 1 : (n>=2 && n<=4) ? 2 : 0;\n"
-"X-Generator: Poedit 1.8.6\n"
+"X-Generator: Poedit 1.8.7\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid "Nautilus"
@@ -875,7 +875,7 @@ msgid "MIME Type"
 msgstr "Typ MIME"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:122
-msgid "The mime type of the file."
+msgid "The MIME type of the file."
 msgstr "MIME typ súboru."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:129
@@ -3532,7 +3532,6 @@ msgid "Music"
 msgstr "Hudba"
 
 #: ../src/nautilus-mime-actions.c:158
-#| msgid "PDF / Postscript"
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
@@ -4843,18 +4842,18 @@ msgid "_Arrange items:"
 msgstr "_Usporiadať položky:"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:28
-msgid "Show context menu item to delete files permanently"
-msgstr "Zobraziť položku kontextovej ponuky na trvalé odstránenie súborov"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
-msgid "Show context menu item to create links from copied files"
-msgstr ""
-"Zobraziť položku kontextovej ponuky na vytvorenie odkazov z kopírovaných "
-"súborov"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
 msgid "Sort _folders before files"
 msgstr "Zoradiť p_riečinky pred súbormi"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
+msgid "Show context menu item to _delete files permanently"
+msgstr "Zobraziť položku kontextovej ponuky na trvalé o_dstránenie súborov"
+
+#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
+msgid "Show context menu item to create _links from copied files"
+msgstr ""
+"Zobraziť po_ložku kontextovej ponuky na vytvorenie odkazov z kopírovaných "
+"súborov"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:31
 msgid "Views"
@@ -4893,12 +4892,12 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Pý_tať sa pred odstránením položiek z Koša alebo odstránením súborov"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
-msgid "Search subfolders on local file systems"
-msgstr "Vyhľadať podpriečinky v miestnych systémoch súborov"
+msgid "Search subfolders on _local locations"
+msgstr "Vyhľadať podpriečinky v _miestnych umiestneniach"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
-msgid "Search subfolders on remote file systems"
-msgstr "Vyhľadať podpriečinky vo vzdialených systémoch súborov"
+msgid "Search subfolders on _network locations"
+msgstr "Vyhľadať podpriečinky v _sieťových umiestneniach"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
 msgid "Icon Captions"
@@ -4970,12 +4969,12 @@ msgid "Around…"
 msgstr "Približne…"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
-msgid "Last modified"
-msgstr "Posledná zmena"
+msgid "Last _modified"
+msgstr "Posledná _zmena"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:8
-msgid "Last used"
-msgstr "Posledné použitie"
+msgid "Last _used"
+msgstr "Posledné _použitie"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:9
 msgid "What"
@@ -5183,6 +5182,12 @@ msgstr "Pripojiť k _serveru"
 #: ../src/gtk/gtkplacesview.ui.h:8
 msgid "Enter server address…"
 msgstr "Zadajte adresu servera…"
+
+#~ msgid "The mime type of the file."
+#~ msgstr "MIME typ súboru."
+
+#~ msgid "Search subfolders on remote file systems"
+#~ msgstr "Vyhľadať podpriečinky vo vzdialených systémoch súborov"
 
 #~ msgid "File Type"
 #~ msgstr "Typ súboru"
