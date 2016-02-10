@@ -28,7 +28,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-02-08 06:50+0000\n"
-"PO-Revision-Date: 2016-02-08 16:12+0100\n"
+"PO-Revision-Date: 2016-02-10 16:09+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: \n"
@@ -100,11 +100,10 @@ msgid "New Window"
 msgstr "Ventana nueva"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:1
-#, fuzzy
 #| msgid "Where to position newly open tabs in browser windows."
 msgid "Where to position newly open tabs in browser windows"
 msgstr ""
-"Dónde posicionar las nuevas pestañas abiertas en las ventanas del examinador."
+"Dónde posicionar las nuevas pestañas abiertas en las ventanas del examinador"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:2
 msgid ""
@@ -130,36 +129,38 @@ msgstr ""
 "barra de rutas."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:5
-#, fuzzy
 #| msgid "Whether to enable recursive search or not"
 msgid "Whether to enable local recursive search or not"
-msgstr "Indica si se debe activar o no la búsqueda recursiva"
+msgstr "Indica si se debe activar o no la búsqueda recursiva local"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:6
-#, fuzzy
 #| msgid "Enables or disables recursive search in Nautilus."
 msgid "Enables or disables local recursive search in Nautilus."
-msgstr "Activa o desactiva la búsqueda recursiva en Nautilus"
+msgstr "Activa o desactiva la búsqueda recursiva local en Nautilus."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:7
-#, fuzzy
 #| msgid "Whether to enable recursive search or not"
 msgid "Whether to enable recursive search or not on remote locations"
-msgstr "Indica si se debe activar o no la búsqueda recursiva"
+msgstr ""
+"Indica si se debe activar o no la búsqueda recursiva en ubicaciones remotas"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:8
-#, fuzzy
 #| msgid "Enables or disables recursive search in Nautilus."
 msgid "Enables or disables recursive search on remote locations in Nautilus."
-msgstr "Activa o desactiva la búsqueda recursiva en Nautilus"
+msgstr ""
+"Activa o desactiva la búsqueda recursiva en ubicaciones remotas en Nautilus."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Filter the search dates using either last used or last modified"
 msgstr ""
+"Filtrar las fechas de búsqueda usando bien la fecha de último uso o de "
+"última modificación"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:10
 msgid "Filter the search dates using either last used or last modified."
 msgstr ""
+"Filtrar las fechas de búsqueda usando bien la fecha de último uso o de "
+"última modificación."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:11
 msgid "Whether to show a context menu item to delete permanently"
@@ -168,7 +169,6 @@ msgstr ""
 "permanentemente"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:12
-#, fuzzy
 #| msgid ""
 #| "If set to true Nautilus will show a delete permanently context menu item "
 #| "to bypass the trash."
@@ -177,7 +177,7 @@ msgid ""
 "item to bypass the Trash."
 msgstr ""
 "Si se establece a cierto, Nautilus mostrará un elemento del menú contextual "
-"para omitir la papelera."
+"de eliminación permanente para omitir la papelera."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:13
 msgid ""
@@ -188,7 +188,6 @@ msgstr ""
 "desde archivos copiados o seleccionados"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:14
-#, fuzzy
 #| msgid ""
 #| "If set to true Nautilus will show context menu items to create links from "
 #| "the copied or selected files"
@@ -197,10 +196,9 @@ msgid ""
 "from the copied or selected files."
 msgstr ""
 "Si se establece a cierto, Nautilus mostrará un elemento del menú contextual "
-"para crear enlaces desde archivos copiados o seleccionados"
+"para crear enlaces desde archivos copiados o seleccionados."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:15
-#, fuzzy
 #| msgid ""
 #| "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgid ""
@@ -264,13 +262,11 @@ msgstr ""
 "«display» para mostrarlos como archivos de texto."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:23
-#, fuzzy
 #| msgid "Show the package installer for unknown mime types"
 msgid "Show the package installer for unknown MIME types"
 msgstr "Mostrar el instalador de paquetes para tipos MIME desconocidos"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:24
-#, fuzzy
 #| msgid ""
 #| "Whether to show the user a package installer dialog in case an unknown "
 #| "mime type is opened, in order to search for an application to handle it."
@@ -283,7 +279,6 @@ msgstr ""
 "pueda manejarlo."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:25
-#, fuzzy
 #| msgid ""
 #| "Show a warning dialog for the change of the shortcut for move to trash"
 msgid ""
@@ -293,7 +288,6 @@ msgstr ""
 "papelera"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:26
-#, fuzzy
 #| msgid ""
 #| "Show a warning dialog for the change of the shortcut for move to trash "
 #| "from control + delete to just delete."
@@ -302,7 +296,7 @@ msgid ""
 "from Control + Delete to just Delete."
 msgstr ""
 "Mostrar un diálogo de advertencia para el cambio del atajo para mover a la "
-"papelera de Ctrl+Supr a simplemente Supr"
+"papelera de Ctrl+Supr a simplemente Supr."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:27
 msgid "Use extra mouse button events in Nautilus' browser window"
@@ -356,7 +350,6 @@ msgid "When to show thumbnails of files"
 msgstr "Cuándo mostrar las miniaturas de los archivos"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:34
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show a file as a thumbnail. If set to \"always"
 #| "\" then always thumbnail, even if the folder is on a remote server. If "
@@ -427,7 +420,6 @@ msgid "Reverse sort order in new windows"
 msgstr "Invertir el orden de colocación en las ventanas nuevas"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:42
-#, fuzzy
 #| msgid ""
 #| "If true, files in new windows will be sorted in reverse order. ie, if "
 #| "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
@@ -439,11 +431,10 @@ msgid ""
 "will be sorted from \"z\" to \"a\"; if sorted by size, instead of being "
 "incrementally they will be sorted decrementally."
 msgstr ""
-"Si se establece a cierto, los archivos en las ventanas nuevas se colocarán "
-"en sentido inverso. Ej: si se ordenados por nombre entonces en vez de "
-"colocarse de la «a» a la «z» se colocarán de la «z» a la «a» ; si se colocan "
-"por tamaño; en lugar de ordenarse incrementalmente se ordenarán "
-"decrementalmente."
+"Si es cierto, los archivos en las ventanas nuevas se colocarán en sentido "
+"inverso. Ej: si se ordenan por nombre, en vez de colocarse de la «a» a la "
+"«z» se colocarán de la «z» a la «a» ; si se colocan por tamaño; en lugar de "
+"ordenarse de menor a mayor se ordenarán de mayor a menor."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:43
 msgid "Default folder viewer"
@@ -513,7 +504,6 @@ msgstr ""
 "realizar una operación de arrastrar y soltar"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:52
-#, fuzzy
 #| msgid ""
 #| "If this is set to true, when performing a drag and drop operation the "
 #| "hovered folder will open automatically after a timeout"
@@ -523,7 +513,7 @@ msgid ""
 msgstr ""
 "Si se establece a cierto, al realizar una operación de arrastrar y soltar, "
 "la carpeta sobre la que se pase el puntero se abrirá automáticamente después "
-"de un cierto tiempo"
+"de un cierto tiempo."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:53
 msgid "List of possible captions on icons"
@@ -566,7 +556,6 @@ msgid "Text Ellipsis Limit"
 msgstr "Límite de la elipsis del texto"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:60
-#, fuzzy
 #| msgid ""
 #| "A string specifying how parts of overlong file names should be replaced "
 #| "by ellipses, depending on the zoom level. Each of the list entries is of "
@@ -612,7 +601,7 @@ msgstr ""
 "«smallest» (más pequeño) y si superan las cuatro líneas para el nivel de "
 "ampliación «smaller» (pequeño). No acorta los nombres de archivo para otros "
 "niveles de ampliación. Niveles de ampliación disponibles: «small», "
-"«standard», «large»"
+"«standard», «large»."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:61
 msgid "Default list zoom level"
@@ -644,7 +633,6 @@ msgid "Use tree view"
 msgstr "Usar vista de árbol"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:68
-#, fuzzy
 #| msgid ""
 #| "Whether a tree should be used for list view navigation instead of a flat "
 #| "list"
@@ -652,8 +640,8 @@ msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
 msgstr ""
-"Indica si un árbol se debe usar para navegación en vista de lista en lugar "
-"de una lista plana"
+"Indica si se debe usar un árbol para navegación en vista de lista en lugar "
+"de una lista plana."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:69
 msgctxt "desktop-font"
@@ -686,7 +674,6 @@ msgid "Trash icon visible on desktop"
 msgstr "Icono de la papelera visible en el escritorio"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:75
-#, fuzzy
 #| msgid ""
 #| "If this is set to true, an icon linking to the trash will be put on the "
 #| "desktop."
@@ -694,8 +681,8 @@ msgid ""
 "If this is set to true, an icon linking to the Trash will be put on the "
 "desktop."
 msgstr ""
-"Si se establece a cierto, se colocará un icono en el escritorio enlazando "
-"con la papelera."
+"Si se establece a cierto, se colocará un icono en el escritorio enlazado con "
+"la papelera."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:76
 msgid "Show mounted volumes on the desktop"
@@ -744,13 +731,11 @@ msgid "'Trash'"
 msgstr "«Papelera»"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:84
-#, fuzzy
 #| msgid "Desktop trash icon name"
 msgid "Desktop Trash icon name"
 msgstr "Nombre del icono de la papelera del escritorio"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:85
-#, fuzzy
 #| msgid ""
 #| "This name can be set if you want a custom name for the trash icon on the "
 #| "desktop."
@@ -806,10 +791,9 @@ msgstr ""
 
 # libnautilus-private/nautilus-global-preferences.c:622
 #: ../data/org.gnome.nautilus.gschema.xml.h:92
-#, fuzzy
 #| msgid "The geometry string for a navigation window."
 msgid "The geometry string for a navigation window"
-msgstr "La cadena de geometría para una ventana de navegación."
+msgstr "La cadena de geometría para una ventana de navegación"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:93
 msgid ""
@@ -820,10 +804,9 @@ msgstr ""
 "las ventanas de navegación."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:94
-#, fuzzy
 #| msgid "Whether the navigation window should be maximized."
 msgid "Whether the navigation window should be maximized"
-msgstr "Indica si la ventana de navegación debería maximizarse."
+msgstr "Indica si la ventana de navegación debería maximizarse"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:95
 msgid "Whether the navigation window should be maximized by default."
@@ -3837,10 +3820,9 @@ msgstr[1] "Esto abrirá %d ventanas separadas."
 # src/file-manager/fm-properties-window.c:844
 #: ../src/nautilus-mime-actions.c:95
 #: ../src/resources/ui/nautilus-search-popover.ui.h:11
-#, fuzzy
 #| msgid "nothing"
 msgid "Anything"
-msgstr "nada"
+msgstr "Cualquier cosa"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
@@ -4384,41 +4366,37 @@ msgid "_Open"
 msgstr "_Abrir"
 
 #: ../src/nautilus-query-editor.c:123
-#, fuzzy
 #| msgid "Searching for network locations"
 msgid "Searching locations only"
-msgstr "Buscando ubicaciones de red"
+msgstr "Buscando sólo ubicaciones"
 
 #: ../src/nautilus-query-editor.c:125
 msgid "Searching devices only"
-msgstr ""
+msgstr "Buscando sólo dispositivos"
 
 #: ../src/nautilus-query-editor.c:127
-#, fuzzy
 #| msgid "Searching for network locations"
 msgid "Searching network locations only"
-msgstr "Buscando ubicaciones de red"
+msgstr "Buscando sólo ubicaciones de red"
 
 #: ../src/nautilus-query-editor.c:130
-#, fuzzy
 #| msgid "Remote location — only searching the current folder"
 msgid "Remote location - only searching the current folder"
 msgstr "Ubicación remota: buscando solo en la carpeta actual"
 
 #: ../src/nautilus-query-editor.c:132
-#, fuzzy
 #| msgid "Remote location — only searching the current folder"
 msgid "Only searching the current folder"
-msgstr "Ubicación remota: buscando solo en la carpeta actual"
+msgstr "Buscando solo en la carpeta actual"
 
 #: ../src/nautilus-search-popover.c:282
 msgid "Show a list to select the date"
-msgstr ""
+msgstr "Mostrar una lista para seleccionar la fecha"
 
 #: ../src/nautilus-search-popover.c:288
 #: ../src/resources/ui/nautilus-search-popover.ui.h:5
 msgid "Show a calendar to select the date"
-msgstr ""
+msgstr "Mostrar un calendario para seleccionar la fecha"
 
 #. Other types
 #: ../src/nautilus-search-popover.c:472
@@ -4439,10 +4417,9 @@ msgstr "Seleccionar"
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
 #: ../src/nautilus-search-popover.c:621
 #: ../src/resources/ui/nautilus-search-popover.ui.h:3
-#, fuzzy
 #| msgid "Select type"
 msgid "Select Dates…"
-msgstr "Seleccione el tipo"
+msgstr "Seleccionar fechas…"
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
@@ -4541,7 +4518,7 @@ msgstr "Acceder a sus archivos y organizarlos."
 #: ../src/nautilus-window.c:2645
 msgid "translator-credits"
 msgstr ""
-"Daniel Mustieles <daniel.musiteles@gmail.com>, 2010 - 2015\n"
+"Daniel Mustieles <daniel.musiteles@gmail.com>, 2010 - 2016\n"
 "Jorge González <jorgegonz@svn.gnome.org>, 2007-2010, 2012\n"
 "Francisco Javier F. Serrador <serrador@cvs.gnome.org>, 2003-2006\n"
 "Pablo Gonzalo del Campo <pablodc@bigfoot.com>, 2000-2004\n"
@@ -5439,17 +5416,14 @@ msgid "Ask before _emptying the Trash or deleting files"
 msgstr "Preguntar antes de vacia_r la papelera o eliminar archivos"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
-#, fuzzy
 #| msgid "Drag and drop is only supported on local file systems."
 msgid "Search subfolders on local file systems"
-msgstr ""
-"Arrastrar y soltar sólo está soportado en los sistemas de archivos locales."
+msgstr "Buscar subcarpetas en sistemas de archivos locales"
 
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
-#, fuzzy
 #| msgid "Sort _folders before files"
 msgid "Search subfolders on remote file systems"
-msgstr "Colocar las carpetas _antes que los archivos"
+msgstr "Buscar subcarpetas en sistemas de archivos remotos"
 
 # src/nautilus-location-bar.c:401
 #: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
@@ -5523,39 +5497,35 @@ msgid "Select a date"
 msgstr "Seleccione una fecha"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:4
-#, fuzzy
 #| msgid "Copy the current selection to the desktop"
 msgid "Clear the currently selected date"
-msgstr "Copiar la selección actual al escritorio"
+msgstr "Limpiar la fecha seleccionada actualmente"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:6
 msgid "Around…"
-msgstr ""
+msgstr "Alrededor de…"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
-#, fuzzy
 #| msgid "Last modified:"
 msgid "Last modified"
-msgstr "Última modificación:"
+msgstr "Última modificación"
 
 # src/file-manager/fm-directory-view.c:2154
 #: ../src/resources/ui/nautilus-search-popover.ui.h:8
-#, fuzzy
 #| msgid "Last _Trashed"
 msgid "Last used"
-msgstr "Último _eliminado"
+msgstr "Último uso"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:9
 msgid "What"
 msgstr "Qué"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:10
-#, fuzzy
 #| msgid "This file cannot be started"
 msgid "Which file types will be searched"
-msgstr "Este archivo no se puede iniciar"
+msgstr "Qúe tipos de archivos se buscarán"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:13
 #| msgid "Text"
@@ -5563,10 +5533,9 @@ msgid "Full Text"
 msgstr "Texto completo"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:14
-#, fuzzy
 #| msgid "Some of the files could not be added as emblems."
 msgid "Search on the file content and name"
-msgstr "Algunos de los archivos no han podido añadirse como emblemas."
+msgstr "Buscar en el nombre y en el contenido del archivo"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:15
 #| msgid "File name"
@@ -5575,10 +5544,9 @@ msgstr "Nombre de archivo"
 
 # libnautilus-private/nautilus-global-preferences.c:727
 #: ../src/resources/ui/nautilus-search-popover.ui.h:16
-#, fuzzy
 #| msgid "Search for files by file name only"
 msgid "Search only on the file name"
-msgstr "Buscar archivos sólo por nombre"
+msgstr "Buscar sólo en el nombre del archivo"
 
 #: ../src/resources/ui/nautilus-toolbar-action-menu.ui.h:2
 msgid "New _Tab"
