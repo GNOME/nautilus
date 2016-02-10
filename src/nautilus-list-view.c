@@ -1535,6 +1535,7 @@ trash_orig_path_cell_data_func (GtkTreeViewColumn *column,
 #define SMALL_ZOOM_ICON_PADDING 0
 #define STANDARD_ZOOM_ICON_PADDING 6
 #define LARGE_ZOOM_ICON_PADDING 6
+#define LARGER_ZOOM_ICON_PADDING 6
 
 static gint
 nautilus_list_view_get_icon_padding_for_zoom_level (NautilusListZoomLevel zoom_level)
@@ -1546,6 +1547,8 @@ nautilus_list_view_get_icon_padding_for_zoom_level (NautilusListZoomLevel zoom_l
 		return STANDARD_ZOOM_ICON_PADDING;
 	case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
 		return LARGE_ZOOM_ICON_PADDING;
+	case NAUTILUS_LIST_ZOOM_LEVEL_LARGER:
+		return LARGER_ZOOM_ICON_PADDING;
 	default:
 		g_assert_not_reached ();
 	}
@@ -2028,7 +2031,7 @@ get_default_zoom_level (void) {
 						  NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL);
 
 	if (default_zoom_level <  NAUTILUS_LIST_ZOOM_LEVEL_SMALL
-	    || default_zoom_level > NAUTILUS_LIST_ZOOM_LEVEL_LARGE) {
+	    || default_zoom_level > NAUTILUS_LIST_ZOOM_LEVEL_LARGER) {
 		default_zoom_level = NAUTILUS_LIST_ZOOM_LEVEL_STANDARD;
 	}
 
@@ -2723,7 +2726,7 @@ nautilus_list_view_set_zoom_level (NautilusListView *view,
 
 	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
 	g_return_if_fail (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
-			  new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE);
+			  new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGER);
 
 	if (view->details->zoom_level == new_level) {
 		return;
@@ -2752,7 +2755,7 @@ nautilus_list_view_bump_zoom_level (NautilusFilesView *view, int zoom_increment)
 	new_level = list_view->details->zoom_level + zoom_increment;
 
 	if (new_level >= NAUTILUS_LIST_ZOOM_LEVEL_SMALL &&
-	    new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGE) {
+	    new_level <= NAUTILUS_LIST_ZOOM_LEVEL_LARGER) {
 		nautilus_list_view_zoom_to_level (view, new_level);
 	}
 }
@@ -2770,7 +2773,7 @@ nautilus_list_view_can_zoom_in (NautilusFilesView *view)
 {
 	g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), FALSE);
 
-	return NAUTILUS_LIST_VIEW (view)->details->zoom_level < NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
+	return NAUTILUS_LIST_VIEW (view)->details->zoom_level < NAUTILUS_LIST_ZOOM_LEVEL_LARGER;
 }
 
 static gboolean 
