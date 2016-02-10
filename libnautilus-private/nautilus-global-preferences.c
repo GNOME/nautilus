@@ -45,27 +45,6 @@ GSettings *gnome_background_preferences;
 GSettings *gnome_interface_preferences;
 GSettings *gnome_privacy_preferences;
 
-/*
- * Public functions
- */
-char *
-nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void)
-{
-	int preference_value;
-	const char *viewer_iid;
-
-	preference_value =
-		g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
-
-	if (preference_value == NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW) {
-		viewer_iid = NAUTILUS_LIST_VIEW_ID;
-	} else {
-		viewer_iid = NAUTILUS_CANVAS_VIEW_ID;
-	}
-
-	return g_strdup (viewer_iid);
-}
-
 void
 nautilus_global_preferences_init (void)
 {

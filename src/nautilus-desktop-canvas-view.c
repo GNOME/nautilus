@@ -216,10 +216,10 @@ desktop_canvas_view_property_filter (GdkXEvent *gdk_xevent,
 	return GDK_FILTER_CONTINUE;
 }
 
-static const char *
+static guint
 real_get_id (NautilusFilesView *view)
 {
-	return NAUTILUS_DESKTOP_VIEW_ID;
+	return NAUTILUS_VIEW_DESKTOP_ID;
 }
 
 static void

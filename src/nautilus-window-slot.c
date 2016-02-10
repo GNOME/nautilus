@@ -1,4 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*-
 
    nautilus-window-slot.c: Nautilus window slot
  
@@ -122,8 +122,8 @@ struct NautilusWindowSlotDetails {
 	GCancellable *mount_cancellable;
 	GError *mount_error;
 	gboolean tried_mount;
-        gchar *view_mode_before_search;
-        gchar *view_mode_before_places;
+        gint view_mode_before_search;
+        gint view_mode_before_places;
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
@@ -135,9 +135,9 @@ static void hide_query_editor (NautilusWindowSlot *slot);
 static void nautilus_window_slot_sync_actions (NautilusWindowSlot *slot);
 static void nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot);
 static void nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot);
-static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot, const char *iid);
+static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot, guint id);
 static NautilusView* nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot, GFile *location);
-static void nautilus_window_slot_set_content_view (NautilusWindowSlot *slot, const char	*id);
+static void nautilus_window_slot_set_content_view (NautilusWindowSlot *slot, guint id);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *slot, gboolean loading);
 char * nautilus_window_slot_get_location_uri (NautilusWindowSlot *slot);
 static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *slot,
@@ -163,56 +163,47 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
 	 * for the desktop window.
 	 */
         if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                view = NAUTILUS_VIEW (nautilus_files_view_new (NAUTILUS_DESKTOP_VIEW_ID, slot));
+                view = NAUTILUS_VIEW (nautilus_files_view_new (NAUTILUS_VIEW_DESKTOP_ID, slot));
         } else if (nautilus_file_is_other_locations (file)) {
                 view = NAUTILUS_VIEW (nautilus_places_view_new ());
 
                 /* Save the current view, so we can go back after places view */
                 if (slot->details->content_view && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)) {
-                        g_clear_pointer (&slot->details->view_mode_before_places, g_free);
-                        slot->details->view_mode_before_places = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
+                        slot->details->view_mode_before_places = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view));
                 }
         } else {
-                gchar *view_id;
+                guint view_id;
 
-                view_id = NULL;
+                view_id = NAUTILUS_VIEW_INVALID_ID;
 
-                /* If we are in search, try to use by default list view. This will be deactivated
-                 * if the user manually switch to a diferent view mode */
+                /* If we are in search, try to use by default list view. */
                 if (nautilus_file_is_in_search (file)) {
-                        if (g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH)) {
-                                /* If it's already set, is because we already made the change to search mode,
-                                 * so the view mode of the current view will be the one search is using,
-                                 * which is not the one we are interested in */
-                                if (slot->details->view_mode_before_search == NULL) {
-                                        slot->details->view_mode_before_search = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
-                                }
-                                view_id = g_strdup (NAUTILUS_LIST_VIEW_ID);
-                        } else {
-                                g_free (slot->details->view_mode_before_search);
-                                slot->details->view_mode_before_search = NULL;
+                        /* If it's already set, is because we already made the change to search mode,
+                         * so the view mode of the current view will be the one search is using,
+                         * which is not the one we are interested in */
+                        if (slot->details->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID) {
+                                slot->details->view_mode_before_search = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view));
                         }
-                }
-
-                /* If there is already a view, just use the view mode that it's currently using, or
-                 * if we were on search before, use what we were using before entering
-                 * search mode */
-	        if (slot->details->content_view != NULL && view_id == NULL) {
-                        if (slot->details->view_mode_before_search != NULL) {
+                        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
+                } else if (slot->details->content_view != NULL) {
+                        /* If there is already a view, just use the view mode that it's currently using, or
+                         * if we were on search before, use what we were using before entering
+                         * search mode */
+                        if (slot->details->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID) {
                                 view_id = slot->details->view_mode_before_search;
-                                slot->details->view_mode_before_search = NULL;
+                                slot->details->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
                         } else if (NAUTILUS_IS_PLACES_VIEW (slot->details->content_view)) {
                                 view_id = slot->details->view_mode_before_places;
-                                slot->details->view_mode_before_places = NULL;
+                                slot->details->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
                         } else {
-		                view_id = g_strdup (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)));
+		                view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view));
                         }
 	        }
 
                 /* If there is not previous view in this slot, use the default view mode
                  * from preferences */
-	        if (view_id == NULL) {
-		        view_id = nautilus_global_preferences_get_default_folder_viewer_preference_as_iid ();
+	        if (view_id == NAUTILUS_VIEW_INVALID_ID) {
+		        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
 	        }
 
                 /* Try to reuse the current view */
@@ -221,8 +212,6 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
                 } else {
                         view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, slot));
                 }
-
-                g_free (view_id);
         }
 
         nautilus_file_unref (file);
@@ -232,16 +221,16 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *slot,
 
 static gboolean
 nautilus_window_slot_content_view_matches (NautilusWindowSlot *slot,
-                                           const char         *iid)
+                                           guint                id)
 {
 	if (slot->details->content_view == NULL) {
 		return FALSE;
 	}
 
-        if (!iid && NAUTILUS_IS_PLACES_VIEW (slot->details->content_view)) {
+        if (id == NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_PLACES_VIEW (slot->details->content_view)) {
                 return TRUE;
-        } else if (iid && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)){
-                return g_strcmp0 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)), iid) == 0;
+        } else if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (slot->details->content_view)){
+                return nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (slot->details->content_view)) == id;
         } else {
                 return FALSE;
         }
@@ -304,7 +293,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *slot)
         action =  g_action_map_lookup_action (G_ACTION_MAP (slot->details->slot_action_group), "files-view-mode");
         if (NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (slot)) &&
             !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (slot))) {
-                variant = g_variant_new_string (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (slot))));
+                variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (slot))));
                 g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
                 g_action_change_state (action, variant);
         } else {
@@ -667,45 +656,29 @@ action_files_view_mode (GSimpleAction *action,
 		        GVariant      *value,
 		        gpointer       user_data)
 {
-        const gchar *name;
         NautilusWindowSlot *slot;
+        const gchar *preferences_key;
+        guint view_id;
 
-        name =  g_variant_get_string (value, NULL);
+        view_id =  g_variant_get_uint32 (value);
         slot = NAUTILUS_WINDOW_SLOT (user_data);
 
         if (!NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (slot)))
-          return;
+                return;
 
-        nautilus_window_slot_set_content_view (slot, name);
-        if (g_strcmp0 (name, "list") == 0) {
-                    /* If this change is caused because of the automatic list view
-                     * switch for search, don't set as default list view */
-                    if (!(nautilus_view_is_searching (nautilus_window_slot_get_current_view (slot))  &&
-                          g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH))) {
-                            g_settings_set_enum (nautilus_preferences,
-                                                 NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-                                                 NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW);
-                    }
-        } else if (g_strcmp0 (name, "grid") == 0) {
-                    /* If the user manually changed the view mode to grid, disable the automatic
-                     * switch to list view on search */
-                    if (nautilus_view_is_searching (nautilus_window_slot_get_current_view (slot))) {
-                          g_settings_set_boolean (nautilus_preferences,
-                                                  NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH,
-                                                  FALSE);
-                    }
-                    g_settings_set_enum (nautilus_preferences,
-                                         NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER,
-                                         NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW);
-        } else {
-                g_assert_not_reached ();
-        }
+        nautilus_window_slot_set_content_view (slot, view_id);
+        preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (slot)) ?
+                          NAUTILUS_PREFERENCES_SEARCH_VIEW :
+                          NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
+
+        g_settings_set_enum (nautilus_preferences, preferences_key, view_id);
 
         g_simple_action_set_state (action, value);
 }
 
 const GActionEntry slot_entries[] = {
-        { "files-view-mode", NULL, "s", "''", action_files_view_mode },
+        /* 4 is NAUTILUS_VIEW_INVALID_ID */
+        { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
         { "search-visible", NULL, NULL, "false", action_search_visible },
 };
 
@@ -727,8 +700,8 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
         gtk_widget_insert_action_group (GTK_WIDGET (slot),
                                         "slot",
                                         G_ACTION_GROUP (slot->details->slot_action_group));
-        nautilus_application_add_accelerator (app, "slot.files-view-mode('list')", "<control>1");
-        nautilus_application_add_accelerator (app, "slot.files-view-mode('grid')", "<control>2");
+        nautilus_application_add_accelerator (app, "slot.files-view-mode(1)", "<control>1");
+        nautilus_application_add_accelerator (app, "slot.files-view-mode(0)", "<control>2");
         nautilus_application_add_accelerator (app, "slot.search-visible", "<control>f");
 }
 
@@ -1544,19 +1517,18 @@ free_location_change (NautilusWindowSlot *slot)
         }
 }
 
-void
+static void
 nautilus_window_slot_set_content_view (NautilusWindowSlot *slot,
-				       const char *id)
+                                       guint                id)
 {
         NautilusFilesView *view;
         GList *selection;
 	char *uri;
 
 	g_assert (slot != NULL);
-	g_assert (id != NULL);
 
 	uri = nautilus_window_slot_get_location_uri (slot);
-	DEBUG ("Change view of window %s to %s", uri, id);
+	DEBUG ("Change view of window %s to %d", uri, id);
 	g_free (uri);
 
 	if (nautilus_window_slot_content_view_matches (slot, id)) {
@@ -2247,11 +2219,6 @@ nautilus_window_slot_dispose (GObject *object)
 	nautilus_window_slot_set_viewed_file (slot, NULL);
 
         g_clear_object (&slot->details->location);
-
-        if (slot->details->view_mode_before_search) {
-                g_free (slot->details->view_mode_before_search);
-                slot->details->view_mode_before_search = NULL;
-        }
 
 	nautilus_file_list_free (slot->details->pending_selection);
 	slot->details->pending_selection = NULL;
