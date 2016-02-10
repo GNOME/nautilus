@@ -98,7 +98,10 @@
  * where a 76px canvas item would only take one.
  * Canvas items are then centered in the extra available space.
  */
-#define STANDARD_ICON_GRID_WIDTH 80
+#define SMALL_ICON_GRID_WIDTH 58
+#define STANDARD_ICON_GRID_WIDTH 56
+#define LARGE_ICON_GRID_WIDTH 56
+#define LARGER_ICON_GRID_WIDTH 64
 
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10
@@ -344,6 +347,21 @@ icon_set_position (NautilusCanvasIcon *icon,
 	icon->y = y;
 }
 
+static guint
+nautilus_canvas_container_get_grid_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
+{
+	switch (zoom_level) {
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL:
+		return SMALL_ICON_GRID_WIDTH;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
+		return STANDARD_ICON_GRID_WIDTH;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
+		return LARGE_ICON_GRID_WIDTH;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+		return LARGER_ICON_GRID_WIDTH;
+	}
+	g_return_val_if_reached (STANDARD_ICON_GRID_WIDTH);
+}
 
 guint
 nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
@@ -355,6 +373,8 @@ nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel 
 		return NAUTILUS_CANVAS_ICON_SIZE_STANDARD;
 	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
 		return NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+		return NAUTILUS_CANVAS_ICON_SIZE_LARGER;
 	}
 	g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
 }
@@ -1252,7 +1272,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 	/* Lay out icons a line at a time. */
 	canvas_width = CANVAS_WIDTH(container, allocation);
 
-	grid_width = STANDARD_ICON_GRID_WIDTH;
+	grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
 	icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
 	line_width = 0;
@@ -6244,8 +6264,8 @@ nautilus_canvas_container_set_zoom_level (NautilusCanvasContainer *container, in
 	pinned_level = new_level;
 	if (pinned_level < NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL) {
 		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
-	} else if (pinned_level > NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE) {
-		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE;
+	} else if (pinned_level > NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER) {
+		pinned_level = NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER;
 	}
 
         if (pinned_level == details->zoom_level) {

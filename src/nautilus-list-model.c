@@ -147,6 +147,7 @@ nautilus_list_model_get_column_type (GtkTreeModel *tree_model, int index)
 	case NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN:
 	case NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN:
 	case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
+	case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
 		return CAIRO_GOBJECT_TYPE_SURFACE;
 	case NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
 		return G_TYPE_BOOLEAN;
@@ -257,6 +258,8 @@ nautilus_list_model_get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_lev
 		return NAUTILUS_LIST_ICON_SIZE_STANDARD;
 	case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
 		return NAUTILUS_LIST_ICON_SIZE_LARGE;
+	case NAUTILUS_LIST_ZOOM_LEVEL_LARGER:
+		return NAUTILUS_LIST_ICON_SIZE_LARGER;
 	}
 	g_return_val_if_reached (NAUTILUS_LIST_ICON_SIZE_STANDARD);
 }
@@ -296,6 +299,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model, GtkTreeIter *iter, int 
 	case NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN:
 	case NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN:
 	case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
+	case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
 		g_value_init (value, CAIRO_GOBJECT_TYPE_SURFACE);
 
 		if (file != NULL) {
@@ -1256,6 +1260,8 @@ nautilus_list_model_get_zoom_level_from_column_id (int column)
 		return NAUTILUS_LIST_ZOOM_LEVEL_STANDARD;
 	case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
 		return NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
+	case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
+		return NAUTILUS_LIST_ZOOM_LEVEL_LARGER;
 	}
 
 	g_return_val_if_reached (NAUTILUS_LIST_ZOOM_LEVEL_STANDARD);
@@ -1271,6 +1277,8 @@ nautilus_list_model_get_column_id_from_zoom_level (NautilusListZoomLevel zoom_le
 		return NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN;
 	case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
 		return NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN;
+	case NAUTILUS_LIST_ZOOM_LEVEL_LARGER:
+		return NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN;
 	}
 
 	g_return_val_if_reached (NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN);

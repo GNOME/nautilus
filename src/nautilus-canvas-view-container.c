@@ -203,6 +203,7 @@ nautilus_canvas_view_container_get_icon_text_attribute_names (NautilusCanvasCont
 		1,	/* NAUTILUS_ZOOM_LEVEL_SMALL */
 		2,	/* NAUTILUS_ZOOM_LEVEL_STANDARD */
 		3,	/* NAUTILUS_ZOOM_LEVEL_LARGE */
+		3,	/* NAUTILUS_ZOOM_LEVEL_LARGER */
 	};
 
 	piece_count = pieces_by_level[nautilus_canvas_container_get_zoom_level (container)];
