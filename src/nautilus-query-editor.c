@@ -81,7 +81,6 @@ settings_search_is_recursive (NautilusQueryEditor *editor)
 {
         NautilusQueryEditorPrivate *priv;
         NautilusFile *file;
-        gchar *recursive_search_key;
         gboolean recursive;
 
         priv = nautilus_query_editor_get_instance_private (editor);
@@ -92,13 +91,13 @@ settings_search_is_recursive (NautilusQueryEditor *editor)
         file = nautilus_file_get (priv->location);
 
         if (nautilus_file_is_remote (file)) {
-                recursive_search_key = "remote-recursive-search";
+                recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
         } else {
-                recursive_search_key = "local-recursive-search";
+                recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
+                            g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
         }
 
         nautilus_file_unref (file);
-        recursive = g_settings_get_boolean (nautilus_preferences, recursive_search_key);
 
         return recursive;
 }
@@ -339,13 +338,7 @@ create_query (NautilusQueryEditor *editor)
         file = nautilus_file_get (priv->location);
         query = nautilus_query_new ();
 
-        if (nautilus_file_is_remote (file)) {
-                recursive = g_settings_get_boolean (nautilus_preferences,
-                                                    "remote-recursive-search");
-        } else {
-                recursive = g_settings_get_boolean (nautilus_preferences,
-                                                    "local-recursive-search");
-        }
+        recursive = settings_search_is_recursive (editor);
 
         nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (priv->entry)));
         nautilus_query_set_location (query, priv->location);
@@ -397,12 +390,7 @@ static void
 nautilus_query_editor_init (NautilusQueryEditor *editor)
 {
         g_signal_connect (nautilus_preferences,
-                          "changed::remote-recursive-search",
-                          G_CALLBACK (recursive_search_preferences_changed),
-                          editor);
-
-        g_signal_connect (nautilus_preferences,
-                          "changed::local-recursive-search",
+                          "changed::recursive-search",
                           G_CALLBACK (recursive_search_preferences_changed),
                           editor);
 }

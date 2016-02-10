@@ -282,7 +282,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 		return;
 	}
 
-	recursive = g_settings_get_boolean (nautilus_preferences, "local-recursive-search");
+	recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
+                    g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
 	tracker->details->recursive = recursive;
 
 	query_text = nautilus_query_get_text (tracker->details->query);

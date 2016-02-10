@@ -1,9 +1,10 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
-/* nautilus-preferences-dialog.c - Functions to create and show the nautilus
-   preference dialog.
+/* nautilus-preferences-window.c - Functions to create and show the nautilus
+   preference window.
 
    Copyright (C) 2002 Jan Arne Petersen
+   Copyright (C) 2016 Carlos Soriano <csoriano@gnome.com>
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -24,7 +25,7 @@
 
 #include <config.h>
 
-#include "nautilus-preferences-dialog.h"
+#include "nautilus-preferences-window.h"
 
 #include <string.h>
 #include <time.h>
@@ -67,7 +68,7 @@
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
   "preview_image_size_combobox"
 
-static const char *const preview_values[] = {"always", "local-only", "never",
+static const char *const speed_tradeoff_values[] = {"always", "local-only", "never",
                                              NULL};
 
 static const char *const click_behavior_components[] = {
@@ -82,6 +83,15 @@ static const char *const executable_text_components[] = {
 static const char *const executable_text_values[] = {"launch", "display", "ask",
                                                      NULL};
 
+static const char *const recursive_search_components[] = {
+    "search_recursive_only_this_computer_radiobutton", "search_recursive_all_locations_radiobutton", "search_recursive_never_radiobutton", NULL};
+
+static const char *const thumbnails_components[] = {
+    "thumbnails_only_this_computer_radiobutton", "thumbnails_all_files_radiobutton", "thumbnails_never_radiobutton", NULL};
+
+static const char *const count_components[] = {
+    "count_only_this_computer_radiobutton", "count_all_files_radiobutton", "count_never_radiobutton", NULL};
+
 static const guint64 thumbnail_limit_values[] = {
     102400,   512000,    1048576,    3145728,     5242880,
     10485760, 104857600, 1073741824, 2147483648U, 4294967295U};
@@ -89,9 +99,9 @@ static const guint64 thumbnail_limit_values[] = {
 static const char *const icon_captions_components[] = {
     "captions_0_combobox", "captions_1_combobox", "captions_2_combobox", NULL};
 
-static GtkWidget *preferences_dialog = NULL;
+static GtkWidget *preferences_window = NULL;
 
-static void nautilus_preferences_dialog_size_group_create(GtkBuilder *builder,
+static void nautilus_preferences_window_size_group_create(GtkBuilder *builder,
                                                           char *prefix,
                                                           int items) {
   GtkSizeGroup *size_group;
@@ -254,7 +264,7 @@ static void update_icon_captions_from_settings(GtkBuilder *builder) {
 }
 
 static void
-nautilus_preferences_dialog_setup_icon_caption_page(GtkBuilder *builder) {
+nautilus_preferences_window_setup_icon_caption_page(GtkBuilder *builder) {
   GList *columns;
   int i;
   gboolean writable;
@@ -311,7 +321,7 @@ static void use_default_callback(NautilusColumnChooser *chooser,
 }
 
 static void
-nautilus_preferences_dialog_setup_list_column_page(GtkBuilder *builder) {
+nautilus_preferences_window_setup_list_column_page(GtkBuilder *builder) {
   GtkWidget *chooser;
   GtkWidget *box;
 
@@ -464,13 +474,9 @@ static void set_gtk_filechooser_sort_first(GObject *object, GParamSpec *pspec) {
       gtk_toggle_button_get_active(GTK_TOGGLE_BUTTON(object)));
 }
 
-static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
-                                              GtkWindow *window) {
-  GtkWidget *dialog;
-
-  /* setup UI */
-  nautilus_preferences_dialog_size_group_create(builder, "captions_label", 3);
-  nautilus_preferences_dialog_size_group_create(builder, "preview_label", 3);
+static void nautilus_preferences_window_setup(GtkBuilder *builder,
+                                              GtkWindow *parent_window) {
+  GtkWidget *window;
 
   /* setup preferences */
   bind_builder_bool(builder, nautilus_preferences,
@@ -493,21 +499,6 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
   bind_builder_bool(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
-  bind_builder_bool(builder, nautilus_preferences,
-                    NAUTILUS_PREFERENCES_DIALOG_LOCAL_RECURSIVE_SEARCH_WIDGET,
-                    NAUTILUS_PREFERENCES_LOCAL_RECURSIVE_SEARCH);
-  bind_builder_bool(builder, nautilus_preferences,
-                    NAUTILUS_PREFERENCES_DIALOG_REMOTE_RECURSIVE_SEARCH_WIDGET,
-                    NAUTILUS_PREFERENCES_REMOTE_RECURSIVE_SEARCH);
-
-  bind_builder_enum(builder, nautilus_preferences,
-                    NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FILES_WIDGET,
-                    NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
-                    (const char **)preview_values);
-  bind_builder_enum(builder, nautilus_preferences,
-                    NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FOLDER_WIDGET,
-                    NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-                    (const char **)preview_values);
 
   bind_builder_radio(
       builder, nautilus_preferences, (const char **)click_behavior_components,
@@ -516,6 +507,18 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
                      (const char **)executable_text_components,
                      NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
                      (const char **)executable_text_values);
+  bind_builder_radio(builder, nautilus_preferences,
+                     (const char **)recursive_search_components,
+                     NAUTILUS_PREFERENCES_RECURSIVE_SEARCH,
+                     (const char **)speed_tradeoff_values);
+  bind_builder_radio(builder, nautilus_preferences,
+                     (const char **)thumbnails_components,
+                     NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
+                     (const char **)speed_tradeoff_values);
+  bind_builder_radio(builder, nautilus_preferences,
+                     (const char **)count_components,
+                     NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+                     (const char **)speed_tradeoff_values);
 
   bind_builder_uint_enum(builder, nautilus_preferences,
                          NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET,
@@ -523,41 +526,36 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
                          thumbnail_limit_values,
                          G_N_ELEMENTS(thumbnail_limit_values));
 
-  nautilus_preferences_dialog_setup_icon_caption_page(builder);
-  nautilus_preferences_dialog_setup_list_column_page(builder);
+  nautilus_preferences_window_setup_icon_caption_page(builder);
+  nautilus_preferences_window_setup_list_column_page(builder);
 
   /* UI callbacks */
-  dialog = GTK_WIDGET(gtk_builder_get_object(builder, "preferences_dialog"));
-  g_signal_connect(dialog, "response", G_CALLBACK(gtk_widget_destroy), NULL);
+  window = GTK_WIDGET(gtk_builder_get_object(builder, "preferences_window"));
+  preferences_window = window;
 
-  gtk_window_set_icon_name(GTK_WINDOW(dialog), "system-file-manager");
+  gtk_window_set_icon_name(GTK_WINDOW(preferences_window), "system-file-manager");
 
-  if (window) {
-    gtk_window_set_screen(GTK_WINDOW(dialog), gtk_window_get_screen(window));
-  }
+  g_object_add_weak_pointer(G_OBJECT(window), (gpointer *)&preferences_window);
 
-  preferences_dialog = dialog;
-  g_object_add_weak_pointer(G_OBJECT(dialog), (gpointer *)&preferences_dialog);
-  gtk_window_set_transient_for(GTK_WINDOW(dialog), window);
-  gtk_window_set_modal(GTK_WINDOW(dialog), TRUE);
+  gtk_window_set_transient_for(GTK_WINDOW(preferences_window), parent_window);
 
-  gtk_widget_show(dialog);
+  gtk_widget_show(preferences_window);
 }
 
-void nautilus_preferences_dialog_show(GtkWindow *window) {
+void nautilus_preferences_window_show(GtkWindow *window) {
   GtkBuilder *builder;
 
-  if (preferences_dialog != NULL) {
-    gtk_window_present(GTK_WINDOW(preferences_dialog));
+  if (preferences_window != NULL) {
+    gtk_window_present(GTK_WINDOW(preferences_window));
     return;
   }
 
   builder = gtk_builder_new();
 
   gtk_builder_add_from_resource(
-      builder, "/org/gnome/nautilus/ui/nautilus-preferences-dialog.ui", NULL);
+      builder, "/org/gnome/nautilus/ui/nautilus-preferences-window.ui", NULL);
 
-  nautilus_preferences_dialog_setup(builder, window);
+  nautilus_preferences_window_setup(builder, window);
 
   g_object_unref(builder);
 }

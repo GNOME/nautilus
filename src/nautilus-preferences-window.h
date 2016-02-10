@@ -1,9 +1,10 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
+/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 
-/* nautilus-preferences-dialog.h - Function to show the nautilus preference
-   dialog.
+/* nautilus-preferences-window.h - Function to show the nautilus preference
+   window.
 
    Copyright (C) 2002 Jan Arne Petersen
+   Copyright (C) 2016 Carlos Soriano <csoriano@gnome.org>
 
    The Gnome Library is free software; you can redistribute it and/or
    modify it under the terms of the GNU Library General Public License as
@@ -22,16 +23,16 @@
    Authors: Jan Arne Petersen <jpetersen@uni-bonn.de>
 */
 
-#ifndef NAUTILUS_PREFERENCES_DIALOG_H
-#define NAUTILUS_PREFERENCES_DIALOG_H
+#ifndef NAUTILUS_PREFERENCES_WINDOW_H
+#define NAUTILUS_PREFERENCES_WINDOW_H
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-void nautilus_preferences_dialog_show(GtkWindow *window);
+void nautilus_preferences_window_show(GtkWindow *window);
 
 G_END_DECLS
 
-#endif /* NAUTILUS_PREFERENCES_DIALOG_H */
+#endif /* NAUTILUS_PREFERENCES_WINDOW_H */
