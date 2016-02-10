@@ -223,10 +223,10 @@ nautilus_empty_view_sort_directories_first_changed (NautilusFilesView *view)
 {
 }
 
-static const char *
+static guint
 nautilus_empty_view_get_id (NautilusFilesView *view)
 {
-	return NAUTILUS_EMPTY_VIEW_ID;
+	return NAUTILUS_VIEW_EMPTY_ID;
 }
 
 static GIcon*

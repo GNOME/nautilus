@@ -78,13 +78,6 @@ typedef enum
 /* The default folder viewer - one of the two enums below */
 #define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"default-folder-viewer"
 
-enum
-{
-	NAUTILUS_DEFAULT_FOLDER_VIEWER_ICON_VIEW,
-	NAUTILUS_DEFAULT_FOLDER_VIEWER_LIST_VIEW,
-	NAUTILUS_DEFAULT_FOLDER_VIEWER_OTHER
-};
-
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 
@@ -159,8 +152,8 @@ typedef enum
 /* Move to trash shorcut changed dialog */
 #define NAUTILUS_PREFERENCES_SHOW_MOVE_TO_TRASH_SHORTCUT_CHANGED_DIALOG "show-move-to-trash-shortcut-changed-dialog"
 
-/* Switch to list view while searching */
-#define NAUTILUS_PREFERENCES_LIST_VIEW_ON_SEARCH "list-view-on-search"
+/* Default view when searching */
+#define NAUTILUS_PREFERENCES_SEARCH_VIEW "search-view"
 
 /* Search behaviour */
 #define NAUTILUS_PREFERENCES_LOCAL_RECURSIVE_SEARCH "local-recursive-search"
@@ -171,7 +164,6 @@ typedef enum
 #define NAUTILUS_PREFERENCES_SHOW_CREATE_LINK "show-create-link"
 
 void nautilus_global_preferences_init                      (void);
-char *nautilus_global_preferences_get_default_folder_viewer_preference_as_iid (void);
 
 extern GSettings *nautilus_preferences;
 extern GSettings *nautilus_icon_view_preferences;

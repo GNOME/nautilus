@@ -192,10 +192,10 @@
       <summary>Whether to show hidden files</summary>
       <description>This key is deprecated and ignored. The "show-hidden" key from "org.gtk.Settings.FileChooser" is now used instead.</description>
     </key>
-    <key type="b" name="list-view-on-search">
-      <default>true</default>
-      <summary>Whether to switch to the list view on search</summary>
-      <description>If this is set to true, view mode will be switched to the list view while searching. However, if the user changes the mode manually, this will be disabled.</description>
+    <key name="search-view" enum="org.gnome.nautilus.FolderView">
+      <default>'icon-view'</default>
+      <summary>What viewer should be used when searching</summary>
+      <description>When searching Nautilus will switch to the type of view in this setting.</description>
     </key>
     <key type="ay" name="bulk-rename-tool">
       <default>[]</default>

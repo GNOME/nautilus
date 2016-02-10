@@ -876,7 +876,7 @@ nautilus_files_view_is_searching (NautilusView *view)
   return NAUTILUS_IS_SEARCH_DIRECTORY (files_view->details->model);
 }
 
-const char *
+guint
 nautilus_files_view_get_view_id (NautilusFilesView *view)
 {
         return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_view_id (view);
@@ -8290,26 +8290,30 @@ nautilus_files_view_init (NautilusFilesView *view)
 }
 
 NautilusFilesView *
-nautilus_files_view_new (const gchar        *id,
+nautilus_files_view_new (guint                id,
                          NautilusWindowSlot *slot)
 {
         NautilusFilesView *view = NULL;
 
-        if (g_strcmp0 (id, NAUTILUS_CANVAS_VIEW_ID) == 0) {
+        switch (id) {
+        case NAUTILUS_VIEW_GRID_ID:
                 view = nautilus_canvas_view_new (slot);
-        } else if (g_strcmp0 (id, NAUTILUS_LIST_VIEW_ID) == 0) {
+        break;
+        case NAUTILUS_VIEW_LIST_ID:
                 view = nautilus_list_view_new (slot);
-        } else if (g_strcmp0 (id, NAUTILUS_DESKTOP_VIEW_ID) == 0) {
+        break;
+        case NAUTILUS_VIEW_DESKTOP_ID:
                 view = nautilus_desktop_canvas_view_new (slot);
-        }
+        break;
 #if ENABLE_EMPTY_VIEW
-        else if (g_strcmp0 (id, NAUTILUS_EMPTY_VIEW_ID) == 0) {
+        case NAUTILUS_VIEW_EMPTY_ID:
                 view = nautilus_empty_view_new (slot);
-        }
+        break;
 #endif
+        }
 
         if (view == NULL) {
-                g_critical ("Unknown view type ID: %s", id);
+                g_critical ("Unknown view type ID: %d", id);
         } else if (g_object_is_floating (view)) {
                 g_object_ref_sink (view);
         }

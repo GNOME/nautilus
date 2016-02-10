@@ -39,13 +39,13 @@ typedef struct NautilusFilesViewClass NautilusFilesViewClass;
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 
-#if ENABLE_EMPTY_VIEW
-#define NAUTILUS_EMPTY_VIEW_ID "empty"
-#endif
-
-#define NAUTILUS_CANVAS_VIEW_ID "grid"
-#define NAUTILUS_DESKTOP_VIEW_ID "desktop"
-#define NAUTILUS_LIST_VIEW_ID "list"
+enum {
+  NAUTILUS_VIEW_GRID_ID,
+  NAUTILUS_VIEW_LIST_ID,
+  NAUTILUS_VIEW_DESKTOP_ID,
+  NAUTILUS_VIEW_EMPTY_ID,
+  NAUTILUS_VIEW_INVALID_ID,
+};
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
 #define NAUTILUS_FILES_VIEW(obj)\
@@ -265,8 +265,8 @@ struct NautilusFilesViewClass {
         void        (* click_policy_changed) (NautilusFilesView *view);
         void        (* sort_directories_first_changed) (NautilusFilesView *view);
 
-        /* Get the id string for this view. Its a constant string, not memory managed */
-        const char *   (* get_view_id)       (NautilusFilesView *view);
+        /* Get the id for this view. Its a guint*/
+        guint        (* get_view_id)       (NautilusFilesView *view);
 
         /* Return the uri of the first visible file */
         char *         (* get_first_visible_file) (NautilusFilesView          *view);
@@ -285,7 +285,7 @@ struct NautilusFilesViewClass {
 /* GObject support */
 GType               nautilus_files_view_get_type                         (void);
 
-NautilusFilesView *      nautilus_files_view_new                         (const gchar        *id,
+NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
 
 /* Functions callable from the user interface and elsewhere. */
@@ -339,7 +339,7 @@ gboolean            nautilus_files_view_is_editable              (NautilusFilesV
 NautilusWindow *    nautilus_files_view_get_window               (NautilusFilesView      *view);
 
 /* NautilusFilesView methods */
-const char *      nautilus_files_view_get_view_id                (NautilusFilesView      *view);
+guint               nautilus_files_view_get_view_id                (NautilusFilesView      *view);
 
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);

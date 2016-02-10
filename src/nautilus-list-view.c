@@ -3061,10 +3061,10 @@ nautilus_list_view_end_loading (NautilusFilesView *view,
 	list_view_notify_clipboard_info (monitor, info, NAUTILUS_LIST_VIEW (view));
 }
 
-static const char *
+static guint
 nautilus_list_view_get_id (NautilusFilesView *view)
 {
-	return NAUTILUS_LIST_VIEW_ID;
+	return NAUTILUS_VIEW_LIST_ID;
 }
 
 static GdkRectangle*
