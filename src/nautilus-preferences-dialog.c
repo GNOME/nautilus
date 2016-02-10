@@ -42,7 +42,6 @@
 
 /* string enum preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_DEFAULT_VIEW_WIDGET "default_view_combobox"
-#define NAUTILUS_PREFERENCES_DIALOG_SORT_ORDER_WIDGET "sort_order_combobox"
 #define NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FILES_WIDGET                       \
   "preview_image_combobox"
 #define NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FOLDER_WIDGET                      \
@@ -67,9 +66,6 @@
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
   "preview_image_size_combobox"
-
-static const char *const sort_order_values[] = {
-    "name", "size", "type", "mtime", "atime", "trash-time", NULL};
 
 static const char *const preview_values[] = {"always", "local-only", "never",
                                              NULL};
@@ -504,10 +500,6 @@ static void nautilus_preferences_dialog_setup(GtkBuilder *builder,
                     NAUTILUS_PREFERENCES_DIALOG_REMOTE_RECURSIVE_SEARCH_WIDGET,
                     NAUTILUS_PREFERENCES_REMOTE_RECURSIVE_SEARCH);
 
-  bind_builder_enum(builder, nautilus_preferences,
-                    NAUTILUS_PREFERENCES_DIALOG_SORT_ORDER_WIDGET,
-                    NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
-                    (const char **)sort_order_values);
   bind_builder_enum(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FILES_WIDGET,
                     NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
