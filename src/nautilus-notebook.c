@@ -304,8 +304,8 @@ build_tab_label (NautilusNotebook *nb, NautilusWindowSlot *slot)
 	label = gtk_label_new (NULL);
 	gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
 	gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
-        gtk_label_set_xalign (GTK_LABEL (label), 0);
-        gtk_label_set_yalign (GTK_LABEL (label), 0);
+        gtk_label_set_xalign (GTK_LABEL (label), 0.5);
+        gtk_label_set_yalign (GTK_LABEL (label), 0.5);
 	gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
 	gtk_widget_show (label);
 
