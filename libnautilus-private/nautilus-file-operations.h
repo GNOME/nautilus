@@ -84,7 +84,9 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 						      const char              *template_uri,
 						      NautilusCreateCallback   done_callback,
 						      gpointer                 data);
-
+gboolean trash_files_match (GList      *trash_children,
+                            GHashTable *trashed,
+                            GHashTable *matched_files);
 void nautilus_file_operations_delete          (GList                  *files,
 					       GtkWindow              *parent_window,
 					       NautilusDeleteCallback  done_callback,
