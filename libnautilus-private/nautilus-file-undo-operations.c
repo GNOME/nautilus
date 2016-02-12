@@ -1093,19 +1093,16 @@ trash_retrieve_files_to_restore_finish (NautilusFileUndoInfoTrash *self,
 	return retval;
 }
 
-static void
-trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
-					GObject *object,
-					GCancellable *cancellable)
+/**
+ * Returns (transfer full): A #GList with full transferred #GFileInfo items as
+ * content. Free the returned object with g_list_free_full (list,g_object_unref).
+ */
+static GList*
+trash_enumerate_children (GError **error)
 {
-	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (object);
 	GFileEnumerator *enumerator;
-	GHashTable *to_restore;
 	GFile *trash;
-	GError *error = NULL;
-
-	to_restore = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, 
-					    g_object_unref, g_object_unref);
+	GList *children = NULL;
 
 	trash = g_file_new_for_uri ("trash:///");
 
@@ -1114,48 +1111,100 @@ trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
 			G_FILE_ATTRIBUTE_TRASH_DELETION_DATE","
 			G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
 			G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-			NULL, &error);
+			NULL, error);
 
 	if (enumerator) {
 		GFileInfo *info;
-		gpointer lookupvalue;
-		GFile *item;
-		glong trash_time, orig_trash_time;
-		const char *origpath;
-		GFile *origfile;
 
-		while ((info = g_file_enumerator_next_file (enumerator, NULL, &error)) != NULL) {
-			/* Retrieve the original file uri */
-			origpath = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
-			origfile = g_file_new_for_path (origpath);
-
-			lookupvalue = g_hash_table_lookup (self->priv->trashed, origfile);
-
-			if (lookupvalue) {
-				GDateTime *date;
-
-				orig_trash_time = GPOINTER_TO_SIZE (lookupvalue);
-				trash_time = 0;
-				date = g_file_info_get_deletion_date (info);
-				if (date) {
-					trash_time = g_date_time_to_unix (date);
-					g_date_time_unref (date);
-				}
-
-				if (abs (orig_trash_time - trash_time) <= TRASH_TIME_EPSILON) {
-					/* File in the trash */
-					item = g_file_get_child (trash, g_file_info_get_name (info));
-					g_hash_table_insert (to_restore, item, g_object_ref (origfile));
-				}
-			}
-
-			g_object_unref (origfile);
-
+		while ((info = g_file_enumerator_next_file (enumerator, NULL, error)) != NULL) {
+			children = g_list_prepend (children, info);
 		}
+
 		g_file_enumerator_close (enumerator, FALSE, NULL);
 		g_object_unref (enumerator);
 	}
+
 	g_object_unref (trash);
+
+	return g_list_reverse (children);
+}
+
+static void
+trash_match_files (GList *trash_children,
+                   GHashTable *trashed,
+                   GHashTable *matched_files)
+{
+	GFile *trash;
+	GList *l;
+	GFileInfo *info;
+	const char *original_path;
+	GFile *original_file;
+	gpointer lookup_value;
+	glong trash_time;
+	glong original_trash_time;
+	GFile *item;
+
+	trash = g_file_new_for_uri ("trash:///");
+
+	/* Iterate over the trash children and check if they match the trashed
+	 * files. This is not done as a match between two hash-tables because
+	 * the trash can contain multiple files with the same original path
+	 */
+	for (l = trash_children; l != NULL; l = l->next) {
+		info = l->data;
+		/* Retrieve the original file uri */
+		original_path = g_file_info_get_attribute_byte_string (info,
+		                                                       G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
+		original_file = g_file_new_for_path (original_path);
+
+		lookup_value = g_hash_table_lookup (trashed, original_file);
+
+		if (lookup_value) {
+			GDateTime *date;
+
+			original_trash_time = GPOINTER_TO_SIZE (lookup_value);
+			trash_time = 0;
+			date = g_file_info_get_deletion_date (info);
+			if (date) {
+				trash_time = g_date_time_to_unix (date);
+				g_date_time_unref (date);
+			}
+
+			if (abs (original_trash_time - trash_time) > TRASH_TIME_EPSILON) {
+				continue;
+			}
+			/* File in the trash */
+			if (matched_files != NULL) {
+				item = g_file_get_child (trash, g_file_info_get_name (info));
+				g_hash_table_insert (matched_files, item, g_object_ref (original_file));
+			}
+		}
+
+		g_object_unref (original_file);
+
+	}
+
+	g_object_unref (trash);
+}
+
+static void
+trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
+                                        GObject *object,
+                                        GCancellable *cancellable)
+{
+	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (object);
+	GHashTable *to_restore;
+	GError *error = NULL;
+	GList *trash_children;
+
+
+	to_restore = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
+					    g_object_unref, g_object_unref);
+
+	trash_children = trash_enumerate_children (&error);
+	trash_match_files (trash_children,
+	                   self->priv->trashed,
+	                   to_restore);
 
 	if (error != NULL) {
 		g_simple_async_result_take_error (res, error);
@@ -1163,6 +1212,8 @@ trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
 	} else {
 		g_simple_async_result_set_op_res_gpointer (res, to_restore, NULL);
 	}
+
+	g_list_free_full (trash_children, g_object_unref);
 }
 
 static void
