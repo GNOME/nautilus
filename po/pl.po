@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-07 13:20+0100\n"
-"PO-Revision-Date: 2016-02-07 13:21+0100\n"
+"POT-Creation-Date: 2016-02-14 19:30+0100\n"
+"PO-Revision-Date: 2016-02-14 19:32+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -71,7 +71,6 @@ msgstr "Uruchamianie oprogramowania"
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4197
 #: ../src/nautilus-window.c:2634
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:50
 msgid "Files"
 msgstr "Pliki"
 
@@ -113,42 +112,36 @@ msgstr ""
 "paska położenia zamiast paska ścieżki."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:5
-msgid "Whether to enable local recursive search or not"
-msgstr "Określa, czy włączyć lokalne wyszukiwanie rekursywne"
+msgid "Where to perform recursive search"
+msgstr "Gdzie wyszukiwać rekursywne"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:6
-msgid "Enables or disables local recursive search in Nautilus."
+msgid ""
+"In which locations Nautilus should search on subfolders. Available values "
+"are 'local-only', 'always', 'never'."
 msgstr ""
-"Włącza lub wyłącza lokalne wyszukiwanie rekursywne w programie Nautilus."
+"W jakich położeniach program Nautilus ma wyszukiwać w podkatalogach. "
+"Dostępne wartości to „local-only” (tylko lokalne), „always” (wszystkie) i "
+"„never” (żadne)."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:7
-msgid "Whether to enable recursive search or not on remote locations"
-msgstr "Określa, czy włączyć wyszukiwanie rekursywne w zdalnych położeniach"
-
-#: ../data/org.gnome.nautilus.gschema.xml.h:8
-msgid "Enables or disables recursive search on remote locations in Nautilus."
-msgstr ""
-"Włącza lub wyłącza wyszukiwanie rekursywne w zdalnych położeniach w "
-"programie Nautilus."
-
-#: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Filter the search dates using either last used or last modified"
 msgstr ""
 "Filtrowanie dat wyszukiwania używając czasu ostatniego użycia lub ostatniej "
 "modyfikacji"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:10
+#: ../data/org.gnome.nautilus.gschema.xml.h:8
 msgid "Filter the search dates using either last used or last modified."
 msgstr ""
 "Filtrowanie dat wyszukiwania używając czasu ostatniego użycia lub ostatniej "
 "modyfikacji."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:11
+#: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Whether to show a context menu item to delete permanently"
 msgstr ""
 "Określa, czy wyświetlać element menu kontekstowego do trwałego usuwania"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:12
+#: ../data/org.gnome.nautilus.gschema.xml.h:10
 msgid ""
 "If set to true, then Nautilus will show a delete permanently context menu "
 "item to bypass the Trash."
@@ -156,7 +149,7 @@ msgstr ""
 "Określa, czy będzie wyświetlany element menu kontekstowego do trwałego "
 "usuwania, pomijający kosz."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:13
+#: ../data/org.gnome.nautilus.gschema.xml.h:11
 msgid ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
@@ -164,7 +157,7 @@ msgstr ""
 "Określa, czy wyświetlać element menu kontekstowego do tworzenia dowiązań ze "
 "skopiowanych lub zaznaczonych plików"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:14
+#: ../data/org.gnome.nautilus.gschema.xml.h:12
 msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
@@ -172,14 +165,14 @@ msgstr ""
 "Określa, czy będzie wyświetlany element menu kontekstowego do tworzenia "
 "dowiązań ze skopiowanych lub zaznaczonych plików."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:15
+#: ../data/org.gnome.nautilus.gschema.xml.h:13
 msgid ""
 "Whether to ask for confirmation when deleting files, or emptying the Trash"
 msgstr ""
 "Określa, czy prosić o potwierdzenia podczas usuwania plików lub opróżniania "
 "kosza"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:16
+#: ../data/org.gnome.nautilus.gschema.xml.h:14
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
@@ -187,11 +180,11 @@ msgstr ""
 "Określa, czy podczas próby usunięcia plików lub opróżnienia kosza będzie "
 "wymagane potwierdzenie."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:17
+#: ../data/org.gnome.nautilus.gschema.xml.h:15
 msgid "When to show number of items in a folder"
 msgstr "Kiedy wyświetlać liczbę elementów w katalogu"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:18
+#: ../data/org.gnome.nautilus.gschema.xml.h:16
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -204,11 +197,11 @@ msgstr ""
 "„local-only” (tylko lokalne), wtedy wyświetlane są liczniki dla lokalnego "
 "systemu plików. Jeżeli ustawiono „never” (nigdy), elementy nie są liczone."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:19
+#: ../data/org.gnome.nautilus.gschema.xml.h:17
 msgid "Type of click used to launch/open files"
 msgstr "Typ kliknięcia używany do uruchamiania/otwierania plików"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:20
+#: ../data/org.gnome.nautilus.gschema.xml.h:18
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -217,11 +210,11 @@ msgstr ""
 "pomocą pojedynczego kliknięcia, lub „double” (podwójnie), aby uruchamiać "
 "pliki za pomocą podwójnego kliknięcia."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:21
+#: ../data/org.gnome.nautilus.gschema.xml.h:19
 msgid "What to do with executable text files when activated"
 msgstr "Czynność po aktywacji wykonywalnych plików tekstowych"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:22
+#: ../data/org.gnome.nautilus.gschema.xml.h:20
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -233,11 +226,11 @@ msgstr ""
 "uruchomienie jako program, „ask” — pytanie, co zrobić, poprzez okno "
 "dialogowe, „display” — wyświetlanie jako plików tekstowych."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:23
+#: ../data/org.gnome.nautilus.gschema.xml.h:21
 msgid "Show the package installer for unknown MIME types"
 msgstr "Wyświetlanie instalatora pakietów dla nieznanych typów MIME"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:24
+#: ../data/org.gnome.nautilus.gschema.xml.h:22
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
@@ -246,14 +239,14 @@ msgstr ""
 "przypadku otwarcia nieznanego typu MIME, aby wyszukać program do jego "
 "obsługi."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:25
+#: ../data/org.gnome.nautilus.gschema.xml.h:23
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash"
 msgstr ""
 "Wyświetlanie ostrzeżenia o zmianie skrótu klawiszowego dla czynności "
 "przeniesienia do kosza"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:26
+#: ../data/org.gnome.nautilus.gschema.xml.h:24
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash "
 "from Control + Delete to just Delete."
@@ -261,13 +254,13 @@ msgstr ""
 "Wyświetla ostrzeżenie o zmianie skrótu klawiszowego dla czynności "
 "przeniesienia do kosza z Ctrl+Delete na sam klawisz Delete."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:27
+#: ../data/org.gnome.nautilus.gschema.xml.h:25
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr ""
 "Określa, czy używać dodatkowych zdarzeń przycisków myszy w oknach "
 "przeglądania programu Nautilus"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:28
+#: ../data/org.gnome.nautilus.gschema.xml.h:26
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
@@ -277,11 +270,11 @@ msgstr ""
 "klucz określa, czy jakaś czynność jest podejmowana przez program Nautilus, "
 "jeśli zostanie naciśnięty przycisk."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:29
+#: ../data/org.gnome.nautilus.gschema.xml.h:27
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr "Przycisk myszy do aktywowania polecenia „Dalej” w oknie przeglądarki"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:30
+#: ../data/org.gnome.nautilus.gschema.xml.h:28
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
@@ -291,11 +284,11 @@ msgstr ""
 "klucz ustawia, który przycisk włącza polecenie „Dalej” w oknie przeglądarki. "
 "Możliwe wartości mieszczą się w zakresie między 6 a 14."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:31
+#: ../data/org.gnome.nautilus.gschema.xml.h:29
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr "Przycisk myszy do aktywowania polecenia „Wstecz” w oknie przeglądarki"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:32
+#: ../data/org.gnome.nautilus.gschema.xml.h:30
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -305,11 +298,11 @@ msgstr ""
 "klucz ustawia, który przycisk włącza polecenie „Wstecz” w oknie "
 "przeglądarki. Możliwe wartości mieszczą się w zakresie między 6 a 14."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:33
+#: ../data/org.gnome.nautilus.gschema.xml.h:31
 msgid "When to show thumbnails of files"
 msgstr "Kiedy wyświetlać miniatury plików"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:34
+#: ../data/org.gnome.nautilus.gschema.xml.h:32
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -325,11 +318,11 @@ msgstr ""
 "tego, co może sugerować nazwa, to ustawienie odnosi się do wszystkich typów "
 "plików, dla których można utworzyć podgląd."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:35
+#: ../data/org.gnome.nautilus.gschema.xml.h:33
 msgid "Maximum image size for thumbnailing"
 msgstr "Maksymalny rozmiar obrazu do utworzenia miniatury"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:36
+#: ../data/org.gnome.nautilus.gschema.xml.h:34
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -339,11 +332,11 @@ msgstr ""
 "to zapobiega tworzeniu miniatur dla bardzo dużych plików, co może zabierać "
 "dużo czasu i pamięci."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:37
+#: ../data/org.gnome.nautilus.gschema.xml.h:35
 msgid "Show folders first in windows"
 msgstr "Katalogi na początku listy w oknie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:38
+#: ../data/org.gnome.nautilus.gschema.xml.h:36
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -351,11 +344,11 @@ msgstr ""
 "Określa, czy w widokach ikon i listy wyświetlane będą najpierw katalogi, a "
 "potem pliki."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:39
+#: ../data/org.gnome.nautilus.gschema.xml.h:37
 msgid "Default sort order"
 msgstr "Domyślna kolejność porządkowania"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:40
+#: ../data/org.gnome.nautilus.gschema.xml.h:38
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -364,11 +357,11 @@ msgstr ""
 "wartości to: „name” (nazwa), „size” (rozmiar), „type” (typ) i „mtime” (czas "
 "modyfikacji)."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:41
+#: ../data/org.gnome.nautilus.gschema.xml.h:39
 msgid "Reverse sort order in new windows"
 msgstr "Odwrócona kolejność porządkowania w nowych oknach"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:42
+#: ../data/org.gnome.nautilus.gschema.xml.h:40
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from \"a\" to \"z\", they "
@@ -381,11 +374,11 @@ msgstr ""
 "Jeżeli pliki są porządkowane według rozmiaru, wtedy zamiast rosnąco będą "
 "porządkowane malejąco."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:43
+#: ../data/org.gnome.nautilus.gschema.xml.h:41
 msgid "Default folder viewer"
 msgstr "Domyślna przeglądarka katalogów"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:44
+#: ../data/org.gnome.nautilus.gschema.xml.h:42
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -395,11 +388,11 @@ msgstr ""
 "widoku dla danego katalogu. Dopuszczalne wartości to „list-view” (widok "
 "listy) i „icon-view” (widok ikon)."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:45
+#: ../data/org.gnome.nautilus.gschema.xml.h:43
 msgid "Whether to show hidden files"
 msgstr "Określa, czy wyświetlać pliki ukryte"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:46
+#: ../data/org.gnome.nautilus.gschema.xml.h:44
 msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
@@ -407,25 +400,22 @@ msgstr ""
 "Ten klucz jest przestarzały i ignorowany. Zamiast tego używany jest teraz "
 "klucz „show-hidden” z „org.gtk.Settings.FileChooser”."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:47
-msgid "Whether to switch to the list view on search"
-msgstr "Określa, czy przełączać do widoku listy podczas wyszukiwania"
+#: ../data/org.gnome.nautilus.gschema.xml.h:45
+msgid "What viewer should be used when searching"
+msgstr "Widok używany podczas wyszukiwania"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:48
+#: ../data/org.gnome.nautilus.gschema.xml.h:46
 msgid ""
-"If this is set to true, view mode will be switched to the list view while "
-"searching. However, if the user changes the mode manually, this will be "
-"disabled."
+"When searching Nautilus will switch to the type of view in this setting."
 msgstr ""
-"Jeśli jest ustawione na wartość „true”, to podczas wyszukiwania widok będzie "
-"zmieniany na listę. Jeśli jednak użytkownik zmieni tryb ręcznie, to zostanie "
-"to wyłączone."
+"Podczas wyszukiwania program Nautilus przełączy na typ widoku podany w tym "
+"ustawieniu."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:49
+#: ../data/org.gnome.nautilus.gschema.xml.h:47
 msgid "Bulk rename utility"
 msgstr "Narzędzie do masowej zmiany nazw"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:50
+#: ../data/org.gnome.nautilus.gschema.xml.h:48
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -440,7 +430,7 @@ msgstr ""
 "oddzielone spacjami. Jeśli nazwa pliku wykonywalnego nie jest pełną ścieżką, "
 "zostanie on wyszukany w ścieżce wyszukiwania."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:51
+#: ../data/org.gnome.nautilus.gschema.xml.h:49
 msgid ""
 "Whether to open the hovered folder after a timeout when drag and drop "
 "operation"
@@ -448,7 +438,7 @@ msgstr ""
 "Określa, czy otwierać najechany katalog po określonym czasie podczas "
 "przeciągania"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:52
+#: ../data/org.gnome.nautilus.gschema.xml.h:50
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
@@ -456,11 +446,11 @@ msgstr ""
 "Określa, czy podczas przeciągania najechany katalog będzie automatycznie "
 "otwierany po określonym czasie."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:53
+#: ../data/org.gnome.nautilus.gschema.xml.h:51
 msgid "List of possible captions on icons"
 msgstr "Lista możliwych podpisów na ikonach"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:54
+#: ../data/org.gnome.nautilus.gschema.xml.h:52
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -471,19 +461,19 @@ msgstr ""
 "podpisów zależy od stopnia powiększenia. Dopuszczalne wartości to: „size”, "
 "„type”, „date_modified”, „owner”, „group”, „permissions” i „mime_type”."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:55
+#: ../data/org.gnome.nautilus.gschema.xml.h:53
 msgid "Default icon zoom level"
 msgstr "Domyślne powiększenie ikon"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:56
+#: ../data/org.gnome.nautilus.gschema.xml.h:54
 msgid "Default zoom level used by the icon view."
 msgstr "Domyślne powiększenie używane przez widok ikon."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:57
+#: ../data/org.gnome.nautilus.gschema.xml.h:55
 msgid "Default Thumbnail Icon Size"
 msgstr "Domyślny rozmiar ikon miniatur"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:58
+#: ../data/org.gnome.nautilus.gschema.xml.h:56
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_SMALL size."
@@ -491,11 +481,11 @@ msgstr ""
 "Domyślny rozmiar ikony miniatury w widoku ikon przy rozmiarze "
 "NAUTILUS_ICON_SIZE_SMALL."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:59
+#: ../data/org.gnome.nautilus.gschema.xml.h:57
 msgid "Text Ellipsis Limit"
 msgstr "Ograniczenie skracania nazw"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:60
+#: ../data/org.gnome.nautilus.gschema.xml.h:58
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -527,35 +517,35 @@ msgstr ""
 "przypadku pozostałych powiększeń. Dostępne wartości powiększenia: small "
 "(małe), standard (standardowe), large (duże)."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:61
+#: ../data/org.gnome.nautilus.gschema.xml.h:59
 msgid "Default list zoom level"
 msgstr "Domyślne powiększenie listy"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:62
+#: ../data/org.gnome.nautilus.gschema.xml.h:60
 msgid "Default zoom level used by the list view."
 msgstr "Domyślne powiększenie używane przez widok listy."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:63
+#: ../data/org.gnome.nautilus.gschema.xml.h:61
 msgid "Default list of columns visible in the list view"
 msgstr "Domyślna lista kolumn widocznych w widoku listy"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:64
+#: ../data/org.gnome.nautilus.gschema.xml.h:62
 msgid "Default list of columns visible in the list view."
 msgstr "Domyślna lista kolumn widocznych w widoku listy."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:65
+#: ../data/org.gnome.nautilus.gschema.xml.h:63
 msgid "Default column order in the list view"
 msgstr "Domyślny porządek kolumn w widoku listy"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:66
+#: ../data/org.gnome.nautilus.gschema.xml.h:64
 msgid "Default column order in the list view."
 msgstr "Domyślny porządek kolumn w widoku listy."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:67
+#: ../data/org.gnome.nautilus.gschema.xml.h:65
 msgid "Use tree view"
 msgstr "Użycie widoku drzewa"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:68
+#: ../data/org.gnome.nautilus.gschema.xml.h:66
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
@@ -563,24 +553,24 @@ msgstr ""
 "Określa, czy drzewo powinno być używane do nawigacji w widoku listy zamiast "
 "płaskiej listy."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:69
+#: ../data/org.gnome.nautilus.gschema.xml.h:67
 msgctxt "desktop-font"
 msgid "''"
 msgstr "''"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:70
+#: ../data/org.gnome.nautilus.gschema.xml.h:68
 msgid "Desktop font"
 msgstr "Czcionka pulpitu"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:71
+#: ../data/org.gnome.nautilus.gschema.xml.h:69
 msgid "The font description used for the icons on the desktop."
 msgstr "Opis czcionki używanej dla ikon pulpitu."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:72
+#: ../data/org.gnome.nautilus.gschema.xml.h:70
 msgid "Home icon visible on desktop"
 msgstr "Ikona katalogu domowego widoczna na pulpicie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:73
+#: ../data/org.gnome.nautilus.gschema.xml.h:71
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -588,21 +578,21 @@ msgstr ""
 "Określa, czy na pulpicie będzie umieszczana ikona skrótu do katalogu "
 "domowego."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:74
+#: ../data/org.gnome.nautilus.gschema.xml.h:72
 msgid "Trash icon visible on desktop"
 msgstr "Ikona kosza widoczna na pulpicie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:75
+#: ../data/org.gnome.nautilus.gschema.xml.h:73
 msgid ""
 "If this is set to true, an icon linking to the Trash will be put on the "
 "desktop."
 msgstr "Określa, czy na pulpicie będzie umieszczona ikona kosza."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:76
+#: ../data/org.gnome.nautilus.gschema.xml.h:74
 msgid "Show mounted volumes on the desktop"
 msgstr "Ikony zamontowanych woluminów na pulpicie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:77
+#: ../data/org.gnome.nautilus.gschema.xml.h:75
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -610,11 +600,11 @@ msgstr ""
 "Określa, czy na pulpicie mają być umieszczane ikony dowiązań do "
 "zamontowanych woluminów."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:78
+#: ../data/org.gnome.nautilus.gschema.xml.h:76
 msgid "Network Servers icon visible on the desktop"
 msgstr "Ikona serwerów sieciowych widoczna na pulpicie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:79
+#: ../data/org.gnome.nautilus.gschema.xml.h:77
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -622,16 +612,16 @@ msgstr ""
 "Określa, czy na pulpicie będzie umieszczona ikona skrótu do widoku serwerów "
 "sieciowych."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:80
+#: ../data/org.gnome.nautilus.gschema.xml.h:78
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "'Katalog domowy'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:81
+#: ../data/org.gnome.nautilus.gschema.xml.h:79
 msgid "Desktop home icon name"
 msgstr "Nazwa ikony katalogu domowego"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:82
+#: ../data/org.gnome.nautilus.gschema.xml.h:80
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -639,16 +629,16 @@ msgstr ""
 "Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony katalogu "
 "domowego na pulpicie."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:83
+#: ../data/org.gnome.nautilus.gschema.xml.h:81
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "'Kosz'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:84
+#: ../data/org.gnome.nautilus.gschema.xml.h:82
 msgid "Desktop Trash icon name"
 msgstr "Nazwa ikony kosza na pulpicie"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:85
+#: ../data/org.gnome.nautilus.gschema.xml.h:83
 msgid ""
 "This name can be set if you want a custom name for the Trash icon on the "
 "desktop."
@@ -656,16 +646,16 @@ msgstr ""
 "Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony kosza na "
 "pulpicie."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:86
+#: ../data/org.gnome.nautilus.gschema.xml.h:84
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "'Serwery sieciowe'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:87
+#: ../data/org.gnome.nautilus.gschema.xml.h:85
 msgid "Network servers icon name"
 msgstr "Nazwa ikony serwerów sieciowych"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:88
+#: ../data/org.gnome.nautilus.gschema.xml.h:86
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -673,7 +663,7 @@ msgstr ""
 "Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony serwerów "
 "sieciowych na pulpicie."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:89
+#: ../data/org.gnome.nautilus.gschema.xml.h:87
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -685,58 +675,58 @@ msgstr ""
 "przekroczy zadanej liczby wierszy. Wartość 0 lub mniejsza oznacza brak "
 "ograniczenia ilości wyświetlanych wierszy."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:90
+#: ../data/org.gnome.nautilus.gschema.xml.h:88
 msgid "Fade the background on change"
 msgstr "Przejście tła podczas zmiany"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:91
+#: ../data/org.gnome.nautilus.gschema.xml.h:89
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
 msgstr ""
 "Określa, czy podczas zmiany tła pulpitu ma być używany efekt przejścia."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:92
+#: ../data/org.gnome.nautilus.gschema.xml.h:90
 msgid "The geometry string for a navigation window"
 msgstr "Ciąg geometrii dla okna nawigacji"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:93
+#: ../data/org.gnome.nautilus.gschema.xml.h:91
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
 msgstr ""
 "Ciąg zawierający zapisaną geometrię i ciąg współrzędnych dla okien nawigacji."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:94
+#: ../data/org.gnome.nautilus.gschema.xml.h:92
 msgid "Whether the navigation window should be maximized"
 msgstr "Określa, czy okno nawigacji powinno być zmaksymalizowane"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:95
+#: ../data/org.gnome.nautilus.gschema.xml.h:93
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Określa, czy okno nawigacji powinno być domyślnie zmaksymalizowane."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:96
+#: ../data/org.gnome.nautilus.gschema.xml.h:94
 msgid "Width of the side pane"
 msgstr "Szerokość panelu bocznego"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:97
+#: ../data/org.gnome.nautilus.gschema.xml.h:95
 msgid "The default width of the side pane in new windows."
 msgstr "Domyślna szerokość paska bocznego w nowych oknach."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:98
+#: ../data/org.gnome.nautilus.gschema.xml.h:96
 msgid "Show location bar in new windows"
 msgstr "Pasek położenia w nowych oknach"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:99
+#: ../data/org.gnome.nautilus.gschema.xml.h:97
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Określa, czy nowo otwarte okna będą miały widoczny pasek położenia."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:100
+#: ../data/org.gnome.nautilus.gschema.xml.h:98
 msgid "Show side pane in new windows"
 msgstr "Panel boczny w nowych oknach"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:101
+#: ../data/org.gnome.nautilus.gschema.xml.h:99
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "Określa, czy nowo otwarte okna będą miały widoczny panel boczny."
 
@@ -874,7 +864,7 @@ msgid "MIME Type"
 msgstr "Typ MIME"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:122
-msgid "The mime type of the file."
+msgid "The MIME type of the file."
 msgstr "Typ MIME pliku."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:129
@@ -2707,7 +2697,7 @@ msgstr "Przygotowanie"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:41
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:50
 #: ../src/resources/ui/nautilus-search-popover.ui.h:12
 #: ../src/resources/ui/nautilus-toolbar.ui.h:5
 msgid "Search"
@@ -2736,7 +2726,7 @@ msgid "Send files by mail…"
 msgstr "Wysyła pliki przez pocztę e-mail…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1140
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1113
 msgid "Oops! Something went wrong."
 msgstr "Coś poszło źle."
 
@@ -2870,7 +2860,7 @@ msgid "_Run"
 msgstr "U_ruchom"
 
 #: ../src/nautilus-canvas-view-container.c:443
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:7
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:7
 msgid "Icon View"
 msgstr "Widok ikon"
 
@@ -3010,7 +3000,7 @@ msgid "Searching…"
 msgstr "Wyszukiwanie…"
 
 #: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:639
+#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:628
 msgid "Loading…"
 msgstr "Wczytywanie…"
 
@@ -3440,7 +3430,7 @@ msgid "Use Default"
 msgstr "Użyj domyślnych"
 
 #: ../src/nautilus-list-view.c:1818
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:8
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:8
 msgid "List View"
 msgstr "Widok listy"
 
@@ -3475,7 +3465,6 @@ msgid "Anything"
 msgstr "Wszystko"
 
 #: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4199
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:53
 msgid "Folders"
 msgstr "Katalogi"
 
@@ -3647,7 +3636,7 @@ msgid "Close tab"
 msgstr "Zamyka kartę"
 
 #. Translators: this is referred to captions under icons.
-#: ../src/nautilus-preferences-dialog.c:149
+#: ../src/nautilus-preferences-window.c:155
 #: ../src/nautilus-properties-window.c:3772
 #: ../src/nautilus-properties-window.c:3799
 msgid "None"
@@ -3958,23 +3947,23 @@ msgstr "P_rzywróć"
 msgid "_Open"
 msgstr "_Otwórz"
 
-#: ../src/nautilus-query-editor.c:123
+#: ../src/nautilus-query-editor.c:122
 msgid "Searching locations only"
 msgstr "Wyszukiwanie tylko w położeniach"
 
-#: ../src/nautilus-query-editor.c:125
+#: ../src/nautilus-query-editor.c:124
 msgid "Searching devices only"
 msgstr "Wyszukiwanie tylko na urządzeniach"
 
-#: ../src/nautilus-query-editor.c:127
+#: ../src/nautilus-query-editor.c:126
 msgid "Searching network locations only"
 msgstr "Wyszukiwanie tylko w położeniach sieciowych"
 
-#: ../src/nautilus-query-editor.c:130
+#: ../src/nautilus-query-editor.c:129
 msgid "Remote location - only searching the current folder"
 msgstr "Zdalne położenie — wyszukiwanie tylko w bieżącym katalogu"
 
-#: ../src/nautilus-query-editor.c:132
+#: ../src/nautilus-query-editor.c:131
 msgid "Only searching the current folder"
 msgstr "Wyszukiwanie tylko w bieżącym katalogu"
 
@@ -4007,7 +3996,7 @@ msgstr "Wybierz daty…"
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:39
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:44
 msgid "Trash"
 msgstr "Kosz"
 
@@ -4103,35 +4092,35 @@ msgstr ""
 "Paweł Żołnowski <pawel@zolnowski.name>, 2015\n"
 "Aviary.pl <gnomepl@aviary.pl>, 2006-2016"
 
-#: ../src/nautilus-window-slot.c:1144
+#: ../src/nautilus-window-slot.c:1117
 msgid "Unable to display the contents of this folder."
 msgstr "Nie można wyświetlić zawartości tego katalogu."
 
-#: ../src/nautilus-window-slot.c:1146
+#: ../src/nautilus-window-slot.c:1119
 msgid "This location doesn't appear to be a folder."
 msgstr "To położenie nie jest katalogiem."
 
-#: ../src/nautilus-window-slot.c:1151
+#: ../src/nautilus-window-slot.c:1124
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Nie można odnaleźć żądanego pliku. Proszę sprawdzić, czy wpisano je "
 "poprawnie, i spróbować ponownie."
 
-#: ../src/nautilus-window-slot.c:1156
+#: ../src/nautilus-window-slot.c:1129
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Położenia „%s” nie są obsługiwane."
 
-#: ../src/nautilus-window-slot.c:1159
+#: ../src/nautilus-window-slot.c:1132
 msgid "Unable to handle this kind of location."
 msgstr "Nie można obsłużyć tego rodzaju położenia."
 
-#: ../src/nautilus-window-slot.c:1164
+#: ../src/nautilus-window-slot.c:1137
 msgid "Unable to access the requested location."
 msgstr "Nie można uzyskać dostępu do żądanego położenia."
 
-#: ../src/nautilus-window-slot.c:1167
+#: ../src/nautilus-window-slot.c:1140
 msgid "Don't have permission to access the requested location."
 msgstr "Brak uprawnień do dostępu do żądanego położenia."
 
@@ -4140,7 +4129,7 @@ msgstr "Brak uprawnień do dostępu do żądanego położenia."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1175
+#: ../src/nautilus-window-slot.c:1148
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4148,12 +4137,12 @@ msgstr ""
 "Nie można odnaleźć żądanego położenia. Proszę sprawdzić, czy wpisano je "
 "poprawnie oraz czy ustawienia sieci są poprawne."
 
-#: ../src/nautilus-window-slot.c:1186
+#: ../src/nautilus-window-slot.c:1159
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Nieobsłużony komunikat błędu: %s"
 
-#: ../src/nautilus-window-slot.c:1334
+#: ../src/nautilus-window-slot.c:1307
 #, c-format
 msgid "Unable to load location"
 msgstr "Nie można wczytać położenia"
@@ -4688,205 +4677,254 @@ msgstr "Brak wyników"
 msgid "Try a different search"
 msgstr "Proszę spróbować innych słów"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:1
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:1
 msgid "Always"
 msgstr "Zawsze"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:2
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:2
 msgid "Local Files Only"
 msgstr "Tylko pliki lokalne"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:3
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:3
 msgid "Never"
 msgstr "Nigdy"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:4
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:4
 msgid "Small"
 msgstr "Małe"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:5
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:5
 msgid "Standard"
 msgstr "Standardowe"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:6
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:6
 msgid "Large"
 msgstr "Duże"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:9
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:9
 msgid "By Name"
 msgstr "Według nazwy"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:10
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:10
 msgid "By Size"
 msgstr "Według rozmiaru"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:11
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:11
 msgid "By Type"
 msgstr "Według typu"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:12
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:12
 msgid "By Modification Date"
 msgstr "Według daty modyfikacji"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:13
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:13
 msgid "By Access Date"
 msgstr "Według daty dostępu"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:14
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:14
 msgid "By Trashed Date"
 msgstr "Według daty przeniesienia do kosza"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:15
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:15
 msgid "100 KB"
 msgstr "100 KB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:16
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:16
 msgid "500 KB"
 msgstr "500 KB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:17
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:17
 msgid "1 MB"
 msgstr "1 MB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:18
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:18
 msgid "3 MB"
 msgstr "3 MB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:19
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:19
 msgid "5 MB"
 msgstr "5 MB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:20
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:20
 msgid "10 MB"
 msgstr "10 MB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:21
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:21
 msgid "100 MB"
 msgstr "100 MB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:22
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:22
 msgid "1 GB"
 msgstr "1 GB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:23
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:23
 msgid "2 GB"
 msgstr "2 GB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:24
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:24
 msgid "4 GB"
 msgstr "4 GB"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:25
-msgid "Files Preferences"
-msgstr "Preferencje menedżera plików"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:25
+#: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:1
+msgid "Sort"
+msgstr "Porządkowanie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:26
-msgid "Default View"
-msgstr "Domyślny widok"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:27
-msgid "_Arrange items:"
-msgstr "_Porządek elementów:"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:28
-msgid "Show context menu item to delete files permanently"
-msgstr "Element „Usuń trwale” w menu kontekstowym"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
-msgid "Show context menu item to create links from copied files"
-msgstr "Element „Utwórz dowiązanie” w menu kontekstowym"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:26
 msgid "Sort _folders before files"
 msgstr "_Katalogi przed plikami"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:31
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:27
+msgid "Allow folders to be _expanded"
+msgstr "_Rozwijanie katalogów"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:28
+msgid "Icon View Captions"
+msgstr "Podpisy ikon"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:29
+msgid ""
+"Add information to be displayed beneath file and folder names.\n"
+"More information will appear when zooming closer."
+msgstr ""
+"Informacje wyświetlane pod nazwami plików i katalogów.\n"
+"Wraz ze wzrostem powiększenia pojawiać się będą kolejne informacje."
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:31
+msgid "Second"
+msgstr "Drugi"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:32
+msgid "Third"
+msgstr "Trzeci"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:33
+msgid "First"
+msgstr "Pierwszy"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:34
 msgid "Views"
 msgstr "Widoki"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:32
-msgid "Behavior"
-msgstr "Zachowanie"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:35
+msgid "Open Action"
+msgstr "Otwieranie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:33
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:36
 msgid "_Single click to open items"
-msgstr "_Otwieranie elementów przez pojedyncze kliknięcie"
+msgstr "_Przez pojedyncze kliknięcie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:34
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:37
 msgid "_Double click to open items"
-msgstr "Ot_wieranie elementów przez podwójne kliknięcie"
+msgstr "Przez po_dwójne kliknięcie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:35
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:38
+msgid "Link Creation"
+msgstr "Dowiązania"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:39
+msgid "Allow creating symbolic _links"
+msgstr "_Element „Utwórz dowiązanie” w menu kontekstowym"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:40
 msgid "Executable Text Files"
 msgstr "Wykonywalne pliki tekstowe"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:36
-msgid "_Run executable text files when they are opened"
-msgstr "Wy_konywanie plików tekstowych po kliknięciu"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:41
+msgid "_Display them"
+msgstr "_Wyświetlanie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:37
-msgid "_View executable text files when they are opened"
-msgstr "Wyświetl_anie plików tekstowych po kliknięciu"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:42
+msgid "_Run them"
+msgstr "U_ruchamianie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:38
-msgid "_Ask each time"
-msgstr "_Pytanie za każdym razem"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:43
+msgid "_Ask what to do"
+msgstr "_Pytanie, co robić"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:40
-msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Pytanie pr_zed opróżnieniem kosza lub usunięciem plików"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:45
+msgid "Ask before _emptying the Trash"
+msgstr "Pytanie pr_zed opróżnieniem kosza"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
-msgid "Search subfolders on local file systems"
-msgstr "Przeszukiwanie podkatalogów w lokalnych systemach plików"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:46
+msgid "Allow _permanently deleting files and folders"
+msgstr "Element „_Usuń trwale” w menu kontekstowym"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
-msgid "Search subfolders on remote file systems"
-msgstr "Przeszukiwanie podkatalogów w zdalnych systemach plików"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:47
+msgid "Behavior"
+msgstr "Zachowanie"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
-msgid "Icon Captions"
-msgstr "Podpisy ikon"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:45
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Kolejność, w jakiej wyświetlane będą informacje pod nazwami ikon. Wraz ze "
-"wzrostem powiększenia pojawiać się będą kolejne informacje."
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:46
-msgid "Navigate folders in a tree"
-msgstr "Katalogi w drzewie"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:47
-msgid "Display"
-msgstr "Wyświetlanie"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:48
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:48
 msgid "Choose the order of information to appear in the list view."
 msgstr "Kolejność, w jakiej będą pojawiać się informacje w widoku listy."
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:49
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:49
 msgid "List Columns"
 msgstr "Kolumny listy"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:51
-msgid "Show _thumbnails:"
-msgstr "Wyświetlanie _miniatur:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:51
+msgid "Search in subfolders:"
+msgstr "Wyszukiwanie w podkatalogach:"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:52
-msgid "_Only for files smaller than:"
-msgstr "_Tylko dla plików mniejszych niż:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:52
+msgid "_On this computer only"
+msgstr "_Tylko na tym komputerze"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:54
-msgid "Count _number of items:"
-msgstr "O_kreślanie liczby elementów:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:53
+msgid "_All locations"
+msgstr "_We wszystkich położeniach"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:55
-msgid "Preview"
-msgstr "Podgląd"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:54
+msgid "_Never"
+msgstr "_Nigdzie"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:55
+msgid "Thumbnails"
+msgstr "Miniatury"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:56
+msgid "Show thumbnails:"
+msgstr "Wyświetlanie miniatur:"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:57
+msgid "_Files on this computer only"
+msgstr "_Tylko dla plików na tym komputerze"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:58
+msgid "A_ll files"
+msgstr "_Dla wszystkich plików"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:59
+msgid "N_ever"
+msgstr "_Wyłączone"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:60
+msgid "Onl_y for files smaller than:"
+msgstr "Ty_lko dla plików mniejszych niż:"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:61
+msgid "File count"
+msgstr "Liczba plików"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:62
+msgid "Count number of files in folders:"
+msgstr "Określanie liczby plików w katalogach:"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:63
+msgid "F_olders in this computer only"
+msgstr "_Tylko na tym komputerze"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:64
+msgid "All folder_s"
+msgstr "_Wszędzie"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:65
+msgid "Ne_ver"
+msgstr "_Nigdzie"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:66
+msgid "Search & Preview"
+msgstr "Wyszukiwanie i podgląd"
 
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:2
 msgid "_Rename"
@@ -4909,12 +4947,12 @@ msgid "Around…"
 msgstr "Około…"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
-msgid "Last modified"
-msgstr "Ostatnia modyfikacja"
+msgid "Last _modified"
+msgstr "Ostatnia _modyfikacja"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:8
-msgid "Last used"
-msgstr "Ostatnie użycie"
+msgid "Last _used"
+msgstr "Ostatnie _użycie"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:9
 msgid "What"
@@ -4979,10 +5017,6 @@ msgstr "Trwające działania"
 #: ../src/resources/ui/nautilus-toolbar.ui.h:8
 msgid "Open operations in progress"
 msgstr "Otwiera trwające działania"
-
-#: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:1
-msgid "Sort"
-msgstr "Porządkowanie"
 
 #. This is used to sort by name in the toolbar view menu
 #: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:3
