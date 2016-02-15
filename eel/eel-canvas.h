@@ -423,11 +423,6 @@ struct _EelCanvas {
 struct _EelCanvasClass {
 	GtkLayoutClass parent_class;
 
-	/* Draw the background for the area given.
-	 */
-	void (* draw_background) (EelCanvas *canvas,
-                                  cairo_t *cr);
-
 	/* Private Virtual methods for groping the canvas inside bonobo */
 	void (* request_update) (EelCanvas *canvas);
 

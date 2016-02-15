@@ -1728,11 +1728,6 @@ group_remove (EelCanvasGroup *group, EelCanvasItem *item)
 /*** EelCanvas ***/
 
 
-enum {
-	DRAW_BACKGROUND,
-	LAST_SIGNAL
-};
-
 static void eel_canvas_class_init          (EelCanvasClass *klass);
 static void eel_canvas_init                (EelCanvas      *canvas);
 static void eel_canvas_destroy             (GtkWidget        *object);
@@ -1757,12 +1752,7 @@ static gint eel_canvas_focus_in            (GtkWidget        *widget,
 static gint eel_canvas_focus_out           (GtkWidget        *widget,
 					    GdkEventFocus    *event);
 static void eel_canvas_request_update_real (EelCanvas      *canvas);
-static void eel_canvas_draw_background     (EelCanvas      *canvas,
-                                            cairo_t        *cr);
-
 static GtkLayoutClass *canvas_parent_class;
-
-static guint canvas_signals[LAST_SIGNAL];
 
 /**
  * eel_canvas_get_type:
@@ -1967,18 +1957,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
 	widget_class->focus_in_event = eel_canvas_focus_in;
 	widget_class->focus_out_event = eel_canvas_focus_out;
 
-	klass->draw_background = eel_canvas_draw_background;
 	klass->request_update = eel_canvas_request_update_real;
-
-	canvas_signals[DRAW_BACKGROUND] =
-		g_signal_new ("draw-background",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      G_STRUCT_OFFSET (EelCanvasClass, draw_background),
-			      NULL, NULL,
-                              g_cclosure_marshal_VOID__BOXED,
-			      G_TYPE_NONE, 1,
-                              CAIRO_GOBJECT_TYPE_CONTEXT);
 
 	gtk_widget_class_set_accessible_type (widget_class, eel_canvas_accessible_get_type ());
 }
@@ -2868,12 +2847,6 @@ eel_canvas_draw (GtkWidget *widget, cairo_t *cr)
 		canvas->need_update = FALSE;
 	}
 
-	/* Hmmm. Would like to queue antiexposes if the update marked
-	   anything that is gonna get redrawn as invalid */
-	
-	g_signal_emit (G_OBJECT (canvas), canvas_signals[DRAW_BACKGROUND], 0,
-                       cr);
-	
 	if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
 		EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->draw (canvas->root, cr, region);
 
@@ -2885,27 +2858,6 @@ eel_canvas_draw (GtkWidget *widget, cairo_t *cr)
 
         cairo_region_destroy (region);
 	return FALSE;
-}
-
-static void
-eel_canvas_draw_background (EelCanvas *canvas,
-                            cairo_t   *cr)
-{
-        cairo_rectangle_int_t rect;
-	GtkStyleContext *style_context;
-	GdkRGBA color;
-
-        if (!gdk_cairo_get_clip_rectangle (cr, &rect))
-              return;
-
-        cairo_save (cr);
-	/* By default, we use the style background. */
-	style_context = gtk_widget_get_style_context (GTK_WIDGET (canvas));
-	gtk_style_context_get_background_color (style_context, GTK_STATE_FLAG_NORMAL, &color);
-	gdk_cairo_set_source_rgba (cr, &color);
-	gdk_cairo_rectangle (cr, &rect);
-	cairo_fill (cr);
-        cairo_restore (cr);
 }
 
 static void

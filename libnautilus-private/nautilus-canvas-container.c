@@ -4647,20 +4647,13 @@ popup_menu (GtkWidget *widget)
 }
 
 static void
-draw_canvas_background (EelCanvas *icon,
-                        cairo_t   *cr)
-{
-	/* Don't chain up to the parent to avoid clearing and redrawing */
-}
-
-static void
 grab_notify_cb  (GtkWidget        *widget,
 		 gboolean          was_grabbed)
 {
 	NautilusCanvasContainer *container;
 
 	container = NAUTILUS_CANVAS_CONTAINER (widget);
-	
+
 	if (container->details->rubberband_info.active &&
 	    !was_grabbed) {
 		/* we got a (un)grab-notify during rubberband.
@@ -4718,7 +4711,6 @@ static void
 nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
 {
 	GtkWidgetClass *widget_class;
-	EelCanvasClass *canvas_class;
 
 	G_OBJECT_CLASS (class)->constructor = nautilus_canvas_container_constructor;
 	G_OBJECT_CLASS (class)->finalize = finalize;
@@ -5074,9 +5066,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
 	widget_class->popup_menu = popup_menu;
 	widget_class->style_updated = style_updated;
 	widget_class->grab_notify = grab_notify_cb;
-
-	canvas_class = EEL_CANVAS_CLASS (class);
-	canvas_class->draw_background = draw_canvas_background;
 
 	gtk_widget_class_set_accessible_type (widget_class, nautilus_canvas_container_accessible_get_type ());
 
