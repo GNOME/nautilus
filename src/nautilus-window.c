@@ -2446,7 +2446,7 @@ nautilus_window_init (NautilusWindow *window)
 	 * specific styling for nautilus without affecting other gtk+ applications.
 	 * This was a request by some theme authors.
 	 */
-	gtk_style_context_add_class (gtk_widget_get_style_context (window),
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
 				     "nautilus-window");
 
 	window_group = gtk_window_group_new ();
