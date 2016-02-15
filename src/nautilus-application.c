@@ -1054,17 +1054,6 @@ theme_changed (GtkSettings *settings)
 	g_object_get (settings, "gtk-theme-name", &theme, NULL);
 	screen = gdk_screen_get_default ();
 
-	/* CSS we want to always load for any theme */
-	if (permanent_provider == NULL) {
-		permanent_provider = gtk_css_provider_new ();
-		file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
-		gtk_css_provider_load_from_file (permanent_provider, file, NULL);
-		gtk_style_context_add_provider_for_screen (screen,
-							   GTK_STYLE_PROVIDER (permanent_provider),
-							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
-		g_object_unref (file);
-	}
-
 	/* CSS that themes can override */
 	if (g_str_equal (theme, "Adwaita"))
 	{
@@ -1085,6 +1074,17 @@ theme_changed (GtkSettings *settings)
 		gtk_style_context_remove_provider_for_screen (screen,
 							      GTK_STYLE_PROVIDER (provider));
 		g_clear_object (&provider);
+	}
+
+	/* CSS we want to always load for any theme */
+	if (permanent_provider == NULL) {
+		permanent_provider = gtk_css_provider_new ();
+		file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
+		gtk_css_provider_load_from_file (permanent_provider, file, NULL);
+		gtk_style_context_add_provider_for_screen (screen,
+							   GTK_STYLE_PROVIDER (permanent_provider),
+							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+		g_object_unref (file);
 	}
 
 	g_free (theme);
