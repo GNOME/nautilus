@@ -217,6 +217,9 @@ nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
 						       NautilusDesktopWindowDetails);
+	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
+				     "nautilus-desktop-window");
+
 }
 
 static void
@@ -388,8 +391,6 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 
 	nclass->sync_title = real_sync_title;
 	nclass->close = real_window_close;
-
-	gtk_widget_class_set_css_name (wclass, "nautilus-desktop-window");
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
 }
