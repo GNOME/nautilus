@@ -59,10 +59,6 @@
   "use_tree_view_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
   "trash_confirm_checkbutton"
-#define NAUTILUS_PREFERENCES_DIALOG_LOCAL_RECURSIVE_SEARCH_WIDGET              \
-  "local_recursive_search_checkbutton"
-#define NAUTILUS_PREFERENCES_DIALOG_REMOTE_RECURSIVE_SEARCH_WIDGET              \
-  "remote_recursive_search_checkbutton"
 
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
