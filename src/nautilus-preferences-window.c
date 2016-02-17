@@ -64,7 +64,7 @@
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
   "preview_image_size_combobox"
 
-static const char *const speed_tradeoff_values[] = {"always", "local-only", "never",
+static const char *const speed_tradeoff_values[] = {"local-only", "always", "never",
                                              NULL};
 
 static const char *const click_behavior_components[] = {
