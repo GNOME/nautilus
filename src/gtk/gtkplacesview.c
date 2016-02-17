@@ -3,16 +3,16 @@
  * Copyright (C) 2015 Georges Basile Stavracas Neto <georges.stavracas@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
- * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation, either version 3 of the License, or
+ * it under the terms of the GNU Lesser General Public License as published by
+ * the Free Software Foundation, either version 2.1 of the License, or
  * (at your option) any later version.
  *
  * This program is distributed in the hope that it will be useful,
  * but WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
- * GNU General Public License for more details.
+ * GNU Lesser General Public License for more details.
  *
- * You should have received a copy of the GNU General Public License
+ * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
@@ -329,11 +329,7 @@ set_busy_cursor (GtkPlacesView *view,
   display = gtk_widget_get_display (widget);
 
   if (busy)
-    {
-      cursor = gdk_cursor_new_from_name (display, "left_ptr_watch");
-      if (cursor == NULL)
-        cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
-    }
+    cursor = gdk_cursor_new_from_name (display, "progress");
   else
     cursor = NULL;
 
@@ -2249,6 +2245,8 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_listbox_row_activated);
   gtk_widget_class_bind_template_callback (widget_class, on_recent_servers_listbox_row_activated);
+
+  gtk_widget_class_set_css_name (widget_class, "placesview");
 }
 
 static void
@@ -2374,8 +2372,6 @@ gtk_places_view_get_search_query (GtkPlacesView *view)
  *
  * Sets the search query of @view. The search is immediately performed
  * once the query is set.
- *
- * Returns:
  */
 void
 gtk_places_view_set_search_query (GtkPlacesView *view,
@@ -2510,8 +2506,6 @@ gtk_places_view_get_local_only (GtkPlacesView *view)
  * @local_only: %TRUE to hide remote locations, %FALSE to show.
  *
  * Sets the #GtkPlacesView::local-only property to @local_only.
- *
- * Returns:
  *
  * Since: 3.18
  */
