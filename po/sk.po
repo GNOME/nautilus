@@ -15,8 +15,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-02-15 18:43+0000\n"
-"PO-Revision-Date: 2016-02-15 21:43+0100\n"
+"POT-Creation-Date: 2016-02-18 13:51+0000\n"
+"PO-Revision-Date: 2016-02-18 16:31+0100\n"
 "Last-Translator: Dušan Kazik <prescott66@gmail.com>\n"
 "Language-Team: slovenčina <>\n"
 "Language: sk\n"
@@ -69,7 +69,7 @@ msgstr "Spustiť softvér"
 # desktop entry name
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4197
-#: ../src/nautilus-window.c:2634
+#: ../src/nautilus-window.c:2721
 msgid "Files"
 msgstr "Súbory"
 
@@ -1621,7 +1621,7 @@ msgstr "Všetky položky v Koši budú trvale odstránené."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2482
-#: ../src/nautilus-window.c:1208
+#: ../src/nautilus-window.c:1297
 msgid "Empty _Trash"
 msgstr "Vyprázdniť _Kôš"
 
@@ -3267,7 +3267,7 @@ msgstr "Otvoriť"
 msgid "_Start"
 msgstr "_Spustiť"
 
-#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1657
+#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1653
 msgid "_Connect"
 msgstr "P_ripojiť"
 
@@ -3287,7 +3287,7 @@ msgstr "Zastaviť jednotku"
 msgid "_Safely Remove Drive"
 msgstr "_Bezpečne odobrať vybranú jednotku"
 
-#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1647
+#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1643
 msgid "_Disconnect"
 msgstr "O_dpojiť"
 
@@ -3648,8 +3648,8 @@ msgstr[2] "Týmto sa otvoria %d samostatné aplikácie."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1165 ../src/gtk/gtkplacesview.c:1209
-#: ../src/gtk/gtkplacesview.c:1260
+#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1205
+#: ../src/gtk/gtkplacesview.c:1256
 msgid "Unable to access location"
 msgstr "Nepodarilo sa získať prístup k umiestneniu"
 
@@ -3675,7 +3675,7 @@ msgid "Close tab"
 msgstr "Zatvoriť kartu"
 
 #. Translators: this is referred to captions under icons.
-#: ../src/nautilus-preferences-window.c:155
+#: ../src/nautilus-preferences-window.c:151
 #: ../src/nautilus-properties-window.c:3772
 #: ../src/nautilus-properties-window.c:3799
 msgid "None"
@@ -3989,7 +3989,7 @@ msgid "_Revert"
 msgstr "_Vrátiť"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1602
+#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1598
 msgid "_Open"
 msgstr "_Otvoriť"
 
@@ -4073,24 +4073,24 @@ msgstr "Vyp_rázdniť"
 msgid "Delete all items in the Trash"
 msgstr "Odstrániť všetky položky v Koši"
 
-#: ../src/nautilus-window.c:1226
+#: ../src/nautilus-window.c:1315
 msgid "_Properties"
 msgstr "V_lastnosti"
 
 # menu item
-#: ../src/nautilus-window.c:1236
+#: ../src/nautilus-window.c:1325
 msgid "_Format…"
 msgstr "_Formátovať…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1490
+#: ../src/nautilus-window.c:1581
 #, c-format
 msgid "“%s” deleted"
 msgstr "Súbor „%s“ odstránený"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1495
+#: ../src/nautilus-window.c:1586
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4098,28 +4098,28 @@ msgstr[0] "%d súborov odstránených"
 msgstr[1] "%d súbor odstránený"
 msgstr[2] "%d súbory odstránené"
 
-#: ../src/nautilus-window.c:1595
+#: ../src/nautilus-window.c:1686
 #, c-format
 msgid "Open %s"
 msgstr "Otvoriť priečinok %s"
 
-#: ../src/nautilus-window.c:1683
+#: ../src/nautilus-window.c:1774
 msgid "_New Tab"
 msgstr "_Nová karta"
 
-#: ../src/nautilus-window.c:1693
+#: ../src/nautilus-window.c:1784
 msgid "Move Tab _Left"
 msgstr "Presunúť kartu _vľavo"
 
-#: ../src/nautilus-window.c:1701
+#: ../src/nautilus-window.c:1792
 msgid "Move Tab _Right"
 msgstr "Presunúť kartu vp_ravo"
 
-#: ../src/nautilus-window.c:1712
+#: ../src/nautilus-window.c:1803
 msgid "_Close Tab"
 msgstr "_Zatvoriť kartu"
 
-#: ../src/nautilus-window.c:2636
+#: ../src/nautilus-window.c:2723
 msgid "Access and organize your files."
 msgstr "Spravujte a organizujte vaše súbory."
 
@@ -4127,7 +4127,7 @@ msgstr "Spravujte a organizujte vaše súbory."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2645
+#: ../src/nautilus-window.c:2732
 msgid "translator-credits"
 msgstr ""
 "Stanislav Višňovský\n"
@@ -4620,12 +4620,12 @@ msgid "Open With Other _Application"
 msgstr "Otvoriť inou _aplikáciou"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1657
+#: ../src/gtk/gtkplacesview.c:1653
 msgid "_Mount"
 msgstr "_Pripojiť"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1647
+#: ../src/gtk/gtkplacesview.c:1643
 msgid "_Unmount"
 msgstr "Od_pojiť"
 
@@ -4879,8 +4879,8 @@ msgid "Link Creation"
 msgstr "Vytváranie odkazov"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:40
-msgid "Allow creating symbolic _links"
-msgstr "Umožniť vytváranie symbolických o_dkazov"
+msgid "Show action to create symbolic _links"
+msgstr "Zobraziť akciu na vytvorenie symbolických o_dkazov"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:41
 msgid "Executable Text Files"
@@ -4904,8 +4904,8 @@ msgid "Ask before _emptying the Trash"
 msgstr "Pý_tať sa pred vyprázdnením Koša"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:47
-msgid "Allow _permanently deleting files and folders"
-msgstr "Umožniť _trvalé odstránenie súborov a priečinkov"
+msgid "Show action to _permanently delete files and folders"
+msgstr "Zobraziť akciu na _trvalé odstránenie súborov a priečinkov"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:48
 msgid "Behavior"
@@ -5133,51 +5133,51 @@ msgstr "_Zastaviť"
 msgid "_Files"
 msgstr "_Súbory"
 
-#: ../src/gtk/gtkplacesview.c:883
+#: ../src/gtk/gtkplacesview.c:879
 msgid "Searching for network locations"
 msgstr "Vyhľadávajú sa sieťové umiestnenia"
 
-#: ../src/gtk/gtkplacesview.c:890
+#: ../src/gtk/gtkplacesview.c:886
 msgid "No network locations found"
 msgstr "Nenašli sa žiadne sieťové umiestnenia"
 
-#: ../src/gtk/gtkplacesview.c:1055
+#: ../src/gtk/gtkplacesview.c:1051
 msgid "Computer"
 msgstr "Počítač"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1182 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/gtkplacesview.c:1178 ../src/gtk/gtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "Pri_pojiť"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1323
+#: ../src/gtk/gtkplacesview.c:1319
 msgid "Unable to unmount volume"
 msgstr "Nepodarilo sa odpojiť zväzok"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1405
+#: ../src/gtk/gtkplacesview.c:1401
 msgid "Cance_l"
 msgstr "_Zrušiť"
 
-#: ../src/gtk/gtkplacesview.c:1612
+#: ../src/gtk/gtkplacesview.c:1608
 msgid "Open in New _Tab"
 msgstr "Otvoriť na novej _karte"
 
 # accelerator conflict
-#: ../src/gtk/gtkplacesview.c:1623
+#: ../src/gtk/gtkplacesview.c:1619
 msgid "Open in New _Window"
 msgstr "Otvoriť v novom _okne"
 
-#: ../src/gtk/gtkplacesview.c:1822
+#: ../src/gtk/gtkplacesview.c:1818
 msgid "Unable to get remote server location"
 msgstr "Nepodarilo sa získať umiestnenie vzdialeného servera"
 
-#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
+#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
 msgid "Networks"
 msgstr "Siete"
 
-#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
+#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
 msgid "On This Computer"
 msgstr "Na tomto počítači"
 
