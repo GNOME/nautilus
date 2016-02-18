@@ -8298,6 +8298,7 @@ nautilus_files_view_new (guint                id,
         switch (id) {
         case NAUTILUS_VIEW_GRID_ID:
                 view = nautilus_canvas_view_new (slot);
+                gtk_style_context_add_class (gtk_widget_get_style_context (view), GTK_STYLE_CLASS_VIEW);
         break;
         case NAUTILUS_VIEW_LIST_ID:
                 view = nautilus_list_view_new (slot);
