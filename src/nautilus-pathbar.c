@@ -580,24 +580,6 @@ _set_simple_bottom_clip (GtkWidget *widget,
 	gtk_widget_set_clip (widget, &clip);
 }
 
-static void
-child_ordering_changed (NautilusPathBar *path_bar)
-{
-	GList *l;
-
-	if (path_bar->priv->up_slider_button) {
-		gtk_style_context_invalidate (gtk_widget_get_style_context (path_bar->priv->up_slider_button));
-	}
-	if (path_bar->priv->down_slider_button) {
-		gtk_style_context_invalidate (gtk_widget_get_style_context (path_bar->priv->down_slider_button));
-	}
-
-	for (l = path_bar->priv->button_list; l; l = l->next) {
-		ButtonData *data = l->data;
-		gtk_style_context_invalidate (gtk_widget_get_style_context (data->button));		
-	}
-}
-
 /* This is a tad complicated */
 static void
 nautilus_path_bar_size_allocate (GtkWidget     *widget,
@@ -614,7 +596,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         gint up_slider_offset;
         gint down_slider_offset;
 	GtkRequisition child_requisition;
-	gboolean needs_reorder = FALSE;
 
 	need_sliders = FALSE;
 	up_slider_offset = 0;
@@ -746,7 +727,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 			}
 		}
 
-		needs_reorder |= gtk_widget_get_child_visible (child) == FALSE;
                 gtk_widget_set_child_visible (child, TRUE);
                 gtk_widget_size_allocate (child, &child_allocation);
 
@@ -760,13 +740,11 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         /* Now we go hide all the widgets that don't fit */
         while (list) {
                 child = BUTTON_DATA (list->data)->button;
-		needs_reorder |= gtk_widget_get_child_visible (child) == TRUE;
         	gtk_widget_set_child_visible (child, FALSE);
                 list = list->prev;
         }
         for (list = first_button->next; list; list = list->next) {
                 child = BUTTON_DATA (list->data)->button;
-		needs_reorder |= gtk_widget_get_child_visible (child) == TRUE;
  	        gtk_widget_set_child_visible (child, FALSE);
         }
 
@@ -775,7 +753,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
                 child_allocation.x = up_slider_offset + allocation->x;
                 gtk_widget_size_allocate (path_bar->priv->up_slider_button, &child_allocation);
 
-		needs_reorder |= gtk_widget_get_child_visible (path_bar->priv->up_slider_button) == FALSE;
                 gtk_widget_set_child_visible (path_bar->priv->up_slider_button, TRUE);
                 gtk_widget_show_all (path_bar->priv->up_slider_button);
 
@@ -783,7 +760,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 			down_slider_offset += path_bar->priv->slider_width;
 		}
         } else {
-		needs_reorder |= gtk_widget_get_child_visible (path_bar->priv->up_slider_button) == TRUE;
         	gtk_widget_set_child_visible (path_bar->priv->up_slider_button, FALSE);
         }
 	
@@ -792,17 +768,11 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         	child_allocation.x = down_slider_offset + allocation->x;
         	gtk_widget_size_allocate (path_bar->priv->down_slider_button, &child_allocation);
 
-		needs_reorder |= gtk_widget_get_child_visible (path_bar->priv->down_slider_button) == FALSE;
       		gtk_widget_set_child_visible (path_bar->priv->down_slider_button, TRUE);
       		gtk_widget_show_all (path_bar->priv->down_slider_button);
       		nautilus_path_bar_update_slider_buttons (path_bar);
     	} else {
-		needs_reorder |= gtk_widget_get_child_visible (path_bar->priv->down_slider_button) == TRUE;
     		gtk_widget_set_child_visible (path_bar->priv->down_slider_button, FALSE);
-	}
-
-	if (needs_reorder) {
-		child_ordering_changed (path_bar);
 	}
 
 	_set_simple_bottom_clip (widget, BUTTON_BOTTOM_SHADOW);
@@ -1992,8 +1962,6 @@ nautilus_path_bar_update_path (NautilusPathBar *path_bar,
 	}	
 
         gtk_widget_pop_composite_child ();
-
-	child_ordering_changed (path_bar);
 }
 
 void
