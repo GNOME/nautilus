@@ -210,7 +210,7 @@ get_slider_button (NautilusPathBar  *path_bar,
         gtk_widget_push_composite_child ();
 
         button = gtk_button_new ();
-	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
+	gtk_widget_set_focus_on_click (button, FALSE);
 	gtk_widget_add_events (button, GDK_SCROLL_MASK);
         gtk_container_add (GTK_CONTAINER (button), gtk_arrow_new (arrow_type, GTK_SHADOW_OUT));
         gtk_container_add (GTK_CONTAINER (path_bar), button);
@@ -1808,7 +1808,7 @@ make_button_data (NautilusPathBar  *path_bar,
         button_data->button = gtk_toggle_button_new ();
 	gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
 				     "text-button");
-	gtk_button_set_focus_on_click (GTK_BUTTON (button_data->button), FALSE);
+	gtk_widget_set_focus_on_click (button_data->button, FALSE);
 	gtk_widget_add_events (button_data->button, GDK_SCROLL_MASK);
 	/* TODO update button type when xdg directories change */
 
