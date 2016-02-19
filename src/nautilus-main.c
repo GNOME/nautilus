@@ -74,9 +74,6 @@ main (int argc, char *argv[])
 	mallopt (M_MMAP_THRESHOLD, 128 *1024);
 #endif
 
-	/* This will be done by gtk+ later, but for now, force it to GNOME */
-	g_desktop_app_info_set_desktop_env ("GNOME");
-
 	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
 		eel_make_warnings_and_criticals_stop_in_debugger ();
 	}
