@@ -672,6 +672,16 @@ layout_get_size_for_layout (PangoLayout *layout,
 	}
 }
 
+static double
+nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
+{
+	EelCanvasItem *canvas_item;
+
+	canvas_item = EEL_CANVAS_ITEM (item);
+
+	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
+}
+
 static void
 prepare_pango_layout_width (NautilusCanvasItem *item,
 			    PangoLayout *layout)
@@ -1776,16 +1786,6 @@ nautilus_canvas_item_hit_test_rectangle (NautilusCanvasItem *item, EelIRect icon
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), FALSE);
 
 	return hit_test (item, icon_rect);
-}
-
-double
-nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
-{
-	EelCanvasItem *canvas_item;
-
-	canvas_item = EEL_CANVAS_ITEM (item);
-
-	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
 }
 
 void
