@@ -55,7 +55,7 @@
 
 /* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_STANDARD.
  * It will adapt to other sizes keeping the same space.*/
-#define MAX_TEXT_WIDTH_STANDARD (107 - 2 * TEXT_BACK_PADDING_X)
+#define MAX_TEXT_WIDTH_STANDARD 110
 
 /* special text height handling
  * each item has three text height variables:
@@ -679,7 +679,7 @@ nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
 
 	canvas_item = EEL_CANVAS_ITEM (item);
 
-	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit;
+	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit - 2 * TEXT_BACK_PADDING_X;
 }
 
 static void
