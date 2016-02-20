@@ -1589,7 +1589,7 @@ static void
 nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item)
 {
 	NautilusCanvasItemDetails *details;
-	EelIRect icon_rect, icon_rect_raw;
+	EelIRect icon_rect;
 	EelIRect text_rect, text_rect_for_layout, text_rect_for_entire_text;
 	EelIRect total_rect, total_rect_for_layout, total_rect_for_entire_text;
 	EelCanvasItem *item;
@@ -1604,19 +1604,15 @@ nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item)
 
 		pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 
-		/* Compute raw and scaled canvas rectangle. */
+		/* Compute scaled canvas rectangle. */
 		icon_rect.x0 = 0;
 		icon_rect.y0 = 0;
-		icon_rect_raw.x0 = 0;
-		icon_rect_raw.y0 = 0;
 
 		get_scaled_icon_size (canvas_item, &width, &height);
 
-		icon_rect_raw.x1 = icon_rect_raw.x0 + width;
-		icon_rect_raw.y1 = icon_rect_raw.y0 + height;
-		icon_rect.x1 = icon_rect_raw.x1 / pixels_per_unit;
-		icon_rect.y1 = icon_rect_raw.y1 / pixels_per_unit;
-		
+		icon_rect.x1 = width / pixels_per_unit;
+		icon_rect.y1 = height / pixels_per_unit;
+
 		/* Compute text rectangle. */
 		text_rect = compute_text_rectangle (canvas_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_DISPLAY);
 		text_rect_for_layout = compute_text_rectangle (canvas_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_LAYOUT);
