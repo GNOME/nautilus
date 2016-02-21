@@ -97,11 +97,12 @@
  * So with an 80px grid unit, a 100px canvas item would take two grid units,
  * where a 76px canvas item would only take one.
  * Canvas items are then centered in the extra available space.
+ * Keep in sync with MAX_TEXT_WIDTH at nautilus-canvas-item.
  */
-#define SMALL_ICON_GRID_WIDTH 58
-#define STANDARD_ICON_GRID_WIDTH 56
-#define LARGE_ICON_GRID_WIDTH 56
-#define LARGER_ICON_GRID_WIDTH 64
+#define SMALL_ICON_GRID_WIDTH 124
+#define STANDARD_ICON_GRID_WIDTH 112
+#define LARGE_ICON_GRID_WIDTH 106
+#define LARGER_ICON_GRID_WIDTH 128
 
 /* Desktop layout mode defines */
 #define DESKTOP_PAD_HORIZONTAL 	10

@@ -53,9 +53,11 @@
 #define TEXT_BACK_PADDING_X 4
 #define TEXT_BACK_PADDING_Y 1
 
-/* Width of the label with the standard icon size NAUTILUS_CANVAS_ICON_SIZE_STANDARD.
- * It will adapt to other sizes keeping the same space.*/
-#define MAX_TEXT_WIDTH_STANDARD 110
+/* Width of the label, keep in sync with ICON_GRID_WIDTH at nautilus-canvas-container.c */
+#define MAX_TEXT_WIDTH_SMALL 116
+#define MAX_TEXT_WIDTH_STANDARD 104
+#define MAX_TEXT_WIDTH_LARGE 98
+#define MAX_TEXT_WIDTH_LARGER 100
 
 /* special text height handling
  * each item has three text height variables:
@@ -676,10 +678,32 @@ static double
 nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
 {
 	EelCanvasItem *canvas_item;
+	NautilusCanvasContainer *container;
+	guint max_text_width;
+
 
 	canvas_item = EEL_CANVAS_ITEM (item);
+	container = canvas_item->canvas;
 
-	return MAX_TEXT_WIDTH_STANDARD * canvas_item->canvas->pixels_per_unit - 2 * TEXT_BACK_PADDING_X;
+	switch (nautilus_canvas_container_get_zoom_level (container)) {
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL:
+	  max_text_width = MAX_TEXT_WIDTH_SMALL;
+	  break;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
+	  max_text_width = MAX_TEXT_WIDTH_STANDARD;
+	  break;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
+	  max_text_width = MAX_TEXT_WIDTH_LARGE;
+	  break;
+	case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+	  max_text_width = MAX_TEXT_WIDTH_LARGER;
+	  break;
+	default:
+	  g_warning ("Zoom level not valid. This may incur in missaligned grid");
+	  max_text_width = MAX_TEXT_WIDTH_STANDARD;
+	}
+
+	return max_text_width * canvas_item->canvas->pixels_per_unit - 2 * TEXT_BACK_PADDING_X;
 }
 
 static void
