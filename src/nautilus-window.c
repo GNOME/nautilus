@@ -481,9 +481,9 @@ on_location_changed (NautilusWindow *window)
 }
 
 static void
-on_slot_loading_changed (NautilusWindowSlot *slot,
-                         GParamSpec         *pspec,
-                         NautilusWindow     *window)
+on_slot_location_changed (NautilusWindowSlot *slot,
+                          GParamSpec         *pspec,
+                          NautilusWindow     *window)
 {
         if (nautilus_window_get_active_slot (window) == slot)
                 on_location_changed (window);
@@ -513,8 +513,8 @@ static void
 connect_slot (NautilusWindow     *window,
               NautilusWindowSlot *slot)
 {
-        g_signal_connect (slot, "notify::loading",
-                          G_CALLBACK (on_slot_loading_changed), window);
+        g_signal_connect (slot, "notify::location",
+                          G_CALLBACK (on_slot_location_changed), window);
 }
 
 static void
