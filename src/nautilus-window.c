@@ -1034,13 +1034,14 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 }
 
 static void
-places_sidebar_show_other_locations (NautilusWindow   *window)
+places_sidebar_show_other_locations (NautilusWindow   *window,
+                                     GtkPlacesOpenFlags open_flags)
 {
         GFile *location;
 
         location = g_file_new_for_uri ("other-locations:///");
 
-        open_location_cb (window, location, GTK_PLACES_OPEN_NORMAL);
+        open_location_cb (window, location, open_flags);
 
         g_object_unref (location);
 }
