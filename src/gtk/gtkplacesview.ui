@@ -85,7 +85,7 @@
                         <property name="visible">1</property>
                         <property name="can_focus">1</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="on_recent_servers_listbox_row_activated" object="GtkPlacesView" swapped="yes"/>
+                        <signal name="row-activated" handler="on_recent_servers_listbox_row_activated" object="GtkNautilusPlacesView" swapped="yes"/>
                       </object>
                     </child>
                   </object>
@@ -103,11 +103,11 @@
       </object>
     </child>
   </object>
-  <template class="GtkPlacesView" parent="GtkBox">
+  <template class="GtkNautilusPlacesView" parent="GtkBox">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
-    <signal name="key-press-event" handler="on_key_press_event" object="GtkPlacesView" swapped="no"/>
+    <signal name="key-press-event" handler="on_key_press_event" object="GtkNautilusPlacesView" swapped="no"/>
     <child>
       <object class="GtkStack" id="stack">
         <property name="visible">1</property>
@@ -131,7 +131,7 @@
                         <property name="visible">1</property>
                         <property name="can_focus">1</property>
                         <property name="selection_mode">none</property>
-                        <signal name="row-activated" handler="on_listbox_row_activated" object="GtkPlacesView" swapped="yes"/>
+                        <signal name="row-activated" handler="on_listbox_row_activated" object="GtkNautilusPlacesView" swapped="yes"/>
                       </object>
                     </child>
                     <style>
@@ -227,7 +227,7 @@
             <property name="can_focus">1</property>
             <property name="sensitive">0</property>
             <property name="receives_default">1</property>
-            <signal name="clicked" handler="on_connect_button_clicked" object="GtkPlacesView" swapped="yes"/>
+            <signal name="clicked" handler="on_connect_button_clicked" object="GtkNautilusPlacesView" swapped="yes"/>
           </object>
           <packing>
             <property name="pack_type">end</property>
@@ -245,9 +245,9 @@
                 <property name="width_chars">20</property>
                 <property name="placeholder_text" translatable="yes">Enter server address…</property>
                 <property name="completion">address_entry_completion</property>
-                <signal name="notify::text" handler="on_address_entry_text_changed" object="GtkPlacesView" swapped="yes"/>
-                <signal name="activate" handler="on_connect_button_clicked" object="GtkPlacesView" swapped="yes"/>
-                <signal name="icon-press" handler="on_address_entry_clear_pressed" object="GtkPlacesView" swapped="yes"/>
+                <signal name="notify::text" handler="on_address_entry_text_changed" object="GtkNautilusPlacesView" swapped="yes"/>
+                <signal name="activate" handler="on_connect_button_clicked" object="GtkNautilusPlacesView" swapped="yes"/>
+                <signal name="icon-press" handler="on_address_entry_clear_pressed" object="GtkNautilusPlacesView" swapped="yes"/>
               </object>
             </child>
             <child>

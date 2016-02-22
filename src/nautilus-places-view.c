@@ -251,7 +251,7 @@ nautilus_places_view_set_search_query (NautilusView  *view,
 
         text = query ? nautilus_query_get_text (query) : NULL;
 
-        gtk_places_view_set_search_query (GTK_PLACES_VIEW (priv->places_view), text);
+        gtk_nautilus_places_view_set_search_query (GTK_NAUTILUS_PLACES_VIEW (priv->places_view), text);
 
         g_free (text);
 }
@@ -270,7 +270,7 @@ nautilus_places_view_is_loading (NautilusView *view)
 
         priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return gtk_places_view_get_loading (GTK_PLACES_VIEW (priv->places_view));
+        return gtk_nautilus_places_view_get_loading (GTK_NAUTILUS_PLACES_VIEW (priv->places_view));
 }
 
 static gboolean
@@ -329,9 +329,9 @@ nautilus_places_view_init (NautilusPlacesView *self)
         priv->location = g_file_new_for_uri ("other-locations:///");
 
         /* Places view */
-        priv->places_view = gtk_places_view_new ();
-        gtk_places_view_set_open_flags (GTK_PLACES_VIEW (priv->places_view),
-                                        GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
+        priv->places_view = gtk_nautilus_places_view_new ();
+        gtk_nautilus_places_view_set_open_flags (GTK_NAUTILUS_PLACES_VIEW (priv->places_view),
+                                                 GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
         gtk_widget_set_hexpand (priv->places_view, TRUE);
         gtk_widget_set_vexpand (priv->places_view, TRUE);
         gtk_widget_show (priv->places_view);
