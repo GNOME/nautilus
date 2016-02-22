@@ -1579,12 +1579,12 @@ nautilus_window_notification_delete_get_label (NautilusFileUndoInfo *undo_info,
 	if (length == 1) {
 		file_label = g_file_get_basename (files->data);
 	        /* Translators: only one item has been deleted and %s is its name. */
-		label = g_strdup_printf (_("“%s” deleted"), file_label);
+		label = g_markup_printf_escaped (_("“%s” deleted"), file_label);
         	g_free (file_label);
 	} else {
 	        /* Translators: one or more items might have been deleted, and %d
 	         * is the count. */
-		label = g_strdup_printf (ngettext ("%d file deleted", "%d files deleted", length), length);
+		label = g_markup_printf_escaped (ngettext ("%d file deleted", "%d files deleted", length), length);
 	}
 
 	return label;
