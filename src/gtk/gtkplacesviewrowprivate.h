@@ -16,44 +16,44 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef GTK_PLACES_VIEW_ROW_H
-#define GTK_PLACES_VIEW_ROW_H
+#ifndef GTK_NAUTILUS_PLACES_VIEW_ROW_H
+#define GTK_NAUTILUS_PLACES_VIEW_ROW_H
 
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define GTK_TYPE_PLACES_VIEW_ROW (gtk_places_view_row_get_type())
+#define GTK_TYPE_NAUTILUS_PLACES_VIEW_ROW (gtk_nautilus_places_view_row_get_type())
 
-G_DECLARE_FINAL_TYPE (GtkPlacesViewRow, gtk_places_view_row, GTK, PLACES_VIEW_ROW, GtkListBoxRow)
+G_DECLARE_FINAL_TYPE (GtkNautilusPlacesViewRow, gtk_nautilus_places_view_row, GTK, NAUTILUS_PLACES_VIEW_ROW, GtkListBoxRow)
 
-GtkWidget*         gtk_places_view_row_new                       (GVolume            *volume,
+GtkWidget*         gtk_nautilus_places_view_row_new                       (GVolume            *volume,
                                                                   GMount             *mount);
 
-GtkWidget*         gtk_places_view_row_get_eject_button          (GtkPlacesViewRow   *row);
+GtkWidget*         gtk_nautilus_places_view_row_get_eject_button          (GtkNautilusPlacesViewRow   *row);
 
-GtkWidget*         gtk_places_view_row_get_event_box             (GtkPlacesViewRow   *row);
+GtkWidget*         gtk_nautilus_places_view_row_get_event_box             (GtkNautilusPlacesViewRow   *row);
 
-GMount*            gtk_places_view_row_get_mount                 (GtkPlacesViewRow   *row);
+GMount*            gtk_nautilus_places_view_row_get_mount                 (GtkNautilusPlacesViewRow   *row);
 
-GVolume*           gtk_places_view_row_get_volume                (GtkPlacesViewRow   *row);
+GVolume*           gtk_nautilus_places_view_row_get_volume                (GtkNautilusPlacesViewRow   *row);
 
-GFile*             gtk_places_view_row_get_file                  (GtkPlacesViewRow   *row);
+GFile*             gtk_nautilus_places_view_row_get_file                  (GtkNautilusPlacesViewRow   *row);
 
-void               gtk_places_view_row_set_busy                  (GtkPlacesViewRow   *row,
+void               gtk_nautilus_places_view_row_set_busy                  (GtkNautilusPlacesViewRow   *row,
                                                                   gboolean            is_busy);
 
-gboolean           gtk_places_view_row_get_is_network            (GtkPlacesViewRow   *row);
+gboolean           gtk_nautilus_places_view_row_get_is_network            (GtkNautilusPlacesViewRow   *row);
 
-void               gtk_places_view_row_set_is_network            (GtkPlacesViewRow   *row,
+void               gtk_nautilus_places_view_row_set_is_network            (GtkNautilusPlacesViewRow   *row,
                                                                   gboolean            is_network);
 
-void               gtk_places_view_row_set_path_size_group       (GtkPlacesViewRow   *row,
+void               gtk_nautilus_places_view_row_set_path_size_group       (GtkNautilusPlacesViewRow   *row,
                                                                   GtkSizeGroup       *group);
 
-void               gtk_places_view_row_set_space_size_group      (GtkPlacesViewRow   *row,
+void               gtk_nautilus_places_view_row_set_space_size_group      (GtkNautilusPlacesViewRow   *row,
                                                                   GtkSizeGroup       *group);
 
 G_END_DECLS
 
-#endif /* GTK_PLACES_VIEW_ROW_H */
+#endif /* GTK_NAUTILUS_PLACES_VIEW_ROW_H */

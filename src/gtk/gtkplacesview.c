@@ -28,11 +28,11 @@
 /**
  * SECTION:gtkplacesview
  * @Short_description: Widget that displays persistent drives and manages mounted networks
- * @Title: GtkPlacesView
+ * @Title: GtkNautilusPlacesView
  * @See_also: #GtkFileChooser
  *
- * #GtkPlacesView is a stock widget that displays a list of persistent drives
- * such as harddisk partitions and networks.  #GtkPlacesView does not monitor
+ * #GtkNautilusPlacesView is a stock widget that displays a list of persistent drives
+ * such as harddisk partitions and networks.  #GtkNautilusPlacesView does not monitor
  * removable devices.
  *
  * The places view displays drives and networks, and will automatically mount
@@ -41,11 +41,11 @@
  * shown at the network list.
  *
  * To make use of the places view, an application at least needs to connect
- * to the #GtkPlacesView::open-location signal. This is emitted when the user
+ * to the #GtkNautilusPlacesView::open-location signal. This is emitted when the user
  * selects a location to open in the view.
  */
 
-struct _GtkPlacesViewPrivate
+struct _GtkNautilusPlacesViewPrivate
 {
   GVolumeMonitor                *volume_monitor;
   GtkPlacesOpenFlags             open_flags;
@@ -89,32 +89,32 @@ struct _GtkPlacesViewPrivate
   guint                          loading : 1;
 };
 
-static void        mount_volume                                  (GtkPlacesView *view,
+static void        mount_volume                                  (GtkNautilusPlacesView *view,
                                                                   GVolume       *volume);
 
-static gboolean    on_button_press_event                         (GtkPlacesViewRow *row,
+static gboolean    on_button_press_event                         (GtkNautilusPlacesViewRow *row,
                                                                   GdkEventButton   *event);
 
 static void        on_eject_button_clicked                       (GtkWidget        *widget,
-                                                                  GtkPlacesViewRow *row);
+                                                                  GtkNautilusPlacesViewRow *row);
 
-static gboolean    on_row_popup_menu                             (GtkPlacesViewRow *row);
+static gboolean    on_row_popup_menu                             (GtkNautilusPlacesViewRow *row);
 
-static void        populate_servers                              (GtkPlacesView *view);
+static void        populate_servers                              (GtkNautilusPlacesView *view);
 
-static gboolean    gtk_places_view_get_fetching_networks         (GtkPlacesView *view);
+static gboolean    gtk_nautilus_places_view_get_fetching_networks         (GtkNautilusPlacesView *view);
 
-static void        gtk_places_view_set_fetching_networks         (GtkPlacesView *view,
+static void        gtk_nautilus_places_view_set_fetching_networks         (GtkNautilusPlacesView *view,
                                                                   gboolean       fetching_networks);
 
-static void        gtk_places_view_set_loading                   (GtkPlacesView *view,
+static void        gtk_nautilus_places_view_set_loading                   (GtkNautilusPlacesView *view,
                                                                   gboolean       loading);
 
-static void        update_loading                                (GtkPlacesView *view);
+static void        update_loading                                (GtkNautilusPlacesView *view);
 
-G_DEFINE_TYPE_WITH_PRIVATE (GtkPlacesView, gtk_places_view, GTK_TYPE_BOX)
+G_DEFINE_TYPE_WITH_PRIVATE (GtkNautilusPlacesView, gtk_nautilus_places_view, GTK_TYPE_BOX)
 
-/* GtkPlacesView properties & signals */
+/* GtkNautilusPlacesView properties & signals */
 enum {
   PROP_0,
   PROP_LOCAL_ONLY,
@@ -138,49 +138,49 @@ const gchar *unsupported_protocols [] =
   NULL
 };
 
-static guint places_view_signals [LAST_SIGNAL] = { 0 };
+static guint nautilus_places_view_signals [LAST_SIGNAL] = { 0 };
 static GParamSpec *properties [LAST_PROP];
 
 static void
-emit_open_location (GtkPlacesView      *view,
+emit_open_location (GtkNautilusPlacesView      *view,
                     GFile              *location,
                     GtkPlacesOpenFlags  open_flags)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if ((open_flags & priv->open_flags) == 0)
     open_flags = GTK_PLACES_OPEN_NORMAL;
 
-  g_signal_emit (view, places_view_signals[OPEN_LOCATION], 0, location, open_flags);
+  g_signal_emit (view, nautilus_places_view_signals[OPEN_LOCATION], 0, location, open_flags);
 }
 
 static void
-emit_show_error_message (GtkPlacesView *view,
+emit_show_error_message (GtkNautilusPlacesView *view,
                          gchar         *primary_message,
                          gchar         *secondary_message)
 {
-  g_signal_emit (view, places_view_signals[SHOW_ERROR_MESSAGE],
+  g_signal_emit (view, nautilus_places_view_signals[SHOW_ERROR_MESSAGE],
                          0, primary_message, secondary_message);
 }
 
 static void
-server_file_changed_cb (GtkPlacesView *view)
+server_file_changed_cb (GtkNautilusPlacesView *view)
 {
   populate_servers (view);
 }
 
 static GBookmarkFile *
-server_list_load (GtkPlacesView *view)
+server_list_load (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GBookmarkFile *bookmarks;
   GError *error = NULL;
   gchar *datadir;
   gchar *filename;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   bookmarks = g_bookmark_file_new ();
   datadir = g_build_filename (g_get_user_config_dir (), "gtk-3.0", NULL);
   filename = g_build_filename (datadir, "servers", NULL);
@@ -246,7 +246,7 @@ server_list_save (GBookmarkFile *bookmarks)
 }
 
 static void
-server_list_add_server (GtkPlacesView *view,
+server_list_add_server (GtkNautilusPlacesView *view,
                         GFile         *file)
 {
   GBookmarkFile *bookmarks;
@@ -283,7 +283,7 @@ server_list_add_server (GtkPlacesView *view,
 }
 
 static void
-server_list_remove_server (GtkPlacesView *view,
+server_list_remove_server (GtkNautilusPlacesView *view,
                            const gchar   *uri)
 {
   GBookmarkFile *bookmarks;
@@ -313,7 +313,7 @@ get_toplevel (GtkWidget *widget)
 }
 
 static void
-set_busy_cursor (GtkPlacesView *view,
+set_busy_cursor (GtkNautilusPlacesView *view,
                  gboolean       busy)
 {
   GtkWidget *widget;
@@ -342,19 +342,19 @@ set_busy_cursor (GtkPlacesView *view,
 
 /* Activates the given row, with the given flags as parameter */
 static void
-activate_row (GtkPlacesView      *view,
-              GtkPlacesViewRow   *row,
+activate_row (GtkNautilusPlacesView      *view,
+              GtkNautilusPlacesViewRow   *row,
               GtkPlacesOpenFlags  flags)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GVolume *volume;
   GMount *mount;
   GFile *file;
 
-  priv = gtk_places_view_get_instance_private (view);
-  mount = gtk_places_view_row_get_mount (row);
-  volume = gtk_places_view_row_get_volume (row);
-  file = gtk_places_view_row_get_file (row);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
+  mount = gtk_nautilus_places_view_row_get_mount (row);
+  volume = gtk_nautilus_places_view_row_get_volume (row);
+  file = gtk_nautilus_places_view_row_get_file (row);
 
   if (file)
     {
@@ -376,18 +376,18 @@ activate_row (GtkPlacesView      *view,
        */
       priv->should_open_location = TRUE;
 
-      gtk_places_view_row_set_busy (row, TRUE);
+      gtk_nautilus_places_view_row_set_busy (row, TRUE);
       mount_volume (view, volume);
     }
 }
 
-static void update_places (GtkPlacesView *view);
+static void update_places (GtkNautilusPlacesView *view);
 
 static void
-gtk_places_view_finalize (GObject *object)
+gtk_nautilus_places_view_finalize (GObject *object)
 {
-  GtkPlacesView *self = (GtkPlacesView *)object;
-  GtkPlacesViewPrivate *priv = gtk_places_view_get_instance_private (self);
+  GtkNautilusPlacesView *self = (GtkNautilusPlacesView *)object;
+  GtkNautilusPlacesViewPrivate *priv = gtk_nautilus_places_view_get_instance_private (self);
 
   g_signal_handlers_disconnect_by_func (priv->volume_monitor, update_places, object);
 
@@ -406,29 +406,29 @@ gtk_places_view_finalize (GObject *object)
   g_clear_object (&priv->path_size_group);
   g_clear_object (&priv->space_size_group);
 
-  G_OBJECT_CLASS (gtk_places_view_parent_class)->finalize (object);
+  G_OBJECT_CLASS (gtk_nautilus_places_view_parent_class)->finalize (object);
 }
 
 static void
-gtk_places_view_get_property (GObject    *object,
+gtk_nautilus_places_view_get_property (GObject    *object,
                               guint       prop_id,
                               GValue     *value,
                               GParamSpec *pspec)
 {
-  GtkPlacesView *self = GTK_PLACES_VIEW (object);
+  GtkNautilusPlacesView *self = GTK_NAUTILUS_PLACES_VIEW (object);
 
   switch (prop_id)
     {
     case PROP_LOCAL_ONLY:
-      g_value_set_boolean (value, gtk_places_view_get_local_only (self));
+      g_value_set_boolean (value, gtk_nautilus_places_view_get_local_only (self));
       break;
 
     case PROP_LOADING:
-      g_value_set_boolean (value, gtk_places_view_get_loading (self));
+      g_value_set_boolean (value, gtk_nautilus_places_view_get_loading (self));
       break;
 
     case PROP_FETCHING_NETWORKS:
-      g_value_set_boolean (value, gtk_places_view_get_fetching_networks (self));
+      g_value_set_boolean (value, gtk_nautilus_places_view_get_fetching_networks (self));
       break;
 
     default:
@@ -437,17 +437,17 @@ gtk_places_view_get_property (GObject    *object,
 }
 
 static void
-gtk_places_view_set_property (GObject      *object,
+gtk_nautilus_places_view_set_property (GObject      *object,
                               guint         prop_id,
                               const GValue *value,
                               GParamSpec   *pspec)
 {
-  GtkPlacesView *self = GTK_PLACES_VIEW (object);
+  GtkNautilusPlacesView *self = GTK_NAUTILUS_PLACES_VIEW (object);
 
   switch (prop_id)
     {
     case PROP_LOCAL_ONLY:
-      gtk_places_view_set_local_only (self, g_value_get_boolean (value));
+      gtk_nautilus_places_view_set_local_only (self, g_value_get_boolean (value));
       break;
 
     default:
@@ -484,7 +484,7 @@ is_external_volume (GVolume *volume)
 typedef struct
 {
   gchar         *uri;
-  GtkPlacesView *view;
+  GtkNautilusPlacesView *view;
 } RemoveServerData;
 
 static void
@@ -496,16 +496,16 @@ on_remove_server_button_clicked (RemoveServerData *data)
 }
 
 static void
-populate_servers (GtkPlacesView *view)
+populate_servers (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GBookmarkFile *server_list;
   GList *children;
   gchar **uris;
   gsize num_uris;
   gint i;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   server_list = server_list_load (view);
 
   if (!server_list)
@@ -610,14 +610,14 @@ populate_servers (GtkPlacesView *view)
 }
 
 static void
-update_view_mode (GtkPlacesView *view)
+update_view_mode (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GList *children;
   GList *l;
   gboolean show_listbox;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   show_listbox = FALSE;
 
   /* drives */
@@ -648,17 +648,17 @@ update_view_mode (GtkPlacesView *view)
 }
 
 static void
-insert_row (GtkPlacesView *view,
+insert_row (GtkNautilusPlacesView *view,
             GtkWidget     *row,
             gboolean       is_network)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   g_object_set_data (G_OBJECT (row), "is-network", GINT_TO_POINTER (is_network));
 
-  g_signal_connect_swapped (gtk_places_view_row_get_event_box (GTK_PLACES_VIEW_ROW (row)),
+  g_signal_connect_swapped (gtk_nautilus_places_view_row_get_event_box (GTK_NAUTILUS_PLACES_VIEW_ROW (row)),
                             "button-press-event",
                             G_CALLBACK (on_button_press_event),
                             row);
@@ -668,19 +668,19 @@ insert_row (GtkPlacesView *view,
                     G_CALLBACK (on_row_popup_menu),
                     row);
 
-  g_signal_connect (gtk_places_view_row_get_eject_button (GTK_PLACES_VIEW_ROW (row)),
+  g_signal_connect (gtk_nautilus_places_view_row_get_eject_button (GTK_NAUTILUS_PLACES_VIEW_ROW (row)),
                     "clicked",
                     G_CALLBACK (on_eject_button_clicked),
                     row);
 
-  gtk_places_view_row_set_path_size_group (GTK_PLACES_VIEW_ROW (row), priv->path_size_group);
-  gtk_places_view_row_set_space_size_group (GTK_PLACES_VIEW_ROW (row), priv->space_size_group);
+  gtk_nautilus_places_view_row_set_path_size_group (GTK_NAUTILUS_PLACES_VIEW_ROW (row), priv->path_size_group);
+  gtk_nautilus_places_view_row_set_space_size_group (GTK_NAUTILUS_PLACES_VIEW_ROW (row), priv->space_size_group);
 
   gtk_container_add (GTK_CONTAINER (priv->listbox), row);
 }
 
 static void
-add_volume (GtkPlacesView *view,
+add_volume (GtkNautilusPlacesView *view,
             GVolume       *volume)
 {
   gboolean is_network;
@@ -708,7 +708,7 @@ add_volume (GtkPlacesView *view,
     {
       GtkWidget *row;
 
-      row = g_object_new (GTK_TYPE_PLACES_VIEW_ROW,
+      row = g_object_new (GTK_TYPE_NAUTILUS_PLACES_VIEW_ROW,
                           "icon", icon,
                           "name", name,
                           "path", path ? path : "",
@@ -730,7 +730,7 @@ add_volume (GtkPlacesView *view,
 }
 
 static void
-add_mount (GtkPlacesView *view,
+add_mount (GtkNautilusPlacesView *view,
            GMount        *mount)
 {
   gboolean is_network;
@@ -756,7 +756,7 @@ add_mount (GtkPlacesView *view,
     {
       GtkWidget *row;
 
-      row = g_object_new (GTK_TYPE_PLACES_VIEW_ROW,
+      row = g_object_new (GTK_TYPE_NAUTILUS_PLACES_VIEW_ROW,
                           "icon", icon,
                           "name", name,
                           "path", path ? path : "",
@@ -778,7 +778,7 @@ add_mount (GtkPlacesView *view,
 }
 
 static void
-add_drive (GtkPlacesView *view,
+add_drive (GtkNautilusPlacesView *view,
            GDrive        *drive)
 {
   GList *volumes;
@@ -793,7 +793,7 @@ add_drive (GtkPlacesView *view,
 }
 
 static void
-add_file (GtkPlacesView *view,
+add_file (GtkNautilusPlacesView *view,
           GFile         *file,
           GIcon         *icon,
           const gchar   *display_name,
@@ -801,7 +801,7 @@ add_file (GtkPlacesView *view,
           gboolean       is_network)
 {
   GtkWidget *row;
-  row = g_object_new (GTK_TYPE_PLACES_VIEW_ROW,
+  row = g_object_new (GTK_TYPE_NAUTILUS_PLACES_VIEW_ROW,
                       "icon", icon,
                       "name", display_name,
                       "path", path,
@@ -815,14 +815,14 @@ add_file (GtkPlacesView *view,
 }
 
 static gboolean
-has_networks (GtkPlacesView *view)
+has_networks (GtkNautilusPlacesView *view)
 {
   GList *l;
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GList *children;
   gboolean has_network = FALSE;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   children = gtk_container_get_children (GTK_CONTAINER (priv->listbox));
   for (l = children; l != NULL; l = l->next)
@@ -841,11 +841,11 @@ has_networks (GtkPlacesView *view)
 }
 
 static void
-update_network_state (GtkPlacesView *view)
+update_network_state (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (priv->network_placeholder == NULL)
     {
@@ -868,7 +868,7 @@ update_network_state (GtkPlacesView *view)
       gtk_container_add (GTK_CONTAINER (priv->listbox), priv->network_placeholder);
     }
 
-  if (gtk_places_view_get_fetching_networks (view))
+  if (gtk_nautilus_places_view_get_fetching_networks (view))
     {
       /* only show a placeholder with a message if the list is empty.
        * otherwise just show the spinner in the header */
@@ -892,7 +892,7 @@ update_network_state (GtkPlacesView *view)
 }
 
 static void
-populate_networks (GtkPlacesView   *view,
+populate_networks (GtkNautilusPlacesView   *view,
                    GFileEnumerator *enumerator,
                    GList           *detected_networks)
 {
@@ -930,13 +930,13 @@ network_enumeration_next_files_finished (GObject      *source_object,
                                          GAsyncResult *res,
                                          gpointer      user_data)
 {
-  GtkPlacesViewPrivate *priv;
-  GtkPlacesView *view;
+  GtkNautilusPlacesViewPrivate *priv;
+  GtkNautilusPlacesView *view;
   GList *detected_networks;
   GError *error;
 
-  view = GTK_PLACES_VIEW (user_data);
-  priv = gtk_places_view_get_instance_private (view);
+  view = GTK_NAUTILUS_PLACES_VIEW (user_data);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   error = NULL;
 
   detected_networks = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source_object),
@@ -951,7 +951,7 @@ network_enumeration_next_files_finished (GObject      *source_object,
     }
   else
     {
-      gtk_places_view_set_fetching_networks (view, FALSE);
+      gtk_nautilus_places_view_set_fetching_networks (view, FALSE);
       populate_networks (view, G_FILE_ENUMERATOR (source_object), detected_networks);
 
       g_list_free_full (detected_networks, g_object_unref);
@@ -970,7 +970,7 @@ network_enumeration_finished (GObject      *source_object,
                               GAsyncResult *res,
                               gpointer      user_data)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GFileEnumerator *enumerator;
   GError *error;
 
@@ -987,7 +987,7 @@ network_enumeration_finished (GObject      *source_object,
     }
   else
     {
-      priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (user_data));
+      priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (user_data));
       g_file_enumerator_next_files_async (enumerator,
                                           G_MAXINT32,
                                           G_PRIORITY_DEFAULT,
@@ -998,18 +998,18 @@ network_enumeration_finished (GObject      *source_object,
 }
 
 static void
-fetch_networks (GtkPlacesView *view)
+fetch_networks (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GFile *network_file;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   network_file = g_file_new_for_uri ("network:///");
 
   g_cancellable_cancel (priv->networks_fetching_cancellable);
   g_clear_object (&priv->networks_fetching_cancellable);
   priv->networks_fetching_cancellable = g_cancellable_new ();
-  gtk_places_view_set_fetching_networks (view, TRUE);
+  gtk_nautilus_places_view_set_fetching_networks (view, TRUE);
   update_network_state (view);
 
   g_file_enumerate_children_async (network_file,
@@ -1024,9 +1024,9 @@ fetch_networks (GtkPlacesView *view)
 }
 
 static void
-update_places (GtkPlacesView *view)
+update_places (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GList *children;
   GList *mounts;
   GList *volumes;
@@ -1035,14 +1035,14 @@ update_places (GtkPlacesView *view)
   GIcon *icon;
   GFile *file;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   /* Clear all previously added items */
   children = gtk_container_get_children (GTK_CONTAINER (priv->listbox));
   g_list_free_full (children, (GDestroyNotify) gtk_widget_destroy);
   priv->network_placeholder = NULL;
   /* Inform clients that we started loading */
-  gtk_places_view_set_loading (view, TRUE);
+  gtk_nautilus_places_view_set_loading (view, TRUE);
 
   /* Add "Computer" row */
   file = g_file_new_for_path ("/");
@@ -1116,7 +1116,7 @@ update_places (GtkPlacesView *view)
   populate_servers (view);
 
   /* fetch networks and add them asynchronously */
-  if (!gtk_places_view_get_local_only (view))
+  if (!gtk_nautilus_places_view_get_local_only (view))
     fetch_networks (view);
 
   update_view_mode (view);
@@ -1129,8 +1129,8 @@ server_mount_ready_cb (GObject      *source_file,
                        GAsyncResult *res,
                        gpointer      user_data)
 {
-  GtkPlacesViewPrivate *priv;
-  GtkPlacesView *view;
+  GtkNautilusPlacesViewPrivate *priv;
+  GtkNautilusPlacesView *view;
   gboolean should_show;
   GError *error;
   GFile *location;
@@ -1156,7 +1156,7 @@ server_mount_ready_cb (GObject      *source_file,
                (error->code != G_IO_ERROR_CANCELLED &&
                 error->code != G_IO_ERROR_FAILED_HANDLED))
         {
-          view = GTK_PLACES_VIEW (user_data);
+          view = GTK_NAUTILUS_PLACES_VIEW (user_data);
           /* if it wasn't cancelled show a dialog */
           emit_show_error_message (view, _("Unable to access location"), error->message);
           should_show = FALSE;
@@ -1170,8 +1170,8 @@ server_mount_ready_cb (GObject      *source_file,
       g_clear_error (&error);
     }
 
-  view = GTK_PLACES_VIEW (user_data);
-  priv = gtk_places_view_get_instance_private (view);
+  view = GTK_NAUTILUS_PLACES_VIEW (user_data);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   priv->should_pulse_entry = FALSE;
 
   /* Restore from Cancel to Connect */
@@ -1224,8 +1224,8 @@ volume_mount_ready_cb (GObject      *source_volume,
                        GAsyncResult *res,
                        gpointer      user_data)
 {
-  GtkPlacesViewPrivate *priv;
-  GtkPlacesView *view;
+  GtkNautilusPlacesViewPrivate *priv;
+  GtkNautilusPlacesView *view;
   gboolean should_show;
   GVolume *volume;
   GError *error;
@@ -1253,7 +1253,7 @@ volume_mount_ready_cb (GObject      *source_volume,
                 error->code != G_IO_ERROR_FAILED_HANDLED))
         {
           /* if it wasn't cancelled show a dialog */
-          emit_show_error_message (GTK_PLACES_VIEW (user_data), _("Unable to access location"), error->message);
+          emit_show_error_message (GTK_NAUTILUS_PLACES_VIEW (user_data), _("Unable to access location"), error->message);
           should_show = FALSE;
         }
       else
@@ -1266,8 +1266,8 @@ volume_mount_ready_cb (GObject      *source_volume,
       g_clear_error (&error);
     }
 
-  view = GTK_PLACES_VIEW (user_data);
-  priv = gtk_places_view_get_instance_private (view);
+  view = GTK_NAUTILUS_PLACES_VIEW (user_data);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   priv->mounting_volume = FALSE;
   update_loading (view);
 
@@ -1280,7 +1280,7 @@ volume_mount_ready_cb (GObject      *source_volume,
       root = g_mount_get_default_location (mount);
 
       if (priv->should_open_location)
-        emit_open_location (GTK_PLACES_VIEW (user_data), root, priv->open_flags);
+        emit_open_location (GTK_NAUTILUS_PLACES_VIEW (user_data), root, priv->open_flags);
 
       g_object_unref (mount);
       g_object_unref (root);
@@ -1294,16 +1294,16 @@ unmount_ready_cb (GObject      *source_mount,
                   GAsyncResult *res,
                   gpointer      user_data)
 {
-  GtkPlacesView *view;
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesView *view;
+  GtkNautilusPlacesViewPrivate *priv;
   GMount *mount;
   GError *error;
 
-  view = GTK_PLACES_VIEW (user_data);
+  view = GTK_NAUTILUS_PLACES_VIEW (user_data);
   mount = G_MOUNT (source_mount);
   error = NULL;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   priv->unmounting_mount = FALSE;
   update_loading (view);
 
@@ -1326,9 +1326,9 @@ unmount_ready_cb (GObject      *source_mount,
 static gboolean
 pulse_entry_cb (gpointer user_data)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (user_data));
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (user_data));
 
   if (priv->should_pulse_entry)
     {
@@ -1347,14 +1347,14 @@ pulse_entry_cb (gpointer user_data)
 }
 
 static void
-unmount_mount (GtkPlacesView *view,
+unmount_mount (GtkNautilusPlacesView *view,
                GMount        *mount)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GMountOperation *operation;
   GtkWidget *toplevel;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
   operation = gtk_mount_operation_new (GTK_WINDOW (toplevel));
 
@@ -1376,14 +1376,14 @@ unmount_mount (GtkPlacesView *view,
 }
 
 static void
-mount_server (GtkPlacesView *view,
+mount_server (GtkNautilusPlacesView *view,
               GFile         *location)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GMountOperation *operation;
   GtkWidget *toplevel;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   g_cancellable_cancel (priv->cancellable);
   g_clear_object (&priv->cancellable);
@@ -1420,14 +1420,14 @@ mount_server (GtkPlacesView *view,
 }
 
 static void
-mount_volume (GtkPlacesView *view,
+mount_volume (GtkNautilusPlacesView *view,
               GVolume       *volume)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GMountOperation *operation;
   GtkWidget *toplevel;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
   operation = gtk_mount_operation_new (GTK_WINDOW (toplevel));
 
@@ -1456,27 +1456,27 @@ static void
 popup_menu_detach_cb (GtkWidget *attach_widget,
                       GtkMenu   *menu)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (attach_widget));
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (attach_widget));
   priv->popup_menu = NULL;
 }
 
 static void
-get_view_and_file (GtkPlacesViewRow  *row,
+get_view_and_file (GtkNautilusPlacesViewRow  *row,
                    GtkWidget        **view,
                    GFile            **file)
 {
   if (view)
-    *view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_PLACES_VIEW);
+    *view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_NAUTILUS_PLACES_VIEW);
 
   if (file)
     {
       GVolume *volume;
       GMount *mount;
 
-      volume = gtk_places_view_row_get_volume (row);
-      mount = gtk_places_view_row_get_mount (row);
+      volume = gtk_nautilus_places_view_row_get_volume (row);
+      mount = gtk_nautilus_places_view_row_get_mount (row);
 
       if (mount)
         *file = g_mount_get_default_location (mount);
@@ -1489,7 +1489,7 @@ get_view_and_file (GtkPlacesViewRow  *row,
 
 static void
 open_cb (GtkMenuItem      *item,
-         GtkPlacesViewRow *row)
+         GtkNautilusPlacesViewRow *row)
 {
   GtkWidget *view;
   GFile *file;
@@ -1497,14 +1497,14 @@ open_cb (GtkMenuItem      *item,
   get_view_and_file (row, &view, &file);
 
   if (file)
-    emit_open_location (GTK_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NORMAL);
+    emit_open_location (GTK_NAUTILUS_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NORMAL);
 
   g_clear_object (&file);
 }
 
 static void
 open_in_new_tab_cb (GtkMenuItem      *item,
-                    GtkPlacesViewRow *row)
+                    GtkNautilusPlacesViewRow *row)
 {
   GtkWidget *view;
   GFile *file;
@@ -1512,14 +1512,14 @@ open_in_new_tab_cb (GtkMenuItem      *item,
   get_view_and_file (row, &view, &file);
 
   if (file)
-    emit_open_location (GTK_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NEW_TAB);
+    emit_open_location (GTK_NAUTILUS_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NEW_TAB);
 
   g_clear_object (&file);
 }
 
 static void
 open_in_new_window_cb (GtkMenuItem      *item,
-                       GtkPlacesViewRow *row)
+                       GtkNautilusPlacesViewRow *row)
 {
   GtkWidget *view;
   GFile *file;
@@ -1527,22 +1527,22 @@ open_in_new_window_cb (GtkMenuItem      *item,
   get_view_and_file (row, &view, &file);
 
   if (file)
-    emit_open_location (GTK_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NEW_WINDOW);
+    emit_open_location (GTK_NAUTILUS_PLACES_VIEW (view), file, GTK_PLACES_OPEN_NEW_WINDOW);
 
   g_clear_object (&file);
 }
 
 static void
 mount_cb (GtkMenuItem      *item,
-          GtkPlacesViewRow *row)
+          GtkNautilusPlacesViewRow *row)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GtkWidget *view;
   GVolume *volume;
 
-  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_PLACES_VIEW);
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (view));
-  volume = gtk_places_view_row_get_volume (row);
+  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_NAUTILUS_PLACES_VIEW);
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (view));
+  volume = gtk_nautilus_places_view_row_get_volume (row);
 
   /*
    * When the mount item is activated, it's expected that
@@ -1551,40 +1551,40 @@ mount_cb (GtkMenuItem      *item,
    */
   priv->should_open_location = FALSE;
 
-  gtk_places_view_row_set_busy (row, TRUE);
-  mount_volume (GTK_PLACES_VIEW (view), volume);
+  gtk_nautilus_places_view_row_set_busy (row, TRUE);
+  mount_volume (GTK_NAUTILUS_PLACES_VIEW (view), volume);
 }
 
 static void
 unmount_cb (GtkMenuItem      *item,
-            GtkPlacesViewRow *row)
+            GtkNautilusPlacesViewRow *row)
 {
   GtkWidget *view;
   GMount *mount;
 
-  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_PLACES_VIEW);
-  mount = gtk_places_view_row_get_mount (row);
+  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_NAUTILUS_PLACES_VIEW);
+  mount = gtk_nautilus_places_view_row_get_mount (row);
 
-  gtk_places_view_row_set_busy (row, TRUE);
+  gtk_nautilus_places_view_row_set_busy (row, TRUE);
 
-  unmount_mount (GTK_PLACES_VIEW (view), mount);
+  unmount_mount (GTK_NAUTILUS_PLACES_VIEW (view), mount);
 }
 
 /* Constructs the popup menu if needed */
 static void
-build_popup_menu (GtkPlacesView    *view,
-                  GtkPlacesViewRow *row)
+build_popup_menu (GtkNautilusPlacesView    *view,
+                  GtkNautilusPlacesViewRow *row)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GtkWidget *item;
   GMount *mount;
   GFile *file;
   gboolean is_network;
 
-  priv = gtk_places_view_get_instance_private (view);
-  mount = gtk_places_view_row_get_mount (row);
-  file = gtk_places_view_row_get_file (row);
-  is_network = gtk_places_view_row_get_is_network (row);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
+  mount = gtk_nautilus_places_view_row_get_mount (row);
+  file = gtk_nautilus_places_view_row_get_file (row);
+  is_network = gtk_nautilus_places_view_row_get_is_network (row);
 
   priv->popup_menu = gtk_menu_new ();
   gtk_style_context_add_class (gtk_widget_get_style_context (priv->popup_menu),
@@ -1661,19 +1661,19 @@ build_popup_menu (GtkPlacesView    *view,
 }
 
 static void
-popup_menu (GtkPlacesViewRow *row,
+popup_menu (GtkNautilusPlacesViewRow *row,
             GdkEventButton   *event)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   GtkWidget *view;
   gint button;
 
-  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_PLACES_VIEW);
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (view));
+  view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_NAUTILUS_PLACES_VIEW);
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (view));
 
   g_clear_pointer (&priv->popup_menu, gtk_widget_destroy);
 
-  build_popup_menu (GTK_PLACES_VIEW (view), row);
+  build_popup_menu (GTK_NAUTILUS_PLACES_VIEW (view), row);
 
   /* The event button needs to be 0 if we're popping up this menu from
    * a button release, else a 2nd click outside the menu with any button
@@ -1702,14 +1702,14 @@ popup_menu (GtkPlacesViewRow *row,
 }
 
 static gboolean
-on_row_popup_menu (GtkPlacesViewRow *row)
+on_row_popup_menu (GtkNautilusPlacesViewRow *row)
 {
   popup_menu (row, NULL);
   return TRUE;
 }
 
 static gboolean
-on_button_press_event (GtkPlacesViewRow *row,
+on_button_press_event (GtkNautilusPlacesViewRow *row,
                        GdkEventButton   *event)
 {
   if (row &&
@@ -1727,11 +1727,11 @@ on_button_press_event (GtkPlacesViewRow *row,
 static gboolean
 on_key_press_event (GtkWidget     *widget,
                     GdkEventKey   *event,
-                    GtkPlacesView *view)
+                    GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (event)
     {
@@ -1755,7 +1755,7 @@ on_key_press_event (GtkWidget     *widget,
 
           focus_widget = gtk_window_get_focus (toplevel);
 
-          if (!GTK_IS_PLACES_VIEW_ROW (focus_widget))
+          if (!GTK_IS_NAUTILUS_PLACES_VIEW_ROW (focus_widget))
             return FALSE;
 
           if ((event->state & modifiers) == GDK_SHIFT_MASK)
@@ -1763,7 +1763,7 @@ on_key_press_event (GtkWidget     *widget,
           else if ((event->state & modifiers) == GDK_CONTROL_MASK)
             priv->current_open_flags = GTK_PLACES_OPEN_NEW_WINDOW;
 
-          activate_row (view, GTK_PLACES_VIEW_ROW (focus_widget), priv->current_open_flags);
+          activate_row (view, GTK_NAUTILUS_PLACES_VIEW_ROW (focus_widget), priv->current_open_flags);
 
           return TRUE;
         }
@@ -1774,24 +1774,24 @@ on_key_press_event (GtkWidget     *widget,
 
 static void
 on_eject_button_clicked (GtkWidget        *widget,
-                         GtkPlacesViewRow *row)
+                         GtkNautilusPlacesViewRow *row)
 {
   if (row)
     {
-      GtkWidget *view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_PLACES_VIEW);
+      GtkWidget *view = gtk_widget_get_ancestor (GTK_WIDGET (row), GTK_TYPE_NAUTILUS_PLACES_VIEW);
 
-      unmount_mount (GTK_PLACES_VIEW (view), gtk_places_view_row_get_mount (row));
+      unmount_mount (GTK_NAUTILUS_PLACES_VIEW (view), gtk_nautilus_places_view_row_get_mount (row));
     }
 }
 
 static void
-on_connect_button_clicked (GtkPlacesView *view)
+on_connect_button_clicked (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   const gchar *uri;
   GFile *file;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   file = NULL;
 
   /*
@@ -1820,14 +1820,14 @@ on_connect_button_clicked (GtkPlacesView *view)
 }
 
 static void
-on_address_entry_text_changed (GtkPlacesView *view)
+on_address_entry_text_changed (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   const gchar* const *supported_protocols;
   gchar *address, *scheme;
   gboolean supported;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   supported = FALSE;
   supported_protocols = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
   address = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->address_entry)));
@@ -1858,7 +1858,7 @@ out:
 }
 
 static void
-on_address_entry_clear_pressed (GtkPlacesView        *view,
+on_address_entry_clear_pressed (GtkNautilusPlacesView        *view,
                                 GtkEntryIconPosition  icon_pos,
                                 GdkEvent             *event,
                                 GtkEntry             *entry)
@@ -1867,14 +1867,14 @@ on_address_entry_clear_pressed (GtkPlacesView        *view,
 }
 
 static void
-on_recent_servers_listbox_row_activated (GtkPlacesView    *view,
-                                         GtkPlacesViewRow *row,
+on_recent_servers_listbox_row_activated (GtkNautilusPlacesView    *view,
+                                         GtkNautilusPlacesViewRow *row,
                                          GtkWidget        *listbox)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   gchar *uri;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   uri = g_object_get_data (G_OBJECT (row), "uri");
 
   gtk_entry_set_text (GTK_ENTRY (priv->address_entry), uri);
@@ -1883,13 +1883,13 @@ on_recent_servers_listbox_row_activated (GtkPlacesView    *view,
 }
 
 static void
-on_listbox_row_activated (GtkPlacesView    *view,
-                          GtkPlacesViewRow *row,
+on_listbox_row_activated (GtkNautilusPlacesView    *view,
+                          GtkNautilusPlacesViewRow *row,
                           GtkWidget        *listbox)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   activate_row (view, row, priv->current_open_flags);
 }
@@ -1898,7 +1898,7 @@ static gboolean
 listbox_filter_func (GtkListBoxRow *row,
                      gpointer       user_data)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   gboolean is_network;
   gboolean is_placeholder;
   gboolean retval;
@@ -1906,7 +1906,7 @@ listbox_filter_func (GtkListBoxRow *row,
   gchar *name;
   gchar *path;
 
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (user_data));
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (user_data));
   retval = FALSE;
   searching = priv->search_query && priv->search_query[0] != '\0';
 
@@ -1995,7 +1995,7 @@ listbox_header_func (GtkListBoxRow *row,
           g_object_set (network_header_spinner,
                         "margin-end", 12,
                         NULL);
-          g_object_bind_property (GTK_PLACES_VIEW (user_data),
+          g_object_bind_property (GTK_NAUTILUS_PLACES_VIEW (user_data),
                                   "fetching-networks",
                                   network_header_spinner,
                                   "active",
@@ -2071,13 +2071,13 @@ listbox_sort_func (GtkListBoxRow *row1,
 }
 
 static void
-gtk_places_view_constructed (GObject *object)
+gtk_nautilus_places_view_constructed (GObject *object)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (object));
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (object));
 
-  G_OBJECT_CLASS (gtk_places_view_parent_class)->constructed (object);
+  G_OBJECT_CLASS (gtk_nautilus_places_view_parent_class)->constructed (object);
 
   gtk_list_box_set_sort_func (GTK_LIST_BOX (priv->listbox),
                               listbox_sort_func,
@@ -2093,7 +2093,7 @@ gtk_places_view_constructed (GObject *object)
                                 NULL);
 
   /* load drives */
-  update_places (GTK_PLACES_VIEW (object));
+  update_places (GTK_NAUTILUS_PLACES_VIEW (object));
 
   g_signal_connect_swapped (priv->volume_monitor,
                             "mount-added",
@@ -2122,32 +2122,32 @@ gtk_places_view_constructed (GObject *object)
 }
 
 static void
-gtk_places_view_map (GtkWidget *widget)
+gtk_nautilus_places_view_map (GtkWidget *widget)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (GTK_PLACES_VIEW (widget));
+  priv = gtk_nautilus_places_view_get_instance_private (GTK_NAUTILUS_PLACES_VIEW (widget));
 
   gtk_entry_set_text (GTK_ENTRY (priv->address_entry), "");
 
-  GTK_WIDGET_CLASS (gtk_places_view_parent_class)->map (widget);
+  GTK_WIDGET_CLASS (gtk_nautilus_places_view_parent_class)->map (widget);
 }
 
 static void
-gtk_places_view_class_init (GtkPlacesViewClass *klass)
+gtk_nautilus_places_view_class_init (GtkNautilusPlacesViewClass *klass)
 {
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
   GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-  object_class->finalize = gtk_places_view_finalize;
-  object_class->constructed = gtk_places_view_constructed;
-  object_class->get_property = gtk_places_view_get_property;
-  object_class->set_property = gtk_places_view_set_property;
+  object_class->finalize = gtk_nautilus_places_view_finalize;
+  object_class->constructed = gtk_nautilus_places_view_constructed;
+  object_class->get_property = gtk_nautilus_places_view_get_property;
+  object_class->set_property = gtk_nautilus_places_view_set_property;
 
-  widget_class->map = gtk_places_view_map;
+  widget_class->map = gtk_nautilus_places_view_map;
 
   /**
-   * GtkPlacesView::open-location:
+   * GtkNautilusPlacesView::open-location:
    * @view: the object which received the signal.
    * @location: (type Gio.File): #GFile to which the caller should switch.
    * @open_flags: a single value from #GtkPlacesOpenFlags specifying how the @location
@@ -2160,18 +2160,18 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
    *
    * Since: 3.18
    */
-  places_view_signals [OPEN_LOCATION] =
+  nautilus_places_view_signals [OPEN_LOCATION] =
           g_signal_new ("open-location",
                         G_OBJECT_CLASS_TYPE (object_class),
                         G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (GtkPlacesViewClass, open_location),
+                        G_STRUCT_OFFSET (GtkNautilusPlacesViewClass, open_location),
                         NULL, NULL, NULL,
                         G_TYPE_NONE, 2,
                         G_TYPE_OBJECT,
                         GTK_TYPE_PLACES_OPEN_FLAGS);
 
   /**
-   * GtkPlacesView::show-error-message:
+   * GtkNautilusPlacesView::show-error-message:
    * @view: the object which received the signal.
    * @primary: primary message with a summary of the error to show.
    * @secondary: secondary message with details of the error to show.
@@ -2183,11 +2183,11 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
    *
    * Since: 3.18
    */
-  places_view_signals [SHOW_ERROR_MESSAGE] =
+  nautilus_places_view_signals [SHOW_ERROR_MESSAGE] =
           g_signal_new ("show-error-message",
                         G_OBJECT_CLASS_TYPE (object_class),
                         G_SIGNAL_RUN_FIRST,
-                        G_STRUCT_OFFSET (GtkPlacesViewClass, show_error_message),
+                        G_STRUCT_OFFSET (GtkNautilusPlacesViewClass, show_error_message),
                         NULL, NULL,
                         NULL,
                         G_TYPE_NONE, 2,
@@ -2228,16 +2228,16 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
   /* Bind class to template */
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/gtk/gtkplacesview.ui");
 
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, actionbar);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, address_entry);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, address_entry_completion);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, completion_store);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, connect_button);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, listbox);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, recent_servers_listbox);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, recent_servers_popover);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, recent_servers_stack);
-  gtk_widget_class_bind_template_child_private (widget_class, GtkPlacesView, stack);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, actionbar);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, address_entry);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, address_entry_completion);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, completion_store);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, connect_button);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, listbox);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, recent_servers_listbox);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, recent_servers_popover);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, recent_servers_stack);
+  gtk_widget_class_bind_template_child_private (widget_class, GtkNautilusPlacesView, stack);
 
   gtk_widget_class_bind_template_callback (widget_class, on_address_entry_text_changed);
   gtk_widget_class_bind_template_callback (widget_class, on_address_entry_clear_pressed);
@@ -2250,11 +2250,11 @@ gtk_places_view_class_init (GtkPlacesViewClass *klass)
 }
 
 static void
-gtk_places_view_init (GtkPlacesView *self)
+gtk_nautilus_places_view_init (GtkNautilusPlacesView *self)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  priv = gtk_places_view_get_instance_private (self);
+  priv = gtk_nautilus_places_view_get_instance_private (self);
 
   priv->volume_monitor = g_volume_monitor_get ();
   priv->open_flags = GTK_PLACES_OPEN_NORMAL;
@@ -2265,27 +2265,27 @@ gtk_places_view_init (GtkPlacesView *self)
 }
 
 /**
- * gtk_places_view_new:
+ * gtk_nautilus_places_view_new:
  *
- * Creates a new #GtkPlacesView widget.
+ * Creates a new #GtkNautilusPlacesView widget.
  *
  * The application should connect to at least the
- * #GtkPlacesView::open-location signal to be notified
+ * #GtkNautilusPlacesView::open-location signal to be notified
  * when the user makes a selection in the view.
  *
- * Returns: a newly created #GtkPlacesView
+ * Returns: a newly created #GtkNautilusPlacesView
  *
  * Since: 3.18
  */
 GtkWidget *
-gtk_places_view_new (void)
+gtk_nautilus_places_view_new (void)
 {
-  return g_object_new (GTK_TYPE_PLACES_VIEW, NULL);
+  return g_object_new (GTK_TYPE_NAUTILUS_PLACES_VIEW, NULL);
 }
 
 /**
- * gtk_places_view_set_open_flags:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_set_open_flags:
+ * @view: a #GtkNautilusPlacesView
  * @flags: Bitmask of modes in which the calling application can open locations
  *
  * Sets the way in which the calling application can open new locations from
@@ -2297,9 +2297,9 @@ gtk_places_view_new (void)
  * application can open new locations, so that the view can display (or not)
  * the “Open in new tab” and “Open in new window” menu items as appropriate.
  *
- * When the #GtkPlacesView::open-location signal is emitted, its flags
+ * When the #GtkNautilusPlacesView::open-location signal is emitted, its flags
  * argument will be set to one of the @flags that was passed in
- * gtk_places_view_set_open_flags().
+ * gtk_nautilus_places_view_set_open_flags().
  *
  * Passing 0 for @flags will cause #GTK_PLACES_OPEN_NORMAL to always be sent
  * to callbacks for the “open-location” signal.
@@ -2307,14 +2307,14 @@ gtk_places_view_new (void)
  * Since: 3.18
  */
 void
-gtk_places_view_set_open_flags (GtkPlacesView      *view,
+gtk_nautilus_places_view_set_open_flags (GtkNautilusPlacesView      *view,
                                 GtkPlacesOpenFlags  flags)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (priv->open_flags != flags)
     {
@@ -2324,7 +2324,7 @@ gtk_places_view_set_open_flags (GtkPlacesView      *view,
 }
 
 /**
- * gtk_places_view_get_open_flags:
+ * gtk_nautilus_places_view_get_open_flags:
  * @view: a #GtkPlacesSidebar
  *
  * Gets the open flags.
@@ -2334,54 +2334,54 @@ gtk_places_view_set_open_flags (GtkPlacesView      *view,
  * Since: 3.18
  */
 GtkPlacesOpenFlags
-gtk_places_view_get_open_flags (GtkPlacesView *view)
+gtk_nautilus_places_view_get_open_flags (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_val_if_fail (GTK_IS_PLACES_VIEW (view), 0);
+  g_return_val_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view), 0);
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   return priv->open_flags;
 }
 
 /**
- * gtk_places_view_get_search_query:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_get_search_query:
+ * @view: a #GtkNautilusPlacesView
  *
  * Retrieves the current search query from @view.
  *
  * Returns: (transfer none): the current search query.
  */
 const gchar*
-gtk_places_view_get_search_query (GtkPlacesView *view)
+gtk_nautilus_places_view_get_search_query (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_val_if_fail (GTK_IS_PLACES_VIEW (view), NULL);
+  g_return_val_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view), NULL);
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   return priv->search_query;
 }
 
 /**
- * gtk_places_view_set_search_query:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_set_search_query:
+ * @view: a #GtkNautilusPlacesView
  * @query_text: the query, or NULL.
  *
  * Sets the search query of @view. The search is immediately performed
  * once the query is set.
  */
 void
-gtk_places_view_set_search_query (GtkPlacesView *view,
+gtk_nautilus_places_view_set_search_query (GtkNautilusPlacesView *view,
                                   const gchar   *query_text)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (g_strcmp0 (priv->search_query, query_text) != 0)
     {
@@ -2396,50 +2396,50 @@ gtk_places_view_set_search_query (GtkPlacesView *view,
 }
 
 /**
- * gtk_places_view_get_loading:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_get_loading:
+ * @view: a #GtkNautilusPlacesView
  *
  * Returns %TRUE if the view is loading locations.
  *
  * Since: 3.18
  */
 gboolean
-gtk_places_view_get_loading (GtkPlacesView *view)
+gtk_nautilus_places_view_get_loading (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_val_if_fail (GTK_IS_PLACES_VIEW (view), FALSE);
+  g_return_val_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view), FALSE);
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   return priv->loading;
 }
 
 static void
-update_loading (GtkPlacesView *view)
+update_loading (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
   gboolean loading;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
   loading = priv->fetching_networks || priv->connecting_to_server ||
             priv->mounting_volume || priv->unmounting_mount;
 
   set_busy_cursor (view, loading);
-  gtk_places_view_set_loading (view, loading);
+  gtk_nautilus_places_view_set_loading (view, loading);
 }
 
 static void
-gtk_places_view_set_loading (GtkPlacesView *view,
+gtk_nautilus_places_view_set_loading (GtkNautilusPlacesView *view,
                              gboolean       loading)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (priv->loading != loading)
     {
@@ -2449,26 +2449,26 @@ gtk_places_view_set_loading (GtkPlacesView *view,
 }
 
 static gboolean
-gtk_places_view_get_fetching_networks (GtkPlacesView *view)
+gtk_nautilus_places_view_get_fetching_networks (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_val_if_fail (GTK_IS_PLACES_VIEW (view), FALSE);
+  g_return_val_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view), FALSE);
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   return priv->fetching_networks;
 }
 
 static void
-gtk_places_view_set_fetching_networks (GtkPlacesView *view,
+gtk_nautilus_places_view_set_fetching_networks (GtkNautilusPlacesView *view,
                                        gboolean       fetching_networks)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (priv->fetching_networks != fetching_networks)
     {
@@ -2478,8 +2478,8 @@ gtk_places_view_set_fetching_networks (GtkPlacesView *view,
 }
 
 /**
- * gtk_places_view_get_local_only:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_get_local_only:
+ * @view: a #GtkNautilusPlacesView
  *
  * Returns %TRUE if only local volumes are shown, i.e. no networks
  * are displayed.
@@ -2489,35 +2489,35 @@ gtk_places_view_set_fetching_networks (GtkPlacesView *view,
  * Since: 3.18
  */
 gboolean
-gtk_places_view_get_local_only (GtkPlacesView *view)
+gtk_nautilus_places_view_get_local_only (GtkNautilusPlacesView *view)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_val_if_fail (GTK_IS_PLACES_VIEW (view), FALSE);
+  g_return_val_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view), FALSE);
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   return priv->local_only;
 }
 
 /**
- * gtk_places_view_set_local_only:
- * @view: a #GtkPlacesView
+ * gtk_nautilus_places_view_set_local_only:
+ * @view: a #GtkNautilusPlacesView
  * @local_only: %TRUE to hide remote locations, %FALSE to show.
  *
- * Sets the #GtkPlacesView::local-only property to @local_only.
+ * Sets the #GtkNautilusPlacesView::local-only property to @local_only.
  *
  * Since: 3.18
  */
 void
-gtk_places_view_set_local_only (GtkPlacesView *view,
+gtk_nautilus_places_view_set_local_only (GtkNautilusPlacesView *view,
                                 gboolean       local_only)
 {
-  GtkPlacesViewPrivate *priv;
+  GtkNautilusPlacesViewPrivate *priv;
 
-  g_return_if_fail (GTK_IS_PLACES_VIEW (view));
+  g_return_if_fail (GTK_IS_NAUTILUS_PLACES_VIEW (view));
 
-  priv = gtk_places_view_get_instance_private (view);
+  priv = gtk_nautilus_places_view_get_instance_private (view);
 
   if (priv->local_only != local_only)
     {

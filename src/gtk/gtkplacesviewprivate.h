@@ -17,29 +17,29 @@
  */
 
 
-#ifndef GTK_PLACES_VIEW_H
-#define GTK_PLACES_VIEW_H
+#ifndef GTK_NAUTILUS_PLACES_VIEW_H
+#define GTK_NAUTILUS_PLACES_VIEW_H
 
 #include <gtk/gtk.h>
 
 G_BEGIN_DECLS
 
-#define GTK_TYPE_PLACES_VIEW        (gtk_places_view_get_type ())
-#define GTK_PLACES_VIEW(obj)        (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_PLACES_VIEW, GtkPlacesView))
-#define GTK_PLACES_VIEW_CLASS(klass)(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_PLACES_VIEW, GtkPlacesViewClass))
-#define GTK_IS_PLACES_VIEW(obj)     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_PLACES_VIEW))
-#define GTK_IS_PLACES_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_PLACES_VIEW))
-#define GTK_PLACES_VIEW_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_PLACES_VIEW, GtkPlacesViewClass))
+#define GTK_TYPE_NAUTILUS_PLACES_VIEW        (gtk_nautilus_places_view_get_type ())
+#define GTK_NAUTILUS_PLACES_VIEW(obj)        (G_TYPE_CHECK_INSTANCE_CAST ((obj), GTK_TYPE_NAUTILUS_PLACES_VIEW, GtkNautilusPlacesView))
+#define GTK_NAUTILUS_PLACES_VIEW_CLASS(klass)(G_TYPE_CHECK_CLASS_CAST ((klass), GTK_TYPE_NAUTILUS_PLACES_VIEW, GtkNautilusPlacesViewClass))
+#define GTK_IS_NAUTILUS_PLACES_VIEW(obj)     (G_TYPE_CHECK_INSTANCE_TYPE ((obj), GTK_TYPE_NAUTILUS_PLACES_VIEW))
+#define GTK_IS_NAUTILUS_PLACES_VIEW_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((klass), GTK_TYPE_NAUTILUS_PLACES_VIEW))
+#define GTK_NAUTILUS_PLACES_VIEW_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS ((obj), GTK_TYPE_NAUTILUS_PLACES_VIEW, GtkNautilusPlacesViewClass))
 
-typedef struct _GtkPlacesView GtkPlacesView;
-typedef struct _GtkPlacesViewClass GtkPlacesViewClass;
-typedef struct _GtkPlacesViewPrivate GtkPlacesViewPrivate;
+typedef struct _GtkNautilusPlacesView GtkNautilusPlacesView;
+typedef struct _GtkNautilusPlacesViewClass GtkNautilusPlacesViewClass;
+typedef struct _GtkNautilusPlacesViewPrivate GtkNautilusPlacesViewPrivate;
 
-struct _GtkPlacesViewClass
+struct _GtkNautilusPlacesViewClass
 {
   GtkBoxClass parent_class;
 
-  void     (* open_location)        (GtkPlacesView          *view,
+  void     (* open_location)        (GtkNautilusPlacesView          *view,
                                      GFile                  *location,
                                      GtkPlacesOpenFlags  open_flags);
 
@@ -53,30 +53,30 @@ struct _GtkPlacesViewClass
   gpointer reserved[10];
 };
 
-struct _GtkPlacesView
+struct _GtkNautilusPlacesView
 {
   GtkBox parent_instance;
 };
 
-GType              gtk_places_view_get_type                      (void) G_GNUC_CONST;
+GType              gtk_nautilus_places_view_get_type                      (void) G_GNUC_CONST;
 
-GtkPlacesOpenFlags gtk_places_view_get_open_flags                (GtkPlacesView      *view);
-void               gtk_places_view_set_open_flags                (GtkPlacesView      *view,
+GtkPlacesOpenFlags gtk_nautilus_places_view_get_open_flags                (GtkNautilusPlacesView      *view);
+void               gtk_nautilus_places_view_set_open_flags                (GtkNautilusPlacesView      *view,
                                                                   GtkPlacesOpenFlags  flags);
 
-const gchar*       gtk_places_view_get_search_query              (GtkPlacesView      *view);
-void               gtk_places_view_set_search_query              (GtkPlacesView      *view,
+const gchar*       gtk_nautilus_places_view_get_search_query              (GtkNautilusPlacesView      *view);
+void               gtk_nautilus_places_view_set_search_query              (GtkNautilusPlacesView      *view,
                                                                   const gchar        *query_text);
 
-gboolean           gtk_places_view_get_local_only                (GtkPlacesView         *view);
+gboolean           gtk_nautilus_places_view_get_local_only                (GtkNautilusPlacesView         *view);
 
-void               gtk_places_view_set_local_only                (GtkPlacesView         *view,
+void               gtk_nautilus_places_view_set_local_only                (GtkNautilusPlacesView         *view,
                                                                   gboolean               local_only);
 
-gboolean           gtk_places_view_get_loading                   (GtkPlacesView         *view);
+gboolean           gtk_nautilus_places_view_get_loading                   (GtkNautilusPlacesView         *view);
 
-GtkWidget *        gtk_places_view_new                           (void);
+GtkWidget *        gtk_nautilus_places_view_new                           (void);
 
 G_END_DECLS
 
-#endif /* GTK_PLACES_VIEW_H */
+#endif /* GTK_NAUTILUS_PLACES_VIEW_H */
