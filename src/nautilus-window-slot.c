@@ -703,6 +703,8 @@ nautilus_window_slot_init (NautilusWindowSlot *slot)
         nautilus_application_add_accelerator (app, "slot.files-view-mode(1)", "<control>1");
         nautilus_application_add_accelerator (app, "slot.files-view-mode(0)", "<control>2");
         nautilus_application_add_accelerator (app, "slot.search-visible", "<control>f");
+
+        slot->details->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
