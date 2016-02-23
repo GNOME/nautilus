@@ -607,6 +607,11 @@ update_operations (NautilusToolbar *self)
                                                       TRUE);
                 }
         }
+
+        /* Since we removed the info widgets, we need to restore the focus */
+        if (gtk_widget_get_visible (self->priv->operations_popover)) {
+                gtk_widget_grab_focus (self->priv->operations_popover);
+        }
 }
 
 static gboolean
@@ -790,6 +795,10 @@ nautilus_toolbar_init (NautilusToolbar *self)
 			  G_CALLBACK (navigation_button_press_cb), self);
 	g_signal_connect (self->priv->forward_button, "button-release-event",
 			  G_CALLBACK (navigation_button_release_cb), self);
+        g_signal_connect (self->priv->operations_popover, "show",
+                          (GCallback) gtk_widget_grab_focus, NULL);
+        g_signal_connect_swapped (self->priv->operations_popover, "closed",
+                                  (GCallback) gtk_widget_grab_focus, self);
 
 	gtk_widget_show_all (GTK_WIDGET (self));
 	toolbar_update_appearance (self);
@@ -886,6 +895,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_button);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_icon);
+	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_popover);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
