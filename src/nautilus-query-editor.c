@@ -576,6 +576,9 @@ setup_widgets (NautilusQueryEditor *editor)
         /* setup the search popover */
         priv->popover = nautilus_search_popover_new ();
 
+        g_signal_connect (priv->popover, "show", (GCallback) gtk_widget_grab_focus, NULL);
+        g_signal_connect_swapped (priv->popover, "closed", (GCallback) gtk_widget_grab_focus, editor);
+
         g_object_bind_property (editor, "query",
                                 priv->popover, "query",
                                 G_BINDING_DEFAULT);
