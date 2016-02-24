@@ -420,14 +420,9 @@ get_text_for_date_range (GPtrArray *date_range)
           /* months */
           normalized = days / 30;
         }
-      else if (days < 1825)
-        {
-          /* years */
-          normalized = days / 365;
-        }
       else
         {
-          /* after the first 5 years, jump at a 5-year pace */
+          /* years */
           normalized = days / 365;
         }
 

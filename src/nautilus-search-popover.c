@@ -25,6 +25,8 @@
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 
+ #define SEARCH_FILTER_MAX_YEARS 5
+
 struct _NautilusSearchPopover
 {
   GtkPopover          parent;
@@ -378,7 +380,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   days = 1;
   maximum_dt = g_date_time_new_from_unix_local (0);
   now = g_date_time_new_now_local ();
-  max_days = (g_date_time_get_year (now) - g_date_time_get_year (maximum_dt)) * 365;
+  max_days = SEARCH_FILTER_MAX_YEARS * 365;
   current_date = g_date_time_new_now_local ();
 
   /* Add the no date filter element first */
@@ -386,10 +388,12 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
   /* This is a tricky loop. The main intention here is that each
-   * timeslice (day, week, month) have 2 or 3 entries. Years,
-   * however, are exceptions and should show many entries.
+   * timeslice (day, week, month) have 2 or 3 entries.
+   * 
+   * For the first appearance of each timeslice, there is made a
+   * check in order to be sure that there is no offset added to days.
    */
-  while (days < max_days)
+  while (days <= max_days)
     {
       gchar *label;
       gint normalized;
@@ -405,25 +409,25 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
         {
           /* weeks */
           normalized = days / 7;
+          if (normalized == 1)
+          	days = 7;
           step = 7;
         }
       else if (days < 365)
         {
           /* months */
           normalized = days / 30;
-          step = 84;
-        }
-      else if (days < 1825)
-        {
-          /* years */
-          normalized = days / 365;
-          step = 365;
+          if (normalized == 1)
+          	days = 30;
+          step = 90;
         }
       else
         {
-          /* after the first 5 years, jump at a 5-year pace */
+          /* years */
           normalized = days / 365;
-          step = 1825;
+          if (normalized == 1)
+          	days = 365;
+          step = 365;
         }
 
       current_date = g_date_time_add_days (now, -days);
