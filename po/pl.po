@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-02-17 22:27+0100\n"
-"PO-Revision-Date: 2016-02-17 22:28+0100\n"
+"POT-Creation-Date: 2016-02-24 16:08+0100\n"
+"PO-Revision-Date: 2016-02-24 16:09+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -70,7 +70,7 @@ msgstr "Uruchamianie oprogramowania"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4197
-#: ../src/nautilus-window.c:2721
+#: ../src/nautilus-window.c:2722
 msgid "Files"
 msgstr "Pliki"
 
@@ -476,10 +476,10 @@ msgstr "Domyślny rozmiar ikon miniatur"
 #: ../data/org.gnome.nautilus.gschema.xml.h:56
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
-"NAUTILUS_ICON_SIZE_SMALL size."
+"NAUTILUS_ICON_SIZE_STANDARD size."
 msgstr ""
 "Domyślny rozmiar ikony miniatury w widoku ikon przy rozmiarze "
-"NAUTILUS_ICON_SIZE_SMALL."
+"„NAUTILUS_ICON_SIZE_STANDARD”."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:57
 msgid "Text Ellipsis Limit"
@@ -753,7 +753,7 @@ msgstr "Więcej _informacji"
 #: ../src/nautilus-mime-actions.c:1488 ../src/nautilus-mime-actions.c:1717
 #: ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170
-#: ../src/nautilus-search-popover.c:535
+#: ../src/nautilus-search-popover.c:539
 msgid "_Cancel"
 msgstr "_Anuluj"
 
@@ -779,7 +779,7 @@ msgstr "Inne położenia"
 msgid "Home"
 msgstr "Katalog domowy"
 
-#: ../libnautilus-private/nautilus-canvas-container.c:2460
+#: ../libnautilus-private/nautilus-canvas-container.c:2481
 msgid "The selection rectangle"
 msgstr "Prostokąt zaznaczenia"
 
@@ -792,7 +792,7 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "Zastępuje bieżące ustawienia kolumn listy ustawieniami domyślnymi"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:57
-#: ../src/nautilus-list-view.c:1713
+#: ../src/nautilus-list-view.c:1716
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:1
 msgid "Name"
 msgstr "Nazwa"
@@ -1602,7 +1602,7 @@ msgstr "Wszystkie elementy w koszu zostaną bezpowrotne usunięte."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2482
-#: ../src/nautilus-window.c:1297
+#: ../src/nautilus-window.c:1298
 msgid "Empty _Trash"
 msgstr "Op_różnij kosz"
 
@@ -2726,7 +2726,7 @@ msgid "Send files by mail…"
 msgstr "Wysyła pliki przez pocztę e-mail…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1113
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1115
 msgid "Oops! Something went wrong."
 msgstr "Coś poszło źle."
 
@@ -2859,7 +2859,7 @@ msgstr ""
 msgid "_Run"
 msgstr "U_ruchom"
 
-#: ../src/nautilus-canvas-view-container.c:443
+#: ../src/nautilus-canvas-view-container.c:444
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:7
 msgid "Icon View"
 msgstr "Widok ikon"
@@ -3000,7 +3000,7 @@ msgid "Searching…"
 msgstr "Wyszukiwanie…"
 
 #: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:628
+#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:628
 msgid "Loading…"
 msgstr "Wczytywanie…"
 
@@ -3227,7 +3227,7 @@ msgstr "Otwórz"
 msgid "_Start"
 msgstr "_Uruchom"
 
-#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1653
+#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1648
 msgid "_Connect"
 msgstr "_Połącz"
 
@@ -3247,7 +3247,7 @@ msgstr "Zatrzymaj napęd"
 msgid "_Safely Remove Drive"
 msgstr "Bezpiecznie u_suń napęd"
 
-#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1643
+#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1638
 msgid "_Disconnect"
 msgstr "O_dłącz"
 
@@ -3421,7 +3421,7 @@ msgstr "Ocena"
 msgid "Failed to load image information"
 msgstr "Wczytanie informacji o obrazie się nie powiodło"
 
-#: ../src/nautilus-list-model.c:369
+#: ../src/nautilus-list-model.c:373
 msgid "(Empty)"
 msgstr "(Pusty)"
 
@@ -3429,17 +3429,17 @@ msgstr "(Pusty)"
 msgid "Use Default"
 msgstr "Użyj domyślnych"
 
-#: ../src/nautilus-list-view.c:1818
+#: ../src/nautilus-list-view.c:1821
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:8
 msgid "List View"
 msgstr "Widok listy"
 
-#: ../src/nautilus-list-view.c:2638
+#: ../src/nautilus-list-view.c:2641
 #, c-format
 msgid "%s Visible Columns"
 msgstr "Widoczne kolumny: %s"
 
-#: ../src/nautilus-list-view.c:2658
+#: ../src/nautilus-list-view.c:2661
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Kolejność wyświetlania informacji w tym katalogu:"
 
@@ -3609,8 +3609,8 @@ msgstr[2] "Spowoduje to otwarcie %d oddzielnych programów."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1205
-#: ../src/gtk/gtkplacesview.c:1256
+#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1204
+#: ../src/gtk/gtkplacesview.c:1251
 msgid "Unable to access location"
 msgstr "Nie można uzyskać dostępu do położenia"
 
@@ -3943,7 +3943,7 @@ msgid "_Revert"
 msgstr "P_rzywróć"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1598
+#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1593
 msgid "_Open"
 msgstr "_Otwórz"
 
@@ -3967,29 +3967,29 @@ msgstr "Zdalne położenie — wyszukiwanie tylko w bieżącym katalogu"
 msgid "Only searching the current folder"
 msgstr "Wyszukiwanie tylko w bieżącym katalogu"
 
-#: ../src/nautilus-search-popover.c:282
+#: ../src/nautilus-search-popover.c:284
 msgid "Show a list to select the date"
 msgstr "Wyświetla listę do wybrania daty"
 
-#: ../src/nautilus-search-popover.c:288
+#: ../src/nautilus-search-popover.c:290
 #: ../src/resources/ui/nautilus-search-popover.ui.h:5
 msgid "Show a calendar to select the date"
 msgstr "Wyświetla kalendarz do wybrania daty"
 
 #. Other types
-#: ../src/nautilus-search-popover.c:472
+#: ../src/nautilus-search-popover.c:476
 msgid "Other Type…"
 msgstr "Inny typ…"
 
-#: ../src/nautilus-search-popover.c:532
+#: ../src/nautilus-search-popover.c:536
 msgid "Select type"
 msgstr "Wybór typu"
 
-#: ../src/nautilus-search-popover.c:536
+#: ../src/nautilus-search-popover.c:540
 msgid "Select"
 msgstr "Wybierz"
 
-#: ../src/nautilus-search-popover.c:621
+#: ../src/nautilus-search-popover.c:625
 #: ../src/resources/ui/nautilus-search-popover.ui.h:3
 msgid "Select Dates…"
 msgstr "Wybierz daty…"
@@ -4026,23 +4026,23 @@ msgstr "Op_różnij"
 msgid "Delete all items in the Trash"
 msgstr "Usuwa wszystkie elementy z kosza"
 
-#: ../src/nautilus-window.c:1315
+#: ../src/nautilus-window.c:1316
 msgid "_Properties"
 msgstr "Wł_aściwości"
 
-#: ../src/nautilus-window.c:1325
+#: ../src/nautilus-window.c:1326
 msgid "_Format…"
 msgstr "Sfo_rmatuj…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1581
+#: ../src/nautilus-window.c:1582
 #, c-format
 msgid "“%s” deleted"
 msgstr "Usunięto „%s”"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1586
+#: ../src/nautilus-window.c:1587
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4050,28 +4050,28 @@ msgstr[0] "Usunięto %d plik"
 msgstr[1] "Usunięto %d pliki"
 msgstr[2] "Usunięto %d plików"
 
-#: ../src/nautilus-window.c:1686
+#: ../src/nautilus-window.c:1687
 #, c-format
 msgid "Open %s"
 msgstr "Otwórz „%s”"
 
-#: ../src/nautilus-window.c:1774
+#: ../src/nautilus-window.c:1775
 msgid "_New Tab"
 msgstr "_Nowa karta"
 
-#: ../src/nautilus-window.c:1784
+#: ../src/nautilus-window.c:1785
 msgid "Move Tab _Left"
 msgstr "Pr_zesuń kartę w lewo"
 
-#: ../src/nautilus-window.c:1792
+#: ../src/nautilus-window.c:1793
 msgid "Move Tab _Right"
 msgstr "P_rzesuń kartę w prawo"
 
-#: ../src/nautilus-window.c:1803
+#: ../src/nautilus-window.c:1804
 msgid "_Close Tab"
 msgstr "Za_mknij kartę"
 
-#: ../src/nautilus-window.c:2723
+#: ../src/nautilus-window.c:2724
 msgid "Access and organize your files."
 msgstr "Organizowanie plików."
 
@@ -4079,7 +4079,7 @@ msgstr "Organizowanie plików."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2732
+#: ../src/nautilus-window.c:2733
 msgid "translator-credits"
 msgstr ""
 "Zbigniew Chyla <chyla@alice.ci.pwr.wroc.pl>, 2000-2003\n"
@@ -4092,35 +4092,35 @@ msgstr ""
 "Paweł Żołnowski <pawel@zolnowski.name>, 2015\n"
 "Aviary.pl <gnomepl@aviary.pl>, 2006-2016"
 
-#: ../src/nautilus-window-slot.c:1117
+#: ../src/nautilus-window-slot.c:1119
 msgid "Unable to display the contents of this folder."
 msgstr "Nie można wyświetlić zawartości tego katalogu."
 
-#: ../src/nautilus-window-slot.c:1119
+#: ../src/nautilus-window-slot.c:1121
 msgid "This location doesn't appear to be a folder."
 msgstr "To położenie nie jest katalogiem."
 
-#: ../src/nautilus-window-slot.c:1124
+#: ../src/nautilus-window-slot.c:1126
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Nie można odnaleźć żądanego pliku. Proszę sprawdzić, czy wpisano je "
 "poprawnie, i spróbować ponownie."
 
-#: ../src/nautilus-window-slot.c:1129
+#: ../src/nautilus-window-slot.c:1131
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Położenia „%s” nie są obsługiwane."
 
-#: ../src/nautilus-window-slot.c:1132
+#: ../src/nautilus-window-slot.c:1134
 msgid "Unable to handle this kind of location."
 msgstr "Nie można obsłużyć tego rodzaju położenia."
 
-#: ../src/nautilus-window-slot.c:1137
+#: ../src/nautilus-window-slot.c:1139
 msgid "Unable to access the requested location."
 msgstr "Nie można uzyskać dostępu do żądanego położenia."
 
-#: ../src/nautilus-window-slot.c:1140
+#: ../src/nautilus-window-slot.c:1142
 msgid "Don't have permission to access the requested location."
 msgstr "Brak uprawnień do dostępu do żądanego położenia."
 
@@ -4129,7 +4129,7 @@ msgstr "Brak uprawnień do dostępu do żądanego położenia."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1148
+#: ../src/nautilus-window-slot.c:1150
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4137,12 +4137,12 @@ msgstr ""
 "Nie można odnaleźć żądanego położenia. Proszę sprawdzić, czy wpisano je "
 "poprawnie oraz czy ustawienia sieci są poprawne."
 
-#: ../src/nautilus-window-slot.c:1159
+#: ../src/nautilus-window-slot.c:1161
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Nieobsłużony komunikat błędu: %s"
 
-#: ../src/nautilus-window-slot.c:1307
+#: ../src/nautilus-window-slot.c:1309
 #, c-format
 msgid "Unable to load location"
 msgstr "Nie można wczytać położenia"
@@ -4571,12 +4571,12 @@ msgid "Open With Other _Application"
 msgstr "Otwórz _za pomocą innego programu"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1653
+#: ../src/gtk/gtkplacesview.c:1648
 msgid "_Mount"
 msgstr "Za_montuj"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1643
+#: ../src/gtk/gtkplacesview.c:1638
 msgid "_Unmount"
 msgstr "O_dmontuj"
 
@@ -5090,32 +5090,32 @@ msgid "Con_nect"
 msgstr "P_ołącz"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1319
+#: ../src/gtk/gtkplacesview.c:1314
 msgid "Unable to unmount volume"
 msgstr "Nie można odmontować woluminu"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1401
+#: ../src/gtk/gtkplacesview.c:1396
 msgid "Cance_l"
 msgstr "_Anuluj"
 
-#: ../src/gtk/gtkplacesview.c:1608
+#: ../src/gtk/gtkplacesview.c:1603
 msgid "Open in New _Tab"
 msgstr "O_twórz w nowej karcie"
 
-#: ../src/gtk/gtkplacesview.c:1619
+#: ../src/gtk/gtkplacesview.c:1614
 msgid "Open in New _Window"
 msgstr "Otwórz w nowy_m oknie"
 
-#: ../src/gtk/gtkplacesview.c:1818
+#: ../src/gtk/gtkplacesview.c:1813
 msgid "Unable to get remote server location"
 msgstr "Nie można uzyskać położenia zdalnego serwera"
 
-#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
+#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
 msgid "Networks"
 msgstr "Sieci"
 
-#: ../src/gtk/gtkplacesview.c:1955 ../src/gtk/gtkplacesview.c:1964
+#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
 msgid "On This Computer"
 msgstr "Na tym komputerze"
 
