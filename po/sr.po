@@ -1,29 +1,28 @@
 # #-#-#-#-#  nautilus.master.sr.po (nautilus)  #-#-#-#-#
 # Serbian translation of nautilus
-# Courtesy of Prevod.org team (http://prevod.org/) -- 2003—2015.
+# Courtesy of Prevod.org team (http://prevod.org/) -- 2003—2016.
 # This file is distributed under the same license as the nautilus package.
 # Данило Шеган <danilo@gnome.org>, 2005.
-# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011—2015.
+# Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011—2016.
 # Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015.
-# Милош Поповић <gpopac@gmail.com>, 2010—20, 2015.
-#
+# Милош Поповић <gpopac@gmail.com>, 2010—2015.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-02-21 01:52+0000\n"
-"PO-Revision-Date: 2016-02-21 12:01+0100\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
+"s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2016-02-23 20:20+0000\n"
+"PO-Revision-Date: 2016-02-24 09:16+0200\n"
 "Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
-"Language-Team: српски <gnome-sr@googlegroups.org>\n"
+"Language-Team: Serbian <gnom@prevod.org>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Virtaal 0.7.1\n"
 "X-Project-Style: gnome\n"
-"X-Generator: Poedit 1.8.6\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid "Nautilus"
@@ -129,8 +128,7 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Whether to show a context menu item to delete permanently"
-msgstr ""
-"Да ли да се прикаже ставка за трајно брисање у приручном менију"
+msgstr "Да ли да се прикаже ставка за трајно брисање у приручном менију"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:10
 msgid ""
@@ -291,12 +289,12 @@ msgid ""
 "\"never\" then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
-"Губитак брзине приликом умањеног прегледа датотека. Уколико је постављено "
-"на „always“ увек се приказује умањена слика, чак и ако је фасцикла на "
-"удаљеном рачунару. Уколико је постављено на „local-only“, приказује се "
-"умањена слика само за локалне датотеке. Уколико је постављено на „never“ "
-"користи се општа иконица. Упркос ономе што предлаже назив, ово се примењује "
-"на било коју врсту датотеке."
+"Губитак брзине приликом умањеног прегледа датотека. Уколико је постављено на "
+"„always“ увек се приказује умањена слика, чак и ако је фасцикла на удаљеном "
+"рачунару. Уколико је постављено на „local-only“, приказује се умањена слика "
+"само за локалне датотеке. Уколико је постављено на „never“ користи се општа "
+"иконица. Упркос ономе што предлаже назив, ово се примењује на било коју "
+"врсту датотеке."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:33
 msgid "Maximum image size for thumbnailing"
@@ -479,18 +477,19 @@ msgid ""
 "not shorten file names for other zoom levels. Available zoom levels: small, "
 "standard, large."
 msgstr ""
-"Ниска која одређује како ће предугачки називи датотека бити скраћени, зависно "
-"од степена увећања. Сваки унос у листи раздвојен зарезом је облика „Степен "
-"увећања:Цео број“. За сваки наведени степен увећања, ако је дати цели број "
-"већи од нуле, назив датотеке неће превазилазити наведени број редова. Ако је "
-"цели број нула или мањи од нуле, неће бити ограничења на наведени степен "
-"увећања. Подразумевани унос у облику „Цели број“, без наведеног степена "
-"увећања, је такође дозвољен. Он дефинише највећи број редова за све остале "
-"степене увећања. Примери: 0 – увек приказује предугачке називе датотека; 3 – "
-"скраћује назив ако прелази три реда; „smallest:5, smaller:4“ – скраћује "
-"назив ако прелази пет редова при најмањем увећању или четири реда при "
-"мањем увећању. Доступни степени увећања се дају на енглеском језику и "
-"доступни су: „small“ (мало), „standard“ (уобичајено) и „large“ (велико)."
+"Ниска која одређује како ће предугачки називи датотека бити скраћени, "
+"зависно од степена увећања. Сваки унос у листи раздвојен зарезом је облика "
+"„Степен увећања:Цео број“. За сваки наведени степен увећања, ако је дати "
+"цели број већи од нуле, назив датотеке неће превазилазити наведени број "
+"редова. Ако је цели број нула или мањи од нуле, неће бити ограничења на "
+"наведени степен увећања. Подразумевани унос у облику „Цели број“, без "
+"наведеног степена увећања, је такође дозвољен. Он дефинише највећи број "
+"редова за све остале степене увећања. Примери: 0 – увек приказује предугачке "
+"називе датотека; 3 – скраћује назив ако прелази три реда; „smallest:5, "
+"smaller:4“ – скраћује назив ако прелази пет редова при најмањем увећању или "
+"четири реда при мањем увећању. Доступни степени увећања се дају на енглеском "
+"језику и доступни су: „small“ (мало), „standard“ (уобичајено) и "
+"„large“ (велико)."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:59
 msgid "Default list zoom level"
@@ -1884,9 +1883,6 @@ msgid ""
 "The folder “%B” cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
-"#-#-#-#-#  nautilus.master.po (PACKAGE VERSION)  #-#-#-#-#\n"
-"Не можете приступити фасцикли „%B“ јер немате овлашћења да је читате.#-#-#-#-"
-"#  nautilus.master.sr.po (nautilus)  #-#-#-#-#\n"
 "Радња над фасциклом „%B“ не може бити обављена зато што немате овлашћења за "
 "њено читање."
 
@@ -5245,8 +5241,7 @@ msgstr "Адреса сервера…"
 
 #~ msgid "Show context menu item to create _links from copied files"
 #~ msgstr ""
-#~ "Прикажи приложени мени са ставком за _прављење веза из умножених "
-#~ "датотека"
+#~ "Прикажи приложени мени са ставком за _прављење веза из умножених датотека"
 
 #~ msgid "_Run executable text files when they are opened"
 #~ msgstr "_Покрени извршне текстуалне датотеке при отварању"
