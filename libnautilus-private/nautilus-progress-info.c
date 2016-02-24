@@ -726,10 +726,12 @@ nautilus_progress_info_set_destination (NautilusProgressInfo *info,
 GFile *
 nautilus_progress_info_get_destination (NautilusProgressInfo *info)
 {
-        GFile *destination;
+        GFile *destination = NULL;
 
         G_LOCK (progress_info);
-        destination = g_object_ref (info->destination);
+        if (info->destination) {
+                destination = g_object_ref (info->destination);
+        }
         G_UNLOCK (progress_info);
 
         return destination;
