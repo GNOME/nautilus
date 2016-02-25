@@ -38,7 +38,6 @@ struct NautilusTrashMonitorDetails {
 
 enum {
 	TRASH_STATE_CHANGED,
-	TRASH_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -80,14 +79,6 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
 		 G_TYPE_NONE, 1,
 		 G_TYPE_BOOLEAN);
 
-        signals[TRASH_CHANGED] = g_signal_new ("trash-changed",
-                                               G_TYPE_FROM_CLASS (object_class),
-                                               G_SIGNAL_RUN_LAST,
-                                               0,
-                                               NULL, NULL,
-                                               NULL,
-                                               G_TYPE_NONE, 0);
-
 	g_type_class_add_private (object_class, sizeof(NautilusTrashMonitorDetails));
 }
 
@@ -116,10 +107,6 @@ enumerate_next_files_cb (GObject *source,
 	GList *infos;
 
 	infos = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source), res, NULL);
-
-        g_signal_emit (trash_monitor,
-                       signals[TRASH_CHANGED], 0);
-
 	if (!infos) {
 		update_empty_info (trash_monitor, TRUE);
 	} else {

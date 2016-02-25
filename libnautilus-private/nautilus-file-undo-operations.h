@@ -209,8 +209,8 @@ struct _NautilusFileUndoInfoTrashClass {
 
 GType nautilus_file_undo_info_trash_get_type (void) G_GNUC_CONST;
 NautilusFileUndoInfo *nautilus_file_undo_info_trash_new (gint item_count);
-void nautilus_file_undo_info_trash_set_trashed (NautilusFileUndoInfoTrash *self,
-                                                GHashTable                *trashed);
+void nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
+					     GFile                     *file);
 GList *nautilus_file_undo_info_trash_get_files (NautilusFileUndoInfoTrash *self);
 
 /* recursive permissions */

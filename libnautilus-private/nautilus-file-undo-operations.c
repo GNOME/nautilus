@@ -33,6 +33,13 @@
 #include "nautilus-file.h"
 #include "nautilus-file-undo-manager.h"
 
+/* Since we use g_get_current_time for setting "orig_trash_time" in the undo
+ * info, there are situations where the difference between this value and the
+ * real deletion time can differ enough to make the rounding a difference of 1
+ * second, failing the equality check. To make sure we avoid this, and to be
+ * preventive, use 2 seconds epsilon.
+ */
+#define TRASH_TIME_EPSILON 2
 
 G_DEFINE_TYPE (NautilusFileUndoInfo, nautilus_file_undo_info, G_TYPE_OBJECT)
 
@@ -1123,6 +1130,64 @@ trash_enumerate_children (GError **error)
 }
 
 static void
+trash_match_files (GList *trash_children,
+                   GHashTable *trashed,
+                   GHashTable *matched_files)
+{
+	GFile *trash;
+	GList *l;
+	GFileInfo *info;
+	const char *original_path;
+	GFile *original_file;
+	gpointer lookup_value;
+	glong trash_time;
+	glong original_trash_time;
+	GFile *item;
+
+	trash = g_file_new_for_uri ("trash:///");
+
+	/* Iterate over the trash children and check if they match the trashed
+	 * files. This is not done as a match between two hash-tables because
+	 * the trash can contain multiple files with the same original path
+	 */
+	for (l = trash_children; l != NULL; l = l->next) {
+		info = l->data;
+		/* Retrieve the original file uri */
+		original_path = g_file_info_get_attribute_byte_string (info,
+		                                                       G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
+		original_file = g_file_new_for_path (original_path);
+
+		lookup_value = g_hash_table_lookup (trashed, original_file);
+
+		if (lookup_value) {
+			GDateTime *date;
+
+			original_trash_time = GPOINTER_TO_SIZE (lookup_value);
+			trash_time = 0;
+			date = g_file_info_get_deletion_date (info);
+			if (date) {
+				trash_time = g_date_time_to_unix (date);
+				g_date_time_unref (date);
+			}
+
+			if (abs (original_trash_time - trash_time) > TRASH_TIME_EPSILON) {
+				continue;
+			}
+			/* File in the trash */
+			if (matched_files != NULL) {
+				item = g_file_get_child (trash, g_file_info_get_name (info));
+				g_hash_table_insert (matched_files, item, g_object_ref (original_file));
+			}
+		}
+
+		g_object_unref (original_file);
+
+	}
+
+	g_object_unref (trash);
+}
+
+static void
 trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
                                         GObject *object,
                                         GCancellable *cancellable)
@@ -1137,7 +1202,7 @@ trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
 					    g_object_unref, g_object_unref);
 
 	trash_children = trash_enumerate_children (&error);
-	trash_files_match (trash_children,
+	trash_match_files (trash_children,
 	                   self->priv->trashed,
 	                   to_restore);
 
@@ -1220,7 +1285,9 @@ nautilus_file_undo_info_trash_init (NautilusFileUndoInfoTrash *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, nautilus_file_undo_info_trash_get_type (),
 						  NautilusFileUndoInfoTrashDetails);
-	self->priv->trashed = NULL;
+	self->priv->trashed =
+		g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, 
+				       g_object_unref, NULL);
 }
 
 static void
@@ -1257,13 +1324,16 @@ nautilus_file_undo_info_trash_new (gint item_count)
 }
 
 void
-nautilus_file_undo_info_trash_set_trashed (NautilusFileUndoInfoTrash *self,
-                                           GHashTable                *trashed)
+nautilus_file_undo_info_trash_add_file (NautilusFileUndoInfoTrash *self,
+					GFile                     *file)
 {
-        if (self->priv->trashed) {
-                g_hash_table_destroy (self->priv->trashed);
-        }
-        self->priv->trashed = g_hash_table_ref (trashed);
+	GTimeVal current_time;
+	gsize orig_trash_time;
+
+	g_get_current_time (&current_time);
+	orig_trash_time = current_time.tv_sec;
+
+	g_hash_table_insert (self->priv->trashed, g_object_ref (file), GSIZE_TO_POINTER (orig_trash_time));
 }
 
 GList *

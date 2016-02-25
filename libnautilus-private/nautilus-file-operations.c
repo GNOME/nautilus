@@ -64,15 +64,6 @@
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
 
-
-/* Since we use g_get_current_time for setting the trashed file timestamp,
- * there are situations where the difference between this value and the
- * real deletion time can differ enough to make the rounding a difference of 1
- * second, failing the equality check. To make sure we avoid this, and to be
- * preventive, use 2 seconds epsilon.
- */
-#define TRASH_TIME_EPSILON 2
-
 /* TODO: TESTING!!! */
 
 typedef struct {
@@ -111,11 +102,9 @@ typedef struct {
 	CommonJob common;
 	GList *files;
 	gboolean try_trash;
-	GHashTable *trashed;
 	gboolean user_cancel;
 	NautilusDeleteCallback done_callback;
 	gpointer done_callback_data;
-	GTask *current_check;
 } DeleteJob;
 
 typedef struct {
@@ -2017,13 +2006,9 @@ trash_file (CommonJob    *job,
             gboolean      toplevel,
             GList        *to_delete)
 {
-	DeleteJob *delete_job = (DeleteJob*) job;
 	GError *error;
 	char *primary, *secondary, *details;
 	int response;
-	GTimeVal current_time;
-	gsize orig_trash_time;
-
 
 	if (should_skip_file (job, file)) {
 		*skipped_file = TRUE;
@@ -2033,14 +2018,12 @@ trash_file (CommonJob    *job,
 	error = NULL;
 
 	if (g_file_trash (file, job->cancellable, &error)) {
-                g_get_current_time (&current_time);
-                orig_trash_time = current_time.tv_sec;
-
-                g_hash_table_insert (delete_job->trashed, g_object_ref (file),
-                                     GSIZE_TO_POINTER (orig_trash_time));
-
 	        transfer_info->num_files ++;
 		nautilus_file_changes_queue_file_removed (file);
+
+		if (job->undo_info != NULL) {
+			nautilus_file_undo_info_trash_add_file (NAUTILUS_FILE_UNDO_INFO_TRASH (job->undo_info), file);
+		}
 
 		report_trash_progress (job, source_info, transfer_info);
                 return;
@@ -2146,29 +2129,17 @@ trash_files (CommonJob *job,
 	}
 }
 
-static gboolean
-delete_task_done (gpointer user_data)
+static void
+delete_task_done (GObject *source_object,
+                  GAsyncResult *res,
+                  gpointer user_data)
 {
 	DeleteJob *job;
 	GHashTable *debuting_uris;
-        NautilusFileUndoInfoTrash *undo_info;
 
 	job = user_data;
 
-        if (job->common.undo_info) {
-                undo_info = NAUTILUS_FILE_UNDO_INFO_TRASH (job->common.undo_info);
-                nautilus_file_undo_info_trash_set_trashed (undo_info, job->trashed);
-        }
-
 	g_list_free_full (job->files, g_object_unref);
-
-        if (job->current_check) {
-                g_object_unref (job->current_check);
-        }
-
-        if (job->trashed) {
-                g_hash_table_unref (job->trashed);
-        }
 
 	if (job->done_callback) {
 		debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc)g_file_equal, g_object_unref, NULL);
@@ -2179,165 +2150,6 @@ delete_task_done (gpointer user_data)
 	finalize_common ((CommonJob *)job);
 
 	nautilus_file_changes_consume_changes (TRUE);
-
-	return FALSE;
-}
-
-gboolean
-trash_files_match (GList      *trash_children,
-                   GHashTable *trashed,
-                   GHashTable *matched_files)
-{
-        GFile *trash;
-        GList *l;
-        GFileInfo *info;
-        const char *original_path;
-        GFile *original_file;
-        gpointer lookup_value;
-        glong trash_time;
-        glong original_trash_time;
-        GFile *item;
-        guint matched_files_count = 0;
-
-        trash = g_file_new_for_uri ("trash:///");
-
-        /* Iterate over the trash children and check if they match the trashed
-         * files. This is not done as a match between two hash-tables because
-         * the trash can contain multiple files with the same original path
-         */
-        for (l = trash_children; l != NULL; l = l->next) {
-                info = l->data;
-                /* Retrieve the original file uri */
-                original_path = g_file_info_get_attribute_byte_string (info,
-                                                                       G_FILE_ATTRIBUTE_TRASH_ORIG_PATH);
-                original_file = g_file_new_for_path (original_path);
-
-                lookup_value = g_hash_table_lookup (trashed, original_file);
-
-                if (lookup_value) {
-                        GDateTime *date;
-
-                        original_trash_time = GPOINTER_TO_SIZE (lookup_value);
-                        trash_time = 0;
-                        date = g_file_info_get_deletion_date (info);
-                        if (date) {
-                                trash_time = g_date_time_to_unix (date);
-                                g_date_time_unref (date);
-                        }
-
-                        if (abs (original_trash_time - trash_time) > TRASH_TIME_EPSILON) {
-                                continue;
-                        }
-                        /* File in the trash */
-                        matched_files_count += 1;
-                        if (matched_files != NULL) {
-                                item = g_file_get_child (trash, g_file_info_get_name (info));
-                                g_hash_table_insert (matched_files, item, g_object_ref (original_file));
-                        }
-                }
-
-                g_object_unref (original_file);
-
-        }
-
-        g_object_unref (trash);
-
-        return matched_files_count == g_hash_table_size (trashed);
-}
-
-static void
-trash_enumerate_next_files_cb (GObject      *source,
-                               GAsyncResult *res,
-                               gpointer      user_data)
-{
-        GTask *task = user_data;
-        DeleteJob *job = g_task_get_task_data (task);
-        GError *error = NULL;
-        GList *infos;
-
-        infos = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source), res, &error);
-
-        if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED) &&
-            trash_files_match (infos, job->trashed, NULL) &&
-            !g_cancellable_is_cancelled (g_task_get_cancellable (task)))
-        {
-                g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), job);
-                g_main_context_invoke (NULL, delete_task_done, job);
-        }
-
-        g_clear_error (&error);
-        g_list_free_full (infos, g_object_unref);
-        g_object_unref (task);
-}
-
-static void
-trash_enumerate_children_cb (GObject      *source,
-                             GAsyncResult *res,
-                             gpointer      user_data)
-{
-        GTask *task = user_data;
-        GFileEnumerator *enumerator;
-        GFile *trash;
-        GError *error = NULL;
-
-        trash = G_FILE (source);
-        enumerator = g_file_enumerate_children_finish (trash, res, &error);
-
-        if (enumerator != NULL) {
-                GFileInfo *trash_info;
-                guint32 trash_item_count;
-
-                trash_info = g_file_query_info (trash,
-                                                G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT,
-                                                G_FILE_COPY_NOFOLLOW_SYMLINKS,
-                                                NULL,
-                                                NULL);
-                trash_item_count = g_file_info_get_attribute_uint32 (trash_info,
-                                                                     G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT);
-                g_file_enumerator_next_files_async (enumerator,
-                                                    trash_item_count,
-                                                    G_PRIORITY_DEFAULT,
-                                                    g_task_get_cancellable (task),
-                                                    trash_enumerate_next_files_cb,
-                                                    task);
-
-                g_object_unref (enumerator);
-                g_object_unref (trash_info);
-        } else {
-                g_object_unref (task);
-        }
-
-        g_clear_error (&error);
-}
-
-static void
-trash_changed_cb (NautilusTrashMonitor *trash_monitor,
-                  gpointer              user_data)
-{
-        DeleteJob *job = user_data;
-        GFile *trash;
-
-        if (job->current_check != NULL) {
-                g_cancellable_cancel (g_task_get_cancellable (job->current_check));
-                g_clear_object (&job->current_check);
-        }
-
-        job->current_check = g_task_new (NULL, g_cancellable_new (), NULL, NULL);
-        g_task_set_task_data (job->current_check, job, NULL);
-
-        trash = g_file_new_for_uri ("trash:///");
-
-        g_file_enumerate_children_async (trash,
-                                         G_FILE_ATTRIBUTE_STANDARD_NAME","
-                                         G_FILE_ATTRIBUTE_TRASH_DELETION_DATE","
-                                         G_FILE_ATTRIBUTE_TRASH_ORIG_PATH,
-                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                         G_PRIORITY_DEFAULT,
-                                         g_task_get_cancellable (job->current_check),
-                                         trash_enumerate_children_cb,
-                                         g_object_ref (job->current_check));
-
-        g_object_unref (trash);
 }
 
 static void
@@ -2367,7 +2179,7 @@ delete_task_thread_func (GTask *task,
 	must_confirm_delete_in_trash = FALSE;
 	must_confirm_delete = FALSE;
 	files_skipped = 0;
-
+	
 	for (l = job->files; l != NULL; l = l->next) {
 		file = l->data;
 		
@@ -2400,31 +2212,21 @@ delete_task_thread_func (GTask *task,
 		} else {
 			job->user_cancel = TRUE;
 		}
-		g_list_free (to_delete_files);
 	}
 	
 	if (to_trash_files != NULL) {
 		to_trash_files = g_list_reverse (to_trash_files);
-		/* Wait until the trash acknowledges the files were trashed to
-		 * finish the operation. It usually takes some time for the
-		 * trash to acknowledge file movement */
-		g_signal_connect (nautilus_trash_monitor_get (), "trash-changed",
-		                  (GCallback)trash_changed_cb, job);
 		
 		trash_files (common, to_trash_files, &files_skipped);
-	
-		/* User has skipped all files, report user cancel */
-		job->user_cancel = files_skipped == g_list_length (job->files);
-		g_list_free (to_trash_files);
-
-		return;
 	}
-
-	job->user_cancel = files_skipped == g_list_length (job->files);
-
-	g_main_context_invoke (g_task_get_context (task),
-	                       delete_task_done,
-	                       job);
+	
+	g_list_free (to_trash_files);
+	g_list_free (to_delete_files);
+	
+	if (files_skipped == g_list_length (job->files)) {
+		/* User has skipped all files, report user cancel */
+		job->user_cancel = TRUE;
+	}
 }
 
 static void
@@ -2445,24 +2247,18 @@ trash_or_delete_internal (GList                  *files,
 	job->user_cancel = FALSE;
 	job->done_callback = done_callback;
 	job->done_callback_data = done_callback_data;
-	job->current_check = NULL;
-	job->trashed = NULL;
 
 	if (try_trash) {
 		inhibit_power_manager ((CommonJob *)job, _("Trashing Files"));
 	} else {
 		inhibit_power_manager ((CommonJob *)job, _("Deleting Files"));
 	}
+	
+	if (!nautilus_file_undo_manager_is_operating () && try_trash) {
+		job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
+	}
 
-        if (try_trash) {
-                job->trashed = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                                      g_object_unref, NULL);
-                if (!nautilus_file_undo_manager_is_operating ()) {
-                        job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
-                }
-        }
-
-	task = g_task_new (NULL, NULL, NULL, NULL);
+	task = g_task_new (NULL, NULL, delete_task_done, job);
 	g_task_set_task_data (task, job, NULL);
 	g_task_run_in_thread (task, delete_task_thread_func);
 	g_object_unref (task);
