@@ -46,6 +46,7 @@ struct _NautilusQuery {
         gboolean searching;
         gboolean recursive;
 	char **prepared_words;
+        GMutex prepared_words_mutex;
 };
 
 static void  nautilus_query_class_init       (NautilusQueryClass *class);
@@ -77,6 +78,7 @@ finalize (GObject *object)
         g_strfreev (query->prepared_words);
         g_clear_object (&query->location);
         g_clear_pointer (&query->date_range, g_ptr_array_unref);
+        g_mutex_clear (&query->prepared_words_mutex);
 
 	G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
@@ -301,6 +303,7 @@ nautilus_query_init (NautilusQuery *query)
         query->location = g_file_new_for_path (g_get_home_dir ());
         query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
         query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
+        g_mutex_init (&query->prepared_words_mutex);
 }
 
 static gchar *
@@ -328,6 +331,7 @@ nautilus_query_matches_string (NautilusQuery *query,
 		return -1;
 	}
 
+        g_mutex_lock (&query->prepared_words_mutex);
         if (!query->prepared_words) {
                 prepared_string = prepare_string_for_compare (query->text);
                 query->prepared_words = g_strsplit (prepared_string, " ", -1);
@@ -347,6 +351,7 @@ nautilus_query_matches_string (NautilusQuery *query,
 
                 nonexact_malus += strlen (ptr) - strlen (query->prepared_words[idx]);
 	}
+        g_mutex_unlock (&query->prepared_words_mutex);
 
 	if (!found) {
 		g_free (prepared_string);
@@ -382,8 +387,10 @@ nautilus_query_set_text (NautilusQuery *query, const char *text)
         g_free (query->text);
         query->text = g_strstrip (g_strdup (text));
 
+        g_mutex_lock (&query->prepared_words_mutex);
         g_strfreev (query->prepared_words);
         query->prepared_words = NULL;
+        g_mutex_unlock (&query->prepared_words_mutex);
 
         g_object_notify (G_OBJECT (query), "text");
 }
