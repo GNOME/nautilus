@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-02-08 01:51+0000\n"
-"PO-Revision-Date: 2016-02-08 11:49+0500\n"
+"POT-Creation-Date: 2016-02-28 16:37+0000\n"
+"PO-Revision-Date: 2016-02-29 14:21+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -59,8 +59,7 @@ msgstr "Бағд. қамтаманы жөнелту"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4197
-#: ../src/nautilus-window.c:2634
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:50
+#: ../src/nautilus-window.c:2722
 msgid "Files"
 msgstr "Файлдар"
 
@@ -99,42 +98,35 @@ msgstr ""
 "әрқашан да мәтіндік енгізу жолағы (батырмалар емес) қолданылатын болады."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:5
-msgid "Whether to enable local recursive search or not"
-msgstr "Жергілікті рекурсивті іздеуді іске қосу керек пе, әлде жоқ па"
+msgid "Where to perform recursive search"
+msgstr "Рекурсивті іздеуді қайда қолдану керек"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:6
-msgid "Enables or disables local recursive search in Nautilus."
+msgid ""
+"In which locations Nautilus should search on subfolders. Available values "
+"are 'local-only', 'always', 'never'."
 msgstr ""
-"Nautilus ішінде жергілікті рекурсивті іздеуді іске қосады немесе сөндіреді."
+"Nautilus қай ораналасуларда ішкі бумаларды іздеуі керек. Мүмкін мәндері "
+"'local-only', 'always', 'never'."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:7
-msgid "Whether to enable recursive search or not on remote locations"
-msgstr ""
-"Қашықтағы орналасуларда рекурсивті іздеуді іске қосу керек пе, әлде жоқ па"
-
-#: ../data/org.gnome.nautilus.gschema.xml.h:8
-msgid "Enables or disables recursive search on remote locations in Nautilus."
-msgstr ""
-"Nautilus ішінде қашықтағы рекурсивті іздеуді іске қосады немесе сөндіреді."
-
-#: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Filter the search dates using either last used or last modified"
 msgstr ""
 "Ізделетін күндерді соңғы қолданылған немесе соңғы өзгертілген бойынша "
 "сүзгілеу"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:10
+#: ../data/org.gnome.nautilus.gschema.xml.h:8
 msgid "Filter the search dates using either last used or last modified."
 msgstr ""
 "Ізделетін күндерді соңғы қолданылған немесе соңғы өзгертілген бойынша "
 "сүзгілеу."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:11
+#: ../data/org.gnome.nautilus.gschema.xml.h:9
 msgid "Whether to show a context menu item to delete permanently"
 msgstr ""
 "Нәрселерді толығымен өшіру нұсқасын контекст мәзірінде көрсету керек пе"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:12
+#: ../data/org.gnome.nautilus.gschema.xml.h:10
 msgid ""
 "If set to true, then Nautilus will show a delete permanently context menu "
 "item to bypass the Trash."
@@ -142,7 +134,7 @@ msgstr ""
 "Ақиқат болса, Nautilus контекст мәзірінде қоқыс шелегін аттап кету үшін "
 "толығымен өшіру мәзір элементін көрсететін болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:13
+#: ../data/org.gnome.nautilus.gschema.xml.h:11
 msgid ""
 "Whether to show context menu items to create links from copied or selected "
 "files"
@@ -150,7 +142,7 @@ msgstr ""
 "Көшірілген немесе таңдалған файлдардан сілтемелерді жасау нұсқасын контекст "
 "мәзірінде көрсету керек пе"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:14
+#: ../data/org.gnome.nautilus.gschema.xml.h:12
 msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
@@ -158,14 +150,14 @@ msgstr ""
 "Ақиқат болса, Nautilus контекст мәзірінде көшірілген немесе таңдалған "
 "файлдардан сілтемелерді жасау нұсқасын контекст мәзірінде көрсететін болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:15
+#: ../data/org.gnome.nautilus.gschema.xml.h:13
 msgid ""
 "Whether to ask for confirmation when deleting files, or emptying the Trash"
 msgstr ""
 "Файлдарды өшіру не қоқыс шелегін тазарту алдында растауды сұрау керек пе, "
 "соны көрсетеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:16
+#: ../data/org.gnome.nautilus.gschema.xml.h:14
 msgid ""
 "If set to true, then Nautilus will ask for confirmation when you attempt to "
 "delete files, or empty the Trash."
@@ -173,11 +165,11 @@ msgstr ""
 "Ақиқат болса, Nautilus сіз файлдарды өшіру не қоқыс шелегіне тастау алдында "
 "растауды сұрайтын болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:17
+#: ../data/org.gnome.nautilus.gschema.xml.h:15
 msgid "When to show number of items in a folder"
 msgstr "Бумадағы нәрселер санын көрсету керек пе"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:18
+#: ../data/org.gnome.nautilus.gschema.xml.h:16
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "\"always\" then always show item counts, even if the folder is on a remote "
@@ -190,11 +182,11 @@ msgstr ""
 "жүйелер үшін есептеледі. Егер мәні \"never\" болса, онда объекттер саны "
 "ешқашан есептелмейді."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:19
+#: ../data/org.gnome.nautilus.gschema.xml.h:17
 msgid "Type of click used to launch/open files"
 msgstr "Файлдарды жөнелту/ашу үшін қолданылатын шерту түрі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:20
+#: ../data/org.gnome.nautilus.gschema.xml.h:18
 msgid ""
 "Possible values are \"single\" to launch files on a single click, or \"double"
 "\" to launch them on a double click."
@@ -202,11 +194,11 @@ msgstr ""
 "Мүмкін мәндері: файлдарды бірлік шертумен жөнелту үшін \"single\", ал, қос "
 "шертумен жөнелту үшін - \"double\"."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:21
+#: ../data/org.gnome.nautilus.gschema.xml.h:19
 msgid "What to do with executable text files when activated"
 msgstr "Орындалатын файлдар белсендірілген кезде олармен не істеу керек"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:22
+#: ../data/org.gnome.nautilus.gschema.xml.h:20
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are \"launch\" to launch them as programs, "
@@ -218,11 +210,11 @@ msgstr ""
 "ретінде орындау, \"ask\" - сұхбат арқылы не істеуді сұрау, \"display\" - "
 "оларды мәтіндік файлдар ретінде көрсету."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:23
+#: ../data/org.gnome.nautilus.gschema.xml.h:21
 msgid "Show the package installer for unknown MIME types"
 msgstr "MIME түрлері белгісіз файлдар үшін дестелер орнатушысын көрсету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:24
+#: ../data/org.gnome.nautilus.gschema.xml.h:22
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
@@ -230,14 +222,14 @@ msgstr ""
 "MIME түрлері белгісіз файлдар ашылған кезде оны аша алатын қолданбаны іздеу "
 "үшін дестелерді орнату сұхбатын көрсету керек пе."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:25
+#: ../data/org.gnome.nautilus.gschema.xml.h:23
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash"
 msgstr ""
 "Қоқыс шелегіне тастауға арналған пернелер жарлығының өзгеруі жөнінде ескерту "
 "сұхбатын көрсету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:26
+#: ../data/org.gnome.nautilus.gschema.xml.h:24
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash "
 "from Control + Delete to just Delete."
@@ -245,11 +237,11 @@ msgstr ""
 "Қоқыс шелегіне тастауға арналған пернелер жарлығының \"Сtrl+Delete\" мәнінен "
 "жай ғана \"Delete\" мәніне өзгеруі жөнінде ескерту сұхбатын көрсету."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:27
+#: ../data/org.gnome.nautilus.gschema.xml.h:25
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr "Nautilus шолу терезесінде тышқанның қосымша батырмаларын қолдану"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:28
+#: ../data/org.gnome.nautilus.gschema.xml.h:26
 msgid ""
 "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
 "will determine if any action is taken inside of Nautilus when either is "
@@ -259,12 +251,12 @@ msgstr ""
 "кілт осы батырмалар басылған кезде Nautilus ішінде қандай да бір әрекет "
 "орындала ма, соны анықтайды."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:29
+#: ../data/org.gnome.nautilus.gschema.xml.h:27
 msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgstr ""
 "Шолушы терезесінде \"Алға\" командасын белсендіру үшін тышқан батырмасы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:30
+#: ../data/org.gnome.nautilus.gschema.xml.h:28
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Forward\" command in a browser window. "
@@ -274,12 +266,12 @@ msgstr ""
 "кілт қай батырма шолушы терезесінде басылған кезде, \"Алға\" командасын "
 "орындайтынын анықтайды. Мүмкін мәндері 6 және 14 арасында жатуы керек."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:31
+#: ../data/org.gnome.nautilus.gschema.xml.h:29
 msgid "Mouse button to activate the \"Back\" command in browser window"
 msgstr ""
 "Шолушы терезесінде \"Артқа\" командасын белсендіру үшін тышқан батырмасы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:32
+#: ../data/org.gnome.nautilus.gschema.xml.h:30
 msgid ""
 "For users with mice that have buttons for \"Forward\" and \"Back\", this key "
 "will set which button activates the \"Back\" command in a browser window. "
@@ -289,11 +281,11 @@ msgstr ""
 "кілт қай батырма шолушы терезесінде басылған кезде, \"Артқа\" командасын "
 "орындайтынын анықтайды. Мүмкін мәндері 6 және 14 арасында жатуы керек."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:33
+#: ../data/org.gnome.nautilus.gschema.xml.h:31
 msgid "When to show thumbnails of files"
 msgstr "Файлдар үлгілерін қашан көрсету керек"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:34
+#: ../data/org.gnome.nautilus.gschema.xml.h:32
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -308,11 +300,11 @@ msgstr ""
 "орнына әрқашан да файл таңбашасы көрсетіледі. Бұл кіші көріністерін жасауға "
 "болатын барлық файлдар үшін іске асады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:35
+#: ../data/org.gnome.nautilus.gschema.xml.h:33
 msgid "Maximum image size for thumbnailing"
 msgstr "Үлгіні көрсету үшін суреттің максималды өлшемі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:36
+#: ../data/org.gnome.nautilus.gschema.xml.h:34
 msgid ""
 "Images over this size (in bytes) won't be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -322,11 +314,11 @@ msgstr ""
 "болады. Бұл баптаудың мақсаты - жүктеуге ұзақ уақыт алатын немесе көп жады "
 "қолданатын үлкен суреттердің кіші көріністер жасалуына жол бермеу."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:37
+#: ../data/org.gnome.nautilus.gschema.xml.h:35
 msgid "Show folders first in windows"
 msgstr "Терезелерде бумаларды алдында көрсету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:38
+#: ../data/org.gnome.nautilus.gschema.xml.h:36
 msgid ""
 "If set to true, then Nautilus shows folders prior to showing files in the "
 "icon and list views."
@@ -334,11 +326,11 @@ msgstr ""
 "Егер ақиқат болса, Nautilus таңбашалар және тізім көріністерінде бумаларды "
 "файлдардың алдында көрсетеді."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:39
+#: ../data/org.gnome.nautilus.gschema.xml.h:37
 msgid "Default sort order"
 msgstr "Негізгі сұрыптау тәсілі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:40
+#: ../data/org.gnome.nautilus.gschema.xml.h:38
 msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
@@ -346,11 +338,11 @@ msgstr ""
 "Таңбашалар көрінісі үшін бастапқы сұрыптау реті. Мүмкін мәндері: \"name\", "
 "\"size\", \"type\" және \"mtime\"."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:41
+#: ../data/org.gnome.nautilus.gschema.xml.h:39
 msgid "Reverse sort order in new windows"
 msgstr "Жаңа терезелерде кері ретпен сұрыптау"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:42
+#: ../data/org.gnome.nautilus.gschema.xml.h:40
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from \"a\" to \"z\", they "
@@ -364,11 +356,11 @@ msgstr ""
 "файлдар кішіден үлкенге дейін ретпен емес, үлкеннен кішіге дейін ретпен "
 "сұрыпталатын болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:43
+#: ../data/org.gnome.nautilus.gschema.xml.h:41
 msgid "Default folder viewer"
 msgstr "Бумалардың бастапқы көрсетушісі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:44
+#: ../data/org.gnome.nautilus.gschema.xml.h:42
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are \"list-view\", "
@@ -377,11 +369,11 @@ msgstr ""
 "Буманы шолу кезінде бұл көрініс қолданылады, егер бұл нақты бума үшін басқа "
 "көрініс таңдалмаған болса. Мүмкін мәндері: \"list-view\" және \"icon-view\"."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:45
+#: ../data/org.gnome.nautilus.gschema.xml.h:43
 msgid "Whether to show hidden files"
 msgstr "Жасырын файлдарды көрсету керек пе"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:46
+#: ../data/org.gnome.nautilus.gschema.xml.h:44
 msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
@@ -389,25 +381,20 @@ msgstr ""
 "Бұл кілт ескірген және қолданылмайды. Оның орнына \"org.gtk.Settings."
 "FileChooser\" ішінен \"show-hidden\" кілті қолданылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:47
-msgid "Whether to switch to the list view on search"
-msgstr "Іздеу кезінде тізім көрінісіне ауысу керек пе"
+#: ../data/org.gnome.nautilus.gschema.xml.h:45
+msgid "What viewer should be used when searching"
+msgstr "Іздеу кезінде қандай көрініс қолданылуы тиіс"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:48
+#: ../data/org.gnome.nautilus.gschema.xml.h:46
 msgid ""
-"If this is set to true, view mode will be switched to the list view while "
-"searching. However, if the user changes the mode manually, this will be "
-"disabled."
-msgstr ""
-"Ақиқат етіп орнатылса, іздеу кезінде көрініс тізім көрінісіне ауысатын "
-"болады. Алайда, пайдаланушы көріністі қолмен ауыстырса, бұл мүмкіндік "
-"сөндірілетін болады."
+"When searching Nautilus will switch to the type of view in this setting."
+msgstr "Іздеу кезінде Nautilus осы баптаудағы көрініс түріне ауысады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:49
+#: ../data/org.gnome.nautilus.gschema.xml.h:47
 msgid "Bulk rename utility"
 msgstr "Топтап атын ауыстыру қолданбасы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:50
+#: ../data/org.gnome.nautilus.gschema.xml.h:48
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -422,7 +409,7 @@ msgstr ""
 "етіп орнатыңыз. Егер орындалатын файл аты толық жолмен берілмесе, ол іздеу "
 "жолында ізделетін болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:51
+#: ../data/org.gnome.nautilus.gschema.xml.h:49
 msgid ""
 "Whether to open the hovered folder after a timeout when drag and drop "
 "operation"
@@ -430,7 +417,7 @@ msgstr ""
 "Ұстап апару және тарту әрекеті кезінде бума үстінде тоқтап қалғанда, оны "
 "белгілі уақыттан кейін ашу керек пе"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:52
+#: ../data/org.gnome.nautilus.gschema.xml.h:50
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
@@ -438,11 +425,11 @@ msgstr ""
 "Орнатылса, ұстап апару және тарту әрекеті кезінде бума үстінде тоқтап "
 "қалғанда, ол белгілі уақыттан кейін автоматты түрде ашылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:53
+#: ../data/org.gnome.nautilus.gschema.xml.h:51
 msgid "List of possible captions on icons"
 msgstr "Таңбашалардың мүмкін сипаттамаларының тізімі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:54
+#: ../data/org.gnome.nautilus.gschema.xml.h:52
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -453,31 +440,31 @@ msgstr ""
 "Жазулар саны масштабқа тәуелді болады. Мүмкін мәндері: \"size\", \"type\", "
 "\"date_modified\", \"owner\", \"group\", \"permissions\", және \"mime_type\"."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:55
+#: ../data/org.gnome.nautilus.gschema.xml.h:53
 msgid "Default icon zoom level"
 msgstr "Таңбашалардың бастапқы масштабы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:56
+#: ../data/org.gnome.nautilus.gschema.xml.h:54
 msgid "Default zoom level used by the icon view."
 msgstr "Таңбаша көрінісіндегі бастапқы масштабы."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:57
+#: ../data/org.gnome.nautilus.gschema.xml.h:55
 msgid "Default Thumbnail Icon Size"
 msgstr "Үлгі таңбашаларының бастапқы өлшемі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:58
+#: ../data/org.gnome.nautilus.gschema.xml.h:56
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
-"NAUTILUS_ICON_SIZE_SMALL size."
+"NAUTILUS_ICON_SIZE_STANDARD size."
 msgstr ""
-"Таңбаша көрінісіндегі үлгілердің бастапқы масштабы, NAUTILUS_ICON_SIZE_SMALL "
-"өлшемін қолдану кезде."
+"Таңбаша көрінісіндегі үлгілердің бастапқы масштабы, "
+"NAUTILUS_ICON_SIZE_STANDARD өлшемін қолдану кезде."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:59
+#: ../data/org.gnome.nautilus.gschema.xml.h:57
 msgid "Text Ellipsis Limit"
 msgstr "Атауларды қысқарту параметрлері"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:60
+#: ../data/org.gnome.nautilus.gschema.xml.h:58
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -505,35 +492,35 @@ msgstr ""
 "асатын файлдар атауларын қысқартып, басқа масштабтарда файлдар атауларын "
 "қысқартпау. Қолжетерлік масштабтар: small, standard, large."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:61
+#: ../data/org.gnome.nautilus.gschema.xml.h:59
 msgid "Default list zoom level"
 msgstr "Тізімнің бастапқы масштабы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:62
+#: ../data/org.gnome.nautilus.gschema.xml.h:60
 msgid "Default zoom level used by the list view."
 msgstr "Тізім көрінісіндегі қолданылатын бастапқы масштабы."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:63
+#: ../data/org.gnome.nautilus.gschema.xml.h:61
 msgid "Default list of columns visible in the list view"
 msgstr "Тізім көрінісіндегі көрінетін бағандардың бастапқы тізімі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:64
+#: ../data/org.gnome.nautilus.gschema.xml.h:62
 msgid "Default list of columns visible in the list view."
 msgstr "Тізім көрінісіндегі көрінетін бағандардың бастапқы тізімі."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:65
+#: ../data/org.gnome.nautilus.gschema.xml.h:63
 msgid "Default column order in the list view"
 msgstr "Тізім көрінісіндегі бағандардың бастапқы реті"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:66
+#: ../data/org.gnome.nautilus.gschema.xml.h:64
 msgid "Default column order in the list view."
 msgstr "Тізім көрінісіндегі бағандардың бастапқы реті."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:67
+#: ../data/org.gnome.nautilus.gschema.xml.h:65
 msgid "Use tree view"
 msgstr "Ағаш тектес көрінісін қолдану"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:68
+#: ../data/org.gnome.nautilus.gschema.xml.h:66
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
@@ -541,71 +528,71 @@ msgstr ""
 "Тізім көрінісі навигациясы үшін жалпақ тізімі орнына ағаш тектес көрініс "
 "қолданылуы керек пе."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:69
+#: ../data/org.gnome.nautilus.gschema.xml.h:67
 msgctxt "desktop-font"
 msgid "''"
 msgstr "''"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:70
+#: ../data/org.gnome.nautilus.gschema.xml.h:68
 msgid "Desktop font"
 msgstr "Жұмыс үстел қарібі"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:71
+#: ../data/org.gnome.nautilus.gschema.xml.h:69
 msgid "The font description used for the icons on the desktop."
 msgstr "Жұмыс үстеліндегі таңбашалары үшін қолданылатын қаріп анықтамасы."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:72
+#: ../data/org.gnome.nautilus.gschema.xml.h:70
 msgid "Home icon visible on desktop"
 msgstr "Үй бумасы таңбашасы жұмыс үстелінде көрінеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:73
+#: ../data/org.gnome.nautilus.gschema.xml.h:71
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr "Орнатылса, үй бумасына сілтейтін таңбаша жұмыс үстеліне орнатылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:74
+#: ../data/org.gnome.nautilus.gschema.xml.h:72
 msgid "Trash icon visible on desktop"
 msgstr "Қоқыс шелегі таңбашасы жұмыс үстелінде көрінеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:75
+#: ../data/org.gnome.nautilus.gschema.xml.h:73
 msgid ""
 "If this is set to true, an icon linking to the Trash will be put on the "
 "desktop."
 msgstr "Орнатылса, қоқыс шелегіне сілтейтін таңбаша жұмыс үстеліне орнатылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:76
+#: ../data/org.gnome.nautilus.gschema.xml.h:74
 msgid "Show mounted volumes on the desktop"
 msgstr "Тіркелген бөлімдер таңбашалары жұмыс үстелінде көрінеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:77
+#: ../data/org.gnome.nautilus.gschema.xml.h:75
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
 msgstr ""
 "Орнатылса, тіркелген томдарға сілтейтін таңбашалар жұмыс үстеліне орнатылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:78
+#: ../data/org.gnome.nautilus.gschema.xml.h:76
 msgid "Network Servers icon visible on the desktop"
 msgstr "Желілік серверлер жұмыс үстелінде көрінеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:79
+#: ../data/org.gnome.nautilus.gschema.xml.h:77
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
 msgstr ""
 "Орнатылса, желілік серверлерге сілтейтін таңбаша жұмыс үстеліне орнатылады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:80
+#: ../data/org.gnome.nautilus.gschema.xml.h:78
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "'Үй бумасы'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:81
+#: ../data/org.gnome.nautilus.gschema.xml.h:79
 msgid "Desktop home icon name"
 msgstr "Жұмыс үстел үй бумасы таңбашасының атауы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:82
+#: ../data/org.gnome.nautilus.gschema.xml.h:80
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -613,16 +600,16 @@ msgstr ""
 "Жұмыс үстеліндегі үй бумасы таңбашасы үшін таңдауыңызша атын қаласаңыз, осы "
 "атауды орната аласыз."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:83
+#: ../data/org.gnome.nautilus.gschema.xml.h:81
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "'Қоқыс шелегі'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:84
+#: ../data/org.gnome.nautilus.gschema.xml.h:82
 msgid "Desktop Trash icon name"
 msgstr "Жұмыс үстел қоқыс шелегі таңбашасының атауы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:85
+#: ../data/org.gnome.nautilus.gschema.xml.h:83
 msgid ""
 "This name can be set if you want a custom name for the Trash icon on the "
 "desktop."
@@ -630,16 +617,16 @@ msgstr ""
 "Жұмыс үстеліндегі қоқыс шелегі таңбашасы үшін таңдауыңызша атын қаласаңыз, "
 "осы атауды орната аласыз."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:86
+#: ../data/org.gnome.nautilus.gschema.xml.h:84
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "'Желілік серверлер'"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:87
+#: ../data/org.gnome.nautilus.gschema.xml.h:85
 msgid "Network servers icon name"
 msgstr "Желілік серверлер таңбашасының атауы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:88
+#: ../data/org.gnome.nautilus.gschema.xml.h:86
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -647,7 +634,7 @@ msgstr ""
 "Жұмыс үстеліндегі желілік серверлер таңбашасы үшін таңдауыңызша атын "
 "қаласаңыз, осы атауды орната аласыз."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:89
+#: ../data/org.gnome.nautilus.gschema.xml.h:87
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -659,11 +646,11 @@ msgstr ""
 "көрсетілген жолдар санынан аспайды. Егер нөлден кіші немесе нөлге тең болса, "
 "жолдар санына шектеу қойылмайды."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:90
+#: ../data/org.gnome.nautilus.gschema.xml.h:88
 msgid "Fade the background on change"
 msgstr "Түсқағазды өзгерту кезінде бәсеңдету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:91
+#: ../data/org.gnome.nautilus.gschema.xml.h:89
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
@@ -671,11 +658,11 @@ msgstr ""
 "Ақиқат болса, Nautilus түсқағазды ауыстыру кезінде бәсеңдету эффектісін "
 "қолданатын болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:92
+#: ../data/org.gnome.nautilus.gschema.xml.h:90
 msgid "The geometry string for a navigation window"
 msgstr "Навигация терезесі үшін геометрия жолы"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:93
+#: ../data/org.gnome.nautilus.gschema.xml.h:91
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
@@ -683,37 +670,37 @@ msgstr ""
 "Навигация терезелері үшін өлшемдері және орналасу координаталарын сақтайтын "
 "жол."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:94
+#: ../data/org.gnome.nautilus.gschema.xml.h:92
 msgid "Whether the navigation window should be maximized"
 msgstr "Навигация терезесі жазық болуы тиіс пе, соны көрсетеді"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:95
+#: ../data/org.gnome.nautilus.gschema.xml.h:93
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
 "Навигация терезесі үнсіз келісім бойынша жазық болуы тиіс пе, соны көрсетеді."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:96
+#: ../data/org.gnome.nautilus.gschema.xml.h:94
 msgid "Width of the side pane"
 msgstr "Бүйір панелінің ені"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:97
+#: ../data/org.gnome.nautilus.gschema.xml.h:95
 msgid "The default width of the side pane in new windows."
 msgstr "Жаңа терезелердегі бүйір панелінің бастапқы ені."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:98
+#: ../data/org.gnome.nautilus.gschema.xml.h:96
 msgid "Show location bar in new windows"
 msgstr "Жаңа терезелерде орналасу өрісін көрсету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:99
+#: ../data/org.gnome.nautilus.gschema.xml.h:97
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr "Іске қосылған болса, жаңа терезелерде орналасу өрісі көрінетін болады."
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:100
+#: ../data/org.gnome.nautilus.gschema.xml.h:98
 msgid "Show side pane in new windows"
 msgstr "Жаңа терезелерде бүйір панельді көрсету"
 
-#: ../data/org.gnome.nautilus.gschema.xml.h:101
+#: ../data/org.gnome.nautilus.gschema.xml.h:99
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr "Іске қосылған болса, жаңа терезелерде бүйір панелі көрінетін болады."
 
@@ -740,7 +727,7 @@ msgstr "_Көбірек ақпарат шығару"
 #: ../src/nautilus-mime-actions.c:1488 ../src/nautilus-mime-actions.c:1717
 #: ../src/nautilus-properties-window.c:4188
 #: ../src/nautilus-properties-window.c:5170
-#: ../src/nautilus-search-popover.c:535
+#: ../src/nautilus-search-popover.c:539
 msgid "_Cancel"
 msgstr "Ба_с тарту"
 
@@ -766,7 +753,7 @@ msgstr "Басқа орналасулар"
 msgid "Home"
 msgstr "Үй бумасы"
 
-#: ../libnautilus-private/nautilus-canvas-container.c:2460
+#: ../libnautilus-private/nautilus-canvas-container.c:2481
 msgid "The selection rectangle"
 msgstr "Таңдау төртбұрышы"
 
@@ -779,7 +766,7 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "Ағымдағы тізім бағандарын үнсіз келісім баптауларымен алмастыру"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:57
-#: ../src/nautilus-list-view.c:1713
+#: ../src/nautilus-list-view.c:1716
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:1
 msgid "Name"
 msgstr "Аты"
@@ -851,8 +838,8 @@ msgid "MIME Type"
 msgstr "MIME түрі"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:122
-msgid "The mime type of the file."
-msgstr "Файлдың mime түрі."
+msgid "The MIME type of the file."
+msgstr "Файлдың MIME түрі."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:129
 #: ../src/nautilus-image-properties-page.c:415
@@ -1573,7 +1560,7 @@ msgstr "Қоқыс шелегіндегі барлық нәрсе толығым
 
 #: ../libnautilus-private/nautilus-file-operations.c:1399
 #: ../libnautilus-private/nautilus-file-operations.c:2482
-#: ../src/nautilus-window.c:1208
+#: ../src/nautilus-window.c:1298
 msgid "Empty _Trash"
 msgstr "Қ_оқыс шелегін тазарту"
 
@@ -2591,7 +2578,7 @@ msgstr "Дайындау"
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:41
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:51
 #: ../src/resources/ui/nautilus-search-popover.ui.h:12
 #: ../src/resources/ui/nautilus-toolbar.ui.h:5
 msgid "Search"
@@ -2620,7 +2607,7 @@ msgid "Send files by mail…"
 msgstr "Файлдарды эл. пошта арқылы жіберу…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1140
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1115
 msgid "Oops! Something went wrong."
 msgstr "Қап! Бірнәрсе қате кетті."
 
@@ -2751,8 +2738,8 @@ msgstr ""
 msgid "_Run"
 msgstr "О_рындау"
 
-#: ../src/nautilus-canvas-view-container.c:443
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:7
+#: ../src/nautilus-canvas-view-container.c:444
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:7
 msgid "Icon View"
 msgstr "Таңбашалар көрінісі"
 
@@ -2890,7 +2877,7 @@ msgid "Searching…"
 msgstr "Іздеу…"
 
 #: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:371 ../src/nautilus-window-slot.c:639
+#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:628
 msgid "Loading…"
 msgstr "Жүктеу..."
 
@@ -3101,7 +3088,7 @@ msgstr "Ашу"
 msgid "_Start"
 msgstr "Ба_стау"
 
-#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1657
+#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1648
 msgid "_Connect"
 msgstr "Ба_йланысу"
 
@@ -3121,7 +3108,7 @@ msgstr "Жетекті тоқтату"
 msgid "_Safely Remove Drive"
 msgstr "Жетекті қауі_псіз шығару"
 
-#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1647
+#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1638
 msgid "_Disconnect"
 msgstr "Ба_йланысты үзу"
 
@@ -3291,7 +3278,7 @@ msgstr "Рейтингі"
 msgid "Failed to load image information"
 msgstr "Сурет ақпаратын жүктеу сәтсіз"
 
-#: ../src/nautilus-list-model.c:369
+#: ../src/nautilus-list-model.c:373
 msgid "(Empty)"
 msgstr "(Бос)"
 
@@ -3299,17 +3286,17 @@ msgstr "(Бос)"
 msgid "Use Default"
 msgstr "Бастапқысын қолдану"
 
-#: ../src/nautilus-list-view.c:1818
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:8
+#: ../src/nautilus-list-view.c:1821
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:8
 msgid "List View"
 msgstr "Тізім көрінісі"
 
-#: ../src/nautilus-list-view.c:2638
+#: ../src/nautilus-list-view.c:2641
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s көрінетін баған"
 
-#: ../src/nautilus-list-view.c:2658
+#: ../src/nautilus-list-view.c:2661
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Бұл бумада көрсетілетін ақпараттың ретін таңдаңыз:"
 
@@ -3331,7 +3318,6 @@ msgid "Anything"
 msgstr "Кез-келген нәрсе"
 
 #: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4199
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:53
 msgid "Folders"
 msgstr "Бумалар"
 
@@ -3348,7 +3334,6 @@ msgid "Music"
 msgstr "Музыка"
 
 #: ../src/nautilus-mime-actions.c:158
-#| msgid "PDF / Postscript"
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
@@ -3473,8 +3458,8 @@ msgstr[0] "Бұл әрекет %d бөлек қолданбаны ашады."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1165 ../src/gtk/gtkplacesview.c:1209
-#: ../src/gtk/gtkplacesview.c:1260
+#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1204
+#: ../src/gtk/gtkplacesview.c:1251
 msgid "Unable to access location"
 msgstr "Орналасуға қатынау мүмкін емес"
 
@@ -3498,7 +3483,7 @@ msgid "Close tab"
 msgstr "Бетті жабу"
 
 #. Translators: this is referred to captions under icons.
-#: ../src/nautilus-preferences-dialog.c:149
+#: ../src/nautilus-preferences-window.c:151
 #: ../src/nautilus-properties-window.c:3772
 #: ../src/nautilus-properties-window.c:3799
 msgid "None"
@@ -3800,60 +3785,60 @@ msgid "_Revert"
 msgstr "Қай_тару"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1602
+#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1593
 msgid "_Open"
 msgstr "А_шу"
 
-#: ../src/nautilus-query-editor.c:123
+#: ../src/nautilus-query-editor.c:122
 msgid "Searching locations only"
 msgstr "Тек орналасуларды іздеу"
 
-#: ../src/nautilus-query-editor.c:125
+#: ../src/nautilus-query-editor.c:124
 msgid "Searching devices only"
 msgstr "Тек құрылғыларда іздеу"
 
-#: ../src/nautilus-query-editor.c:127
+#: ../src/nautilus-query-editor.c:126
 msgid "Searching network locations only"
 msgstr "Тек желілік орналасуларды іздеу"
 
-#: ../src/nautilus-query-editor.c:130
+#: ../src/nautilus-query-editor.c:129
 msgid "Remote location - only searching the current folder"
 msgstr "Қашықтағы орналасу — тек ағымдағы бумадан іздеу"
 
-#: ../src/nautilus-query-editor.c:132
+#: ../src/nautilus-query-editor.c:131
 msgid "Only searching the current folder"
 msgstr "Тек ағымдағы бумадан іздеу"
 
-#: ../src/nautilus-search-popover.c:282
+#: ../src/nautilus-search-popover.c:284
 msgid "Show a list to select the date"
 msgstr "Күнді таңдау үшін тізімді көрсету"
 
-#: ../src/nautilus-search-popover.c:288
+#: ../src/nautilus-search-popover.c:290
 #: ../src/resources/ui/nautilus-search-popover.ui.h:5
 msgid "Show a calendar to select the date"
 msgstr "Күнді таңдау үшін күнтізбені көрсету"
 
 #. Other types
-#: ../src/nautilus-search-popover.c:472
+#: ../src/nautilus-search-popover.c:476
 msgid "Other Type…"
 msgstr "Басқа түрі…"
 
-#: ../src/nautilus-search-popover.c:532
+#: ../src/nautilus-search-popover.c:536
 msgid "Select type"
 msgstr "Түрін таңдаңыз"
 
-#: ../src/nautilus-search-popover.c:536
+#: ../src/nautilus-search-popover.c:540
 msgid "Select"
 msgstr "Таңдау"
 
-#: ../src/nautilus-search-popover.c:621
+#: ../src/nautilus-search-popover.c:625
 #: ../src/resources/ui/nautilus-search-popover.ui.h:3
 msgid "Select Dates…"
 msgstr "Күндерді таңдау..."
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:39
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:45
 msgid "Trash"
 msgstr "Қоқыс шелегі"
 
@@ -3882,50 +3867,50 @@ msgstr "Бо_сату"
 msgid "Delete all items in the Trash"
 msgstr "Қоқыс шелегінен барлық нәрсені өшіру"
 
-#: ../src/nautilus-window.c:1226
+#: ../src/nautilus-window.c:1316
 msgid "_Properties"
 msgstr "Қас_иеттері"
 
-#: ../src/nautilus-window.c:1236
+#: ../src/nautilus-window.c:1326
 msgid "_Format…"
 msgstr "Пі_шімдеу…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1490
+#: ../src/nautilus-window.c:1582
 #, c-format
 msgid "“%s” deleted"
 msgstr "\"%s\" өшірілді"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1495
+#: ../src/nautilus-window.c:1587
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d файл өшірілді"
 
-#: ../src/nautilus-window.c:1595
+#: ../src/nautilus-window.c:1687
 #, c-format
 msgid "Open %s"
 msgstr "%s ашу"
 
-#: ../src/nautilus-window.c:1683
+#: ../src/nautilus-window.c:1775
 msgid "_New Tab"
 msgstr "_Жаңа бет"
 
-#: ../src/nautilus-window.c:1693
+#: ../src/nautilus-window.c:1785
 msgid "Move Tab _Left"
 msgstr "Бетті со_лға жылжыту"
 
-#: ../src/nautilus-window.c:1701
+#: ../src/nautilus-window.c:1793
 msgid "Move Tab _Right"
 msgstr "Бетті _оңға жылжыту"
 
-#: ../src/nautilus-window.c:1712
+#: ../src/nautilus-window.c:1804
 msgid "_Close Tab"
 msgstr "Бетті _жабу"
 
-#: ../src/nautilus-window.c:2636
+#: ../src/nautilus-window.c:2724
 msgid "Access and organize your files."
 msgstr "Файлдарыңызға қатынау және басқару."
 
@@ -3933,37 +3918,37 @@ msgstr "Файлдарыңызға қатынау және басқару."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2645
+#: ../src/nautilus-window.c:2733
 msgid "translator-credits"
 msgstr "Baurzhan Muftakhidinov <baurthefirst@gmail.com>"
 
-#: ../src/nautilus-window-slot.c:1144
+#: ../src/nautilus-window-slot.c:1119
 msgid "Unable to display the contents of this folder."
 msgstr "Бұл буманың құрамасын көрсету мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1146
+#: ../src/nautilus-window-slot.c:1121
 msgid "This location doesn't appear to be a folder."
 msgstr "Бұл орналасу бума емес сияқты."
 
-#: ../src/nautilus-window-slot.c:1151
+#: ../src/nautilus-window-slot.c:1126
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "Сұралған файлды табу мүмкін емес. Жазылуды тексеріп, қайталап көріңіз."
 
-#: ../src/nautilus-window-slot.c:1156
+#: ../src/nautilus-window-slot.c:1131
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "“%s” орналасуларына қолдау жоқ."
 
-#: ../src/nautilus-window-slot.c:1159
+#: ../src/nautilus-window-slot.c:1134
 msgid "Unable to handle this kind of location."
 msgstr "Бұл тектес орналасуларды өндеу мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1164
+#: ../src/nautilus-window-slot.c:1139
 msgid "Unable to access the requested location."
 msgstr "Сұралған орналасуға қатынау мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1167
+#: ../src/nautilus-window-slot.c:1142
 msgid "Don't have permission to access the requested location."
 msgstr "Сұралған орналасуға қатынау үшін рұқсаттар жоқ."
 
@@ -3972,7 +3957,7 @@ msgstr "Сұралған орналасуға қатынау үшін рұқса
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1175
+#: ../src/nautilus-window-slot.c:1150
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -3980,12 +3965,12 @@ msgstr ""
 "Сұралған орналасуды табу мүмкін емес. Оның дұрыс жазылғанын және желі "
 "баптауларын тексеріңіз."
 
-#: ../src/nautilus-window-slot.c:1186
+#: ../src/nautilus-window-slot.c:1161
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Өнделмеген қате хабарламасы: %s"
 
-#: ../src/nautilus-window-slot.c:1334
+#: ../src/nautilus-window-slot.c:1309
 #, c-format
 msgid "Unable to load location"
 msgstr "Орналасуды жүктеу мүмкін емес"
@@ -4412,12 +4397,12 @@ msgid "Open With Other _Application"
 msgstr "Басқа қолд_анбамен ашу"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1657
+#: ../src/gtk/gtkplacesview.c:1648
 msgid "_Mount"
 msgstr "Ті_ркеу"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1647
+#: ../src/gtk/gtkplacesview.c:1638
 msgid "_Unmount"
 msgstr "_Тіркеуден шығару"
 
@@ -4518,206 +4503,258 @@ msgstr "Нәтижелер табылмады"
 msgid "Try a different search"
 msgstr "Басқа сөздерді іздеп көріңіз"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:1
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:1
 msgid "Always"
 msgstr "Әрқашан"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:2
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:2
 msgid "Local Files Only"
 msgstr "Тек жергілікті файлдар"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:3
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:3
 msgid "Never"
 msgstr "Ешқашан"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:4
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:4
 msgid "Small"
 msgstr "Кіші"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:5
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:5
 msgid "Standard"
 msgstr "Қалыпты"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:6
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:6
 msgid "Large"
 msgstr "Үлкен"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:9
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:9
 msgid "By Name"
 msgstr "Аты бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:10
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:10
 msgid "By Size"
 msgstr "Өлшемі бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:11
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:11
 msgid "By Type"
 msgstr "Түрі бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:12
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:12
 msgid "By Modification Date"
 msgstr "Түзету уақыты бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:13
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:13
 msgid "By Access Date"
 msgstr "Қатынау уақыты бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:14
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:14
 msgid "By Trashed Date"
 msgstr "Тасталу уақыты бойынша"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:15
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:15
 msgid "100 KB"
 msgstr "100 КБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:16
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:16
 msgid "500 KB"
 msgstr "500 КБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:17
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:17
 msgid "1 MB"
 msgstr "1 МБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:18
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:18
 msgid "3 MB"
 msgstr "3 МБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:19
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:19
 msgid "5 MB"
 msgstr "5 МБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:20
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:20
 msgid "10 MB"
 msgstr "10 МБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:21
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:21
 msgid "100 MB"
 msgstr "100 МБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:22
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:22
 msgid "1 GB"
 msgstr "1 ГБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:23
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:23
 msgid "2 GB"
 msgstr "2 ГБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:24
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:24
 msgid "4 GB"
 msgstr "4 ГБ"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:25
-msgid "Files Preferences"
-msgstr "Files баптаулары"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:25
+msgid "Preferences"
+msgstr "Баптаулар"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:26
-msgid "Default View"
-msgstr "Бастапқы көрінісі"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:26
+#: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:1
+msgid "Sort"
+msgstr "Сұрыптау"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:27
-msgid "_Arrange items:"
-msgstr "_Құраманы реттеу:"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:28
-msgid "Show context menu item to delete files permanently"
-msgstr "Файлдарды толығымен өшіру нұсқасын контекст мәзірінде көрсету"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:29
-msgid "Show context menu item to create links from copied files"
-msgstr ""
-"Көшірілген файлдардан сілтемелерді жасау нұсқасын контекст мәзірінде көрсету"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:30
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:27
 msgid "Sort _folders before files"
 msgstr "Бу_маларды файлдардың алдына қою"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:31
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:28
+msgid "Allow folders to be _expanded"
+msgstr "Бумаларды а_шық қылуға рұқсат ету"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:29
+msgid "Icon View Captions"
+msgstr "Таңбашалар көрінісінің сипаттамалары"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:30
+msgid ""
+"Add information to be displayed beneath file and folder names.\n"
+"More information will appear when zooming closer."
+msgstr ""
+"Файлдар және бумалар атауларының астында көрсетілетін ақпаратты қосыңыз.\n"
+"Масштабы үлкейген кезде көбірек ақпарат көрсетіледі."
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:32
+msgid "Second"
+msgstr "Екінші"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:33
+msgid "Third"
+msgstr "Үшінші"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:34
+msgid "First"
+msgstr "Бірінші"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:35
 msgid "Views"
 msgstr "Көріністер"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:32
-msgid "Behavior"
-msgstr "Мінез-құлығы"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:36
+msgid "Open Action"
+msgstr "Әрекетті ашу"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:33
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:37
 msgid "_Single click to open items"
 msgstr "Нәр_селерді ашу үшін бірлік шертуді қолдану"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:34
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:38
 msgid "_Double click to open items"
 msgstr "Нәрселерді а_шу үшін қос шертуді қолдану"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:35
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:39
+msgid "Link Creation"
+msgstr "Сілтемелерді жасау"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:40
+msgid "Show action to create symbolic _links"
+msgstr "Символдық сі_лтемелерді жасау әрекетін көрсету"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:41
 msgid "Executable Text Files"
 msgstr "Орындалатын мәтіндік файлдары"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:36
-msgid "_Run executable text files when they are opened"
-msgstr "Орындалатын файлдар ашылған кезде оларды жө_нелту"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:42
+msgid "_Display them"
+msgstr "Оларды көр_сету"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:37
-msgid "_View executable text files when they are opened"
-msgstr "Орындалатын файлдар ашылған кезде оларды _көрсету"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:43
+msgid "_Run them"
+msgstr "Оларды о_рындау"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:38
-msgid "_Ask each time"
-msgstr "Әр р_ет сұрау"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:44
+msgid "_Ask what to do"
+msgstr "Не істеуді сұр_ау"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:40
-msgid "Ask before _emptying the Trash or deleting files"
-msgstr "Қ_оқыс шелегін тазарту не файлдарды өшіру алдында сұрау"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:46
+msgid "Ask before _emptying the Trash"
+msgstr "Қоқыс шелегін та_зарту алдында сұрау"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:42
-msgid "Search subfolders on local file systems"
-msgstr "Жергілікті файлдық жүйеде ішкі бумалардан іздеу"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:47
+msgid "Show action to _permanently delete files and folders"
+msgstr "Файлдар және бумаларды _толығымен әрекетін көрсету"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:43
-msgid "Search subfolders on remote file systems"
-msgstr "Қашықтағы файлдық жүйелерде ішкі бумалардан іздеу"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:48
+msgid "Behavior"
+msgstr "Мінез-құлығы"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:44
-msgid "Icon Captions"
-msgstr "Таңбашалар сипаттамалары"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:45
-msgid ""
-"Choose the order of information to appear beneath icon names. More "
-"information will appear when zooming in closer."
-msgstr ""
-"Таңбашалардың астында көрсетілетін ақпарат ретін таңдаңыз. Масштабы үлкейген "
-"кезде көбірек ақпарат көрсетіледі."
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:46
-msgid "Navigate folders in a tree"
-msgstr "Бумаларды ағаш түрінде қарау"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:47
-msgid "Display"
-msgstr "Көрініс"
-
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:48
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:49
 msgid "Choose the order of information to appear in the list view."
 msgstr "Тізім көрінісі үшін көрсетілетін ақпараттың ретін таңдаңыз."
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:49
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:50
 msgid "List Columns"
 msgstr "Тізім бағандары"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:51
-msgid "Show _thumbnails:"
-msgstr "Ү_лгілерін көрсету:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:52
+msgid "Search in subfolders:"
+msgstr "Ішкі бумалардан іздеу:"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:52
-msgid "_Only for files smaller than:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:53
+msgid "_On this computer only"
+msgstr "Тек бұл к_омпьютерде"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:54
+msgid "_All locations"
+msgstr "Б_арлық орналасулар"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:55
+msgid "_Never"
+msgstr "Ешқаша_н"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:56
+msgid "Thumbnails"
+msgstr "Үлгілер"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:57
+msgid "Show thumbnails:"
+msgstr "Үлгілерді көрсету:"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:58
+msgid "_Files on this computer only"
+msgstr "Тек бұл компьютердегі _файлдар"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:59
+msgid "A_ll files"
+msgstr "Б_арлық файлдар"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:60
+msgid "N_ever"
+msgstr "_Ешқашан"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:61
+msgid "Onl_y for files smaller than:"
 msgstr "Өл_шемі келесіден аз файлдар үшін ғана:"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:54
-msgid "Count _number of items:"
-msgstr "Нәрселер са_нын анықтау:"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:62
+msgid "File count"
+msgstr "Файлдар саны"
 
-#: ../src/resources/ui/nautilus-preferences-dialog.ui.h:55
-msgid "Preview"
-msgstr "Алдын-ала қарау"
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:63
+msgid "Count number of files in folders:"
+msgstr "Бумалардағы файлдар санын анықтау:"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:64
+msgid "F_olders in this computer only"
+msgstr "Тек бұл компьютердегі бу_малар"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:65
+msgid "All folder_s"
+msgstr "Барлық бу_малар"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:66
+msgid "Ne_ver"
+msgstr "Ешқ_ашан"
+
+#: ../src/resources/ui/nautilus-preferences-window.ui.h:67
+msgid "Search & Preview"
+msgstr "Іздеу және алдын-ала қарау"
 
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:2
 msgid "_Rename"
@@ -4736,16 +4773,16 @@ msgid "Clear the currently selected date"
 msgstr "Ағымдағы таңдалған күнді тазарту"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:6
-msgid "Around…"
-msgstr "Шамалы..."
+msgid "Since…"
+msgstr "Бастап…"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
-msgid "Last modified"
-msgstr "Соңғы өзгертілген"
+msgid "Last _modified"
+msgstr "Соңғы ө_згертілген"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:8
-msgid "Last used"
-msgstr "Соңғы қолданылған"
+msgid "Last _used"
+msgstr "Соңғы қолдан_ылған"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:9
 msgid "What"
@@ -4811,10 +4848,6 @@ msgstr "Әрекет орындалуда"
 msgid "Open operations in progress"
 msgstr "Ашу әрекеттері орындалуда"
 
-#: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:1
-msgid "Sort"
-msgstr "Сұрыптау"
-
 #. This is used to sort by name in the toolbar view menu
 #: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:3
 msgctxt "Sort Criterion"
@@ -4865,50 +4898,50 @@ msgstr "Т_оқтату"
 msgid "_Files"
 msgstr "_Файлдар"
 
-#: ../src/gtk/gtkplacesview.c:883
+#: ../src/gtk/gtkplacesview.c:879
 msgid "Searching for network locations"
 msgstr "Желілік орналасуларды іздеу"
 
-#: ../src/gtk/gtkplacesview.c:890
+#: ../src/gtk/gtkplacesview.c:886
 msgid "No network locations found"
 msgstr "Желілік орналасулар табылмады"
 
-#: ../src/gtk/gtkplacesview.c:1055
+#: ../src/gtk/gtkplacesview.c:1051
 msgid "Computer"
 msgstr "Компьютер"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1182 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/gtkplacesview.c:1178 ../src/gtk/gtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "Ба_йланысты орнату"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1323
+#: ../src/gtk/gtkplacesview.c:1314
 msgid "Unable to unmount volume"
 msgstr "Томды тіркеуден босату мүмкін емес"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1405
+#: ../src/gtk/gtkplacesview.c:1396
 msgid "Cance_l"
 msgstr "Бас _тарту"
 
-#: ../src/gtk/gtkplacesview.c:1612
+#: ../src/gtk/gtkplacesview.c:1603
 msgid "Open in New _Tab"
 msgstr "Жаңа бе_тте ашу"
 
-#: ../src/gtk/gtkplacesview.c:1623
+#: ../src/gtk/gtkplacesview.c:1614
 msgid "Open in New _Window"
 msgstr "Жаңа тере_зеде ашу"
 
-#: ../src/gtk/gtkplacesview.c:1822
+#: ../src/gtk/gtkplacesview.c:1813
 msgid "Unable to get remote server location"
 msgstr "Қашықтағы сервер орналасуын алу мүмкін емес"
 
-#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
+#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
 msgid "Networks"
 msgstr "Желілер"
 
-#: ../src/gtk/gtkplacesview.c:1959 ../src/gtk/gtkplacesview.c:1968
+#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
 msgid "On This Computer"
 msgstr "Бұл компьютерде"
 
@@ -4947,6 +4980,76 @@ msgstr "_Серверге байланысты орнату"
 msgid "Enter server address…"
 msgstr "Сервер адресін енгізіңіз…"
 
+#~ msgid "Enables or disables local recursive search in Nautilus."
+#~ msgstr ""
+#~ "Nautilus ішінде жергілікті рекурсивті іздеуді іске қосады немесе "
+#~ "сөндіреді."
+
+#~ msgid "Whether to enable recursive search or not on remote locations"
+#~ msgstr ""
+#~ "Қашықтағы орналасуларда рекурсивті іздеуді іске қосу керек пе, әлде жоқ па"
+
+#~ msgid ""
+#~ "Enables or disables recursive search on remote locations in Nautilus."
+#~ msgstr ""
+#~ "Nautilus ішінде қашықтағы рекурсивті іздеуді іске қосады немесе сөндіреді."
+
+#~ msgid "Whether to switch to the list view on search"
+#~ msgstr "Іздеу кезінде тізім көрінісіне ауысу керек пе"
+
+#~ msgid ""
+#~ "If this is set to true, view mode will be switched to the list view while "
+#~ "searching. However, if the user changes the mode manually, this will be "
+#~ "disabled."
+#~ msgstr ""
+#~ "Ақиқат етіп орнатылса, іздеу кезінде көрініс тізім көрінісіне ауысатын "
+#~ "болады. Алайда, пайдаланушы көріністі қолмен ауыстырса, бұл мүмкіндік "
+#~ "сөндірілетін болады."
+
+#~ msgid "The mime type of the file."
+#~ msgstr "Файлдың mime түрі."
+
+#~ msgid "Files Preferences"
+#~ msgstr "Files баптаулары"
+
+#~ msgid "Default View"
+#~ msgstr "Бастапқы көрінісі"
+
+#~ msgid "_Arrange items:"
+#~ msgstr "_Құраманы реттеу:"
+
+#~ msgid "Show context menu item to create links from copied files"
+#~ msgstr ""
+#~ "Көшірілген файлдардан сілтемелерді жасау нұсқасын контекст мәзірінде "
+#~ "көрсету"
+
+#~ msgid "_Run executable text files when they are opened"
+#~ msgstr "Орындалатын файлдар ашылған кезде оларды жө_нелту"
+
+#~ msgid "_View executable text files when they are opened"
+#~ msgstr "Орындалатын файлдар ашылған кезде оларды _көрсету"
+
+#~ msgid "_Ask each time"
+#~ msgstr "Әр р_ет сұрау"
+
+#~ msgid "Search subfolders on local file systems"
+#~ msgstr "Жергілікті файлдық жүйеде ішкі бумалардан іздеу"
+
+#~ msgid "Search subfolders on remote file systems"
+#~ msgstr "Қашықтағы файлдық жүйелерде ішкі бумалардан іздеу"
+
+#~ msgid "Navigate folders in a tree"
+#~ msgstr "Бумаларды ағаш түрінде қарау"
+
+#~ msgid "Display"
+#~ msgstr "Көрініс"
+
+#~ msgid "Preview"
+#~ msgstr "Алдын-ала қарау"
+
+#~ msgid "Around…"
+#~ msgstr "Шамалы..."
+
 #~ msgid "File Type"
 #~ msgstr "Файл түрі"
 
@@ -4958,9 +5061,6 @@ msgstr "Сервер адресін енгізіңіз…"
 
 #~ msgid "Current"
 #~ msgstr "Ағымдағы"
-
-#~ msgid "All Files"
-#~ msgstr "Барлық файлдар"
 
 #~ msgid "Add a new criterion to this search"
 #~ msgstr "Бұл іздеуге жаңа шартты қосу"
@@ -4999,9 +5099,6 @@ msgstr "Сервер адресін енгізіңіз…"
 #~ msgctxt "Bookmark"
 #~ msgid "_Name"
 #~ msgstr "_Аты"
-
-#~ msgid "_Location"
-#~ msgstr "Орна_ласуы"
 
 #~ msgid "The text of the label."
 #~ msgstr "Белгі мәтіні."
@@ -6128,9 +6225,6 @@ msgstr "Сервер адресін енгізіңіз…"
 #~ msgid "Select folder to search in"
 #~ msgstr "Ішінен іздеу үшін буманы көрсетіңіз"
 
-#~ msgid "Search Folder"
-#~ msgstr "Бумадан іздеу"
-
 #~ msgid "Edit the saved search"
 #~ msgstr "Сақталған іздеуді түзету"
 
@@ -6354,10 +6448,6 @@ msgstr "Сервер адресін енгізіңіз…"
 
 #~ msgid "Open Folder"
 #~ msgstr "Буманы ашу"
-
-#, fuzzy
-#~ msgid "An older"
-#~ msgstr "Бу_мадан жасау:"
 
 #, fuzzy
 #~ msgid "Another"
