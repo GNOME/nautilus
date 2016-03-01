@@ -653,8 +653,7 @@ nautilus_file_conflict_dialog_new (GtkWindow *parent,
 						   "modal", TRUE,
 						   "title", dest_is_dir ? _("Merge Folder") : _("File and Folder conflict"),
 						   NULL));
-	}
-	else {
+	} else {
 		dialog = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,
 						   "use-header-bar", TRUE,
 						   "modal", TRUE,
