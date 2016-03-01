@@ -668,5 +668,9 @@ nautilus_file_conflict_dialog_new (GtkWindow *parent,
 				    dest_dir);
 	gtk_window_set_transient_for (GTK_WINDOW (dialog),
 				      parent);
+
+        g_object_unref (src);
+        g_object_unref (dest);
+
 	return dialog;
 }
