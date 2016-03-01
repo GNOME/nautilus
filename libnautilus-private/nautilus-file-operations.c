@@ -6476,7 +6476,7 @@ create_task_thread_func (GTask *task,
 			if (job->src != NULL) {
 				basename = g_file_get_basename (job->src);
 				/* localizers: the initial name of a new template document */
-				filename = g_strdup_printf (_("Untitled %s"), basename);
+				filename = g_strdup_printf ("%s", basename);
 
 				g_free (basename);
 			}
