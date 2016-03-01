@@ -4578,6 +4578,8 @@ create_properties_window (StartupData *startup_data)
 
 	window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
 							     "use-header-bar", TRUE,
+							     "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
+							     "modal", TRUE,
 							     NULL));
 
 	window->details->original_files = nautilus_file_list_copy (startup_data->original_files);
@@ -4598,8 +4600,6 @@ create_properties_window (StartupData *startup_data)
 	if (startup_data->startup_id) {
 		gtk_window_set_startup_id (GTK_WINDOW (window), startup_data->startup_id);
 	}
-
-	gtk_window_set_type_hint (GTK_WINDOW (window), GDK_WINDOW_TYPE_HINT_DIALOG);
 
 	/* Set initial window title */
 	update_properties_window_title (window);
