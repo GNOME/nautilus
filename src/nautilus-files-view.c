@@ -131,7 +131,6 @@ enum
     FILE_CHANGED,
     MOVE_COPY_ITEMS,
     REMOVE_FILE,
-    SELECTION_CHANGED,
     TRASH,
     DELETE,
     LAST_SIGNAL
@@ -146,6 +145,7 @@ enum
     PROP_IS_LOADING,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
+    PROP_SELECTION,
     NUM_PROPERTIES
 };
 
@@ -3044,6 +3044,7 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
          */
         nautilus_files_view_call_set_selection (view, selection);
         nautilus_files_view_reveal_selection (view);
+        g_object_notify (G_OBJECT (view), "selection");
     }
     else
     {
@@ -3398,12 +3399,6 @@ nautilus_files_view_display_selection_info (NautilusFilesView *view)
 }
 
 static void
-nautilus_files_view_send_selection_change (NautilusFilesView *view)
-{
-    g_signal_emit (view, signals[SELECTION_CHANGED], 0);
-}
-
-static void
 nautilus_files_view_set_location (NautilusView *view,
                                   GFile        *location)
 {
@@ -3537,6 +3532,12 @@ done_loading (NautilusFilesView *view,
 
             nautilus_files_view_call_set_selection (view, pending_selection);
             do_reveal = TRUE;
+        }
+
+        if (selection)
+        {
+            g_list_free_full (selection, g_object_unref);
+            g_object_notify (G_OBJECT (view), "selection");
         }
 
         if (pending_selection)
@@ -4110,7 +4111,7 @@ process_old_files (NautilusFilesView *view)
             /* Send a selection change since some file names could
              * have changed.
              */
-            nautilus_files_view_send_selection_change (view);
+            g_object_notify (G_OBJECT (view), "selection");
         }
 
         g_signal_emit (view, signals[END_FILE_CHANGES], 0);
@@ -4157,7 +4158,7 @@ display_selection_info_idle_callback (gpointer data)
 
     priv->display_selection_idle_id = 0;
     nautilus_files_view_display_selection_info (view);
-    nautilus_files_view_send_selection_change (view);
+    g_object_notify (G_OBJECT (view), "selection");
 
     g_object_unref (G_OBJECT (view));
 
@@ -8864,6 +8865,12 @@ nautilus_files_view_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SELECTION:
+            {
+                g_value_set_pointer (value, nautilus_view_get_selection (NAUTILUS_VIEW (view)));
+            }
+            break;
+
         default:
             g_assert_not_reached ();
     }
@@ -8917,6 +8924,12 @@ nautilus_files_view_set_property (GObject      *object,
             nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
         }
         break;
+
+        case PROP_SELECTION:
+            {
+                nautilus_view_set_selection (NAUTILUS_VIEW (directory_view), g_value_get_pointer (value));
+            }
+            break;
 
         default:
         {
@@ -9365,15 +9378,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
-    signals[SELECTION_CHANGED] =
-        g_signal_new ("selection-changed",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      0,
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
     klass->get_backing_uri = real_get_backing_uri;
     klass->get_window = nautilus_files_view_get_window;
     klass->update_context_menus = real_update_context_menus;
@@ -9403,6 +9407,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
+    g_object_class_override_property (oclass, PROP_SELECTION, "selection");
 }
 
 static void
