@@ -24,6 +24,7 @@
 
 #include "nautilus-canvas-view.h"
 
+#include "nautilus-action-bar.h"
 #include "nautilus-canvas-view-container.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-files-view-dnd.h"

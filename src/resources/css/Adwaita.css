@@ -93,6 +93,13 @@
     box-shadow: none;
 }
 
+button.thumbnail-button {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    border-radius: 0px;
+}
+
 @define-color disk_space_unknown #888a85;
 @define-color disk_space_used #729fcf;
 @define-color disk_space_free #eeeeec;
@@ -169,3 +176,5 @@
  * always allocates at least 1 pixel */
 searchbar { border-top: 1px solid @borders; }
 .searchbar-container { margin-top: -1px; }
+
+actionbar { border-top: 1px solid @borders; }

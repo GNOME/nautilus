@@ -158,6 +158,8 @@ nautilus_no_main_sources = \
 	gtk/nautilusgtkplacesviewprivate.h		\
 	gtk/nautilusgtkplacesviewrow.c			\
 	gtk/nautilusgtkplacesviewrowprivate.h		\
+	nautilus-action-bar.c			\
+	nautilus-action-bar.h			\
 	nautilus-application.c			\
 	nautilus-application.h			\
 	nautilus-bookmark-list.c		\
