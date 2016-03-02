@@ -3579,7 +3579,7 @@ process_new_files (NautilusFilesView *view)
                                         new_changed_files = g_list_delete_link (new_changed_files, node);
                                         old_added_files = g_list_prepend (old_added_files, pending);
                                 }
-                        } else if (nautilus_files_view_should_show_file (view, pending->file)) {
+                        } else {
                                 new_changed_files = g_list_delete_link (new_changed_files, node);
                                 old_changed_files = g_list_prepend (old_changed_files, pending);
                         }
