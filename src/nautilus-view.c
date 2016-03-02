@@ -40,7 +40,7 @@ nautilus_view_default_init (NautilusViewInterface *iface)
         /**
          * NautilusView::view-widget:
          *
-         * %TRUE if the view is loading the location, %FALSE otherwise.
+         * The widget to be inserted into the view menu.
          */
         g_object_interface_install_property (iface,
                                              g_param_spec_object ("view-widget",
