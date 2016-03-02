@@ -50,6 +50,7 @@ enum
     PROP_SEARCH_QUERY,
     PROP_IS_LOADING,
     PROP_IS_SEARCHING,
+    PROP_SELECTION,
     LAST_PROP
 };
 
@@ -170,6 +171,12 @@ nautilus_places_view_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SELECTION:
+        {
+            g_value_set_pointer (value, NULL);
+        }
+        break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -195,6 +202,9 @@ nautilus_places_view_set_property (GObject      *object,
         {
             nautilus_view_set_search_query (view, g_value_get_object (value));
         }
+        break;
+
+        case PROP_SELECTION:
         break;
 
         default:
@@ -348,6 +358,7 @@ nautilus_places_view_class_init (NautilusPlacesViewClass *klass)
     g_object_class_override_property (object_class, PROP_IS_LOADING, "is-loading");
     g_object_class_override_property (object_class, PROP_IS_SEARCHING, "is-searching");
     g_object_class_override_property (object_class, PROP_LOCATION, "location");
+    g_object_class_override_property (object_class, PROP_SELECTION, "selection");
     g_object_class_override_property (object_class, PROP_SEARCH_QUERY, "search-query");
 }
 
