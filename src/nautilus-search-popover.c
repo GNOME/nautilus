@@ -384,7 +384,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   current_date = g_date_time_new_now_local ();
 
   /* Add the no date filter element first */
-  row = create_row_for_label ("Any time", TRUE);
+  row = create_row_for_label (_("Any time"), TRUE);
   gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
   /* This is a tricky loop. The main intention here is that each
