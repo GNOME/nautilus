@@ -44,6 +44,10 @@ struct _NautilusViewInterface
         GTypeInterface parent;
 
         guint                           (*get_view_id)               (NautilusView         *view);
+
+        /* Action bar of the view */
+        GtkWidget*                      (*get_action_bar)            (NautilusView         *view);
+
         /*
          * Returns the menu sections that should be shown in the toolbar menu
          * when this view is active. Implementations must not return %NULL
@@ -75,6 +79,8 @@ struct _NautilusViewInterface
 GIcon *                        nautilus_view_get_icon                  (guint                 view_id);
 
 guint                          nautilus_view_get_view_id               (NautilusView         *view);
+
+GtkWidget*                     nautilus_view_get_action_bar            (NautilusView         *view);
 
 NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
 
