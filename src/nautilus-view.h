@@ -35,6 +35,9 @@ struct _NautilusViewInterface
 {
         GTypeInterface parent;
 
+        /* Action bar of the view */
+        GtkWidget*           (*get_action_bar)             (NautilusView         *view);
+
         /* The icon that represents the view */
         GIcon*               (*get_icon)                   (NautilusView         *view);
 
@@ -65,6 +68,8 @@ struct _NautilusViewInterface
         /* Whether the current view is searching or not */
         gboolean             (*is_searching)               (NautilusView         *view);
 };
+
+GtkWidget*         nautilus_view_get_action_bar            (NautilusView         *view);
 
 GIcon*             nautilus_view_get_icon                  (NautilusView         *view);
 

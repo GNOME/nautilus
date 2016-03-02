@@ -110,6 +110,22 @@ nautilus_view_default_init (NautilusViewInterface *iface)
 }
 
 /**
+ * nautilus_view_get_action_bar:
+ * @view: a #NautilusView
+ *
+ * Retrieves the action bar of @view.
+ *
+ * Returns: (transfer none): a #GtkWidget or %NULL.
+ */
+GtkWidget*
+nautilus_view_get_action_bar (NautilusView *view)
+{
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_action_bar, NULL);
+
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_action_bar (view);
+}
+
+/**
  * nautilus_view_get_icon:
  * @view: a #NautilusView
  *
