@@ -27,12 +27,12 @@
 
 #include "nautilus-files-view.h"
 
+#include "nautilus-action-bar.h"
 #include "nautilus-application.h"
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-undo-manager.h"
-#include "nautilus-floating-bar.h"
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-list-view.h"
 #include "nautilus-canvas-view.h"
@@ -115,9 +115,6 @@
 
 #define SHORTCUTS_PATH "/nautilus/scripts-accels"
 
-/* Delay to show the Loading... floating bar */
-#define FLOATING_BAR_LOADING_DELAY 200 /* ms */
-
 #define MIN_COMMON_FILENAME_PREFIX_LENGTH 4
 
 enum
@@ -180,7 +177,6 @@ typedef struct
 
     guint display_selection_idle_id;
     guint update_context_menus_timeout_id;
-    guint update_status_idle_id;
     guint reveal_selection_idle_id;
 
     guint display_pending_source_id;
@@ -248,12 +244,6 @@ typedef struct
     GtkWidget *no_search_results_widget;
     GtkWidget *starred_is_empty_widget;
 
-    /* Floating bar */
-    guint floating_bar_set_status_timeout_id;
-    guint floating_bar_loading_timeout_id;
-    guint floating_bar_set_passthrough_timeout_id;
-    GtkWidget *floating_bar;
-
     /* Toolbar menu */
     NautilusToolbarMenuSections *toolbar_menu_sections;
     GtkWidget *sort_menu;
@@ -272,6 +262,9 @@ typedef struct
 
     gint name_accepted_handler_id;
     gint cancelled_handler_id;
+
+    /* Action bar */
+    GtkWidget *actionbar;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -295,8 +288,6 @@ static void     open_one_in_new_window (gpointer data,
                                         gpointer callback_data);
 static void     schedule_update_context_menus (NautilusFilesView *view);
 static void     remove_update_context_menus_timeout_callback (NautilusFilesView *view);
-static void     schedule_update_status (NautilusFilesView *view);
-static void     remove_update_status_idle_callback (NautilusFilesView *view);
 static void     reset_update_interval (NautilusFilesView *view);
 static void     schedule_idle_display_of_pending_files (NautilusFilesView *view);
 static void     unschedule_display_of_pending_files (NautilusFilesView *view);
@@ -348,233 +339,6 @@ static const struct
     { GDK_KEY_ZoomIn, "zoom-in" },
     { GDK_KEY_ZoomOut, "zoom-out" },
 };
-
-/*
- * Floating Bar code
- */
-static void
-remove_loading_floating_bar (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_loading_timeout_id);
-        priv->floating_bar_loading_timeout_id = 0;
-    }
-
-    gtk_widget_hide (priv->floating_bar);
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
-}
-
-static void
-real_setup_loading_floating_bar (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
-    nautilus_floating_bar_set_primary_label (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                             nautilus_view_is_searching (NAUTILUS_VIEW (view)) ? _("Searching…") : _("Loading…"));
-    nautilus_floating_bar_set_details_label (NAUTILUS_FLOATING_BAR (priv->floating_bar), NULL);
-    nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar), priv->loading);
-    nautilus_floating_bar_add_action (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                      "process-stop-symbolic",
-                                      NAUTILUS_FLOATING_BAR_ACTION_ID_STOP);
-
-    gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_widget_show (priv->floating_bar);
-}
-
-static gboolean
-setup_loading_floating_bar_timeout_cb (gpointer user_data)
-{
-    NautilusFilesView *view = user_data;
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    priv->floating_bar_loading_timeout_id = 0;
-    real_setup_loading_floating_bar (view);
-
-    return FALSE;
-}
-
-static void
-setup_loading_floating_bar (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    /* setup loading overlay */
-    if (priv->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_set_status_timeout_id);
-        priv->floating_bar_set_status_timeout_id = 0;
-    }
-
-    if (priv->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_loading_timeout_id);
-        priv->floating_bar_loading_timeout_id = 0;
-    }
-
-    priv->floating_bar_loading_timeout_id =
-        g_timeout_add (FLOATING_BAR_LOADING_DELAY, setup_loading_floating_bar_timeout_cb, view);
-}
-
-static void
-floating_bar_action_cb (NautilusFloatingBar *floating_bar,
-                        gint                 action,
-                        NautilusFilesView   *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (action == NAUTILUS_FLOATING_BAR_ACTION_ID_STOP)
-    {
-        remove_loading_floating_bar (view);
-        nautilus_window_slot_stop_loading (priv->slot);
-    }
-}
-
-static void
-real_floating_bar_set_short_status (NautilusFilesView *view,
-                                    const gchar       *primary_status,
-                                    const gchar       *detail_status)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->loading)
-    {
-        return;
-    }
-
-    nautilus_floating_bar_cleanup_actions (NAUTILUS_FLOATING_BAR (priv->floating_bar));
-    nautilus_floating_bar_set_show_spinner (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                            FALSE);
-
-    if (primary_status == NULL && detail_status == NULL)
-    {
-        gtk_widget_hide (priv->floating_bar);
-        nautilus_floating_bar_remove_hover_timeout (NAUTILUS_FLOATING_BAR (priv->floating_bar));
-        return;
-    }
-
-    nautilus_floating_bar_set_labels (NAUTILUS_FLOATING_BAR (priv->floating_bar),
-                                      primary_status,
-                                      detail_status);
-
-    gtk_widget_show (priv->floating_bar);
-}
-
-typedef struct
-{
-    gchar *primary_status;
-    gchar *detail_status;
-    NautilusFilesView *view;
-} FloatingBarSetStatusData;
-
-static void
-floating_bar_set_status_data_free (gpointer data)
-{
-    FloatingBarSetStatusData *status_data = data;
-
-    g_free (status_data->primary_status);
-    g_free (status_data->detail_status);
-
-    g_slice_free (FloatingBarSetStatusData, data);
-}
-
-static gboolean
-floating_bar_set_status_timeout_cb (gpointer data)
-{
-    NautilusFilesViewPrivate *priv;
-
-    FloatingBarSetStatusData *status_data = data;
-
-    priv = nautilus_files_view_get_instance_private (status_data->view);
-
-    priv->floating_bar_set_status_timeout_id = 0;
-    real_floating_bar_set_short_status (status_data->view,
-                                        status_data->primary_status,
-                                        status_data->detail_status);
-
-    return FALSE;
-}
-
-static gboolean
-remove_floating_bar_passthrough (gpointer data)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (data));
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->floating_bar, FALSE);
-    priv->floating_bar_set_passthrough_timeout_id = 0;
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-set_floating_bar_status (NautilusFilesView *view,
-                         const gchar       *primary_status,
-                         const gchar       *detail_status)
-{
-    GtkSettings *settings;
-    gint double_click_time;
-    FloatingBarSetStatusData *status_data;
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_set_status_timeout_id);
-        priv->floating_bar_set_status_timeout_id = 0;
-    }
-
-    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
-    g_object_get (settings,
-                  "gtk-double-click-time", &double_click_time,
-                  NULL);
-
-    status_data = g_slice_new0 (FloatingBarSetStatusData);
-    status_data->primary_status = g_strdup (primary_status);
-    status_data->detail_status = g_strdup (detail_status);
-    status_data->view = view;
-
-    if (priv->floating_bar_set_passthrough_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_set_passthrough_timeout_id);
-        priv->floating_bar_set_passthrough_timeout_id = 0;
-    }
-    /* Activate passthrough on the floating bar just long enough for a
-     * potential double click to happen, so to not interfere with it */
-    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
-                                          priv->floating_bar, TRUE);
-    priv->floating_bar_set_passthrough_timeout_id = g_timeout_add ((guint) double_click_time,
-                                                                   remove_floating_bar_passthrough,
-                                                                   view);
-
-    /* waiting for half of the double-click-time before setting
-     * the status seems to be a good approximation of not setting it
-     * too often and not delaying the statusbar too much.
-     */
-    priv->floating_bar_set_status_timeout_id =
-        g_timeout_add_full (G_PRIORITY_DEFAULT,
-                            (guint) (double_click_time / 2),
-                            floating_bar_set_status_timeout_cb,
-                            status_data,
-                            floating_bar_set_status_data_free);
-}
 
 static char *
 real_get_backing_uri (NautilusFilesView *view)
@@ -3117,7 +2881,6 @@ nautilus_files_view_destroy (GtkWidget *object)
     }
 
     remove_update_context_menus_timeout_callback (view);
-    remove_update_status_idle_callback (view);
 
     if (priv->display_selection_idle_id != 0)
     {
@@ -3131,24 +2894,6 @@ nautilus_files_view_destroy (GtkWidget *object)
         priv->reveal_selection_idle_id = 0;
     }
 
-    if (priv->floating_bar_set_status_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_set_status_timeout_id);
-        priv->floating_bar_set_status_timeout_id = 0;
-    }
-
-    if (priv->floating_bar_loading_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_loading_timeout_id);
-        priv->floating_bar_loading_timeout_id = 0;
-    }
-
-    if (priv->floating_bar_set_passthrough_timeout_id != 0)
-    {
-        g_source_remove (priv->floating_bar_set_passthrough_timeout_id);
-        priv->floating_bar_set_passthrough_timeout_id = 0;
-    }
-
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           schedule_update_context_menus, view);
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
@@ -3157,8 +2902,6 @@ nautilus_files_view_destroy (GtkWidget *object)
                                           sort_directories_first_changed_callback, view);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           show_hidden_files_changed_callback, view);
-    g_signal_handlers_disconnect_by_func (nautilus_window_state,
-                                          nautilus_files_view_display_selection_info, view);
     g_signal_handlers_disconnect_by_func (gnome_lockdown_preferences,
                                           schedule_update_context_menus, view);
     g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
@@ -3172,6 +2915,7 @@ nautilus_files_view_destroy (GtkWidget *object)
 
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location);
+    g_clear_object (&priv->actionbar);
 
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
@@ -3205,216 +2949,6 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->starred_cancellable);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
-}
-
-/**
- * nautilus_files_view_display_selection_info:
- *
- * Display information about the current selection, and notify the view frame of the changed selection.
- * @view: NautilusFilesView for which to display selection info.
- *
- **/
-void
-nautilus_files_view_display_selection_info (NautilusFilesView *view)
-{
-    g_autolist (NautilusFile) selection = NULL;
-    goffset non_folder_size;
-    gboolean non_folder_size_known;
-    guint non_folder_count, folder_count, folder_item_count;
-    gboolean folder_item_count_known;
-    guint file_item_count;
-    GList *p;
-    char *first_item_name;
-    char *non_folder_count_str;
-    char *non_folder_item_count_str;
-    char *folder_count_str;
-    char *folder_item_count_str;
-    char *primary_status;
-    char *detail_status;
-    NautilusFile *file;
-
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-
-    folder_item_count_known = TRUE;
-    folder_count = 0;
-    folder_item_count = 0;
-    non_folder_count = 0;
-    non_folder_size_known = FALSE;
-    non_folder_size = 0;
-    first_item_name = NULL;
-    folder_count_str = NULL;
-    folder_item_count_str = NULL;
-    non_folder_count_str = NULL;
-    non_folder_item_count_str = NULL;
-
-    for (p = selection; p != NULL; p = p->next)
-    {
-        file = p->data;
-        if (nautilus_file_is_directory (file))
-        {
-            folder_count++;
-            if (nautilus_file_get_directory_item_count (file, &file_item_count, NULL))
-            {
-                folder_item_count += file_item_count;
-            }
-            else
-            {
-                folder_item_count_known = FALSE;
-            }
-        }
-        else
-        {
-            non_folder_count++;
-            if (!nautilus_file_can_get_size (file))
-            {
-                non_folder_size_known = TRUE;
-                non_folder_size += nautilus_file_get_size (file);
-            }
-        }
-
-        if (first_item_name == NULL)
-        {
-            first_item_name = nautilus_file_get_display_name (file);
-        }
-    }
-
-    /* Break out cases for localization's sake. But note that there are still pieces
-     * being assembled in a particular order, which may be a problem for some localizers.
-     */
-
-    if (folder_count != 0)
-    {
-        if (folder_count == 1 && non_folder_count == 0)
-        {
-            folder_count_str = g_strdup_printf (_("“%s” selected"), first_item_name);
-        }
-        else
-        {
-            folder_count_str = g_strdup_printf (ngettext ("%'d folder selected",
-                                                          "%'d folders selected",
-                                                          folder_count),
-                                                folder_count);
-        }
-
-        if (folder_count == 1)
-        {
-            if (!folder_item_count_known)
-            {
-                folder_item_count_str = g_strdup ("");
-            }
-            else
-            {
-                folder_item_count_str = g_strdup_printf (ngettext ("(containing %'d item)",
-                                                                   "(containing %'d items)",
-                                                                   folder_item_count),
-                                                         folder_item_count);
-            }
-        }
-        else
-        {
-            if (!folder_item_count_known)
-            {
-                folder_item_count_str = g_strdup ("");
-            }
-            else
-            {
-                /* translators: this is preceded with a string of form 'N folders' (N more than 1) */
-                folder_item_count_str = g_strdup_printf (ngettext ("(containing a total of %'d item)",
-                                                                   "(containing a total of %'d items)",
-                                                                   folder_item_count),
-                                                         folder_item_count);
-            }
-        }
-    }
-
-    if (non_folder_count != 0)
-    {
-        if (folder_count == 0)
-        {
-            if (non_folder_count == 1)
-            {
-                non_folder_count_str = g_strdup_printf (_("“%s” selected"),
-                                                        first_item_name);
-            }
-            else
-            {
-                non_folder_count_str = g_strdup_printf (ngettext ("%'d item selected",
-                                                                  "%'d items selected",
-                                                                  non_folder_count),
-                                                        non_folder_count);
-            }
-        }
-        else
-        {
-            /* Folders selected also, use "other" terminology */
-            non_folder_count_str = g_strdup_printf (ngettext ("%'d other item selected",
-                                                              "%'d other items selected",
-                                                              non_folder_count),
-                                                    non_folder_count);
-        }
-
-        if (non_folder_size_known)
-        {
-            char *size_string;
-
-            size_string = g_format_size (non_folder_size);
-            /* This is marked for translation in case a localiser
-             * needs to use something other than parentheses. The
-             * the message in parentheses is the size of the selected items.
-             */
-            non_folder_item_count_str = g_strdup_printf (_("(%s)"), size_string);
-            g_free (size_string);
-        }
-        else
-        {
-            non_folder_item_count_str = g_strdup ("");
-        }
-    }
-
-    if (folder_count == 0 && non_folder_count == 0)
-    {
-        primary_status = NULL;
-        detail_status = NULL;
-    }
-    else if (folder_count == 0)
-    {
-        primary_status = g_strdup (non_folder_count_str);
-        detail_status = g_strdup (non_folder_item_count_str);
-    }
-    else if (non_folder_count == 0)
-    {
-        primary_status = g_strdup (folder_count_str);
-        detail_status = g_strdup (folder_item_count_str);
-    }
-    else
-    {
-        /* This is marked for translation in case a localizer
-         * needs to change ", " to something else. The comma
-         * is between the message about the number of folders
-         * and the number of items in those folders and the
-         * message about the number of other items and the
-         * total size of those items.
-         */
-        primary_status = g_strdup_printf (_("%s %s, %s %s"),
-                                          folder_count_str,
-                                          folder_item_count_str,
-                                          non_folder_count_str,
-                                          non_folder_item_count_str);
-        detail_status = NULL;
-    }
-
-    g_free (first_item_name);
-    g_free (folder_count_str);
-    g_free (folder_item_count_str);
-    g_free (non_folder_count_str);
-    g_free (non_folder_item_count_str);
-
-    set_floating_bar_status (view, primary_status, detail_status);
-
-    g_free (primary_status);
-    g_free (detail_status);
 }
 
 static void
@@ -3530,9 +3064,7 @@ done_loading (NautilusFilesView *view,
 
     if (!priv->in_destruction)
     {
-        remove_loading_floating_bar (view);
         schedule_update_context_menus (view);
-        schedule_update_status (view);
         nautilus_files_view_update_toolbar_menus (view);
         reset_update_interval (view);
 
@@ -3553,9 +3085,8 @@ done_loading (NautilusFilesView *view,
             do_reveal = TRUE;
         }
 
-        if (selection)
+        if (selection != NULL)
         {
-            g_list_free_full (selection, g_object_unref);
             g_object_notify (G_OBJECT (view), "selection");
         }
 
@@ -3587,7 +3118,6 @@ done_loading (NautilusFilesView *view,
                 nautilus_files_view_reveal_selection (view);
             }
         }
-        nautilus_files_view_display_selection_info (view);
     }
 
     priv->loading = FALSE;
@@ -4176,7 +3706,6 @@ display_selection_info_idle_callback (gpointer data)
     g_object_ref (G_OBJECT (view));
 
     priv->display_selection_idle_id = 0;
-    nautilus_files_view_display_selection_info (view);
     g_object_notify (G_OBJECT (view), "selection");
 
     g_object_unref (G_OBJECT (view));
@@ -4440,9 +3969,6 @@ files_added_callback (NautilusDirectory *directory,
 
     queue_pending_files (view, directory, files, &priv->new_added_files);
 
-    /* The number of items could have changed */
-    schedule_update_status (view);
-
     nautilus_profile_end (NULL);
 }
 
@@ -4468,9 +3994,6 @@ files_changed_callback (NautilusDirectory *directory,
     schedule_changes (view);
 
     queue_pending_files (view, directory, files, &priv->new_changed_files);
-
-    /* The free space or the number of items could have changed */
-    schedule_update_status (view);
 
     /* A change in MIME type could affect the Open with menu, for
      * one thing, so we need to update menus when files change.
@@ -4498,8 +4021,6 @@ done_loading_callback (NautilusDirectory *directory,
          */
         unschedule_display_of_pending_files (view);
         schedule_timeout_display_of_pending_files (view, UPDATE_INTERVAL_MIN);
-
-        remove_loading_floating_bar (view);
     }
     nautilus_profile_end (NULL);
 }
@@ -8191,62 +7712,6 @@ schedule_update_context_menus (NautilusFilesView *view)
     }
 }
 
-static void
-remove_update_status_idle_callback (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->update_status_idle_id != 0)
-    {
-        g_source_remove (priv->update_status_idle_id);
-        priv->update_status_idle_id = 0;
-    }
-}
-
-static gboolean
-update_status_idle_callback (gpointer data)
-{
-    NautilusFilesViewPrivate *priv;
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (data);
-    priv = nautilus_files_view_get_instance_private (view);
-    nautilus_files_view_display_selection_info (view);
-    priv->update_status_idle_id = 0;
-    return FALSE;
-}
-
-static void
-schedule_update_status (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    /* Make sure we haven't already destroyed it */
-    if (priv->slot == NULL)
-    {
-        return;
-    }
-
-    if (priv->loading)
-    {
-        /* Don't update status bar while loading the dir */
-        return;
-    }
-
-    if (priv->update_status_idle_id == 0)
-    {
-        priv->update_status_idle_id =
-            g_idle_add_full (G_PRIORITY_DEFAULT_IDLE - 20,
-                             update_status_idle_callback, view, NULL);
-    }
-}
-
 /**
  * nautilus_files_view_notify_selection_changed:
  *
@@ -8304,9 +7769,7 @@ file_changed_callback (NautilusFile *file,
     NautilusFilesView *view = NAUTILUS_FILES_VIEW (callback_data);
 
     schedule_changes (view);
-
     schedule_update_context_menus (view);
-    schedule_update_status (view);
 }
 
 /**
@@ -8336,8 +7799,6 @@ load_directory (NautilusFilesView *view,
     g_signal_emit (view, signals[CLEAR], 0);
 
     priv->loading = TRUE;
-
-    setup_loading_floating_bar (view);
 
     /* Update menus when directory is empty, before going to new
      * location, so they won't have any false lingering knowledge
@@ -9162,6 +8623,16 @@ nautilus_files_view_key_press_event (GtkWidget   *widget,
     return GDK_EVENT_PROPAGATE;
 }
 
+static GtkWidget *
+nautilus_files_view_get_action_bar (NautilusView *view)
+{
+    NautilusFilesViewPrivate *priv;
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    return priv->actionbar;
+}
+
 static NautilusQuery *
 nautilus_files_view_get_search_query (NautilusView *view)
 {
@@ -9286,6 +8757,7 @@ nautilus_files_view_is_loading (NautilusView *view)
 static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
+    iface->get_action_bar = nautilus_files_view_get_action_bar;
     iface->get_location = nautilus_files_view_get_location;
     iface->set_location = nautilus_files_view_set_location;
     iface->get_selection = nautilus_files_view_get_selection;
@@ -9517,6 +8989,9 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
 
+    /* Actionbar */
+    priv->actionbar = g_object_ref_sink (nautilus_action_bar_new (NAUTILUS_VIEW (view)));
+
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
     priv->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
@@ -9549,17 +9024,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                                           priv->trash_is_empty_widget,
                                           TRUE);
     g_object_unref (builder);
-
-    /* Floating bar */
-    priv->floating_bar = nautilus_floating_bar_new (NULL, NULL, FALSE);
-    gtk_widget_set_halign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_widget_set_valign (priv->floating_bar, GTK_ALIGN_END);
-    gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->floating_bar);
-
-    g_signal_connect (priv->floating_bar,
-                      "action",
-                      G_CALLBACK (floating_bar_action_cb),
-                      view);
 
     priv->non_ready_files =
         g_hash_table_new_full (file_and_directory_hash,

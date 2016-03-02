@@ -137,6 +137,13 @@
     box-shadow: none;
 }
 
+button.thumbnail-button {
+    padding: 0px;
+    margin: 0px;
+    border: 0px;
+    border-radius: 0px;
+}
+
 @define-color disk_space_unknown #888a85;
 @define-color disk_space_used #729fcf;
 @define-color disk_space_free #eeeeec;
@@ -201,3 +208,10 @@ flowboxchild:selected > widget > box > .icon-background {background-color:black;
 flowboxchild > widget > .icon-item-background {padding:4px;}
 flowboxchild:selected > widget > .icon-item-background {padding:4px; background-color:#4a90d9; border-color:#4a90d9; border-style:solid; border-width:0px; border-radius:4px 4px 4px 4px;}
 
+/* Action bar */
+actionbar
+{
+  border-top: 1px solid @borders;
+  /* Same as sidebar_bg_color in gtk */
+  background-color: mix(@theme_bg_color, @theme_base_color, 0.5);
+} 
