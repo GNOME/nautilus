@@ -1655,6 +1655,7 @@ reveal_newly_added_folder (NautilusFilesView *view,
                                                       G_CALLBACK (reveal_newly_added_folder),
                                                       (void *) target_location);
                 nautilus_files_view_select_file (view, new_file);
+                nautilus_files_view_reveal_selection (view);
         }
         g_object_unref (location);
 }
@@ -1744,6 +1745,7 @@ new_folder_done (GFile    *new_folder,
                 if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
                         /* The file was already added */
                         nautilus_files_view_select_file (directory_view, file);
+                        nautilus_files_view_reveal_selection (directory_view);
                 } else {
                         /* We need to run after the default handler adds the folder we want to
                          * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
