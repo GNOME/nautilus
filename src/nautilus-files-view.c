@@ -27,6 +27,7 @@
 
 #include "nautilus-files-view.h"
 
+#include "nautilus-action-bar.h"
 #include "nautilus-application.h"
 #ifdef ENABLE_TRACKER
 #include "nautilus-batch-rename-dialog.h"
@@ -278,6 +279,9 @@ struct NautilusFilesViewDetails
 
     gulong stop_signal_handler;
     gulong reload_signal_handler;
+
+    /* Action bar */
+    GtkWidget *actionbar;
 };
 
 typedef struct
@@ -8794,6 +8798,12 @@ nautilus_files_view_key_press_event (GtkWidget   *widget,
     return GDK_EVENT_PROPAGATE;
 }
 
+static GtkWidget *
+nautilus_files_view_get_action_bar (NautilusView *view)
+{
+    return NAUTILUS_FILES_VIEW (view)->details->actionbar;
+}
+
 static NautilusQuery *
 nautilus_files_view_get_search_query (NautilusView *view)
 {
@@ -8906,6 +8916,7 @@ nautilus_files_view_is_loading (NautilusView *view)
 static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
+    iface->get_action_bar = nautilus_files_view_get_action_bar;
     iface->get_location = nautilus_files_view_get_location;
     iface->set_location = nautilus_files_view_set_location;
     iface->get_selection = nautilus_files_view_get_selection;
@@ -9120,6 +9131,9 @@ nautilus_files_view_init (NautilusFilesView *view)
                               view);
 
     gtk_container_add (GTK_CONTAINER (view->details->overlay), view->details->scrolled_window);
+
+    /* Actionbar */
+    view->details->actionbar = nautilus_action_bar_new (NAUTILUS_VIEW (view));
 
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
