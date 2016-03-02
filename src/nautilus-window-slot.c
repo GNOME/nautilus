@@ -2648,8 +2648,13 @@ static void
 change_view (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
+    NautilusView *view;
+    gboolean view_changed;
 
     priv = nautilus_window_slot_get_instance_private (self);
+    view = priv->new_content_view;
+    view_changed = priv->content_view != view;
+
     /* Switch to the new content view.
      * Destroy the extra location widgets first, since they might hold
      * a pointer to the old view, which will possibly be destroyed inside
@@ -2657,6 +2662,14 @@ change_view (NautilusWindowSlot *self)
      */
     nautilus_window_slot_remove_extra_location_widgets (self);
     nautilus_window_slot_switch_new_content_view (self);
+
+    /* Remove the old actionbar before switching to the new view */
+    if (view_changed &&
+        priv->content_view &&
+        nautilus_view_get_action_bar (priv->content_view))
+    {
+        gtk_container_remove (GTK_CONTAINER (self), nautilus_view_get_action_bar (priv->content_view));
+    }
 
     if (priv->pending_location != NULL)
     {
@@ -2668,6 +2681,17 @@ change_view (NautilusWindowSlot *self)
      * add back the extra location widgets.
      */
     nautilus_window_slot_setup_extra_location_widgets (self);
+
+    /* Add the actionbar (if any) after the extra location widgets are set */
+    if (view_changed && nautilus_view_get_action_bar (view))
+    {
+        GtkWidget *actionbar;
+
+        actionbar = nautilus_view_get_action_bar (view);
+
+        gtk_box_pack_end (GTK_BOX (self), actionbar, FALSE, FALSE, 0);
+        gtk_widget_show (actionbar);
+    }
 }
 
 static void
