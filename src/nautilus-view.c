@@ -96,6 +96,17 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                                                   "The search query being performed on the view",
                                                                   NAUTILUS_TYPE_QUERY,
                                                                   G_PARAM_READWRITE));
+
+        /**
+         * NautilusView::selection:
+         *
+         * The current selection of the view.
+         */
+        g_object_interface_install_property (iface,
+                                             g_param_spec_pointer ("selection",
+                                                                   "Selection of the view",
+                                                                   "The selection of the view",
+                                                                    G_PARAM_READWRITE));
 }
 
 /**

@@ -54,6 +54,7 @@ G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR);
 
 static void
 selection_changed_cb (NautilusFilesView *view,
+		      GParamSpec        *pspec,
 		      NautilusTrashBar *bar)
 {
         GList *selection;
@@ -73,10 +74,10 @@ static void
 connect_view_and_update_button (NautilusTrashBar *bar)
 {
 	bar->priv->selection_handler_id =
-		g_signal_connect (bar->priv->view, "selection-changed",
+		g_signal_connect (bar->priv->view, "notify::selection",
 				  G_CALLBACK (selection_changed_cb), bar);
 
-	selection_changed_cb (bar->priv->view, bar);
+	selection_changed_cb (bar->priv->view, NULL, bar);
 }
 
 static void
