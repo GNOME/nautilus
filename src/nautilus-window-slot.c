@@ -110,7 +110,6 @@ struct NautilusWindowSlotDetails {
          * finish. Used for showing a spinner to provide feedback to the user. */
 	gboolean allow_stop;
 	gboolean needs_reload;
-	gboolean load_with_search;
 
 	/* New location. */
 	GFile *pending_location;
