@@ -422,7 +422,7 @@ nautilus_application_open_location_full (NautilusApplication     *application,
         nautilus_window_open_location_full (target_window, location, flags, selection, target_slot);
 }
 
-static void
+static NautilusWindow*
 open_window (NautilusApplication *application,
              GFile               *location)
 {
@@ -442,6 +442,8 @@ open_window (NautilusApplication *application,
 	}
 
 	nautilus_profile_end (NULL);
+
+        return window;
 }
 
 void
