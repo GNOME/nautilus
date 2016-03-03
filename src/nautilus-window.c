@@ -795,7 +795,10 @@ nautilus_window_sync_allow_stop (NautilusWindow *window,
 			update_cursor (window);
 		}
 
-		nautilus_notebook_sync_loading (NAUTILUS_NOTEBOOK (window->priv->notebook), slot);
+                /* Avoid updating the notebook if we are calling on dispose or
+                 * on removal of a notebook tab */
+                if (nautilus_notebook_contains_slot (NAUTILUS_NOTEBOOK (window->priv->notebook), slot))
+                        nautilus_notebook_sync_loading (NAUTILUS_NOTEBOOK (window->priv->notebook), slot);
 	}
 }
 
