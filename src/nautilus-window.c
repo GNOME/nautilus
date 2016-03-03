@@ -2737,3 +2737,16 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
 			      "logo-icon-name", "system-file-manager",
 			      NULL);
 }
+
+void
+nautilus_window_search (NautilusWindow *window,
+                        const gchar    *text)
+{
+        NautilusWindowSlot *active_slot;
+
+        active_slot = nautilus_window_get_active_slot (window);
+        if (active_slot)
+                nautilus_window_slot_search (active_slot, text);
+        else
+                g_warning ("Trying search on a slot but no active slot present");
+}

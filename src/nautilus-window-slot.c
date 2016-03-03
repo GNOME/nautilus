@@ -110,6 +110,7 @@ struct NautilusWindowSlotDetails {
          * finish. Used for showing a spinner to provide feedback to the user. */
 	gboolean allow_stop;
 	gboolean needs_reload;
+        gchar *pending_search_text;
 
 	/* New location. */
 	GFile *pending_location;
@@ -267,6 +268,9 @@ update_search_visible (NautilusWindowSlot *slot)
                         nautilus_window_slot_set_search_visible (slot, FALSE);
                 g_object_unref (query);
         }
+
+        if (slot->details->pending_search_text)
+                nautilus_window_slot_search (slot, g_strdup (slot->details->pending_search_text));
 }
 
 static void
@@ -454,6 +458,29 @@ nautilus_window_slot_get_search_visible (NautilusWindowSlot *slot)
         g_variant_unref (state);
 
         return searching;
+}
+
+void
+nautilus_window_slot_search (NautilusWindowSlot *slot,
+                             const gchar        *text)
+{
+        NautilusView *view;
+
+        if (slot->details->pending_search_text) {
+                g_free (slot->details->pending_search_text);
+                slot->details->pending_search_text = NULL;
+        }
+
+        view = nautilus_window_slot_get_current_view (slot);
+        /* We could call this when the location is still being checked in the
+         * window slot. For that, save the search we want to do for once we have
+         * a view set up */
+        if (view) {
+                nautilus_window_slot_set_search_visible (slot, TRUE);
+                nautilus_query_editor_set_text (slot->details->query_editor, text);
+        } else {
+                slot->details->pending_search_text = g_strdup (text);
+        }
 }
 
 gboolean
