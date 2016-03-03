@@ -631,6 +631,7 @@ nautilus_window_slot_constructed (GObject *object)
 {
 	NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (object);
 	GtkWidget *extras_vbox;
+        GtkStyleContext *style_context;
 
 	G_OBJECT_CLASS (nautilus_window_slot_parent_class)->constructed (object);
 
@@ -639,6 +640,8 @@ nautilus_window_slot_constructed (GObject *object)
 	gtk_widget_show (GTK_WIDGET (slot));
 
 	extras_vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+        style_context = gtk_widget_get_style_context (extras_vbox);
+        gtk_style_context_add_class (style_context, "searchbar-container");
 	slot->details->extra_location_widgets = extras_vbox;
 	gtk_box_pack_start (GTK_BOX (slot), extras_vbox, FALSE, FALSE, 0);
 	gtk_widget_show (extras_vbox);
