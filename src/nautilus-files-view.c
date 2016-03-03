@@ -3654,6 +3654,9 @@ display_pending_files (NautilusFilesView *view)
         process_new_files (view);
         process_old_files (view);
 
+        if (!nautilus_files_view_get_selection (NAUTILUS_VIEW (view)))
+                nautilus_files_view_select_first (view);
+
         if (view->details->model != NULL
             && nautilus_directory_are_all_files_seen (view->details->model)
             && g_hash_table_size (view->details->non_ready_files) == 0) {
