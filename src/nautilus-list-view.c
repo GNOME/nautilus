@@ -2467,6 +2467,7 @@ nautilus_list_view_select_first (NautilusFilesView *view)
 		return;
 	}
 	selection = gtk_tree_view_get_selection (NAUTILUS_LIST_VIEW (view)->details->tree_view);
+	gtk_tree_selection_unselect_all (selection);
 	gtk_tree_selection_select_iter (selection, &iter);
 }
 
