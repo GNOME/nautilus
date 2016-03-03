@@ -159,3 +159,8 @@
 .documents-entry-tag.button:hover {
     color: shade(@entry_tag_bg, 2.10);
 }
+
+/* Workaround for the double border of the searchbar since we use a revealer which
+ * always allocates at least 1 pixel */
+searchbar { border-top: 1px solid @borders; }
+.searchbar-container { margin-top: -1px; }
