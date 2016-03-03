@@ -188,6 +188,24 @@ nautilus_notebook_init (NautilusNotebook *notebook)
 #endif
 }
 
+gboolean
+nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
+                                 NautilusWindowSlot *slot)
+{
+        GList *children;
+        GList *l;
+        gboolean found = FALSE;
+
+        children = gtk_container_get_children (GTK_CONTAINER (notebook));
+        for (l = children; l != NULL && !found; l = l->next) {
+                found = l->data == slot;
+        }
+
+        g_list_free (children);
+
+        return found;
+}
+
 void
 nautilus_notebook_sync_loading (NautilusNotebook *notebook,
 				NautilusWindowSlot *slot)
