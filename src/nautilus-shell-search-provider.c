@@ -546,8 +546,9 @@ result_list_attributes_ready_cb (GList    *file_list,
                            "id", g_variant_new_string (uri));
     g_variant_builder_add (&meta, "{sv}",
                            "name", g_variant_new_string (display_name));
+    /* Some backends like trash:/// don't have a path, so we show the uri itself. */
     g_variant_builder_add (&meta, "{sv}",
-                           "description", g_variant_new_string (description));
+                           "description", g_variant_new_string (description? description : uri));
 
     gicon = NULL;
     thumbnail_path = nautilus_file_get_thumbnail_path (file);
