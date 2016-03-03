@@ -726,3 +726,15 @@ nautilus_query_editor_set_query (NautilusQueryEditor	*editor,
 
 	g_free (text);
 }
+
+void
+nautilus_query_editor_set_text (NautilusQueryEditor *editor,
+                                const gchar         *text)
+{
+        NautilusQueryEditorPrivate *priv;
+
+        priv = nautilus_query_editor_get_instance_private (editor);
+
+        /* The handler of the entry will take care of everything */
+        gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+}

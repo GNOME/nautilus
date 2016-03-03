@@ -1372,3 +1372,18 @@ nautilus_application_new (void)
 			     "register-session", TRUE,
 			     NULL);
 }
+
+void
+nautilus_application_search (NautilusApplication *application,
+                             const gchar         *uri,
+                             const gchar         *text)
+{
+        NautilusWindow *window;
+        GFile *location;
+
+        location = g_file_new_for_uri (uri);
+        window = open_window (application, location);
+        nautilus_window_search (window, text);
+
+        g_object_unref (location);
+}

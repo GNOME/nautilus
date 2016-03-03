@@ -52,5 +52,7 @@ void           nautilus_query_editor_set_query   (NautilusQueryEditor *editor,
 GFile *        nautilus_query_editor_get_location (NautilusQueryEditor *editor);
 void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
 						   GFile               *location);
+void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
+                                                   const gchar         *text);
 
 #endif /* NAUTILUS_QUERY_EDITOR_H */

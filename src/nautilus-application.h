@@ -85,4 +85,8 @@ void nautilus_application_edit_bookmarks (NautilusApplication *application,
 
 GtkWidget * nautilus_application_connect_server (NautilusApplication *application,
 						 NautilusWindow      *window);
+
+void nautilus_application_search (NautilusApplication *application,
+                                  const gchar         *uri,
+                                  const gchar         *text);
 #endif /* __NAUTILUS_APPLICATION_H__ */
