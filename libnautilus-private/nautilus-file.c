@@ -4581,6 +4581,24 @@ nautilus_file_get_thumbnail_icon (NautilusFile *file,
 	return icon;
 }
 
+gboolean nautilus_thumbnail_is_limited_by_zoom (int size, int scale,
+						 NautilusFileIconFlags flags)
+{
+	int zoom_level;
+
+	if (flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE) {
+		zoom_level = size * scale;
+	} else {
+		zoom_level = size * scale *
+			     cached_thumbnail_size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
+	}
+
+	if (zoom_level <= NAUTILUS_LIST_ICON_SIZE_SMALL)
+		return FALSE;
+
+	return TRUE;
+}
+
 NautilusIconInfo *
 nautilus_file_get_icon (NautilusFile *file,
 			int size,
@@ -4608,7 +4626,8 @@ nautilus_file_get_icon (NautilusFile *file,
 	       flags & NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE);
 
 	if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS &&
-	    nautilus_file_should_show_thumbnail (file)) {
+	    nautilus_file_should_show_thumbnail (file) &&
+	    nautilus_thumbnail_is_limited_by_zoom (size, scale, flags)) {
 		icon = nautilus_file_get_thumbnail_icon (file, size, scale, flags);
 	}
 

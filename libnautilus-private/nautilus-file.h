@@ -210,6 +210,9 @@ NautilusRequestStatus   nautilus_file_get_deep_counts                   (Nautilu
 									 gboolean                        force);
 gboolean                nautilus_file_should_show_thumbnail             (NautilusFile                   *file);
 gboolean                nautilus_file_should_show_directory_item_count  (NautilusFile                   *file);
+gboolean 		 nautilus_thumbnail_is_limited_by_zoom		 (int 				 size,
+									  int 				 scale,
+									  NautilusFileIconFlags 	 flags);
 
 void                    nautilus_file_set_search_relevance              (NautilusFile                   *file,
 									 gdouble                         relevance);
