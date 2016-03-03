@@ -727,26 +727,6 @@ showing_trash_directory (NautilusFilesView *view)
 }
 
 static gboolean
-showing_remote_directory (NautilusFilesView *view)
-{
-        NautilusDirectory *base;
-
-        /* Nautilus search is kind of special, since when we swtich to a search directory
-         * its uri is something invented, not a real GFile or where we were before
-         * entering search. For that we need to get the base model of the search directory,
-         * that is basically the real location we were before entering search */
-        if (NAUTILUS_IS_SEARCH_DIRECTORY (view->details->model))
-                base = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (view->details->model));
-        else
-                base = view->details->model;
-
-        if (base != NULL)
-                return nautilus_directory_is_remote (base);
-        else
-                return FALSE;
-}
-
-static gboolean
 showing_recent_directory (NautilusFilesView *view)
 {
         NautilusFile *file;
