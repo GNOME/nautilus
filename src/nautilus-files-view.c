@@ -753,7 +753,7 @@ nautilus_files_view_is_empty (NautilusFilesView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
 
-        return         NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_empty (view);
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_empty (view);
 }
 
 /**
