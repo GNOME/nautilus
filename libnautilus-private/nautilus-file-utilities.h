@@ -88,6 +88,8 @@ void nautilus_get_x_content_types_for_mount_async (GMount *mount,
 						   NautilusMountGetContent callback,
 						   GCancellable *cancellable,
 						   gpointer user_data);
+char * get_message_for_content_type (const char *content_type);
+char * get_message_for_two_content_types (char **content_types);
 
 gboolean nautilus_file_selection_equal (GList *selection_a, GList *selection_b);
 
