@@ -78,6 +78,13 @@ void nautilus_application_open_location_full (NautilusApplication     *applicati
                                               NautilusWindow          *target_window,
                                               NautilusWindowSlot      *target_slot);
 
+NautilusApplication *nautilus_application_get_default (void);
+void nautilus_application_send_notification (NautilusApplication *self,
+                                             const gchar         *notification_id,
+                                             GNotification       *notification);
+void nautilus_application_withdraw_notification (NautilusApplication *self,
+                                                 const gchar         *notification_id);
+
 NautilusBookmarkList *
      nautilus_application_get_bookmarks  (NautilusApplication *application);
 void nautilus_application_edit_bookmarks (NautilusApplication *application,
