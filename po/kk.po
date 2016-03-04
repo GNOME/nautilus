@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-03-03 01:55+0000\n"
-"PO-Revision-Date: 2016-03-03 11:19+0500\n"
+"POT-Creation-Date: 2016-03-04 01:51+0000\n"
+"PO-Revision-Date: 2016-03-04 09:42+0500\n"
 "Last-Translator: Baurzhan Muftakhidinov <baurthefirst@gmail.com>\n"
 "Language-Team: Kazakh <kk_KZ@googlegroups.com>\n"
 "Language: kk\n"
@@ -59,7 +59,7 @@ msgstr "Бағд. қамтаманы жөнелту"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4198
-#: ../src/nautilus-window.c:2722
+#: ../src/nautilus-window.c:2725
 msgid "Files"
 msgstr "Файлдар"
 
@@ -720,8 +720,8 @@ msgstr "_Көбірек ақпарат шығару"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:558
 #: ../libnautilus-private/nautilus-file-operations.c:182
-#: ../src/nautilus-files-view.c:1102 ../src/nautilus-files-view.c:1576
-#: ../src/nautilus-files-view.c:5283 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-files-view.c:1082 ../src/nautilus-files-view.c:1556
+#: ../src/nautilus-files-view.c:5274 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:560 ../src/nautilus-mime-actions.c:564
 #: ../src/nautilus-mime-actions.c:635 ../src/nautilus-mime-actions.c:978
 #: ../src/nautilus-mime-actions.c:1488 ../src/nautilus-mime-actions.c:1717
@@ -1583,7 +1583,7 @@ msgstr "Қоқыс шелегіндегі барлық нәрсе толығым
 
 #: ../libnautilus-private/nautilus-file-operations.c:1428
 #: ../libnautilus-private/nautilus-file-operations.c:2504
-#: ../src/nautilus-window.c:1298
+#: ../src/nautilus-window.c:1301
 msgid "Empty _Trash"
 msgstr "Қ_оқыс шелегін тазарту"
 
@@ -1765,7 +1765,7 @@ msgstr "Қоқыс шелегін та_зартпау"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2636
-#: ../src/nautilus-files-view.c:5704
+#: ../src/nautilus-files-view.c:5695
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s” файлына қатынау мүмкін емес"
@@ -2658,7 +2658,7 @@ msgid "Send files by mail…"
 msgstr "Файлдарды эл. пошта арқылы жіберу…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1115
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1144
 msgid "Oops! Something went wrong."
 msgstr "Қап! Бірнәрсе қате кетті."
 
@@ -2684,23 +2684,23 @@ msgstr ""
 "оларды жасауға болатындай рұқсаттарды орнатыңыз:\n"
 "%s"
 
-#: ../src/nautilus-application.c:546
+#: ../src/nautilus-application.c:548
 msgid "--check cannot be used with other options."
 msgstr "--check басқа опциялармен бірге қолдануға болмайды."
 
-#: ../src/nautilus-application.c:553
+#: ../src/nautilus-application.c:555
 msgid "--quit cannot be used with URIs."
 msgstr "--quit опциясын URI-мен бірге қолдануға болмайды."
 
-#: ../src/nautilus-application.c:561
+#: ../src/nautilus-application.c:563
 msgid "--select must be used with at least an URI."
 msgstr "--select опциясын кем дегенде бір URI-мен қолдануға керек."
 
-#: ../src/nautilus-application.c:568
+#: ../src/nautilus-application.c:570
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr "--no-desktop және --force-desktop бірге қолдануға болмайды."
 
-#: ../src/nautilus-application.c:681
+#: ../src/nautilus-application.c:683
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -2709,47 +2709,47 @@ msgstr ""
 "Көмекті көрсету кезінде қате кетті: \n"
 "%s"
 
-#: ../src/nautilus-application.c:820
+#: ../src/nautilus-application.c:822
 msgid "Perform a quick set of self-check tests."
 msgstr "Өз-өзін тексеретін сынаулардың жылдам жиынын орындау."
 
-#: ../src/nautilus-application.c:827
+#: ../src/nautilus-application.c:829
 msgid "Create the initial window with the given geometry."
 msgstr "Бастапқы терезені көрсетілген өлшемдерімен жасау."
 
-#: ../src/nautilus-application.c:827
+#: ../src/nautilus-application.c:829
 msgid "GEOMETRY"
 msgstr "GEOMETRY"
 
-#: ../src/nautilus-application.c:829
+#: ../src/nautilus-application.c:831
 msgid "Show the version of the program."
 msgstr "Бағдарлама нұсқасын көрсету."
 
-#: ../src/nautilus-application.c:831
+#: ../src/nautilus-application.c:833
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Көрсетілген URI-лар үшін әрқашан жаңа терезені ашу."
 
-#: ../src/nautilus-application.c:833
+#: ../src/nautilus-application.c:835
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Терезелерді тек арнайы көрсетілген URI-лар үшін жасау."
 
-#: ../src/nautilus-application.c:835
+#: ../src/nautilus-application.c:837
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr "Жұмыс үстелін ешқашан басқармау (GSettings баптауын елемеу)."
 
-#: ../src/nautilus-application.c:837
+#: ../src/nautilus-application.c:839
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr "Жұмыс үстелін әрқашан басқару (GSettings баптауын елемеу)."
 
-#: ../src/nautilus-application.c:839
+#: ../src/nautilus-application.c:841
 msgid "Quit Nautilus."
 msgstr "Nautilus жұмысын аяқтау."
 
-#: ../src/nautilus-application.c:841
+#: ../src/nautilus-application.c:843
 msgid "Select specified URI in parent folder."
 msgstr "Көрсетілген URI-ді аталық бумасында таңдау."
 
-#: ../src/nautilus-application.c:842
+#: ../src/nautilus-application.c:844
 msgid "[URI...]"
 msgstr "[URI...]"
 
@@ -2928,98 +2928,98 @@ msgid "Searching…"
 msgstr "Іздеу…"
 
 #: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:628
+#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:657
 msgid "Loading…"
 msgstr "Жүктеу..."
 
-#: ../src/nautilus-files-view.c:1093 ../src/nautilus-mime-actions.c:969
+#: ../src/nautilus-files-view.c:1073 ../src/nautilus-mime-actions.c:969
 #: ../src/nautilus-mime-actions.c:1713
 msgid "Are you sure you want to open all files?"
 msgstr "Барлық файлдарды ашуды шынымен қалайсыз ба?"
 
-#: ../src/nautilus-files-view.c:1095
+#: ../src/nautilus-files-view.c:1075
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Бұл әрекет %'d бөлек бетті ашады."
 
-#: ../src/nautilus-files-view.c:1098
+#: ../src/nautilus-files-view.c:1078
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Бұл әрекет %'d бөлек терезені ашады."
 
-#: ../src/nautilus-files-view.c:1102 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-files-view.c:1082 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:978 ../src/nautilus-mime-actions.c:1155
 #: ../src/nautilus-mime-actions.c:1717
 msgid "_OK"
 msgstr "_ОК"
 
-#: ../src/nautilus-files-view.c:1573
+#: ../src/nautilus-files-view.c:1553
 msgid "Select Items Matching"
 msgstr "Үлгі бойынша таңдау"
 
-#: ../src/nautilus-files-view.c:1578 ../src/nautilus-files-view.c:5284
+#: ../src/nautilus-files-view.c:1558 ../src/nautilus-files-view.c:5275
 msgid "_Select"
 msgstr "Таң_дау"
 
-#: ../src/nautilus-files-view.c:1586
+#: ../src/nautilus-files-view.c:1566
 msgid "_Pattern:"
 msgstr "_Шаблон:"
 
-#: ../src/nautilus-files-view.c:1592
+#: ../src/nautilus-files-view.c:1572
 msgid "Examples: "
 msgstr "Мысалдар:"
 
-#: ../src/nautilus-files-view.c:1833
+#: ../src/nautilus-files-view.c:1813
 msgid "A folder with that name already exists."
 msgstr "Олай аталатын бума бар болып тұр."
 
-#: ../src/nautilus-files-view.c:1835
+#: ../src/nautilus-files-view.c:1815
 msgid "A file with that name already exists."
 msgstr "Олай аталатын файл бар болып тұр."
 
-#: ../src/nautilus-files-view.c:1850
+#: ../src/nautilus-files-view.c:1830
 msgid "Folder names cannot contain “/”."
 msgstr "Бума атында \"/\" болмауы тиіс."
 
-#: ../src/nautilus-files-view.c:1852
+#: ../src/nautilus-files-view.c:1832
 msgid "Files names cannot contain “/”."
 msgstr "Файл атында \"/\" болмауы тиіс."
 
-#: ../src/nautilus-files-view.c:1855
+#: ../src/nautilus-files-view.c:1835
 msgid "A folder can not be called “.”."
 msgstr "Бума аты \".\" болуы мүмкін емес."
 
-#: ../src/nautilus-files-view.c:1857
+#: ../src/nautilus-files-view.c:1837
 msgid "A file can not be called “.”."
 msgstr "Файл аты \".\" болуы мүмкін емес."
 
-#: ../src/nautilus-files-view.c:1860
+#: ../src/nautilus-files-view.c:1840
 msgid "A folder can not be called “..”."
 msgstr "Бума аты \"..\" болуы мүмкін емес."
 
-#: ../src/nautilus-files-view.c:1862
+#: ../src/nautilus-files-view.c:1842
 msgid "A file can not be called “..”."
 msgstr "Файл аты \"..\" болуы мүмкін емес."
 
-#: ../src/nautilus-files-view.c:2093 ../src/nautilus-files-view.c:2161
+#: ../src/nautilus-files-view.c:2073 ../src/nautilus-files-view.c:2141
 msgid "Folder name"
 msgstr "Бума аты"
 
-#: ../src/nautilus-files-view.c:2095
+#: ../src/nautilus-files-view.c:2075
 msgid "File name"
 msgstr "Файл аты"
 
-#: ../src/nautilus-files-view.c:2160
+#: ../src/nautilus-files-view.c:2140
 msgid "Create"
 msgstr "Жасау"
 
-#: ../src/nautilus-files-view.c:2162
+#: ../src/nautilus-files-view.c:2142
 msgid "New Folder"
 msgstr "Жаңа бума"
 
-#: ../src/nautilus-files-view.c:2603
+#: ../src/nautilus-files-view.c:2583
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -3027,38 +3027,38 @@ msgstr ""
 "Nautilus 3.6 бұл буманы ескірген деп есептейді және бұл баптауларды ~/.local/"
 "share/nautilus ішіне жылжытып көрді"
 
-#: ../src/nautilus-files-view.c:3030 ../src/nautilus-files-view.c:3065
+#: ../src/nautilus-files-view.c:3010 ../src/nautilus-files-view.c:3045
 #, c-format
 msgid "“%s” selected"
 msgstr "\"%s\" таңдалды"
 
-#: ../src/nautilus-files-view.c:3032
+#: ../src/nautilus-files-view.c:3012
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d бума таңдалды"
 
-#: ../src/nautilus-files-view.c:3042
+#: ../src/nautilus-files-view.c:3022
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(құрамында %'d нәрсе бар)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-files-view.c:3053
+#: ../src/nautilus-files-view.c:3033
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(құрамында жалпы %'d нәрсе бар)"
 
-#: ../src/nautilus-files-view.c:3068
+#: ../src/nautilus-files-view.c:3048
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%d нәрсе ерекшеленді"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-files-view.c:3075
+#: ../src/nautilus-files-view.c:3055
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3068,7 +3068,7 @@ msgstr[0] "%'d басқа нәрсе ерекшеленді"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-files-view.c:3089
+#: ../src/nautilus-files-view.c:3069
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3080,102 +3080,102 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-files-view.c:3113
+#: ../src/nautilus-files-view.c:3093
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-files-view.c:5273
+#: ../src/nautilus-files-view.c:5264
 msgid "Select Move Destination"
 msgstr "Жылжыту мақсатын көрсетіңіз"
 
-#: ../src/nautilus-files-view.c:5275
+#: ../src/nautilus-files-view.c:5266
 msgid "Select Copy Destination"
 msgstr "Көшіріп алу мақсатын көрсетіңіз"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5731
+#: ../src/nautilus-files-view.c:5722
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "“%s” өшіру мүмкін емес"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5758
+#: ../src/nautilus-files-view.c:5749
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s” шығару мүмкін емес"
 
-#: ../src/nautilus-files-view.c:5780
+#: ../src/nautilus-files-view.c:5771
 msgid "Unable to stop drive"
 msgstr "Дискті тоқтату мүмкін емес"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5885
+#: ../src/nautilus-files-view.c:5876
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s” іске қосу мүмкін емес"
 
-#: ../src/nautilus-files-view.c:6642
+#: ../src/nautilus-files-view.c:6633
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Таңдалғаннан жаңа буманы жасау (%'d нәрсе)"
 
-#: ../src/nautilus-files-view.c:6690
+#: ../src/nautilus-files-view.c:6681
 #, c-format
 msgid "Open With %s"
 msgstr "%s көмегімен ашу"
 
-#: ../src/nautilus-files-view.c:6699
+#: ../src/nautilus-files-view.c:6690
 msgid "Run"
 msgstr "Жөнелту"
 
-#: ../src/nautilus-files-view.c:6701
+#: ../src/nautilus-files-view.c:6692
 msgid "Open"
 msgstr "Ашу"
 
-#: ../src/nautilus-files-view.c:6752
+#: ../src/nautilus-files-view.c:6743
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
 msgid "_Start"
 msgstr "Ба_стау"
 
-#: ../src/nautilus-files-view.c:6755 ../src/gtk/gtkplacesview.c:1648
+#: ../src/nautilus-files-view.c:6746 ../src/gtk/gtkplacesview.c:1648
 msgid "_Connect"
 msgstr "Ба_йланысу"
 
-#: ../src/nautilus-files-view.c:6758
+#: ../src/nautilus-files-view.c:6749
 msgid "_Start Multi-disk Drive"
 msgstr "Көпдискті жетекті іске қо_су"
 
-#: ../src/nautilus-files-view.c:6761
+#: ../src/nautilus-files-view.c:6752
 msgid "U_nlock Drive"
 msgstr "Жетекті бо_сату"
 
-#: ../src/nautilus-files-view.c:6777
+#: ../src/nautilus-files-view.c:6768
 msgid "Stop Drive"
 msgstr "Жетекті тоқтату"
 
-#: ../src/nautilus-files-view.c:6780
+#: ../src/nautilus-files-view.c:6771
 msgid "_Safely Remove Drive"
 msgstr "Жетекті қауі_псіз шығару"
 
-#: ../src/nautilus-files-view.c:6783 ../src/gtk/gtkplacesview.c:1638
+#: ../src/nautilus-files-view.c:6774 ../src/gtk/gtkplacesview.c:1638
 msgid "_Disconnect"
 msgstr "Ба_йланысты үзу"
 
-#: ../src/nautilus-files-view.c:6786
+#: ../src/nautilus-files-view.c:6777
 msgid "_Stop Multi-disk Drive"
 msgstr "Көпдискті жетекті тоқта_ту"
 
-#: ../src/nautilus-files-view.c:6789
+#: ../src/nautilus-files-view.c:6780
 msgid "_Lock Drive"
 msgstr "Жетекті б_локтау"
 
-#: ../src/nautilus-files-view.c:8240
+#: ../src/nautilus-files-view.c:8231
 msgid "Content View"
 msgstr "Құрама көрінісі"
 
-#: ../src/nautilus-files-view.c:8241
+#: ../src/nautilus-files-view.c:8232
 msgid "View of the current folder"
 msgstr "Ағымдағы бума көрінісі"
 
@@ -3342,12 +3342,12 @@ msgstr "Бастапқысын қолдану"
 msgid "List View"
 msgstr "Тізім көрінісі"
 
-#: ../src/nautilus-list-view.c:2641
+#: ../src/nautilus-list-view.c:2642
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s көрінетін баған"
 
-#: ../src/nautilus-list-view.c:2661
+#: ../src/nautilus-list-view.c:2662
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Бұл бумада көрсетілетін ақпараттың ретін таңдаңыз:"
 
@@ -3529,7 +3529,7 @@ msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "%d нәрсе ашылуда"
 
-#: ../src/nautilus-notebook.c:322
+#: ../src/nautilus-notebook.c:340
 msgid "Close tab"
 msgstr "Бетті жабу"
 
@@ -3923,50 +3923,50 @@ msgstr "Бо_сату"
 msgid "Delete all items in the Trash"
 msgstr "Қоқыс шелегінен барлық нәрсені өшіру"
 
-#: ../src/nautilus-window.c:1316
+#: ../src/nautilus-window.c:1319
 msgid "_Properties"
 msgstr "Қас_иеттері"
 
-#: ../src/nautilus-window.c:1326
+#: ../src/nautilus-window.c:1329
 msgid "_Format…"
 msgstr "Пі_шімдеу…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1582
+#: ../src/nautilus-window.c:1585
 #, c-format
 msgid "“%s” deleted"
 msgstr "\"%s\" өшірілді"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1587
+#: ../src/nautilus-window.c:1590
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d файл өшірілді"
 
-#: ../src/nautilus-window.c:1687
+#: ../src/nautilus-window.c:1690
 #, c-format
 msgid "Open %s"
 msgstr "%s ашу"
 
-#: ../src/nautilus-window.c:1775
+#: ../src/nautilus-window.c:1778
 msgid "_New Tab"
 msgstr "_Жаңа бет"
 
-#: ../src/nautilus-window.c:1785
+#: ../src/nautilus-window.c:1788
 msgid "Move Tab _Left"
 msgstr "Бетті со_лға жылжыту"
 
-#: ../src/nautilus-window.c:1793
+#: ../src/nautilus-window.c:1796
 msgid "Move Tab _Right"
 msgstr "Бетті _оңға жылжыту"
 
-#: ../src/nautilus-window.c:1804
+#: ../src/nautilus-window.c:1807
 msgid "_Close Tab"
 msgstr "Бетті _жабу"
 
-#: ../src/nautilus-window.c:2724
+#: ../src/nautilus-window.c:2727
 msgid "Access and organize your files."
 msgstr "Файлдарыңызға қатынау және басқару."
 
@@ -3974,37 +3974,37 @@ msgstr "Файлдарыңызға қатынау және басқару."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2733
+#: ../src/nautilus-window.c:2736
 msgid "translator-credits"
 msgstr "Baurzhan Muftakhidinov <baurthefirst@gmail.com>"
 
-#: ../src/nautilus-window-slot.c:1119
+#: ../src/nautilus-window-slot.c:1148
 msgid "Unable to display the contents of this folder."
 msgstr "Бұл буманың құрамасын көрсету мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1121
+#: ../src/nautilus-window-slot.c:1150
 msgid "This location doesn't appear to be a folder."
 msgstr "Бұл орналасу бума емес сияқты."
 
-#: ../src/nautilus-window-slot.c:1126
+#: ../src/nautilus-window-slot.c:1155
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "Сұралған файлды табу мүмкін емес. Жазылуды тексеріп, қайталап көріңіз."
 
-#: ../src/nautilus-window-slot.c:1131
+#: ../src/nautilus-window-slot.c:1160
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "“%s” орналасуларына қолдау жоқ."
 
-#: ../src/nautilus-window-slot.c:1134
+#: ../src/nautilus-window-slot.c:1163
 msgid "Unable to handle this kind of location."
 msgstr "Бұл тектес орналасуларды өндеу мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1139
+#: ../src/nautilus-window-slot.c:1168
 msgid "Unable to access the requested location."
 msgstr "Сұралған орналасуға қатынау мүмкін емес."
 
-#: ../src/nautilus-window-slot.c:1142
+#: ../src/nautilus-window-slot.c:1171
 msgid "Don't have permission to access the requested location."
 msgstr "Сұралған орналасуға қатынау үшін рұқсаттар жоқ."
 
@@ -4013,7 +4013,7 @@ msgstr "Сұралған орналасуға қатынау үшін рұқса
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1150
+#: ../src/nautilus-window-slot.c:1179
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4021,12 +4021,12 @@ msgstr ""
 "Сұралған орналасуды табу мүмкін емес. Оның дұрыс жазылғанын және желі "
 "баптауларын тексеріңіз."
 
-#: ../src/nautilus-window-slot.c:1161
+#: ../src/nautilus-window-slot.c:1190
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Өнделмеген қате хабарламасы: %s"
 
-#: ../src/nautilus-window-slot.c:1309
+#: ../src/nautilus-window-slot.c:1338
 #, c-format
 msgid "Unable to load location"
 msgstr "Орналасуды жүктеу мүмкін емес"
@@ -4677,14 +4677,17 @@ msgstr ""
 "Масштабы үлкейген кезде көбірек ақпарат көрсетіледі."
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:32
+msgctxt "the n-th position of an icon caption"
 msgid "Second"
 msgstr "Екінші"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:33
+msgctxt "the n-th position of an icon caption"
 msgid "Third"
 msgstr "Үшінші"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:34
+msgctxt "the n-th position of an icon caption"
 msgid "First"
 msgstr "Бірінші"
 
