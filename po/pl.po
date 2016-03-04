@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-03-03 17:14+0100\n"
-"PO-Revision-Date: 2016-03-03 17:15+0100\n"
+"POT-Creation-Date: 2016-03-04 22:30+0100\n"
+"PO-Revision-Date: 2016-03-04 22:32+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <gnomepl@aviary.pl>\n"
 "Language: pl\n"
@@ -626,8 +626,8 @@ msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
 msgstr ""
-"Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony katalogu "
-"domowego na pulpicie."
+"Tę nazwę można ustawić, jeżeli potrzebna jest niestandardowa nazwa ikony "
+"katalogu domowego na pulpicie."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:81
 msgctxt "trash-icon-name"
@@ -643,8 +643,8 @@ msgid ""
 "This name can be set if you want a custom name for the Trash icon on the "
 "desktop."
 msgstr ""
-"Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony kosza na "
-"pulpicie."
+"Tę nazwę można ustawić, jeżeli potrzebna jest niestandardowa nazwa ikony "
+"kosza na pulpicie."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:84
 msgctxt "network-icon-name"
@@ -660,8 +660,8 @@ msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
 msgstr ""
-"Tę nazwę można ustawić, jeżeli potrzebna jest inna nazwa ikony serwerów "
-"sieciowych na pulpicie."
+"Tę nazwę można ustawić, jeżeli potrzebna jest niestandardowa nazwa ikony "
+"serwerów sieciowych na pulpicie."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:87
 msgid ""
@@ -759,7 +759,7 @@ msgstr "_Anuluj"
 
 #: ../eel/eel-stock-dialogs.c:204
 msgid "You can stop this operation by clicking cancel."
-msgstr "Można zatrzymać to działanie poprzez kliknięcie przycisku „Anuluj”."
+msgstr "Można zatrzymać to działanie klikając przycisk „Anuluj”."
 
 #: ../eel/eel-vfs-extensions.c:98
 msgid " (invalid Unicode)"
@@ -819,7 +819,7 @@ msgstr "Typ pliku."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:78
 msgid "Modified"
-msgstr "Zmodyfikowano"
+msgstr "Modyfikacja"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:79
 #: ../libnautilus-private/nautilus-column-utilities.c:137
@@ -2786,7 +2786,7 @@ msgid "Send files by mail…"
 msgstr "Wysyła pliki przez pocztę e-mail…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1141
+#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1144
 msgid "Oops! Something went wrong."
 msgstr "Coś się nie powiodło."
 
@@ -3060,7 +3060,7 @@ msgid "Searching…"
 msgstr "Wyszukiwanie…"
 
 #: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:654
+#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:657
 msgid "Loading…"
 msgstr "Wczytywanie…"
 
@@ -3726,11 +3726,13 @@ msgstr "Pomyślnie ukończono wszystkie działania na plikach"
 
 #: ../src/nautilus-properties-window.c:492
 msgid "You cannot assign more than one custom icon at a time!"
-msgstr "Nie można przypisać więcej niż jednej ikony użytkownika jednocześnie."
+msgstr ""
+"Nie można przypisać więcej niż jednej niestandardowej ikony jednocześnie."
 
 #: ../src/nautilus-properties-window.c:493
 msgid "Please drop just one image to set a custom icon."
-msgstr "Proszę przeciągnąć dokładnie jeden obraz, aby ustawić wygląd ikony."
+msgstr ""
+"Proszę przeciągnąć dokładnie jeden obraz, aby ustawić niestandardową ikonę."
 
 #: ../src/nautilus-properties-window.c:504
 msgid "The file that you dropped is not local."
@@ -3739,7 +3741,8 @@ msgstr "Przeciągnięty plik nie jest plikiem lokalnym."
 #: ../src/nautilus-properties-window.c:505
 #: ../src/nautilus-properties-window.c:511
 msgid "You can only use local images as custom icons."
-msgstr "Jako ikony użytkownika mogą być wykorzystywane tylko obrazy lokalne."
+msgstr ""
+"Jako niestandardowe ikony mogą być wykorzystywane tylko obrazy lokalne."
 
 #: ../src/nautilus-properties-window.c:510
 msgid "The file that you dropped is not an image."
@@ -3954,7 +3957,7 @@ msgstr "Zezwolenie na _wykonywanie pliku jako programu"
 
 #: ../src/nautilus-properties-window.c:4186
 msgid "Change Permissions for Enclosed Files"
-msgstr "Zmień uprawnienia zawartych plików"
+msgstr "Zmiana uprawnień zawartych plików"
 
 #: ../src/nautilus-properties-window.c:4190
 msgid "Change"
@@ -3996,7 +3999,7 @@ msgstr "Tworzenie okna właściwości."
 
 #: ../src/nautilus-properties-window.c:5178
 msgid "Select Custom Icon"
-msgstr "Wybór własnej ikony"
+msgstr "Wybór niestandardowej ikony"
 
 #: ../src/nautilus-properties-window.c:5180
 msgid "_Revert"
@@ -4157,35 +4160,35 @@ msgstr ""
 "Paweł Żołnowski <pawel@zolnowski.name>, 2015\n"
 "Aviary.pl <gnomepl@aviary.pl>, 2006-2016"
 
-#: ../src/nautilus-window-slot.c:1145
+#: ../src/nautilus-window-slot.c:1148
 msgid "Unable to display the contents of this folder."
 msgstr "Nie można wyświetlić zawartości tego katalogu."
 
-#: ../src/nautilus-window-slot.c:1147
+#: ../src/nautilus-window-slot.c:1150
 msgid "This location doesn't appear to be a folder."
 msgstr "To położenie nie jest katalogiem."
 
-#: ../src/nautilus-window-slot.c:1152
+#: ../src/nautilus-window-slot.c:1155
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "Nie można odnaleźć żądanego pliku. Proszę sprawdzić, czy wpisano je "
 "poprawnie, i spróbować ponownie."
 
-#: ../src/nautilus-window-slot.c:1157
+#: ../src/nautilus-window-slot.c:1160
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "Położenia „%s” nie są obsługiwane."
 
-#: ../src/nautilus-window-slot.c:1160
+#: ../src/nautilus-window-slot.c:1163
 msgid "Unable to handle this kind of location."
 msgstr "Nie można obsłużyć tego rodzaju położenia."
 
-#: ../src/nautilus-window-slot.c:1165
+#: ../src/nautilus-window-slot.c:1168
 msgid "Unable to access the requested location."
 msgstr "Nie można uzyskać dostępu do żądanego położenia."
 
-#: ../src/nautilus-window-slot.c:1168
+#: ../src/nautilus-window-slot.c:1171
 msgid "Don't have permission to access the requested location."
 msgstr "Brak uprawnień do dostępu do żądanego położenia."
 
@@ -4194,7 +4197,7 @@ msgstr "Brak uprawnień do dostępu do żądanego położenia."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1176
+#: ../src/nautilus-window-slot.c:1179
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4202,12 +4205,12 @@ msgstr ""
 "Nie można odnaleźć żądanego położenia. Proszę sprawdzić, czy wpisano je "
 "poprawnie oraz czy ustawienia sieci są poprawne."
 
-#: ../src/nautilus-window-slot.c:1187
+#: ../src/nautilus-window-slot.c:1190
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Nieobsłużony komunikat błędu: %s"
 
-#: ../src/nautilus-window-slot.c:1335
+#: ../src/nautilus-window-slot.c:1338
 #, c-format
 msgid "Unable to load location"
 msgstr "Nie można wczytać położenia"
@@ -4333,9 +4336,7 @@ msgstr "Otwarcie w nowym oknie"
 #: ../src/resources/gtk/help-overlay.ui.h:13
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
-msgstr ""
-"Otwarcie położenia elementu (tylko w widokach wyszukiwania i ostatnio "
-"używanych elementów)"
+msgstr "Otwarcie położenia elementu (wyszukiwanie i ostatnio używane)"
 
 #: ../src/resources/gtk/help-overlay.ui.h:14
 msgctxt "shortcut window"
