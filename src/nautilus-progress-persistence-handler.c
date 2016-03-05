@@ -138,8 +138,8 @@ progress_persistence_handler_update_notification (NautilusProgressPersistenceHan
 				self->priv->active_infos);
         g_notification_set_body (notification, body);
 
-        g_application_send_notification (g_application_get_default (),
-                                         "progress", notification);
+        nautilus_application_send_notification (self->priv->app,
+                                                "progress", notification);
 
         g_object_unref (notification);
 	g_free (body);
@@ -201,9 +201,9 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
 	complete_notification = g_notification_new (_("File Operations"));
         g_notification_set_body (complete_notification,
                                  _("All file operations have been successfully completed"));
-	g_application_send_notification (g_application_get_default (),
-                                         "transfer-complete",
-                                         complete_notification);
+        nautilus_application_send_notification (self->priv->app,
+                                                "transfer-complete",
+                                                complete_notification);
 
 	g_object_unref (complete_notification);
 }
@@ -215,8 +215,8 @@ progress_persistence_handler_hide_notification_or_status (NautilusProgressPersis
 		gtk_status_icon_set_visible (self->priv->status_icon, FALSE);
 	}
 
-        g_application_withdraw_notification (g_application_get_default (),
-                                             "progress");
+        nautilus_application_withdraw_notification (self->priv->app,
+                                                    "progress");
 }
 
 static void
