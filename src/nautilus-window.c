@@ -939,12 +939,12 @@ static void
 notify_unmount_done (GMountOperation *op,
                      const gchar     *message)
 {
-  GApplication *application;
+  NautilusApplication *application;
   gchar *notification_id;
 
-  application = g_application_get_default ();
+  application = nautilus_application_get_default ();
   notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
-  g_application_withdraw_notification (application, notification_id);
+  nautilus_application_withdraw_notification (application, notification_id);
 
   if (message != NULL)
     {
@@ -958,7 +958,7 @@ notify_unmount_done (GMountOperation *op,
       g_notification_set_body (unplug, strings[1]);
       g_notification_set_icon (unplug, icon);
 
-      g_application_send_notification (application, notification_id, unplug);
+      nautilus_application_send_notification (application, notification_id, unplug);
       g_object_unref (unplug);
       g_object_unref (icon);
       g_strfreev (strings);
@@ -971,13 +971,13 @@ static void
 notify_unmount_show (GMountOperation *op,
                      const gchar     *message)
 {
-  GApplication *application;
+  NautilusApplication *application;
   GNotification *unmount;
   gchar *notification_id;
   GIcon *icon;
   gchar **strings;
 
-  application = g_application_get_default ();
+  application = nautilus_application_get_default ();
   strings = g_strsplit (message, "\n", 0);
   icon = g_themed_icon_new ("media-removable");
 
@@ -987,7 +987,7 @@ notify_unmount_show (GMountOperation *op,
   g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
 
   notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
-  g_application_send_notification (application, notification_id, unmount);
+  nautilus_application_send_notification (application, notification_id, unmount);
   g_object_unref (unmount);
   g_object_unref (icon);
   g_strfreev (strings);
