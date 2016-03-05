@@ -1624,7 +1624,9 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 			g_free (label);
 		}
 		g_list_free (files);
-	}
+        } else {
+                hide_notification_delete (window);
+        }
 }
 
 static void
