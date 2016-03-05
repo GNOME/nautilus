@@ -83,15 +83,10 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
 {
 	NautilusFileUndoManager *self = user_data;
 
-	if (!is_empty) {
-		return;
-	}
-
-	if (self->priv->state == NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE) {
-		return;
-	}
-
-	if (NAUTILUS_IS_FILE_UNDO_INFO_TRASH (self->priv->info)) {
+	/* A trash operation cannot be undone if the trash is empty */
+	if (is_empty &&
+	    self->priv->state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
+	    NAUTILUS_IS_FILE_UNDO_INFO_TRASH (self->priv->info)) {
 		file_undo_manager_clear (self);
 		g_signal_emit (self, signals[SIGNAL_UNDO_CHANGED], 0);
 	}
