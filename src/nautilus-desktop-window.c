@@ -92,6 +92,11 @@ nautilus_desktop_window_init_actions (NautilusDesktopWindow *window)
 	action = g_action_map_lookup_action (G_ACTION_MAP (window),
 					     "new-tab");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+
+	/* Don't allow switching to home dir on desktop */
+	action = g_action_map_lookup_action (G_ACTION_MAP (window),
+					     "go-home");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }
 
 static void
