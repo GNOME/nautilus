@@ -91,6 +91,11 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char
 
 	g_strfreev (bar->priv->x_content_types);
 
+        if (!should_handle_content_types (x_content_types)) {
+                g_warning ("Content types in content types bar cannot be handled. Check before creating the content bar if they can be handled.");
+                return;
+        }
+
 	types = g_ptr_array_new ();
 	apps = g_ptr_array_new ();
 	g_ptr_array_set_free_func (apps, g_object_unref);
@@ -109,9 +114,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char
 	bar->priv->x_content_types = (char **) g_ptr_array_free (types, FALSE);
 
 	switch (num_types) {
-	case 0:
-		message = NULL;
-		break;
 	case 1:
 		message = get_message_for_content_type (bar->priv->x_content_types[0]);
 		break;
@@ -121,12 +123,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char
 	default:
 		message = g_strdup (_("Open with:"));
 		break;
-	}
-
-	if (message == NULL) {
-		g_ptr_array_free (apps, TRUE);
-		gtk_widget_destroy (GTK_WIDGET (bar));
-		return;
 	}
 
 	gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
