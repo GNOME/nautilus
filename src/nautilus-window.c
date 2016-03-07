@@ -1037,8 +1037,8 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 }
 
 static void
-places_sidebar_show_other_locations (NautilusWindow   *window,
-                                     GtkPlacesOpenFlags open_flags)
+places_sidebar_show_other_locations_with_flags (NautilusWindow     *window,
+                                                GtkPlacesOpenFlags  open_flags)
 {
         GFile *location;
 
@@ -2596,7 +2596,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_open);
 	gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_close);
 
-        gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_other_locations);
+        gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_other_locations_with_flags);
 
 	properties[PROP_DISABLE_CHROME] =
 		g_param_spec_boolean ("disable-chrome",
