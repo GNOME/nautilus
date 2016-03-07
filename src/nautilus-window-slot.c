@@ -1877,6 +1877,9 @@ nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount
 
 	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
+        if (!should_handle_content_types (x_content_types))
+                return;
+
 	bar = nautilus_x_content_bar_new (mount, x_content_types);
 	gtk_widget_show (bar);
 	nautilus_window_slot_add_extra_location_widget (slot, bar);
