@@ -1065,6 +1065,31 @@ get_message_for_two_content_types (char **content_types)
 }
 
 gboolean
+should_handle_content_type (char *content_type)
+{
+        GAppInfo *default_app;
+
+        default_app = g_app_info_get_default_for_type (content_type, FALSE);
+
+        return !g_str_has_prefix (content_type, "x-content/blank-") &&
+               !g_content_type_is_a (content_type, "x-content/win32-software") &&
+               default_app != NULL;
+}
+
+gboolean
+should_handle_content_types (char ** content_types)
+{
+        int i;
+
+        for (i = 0; content_types[i] != NULL; i++) {
+                if (should_handle_content_type (content_types[i]))
+                        return TRUE;
+        }
+
+        return FALSE;
+}
+
+gboolean
 nautilus_file_selection_equal (GList *selection_a,
 			       GList *selection_b)
 {
