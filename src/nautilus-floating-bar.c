@@ -478,14 +478,15 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
 				  const gchar *icon_name,
 				  gint action_id)
 {
-	GtkWidget *w, *button;
+	GtkWidget *button;
+	GtkStyleContext *context;
 
-	w = gtk_image_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
-	gtk_widget_show (w);
-
-	button = gtk_button_new ();
-	gtk_button_set_relief (GTK_BUTTON (button), GTK_RELIEF_NONE);
-	gtk_button_set_image (GTK_BUTTON (button), w);
+	button = gtk_button_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+	context = gtk_widget_get_style_context (button);
+	gtk_button_set_relief (button, GTK_RELIEF_NONE);
+	gtk_style_context_add_class (context, "circular");
+	gtk_style_context_add_class (context, "flat");
+	gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
 	gtk_box_pack_end (GTK_BOX (self), button, FALSE, FALSE, 0);
 	gtk_widget_show (button);
 
