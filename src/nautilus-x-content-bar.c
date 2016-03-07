@@ -95,16 +95,10 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char
 	apps = g_ptr_array_new ();
 	g_ptr_array_set_free_func (apps, g_object_unref);
 	for (n = 0; x_content_types[n] != NULL; n++) {
-		if (g_str_has_prefix (x_content_types[n], "x-content/blank-"))
-			continue;
-
-		if (g_content_type_is_a (x_content_types[n], "x-content/win32-software"))
+		if (!should_handle_content_type (x_content_types[n]))
 			continue;
 
 		default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
-		if (default_app == NULL)
-			continue;
-
 		g_ptr_array_add (types, g_strdup (x_content_types[n]));
 		g_ptr_array_add (apps, default_app);
 	}
