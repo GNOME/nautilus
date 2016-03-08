@@ -30,6 +30,7 @@
 struct NautilusSpecialLocationBarPrivate
 {
 	GtkWidget *label;
+	GtkWidget *learn_more_label;
 	NautilusSpecialLocation special_location;
 };
 
@@ -40,14 +41,17 @@ enum {
 
 G_DEFINE_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, GTK_TYPE_INFO_BAR)
 
-static char *
-get_message_for_special_location (NautilusSpecialLocation location)
+static void
+set_special_location (NautilusSpecialLocationBar *bar,
+		      NautilusSpecialLocation     location)
 {
 	char *message;
+        char *learn_more_markup = NULL;
 
 	switch (location) {
 	case NAUTILUS_SPECIAL_LOCATION_TEMPLATES:
-		message = g_strdup (_("Files in this folder will appear in the New Document menu."));
+		message = g_strdup (_("Put files in this folder to use them as templates for new documents."));
+		learn_more_markup = g_strdup (_("<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates\">Learn more…</a>"));
 		break;
 	case NAUTILUS_SPECIAL_LOCATION_SCRIPTS:
 		message = g_strdup (_("Executable files in this folder will appear in the Scripts menu."));
@@ -56,21 +60,18 @@ get_message_for_special_location (NautilusSpecialLocation location)
 		g_assert_not_reached ();
 	}
 
-	return message;
-}
-
-static void
-set_special_location (NautilusSpecialLocationBar *bar,
-		      NautilusSpecialLocation     location)
-{
-	char *message;
-
-	message = get_message_for_special_location (location);
-
 	gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
 	g_free (message);
 
 	gtk_widget_show (bar->priv->label);
+
+        if (learn_more_markup) {
+                gtk_label_set_markup (bar->priv->learn_more_label, learn_more_markup);
+                gtk_widget_show (bar->priv->learn_more_label);
+                g_free (learn_more_markup);
+        } else {
+                gtk_widget_hide (bar->priv->learn_more_label);
+        }
 }
 
 static void
@@ -155,6 +156,11 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 
 	gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
 	gtk_container_add (GTK_CONTAINER (location_area), bar->priv->label);
+
+        bar->priv->learn_more_label = gtk_label_new (NULL);
+        gtk_widget_set_hexpand (bar->priv->learn_more_label, TRUE);
+        gtk_widget_set_halign (bar->priv->learn_more_label, GTK_ALIGN_END);
+        gtk_container_add (GTK_CONTAINER (location_area), bar->priv->learn_more_label);
 }
 
 GtkWidget *
