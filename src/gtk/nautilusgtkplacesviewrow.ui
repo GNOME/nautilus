@@ -1,49 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface domain="gtk30">
   <requires lib="gtk+" version="3.16"/>
-  <template class="GtkNautilusPlacesViewRow" parent="GtkListBoxRow">
+  <template class="NautilusGtkPlacesViewRow" parent="GtkListBoxRow">
     <property name="width_request">100</property>
     <property name="visible">True</property>
     <property name="can_focus">True</property>
-    <style>
-      <class name="volume-row" />
-    </style>
     <child>
       <object class="GtkEventBox" id="event_box">
-        <property name="visible">True</property>
+        <property name="visible">1</property>
         <child>
           <object class="GtkBox" id="box">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
+            <property name="visible">1</property>
             <property name="margin_start">12</property>
             <property name="margin_end">12</property>
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
-            <property name="border_width">0</property>
             <property name="spacing">18</property>
             <child>
               <object class="GtkImage" id="icon_image">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="visible">1</property>
                 <property name="pixel_size">32</property>
               </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkLabel" id="name_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="hexpand">True</property>
+                <property name="visible">1</property>
+                <property name="hexpand">1</property>
                 <property name="xalign">0</property>
                 <property name="ellipsize">end</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
                 <property name="position">1</property>
               </packing>
             </child>
@@ -61,8 +47,7 @@
             </child>
             <child>
               <object class="GtkLabel" id="path_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
+                <property name="visible">1</property>
                 <property name="justify">right</property>
                 <property name="ellipsize">middle</property>
                 <property name="xalign">0</property>
@@ -72,8 +57,6 @@
                 </style>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
                 <property name="position">3</property>
               </packing>
             </child>
@@ -85,7 +68,7 @@
                 <property name="tooltip-text" translatable="yes">Unmount</property>
                 <child>
                   <object class="GtkImage" id="eject_icon">
-                    <property name="visible">True</property>
+                    <property name="visible">1</property>
                     <property name="icon_name">media-eject-symbolic</property>
                     <property name="icon_size">1</property>
                   </object>
@@ -96,20 +79,14 @@
                 </style>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
                 <property name="position">4</property>
               </packing>
             </child>
             <child>
               <object class="GtkSpinner" id="busy_spinner">
-                <property name="visible">False</property>
-                <property name="can_focus">False</property>
-                <property name="active">True</property>
+                <property name="active">1</property>
               </object>
               <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
                 <property name="position">5</property>
               </packing>
             </child>
