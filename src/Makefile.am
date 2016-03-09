@@ -135,10 +135,10 @@ nautilus_built_sources = \
 	$(NULL)
 
 nautilus_SOURCES = \
-	gtk/gtkplacesview.c			\
-	gtk/gtkplacesviewprivate.h		\
-	gtk/gtkplacesviewrow.c			\
-	gtk/gtkplacesviewrowprivate.h		\
+	gtk/nautilusgtkplacesview.c			\
+	gtk/nautilusgtkplacesviewprivate.h		\
+	gtk/nautilusgtkplacesviewrow.c			\
+	gtk/nautilusgtkplacesviewrowprivate.h		\
 	nautilus-application.c			\
 	nautilus-application.h			\
 	nautilus-bookmark-list.c		\
