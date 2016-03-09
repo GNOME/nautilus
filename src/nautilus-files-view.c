@@ -8086,11 +8086,11 @@ nautilus_files_view_init (NautilusFilesView *view)
                 "<alt>Down",
                 NULL
         };
-	const gchar *open_properties[] = {
-		"<control>i",
-		"<alt>Return",
-		NULL
-	};
+        const gchar *open_properties[] = {
+                "<control>i",
+                "<alt>Return",
+                NULL
+        };
 
         nautilus_profile_start (NULL);
 
@@ -8265,7 +8265,7 @@ nautilus_files_view_init (NautilusFilesView *view)
          * actions active */
         nautilus_application_add_accelerator (app, "view.delete-permanently-menu-item", "Delete");
         nautilus_application_add_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
-	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "view.properties", open_properties);
+        gtk_application_set_accels_for_action (GTK_APPLICATION (app), "view.properties", open_properties);
         nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
         nautilus_application_add_accelerator (app, "view.rename", "F2");
         nautilus_application_add_accelerator (app, "view.cut", "<control>x");
