@@ -1031,7 +1031,7 @@ get_message_for_content_type (const char *content_type)
 }
 
 char *
-get_message_for_two_content_types (char **content_types)
+get_message_for_two_content_types (const char * const *content_types)
 {
 	char *message;
 
@@ -1065,7 +1065,7 @@ get_message_for_two_content_types (char **content_types)
 }
 
 gboolean
-should_handle_content_type (char *content_type)
+should_handle_content_type (const char *content_type)
 {
         GAppInfo *default_app;
 
@@ -1077,7 +1077,7 @@ should_handle_content_type (char *content_type)
 }
 
 gboolean
-should_handle_content_types (char ** content_types)
+should_handle_content_types (const char * const * content_types)
 {
         int i;
 

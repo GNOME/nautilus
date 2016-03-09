@@ -1871,7 +1871,7 @@ typedef struct {
 } FindMountData;
 
 static void
-nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount, const char **x_content_types)
+nautilus_window_slot_show_x_content_bar (NautilusWindowSlot *slot, GMount *mount, const char * const *x_content_types)
 {
 	GtkWidget *bar;
 
@@ -1899,7 +1899,7 @@ found_content_type_cb (const char **x_content_types,
 	slot = data->slot;
 
 	if (x_content_types != NULL && x_content_types[0] != NULL) {
-		nautilus_window_slot_show_x_content_bar (slot, data->mount, x_content_types);
+		nautilus_window_slot_show_x_content_bar (slot, data->mount, (const char* const *) x_content_types);
 	}
 
 	slot->details->find_mount_cancellable = NULL;

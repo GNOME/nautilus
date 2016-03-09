@@ -80,7 +80,7 @@ content_bar_response_cb (GtkInfoBar *infobar,
 }
 
 static void
-nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char **x_content_types)
+nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char * const *x_content_types)
 {
 	char *message = NULL;
 	guint num_types;
@@ -118,7 +118,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char
 		message = get_message_for_content_type (bar->priv->x_content_types[0]);
 		break;
 	case 2:
-		message = get_message_for_two_content_types (bar->priv->x_content_types);
+		message = get_message_for_two_content_types ((const char* const *) bar->priv->x_content_types);
 		break;
 	default:
 		message = g_strdup (_("Open with:"));
@@ -302,7 +302,7 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
 
 GtkWidget *
 nautilus_x_content_bar_new (GMount *mount,
-			    const char **x_content_types)
+			    const char * const *x_content_types)
 {
 	return g_object_new (NAUTILUS_TYPE_X_CONTENT_BAR,
 			     "message-type", GTK_MESSAGE_QUESTION,
