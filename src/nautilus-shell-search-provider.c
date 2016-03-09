@@ -663,7 +663,7 @@ handle_launch_search (NautilusShellSearchProvider2 *skeleton,
   gchar *string = g_strjoinv (" ", terms);
   gchar *uri = nautilus_get_home_directory_uri ();
 
-  nautilus_application_search (app, uri, string);
+  nautilus_application_search (NAUTILUS_APPLICATION (app), uri, string);
 
   g_free (string);
   g_free (uri);
