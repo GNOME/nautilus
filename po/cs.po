@@ -19,11 +19,11 @@
 #
 msgid ""
 msgstr ""
-"Project-Id-Version: nautilus master\n"
+"Project-Id-Version: nautilus gnome-3.20\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-03-09 01:51+0000\n"
-"PO-Revision-Date: 2016-03-09 10:13+0100\n"
+"PO-Revision-Date: 2016-03-09 11:36+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: Czech <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -296,14 +296,6 @@ msgid "When to show thumbnails of files"
 msgstr "Kdy zobrazovat miniatury souborů"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:32
-#, fuzzy
-#| msgid ""
-#| "Speed tradeoff for when to show a file as a thumbnail. If set to \"always"
-#| "\" then always thumbnail, even if the folder is on a remote server. If "
-#| "set to \"local-only\" then only show thumbnails for local file systems. "
-#| "If set to \"never\" then never bother to thumbnail files, just use a "
-#| "generic icon. Despite what the name may suggest, this applies to any "
-#| "previewable file type."
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -311,12 +303,12 @@ msgid ""
 "\"never\" then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
-"Rozhodnutí, kdy zobrazovat soubory jako miniatury. Je-li nastaveno na "
-"„always“, tak pokaždé tvořit miniatury, i když je složka na vzdáleném "
-"serveru. Je-li nastaveno na „local-only“, zobrazovat miniatury jen pro "
-"místní systémy souborů. Je-li nastaveno na „never“, tak se nikdy neobtěžovat "
-"s miniaturami souborů a prostě použít obecnou ikonu. Toto bude provedeno "
-"vždy, nehledě na název souboru."
+"Jak rozhodnout, kdy zobrazovat soubory jako miniatury. Je-li nastaveno na "
+"„always“, tak se vytvoří miniatury pokaždé, i když je složka na vzdáleném "
+"serveru. Je-li nastaveno na „local-only“, zobrazují se miniatury jen pro "
+"místní systémy souborů. Je-li nastaveno na „never“, tak se miniaturami "
+"souborů nebude nikdy zabývat a prostě se použije obecná ikona. Toto bude "
+"provedeno vždy, nehledě na název souboru."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:33
 msgid "Maximum image size for thumbnailing"
@@ -361,12 +353,6 @@ msgid "Reverse sort order in new windows"
 msgstr "Obrátit pořadí řazení v nových oknech"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:40
-#, fuzzy
-#| msgid ""
-#| "If true, files in new windows will be sorted in reverse order. ie, if "
-#| "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
-#| "they will be sorted from \"z\" to \"a\"; if sorted by size, instead of "
-#| "being incrementally they will be sorted decrementally."
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from \"a\" to \"z\", they "
@@ -406,12 +392,14 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:45
 msgid "What viewer should be used when searching"
-msgstr ""
+msgstr "Které zobrazení se má použít při hledání"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:46
 msgid ""
 "When searching Nautilus will switch to the type of view in this setting."
 msgstr ""
+"Když bude Nautilus vyhledávat, přepne se na typ zobrazení uvedený v tomto "
+"nastavení."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:47
 msgid "Bulk rename utility"
@@ -489,21 +477,6 @@ msgid "Text Ellipsis Limit"
 msgstr "Limit výpustky textu"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:58
-#, fuzzy
-#| msgid ""
-#| "A string specifying how parts of overlong file names should be replaced "
-#| "by ellipses, depending on the zoom level. Each of the list entries is of "
-#| "the form \"Zoom Level:Integer\". For each specified zoom level, if the "
-#| "given integer is larger than 0, the file name will not exceed the given "
-#| "number of lines. If the integer is 0 or smaller, no limit is imposed on "
-#| "the specified zoom level. A default entry of the form \"Integer\" without "
-#| "any specified zoom level is also allowed. It defines the maximum number "
-#| "of lines for all other zoom levels. Examples: 0 - always display overlong "
-#| "file names; 3 - shorten file names if they exceed three lines; smallest:5,"
-#| "smaller:4,0 - shorten file names if they exceed five lines for zoom level "
-#| "\"smallest\". Shorten file names if they exceed four lines for zoom level "
-#| "\"smaller\". Do not shorten file names for other zoom levels. Available "
-#| "zoom levels: small, standard, large"
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -532,7 +505,7 @@ msgstr ""
 "přesahují pět řádků pro úroveň přiblížení „smallest“. Zkrátit názvy souborů, "
 "pokud přesahují čtyři řádky pro úroveň přiblížení „smaller“. Nezkracovat "
 "názvy souborů pro ostatní úrovně přiblížení. Dostupné úrovně přiblížení: "
-"small (malá), standard (standardní), large (velká)"
+"small (malá), standard (standardní), large (velká)."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:59
 msgid "Default list zoom level"
@@ -707,10 +680,8 @@ msgstr ""
 "efekt prolínání."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:90
-#, fuzzy
-#| msgid "The geometry string for a navigation window."
 msgid "The geometry string for a navigation window"
-msgstr "Řetězec geometrie pro navigační okno."
+msgstr "Řetězec geometrie pro navigační okno"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:91
 msgid ""
@@ -719,8 +690,6 @@ msgid ""
 msgstr "Řetězec obsahuje uložené rozměry a souřadnice pro navigační okna."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:92
-#, fuzzy
-#| msgid "Whether the navigation window should be maximized."
 msgid "Whether the navigation window should be maximized"
 msgstr "Zda by mělo být navigační okno maximalizováno."
 
@@ -891,10 +860,8 @@ msgid "MIME Type"
 msgstr "Typ MIME"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:122
-#, fuzzy
-#| msgid "The type of the file."
 msgid "The MIME type of the file."
-msgstr "Typ souboru."
+msgstr "Typ MIME souboru."
 
 #: ../libnautilus-private/nautilus-column-utilities.c:129
 #: ../src/nautilus-image-properties-page.c:415
@@ -1008,6 +975,7 @@ msgstr "Nelze přejmenovat ikonu plochy"
 #, c-format
 msgid "Probably the content of the file is an invalid desktop file format"
 msgstr ""
+"Obsah souboru pravděpodobně není v platném formátu pro soubory .desktop"
 
 #. Translators: Time in 24h format
 #: ../libnautilus-private/nautilus-file.c:4769
@@ -1341,17 +1309,13 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "Jiný soubor se stejným názvem již existuje v „%s“."
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
-#, fuzzy
-#| msgid "Original file"
 msgid "Original folder"
-msgstr "Původní soubor"
+msgstr "Původní složka"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
-#, fuzzy
-#| msgid "? items"
 msgid "Items:"
-msgstr "? položek"
+msgstr "Položek:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
 msgid "Original file"
@@ -1375,10 +1339,8 @@ msgid "Last modified:"
 msgstr "Naposledy změněno:"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:292
-#, fuzzy
-#| msgid "Merge"
 msgid "Merge with"
-msgstr "Sloučit"
+msgstr "Sloučit s"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:292
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:296
@@ -1401,10 +1363,8 @@ msgstr "Výchozí"
 
 #. Setup the checkbox to apply the action to all files
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:548
-#, fuzzy
-#| msgid "Apply this action to all files"
 msgid "Apply this action to all files and folders"
-msgstr "Použít tuto akci na všechny soubory"
+msgstr "Použít tuto akci na všechny soubory a složky"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:560
 #: ../libnautilus-private/nautilus-file-operations.c:183
@@ -1420,17 +1380,13 @@ msgid "Replace"
 msgstr "Nahradit"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:654
-#, fuzzy
-#| msgid "New Folder"
 msgid "Merge Folder"
-msgstr "Nová složka"
+msgstr "Sloučit složku"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:654
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:660
-#, fuzzy
-#| msgid "File conflict"
 msgid "File and Folder conflict"
-msgstr "Konflikt souborů"
+msgstr "Konflikt souborů a složek"
 
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:660
 msgid "File conflict"
@@ -2821,36 +2777,36 @@ msgstr "Nelze dokončit požadované hledání"
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Před %d dnem"
+msgstr[1] "Před %d dny"
+msgstr[2] "Před %d dny"
 
 #. weeks
 #: ../libnautilus-private/nautilus-ui-utilities.c:370
 #, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Minulý týden"
+msgstr[1] "Poslední %d týdny"
+msgstr[2] "Posledních %d týdnů"
 
 #. months
 #: ../libnautilus-private/nautilus-ui-utilities.c:375
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Minulý měsíc"
+msgstr[1] "Poslední %d měsíce"
+msgstr[2] "Posledních %d měsíců"
 
 #. years
 #: ../libnautilus-private/nautilus-ui-utilities.c:380
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
+msgstr[0] "Loni"
+msgstr[1] "Poslední %d roky"
+msgstr[2] "Posledních %d let"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:96
 #: ../nautilus-sendto-extension/nautilus-nste.c:101
@@ -3136,7 +3092,8 @@ msgstr "Přejmenovává se „%s“ na „%s“."
 msgid "Searching…"
 msgstr "Hledá se…"
 
-#: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
+#: ../src/nautilus-files-view.c:403
+#: ../src/nautilus-image-properties-page.c:708
 #: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:657
 msgid "Loading…"
 msgstr "Načítá se…"
@@ -3596,10 +3553,8 @@ msgstr[2] "Toto otevře %d samostatných oken."
 
 #: ../src/nautilus-mime-actions.c:95
 #: ../src/resources/ui/nautilus-search-popover.ui.h:11
-#, fuzzy
-#| msgid "nothing"
 msgid "Anything"
-msgstr "nic"
+msgstr "Cokoliv"
 
 #: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4200
 msgid "Folders"
@@ -4083,46 +4038,38 @@ msgid "_Open"
 msgstr "_Otevřít"
 
 #: ../src/nautilus-query-editor.c:122
-#, fuzzy
-#| msgid "Searching for network locations"
 msgid "Searching locations only"
-msgstr "Prohledávají se síťová umístění"
+msgstr "Prohledávají se jen umístění"
 
 #: ../src/nautilus-query-editor.c:124
 msgid "Searching devices only"
-msgstr ""
+msgstr "Prohledávají se jen zařízení"
 
 #: ../src/nautilus-query-editor.c:126
-#, fuzzy
-#| msgid "Searching for network locations"
 msgid "Searching network locations only"
-msgstr "Prohledávají se síťová umístění"
+msgstr "Prohledávají se jen síťová umístění"
 
 #: ../src/nautilus-query-editor.c:129
-#, fuzzy
-#| msgid "Remote location — only searching the current folder"
 msgid "Remote location - only searching the current folder"
 msgstr "Vzdálené umístění — prohledává se jen aktuální složka"
 
 #: ../src/nautilus-query-editor.c:131
-#, fuzzy
-#| msgid "Remote location — only searching the current folder"
 msgid "Only searching the current folder"
-msgstr "Vzdálené umístění — prohledává se jen aktuální složka"
+msgstr "Prohledává se jen aktuální složka"
 
 #: ../src/nautilus-search-popover.c:284
 msgid "Show a list to select the date"
-msgstr ""
+msgstr "Zobrazit seznam pro výběr data"
 
 #: ../src/nautilus-search-popover.c:290
 #: ../src/resources/ui/nautilus-search-popover.ui.h:5
 msgid "Show a calendar to select the date"
-msgstr ""
+msgstr "Zobrazit kalendář pro výběr data"
 
 #. Add the no date filter element first
 #: ../src/nautilus-search-popover.c:387
 msgid "Any time"
-msgstr ""
+msgstr "Kdykoliv"
 
 #. Other types
 #: ../src/nautilus-search-popover.c:476
@@ -4139,10 +4086,8 @@ msgstr "Vybrat"
 
 #: ../src/nautilus-search-popover.c:625
 #: ../src/resources/ui/nautilus-search-popover.ui.h:3
-#, fuzzy
-#| msgid "Select type"
 msgid "Select Dates…"
-msgstr "Vyberte typ"
+msgstr "Vybrat data…"
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
@@ -4861,10 +4806,8 @@ msgid "4 GB"
 msgstr "4 GB"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:25
-#, fuzzy
-#| msgid "Prefere_nces"
 msgid "Preferences"
-msgstr "_Předvolby"
+msgstr "Předvolby"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:26
 #: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:1
@@ -4877,53 +4820,42 @@ msgstr "Řadit _složky před soubory"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:28
 msgid "Allow folders to be _expanded"
-msgstr ""
+msgstr "Umožnit rozbalování slož_ek"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:29
-#, fuzzy
-#| msgid "Icon Captions"
 msgid "Icon View Captions"
-msgstr "Popisky ikon"
+msgstr "Popisky v ikonovém zobrazení"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:30
-#, fuzzy
-#| msgid ""
-#| "Choose the order of information to appear beneath icon names. More "
-#| "information will appear when zooming in closer."
 msgid ""
 "Add information to be displayed beneath file and folder names.\n"
 "More information will appear when zooming closer."
 msgstr ""
-"Zvolte pořadí informací, které se objeví pod názvy ikon. Čím větší použijete "
-"zvětšení, tím více se objeví informací."
+"Přidat informace, které se zobrazí pod názvy souborů a složek.\n"
+"Čím větší použijete zvětšení, tím více informací se objeví."
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:32
-#, fuzzy
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
 msgctxt "the n-th position of an icon caption"
 msgid "Second"
-msgstr "%'d sekunda"
+msgstr "Druhý"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:33
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
-msgstr ""
+msgstr "Třetí"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:34
 msgctxt "the n-th position of an icon caption"
 msgid "First"
-msgstr ""
+msgstr "První"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:35
 msgid "Views"
 msgstr "Zobrazení"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:36
-#, fuzzy
-#| msgid "Open action menu"
 msgid "Open Action"
-msgstr "Otevřít nabídku činností"
+msgstr "Otevírání"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:37
 msgid "_Single click to open items"
@@ -4934,48 +4866,36 @@ msgid "_Double click to open items"
 msgstr "Aktivovat položky _dvojitým kliknutím"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:39
-#, fuzzy
-#| msgid "Link target:"
 msgid "Link Creation"
-msgstr "Cíl odkazu:"
+msgstr "Vytváření odkazů"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:40
-#, fuzzy
-#| msgid "The target doesn't support symbolic links."
 msgid "Show action to create symbolic _links"
-msgstr "Tento cíl nepodporuje symbolické odkazy."
+msgstr "Zobrazovat činnost pro vytvoření symbo_lických odkazů"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:41
 msgid "Executable Text Files"
 msgstr "Spustitelné textové soubory"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:42
-#, fuzzy
-#| msgid "_Display"
 msgid "_Display them"
-msgstr "_Zobrazit"
+msgstr "_Zobrazit je"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:43
-#, fuzzy
-#| msgid "_Run"
 msgid "_Run them"
-msgstr "_Spustit"
+msgstr "_Spustit je"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:44
 msgid "_Ask what to do"
-msgstr ""
+msgstr "Zeptat se, co děl_at"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:46
-#, fuzzy
-#| msgid "Ask before _emptying the Trash or deleting files"
 msgid "Ask before _emptying the Trash"
-msgstr "Zeptat se před _vyprázdněním koše nebo odstraněním souborů"
+msgstr "Zeptat se před _vyprázdněním koše"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:47
-#, fuzzy
-#| msgid "Show context menu item to delete files permanently"
 msgid "Show action to _permanently delete files and folders"
-msgstr "Zobrazovat v kontextové nabídce položku pro trvalé smazání"
+msgstr "Zobrazovat činnost _pro trvalé smazání souborů a složek"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:48
 msgid "Behavior"
@@ -4990,96 +4910,68 @@ msgid "List Columns"
 msgstr "Sloupce seznamu"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:52
-#, fuzzy
-#| msgid "Search files"
 msgid "Search in subfolders:"
-msgstr "Hledat soubory"
+msgstr "Hledat v podsložkách:"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:53
-#, fuzzy
-#| msgid "On This Computer"
 msgid "_On this computer only"
-msgstr "Na tomto počítači"
+msgstr "Jen na tomt_o počítači"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:54
-#, fuzzy
-#| msgid "Enter location"
 msgid "_All locations"
-msgstr "Zadat umístění"
+msgstr "Ve _všech umístěních"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:55
-#, fuzzy
-#| msgid "Never"
 msgid "_Never"
-msgstr "Nikdy"
+msgstr "_Nikdy"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:56
-#, fuzzy
-#| msgid "Show _thumbnails:"
 msgid "Thumbnails"
-msgstr "Zobrazovat minia_tury:"
+msgstr "Miniatury"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:57
-#, fuzzy
-#| msgid "Show _thumbnails:"
 msgid "Show thumbnails:"
-msgstr "Zobrazovat minia_tury:"
+msgstr "Zobrazovat miniatury:"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:58
 msgid "_Files on this computer only"
-msgstr ""
+msgstr "Jen _soubory na tomto počítači"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:59
-#, fuzzy
-#| msgid "All Files"
 msgid "A_ll files"
-msgstr "Všechny soubory"
+msgstr "Všech_ny soubory"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:60
-#, fuzzy
-#| msgid "Never"
 msgid "N_ever"
-msgstr "Nikdy"
+msgstr "N_ikdy"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:61
-#, fuzzy
-#| msgid "_Only for files smaller than:"
 msgid "Onl_y for files smaller than:"
 msgstr "_Jen pro soubory menší než:"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:62
-#, fuzzy
-#| msgid "File conflict"
 msgid "File count"
-msgstr "Konflikt souborů"
+msgstr "Počítání souborů"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:63
-#, fuzzy
-#| msgid "Count _number of items:"
 msgid "Count number of files in folders:"
-msgstr "Počítat _počet položek:"
+msgstr "Počítat soubory ve složkách:"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:64
-#, fuzzy
-#| msgid "Folder is Empty"
 msgid "F_olders in this computer only"
-msgstr "Složka je prázdná"
+msgstr "Jen ve sl_ožkách na tomto počítači"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:65
-#, fuzzy
-#| msgid "All Files"
 msgid "All folder_s"
-msgstr "Všechny soubory"
+msgstr "Ve všech slož_kách"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:66
 msgid "Ne_ver"
-msgstr ""
+msgstr "Nik_dy"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:67
-#, fuzzy
-#| msgid "Search files"
 msgid "Search & Preview"
-msgstr "Hledat soubory"
+msgstr "Hledání a náhledy"
 
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:2
 msgid "_Rename"
@@ -5087,65 +4979,51 @@ msgstr "Přej_menovat"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:1
 msgid "When"
-msgstr ""
+msgstr "Kdy"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:2
-#, fuzzy
-#| msgid "Select type"
 msgid "Select a date"
-msgstr "Vyberte typ"
+msgstr "Vybrat datum"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:4
 msgid "Clear the currently selected date"
-msgstr ""
+msgstr "Vymazat aktuálně vybrané datum"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:6
 msgid "Since…"
-msgstr ""
+msgstr "Po…"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
-#, fuzzy
-#| msgid "Last modified:"
-msgid "Last _modified"
+msgid "Last modified"
 msgstr "Naposledy změněno:"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:8
-#, fuzzy
-#| msgid "Last _Trashed"
 msgid "Last _used"
-msgstr "Naposledy přesunuto do _koše"
+msgstr "Naposledy po_užito"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:9
 msgid "What"
-msgstr ""
+msgstr "Co"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:10
-#, fuzzy
-#| msgid "This file cannot be started"
 msgid "Which file types will be searched"
-msgstr "Tento soubor nelze spustit"
+msgstr "Které typy souborů budou hledány"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:13
-#, fuzzy
-#| msgid "Text"
 msgid "Full Text"
-msgstr "Text"
+msgstr "Všechen text"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:14
 msgid "Search on the file content and name"
-msgstr ""
+msgstr "Hledat v názvu i obsahu souboru"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:15
-#, fuzzy
-#| msgid "File name"
 msgid "File Name"
 msgstr "Název souboru"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:16
-#, fuzzy
-#| msgid "The owner of the file."
 msgid "Search only on the file name"
-msgstr "Vlastník souboru."
+msgstr "Hledat jen v názvu souboru"
 
 #: ../src/resources/ui/nautilus-toolbar-action-menu.ui.h:2
 msgid "New _Tab"
@@ -5318,74 +5196,3 @@ msgstr "Připojit se k _serveru"
 #: ../src/gtk/gtkplacesview.ui.h:8
 msgid "Enter server address…"
 msgstr "zadejte adresu serveru…"
-
-#~ msgid "Enables or disables recursive search in Nautilus."
-#~ msgstr "Povoluje nebo zakazuje rekurzivní hledání v aplikaci Nautilus."
-
-#~ msgid "Whether to switch to the list view on search"
-#~ msgstr "Zda se při hledání přepnout na zobrazení v seznamu"
-
-#~ msgid ""
-#~ "If this is set to true, view mode will be switched to the list view while "
-#~ "searching. However, if the user changes the mode manually, this will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Je li nastaveno na pravda (true), bude během hledání režim zobrazení "
-#~ "přepnut na zobrazení v seznamu. Když ale uživatel změní tento režim "
-#~ "ručně, nebude se toto používat."
-
-#~ msgid "The mime type of the file."
-#~ msgstr "Typ mime souboru."
-
-#~ msgid "Unable to rename desktop file"
-#~ msgstr "Nelze přejmenovat soubor plochy"
-
-#~ msgid "Untitled %s"
-#~ msgstr "Nepojmenovaný soubor %s"
-
-#~ msgid "File Type"
-#~ msgstr "Typ souboru"
-
-#~ msgid "Any"
-#~ msgstr "Libovolné"
-
-#~ msgid "Remove this criterion from the search"
-#~ msgstr "Odebrat tuto podmínku hledání"
-
-#~ msgid "Current"
-#~ msgstr "Aktuální"
-
-#~ msgid "Add a new criterion to this search"
-#~ msgstr "Přidat novou podmínku hledání"
-
-#~ msgid "Files Preferences"
-#~ msgstr "Předvolby Files"
-
-#~ msgid "Default View"
-#~ msgstr "Výchozí zobrazení"
-
-#~ msgid "_Arrange items:"
-#~ msgstr "Ř_adit položky:"
-
-#~ msgid "Show context menu item to create links from copied files"
-#~ msgstr ""
-#~ "Zobrazovat v kontextové nabídce položku pro vytvoření odkazů z "
-#~ "kopírovaných souborů"
-
-#~ msgid "_Run executable text files when they are opened"
-#~ msgstr "_Spouštět spustitelné textové soubory při otevření"
-
-#~ msgid "_View executable text files when they are opened"
-#~ msgstr "_Zobrazit spustitelné textové soubory při otevření"
-
-#~ msgid "_Ask each time"
-#~ msgstr "_Vždy se ptát"
-
-#~ msgid "Navigate folders in a tree"
-#~ msgstr "Procházet složkami stromově"
-
-#~ msgid "Display"
-#~ msgstr "Zobrazit"
-
-#~ msgid "Preview"
-#~ msgstr "Náhled"
