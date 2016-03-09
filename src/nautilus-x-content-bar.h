@@ -53,7 +53,7 @@ typedef struct
 GType		 nautilus_x_content_bar_get_type	(void) G_GNUC_CONST;
 
 GtkWidget	*nautilus_x_content_bar_new		   (GMount              *mount,
-							    const char         **x_content_types);
+							    const char * const*  x_content_types);
 
 G_END_DECLS
 
