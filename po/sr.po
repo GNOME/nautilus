@@ -2,30 +2,27 @@
 # Serbian translation of nautilus
 # Courtesy of Prevod.org team (http://prevod.org/) -- 2003—2016.
 # This file is distributed under the same license as the nautilus package.
-#
-# Translators: 
+# Translators:
 # Данило Шеган <danilo@gnome.org>, 2005.
 # Милош Поповић <gpopac@gmail.com>, 2010—2015.
 # Мирослав Николић <miroslavnikolic@rocketmail.com>, 2011—2016.
 # Марко М. Костић (Marko M. Kostić) <marko.m.kostic@gmail.com>, 2015—2016.
-#
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-03-07 20:08+0000\n"
-"PO-Revision-Date: 2016-03-06 21:07+0100\n"
-"Last-Translator: Марко М. Костић <marko.m.kostic@gmail.com>\n"
-"Language-Team: Serbian <gnom@prevod.org>\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
+"s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"POT-Creation-Date: 2016-03-10 01:52+0000\n"
+"PO-Revision-Date: 2016-03-10 08:43+0200\n"
+"Last-Translator: Мирослав Николић <miroslavnikolic@rocketmail.com>\n"
+"Language-Team: Serbian <(nothing)>\n"
 "Language: sr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : n"
-"%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"Plural-Forms: nplurals=4; plural=n==1? 3 : n%10==1 && n%100!=11 ? 0 : "
+"n%10>=2 && n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
 "X-Project-Style: gnome\n"
-"X-Generator: Poedit 1.8.6\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid "Nautilus"
@@ -375,8 +372,8 @@ msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
 msgstr ""
-"Овај кључ је застарео и занемарен. Сада се користи кључ „show-"
-"hidden“ (прикажи скривене) из „org.gtk.Settings.FileChooser“ уместо њега."
+"Овај кључ је застарео и занемарен. Сада се уместо њега користи кључ „show-"
+"hidden“ (прикажи скривене) из „org.gtk.Settings.FileChooser“."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:45
 msgid "What viewer should be used when searching"
@@ -951,7 +948,7 @@ msgstr "Косе црте нису дозвољене у називу датот
 #: ../libnautilus-private/nautilus-file.c:1864
 #, c-format
 msgid "File not found"
-msgstr "Датотека није пронађена"
+msgstr "Нема такве датотеке"
 
 #: ../libnautilus-private/nautilus-file.c:1892
 #, c-format
@@ -1728,8 +1725,8 @@ msgid ""
 "Files in the folder “%B” cannot be deleted because you do not have "
 "permissions to see them."
 msgstr ""
-"Датотеке у фасцикли „%B“ не могу бити обрисане зато што немате довољно "
-"овлашћења да бисте их видели."
+"Датотеке у фасцикли „%B“ не могу бити обрисане зато што немате овлашћења да "
+"их видите."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1660
 #: ../libnautilus-private/nautilus-file-operations.c:2824
@@ -3391,7 +3388,7 @@ msgstr "Отвори"
 msgid "_Start"
 msgstr "_Покрени"
 
-#: ../src/nautilus-files-view.c:6744 ../src/gtk/gtkplacesview.c:1648
+#: ../src/nautilus-files-view.c:6744 ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Connect"
 msgstr "_Повежи се"
 
@@ -3411,7 +3408,7 @@ msgstr "Заустави уређај"
 msgid "_Safely Remove Drive"
 msgstr "_Безбедно уклони уређај"
 
-#: ../src/nautilus-files-view.c:6772 ../src/gtk/gtkplacesview.c:1638
+#: ../src/nautilus-files-view.c:6772 ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Disconnect"
 msgstr "_Прекини везу"
 
@@ -3777,8 +3774,8 @@ msgstr[3] "Ово ће отворити један засебан програм
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1204
-#: ../src/gtk/gtkplacesview.c:1251
+#: ../src/gtk/nautilusgtkplacesview.c:1162
+#: ../src/gtk/nautilusgtkplacesview.c:1235
 msgid "Unable to access location"
 msgstr "Не могу да учитам путању"
 
@@ -4114,7 +4111,8 @@ msgid "_Revert"
 msgstr "_Врати"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5182 ../src/gtk/gtkplacesview.c:1593
+#: ../src/nautilus-properties-window.c:5182
+#: ../src/gtk/nautilusgtkplacesview.c:1577
 msgid "_Open"
 msgstr "_Отвори"
 
@@ -4688,12 +4686,12 @@ msgid "Open With Other _Application"
 msgstr "Отвори другим _програмом"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1648
+#: ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Mount"
 msgstr "_Закачи"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1638
+#: ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Unmount"
 msgstr "_Откачи"
 
@@ -4790,7 +4788,7 @@ msgid "No Results Found"
 msgstr "Нема резултата"
 
 #: ../src/resources/ui/nautilus-no-search-results.ui.h:2
-#: ../src/gtk/gtkplacesview.ui.h:5
+#: ../src/gtk/nautilusgtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "Покушај другачију претрагу"
 
@@ -5193,85 +5191,97 @@ msgstr "_Заустави"
 msgid "_Files"
 msgstr "_Датотеке"
 
-#: ../src/gtk/gtkplacesview.c:879
+#: ../src/gtk/nautilusgtkplacesview.c:880
 msgid "Searching for network locations"
 msgstr "Тражим мрежна места"
 
-#: ../src/gtk/gtkplacesview.c:886
+#: ../src/gtk/nautilusgtkplacesview.c:887
 msgid "No network locations found"
 msgstr "Нема мрежних места"
 
-#: ../src/gtk/gtkplacesview.c:1051
+#: ../src/gtk/nautilusgtkplacesview.c:1052
 msgid "Computer"
 msgstr "Рачунар"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1178 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/nautilusgtkplacesview.c:1179
+#: ../src/gtk/nautilusgtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "Повеж_и се"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1314
+#: ../src/gtk/nautilusgtkplacesview.c:1298
 msgid "Unable to unmount volume"
 msgstr "Не могу да откачим уређај"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1396
+#: ../src/gtk/nautilusgtkplacesview.c:1380
 msgid "Cance_l"
 msgstr "О_ткажи"
 
-#: ../src/gtk/gtkplacesview.c:1603
+#: ../src/gtk/nautilusgtkplacesview.c:1587
 msgid "Open in New _Tab"
 msgstr "Отвори у новом _језичку"
 
-#: ../src/gtk/gtkplacesview.c:1614
+#: ../src/gtk/nautilusgtkplacesview.c:1598
 msgid "Open in New _Window"
 msgstr "Отвори у но_вом прозору"
 
-#: ../src/gtk/gtkplacesview.c:1813
+#: ../src/gtk/nautilusgtkplacesview.c:1797
 msgid "Unable to get remote server location"
 msgstr "Не могу да прибавим адресу удаљеног сервера"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "Networks"
 msgstr "Мреже"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "On This Computer"
 msgstr "На овом рачунару"
 
-#. Translators: respectively, free and total space of the drive
-#: ../src/gtk/gtkplacesviewrow.c:110
+#. Translators: respectively, free and total space of the drive. The plural form
+#. * should be based on the free space available.
+#. * i.e. 1 GB / 24 GB available.
+#.
+#: ../src/gtk/nautilusgtkplacesviewrow.c:134
 #, c-format
+#| msgid "%s / %s available"
 msgid "%s / %s available"
-msgstr "%s слободно од укупно %s"
+msgid_plural "%s / %s available"
+msgstr[0] "Доступан је %s од %s"
+msgstr[1] "Доступна су %s од %s"
+msgstr[2] "Доступно је %s од %s"
+msgstr[3] "Доступан је 1 GB од %s"
 
-#: ../src/gtk/gtkplacesviewrow.c:449
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
 msgid "Disconnect"
 msgstr "Прекини везу"
 
-#: ../src/gtk/gtkplacesviewrow.c:449 ../src/gtk/gtkplacesviewrow.ui.h:1
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
+#: ../src/gtk/nautilusgtkplacesviewrow.ui.h:1
 msgid "Unmount"
 msgstr "Откачи"
 
 #. Translators: Server as any successfully connected network address
-#: ../src/gtk/gtkplacesview.ui.h:2
+#: ../src/gtk/nautilusgtkplacesview.ui.h:2
 msgid "No recent servers found"
 msgstr "Нема скорашњих сервера"
 
-#: ../src/gtk/gtkplacesview.ui.h:3
+#: ../src/gtk/nautilusgtkplacesview.ui.h:3
 msgid "Recent Servers"
 msgstr "Скорашњи сервери"
 
-#: ../src/gtk/gtkplacesview.ui.h:4
+#: ../src/gtk/nautilusgtkplacesview.ui.h:4
 msgid "No results found"
 msgstr "Нема резултата"
 
-#: ../src/gtk/gtkplacesview.ui.h:6
+#: ../src/gtk/nautilusgtkplacesview.ui.h:6
 msgid "Connect to _Server"
 msgstr "Повежи се на _сервер"
 
-#: ../src/gtk/gtkplacesview.ui.h:8
+#: ../src/gtk/nautilusgtkplacesview.ui.h:8
 msgid "Enter server address…"
 msgstr "Адреса сервера…"
 
