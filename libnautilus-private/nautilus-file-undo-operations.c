@@ -55,7 +55,7 @@ struct _NautilusFileUndoInfoDetails {
 	NautilusFileUndoOp op_type;
 	guint count;		/* Number of items */
 
-	GSimpleAsyncResult *apply_async_result;
+        GTask *apply_async_task;
 
 	gchar *undo_label;
 	gchar *redo_label;
@@ -69,7 +69,7 @@ nautilus_file_undo_info_init (NautilusFileUndoInfo *self)
 {
 	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FILE_UNDO_INFO,
 						  NautilusFileUndoInfoDetails);
-	self->priv->apply_async_result = NULL;
+        self->priv->apply_async_task = NULL;
 }
 
 static void
@@ -157,7 +157,7 @@ nautilus_file_undo_info_finalize (GObject *obj)
 {
 	NautilusFileUndoInfo *self = NAUTILUS_FILE_UNDO_INFO (obj);
 
-	g_clear_object (&self->priv->apply_async_result);
+        g_clear_object (&self->priv->apply_async_task);
 
 	G_OBJECT_CLASS (nautilus_file_undo_info_parent_class)->finalize (obj);
 }
@@ -213,12 +213,12 @@ nautilus_file_undo_info_apply_async (NautilusFileUndoInfo *self,
 				     GAsyncReadyCallback callback,
 				     gpointer user_data)
 {
-	g_assert (self->priv->apply_async_result == NULL);
+        g_assert (self->priv->apply_async_task == NULL);
 
-	self->priv->apply_async_result = 
-		g_simple_async_result_new (G_OBJECT (self),
-					   callback, user_data,
-					   nautilus_file_undo_info_apply_async);
+        self->priv->apply_async_task = g_task_new (G_OBJECT (self),
+                                                   NULL,
+                                                   callback,
+                                                   user_data);
 
 	if (undo) {
 		NAUTILUS_FILE_UNDO_INFO_CLASS (G_OBJECT_GET_CLASS (self))->undo_func (self, parent_window);
@@ -240,20 +240,23 @@ file_undo_info_op_res_free (gpointer data)
 
 gboolean
 nautilus_file_undo_info_apply_finish (NautilusFileUndoInfo *self,
-				      GAsyncResult *res,
-				      gboolean *user_cancel,
-				      GError **error)
+                                      GAsyncResult *res,
+                                      gboolean *user_cancel,
+                                      GError **error)
 {
-	FileUndoInfoOpRes *op_res;
+        FileUndoInfoOpRes *op_res;
+        gboolean success = FALSE;
 
-	if (g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error)) {
-		return FALSE;
-	}
+        op_res = g_task_propagate_pointer (G_TASK (res), error);
 
-	op_res = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
-	*user_cancel = op_res->user_cancel;
+        if (op_res != NULL) {
+                *user_cancel = op_res->user_cancel;
+                success = op_res->success;
 
-	return op_res->success;
+                file_undo_info_op_res_free (op_res);
+        }
+
+        return success;
 }
 
 void
@@ -278,12 +281,10 @@ file_undo_info_complete_apply (NautilusFileUndoInfo *self,
 	op_res->user_cancel = user_cancel;
 	op_res->success = success;
 
+        g_task_return_pointer (self->priv->apply_async_task, op_res,
+                               file_undo_info_op_res_free);
 
-	g_simple_async_result_set_op_res_gpointer (self->priv->apply_async_result, op_res,
-						   file_undo_info_op_res_free);
-	g_simple_async_result_complete_in_idle (self->priv->apply_async_result);
-
-	g_clear_object (&self->priv->apply_async_result);
+        g_clear_object (&self->priv->apply_async_task);
 }
 
 static void
@@ -1079,26 +1080,13 @@ trash_redo_func (NautilusFileUndoInfo *info,
 	}
 }
 
-static GHashTable *
-trash_retrieve_files_to_restore_finish (NautilusFileUndoInfoTrash *self,
-					GAsyncResult *res,
-					GError **error)
-{
-	GHashTable *retval = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
-
-	if (retval == NULL) {
-		g_simple_async_result_propagate_error (G_SIMPLE_ASYNC_RESULT (res), error);
-	}
-
-	return retval;
-}
-
 static void
-trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
-					GObject *object,
-					GCancellable *cancellable)
+trash_retrieve_files_to_restore_thread (GTask *task,
+                                        gpointer source_object,
+                                        gpointer task_data,
+                                        GCancellable *cancellable)
 {
-	NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (object);
+        NautilusFileUndoInfoTrash *self = NAUTILUS_FILE_UNDO_INFO_TRASH (source_object);
 	GFileEnumerator *enumerator;
 	GHashTable *to_restore;
 	GFile *trash;
@@ -1158,26 +1146,25 @@ trash_retrieve_files_to_restore_thread (GSimpleAsyncResult *res,
 	g_object_unref (trash);
 
 	if (error != NULL) {
-		g_simple_async_result_take_error (res, error);
+                g_task_return_error (task, error);
 		g_hash_table_destroy (to_restore);
 	} else {
-		g_simple_async_result_set_op_res_gpointer (res, to_restore, NULL);
+                g_task_return_pointer (task, to_restore, NULL);
 	}
 }
 
 static void
 trash_retrieve_files_to_restore_async (NautilusFileUndoInfoTrash *self,
-				 GAsyncReadyCallback callback,
-				 gpointer user_data)
+                                       GAsyncReadyCallback callback,
+                                       gpointer user_data)
 {
-	GSimpleAsyncResult *async_op;
+        GTask *task;
 
-	async_op = g_simple_async_result_new (G_OBJECT (self), callback, user_data,
-					      trash_retrieve_files_to_restore_async);
-	g_simple_async_result_run_in_thread (async_op, trash_retrieve_files_to_restore_thread,
-					     G_PRIORITY_DEFAULT, NULL);
+        task = g_task_new (G_OBJECT (self), NULL, callback, user_data);
 
-	g_object_unref (async_op);
+        g_task_run_in_thread (task, trash_retrieve_files_to_restore_thread);
+
+        g_object_unref (task);
 }
 
 static void
@@ -1189,7 +1176,7 @@ trash_retrieve_files_ready (GObject *source,
 	GHashTable *files_to_restore;
 	GError *error = NULL;
 
-	files_to_restore = trash_retrieve_files_to_restore_finish (self, res, &error);
+        files_to_restore = g_task_propagate_pointer (G_TASK (res), &error);
 
 	if (error == NULL && g_hash_table_size (files_to_restore) > 0) {
 		GList *gfiles_in_trash, *l;
