@@ -6585,6 +6585,10 @@ real_update_actions_state (NautilusFilesView *view)
                                              "zoom-default");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      nautilus_files_view_supports_zooming (view));
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "zoom-to-level");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     !nautilus_files_view_is_empty (view));
 }
 
 /* Convenience function to be called when updating menus,
