@@ -97,44 +97,35 @@ update_empty_info (NautilusTrashMonitor *trash_monitor,
 		       trash_monitor->details->empty);
 }
 
+/* Use G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT since we only want to know whether the
+ * trash is empty or not, not access its children. This is available for the
+ * trash backend since it uses a cache. In this way we prevent flooding the
+ * trash backend with enumeration requests when trashing > 1000 files
+ */
 static void
-enumerate_next_files_cb (GObject *source,
-			 GAsyncResult *res,
-			 gpointer user_data)
+trash_query_info_cb (GObject *source,
+                     GAsyncResult *res,
+                     gpointer user_data)
 {
-	NautilusTrashMonitor *trash_monitor = user_data;
-	GList *infos;
+        NautilusTrashMonitor *trash_monitor = user_data;
+        GFileInfo *info;
+        guint32 item_count;
+        gboolean is_empty = TRUE;
 
-	infos = g_file_enumerator_next_files_finish (G_FILE_ENUMERATOR (source), res, NULL);
-	if (!infos) {
-		update_empty_info (trash_monitor, TRUE);
-	} else {
-		update_empty_info (trash_monitor, FALSE);
-		g_list_free_full (infos, g_object_unref);
-	}
+        info = g_file_query_info_finish (G_FILE (source), res, NULL);
 
-	g_object_unref (trash_monitor);
-}
+        if (info != NULL) {
+                item_count = g_file_info_get_attribute_uint32 (info,
+                                                               G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT);
+                is_empty = item_count == 0;
 
-static void
-enumerate_children_cb (GObject *source,
-		       GAsyncResult *res,
-		       gpointer user_data)
-{
-	GFileEnumerator *enumerator;
-	NautilusTrashMonitor *trash_monitor = user_data;
+                g_object_unref (info);
 
-	enumerator = g_file_enumerate_children_finish (G_FILE (source), res, NULL);
-	if (!enumerator) {
-		update_empty_info (trash_monitor, TRUE);
-		g_object_unref (trash_monitor);
-		return;
-	}
+        }
 
-	g_file_enumerator_next_files_async (enumerator, 1,
-					    G_PRIORITY_DEFAULT, NULL,
-					    enumerate_next_files_cb, trash_monitor);
-	g_object_unref (enumerator);
+        update_empty_info (trash_monitor, is_empty);
+
+        g_object_unref (trash_monitor);
 }
 
 static void
@@ -143,11 +134,11 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
 	GFile *location;
 
 	location = g_file_new_for_uri ("trash:///");
-	g_file_enumerate_children_async (location,
-					 G_FILE_ATTRIBUTE_STANDARD_TYPE,
-					 G_FILE_QUERY_INFO_NONE,
-					 G_PRIORITY_DEFAULT, NULL,
-					 enumerate_children_cb, g_object_ref (trash_monitor));
+        g_file_query_info_async (location,
+                                 G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT,
+                                 G_FILE_QUERY_INFO_NONE,
+                                 G_PRIORITY_DEFAULT, NULL,
+                                 trash_query_info_cb, g_object_ref (trash_monitor));
 	
 	g_object_unref (location);
 }
