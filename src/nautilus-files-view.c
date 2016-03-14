@@ -3586,6 +3586,15 @@ process_new_files (NautilusFilesView *view)
 }
 
 static void
+on_end_file_changes (NautilusFilesView *view)
+{
+        /* Addition and removal of files modify the empty state */
+        check_empty_states (view);
+        /* If the view is empty, zoom slider and sort menu are insensitive */
+        nautilus_files_view_update_toolbar_menus (view);
+}
+
+static void
 process_old_files (NautilusFilesView *view)
 {
         GList *files_added, *files_changed, *node;
@@ -3616,7 +3625,6 @@ process_old_files (NautilusFilesView *view)
                 }
 
                 g_signal_emit (view, signals[END_FILE_CHANGES], 0);
-                check_empty_states (view);
 
                 if (files_changed != NULL) {
                         selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
@@ -8106,6 +8114,11 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         g_signal_connect (view->details->zoom_level_scale, "value-changed",
                           G_CALLBACK (zoom_level_changed), view);
+
+        g_signal_connect (view,
+                          "end-file-changes",
+                          G_CALLBACK (on_end_file_changes),
+                          view);
 
         g_object_unref (builder);
 
