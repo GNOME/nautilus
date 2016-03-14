@@ -6839,7 +6839,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         GActionGroup *view_action_group;
         GVariant *variant;
         GVariantIter iter;
-        gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, enable_sort;
+        gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, sort_available;
         const gchar *hint;
 
         view_action_group = nautilus_files_view_get_action_group (view);
@@ -6847,11 +6847,11 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         gtk_widget_set_visible (view->details->visible_columns,
                                 g_action_group_has_action (view_action_group, "visible-columns"));
 
-        enable_sort = g_action_group_get_action_enabled (view_action_group, "sort");
+        sort_available = g_action_group_get_action_enabled (view_action_group, "sort");
         show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
-        gtk_widget_set_visible (view->details->sort_menu, enable_sort);
+        gtk_widget_set_visible (view->details->sort_menu, sort_available);
 
-        if (enable_sort) {
+        if (sort_available) {
                 variant = g_action_group_get_action_state_hint (view_action_group, "sort");
                 g_variant_iter_init (&iter, variant);
 
