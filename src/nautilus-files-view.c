@@ -343,32 +343,6 @@ static const struct {
 #endif
 };
 
-static void
-check_empty_states (NautilusFilesView *view)
-{
-        GList *files;
-        GList *filtered;
-        gboolean show_hidden_files;
-
-        gtk_widget_hide (view->details->no_search_results_widget);
-        gtk_widget_hide (view->details->folder_is_empty_widget);
-        if (!view->details->loading && view->details->model && !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view)) {
-                files = nautilus_directory_get_file_list (view->details->model);
-                show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
-                                                            NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-                filtered = nautilus_file_list_filter_hidden (files, show_hidden_files);
-                if (g_list_length (filtered) == 0) {
-                        if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
-                                gtk_widget_show (view->details->no_search_results_widget);
-                        } else {
-                                gtk_widget_show (view->details->folder_is_empty_widget);
-                        }
-                }
-                nautilus_file_list_free (filtered);
-                nautilus_file_list_free (files);
-        }
-}
-
 /*
  * Floating Bar code
  */
@@ -3159,6 +3133,26 @@ reveal_selection_idle_callback (gpointer data)
         nautilus_files_view_reveal_selection (view);
 
         return FALSE;
+}
+
+static void
+check_empty_states (NautilusFilesView *view)
+{
+        GList *files;
+        GList *filtered;
+        gboolean show_hidden_files;
+
+        gtk_widget_hide (view->details->no_search_results_widget);
+        gtk_widget_hide (view->details->folder_is_empty_widget);
+        if (!view->details->loading &&
+            !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) &&
+            nautilus_files_view_is_empty (view)) {
+                if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
+                        gtk_widget_show (view->details->no_search_results_widget);
+                } else {
+                        gtk_widget_show (view->details->folder_is_empty_widget);
+                }
+        }
 }
 
 static void
