@@ -6857,6 +6857,14 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
         gtk_widget_set_visible (view->details->sort_menu, sort_available);
 
+        /* We want to make insensitive available actions but that are not current
+         * available due to the directory
+         */
+        gtk_widget_set_sensitive (view->details->sort_menu,
+                                  !nautilus_files_view_is_empty (view));
+        gtk_widget_set_sensitive (view->details->zoom_level_scale,
+                                  !nautilus_files_view_is_empty (view));
+
         if (sort_available) {
                 variant = g_action_group_get_action_state_hint (view_action_group, "sort");
                 g_variant_iter_init (&iter, variant);
