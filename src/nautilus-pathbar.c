@@ -480,7 +480,7 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
 	 */
 	path_bar->priv->slider_width = MIN (height * 2 / 3 + 5, height);
 
-	if (path_bar->priv->button_list && path_bar->priv->button_list->next != NULL) {
+	if (path_bar->priv->button_list) {
 		*minimum += (path_bar->priv->slider_width) * 2;
 		*natural += (path_bar->priv->slider_width) * 2;
 	}
@@ -616,7 +616,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 	GtkRequisition child_requisition;
 	gboolean needs_reorder = FALSE;
 
-	need_sliders = FALSE;
+	need_sliders = TRUE;
 	up_slider_offset = 0;
 	down_slider_offset = 0;
 	path_bar = NAUTILUS_PATH_BAR (widget);
@@ -649,7 +649,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
                 width += child_requisition.width;
         }
 
-        if (width <= allocation->width) {
+        if (width <= allocation->width && !need_sliders) {
 		first_button = g_list_last (path_bar->priv->button_list);
         } else {
                 gboolean reached_end;
