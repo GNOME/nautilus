@@ -335,6 +335,22 @@ nautilus_application_open_location_full (NautilusApplication     *self,
                                          NautilusWindow          *target_window,
                                          NautilusWindowSlot      *target_slot)
 {
+        NAUTILUS_APPLICATION_CLASS (G_OBJECT_GET_CLASS (self))->open_location_full (self,
+                                                                                    location,
+                                                                                    flags,
+                                                                                    selection,
+                                                                                    target_window,
+                                                                                    target_slot);
+}
+
+static void
+real_open_location_full (NautilusApplication     *self,
+                         GFile                   *location,
+                         NautilusWindowOpenFlags  flags,
+                         GList                   *selection,
+                         NautilusWindow          *target_window,
+                         NautilusWindowSlot      *target_slot)
+{
         NautilusWindowSlot *active_slot;
         NautilusWindow *active_window;
         GFile *old_location;
@@ -1456,6 +1472,8 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class->open = nautilus_application_open;
 	application_class->command_line = nautilus_application_command_line;
 	application_class->handle_local_options = nautilus_application_handle_local_options;
+
+	class->open_location_full = real_open_location_full;
 
 	gtkapp_class = GTK_APPLICATION_CLASS (class);
 	gtkapp_class->window_added = nautilus_application_window_added;

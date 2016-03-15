@@ -34,6 +34,13 @@ G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, A
 
 struct _NautilusApplicationClass {
 	GtkApplicationClass parent_class;
+
+        void  (*open_location_full) (NautilusApplication     *application,
+                                     GFile                   *location,
+                                     NautilusWindowOpenFlags  flags,
+                                     GList                   *selection,
+                                     NautilusWindow          *target_window,
+                                     NautilusWindowSlot      *target_slot);
 };
 
 NautilusApplication * nautilus_application_new (void);
