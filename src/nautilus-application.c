@@ -405,7 +405,7 @@ nautilus_application_open_location_full (NautilusApplication     *application,
 
 	/* close the current window if the flags say so */
 	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
-		if (NAUTILUS_IS_DESKTOP_WINDOW (active_window)) {
+		if (!NAUTILUS_IS_DESKTOP_WINDOW (active_window)) {
 			if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
 				nautilus_window_close (active_window);
 			} else {
