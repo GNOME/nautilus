@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-03-09 01:51+0000\n"
-"PO-Revision-Date: 2016-03-09 11:34+0100\n"
+"POT-Creation-Date: 2016-03-15 01:50+0000\n"
+"PO-Revision-Date: 2016-03-15 10:06+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -459,7 +459,7 @@ msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
 msgstr ""
-"Se metût a vêr, une icone che a ponte ae cartele cjase a vegnarà metude sul "
+"Se metût a vêr, une icone che a ponte ae cartele Cjase a vegnarà metude sul "
 "scritori."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:72
@@ -627,8 +627,8 @@ msgstr "Mostre plui _detais"
 #: ../eel/eel-stock-dialogs.c:195
 #: ../libnautilus-private/nautilus-file-conflict-dialog.c:558
 #: ../libnautilus-private/nautilus-file-operations.c:182
-#: ../src/nautilus-files-view.c:1082 ../src/nautilus-files-view.c:1556
-#: ../src/nautilus-files-view.c:5274 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-files-view.c:1056 ../src/nautilus-files-view.c:1530
+#: ../src/nautilus-files-view.c:5276 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:560 ../src/nautilus-mime-actions.c:564
 #: ../src/nautilus-mime-actions.c:635 ../src/nautilus-mime-actions.c:978
 #: ../src/nautilus-mime-actions.c:1488 ../src/nautilus-mime-actions.c:1717
@@ -1742,7 +1742,7 @@ msgstr "_No stâ disvuedâ la scovacere"
 
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2636
-#: ../src/nautilus-files-view.c:5695
+#: ../src/nautilus-files-view.c:5697
 #, fuzzy, c-format
 #| msgid "Unable to eject %s"
 msgid "Unable to access “%s”"
@@ -2206,65 +2206,65 @@ msgstr "Torne a fâ modifiche"
 msgid "Redo last undone action"
 msgstr "Torne fâs le ultime azion anulade"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:365
+#: ../libnautilus-private/nautilus-file-undo-operations.c:366
 #, c-format
 msgid "Move %d item back to '%s'"
 msgid_plural "Move %d items back to '%s'"
 msgstr[0] "Sposte di gnûf %d element su '%s'"
 msgstr[1] "Sposte di gnûf %d elements su '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:368
+#: ../libnautilus-private/nautilus-file-undo-operations.c:369
 #, c-format
 msgid "Move %d item to '%s'"
 msgid_plural "Move %d items to '%s'"
 msgstr[0] "Sposte %d element su '%s'"
 msgstr[1] "Sposte %d elements su '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:372
+#: ../libnautilus-private/nautilus-file-undo-operations.c:373
 #, c-format
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
 msgstr[0] "_Anule spostament %d element"
 msgstr[1] "_Anule spostament %d elements"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:375
+#: ../libnautilus-private/nautilus-file-undo-operations.c:376
 #, c-format
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
 msgstr[0] "_Torne sposte %d element"
 msgstr[1] "_Torne sposte %d elements"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:379
+#: ../libnautilus-private/nautilus-file-undo-operations.c:380
 #, c-format
 msgid "Move '%s' back to '%s'"
 msgstr "Sposte di gnûf '%s' su '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:380
+#: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' to '%s'"
 msgstr "Môf '%s' in '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:382
+#: ../libnautilus-private/nautilus-file-undo-operations.c:383
 msgid "_Undo Move"
 msgstr "_Anule spostament"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:383
+#: ../libnautilus-private/nautilus-file-undo-operations.c:384
 msgid "_Redo Move"
 msgstr "_Torne Sposte"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:386
+#: ../libnautilus-private/nautilus-file-undo-operations.c:387
 #, fuzzy
 #| msgid "_Delete from Trash"
 msgid "_Undo Restore from Trash"
 msgstr "_Elimine de Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:387
+#: ../libnautilus-private/nautilus-file-undo-operations.c:388
 #, fuzzy
 #| msgid "_Delete from Trash"
 msgid "_Redo Restore from Trash"
 msgstr "_Elimine de Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:390
+#: ../libnautilus-private/nautilus-file-undo-operations.c:391
 #, fuzzy, c-format
 #| msgid "Move each selected item to the Trash"
 msgid "Move %d item back to trash"
@@ -2272,8 +2272,8 @@ msgid_plural "Move %d items back to trash"
 msgstr[0] "Môf ogni element selezionât te Scovacere"
 msgstr[1] "Môf ogni element selezionât te Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:393
-#: ../libnautilus-private/nautilus-file-undo-operations.c:989
+#: ../libnautilus-private/nautilus-file-undo-operations.c:394
+#: ../libnautilus-private/nautilus-file-undo-operations.c:990
 #, fuzzy, c-format
 #| msgid "_Delete from Trash"
 msgid "Restore %d item from trash"
@@ -2281,25 +2281,25 @@ msgid_plural "Restore %d items from trash"
 msgstr[0] "_Elimine de Scovacere"
 msgstr[1] "_Elimine de Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:397
+#: ../libnautilus-private/nautilus-file-undo-operations.c:398
 #, c-format
 msgid "Move '%s' back to trash"
 msgstr "Torne movi '%s' te scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:398
+#: ../libnautilus-private/nautilus-file-undo-operations.c:399
 #, fuzzy, c-format
 #| msgid "_Delete from Trash"
 msgid "Restore '%s' from trash"
 msgstr "_Elimine de Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:402
+#: ../libnautilus-private/nautilus-file-undo-operations.c:403
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
 msgstr[0] "Scancele %d element copiât"
 msgstr[1] "Scancele %d elements copiâts"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:405
+#: ../libnautilus-private/nautilus-file-undo-operations.c:406
 #, fuzzy, c-format
 #| msgid "Copying %'d file to \"%B\""
 #| msgid_plural "Copying %'d files to \"%B\""
@@ -2308,41 +2308,41 @@ msgid_plural "Copy %d items to '%s'"
 msgstr[0] "Daûr a copiâ %'d file in \"%B\""
 msgstr[1] "Daûr a copiâ %'d files in \"%B\""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:409
+#: ../libnautilus-private/nautilus-file-undo-operations.c:410
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
 msgstr[0] "_Anule Copie %d element"
 msgstr[1] "_Anule Copie %d elements"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:412
+#: ../libnautilus-private/nautilus-file-undo-operations.c:413
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
 msgstr[0] "_Torne Copie %d element"
 msgstr[1] "_Torne Copie %d elements"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:416
-#: ../libnautilus-private/nautilus-file-undo-operations.c:438
-#: ../libnautilus-private/nautilus-file-undo-operations.c:671
+#: ../libnautilus-private/nautilus-file-undo-operations.c:417
+#: ../libnautilus-private/nautilus-file-undo-operations.c:439
+#: ../libnautilus-private/nautilus-file-undo-operations.c:672
 #, c-format
 msgid "Delete '%s'"
 msgstr "Elimine '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:417
+#: ../libnautilus-private/nautilus-file-undo-operations.c:418
 #, c-format
 msgid "Copy '%s' to '%s'"
 msgstr "Copie '%s' su '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:419
+#: ../libnautilus-private/nautilus-file-undo-operations.c:420
 msgid "_Undo Copy"
 msgstr "_Anule copie"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:420
+#: ../libnautilus-private/nautilus-file-undo-operations.c:421
 msgid "_Redo Copy"
 msgstr "_Torne Copie"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:424
+#: ../libnautilus-private/nautilus-file-undo-operations.c:425
 #, fuzzy, c-format
 #| msgid "Duplicate each selected item"
 msgid "Delete %d duplicated item"
@@ -2350,7 +2350,7 @@ msgid_plural "Delete %d duplicated items"
 msgstr[0] "Dupliche ogni element selezionât"
 msgstr[1] "Dupliche ogni element selezionât"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:427
+#: ../libnautilus-private/nautilus-file-undo-operations.c:428
 #, fuzzy, c-format
 #| msgid "Duplicate each selected item"
 msgid "Duplicate %d item in '%s'"
@@ -2358,7 +2358,7 @@ msgid_plural "Duplicate %d items in '%s'"
 msgstr[0] "Dupliche ogni element selezionât"
 msgstr[1] "Dupliche ogni element selezionât"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:431
+#: ../libnautilus-private/nautilus-file-undo-operations.c:432
 #, fuzzy, c-format
 #| msgid "Duplicate each selected item"
 msgid "_Undo Duplicate %d item"
@@ -2366,7 +2366,7 @@ msgid_plural "_Undo Duplicate %d items"
 msgstr[0] "Dupliche ogni element selezionât"
 msgstr[1] "Dupliche ogni element selezionât"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:434
+#: ../libnautilus-private/nautilus-file-undo-operations.c:435
 #, fuzzy, c-format
 #| msgid "Duplicate each selected item"
 msgid "_Redo Duplicate %d item"
@@ -2374,24 +2374,24 @@ msgid_plural "_Redo Duplicate %d items"
 msgstr[0] "Dupliche ogni element selezionât"
 msgstr[1] "Dupliche ogni element selezionât"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:439
+#: ../libnautilus-private/nautilus-file-undo-operations.c:440
 #, c-format
 msgid "Duplicate '%s' in '%s'"
 msgstr "Dopleâ '%s' in '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:442
+#: ../libnautilus-private/nautilus-file-undo-operations.c:443
 #, fuzzy
 #| msgid "D_uplicate"
 msgid "_Undo Duplicate"
 msgstr "D_upliche"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:443
+#: ../libnautilus-private/nautilus-file-undo-operations.c:444
 #, fuzzy
 #| msgid "D_uplicate"
 msgid "_Redo Duplicate"
 msgstr "D_upliche"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:447
+#: ../libnautilus-private/nautilus-file-undo-operations.c:448
 #, fuzzy, c-format
 #| msgid "_Double click to open items"
 msgid "Delete links to %d item"
@@ -2399,205 +2399,203 @@ msgid_plural "Delete links to %d items"
 msgstr[0] "_Dopli clic par vierzi i elments"
 msgstr[1] "_Dopli clic par vierzi i elments"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:450
+#: ../libnautilus-private/nautilus-file-undo-operations.c:451
 #, c-format
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
 msgstr[0] "Cree leams a %d element"
 msgstr[1] "Cree leams a %d elements"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:454
+#: ../libnautilus-private/nautilus-file-undo-operations.c:455
 #, c-format
 msgid "Delete link to '%s'"
 msgstr "Elimine leam a '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:455
+#: ../libnautilus-private/nautilus-file-undo-operations.c:456
 #, c-format
 msgid "Create link to '%s'"
 msgstr "Cree leam a '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:457
+#: ../libnautilus-private/nautilus-file-undo-operations.c:458
 #, fuzzy
 #| msgid "Undo the edit"
 msgid "_Undo Create Link"
 msgstr "Anule la modifiche"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:458
+#: ../libnautilus-private/nautilus-file-undo-operations.c:459
 #, fuzzy
 #| msgid "Redo the edit"
 msgid "_Redo Create Link"
 msgstr "Torne a fâ la modifiche"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:674
+#: ../libnautilus-private/nautilus-file-undo-operations.c:675
 #, c-format
 msgid "Create an empty file '%s'"
 msgstr "Creâ un file vueit '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:676
+#: ../libnautilus-private/nautilus-file-undo-operations.c:677
 #, fuzzy
 #| msgid "_Empty File"
 msgid "_Undo Create Empty File"
 msgstr "File _vueit"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:677
+#: ../libnautilus-private/nautilus-file-undo-operations.c:678
 #, fuzzy
 #| msgid "_Empty File"
 msgid "_Redo Create Empty File"
 msgstr "File _vueit"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:679
+#: ../libnautilus-private/nautilus-file-undo-operations.c:680
 #, c-format
 msgid "Create a new folder '%s'"
 msgstr "Creâ une gnove cartele '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:681
+#: ../libnautilus-private/nautilus-file-undo-operations.c:682
 #, fuzzy
 #| msgid "Create Folder"
 msgid "_Undo Create Folder"
 msgstr "Cree cartele"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:682
+#: ../libnautilus-private/nautilus-file-undo-operations.c:683
 #, fuzzy
 #| msgid "Create Folder"
 msgid "_Redo Create Folder"
 msgstr "Cree cartele"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:684
+#: ../libnautilus-private/nautilus-file-undo-operations.c:685
 #, fuzzy, c-format
 #| msgid "Create Document from template \"%s\""
 msgid "Create new file '%s' from template "
 msgstr "Cree document dal model \"%s\""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:686
+#: ../libnautilus-private/nautilus-file-undo-operations.c:687
 #, fuzzy
 #| msgid "Create Document from template \"%s\""
 msgid "_Undo Create from Template"
 msgstr "Cree document dal model \"%s\""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:687
+#: ../libnautilus-private/nautilus-file-undo-operations.c:688
 #, fuzzy
 #| msgid "Create Document from template \"%s\""
 msgid "_Redo Create from Template"
 msgstr "Cree document dal model \"%s\""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:872
 #: ../libnautilus-private/nautilus-file-undo-operations.c:873
+#: ../libnautilus-private/nautilus-file-undo-operations.c:874
 #, c-format
 msgid "Rename '%s' as '%s'"
 msgstr "Cambie non '%s' in '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:875
+#: ../libnautilus-private/nautilus-file-undo-operations.c:876
 #, fuzzy
 #| msgid "Rename"
 msgid "_Undo Rename"
 msgstr "Cambie non"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:876
+#: ../libnautilus-private/nautilus-file-undo-operations.c:877
 #, fuzzy
 #| msgid "Rename"
 msgid "_Redo Rename"
 msgstr "Cambie non"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:992
-#, fuzzy, c-format
-#| msgid "Moving files to trash"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:993
+#, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
-msgstr[0] "Daûr a movi i files te scovacere"
-msgstr[1] "Daûr a movi i files te scovacere"
+msgstr[0] "Môf %d file te scovacere"
+msgstr[1] "Môf %d file te scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1004
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1005
 #, c-format
 msgid "Restore '%s' to '%s'"
 msgstr "Torne a meti '%s' in '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1011
-#, fuzzy, c-format
-#| msgid "Move to Trash"
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1012
+#, c-format
 msgid "Move '%s' to trash"
-msgstr "Môf te scovacere"
+msgstr "Môf '%s' te scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1016
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1017
 #, fuzzy
 #| msgid "_Trash"
 msgid "_Undo Trash"
 msgstr "Sco_vacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1017
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1018
 #, fuzzy
 #| msgid "Mo_ve to Trash"
 msgid "_Redo Trash"
 msgstr "Mô_f te Scovacere"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1310
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1297
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1311
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1298
 #, fuzzy, c-format
 #| msgid "The permissions of the file."
 msgid "Set permissions of items enclosed in '%s'"
 msgstr "I permès dal file."
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1313
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1464
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1300
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1451
 #, fuzzy
 #| msgid "Folder Permissions:"
 msgid "_Undo Change Permissions"
 msgstr "Permès cartele:"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1314
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1465
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1301
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1452
 #, fuzzy
 #| msgid "Folder Permissions:"
 msgid "_Redo Change Permissions"
 msgstr "Permès cartele:"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1461
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1448
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1462
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1449
 #, fuzzy, c-format
 #| msgid "The permissions of the file."
 msgid "Set permissions of '%s'"
 msgstr "I permès dal file."
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1572
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1559
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1561
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "Cambie grup di '%s' a '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1564
 msgid "_Undo Change Group"
 msgstr "_Anule cambie grup"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1578
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1565
 msgid "_Redo Change Group"
 msgstr "_Torne cambie grup"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1580
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr ""
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "Cambie proprietari di '%s' a '%s'"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1585
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1572
 msgid "_Undo Change Owner"
 msgstr "_Anule cambie proprietari"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1586
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1573
 msgid "_Redo Change Owner"
 msgstr "_Torne cambie proprietari"
 
@@ -2666,10 +2664,9 @@ msgid "Contains photos and music"
 msgstr "Al ten fotos e musiche"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:80
-#, fuzzy, c-format
-#| msgid "Error while deleting."
+#, c-format
 msgid "Error while adding “%s”: %s"
-msgstr "Erôr dilunc la eliminazion."
+msgstr "Erôr tal zontâ “%s”: %s"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:82
 msgid "Could not add application"
@@ -2702,27 +2699,23 @@ msgstr "document %s"
 
 #. Translators; %s here is a mime-type description
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:259
-#, fuzzy, c-format
-#| msgid "Open all files of type \"%s\" with:"
+#, c-format
 msgid "Open all files of type “%s” with"
-msgstr "Vierç ducj i files si gjenar \"%s\" cun:"
+msgstr "Vierç ducj i file dal gjenar \"%s\" cun"
 
 #. Translators: first %s is filename, second %s is mime-type description
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:266
-#, fuzzy, c-format
-#| msgid "Select an application to open %s and other files of type \"%s\""
+#, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
-msgstr "Sielç une aplicazion par vierzi %s e altris files di gjenar \"%s\""
+msgstr "Sielç une aplicazion par vierzi %s e altris file dal gjenar \"%s\""
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:325
 msgid "_Add"
 msgstr "_Zonte"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:333
-#, fuzzy
-#| msgid "Use De_fault"
 msgid "Set as default"
-msgstr "Pre_determinâts"
+msgstr "Met come predefinît"
 
 #: ../libnautilus-private/nautilus-program-choosing.c:312
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -2758,10 +2751,8 @@ msgid "Details: "
 msgstr "Detais:"
 
 #: ../libnautilus-private/nautilus-progress-info.c:297
-#, fuzzy
-#| msgid "Cancel"
 msgid "Cancelled"
-msgstr "Scancele"
+msgstr "Anulât"
 
 #: ../libnautilus-private/nautilus-progress-info.c:360
 #: ../libnautilus-private/nautilus-progress-info.c:378
@@ -2779,8 +2770,7 @@ msgid "Search"
 msgstr "Cîr"
 
 #: ../libnautilus-private/nautilus-query.c:473
-#, fuzzy, c-format
-#| msgid "Search for \"%s\""
+#, c-format
 msgid "Search for “%s”"
 msgstr "Cîr \"%s\""
 
@@ -2798,12 +2788,11 @@ msgstr[1] "%d diis indaûr"
 
 #. weeks
 #: ../libnautilus-private/nautilus-ui-utilities.c:370
-#, fuzzy, c-format
-#| msgid "Last changed:"
+#, c-format
 msgid "Last week"
 msgid_plural "%d weeks ago"
-msgstr[0] "Ultin cambiament:"
-msgstr[1] "Ultin cambiament:"
+msgstr[0] "Ultime setemane"
+msgstr[1] "%d setemanis indaûr"
 
 #. months
 #: ../libnautilus-private/nautilus-ui-utilities.c:375
@@ -2823,10 +2812,8 @@ msgstr[1] "%d agns indaûr"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:96
 #: ../nautilus-sendto-extension/nautilus-nste.c:101
-#, fuzzy
-#| msgid "Move to…"
 msgid "Send to…"
-msgstr "Sposte in..."
+msgstr "Invie a..."
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:97
 msgid "Send file by mail…"
@@ -2893,10 +2880,8 @@ msgid "GEOMETRY"
 msgstr "GJEOMETRIE"
 
 #: ../src/nautilus-application.c:835
-#, fuzzy
-#| msgid "The permissions of the file."
 msgid "Show the version of the program."
-msgstr "I permès dal file."
+msgstr "Mostre la version dal program."
 
 #: ../src/nautilus-application.c:837
 msgid "Always open a new window for browsing specified URIs"
@@ -3014,10 +2999,8 @@ msgid "Sorry, could not display all the contents of “%s”: %s"
 msgstr ""
 
 #: ../src/nautilus-error-reporting.c:82
-#, fuzzy
-#| msgid "The permissions could not be changed."
 msgid "This location could not be displayed."
-msgstr "I permès no puedin jessi cambiâts."
+msgstr "Cheste posizion no pues sedi mostrade."
 
 #: ../src/nautilus-error-reporting.c:106
 #, c-format
@@ -3053,11 +3036,12 @@ msgid "The permissions could not be changed."
 msgstr "I permès no puedin jessi cambiâts."
 
 #: ../src/nautilus-error-reporting.c:203
-#, fuzzy, c-format
-#| msgid "The name \"%s\" is not valid. Please use a different name."
+#, c-format
 msgid ""
 "The name “%s” is already used in this location. Please use a different name."
-msgstr "Il non \"%s\" nol è valit. Sielç par plasê un altri non."
+msgstr ""
+"Il non \"%s\" al è za doprât in cheste posizion. Sielç par plasê un altri "
+"non."
 
 #: ../src/nautilus-error-reporting.c:208
 #, c-format
@@ -3072,28 +3056,23 @@ msgid "You do not have the permissions necessary to rename “%s”."
 msgstr "No tu âs i permès necessaris par cambiâ non a “%s”."
 
 #: ../src/nautilus-error-reporting.c:218
-#, fuzzy, c-format
-#| msgid ""
-#| "The name \"%s\" is not valid because it contains the character \"/\". "
-#| "Please use a different name."
+#, c-format
 msgid ""
 "The name “%s” is not valid because it contains the character “/”. Please use "
 "a different name."
 msgstr ""
-"Il non \"%s\" nol è valit parcè che al à dentri il caratar \"/\". Sielç par "
-"plasê un altri non."
+"Il non \"%s\" nol è valit parcè che al à dentri il caratar \"/\". Par plasê "
+"dopre un altri non."
 
 #: ../src/nautilus-error-reporting.c:222
-#, fuzzy, c-format
-#| msgid "The name \"%s\" is not valid. Please use a different name."
+#, c-format
 msgid "The name “%s” is not valid. Please use a different name."
-msgstr "Il non \"%s\" nol è valit. Sielç par plasê un altri non."
+msgstr "Il non \"%s\" nol è valit. Par plasê dopre un altri non."
 
 #: ../src/nautilus-error-reporting.c:228
-#, fuzzy, c-format
-#| msgid "The name \"%s\" is not valid. Please use a different name."
+#, c-format
 msgid "The name “%s” is too long. Please use a different name."
-msgstr "Il non \"%s\" nol è valit. Sielç par plasê un altri non."
+msgstr "Il non \"%s\" al è masse lunc. Par plasê dopre un altri non."
 
 #. fall through
 #: ../src/nautilus-error-reporting.c:242
@@ -3110,138 +3089,124 @@ msgstr "No si pues cambiâ non al element."
 msgid "Renaming “%s” to “%s”."
 msgstr "Modifiche dal non di “%s” in “%s”."
 
-#: ../src/nautilus-files-view.c:403
+#: ../src/nautilus-files-view.c:377
 msgid "Searching…"
 msgstr "Cirint..."
 
-#: ../src/nautilus-files-view.c:403
+#: ../src/nautilus-files-view.c:377
 #: ../src/nautilus-image-properties-page.c:708
 #: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:657
 msgid "Loading…"
 msgstr "Daûr a cjamâ..."
 
-#: ../src/nautilus-files-view.c:1073 ../src/nautilus-mime-actions.c:969
+#: ../src/nautilus-files-view.c:1047 ../src/nautilus-mime-actions.c:969
 #: ../src/nautilus-mime-actions.c:1713
 msgid "Are you sure you want to open all files?"
 msgstr "Sêstu sigûr di volê vierzi ducj i files?"
 
-#: ../src/nautilus-files-view.c:1075
-#, fuzzy, c-format
-#| msgid "This will open %'d separate window."
-#| msgid_plural "This will open %'d separate windows."
+#: ../src/nautilus-files-view.c:1049
+#, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
-msgstr[0] "Chest al vierzarà %'d barcon separât."
-msgstr[1] "Chest al vierzarà %'d barcons separadis."
+msgstr[0] "Chest al vierzarà %'d schede separade."
+msgstr[1] "Chest al vierzarà %'d schedis separadis."
 
-#: ../src/nautilus-files-view.c:1078
+#: ../src/nautilus-files-view.c:1052
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Chest al vierzarà %'d barcon separât."
 msgstr[1] "Chest al vierzarà %'d barcons separadis."
 
-#: ../src/nautilus-files-view.c:1082 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-files-view.c:1056 ../src/nautilus-location-entry.c:270
 #: ../src/nautilus-mime-actions.c:978 ../src/nautilus-mime-actions.c:1155
 #: ../src/nautilus-mime-actions.c:1717
 msgid "_OK"
 msgstr "_OK"
 
-#: ../src/nautilus-files-view.c:1553
-#, fuzzy
-#| msgid "Select all items in this window"
+#: ../src/nautilus-files-view.c:1527
 msgid "Select Items Matching"
-msgstr "Selezione ducj i elements in chest barcon"
+msgstr "Selezione i elements compagns"
 
-#: ../src/nautilus-files-view.c:1558 ../src/nautilus-files-view.c:5275
+#: ../src/nautilus-files-view.c:1532 ../src/nautilus-files-view.c:5277
 msgid "_Select"
 msgstr "_Selezione"
 
-#: ../src/nautilus-files-view.c:1566
+#: ../src/nautilus-files-view.c:1540
 msgid "_Pattern:"
 msgstr "_Model:"
 
-#: ../src/nautilus-files-view.c:1572
+#: ../src/nautilus-files-view.c:1546
 msgid "Examples: "
 msgstr "Esemplis:"
 
-#: ../src/nautilus-files-view.c:1813
-#, fuzzy
-#| msgid "A folder with the same name already exists in “%s”."
+#: ../src/nautilus-files-view.c:1787
 msgid "A folder with that name already exists."
-msgstr "Une cartele cun il stes non a esist za in \"%s\"."
+msgstr "Une cartele cul stes non a esist za."
 
-#: ../src/nautilus-files-view.c:1815
-#, fuzzy
-#| msgid "A folder with the same name already exists in “%s”."
+#: ../src/nautilus-files-view.c:1789
 msgid "A file with that name already exists."
-msgstr "Une cartele cun il stes non a esist za in \"%s\"."
+msgstr "Un file cul stes non a esist za."
 
-#: ../src/nautilus-files-view.c:1830
+#: ../src/nautilus-files-view.c:1804
 msgid "Folder names cannot contain “/”."
 msgstr "I nons des cartelis no puedi vê il caratar “/”."
 
-#: ../src/nautilus-files-view.c:1832
+#: ../src/nautilus-files-view.c:1806
 msgid "Files names cannot contain “/”."
 msgstr "I nons dai file no puedi vê il caratar “/”."
 
-#: ../src/nautilus-files-view.c:1835
+#: ../src/nautilus-files-view.c:1809
 msgid "A folder can not be called “.”."
 msgstr "Une cartele no pues sedi clamade “.”."
 
-#: ../src/nautilus-files-view.c:1837
-#, fuzzy
-#| msgid "This file cannot be ejected"
+#: ../src/nautilus-files-view.c:1811
 msgid "A file can not be called “.”."
-msgstr "No si rive a parâ fûr chest file"
+msgstr "No si pues clamâ un file \".\"."
 
-#: ../src/nautilus-files-view.c:1840
+#: ../src/nautilus-files-view.c:1814
 msgid "A folder can not be called “..”."
 msgstr "Une cartele no pues sedi clamade “..”."
 
-#: ../src/nautilus-files-view.c:1842
-#, fuzzy
-#| msgid "This file cannot be ejected"
+#: ../src/nautilus-files-view.c:1816
 msgid "A file can not be called “..”."
-msgstr "No si rive a parâ fûr chest file"
+msgstr "No si pues clamâ un file \"..\"."
 
-#: ../src/nautilus-files-view.c:2073 ../src/nautilus-files-view.c:2141
+#: ../src/nautilus-files-view.c:2047 ../src/nautilus-files-view.c:2115
 msgid "Folder name"
 msgstr "Non de cartele"
 
-#: ../src/nautilus-files-view.c:2075
+#: ../src/nautilus-files-view.c:2049
 msgid "File name"
 msgstr "Non dal file"
 
-#: ../src/nautilus-files-view.c:2140
-#, fuzzy
-#| msgid "Creator"
+#: ../src/nautilus-files-view.c:2114
 msgid "Create"
-msgstr "Creatôr"
+msgstr "Cree"
 
-#: ../src/nautilus-files-view.c:2142
+#: ../src/nautilus-files-view.c:2116
 msgid "New Folder"
 msgstr "Gnove cartele"
 
-#: ../src/nautilus-files-view.c:2583
+#: ../src/nautilus-files-view.c:2557
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
 msgstr ""
 
-#: ../src/nautilus-files-view.c:3010 ../src/nautilus-files-view.c:3045
+#: ../src/nautilus-files-view.c:2984 ../src/nautilus-files-view.c:3019
 #, c-format
 msgid "“%s” selected"
 msgstr "selezionât \"%s\""
 
-#: ../src/nautilus-files-view.c:3012
+#: ../src/nautilus-files-view.c:2986
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d cartele selezionade"
 msgstr[1] "%'d cartelis selezionadis"
 
-#: ../src/nautilus-files-view.c:3022
+#: ../src/nautilus-files-view.c:2996
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -3249,14 +3214,14 @@ msgstr[0] " (cun dentri %'d element)"
 msgstr[1] " (cun dentri %'d elements)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-files-view.c:3033
+#: ../src/nautilus-files-view.c:3007
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] " (cun dentri un totâl di %'d element)"
 msgstr[1] " (cun dentri un totâl di %'d elements)"
 
-#: ../src/nautilus-files-view.c:3048
+#: ../src/nautilus-files-view.c:3022
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -3264,7 +3229,7 @@ msgstr[0] "%'d element selezionât"
 msgstr[1] "%'d elements selezionâts"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-files-view.c:3055
+#: ../src/nautilus-files-view.c:3029
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -3275,7 +3240,7 @@ msgstr[1] "%'d altris elements selezionâts"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-files-view.c:3069
+#: ../src/nautilus-files-view.c:3043
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -3287,103 +3252,103 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-files-view.c:3093
+#: ../src/nautilus-files-view.c:3067
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-files-view.c:5264
+#: ../src/nautilus-files-view.c:5266
 msgid "Select Move Destination"
 msgstr "Sielç destinazion spostament"
 
-#: ../src/nautilus-files-view.c:5266
+#: ../src/nautilus-files-view.c:5268
 msgid "Select Copy Destination"
 msgstr "Sielç destinazion copie"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5722
+#: ../src/nautilus-files-view.c:5724
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "No si pues gjavâ %s"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5749
+#: ../src/nautilus-files-view.c:5751
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "No si pues parâ fûr \"%s\""
 
-#: ../src/nautilus-files-view.c:5771
+#: ../src/nautilus-files-view.c:5773
 msgid "Unable to stop drive"
 msgstr "No si pues fermâ il dispositîf"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5876
+#: ../src/nautilus-files-view.c:5878
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "No si pues fâ partî %s"
 
-#: ../src/nautilus-files-view.c:6631
+#: ../src/nautilus-files-view.c:6637
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] ""
 msgstr[1] ""
 
-#: ../src/nautilus-files-view.c:6679
+#: ../src/nautilus-files-view.c:6685
 #, c-format
 msgid "Open With %s"
 msgstr "Vierç cun %s"
 
-#: ../src/nautilus-files-view.c:6688
+#: ../src/nautilus-files-view.c:6694
 msgid "Run"
 msgstr "Eseguìs"
 
-#: ../src/nautilus-files-view.c:6690
+#: ../src/nautilus-files-view.c:6696
 msgid "Open"
 msgstr "Vierç"
 
-#: ../src/nautilus-files-view.c:6741
+#: ../src/nautilus-files-view.c:6747
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
 msgid "_Start"
 msgstr "_Fâs partî"
 
-#: ../src/nautilus-files-view.c:6744 ../src/gtk/gtkplacesview.c:1648
+#: ../src/nautilus-files-view.c:6750 ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Connect"
 msgstr "_Conetiti"
 
-#: ../src/nautilus-files-view.c:6747
+#: ../src/nautilus-files-view.c:6753
 msgid "_Start Multi-disk Drive"
 msgstr "_Fâs partî il Dispositîf Multi-disc"
 
-#: ../src/nautilus-files-view.c:6750
+#: ../src/nautilus-files-view.c:6756
 msgid "U_nlock Drive"
 msgstr "S_bloche Dispositîf"
 
-#: ../src/nautilus-files-view.c:6766
+#: ../src/nautilus-files-view.c:6772
 msgid "Stop Drive"
 msgstr "Ferme Dispositîf"
 
-#: ../src/nautilus-files-view.c:6769
+#: ../src/nautilus-files-view.c:6775
 msgid "_Safely Remove Drive"
 msgstr "_Gjave dispositîf in sigurece"
 
-#: ../src/nautilus-files-view.c:6772 ../src/gtk/gtkplacesview.c:1638
+#: ../src/nautilus-files-view.c:6778 ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Disconnect"
 msgstr "_Disconet"
 
-#: ../src/nautilus-files-view.c:6775
+#: ../src/nautilus-files-view.c:6781
 msgid "_Stop Multi-disk Drive"
 msgstr "_Ferme Dispositîf Multi-disc"
 
-#: ../src/nautilus-files-view.c:6778
+#: ../src/nautilus-files-view.c:6784
 msgid "_Lock Drive"
 msgstr "_Bloche Dispositîf"
 
-#: ../src/nautilus-files-view.c:8234
+#: ../src/nautilus-files-view.c:8253
 msgid "Content View"
 msgstr "Viodude Contignût"
 
-#: ../src/nautilus-files-view.c:8235
+#: ../src/nautilus-files-view.c:8254
 msgid "View of the current folder"
 msgstr "Viôt la cartele atuâl"
 
@@ -3604,10 +3569,8 @@ msgid "Music"
 msgstr "Musiche"
 
 #: ../src/nautilus-mime-actions.c:158
-#, fuzzy
-#| msgid "Pdf / Postscript"
 msgid "PDF / PostScript"
-msgstr "Pdf / Postscript"
+msgstr "PDF / PostScript"
 
 #: ../src/nautilus-mime-actions.c:166
 msgid "Picture"
@@ -3741,8 +3704,8 @@ msgstr[1] "Chest al vierzarà %d barcons separâts."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1204
-#: ../src/gtk/gtkplacesview.c:1251
+#: ../src/gtk/nautilusgtkplacesview.c:1162
+#: ../src/gtk/nautilusgtkplacesview.c:1235
 #, fuzzy
 #| msgid "Unable to eject %V"
 msgid "Unable to access location"
@@ -3847,8 +3810,7 @@ msgid "%s Properties"
 msgstr "Propietâts par %s"
 
 #: ../src/nautilus-properties-window.c:1227
-#, fuzzy, c-format
-#| msgid "%s (%s)"
+#, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
@@ -3917,10 +3879,8 @@ msgid "Link target:"
 msgstr "Destinazion leam:"
 
 #: ../src/nautilus-properties-window.c:3006
-#, fuzzy
-#| msgid "_Paste Into Folder"
 msgid "Parent Folder:"
-msgstr "_Tache inte cartele"
+msgstr "Cartele superiôr:"
 
 #: ../src/nautilus-properties-window.c:3014
 msgid "Volume:"
@@ -4030,10 +3990,8 @@ msgid "Allow _executing file as program"
 msgstr "Permet _esecuzion file come program"
 
 #: ../src/nautilus-properties-window.c:4186
-#, fuzzy
-#| msgid "The permissions of the file."
 msgid "Change Permissions for Enclosed Files"
-msgstr "I permès dal file."
+msgstr "Cambie permès ai file contignûts"
 
 #: ../src/nautilus-properties-window.c:4190
 msgid "Change"
@@ -4052,16 +4010,13 @@ msgid "Security context:"
 msgstr "Contest di sigurece:"
 
 #: ../src/nautilus-properties-window.c:4302
-#, fuzzy
-#| msgid "The permissions of the file."
 msgid "Change Permissions for Enclosed Files…"
-msgstr "I permès dal file."
+msgstr "Cambie permès ai file contignûts..."
 
 #: ../src/nautilus-properties-window.c:4312
-#, fuzzy, c-format
-#| msgid "The permissions could not be changed."
+#, c-format
 msgid "The permissions of “%s” could not be determined."
-msgstr "I permès no puedin jessi cambiâts."
+msgstr "I permès di “%s” no puedin jessi determinâts."
 
 #: ../src/nautilus-properties-window.c:4315
 msgid "The permissions of the selected file could not be determined."
@@ -4084,15 +4039,14 @@ msgid "_Revert"
 msgstr "_Invertìs"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5182 ../src/gtk/gtkplacesview.c:1593
+#: ../src/nautilus-properties-window.c:5182
+#: ../src/gtk/nautilusgtkplacesview.c:1577
 msgid "_Open"
 msgstr "_Vierç"
 
 #: ../src/nautilus-query-editor.c:122
-#, fuzzy
-#| msgid "Specify a location to open"
 msgid "Searching locations only"
-msgstr "Specifiche une posizion di vierzi"
+msgstr "Daûr a cirî nome lis posizions"
 
 #: ../src/nautilus-query-editor.c:124
 msgid "Searching devices only"
@@ -4107,10 +4061,8 @@ msgid "Remote location - only searching the current folder"
 msgstr ""
 
 #: ../src/nautilus-query-editor.c:131
-#, fuzzy
-#| msgid "Open the parent folder"
 msgid "Only searching the current folder"
-msgstr "Vierç la cartele parsore di cheste"
+msgstr "Daûr a cirî nome te cartele atuâl"
 
 #: ../src/nautilus-search-popover.c:284
 msgid "Show a list to select the date"
@@ -4163,10 +4115,8 @@ msgid "_Restore"
 msgstr "_Ripristine"
 
 #: ../src/nautilus-trash-bar.c:209
-#, fuzzy
-#| msgid "Restore each selected icon to its original size"
 msgid "Restore selected items to their original position"
-msgstr "Torne ae dimension origjinâl di ogni icone selezionade"
+msgstr "Torne met i elements selezionâts te lôr posizion di origjin"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: ../src/nautilus-trash-bar.c:213
@@ -4211,11 +4161,11 @@ msgstr "_Gnove schede"
 
 #: ../src/nautilus-window.c:1790
 msgid "Move Tab _Left"
-msgstr "Sposte schede a _Sinistre"
+msgstr "Sposte schede a _çampe"
 
 #: ../src/nautilus-window.c:1798
 msgid "Move Tab _Right"
-msgstr "Sposte schede a _Diestre"
+msgstr "Sposte schede a _drete"
 
 #: ../src/nautilus-window.c:1809
 msgid "_Close Tab"
@@ -4236,16 +4186,12 @@ msgstr ""
 "Fabio Tomat <f.t.public@gmail.com>"
 
 #: ../src/nautilus-window-slot.c:1148
-#, fuzzy
-#| msgid "View or modify the properties of the open folder"
 msgid "Unable to display the contents of this folder."
-msgstr "Cjale o modifiche lis propietâts de cartele vierte"
+msgstr "Impussibil mostrâ i contignûts di cheste cartele."
 
 #: ../src/nautilus-window-slot.c:1150
-#, fuzzy
-#| msgid "The location is not a folder."
 msgid "This location doesn't appear to be a folder."
-msgstr "The posizion no je une cartele."
+msgstr "Cheste posizion no semee jessi une cartele."
 
 #: ../src/nautilus-window-slot.c:1155
 msgid ""
@@ -4258,16 +4204,12 @@ msgid "“%s” locations are not supported."
 msgstr ""
 
 #: ../src/nautilus-window-slot.c:1163
-#, fuzzy
-#| msgid "Go to the next visited location"
 msgid "Unable to handle this kind of location."
-msgstr "Va ae posizion visitade dopo"
+msgstr "Impussibil doprâ chest gjenar di posizion."
 
 #: ../src/nautilus-window-slot.c:1168
-#, fuzzy
-#| msgid "Go to the previous visited location"
 msgid "Unable to access the requested location."
-msgstr "Va ae posizion visitade prime"
+msgstr "Impussibil jentrâ te posizion domandade."
 
 #: ../src/nautilus-window-slot.c:1171
 msgid "Don't have permission to access the requested location."
@@ -4339,11 +4281,9 @@ msgid "Shortcuts"
 msgstr "Scurtis"
 
 #: ../src/resources/gtk/help-overlay.ui.h:9
-#, fuzzy
-#| msgid "Open"
 msgctxt "shortcut window"
 msgid "Opening"
-msgstr "Vierç"
+msgstr "Daûr a vierzi"
 
 #: ../src/resources/gtk/help-overlay.ui.h:10
 msgctxt "shortcut window"
@@ -4371,11 +4311,9 @@ msgid "Open file and close window"
 msgstr "Vierç file e siere barcon"
 
 #: ../src/resources/gtk/help-overlay.ui.h:15
-#, fuzzy
-#| msgid "Open With Other _Application"
 msgctxt "shortcut window"
 msgid "Open with default application"
-msgstr "Vierç cuntune altre _aplicazion"
+msgstr "Vierç cun l'aplicazion predefinide"
 
 #: ../src/resources/gtk/help-overlay.ui.h:16
 msgctxt "shortcut window"
@@ -4388,39 +4326,29 @@ msgid "New tab"
 msgstr "Gnove schede"
 
 #: ../src/resources/gtk/help-overlay.ui.h:18
-#, fuzzy
-#| msgid "Activate previous tab"
 msgctxt "shortcut window"
 msgid "Go to previous tab"
-msgstr "Ative schede precedent"
+msgstr "Va te schede precedent"
 
 #: ../src/resources/gtk/help-overlay.ui.h:19
-#, fuzzy
-#| msgid "Activate next tab"
 msgctxt "shortcut window"
 msgid "Go to next tab"
-msgstr "Ative schede sucessive"
+msgstr "Va te prossime schede"
 
 #: ../src/resources/gtk/help-overlay.ui.h:20
-#, fuzzy
-#| msgid "Open With"
 msgctxt "shortcut window"
 msgid "Open tab"
-msgstr "Vierç cun"
+msgstr "Vierç schede"
 
 #: ../src/resources/gtk/help-overlay.ui.h:21
-#, fuzzy
-#| msgid "Move Tab _Left"
 msgctxt "shortcut window"
 msgid "Move tab left"
-msgstr "Sposte schede a _Sinistre"
+msgstr "Sposte schede a çampe"
 
 #: ../src/resources/gtk/help-overlay.ui.h:22
-#, fuzzy
-#| msgid "Move Tab _Right"
 msgctxt "shortcut window"
 msgid "Move tab right"
-msgstr "Sposte schede a _Diestre"
+msgstr "Sposte schede a drete"
 
 #: ../src/resources/gtk/help-overlay.ui.h:23
 msgctxt "shortcut window"
@@ -4433,11 +4361,9 @@ msgid "Go back"
 msgstr "Torne indaûr"
 
 #: ../src/resources/gtk/help-overlay.ui.h:25
-#, fuzzy
-#| msgid "_Forward"
 msgctxt "shortcut window"
 msgid "Go forward"
-msgstr "Inde_vant"
+msgstr "Va Indevant"
 
 #: ../src/resources/gtk/help-overlay.ui.h:26
 msgctxt "shortcut window"
@@ -4450,18 +4376,14 @@ msgid "Go down"
 msgstr ""
 
 #: ../src/resources/gtk/help-overlay.ui.h:28
-#, fuzzy
-#| msgid "Close this folder"
 msgctxt "shortcut window"
 msgid "Go to home folder"
-msgstr "Siere cheste cartele"
+msgstr "Va te cartele Cjase"
 
 #: ../src/resources/gtk/help-overlay.ui.h:29
-#, fuzzy
-#| msgid "Enter _Location…"
 msgctxt "shortcut window"
 msgid "Enter location"
-msgstr "Vierç _Posizion..."
+msgstr "Introdusi posizion"
 
 #: ../src/resources/gtk/help-overlay.ui.h:30
 msgctxt "shortcut window"
@@ -4474,11 +4396,9 @@ msgid "Location bar with home location"
 msgstr ""
 
 #: ../src/resources/gtk/help-overlay.ui.h:32
-#, fuzzy
-#| msgid "Views"
 msgctxt "shortcut window"
 msgid "View"
-msgstr "Viodudis"
+msgstr "Viodude"
 
 #: ../src/resources/gtk/help-overlay.ui.h:33
 msgctxt "shortcut window"
@@ -4491,18 +4411,14 @@ msgid "Zoom out"
 msgstr "Diminuìs ingrandiment"
 
 #: ../src/resources/gtk/help-overlay.ui.h:35
-#, fuzzy
-#| msgid "Reset"
 msgctxt "shortcut window"
 msgid "Reset zoom"
-msgstr "Reset"
+msgstr "Azerâ ingrandiment"
 
 #: ../src/resources/gtk/help-overlay.ui.h:36
-#, fuzzy
-#| msgid "Preview"
 msgctxt "shortcut window"
 msgid "Refresh view"
-msgstr "Anteprime"
+msgstr "Inzorne viodude"
 
 #: ../src/resources/gtk/help-overlay.ui.h:37
 msgctxt "shortcut window"
@@ -4525,18 +4441,14 @@ msgid "List view"
 msgstr "Viodude a liste"
 
 #: ../src/resources/gtk/help-overlay.ui.h:41
-#, fuzzy
-#| msgid "Preview"
 msgctxt "shortcut window"
 msgid "Grid view"
-msgstr "Anteprime"
+msgstr "Viodude a gridele"
 
 #: ../src/resources/gtk/help-overlay.ui.h:42
-#, fuzzy
-#| msgid "Edit"
 msgctxt "shortcut window"
 msgid "Editing"
-msgstr "Modifiche"
+msgstr "Daûr a modificâ"
 
 #: ../src/resources/gtk/help-overlay.ui.h:43
 msgctxt "shortcut window"
@@ -4579,32 +4491,24 @@ msgid "Invert selection"
 msgstr "Invertìs selezion"
 
 #: ../src/resources/gtk/help-overlay.ui.h:51
-#, fuzzy
-#| msgid "Select all items in this window"
 msgctxt "shortcut window"
 msgid "Select items matching"
-msgstr "Selezione ducj i elements in chest barcon"
+msgstr "Selezione i elements compagns"
 
 #: ../src/resources/gtk/help-overlay.ui.h:52
-#, fuzzy
-#| msgid "Undo"
 msgctxt "shortcut window"
 msgid "Undo"
 msgstr "Anule"
 
 #: ../src/resources/gtk/help-overlay.ui.h:53
-#, fuzzy
-#| msgid "Redo"
 msgctxt "shortcut window"
 msgid "Redo"
-msgstr "Torne a fâ modifiche"
+msgstr "Torne fâ"
 
 #: ../src/resources/gtk/help-overlay.ui.h:54
-#, fuzzy
-#| msgid "%s Properties"
 msgctxt "shortcut window"
 msgid "Show item properties"
-msgstr "Propietâts par %s"
+msgstr "Mostre propietâts element"
 
 #: ../src/resources/gtk/menus.ui.h:1
 msgid "New _Window"
@@ -4648,10 +4552,8 @@ msgid "_Paste"
 msgstr "_Tache"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:4
-#, fuzzy
-#| msgid "Undo the edit"
 msgid "Create _Link"
-msgstr "Anule la modifiche"
+msgstr "Cree _leam"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:5
 #: ../src/resources/ui/nautilus-toolbar-action-menu.ui.h:3
@@ -4668,10 +4570,8 @@ msgid "_Keep aligned"
 msgstr "_Ten in rie"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:8
-#, fuzzy
-#| msgid "Clean _Up by Name"
 msgid "Organize _Desktop by Name"
-msgstr "_Met in ordin par non"
+msgstr "Organize il _scritori par non"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:9
 msgid "Change _Background"
@@ -4704,12 +4604,12 @@ msgid "Open With Other _Application"
 msgstr "Vierç cuntune altre _aplicazion"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1648
+#: ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Mount"
 msgstr "_Monte"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1638
+#: ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Unmount"
 msgstr "_Dismonte"
 
@@ -4790,16 +4690,12 @@ msgid "Delete Shortcuts Have Changed"
 msgstr ""
 
 #: ../src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui.h:2
-#, fuzzy
-#| msgid ""
-#| "With the latest version of Files, you no longer need to hold Ctrl to "
-#| "delete—the Delete key will work when pressed on its own."
 msgid ""
 "With the latest version of Files, you no longer need to hold Ctrl to delete "
 "— the Delete key will work when pressed on its own."
 msgstr ""
-"Cun l'ultime version di File, no tu scugnis tegnî scliçât il tast Ctrl par "
-"eliminâ: il tast canc cumò al elimine ce che tu âs selezionât."
+"Cun l'ultime version di File, no tu scugnis tegnî fracât il tast Ctrl par "
+"eliminâ — il tast Canc cumò al elimine ce che tu âs selezionât."
 
 #: ../src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui.h:3
 msgid "Got it"
@@ -4810,7 +4706,7 @@ msgid "No Results Found"
 msgstr "Nissun risultât cjatât"
 
 #: ../src/resources/ui/nautilus-no-search-results.ui.h:2
-#: ../src/gtk/gtkplacesview.ui.h:5
+#: ../src/gtk/nautilusgtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "Prove une ricercje diferente"
 
@@ -4920,10 +4816,8 @@ msgid "Allow folders to be _expanded"
 msgstr ""
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:29
-#, fuzzy
-#| msgid "Icon Captions"
 msgid "Icon View Captions"
-msgstr "Didascaliis des iconis"
+msgstr "Didascaliis viodude iconis"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:30
 msgid ""
@@ -4967,10 +4861,8 @@ msgid "Link Creation"
 msgstr "Creazion leam"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:40
-#, fuzzy
-#| msgid "The target doesn't support symbolic links."
 msgid "Show action to create symbolic _links"
-msgstr "La destinazion no supuarte i leams simbolics."
+msgstr "Mostre azion par creâ _leams simbolics."
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:41
 msgid "Executable Text Files"
@@ -5047,10 +4939,8 @@ msgid "N_ever"
 msgstr "M_ai"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:61
-#, fuzzy
-#| msgid "_Only for files smaller than:"
 msgid "Onl_y for files smaller than:"
-msgstr "D_ome files plui piçui di:"
+msgstr "Dome par file plui pi_çui di:"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:62
 msgid "File count"
@@ -5220,85 +5110,94 @@ msgstr "_Ferme"
 msgid "_Files"
 msgstr "_File"
 
-#: ../src/gtk/gtkplacesview.c:879
+#: ../src/gtk/nautilusgtkplacesview.c:880
 msgid "Searching for network locations"
 msgstr "Daûr a cirî posizions di rêt"
 
-#: ../src/gtk/gtkplacesview.c:886
+#: ../src/gtk/nautilusgtkplacesview.c:887
 msgid "No network locations found"
 msgstr ""
 
-#: ../src/gtk/gtkplacesview.c:1051
+#: ../src/gtk/nautilusgtkplacesview.c:1052
 msgid "Computer"
 msgstr "Ordenadôr"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1178 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/nautilusgtkplacesview.c:1179
+#: ../src/gtk/nautilusgtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "Co_net"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1314
+#: ../src/gtk/nautilusgtkplacesview.c:1298
 msgid "Unable to unmount volume"
 msgstr "Impussibil dismontâ il volum"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1396
+#: ../src/gtk/nautilusgtkplacesview.c:1380
 msgid "Cance_l"
 msgstr "Anu_le"
 
-#: ../src/gtk/gtkplacesview.c:1603
+#: ../src/gtk/nautilusgtkplacesview.c:1587
 msgid "Open in New _Tab"
 msgstr "Vierç intune gnove _schede"
 
-#: ../src/gtk/gtkplacesview.c:1614
+#: ../src/gtk/nautilusgtkplacesview.c:1598
 msgid "Open in New _Window"
 msgstr "Vierç intun gnûf _barcon"
 
-#: ../src/gtk/gtkplacesview.c:1813
+#: ../src/gtk/nautilusgtkplacesview.c:1797
 msgid "Unable to get remote server location"
 msgstr "Impussibil vê la posizion rimote dal servidôr"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "Networks"
 msgstr "Rêts"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "On This Computer"
 msgstr "Su chest computer"
 
-#. Translators: respectively, free and total space of the drive
-#: ../src/gtk/gtkplacesviewrow.c:110
+#. Translators: respectively, free and total space of the drive. The plural form
+#. * should be based on the free space available.
+#. * i.e. 1 GB / 24 GB available.
+#.
+#: ../src/gtk/nautilusgtkplacesviewrow.c:134
 #, c-format
 msgid "%s / %s available"
-msgstr "%s / %s disponibil"
+msgid_plural "%s / %s available"
+msgstr[0] "%s / %s disponibil"
+msgstr[1] "%s / %s disponibii"
 
-#: ../src/gtk/gtkplacesviewrow.c:449
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
 msgid "Disconnect"
 msgstr "Disconet"
 
-#: ../src/gtk/gtkplacesviewrow.c:449 ../src/gtk/gtkplacesviewrow.ui.h:1
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
+#: ../src/gtk/nautilusgtkplacesviewrow.ui.h:1
 msgid "Unmount"
 msgstr "Dismonte"
 
 #. Translators: Server as any successfully connected network address
-#: ../src/gtk/gtkplacesview.ui.h:2
+#: ../src/gtk/nautilusgtkplacesview.ui.h:2
 msgid "No recent servers found"
 msgstr "Nissun servidôrs resint cjatât"
 
-#: ../src/gtk/gtkplacesview.ui.h:3
+#: ../src/gtk/nautilusgtkplacesview.ui.h:3
 msgid "Recent Servers"
 msgstr "Servidôrs resints"
 
-#: ../src/gtk/gtkplacesview.ui.h:4
+#: ../src/gtk/nautilusgtkplacesview.ui.h:4
 msgid "No results found"
 msgstr "Nissun risultât cjatât"
 
-#: ../src/gtk/gtkplacesview.ui.h:6
+#: ../src/gtk/nautilusgtkplacesview.ui.h:6
 msgid "Connect to _Server"
 msgstr "Coneti al _servidôr"
 
-#: ../src/gtk/gtkplacesview.ui.h:8
+#: ../src/gtk/nautilusgtkplacesview.ui.h:8
 msgid "Enter server address…"
 msgstr "Scrîf direzion servidôr..."
 
