@@ -29,31 +29,13 @@
 #include "nautilus-bookmark-list.h"
 #include "nautilus-window.h"
 
-#define NAUTILUS_TYPE_APPLICATION nautilus_application_get_type()
-#define NAUTILUS_APPLICATION(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplication))
-#define NAUTILUS_APPLICATION_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))
-#define NAUTILUS_IS_APPLICATION(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_APPLICATION))
-#define NAUTILUS_IS_APPLICATION_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_APPLICATION))
-#define NAUTILUS_APPLICATION_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_APPLICATION, NautilusApplicationClass))
+G_BEGIN_DECLS
+#define NAUTILUS_TYPE_APPLICATION (nautilus_application_get_type())
+G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, GtkApplication)
 
-typedef struct _NautilusApplicationPriv NautilusApplicationPriv;
-
-typedef struct {
-	GtkApplication parent;
-
-	NautilusApplicationPriv *priv;
-} NautilusApplication;
-
-typedef struct {
+struct _NautilusApplicationClass {
 	GtkApplicationClass parent_class;
-} NautilusApplicationClass;
-
-GType nautilus_application_get_type (void);
+};
 
 NautilusApplication * nautilus_application_new (void);
 
@@ -96,4 +78,6 @@ GtkWidget * nautilus_application_connect_server (NautilusApplication *applicatio
 void nautilus_application_search (NautilusApplication *application,
                                   const gchar         *uri,
                                   const gchar         *text);
+G_END_DECLS
+
 #endif /* __NAUTILUS_APPLICATION_H__ */
