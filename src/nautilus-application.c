@@ -29,7 +29,6 @@
 #include "nautilus-application.h"
 
 #include "nautilus-dbus-manager.h"
-#include "nautilus-desktop-window.h"
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-previewer.h"
@@ -69,8 +68,6 @@ typedef struct {
 	NautilusProgressPersistenceHandler *progress_handler;
 	NautilusDBusManager *dbus_manager;
 	NautilusFreedesktopDBus *fdb_manager;
-
-	gboolean desktop_override;
 
 	NautilusBookmarkList *bookmark_list;
 
@@ -124,7 +121,6 @@ static gboolean
 check_required_directories (NautilusApplication *self)
 {
 	char *user_directory;
-	char *desktop_directory;
 	GSList *directories;
 	gboolean ret;
 
@@ -135,16 +131,11 @@ check_required_directories (NautilusApplication *self)
 	ret = TRUE;
 
 	user_directory = nautilus_get_user_directory ();
-	desktop_directory = nautilus_get_desktop_directory ();
 
 	directories = NULL;
 
 	if (!g_file_test (user_directory, G_FILE_TEST_IS_DIR)) {
 		directories = g_slist_prepend (directories, user_directory);
-	}
-
-	if (!g_file_test (desktop_directory, G_FILE_TEST_IS_DIR)) {
-		directories = g_slist_prepend (directories, desktop_directory);
 	}
 
 	if (directories != NULL) {
@@ -187,7 +178,6 @@ check_required_directories (NautilusApplication *self)
 
 	g_slist_free (directories);
 	g_free (user_directory);
-	g_free (desktop_directory);
 	nautilus_profile_end (NULL);
 
 	return ret;
@@ -389,22 +379,6 @@ real_open_location_full (NautilusApplication     *self,
         if (target_slot != NULL)
                 target_window = nautilus_window_slot_get_window (target_slot);
 
-        if ((target_window && NAUTILUS_IS_DESKTOP_WINDOW (target_window)) ||
-            (!target_window && NAUTILUS_IS_DESKTOP_WINDOW (active_window))) {
-                NautilusWindow *desktop_target_window;
-
-                desktop_target_window = target_window ? target_window : active_window;
-		use_same = !nautilus_desktop_window_loaded (NAUTILUS_DESKTOP_WINDOW (desktop_target_window));
-
-		/* if we're requested to open a new tab on the desktop, open a window
-		 * instead.
-		 */
-		if (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) {
-			flags ^= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-		}
-	}
-
 	g_assert (!((flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) != 0 &&
 		    (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0));
 
@@ -433,16 +407,14 @@ real_open_location_full (NautilusApplication     *self,
 
 	/* close the current window if the flags say so */
 	if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0) {
-		if (!NAUTILUS_IS_DESKTOP_WINDOW (active_window)) {
-			if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
-				nautilus_window_close (active_window);
-			} else {
-				g_signal_connect_object (target_window,
-							 "show",
-							 G_CALLBACK (new_window_show_callback),
-							 active_window,
-							 G_CONNECT_AFTER);
-			}
+		if (gtk_widget_get_visible (GTK_WIDGET (target_window))) {
+			nautilus_window_close (active_window);
+		} else {
+			g_signal_connect_object (target_window,
+						 "show",
+						 G_CALLBACK (new_window_show_callback),
+						 active_window,
+						 G_CONNECT_AFTER);
 		}
 	}
 
@@ -598,13 +570,6 @@ do_cmdline_sanity_checks (NautilusApplication *self,
 		goto out;
 	}
 
-	if (g_variant_dict_contains (options, "force-desktop") &&
-	    g_variant_dict_contains (options, "no-desktop")) {
-		g_printerr ("%s\n",
-			    _("--no-desktop and --force-desktop cannot be used together."));
-		goto out;
-	}
-
 	retval = TRUE;
 
  out:
@@ -727,27 +692,6 @@ action_help (GSimpleAction *action,
 }
 
 static void
-action_open_desktop (GSimpleAction *action,
-                     GVariant      *parameter,
-                     gpointer       user_data)
-{
-        nautilus_desktop_window_ensure ();
-}
-
-static void
-action_close_desktop (GSimpleAction *action,
-                      GVariant      *parameter,
-                      gpointer       user_data)
-{
-        GtkWidget *desktop_window;
-
-        desktop_window = nautilus_desktop_window_get ();
-        if (desktop_window != NULL) {
-                gtk_widget_destroy (desktop_window);
-        }
-}
-
-static void
 action_kill (GSimpleAction *action,
              GVariant      *parameter,
              gpointer       user_data)
@@ -766,7 +710,6 @@ action_quit (GSimpleAction *action,
         NautilusApplication *self = NAUTILUS_APPLICATION (user_data);
         GList *windows, *l;
 
-        /* nautilus_window_close() doesn't do anything for desktop windows */
         windows = nautilus_application_get_windows (self);
         /* make a copy, since the original list will be modified when destroying
          * a window, making this list invalid */
@@ -817,8 +760,6 @@ static GActionEntry app_entries[] = {
         { "help", action_help, NULL, NULL, NULL },
         { "quit", action_quit, NULL, NULL, NULL },
         { "kill", action_kill, NULL, NULL, NULL },
-        { "open-desktop", action_open_desktop, NULL, NULL, NULL },
-        { "close-desktop", action_close_desktop, NULL, NULL, NULL },
         { "show-help-overlay", action_show_help_overlay, NULL, NULL, NULL },
 };
 
@@ -867,10 +808,6 @@ const GOptionEntry options[] = {
           N_("Always open a new window for browsing specified URIs"), NULL },
         { "no-default-window", 'n', 0, G_OPTION_ARG_NONE, NULL,
           N_("Only create windows for explicitly specified URIs."), NULL },
-        { "no-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
-          N_("Never manage the desktop (ignore the GSettings preference)."), NULL },
-        { "force-desktop", '\0', 0, G_OPTION_ARG_NONE, NULL,
-          N_("Always manage the desktop (ignore the GSettings preference)."), NULL },
         { "quit", 'q', 0, G_OPTION_ARG_NONE, NULL,
           N_("Quit Nautilus."), NULL },
         { "select", 's', 0, G_OPTION_ARG_NONE, NULL,
@@ -988,30 +925,6 @@ nautilus_application_command_line (GApplication            *application,
 		goto out;
 	}
 
-	if (g_variant_dict_contains (options, "force-desktop")) {
-		DEBUG ("Forcing desktop, as requested");
-		priv->desktop_override = TRUE;
-		g_action_group_activate_action (G_ACTION_GROUP (application),
-						"open-desktop", NULL);
-	} else if (g_variant_dict_contains (options, "no-desktop")) {
-		if (g_application_get_is_remote (application)) {
-			DEBUG ("Not primary instance. Ignoring --no-desktop.");
-		} else {
-			DEBUG ("Forcing desktop off, as requested");
-			priv->desktop_override = TRUE;
-			g_action_group_activate_action (G_ACTION_GROUP (application),
-							"close-desktop", NULL);
-		}
-	}
-
-	if (g_variant_dict_contains (options, "no-default-window")) {
-		/* Do nothing. If icons on desktop are enabled, it will create
-		 * the desktop window which will hold the application. If not,
-		 * it will just exit. */
-		retval = EXIT_SUCCESS;
-		goto out;
-	}
-
 	retval = nautilus_application_handle_file_args (self, options);
 
  out:
@@ -1033,58 +946,6 @@ nautilus_application_init (NautilusApplication *self)
                                                      NULL);
 
 	g_application_add_main_option_entries (G_APPLICATION (self), options);
-}
-
-static void
-nautilus_application_set_desktop_visible (NautilusApplication *self,
-					  gboolean             visible)
-{
-	const gchar *action_name;
-
-	action_name = visible ? "open-desktop" : "close-desktop";
-	g_action_group_activate_action (G_ACTION_GROUP (self),
-					action_name, NULL);
-}
-
-static void
-update_desktop_from_gsettings (NautilusApplication *self)
-{
-        NautilusApplicationPrivate *priv;
-	GdkDisplay *display;
-	gboolean visible;
-
-        priv = nautilus_application_get_instance_private (self);
-	/* desktop GSetting was overridden - don't do anything */
-	if (priv->desktop_override) {
-		return;
-	}
-
-#ifdef GDK_WINDOWING_X11
-	display = gdk_display_get_default ();
-	visible = g_settings_get_boolean (gnome_background_preferences,
-                                          NAUTILUS_PREFERENCES_SHOW_DESKTOP);
-	if (!GDK_IS_X11_DISPLAY (display)) {
-		if (visible)
-			g_warning ("Desktop icons only supported on X11. Desktop not created");
-
-		return;
-	}
-
-	nautilus_application_set_desktop_visible (self, visible);
-
-	return;
-#endif
-
-	g_warning ("Desktop icons only supported on X11. Desktop not created");
-}
-
-static void
-init_desktop (NautilusApplication *self)
-{
-	g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-				  G_CALLBACK (update_desktop_from_gsettings),
-				  self);
-	update_desktop_from_gsettings (self);
 }
 
 static void
@@ -1250,7 +1111,6 @@ nautilus_application_startup_common (NautilusApplication *self)
 	check_required_directories (self);
 
 	nautilus_init_application_actions (self);
-	init_desktop (self);
 
 	nautilus_profile_end (NULL);
 

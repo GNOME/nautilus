@@ -2,6 +2,7 @@ include $(top_srcdir)/Makefile.shared
 
 bin_PROGRAMS=					\
 	nautilus				\
+	nautilus-desktop			\
 	nautilus-autorun-software		\
 	$(NULL)
 
@@ -134,7 +135,7 @@ nautilus_built_sources = \
 	nautilus-enum-types.c \
 	$(NULL)
 
-nautilus_SOURCES = \
+nautilus_no_main_sources = \
 	gtk/nautilusgtkplacesview.c			\
 	gtk/nautilusgtkplacesviewprivate.h		\
 	gtk/nautilusgtkplacesviewrow.c			\
@@ -178,7 +179,6 @@ nautilus_SOURCES = \
 	nautilus-list-view-dnd.h		\
 	nautilus-location-entry.c               \
 	nautilus-location-entry.h               \
-	nautilus-main.c 			\
 	nautilus-mime-actions.c 		\
 	nautilus-mime-actions.h 		\
 	nautilus-notebook.c			\
@@ -221,7 +221,23 @@ nautilus_SOURCES = \
 	nautilus-x-content-bar.h		\
 	$(NULL)
 
+nautilus_SOURCES = \
+	$(nautilus_no_main_sources)		\
+	nautilus-main.c				\
+	$(NULL)
+
+nautilus_desktop_SOURCES= 				\
+	$(nautilus_no_main_sources)			\
+	main-desktop.c					\
+	nautilus-desktop-application.c			\
+	nautilus-desktop-application.h			\
+	$(NULL)
+
 nodist_nautilus_SOURCES = \
+	$(nautilus_built_sources) \
+	$(NULL)
+
+nodist_nautilus_desktop_SOURCES = \
 	$(nautilus_built_sources) \
 	$(NULL)
 
