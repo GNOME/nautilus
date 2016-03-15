@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-03-15 01:50+0000\n"
-"PO-Revision-Date: 2016-03-15 10:06+0100\n"
+"PO-Revision-Date: 2016-03-15 10:33+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -2392,12 +2392,11 @@ msgid "_Redo Duplicate"
 msgstr "D_upliche"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:448
-#, fuzzy, c-format
-#| msgid "_Double click to open items"
+#, c-format
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
-msgstr[0] "_Dopli clic par vierzi i elments"
-msgstr[1] "_Dopli clic par vierzi i elments"
+msgstr[0] "Elimine i leams a %d element"
+msgstr[1] "Elimine i leams a %d elements"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:451
 #, c-format
@@ -2463,10 +2462,9 @@ msgid "_Redo Create Folder"
 msgstr "Cree cartele"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:685
-#, fuzzy, c-format
-#| msgid "Create Document from template \"%s\""
+#, c-format
 msgid "Create new file '%s' from template "
-msgstr "Cree document dal model \"%s\""
+msgstr "Cree gnûf file \"%s\" dal model "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:687
 #, fuzzy
@@ -2530,7 +2528,7 @@ msgstr "Mô_f te Scovacere"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1297
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
-msgstr ""
+msgstr "Torne met i permès origjinâi ai elements contignûts in '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1298
 #, fuzzy, c-format
@@ -2555,7 +2553,7 @@ msgstr "Permès cartele:"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1448
 #, c-format
 msgid "Restore original permissions of '%s'"
-msgstr ""
+msgstr "Torne met i permès origjinâi a '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1449
 #, fuzzy, c-format
@@ -2566,7 +2564,7 @@ msgstr "I permès dal file."
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1559
 #, c-format
 msgid "Restore group of '%s' to '%s'"
-msgstr ""
+msgstr "Torne met come grup di '%s' '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1561
 #, c-format
@@ -2584,7 +2582,7 @@ msgstr "_Torne cambie grup"
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1567
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
-msgstr ""
+msgstr "Torne met come proprietari di '%s' '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1569
 #, c-format
@@ -2606,7 +2604,7 @@ msgstr "No pues determinâ la posizion origjinâl di \"%s\""
 
 #: ../libnautilus-private/nautilus-file-utilities.c:900
 msgid "The item cannot be restored from trash"
-msgstr ""
+msgstr "No si pues tirâ fûr de scovacere l'element"
 
 #: ../libnautilus-private/nautilus-file-utilities.c:1004
 msgid "Audio CD"
@@ -2673,10 +2671,8 @@ msgid "Could not add application"
 msgstr "Impussibil zontâ le aplicazion"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:110
-#, fuzzy
-#| msgid "Could not remove application"
 msgid "Could not forget association"
-msgstr "No si pues gjavâ l'aplicazion"
+msgstr "Impussibil dismenteâ associazion"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:134
 msgid "Forget association"
@@ -2866,14 +2862,16 @@ msgid ""
 "There was an error displaying help: \n"
 "%s"
 msgstr ""
+"Al è saltât fûr un erôr tal mostrâ la guide: \n"
+"%s"
 
 #: ../src/nautilus-application.c:826
 msgid "Perform a quick set of self-check tests."
-msgstr ""
+msgstr "Eseguìs une veloce serie di test di diagnostiche."
 
 #: ../src/nautilus-application.c:833
 msgid "Create the initial window with the given geometry."
-msgstr ""
+msgstr "Cree il barcon iniziâl cun la gjeometrie furnide."
 
 #: ../src/nautilus-application.c:833
 msgid "GEOMETRY"
@@ -2986,7 +2984,7 @@ msgstr "Scritori"
 #: ../src/nautilus-error-reporting.c:67
 #, c-format
 msgid "You do not have the permissions necessary to view the contents of “%s”."
-msgstr ""
+msgstr "No tu âs i permès necessaris par viodi i contignûts di “%s”."
 
 #: ../src/nautilus-error-reporting.c:71
 #, c-format
@@ -2996,7 +2994,7 @@ msgstr " Impussibil cjatâ “%s”. Forsit al è stât eliminât di pôc timp."
 #: ../src/nautilus-error-reporting.c:75
 #, c-format
 msgid "Sorry, could not display all the contents of “%s”: %s"
-msgstr ""
+msgstr "Mi displâs, no tu puedis mostrâ ducj i contignûts di “%s”: %s"
 
 #: ../src/nautilus-error-reporting.c:82
 msgid "This location could not be displayed."
@@ -3591,16 +3589,14 @@ msgid "The link “%s” is broken."
 msgstr "Il leam \"%s\" nol funzione."
 
 #: ../src/nautilus-mime-actions.c:552
-#, fuzzy
-#| msgid "This link cannot be used, because it has no target."
 msgid "This link cannot be used because it has no target."
-msgstr "Il leam nol pues jessi doprât, parcè nol à une destinazion."
+msgstr "Il leam nol pues jessi doprât parcè che nol à une destinazion."
 
 #: ../src/nautilus-mime-actions.c:554
-#, fuzzy, c-format
-#| msgid "This link cannot be used, because its target \"%s\" doesn't exist."
+#, c-format
 msgid "This link cannot be used because its target “%s” doesn't exist."
-msgstr "Il leam nol pues jessi doprât, parcè la destinazion \"%s\" no esist."
+msgstr ""
+"Chest leam nol pues jessi doprât parcè che la destinazion \"%s\" no esist."
 
 #: ../src/nautilus-mime-actions.c:564
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:27
@@ -3608,10 +3604,9 @@ msgid "Mo_ve to Trash"
 msgstr "Mô_f te Scovacere"
 
 #: ../src/nautilus-mime-actions.c:624
-#, fuzzy, c-format
-#| msgid "Do you want to run \"%s\", or display its contents?"
+#, c-format
 msgid "Do you want to run “%s”, or display its contents?"
-msgstr "Vuelistu eseguî \"%s\" o mostrâ il contignût?"
+msgstr "Vuelistu eseguî \"%s\" o mostrâ il so contignût?"
 
 #: ../src/nautilus-mime-actions.c:626
 #, c-format
@@ -3694,28 +3689,22 @@ msgid "Mark as _Trusted"
 msgstr "Segne come _fidât"
 
 #: ../src/nautilus-mime-actions.c:1714
-#, fuzzy, c-format
-#| msgid "This will open %d separate window."
-#| msgid_plural "This will open %d separate windows."
+#, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
-msgstr[0] "Chest al vierzarà %d barcon separât."
-msgstr[1] "Chest al vierzarà %d barcons separâts."
+msgstr[0] "Chest al vierzarà %d aplicazion separade."
+msgstr[1] "Chest al vierzarà %d aplicazions separadis."
 
 #. if it wasn't cancelled show a dialog
 #: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
 #: ../src/gtk/nautilusgtkplacesview.c:1162
 #: ../src/gtk/nautilusgtkplacesview.c:1235
-#, fuzzy
-#| msgid "Unable to eject %V"
 msgid "Unable to access location"
-msgstr "No si pues parâ fûr %V"
+msgstr "Impussibil jentrâ te posizion"
 
 #: ../src/nautilus-mime-actions.c:2134
-#, fuzzy
-#| msgid "Download location?"
 msgid "Unable to start location"
-msgstr "Discjamâ la posizion?"
+msgstr "Impussibil inviâ la posizion"
 
 #: ../src/nautilus-mime-actions.c:2218
 #, c-format
@@ -4173,7 +4162,7 @@ msgstr "_Siere Schede"
 
 #: ../src/nautilus-window.c:2729
 msgid "Access and organize your files."
-msgstr ""
+msgstr "Dopre e organize i tiei file."
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -4201,7 +4190,7 @@ msgstr ""
 #: ../src/nautilus-window-slot.c:1160
 #, c-format
 msgid "“%s” locations are not supported."
-msgstr ""
+msgstr "Lis posizions “%s” no son supuartadis."
 
 #: ../src/nautilus-window-slot.c:1163
 msgid "Unable to handle this kind of location."
@@ -4213,7 +4202,7 @@ msgstr "Impussibil jentrâ te posizion domandade."
 
 #: ../src/nautilus-window-slot.c:1171
 msgid "Don't have permission to access the requested location."
-msgstr ""
+msgstr "No si à i permès par jentrâ inte posizion domandade."
 
 #. This case can be hit for user-typed strings like "foo" due to
 #. * the code that guesses web addresses when there's no initial "/".
@@ -4368,12 +4357,12 @@ msgstr "Va Indevant"
 #: ../src/resources/gtk/help-overlay.ui.h:26
 msgctxt "shortcut window"
 msgid "Go up"
-msgstr ""
+msgstr "Va su"
 
 #: ../src/resources/gtk/help-overlay.ui.h:27
 msgctxt "shortcut window"
 msgid "Go down"
-msgstr ""
+msgstr "Va ju"
 
 #: ../src/resources/gtk/help-overlay.ui.h:28
 msgctxt "shortcut window"
@@ -4833,12 +4822,12 @@ msgstr "Secont"
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:33
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
-msgstr ""
+msgstr "Tierce"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:34
 msgctxt "the n-th position of an icon caption"
 msgid "First"
-msgstr ""
+msgstr "Prime"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:35
 msgid "Views"
@@ -5116,7 +5105,7 @@ msgstr "Daûr a cirî posizions di rêt"
 
 #: ../src/gtk/nautilusgtkplacesview.c:887
 msgid "No network locations found"
-msgstr ""
+msgstr "Nissune posizion di rêt cjatade"
 
 #: ../src/gtk/nautilusgtkplacesview.c:1052
 msgid "Computer"
