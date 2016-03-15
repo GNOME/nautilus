@@ -66,8 +66,6 @@
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
-G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
-
 struct _NautilusApplicationPriv {
 	NautilusProgressPersistenceHandler *progress_handler;
 	NautilusDBusManager *dbus_manager;
@@ -83,6 +81,8 @@ struct _NautilusApplicationPriv {
 
         GHashTable *notifications;
 };
+
+G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
 void
 nautilus_application_add_accelerator (GApplication *app,
