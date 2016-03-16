@@ -3186,7 +3186,7 @@ done_loading (NautilusFilesView *view,
                 } else if (pending_selection != NULL && all_files_seen) {
                         view->details->pending_selection = NULL;
 
-                        nautilus_files_view_call_set_selection (view, selection);
+                        nautilus_files_view_call_set_selection (view, pending_selection);
                         do_reveal = TRUE;
                 }
 
