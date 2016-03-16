@@ -1271,8 +1271,6 @@ add_menu_separator (GtkWidget *menu)
 
         separator = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
         gtk_container_add (GTK_CONTAINER (menu), separator);
-        gtk_widget_set_margin_top (separator, 6);
-        gtk_widget_set_margin_bottom (separator, 6);
         gtk_widget_show (separator);
 }
 
