@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-03-15 01:50+0000\n"
-"PO-Revision-Date: 2016-03-15 10:33+0100\n"
+"PO-Revision-Date: 2016-03-16 11:23+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -2101,8 +2101,6 @@ msgid "Copying Files"
 msgstr "Copie dai file"
 
 #: ../libnautilus-private/nautilus-file-operations.c:5199
-#, fuzzy
-#| msgid "Preparing to Move to “%B”"
 msgid "Preparing to move to “%B”"
 msgstr "Daûr a prontâ a movi in \"%B\""
 
@@ -2253,33 +2251,27 @@ msgid "_Redo Move"
 msgstr "_Torne Sposte"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:387
-#, fuzzy
-#| msgid "_Delete from Trash"
 msgid "_Undo Restore from Trash"
-msgstr "_Elimine de Scovacere"
+msgstr "_Anule il tirâ fûr de Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:388
-#, fuzzy
-#| msgid "_Delete from Trash"
 msgid "_Redo Restore from Trash"
-msgstr "_Elimine de Scovacere"
+msgstr "_Torne tire fûr de Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:391
-#, fuzzy, c-format
-#| msgid "Move each selected item to the Trash"
+#, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
-msgstr[0] "Môf ogni element selezionât te Scovacere"
-msgstr[1] "Môf ogni element selezionât te Scovacere"
+msgstr[0] "Torne môf %d element te Scovacere"
+msgstr[1] "Torne môf %d elements te Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:394
 #: ../libnautilus-private/nautilus-file-undo-operations.c:990
-#, fuzzy, c-format
-#| msgid "_Delete from Trash"
+#, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
-msgstr[0] "_Elimine de Scovacere"
-msgstr[1] "_Elimine de Scovacere"
+msgstr[0] "Tire fûr %d element de scovacere"
+msgstr[1] "Tire fûr %d elements de scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:398
 #, c-format
@@ -2287,10 +2279,9 @@ msgid "Move '%s' back to trash"
 msgstr "Torne movi '%s' te scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:399
-#, fuzzy, c-format
-#| msgid "_Delete from Trash"
+#, c-format
 msgid "Restore '%s' from trash"
-msgstr "_Elimine de Scovacere"
+msgstr "Tire fûr '%s de Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:403
 #, c-format
@@ -2300,13 +2291,11 @@ msgstr[0] "Scancele %d element copiât"
 msgstr[1] "Scancele %d elements copiâts"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:406
-#, fuzzy, c-format
-#| msgid "Copying %'d file to \"%B\""
-#| msgid_plural "Copying %'d files to \"%B\""
+#, c-format
 msgid "Copy %d item to '%s'"
 msgid_plural "Copy %d items to '%s'"
-msgstr[0] "Daûr a copiâ %'d file in \"%B\""
-msgstr[1] "Daûr a copiâ %'d files in \"%B\""
+msgstr[0] "Copie %d element su '%s'"
+msgstr[1] "Copie %d elements su '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:410
 #, c-format
@@ -2343,36 +2332,32 @@ msgid "_Redo Copy"
 msgstr "_Torne Copie"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:425
-#, fuzzy, c-format
-#| msgid "Duplicate each selected item"
+#, c-format
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
-msgstr[0] "Dupliche ogni element selezionât"
-msgstr[1] "Dupliche ogni element selezionât"
+msgstr[0] "Elimine %d element dopleât"
+msgstr[1] "Elimine %d elements dopleâts"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:428
-#, fuzzy, c-format
-#| msgid "Duplicate each selected item"
+#, c-format
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
-msgstr[0] "Dupliche ogni element selezionât"
-msgstr[1] "Dupliche ogni element selezionât"
+msgstr[0] "Doplee %d element in '%s'"
+msgstr[1] "Doplee %d elements in '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:432
-#, fuzzy, c-format
-#| msgid "Duplicate each selected item"
+#, c-format
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
-msgstr[0] "Dupliche ogni element selezionât"
-msgstr[1] "Dupliche ogni element selezionât"
+msgstr[0] "_Anule dopleament %d element"
+msgstr[1] "_Anule dopleament %d elements"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:435
-#, fuzzy, c-format
-#| msgid "Duplicate each selected item"
+#, c-format
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
-msgstr[0] "Dupliche ogni element selezionât"
-msgstr[1] "Dupliche ogni element selezionât"
+msgstr[0] "_Torne doplee %d element"
+msgstr[1] "_Torne doplee %d elements"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:440
 #, c-format
@@ -2380,16 +2365,12 @@ msgid "Duplicate '%s' in '%s'"
 msgstr "Dopleâ '%s' in '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:443
-#, fuzzy
-#| msgid "D_uplicate"
 msgid "_Undo Duplicate"
-msgstr "D_upliche"
+msgstr "_Anule dopleament"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:444
-#, fuzzy
-#| msgid "D_uplicate"
 msgid "_Redo Duplicate"
-msgstr "D_upliche"
+msgstr "_Torne a dopleâ"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:448
 #, c-format
@@ -2902,10 +2883,8 @@ msgid "Quit Nautilus."
 msgstr "Va fûr di Nautilis."
 
 #: ../src/nautilus-application.c:847
-#, fuzzy
-#| msgid "Select the columns visible in this folder"
 msgid "Select specified URI in parent folder."
-msgstr "Sielç lis colonis visibilis in cheste cartele"
+msgstr "Selezione i URI specificâts te cartele superiôr."
 
 #: ../src/nautilus-application.c:848
 msgid "[URI...]"
@@ -2931,16 +2910,13 @@ msgid "Oops! There was a problem running this software."
 msgstr "Orpo! Al è vignût fûr un probleme fasint zirâ chest software."
 
 #: ../src/nautilus-autorun-software.c:201
-#, fuzzy, c-format
-#| msgid ""
-#| "You have just inserted media with software intended to be automatically "
-#| "started."
+#, c-format
 msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
 "to run it?"
 msgstr ""
-"Tu âs apene metût dentri un supuart cun software pensât par jessi inviât in "
-"automatic."
+"\"%s\" al à un software pensât par sedi inviât in automatic. Vûstu fâlu "
+"partî?"
 
 #: ../src/nautilus-autorun-software.c:205
 msgid "If you don't trust this location or aren't sure, press Cancel."
@@ -3524,10 +3500,8 @@ msgid "%s Visible Columns"
 msgstr "%s colonis visibilis"
 
 #: ../src/nautilus-list-view.c:2662
-#, fuzzy
-#| msgid "Choose the order of information to appear in the list view."
 msgid "Choose the order of information to appear in this folder:"
-msgstr "Sielç l'ordin des informazions inte viodude a liste."
+msgstr "Sielç l'ordin des informazions di mostrâ in cheste cartele:"
 
 #: ../src/nautilus-location-entry.c:255
 #, c-format
@@ -3647,16 +3621,14 @@ msgid "_Select Application"
 msgstr "_Sielç une aplicazion"
 
 #: ../src/nautilus-mime-actions.c:1189
-#, fuzzy
-#| msgid "There was an error copying the file into %F."
 msgid "There was an internal error trying to search for applications:"
-msgstr "Al è stât un erôr copiant il file in %F."
+msgstr ""
+"Al è vignût fûr un erôr interni intant che a si provave a cirî lis "
+"aplicazions:"
 
 #: ../src/nautilus-mime-actions.c:1191
-#, fuzzy
-#| msgid "Select an Application"
 msgid "Unable to search for application"
-msgstr "Sielç une aplicazion"
+msgstr "Impussibil cirî la aplicazion"
 
 #: ../src/nautilus-mime-actions.c:1314
 #, c-format
@@ -3668,10 +3640,8 @@ msgstr ""
 "Âstu voie di cirî une aplicazion par vierzi chest file?"
 
 #: ../src/nautilus-mime-actions.c:1464
-#, fuzzy
-#| msgid "Choose what application to launch."
 msgid "Untrusted application launcher"
-msgstr "Sielç cuale aplicazion inviâ."
+msgstr "Inviadôrs di aplicazion no fidât"
 
 #: ../src/nautilus-mime-actions.c:1467
 #, c-format
