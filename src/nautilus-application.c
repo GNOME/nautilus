@@ -1208,29 +1208,24 @@ on_application_shutdown (GApplication *application,
         g_list_free (notification_ids);
 }
 
-static void
-nautilus_application_startup (GApplication *app)
+void
+nautilus_application_startup_common (NautilusApplication *self)
 {
-	NautilusApplication *self = NAUTILUS_APPLICATION (app);
         NautilusApplicationPrivate *priv;
 
 	nautilus_profile_start (NULL);
-
         priv = nautilus_application_get_instance_private (self);
 
-	g_application_set_resource_base_path (app, "/org/gnome/nautilus");
+	g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/nautilus");
 
 	/* chain up to the GTK+ implementation early, so gtk_init()
 	 * is called for us.
 	 */
-	G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (app);
+	G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
 	gtk_window_set_default_icon_name ("system-file-manager");
 
 	setup_theme_extensions ();
-
-	/* create DBus manager */
-	priv->fdb_manager = nautilus_freedesktop_dbus_new ();
 
 	/* initialize preferences and create the global GSettings objects */
 	nautilus_global_preferences_init ();
@@ -1260,6 +1255,23 @@ nautilus_application_startup (GApplication *app)
 	nautilus_profile_end (NULL);
 
         g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
+
+}
+
+static void
+nautilus_application_startup (GApplication *app)
+{
+	NautilusApplication *self = NAUTILUS_APPLICATION (app);
+        NautilusApplicationPrivate *priv;
+
+	nautilus_profile_start (NULL);
+        priv = nautilus_application_get_instance_private (self);
+
+	/* create DBus manager */
+	priv->fdb_manager = nautilus_freedesktop_dbus_new ();
+        nautilus_application_startup_common (self);
+
+	nautilus_profile_end (NULL);
 }
 
 static gboolean
@@ -1328,6 +1340,12 @@ update_dbus_opened_locations (NautilusApplication *self)
 	g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
         priv = nautilus_application_get_instance_private (self);
+
+        /* Children of nautilus application could not handle the dbus, so don't
+         * do anything in that case */
+        if (!priv->fdb_manager)
+                return;
+
 	for (l = priv->windows; l != NULL; l = l->next) {
 		window = l->data;
 
