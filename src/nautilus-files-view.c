@@ -3180,7 +3180,7 @@ done_loading (NautilusFilesView *view,
                 selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
                 if (nautilus_view_is_searching (NAUTILUS_VIEW (view)) &&
-                    all_files_seen && !selection) {
+                    all_files_seen && !selection && !pending_selection) {
                         nautilus_files_view_select_first (view);
                         do_reveal = TRUE;
                 } else if (pending_selection != NULL && all_files_seen) {
@@ -3656,8 +3656,11 @@ display_pending_files (NautilusFilesView *view)
         process_new_files (view);
         process_old_files (view);
 
-        if (!nautilus_files_view_get_selection (NAUTILUS_VIEW (view)))
+        if (!nautilus_files_view_get_selection (NAUTILUS_VIEW (view)) &&
+            !view->details->pending_selection) {
                 nautilus_files_view_select_first (view);
+
+            }
 
         if (view->details->model != NULL
             && nautilus_directory_are_all_files_seen (view->details->model)
