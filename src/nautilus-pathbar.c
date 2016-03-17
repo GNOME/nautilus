@@ -479,7 +479,9 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
 	/* Theoretically, the slider could be bigger than the other button.  But we're
 	 * not going to worry about that now.
 	 */
-	path_bar->priv->slider_width = MIN (height * 2 / 3 + 5, height);
+        gtk_widget_get_preferred_width (path_bar->priv->down_slider_button,
+                                        &path_bar->priv->slider_width,
+                                        NULL);
 
 	if (path_bar->priv->button_list) {
 		*minimum += (path_bar->priv->slider_width) * 2;
