@@ -5279,6 +5279,10 @@ copy_or_move_selection (NautilusFilesView *view,
                                               _("_Cancel"), GTK_RESPONSE_CANCEL,
                                               _("_Select"), GTK_RESPONSE_OK,
                                               NULL);
+
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+                                         GTK_RESPONSE_OK);
+
         gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
         gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
