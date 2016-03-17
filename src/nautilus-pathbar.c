@@ -202,8 +202,8 @@ action_pathbar_properties (GSimpleAction *action,
 }
 
 static GtkWidget *
-get_slider_button (NautilusPathBar  *path_bar,
-		   GtkArrowType arrow_type)
+get_slider_button (NautilusPathBar *path_bar,
+                   const gchar     *arrow_type)
 {
         GtkWidget *button;
 
@@ -212,7 +212,8 @@ get_slider_button (NautilusPathBar  *path_bar,
         button = gtk_button_new ();
 	gtk_button_set_focus_on_click (GTK_BUTTON (button), FALSE);
 	gtk_widget_add_events (button, GDK_SCROLL_MASK);
-        gtk_container_add (GTK_CONTAINER (button), gtk_arrow_new (arrow_type, GTK_SHADOW_OUT));
+        gtk_container_add (GTK_CONTAINER (button),
+                           gtk_image_new_from_icon_name (arrow_type, GTK_ICON_SIZE_MENU));
         gtk_container_add (GTK_CONTAINER (path_bar), button);
         gtk_widget_show_all (button);
 
@@ -310,8 +311,8 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
 	gtk_widget_set_has_window (GTK_WIDGET (path_bar), FALSE);
         gtk_widget_set_redraw_on_allocate (GTK_WIDGET (path_bar), FALSE);
 
-        path_bar->priv->up_slider_button = get_slider_button (path_bar, GTK_ARROW_LEFT);
-        path_bar->priv->down_slider_button = get_slider_button (path_bar, GTK_ARROW_RIGHT);
+        path_bar->priv->up_slider_button = get_slider_button (path_bar, "go-previous-symbolic");
+        path_bar->priv->down_slider_button = get_slider_button (path_bar, "go-next-symbolic");
 
         g_signal_connect_swapped (path_bar->priv->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
         g_signal_connect_swapped (path_bar->priv->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
