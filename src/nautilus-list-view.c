@@ -1664,7 +1664,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 				 G_CALLBACK (get_icon_scale_callback), view, 0);
 
 	gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
-	gtk_tree_view_set_rules_hint (view->details->tree_view, TRUE);
 
 	g_settings_bind (nautilus_list_view_preferences, NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE,
 			 view->details->tree_view, "show-expanders",
