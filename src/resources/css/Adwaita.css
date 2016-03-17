@@ -122,6 +122,11 @@
     border-bottom: 1px solid @theme_bg_color;
 }
 
+/* Hide superfluous treeview drop target indication */
+.nautilus-list-view .view.dnd {
+    border-style: none;
+}
+
 /* Libgd tag entries in the search. Sadly it requires this copy pasted css style.
  * https://git.gnome.org/browse/libgd/tree/libgd/gd-tagged-entry-default.css
  */
