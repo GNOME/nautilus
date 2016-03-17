@@ -475,12 +475,9 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	GtkWidget *widget, *dialog_area;
 	NautilusFileConflictDialogDetails *details;
 	GtkDialog *dialog;
-	gboolean source_is_dir;
 
 	details = fcd->details = NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE (fcd);
 	dialog = GTK_DIALOG (fcd);
-
-	source_is_dir = nautilus_file_is_directory (details->source);
 
 	/* Setup the main hbox */
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
