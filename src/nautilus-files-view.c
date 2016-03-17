@@ -3138,10 +3138,6 @@ reveal_selection_idle_callback (gpointer data)
 static void
 check_empty_states (NautilusFilesView *view)
 {
-        GList *files;
-        GList *filtered;
-        gboolean show_hidden_files;
-
         gtk_widget_hide (view->details->no_search_results_widget);
         gtk_widget_hide (view->details->folder_is_empty_widget);
         if (!view->details->loading &&
