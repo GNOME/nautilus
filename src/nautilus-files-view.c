@@ -6268,11 +6268,9 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean can_copy_files;
         gboolean can_link_from_copied_files;
         gboolean can_paste_files_into;
-        gboolean show_app, show_run;
         gboolean item_opens_in_view;
         gboolean is_read_only;
         GAction *action;
-        GAppInfo *app;
         gboolean show_properties;
         GActionGroup *view_action_group;
         gboolean show_mount;
@@ -6357,34 +6355,20 @@ real_update_actions_state (NautilusFilesView *view)
         selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         selection_count = g_list_length (selection);
 
-        show_app = show_run = item_opens_in_view = selection_count != 0;
+        item_opens_in_view = selection_count != 0;
 
         for (l = selection; l != NULL; l = l->next) {
                 NautilusFile *file;
 
                 file = NAUTILUS_FILE (selection->data);
 
-                if (!nautilus_mime_file_opens_in_external_app (file)) {
-                        show_app = FALSE;
-                }
-
-                if (!nautilus_mime_file_launches (file)) {
-                        show_run = FALSE;
-                }
-
                 if (!nautilus_mime_file_opens_in_view (file)) {
                         item_opens_in_view = FALSE;
                 }
 
-                if (!show_app && !show_run && !item_opens_in_view) {
+                if (!item_opens_in_view) {
                         break;
                 }
-        }
-
-        /* Open With <App> menu item */
-        app = NULL;
-        if (show_app) {
-                app = nautilus_mime_get_default_application_for_files (selection);
         }
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
