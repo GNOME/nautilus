@@ -7535,13 +7535,6 @@ nautilus_files_view_stop_batching_selection_changes (NautilusFilesView *view)
         }
 }
 
-static GArray *
-real_get_selected_icon_locations (NautilusFilesView *view)
-{
-        /* By default, just return an empty list. */
-        return g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-}
-
 static void
 nautilus_files_view_get_property (GObject    *object,
                                   guint       prop_id,
@@ -8005,7 +7998,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               g_cclosure_marshal_VOID__VOID,
                               G_TYPE_NONE, 0);
 
-        klass->get_selected_icon_locations = real_get_selected_icon_locations;
         klass->get_backing_uri = real_get_backing_uri;
         klass->using_manual_layout = real_using_manual_layout;
         klass->get_window = nautilus_files_view_get_window;

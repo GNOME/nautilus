@@ -1184,16 +1184,6 @@ nautilus_canvas_view_compute_rename_popover_relative_to (NautilusFilesView *view
         return bounding_box;
 }
 
-static GArray *
-nautilus_canvas_view_get_selected_icon_locations (NautilusFilesView *view)
-{
-	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
-
-	return nautilus_canvas_container_get_selected_icon_locations
-		(get_canvas_container (NAUTILUS_CANVAS_VIEW (view)));
-}
-
-
 static void
 nautilus_canvas_view_set_selection (NautilusFilesView *view, GList *selection)
 {
@@ -1898,7 +1888,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_files_view_class->clear = nautilus_canvas_view_clear;
 	nautilus_files_view_class->end_loading = nautilus_canvas_view_end_loading;
 	nautilus_files_view_class->file_changed = nautilus_canvas_view_file_changed;
-	nautilus_files_view_class->get_selected_icon_locations = nautilus_canvas_view_get_selected_icon_locations;
 	nautilus_files_view_class->compute_rename_popover_relative_to = nautilus_canvas_view_compute_rename_popover_relative_to;
 	nautilus_files_view_class->get_selection = nautilus_canvas_view_get_selection;
 	nautilus_files_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
