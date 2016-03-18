@@ -526,28 +526,13 @@ set_floating_bar_status (NautilusFilesView *view,
 static char *
 real_get_backing_uri (NautilusFilesView *view)
 {
-        NautilusDirectory *directory;
-        char *uri;
-
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
         if (view->details->model == NULL) {
                 return NULL;
         }
 
-        directory = view->details->model;
-
-        if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-                directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
-        } else {
-                nautilus_directory_ref (directory);
-        }
-
-        uri = nautilus_directory_get_uri (directory);
-
-        nautilus_directory_unref (directory);
-
-        return uri;
+        return nautilus_directory_get_uri (view->details->model);
 }
 
 /**

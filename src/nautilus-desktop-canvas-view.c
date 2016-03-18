@@ -39,6 +39,7 @@
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <libnautilus-private/nautilus-desktop-icon-file.h>
+#include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -65,6 +66,7 @@ struct NautilusDesktopCanvasViewDetails
 
 static void     default_zoom_level_changed                        (gpointer                user_data);
 static void     real_update_context_menus                         (NautilusFilesView           *view);
+static char*    real_get_backing_uri                              (NautilusFilesView           *view);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -289,6 +291,7 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 	vclass->update_context_menus = real_update_context_menus;
 	vclass->get_view_id = real_get_id;
 	vclass->end_loading = nautilus_desktop_canvas_view_end_loading;
+	vclass->get_backing_uri = real_get_backing_uri;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
 }
@@ -554,6 +557,36 @@ const GActionEntry desktop_view_entries[] = {
 	{ "stretch", action_stretch },
 	{ "unstretch", action_unstretch },
 };
+
+static char*
+real_get_backing_uri (NautilusFilesView *view)
+{
+        gchar *uri;
+        NautilusDirectory *directory;
+        NautilusDirectory *model;
+
+        g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
+
+        model = nautilus_files_view_get_model (view);
+
+        if (model == NULL) {
+                return NULL;
+        }
+
+        directory = model;
+
+        if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+                directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
+        } else {
+                nautilus_directory_ref (directory);
+        }
+
+        uri = nautilus_directory_get_uri (directory);
+
+        nautilus_directory_unref (directory);
+
+        return uri;
+}
 
 static void
 real_update_context_menus (NautilusFilesView *view)
