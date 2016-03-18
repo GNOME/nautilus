@@ -1963,8 +1963,8 @@ report_trash_progress (CommonJob    *job,
 			                              seconds_count_format_time_units (remaining_time));
                         files_per_second_message = ngettext ("(%d file/sec)",
 	                                                     "(%d files/sec)",
-                                                              (int) transfer_rate + 0.5);
-                        concat_detail = g_strconcat (time_left_message, files_per_second_message, NULL);
+                                                              (int)(transfer_rate + 0.5));
+                        concat_detail = g_strconcat (time_left_message, " ", files_per_second_message, NULL);
 
 	                details = f (concat_detail,
                                      transfer_info->num_files + 1, source_info->num_files,
