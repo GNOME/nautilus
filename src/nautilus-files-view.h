@@ -201,13 +201,6 @@ struct NautilusFilesViewClass {
          */
         void     (* reveal_selection)        (NautilusFilesView *view);
 
-        /* merge_menus is a function pointer that subclasses can override to
-         * add their own menu items to the window's menu bar.
-         * If overridden, subclasses must call parent class's function.
-         */
-        void    (* merge_menus)              (NautilusFilesView *view);
-        void    (* unmerge_menus)            (NautilusFilesView *view);
-
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
          * It is called (at least) whenever the selection changes. If overridden,
