@@ -225,14 +225,6 @@ struct NautilusFilesViewClass {
          * view's lifecycle. */
         gboolean (* using_manual_layout)     (NautilusFilesView *view);
 
-        /* is_read_only is a function pointer that subclasses may
-         * override to control whether or not the user is allowed to
-         * change the contents of the currently viewed directory. The
-         * default implementation checks the permissions of the
-         * directory.
-         */
-        gboolean (* is_read_only)            (NautilusFilesView *view);
-
         /* is_empty is a function pointer that subclasses must
          * override to report whether the view contains any items.
          */

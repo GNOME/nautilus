@@ -326,6 +326,8 @@ static void     set_search_query_internal                      (NautilusFilesVie
                                                                 NautilusQuery     *query,
                                                                 NautilusDirectory *base_model);
 
+static gboolean nautilus_files_view_is_read_only               (NautilusFilesView *view);
+
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
                          GTK_TYPE_GRID,
@@ -662,14 +664,6 @@ nautilus_files_view_get_view_widget (NautilusView *view)
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
         return NAUTILUS_FILES_VIEW (view)->details->view_menu_widget;
-}
-
-static gboolean
-nautilus_files_view_is_read_only (NautilusFilesView *view)
-{
-        g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
-
-        return         NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_read_only (view);
 }
 
 static gboolean
@@ -7367,7 +7361,7 @@ nautilus_files_view_is_editable (NautilusFilesView *view)
 }
 
 static gboolean
-real_is_read_only (NautilusFilesView *view)
+nautilus_files_view_is_read_only (NautilusFilesView *view)
 {
         NautilusFile *file;
 
@@ -8012,7 +8006,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_TYPE_NONE, 0);
 
         klass->get_selected_icon_locations = real_get_selected_icon_locations;
-        klass->is_read_only = real_is_read_only;
         klass->get_backing_uri = real_get_backing_uri;
         klass->using_manual_layout = real_using_manual_layout;
         klass->get_window = nautilus_files_view_get_window;
