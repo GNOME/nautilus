@@ -268,6 +268,12 @@ struct NautilusFilesViewClass {
          * home and other special links. */
         gboolean       (* special_link_in_selection)   (NautilusFilesView *view,
                                                         GList             *selection);
+        /* Use this when the scripts environment vars are being set, for selected files, etc.,
+         * if the subclassed view has some special links that need conversion to
+         * normal uris */
+        char *         (* get_file_paths_or_uris_as_newline_delimited_string) (NautilusFilesView *view,
+                                                                               GList             *selection,
+                                                                               gboolean           get_paths);
 };
 
 /* GObject support */

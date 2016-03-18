@@ -4441,32 +4441,28 @@ get_file_names_as_parameter_array (GList             *selection,
         return parameters;
 }
 
+static char*
+nautilus_files_view_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
+                                                                        GList             *selection,
+                                                                        gboolean           get_paths)
+{
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_file_paths_or_uris_as_newline_delimited_string (view, selection, get_paths);
+}
+
 static char *
-get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
-                                                    gboolean  get_paths)
+real_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
+                                                         GList             *selection,
+                                                         gboolean           get_paths)
 {
         char *path;
         char *uri;
         char *result;
-        NautilusDesktopLink *link;
         GString *expanding_string;
         GList *node;
-        GFile *location;
 
         expanding_string = g_string_new ("");
         for (node = selection; node != NULL; node = node->next) {
-                uri = NULL;
-                if (NAUTILUS_IS_DESKTOP_ICON_FILE (node->data)) {
-                        link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (node->data));
-                        if (link != NULL) {
-                                location = nautilus_desktop_link_get_activation_location (link);
-                                uri = g_file_get_uri (location);
-                                g_object_unref (location);
-                                g_object_unref (G_OBJECT (link));
-                        }
-                } else {
-                        uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
-                }
+                uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
                 if (uri == NULL) {
                         continue;
                 }
@@ -4492,15 +4488,17 @@ get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
 }
 
 static char *
-get_file_paths_as_newline_delimited_string (GList *selection)
+get_file_paths_as_newline_delimited_string (NautilusFilesView *view,
+                                            GList             *selection)
 {
-        return get_file_paths_or_uris_as_newline_delimited_string (selection, TRUE);
+        return nautilus_files_view_get_file_paths_or_uris_as_newline_delimited_string (view, selection, TRUE);
 }
 
 static char *
-get_file_uris_as_newline_delimited_string (GList *selection)
+get_file_uris_as_newline_delimited_string (NautilusFilesView *view,
+                                           GList             *selection)
 {
-        return get_file_paths_or_uris_as_newline_delimited_string (selection, FALSE);
+        return nautilus_files_view_get_file_paths_or_uris_as_newline_delimited_string (view, selection, FALSE);
 }
 
 /* returns newly allocated strings for setting the environment variables */
@@ -4520,13 +4518,13 @@ get_strings_for_environment_variables (NautilusFilesView  *view,
         if (g_str_has_prefix (directory_uri, "file:") ||
             eel_uri_is_desktop (directory_uri) ||
             eel_uri_is_trash (directory_uri)) {
-                *file_paths = get_file_paths_as_newline_delimited_string (selected_files);
+                *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
         } else {
                 *file_paths = g_strdup ("");
         }
         g_free (directory_uri);
 
-        *uris = get_file_uris_as_newline_delimited_string (selected_files);
+        *uris = get_file_uris_as_newline_delimited_string (view, selected_files);
 
         *uri = nautilus_directory_get_uri (view->details->model);
         if (eel_uri_is_desktop (*uri)) {
@@ -7979,6 +7977,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         klass->update_actions_state = real_update_actions_state;
         klass->check_empty_states = real_check_empty_states;
         klass->special_link_in_selection = real_special_link_in_selection;
+        klass->get_file_paths_or_uris_as_newline_delimited_string = real_get_file_paths_or_uris_as_newline_delimited_string;
 
         copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 

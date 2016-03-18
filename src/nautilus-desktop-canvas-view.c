@@ -70,6 +70,9 @@ static char*    real_get_backing_uri                              (NautilusFiles
 static void     real_check_empty_states                           (NautilusFilesView           *view);
 static gboolean real_special_link_in_selection                    (NautilusFilesView           *view,
                                                                    GList                       *selection);
+static char *   real_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
+                                                                         GList             *selection,
+                                                                         gboolean           get_paths);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -296,6 +299,8 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 	vclass->end_loading = nautilus_desktop_canvas_view_end_loading;
 	vclass->get_backing_uri = real_get_backing_uri;
 	vclass->check_empty_states = real_check_empty_states;
+	vclass->get_file_paths_or_uris_as_newline_delimited_string = real_get_file_paths_or_uris_as_newline_delimited_string;
+
         vclass->special_link_in_selection = real_special_link_in_selection;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
@@ -620,6 +625,57 @@ real_get_backing_uri (NautilusFilesView *view)
         nautilus_directory_unref (directory);
 
         return uri;
+}
+
+static char *
+real_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
+                                                         GList             *selection,
+                                                         gboolean           get_paths)
+{
+        char *path;
+        char *uri;
+        char *result;
+        NautilusDesktopLink *link;
+        GString *expanding_string;
+        GList *node;
+        GFile *location;
+
+        expanding_string = g_string_new ("");
+        for (node = selection; node != NULL; node = node->next) {
+                uri = NULL;
+                if (NAUTILUS_IS_DESKTOP_ICON_FILE (node->data)) {
+                        link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (node->data));
+                        if (link != NULL) {
+                                location = nautilus_desktop_link_get_activation_location (link);
+                                uri = g_file_get_uri (location);
+                                g_object_unref (location);
+                                g_object_unref (G_OBJECT (link));
+                        }
+                } else {
+                        uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+                }
+                if (uri == NULL) {
+                        continue;
+                }
+
+                if (get_paths) {
+                        path = g_filename_from_uri (uri, NULL, NULL);
+                        if (path != NULL) {
+                                g_string_append (expanding_string, path);
+                                g_free (path);
+                                g_string_append (expanding_string, "\n");
+                        }
+                } else {
+                        g_string_append (expanding_string, uri);
+                        g_string_append (expanding_string, "\n");
+                }
+                g_free (uri);
+        }
+
+        result = expanding_string->str;
+        g_string_free (expanding_string, FALSE);
+
+        return result;
 }
 
 static void
