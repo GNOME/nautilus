@@ -316,7 +316,7 @@ static void     nautilus_files_view_select_file                      (NautilusFi
 
 static void     update_templates_directory                     (NautilusFilesView *view);
 
-static void     check_empty_states                             (NautilusFilesView *view);
+static void     nautilus_files_view_check_empty_states         (NautilusFilesView *view);
 
 static gboolean nautilus_files_view_is_searching               (NautilusView      *view);
 
@@ -3098,12 +3098,17 @@ reveal_selection_idle_callback (gpointer data)
 }
 
 static void
-check_empty_states (NautilusFilesView *view)
+nautilus_files_view_check_empty_states (NautilusFilesView *view)
+{
+        NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->check_empty_states (view);
+}
+
+static void
+real_check_empty_states (NautilusFilesView *view)
 {
         gtk_widget_hide (view->details->no_search_results_widget);
         gtk_widget_hide (view->details->folder_is_empty_widget);
         if (!view->details->loading &&
-            !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) &&
             nautilus_files_view_is_empty (view)) {
                 if (nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
                         gtk_widget_show (view->details->no_search_results_widget);
@@ -3179,7 +3184,7 @@ done_loading (NautilusFilesView *view,
         g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
         g_object_notify (G_OBJECT (view), "is-loading");
 
-        check_empty_states (view);
+        nautilus_files_view_check_empty_states (view);
 
         nautilus_profile_end (NULL);
 }
@@ -3547,7 +3552,7 @@ static void
 on_end_file_changes (NautilusFilesView *view)
 {
         /* Addition and removal of files modify the empty state */
-        check_empty_states (view);
+        nautilus_files_view_check_empty_states (view);
         /* If the view is empty, zoom slider and sort menu are insensitive */
         nautilus_files_view_update_toolbar_menus (view);
 }
@@ -7124,7 +7129,7 @@ finish_loading (NautilusFilesView *view)
         g_signal_emit (view, signals[BEGIN_LOADING], 0);
         nautilus_profile_end ("BEGIN_LOADING");
 
-        check_empty_states (view);
+        nautilus_files_view_check_empty_states (view);
 
         if (nautilus_directory_are_all_files_seen (view->details->model)) {
                 /* Unschedule a pending update and schedule a new one with the minimal
@@ -7986,6 +7991,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         klass->get_window = nautilus_files_view_get_window;
         klass->update_context_menus = real_update_context_menus;
         klass->update_actions_state = real_update_actions_state;
+        klass->check_empty_states = real_check_empty_states;
 
         copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 
