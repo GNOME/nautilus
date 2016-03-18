@@ -262,6 +262,12 @@ struct NautilusFilesViewClass {
         /* Use this to show an optional visual feedback when the directory is empty.
          * By default it shows a widget overlay on top of the view */
         void           (* check_empty_states)          (NautilusFilesView *view);
+
+        /* Use this to tell the view whether inside the selection there is some link
+         * that cannot be work with. This is used by the desktop for the trash,
+         * home and other special links. */
+        gboolean       (* special_link_in_selection)   (NautilusFilesView *view,
+                                                        GList             *selection);
 };
 
 /* GObject support */

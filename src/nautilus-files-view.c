@@ -4055,33 +4055,19 @@ offset_drop_points (GArray *relative_item_points,
         }
 }
 
-/* special_link_in_selection
- *
- * Return TRUE if one of our special links is in the selection.
- * Special links include the following:
- *         NAUTILUS_DESKTOP_LINK_TRASH, NAUTILUS_DESKTOP_LINK_HOME, NAUTILUS_DESKTOP_LINK_MOUNT
- */
-
 static gboolean
-special_link_in_selection (GList *selection)
+nautilus_files_view_special_link_in_selection (NautilusFilesView *view,
+                                               GList             *selection)
 {
-        gboolean saw_link;
-        GList *node;
-        NautilusFile *file;
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->special_link_in_selection (view, selection);
+}
 
-        saw_link = FALSE;
-
-        for (node = selection; node != NULL; node = node->next) {
-                file = NAUTILUS_FILE (node->data);
-
-                saw_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
-
-                if (saw_link) {
-                        break;
-                }
-        }
-
-        return saw_link;
+/* Normal view doesn't have any special link */
+static gboolean
+real_special_link_in_selection (NautilusFilesView *view,
+                                GList             *selection)
+{
+        return FALSE;
 }
 
 /* desktop_or_home_dir_in_selection
@@ -6246,7 +6232,7 @@ real_update_actions_state (NautilusFilesView *view)
 
         selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
         selection_count = g_list_length (selection);
-        selection_contains_special_link = special_link_in_selection (selection);
+        selection_contains_special_link = nautilus_files_view_special_link_in_selection (view, selection);
         selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
         selection_contains_recent = showing_recent_directory (view);
         selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
@@ -7992,6 +7978,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         klass->update_context_menus = real_update_context_menus;
         klass->update_actions_state = real_update_actions_state;
         klass->check_empty_states = real_check_empty_states;
+        klass->special_link_in_selection = real_special_link_in_selection;
 
         copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);
 

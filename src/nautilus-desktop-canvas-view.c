@@ -68,6 +68,8 @@ static void     default_zoom_level_changed                        (gpointer     
 static void     real_update_context_menus                         (NautilusFilesView           *view);
 static char*    real_get_backing_uri                              (NautilusFilesView           *view);
 static void     real_check_empty_states                           (NautilusFilesView           *view);
+static gboolean real_special_link_in_selection                    (NautilusFilesView           *view,
+                                                                   GList                       *selection);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
@@ -294,6 +296,7 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 	vclass->end_loading = nautilus_desktop_canvas_view_end_loading;
 	vclass->get_backing_uri = real_get_backing_uri;
 	vclass->check_empty_states = real_check_empty_states;
+        vclass->special_link_in_selection = real_special_link_in_selection;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
 }
@@ -559,6 +562,29 @@ const GActionEntry desktop_view_entries[] = {
 	{ "stretch", action_stretch },
 	{ "unstretch", action_unstretch },
 };
+
+static gboolean
+real_special_link_in_selection (NautilusFilesView *view,
+                                GList             *selection)
+{
+        gboolean saw_link;
+        GList *node;
+        NautilusFile *file;
+
+        saw_link = FALSE;
+
+        for (node = selection; node != NULL; node = node->next) {
+                file = NAUTILUS_FILE (node->data);
+
+                saw_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
+
+                if (saw_link) {
+                        break;
+                }
+        }
+
+        return saw_link;
+}
 
 /* Do nothing */
 static void
