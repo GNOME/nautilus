@@ -22,22 +22,9 @@
 #ifndef NAUTILUS_WINDOW_SLOT_H
 #define NAUTILUS_WINDOW_SLOT_H
 
-#include "nautilus-query-editor.h"
-
-typedef struct NautilusWindowSlot NautilusWindowSlot;
-typedef struct NautilusWindowSlotClass NautilusWindowSlotClass;
-typedef struct NautilusWindowSlotDetails NautilusWindowSlotDetails;
-
-#include "nautilus-files-view.h"
-#include "nautilus-view.h"
-#include "nautilus-window.h"
-
-#define NAUTILUS_TYPE_WINDOW_SLOT	 (nautilus_window_slot_get_type())
-#define NAUTILUS_WINDOW_SLOT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_WINDOW_SLOT, NautilusWindowSlotClass))
-#define NAUTILUS_WINDOW_SLOT(obj)	 (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_WINDOW_SLOT, NautilusWindowSlot))
-#define NAUTILUS_IS_WINDOW_SLOT(obj)      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_WINDOW_SLOT))
-#define NAUTILUS_IS_WINDOW_SLOT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_WINDOW_SLOT))
-#define NAUTILUS_WINDOW_SLOT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_WINDOW_SLOT, NautilusWindowSlotClass))
+#include <gdk/gdk.h>
+#include <gio/gio.h>
+#include <gtk/gtk.h>
 
 typedef enum {
 	NAUTILUS_LOCATION_CHANGE_STANDARD,
@@ -46,24 +33,22 @@ typedef enum {
 	NAUTILUS_LOCATION_CHANGE_RELOAD
 } NautilusLocationChangeType;
 
-struct NautilusWindowSlotClass {
+#define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
+G_DECLARE_DERIVABLE_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, GtkBox)
+
+#include "nautilus-query-editor.h"
+#include "nautilus-files-view.h"
+#include "nautilus-view.h"
+#include "nautilus-window.h"
+
+
+struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
 
 	/* wrapped NautilusWindowInfo signals, for overloading */
 	void (* active)   (NautilusWindowSlot *slot);
 	void (* inactive) (NautilusWindowSlot *slot);
 };
-
-/* Each NautilusWindowSlot corresponds to a location in the window
- * for displaying a NautilusFilesView, i.e. a tab.
- */
-struct NautilusWindowSlot {
-	GtkBox parent;
-
-	NautilusWindowSlotDetails *details;
-};
-
-GType   nautilus_window_slot_get_type (void);
 
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusWindow     *window);
 
