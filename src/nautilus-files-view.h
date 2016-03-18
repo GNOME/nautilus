@@ -238,9 +238,6 @@ struct NautilusFilesViewClass {
          */
         gboolean (* is_empty)                (NautilusFilesView *view);
 
-        gboolean (* can_rename_file)         (NautilusFilesView *view,
-                                              NautilusFile      *file);
-
         /* convert *point from widget's coordinate system to a coordinate
          * system used for specifying file operation positions, which is view-specific.
          *

@@ -664,22 +664,6 @@ nautilus_files_view_get_view_widget (NautilusView *view)
         return NAUTILUS_FILES_VIEW (view)->details->view_menu_widget;
 }
 
-/**
- * nautilus_files_view_can_rename_file
- *
- * Determine whether a file can be renamed.
- * @file: A NautilusFile
- *
- * Return value: TRUE if @file can be renamed, FALSE otherwise.
- *
- **/
-static gboolean
-nautilus_files_view_can_rename_file (NautilusFilesView *view,
-                                     NautilusFile      *file)
-{
-        return         NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->can_rename_file (view, file);
-}
-
 static gboolean
 nautilus_files_view_is_read_only (NautilusFilesView *view)
 {
@@ -4178,13 +4162,6 @@ trash_or_delete_files (GtkWindow         *parent_window,
         g_list_free_full (locations, g_object_unref);
 }
 
-static gboolean
-can_rename_file (NautilusFilesView *view,
-                 NautilusFile      *file)
-{
-        return nautilus_file_can_rename (file);
-}
-
 static void
 open_one_in_new_window (gpointer data,
                         gpointer callback_data)
@@ -6336,7 +6313,7 @@ real_update_actions_state (NautilusFilesView *view)
         } else {
                 g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                              selection_count == 1 &&
-                                             nautilus_files_view_can_rename_file (view, selection->data));
+                                             nautilus_file_can_rename (selection->data));
         }
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
@@ -8036,7 +8013,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
         klass->get_selected_icon_locations = real_get_selected_icon_locations;
         klass->is_read_only = real_is_read_only;
-        klass->can_rename_file = can_rename_file;
         klass->get_backing_uri = real_get_backing_uri;
         klass->using_manual_layout = real_using_manual_layout;
         klass->get_window = nautilus_files_view_get_window;

@@ -999,12 +999,6 @@ layout_changed_callback (NautilusCanvasContainer *container,
 	}
 }
 
-static gboolean
-nautilus_canvas_view_can_rename_file (NautilusFilesView *view, NautilusFile *file)
-{
-	return NAUTILUS_FILES_VIEW_CLASS(nautilus_canvas_view_parent_class)->can_rename_file (view, file);
-}
-
 const GActionEntry canvas_view_entries[] = {
 	{ "keep-aligned", NULL, NULL, "true", action_keep_aligned },
 	{ "reversed-order", NULL, NULL, "false", action_reversed_order },
@@ -1899,7 +1893,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_files_view_class->add_file = nautilus_canvas_view_add_file;
 	nautilus_files_view_class->begin_loading = nautilus_canvas_view_begin_loading;
 	nautilus_files_view_class->bump_zoom_level = nautilus_canvas_view_bump_zoom_level;
-	nautilus_files_view_class->can_rename_file = nautilus_canvas_view_can_rename_file;
 	nautilus_files_view_class->can_zoom_in = nautilus_canvas_view_can_zoom_in;
 	nautilus_files_view_class->can_zoom_out = nautilus_canvas_view_can_zoom_out;
 	nautilus_files_view_class->clear = nautilus_canvas_view_clear;
