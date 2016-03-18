@@ -571,6 +571,8 @@ real_update_context_menus (NautilusFilesView *view)
 
 	view_action_group = nautilus_files_view_get_action_group (view);
 	desktop_view = NAUTILUS_DESKTOP_CANVAS_VIEW (view);
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+	selection_count = g_list_length (selection);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "empty-trash");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), trash_link_is_selection (view));
@@ -584,9 +586,10 @@ real_update_context_menus (NautilusFilesView *view)
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "change-background");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
+	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "properties");
+	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), selection_count > 0);
+
 	/* Stretch */
-        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-	selection_count = g_list_length (selection);
 	canvas_container = get_canvas_container (desktop_view);
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "stretch");

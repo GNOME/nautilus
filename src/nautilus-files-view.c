@@ -6241,7 +6241,6 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean item_opens_in_view;
         gboolean is_read_only;
         GAction *action;
-        gboolean show_properties;
         GActionGroup *view_action_group;
         gboolean show_mount;
         gboolean show_unmount;
@@ -6286,7 +6285,6 @@ real_update_actions_state (NautilusFilesView *view)
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
                                 can_paste_into_file (NAUTILUS_FILE (selection->data)));
-        show_properties = !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (view) || selection_count > 0;
          settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
                                                                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
          settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
@@ -6505,7 +6503,7 @@ real_update_actions_state (NautilusFilesView *view)
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "properties");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     show_properties);
+                                     TRUE);
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "new-document");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
