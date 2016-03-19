@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-03-15 01:50+0000\n"
-"PO-Revision-Date: 2016-03-17 12:08+0100\n"
+"PO-Revision-Date: 2016-03-19 22:58+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -209,6 +209,8 @@ msgstr ""
 #: ../data/org.gnome.nautilus.gschema.xml.h:25
 msgid "Use extra mouse button events in Nautilus' browser window"
 msgstr ""
+"Dopre i events dai botons adizionâi dal mouse tal barcon di esplorazion "
+"Nautilus"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:26
 msgid ""
@@ -216,10 +218,13 @@ msgid ""
 "will determine if any action is taken inside of Nautilus when either is "
 "pressed."
 msgstr ""
+"Pai utents cui mouse che a àn i botons \"indenant\" e \"indaûr\", cheste "
+"clâf a specifiche se cualsisei azion e je fate dentri Nautilus cuant che un "
+"al ven fracât."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:27
 msgid "Mouse button to activate the \"Forward\" command in browser window"
-msgstr ""
+msgstr "Boton mouse par ativâ il comant \"indenant\" tal barcon di navigazion"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:28
 msgid ""
@@ -227,10 +232,13 @@ msgid ""
 "will set which button activates the \"Forward\" command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
+"Pai utents cui mouse che a àn botons par \"indenant\" e \"indaûr\", cheste "
+"clâf a configure cuâl boton al ative il comant \"indenant\" intun barcon di "
+"navigazion. I valôrs pussibii a varin tra 6 e 14."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:29
 msgid "Mouse button to activate the \"Back\" command in browser window"
-msgstr ""
+msgstr "Boton mouse par ativâ il comant \"indaûr\" tal barcon di navigazion"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:30
 msgid ""
@@ -238,10 +246,13 @@ msgid ""
 "will set which button activates the \"Back\" command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
+"Pai utents cui mouse che a àn botons par \"indenant\" e \"indaûr\", cheste "
+"clâf a configure cuâl boton al ative il comant \"indaûr\" intun barcon di "
+"navigazion. I valôrs pussibii a varin tra 6 e 14."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:31
 msgid "When to show thumbnails of files"
-msgstr ""
+msgstr "Cuant mostrâ lis miniaturis dai file"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:32
 msgid ""
@@ -254,7 +265,7 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:33
 msgid "Maximum image size for thumbnailing"
-msgstr ""
+msgstr "Dimension massime de inmagjin par vê miniaturis"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:34
 msgid ""
@@ -287,7 +298,7 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:39
 msgid "Reverse sort order in new windows"
-msgstr ""
+msgstr "Invertìs l'ordin intai gnûfs barcons"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:40
 msgid ""
@@ -317,6 +328,8 @@ msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
 msgstr ""
+"Cheste clâf e je deprecade e ignorade. La clâf \"show-hidden\" di \"org.gtk."
+"Settings.FileChooser\" a ven doprade al so puest, cumò."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:45
 msgid "What viewer should be used when searching"
@@ -559,13 +572,15 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:88
 msgid "Fade the background on change"
-msgstr ""
+msgstr "Sfante il sfont cuant che al cambie"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:89
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
 msgstr ""
+"Se metût a vêr, alore Nautilus al doprarà un efiet a disfantâ par cambiâ il "
+"sfont dal scritori."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:90
 msgid "The geometry string for a navigation window"
@@ -1489,10 +1504,8 @@ msgid " (%'d"
 msgstr " (%'d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1388
-#, fuzzy
-#| msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
 msgid "Are you sure you want to permanently delete “%B” from the trash?"
-msgstr "Sêstu sigûr di volê eliminâ definitivamentri \"%B\" de Scovacere?"
+msgstr "Sêstu sigûr di volê eliminâ par simpri \"%B\" de Scovacere?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1391
 #, c-format
@@ -1543,32 +1556,26 @@ msgstr[1] ""
 "Sêstu sigûr di volê eliminâ definitivamentri i %'d elements selezionâts?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1511
-#, fuzzy
-#| msgid "Detected as “%s”"
 msgid "Deleted “%B”"
-msgstr "Rilevât come “%s”"
+msgstr "\"%B\" eliminât"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1513
-#, fuzzy
-#| msgid "Duplicating “%B”"
 msgid "Deleting “%B”"
-msgstr "Dopleant \"%B\""
+msgstr "Daûr a eliminâ \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1521
-#, fuzzy, c-format
-#| msgid "Deleting files"
+#, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
-msgstr[0] "Daûr a eliminâ files"
-msgstr[1] "Daûr a eliminâ files"
+msgstr[0] "Eliminât %'d file"
+msgstr[1] "Eliminâts %'d file"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1525
-#, fuzzy, c-format
-#| msgid "Deleting files"
+#, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
-msgstr[0] "Daûr a eliminâ files"
-msgstr[1] "Daûr a eliminâ files"
+msgstr[0] "Daûr a eliminâ %'d file"
+msgstr[1] "Daûr a eliminâ %'d file"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
@@ -1592,13 +1599,10 @@ msgstr "%'d / %'d"
 #.
 #: ../libnautilus-private/nautilus-file-operations.c:1568
 #: ../libnautilus-private/nautilus-file-operations.c:1964
-#, fuzzy
-#| msgid "%'d file left to delete — %T left"
-#| msgid_plural "%'d files left to delete — %T left"
 msgid "%'d / %'d — %T left"
 msgid_plural "%'d / %'d — %T left"
-msgstr[0] "%'d file ancjemò di eliminâ - a mancjin %T"
-msgstr[1] "%'d files ancjemò di eliminâ - a mancjin %T"
+msgstr[0] "%'d / %'d — Al reste %T"
+msgstr[1] "%'d / %'d — A restin %T"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1571
 #: ../libnautilus-private/nautilus-file-operations.c:1967
@@ -1617,15 +1621,12 @@ msgid "Error while deleting."
 msgstr "Erôr dilunc la eliminazion."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1657
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "Files in the folder “%B” cannot be deleted because you do not have "
 "permissions to see them."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"I file te cartele \"%B\" no puedin jessi eliminâts parcè che no tu âs i "
+"permès par viodiju."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1660
 #: ../libnautilus-private/nautilus-file-operations.c:2824
@@ -1642,23 +1643,18 @@ msgid "_Skip files"
 msgstr "_Salte files"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1690
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "The folder “%B” cannot be deleted because you do not have permissions to "
 "read it."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"La cartele \"%B\" no pues jessi eliminade parcè che no tu âs i permès par "
+"leile."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1693
 #: ../libnautilus-private/nautilus-file-operations.c:2863
 #: ../libnautilus-private/nautilus-file-operations.c:4061
-#, fuzzy
-#| msgid "There was an error copying the file into %F."
 msgid "There was an error reading the folder “%B”."
-msgstr "Al è stât un erôr copiant il file in %F."
+msgstr "Al è vignût fûr un erôr tal lei la cartele \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1727
 msgid "Could not remove the folder %B."
@@ -1669,39 +1665,31 @@ msgid "There was an error deleting %B."
 msgstr "Al è vignût fûr un erôr tal scancelâ %B."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1906
-#, fuzzy
-#| msgid "Duplicating “%B”"
 msgid "Trashing “%B”"
-msgstr "Dopleant \"%B\""
+msgstr "Movint te Scovacere \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1908
-#, fuzzy
-#| msgid "Trash"
 msgid "Trashed “%B”"
-msgstr "Scovacere"
+msgstr "Mot te scovacere \"%B\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:1916
-#, fuzzy, c-format
-#| msgid "Trashing Files"
+#, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
-msgstr[0] "Si stâ butant file te scovacere"
-msgstr[1] "Si stâ butant file te scovacere"
+msgstr[0] "Daûr a movi te scovacere %'d file"
+msgstr[1] "Daûr a movi te scovacere %'d file"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1920
-#, fuzzy, c-format
-#| msgid "Trash"
+#, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
-msgstr[0] "Scovacere"
-msgstr[1] "Scovacere"
+msgstr[0] "Mot te Scovacere %'d file"
+msgstr[1] "Mots te Scovacere %'d file"
 
 #. Translators: %B is a file name
 #: ../libnautilus-private/nautilus-file-operations.c:2043
-#, fuzzy
-#| msgid "Cannot move file to trash, do you want to delete immediately?"
 msgid "“%B” can't be put in the trash. Do you want to delete it immediately?"
-msgstr "No si pues movi il file te scovacere, vuelistu eliminâlu daurman?"
+msgstr "No si pues movi te scovacere \"%B\". Vuelistu eliminâlu daurman?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2049
 msgid "This remote location does not support sending items to the trash."
@@ -1743,10 +1731,9 @@ msgstr "_No stâ disvuedâ la scovacere"
 #. Translators: %s is a file name formatted for display
 #: ../libnautilus-private/nautilus-file-operations.c:2636
 #: ../src/nautilus-files-view.c:5697
-#, fuzzy, c-format
-#| msgid "Unable to eject %s"
+#, c-format
 msgid "Unable to access “%s”"
-msgstr "No si pues parâ fûr %s"
+msgstr "No si pues entrâ in \"%s\""
 
 #: ../libnautilus-private/nautilus-file-operations.c:2712
 #, c-format
@@ -1794,37 +1781,27 @@ msgid "Error while moving files to trash."
 msgstr "Erôr intant che a si spostave file te scovacere."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2821
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "Files in the folder “%B” cannot be handled because you do not have "
 "permissions to see them."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"I file te cartele \"%B\" no puedin jessi doprâts parcè che no tu âs i permès "
+"par viodiju."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2860
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "The folder “%B” cannot be handled because you do not have permissions to "
 "read it."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"La cartele \"%B\" no pues jessi doprade parcè che no tu âs i permès par "
+"leile."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2937
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "The file “%B” cannot be handled because you do not have permissions to read "
 "it."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"Il file \"%B\" nol pues jessi doprât parcè che no tu âs i permès par leilu."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2940
 msgid "There was an error getting information about “%B”."
@@ -1957,43 +1934,32 @@ msgstr[0] "%'d / %'d — al reste %T (%S/sec)"
 msgstr[1] "%'d / %'d — a restin %T (%S/sec)"
 
 #: ../libnautilus-private/nautilus-file-operations.c:3880
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "The folder “%B” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"La cartele \"%B\" no pues jessi copiade parcè che no tu âs i permès par "
+"creâle te destinazion."
 
 #: ../libnautilus-private/nautilus-file-operations.c:3883
-#, fuzzy
-#| msgid "There was an error copying the file into %F."
 msgid "There was an error creating the folder “%B”."
-msgstr "Al è stât un erôr copiant il file in %F."
+msgstr "Al è vignût fûr un erôr tal creâ la cartele \"%B\"."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4013
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "Files in the folder “%B” cannot be copied because you do not have "
 "permissions to see them."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"I file te cartele \"%B\" no puedin jessi copiâts parcè che no tu âs i permès "
+"par viodiju."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4058
-#, fuzzy
-#| msgid ""
-#| "The folder \"%B\" cannot be deleted because you do not have permissions "
-#| "to read it."
 msgid ""
 "The folder “%B” cannot be copied because you do not have permissions to read "
 "it."
 msgstr ""
-"La cartele \"%B\" no si pues eliminâ parcè che no tu âs i permès par leile."
+"La cartele \"%B\" no pues jessi copiade parcè che no tu âs i permès par "
+"leile."
 
 #: ../libnautilus-private/nautilus-file-operations.c:4103
 #: ../libnautilus-private/nautilus-file-operations.c:4832
@@ -2363,16 +2329,12 @@ msgid "Create link to '%s'"
 msgstr "Cree leam a '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:458
-#, fuzzy
-#| msgid "Undo the edit"
 msgid "_Undo Create Link"
-msgstr "Anule la modifiche"
+msgstr "_Anule il creâ dal leam"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:459
-#, fuzzy
-#| msgid "Redo the edit"
 msgid "_Redo Create Link"
-msgstr "Torne a fâ la modifiche"
+msgstr "_Torne cree leam"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:675
 #, c-format
@@ -2380,16 +2342,12 @@ msgid "Create an empty file '%s'"
 msgstr "Creâ un file vueit '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:677
-#, fuzzy
-#| msgid "_Empty File"
 msgid "_Undo Create Empty File"
-msgstr "File _vueit"
+msgstr "_Anule il creâ dal file vueit"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:678
-#, fuzzy
-#| msgid "_Empty File"
 msgid "_Redo Create Empty File"
-msgstr "File _vueit"
+msgstr "_Torne cree il file vueit"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:680
 #, c-format
@@ -2397,16 +2355,12 @@ msgid "Create a new folder '%s'"
 msgstr "Creâ une gnove cartele '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:682
-#, fuzzy
-#| msgid "Create Folder"
 msgid "_Undo Create Folder"
-msgstr "Cree cartele"
+msgstr "_Anule il creâ de cartele"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:683
-#, fuzzy
-#| msgid "Create Folder"
 msgid "_Redo Create Folder"
-msgstr "Cree cartele"
+msgstr "_Torne cree cartele"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:685
 #, c-format
@@ -2414,16 +2368,12 @@ msgid "Create new file '%s' from template "
 msgstr "Cree gnûf file \"%s\" dal model "
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:687
-#, fuzzy
-#| msgid "Create Document from template \"%s\""
 msgid "_Undo Create from Template"
-msgstr "Cree document dal model \"%s\""
+msgstr "_Anule il creâ dal model"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:688
-#, fuzzy
-#| msgid "Create Document from template \"%s\""
 msgid "_Redo Create from Template"
-msgstr "Cree document dal model \"%s\""
+msgstr "_Torne cree dal model"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:873
 #: ../libnautilus-private/nautilus-file-undo-operations.c:874
@@ -2432,16 +2382,12 @@ msgid "Rename '%s' as '%s'"
 msgstr "Cambie non '%s' in '%s'"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:876
-#, fuzzy
-#| msgid "Rename"
 msgid "_Undo Rename"
-msgstr "Cambie non"
+msgstr "_Anule il cambiament di non"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:877
-#, fuzzy
-#| msgid "Rename"
 msgid "_Redo Rename"
-msgstr "Cambie non"
+msgstr "_Torne cambie non"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:993
 #, c-format
@@ -2461,16 +2407,12 @@ msgid "Move '%s' to trash"
 msgstr "Môf '%s' te scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1017
-#, fuzzy
-#| msgid "_Trash"
 msgid "_Undo Trash"
-msgstr "Sco_vacere"
+msgstr "_Anule il movi te Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1018
-#, fuzzy
-#| msgid "Mo_ve to Trash"
 msgid "_Redo Trash"
-msgstr "Mô_f te Scovacere"
+msgstr "_Torne môf te Scovacere"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1297
 #, c-format
@@ -2485,17 +2427,13 @@ msgstr "I permès dal file."
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1300
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1451
-#, fuzzy
-#| msgid "Folder Permissions:"
 msgid "_Undo Change Permissions"
-msgstr "Permès cartele:"
+msgstr "_Anule il cambiament dai permès"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1301
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1452
-#, fuzzy
-#| msgid "Folder Permissions:"
 msgid "_Redo Change Permissions"
-msgstr "Permès cartele:"
+msgstr "_Torne cambie i permès"
 
 #: ../libnautilus-private/nautilus-file-undo-operations.c:1448
 #, c-format
@@ -3295,15 +3233,15 @@ msgstr "Viôt la cartele atuâl"
 #: ../src/nautilus-files-view-dnd.c:172 ../src/nautilus-files-view-dnd.c:206
 #: ../src/nautilus-files-view-dnd.c:297
 msgid "Drag and drop is not supported."
-msgstr ""
+msgstr "Strissine e mole nol è supuartât."
 
 #: ../src/nautilus-files-view-dnd.c:173
 msgid "Drag and drop is only supported on local file systems."
-msgstr ""
+msgstr "Strissine e mole al è supuartât dome pai file system locâi."
 
 #: ../src/nautilus-files-view-dnd.c:207 ../src/nautilus-files-view-dnd.c:298
 msgid "An invalid drag type was used."
-msgstr ""
+msgstr "Al è stât doprât un gjenar di strissinament no valit."
 
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/nautilus-files-view-dnd.c:385
@@ -3688,7 +3626,7 @@ msgstr "Dutis lis operazions a son stadis completadis cun sucès"
 
 #: ../src/nautilus-properties-window.c:492
 msgid "You cannot assign more than one custom icon at a time!"
-msgstr ""
+msgstr "No tu puedis assegnâ plui di une icone personalizade ae volte!"
 
 #: ../src/nautilus-properties-window.c:493
 #, fuzzy
@@ -4353,7 +4291,7 @@ msgstr "Mostre/plate file platâts"
 #: ../src/resources/gtk/help-overlay.ui.h:38
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
-msgstr ""
+msgstr "Mostre/plate il panel laterâl"
 
 #: ../src/resources/gtk/help-overlay.ui.h:39
 msgctxt "shortcut window"
@@ -4794,12 +4732,10 @@ msgid "Executable Text Files"
 msgstr "File di test eseguibii"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:42
-#, fuzzy
 msgid "_Display them"
 msgstr "_Mostriju"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:43
-#, fuzzy
 msgid "_Run them"
 msgstr "_Eseguìsiju"
 
