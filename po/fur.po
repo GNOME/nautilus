@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-03-15 01:50+0000\n"
-"PO-Revision-Date: 2016-03-19 23:08+0100\n"
+"PO-Revision-Date: 2016-03-20 23:30+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -600,11 +600,13 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:92
 msgid "Whether the navigation window should be maximized"
-msgstr ""
+msgstr "Indiche se il barcon di navigazion al à di sedi slargjât"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:93
 msgid "Whether the navigation window should be maximized by default."
 msgstr ""
+"Indiche se il barcon di navigazion al à di sedi slargjât come impostazion "
+"predefinide."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:94
 msgid "Width of the side pane"
@@ -889,10 +891,8 @@ msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: ../libnautilus-private/nautilus-file.c:4772
-#, fuzzy
-#| msgid "today, %-I:%M %p"
 msgid "%l:%M %p"
-msgstr "vuê, %-H:%M"
+msgstr "%I:%M %p"
 
 #: ../libnautilus-private/nautilus-file.c:4779
 #, no-c-format
@@ -1699,7 +1699,7 @@ msgstr "No si pues movi te scovacere \"%B\". Vuelistu eliminâlu daurman?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:2049
 msgid "This remote location does not support sending items to the trash."
-msgstr ""
+msgstr "Cheste posizion rimote no supuarte il mandâ elements te scovacere."
 
 #: ../libnautilus-private/nautilus-file-operations.c:2252
 msgid "Trashing Files"
@@ -3251,8 +3251,6 @@ msgstr "Al è stât doprât un gjenar di strissinament no valit."
 
 #. Translator: This is the filename used for when you dnd text to a directory
 #: ../src/nautilus-files-view-dnd.c:385
-#, fuzzy
-#| msgid "dropped text.txt"
 msgid "Dropped Text.txt"
 msgstr "test molât.txt"
 
@@ -3260,10 +3258,8 @@ msgstr "test molât.txt"
 #. * data to a directory, if the source didn't supply a name.
 #.
 #: ../src/nautilus-files-view-dnd.c:483
-#, fuzzy
-#| msgid "dropped text.txt"
 msgid "dropped data"
-msgstr "test molât.txt"
+msgstr "dât molât"
 
 #: ../src/nautilus-image-properties-page.c:331
 msgid "Image Type"
@@ -3429,10 +3425,8 @@ msgstr[1] "Chest al vierzarà %d barcons separâts."
 
 #: ../src/nautilus-mime-actions.c:95
 #: ../src/resources/ui/nautilus-search-popover.ui.h:11
-#, fuzzy
-#| msgid "nothing"
 msgid "Anything"
-msgstr "nuie"
+msgstr "Cualsisei"
 
 #: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4200
 msgid "Folders"
@@ -3635,10 +3629,8 @@ msgid "You cannot assign more than one custom icon at a time!"
 msgstr "No tu puedis assegnâ plui di une icone personalizade ae volte!"
 
 #: ../src/nautilus-properties-window.c:493
-#, fuzzy
-#| msgid "You can only use local images as custom icons."
 msgid "Please drop just one image to set a custom icon."
-msgstr "Tu puedis doprâ nome inmagjinis locâi come iconis personalizadis."
+msgstr "Mole une sole inmagjin par meti une icone personalizade."
 
 #: ../src/nautilus-properties-window.c:504
 msgid "The file that you dropped is not local."
@@ -3889,7 +3881,7 @@ msgstr "I permès di “%s” no puedin jessi determinâts."
 
 #: ../src/nautilus-properties-window.c:4315
 msgid "The permissions of the selected file could not be determined."
-msgstr ""
+msgstr "Impussibil determinâ i permès dal file selezionât."
 
 #: ../src/nautilus-properties-window.c:4565
 msgid "Open With"
@@ -3935,12 +3927,12 @@ msgstr "Daûr a cirî nome te cartele atuâl"
 
 #: ../src/nautilus-search-popover.c:284
 msgid "Show a list to select the date"
-msgstr ""
+msgstr "Mostre une liste par selezionâ la date"
 
 #: ../src/nautilus-search-popover.c:290
 #: ../src/resources/ui/nautilus-search-popover.ui.h:5
 msgid "Show a calendar to select the date"
-msgstr ""
+msgstr "Mostre un calendari par selezionâ la date"
 
 #. Add the no date filter element first
 #: ../src/nautilus-search-popover.c:387
@@ -3973,7 +3965,7 @@ msgstr "Scovacere"
 
 #: ../src/nautilus-special-location-bar.c:51
 msgid "Files in this folder will appear in the New Document menu."
-msgstr ""
+msgstr "I file in cheste cartele a vegnaran mostrâts intal menù Gnûf Document."
 
 #: ../src/nautilus-special-location-bar.c:54
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -4066,6 +4058,8 @@ msgstr "Cheste posizion no semee jessi une cartele."
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
+"Impussibil cjatâ il file domandât. Controle se al è scrit in maniere juste e "
+"torne prove."
 
 #: ../src/nautilus-window-slot.c:1160
 #, c-format
@@ -4094,6 +4088,8 @@ msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr ""
+"Impussibil cjatâ la posizion domandade. Controle se e je scrite in maniere "
+"juste o lis impostazions di rêt."
 
 #: ../src/nautilus-window-slot.c:1190
 #, c-format
@@ -4448,7 +4444,7 @@ msgstr "Cam_bie fondâl dal Scritori"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:10
 msgid "_Scripts"
-msgstr ""
+msgstr "_Script"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:11
 msgid "_Open Scripts Folder"
@@ -4532,7 +4528,7 @@ msgstr "_Tire fûr de Scovacere"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:32
 msgid "Resize Icon…"
-msgstr ""
+msgstr "Ridimensione icone..."
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:33
 msgid "Restore Icon's Original Size"
@@ -4556,7 +4552,7 @@ msgstr "La cartele e je vueide"
 
 #: ../src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui.h:1
 msgid "Delete Shortcuts Have Changed"
-msgstr ""
+msgstr "Scurtis par eliminâ modificadis"
 
 #: ../src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui.h:2
 msgid ""
@@ -4693,6 +4689,8 @@ msgid ""
 "Add information to be displayed beneath file and folder names.\n"
 "More information will appear when zooming closer."
 msgstr ""
+"Zonte informazions che a vegnaran mostradis sot i nons di file e cartelis.\n"
+"Aumentant l'ingrandiment a vegnaran mostradis plui informazions."
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:32
 msgctxt "the n-th position of an icon caption"
@@ -4755,7 +4753,7 @@ msgstr "Domand_e prime di disvuedâ la Scovacere"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:47
 msgid "Show action to _permanently delete files and folders"
-msgstr ""
+msgstr "Mostre azion par eliminâ _par simpri i file e lis cartelis"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:48
 msgid "Behavior"
@@ -4870,14 +4868,12 @@ msgid "Which file types will be searched"
 msgstr "Cuai gjenars di file a vegnaran cirûts"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:13
-#, fuzzy
-#| msgid "Text"
 msgid "Full Text"
-msgstr "Test"
+msgstr "Test complet"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:14
 msgid "Search on the file content and name"
-msgstr ""
+msgstr "Cîr tal contignût dal file e tal non"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:15
 msgid "File Name"
