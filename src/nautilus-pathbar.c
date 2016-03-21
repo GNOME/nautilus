@@ -311,8 +311,8 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
 	gtk_widget_set_has_window (GTK_WIDGET (path_bar), FALSE);
         gtk_widget_set_redraw_on_allocate (GTK_WIDGET (path_bar), FALSE);
 
-        path_bar->priv->up_slider_button = get_slider_button (path_bar, "go-previous-symbolic");
-        path_bar->priv->down_slider_button = get_slider_button (path_bar, "go-next-symbolic");
+        path_bar->priv->up_slider_button = get_slider_button (path_bar, "pan-start-symbolic");
+        path_bar->priv->down_slider_button = get_slider_button (path_bar, "pan-end-symbolic");
 
         g_signal_connect_swapped (path_bar->priv->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
         g_signal_connect_swapped (path_bar->priv->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
