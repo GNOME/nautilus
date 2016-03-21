@@ -642,6 +642,9 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
                 return;
 	}
         direction = gtk_widget_get_direction (widget);
+	gtk_widget_get_preferred_width (path_bar->priv->up_slider_button,
+					&path_bar->priv->slider_width,
+					NULL);
 
   	/* First, we check to see if we need the scrollbars. */
 	width = 0;
