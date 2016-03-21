@@ -86,7 +86,7 @@ struct _NautilusPathBarDetails {
 	GtkWidget *up_slider_button;
 	GtkWidget *down_slider_button;
 	guint settings_signal_id;
-	gint16 slider_width;
+	gint slider_width;
 	guint timer;
 	guint slider_visible : 1;
 	guint need_timer : 1;
