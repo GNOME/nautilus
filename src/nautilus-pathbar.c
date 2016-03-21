@@ -313,6 +313,10 @@ nautilus_path_bar_init (NautilusPathBar *path_bar)
 
         path_bar->priv->up_slider_button = get_slider_button (path_bar, "pan-start-symbolic");
         path_bar->priv->down_slider_button = get_slider_button (path_bar, "pan-end-symbolic");
+        gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (path_bar->priv->up_slider_button)),
+                                     "slider-button");
+        gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (path_bar->priv->down_slider_button)),
+                                     "slider-button");
 
         g_signal_connect_swapped (path_bar->priv->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), path_bar);
         g_signal_connect_swapped (path_bar->priv->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), path_bar);
