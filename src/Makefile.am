@@ -156,6 +156,8 @@ nautilus_no_main_sources = \
 	nautilus-desktop-item-properties.h	\
 	nautilus-desktop-window.c		\
 	nautilus-desktop-window.h		\
+	nautilus-desktop-window-slot.c		\
+	nautilus-desktop-window-slot.h		\
 	nautilus-error-reporting.c		\
 	nautilus-error-reporting.h		\
 	nautilus-preferences-window.c	\

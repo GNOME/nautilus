@@ -24,6 +24,7 @@
 #include "nautilus-desktop-window.h"
 #include "nautilus-window.h"
 #include "nautilus-application.h"
+#include "nautilus-desktop-window-slot.h"
 
 #include <X11/Xatom.h>
 #include <gdk/gdkx.h>
@@ -378,6 +379,12 @@ real_window_close (NautilusWindow *window)
 	return;
 }
 
+static NautilusWindowSlot *
+real_create_slot (NautilusWindow *window)
+{
+	return NAUTILUS_WINDOW_SLOT (nautilus_desktop_window_slot_new (window));
+}
+
 static void
 nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 {
@@ -395,6 +402,7 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 
 	nclass->sync_title = real_sync_title;
 	nclass->close = real_window_close;
+	nclass->create_slot = real_create_slot;
 
 	g_type_class_add_private (klass, sizeof (NautilusDesktopWindowDetails));
 }
