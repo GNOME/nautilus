@@ -52,4 +52,12 @@ nautilus_desktop_window_slot_class_init (NautilusDesktopWindowSlotClass *klass)
 static void
 nautilus_desktop_window_slot_init (NautilusDesktopWindowSlot *self)
 {
+  GAction *action;
+  GActionGroup *action_group;
+
+  /* Disable search on desktop */
+  action_group = gtk_widget_get_action_group (GTK_WIDGET (self), "slot");
+  action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "search-visible");
+
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }

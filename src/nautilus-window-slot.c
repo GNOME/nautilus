@@ -248,15 +248,8 @@ update_search_visible (NautilusWindowSlot *self)
         NautilusWindowSlotPrivate *priv;
         NautilusQuery *query;
         NautilusView *view;
-        GAction *action;
 
         priv = nautilus_window_slot_get_instance_private (self);
-
-        action =  g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group),
-                                              "search-visible");
-        /* Don't allow search on desktop */
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                      !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (self)));
 
         view = nautilus_window_slot_get_current_view (self);
         /* If we changed location just to another search location, for example,
@@ -519,11 +512,16 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
         NautilusWindowSlotPrivate *priv;
 	NautilusWindow *window;
 	gboolean retval;
+        GAction *action;
 
         priv = nautilus_window_slot_get_instance_private (self);
 	retval = FALSE;
 	window = nautilus_window_slot_get_window (self);
-	if (!NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+        action =  g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group),
+                                              "search-visible");
+
+        /* If the action is not enabled, don't try to handle search */
+	if (g_action_get_enabled (action)) {
                 retval = gtk_search_bar_handle_event (GTK_SEARCH_BAR (priv->query_editor),
                                                       (GdkEvent*) event);
 	}
