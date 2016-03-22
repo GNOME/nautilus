@@ -380,7 +380,8 @@ real_window_close (NautilusWindow *window)
 }
 
 static NautilusWindowSlot *
-real_create_slot (NautilusWindow *window)
+real_create_slot (NautilusWindow *window,
+                  GFile          *location)
 {
 	return NAUTILUS_WINDOW_SLOT (nautilus_desktop_window_slot_new (window));
 }

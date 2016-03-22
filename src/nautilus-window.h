@@ -89,7 +89,8 @@ struct NautilusWindowClass {
         /* Use this in case your window has a special slot. Also is expected that
          * the slot is initialized with nautilus_window_initialize_slot.
          */
-        NautilusWindowSlot * (* create_slot) (NautilusWindow *window);
+        NautilusWindowSlot * (* create_slot) (NautilusWindow *window,
+                                              GFile          *location);
 };
 
 typedef struct _NautilusWindowPrivate NautilusWindowPrivate;

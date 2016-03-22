@@ -39,6 +39,7 @@
 #include "nautilus-toolbar.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-list-view.h"
+#include "nautilus-other-locations-window-slot.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -80,6 +81,9 @@ static void mouse_forward_button_changed	     (gpointer                  callbac
 static void use_extra_mouse_buttons_changed          (gpointer                  callback_data);
 static void nautilus_window_initialize_actions 	     (NautilusWindow *window);
 static GtkWidget * nautilus_window_ensure_location_entry (NautilusWindow *window);
+static void close_slot                                (NautilusWindow     *window,
+                                                       NautilusWindowSlot *slot,
+                                                       gboolean            remove_from_notebook);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our 
  * lower threshold (well-documented to be the one of the button events for the 
@@ -524,15 +528,29 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_create_slot (NautilusWindow *window)
+nautilus_window_create_slot (NautilusWindow *window,
+                             GFile          *location)
 {
-       return NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS(window))->create_slot (window);
+       return NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS(window))->create_slot (window, location);
 }
 
 static NautilusWindowSlot *
-real_create_slot (NautilusWindow *window)
+real_create_slot (NautilusWindow *window,
+                  GFile          *location)
 {
-        return nautilus_window_slot_new (window);
+        NautilusFile *file = NULL;
+
+        if (location) {
+                file = nautilus_file_get (location);
+        }
+        /* If not file, assume we open the home directory. We will switch eventually
+         * to a different location if not.
+         */
+        if (file && nautilus_file_is_other_locations (file)) {
+                return NAUTILUS_WINDOW_SLOT (nautilus_other_locations_window_slot_new (window));
+        } else {
+                return nautilus_window_slot_new (window);
+        }
 }
 
 void
@@ -573,6 +591,11 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         gboolean new_tab_at_end;
 
         active_slot = nautilus_window_get_active_slot (window);
+        /* The location owner can be one of the slots requesting to handle an
+         * unhandled location. But this slot can be destroyed when switching to
+         * a new slot. So keep the locaiton alive
+         */
+        g_object_ref (location);
 
         /* Assert that we are not managing new windows */
         g_assert (! (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW));
@@ -582,13 +605,19 @@ nautilus_window_open_location_full (NautilusWindow          *window,
                 if (new_tab_at_end)
 		flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 
-		target_slot = nautilus_window_create_slot (window);
+		target_slot = nautilus_window_create_slot (window, location);
                 nautilus_window_initialize_slot (window, target_slot, flags);
 	}
 
-	if (target_slot == NULL) {
-		target_slot = active_slot;
-	}
+        if (!target_slot)
+                target_slot = active_slot;
+
+	if (target_slot == NULL || !nautilus_window_slot_handles_location (active_slot, location)) {
+                target_slot = nautilus_window_create_slot (window, location);
+                nautilus_window_initialize_slot (window, target_slot, flags);
+                if (active_slot)
+                  close_slot (window, active_slot, TRUE);
+        }
 
         /* Make the opened location the one active if we weren't ask for the
          * oposite, since it's the most usual use case */
@@ -598,6 +627,8 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         }
 
 	nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
+
+        g_object_unref (location);
 }
 
 static int
@@ -2139,7 +2170,7 @@ nautilus_window_constructed (GObject *self)
 	 * some actions trigger UI widgets to show/hide. */
 	nautilus_window_initialize_actions (window);
 
-	slot = nautilus_window_create_slot (window);
+	slot = nautilus_window_create_slot (window, NULL);
         nautilus_window_initialize_slot (window, slot, 0);
 	nautilus_window_set_active_slot (window, slot);
 

@@ -185,6 +185,8 @@ nautilus_no_main_sources = \
 	nautilus-mime-actions.h 		\
 	nautilus-notebook.c			\
 	nautilus-notebook.h			\
+	nautilus-other-locations-window-slot.c	\
+	nautilus-other-locations-window-slot.h	\
 	nautilus-pathbar.c			\
 	nautilus-pathbar.h			\
 	nautilus-places-view.c			\

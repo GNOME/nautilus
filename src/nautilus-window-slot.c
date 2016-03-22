@@ -29,7 +29,6 @@
 #include "nautilus-desktop-canvas-view.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-places-view.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-trash-bar.h"
 #include "nautilus-view.h"
@@ -120,7 +119,6 @@ typedef struct {
 	GError *mount_error;
 	gboolean tried_mount;
         gint view_mode_before_search;
-        gint view_mode_before_places;
 } NautilusWindowSlotPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
@@ -144,6 +142,27 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
+gboolean
+nautilus_window_slot_handles_location (NautilusWindowSlot *self,
+                                       GFile              *location)
+{
+        return NAUTILUS_WINDOW_SLOT_CLASS (G_OBJECT_GET_CLASS (self))->handles_location (self, location);
+}
+
+static gboolean
+real_handles_location (NautilusWindowSlot *self,
+                       GFile              *location)
+{
+        NautilusFile *file;
+        gboolean handles_location;
+
+        file = nautilus_file_get (location);
+        handles_location = !nautilus_file_is_other_locations (file) &&
+                           !nautilus_file_is_desktop_directory (file);
+        nautilus_file_unref (file);
+
+        return handles_location;
+}
 
 static NautilusView*
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
@@ -166,55 +185,43 @@ real_get_view_for_location (NautilusWindowSlot *self,
         window = nautilus_window_slot_get_window (self);
         file = nautilus_file_get (location);
         view = NULL;
+        guint view_id;
 
-        if (nautilus_file_is_other_locations (file)) {
-                view = NAUTILUS_VIEW (nautilus_places_view_new ());
+        view_id = NAUTILUS_VIEW_INVALID_ID;
 
-                /* Save the current view, so we can go back after places view */
-                if (priv->content_view && NAUTILUS_IS_FILES_VIEW (priv->content_view)) {
-                        priv->view_mode_before_places = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
+        /* If we are in search, try to use by default list view. */
+        if (nautilus_file_is_in_search (file)) {
+                /* If it's already set, is because we already made the change to search mode,
+                 * so the view mode of the current view will be the one search is using,
+                 * which is not the one we are interested in */
+                if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID) {
+                        priv->view_mode_before_search = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
                 }
-        } else {
-                guint view_id;
-
-                view_id = NAUTILUS_VIEW_INVALID_ID;
-
-                /* If we are in search, try to use by default list view. */
-                if (nautilus_file_is_in_search (file)) {
-                        /* If it's already set, is because we already made the change to search mode,
-                         * so the view mode of the current view will be the one search is using,
-                         * which is not the one we are interested in */
-                        if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID) {
-                                priv->view_mode_before_search = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
-                        }
-                        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
-                } else if (priv->content_view != NULL) {
-                        /* If there is already a view, just use the view mode that it's currently using, or
-                         * if we were on search before, use what we were using before entering
-                         * search mode */
-                        if (priv->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID) {
-                                view_id = priv->view_mode_before_search;
-                                priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
-                        } else if (NAUTILUS_IS_PLACES_VIEW (priv->content_view)) {
-                                view_id = priv->view_mode_before_places;
-                                priv->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
-                        } else {
-		                view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
-                        }
-	        }
-
-                /* If there is not previous view in this slot, use the default view mode
-                 * from preferences */
-	        if (view_id == NAUTILUS_VIEW_INVALID_ID) {
-		        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
-	        }
-
-                /* Try to reuse the current view */
-                if (nautilus_window_slot_content_view_matches (self, view_id)) {
-                        view = priv->content_view;
+                view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
+        } else if (priv->content_view != NULL) {
+                /* If there is already a view, just use the view mode that it's currently using, or
+                 * if we were on search before, use what we were using before entering
+                 * search mode */
+                if (priv->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID) {
+                        view_id = priv->view_mode_before_search;
+                        priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
                 } else {
-                        view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
+	                view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
                 }
+
+        }
+
+        /* If there is not previous view in this slot, use the default view mode
+         * from preferences */
+        if (view_id == NAUTILUS_VIEW_INVALID_ID) {
+	        view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER);
+        }
+
+        /* Try to reuse the current view */
+        if (nautilus_window_slot_content_view_matches (self, view_id)) {
+                view = priv->content_view;
+        } else {
+                view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
         }
 
         nautilus_file_unref (file);
@@ -233,9 +240,7 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
 		return FALSE;
 	}
 
-        if (id == NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_PLACES_VIEW (priv->content_view)) {
-                return TRUE;
-        } else if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view)){
+        if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view)){
                 return nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view)) == id;
         } else {
                 return FALSE;
@@ -2434,6 +2439,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 	klass->active = real_active;
 	klass->inactive = real_inactive;
         klass->get_view_for_location = real_get_view_for_location;
+        klass->handles_location = real_handles_location;
 
 	oclass->dispose = nautilus_window_slot_dispose;
 	oclass->constructed = nautilus_window_slot_constructed;
