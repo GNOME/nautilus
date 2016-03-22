@@ -28,7 +28,6 @@
 #include "nautilus-files-view.h"
 
 #include "nautilus-application.h"
-#include "nautilus-desktop-canvas-view.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
@@ -69,8 +68,6 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include <libnautilus-private/nautilus-clipboard.h>
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
-#include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-search-directory.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
@@ -91,7 +88,6 @@
 #include <libnautilus-private/nautilus-signaller.h>
 #include <libnautilus-private/nautilus-icon-names.h>
 
-#define GNOME_DESKTOP_USE_UNSTABLE_API
 #include <gdesktop-enums.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
@@ -8244,9 +8240,6 @@ nautilus_files_view_new (guint                id,
         break;
         case NAUTILUS_VIEW_LIST_ID:
                 view = nautilus_list_view_new (slot);
-        break;
-        case NAUTILUS_VIEW_DESKTOP_ID:
-                view = nautilus_desktop_canvas_view_new (slot);
         break;
 #if ENABLE_EMPTY_VIEW
         case NAUTILUS_VIEW_EMPTY_ID:

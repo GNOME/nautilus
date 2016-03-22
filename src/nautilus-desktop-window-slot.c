@@ -17,6 +17,7 @@
  */
 
 #include "nautilus-desktop-window-slot.h"
+#include "nautilus-desktop-canvas-view.h"
 
 struct _NautilusDesktopWindowSlot
 {
@@ -24,6 +25,13 @@ struct _NautilusDesktopWindowSlot
 };
 
 G_DEFINE_TYPE (NautilusDesktopWindowSlot, nautilus_desktop_window_slot, NAUTILUS_TYPE_WINDOW_SLOT)
+
+static NautilusView *
+real_get_view_for_location (NautilusWindowSlot *self,
+                            GFile              *location)
+{
+  return NAUTILUS_VIEW (nautilus_desktop_canvas_view_new (self));
+}
 
 NautilusDesktopWindowSlot *
 nautilus_desktop_window_slot_new (NautilusWindow *window)
@@ -36,6 +44,9 @@ nautilus_desktop_window_slot_new (NautilusWindow *window)
 static void
 nautilus_desktop_window_slot_class_init (NautilusDesktopWindowSlotClass *klass)
 {
+  NautilusWindowSlotClass *parent_class = NAUTILUS_WINDOW_SLOT_CLASS (klass);
+
+  parent_class->get_view_for_location = real_get_view_for_location;
 }
 
 static void
