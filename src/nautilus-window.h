@@ -86,6 +86,10 @@ struct NautilusWindowClass {
         void   (* sync_title) (NautilusWindow *window,
 			       NautilusWindowSlot *slot);
         void   (* close) (NautilusWindow *window);
+        /* Use this in case your window has a special slot. Also is expected that
+         * the slot is initialized with nautilus_window_initialize_slot.
+         */
+        NautilusWindowSlot * (* create_slot) (NautilusWindow *window);
 };
 
 typedef struct _NautilusWindowPrivate NautilusWindowPrivate;
@@ -149,4 +153,8 @@ void nautilus_window_end_dnd (NautilusWindow *window,
 
 void nautilus_window_search (NautilusWindow *window,
                              const gchar    *text);
+
+void nautilus_window_initialize_slot (NautilusWindow          *window,
+                                      NautilusWindowSlot      *slot,
+                                      NautilusWindowOpenFlags  flags);
 #endif

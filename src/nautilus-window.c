@@ -524,14 +524,25 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_create_slot (NautilusWindow             *window,
-			   NautilusWindowOpenFlags flags)
+nautilus_window_create_slot (NautilusWindow *window)
 {
-	NautilusWindowSlot *slot;
+       return NAUTILUS_WINDOW_CLASS (G_OBJECT_GET_CLASS(window))->create_slot (window);
+}
 
+static NautilusWindowSlot *
+real_create_slot (NautilusWindow *window)
+{
+        return nautilus_window_slot_new (window);
+}
+
+void
+nautilus_window_initialize_slot (NautilusWindow          *window,
+                                 NautilusWindowSlot      *slot,
+                                 NautilusWindowOpenFlags  flags)
+{
 	g_assert (NAUTILUS_IS_WINDOW (window));
+	g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
-	slot = nautilus_window_slot_new (window);
         connect_slot (window, slot);
 
 	g_signal_handlers_block_by_func (window->priv->notebook,
@@ -549,8 +560,6 @@ nautilus_window_create_slot (NautilusWindow             *window,
 
 	window->priv->slots = g_list_append (window->priv->slots, slot);
 	g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
-
-	return slot;
 }
 
 void
@@ -573,7 +582,8 @@ nautilus_window_open_location_full (NautilusWindow          *window,
                 if (new_tab_at_end)
 		flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
 
-		target_slot = nautilus_window_create_slot (window, flags);
+		target_slot = nautilus_window_create_slot (window);
+                nautilus_window_initialize_slot (window, target_slot, flags);
 	}
 
 	if (target_slot == NULL) {
@@ -2129,7 +2139,8 @@ nautilus_window_constructed (GObject *self)
 	 * some actions trigger UI widgets to show/hide. */
 	nautilus_window_initialize_actions (window);
 
-	slot = nautilus_window_create_slot (window, 0);
+	slot = nautilus_window_create_slot (window);
+        nautilus_window_initialize_slot (window, slot, 0);
 	nautilus_window_set_active_slot (window, slot);
 
 	window->priv->bookmarks_id =
@@ -2578,6 +2589,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
         wclass->grab_focus = nautilus_window_grab_focus;
 
 	class->close = real_window_close;
+	class->create_slot = real_create_slot;
 
 	gtk_widget_class_set_template_from_resource (wclass,
 	                                             "/org/gnome/nautilus/ui/nautilus-window.ui");
