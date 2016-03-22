@@ -817,19 +817,16 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *self,
 	GFile *old_location;
 	GList *old_selection;
         NautilusWindow *window;
-        gboolean is_desktop;
 
         priv = nautilus_window_slot_get_instance_private (self);
 	old_selection = NULL;
         old_location = nautilus_window_slot_get_location (self);
         window = nautilus_window_slot_get_window (self);
-        is_desktop = NAUTILUS_IS_DESKTOP_CANVAS_VIEW (window);
 
         if (priv->content_view) {
                 old_selection = nautilus_view_get_selection (priv->content_view);
 	}
-        if (!is_desktop &&
-            old_location && g_file_equal (old_location, location) &&
+        if (old_location && g_file_equal (old_location, location) &&
             nautilus_file_selection_equal (old_selection, new_selection))
           goto done;
 
