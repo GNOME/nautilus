@@ -274,8 +274,6 @@ NautilusFilesView *      nautilus_files_view_new                         (guint 
 NautilusWindowSlot *nautilus_files_view_get_nautilus_window_slot         (NautilusFilesView *view);
 char *              nautilus_files_view_get_uri                          (NautilusFilesView *view);
 
-void                nautilus_files_view_display_selection_info           (NautilusFilesView *view);
-
 GdkAtom                    nautilus_files_view_get_copied_files_atom     (NautilusFilesView *view);
 
 /* Wrappers for signal emitters. These are normally called

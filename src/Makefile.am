@@ -180,8 +180,6 @@ nautilus_no_main_sources = \
 	nautilus-files-view.h			\
 	nautilus-files-view-dnd.c		\
 	nautilus-files-view-dnd.h		\
-	nautilus-floating-bar.c			\
-	nautilus-floating-bar.h			\
 	nautilus-freedesktop-dbus.c		\
 	nautilus-freedesktop-dbus.h		\
 	nautilus-image-properties-page.c	\
