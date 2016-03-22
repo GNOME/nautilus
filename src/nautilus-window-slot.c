@@ -25,8 +25,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-canvas-view.h"
-#include "nautilus-desktop-window.h"
-#include "nautilus-desktop-canvas-view.h"
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-special-location-bar.h"
@@ -782,12 +780,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include <libnautilus-private/nautilus-debug.h>
-
-/* FIXME bugzilla.gnome.org 41243:
- * We should use inheritance instead of these special cases
- * for the desktop window.
- */
-#include "nautilus-desktop-window.h"
 
 static void begin_location_change                     (NautilusWindowSlot         *slot,
                                                        GFile                      *location,
