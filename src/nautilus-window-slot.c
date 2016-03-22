@@ -149,6 +149,13 @@ static NautilusView*
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
                                             GFile              *location)
 {
+        return NAUTILUS_WINDOW_SLOT_CLASS (G_OBJECT_GET_CLASS (self))->get_view_for_location (self, location);
+}
+
+static NautilusView*
+real_get_view_for_location (NautilusWindowSlot *self,
+                            GFile              *location)
+{
         NautilusWindowSlotPrivate *priv;
 
         NautilusWindow *window;
@@ -160,13 +167,7 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
         file = nautilus_file_get (location);
         view = NULL;
 
-        /* FIXME bugzilla.gnome.org 41243:
-	 * We should use inheritance instead of these special cases
-	 * for the desktop window.
-	 */
-        if (NAUTILUS_IS_DESKTOP_WINDOW (window)) {
-                view = NAUTILUS_VIEW (nautilus_files_view_new (NAUTILUS_VIEW_DESKTOP_ID, self));
-        } else if (nautilus_file_is_other_locations (file)) {
+        if (nautilus_file_is_other_locations (file)) {
                 view = NAUTILUS_VIEW (nautilus_places_view_new ());
 
                 /* Save the current view, so we can go back after places view */
@@ -2437,6 +2438,7 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 
 	klass->active = real_active;
 	klass->inactive = real_inactive;
+        klass->get_view_for_location = real_get_view_for_location;
 
 	oclass->dispose = nautilus_window_slot_dispose;
 	oclass->constructed = nautilus_window_slot_constructed;

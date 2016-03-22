@@ -48,6 +48,13 @@ struct _NautilusWindowSlotClass {
 	/* wrapped NautilusWindowInfo signals, for overloading */
 	void (* active)   (NautilusWindowSlot *slot);
 	void (* inactive) (NautilusWindowSlot *slot);
+
+        /* Use this in case the subclassed slot has some special views differents
+         * that the ones supported here. You can return your nautilus view
+         * subclass in this function.
+         */
+        NautilusView*  (* get_view_for_location) (NautilusWindowSlot *slot,
+                                                  GFile              *location);
 };
 
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusWindow     *window);
