@@ -304,13 +304,9 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 
         /* Files view mode */
         action =  g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group), "files-view-mode");
-        if (NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (self)) &&
-            !NAUTILUS_IS_DESKTOP_CANVAS_VIEW (nautilus_window_slot_get_current_view (self))) {
+        if (g_action_get_enabled (action)) {
                 variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self))));
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
                 g_action_change_state (action, variant);
-        } else {
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
         }
 }
 
