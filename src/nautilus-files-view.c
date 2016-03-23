@@ -960,7 +960,6 @@ script_launch_parameters_new (NautilusFile *file,
         ScriptLaunchParameters *result;
 
         result = g_new0 (ScriptLaunchParameters, 1);
-        g_object_ref (directory_view);
         result->directory_view = directory_view;
         nautilus_file_ref (file);
         result->file = file;
@@ -971,7 +970,6 @@ script_launch_parameters_new (NautilusFile *file,
 static void
 script_launch_parameters_free (ScriptLaunchParameters *parameters)
 {
-        g_object_unref (parameters->directory_view);
         nautilus_file_unref (parameters->file);
         g_free (parameters);
 }
