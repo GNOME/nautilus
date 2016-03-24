@@ -1280,7 +1280,8 @@ action_open_item_new_tab (GSimpleAction *action,
         if (nautilus_files_view_confirm_multiple (window, g_list_length (selection), TRUE)) {
                 nautilus_files_view_activate_files (view,
                                               selection,
-                                              NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
+                                              NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
+                                              NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE,
                                               FALSE);
         }
 

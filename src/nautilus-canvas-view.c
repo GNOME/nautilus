@@ -1311,6 +1311,7 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
 
 	if (open_in_tab) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+		flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
 	}
 
 	if (open_in_window) {
