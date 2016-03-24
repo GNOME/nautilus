@@ -204,7 +204,7 @@ nautilus_places_view_set_location (NautilusView *view,
                  * delegates the location to application, which takes care of
                  * selecting the appropriate view.
                  */
-                if (!g_strcmp0 (uri, "other-locations:///") == 0) {
+                if (g_strcmp0 (uri, "other-locations:///") != 0) {
                         nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                                                  location, 0, NULL, NULL, NULL);
                 } else {
