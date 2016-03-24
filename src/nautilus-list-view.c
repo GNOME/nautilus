@@ -228,6 +228,7 @@ activate_selected_items_alternate (NautilusListView *view,
 
 	if (open_in_tab) {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+                flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
 	} else {
 		flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
 	}

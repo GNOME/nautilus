@@ -915,7 +915,8 @@ open_location_cb (NautilusWindow     *window,
 
 	switch (open_flags) {
 	case GTK_PLACES_OPEN_NEW_TAB:
-		flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+                flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
+                        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
 		break;
 
 	case GTK_PLACES_OPEN_NEW_WINDOW:

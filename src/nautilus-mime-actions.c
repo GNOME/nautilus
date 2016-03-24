@@ -1643,6 +1643,7 @@ activate_files (ActivateParameters *parameters)
 	if (count > 1) {
 		if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0) {
 			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+                        flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
 		} else {
 			flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
 		}
