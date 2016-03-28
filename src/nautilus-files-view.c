@@ -6645,6 +6645,14 @@ action_detect_media (GSimpleAction *action,
     nautilus_file_list_free (selection);
 }
 
+static void
+action_stop_loading (GSimpleAction *action,
+                     GVariant      *state,
+                     gpointer       user_data)
+{
+    nautilus_files_view_stop_loading (user_data);
+}
+
 const GActionEntry view_entries[] =
 {
     /* Toolbar menu */
@@ -6706,7 +6714,9 @@ const GActionEntry view_entries[] =
     { "invert-selection", action_invert_selection },
     { "open-file-and-close-window", action_open_file_and_close_window },
     /* Warning dialog for the change of the shorcut to move to trash */
-    { "show-move-to-trash-shortcut-changed-dialog", action_show_move_to_trash_shortcut_changed_dialog }
+    { "show-move-to-trash-shortcut-changed-dialog", action_show_move_to_trash_shortcut_changed_dialog },
+    /* Helper */
+    { "stop-loading", action_stop_loading }
 };
 
 static gboolean
