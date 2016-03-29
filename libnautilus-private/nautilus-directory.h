@@ -238,6 +238,8 @@ gboolean           nautilus_directory_is_editable              (NautilusDirector
 
 void               nautilus_directory_dump                     (NautilusDirectory         *directory);
 
+void               nautilus_directory_add_to_cache             (NautilusDirectory         *directory);
+
 NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
                                                                 const char        *filename,
                                                                 gboolean           self_owned);

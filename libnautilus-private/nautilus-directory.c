@@ -33,8 +33,6 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-profile.h"
-#include "nautilus-desktop-directory.h"
-#include "nautilus-desktop-directory-file.h"
 #include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
@@ -455,6 +453,25 @@ nautilus_directory_get_for_file (NautilusFile *file)
 	return directory;
 }
 
+void
+nautilus_directory_add_to_cache (NautilusDirectory *directory)
+{
+	NautilusDirectory *existing_directory;
+	GFile *location;
+
+	location = nautilus_directory_get_location (directory);
+	existing_directory = nautilus_directory_get_existing (location);
+	if (existing_directory == NULL) {
+		/* Put it in the hash table. */
+		g_hash_table_insert (directories,
+				     directory->details->location,
+				     directory);
+	} else {
+		nautilus_directory_unref (existing_directory);
+	}
+}
+
+
 /* Returns a reffed NautilusFile object for this directory.
  */
 NautilusFile *
@@ -593,9 +610,7 @@ nautilus_directory_new (GFile *location)
 
 	uri = g_file_get_uri (location);
 
-	if (eel_uri_is_desktop (uri)) {
-		type = NAUTILUS_TYPE_DESKTOP_DIRECTORY;
-	} else if (eel_uri_is_search (uri)) {
+	if (eel_uri_is_search (uri)) {
 		type = NAUTILUS_TYPE_SEARCH_DIRECTORY;
 	} else {
 		type = NAUTILUS_TYPE_VFS_DIRECTORY;
