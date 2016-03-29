@@ -1,5 +1,5 @@
 /*
- * nautilus-progress-persistence-handler.c: file operation progress systray icon and notification handler.
+ * nautilus-progress-persistence-handler.c: file operation progress notification handler.
  *
  * Copyright (C) 2007, 2011, 2015 Red Hat, Inc.
  *
@@ -39,8 +39,6 @@ struct _NautilusProgressPersistenceHandlerPriv {
 
         NautilusApplication *app;
 	guint active_infos;
-
-	GtkStatusIcon *status_icon;
 };
 
 G_DEFINE_TYPE (NautilusProgressPersistenceHandler, nautilus_progress_persistence_handler, G_TYPE_OBJECT);
@@ -49,16 +47,16 @@ G_DEFINE_TYPE (NautilusProgressPersistenceHandler, nautilus_progress_persistence
  * - file operations that end within two seconds do not get notified in any way
  * - if no file operations are running, and one passes the two seconds
  *   timeout, a window is displayed with the progress
- * - if the window is closed, we show a resident notification, or a status icon, depending on
+ * - if the window is closed, we show a resident notification, depending on
  *   the capabilities of the notification daemon running in the session
  * - if some file operations are running, and another one passes the two seconds
  *   timeout, and the window is showing, we add it to the window directly
  * - in the same case, but when the window is not showing, we update the resident
- *   notification, changing its message, or the status icon's tooltip
+ *   notification, changing its message
  * - when one file operation finishes, if it's not the last one, we only update the
- *   resident notification's message, or the status icon's tooltip
+ *   resident notification's message
  * - in the same case, if it's the last one, we close the resident notification,
- *   or the status icon, and trigger a transient one
+ *   and trigger a transient one
  * - in the same case, but the window was showing, we just hide the window
  */
 
@@ -91,40 +89,14 @@ static GActionEntry progress_persistence_entries[] = {
 };
 
 static void
-status_icon_activate_cb (GtkStatusIcon                      *icon,
-                         NautilusProgressPersistenceHandler *self)
-{
-	gtk_status_icon_set_visible (icon, FALSE);
-        show_file_transfers (self);
-}
-
-static void
-progress_persistence_handler_ensure_status_icon (NautilusProgressPersistenceHandler *self)
-{
-	GIcon *icon;
-	GtkStatusIcon *status_icon;
-
-	if (self->priv->status_icon != NULL) {
-		return;
-	}
-
-	icon = g_themed_icon_new_with_default_fallbacks ("system-file-manager-symbolic");
-	status_icon = gtk_status_icon_new_from_gicon (icon);
-	g_signal_connect (status_icon, "activate",
-			  (GCallback) status_icon_activate_cb,
-			  self);
-
-	gtk_status_icon_set_visible (status_icon, FALSE);
-	g_object_unref (icon);
-
-	self->priv->status_icon = status_icon;
-}
-
-static void
 progress_persistence_handler_update_notification (NautilusProgressPersistenceHandler *self)
 {
         GNotification *notification;
 	gchar *body;
+
+	if (!server_has_persistence ()) {
+		return;
+	}
 
         notification = g_notification_new (_("File Operations"));
 	g_notification_set_default_action (notification, "app.show-file-transfers");
@@ -144,23 +116,6 @@ progress_persistence_handler_update_notification (NautilusProgressPersistenceHan
 	g_free (body);
 }
 
-static void
-progress_persistence_handler_update_status_icon (NautilusProgressPersistenceHandler *self)
-{
-	gchar *tooltip;
-
-	progress_persistence_handler_ensure_status_icon (self);
-
-	tooltip = g_strdup_printf (ngettext ("%'d file operation active",
-					     "%'d file operations active",
-					     self->priv->active_infos),
-				   self->priv->active_infos);
-	gtk_status_icon_set_tooltip_text (self->priv->status_icon, tooltip);
-	g_free (tooltip);
-
-	gtk_status_icon_set_visible (self->priv->status_icon, TRUE);
-}
-
 void
 nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersistenceHandler *self)
 {
@@ -169,22 +124,8 @@ nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersisten
         windows = nautilus_application_get_windows (self->priv->app);
         if (self->priv->active_infos > 0 &&
             g_list_length (windows) == 0) {
-	        if (server_has_persistence ()) {
-		        progress_persistence_handler_update_notification (self);
-	        } else {
-		        progress_persistence_handler_update_status_icon (self);
-	        }
+		    progress_persistence_handler_update_notification (self);
         }
-}
-
-static void
-progress_persistence_handler_update_notification_or_status (NautilusProgressPersistenceHandler *self)
-{
-	if (server_has_persistence ()) {
-		progress_persistence_handler_update_notification (self);
-	} else {
-		progress_persistence_handler_update_status_icon (self);
-	}
 }
 
 static void
@@ -192,7 +133,6 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
 {
 	GNotification *complete_notification;
 
-	/* don't display the notification if we'd be using a status icon */
 	if (!server_has_persistence ()) {
 		return;
 	}
@@ -208,10 +148,10 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
 }
 
 static void
-progress_persistence_handler_hide_notification_or_status (NautilusProgressPersistenceHandler *self)
+progress_persistence_handler_hide_notification (NautilusProgressPersistenceHandler *self)
 {
-	if (self->priv->status_icon != NULL) {
-		gtk_status_icon_set_visible (self->priv->status_icon, FALSE);
+	if (!server_has_persistence ()) {
+		return;
 	}
 
         nautilus_application_withdraw_notification (self->priv->app,
@@ -229,10 +169,10 @@ progress_info_finished_cb (NautilusProgressInfo               *info,
         windows = nautilus_application_get_windows (self->priv->app);
         if (self->priv->active_infos > 0) {
 	        if (g_list_length (windows) == 0) {
-		        progress_persistence_handler_update_notification_or_status (self);
+		        progress_persistence_handler_update_notification (self);
 	        }
         } else if (g_list_length (windows)  == 0) {
-	        progress_persistence_handler_hide_notification_or_status (self);
+	        progress_persistence_handler_hide_notification (self);
 	        progress_persistence_handler_show_complete_notification (self);
         }
 
@@ -250,7 +190,7 @@ handle_new_progress_info (NautilusProgressPersistenceHandler *self,
         windows = nautilus_application_get_windows (self->priv->app);
 
 	if (g_list_length (windows) == 0) {
-		progress_persistence_handler_update_notification_or_status (self);
+		progress_persistence_handler_update_notification (self);
         }
 }
 
