@@ -8153,11 +8153,17 @@ nautilus_files_view_init (NautilusFilesView *view)
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
         view->details->no_search_results_widget = GTK_WIDGET (gtk_builder_get_object (builder, "no_search_results"));
         gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->no_search_results_widget);
+        gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (view->details->overlay),
+                                              view->details->no_search_results_widget,
+                                              TRUE);
         g_object_unref (builder);
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-folder-is-empty.ui");
         view->details->folder_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "folder_is_empty"));
         gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->folder_is_empty_widget);
+        gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (view->details->overlay),
+                                              view->details->folder_is_empty_widget,
+                                              TRUE);
         g_object_unref (builder);
 
         /* Floating bar */
