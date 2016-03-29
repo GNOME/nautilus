@@ -187,7 +187,6 @@ present_autorun_for_software_dialog (GMount *mount)
 	int icon_size;
 	NautilusIconInfo *icon_info;
 	GdkPixbuf *pixbuf;
-	GtkWidget *image;
 	char *mount_name;
 	GtkWidget *dialog;
 	AutorunSoftwareDialogData *data;
@@ -220,10 +219,6 @@ present_autorun_for_software_dialog (GMount *mount)
 	icon_info = nautilus_icon_info_lookup (icon, icon_size,
 					       gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
 	pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
-	image = gtk_image_new_from_pixbuf (pixbuf);
-        gtk_widget_set_valign (image, GTK_ALIGN_START);
-
-	gtk_message_dialog_set_image (GTK_MESSAGE_DIALOG (dialog), image);
 
 	gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
 
