@@ -25,8 +25,6 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-signaller.h"
-#include "nautilus-desktop-directory.h"
-#include "nautilus-desktop-directory-file.h"
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
@@ -37,8 +35,6 @@
 #include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
-#include "nautilus-search-directory.h"
-#include "nautilus-search-directory-file.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-video-mime-types.h"
@@ -533,27 +529,7 @@ nautilus_file_new_from_filename (NautilusDirectory *directory,
 	g_assert (filename != NULL);
 	g_assert (filename[0] != '\0');
 
-	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-		if (self_owned) {
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE, NULL));
-		} else {
-			/* This doesn't normally happen, unless the user somehow types in a uri
-			 * that references a file like this. (See #349840) */
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-		}
-	} else if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
-		if (self_owned) {
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
-		} else {
-			/* This doesn't normally happen, unless the user somehow types in a uri
-			 * that references a file like this. (See #349840) */
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-		}
-	} else {
-		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-	}
-	nautilus_file_set_directory (file, directory);
-
+	file = nautilus_directory_new_file_from_filename (directory, filename, self_owned);
 	file->details->name = eel_ref_str_new (filename);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF

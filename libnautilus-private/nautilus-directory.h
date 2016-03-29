@@ -232,5 +232,8 @@ gboolean           nautilus_directory_is_editable              (NautilusDirector
 
 void               nautilus_directory_dump                     (NautilusDirectory         *directory);
 
+NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
+                                                                const char        *filename,
+                                                                gboolean           self_owned);
 
 #endif /* NAUTILUS_DIRECTORY_H */

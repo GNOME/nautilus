@@ -27,11 +27,14 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-directory.h"
+#include "nautilus-search-directory-file.h"
+#include "nautilus-vfs-file.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-profile.h"
 #include "nautilus-desktop-directory.h"
+#include "nautilus-desktop-directory-file.h"
 #include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
@@ -537,6 +540,41 @@ nautilus_directory_get_location (NautilusDirectory  *directory)
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
 	return g_object_ref (directory->details->location);
+}
+
+NautilusFile *
+nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
+                                           const char        *filename,
+                                           gboolean           self_owned)
+{
+	NautilusFile *file;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (filename != NULL);
+	g_assert (filename[0] != '\0');
+
+	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
+		if (self_owned) {
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE, NULL));
+		} else {
+			/* This doesn't normally happen, unless the user somehow types in a uri
+			 * that references a file like this. (See #349840) */
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+		}
+	} else if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+		if (self_owned) {
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
+		} else {
+			/* This doesn't normally happen, unless the user somehow types in a uri
+			 * that references a file like this. (See #349840) */
+			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+		}
+	} else {
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+	}
+	nautilus_file_set_directory (file, directory);
+
+	return file;
 }
 
 static NautilusDirectory *
