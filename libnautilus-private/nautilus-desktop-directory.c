@@ -23,6 +23,7 @@
 
 #include <config.h>
 #include "nautilus-desktop-directory.h"
+#include "nautilus-desktop-directory-file.h"
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
@@ -484,6 +485,30 @@ update_desktop_directory (NautilusDesktopDirectory *desktop)
 	desktop->details->real_directory = real_directory;
 }
 
+static NautilusFile *
+real_new_file_from_filename (NautilusDirectory *directory,
+                             const char        *filename,
+                             gboolean           self_owned)
+{
+	NautilusFile *file;
+
+	g_assert (NAUTILUS_IS_DIRECTORY (directory));
+	g_assert (filename != NULL);
+	g_assert (filename[0] != '\0');
+
+	if (self_owned) {
+		file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE, NULL));
+	} else {
+		g_critical ("Accessing desktop uris directly is not supported.");
+
+		return NULL;
+	}
+
+	nautilus_file_set_directory (file, directory);
+
+	return file;
+}
+
 static void
 desktop_directory_changed_callback (gpointer data)
 {
@@ -522,6 +547,7 @@ nautilus_desktop_directory_class_init (NautilusDesktopDirectoryClass *class)
 	directory_class->force_reload = desktop_force_reload;
  	directory_class->are_all_files_seen = desktop_are_all_files_seen;
 	directory_class->is_not_empty = desktop_is_not_empty;
+	directory_class->new_file_from_filename = real_new_file_from_filename;
 	/* Override get_file_list so that we can return the list of files
 	 * in NautilusDesktopDirectory->details->real_directory,
 	 * in addition to the list of standard desktop icons on the desktop.

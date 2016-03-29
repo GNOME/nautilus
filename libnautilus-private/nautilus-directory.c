@@ -568,15 +568,7 @@ real_new_file_from_filename (NautilusDirectory *directory,
 	g_assert (filename != NULL);
 	g_assert (filename[0] != '\0');
 
-	if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-		if (self_owned) {
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE, NULL));
-		} else {
-			/* This doesn't normally happen, unless the user somehow types in a uri
-			 * that references a file like this. (See #349840) */
-			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-		}
-	} else if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
+        if (NAUTILUS_IS_SEARCH_DIRECTORY (directory)) {
 		if (self_owned) {
 			file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
 		} else {
