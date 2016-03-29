@@ -65,6 +65,9 @@ static GList *            real_get_file_list                  (NautilusDirectory
 static gboolean		  real_is_editable                    (NautilusDirectory      *directory);
 static void               set_directory_location              (NautilusDirectory      *directory,
 							       GFile                  *location);
+static NautilusFile *     real_new_file_from_filename (NautilusDirectory *directory,
+                                                       const char        *filename,
+                                                       gboolean           self_owned);
 
 G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
 
@@ -111,6 +114,8 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 
 	object_class = G_OBJECT_CLASS (klass);
 	
+        klass->new_file_from_filename = real_new_file_from_filename;
+
 	object_class->finalize = nautilus_directory_finalize;
 	object_class->set_property = nautilus_directory_set_property;
 	object_class->get_property = nautilus_directory_get_property;
@@ -546,6 +551,16 @@ NautilusFile *
 nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
                                            const char        *filename,
                                            gboolean           self_owned)
+{
+        return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
+                                                                                                  filename,
+                                                                                                  self_owned);
+}
+
+static NautilusFile *
+real_new_file_from_filename (NautilusDirectory *directory,
+                             const char        *filename,
+                             gboolean           self_owned)
 {
 	NautilusFile *file;
 

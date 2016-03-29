@@ -137,6 +137,12 @@ typedef struct
 	 * An example of this is the search directory.
 	 */
 	gboolean (* is_editable)         (NautilusDirectory *directory);
+
+        /* Subclasses can use this to create custom files when asked by the user
+         * or the nautilus cache. */
+        NautilusFile * (* new_file_from_filename) (NautilusDirectory *directory,
+                                                   const char        *filename,
+                                                   gboolean           self_owned);
 } NautilusDirectoryClass;
 
 /* Basic GObject requirements. */
