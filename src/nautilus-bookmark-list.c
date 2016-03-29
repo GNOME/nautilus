@@ -569,6 +569,10 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 		return FALSE;
 	}
 
+	if (nautilus_is_search_directory (location)) {
+		return FALSE;
+	}
+
 	bookmark = nautilus_bookmark_new (location, NULL);
 	is_builtin = nautilus_bookmark_get_is_builtin (bookmark);
 	g_object_unref (bookmark);

@@ -35,6 +35,7 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>
+#include <eel/eel-vfs-extensions.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -521,6 +522,15 @@ nautilus_is_desktop_directory (GFile *dir)
 	}
 
 	return g_file_equal (dir, desktop_dir);
+}
+
+gboolean
+nautilus_is_search_directory (GFile *dir)
+{
+        g_autofree gchar *uri = NULL;
+
+        uri = g_file_get_uri (dir);
+        return eel_uri_is_search (uri);
 }
 
 GMount *
