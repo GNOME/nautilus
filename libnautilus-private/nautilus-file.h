@@ -599,6 +599,8 @@ typedef struct {
                                                           gpointer                        callback_data);
 
        char*                 (* get_target_uri)          (NautilusFile                   *file);
+
+       gboolean              (* drag_can_accept_files)   (NautilusFile                   *drop_target_item);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

@@ -165,6 +165,7 @@ static const char * nautilus_file_peek_display_name (NautilusFile *file);
 static const char * nautilus_file_peek_display_name_collation_key (NautilusFile *file);
 static void file_mount_unmounted (GMount *mount,  gpointer data);
 static void metadata_hash_free (GHashTable *hash);
+static gboolean real_drag_can_accept_files (NautilusFile *drop_target_item);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
 			 G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
@@ -8004,6 +8005,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 	class->can_rename = real_can_rename;
 	class->rename = real_rename;
 	class->get_target_uri = real_get_target_uri;
+	class->drag_can_accept_files = real_drag_can_accept_files;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",
@@ -8126,6 +8128,12 @@ nautilus_file_info_providers_done (NautilusFile *file)
 
 static gboolean
 nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
+{
+        return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (drop_target_item))->drag_can_accept_files (drop_target_item);
+}
+
+static gboolean
+real_drag_can_accept_files (NautilusFile *drop_target_item)
 {
 	if (nautilus_file_is_directory (drop_target_item)) {
 		NautilusDirectory *directory;
