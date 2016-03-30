@@ -27,7 +27,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
-#include "nautilus-desktop-icon-file.h"
 #include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
