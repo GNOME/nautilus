@@ -601,6 +601,9 @@ typedef struct {
        char*                 (* get_target_uri)          (NautilusFile                   *file);
 
        gboolean              (* drag_can_accept_files)   (NautilusFile                   *drop_target_item);
+
+       void                  (* invalidate_attributes_internal) (NautilusFile            *file,
+                                                                 NautilusFileAttributes   file_attributes);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */
