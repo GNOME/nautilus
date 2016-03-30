@@ -560,6 +560,13 @@ typedef struct {
 							  gpointer                        callback_data);
 
 	void                 (* poll_for_media)          (NautilusFile                   *file);
+
+        gboolean             (* can_rename)              (NautilusFile                   *file);
+
+        void                 (* rename)                  (NautilusFile                   *file,
+                                                          const char                     *new_name,
+                                                          NautilusFileOperationCallback   callback,
+                                                          gpointer                        callback_data);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

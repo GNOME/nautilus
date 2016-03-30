@@ -1490,6 +1490,12 @@ can_rename_desktop_file (NautilusFile *file)
 gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
+	return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->can_rename (file);
+}
+
+static gboolean
+real_can_rename (NautilusFile *file)
+{
 	gboolean can_rename;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
@@ -1793,10 +1799,22 @@ name_is (NautilusFile *file, const char *new_name)
 }
 
 void
-nautilus_file_rename (NautilusFile *file,
-		      const char *new_name,
-		      NautilusFileOperationCallback callback,
-		      gpointer callback_data)
+nautilus_file_rename (NautilusFile                  *file,
+                      const char                    *new_name,
+                      NautilusFileOperationCallback  callback,
+                      gpointer                       callback_data)
+{
+        NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->rename (file,
+                                                                 new_name,
+                                                                 callback,
+                                                                 callback_data);
+}
+
+static void
+real_rename (NautilusFile                  *file,
+             const char                    *new_name,
+             NautilusFileOperationCallback  callback,
+             gpointer                       callback_data)
 {
 	NautilusFileOperation *op;
 	char *uri;
@@ -8031,6 +8049,8 @@ nautilus_file_class_init (NautilusFileClass *class)
 
 	class->set_metadata = real_set_metadata;
 	class->set_metadata_as_list = real_set_metadata_as_list;
+	class->can_rename = real_can_rename;
+	class->rename = real_rename;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",
