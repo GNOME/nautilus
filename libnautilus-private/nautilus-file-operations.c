@@ -53,8 +53,6 @@
 #include <glib.h>
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
-#include "nautilus-desktop-icon-file.h"
-#include "nautilus-desktop-link-monitor.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
