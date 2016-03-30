@@ -31,6 +31,8 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-link.h"
+#include "nautilus-file-undo-manager.h"
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-desktop-directory.h"
 #include <glib/gi18n.h>
@@ -343,6 +345,85 @@ nautilus_desktop_icon_file_eject (NautilusFile                   *file,
 }
 
 static void
+real_rename (NautilusFile                  *file,
+             const char                    *new_name,
+             NautilusFileOperationCallback  callback,
+             gpointer                       callback_data)
+{
+	NautilusDesktopLink *link;
+	char *old_name;
+	gboolean success;
+	GError *error;
+
+	g_return_if_fail (NAUTILUS_IS_FILE (file));
+	g_return_if_fail (new_name != NULL);
+	g_return_if_fail (callback != NULL);
+
+	/* Can't rename a file that's already gone.
+	 * We need to check this here because there may be a new
+	 * file with the same name.
+	 */
+	if (nautilus_file_is_gone (file)) {
+	       	/* Claim that something changed even if the rename
+		 * failed. This makes it easier for some clients who
+		 * see the "reverting" to the old name as "changing
+		 * back".
+		 */
+		nautilus_file_changed (file);
+		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+				     _("File not found"));
+		(* callback) (file, NULL, error, callback_data);
+		g_error_free (error);
+		return;
+	}
+
+	link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+	old_name = nautilus_file_get_display_name (file);
+
+	if ((old_name != NULL && strcmp (new_name, old_name) == 0)) {
+		success = TRUE;
+	} else {
+		success = (link != NULL && nautilus_desktop_link_rename (link, new_name));
+	}
+
+	if (success) {
+		(* callback) (file, NULL, NULL, callback_data);
+	} else {
+		error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
+				     _("Unable to rename desktop icon"));
+		(* callback) (file, NULL, error, callback_data);
+		g_error_free (error);
+	}
+
+	g_free (old_name);
+	g_object_unref (link);
+
+	return;
+}
+
+static gboolean
+real_can_rename (NautilusFile *file)
+{
+        NautilusDesktopLink *link;
+        gboolean can_rename;
+
+        can_rename = NAUTILUS_FILE_CLASS (nautilus_desktop_icon_file_parent_class)->can_rename (file);
+
+        if (!can_rename)
+                return FALSE;
+
+        link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+
+        /* Certain types of links can't be renamed */
+        if (link != NULL) {
+                can_rename = nautilus_desktop_link_can_rename (link);
+                g_object_unref (link);
+        }
+
+        return can_rename;
+}
+
+static void
 nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
 					 const char             *key,
 					 const char             *value)
@@ -382,6 +463,8 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 	file_class->set_metadata_as_list = nautilus_desktop_icon_file_set_metadata_as_list;
 	file_class->unmount = nautilus_desktop_icon_file_unmount;
 	file_class->eject = nautilus_desktop_icon_file_eject;
+        file_class->can_rename = real_can_rename;
+        file_class->rename = real_rename;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }

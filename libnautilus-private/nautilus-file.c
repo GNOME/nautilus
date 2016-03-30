@@ -1517,18 +1517,6 @@ real_can_rename (NautilusFile *file)
 	
 	can_rename = TRUE;
 
-	/* Certain types of links can't be renamed */
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		NautilusDesktopLink *link;
-
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-
-		if (link != NULL) {
-			can_rename = nautilus_desktop_link_can_rename (link);
-			g_object_unref (link);
-		}
-	}
-
 	if (!can_rename) {
 		return FALSE;
 	}
@@ -1864,8 +1852,7 @@ real_rename (NautilusFile                  *file,
 	 * (1) rename returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.
 	 */
-	if (!NAUTILUS_IS_DESKTOP_ICON_FILE (file) &&
-	    !is_renameable_desktop_file &&
+	if (!is_renameable_desktop_file &&
 	    name_is (file, new_name)) {
 		(* callback) (file, NULL, NULL, callback_data);
 		return;
@@ -1886,32 +1873,6 @@ real_rename (NautilusFile                  *file,
 		
 		(* callback) (file, NULL, error, callback_data);
 		g_error_free (error);
-		return;
-	}
-
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		NautilusDesktopLink *link;
-
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-		old_name = nautilus_file_get_display_name (file);
-
-		if ((old_name != NULL && strcmp (new_name, old_name) == 0)) {
-			success = TRUE;
-		} else {
-			success = (link != NULL && nautilus_desktop_link_rename (link, new_name));
-		}
-
-		if (success) {
-			(* callback) (file, NULL, NULL, callback_data);
-		} else {
-			error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
-					     _("Unable to rename desktop icon"));
-			(* callback) (file, NULL, error, callback_data);
-			g_error_free (error);
-		}
-
-		g_free (old_name);
-		g_object_unref (link);
 		return;
 	}
 
