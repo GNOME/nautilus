@@ -48,7 +48,6 @@
 #include <libnautilus-private/nautilus-column-chooser.h>
 #include <libnautilus-private/nautilus-column-utilities.h>
 #include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

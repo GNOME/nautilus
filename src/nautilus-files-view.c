@@ -73,7 +73,6 @@
 #include <libnautilus-private/nautilus-dnd.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
-#include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-file-private.h>

@@ -29,7 +29,7 @@
 
 #include "nautilus-tree-view-drag-dest.h"
 
-#include "nautilus-file-dnd.h"
+#include "nautilus-dnd.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"

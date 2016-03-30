@@ -37,26 +37,6 @@
 #define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
 #define NAUTILUS_ICON_DND_RAW_TYPE	"application/octet-stream"
 
-/* Item of the drag selection list */
-typedef struct {
-	NautilusFile *file;
-	char *uri;
-	gboolean got_icon_position;
-	int icon_x, icon_y;
-	int icon_width, icon_height;
-} NautilusDragSelectionItem;
-
-/* Standard Drag & Drop types. */
-typedef enum {
-	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
-	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_NETSCAPE_URL,
-	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
-	NAUTILUS_ICON_DND_RAW,
-	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
-} NautilusIconDndTargetType;
-
 /* drag&drop-related information. */
 typedef struct {
 	GtkTargetList *target_list;

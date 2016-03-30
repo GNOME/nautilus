@@ -39,7 +39,6 @@
 #include <libnautilus-private/nautilus-clipboard-monitor.h>
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-dnd.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
 #include <libnautilus-private/nautilus-global-preferences.h>

@@ -35,7 +35,6 @@
 
 #include "nautilus-canvas-dnd.h"
 
-#include "nautilus-file-dnd.h"
 #include "nautilus-canvas-private.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
