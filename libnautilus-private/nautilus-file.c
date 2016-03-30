@@ -3857,26 +3857,11 @@ real_get_target_uri (NautilusFile *file)
 {
 	char *uri, *target_uri;
 	GFile *location;
-	NautilusDesktopLink *link;
 
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-
-		if (link != NULL) {
-			location = nautilus_desktop_link_get_activation_location (link);
-			g_object_unref (link);
-			if (location != NULL) {
-				uri = g_file_get_uri (location);
-				g_object_unref (location);
-				return uri;
-			}
-		}
-	}
-	
 	uri = nautilus_file_get_uri (file);
-			
+
 	/* Check for Nautilus link */
 	if (nautilus_file_is_nautilus_link (file)) {
 		location = nautilus_file_get_location (file);

@@ -344,6 +344,29 @@ nautilus_desktop_icon_file_eject (NautilusFile                   *file,
 	}
 }
 
+static char*
+real_get_target_uri (NautilusFile *file)
+{
+	char *uri = NULL;
+	GFile *location;
+	NautilusDesktopLink *link;
+
+	g_return_val_if_fail (NAUTILUS_IS_DESKTOP_ICON_FILE (file), NULL);
+
+	link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+
+	if (link != NULL) {
+		location = nautilus_desktop_link_get_activation_location (link);
+		g_object_unref (link);
+		if (location != NULL) {
+			uri = g_file_get_uri (location);
+			g_object_unref (location);
+		}
+	}
+
+        return uri;
+}
+
 static void
 real_rename (NautilusFile                  *file,
              const char                    *new_name,
@@ -465,6 +488,7 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 	file_class->eject = nautilus_desktop_icon_file_eject;
         file_class->can_rename = real_can_rename;
         file_class->rename = real_rename;
+        file_class->get_target_uri = real_get_target_uri;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }
