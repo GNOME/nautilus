@@ -30,7 +30,6 @@
 #include <config.h>
 
 #include "nautilus-application.h"
-#include "nautilus-desktop-window.h"
 #include "nautilus-location-entry.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-notebook.h"
@@ -1649,7 +1648,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 	if (undo_info != NULL &&
             state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
             nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH &&
-            !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+            !window->priv->disable_chrome) {
 		files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
 
 		/* Don't pop up a notification if user canceled the operation or the focus
@@ -1718,7 +1717,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
         current_location = nautilus_window_slot_get_location (window->priv->active_slot);
 	if (gtk_window_has_toplevel_focus (GTK_WINDOW (window)) &&
-            !NAUTILUS_IS_DESKTOP_WINDOW (window)) {
+            !window->priv->disable_chrome) {
                 remove_notifications (window);
 	        gtk_label_set_text (GTK_LABEL (window->priv->notification_operation_label),
                                     main_label);
