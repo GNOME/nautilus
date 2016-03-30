@@ -567,6 +567,8 @@ typedef struct {
                                                           const char                     *new_name,
                                                           NautilusFileOperationCallback   callback,
                                                           gpointer                        callback_data);
+
+       char*                 (* get_drop_target_uri)     (NautilusFile                   *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */
