@@ -446,6 +446,13 @@ real_can_rename (NautilusFile *file)
         return can_rename;
 }
 
+static gboolean
+real_drag_can_accept_files (NautilusFile *drop_target_item)
+{
+        return TRUE;
+}
+
+
 static void
 nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
 					 const char             *key,
@@ -489,6 +496,7 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
         file_class->can_rename = real_can_rename;
         file_class->rename = real_rename;
         file_class->get_target_uri = real_get_target_uri;
+        file_class->drag_can_accept_files = real_drag_can_accept_files;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }
