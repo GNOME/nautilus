@@ -25,7 +25,6 @@
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-signaller.h"
-#include "nautilus-desktop-icon-file.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-operations.h"
@@ -7440,14 +7439,6 @@ real_invalidate_attributes_internal (NautilusFile           *file,
 		return;
 	}
 
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		/* Desktop icon files are always up to date.
-		 * If we invalidate their attributes they
-		 * will lose data, so we just ignore them.
-		 */
-		return;
-	}
-	
 	request = nautilus_directory_set_up_request (file_attributes);
 
 	if (REQUEST_WANTS_TYPE (request, REQUEST_DIRECTORY_COUNT)) {

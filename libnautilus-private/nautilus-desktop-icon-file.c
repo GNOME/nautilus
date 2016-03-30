@@ -452,6 +452,15 @@ real_drag_can_accept_files (NautilusFile *drop_target_item)
         return TRUE;
 }
 
+static void
+real_invalidate_attributes_internal (NautilusFile *file)
+{
+        /* Desktop icon files are always up to date.
+         * If we invalidate their attributes they
+         * will lose data, so we just ignore them.
+         */
+        return;
+}
 
 static void
 nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
@@ -497,6 +506,7 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
         file_class->rename = real_rename;
         file_class->get_target_uri = real_get_target_uri;
         file_class->drag_can_accept_files = real_drag_can_accept_files;
+        file_class->invalidate_attributes_internal = real_invalidate_attributes_internal;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }
