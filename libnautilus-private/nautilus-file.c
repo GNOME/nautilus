@@ -1612,6 +1612,19 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 	return scheme;
 }
 
+
+gboolean
+nautilus_file_opens_in_view (NautilusFile *file)
+{
+        return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->opens_in_view (file);
+}
+
+static gboolean
+real_opens_in_view (NautilusFile *file)
+{
+        return nautilus_file_is_directory (file);
+}
+
 NautilusFileOperation *
 nautilus_file_operation_new (NautilusFile *file,
 			     NautilusFileOperationCallback callback,
@@ -8005,6 +8018,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 	class->get_target_uri = real_get_target_uri;
 	class->drag_can_accept_files = real_drag_can_accept_files;
 	class->invalidate_attributes_internal = real_invalidate_attributes_internal;
+	class->opens_in_view = real_opens_in_view;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",

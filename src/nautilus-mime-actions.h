@@ -37,7 +37,6 @@ GList *                nautilus_mime_get_applications_for_file            (Nauti
 
 GAppInfo *             nautilus_mime_get_default_application_for_files    (GList                   *files);
 
-gboolean               nautilus_mime_file_opens_in_view                   (NautilusFile            *file);
 gboolean               nautilus_mime_file_opens_in_external_app           (NautilusFile            *file);
 gboolean               nautilus_mime_file_launches                        (NautilusFile            *file);
 void                   nautilus_mime_activate_files                       (GtkWindow               *parent_window,

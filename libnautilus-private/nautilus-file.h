@@ -456,6 +456,8 @@ GdkPixbuf *             nautilus_file_get_icon_pixbuf                   (Nautilu
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
 
+/* Whether the file should open inside a view */
+gboolean                nautilus_file_opens_in_view                     (NautilusFile                   *file);
 /* Thumbnailing handling */
 gboolean                nautilus_file_is_thumbnailing                   (NautilusFile                   *file);
 
@@ -604,6 +606,8 @@ typedef struct {
 
        void                  (* invalidate_attributes_internal) (NautilusFile            *file,
                                                                  NautilusFileAttributes   file_attributes);
+
+       gboolean              (* opens_in_view)           (NautilusFile                   *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

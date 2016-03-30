@@ -6299,7 +6299,7 @@ real_update_actions_state (NautilusFilesView *view)
 
                 file = NAUTILUS_FILE (selection->data);
 
-                if (!nautilus_mime_file_opens_in_view (file)) {
+                if (!nautilus_file_opens_in_view (file)) {
                         item_opens_in_view = FALSE;
                 }
 
@@ -6586,7 +6586,7 @@ update_selection_menu (NautilusFilesView *view)
                         show_run = FALSE;
                 }
 
-                if (!nautilus_mime_file_opens_in_view (file)) {
+                if (!nautilus_file_opens_in_view (file)) {
                         item_opens_in_view = FALSE;
                 }
 

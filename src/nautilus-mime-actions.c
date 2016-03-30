@@ -41,7 +41,6 @@
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-signaller.h>
 
@@ -672,13 +671,6 @@ get_default_executable_text_file_action (void)
 	}
 }
 
-gboolean
-nautilus_mime_file_opens_in_view (NautilusFile *file)
-{
-  return (nautilus_file_is_directory (file) ||
-	  NAUTILUS_IS_DESKTOP_ICON_FILE (file));
-}
-
 static ActivationAction
 get_activation_action (NautilusFile *file)
 {
@@ -710,7 +702,7 @@ get_activation_action (NautilusFile *file)
 	} 
 
 	if (action == ACTIVATION_ACTION_DO_NOTHING) {
-		if (nautilus_mime_file_opens_in_view (file)) {
+		if (nautilus_file_opens_in_view (file)) {
 			action = ACTIVATION_ACTION_OPEN_IN_VIEW;
 		} else {
 			action = ACTIVATION_ACTION_OPEN_IN_APPLICATION;
