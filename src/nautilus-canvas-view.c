@@ -25,7 +25,6 @@
 #include "nautilus-canvas-view.h"
 
 #include "nautilus-canvas-view-container.h"
-#include "nautilus-desktop-canvas-view.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-toolbar.h"
@@ -47,7 +46,6 @@
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
 #include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_VIEW
 #include <libnautilus-private/nautilus-debug.h>
