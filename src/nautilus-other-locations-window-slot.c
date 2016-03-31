@@ -17,7 +17,6 @@
  */
 
 #include "nautilus-other-locations-window-slot.h"
-#include "nautilus-desktop-canvas-view.h"
 #include "nautilus-places-view.h"
 
 struct _NautilusOtherLocationsWindowSlot
