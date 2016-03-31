@@ -30,7 +30,6 @@
 #include "nautilus-window.h"
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-application.h"
-#include "nautilus-desktop-window.h"
 
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-ui-utilities.h>
@@ -600,8 +599,11 @@ update_operations (NautilusToolbar *self)
                                                TRUE);
                 gtk_widget_queue_draw (self->priv->operations_icon);
 
-                /* Show the popover at start to increase visibility */
-                if (!NAUTILUS_IS_DESKTOP_WINDOW (self->priv->window)) {
+                /* Show the popover at start to increase visibility.
+                 * Check whether the toolbar is visible or not before showing the
+                 * popover. This can happens if the window has the disables-chrome
+                 * property set. */
+                if (gtk_widget_get_visible (GTK_WIDGET (self))) {
                         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->operations_button),
                                                       TRUE);
                 }
