@@ -51,7 +51,6 @@
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-file-operations.h>
 #include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-link.h>
 #include <libnautilus-private/nautilus-metadata.h>
@@ -279,39 +278,14 @@ static NautilusFile *
 get_target_file_for_original_file (NautilusFile *file)
 {
 	NautilusFile *target_file;
-	GFile *location;
-	char *uri_to_display;
-	NautilusDesktopLink *link;
+	g_autoptr (GFile) location;
+	g_autofree char *uri_to_display;
 
-	target_file = NULL;
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
+	uri_to_display = nautilus_file_get_target_uri (file);
+	location = g_file_new_for_uri (uri_to_display);
+	target_file = nautilus_file_get (location);
 
-		if (link != NULL) {
-			/* map to linked URI for these types of links */
-			location = nautilus_desktop_link_get_activation_location (link);
-			if (location) {
-				target_file = nautilus_file_get (location);
-				g_object_unref (location);
-			}
-			
-			g_object_unref (link);
-		}
-        } else {
-		uri_to_display = nautilus_file_get_activation_uri (file);
-		if (uri_to_display != NULL) {
-			target_file = nautilus_file_get_by_uri (uri_to_display);
-			g_free (uri_to_display);
-		}
-	}
-	
-	if (target_file != NULL) {
-		return target_file;
-	}
-
-	/* Ref passed-in file here since we've decided to use it. */
-	nautilus_file_ref (file);
-	return file;
+	return target_file;
 }
 
 static NautilusFile *
