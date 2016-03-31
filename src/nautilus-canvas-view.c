@@ -1449,7 +1449,7 @@ get_icon_drop_target_uri_callback (NautilusCanvasContainer *container,
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (canvas_view), NULL);
 
-	return nautilus_file_get_drop_target_uri (file);
+	return nautilus_file_get_target_uri (file);
 }
 
 /* Preferences changed callbacks */

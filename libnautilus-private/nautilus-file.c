@@ -3847,13 +3847,13 @@ nautilus_file_get_activation_location (NautilusFile *file)
 
 
 char *
-nautilus_file_get_drop_target_uri (NautilusFile *file)
+nautilus_file_get_target_uri (NautilusFile *file)
 {
-        return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_drop_target_uri (file);
+        return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_target_uri (file);
 }
 
 static char *
-real_get_drop_target_uri (NautilusFile *file)
+real_get_target_uri (NautilusFile *file)
 {
 	char *uri, *target_uri;
 	GFile *location;
@@ -8018,7 +8018,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 	class->set_metadata_as_list = real_set_metadata_as_list;
 	class->can_rename = real_can_rename;
 	class->rename = real_rename;
-	class->get_drop_target_uri = real_get_drop_target_uri;
+	class->get_target_uri = real_get_target_uri;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",

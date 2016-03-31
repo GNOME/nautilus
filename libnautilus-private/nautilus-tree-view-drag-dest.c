@@ -425,7 +425,7 @@ get_drop_target_uri_for_path (NautilusTreeViewDragDest *dest,
 					     dest->details->drag_type,
 					     dest->details->drag_list);
 	if (can) {
-		target = nautilus_file_get_drop_target_uri (file);
+		target = nautilus_file_get_target_uri (file);
 	}
 	nautilus_file_unref (file);
 

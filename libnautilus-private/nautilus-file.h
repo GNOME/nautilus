@@ -422,7 +422,7 @@ gboolean                nautilus_file_has_activation_uri                (Nautilu
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);
 
-char *                  nautilus_file_get_drop_target_uri               (NautilusFile                   *file);
+char *                  nautilus_file_get_target_uri                    (NautilusFile                   *file);
 
 GIcon *                 nautilus_file_get_gicon                         (NautilusFile                   *file,
 									 NautilusFileIconFlags           flags);
@@ -568,7 +568,7 @@ typedef struct {
                                                           NautilusFileOperationCallback   callback,
                                                           gpointer                        callback_data);
 
-       char*                 (* get_drop_target_uri)     (NautilusFile                   *file);
+       char*                 (* get_target_uri)          (NautilusFile                   *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */
