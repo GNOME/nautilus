@@ -57,6 +57,24 @@ char *   eel_str_strip_substring_and_after (const char    *str,
 char *   eel_str_replace_substring         (const char    *str,
 					    const char    *substring,
 					    const char    *replacement);
+/**
+ * eel_str_rtrim_punctuation:
+ * @str: string
+ *
+ * Returns: a copy of str with trailing punctuation characters removed
+ */
+char *   eel_str_rtrim_punctuation         (char *str);
+
+
+/**
+ * eel_str_get_common_prefix:
+ * @str: set of strings
+ * @min_required_len: the minimum number of characters required in the prefix
+ *
+ * Returns: the common prefix for a set of strings, or NULL if there isn't a
+ * common prefix of length min_required_len
+ */
+char *   eel_str_get_common_prefix         (GList *strs, int min_required_len);
 
 typedef char * eel_ref_str;
 

@@ -95,6 +95,28 @@ gboolean should_handle_content_types (const char * const *content_type);
 
 gboolean nautilus_file_selection_equal (GList *selection_a, GList *selection_b);
 
+/**
+ * nautilus_get_common_filename_prefix:
+ * @file_list: set of files (NautilusFile *)
+ * @min_required_len: the minimum number of characters required in the prefix
+ *
+ * Returns: the common filename prefix for a set of files, or NULL if
+ * there isn't a common prefix of length min_required_len
+ */
+char * nautilus_get_common_filename_prefix (GList *file_list,
+                                            int    min_required_len);
+
+/**
+ * nautilus_get_common_filename_prefix_from_filenames:
+ * @filename_list: set of file names (char *)
+ * @min_required_len: the minimum number of characters required in the prefix
+ *
+ * Returns: the common filename prefix for a set of filenames, or NULL if
+ * there isn't a common prefix of length min_required_len
+ */
+char * nautilus_get_common_filename_prefix_from_filenames (GList *filename_list,
+                                                           int    min_required_len);
+
 void nautilus_ensure_extension_points (void);
 void nautilus_ensure_extension_builtins (void);
 

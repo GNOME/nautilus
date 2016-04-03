@@ -126,6 +126,9 @@
 /* Delay to show the Loading... floating bar */
 #define FLOATING_BAR_LOADING_DELAY 200 /* ms */
 
+#define MIN_COMMON_FILENAME_PREFIX_LENGTH 4
+
+
 enum {
         ADD_FILE,
         BEGIN_FILE_CHANGES,
@@ -2094,6 +2097,8 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         FileNameWidgetData *widget_data;
         GtkWidget *label_file_name;
         GtkBuilder *builder;
+        GList *selection;
+        char *common_prefix;
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-create-folder-dialog.ui");
         label_file_name = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
@@ -2122,6 +2127,13 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
                                           G_CALLBACK (create_folder_dialog_on_response),
                                           NULL);
 
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+        common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
+        if (common_prefix != NULL) {
+                gtk_entry_set_text (GTK_ENTRY (widget_data->name_entry), common_prefix);
+                g_free (common_prefix);
+        }
+
         gtk_builder_connect_signals (builder, widget_data);
         gtk_button_set_label (GTK_BUTTON (widget_data->activate_button),
                               _("Create"));
@@ -2132,6 +2144,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
         /* Update the ok button status */
         file_name_widget_entry_on_changed (widget_data);
 
+        nautilus_file_list_free (selection);
         g_object_unref (builder);
 }
 

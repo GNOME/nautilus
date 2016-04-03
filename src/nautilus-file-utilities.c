@@ -1149,6 +1149,60 @@ nautilus_file_selection_equal (GList *selection_a,
 	return selection_matches;
 }
 
+char *
+nautilus_get_common_filename_prefix (GList *file_list,
+                                     int    min_required_len)
+{
+        GList *l;
+        GList *strs = NULL;
+        char *name;
+        char *result;
+
+        if (file_list == NULL)
+                return NULL;
+
+        for (l = file_list; l != NULL; l = l->next) {
+                g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
+
+                name = nautilus_file_get_display_name (l->data);
+                strs = g_list_append (strs, name);
+        }
+
+        result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
+        g_list_free_full (strs, g_free);
+
+        return result;
+}
+
+char *
+nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
+                                                    int    min_required_len)
+{
+        char *common_prefix;
+        char *truncated;
+        int common_prefix_len;
+
+        common_prefix = eel_str_get_common_prefix (filenames, min_required_len);
+
+        if (common_prefix == NULL)
+                return NULL;
+
+        truncated = eel_filename_strip_extension (common_prefix);
+        g_free (common_prefix);
+        common_prefix = truncated;
+
+        truncated = eel_str_rtrim_punctuation (common_prefix);
+        g_free (common_prefix);
+
+        common_prefix_len = g_utf8_strlen (truncated, -1);
+        if (common_prefix_len < min_required_len) {
+                g_free (truncated);
+                return NULL;
+        }
+
+        return truncated;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void

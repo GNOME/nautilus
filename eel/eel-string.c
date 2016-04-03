@@ -208,6 +208,132 @@ eel_str_replace_substring (const char *string,
 	return result;
 }
 
+char *
+eel_str_rtrim_punctuation (char *str)
+{
+	int num_punctuation_chars;
+	int str_len;
+	int num_chars_left;
+	char *current_char_pos;
+	gunichar current_char;
+
+	num_punctuation_chars = 0;
+	str_len = g_utf8_strlen (str, -1);
+	current_char_pos = g_utf8_offset_to_pointer (str, str_len);
+
+	while (num_punctuation_chars <= str_len) {
+		current_char_pos = g_utf8_prev_char (current_char_pos);
+		current_char = g_utf8_get_char (current_char_pos);
+
+		if (!g_unichar_ispunct (current_char) && !g_unichar_isspace (current_char))
+			break;
+
+		++num_punctuation_chars;
+	}
+
+	if (num_punctuation_chars == 0)
+		return g_strdup (str);
+
+	num_chars_left = str_len - num_punctuation_chars;
+
+	return g_utf8_substring (str, 0, num_chars_left);
+}
+
+/**
+ * get_common_prefix_length:
+ * @str_a: first string
+ * @str_b: second string
+ * @min_required_len: the minimum number of characters required in the prefix
+ *
+ * Returns: the size of the common prefix of two strings, in characters.
+ * If there's no common prefix, or the common prefix is smaller than
+ * min_required_len, this will return -1
+ */
+static int
+get_common_prefix_length (char *str_a,
+			  char *str_b,
+			  int   min_required_len)
+{
+	int a_len;
+	int b_len;
+	int intersection_len;
+	int matching_chars;
+	char *a;
+	char *b;
+
+	a_len = g_utf8_strlen (str_a, -1);
+	b_len = g_utf8_strlen (str_b, -1);
+
+	intersection_len = MIN (a_len, b_len);
+	if (intersection_len < min_required_len)
+		return -1;
+
+	matching_chars = 0;
+	a = str_a;
+	b = str_b;
+	while (matching_chars < intersection_len) {
+		if (g_utf8_get_char (a) != g_utf8_get_char (b))
+			break;
+
+		++matching_chars;
+
+		a = g_utf8_next_char (a);
+		b = g_utf8_next_char (b);
+	}
+
+	if (matching_chars < min_required_len)
+		return -1;
+
+	return matching_chars;
+}
+
+char *
+eel_str_get_common_prefix (GList *strs, int min_required_len)
+{
+	GList *l;
+	char *common_part;
+	char *name;
+	char *truncated;
+	int matching_chars;
+
+	if (strs == NULL)
+		return NULL;
+
+	common_part = NULL;
+	for (l = strs; l != NULL; l = l->next) {
+
+		name = l->data;
+		if (name == NULL) {
+			g_free (common_part);
+			return NULL;
+		}
+
+		if (l->prev == NULL) {
+			common_part = g_strdup (name);
+			continue;
+		}
+
+		matching_chars = get_common_prefix_length (common_part, name, min_required_len);
+
+		if (matching_chars == -1) {
+			g_free (common_part);
+			return NULL;
+		}
+
+		truncated = g_utf8_substring (common_part, 0, matching_chars);
+		g_free (common_part);
+		common_part = truncated;
+	}
+
+	matching_chars = g_utf8_strlen (common_part, -1);
+	if (matching_chars < min_required_len) {
+		g_free (common_part);
+		return NULL;
+	}
+
+	return common_part;
+}
+
 /**************** Custom printf ***********/
 
 typedef struct {
