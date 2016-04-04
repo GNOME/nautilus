@@ -17,6 +17,7 @@
  */
 
 #include "nautilus-desktop-canvas-view-container.h"
+#include "nautilus-desktop-icon-file.h"
 
 struct _NautilusDesktopCanvasViewContainer
 {
@@ -24,6 +25,26 @@ struct _NautilusDesktopCanvasViewContainer
 };
 
 G_DEFINE_TYPE (NautilusDesktopCanvasViewContainer, nautilus_desktop_canvas_view_container, NAUTILUS_TYPE_CANVAS_VIEW_CONTAINER)
+
+static char *
+real_get_icon_description (NautilusCanvasContainer *container,
+                           NautilusCanvasIconData  *data)
+{
+  NautilusFile *file;
+
+  file = NAUTILUS_FILE (data);
+  g_assert (NAUTILUS_IS_FILE (file));
+
+  if (NAUTILUS_IS_DESKTOP_ICON_FILE (file))
+    {
+      return NULL;
+    }
+  else
+    {
+      return NAUTILUS_CANVAS_CONTAINER_CLASS (G_OBJECT_GET_CLASS (container))->get_icon_description (container,
+                                                                                                     data);
+    }
+}
 
 NautilusDesktopCanvasViewContainer *
 nautilus_desktop_canvas_view_container_new (void)
@@ -34,6 +55,9 @@ nautilus_desktop_canvas_view_container_new (void)
 static void
 nautilus_desktop_canvas_view_container_class_init (NautilusDesktopCanvasViewContainerClass *klass)
 {
+  NautilusCanvasContainerClass *container_class = NAUTILUS_CANVAS_CONTAINER_CLASS (klass);
+
+  container_class->get_icon_description = real_get_icon_description;
 }
 
 static void

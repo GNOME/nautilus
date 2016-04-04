@@ -85,10 +85,6 @@ nautilus_canvas_view_container_get_icon_description (NautilusCanvasContainer *co
 	file = NAUTILUS_FILE (data);
 	g_assert (NAUTILUS_IS_FILE (file));
 
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		return NULL;
-	}
-
 	mime_type = nautilus_file_get_mime_type (file);
 	description = g_content_type_get_description (mime_type);
 	g_free (mime_type);
