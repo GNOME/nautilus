@@ -4448,7 +4448,6 @@ static gboolean
 is_a_special_file (NautilusFile *file)
 {
 	if (file == NULL ||
-	    NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
 	    nautilus_file_is_nautilus_link (file) ||
 	    is_merged_trash_directory (file) ||
 	    is_computer_directory (file)) {
@@ -4464,6 +4463,7 @@ should_show_open_with (NautilusPropertiesWindow *window)
 	char *mime_type;
 	char *extension;
 	gboolean hide;
+	g_autoptr (GAppInfo) app_info = NULL;
 
 	/* Don't show open with tab for desktop special icons (trash, etc)
 	 * or desktop files. We don't get the open-with menu for these anyway.
@@ -4482,7 +4482,8 @@ should_show_open_with (NautilusPropertiesWindow *window)
 
 		for (l = window->details->target_files; l; l = l->next) {
 			file = NAUTILUS_FILE (l->data);
-			if (nautilus_file_is_directory (file) || is_a_special_file (file)) {
+			app_info = nautilus_mime_get_default_application_for_file (file);
+			if (nautilus_file_is_directory (file) || !app_info || is_a_special_file (file)) {
 				return FALSE;
 			}
 		}
@@ -4493,7 +4494,8 @@ should_show_open_with (NautilusPropertiesWindow *window)
 	} else {
 		file = get_target_file (window);
 
-		if (nautilus_file_is_directory (file) || is_a_special_file (file)) {
+		app_info = nautilus_mime_get_default_application_for_file (file);
+		if (nautilus_file_is_directory (file) || !app_info || is_a_special_file (file)) {
 			return FALSE;
 		}
 	}
