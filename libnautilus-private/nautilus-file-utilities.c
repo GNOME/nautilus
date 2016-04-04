@@ -257,6 +257,7 @@ char *
 nautilus_compute_title_for_location (GFile *location)
 {
 	NautilusFile *file;
+        GMount *mount;
 	char *title;
 
 	/* TODO-gio: This doesn't really work all that great if the
@@ -265,6 +266,14 @@ nautilus_compute_title_for_location (GFile *location)
 	if (nautilus_is_home_directory (location)) {
 		return g_strdup (_("Home"));
 	}
+
+        if ((mount = nautilus_get_mounted_mount_for_root (location)) != NULL) {
+                title = g_mount_get_name(mount);
+
+                g_object_unref(mount);
+
+                return title;
+        }
 	
 	title = NULL;
 	if (location) {
