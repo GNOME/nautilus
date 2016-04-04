@@ -52,6 +52,8 @@ struct NautilusCanvasView {
 
 struct NautilusCanvasViewClass {
 	NautilusFilesViewClass parent_class;
+
+        NautilusCanvasContainer * (* create_canvas_container) (NautilusCanvasView *canvas_view);
 };
 
 /* GObject support */

@@ -1639,11 +1639,22 @@ store_layout_timestamp (NautilusCanvasContainer *container,
 static NautilusCanvasContainer *
 create_canvas_container (NautilusCanvasView *canvas_view)
 {
-	NautilusCanvasContainer *canvas_container;
+        return NAUTILUS_CANVAS_VIEW_CLASS (G_OBJECT_GET_CLASS (canvas_view))->create_canvas_container (canvas_view);
+}
+
+static NautilusCanvasContainer *
+real_create_canvas_container (NautilusCanvasView *canvas_view)
+{
+        return nautilus_canvas_view_container_new (canvas_view);
+}
+
+static void
+initialize_canvas_container (NautilusCanvasView      *canvas_view,
+                             NautilusCanvasContainer *canvas_container)
+{
         GtkWidget *content_widget;
 
         content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (canvas_view));
-	canvas_container = nautilus_canvas_view_container_new (canvas_view);
 	canvas_view->details->canvas_container = GTK_WIDGET (canvas_container);
 	g_object_add_weak_pointer (G_OBJECT (canvas_container),
 				   (gpointer *) &canvas_view->details->canvas_container);
@@ -1705,8 +1716,6 @@ create_canvas_container (NautilusCanvasView *canvas_view)
 						  get_default_zoom_level (canvas_view));
 
 	gtk_widget_show (GTK_WIDGET (canvas_container));
-
-	return canvas_container;
 }
 
 /* Handles an URL received from Mozilla */
@@ -1876,6 +1885,8 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	oclass->finalize = nautilus_canvas_view_finalize;
 
 	GTK_WIDGET_CLASS (klass)->destroy = nautilus_canvas_view_destroy;
+
+        klass->create_canvas_container = real_create_canvas_container;
 	
 	nautilus_files_view_class->add_file = nautilus_canvas_view_add_file;
 	nautilus_files_view_class->begin_loading = nautilus_canvas_view_begin_loading;
@@ -1950,6 +1961,7 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
         canvas_view->details->icon = g_themed_icon_new ("view-grid-symbolic");
 
 	canvas_container = create_canvas_container (canvas_view);
+        initialize_canvas_container (canvas_view, canvas_container);
 
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER,
