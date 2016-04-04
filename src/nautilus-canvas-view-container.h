@@ -42,6 +42,8 @@ typedef struct NautilusCanvasViewContainerClass NautilusCanvasViewContainerClass
 #define NAUTILUS_CANVAS_VIEW_CONTAINER_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CANVAS_VIEW_CONTAINER, NautilusCanvasViewContainerClass))
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(NautilusCanvasViewContainer, g_object_unref)
+
 typedef struct NautilusCanvasViewContainerDetails NautilusCanvasViewContainerDetails;
 
 struct NautilusCanvasViewContainer {
