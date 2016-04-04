@@ -152,6 +152,8 @@ nautilus_no_main_sources = \
 	nautilus-dbus-manager.h 		\
 	nautilus-desktop-canvas-view.c		\
 	nautilus-desktop-canvas-view.h		\
+	nautilus-desktop-canvas-view-container.c	\
+	nautilus-desktop-canvas-view-container.h	\
 	nautilus-desktop-item-properties.c	\
 	nautilus-desktop-item-properties.h	\
 	nautilus-desktop-window.c		\

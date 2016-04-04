@@ -28,6 +28,7 @@
 #include "nautilus-desktop-canvas-view.h"
 
 #include "nautilus-canvas-view-container.h"
+#include "nautilus-desktop-canvas-view-container.h"
 #include "nautilus-files-view.h"
 
 #include <X11/Xatom.h>
@@ -285,14 +286,25 @@ nautilus_desktop_canvas_view_end_loading (NautilusFilesView *view,
 	g_free (stored_size_icon);
 }
 
+static NautilusCanvasContainer *
+real_create_canvas_container (NautilusCanvasView *canvas_view)
+{
+        return NAUTILUS_CANVAS_CONTAINER (nautilus_desktop_canvas_view_container_new ());
+}
+
 static void
 nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 {
 	NautilusFilesViewClass *vclass;
+        NautilusCanvasViewClass *parent_class;
 
 	vclass = NAUTILUS_FILES_VIEW_CLASS (class);
+	parent_class = NAUTILUS_CANVAS_VIEW_CLASS (class);
+
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_canvas_view_dispose;
+
+        parent_class->create_canvas_container = real_create_canvas_container;
 
 	vclass->update_context_menus = real_update_context_menus;
 	vclass->get_view_id = real_get_id;
