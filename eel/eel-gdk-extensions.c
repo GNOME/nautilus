@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-gdk-extensions.c: Graphics routines to augment what's in gdk.
 

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-desktop-link-monitor.h: singleton that manages the desktop links
     
    Copyright (C) 2003 Red Hat, Inc.

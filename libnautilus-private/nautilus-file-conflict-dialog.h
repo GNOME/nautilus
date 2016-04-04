@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* nautilus-file-conflict-dialog: dialog that handles file conflicts
    during transfer operations.

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-search-directory-file.c: Subclass of NautilusFile to help implement the
    searches
  

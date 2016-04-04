@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* nautilus-icon-info.c
  * Copyright (C) 2007  Red Hat, Inc.,  Alexander Larsson <alexl@redhat.com>
  *

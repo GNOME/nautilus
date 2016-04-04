@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-desktop-directory-file.h: Subclass of NautilusFile to implement the
    the case of the desktop directory
  

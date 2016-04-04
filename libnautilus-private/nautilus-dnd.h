@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* nautilus-dnd.h - Common Drag & drop handling code shared by the icon container
    and the list view.

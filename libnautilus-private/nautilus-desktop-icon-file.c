@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-desktop-icon-file.c: Subclass of NautilusFile to help implement the
    virtual desktop icons.
  
@@ -369,7 +368,7 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
 	file_class = NAUTILUS_FILE_CLASS (klass);
 
 	file_class->default_file_type = G_FILE_TYPE_DIRECTORY;
-	
+
 	file_class->monitor_add = desktop_icon_file_monitor_add;
 	file_class->monitor_remove = desktop_icon_file_monitor_remove;
 	file_class->call_when_ready = desktop_icon_file_call_when_ready;

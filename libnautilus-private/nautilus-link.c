@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-link.c: .desktop link files.
  
    Copyright (C) 2001 Red Hat, Inc.

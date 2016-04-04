@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: nil; c-basic-offset: 8 -*- */
 /*
  *  Copyright © 2002 Christophe Fergeau
  *  Copyright © 2003, 2004 Marco Pesenti Gritti

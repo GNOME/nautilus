@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    Copyright (C) 2001 Maciej Stachowiak
   
    This program is free software; you can redistribute it and/or

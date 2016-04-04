@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
 /* nautilus-ui-utilities.c - helper functions for GtkUIManager stuff
 

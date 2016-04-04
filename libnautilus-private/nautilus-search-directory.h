@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-search-directory.h: Subclass of NautilusDirectory to implement
    a virtual directory consisting of the search directory and the search
    icons

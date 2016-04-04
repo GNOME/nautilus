@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-file-attributes.h: #defines and other file-attribute-related info
  
    Copyright (C) 2000 Eazel, Inc.

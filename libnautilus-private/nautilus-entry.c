@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* NautilusEntry: one-line text editing widget. This consists of bug fixes
  * and other improvements to GtkEntry, and all the changes could be rolled

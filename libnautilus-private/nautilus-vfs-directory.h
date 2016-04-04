@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-vfs-directory.h: Subclass of NautilusDirectory to implement the
    the case of a VFS directory.
  

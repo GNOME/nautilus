@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
 /* nautilus-mime-actions.c - uri-specific versions of mime action functions
 

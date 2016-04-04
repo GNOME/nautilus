@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-   
+/*
    eel-self-checks.h: The self-check framework.
  
    Copyright (C) 1999 Eazel, Inc.

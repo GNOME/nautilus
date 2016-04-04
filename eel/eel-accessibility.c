@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* eel-accessibility.h - Utility functions for accessibility
 
    Copyright (C) 2002 Anders Carlsson, Sun Microsystems, Inc.

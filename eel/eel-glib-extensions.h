@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-glib-extensions.h - interface for new functions that conceptually
                                 belong in glib. Perhaps some of these will be

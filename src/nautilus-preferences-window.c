@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 2; tab-width: 2 -*- */
 
 /* nautilus-preferences-window.c - Functions to create and show the nautilus
    preference window.

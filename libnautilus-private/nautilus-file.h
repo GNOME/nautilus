@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-file.h: Nautilus file model.
  
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-vfs-directory.c: Subclass of NautilusDirectory to help implement the
    virtual trash directory.
  

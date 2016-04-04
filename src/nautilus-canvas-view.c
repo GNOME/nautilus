@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* fm-canvas-view.c - implementation of canvas view of directory.
 

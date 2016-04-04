@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-file.c: Nautilus file model.
  
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
@@ -1516,7 +1515,7 @@ gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
 	gboolean can_rename;
-	
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
 	/* Nonexistent files can't be renamed. */
@@ -1831,7 +1830,7 @@ nautilus_file_rename (NautilusFile *file,
 	gboolean is_renameable_desktop_file;
 	GFile *location;
 	GError *error;
-	
+
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
@@ -1921,7 +1920,7 @@ nautilus_file_rename (NautilusFile *file,
 		g_object_unref (link);
 		return;
 	}
-	
+
 	if (is_renameable_desktop_file) {
 		/* Don't actually change the name if the new name is the same.
 		 * This helps for the vfolder method where this can happen and
@@ -3898,7 +3897,7 @@ nautilus_file_get_drop_target_uri (NautilusFile *file)
 	char *uri, *target_uri;
 	GFile *location;
 	NautilusDesktopLink *link;
-	
+
 	g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
 	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {

@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* fm-error-reporting.h - interface for file manager functions that report
  			  errors to the user.

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    Default file icon used by the icon factory.
  
    Copyright (C) 2000 Eazel, Inc.

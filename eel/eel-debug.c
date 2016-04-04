@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    eel-debug.c: Eel debugging aids.
  
    Copyright (C) 2000, 2001 Eazel, Inc.

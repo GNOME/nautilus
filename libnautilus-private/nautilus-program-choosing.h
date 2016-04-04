@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* nautilus-program-choosing.h - functions for selecting and activating
  				 programs for opening/viewing particular files.

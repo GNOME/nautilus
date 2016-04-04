@@ -1,4 +1,3 @@
-/* -*- Mode: C; tab-width: 8; indent-tabs-mode: t; c-basic-offset: 8 -*- */
 /*
  * Copyright (C) 2008 Red Hat, Inc.
  * Copyright (C) 2006 Paolo Borelli <pborelli@katamail.com>

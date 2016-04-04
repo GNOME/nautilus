@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
- *
+/*
  *  Copyright (C) 2012 Red Hat, Inc.
  *
  *  This library is free software; you can redistribute it and/or

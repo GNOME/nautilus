@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-metadata.h: #defines and other metadata-related info
  
    Copyright (C) 2000 Eazel, Inc.

@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 /* nautilus-file-drag.h - Drag & drop handling code that operated on 
    NautilusFile objects.
 

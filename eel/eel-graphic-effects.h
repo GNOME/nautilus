@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    eel-graphic-effects.h: Pixmap manipulation routines for graphical effects.
 
    Copyright (C) 2000 Eazel, Inc.

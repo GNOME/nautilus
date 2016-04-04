@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-gtk-extensions.c - implementation of new functions that operate on
   			  gtk classes. Perhaps some of these should be

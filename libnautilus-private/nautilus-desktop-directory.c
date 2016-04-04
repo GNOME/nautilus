@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-desktop-directory.c: Subclass of NautilusDirectory to implement
    a virtual directory consisting of the desktop directory and the desktop
    icons

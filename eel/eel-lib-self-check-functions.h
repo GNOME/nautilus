@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    eel-lib-self-check-functions.h: Wrapper and prototypes for all
    self-check functions in libeel.
  

@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-   
+/*
    nautilus-lib-self-check-functions.c: Wrapper for all self check functions
    in Nautilus proper.
  

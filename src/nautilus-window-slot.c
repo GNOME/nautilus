@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: nil; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-window-slot.c: Nautilus window slot
  
    Copyright (C) 2008 Free Software Foundation, Inc.

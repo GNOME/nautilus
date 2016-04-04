@@ -1,4 +1,3 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*- */
 
 /* eel-vfs-extensions.c - gnome-vfs extensions.  Its likely some of these will 
                           be part of gnome-vfs in the future.

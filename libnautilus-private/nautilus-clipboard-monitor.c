@@ -1,5 +1,4 @@
-/* -*- Mode: C; indent-tabs-mode: t; c-basic-offset: 8; tab-width: 8 -*-
-
+/*
    nautilus-clipboard-monitor.c: catch clipboard changes.
     
    Copyright (C) 2004 Red Hat, Inc.
