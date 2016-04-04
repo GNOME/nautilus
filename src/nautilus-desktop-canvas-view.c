@@ -757,7 +757,6 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 	}
 
 	canvas_container = get_canvas_container (desktop_canvas_view);
-	nautilus_canvas_view_container_set_sort_desktop (NAUTILUS_CANVAS_VIEW_CONTAINER (canvas_container), TRUE);
 
 	nautilus_canvas_container_set_is_fixed_size (canvas_container, TRUE);
 	nautilus_canvas_container_set_is_desktop (canvas_container, TRUE);

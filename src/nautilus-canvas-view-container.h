@@ -50,7 +50,6 @@ struct NautilusCanvasViewContainer {
 	NautilusCanvasContainer parent;
 
 	NautilusCanvasView *view;
-	gboolean    sort_for_desktop;
 };
 
 struct NautilusCanvasViewContainerClass {
@@ -61,7 +60,5 @@ GType                  nautilus_canvas_view_container_get_type         (void);
 NautilusCanvasContainer *nautilus_canvas_view_container_construct        (NautilusCanvasViewContainer *canvas_container,
 								      NautilusCanvasView      *view);
 NautilusCanvasContainer *nautilus_canvas_view_container_new              (NautilusCanvasView      *view);
-void                   nautilus_canvas_view_container_set_sort_desktop (NautilusCanvasViewContainer *container,
-								      gboolean         desktop);
 
 #endif /* NAUTILUS_CANVAS_VIEW_CONTAINER_H */

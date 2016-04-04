@@ -30,7 +30,6 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <libnautilus-private/nautilus-file-attributes.h>
 #include <libnautilus-private/nautilus-thumbnails.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
 
 G_DEFINE_TYPE (NautilusCanvasViewContainer, nautilus_canvas_view_container, NAUTILUS_TYPE_CANVAS_CONTAINER);
 
@@ -284,89 +283,6 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer *container
 	}
 }
 
-/* Sort as follows:
- *   0) home link
- *   1) network link
- *   2) mount links
- *   3) other
- *   4) trash link
- */
-typedef enum {
-	SORT_HOME_LINK,
-	SORT_NETWORK_LINK,
-	SORT_MOUNT_LINK,
-	SORT_OTHER,
-	SORT_TRASH_LINK
-} SortCategory;
-
-static SortCategory
-get_sort_category (NautilusFile *file)
-{
-	NautilusDesktopLink *link;
-	SortCategory category;
-
-	category = SORT_OTHER;
-	
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file)) {
-		link = nautilus_desktop_icon_file_get_link (NAUTILUS_DESKTOP_ICON_FILE (file));
-		if (link != NULL) {
-			switch (nautilus_desktop_link_get_link_type (link)) {
-			case NAUTILUS_DESKTOP_LINK_HOME:
-				category = SORT_HOME_LINK;
-				break;
-			case NAUTILUS_DESKTOP_LINK_MOUNT:
-				category = SORT_MOUNT_LINK;
-				break;
-			case NAUTILUS_DESKTOP_LINK_TRASH:
-				category = SORT_TRASH_LINK;
-				break;
-			case NAUTILUS_DESKTOP_LINK_NETWORK:
-				category = SORT_NETWORK_LINK;
-				break;
-			default:
-				category = SORT_OTHER;
-				break;
-			}
-			g_object_unref (link);
-		}
-	} 
-	
-	return category;
-}
-
-static int
-fm_desktop_canvas_container_icons_compare (NautilusCanvasContainer *container,
-					 NautilusCanvasIconData      *data_a,
-					 NautilusCanvasIconData      *data_b)
-{
-	NautilusFile *file_a;
-	NautilusFile *file_b;
-	NautilusFilesView *directory_view;
-	SortCategory category_a, category_b;
-
-	file_a = (NautilusFile *) data_a;
-	file_b = (NautilusFile *) data_b;
-
-	directory_view = NAUTILUS_FILES_VIEW (NAUTILUS_CANVAS_VIEW_CONTAINER (container)->view);
-	g_return_val_if_fail (directory_view != NULL, 0);
-	
-	category_a = get_sort_category (file_a);
-	category_b = get_sort_category (file_b);
-
-	if (category_a == category_b) {
-		return nautilus_file_compare_for_sort 
-			(file_a, file_b, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME, 
-			 nautilus_files_view_should_sort_directories_first (directory_view),
-			 FALSE);
-	}
-
-	if (category_a < category_b) {
-		return -1;
-	} else {
-		return +1;
-	}
-}
-
 static int
 nautilus_canvas_view_container_compare_icons (NautilusCanvasContainer *container,
 					    NautilusCanvasIconData      *icon_a,
@@ -376,11 +292,6 @@ nautilus_canvas_view_container_compare_icons (NautilusCanvasContainer *container
 
 	canvas_view = get_canvas_view (container);
 	g_return_val_if_fail (canvas_view != NULL, 0);
-
-	if (NAUTILUS_CANVAS_VIEW_CONTAINER (container)->sort_for_desktop) {
-		return fm_desktop_canvas_container_icons_compare
-			(container, icon_a, icon_b);
-	}
 
 	/* Type unsafe comparisons for performance */
 	return nautilus_canvas_view_compare_files (canvas_view,
@@ -446,11 +357,4 @@ nautilus_canvas_view_container_new (NautilusCanvasView *view)
 	return nautilus_canvas_view_container_construct
 		(g_object_new (NAUTILUS_TYPE_CANVAS_VIEW_CONTAINER, NULL),
 		 view);
-}
-
-void
-nautilus_canvas_view_container_set_sort_desktop (NautilusCanvasViewContainer *container,
-					       gboolean         desktop)
-{
-	container->sort_for_desktop = desktop;
 }
