@@ -1129,11 +1129,9 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 						 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 0,
-						 NULL);
-		g_object_set (dialog,
-			      "text", error_message,
-			      "secondary-text", _("The file is of an unknown type"),
-			      NULL);
+						 "%s", error_message);
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  _("The file is of an unknown type"));
 	} else {
 		char *text;
 		text = g_strdup_printf (_("There is no application installed for “%s” files"), g_content_type_get_description (mime_type));
@@ -1142,11 +1140,9 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 						 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 0,
-						 NULL);
-		g_object_set (dialog,
-			      "text", error_message,
-			      "secondary-text", text,
-			      NULL);
+						 "%s", error_message);
+		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+							  text);
 
 		g_free (text);
 	}
