@@ -1099,7 +1099,8 @@ choose_program (GtkDialog *message_dialog, int response, gpointer callback_data)
 	gtk_widget_destroy (GTK_WIDGET (message_dialog));
 
 	dialog = gtk_app_chooser_dialog_new (parameters->parent_window,
-					     0, location);
+					     GTK_DIALOG_MODAL,
+					     location);
 	g_object_set_data_full (G_OBJECT (dialog), 
 				"mime-action:file",
 				nautilus_file_ref (file),
@@ -1125,7 +1126,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 	char *error_message = get_application_no_mime_type_handler_message (parameters->file, parameters->uri);
 	if (g_content_type_is_unknown (mime_type)) {
 		dialog = gtk_message_dialog_new (parameters->parent_window,
-						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 0,
 						 NULL);
@@ -1138,7 +1139,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 		text = g_strdup_printf (_("There is no application installed for “%s” files"), g_content_type_get_description (mime_type));
 
 		dialog = gtk_message_dialog_new (parameters->parent_window,
-						 GTK_DIALOG_DESTROY_WITH_PARENT,
+						 GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
 						 GTK_MESSAGE_ERROR,
 						 0,
 						 NULL);
