@@ -243,10 +243,9 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer *container
 		return;
 	}
 
-	if (NAUTILUS_IS_DESKTOP_ICON_FILE (file) ||
-	    nautilus_file_is_nautilus_link (file)) {
-		/* Don't show the normal extra information for desktop icons,
-		 * or desktop files, it doesn't make sense. */
+	if (nautilus_file_is_nautilus_link (file)) {
+		/* Don't show the normal extra information for desktop files,
+                 * it doesn't make sense. */
  		*additional_text = NULL;
 		return;
 	}
