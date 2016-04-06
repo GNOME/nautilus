@@ -78,6 +78,12 @@ typedef struct {
 	/* cache of selected URIs, representing items being dragged */
 	GList *selection_cache;
 
+        /* File selection list information request handler, for the call for
+         * information (mostly the file system info, in order to know if we want
+         * co copy or move the files) about the files being dragged, that can
+         * come from another nautilus process, like the desktop. */
+        NautilusFileListHandle *file_list_info_handler;
+
 	/* has the drop occured ? */
 	gboolean drop_occured;
 
@@ -155,5 +161,7 @@ void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
 gboolean		    nautilus_drag_selection_includes_special_link (GList			      *selection_list);
 
 NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDragContext                     *context);
+
+GList *                     nautilus_drag_file_list_from_selection_list   (const GList                        *selection_list);
 
 #endif

@@ -135,6 +135,27 @@ nautilus_drag_uri_list_from_selection_list (const GList *selection_list)
 	return g_list_reverse (uri_list);
 }
 
+/*
+ * Transfer: Full. Free with g_list_free_full (list, g_object_unref);
+ */
+GList *
+nautilus_drag_file_list_from_selection_list (const GList *selection_list)
+{
+	NautilusDragSelectionItem *selection_item;
+	GList *file_list;
+	const GList *l;
+
+	file_list = NULL;
+	for (l = selection_list; l != NULL; l = l->next) {
+		selection_item = (NautilusDragSelectionItem *) l->data;
+		if (selection_item->file != NULL) {
+			file_list = g_list_prepend (file_list, g_object_ref (selection_item->file));
+		}
+	}
+
+	return g_list_reverse (file_list);
+}
+
 GList *
 nautilus_drag_uri_list_from_array (const char **uris)
 {
@@ -189,7 +210,7 @@ nautilus_drag_build_selection_list (GtkSelectionData *data)
 		item->uri = g_malloc (len + 1);
 		memcpy (item->uri, oldp, len);
 		item->uri[len] = 0;
-		item->file = nautilus_file_get_existing_by_uri (item->uri);
+		item->file = nautilus_file_get_by_uri (item->uri);
 
 		p++;
 		if (*p == '\n' || *p == '\0') {
@@ -371,7 +392,7 @@ source_is_deletable (GFile *file)
 	gboolean ret;
 
 	/* if there's no a cached NautilusFile, it returns NULL */
-	naut_file = nautilus_file_get_existing (file);
+	naut_file = nautilus_file_get (file);
 	if (naut_file == NULL) {
 		return FALSE;
 	}
@@ -466,7 +487,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
 	
 	dropped_uri = ((NautilusDragSelectionItem *)items->data)->uri;
 	dropped_file = ((NautilusDragSelectionItem *)items->data)->file;
-	target_file = nautilus_file_get_existing_by_uri (target_uri_string);
+	target_file = nautilus_file_get_by_uri (target_uri_string);
 
 	if (eel_uri_is_desktop (dropped_uri) &&
 	    !eel_uri_is_desktop (target_uri_string)) {
@@ -607,7 +628,7 @@ cache_one_item (const char *uri,
 
 	item = nautilus_drag_selection_item_new ();
 	item->uri = g_strdup (uri);
-	item->file = nautilus_file_get_existing_by_uri (uri);
+	item->file = nautilus_file_get_by_uri (uri);
 	item->icon_x = x;
 	item->icon_y = y;
 	item->icon_width = w;

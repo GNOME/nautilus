@@ -358,6 +358,28 @@ nautilus_canvas_container_position_shadow (NautilusCanvasContainer *container,
 }
 
 static void
+stop_cache_selection_list (NautilusDragInfo *drag_info)
+{
+        if (drag_info->file_list_info_handler) {
+                nautilus_file_list_cancel_call_when_ready (drag_info->file_list_info_handler);
+        }
+}
+
+static void
+cache_selection_list (NautilusDragInfo *drag_info)
+{
+        GList *files;
+
+        files = nautilus_drag_file_list_from_selection_list (drag_info->selection_list);
+        nautilus_file_list_call_when_ready (files,
+                                            NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                            drag_info->file_list_info_handler,
+                                            NULL, NULL);
+
+        g_list_free_full (files, g_object_unref);
+}
+
+static void
 nautilus_canvas_container_dropped_canvas_feedback (GtkWidget *widget,
 					       GtkSelectionData *data,
 					       int x, int y)
@@ -369,6 +391,7 @@ nautilus_canvas_container_dropped_canvas_feedback (GtkWidget *widget,
 	dnd_info = container->details->dnd_info;
 	
 	/* Delete old selection list. */
+        stop_cache_selection_list (&dnd_info->drag_info);
 	nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
 	dnd_info->drag_info.selection_list = NULL;
 
@@ -381,6 +404,7 @@ nautilus_canvas_container_dropped_canvas_feedback (GtkWidget *widget,
 
 	/* Build the selection list and the shadow. */
 	dnd_info->drag_info.selection_list = nautilus_drag_build_selection_list (data);
+        cache_selection_list (&dnd_info->drag_info);
 	dnd_info->shadow = create_selection_shadow (container, dnd_info->drag_info.selection_list);
 	nautilus_canvas_container_position_shadow (container, x, y);
 }
@@ -535,6 +559,7 @@ drag_end_callback (GtkWidget *widget,
         window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (container)));
 	dnd_info = container->details->dnd_info;
 
+        stop_cache_selection_list (&dnd_info->drag_info);
 	nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
 	nautilus_drag_destroy_selection_list (container->details->dnd_source_info->selection_cache);
 	dnd_info->drag_info.selection_list = NULL;
@@ -1077,6 +1102,7 @@ nautilus_canvas_container_receive_dropped_icons (NautilusCanvasContainer *contai
 	}
 
 	g_free (drop_target);
+        stop_cache_selection_list (&container->details->dnd_info->drag_info);
 	nautilus_drag_destroy_selection_list (container->details->dnd_info->drag_info.selection_list);
 	container->details->dnd_info->drag_info.selection_list = NULL;
 }
