@@ -101,7 +101,7 @@ typedef struct
     gboolean supports_scaling;
     gboolean supports_keep_aligned;
 
-    /* Needed for async operations. Suposedly we would use cancellable and gtask,
+    /* FIXME: Needed for async operations. Suposedly we would use cancellable and gtask,
      * sadly gtkclipboard doesn't support that.
      * We follow this pattern for checking validity of the object in the views.
      * Ideally we would connect to a weak reference and do a cancellable.
@@ -447,12 +447,13 @@ nautilus_canvas_view_remove_file (NautilusFilesView *view,
 }
 
 static void
-nautilus_canvas_view_add_file (NautilusFilesView *view,
-                               NautilusFile      *file,
-                               NautilusDirectory *directory)
+nautilus_canvas_view_add_files (NautilusFilesView *view,
+                                GList             *files,
+                                NautilusDirectory *directory)
 {
     NautilusCanvasView *canvas_view;
     NautilusCanvasContainer *canvas_container;
+    GList *l;
 
     g_assert (directory == nautilus_files_view_get_model (view));
 
@@ -465,10 +466,13 @@ nautilus_canvas_view_add_file (NautilusFilesView *view,
         nautilus_canvas_container_reset_scroll_region (canvas_container);
     }
 
-    if (nautilus_canvas_container_add (canvas_container,
-                                       NAUTILUS_CANVAS_ICON_DATA (file)))
+    for (l = files; l != NULL; l = l->next)
     {
-        nautilus_file_ref (file);
+        if (nautilus_canvas_container_add (canvas_container,
+                                           NAUTILUS_CANVAS_ICON_DATA (l->data)))
+        {
+            nautilus_file_ref (NAUTILUS_FILE (l->data));
+        }
     }
 }
 
@@ -2007,7 +2011,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 
     klass->create_canvas_container = real_create_canvas_container;
 
-    nautilus_files_view_class->add_file = nautilus_canvas_view_add_file;
+    nautilus_files_view_class->add_files = nautilus_canvas_view_add_files;
     nautilus_files_view_class->begin_loading = nautilus_canvas_view_begin_loading;
     nautilus_files_view_class->bump_zoom_level = nautilus_canvas_view_bump_zoom_level;
     nautilus_files_view_class->can_zoom_in = nautilus_canvas_view_can_zoom_in;

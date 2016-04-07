@@ -2062,14 +2062,18 @@ create_and_set_up_tree_view (NautilusListView *view)
 }
 
 static void
-nautilus_list_view_add_file (NautilusFilesView *view,
-                             NautilusFile      *file,
-                             NautilusDirectory *directory)
+nautilus_list_view_add_files (NautilusFilesView *view,
+                              GList      *files,
+                              NautilusDirectory *directory)
 {
     NautilusListModel *model;
+    GList *l;
 
     model = NAUTILUS_LIST_VIEW (view)->details->model;
-    nautilus_list_model_add_file (model, file, directory);
+    for (l = files; l != NULL; l = l->next)
+    {
+        nautilus_list_model_add_file (model, NAUTILUS_FILE (l->data), directory);
+    }
 }
 
 static char **
@@ -3496,7 +3500,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     G_OBJECT_CLASS (class)->dispose = nautilus_list_view_dispose;
     G_OBJECT_CLASS (class)->finalize = nautilus_list_view_finalize;
 
-    nautilus_files_view_class->add_file = nautilus_list_view_add_file;
+    nautilus_files_view_class->add_files = nautilus_list_view_add_files;
     nautilus_files_view_class->begin_loading = nautilus_list_view_begin_loading;
     nautilus_files_view_class->end_loading = nautilus_list_view_end_loading;
     nautilus_files_view_class->bump_zoom_level = nautilus_list_view_bump_zoom_level;

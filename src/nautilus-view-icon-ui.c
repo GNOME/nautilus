@@ -1,0 +1,252 @@
+/* nautilus-view-icon-ui.c
+ *
+ * Copyright (C) 2016 Carlos Soriano <csoriano@gnome.org>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
+#include <config.h>
+#include <glib.h>
+
+#include "nautilus-view-icon-ui.h"
+#include "nautilus-view-icon-item-ui.h"
+#include "nautilus-view-icon-controller.h"
+#include "nautilus-files-view.h"
+#include "nautilus-file.h"
+#include "nautilus-directory.h"
+#include "nautilus-global-preferences.h"
+
+struct _NautilusViewIconUi
+{
+    GtkFlowBox parent_instance;
+
+    NautilusViewIconController *controller;
+};
+
+G_DEFINE_TYPE (NautilusViewIconUi, nautilus_view_icon_ui, GTK_TYPE_FLOW_BOX)
+
+enum
+{
+    PROP_0,
+    PROP_CONTROLLER,
+    N_PROPS
+};
+
+static void
+set_controller (NautilusViewIconUi         *self,
+                NautilusViewIconController *controller)
+{
+    self->controller = controller;
+
+    g_object_notify (G_OBJECT (self), "controller");
+}
+
+static void
+get_property (GObject    *object,
+              guint       prop_id,
+              GValue     *value,
+              GParamSpec *pspec)
+{
+    NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (object);
+
+    switch (prop_id)
+    {
+        case PROP_CONTROLLER:
+        {
+            g_value_set_object (value, self->controller);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
+set_property (GObject      *object,
+              guint         prop_id,
+              const GValue *value,
+              GParamSpec   *pspec)
+{
+    NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (object);
+
+    switch (prop_id)
+    {
+        case PROP_CONTROLLER:
+        {
+            set_controller (self, g_value_get_object (value));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
+on_view_item_model_selected_changed (GObject    *object,
+                                     GParamSpec *pspec,
+                                     gpointer    user_data)
+{
+    NautilusViewIconUi *self;
+    NautilusViewItemModel *item_model;
+    GtkFlowBoxChild *item_ui;
+
+    self = NAUTILUS_VIEW_ICON_UI (user_data);
+    item_model = NAUTILUS_VIEW_ITEM_MODEL (object);
+    item_ui = GTK_FLOW_BOX_CHILD (nautilus_view_item_model_get_item_ui (item_model));
+    if (nautilus_view_item_model_get_is_selected (item_model) && !gtk_flow_box_child_is_selected (item_ui))
+    {
+        gtk_flow_box_select_child (GTK_FLOW_BOX (self), item_ui);
+    }
+    else if (!nautilus_view_item_model_get_is_selected (item_model) && gtk_flow_box_child_is_selected (item_ui))
+    {
+        gtk_flow_box_unselect_child (GTK_FLOW_BOX (self), item_ui);
+    }
+}
+
+
+static GtkWidget *
+create_widget_func (gpointer item,
+                    gpointer user_data)
+{
+    NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (user_data);
+    NautilusViewItemModel *item_model = NAUTILUS_VIEW_ITEM_MODEL (item);
+    NautilusViewIconItemUi *child;
+
+    child = nautilus_view_icon_item_ui_new (item_model);
+    nautilus_view_item_model_set_item_ui (item_model, GTK_WIDGET (child));
+    gtk_widget_show (GTK_WIDGET (child));
+
+    g_signal_connect (item_model, "notify::selected",
+                      (GCallback) on_view_item_model_selected_changed, self);
+
+    return GTK_WIDGET (child);
+}
+
+static void
+on_child_activated (GtkFlowBox      *flow_box,
+                    GtkFlowBoxChild *child,
+                    gpointer         user_data)
+{
+    NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (user_data);
+    NautilusViewItemModel *item_model;
+    NautilusFile *file;
+    g_autoptr (GList) list = NULL;
+
+    item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child));
+    file = nautilus_view_item_model_get_file (item_model);
+    list = g_list_append (list, file);
+
+    nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (self->controller), list, 0, TRUE);
+}
+
+static void
+on_ui_selected_children_changed (GtkFlowBox *box,
+                                 gpointer    user_data)
+{
+    NautilusViewIconUi *self;
+    GList *selected_children_ui;
+    GList *l;
+    GList *files_selection;
+
+    self = NAUTILUS_VIEW_ICON_UI (user_data);
+    files_selection = NULL;
+
+    selected_children_ui = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self));
+    for (l = selected_children_ui; l != NULL; l = l->next)
+    {
+        NautilusViewItemModel *item_model;
+        NautilusFile *file;
+
+        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (l->data));
+        file = nautilus_view_item_model_get_file (item_model);
+        files_selection = g_list_prepend (files_selection, file);
+    }
+
+    nautilus_view_set_selection (NAUTILUS_VIEW (self->controller), files_selection);
+}
+
+static void
+finalize (GObject *object)
+{
+    G_OBJECT_CLASS (nautilus_view_icon_ui_parent_class)->finalize (object);
+}
+
+static void
+constructed (GObject *object)
+{
+    NautilusViewIconUi *self = NAUTILUS_VIEW_ICON_UI (object);
+    NautilusViewModel *model;
+    GListStore *gmodel;
+
+    G_OBJECT_CLASS (nautilus_view_icon_ui_parent_class)->constructed (object);
+
+    gtk_flow_box_set_activate_on_single_click (GTK_FLOW_BOX (self), FALSE);
+    gtk_flow_box_set_max_children_per_line (GTK_FLOW_BOX (self), 20);
+    gtk_flow_box_set_selection_mode (GTK_FLOW_BOX (self), GTK_SELECTION_MULTIPLE);
+    gtk_flow_box_set_homogeneous (GTK_FLOW_BOX (self), FALSE);
+    gtk_flow_box_set_row_spacing (GTK_FLOW_BOX (self), 4);
+    gtk_flow_box_set_column_spacing (GTK_FLOW_BOX (self), 8);
+    gtk_widget_set_valign (GTK_WIDGET (self), GTK_ALIGN_START);
+    gtk_widget_set_margin_top (GTK_WIDGET (self), 10);
+    gtk_widget_set_margin_start (GTK_WIDGET (self), 10);
+    gtk_widget_set_margin_bottom (GTK_WIDGET (self), 10);
+    gtk_widget_set_margin_end (GTK_WIDGET (self), 10);
+
+    model = nautilus_view_icon_controller_get_model (self->controller);
+    gmodel = nautilus_view_model_get_g_model (model);
+    gtk_flow_box_bind_model (GTK_FLOW_BOX (self),
+                             G_LIST_MODEL (gmodel),
+                             create_widget_func, self, NULL);
+
+    g_signal_connect (self, "child-activated", (GCallback) on_child_activated, self);
+    g_signal_connect (self, "selected-children-changed", (GCallback) on_ui_selected_children_changed, self);
+}
+
+static void
+nautilus_view_icon_ui_class_init (NautilusViewIconUiClass *klass)
+{
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    object_class->finalize = finalize;
+    object_class->set_property = set_property;
+    object_class->get_property = get_property;
+    object_class->constructed = constructed;
+
+    g_object_class_install_property (object_class,
+                                     PROP_CONTROLLER,
+                                     g_param_spec_object ("controller",
+                                                          "Controller",
+                                                          "The controller of the view",
+                                                          NAUTILUS_TYPE_VIEW_ICON_CONTROLLER,
+                                                          G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY));
+}
+
+static void
+nautilus_view_icon_ui_init (NautilusViewIconUi *self)
+{
+}
+
+NautilusViewIconUi *
+nautilus_view_icon_ui_new (NautilusViewIconController *controller)
+{
+    return g_object_new (NAUTILUS_TYPE_VIEW_ICON_UI,
+                         "controller", controller,
+                         NULL);
+}

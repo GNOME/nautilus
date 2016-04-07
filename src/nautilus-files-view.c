@@ -35,6 +35,7 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-floating-bar.h"
+#include "nautilus-view-icon-controller.h"
 #include "nautilus-list-view.h"
 #include "nautilus-canvas-view.h"
 #include "nautilus-mime-actions.h"
@@ -130,10 +131,9 @@
 
 #define MIN_COMMON_FILENAME_PREFIX_LENGTH 4
 
-
 enum
 {
-    ADD_FILE,
+    ADD_FILES,
     BEGIN_FILE_CHANGES,
     BEGIN_LOADING,
     CLEAR,
@@ -3632,35 +3632,39 @@ debuting_files_data_free (DebutingFilesData *data)
  * it selects and reveals them all.
  */
 static void
-debuting_files_add_file_callback (NautilusFilesView *view,
-                                  NautilusFile      *new_file,
-                                  NautilusDirectory *directory,
-                                  DebutingFilesData *data)
+debuting_files_add_files_callback (NautilusFilesView *view,
+                                   GList             *new_files,
+                                   NautilusDirectory *directory,
+                                   DebutingFilesData *data)
 {
     GFile *location;
+    GList *l;
 
     nautilus_profile_start (NULL);
 
-    location = nautilus_file_get_location (new_file);
-
-    if (g_hash_table_remove (data->debuting_files, location))
+    for (l = new_files; l != NULL; l = l->next)
     {
-        nautilus_file_ref (new_file);
-        data->added_files = g_list_prepend (data->added_files, new_file);
+        location = nautilus_file_get_location (NAUTILUS_FILE (l->data));
 
-        if (g_hash_table_size (data->debuting_files) == 0)
+        if (g_hash_table_remove (data->debuting_files, location))
         {
-            nautilus_files_view_call_set_selection (view, data->added_files);
-            nautilus_files_view_reveal_selection (view);
-            g_signal_handlers_disconnect_by_func (view,
-                                                  G_CALLBACK (debuting_files_add_file_callback),
-                                                  data);
+            nautilus_file_ref (NAUTILUS_FILE (l->data));
+            data->added_files = g_list_prepend (data->added_files, NAUTILUS_FILE (l->data));
+
         }
+        g_object_unref (location);
+    }
+
+    if (g_hash_table_size (data->debuting_files) == 0)
+    {
+        nautilus_files_view_call_set_selection (view, data->added_files);
+        nautilus_files_view_reveal_selection (view);
+        g_signal_handlers_disconnect_by_func (view,
+                                              G_CALLBACK (debuting_files_add_files_callback),
+                                              data);
     }
 
     nautilus_profile_end (NULL);
-
-    g_object_unref (location);
 }
 
 typedef struct
@@ -3685,13 +3689,18 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 }
 
 static void
-pre_copy_move_add_file_callback (NautilusFilesView *view,
-                                 NautilusFile      *new_file,
+pre_copy_move_add_files_callback (NautilusFilesView *view,
+                                 GList             *new_files,
                                  NautilusDirectory *directory,
                                  CopyMoveDoneData  *data)
 {
-    nautilus_file_ref (new_file);
-    data->added_files = g_list_prepend (data->added_files, new_file);
+    GList *l;
+
+    for (l = new_files; l != NULL; l = l->next)
+    {
+        nautilus_file_ref (NAUTILUS_FILE (l->data));
+        data->added_files = g_list_prepend (data->added_files, l->data);
+    }
 }
 
 /* This needs to be called prior to nautilus_file_operations_copy_move.
@@ -3711,11 +3720,11 @@ pre_copy_move (NautilusFilesView *directory_view)
                                (gpointer *) &copy_move_done_data->directory_view);
 
     /* We need to run after the default handler adds the folder we want to
-     * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
+     * operate on. The ADD_FILES signal is registered as G_SIGNAL_RUN_LAST, so we
      * must use connect_after.
      */
-    g_signal_connect (directory_view, "add-file",
-                      G_CALLBACK (pre_copy_move_add_file_callback), copy_move_done_data);
+    g_signal_connect (directory_view, "add-files",
+                      G_CALLBACK (pre_copy_move_add_files_callback), copy_move_done_data);
 
     return copy_move_done_data;
 }
@@ -3791,17 +3800,17 @@ copy_move_done_callback (GHashTable *debuting_files,
         nautilus_file_list_free (copy_move_done_data->added_files);
         copy_move_done_data->added_files = failed_files;
 
-        /* We're passed the same data used by pre_copy_move_add_file_callback, so disconnecting
+        /* We're passed the same data used by pre_copy_move_add_files_callback, so disconnecting
          * it will free data. We've already siphoned off the added_files we need, and stashed the
          * directory_view pointer.
          */
         g_signal_handlers_disconnect_by_func (directory_view,
-                                              G_CALLBACK (pre_copy_move_add_file_callback),
+                                              G_CALLBACK (pre_copy_move_add_files_callback),
                                               data);
 
         /* Any items in the debuting_files hash table that have
          * "FALSE" as their value aren't really being copied
-         * or moved, so we can't wait for an add_file signal
+         * or moved, so we can't wait for an add_files signal
          * to come in for those.
          */
         g_hash_table_foreach_remove (debuting_files,
@@ -3822,12 +3831,12 @@ copy_move_done_callback (GHashTable *debuting_files,
         else
         {
             /* We need to run after the default handler adds the folder we want to
-             * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
+             * operate on. The ADD_FILES signal is registered as G_SIGNAL_RUN_LAST, so we
              * must use connect_after.
              */
             g_signal_connect_data (directory_view,
-                                   "add-file",
-                                   G_CALLBACK (debuting_files_add_file_callback),
+                                   "add-files",
+                                   G_CALLBACK (debuting_files_add_files_callback),
                                    debuting_files_data,
                                    (GClosureNotify) debuting_files_data_free,
                                    G_CONNECT_AFTER);
@@ -4055,6 +4064,7 @@ process_old_files (NautilusFilesView *view)
     GList *files_added, *files_changed, *node;
     FileAndDirectory *pending;
     GList *selection, *files;
+    g_autoptr (GList) pending_additions = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
     files_added = priv->old_added_files;
@@ -4070,8 +4080,7 @@ process_old_files (NautilusFilesView *view)
         for (node = files_added; node != NULL; node = node->next)
         {
             pending = node->data;
-            g_signal_emit (view,
-                           signals[ADD_FILE], 0, pending->file, pending->directory);
+            pending_additions = g_list_prepend (pending_additions, pending->file);
             /* Acknowledge the files that were pending to be revealed */
             if (g_hash_table_contains (priv->pending_reveal, pending->file))
             {
@@ -4079,6 +4088,12 @@ process_old_files (NautilusFilesView *view)
                                      pending->file,
                                      GUINT_TO_POINTER (TRUE));
             }
+        }
+
+        if (files_added != NULL)
+        {
+            g_signal_emit (view,
+                           signals[ADD_FILES], 0, pending_additions, pending->directory);
         }
 
         for (node = files_changed; node != NULL; node = node->next)
@@ -8013,21 +8028,21 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     GActionGroup *view_action_group;
-    GVariant *variant;
-    GVariantIter iter;
-    gboolean show_sort_trash, show_sort_access, show_sort_modification, sort_available;
-    const gchar *hint;
+    gboolean sort_available;
     g_autofree gchar *zoom_level_percent = NULL;
+    NautilusFile *file;
 
     view_action_group = nautilus_files_view_get_action_group (view);
     priv = nautilus_files_view_get_instance_private (view);
+    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (view));
 
     gtk_widget_set_visible (priv->visible_columns,
                             g_action_group_has_action (view_action_group, "visible-columns"));
 
     sort_available = g_action_group_get_action_enabled (view_action_group, "sort");
-    show_sort_trash = show_sort_modification = show_sort_access = FALSE;
     gtk_widget_set_visible (priv->sort_menu, sort_available);
+    gtk_widget_set_visible (priv->sort_trash_time,
+                            nautilus_file_is_in_trash (file));
 
     /* We want to make insensitive available actions but that are not current
      * available due to the directory
@@ -8036,24 +8051,6 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
                               !nautilus_files_view_is_empty (view));
     gtk_widget_set_sensitive (priv->zoom_controls_box,
                               !nautilus_files_view_is_empty (view));
-
-    if (sort_available)
-    {
-        variant = g_action_group_get_action_state_hint (view_action_group, "sort");
-        g_variant_iter_init (&iter, variant);
-
-        while (g_variant_iter_next (&iter, "&s", &hint))
-        {
-            if (g_strcmp0 (hint, "trash-time") == 0)
-            {
-                show_sort_trash = TRUE;
-            }
-        }
-
-        g_variant_unref (variant);
-    }
-
-    gtk_widget_set_visible (priv->sort_trash_time, show_sort_trash);
 
     zoom_level_percent = g_strdup_printf ("%.0f%%", nautilus_files_view_get_zoom_level_percentage (view) * 100.0);
     gtk_label_set_label (GTK_LABEL (priv->zoom_level_label), zoom_level_percent);
@@ -9331,14 +9328,14 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
 
-    signals[ADD_FILE] =
-        g_signal_new ("add-file",
+    signals[ADD_FILES] =
+        g_signal_new ("add-files",
                       G_TYPE_FROM_CLASS (klass),
                       G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, add_file),
+                      G_STRUCT_OFFSET (NautilusFilesViewClass, add_files),
                       NULL, NULL,
                       g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 2, NAUTILUS_TYPE_FILE, NAUTILUS_TYPE_DIRECTORY);
+                      G_TYPE_NONE, 2, G_TYPE_POINTER, NAUTILUS_TYPE_DIRECTORY);
     signals[BEGIN_FILE_CHANGES] =
         g_signal_new ("begin-file-changes",
                       G_TYPE_FROM_CLASS (klass),
@@ -9693,12 +9690,22 @@ nautilus_files_view_new (guint               id,
                          NautilusWindowSlot *slot)
 {
     NautilusFilesView *view = NULL;
+    gboolean use_experimental_views;
 
+    use_experimental_views = g_settings_get_boolean (nautilus_preferences,
+                                                     NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
         {
-            view = nautilus_canvas_view_new (slot);
+            if (use_experimental_views)
+            {
+                view = NAUTILUS_FILES_VIEW (nautilus_view_icon_controller_new (slot));
+            }
+            else
+            {
+                view = nautilus_canvas_view_new (slot);
+            }
         }
         break;
 

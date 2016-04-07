@@ -57,12 +57,12 @@ struct _NautilusFilesViewClass {
          */
         void         (* begin_file_changes)     (NautilusFilesView *view);
 
-        /* The 'add_file' signal is emitted to add one file to the view.
+        /* The 'add_files' signal is emitted to add a set of files to the view.
          * It must be replaced by each subclass.
          */
-        void    (* add_file)                    (NautilusFilesView *view,
-                                                 NautilusFile      *file,
-                                                 NautilusDirectory *directory);
+        void    (* add_files)                    (NautilusFilesView *view,
+                                                  GList             *files,
+                                                  NautilusDirectory *directory);
         void    (* remove_file)                 (NautilusFilesView *view,
                                                  NautilusFile      *file,
                                                  NautilusDirectory *directory);
@@ -324,8 +324,6 @@ char *            nautilus_files_view_get_title                  (NautilusFilesV
 gboolean          nautilus_files_view_supports_zooming           (NautilusFilesView      *view);
 void              nautilus_files_view_bump_zoom_level            (NautilusFilesView      *view,
                                                                   int                     zoom_increment);
-void              nautilus_files_view_zoom_to_level              (NautilusFilesView      *view,
-                                                                  gint                    level);
 gboolean          nautilus_files_view_can_zoom_in                (NautilusFilesView      *view);
 gboolean          nautilus_files_view_can_zoom_out               (NautilusFilesView      *view);
 void              nautilus_files_view_update_menus               (NautilusFilesView      *view);
