@@ -1677,7 +1677,6 @@ attach_combo_box (GtkGrid *grid,
 		  gboolean three_columns)
 {
 	GtkWidget *combo_box;
-	GtkWidget *aligner;
 
 	if (!three_columns) {
 		combo_box = gtk_combo_box_text_new ();
@@ -1695,6 +1694,7 @@ attach_combo_box (GtkGrid *grid,
 					       "text", 0);
 		
 	}
+	gtk_widget_set_halign (combo_box, GTK_ALIGN_START);
 	gtk_widget_show (combo_box);
 
   	gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
@@ -1702,14 +1702,7 @@ attach_combo_box (GtkGrid *grid,
 					      NULL,
 					      NULL);
 
-	/* Put combo box in alignment to make it left-justified
-	 * but minimally sized.
-	 */
-	aligner = gtk_alignment_new (0, 0.5, 0, 0);
-	gtk_widget_show (aligner);
-
-	gtk_container_add (GTK_CONTAINER (aligner), combo_box);
-	gtk_grid_attach_next_to (grid, aligner, sibling,
+	gtk_grid_attach_next_to (grid, combo_box, sibling,
 				 GTK_POS_RIGHT, 1, 1);
 
 	return GTK_COMBO_BOX (combo_box);
@@ -2887,7 +2880,6 @@ static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
 	GtkGrid *grid;
-	GtkWidget *icon_aligner;
 	GtkWidget *icon_pixmap_widget;
 	GtkWidget *volume_usage;
 	GtkWidget *hbox, *vbox;
@@ -2899,13 +2891,10 @@ create_basic_page (NautilusPropertiesWindow *window)
 
 	icon_pixmap_widget = create_image_widget (
 		window, should_show_custom_icon_buttons (window));
+	gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
 	gtk_widget_show (icon_pixmap_widget);
 
-	icon_aligner = gtk_alignment_new (1, 0, 0, 0);
-	gtk_widget_show (icon_aligner);
-	
-	gtk_container_add (GTK_CONTAINER (icon_aligner), icon_pixmap_widget);
-	gtk_box_pack_start (GTK_BOX (hbox), icon_aligner, FALSE, FALSE, 0);
+	gtk_box_pack_start (GTK_BOX (hbox), icon_pixmap_widget, FALSE, FALSE, 0);
 
 	window->details->icon_chooser = NULL;
 
