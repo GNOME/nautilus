@@ -2629,7 +2629,6 @@ create_column_editor (NautilusListView *view)
 	GtkWidget *label;
 	GtkWidget *box;
 	GtkWidget *column_chooser;
-	GtkWidget *alignment;
 	NautilusFile *file;
 	char *str;
 	char *name;
@@ -2669,15 +2668,10 @@ create_column_editor (NautilusListView *view)
 
 	g_free (str);
 
-	alignment = gtk_alignment_new (0.5, 0.5, 1, 1);
-	gtk_alignment_set_padding (GTK_ALIGNMENT (alignment),
-				   0, 0, 12, 0);
-	gtk_widget_show (alignment);
-	gtk_box_pack_start (GTK_BOX (box), alignment, TRUE, TRUE, 0);
-
 	column_chooser = nautilus_column_chooser_new (file);
+	gtk_widget_set_margin_start (column_chooser, 12);
 	gtk_widget_show (column_chooser);
-	gtk_container_add (GTK_CONTAINER (alignment), column_chooser);
+	gtk_box_pack_start (GTK_BOX (box), column_chooser, TRUE, TRUE, 0);
 
 	g_signal_connect (column_chooser, "changed",
 			  G_CALLBACK (column_chooser_changed_callback),
