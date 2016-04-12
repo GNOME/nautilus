@@ -603,7 +603,7 @@ update_operations (NautilusToolbar *self)
                  * Check whether the toolbar is visible or not before showing the
                  * popover. This can happens if the window has the disables-chrome
                  * property set. */
-                if (gtk_widget_get_visible (GTK_WIDGET (self))) {
+                if (gtk_widget_is_visible (GTK_WIDGET (self))) {
                         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->priv->operations_button),
                                                       TRUE);
                 }
