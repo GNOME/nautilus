@@ -445,7 +445,8 @@ real_drag_can_accept_files (NautilusFile *drop_target_item)
 }
 
 static void
-real_invalidate_attributes_internal (NautilusFile *file)
+real_invalidate_attributes_internal (NautilusFile           *file,
+                                     NautilusFileAttributes  attributes)
 {
         /* Desktop icon files are always up to date.
          * If we invalidate their attributes they
