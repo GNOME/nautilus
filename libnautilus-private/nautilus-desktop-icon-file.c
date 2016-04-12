@@ -361,10 +361,12 @@ real_get_target_uri (NautilusFile *file)
 		if (location != NULL) {
 			uri = g_file_get_uri (location);
 			g_object_unref (location);
+
+                        return uri;
 		}
 	}
 
-        return uri;
+        return NAUTILUS_FILE_CLASS (nautilus_desktop_icon_file_parent_class)->get_target_uri (file);
 }
 
 static void
