@@ -1811,6 +1811,30 @@ nautilus_file_rename (NautilusFile                  *file,
                                                                  callback_data);
 }
 
+gboolean
+nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
+                                       NautilusFileOperationCallback  callback,
+                                       gpointer                       callback_data)
+{
+	GError *error;
+
+	if (nautilus_file_is_gone (file)) {
+	       	/* Claim that something changed even if the rename
+		 * failed. This makes it easier for some clients who
+		 * see the "reverting" to the old name as "changing
+		 * back".
+		 */
+		nautilus_file_changed (file);
+		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+				     _("File not found"));
+		(* callback) (file, NULL, error, callback_data);
+		g_error_free (error);
+		return TRUE;
+	}
+
+  return FALSE;
+}
+
 static void
 real_rename (NautilusFile                  *file,
              const char                    *new_name,
@@ -1847,20 +1871,9 @@ real_rename (NautilusFile                  *file,
 	 * We need to check this here because there may be a new
 	 * file with the same name.
 	 */
-	if (nautilus_file_is_gone (file)) {
-	       	/* Claim that something changed even if the rename
-		 * failed. This makes it easier for some clients who
-		 * see the "reverting" to the old name as "changing
-		 * back".
-		 */
-		nautilus_file_changed (file);
-		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-				     _("File not found"));
-		(* callback) (file, NULL, error, callback_data);
-		g_error_free (error);
-		return;
-	}
-
+        if (nautilus_file_rename_handle_file_gone (file, callback, callback_data)) {
+                return;
+        }
 	/* Test the name-hasn't-changed case explicitly, for two reasons.
 	 * (1) rename returns an error if new & old are same.
 	 * (2) We don't want to send file-changed signal if nothing changed.

@@ -334,6 +334,13 @@ void                    nautilus_file_cancel                            (Nautilu
  */
 gboolean                nautilus_file_is_gone                           (NautilusFile                   *file);
 
+/* Used in subclasses that handles the rename of a file. This handles the case
+ * when the file is gone. If this returns TRUE, simply do nothing
+ */
+gboolean                nautilus_file_rename_handle_file_gone           (NautilusFile                   *file,
+                                                                         NautilusFileOperationCallback   callback,
+                                                                         gpointer                        callback_data);
+
 /* Return true if this file is not confirmed to have ever really
  * existed. This is true when the NautilusFile object has been created, but no I/O
  * has yet confirmed the existence of a file by that name.
