@@ -36,7 +36,6 @@ struct _NautilusDesktopApplication
   NautilusApplication parent_instance;
 
   GCancellable *freedesktop_cancellable;
-  GList *pending_locations;
 };
 
 G_DEFINE_TYPE (NautilusDesktopApplication, nautilus_desktop_application, NAUTILUS_TYPE_APPLICATION)
