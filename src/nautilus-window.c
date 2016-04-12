@@ -597,7 +597,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         active_slot = nautilus_window_get_active_slot (window);
         /* The location owner can be one of the slots requesting to handle an
          * unhandled location. But this slot can be destroyed when switching to
-         * a new slot. So keep the locaiton alive
+         * a new slot. So keep the location alive.
          */
         g_object_ref (location);
 
