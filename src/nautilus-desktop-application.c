@@ -72,24 +72,6 @@ open_location_on_dbus (NautilusDesktopApplication *self,
                                                         self);
 }
 
-
-static void
-on_freedesktop_bus_proxy_created (GObject      *source_object,
-                                  GAsyncResult *res,
-                                  gpointer      user_data)
-{
-  GError *error = NULL;
-
-  freedesktop_proxy = nautilus_freedesktop_file_manager1_proxy_new_for_bus_finish (res, &error);
-
-  if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-    {
-      g_warning ("Unable to create File Manager freedesktop proxy: %s", error->message);
-    }
-
-  g_clear_error (&error);
-}
-
 static void
 open_location_full (NautilusApplication     *app,
                     GFile                   *location,
@@ -189,16 +171,23 @@ static void
 nautilus_desktop_application_startup (GApplication *app)
 {
   NautilusDesktopApplication *self = NAUTILUS_DESKTOP_APPLICATION (app);
+  GError *error = NULL;
 
   nautilus_application_startup_common (NAUTILUS_APPLICATION (app));
   self->freedesktop_cancellable = g_cancellable_new ();
-  nautilus_freedesktop_file_manager1_proxy_new_for_bus (G_BUS_TYPE_SESSION,
+  freedesktop_proxy = nautilus_freedesktop_file_manager1_proxy_new_for_bus_sync (G_BUS_TYPE_SESSION,
                                                         G_DBUS_PROXY_FLAGS_NONE,
                                                         "org.freedesktop.FileManager1",
                                                         "/org/freedesktop/FileManager1",
                                                         self->freedesktop_cancellable,
-                                                        on_freedesktop_bus_proxy_created,
-                                                        self);
+                                                        &error);
+
+  if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+      g_warning ("Unable to create File Manager freedesktop proxy: %s", error->message);
+    }
+
+  g_clear_error (&error);
 
   init_desktop (self);
 }
