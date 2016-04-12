@@ -50,14 +50,12 @@ on_show_folders (GObject      *source_object,
   nautilus_freedesktop_file_manager1_call_show_items_finish (freedesktop_proxy,
                                                              res,
                                                              &error);
-  if (error != NULL)
+  if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        {
-          g_warning ("Unable to show items with File Manager freedesktop proxy: %s", error->message);
-        }
-      g_error_free (error);
+      g_warning ("Unable to show items with File Manager freedesktop proxy: %s", error->message);
     }
+
+  g_clear_error (&error);
 }
 
 static void
@@ -84,14 +82,12 @@ on_freedesktop_bus_proxy_created (GObject      *source_object,
 
   freedesktop_proxy = nautilus_freedesktop_file_manager1_proxy_new_for_bus_finish (res, &error);
 
-  if (error != NULL)
+  if (error && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
-      if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-        {
-          g_warning ("Unable to create File Manager freedesktop proxy: %s", error->message);
-        }
-      g_error_free (error);
+      g_warning ("Unable to create File Manager freedesktop proxy: %s", error->message);
     }
+
+  g_clear_error (&error);
 }
 
 static void
