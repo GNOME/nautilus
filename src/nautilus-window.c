@@ -557,6 +557,24 @@ real_create_slot (NautilusWindow *window,
         return slot;
 }
 
+static NautilusWindowSlot *
+replace_active_slot (NautilusWindow          *window,
+                     GFile                   *location,
+                     NautilusWindowOpenFlags  flags)
+{
+        NautilusWindowSlot *new_slot;
+        NautilusWindowSlot *active_slot;
+
+        new_slot = nautilus_window_create_slot (window, location);
+        nautilus_window_initialize_slot (window, new_slot, flags);
+        active_slot = nautilus_window_get_active_slot (window);
+        if (active_slot) {
+                close_slot (window, active_slot, TRUE);
+        }
+
+        return new_slot;
+}
+
 void
 nautilus_window_initialize_slot (NautilusWindow          *window,
                                  NautilusWindowSlot      *slot,
@@ -594,7 +612,6 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         NautilusWindowSlot *active_slot;
         gboolean new_tab_at_end;
 
-        active_slot = nautilus_window_get_active_slot (window);
         /* The location owner can be one of the slots requesting to handle an
          * unhandled location. But this slot can be destroyed when switching to
          * a new slot. So keep the location alive.
@@ -608,20 +625,17 @@ nautilus_window_open_location_full (NautilusWindow          *window,
                 new_tab_at_end = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION) == NAUTILUS_NEW_TAB_POSITION_END;
                 if (new_tab_at_end)
 		flags |= NAUTILUS_WINDOW_OPEN_SLOT_APPEND;
-
-		target_slot = nautilus_window_create_slot (window, location);
-                nautilus_window_initialize_slot (window, target_slot, flags);
 	}
 
+        active_slot = nautilus_window_get_active_slot (window);
         if (!target_slot)
                 target_slot = active_slot;
 
-	if (target_slot == NULL || !nautilus_window_slot_handles_location (target_slot, location)) {
+	if (target_slot == NULL || (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0) {
                 target_slot = nautilus_window_create_slot (window, location);
                 nautilus_window_initialize_slot (window, target_slot, flags);
-                if (active_slot) {
-                        close_slot (window, active_slot, TRUE);
-                }
+        } else if (!nautilus_window_slot_handles_location (target_slot, location)) {
+                target_slot = replace_active_slot (window, location, flags);
         }
 
         /* Make the opened location the one active if we weren't ask for the
