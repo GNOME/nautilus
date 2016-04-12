@@ -172,11 +172,9 @@ real_get_icon_description (NautilusCanvasContainer *container,
     {
       return NULL;
     }
-  else
-    {
-      return NAUTILUS_CANVAS_CONTAINER_CLASS (G_OBJECT_GET_CLASS (container))->get_icon_description (container,
-                                                                                                     data);
-    }
+
+  return NAUTILUS_CANVAS_CONTAINER_CLASS (G_OBJECT_GET_CLASS (container))->get_icon_description (container,
+                                                                                                 data);
 }
 
 NautilusDesktopCanvasViewContainer *
