@@ -152,11 +152,11 @@ real_get_icon_text (NautilusCanvasContainer  *container,
       return;
     }
 
-  return NAUTILUS_CANVAS_CONTAINER_CLASS (G_OBJECT_GET_CLASS (container))->get_icon_text (container,
-                                                                                          data,
-                                                                                          editable_text,
-                                                                                          additional_text,
-                                                                                          include_invisible);
+  return NAUTILUS_CANVAS_CONTAINER_CLASS (nautilus_desktop_canvas_view_container_parent_class)->get_icon_text (container,
+                                                                                                               data,
+                                                                                                               editable_text,
+                                                                                                               additional_text,
+                                                                                                               include_invisible);
 }
 
 static char *
