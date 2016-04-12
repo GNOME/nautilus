@@ -214,6 +214,9 @@ nautilus_desktop_application_dispose (GObject *object)
   NautilusDesktopApplication *self = NAUTILUS_DESKTOP_APPLICATION (object);
 
   g_clear_object (&self->freedesktop_cancellable);
+
+
+  G_OBJECT_CLASS (nautilus_desktop_application_parent_class)->dispose (object);
 }
 
 static void
