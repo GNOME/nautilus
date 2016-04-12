@@ -238,7 +238,7 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
 		return FALSE;
 	}
 
-        if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view)){
+        if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view)) {
                 return nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view)) == id;
         } else {
                 return FALSE;
