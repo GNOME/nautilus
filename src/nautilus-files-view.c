@@ -4057,11 +4057,11 @@ nautilus_files_view_special_link_in_selection (NautilusFilesView *view,
         return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->special_link_in_selection (view, selection);
 }
 
-/* Normal view doesn't have any special link */
 static gboolean
 real_special_link_in_selection (NautilusFilesView *view,
                                 GList             *selection)
 {
+        /* Normal views doesn't have any special link */
         return FALSE;
 }
 
