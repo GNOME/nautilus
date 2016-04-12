@@ -538,6 +538,7 @@ real_create_slot (NautilusWindow *window,
                   GFile          *location)
 {
         NautilusFile *file = NULL;
+        NautilusWindowSlot *slot;
 
         if (location) {
                 file = nautilus_file_get (location);
@@ -546,10 +547,14 @@ real_create_slot (NautilusWindow *window,
          * to a different location if not.
          */
         if (file && nautilus_file_is_other_locations (file)) {
-                return NAUTILUS_WINDOW_SLOT (nautilus_other_locations_window_slot_new (window));
+                slot = NAUTILUS_WINDOW_SLOT (nautilus_other_locations_window_slot_new (window));
         } else {
-                return nautilus_window_slot_new (window);
+                slot = nautilus_window_slot_new (window);
         }
+
+        nautilus_file_unref (file);
+
+        return slot;
 }
 
 void
