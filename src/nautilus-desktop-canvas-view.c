@@ -69,8 +69,6 @@ static void     default_zoom_level_changed                        (gpointer     
 static void     real_update_context_menus                         (NautilusFilesView           *view);
 static char*    real_get_backing_uri                              (NautilusFilesView           *view);
 static void     real_check_empty_states                           (NautilusFilesView           *view);
-static gboolean real_special_link_in_selection                    (NautilusFilesView           *view,
-                                                                   GList                       *selection);
 static char *   real_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
                                                                          GList             *selection,
                                                                          gboolean           get_paths);
@@ -312,8 +310,6 @@ nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 	vclass->get_backing_uri = real_get_backing_uri;
 	vclass->check_empty_states = real_check_empty_states;
 	vclass->get_file_paths_or_uris_as_newline_delimited_string = real_get_file_paths_or_uris_as_newline_delimited_string;
-
-        vclass->special_link_in_selection = real_special_link_in_selection;
 
 	g_type_class_add_private (class, sizeof (NautilusDesktopCanvasViewDetails));
 }
@@ -579,29 +575,6 @@ const GActionEntry desktop_view_entries[] = {
 	{ "stretch", action_stretch },
 	{ "unstretch", action_unstretch },
 };
-
-static gboolean
-real_special_link_in_selection (NautilusFilesView *view,
-                                GList             *selection)
-{
-        gboolean saw_link;
-        GList *node;
-        NautilusFile *file;
-
-        saw_link = FALSE;
-
-        for (node = selection; node != NULL; node = node->next) {
-                file = NAUTILUS_FILE (node->data);
-
-                saw_link = NAUTILUS_IS_DESKTOP_ICON_FILE (file);
-
-                if (saw_link) {
-                        break;
-                }
-        }
-
-        return saw_link;
-}
 
 static void
 real_check_empty_states (NautilusFilesView *view)

@@ -6971,6 +6971,18 @@ nautilus_file_is_user_special_directory (NautilusFile *file,
 }
 
 gboolean
+nautilus_file_is_special_link (NautilusFile *file)
+{
+        return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->is_special_link (file);
+}
+
+static gboolean
+real_is_special_link (NautilusFile *file)
+{
+        return FALSE;
+}
+
+gboolean
 nautilus_file_is_archive (NautilusFile *file)
 {
 	char *mime_type;
@@ -8019,6 +8031,7 @@ nautilus_file_class_init (NautilusFileClass *class)
 	class->drag_can_accept_files = real_drag_can_accept_files;
 	class->invalidate_attributes_internal = real_invalidate_attributes_internal;
 	class->opens_in_view = real_opens_in_view;
+	class->is_special_link = real_is_special_link;
 
 	signals[CHANGED] =
 		g_signal_new ("changed",

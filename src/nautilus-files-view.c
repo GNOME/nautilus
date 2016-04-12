@@ -4054,15 +4054,23 @@ static gboolean
 nautilus_files_view_special_link_in_selection (NautilusFilesView *view,
                                                GList             *selection)
 {
-        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->special_link_in_selection (view, selection);
-}
+        gboolean saw_link;
+        GList *node;
+        NautilusFile *file;
 
-static gboolean
-real_special_link_in_selection (NautilusFilesView *view,
-                                GList             *selection)
-{
-        /* Normal views doesn't have any special link */
-        return FALSE;
+        saw_link = FALSE;
+
+        for (node = selection; node != NULL; node = node->next) {
+                file = NAUTILUS_FILE (node->data);
+
+                saw_link = nautilus_file_is_special_link (file);
+
+                if (saw_link) {
+                        break;
+                }
+        }
+
+        return saw_link;
 }
 
 /* desktop_or_home_dir_in_selection
@@ -7971,7 +7979,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         klass->update_context_menus = real_update_context_menus;
         klass->update_actions_state = real_update_actions_state;
         klass->check_empty_states = real_check_empty_states;
-        klass->special_link_in_selection = real_special_link_in_selection;
         klass->get_file_paths_or_uris_as_newline_delimited_string = real_get_file_paths_or_uris_as_newline_delimited_string;
 
         copied_files_atom = gdk_atom_intern ("x-special/gnome-copied-files", FALSE);

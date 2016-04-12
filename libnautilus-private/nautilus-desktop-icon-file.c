@@ -468,6 +468,12 @@ real_opens_in_view (NautilusFile *file)
         return TRUE;
 }
 
+static gboolean
+real_is_special_link (NautilusFile *file)
+{
+        return TRUE;
+}
+
 static void
 nautilus_desktop_icon_file_set_metadata (NautilusFile           *file,
 					 const char             *key,
@@ -514,6 +520,7 @@ nautilus_desktop_icon_file_class_init (NautilusDesktopIconFileClass *klass)
         file_class->drag_can_accept_files = real_drag_can_accept_files;
         file_class->invalidate_attributes_internal = real_invalidate_attributes_internal;
         file_class->opens_in_view = real_opens_in_view;
+        file_class->is_special_link = real_is_special_link;
 
 	g_type_class_add_private (object_class, sizeof(NautilusDesktopIconFileDetails));
 }
