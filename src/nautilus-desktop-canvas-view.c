@@ -603,10 +603,10 @@ real_special_link_in_selection (NautilusFilesView *view,
         return saw_link;
 }
 
-/* Do nothing */
 static void
 real_check_empty_states (NautilusFilesView *view)
 {
+        /* Do nothing */
 }
 
 static char*
