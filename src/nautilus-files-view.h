@@ -264,7 +264,7 @@ struct NautilusFilesViewClass {
         void           (* check_empty_states)          (NautilusFilesView *view);
 
         /* Use this to tell the view whether inside the selection there is some link
-         * that cannot be work with. This is used by the desktop for the trash,
+         * that cannot be worked with. This is used by the desktop for the trash,
          * home and other special links. */
         gboolean       (* special_link_in_selection)   (NautilusFilesView *view,
                                                         GList             *selection);
