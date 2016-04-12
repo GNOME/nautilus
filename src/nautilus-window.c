@@ -619,8 +619,9 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 	if (target_slot == NULL || !nautilus_window_slot_handles_location (active_slot, location)) {
                 target_slot = nautilus_window_create_slot (window, location);
                 nautilus_window_initialize_slot (window, target_slot, flags);
-                if (active_slot)
-                  close_slot (window, active_slot, TRUE);
+                if (active_slot) {
+                        close_slot (window, active_slot, TRUE);
+                }
         }
 
         /* Make the opened location the one active if we weren't ask for the
