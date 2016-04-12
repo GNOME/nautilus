@@ -624,13 +624,7 @@ real_get_backing_uri (NautilusFilesView *view)
                 return NULL;
         }
 
-        directory = model;
-
-        if (NAUTILUS_IS_DESKTOP_DIRECTORY (directory)) {
-                directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (directory));
-        } else {
-                nautilus_directory_ref (directory);
-        }
+        directory = nautilus_desktop_directory_get_real_directory (NAUTILUS_DESKTOP_DIRECTORY (model));
 
         uri = nautilus_directory_get_uri (directory);
 
