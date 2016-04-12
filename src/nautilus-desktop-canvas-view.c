@@ -294,15 +294,15 @@ static void
 nautilus_desktop_canvas_view_class_init (NautilusDesktopCanvasViewClass *class)
 {
 	NautilusFilesViewClass *vclass;
-        NautilusCanvasViewClass *parent_class;
+        NautilusCanvasViewClass *canvas_class;
 
 	vclass = NAUTILUS_FILES_VIEW_CLASS (class);
-	parent_class = NAUTILUS_CANVAS_VIEW_CLASS (class);
+	canvas_class = NAUTILUS_CANVAS_VIEW_CLASS (class);
 
 
 	G_OBJECT_CLASS (class)->dispose = nautilus_desktop_canvas_view_dispose;
 
-        parent_class->create_canvas_container = real_create_canvas_container;
+        canvas_class->create_canvas_container = real_create_canvas_container;
 
 	vclass->update_context_menus = real_update_context_menus;
 	vclass->get_view_id = real_get_id;
