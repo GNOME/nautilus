@@ -361,6 +361,7 @@ stop_cache_selection_list (NautilusDragInfo *drag_info)
 {
         if (drag_info->file_list_info_handler) {
                 nautilus_file_list_cancel_call_when_ready (drag_info->file_list_info_handler);
+                drag_info->file_list_info_handler = NULL;
         }
 }
 
