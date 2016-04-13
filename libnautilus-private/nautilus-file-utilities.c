@@ -1156,4 +1156,26 @@ nautilus_self_check_file_utilities (void)
 {
 }
 
+void
+nautilus_ensure_extension_builtins (void)
+{
+      g_type_ensure (NAUTILUS_TYPE_SEARCH_DIRECTORY);
+}
+
+void
+nautilus_ensure_extension_points (void)
+{
+  static gsize once_init_value = 0;
+
+  if (g_once_init_enter (&once_init_value))
+    {
+      GIOExtensionPoint *extension_point;
+
+      extension_point = g_io_extension_point_register (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME);
+      g_io_extension_point_set_required_type (extension_point, NAUTILUS_TYPE_DIRECTORY);
+
+      g_once_init_leave (&once_init_value, 1);
+    }
+}
+
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */

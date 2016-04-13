@@ -25,6 +25,8 @@
 #include <libnautilus-private/nautilus-directory.h>
 #include <libnautilus-private/nautilus-query.h>
 
+#define NAUTILUS_SEARCH_DIRECTORY_PROVIDER_NAME "search-directory-provider"
+
 #define NAUTILUS_TYPE_SEARCH_DIRECTORY nautilus_search_directory_get_type()
 #define NAUTILUS_SEARCH_DIRECTORY(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_DIRECTORY, NautilusSearchDirectory))

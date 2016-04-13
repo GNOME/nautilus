@@ -38,6 +38,8 @@
 #define NAUTILUS_DESKTOP_DIRECTORY_GET_CLASS(obj) \
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_DESKTOP_DIRECTORY, NautilusDesktopDirectoryClass))
 
+#define NAUTILUS_DESKTOP_DIRECTORY_PROVIDER_NAME "desktop-directory-provider"
+
 typedef struct NautilusDesktopDirectoryDetails NautilusDesktopDirectoryDetails;
 
 typedef struct {

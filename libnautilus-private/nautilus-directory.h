@@ -38,6 +38,8 @@
           operations on files.
 */
 
+#define NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME "nautilus-directory-provider"
+
 #define NAUTILUS_TYPE_DIRECTORY nautilus_directory_get_type()
 #define NAUTILUS_DIRECTORY(obj) \
   (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_DIRECTORY, NautilusDirectory))
@@ -143,6 +145,10 @@ typedef struct
         NautilusFile * (* new_file_from_filename) (NautilusDirectory *directory,
                                                    const char        *filename,
                                                    gboolean           self_owned);
+        /* Subclasses can say if they handle the location provided or should the
+         * nautilus file class handle it.
+         */
+        gboolean       (* handles_location)       (GFile             *location);
 } NautilusDirectoryClass;
 
 /* Basic GObject requirements. */
@@ -237,8 +243,6 @@ GList *            nautilus_directory_list_sort_by_uri         (GList           
 gboolean           nautilus_directory_is_editable              (NautilusDirectory         *directory);
 
 void               nautilus_directory_dump                     (NautilusDirectory         *directory);
-
-void               nautilus_directory_add_to_cache             (NautilusDirectory         *directory);
 
 NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
                                                                 const char        *filename,

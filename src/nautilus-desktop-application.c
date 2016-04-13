@@ -21,6 +21,7 @@
 #include "nautilus-desktop-application.h"
 #include "nautilus-desktop-window.h"
 #include "nautilus-desktop-directory.h"
+#include "nautilus-file-utilities.h"
 
 #include "nautilus-freedesktop-generated.h"
 
@@ -29,7 +30,6 @@
 #include <gdk/gdkx.h>
 
 static NautilusFreedesktopFileManager1 *freedesktop_proxy = NULL;
-static NautilusDirectory *desktop_directory = NULL;
 
 struct _NautilusDesktopApplication
 {
@@ -219,13 +219,18 @@ nautilus_desktop_application_class_init (NautilusDesktopApplicationClass *klass)
 }
 
 static void
+nautilus_desktop_ensure_builtins (void)
+{
+  /* Ensure the type so it can be registered early as a directory extension provider*/
+  g_type_ensure (NAUTILUS_TYPE_DESKTOP_DIRECTORY);
+}
+
+static void
 nautilus_desktop_application_init (NautilusDesktopApplication *self)
 {
-  g_autoptr (GFile) desktop_location;
-
-  desktop_location = g_file_new_for_uri (EEL_DESKTOP_URI);
-  desktop_directory = g_object_new (NAUTILUS_TYPE_DESKTOP_DIRECTORY, "location", desktop_location, NULL);
-  nautilus_directory_add_to_cache (NAUTILUS_DIRECTORY (desktop_directory));
+  nautilus_ensure_extension_points ();
+  nautilus_ensure_extension_builtins ();
+  nautilus_desktop_ensure_builtins ();
 }
 
 NautilusDesktopApplication *

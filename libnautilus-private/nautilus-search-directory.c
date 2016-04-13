@@ -95,8 +95,12 @@ enum {
 	NUM_PROPERTIES
 };
 
-G_DEFINE_TYPE (NautilusSearchDirectory, nautilus_search_directory,
-	       NAUTILUS_TYPE_DIRECTORY);
+G_DEFINE_TYPE_WITH_CODE (NautilusSearchDirectory, nautilus_search_directory, NAUTILUS_TYPE_DIRECTORY,
+                         nautilus_ensure_extension_points ();
+                         g_io_extension_point_implement (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME,
+                                                         g_define_type_id,
+                                                         NAUTILUS_SEARCH_DIRECTORY_PROVIDER_NAME,
+                                                         0));
 
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
@@ -687,6 +691,16 @@ search_is_editable (NautilusDirectory *directory)
 	return FALSE;
 }
 
+static gboolean
+real_handles_location (GFile *location)
+{
+        g_autofree gchar *uri;
+
+        uri = g_file_get_uri (location);
+
+        return eel_uri_is_search (uri);
+}
+
 static void
 search_set_property (GObject *object,
 		     guint property_id,
@@ -859,6 +873,7 @@ nautilus_search_directory_class_init (NautilusSearchDirectoryClass *class)
 	
 	directory_class->get_file_list = search_get_file_list;
 	directory_class->is_editable = search_is_editable;
+	directory_class->handles_location = real_handles_location;
 
 	properties[PROP_BASE_MODEL] =
 		g_param_spec_object ("base-model",

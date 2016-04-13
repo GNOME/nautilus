@@ -66,6 +66,7 @@ static void               set_directory_location              (NautilusDirectory
 static NautilusFile *     real_new_file_from_filename (NautilusDirectory *directory,
                                                        const char        *filename,
                                                        gboolean           self_owned);
+static gboolean           real_handles_location               (GFile                  *location);
 
 G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
 
@@ -160,6 +161,7 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 
 	klass->get_file_list = real_get_file_list;
 	klass->is_editable = real_is_editable;
+	klass->handles_location = real_handles_location;
 
 	g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
 	g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
@@ -453,25 +455,6 @@ nautilus_directory_get_for_file (NautilusFile *file)
 	return directory;
 }
 
-void
-nautilus_directory_add_to_cache (NautilusDirectory *directory)
-{
-	NautilusDirectory *existing_directory;
-	GFile *location;
-
-	location = nautilus_directory_get_location (directory);
-	existing_directory = nautilus_directory_get_existing (location);
-	if (existing_directory == NULL) {
-		/* Put it in the hash table. */
-		g_hash_table_insert (directories,
-				     directory->details->location,
-				     directory);
-	} else {
-		nautilus_directory_unref (existing_directory);
-	}
-}
-
-
 /* Returns a reffed NautilusFile object for this directory.
  */
 NautilusFile *
@@ -564,6 +547,13 @@ nautilus_directory_get_location (NautilusDirectory  *directory)
 	return g_object_ref (directory->details->location);
 }
 
+static gboolean
+real_handles_location (GFile *location)
+{
+        /* This class is the fallback on handling any location */
+        return TRUE;
+}
+
 NautilusFile *
 nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
                                            const char        *filename,
@@ -601,26 +591,52 @@ real_new_file_from_filename (NautilusDirectory *directory,
 	return file;
 }
 
+static GList*
+nautilus_directory_provider_get_all (void)
+{
+        GIOExtensionPoint *extension_point;
+        GList *extensions;
+
+        extension_point = g_io_extension_point_lookup (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME);
+        extensions = g_io_extension_point_get_extensions (extension_point);
+
+        return extensions;
+}
+
 static NautilusDirectory *
 nautilus_directory_new (GFile *location)
 {
-	NautilusDirectory *directory;
-	GType type;
-	char *uri;
+        GList *extensions;
+        GList *l;
+        GIOExtension *gio_extension;
+        GType handling_provider_type;
+        gboolean handled = FALSE;
+        NautilusDirectoryClass *current_provider_class;
+        NautilusDirectory *handling_instance;
 
-	uri = g_file_get_uri (location);
+        extensions = nautilus_directory_provider_get_all ();
 
-	if (eel_uri_is_search (uri)) {
-		type = NAUTILUS_TYPE_SEARCH_DIRECTORY;
-	} else {
-		type = NAUTILUS_TYPE_VFS_DIRECTORY;
-	}
+        for (l = extensions; l != NULL; l = l->next) {
+                gio_extension = l->data;
+                current_provider_class = NAUTILUS_DIRECTORY_CLASS (g_io_extension_ref_class (gio_extension));
+                if (current_provider_class->handles_location (location)) {
+                        handling_provider_type = g_io_extension_get_type (gio_extension);
+                        handled = TRUE;
+                        break;
+                }
+        }
 
-	g_free (uri);
+        if (!handled) {
+                /* This class is the fallback for any location */
+                handling_provider_type = NAUTILUS_TYPE_VFS_DIRECTORY;
+        }
 
-	directory = g_object_new (type, "location", location, NULL);
+        handling_instance = g_object_new (handling_provider_type,
+                                          "location", location,
+                                          NULL);
 
-	return directory;
+
+        return handling_instance;
 }
 
 gboolean

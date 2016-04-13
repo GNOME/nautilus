@@ -60,9 +60,12 @@ typedef struct {
 
 static void desktop_directory_changed_callback (gpointer data);
 
-G_DEFINE_TYPE (NautilusDesktopDirectory, nautilus_desktop_directory,
-	       NAUTILUS_TYPE_DIRECTORY);
-
+G_DEFINE_TYPE_WITH_CODE (NautilusDesktopDirectory, nautilus_desktop_directory, NAUTILUS_TYPE_DIRECTORY,
+                         nautilus_ensure_extension_points ();
+                         g_io_extension_point_implement (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME,
+                                                         g_define_type_id,
+                                                         NAUTILUS_DESKTOP_DIRECTORY_PROVIDER_NAME,
+                                                         0));
 static gboolean
 desktop_contains_file (NautilusDirectory *directory,
 		       NautilusFile *file)
@@ -509,6 +512,16 @@ real_new_file_from_filename (NautilusDirectory *directory,
 	return file;
 }
 
+static gboolean
+real_handles_location (GFile *location)
+{
+        g_autofree gchar *uri;
+
+        uri = g_file_get_uri (location);
+
+        return eel_uri_is_desktop (uri);
+}
+
 static void
 desktop_directory_changed_callback (gpointer data)
 {
@@ -548,6 +561,7 @@ nautilus_desktop_directory_class_init (NautilusDesktopDirectoryClass *class)
  	directory_class->are_all_files_seen = desktop_are_all_files_seen;
 	directory_class->is_not_empty = desktop_is_not_empty;
 	directory_class->new_file_from_filename = real_new_file_from_filename;
+	directory_class->handles_location = real_handles_location;
 	/* Override get_file_list so that we can return the list of files
 	 * in NautilusDesktopDirectory->details->real_directory,
 	 * in addition to the list of standard desktop icons on the desktop.

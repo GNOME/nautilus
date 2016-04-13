@@ -95,4 +95,7 @@ gboolean should_handle_content_types (const char * const *content_type);
 
 gboolean nautilus_file_selection_equal (GList *selection_a, GList *selection_b);
 
+void nautilus_ensure_extension_points (void);
+void nautilus_ensure_extension_builtins (void);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */

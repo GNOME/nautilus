@@ -946,6 +946,9 @@ nautilus_application_init (NautilusApplication *self)
                                                      NULL);
 
 	g_application_add_main_option_entries (G_APPLICATION (self), options);
+
+        nautilus_ensure_extension_points ();
+        nautilus_ensure_extension_builtins ();
 }
 
 static void
