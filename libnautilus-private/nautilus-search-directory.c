@@ -942,7 +942,7 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *search,
         old_query = search->details->query;
 
 	if (search->details->query != query) {
-	        search->details->query = query;
+	        search->details->query = g_object_ref (query);
 
 	        g_clear_pointer (&search->details->binding, g_binding_unbind);
 
