@@ -5274,6 +5274,7 @@ copy_or_move_selection (NautilusFilesView *view,
                                               _("_Cancel"), GTK_RESPONSE_CANCEL,
                                               _("_Select"), GTK_RESPONSE_OK,
                                               NULL);
+        gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
 
         gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                          GTK_RESPONSE_OK);
