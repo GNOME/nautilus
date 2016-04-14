@@ -3216,7 +3216,9 @@ done_loading (NautilusFilesView *view,
         g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
         g_object_notify (G_OBJECT (view), "is-loading");
 
-        check_empty_states (view);
+        if (!view->details->in_destruction) {
+                check_empty_states (view);
+        }
 
         nautilus_profile_end (NULL);
 }
