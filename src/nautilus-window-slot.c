@@ -2268,7 +2268,7 @@ nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *self)
         NautilusWindowSlotPrivate *priv;
 
         priv = nautilus_window_slot_get_instance_private (self);
-        if (priv->new_content_view && NAUTILUS_IS_FILES_VIEW (priv->new_content_view)) {
+        if (priv->content_view) {
 		/* disconnect old view */
                 g_signal_handlers_disconnect_by_func (priv->content_view,
                                                       G_CALLBACK (view_is_loading_changed_cb),
