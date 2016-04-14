@@ -2152,7 +2152,7 @@ nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *slot)
 static void
 nautilus_window_slot_disconnect_content_view (NautilusWindowSlot *slot)
 {
-        if (slot->details->new_content_view && NAUTILUS_IS_FILES_VIEW (slot->details->new_content_view)) {
+        if (slot->details->content_view) {
 		/* disconnect old view */
                 g_signal_handlers_disconnect_by_func (slot->details->content_view,
                                                       G_CALLBACK (view_is_loading_changed_cb),
