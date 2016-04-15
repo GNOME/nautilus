@@ -7,8 +7,8 @@ msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-04-10 13:19+0000\n"
-"PO-Revision-Date: 2016-04-10 20:00+0200\n"
+"POT-Creation-Date: 2016-04-15 13:16+0000\n"
+"PO-Revision-Date: 2016-04-16 00:15+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur_IT\n"
@@ -58,7 +58,7 @@ msgstr "Eseguìs Software"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
 #: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4198
-#: ../src/nautilus-window.c:2728
+#: ../src/nautilus-window.c:2726
 msgid "Files"
 msgstr "File"
 
@@ -1502,7 +1502,7 @@ msgstr " (%'d"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1388
 msgid "Are you sure you want to permanently delete “%B” from the trash?"
-msgstr "Sêstu sigûr di volê eliminâ par simpri \"%B\" de Scovacere?"
+msgstr "Sigûrs di volê eliminâ par simpri \"%B\" de Scovacere?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1391
 #, c-format
@@ -1513,7 +1513,7 @@ msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
 msgstr[0] ""
-"Sêstu sigûr di volê eliminâ definitivamentri l'%'d element selezionât de "
+"Sigûrs di volê eliminâ definitivamentri l'%'d element selezionât de "
 "Scovacere?"
 msgstr[1] ""
 "Sêstu sigûr di volê eliminâ definitivamentri i %'d elements selezionâts de "
@@ -1534,21 +1534,20 @@ msgstr "Ducj i elements inte scovacere a vegnaran eliminâts par simpri."
 
 #: ../libnautilus-private/nautilus-file-operations.c:1428
 #: ../libnautilus-private/nautilus-file-operations.c:2504
-#: ../src/nautilus-window.c:1302
+#: ../src/nautilus-window.c:1300
 msgid "Empty _Trash"
 msgstr "Dis_vuede scovacere"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1455
 msgid "Are you sure you want to permanently delete “%B”?"
-msgstr "Sêstu sigûr di volê eliminâ definitivamentri “%B”?"
+msgstr "Sigûrs di volê eliminâ definitivamentri “%B”?"
 
 #: ../libnautilus-private/nautilus-file-operations.c:1458
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
-msgstr[0] ""
-"Sêstu sigûr di volê eliminâ definitivamentri l'%'d element selezionât?"
+msgstr[0] "Sigûrs di volê eliminâ definitivamentri l'%'d element selezionât?"
 msgstr[1] ""
 "Sêstu sigûr di volê eliminâ definitivamentri i %'d elements selezionâts?"
 
@@ -2810,7 +2809,7 @@ msgstr "Impussibil cjatâ il program"
 msgid "Oops! There was a problem running this software."
 msgstr "Orpo! Al è vignût fûr un probleme fasint zirâ chest software."
 
-#: ../src/nautilus-autorun-software.c:201
+#: ../src/nautilus-autorun-software.c:200
 #, c-format
 msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
@@ -2819,11 +2818,12 @@ msgstr ""
 "\"%s\" al à un software pensât par jessi inviât in automatic. Vûstu fâlu "
 "partî?"
 
-#: ../src/nautilus-autorun-software.c:205
+#: ../src/nautilus-autorun-software.c:204
 msgid "If you don't trust this location or aren't sure, press Cancel."
-msgstr "Se no ti ti fidis di cheste posizion o no tu sês sigûr, sclice Anule."
+msgstr ""
+"Se no tu ti fidis di cheste posizion o no tu sês sigûr/sigure, frache Anule."
 
-#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:636
+#: ../src/nautilus-autorun-software.c:235 ../src/nautilus-mime-actions.c:636
 msgid "_Run"
 msgstr "_Eseguìs"
 
@@ -2977,7 +2977,7 @@ msgstr "Daûr a cjamâ..."
 #: ../src/nautilus-files-view.c:1045 ../src/nautilus-mime-actions.c:969
 #: ../src/nautilus-mime-actions.c:1714
 msgid "Are you sure you want to open all files?"
-msgstr "Sêstu sigûr di volê vierzi ducj i files?"
+msgstr "Sigûrs di volê vierzi ducj i file?"
 
 #: ../src/nautilus-files-view.c:1047
 #, c-format
@@ -3978,51 +3978,51 @@ msgstr "_Disvuede"
 msgid "Delete all items in the Trash"
 msgstr "Elimine ducj i elements te Scovacere"
 
-#: ../src/nautilus-window.c:1320
+#: ../src/nautilus-window.c:1318
 msgid "_Properties"
 msgstr "_Propietâts"
 
-#: ../src/nautilus-window.c:1330
+#: ../src/nautilus-window.c:1328
 msgid "_Format…"
 msgstr "_Formate..."
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1586
+#: ../src/nautilus-window.c:1584
 #, c-format
 msgid "“%s” deleted"
 msgstr "“%s” eliminât"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1591
+#: ../src/nautilus-window.c:1589
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d file eliminât"
 msgstr[1] "%d file eliminâts"
 
-#: ../src/nautilus-window.c:1693
+#: ../src/nautilus-window.c:1691
 #, c-format
 msgid "Open %s"
 msgstr "Vierç %s"
 
-#: ../src/nautilus-window.c:1781
+#: ../src/nautilus-window.c:1779
 msgid "_New Tab"
 msgstr "_Gnove schede"
 
-#: ../src/nautilus-window.c:1791
+#: ../src/nautilus-window.c:1789
 msgid "Move Tab _Left"
 msgstr "Sposte schede a _çampe"
 
-#: ../src/nautilus-window.c:1799
+#: ../src/nautilus-window.c:1797
 msgid "Move Tab _Right"
 msgstr "Sposte schede a _drete"
 
-#: ../src/nautilus-window.c:1810
+#: ../src/nautilus-window.c:1808
 msgid "_Close Tab"
 msgstr "_Siere Schede"
 
-#: ../src/nautilus-window.c:2730
+#: ../src/nautilus-window.c:2728
 msgid "Access and organize your files."
 msgstr "Dopre e organize i tiei file."
 
@@ -4030,7 +4030,7 @@ msgstr "Dopre e organize i tiei file."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2739
+#: ../src/nautilus-window.c:2737
 msgid "translator-credits"
 msgstr ""
 "Andrea Decorte <adecorte@gmail.com>\n"
