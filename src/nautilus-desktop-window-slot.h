@@ -18,8 +18,8 @@
 #ifndef NAUTILUS_DESKTOP_WINDOW_SLOT_H
 #define NAUTILUS_DESKTOP_WINDOW_SLOT_H
 
-#include <src/nautilus-window-slot.h>
-#include <src/nautilus-window.h>
+#include "nautilus-window-slot.h"
+#include "nautilus-window.h"
 
 G_BEGIN_DECLS
 
