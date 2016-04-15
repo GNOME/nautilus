@@ -20,17 +20,21 @@
 */
 
 #include <config.h>
+
 #include "nautilus-desktop-link.h"
 #include "nautilus-desktop-link-monitor.h"
 #include "nautilus-desktop-icon-file.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-desktop-directory.h"
-#include "nautilus-icon-names.h"
+
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+
 #include <libnautilus-private/nautilus-file-utilities.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
 #include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-icon-names.h>
+
 #include <string.h>
 
 struct NautilusDesktopLinkDetails {

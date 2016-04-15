@@ -1,10 +1,13 @@
 include $(top_srcdir)/Makefile.shared
 
+AUTOMAKE_OPTIONS = subdir-objects
+
 bin_PROGRAMS=					\
 	nautilus				\
-	nautilus-desktop			\
 	nautilus-autorun-software		\
 	$(NULL)
+
+noinst_LTLIBRARIES=libnautilus.la
 
 AM_CPPFLAGS =							\
 	-I$(top_srcdir) 					\
@@ -26,6 +29,10 @@ AM_CPPFLAGS =							\
 	$(NULL)
 
 LDADD =\
+	libnautilus.la \
+	$(NULL)
+
+libnautilus_la_LIBADD =\
 	$(top_builddir)/libnautilus-private/libnautilus-private.la  \
 	$(top_builddir)/libgd/libgd.la \
 	$(BASE_LIBS) \
@@ -82,9 +89,9 @@ headers =					\
 
 resource_files = $(shell glib-compile-resources --sourcedir=$(srcdir)/resources --generate-dependencies $(srcdir)/resources/nautilus.gresource.xml)
 nautilus-resources.c: resources/nautilus.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir)/resources --generate-source --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
+	glib-compile-resources --manual-register --target=$@ --sourcedir=$(srcdir)/resources --generate-source --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
 nautilus-resources.h: resources/nautilus.gresource.xml $(resource_files)
-	glib-compile-resources --target=$@ --sourcedir=$(srcdir)/resources --generate-header --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
+	glib-compile-resources --manual-register --target=$@ --sourcedir=$(srcdir)/resources --generate-header --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
 
 nautilus-enum-types.h: stamp-nautilus-enum-types.h
 	$(AM_V_GEN)true
@@ -150,16 +157,8 @@ nautilus_no_main_sources = \
 	nautilus-canvas-view-container.h	\
 	nautilus-dbus-manager.c 		\
 	nautilus-dbus-manager.h 		\
-	nautilus-desktop-canvas-view.c		\
-	nautilus-desktop-canvas-view.h		\
-	nautilus-desktop-canvas-view-container.c	\
-	nautilus-desktop-canvas-view-container.h	\
 	nautilus-desktop-item-properties.c	\
 	nautilus-desktop-item-properties.h	\
-	nautilus-desktop-window.c		\
-	nautilus-desktop-window.h		\
-	nautilus-desktop-window-slot.c		\
-	nautilus-desktop-window-slot.h		\
 	nautilus-error-reporting.c		\
 	nautilus-error-reporting.h		\
 	nautilus-preferences-window.c	\
@@ -227,24 +226,13 @@ nautilus_no_main_sources = \
 	nautilus-x-content-bar.h		\
 	$(NULL)
 
+nodist_libnautilus_la_SOURCES = \
+	$(nautilus_built_sources) \
+	$(nautilus_no_main_sources) \
+	$(NULL)
+
 nautilus_SOURCES = \
-	$(nautilus_no_main_sources)		\
 	nautilus-main.c				\
-	$(NULL)
-
-nautilus_desktop_SOURCES= 				\
-	$(nautilus_no_main_sources)			\
-	main-desktop.c					\
-	nautilus-desktop-application.c			\
-	nautilus-desktop-application.h			\
-	$(NULL)
-
-nodist_nautilus_SOURCES = \
-	$(nautilus_built_sources) \
-	$(NULL)
-
-nodist_nautilus_desktop_SOURCES = \
-	$(nautilus_built_sources) \
 	$(NULL)
 
 EMPTY_VIEW_SOURCES = \

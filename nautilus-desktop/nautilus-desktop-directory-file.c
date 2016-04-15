@@ -22,16 +22,17 @@
 
 #include <config.h>
 #include "nautilus-desktop-directory-file.h"
-
 #include "nautilus-desktop-metadata.h"
-#include "nautilus-directory-notify.h"
-#include "nautilus-directory-private.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-desktop-directory.h"
-#include "nautilus-metadata.h"
+
+#include <libnautilus-private/nautilus-directory-notify.h>
+#include <libnautilus-private/nautilus-directory-private.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-private.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-metadata.h>
+
+#include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <string.h>

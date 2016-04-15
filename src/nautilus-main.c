@@ -29,6 +29,7 @@
 #include <config.h>
 
 #include "nautilus-application.h"
+#include "nautilus-resources.h"
 
 #include <libnautilus-private/nautilus-debug.h>
 #include <eel/eel-debug.h>
@@ -87,7 +88,7 @@ main (int argc, char *argv[])
 #ifdef HAVE_EXEMPI
 	xmp_init();
 #endif
-
+	nautilus_register_resource ();
 	/* Run the nautilus application. */
 	application = nautilus_application_new ();
 

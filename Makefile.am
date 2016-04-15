@@ -6,6 +6,7 @@ DIRS =				\
 	libgd                   \
 	libnautilus-private 	\
 	src 			\
+	nautilus-desktop	\
 	test 			\
 	po 			\
 	data 			\

@@ -80,18 +80,6 @@ libnautilus_private_la_SOURCES = \
 	nautilus-debug.h \
 	nautilus-default-file-icon.c \
 	nautilus-default-file-icon.h \
-	nautilus-desktop-directory-file.c \
-	nautilus-desktop-directory-file.h \
-	nautilus-desktop-directory.c \
-	nautilus-desktop-directory.h \
-	nautilus-desktop-icon-file.c \
-	nautilus-desktop-icon-file.h \
-	nautilus-desktop-link-monitor.c \
-	nautilus-desktop-link-monitor.h \
-	nautilus-desktop-link.c \
-	nautilus-desktop-link.h \
-	nautilus-desktop-metadata.c \
-	nautilus-desktop-metadata.h \
 	nautilus-directory-async.c \
 	nautilus-directory-notify.h \
 	nautilus-directory-private.h \

@@ -1,6 +1,7 @@
 #include <config.h>
 
 #include "nautilus-desktop-application.h"
+#include <src/nautilus-resources.h>
 
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
@@ -25,6 +26,7 @@ main (int argc, char *argv[])
 
   g_set_prgname ("nautilus-desktop");
 
+  nautilus_register_resource ();
   application = nautilus_desktop_application_new ();
 
   retval = g_application_run (G_APPLICATION (application),

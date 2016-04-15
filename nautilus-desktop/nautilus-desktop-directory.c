@@ -25,11 +25,11 @@
 #include "nautilus-desktop-directory.h"
 #include "nautilus-desktop-directory-file.h"
 
-#include "nautilus-directory-private.h"
-#include "nautilus-file.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-global-preferences.h"
+#include <libnautilus-private/nautilus-directory-private.h>
+#include <libnautilus-private/nautilus-file.h>
+#include <libnautilus-private/nautilus-file-private.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
 #include <gtk/gtk.h>
 
 struct NautilusDesktopDirectoryDetails {
