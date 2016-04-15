@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_DESKTOP_WINDOW_H
 #define NAUTILUS_DESKTOP_WINDOW_H
 
-#include "nautilus-window.h"
+#include <src/nautilus-window.h>
 
 #define NAUTILUS_TYPE_DESKTOP_WINDOW nautilus_desktop_window_get_type()
 #define NAUTILUS_DESKTOP_WINDOW(obj) \

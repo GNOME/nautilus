@@ -23,9 +23,7 @@
 #include "nautilus-desktop-link-monitor.h"
 #include "nautilus-desktop-link.h"
 #include "nautilus-desktop-icon-file.h"
-#include "nautilus-directory.h"
 #include "nautilus-desktop-directory.h"
-#include "nautilus-global-preferences.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-vfs-extensions.h>
@@ -33,7 +31,11 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
+
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <libnautilus-private/nautilus-global-preferences.h>
+#include <libnautilus-private/nautilus-directory.h>
+
 #include <string.h>
 
 struct NautilusDesktopLinkMonitorDetails {

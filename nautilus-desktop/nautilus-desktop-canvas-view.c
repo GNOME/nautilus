@@ -27,9 +27,9 @@
 
 #include "nautilus-desktop-canvas-view.h"
 
-#include "nautilus-canvas-view-container.h"
 #include "nautilus-desktop-canvas-view-container.h"
-#include "nautilus-files-view.h"
+#include "nautilus-desktop-icon-file.h"
+#include "nautilus-desktop-directory.h"
 
 #include <X11/Xatom.h>
 #include <gtk/gtk.h>
@@ -39,8 +39,6 @@
 #include <fcntl.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-desktop-icon-file.h>
-#include <libnautilus-private/nautilus-desktop-directory.h>
 #include <libnautilus-private/nautilus-directory-notify.h>
 #include <libnautilus-private/nautilus-file-changes-queue.h>
 #include <libnautilus-private/nautilus-file-operations.h>
@@ -52,6 +50,7 @@
 #include <libnautilus-private/nautilus-monitor.h>
 #include <libnautilus-private/nautilus-program-choosing.h>
 #include <libnautilus-private/nautilus-trash-monitor.h>
+#include <src/nautilus-files-view.h>
 #include <limits.h>
 #include <stddef.h>
 #include <stdio.h>

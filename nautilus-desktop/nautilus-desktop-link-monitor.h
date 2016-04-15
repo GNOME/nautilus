@@ -23,7 +23,7 @@
 #define NAUTILUS_DESKTOP_LINK_MONITOR_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-desktop-link.h>
+#include "nautilus-desktop-link.h"
 
 #define NAUTILUS_TYPE_DESKTOP_LINK_MONITOR nautilus_desktop_link_monitor_get_type()
 #define NAUTILUS_DESKTOP_LINK_MONITOR(obj) \

@@ -318,6 +318,7 @@ libnautilus-extension/libnautilus-extension-uninstalled.pc
 libgd/Makefile
 po/Makefile.in
 src/Makefile
+nautilus-desktop/Makefile
 nautilus-sendto-extension/Makefile
 test/Makefile
 ])

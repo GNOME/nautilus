@@ -10,6 +10,7 @@ DIRS =				\
 	po 			\
 	data 			\
 	docs			\
+	nautilus-desktop	\
 	$(NULL)
 
 DIST_SUBDIRS = $(DIRS) nautilus-sendto-extension

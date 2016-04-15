@@ -1,40 +1,41 @@
 /*
    nautilus-desktop-icon-file.c: Subclass of NautilusFile to help implement the
    virtual desktop icons.
- 
+
    Copyright (C) 2003 Red Hat, Inc.
-  
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
-  
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-  
+
    You should have received a copy of the GNU General Public
    License along with this program; if not, see <http://www.gnu.org/licenses/>.
-  
+
    Author: Alexander Larsson <alexl@redhat.com>
 */
 
 #include <config.h>
 #include "nautilus-desktop-icon-file.h"
-
 #include "nautilus-desktop-metadata.h"
 #include "nautilus-desktop-directory-file.h"
-#include "nautilus-directory-notify.h"
-#include "nautilus-directory-private.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-link.h"
-#include "nautilus-file-undo-manager.h"
-#include <eel/eel-glib-extensions.h>
 #include "nautilus-desktop-directory.h"
+
+#include <libnautilus-private/nautilus-directory-notify.h>
+#include <libnautilus-private/nautilus-directory-private.h>
+#include <libnautilus-private/nautilus-file-attributes.h>
+#include <libnautilus-private/nautilus-file-private.h>
+#include <libnautilus-private/nautilus-file-utilities.h>
+#include <libnautilus-private/nautilus-file-operations.h>
+#include <libnautilus-private/nautilus-link.h>
+#include <libnautilus-private/nautilus-file-undo-manager.h>
+
+#include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 #include <string.h>
 #include <gio/gio.h>
@@ -95,7 +96,7 @@ desktop_icon_file_check_if_ready (NautilusFile *file,
 }
 
 static gboolean
-desktop_icon_file_get_item_count (NautilusFile *file, 
+desktop_icon_file_get_item_count (NautilusFile *file,
 				  guint *count,
 				  gboolean *count_unreadable)
 {
@@ -165,9 +166,9 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 	NautilusDesktopLink *link;
 	char *display_name;
 	GMount *mount;
-	
+
 	file = NAUTILUS_FILE (icon_file);
-	
+
 	link = icon_file->details->link;
 
 	if (link == NULL) {
@@ -194,7 +195,7 @@ update_info_from_link (NautilusDesktopIconFile *icon_file)
 		file->details->can_unmount = g_mount_can_unmount (mount);
 		file->details->can_eject = g_mount_can_eject (mount);
 	}
-	
+
 	file->details->file_info_is_up_to_date = TRUE;
 
 	display_name = nautilus_desktop_link_get_display_name (link);
@@ -220,7 +221,7 @@ void
 nautilus_desktop_icon_file_update (NautilusDesktopIconFile *icon_file)
 {
 	NautilusFile *file;
-	
+
 	update_info_from_link (icon_file);
 	file = NAUTILUS_FILE (icon_file);
 	nautilus_file_changed (file);
@@ -235,22 +236,22 @@ nautilus_desktop_icon_file_remove (NautilusDesktopIconFile *icon_file)
 	icon_file->details->link = NULL;
 
 	file = NAUTILUS_FILE (icon_file);
-	
+
 	/* ref here because we might be removing the last ref when we
 	 * mark the file gone below, but we need to keep a ref at
-	 * least long enough to send the change notification. 
+	 * least long enough to send the change notification.
 	 */
 	nautilus_file_ref (file);
-	
+
 	file->details->is_gone = TRUE;
-	
+
 	list.data = file;
 	list.next = NULL;
 	list.prev = NULL;
-	
+
 	nautilus_directory_remove_file (file->details->directory, file);
 	nautilus_directory_emit_change_signals (file->details->directory, &list);
-	
+
 	nautilus_file_unref (file);
 }
 
@@ -314,7 +315,7 @@ nautilus_desktop_icon_file_unmount (NautilusFile                   *file,
 {
 	NautilusDesktopIconFile *desktop_file;
 	GMount *mount;
-	
+
 	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
 	if (desktop_file) {
 		mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
@@ -322,7 +323,7 @@ nautilus_desktop_icon_file_unmount (NautilusFile                   *file,
 			nautilus_file_operations_unmount_mount (NULL, mount, FALSE, TRUE);
 		}
 	}
-	
+
 }
 
 static void
@@ -334,7 +335,7 @@ nautilus_desktop_icon_file_eject (NautilusFile                   *file,
 {
 	NautilusDesktopIconFile *desktop_file;
 	GMount *mount;
-	
+
 	desktop_file = NAUTILUS_DESKTOP_ICON_FILE (file);
 	if (desktop_file) {
 		mount = nautilus_desktop_link_get_mount (desktop_file->details->link);
