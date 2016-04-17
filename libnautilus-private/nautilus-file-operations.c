@@ -1565,15 +1565,16 @@ report_delete_progress (CommonJob *job,
                         time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %T left",
 	                                              "%'d / %'d \xE2\x80\x94 %T left",
 			                              seconds_count_format_time_units (remaining_time));
+                        transfer_rate += 0.5;
                         files_per_second_message = ngettext ("(%d file/sec)",
 	                                                     "(%d files/sec)",
-                                                              (int)(transfer_rate + 0.5));
+                                                              (int) transfer_rate);
                         concat_detail = g_strconcat (time_left_message, " ", files_per_second_message, NULL);
 
 	                details = f (concat_detail,
                                      transfer_info->num_files + 1, source_info->num_files,
                                      remaining_time,
-                                     (int) transfer_rate + 0.5);
+                                     (int) transfer_rate);
 
                         g_free (concat_detail);
                 } else {
