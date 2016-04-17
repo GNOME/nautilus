@@ -473,38 +473,13 @@ add_operations_button_attention_style (NautilusToolbar *self)
                                                                             self);
 }
 
-/* It's not the most beautiful solution, but we need to check wheter all windows
- * have it's button inactive, so the toolbar can schedule to remove the operations
- * only in that case to avoid other windows to show an empty popover in the oposite
- * case */
-static gboolean
-is_all_windows_operations_buttons_inactive ()
-{
-        GApplication *application;
-        GList *windows;
-        GList *l;
-        GtkWidget *toolbar;
-
-        application = g_application_get_default ();
-        windows = nautilus_application_get_windows (NAUTILUS_APPLICATION (application));
-
-        for (l = windows; l != NULL; l = l->next) {
-                toolbar = nautilus_window_get_toolbar (NAUTILUS_WINDOW (l->data));
-                if (nautilus_toolbar_is_operations_button_active (NAUTILUS_TOOLBAR (toolbar))) {
-                          return FALSE;
-                }
-        }
-
-        return TRUE;
-}
-
 static void
 on_progress_info_cancelled (NautilusToolbar *self)
 {
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
-        if (is_all_windows_operations_buttons_inactive ()) {
+        if (!nautilus_progress_manager_has_viewers (self->priv->progress_manager)) {
                 schedule_remove_finished_operations (self);
         }
 }
@@ -526,7 +501,7 @@ on_progress_info_finished (NautilusToolbar      *self,
         /* Update the pie chart progress */
         gtk_widget_queue_draw (self->priv->operations_icon);
 
-        if (is_all_windows_operations_buttons_inactive ()){
+        if (!nautilus_progress_manager_has_viewers (self->priv->progress_manager)) {
                 schedule_remove_finished_operations (self);
         }
 
@@ -747,13 +722,32 @@ on_operations_icon_draw (GtkWidget       *widget,
 }
 
 static void
-on_operations_button_toggled (NautilusToolbar *self)
+on_operations_button_toggled (NautilusToolbar *self,
+                              GtkToggleButton *button)
 {
-        unschedule_remove_finished_operations (self);
-        if (is_all_windows_operations_buttons_inactive ()) {
+        if (gtk_toggle_button_get_active (button)) {
+                unschedule_remove_finished_operations (self);
+                nautilus_progress_manager_add_viewer (self->priv->progress_manager,
+                                                      G_OBJECT (self));
+        }
+        else {
+                nautilus_progress_manager_remove_viewer (self->priv->progress_manager,
+                                                         G_OBJECT (self));
+        }
+}
+
+static void
+on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
+                                 NautilusToolbar             *self)
+{
+        if (nautilus_progress_manager_has_viewers (manager)) {
+                unschedule_remove_finished_operations (self);
+                return;
+        }
+
+        if (nautilus_progress_manager_are_all_infos_finished_or_cancelled (manager)) {
+                unschedule_remove_finished_operations (self);
                 schedule_remove_finished_operations (self);
-        } else {
-                update_operations (self);
         }
 }
 
@@ -782,6 +776,9 @@ nautilus_toolbar_init (NautilusToolbar *self)
         self->priv->progress_manager = nautilus_progress_info_manager_dup_singleton ();
 	g_signal_connect (self->priv->progress_manager, "new-progress-info",
 			  G_CALLBACK (on_new_progress_info), self);
+        g_signal_connect (self->priv->progress_manager, "has-viewers-changed",
+                          G_CALLBACK (on_progress_has_viewers_changed), self);
+
         update_operations (self);
 
 	g_object_set_data (G_OBJECT (self->priv->back_button), "nav-direction",

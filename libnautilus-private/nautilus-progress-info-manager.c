@@ -26,10 +26,12 @@
 
 struct _NautilusProgressInfoManagerPriv {
 	GList *progress_infos;
+	GList *current_viewers;
 };
 
 enum {
 	NEW_PROGRESS_INFO,
+	HAS_VIEWERS_CHANGED,
 	LAST_SIGNAL
 };
 
@@ -40,14 +42,22 @@ static guint signals[LAST_SIGNAL] = { 0, };
 G_DEFINE_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager,
                G_TYPE_OBJECT);
 
+static void remove_viewer (NautilusProgressInfoManager *self, GObject *viewer);
+
 static void
 nautilus_progress_info_manager_finalize (GObject *obj)
 {
+	GList *l;
 	NautilusProgressInfoManager *self = NAUTILUS_PROGRESS_INFO_MANAGER (obj);
 
 	if (self->priv->progress_infos != NULL) {
 		g_list_free_full (self->priv->progress_infos, g_object_unref);
 	}
+
+	for (l = self->priv->current_viewers; l != NULL; l = l->next) {
+		g_object_weak_unref (l->data, (GWeakNotify) remove_viewer, self);
+	}
+	g_list_free (self->priv->current_viewers);
 
 	G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->finalize (obj);
 }
@@ -97,6 +107,15 @@ nautilus_progress_info_manager_class_init (NautilusProgressInfoManagerClass *kla
 			      G_TYPE_NONE,
 			      1,
 			      NAUTILUS_TYPE_PROGRESS_INFO);
+
+	signals[HAS_VIEWERS_CHANGED] =
+		g_signal_new ("has-viewers-changed",
+			      G_TYPE_FROM_CLASS (klass),
+			      G_SIGNAL_RUN_LAST,
+			      0, NULL, NULL,
+			      g_cclosure_marshal_VOID__VOID,
+			      G_TYPE_NONE,
+			      0);
 
 	g_type_class_add_private (klass, sizeof (NautilusProgressInfoManagerPriv));
 }
@@ -159,4 +178,47 @@ nautilus_progress_manager_are_all_infos_finished_or_cancelled (NautilusProgressI
         }
 
         return TRUE;
+}
+
+static void
+remove_viewer (NautilusProgressInfoManager *self,
+               GObject                     *viewer)
+{
+        self->priv->current_viewers = g_list_remove (self->priv->current_viewers, viewer);
+
+        if (self->priv->current_viewers == NULL)
+                g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
+}
+
+void
+nautilus_progress_manager_add_viewer (NautilusProgressInfoManager *self,
+                                      GObject                     *viewer)
+{
+        GList *viewers;
+
+        viewers = self->priv->current_viewers;
+        if (g_list_find (viewers, viewer) == NULL) {
+                g_object_weak_ref (viewer, (GWeakNotify) remove_viewer, self);
+                viewers = g_list_append (viewers, viewer);
+                self->priv->current_viewers = viewers;
+
+                if (g_list_length (viewers) == 1)
+                        g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
+        }
+}
+
+void
+nautilus_progress_manager_remove_viewer (NautilusProgressInfoManager *self,
+                                         GObject                     *viewer)
+{
+        if (g_list_find (self->priv->current_viewers, viewer) != NULL) {
+                g_object_weak_unref (viewer, (GWeakNotify) remove_viewer, self);
+                remove_viewer (self, viewer);
+        }
+}
+
+gboolean
+nautilus_progress_manager_has_viewers (NautilusProgressInfoManager *self)
+{
+        return self->priv->current_viewers != NULL;
 }
