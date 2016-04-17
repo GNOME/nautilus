@@ -239,20 +239,19 @@ void eel_canvas_item_show (EelCanvasItem *item);
  */
 void eel_canvas_item_hide (EelCanvasItem *item);
 
-/* Grab the mouse for the specified item.  Only the events in event_mask will be
- * reported.  If cursor is non-NULL, it will be used during the duration of the
- * grab.  Time is a proper X event time parameter.  Returns the same values as
- * XGrabPointer().
+/* Grab the seat for the specified item.  Only the events in event_mask will be
+ * reported. If cursor is non-NULL, it will be used during the duration of the
+ * grab. event is the event, triggering the grab. Returns the same values as gdk_seat_grab().
  */
 GdkGrabStatus eel_canvas_item_grab (EelCanvasItem *item,
 				    GdkEventMask event_mask,
 				    GdkCursor *cursor,
-				    guint32 etime);
+				    const GdkEvent* event);
 
-/* Ungrabs the mouse -- the specified item must be the same that was passed to
- * eel_canvas_item_grab().  Time is a proper X event time parameter.
+/* Ungrabs the seat -- the specified item must be the same that was passed to
+ * eel_canvas_item_grab().
  */
-void eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime);
+void eel_canvas_item_ungrab (EelCanvasItem *item);
 
 /* These functions convert from a coordinate system to another.  "w" is world
  * coordinates and "i" is item coordinates.

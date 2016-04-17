@@ -2498,12 +2498,12 @@ start_rubberbanding (NautilusCanvasContainer *container,
 			      (GDK_POINTER_MOTION_MASK
 			       | GDK_BUTTON_RELEASE_MASK 
 			       | GDK_SCROLL_MASK),
-			      NULL, event->time);
+			      NULL,
+			      (GdkEvent *)event);
 }
 
 static void
-stop_rubberbanding (NautilusCanvasContainer *container,
-		    guint32 time)
+stop_rubberbanding (NautilusCanvasContainer *container)
 {
 	NautilusCanvasRubberbandInfo *band_info;
 	GList *icons;
@@ -2520,7 +2520,7 @@ stop_rubberbanding (NautilusCanvasContainer *container,
 	g_object_get (gtk_settings_get_default (), "gtk-enable-animations", &enable_animation, NULL);
 
 	/* Destroy this canvas item; the parent will unref it. */
-	eel_canvas_item_ungrab (band_info->selection_rectangle, time);
+	eel_canvas_item_ungrab (band_info->selection_rectangle);
 	eel_canvas_item_lower_to_bottom (band_info->selection_rectangle);
 	if (enable_animation) {
 		nautilus_selection_canvas_item_fade_out (NAUTILUS_SELECTION_CANVAS_ITEM (band_info->selection_rectangle), 150);
@@ -4181,7 +4181,8 @@ clear_drag_state (NautilusCanvasContainer *container)
 }
 
 static gboolean
-start_stretching (NautilusCanvasContainer *container)
+start_stretching (NautilusCanvasContainer *container,
+		  GdkEvent *event)
 {
 	NautilusCanvasContainerDetails *details;
 	NautilusCanvasIcon *icon;
@@ -4236,7 +4237,7 @@ start_stretching (NautilusCanvasContainer *container)
 			      (GDK_POINTER_MOTION_MASK
 			       | GDK_BUTTON_RELEASE_MASK),
 			      cursor,
-			      GDK_CURRENT_TIME);
+			      event);
 	if (cursor)
 		g_object_unref (cursor);
 
@@ -4339,8 +4340,7 @@ keyboard_stretching (NautilusCanvasContainer *container,
 static void
 ungrab_stretch_icon (NautilusCanvasContainer *container)
 {
-	eel_canvas_item_ungrab (EEL_CANVAS_ITEM (container->details->stretch_icon->item),
-				GDK_CURRENT_TIME);
+	eel_canvas_item_ungrab (EEL_CANVAS_ITEM (container->details->stretch_icon->item));
 }
 
 static void
@@ -4417,7 +4417,7 @@ button_release_event (GtkWidget *widget,
 	details = container->details;
 
 	if (event->button == RUBBERBAND_BUTTON && details->rubberband_info.active) {
-		stop_rubberbanding (container, event->time);
+		stop_rubberbanding (container);
 		return TRUE;
 	}
 	
@@ -4684,8 +4684,7 @@ grab_notify_cb  (GtkWidget        *widget,
 		 * up (e.g. authentication or an error). Stop
 		 * the rubberbanding so that we can handle the
 		 * dialog. */
-		stop_rubberbanding (container,
-				    GDK_CURRENT_TIME);
+		stop_rubberbanding (container);
 	}
 }
 
@@ -5335,7 +5334,7 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 		 * If so, it won't modify the selection.
 		 */
 		if (icon == container->details->stretch_icon) {
-			if (start_stretching (container)) {
+			if (start_stretching (container, (GdkEvent *)event)) {
 				return TRUE;
 			}
 		}

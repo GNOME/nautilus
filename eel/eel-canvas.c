@@ -311,7 +311,7 @@ eel_canvas_item_dispose (GObject *object)
 			item->canvas->need_repick = TRUE;
 		}
 
-		eel_canvas_item_ungrab (item, GDK_CURRENT_TIME);
+		eel_canvas_item_ungrab (item);
 
 		if (item == item->canvas->focused_item)
 			item->canvas->focused_item = NULL;
@@ -824,34 +824,42 @@ eel_canvas_item_hide (EelCanvasItem *item)
 }
 
 
+/*
+ * Prepare the window for grabbing, i.e. show it.
+ */
+static void
+seat_grab_prepare_window (GdkSeat *seat,
+			  GdkWindow *window,
+			  gpointer user_data)
+{
+	gdk_window_show (window);
+}
+
 /**
  * eel_canvas_item_grab:
  * @item: A canvas item.
  * @event_mask: Mask of events that will be sent to this item.
  * @cursor: If non-NULL, the cursor that will be used while the grab is active.
- * @etime: The timestamp required for grabbing the mouse, or GDK_CURRENT_TIME.
+ * @event: The event, triggering the grab, if any.
  *
  * Specifies that all events that match the specified event mask should be sent
- * to the specified item, and also grabs the mouse by calling
- * gdk_pointer_grab().  The event mask is also used when grabbing the pointer.
+ * to the specified item, and also grabs the seat by calling gdk_seat_grab().
  * If @cursor is not NULL, then that cursor is used while the grab is active.
- * The @etime parameter is the timestamp required for grabbing the mouse.
  *
- * Return value: If an item was already grabbed, it returns %GDK_GRAB_ALREADY_GRABBED.  If
+ * Return value: If an item was already grabbed, it returns %GDK_GRAB_ALREADY_GRABBED. If
  * the specified item was hidden by calling eel_canvas_item_hide(), then it
- * returns %GDK_GRAB_NOT_VIEWABLE.  Else, it returns the result of calling
- * gdk_pointer_grab().
+ * returns %GDK_GRAB_NOT_VIEWABLE. Else, it returns the result of calling
+ * gdk_seat_grab().
  **/
 GdkGrabStatus
 eel_canvas_item_grab (EelCanvasItem *item,
 		      GdkEventMask event_mask,
 		      GdkCursor *cursor,
-		      guint32 timestamp)
+		      const GdkEvent *event)
 {
 	GdkGrabStatus retval;
 	GdkDisplay *display;
-	GdkDeviceManager *manager;
-	GdkDevice *device;
+	GdkSeat *seat;
 
 	g_return_val_if_fail (EEL_IS_CANVAS_ITEM (item), GDK_GRAB_NOT_VIEWABLE);
 	g_return_val_if_fail (gtk_widget_get_mapped (GTK_WIDGET (item->canvas)),
@@ -864,16 +872,16 @@ eel_canvas_item_grab (EelCanvasItem *item,
 		return GDK_GRAB_NOT_VIEWABLE;
 
 	display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-	manager = gdk_display_get_device_manager (display);
-	device = gdk_device_manager_get_client_pointer (manager);
+	seat = gdk_display_get_default_seat (display);
 
-	retval = gdk_device_grab (device,
-				  gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas)),
-				  GDK_OWNERSHIP_NONE,
-				  FALSE,
-				  event_mask,
-				  cursor,
-				  timestamp);
+	retval = gdk_seat_grab (seat,
+				gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas)),
+				GDK_SEAT_CAPABILITY_ALL_POINTING,
+				FALSE,
+				cursor,
+				event,
+				seat_grab_prepare_window,
+				NULL);
 
 	if (retval != GDK_GRAB_SUCCESS)
 		return retval;
@@ -889,17 +897,15 @@ eel_canvas_item_grab (EelCanvasItem *item,
 /**
  * eel_canvas_item_ungrab:
  * @item: A canvas item that holds a grab.
- * @etime: The timestamp for ungrabbing the mouse.
  *
  * Ungrabs the item, which must have been grabbed in the canvas, and ungrabs the
- * mouse.
+ * seat.
  **/
 void
-eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
+eel_canvas_item_ungrab (EelCanvasItem *item)
 {
 	GdkDisplay *display;
-	GdkDeviceManager *manager;
-	GdkDevice *device;
+	GdkSeat *seat;
 
 	g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
 
@@ -907,11 +913,10 @@ eel_canvas_item_ungrab (EelCanvasItem *item, guint32 etime)
 		return;
 
 	display = gtk_widget_get_display (GTK_WIDGET (item->canvas));
-	manager = gdk_display_get_device_manager (display);
-	device = gdk_device_manager_get_client_pointer (manager);
+	seat = gdk_display_get_default_seat (display);
 
 	item->canvas->grabbed_item = NULL;
-	gdk_device_ungrab (device, etime);
+	gdk_seat_ungrab (seat);
 }
 
 /**
@@ -2034,7 +2039,7 @@ shutdown_transients (EelCanvas *canvas)
 	}
 
 	if (canvas->grabbed_item) {
-		eel_canvas_item_ungrab (canvas->grabbed_item, GDK_CURRENT_TIME);
+		eel_canvas_item_ungrab (canvas->grabbed_item);
 	}
 
 	remove_idle (canvas);
@@ -2393,29 +2398,19 @@ emit_event (EelCanvas *canvas, GdkEvent *event)
 	case GDK_ENTER_NOTIFY:
 	case GDK_LEAVE_NOTIFY:
 		eel_canvas_window_to_world (canvas,
-					      ev.crossing.x, ev.crossing.y,
-					      &ev.crossing.x, &ev.crossing.y);
+					    ev.crossing.x, ev.crossing.y,
+					    &ev.crossing.x, &ev.crossing.y);
 		break;
 
 	case GDK_MOTION_NOTIFY:
-                eel_canvas_window_to_world (canvas,
-                                              ev.motion.x, ev.motion.y,
-                                              &ev.motion.x, &ev.motion.y);
-                break;
-
 	case GDK_BUTTON_PRESS:
 	case GDK_2BUTTON_PRESS:
 	case GDK_3BUTTON_PRESS:
-                eel_canvas_window_to_world (canvas,
-                                              ev.motion.x, ev.motion.y,
-                                              &ev.motion.x, &ev.motion.y);
-                break;
-
 	case GDK_BUTTON_RELEASE:
-		eel_canvas_window_to_world (canvas,
-					      ev.motion.x, ev.motion.y,
-					      &ev.motion.x, &ev.motion.y);
-		break;
+                eel_canvas_window_to_world (canvas,
+                                            ev.motion.x, ev.motion.y,
+                                            &ev.motion.x, &ev.motion.y);
+                break;
 
 	default:
 		break;
