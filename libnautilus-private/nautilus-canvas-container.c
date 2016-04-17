@@ -2251,6 +2251,8 @@ rubberband_timeout_callback (gpointer data)
 	double world_x, world_y;
 	int x_scroll, y_scroll;
 	int adj_x, adj_y;
+	GdkDisplay *display;
+	GdkSeat *seat;
 	gboolean adj_changed;
 	GtkAllocation allocation;
 	
@@ -2277,10 +2279,11 @@ rubberband_timeout_callback (gpointer data)
 		adj_changed = TRUE;
 	}
 
+	display = gtk_widget_get_display (widget);
+	seat = gdk_display_get_default_seat (display);
+
 	gdk_window_get_device_position (gtk_widget_get_window (widget),
-					gdk_device_manager_get_client_pointer (
-									       gdk_display_get_device_manager (
-													       gtk_widget_get_display (widget))),
+					gdk_seat_get_pointer (seat),
 					&x, &y, NULL);
 
 	if (x < RUBBERBAND_SCROLL_THRESHOLD) {
