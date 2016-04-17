@@ -470,7 +470,7 @@ reset_button_clicked_cb (GtkButton *w,
 static void
 nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 {
-	GtkWidget *hbox, *vbox, *vbox2, *alignment;
+	GtkWidget *hbox, *vbox, *vbox2;
 	GtkWidget *widget, *dialog_area;
 	NautilusFileConflictDialogDetails *details;
 	GtkDialog *dialog;
@@ -500,11 +500,10 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	details->titles_vbox = widget;
 
 	/* Setup the hboxes to pack file infos into */
-	alignment = gtk_alignment_new (0.0, 0.0, 0.0, 0.0);
-	g_object_set (alignment, "left-padding", 12, NULL);
 	vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
-	gtk_container_add (GTK_CONTAINER (alignment), vbox2);
-	gtk_box_pack_start (GTK_BOX (vbox), alignment, FALSE, FALSE, 0);
+	gtk_widget_set_halign (vbox2, GTK_ALIGN_START);
+	gtk_widget_set_margin_start (vbox2, 12);
+	gtk_box_pack_start (GTK_BOX (vbox), vbox2, FALSE, FALSE, 0);
 
 	hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
 	gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
@@ -537,7 +536,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 	g_signal_connect (widget, "clicked",
 			  G_CALLBACK (reset_button_clicked_cb), dialog);
 
-	gtk_widget_show_all (alignment);
+	gtk_widget_show_all (vbox2);
 
 
 	/* Setup the checkbox to apply the action to all files */
