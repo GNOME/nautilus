@@ -104,6 +104,29 @@ loading_cb (NautilusView *view)
 }
 
 static void
+show_error_message_cb (NautilusGtkPlacesView *view,
+                       const gchar           *primary,
+                       const gchar           *secondary)
+{
+        GtkWidget *dialog;
+        GtkWidget *window;
+
+        window = gtk_widget_get_toplevel (GTK_WIDGET (view));
+
+        dialog = gtk_message_dialog_new (GTK_WINDOW (window),
+                                         GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                         GTK_MESSAGE_ERROR,
+                                         GTK_BUTTONS_CLOSE,
+                                         "%s", primary);
+        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+                                                  "%s", secondary);
+
+        gtk_dialog_run (GTK_DIALOG (dialog));
+
+        gtk_widget_destroy (dialog);
+}
+
+static void
 nautilus_places_view_finalize (GObject *object)
 {
         NautilusPlacesView *self = (NautilusPlacesView *)object;
@@ -346,6 +369,11 @@ nautilus_places_view_init (NautilusPlacesView *self)
         g_signal_connect_swapped (priv->places_view,
                                   "open-location",
                                   G_CALLBACK (open_location_cb),
+                                  self);
+
+        g_signal_connect_swapped (priv->places_view,
+                                  "show-error-message",
+                                  G_CALLBACK (show_error_message_cb),
                                   self);
 
 }
