@@ -824,14 +824,16 @@ void
 nautilus_drag_autoscroll_calculate_delta (GtkWidget *widget, float *x_scroll_delta, float *y_scroll_delta)
 {
 	GtkAllocation allocation;
-	GdkDeviceManager *manager;
+	GdkDisplay *display;
+	GdkSeat *seat;
 	GdkDevice *pointer;
 	int x, y;
 
 	g_assert (GTK_IS_WIDGET (widget));
 
-	manager = gdk_display_get_device_manager (gtk_widget_get_display (widget));
-	pointer = gdk_device_manager_get_client_pointer (manager);
+	display = gtk_widget_get_display (widget);
+	seat = gdk_display_get_default_seat (display);
+	pointer = gdk_seat_get_pointer (seat);
 	gdk_window_get_device_position (gtk_widget_get_window (widget), pointer,
 					&x, &y, NULL);
 
