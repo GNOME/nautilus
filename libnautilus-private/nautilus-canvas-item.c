@@ -682,7 +682,7 @@ nautilus_canvas_item_get_max_text_width (NautilusCanvasItem *item)
 
 
 	canvas_item = EEL_CANVAS_ITEM (item);
-	container = canvas_item->canvas;
+	container = NAUTILUS_CANVAS_CONTAINER (canvas_item->canvas);
 
 	switch (nautilus_canvas_container_get_zoom_level (container)) {
 	case NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL:
