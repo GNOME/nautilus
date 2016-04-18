@@ -891,13 +891,11 @@ static gint
 nautilus_application_command_line (GApplication            *application,
                                    GApplicationCommandLine *command_line)
 {
-        NautilusApplicationPrivate *priv;
 	NautilusApplication *self = NAUTILUS_APPLICATION (application);
 	gint retval = -1;
 	GVariantDict *options;
 
 	nautilus_profile_start (NULL);
-        priv = nautilus_application_get_instance_private (self);
 
 	options = g_application_command_line_get_options_dict (command_line);
 
