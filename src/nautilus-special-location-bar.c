@@ -66,7 +66,8 @@ set_special_location (NautilusSpecialLocationBar *bar,
 	gtk_widget_show (bar->priv->label);
 
         if (learn_more_markup) {
-                gtk_label_set_markup (bar->priv->learn_more_label, learn_more_markup);
+                gtk_label_set_markup (GTK_LABEL (bar->priv->learn_more_label),
+                                      learn_more_markup);
                 gtk_widget_show (bar->priv->learn_more_label);
                 g_free (learn_more_markup);
         } else {
