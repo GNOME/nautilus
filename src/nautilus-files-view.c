@@ -31,6 +31,7 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-list-view.h"
+#include "nautilus-canvas-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-previewer.h"
 #include "nautilus-properties-window.h"
