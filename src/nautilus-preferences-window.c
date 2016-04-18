@@ -96,25 +96,6 @@ static const char *const icon_captions_components[] = {
 
 static GtkWidget *preferences_window = NULL;
 
-static void nautilus_preferences_window_size_group_create(GtkBuilder *builder,
-                                                          char *prefix,
-                                                          int items) {
-  GtkSizeGroup *size_group;
-  int i;
-  char *item_name;
-  GtkWidget *widget;
-
-  size_group = gtk_size_group_new(GTK_SIZE_GROUP_HORIZONTAL);
-
-  for (i = 0; i < items; i++) {
-    item_name = g_strdup_printf("%s_%d", prefix, i);
-    widget = GTK_WIDGET(gtk_builder_get_object(builder, item_name));
-    gtk_size_group_add_widget(size_group, widget);
-    g_free(item_name);
-  }
-  g_object_unref(G_OBJECT(size_group));
-}
-
 static void columns_changed_callback(NautilusColumnChooser *chooser,
                                      gpointer callback_data) {
   char **visible_columns;
@@ -338,40 +319,6 @@ static void bind_builder_bool(GtkBuilder *builder, GSettings *settings,
                               const char *widget_name, const char *prefs) {
   g_settings_bind(settings, prefs, gtk_builder_get_object(builder, widget_name),
                   "active", G_SETTINGS_BIND_DEFAULT);
-}
-
-static gboolean enum_get_mapping(GValue *value, GVariant *variant,
-                                 gpointer user_data) {
-  const char **enum_values = user_data;
-  const char *str;
-  int i;
-
-  str = g_variant_get_string(variant, NULL);
-  for (i = 0; enum_values[i] != NULL; i++) {
-    if (strcmp(enum_values[i], str) == 0) {
-      g_value_set_int(value, i);
-      return TRUE;
-    }
-  }
-
-  return FALSE;
-}
-
-static GVariant *enum_set_mapping(const GValue *value,
-                                  const GVariantType *expected_type,
-                                  gpointer user_data) {
-  const char **enum_values = user_data;
-
-  return g_variant_new_string(enum_values[g_value_get_int(value)]);
-}
-
-static void bind_builder_enum(GtkBuilder *builder, GSettings *settings,
-                              const char *widget_name, const char *prefs,
-                              const char **enum_values) {
-  g_settings_bind_with_mapping(
-      settings, prefs, gtk_builder_get_object(builder, widget_name), "active",
-      G_SETTINGS_BIND_DEFAULT, enum_get_mapping, enum_set_mapping, enum_values,
-      NULL);
 }
 
 typedef struct {
