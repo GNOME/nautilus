@@ -175,12 +175,10 @@ real_get_view_for_location (NautilusWindowSlot *self,
 {
         NautilusWindowSlotPrivate *priv;
 
-        NautilusWindow *window;
         NautilusView *view;
         NautilusFile *file;
 
         priv = nautilus_window_slot_get_instance_private (self);
-        window = nautilus_window_slot_get_window (self);
         file = nautilus_file_get (location);
         view = NULL;
         guint view_id;
@@ -509,13 +507,11 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
 				   GdkEventKey        *event)
 {
         NautilusWindowSlotPrivate *priv;
-	NautilusWindow *window;
 	gboolean retval;
         GAction *action;
 
         priv = nautilus_window_slot_get_instance_private (self);
 	retval = FALSE;
-	window = nautilus_window_slot_get_window (self);
         action =  g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group),
                                               "search-visible");
 
@@ -809,12 +805,10 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *self,
         NautilusWindowSlotPrivate *priv;
 	GFile *old_location;
 	GList *old_selection;
-        NautilusWindow *window;
 
         priv = nautilus_window_slot_get_instance_private (self);
 	old_selection = NULL;
         old_location = nautilus_window_slot_get_location (self);
-        window = nautilus_window_slot_get_window (self);
 
         if (priv->content_view) {
                 old_selection = nautilus_view_get_selection (priv->content_view);
