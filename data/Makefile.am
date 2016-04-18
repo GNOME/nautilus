@@ -1,6 +1,23 @@
-NULL=
+include $(top_srcdir)/Makefile.shared
 
 SUBDIRS = icons
+
+AM_CPPFLAGS=\
+	$(COMMON_CFLAGS)					\
+	$(NULL)
+
+noinst_PROGRAMS=				\
+	lineup-parameters			\
+	$(NULL)
+
+lineup_parameters_SOURCES=			\
+	lineup-parameters.c			\
+	$(NULL)
+
+lineup_parameters_LDADD=			\
+	$(CORE_LIBS)				\
+	$(COMMON_LIBS) \
+	$(NULL)
 
 desktopdir       = $(datadir)/applications
 desktop_in_files = 					\
@@ -66,11 +83,11 @@ CLEANFILES =			\
 	$(desktop_DATA)		\
 	$(service_DATA)		\
 	$(appdata_DATA)		\
+	$(noinst_PROGRAMS)	\
 	$(NULL)
 
 if ENABLE_DESKTOP
 CLEANFILES += $(autostart_DATA)
 endif
-
 
 -include $(top_srcdir)/git.mk
