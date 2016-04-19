@@ -28,6 +28,8 @@
 #include <libnautilus-private/nautilus-global-preferences.h>
 #include <eel/eel.h>
 #include <gdk/gdkx.h>
+#include <stdlib.h>
+#include <glib/gi18n.h>
 
 static NautilusFreedesktopFileManager1 *freedesktop_proxy = NULL;
 
@@ -35,6 +37,7 @@ struct _NautilusDesktopApplication
 {
   NautilusApplication parent_instance;
 
+  gboolean force;
   GCancellable *freedesktop_cancellable;
 };
 
@@ -134,6 +137,8 @@ update_desktop_from_gsettings (NautilusDesktopApplication *self)
   display = gdk_display_get_default ();
   visible = g_settings_get_boolean (gnome_background_preferences,
                                     NAUTILUS_PREFERENCES_SHOW_DESKTOP);
+  visible = visible || self->force;
+
   if (!GDK_IS_X11_DISPLAY (display))
     {
       if (visible)
@@ -155,9 +160,12 @@ update_desktop_from_gsettings (NautilusDesktopApplication *self)
 static void
 init_desktop (NautilusDesktopApplication *self)
 {
-  g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
-                            G_CALLBACK (update_desktop_from_gsettings),
-                            self);
+  if (!self->force)
+    {
+      g_signal_connect_swapped (gnome_background_preferences, "changed::" NAUTILUS_PREFERENCES_SHOW_DESKTOP,
+                                G_CALLBACK (update_desktop_from_gsettings),
+                                self);
+    }
   update_desktop_from_gsettings (self);
 }
 
@@ -165,6 +173,25 @@ static void
 nautilus_desktop_application_activate (GApplication *app)
 {
   /* Do nothing */
+}
+
+static gint
+nautilus_desktop_application_command_line (GApplication            *application,
+                                           GApplicationCommandLine *command_line)
+{
+  NautilusDesktopApplication *self = NAUTILUS_DESKTOP_APPLICATION (application);
+  GVariantDict *options;
+
+  options = g_application_command_line_get_options_dict (command_line);
+
+  if (g_variant_dict_contains (options, "force"))
+    {
+      self->force = TRUE;
+    }
+
+  init_desktop (self);
+
+  return EXIT_SUCCESS;
 }
 
 static void
@@ -188,8 +215,6 @@ nautilus_desktop_application_startup (GApplication *app)
     }
 
   g_clear_error (&error);
-
-  init_desktop (self);
 }
 
 static void
@@ -214,6 +239,7 @@ nautilus_desktop_application_class_init (NautilusDesktopApplicationClass *klass)
 
   application_class->startup = nautilus_desktop_application_startup;
   application_class->activate = nautilus_desktop_application_activate;
+  application_class->command_line = nautilus_desktop_application_command_line;
 
   gobject_class->dispose = nautilus_desktop_application_dispose;
 }
@@ -225,9 +251,18 @@ nautilus_desktop_ensure_builtins (void)
   g_type_ensure (NAUTILUS_TYPE_DESKTOP_DIRECTORY);
 }
 
+const GOptionEntry desktop_options[] = {
+  { "force", '\0', 0, G_OPTION_ARG_NONE, NULL,
+    N_("Always manage the desktop (ignore the GSettings preference)."), NULL },
+  { NULL }
+};
+
 static void
 nautilus_desktop_application_init (NautilusDesktopApplication *self)
 {
+  self->force = FALSE;
+
+  g_application_add_main_option_entries (G_APPLICATION (self), desktop_options);
   nautilus_ensure_extension_points ();
   nautilus_ensure_extension_builtins ();
   nautilus_desktop_ensure_builtins ();
@@ -239,6 +274,7 @@ nautilus_desktop_application_new (void)
   return g_object_new (NAUTILUS_TYPE_DESKTOP_APPLICATION,
                        "application-id", "org.gnome.NautilusDesktop",
                        "register-session", TRUE,
+                       "flags", G_APPLICATION_HANDLES_COMMAND_LINE,
                         NULL);
 }
 
