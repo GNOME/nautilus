@@ -1,16 +1,21 @@
 NULL=
 
 desktopdir       = $(datadir)/applications
-desktop_DATA     = 					\
-	$(desktop_in_files:.desktop.in=.desktop)	\
-	nautilus-classic.desktop
 desktop_in_files = 					\
 	org.gnome.Nautilus.desktop.in			\
 	nautilus-autorun-software.desktop.in
 
-autostartdir     = $(sysconfdir)/xdg/autostart
+desktop_DATA     = 					\
+	$(desktop_in_files:.desktop.in=.desktop)
+
 autostart_in_files = nautilus-autostart.desktop.in
-autostart_DATA = $(autostart_in_files:.desktop.in=.desktop)
+
+if ENABLE_DESKTOP
+desktop_DATA += nautilus-classic.desktop
+
+autostartdir     = $(sysconfdir)/xdg/autostart
+autostart_DATA   = $(autostart_in_files:.desktop.in=.desktop)
+endif
 
 appdatadir = $(datadir)/appdata
 appdata_in_files = org.gnome.Nautilus.appdata.xml.in
@@ -55,8 +60,12 @@ EXTRA_DIST =				\
 CLEANFILES =			\
 	$(desktop_DATA)		\
 	$(service_DATA)		\
-	$(autostart_DATA)	\
 	$(appdata_DATA)		\
 	$(NULL)
+
+if ENABLE_DESKTOP
+CLEANFILES += $(autostart_DATA)
+endif
+
 
 -include $(top_srcdir)/git.mk

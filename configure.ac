@@ -165,7 +165,25 @@ AM_CONDITIONAL(ENABLE_EMPTY_VIEW, test "x$ENABLE_EMPTY_VIEW" = "x1")
 
 dnl ==========================================================================
 
-AC_ARG_ENABLE(packagekit, 
+dnl *********************************
+dnl *** Check for desktop support ***
+dnl *********************************
+
+AC_ARG_ENABLE(desktop,
+              [AS_HELP_STRING([--enable-desktop=@<:@yes/no@:>@],
+                              [build desktop support [default=yes]])],
+              [enable_desktop="$enableval"],
+              [enable_desktop=yes])
+
+if test "x$enable_desktop" != "xno"; then
+  AC_DEFINE(ENABLE_DESKTOP, 1, [Define to enable the desktop support])
+fi
+
+AM_CONDITIONAL(ENABLE_DESKTOP, test "x$enable_desktop" = "xyes")
+
+dnl ==========================================================================
+
+AC_ARG_ENABLE(packagekit,
 	AS_HELP_STRING([--disable-packagekit],
 			[build without PackageKit support]))
 msg_packagekit=no
@@ -337,6 +355,7 @@ nautilus-$VERSION:
 	PackageKit support:     $msg_packagekit
 	nautilus-sendto ext:	$enable_nst_extension
 	Tracker support:	$enable_tracker
+	desktop support:	$enable_desktop
 
         profiling support:      ${enable_profiling}
 	nautilus-extension documentation: ${enable_gtk_doc}

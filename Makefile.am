@@ -6,12 +6,15 @@ DIRS =				\
 	libgd                   \
 	libnautilus-private 	\
 	src 			\
-	nautilus-desktop	\
 	test 			\
 	po 			\
 	data 			\
 	docs			\
 	$(NULL)
+
+if ENABLE_DESKTOP
+DIRS += nautilus-desktop
+endif
 
 DIST_SUBDIRS = $(DIRS) nautilus-sendto-extension
 
