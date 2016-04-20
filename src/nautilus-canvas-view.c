@@ -2046,7 +2046,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
     NautilusCanvasContainer *canvas_container;
     GActionGroup *view_action_group;
     GtkClipboard *clipboard;
-    NautilusView *view;
 
     canvas_view->details = g_new0 (NautilusCanvasViewDetails, 1);
     canvas_view->details->sort = &sort_criteria[0];
@@ -2097,11 +2096,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
     /* Keep the action synced with the actual value, so the toolbar can poll it */
     g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (canvas_view)),
                                         "zoom-to-level", g_variant_new_int32 (get_default_zoom_level (canvas_view)));
-
-    /* Don't show thumbnails */
-    view = NAUTILUS_VIEW (canvas_view);
-    nautilus_action_bar_set_show_thumbnail (NAUTILUS_ACTION_BAR (nautilus_view_get_action_bar (view)),
-                                            FALSE);
 }
 
 NautilusFilesView *
