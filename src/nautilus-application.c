@@ -1366,7 +1366,6 @@ nautilus_application_new (void)
 			     "application-id", "org.gnome.Nautilus",
 			     "flags", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
 			     "inactivity-timeout", 12000,
-			     "register-session", TRUE,
 			     NULL);
 }
 
