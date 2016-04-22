@@ -23,7 +23,7 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
-#include <libnautilus-private/nautilus-query.h>
+#include "nautilus-query.h"
 
 G_BEGIN_DECLS
 

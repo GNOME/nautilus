@@ -25,7 +25,7 @@
 #ifndef NAUTILUS_LOCATION_ENTRY_H
 #define NAUTILUS_LOCATION_ENTRY_H
 
-#include <libnautilus-private/nautilus-entry.h>
+#include "nautilus-entry.h"
 
 #define NAUTILUS_TYPE_LOCATION_ENTRY nautilus_location_entry_get_type()
 #define NAUTILUS_LOCATION_ENTRY(obj) \

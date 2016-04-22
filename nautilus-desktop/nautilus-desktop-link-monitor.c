@@ -32,9 +32,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-directory.h>
+#include <src/nautilus-trash-monitor.h>
+#include <src/nautilus-global-preferences.h>
+#include <src/nautilus-directory.h>
 
 #include <string.h>
 

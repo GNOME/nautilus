@@ -47,15 +47,15 @@
 #include <eel/eel-vfs-extensions.h>
 
 #include <libnautilus-extension/nautilus-property-page-provider.h>
-#include <libnautilus-private/nautilus-entry.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-mime-application-chooser.h>
-#include <libnautilus-private/nautilus-module.h>
+#include "nautilus-entry.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-link.h"
+#include "nautilus-metadata.h"
+#include "nautilus-mime-application-chooser.h"
+#include "nautilus-module.h"
 
 #if HAVE_SYS_VFS_H
 #include <sys/vfs.h>

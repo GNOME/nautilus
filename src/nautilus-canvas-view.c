@@ -35,20 +35,20 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-canvas-container.h>
-#include <libnautilus-private/nautilus-canvas-dnd.h>
-#include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-clipboard.h>
+#include "nautilus-clipboard-monitor.h"
+#include "nautilus-directory.h"
+#include "nautilus-dnd.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-canvas-container.h"
+#include "nautilus-canvas-dnd.h"
+#include "nautilus-link.h"
+#include "nautilus-metadata.h"
+#include "nautilus-clipboard.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_VIEW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 #include <locale.h>
 #include <signal.h>

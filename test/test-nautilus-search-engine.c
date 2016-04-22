@@ -1,5 +1,5 @@
-#include <libnautilus-private/nautilus-search-provider.h>
-#include <libnautilus-private/nautilus-search-engine.h>
+#include <src/nautilus-search-provider.h>
+#include <src/nautilus-search-engine.h>
 #include <gtk/gtk.h>
 
 static void

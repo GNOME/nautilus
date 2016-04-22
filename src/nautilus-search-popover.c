@@ -21,9 +21,9 @@
 #include "nautilus-mime-actions.h"
 
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
+#include "nautilus-file.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-global-preferences.h"
 
  #define SEARCH_FILTER_MAX_YEARS 5
 

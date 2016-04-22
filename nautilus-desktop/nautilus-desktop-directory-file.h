@@ -23,7 +23,7 @@
 #ifndef NAUTILUS_DESKTOP_DIRECTORY_FILE_H
 #define NAUTILUS_DESKTOP_DIRECTORY_FILE_H
 
-#include <libnautilus-private/nautilus-file.h>
+#include <src/nautilus-file.h>
 
 #define NAUTILUS_TYPE_DESKTOP_DIRECTORY_FILE nautilus_desktop_directory_file_get_type()
 #define NAUTILUS_DESKTOP_DIRECTORY_FILE(obj) \

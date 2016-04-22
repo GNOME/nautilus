@@ -31,8 +31,8 @@
 #include <glib/gi18n.h>
 #include <libnautilus-extension/nautilus-extension-types.h>
 #include <libnautilus-extension/nautilus-file-info.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
+#include "nautilus-file.h"
+#include "nautilus-file-attributes.h"
 
 #define MAIN_GROUP "Desktop Entry"
 

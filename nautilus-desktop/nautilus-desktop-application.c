@@ -25,7 +25,7 @@
 
 #include "nautilus-freedesktop-generated.h"
 
-#include <libnautilus-private/nautilus-global-preferences.h>
+#include <src/nautilus-global-preferences.h>
 #include <eel/eel.h>
 #include <gdk/gdkx.h>
 #include <stdlib.h>

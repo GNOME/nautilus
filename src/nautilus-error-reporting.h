@@ -25,7 +25,7 @@
 #define NAUTILUS_ERROR_REPORTING_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-file.h>
+#include "nautilus-file.h"
 
 void nautilus_report_error_loading_directory	 (NautilusFile   *file,
 						  GError         *error,

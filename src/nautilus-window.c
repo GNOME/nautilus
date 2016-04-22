@@ -51,21 +51,21 @@
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
 #endif
-#include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-file-undo-manager.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-profile.h>
-#include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-signaller.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
+#include "nautilus-dnd.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
+#include "nautilus-profile.h"
+#include "nautilus-clipboard.h"
+#include "nautilus-signaller.h"
+#include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 #include <math.h>
 #include <sys/time.h>

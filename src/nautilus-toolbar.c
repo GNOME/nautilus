@@ -31,10 +31,10 @@
 #include "nautilus-progress-info-widget.h"
 #include "nautilus-application.h"
 
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-progress-info-manager.h>
-#include <libnautilus-private/nautilus-file-operations.h>
+#include "nautilus-global-preferences.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-progress-info-manager.h"
+#include "nautilus-file-operations.h"
 
 #include <glib/gi18n.h>
 #include <math.h>

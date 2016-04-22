@@ -36,12 +36,12 @@
 #include <glib/gi18n.h>
 #include <eel/eel-stock-dialogs.h>
 
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-monitor.h>
-#include <libnautilus-private/nautilus-profile.h>
+#include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-module.h"
+#include "nautilus-monitor.h"
+#include "nautilus-profile.h"
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 
 enum {
@@ -775,7 +775,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 }
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 static void begin_location_change                     (NautilusWindowSlot         *slot,
                                                        GFile                      *location,

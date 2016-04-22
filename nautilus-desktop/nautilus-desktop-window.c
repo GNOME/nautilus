@@ -33,9 +33,9 @@
 #include <glib/gi18n.h>
 
 #include <eel/eel-vfs-extensions.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-icon-names.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-icon-names.h>
+#include <src/nautilus-global-preferences.h>
 #include <src/nautilus-window.h>
 #include <src/nautilus-application.h>
 

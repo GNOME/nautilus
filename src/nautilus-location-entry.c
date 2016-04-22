@@ -37,9 +37,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-entry.h>
-#include <libnautilus-private/nautilus-clipboard.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-entry.h"
+#include "nautilus-clipboard.h"
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>

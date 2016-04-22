@@ -24,7 +24,7 @@
 #ifndef NAUTILUS_DESKTOP_DIRECTORY_H
 #define NAUTILUS_DESKTOP_DIRECTORY_H
 
-#include <libnautilus-private/nautilus-directory.h>
+#include <src/nautilus-directory.h>
 
 #define NAUTILUS_TYPE_DESKTOP_DIRECTORY nautilus_desktop_directory_get_type()
 #define NAUTILUS_DESKTOP_DIRECTORY(obj) \

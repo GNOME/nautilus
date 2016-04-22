@@ -27,12 +27,12 @@
 
 #include <string.h>
 #include <glib/gi18n.h>
-#include <libnautilus-private/nautilus-file.h>
+#include "nautilus-file.h"
 #include <eel/eel-string.h>
 #include <eel/eel-stock-dialogs.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 #define NEW_NAME_TAG "Nautilus: new name"
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH	50

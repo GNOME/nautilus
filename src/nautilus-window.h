@@ -29,8 +29,8 @@
 
 #include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-bookmark.h>
-#include <libnautilus-private/nautilus-search-directory.h>
+#include "nautilus-bookmark.h"
+#include "nautilus-search-directory.h"
 
 typedef struct NautilusWindow NautilusWindow;
 typedef struct NautilusWindowClass NautilusWindowClass;

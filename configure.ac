@@ -329,7 +329,6 @@ docs/reference/Makefile
 docs/reference/libnautilus-extension/Makefile
 docs/reference/libnautilus-extension/version.xml
 eel/Makefile
-libnautilus-private/Makefile
 libnautilus-extension/Makefile
 libnautilus-extension/libnautilus-extension.pc
 libnautilus-extension/libnautilus-extension-uninstalled.pc

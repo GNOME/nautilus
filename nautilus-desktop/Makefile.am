@@ -6,8 +6,6 @@ bin_PROGRAMS=					\
 
 AM_CPPFLAGS =							\
 	-I$(top_srcdir) 					\
-	-I$(top_srcdir)/libnautilus-private 			\
-	-I$(top_builddir)/libnautilus-private 			\
 	-I$(top_srcdir)/libgd                                   \
 	-I$(top_srcdir)/src                                     \
 	-I$(top_builddir)/src                                     \

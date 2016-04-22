@@ -25,7 +25,7 @@
 
 #include <glib.h>
 
-#include <libnautilus-private/nautilus-file.h>
+#include <src/nautilus-file.h>
 
 void nautilus_desktop_set_metadata_string (NautilusFile *file,
                                            const gchar *name,

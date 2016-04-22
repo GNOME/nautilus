@@ -35,10 +35,10 @@
 
 #include <eel/eel-glib-extensions.h>
 
-#include <libnautilus-private/nautilus-column-chooser.h>
-#include <libnautilus-private/nautilus-column-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-module.h>
+#include "nautilus-column-chooser.h"
+#include "nautilus-column-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-module.h"
 
 /* string enum preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_DEFAULT_VIEW_WIDGET "default_view_combobox"

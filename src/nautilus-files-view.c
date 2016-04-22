@@ -67,31 +67,31 @@
 #include <eel/eel-vfs-extensions.h>
 
 #include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-search-directory.h>
-#include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-file-changes-queue.h>
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file-private.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-profile.h>
-#include <libnautilus-private/nautilus-program-choosing.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-signaller.h>
-#include <libnautilus-private/nautilus-icon-names.h>
+#include "nautilus-clipboard.h"
+#include "nautilus-clipboard-monitor.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-directory.h"
+#include "nautilus-dnd.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-file-changes-queue.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file-private.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-link.h"
+#include "nautilus-metadata.h"
+#include "nautilus-module.h"
+#include "nautilus-profile.h"
+#include "nautilus-program-choosing.h"
+#include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-signaller.h"
+#include "nautilus-icon-names.h"
 
 #include <gdesktop-enums.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100

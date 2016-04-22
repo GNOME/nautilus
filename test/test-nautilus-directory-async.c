@@ -1,7 +1,7 @@
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-search-directory.h>
-#include <libnautilus-private/nautilus-file.h>
+#include <src/nautilus-directory.h>
+#include <src/nautilus-search-directory.h>
+#include <src/nautilus-file.h>
 #include <unistd.h>
 
 void *client1, *client2;

@@ -1,8 +1,8 @@
 #include "test.h"
 
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-progress-info.h>
-#include <libnautilus-private/nautilus-progress-info-manager.h>
+#include <src/nautilus-file-operations.h>
+#include <src/nautilus-progress-info.h>
+#include <src/nautilus-progress-info-manager.h>
 
 static void
 copy_done (GHashTable *debuting_uris, 

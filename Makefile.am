@@ -4,7 +4,6 @@ DIRS =				\
 	eel			\
 	libnautilus-extension	\
 	libgd                   \
-	libnautilus-private 	\
 	src 			\
 	test 			\
 	po 			\

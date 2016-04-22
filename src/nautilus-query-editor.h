@@ -24,7 +24,7 @@
 
 #include <gtk/gtk.h>
 
-#include <libnautilus-private/nautilus-query.h>
+#include "nautilus-query.h"
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 

@@ -25,7 +25,7 @@
 #define NAUTILUS_PROPERTIES_WINDOW_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-file.h>
+#include "nautilus-file.h"
 
 typedef struct NautilusPropertiesWindow NautilusPropertiesWindow;
 

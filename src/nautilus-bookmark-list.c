@@ -26,9 +26,9 @@
 #include <config.h>
 #include "nautilus-bookmark-list.h"
 
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-icon-names.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
+#include "nautilus-icon-names.h"
 
 #include <gio/gio.h>
 #include <string.h>

@@ -5,8 +5,7 @@ srcdir=`dirname $0`
 test -z "$srcdir" && srcdir=.
 
 (test -f $srcdir/configure.ac \
-  && test -f $srcdir/README \
-  && test -d $srcdir/libnautilus-private) || {
+  && test -f $srcdir/README) || {
     echo -n "**Error**: Directory "\`$srcdir\'" does not look like the"
     echo " top-level $PKG_NAME directory"
     exit 1

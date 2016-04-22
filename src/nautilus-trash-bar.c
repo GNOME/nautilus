@@ -26,10 +26,10 @@
 #include "nautilus-trash-bar.h"
 
 #include "nautilus-files-view.h"
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
+#include "nautilus-file-operations.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
+#include "nautilus-trash-monitor.h"
 
 #define NAUTILUS_TRASH_BAR_GET_PRIVATE(o)\
 	(G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarPrivate))

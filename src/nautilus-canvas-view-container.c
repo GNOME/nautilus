@@ -27,9 +27,9 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-thumbnails.h>
+#include "nautilus-global-preferences.h"
+#include "nautilus-file-attributes.h"
+#include "nautilus-thumbnails.h"
 
 G_DEFINE_TYPE (NautilusCanvasViewContainer, nautilus_canvas_view_container, NAUTILUS_TYPE_CANVAS_CONTAINER);
 

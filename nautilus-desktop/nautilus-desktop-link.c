@@ -30,10 +30,10 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-names.h>
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-trash-monitor.h>
+#include <src/nautilus-global-preferences.h>
+#include <src/nautilus-icon-names.h>
 
 #include <string.h>
 

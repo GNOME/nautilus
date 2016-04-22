@@ -44,20 +44,20 @@
 #include <glib-object.h>
 #include <libgd/gd.h>
 #include <libnautilus-extension/nautilus-column-provider.h>
-#include <libnautilus-private/nautilus-clipboard-monitor.h>
-#include <libnautilus-private/nautilus-column-chooser.h>
-#include <libnautilus-private/nautilus-column-utilities.h>
-#include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-metadata.h>
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-tree-view-drag-dest.h>
-#include <libnautilus-private/nautilus-clipboard.h>
+#include "nautilus-clipboard-monitor.h"
+#include "nautilus-column-chooser.h"
+#include "nautilus-column-utilities.h"
+#include "nautilus-dnd.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
+#include "nautilus-module.h"
+#include "nautilus-tree-view-drag-dest.h"
+#include "nautilus-clipboard.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 /* We use a rectangle to make the popover point to the right column. In an
  * ideal world with GtkListBox we would just point to the GtkListBoxRow. In our case, we

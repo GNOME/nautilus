@@ -28,11 +28,11 @@
 #include <glib/gi18n.h>
 #include <gdk/gdkx.h>
 
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-search-engine.h>
-#include <libnautilus-private/nautilus-search-provider.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
+#include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-search-engine.h"
+#include "nautilus-search-provider.h"
+#include "nautilus-ui-utilities.h"
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"

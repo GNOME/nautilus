@@ -27,7 +27,7 @@
 #include "nautilus-files-view.h"
 
 #include <string.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
+#include "nautilus-file-utilities.h"
 #include <eel/eel-vfs-extensions.h>
 
 struct NautilusEmptyViewDetails {

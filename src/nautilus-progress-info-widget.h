@@ -26,7 +26,7 @@
 
 #include <gtk/gtk.h>
 
-#include <libnautilus-private/nautilus-progress-info.h>
+#include "nautilus-progress-info.h"
 
 #define NAUTILUS_TYPE_PROGRESS_INFO_WIDGET nautilus_progress_info_widget_get_type()
 #define NAUTILUS_PROGRESS_INFO_WIDGET(obj) \

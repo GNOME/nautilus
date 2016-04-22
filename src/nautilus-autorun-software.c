@@ -32,8 +32,8 @@
 
 #include <glib/gi18n.h>
 
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-icon-info.h>
+#include "nautilus-module.h"
+#include "nautilus-icon-info.h"
 
 typedef struct
 {

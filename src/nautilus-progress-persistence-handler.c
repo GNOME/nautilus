@@ -31,8 +31,8 @@
 
 #include <glib/gi18n.h>
 
-#include <libnautilus-private/nautilus-progress-info.h>
-#include <libnautilus-private/nautilus-progress-info-manager.h>
+#include "nautilus-progress-info.h"
+#include "nautilus-progress-info-manager.h"
 
 struct _NautilusProgressPersistenceHandlerPriv {
 	NautilusProgressInfoManager *manager;

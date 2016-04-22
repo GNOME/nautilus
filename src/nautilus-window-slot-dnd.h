@@ -29,7 +29,7 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include <libnautilus-private/nautilus-dnd.h>
+#include "nautilus-dnd.h"
 
 #include "nautilus-window-slot.h"
 

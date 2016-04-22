@@ -26,7 +26,7 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 
-#include <libnautilus-private/nautilus-file.h>
+#include "nautilus-file.h"
 
 #include "nautilus-window.h"
 

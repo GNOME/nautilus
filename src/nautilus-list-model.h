@@ -22,8 +22,8 @@
 
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-directory.h>
+#include "nautilus-file.h"
+#include "nautilus-directory.h"
 #include <libnautilus-extension/nautilus-column.h>
 
 #ifndef NAUTILUS_LIST_MODEL_H

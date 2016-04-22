@@ -25,7 +25,7 @@
 #include "nautilus-previewer.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_PREVIEWER
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 #include <gio/gio.h>
 

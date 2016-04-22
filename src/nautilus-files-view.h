@@ -28,9 +28,9 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-#include <libnautilus-private/nautilus-directory.h>
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-link.h>
+#include "nautilus-directory.h"
+#include "nautilus-file.h"
+#include "nautilus-link.h"
 
 typedef struct NautilusFilesView NautilusFilesView;
 typedef struct NautilusFilesViewClass NautilusFilesViewClass;

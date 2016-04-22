@@ -39,19 +39,19 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-preferences-window.h"
 
-#include <libnautilus-private/nautilus-directory-private.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-lib-self-check-functions.h>
-#include <libnautilus-private/nautilus-module.h>
-#include <libnautilus-private/nautilus-profile.h>
-#include <libnautilus-private/nautilus-signaller.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
+#include "nautilus-directory-private.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-module.h"
+#include "nautilus-profile.h"
+#include "nautilus-signaller.h"
+#include "nautilus-ui-utilities.h"
 #include <libnautilus-extension/nautilus-menu-provider.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
-#include <libnautilus-private/nautilus-debug.h>
+#include "nautilus-debug.h"
 
 #include <sys/types.h>
 #include <sys/stat.h>

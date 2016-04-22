@@ -24,7 +24,7 @@
 #include <config.h>
 
 #include <gtk/gtk.h>
-#include <libnautilus-private/nautilus-mime-actions.h>
+#include <src/nautilus-mime-actions.h>
 #include <stdio.h>
 
 static gboolean ready = FALSE;

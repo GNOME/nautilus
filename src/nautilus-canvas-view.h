@@ -26,7 +26,7 @@
 #define NAUTILUS_CANVAS_VIEW_H
 
 #include "nautilus-files-view.h"
-#include "libnautilus-private/nautilus-canvas-container.h"
+#include "nautilus-canvas-container.h"
 
 typedef struct NautilusCanvasView NautilusCanvasView;
 typedef struct NautilusCanvasViewClass NautilusCanvasViewClass;

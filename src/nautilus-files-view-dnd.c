@@ -36,9 +36,9 @@
 
 #include <glib/gi18n.h>
 
-#include <libnautilus-private/nautilus-clipboard.h>
-#include <libnautilus-private/nautilus-dnd.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
+#include "nautilus-clipboard.h"
+#include "nautilus-dnd.h"
+#include "nautilus-global-preferences.h"
 
 #define GET_ANCESTOR(obj) \
         GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))

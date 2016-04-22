@@ -28,7 +28,7 @@
 #include <gio/gio.h>
 #include <eel/eel-vfs-extensions.h>
 #include <libnautilus-extension/nautilus-property-page-provider.h>
-#include <libnautilus-private/nautilus-module.h>
+#include "nautilus-module.h"
 #include <string.h>
 
 #ifdef HAVE_EXIF

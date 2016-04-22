@@ -6,7 +6,7 @@
 
 #include <eel/eel-debug.h>
 #include <eel/eel.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
+#include <src/nautilus-file-utilities.h>
 
 void       test_init                            (int                         *argc,
 						 char                      ***argv);

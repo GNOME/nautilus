@@ -33,7 +33,7 @@
 #include <cairo-gobject.h>
 
 #include <eel/eel-graphic-effects.h>
-#include <libnautilus-private/nautilus-dnd.h>
+#include "nautilus-dnd.h"
 
 enum {
 	SUBDIRECTORY_UNLOADED,

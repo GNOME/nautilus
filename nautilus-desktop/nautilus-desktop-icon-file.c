@@ -26,14 +26,14 @@
 #include "nautilus-desktop-directory-file.h"
 #include "nautilus-desktop-directory.h"
 
-#include <libnautilus-private/nautilus-directory-notify.h>
-#include <libnautilus-private/nautilus-directory-private.h>
-#include <libnautilus-private/nautilus-file-attributes.h>
-#include <libnautilus-private/nautilus-file-private.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-file-operations.h>
-#include <libnautilus-private/nautilus-link.h>
-#include <libnautilus-private/nautilus-file-undo-manager.h>
+#include <src/nautilus-directory-notify.h>
+#include <src/nautilus-directory-private.h>
+#include <src/nautilus-file-attributes.h>
+#include <src/nautilus-file-private.h>
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-file-operations.h>
+#include <src/nautilus-link.h>
+#include <src/nautilus-file-undo-manager.h>
 
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>

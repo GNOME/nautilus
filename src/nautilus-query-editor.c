@@ -33,9 +33,9 @@
 #include <libgd/gd.h>
 
 #include <eel/eel-glib-extensions.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
+#include "nautilus-file-utilities.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-global-preferences.h"
 
 typedef struct {
 	GtkWidget *entry;

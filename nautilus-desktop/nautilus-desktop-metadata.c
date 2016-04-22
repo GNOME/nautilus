@@ -24,8 +24,8 @@
 
 #include "nautilus-desktop-metadata.h"
 
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-keyfile-metadata.h>
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-keyfile-metadata.h>
 
 static gchar *
 get_keyfile_path (void)

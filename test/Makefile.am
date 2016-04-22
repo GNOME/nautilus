@@ -12,10 +12,7 @@ AM_CPPFLAGS =\
 	$(NULL)
 
 LDADD =\
-	$(top_builddir)/libnautilus-private/libnautilus-private.la \
-	$(BASE_LIBS) \
-	$(COMMON_LIBS) \
-	$(NAUTILUS_LIBS) \
+	$(top_builddir)/src/libnautilus.la \
 	$(NULL)
 
 noinst_PROGRAMS =\

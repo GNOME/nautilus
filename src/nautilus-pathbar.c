@@ -25,12 +25,12 @@
 #include "nautilus-pathbar.h"
 #include "nautilus-properties-window.h"
 
-#include <libnautilus-private/nautilus-file.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-global-preferences.h>
-#include <libnautilus-private/nautilus-icon-names.h>
-#include <libnautilus-private/nautilus-trash-monitor.h>
-#include <libnautilus-private/nautilus-ui-utilities.h>
+#include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-names.h"
+#include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
 
 #include "nautilus-window-slot-dnd.h"
 

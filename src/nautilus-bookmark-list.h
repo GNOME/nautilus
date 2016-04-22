@@ -26,7 +26,7 @@
 #ifndef NAUTILUS_BOOKMARK_LIST_H
 #define NAUTILUS_BOOKMARK_LIST_H
 
-#include <libnautilus-private/nautilus-bookmark.h>
+#include "nautilus-bookmark.h"
 #include <gio/gio.h>
 
 typedef struct NautilusBookmarkList NautilusBookmarkList;

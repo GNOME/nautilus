@@ -27,9 +27,9 @@
 #include <string.h>
 
 #include "nautilus-x-content-bar.h"
-#include <libnautilus-private/nautilus-icon-info.h>
-#include <libnautilus-private/nautilus-file-utilities.h>
-#include <libnautilus-private/nautilus-program-choosing.h>
+#include "nautilus-icon-info.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-program-choosing.h"
 
 #define NAUTILUS_X_CONTENT_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBarPrivate))
 
