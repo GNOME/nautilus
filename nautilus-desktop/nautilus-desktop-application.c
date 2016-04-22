@@ -238,6 +238,7 @@ nautilus_desktop_application_new (void)
 {
   return g_object_new (NAUTILUS_TYPE_DESKTOP_APPLICATION,
                        "application-id", "org.gnome.NautilusDesktop",
+                       "register-session", TRUE,
                         NULL);
 }
 
