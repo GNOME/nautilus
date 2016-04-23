@@ -2255,7 +2255,7 @@ nautilus_canvas_item_accessible_get_image_position
 			}
 		}
 	}
-	atk_component_get_position (ATK_COMPONENT (image), x, y, coord_type);
+	atk_component_get_extents (ATK_COMPONENT (image), x, y, NULL, NULL, coord_type);
 	*x += x_offset;
 	*y += y_offset;
 }
@@ -2410,7 +2410,7 @@ nautilus_canvas_item_accessible_get_character_extents (AtkText	   *text,
 	gboolean have_editable;
 	gint text_offset, pix_height;
 
-	atk_component_get_position (ATK_COMPONENT (text), &pos_x, &pos_y, coords);
+	atk_component_get_extents (ATK_COMPONENT (text), &pos_x, &pos_y, NULL, NULL, coords);
 	item = NAUTILUS_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
 	if (item->details->pixbuf) {
