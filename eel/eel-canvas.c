@@ -3444,28 +3444,6 @@ boolean_handled_accumulator (GSignalInvocationHint *ihint,
 	return continue_emission;
 }
 
-static guint
-eel_canvas_item_accessible_add_focus_handler (AtkComponent    *component,
-                                              AtkFocusHandler handler)
-{
- 	GSignalMatchType match_type;
-	guint signal_id;
-
-	match_type = G_SIGNAL_MATCH_ID | G_SIGNAL_MATCH_FUNC;
-	signal_id = g_signal_lookup ("focus-event", ATK_TYPE_OBJECT);
-
-	if (!g_signal_handler_find (component, match_type, signal_id, 0, NULL,
-                                    (gpointer) handler, NULL)) {
-		return g_signal_connect_closure_by_id (component,
-                                                       signal_id, 0,
-                                                       g_cclosure_new (
-                                                       G_CALLBACK (handler), NULL,
-                                                       (GClosureNotify) NULL),
-                                                       FALSE);
-	} 
-	return 0;
-}
-
 static void
 eel_canvas_item_accessible_get_item_extents (EelCanvasItem *item,
                                              GdkRectangle  *rect)
@@ -3622,22 +3600,13 @@ eel_canvas_item_accessible_grab_focus (AtkComponent *component)
 }
 
 static void
-eel_canvas_item_accessible_remove_focus_handler (AtkComponent *component,
-                                                 guint		handler_id)
-{
- 	g_signal_handler_disconnect (component, handler_id);
-}
-
-static void
 eel_canvas_item_accessible_component_interface_init (AtkComponentIface *iface)
 {
 	g_return_if_fail (iface != NULL);
 
-	iface->add_focus_handler = eel_canvas_item_accessible_add_focus_handler;
 	iface->get_extents = eel_canvas_item_accessible_get_extents;
 	iface->get_mdi_zorder = eel_canvas_item_accessible_get_mdi_zorder;
 	iface->grab_focus = eel_canvas_item_accessible_grab_focus;
-      	iface->remove_focus_handler = eel_canvas_item_accessible_remove_focus_handler;
 }
 
 static gboolean
