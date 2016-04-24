@@ -145,29 +145,6 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
 }
 
 void
-nautilus_gmenu_replace_section (GMenu       *menu,
-				const gchar *section_id,
-				GMenuModel  *section)
-{
-	GMenuModel *orig_section;
-	GMenuItem *item;
-	gint idx;
-
-	orig_section = find_gmenu_model (G_MENU_MODEL (menu), section_id);
-	g_return_if_fail (orig_section != NULL);
-
-	g_menu_remove_all (G_MENU (orig_section));
-
-	for (idx = 0; idx < g_menu_model_get_n_items (section); idx++) {
-		item = g_menu_item_new_from_model (section, idx);
-		g_menu_append_item (G_MENU (orig_section), item);
-		g_object_unref (item);
-	}
-
-	g_object_unref (orig_section);
-}
-
-void
 nautilus_pop_up_context_menu (GtkWidget      *parent,
 			      GMenu          *menu,
 			      GdkEventButton *event)

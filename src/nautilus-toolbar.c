@@ -73,7 +73,8 @@ struct _NautilusToolbarPrivate {
         GtkWidget *operations_revealer;
         GtkWidget *operations_icon;
 	GtkWidget *view_icon;
-	GMenu *action_menu;
+        GtkWidget *undo_button;
+        GtkWidget *redo_button;
 
 	GtkWidget *forward_button;
 	GtkWidget *back_button;
@@ -769,9 +770,11 @@ nautilus_toolbar_init (NautilusToolbar *self)
 					  self->priv->location_entry);
 
 	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-action-menu.ui");
-	self->priv->action_menu = G_MENU (gtk_builder_get_object (builder, "action-menu"));
-	gtk_menu_button_set_menu_model (GTK_MENU_BUTTON (self->priv->action_button),
-					G_MENU_MODEL (self->priv->action_menu));
+        self->priv->undo_button = GTK_WIDGET (gtk_builder_get_object (builder, "undo"));
+        self->priv->redo_button = GTK_WIDGET (gtk_builder_get_object (builder, "redo"));
+        gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->action_button),
+                                     GTK_WIDGET (gtk_builder_get_object (builder, "action_menu_widget")));
+
 	g_object_unref (builder);
 
         self->priv->progress_manager = nautilus_progress_info_manager_dup_singleton ();
@@ -919,10 +922,25 @@ nautilus_toolbar_new ()
 			     NULL);
 }
 
-GMenu *
-nautilus_toolbar_get_action_menu (NautilusToolbar *self)
+static void
+set_string_property (GObject *object,
+                     char    *prop_name,
+                     char    *value)
 {
-	return self->priv->action_menu;
+        GValue val = G_VALUE_INIT;
+        g_value_init (&val, G_TYPE_STRING);
+        g_value_set_string (&val, value);
+        g_object_set_property (object, prop_name, &val);
+        g_value_unset (&val);
+}
+
+void
+nautilus_toolbar_update_undo_redo_labels (NautilusToolbar *self,
+                                          gchar           *undo_label,
+                                          gchar           *redo_label)
+{
+        set_string_property (G_OBJECT (self->priv->undo_button), "text", undo_label);
+        set_string_property (G_OBJECT (self->priv->redo_button), "text", redo_label);
 }
 
 GtkWidget *

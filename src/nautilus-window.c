@@ -435,7 +435,6 @@ undo_manager_changed (NautilusWindow *window)
 	gboolean undo_active, redo_active;
 	gchar *undo_label, *undo_description, *redo_label, *redo_description;
 	gboolean is_undo;
-	GMenu* undo_section;
 	GAction *action;
 
 	toolbar = NAUTILUS_TOOLBAR (window->priv->toolbar);
@@ -459,16 +458,12 @@ undo_manager_changed (NautilusWindow *window)
 	action = g_action_map_lookup_action (G_ACTION_MAP (window), "redo");
 	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
 
-	undo_section = g_menu_new ();
 	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
 	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
-	g_menu_append (undo_section, undo_label, "win.undo");
-	g_menu_append (undo_section, redo_label, "win.redo");
-	nautilus_gmenu_replace_section (nautilus_toolbar_get_action_menu (toolbar),
-					"undo-redo-section",
-					G_MENU_MODEL (undo_section));
+        undo_label = undo_label == NULL ? g_strdup (_("Undo")) : undo_label;
+        redo_label = redo_label == NULL ? g_strdup (_("Redo")) : redo_label;
+        nautilus_toolbar_update_undo_redo_labels (toolbar, undo_label, redo_label);
 
-	g_object_unref (undo_section);
 	g_free (undo_label);
 	g_free (undo_description);
 	g_free (redo_label);

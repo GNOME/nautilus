@@ -34,9 +34,6 @@ void nautilus_gmenu_merge                          (GMenu             *original,
 						    GMenu             *gmenu_to_merge,
 						    const gchar       *submodel_name,
 						    gboolean           prepend);
-void nautilus_gmenu_replace_section                (GMenu             *menu,
-						    const gchar       *section_id,
-						    GMenuModel        *section);
 void nautilus_pop_up_context_menu                  (GtkWidget         *parent,
 						    GMenu             *menu,
 						    GdkEventButton    *event);

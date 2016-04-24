@@ -66,7 +66,10 @@ GtkWidget *nautilus_toolbar_new (void);
 
 GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
-GMenu     *nautilus_toolbar_get_action_menu (NautilusToolbar *self);
+
+void nautilus_toolbar_update_undo_redo_labels (NautilusToolbar *self,
+                                               gchar           *undo_label,
+                                               gchar           *redo_label);
 
 void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 					       gboolean show_location_entry);
