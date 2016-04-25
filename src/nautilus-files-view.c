@@ -3618,7 +3618,8 @@ display_pending_files (NautilusFilesView *view)
         process_old_files (view);
 
         if (!nautilus_files_view_get_selection (NAUTILUS_VIEW (view)) &&
-            !view->details->pending_selection) {
+            !view->details->pending_selection &&
+            nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
                 nautilus_files_view_select_first (view);
 
             }
