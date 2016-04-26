@@ -338,7 +338,7 @@ nautilus_application_open_location_full (NautilusApplication     *self,
 {
         NautilusWindowSlot *active_slot;
         NautilusWindow *active_window;
-        GFile *old_location;
+        GFile *old_location = NULL;
 	char *old_uri, *new_uri;
 	gboolean use_same;
 
@@ -348,11 +348,16 @@ nautilus_application_open_location_full (NautilusApplication     *self,
          * so what we do is never rely on this on the callers, but would be cool to
 	 * make it work withouth explicitly setting the active window on the callers. */
         active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (GTK_APPLICATION (self)));
-        active_slot = nautilus_window_get_active_slot (active_window);
+        /* There is no active window if the application is run with
+         * --gapplication-service
+         */
+        if (active_window) {
+                active_slot = nautilus_window_get_active_slot (active_window);
+                /* Just for debug.*/
+                old_location = nautilus_window_slot_get_location (active_slot);
+        }
 
-	/* Just for debug.*/
 
-	old_location = nautilus_window_slot_get_location (active_slot);
         /* this happens at startup */
         if (old_location == NULL)
 		old_uri = g_strdup ("(none)");
