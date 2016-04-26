@@ -2068,6 +2068,14 @@ nautilus_file_is_local (NautilusFile *file)
 	return nautilus_directory_is_local (file->details->directory);
 }
 
+gboolean
+nautilus_file_is_local_or_fuse (NautilusFile *file)
+{
+	g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+	return nautilus_directory_is_local_or_fuse (file->details->directory);
+}
+
 static void
 update_link (NautilusFile *link_file, NautilusFile *target_file)
 {
