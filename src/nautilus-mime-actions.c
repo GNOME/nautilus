@@ -405,7 +405,8 @@ nautilus_mime_get_default_application_for_file (NautilusFile *file)
 	}
 
 	mime_type = nautilus_file_get_mime_type (file);
-	app = g_app_info_get_default_for_type (mime_type, !nautilus_file_is_local (file));
+	app = g_app_info_get_default_for_type (mime_type,
+                                               !nautilus_file_is_local_or_fuse (file));
 	g_free (mime_type);
 
 	if (app == NULL) {
