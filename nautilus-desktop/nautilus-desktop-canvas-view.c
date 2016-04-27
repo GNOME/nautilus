@@ -68,9 +68,6 @@ static void     default_zoom_level_changed                        (gpointer     
 static void     real_update_context_menus                         (NautilusFilesView           *view);
 static char*    real_get_backing_uri                              (NautilusFilesView           *view);
 static void     real_check_empty_states                           (NautilusFilesView           *view);
-static char *   real_get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
-                                                                         GList             *selection,
-                                                                         gboolean           get_paths);
 static void     nautilus_desktop_canvas_view_update_canvas_container_fonts  (NautilusDesktopCanvasView      *view);
 static void     font_changed_callback                             (gpointer                callback_data);
 
