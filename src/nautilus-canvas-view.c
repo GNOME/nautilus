@@ -1158,6 +1158,8 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
 
 	/* Make sure at least one of the selected items is scrolled into view */
 	if (selection != NULL) {
+                /* Update the icon ordering to reveal the rigth selection */
+                nautilus_canvas_container_layout_now (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)));
 		nautilus_canvas_container_reveal 
 			(get_canvas_container (NAUTILUS_CANVAS_VIEW (view)), 
 			 selection->data);
