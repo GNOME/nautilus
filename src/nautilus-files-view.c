@@ -209,6 +209,7 @@ struct NautilusFilesViewDetails
         GList *old_changed_files;
 
         GList *pending_selection;
+        GHashTable *pending_reveal;
 
         /* whether we are in the active slot */
         gboolean active;
@@ -1553,25 +1554,6 @@ zoom_level_changed (GtkRange          *range,
                                             g_variant_new_int32 (gtk_range_get_value (range)));
 }
 
-static void
-reveal_newly_added_folder (NautilusFilesView *view,
-                           NautilusFile      *new_file,
-                           NautilusDirectory *directory,
-                           GFile             *target_location)
-{
-        GFile *location;
-
-        location = nautilus_file_get_location (new_file);
-        if (g_file_equal (location, target_location)) {
-                g_signal_handlers_disconnect_by_func (view,
-                                                      G_CALLBACK (reveal_newly_added_folder),
-                                                      (void *) target_location);
-                nautilus_files_view_select_file (view, new_file);
-                nautilus_files_view_reveal_selection (view);
-        }
-        g_object_unref (location);
-}
-
 typedef struct {
         NautilusFilesView *directory_view;
         GHashTable *added_locations;
@@ -1653,23 +1635,16 @@ new_folder_done (GFile    *new_folder,
                                                      0, 0);
                 g_list_free_full (uris, g_free);
                 g_free (target_uri);
+        }
+
+        if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
+                /* The file was already added */
+                nautilus_files_view_select_file (directory_view, file);
+                nautilus_files_view_reveal_selection (directory_view);
         } else {
-                if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
-                        /* The file was already added */
-                        nautilus_files_view_select_file (directory_view, file);
-                        nautilus_files_view_reveal_selection (directory_view);
-                } else {
-                        /* We need to run after the default handler adds the folder we want to
-                         * operate on. The ADD_FILE signal is registered as G_SIGNAL_RUN_LAST, so we
-                         * must use connect_after.
-                         */
-                        g_signal_connect_data (directory_view,
-                                               "add-file",
-                                               G_CALLBACK (reveal_newly_added_folder),
-                                               g_object_ref (new_folder),
-                                               (GClosureNotify)g_object_unref,
-                                               G_CONNECT_AFTER);
-                }
+                g_hash_table_insert (directory_view->details->pending_reveal,
+                                     file,
+                                     GUINT_TO_POINTER (TRUE));
         }
 
         nautilus_file_unref (file);
@@ -1885,10 +1860,13 @@ rename_file_on_name_accepted (gpointer user_data)
         data = (FileNameWidgetData *) user_data;
 
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
-        nautilus_rename_file (data->target_file, name, NULL, NULL);
 
-        nautilus_files_view_select_file (data->view, data->target_file);
-        nautilus_files_view_reveal_selection (data->view);
+        /* Put it on the queue for reveal after the view acknowledges the change */
+        g_hash_table_insert (data->view->details->pending_reveal,
+                             data->target_file,
+                             GUINT_TO_POINTER (FALSE));
+
+        nautilus_rename_file (data->target_file, name, NULL, NULL);
 
         gtk_widget_hide (data->widget);
 
@@ -2863,6 +2841,7 @@ nautilus_files_view_finalize (GObject *object)
         }
 
         g_hash_table_destroy (view->details->non_ready_files);
+        g_hash_table_destroy (view->details->pending_reveal);
 
         G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
@@ -3553,6 +3532,29 @@ on_end_file_changes (NautilusFilesView *view)
         nautilus_files_view_check_empty_states (view);
         /* If the view is empty, zoom slider and sort menu are insensitive */
         nautilus_files_view_update_toolbar_menus (view);
+
+        /* Reveal files that were pending to be revealed, only if all of them
+         * were acknowledged by the view
+         */
+        if (g_hash_table_size (view->details->pending_reveal) > 0) {
+                GList *keys;
+                GList *l;
+                gboolean all_files_acknowledged = TRUE;
+
+                keys = g_hash_table_get_keys (view->details->pending_reveal);
+                for (l = keys; l && all_files_acknowledged; l = l->next) {
+                        all_files_acknowledged = GPOINTER_TO_UINT (g_hash_table_lookup (view->details->pending_reveal,
+                                                                                        l->data));
+                }
+
+                if (all_files_acknowledged) {
+                        nautilus_files_view_set_selection (NAUTILUS_VIEW (view), keys);
+                        nautilus_files_view_reveal_selection (view);
+                        g_hash_table_remove_all (view->details->pending_reveal);
+                }
+
+                g_list_free (keys);
+        }
 }
 
 static void
@@ -3561,31 +3563,48 @@ process_old_files (NautilusFilesView *view)
         GList *files_added, *files_changed, *node;
         FileAndDirectory *pending;
         GList *selection, *files;
-        gboolean send_selection_change;
 
         files_added = view->details->old_added_files;
         files_changed = view->details->old_changed_files;
 
-        send_selection_change = FALSE;
 
         if (files_added != NULL || files_changed != NULL) {
+                gboolean send_selection_change = FALSE;
+
                 g_signal_emit (view, signals[BEGIN_FILE_CHANGES], 0);
 
                 for (node = files_added; node != NULL; node = node->next) {
                         pending = node->data;
                         g_signal_emit (view,
                                        signals[ADD_FILE], 0, pending->file, pending->directory);
+                        /* Acknowledge the files that were pending to be revealed */
+                        if (g_hash_table_contains (view->details->pending_reveal, pending->file)) {
+                                g_hash_table_insert (view->details->pending_reveal,
+                                                     pending->file,
+                                                     GUINT_TO_POINTER (TRUE));
+                        }
                 }
 
                 for (node = files_changed; node != NULL; node = node->next) {
+                        gboolean should_show_file;
                         pending = node->data;
+                        should_show_file = still_should_show_file (view, pending->file, pending->directory);
                         g_signal_emit (view,
-                                       signals[still_should_show_file (view, pending->file, pending->directory)
-                                               ? FILE_CHANGED : REMOVE_FILE], 0,
+                                       signals[should_show_file ? FILE_CHANGED : REMOVE_FILE], 0,
                                        pending->file, pending->directory);
-                }
 
-                g_signal_emit (view, signals[END_FILE_CHANGES], 0);
+                        /* Acknowledge the files that were pending to be revealed */
+                        if (g_hash_table_contains (view->details->pending_reveal, pending->file)) {
+                                if (should_show_file) {
+                                        g_hash_table_insert (view->details->pending_reveal,
+                                                             pending->file,
+                                                             GUINT_TO_POINTER (TRUE));
+                                } else {
+                                        g_hash_table_remove (view->details->pending_reveal,
+                                                             pending->file);
+                                }
+                        }
+                }
 
                 if (files_changed != NULL) {
                         selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
@@ -3601,13 +3620,15 @@ process_old_files (NautilusFilesView *view)
 
                 file_and_directory_list_free (view->details->old_changed_files);
                 view->details->old_changed_files = NULL;
-        }
 
-        if (send_selection_change) {
-                /* Send a selection change since some file names could
-                 * have changed.
-                 */
-                nautilus_files_view_send_selection_change (view);
+                if (send_selection_change) {
+                        /* Send a selection change since some file names could
+                         * have changed.
+                         */
+                        nautilus_files_view_send_selection_change (view);
+                }
+
+                g_signal_emit (view, signals[END_FILE_CHANGES], 0);
         }
 }
 
@@ -8128,6 +8149,8 @@ nautilus_files_view_init (NautilusFilesView *view)
                                        file_and_directory_equal,
                                        (GDestroyNotify)file_and_directory_free,
                                        NULL);
+
+       view->details->pending_reveal = g_hash_table_new (NULL, NULL);
 
         gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
                                               GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
