@@ -338,9 +338,8 @@ nautilus_canvas_item_set_property (GObject        *object,
 		}
 		details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
 
-		if (details->is_highlighted_as_keyboard_focus) {
-			atk_focus_tracker_notify (accessible);
-		}
+		atk_object_notify_state_change (accessible, ATK_STATE_FOCUSED,
+						details->is_highlighted_as_keyboard_focus);
 		break;
 		
         case PROP_HIGHLIGHTED_FOR_DROP:
