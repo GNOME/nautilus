@@ -122,8 +122,11 @@ struct NautilusCanvasContainerDetails {
 	GList *selection;
 	GHashTable *icon_set;
 
-	/* Current icon for keyboard navigation. */
-	NautilusCanvasIcon *keyboard_focus;
+	/* Currently focused icon for accessibility. */
+	NautilusCanvasIcon *focus;
+	gboolean keyboard_focus;
+
+	/* Starting icon for keyboard rubberbanding. */
 	NautilusCanvasIcon *keyboard_rubberband_start;
 
 	/* Current icon with stretch handles, so we have only one. */

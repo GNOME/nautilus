@@ -754,7 +754,7 @@ keyboard_icon_reveal_timeout_callback (gpointer data)
 	 * this wouldn't actually be an improvement 
 	 * (see bugzilla.gnome.org 40612).
 	 */
-	if (icon == container->details->keyboard_focus
+	if (icon == container->details->focus
 	    || icon->is_selected) {
 		reveal_icon (container, icon);
 	}
@@ -792,45 +792,54 @@ schedule_keyboard_icon_reveal (NautilusCanvasContainer *container,
 				 container);
 }
 
-static void
-clear_keyboard_focus (NautilusCanvasContainer *container)
-{
-        if (container->details->keyboard_focus != NULL) {
-		eel_canvas_item_set (EEL_CANVAS_ITEM (container->details->keyboard_focus->item),
-				     "highlighted_as_keyboard_focus", 0,
-				     NULL);
-	}
-	
-	container->details->keyboard_focus = NULL;
-}
-
 static void inline
-emit_atk_focus_tracker_notify (NautilusCanvasIcon *icon)
+emit_atk_object_notify_focused (NautilusCanvasIcon *icon,
+				gboolean focused)
 {
 	AtkObject *atk_object = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
-	atk_focus_tracker_notify (atk_object);
+	atk_object_notify_state_change (atk_object, ATK_STATE_FOCUSED, focused);
 }
 
-/* Set @icon as the icon currently selected for keyboard operations. */
 static void
-set_keyboard_focus (NautilusCanvasContainer *container,
-		    NautilusCanvasIcon *icon)
+clear_focus (NautilusCanvasContainer *container)
+{
+	if (container->details->focus != NULL) {
+		if (container->details->keyboard_focus) {
+			eel_canvas_item_set (EEL_CANVAS_ITEM (container->details->focus->item),
+					     "highlighted_as_keyboard_focus", 0,
+					     NULL);
+		} else {
+			emit_atk_object_notify_focused (container->details->focus, FALSE);
+		}
+	}
+
+	container->details->focus = NULL;
+}
+
+/* Set @icon as the icon currently focused for accessibility. */
+static void
+set_focus (NautilusCanvasContainer *container,
+	   NautilusCanvasIcon *icon,
+	   gboolean keyboard_focus)
 {
 	g_assert (icon != NULL);
 
-	if (icon == container->details->keyboard_focus) {
+	if (icon == container->details->focus) {
 		return;
 	}
 
-	clear_keyboard_focus (container);
+	clear_focus (container);
 
-	container->details->keyboard_focus = icon;
+	container->details->focus = icon;
+	container->details->keyboard_focus = keyboard_focus;
 
-	eel_canvas_item_set (EEL_CANVAS_ITEM (container->details->keyboard_focus->item),
-			     "highlighted_as_keyboard_focus", 1,
-			     NULL);
-
-	emit_atk_focus_tracker_notify (icon);
+	if (keyboard_focus) {
+		eel_canvas_item_set (EEL_CANVAS_ITEM (container->details->focus->item),
+				     "highlighted_as_keyboard_focus", 1,
+				     NULL);
+	} else {
+		emit_atk_object_notify_focused (container->details->focus, TRUE);
+	}
 }
 
 static void
@@ -2093,10 +2102,6 @@ select_range (NautilusCanvasContainer *container,
 		}
 		
 	}
-	
-	if (selection_changed && icon2 != NULL) {
-		emit_atk_focus_tracker_notify (icon2);
-	}
 	return selection_changed;
 }
 
@@ -2119,7 +2124,6 @@ select_one_unselect_others (NautilusCanvasContainer *container,
 	}
 	
 	if (selection_changed && icon_to_select != NULL) {
-		emit_atk_focus_tracker_notify (icon_to_select);
 		reveal_icon (container, icon_to_select);
 	}
 	return selection_changed;
@@ -3293,14 +3297,12 @@ keyboard_move_to (NautilusCanvasContainer *container,
 		return;
 	}
 
+	set_focus (container, icon, TRUE);
+
 	if (event != NULL &&
 	    (event->state & GDK_CONTROL_MASK) != 0 &&
 	    (event->state & GDK_SHIFT_MASK) == 0) {
-		/* Move the keyboard focus. Use Control modifier
-		 * rather than Alt to avoid Sawfish conflict.
-		 */
-		set_keyboard_focus (container, icon);
-		container->details->keyboard_rubberband_start = NULL;
+		clear_keyboard_rubberband_start (container);
 	} else if (event != NULL &&
 		   ((event->state & GDK_CONTROL_MASK) != 0 ||
 		    !container->details->auto_layout) &&
@@ -3311,8 +3313,6 @@ keyboard_move_to (NautilusCanvasContainer *container,
 		if (from && !container->details->keyboard_rubberband_start) {
 			set_keyboard_rubberband_start (container, from);
 		} 
-
-		set_keyboard_focus (container, icon);
 
 		if (icon && container->details->keyboard_rubberband_start) {
 			rect = get_rubberband (container->details->keyboard_rubberband_start,
@@ -3331,15 +3331,12 @@ keyboard_move_to (NautilusCanvasContainer *container,
 			container->details->range_selection_base_icon = icon;
 		} 
 
-		set_keyboard_focus (container, icon);
-
 		if (select_range (container, start_icon, icon, TRUE)) {
 			g_signal_emit (container,
 				       signals[SELECTION_CHANGED], 0);
 		}
 	} else {
-		/* Select icons and get rid of the special keyboard focus. */
-		clear_keyboard_focus (container);
+		/* Select icon. */
 		clear_keyboard_rubberband_start (container);
 		
 		container->details->range_selection_base_icon = icon;
@@ -3430,7 +3427,7 @@ keyboard_arrow_key (NautilusCanvasContainer *container,
 	 * If there's multiple selection, use the icon farthest toward the end.
 	 */
 	
-	from = container->details->keyboard_focus;
+	from = container->details->focus;
 
 	if (from == NULL) {
 		if (has_multiple_selection (container)) {
@@ -3665,18 +3662,18 @@ keyboard_space (NautilusCanvasContainer *container,
 	NautilusCanvasIcon *icon;
 	
 	if (!has_selection (container) &&
-	    container->details->keyboard_focus != NULL) {
+	    container->details->focus != NULL) {
 		keyboard_move_to (container,
-				  container->details->keyboard_focus,
+				  container->details->focus,
 				  NULL, NULL);
 	} else if ((event->state & GDK_CONTROL_MASK) != 0 &&
 		   (event->state & GDK_SHIFT_MASK) == 0) {
 		/* Control-space toggles the selection state of the current icon. */
-		if (container->details->keyboard_focus != NULL) {
-			icon_toggle_selected (container, container->details->keyboard_focus);
+		if (container->details->focus != NULL) {
+			icon_toggle_selected (container, container->details->focus);
 			g_signal_emit (container, signals[SELECTION_CHANGED], 0);
-			if  (container->details->keyboard_focus->is_selected) {
-				container->details->range_selection_base_icon = container->details->keyboard_focus;
+			if  (container->details->focus->is_selected) {
+				container->details->range_selection_base_icon = container->details->focus;
 			} 
 		} else {
 			icon = find_best_selected_icon (container,
@@ -3690,7 +3687,7 @@ keyboard_space (NautilusCanvasContainer *container,
 							   NULL);
 			}
 			if (icon != NULL) {
-				set_keyboard_focus (container, icon);
+				set_focus (container, icon, TRUE);
 			}
 		}
 	} else if ((event->state & GDK_SHIFT_MASK) != 0) {
@@ -3994,7 +3991,6 @@ button_press_event (GtkWidget *widget,
         container->details->button_down_time = event->time;
 	
         /* Forget about the old keyboard selection now that we've started mousing. */
-        clear_keyboard_focus (container);
 	clear_keyboard_rubberband_start (container);
 
 	if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS) {
@@ -4012,6 +4008,8 @@ button_press_event (GtkWidget *widget,
 	if (clicked_on_icon) {
 		return TRUE;
 	}
+
+	clear_focus (container);
 
 	if (event->button == DRAG_BUTTON &&
 	    event->type == GDK_BUTTON_PRESS) {
@@ -5349,6 +5347,8 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 	    (event->state & GDK_SHIFT_MASK) != 0) {
 		NautilusCanvasIcon *start_icon;
 
+		set_focus (container, icon, FALSE);
+
 		start_icon = details->range_selection_base_icon;
 		if (start_icon == NULL || !start_icon->is_selected) {
 			start_icon = icon;
@@ -5360,6 +5360,8 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 				       signals[SELECTION_CHANGED], 0);
 		}
 	} else if (!details->icon_selected_on_button_down) {
+		set_focus (container, icon, FALSE);
+
 		details->range_selection_base_icon = icon;
 		if (button_event_modifies_selection (event)) {
 			icon_toggle_selected (container, icon);
@@ -5450,7 +5452,7 @@ nautilus_canvas_container_clear (NautilusCanvasContainer *container)
 		return;
 	}
 
-	clear_keyboard_focus (container);
+	clear_focus (container);
 	clear_keyboard_rubberband_start (container);
 	unschedule_keyboard_icon_reveal (container);
 	set_pending_icon_to_reveal (container, NULL);
@@ -5671,12 +5673,12 @@ icon_destroy (NautilusCanvasContainer *container,
 
 	was_selected = icon->is_selected;
 
-	if (details->keyboard_focus == icon ||
-	    details->keyboard_focus == NULL) {
+	if (details->focus == icon ||
+	    details->focus == NULL) {
 		if (icon_to_focus != NULL) {
-			set_keyboard_focus (container, icon_to_focus);
+			set_focus (container, icon_to_focus, TRUE);
 		} else {
-			clear_keyboard_focus (container);
+			clear_focus (container);
 		}
 	}
 	
