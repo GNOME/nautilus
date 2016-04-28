@@ -993,9 +993,13 @@ theme_changed (GtkSettings *settings)
 		permanent_provider = gtk_css_provider_new ();
 		file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
 		gtk_css_provider_load_from_file (permanent_provider, file, NULL);
+		/* The behavior of two style providers with the same priority is
+		 * undefined and gtk happens to prefer the provider that got added last.
+		 * Use a higher priority here to avoid this problem.
+		 */
 		gtk_style_context_add_provider_for_screen (screen,
 							   GTK_STYLE_PROVIDER (permanent_provider),
-							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+							   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
 		g_object_unref (file);
 	}
 
