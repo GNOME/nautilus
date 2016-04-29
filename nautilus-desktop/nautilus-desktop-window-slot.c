@@ -64,4 +64,6 @@ nautilus_desktop_window_slot_init (NautilusDesktopWindowSlot *self)
   /* Disable the ability to change between types of views */
   action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+  action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode-toggle");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }

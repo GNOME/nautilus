@@ -75,4 +75,6 @@ nautilus_other_locations_window_slot_init (NautilusOtherLocationsWindowSlot *sel
 
   action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode");
   g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+  action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode-toggle");
+  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }

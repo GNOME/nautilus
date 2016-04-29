@@ -414,9 +414,9 @@ action_undo (GSimpleAction *action,
 }
 
 static void
-action_toggle_state_action_button (GSimpleAction *action,
-				   GVariant      *state,
-				   gpointer       user_data)
+action_toggle_state_view_button (GSimpleAction *action,
+                                 GVariant      *state,
+                                 gpointer       user_data)
 {
 	GVariant *current_state;
 
@@ -424,50 +424,6 @@ action_toggle_state_action_button (GSimpleAction *action,
 	g_action_change_state (G_ACTION (action),
 			       g_variant_new_boolean (!g_variant_get_boolean (current_state)));
 	g_variant_unref (current_state);
-}
-
-static void
-undo_manager_changed (NautilusWindow *window)
-{
-	NautilusToolbar *toolbar;
-	NautilusFileUndoInfo *info;
-	NautilusFileUndoManagerState undo_state;
-	gboolean undo_active, redo_active;
-	gchar *undo_label, *undo_description, *redo_label, *redo_description;
-	gboolean is_undo;
-	GAction *action;
-
-	toolbar = NAUTILUS_TOOLBAR (window->priv->toolbar);
-	undo_label = undo_description = redo_label = redo_description = NULL;
-
-	info = nautilus_file_undo_manager_get_action ();
-	undo_state = nautilus_file_undo_manager_get_state ();
-	undo_active = redo_active = FALSE;
-	if (info != NULL &&
-	    (undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE)) {
-		is_undo = (undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO);
-		undo_active = is_undo;
-		redo_active = !is_undo;
-		nautilus_file_undo_info_get_strings (info,
-						     &undo_label, &undo_description,
-						     &redo_label, &redo_description);
-	}
-
-	action = g_action_map_lookup_action (G_ACTION_MAP (window), "undo");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), undo_active);
-	action = g_action_map_lookup_action (G_ACTION_MAP (window), "redo");
-	g_simple_action_set_enabled (G_SIMPLE_ACTION (action), redo_active);
-
-	undo_label = undo_active ? undo_label : g_strdup (_("Undo"));
-	redo_label = redo_active ? redo_label : g_strdup (_("Redo"));
-        undo_label = undo_label == NULL ? g_strdup (_("Undo")) : undo_label;
-        redo_label = redo_label == NULL ? g_strdup (_("Redo")) : redo_label;
-        nautilus_toolbar_update_undo_redo_labels (toolbar, undo_label, redo_label);
-
-	g_free (undo_label);
-	g_free (undo_description);
-	g_free (redo_label);
-	g_free (redo_description);
 }
 
 static void
@@ -2066,7 +2022,7 @@ const GActionEntry win_entries[] = {
 	{ "back",  action_back },
 	{ "forward",  action_forward },
 	{ "up",  action_up },
-	{ "action-menu", action_toggle_state_action_button, NULL, "false", NULL },
+        { "view-menu", action_toggle_state_view_button, NULL, "false", NULL },
 	{ "reload", action_reload },
 	{ "stop", action_stop },
 	{ "new-tab", action_new_tab },
@@ -2130,7 +2086,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 	nautilus_application_add_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
 	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
 	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
-	nautilus_application_add_accelerator (app, "win.action-menu", "F10");
+        nautilus_application_add_accelerator (app, "win.view-menu", "F10");
 
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
@@ -2145,10 +2101,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 		nautilus_window_show_sidebar (window);
 
 	g_variant_unref (state);
-
-	g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
-				 G_CALLBACK (undo_manager_changed), window, G_CONNECT_SWAPPED);
-	undo_manager_changed (window);
 }
 
 

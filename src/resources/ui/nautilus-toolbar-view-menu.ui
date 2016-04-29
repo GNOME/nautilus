@@ -9,48 +9,6 @@
         <property name="orientation">vertical</property>
         <property name="width_request">160</property>
         <child>
-          <object class="GtkBox" id="views_box">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="margin-bottom">6</property>
-            <style>
-                <class name="linked"/>
-            </style>
-            <child>
-              <object class="GtkModelButton" id="grid_button">
-                <property name="visible">True</property>
-                <property name="text">Grid</property>
-                <property name="action-name">slot.files-view-mode</property>
-                <property name="action-target">uint32 0</property>
-                <property name="iconic">True</property>
-                <property name="centered">True</property>
-                <property name="icon">icon_grid</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkModelButton" id="list_button">
-                <property name="visible">True</property>
-                <property name="text">List</property>
-                <property name="action-name">slot.files-view-mode</property>
-                <property name="action-target">uint32 1</property>
-                <property name="iconic">True</property>
-                <property name="centered">True</property>
-                <property name="icon">icon_list</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-        <child>
           <object class="GtkScale" id="zoom_level_scale">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -196,7 +154,7 @@
           <object class="GtkModelButton" id="reload">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Reload</property>
+            <property name="text" translatable="yes">R_eload</property>
             <property name="action-name">win.reload</property>
           </object>
         </child>
@@ -208,14 +166,96 @@
             <property name="action-name">win.stop</property>
           </object>
         </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="new-folder">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">New _Folder</property>
+            <property name="action-name">view.new-folder</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="new-tab">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">New _Tab</property>
+            <property name="action-name">win.new-tab</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="undo">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Undo</property>
+            <property name="action-name">win.undo</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="redo">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Redo</property>
+            <property name="action-name">win.redo</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="select-all">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">Select _All</property>
+            <property name="action-name">view.select-all</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="enter-location">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">Enter _Location</property>
+            <property name="action-name">win.enter-location</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="bookmark-this-location">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Bookmark this Location</property>
+            <property name="action-name">win.bookmark-current-location</property>
+          </object>
+        </child>
       </object>
     </child>
-  </object>
-  <object class="GThemedIcon" id="icon_grid">
-    <property name="name">view-grid-symbolic</property>
-  </object>
-  <object class="GThemedIcon" id="icon_list">
-    <property name="name">view-list-symbolic</property>
   </object>
   <object class="GtkAdjustment" id="zoom_adjustment">
     <property name="lower">0</property>

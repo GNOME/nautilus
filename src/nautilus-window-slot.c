@@ -720,12 +720,46 @@ action_search_visible (GSimpleAction *action,
 }
 
 static void
+change_files_view_mode (NautilusWindowSlot *self,
+                        guint               view_id)
+{
+        const gchar *preferences_key;
+
+        nautilus_window_slot_set_content_view (self, view_id);
+        preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
+                          NAUTILUS_PREFERENCES_SEARCH_VIEW :
+                          NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
+
+        g_settings_set_enum (nautilus_preferences, preferences_key, view_id);
+}
+
+static void
+action_files_view_mode_toggle (GSimpleAction *action,
+                               GVariant      *value,
+                               gpointer       user_data)
+{
+        NautilusWindowSlot *self;
+        NautilusWindowSlotPrivate *priv;
+        guint current_view_id;
+
+        self = NAUTILUS_WINDOW_SLOT (user_data);
+        priv = nautilus_window_slot_get_instance_private (self);
+        if (priv->content_view == NULL)
+                return;
+
+        current_view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
+        if (current_view_id == NAUTILUS_VIEW_LIST_ID)
+                change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
+        else
+                change_files_view_mode (self, NAUTILUS_VIEW_LIST_ID);
+}
+
+static void
 action_files_view_mode (GSimpleAction *action,
 		        GVariant      *value,
 		        gpointer       user_data)
 {
         NautilusWindowSlot *self;
-        const gchar *preferences_key;
         guint view_id;
 
         view_id =  g_variant_get_uint32 (value);
@@ -734,12 +768,7 @@ action_files_view_mode (GSimpleAction *action,
         if (!NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (self)))
                 return;
 
-        nautilus_window_slot_set_content_view (self, view_id);
-        preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
-                          NAUTILUS_PREFERENCES_SEARCH_VIEW :
-                          NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
-
-        g_settings_set_enum (nautilus_preferences, preferences_key, view_id);
+        change_files_view_mode (self, view_id);
 
         g_simple_action_set_state (action, value);
 }
@@ -747,6 +776,7 @@ action_files_view_mode (GSimpleAction *action,
 const GActionEntry slot_entries[] = {
         /* 4 is NAUTILUS_VIEW_INVALID_ID */
         { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
+        { "files-view-mode-toggle", action_files_view_mode_toggle },
         { "search-visible", NULL, NULL, "false", action_search_visible },
 };
 

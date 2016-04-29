@@ -66,15 +66,13 @@ struct _NautilusToolbarPrivate {
 
 	GtkWidget *operations_button;
 	GtkWidget *view_button;
-	GtkWidget *action_button;
+        GtkWidget *view_toggle_button;
+        GtkWidget *view_toggle_icon;
 
         GtkWidget *operations_popover;
         GtkWidget *operations_container;
         GtkWidget *operations_revealer;
         GtkWidget *operations_icon;
-	GtkWidget *view_icon;
-        GtkWidget *undo_button;
-        GtkWidget *redo_button;
 
 	GtkWidget *forward_button;
 	GtkWidget *back_button;
@@ -756,8 +754,6 @@ on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
 static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
-	GtkBuilder *builder;
-
 	self->priv = nautilus_toolbar_get_instance_private (self);
 	gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -768,14 +764,6 @@ nautilus_toolbar_init (NautilusToolbar *self)
 	self->priv->location_entry = nautilus_location_entry_new ();
 	gtk_container_add (GTK_CONTAINER (self->priv->location_entry_container),
 					  self->priv->location_entry);
-
-	builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-action-menu.ui");
-        self->priv->undo_button = GTK_WIDGET (gtk_builder_get_object (builder, "undo"));
-        self->priv->redo_button = GTK_WIDGET (gtk_builder_get_object (builder, "redo"));
-        gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->action_button),
-                                     GTK_WIDGET (gtk_builder_get_object (builder, "action_menu_widget")));
-
-	g_object_unref (builder);
 
         self->priv->progress_manager = nautilus_progress_info_manager_dup_singleton ();
 	g_signal_connect (self->priv->progress_manager, "new-progress-info",
@@ -901,8 +889,8 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
-        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_icon);
-	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, action_button);
+        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_button);
+        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_icon);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, path_bar_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, location_entry_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, back_button);
@@ -920,27 +908,6 @@ nautilus_toolbar_new ()
 			     "custom-title", gtk_label_new (NULL),
 			     "valign", GTK_ALIGN_CENTER,
 			     NULL);
-}
-
-static void
-set_string_property (GObject *object,
-                     char    *prop_name,
-                     char    *value)
-{
-        GValue val = G_VALUE_INIT;
-        g_value_init (&val, G_TYPE_STRING);
-        g_value_set_string (&val, value);
-        g_object_set_property (object, prop_name, &val);
-        g_value_unset (&val);
-}
-
-void
-nautilus_toolbar_update_undo_redo_labels (NautilusToolbar *self,
-                                          gchar           *undo_label,
-                                          gchar           *redo_label)
-{
-        set_string_property (G_OBJECT (self->priv->undo_button), "text", undo_label);
-        set_string_property (G_OBJECT (self->priv->redo_button), "text", redo_label);
 }
 
 GtkWidget *
@@ -968,10 +935,10 @@ nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
 }
 
 static gboolean
-nautilus_toolbar_view_icon_transform_to (GBinding     *binding,
-                                         const GValue *from_value,
-                                         GValue       *to_value,
-                                         gpointer      user_data)
+nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
+                                                const GValue *from_value,
+                                                GValue       *to_value,
+                                                gpointer      user_data)
 {
         GIcon *icon;
 
@@ -998,10 +965,15 @@ nautilus_toolbar_view_widget_transform_to (GBinding     *binding,
         toolbar = NAUTILUS_TOOLBAR (user_data);
         view_widget = g_value_get_object (from_value);
 
-        gtk_widget_set_sensitive (toolbar->priv->view_button, view_widget != NULL);
         gtk_menu_button_set_popover (GTK_MENU_BUTTON (toolbar->priv->view_button), NULL);
 
         g_value_set_object (to_value, view_widget);
+
+        /* Make the sensitivity change after the popover has been set, so that the sensitivity
+         * propagates to the popover. Otherwise the popover will remain greyed out after
+         * switching to a previous tab
+         */
+        gtk_widget_set_sensitive (toolbar->priv->view_button, view_widget != NULL);
 
         return TRUE;
 }
@@ -1021,9 +993,9 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
                 if (slot) {
                         toolbar->priv->icon_binding =
                                         g_object_bind_property_full (slot, "icon",
-                                                                     toolbar->priv->view_icon, "gicon",
+                                                                     toolbar->priv->view_toggle_icon, "gicon",
                                                                      G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                                     (GBindingTransformFunc) nautilus_toolbar_view_icon_transform_to,
+                                                                     (GBindingTransformFunc) nautilus_toolbar_view_toggle_icon_transform_to,
                                                                      NULL,
                                                                      toolbar,
                                                                      NULL);

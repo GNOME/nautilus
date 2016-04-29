@@ -72,15 +72,15 @@
       </packing>
     </child>
     <child>
-      <object class="GtkMenuButton" id="action_button">
+      <object class="GtkMenuButton" id="view_button">
         <property name="visible">True</property>
         <property name="sensitive">True</property>
-        <property name="action_name">win.action-menu</property>
+        <property name="action_name">win.view-menu</property>
         <style>
           <class name="image-button"/>
         </style>
         <child>
-          <object class="GtkImage" id="action_icon">
+          <object class="GtkImage">
             <property name="visible">True</property>
             <property name="icon-name">open-menu-symbolic</property>
             <property name="icon-size">1</property>
@@ -98,22 +98,23 @@
       </packing>
     </child>
     <child>
-      <object class="GtkMenuButton" id="view_button">
+      <object class="GtkButton" id="view_toggle_button">
         <property name="visible">True</property>
         <property name="sensitive">True</property>
+        <property name="action_name">slot.files-view-mode-toggle</property>
         <style>
           <class name="image-button"/>
         </style>
         <child>
-          <object class="GtkImage" id="view_icon">
+          <object class="GtkImage" id="view_toggle_icon">
             <property name="visible">True</property>
             <property name="icon-size">1</property>
           </object>
         </child>
         <child internal-child="accessible">
           <object class="AtkObject">
-            <property name="accessible-name" translatable="yes">View menu</property>
-            <property name="accessible-description" translatable="yes">Open view menu</property>
+            <property name="accessible-name" translatable="yes">View mode toggle</property>
+            <property name="accessible-description" translatable="yes">Toggle between grid and list view</property>
           </object>
         </child>
       </object>
