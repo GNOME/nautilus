@@ -30,6 +30,30 @@
           </packing>
         </child>
         <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-top">6</property>
+            <property name="margin-bottom">6</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="undo">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Undo</property>
+            <property name="action-name">win.undo</property>
+          </object>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="redo">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="text" translatable="yes">_Redo</property>
+            <property name="action-name">win.redo</property>
+          </object>
+        </child>
+        <child>
           <object class="GtkBox" id="sort_menu">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
@@ -188,30 +212,6 @@
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">New _Tab</property>
             <property name="action-name">win.new-tab</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="undo">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Undo</property>
-            <property name="action-name">win.undo</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="redo">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Redo</property>
-            <property name="action-name">win.redo</property>
           </object>
         </child>
         <child>
