@@ -9,6 +9,85 @@
         <property name="orientation">vertical</property>
         <property name="width_request">160</property>
         <child>
+          <object class="GtkBox" id="new_buttons_box">
+            <property name="visible">True</property>
+            <property name="orientation">horizontal</property>
+            <property name="margin-bottom">6</property>
+            <style>
+              <class name="linked"/>
+            </style>
+            <child>
+              <object class="GtkButton" id="new-folder">
+                <property name="visible">True</property>
+                <property name="action_name">view.new-folder</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">folder-new-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">New Folder</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="bookmark-this-location">
+                <property name="visible">True</property>
+                <property name="action_name">win.bookmark-current-location</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">bookmark-new-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">Bookmark this Location</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="new-tab">
+                <property name="visible">True</property>
+                <property name="action-name">win.new-tab</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">tab-new-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">New Tab</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
           <object class="GtkScale" id="zoom_level_scale">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
@@ -188,46 +267,6 @@
             <property name="can_focus">True</property>
             <property name="text" translatable="yes">St_op</property>
             <property name="action-name">win.stop</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="new-folder">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">New _Folder</property>
-            <property name="action-name">view.new-folder</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="new-tab">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">New _Tab</property>
-            <property name="action-name">win.new-tab</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="bookmark-this-location">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Bookmark this Location</property>
-            <property name="action-name">win.bookmark-current-location</property>
           </object>
         </child>
       </object>
