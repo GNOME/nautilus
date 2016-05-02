@@ -82,10 +82,6 @@ const char *          nautilus_icon_info_get_used_name                (NautilusI
 
 void                  nautilus_icon_info_clear_caches                 (void);
 
-/* Relationship between zoom levels and icons sizes. */
-guint nautilus_get_list_icon_size_for_zoom_level          (NautilusListZoomLevel  zoom_level);
-guint nautilus_get_canvas_icon_size_for_zoom_level          (NautilusCanvasZoomLevel  zoom_level);
-
 gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
 
 G_END_DECLS
