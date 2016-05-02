@@ -268,8 +268,8 @@ struct NautilusFilesViewDetails
         GtkWidget *visible_columns;
         GtkWidget *stop;
         GtkWidget *reload;
-        GtkAdjustment *zoom_adjustment;
-        GtkWidget *zoom_level_scale;
+        GtkWidget *zoom_controls_box;
+        GtkWidget *zoom_level_label;
 
         GtkWidget *undo_button;
         GtkWidget *redo_button;
@@ -778,6 +778,28 @@ nautilus_files_view_restore_default_zoom_level (NautilusFilesView *view)
         }
 
         NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_default_zoom_level (view);
+}
+
+/**
+ * nautilus_files_view_restore_standard_zoom_level:
+ *
+ * Restore the zoom level to 100%
+ */
+static void
+nautilus_files_view_restore_standard_zoom_level (NautilusFilesView *view)
+{
+        if (!nautilus_files_view_supports_zooming (view))
+                return;
+
+        NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_standard_zoom_level (view);
+}
+
+static gfloat
+nautilus_files_view_get_zoom_level_percentage (NautilusFilesView *view)
+{
+        g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), 1);
+
+        return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_zoom_level_percentage (view);
 }
 
 gboolean
@@ -1546,15 +1568,6 @@ action_select_pattern (GSimpleAction *action,
         g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
         select_pattern(user_data);
-}
-
-static void
-zoom_level_changed (GtkRange          *range,
-                    NautilusFilesView *view)
-{
-        g_action_group_change_action_state (view->details->view_action_group,
-                                            "zoom-to-level",
-                                            g_variant_new_int32 (gtk_range_get_value (range)));
 }
 
 typedef struct {
@@ -2358,6 +2371,14 @@ action_zoom_default (GSimpleAction *action,
                      gpointer       user_data)
 {
         nautilus_files_view_restore_default_zoom_level (user_data);
+}
+
+static void
+action_zoom_standard (GSimpleAction *action,
+                      GVariant      *state,
+                      gpointer       user_data)
+{
+        nautilus_files_view_restore_standard_zoom_level (user_data);
 }
 
 static void
@@ -6016,6 +6037,7 @@ const GActionEntry view_entries[] = {
         { "zoom-in",  action_zoom_in },
         { "zoom-out", action_zoom_out },
         { "zoom-default", action_zoom_default },
+        { "zoom-standard", action_zoom_standard },
         { "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
         /* Background menu */
         { "new-folder", action_new_folder },
@@ -6622,6 +6644,10 @@ real_update_actions_state (NautilusFilesView *view)
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      nautilus_files_view_supports_zooming (view));
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "zoom-standard");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     nautilus_files_view_supports_zooming (view));
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "zoom-to-level");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      !nautilus_files_view_is_empty (view));
@@ -6883,6 +6909,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         GVariantIter iter;
         gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, sort_available;
         const gchar *hint;
+        g_autofree gchar *zoom_level_percent = NULL;
 
         view_action_group = nautilus_files_view_get_action_group (view);
 
@@ -6898,7 +6925,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
          */
         gtk_widget_set_sensitive (view->details->sort_menu,
                                   !nautilus_files_view_is_empty (view));
-        gtk_widget_set_sensitive (view->details->zoom_level_scale,
+        gtk_widget_set_sensitive (view->details->zoom_controls_box,
                                   !nautilus_files_view_is_empty (view));
 
         if (sort_available) {
@@ -6918,10 +6945,8 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         gtk_widget_set_visible (view->details->sort_trash_time, show_sort_trash);
         gtk_widget_set_visible (view->details->sort_search_relevance, show_sort_search);
 
-        variant = g_action_group_get_action_state (view_action_group, "zoom-to-level");
-        gtk_adjustment_set_value (view->details->zoom_adjustment,
-                                  g_variant_get_int32 (variant));
-        g_variant_unref (variant);
+        zoom_level_percent = g_strdup_printf ("%.0f%%", nautilus_files_view_get_zoom_level_percentage (view) * 100.0);
+        gtk_label_set_label (GTK_LABEL (view->details->zoom_level_label), zoom_level_percent);
 }
 
 /* Convenience function to reset the menus owned by the view but managed on
@@ -8234,8 +8259,8 @@ nautilus_files_view_init (NautilusFilesView *view)
         /* View menu */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
         view->details->view_menu_widget =  g_object_ref_sink (gtk_builder_get_object (builder, "view_menu_widget"));
-        view->details->zoom_level_scale = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_scale"));
-        view->details->zoom_adjustment = GTK_ADJUSTMENT (gtk_builder_get_object (builder, "zoom_adjustment"));
+        view->details->zoom_controls_box = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_controls_box"));
+        view->details->zoom_level_label = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_label"));
 
         view->details->sort_menu =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
         view->details->sort_trash_time =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
@@ -8246,9 +8271,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         view->details->undo_button = GTK_WIDGET (gtk_builder_get_object (builder, "undo"));
         view->details->redo_button = GTK_WIDGET (gtk_builder_get_object (builder, "redo"));
-
-        g_signal_connect (view->details->zoom_level_scale, "value-changed",
-                          G_CALLBACK (zoom_level_changed), view);
 
         g_signal_connect (view,
                           "end-file-changes",

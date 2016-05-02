@@ -183,6 +183,11 @@ struct NautilusFilesViewClass {
          * to restore the zoom level of an object to a default setting. */
         void    (* restore_default_zoom_level) (NautilusFilesView *view);
 
+        /*
+         * restore_default_zoom_level: restores the zoom level to 100% (or to
+         * whatever is considered the 'standard' zoom level for the view). */
+        void    (* restore_standard_zoom_level) (NautilusFilesView *view);
+
         /* can_zoom_in is a function pointer that subclasses must override to
          * return whether the view is at maximum size (furthest-in zoom level) */
         gboolean (* can_zoom_in)             (NautilusFilesView *view);
@@ -190,6 +195,9 @@ struct NautilusFilesViewClass {
         /* can_zoom_out is a function pointer that subclasses must override to
          * return whether the view is at minimum size (furthest-out zoom level) */
         gboolean (* can_zoom_out)            (NautilusFilesView *view);
+
+        /* The current zoom level as a percentage of the default (0, 1] */
+        gfloat   (* get_zoom_level_percentage) (NautilusFilesView *view);
 
         /* reveal_selection is a function pointer that subclasses may
          * override to make sure the selected items are sufficiently

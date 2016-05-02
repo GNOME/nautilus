@@ -834,6 +834,12 @@ nautilus_canvas_view_restore_default_zoom_level (NautilusFilesView *view)
 		(view, get_default_zoom_level (canvas_view));
 }
 
+static void
+nautilus_canvas_view_restore_standard_zoom_level (NautilusFilesView *view)
+{
+        nautilus_canvas_view_zoom_to_level (view, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
+}
+
 static gboolean 
 nautilus_canvas_view_can_zoom_in (NautilusFilesView *view)
 {
@@ -850,6 +856,18 @@ nautilus_canvas_view_can_zoom_out (NautilusFilesView *view)
 
 	return nautilus_canvas_view_get_zoom_level (view) 
 		> NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL;
+}
+
+static gfloat
+nautilus_canvas_view_get_zoom_level_percentage (NautilusFilesView *view)
+{
+        guint icon_size;
+        NautilusCanvasZoomLevel zoom_level;
+
+        zoom_level = nautilus_canvas_view_get_zoom_level (view);
+        icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (zoom_level);
+
+        return (gfloat) icon_size / NAUTILUS_CANVAS_ICON_SIZE_LARGE;
 }
 
 static gboolean
@@ -1898,6 +1916,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_files_view_class->bump_zoom_level = nautilus_canvas_view_bump_zoom_level;
 	nautilus_files_view_class->can_zoom_in = nautilus_canvas_view_can_zoom_in;
 	nautilus_files_view_class->can_zoom_out = nautilus_canvas_view_can_zoom_out;
+        nautilus_files_view_class->get_zoom_level_percentage = nautilus_canvas_view_get_zoom_level_percentage;
 	nautilus_files_view_class->clear = nautilus_canvas_view_clear;
 	nautilus_files_view_class->end_loading = nautilus_canvas_view_end_loading;
 	nautilus_files_view_class->file_changed = nautilus_canvas_view_file_changed;
@@ -1907,6 +1926,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_files_view_class->is_empty = nautilus_canvas_view_is_empty;
 	nautilus_files_view_class->remove_file = nautilus_canvas_view_remove_file;
 	nautilus_files_view_class->restore_default_zoom_level = nautilus_canvas_view_restore_default_zoom_level;
+        nautilus_files_view_class->restore_standard_zoom_level = nautilus_canvas_view_restore_standard_zoom_level;
 	nautilus_files_view_class->reveal_selection = nautilus_canvas_view_reveal_selection;
 	nautilus_files_view_class->select_all = nautilus_canvas_view_select_all;
 	nautilus_files_view_class->select_first = nautilus_canvas_view_select_first;

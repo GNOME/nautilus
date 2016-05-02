@@ -12,7 +12,8 @@
           <object class="GtkBox" id="new_buttons_box">
             <property name="visible">True</property>
             <property name="orientation">horizontal</property>
-            <property name="margin-bottom">6</property>
+            <property name="homogeneous">True</property>
+            <property name="margin-bottom">9</property>
             <style>
               <class name="linked"/>
             </style>
@@ -88,25 +89,82 @@
           </object>
         </child>
         <child>
-          <object class="GtkScale" id="zoom_level_scale">
+          <object class="GtkBox" id="zoom_controls_box">
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="draw_value">False</property>
-            <property name="has_origin">False</property>
-            <property name="adjustment">zoom_adjustment</property>
-            <property name="round_digits">0</property>
-            <property name="restrict_to_fill_level">False</property>
-            <marks>
-              <mark value="0" position="bottom"/>
-              <mark value="1" position="bottom"/>
-              <mark value="2" position="bottom"/>
-              <mark value="3" position="bottom"/>
-            </marks>
+            <property name="orientation">horizontal</property>
+            <property name="homogeneous">True</property>
+            <style>
+              <class name="linked"/>
+            </style>
+            <child>
+              <object class="GtkButton" id="zoom-out">
+                <property name="visible">True</property>
+                <property name="action-name">view.zoom-out</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">zoom-out-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">Zoom Out</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="zoom-default">
+                <property name="visible">True</property>
+                <property name="action_name">view.zoom-standard</property>
+                <child>
+                  <object class="GtkLabel" id="zoom_level_label">
+                    <property name="visible">True</property>
+                    <property name="width-chars">5</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">Reset Zoom</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="zoom-in">
+                <property name="visible">True</property>
+                <property name="action_name">view.zoom-in</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="icon-name">zoom-in-symbolic</property>
+                    <property name="icon-size">1</property>
+                  </object>
+                </child>
+                <child internal-child="accessible">
+                  <object class="AtkObject">
+                    <property name="accessible-name" translatable="yes">Zoom In</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
           </object>
-          <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
@@ -271,12 +329,5 @@
         </child>
       </object>
     </child>
-  </object>
-  <object class="GtkAdjustment" id="zoom_adjustment">
-    <property name="lower">0</property>
-    <property name="upper">3</property>
-    <property name="step_increment">1</property>
-    <property name="page_increment">1</property>
-    <property name="value">1</property>
   </object>
 </interface>

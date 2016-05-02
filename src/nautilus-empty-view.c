@@ -155,6 +155,11 @@ nautilus_empty_view_restore_default_zoom_level (NautilusFilesView *view)
 {
 }
 
+static void
+nautilus_empty_view_restore_standard_zoom_level (NautilusFilesView *view)
+{
+}
+
 static gboolean 
 nautilus_empty_view_can_zoom_in (NautilusFilesView *view)
 {
@@ -165,6 +170,12 @@ static gboolean
 nautilus_empty_view_can_zoom_out (NautilusFilesView *view)
 {
 	return FALSE;
+}
+
+static gfloat
+nautilus_empty_view_get_zoom_level_percentage (NautilusFilesView *view)
+{
+        return 1.0;
 }
 
 static void
@@ -242,6 +253,7 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 	nautilus_files_view_class->bump_zoom_level = nautilus_empty_view_bump_zoom_level;
 	nautilus_files_view_class->can_zoom_in = nautilus_empty_view_can_zoom_in;
 	nautilus_files_view_class->can_zoom_out = nautilus_empty_view_can_zoom_out;
+        nautilus_files_view_class->get_zoom_level_percentage = nautilus_empty_view_get_zoom_level_percentage;
         nautilus_files_view_class->click_policy_changed = nautilus_empty_view_click_policy_changed;
 	nautilus_files_view_class->clear = nautilus_empty_view_clear;
 	nautilus_files_view_class->file_changed = nautilus_empty_view_file_changed;
@@ -251,6 +263,7 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 	nautilus_files_view_class->remove_file = nautilus_empty_view_remove_file;
 	nautilus_files_view_class->update_menus = nautilus_empty_view_update_menus;
 	nautilus_files_view_class->restore_default_zoom_level = nautilus_empty_view_restore_default_zoom_level;
+        nautilus_files_view_class->restore_standard_zoom_level = nautilus_empty_view_restore_standard_zoom_level;
 	nautilus_files_view_class->reveal_selection = nautilus_empty_view_reveal_selection;
 	nautilus_files_view_class->select_all = nautilus_empty_view_select_all;
 	nautilus_files_view_class->set_selection = nautilus_empty_view_set_selection;
