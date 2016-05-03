@@ -1143,7 +1143,7 @@ show_unhandled_type_error (ActivateParametersInstall *parameters)
 						 0,
 						 "%s", error_message);
 		gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-							  text);
+							  "%s", text);
 
 		g_free (text);
 	}
