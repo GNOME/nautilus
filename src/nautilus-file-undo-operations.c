@@ -330,8 +330,8 @@ G_DEFINE_TYPE (NautilusFileUndoInfoExt, nautilus_file_undo_info_ext, NAUTILUS_TY
 struct _NautilusFileUndoInfoExtDetails {
 	GFile *src_dir;
 	GFile *dest_dir;
-	GList *sources;	     /* Relative to src_dir */
-	GList *destinations; /* Relative to dest_dir */
+        GQueue *sources;      /* Relative to src_dir */
+        GQueue *destinations; /* Relative to dest_dir */
 };
 
 static char *
@@ -340,7 +340,7 @@ ext_get_first_target_short_name (NautilusFileUndoInfoExt *self)
 	GList *targets_first;
 	char *file_name = NULL;
 
-	targets_first = g_list_first (self->priv->destinations);
+        targets_first = g_queue_peek_head_link (self->priv->destinations);
 
 	if (targets_first != NULL &&
 	    targets_first->data != NULL) {
@@ -479,35 +479,47 @@ static void
 ext_create_link_redo_func (NautilusFileUndoInfoExt *self,
 			   GtkWindow *parent_window)
 {
-	nautilus_file_operations_link (self->priv->sources, NULL,
-				       self->priv->dest_dir, parent_window,
-				       file_undo_info_transfer_callback, self);
+        nautilus_file_operations_link (g_queue_peek_head_link (self->priv->sources),
+                                       NULL,
+                                       self->priv->dest_dir,
+                                       parent_window,
+                                       file_undo_info_transfer_callback,
+                                       self);
 }
 
 static void
 ext_duplicate_redo_func (NautilusFileUndoInfoExt *self,
 			 GtkWindow *parent_window)
 {
-	nautilus_file_operations_duplicate (self->priv->sources, NULL, parent_window,
-					    file_undo_info_transfer_callback, self);
+        nautilus_file_operations_duplicate (g_queue_peek_head_link (self->priv->sources),
+                                            NULL,
+                                            parent_window,
+                                            file_undo_info_transfer_callback,
+                                            self);
 }
 
 static void
 ext_copy_redo_func (NautilusFileUndoInfoExt *self,
 		    GtkWindow *parent_window)
 {
-	nautilus_file_operations_copy (self->priv->sources, NULL,
-				       self->priv->dest_dir, parent_window,
-				       file_undo_info_transfer_callback, self);
+        nautilus_file_operations_copy (g_queue_peek_head_link (self->priv->sources),
+                                       NULL,
+                                       self->priv->dest_dir,
+                                       parent_window,
+                                       file_undo_info_transfer_callback,
+                                       self);
 }
 
 static void
 ext_move_restore_redo_func (NautilusFileUndoInfoExt *self,
 			    GtkWindow *parent_window)
 {
-	nautilus_file_operations_move (self->priv->sources, NULL,
-				       self->priv->dest_dir, parent_window,
-				       file_undo_info_transfer_callback, self);
+        nautilus_file_operations_move (g_queue_peek_head_link (self->priv->sources),
+                                       NULL,
+                                       self->priv->dest_dir,
+                                       parent_window,
+                                       file_undo_info_transfer_callback,
+                                       self);
 }
 
 static void
@@ -535,8 +547,10 @@ static void
 ext_restore_undo_func (NautilusFileUndoInfoExt *self,
 		       GtkWindow *parent_window)
 {
-	nautilus_file_operations_trash_or_delete (self->priv->destinations, parent_window,
-						  file_undo_info_delete_callback, self);
+        nautilus_file_operations_trash_or_delete (g_queue_peek_head_link (self->priv->destinations),
+                                                  parent_window,
+                                                  file_undo_info_delete_callback,
+                                                  self);
 }
 
 
@@ -544,9 +558,12 @@ static void
 ext_move_undo_func (NautilusFileUndoInfoExt *self,
 		    GtkWindow *parent_window)
 {
-	nautilus_file_operations_move (self->priv->destinations, NULL,
-				       self->priv->src_dir, parent_window,
-				       file_undo_info_transfer_callback, self);
+        nautilus_file_operations_move (g_queue_peek_head_link (self->priv->destinations),
+                                       NULL,
+                                       self->priv->src_dir,
+                                       parent_window,
+                                       file_undo_info_transfer_callback,
+                                       self);
 }
 
 static void
@@ -555,7 +572,7 @@ ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt *self,
 {
 	GList *files;
 
-	files = g_list_copy (self->priv->destinations);
+        files = g_list_copy (g_queue_peek_head_link (self->priv->destinations));
 	files = g_list_reverse (files); /* Deleting must be done in reverse */
 
 	nautilus_file_operations_delete (files, parent_window,
@@ -597,11 +614,11 @@ nautilus_file_undo_info_ext_finalize (GObject *obj)
 	NautilusFileUndoInfoExt *self = NAUTILUS_FILE_UNDO_INFO_EXT (obj);
 
 	if (self->priv->sources) {
-		g_list_free_full (self->priv->sources, g_object_unref);
+                g_queue_free_full (self->priv->sources, g_object_unref);
 	}
 
 	if (self->priv->destinations) {
-		g_list_free_full (self->priv->destinations, g_object_unref);
+                g_queue_free_full (self->priv->destinations, g_object_unref);
 	}
 
 	g_clear_object (&self->priv->src_dir);
@@ -640,6 +657,8 @@ nautilus_file_undo_info_ext_new (NautilusFileUndoOp op_type,
 
 	retval->priv->src_dir = g_object_ref (src_dir);
 	retval->priv->dest_dir = g_object_ref (target_dir);
+        retval->priv->sources = g_queue_new ();
+        retval->priv->destinations = g_queue_new ();
 
 	return NAUTILUS_FILE_UNDO_INFO (retval);
 }
@@ -649,10 +668,8 @@ nautilus_file_undo_info_ext_add_origin_target_pair (NautilusFileUndoInfoExt *sel
 						    GFile                   *origin,
 						    GFile                   *target)
 {
-	self->priv->sources =
-		g_list_append (self->priv->sources, g_object_ref (origin));
-	self->priv->destinations =
-		g_list_append (self->priv->destinations, g_object_ref (target));
+        g_queue_push_tail (self->priv->sources, g_object_ref (origin));
+        g_queue_push_tail (self->priv->destinations, g_object_ref (target));
 }
 
 /* create new file/folder */
