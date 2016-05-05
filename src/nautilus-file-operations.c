@@ -2002,7 +2002,7 @@ trash_file (CommonJob    *job,
             SourceInfo   *source_info,
             TransferInfo *transfer_info,
             gboolean      toplevel,
-            GList        *to_delete)
+            GList       **to_delete)
 {
 	GError *error;
 	char *primary, *secondary, *details;
@@ -2033,7 +2033,7 @@ trash_file (CommonJob    *job,
 	}
 
 	if (job->delete_all) {
-		to_delete = g_list_prepend (to_delete, file);
+		*to_delete = g_list_prepend (*to_delete, file);
 		goto skip;
 	}
 
@@ -2065,10 +2065,10 @@ trash_file (CommonJob    *job,
 	        *skipped_file = TRUE;
 		job->skip_all_error = TRUE;
 	} else if (response == 3) { /* delete all */
-		to_delete = g_list_prepend (to_delete, file);
+		*to_delete = g_list_prepend (*to_delete, file);
 		job->delete_all = TRUE;
 	} else if (response == 4) { /* delete */
-		to_delete = g_list_prepend (to_delete, file);
+		*to_delete = g_list_prepend (*to_delete, file);
 	}
 
 skip:
@@ -2114,7 +2114,7 @@ trash_files (CommonJob *job,
                 trash_file (job, file,
                             &skipped_file,
                             &source_info, &transfer_info,
-                            TRUE, to_delete);
+                            TRUE, &to_delete);
 		if (skipped_file) {
 			(*files_skipped)++;
 		}
