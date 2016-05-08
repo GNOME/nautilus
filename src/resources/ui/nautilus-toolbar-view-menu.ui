@@ -204,14 +204,13 @@
               </object>
             </child>
             <child>
-              <object class="GtkLabel" id="sort_label">
+              <object class="GtkLabel">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="halign">start</property>
+                <property name="sensitive">False</property>
                 <property name="label" translatable="yes">Sort</property>
-                <property name="margin-start">6</property>
+                <property name="xalign">0</property>
                 <style>
-                  <class name="separator"/>
+                  <class name="nautilus-menu-sort-heading" />
                 </style>
               </object>
             </child>
