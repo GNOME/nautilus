@@ -5149,6 +5149,7 @@ select_image_button_callback (GtkWidget *widget,
 						      g_get_user_special_dir (G_USER_DIRECTORY_PICTURES),
 						      NULL);
 		gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+		gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
 		filter = gtk_file_filter_new ();
 		gtk_file_filter_add_pixbuf_formats (filter);
