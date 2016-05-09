@@ -5403,6 +5403,8 @@ item_event_callback (EelCanvasItem *item,
 	event_button = &event->button;
 
 	switch (event->type) {
+	case GDK_MOTION_NOTIFY:
+		return FALSE;
 	case GDK_BUTTON_PRESS:
 		container->details->double_clicked = FALSE;
 		if (handle_canvas_button_press (container, icon, event_button)) {
