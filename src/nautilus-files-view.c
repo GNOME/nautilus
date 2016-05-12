@@ -1795,21 +1795,31 @@ validate_file_name (const gchar *name,
 }
 
 static void
-file_name_widget_entry_on_changed (gpointer user_data)
-{
+file_name_widget_entry_on_directory_info_ready (NautilusDirectory *directory,
+                                                GList             *files,
+                                                gpointer           callback_data) {
         FileNameWidgetData *data;
-        NautilusFile *existing_file;
         gchar *name;
         gchar *error_message;
+        NautilusFile *existing_file;
         gboolean valid_name;
         gboolean duplicated;
 
-        data = (FileNameWidgetData *) user_data;
+        data = (FileNameWidgetData *) callback_data;
+
+        if (data->view == NULL) {
+                nautilus_directory_unref (directory);
+                return;
+        }
+
+        g_object_remove_weak_pointer (G_OBJECT (data->view),
+                                      (gpointer *) &data->view);
+
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
         error_message = validate_file_name (name, data->target_is_folder);
         gtk_label_set_label (GTK_LABEL (data->error_label), error_message);
 
-        existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
+        existing_file = nautilus_directory_get_file_by_name (directory, name);
 
         valid_name = strlen (name) > 0 && error_message == NULL;
         /* If there is a target file and the name is the same, we don't show it
@@ -1840,6 +1850,37 @@ file_name_widget_entry_on_changed (gpointer user_data)
                 nautilus_file_unref (existing_file);
 
         g_free (name);
+
+        nautilus_directory_unref (directory);
+}
+
+static void
+file_name_widget_entry_on_changed (gpointer user_data)
+{
+        FileNameWidgetData *data;
+        NautilusFile *parent_location;
+        NautilusDirectory *containing_dir;
+
+        data = (FileNameWidgetData *) user_data;
+
+        if (data->target_file != NULL &&
+            !nautilus_file_is_self_owned (data->target_file)) {
+                parent_location = nautilus_file_get_parent (data->target_file);
+                containing_dir = nautilus_directory_get_for_file (parent_location);
+
+                nautilus_file_unref (parent_location);
+        } else {
+                containing_dir = nautilus_directory_get_by_uri (nautilus_files_view_get_backing_uri (data->view));
+        }
+
+        g_object_add_weak_pointer (G_OBJECT (data->view),
+                                   (gpointer *) &data->view);
+
+        nautilus_directory_call_when_ready (containing_dir,
+                                            NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                            TRUE,
+                                            file_name_widget_entry_on_directory_info_ready,
+                                            data);
 }
 
 static void
@@ -1916,8 +1957,9 @@ rename_file_on_name_accepted (gpointer user_data)
 }
 
 static void
-file_name_widget_on_activate (gpointer user_data)
-{
+file_name_widget_on_directory_info_ready (NautilusDirectory *directory,
+                                          GList             *files,
+                                          gpointer           callback_data) {
         FileNameWidgetData *data;
         NautilusFile *existing_file;
         gchar *name;
@@ -1925,9 +1967,20 @@ file_name_widget_on_activate (gpointer user_data)
         gboolean valid_name;
         gboolean duplicated;
 
-        data = (FileNameWidgetData *) user_data;
+        data = (FileNameWidgetData *) callback_data;
+
+        if (data->view == NULL) {
+                nautilus_directory_unref (directory);
+                return;
+        }
+
+        g_object_remove_weak_pointer (G_OBJECT (data->view),
+                                      (gpointer *) &data->view);
+
         name = g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (data->name_entry))));
-        existing_file = nautilus_directory_get_file_by_name (data->view->details->model, name);
+
+        existing_file = nautilus_directory_get_file_by_name (directory, name);
+
         error_message = validate_file_name (name, data->target_is_folder);
         valid_name = strlen (name) > 0 && error_message == NULL;
         duplicated = existing_file != NULL &&
@@ -1955,6 +2008,36 @@ file_name_widget_on_activate (gpointer user_data)
         if (existing_file != NULL)
                 nautilus_file_unref (existing_file);
 
+        nautilus_directory_unref (directory);
+}
+
+static void
+file_name_widget_on_activate (gpointer user_data)
+{
+        FileNameWidgetData *data;
+        NautilusFile *parent_location;
+        NautilusDirectory *containing_dir;
+
+        data = (FileNameWidgetData *) user_data;
+
+        if (data->target_file != NULL &&
+            !nautilus_file_is_self_owned (data->target_file)) {
+                parent_location = nautilus_file_get_parent (data->target_file);
+                containing_dir = nautilus_directory_get_for_file (parent_location);
+
+                nautilus_file_unref (parent_location);
+        } else {
+                containing_dir = nautilus_directory_get_by_uri (nautilus_files_view_get_backing_uri (data->view));
+        }
+
+        g_object_add_weak_pointer (G_OBJECT (data->view),
+                                   (gpointer *) &data->view);
+
+        nautilus_directory_call_when_ready (containing_dir,
+                                            NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                            TRUE,
+                                            file_name_widget_on_directory_info_ready,
+                                            data);
 }
 
 static void
