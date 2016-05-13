@@ -264,7 +264,6 @@ struct NautilusFilesViewDetails
         GtkWidget *view_menu_widget;
         GtkWidget *sort_menu;
         GtkWidget *sort_trash_time;
-        GtkWidget *sort_search_relevance;
         GtkWidget *visible_columns;
         GtkWidget *stop;
         GtkWidget *reload;
@@ -6907,7 +6906,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
         GActionGroup *view_action_group;
         GVariant *variant;
         GVariantIter iter;
-        gboolean show_sort_trash, show_sort_search, show_sort_access, show_sort_modification, sort_available;
+        gboolean show_sort_trash, show_sort_access, show_sort_modification, sort_available;
         const gchar *hint;
         g_autofree gchar *zoom_level_percent = NULL;
 
@@ -6917,7 +6916,7 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
                                 g_action_group_has_action (view_action_group, "visible-columns"));
 
         sort_available = g_action_group_get_action_enabled (view_action_group, "sort");
-        show_sort_trash = show_sort_search = show_sort_modification = show_sort_access = FALSE;
+        show_sort_trash = show_sort_modification = show_sort_access = FALSE;
         gtk_widget_set_visible (view->details->sort_menu, sort_available);
 
         /* We want to make insensitive available actions but that are not current
@@ -6935,15 +6934,12 @@ nautilus_files_view_reset_view_menu (NautilusFilesView *view)
                 while (g_variant_iter_next (&iter, "&s", &hint)) {
                         if (g_strcmp0 (hint, "trash-time") == 0)
                                 show_sort_trash = TRUE;
-                        if (g_strcmp0 (hint, "search-relevance") == 0)
-                                show_sort_search = TRUE;
                 }
 
                 g_variant_unref (variant);
         }
 
         gtk_widget_set_visible (view->details->sort_trash_time, show_sort_trash);
-        gtk_widget_set_visible (view->details->sort_search_relevance, show_sort_search);
 
         zoom_level_percent = g_strdup_printf ("%.0f%%", nautilus_files_view_get_zoom_level_percentage (view) * 100.0);
         gtk_label_set_label (GTK_LABEL (view->details->zoom_level_label), zoom_level_percent);
@@ -8264,7 +8260,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         view->details->sort_menu =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_menu"));
         view->details->sort_trash_time =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_trash_time"));
-        view->details->sort_search_relevance =  GTK_WIDGET (gtk_builder_get_object (builder, "sort_search_relevance"));
         view->details->visible_columns =  GTK_WIDGET (gtk_builder_get_object (builder, "visible_columns"));
         view->details->reload =  GTK_WIDGET (gtk_builder_get_object (builder, "reload"));
         view->details->stop =  GTK_WIDGET (gtk_builder_get_object (builder, "stop"));
