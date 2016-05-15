@@ -218,9 +218,36 @@
               <object class="GtkModelButton" id="sort_name">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
-                <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_Name</property>
+                <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_A-Z</property>
                 <property name="action-name">view.sort</property>
                 <property name="action-target">'name'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_name_desc">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name, in descending order in the toolbar view menu">_Z-A</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'name-desc'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_modification_date_desc">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">Last _Modified</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'modification-date-desc'</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="sort_modification_date">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_First Modified</property>
+                <property name="action-name">view.sort</property>
+                <property name="action-target">'modification-date'</property>
               </object>
             </child>
             <child>
@@ -242,37 +269,12 @@
               </object>
             </child>
             <child>
-              <object class="GtkModelButton" id="sort_modification_date">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="text" translatable="yes">Last _Modified</property>
-                <property name="action-name">view.sort</property>
-                <property name="action-target">'modification-date'</property>
-              </object>
-            </child>
-            <child>
               <object class="GtkModelButton" id="sort_trash_time">
                 <property name="visible">False</property>
                 <property name="can_focus">True</property>
                 <property name="text" translatable="yes">Last _Trashed</property>
                 <property name="action-name">view.sort</property>
                 <property name="action-target">'trash-time'</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkSeparator">
-                <property name="visible">True</property>
-                <property name="orientation">horizontal</property>
-                <property name="margin-top">6</property>
-                <property name="margin-bottom">6</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkModelButton" id="reversed_order">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="text" translatable="yes">Re_verse Order</property>
-                <property name="action-name">view.reversed-order</property>
               </object>
             </child>
           </object>

@@ -74,6 +74,7 @@ typedef struct {
 	const NautilusFileSortType sort_type;
 	const char *metadata_text;
 	const char *action_target_name;
+        const gboolean reverse_order;
 	SortCriterionMatchFunc match_func;
 } SortCriterion;
 
@@ -91,7 +92,6 @@ struct NautilusCanvasViewDetails
 	guint react_to_canvas_change_idle_id;
 
 	const SortCriterion *sort;
-	gboolean sort_reversed;
 
 	gulong clipboard_handler_id;
 
@@ -113,55 +113,79 @@ static const SortCriterion sort_criteria[] = {
 	{
 		NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 		"name",
-		"name"
+		"name",
+                FALSE
 	},
+        {
+                NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                "name",
+                "name-desc",
+                TRUE
+        },
 	{
 		NAUTILUS_FILE_SORT_BY_SIZE,
 		"size",
-		"size"
+		"size",
+                TRUE
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_TYPE,
 		"type",
-		"type"
+		"type",
+                FALSE
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_MTIME,
 		"modification date",
 		"modification-date",
+                FALSE
 	},
+        {
+                NAUTILUS_FILE_SORT_BY_MTIME,
+                "modification date",
+                "modification-date-desc",
+                TRUE
+        },
 	{
 		NAUTILUS_FILE_SORT_BY_ATIME,
 		"access date",
 		"access-date",
+                FALSE
 	},
+        {
+                NAUTILUS_FILE_SORT_BY_ATIME,
+                "access date",
+                "access-date-desc",
+                TRUE
+        },
 	{
 		NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 		"trashed",
 		"trash-time",
+                TRUE,
 		nautilus_file_is_in_trash
 	},
 	{
 		NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
 		NULL,
 		"search-relevance",
+                TRUE,
 		nautilus_file_is_in_search
 	}
 };
 
 static void                 nautilus_canvas_view_set_directory_sort_by        (NautilusCanvasView           *canvas_view,
 									     NautilusFile         *file,
-									     const char           *sort_by);
+                                                                               const SortCriterion *sort);
 static void                 nautilus_canvas_view_update_click_mode            (NautilusCanvasView           *canvas_view);
 static gboolean             nautilus_canvas_view_supports_scaling	      (NautilusCanvasView           *canvas_view);
 static void                 nautilus_canvas_view_reveal_selection       (NautilusFilesView               *view);
-static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusFileSortType  sort_type);
-static gboolean             set_sort_reversed                         (NautilusCanvasView     *canvas_view,
-								       gboolean              new_value,
-								       gboolean              set_metadata);
+static const SortCriterion *get_sort_criterion_by_metadata_text       (const char *metadata_text,
+                                                                       gboolean    reversed);
+static const SortCriterion *get_sort_criterion_by_sort_type           (NautilusFileSortType  sort_type,
+                                                                       gboolean              reversed);
 static void                 switch_to_manual_layout                   (NautilusCanvasView     *view);
-static NautilusFileSortType get_default_sort_order                    (NautilusFile         *file,
-								       gboolean             *reversed);
+static const SortCriterion *get_default_sort_order                    (NautilusFile         *file);
 static void                 nautilus_canvas_view_clear                  (NautilusFilesView         *view);
 
 G_DEFINE_TYPE (NautilusCanvasView, nautilus_canvas_view, NAUTILUS_TYPE_FILES_VIEW);
@@ -268,7 +292,6 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
 {
 	NautilusFile *file;
         const SortCriterion *overrided_sort_criterion;
-        gboolean overrided_reversed;
 
 	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
 
@@ -276,16 +299,14 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
          * of the change to not allow sorting on search and recent, or the
          * case that the user or some app modified directly the metadata */
         if (nautilus_file_is_in_search (file) || nautilus_file_is_in_recent (file)) {
-	        overrided_sort_criterion = get_sort_criterion_by_sort_type (get_default_sort_order (file, NULL));
-	        nautilus_file_get_default_sort_attribute (file, &overrided_reversed);
-                set_sort_reversed (canvas_view, overrided_reversed, FALSE);
+                overrided_sort_criterion = get_default_sort_order (file);
         } else if (sort != NULL && canvas_view->details->sort != sort) {
                 overrided_sort_criterion = sort;
                 if (set_metadata) {
 	                /* Store the new sort setting. */
                         nautilus_canvas_view_set_directory_sort_by (canvas_view,
 			                                            file,
-			                                            sort->metadata_text);
+                                                                    sort);
                 }
 	} else {
                 return;
@@ -298,20 +319,13 @@ void
 nautilus_canvas_view_clean_up_by_name (NautilusCanvasView *canvas_view)
 {
 	NautilusCanvasContainer *canvas_container;
-	gboolean saved_sort_reversed;
 
 	canvas_container = get_canvas_container (canvas_view);
 
-	/* Hardwire Clean Up to always be by name, in forward order */
-	saved_sort_reversed = canvas_view->details->sort_reversed;
-
-	set_sort_reversed (canvas_view, FALSE, FALSE);
 	update_sort_criterion (canvas_view, &sort_criteria[0], FALSE);
 
 	nautilus_canvas_container_sort (canvas_container);
 	nautilus_canvas_container_freeze_icon_positions (canvas_container);
-
-	set_sort_reversed (canvas_view, saved_sort_reversed, FALSE);
 }
 
 static gboolean
@@ -452,54 +466,60 @@ nautilus_canvas_view_supports_keep_aligned (NautilusCanvasView *view)
 	return view->details->supports_keep_aligned;
 }
 
-static char *
+static const SortCriterion *
 nautilus_canvas_view_get_directory_sort_by (NautilusCanvasView *canvas_view,
 					  NautilusFile *file)
 {
-	const SortCriterion *default_sort_criterion;
+        const SortCriterion *default_sort;
+        g_autofree char *sort_by = NULL;
+        gboolean reversed;
 
 	if (!nautilus_canvas_view_supports_auto_layout (canvas_view)) {
-		return g_strdup ("name");
+                return get_sort_criterion_by_metadata_text ("name", FALSE);
 	}
 
-	default_sort_criterion = get_sort_criterion_by_sort_type (get_default_sort_order (file, NULL));
-	g_return_val_if_fail (default_sort_criterion != NULL, NULL);
+        default_sort = get_default_sort_order (file);
+        g_return_val_if_fail (default_sort != NULL, NULL);
 
-	return nautilus_file_get_metadata
-		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
-		 default_sort_criterion->metadata_text);
+        sort_by = nautilus_file_get_metadata (file,
+                                              NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
+                                              default_sort->metadata_text);
+
+        reversed = nautilus_file_get_boolean_metadata (file,
+                                                       NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                                       default_sort->reverse_order);
+
+        return get_sort_criterion_by_metadata_text (sort_by, reversed);
 }
 
-static NautilusFileSortType
-get_default_sort_order (NautilusFile *file, gboolean *reversed)
+static const SortCriterion *
+get_default_sort_order (NautilusFile *file)
 {
-	NautilusFileSortType retval, default_sort_order;
-	gboolean default_sort_in_reverse_order;
+        NautilusFileSortType sort_type, default_sort_order;
+        gboolean reversed;
 
 	default_sort_order = g_settings_get_enum (nautilus_preferences,
 						  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-	default_sort_in_reverse_order = g_settings_get_boolean (nautilus_preferences,
-								NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
+        reversed = g_settings_get_boolean (nautilus_preferences,
+                                           NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
 
-	retval = nautilus_file_get_default_sort_type (file, reversed);
+        /* If this is a special folder (e.g. search or recent), override the sort
+         * order and reversed flag with values appropriate for the folder */
+        sort_type = nautilus_file_get_default_sort_type (file, &reversed);
 
-	if (retval == NAUTILUS_FILE_SORT_NONE) {
-
-		if (reversed != NULL) {
-			*reversed = default_sort_in_reverse_order;
-		}
-
-		retval = CLAMP (default_sort_order, NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-				NAUTILUS_FILE_SORT_BY_ATIME);
+        if (sort_type == NAUTILUS_FILE_SORT_NONE) {
+                sort_type = CLAMP (default_sort_order,
+                                   NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                   NAUTILUS_FILE_SORT_BY_ATIME);
 	}
 
-	return retval;
+        return get_sort_criterion_by_sort_type (sort_type, reversed);
 }
 
 static void
 nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView *canvas_view, 
 					  NautilusFile *file, 
-					  const char *sort_by)
+                                            const SortCriterion *sort)
 {
 	const SortCriterion *default_sort_criterion;
 
@@ -507,48 +527,17 @@ nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView *canvas_view,
 		return;
 	}
 
-	default_sort_criterion = get_sort_criterion_by_sort_type (get_default_sort_order (file, NULL));
+        default_sort_criterion = get_default_sort_order (file);
 	g_return_if_fail (default_sort_criterion != NULL);
 
 	nautilus_file_set_metadata
 		(file, NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY,
 		 default_sort_criterion->metadata_text,
-		 sort_by);
-}
-
-static gboolean
-nautilus_canvas_view_get_directory_sort_reversed (NautilusCanvasView *canvas_view,
-						NautilusFile *file)
-{
-	gboolean reversed;
-
-	if (!nautilus_canvas_view_supports_auto_layout (canvas_view)) {
-		return FALSE;
-	}
-
-	get_default_sort_order (file, &reversed);
-	return nautilus_file_get_boolean_metadata
-		(file,
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-		 reversed);
-}
-
-static void
-nautilus_canvas_view_set_directory_sort_reversed (NautilusCanvasView *canvas_view,
-						NautilusFile *file,
-						gboolean sort_reversed)
-{
-	gboolean reversed;
-
-	if (!nautilus_canvas_view_supports_auto_layout (canvas_view)) {
-		return;
-	}
-
-	get_default_sort_order (file, &reversed);
-	nautilus_file_set_boolean_metadata
-		(file,
-		 NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
-		 reversed, sort_reversed);
+                 sort->metadata_text);
+        nautilus_file_set_boolean_metadata (file,
+                                            NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED,
+                                            default_sort_criterion->reverse_order,
+                                            sort->reverse_order);
 }
 
 static gboolean
@@ -618,36 +607,19 @@ nautilus_canvas_view_set_directory_auto_layout (NautilusCanvasView *canvas_view,
 		 auto_layout);
 }
 
-static gboolean
-set_sort_reversed (NautilusCanvasView *canvas_view,
-		   gboolean new_value,
-		   gboolean set_metadata)
-{
-	if (canvas_view->details->sort_reversed == new_value) {
-		return FALSE;
-	}
-	canvas_view->details->sort_reversed = new_value;
-
-	if (set_metadata) {
-		/* Store the new sort setting. */
-		nautilus_canvas_view_set_directory_sort_reversed (canvas_view, nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view)), new_value);
-	}
-
-	return TRUE;
-}
-
 static const SortCriterion *
-get_sort_criterion_by_metadata_text (const char *metadata_text)
+get_sort_criterion_by_metadata_text (const char *metadata_text, gboolean reversed)
 {
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
 	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
-		if (g_strcmp0 (sort_criteria[i].metadata_text, metadata_text) == 0) {
+                if (g_strcmp0 (sort_criteria[i].metadata_text, metadata_text) == 0
+                    && reversed == sort_criteria[i].reverse_order) {
 			return &sort_criteria[i];
 		}
 	}
-	return NULL;
+        return &sort_criteria[0];
 }
 
 static const SortCriterion *
@@ -664,13 +636,14 @@ get_sort_criterion_by_action_target_name (const char *action_target_name)
 }
 
 static const SortCriterion *
-get_sort_criterion_by_sort_type (NautilusFileSortType sort_type)
+get_sort_criterion_by_sort_type (NautilusFileSortType sort_type, gboolean reversed)
 {
 	guint i;
 
 	/* Figure out what the new sort setting should be. */
 	for (i = 0; i < G_N_ELEMENTS (sort_criteria); i++) {
-		if (sort_type == sort_criteria[i].sort_type) {
+                if (sort_type == sort_criteria[i].sort_type
+                    && reversed == sort_criteria[i].reverse_order) {
 			return &sort_criteria[i];
 		}
 	}
@@ -695,7 +668,8 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 	NautilusCanvasView *canvas_view;
 	GtkWidget *canvas_container;
 	NautilusFile *file;
-	char *sort_name, *uri;
+        char *uri;
+        const SortCriterion *sort;
 
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
 
@@ -712,12 +686,8 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 	 * It's OK not to resort the icons because the
 	 * container doesn't have any icons at this point.
 	 */
-	sort_name = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
-	update_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
-	g_free (sort_name);
-
-	/* Set the sort direction from the metadata. */
-	set_sort_reversed (canvas_view, nautilus_canvas_view_get_directory_sort_reversed (canvas_view, file), FALSE);
+        sort = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
+        update_sort_criterion (canvas_view, sort, FALSE);
 
 	nautilus_canvas_container_set_keep_aligned
 		(get_canvas_container (canvas_view), 
@@ -893,24 +863,6 @@ nautilus_canvas_view_get_selection (NautilusFilesView *view)
 }
 
 static void
-action_reversed_order (GSimpleAction *action,
-		       GVariant      *state,
-		       gpointer       user_data)
-{
-	gboolean reversed_order;
-
-	g_assert (NAUTILUS_IS_CANVAS_VIEW (user_data));
-
-	reversed_order = g_variant_get_boolean (state);
-	if (set_sort_reversed (user_data, reversed_order, TRUE)) {
-		nautilus_canvas_container_sort (get_canvas_container (user_data));
-		nautilus_canvas_view_reveal_selection (NAUTILUS_FILES_VIEW (user_data));
-	}
-
-	g_simple_action_set_state (action, state);
-}
-
-static void
 action_keep_aligned (GSimpleAction *action,
 		     GVariant      *state,
 		     gpointer       user_data)
@@ -1019,7 +971,6 @@ layout_changed_callback (NautilusCanvasContainer *container,
 
 const GActionEntry canvas_view_entries[] = {
 	{ "keep-aligned", NULL, NULL, "true", action_keep_aligned },
-	{ "reversed-order", NULL, NULL, "false", action_reversed_order },
 	{ "sort", NULL, "s", "'name'", action_sort_order_changed },
 	{ "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
 };
@@ -1091,7 +1042,6 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
 	view_action_group = nautilus_files_view_get_action_group (view);
 	if (nautilus_canvas_view_supports_auto_layout (canvas_view)) {
 		GVariant *sort_state;
-		GVariant *reversed_state;
 
 		/* When we change the sort action state, even using the same value, it triggers
 		 * the sort action changed handler, which reveals the selection, since we expect
@@ -1099,16 +1049,9 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
 		 * need to update the actions state for others reason than an actual sort change,
 		 * so we need to prevent to trigger the sort action changed handler for those cases.
 		 * To achieve this, check if the action state value actually changed before setting
-		 * it. The same happens to the reversed-order state.
+                 * it
 		 */
 		sort_state = g_action_group_get_action_state (view_action_group, "sort");
-		reversed_state = g_action_group_get_action_state (view_action_group, "reversed-order");
-
-		if (NAUTILUS_CANVAS_VIEW (view)->details->sort_reversed != g_variant_get_boolean (reversed_state)) {
-			g_action_group_change_action_state (view_action_group,
-							    "reversed-order",
-							    g_variant_new_boolean (NAUTILUS_CANVAS_VIEW (view)->details->sort_reversed));
-		}
 
 		if (g_strcmp0 (g_variant_get_string (sort_state, NULL),
                                NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name) != 0) {
@@ -1117,7 +1060,6 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
                                                              g_variant_new_string (NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name));
 		}
 
-		g_variant_unref (reversed_state);
 		g_variant_unref (sort_state);
 	}
 
@@ -1363,7 +1305,7 @@ nautilus_canvas_view_compare_files (NautilusCanvasView   *canvas_view,
 		(a, b, canvas_view->details->sort->sort_type,
 		 /* Use type-unsafe cast for performance */
 		 nautilus_files_view_should_sort_directories_first ((NautilusFilesView *)canvas_view),
-		 canvas_view->details->sort_reversed);
+                 canvas_view->details->sort->reverse_order);
 }
 
 static int
@@ -1506,7 +1448,7 @@ default_sort_order_changed_callback (gpointer callback_data)
 {
 	NautilusCanvasView *canvas_view;
 	NautilusFile *file;
-	char *sort_name;
+        const SortCriterion *sort;
 	NautilusCanvasContainer *canvas_container;
 
 	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (callback_data));
@@ -1514,29 +1456,9 @@ default_sort_order_changed_callback (gpointer callback_data)
 	canvas_view = NAUTILUS_CANVAS_VIEW (callback_data);
 
 	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
-	sort_name = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
-	update_sort_criterion (canvas_view, get_sort_criterion_by_metadata_text (sort_name), FALSE);
-	g_free (sort_name);
+        sort = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
+        update_sort_criterion (canvas_view, sort, FALSE);
 
-	canvas_container = get_canvas_container (canvas_view);
-	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (canvas_container));
-
-	nautilus_canvas_container_request_update_all (canvas_container);
-}
-
-static void
-default_sort_in_reverse_order_changed_callback (gpointer callback_data)
-{
-	NautilusCanvasView *canvas_view;
-	NautilusFile *file;
-	NautilusCanvasContainer *canvas_container;
-
-	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (callback_data));
-
-	canvas_view = NAUTILUS_CANVAS_VIEW (callback_data);
-
-	file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
-	set_sort_reversed (canvas_view, nautilus_canvas_view_get_directory_sort_reversed (canvas_view, file), FALSE);
 	canvas_container = get_canvas_container (canvas_view);
 	g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (canvas_container));
 
@@ -1874,9 +1796,6 @@ nautilus_canvas_view_finalize (GObject *object)
 					      default_sort_order_changed_callback,
 					      canvas_view);
 	g_signal_handlers_disconnect_by_func (nautilus_preferences,
-					      default_sort_in_reverse_order_changed_callback,
-					      canvas_view);
-	g_signal_handlers_disconnect_by_func (nautilus_preferences,
 					      image_display_policy_changed_callback,
 					      canvas_view);
 
@@ -1994,7 +1913,7 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 				  canvas_view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER,
-				  G_CALLBACK (default_sort_in_reverse_order_changed_callback),
+				  G_CALLBACK (default_sort_order_changed_callback),
 				  canvas_view);
 	g_signal_connect_swapped (nautilus_preferences,
 				  "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
