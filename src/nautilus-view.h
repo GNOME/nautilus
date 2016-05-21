@@ -39,8 +39,8 @@ struct _NautilusViewInterface
         GIcon*               (*get_icon)                   (NautilusView         *view);
 
         /*
-         * The widget that is displayed under the view menu. When set to NULL, the
-         * button gets insensitive.
+         * The toolbar menu section (widget), that should be shown in the menu
+         * when this view is active
          */
         GtkWidget*           (*get_view_widget)            (NautilusView         *view);
 

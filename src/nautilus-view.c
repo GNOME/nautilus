@@ -118,7 +118,8 @@ nautilus_view_get_icon (NautilusView *view)
  * nautilus_view_get_view_widget:
  * @view: a #NautilusView
  *
- * Retrieves the view menu widget from @view.
+ * Retrieves the toolbar menu section (widget) from @view, that should be shown
+ * in the menu when this view is active
  *
  * Returns: (transfer none): the widget displayed under view menu.
  */

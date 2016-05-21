@@ -66,6 +66,7 @@ struct _NautilusToolbarPrivate {
 
 	GtkWidget *operations_button;
 	GtkWidget *view_button;
+        GtkWidget *view_menu_slot_section;
         GtkWidget *view_toggle_button;
         GtkWidget *view_toggle_icon;
 
@@ -889,6 +890,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
+        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_menu_slot_section);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_button);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_icon);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, path_bar_container);
@@ -953,29 +955,39 @@ nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
         return TRUE;
 }
 
-static gboolean
-nautilus_toolbar_view_widget_transform_to (GBinding     *binding,
-                                           const GValue *from_value,
-                                           GValue       *to_value,
-                                           gpointer      user_data)
+static void
+on_slot_view_widget_changed (NautilusToolbar    *toolbar,
+                             GParamSpec         *param,
+                             NautilusWindowSlot *slot)
 {
-        NautilusToolbar *toolbar;
         GtkWidget *view_widget;
+        GList *children;
+        GList *child;
 
-        toolbar = NAUTILUS_TOOLBAR (user_data);
-        view_widget = g_value_get_object (from_value);
+        children = gtk_container_get_children (GTK_CONTAINER (toolbar->priv->view_menu_slot_section));
+        for (child = children; child != NULL; child = g_list_next (child)) {
+                gtk_container_remove (GTK_CONTAINER (toolbar->priv->view_menu_slot_section),
+                                      GTK_WIDGET (child->data));
+        }
+        g_list_free (children);
 
-        gtk_menu_button_set_popover (GTK_MENU_BUTTON (toolbar->priv->view_button), NULL);
-
-        g_value_set_object (to_value, view_widget);
-
-        /* Make the sensitivity change after the popover has been set, so that the sensitivity
-         * propagates to the popover. Otherwise the popover will remain greyed out after
-         * switching to a previous tab
-         */
+        view_widget = nautilus_window_slot_get_view_widget (slot);
         gtk_widget_set_sensitive (toolbar->priv->view_button, view_widget != NULL);
+        if (view_widget == NULL)
+                return;
 
-        return TRUE;
+        gtk_box_pack_start (GTK_BOX (toolbar->priv->view_menu_slot_section), view_widget, FALSE, FALSE, 0);
+}
+
+static void
+disconnect_view_widget_change_handler (NautilusToolbar *toolbar)
+{
+        if (toolbar->priv->active_slot == NULL)
+                return;
+
+        g_signal_handlers_disconnect_by_func (toolbar->priv->active_slot,
+                                              G_CALLBACK (on_slot_view_widget_changed),
+                                              toolbar);
 }
 
 void
@@ -988,6 +1000,7 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
         g_clear_pointer (&toolbar->priv->view_widget_binding, g_binding_unbind);
 
         if (toolbar->priv->active_slot != slot) {
+                disconnect_view_widget_change_handler (toolbar);
                 toolbar->priv->active_slot = slot;
 
                 if (slot) {
@@ -999,16 +1012,11 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
                                                                      NULL,
                                                                      toolbar,
                                                                      NULL);
-                        toolbar->priv->view_widget_binding =
-                                        g_object_bind_property_full (slot, "view-widget",
-                                                                     toolbar->priv->view_button, "popover",
-                                                                     G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                                     (GBindingTransformFunc) nautilus_toolbar_view_widget_transform_to,
-                                                                     NULL,
-                                                                     toolbar,
-                                                                     NULL);
-                }
 
+                        on_slot_view_widget_changed (toolbar, NULL, slot);
+                        g_signal_connect_swapped (slot, "notify::view-widget",
+                                                  G_CALLBACK (on_slot_view_widget_changed), toolbar);
+                }
         }
 }
 

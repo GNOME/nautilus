@@ -637,8 +637,8 @@ nautilus_files_view_get_icon (NautilusView *view)
  * nautilus_files_view_get_view_widget:
  * @view: a #NautilusFilesView
  *
- * Retrieves the view menu, as a #GtkWidget. If it's %NULL,
- * the button renders insensitive.
+ * Retrieves the menu section, as a #GtkWidget that should be added to the toolbar
+ * menu for this view. If it's %NULL, no widget is added for this view
  *
  * Returns: (transfer none): a #GtkWidget for the view menu
  */

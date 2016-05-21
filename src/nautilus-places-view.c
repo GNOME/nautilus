@@ -283,7 +283,7 @@ nautilus_places_view_set_search_query (NautilusView  *view,
 static GtkWidget*
 nautilus_places_view_get_view_widget (NautilusView *view)
 {
-        /* By returning NULL, the view menu button turns insensitive */
+        /* By returning NULL, no section will be added to the toolbar menu when this view is active */
         return NULL;
 }
 
