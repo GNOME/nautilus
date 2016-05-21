@@ -65,7 +65,6 @@ struct _NautilusToolbarPrivate {
         guint operations_button_attention_timeout_id;
 
 	GtkWidget *operations_button;
-	GtkWidget *view_button;
         GtkWidget *view_menu_slot_section;
         GtkWidget *view_toggle_button;
         GtkWidget *view_toggle_icon;
@@ -889,7 +888,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_popover);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
-	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_menu_slot_section);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_button);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_icon);
@@ -972,7 +970,6 @@ on_slot_view_widget_changed (NautilusToolbar    *toolbar,
         g_list_free (children);
 
         view_widget = nautilus_window_slot_get_view_widget (slot);
-        gtk_widget_set_sensitive (toolbar->priv->view_button, view_widget != NULL);
         if (view_widget == NULL)
                 return;
 
