@@ -65,6 +65,7 @@ struct _NautilusToolbarPrivate {
         guint operations_button_attention_timeout_id;
 
 	GtkWidget *operations_button;
+        GtkWidget *view_button;
         GtkWidget *view_menu_slot_section;
         GtkWidget *view_toggle_button;
         GtkWidget *view_toggle_icon;
@@ -754,8 +755,17 @@ on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
 static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
+        GtkBuilder *builder;
+        GtkWidget *menu_popover;
+
 	self->priv = nautilus_toolbar_get_instance_private (self);
 	gtk_widget_init_template (GTK_WIDGET (self));
+
+        builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-menu.ui");
+        menu_popover = GTK_WIDGET (gtk_builder_get_object (builder, "menu_popover"));
+        self->priv->view_menu_slot_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_slot_section"));
+        gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button), menu_popover);
+        g_object_unref (builder);
 
 	self->priv->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
 	gtk_container_add (GTK_CONTAINER (self->priv->path_bar_container),
@@ -888,7 +898,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_popover);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_container);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, operations_revealer);
-        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_menu_slot_section);
+        gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_button);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_button);
         gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, view_toggle_icon);
 	gtk_widget_class_bind_template_child_private (widget_class, NautilusToolbar, path_bar_container);

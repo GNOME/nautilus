@@ -72,11 +72,11 @@
       </packing>
     </child>
     <child>
-      <object class="GtkMenuButton" id="view-button">
+      <object class="GtkMenuButton" id="view_button">
         <property name="visible">True</property>
         <property name="sensitive">True</property>
         <property name="action_name">win.view-menu</property>
-        <property name="popover">view_menu_popover</property>
+        <!-- Popover defined in nautilus-toolbar-menu.ui -->
         <style>
           <class name="image-button"/>
         </style>
@@ -197,103 +197,6 @@
             <property name="visible">True</property>
             <property name="margin">12</property>
             <property name="spacing">10</property>
-          </object>
-        </child>
-      </object>
-    </child>
-  </object>
-  <object class="GtkPopoverMenu" id="view_menu_popover">
-    <child>
-      <object class="GtkBox">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="border_width">9</property>
-        <property name="orientation">vertical</property>
-        <property name="width_request">160</property>
-        <child>
-          <object class="GtkBox">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="homogeneous">True</property>
-            <style>
-              <class name="linked"/>
-            </style>
-            <child>
-              <object class="GtkButton" id="new-folder">
-                <property name="visible">True</property>
-                <property name="action_name">view.new-folder</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="icon-name">folder-new-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">New Folder</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">0</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="bookmark-this-location">
-                <property name="visible">True</property>
-                <property name="action_name">win.bookmark-current-location</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="icon-name">bookmark-new-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">Bookmark this Location</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="new-tab">
-                <property name="visible">True</property>
-                <property name="action-name">win.new-tab</property>
-                <child>
-                  <object class="GtkImage">
-                    <property name="visible">True</property>
-                    <property name="icon-name">tab-new-symbolic</property>
-                    <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">New Tab</property>
-                  </object>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-          </object>
-        </child>
-        <child>
-          <object class="GtkBox" id="view_menu_slot_section">
-            <property name="visible">True</property>
-            <property name="can_focus">False</property>
-            <property name="orientation">vertical</property>
           </object>
         </child>
       </object>
