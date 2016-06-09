@@ -8129,6 +8129,11 @@ nautilus_files_view_init (NautilusFilesView *view)
                 "<alt>Return",
                 NULL
         };
+        const gchar *zoom_in_accels[] = {
+                "<control>equal",
+                "<control>plus",
+                NULL
+        };
 
         nautilus_profile_start (NULL);
 
@@ -8295,7 +8300,8 @@ nautilus_files_view_init (NautilusFilesView *view)
         app = g_application_get_default ();
 
         /* Toolbar menu */
-        nautilus_application_add_accelerator (app, "view.zoom-in", "<control>plus");
+        gtk_application_set_accels_for_action (GTK_APPLICATION (app),
+                                               "view.zoom-in", zoom_in_accels);
         nautilus_application_add_accelerator (app, "view.zoom-out", "<control>minus");
         nautilus_application_add_accelerator (app, "view.show-hidden-files", "<control>h");
         /* Background menu */
