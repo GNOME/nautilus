@@ -255,6 +255,7 @@ show_menu (NautilusToolbar *self,
 		break;
 	}
 
+        gtk_menu_attach_to_widget (GTK_MENU (menu), GTK_WIDGET (window), NULL);
         gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
 			(GtkMenuPositionFunc) menu_position_func, widget,
                         button, event_time);
