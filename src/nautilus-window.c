@@ -2074,34 +2074,34 @@ nautilus_window_initialize_actions (NautilusWindow *window)
 					 window);
 
 	app = g_application_get_default ();
-	nautilus_application_add_accelerator (app, "win.back", "<alt>Left");
-	nautilus_application_add_accelerator (app, "win.forward", "<alt>Right");
-	nautilus_application_add_accelerator (app, "win.enter-location", "<control>l");
-	nautilus_application_add_accelerator (app, "win.new-tab", "<control>t");
-	nautilus_application_add_accelerator (app, "win.close-current-view", "<control>w");
+	nautilus_application_set_accelerator (app, "win.back", "<alt>Left");
+	nautilus_application_set_accelerator (app, "win.forward", "<alt>Right");
+	nautilus_application_set_accelerator (app, "win.enter-location", "<control>l");
+	nautilus_application_set_accelerator (app, "win.new-tab", "<control>t");
+	nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
         /* Special case reload, since users are used to use two shortcuts instead of one */
 	gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
 
-	nautilus_application_add_accelerator (app, "win.undo", "<control>z");
-	nautilus_application_add_accelerator (app, "win.redo", "<shift><control>z");
+	nautilus_application_set_accelerator (app, "win.undo", "<control>z");
+	nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
 	/* Only accesible by shorcuts */
-	nautilus_application_add_accelerator (app, "win.bookmark-current-location", "<control>d");
-	nautilus_application_add_accelerator (app, "win.up", "<alt>Up");
-	nautilus_application_add_accelerator (app, "win.go-home", "<alt>Home");
-	nautilus_application_add_accelerator (app, "win.tab-previous", "<control>Page_Up");
-	nautilus_application_add_accelerator (app, "win.tab-next", "<control>Page_Down");
-	nautilus_application_add_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
-	nautilus_application_add_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
-	nautilus_application_add_accelerator (app, "win.prompt-root-location", "slash");
-	nautilus_application_add_accelerator (app, "win.prompt-home-location", "asciitilde");
-        nautilus_application_add_accelerator (app, "win.view-menu", "F10");
+	nautilus_application_set_accelerator (app, "win.bookmark-current-location", "<control>d");
+	nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
+	nautilus_application_set_accelerator (app, "win.go-home", "<alt>Home");
+	nautilus_application_set_accelerator (app, "win.tab-previous", "<control>Page_Up");
+	nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
+	nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
+	nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
+	nautilus_application_set_accelerator (app, "win.prompt-root-location", "slash");
+	nautilus_application_set_accelerator (app, "win.prompt-home-location", "asciitilde");
+	nautilus_application_set_accelerator (app, "win.view-menu", "F10");
 
 	/* Alt+N for the first 9 tabs */
 	for (i = 0; i < 9; ++i) {
 		g_snprintf (detailed_action, sizeof (detailed_action), "win.go-to-tab(%i)", i);
 		g_snprintf (accel, sizeof (accel), "<alt>%i", i + 1);
-		nautilus_application_add_accelerator (app, detailed_action, accel);
+		nautilus_application_set_accelerator (app, detailed_action, accel);
 	}
 
 	action = g_action_map_lookup_action (G_ACTION_MAP (app), "show-hide-sidebar");

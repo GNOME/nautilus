@@ -797,9 +797,9 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
         gtk_widget_insert_action_group (GTK_WIDGET (self),
                                         "slot",
                                         G_ACTION_GROUP (priv->slot_action_group));
-        nautilus_application_add_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
-        nautilus_application_add_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
-        nautilus_application_add_accelerator (app, "slot.search-visible", "<control>f");
+        nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
+        nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
+        nautilus_application_set_accelerator (app, "slot.search-visible", "<control>f");
 
         priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
 }

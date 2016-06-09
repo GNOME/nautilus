@@ -81,7 +81,7 @@ typedef struct {
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
 void
-nautilus_application_add_accelerator (GApplication *app,
+nautilus_application_set_accelerator (GApplication *app,
 				      const gchar  *action_name,
 				      const gchar  *accel)
 {
@@ -801,7 +801,7 @@ nautilus_init_application_actions (NautilusApplication *app)
                                             "show-hide-sidebar",
                                             g_variant_new_boolean (show_sidebar));
 
-        nautilus_application_add_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
+        nautilus_application_set_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
 }
 
 const GOptionEntry options[] = {

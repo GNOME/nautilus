@@ -4767,7 +4767,7 @@ add_script_to_scripts_menus (NautilusFilesView *view,
         g_menu_append_item (menu, menu_item);
 
 	if ((shortcut = g_hash_table_lookup (script_accels, name))) {
-		nautilus_application_add_accelerator (g_application_get_default(),
+		nautilus_application_set_accelerator (g_application_get_default(),
 						      detailed_action_name, shortcut);
 	}
 
@@ -8301,39 +8301,39 @@ nautilus_files_view_init (NautilusFilesView *view)
 
         /* Toolbar menu */
         nautilus_application_set_accelerators (app, "view.zoom-in", zoom_in_accels);
-        nautilus_application_add_accelerator (app, "view.zoom-out", "<control>minus");
-        nautilus_application_add_accelerator (app, "view.show-hidden-files", "<control>h");
+        nautilus_application_set_accelerator (app, "view.zoom-out", "<control>minus");
+        nautilus_application_set_accelerator (app, "view.show-hidden-files", "<control>h");
         /* Background menu */
-        nautilus_application_add_accelerator (app, "view.select-all", "<control>a");
-        nautilus_application_add_accelerator (app, "view.paste", "<control>v");
-        nautilus_application_add_accelerator (app, "view.create-link", "<control>m");
+        nautilus_application_set_accelerator (app, "view.select-all", "<control>a");
+        nautilus_application_set_accelerator (app, "view.paste", "<control>v");
+        nautilus_application_set_accelerator (app, "view.create-link", "<control>m");
         /* Selection menu */
         nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
-        nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
-        nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
-        nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
-        nautilus_application_add_accelerator (app, "view.delete-from-trash", "Delete");
-        nautilus_application_add_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
+        nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
+        nautilus_application_set_accelerator (app, "view.open-item-new-window", "<shift><control>w");
+        nautilus_application_set_accelerator (app, "view.move-to-trash", "Delete");
+        nautilus_application_set_accelerator (app, "view.delete-from-trash", "Delete");
+        nautilus_application_set_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
         /* When trash is not available, allow the "Delete" key to delete permanently, that is, when
          * the menu item is available, since we never make both the trash and delete-permanently-menu-item
          * actions active */
-        nautilus_application_add_accelerator (app, "view.delete-permanently-menu-item", "Delete");
-        nautilus_application_add_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
+        nautilus_application_set_accelerator (app, "view.delete-permanently-menu-item", "Delete");
+        nautilus_application_set_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
         nautilus_application_set_accelerators (app, "view.properties", open_properties);
-        nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
-        nautilus_application_add_accelerator (app, "view.rename", "F2");
-        nautilus_application_add_accelerator (app, "view.cut", "<control>x");
-        nautilus_application_add_accelerator (app, "view.copy", "<control>c");
-        nautilus_application_add_accelerator (app, "view.create-link-in-place", "<control><shift>m");
-        nautilus_application_add_accelerator (app, "view.new-folder", "<control><shift>n");
+        nautilus_application_set_accelerator (app, "view.open-item-location", "<control><alt>o");
+        nautilus_application_set_accelerator (app, "view.rename", "F2");
+        nautilus_application_set_accelerator (app, "view.cut", "<control>x");
+        nautilus_application_set_accelerator (app, "view.copy", "<control>c");
+        nautilus_application_set_accelerator (app, "view.create-link-in-place", "<control><shift>m");
+        nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
         /* Only accesible by shorcuts */
-        nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
-        nautilus_application_add_accelerator (app, "view.invert-selection", "<shift><control>i");
-        nautilus_application_add_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
+        nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
+        nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
+        nautilus_application_set_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
 
         /* Show a warning dialog to inform the user that the shorcut for move to trash
          * changed */
-        nautilus_application_add_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
+        nautilus_application_set_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
 
         nautilus_profile_end (NULL);
 }
