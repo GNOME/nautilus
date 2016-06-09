@@ -8300,8 +8300,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         app = g_application_get_default ();
 
         /* Toolbar menu */
-        gtk_application_set_accels_for_action (GTK_APPLICATION (app),
-                                               "view.zoom-in", zoom_in_accels);
+        nautilus_application_set_accelerators (app, "view.zoom-in", zoom_in_accels);
         nautilus_application_add_accelerator (app, "view.zoom-out", "<control>minus");
         nautilus_application_add_accelerator (app, "view.show-hidden-files", "<control>h");
         /* Background menu */
@@ -8309,8 +8308,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         nautilus_application_add_accelerator (app, "view.paste", "<control>v");
         nautilus_application_add_accelerator (app, "view.create-link", "<control>m");
         /* Selection menu */
-        gtk_application_set_accels_for_action (GTK_APPLICATION (app),
-                                               "view.open-with-default-application", open_accels);
+        nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
         nautilus_application_add_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
         nautilus_application_add_accelerator (app, "view.open-item-new-window", "<shift><control>w");
         nautilus_application_add_accelerator (app, "view.move-to-trash", "Delete");
@@ -8321,7 +8319,7 @@ nautilus_files_view_init (NautilusFilesView *view)
          * actions active */
         nautilus_application_add_accelerator (app, "view.delete-permanently-menu-item", "Delete");
         nautilus_application_add_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
-        gtk_application_set_accels_for_action (GTK_APPLICATION (app), "view.properties", open_properties);
+        nautilus_application_set_accelerators (app, "view.properties", open_properties);
         nautilus_application_add_accelerator (app, "view.open-item-location", "<control><alt>o");
         nautilus_application_add_accelerator (app, "view.rename", "F2");
         nautilus_application_add_accelerator (app, "view.cut", "<control>x");

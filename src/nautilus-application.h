@@ -52,6 +52,10 @@ void nautilus_application_add_accelerator (GApplication *app,
 					   const gchar  *action_name,
 					   const gchar  *accel);
 
+void nautilus_application_set_accelerators (GApplication *app,
+					    const gchar  *action_name,
+					    const gchar **accels);
+
 GList * nautilus_application_get_windows (NautilusApplication *application);
 
 void nautilus_application_open_location (NautilusApplication *application,

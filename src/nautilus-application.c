@@ -93,6 +93,14 @@ nautilus_application_add_accelerator (GApplication *app,
 	gtk_application_set_accels_for_action (GTK_APPLICATION (app), action_name, vaccels);
 }
 
+void
+nautilus_application_set_accelerators (GApplication *app,
+				       const gchar  *action_name,
+				       const gchar **accels)
+{
+	gtk_application_set_accels_for_action (GTK_APPLICATION (app), action_name, accels);
+}
+
 GList *
 nautilus_application_get_windows (NautilusApplication *self)
 {
