@@ -2757,14 +2757,6 @@ nautilus_list_view_bump_zoom_level (NautilusFilesView *view, int zoom_increment)
 }
 
 static void
-nautilus_list_view_restore_default_zoom_level (NautilusFilesView *view)
-{
-	g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
-
-	nautilus_list_view_zoom_to_level (view, get_default_zoom_level ());
-}
-
-static void
 nautilus_list_view_restore_standard_zoom_level (NautilusFilesView *view)
 {
         nautilus_list_view_zoom_to_level (view, NAUTILUS_LIST_ZOOM_LEVEL_STANDARD);
@@ -3158,7 +3150,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 	nautilus_files_view_class->get_selection_for_file_transfer = nautilus_list_view_get_selection_for_file_transfer;
 	nautilus_files_view_class->is_empty = nautilus_list_view_is_empty;
 	nautilus_files_view_class->remove_file = nautilus_list_view_remove_file;
-	nautilus_files_view_class->restore_default_zoom_level = nautilus_list_view_restore_default_zoom_level;
         nautilus_files_view_class->restore_standard_zoom_level = nautilus_list_view_restore_standard_zoom_level;
 	nautilus_files_view_class->reveal_selection = nautilus_list_view_reveal_selection;
 	nautilus_files_view_class->select_all = nautilus_list_view_select_all;

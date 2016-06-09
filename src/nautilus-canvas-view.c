@@ -793,18 +793,6 @@ nautilus_canvas_view_bump_zoom_level (NautilusFilesView *view, int zoom_incremen
 }
 
 static void
-nautilus_canvas_view_restore_default_zoom_level (NautilusFilesView *view)
-{
-	NautilusCanvasView *canvas_view;
-
-	g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
-
-	canvas_view = NAUTILUS_CANVAS_VIEW (view);
-	nautilus_canvas_view_zoom_to_level
-		(view, get_default_zoom_level (canvas_view));
-}
-
-static void
 nautilus_canvas_view_restore_standard_zoom_level (NautilusFilesView *view)
 {
         nautilus_canvas_view_zoom_to_level (view, NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
@@ -1844,7 +1832,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 	nautilus_files_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
 	nautilus_files_view_class->is_empty = nautilus_canvas_view_is_empty;
 	nautilus_files_view_class->remove_file = nautilus_canvas_view_remove_file;
-	nautilus_files_view_class->restore_default_zoom_level = nautilus_canvas_view_restore_default_zoom_level;
         nautilus_files_view_class->restore_standard_zoom_level = nautilus_canvas_view_restore_standard_zoom_level;
 	nautilus_files_view_class->reveal_selection = nautilus_canvas_view_reveal_selection;
 	nautilus_files_view_class->select_all = nautilus_canvas_view_select_all;

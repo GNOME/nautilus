@@ -759,24 +759,6 @@ nautilus_files_view_supports_zooming (NautilusFilesView *view)
 }
 
 /**
- * nautilus_files_view_restore_default_zoom_level:
- *
- * restore to the default zoom level by invoking the relevant subclass through the slot
- *
- **/
-void
-nautilus_files_view_restore_default_zoom_level (NautilusFilesView *view)
-{
-        g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-        if (!nautilus_files_view_supports_zooming (view)) {
-                return;
-        }
-
-        NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->restore_default_zoom_level (view);
-}
-
-/**
  * nautilus_files_view_restore_standard_zoom_level:
  *
  * Restore the zoom level to 100%
@@ -2364,14 +2346,6 @@ action_zoom_out (GSimpleAction *action,
         view = NAUTILUS_FILES_VIEW (user_data);
 
         nautilus_files_view_bump_zoom_level (view, -1);
-}
-
-static void
-action_zoom_default (GSimpleAction *action,
-                     GVariant      *state,
-                     gpointer       user_data)
-{
-        nautilus_files_view_restore_default_zoom_level (user_data);
 }
 
 static void
@@ -6039,7 +6013,6 @@ const GActionEntry view_entries[] = {
         /* Toolbar menu */
         { "zoom-in",  action_zoom_in },
         { "zoom-out", action_zoom_out },
-        { "zoom-default", action_zoom_default },
         { "zoom-standard", action_zoom_standard },
         { "show-hidden-files", NULL, NULL, "true", action_show_hidden_files },
         /* Background menu */
@@ -6642,10 +6615,6 @@ real_update_actions_state (NautilusFilesView *view)
                                              "zoom-out");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      nautilus_files_view_can_zoom_out (view));
-        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
-                                             "zoom-default");
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     nautilus_files_view_supports_zooming (view));
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "zoom-standard");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -8355,7 +8324,6 @@ nautilus_files_view_init (NautilusFilesView *view)
         nautilus_application_add_accelerator (app, "view.new-folder", "<control><shift>n");
         /* Only accesible by shorcuts */
         nautilus_application_add_accelerator (app, "view.select-pattern", "<control>s");
-        nautilus_application_add_accelerator (app, "view.zoom-default", "<control>0");
         nautilus_application_add_accelerator (app, "view.invert-selection", "<shift><control>i");
         nautilus_application_add_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
 

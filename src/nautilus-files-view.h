@@ -179,10 +179,6 @@ struct NautilusFilesViewClass {
         void    (* bump_zoom_level)          (NautilusFilesView *view,
                                               int                zoom_increment);
 
-        /* restore_default_zoom_level is a function pointer that subclasses must override
-         * to restore the zoom level of an object to a default setting. */
-        void    (* restore_default_zoom_level) (NautilusFilesView *view);
-
         /*
          * restore_default_zoom_level: restores the zoom level to 100% (or to
          * whatever is considered the 'standard' zoom level for the view). */
@@ -360,7 +356,6 @@ void              nautilus_files_view_bump_zoom_level            (NautilusFilesV
                                                                   int                     zoom_increment);
 void              nautilus_files_view_zoom_to_level              (NautilusFilesView      *view,
                                                                   gint                    level);
-void              nautilus_files_view_restore_default_zoom_level (NautilusFilesView      *view);
 gboolean          nautilus_files_view_can_zoom_in                (NautilusFilesView      *view);
 gboolean          nautilus_files_view_can_zoom_out               (NautilusFilesView      *view);
 void              nautilus_files_view_update_menus               (NautilusFilesView      *view);
