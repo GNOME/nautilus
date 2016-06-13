@@ -5152,11 +5152,14 @@ get_text_ellipsis_limit_for_zoom (char **strs,
 	}
 
 	if (strs != NULL) {
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 		for (p = strs; *p != NULL; p++) {
 			if (sscanf (*p, str, limit)) {
 				success = TRUE;
 			}
 		}
+#pragma GCC diagnostic pop
 	}
 
 	g_free (str);

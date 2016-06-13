@@ -414,6 +414,8 @@ get_link_name (const char *name, int count, int max_length)
 		use_count = TRUE;
 	}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 	if (use_count)
 		result = g_strdup_printf (format, count, name);
 	else
@@ -435,7 +437,7 @@ get_link_name (const char *name, int count, int max_length)
 			g_free (new_name);
 		}
 	}
-
+#pragma GCC diagnostic pop
 	return result;
 }
 
@@ -708,6 +710,8 @@ make_next_duplicate_name (const char *base, const char *suffix, int count, int m
 
 	}
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 	if (use_count)
 		result = g_strdup_printf (format, base, count, suffix);
 	else
@@ -729,6 +733,7 @@ make_next_duplicate_name (const char *base, const char *suffix, int count, int m
 			g_free (new_base);
 		}
 	}
+#pragma GCC diagnostic pop
 
 	return result;
 }

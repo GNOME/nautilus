@@ -425,7 +425,10 @@ get_text_for_date_range (GPtrArray *date_range)
           normalized = days / 365;
         }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
       label = g_strdup_printf (get_text_for_days_ago (days), normalized);
+#pragma GCC diagnostic pop
     }
 
     g_free (formatted_date);
