@@ -48,9 +48,6 @@ struct _NautilusActionBar
   GtkWidget          *new_folder_0_button;
   GtkWidget          *paste_button;
   GtkWidget          *select_all_button;
-  GtkWidget          *no_selection_separator;
-  GtkWidget          *bookmark_button;
-  GtkWidget          *properties_0_button;
   GtkWidget          *no_selection_overflow_button;
   GtkWidget          *no_selection_folder_label;
 
@@ -64,7 +61,7 @@ struct _NautilusActionBar
   GtkWidget          *properties_folders_button;
   GtkWidget          *folders_overflow_button;
 
-  GtkWidget          *no_selection_widgets    [5];
+  GtkWidget          *no_selection_widgets    [3];
   GtkWidget          *files_folders_widgets   [5];
 
   /* Labels */
@@ -531,9 +528,9 @@ nautilus_action_bar_set_property (GObject      *object,
 static void
 set_visible_buttons (GtkWidget **widgets,
                      GtkWidget  *overflow,
+                     gint        length,
                      gint        visible_items)
 {
-  const gint length = 5;
   gint i;
 
   gtk_widget_set_visible (overflow, visible_items < length);
@@ -550,12 +547,13 @@ nautilus_action_bar_size_allocate (GtkWidget     *widget,
   GtkWidget **widgets;
   GtkWidget *overflow_button, *reference_button;
   gint visible_items, button_width, overflow_button_width, static_button_width;
-  gint max_width;
+  gint max_width, max_items;
 
   self = NAUTILUS_ACTION_BAR (widget);
   max_width = 2 * allocation->width / 3 - 2 * gtk_container_get_border_width (GTK_CONTAINER (self->stack));
   reference_button = overflow_button = NULL;
   static_button_width = 0;
+  max_items = 5;
 
   switch (self->mode)
     {
@@ -563,6 +561,7 @@ nautilus_action_bar_size_allocate (GtkWidget     *widget,
       overflow_button = self->no_selection_overflow_button;
       reference_button = self->new_folder_0_button;
       widgets = self->no_selection_widgets;
+      max_items = 3;
       break;
 
     case MODE_FILES_ONLY:
@@ -614,14 +613,10 @@ nautilus_action_bar_size_allocate (GtkWidget     *widget,
     }
 
   /* Number of visible widgets */
-  visible_items = CLAMP ((max_width - overflow_button_width - static_button_width) / MAX (button_width, 1), 0, 5);
+  visible_items = CLAMP ((max_width - overflow_button_width - static_button_width) / MAX (button_width, 1), 0, max_items);
 
   if (visible_items > 0)
-    set_visible_buttons (widgets, overflow_button, visible_items);
-
-  /* Hide the separator if needed */
-  if (self->mode == MODE_NO_SELECTION)
-    gtk_widget_set_visible (self->no_selection_separator, visible_items > 3);
+    set_visible_buttons (widgets, overflow_button, max_items, visible_items);
 
   /* Let GtkBox allocate and position the widgets */
   GTK_WIDGET_CLASS (nautilus_action_bar_parent_class)->size_allocate (widget, allocation);
@@ -693,7 +688,6 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-action-bar.ui");
 
-  gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, bookmark_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, copy_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, default_app_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, default_app_icon);
@@ -705,11 +699,9 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, new_folder_0_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, no_selection_folder_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, no_selection_overflow_button);
-  gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, no_selection_separator);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, open_file_box);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, open_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, paste_button);
-  gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, properties_0_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, properties_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, rename_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, select_all_button);
@@ -731,8 +723,6 @@ nautilus_action_bar_init (NautilusActionBar *self)
   self->no_selection_widgets[0] = self->new_folder_0_button;
   self->no_selection_widgets[1] = self->paste_button;
   self->no_selection_widgets[2] = self->select_all_button;
-  self->no_selection_widgets[3] = self->bookmark_button;
-  self->no_selection_widgets[4] = self->properties_0_button;
 
   /* Folder- and folder-only widgets */
   self->files_folders_widgets[0] = self->move_folders_button;
