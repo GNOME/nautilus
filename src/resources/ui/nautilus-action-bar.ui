@@ -65,44 +65,6 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator" id="no_selection_separator">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="bookmark_button">
-                <property name="label" translatable="yes">Bookmark</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">4</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkButton" id="properties_0_button">
-                <property name="label" translatable="yes">Properties</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="action_name">view.properties</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">5</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkMenuButton" id="no_selection_overflow_button">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
@@ -465,39 +427,7 @@
             <property name="position">3</property>
           </packing>
         </child>
-        <child>
-          <object class="GtkModelButton">
-            <property name="visible" bind-source="bookmark_button" bind-property="visible" bind-flags="default|invert-boolean" />
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">view.bookmark</property>
-            <property name="text" translatable="yes">Bookmark</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">4</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkModelButton">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">True</property>
-            <property name="action_name">view.properties</property>
-            <property name="text" translatable="yes">Properties</property>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">5</property>
-          </packing>
-        </child>
       </object>
-      <packing>
-        <property name="submenu">submenu0</property>
-        <property name="position">1</property>
-      </packing>
     </child>
   </object>
   <object class="GtkPopoverMenu" id="folders_popover">
@@ -625,8 +555,6 @@
       <widget name="new_folder_0_button"/>
       <widget name="paste_button"/>
       <widget name="select_all_button"/>
-      <widget name="bookmark_button"/>
-      <widget name="properties_0_button"/>
     </widgets>
   </object>
 </interface>
