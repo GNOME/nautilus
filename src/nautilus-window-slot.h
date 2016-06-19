@@ -40,6 +40,7 @@ G_DECLARE_DERIVABLE_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WI
 #include "nautilus-files-view.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
+#include "nautilus-toolbar-menu-sections.h"
 
 
 struct _NautilusWindowSlotClass {
@@ -95,7 +96,7 @@ void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 
 GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *slot);
 
-GtkWidget* nautilus_window_slot_get_view_widget            (NautilusWindowSlot *slot);
+NautilusToolbarMenuSections * nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *slot);
 

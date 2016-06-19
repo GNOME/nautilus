@@ -146,7 +146,6 @@ enum {
         PROP_WINDOW_SLOT = 1,
         PROP_SUPPORTS_ZOOMING,
         PROP_ICON,
-        PROP_VIEW_WIDGET,
         PROP_IS_SEARCH,
         PROP_IS_LOADING,
         PROP_LOCATION,
@@ -260,8 +259,8 @@ struct NautilusFilesViewDetails
         guint floating_bar_loading_timeout_id;
         GtkWidget *floating_bar;
 
-        /* View menu */
-        GtkWidget *view_menu_widget;
+        /* Toolbar menu */
+        NautilusToolbarMenuSections *toolbar_menu_sections;
         GtkWidget *sort_menu;
         GtkWidget *sort_trash_time;
         GtkWidget *visible_columns;
@@ -634,20 +633,21 @@ nautilus_files_view_get_icon (NautilusView *view)
 }
 
 /**
- * nautilus_files_view_get_view_widget:
+ * nautilus_files_view_get_toolbar_menu_sections:
  * @view: a #NautilusFilesView
  *
- * Retrieves the menu section, as a #GtkWidget that should be added to the toolbar
- * menu for this view. If it's %NULL, no widget is added for this view
+ * Retrieves the menu sections that should be added to the toolbar menu when
+ * this view is active
  *
- * Returns: (transfer none): a #GtkWidget for the view menu
+ * Returns: (transfer none): a #NautilusToolbarMenuSections with the details of
+ * which menu sections should be added to the menu
  */
-static GtkWidget*
-nautilus_files_view_get_view_widget (NautilusView *view)
+static NautilusToolbarMenuSections *
+nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
 
-        return NAUTILUS_FILES_VIEW (view)->details->view_menu_widget;
+        return NAUTILUS_FILES_VIEW (view)->details->toolbar_menu_sections;
 }
 
 static gboolean
@@ -2944,7 +2944,9 @@ nautilus_files_view_finalize (GObject *object)
         g_clear_object (&view->details->view_action_group);
         g_clear_object (&view->details->background_menu);
         g_clear_object (&view->details->selection_menu);
-        g_clear_object (&view->details->view_menu_widget);
+        g_clear_object (&view->details->toolbar_menu_sections->zoom_section);
+        g_clear_object (&view->details->toolbar_menu_sections->extended_section);
+        g_free (view->details->toolbar_menu_sections);
 
         if (view->details->rename_file_popover != NULL) {
                 gtk_popover_set_relative_to (GTK_POPOVER (view->details->rename_file_popover),
@@ -7653,10 +7655,6 @@ nautilus_files_view_get_property (GObject    *object,
                 g_value_set_object (value, nautilus_view_get_icon (NAUTILUS_VIEW (view)));
                 break;
 
-        case PROP_VIEW_WIDGET:
-                g_value_set_object (value, nautilus_view_get_view_widget (NAUTILUS_VIEW (view)));
-                break;
-
         case PROP_IS_LOADING:
                 g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
                 break;
@@ -8096,7 +8094,7 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
         iface->set_selection = nautilus_files_view_set_selection;
         iface->get_search_query = nautilus_files_view_get_search_query;
         iface->set_search_query = nautilus_files_view_set_search_query;
-        iface->get_view_widget = nautilus_files_view_get_view_widget;
+        iface->get_toolbar_menu_sections = nautilus_files_view_get_toolbar_menu_sections;
         iface->is_searching = nautilus_files_view_is_searching;
         iface->is_loading = nautilus_files_view_is_loading;
 }
@@ -8225,7 +8223,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                                       G_PARAM_STATIC_STRINGS));
 
         g_object_class_override_property (oclass, PROP_ICON, "icon");
-        g_object_class_override_property (oclass, PROP_VIEW_WIDGET, "view-widget");
         g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
         g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
         g_object_class_override_property (oclass, PROP_LOCATION, "location");
@@ -8257,9 +8254,11 @@ nautilus_files_view_init (NautilusFilesView *view)
         view->details = G_TYPE_INSTANCE_GET_PRIVATE (view, NAUTILUS_TYPE_FILES_VIEW,
                                                      NautilusFilesViewDetails);
 
-        /* View menu */
+        /* Toolbar menu */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
-        view->details->view_menu_widget =  g_object_ref_sink (gtk_builder_get_object (builder, "view_menu_widget"));
+        view->details->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
+        view->details->toolbar_menu_sections->zoom_section = g_object_ref_sink (gtk_builder_get_object (builder, "zoom_section"));
+        view->details->toolbar_menu_sections->extended_section = g_object_ref_sink (gtk_builder_get_object (builder, "extended_section"));
         view->details->zoom_controls_box = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_controls_box"));
         view->details->zoom_level_label = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_label"));
 

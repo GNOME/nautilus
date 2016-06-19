@@ -54,7 +54,7 @@ enum {
         PROP_ACTIVE = 1,
 	PROP_WINDOW,
         PROP_ICON,
-        PROP_VIEW_WIDGET,
+        PROP_TOOLBAR_MENU_SECTIONS,
 	PROP_LOADING,
         PROP_LOCATION,
 	NUM_PROPERTIES
@@ -648,8 +648,8 @@ nautilus_window_slot_get_property (GObject *object,
         case PROP_ICON:
                 g_value_set_object (value, nautilus_window_slot_get_icon (self));
                 break;
-        case PROP_VIEW_WIDGET:
-                g_value_set_object (value, nautilus_window_slot_get_view_widget (self));
+        case PROP_TOOLBAR_MENU_SECTIONS:
+                g_value_set_pointer (value, nautilus_window_slot_get_toolbar_menu_sections (self));
                 break;
         case PROP_LOADING:
                 g_value_set_boolean (value, nautilus_window_slot_get_loading (self));
@@ -2332,7 +2332,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
 		gtk_widget_show (widget);
 
                 g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
-                g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_VIEW_WIDGET]);
+                g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
 	}
 
 done:
@@ -2505,12 +2505,11 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 				     G_TYPE_ICON,
 				     G_PARAM_READABLE);
 
-        properties[PROP_VIEW_WIDGET] =
-		g_param_spec_object ("view-widget",
-				     "Widget for the view menu",
-				     "The widget for the view's menu",
-				     GTK_TYPE_WIDGET,
-				     G_PARAM_READABLE);
+        properties[PROP_TOOLBAR_MENU_SECTIONS] =
+                g_param_spec_pointer ("toolbar-menu-sections",
+                                      "Menu sections for the toolbar menu",
+                                      "The menu sections to add to the toolbar menu for this slot",
+                                      G_PARAM_READABLE);
 
         properties[PROP_LOCATION] =
 		g_param_spec_object ("location",
@@ -2762,8 +2761,8 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
         return view ? nautilus_view_get_icon (view) : NULL;
 }
 
-GtkWidget*
-nautilus_window_slot_get_view_widget (NautilusWindowSlot *self)
+NautilusToolbarMenuSections *
+nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
 {
         NautilusView *view;
 
@@ -2771,7 +2770,7 @@ nautilus_window_slot_get_view_widget (NautilusWindowSlot *self)
 
         view = nautilus_window_slot_get_current_view (self);
 
-        return view ? nautilus_view_get_view_widget (view) : NULL;
+        return view ? nautilus_view_get_toolbar_menu_sections (view) : NULL;
 }
 
 gboolean

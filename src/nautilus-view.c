@@ -38,18 +38,6 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                                                   G_PARAM_READABLE));
 
         /**
-         * NautilusView::view-widget:
-         *
-         * %TRUE if the view is loading the location, %FALSE otherwise.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_object ("view-widget",
-                                                                  "View widget for the menu",
-                                                                  "The view widget that appears under the view menu",
-                                                                  GTK_TYPE_WIDGET,
-                                                                  G_PARAM_READABLE));
-
-        /**
          * NautilusView::is-loading:
          *
          * %TRUE if the view is loading the location, %FALSE otherwise.
@@ -115,20 +103,21 @@ nautilus_view_get_icon (NautilusView *view)
 }
 
 /**
- * nautilus_view_get_view_widget:
+ * nautilus_view_get_toolbar_menu_sections:
  * @view: a #NautilusView
  *
- * Retrieves the toolbar menu section (widget) from @view, that should be shown
- * in the menu when this view is active
+ * Retrieves the menu sections to show in the main toolbar menu when this view
+ * is active
  *
- * Returns: (transfer none): the widget displayed under view menu.
+ * Returns: (transfer none): a #NautilusToolbarMenuSections with the sections to
+ * be displayed
  */
-GtkWidget*
-nautilus_view_get_view_widget (NautilusView *view)
+NautilusToolbarMenuSections *
+nautilus_view_get_toolbar_menu_sections (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_view_widget, NULL);
+        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_view_widget (view);
+        return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
 }
 
 /**

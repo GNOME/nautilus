@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <object class="GtkBox" id="view_menu_widget">
+  <object class="GtkBox" id="zoom_section">
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
@@ -84,6 +84,12 @@
         </child>
       </object>
     </child>
+  </object>
+  <object class="GtkBox" id="extended_section">
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="orientation">vertical</property>
+    <property name="width_request">160</property>
     <child>
       <object class="GtkSeparator">
         <property name="visible">True</property>

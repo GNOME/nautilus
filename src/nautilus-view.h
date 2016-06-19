@@ -24,6 +24,7 @@
 #include <gtk/gtk.h>
 
 #include "nautilus-query.h"
+#include "nautilus-toolbar-menu-sections.h"
 
 G_BEGIN_DECLS
 
@@ -36,58 +37,59 @@ struct _NautilusViewInterface
         GTypeInterface parent;
 
         /* The icon that represents the view */
-        GIcon*               (*get_icon)                   (NautilusView         *view);
+        GIcon*                          (*get_icon)                  (NautilusView         *view);
 
         /*
-         * The toolbar menu section (widget), that should be shown in the menu
-         * when this view is active
+         * Returns the menu sections that should be shown in the toolbar menu
+         * when this view is active. Implementations can return %NULL to
+         * indicate that no extra sections should be added to the menu
          */
-        GtkWidget*           (*get_view_widget)            (NautilusView         *view);
+        NautilusToolbarMenuSections *   (*get_toolbar_menu_sections) (NautilusView         *view);
 
         /* Current location of the view */
-        GFile*               (*get_location)               (NautilusView         *view);
-        void                 (*set_location)               (NautilusView         *view,
-                                                            GFile                *location);
+        GFile*                          (*get_location)              (NautilusView         *view);
+        void                            (*set_location)              (NautilusView         *view,
+                                                                      GFile                *location);
 
         /* Selection */
-        GList*               (*get_selection)              (NautilusView         *view);
-        void                 (*set_selection)              (NautilusView         *view,
-                                                            GList                *selection);
+        GList*                          (*get_selection)             (NautilusView         *view);
+        void                            (*set_selection)             (NautilusView         *view,
+                                                                      GList                *selection);
 
         /* Search */
-        NautilusQuery*       (*get_search_query)           (NautilusView         *view);
-        void                 (*set_search_query)           (NautilusView         *view,
-                                                            NautilusQuery        *query);
+        NautilusQuery*                  (*get_search_query)          (NautilusView         *view);
+        void                            (*set_search_query)          (NautilusView         *view,
+                                                                      NautilusQuery        *query);
 
         /* Whether the current view is loading the location */
-        gboolean             (*is_loading)                 (NautilusView         *view);
+        gboolean                        (*is_loading)                (NautilusView         *view);
 
         /* Whether the current view is searching or not */
-        gboolean             (*is_searching)               (NautilusView         *view);
+        gboolean                        (*is_searching)              (NautilusView         *view);
 };
 
-GIcon*             nautilus_view_get_icon                  (NautilusView         *view);
+GIcon *                        nautilus_view_get_icon                  (NautilusView         *view);
 
-GtkWidget*         nautilus_view_get_view_widget           (NautilusView         *view);
+NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
 
-GFile*             nautilus_view_get_location              (NautilusView         *view);
+GFile *                        nautilus_view_get_location              (NautilusView         *view);
 
-void               nautilus_view_set_location              (NautilusView         *view,
-                                                            GFile                *location);
+void                           nautilus_view_set_location              (NautilusView         *view,
+                                                                        GFile                *location);
 
-GList*             nautilus_view_get_selection             (NautilusView         *view);
+GList *                        nautilus_view_get_selection             (NautilusView         *view);
 
-void               nautilus_view_set_selection             (NautilusView         *view,
-                                                            GList                *selection);
+void                           nautilus_view_set_selection             (NautilusView         *view,
+                                                                        GList                *selection);
 
-NautilusQuery*     nautilus_view_get_search_query          (NautilusView         *view);
+NautilusQuery *                nautilus_view_get_search_query          (NautilusView         *view);
 
-void               nautilus_view_set_search_query          (NautilusView         *view,
-                                                            NautilusQuery        *query);
+void                           nautilus_view_set_search_query          (NautilusView         *view,
+                                                                        NautilusQuery        *query);
 
-gboolean           nautilus_view_is_loading                (NautilusView         *view);
+gboolean                       nautilus_view_is_loading                (NautilusView         *view);
 
-gboolean           nautilus_view_is_searching              (NautilusView         *view);
+gboolean                       nautilus_view_is_searching              (NautilusView         *view);
 
 G_END_DECLS
 

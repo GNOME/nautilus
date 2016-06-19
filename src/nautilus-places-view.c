@@ -47,7 +47,6 @@ enum {
         PROP_ICON,
         PROP_LOCATION,
         PROP_SEARCH_QUERY,
-        PROP_VIEW_WIDGET,
         PROP_IS_LOADING,
         PROP_IS_SEARCHING,
         LAST_PROP
@@ -158,10 +157,6 @@ nautilus_places_view_get_property (GObject    *object,
 
         case PROP_SEARCH_QUERY:
                 g_value_set_object (value, nautilus_view_get_search_query (view));
-                break;
-
-        case PROP_VIEW_WIDGET:
-                g_value_set_object (value, nautilus_view_get_view_widget (view));
                 break;
 
         default:
@@ -280,10 +275,10 @@ nautilus_places_view_set_search_query (NautilusView  *view,
         g_free (text);
 }
 
-static GtkWidget*
-nautilus_places_view_get_view_widget (NautilusView *view)
+static NautilusToolbarMenuSections *
+nautilus_places_view_get_toolbar_menu_sections (NautilusView *view)
 {
-        /* By returning NULL, no section will be added to the toolbar menu when this view is active */
+        /* By returning NULL, no sections will be added to the toolbar menu when this view is active */
         return NULL;
 }
 
@@ -317,7 +312,7 @@ nautilus_places_view_iface_init (NautilusViewInterface *iface)
         iface->set_selection = nautilus_places_view_set_selection;
         iface->get_search_query = nautilus_places_view_get_search_query;
         iface->set_search_query = nautilus_places_view_set_search_query;
-        iface->get_view_widget = nautilus_places_view_get_view_widget;
+        iface->get_toolbar_menu_sections = nautilus_places_view_get_toolbar_menu_sections;
         iface->is_loading = nautilus_places_view_is_loading;
         iface->is_searching = nautilus_places_view_is_searching;
 }
@@ -336,7 +331,6 @@ nautilus_places_view_class_init (NautilusPlacesViewClass *klass)
         g_object_class_override_property (object_class, PROP_IS_SEARCHING, "is-searching");
         g_object_class_override_property (object_class, PROP_LOCATION, "location");
         g_object_class_override_property (object_class, PROP_SEARCH_QUERY, "search-query");
-        g_object_class_override_property (object_class, PROP_VIEW_WIDGET, "view-widget");
 }
 
 static void

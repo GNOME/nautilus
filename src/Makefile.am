@@ -223,6 +223,7 @@ nautilus_no_main_sources = \
 	nautilus-special-location-bar.h		\
 	nautilus-toolbar.c			\
 	nautilus-toolbar.h			\
+	nautilus-toolbar-menu-sections.h	\
 	nautilus-trash-bar.c			\
 	nautilus-trash-bar.h			\
 	nautilus-view.c				\

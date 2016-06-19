@@ -35,6 +35,7 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-toolbar-menu-sections.h"
 
 #include <glib/gi18n.h>
 #include <math.h>
@@ -66,7 +67,8 @@ struct _NautilusToolbarPrivate {
 
 	GtkWidget *operations_button;
         GtkWidget *view_button;
-        GtkWidget *view_menu_slot_section;
+        GtkWidget *view_menu_zoom_section;
+        GtkWidget *view_menu_extended_section;
         GtkWidget *view_toggle_button;
         GtkWidget *view_toggle_icon;
 
@@ -763,7 +765,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-menu.ui");
         menu_popover = GTK_WIDGET (gtk_builder_get_object (builder, "menu_popover"));
-        self->priv->view_menu_slot_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_slot_section"));
+        self->priv->view_menu_zoom_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_zoom_section"));
+        self->priv->view_menu_extended_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_extended_section"));
         gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button), menu_popover);
         g_object_unref (builder);
 
@@ -964,36 +967,46 @@ nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
 }
 
 static void
-on_slot_view_widget_changed (NautilusToolbar    *toolbar,
-                             GParamSpec         *param,
-                             NautilusWindowSlot *slot)
+container_remove_all_children (GtkContainer *container)
 {
-        GtkWidget *view_widget;
         GList *children;
         GList *child;
 
-        children = gtk_container_get_children (GTK_CONTAINER (toolbar->priv->view_menu_slot_section));
-        for (child = children; child != NULL; child = g_list_next (child)) {
-                gtk_container_remove (GTK_CONTAINER (toolbar->priv->view_menu_slot_section),
-                                      GTK_WIDGET (child->data));
-        }
+        children = gtk_container_get_children (container);
+        for (child = children; child != NULL; child = g_list_next (child))
+                gtk_container_remove (container, GTK_WIDGET (child->data));
         g_list_free (children);
-
-        view_widget = nautilus_window_slot_get_view_widget (slot);
-        if (view_widget == NULL)
-                return;
-
-        gtk_box_pack_start (GTK_BOX (toolbar->priv->view_menu_slot_section), view_widget, FALSE, FALSE, 0);
 }
 
 static void
-disconnect_view_widget_change_handler (NautilusToolbar *toolbar)
+on_slot_toolbar_menu_sections_changed (NautilusToolbar    *toolbar,
+                                       GParamSpec         *param,
+                                       NautilusWindowSlot *slot)
+{
+        NautilusToolbarMenuSections *new_sections;
+
+        container_remove_all_children (GTK_CONTAINER (toolbar->priv->view_menu_zoom_section));
+        container_remove_all_children (GTK_CONTAINER (toolbar->priv->view_menu_extended_section));
+
+        new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
+        if (new_sections == NULL)
+                return;
+
+        if (new_sections->zoom_section != NULL)
+                gtk_box_pack_start (GTK_BOX (toolbar->priv->view_menu_zoom_section), new_sections->zoom_section, FALSE, FALSE, 0);
+
+        if (new_sections->extended_section != NULL)
+                gtk_box_pack_start (GTK_BOX (toolbar->priv->view_menu_extended_section), new_sections->extended_section, FALSE, FALSE, 0);
+}
+
+static void
+disconnect_toolbar_menu_sections_change_handler (NautilusToolbar *toolbar)
 {
         if (toolbar->priv->active_slot == NULL)
                 return;
 
         g_signal_handlers_disconnect_by_func (toolbar->priv->active_slot,
-                                              G_CALLBACK (on_slot_view_widget_changed),
+                                              G_CALLBACK (on_slot_toolbar_menu_sections_changed),
                                               toolbar);
 }
 
@@ -1007,7 +1020,7 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
         g_clear_pointer (&toolbar->priv->view_widget_binding, g_binding_unbind);
 
         if (toolbar->priv->active_slot != slot) {
-                disconnect_view_widget_change_handler (toolbar);
+                disconnect_toolbar_menu_sections_change_handler (toolbar);
                 toolbar->priv->active_slot = slot;
 
                 if (slot) {
@@ -1020,9 +1033,9 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
                                                                      toolbar,
                                                                      NULL);
 
-                        on_slot_view_widget_changed (toolbar, NULL, slot);
-                        g_signal_connect_swapped (slot, "notify::view-widget",
-                                                  G_CALLBACK (on_slot_view_widget_changed), toolbar);
+                        on_slot_toolbar_menu_sections_changed (toolbar, NULL, slot);
+                        g_signal_connect_swapped (slot, "notify::toolbar-menu-sections",
+                                                  G_CALLBACK (on_slot_toolbar_menu_sections_changed), toolbar);
                 }
         }
 }
