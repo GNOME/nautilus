@@ -269,9 +269,6 @@ struct NautilusFilesViewDetails
         GtkWidget *zoom_controls_box;
         GtkWidget *zoom_level_label;
 
-        GtkWidget *undo_button;
-        GtkWidget *redo_button;
-
         gulong stop_signal_handler;
         gulong reload_signal_handler;
 };
@@ -8001,90 +7998,6 @@ nautilus_files_view_is_loading (NautilusView *view)
 }
 
 static void
-update_menu_item (GtkWidget      *menu_item,
-                  NautilusWindow *window,
-                  const char     *action_name,
-                  gboolean        enabled,
-                  char           *label)
-{
-        GAction *action;
-        GValue val = G_VALUE_INIT;
-
-        /* Activate/deactivate */
-        action = g_action_map_lookup_action (G_ACTION_MAP (window), action_name);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
-
-        /* Set the text of the menu item. Can't use gtk_button_set_label here
-         * as we need to set the text property, not the label. There's no equivalent
-         * gtk_model_button_set_text function
-         */
-        g_value_init (&val, G_TYPE_STRING);
-        g_value_set_string (&val, label);
-        g_object_set_property (G_OBJECT (menu_item), "text", &val);
-        g_value_unset (&val);
-}
-
-static void
-undo_manager_changed (NautilusFilesView *view)
-{
-        NautilusWindow *window;
-        NautilusFileUndoInfo *info;
-        NautilusFileUndoManagerState undo_state;
-        gboolean undo_active;
-        gboolean redo_active;
-        gchar *undo_label;
-        gchar *redo_label;
-        gchar *undo_description;
-        gchar *redo_description;
-        gboolean is_undo;
-
-        window = nautilus_files_view_get_window (view);
-        undo_label = undo_description = redo_label = redo_description = NULL;
-
-        /* Look up the last action from the undo manager, and get the text that
-         * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
-         */
-        info = nautilus_file_undo_manager_get_action ();
-        undo_state = nautilus_file_undo_manager_get_state ();
-        undo_active = redo_active = FALSE;
-        if (info != NULL && undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE) {
-                is_undo = undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
-
-                /* The last action can either be undone/redone. Activate the corresponding
-                 * menu item and deactivate the other
-                 */
-                undo_active = is_undo;
-                redo_active = !is_undo;
-                nautilus_file_undo_info_get_strings (info, &undo_label, &undo_description,
-                                                     &redo_label, &redo_description);
-                g_free (undo_description);
-                g_free (redo_description);
-        }
-
-        /* Set the label of the undo and redo menu items, and activate them appropriately
-         */
-        undo_label = undo_active && undo_label != NULL ? undo_label : g_strdup (_("_Undo"));
-        update_menu_item (view->details->undo_button, window, "undo", undo_active, undo_label);
-
-        redo_label = redo_active && redo_label != NULL ? redo_label : g_strdup (_("_Redo"));
-        update_menu_item (view->details->redo_button, window, "redo", redo_active, redo_label);
-
-        g_free (undo_label);
-        g_free (redo_label);
-}
-
-static void
-nautilus_files_view_constructed (GObject *object)
-{
-        NautilusFilesView *view;
-
-        view = NAUTILUS_FILES_VIEW (object);
-        g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
-                                 G_CALLBACK (undo_manager_changed), view, G_CONNECT_SWAPPED);
-        undo_manager_changed (view);
-}
-
-static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
         iface->get_icon = nautilus_files_view_get_icon;
@@ -8109,7 +8022,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
         oclass = G_OBJECT_CLASS (klass);
 
         oclass->finalize = nautilus_files_view_finalize;
-        oclass->constructed = nautilus_files_view_constructed;
         oclass->get_property = nautilus_files_view_get_property;
         oclass->set_property = nautilus_files_view_set_property;
 
@@ -8257,6 +8169,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         /* Toolbar menu */
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
         view->details->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
+        view->details->toolbar_menu_sections->supports_undo_redo = TRUE;
         view->details->toolbar_menu_sections->zoom_section = g_object_ref_sink (gtk_builder_get_object (builder, "zoom_section"));
         view->details->toolbar_menu_sections->extended_section = g_object_ref_sink (gtk_builder_get_object (builder, "extended_section"));
         view->details->zoom_controls_box = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_controls_box"));
@@ -8267,9 +8180,6 @@ nautilus_files_view_init (NautilusFilesView *view)
         view->details->visible_columns =  GTK_WIDGET (gtk_builder_get_object (builder, "visible_columns"));
         view->details->reload =  GTK_WIDGET (gtk_builder_get_object (builder, "reload"));
         view->details->stop =  GTK_WIDGET (gtk_builder_get_object (builder, "stop"));
-
-        view->details->undo_button = GTK_WIDGET (gtk_builder_get_object (builder, "undo"));
-        view->details->redo_button = GTK_WIDGET (gtk_builder_get_object (builder, "redo"));
 
         g_signal_connect (view,
                           "end-file-changes",

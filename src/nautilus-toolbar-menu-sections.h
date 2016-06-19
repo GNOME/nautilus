@@ -26,6 +26,7 @@ typedef struct _NautilusToolbarMenuSections NautilusToolbarMenuSections;
 struct _NautilusToolbarMenuSections {
         GtkWidget *zoom_section;
         GtkWidget *extended_section;
+        gboolean   supports_undo_redo;
 };
 
 G_END_DECLS

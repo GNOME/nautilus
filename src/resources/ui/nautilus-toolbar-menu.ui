@@ -96,6 +96,37 @@
           </object>
         </child>
         <child>
+          <object class="GtkBox" id="view_menu_undo_redo_section">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
+                <property name="margin-top">6</property>
+                <property name="margin-bottom">6</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="undo">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_Undo</property>
+                <property name="action-name">win.undo</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkModelButton" id="redo">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="text" translatable="yes">_Redo</property>
+                <property name="action-name">win.redo</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
           <!-- Other controls custom to the view are added to this -->
           <object class="GtkBox" id="view_menu_extended_section">
             <property name="visible">True</property>

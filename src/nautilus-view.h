@@ -41,8 +41,7 @@ struct _NautilusViewInterface
 
         /*
          * Returns the menu sections that should be shown in the toolbar menu
-         * when this view is active. Implementations can return %NULL to
-         * indicate that no extra sections should be added to the menu
+         * when this view is active. Implementations must not return %NULL
          */
         NautilusToolbarMenuSections *   (*get_toolbar_menu_sections) (NautilusView         *view);
 

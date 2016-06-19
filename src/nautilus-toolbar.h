@@ -75,4 +75,6 @@ void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
 
 gboolean   nautilus_toolbar_is_operations_button_active (NautilusToolbar *toolbar);
 
+void       nautilus_toolbar_on_window_constructed       (NautilusToolbar *toolbar);
+
 #endif /* __NAUTILUS_TOOLBAR_H__ */

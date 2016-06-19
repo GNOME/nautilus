@@ -2151,6 +2151,8 @@ nautilus_window_constructed (GObject *self)
 		g_signal_connect_swapped (nautilus_application_get_bookmarks (application), "changed",
 					  G_CALLBACK (nautilus_window_sync_bookmarks), window);
 
+        nautilus_toolbar_on_window_constructed (NAUTILUS_TOOLBAR (window->priv->toolbar));
+
 	nautilus_profile_end (NULL);
 }
 

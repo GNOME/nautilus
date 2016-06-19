@@ -35,6 +35,7 @@
 #include "nautilus-ui-utilities.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
 #include "nautilus-toolbar-menu-sections.h"
 
 #include <glib/gi18n.h>
@@ -68,7 +69,10 @@ struct _NautilusToolbarPrivate {
 	GtkWidget *operations_button;
         GtkWidget *view_button;
         GtkWidget *view_menu_zoom_section;
+        GtkWidget *view_menu_undo_redo_section;
         GtkWidget *view_menu_extended_section;
+        GtkWidget *undo_button;
+        GtkWidget *redo_button;
         GtkWidget *view_toggle_button;
         GtkWidget *view_toggle_icon;
 
@@ -755,6 +759,71 @@ on_progress_has_viewers_changed (NautilusProgressInfoManager *manager,
 }
 
 static void
+update_menu_item (GtkWidget       *menu_item,
+                  NautilusToolbar *self,
+                  const char      *action_name,
+                  gboolean         enabled,
+                  char            *label)
+{
+        GAction *action;
+        GValue val = G_VALUE_INIT;
+
+        /* Activate/deactivate */
+        action = g_action_map_lookup_action (G_ACTION_MAP (self->priv->window), action_name);
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), enabled);
+
+        /* Set the text of the menu item. Can't use gtk_button_set_label here as
+         * we need to set the text property, not the label. There's no equivalent
+         * gtk_model_button_set_text function (refer to #766083 for discussion
+         * on adding a set_text function)
+         */
+        g_value_init (&val, G_TYPE_STRING);
+        g_value_set_string (&val, label);
+        g_object_set_property (G_OBJECT (menu_item), "text", &val);
+        g_value_unset (&val);
+}
+
+static void
+undo_manager_changed (NautilusToolbar *self)
+{
+        NautilusFileUndoInfo *info;
+        NautilusFileUndoManagerState undo_state;
+        gboolean undo_active;
+        gboolean redo_active;
+        g_autofree gchar *undo_label = NULL;
+        g_autofree gchar *redo_label = NULL;
+        g_autofree gchar *undo_description = NULL;
+        g_autofree gchar *redo_description = NULL;
+        gboolean is_undo;
+
+        /* Look up the last action from the undo manager, and get the text that
+         * describes it, e.g. "Undo Create Folder"/"Redo Create Folder"
+         */
+        info = nautilus_file_undo_manager_get_action ();
+        undo_state = nautilus_file_undo_manager_get_state ();
+        undo_active = redo_active = FALSE;
+        if (info != NULL && undo_state > NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE) {
+                is_undo = undo_state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO;
+
+                /* The last action can either be undone/redone. Activate the corresponding
+                 * menu item and deactivate the other
+                 */
+                undo_active = is_undo;
+                redo_active = !is_undo;
+                nautilus_file_undo_info_get_strings (info, &undo_label, &undo_description,
+                                                     &redo_label, &redo_description);
+        }
+
+        /* Set the label of the undo and redo menu items, and activate them appropriately
+         */
+        undo_label = undo_active && undo_label != NULL ? undo_label : g_strdup (_("_Undo"));
+        update_menu_item (self->priv->undo_button, self, "undo", undo_active, undo_label);
+
+        redo_label = redo_active && redo_label != NULL ? redo_label : g_strdup (_("_Redo"));
+        update_menu_item (self->priv->redo_button, self, "redo", redo_active, redo_label);
+}
+
+static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
         GtkBuilder *builder;
@@ -766,7 +835,10 @@ nautilus_toolbar_init (NautilusToolbar *self)
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-menu.ui");
         menu_popover = GTK_WIDGET (gtk_builder_get_object (builder, "menu_popover"));
         self->priv->view_menu_zoom_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_zoom_section"));
+        self->priv->view_menu_undo_redo_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_undo_redo_section"));
         self->priv->view_menu_extended_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_extended_section"));
+        self->priv->undo_button = GTK_WIDGET (gtk_builder_get_object (builder, "undo"));
+        self->priv->redo_button = GTK_WIDGET (gtk_builder_get_object (builder, "redo"));
         gtk_menu_button_set_popover (GTK_MENU_BUTTON (self->priv->view_button), menu_popover);
         g_object_unref (builder);
 
@@ -805,6 +877,21 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
 	gtk_widget_show_all (GTK_WIDGET (self));
 	toolbar_update_appearance (self);
+}
+
+void
+nautilus_toolbar_on_window_constructed (NautilusToolbar *self)
+{
+        /* undo_manager_changed manipulates the window actions, so set it up
+         * after the window and it's actions have been constructed
+         */
+        g_signal_connect_object (nautilus_file_undo_manager_get (),
+                                 "undo-changed",
+                                 G_CALLBACK (undo_manager_changed),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+
+        undo_manager_changed (self);
 }
 
 static void
@@ -991,6 +1078,9 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *toolbar,
         new_sections = nautilus_window_slot_get_toolbar_menu_sections (slot);
         if (new_sections == NULL)
                 return;
+
+        gtk_widget_set_visible (toolbar->priv->view_menu_undo_redo_section,
+                                new_sections->supports_undo_redo);
 
         if (new_sections->zoom_section != NULL)
                 gtk_box_pack_start (GTK_BOX (toolbar->priv->view_menu_zoom_section), new_sections->zoom_section, FALSE, FALSE, 0);
