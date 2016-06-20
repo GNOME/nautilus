@@ -49,7 +49,6 @@ struct _NautilusActionBar
   GtkWidget          *paste_button;
   GtkWidget          *select_all_button;
   GtkWidget          *no_selection_overflow_button;
-  GtkWidget          *no_selection_folder_label;
 
   /* Folders buttons */
   GtkWidget          *open_file_box;
@@ -436,25 +435,6 @@ update_status (NautilusActionBar *actionbar)
 }
 
 static void
-location_changed_cb (NautilusActionBar *self)
-{
-  NautilusFile *file;
-  gchar *display_name;
-
-  file = nautilus_file_get (nautilus_view_get_location (self->view));
-
-  if (nautilus_file_is_home (file))
-    display_name = g_strdup (_("Home"));
-  else
-    display_name = nautilus_file_get_display_name (file);
-
-  gtk_label_set_label (GTK_LABEL (self->no_selection_folder_label), display_name);
-
-  g_clear_pointer (&file, nautilus_file_unref);
-  g_free (display_name);
-}
-
-static void
 clear_selection_cb (NautilusActionBar *self)
 {
   nautilus_view_set_selection (self->view, NULL);
@@ -511,7 +491,6 @@ nautilus_action_bar_set_property (GObject      *object,
     case PROP_VIEW:
       if (g_set_object (&self->view, g_value_get_object (value)))
         {
-          g_signal_connect_swapped (self->view, "notify::location", G_CALLBACK (location_changed_cb), self);
           g_signal_connect_swapped (self->view, "notify::selection", G_CALLBACK (update_status), self);
           g_signal_connect_swapped (self->view, "notify::is-loading", G_CALLBACK (update_status), self);
           g_signal_connect_swapped (self->view, "notify::is-searching", G_CALLBACK (update_status), self);
@@ -554,6 +533,7 @@ nautilus_action_bar_size_allocate (GtkWidget     *widget,
   reference_button = overflow_button = NULL;
   static_button_width = 0;
   max_items = 5;
+  widgets = NULL;
 
   switch (self->mode)
     {
@@ -697,7 +677,6 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, move_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, move_trash_folders_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, new_folder_0_button);
-  gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, no_selection_folder_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, no_selection_overflow_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, open_file_box);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, open_folders_button);
