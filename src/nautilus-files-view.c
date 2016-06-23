@@ -8328,6 +8328,7 @@ nautilus_files_view_init (NautilusFilesView *view)
         nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
         /* Only accesible by shorcuts */
         nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
+        nautilus_application_set_accelerator (app, "view.zoom-standard", "<control>0");
         nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
         nautilus_application_set_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
 
