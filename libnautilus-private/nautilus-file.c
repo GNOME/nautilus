@@ -3317,22 +3317,21 @@ nautilus_file_compare_for_sort_by_attribute     (NautilusFile                   
 /**
  * nautilus_file_compare_name:
  * @file: A file object
- * @pattern: A string we are comparing it with
+ * @string: A string we are comparing it with
  * 
- * Return value: result of a comparison of the file name and the given pattern,
- * using the same sorting order as sort by name.
+ * Return value: result of a comparison of the file name and the given string.
  **/
 int
 nautilus_file_compare_display_name (NautilusFile *file,
-				    const char *pattern)
+				    const char *string)
 {
 	const char *name;
 	int result;
 
-	g_return_val_if_fail (pattern != NULL, -1);
+	g_return_val_if_fail (string != NULL, -1);
 
 	name = nautilus_file_peek_display_name (file);
-	result = g_utf8_collate (name, pattern);
+	result = g_strcmp0 (name, string);
 	return result;
 }
 
