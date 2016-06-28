@@ -20,16 +20,12 @@
               <object class="GtkButton" id="new-folder">
                 <property name="visible">True</property>
                 <property name="action_name">view.new-folder</property>
+                <property name="tooltip-text" translatable="yes">New folder</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="icon-name">folder-new-symbolic</property>
                     <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">New Folder</property>
                   </object>
                 </child>
               </object>
@@ -43,16 +39,12 @@
               <object class="GtkButton" id="bookmark-this-location">
                 <property name="visible">True</property>
                 <property name="action_name">win.bookmark-current-location</property>
+                <property name="tooltip-text" translatable="yes">Bookmark this location</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="icon-name">bookmark-new-symbolic</property>
                     <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">Bookmark this Location</property>
                   </object>
                 </child>
               </object>
@@ -66,16 +58,12 @@
               <object class="GtkButton" id="new-tab">
                 <property name="visible">True</property>
                 <property name="action-name">win.new-tab</property>
+                <property name="tooltip-text" translatable="yes">New tab</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
                     <property name="icon-name">tab-new-symbolic</property>
                     <property name="icon-size">1</property>
-                  </object>
-                </child>
-                <child internal-child="accessible">
-                  <object class="AtkObject">
-                    <property name="accessible-name" translatable="yes">New Tab</property>
                   </object>
                 </child>
               </object>

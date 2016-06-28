@@ -18,16 +18,12 @@
           <object class="GtkButton" id="zoom-out">
             <property name="visible">True</property>
             <property name="action-name">view.zoom-out</property>
+            <property name="tooltip-text" translatable="yes">Zoom out</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="icon-name">zoom-out-symbolic</property>
                 <property name="icon-size">1</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject">
-                <property name="accessible-name" translatable="yes">Zoom Out</property>
               </object>
             </child>
           </object>
@@ -41,15 +37,11 @@
           <object class="GtkButton" id="zoom-default">
             <property name="visible">True</property>
             <property name="action_name">view.zoom-standard</property>
+            <property name="tooltip-text" translatable="yes">Reset zoom</property>
             <child>
               <object class="GtkLabel" id="zoom_level_label">
                 <property name="visible">True</property>
                 <property name="width-chars">5</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject">
-                <property name="accessible-name" translatable="yes">Reset Zoom</property>
               </object>
             </child>
           </object>
@@ -63,16 +55,12 @@
           <object class="GtkButton" id="zoom-in">
             <property name="visible">True</property>
             <property name="action_name">view.zoom-in</property>
+            <property name="tooltip-text" translatable="yes">Zoom in</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
                 <property name="icon-name">zoom-in-symbolic</property>
                 <property name="icon-size">1</property>
-              </object>
-            </child>
-            <child internal-child="accessible">
-              <object class="AtkObject">
-                <property name="accessible-name" translatable="yes">Zoom In</property>
               </object>
             </child>
           </object>
