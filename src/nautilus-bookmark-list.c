@@ -321,18 +321,22 @@ op_processed_cb (NautilusBookmarkList *self)
 }
 
 static void
-load_callback (GObject *source,
+load_callback (GObject *source_object,
 	       GAsyncResult *res,
 	       gpointer user_data)
 {
-	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source);
+	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+	GError *error = NULL;
 	gchar *contents;
 	char **lines;
 	int i;
 
-	contents = g_simple_async_result_get_op_res_gpointer (G_SIMPLE_ASYNC_RESULT (res));
+	contents = g_task_propagate_pointer (G_TASK (res), &error);
 
-	if (contents == NULL) {
+	if (error != NULL) {
+		g_warning ("Unable to get contents of the bookmarks file: %s",
+			   error->message);
+		g_error_free (error);
 		op_processed_cb (self);
 		return;
 	}
@@ -364,8 +368,9 @@ load_callback (GObject *source,
 }
 
 static void
-load_io_thread (GSimpleAsyncResult *result,
-		GObject *object,
+load_io_thread (GTask *task,
+		gpointer source_object,
+		gpointer task_data,
 		GCancellable *cancellable)
 {
 	GFile *file;
@@ -382,37 +387,49 @@ load_io_thread (GSimpleAsyncResult *result,
 	g_object_unref (file);
 
 	if (error != NULL) {
-		if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_NOT_FOUND)) {
-			g_warning ("Could not load bookmark file: %s\n", error->message);
-		}
-		g_error_free (error);
+		g_task_return_error (task, error);
 	} else {
-		g_simple_async_result_set_op_res_gpointer (result, contents, g_free);
+		g_task_return_pointer (task, contents, g_free);
 	}
 }
 
 static void
 load_file_async (NautilusBookmarkList *self)
 {
-	GSimpleAsyncResult *result;
+	GTask *task;
 
 	/* Wipe out old list. */
 	clear (self);
 
-	result = g_simple_async_result_new (G_OBJECT (self), 
-					    load_callback, NULL, NULL);
-	g_simple_async_result_run_in_thread (result, load_io_thread,
-					     G_PRIORITY_DEFAULT, NULL);
-	g_object_unref (result);
+	task = g_task_new (G_OBJECT (self),
+			   NULL,
+			   load_callback, NULL);
+	g_task_run_in_thread (task, load_io_thread);
+	g_object_unref (task);
 }
 
 static void
-save_callback (GObject *source,
+save_callback (GObject *source_object,
 	       GAsyncResult *res,
 	       gpointer user_data)
 {
-	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source);
+	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+	GError *error;
+	gboolean success;
 	GFile *file;
+
+	success = g_task_propagate_boolean (G_TASK (res), &error);
+
+	if (error != NULL) {
+		g_warning ("Unable to replace contents of the bookmarks file: %s",
+			   error->message);
+		g_error_free (error);
+	}
+
+	/* g_file_replace_contents() returned FALSE, but did not set an error. */
+	if (!success) {
+		g_warning ("Unable to replace contents of the bookmarks file.");
+	}
 
 	/* re-enable bookmark file monitoring */
 	file = nautilus_bookmark_list_get_file ();
@@ -427,12 +444,14 @@ save_callback (GObject *source,
 }
 
 static void
-save_io_thread (GSimpleAsyncResult *result,
-		GObject *object,
+save_io_thread (GTask *task,
+		gpointer source_object,
+		gpointer task_data,
 		GCancellable *cancellable)
 {
 	gchar *contents, *path;
 	GFile *parent, *file;
+	gboolean success;
 	GError *error = NULL;
 
 	file = nautilus_bookmark_list_get_file ();
@@ -442,16 +461,17 @@ save_io_thread (GSimpleAsyncResult *result,
 	g_free (path);
 	g_object_unref (parent);
 
-	contents = g_simple_async_result_get_op_res_gpointer (result);
-	g_file_replace_contents (file, 
-				 contents, strlen (contents),
-				 NULL, FALSE, 0, NULL,
-				 NULL, &error);
+	contents = (gchar *)g_task_get_task_data (task);
+
+	success = g_file_replace_contents (file,
+					   contents, strlen (contents),
+					   NULL, FALSE, 0, NULL,
+					   NULL, &error);
 
 	if (error != NULL) {
-		g_warning ("Unable to replace contents of the bookmarks file: %s",
-			   error->message);
-		g_error_free (error);
+		g_task_return_error (task, error);
+	} else {
+		g_task_return_boolean (task, success);
 	}
 
 	g_object_unref (file);
@@ -460,7 +480,7 @@ save_io_thread (GSimpleAsyncResult *result,
 static void
 save_file_async (NautilusBookmarkList *self)
 {
-	GSimpleAsyncResult *result;
+	GTask *task;
 	GString *bookmark_string;
 	gchar *contents;
 	GList *l;
@@ -495,14 +515,14 @@ save_file_async (NautilusBookmarkList *self)
 		}
 	}
 
-	result = g_simple_async_result_new (G_OBJECT (self),
-					    save_callback, NULL, NULL);
+	task = g_task_new (G_OBJECT (self),
+			   NULL,
+			   save_callback, NULL);
 	contents = g_string_free (bookmark_string, FALSE);
-	g_simple_async_result_set_op_res_gpointer (result, contents, g_free);
+	g_task_set_task_data (task, contents, g_free);
 
-	g_simple_async_result_run_in_thread (result, save_io_thread,
-					     G_PRIORITY_DEFAULT, NULL);
-	g_object_unref (result);
+	g_task_run_in_thread (task, save_io_thread);
+	g_object_unref (task);
 }
 
 static void
