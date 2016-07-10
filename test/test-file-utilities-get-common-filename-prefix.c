@@ -362,8 +362,9 @@ test_many_strings ()
         GList *list = NULL;
         char *actual;
         char *filename;
+        int i;
 
-        for (int i = 0; i < 500; ++i) {
+        for (i = 0; i < 500; ++i) {
                 filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
                 list = g_list_append (list, filename);
         }
@@ -381,8 +382,9 @@ test_many_strings_last_differs ()
         GList *list = NULL;
         char *actual;
         char *filename;
+        int i;
 
-        for (int i = 0; i < 500; ++i) {
+        for (i = 0; i < 500; ++i) {
                 filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
 
                 if (i == 499) {
@@ -405,8 +407,9 @@ test_many_strings_first_differs ()
         GList *list = NULL;
         char *actual;
         char *filename;
+        int i;
 
-        for (int i = 0; i < 500; ++i) {
+        for (i = 0; i < 500; ++i) {
                 filename = g_strdup_printf ("we are no longer the knights who say nii%d", i);
 
                 if (i == 0) {
