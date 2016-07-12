@@ -21,6 +21,7 @@
 #include <gtk/gtk.h>
 
 #include <gio/gio.h>
+#include <gio/gvfs.h>
 #include <gtk/gtk.h>
 
 #include "nautilusgtkplacesviewprivate.h"
@@ -68,6 +69,7 @@ struct _NautilusGtkPlacesViewPrivate
   GtkWidget                     *recent_servers_popover;
   GtkWidget                     *recent_servers_stack;
   GtkWidget                     *stack;
+  GtkWidget                     *server_adresses_popover;
   GtkWidget                     *network_placeholder;
   GtkWidget                     *network_placeholder_label;
 
@@ -472,9 +474,7 @@ is_external_volume (GVolume *volume)
   is_external |= !id;
 
   if (drive)
-    is_external |= g_drive_can_eject (drive) ||
-                   g_drive_is_media_removable (drive) ||
-                   g_drive_can_stop (drive);
+    is_external |= g_drive_is_removable (drive);
 
   g_clear_object (&drive);
   g_free (id);
@@ -704,8 +704,7 @@ add_volume (NautilusGtkPlacesView *view,
   name = g_volume_get_name (volume);
   path = !is_network ? g_volume_get_identifier (volume, G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE) : NULL;
 
-  if (!mount ||
-      (mount && !g_mount_is_shadowed (mount)))
+  if (!mount || !g_mount_is_shadowed (mount))
     {
       GtkWidget *row;
 
@@ -1003,8 +1002,19 @@ fetch_networks (NautilusGtkPlacesView *view)
 {
   NautilusGtkPlacesViewPrivate *priv;
   GFile *network_file;
+  const gchar * const *supported_uris;
+  gboolean found;
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
+  supported_uris = g_vfs_get_supported_uri_schemes (g_vfs_get_default ());
+
+  for (found = FALSE; !found && supported_uris && supported_uris[0]; supported_uris++)
+    if (g_strcmp0 (supported_uris[0], "network") == 0)
+      found = TRUE;
+
+  if (!found)
+    return;
+
   network_file = g_file_new_for_uri ("network:///");
 
   g_cancellable_cancel (priv->networks_fetching_cancellable);
@@ -1458,11 +1468,20 @@ get_view_and_file (NautilusGtkPlacesViewRow  *row,
       mount = nautilus_gtk_places_view_row_get_mount (row);
 
       if (mount)
-        *file = g_mount_get_default_location (mount);
+        {
+          *file = g_mount_get_default_location (mount);
+        }
       else if (volume)
-        *file = g_volume_get_activation_root (volume);
+        {
+          *file = g_volume_get_activation_root (volume);
+        }
       else
-        *file = NULL;
+        {
+          *file = nautilus_gtk_places_view_row_get_file (row);
+          if (*file) {
+            g_object_ref (*file);
+          }
+        }
     }
 }
 
@@ -1812,15 +1831,6 @@ on_address_entry_text_changed (NautilusGtkPlacesView *view)
   address = g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->address_entry)));
   scheme = g_uri_parse_scheme (address);
 
-  if (strlen (address) > 0)
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (priv->address_entry),
-                                       GTK_ENTRY_ICON_SECONDARY,
-                                       "edit-clear-symbolic");
-  else
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (priv->address_entry),
-                                       GTK_ENTRY_ICON_SECONDARY,
-                                       NULL);
-
   if (!supported_protocols)
     goto out;
 
@@ -1837,12 +1847,23 @@ out:
 }
 
 static void
-on_address_entry_clear_pressed (NautilusGtkPlacesView        *view,
-                                GtkEntryIconPosition  icon_pos,
-                                GdkEvent             *event,
-                                GtkEntry             *entry)
+on_address_entry_show_help_pressed (NautilusGtkPlacesView        *view,
+                                    GtkEntryIconPosition  icon_pos,
+                                    GdkEvent             *event,
+                                    GtkEntry             *entry)
 {
-  gtk_entry_set_text (entry, "");
+  NautilusGtkPlacesViewPrivate *priv;
+  GdkRectangle rect;
+
+  priv = nautilus_gtk_places_view_get_instance_private (view);
+
+  /* Setup the auxiliary popover's rectangle */
+  gtk_entry_get_icon_area (GTK_ENTRY (priv->address_entry),
+                           GTK_ENTRY_ICON_SECONDARY,
+                           &rect);
+
+  gtk_popover_set_pointing_to (GTK_POPOVER (priv->server_adresses_popover), &rect);
+  gtk_widget_set_visible (priv->server_adresses_popover, TRUE);
 }
 
 static void
@@ -2217,9 +2238,10 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
   gtk_widget_class_bind_template_child_private (widget_class, NautilusGtkPlacesView, recent_servers_popover);
   gtk_widget_class_bind_template_child_private (widget_class, NautilusGtkPlacesView, recent_servers_stack);
   gtk_widget_class_bind_template_child_private (widget_class, NautilusGtkPlacesView, stack);
+  gtk_widget_class_bind_template_child_private (widget_class, NautilusGtkPlacesView, server_adresses_popover);
 
   gtk_widget_class_bind_template_callback (widget_class, on_address_entry_text_changed);
-  gtk_widget_class_bind_template_callback (widget_class, on_address_entry_clear_pressed);
+  gtk_widget_class_bind_template_callback (widget_class, on_address_entry_show_help_pressed);
   gtk_widget_class_bind_template_callback (widget_class, on_connect_button_clicked);
   gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
   gtk_widget_class_bind_template_callback (widget_class, on_listbox_row_activated);

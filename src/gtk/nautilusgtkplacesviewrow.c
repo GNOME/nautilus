@@ -17,6 +17,7 @@
  */
 
 #include "config.h"
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
 #include <gio/gio.h>
@@ -37,7 +38,6 @@
 #include "gtktypebuiltins.h"
 #else
 #include <gtk/gtk.h>
-#include <glib/gi18n.h>
 #endif
 
 struct _NautilusGtkPlacesViewRow
@@ -131,7 +131,7 @@ measure_available_space_finished (GObject      *object,
    * should be based on the free space available.
    * i.e. 1 GB / 24 GB available.
    */
-  label = g_strdup_printf (ngettext ("%s / %s available", "%s / %s available", plural_form),
+  label = g_strdup_printf (dngettext (GETTEXT_PACKAGE, "%s / %s available", "%s / %s available", plural_form),
                            formatted_free_size, formatted_total_size);
 
   gtk_label_set_label (row->available_space_label, label);
