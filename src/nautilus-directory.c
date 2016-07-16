@@ -642,20 +642,15 @@ nautilus_directory_new (GFile *location)
 gboolean
 nautilus_directory_is_local (NautilusDirectory *directory)
 {
-  g_autofree char* path = NULL;
-
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
 	if (directory->details->location == NULL) {
 		return TRUE;
 	}
 
-  path = g_file_get_path (directory->details->location);
-
 	return nautilus_directory_is_in_trash (directory) ||
                nautilus_directory_is_in_recent (directory) ||
-	       g_file_is_native (directory->details->location) ||
-         path != NULL;
+	       g_file_is_native (directory->details->location);
 }
 
 gboolean
