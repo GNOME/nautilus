@@ -4426,7 +4426,7 @@ do_run_conflict_dialog (gpointer _data)
 	if (response == CONFLICT_RESPONSE_RENAME) {
 		data->resp_data->new_name = 
 			nautilus_file_conflict_dialog_get_new_name (NAUTILUS_FILE_CONFLICT_DIALOG (dialog));
-	} else if (response != GTK_RESPONSE_CANCEL ||
+	} else if (response != GTK_RESPONSE_CANCEL &&
 		   response != GTK_RESPONSE_NONE) {
 		   data->resp_data->apply_to_all =
 			   nautilus_file_conflict_dialog_get_apply_to_all 
