@@ -135,6 +135,7 @@ update_information_label (NautilusQueryEditor *editor)
                 gtk_label_set_label (GTK_LABEL (priv->label), label);
 
                 g_free (uri);
+                nautilus_file_unref (file);
         }
 }
 
