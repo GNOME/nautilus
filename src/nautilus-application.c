@@ -1085,6 +1085,8 @@ on_application_shutdown (GApplication *application,
         }
 
         g_list_free (notification_ids);
+
+        nautilus_icon_info_clear_caches ();
 }
 
 void
@@ -1191,16 +1193,6 @@ nautilus_application_dbus_unregister (GApplication	*app,
 	if (priv->search_provider) {
 		nautilus_shell_search_provider_unregister (priv->search_provider);
 	}
-}
-
-static void
-nautilus_application_quit_mainloop (GApplication *app)
-{
-	DEBUG ("Quitting mainloop");
-
-	nautilus_icon_info_clear_caches ();
-
-	G_APPLICATION_CLASS (nautilus_application_parent_class)->quit_mainloop (app);
 }
 
 static void
@@ -1362,7 +1354,6 @@ nautilus_application_class_init (NautilusApplicationClass *class)
 	application_class = G_APPLICATION_CLASS (class);
 	application_class->startup = nautilus_application_startup;
 	application_class->activate = nautilus_application_activate;
-	application_class->quit_mainloop = nautilus_application_quit_mainloop;
 	application_class->dbus_register = nautilus_application_dbus_register;
 	application_class->dbus_unregister = nautilus_application_dbus_unregister;
 	application_class->open = nautilus_application_open;
