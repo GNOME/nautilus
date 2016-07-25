@@ -29,6 +29,7 @@
 #include "nautilus-application.h"
 
 #include "nautilus-dbus-manager.h"
+#include "nautilus-file-undo-manager.h"
 #include "nautilus-freedesktop-dbus.h"
 #include "nautilus-image-properties-page.h"
 #include "nautilus-previewer.h"
@@ -76,6 +77,8 @@ typedef struct {
 	GList *windows;
 
         GHashTable *notifications;
+
+        NautilusFileUndoManager *undo_manager;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -551,6 +554,8 @@ nautilus_application_finalize (GObject *object)
 
         g_hash_table_destroy (priv->notifications);
 
+        g_clear_object (&priv->undo_manager);
+
         G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -955,6 +960,8 @@ nautilus_application_init (NautilusApplication *self)
                                                      g_str_equal,
                                                      g_free,
                                                      NULL);
+
+        priv->undo_manager = nautilus_file_undo_manager_new ();
 
 	g_application_add_main_option_entries (G_APPLICATION (self), options);
 

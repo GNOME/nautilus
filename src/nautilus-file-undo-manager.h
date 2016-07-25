@@ -68,6 +68,7 @@ struct _NautilusFileUndoManagerClass {
 
 GType nautilus_file_undo_manager_get_type (void) G_GNUC_CONST;
 
+NautilusFileUndoManager *nautilus_file_undo_manager_new (void);
 NautilusFileUndoManager * nautilus_file_undo_manager_get (void);
 
 void nautilus_file_undo_manager_set_action (NautilusFileUndoInfo *info);
