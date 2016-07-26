@@ -4915,6 +4915,8 @@ update_scripts_menu (NautilusFilesView *view)
                 g_object_unref (submenu);
         }
 
+        nautilus_directory_unref (directory);
+
         view->details->scripts_present = submenu != NULL;
 }
 
@@ -5136,6 +5138,8 @@ update_templates_menu (NautilusFilesView *view)
                                       FALSE);
                 g_object_unref (submenu);
         }
+
+        nautilus_directory_unref (directory);
 
         view->details->templates_present = submenu != NULL;
 
