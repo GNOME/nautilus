@@ -2,8 +2,6 @@
 <interface>
   <object class="GtkPopover" id="rename_file_popover">
     <property name="position">bottom</property>
-    <signal name="closed" handler="rename_file_popover_on_closed"/>
-    <signal name="unmap" handler="rename_file_popover_on_unmap"/>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
@@ -27,8 +25,7 @@
         <child>
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
-            <property name="activates-default">True</property>
-            <signal name="changed" handler="file_name_widget_entry_on_changed" swapped="yes" />
+            <property name="can_default">True</property>
           </object>
           <packing>
             <property name="left-attach">0</property>
@@ -41,8 +38,6 @@
             <property name="sensitive">False</property>
             <property name="label" translatable="yes">_Rename</property>
             <property name="use_underline">True</property>
-            <property name="can_default">True</property>
-            <signal name="clicked" handler="file_name_widget_on_activate" swapped="yes" />
             <style>
               <class name="suggested-action"/>
             </style>

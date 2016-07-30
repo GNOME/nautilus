@@ -272,6 +272,12 @@ nautilus_no_main_sources = \
 	nautilus-file-changes-queue.h \
 	nautilus-file-conflict-dialog.c \
 	nautilus-file-conflict-dialog.h \
+	nautilus-file-name-widget-controller.c \
+	nautilus-file-name-widget-controller.h \
+	nautilus-rename-file-popover-controller.c \
+	nautilus-rename-file-popover-controller.h \
+	nautilus-new-folder-dialog-controller.c \
+	nautilus-new-folder-dialog-controller.h \
 	nautilus-file-operations.c \
 	nautilus-file-operations.h \
 	nautilus-file-private.h \
