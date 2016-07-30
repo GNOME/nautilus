@@ -87,6 +87,7 @@ canvas_container_set_workarea (NautilusCanvasContainer *canvas_container,
 {
 	int left, right, top, bottom;
 	int screen_width, screen_height;
+	int scale;
 	int i;
 
 	left = right = top = bottom = 0;
@@ -94,11 +95,14 @@ canvas_container_set_workarea (NautilusCanvasContainer *canvas_container,
 	screen_width  = gdk_screen_get_width (screen);
 	screen_height = gdk_screen_get_height (screen);
 
+	scale = gdk_window_get_scale_factor (gdk_screen_get_root_window (screen));
+	scale = scale ? scale : 1;
+
 	for (i = 0; i < n_items; i += 4) {
-		int x      = workareas [i];
-		int y      = workareas [i + 1];
-		int width  = workareas [i + 2];
-		int height = workareas [i + 3];
+		int x      = workareas [i] / scale;
+		int y      = workareas [i + 1] / scale;
+		int width  = workareas [i + 2] / scale;
+		int height = workareas [i + 3] / scale;
 
 		if ((x + width) > screen_width || (y + height) > screen_height)
 			continue;
