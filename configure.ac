@@ -29,7 +29,6 @@ AC_CONFIG_MACRO_DIR([m4])
 AM_INIT_AUTOMAKE([1.11 dist-xz no-dist-gzip tar-ustar foreign])
 m4_ifdef([AM_SILENT_RULES], [AM_SILENT_RULES([yes])])
 AM_MAINTAINER_MODE([enable])
-GNOME_MAINTAINER_MODE_DEFINES
 
 dnl We need to decrement current by one in the calculation of the age because
 dnl the library was started with version "1:0:0" instead of "0:0:0"
@@ -66,6 +65,7 @@ IT_PROG_INTLTOOL([0.50])
 
 dnl ==========================================================================
 
+AX_REQUIRE_DEFINED([GTK_DOC_CHECK])
 GTK_DOC_CHECK([1.10],[--flavour no-tmpl])
 
 dnl ==========================================================================
