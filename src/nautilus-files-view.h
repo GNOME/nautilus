@@ -259,7 +259,7 @@ struct NautilusFilesViewClass {
 
         NautilusWindow * (*get_window)       (NautilusFilesView *view);
 
-        GdkRectangle * (*compute_rename_popover_relative_to) (NautilusFilesView *view);
+        GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
 
         GIcon *        (* get_icon)          (NautilusFilesView *view);
 
