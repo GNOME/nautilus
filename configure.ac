@@ -1,4 +1,4 @@
-AC_PREREQ(2.54)
+AC_PREREQ(2.60)
 
 dnl ===========================================================================
 
@@ -56,12 +56,10 @@ AC_SUBST(GETTEXT_PACKAGE)
 AC_DEFINE_UNQUOTED(GETTEXT_PACKAGE,"$GETTEXT_PACKAGE",
                    [the gettext translation domain])
 
-AM_GLIB_GNU_GETTEXT
-GLIB_DEFINE_LOCALEDIR(GNOMELOCALEDIR)
+AM_GNU_GETTEXT_VERSION([0.19.8])
+AM_GNU_GETTEXT([external])
 
 GLIB_GSETTINGS
-
-IT_PROG_INTLTOOL([0.50])
 
 dnl ==========================================================================
 
@@ -321,9 +319,6 @@ LIBGD_INIT([
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
-data/org.gnome.Nautilus.desktop.in
-data/nautilus-autorun-software.desktop.in
-data/nautilus-classic.desktop
 docs/Makefile
 docs/reference/Makefile
 docs/reference/libnautilus-extension/Makefile

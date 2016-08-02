@@ -32,7 +32,7 @@ nautilus_module_initialize (GTypeModule*module)
 {
 	nautilus_nste_register_type (module);
 
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 }
 

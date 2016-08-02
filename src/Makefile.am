@@ -21,6 +21,7 @@ AM_CPPFLAGS =							\
 	$(TRACKER_CFLAGS)					\
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
 	-DNAUTILUS_EXTENSIONDIR=\""$(libdir)/nautilus/extensions-3.0"\" \
 	-DPREFIX=\""$(prefix)"\" 				\
@@ -375,8 +376,6 @@ BUILT_SOURCES = 					\
 	$(NULL)
 
 TESTS=check-nautilus
-
-@INTLTOOL_SERVER_RULE@
 
 CLEANFILES = \
 	$(BUILT_SOURCES)			\

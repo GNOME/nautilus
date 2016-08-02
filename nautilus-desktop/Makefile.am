@@ -17,6 +17,7 @@ AM_CPPFLAGS =							\
 	$(EXEMPI_CFLAGS)                                        \
 	-DDATADIR=\""$(datadir)"\" 				\
 	-DLIBDIR=\""$(libdir)"\" 				\
+	-DLOCALEDIR=\""$(localedir)"\"				\
 	-DNAUTILUS_DATADIR=\""$(datadir)/nautilus"\" 		\
 	-DPREFIX=\""$(prefix)"\" 				\
 	-DVERSION="\"$(VERSION)\"" 				\

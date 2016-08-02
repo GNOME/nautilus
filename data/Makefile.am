@@ -5,24 +5,29 @@ desktop_in_files = 					\
 	org.gnome.Nautilus.desktop.in			\
 	nautilus-autorun-software.desktop.in
 
-desktop_DATA     = 					\
-	$(desktop_in_files:.desktop.in=.desktop)
-
 autostart_in_files = nautilus-autostart.desktop.in
 
 if ENABLE_DESKTOP
-desktop_DATA += nautilus-classic.desktop
+desktop_in_files += nautilus-classic.desktop.in
 
 autostartdir     = $(sysconfdir)/xdg/autostart
 autostart_DATA   = $(autostart_in_files:.desktop.in=.desktop)
+
+$(autostart_DATA): $(autostart_in_files)
+	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 endif
+
+desktop_DATA = $(desktop_in_files:.desktop.in=.desktop)
+
+$(desktop_DATA): %.desktop: %.desktop.in
+	$(AM_V_GEN) $(MSGFMT) --desktop --template $< -d $(top_srcdir)/po -o $@
 
 appdatadir = $(datadir)/appdata
 appdata_in_files = org.gnome.Nautilus.appdata.xml.in
 appdata_DATA = $(appdata_in_files:.xml.in=.xml)
-@INTLTOOL_XML_RULE@
 
-@INTLTOOL_DESKTOP_RULE@
+$(appdata_DATA): $(appdata_in_files)
+	$(AM_V_GEN) $(MSGFMT) --xml --template $< -d $(top_srcdir)/po -o $@
 
 servicedir = $(datadir)/dbus-1/services
 service_DATA = $(service_in_files:.service.in=.service)
@@ -44,8 +49,6 @@ gsettings_SCHEMAS = org.gnome.nautilus.gschema.xml
 @GSETTINGS_RULES@
 
 EXTRA_DIST =				\
-	org.gnome.Nautilus.desktop	\
-	org.gnome.Nautilus.desktop.in	\
 	dbus-interfaces.xml		\
 	freedesktop-dbus-interfaces.xml	\
 	shell-search-provider-dbus-interfaces.xml \

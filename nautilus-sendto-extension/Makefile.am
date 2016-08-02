@@ -7,6 +7,7 @@ AM_CPPFLAGS=\
 	$(WARNING_CFLAGS) \
 	$(DISABLE_DEPRECATED) \
 	-DDATADIR=\""$(datadir)"\" \
+	-DLOCALEDIR=\""$(localedir)"\" \
 	$(NULL)
 
 nautilus_extensiondir = $(libdir)/nautilus/extensions-3.0
