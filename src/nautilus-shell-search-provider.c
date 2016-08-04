@@ -394,7 +394,7 @@ execute_search (NautilusShellSearchProvider *self,
 {
   gchar *terms_joined;
   NautilusQuery *query;
-  NautilusSearchEngine *simple_provider;
+  NautilusSearchEngineSimple *simple_provider;
   PendingSearch *pending_search;
   GFile *home;
 
