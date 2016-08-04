@@ -2159,7 +2159,6 @@ update_info_internal (NautilusFile *file,
 						  g_file_info_get_edit_name (info),
 						  FALSE);
 
-	mime_type = g_file_info_get_content_type (info);
 	file_type = g_file_info_get_file_type (info);
 	if (file->details->type != file_type) {
 		changed = TRUE;

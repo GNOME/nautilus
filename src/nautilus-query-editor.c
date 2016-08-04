@@ -658,7 +658,6 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
         gboolean should_notify;
 
         priv = nautilus_query_editor_get_instance_private (editor);
-        should_notify = FALSE;
 
         /* The client could set us a location that is actually a search directory,
          * like what happens with the slot when updating the query editor location.

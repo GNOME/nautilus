@@ -2602,7 +2602,7 @@ set_up_scripts_directory_global (void)
                                 if (res == -1) {
                                         fd = g_creat (updated, 0600);
                                         if (fd != -1) {
-                                                res = write (fd, message, strlen (message));
+                                                write (fd, message, strlen (message));
                                                 close (fd);
                                         }
                                 }
@@ -5597,8 +5597,7 @@ invoke_external_bulk_rename_utility (NautilusFilesView *view,
 }
 
 static void
-real_action_rename (NautilusFilesView *view,
-                    gboolean           select_all)
+real_action_rename (NautilusFilesView *view)
 {
         NautilusFile *file;
         GList *selection;
@@ -5615,11 +5614,7 @@ real_action_rename (NautilusFilesView *view,
                         }
                 } else {
                         file = NAUTILUS_FILE (selection->data);
-                        if (!select_all) {
-                                /* directories don't have a file extension, so
-                                 * they are always pre-selected as a whole */
-                                select_all = nautilus_file_is_directory (file);
-                        }
+
                         nautilus_files_view_rename_file_popover_new (view, file);
                 }
         }
@@ -5632,7 +5627,7 @@ action_rename (GSimpleAction *action,
                GVariant      *state,
                gpointer       user_data)
 {
-        real_action_rename (NAUTILUS_FILES_VIEW (user_data), FALSE);
+        real_action_rename (NAUTILUS_FILES_VIEW (user_data));
 }
 
 #define BG_KEY_PRIMARY_COLOR      "primary-color"

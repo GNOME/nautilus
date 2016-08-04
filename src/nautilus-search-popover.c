@@ -381,7 +381,6 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
   maximum_dt = g_date_time_new_from_unix_local (0);
   now = g_date_time_new_now_local ();
   max_days = SEARCH_FILTER_MAX_YEARS * 365;
-  current_date = g_date_time_new_now_local ();
 
   /* Add the no date filter element first */
   row = create_row_for_label (_("Any time"), TRUE);
