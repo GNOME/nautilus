@@ -1567,11 +1567,11 @@ track_newly_added_locations (NautilusFilesView *view,
                              NautilusDirectory *directory,
                              gpointer           user_data)
 {
-        NewFolderData *data;
+        GHashTable *added_locations;
 
-        data = user_data;
+        added_locations = user_data;
 
-        g_hash_table_insert (data->added_locations, nautilus_file_get_location (new_file), NULL);
+        g_hash_table_add (added_locations, nautilus_file_get_location (new_file));
 }
 
 static void
@@ -1595,7 +1595,7 @@ new_folder_done (GFile    *new_folder,
 
         g_signal_handlers_disconnect_by_func (directory_view,
                                               G_CALLBACK (track_newly_added_locations),
-                                              (void *) data);
+                                              data->added_locations);
 
         if (new_folder == NULL) {
                 goto fail;
@@ -1632,7 +1632,7 @@ new_folder_done (GFile    *new_folder,
                 g_free (target_uri);
         }
 
-        if (g_hash_table_lookup_extended (data->added_locations, new_folder, NULL, NULL)) {
+        if (g_hash_table_contains (data->added_locations, new_folder)) {
                 /* The file was already added */
                 nautilus_files_view_select_file (directory_view, file);
                 nautilus_files_view_reveal_selection (directory_view);
@@ -1785,7 +1785,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
         g_signal_connect_data (view,
                                "add-file",
                                G_CALLBACK (track_newly_added_locations),
-                               data,
+                               data->added_locations,
                                (GClosureNotify)NULL,
                                G_CONNECT_AFTER);
 
@@ -1865,7 +1865,7 @@ setup_new_folder_data (NautilusFilesView *directory_view)
         g_signal_connect_data (directory_view,
                                "add-file",
                                G_CALLBACK (track_newly_added_locations),
-                               data,
+                               data->added_locations,
                                (GClosureNotify)NULL,
                                G_CONNECT_AFTER);
 
