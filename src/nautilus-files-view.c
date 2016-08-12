@@ -3429,10 +3429,14 @@ process_old_files (NautilusFilesView *view)
 static void
 display_pending_files (NautilusFilesView *view)
 {
+        GList *selection;
+
         process_new_files (view);
         process_old_files (view);
 
-        if (!nautilus_files_view_get_selection (NAUTILUS_VIEW (view)) &&
+        selection = nautilus_files_view_get_selection (NAUTILUS_VIEW (view));
+
+        if (selection == NULL &&
             !view->details->pending_selection &&
             nautilus_view_is_searching (NAUTILUS_VIEW (view))) {
                 nautilus_files_view_select_first (view);
@@ -3444,6 +3448,8 @@ display_pending_files (NautilusFilesView *view)
             && g_hash_table_size (view->details->non_ready_files) == 0) {
                 done_loading (view, TRUE);
         }
+
+        nautilus_file_list_free (selection);
 }
 
 static gboolean
@@ -6107,10 +6113,6 @@ real_update_actions_state (NautilusFilesView *view)
                                              "new-folder");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_create_files);
 
-
-        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-        selection_count = g_list_length (selection);
-
         item_opens_in_view = selection_count != 0;
 
         for (l = selection; l != NULL; l = l->next) {
@@ -6332,6 +6334,8 @@ real_update_actions_state (NautilusFilesView *view)
                                              "zoom-to-level");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                      !nautilus_files_view_is_empty (view));
+
+        nautilus_file_list_free (selection);
 }
 
 /* Convenience function to be called when updating menus,
@@ -6535,6 +6539,8 @@ update_selection_menu (NautilusFilesView *view)
                                                      FALSE);
                 g_object_unref (menu_item);
         }
+
+        nautilus_file_list_free (selection);
 
         update_scripts_menu (view);
 }
