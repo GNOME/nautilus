@@ -414,7 +414,7 @@ save_callback (GObject *source_object,
 	       gpointer user_data)
 {
 	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
-	GError *error;
+	GError *error = NULL;
 	gboolean success;
 	GFile *file;
 
