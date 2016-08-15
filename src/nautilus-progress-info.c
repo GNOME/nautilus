@@ -293,7 +293,7 @@ set_details_in_thread (GTask                *task,
                        GCancellable         *cancellable)
 {
         if (!g_cancellable_is_cancelled (cancellable)) {
-                nautilus_progress_info_set_details  (info, _("Cancelled"));
+                nautilus_progress_info_set_details  (info, _("Canceled"));
                 G_LOCK (progress_info);
 		info->cancel_at_idle = TRUE;
                 g_timer_stop (info->progress_timer);
