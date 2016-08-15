@@ -2745,7 +2745,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
 			       "program-name", _("Files"),
 			       "version", VERSION,
 			       "comments", _("Access and organize your files."),
-			       "copyright", "Copyright © 1999–2014 The Files Authors",
+			       "copyright", "Copyright © 1999–2016 The Files Authors",
 			       "license-type", GTK_LICENSE_GPL_2_0,
 			       "authors", authors,
 			       "documenters", documenters,
