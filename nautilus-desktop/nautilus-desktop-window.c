@@ -32,6 +32,9 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 
+#define GNOME_DESKTOP_USE_UNSTABLE_API
+#include <libgnome-desktop/gnome-bg.h>
+
 #include <eel/eel-vfs-extensions.h>
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-icon-names.h>
@@ -45,10 +48,90 @@ struct NautilusDesktopWindowDetails {
 	gboolean loaded;
 
 	GtkWidget *desktop_selection;
+
+	gboolean composited;
+	cairo_surface_t *surface;
 };
 
 G_DEFINE_TYPE (NautilusDesktopWindow, nautilus_desktop_window, 
 	       NAUTILUS_TYPE_WINDOW);
+
+static void
+background_changed (NautilusDesktopWindow *window)
+{
+	GtkWidget *widget = GTK_WIDGET (window);
+	GdkScreen *screen = gtk_widget_get_screen (widget);
+
+	g_clear_pointer (&window->details->surface, cairo_surface_destroy);
+
+	window->details->surface = gnome_bg_get_surface_from_root (screen);
+	gtk_widget_queue_draw (widget);
+}
+
+static GdkFilterReturn
+filter_func (GdkXEvent             *xevent,
+             GdkEvent              *event,
+             NautilusDesktopWindow *window)
+{
+	XEvent *xev = (XEvent *) xevent;
+	GdkAtom gdkatom;
+
+	if (xev->type != PropertyNotify) {
+		return GDK_FILTER_CONTINUE;
+	}
+
+	gdkatom = gdk_atom_intern_static_string ("_XROOTPMAP_ID");
+	if (xev->xproperty.atom != gdk_x11_atom_to_xatom (gdkatom)) {
+		return GDK_FILTER_CONTINUE;
+	}
+
+	background_changed (window);
+
+	return GDK_FILTER_CONTINUE;
+}
+
+static void
+nautilus_desktop_window_composited_changed (GtkWidget *widget)
+{
+	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (widget);
+	GdkScreen *screen = gtk_widget_get_screen (widget);
+	gboolean composited = gdk_screen_is_composited (screen);
+	GdkWindow *root;
+	gint events;
+
+	if (window->details->composited == composited) {
+		return;
+	}
+
+	window->details->composited = composited;
+	root = gdk_screen_get_root_window (screen);
+
+	if (composited) {
+		gdk_window_remove_filter (root, (GdkFilterFunc) filter_func, window);
+
+		g_clear_pointer (&window->details->surface, cairo_surface_destroy);
+	} else {
+		events = gdk_window_get_events (root);
+
+		gdk_window_set_events (root, events | GDK_PROPERTY_CHANGE_MASK);
+		gdk_window_add_filter (root, (GdkFilterFunc) filter_func, window);
+		background_changed (window);
+	}
+}
+
+static gboolean
+nautilus_desktop_window_draw (GtkWidget *widget,
+                              cairo_t   *cr)
+{
+	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (widget);
+
+	if (window->details->surface) {
+		cairo_set_source_surface (cr, window->details->surface, 0, 0);
+		cairo_paint (cr);
+	}
+
+	return GTK_WIDGET_CLASS (nautilus_desktop_window_parent_class)->draw (widget, cr);
+}
 
 static void
 nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
@@ -74,7 +157,20 @@ nautilus_desktop_window_update_directory (NautilusDesktopWindow *window)
 static void
 nautilus_desktop_window_finalize (GObject *obj)
 {
+	NautilusDesktopWindow *window = NAUTILUS_DESKTOP_WINDOW (obj);
+	GdkScreen *screen;
+	GdkWindow *root;
+
 	nautilus_desktop_link_monitor_shutdown ();
+
+	if (window->details->composited == FALSE) {
+		screen = gtk_widget_get_screen (GTK_WIDGET (window));
+		root = gdk_screen_get_root_window (screen);
+
+		gdk_window_remove_filter (root, (GdkFilterFunc) filter_func, window);
+	}
+
+	g_clear_pointer (&window->details->surface, cairo_surface_destroy);
 
 	G_OBJECT_CLASS (nautilus_desktop_window_parent_class)->finalize (obj);
 }
@@ -221,11 +317,16 @@ nautilus_desktop_window_constructed (GObject *obj)
 static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
+	GtkWidget *widget = GTK_WIDGET (window);
+	GdkScreen *screen = gtk_widget_get_screen (widget);
+
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
 						       NautilusDesktopWindowDetails);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
 				     "nautilus-desktop-window");
 
+	window->details->composited = gdk_screen_is_composited (screen);
+	nautilus_desktop_window_composited_changed (widget);
 }
 
 static void
@@ -401,6 +502,8 @@ nautilus_desktop_window_class_init (NautilusDesktopWindowClass *klass)
 	wclass->unrealize = unrealize;
 	wclass->map = map;
 	wclass->delete_event = nautilus_desktop_window_delete_event;
+	wclass->composited_changed = nautilus_desktop_window_composited_changed;
+	wclass->draw = nautilus_desktop_window_draw;
 
 	nclass->sync_title = real_sync_title;
 	nclass->close = real_window_close;
