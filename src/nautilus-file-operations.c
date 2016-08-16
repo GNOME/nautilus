@@ -2012,6 +2012,29 @@ skip:
 }
 
 static void
+transfer_add_file_to_count (GFile        *file,
+                            CommonJob    *job,
+                            TransferInfo *transfer_info)
+{
+    g_autoptr (GFileInfo) file_info;
+
+    if (g_cancellable_is_cancelled (job->cancellable)) {
+        return;
+    }
+
+    file_info = g_file_query_info (file,
+                                   G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                   G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                   job->cancellable,
+                                   NULL);
+
+    transfer_info->num_files++;
+    if (file_info != NULL) {
+        transfer_info->num_bytes += g_file_info_get_size (file_info);
+    }
+}
+
+static void
 trash_files (CommonJob *job,
              GList     *files,
              int       *files_skipped)
@@ -2053,6 +2076,9 @@ trash_files (CommonJob *job,
                             TRUE, &to_delete);
 		if (skipped_file) {
 			(*files_skipped)++;
+			transfer_file_add_to_count (file, job, &transfer_info);
+			report_trash_progress (job, &source_info, &transfer_info);
+
 		}
 	}
 
@@ -3927,6 +3953,12 @@ copy_move_directory (CopyMoveJob *copy_job,
 			copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
 					source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file,
 					readonly_source_fs);
+
+			if (local_skipped_file) {
+				transfer_file_add_to_count (src_file, job, transfer_info);
+				report_copy_progress (copy_job, source_info, transfer_info);
+			}
+
 			g_object_unref (src_file);
 			g_object_unref (info);
 		}
@@ -4889,6 +4921,11 @@ copy_files (CopyMoveJob *job,
 					point, FALSE, &skipped_file,
 					readonly_source_fs);
 			g_object_unref (dest);
+
+			if (skipped_file) {
+				transfer_file_add_to_count (src, common, transfer_info);
+				report_copy_progress (job, source_info, transfer_info);
+			}
 		}
 		i++;
 	}
@@ -5458,6 +5495,11 @@ common = &job->common;
 				job->debuting_files,
 				point, fallback->overwrite, &skipped_file, FALSE);
 		i++;
+
+		if (skipped_file) {
+			transfer_file_add_to_count (src, common, transfer_info);
+			report_copy_progress (job, source_info, transfer_info);
+		}
 	}
 }
 
