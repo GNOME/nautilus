@@ -295,7 +295,6 @@ AM_CONDITIONAL(ENABLE_UPDATE_MIMEDB, test x$enable_update_mimedb = xyes)
 LIBGD_INIT([
   gtk-hacks
   notification
-  static
   _view-common
   tagged-entry
 ])
