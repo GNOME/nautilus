@@ -8,6 +8,7 @@ DIRS =				\
 	test 			\
 	data 			\
 	po 			\
+	data/icons		\
 	docs			\
 	$(NULL)
 
