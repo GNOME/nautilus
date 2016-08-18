@@ -1,5 +1,7 @@
 NULL=
 
+SUBDIRS = icons
+
 desktopdir       = $(datadir)/applications
 desktop_in_files = 					\
 	org.gnome.Nautilus.desktop.in			\

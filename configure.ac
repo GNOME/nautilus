@@ -319,6 +319,7 @@ LIBGD_INIT([
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
+data/icons/Makefile
 docs/Makefile
 docs/reference/Makefile
 docs/reference/libnautilus-extension/Makefile
