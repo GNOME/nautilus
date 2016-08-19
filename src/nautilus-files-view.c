@@ -683,6 +683,16 @@ nautilus_files_view_supports_creating_files (NautilusFilesView *view)
 }
 
 static gboolean
+nautilus_files_view_supports_extract_here (NautilusFilesView *view)
+{
+        g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+
+        return nautilus_files_view_supports_creating_files (view)
+                && !nautilus_directory_is_remote (view->details->model)
+                && !nautilus_view_is_searching (NAUTILUS_VIEW (view));
+}
+
+static gboolean
 nautilus_files_view_is_empty (NautilusFilesView *view)
 {
         g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
@@ -5360,6 +5370,238 @@ action_rename (GSimpleAction *action,
         real_action_rename (NAUTILUS_FILES_VIEW (user_data));
 }
 
+typedef struct {
+        NautilusFilesView *view;
+        GHashTable *added_locations;
+} ExtractData;
+
+static void
+extract_done (GList    *outputs,
+              gpointer  user_data)
+{
+        ExtractData *data;
+        GList *l;
+        gboolean all_files_acknowledged;
+
+        data = user_data;
+
+        if (data->view == NULL) {
+                goto out;
+        }
+
+        g_signal_handlers_disconnect_by_func (data->view,
+                                              G_CALLBACK (track_newly_added_locations),
+                                              data->added_locations);
+
+        if (outputs == NULL) {
+                goto out;
+        }
+
+        all_files_acknowledged = TRUE;
+        for (l = outputs; l && all_files_acknowledged; l = l->next) {
+                all_files_acknowledged = g_hash_table_contains (data->added_locations,
+                                                                l->data);
+        }
+
+        if (all_files_acknowledged) {
+                GList *selection = NULL;
+
+                for (l = outputs; l != NULL; l = l->next) {
+                        selection = g_list_prepend (selection,
+                                                    nautilus_file_get (l->data));
+                }
+
+                nautilus_files_view_set_selection (NAUTILUS_VIEW (data->view),
+                                                   selection);
+                nautilus_files_view_reveal_selection (data->view);
+
+                nautilus_file_list_free (selection);
+        } else {
+                for (l = outputs; l != NULL; l = l->next) {
+                        gboolean acknowledged;
+
+                        acknowledged = g_hash_table_contains (data->added_locations,
+                                                              l->data);
+
+                        g_hash_table_insert (data->view->details->pending_reveal,
+                                             nautilus_file_get (l->data),
+                                             GUINT_TO_POINTER (acknowledged));
+                }
+        }
+out:
+        g_hash_table_destroy (data->added_locations);
+
+        if (data->view != NULL) {
+                g_object_remove_weak_pointer (G_OBJECT (data->view),
+                                              (gpointer *) &data->view);
+        }
+
+        g_free (data);
+}
+
+static void
+extract_files (NautilusFilesView *view,
+               GList             *files,
+               GFile             *destination_directory)
+{
+        GList *locations = NULL;
+        GList *l;
+        gboolean extracting_to_current_directory;
+
+        if (files == NULL) {
+                return;
+        }
+
+        for (l = files; l != NULL; l = l->next) {
+                locations = g_list_prepend (locations,
+                                            nautilus_file_get_location (l->data));
+        }
+
+        locations = g_list_reverse (locations);
+
+        extracting_to_current_directory = g_file_equal (destination_directory,
+                                                        nautilus_view_get_location (NAUTILUS_VIEW (view)));
+
+        if (extracting_to_current_directory) {
+                ExtractData *data;
+
+                data = g_new (ExtractData, 1);
+                data->view = view;
+                data->added_locations = g_hash_table_new_full (g_file_hash,
+                                                               (GEqualFunc)g_file_equal,
+                                                               g_object_unref, NULL);
+
+
+                g_object_add_weak_pointer (G_OBJECT (data->view),
+                                           (gpointer *) &data->view);
+
+                g_signal_connect_data (view,
+                                       "add-file",
+                                       G_CALLBACK (track_newly_added_locations),
+                                       data->added_locations,
+                                       NULL,
+                                       G_CONNECT_AFTER);
+
+                nautilus_file_operations_extract_files (locations,
+                                                        destination_directory,
+                                                        nautilus_files_view_get_containing_window (view),
+                                                        extract_done,
+                                                        data);
+        } else {
+                nautilus_file_operations_extract_files (locations,
+                                                        destination_directory,
+                                                        nautilus_files_view_get_containing_window (view),
+                                                        NULL,
+                                                        NULL);
+        }
+
+        g_list_free_full (locations, g_object_unref);
+}
+
+typedef struct {
+        NautilusFilesView *view;
+        GList *files;
+} ExtractToData;
+
+static void
+on_extract_destination_dialog_response (GtkDialog *dialog,
+                                        gint       response_id,
+                                        gpointer   user_data)
+{
+        ExtractToData *data;
+
+        data = user_data;
+
+        if (response_id == GTK_RESPONSE_OK) {
+                g_autoptr (GFile) destination_directory;
+
+                destination_directory = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
+
+                extract_files (data->view, data->files, destination_directory);
+        }
+
+        gtk_widget_destroy (GTK_WIDGET (dialog));
+        nautilus_file_list_free (data->files);
+        g_free (data);
+}
+
+static void
+extract_files_to_chosen_location (NautilusFilesView *view,
+                                  GList             *files)
+{
+        ExtractToData *data;
+        GtkWidget *dialog;
+        g_autofree char *uri = NULL;
+
+        if (files == NULL) {
+                return;
+        }
+
+        data = g_new (ExtractToData, 1);
+
+        dialog = gtk_file_chooser_dialog_new (_("Select Extract Destination"),
+                                              GTK_WINDOW (nautilus_files_view_get_window (view)),
+                                              GTK_FILE_CHOOSER_ACTION_SELECT_FOLDER,
+                                              _("_Cancel"), GTK_RESPONSE_CANCEL,
+                                              _("_Select"), GTK_RESPONSE_OK,
+                                              NULL);
+        gtk_file_chooser_set_local_only (GTK_FILE_CHOOSER (dialog), FALSE);
+
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
+                                         GTK_RESPONSE_OK);
+
+        gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
+        gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
+
+        uri = nautilus_directory_get_uri (view->details->model);
+        gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog), uri);
+
+        data->view = view;
+        data->files = nautilus_file_list_copy (files);
+
+        g_signal_connect (dialog, "response",
+                          G_CALLBACK (on_extract_destination_dialog_response),
+                          data);
+
+        gtk_widget_show_all (dialog);
+}
+
+static void
+action_extract_here (GSimpleAction *action,
+                     GVariant      *state,
+                     gpointer       user_data)
+{
+        NautilusFilesView *view;
+        GList *selection;
+
+        view = NAUTILUS_FILES_VIEW (user_data);
+
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+        extract_files (view, selection,
+                       nautilus_view_get_location (NAUTILUS_VIEW (view)));
+
+        nautilus_file_list_free (selection);
+}
+
+static void
+action_extract_to (GSimpleAction *action,
+                   GVariant      *state,
+                   gpointer       user_data)
+{
+        NautilusFilesView *view;
+        GList *selection;
+
+        view = NAUTILUS_FILES_VIEW (user_data);
+
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+        extract_files_to_chosen_location (view, selection);
+
+        nautilus_file_list_free (selection);
+}
+
+
 #define BG_KEY_PRIMARY_COLOR      "primary-color"
 #define BG_KEY_SECONDARY_COLOR    "secondary-color"
 #define BG_KEY_COLOR_TYPE         "color-shading-type"
@@ -5796,6 +6038,8 @@ const GActionEntry view_entries[] = {
         { "restore-from-trash", action_restore_from_trash},
         { "paste-into", action_paste_files_into },
         { "rename", action_rename},
+        { "extract-here", action_extract_here },
+        { "extract-to", action_extract_to },
         { "properties", action_properties},
         { "set-as-wallpaper", action_set_as_wallpaper },
         { "mount-volume", action_mount_volume },
@@ -6033,6 +6277,21 @@ all_in_trash (GList *files)
         return TRUE;
 }
 
+static gboolean
+can_extract_all (GList *files)
+{
+        NautilusFile *file;
+        GList *l;
+
+        for (l = files; l != NULL; l = l->next) {
+                file = l->data;
+                if (!nautilus_file_is_archive (file)) {
+                        return FALSE;
+                }
+        }
+        return TRUE;
+}
+
 GActionGroup *
 nautilus_files_view_get_action_group (NautilusFilesView *view)
 {
@@ -6060,6 +6319,8 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean can_copy_files;
         gboolean can_link_from_copied_files;
         gboolean can_paste_files_into;
+        gboolean can_extract_files;
+        gboolean can_extract_here;
         gboolean item_opens_in_view;
         gboolean is_read_only;
         GAction *action;
@@ -6107,6 +6368,9 @@ real_update_actions_state (NautilusFilesView *view)
         can_paste_files_into = (!selection_contains_recent &&
                                 selection_count == 1 &&
                                 can_paste_into_file (NAUTILUS_FILE (selection->data)));
+        can_extract_files = selection_count != 0 &&
+                            can_extract_all (selection);
+        can_extract_here = nautilus_files_view_supports_extract_here (view);
          settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
                                                                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
          settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
@@ -6129,6 +6393,15 @@ real_update_actions_state (NautilusFilesView *view)
                                              selection_count == 1 &&
                                              nautilus_file_can_rename (selection->data));
         }
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "extract-here");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     can_extract_files && can_extract_here);
+
+        action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                             "extract-to");
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_extract_files);
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "open-item-location");
