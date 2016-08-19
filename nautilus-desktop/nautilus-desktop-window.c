@@ -318,14 +318,13 @@ static void
 nautilus_desktop_window_init (NautilusDesktopWindow *window)
 {
 	GtkWidget *widget = GTK_WIDGET (window);
-	GdkScreen *screen = gtk_widget_get_screen (widget);
 
 	window->details = G_TYPE_INSTANCE_GET_PRIVATE (window, NAUTILUS_TYPE_DESKTOP_WINDOW,
 						       NautilusDesktopWindowDetails);
 	gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
 				     "nautilus-desktop-window");
 
-	window->details->composited = gdk_screen_is_composited (screen);
+	window->details->composited = TRUE;
 	nautilus_desktop_window_composited_changed (widget);
 }
 
