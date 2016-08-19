@@ -32,6 +32,9 @@ G_BEGIN_DECLS
 /* Trash options */
 #define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
 
+/* Automatic decompression */
+#define NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION            "automatic-decompression"
+
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES			"show-hidden"
 

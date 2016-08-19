@@ -58,6 +58,8 @@
   "use_tree_view_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
   "trash_confirm_checkbutton"
+#define NAUTILUS_PREFERENCES_DIALOG_AUTOMATIC_DECOMPRESSION_WIDGET             \
+  "automatic_decompression_checkbutton"
 
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
@@ -432,6 +434,9 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
   bind_builder_bool(builder, nautilus_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET,
                     NAUTILUS_PREFERENCES_CONFIRM_TRASH);
+  bind_builder_bool (builder, nautilus_preferences,
+                     NAUTILUS_PREFERENCES_DIALOG_AUTOMATIC_DECOMPRESSION_WIDGET,
+                     NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION);
   bind_builder_bool(builder, nautilus_list_view_preferences,
                     NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET,
                     NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);

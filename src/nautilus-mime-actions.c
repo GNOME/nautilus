@@ -54,6 +54,7 @@ typedef enum {
 	ACTIVATION_ACTION_LAUNCH_IN_TERMINAL,
 	ACTIVATION_ACTION_OPEN_IN_VIEW,
 	ACTIVATION_ACTION_OPEN_IN_APPLICATION,
+        ACTIVATION_ACTION_EXTRACT,
 	ACTIVATION_ACTION_DO_NOTHING,
 } ActivationAction;
 
@@ -677,6 +678,13 @@ get_activation_action (NautilusFile *file)
 {
 	ActivationAction action;
 	char *activation_uri;
+        gboolean can_extract;
+        can_extract = g_settings_get_boolean (nautilus_preferences,
+                                              NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION);
+
+        if (can_extract && nautilus_file_is_archive (file)) {
+                return ACTIVATION_ACTION_EXTRACT;
+        }
 
 	if (nautilus_file_is_nautilus_link (file)) {
 		return ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
@@ -712,6 +720,12 @@ get_activation_action (NautilusFile *file)
 	g_free (activation_uri);
 
 	return action;
+}
+
+gboolean
+nautilus_mime_file_extracts (NautilusFile *file)
+{
+        return get_activation_action (file) == ACTIVATION_ACTION_EXTRACT;
 }
 
 gboolean
@@ -1565,6 +1579,10 @@ activate_files (ActivateParameters *parameters)
 			break;
 		case ACTIVATION_ACTION_DO_NOTHING :
 			break;
+                case ACTIVATION_ACTION_EXTRACT :
+                        /* Extraction of files should be handled in the view */
+                        g_assert_not_reached ();
+                        break;
 		case ACTIVATION_ACTION_ASK :
 			g_assert_not_reached ();
 			break;

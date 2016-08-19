@@ -311,6 +311,12 @@ static void     nautilus_files_view_select_file                      (NautilusFi
 
 static void     update_templates_directory                     (NautilusFilesView *view);
 
+static void     extract_files                                  (NautilusFilesView *view,
+                                                                GList             *files,
+                                                                GFile             *destination_directory);
+static void     extract_files_to_chosen_location               (NautilusFilesView *view,
+                                                                GList             *files);
+
 static void     nautilus_files_view_check_empty_states         (NautilusFilesView *view);
 
 static gboolean nautilus_files_view_is_searching               (NautilusView      *view);
@@ -1109,17 +1115,33 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
                                     NautilusWindowOpenFlags  flags,
                                     gboolean                 confirm_multiple)
 {
+        GList *files_to_extract;
+        GList *files_to_activate;
         char *path;
+
+        files_to_extract = nautilus_file_list_filter (files,
+                                                      &files_to_activate,
+                                                      (NautilusFileFilterFunc)nautilus_mime_file_extracts,
+                                                      NULL);
+
+        if (nautilus_files_view_supports_extract_here (view)) {
+                extract_files (view, files_to_extract,
+                               nautilus_view_get_location (NAUTILUS_VIEW (view)));
+        } else {
+                extract_files_to_chosen_location (view, files_to_extract);
+        }
 
         path = get_view_directory (view);
         nautilus_mime_activate_files (nautilus_files_view_get_containing_window (view),
                                       view->details->slot,
-                                      files,
+                                      files_to_activate,
                                       path,
                                       flags,
                                       confirm_multiple);
 
         g_free (path);
+        g_list_free (files_to_extract);
+        g_list_free (files_to_activate);
 }
 
 static void
@@ -1128,6 +1150,23 @@ nautilus_files_view_activate_file (NautilusFilesView       *view,
                                    NautilusWindowOpenFlags  flags)
 {
         char *path;
+
+        if (nautilus_mime_file_extracts (file)) {
+                GList *files = NULL;
+
+                files = g_list_prepend (files, file);
+
+                if (nautilus_files_view_supports_extract_here (view)) {
+                        extract_files (view, files,
+                                       nautilus_view_get_location (NAUTILUS_VIEW (view)));
+                } else {
+                        extract_files_to_chosen_location (view, files);
+                }
+
+                g_list_free (files);
+
+                return;
+        }
 
         path = get_view_directory (view);
         nautilus_mime_activate_file (nautilus_files_view_get_containing_window (view),
@@ -6333,6 +6372,7 @@ real_update_actions_state (NautilusFilesView *view)
         gboolean show_detect_media;
         gboolean settings_show_delete_permanently;
         gboolean settings_show_create_link;
+        gboolean settings_automatic_decompression;
         GDriveStartStopType start_stop_type;
 
         view_action_group = view->details->view_action_group;
@@ -6375,6 +6415,8 @@ real_update_actions_state (NautilusFilesView *view)
                                                                     NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
          settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
                                                              NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
+        settings_automatic_decompression = g_settings_get_boolean (nautilus_preferences,
+                                                                   NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION);
 
         /* Right click actions */
         /* Selection menu actions */
@@ -6397,11 +6439,16 @@ real_update_actions_state (NautilusFilesView *view)
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "extract-here");
         g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                     can_extract_files && can_extract_here);
+                                     can_extract_files &&
+                                     !settings_automatic_decompression &&
+                                     can_extract_here);
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "extract-to");
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_extract_files);
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     can_extract_files &&
+                                     (!settings_automatic_decompression ||
+                                      can_extract_here));
 
         action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                              "open-item-location");
@@ -6658,7 +6705,9 @@ update_selection_menu (NautilusFilesView *view)
         GList *selection, *l;
         NautilusFile *file;
         gint selection_count;
-        gboolean show_app, show_run;
+        gboolean show_app;
+        gboolean show_run;
+        gboolean show_extract;
         gboolean item_opens_in_view;
         gchar *item_label;
         GAppInfo *app;
@@ -6696,11 +6745,15 @@ update_selection_menu (NautilusFilesView *view)
         g_free (item_label);
 
         /* Open With <App> menu item */
-        show_app = show_run = item_opens_in_view = selection_count != 0;
+        show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
         for (l = selection; l != NULL; l = l->next) {
                 NautilusFile *file;
 
-                file = NAUTILUS_FILE (selection->data);
+                file = NAUTILUS_FILE (l->data);
+
+                if (!nautilus_mime_file_extracts (file)) {
+                        show_extract = FALSE;
+                }
 
                 if (!nautilus_mime_file_opens_in_external_app (file)) {
                         show_app = FALSE;
@@ -6714,7 +6767,7 @@ update_selection_menu (NautilusFilesView *view)
                         item_opens_in_view = FALSE;
                 }
 
-                if (!show_app && !show_run && !item_opens_in_view) {
+                if (!show_extract && !show_app && !show_run && !item_opens_in_view) {
                         break;
                 }
         }
@@ -6740,6 +6793,10 @@ update_selection_menu (NautilusFilesView *view)
                 g_object_unref (app);
         } else if (show_run) {
                 item_label = g_strdup (_("Run"));
+        } else if (show_extract) {
+                item_label = nautilus_files_view_supports_extract_here (view) ?
+                             g_strdup (_("Extract Here")) :
+                             g_strdup (_("Extract to…"));
         } else {
                 item_label = g_strdup (_("Open"));
         }
