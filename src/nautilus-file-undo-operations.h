@@ -36,6 +36,7 @@ typedef enum {
 	NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE,
 	NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE,
 	NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER,
+	NAUTILUS_FILE_UNDO_OP_EXTRACT,
 	NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH,
 	NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH,
 	NAUTILUS_FILE_UNDO_OP_CREATE_LINK,
@@ -295,5 +296,33 @@ NautilusFileUndoInfo *nautilus_file_undo_info_ownership_new (NautilusFileUndoOp 
 							     GFile              *file,
 							     const char         *current_data,
 							     const char         *new_data);
+
+/* extract */
+#define NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT         (nautilus_file_undo_info_extract_get_type ())
+#define NAUTILUS_FILE_UNDO_INFO_EXTRACT(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT, NautilusFileUndoInfoExtract))
+#define NAUTILUS_FILE_UNDO_INFO_EXTRACT_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT, NautilusFileUndoInfoExtractClass))
+#define NAUTILUS_IS_FILE_UNDO_INFO_EXTRACT(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT))
+#define NAUTILUS_IS_FILE_UNDO_INFO_EXTRACT_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT))
+#define NAUTILUS_FILE_UNDO_INFO_EXTRACT_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_EXTRACT, NautilusFileUndoInfoExtractClass))
+
+typedef struct _NautilusFileUndoInfoExtract        NautilusFileUndoInfoExtract;
+typedef struct _NautilusFileUndoInfoExtractClass   NautilusFileUndoInfoExtractClass;
+typedef struct _NautilusFileUndoInfoExtractDetails NautilusFileUndoInfoExtractDetails;
+
+struct _NautilusFileUndoInfoExtract {
+        NautilusFileUndoInfo parent;
+        NautilusFileUndoInfoExtractDetails *priv;
+};
+
+struct _NautilusFileUndoInfoExtractClass {
+        NautilusFileUndoInfoClass parent_class;
+};
+
+GType nautilus_file_undo_info_extract_get_type (void) G_GNUC_CONST;
+NautilusFileUndoInfo * nautilus_file_undo_info_extract_new (GList *sources,
+                                                            GFile *destination_directory);
+void nautilus_file_undo_info_extract_set_outputs (NautilusFileUndoInfoExtract *self,
+                                                  GList                       *outputs);
+
 
 #endif /* __NAUTILUS_FILE_UNDO_OPERATIONS_H__ */

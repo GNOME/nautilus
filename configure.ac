@@ -11,6 +11,7 @@ m4_define(exif_minver,                 0.6.20)
 m4_define(exempi_minver,               2.1.0)
 m4_define(notify_minver,               0.7.0)
 m4_define(schemas_minver,              3.8.0)
+m4_define(autoar_minver,               0.1)
 
 dnl 1. If the library code has changed at all since last release, then increment revision.
 dnl 2. If any interfaces have been added, then increment current and set revision to 0.
@@ -268,6 +269,7 @@ dnl base libs
 PKG_CHECK_MODULES(BASE, [
 	gtk+-3.0 >= gtk_minver
 	glib-2.0 >= glib_minver
+        gnome-autoar >= autoar_minver
 ])
 
 dnl common libs (eel, nautilus)

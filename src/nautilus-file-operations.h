@@ -44,6 +44,8 @@ typedef void (* NautilusMountCallback)     (GVolume    *volume,
 					    gboolean    success,
 					    GObject    *callback_data_object);
 typedef void (* NautilusUnmountCallback)   (gpointer    callback_data);
+typedef void (* NautilusExtractCallback)   (GList    *outputs,
+                                            gpointer  callback_data);
 
 /* FIXME: int copy_action should be an enum */
 
@@ -147,6 +149,11 @@ void nautilus_file_mark_desktop_file_trusted (GFile           *file,
 					      gboolean          interactive,
 					      NautilusOpCallback done_callback,
 					      gpointer          done_callback_data);
+void nautilus_file_operations_extract_files (GList                   *files,
+                                             GFile                   *destination_directory,
+                                             GtkWindow               *parent_window,
+                                             NautilusExtractCallback  done_callback,
+                                             gpointer                 done_callback_data);
 
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

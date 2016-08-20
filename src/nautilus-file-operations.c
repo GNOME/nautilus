@@ -51,6 +51,8 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
+#include <gnome-autoar/gnome-autoar.h>
+
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
@@ -169,8 +171,24 @@ typedef struct {
 	int last_reported_files_left;
 } TransferInfo;
 
+typedef struct {
+        CommonJob common;
+        GList *source_files;
+        GFile *destination_directory;
+        GList *output_files;
+
+        gdouble base_progress;
+
+        guint64 archive_compressed_size;
+        guint64 total_compressed_size;
+
+        NautilusExtractCallback done_callback;
+        gpointer done_callback_data;
+} ExtractJob;
+
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define NSEC_PER_MICROSEC 1000
+#define PROGRESS_NOTIFY_INTERVAL 100 * NSEC_PER_MICROSEC
 
 #define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
 
@@ -7023,6 +7041,366 @@ nautilus_file_mark_desktop_file_trusted (GFile *file,
 	g_task_set_task_data (task, job, NULL);
 	g_task_run_in_thread (task, mark_trusted_task_thread_func);
 	g_object_unref (task);
+}
+
+static void
+extract_task_done (GObject      *source_object,
+                   GAsyncResult *res,
+                   gpointer      user_data)
+{
+        ExtractJob *extract_job;
+
+        extract_job = user_data;
+
+        if (extract_job->done_callback) {
+                extract_job->done_callback (extract_job->output_files,
+                                            extract_job->done_callback_data);
+        }
+
+        g_list_free_full (extract_job->source_files, g_object_unref);
+        g_list_free_full (extract_job->output_files, g_object_unref);
+        g_object_unref (extract_job->destination_directory);
+
+        finalize_common ((CommonJob *)extract_job);
+
+        nautilus_file_changes_consume_changes (TRUE);
+}
+
+static GFile*
+extract_job_on_decide_destination (AutoarExtractor *extractor,
+                                   GFile           *destination,
+                                   GList           *files,
+                                   gpointer         user_data)
+{
+        ExtractJob *extract_job = user_data;
+        GFile *decided_destination;
+        g_autofree char *basename;
+
+        nautilus_progress_info_set_details (extract_job->common.progress,
+                                            _("Verifying destination"));
+
+        basename = g_file_get_basename (destination);
+        decided_destination = nautilus_generate_unique_file_in_directory (extract_job->destination_directory,
+                                                                          basename);
+
+        if (job_aborted ((CommonJob *)extract_job)) {
+                g_object_unref (decided_destination);
+                return NULL;
+        }
+
+        extract_job->output_files = g_list_prepend (extract_job->output_files,
+                                                    decided_destination);
+
+        return g_object_ref (decided_destination);
+}
+
+static void
+extract_job_on_progress (AutoarExtractor *extractor,
+                         guint64          archive_current_decompressed_size,
+                         guint            archive_current_decompressed_files,
+                         gpointer         user_data)
+{
+        ExtractJob *extract_job = user_data;
+        CommonJob *common = user_data;
+        GFile *source_file;
+        char *details;
+        double elapsed;
+        double transfer_rate;
+        int remaining_time;
+        guint64 archive_total_decompressed_size;
+        gdouble archive_weight;
+        gdouble archive_decompress_progress;
+        guint64 job_completed_size;
+        gdouble job_progress;
+
+        source_file = autoar_extractor_get_source_file (extractor);
+
+        nautilus_progress_info_take_status (common->progress,
+                                            f (_("Extracting “%B”"), source_file));
+
+        archive_total_decompressed_size = autoar_extractor_get_total_size (extractor);
+
+        archive_decompress_progress = (gdouble)archive_current_decompressed_size /
+                                      (gdouble)archive_total_decompressed_size;
+
+        archive_weight = 0;
+        if (extract_job->total_compressed_size) {
+                archive_weight = (gdouble)extract_job->archive_compressed_size /
+                                 (gdouble)extract_job->total_compressed_size;
+        }
+
+        job_progress = archive_decompress_progress * archive_weight + extract_job->base_progress;
+
+        elapsed = g_timer_elapsed (common->time, NULL);
+
+        transfer_rate = 0;
+        remaining_time = -1;
+
+        job_completed_size = job_progress * extract_job->total_compressed_size;
+
+        if (elapsed > 0) {
+                transfer_rate = job_completed_size / elapsed;
+        }
+        if (transfer_rate > 0) {
+                remaining_time = (extract_job->total_compressed_size - job_completed_size) /
+                                 transfer_rate;
+        }
+
+        if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE ||
+            transfer_rate == 0) {
+                /* To translators: %S will expand to a size like "2 bytes" or
+                 * "3 MB", so something like "4 kb / 4 MB"
+                 */
+                details = f (_("%S / %S"), job_completed_size, extract_job->total_compressed_size);
+        } else {
+                /* To translators: %S will expand to a size like "2 bytes" or
+                 * "3 MB", %T to a time duration like "2 minutes". So the whole
+                 * thing will be something like
+                 * "2 kb / 4 MB -- 2 hours left (4kb/sec)"
+                 *
+                 * The singular/plural form will be used depending on the
+                 * remaining time (i.e. the %T argument).
+                 */
+                details = f (ngettext ("%S / %S \xE2\x80\x94 %T left (%S/sec)",
+                                       "%S / %S \xE2\x80\x94 %T left (%S/sec)",
+                                       seconds_count_format_time_units (remaining_time)),
+                             job_completed_size, extract_job->total_compressed_size,
+                             remaining_time,
+                             (goffset)transfer_rate);
+        }
+
+        nautilus_progress_info_take_details (common->progress, details);
+
+        if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
+                nautilus_progress_info_set_remaining_time (common->progress,
+                                                           remaining_time);
+                nautilus_progress_info_set_elapsed_time (common->progress,
+                                                         elapsed);
+        }
+
+        nautilus_progress_info_set_progress (common->progress, job_progress, 1);
+}
+
+static void
+extract_job_on_error (AutoarExtractor *extractor,
+                      GError          *error,
+                      gpointer         user_data)
+{
+        ExtractJob *extract_job = user_data;
+        GFile *source_file;
+        gint response_id;
+
+        source_file = autoar_extractor_get_source_file (extractor);
+
+        nautilus_progress_info_take_status (extract_job->common.progress,
+                                            f (_("Error extracting “%B””"),
+                                               source_file));
+
+        response_id = run_warning ((CommonJob *)extract_job,
+                                   f (_("There was an error while extracting “%B”."),
+                                      source_file),
+                                   g_strdup (error->message),
+                                   NULL,
+                                   FALSE,
+                                   CANCEL,
+                                   SKIP,
+                                   NULL);
+
+        if (response_id == 0 || response_id == GTK_RESPONSE_DELETE_EVENT) {
+                abort_job ((CommonJob *)extract_job);
+        }
+}
+
+static void
+extract_job_on_completed (AutoarExtractor *extractor,
+                          gpointer         user_data)
+{
+        ExtractJob *extract_job = user_data;
+        GFile *output_file;
+
+        output_file = G_FILE (extract_job->output_files->data);
+
+        nautilus_file_changes_queue_file_added (output_file);
+}
+
+static void
+report_extract_final_progress (ExtractJob *extract_job,
+                               gint        total_files)
+{
+        char *status;
+
+        nautilus_progress_info_set_destination (extract_job->common.progress,
+                                                extract_job->destination_directory);
+
+        if (total_files == 1) {
+                GFile *source_file;
+
+                source_file = G_FILE (extract_job->source_files->data);
+                status = f (_("Extracted “%B” to “%B”"),
+                            source_file,
+                            extract_job->destination_directory);
+        } else {
+                status = f (ngettext ("Extracted %'d file to “%B”",
+                                      "Extracted %'d files to “%B”",
+                                      total_files),
+                            total_files,
+                            extract_job->destination_directory);
+
+        }
+
+        nautilus_progress_info_take_status (extract_job->common.progress,
+                                            status);
+        nautilus_progress_info_take_details (extract_job->common.progress,
+                                             f (_("%S / %S"),
+                                                extract_job->total_compressed_size,
+                                                extract_job->total_compressed_size));
+}
+
+static void
+extract_task_thread_func (GTask        *task,
+                          gpointer      source_object,
+                          gpointer      task_data,
+                          GCancellable *cancellable)
+{
+        ExtractJob *extract_job = task_data;
+        GList *l;
+        GList *existing_output_files = NULL;
+        gint total_files;
+        g_autofree guint64 *archive_compressed_sizes;
+        gint i;
+
+        g_timer_start (extract_job->common.time);
+
+        nautilus_progress_info_start (extract_job->common.progress);
+
+        nautilus_progress_info_set_details (extract_job->common.progress,
+                                            _("Preparing to extract"));
+
+        total_files = g_list_length (extract_job->source_files);
+
+        archive_compressed_sizes = g_malloc0_n (total_files, sizeof (guint64));
+        extract_job->total_compressed_size = 0;
+
+        for (l = extract_job->source_files, i = 0;
+             l != NULL && !job_aborted ((CommonJob *)extract_job);
+             l = l->next, i++) {
+                GFile *source_file;
+                g_autoptr (GFileInfo) info;
+
+                source_file = G_FILE (l->data);
+                info = g_file_query_info (source_file,
+                                          G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                          G_FILE_COPY_NOFOLLOW_SYMLINKS,
+                                          extract_job->common.cancellable,
+                                          NULL);
+
+                if (info) {
+                        archive_compressed_sizes[i] = g_file_info_get_size (info);
+                        extract_job->total_compressed_size += archive_compressed_sizes[i];
+                }
+        }
+
+        extract_job->base_progress = 0;
+
+        for (l = extract_job->source_files, i = 0;
+             l != NULL && !job_aborted ((CommonJob *)extract_job);
+             l = l->next, i++) {
+                g_autoptr (AutoarExtractor) extractor;
+
+                extractor = autoar_extractor_new (G_FILE (l->data),
+                                                  extract_job->destination_directory);
+
+                autoar_extractor_set_notify_interval (extractor,
+                                                      PROGRESS_NOTIFY_INTERVAL);
+
+                g_signal_connect (extractor, "error",
+                                  G_CALLBACK (extract_job_on_error),
+                                  extract_job);
+                g_signal_connect (extractor, "decide-destination",
+                                  G_CALLBACK (extract_job_on_decide_destination),
+                                  extract_job);
+                g_signal_connect (extractor, "progress",
+                                  G_CALLBACK (extract_job_on_progress),
+                                  extract_job);
+                g_signal_connect (extractor, "completed",
+                                  G_CALLBACK (extract_job_on_completed),
+                                  extract_job);
+
+                extract_job->archive_compressed_size = archive_compressed_sizes[i];
+
+                autoar_extractor_start (extractor,
+                                        extract_job->common.cancellable);
+
+                g_signal_handlers_disconnect_by_data (extractor,
+                                                      extract_job);
+
+                extract_job->base_progress += (gdouble)extract_job->archive_compressed_size /
+                                              (gdouble)extract_job->total_compressed_size;
+        }
+
+        if (!job_aborted ((CommonJob *)extract_job)) {
+                report_extract_final_progress (extract_job, total_files);
+        }
+
+        for (l = extract_job->output_files; l != NULL; l = l->next) {
+                GFile *output_file;
+
+                output_file = G_FILE (l->data);
+
+                if (g_file_query_exists (output_file, NULL)) {
+                        existing_output_files = g_list_prepend (existing_output_files,
+                                                                g_object_ref (output_file));
+                }
+        }
+
+        g_list_free_full (extract_job->output_files, g_object_unref);
+
+        extract_job->output_files = existing_output_files;
+
+        if (extract_job->common.undo_info) {
+                if (extract_job->output_files) {
+                        NautilusFileUndoInfoExtract *undo_info;
+
+                        undo_info = NAUTILUS_FILE_UNDO_INFO_EXTRACT (extract_job->common.undo_info);
+
+                        nautilus_file_undo_info_extract_set_outputs (undo_info,
+                                                                     extract_job->output_files);
+                } else {
+                        /* There is nothing to undo if there is no output */
+                        g_clear_object (&extract_job->common.undo_info);
+                }
+        }
+}
+
+void
+nautilus_file_operations_extract_files (GList                   *files,
+                                        GFile                   *destination_directory,
+                                        GtkWindow               *parent_window,
+                                        NautilusExtractCallback  done_callback,
+                                        gpointer                 done_callback_data)
+{
+        ExtractJob *extract_job;
+        g_autoptr (GTask) task;
+
+        extract_job = op_job_new (ExtractJob, parent_window);
+        extract_job->source_files = g_list_copy_deep (files,
+                                                      (GCopyFunc)g_object_ref,
+                                                      NULL);
+        extract_job->destination_directory = g_object_ref (destination_directory);
+        extract_job->done_callback = done_callback;
+        extract_job->done_callback_data = done_callback_data;
+
+        inhibit_power_manager ((CommonJob *)extract_job, _("Extracting Files"));
+
+        if (!nautilus_file_undo_manager_is_operating ()) {
+                extract_job->common.undo_info = nautilus_file_undo_info_extract_new (files,
+                                                                                     destination_directory);
+        }
+
+        task = g_task_new (NULL, extract_job->common.cancellable,
+                           extract_task_done, extract_job);
+        g_task_set_task_data (task, extract_job, NULL);
+        g_task_run_in_thread (task, extract_task_thread_func);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
