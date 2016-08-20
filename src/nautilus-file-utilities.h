@@ -64,13 +64,12 @@ gboolean nautilus_uri_parse                          (const char  *uri,
 						      guint16     *port,
 						      char       **userinfo);
 
-/* Return an allocated file name that is guranteed to be unique, but
- * tries to make the name readable to users.
+/* Return an allocated file location that is guranteed to be unique, but
+ * tries to make the location name readable to users.
  * This isn't race-free, so don't use for security-related things
  */
-char *   nautilus_ensure_unique_file_name            (const char *directory_uri,
-						      const char *base_name,
-			                              const char *extension);
+GFile * nautilus_generate_unique_file_in_directory (GFile      *directory,
+                                                    const char *basename);
 
 GFile *  nautilus_find_existing_uri_in_hierarchy     (GFile *location);
 

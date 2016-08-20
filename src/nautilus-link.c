@@ -183,10 +183,12 @@ nautilus_link_local_create (const char     *directory_uri,
 			    gboolean        unique_filename)
 {
 	char *real_directory_uri;
-	char *uri, *contents;
+        char *contents;
 	GFile *file;
 	GList dummy_list;
 	NautilusFileChangesQueuePosition item;
+        g_autofree char *link_name = NULL;
+        g_autoptr (GFile) directory = NULL;
 
 	g_return_val_if_fail (directory_uri != NULL, FALSE);
 	g_return_val_if_fail (base_name != NULL, FALSE);
@@ -204,29 +206,17 @@ nautilus_link_local_create (const char     *directory_uri,
 		real_directory_uri = g_strdup (directory_uri);
 	}
 
+        link_name = g_strdup_printf ("%s.desktop", base_name);
+        directory = g_file_new_for_uri (real_directory_uri);
+
 	if (unique_filename) {
-		uri = nautilus_ensure_unique_file_name (real_directory_uri,
-							base_name, ".desktop");
-		if (uri == NULL) {
-			g_free (real_directory_uri);
-			return FALSE;
-		}
-		file = g_file_new_for_uri (uri);
-		g_free (uri);
+                file = nautilus_generate_unique_file_in_directory (directory,
+                                                                   link_name);
 	} else {
-		char *link_name;
-		GFile *dir;
-
-		link_name = g_strdup_printf ("%s.desktop", base_name);
-
 		/* replace '/' with '-', just in case */
 		g_strdelimit (link_name, "/", '-');
 
-		dir = g_file_new_for_uri (directory_uri);
-		file = g_file_get_child (dir, link_name);
-
-		g_free (link_name);
-		g_object_unref (dir);
+		file = g_file_get_child (directory, link_name);
 	}
 
 	g_free (real_directory_uri);

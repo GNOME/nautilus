@@ -583,52 +583,40 @@ nautilus_get_mounted_mount_for_root (GFile *location)
 	return result;
 }
 
-char *
-nautilus_ensure_unique_file_name (const char *directory_uri,
-				  const char *base_name,
-				  const char *extension)
+GFile *
+nautilus_generate_unique_file_in_directory (GFile      *directory,
+                                            const char *basename)
 {
-	GFileInfo *info;
-	char *filename;
-	GFile *dir, *child;
-	int copy;
-	char *res;
+        g_autofree char *basename_without_extension = NULL;
+        const char *extension;
+        GFile *child;
+        int copy;
 
-	dir = g_file_new_for_uri (directory_uri);
+        g_return_val_if_fail (directory != NULL, NULL);
+        g_return_val_if_fail (basename != NULL, NULL);
+        g_return_val_if_fail (g_file_query_exists (directory, NULL), NULL);
 
-	info = g_file_query_info (dir, G_FILE_ATTRIBUTE_STANDARD_TYPE, 0, NULL, NULL);
-	if (info == NULL) {
-		g_object_unref (dir);
-		return NULL;
-	}
-	g_object_unref (info);
+        basename_without_extension = eel_filename_strip_extension (basename);
+        extension = eel_filename_get_extension_offset (basename);
 
-	filename = g_strdup_printf ("%s%s",
-				    base_name,
-				    extension);
-	child = g_file_get_child (dir, filename);
-	g_free (filename);
-	
-	copy = 1;
-	while ((info = g_file_query_info (child, G_FILE_ATTRIBUTE_STANDARD_TYPE, 0, NULL, NULL)) != NULL) {
-		g_object_unref (info);
-		g_object_unref (child);
-		
-		filename = g_strdup_printf ("%s-%d%s",
-					    base_name,
-					    copy,
-					    extension);
-		child = g_file_get_child (dir, filename);
-		g_free (filename);
-		
-		copy++;
-	}
+        child = g_file_get_child (directory, basename);
 
-	res = g_file_get_uri (child);
-	g_object_unref (child);
-	g_object_unref (dir);
-	
-	return res;
+        copy = 1;
+        while (g_file_query_exists (child, NULL)) {
+                g_autofree char *filename;
+
+                g_object_unref (child);
+
+                filename = g_strdup_printf ("%s (%d)%s",
+                                            basename_without_extension,
+                                            copy,
+                                            extension ? extension : "");
+                child = g_file_get_child (directory, filename);
+
+                copy++;
+        }
+
+        return child;
 }
 
 GFile *
