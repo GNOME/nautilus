@@ -1849,3 +1849,145 @@ nautilus_file_undo_info_extract_new (GList *sources,
 
         return NAUTILUS_FILE_UNDO_INFO (self);
 }
+
+
+/* compress */
+G_DEFINE_TYPE (NautilusFileUndoInfoCompress, nautilus_file_undo_info_compress, NAUTILUS_TYPE_FILE_UNDO_INFO)
+
+struct _NautilusFileUndoInfoCompressDetails {
+        GList *sources;
+        GFile *output;
+        AutoarFormat format;
+        AutoarFilter filter;
+};
+
+static void
+compress_callback (GFile    *new_file,
+                   gboolean  success,
+                   gpointer  callback_data)
+{
+        NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (callback_data);
+
+        if (success) {
+                g_object_unref (self->priv->output);
+
+                self->priv->output = g_object_ref (new_file);
+        }
+
+        file_undo_info_transfer_callback (NULL, success, self);
+}
+
+static void
+compress_strings_func (NautilusFileUndoInfo  *info,
+                       gchar                **undo_label,
+                       gchar                **undo_description,
+                       gchar                **redo_label,
+                       gchar                **redo_description)
+{
+        NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (info);
+        g_autofree gchar *output_name;
+        gint sources_count;
+
+        output_name = g_file_get_parse_name (self->priv->output);
+        *undo_description = g_strdup_printf (_("Delete '%s'"), output_name);
+
+        sources_count = g_list_length (self->priv->sources);
+        if (sources_count == 1) {
+                GFile *source;
+                g_autofree gchar *source_name;
+
+                source = self->priv->sources->data;
+                source_name = g_file_get_parse_name (source);
+
+                *redo_description = g_strdup_printf (_("Compress '%s'"), source_name);
+        } else {
+                *redo_description = g_strdup_printf (_("Compress '%d' files"), sources_count);
+        }
+
+        *undo_label = g_strdup (_("_Undo Compress"));
+        *redo_label = g_strdup (_("_Redo Compress"));
+}
+
+static void
+compress_redo_func (NautilusFileUndoInfo *info,
+                    GtkWindow            *parent_window)
+{
+        NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (info);
+
+        nautilus_file_operations_compress (self->priv->sources,
+                                           self->priv->output,
+                                           self->priv->format,
+                                           self->priv->filter,
+                                           parent_window,
+                                           compress_callback,
+                                           self);
+}
+
+static void
+compress_undo_func (NautilusFileUndoInfo *info,
+                    GtkWindow            *parent_window)
+{
+        NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (info);
+        GList *files = NULL;
+
+        files = g_list_prepend (files, self->priv->output);
+
+        nautilus_file_operations_delete (files, parent_window,
+                                         file_undo_info_delete_callback, self);
+
+        g_list_free (files);
+}
+
+static void
+nautilus_file_undo_info_compress_init (NautilusFileUndoInfoCompress *self)
+{
+        self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, nautilus_file_undo_info_compress_get_type (),
+                                                  NautilusFileUndoInfoCompressDetails);
+}
+
+static void
+nautilus_file_undo_info_compress_finalize (GObject *obj)
+{
+        NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (obj);
+
+        g_list_free_full (self->priv->sources, g_object_unref);
+        g_clear_object (&self->priv->output);
+
+        G_OBJECT_CLASS (nautilus_file_undo_info_compress_parent_class)->finalize (obj);
+}
+
+static void
+nautilus_file_undo_info_compress_class_init (NautilusFileUndoInfoCompressClass *klass)
+{
+        GObjectClass *oclass = G_OBJECT_CLASS (klass);
+        NautilusFileUndoInfoClass *iclass = NAUTILUS_FILE_UNDO_INFO_CLASS (klass);
+
+        oclass->finalize = nautilus_file_undo_info_compress_finalize;
+
+        iclass->undo_func = compress_undo_func;
+        iclass->redo_func = compress_redo_func;
+        iclass->strings_func = compress_strings_func;
+
+        g_type_class_add_private (klass, sizeof (NautilusFileUndoInfoCompressDetails));
+}
+
+NautilusFileUndoInfo *
+nautilus_file_undo_info_compress_new (GList        *sources,
+                                      GFile        *output,
+                                      AutoarFormat  format,
+                                      AutoarFilter  filter)
+{
+        NautilusFileUndoInfoCompress *self;
+
+        self = g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS,
+                             "item-count", 1,
+                             "op-type", NAUTILUS_FILE_UNDO_OP_COMPRESS,
+                             NULL);
+
+        self->priv->sources = g_list_copy_deep (sources, (GCopyFunc)g_object_ref, NULL);
+        self->priv->output = g_object_ref (output);
+        self->priv->format = format;
+        self->priv->filter = filter;
+
+        return NAUTILUS_FILE_UNDO_INFO (self);
+}

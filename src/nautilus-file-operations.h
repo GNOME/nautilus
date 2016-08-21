@@ -26,6 +26,8 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <gnome-autoar/gnome-autoar.h>
+
 
 #define SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE 1
 
@@ -154,6 +156,13 @@ void nautilus_file_operations_extract_files (GList                   *files,
                                              GtkWindow               *parent_window,
                                              NautilusExtractCallback  done_callback,
                                              gpointer                 done_callback_data);
+void nautilus_file_operations_compress (GList                  *files,
+                                        GFile                  *output,
+                                        AutoarFormat            format,
+                                        AutoarFilter            filter,
+                                        GtkWindow              *parent_window,
+                                        NautilusCreateCallback  done_callback,
+                                        gpointer                done_callback_data);
 
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

@@ -27,6 +27,7 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
+#include <gnome-autoar/gnome-autoar.h>
 
 typedef enum {
 	NAUTILUS_FILE_UNDO_OP_COPY,
@@ -37,6 +38,7 @@ typedef enum {
 	NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE,
 	NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER,
 	NAUTILUS_FILE_UNDO_OP_EXTRACT,
+	NAUTILUS_FILE_UNDO_OP_COMPRESS,
 	NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH,
 	NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH,
 	NAUTILUS_FILE_UNDO_OP_CREATE_LINK,
@@ -323,6 +325,33 @@ NautilusFileUndoInfo * nautilus_file_undo_info_extract_new (GList *sources,
                                                             GFile *destination_directory);
 void nautilus_file_undo_info_extract_set_outputs (NautilusFileUndoInfoExtract *self,
                                                   GList                       *outputs);
+
+/* compress */
+#define NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS         (nautilus_file_undo_info_compress_get_type ())
+#define NAUTILUS_FILE_UNDO_INFO_COMPRESS(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS, NautilusFileUndoInfoCompress))
+#define NAUTILUS_FILE_UNDO_INFO_COMPRESS_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS, NautilusFileUndoInfoCompressClass))
+#define NAUTILUS_IS_FILE_UNDO_INFO_COMPRESS(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS))
+#define NAUTILUS_IS_FILE_UNDO_INFO_COMPRESS_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS))
+#define NAUTILUS_FILE_UNDO_INFO_COMPRESS_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_COMPRESS, NautilusFileUndoInfoCompressClass))
+
+typedef struct _NautilusFileUndoInfoCompress        NautilusFileUndoInfoCompress;
+typedef struct _NautilusFileUndoInfoCompressClass   NautilusFileUndoInfoCompressClass;
+typedef struct _NautilusFileUndoInfoCompressDetails NautilusFileUndoInfoCompressDetails;
+
+struct _NautilusFileUndoInfoCompress {
+        NautilusFileUndoInfo parent;
+        NautilusFileUndoInfoCompressDetails *priv;
+};
+
+struct _NautilusFileUndoInfoCompressClass {
+        NautilusFileUndoInfoClass parent_class;
+};
+
+GType nautilus_file_undo_info_compress_get_type (void) G_GNUC_CONST;
+NautilusFileUndoInfo * nautilus_file_undo_info_compress_new (GList        *sources,
+                                                             GFile        *output,
+                                                             AutoarFormat  format,
+                                                             AutoarFilter  filter);
 
 
 #endif /* __NAUTILUS_FILE_UNDO_OPERATIONS_H__ */

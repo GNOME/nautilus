@@ -51,7 +51,6 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 #include <glib.h>
-#include <gnome-autoar/gnome-autoar.h>
 
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
@@ -153,7 +152,8 @@ typedef enum {
 	OP_KIND_COPY,
 	OP_KIND_MOVE,
 	OP_KIND_DELETE,
-	OP_KIND_TRASH
+	OP_KIND_TRASH,
+        OP_KIND_COMPRESS
 } OpKind;
 
 typedef struct {
@@ -185,6 +185,23 @@ typedef struct {
         NautilusExtractCallback done_callback;
         gpointer done_callback_data;
 } ExtractJob;
+
+typedef struct {
+        CommonJob common;
+        GList *source_files;
+        GFile *output_file;
+
+        AutoarFormat format;
+        AutoarFilter filter;
+
+        guint64 total_size;
+        guint total_files;
+
+        gboolean success;
+
+        NautilusCreateCallback done_callback;
+        gpointer done_callback_data;
+} CompressJob;
 
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define NSEC_PER_MICROSEC 1000
@@ -2710,7 +2727,12 @@ report_preparing_count_progress (CommonJob *job,
 		                source_info->num_files),
 		       source_info->num_files);
 		break;
-	} 
+        case OP_KIND_COMPRESS:
+                s = f (ngettext("Preparing to compress %'d file",
+                                "Preparing to compress %'d files",
+                                source_info->num_files),
+                       source_info->num_files);
+        }
 
 	nautilus_progress_info_take_details (job->progress, s);
 	nautilus_progress_info_pulse_progress (job->progress);
@@ -2743,7 +2765,9 @@ get_scan_primary (OpKind kind)
 		return f (_("Error while deleting."));
 	case OP_KIND_TRASH:
 		return f (_("Error while moving files to trash."));
-	}
+        case OP_KIND_COMPRESS:
+                return f (_("Error while compressing files."));
+        }
 }
 
 static void
@@ -7401,6 +7425,293 @@ nautilus_file_operations_extract_files (GList                   *files,
                            extract_task_done, extract_job);
         g_task_set_task_data (task, extract_job, NULL);
         g_task_run_in_thread (task, extract_task_thread_func);
+}
+
+static void
+compress_task_done (GObject      *source_object,
+                    GAsyncResult *res,
+                    gpointer      user_data)
+{
+        CompressJob *compress_job = user_data;
+
+        if (compress_job->done_callback) {
+                compress_job->done_callback (compress_job->output_file,
+                                             compress_job->success,
+                                             compress_job->done_callback_data);
+        }
+
+        g_object_unref (compress_job->output_file);
+        g_list_free_full (compress_job->source_files, g_object_unref);
+
+        finalize_common ((CommonJob *)compress_job);
+
+        nautilus_file_changes_consume_changes (TRUE);
+}
+
+static void
+compress_job_on_progress (AutoarCompressor *compressor,
+                          guint64           completed_size,
+                          guint             completed_files,
+                          gpointer          user_data)
+{
+        CompressJob *compress_job = user_data;
+        CommonJob *common = user_data;
+        char *status;
+        char *details;
+        int files_left;
+        double elapsed;
+        double transfer_rate;
+        int remaining_time;
+
+        files_left = compress_job->total_files - completed_files;
+
+        if (compress_job->total_files == 1) {
+                status = f (_("Compressing “%B” into “%B”"),
+                            G_FILE (compress_job->source_files->data),
+                            compress_job->output_file);
+        } else {
+                status = f (ngettext ("Compressing %'d file into “%B”",
+                                      "Compressing %'d files into “%B”",
+                                      compress_job->total_files),
+                            compress_job->total_files,
+                            compress_job->output_file);
+
+        }
+
+        nautilus_progress_info_take_status (common->progress, status);
+
+        elapsed = g_timer_elapsed (common->time, NULL);
+
+        transfer_rate = 0;
+        remaining_time = -1;
+
+        if (elapsed > 0) {
+                if (completed_size > 0) {
+                        transfer_rate = completed_size / elapsed;
+                        remaining_time = (compress_job->total_size - completed_size) / transfer_rate;
+                } else if (completed_files > 0) {
+                        transfer_rate = completed_files / elapsed;
+                        remaining_time = (compress_job->total_files - completed_files) / transfer_rate;
+                }
+        }
+
+        if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE ||
+            transfer_rate == 0) {
+                if (compress_job->total_files == 1) {
+                        /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
+                        details = f (_("%S / %S"), completed_size, compress_job->total_size);
+                } else {
+                        details = f (_("%'d / %'d"),
+                                     files_left > 0 ? completed_files + 1 : completed_files,
+                                     compress_job->total_files);
+                }
+        } else {
+                if (compress_job->total_files == 1) {
+                        if (files_left > 0) {
+                                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
+                                 * "2 minutes". So the whole thing will be something like "2 kb / 4 MB -- 2 hours left (4kb/sec)"
+                                 *
+                                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                                 */
+                                details = f (ngettext ("%S / %S \xE2\x80\x94 %T left (%S/sec)",
+                                                       "%S / %S \xE2\x80\x94 %T left (%S/sec)",
+                                                       seconds_count_format_time_units (remaining_time)),
+                                             completed_size, compress_job->total_size,
+                                             remaining_time,
+                                             (goffset)transfer_rate);
+                        } else {
+                                /* To translators: %S will expand to a size like "2 bytes" or "3 MB". */
+                                details = f (_("%S / %S"),
+                                             completed_size,
+                                             compress_job->total_size);
+                        }
+                } else {
+                        if (files_left > 0) {
+                                /* To translators: %T will expand to a time duration like "2 minutes".
+                                 * So the whole thing will be something like "1 / 5 -- 2 hours left (4kb/sec)"
+                                 *
+                                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                                 */
+                                details = f (ngettext ("%'d / %'d \xE2\x80\x94 %T left (%S/sec)",
+                                                       "%'d / %'d \xE2\x80\x94 %T left (%S/sec)",
+                                                       seconds_count_format_time_units (remaining_time)),
+                                             completed_files + 1, compress_job->total_files,
+                                             remaining_time,
+                                             (goffset)transfer_rate);
+                        } else {
+                                /* To translators: %'d is the number of files completed for the operation,
+                                 * so it will be something like 2/14. */
+                                details = f (_("%'d / %'d"),
+                                             completed_files,
+                                             compress_job->total_files);
+                        }
+                }
+        }
+
+        nautilus_progress_info_take_details (common->progress, details);
+
+        if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE) {
+                nautilus_progress_info_set_remaining_time (common->progress,
+                                                           remaining_time);
+                nautilus_progress_info_set_elapsed_time (common->progress,
+                                                         elapsed);
+        }
+
+        nautilus_progress_info_set_progress (common->progress,
+                                             completed_size,
+                                             compress_job->total_size);
+}
+
+static void
+compress_job_on_error (AutoarCompressor *compressor,
+                       GError           *error,
+                       gpointer          user_data)
+{
+        CompressJob *compress_job = user_data;
+        char *status;
+
+        if (compress_job->total_files == 1) {
+                status = f (_("Error compressing “%B” into “%B”"),
+                            G_FILE (compress_job->source_files->data),
+                            compress_job->output_file);
+        } else {
+                status = f (ngettext ("Error compressing %'d file into “%B”",
+                                      "Error compressing %'d files into “%B”",
+                                      compress_job->total_files),
+                            compress_job->total_files,
+                            compress_job->output_file);
+        }
+
+        nautilus_progress_info_take_status (compress_job->common.progress,
+                                            status);
+
+        run_error ((CommonJob *)compress_job,
+                   _("There was an error while compressing files."),
+                   g_strdup (error->message),
+                   NULL,
+                   FALSE,
+                   CANCEL,
+                   NULL);
+
+        abort_job ((CommonJob *)compress_job);
+}
+
+static void
+compress_job_on_completed (AutoarCompressor *compressor,
+                           gpointer          user_data)
+{
+        CompressJob *compress_job = user_data;
+        g_autoptr (GFile) destination_directory;
+        char *status;
+
+        if (compress_job->total_files == 1) {
+                status = f (_("Compressed “%B” into “%B”"),
+                            G_FILE (compress_job->source_files->data),
+                            compress_job->output_file);
+        } else {
+                status = f (ngettext ("Compressed %'d file into “%B”",
+                                      "Compressed %'d files into “%B”",
+                                      compress_job->total_files),
+                            compress_job->total_files,
+                            compress_job->output_file);
+        }
+
+        nautilus_progress_info_take_status (compress_job->common.progress,
+                                            status);
+
+        nautilus_file_changes_queue_file_added (compress_job->output_file);
+
+        destination_directory = g_file_get_parent (compress_job->output_file);
+        nautilus_progress_info_set_destination (compress_job->common.progress,
+                                                destination_directory);
+}
+
+static void
+compress_task_thread_func (GTask        *task,
+                           gpointer      source_object,
+                           gpointer      task_data,
+                           GCancellable *cancellable)
+{
+        CompressJob *compress_job = task_data;
+        SourceInfo source_info;
+        g_autoptr (AutoarCompressor) compressor;
+
+        g_timer_start (compress_job->common.time);
+
+        nautilus_progress_info_start (compress_job->common.progress);
+
+        scan_sources (compress_job->source_files,
+                      &source_info,
+                      (CommonJob *)compress_job,
+                      OP_KIND_COMPRESS);
+
+        compress_job->total_files = source_info.num_files;
+        compress_job->total_size = source_info.num_bytes;
+
+        compressor = autoar_compressor_new (compress_job->source_files,
+                                            compress_job->output_file,
+                                            compress_job->format,
+                                            compress_job->filter,
+                                            FALSE);
+
+        autoar_compressor_set_output_is_dest (compressor, TRUE);
+
+        autoar_compressor_set_notify_interval (compressor,
+                                               PROGRESS_NOTIFY_INTERVAL);
+
+        g_signal_connect (compressor, "progress",
+                          G_CALLBACK (compress_job_on_progress), compress_job);
+        g_signal_connect (compressor, "error",
+                          G_CALLBACK (compress_job_on_error), compress_job);
+        g_signal_connect (compressor, "completed",
+                          G_CALLBACK (compress_job_on_completed), compress_job);
+        autoar_compressor_start (compressor,
+                                 compress_job->common.cancellable);
+
+        compress_job->success = g_file_query_exists (compress_job->output_file,
+                                                     NULL);
+
+        /* There is nothing to undo if the output was not created */
+        if (compress_job->common.undo_info != NULL && !compress_job->success) {
+                g_clear_object (&compress_job->common.undo_info);
+        }
+}
+
+void
+nautilus_file_operations_compress (GList                  *files,
+                                   GFile                  *output,
+                                   AutoarFormat            format,
+                                   AutoarFilter            filter,
+                                   GtkWindow              *parent_window,
+                                   NautilusCreateCallback  done_callback,
+                                   gpointer                done_callback_data)
+{
+        g_autoptr (GTask) task;
+        CompressJob *compress_job;
+
+        compress_job = op_job_new (CompressJob, parent_window);
+        compress_job->source_files = g_list_copy_deep (files,
+                                                       (GCopyFunc)g_object_ref,
+                                                       NULL);
+        compress_job->output_file = g_object_ref (output);
+        compress_job->format = format;
+        compress_job->filter = filter;
+        compress_job->done_callback = done_callback;
+        compress_job->done_callback_data = done_callback_data;
+
+        inhibit_power_manager ((CommonJob *)compress_job, _("Compressing Files"));
+
+        if (!nautilus_file_undo_manager_is_operating ()) {
+                compress_job->common.undo_info = nautilus_file_undo_info_compress_new (files,
+                                                                                       output,
+                                                                                       format,
+                                                                                       filter);
+        }
+
+        task = g_task_new (NULL, compress_job->common.cancellable,
+                           compress_task_done, compress_job);
+        g_task_set_task_data (task, compress_job, NULL);
+        g_task_run_in_thread (task, compress_task_thread_func);
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
