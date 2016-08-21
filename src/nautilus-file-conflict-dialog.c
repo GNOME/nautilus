@@ -32,18 +32,11 @@
 
 #include "nautilus-file.h"
 #include "nautilus-icon-info.h"
+#include "nautilus-operations-ui-manager.h"
 
 struct _NautilusFileConflictDialogDetails
 {
-	/* conflicting objects */
-	NautilusFile *source;
-	NautilusFile *destination;
-	NautilusFile *dest_dir;
-
 	gchar *conflict_name;
-	NautilusFileListHandle *handle;
-	gulong src_handler_id;
-	gulong dest_handler_id;
 
 	/* UI objects */
 	GtkWidget *titles_vbox;
@@ -52,6 +45,7 @@ struct _NautilusFileConflictDialogDetails
 	GtkWidget *expander;
 	GtkWidget *entry;
 	GtkWidget *checkbox;
+        GtkWidget *skip_button;
 	GtkWidget *rename_button;
 	GtkWidget *replace_button;
 	GtkWidget *dest_image;
@@ -66,307 +60,128 @@ G_DEFINE_TYPE (NautilusFileConflictDialog,
 	(G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, \
 				      NautilusFileConflictDialogDetails))
 
-static void
-file_icons_changed (NautilusFile *file,
-		    NautilusFileConflictDialog *fcd)
+
+void
+nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
+                                        gchar *primary_text,
+                                        gchar *secondary_text)
 {
-	GdkPixbuf *pixbuf;
+        NautilusFileConflictDialogDetails *details = fcd->details;
+        GtkWidget *label;
+        PangoAttrList *attr_list;
 
-	pixbuf = nautilus_file_get_icon_pixbuf (fcd->details->destination,
-						NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-						TRUE,
-						gtk_widget_get_scale_factor (fcd->details->dest_image),
-						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+        label = gtk_label_new (primary_text);
+        gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
+        gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+        gtk_box_pack_start (GTK_BOX (details->titles_vbox),
+                            label, FALSE, FALSE, 0);
+        gtk_widget_show (label);
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->details->dest_image), pixbuf);
-	g_object_unref (pixbuf);
+        attr_list = pango_attr_list_new ();
+        pango_attr_list_insert (attr_list, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
+        pango_attr_list_insert (attr_list, pango_attr_scale_new (PANGO_SCALE_LARGE));
+        g_object_set (label,
+                      "attributes", attr_list,
+                      NULL);
 
-	pixbuf = nautilus_file_get_icon_pixbuf (fcd->details->source,
-						NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-						TRUE,
-						gtk_widget_get_scale_factor (fcd->details->src_image),
-						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+        pango_attr_list_unref (attr_list);
 
-	gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->details->src_image), pixbuf);
-	g_object_unref (pixbuf);
+        label = gtk_label_new (secondary_text);
+        gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+        gtk_box_pack_start (GTK_BOX (details->titles_vbox),
+                            label, FALSE, FALSE, 0);
+        gtk_widget_show (label);
 }
 
-static void
-file_list_ready_cb (GList *files,
-		    gpointer user_data)
+void
+nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
+                                          GdkPixbuf *destination_pixbuf,
+                                          GdkPixbuf *source_pixbuf)
 {
-	NautilusFileConflictDialog *fcd = user_data;
-	NautilusFile *src, *dest, *dest_dir;
-	time_t src_mtime, dest_mtime;
-	gboolean source_is_dir,	dest_is_dir, should_show_type;
-	NautilusFileConflictDialogDetails *details;
-	char *primary_text, *message, *secondary_text;
-	const gchar *message_extra;
-	char *dest_name, *dest_dir_name, *edit_name;
-	char *label_text;
-	char *size, *date, *type = NULL;
-	GdkPixbuf *pixbuf;
-	GtkWidget *label;
-	GString *str;
-	PangoAttrList *attr_list;
+        NautilusFileConflictDialogDetails *details = fcd->details;
 
-	details = fcd->details;
+        if (details->dest_image == NULL) {
+                details->dest_image = gtk_image_new_from_pixbuf (destination_pixbuf);
+                gtk_box_pack_start (GTK_BOX (details->first_hbox),
+                                    details->dest_image, FALSE, FALSE, 0);
+                gtk_widget_show (details->dest_image);
+        } else {
+                gtk_image_set_from_pixbuf (GTK_IMAGE (details->dest_image),
+                                           destination_pixbuf);
+        }
 
-	details->handle = NULL;
-
-	dest_dir = g_list_nth_data (files, 0);
-	dest = g_list_nth_data (files, 1);
-	src = g_list_nth_data (files, 2);
-
-	src_mtime = nautilus_file_get_mtime (src);
-	dest_mtime = nautilus_file_get_mtime (dest);
-
-	dest_name = nautilus_file_get_display_name (dest);
-	dest_dir_name = nautilus_file_get_display_name (dest_dir);
-
-	source_is_dir = nautilus_file_is_directory (src);
-	dest_is_dir = nautilus_file_is_directory (dest);
-
-	type = nautilus_file_get_mime_type (dest);
-	should_show_type = !nautilus_file_is_mime_type (src, type);
-
-	g_free (type);
-	type = NULL;
-
-	/* Set up the right labels */
-	if (dest_is_dir) {
-		if (source_is_dir) {
-			primary_text = g_strdup_printf
-				(_("Merge folder “%s”?"),
-				 dest_name);
-
-			message_extra = 
-				_("Merging will ask for confirmation before replacing any files in "
-				  "the folder that conflict with the files being copied.");
-
-			if (src_mtime > dest_mtime) {
-				message = g_strdup_printf (
-					_("An older folder with the same name already exists in “%s”."),
-					dest_dir_name);
-			} else if (src_mtime < dest_mtime) {
-				message = g_strdup_printf (
-					_("A newer folder with the same name already exists in “%s”."),
-					dest_dir_name);
-			} else {
-				message = g_strdup_printf (
-					_("Another folder with the same name already exists in “%s”."),
-					dest_dir_name);
-			}
-		} else {
-			message_extra =
-				_("Replacing it will remove all files in the folder.");
-			primary_text = g_strdup_printf
-				(_("Replace folder “%s”?"), dest_name);
-			message = g_strdup_printf
-				(_("A folder with the same name already exists in “%s”."),
-				 dest_dir_name);
-		}
-	} else {
-		primary_text = g_strdup_printf
-			(_("Replace file “%s”?"), dest_name);
-
-		message_extra = _("Replacing it will overwrite its content.");
-
-		if (src_mtime > dest_mtime) {
-			message = g_strdup_printf (
-				_("An older file with the same name already exists in “%s”."),
-				dest_dir_name);
-		} else if (src_mtime < dest_mtime) {
-			message = g_strdup_printf (
-				_("A newer file with the same name already exists in “%s”."),
-				dest_dir_name);
-		} else {
-			message = g_strdup_printf (
-				_("Another file with the same name already exists in “%s”."),
-				dest_dir_name);
-		}
-	}
-
-	secondary_text = g_strdup_printf ("%s\n%s", message, message_extra);
-	g_free (message);
-
-	label = gtk_label_new (primary_text);
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
-	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-			    label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-
-	attr_list = pango_attr_list_new ();
-	pango_attr_list_insert (attr_list, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-	pango_attr_list_insert (attr_list, pango_attr_scale_new (PANGO_SCALE_LARGE));
-	g_object_set (label,
-		      "attributes", attr_list,
-		      NULL);
-
-	pango_attr_list_unref (attr_list);
-
-	label = gtk_label_new (secondary_text);
-	gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
-	gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-	gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-			    label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-	g_free (primary_text);
-	g_free (secondary_text);
-
-	/* Set up file icons */
-	pixbuf = nautilus_file_get_icon_pixbuf (dest,
-						NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-						TRUE,
-						gtk_widget_get_scale_factor (fcd->details->titles_vbox),
-						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
-	details->dest_image = gtk_image_new_from_pixbuf (pixbuf);
-	gtk_box_pack_start (GTK_BOX (details->first_hbox),
-			    details->dest_image, FALSE, FALSE, 0);
-	gtk_widget_show (details->dest_image);
-	g_object_unref (pixbuf);
-
-	pixbuf = nautilus_file_get_icon_pixbuf (src,
-						NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-						TRUE,
-						gtk_widget_get_scale_factor (fcd->details->titles_vbox),
-						NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
-	details->src_image = gtk_image_new_from_pixbuf (pixbuf);
-	gtk_box_pack_start (GTK_BOX (details->second_hbox),
-			    details->src_image, FALSE, FALSE, 0);
-	gtk_widget_show (details->src_image);
-	g_object_unref (pixbuf);
-
-	/* Set up labels */
-	label = gtk_label_new (NULL);
-	date = nautilus_file_get_string_attribute (dest,
-						   "date_modified");
-	size = nautilus_file_get_string_attribute (dest, "size");
-
-	if (should_show_type) {
-		type = nautilus_file_get_string_attribute (dest, "type");
-	}
-
-	str = g_string_new (NULL);
-	if (dest_is_dir) {
-		g_string_append_printf (str, "<b>%s</b>\n", _("Original folder"));
-		g_string_append_printf (str, "%s %s\n", _("Items:"), size);
-	}
-	else {
-		g_string_append_printf (str, "<b>%s</b>\n", _("Original file"));
-		g_string_append_printf (str, "%s %s\n", _("Size:"), size);
-	}
-
-	if (should_show_type) {
-		g_string_append_printf (str, "%s %s\n", _("Type:"), type);
-	}
-
-	g_string_append_printf (str, "%s %s", _("Last modified:"), date);
-
-	label_text = str->str;
-	gtk_label_set_markup (GTK_LABEL (label),
-			      label_text);
-	gtk_box_pack_start (GTK_BOX (details->first_hbox),
-			    label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-
-	g_free (size);
-	g_free (type);
-	g_free (date);
-	g_string_erase (str, 0, -1);
-
-	/* Second label */
-	label = gtk_label_new (NULL);
-	date = nautilus_file_get_string_attribute (src,
-						   "date_modified");
-	size = nautilus_file_get_string_attribute (src, "size");
-
-	if (should_show_type) {
-		type = nautilus_file_get_string_attribute (src, "type");
-	}
-
-	if (source_is_dir) {
-		g_string_append_printf (str, "<b>%s</b>\n", dest_is_dir ? _("Merge with") : _("Replace with"));
-		g_string_append_printf (str, "%s %s\n", _("Items:"), size);
-	}
-	else {
-		g_string_append_printf (str, "<b>%s</b>\n", _("Replace with"));
-		g_string_append_printf (str, "%s %s\n", _("Size:"), size);
-	}
-
-	if (should_show_type) {
-		g_string_append_printf (str, "%s %s\n", _("Type:"), type);
-	}
-
-	g_string_append_printf (str, "%s %s", _("Last modified:"), date);
-	label_text = g_string_free (str, FALSE);
-
-	gtk_label_set_markup (GTK_LABEL (label),
-			      label_text);
-	gtk_box_pack_start (GTK_BOX (details->second_hbox),
-			    label, FALSE, FALSE, 0);
-	gtk_widget_show (label);
-
-	g_free (size);
-	g_free (date);
-	g_free (type);
-	g_free (label_text);
-
-	/* Populate the entry */
-	edit_name = nautilus_file_get_edit_name (dest);
-	details->conflict_name = edit_name;
-
-	gtk_entry_set_text (GTK_ENTRY (details->entry), edit_name);
-
-	if (source_is_dir && dest_is_dir) {
-		gtk_button_set_label (GTK_BUTTON (details->replace_button),
-				      _("Merge"));
-	}
-
-	nautilus_file_monitor_add (src, fcd, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
-	nautilus_file_monitor_add (dest, fcd, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
-
-	details->src_handler_id = g_signal_connect (src, "changed",
-			  G_CALLBACK (file_icons_changed), fcd);
-	details->dest_handler_id = g_signal_connect (dest, "changed",
-			  G_CALLBACK (file_icons_changed), fcd);
+        if (details->src_image == NULL) {
+                details->src_image = gtk_image_new_from_pixbuf (source_pixbuf);
+                gtk_box_pack_start (GTK_BOX (details->second_hbox),
+                                    details->src_image, FALSE, FALSE, 0);
+                gtk_widget_show (details->src_image);
+        } else {
+                gtk_image_set_from_pixbuf (GTK_IMAGE (details->src_image),
+                                           source_pixbuf);
+        }
 }
 
-static void
-build_dialog_appearance (NautilusFileConflictDialog *fcd)
+void
+nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *fcd,
+                                               gchar *destination_label,
+                                               gchar *source_label)
 {
-	GList *files = NULL;
-	NautilusFileConflictDialogDetails *details = fcd->details;
+        NautilusFileConflictDialogDetails *details = fcd->details;
+        GtkWidget *label;
 
-	files = g_list_prepend (files, details->source);
-	files = g_list_prepend (files, details->destination);
-	files = g_list_prepend (files, details->dest_dir);
+        label = gtk_label_new (NULL);
+        gtk_label_set_markup (GTK_LABEL (label),
+                              destination_label);
+        gtk_box_pack_start (GTK_BOX (details->first_hbox),
+                            label, FALSE, FALSE, 0);
+        gtk_widget_show (label);
 
-	nautilus_file_list_call_when_ready (files,
-					    NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-					    &details->handle, file_list_ready_cb, fcd);
-	g_list_free (files);
+        label = gtk_label_new (NULL);
+        gtk_label_set_markup (GTK_LABEL (label),
+                              source_label);
+        gtk_box_pack_start (GTK_BOX (details->second_hbox),
+                            label, FALSE, FALSE, 0);
+        gtk_widget_show (label);
 }
 
-static void
-set_source_and_destination (GtkWidget *w,
-			    GFile *source,
-			    GFile *destination,
-			    GFile *dest_dir)
+void
+nautilus_file_conflict_dialog_set_conflict_name (NautilusFileConflictDialog *fcd,
+                                                 gchar *conflict_name)
 {
-	NautilusFileConflictDialog *dialog;
-	NautilusFileConflictDialogDetails *details;
+        NautilusFileConflictDialogDetails *details = fcd->details;
 
-	dialog = NAUTILUS_FILE_CONFLICT_DIALOG (w);
-	details = dialog->details;
+        details->conflict_name = g_strdup (conflict_name);
 
-	details->source = nautilus_file_get (source);
-	details->destination = nautilus_file_get (destination);
-	details->dest_dir = nautilus_file_get (dest_dir);
+        gtk_entry_set_text (GTK_ENTRY (details->entry), details->conflict_name);
 
-	build_dialog_appearance (dialog);
+}
+
+void
+nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDialog *fcd,
+                                                        gchar *label)
+{
+        NautilusFileConflictDialogDetails *details = fcd->details;
+
+        gtk_button_set_label (GTK_BUTTON (details->replace_button),
+                              label);
+}
+
+void
+nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd)
+{
+        NautilusFileConflictDialogDetails *details = fcd->details;
+
+        gtk_widget_hide (details->skip_button);
+}
+
+void
+nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd)
+{
+        NautilusFileConflictDialogDetails *details = fcd->details;
+
+        gtk_widget_hide (details->checkbox);
 }
 
 static void
@@ -549,12 +364,15 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 			  G_CALLBACK (checkbox_toggled_cb), dialog);
 
 	/* Add buttons */
-	gtk_dialog_add_buttons (dialog,
-				_("_Cancel"),
-				GTK_RESPONSE_CANCEL,
-				_("_Skip"),
-				CONFLICT_RESPONSE_SKIP,
-				NULL);
+        gtk_dialog_add_button (dialog,
+                               _("_Cancel"),
+                               GTK_RESPONSE_CANCEL);
+
+        details->skip_button =
+                gtk_dialog_add_button (dialog,
+                                       _("_Skip"),
+                                       CONFLICT_RESPONSE_SKIP);
+
 	details->rename_button =
 		gtk_dialog_add_button (dialog,
 				       _("Re_name"),
@@ -583,24 +401,6 @@ do_finalize (GObject *self)
 
 	g_free (details->conflict_name);
 
-	if (details->handle != NULL) {
-		nautilus_file_list_cancel_call_when_ready (details->handle);
-	}
-
-	if (details->src_handler_id) {
-		g_signal_handler_disconnect (details->source, details->src_handler_id);
-		nautilus_file_monitor_remove (details->source, self);
-	}
-
-	if (details->dest_handler_id) {
-		g_signal_handler_disconnect (details->destination, details->dest_handler_id);
-		nautilus_file_monitor_remove (details->destination, self);
-	}
-
-	nautilus_file_unref (details->source);
-	nautilus_file_unref (details->destination);
-	nautilus_file_unref (details->dest_dir);
-
 	G_OBJECT_CLASS (nautilus_file_conflict_dialog_parent_class)->finalize (self);
 }
 
@@ -626,45 +426,18 @@ nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dial
 		(GTK_TOGGLE_BUTTON (dialog->details->checkbox));
 }
 
-GtkWidget *
-nautilus_file_conflict_dialog_new (GtkWindow *parent,
-				   GFile *source,
-				   GFile *destination,
-				   GFile *dest_dir)
+NautilusFileConflictDialog *
+nautilus_file_conflict_dialog_new (GtkWindow *parent)
 {
-	GtkWidget *dialog;
-	NautilusFile *src, *dest;
-	gboolean source_is_dir, dest_is_dir;
+        NautilusFileConflictDialog *dialog;
 
-	src = nautilus_file_get (source);
-	dest = nautilus_file_get (destination);
+        dialog = NAUTILUS_FILE_CONFLICT_DIALOG (g_object_new (NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,
+                                                "use-header-bar", TRUE,
+                                                "modal", TRUE,
+                                                NULL));
 
-	source_is_dir = nautilus_file_is_directory (src);
-	dest_is_dir = nautilus_file_is_directory (dest);
-
-	if (source_is_dir) {
-		dialog = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,
-						   "use-header-bar", TRUE,
-						   "modal", TRUE,
-						   "title", dest_is_dir ? _("Merge Folder") : _("File and Folder conflict"),
-						   NULL));
-	} else {
-		dialog = GTK_WIDGET (g_object_new (NAUTILUS_TYPE_FILE_CONFLICT_DIALOG,
-						   "use-header-bar", TRUE,
-						   "modal", TRUE,
-						   "title", dest_is_dir ? _("File and Folder conflict") : _("File conflict"),
-						   NULL));
-	}
-	
-	set_source_and_destination (dialog,
-				    source,
-				    destination,
-				    dest_dir);
 	gtk_window_set_transient_for (GTK_WINDOW (dialog),
 				      parent);
-
-        g_object_unref (src);
-        g_object_unref (dest);
 
 	return dialog;
 }

@@ -278,6 +278,8 @@ nautilus_no_main_sources = \
 	nautilus-rename-file-popover-controller.h \
 	nautilus-new-folder-dialog-controller.c \
 	nautilus-new-folder-dialog-controller.h \
+	nautilus-operations-ui-manager.c \
+	nautilus-operations-ui-manager.h \
 	nautilus-file-operations.c \
 	nautilus-file-operations.h \
 	nautilus-file-private.h \
