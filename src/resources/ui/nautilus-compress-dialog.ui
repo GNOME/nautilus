@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.14"/>
+  <object class="GtkDialog" id="compress_dialog">
+    <property name="title" translatable="true">Create Archive</property>
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="use-header-bar">1</property>
+    <property name="width_request">490</property>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="vbox">
+        <property name="orientation">vertical</property>
+        <property name="margin_top">18</property>
+        <property name="margin_bottom">12</property>
+        <property name="margin_start">18</property>
+        <property name="margin_end">18</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="name_label">
+            <property name="label" translatable="yes">Archive name</property>
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkEntry" id="name_entry">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="error_label">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="dim-label"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkBox" id="hbox">
+            <property name="orientation">horizontal</property>
+            <property name="homogeneous">True</property>
+            <property name="spacing">0</property>
+            <child>
+              <object class="GtkRadioButton" id="zip_radio_button">
+                <property name="label" translatable="no">.zip</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="zip_radio_button_on_toggled"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="tar_xz_radio_button">
+                <property name="label" translatable="no">.tar.xz</property>
+                <property name="group">zip_radio_button</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="tar_xz_radio_button_on_toggled"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkRadioButton" id="seven_zip_radio_button">
+                <property name="label" translatable="no">.7z</property>
+                <property name="group">zip_radio_button</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="seven_zip_radio_button_on_toggled"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel" id="description_label">
+            <property name="visible">True</property>
+            <property name="xalign">0</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="cancel_button">
+        <property name="label" translatable="yes">Cancel</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="activate_button">
+        <property name="label" translatable="yes">Create</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="can_default">True</property>
+        <property name="receives_default">True</property>
+        <property name="sensitive">False</property>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="ok" default="true">activate_button</action-widget>
+      <action-widget response="cancel">cancel_button</action-widget>
+    </action-widgets>
+  </object>
+</interface>
