@@ -56,8 +56,15 @@
     <value value="1" nick="last_used"/>
   </enum>
 
+  <enum id="org.gnome.nautilus.CompressionFormat">
+    <value value="0" nick="zip"/>
+    <value value="1" nick="tar.xz"/>
+    <value value="2" nick="7z"/>
+  </enum>
+
   <schema path="/org/gnome/nautilus/" id="org.gnome.nautilus" gettext-domain="nautilus">
     <child schema="org.gnome.nautilus.preferences" name="preferences"/>
+    <child schema="org.gnome.nautilus.compression" name="compression"/>
     <child schema="org.gnome.nautilus.icon-view" name="icon-view"/>
     <child schema="org.gnome.nautilus.list-view" name="list-view"/>
     <child schema="org.gnome.nautilus.desktop" name="desktop"/>
@@ -208,6 +215,14 @@
       <default>true</default>
       <summary>Whether to open the hovered folder after a timeout when drag and drop operation</summary>
       <description>If this is set to true, when performing a drag and drop operation the hovered folder will open automatically after a timeout.</description>
+    </key>
+  </schema>
+
+  <schema path="/org/gnome/nautilus/compression/" id="org.gnome.nautilus.compression" gettext-domain="nautilus">
+    <key name="default-compression-format" enum="org.gnome.nautilus.CompressionFormat">
+      <default>'zip'</default>
+      <summary>Default format for compressing files</summary>
+      <description>The format that will be selected when compressing files.</description>
     </key>
   </schema>
 

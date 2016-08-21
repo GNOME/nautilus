@@ -80,6 +80,16 @@ typedef enum
 /* The default folder viewer - one of the two enums below */
 #define NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER		"default-folder-viewer"
 
+/* Compression */
+#define NAUTILUS_PREFERENCES_DEFAULT_COMPRESSION_FORMAT         "default-compression-format"
+
+typedef enum
+{
+        NAUTILUS_COMPRESSION_ZIP = 0,
+        NAUTILUS_COMPRESSION_TAR_XZ,
+        NAUTILUS_COMPRESSION_7ZIP
+} NautilusCompressionFormat;
+
 /* Icon View */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
 
@@ -167,6 +177,7 @@ typedef enum
 void nautilus_global_preferences_init                      (void);
 
 extern GSettings *nautilus_preferences;
+extern GSettings *nautilus_compression_preferences;
 extern GSettings *nautilus_icon_view_preferences;
 extern GSettings *nautilus_list_view_preferences;
 extern GSettings *nautilus_desktop_preferences;
