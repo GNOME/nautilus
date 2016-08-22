@@ -2076,7 +2076,7 @@ trash_files (CommonJob *job,
                             TRUE, &to_delete);
 		if (skipped_file) {
 			(*files_skipped)++;
-			transfer_file_add_to_count (file, job, &transfer_info);
+			transfer_add_file_to_count (file, job, &transfer_info);
 			report_trash_progress (job, &source_info, &transfer_info);
 
 		}
@@ -3955,7 +3955,7 @@ copy_move_directory (CopyMoveJob *copy_job,
 					readonly_source_fs);
 
 			if (local_skipped_file) {
-				transfer_file_add_to_count (src_file, job, transfer_info);
+				transfer_add_file_to_count (src_file, job, transfer_info);
 				report_copy_progress (copy_job, source_info, transfer_info);
 			}
 
@@ -4923,7 +4923,7 @@ copy_files (CopyMoveJob *job,
 			g_object_unref (dest);
 
 			if (skipped_file) {
-				transfer_file_add_to_count (src, common, transfer_info);
+				transfer_add_file_to_count (src, common, transfer_info);
 				report_copy_progress (job, source_info, transfer_info);
 			}
 		}
@@ -5497,7 +5497,7 @@ common = &job->common;
 		i++;
 
 		if (skipped_file) {
-			transfer_file_add_to_count (src, common, transfer_info);
+			transfer_add_file_to_count (src, common, transfer_info);
 			report_copy_progress (job, source_info, transfer_info);
 		}
 	}
