@@ -191,6 +191,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
         NautilusCompressDialogController *self;
         g_autoptr (GtkBuilder) builder;
         GtkWidget *compress_dialog;
+        GtkWidget *error_revealer;
         GtkWidget *error_label;
         GtkWidget *name_entry;
         GtkWidget *activate_button;
@@ -202,6 +203,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
         builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
         compress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "compress_dialog"));
+        error_revealer = GTK_WIDGET (gtk_builder_get_object (builder, "error_revealer"));
         error_label = GTK_WIDGET (gtk_builder_get_object (builder, "error_label"));
         name_entry = GTK_WIDGET (gtk_builder_get_object (builder, "name_entry"));
         activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "activate_button"));
@@ -214,6 +216,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       parent_window);
 
         self = g_object_new (NAUTILUS_TYPE_COMPRESS_DIALOG_CONTROLLER,
+                             "error-revealer", error_revealer,
                              "error-label", error_label,
                              "name-entry", name_entry,
                              "activate-button", activate_button,

@@ -6,6 +6,7 @@
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
 typedef struct {
+        GtkWidget *error_revealer;
         GtkWidget *error_label;
         GtkWidget *name_entry;
         GtkWidget *activate_button;
@@ -22,7 +23,8 @@ enum {
 };
 
 enum {
-        PROP_ERROR_LABEL = 1,
+        PROP_ERROR_REVEALER = 1,
+        PROP_ERROR_LABEL,
         PROP_NAME_ENTRY,
         PROP_ACTION_BUTTON,
         PROP_CONTAINING_DIRECTORY,
@@ -108,6 +110,9 @@ duplicated_file_label_show (NautilusFileNameWidgetController *self)
                                      _("A file with that name already exists."));
         }
 
+        gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
+                                       TRUE);
+
         priv->duplicated_label_timeout_id = 0;
 
         return G_SOURCE_REMOVE;
@@ -130,6 +135,8 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
                                                                           &error_message);
 
         gtk_label_set_label (GTK_LABEL (priv->error_label), error_message);
+        gtk_revealer_set_reveal_child (GTK_REVEALER (priv->error_revealer),
+                                       error_message != NULL);
 
         existing_file = nautilus_directory_get_file_by_name (priv->containing_directory, name);
         *duplicated_name = existing_file != NULL &&
@@ -259,6 +266,9 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
         priv = nautilus_file_name_widget_controller_get_instance_private (controller);
 
         switch (prop_id) {
+                case PROP_ERROR_REVEALER:
+                        priv->error_revealer = GTK_WIDGET (g_value_get_object (value));
+                        break;
                 case PROP_ERROR_LABEL:
                         priv->error_label = GTK_WIDGET (g_value_get_object (value));
                         break;
@@ -347,6 +357,16 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
                               NULL, NULL,
                               g_cclosure_marshal_generic,
                               G_TYPE_NONE, 0);
+
+        g_object_class_install_property (
+                object_class,
+                PROP_ERROR_REVEALER,
+                g_param_spec_object ("error-revealer",
+                                     "Error Revealer",
+                                     "The error label revealer",
+                                     GTK_TYPE_WIDGET,
+                                     G_PARAM_WRITABLE |
+                                     G_PARAM_CONSTRUCT_ONLY));
 
         g_object_class_install_property (
                 object_class,

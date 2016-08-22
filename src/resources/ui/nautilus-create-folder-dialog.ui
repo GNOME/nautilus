@@ -40,12 +40,15 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="error_label">
-            <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
+          <object class="GtkRevealer" id="error_revealer">
+            <child>
+              <object class="GtkLabel" id="error_label">
+                <property name="margin_top">4</property>
+                <property name="margin_bottom">4</property>
+                <property name="visible">True</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
