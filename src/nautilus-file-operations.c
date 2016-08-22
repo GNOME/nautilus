@@ -2016,7 +2016,7 @@ transfer_add_file_to_count (GFile        *file,
                             CommonJob    *job,
                             TransferInfo *transfer_info)
 {
-    g_autoptr (GFileInfo) file_info;
+    g_autoptr (GFileInfo) file_info = NULL;
 
     if (g_cancellable_is_cancelled (job->cancellable)) {
         return;
