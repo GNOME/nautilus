@@ -214,6 +214,9 @@ struct NautilusFileDetails
 
 typedef struct {
 	NautilusFile *file;
+	GList *files;
+	gint renamed_files;
+	gint skipped_files;
 	GCancellable *cancellable;
 	NautilusFileOperationCallback callback;
 	gpointer callback_data;

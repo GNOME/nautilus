@@ -1221,3 +1221,19 @@ nautilus_ensure_extension_points (void)
 }
 
 #endif /* !NAUTILUS_OMIT_SELF_CHECK */
+
+gboolean
+nautilus_file_can_rename_files (GList *files)
+{
+    GList *l;
+    NautilusFile *file;
+
+    for (l = files; l != NULL; l = l->next) {
+        file = NAUTILUS_FILE (l->data);
+
+        if (!nautilus_file_can_rename (file))
+            return FALSE;
+    }
+
+    return TRUE;
+}

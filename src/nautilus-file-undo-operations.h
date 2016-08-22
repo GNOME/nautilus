@@ -34,6 +34,7 @@ typedef enum {
 	NAUTILUS_FILE_UNDO_OP_DUPLICATE,
 	NAUTILUS_FILE_UNDO_OP_MOVE,
 	NAUTILUS_FILE_UNDO_OP_RENAME,
+	NAUTILUS_FILE_UNDO_OP_BATCH_RENAME,
 	NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE,
 	NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE,
 	NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER,
@@ -187,6 +188,34 @@ void nautilus_file_undo_info_rename_set_data_pre (NautilusFileUndoInfoRename *se
 						  gchar                      *new_display_name);
 void nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
 						   GFile                      *new_file);
+
+/* batch rename */
+#define NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME         (nautilus_file_undo_info_batch_rename_get_type ())
+#define NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME, NautilusFileUndoInfoBatchRename))
+#define NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME, NautilusFileUndoInfoBatchRenameClass))
+#define NAUTILUS_IS_FILE_UNDO_INFO_BATCH_RENAME(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME))
+#define NAUTILUS_IS_FILE_UNDO_INFO_BATCH_RENAME_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME))
+#define NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME, NautilusFileUndoInfoBatchRenameClass))
+
+typedef struct _NautilusFileUndoInfoBatchRename      NautilusFileUndoInfoBatchRename;
+typedef struct _NautilusFileUndoInfoBatchRenameClass NautilusFileUndoInfoBatchRenameClass;
+typedef struct _NautilusFileUndoInfoBatchRenameDetails NautilusFileUndoInfoBatchRenameDetails;
+
+struct _NautilusFileUndoInfoBatchRename {
+	NautilusFileUndoInfo parent;
+	NautilusFileUndoInfoBatchRenameDetails *priv;
+};
+
+struct _NautilusFileUndoInfoBatchRenameClass {
+	NautilusFileUndoInfoClass parent_class;
+};
+
+GType nautilus_file_undo_info_batch_rename_get_type (void) G_GNUC_CONST;
+NautilusFileUndoInfo *nautilus_file_undo_info_batch_rename_new (gint item_count);
+void nautilus_file_undo_info_batch_rename_set_data_pre (NautilusFileUndoInfoBatchRename *self,
+						        GList                           *old_files);
+void nautilus_file_undo_info_batch_rename_set_data_post (NautilusFileUndoInfoBatchRename *self,
+						         GList                           *new_files);
 
 /* trash */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_TRASH         (nautilus_file_undo_info_trash_get_type ())

@@ -994,6 +994,189 @@ nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
 	self->priv->new_file = g_object_ref (new_file);
 }
 
+/* batch rename */
+G_DEFINE_TYPE (NautilusFileUndoInfoBatchRename, nautilus_file_undo_info_batch_rename, NAUTILUS_TYPE_FILE_UNDO_INFO);
+
+struct _NautilusFileUndoInfoBatchRenameDetails {
+        GList *old_files;
+        GList *new_files;
+        GList *old_display_names;
+        GList *new_display_names;
+};
+
+static void
+batch_rename_strings_func (NautilusFileUndoInfo *info,
+                           gchar               **undo_label,
+                           gchar               **undo_description,
+                           gchar               **redo_label,
+                           gchar               **redo_description)
+{
+        NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
+
+        *undo_description = g_strdup_printf (_("Batch rename '%d' files"),
+                                             g_list_length (self->priv->new_files));
+        *redo_description = g_strdup_printf (_("Batch rename '%d' files"),
+                                             g_list_length (self->priv->new_files));
+
+        *undo_label = g_strdup (_("_Undo Batch rename"));
+        *redo_label = g_strdup (_("_Redo Batch rename"));
+}
+
+static void
+batch_rename_redo_func (NautilusFileUndoInfo *info,
+                        GtkWindow *parent_window)
+{
+        NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
+
+        GList *l, *files;
+        NautilusFile *file;
+        GFile *old_file;
+
+        files = NULL;
+
+        for (l = self->priv->old_files; l != NULL; l = l->next) {
+                old_file = l->data;
+
+                file = nautilus_file_get (old_file);
+                files = g_list_append (files, file);
+        }
+
+        nautilus_file_batch_rename (files, self->priv->new_display_names, file_undo_info_operation_callback, self);
+}
+
+static void
+batch_rename_undo_func (NautilusFileUndoInfo *info,
+                        GtkWindow *parent_window)
+{
+        NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
+
+        GList *l, *files;
+        NautilusFile *file;
+        GFile *new_file;
+
+        files = NULL;
+
+        for (l = self->priv->new_files; l != NULL; l = l->next) {
+                new_file = l->data;
+
+                file = nautilus_file_get (new_file);
+                files = g_list_append (files, file);
+        }
+
+        nautilus_file_batch_rename (files, self->priv->old_display_names, file_undo_info_operation_callback, self);
+}
+
+static void
+nautilus_file_undo_info_batch_rename_init (NautilusFileUndoInfoBatchRename *self)
+{
+        self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, nautilus_file_undo_info_batch_rename_get_type (),
+                                                  NautilusFileUndoInfoBatchRenameDetails);
+}
+
+static void
+nautilus_file_undo_info_batch_rename_finalize (GObject *obj)
+{
+        GList *l;
+        GFile *file;
+        GString *string;
+        NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (obj);
+
+        for (l = self->priv->new_files; l != NULL; l = l->next){
+                file = l->data;
+
+                g_clear_object (&file);
+        }
+
+        for (l = self->priv->old_files; l != NULL; l = l->next){
+                file = l->data;
+
+                g_clear_object (&file);
+        }
+
+        for (l = self->priv->new_display_names; l != NULL; l = l->next) {
+                string = l->data;
+
+                g_string_free (string, TRUE);
+        }
+
+        for (l = self->priv->old_display_names; l != NULL; l = l->next) {
+                string = l->data;
+
+                g_string_free (string, TRUE);
+        }
+
+        g_list_free (self->priv->new_files);
+        g_list_free (self->priv->old_files);
+        g_list_free (self->priv->new_display_names);
+        g_list_free (self->priv->old_display_names);
+
+        G_OBJECT_CLASS (nautilus_file_undo_info_batch_rename_parent_class)->finalize (obj);
+}
+
+static void
+nautilus_file_undo_info_batch_rename_class_init (NautilusFileUndoInfoBatchRenameClass *klass)
+{
+        GObjectClass *oclass = G_OBJECT_CLASS (klass);
+        NautilusFileUndoInfoClass *iclass = NAUTILUS_FILE_UNDO_INFO_CLASS (klass);
+
+        oclass->finalize = nautilus_file_undo_info_batch_rename_finalize;
+
+        iclass->undo_func = batch_rename_undo_func;
+        iclass->redo_func = batch_rename_redo_func;
+        iclass->strings_func = batch_rename_strings_func;
+
+        g_type_class_add_private (klass, sizeof (NautilusFileUndoInfoBatchRenameDetails));
+}
+
+NautilusFileUndoInfo *
+nautilus_file_undo_info_batch_rename_new (gint item_count)
+{
+        return g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME,
+                             "op-type", NAUTILUS_FILE_UNDO_OP_BATCH_RENAME,
+                             "item-count", item_count,
+                             NULL);
+}
+
+void
+nautilus_file_undo_info_batch_rename_set_data_pre (NautilusFileUndoInfoBatchRename *self,
+                                                   GList                           *old_files)
+{
+        GList *l;
+        GString *old_name;
+        GFile *file;
+
+        self->priv->old_files = old_files;
+        self->priv->old_display_names = NULL;
+
+        for (l = old_files; l != NULL; l = l->next) {
+                file = l->data;
+
+                old_name = g_string_new (g_file_get_basename (file));
+
+                self->priv->old_display_names = g_list_append (self->priv->old_display_names, old_name);
+        }
+}
+
+void
+nautilus_file_undo_info_batch_rename_set_data_post (NautilusFileUndoInfoBatchRename *self,
+                                                    GList                           *new_files)
+{
+        GList *l;
+        GString *new_name;
+        GFile *file;
+
+        self->priv->new_files = new_files;
+        self->priv->new_display_names = NULL;
+
+        for (l = new_files; l != NULL; l = l->next) {
+                file = l->data;
+
+                new_name = g_string_new (g_file_get_basename (file));
+
+                self->priv->new_display_names = g_list_append (self->priv->new_display_names, new_name);
+        }
+}
+
 /* trash */
 G_DEFINE_TYPE (NautilusFileUndoInfoTrash, nautilus_file_undo_info_trash, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
