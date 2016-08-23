@@ -7217,7 +7217,7 @@ extract_job_on_error (AutoarExtractor *extractor,
         source_file = autoar_extractor_get_source_file (extractor);
 
         nautilus_progress_info_take_status (extract_job->common.progress,
-                                            f (_("Error extracting “%B””"),
+                                            f (_("Error extracting “%B”"),
                                                source_file));
 
         response_id = run_warning ((CommonJob *)extract_job,
