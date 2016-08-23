@@ -445,7 +445,10 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
         g_ptr_array_add (date_range, g_date_time_ref (now));
         label = get_text_for_date_range (date_range);
         row = create_row_for_label (label, normalized == 1);
-        g_object_set_data (G_OBJECT (row), "date", g_date_time_ref (current_date));
+        g_object_set_data_full (G_OBJECT (row),
+                                "date",
+                                g_date_time_ref (current_date),
+                                (GDestroyNotify) g_date_time_unref);
 
         gtk_container_add (GTK_CONTAINER (popover->dates_listbox), row);
 
