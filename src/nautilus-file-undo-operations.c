@@ -1742,7 +1742,9 @@ extract_strings_func (NautilusFileUndoInfo  *info,
 
                 *undo_description = g_strdup_printf (_("Delete '%s'"), name);
         } else {
-                *undo_description = g_strdup_printf (_("Delete %d extracted files"),
+                *undo_description = g_strdup_printf (ngettext ("Delete %d extracted file",
+                                                               "Delete %d extracted files",
+                                                               total_outputs),
                                                      total_outputs);
         }
 
@@ -1755,7 +1757,9 @@ extract_strings_func (NautilusFileUndoInfo  *info,
 
                 *undo_description = g_strdup_printf (_("Extract '%s'"), name);
         } else {
-                *undo_description = g_strdup_printf (_("Extract %d files"),
+                *undo_description = g_strdup_printf (ngettext ("Extract %d file",
+                                                               "Extract %d files",
+                                                               total_sources),
                                                      total_sources);
         }
 }
@@ -1901,7 +1905,10 @@ compress_strings_func (NautilusFileUndoInfo  *info,
 
                 *redo_description = g_strdup_printf (_("Compress '%s'"), source_name);
         } else {
-                *redo_description = g_strdup_printf (_("Compress '%d' files"), sources_count);
+                *redo_description = g_strdup_printf (ngettext ("Compress %d file",
+                                                               "Compress %d files",
+                                                               sources_count),
+                                                     sources_count);
         }
 
         *undo_label = g_strdup (_("_Undo Compress"));
