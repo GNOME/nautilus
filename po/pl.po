@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-22 21:56+0000\n"
-"PO-Revision-Date: 2016-08-23 12:00+0200\n"
+"POT-Creation-Date: 2016-08-23 12:46+0000\n"
+"PO-Revision-Date: 2016-08-23 19:33+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -2889,7 +2889,7 @@ msgstr[2] "_Ponów skopiowanie %d elementów"
 #: src/nautilus-file-undo-operations.c:447
 #: src/nautilus-file-undo-operations.c:697
 #: src/nautilus-file-undo-operations.c:1743
-#: src/nautilus-file-undo-operations.c:1892
+#: src/nautilus-file-undo-operations.c:1896
 #, c-format
 msgid "Delete '%s'"
 msgstr "Usuwa „%s”"
@@ -3141,34 +3141,43 @@ msgstr "_Ponów rozpakowanie"
 
 #: src/nautilus-file-undo-operations.c:1745
 #, c-format
-msgid "Delete %d extracted files"
-msgstr "Usuwa %d rozpakowane pliki"
+msgid "Delete %d extracted file"
+msgid_plural "Delete %d extracted files"
+msgstr[0] "Usuwa %d rozpakowany plik"
+msgstr[1] "Usuwa %d rozpakowane pliki"
+msgstr[2] "Usuwa %d rozpakowanych plików"
 
-#: src/nautilus-file-undo-operations.c:1756
+#: src/nautilus-file-undo-operations.c:1758
 #, c-format
 msgid "Extract '%s'"
 msgstr "Rozpakowuje „%s”"
 
-#: src/nautilus-file-undo-operations.c:1758
+#: src/nautilus-file-undo-operations.c:1760
 #, c-format
-msgid "Extract %d files"
-msgstr "Rozpakowuje %d pliki"
+msgid "Extract %d file"
+msgid_plural "Extract %d files"
+msgstr[0] "Rozpakowuje %d plik"
+msgstr[1] "Rozpakowuje %d pliki"
+msgstr[2] "Rozpakowuje %d plików"
 
-#: src/nautilus-file-undo-operations.c:1902
+#: src/nautilus-file-undo-operations.c:1906
 #, c-format
 msgid "Compress '%s'"
 msgstr "Kompresuje „%s”"
 
-#: src/nautilus-file-undo-operations.c:1904
+#: src/nautilus-file-undo-operations.c:1908
 #, c-format
-msgid "Compress '%d' files"
-msgstr "Kompresuje pliki „%d”"
+msgid "Compress %d file"
+msgid_plural "Compress %d files"
+msgstr[0] "Kompresuje %d plik"
+msgstr[1] "Kompresuje %d pliki"
+msgstr[2] "Kompresuje %d plików"
 
-#: src/nautilus-file-undo-operations.c:1907
+#: src/nautilus-file-undo-operations.c:1914
 msgid "_Undo Compress"
 msgstr "_Cofnij skompresowanie"
 
-#: src/nautilus-file-undo-operations.c:1908
+#: src/nautilus-file-undo-operations.c:1915
 msgid "_Redo Compress"
 msgstr "_Ponów skompresowanie"
 
