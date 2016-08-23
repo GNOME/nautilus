@@ -4601,6 +4601,7 @@ get_extension_selection_menu_items (NautilusFilesView *view)
     }
 
     nautilus_module_extension_list_free (providers);
+    nautilus_file_list_free (selection);
 
     return items;
 }
