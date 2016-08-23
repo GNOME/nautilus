@@ -1755,9 +1755,9 @@ extract_strings_func (NautilusFileUndoInfo  *info,
                 source = self->priv->sources->data;
                 name = g_file_get_parse_name (source);
 
-                *undo_description = g_strdup_printf (_("Extract '%s'"), name);
+                *redo_description = g_strdup_printf (_("Extract '%s'"), name);
         } else {
-                *undo_description = g_strdup_printf (ngettext ("Extract %d file",
+                *redo_description = g_strdup_printf (ngettext ("Extract %d file",
                                                                "Extract %d files",
                                                                total_sources),
                                                      total_sources);
