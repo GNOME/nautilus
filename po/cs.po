@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-08-23 10:02+0000\n"
-"PO-Revision-Date: 2016-08-23 13:37+0200\n"
+"POT-Creation-Date: 2016-08-23 12:46+0000\n"
+"PO-Revision-Date: 2016-08-23 15:24+0200\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -2876,7 +2876,7 @@ msgstr[2] "_Opakovat kopírování %d položek"
 #: src/nautilus-file-undo-operations.c:447
 #: src/nautilus-file-undo-operations.c:697
 #: src/nautilus-file-undo-operations.c:1743
-#: src/nautilus-file-undo-operations.c:1892
+#: src/nautilus-file-undo-operations.c:1896
 #, c-format
 msgid "Delete '%s'"
 msgstr "Smazat „%s“"
@@ -3119,52 +3119,57 @@ msgid "_Redo Change Owner"
 msgstr "_Opakovat změnu vlastníka"
 
 #: src/nautilus-file-undo-operations.c:1730
-#| msgid "_Undo Trash"
 msgid "_Undo Extract"
 msgstr "_Vrátit rozbalení"
 
 #: src/nautilus-file-undo-operations.c:1731
-#| msgid "_Redo Trash"
 msgid "_Redo Extract"
 msgstr "_Opakovat rozbalení"
 
 #: src/nautilus-file-undo-operations.c:1745
-#, fuzzy, c-format
+#, c-format
 #| msgid "Delete %d copied item"
 #| msgid_plural "Delete %d copied items"
-msgid "Delete %d extracted files"
-msgstr "Smazat %d zkopírovanou položku"
+msgid "Delete %d extracted file"
+msgid_plural "Delete %d extracted files"
+msgstr[0] "Smazat %d rozbalený soubor"
+msgstr[1] "Smazat %d rozbalené soubory"
+msgstr[2] "Smazat %d rozbalených souborů"
 
-#: src/nautilus-file-undo-operations.c:1756
+#: src/nautilus-file-undo-operations.c:1758
 #, c-format
 msgid "Extract '%s'"
 msgstr "Rozbalit „%s“"
 
-#: src/nautilus-file-undo-operations.c:1758
-#, fuzzy, c-format
+#: src/nautilus-file-undo-operations.c:1760
+#, c-format
 #| msgid "Trashed %'d file"
 #| msgid_plural "Trashed %'d files"
-msgid "Extract %d files"
-msgstr "Vyhozen %'d soubor do koše"
+msgid "Extract %d file"
+msgid_plural "Extract %d files"
+msgstr[0] "Rozbalit %d soubor"
+msgstr[1] "Rozbalit %d soubory"
+msgstr[2] "Rozbalit %d souborů"
 
-#: src/nautilus-file-undo-operations.c:1902
+#: src/nautilus-file-undo-operations.c:1906
 #, c-format
-#| msgid "Copy '%s' to '%s'"
 msgid "Compress '%s'"
 msgstr "Zkomprimovat „%s“"
 
-#: src/nautilus-file-undo-operations.c:1904
+#: src/nautilus-file-undo-operations.c:1908
 #, c-format
-msgid "Compress '%d' files"
-msgstr ""
+#| msgid "Compressed Files"
+msgid "Compress %d file"
+msgid_plural "Compress %d files"
+msgstr[0] "Komprimovat %d soubor"
+msgstr[1] "Komprimovat %d soubory"
+msgstr[2] "Komprimovat %d souborů"
 
-#: src/nautilus-file-undo-operations.c:1907
-#| msgid "_Undo Copy"
+#: src/nautilus-file-undo-operations.c:1914
 msgid "_Undo Compress"
 msgstr "_Vrátit komprimaci"
 
-#: src/nautilus-file-undo-operations.c:1908
-#| msgid "_Redo Copy"
+#: src/nautilus-file-undo-operations.c:1915
 msgid "_Redo Compress"
 msgstr "_Opakovat komprimaci"
 
@@ -4693,7 +4698,6 @@ msgid "_Quit"
 msgstr "_Ukončit"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:23
-#| msgid "Archive"
 msgid "Archive name"
 msgstr "Název archivu"
 
@@ -5075,7 +5079,6 @@ msgid "Show action to _permanently delete files and folders"
 msgstr "Zobrazovat činnost _pro trvalé smazání souborů a složek"
 
 #: src/resources/ui/nautilus-preferences-window.ui:769
-#| msgid "Copying Files"
 msgid "Compressed Files"
 msgstr "Komprimované soubory"
 
@@ -5422,7 +5425,6 @@ msgid "SSH File Transfer Protocol"
 msgstr "SFTP"
 
 #: src/gtk/nautilusgtkplacesview.ui:147
-#| msgid "WebDav"
 msgid "WebDAV"
 msgstr "WebDAV"
 
