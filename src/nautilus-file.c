@@ -8196,7 +8196,7 @@ static const gchar * const remote_types[] =
 gboolean
 nautilus_file_is_remote (NautilusFile *file)
 {
-    char *filesystem_type;
+    g_autofree char* filesystem_type = NULL;
 
     g_assert (NAUTILUS_IS_FILE (file));
 
