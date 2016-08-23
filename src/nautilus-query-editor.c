@@ -275,12 +275,26 @@ nautilus_query_editor_set_property (GObject      *object,
 }
 
 static void
+nautilus_query_editor_finalize (GObject *object)
+{
+    NautilusQueryEditorPrivate *priv;
+
+    priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (object));
+
+    g_clear_object (&priv->date_range_tag);
+    g_clear_object (&priv->mime_types_tag);
+
+    G_OBJECT_CLASS (nautilus_query_editor_parent_class)->finalize (object);
+}
+
+static void
 nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 {
     GObjectClass *gobject_class;
     GtkWidgetClass *widget_class;
 
     gobject_class = G_OBJECT_CLASS (class);
+    gobject_class->finalize = nautilus_query_editor_finalize;
     gobject_class->dispose = nautilus_query_editor_dispose;
     gobject_class->get_property = nautilus_query_editor_get_property;
     gobject_class->set_property = nautilus_query_editor_set_property;
