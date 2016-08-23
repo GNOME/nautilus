@@ -269,7 +269,7 @@ dnl base libs
 PKG_CHECK_MODULES(BASE, [
 	gtk+-3.0 >= gtk_minver
 	glib-2.0 >= glib_minver
-        gnome-autoar >= autoar_minver
+        gnome-autoar-0 >= autoar_minver
 ])
 
 dnl common libs (eel, nautilus)
