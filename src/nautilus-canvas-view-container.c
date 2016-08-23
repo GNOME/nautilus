@@ -296,6 +296,8 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer  *containe
             g_free (text_array[i]);
         }
     }
+
+    g_free (attributes);
 }
 
 static int
