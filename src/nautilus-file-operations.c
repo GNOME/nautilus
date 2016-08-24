@@ -7586,7 +7586,7 @@ compress_job_on_error (AutoarCompressor *compressor,
                                             status);
 
         run_error ((CommonJob *)compress_job,
-                   _("There was an error while compressing files."),
+                   g_strdup (_("There was an error while compressing files.")),
                    g_strdup (error->message),
                    NULL,
                    FALSE,
