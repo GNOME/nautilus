@@ -27,8 +27,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-08-23 10:02+0000\n"
-"PO-Revision-Date: 2016-08-23 13:04+0200\n"
+"POT-Creation-Date: 2016-08-23 12:46+0000\n"
+"PO-Revision-Date: 2016-08-24 10:16+0200\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Español; Castellano <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -219,9 +219,6 @@ msgstr ""
 "otra aplicación"
 
 #: data/org.gnome.nautilus.gschema.xml:116
-#| msgid ""
-#| "If set to true, then Nautilus will automatically mount media such as user-"
-#| "visible hard disks and removable media on start-up and media insertion."
 msgid ""
 "If set to true, then Nautilus will automatically extract compressed files "
 "instead of opening them in another application"
@@ -1193,17 +1190,14 @@ msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr "Archivadores más pequeños pero se puede instalar en Windows y Mac."
 
 #: src/nautilus-compress-dialog-controller.c:41
-#| msgid "File names cannot contain “/”."
 msgid "Archive names cannot contain “/”."
 msgstr "Los nombres de archivadores no pueden contener «/»."
 
 #: src/nautilus-compress-dialog-controller.c:43
-#| msgid "A file cannot be called “.”."
 msgid "An archive cannot be called “.”."
 msgstr "Un archivador no se puede llamar «.»."
 
 #: src/nautilus-compress-dialog-controller.c:45
-#| msgid "A file cannot be called “..”."
 msgid "An archive cannot be called “..”."
 msgstr "Un archivador no se puede llamar «..»."
 
@@ -2199,8 +2193,6 @@ msgstr[1] "Preparándose para mover a la papelera %'d archivos"
 # src/file-manager/dfos-xfer.c:1009
 #: src/nautilus-file-operations.c:2731
 #, c-format
-#| msgid "Preparing to move %'d file"
-#| msgid_plural "Preparing to move %'d files"
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
 msgstr[0] "Preparándose para comprimir %'d archivo"
@@ -2225,7 +2217,6 @@ msgstr "Error al mover los archivos a la papelera."
 
 # src/file-manager/dfos-xfer.c:745
 #: src/nautilus-file-operations.c:2769
-#| msgid "Error while creating file %B."
 msgid "Error while compressing files."
 msgstr "Error al comprimir archivos."
 
@@ -2635,31 +2626,25 @@ msgstr "Verificando destino"
 
 # src/file-manager/fm-icon-view.c:1277
 #: src/nautilus-file-operations.c:7143
-#| msgid "Trashing “%B”"
 msgid "Extracting “%B”"
 msgstr "Extrayendo «%B»"
 
 # src/file-manager/dfos-xfer.c:745
 #: src/nautilus-file-operations.c:7220
-#| msgid "Error while copying “%B”."
 msgid "Error extracting “%B”"
 msgstr "Error al extraer «%B»."
 
 #: src/nautilus-file-operations.c:7224
-#| msgid "There was an error deleting the file “%B”."
 msgid "There was an error while extracting “%B”."
 msgstr "Hubo un error al extraer «%B»."
 
 # src/file-manager/fm-error-reporting.c:214
 #: src/nautilus-file-operations.c:7263
-#| msgid "Moved “%B” to “%B”"
 msgid "Extracted “%B” to “%B”"
 msgstr "Extraído «%B» a «%B»"
 
 # src/file-manager/dfos-xfer.c:700
 #: src/nautilus-file-operations.c:7267
-#| msgid "Moved %'d file to “%B”"
-#| msgid_plural "Moved %'d files to “%B”"
 msgid "Extracted %'d file to “%B”"
 msgid_plural "Extracted %'d files to “%B”"
 msgstr[0] "Extraído %'d archivo a «%B»"
@@ -2667,26 +2652,20 @@ msgstr[1] "Extraídos %'d archivos a «%B»"
 
 # src/file-manager/dfos-xfer.c:1009
 #: src/nautilus-file-operations.c:7301
-#| msgid "Preparing to trash %'d file"
-#| msgid_plural "Preparing to trash %'d files"
 msgid "Preparing to extract"
 msgstr "Preparándose para extraer"
 
 #: src/nautilus-file-operations.c:7417
-#| msgid "Trashing Files"
 msgid "Extracting Files"
 msgstr "Extrayendo archivos"
 
 # src/file-manager/fm-error-reporting.c:214
 #: src/nautilus-file-operations.c:7469
-#| msgid "Copying “%B” to “%B”"
 msgid "Compressing “%B” into “%B”"
 msgstr "Comprimiendo «%B» en «%B»"
 
 # src/file-manager/dfos-xfer.c:723
 #: src/nautilus-file-operations.c:7473
-#| msgid "Copying %'d file to “%B”"
-#| msgid_plural "Copying %'d files to “%B”"
 msgid "Compressing %'d file into “%B”"
 msgid_plural "Compressing %'d files into “%B”"
 msgstr[0] "Comprimiendo %'d archivo en «%B»"
@@ -2694,41 +2673,33 @@ msgstr[1] "Comprimiendo %'d archivos en «%B»"
 
 # src/file-manager/fm-error-reporting.c:214
 #: src/nautilus-file-operations.c:7574
-#| msgid "Copying “%B” to “%B”"
 msgid "Error compressing “%B” into “%B”"
 msgstr "Error al comprimir «%B» en «%B»"
 
 # src/file-manager/dfos-xfer.c:723
 #: src/nautilus-file-operations.c:7578
-#| msgid "Copying %'d file to “%B”"
-#| msgid_plural "Copying %'d files to “%B”"
 msgid "Error compressing %'d file into “%B”"
 msgid_plural "Error compressing %'d files into “%B”"
 msgstr[0] "Error al comprimir %'d archivo en «%B»"
 msgstr[1] "Error al comprimir %'d archivos en «%B»"
 
 #: src/nautilus-file-operations.c:7589
-#| msgid "There was an error copying the file into %F."
 msgid "There was an error while compressing files."
 msgstr "Hubo un error al comprimir los archivos."
 
 # src/file-manager/fm-error-reporting.c:214
 #: src/nautilus-file-operations.c:7608
-#| msgid "Copied “%B” to “%B”"
 msgid "Compressed “%B” into “%B”"
 msgstr "Comprimido «%B» en «%B»"
 
 # src/file-manager/dfos-xfer.c:723
 #: src/nautilus-file-operations.c:7612
-#| msgid "Copied %'d file to “%B”"
-#| msgid_plural "Copied %'d files to “%B”"
 msgid "Compressed %'d file into “%B”"
 msgid_plural "Compressed %'d files into “%B”"
 msgstr[0] "Comprimido %'d archivo en «%B»"
 msgstr[1] "Comprimidos %'d archivos en «%B»"
 
 #: src/nautilus-file-operations.c:7702
-#| msgid "Copying Files"
 msgid "Compressing Files"
 msgstr "Comprimiendo archivos"
 
@@ -2878,7 +2849,6 @@ msgstr "Seleccionar el destino para copiar"
 
 # src/nautilus-property-browser.c:263 src/nautilus-property-browser.c:1977
 #: src/nautilus-files-view.c:5767
-#| msgid "Select Move Destination"
 msgid "Select Extract Destination"
 msgstr "Seleccionar el destino para extraer"
 
@@ -2922,7 +2892,6 @@ msgid "Run"
 msgstr "Ejecutar"
 
 #: src/nautilus-files-view.c:7000
-#| msgid "E_xtra Pane"
 msgid "Extract Here"
 msgstr "Extraer aquí"
 
@@ -3149,7 +3118,7 @@ msgstr[1] "_Rehacer copiar %d elementos"
 #: src/nautilus-file-undo-operations.c:447
 #: src/nautilus-file-undo-operations.c:697
 #: src/nautilus-file-undo-operations.c:1743
-#: src/nautilus-file-undo-operations.c:1892
+#: src/nautilus-file-undo-operations.c:1896
 #, c-format
 msgid "Delete '%s'"
 msgstr "Eliminar «%s»"
@@ -3415,54 +3384,54 @@ msgid "_Redo Change Owner"
 msgstr "_Rehacer cambiar propietario"
 
 #: src/nautilus-file-undo-operations.c:1730
-#| msgid "_Undo Trash"
 msgid "_Undo Extract"
 msgstr "_Deshacer extraer"
 
 # src/file-manager/fm-directory-view.c:2145
 #: src/nautilus-file-undo-operations.c:1731
-#| msgid "_Redo Trash"
 msgid "_Redo Extract"
 msgstr "_Rehacer extraer"
 
 #: src/nautilus-file-undo-operations.c:1745
 #, c-format
-#| msgid "Delete %d copied item"
-#| msgid_plural "Delete %d copied items"
-msgid "Delete %d extracted files"
-msgstr "Eliminar %d elemento extraídos"
+#| msgid "Delete %d extracted files"
+msgid "Delete %d extracted file"
+msgid_plural "Delete %d extracted files"
+msgstr[0] "Eliminar %d elemento extraído"
+msgstr[1] "Eliminar %d elementos extraídos"
 
-#: src/nautilus-file-undo-operations.c:1756
+#: src/nautilus-file-undo-operations.c:1758
 #, c-format
 msgid "Extract '%s'"
 msgstr "Extraer «%s»"
 
-#: src/nautilus-file-undo-operations.c:1758
+#: src/nautilus-file-undo-operations.c:1760
 #, c-format
-#| msgid "Trashed %'d file"
-#| msgid_plural "Trashed %'d files"
-msgid "Extract %d files"
-msgstr "Extraídos %d archivos"
+#| msgid "Extract %d files"
+msgid "Extract %d file"
+msgid_plural "Extract %d files"
+msgstr[0] "Extraer %d archivo"
+msgstr[1] "Extraer %d archivos"
 
-#: src/nautilus-file-undo-operations.c:1902
+#: src/nautilus-file-undo-operations.c:1906
 #, c-format
-#| msgid "Copy '%s' to '%s'"
 msgid "Compress '%s'"
 msgstr "Comprimir «%s»"
 
-#: src/nautilus-file-undo-operations.c:1904
+#: src/nautilus-file-undo-operations.c:1908
 #, c-format
-msgid "Compress '%d' files"
-msgstr "Comprimir «%d» archivos"
+#| msgid "Compress '%d' files"
+msgid "Compress %d file"
+msgid_plural "Compress %d files"
+msgstr[0] "Comprimir %d archivo"
+msgstr[1] "Comprimir %d archivos"
 
-#: src/nautilus-file-undo-operations.c:1907
-#| msgid "_Undo Copy"
+#: src/nautilus-file-undo-operations.c:1914
 msgid "_Undo Compress"
 msgstr "_Deshacer comprimir"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-file-undo-operations.c:1908
-#| msgid "_Redo Copy"
+#: src/nautilus-file-undo-operations.c:1915
 msgid "_Redo Compress"
 msgstr "_Rehacer comprimir"
 
@@ -5169,7 +5138,6 @@ msgid "_Quit"
 msgstr "_Salir"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:23
-#| msgid "Archive"
 msgid "Archive name"
 msgstr "Nombre del archivador"
 
@@ -5603,7 +5571,6 @@ msgid "Show action to _permanently delete files and folders"
 msgstr "Mostrar una acción para eliminar archivos y carpetas _permanentemente"
 
 #: src/resources/ui/nautilus-preferences-window.ui:769
-#| msgid "Copying Files"
 msgid "Compressed Files"
 msgstr "Archivos comprimidos"
 
@@ -6002,7 +5969,6 @@ msgid "SSH File Transfer Protocol"
 msgstr "Protocolo de transferencia de archivos por SSH"
 
 #: src/gtk/nautilusgtkplacesview.ui:147
-#| msgid "WebDav"
 msgid "WebDAV"
 msgstr "WebDAV"
 
