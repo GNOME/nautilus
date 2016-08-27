@@ -181,13 +181,12 @@ struct _NautilusFileUndoInfoRenameClass {
 };
 
 GType nautilus_file_undo_info_rename_get_type (void) G_GNUC_CONST;
-NautilusFileUndoInfo *nautilus_file_undo_info_rename_new (void);
-void nautilus_file_undo_info_rename_set_data_pre (NautilusFileUndoInfoRename *self,
-						  GFile                      *old_file,
-						  gchar                      *old_display_name,
-						  gchar                      *new_display_name);
-void nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
-						   GFile                      *new_file);
+NautilusFileUndoInfo *nautilus_file_undo_info_rename_new ();
+void nautilus_file_undo_info_rename_add_file (NautilusFileUndoInfoRename *self,
+                                              GFile                      *new_file,
+                                              GFile                      *old_file,
+                                              const gchar                *new_name,
+                                              const gchar                *old_name);
 
 /* batch rename */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_BATCH_RENAME         (nautilus_file_undo_info_batch_rename_get_type ())

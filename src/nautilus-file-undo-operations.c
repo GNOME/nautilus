@@ -288,6 +288,18 @@ file_undo_info_complete_apply (NautilusFileUndoInfo *self,
 }
 
 static void
+file_undo_info_rename_callback (GList    *new_files,
+                                GList    *old_files,
+                                gboolean  user_cancel,
+                                gpointer  user_data)
+{
+	NautilusFileUndoInfo *self = user_data;
+
+  g_print ("undo done %d\n", user_cancel);
+	file_undo_info_complete_apply (self, !user_cancel, user_cancel);
+}
+
+static void
 file_undo_info_transfer_callback (GHashTable * debuting_uris,
 				  gboolean success,
                                   gpointer user_data)
@@ -876,10 +888,10 @@ nautilus_file_undo_info_create_set_data (NautilusFileUndoInfoCreate *self,
 G_DEFINE_TYPE (NautilusFileUndoInfoRename, nautilus_file_undo_info_rename, NAUTILUS_TYPE_FILE_UNDO_INFO)
 
 struct _NautilusFileUndoInfoRenameDetails {
-	GFile *old_file;
-	GFile *new_file;
-	gchar *old_display_name;
-	gchar *new_display_name;
+        GList *new_files;
+        GList *old_files;
+        GList *new_names;
+        GList *old_names;
 };
 
 static void
@@ -890,19 +902,27 @@ rename_strings_func (NautilusFileUndoInfo *info,
 		     gchar **redo_description)
 {
 	NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
-	gchar *new_name, *old_name;
 
-	new_name = g_file_get_parse_name (self->priv->new_file);
-	old_name = g_file_get_parse_name (self->priv->old_file);
+    if (g_list_length (self->priv->new_files) == 1) {
+            gchar *new_name;
+            gchar *old_name;
 
-	*undo_description = g_strdup_printf (_("Rename '%s' as '%s'"), new_name, old_name);
-	*redo_description = g_strdup_printf (_("Rename '%s' as '%s'"), old_name, new_name);
+	    new_name = self->priv->new_names->data;
+	    old_name = self->priv->old_names->data;
+
+	    *undo_description = g_strdup_printf (_("Rename “%s” as '%s'"),
+                                                 new_name, old_name);
+	    *redo_description = g_strdup_printf (_("Rename '%s' as '%s'"),
+                                                 old_name, new_name);
+    } else {
+	    *undo_description = g_strdup_printf (_("Undo rename of %d files"),
+                                                 g_list_length (self->priv->new_files));
+	    *redo_description = g_strdup_printf (_("Redo rename of %d files"),
+                                                 g_list_length (self->priv->new_files));
+    }
 
 	*undo_label = g_strdup (_("_Undo Rename"));
 	*redo_label = g_strdup (_("_Redo Rename"));
-
-	g_free (old_name);
-	g_free (new_name);
 }
 
 static void
@@ -910,13 +930,9 @@ rename_redo_func (NautilusFileUndoInfo *info,
 		  GtkWindow *parent_window)
 {
 	NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
-	NautilusFile *file;
 
-	file = nautilus_file_get (self->priv->old_file);
-	nautilus_file_rename (file, self->priv->new_display_name,
-			      file_undo_info_operation_callback, self);
-
-	nautilus_file_unref (file);
+	nautilus_file_operations_rename (self->priv->old_files, self->priv->new_names,
+                                         parent_window, file_undo_info_rename_callback, self);
 }
 
 static void
@@ -924,13 +940,9 @@ rename_undo_func (NautilusFileUndoInfo *info,
 		  GtkWindow *parent_window)
 {
 	NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (info);
-	NautilusFile *file;
 
-	file = nautilus_file_get (self->priv->new_file);
-	nautilus_file_rename (file, self->priv->old_display_name,
-			      file_undo_info_operation_callback, self);
-
-	nautilus_file_unref (file);
+	nautilus_file_operations_rename (self->priv->new_files, self->priv->old_names,
+                                         parent_window, file_undo_info_rename_callback, self);
 }
 
 static void
@@ -944,10 +956,14 @@ static void
 nautilus_file_undo_info_rename_finalize (GObject *obj)
 {
 	NautilusFileUndoInfoRename *self = NAUTILUS_FILE_UNDO_INFO_RENAME (obj);
-	g_clear_object (&self->priv->old_file);
-	g_clear_object (&self->priv->new_file);
-	g_free (self->priv->old_display_name);
-	g_free (self->priv->new_display_name);
+	g_list_free_full (self->priv->new_files, g_object_unref);
+	self->priv->new_files = NULL;
+	g_list_free_full (self->priv->old_files, g_object_unref);
+	self->priv->old_files = NULL;
+	g_list_free_full (self->priv->new_names, g_free);
+	self->priv->new_names = NULL;
+	g_list_free_full (self->priv->old_names, g_free);
+	self->priv->old_names = NULL;
 
 	G_OBJECT_CLASS (nautilus_file_undo_info_rename_parent_class)->finalize (obj);
 }
@@ -967,31 +983,25 @@ nautilus_file_undo_info_rename_class_init (NautilusFileUndoInfoRenameClass *klas
 	g_type_class_add_private (klass, sizeof (NautilusFileUndoInfoRenameDetails));
 }
 
+void
+nautilus_file_undo_info_rename_add_file (NautilusFileUndoInfoRename *self,
+                                         GFile                      *new_file,
+                                         GFile                      *old_file,
+                                         const gchar                *new_name,
+                                         const gchar                *old_name)
+{
+    self->priv->new_files = g_list_append (self->priv->new_files, g_object_ref (new_file));
+    self->priv->old_files = g_list_append (self->priv->old_files, g_object_ref (old_file));
+    self->priv->new_names = g_list_append (self->priv->new_names, g_strdup (new_name));
+    self->priv->old_names = g_list_append (self->priv->old_names, g_strdup (old_name));
+}
+
 NautilusFileUndoInfo *
-nautilus_file_undo_info_rename_new (void)
+nautilus_file_undo_info_rename_new ()
 {
 	return g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO_RENAME,
 			     "op-type", NAUTILUS_FILE_UNDO_OP_RENAME,
-			     "item-count", 1,
 			     NULL);
-}
-
-void
-nautilus_file_undo_info_rename_set_data_pre (NautilusFileUndoInfoRename *self,
-					     GFile                      *old_file,
-					     gchar                      *old_display_name,
-					     gchar                      *new_display_name)
-{
-	self->priv->old_file = g_object_ref (old_file);
-	self->priv->old_display_name = g_strdup (old_display_name);
-	self->priv->new_display_name = g_strdup (new_display_name);
-}
-
-void
-nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
-					      GFile                      *new_file)
-{
-	self->priv->new_file = g_object_ref (new_file);
 }
 
 /* batch rename */

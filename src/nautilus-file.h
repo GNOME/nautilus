@@ -331,6 +331,8 @@ void                    nautilus_file_batch_rename                      (GList  
 void                    nautilus_file_cancel                            (NautilusFile                   *file,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
+gboolean
+nautilus_file_update_name (NautilusFile *file, const char *name);
 
 /* Return true if this file has already been deleted.
  * This object will be unref'd after sending the files_removed signal,

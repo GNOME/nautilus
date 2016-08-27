@@ -42,6 +42,12 @@ typedef void (* NautilusOpCallback)        (gboolean    success,
 typedef void (* NautilusDeleteCallback)    (GHashTable *debuting_uris,
 					    gboolean    user_cancel,
 					    gpointer    callback_data);
+typedef void (* NautilusRenameCallback)    (GList      *new_files,
+					    GList      *new_names,
+					    GList      *old_files,
+					    GList      *old_names,
+                                            gboolean    success,
+                                            gpointer    callback_data);
 typedef void (* NautilusMountCallback)     (GVolume    *volume,
 					    gboolean    success,
 					    GObject    *callback_data_object);
@@ -164,5 +170,18 @@ void nautilus_file_operations_compress (GList                  *files,
                                         NautilusCreateCallback  done_callback,
                                         gpointer                done_callback_data);
 
+
+void
+nautilus_file_operations_rename (GList                  *files,
+                                 GList                  *new_names,
+                                 GtkWindow              *parent_window,
+                                 NautilusRenameCallback  done_callback,
+                                 gpointer                done_callback_data);
+void
+nautilus_file_operations_rename_file (GFile                  *file,
+                                      const gchar            *new_name,
+                                      GtkWindow              *parent_window,
+                                      NautilusRenameCallback  done_callback,
+                                      gpointer                done_callback_data);
 
 #endif /* NAUTILUS_FILE_OPERATIONS_H */

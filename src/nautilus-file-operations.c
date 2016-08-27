@@ -107,6 +107,19 @@ typedef struct {
 
 typedef struct {
 	CommonJob common;
+	GList *old_files;
+	GList *renamed_old_files;
+	GList *new_files;
+	GList *old_names;
+	GList *new_names;
+	GList *renamed_new_names;
+	gboolean user_cancel;
+	NautilusRenameCallback done_callback;
+	gpointer done_callback_data;
+} RenameJob;
+
+typedef struct {
+	CommonJob common;
 	GFile *dest_dir;
 	char *filename;
 	gboolean make_dir;
@@ -119,7 +132,6 @@ typedef struct {
 	NautilusCreateCallback done_callback;
 	gpointer done_callback_data;
 } CreateJob;
-
 
 typedef struct {
 	CommonJob common;
@@ -153,7 +165,8 @@ typedef enum {
 	OP_KIND_MOVE,
 	OP_KIND_DELETE,
 	OP_KIND_TRASH,
-        OP_KIND_COMPRESS
+        OP_KIND_COMPRESS,
+	OP_KIND_RENAME
 } OpKind;
 
 typedef struct {
@@ -243,7 +256,8 @@ is_all_button_text (const char *button_text)
 static void scan_sources (GList *files,
 			  SourceInfo *source_info,
 			  CommonJob *job,
-			  OpKind kind);
+			  OpKind kind,
+                          gboolean recursive);
 
 
 static void empty_trash_thread_func (GTask *task,
@@ -1793,7 +1807,7 @@ delete_files (CommonJob *job, GList *files, int *files_skipped)
 	SourceInfo source_info;
 	TransferInfo transfer_info;
         DeleteData data;
-	
+
 	if (job_aborted (job)) {
 		return;
 	}
@@ -1801,7 +1815,8 @@ delete_files (CommonJob *job, GList *files, int *files_skipped)
 	scan_sources (files,
 		      &source_info,
 		      job,
-		      OP_KIND_DELETE);
+		      OP_KIND_DELETE,
+                      TRUE);
 	if (job_aborted (job)) {
 		return;
 	}
@@ -2088,7 +2103,8 @@ trash_files (CommonJob *job,
 	scan_sources (files,
 		      &source_info,
 		      job,
-		      OP_KIND_TRASH);
+		      OP_KIND_TRASH,
+                      TRUE);
 	if (job_aborted (job)) {
 		return;
 	}
@@ -2281,6 +2297,281 @@ nautilus_file_operations_delete (GList                  *files,
 				  done_callback,  done_callback_data);
 }
 
+static void
+rename_task_done (GObject      *source_object,
+                  GAsyncResult *res,
+                  gpointer      user_data)
+{
+        RenameJob *job;
+
+        job = user_data;
+
+        if (job->done_callback) {
+                job->done_callback (job->new_files,
+                                    job->renamed_new_names,
+                                    job->renamed_old_files,
+                                    job->old_names,
+                                    job_aborted ((CommonJob *) job) || job->user_cancel,
+                                    job->done_callback_data);
+        }
+
+        g_list_free_full (job->old_files, g_object_unref);
+        g_list_free_full (job->renamed_old_files, g_object_unref);
+        g_list_free_full (job->new_files, g_object_unref);
+        g_list_free_full (job->new_names, g_free);
+        g_list_free_full (job->old_names, g_free);
+
+        finalize_common ((CommonJob *)job);
+
+        nautilus_file_changes_consume_changes (TRUE);
+}
+
+
+static void
+report_rename_progress (CommonJob    *job,
+                        SourceInfo   *source_info,
+                        TransferInfo *transfer_info)
+{
+	int files_left;
+	char *details;
+        char *status;
+        RenameJob *rename_job;
+        GFile *current_file;
+        gchar *new_file_name;
+
+        rename_job = (RenameJob *) job;
+	files_left = source_info->num_files - transfer_info->num_files;
+
+	/* Races and whatnot could cause this to be negative... */
+	if (files_left < 0) {
+		files_left = 0;
+	}
+
+        if (source_info->num_files == 1) {
+                if (files_left > 0) {
+                        status = _("Renaming “%B” to “%B”");
+                } else {
+                        status = _("Renamed “%B” to “%B”");
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       (GFile*) rename_job->old_files->data,
+                                                       (GFile*) rename_job->new_files->data));
+
+        } else {
+                if (files_left > 0) {
+                        status = ngettext ("Renaming %'d file",
+                                           "Renaming %'d files",
+                                            source_info->num_files);
+                } else {
+                        status = ngettext ("Renamed %'d file",
+                                           "Renamed %'d files",
+                                           source_info->num_files);
+                }
+	        nautilus_progress_info_take_status (job->progress,
+					            f (status,
+                                                       source_info->num_files));
+        }
+
+                g_print ("reporting %d\n", transfer_info->num_files);
+        if (files_left > 0) {
+                current_file = g_list_nth_data (rename_job->old_files,
+                                                transfer_info->num_files);
+                new_file_name = g_list_nth_data (rename_job->new_names, transfer_info->num_files);
+                details = f (_("“%B” to “%s”"),
+                             current_file,
+                             new_file_name);
+        } else {
+                details = "";
+        }
+        	nautilus_progress_info_set_details (job->progress, details);
+
+	if (source_info->num_files != 0) {
+		nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
+	}
+}
+
+
+static void
+rename_task_thread_func (GTask        *task,
+                         gpointer      source_object,
+                         gpointer      task_data,
+                         GCancellable *cancellable)
+{
+		RenameJob *job = task_data;
+        SourceInfo source_info;
+        TransferInfo transfer_info;
+	GList *l;
+	GList *l2;
+	g_autoptr (GList) skipped_files = NULL;
+	CommonJob *common;
+
+	common = (CommonJob *)job;
+
+	memset (&transfer_info, 0, sizeof (transfer_info));
+	nautilus_progress_info_start (job->common.progress);
+
+	scan_sources (job->old_files,
+		      &source_info,
+		      common,
+		      OP_KIND_RENAME,
+                      FALSE);
+
+	if (job_aborted (common)) {
+		return;
+	}
+
+	for (l = job->old_files, l2 = job->new_names;
+             l != NULL && l2 != NULL && !job_aborted ((CommonJob *)job);
+             l = l->next, l2 = l2->next) {
+                GFile *old_file;
+                gchar *new_name;
+
+		old_file = l->data;
+		new_name = l2->data;
+                if (!should_skip_file (common, old_file)) {
+                        g_autoptr (GError) error = NULL;
+                        g_autoptr (GFile) new_file = NULL;
+                        g_autoptr (GFileInfo) info = NULL;
+                        const gchar *old_name = NULL;
+                        gchar *primary = NULL;
+                        gchar *secondary = NULL;
+                        gchar *details = NULL;
+                        gint response;
+
+                        info = g_file_query_info (old_file,
+                                                  G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME ,
+                                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                                  job->common.cancellable,
+                                                  NULL);
+
+                        g_print ("file %s, name %s\n", g_file_get_uri (old_file), new_name);
+                        /* rename returns an error if new and old are same. */
+                        old_name = g_file_info_get_display_name (info);
+                        if (g_strcmp0 (old_name, new_name) == 0) {
+                                skip_file (common, old_file);
+
+                                transfer_add_file_to_count (old_file, common, &transfer_info);
+                                report_rename_progress (common, &source_info, &transfer_info);
+                                continue;
+                        }
+
+                        new_file = g_file_set_display_name (old_file,
+                                                            new_name,
+                                                            job->common.cancellable,
+                                                            &error);
+
+                        if (!error) {
+                                nautilus_file_changes_queue_file_changed (old_file);
+
+                                if (common->undo_info) {
+                                        nautilus_file_undo_info_rename_add_file (NAUTILUS_FILE_UNDO_INFO_RENAME (job->common.undo_info),
+                                                                                 new_file, old_file,
+                                                                                 new_name, old_name);
+                                }
+
+                                job->new_files = g_list_append (job->new_files, g_object_ref (new_file));
+                                job->renamed_old_files = g_list_append (job->renamed_old_files,
+                                                                        g_object_ref (old_file));
+                                job->old_names = g_list_append (job->old_names, g_strdup (old_name));
+                                job->renamed_new_names = g_list_append (job->renamed_new_names, g_strdup (new_name));
+                                transfer_add_file_to_count (old_file, common, &transfer_info);
+                                report_rename_progress (common, &source_info, &transfer_info);
+                                continue;
+                        }
+
+                        if (common->skip_all_error) {
+                                skip_file (common, old_file);
+
+                                transfer_add_file_to_count (old_file, common, &transfer_info);
+                                report_rename_progress (common, &source_info, &transfer_info);
+                                continue;
+                        }
+
+	                /* Translators: %B is a file name */
+	                primary = f (_("“%B” can't be renamed"), old_file);
+	                secondary = NULL;
+	                details = error->message;
+
+	                response = run_question (common,
+				                 primary,
+				                 secondary,
+				                 details,
+				                 (source_info.num_files - transfer_info.num_files) > 1,
+				                 CANCEL, SKIP_ALL, SKIP,
+				                 NULL);
+
+	                if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT) {
+                                job->user_cancel = TRUE;
+		                abort_job (common);
+	                } else if (response == 1) { /* skip all */
+                                skip_file (common, old_file);
+		                common->skip_all_error = TRUE;
+	                } else if (response == 2) { /* skip */
+                                skip_file (common, old_file);
+		                common->skip_all_error = TRUE;
+                        }
+                }
+
+                transfer_add_file_to_count (old_file, common, &transfer_info);
+                report_rename_progress (common, &source_info, &transfer_info);
+	}
+
+        if (common->skip_files) {
+                skipped_files = g_hash_table_get_keys (common->skip_files);
+                if (g_list_length (skipped_files) == g_list_length (job->old_files)) {
+                        job->user_cancel = TRUE;
+                }
+        }
+}
+
+void
+nautilus_file_operations_rename (GList                  *files,
+                                 GList                  *new_names,
+                                 GtkWindow              *parent_window,
+                                 NautilusRenameCallback  done_callback,
+                                 gpointer                done_callback_data)
+{
+	GTask *task;
+	RenameJob *job;
+
+	job = op_job_new (RenameJob, parent_window);
+	job->old_files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+	job->new_names = g_list_copy_deep (new_names, (GCopyFunc) g_strdup, NULL);
+    job->renamed_new_names = NULL;
+    job->renamed_old_files = NULL;
+	job->done_callback = done_callback;
+	job->user_cancel = FALSE;
+	job->done_callback_data = done_callback_data;
+
+	inhibit_power_manager ((CommonJob *)job, _("Renaming Files"));
+
+	if (!nautilus_file_undo_manager_is_operating ()) {
+                job->common.undo_info = nautilus_file_undo_info_rename_new (g_list_length (job->new_files));
+	}
+
+	task = g_task_new (NULL, NULL, rename_task_done, job);
+	g_task_set_task_data (task, job, NULL);
+	g_task_run_in_thread (task, rename_task_thread_func);
+	g_object_unref (task);
+}
+
+void
+nautilus_file_operations_rename_file (GFile                  *file,
+                                      const gchar            *new_name,
+                                      GtkWindow              *parent_window,
+                                      NautilusRenameCallback  done_callback,
+                                      gpointer                done_callback_data)
+{
+	g_autoptr (GList) files;
+	g_autoptr (GList) new_names;
+
+	files = g_list_append (NULL, g_object_ref (file));
+	new_names = g_list_append (NULL, g_strdup (new_name));
+
+        nautilus_file_operations_rename (files, new_names, parent_window,
+                                         done_callback, done_callback_data);
+}
 
 
 typedef struct {
@@ -2493,7 +2784,7 @@ prompt_empty_trash (GtkWindow *parent_window)
 						    "the trash must be emptied. "
 						    "All trashed items on the volume "
 						    "will be permanently lost."));
-	gtk_dialog_add_buttons (GTK_DIALOG (dialog), 
+	gtk_dialog_add_buttons (GTK_DIALOG (dialog),
 	                        _("Do _not Empty Trash"), GTK_RESPONSE_REJECT, 
 				CANCEL, GTK_RESPONSE_CANCEL, 
 	                        _("Empty _Trash"), GTK_RESPONSE_ACCEPT, NULL);
@@ -2560,7 +2851,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow                      *par
 		if (response == GTK_RESPONSE_ACCEPT) {
 			GTask *task;
 			EmptyTrashJob *job;
-			
+
 			job = op_job_new (EmptyTrashJob, parent_window);
 			job->should_confirm = FALSE;
 			job->trash_dirs = get_trash_dirs_for_mount (mount);
@@ -2581,7 +2872,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow                      *par
 			return;
 		}
 	}
-	
+
 	do_unmount (data);
 }
 
@@ -2767,6 +3058,8 @@ get_scan_primary (OpKind kind)
 		return f (_("Error while moving files to trash."));
         case OP_KIND_COMPRESS:
                 return f (_("Error while compressing files."));
+        case OP_KIND_RENAME:
+                return f (_("Error while renaming files."));
         }
 }
 
@@ -2894,9 +3187,10 @@ scan_dir (GFile *dir,
 }	
 
 static void
-scan_file (GFile *file,
-	   SourceInfo *source_info,
-	   CommonJob *job)
+scan_file (GFile      *file,
+           SourceInfo *source_info,
+           CommonJob  *job,
+           gboolean    recursive)
 {
 	GFileInfo *info;
 	GError *error;
@@ -2969,22 +3263,25 @@ scan_file (GFile *file,
 		}
 	}
 		
-	while (!job_aborted (job) && 
-	       (dir = g_queue_pop_head (dirs)) != NULL) {
-		scan_dir (dir, source_info, job, dirs);
-		g_object_unref (dir);
-	}
-
+        if (recursive)
+          {
+	        while (!job_aborted (job) &&
+	               (dir = g_queue_pop_head (dirs)) != NULL) {
+		        scan_dir (dir, source_info, job, dirs);
+		        g_object_unref (dir);
+	  }
+    }
 	/* Free all from queue if we exited early */
 	g_queue_foreach (dirs, (GFunc)g_object_unref, NULL);
 	g_queue_free (dirs);
 }
 
 static void
-scan_sources (GList *files,
-	      SourceInfo *source_info,
-	      CommonJob *job,
-	      OpKind kind)
+scan_sources (GList      *files,
+              SourceInfo *source_info,
+              CommonJob  *job,
+              OpKind      kind,
+              gboolean    recursive)
 {
 	GList *l;
 	GFile *file;
@@ -2999,7 +3296,8 @@ scan_sources (GList *files,
 
 		scan_file (file,
 			   source_info,
-			   job);
+			   job,
+                           recursive);
 	}
 
 	/* Make sure we report the final count */
@@ -4850,7 +5148,7 @@ copy_files (CopyMoveJob *job,
 			point = NULL;
 		}
 
-		
+
 		same_fs = FALSE;
 		if (dest_fs_id) {
 			same_fs = has_fs_id (src, dest_fs_id);
@@ -4939,7 +5237,8 @@ copy_task_thread_func (GTask *task,
 	scan_sources (job->files,
 		      &source_info,
 		      common,
-		      OP_KIND_COPY);
+		      OP_KIND_COPY,
+                      TRUE);
 	if (job_aborted (common)) {
 		goto aborted;
 	}
@@ -5186,12 +5485,12 @@ move_file_prepare (CopyMoveJob *move_job,
 	}
 
  retry:
-	
+
 	flags = G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_NO_FALLBACK_FOR_MOVE;
 	if (overwrite) {
 		flags |= G_FILE_COPY_OVERWRITE;
 	}
-	
+
 	error = NULL;
 	if (g_file_move (src, dest,
 			 flags,
@@ -5525,7 +5824,8 @@ move_task_thread_func (GTask *task,
 	scan_sources (fallback_files,
 		      &source_info,
 		      common,
-		      OP_KIND_MOVE);
+		      OP_KIND_MOVE,
+                      TRUE);
 	
 	g_list_free (fallback_files);
 	
@@ -7314,7 +7614,7 @@ extract_task_thread_func (GTask        *task,
                 source_file = G_FILE (l->data);
                 info = g_file_query_info (source_file,
                                           G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                          G_FILE_COPY_NOFOLLOW_SYMLINKS,
+                                          G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                           extract_job->common.cancellable,
                                           NULL);
 
@@ -7643,7 +7943,8 @@ compress_task_thread_func (GTask        *task,
         scan_sources (compress_job->source_files,
                       &source_info,
                       (CommonJob *)compress_job,
-                      OP_KIND_COMPRESS);
+                      OP_KIND_COMPRESS,
+                      TRUE);
 
         compress_job->total_files = source_info.num_files;
         compress_job->total_size = source_info.num_bytes;

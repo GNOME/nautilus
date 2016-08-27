@@ -1755,16 +1755,51 @@ nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 }
 
 static void
+on_rename (GList    *new_locations,
+           GList    *new_names,
+           GList    *old_locations,
+           GList    *old_names,
+           gboolean  success,
+           gpointer  user_data)
+{
+  GList *l;
+  GList *l2;
+  NautilusFile *old_file;
+  GFile *old_location;
+  gchar *new_name;
+
+  g_print ("renamed, new files\n");
+
+  for (l = new_locations; l != NULL; l = l->next)
+    {
+      g_print ("%s\n", g_file_get_uri (l->data));
+    }
+
+  g_print ("renamed, old files\n");
+  for (l = old_locations, l2 = new_names; l != NULL && l2 != NULL; l = l->next, l2 = l2->next)
+    {
+      old_location = l->data;
+      new_name = l2->data;
+      g_print ("%s\n", g_file_get_uri (l->data));
+      old_file = nautilus_file_get (old_location);
+      nautilus_file_update_name (old_file, new_name);
+    }
+}
+
+static void
 rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
                                                  gpointer                          user_data)
 {
         NautilusFilesView *view;
         NautilusFile *target_file;
+        GFile *location;
         g_autofree gchar *name;
+        GtkWindow *parent_window;
 
         view = NAUTILUS_FILES_VIEW (user_data);
 
         name = nautilus_file_name_widget_controller_get_new_name (controller);
+        parent_window = GTK_WINDOW (nautilus_files_view_get_window (view));
 
         target_file =
                 nautilus_rename_file_popover_controller_get_target_file (view->details->rename_file_controller);
@@ -1774,7 +1809,8 @@ rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetControlle
                              target_file,
                              GUINT_TO_POINTER (FALSE));
 
-        nautilus_rename_file (target_file, name, NULL, NULL);
+        location = nautilus_file_get_location (target_file);
+        nautilus_file_operations_rename_file (location, name, parent_window, on_rename, view);
 
         g_clear_object (&view->details->rename_file_controller);
 }

@@ -1879,10 +1879,12 @@ rename_callback (GObject *source_object,
 						   res, &error);
 
 	if (new_file != NULL) {
+#if 0
 		if (op->undo_info != NULL) {
 			nautilus_file_undo_info_rename_set_data_post (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
 								      new_file);
 		}
+#endif
 		g_file_query_info_async (new_file,
 					 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
 					 0,
@@ -2194,8 +2196,10 @@ real_rename (NautilusFile                  *file,
 		op->undo_info = nautilus_file_undo_info_rename_new ();
 
 		old_name = nautilus_file_get_display_name (file);
+#if 0
 		nautilus_file_undo_info_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
 							     location, old_name, new_file_name);
+#endif
 		g_free (old_name);
 	}
 
