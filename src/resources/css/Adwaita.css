@@ -169,3 +169,19 @@
  * always allocates at least 1 pixel */
 searchbar { border-top: 1px solid @borders; }
 .searchbar-container { margin-top: -1px; }
+
+@define-color conflict_bg #fef6b6;
+
+.conflict-row {
+    background: @conflict_bg;
+    color: black;
+}
+
+.conflict-row:hover {
+    background-color: shade(@conflict_bg, 0.9);
+}
+
+.conflict-row:selected {
+  background: @theme_selected_bg_color;
+  color: @theme_selected_fg_color;
+}

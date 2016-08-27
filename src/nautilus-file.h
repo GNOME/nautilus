@@ -324,6 +324,10 @@ void                    nautilus_file_rename                            (Nautilu
 									 const char                     *new_name,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
+void                    nautilus_file_batch_rename                      (GList                          *files,
+                                                                         GList                          *new_names,
+                                                                         NautilusFileOperationCallback   callback,
+                                                                         gpointer                        callback_data);
 void                    nautilus_file_cancel                            (NautilusFile                   *file,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);

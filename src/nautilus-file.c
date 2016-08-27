@@ -1648,15 +1648,36 @@ nautilus_file_operation_new (NautilusFile *file,
 static void
 nautilus_file_operation_remove (NautilusFileOperation *op)
 {
+        GList *l;
+        NautilusFile *file;
+
 	op->file->details->operations_in_progress = g_list_remove
 		(op->file->details->operations_in_progress, op);
+
+
+        for (l = op->files; l != NULL; l = l->next) {
+                file = NAUTILUS_FILE (l->data);
+                file->details->operations_in_progress = g_list_remove
+                        (file->details->operations_in_progress, op);
+        }
 }
 
 void
 nautilus_file_operation_free (NautilusFileOperation *op)
 {
+        NautilusFile *file;
+        GList *l;
+
 	nautilus_file_operation_remove (op);
-	nautilus_file_unref (op->file);
+
+        if (op->files == NULL)
+                nautilus_file_unref (op->file);
+        else
+                for (l = op->files; l != NULL; l = l->next) {
+                        file = NAUTILUS_FILE (l->data);
+                        nautilus_file_unref (file);
+                }
+
 	g_object_unref (op->cancellable);
 	if (op->free_data) {
 		op->free_data (op->data);
@@ -1680,10 +1701,12 @@ nautilus_file_operation_complete (NautilusFileOperation *op,
 	 * as "changing back".
 	 */
 	nautilus_file_operation_remove (op);
-	nautilus_file_changed (op->file);
-	if (op->callback) {
+
+        if (op->files == NULL)
+                nautilus_file_changed (op->file);
+
+	if (op->callback)
 		(* op->callback) (op->file, result_file, error, op->callback_data);
-	}
 
 	if (error != NULL) {
 		g_clear_object (&op->undo_info);
@@ -1759,6 +1782,86 @@ rename_get_info_callback (GObject *source_object,
 	}
 }
 
+typedef struct {
+        NautilusFileOperation *op;
+        NautilusFile *file;
+} BatchRenameData;
+
+static void
+batch_rename_get_info_callback (GObject      *source_object,
+                                GAsyncResult *res,
+                                gpointer      callback_data)
+{
+        NautilusFileOperation *op;
+        NautilusDirectory *directory;
+        NautilusFile *existing_file;
+        char *old_uri;
+        char *new_uri;
+        const char *new_name;
+        GFileInfo *new_info;
+        GError *error;
+        BatchRenameData *data;
+
+        data = callback_data;
+
+        op = data->op;
+        op->file = data->file;
+
+        error = NULL;
+        new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+        if (new_info != NULL) {
+                old_uri = nautilus_file_get_uri (op->file);
+
+                new_name = g_file_info_get_name (new_info);
+
+                directory = op->file->details->directory;
+
+                /* If there was another file by the same name in this
+                 * directory and it is not the same file that we are
+                 * renaming, mark it gone.
+                 */
+                existing_file = nautilus_directory_find_file_by_name (directory, new_name);
+                if (existing_file != NULL && existing_file != op->file) {
+                        nautilus_file_mark_gone (existing_file);
+                        nautilus_file_changed (existing_file);
+                }
+
+                update_info_and_name (op->file, new_info);
+
+                new_uri = nautilus_file_get_uri (op->file);
+                nautilus_directory_moved (old_uri, new_uri);
+                g_free (new_uri);
+                g_free (old_uri);
+
+                /* the rename could have affected the display name if e.g.
+                 * we're in a vfolder where the name comes from a desktop file
+                 * and a rename affects the contents of the desktop file.
+                 */
+                if (op->file->details->got_custom_display_name) {
+                        nautilus_file_invalidate_attributes (op->file,
+                                                             NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                                             NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+                }
+
+                g_object_unref (new_info);
+        }
+
+        op->renamed_files++;
+
+        if (op->renamed_files + op->skipped_files == g_list_length (op->files)) {
+                nautilus_file_operation_complete (op, NULL, error);
+        }
+
+        if (op->files == NULL)
+                nautilus_file_operation_complete (op, NULL, error);
+
+        g_free (data);
+
+        if (error) {
+                g_error_free (error);
+        }
+}
+
 static void
 rename_callback (GObject *source_object,
 		 GAsyncResult *res,
@@ -1779,7 +1882,6 @@ rename_callback (GObject *source_object,
 			nautilus_file_undo_info_rename_set_data_post (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
 								      new_file);
 		}
-
 		g_file_query_info_async (new_file,
 					 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
 					 0,
@@ -1812,6 +1914,217 @@ nautilus_file_rename (NautilusFile                  *file,
                                                                  callback_data);
 }
 
+static gchar*
+nautilus_file_can_rename_file (NautilusFile                  *file,
+                               const char                    *new_name,
+                               NautilusFileOperationCallback  callback,
+                               gpointer                       callback_data)
+{
+        GError *error;
+        gboolean is_renameable_desktop_file;
+        gboolean success;
+        gboolean name_changed;
+        gchar *new_file_name;
+        gchar *uri;
+        gchar *old_name;
+
+        is_renameable_desktop_file =
+                is_desktop_file (file) && can_rename_desktop_file (file);
+
+        /* Return an error for incoming names containing path separators.
+         * But not for .desktop files as '/' are allowed for them */
+        if (strstr (new_name, "/") != NULL && !is_renameable_desktop_file) {
+                error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
+                                     _("Slashes are not allowed in filenames"));
+                if (callback != NULL)
+                        (* callback) (file, NULL, error, callback_data);
+                g_error_free (error);
+                return NULL;
+        }
+
+        /* Can't rename a file that's already gone.
+         * We need to check this here because there may be a new
+         * file with the same name.
+         */
+        if (nautilus_file_rename_handle_file_gone (file, callback, callback_data)) {
+                return NULL;
+        }
+
+        /* Test the name-hasn't-changed case explicitly, for two reasons.
+         * (1) rename returns an error if new & old are same.
+         * (2) We don't want to send file-changed signal if nothing changed.
+         */
+        if (!is_renameable_desktop_file &&
+            name_is (file, new_name)) {
+                if (callback != NULL)
+                        (* callback) (file, NULL, NULL, callback_data);
+                return NULL;
+        }
+
+        /* Self-owned files can't be renamed. Test the name-not-actually-changing
+         * case before this case.
+         */
+        if (nautilus_file_is_self_owned (file)) {
+                /* Claim that something changed even if the rename
+                 * failed. This makes it easier for some clients who
+                 * see the "reverting" to the old name as "changing
+                 * back".
+                 */
+                nautilus_file_changed (file);
+                error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
+                                     _("Toplevel files cannot be renamed"));
+
+                if (callback != NULL)
+                        (* callback) (file, NULL, error, callback_data);
+                g_error_free (error);
+
+                return NULL;
+        }
+
+        if (is_renameable_desktop_file) {
+                /* Don't actually change the name if the new name is the same.
+                 * This helps for the vfolder method where this can happen and
+                 * we want to minimize actual changes
+                 */
+                uri = nautilus_file_get_uri (file);
+                old_name = nautilus_link_local_get_text (uri);
+                if (old_name != NULL && strcmp (new_name, old_name) == 0) {
+                        success = TRUE;
+                        name_changed = FALSE;
+                } else {
+                        success = nautilus_link_local_set_text (uri, new_name);
+                        name_changed = TRUE;
+                }
+                g_free (old_name);
+                g_free (uri);
+
+                if (!success) {
+                        error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
+                                             _("Probably the content of the file is an invalid desktop file format"));
+                        if (callback != NULL)
+                                (* callback) (file, NULL, error, callback_data);
+                        g_error_free (error);
+                        return NULL;
+                }
+                new_file_name = g_strdup_printf ("%s.desktop", new_name);
+                new_file_name = g_strdelimit (new_file_name, "/", '-');
+
+                if (name_is (file, new_file_name)) {
+                        if (name_changed) {
+                                nautilus_file_invalidate_attributes (file,
+                                                                     NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                                                     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+                        }
+
+                        if (callback != NULL)
+                                (* callback) (file, NULL, NULL, callback_data);
+                        g_free (new_file_name);
+                        return NULL;
+                }
+        } else {
+                new_file_name = g_strdup (new_name);
+        }
+
+        return new_file_name;
+}
+
+static void
+real_batch_rename (GList                         *files,
+                   GList                         *new_names,
+                   NautilusFileOperationCallback  callback,
+                   gpointer                       callback_data)
+{
+        GList *l1, *l2, *old_files, *new_files;
+        NautilusFileOperation *op;
+        GFile *location;
+        gchar *new_file_name;
+        GString *new_name;
+        NautilusFile *file;
+        GError *error;
+        GFile *new_file;
+        BatchRenameData *data;
+
+        error = NULL;
+        old_files = NULL;
+        new_files = NULL;
+
+        /* Set up a batch renaming operation. */
+        op = nautilus_file_operation_new (files->data, callback, callback_data);
+        op->files = files;
+        op->renamed_files = 0;
+        op->skipped_files = 0;
+
+        for (l1 = files->next; l1 != NULL; l1 = l1->next) {
+                file = NAUTILUS_FILE (l1->data);
+
+                file->details->operations_in_progress = g_list_prepend (file->details->operations_in_progress,
+                                                                        op);
+        }
+
+        for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next) {
+                file = NAUTILUS_FILE (l1->data);
+                new_name = l2->data;
+
+                location = nautilus_file_get_location (file);
+                old_files = g_list_append (old_files, location);
+
+                new_file_name = nautilus_file_can_rename_file (file,
+                                                               new_name->str,
+                                                               callback,
+                                                               callback_data);
+
+                if (new_file_name == NULL) {
+                     op->skipped_files++;
+
+                     new_file = nautilus_file_get_location (file);
+                     new_files = g_list_append (new_files, new_file);
+
+                     continue;
+                }
+
+                g_assert (G_IS_FILE (location));
+
+                /* Do the renaming. */
+                new_file = g_file_set_display_name (location,
+                                                    new_file_name,
+                                                    op->cancellable,
+                                                    &error);
+
+                data = g_new0 (BatchRenameData, 1);
+                data->op = op;
+                data->file = file;
+
+                new_files = g_list_append (new_files, new_file);
+
+                g_file_query_info_async (new_file,
+                                         NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                         0,
+                                         G_PRIORITY_DEFAULT,
+                                         op->cancellable,
+                                         batch_rename_get_info_callback,
+                                         data);
+
+                if (error != NULL) {
+                        g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (file));
+                        g_error_free (error);
+                        error = NULL;
+                }
+        }
+
+        /* Tell the undo manager a batch rename is taking place */
+        if (!nautilus_file_undo_manager_is_operating ()) {
+                op->undo_info = nautilus_file_undo_info_batch_rename_new (g_list_length (new_files));
+
+                nautilus_file_undo_info_batch_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (op->undo_info),
+                                                                   old_files);
+
+                nautilus_file_undo_info_batch_rename_set_data_post (NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (op->undo_info),
+                                                                    new_files);
+
+                nautilus_file_undo_manager_set_action (op->undo_info);
+        }
+}
+
 gboolean
 nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
                                        NautilusFileOperationCallback  callback,
@@ -1820,7 +2133,7 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
 	GError *error;
 
 	if (nautilus_file_is_gone (file)) {
-	       	/* Claim that something changed even if the rename
+		/* Claim that something changed even if the rename
 		 * failed. This makes it easier for some clients who
 		 * see the "reverting" to the old name as "changing
 		 * back".
@@ -1836,6 +2149,18 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
   return FALSE;
 }
 
+void
+nautilus_file_batch_rename (GList                         *files,
+                            GList                         *new_names,
+                            NautilusFileOperationCallback  callback,
+                            gpointer                       callback_data)
+{
+        real_batch_rename (files,
+                           new_names,
+                           callback,
+                           callback_data);
+}
+
 static void
 real_rename (NautilusFile                  *file,
              const char                    *new_name,
@@ -1843,107 +2168,21 @@ real_rename (NautilusFile                  *file,
              gpointer                       callback_data)
 {
 	NautilusFileOperation *op;
-	char *uri;
 	char *old_name;
 	char *new_file_name;
-	gboolean success, name_changed;
-	gboolean is_renameable_desktop_file;
 	GFile *location;
-	GError *error;
 
 	g_return_if_fail (NAUTILUS_IS_FILE (file));
 	g_return_if_fail (new_name != NULL);
 	g_return_if_fail (callback != NULL);
 
-	is_renameable_desktop_file =
-		is_desktop_file (file) && can_rename_desktop_file (file);
-	
-	/* Return an error for incoming names containing path separators.
-	 * But not for .desktop files as '/' are allowed for them */
-	if (strstr (new_name, "/") != NULL && !is_renameable_desktop_file) {
-		error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
-				     _("Slashes are not allowed in filenames"));
-		(* callback) (file, NULL, error, callback_data);
-		g_error_free (error);
+	new_file_name = nautilus_file_can_rename_file (file,
+						       new_name,
+						       callback,
+						       callback_data);
+
+	if (new_file_name == NULL)
 		return;
-	}
-	
-	/* Can't rename a file that's already gone.
-	 * We need to check this here because there may be a new
-	 * file with the same name.
-	 */
-        if (nautilus_file_rename_handle_file_gone (file, callback, callback_data)) {
-                return;
-        }
-	/* Test the name-hasn't-changed case explicitly, for two reasons.
-	 * (1) rename returns an error if new & old are same.
-	 * (2) We don't want to send file-changed signal if nothing changed.
-	 */
-	if (!is_renameable_desktop_file &&
-	    name_is (file, new_name)) {
-		(* callback) (file, NULL, NULL, callback_data);
-		return;
-	}
-
-	/* Self-owned files can't be renamed. Test the name-not-actually-changing
-	 * case before this case.
-	 */
-	if (nautilus_file_is_self_owned (file)) {
-	       	/* Claim that something changed even if the rename
-		 * failed. This makes it easier for some clients who
-		 * see the "reverting" to the old name as "changing
-		 * back".
-		 */
-		nautilus_file_changed (file);
-		error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED,
-				     _("Toplevel files cannot be renamed"));
-		
-		(* callback) (file, NULL, error, callback_data);
-		g_error_free (error);
-		return;
-	}
-
-	if (is_renameable_desktop_file) {
-		/* Don't actually change the name if the new name is the same.
-		 * This helps for the vfolder method where this can happen and
-		 * we want to minimize actual changes
-		 */
-		uri = nautilus_file_get_uri (file);
-		old_name = nautilus_link_local_get_text (uri);
-		if (old_name != NULL && strcmp (new_name, old_name) == 0) {
-			success = TRUE;
-			name_changed = FALSE;
-		} else {
-			success = nautilus_link_local_set_text (uri, new_name);
-			name_changed = TRUE;
-		}
-		g_free (old_name);
-		g_free (uri);
-
-		if (!success) {
-			error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
-					     _("Probably the content of the file is an invalid desktop file format"));
-			(* callback) (file, NULL, error, callback_data);
-			g_error_free (error);
-			return;
-		}
-		new_file_name = g_strdup_printf ("%s.desktop", new_name);
-		new_file_name = g_strdelimit (new_file_name, "/", '-');
-
-		if (name_is (file, new_file_name)) {
-			if (name_changed) {
-				nautilus_file_invalidate_attributes (file,
-								     NAUTILUS_FILE_ATTRIBUTE_INFO |
-								     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-			}
-
-			(* callback) (file, NULL, NULL, callback_data);
-			g_free (new_file_name);
-			return;
-		}
-	} else {
-		new_file_name = g_strdup (new_name);
-	}
 
 	/* Set up a renaming operation. */
 	op = nautilus_file_operation_new (file, callback, callback_data);
