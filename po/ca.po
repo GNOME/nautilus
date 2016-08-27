@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-08-23 06:49+0200\n"
+"POT-Creation-Date: 2016-08-27 14:20+0200\n"
 "PO-Revision-Date: 2016-08-23 07:08+0200\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -132,13 +132,16 @@ msgid ""
 "Whether to extract compressed files instead of opening them in another "
 "application"
 msgstr ""
-"Si cal extreure els fitxers comprimits en comptes d'obrir-los en una altra aplicació"
+"Si cal extreure els fitxers comprimits en comptes d'obrir-los en una altra "
+"aplicació"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:16
 msgid ""
 "If set to true, then Nautilus will automatically extract compressed files "
 "instead of opening them in another application"
-msgstr "Si s'estableix a cert, llavors el Nautilus extraurà automàticament fitxers comprimits en comptes d'obrir-los en una altra aplicació"
+msgstr ""
+"Si s'estableix a cert, llavors el Nautilus extraurà automàticament fitxers "
+"comprimits en comptes d'obrir-los en una altra aplicació"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:17
 msgid "When to show number of items in a folder"
@@ -492,7 +495,7 @@ msgstr ""
 "fitxers si superen les cinc línies per al nivell d'ampliació «smallest». "
 "Retalla els noms dels fitxers si superen les quatre línies per al nivell "
 "d'ampliació «smaller». No retallarà els noms dels fitxers en els altres "
-"nivells d'ampliació. Nivells d'ampliació disponibles: petit, estàndard i gran"
+"nivells d'ampliació. Nivells d'ampliació disponibles: petit, estàndard i gran."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:63
 msgid "Default list zoom level"
@@ -528,7 +531,7 @@ msgid ""
 "list."
 msgstr ""
 "Indica si s'hauria d'utilitzar un arbre per a la navegació de la vista de "
-"llista en lloc d'una llista plana"
+"llista en lloc d'una llista plana."
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:72
 msgid "Desktop font"
@@ -1856,7 +1859,7 @@ msgstr "S'ha produït un error en suprimir la carpeta «%B»."
 msgid "You do not have sufficient permissions to delete the folder “%B”."
 msgstr "No teniu els permisos suficients per suprimir la carpeta «%B»."
 
-#: ../src/nautilus-file-operations.c:176
+#: ../src/nautilus-file-operations.c:1765
 msgid "There was an error deleting the file “%B”."
 msgstr "S'ha produït un error en suprimir el fitxer «%B»."
 
@@ -2375,12 +2378,12 @@ msgid "Extracting “%B”"
 msgstr "S'està extraient «%B»"
 
 #: ../src/nautilus-file-operations.c:7220
-msgid "Error extracting “%B””"
+msgid "Error extracting “%B”"
 msgstr "S'ha produït un error en extraure «%B»"
 
 #: ../src/nautilus-file-operations.c:7224
 msgid "There was an error while extracting “%B”."
-msgstr "S'ha produït un error durant l'extracció de «%B»"
+msgstr "S'ha produït un error durant l'extracció de «%B»."
 
 #: ../src/nautilus-file-operations.c:7263
 msgid "Extracted “%B” to “%B”"
@@ -2674,7 +2677,7 @@ msgstr "No es permet arrossegar i deixar anar."
 #: ../src/nautilus-files-view-dnd.c:172
 msgid "Drag and drop is only supported on local file systems."
 msgstr ""
-"L'arrossegar i deixar anar només es permet en els sistemes de fitxers locals."
+"Arrossegar i deixar anar només es permet en els sistemes de fitxers locals."
 
 #: ../src/nautilus-files-view-dnd.c:206 ../src/nautilus-files-view-dnd.c:297
 msgid "An invalid drag type was used."
@@ -2819,7 +2822,7 @@ msgstr[1] "_Refés la còpia de %d elements"
 #: ../src/nautilus-file-undo-operations.c:447
 #: ../src/nautilus-file-undo-operations.c:697
 #: ../src/nautilus-file-undo-operations.c:1743
-#: ../src/nautilus-file-undo-operations.c:1892
+#: ../src/nautilus-file-undo-operations.c:1896
 #, c-format
 msgid "Delete '%s'"
 msgstr "Suprimeix «%s»"
@@ -3064,34 +3067,40 @@ msgstr "_Refés l'extracció"
 
 #: ../src/nautilus-file-undo-operations.c:1745
 #, c-format
-msgid "Delete %d extracted files"
-msgstr "Suprimeix %d fitxers extrets"
+msgid "Delete %d extracted file"
+msgid_plural "Delete %d extracted files"
+msgstr[0] "Suprimeix %d fitxer extret"
+msgstr[1] "Suprimeix %d fitxers extrets"
 
-#: ../src/nautilus-file-undo-operations.c:1756
+#: ../src/nautilus-file-undo-operations.c:1758
 #, c-format
 msgid "Extract '%s'"
 msgstr "Extreu «%s»"
 
-#: ../src/nautilus-file-undo-operations.c:1758
+#: ../src/nautilus-file-undo-operations.c:1760
 #, c-format
-msgid "Extract %d files"
-msgstr "Extreu %d fitxers"
+msgid "Extract %d file"
+msgid_plural "Extract %d files"
+msgstr[0] "Extreu %d fitxer"
+msgstr[1] "Extreu %d fitxers"
 
-#: ../src/nautilus-file-undo-operations.c:1902
+#: ../src/nautilus-file-undo-operations.c:1906
 #, c-format
 msgid "Compress '%s'"
 msgstr "Comprimeix «%s»"
 
-#: ../src/nautilus-file-undo-operations.c:1904
+#: ../src/nautilus-file-undo-operations.c:1908
 #, c-format
-msgid "Compress '%d' files"
-msgstr "Comprimeix '%d' fitxers"
+msgid "Compress %d file"
+msgid_plural "Compress %d files"
+msgstr[0] "Comprimeix '%d' fitxer"
+msgstr[1] "Comprimeix '%d' fitxers"
 
-#: ../src/nautilus-file-undo-operations.c:1907
+#: ../src/nautilus-file-undo-operations.c:1914
 msgid "_Undo Compress"
 msgstr "_Desfés la compressió"
 
-#: ../src/nautilus-file-undo-operations.c:1908
+#: ../src/nautilus-file-undo-operations.c:1915
 msgid "_Redo Compress"
 msgstr "_Refés la compressió"
 
@@ -4111,14 +4120,17 @@ msgstr "Paperera"
 
 #: ../src/nautilus-special-location-bar.c:53
 msgid "Put files in this folder to use them as templates for new documents."
-msgstr "Poseu els fitxers en aquesta carpeta per a usar-los com a plantilles per a documents nous."
+msgstr ""
+"Poseu els fitxers en aquesta carpeta per a usar-los com a plantilles per a "
+"documents nous."
 
 #: ../src/nautilus-special-location-bar.c:54
 msgid ""
 "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
 "\">Learn more…</a>"
-msgstr"<a href=\"help:gnome-help/files-templates\" title=\"Ajuda del GNOME per a plantilles"
-"\">Més informació...</a>"
+msgstr ""
+"<a href=\"help:gnome-help/files-templates\" title=\"Ajuda del GNOME per a "
+"plantilles\">Més informació...</a>"
 
 #: ../src/nautilus-special-location-bar.c:57
 msgid "Executable files in this folder will appear in the Scripts menu."
