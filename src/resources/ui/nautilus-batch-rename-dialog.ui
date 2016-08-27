@@ -287,12 +287,15 @@
             </child>
             <child>
               <object class="GtkScrolledWindow" id="scrolled_window">
-                <property name="height_request">250</property>
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="hexpand">False</property>
                 <property name="vexpand">True</property>
                 <property name="shadow_type">in</property>
+                <property name="max-content-height">250</property>
+                <property name="min-content-height">250</property>
+                <property name="max-content-width">600</property>
+                <property name="min-content-width">600</property>
                 <child>
                   <object class="GtkViewport">
                     <property name="visible">True</property>
