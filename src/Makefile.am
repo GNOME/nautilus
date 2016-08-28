@@ -99,44 +99,19 @@ nautilus-resources.c: resources/nautilus.gresource.xml $(resource_files)
 nautilus-resources.h: resources/nautilus.gresource.xml $(resource_files)
 	glib-compile-resources --manual-register --target=$@ --sourcedir=$(srcdir)/resources --generate-header --c-name nautilus $(srcdir)/resources/nautilus.gresource.xml
 
-nautilus-enum-types.h: stamp-nautilus-enum-types.h
-	$(AM_V_GEN)true
-
-stamp-nautilus-enum-types.h: $(headers) Makefile
+nautilus-enum-types.h: nautilus-enum-types.h.template $(headers)
 	$(AM_V_GEN)(cd $(srcdir) \
 	&& glib-mkenums \
-			--fhead "#ifndef __NAUTILUS_ENUM_TYPES_H__\n" \
-			--fhead "#define __NAUTILUS_ENUM_TYPES_H__ 1\n\n" \
-			--fhead "#include <glib-object.h>\n\n" \
-			--fhead "G_BEGIN_DECLS\n\n" \
-			--ftail "G_END_DECLS\n\n" \
-			--ftail "#endif /* __NAUTILUS_ENUM_TYPES_H__ */\n" \
-			--fprod "#include \"@filename@\"\n" \
-			--eprod "#define @ENUMPREFIX@_TYPE_@ENUMSHORT@ @enum_name@_get_type()\n" \
-			--eprod "GType @enum_name@_get_type (void);\n" \
-		$(headers) ) > xgen-gth \
-	&& (cmp -s xgen-gth nautilus-enum-types.h || cp xgen-gth nautilus-enum-types.h) \
-	&& rm -f xgen-gth \
-	&& echo timestamp > $(@F)
+		--template nautilus-enum-types.h.template \
+		$(headers)) \
+	> $@
 
-nautilus-enum-types.c: $(headers) Makefile
+nautilus-enum-types.c: nautilus-enum-types.c.template $(headers)
 	$(AM_V_GEN)(cd $(srcdir) \
 	&& glib-mkenums \
-			--fhead "#include <config.h>\n" \
-			--fhead "#include <glib-object.h>\n" \
-			--fhead "#include \"nautilus-enum-types.h\"\n\n" \
-			--fprod "\n/* enumerations from \"@filename@\" */" \
-			--vhead "static const G@Type@Value _@enum_name@_values[] = {" \
-			--vprod "  { @VALUENAME@, \"@VALUENAME@\", \"@valuenick@\" }," \
-			--vtail "  { 0, NULL, NULL }\n};\n\n" \
-			--vtail "GType\n@enum_name@_get_type (void)\n{\n" \
-			--vtail "  static GType type = 0;\n\n" \
-			--vtail "  if (!type)\n" \
-			--vtail "    type = g_@type@_register_static (\"@EnumName@\", _@enum_name@_values);\n\n" \
-			--vtail "  return type;\n}\n\n" \
-		$(headers) ) > xgen-gtc \
-	&& cp xgen-gtc $(@F) \
-	&& rm -f xgen-gtc
+		--template nautilus-enum-types.c.template \
+		$(headers)) \
+	> $@
 
 if ENABLE_TRACKER
 nautilus_tracker_engine_sources = \
@@ -392,7 +367,6 @@ TESTS=check-nautilus
 CLEANFILES = \
 	$(BUILT_SOURCES)			\
 	$(server_DATA)				\
-	stamp-nautilus-enum-types.h		\
 	$(NULL)
 
 EXTRA_DIST =					\
@@ -400,6 +374,8 @@ EXTRA_DIST =					\
 	$(server_in_files)			\
 	resources/nautilus.gresource.xml	\
 	check-nautilus				\
+	nautilus-enum-types.h.template		\
+	nautilus-enum-types.c.template		\
 	$(NULL)
 
 dist-hook:

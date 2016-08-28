@@ -1,0 +1,25 @@
+/*** BEGIN file-header ***/
+#ifndef NAUTILUS_ENUM_TYPES_H
+#define NAUTILUS_ENUM_TYPES_H
+
+#include <glib-object.h>
+
+G_BEGIN_DECLS
+/*** END file-header ***/
+
+/*** BEGIN file-production ***/
+/* Enumerations from "@filename@" */
+
+/*** END file-production ***/
+
+/*** BEGIN enumeration-production ***/
+#define @ENUMPREFIX@_TYPE_@ENUMSHORT@ (@enum_name@_get_type ())
+GType @enum_name@_get_type (void);
+
+/*** END enumeration-production ***/
+
+/*** BEGIN file-tail ***/
+G_END_DECLS
+
+#endif /* NAUTILUS_ENUM_TYPES_H */
+/*** END file-tail ***/
