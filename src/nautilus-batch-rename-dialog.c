@@ -2600,7 +2600,7 @@ on_key_press_event (GtkWidget    *widget,
 
                 if ((keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) &&
                     tag_removed)
-                        return TRUE;
+                        return GDK_EVENT_STOP;
 
                 return GDK_EVENT_PROPAGATE;
         }
@@ -2717,7 +2717,7 @@ on_key_press_event (GtkWidget    *widget,
 
         if (tag_removed) {
                 if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace)
-                        return TRUE;
+                        return GDK_EVENT_STOP;
 
                 return GDK_EVENT_PROPAGATE;
         }
