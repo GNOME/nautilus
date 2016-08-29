@@ -25,29 +25,15 @@
 #ifndef NAUTILUS_LOCATION_ENTRY_H
 #define NAUTILUS_LOCATION_ENTRY_H
 
-#include "nautilus-entry.h"
+#include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_LOCATION_ENTRY nautilus_location_entry_get_type()
-#define NAUTILUS_LOCATION_ENTRY(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntry))
-#define NAUTILUS_LOCATION_ENTRY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntryClass))
-#define NAUTILUS_IS_LOCATION_ENTRY(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LOCATION_ENTRY))
-#define NAUTILUS_IS_LOCATION_ENTRY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LOCATION_ENTRY))
-#define NAUTILUS_LOCATION_ENTRY_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_LOCATION_ENTRY, NautilusLocationEntryClass))
+G_DECLARE_DERIVABLE_TYPE (NautilusLocationEntry, nautilus_location_entry,
+                          NAUTILUS, LOCATION_ENTRY,
+                          GtkEntry)
 
-typedef struct NautilusLocationEntryDetails NautilusLocationEntryDetails;
-
-typedef struct NautilusLocationEntry {
-	NautilusEntry parent;
-	NautilusLocationEntryDetails *details;
-} NautilusLocationEntry;
-
-typedef struct {
-	NautilusEntryClass parent_class;
+typedef struct _NautilusLocationEntryClass {
+	GtkEntryClass parent_class;
 	/* for GtkBindingSet */
 	void         (* cancel)           (NautilusLocationEntry *entry);
 } NautilusLocationEntryClass;
@@ -57,8 +43,6 @@ typedef enum {
 	NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR
 } NautilusLocationEntryAction;
 
-GType      nautilus_location_entry_get_type     	(void);
-
 GtkWidget* nautilus_location_entry_new          	(void);
 void       nautilus_location_entry_set_special_text     (NautilusLocationEntry *entry,
 							 const char            *special_text);
@@ -66,6 +50,5 @@ void       nautilus_location_entry_set_secondary_action (NautilusLocationEntry *
 							 NautilusLocationEntryAction secondary_action);
 void       nautilus_location_entry_set_location         (NautilusLocationEntry *entry,
 							 GFile                 *location);
-void       nautilus_location_entry_focus                (NautilusLocationEntry *entry);
 
 #endif /* NAUTILUS_LOCATION_ENTRY_H */

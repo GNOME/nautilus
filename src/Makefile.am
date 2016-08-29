@@ -269,8 +269,6 @@ nautilus_no_main_sources = \
 	nautilus-directory.h \
 	nautilus-dnd.c \
 	nautilus-dnd.h \
-	nautilus-entry.c \
-	nautilus-entry.h \
 	nautilus-file-attributes.h \
 	nautilus-file-changes-queue.c \
 	nautilus-file-changes-queue.h \

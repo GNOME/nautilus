@@ -1597,7 +1597,7 @@ nautilus_window_ensure_location_entry (NautilusWindow *window)
     nautilus_toolbar_set_show_location_entry (NAUTILUS_TOOLBAR (window->priv->toolbar), TRUE);
 
     location_entry = nautilus_toolbar_get_location_entry (NAUTILUS_TOOLBAR (window->priv->toolbar));
-    nautilus_location_entry_focus (NAUTILUS_LOCATION_ENTRY (location_entry));
+    gtk_widget_grab_focus (location_entry);
 
     return location_entry;
 }

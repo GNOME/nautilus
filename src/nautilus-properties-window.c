@@ -46,7 +46,6 @@
 #include <eel/eel-vfs-extensions.h>
 
 #include <libnautilus-extension/nautilus-property-page-provider.h>
-#include "nautilus-entry.h"
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
@@ -107,6 +106,8 @@ struct NautilusPropertiesWindowDetails
     GtkWidget *name_field;
     unsigned int name_row;
     char *pending_name;
+
+    guint select_idle_id;
 
     GtkLabel *directory_contents_title_field;
     GtkLabel *directory_contents_value_field;
@@ -218,11 +219,11 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_destroy_handler);
 static void append_extension_pages (NautilusPropertiesWindow *window);
 
-static gboolean name_field_focus_out (NautilusEntry *name_field,
+static gboolean name_field_focus_out (GtkWidget     *name_field,
                                       GdkEventFocus *event,
-                                      gpointer       callback_data);
-static void name_field_activate (NautilusEntry *name_field,
-                                 gpointer       callback_data);
+                                      gpointer       user_data);
+static void name_field_activate (GtkWidget *name_field,
+                                 gpointer   user_data);
 static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
                                                  GtkWidget  *sibling,
                                                  const char *initial_text);
@@ -584,7 +585,7 @@ set_name_field (NautilusPropertiesWindow *window,
      * 4) Creating entry (potentially replacing label)
      */
     use_label = is_multi_file_window (window) || !nautilus_file_can_rename (get_original_file (window));
-    new_widget = !window->details->name_field || (use_label ? NAUTILUS_IS_ENTRY (window->details->name_field) : GTK_IS_LABEL (window->details->name_field));
+    new_widget = !window->details->name_field || (use_label ? GTK_IS_ENTRY (window->details->name_field) : GTK_IS_LABEL (window->details->name_field));
 
     if (new_widget)
     {
@@ -602,7 +603,7 @@ set_name_field (NautilusPropertiesWindow *window,
         }
         else
         {
-            window->details->name_field = nautilus_entry_new ();
+            window->details->name_field = gtk_entry_new ();
             gtk_entry_set_text (GTK_ENTRY (window->details->name_field), name);
             gtk_widget_show (window->details->name_field);
 
@@ -727,7 +728,7 @@ update_name_field (NautilusPropertiesWindow *window)
 }
 
 static void
-name_field_restore_original_name (NautilusEntry *name_field)
+name_field_restore_original_name (GtkWidget *name_field)
 {
     const char *original_name;
     char *displayed_name;
@@ -746,7 +747,7 @@ name_field_restore_original_name (NautilusEntry *name_field)
     {
         gtk_entry_set_text (GTK_ENTRY (name_field), original_name);
     }
-    nautilus_entry_select_all (name_field);
+    gtk_editable_select_region (GTK_EDITABLE (name_field), 0, -1);
 
     g_free (displayed_name);
 }
@@ -770,7 +771,7 @@ rename_callback (NautilusFile *file,
                                              GTK_WINDOW (window));
         if (window->details->name_field != NULL)
         {
-            name_field_restore_original_name (NAUTILUS_ENTRY (window->details->name_field));
+            name_field_restore_original_name (window->details->name_field);
         }
     }
 
@@ -786,14 +787,14 @@ set_pending_name (NautilusPropertiesWindow *window,
 }
 
 static void
-name_field_done_editing (NautilusEntry            *name_field,
+name_field_done_editing (GtkWidget                *name_field,
                          NautilusPropertiesWindow *window)
 {
     NautilusFile *file;
     char *new_name;
     const char *original_name;
 
-    g_return_if_fail (NAUTILUS_IS_ENTRY (name_field));
+    g_return_if_fail (GTK_IS_ENTRY (name_field));
 
     /* Don't apply if the dialog has more than one file */
     if (is_multi_file_window (window))
@@ -816,7 +817,7 @@ name_field_done_editing (NautilusEntry            *name_field,
     /* Special case: silently revert text if new text is empty. */
     if (strlen (new_name) == 0)
     {
-        name_field_restore_original_name (NAUTILUS_ENTRY (name_field));
+        name_field_restore_original_name (name_field);
     }
     else
     {
@@ -838,31 +839,54 @@ name_field_done_editing (NautilusEntry            *name_field,
 }
 
 static gboolean
-name_field_focus_out (NautilusEntry *name_field,
+name_field_focus_out (GtkWidget     *name_field,
                       GdkEventFocus *event,
-                      gpointer       callback_data)
+                      gpointer       user_data)
 {
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (callback_data));
+    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (user_data));
 
-    if (gtk_widget_get_sensitive (GTK_WIDGET (name_field)))
+    if (gtk_widget_get_sensitive (name_field))
     {
-        name_field_done_editing (name_field, NAUTILUS_PROPERTIES_WINDOW (callback_data));
+        name_field_done_editing (name_field, NAUTILUS_PROPERTIES_WINDOW (user_data));
     }
 
     return FALSE;
 }
 
-static void
-name_field_activate (NautilusEntry *name_field,
-                     gpointer       callback_data)
+static gboolean
+select_all_at_idle (gpointer user_data)
 {
-    g_assert (NAUTILUS_IS_ENTRY (name_field));
-    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (callback_data));
+    NautilusPropertiesWindow *window;
+
+    window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+
+    gtk_editable_select_region (GTK_EDITABLE (window->details->name_field),
+                                0, -1);
+
+    window->details->select_idle_id = 0;
+
+    return FALSE;
+}
+
+static void
+name_field_activate (GtkWidget  *name_field,
+                     gpointer    user_data)
+{
+    NautilusPropertiesWindow *window;
+
+    g_assert (GTK_IS_ENTRY (name_field));
+    g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (user_data));
+
+    window = NAUTILUS_PROPERTIES_WINDOW (user_data);
 
     /* Accept changes. */
-    name_field_done_editing (name_field, NAUTILUS_PROPERTIES_WINDOW (callback_data));
+    name_field_done_editing (name_field, window);
 
-    nautilus_entry_select_all_at_idle (name_field);
+    if (window->details->select_idle_id == 0)
+    {
+        window->details->select_idle_id = g_idle_add (select_all_at_idle,
+                                                      window);
+    }
 }
 
 static void
@@ -3169,9 +3193,8 @@ create_basic_page (NautilusPropertiesWindow *window)
     update_name_field (window);
 
     /* Start with name field selected, if it's an entry. */
-    if (NAUTILUS_IS_ENTRY (window->details->name_field))
+    if (GTK_IS_ENTRY (window->details->name_field))
     {
-        nautilus_entry_select_all (NAUTILUS_ENTRY (window->details->name_field));
         gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
     }
 
@@ -5480,6 +5503,11 @@ real_finalize (GObject *object)
     g_list_free_full (window->details->mime_list, g_free);
 
     g_free (window->details->pending_name);
+
+    if (window->details->select_idle_id != 0)
+    {
+        g_source_remove (window->details->select_idle_id);
+    }
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
