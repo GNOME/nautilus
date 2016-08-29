@@ -2288,7 +2288,7 @@ on_key_press_event (GtkWidget    *widget,
         gboolean entry_has_selection;
         gint start;
         gint end;
-        gboolean tag_removed;
+        gboolean tag_removed = FALSE;
         TagData *tag_data;
         gint minimum_tag_position;
         GAction *action;
@@ -2319,7 +2319,6 @@ on_key_press_event (GtkWidget    *widget,
                 old_entry_text = g_string_new (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
 
                 minimum_tag_position = G_MAXINT;
-                tag_removed = FALSE;
 
                 tag_data = g_hash_table_lookup (dialog->tag_info_table, ORIGINAL_FILE_NAME);
                 if (tag_data->set) {
@@ -2601,125 +2600,118 @@ on_key_press_event (GtkWidget    *widget,
                 if ((keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) &&
                     tag_removed)
                         return GDK_EVENT_STOP;
+        } else {
+                if (remove_tag (dialog,
+                                ORIGINAL_FILE_NAME,
+                                "add-original-file-name-tag",
+                                keyval,
+                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-                return GDK_EVENT_PROPAGATE;
-        }
+                if (!tag_removed && remove_tag (dialog,
+                                                CREATION_DATE,
+                                                "add-creation-date-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        tag_removed = FALSE;
+                if (!tag_removed && remove_tag (dialog,
+                                                NUMBERING,
+                                                "add-numbering-tag-zero",
+                                                keyval,
+                                                gdk_event->key.is_modifier)) {
+                        tag_removed = TRUE;
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-one");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-        if (remove_tag (dialog,
-                        ORIGINAL_FILE_NAME,
-                        "add-original-file-name-tag",
-                        keyval,
-                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-two");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                }
 
-        if (!tag_removed && remove_tag (dialog,
-                                        CREATION_DATE,
-                                        "add-creation-date-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                if (!tag_removed && remove_tag (dialog,
+                                                NUMBERING0,
+                                                "add-numbering-tag-one",
+                                                keyval,
+                                                gdk_event->key.is_modifier)) {
+                        tag_removed = TRUE;
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-zero");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-        if (!tag_removed && remove_tag (dialog,
-                                        NUMBERING,
-                                        "add-numbering-tag-zero",
-                                        keyval,
-                                        gdk_event->key.is_modifier)) {
-                tag_removed = TRUE;
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-one");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-two");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                }
 
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-two");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
-        }
+                if (!tag_removed && remove_tag (dialog,
+                                                NUMBERING00,
+                                                "add-numbering-tag-two",
+                                                keyval,
+                                                gdk_event->key.is_modifier)) {
+                        tag_removed = TRUE;
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-one");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 
-        if (!tag_removed && remove_tag (dialog,
-                                        NUMBERING0,
-                                        "add-numbering-tag-one",
-                                        keyval,
-                                        gdk_event->key.is_modifier)) {
-                tag_removed = TRUE;
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-zero");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                                                           "add-numbering-tag-zero");
+                        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                }
 
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-two");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
-        }
+                if (!tag_removed && remove_tag (dialog,
+                                                CAMERA_MODEL,
+                                                "add-equipment-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        NUMBERING00,
-                                        "add-numbering-tag-two",
-                                        keyval,
-                                        gdk_event->key.is_modifier)) {
-                tag_removed = TRUE;
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-one");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+                if (!tag_removed && remove_tag (dialog,
+                                                SEASON_NUMBER,
+                                                "add-season-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-                action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                                                   "add-numbering-tag-zero");
-                g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
-        }
+                if (!tag_removed && remove_tag (dialog,
+                                                EPISODE_NUMBER,
+                                                "add-episode-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        CAMERA_MODEL,
-                                        "add-equipment-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                if (!tag_removed && remove_tag (dialog,
+                                                TRACK_NUMBER,
+                                                "add-track-number-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        SEASON_NUMBER,
-                                        "add-season-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                if (!tag_removed && remove_tag (dialog,
+                                                ARTIST_NAME,
+                                                "add-artist-name-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        EPISODE_NUMBER,
-                                        "add-episode-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                if (!tag_removed && remove_tag (dialog,
+                                                TITLE,
+                                                "add-title-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        TRACK_NUMBER,
-                                        "add-track-number-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
+                if (!tag_removed && remove_tag (dialog,
+                                                ALBUM_NAME,
+                                                "add-album-name-tag",
+                                                keyval,
+                                                gdk_event->key.is_modifier))
+                        tag_removed = TRUE;
 
-        if (!tag_removed && remove_tag (dialog,
-                                        ARTIST_NAME,
-                                        "add-artist-name-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
-
-        if (!tag_removed && remove_tag (dialog,
-                                        TITLE,
-                                        "add-title-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
-
-        if (!tag_removed && remove_tag (dialog,
-                                        ALBUM_NAME,
-                                        "add-album-name-tag",
-                                        keyval,
-                                        gdk_event->key.is_modifier))
-                tag_removed = TRUE;
-
-        if (tag_removed) {
-                if (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace)
+                if (tag_removed && (keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace)) {
                         return GDK_EVENT_STOP;
-
-                return GDK_EVENT_PROPAGATE;
+                }
         }
 
         return GDK_EVENT_PROPAGATE;
