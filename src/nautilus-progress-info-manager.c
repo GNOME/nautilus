@@ -24,15 +24,17 @@
 
 #include "nautilus-progress-info-manager.h"
 
-struct _NautilusProgressInfoManagerPriv {
-	GList *progress_infos;
-	GList *current_viewers;
+struct _NautilusProgressInfoManagerPriv
+{
+    GList *progress_infos;
+    GList *current_viewers;
 };
 
-enum {
-	NEW_PROGRESS_INFO,
-	HAS_VIEWERS_CHANGED,
-	LAST_SIGNAL
+enum
+{
+    NEW_PROGRESS_INFO,
+    HAS_VIEWERS_CHANGED,
+    LAST_SIGNAL
 };
 
 static NautilusProgressInfoManager *singleton = NULL;
@@ -42,183 +44,198 @@ static guint signals[LAST_SIGNAL] = { 0, };
 G_DEFINE_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager,
                G_TYPE_OBJECT);
 
-static void remove_viewer (NautilusProgressInfoManager *self, GObject *viewer);
+static void remove_viewer (NautilusProgressInfoManager *self,
+                           GObject                     *viewer);
 
 static void
 nautilus_progress_info_manager_finalize (GObject *obj)
 {
-	GList *l;
-	NautilusProgressInfoManager *self = NAUTILUS_PROGRESS_INFO_MANAGER (obj);
+    GList *l;
+    NautilusProgressInfoManager *self = NAUTILUS_PROGRESS_INFO_MANAGER (obj);
 
-	if (self->priv->progress_infos != NULL) {
-		g_list_free_full (self->priv->progress_infos, g_object_unref);
-	}
+    if (self->priv->progress_infos != NULL)
+    {
+        g_list_free_full (self->priv->progress_infos, g_object_unref);
+    }
 
-	for (l = self->priv->current_viewers; l != NULL; l = l->next) {
-		g_object_weak_unref (l->data, (GWeakNotify) remove_viewer, self);
-	}
-	g_list_free (self->priv->current_viewers);
+    for (l = self->priv->current_viewers; l != NULL; l = l->next)
+    {
+        g_object_weak_unref (l->data, (GWeakNotify) remove_viewer, self);
+    }
+    g_list_free (self->priv->current_viewers);
 
-	G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->finalize (obj);
+    G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->finalize (obj);
 }
 
 static GObject *
-nautilus_progress_info_manager_constructor (GType type,
-					    guint n_props,
-					    GObjectConstructParam *props)
+nautilus_progress_info_manager_constructor (GType                  type,
+                                            guint                  n_props,
+                                            GObjectConstructParam *props)
 {
-	GObject *retval;
+    GObject *retval;
 
-	if (singleton != NULL) {
-		return g_object_ref (singleton);
-	}
+    if (singleton != NULL)
+    {
+        return g_object_ref (singleton);
+    }
 
-	retval = G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->constructor
-		(type, n_props, props);
+    retval = G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->constructor
+                 (type, n_props, props);
 
-	singleton = NAUTILUS_PROGRESS_INFO_MANAGER (retval);
-	g_object_add_weak_pointer (retval, (gpointer) &singleton);
+    singleton = NAUTILUS_PROGRESS_INFO_MANAGER (retval);
+    g_object_add_weak_pointer (retval, (gpointer) & singleton);
 
-	return retval;
+    return retval;
 }
 
 static void
 nautilus_progress_info_manager_init (NautilusProgressInfoManager *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_INFO_MANAGER,
-						  NautilusProgressInfoManagerPriv);
+    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_INFO_MANAGER,
+                                              NautilusProgressInfoManagerPriv);
 }
 
 static void
 nautilus_progress_info_manager_class_init (NautilusProgressInfoManagerClass *klass)
 {
-	GObjectClass *oclass;
+    GObjectClass *oclass;
 
-	oclass = G_OBJECT_CLASS (klass);
-	oclass->constructor = nautilus_progress_info_manager_constructor;
-	oclass->finalize = nautilus_progress_info_manager_finalize;
+    oclass = G_OBJECT_CLASS (klass);
+    oclass->constructor = nautilus_progress_info_manager_constructor;
+    oclass->finalize = nautilus_progress_info_manager_finalize;
 
-	signals[NEW_PROGRESS_INFO] =
-		g_signal_new ("new-progress-info",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__OBJECT,
-			      G_TYPE_NONE,
-			      1,
-			      NAUTILUS_TYPE_PROGRESS_INFO);
+    signals[NEW_PROGRESS_INFO] =
+        g_signal_new ("new-progress-info",
+                      G_TYPE_FROM_CLASS (klass),
+                      G_SIGNAL_RUN_LAST,
+                      0, NULL, NULL,
+                      g_cclosure_marshal_VOID__OBJECT,
+                      G_TYPE_NONE,
+                      1,
+                      NAUTILUS_TYPE_PROGRESS_INFO);
 
-	signals[HAS_VIEWERS_CHANGED] =
-		g_signal_new ("has-viewers-changed",
-			      G_TYPE_FROM_CLASS (klass),
-			      G_SIGNAL_RUN_LAST,
-			      0, NULL, NULL,
-			      g_cclosure_marshal_VOID__VOID,
-			      G_TYPE_NONE,
-			      0);
+    signals[HAS_VIEWERS_CHANGED] =
+        g_signal_new ("has-viewers-changed",
+                      G_TYPE_FROM_CLASS (klass),
+                      G_SIGNAL_RUN_LAST,
+                      0, NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE,
+                      0);
 
-	g_type_class_add_private (klass, sizeof (NautilusProgressInfoManagerPriv));
+    g_type_class_add_private (klass, sizeof (NautilusProgressInfoManagerPriv));
 }
 
 NautilusProgressInfoManager *
 nautilus_progress_info_manager_dup_singleton (void)
 {
-	return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NULL);
+    return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NULL);
 }
 
 void
 nautilus_progress_info_manager_add_new_info (NautilusProgressInfoManager *self,
-					     NautilusProgressInfo *info)
+                                             NautilusProgressInfo        *info)
 {
-	if (g_list_find (self->priv->progress_infos, info) != NULL) {
-		g_warning ("Adding two times the same progress info object to the manager");
-		return;
-	}
-	
-	self->priv->progress_infos =
-		g_list_prepend (self->priv->progress_infos, g_object_ref (info));
+    if (g_list_find (self->priv->progress_infos, info) != NULL)
+    {
+        g_warning ("Adding two times the same progress info object to the manager");
+        return;
+    }
 
-	g_signal_emit (self, signals[NEW_PROGRESS_INFO], 0, info);
+    self->priv->progress_infos =
+        g_list_prepend (self->priv->progress_infos, g_object_ref (info));
+
+    g_signal_emit (self, signals[NEW_PROGRESS_INFO], 0, info);
 }
 
 void
 nautilus_progress_info_manager_remove_finished_or_cancelled_infos (NautilusProgressInfoManager *self)
 {
-        GList *l;
-        GList *next;
+    GList *l;
+    GList *next;
 
-        l = self->priv->progress_infos;
-        while (l != NULL) {
-                next = l->next;
-                if (nautilus_progress_info_get_is_finished (l->data) ||
-                    nautilus_progress_info_get_is_cancelled (l->data)) {
-                        self->priv->progress_infos = g_list_remove (self->priv->progress_infos,
-                                                                    l->data);
-                }
-                l = next;
+    l = self->priv->progress_infos;
+    while (l != NULL)
+    {
+        next = l->next;
+        if (nautilus_progress_info_get_is_finished (l->data) ||
+            nautilus_progress_info_get_is_cancelled (l->data))
+        {
+            self->priv->progress_infos = g_list_remove (self->priv->progress_infos,
+                                                        l->data);
         }
+        l = next;
+    }
 }
 
 GList *
 nautilus_progress_info_manager_get_all_infos (NautilusProgressInfoManager *self)
 {
-	return self->priv->progress_infos;
+    return self->priv->progress_infos;
 }
 
 gboolean
 nautilus_progress_manager_are_all_infos_finished_or_cancelled (NautilusProgressInfoManager *self)
 {
-        GList *l;
+    GList *l;
 
-        for (l = self->priv->progress_infos; l != NULL; l = l->next) {
-                if (!(nautilus_progress_info_get_is_finished (l->data) ||
-                      nautilus_progress_info_get_is_cancelled (l->data))) {
-                      return FALSE;
-                    }
+    for (l = self->priv->progress_infos; l != NULL; l = l->next)
+    {
+        if (!(nautilus_progress_info_get_is_finished (l->data) ||
+              nautilus_progress_info_get_is_cancelled (l->data)))
+        {
+            return FALSE;
         }
+    }
 
-        return TRUE;
+    return TRUE;
 }
 
 static void
 remove_viewer (NautilusProgressInfoManager *self,
                GObject                     *viewer)
 {
-        self->priv->current_viewers = g_list_remove (self->priv->current_viewers, viewer);
+    self->priv->current_viewers = g_list_remove (self->priv->current_viewers, viewer);
 
-        if (self->priv->current_viewers == NULL)
-                g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
+    if (self->priv->current_viewers == NULL)
+    {
+        g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
+    }
 }
 
 void
 nautilus_progress_manager_add_viewer (NautilusProgressInfoManager *self,
                                       GObject                     *viewer)
 {
-        GList *viewers;
+    GList *viewers;
 
-        viewers = self->priv->current_viewers;
-        if (g_list_find (viewers, viewer) == NULL) {
-                g_object_weak_ref (viewer, (GWeakNotify) remove_viewer, self);
-                viewers = g_list_append (viewers, viewer);
-                self->priv->current_viewers = viewers;
+    viewers = self->priv->current_viewers;
+    if (g_list_find (viewers, viewer) == NULL)
+    {
+        g_object_weak_ref (viewer, (GWeakNotify) remove_viewer, self);
+        viewers = g_list_append (viewers, viewer);
+        self->priv->current_viewers = viewers;
 
-                if (g_list_length (viewers) == 1)
-                        g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
+        if (g_list_length (viewers) == 1)
+        {
+            g_signal_emit (self, signals[HAS_VIEWERS_CHANGED], 0);
         }
+    }
 }
 
 void
 nautilus_progress_manager_remove_viewer (NautilusProgressInfoManager *self,
                                          GObject                     *viewer)
 {
-        if (g_list_find (self->priv->current_viewers, viewer) != NULL) {
-                g_object_weak_unref (viewer, (GWeakNotify) remove_viewer, self);
-                remove_viewer (self, viewer);
-        }
+    if (g_list_find (self->priv->current_viewers, viewer) != NULL)
+    {
+        g_object_weak_unref (viewer, (GWeakNotify) remove_viewer, self);
+        remove_viewer (self, viewer);
+    }
 }
 
 gboolean
 nautilus_progress_manager_has_viewers (NautilusProgressInfoManager *self)
 {
-        return self->priv->current_viewers != NULL;
+    return self->priv->current_viewers != NULL;
 }

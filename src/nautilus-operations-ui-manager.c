@@ -6,12 +6,13 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-conflict-dialog.h"
 
-typedef struct {
-        GSourceFunc source_func;
-        gpointer user_data;
-        GMutex mutex;
-        GCond cond;
-        gboolean completed;
+typedef struct
+{
+    GSourceFunc source_func;
+    gpointer user_data;
+    GMutex mutex;
+    GCond cond;
+    gboolean completed;
 } ContextInvokeData;
 
 G_LOCK_DEFINE_STATIC (main_context_sync);
@@ -19,18 +20,21 @@ G_LOCK_DEFINE_STATIC (main_context_sync);
 static gboolean
 invoke_main_context_source_func_wrapper (gpointer user_data)
 {
-        ContextInvokeData *data = user_data;
+    ContextInvokeData *data = user_data;
 
-        g_mutex_lock (&data->mutex);
+    g_mutex_lock (&data->mutex);
 
-        while (data->source_func (data->user_data));
+    while (data->source_func (data->user_data))
+    {
+        ;
+    }
 
-        data->completed = TRUE;
+    data->completed = TRUE;
 
-        g_cond_signal (&data->cond);
-        g_mutex_unlock (&data->mutex);
+    g_cond_signal (&data->cond);
+    g_mutex_unlock (&data->mutex);
 
-        return G_SOURCE_REMOVE;
+    return G_SOURCE_REMOVE;
 }
 
 /* This function is used to run UI on the main thread in order to ask the user
@@ -44,380 +48,416 @@ invoke_main_context_sync (GMainContext *main_context,
                           GSourceFunc   source_func,
                           gpointer      user_data)
 {
-        ContextInvokeData data;
-        /* Allow only one thread at a time to invoke the main context so we
-         * don't get race conditions which could lead to multiple dialogs being
-         * displayed at the same time
-         */
-        G_LOCK (main_context_sync);
+    ContextInvokeData data;
+    /* Allow only one thread at a time to invoke the main context so we
+     * don't get race conditions which could lead to multiple dialogs being
+     * displayed at the same time
+     */
+    G_LOCK (main_context_sync);
 
-        data.source_func = source_func;
-        data.user_data = user_data;
+    data.source_func = source_func;
+    data.user_data = user_data;
 
-        g_mutex_init (&data.mutex);
-        g_cond_init (&data.cond);
-        data.completed = FALSE;
+    g_mutex_init (&data.mutex);
+    g_cond_init (&data.cond);
+    data.completed = FALSE;
 
-        g_mutex_lock (&data.mutex);
+    g_mutex_lock (&data.mutex);
 
-        g_main_context_invoke (main_context,
-                               invoke_main_context_source_func_wrapper,
-                               &data);
+    g_main_context_invoke (main_context,
+                           invoke_main_context_source_func_wrapper,
+                           &data);
 
-        while (!data.completed) {
-                g_cond_wait (&data.cond, &data.mutex);
-        }
+    while (!data.completed)
+    {
+        g_cond_wait (&data.cond, &data.mutex);
+    }
 
-        g_mutex_unlock (&data.mutex);
+    g_mutex_unlock (&data.mutex);
 
-        G_UNLOCK (main_context_sync);
+    G_UNLOCK (main_context_sync);
 
-        g_mutex_clear (&data.mutex);
-        g_cond_clear (&data.cond);
+    g_mutex_clear (&data.mutex);
+    g_cond_clear (&data.cond);
 }
 
-typedef struct {
-        GFile *source_name;
-        GFile *destination_name;
-        GFile *destination_directory_name;
+typedef struct
+{
+    GFile *source_name;
+    GFile *destination_name;
+    GFile *destination_directory_name;
 
-        GtkWindow *parent;
+    GtkWindow *parent;
 
-        FileConflictResponse *response;
+    FileConflictResponse *response;
 
-        NautilusFile *source;
-        NautilusFile *destination;
-        NautilusFile *destination_directory;
+    NautilusFile *source;
+    NautilusFile *destination;
+    NautilusFile *destination_directory;
 
-        NautilusFileConflictDialog *dialog;
+    NautilusFileConflictDialog *dialog;
 
-        NautilusFileListCallback on_file_list_ready;
-        NautilusFileListHandle *handle;
-        gulong source_handler_id;
-        gulong destination_handler_id;
+    NautilusFileListCallback on_file_list_ready;
+    NautilusFileListHandle *handle;
+    gulong source_handler_id;
+    gulong destination_handler_id;
 } FileConflictDialogData;
 
 void
 file_conflict_response_free (FileConflictResponse *response)
 {
-        g_free (response->new_name);
-        g_slice_free (FileConflictResponse, response);
+    g_free (response->new_name);
+    g_slice_free (FileConflictResponse, response);
 }
 
 static void
 set_copy_move_dialog_text (FileConflictDialogData *data)
 {
-        g_autofree gchar *primary_text = NULL;
-        g_autofree gchar *secondary_text = NULL;
-        const gchar *message_extra;
-        time_t source_mtime;
-        time_t destination_mtime;
-        g_autofree gchar *message = NULL;
-        g_autofree gchar *destination_name;
-        g_autofree gchar *destination_directory_name;
-        gboolean source_is_directory;
-        gboolean destination_is_directory;
+    g_autofree gchar *primary_text = NULL;
+    g_autofree gchar *secondary_text = NULL;
+    const gchar *message_extra;
+    time_t source_mtime;
+    time_t destination_mtime;
+    g_autofree gchar *message = NULL;
+    g_autofree gchar *destination_name;
+    g_autofree gchar *destination_directory_name;
+    gboolean source_is_directory;
+    gboolean destination_is_directory;
 
-        source_mtime = nautilus_file_get_mtime (data->source);
-        destination_mtime = nautilus_file_get_mtime (data->destination);
+    source_mtime = nautilus_file_get_mtime (data->source);
+    destination_mtime = nautilus_file_get_mtime (data->destination);
 
-        destination_name = nautilus_file_get_display_name (data->destination);
-        destination_directory_name = nautilus_file_get_display_name (data->destination_directory);
+    destination_name = nautilus_file_get_display_name (data->destination);
+    destination_directory_name = nautilus_file_get_display_name (data->destination_directory);
 
-        source_is_directory = nautilus_file_is_directory (data->source);
-        destination_is_directory = nautilus_file_is_directory (data->destination);
+    source_is_directory = nautilus_file_is_directory (data->source);
+    destination_is_directory = nautilus_file_is_directory (data->destination);
 
-        if (destination_is_directory) {
-                if (source_is_directory) {
-                        primary_text = g_strdup_printf (_("Merge folder “%s”?"),
-                                                        destination_name);
+    if (destination_is_directory)
+    {
+        if (source_is_directory)
+        {
+            primary_text = g_strdup_printf (_("Merge folder “%s”?"),
+                                            destination_name);
 
-                        message_extra = _("Merging will ask for confirmation before replacing any files in "
-                                          "the folder that conflict with the files being copied.");
+            message_extra = _("Merging will ask for confirmation before replacing any files in "
+                              "the folder that conflict with the files being copied.");
 
-                        if (source_mtime > destination_mtime) {
-                                message = g_strdup_printf (_("An older folder with the same name already exists in “%s”."),
-                                                           destination_directory_name);
-                        } else if (source_mtime < destination_mtime) {
-                                message = g_strdup_printf (_("A newer folder with the same name already exists in “%s”."),
-                                                           destination_directory_name);
-                        } else {
-                                message = g_strdup_printf (_("Another folder with the same name already exists in “%s”."),
-                                                           destination_directory_name);
-                        }
-                } else {
-                        primary_text = g_strdup_printf (_("Replace folder “%s”?"),
-                                                        destination_name);
-                        message_extra = _("Replacing it will remove all files in the folder.");
-                        message = g_strdup_printf (_("A folder with the same name already exists in “%s”."),
-                                                   destination_directory_name);
-                }
-        } else {
-                primary_text = g_strdup_printf (_("Replace file “%s”?"),
-                                                destination_name);
-
-                message_extra = _("Replacing it will overwrite its content.");
-
-                if (source_mtime > destination_mtime) {
-                        message = g_strdup_printf (_("An older file with the same name already exists in “%s”."),
-                                                   destination_directory_name);
-                } else if (source_mtime < destination_mtime) {
-                        message = g_strdup_printf (_("A newer file with the same name already exists in “%s”."),
-                                                   destination_directory_name);
-                } else {
-                        message = g_strdup_printf (_("Another file with the same name already exists in “%s”."),
-                                                   destination_directory_name);
-                }
+            if (source_mtime > destination_mtime)
+            {
+                message = g_strdup_printf (_("An older folder with the same name already exists in “%s”."),
+                                           destination_directory_name);
+            }
+            else if (source_mtime < destination_mtime)
+            {
+                message = g_strdup_printf (_("A newer folder with the same name already exists in “%s”."),
+                                           destination_directory_name);
+            }
+            else
+            {
+                message = g_strdup_printf (_("Another folder with the same name already exists in “%s”."),
+                                           destination_directory_name);
+            }
         }
+        else
+        {
+            primary_text = g_strdup_printf (_("Replace folder “%s”?"),
+                                            destination_name);
+            message_extra = _("Replacing it will remove all files in the folder.");
+            message = g_strdup_printf (_("A folder with the same name already exists in “%s”."),
+                                       destination_directory_name);
+        }
+    }
+    else
+    {
+        primary_text = g_strdup_printf (_("Replace file “%s”?"),
+                                        destination_name);
 
-        secondary_text = g_strdup_printf ("%s\n%s", message, message_extra);
+        message_extra = _("Replacing it will overwrite its content.");
 
-        nautilus_file_conflict_dialog_set_text (data->dialog,
-                                                primary_text,
-                                                secondary_text);
+        if (source_mtime > destination_mtime)
+        {
+            message = g_strdup_printf (_("An older file with the same name already exists in “%s”."),
+                                       destination_directory_name);
+        }
+        else if (source_mtime < destination_mtime)
+        {
+            message = g_strdup_printf (_("A newer file with the same name already exists in “%s”."),
+                                       destination_directory_name);
+        }
+        else
+        {
+            message = g_strdup_printf (_("Another file with the same name already exists in “%s”."),
+                                       destination_directory_name);
+        }
+    }
+
+    secondary_text = g_strdup_printf ("%s\n%s", message, message_extra);
+
+    nautilus_file_conflict_dialog_set_text (data->dialog,
+                                            primary_text,
+                                            secondary_text);
 }
 
 static void
 set_images (FileConflictDialogData *data)
 {
-        GdkPixbuf *source_pixbuf;
-        GdkPixbuf *destination_pixbuf;
+    GdkPixbuf *source_pixbuf;
+    GdkPixbuf *destination_pixbuf;
 
-        destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
-                                                            NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-                                                            TRUE,
-                                                            1,
-                                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
+                                                        NAUTILUS_CANVAS_ICON_SIZE_SMALL,
+                                                        TRUE,
+                                                        1,
+                                                        NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
-        source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
-                                                       NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-                                                       TRUE,
-                                                       1,
-                                                       NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
+                                                   NAUTILUS_CANVAS_ICON_SIZE_SMALL,
+                                                   TRUE,
+                                                   1,
+                                                   NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
-        nautilus_file_conflict_dialog_set_images (data->dialog,
-                                                  destination_pixbuf,
-                                                  source_pixbuf);
+    nautilus_file_conflict_dialog_set_images (data->dialog,
+                                              destination_pixbuf,
+                                              source_pixbuf);
 
-        g_object_unref (destination_pixbuf);
-        g_object_unref (source_pixbuf);
+    g_object_unref (destination_pixbuf);
+    g_object_unref (source_pixbuf);
 }
 
 static void
 set_file_labels (FileConflictDialogData *data)
 {
-        GString *destination_label;
-        GString *source_label;
-        gboolean source_is_directory;
-        gboolean destination_is_directory;
-        gboolean should_show_type;
-        g_autofree char *destination_mime_type = NULL;
-        g_autofree char *destination_date = NULL;
-        g_autofree char *destination_size = NULL;
-        g_autofree char *destination_type = NULL;
-        g_autofree char *source_date = NULL;
-        g_autofree char *source_size = NULL;
-        g_autofree char *source_type = NULL;
+    GString *destination_label;
+    GString *source_label;
+    gboolean source_is_directory;
+    gboolean destination_is_directory;
+    gboolean should_show_type;
+    g_autofree char *destination_mime_type = NULL;
+    g_autofree char *destination_date = NULL;
+    g_autofree char *destination_size = NULL;
+    g_autofree char *destination_type = NULL;
+    g_autofree char *source_date = NULL;
+    g_autofree char *source_size = NULL;
+    g_autofree char *source_type = NULL;
 
-        source_is_directory = nautilus_file_is_directory (data->source);
-        destination_is_directory = nautilus_file_is_directory (data->destination);
+    source_is_directory = nautilus_file_is_directory (data->source);
+    destination_is_directory = nautilus_file_is_directory (data->destination);
 
-        destination_mime_type = nautilus_file_get_mime_type (data->destination);
-        should_show_type = !nautilus_file_is_mime_type (data->source,
-                                                        destination_mime_type);
+    destination_mime_type = nautilus_file_get_mime_type (data->destination);
+    should_show_type = !nautilus_file_is_mime_type (data->source,
+                                                    destination_mime_type);
 
-        destination_date = nautilus_file_get_string_attribute (data->destination,
-                                                               "date_modified");
-        destination_size = nautilus_file_get_string_attribute (data->destination,
-                                                               "size");
+    destination_date = nautilus_file_get_string_attribute (data->destination,
+                                                           "date_modified");
+    destination_size = nautilus_file_get_string_attribute (data->destination,
+                                                           "size");
 
-        if (should_show_type) {
-                destination_type = nautilus_file_get_string_attribute (data->destination,
-                                                                       "type");
-        }
+    if (should_show_type)
+    {
+        destination_type = nautilus_file_get_string_attribute (data->destination,
+                                                               "type");
+    }
 
-        destination_label = g_string_new (NULL);
-        if (destination_is_directory) {
-                g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original folder"));
-                g_string_append_printf (destination_label, "%s %s\n", _("Items:"), destination_size);
-        }
-        else {
-                g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original file"));
-                g_string_append_printf (destination_label, "%s %s\n", _("Size:"), destination_size);
-        }
+    destination_label = g_string_new (NULL);
+    if (destination_is_directory)
+    {
+        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original folder"));
+        g_string_append_printf (destination_label, "%s %s\n", _("Items:"), destination_size);
+    }
+    else
+    {
+        g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original file"));
+        g_string_append_printf (destination_label, "%s %s\n", _("Size:"), destination_size);
+    }
 
-        if (should_show_type) {
-                g_string_append_printf (destination_label, "%s %s\n", _("Type:"), destination_type);
-        }
+    if (should_show_type)
+    {
+        g_string_append_printf (destination_label, "%s %s\n", _("Type:"), destination_type);
+    }
 
-        g_string_append_printf (destination_label, "%s %s", _("Last modified:"), destination_date);
+    g_string_append_printf (destination_label, "%s %s", _("Last modified:"), destination_date);
 
-        source_date = nautilus_file_get_string_attribute (data->source,
-                                                          "date_modified");
-        source_size = nautilus_file_get_string_attribute (data->source,
-                                                          "size");
+    source_date = nautilus_file_get_string_attribute (data->source,
+                                                      "date_modified");
+    source_size = nautilus_file_get_string_attribute (data->source,
+                                                      "size");
 
-        if (should_show_type) {
-                source_type = nautilus_file_get_string_attribute (data->source,
-                                                                  "type");
-        }
+    if (should_show_type)
+    {
+        source_type = nautilus_file_get_string_attribute (data->source,
+                                                          "type");
+    }
 
-        source_label = g_string_new (NULL);
-        if (source_is_directory) {
-                g_string_append_printf (source_label, "<b>%s</b>\n",
-                                        destination_is_directory ?
-                                        _("Merge with") : _("Replace with"));
-                g_string_append_printf (source_label, "%s %s\n", _("Items:"), source_size);
-        }
-        else {
-                g_string_append_printf (source_label, "<b>%s</b>\n", _("Replace with"));
-                g_string_append_printf (source_label, "%s %s\n", _("Size:"), source_size);
-        }
+    source_label = g_string_new (NULL);
+    if (source_is_directory)
+    {
+        g_string_append_printf (source_label, "<b>%s</b>\n",
+                                destination_is_directory ?
+                                _("Merge with") : _("Replace with"));
+        g_string_append_printf (source_label, "%s %s\n", _("Items:"), source_size);
+    }
+    else
+    {
+        g_string_append_printf (source_label, "<b>%s</b>\n", _("Replace with"));
+        g_string_append_printf (source_label, "%s %s\n", _("Size:"), source_size);
+    }
 
-        if (should_show_type) {
-                g_string_append_printf (source_label, "%s %s\n", _("Type:"), source_type);
-        }
+    if (should_show_type)
+    {
+        g_string_append_printf (source_label, "%s %s\n", _("Type:"), source_type);
+    }
 
-        g_string_append_printf (source_label, "%s %s", _("Last modified:"), source_date);
+    g_string_append_printf (source_label, "%s %s", _("Last modified:"), source_date);
 
-        nautilus_file_conflict_dialog_set_file_labels (data->dialog,
-                                                       destination_label->str,
-                                                       source_label->str);
+    nautilus_file_conflict_dialog_set_file_labels (data->dialog,
+                                                   destination_label->str,
+                                                   source_label->str);
 
-        g_string_free (destination_label, TRUE);
-        g_string_free (source_label, TRUE);
+    g_string_free (destination_label, TRUE);
+    g_string_free (source_label, TRUE);
 }
 
 static void
 set_conflict_name (FileConflictDialogData *data)
 {
-        g_autofree gchar *edit_name;
+    g_autofree gchar *edit_name;
 
-        edit_name = nautilus_file_get_edit_name (data->destination);
+    edit_name = nautilus_file_get_edit_name (data->destination);
 
-        nautilus_file_conflict_dialog_set_conflict_name (data->dialog,
-                                                         edit_name);
+    nautilus_file_conflict_dialog_set_conflict_name (data->dialog,
+                                                     edit_name);
 }
 
 static void
 set_replace_button_label (FileConflictDialogData *data)
 {
-        gboolean source_is_directory, destination_is_directory;
+    gboolean source_is_directory, destination_is_directory;
 
-        source_is_directory = nautilus_file_is_directory (data->source);
-        destination_is_directory = nautilus_file_is_directory (data->destination);
+    source_is_directory = nautilus_file_is_directory (data->source);
+    destination_is_directory = nautilus_file_is_directory (data->destination);
 
-        if (source_is_directory && destination_is_directory) {
-                nautilus_file_conflict_dialog_set_replace_button_label (data->dialog,
-                                                                        _("Merge"));
-        }
+    if (source_is_directory && destination_is_directory)
+    {
+        nautilus_file_conflict_dialog_set_replace_button_label (data->dialog,
+                                                                _("Merge"));
+    }
 }
 
 static void
 file_icons_changed (NautilusFile           *file,
                     FileConflictDialogData *data)
 {
-        set_images (data);
+    set_images (data);
 }
 
 static void
 copy_move_conflict_on_file_list_ready (GList    *files,
                                        gpointer  user_data)
 {
-        FileConflictDialogData *data = user_data;
-        g_autofree gchar *title;
+    FileConflictDialogData *data = user_data;
+    g_autofree gchar *title;
 
-        data->handle = NULL;
+    data->handle = NULL;
 
-        if (nautilus_file_is_directory (data->source)) {
-                title = g_strdup (nautilus_file_is_directory (data->destination) ?
-                                  _("Merge Folder") :
-                                  _("File and Folder conflict"));
-        } else {
-                title = g_strdup (nautilus_file_is_directory (data->destination) ?
-                                  _("File and Folder conflict") :
-                                  _("File conflict"));
-        }
+    if (nautilus_file_is_directory (data->source))
+    {
+        title = g_strdup (nautilus_file_is_directory (data->destination) ?
+                          _("Merge Folder") :
+                          _("File and Folder conflict"));
+    }
+    else
+    {
+        title = g_strdup (nautilus_file_is_directory (data->destination) ?
+                          _("File and Folder conflict") :
+                          _("File conflict"));
+    }
 
-        gtk_window_set_title (GTK_WINDOW (data->dialog), title);
+    gtk_window_set_title (GTK_WINDOW (data->dialog), title);
 
-        set_copy_move_dialog_text (data);
+    set_copy_move_dialog_text (data);
 
-        set_images (data);
+    set_images (data);
 
-        set_file_labels (data);
+    set_file_labels (data);
 
-        set_conflict_name (data);
+    set_conflict_name (data);
 
-        set_replace_button_label (data);
+    set_replace_button_label (data);
 
-        nautilus_file_monitor_add (data->source, data, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
-        nautilus_file_monitor_add (data->destination, data, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
+    nautilus_file_monitor_add (data->source, data, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
+    nautilus_file_monitor_add (data->destination, data, NAUTILUS_FILE_ATTRIBUTES_FOR_ICON);
 
-        data->source_handler_id = g_signal_connect (data->source, "changed",
-                                                    G_CALLBACK (file_icons_changed), data);
-        data->destination_handler_id = g_signal_connect (data->destination, "changed",
-                                                         G_CALLBACK (file_icons_changed), data);
+    data->source_handler_id = g_signal_connect (data->source, "changed",
+                                                G_CALLBACK (file_icons_changed), data);
+    data->destination_handler_id = g_signal_connect (data->destination, "changed",
+                                                     G_CALLBACK (file_icons_changed), data);
 }
 
 static gboolean
 run_file_conflict_dialog (gpointer user_data)
 {
-        FileConflictDialogData *data = user_data;
-        int response_id;
-        GList *files = NULL;
+    FileConflictDialogData *data = user_data;
+    int response_id;
+    GList *files = NULL;
 
-        data->source = nautilus_file_get (data->source_name);
-        data->destination = nautilus_file_get (data->destination_name);
-        data->destination_directory = nautilus_file_get (data->destination_directory_name);
+    data->source = nautilus_file_get (data->source_name);
+    data->destination = nautilus_file_get (data->destination_name);
+    data->destination_directory = nautilus_file_get (data->destination_directory_name);
 
-        data->dialog = nautilus_file_conflict_dialog_new (data->parent);
+    data->dialog = nautilus_file_conflict_dialog_new (data->parent);
 
-        files = g_list_prepend (files, data->source);
-        files = g_list_prepend (files, data->destination);
-        files = g_list_prepend (files, data->destination_directory);
+    files = g_list_prepend (files, data->source);
+    files = g_list_prepend (files, data->destination);
+    files = g_list_prepend (files, data->destination_directory);
 
-        nautilus_file_list_call_when_ready (files,
-                                            NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
-                                            &data->handle,
-                                            data->on_file_list_ready,
-                                            data);
+    nautilus_file_list_call_when_ready (files,
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
+                                        &data->handle,
+                                        data->on_file_list_ready,
+                                        data);
 
-        response_id = gtk_dialog_run (GTK_DIALOG (data->dialog));
+    response_id = gtk_dialog_run (GTK_DIALOG (data->dialog));
 
-        if (data->handle != NULL) {
-                nautilus_file_list_cancel_call_when_ready (data->handle);
-        }
+    if (data->handle != NULL)
+    {
+        nautilus_file_list_cancel_call_when_ready (data->handle);
+    }
 
-        if (data->source_handler_id) {
-                g_signal_handler_disconnect (data->source, data->source_handler_id);
-                nautilus_file_monitor_remove (data->source, data);
-        }
+    if (data->source_handler_id)
+    {
+        g_signal_handler_disconnect (data->source, data->source_handler_id);
+        nautilus_file_monitor_remove (data->source, data);
+    }
 
-        if (data->destination_handler_id) {
-                g_signal_handler_disconnect (data->destination, data->destination_handler_id);
-                nautilus_file_monitor_remove (data->destination, data);
-        }
+    if (data->destination_handler_id)
+    {
+        g_signal_handler_disconnect (data->destination, data->destination_handler_id);
+        nautilus_file_monitor_remove (data->destination, data);
+    }
 
-        if (response_id == CONFLICT_RESPONSE_RENAME) {
-                data->response->new_name =
-                        nautilus_file_conflict_dialog_get_new_name (data->dialog);
-        } else if (response_id != GTK_RESPONSE_CANCEL ||
-                   response_id != GTK_RESPONSE_NONE) {
-                   data->response->apply_to_all =
-                           nautilus_file_conflict_dialog_get_apply_to_all (data->dialog);
-        }
+    if (response_id == CONFLICT_RESPONSE_RENAME)
+    {
+        data->response->new_name =
+            nautilus_file_conflict_dialog_get_new_name (data->dialog);
+    }
+    else if (response_id != GTK_RESPONSE_CANCEL ||
+             response_id != GTK_RESPONSE_NONE)
+    {
+        data->response->apply_to_all =
+            nautilus_file_conflict_dialog_get_apply_to_all (data->dialog);
+    }
 
-        data->response->id = response_id;
+    data->response->id = response_id;
 
-        gtk_widget_destroy (GTK_WIDGET (data->dialog));
+    gtk_widget_destroy (GTK_WIDGET (data->dialog));
 
-        nautilus_file_unref (data->source);
-        nautilus_file_unref (data->destination);
-        nautilus_file_unref (data->destination_directory);
-        g_list_free (files);
+    nautilus_file_unref (data->source);
+    nautilus_file_unref (data->destination);
+    nautilus_file_unref (data->destination_directory);
+    g_list_free (files);
 
-        return G_SOURCE_REMOVE;
+    return G_SOURCE_REMOVE;
 }
 
 FileConflictResponse *
@@ -426,24 +466,24 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
                                     GFile     *destination_name,
                                     GFile     *destination_directory_name)
 {
-        FileConflictDialogData *data;
+    FileConflictDialogData *data;
 
-        data = g_slice_new0 (FileConflictDialogData);
-        data->parent = parent_window;
-        data->source_name = source_name;
-        data->destination_name = destination_name;
-        data->destination_directory_name = destination_directory_name;
+    data = g_slice_new0 (FileConflictDialogData);
+    data->parent = parent_window;
+    data->source_name = source_name;
+    data->destination_name = destination_name;
+    data->destination_directory_name = destination_directory_name;
 
-        data->response = g_slice_new0 (FileConflictResponse);
-        data->response->new_name = NULL;
+    data->response = g_slice_new0 (FileConflictResponse);
+    data->response->new_name = NULL;
 
-        data->on_file_list_ready = copy_move_conflict_on_file_list_ready;
+    data->on_file_list_ready = copy_move_conflict_on_file_list_ready;
 
-        invoke_main_context_sync (NULL,
-                                  run_file_conflict_dialog,
-                                  data);
+    invoke_main_context_sync (NULL,
+                              run_file_conflict_dialog,
+                              data);
 
-        g_slice_free (FileConflictDialogData, data);
+    g_slice_free (FileConflictDialogData, data);
 
-        return data->response;
+    return data->response;
 }

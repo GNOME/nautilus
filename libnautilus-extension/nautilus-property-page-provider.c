@@ -1,6 +1,6 @@
 /*
  *  nautilus-property-page-provider.c - Interface for Nautilus extensions
- *                                      that provide property pages for 
+ *                                      that provide property pages for
  *                                      files.
  *
  *  Copyright (C) 2003 Novell, Inc.
@@ -17,7 +17,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
@@ -42,31 +42,33 @@ nautilus_property_page_provider_base_init (gpointer g_class)
 {
 }
 
-GType                   
+GType
 nautilus_property_page_provider_get_type (void)
 {
-	static GType type = 0;
+    static GType type = 0;
 
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusPropertyPageProviderIface),
-			nautilus_property_page_provider_base_init,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			0,
-			0,
-			NULL
-		};
-		
-		type = g_type_register_static (G_TYPE_INTERFACE, 
-					       "NautilusPropertyPageProvider",
-					       &info, 0);
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-	}
+    if (!type)
+    {
+        const GTypeInfo info =
+        {
+            sizeof (NautilusPropertyPageProviderIface),
+            nautilus_property_page_provider_base_init,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            0,
+            0,
+            NULL
+        };
 
-	return type;
+        type = g_type_register_static (G_TYPE_INTERFACE,
+                                       "NautilusPropertyPageProvider",
+                                       &info, 0);
+        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
+    }
+
+    return type;
 }
 
 /**
@@ -84,13 +86,11 @@ nautilus_property_page_provider_get_type (void)
  */
 GList *
 nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
-					   GList *files)
+                                           GList                        *files)
 {
-	g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_PROVIDER (provider), NULL);
-	g_return_val_if_fail (NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages != NULL, NULL);
+    g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_PROVIDER (provider), NULL);
+    g_return_val_if_fail (NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages != NULL, NULL);
 
-	return NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages 
-		(provider, files);	
+    return NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages
+               (provider, files);
 }
-
-					       

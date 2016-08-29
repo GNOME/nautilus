@@ -31,55 +31,57 @@
 #include "nautilus-query.h"
 #include "nautilus-enum-types.h"
 
-struct _NautilusQuery {
-        GObject parent;
+struct _NautilusQuery
+{
+    GObject parent;
 
-	char *text;
-	GFile *location;
-	GList *mime_types;
-	gboolean show_hidden;
-        GPtrArray *date_range;
-        NautilusQuerySearchType search_type;
-        NautilusQuerySearchContent search_content;
+    char *text;
+    GFile *location;
+    GList *mime_types;
+    gboolean show_hidden;
+    GPtrArray *date_range;
+    NautilusQuerySearchType search_type;
+    NautilusQuerySearchContent search_content;
 
-        gboolean searching;
-        gboolean recursive;
-	char **prepared_words;
-        GMutex prepared_words_mutex;
+    gboolean searching;
+    gboolean recursive;
+    char **prepared_words;
+    GMutex prepared_words_mutex;
 };
 
-static void  nautilus_query_class_init       (NautilusQueryClass *class);
-static void  nautilus_query_init             (NautilusQuery      *query);
+static void  nautilus_query_class_init (NautilusQueryClass *class);
+static void  nautilus_query_init (NautilusQuery *query);
 
 G_DEFINE_TYPE (NautilusQuery, nautilus_query, G_TYPE_OBJECT);
 
-enum {
-        PROP_0,
-        PROP_DATE_RANGE,
-        PROP_LOCATION,
-        PROP_MIMETYPES,
-        PROP_RECURSIVE,
-        PROP_SEARCH_TYPE,
-        PROP_SEARCHING,
-        PROP_SHOW_HIDDEN,
-        PROP_TEXT,
-        LAST_PROP
+enum
+{
+    PROP_0,
+    PROP_DATE_RANGE,
+    PROP_LOCATION,
+    PROP_MIMETYPES,
+    PROP_RECURSIVE,
+    PROP_SEARCH_TYPE,
+    PROP_SEARCHING,
+    PROP_SHOW_HIDDEN,
+    PROP_TEXT,
+    LAST_PROP
 };
 
 static void
 finalize (GObject *object)
 {
-	NautilusQuery *query;
+    NautilusQuery *query;
 
-	query = NAUTILUS_QUERY (object);
+    query = NAUTILUS_QUERY (object);
 
-        g_free (query->text);
-        g_strfreev (query->prepared_words);
-        g_clear_object (&query->location);
-        g_clear_pointer (&query->date_range, g_ptr_array_unref);
-        g_mutex_clear (&query->prepared_words_mutex);
+    g_free (query->text);
+    g_strfreev (query->prepared_words);
+    g_clear_object (&query->location);
+    g_clear_pointer (&query->date_range, g_ptr_array_unref);
+    g_mutex_clear (&query->prepared_words_mutex);
 
-	G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_query_parent_class)->finalize (object);
 }
 
 static void
@@ -88,44 +90,61 @@ nautilus_query_get_property (GObject    *object,
                              GValue     *value,
                              GParamSpec *pspec)
 {
-        NautilusQuery *self = NAUTILUS_QUERY (object);
+    NautilusQuery *self = NAUTILUS_QUERY (object);
 
-        switch (prop_id) {
+    switch (prop_id)
+    {
         case PROP_DATE_RANGE:
-                g_value_set_pointer (value, self->date_range);
-                break;
+        {
+            g_value_set_pointer (value, self->date_range);
+        }
+        break;
 
         case PROP_LOCATION:
-                g_value_set_object (value, self->location);
-                break;
+        {
+            g_value_set_object (value, self->location);
+        }
+        break;
 
         case PROP_MIMETYPES:
-                g_value_set_pointer (value, self->mime_types);
-                break;
+        {
+            g_value_set_pointer (value, self->mime_types);
+        }
+        break;
 
         case PROP_RECURSIVE:
-                g_value_set_boolean (value, self->recursive);
-                break;
+        {
+            g_value_set_boolean (value, self->recursive);
+        }
+        break;
 
         case PROP_SEARCH_TYPE:
-                g_value_set_enum (value, self->search_type);
-                break;
+        {
+            g_value_set_enum (value, self->search_type);
+        }
+        break;
 
         case PROP_SEARCHING:
-                g_value_set_boolean (value, self->searching);
-                break;
+        {
+            g_value_set_boolean (value, self->searching);
+        }
+        break;
 
         case PROP_SHOW_HIDDEN:
-                g_value_set_boolean (value, self->show_hidden);
-                break;
+        {
+            g_value_set_boolean (value, self->show_hidden);
+        }
+        break;
 
         case PROP_TEXT:
-                g_value_set_string (value, self->text);
-                break;
+        {
+            g_value_set_string (value, self->text);
+        }
+        break;
 
         default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -134,382 +153,413 @@ nautilus_query_set_property (GObject      *object,
                              const GValue *value,
                              GParamSpec   *pspec)
 {
-        NautilusQuery *self = NAUTILUS_QUERY (object);
+    NautilusQuery *self = NAUTILUS_QUERY (object);
 
-        switch (prop_id) {
+    switch (prop_id)
+    {
         case PROP_DATE_RANGE:
-                nautilus_query_set_date_range (self, g_value_get_pointer (value));
-                break;
+        {
+            nautilus_query_set_date_range (self, g_value_get_pointer (value));
+        }
+        break;
 
         case PROP_LOCATION:
-                nautilus_query_set_location (self, g_value_get_object (value));
-                break;
+        {
+            nautilus_query_set_location (self, g_value_get_object (value));
+        }
+        break;
 
         case PROP_MIMETYPES:
-                nautilus_query_set_mime_types (self, g_value_get_pointer (value));
-                break;
+        {
+            nautilus_query_set_mime_types (self, g_value_get_pointer (value));
+        }
+        break;
 
         case PROP_RECURSIVE:
-                nautilus_query_set_recursive (self, g_value_get_boolean (value));
-                break;
+        {
+            nautilus_query_set_recursive (self, g_value_get_boolean (value));
+        }
+        break;
 
         case PROP_SEARCH_TYPE:
-                nautilus_query_set_search_type (self, g_value_get_enum (value));
-                break;
+        {
+            nautilus_query_set_search_type (self, g_value_get_enum (value));
+        }
+        break;
 
         case PROP_SEARCHING:
-                nautilus_query_set_searching (self, g_value_get_boolean (value));
-                break;
+        {
+            nautilus_query_set_searching (self, g_value_get_boolean (value));
+        }
+        break;
+
         case PROP_SHOW_HIDDEN:
-                nautilus_query_set_show_hidden_files (self, g_value_get_boolean (value));
-                break;
+        {
+            nautilus_query_set_show_hidden_files (self, g_value_get_boolean (value));
+        }
+        break;
 
         case PROP_TEXT:
-                nautilus_query_set_text (self, g_value_get_string (value));
-                break;
+        {
+            nautilus_query_set_text (self, g_value_get_string (value));
+        }
+        break;
 
         default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
 nautilus_query_class_init (NautilusQueryClass *class)
 {
-	GObjectClass *gobject_class;
+    GObjectClass *gobject_class;
 
-	gobject_class = G_OBJECT_CLASS (class);
-	gobject_class->finalize = finalize;
-        gobject_class->get_property = nautilus_query_get_property;
-        gobject_class->set_property = nautilus_query_set_property;
+    gobject_class = G_OBJECT_CLASS (class);
+    gobject_class->finalize = finalize;
+    gobject_class->get_property = nautilus_query_get_property;
+    gobject_class->set_property = nautilus_query_set_property;
 
-        /**
-         * NautilusQuery::date-range:
-         *
-         * The date range of the query.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_DATE_RANGE,
-                                         g_param_spec_pointer ("date-range",
-                                                               "Date range of the query",
-                                                               "The range date of the query",
-                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::date-range:
+     *
+     * The date range of the query.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_DATE_RANGE,
+                                     g_param_spec_pointer ("date-range",
+                                                           "Date range of the query",
+                                                           "The range date of the query",
+                                                           G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::location:
-         *
-         * The location of the query.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_LOCATION,
-                                         g_param_spec_object ("location",
-                                                              "Location of the query",
-                                                              "The location of the query",
-                                                              G_TYPE_FILE,
-                                                              G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::location:
+     *
+     * The location of the query.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_LOCATION,
+                                     g_param_spec_object ("location",
+                                                          "Location of the query",
+                                                          "The location of the query",
+                                                          G_TYPE_FILE,
+                                                          G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::mimetypes:
-         *
-         * MIME types the query holds.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_MIMETYPES,
-                                         g_param_spec_pointer ("mimetypes",
-                                                               "MIME types of the query",
-                                                               "The MIME types of the query",
-                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::mimetypes:
+     *
+     * MIME types the query holds.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_MIMETYPES,
+                                     g_param_spec_pointer ("mimetypes",
+                                                           "MIME types of the query",
+                                                           "The MIME types of the query",
+                                                           G_PARAM_READWRITE));
 
-	/**
-         * NautilusQuery::recursive:
-         *
-         * Whether the query is being performed on subdirectories or not.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_RECURSIVE,
-                                         g_param_spec_boolean ("recursive",
-                                                               "Whether the query is being performed on subdirectories",
-                                                               "Whether the query is being performed on subdirectories or not",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::recursive:
+     *
+     * Whether the query is being performed on subdirectories or not.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_RECURSIVE,
+                                     g_param_spec_boolean ("recursive",
+                                                           "Whether the query is being performed on subdirectories",
+                                                           "Whether the query is being performed on subdirectories or not",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::search-type:
-         *
-         * The search type of the query.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_SEARCH_TYPE,
-                                         g_param_spec_enum ("search-type",
-                                                            "Type of the query",
-                                                            "The type of the query",
-                                                            NAUTILUS_TYPE_QUERY_SEARCH_TYPE,
-                                                            NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED,
-                                                            G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::search-type:
+     *
+     * The search type of the query.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_SEARCH_TYPE,
+                                     g_param_spec_enum ("search-type",
+                                                        "Type of the query",
+                                                        "The type of the query",
+                                                        NAUTILUS_TYPE_QUERY_SEARCH_TYPE,
+                                                        NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED,
+                                                        G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::searching:
-         *
-         * Whether the query is being performed or not.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_SEARCHING,
-                                         g_param_spec_boolean ("searching",
-                                                               "Whether the query is being performed",
-                                                               "Whether the query is being performed or not",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::searching:
+     *
+     * Whether the query is being performed or not.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_SEARCHING,
+                                     g_param_spec_boolean ("searching",
+                                                           "Whether the query is being performed",
+                                                           "Whether the query is being performed or not",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::show-hidden:
-         *
-         * Whether the search should include hidden files.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_SHOW_HIDDEN,
-                                         g_param_spec_boolean ("show-hidden",
-                                                               "Show hidden files",
-                                                               "Whether the search should show hidden files",
-                                                               FALSE,
-                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::show-hidden:
+     *
+     * Whether the search should include hidden files.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_SHOW_HIDDEN,
+                                     g_param_spec_boolean ("show-hidden",
+                                                           "Show hidden files",
+                                                           "Whether the search should show hidden files",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
 
-        /**
-         * NautilusQuery::text:
-         *
-         * The search string.
-         *
-         */
-        g_object_class_install_property (gobject_class,
-                                         PROP_TEXT,
-                                         g_param_spec_string ("text",
-                                                              "Text of the search",
-                                                              "The text string of the search",
-                                                              NULL,
-                                                              G_PARAM_READWRITE));
+    /**
+     * NautilusQuery::text:
+     *
+     * The search string.
+     *
+     */
+    g_object_class_install_property (gobject_class,
+                                     PROP_TEXT,
+                                     g_param_spec_string ("text",
+                                                          "Text of the search",
+                                                          "The text string of the search",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
 }
 
 static void
 nautilus_query_init (NautilusQuery *query)
 {
-        query->show_hidden = TRUE;
-        query->location = g_file_new_for_path (g_get_home_dir ());
-        query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
-        query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
-        g_mutex_init (&query->prepared_words_mutex);
+    query->show_hidden = TRUE;
+    query->location = g_file_new_for_path (g_get_home_dir ());
+    query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
+    query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
+    g_mutex_init (&query->prepared_words_mutex);
 }
 
 static gchar *
 prepare_string_for_compare (const gchar *string)
 {
-	gchar *normalized, *res;
+    gchar *normalized, *res;
 
-	normalized = g_utf8_normalize (string, -1, G_NORMALIZE_NFD);
-	res = g_utf8_strdown (normalized, -1);
-	g_free (normalized);
+    normalized = g_utf8_normalize (string, -1, G_NORMALIZE_NFD);
+    res = g_utf8_strdown (normalized, -1);
+    g_free (normalized);
 
-	return res;
+    return res;
 }
 
 gdouble
 nautilus_query_matches_string (NautilusQuery *query,
-			       const gchar *string)
+                               const gchar   *string)
 {
-	gchar *prepared_string, *ptr;
-	gboolean found;
-	gdouble retval;
-	gint idx, nonexact_malus;
+    gchar *prepared_string, *ptr;
+    gboolean found;
+    gdouble retval;
+    gint idx, nonexact_malus;
 
-        if (!query->text) {
-		return -1;
-	}
+    if (!query->text)
+    {
+        return -1;
+    }
 
-        g_mutex_lock (&query->prepared_words_mutex);
-        if (!query->prepared_words) {
-                prepared_string = prepare_string_for_compare (query->text);
-                query->prepared_words = g_strsplit (prepared_string, " ", -1);
-		g_free (prepared_string);
-	}
+    g_mutex_lock (&query->prepared_words_mutex);
+    if (!query->prepared_words)
+    {
+        prepared_string = prepare_string_for_compare (query->text);
+        query->prepared_words = g_strsplit (prepared_string, " ", -1);
+        g_free (prepared_string);
+    }
 
-	prepared_string = prepare_string_for_compare (string);
-	found = TRUE;
-	ptr = NULL;
-	nonexact_malus = 0;
+    prepared_string = prepare_string_for_compare (string);
+    found = TRUE;
+    ptr = NULL;
+    nonexact_malus = 0;
 
-        for (idx = 0; query->prepared_words[idx] != NULL; idx++) {
-                if ((ptr = strstr (prepared_string, query->prepared_words[idx])) == NULL) {
-			found = FALSE;
-			break;
-		}
+    for (idx = 0; query->prepared_words[idx] != NULL; idx++)
+    {
+        if ((ptr = strstr (prepared_string, query->prepared_words[idx])) == NULL)
+        {
+            found = FALSE;
+            break;
+        }
 
-                nonexact_malus += strlen (ptr) - strlen (query->prepared_words[idx]);
-	}
-        g_mutex_unlock (&query->prepared_words_mutex);
+        nonexact_malus += strlen (ptr) - strlen (query->prepared_words[idx]);
+    }
+    g_mutex_unlock (&query->prepared_words_mutex);
 
-	if (!found) {
-		g_free (prepared_string);
-		return -1;
-	}
+    if (!found)
+    {
+        g_free (prepared_string);
+        return -1;
+    }
 
-	retval = MAX (10.0, 50.0 - (gdouble) (ptr - prepared_string) - nonexact_malus);
-	g_free (prepared_string);
+    retval = MAX (10.0, 50.0 - (gdouble) (ptr - prepared_string) - nonexact_malus);
+    g_free (prepared_string);
 
-	return retval;
+    return retval;
 }
 
 NautilusQuery *
 nautilus_query_new (void)
 {
-	return g_object_new (NAUTILUS_TYPE_QUERY,  NULL);
+    return g_object_new (NAUTILUS_TYPE_QUERY, NULL);
 }
 
 
 char *
 nautilus_query_get_text (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-        return g_strdup (query->text);
+    return g_strdup (query->text);
 }
 
-void 
-nautilus_query_set_text (NautilusQuery *query, const char *text)
+void
+nautilus_query_set_text (NautilusQuery *query,
+                         const char    *text)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        g_free (query->text);
-        query->text = g_strstrip (g_strdup (text));
+    g_free (query->text);
+    query->text = g_strstrip (g_strdup (text));
 
-        g_mutex_lock (&query->prepared_words_mutex);
-        g_strfreev (query->prepared_words);
-        query->prepared_words = NULL;
-        g_mutex_unlock (&query->prepared_words_mutex);
+    g_mutex_lock (&query->prepared_words_mutex);
+    g_strfreev (query->prepared_words);
+    query->prepared_words = NULL;
+    g_mutex_unlock (&query->prepared_words_mutex);
 
-        g_object_notify (G_OBJECT (query), "text");
+    g_object_notify (G_OBJECT (query), "text");
 }
 
-GFile*
+GFile *
 nautilus_query_get_location (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-        return g_object_ref (query->location);
+    return g_object_ref (query->location);
 }
 
 void
 nautilus_query_set_location (NautilusQuery *query,
                              GFile         *location)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        if (g_set_object (&query->location, location)) {
-                g_object_notify (G_OBJECT (query), "location");
-        }
-
+    if (g_set_object (&query->location, location))
+    {
+        g_object_notify (G_OBJECT (query), "location");
+    }
 }
 
 GList *
 nautilus_query_get_mime_types (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-        return g_list_copy_deep (query->mime_types, (GCopyFunc) g_strdup, NULL);
+    return g_list_copy_deep (query->mime_types, (GCopyFunc) g_strdup, NULL);
 }
 
 void
-nautilus_query_set_mime_types (NautilusQuery *query, GList *mime_types)
+nautilus_query_set_mime_types (NautilusQuery *query,
+                               GList         *mime_types)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        g_list_free_full (query->mime_types, g_free);
-        query->mime_types = g_list_copy_deep (mime_types, (GCopyFunc) g_strdup, NULL);
+    g_list_free_full (query->mime_types, g_free);
+    query->mime_types = g_list_copy_deep (mime_types, (GCopyFunc) g_strdup, NULL);
 
-        g_object_notify (G_OBJECT (query), "mimetypes");
+    g_object_notify (G_OBJECT (query), "mimetypes");
 }
 
 void
-nautilus_query_add_mime_type (NautilusQuery *query, const char *mime_type)
+nautilus_query_add_mime_type (NautilusQuery *query,
+                              const char    *mime_type)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        query->mime_types = g_list_append (query->mime_types, g_strdup (mime_type));
+    query->mime_types = g_list_append (query->mime_types, g_strdup (mime_type));
 
-        g_object_notify (G_OBJECT (query), "mimetypes");
+    g_object_notify (G_OBJECT (query), "mimetypes");
 }
 
 gboolean
 nautilus_query_get_show_hidden_files (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-        return query->show_hidden;
+    return query->show_hidden;
 }
 
 void
-nautilus_query_set_show_hidden_files (NautilusQuery *query, gboolean show_hidden)
+nautilus_query_set_show_hidden_files (NautilusQuery *query,
+                                      gboolean       show_hidden)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        if (query->show_hidden != show_hidden) {
-                query->show_hidden = show_hidden;
-                g_object_notify (G_OBJECT (query), "show-hidden");
-        }
+    if (query->show_hidden != show_hidden)
+    {
+        query->show_hidden = show_hidden;
+        g_object_notify (G_OBJECT (query), "show-hidden");
+    }
 }
 
 char *
 nautilus_query_to_readable_string (NautilusQuery *query)
 {
-        if (!query || !query->text || query->text[0] == '\0') {
-                return g_strdup (_("Search"));
-        }
+    if (!query || !query->text || query->text[0] == '\0')
+    {
+        return g_strdup (_("Search"));
+    }
 
-        return g_strdup_printf (_("Search for “%s”"), query->text);
+    return g_strdup_printf (_("Search for “%s”"), query->text);
 }
 
 NautilusQuerySearchContent
 nautilus_query_get_search_content (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
-        return query->search_content;
+    return query->search_content;
 }
 
 void
 nautilus_query_set_search_content (NautilusQuery              *query,
                                    NautilusQuerySearchContent  content)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        if (query->search_content != content) {
-                query->search_content = content;
-                g_object_notify (G_OBJECT (query), "search-type");
-        }
+    if (query->search_content != content)
+    {
+        query->search_content = content;
+        g_object_notify (G_OBJECT (query), "search-type");
+    }
 }
 
 NautilusQuerySearchType
 nautilus_query_get_search_type (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), -1);
 
-        return query->search_type;
+    return query->search_type;
 }
 
 void
 nautilus_query_set_search_type (NautilusQuery           *query,
                                 NautilusQuerySearchType  type)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        if (query->search_type != type) {
-                query->search_type = type;
-                g_object_notify (G_OBJECT (query), "search-type");
-        }
+    if (query->search_type != type)
+    {
+        query->search_type = type;
+        g_object_notify (G_OBJECT (query), "search-type");
+    }
 }
 
 /**
@@ -521,94 +571,100 @@ nautilus_query_set_search_type (NautilusQuery           *query,
  *
  * Returns: (transfer full): the #GptrArray composed of #GDateTime representing the date range.
  */
-GPtrArray*
+GPtrArray *
 nautilus_query_get_date_range (NautilusQuery *query)
 {
-        static GMutex mutex;
+    static GMutex mutex;
 
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-        g_mutex_lock (&mutex);
-        if (query->date_range)
-                g_ptr_array_ref (query->date_range);
-        g_mutex_unlock (&mutex);
+    g_mutex_lock (&mutex);
+    if (query->date_range)
+    {
+        g_ptr_array_ref (query->date_range);
+    }
+    g_mutex_unlock (&mutex);
 
-        return query->date_range;
+    return query->date_range;
 }
 
 void
 nautilus_query_set_date_range (NautilusQuery *query,
                                GPtrArray     *date_range)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        g_clear_pointer (&query->date_range, g_ptr_array_unref);
-        if (date_range) {
-                query->date_range = g_ptr_array_ref (date_range);
-        }
+    g_clear_pointer (&query->date_range, g_ptr_array_unref);
+    if (date_range)
+    {
+        query->date_range = g_ptr_array_ref (date_range);
+    }
 
-        g_object_notify (G_OBJECT (query), "date-range");
+    g_object_notify (G_OBJECT (query), "date-range");
 }
 
 gboolean
 nautilus_query_get_searching (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-        return query->searching;
+    return query->searching;
 }
 
 void
 nautilus_query_set_searching (NautilusQuery *query,
                               gboolean       searching)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        searching = !!searching;
+    searching = !!searching;
 
-        if (query->searching != searching) {
-                query->searching = searching;
+    if (query->searching != searching)
+    {
+        query->searching = searching;
 
-                g_object_notify (G_OBJECT (query), "searching");
-        }
+        g_object_notify (G_OBJECT (query), "searching");
+    }
 }
 
 gboolean
 nautilus_query_get_recursive (NautilusQuery *query)
 {
-        g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-        return query->recursive;
+    return query->recursive;
 }
 
 void
 nautilus_query_set_recursive (NautilusQuery *query,
                               gboolean       recursive)
 {
-        g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-        recursive = !!recursive;
+    recursive = !!recursive;
 
-        if (query->recursive != recursive) {
-                query->recursive = recursive;
+    if (query->recursive != recursive)
+    {
+        query->recursive = recursive;
 
-                g_object_notify (G_OBJECT (query), "recursive");
-        }
+        g_object_notify (G_OBJECT (query), "recursive");
+    }
 }
 
 gboolean
 nautilus_query_is_empty (NautilusQuery *query)
 {
-        if (!query) {
-                return TRUE;
-
-        }
-
-        if (!query->date_range &&
-            (!query->text || (query->text && query->text[0] == '\0')) &&
-            !query->mime_types) {
-                return TRUE;
+    if (!query)
+    {
+        return TRUE;
     }
 
-        return FALSE;
+    if (!query->date_range &&
+        (!query->text || (query->text && query->text[0] == '\0')) &&
+        !query->mime_types)
+    {
+        return TRUE;
+    }
+
+    return FALSE;
 }

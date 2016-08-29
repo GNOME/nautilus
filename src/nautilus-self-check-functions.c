@@ -1,4 +1,3 @@
-
 /*
  * Nautilus
  *
@@ -19,20 +18,20 @@
  *
  * Author: Darin Adler <darin@bentspoon.com>
  */
-   
+
 /* nautilus-self-check-functions.c: Wrapper for all self check functions
  * in Nautilus proper.
  */
 
 #include <config.h>
 
-#if ! defined (NAUTILUS_OMIT_SELF_CHECK)
+#if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 #include "nautilus-self-check-functions.h"
 
 void nautilus_run_self_checks(void)
 {
-	NAUTILUS_FOR_EACH_SELF_CHECK_FUNCTION (NAUTILUS_CALL_SELF_CHECK_FUNCTION)
+    NAUTILUS_FOR_EACH_SELF_CHECK_FUNCTION (NAUTILUS_CALL_SELF_CHECK_FUNCTION)
 }
 
 #endif /* ! NAUTILUS_OMIT_SELF_CHECK */

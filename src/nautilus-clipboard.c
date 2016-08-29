@@ -1,4 +1,3 @@
-
 /* nautilus-clipboard.c
  *
  * Nautilus Clipboard support.  For now, routines to support component cut
@@ -33,101 +32,117 @@
 #include <string.h>
 
 static GList *
-convert_lines_to_str_list (char **lines, gboolean *cut)
+convert_lines_to_str_list (char     **lines,
+                           gboolean  *cut)
 {
-	int i;
-	GList *result;
+    int i;
+    GList *result;
 
-	if (cut) {
-		*cut = FALSE;
-	}
+    if (cut)
+    {
+        *cut = FALSE;
+    }
 
-	if (lines[0] == NULL) {
-		return NULL;
-	}
+    if (lines[0] == NULL)
+    {
+        return NULL;
+    }
 
-	if (strcmp (lines[0], "cut") == 0) {
-		if (cut) {
-			*cut = TRUE;
-		}
-	} else if (strcmp (lines[0], "copy") != 0) {
-		return NULL;
-	}
+    if (strcmp (lines[0], "cut") == 0)
+    {
+        if (cut)
+        {
+            *cut = TRUE;
+        }
+    }
+    else if (strcmp (lines[0], "copy") != 0)
+    {
+        return NULL;
+    }
 
-	result = NULL;
-	for (i = 1; lines[i] != NULL; i++) {
-		result = g_list_prepend (result, g_strdup (lines[i]));
-	}
-	return g_list_reverse (result);
+    result = NULL;
+    for (i = 1; lines[i] != NULL; i++)
+    {
+        result = g_list_prepend (result, g_strdup (lines[i]));
+    }
+    return g_list_reverse (result);
 }
 
-GList*
+GList *
 nautilus_clipboard_get_uri_list_from_selection_data (GtkSelectionData *selection_data,
-						     gboolean *cut,
-						     GdkAtom copied_files_atom)
+                                                     gboolean         *cut,
+                                                     GdkAtom           copied_files_atom)
 {
-	GList *items;
-	char **lines;
+    GList *items;
+    char **lines;
 
-	if (gtk_selection_data_get_data_type (selection_data) != copied_files_atom
-	    || gtk_selection_data_get_length (selection_data) <= 0) {
-		items = NULL;
-	} else {
-		gchar *data;
-		/* Not sure why it's legal to assume there's an extra byte
-		 * past the end of the selection data that it's safe to write
-		 * to. But gtk_editable_selection_received does this, so I
-		 * think it is OK.
-		 */
-		data = (gchar *) gtk_selection_data_get_data (selection_data);
-		data[gtk_selection_data_get_length (selection_data)] = '\0';
-		lines = g_strsplit (data, "\n", 0);
-		items = convert_lines_to_str_list (lines, cut);
-		g_strfreev (lines);
-	}
-	
-	return items;
+    if (gtk_selection_data_get_data_type (selection_data) != copied_files_atom
+        || gtk_selection_data_get_length (selection_data) <= 0)
+    {
+        items = NULL;
+    }
+    else
+    {
+        gchar *data;
+        /* Not sure why it's legal to assume there's an extra byte
+         * past the end of the selection data that it's safe to write
+         * to. But gtk_editable_selection_received does this, so I
+         * think it is OK.
+         */
+        data = (gchar *) gtk_selection_data_get_data (selection_data);
+        data[gtk_selection_data_get_length (selection_data)] = '\0';
+        lines = g_strsplit (data, "\n", 0);
+        items = convert_lines_to_str_list (lines, cut);
+        g_strfreev (lines);
+    }
+
+    return items;
 }
 
 GtkClipboard *
 nautilus_clipboard_get (GtkWidget *widget)
 {
-	return gtk_clipboard_get_for_display (gtk_widget_get_display (GTK_WIDGET (widget)),
-					      GDK_SELECTION_CLIPBOARD);
+    return gtk_clipboard_get_for_display (gtk_widget_get_display (GTK_WIDGET (widget)),
+                                          GDK_SELECTION_CLIPBOARD);
 }
 
 void
-nautilus_clipboard_clear_if_colliding_uris (GtkWidget *widget,
-					    const GList *item_uris,
-					    GdkAtom copied_files_atom)
+nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
+                                            const GList *item_uris,
+                                            GdkAtom      copied_files_atom)
 {
-	GtkSelectionData *data;
-	GList *clipboard_item_uris, *l;
-	gboolean collision;
+    GtkSelectionData *data;
+    GList *clipboard_item_uris, *l;
+    gboolean collision;
 
-	collision = FALSE;
-	data = gtk_clipboard_wait_for_contents (nautilus_clipboard_get (widget),
-						copied_files_atom);
-	if (data == NULL) {
-		return;
-	}
+    collision = FALSE;
+    data = gtk_clipboard_wait_for_contents (nautilus_clipboard_get (widget),
+                                            copied_files_atom);
+    if (data == NULL)
+    {
+        return;
+    }
 
-	clipboard_item_uris = nautilus_clipboard_get_uri_list_from_selection_data (data, NULL,
-										   copied_files_atom);
+    clipboard_item_uris = nautilus_clipboard_get_uri_list_from_selection_data (data, NULL,
+                                                                               copied_files_atom);
 
-	for (l = (GList *) item_uris; l; l = l->next) {
-		if (g_list_find_custom ((GList *) item_uris, l->data,
-					(GCompareFunc) g_strcmp0)) {
-			collision = TRUE;
-			break;
-		}
-	}
-	
-	if (collision) {
-		gtk_clipboard_clear (nautilus_clipboard_get (widget));
-	}
-	
-	if (clipboard_item_uris) {
-		g_list_free_full (clipboard_item_uris, g_free);
-	}
+    for (l = (GList *) item_uris; l; l = l->next)
+    {
+        if (g_list_find_custom ((GList *) item_uris, l->data,
+                                (GCompareFunc) g_strcmp0))
+        {
+            collision = TRUE;
+            break;
+        }
+    }
+
+    if (collision)
+    {
+        gtk_clipboard_clear (nautilus_clipboard_get (widget));
+    }
+
+    if (clipboard_item_uris)
+    {
+        g_list_free_full (clipboard_item_uris, g_free);
+    }
 }

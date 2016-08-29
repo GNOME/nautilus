@@ -16,7 +16,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
@@ -25,31 +25,34 @@
 #include <glib/gi18n-lib.h>
 #include "nautilus-menu.h"
 
-enum {
-	ACTIVATE,
-	LAST_SIGNAL
+enum
+{
+    ACTIVATE,
+    LAST_SIGNAL
 };
 
-enum {
-	PROP_0,
-	PROP_NAME,
-	PROP_LABEL,
-	PROP_TIP,
-	PROP_ICON,
-	PROP_SENSITIVE,
-	PROP_PRIORITY,
-	PROP_MENU,
-	LAST_PROP
+enum
+{
+    PROP_0,
+    PROP_NAME,
+    PROP_LABEL,
+    PROP_TIP,
+    PROP_ICON,
+    PROP_SENSITIVE,
+    PROP_PRIORITY,
+    PROP_MENU,
+    LAST_PROP
 };
 
-struct _NautilusMenuItemDetails {
-	char *name;
-	char *label;
-	char *tip;
-	char *icon;
-	NautilusMenu *menu;
-	gboolean sensitive;
-	gboolean priority;
+struct _NautilusMenuItemDetails
+{
+    char *name;
+    char *label;
+    char *tip;
+    char *icon;
+    NautilusMenu *menu;
+    gboolean sensitive;
+    gboolean priority;
 };
 
 static guint signals[LAST_SIGNAL];
@@ -83,24 +86,24 @@ static GObjectClass *parent_class = NULL;
  */
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
-			const char *label,
-			const char *tip,
-			const char *icon)
+                        const char *label,
+                        const char *tip,
+                        const char *icon)
 {
-	NautilusMenuItem *item;
+    NautilusMenuItem *item;
 
-	g_return_val_if_fail (name != NULL, NULL);
-	g_return_val_if_fail (label != NULL, NULL);
-	g_return_val_if_fail (tip != NULL, NULL);
+    g_return_val_if_fail (name != NULL, NULL);
+    g_return_val_if_fail (label != NULL, NULL);
+    g_return_val_if_fail (tip != NULL, NULL);
 
-	item = g_object_new (NAUTILUS_TYPE_MENU_ITEM, 
-			     "name", name,
-			     "label", label,
-			     "tip", tip,
-			     "icon", icon,
-			     NULL);
+    item = g_object_new (NAUTILUS_TYPE_MENU_ITEM,
+                         "name", name,
+                         "label", label,
+                         "tip", tip,
+                         "icon", icon,
+                         NULL);
 
-	return item;
+    return item;
 }
 
 /**
@@ -112,7 +115,7 @@ nautilus_menu_item_new (const char *name,
 void
 nautilus_menu_item_activate (NautilusMenuItem *item)
 {
-	g_signal_emit (item, signals[ACTIVATE], 0);
+    g_signal_emit (item, signals[ACTIVATE], 0);
 }
 
 /**
@@ -123,224 +126,276 @@ nautilus_menu_item_activate (NautilusMenuItem *item)
  * Attachs a menu to the given #NautilusMenuItem.
  */
 void
-nautilus_menu_item_set_submenu (NautilusMenuItem *item, NautilusMenu *menu)
+nautilus_menu_item_set_submenu (NautilusMenuItem *item,
+                                NautilusMenu     *menu)
 {
-	g_object_set (item, "menu", menu, NULL);
+    g_object_set (item, "menu", menu, NULL);
 }
 
 static void
-nautilus_menu_item_get_property (GObject *object,
-				 guint param_id,
-				 GValue *value,
-				 GParamSpec *pspec)
+nautilus_menu_item_get_property (GObject    *object,
+                                 guint       param_id,
+                                 GValue     *value,
+                                 GParamSpec *pspec)
 {
-	NautilusMenuItem *item;
-	
-	item = NAUTILUS_MENU_ITEM (object);
-	
-	switch (param_id) {
-	case PROP_NAME :
-		g_value_set_string (value, item->details->name);
-		break;
-	case PROP_LABEL :
-		g_value_set_string (value, item->details->label);
-		break;
-	case PROP_TIP :
-		g_value_set_string (value, item->details->tip);
-		break;
-	case PROP_ICON :
-		g_value_set_string (value, item->details->icon);
-		break;
-	case PROP_SENSITIVE :
-		g_value_set_boolean (value, item->details->sensitive);
-		break;
-	case PROP_PRIORITY :
-		g_value_set_boolean (value, item->details->priority);
-		break;
-	case PROP_MENU :
-		g_value_set_object (value, item->details->menu);
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-		break;
-	}
+    NautilusMenuItem *item;
+
+    item = NAUTILUS_MENU_ITEM (object);
+
+    switch (param_id)
+    {
+        case PROP_NAME:
+        {
+            g_value_set_string (value, item->details->name);
+        }
+        break;
+
+        case PROP_LABEL:
+        {
+            g_value_set_string (value, item->details->label);
+        }
+        break;
+
+        case PROP_TIP:
+        {
+            g_value_set_string (value, item->details->tip);
+        }
+        break;
+
+        case PROP_ICON:
+        {
+            g_value_set_string (value, item->details->icon);
+        }
+        break;
+
+        case PROP_SENSITIVE:
+        {
+            g_value_set_boolean (value, item->details->sensitive);
+        }
+        break;
+
+        case PROP_PRIORITY:
+        {
+            g_value_set_boolean (value, item->details->priority);
+        }
+        break;
+
+        case PROP_MENU:
+        {
+            g_value_set_object (value, item->details->menu);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+        }
+        break;
+    }
 }
 
 static void
-nautilus_menu_item_set_property (GObject *object,
-				 guint param_id,
-				 const GValue *value,
-				 GParamSpec *pspec)
+nautilus_menu_item_set_property (GObject      *object,
+                                 guint         param_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
-	NautilusMenuItem *item;
-	
-	item = NAUTILUS_MENU_ITEM (object);
+    NautilusMenuItem *item;
 
-	switch (param_id) {
-	case PROP_NAME :
-		g_free (item->details->name);
-		item->details->name = g_strdup (g_value_get_string (value));
-		g_object_notify (object, "name");
-		break;
-	case PROP_LABEL :
-		g_free (item->details->label);
-		item->details->label = g_strdup (g_value_get_string (value));
-		g_object_notify (object, "label");
-		break;
-	case PROP_TIP :
-		g_free (item->details->tip);
-		item->details->tip = g_strdup (g_value_get_string (value));
-		g_object_notify (object, "tip");
-		break;
-	case PROP_ICON :
-		g_free (item->details->icon);
-		item->details->icon = g_strdup (g_value_get_string (value));
-		g_object_notify (object, "icon");
-		break;
-	case PROP_SENSITIVE :
-		item->details->sensitive = g_value_get_boolean (value);
-		g_object_notify (object, "sensitive");
-		break;
-	case PROP_PRIORITY :
-		item->details->priority = g_value_get_boolean (value);
-		g_object_notify (object, "priority");
-		break;
-	case PROP_MENU :
-		if (item->details->menu) {
-			g_object_unref (item->details->menu);
-		}
-		item->details->menu = g_object_ref (g_value_get_object (value));
-		g_object_notify (object, "menu");
-		break;
-	default :
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
-		break;
-	}
+    item = NAUTILUS_MENU_ITEM (object);
+
+    switch (param_id)
+    {
+        case PROP_NAME:
+        {
+            g_free (item->details->name);
+            item->details->name = g_strdup (g_value_get_string (value));
+            g_object_notify (object, "name");
+        }
+        break;
+
+        case PROP_LABEL:
+        {
+            g_free (item->details->label);
+            item->details->label = g_strdup (g_value_get_string (value));
+            g_object_notify (object, "label");
+        }
+        break;
+
+        case PROP_TIP:
+        {
+            g_free (item->details->tip);
+            item->details->tip = g_strdup (g_value_get_string (value));
+            g_object_notify (object, "tip");
+        }
+        break;
+
+        case PROP_ICON:
+        {
+            g_free (item->details->icon);
+            item->details->icon = g_strdup (g_value_get_string (value));
+            g_object_notify (object, "icon");
+        }
+        break;
+
+        case PROP_SENSITIVE:
+        {
+            item->details->sensitive = g_value_get_boolean (value);
+            g_object_notify (object, "sensitive");
+        }
+        break;
+
+        case PROP_PRIORITY:
+        {
+            item->details->priority = g_value_get_boolean (value);
+            g_object_notify (object, "priority");
+        }
+        break;
+
+        case PROP_MENU:
+        {
+            if (item->details->menu)
+            {
+                g_object_unref (item->details->menu);
+            }
+            item->details->menu = g_object_ref (g_value_get_object (value));
+            g_object_notify (object, "menu");
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
+        }
+        break;
+    }
 }
 
 static void
 nautilus_menu_item_finalize (GObject *object)
 {
-	NautilusMenuItem *item;
+    NautilusMenuItem *item;
 
-	item = NAUTILUS_MENU_ITEM (object);
+    item = NAUTILUS_MENU_ITEM (object);
 
-	g_free (item->details->name);
-	g_free (item->details->label);
-	g_free (item->details->tip);
-	g_free (item->details->icon);
-	if (item->details->menu) {
-		g_object_unref (item->details->menu);
-	}
+    g_free (item->details->name);
+    g_free (item->details->label);
+    g_free (item->details->tip);
+    g_free (item->details->icon);
+    if (item->details->menu)
+    {
+        g_object_unref (item->details->menu);
+    }
 
-	g_free (item->details);
+    g_free (item->details);
 
-	G_OBJECT_CLASS (parent_class)->finalize (object);
+    G_OBJECT_CLASS (parent_class)->finalize (object);
 }
 
 static void
 nautilus_menu_item_instance_init (NautilusMenuItem *item)
 {
-	item->details = g_new0 (NautilusMenuItemDetails, 1);
-	item->details->sensitive = TRUE;
-	item->details->menu = NULL;
+    item->details = g_new0 (NautilusMenuItemDetails, 1);
+    item->details->sensitive = TRUE;
+    item->details->menu = NULL;
 }
 
 static void
 nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 {
-	parent_class = g_type_class_peek_parent (class);
-	
-	G_OBJECT_CLASS (class)->finalize = nautilus_menu_item_finalize;
-	G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
-	G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;
+    parent_class = g_type_class_peek_parent (class);
 
-        signals[ACTIVATE] =
-                g_signal_new ("activate",
-                              G_TYPE_FROM_CLASS (class),
-                              G_SIGNAL_RUN_LAST,
-                              G_STRUCT_OFFSET (NautilusMenuItemClass, 
-					       activate),
-                              NULL, NULL,
-                              g_cclosure_marshal_VOID__VOID,
-                              G_TYPE_NONE, 0); 
+    G_OBJECT_CLASS (class)->finalize = nautilus_menu_item_finalize;
+    G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
+    G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;
 
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_NAME,
-					 g_param_spec_string ("name",
-							      "Name",
-							      "Name of the item",
-							      NULL,
-							      G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_LABEL,
-					 g_param_spec_string ("label",
-							      "Label",
-							      "Label to display to the user",
-							      NULL,
-							      G_PARAM_READWRITE));
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_TIP,
-					 g_param_spec_string ("tip",
-							      "Tip",
-							      "Tooltip for the menu item",
-							      NULL,
-							      G_PARAM_READWRITE));
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_ICON,
-					 g_param_spec_string ("icon",
-							      "Icon",
-							      "Name of the icon to display in the menu item",
-							      NULL,
-							      G_PARAM_READWRITE));
+    signals[ACTIVATE] =
+        g_signal_new ("activate",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST,
+                      G_STRUCT_OFFSET (NautilusMenuItemClass,
+                                       activate),
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
 
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_SENSITIVE,
-					 g_param_spec_boolean ("sensitive",
-							       "Sensitive",
-							       "Whether the menu item is sensitive",
-							       TRUE,
-							       G_PARAM_READWRITE));
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_PRIORITY,
-					 g_param_spec_boolean ("priority",
-							       "Priority",
-							       "Show priority text in toolbars",
-							       TRUE,
-							       G_PARAM_READWRITE));
-	g_object_class_install_property (G_OBJECT_CLASS (class),
-					 PROP_MENU,
-					 g_param_spec_object ("menu",
-							       "Menu",
-							       "The menu belonging to this item. May be null.",
-							       NAUTILUS_TYPE_MENU,
-							       G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_NAME,
+                                     g_param_spec_string ("name",
+                                                          "Name",
+                                                          "Name of the item",
+                                                          NULL,
+                                                          G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_LABEL,
+                                     g_param_spec_string ("label",
+                                                          "Label",
+                                                          "Label to display to the user",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_TIP,
+                                     g_param_spec_string ("tip",
+                                                          "Tip",
+                                                          "Tooltip for the menu item",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_ICON,
+                                     g_param_spec_string ("icon",
+                                                          "Icon",
+                                                          "Name of the icon to display in the menu item",
+                                                          NULL,
+                                                          G_PARAM_READWRITE));
+
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_SENSITIVE,
+                                     g_param_spec_boolean ("sensitive",
+                                                           "Sensitive",
+                                                           "Whether the menu item is sensitive",
+                                                           TRUE,
+                                                           G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_PRIORITY,
+                                     g_param_spec_boolean ("priority",
+                                                           "Priority",
+                                                           "Show priority text in toolbars",
+                                                           TRUE,
+                                                           G_PARAM_READWRITE));
+    g_object_class_install_property (G_OBJECT_CLASS (class),
+                                     PROP_MENU,
+                                     g_param_spec_object ("menu",
+                                                          "Menu",
+                                                          "The menu belonging to this item. May be null.",
+                                                          NAUTILUS_TYPE_MENU,
+                                                          G_PARAM_READWRITE));
 }
 
-GType 
+GType
 nautilus_menu_item_get_type (void)
 {
-	static GType type = 0;
-	
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusMenuItemClass),
-			NULL,
-			NULL,
-			(GClassInitFunc)nautilus_menu_item_class_init,
-			NULL,
-			NULL,
-			sizeof (NautilusMenuItem),
-			0,
-			(GInstanceInitFunc)nautilus_menu_item_instance_init
-		};
-		
-		type = g_type_register_static 
-			(G_TYPE_OBJECT, 
-			 "NautilusMenuItem",
-			 &info, 0);
-	}
+    static GType type = 0;
 
-	return type;
+    if (!type)
+    {
+        const GTypeInfo info =
+        {
+            sizeof (NautilusMenuItemClass),
+            NULL,
+            NULL,
+            (GClassInitFunc) nautilus_menu_item_class_init,
+            NULL,
+            NULL,
+            sizeof (NautilusMenuItem),
+            0,
+            (GInstanceInitFunc) nautilus_menu_item_instance_init
+        };
+
+        type = g_type_register_static
+                   (G_TYPE_OBJECT,
+                   "NautilusMenuItem",
+                   &info, 0);
+    }
+
+    return type;
 }
-

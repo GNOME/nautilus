@@ -1,4 +1,3 @@
-
 /*
  * Nautilus
  *
@@ -55,54 +54,57 @@
 #endif
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
-	gint retval;
-	NautilusApplication *application;
-	
+    gint retval;
+    NautilusApplication *application;
+
 #if defined (HAVE_MALLOPT) && defined(M_MMAP_THRESHOLD)
-	/* Nautilus uses lots and lots of small and medium size allocations,
-	 * and then a few large ones for the desktop background. By default
-	 * glibc uses a dynamic treshold for how large allocations should
-	 * be mmaped. Unfortunately this triggers quickly for nautilus when
-	 * it does the desktop background allocations, raising the limit
-	 * such that a lot of temporary large allocations end up on the
-	 * heap and are thus not returned to the OS. To fix this we set
-	 * a hardcoded limit. I don't know what a good value is, but 128K
-	 * was the old glibc static limit, lets use that.
-	 */
-	mallopt (M_MMAP_THRESHOLD, 128 *1024);
+    /* Nautilus uses lots and lots of small and medium size allocations,
+     * and then a few large ones for the desktop background. By default
+     * glibc uses a dynamic treshold for how large allocations should
+     * be mmaped. Unfortunately this triggers quickly for nautilus when
+     * it does the desktop background allocations, raising the limit
+     * such that a lot of temporary large allocations end up on the
+     * heap and are thus not returned to the OS. To fix this we set
+     * a hardcoded limit. I don't know what a good value is, but 128K
+     * was the old glibc static limit, lets use that.
+     */
+    mallopt (M_MMAP_THRESHOLD, 128 * 1024);
 #endif
 
-	if (g_getenv ("NAUTILUS_DEBUG") != NULL) {
-		eel_make_warnings_and_criticals_stop_in_debugger ();
-	}
-	
-	/* Initialize gettext support */
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-	textdomain (GETTEXT_PACKAGE);
+    if (g_getenv ("NAUTILUS_DEBUG") != NULL)
+    {
+        eel_make_warnings_and_criticals_stop_in_debugger ();
+    }
 
-	g_set_prgname ("nautilus");
+    /* Initialize gettext support */
+    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
+
+    g_set_prgname ("nautilus");
 
 #ifdef HAVE_EXEMPI
-	xmp_init();
+    xmp_init ();
 #endif
-	nautilus_register_resource ();
-	/* Run the nautilus application. */
-	application = nautilus_application_new ();
+    nautilus_register_resource ();
+    /* Run the nautilus application. */
+    application = nautilus_application_new ();
 
-	/* hold indefinitely if we're asked to persist */
-	if (g_getenv ("NAUTILUS_PERSIST") != NULL) {
-		g_application_hold (G_APPLICATION (application));
-	}
+    /* hold indefinitely if we're asked to persist */
+    if (g_getenv ("NAUTILUS_PERSIST") != NULL)
+    {
+        g_application_hold (G_APPLICATION (application));
+    }
 
-	retval = g_application_run (G_APPLICATION (application),
-				    argc, argv);
+    retval = g_application_run (G_APPLICATION (application),
+                                argc, argv);
 
-	g_object_unref (application);
+    g_object_unref (application);
 
- 	eel_debug_shut_down ();
+    eel_debug_shut_down ();
 
-	return retval;
+    return retval;
 }

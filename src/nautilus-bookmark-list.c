@@ -1,4 +1,3 @@
-
 /*
  * Nautilus
  *
@@ -37,202 +36,208 @@
 #define LOAD_JOB 1
 #define SAVE_JOB 2
 
-enum {
-	CHANGED,
-	LAST_SIGNAL
+enum
+{
+    CHANGED,
+    LAST_SIGNAL
 };
 
 static guint signals[LAST_SIGNAL];
 
 /* forward declarations */
 
-static void        nautilus_bookmark_list_load_file     (NautilusBookmarkList *bookmarks);
-static void        nautilus_bookmark_list_save_file     (NautilusBookmarkList *bookmarks);
+static void        nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks);
+static void        nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks);
 
-G_DEFINE_TYPE(NautilusBookmarkList, nautilus_bookmark_list, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusBookmarkList, nautilus_bookmark_list, G_TYPE_OBJECT)
 
 static NautilusBookmark *
 new_bookmark_from_uri (const char *uri, const char *label)
 {
-	NautilusBookmark *new_bookmark;
-	GFile *location;
+    NautilusBookmark *new_bookmark;
+    GFile *location;
 
-	location = NULL;
-	if (uri) {
-		location = g_file_new_for_uri (uri);
-	}
-	
-	new_bookmark = NULL;
+    location = NULL;
+    if (uri)
+    {
+        location = g_file_new_for_uri (uri);
+    }
 
-	if (location) {
-		new_bookmark = nautilus_bookmark_new (location, label);
-		g_object_unref (location);
-	}
+    new_bookmark = NULL;
 
-	return new_bookmark;
+    if (location)
+    {
+        new_bookmark = nautilus_bookmark_new (location, label);
+        g_object_unref (location);
+    }
+
+    return new_bookmark;
 }
 
 static GFile *
 nautilus_bookmark_list_get_legacy_file (void)
 {
-	char *filename;
-	GFile *file;
+    char *filename;
+    GFile *file;
 
-	filename = g_build_filename (g_get_home_dir (),
-				     ".gtk-bookmarks",
-				     NULL);
-	file = g_file_new_for_path (filename);
+    filename = g_build_filename (g_get_home_dir (),
+                                 ".gtk-bookmarks",
+                                 NULL);
+    file = g_file_new_for_path (filename);
 
-	g_free (filename);
+    g_free (filename);
 
-	return file;
+    return file;
 }
 
 static GFile *
 nautilus_bookmark_list_get_file (void)
 {
-	char *filename;
-	GFile *file;
+    char *filename;
+    GFile *file;
 
-	filename = g_build_filename (g_get_user_config_dir (),
-				     "gtk-3.0",
-				     "bookmarks",
-				     NULL);
-	file = g_file_new_for_path (filename);
+    filename = g_build_filename (g_get_user_config_dir (),
+                                 "gtk-3.0",
+                                 "bookmarks",
+                                 NULL);
+    file = g_file_new_for_path (filename);
 
-	g_free (filename);
+    g_free (filename);
 
-	return file;
+    return file;
 }
 
 /* Initialization.  */
 
 static void
 bookmark_in_list_changed_callback (NautilusBookmark     *bookmark,
-				   NautilusBookmarkList *bookmarks)
+                                   NautilusBookmarkList *bookmarks)
 {
-	g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
-	g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
+    g_assert (NAUTILUS_IS_BOOKMARK (bookmark));
+    g_assert (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
 
-	/* save changes to the list */
-	nautilus_bookmark_list_save_file (bookmarks);
+    /* save changes to the list */
+    nautilus_bookmark_list_save_file (bookmarks);
 }
 
 static void
-bookmark_in_list_notify (GObject *object,
-			 GParamSpec *pspec,
-			 NautilusBookmarkList *bookmarks)
+bookmark_in_list_notify (GObject              *object,
+                         GParamSpec           *pspec,
+                         NautilusBookmarkList *bookmarks)
 {
-	/* emit the changed signal without saving, as only appearance properties changed */
-	g_signal_emit (bookmarks, signals[CHANGED], 0);
+    /* emit the changed signal without saving, as only appearance properties changed */
+    g_signal_emit (bookmarks, signals[CHANGED], 0);
 }
 
 static void
 stop_monitoring_bookmark (NautilusBookmarkList *bookmarks,
-			  NautilusBookmark     *bookmark)
+                          NautilusBookmark     *bookmark)
 {
-	g_signal_handlers_disconnect_by_func (bookmark,
-					      bookmark_in_list_changed_callback,
-					      bookmarks);
+    g_signal_handlers_disconnect_by_func (bookmark,
+                                          bookmark_in_list_changed_callback,
+                                          bookmarks);
 }
 
 static void
-stop_monitoring_one (gpointer data, gpointer user_data)
+stop_monitoring_one (gpointer data,
+                     gpointer user_data)
 {
-	g_assert (NAUTILUS_IS_BOOKMARK (data));
-	g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
+    g_assert (NAUTILUS_IS_BOOKMARK (data));
+    g_assert (NAUTILUS_IS_BOOKMARK_LIST (user_data));
 
-	stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data), 
-				  NAUTILUS_BOOKMARK (data));
+    stop_monitoring_bookmark (NAUTILUS_BOOKMARK_LIST (user_data),
+                              NAUTILUS_BOOKMARK (data));
 }
 
 static void
 clear (NautilusBookmarkList *bookmarks)
 {
-	g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
-	g_list_free_full (bookmarks->list, g_object_unref);
-	bookmarks->list = NULL;
+    g_list_foreach (bookmarks->list, stop_monitoring_one, bookmarks);
+    g_list_free_full (bookmarks->list, g_object_unref);
+    bookmarks->list = NULL;
 }
 
 static void
 do_finalize (GObject *object)
 {
-	if (NAUTILUS_BOOKMARK_LIST (object)->monitor != NULL) {
-		g_file_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->monitor);
-		NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
-	}
+    if (NAUTILUS_BOOKMARK_LIST (object)->monitor != NULL)
+    {
+        g_file_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->monitor);
+        NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
+    }
 
-	g_queue_free (NAUTILUS_BOOKMARK_LIST (object)->pending_ops);
+    g_queue_free (NAUTILUS_BOOKMARK_LIST (object)->pending_ops);
 
-	clear (NAUTILUS_BOOKMARK_LIST (object));
+    clear (NAUTILUS_BOOKMARK_LIST (object));
 
-	G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
 }
 
 static void
 nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (class);
+    GObjectClass *object_class = G_OBJECT_CLASS (class);
 
-	object_class->finalize = do_finalize;
+    object_class->finalize = do_finalize;
 
-	signals[CHANGED] =
-		g_signal_new ("changed",
-		              G_TYPE_FROM_CLASS (object_class),
-		              G_SIGNAL_RUN_LAST,
-		              G_STRUCT_OFFSET (NautilusBookmarkListClass, 
-					       changed),
-		              NULL, NULL,
-		              g_cclosure_marshal_VOID__VOID,
-		              G_TYPE_NONE, 0);
+    signals[CHANGED] =
+        g_signal_new ("changed",
+                      G_TYPE_FROM_CLASS (object_class),
+                      G_SIGNAL_RUN_LAST,
+                      G_STRUCT_OFFSET (NautilusBookmarkListClass,
+                                       changed),
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
 }
 
 static void
 bookmark_monitor_changed_cb (GFileMonitor      *monitor,
-			     GFile             *child,
-			     GFile             *other_file,
-			     GFileMonitorEvent  eflags,
-			     gpointer           user_data)
+                             GFile             *child,
+                             GFile             *other_file,
+                             GFileMonitorEvent  eflags,
+                             gpointer           user_data)
 {
-	if (eflags == G_FILE_MONITOR_EVENT_CHANGED ||
-	    eflags == G_FILE_MONITOR_EVENT_CREATED) {
-		g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST (user_data)));
-		nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST (user_data));
-	}
+    if (eflags == G_FILE_MONITOR_EVENT_CHANGED ||
+        eflags == G_FILE_MONITOR_EVENT_CREATED)
+    {
+        g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (NAUTILUS_BOOKMARK_LIST (user_data)));
+        nautilus_bookmark_list_load_file (NAUTILUS_BOOKMARK_LIST (user_data));
+    }
 }
 
 static void
 nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
 {
-	GFile *file;
+    GFile *file;
 
-	bookmarks->pending_ops = g_queue_new ();
+    bookmarks->pending_ops = g_queue_new ();
 
-	nautilus_bookmark_list_load_file (bookmarks);
+    nautilus_bookmark_list_load_file (bookmarks);
 
-	file = nautilus_bookmark_list_get_file ();
-	bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
-	g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
+    file = nautilus_bookmark_list_get_file ();
+    bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+    g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
 
-	g_signal_connect (bookmarks->monitor, "changed",
-			  G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
+    g_signal_connect (bookmarks->monitor, "changed",
+                      G_CALLBACK (bookmark_monitor_changed_cb), bookmarks);
 
-	g_object_unref (file);
+    g_object_unref (file);
 }
 
 static void
 insert_bookmark_internal (NautilusBookmarkList *bookmarks,
-			  NautilusBookmark     *bookmark,
-			  int                   index)
+                          NautilusBookmark     *bookmark,
+                          int                   index)
 {
-	bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
+    bookmarks->list = g_list_insert (bookmarks->list, bookmark, index);
 
-	g_signal_connect_object (bookmark, "contents-changed",
-				 G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
-	g_signal_connect_object (bookmark, "notify::icon",
-				 G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
-	g_signal_connect_object (bookmark, "notify::name",
-				 G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
+    g_signal_connect_object (bookmark, "contents-changed",
+                             G_CALLBACK (bookmark_in_list_changed_callback), bookmarks, 0);
+    g_signal_connect_object (bookmark, "notify::icon",
+                             G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
+    g_signal_connect_object (bookmark, "notify::name",
+                             G_CALLBACK (bookmark_in_list_notify), bookmarks, 0);
 }
 
 /**
@@ -247,41 +252,45 @@ insert_bookmark_internal (NautilusBookmarkList *bookmarks,
  **/
 NautilusBookmark *
 nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
-					   GFile                *location,
-					   guint                *index)
+                                           GFile                *location,
+                                           guint                *index)
 {
-	GList *node;
-	GFile *bookmark_location;
-	NautilusBookmark *bookmark;
-	gboolean found = FALSE;
-	guint idx;
+    GList *node;
+    GFile *bookmark_location;
+    NautilusBookmark *bookmark;
+    gboolean found = FALSE;
+    guint idx;
 
-	g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
-	g_return_val_if_fail (G_IS_FILE (location), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-	idx = 0;
+    idx = 0;
 
-	for (node = bookmarks->list; node != NULL; node = node->next) {
-		bookmark = node->data;
-		bookmark_location = nautilus_bookmark_get_location (bookmark);
+    for (node = bookmarks->list; node != NULL; node = node->next)
+    {
+        bookmark = node->data;
+        bookmark_location = nautilus_bookmark_get_location (bookmark);
 
-		if (g_file_equal (location, bookmark_location)) {
-			found = TRUE;
-		}
+        if (g_file_equal (location, bookmark_location))
+        {
+            found = TRUE;
+        }
 
-		g_object_unref (bookmark_location);
+        g_object_unref (bookmark_location);
 
-		if (found) {
-			if (index) {
-				*index = idx;
-			}
-			return bookmark;
-		}
+        if (found)
+        {
+            if (index)
+            {
+                *index = idx;
+            }
+            return bookmark;
+        }
 
-		idx++;
-	}
+        idx++;
+    }
 
-	return NULL;
+    return NULL;
 }
 
 /**
@@ -293,18 +302,19 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
  **/
 void
 nautilus_bookmark_list_append (NautilusBookmarkList *bookmarks,
-			       NautilusBookmark     *bookmark)
+                               NautilusBookmark     *bookmark)
 {
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
-	g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
+    g_return_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks));
+    g_return_if_fail (NAUTILUS_IS_BOOKMARK (bookmark));
 
-	if (g_list_find_custom (bookmarks->list, bookmark,
-				nautilus_bookmark_compare_with) != NULL) {
-		return;
-	}
+    if (g_list_find_custom (bookmarks->list, bookmark,
+                            nautilus_bookmark_compare_with) != NULL)
+    {
+        return;
+    }
 
-	insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1);
-	nautilus_bookmark_list_save_file (bookmarks);
+    insert_bookmark_internal (bookmarks, g_object_ref (bookmark), -1);
+    nautilus_bookmark_list_save_file (bookmarks);
 }
 
 static void
@@ -313,307 +323,334 @@ process_next_op (NautilusBookmarkList *bookmarks);
 static void
 op_processed_cb (NautilusBookmarkList *self)
 {
-	g_queue_pop_tail (self->pending_ops);
+    g_queue_pop_tail (self->pending_ops);
 
-	if (!g_queue_is_empty (self->pending_ops)) {
-		process_next_op (self);
-	}
+    if (!g_queue_is_empty (self->pending_ops))
+    {
+        process_next_op (self);
+    }
 }
 
 static void
-load_callback (GObject *source_object,
-	       GAsyncResult *res,
-	       gpointer user_data)
+load_callback (GObject      *source_object,
+               GAsyncResult *res,
+               gpointer      user_data)
 {
-	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
-	GError *error = NULL;
-	gchar *contents;
-	char **lines;
-	int i;
+    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+    GError *error = NULL;
+    gchar *contents;
+    char **lines;
+    int i;
 
-	contents = g_task_propagate_pointer (G_TASK (res), &error);
+    contents = g_task_propagate_pointer (G_TASK (res), &error);
 
-	if (error != NULL) {
-		g_warning ("Unable to get contents of the bookmarks file: %s",
-			   error->message);
-		g_error_free (error);
-		op_processed_cb (self);
-		return;
-	}
+    if (error != NULL)
+    {
+        g_warning ("Unable to get contents of the bookmarks file: %s",
+                   error->message);
+        g_error_free (error);
+        op_processed_cb (self);
+        return;
+    }
 
-	lines = g_strsplit (contents, "\n", -1);
-	for (i = 0; lines[i]; i++) {
-		/* Ignore empty or invalid lines that cannot be parsed properly */
-		if (lines[i][0] != '\0' && lines[i][0] != ' ') {
-			/* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space */
-			/* we must seperate the bookmark uri and the potential label */
-			char *space, *label;
+    lines = g_strsplit (contents, "\n", -1);
+    for (i = 0; lines[i]; i++)
+    {
+        /* Ignore empty or invalid lines that cannot be parsed properly */
+        if (lines[i][0] != '\0' && lines[i][0] != ' ')
+        {
+            /* gtk 2.7/2.8 might have labels appended to bookmarks which are separated by a space */
+            /* we must seperate the bookmark uri and the potential label */
+            char *space, *label;
 
-			label = NULL;
-			space = strchr (lines[i], ' ');
-			if (space) {
-				*space = '\0';
-				label = g_strdup (space + 1);
-			}
+            label = NULL;
+            space = strchr (lines[i], ' ');
+            if (space)
+            {
+                *space = '\0';
+                label = g_strdup (space + 1);
+            }
 
-			insert_bookmark_internal (self, new_bookmark_from_uri (lines[i], label), -1);
-			g_free (label);
-		}
-	}
+            insert_bookmark_internal (self, new_bookmark_from_uri (lines[i], label), -1);
+            g_free (label);
+        }
+    }
 
-	g_signal_emit (self, signals[CHANGED], 0);
-	op_processed_cb (self);
+    g_signal_emit (self, signals[CHANGED], 0);
+    op_processed_cb (self);
 
-	g_strfreev (lines);
+    g_strfreev (lines);
 }
 
 static void
-load_io_thread (GTask *task,
-		gpointer source_object,
-		gpointer task_data,
-		GCancellable *cancellable)
+load_io_thread (GTask        *task,
+                gpointer      source_object,
+                gpointer      task_data,
+                GCancellable *cancellable)
 {
-	GFile *file;
-	gchar *contents;
-	GError *error = NULL;
+    GFile *file;
+    gchar *contents;
+    GError *error = NULL;
 
-	file = nautilus_bookmark_list_get_file ();
-	if (!g_file_query_exists (file, NULL)) {
-		g_object_unref (file);
-		file = nautilus_bookmark_list_get_legacy_file ();
-	}
+    file = nautilus_bookmark_list_get_file ();
+    if (!g_file_query_exists (file, NULL))
+    {
+        g_object_unref (file);
+        file = nautilus_bookmark_list_get_legacy_file ();
+    }
 
-	g_file_load_contents (file, NULL, &contents, NULL, NULL, &error);
-	g_object_unref (file);
+    g_file_load_contents (file, NULL, &contents, NULL, NULL, &error);
+    g_object_unref (file);
 
-	if (error != NULL) {
-		g_task_return_error (task, error);
-	} else {
-		g_task_return_pointer (task, contents, g_free);
-	}
+    if (error != NULL)
+    {
+        g_task_return_error (task, error);
+    }
+    else
+    {
+        g_task_return_pointer (task, contents, g_free);
+    }
 }
 
 static void
 load_file_async (NautilusBookmarkList *self)
 {
-	GTask *task;
+    GTask *task;
 
-	/* Wipe out old list. */
-	clear (self);
+    /* Wipe out old list. */
+    clear (self);
 
-	task = g_task_new (G_OBJECT (self),
-			   NULL,
-			   load_callback, NULL);
-	g_task_run_in_thread (task, load_io_thread);
-	g_object_unref (task);
+    task = g_task_new (G_OBJECT (self),
+                       NULL,
+                       load_callback, NULL);
+    g_task_run_in_thread (task, load_io_thread);
+    g_object_unref (task);
 }
 
 static void
-save_callback (GObject *source_object,
-	       GAsyncResult *res,
-	       gpointer user_data)
+save_callback (GObject      *source_object,
+               GAsyncResult *res,
+               gpointer      user_data)
 {
-	NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
-	GError *error = NULL;
-	gboolean success;
-	GFile *file;
+    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (source_object);
+    GError *error = NULL;
+    gboolean success;
+    GFile *file;
 
-	success = g_task_propagate_boolean (G_TASK (res), &error);
+    success = g_task_propagate_boolean (G_TASK (res), &error);
 
-	if (error != NULL) {
-		g_warning ("Unable to replace contents of the bookmarks file: %s",
-			   error->message);
-		g_error_free (error);
-	}
+    if (error != NULL)
+    {
+        g_warning ("Unable to replace contents of the bookmarks file: %s",
+                   error->message);
+        g_error_free (error);
+    }
 
-	/* g_file_replace_contents() returned FALSE, but did not set an error. */
-	if (!success) {
-		g_warning ("Unable to replace contents of the bookmarks file.");
-	}
+    /* g_file_replace_contents() returned FALSE, but did not set an error. */
+    if (!success)
+    {
+        g_warning ("Unable to replace contents of the bookmarks file.");
+    }
 
-	/* re-enable bookmark file monitoring */
-	file = nautilus_bookmark_list_get_file ();
-	self->monitor = g_file_monitor_file (file, 0, NULL, NULL);
-	g_object_unref (file);
+    /* re-enable bookmark file monitoring */
+    file = nautilus_bookmark_list_get_file ();
+    self->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+    g_object_unref (file);
 
-	g_file_monitor_set_rate_limit (self->monitor, 1000);
-	g_signal_connect (self->monitor, "changed",
-			  G_CALLBACK (bookmark_monitor_changed_cb), self);
+    g_file_monitor_set_rate_limit (self->monitor, 1000);
+    g_signal_connect (self->monitor, "changed",
+                      G_CALLBACK (bookmark_monitor_changed_cb), self);
 
-	op_processed_cb (self);
+    op_processed_cb (self);
 }
 
 static void
-save_io_thread (GTask *task,
-		gpointer source_object,
-		gpointer task_data,
-		GCancellable *cancellable)
+save_io_thread (GTask        *task,
+                gpointer      source_object,
+                gpointer      task_data,
+                GCancellable *cancellable)
 {
-	gchar *contents, *path;
-	GFile *parent, *file;
-	gboolean success;
-	GError *error = NULL;
+    gchar *contents, *path;
+    GFile *parent, *file;
+    gboolean success;
+    GError *error = NULL;
 
-	file = nautilus_bookmark_list_get_file ();
-	parent = g_file_get_parent (file);
-	path = g_file_get_path (parent);
-	g_mkdir_with_parents (path, 0700);
-	g_free (path);
-	g_object_unref (parent);
+    file = nautilus_bookmark_list_get_file ();
+    parent = g_file_get_parent (file);
+    path = g_file_get_path (parent);
+    g_mkdir_with_parents (path, 0700);
+    g_free (path);
+    g_object_unref (parent);
 
-	contents = (gchar *)g_task_get_task_data (task);
+    contents = (gchar *) g_task_get_task_data (task);
 
-	success = g_file_replace_contents (file,
-					   contents, strlen (contents),
-					   NULL, FALSE, 0, NULL,
-					   NULL, &error);
+    success = g_file_replace_contents (file,
+                                       contents, strlen (contents),
+                                       NULL, FALSE, 0, NULL,
+                                       NULL, &error);
 
-	if (error != NULL) {
-		g_task_return_error (task, error);
-	} else {
-		g_task_return_boolean (task, success);
-	}
+    if (error != NULL)
+    {
+        g_task_return_error (task, error);
+    }
+    else
+    {
+        g_task_return_boolean (task, success);
+    }
 
-	g_object_unref (file);
+    g_object_unref (file);
 }
 
 static void
 save_file_async (NautilusBookmarkList *self)
 {
-	GTask *task;
-	GString *bookmark_string;
-	gchar *contents;
-	GList *l;
+    GTask *task;
+    GString *bookmark_string;
+    gchar *contents;
+    GList *l;
 
-	bookmark_string = g_string_new (NULL);
+    bookmark_string = g_string_new (NULL);
 
-	/* temporarily disable bookmark file monitoring when writing file */
-	if (self->monitor != NULL) {
-		g_file_monitor_cancel (self->monitor);
-		self->monitor = NULL;
-	}
+    /* temporarily disable bookmark file monitoring when writing file */
+    if (self->monitor != NULL)
+    {
+        g_file_monitor_cancel (self->monitor);
+        self->monitor = NULL;
+    }
 
-	for (l = self->list; l; l = l->next) {
-		NautilusBookmark *bookmark;
+    for (l = self->list; l; l = l->next)
+    {
+        NautilusBookmark *bookmark;
 
-		bookmark = NAUTILUS_BOOKMARK (l->data);
+        bookmark = NAUTILUS_BOOKMARK (l->data);
 
-		/* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
-		if (nautilus_bookmark_get_has_custom_name (bookmark)) {
-			const char *label;
-			char *uri;
-			label = nautilus_bookmark_get_name (bookmark);
-			uri = nautilus_bookmark_get_uri (bookmark);
-			g_string_append_printf (bookmark_string,
-						"%s %s\n", uri, label);
-			g_free (uri);
-		} else {
-			char *uri;
-			uri = nautilus_bookmark_get_uri (bookmark);
-			g_string_append_printf (bookmark_string, "%s\n", uri);
-			g_free (uri);
-		}
-	}
+        /* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
+        if (nautilus_bookmark_get_has_custom_name (bookmark))
+        {
+            const char *label;
+            char *uri;
+            label = nautilus_bookmark_get_name (bookmark);
+            uri = nautilus_bookmark_get_uri (bookmark);
+            g_string_append_printf (bookmark_string,
+                                    "%s %s\n", uri, label);
+            g_free (uri);
+        }
+        else
+        {
+            char *uri;
+            uri = nautilus_bookmark_get_uri (bookmark);
+            g_string_append_printf (bookmark_string, "%s\n", uri);
+            g_free (uri);
+        }
+    }
 
-	task = g_task_new (G_OBJECT (self),
-			   NULL,
-			   save_callback, NULL);
-	contents = g_string_free (bookmark_string, FALSE);
-	g_task_set_task_data (task, contents, g_free);
+    task = g_task_new (G_OBJECT (self),
+                       NULL,
+                       save_callback, NULL);
+    contents = g_string_free (bookmark_string, FALSE);
+    g_task_set_task_data (task, contents, g_free);
 
-	g_task_run_in_thread (task, save_io_thread);
-	g_object_unref (task);
+    g_task_run_in_thread (task, save_io_thread);
+    g_object_unref (task);
 }
 
 static void
 process_next_op (NautilusBookmarkList *bookmarks)
 {
-	gint op;
+    gint op;
 
-	op = GPOINTER_TO_INT (g_queue_peek_tail (bookmarks->pending_ops));
+    op = GPOINTER_TO_INT (g_queue_peek_tail (bookmarks->pending_ops));
 
-	if (op == LOAD_JOB) {
-		load_file_async (bookmarks);
-	} else {
-		save_file_async (bookmarks);
-	}
+    if (op == LOAD_JOB)
+    {
+        load_file_async (bookmarks);
+    }
+    else
+    {
+        save_file_async (bookmarks);
+    }
 }
 
 /**
  * nautilus_bookmark_list_load_file:
- * 
+ *
  * Reads bookmarks from file, clobbering contents in memory.
  * @bookmarks: the list of bookmarks to fill with file contents.
  **/
 static void
 nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks)
 {
-	g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (LOAD_JOB));
+    g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (LOAD_JOB));
 
-	if (g_queue_get_length (bookmarks->pending_ops) == 1) {
-		process_next_op (bookmarks);
-	}
+    if (g_queue_get_length (bookmarks->pending_ops) == 1)
+    {
+        process_next_op (bookmarks);
+    }
 }
 
 /**
  * nautilus_bookmark_list_save_file:
- * 
+ *
  * Save bookmarks to disk.
  * @bookmarks: the list of bookmarks to save.
  **/
 static void
 nautilus_bookmark_list_save_file (NautilusBookmarkList *bookmarks)
 {
-	g_signal_emit (bookmarks, signals[CHANGED], 0);
+    g_signal_emit (bookmarks, signals[CHANGED], 0);
 
-	g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (SAVE_JOB));
+    g_queue_push_head (bookmarks->pending_ops, GINT_TO_POINTER (SAVE_JOB));
 
-	if (g_queue_get_length (bookmarks->pending_ops) == 1) {
-		process_next_op (bookmarks);
-	}
+    if (g_queue_get_length (bookmarks->pending_ops) == 1)
+    {
+        process_next_op (bookmarks);
+    }
 }
 
 gboolean
 nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
-					      GFile                *location)
+                                              GFile                *location)
 {
-	NautilusBookmark *bookmark;
-	gboolean is_builtin;
+    NautilusBookmark *bookmark;
+    gboolean is_builtin;
 
-	if (nautilus_bookmark_list_item_with_location (list, location, NULL)) {
-		return FALSE;
-	}
+    if (nautilus_bookmark_list_item_with_location (list, location, NULL))
+    {
+        return FALSE;
+    }
 
-	if (nautilus_is_home_directory (location)) {
-		return FALSE;
-	}
+    if (nautilus_is_home_directory (location))
+    {
+        return FALSE;
+    }
 
-	if (nautilus_is_search_directory (location)) {
-		return FALSE;
-	}
+    if (nautilus_is_search_directory (location))
+    {
+        return FALSE;
+    }
 
-	bookmark = nautilus_bookmark_new (location, NULL);
-	is_builtin = nautilus_bookmark_get_is_builtin (bookmark);
-	g_object_unref (bookmark);
+    bookmark = nautilus_bookmark_new (location, NULL);
+    is_builtin = nautilus_bookmark_get_is_builtin (bookmark);
+    g_object_unref (bookmark);
 
-	return !is_builtin;
+    return !is_builtin;
 }
 
 /**
  * nautilus_bookmark_list_new:
- * 
+ *
  * Create a new bookmark_list, with contents read from disk.
- * 
+ *
  * Return value: A pointer to the new widget.
  **/
 NautilusBookmarkList *
 nautilus_bookmark_list_new (void)
 {
-	NautilusBookmarkList *list;
+    NautilusBookmarkList *list;
 
-	list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
+    list = NAUTILUS_BOOKMARK_LIST (g_object_new (NAUTILUS_TYPE_BOOKMARK_LIST, NULL));
 
-	return list;
+    return list;
 }
 
 /**
@@ -625,7 +662,7 @@ nautilus_bookmark_list_new (void)
 GList *
 nautilus_bookmark_list_get_all (NautilusBookmarkList *bookmarks)
 {
-       g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK_LIST (bookmarks), NULL);
 
-       return bookmarks->list;
+    return bookmarks->list;
 }

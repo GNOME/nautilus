@@ -35,277 +35,326 @@
 
 struct NautilusXContentBarPrivate
 {
-	GtkWidget *label;
+    GtkWidget *label;
 
-	char **x_content_types;
-	GMount *mount;
+    char **x_content_types;
+    GMount *mount;
 };
 
-enum {
-	PROP_0,
-	PROP_MOUNT,
-	PROP_X_CONTENT_TYPES,
+enum
+{
+    PROP_0,
+    PROP_MOUNT,
+    PROP_X_CONTENT_TYPES,
 };
 
-enum {
-	CONTENT_BAR_RESPONSE_APP = 1
+enum
+{
+    CONTENT_BAR_RESPONSE_APP = 1
 };
 
 G_DEFINE_TYPE (NautilusXContentBar, nautilus_x_content_bar, GTK_TYPE_INFO_BAR)
 
 static void
 content_bar_response_cb (GtkInfoBar *infobar,
-			 gint response_id,
-			 gpointer user_data)
+                         gint        response_id,
+                         gpointer    user_data)
 {
-	GAppInfo *default_app;
-	NautilusXContentBar *bar = user_data;
+    GAppInfo *default_app;
+    NautilusXContentBar *bar = user_data;
 
-	if (response_id < 0) {
-		return;
-	}
+    if (response_id < 0)
+    {
+        return;
+    }
 
-	if (bar->priv->x_content_types == NULL ||
-	    bar->priv->mount == NULL)
-		return;
+    if (bar->priv->x_content_types == NULL ||
+        bar->priv->mount == NULL)
+    {
+        return;
+    }
 
-	/* FIXME */
- 	default_app = g_app_info_get_default_for_type (bar->priv->x_content_types[response_id], FALSE);
-	if (default_app != NULL) {
-		nautilus_launch_application_for_mount (default_app, bar->priv->mount,
-						       GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
-		g_object_unref (default_app);
-	}
+    /* FIXME */
+    default_app = g_app_info_get_default_for_type (bar->priv->x_content_types[response_id], FALSE);
+    if (default_app != NULL)
+    {
+        nautilus_launch_application_for_mount (default_app, bar->priv->mount,
+                                               GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
+        g_object_unref (default_app);
+    }
 }
 
 static void
-nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar, const char * const *x_content_types)
+nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
+                                            const char * const  *x_content_types)
 {
-	char *message = NULL;
-	guint num_types;
-	guint n;
-	GPtrArray *types;
-	GPtrArray *apps;
-	GAppInfo *default_app;
+    char *message = NULL;
+    guint num_types;
+    guint n;
+    GPtrArray *types;
+    GPtrArray *apps;
+    GAppInfo *default_app;
 
-	g_strfreev (bar->priv->x_content_types);
+    g_strfreev (bar->priv->x_content_types);
 
-        if (!should_handle_content_types (x_content_types)) {
-                g_warning ("Content types in content types bar cannot be handled. Check before creating the content bar if they can be handled.");
-                return;
+    if (!should_handle_content_types (x_content_types))
+    {
+        g_warning ("Content types in content types bar cannot be handled. Check before creating the content bar if they can be handled.");
+        return;
+    }
+
+    types = g_ptr_array_new ();
+    apps = g_ptr_array_new ();
+    g_ptr_array_set_free_func (apps, g_object_unref);
+    for (n = 0; x_content_types[n] != NULL; n++)
+    {
+        if (!should_handle_content_type (x_content_types[n]))
+        {
+            continue;
         }
 
-	types = g_ptr_array_new ();
-	apps = g_ptr_array_new ();
-	g_ptr_array_set_free_func (apps, g_object_unref);
-	for (n = 0; x_content_types[n] != NULL; n++) {
-		if (!should_handle_content_type (x_content_types[n]))
-			continue;
+        default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
+        g_ptr_array_add (types, g_strdup (x_content_types[n]));
+        g_ptr_array_add (apps, default_app);
+    }
 
-		default_app = g_app_info_get_default_for_type (x_content_types[n], FALSE);
-		g_ptr_array_add (types, g_strdup (x_content_types[n]));
-		g_ptr_array_add (apps, default_app);
-	}
+    num_types = types->len;
+    g_ptr_array_add (types, NULL);
 
-	num_types = types->len;
-	g_ptr_array_add (types, NULL);
+    bar->priv->x_content_types = (char **) g_ptr_array_free (types, FALSE);
 
-	bar->priv->x_content_types = (char **) g_ptr_array_free (types, FALSE);
+    switch (num_types)
+    {
+        case 1:
+        {
+            message = get_message_for_content_type (bar->priv->x_content_types[0]);
+        }
+        break;
 
-	switch (num_types) {
-	case 1:
-		message = get_message_for_content_type (bar->priv->x_content_types[0]);
-		break;
-	case 2:
-		message = get_message_for_two_content_types ((const char* const *) bar->priv->x_content_types);
-		break;
-	default:
-		message = g_strdup (_("Open with:"));
-		break;
-	}
+        case 2:
+        {
+            message = get_message_for_two_content_types ((const char * const *) bar->priv->x_content_types);
+        }
+        break;
 
-	gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
-	g_free (message);
+        default:
+        {
+            message = g_strdup (_("Open with:"));
+        }
+        break;
+    }
 
-	gtk_widget_show (bar->priv->label);
+    gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
+    g_free (message);
 
-	for (n = 0; bar->priv->x_content_types[n] != NULL; n++) {
-		const char *name;
-		GIcon *icon;
-		GtkWidget *image;
-		GtkWidget *button;
-		GAppInfo *app;
-		gboolean has_app;
-		guint i;
+    gtk_widget_show (bar->priv->label);
 
-		default_app = g_ptr_array_index (apps, n);
-		has_app = FALSE;
+    for (n = 0; bar->priv->x_content_types[n] != NULL; n++)
+    {
+        const char *name;
+        GIcon *icon;
+        GtkWidget *image;
+        GtkWidget *button;
+        GAppInfo *app;
+        gboolean has_app;
+        guint i;
 
-		for (i = 0; i < n; i++) {
-			app = g_ptr_array_index (apps, i);
-			if (g_app_info_equal (app, default_app)) {
-				has_app = TRUE;
-				break;
-			}
-		}
+        default_app = g_ptr_array_index (apps, n);
+        has_app = FALSE;
 
-		if (has_app) {
-			continue;
-		}
+        for (i = 0; i < n; i++)
+        {
+            app = g_ptr_array_index (apps, i);
+            if (g_app_info_equal (app, default_app))
+            {
+                has_app = TRUE;
+                break;
+            }
+        }
 
-		icon = g_app_info_get_icon (default_app);
-		if (icon != NULL) {
-			image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_BUTTON);
-		} else {
-			image = NULL;
-		}
+        if (has_app)
+        {
+            continue;
+        }
 
-		name = g_app_info_get_name (default_app);
-		button = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
-						  name,
-						  n);
+        icon = g_app_info_get_icon (default_app);
+        if (icon != NULL)
+        {
+            image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_BUTTON);
+        }
+        else
+        {
+            image = NULL;
+        }
 
-		gtk_button_set_image (GTK_BUTTON (button), image);
-		gtk_button_set_always_show_image (GTK_BUTTON (button), TRUE);
-		gtk_button_set_label (GTK_BUTTON (button), name);
-		gtk_widget_show (button);
-	}
+        name = g_app_info_get_name (default_app);
+        button = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+                                          name,
+                                          n);
 
-	g_ptr_array_free (apps, TRUE);
+        gtk_button_set_image (GTK_BUTTON (button), image);
+        gtk_button_set_always_show_image (GTK_BUTTON (button), TRUE);
+        gtk_button_set_label (GTK_BUTTON (button), name);
+        gtk_widget_show (button);
+    }
+
+    g_ptr_array_free (apps, TRUE);
 }
 
 static void
-nautilus_x_content_bar_set_mount (NautilusXContentBar *bar, GMount *mount)
+nautilus_x_content_bar_set_mount (NautilusXContentBar *bar,
+                                  GMount              *mount)
 {
-	if (bar->priv->mount != NULL) {
-		g_object_unref (bar->priv->mount);
-	}
-	bar->priv->mount = mount != NULL ? g_object_ref (mount) : NULL;
+    if (bar->priv->mount != NULL)
+    {
+        g_object_unref (bar->priv->mount);
+    }
+    bar->priv->mount = mount != NULL ? g_object_ref (mount) : NULL;
 }
 
 
 static void
 nautilus_x_content_bar_set_property (GObject      *object,
-				     guint         prop_id,
-				     const GValue *value,
-				     GParamSpec   *pspec)
+                                     guint         prop_id,
+                                     const GValue *value,
+                                     GParamSpec   *pspec)
 {
-	NautilusXContentBar *bar;
+    NautilusXContentBar *bar;
 
-	bar = NAUTILUS_X_CONTENT_BAR (object);
+    bar = NAUTILUS_X_CONTENT_BAR (object);
 
-	switch (prop_id) {
-	case PROP_MOUNT:
-		nautilus_x_content_bar_set_mount (bar, G_MOUNT (g_value_get_object (value)));
-		break;
-	case PROP_X_CONTENT_TYPES:
-		nautilus_x_content_bar_set_x_content_types (bar, g_value_get_boxed (value));
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+    switch (prop_id)
+    {
+        case PROP_MOUNT:
+        {
+            nautilus_x_content_bar_set_mount (bar, G_MOUNT (g_value_get_object (value)));
+        }
+        break;
+
+        case PROP_X_CONTENT_TYPES:
+        {
+            nautilus_x_content_bar_set_x_content_types (bar, g_value_get_boxed (value));
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
+    }
 }
 
 static void
 nautilus_x_content_bar_get_property (GObject    *object,
-				     guint       prop_id,
-				     GValue     *value,
-				     GParamSpec *pspec)
+                                     guint       prop_id,
+                                     GValue     *value,
+                                     GParamSpec *pspec)
 {
-	NautilusXContentBar *bar;
+    NautilusXContentBar *bar;
 
-	bar = NAUTILUS_X_CONTENT_BAR (object);
+    bar = NAUTILUS_X_CONTENT_BAR (object);
 
-	switch (prop_id) {
-	case PROP_MOUNT:
-                g_value_set_object (value, bar->priv->mount);
-		break;
-	case PROP_X_CONTENT_TYPES:
-		g_value_set_boxed (value, &bar->priv->x_content_types);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+    switch (prop_id)
+    {
+        case PROP_MOUNT:
+        {
+            g_value_set_object (value, bar->priv->mount);
+        }
+        break;
+
+        case PROP_X_CONTENT_TYPES:
+        {
+            g_value_set_boxed (value, &bar->priv->x_content_types);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
+    }
 }
 
 static void
 nautilus_x_content_bar_finalize (GObject *object)
 {
-	NautilusXContentBar *bar = NAUTILUS_X_CONTENT_BAR (object);
+    NautilusXContentBar *bar = NAUTILUS_X_CONTENT_BAR (object);
 
-	g_strfreev (bar->priv->x_content_types);
-	if (bar->priv->mount != NULL)
-		g_object_unref (bar->priv->mount);
+    g_strfreev (bar->priv->x_content_types);
+    if (bar->priv->mount != NULL)
+    {
+        g_object_unref (bar->priv->mount);
+    }
 
-        G_OBJECT_CLASS (nautilus_x_content_bar_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_x_content_bar_parent_class)->finalize (object);
 }
 
 static void
 nautilus_x_content_bar_class_init (NautilusXContentBarClass *klass)
 {
-	GObjectClass *object_class;
+    GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
-	object_class->get_property = nautilus_x_content_bar_get_property;
-	object_class->set_property = nautilus_x_content_bar_set_property;
-	object_class->finalize = nautilus_x_content_bar_finalize;
+    object_class = G_OBJECT_CLASS (klass);
+    object_class->get_property = nautilus_x_content_bar_get_property;
+    object_class->set_property = nautilus_x_content_bar_set_property;
+    object_class->finalize = nautilus_x_content_bar_finalize;
 
-	g_type_class_add_private (klass, sizeof (NautilusXContentBarPrivate));
+    g_type_class_add_private (klass, sizeof (NautilusXContentBarPrivate));
 
-        g_object_class_install_property (object_class,
-					 PROP_MOUNT,
-					 g_param_spec_object (
-						 "mount",
-						 "The GMount to run programs for",
-						 "The GMount to run programs for",
-						 G_TYPE_MOUNT,
-						 G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+    g_object_class_install_property (object_class,
+                                     PROP_MOUNT,
+                                     g_param_spec_object (
+                                         "mount",
+                                         "The GMount to run programs for",
+                                         "The GMount to run programs for",
+                                         G_TYPE_MOUNT,
+                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 
-        g_object_class_install_property (object_class,
-					 PROP_X_CONTENT_TYPES,
-					 g_param_spec_boxed ("x-content-types",
-							     "The x-content types for the cluebar",
-							     "The x-content types for the cluebar",
-							     G_TYPE_STRV,
-							     G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
+    g_object_class_install_property (object_class,
+                                     PROP_X_CONTENT_TYPES,
+                                     g_param_spec_boxed ("x-content-types",
+                                                         "The x-content types for the cluebar",
+                                                         "The x-content types for the cluebar",
+                                                         G_TYPE_STRV,
+                                                         G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
 }
 
 static void
 nautilus_x_content_bar_init (NautilusXContentBar *bar)
 {
-	GtkWidget *content_area;
-	GtkWidget *action_area;
-	PangoAttrList *attrs;
+    GtkWidget *content_area;
+    GtkWidget *action_area;
+    PangoAttrList *attrs;
 
-	bar->priv = NAUTILUS_X_CONTENT_BAR_GET_PRIVATE (bar);
-	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
-	action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+    bar->priv = NAUTILUS_X_CONTENT_BAR_GET_PRIVATE (bar);
+    content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
+    action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
-	gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area), GTK_ORIENTATION_HORIZONTAL);
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area), GTK_ORIENTATION_HORIZONTAL);
 
-	attrs = pango_attr_list_new ();
-	pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-	bar->priv->label = gtk_label_new (NULL);
-	gtk_label_set_attributes (GTK_LABEL (bar->priv->label), attrs);
-	pango_attr_list_unref (attrs);
+    attrs = pango_attr_list_new ();
+    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
+    bar->priv->label = gtk_label_new (NULL);
+    gtk_label_set_attributes (GTK_LABEL (bar->priv->label), attrs);
+    pango_attr_list_unref (attrs);
 
-	gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
-	gtk_container_add (GTK_CONTAINER (content_area), bar->priv->label);
+    gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
+    gtk_container_add (GTK_CONTAINER (content_area), bar->priv->label);
 
-	g_signal_connect (bar, "response",
-			  G_CALLBACK (content_bar_response_cb),
-			  bar);
+    g_signal_connect (bar, "response",
+                      G_CALLBACK (content_bar_response_cb),
+                      bar);
 }
 
 GtkWidget *
-nautilus_x_content_bar_new (GMount *mount,
-			    const char * const *x_content_types)
+nautilus_x_content_bar_new (GMount             *mount,
+                            const char * const *x_content_types)
 {
-	return g_object_new (NAUTILUS_TYPE_X_CONTENT_BAR,
-			     "message-type", GTK_MESSAGE_QUESTION,
-			     "mount", mount,
-			     "x-content-types", x_content_types,
-			     NULL);
+    return g_object_new (NAUTILUS_TYPE_X_CONTENT_BAR,
+                         "message-type", GTK_MESSAGE_QUESTION,
+                         "mount", mount,
+                         "x-content-types", x_content_types,
+                         NULL);
 }

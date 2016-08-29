@@ -1,4 +1,3 @@
-
 /* Eel - pixbuf manipulation routines for graphical effects.
  *
  * Copyright (C) 2000 Eazel, Inc
@@ -20,7 +19,7 @@
  */
 
 /* This file contains pixbuf manipulation routines used for graphical effects like pre-lighting
-   and selection hilighting */
+ *  and selection hilighting */
 
 #include <config.h>
 
@@ -35,17 +34,17 @@
 static GdkPixbuf *
 create_new_pixbuf (GdkPixbuf *src)
 {
-	g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
-	g_assert ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4));
+    g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
+    g_assert ((!gdk_pixbuf_get_has_alpha (src)
+               && gdk_pixbuf_get_n_channels (src) == 3)
+              || (gdk_pixbuf_get_has_alpha (src)
+                  && gdk_pixbuf_get_n_channels (src) == 4));
 
-	return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
-			       gdk_pixbuf_get_has_alpha (src),
-			       gdk_pixbuf_get_bits_per_sample (src),
-			       gdk_pixbuf_get_width (src),
-			       gdk_pixbuf_get_height (src));
+    return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
+                           gdk_pixbuf_get_has_alpha (src),
+                           gdk_pixbuf_get_bits_per_sample (src),
+                           gdk_pixbuf_get_width (src),
+                           gdk_pixbuf_get_height (src));
 }
 
 /* utility routine to bump the level of a color component with pinning */
@@ -53,102 +52,109 @@ create_new_pixbuf (GdkPixbuf *src)
 static guchar
 lighten_component (guchar cur_value)
 {
-	int new_value = cur_value;
-	new_value += 24 + (new_value >> 3);
-	if (new_value > 255) {
-		new_value = 255;
-	}
-	return (guchar) new_value;
+    int new_value = cur_value;
+    new_value += 24 + (new_value >> 3);
+    if (new_value > 255)
+    {
+        new_value = 255;
+    }
+    return (guchar) new_value;
 }
 
 GdkPixbuf *
-eel_create_spotlight_pixbuf (GdkPixbuf* src)
+eel_create_spotlight_pixbuf (GdkPixbuf *src)
 {
-	GdkPixbuf *dest;
-	int i, j;
-	int width, height, has_alpha, src_row_stride, dst_row_stride;
-	guchar *target_pixels, *original_pixels;
-	guchar *pixsrc, *pixdest;
+    GdkPixbuf *dest;
+    int i, j;
+    int width, height, has_alpha, src_row_stride, dst_row_stride;
+    guchar *target_pixels, *original_pixels;
+    guchar *pixsrc, *pixdest;
 
-	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
-	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+    g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
+    g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+                           && gdk_pixbuf_get_n_channels (src) == 3)
+                          || (gdk_pixbuf_get_has_alpha (src)
+                              && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+    g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
 
-	dest = create_new_pixbuf (src);
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	dst_row_stride = gdk_pixbuf_get_rowstride (dest);
-	src_row_stride = gdk_pixbuf_get_rowstride (src);
-	target_pixels = gdk_pixbuf_get_pixels (dest);
-	original_pixels = gdk_pixbuf_get_pixels (src);
+    dest = create_new_pixbuf (src);
 
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i * dst_row_stride;
-		pixsrc = original_pixels + i * src_row_stride;
-		for (j = 0; j < width; j++) {		
-			*pixdest++ = lighten_component (*pixsrc++);
-			*pixdest++ = lighten_component (*pixsrc++);
-			*pixdest++ = lighten_component (*pixsrc++);
-			if (has_alpha) {
-				*pixdest++ = *pixsrc++;
-			}
-		}
-	}
-	return dest;
+    has_alpha = gdk_pixbuf_get_has_alpha (src);
+    width = gdk_pixbuf_get_width (src);
+    height = gdk_pixbuf_get_height (src);
+    dst_row_stride = gdk_pixbuf_get_rowstride (dest);
+    src_row_stride = gdk_pixbuf_get_rowstride (src);
+    target_pixels = gdk_pixbuf_get_pixels (dest);
+    original_pixels = gdk_pixbuf_get_pixels (src);
+
+    for (i = 0; i < height; i++)
+    {
+        pixdest = target_pixels + i * dst_row_stride;
+        pixsrc = original_pixels + i * src_row_stride;
+        for (j = 0; j < width; j++)
+        {
+            *pixdest++ = lighten_component (*pixsrc++);
+            *pixdest++ = lighten_component (*pixsrc++);
+            *pixdest++ = lighten_component (*pixsrc++);
+            if (has_alpha)
+            {
+                *pixdest++ = *pixsrc++;
+            }
+        }
+    }
+    return dest;
 }
 
 /* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
 
 GdkPixbuf *
 eel_create_colorized_pixbuf (GdkPixbuf *src,
-			     GdkRGBA *color)
+                             GdkRGBA   *color)
 {
-	int i, j;
-	int width, height, has_alpha, src_row_stride, dst_row_stride;
-	guchar *target_pixels;
-	guchar *original_pixels;
-	guchar *pixsrc;
-	guchar *pixdest;
-	GdkPixbuf *dest;
-	gint red_value, green_value, blue_value;
+    int i, j;
+    int width, height, has_alpha, src_row_stride, dst_row_stride;
+    guchar *target_pixels;
+    guchar *original_pixels;
+    guchar *pixsrc;
+    guchar *pixdest;
+    GdkPixbuf *dest;
+    gint red_value, green_value, blue_value;
 
-	g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
-	g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
-			       && gdk_pixbuf_get_n_channels (src) == 3)
-			      || (gdk_pixbuf_get_has_alpha (src)
-				  && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-	g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+    g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
+    g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
+                           && gdk_pixbuf_get_n_channels (src) == 3)
+                          || (gdk_pixbuf_get_has_alpha (src)
+                              && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+    g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
 
-	red_value = (gint) floor (color->red * 255);
-	green_value = (gint) floor (color->green * 255);
-	blue_value = (gint) floor (color->blue * 255);	
+    red_value = (gint) floor (color->red * 255);
+    green_value = (gint) floor (color->green * 255);
+    blue_value = (gint) floor (color->blue * 255);
 
-	dest = create_new_pixbuf (src);
-	
-	has_alpha = gdk_pixbuf_get_has_alpha (src);
-	width = gdk_pixbuf_get_width (src);
-	height = gdk_pixbuf_get_height (src);
-	src_row_stride = gdk_pixbuf_get_rowstride (src);
-	dst_row_stride = gdk_pixbuf_get_rowstride (dest);
-	target_pixels = gdk_pixbuf_get_pixels (dest);
-	original_pixels = gdk_pixbuf_get_pixels (src);
+    dest = create_new_pixbuf (src);
 
-	for (i = 0; i < height; i++) {
-		pixdest = target_pixels + i*dst_row_stride;
-		pixsrc = original_pixels + i*src_row_stride;
-		for (j = 0; j < width; j++) {		
-			*pixdest++ = (*pixsrc++ * red_value) >> 8;
-			*pixdest++ = (*pixsrc++ * green_value) >> 8;
-			*pixdest++ = (*pixsrc++ * blue_value) >> 8;
-			if (has_alpha) {
-				*pixdest++ = *pixsrc++;
-			}
-		}
-	}
-	return dest;
+    has_alpha = gdk_pixbuf_get_has_alpha (src);
+    width = gdk_pixbuf_get_width (src);
+    height = gdk_pixbuf_get_height (src);
+    src_row_stride = gdk_pixbuf_get_rowstride (src);
+    dst_row_stride = gdk_pixbuf_get_rowstride (dest);
+    target_pixels = gdk_pixbuf_get_pixels (dest);
+    original_pixels = gdk_pixbuf_get_pixels (src);
+
+    for (i = 0; i < height; i++)
+    {
+        pixdest = target_pixels + i * dst_row_stride;
+        pixsrc = original_pixels + i * src_row_stride;
+        for (j = 0; j < width; j++)
+        {
+            *pixdest++ = (*pixsrc++ *red_value) >> 8;
+            *pixdest++ = (*pixsrc++ *green_value) >> 8;
+            *pixdest++ = (*pixsrc++ *blue_value) >> 8;
+            if (has_alpha)
+            {
+                *pixdest++ = *pixsrc++;
+            }
+        }
+    }
+    return dest;
 }

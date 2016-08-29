@@ -15,7 +15,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Raffaele Sandrini <rasa@gmx.ch>
  *
  */
@@ -40,17 +40,19 @@
 #define NAUTILUS_MENU_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_MENU, NautilusMenuPrivate))
 G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
 
-struct _NautilusMenuPrivate {
-	GList *item_list;
+struct _NautilusMenuPrivate
+{
+    GList *item_list;
 };
 
 void
-nautilus_menu_append_item (NautilusMenu *menu, NautilusMenuItem *item)
+nautilus_menu_append_item (NautilusMenu     *menu,
+                           NautilusMenuItem *item)
 {
-	g_return_if_fail (menu != NULL);
-	g_return_if_fail (item != NULL);
-	
-	menu->priv->item_list = g_list_append (menu->priv->item_list, g_object_ref (item));
+    g_return_if_fail (menu != NULL);
+    g_return_if_fail (item != NULL);
+
+    menu->priv->item_list = g_list_append (menu->priv->item_list, g_object_ref (item));
 }
 
 /**
@@ -62,14 +64,14 @@ nautilus_menu_append_item (NautilusMenu *menu, NautilusMenuItem *item)
 GList *
 nautilus_menu_get_items (NautilusMenu *menu)
 {
-	GList *item_list;
+    GList *item_list;
 
-	g_return_val_if_fail (menu != NULL, NULL);
-	
-	item_list = g_list_copy (menu->priv->item_list);
-	g_list_foreach (item_list, (GFunc)g_object_ref, NULL);
-	
-	return item_list;
+    g_return_val_if_fail (menu != NULL, NULL);
+
+    item_list = g_list_copy (menu->priv->item_list);
+    g_list_foreach (item_list, (GFunc) g_object_ref, NULL);
+
+    return item_list;
 }
 
 /**
@@ -80,10 +82,10 @@ nautilus_menu_get_items (NautilusMenu *menu)
 void
 nautilus_menu_item_list_free (GList *item_list)
 {
-	g_return_if_fail (item_list != NULL);
-	
-	g_list_foreach (item_list, (GFunc)g_object_unref, NULL);
-	g_list_free (item_list);
+    g_return_if_fail (item_list != NULL);
+
+    g_list_foreach (item_list, (GFunc) g_object_unref, NULL);
+    g_list_free (item_list);
 }
 
 /* Type initialization */
@@ -91,31 +93,32 @@ nautilus_menu_item_list_free (GList *item_list)
 static void
 nautilus_menu_finalize (GObject *object)
 {
-	NautilusMenu *menu = NAUTILUS_MENU (object);
+    NautilusMenu *menu = NAUTILUS_MENU (object);
 
-	if (menu->priv->item_list) {
-		g_list_free (menu->priv->item_list);
-	}
+    if (menu->priv->item_list)
+    {
+        g_list_free (menu->priv->item_list);
+    }
 
-	G_OBJECT_CLASS (nautilus_menu_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_menu_parent_class)->finalize (object);
 }
 
 static void
 nautilus_menu_init (NautilusMenu *menu)
 {
-	menu->priv = NAUTILUS_MENU_GET_PRIVATE (menu);
+    menu->priv = NAUTILUS_MENU_GET_PRIVATE (menu);
 
-	menu->priv->item_list = NULL;
+    menu->priv->item_list = NULL;
 }
 
 static void
 nautilus_menu_class_init (NautilusMenuClass *klass)
 {
-	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-	
-	g_type_class_add_private (klass, sizeof (NautilusMenuPrivate));
-	
-	object_class->finalize = nautilus_menu_finalize;
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
+
+    g_type_class_add_private (klass, sizeof (NautilusMenuPrivate));
+
+    object_class->finalize = nautilus_menu_finalize;
 }
 
 /* public constructors */
@@ -123,9 +126,9 @@ nautilus_menu_class_init (NautilusMenuClass *klass)
 NautilusMenu *
 nautilus_menu_new (void)
 {
-	NautilusMenu *obj;
-	
-	obj = NAUTILUS_MENU (g_object_new (NAUTILUS_TYPE_MENU, NULL));
-	
-	return obj;
+    NautilusMenu *obj;
+
+    obj = NAUTILUS_MENU (g_object_new (NAUTILUS_TYPE_MENU, NULL));
+
+    return obj;
 }

@@ -33,131 +33,145 @@
 static DebugFlags flags = 0;
 static gboolean initialized = FALSE;
 
-static GDebugKey keys[] = {
-  { "Application", NAUTILUS_DEBUG_APPLICATION },
-  { "Bookmarks", NAUTILUS_DEBUG_BOOKMARKS },
-  { "DBus", NAUTILUS_DEBUG_DBUS },
-  { "DirectoryView", NAUTILUS_DEBUG_DIRECTORY_VIEW },
-  { "File", NAUTILUS_DEBUG_FILE },
-  { "CanvasContainer", NAUTILUS_DEBUG_CANVAS_CONTAINER },
-  { "IconView", NAUTILUS_DEBUG_CANVAS_VIEW },
-  { "ListView", NAUTILUS_DEBUG_LIST_VIEW },
-  { "Mime", NAUTILUS_DEBUG_MIME },
-  { "Places", NAUTILUS_DEBUG_PLACES },
-  { "Previewer", NAUTILUS_DEBUG_PREVIEWER },
-  { "Search", NAUTILUS_DEBUG_SEARCH },
-  { "SearchHit", NAUTILUS_DEBUG_SEARCH_HIT },
-  { "Smclient", NAUTILUS_DEBUG_SMCLIENT },
-  { "Window", NAUTILUS_DEBUG_WINDOW },
-  { "Undo", NAUTILUS_DEBUG_UNDO },
-  { 0, }
+static GDebugKey keys[] =
+{
+    { "Application", NAUTILUS_DEBUG_APPLICATION },
+    { "Bookmarks", NAUTILUS_DEBUG_BOOKMARKS },
+    { "DBus", NAUTILUS_DEBUG_DBUS },
+    { "DirectoryView", NAUTILUS_DEBUG_DIRECTORY_VIEW },
+    { "File", NAUTILUS_DEBUG_FILE },
+    { "CanvasContainer", NAUTILUS_DEBUG_CANVAS_CONTAINER },
+    { "IconView", NAUTILUS_DEBUG_CANVAS_VIEW },
+    { "ListView", NAUTILUS_DEBUG_LIST_VIEW },
+    { "Mime", NAUTILUS_DEBUG_MIME },
+    { "Places", NAUTILUS_DEBUG_PLACES },
+    { "Previewer", NAUTILUS_DEBUG_PREVIEWER },
+    { "Search", NAUTILUS_DEBUG_SEARCH },
+    { "SearchHit", NAUTILUS_DEBUG_SEARCH_HIT },
+    { "Smclient", NAUTILUS_DEBUG_SMCLIENT },
+    { "Window", NAUTILUS_DEBUG_WINDOW },
+    { "Undo", NAUTILUS_DEBUG_UNDO },
+    { 0, }
 };
 
 static void
 nautilus_debug_set_flags_from_env ()
 {
-  guint nkeys;
-  const gchar *flags_string;
+    guint nkeys;
+    const gchar *flags_string;
 
-  for (nkeys = 0; keys[nkeys].value; nkeys++);
+    for (nkeys = 0; keys[nkeys].value; nkeys++)
+    {
+        ;
+    }
 
-  flags_string = g_getenv ("NAUTILUS_DEBUG");
+    flags_string = g_getenv ("NAUTILUS_DEBUG");
 
-  if (flags_string)
-    nautilus_debug_set_flags (g_parse_debug_string (flags_string, keys, nkeys));
+    if (flags_string)
+    {
+        nautilus_debug_set_flags (g_parse_debug_string (flags_string, keys, nkeys));
+    }
 
-  initialized = TRUE;
+    initialized = TRUE;
 }
 
 void
 nautilus_debug_set_flags (DebugFlags new_flags)
 {
-  flags |= new_flags;
-  initialized = TRUE;
+    flags |= new_flags;
+    initialized = TRUE;
 }
 
 gboolean
 nautilus_debug_flag_is_set (DebugFlags flag)
 {
-  return flag & flags;
+    return flag & flags;
 }
 
 void
-nautilus_debug (DebugFlags flag,
+nautilus_debug (DebugFlags   flag,
                 const gchar *format,
                 ...)
 {
-  va_list args;
-  va_start (args, format);
-  nautilus_debug_valist (flag, format, args);
-  va_end (args);
+    va_list args;
+    va_start (args, format);
+    nautilus_debug_valist (flag, format, args);
+    va_end (args);
 }
 
 void
-nautilus_debug_valist (DebugFlags flag,
+nautilus_debug_valist (DebugFlags   flag,
                        const gchar *format,
-                       va_list args)
+                       va_list      args)
 {
-  if (G_UNLIKELY(!initialized))
-    nautilus_debug_set_flags_from_env ();
+    if (G_UNLIKELY (!initialized))
+    {
+        nautilus_debug_set_flags_from_env ();
+    }
 
-  if (flag & flags)
-    g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
+    if (flag & flags)
+    {
+        g_logv (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, format, args);
+    }
 }
 
 static void
-nautilus_debug_files_valist (DebugFlags flag,
-                             GList *files,
+nautilus_debug_files_valist (DebugFlags   flag,
+                             GList       *files,
                              const gchar *format,
-                             va_list args)
+                             va_list      args)
 {
-  NautilusFile *file;
-  GList *l;
-  gchar *uri, *msg;
+    NautilusFile *file;
+    GList *l;
+    gchar *uri, *msg;
 
-  if (G_UNLIKELY (!initialized))
-    nautilus_debug_set_flags_from_env ();
-
-  if (!(flag & flags))
-    return;
-
-  msg = g_strdup_vprintf (format, args);
-
-  g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "%s:", msg);
-
-  for (l = files; l != NULL; l = l->next)
+    if (G_UNLIKELY (!initialized))
     {
-      file = l->data;
-      uri = nautilus_file_get_uri (file);
-
-      if (nautilus_file_is_gone (file)) {
-        gchar *new_uri;
-
-        /* Hack: this will create an invalid URI, but it's for
-         * display purposes only.
-         */
-        new_uri = g_strconcat (uri ? uri : "", " (gone)", NULL);
-        g_free (uri);
-        uri = new_uri;
-      }
-
-      g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "   %s", uri);
-      g_free (uri);
+        nautilus_debug_set_flags_from_env ();
     }
 
-  g_free (msg);
+    if (!(flag & flags))
+    {
+        return;
+    }
+
+    msg = g_strdup_vprintf (format, args);
+
+    g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "%s:", msg);
+
+    for (l = files; l != NULL; l = l->next)
+    {
+        file = l->data;
+        uri = nautilus_file_get_uri (file);
+
+        if (nautilus_file_is_gone (file))
+        {
+            gchar *new_uri;
+
+            /* Hack: this will create an invalid URI, but it's for
+             * display purposes only.
+             */
+            new_uri = g_strconcat (uri ? uri : "", " (gone)", NULL);
+            g_free (uri);
+            uri = new_uri;
+        }
+
+        g_log (G_LOG_DOMAIN, G_LOG_LEVEL_DEBUG, "   %s", uri);
+        g_free (uri);
+    }
+
+    g_free (msg);
 }
 
 void
-nautilus_debug_files (DebugFlags flag,
-                      GList *files,
+nautilus_debug_files (DebugFlags   flag,
+                      GList       *files,
                       const gchar *format,
                       ...)
 {
-  va_list args;
+    va_list args;
 
-  va_start (args, format);
-  nautilus_debug_files_valist (flag, files, format, args);
-  va_end (args);
+    va_start (args, format);
+    nautilus_debug_files_valist (flag, files, format, args);
+    va_end (args);
 }
-

@@ -21,7 +21,7 @@
 
 struct _NautilusOtherLocationsWindowSlot
 {
-  NautilusWindowSlot parent_instance;
+    NautilusWindowSlot parent_instance;
 };
 
 G_DEFINE_TYPE (NautilusOtherLocationsWindowSlot, nautilus_other_locations_window_slot, NAUTILUS_TYPE_WINDOW_SLOT)
@@ -30,51 +30,51 @@ static gboolean
 real_handles_location (NautilusWindowSlot *self,
                        GFile              *location)
 {
-  NautilusFile *file;
-  gboolean handles_location;
+    NautilusFile *file;
+    gboolean handles_location;
 
-  file = nautilus_file_get (location);
-  handles_location = nautilus_file_is_other_locations (file);
-  nautilus_file_unref (file);
+    file = nautilus_file_get (location);
+    handles_location = nautilus_file_is_other_locations (file);
+    nautilus_file_unref (file);
 
-  return handles_location;
+    return handles_location;
 }
 
 static NautilusView *
 real_get_view_for_location (NautilusWindowSlot *self,
                             GFile              *location)
 {
-  return NAUTILUS_VIEW (nautilus_places_view_new ());
+    return NAUTILUS_VIEW (nautilus_places_view_new ());
 }
 
 NautilusOtherLocationsWindowSlot *
 nautilus_other_locations_window_slot_new (NautilusWindow *window)
 {
-  return g_object_new (NAUTILUS_TYPE_OTHER_LOCATIONS_WINDOW_SLOT,
-                       "window", window,
-                       NULL);
+    return g_object_new (NAUTILUS_TYPE_OTHER_LOCATIONS_WINDOW_SLOT,
+                         "window", window,
+                         NULL);
 }
 
 static void
 nautilus_other_locations_window_slot_class_init (NautilusOtherLocationsWindowSlotClass *klass)
 {
-  NautilusWindowSlotClass *parent_class = NAUTILUS_WINDOW_SLOT_CLASS (klass);
+    NautilusWindowSlotClass *parent_class = NAUTILUS_WINDOW_SLOT_CLASS (klass);
 
-  parent_class->get_view_for_location = real_get_view_for_location;
-  parent_class->handles_location = real_handles_location;
+    parent_class->get_view_for_location = real_get_view_for_location;
+    parent_class->handles_location = real_handles_location;
 }
 
 static void
 nautilus_other_locations_window_slot_init (NautilusOtherLocationsWindowSlot *self)
 {
-  GAction *action;
-  GActionGroup *action_group;
+    GAction *action;
+    GActionGroup *action_group;
 
-  /* Disable the ability to change between types of views */
-  action_group = gtk_widget_get_action_group (GTK_WIDGET (self), "slot");
+    /* Disable the ability to change between types of views */
+    action_group = gtk_widget_get_action_group (GTK_WIDGET (self), "slot");
 
-  action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
-  action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode-toggle");
-  g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+    action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+    action = g_action_map_lookup_action (G_ACTION_MAP (action_group), "files-view-mode-toggle");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 }

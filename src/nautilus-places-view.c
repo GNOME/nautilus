@@ -25,33 +25,34 @@
 
 typedef struct
 {
-        GFile                       *location;
-        GIcon                       *icon;
-        NautilusQuery               *search_query;
-        NautilusToolbarMenuSections *toolbar_menu_sections;
+    GFile *location;
+    GIcon *icon;
+    NautilusQuery *search_query;
+    NautilusToolbarMenuSections *toolbar_menu_sections;
 
-        GtkWidget                   *places_view;
+    GtkWidget *places_view;
 } NautilusPlacesViewPrivate;
 
 struct _NautilusPlacesView
 {
-        GtkFrameClass parent;
+    GtkFrameClass parent;
 };
 
-static void          nautilus_places_view_iface_init             (NautilusViewInterface *iface);
+static void          nautilus_places_view_iface_init (NautilusViewInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusPlacesView, nautilus_places_view, GTK_TYPE_BOX,
                          G_ADD_PRIVATE (NautilusPlacesView)
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_VIEW, nautilus_places_view_iface_init));
 
-enum {
-        PROP_0,
-        PROP_ICON,
-        PROP_LOCATION,
-        PROP_SEARCH_QUERY,
-        PROP_IS_LOADING,
-        PROP_IS_SEARCHING,
-        LAST_PROP
+enum
+{
+    PROP_0,
+    PROP_ICON,
+    PROP_LOCATION,
+    PROP_SEARCH_QUERY,
+    PROP_IS_LOADING,
+    PROP_IS_SEARCHING,
+    LAST_PROP
 };
 
 static void
@@ -59,49 +60,57 @@ open_location_cb (NautilusPlacesView *view,
                   GFile              *location,
                   GtkPlacesOpenFlags  open_flags)
 {
-        NautilusWindowOpenFlags flags;
-        GtkWidget *slot;
+    NautilusWindowOpenFlags flags;
+    GtkWidget *slot;
 
-        slot = gtk_widget_get_ancestor (GTK_WIDGET (view), NAUTILUS_TYPE_WINDOW_SLOT);
+    slot = gtk_widget_get_ancestor (GTK_WIDGET (view), NAUTILUS_TYPE_WINDOW_SLOT);
 
-        switch (open_flags) {
+    switch (open_flags)
+    {
         case GTK_PLACES_OPEN_NEW_TAB:
-                flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
-                        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
-                break;
+        {
+            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB |
+                    NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+        }
+        break;
 
         case GTK_PLACES_OPEN_NEW_WINDOW:
-                flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-                break;
+        {
+            flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        }
+        break;
 
         case GTK_PLACES_OPEN_NORMAL: /* fall-through */
         default:
-                flags = 0;
-                break;
+        {
+            flags = 0;
         }
+        break;
+    }
 
-        if (slot) {
-                NautilusFile *file;
-                GtkWidget *window;
-                char *path;
+    if (slot)
+    {
+        NautilusFile *file;
+        GtkWidget *window;
+        char *path;
 
-                path = "other-locations:///";
-                file = nautilus_file_get (location);
-                window = gtk_widget_get_toplevel (GTK_WIDGET (view));
+        path = "other-locations:///";
+        file = nautilus_file_get (location);
+        window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
-                nautilus_mime_activate_file (GTK_WINDOW (window),
-                                             NAUTILUS_WINDOW_SLOT (slot),
-                                             file,
-                                             path,
-                                             flags);
-                nautilus_file_unref (file);
-        }
+        nautilus_mime_activate_file (GTK_WINDOW (window),
+                                     NAUTILUS_WINDOW_SLOT (slot),
+                                     file,
+                                     path,
+                                     flags);
+        nautilus_file_unref (file);
+    }
 }
 
 static void
 loading_cb (NautilusView *view)
 {
-        g_object_notify (G_OBJECT (view), "is-loading");
+    g_object_notify (G_OBJECT (view), "is-loading");
 }
 
 static void
@@ -109,37 +118,37 @@ show_error_message_cb (NautilusGtkPlacesView *view,
                        const gchar           *primary,
                        const gchar           *secondary)
 {
-        GtkWidget *dialog;
-        GtkWidget *window;
+    GtkWidget *dialog;
+    GtkWidget *window;
 
-        window = gtk_widget_get_toplevel (GTK_WIDGET (view));
+    window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
-        dialog = gtk_message_dialog_new (GTK_WINDOW (window),
-                                         GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
-                                         GTK_MESSAGE_ERROR,
-                                         GTK_BUTTONS_CLOSE,
-                                         "%s", primary);
-        gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
-                                                  "%s", secondary);
+    dialog = gtk_message_dialog_new (GTK_WINDOW (window),
+                                     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
+                                     GTK_MESSAGE_ERROR,
+                                     GTK_BUTTONS_CLOSE,
+                                     "%s", primary);
+    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+                                              "%s", secondary);
 
-        gtk_dialog_run (GTK_DIALOG (dialog));
+    gtk_dialog_run (GTK_DIALOG (dialog));
 
-        gtk_widget_destroy (dialog);
+    gtk_widget_destroy (dialog);
 }
 
 static void
 nautilus_places_view_finalize (GObject *object)
 {
-        NautilusPlacesView *self = (NautilusPlacesView *)object;
-        NautilusPlacesViewPrivate *priv = nautilus_places_view_get_instance_private (self);
+    NautilusPlacesView *self = (NautilusPlacesView *) object;
+    NautilusPlacesViewPrivate *priv = nautilus_places_view_get_instance_private (self);
 
-        g_clear_object (&priv->icon);
-        g_clear_object (&priv->location);
-        g_clear_object (&priv->search_query);
+    g_clear_object (&priv->icon);
+    g_clear_object (&priv->location);
+    g_clear_object (&priv->search_query);
 
-        g_free (priv->toolbar_menu_sections);
+    g_free (priv->toolbar_menu_sections);
 
-        G_OBJECT_CLASS (nautilus_places_view_parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_places_view_parent_class)->finalize (object);
 }
 
 static void
@@ -148,24 +157,31 @@ nautilus_places_view_get_property (GObject    *object,
                                    GValue     *value,
                                    GParamSpec *pspec)
 {
-        NautilusView *view = NAUTILUS_VIEW (object);
+    NautilusView *view = NAUTILUS_VIEW (object);
 
-        switch (prop_id) {
+    switch (prop_id)
+    {
         case PROP_ICON:
-                g_value_set_object (value, nautilus_view_get_icon (view));
-                break;
+        {
+            g_value_set_object (value, nautilus_view_get_icon (view));
+        }
+        break;
 
         case PROP_LOCATION:
-                g_value_set_object (value, nautilus_view_get_location (view));
-                break;
+        {
+            g_value_set_object (value, nautilus_view_get_location (view));
+        }
+        break;
 
         case PROP_SEARCH_QUERY:
-                g_value_set_object (value, nautilus_view_get_search_query (view));
-                break;
+        {
+            g_value_set_object (value, nautilus_view_get_search_query (view));
+        }
+        break;
 
         default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -174,223 +190,233 @@ nautilus_places_view_set_property (GObject      *object,
                                    const GValue *value,
                                    GParamSpec   *pspec)
 {
-        NautilusView *view = NAUTILUS_VIEW (object);
+    NautilusView *view = NAUTILUS_VIEW (object);
 
-        switch (prop_id) {
+    switch (prop_id)
+    {
         case PROP_LOCATION:
-                nautilus_view_set_location (view, g_value_get_object (value));
-                break;
+        {
+            nautilus_view_set_location (view, g_value_get_object (value));
+        }
+        break;
 
         case PROP_SEARCH_QUERY:
-                nautilus_view_set_search_query (view, g_value_get_object (value));
-                break;
+        {
+            nautilus_view_set_search_query (view, g_value_get_object (value));
+        }
+        break;
 
         default:
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
-static GIcon*
+static GIcon *
 nautilus_places_view_get_icon (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return priv->icon;
+    return priv->icon;
 }
 
-static GFile*
+static GFile *
 nautilus_places_view_get_location (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return priv->location;
+    return priv->location;
 }
 
 static void
 nautilus_places_view_set_location (NautilusView *view,
                                    GFile        *location)
 {
-        if (location) {
-                NautilusPlacesViewPrivate *priv;
-                gchar *uri;
+    if (location)
+    {
+        NautilusPlacesViewPrivate *priv;
+        gchar *uri;
 
-                priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
-                uri = g_file_get_uri (location);
+        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+        uri = g_file_get_uri (location);
 
-                /*
-                 * If it's not trying to open the places view itself, simply
-                 * delegates the location to application, which takes care of
-                 * selecting the appropriate view.
-                 */
-                if (g_strcmp0 (uri, "other-locations:///") != 0) {
-                        nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                                 location, 0, NULL, NULL, NULL);
-                } else {
-                        g_set_object (&priv->location, location);
-                }
-
-                g_free (uri);
+        /*
+         * If it's not trying to open the places view itself, simply
+         * delegates the location to application, which takes care of
+         * selecting the appropriate view.
+         */
+        if (g_strcmp0 (uri, "other-locations:///") != 0)
+        {
+            nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                                     location, 0, NULL, NULL, NULL);
         }
+        else
+        {
+            g_set_object (&priv->location, location);
+        }
+
+        g_free (uri);
+    }
 }
 
-static GList*
+static GList *
 nautilus_places_view_get_selection (NautilusView *view)
 {
-        /* STUB */
-        return NULL;
+    /* STUB */
+    return NULL;
 }
 
 static void
 nautilus_places_view_set_selection (NautilusView *view,
                                     GList        *selection)
 {
-        /* STUB */
+    /* STUB */
 }
 
-static NautilusQuery*
+static NautilusQuery *
 nautilus_places_view_get_search_query (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return priv->search_query;
+    return priv->search_query;
 }
 
 static void
 nautilus_places_view_set_search_query (NautilusView  *view,
                                        NautilusQuery *query)
 {
-        NautilusPlacesViewPrivate *priv;
-        gchar *text;
+    NautilusPlacesViewPrivate *priv;
+    gchar *text;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        g_set_object (&priv->search_query, query);
+    g_set_object (&priv->search_query, query);
 
-        text = query ? nautilus_query_get_text (query) : NULL;
+    text = query ? nautilus_query_get_text (query) : NULL;
 
-        nautilus_gtk_places_view_set_search_query (NAUTILUS_GTK_PLACES_VIEW (priv->places_view), text);
+    nautilus_gtk_places_view_set_search_query (NAUTILUS_GTK_PLACES_VIEW (priv->places_view), text);
 
-        g_free (text);
+    g_free (text);
 }
 
 static NautilusToolbarMenuSections *
 nautilus_places_view_get_toolbar_menu_sections (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return priv->toolbar_menu_sections;
+    return priv->toolbar_menu_sections;
 }
 
 static gboolean
 nautilus_places_view_is_loading (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return nautilus_gtk_places_view_get_loading (NAUTILUS_GTK_PLACES_VIEW (priv->places_view));
+    return nautilus_gtk_places_view_get_loading (NAUTILUS_GTK_PLACES_VIEW (priv->places_view));
 }
 
 static gboolean
 nautilus_places_view_is_searching (NautilusView *view)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
+    priv = nautilus_places_view_get_instance_private (NAUTILUS_PLACES_VIEW (view));
 
-        return priv->search_query != NULL;
+    return priv->search_query != NULL;
 }
 
 static void
 nautilus_places_view_iface_init (NautilusViewInterface *iface)
 {
-        iface->get_icon = nautilus_places_view_get_icon;
-        iface->get_location = nautilus_places_view_get_location;
-        iface->set_location = nautilus_places_view_set_location;
-        iface->get_selection = nautilus_places_view_get_selection;
-        iface->set_selection = nautilus_places_view_set_selection;
-        iface->get_search_query = nautilus_places_view_get_search_query;
-        iface->set_search_query = nautilus_places_view_set_search_query;
-        iface->get_toolbar_menu_sections = nautilus_places_view_get_toolbar_menu_sections;
-        iface->is_loading = nautilus_places_view_is_loading;
-        iface->is_searching = nautilus_places_view_is_searching;
+    iface->get_icon = nautilus_places_view_get_icon;
+    iface->get_location = nautilus_places_view_get_location;
+    iface->set_location = nautilus_places_view_set_location;
+    iface->get_selection = nautilus_places_view_get_selection;
+    iface->set_selection = nautilus_places_view_set_selection;
+    iface->get_search_query = nautilus_places_view_get_search_query;
+    iface->set_search_query = nautilus_places_view_set_search_query;
+    iface->get_toolbar_menu_sections = nautilus_places_view_get_toolbar_menu_sections;
+    iface->is_loading = nautilus_places_view_is_loading;
+    iface->is_searching = nautilus_places_view_is_searching;
 }
 
 static void
 nautilus_places_view_class_init (NautilusPlacesViewClass *klass)
 {
-        GObjectClass *object_class = G_OBJECT_CLASS (klass);
+    GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
-        object_class->finalize = nautilus_places_view_finalize;
-        object_class->get_property = nautilus_places_view_get_property;
-        object_class->set_property = nautilus_places_view_set_property;
+    object_class->finalize = nautilus_places_view_finalize;
+    object_class->get_property = nautilus_places_view_get_property;
+    object_class->set_property = nautilus_places_view_set_property;
 
-        g_object_class_override_property (object_class, PROP_ICON, "icon");
-        g_object_class_override_property (object_class, PROP_IS_LOADING, "is-loading");
-        g_object_class_override_property (object_class, PROP_IS_SEARCHING, "is-searching");
-        g_object_class_override_property (object_class, PROP_LOCATION, "location");
-        g_object_class_override_property (object_class, PROP_SEARCH_QUERY, "search-query");
+    g_object_class_override_property (object_class, PROP_ICON, "icon");
+    g_object_class_override_property (object_class, PROP_IS_LOADING, "is-loading");
+    g_object_class_override_property (object_class, PROP_IS_SEARCHING, "is-searching");
+    g_object_class_override_property (object_class, PROP_LOCATION, "location");
+    g_object_class_override_property (object_class, PROP_SEARCH_QUERY, "search-query");
 }
 
 static void
 nautilus_places_view_init (NautilusPlacesView *self)
 {
-        NautilusPlacesViewPrivate *priv;
+    NautilusPlacesViewPrivate *priv;
 
-        priv = nautilus_places_view_get_instance_private (self);
+    priv = nautilus_places_view_get_instance_private (self);
 
-        /* Icon */
-        priv->icon = g_themed_icon_new_with_default_fallbacks ("view-list-symbolic");
+    /* Icon */
+    priv->icon = g_themed_icon_new_with_default_fallbacks ("view-list-symbolic");
 
-        /* Location */
-        priv->location = g_file_new_for_uri ("other-locations:///");
+    /* Location */
+    priv->location = g_file_new_for_uri ("other-locations:///");
 
-        /* Places view */
-        priv->places_view = nautilus_gtk_places_view_new ();
-        nautilus_gtk_places_view_set_open_flags (NAUTILUS_GTK_PLACES_VIEW (priv->places_view),
-                                                 GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
-        gtk_widget_set_hexpand (priv->places_view, TRUE);
-        gtk_widget_set_vexpand (priv->places_view, TRUE);
-        gtk_widget_show (priv->places_view);
-        gtk_container_add (GTK_CONTAINER (self), priv->places_view);
+    /* Places view */
+    priv->places_view = nautilus_gtk_places_view_new ();
+    nautilus_gtk_places_view_set_open_flags (NAUTILUS_GTK_PLACES_VIEW (priv->places_view),
+                                             GTK_PLACES_OPEN_NEW_TAB | GTK_PLACES_OPEN_NEW_WINDOW | GTK_PLACES_OPEN_NORMAL);
+    gtk_widget_set_hexpand (priv->places_view, TRUE);
+    gtk_widget_set_vexpand (priv->places_view, TRUE);
+    gtk_widget_show (priv->places_view);
+    gtk_container_add (GTK_CONTAINER (self), priv->places_view);
 
-        g_signal_connect_swapped (priv->places_view,
-                                  "notify::loading",
-                                  G_CALLBACK (loading_cb),
-                                  self);
+    g_signal_connect_swapped (priv->places_view,
+                              "notify::loading",
+                              G_CALLBACK (loading_cb),
+                              self);
 
-        g_signal_connect_swapped (priv->places_view,
-                                  "open-location",
-                                  G_CALLBACK (open_location_cb),
-                                  self);
+    g_signal_connect_swapped (priv->places_view,
+                              "open-location",
+                              G_CALLBACK (open_location_cb),
+                              self);
 
-        g_signal_connect_swapped (priv->places_view,
-                                  "show-error-message",
-                                  G_CALLBACK (show_error_message_cb),
-                                  self);
+    g_signal_connect_swapped (priv->places_view,
+                              "show-error-message",
+                              G_CALLBACK (show_error_message_cb),
+                              self);
 
-        /* Toolbar menu */
-        priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
-        priv->toolbar_menu_sections->supports_undo_redo = FALSE;
+    /* Toolbar menu */
+    priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
+    priv->toolbar_menu_sections->supports_undo_redo = FALSE;
 }
 
 NautilusPlacesView *
 nautilus_places_view_new (void)
 {
-        NautilusPlacesView *view;
+    NautilusPlacesView *view;
 
-        view = g_object_new (NAUTILUS_TYPE_PLACES_VIEW, NULL);
-        if (g_object_is_floating (view)) {
-                g_object_ref_sink (view);
-        }
+    view = g_object_new (NAUTILUS_TYPE_PLACES_VIEW, NULL);
+    if (g_object_is_floating (view))
+    {
+        g_object_ref_sink (view);
+    }
 
-        return view;
+    return view;
 }

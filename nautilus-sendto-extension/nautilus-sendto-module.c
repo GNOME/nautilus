@@ -28,12 +28,12 @@
 
 
 void
-nautilus_module_initialize (GTypeModule*module)
+nautilus_module_initialize (GTypeModule *module)
 {
-	nautilus_nste_register_type (module);
+    nautilus_nste_register_type (module);
 
-	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 }
 
 void
@@ -43,13 +43,12 @@ nautilus_module_shutdown (void)
 
 void
 nautilus_module_list_types (const GType **types,
-			    int          *num_types)
+                            int          *num_types)
 {
-	static GType type_list[1];
+    static GType type_list[1];
 
-	type_list[0] = NAUTILUS_TYPE_NSTE;
-	*types = type_list;
+    type_list[0] = NAUTILUS_TYPE_NSTE;
+    *types = type_list;
 
-	*num_types = 1;
+    *num_types = 1;
 }
-

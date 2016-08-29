@@ -1,6 +1,6 @@
 /*
  *  nautilus-location-widget-provider.c - Interface for Nautilus
-                 extensions that provide extra widgets for a location
+ *                extensions that provide extra widgets for a location
  *
  *  Copyright (C) 2005 Red Hat, Inc.
  *
@@ -16,7 +16,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Alexander Larsson <alexl@redhat.com>
  *
  */
@@ -41,31 +41,33 @@ nautilus_location_widget_provider_base_init (gpointer g_class)
 {
 }
 
-GType                   
+GType
 nautilus_location_widget_provider_get_type (void)
 {
-	static GType type = 0;
+    static GType type = 0;
 
-	if (!type) {
-		const GTypeInfo info = {
-			sizeof (NautilusLocationWidgetProviderIface),
-			nautilus_location_widget_provider_base_init,
-			NULL,
-			NULL,
-			NULL,
-			NULL,
-			0,
-			0,
-			NULL
-		};
-		
-		type = g_type_register_static (G_TYPE_INTERFACE, 
-					       "NautilusLocationWidgetProvider",
-					       &info, 0);
-		g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-	}
+    if (!type)
+    {
+        const GTypeInfo info =
+        {
+            sizeof (NautilusLocationWidgetProviderIface),
+            nautilus_location_widget_provider_base_init,
+            NULL,
+            NULL,
+            NULL,
+            NULL,
+            0,
+            0,
+            NULL
+        };
 
-	return type;
+        type = g_type_register_static (G_TYPE_INTERFACE,
+                                       "NautilusLocationWidgetProvider",
+                                       &info, 0);
+        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
+    }
+
+    return type;
 }
 
 /**
@@ -77,13 +79,12 @@ nautilus_location_widget_provider_get_type (void)
  * Returns: (transfer none): the location widget for @provider at @uri
  */
 GtkWidget *
-nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider     *provider,
-					      const char                         *uri,
-					      GtkWidget                          *window)
+nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider *provider,
+                                              const char                     *uri,
+                                              GtkWidget                      *window)
 {
-	g_return_val_if_fail (NAUTILUS_IS_LOCATION_WIDGET_PROVIDER (provider), NULL);
+    g_return_val_if_fail (NAUTILUS_IS_LOCATION_WIDGET_PROVIDER (provider), NULL);
 
-	return NAUTILUS_LOCATION_WIDGET_PROVIDER_GET_IFACE (provider)->get_widget 
-		(provider, uri, window);
-
-}				       
+    return NAUTILUS_LOCATION_WIDGET_PROVIDER_GET_IFACE (provider)->get_widget
+               (provider, uri, window);
+}

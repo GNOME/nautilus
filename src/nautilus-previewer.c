@@ -34,80 +34,82 @@
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
 static void
-previewer_show_file_ready_cb (GObject *source,
+previewer_show_file_ready_cb (GObject      *source,
                               GAsyncResult *res,
-                              gpointer user_data)
+                              gpointer      user_data)
 {
-  GError *error = NULL;
+    GError *error = NULL;
 
-  g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
-                                 res, &error);
+    g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
+                                   res, &error);
 
-  if (error != NULL) {
-    DEBUG ("Unable to call ShowFile on NautilusPreviewer: %s",
-           error->message);
-    g_error_free (error);
-  }
+    if (error != NULL)
+    {
+        DEBUG ("Unable to call ShowFile on NautilusPreviewer: %s",
+               error->message);
+        g_error_free (error);
+    }
 }
 
 static void
-previewer_close_ready_cb (GObject *source,
+previewer_close_ready_cb (GObject      *source,
                           GAsyncResult *res,
-                          gpointer user_data)
+                          gpointer      user_data)
 {
-  GError *error = NULL;
+    GError *error = NULL;
 
-  g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
-                                 res, &error);
+    g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
+                                   res, &error);
 
-  if (error != NULL) {
-    DEBUG ("Unable to call Close on NautilusPreviewer: %s",
-           error->message);
-    g_error_free (error);
-  }
+    if (error != NULL)
+    {
+        DEBUG ("Unable to call Close on NautilusPreviewer: %s",
+               error->message);
+        g_error_free (error);
+    }
 }
 
 void
 nautilus_previewer_call_show_file (const gchar *uri,
-                                   guint xid,
-				   gboolean close_if_already_visible)
+                                   guint        xid,
+                                   gboolean     close_if_already_visible)
 {
-  GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
-  GVariant *variant;
+    GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+    GVariant *variant;
 
-  variant = g_variant_new ("(sib)",
-                           uri, xid, close_if_already_visible);
+    variant = g_variant_new ("(sib)",
+                             uri, xid, close_if_already_visible);
 
-  g_dbus_connection_call (connection,
-                          PREVIEWER_DBUS_NAME,
-                          PREVIEWER_DBUS_PATH,
-                          PREVIEWER_DBUS_IFACE,
-                          "ShowFile",
-                          variant,
-                          NULL,
-                          G_DBUS_CALL_FLAGS_NONE,
-                          -1,
-                          NULL,
-                          previewer_show_file_ready_cb,
-                          NULL);
+    g_dbus_connection_call (connection,
+                            PREVIEWER_DBUS_NAME,
+                            PREVIEWER_DBUS_PATH,
+                            PREVIEWER_DBUS_IFACE,
+                            "ShowFile",
+                            variant,
+                            NULL,
+                            G_DBUS_CALL_FLAGS_NONE,
+                            -1,
+                            NULL,
+                            previewer_show_file_ready_cb,
+                            NULL);
 }
 
 void
 nautilus_previewer_call_close (void)
 {
-  GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+    GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
 
-  /* don't autostart the previewer if it's not running */
-  g_dbus_connection_call (connection,
-                          PREVIEWER_DBUS_NAME,
-                          PREVIEWER_DBUS_PATH,
-                          PREVIEWER_DBUS_IFACE,
-                          "Close",
-                          NULL,
-                          NULL,
-                          G_DBUS_CALL_FLAGS_NO_AUTO_START,
-                          -1,
-                          NULL,
-                          previewer_close_ready_cb,
-                          NULL);
+    /* don't autostart the previewer if it's not running */
+    g_dbus_connection_call (connection,
+                            PREVIEWER_DBUS_NAME,
+                            PREVIEWER_DBUS_PATH,
+                            PREVIEWER_DBUS_IFACE,
+                            "Close",
+                            NULL,
+                            NULL,
+                            G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                            -1,
+                            NULL,
+                            previewer_close_ready_cb,
+                            NULL);
 }

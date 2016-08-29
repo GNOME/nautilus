@@ -12,7 +12,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with this program; if not, see <http://www.gnu.org/licenses/>. 
+ * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
 #include "config.h"
@@ -25,56 +25,63 @@
 static GtkRecentManager *
 nautilus_recent_get_manager (void)
 {
-	static GtkRecentManager *manager = NULL;
+    static GtkRecentManager *manager = NULL;
 
-	if (manager == NULL) {
-		manager = gtk_recent_manager_get_default ();
-	}
+    if (manager == NULL)
+    {
+        manager = gtk_recent_manager_get_default ();
+    }
 
-	return manager;
+    return manager;
 }
 
 void
 nautilus_recent_add_file (NautilusFile *file,
-			  GAppInfo *application)
+                          GAppInfo     *application)
 {
-	GtkRecentData recent_data;
-	char *uri;
+    GtkRecentData recent_data;
+    char *uri;
 
-	uri = nautilus_file_get_activation_uri (file);
-	if (uri == NULL) {
-		uri = nautilus_file_get_uri (file);
-	}
+    uri = nautilus_file_get_activation_uri (file);
+    if (uri == NULL)
+    {
+        uri = nautilus_file_get_uri (file);
+    }
 
-	/* do not add trash:// etc */
-	if (eel_uri_is_trash (uri)  ||
-	    eel_uri_is_search (uri) ||
-	    eel_uri_is_recent (uri) ||
-	    eel_uri_is_desktop (uri)) {
-		g_free (uri);
-		return;
-	}
+    /* do not add trash:// etc */
+    if (eel_uri_is_trash (uri) ||
+        eel_uri_is_search (uri) ||
+        eel_uri_is_recent (uri) ||
+        eel_uri_is_desktop (uri))
+    {
+        g_free (uri);
+        return;
+    }
 
-	recent_data.display_name = NULL;
-	recent_data.description = NULL;
+    recent_data.display_name = NULL;
+    recent_data.description = NULL;
 
-	recent_data.mime_type = nautilus_file_get_mime_type (file);
-	recent_data.app_name = g_strdup (g_get_application_name ());
+    recent_data.mime_type = nautilus_file_get_mime_type (file);
+    recent_data.app_name = g_strdup (g_get_application_name ());
 
-	if (application != NULL)
-		recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
-	else
-		recent_data.app_exec = g_strdup (DEFAULT_APP_EXEC);
+    if (application != NULL)
+    {
+        recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
+    }
+    else
+    {
+        recent_data.app_exec = g_strdup (DEFAULT_APP_EXEC);
+    }
 
-	recent_data.groups = NULL;
-	recent_data.is_private = FALSE;
+    recent_data.groups = NULL;
+    recent_data.is_private = FALSE;
 
-	gtk_recent_manager_add_full (nautilus_recent_get_manager (),
-				     uri, &recent_data);
+    gtk_recent_manager_add_full (nautilus_recent_get_manager (),
+                                 uri, &recent_data);
 
-	g_free (recent_data.mime_type);
-	g_free (recent_data.app_name);
-	g_free (recent_data.app_exec);
-	
-	g_free (uri);
+    g_free (recent_data.mime_type);
+    g_free (recent_data.app_name);
+    g_free (recent_data.app_exec);
+
+    g_free (uri);
 }

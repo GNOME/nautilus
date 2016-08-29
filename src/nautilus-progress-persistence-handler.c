@@ -34,11 +34,12 @@
 #include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
 
-struct _NautilusProgressPersistenceHandlerPriv {
-	NautilusProgressInfoManager *manager;
+struct _NautilusProgressPersistenceHandlerPriv
+{
+    NautilusProgressInfoManager *manager;
 
-        NautilusApplication *app;
-	guint active_infos;
+    NautilusApplication *app;
+    guint active_infos;
 };
 
 G_DEFINE_TYPE (NautilusProgressPersistenceHandler, nautilus_progress_persistence_handler, G_TYPE_OBJECT);
@@ -65,207 +66,219 @@ static gboolean server_has_persistence (void);
 static void
 show_file_transfers (NautilusProgressPersistenceHandler *self)
 {
-        GFile *home;
+    GFile *home;
 
-        home = g_file_new_for_path (g_get_home_dir ());
-        nautilus_application_open_location (self->priv->app, home, NULL, NULL);
+    home = g_file_new_for_path (g_get_home_dir ());
+    nautilus_application_open_location (self->priv->app, home, NULL, NULL);
 
-        g_object_unref (home);
+    g_object_unref (home);
 }
 
 static void
 action_show_file_transfers (GSimpleAction *action,
-			    GVariant *parameter,
-			    gpointer user_data)
+                            GVariant      *parameter,
+                            gpointer       user_data)
 {
-        NautilusProgressPersistenceHandler *self;
+    NautilusProgressPersistenceHandler *self;
 
-        self = NAUTILUS_PROGRESS_PERSISTENCE_HANDLER (user_data);
-        show_file_transfers (self);
+    self = NAUTILUS_PROGRESS_PERSISTENCE_HANDLER (user_data);
+    show_file_transfers (self);
 }
 
-static GActionEntry progress_persistence_entries[] = {
-	{ "show-file-transfers", action_show_file_transfers, NULL, NULL, NULL }
+static GActionEntry progress_persistence_entries[] =
+{
+    { "show-file-transfers", action_show_file_transfers, NULL, NULL, NULL }
 };
 
 static void
 progress_persistence_handler_update_notification (NautilusProgressPersistenceHandler *self)
 {
-        GNotification *notification;
-	gchar *body;
+    GNotification *notification;
+    gchar *body;
 
-	if (!server_has_persistence ()) {
-		return;
-	}
+    if (!server_has_persistence ())
+    {
+        return;
+    }
 
-        notification = g_notification_new (_("File Operations"));
-	g_notification_set_default_action (notification, "app.show-file-transfers");
-        g_notification_add_button (notification, _("Show Details"),
-                                   "app.show-file-transfers");
+    notification = g_notification_new (_("File Operations"));
+    g_notification_set_default_action (notification, "app.show-file-transfers");
+    g_notification_add_button (notification, _("Show Details"),
+                               "app.show-file-transfers");
 
-	body = g_strdup_printf (ngettext ("%'d file operation active",
-					  "%'d file operations active",
-					  self->priv->active_infos),
-				self->priv->active_infos);
-        g_notification_set_body (notification, body);
+    body = g_strdup_printf (ngettext ("%'d file operation active",
+                                      "%'d file operations active",
+                                      self->priv->active_infos),
+                            self->priv->active_infos);
+    g_notification_set_body (notification, body);
 
-        nautilus_application_send_notification (self->priv->app,
-                                                "progress", notification);
+    nautilus_application_send_notification (self->priv->app,
+                                            "progress", notification);
 
-        g_object_unref (notification);
-	g_free (body);
+    g_object_unref (notification);
+    g_free (body);
 }
 
 void
 nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersistenceHandler *self)
 {
-        GList *windows;
+    GList *windows;
 
-        windows = nautilus_application_get_windows (self->priv->app);
-        if (self->priv->active_infos > 0 &&
-            g_list_length (windows) == 0) {
-		    progress_persistence_handler_update_notification (self);
-        }
+    windows = nautilus_application_get_windows (self->priv->app);
+    if (self->priv->active_infos > 0 &&
+        g_list_length (windows) == 0)
+    {
+        progress_persistence_handler_update_notification (self);
+    }
 }
 
 static void
 progress_persistence_handler_show_complete_notification (NautilusProgressPersistenceHandler *self)
 {
-	GNotification *complete_notification;
+    GNotification *complete_notification;
 
-	if (!server_has_persistence ()) {
-		return;
-	}
+    if (!server_has_persistence ())
+    {
+        return;
+    }
 
-	complete_notification = g_notification_new (_("File Operations"));
-        g_notification_set_body (complete_notification,
-                                 _("All file operations have been successfully completed"));
-        nautilus_application_send_notification (self->priv->app,
-                                                "transfer-complete",
-                                                complete_notification);
+    complete_notification = g_notification_new (_("File Operations"));
+    g_notification_set_body (complete_notification,
+                             _("All file operations have been successfully completed"));
+    nautilus_application_send_notification (self->priv->app,
+                                            "transfer-complete",
+                                            complete_notification);
 
-	g_object_unref (complete_notification);
+    g_object_unref (complete_notification);
 }
 
 static void
 progress_persistence_handler_hide_notification (NautilusProgressPersistenceHandler *self)
 {
-	if (!server_has_persistence ()) {
-		return;
-	}
+    if (!server_has_persistence ())
+    {
+        return;
+    }
 
-        nautilus_application_withdraw_notification (self->priv->app,
-                                                    "progress");
+    nautilus_application_withdraw_notification (self->priv->app,
+                                                "progress");
 }
 
 static void
 progress_info_finished_cb (NautilusProgressInfo               *info,
                            NautilusProgressPersistenceHandler *self)
 {
-        GList *windows;
+    GList *windows;
 
-	self->priv->active_infos--;
+    self->priv->active_infos--;
 
-        windows = nautilus_application_get_windows (self->priv->app);
-        if (self->priv->active_infos > 0) {
-	        if (g_list_length (windows) == 0) {
-		        progress_persistence_handler_update_notification (self);
-	        }
-        } else if (g_list_length (windows)  == 0) {
-	        progress_persistence_handler_hide_notification (self);
-	        progress_persistence_handler_show_complete_notification (self);
+    windows = nautilus_application_get_windows (self->priv->app);
+    if (self->priv->active_infos > 0)
+    {
+        if (g_list_length (windows) == 0)
+        {
+            progress_persistence_handler_update_notification (self);
         }
-
+    }
+    else if (g_list_length (windows) == 0)
+    {
+        progress_persistence_handler_hide_notification (self);
+        progress_persistence_handler_show_complete_notification (self);
+    }
 }
 
 static void
 handle_new_progress_info (NautilusProgressPersistenceHandler *self,
                           NautilusProgressInfo               *info)
 {
-        GList *windows;
-	g_signal_connect (info, "finished",
-			  G_CALLBACK (progress_info_finished_cb), self);
+    GList *windows;
+    g_signal_connect (info, "finished",
+                      G_CALLBACK (progress_info_finished_cb), self);
 
-	self->priv->active_infos++;
-        windows = nautilus_application_get_windows (self->priv->app);
+    self->priv->active_infos++;
+    windows = nautilus_application_get_windows (self->priv->app);
 
-	if (g_list_length (windows) == 0) {
-		progress_persistence_handler_update_notification (self);
-        }
+    if (g_list_length (windows) == 0)
+    {
+        progress_persistence_handler_update_notification (self);
+    }
 }
 
-typedef struct {
-	NautilusProgressInfo *info;
-	NautilusProgressPersistenceHandler *self;
+typedef struct
+{
+    NautilusProgressInfo *info;
+    NautilusProgressPersistenceHandler *self;
 } TimeoutData;
 
 static void
 timeout_data_free (TimeoutData *data)
 {
-	g_clear_object (&data->self);
-	g_clear_object (&data->info);
+    g_clear_object (&data->self);
+    g_clear_object (&data->info);
 
-	g_slice_free (TimeoutData, data);
+    g_slice_free (TimeoutData, data);
 }
 
 static TimeoutData *
 timeout_data_new (NautilusProgressPersistenceHandler *self,
                   NautilusProgressInfo               *info)
 {
-	TimeoutData *retval;
+    TimeoutData *retval;
 
-	retval = g_slice_new0 (TimeoutData);
-	retval->self = g_object_ref (self);
-	retval->info = g_object_ref (info);
+    retval = g_slice_new0 (TimeoutData);
+    retval->self = g_object_ref (self);
+    retval->info = g_object_ref (info);
 
-	return retval;
+    return retval;
 }
 
 static gboolean
 new_op_started_timeout (TimeoutData *data)
 {
-	NautilusProgressInfo *info = data->info;
-	NautilusProgressPersistenceHandler *self = data->self;
+    NautilusProgressInfo *info = data->info;
+    NautilusProgressPersistenceHandler *self = data->self;
 
-	if (nautilus_progress_info_get_is_paused (info)) {
-		return TRUE;
-	}
+    if (nautilus_progress_info_get_is_paused (info))
+    {
+        return TRUE;
+    }
 
-	if (!nautilus_progress_info_get_is_finished (info)) {
-		handle_new_progress_info (self, info);
-	}
+    if (!nautilus_progress_info_get_is_finished (info))
+    {
+        handle_new_progress_info (self, info);
+    }
 
-	timeout_data_free (data);
+    timeout_data_free (data);
 
-	return FALSE;
+    return FALSE;
 }
 
 static void
 release_application (NautilusProgressInfo               *info,
                      NautilusProgressPersistenceHandler *self)
 {
-	/* release the GApplication hold we acquired */
-	g_application_release (g_application_get_default ());
+    /* release the GApplication hold we acquired */
+    g_application_release (g_application_get_default ());
 }
 
 static void
 progress_info_started_cb (NautilusProgressInfo               *info,
                           NautilusProgressPersistenceHandler *self)
 {
-	TimeoutData *data;
+    TimeoutData *data;
 
-	/* hold GApplication so we never quit while there's an operation pending */
-	g_application_hold (g_application_get_default ());
+    /* hold GApplication so we never quit while there's an operation pending */
+    g_application_hold (g_application_get_default ());
 
-	g_signal_connect (info, "finished",
-			  G_CALLBACK (release_application), self);
+    g_signal_connect (info, "finished",
+                      G_CALLBACK (release_application), self);
 
-	data = timeout_data_new (self, info);
+    data = timeout_data_new (self, info);
 
-	/* timeout for the progress window to appear */
-	g_timeout_add_seconds (2,
-			       (GSourceFunc) new_op_started_timeout,
-			       data);
+    /* timeout for the progress window to appear */
+    g_timeout_add_seconds (2,
+                           (GSourceFunc) new_op_started_timeout,
+                           data);
 }
 
 static void
@@ -273,92 +286,99 @@ new_progress_info_cb (NautilusProgressInfoManager        *manager,
                       NautilusProgressInfo               *info,
                       NautilusProgressPersistenceHandler *self)
 {
-	g_signal_connect (info, "started",
-			  G_CALLBACK (progress_info_started_cb), self);
+    g_signal_connect (info, "started",
+                      G_CALLBACK (progress_info_started_cb), self);
 }
 
 static void
 nautilus_progress_persistence_handler_dispose (GObject *obj)
 {
-	NautilusProgressPersistenceHandler *self = NAUTILUS_PROGRESS_PERSISTENCE_HANDLER (obj);
+    NautilusProgressPersistenceHandler *self = NAUTILUS_PROGRESS_PERSISTENCE_HANDLER (obj);
 
-	g_clear_object (&self->priv->manager);
+    g_clear_object (&self->priv->manager);
 
-	G_OBJECT_CLASS (nautilus_progress_persistence_handler_parent_class)->dispose (obj);
+    G_OBJECT_CLASS (nautilus_progress_persistence_handler_parent_class)->dispose (obj);
 }
 
 static gboolean
 server_has_persistence (void)
 {
-        static gboolean retval = FALSE;
-        GDBusConnection *conn;
-        GVariant *result;
-        char **cap, **caps;
-        static gboolean initialized = FALSE;
+    static gboolean retval = FALSE;
+    GDBusConnection *conn;
+    GVariant *result;
+    char **cap, **caps;
+    static gboolean initialized = FALSE;
 
-        if (initialized) {
-                return retval;
-        }
-        initialized = TRUE;
-
-        conn = g_application_get_dbus_connection (g_application_get_default ());
-        result = g_dbus_connection_call_sync (conn,
-                                              "org.freedesktop.Notifications",
-                                              "/org/freedesktop/Notifications",
-                                              "org.freedesktop.Notifications",
-                                              "GetCapabilities",
-                                              g_variant_new ("()"),
-                                              G_VARIANT_TYPE ("(as)"),
-                                              G_DBUS_CALL_FLAGS_NONE,
-                                              -1, NULL, NULL);
-
-        if (result == NULL)
-                return FALSE;
-
-        g_variant_get (result, "(^a&s)", &caps);
-
-        for (cap = caps; *cap != NULL; cap++)
-                if (g_strcmp0 ("persistence", *cap) == 0)
-                        retval = TRUE;
-
-        g_free (caps);
-        g_variant_unref (result);
-
+    if (initialized)
+    {
         return retval;
+    }
+    initialized = TRUE;
+
+    conn = g_application_get_dbus_connection (g_application_get_default ());
+    result = g_dbus_connection_call_sync (conn,
+                                          "org.freedesktop.Notifications",
+                                          "/org/freedesktop/Notifications",
+                                          "org.freedesktop.Notifications",
+                                          "GetCapabilities",
+                                          g_variant_new ("()"),
+                                          G_VARIANT_TYPE ("(as)"),
+                                          G_DBUS_CALL_FLAGS_NONE,
+                                          -1, NULL, NULL);
+
+    if (result == NULL)
+    {
+        return FALSE;
+    }
+
+    g_variant_get (result, "(^a&s)", &caps);
+
+    for (cap = caps; *cap != NULL; cap++)
+    {
+        if (g_strcmp0 ("persistence", *cap) == 0)
+        {
+            retval = TRUE;
+        }
+    }
+
+    g_free (caps);
+    g_variant_unref (result);
+
+    return retval;
 }
 
 static void
 nautilus_progress_persistence_handler_init (NautilusProgressPersistenceHandler *self)
 {
-	self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER,
-						  NautilusProgressPersistenceHandlerPriv);
+    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER,
+                                              NautilusProgressPersistenceHandlerPriv);
 
-	self->priv->manager = nautilus_progress_info_manager_dup_singleton ();
-	g_signal_connect (self->priv->manager, "new-progress-info",
-			  G_CALLBACK (new_progress_info_cb), self);
+    self->priv->manager = nautilus_progress_info_manager_dup_singleton ();
+    g_signal_connect (self->priv->manager, "new-progress-info",
+                      G_CALLBACK (new_progress_info_cb), self);
 }
 
 static void
 nautilus_progress_persistence_handler_class_init (NautilusProgressPersistenceHandlerClass *klass)
 {
-	GObjectClass *oclass;
+    GObjectClass *oclass;
 
-	oclass = G_OBJECT_CLASS (klass);
-	oclass->dispose = nautilus_progress_persistence_handler_dispose;
+    oclass = G_OBJECT_CLASS (klass);
+    oclass->dispose = nautilus_progress_persistence_handler_dispose;
 
-	g_type_class_add_private (klass, sizeof (NautilusProgressPersistenceHandlerPriv));
+    g_type_class_add_private (klass, sizeof (NautilusProgressPersistenceHandlerPriv));
 }
 
 NautilusProgressPersistenceHandler *
 nautilus_progress_persistence_handler_new (GObject *app)
 {
-        NautilusProgressPersistenceHandler *self;
+    NautilusProgressPersistenceHandler *self;
 
-        self = g_object_new (NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER, NULL);
-        self->priv->app = NAUTILUS_APPLICATION (app);
+    self = g_object_new (NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER, NULL);
+    self->priv->app = NAUTILUS_APPLICATION (app);
 
-        g_action_map_add_action_entries (G_ACTION_MAP (self->priv->app),
-                                         progress_persistence_entries, G_N_ELEMENTS (progress_persistence_entries),
-                                         self);
-	return self;
+    g_action_map_add_action_entries (G_ACTION_MAP (self->priv->app),
+                                     progress_persistence_entries, G_N_ELEMENTS (progress_persistence_entries),
+                                     self);
+    return self;
 }

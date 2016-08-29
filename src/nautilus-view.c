@@ -25,65 +25,65 @@ G_DEFINE_INTERFACE (NautilusView, nautilus_view, GTK_TYPE_WIDGET)
 static void
 nautilus_view_default_init (NautilusViewInterface *iface)
 {
-        /**
-         * NautilusView::icon:
-         *
-         * The #GIcon that represents the view, or %NULL.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_object ("icon",
-                                                                  "Icon that represents the view",
-                                                                  "The icon that represents the view",
-                                                                  G_TYPE_ICON,
-                                                                  G_PARAM_READABLE));
+    /**
+     * NautilusView::icon:
+     *
+     * The #GIcon that represents the view, or %NULL.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_object ("icon",
+                                                              "Icon that represents the view",
+                                                              "The icon that represents the view",
+                                                              G_TYPE_ICON,
+                                                              G_PARAM_READABLE));
 
-        /**
-         * NautilusView::is-loading:
-         *
-         * %TRUE if the view is loading the location, %FALSE otherwise.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_boolean ("is-loading",
-                                                                   "Current view is loading",
-                                                                   "Whether the current view is loading the location or not",
-                                                                   FALSE,
-                                                                   G_PARAM_READABLE));
+    /**
+     * NautilusView::is-loading:
+     *
+     * %TRUE if the view is loading the location, %FALSE otherwise.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_boolean ("is-loading",
+                                                               "Current view is loading",
+                                                               "Whether the current view is loading the location or not",
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
 
-        /**
-         * NautilusView::is-searching:
-         *
-         * %TRUE if the view is searching, %FALSE otherwise.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_boolean ("is-searching",
-                                                                   "Current view is searching",
-                                                                   "Whether the current view is searching or not",
-                                                                   FALSE,
-                                                                   G_PARAM_READABLE));
+    /**
+     * NautilusView::is-searching:
+     *
+     * %TRUE if the view is searching, %FALSE otherwise.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_boolean ("is-searching",
+                                                               "Current view is searching",
+                                                               "Whether the current view is searching or not",
+                                                               FALSE,
+                                                               G_PARAM_READABLE));
 
-        /**
-         * NautilusView::location:
-         *
-         * The current location of the view.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_object ("location",
-                                                                  "Location displayed by the view",
-                                                                  "The current location displayed by the view",
-                                                                  G_TYPE_FILE,
-                                                                  G_PARAM_READWRITE));
+    /**
+     * NautilusView::location:
+     *
+     * The current location of the view.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_object ("location",
+                                                              "Location displayed by the view",
+                                                              "The current location displayed by the view",
+                                                              G_TYPE_FILE,
+                                                              G_PARAM_READWRITE));
 
-        /**
-         * NautilusView::search-query:
-         *
-         * The search query being performed, or NULL.
-         */
-        g_object_interface_install_property (iface,
-                                             g_param_spec_object ("search-query",
-                                                                  "Search query being performed",
-                                                                  "The search query being performed on the view",
-                                                                  NAUTILUS_TYPE_QUERY,
-                                                                  G_PARAM_READWRITE));
+    /**
+     * NautilusView::search-query:
+     *
+     * The search query being performed, or NULL.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_object ("search-query",
+                                                              "Search query being performed",
+                                                              "The search query being performed on the view",
+                                                              NAUTILUS_TYPE_QUERY,
+                                                              G_PARAM_READWRITE));
 }
 
 /**
@@ -94,12 +94,12 @@ nautilus_view_default_init (NautilusViewInterface *iface)
  *
  * Returns: (transfer none): a #GIcon
  */
-GIcon*
+GIcon *
 nautilus_view_get_icon (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_icon, NULL);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_icon, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_icon (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_icon (view);
 }
 
 /**
@@ -115,9 +115,9 @@ nautilus_view_get_icon (NautilusView *view)
 NautilusToolbarMenuSections *
 nautilus_view_get_toolbar_menu_sections (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections, NULL);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
 }
 
 /**
@@ -128,12 +128,12 @@ nautilus_view_get_toolbar_menu_sections (NautilusView *view)
  *
  * Returns: (transfer none): a #GFile
  */
-GFile*
+GFile *
 nautilus_view_get_location (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_location, NULL);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_location, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_location (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_location (view);
 }
 
 /**
@@ -149,9 +149,9 @@ void
 nautilus_view_set_location (NautilusView *view,
                             GFile        *location)
 {
-        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_location);
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_location);
 
-        NAUTILUS_VIEW_GET_IFACE (view)->set_location (view, location);
+    NAUTILUS_VIEW_GET_IFACE (view)->set_location (view, location);
 }
 
 /**
@@ -163,12 +163,12 @@ nautilus_view_set_location (NautilusView *view,
  * Returns: (transfer full) (type GFile): a newly allocated list
  * of the currently selected files.
  */
-GList*
+GList *
 nautilus_view_get_selection (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_selection, NULL);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_selection, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_selection (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_selection (view);
 }
 
 /**
@@ -184,9 +184,9 @@ void
 nautilus_view_set_selection (NautilusView *view,
                              GList        *selection)
 {
-        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_selection);
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_selection);
 
-        NAUTILUS_VIEW_GET_IFACE (view)->set_selection (view, selection);
+    NAUTILUS_VIEW_GET_IFACE (view)->set_selection (view, selection);
 }
 
 /**
@@ -197,12 +197,12 @@ nautilus_view_set_selection (NautilusView *view,
  *
  * Returns: (transfer none): a #
  */
-NautilusQuery*
+NautilusQuery *
 nautilus_view_get_search_query (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_search_query, NULL);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_search_query, NULL);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->get_search_query (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_search_query (view);
 }
 
 /**
@@ -218,9 +218,9 @@ void
 nautilus_view_set_search_query (NautilusView  *view,
                                 NautilusQuery *query)
 {
-        g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_search_query);
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_search_query);
 
-        NAUTILUS_VIEW_GET_IFACE (view)->set_search_query (view, query);
+    NAUTILUS_VIEW_GET_IFACE (view)->set_search_query (view, query);
 }
 
 /**
@@ -234,9 +234,9 @@ nautilus_view_set_search_query (NautilusView  *view,
 gboolean
 nautilus_view_is_loading (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_loading, FALSE);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_loading, FALSE);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->is_loading (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->is_loading (view);
 }
 
 /**
@@ -250,7 +250,7 @@ nautilus_view_is_loading (NautilusView *view)
 gboolean
 nautilus_view_is_searching (NautilusView *view)
 {
-        g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_searching, FALSE);
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->is_searching, FALSE);
 
-        return NAUTILUS_VIEW_GET_IFACE (view)->is_searching (view);
+    return NAUTILUS_VIEW_GET_IFACE (view)->is_searching (view);
 }

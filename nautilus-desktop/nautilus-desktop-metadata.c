@@ -30,61 +30,61 @@
 static gchar *
 get_keyfile_path (void)
 {
-	gchar *xdg_dir, *retval;
+    gchar *xdg_dir, *retval;
 
-	xdg_dir = nautilus_get_user_directory ();
-	retval = g_build_filename (xdg_dir, "desktop-metadata", NULL);
+    xdg_dir = nautilus_get_user_directory ();
+    retval = g_build_filename (xdg_dir, "desktop-metadata", NULL);
 
-	g_free (xdg_dir);
+    g_free (xdg_dir);
 
-	return retval;
+    return retval;
 }
 
 void
 nautilus_desktop_set_metadata_string (NautilusFile *file,
-                                      const gchar *name,
-                                      const gchar *key,
-                                      const gchar *string)
+                                      const gchar  *name,
+                                      const gchar  *key,
+                                      const gchar  *string)
 {
-	gchar *keyfile_filename;
+    gchar *keyfile_filename;
 
-	keyfile_filename = get_keyfile_path ();
+    keyfile_filename = get_keyfile_path ();
 
-	nautilus_keyfile_metadata_set_string (file, keyfile_filename,
-	                                      name, key, string);
+    nautilus_keyfile_metadata_set_string (file, keyfile_filename,
+                                          name, key, string);
 
-	g_free (keyfile_filename);
+    g_free (keyfile_filename);
 }
 
 void
-nautilus_desktop_set_metadata_stringv (NautilusFile *file,
-                                       const char *name,
-                                       const char *key,
+nautilus_desktop_set_metadata_stringv (NautilusFile       *file,
+                                       const char         *name,
+                                       const char         *key,
                                        const char * const *stringv)
 {
-	gchar *keyfile_filename;
+    gchar *keyfile_filename;
 
-	keyfile_filename = get_keyfile_path ();
+    keyfile_filename = get_keyfile_path ();
 
-	nautilus_keyfile_metadata_set_stringv (file, keyfile_filename,
-	                                       name, key, stringv);
+    nautilus_keyfile_metadata_set_stringv (file, keyfile_filename,
+                                           name, key, stringv);
 
-	g_free (keyfile_filename);
+    g_free (keyfile_filename);
 }
 
 gboolean
 nautilus_desktop_update_metadata_from_keyfile (NautilusFile *file,
-					       const gchar *name)
+                                               const gchar  *name)
 {
-	gchar *keyfile_filename;
-	gboolean result;
+    gchar *keyfile_filename;
+    gboolean result;
 
-	keyfile_filename = get_keyfile_path ();
+    keyfile_filename = get_keyfile_path ();
 
-	result = nautilus_keyfile_metadata_update_from_keyfile (file,
-	                                                        keyfile_filename,
-	                                                        name);
+    result = nautilus_keyfile_metadata_update_from_keyfile (file,
+                                                            keyfile_filename,
+                                                            name);
 
-	g_free (keyfile_filename);
-	return result;
+    g_free (keyfile_filename);
+    return result;
 }

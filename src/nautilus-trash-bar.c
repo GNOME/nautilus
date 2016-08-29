@@ -31,206 +31,224 @@
 #include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
 
-#define NAUTILUS_TRASH_BAR_GET_PRIVATE(o)\
-	(G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarPrivate))
+#define NAUTILUS_TRASH_BAR_GET_PRIVATE(o) \
+    (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarPrivate))
 
-enum {
-	PROP_VIEW = 1,
-	NUM_PROPERTIES
+enum
+{
+    PROP_VIEW = 1,
+    NUM_PROPERTIES
 };
 
-enum {
-	TRASH_BAR_RESPONSE_EMPTY = 1,
-	TRASH_BAR_RESPONSE_RESTORE
+enum
+{
+    TRASH_BAR_RESPONSE_EMPTY = 1,
+    TRASH_BAR_RESPONSE_RESTORE
 };
 
 struct NautilusTrashBarPrivate
 {
-	NautilusFilesView *view;
-	gulong selection_handler_id;
+    NautilusFilesView *view;
+    gulong selection_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR);
 
 static void
 selection_changed_cb (NautilusFilesView *view,
-		      NautilusTrashBar *bar)
+                      NautilusTrashBar  *bar)
 {
-        GList *selection;
-	int count;
+    GList *selection;
+    int count;
 
-        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-	count = g_list_length (selection);
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    count = g_list_length (selection);
 
-	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
-					     TRASH_BAR_RESPONSE_RESTORE,
-					     (count > 0));
+    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
+                                         TRASH_BAR_RESPONSE_RESTORE,
+                                         (count > 0));
 
-        nautilus_file_list_free (selection);
+    nautilus_file_list_free (selection);
 }
 
 static void
 connect_view_and_update_button (NautilusTrashBar *bar)
 {
-	bar->priv->selection_handler_id =
-		g_signal_connect (bar->priv->view, "selection-changed",
-				  G_CALLBACK (selection_changed_cb), bar);
+    bar->priv->selection_handler_id =
+        g_signal_connect (bar->priv->view, "selection-changed",
+                          G_CALLBACK (selection_changed_cb), bar);
 
-	selection_changed_cb (bar->priv->view, bar);
+    selection_changed_cb (bar->priv->view, bar);
 }
 
 static void
 nautilus_trash_bar_set_property (GObject      *object,
-				 guint         prop_id,
-				 const GValue *value,
-				 GParamSpec   *pspec)
+                                 guint         prop_id,
+                                 const GValue *value,
+                                 GParamSpec   *pspec)
 {
-	NautilusTrashBar *bar;
+    NautilusTrashBar *bar;
 
-	bar = NAUTILUS_TRASH_BAR (object);
+    bar = NAUTILUS_TRASH_BAR (object);
 
-	switch (prop_id) {
-	case PROP_VIEW:
-		bar->priv->view = g_value_get_object (value);
-		connect_view_and_update_button (bar);
-		break;
-	default:
-		G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-		break;
-	}
+    switch (prop_id)
+    {
+        case PROP_VIEW:
+        {
+            bar->priv->view = g_value_get_object (value);
+            connect_view_and_update_button (bar);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
+    }
 }
 
 static void
 nautilus_trash_bar_dispose (GObject *obj)
 {
-	NautilusTrashBar *bar;
+    NautilusTrashBar *bar;
 
-	bar = NAUTILUS_TRASH_BAR (obj);
+    bar = NAUTILUS_TRASH_BAR (obj);
 
-	if (bar->priv->selection_handler_id) {
-		g_signal_handler_disconnect (bar->priv->view, bar->priv->selection_handler_id);
-		bar->priv->selection_handler_id = 0;
-	}
+    if (bar->priv->selection_handler_id)
+    {
+        g_signal_handler_disconnect (bar->priv->view, bar->priv->selection_handler_id);
+        bar->priv->selection_handler_id = 0;
+    }
 
-	G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->dispose (obj);
+    G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->dispose (obj);
 }
 
 static void
 nautilus_trash_bar_trash_state_changed (NautilusTrashMonitor *trash_monitor,
-					gboolean              state,
-					gpointer              data)
+                                        gboolean              state,
+                                        gpointer              data)
 {
-	NautilusTrashBar *bar;
+    NautilusTrashBar *bar;
 
-	bar = NAUTILUS_TRASH_BAR (data);
+    bar = NAUTILUS_TRASH_BAR (data);
 
-	gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
-					     TRASH_BAR_RESPONSE_EMPTY,
-					     !nautilus_trash_monitor_is_empty ());
+    gtk_info_bar_set_response_sensitive (GTK_INFO_BAR (bar),
+                                         TRASH_BAR_RESPONSE_EMPTY,
+                                         !nautilus_trash_monitor_is_empty ());
 }
 
 static void
 nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
 {
-	GObjectClass *object_class;
+    GObjectClass *object_class;
 
-	object_class = G_OBJECT_CLASS (klass);
+    object_class = G_OBJECT_CLASS (klass);
 
-	object_class->set_property = nautilus_trash_bar_set_property;
-	object_class->dispose = nautilus_trash_bar_dispose;
+    object_class->set_property = nautilus_trash_bar_set_property;
+    object_class->dispose = nautilus_trash_bar_dispose;
 
-	g_object_class_install_property (object_class,
-					 PROP_VIEW,
-					 g_param_spec_object ("view",
-							      "view",
-							      "the NautilusFilesView",
-							      NAUTILUS_TYPE_FILES_VIEW,
-							      G_PARAM_WRITABLE |
-							      G_PARAM_CONSTRUCT_ONLY |
-							      G_PARAM_STATIC_STRINGS));
+    g_object_class_install_property (object_class,
+                                     PROP_VIEW,
+                                     g_param_spec_object ("view",
+                                                          "view",
+                                                          "the NautilusFilesView",
+                                                          NAUTILUS_TYPE_FILES_VIEW,
+                                                          G_PARAM_WRITABLE |
+                                                          G_PARAM_CONSTRUCT_ONLY |
+                                                          G_PARAM_STATIC_STRINGS));
 
-	g_type_class_add_private (klass, sizeof (NautilusTrashBarPrivate));
+    g_type_class_add_private (klass, sizeof (NautilusTrashBarPrivate));
 }
 
 static void
 trash_bar_response_cb (GtkInfoBar *infobar,
-		       gint response_id,
-		       gpointer user_data)
+                       gint        response_id,
+                       gpointer    user_data)
 {
-	NautilusTrashBar *bar;
-	GtkWidget *window;
-	GList *files;
+    NautilusTrashBar *bar;
+    GtkWidget *window;
+    GList *files;
 
-	bar = NAUTILUS_TRASH_BAR (infobar);
-	window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
+    bar = NAUTILUS_TRASH_BAR (infobar);
+    window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
 
-	switch (response_id) {
-	case TRASH_BAR_RESPONSE_EMPTY:
-		nautilus_file_operations_empty_trash (window);
-		break;
-	case TRASH_BAR_RESPONSE_RESTORE:
-		files = nautilus_view_get_selection (NAUTILUS_VIEW (bar->priv->view));
-		nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
-		nautilus_file_list_free (files);
-		break;
-	default:
-		break;
-	}
+    switch (response_id)
+    {
+        case TRASH_BAR_RESPONSE_EMPTY:
+        {
+            nautilus_file_operations_empty_trash (window);
+        }
+        break;
+
+        case TRASH_BAR_RESPONSE_RESTORE:
+        {
+            files = nautilus_view_get_selection (NAUTILUS_VIEW (bar->priv->view));
+            nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
+            nautilus_file_list_free (files);
+        }
+        break;
+
+        default:
+        {
+        }
+        break;
+    }
 }
 
 static void
 nautilus_trash_bar_init (NautilusTrashBar *bar)
 {
-	GtkWidget *content_area, *action_area, *w;
-	GtkWidget *label;
-	PangoAttrList *attrs;
+    GtkWidget *content_area, *action_area, *w;
+    GtkWidget *label;
+    PangoAttrList *attrs;
 
-	bar->priv = NAUTILUS_TRASH_BAR_GET_PRIVATE (bar);
-	content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
-	action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
+    bar->priv = NAUTILUS_TRASH_BAR_GET_PRIVATE (bar);
+    content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
+    action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
-	gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
-					GTK_ORIENTATION_HORIZONTAL);
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (action_area),
+                                    GTK_ORIENTATION_HORIZONTAL);
 
-	attrs = pango_attr_list_new ();
-	pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-	label = gtk_label_new (_("Trash"));
-	gtk_label_set_attributes (GTK_LABEL (label), attrs);
-	pango_attr_list_unref (attrs);
+    attrs = pango_attr_list_new ();
+    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
+    label = gtk_label_new (_("Trash"));
+    gtk_label_set_attributes (GTK_LABEL (label), attrs);
+    pango_attr_list_unref (attrs);
 
-	gtk_widget_show (label);
-	gtk_container_add (GTK_CONTAINER (content_area), label);
+    gtk_widget_show (label);
+    gtk_container_add (GTK_CONTAINER (content_area), label);
 
-	w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
-				     _("_Restore"),
-				     TRASH_BAR_RESPONSE_RESTORE);
-	gtk_widget_set_tooltip_text (w,
-				     _("Restore selected items to their original position"));
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+                                 _("_Restore"),
+                                 TRASH_BAR_RESPONSE_RESTORE);
+    gtk_widget_set_tooltip_text (w,
+                                 _("Restore selected items to their original position"));
 
-	w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
-	/* Translators: "Empty" is an action (for the trash) , not a state */
-				     _("_Empty"),
-				     TRASH_BAR_RESPONSE_EMPTY);
-	gtk_widget_set_tooltip_text (w,
-				     _("Delete all items in the Trash"));
+    w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
+                                 /* Translators: "Empty" is an action (for the trash) , not a state */
+                                 _("_Empty"),
+                                 TRASH_BAR_RESPONSE_EMPTY);
+    gtk_widget_set_tooltip_text (w,
+                                 _("Delete all items in the Trash"));
 
-	g_signal_connect_object (nautilus_trash_monitor_get (),
-				 "trash-state-changed",
-				 G_CALLBACK (nautilus_trash_bar_trash_state_changed),
-				 bar,
-				 0);
-	nautilus_trash_bar_trash_state_changed (nautilus_trash_monitor_get (),
-						FALSE, bar);
+    g_signal_connect_object (nautilus_trash_monitor_get (),
+                             "trash-state-changed",
+                             G_CALLBACK (nautilus_trash_bar_trash_state_changed),
+                             bar,
+                             0);
+    nautilus_trash_bar_trash_state_changed (nautilus_trash_monitor_get (),
+                                            FALSE, bar);
 
-	g_signal_connect (bar, "response",
-			  G_CALLBACK (trash_bar_response_cb), bar);
+    g_signal_connect (bar, "response",
+                      G_CALLBACK (trash_bar_response_cb), bar);
 }
 
 GtkWidget *
 nautilus_trash_bar_new (NautilusFilesView *view)
 {
-	return g_object_new (NAUTILUS_TYPE_TRASH_BAR,
-			     "view", view,
-			     "message-type", GTK_MESSAGE_QUESTION,
-			     NULL);
+    return g_object_new (NAUTILUS_TYPE_TRASH_BAR,
+                         "view", view,
+                         "message-type", GTK_MESSAGE_QUESTION,
+                         NULL);
 }

@@ -1,6 +1,6 @@
 /*
  *  nautilus-extension-types.c - Type definitions for Nautilus extensions
- * 
+ *
  *  Copyright (C) 2003 Novell, Inc.
  *
  *  This library is free software; you can redistribute it and/or
@@ -17,7 +17,7 @@
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  *  Author: Dave Camp <dave@ximian.com>
- * 
+ *
  */
 
 #include <config.h>
@@ -27,30 +27,32 @@
 GType
 nautilus_operation_result_get_type (void)
 {
-	static GType type = 0;
-	if (type == 0) {
-		static const GEnumValue values[] = {
-			{ 
-				NAUTILUS_OPERATION_COMPLETE, 
-				"NAUTILUS_OPERATION_COMPLETE",
-				"complete",
-			}, 
-			{
-				NAUTILUS_OPERATION_FAILED,
-				"NAUTILUS_OPERATION_FAILED",
-				"failed",
-			},
-			{
-				NAUTILUS_OPERATION_IN_PROGRESS,
-				"NAUTILUS_OPERATION_IN_PROGRESS",
-				"in_progress",
-			},
-			{ 0, NULL, NULL }
-		};
-		
-		type = g_enum_register_static ("NautilusOperationResult", 
-					       values);
-	}
+    static GType type = 0;
+    if (type == 0)
+    {
+        static const GEnumValue values[] =
+        {
+            {
+             NAUTILUS_OPERATION_COMPLETE,
+             "NAUTILUS_OPERATION_COMPLETE",
+             "complete",
+},
+            {
+             NAUTILUS_OPERATION_FAILED,
+             "NAUTILUS_OPERATION_FAILED",
+             "failed",
+},
+            {
+             NAUTILUS_OPERATION_IN_PROGRESS,
+             "NAUTILUS_OPERATION_IN_PROGRESS",
+             "in_progress",
+},
+            { 0, NULL, NULL }
+        };
 
-	return type;
+        type = g_enum_register_static ("NautilusOperationResult",
+                                       values);
+    }
+
+    return type;
 }

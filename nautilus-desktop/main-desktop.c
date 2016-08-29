@@ -14,25 +14,26 @@
 #include <unistd.h>
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
-  NautilusDesktopApplication *application;
-  int retval;
+    NautilusDesktopApplication *application;
+    int retval;
 
-  /* Initialize gettext support */
-  bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-  bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-  textdomain (GETTEXT_PACKAGE);
+    /* Initialize gettext support */
+    bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
+    bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
+    textdomain (GETTEXT_PACKAGE);
 
-  g_set_prgname ("nautilus-desktop");
+    g_set_prgname ("nautilus-desktop");
 
-  nautilus_register_resource ();
-  application = nautilus_desktop_application_new ();
+    nautilus_register_resource ();
+    application = nautilus_desktop_application_new ();
 
-  retval = g_application_run (G_APPLICATION (application),
-                              argc, argv);
+    retval = g_application_run (G_APPLICATION (application),
+                                argc, argv);
 
-  g_object_unref (application);
+    g_object_unref (application);
 
-  return retval;
+    return retval;
 }
