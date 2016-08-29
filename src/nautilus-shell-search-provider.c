@@ -394,7 +394,6 @@ execute_search (NautilusShellSearchProvider *self,
 {
   gchar *terms_joined;
   NautilusQuery *query;
-  NautilusSearchEngineSimple *simple_provider;
   PendingSearch *pending_search;
   GFile *home;
 
@@ -439,8 +438,6 @@ execute_search (NautilusShellSearchProvider *self,
   g_debug ("*** Search engine search started");
   nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
                                       query);
-  simple_provider = nautilus_search_engine_get_simple_provider (pending_search->engine);
-  g_object_set (simple_provider, "recursive", TRUE, NULL);
   nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine));
 
   g_clear_object (&home);
