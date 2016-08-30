@@ -28,6 +28,8 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
+#define ROW_MARGIN_START 6
+
 struct _NautilusBatchRenameDialog
 {
     GtkDialog parent;
@@ -971,7 +973,7 @@ create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
     label_old = gtk_label_new (old_text);
     gtk_label_set_xalign (GTK_LABEL (label_old), 0.0);
     gtk_widget_set_hexpand (label_old, TRUE);
-    gtk_widget_set_margin_start (label_old, 6);
+    gtk_widget_set_margin_start (label_old, ROW_MARGIN_START);
 
     gtk_label_set_ellipsize (GTK_LABEL (label_old), PANGO_ELLIPSIZE_END);
 
@@ -998,7 +1000,7 @@ create_result_row_for_label (NautilusBatchRenameDialog *dialog,
     label_new = gtk_label_new (new_text);
     gtk_label_set_xalign (GTK_LABEL (label_new), 0.0);
     gtk_widget_set_hexpand (label_new, TRUE);
-    gtk_widget_set_margin_start (label_new, 6);
+    gtk_widget_set_margin_start (label_new, ROW_MARGIN_START);
 
     gtk_label_set_ellipsize (GTK_LABEL (label_new), PANGO_ELLIPSIZE_END);
 
@@ -1024,7 +1026,7 @@ create_arrow_row_for_label (NautilusBatchRenameDialog *dialog,
     icon = gtk_label_new ("→");
     gtk_label_set_xalign (GTK_LABEL (icon), 1.0);
     gtk_widget_set_hexpand (icon, FALSE);
-    gtk_widget_set_margin_start (icon, 6);
+    gtk_widget_set_margin_start (icon, ROW_MARGIN_START);
 
     dialog->listbox_icons = g_list_prepend (dialog->listbox_icons, icon);
 
