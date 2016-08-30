@@ -1103,9 +1103,13 @@ batch_rename_strings_func (NautilusFileUndoInfo  *info,
 {
     NautilusFileUndoInfoBatchRename *self = NAUTILUS_FILE_UNDO_INFO_BATCH_RENAME (info);
 
-    *undo_description = g_strdup_printf (_("Batch rename '%d' files"),
+    *undo_description = g_strdup_printf (ngettext ("Batch rename %d file",
+                                                   "Batch rename %d files",
+                                                   g_list_length (self->priv->new_files)),
                                          g_list_length (self->priv->new_files));
-    *redo_description = g_strdup_printf (_("Batch rename '%d' files"),
+    *redo_description = g_strdup_printf (ngettext ("Batch rename %d file",
+                                                   "Batch rename %d files",
+                                                   g_list_length (self->priv->new_files)),
                                          g_list_length (self->priv->new_files));
 
     *undo_label = g_strdup (_("_Undo Batch Rename"));
