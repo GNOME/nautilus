@@ -375,7 +375,7 @@ batch_rename_format (NautilusFile *file,
 
             if (metadata != NULL)
             {
-                new_name = g_string_append (new_name, metadata);
+                g_string_append_printf (new_name, "%02d", atoi (metadata));
                 added_tag = TRUE;
             }
         }
