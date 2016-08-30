@@ -1108,8 +1108,8 @@ batch_rename_strings_func (NautilusFileUndoInfo  *info,
     *redo_description = g_strdup_printf (_("Batch rename '%d' files"),
                                          g_list_length (self->priv->new_files));
 
-    *undo_label = g_strdup (_("_Undo Batch rename"));
-    *redo_label = g_strdup (_("_Redo Batch rename"));
+    *undo_label = g_strdup (_("_Undo Batch Rename"));
+    *redo_label = g_strdup (_("_Redo Batch Rename"));
 }
 
 static void

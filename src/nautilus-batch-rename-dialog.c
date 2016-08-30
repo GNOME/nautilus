@@ -144,7 +144,7 @@ add_numbering_order (GSimpleAction *action,
     if (g_strcmp0 (target_name, "name-ascending") == 0)
     {
         gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Original name (Ascending)"));
+                             _("Original Name (Ascending)"));
         dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
                                                                ORIGINAL_ASCENDING,
                                                                NULL);
@@ -153,7 +153,7 @@ add_numbering_order (GSimpleAction *action,
     if (g_strcmp0 (target_name, "name-descending") == 0)
     {
         gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Original name (Descending)"));
+                             _("Original Name (Descending)"));
         dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
                                                                ORIGINAL_DESCENDING,
                                                                NULL);
@@ -1201,13 +1201,13 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
     if (name_occurences > 1)
     {
         g_string_append_printf (display_text,
-                                _("\"%s\" would not be a unique new name"),
+                                _("“%s” would not be a unique new name."),
                                 conflict_file_name->str);
     }
     else
     {
         g_string_append_printf (display_text,
-                                _("\"%s\" would conflict with an existing file."),
+                                _("“%s” would conflict with an existing file."),
                                 conflict_file_name->str);
     }
 

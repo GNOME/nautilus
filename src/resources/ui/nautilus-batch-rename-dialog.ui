@@ -181,7 +181,7 @@
                                 <property name="visible">True</property>
                                 <property name="width-request">180</property>
                                 <property name="xalign">0</property>
-                                <property name="label" translatable="yes">Original name (Ascending)</property>
+                                <property name="label" translatable="yes">Original Name (Ascending)</property>
                                 <property name="can_focus">False</property>
                               </object>
                             </child>
@@ -204,7 +204,7 @@
                   </object>
                   <packing>
                     <property name="name">format</property>
-                    <property name="title" translatable="yes">Format</property>
+                    <property name="title" translatable="yes" comments="Translators: This is a noun, not a verb">Format</property>
                   </packing>
                 </child>
                 <child>
@@ -275,7 +275,7 @@
                   </object>
                   <packing>
                     <property name="name">replace</property>
-                    <property name="title" translatable="yes">Replace</property>
+                    <property name="title" translatable="yes" context="title">Replace</property>
                   </packing>
                 </child>
               </object>
@@ -479,12 +479,12 @@
   <menu id="numbering_order_menu">
     <section>
       <item>
-        <attribute name="label" translatable="yes">Original name (Ascending) </attribute>
+        <attribute name="label" translatable="yes">Original Name (Ascending)</attribute>
         <attribute name="action">dialog.numbering-order-changed</attribute>
         <attribute name="target">name-ascending</attribute>
       </item>
       <item>
-        <attribute name="label" translatable="yes">Original name (Descending)</attribute>
+        <attribute name="label" translatable="yes">Original Name (Descending)</attribute>
         <attribute name="action">dialog.numbering-order-changed</attribute>
         <attribute name="target">name-descending</attribute>
       </item>
