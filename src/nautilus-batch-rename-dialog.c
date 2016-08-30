@@ -29,6 +29,7 @@
 #include <glib/gi18n.h>
 
 #define ROW_MARGIN_START 6
+#define ROW_MARGIN_TOP_BOTTOM 4
 
 struct _NautilusBatchRenameDialog
 {
@@ -939,7 +940,7 @@ update_rows_height (NautilusBatchRenameDialog *dialog)
 
     if (maximum_height != dialog->row_height)
     {
-        dialog->row_height = maximum_height;
+        dialog->row_height = maximum_height + ROW_MARGIN_TOP_BOTTOM * 2;
 
         for (l = dialog->listbox_icons; l != NULL; l = l->next)
         {
