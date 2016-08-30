@@ -8263,6 +8263,14 @@ extract_job_on_error (AutoarExtractor *extractor,
 
     source_file = autoar_extractor_get_source_file (extractor);
 
+    if (IS_IO_ERROR (error, NOT_SUPPORTED))
+    {
+        handle_unsupported_compressed_file (extract_job->common.parent_window,
+                                            source_file);
+
+        return;
+    }
+
     nautilus_progress_info_take_status (extract_job->common.progress,
                                         f (_("Error extracting “%B”"),
                                            source_file));

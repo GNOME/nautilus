@@ -24,4 +24,7 @@ enum
     CONFLICT_RESPONSE_RENAME = 3,
 };
 
+void handle_unsupported_compressed_file (GtkWindow *parent_window,
+                                         GFile     *compressed_file);
+
 #endif /* NAUTILUS_OPERATIONS_UI_MANAGER */

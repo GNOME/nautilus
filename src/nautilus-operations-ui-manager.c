@@ -5,6 +5,8 @@
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-conflict-dialog.h"
+#include "nautilus-mime-actions.h"
+#include "nautilus-program-choosing.h"
 
 typedef struct
 {
@@ -486,4 +488,72 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
     g_slice_free (FileConflictDialogData, data);
 
     return data->response;
+}
+
+typedef struct {
+    GtkWindow *parent_window;
+    NautilusFile *file;
+} HandleUnsupportedFileData;
+
+static gboolean
+open_file_in_application (gpointer user_data)
+{
+    HandleUnsupportedFileData *data;
+    g_autoptr (GAppInfo) application  = NULL;
+
+    data = user_data;
+
+    application = nautilus_mime_get_default_application_for_file (data->file);
+
+    if (!application)
+    {
+        GtkWidget *dialog;
+        g_autofree gchar *mime_type = NULL;
+
+        mime_type = nautilus_file_get_mime_type (data->file);
+
+        dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
+                                                              GTK_DIALOG_MODAL |
+                                                              GTK_DIALOG_DESTROY_WITH_PARENT |
+                                                              GTK_DIALOG_USE_HEADER_BAR,
+                                                              mime_type);
+        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
+        {
+            application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
+        }
+
+        gtk_widget_destroy (dialog);
+    }
+
+    if (application)
+    {
+        g_autoptr (GList) files = NULL;
+
+        files = g_list_append (NULL, data->file);
+
+        nautilus_launch_application (application, files, data->parent_window);
+    }
+
+    return G_SOURCE_REMOVE;
+}
+
+/* This is used to open compressed files that are not supported by gnome-autoar
+ * in another application
+ */
+void
+handle_unsupported_compressed_file (GtkWindow *parent_window,
+                                    GFile     *compressed_file)
+{
+    HandleUnsupportedFileData *data;
+
+    data = g_slice_new0 (HandleUnsupportedFileData);
+    data->parent_window = parent_window;
+    data->file = nautilus_file_get (compressed_file);
+
+    invoke_main_context_sync (NULL, open_file_in_application, data);
+
+    nautilus_file_unref (data->file);
+    g_slice_free (HandleUnsupportedFileData, data);
+
+    return;
 }
