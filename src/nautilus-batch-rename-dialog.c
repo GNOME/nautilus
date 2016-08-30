@@ -3221,7 +3221,9 @@ nautilus_batch_rename_dialog_new (GList             *selection,
                                   GTK_WINDOW (window));
 
     dialog_title = g_string_new ("");
-    g_string_append_printf (dialog_title, "Rename %d Files", g_list_length (selection));
+    g_string_append_printf (dialog_title,
+                            ngettext ("Rename %d File", "Rename %d Files", g_list_length (selection)),
+                            g_list_length (selection));
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
