@@ -1972,7 +1972,7 @@ nautilus_directory_number_outstanding (void)
 void
 nautilus_directory_dump (NautilusDirectory *directory)
 {
-    g_autofree gchar *uri;
+    g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (directory->details->location);
     g_print ("uri: %s\n", uri);

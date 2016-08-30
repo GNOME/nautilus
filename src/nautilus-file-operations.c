@@ -1895,7 +1895,7 @@ delete_file_recursively (GFile          *file,
 
             while (info != NULL)
             {
-                g_autoptr (GFile) child;
+                g_autoptr (GFile) child = NULL;
 
                 child = g_file_enumerator_get_child (enumerator, info);
 
@@ -8137,7 +8137,7 @@ extract_job_on_decide_destination (AutoarExtractor *extractor,
 {
     ExtractJob *extract_job = user_data;
     GFile *decided_destination;
-    g_autofree char *basename;
+    g_autofree char *basename = NULL;
 
     nautilus_progress_info_set_details (extract_job->common.progress,
                                         _("Verifying destination"));
@@ -8348,7 +8348,7 @@ extract_task_thread_func (GTask        *task,
     GList *l;
     GList *existing_output_files = NULL;
     gint total_files;
-    g_autofree guint64 *archive_compressed_sizes;
+    g_autofree guint64 *archive_compressed_sizes = NULL;
     gint i;
 
     g_timer_start (extract_job->common.time);
@@ -8368,7 +8368,7 @@ extract_task_thread_func (GTask        *task,
          l = l->next, i++)
     {
         GFile *source_file;
-        g_autoptr (GFileInfo) info;
+        g_autoptr (GFileInfo) info = NULL;
 
         source_file = G_FILE (l->data);
         info = g_file_query_info (source_file,
@@ -8390,7 +8390,7 @@ extract_task_thread_func (GTask        *task,
          l != NULL && !job_aborted ((CommonJob *) extract_job);
          l = l->next, i++)
     {
-        g_autoptr (AutoarExtractor) extractor;
+        g_autoptr (AutoarExtractor) extractor = NULL;
 
         extractor = autoar_extractor_new (G_FILE (l->data),
                                           extract_job->destination_directory);
@@ -8472,7 +8472,7 @@ nautilus_file_operations_extract_files (GList                   *files,
                                         gpointer                 done_callback_data)
 {
     ExtractJob *extract_job;
-    g_autoptr (GTask) task;
+    g_autoptr (GTask) task = NULL;
 
     extract_job = op_job_new (ExtractJob, parent_window);
     extract_job->source_files = g_list_copy_deep (files,
@@ -8696,7 +8696,7 @@ compress_job_on_completed (AutoarCompressor *compressor,
                            gpointer          user_data)
 {
     CompressJob *compress_job = user_data;
-    g_autoptr (GFile) destination_directory;
+    g_autoptr (GFile) destination_directory = NULL;
     char *status;
 
     if (compress_job->total_files == 1)
@@ -8732,7 +8732,7 @@ compress_task_thread_func (GTask        *task,
 {
     CompressJob *compress_job = task_data;
     SourceInfo source_info;
-    g_autoptr (AutoarCompressor) compressor;
+    g_autoptr (AutoarCompressor) compressor = NULL;
 
     g_timer_start (compress_job->common.time);
 
@@ -8785,7 +8785,7 @@ nautilus_file_operations_compress (GList                  *files,
                                    NautilusCreateCallback  done_callback,
                                    gpointer                done_callback_data)
 {
-    g_autoptr (GTask) task;
+    g_autoptr (GTask) task = NULL;
     CompressJob *compress_job;
 
     compress_job = op_job_new (CompressJob, parent_window);

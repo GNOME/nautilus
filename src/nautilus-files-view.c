@@ -1838,7 +1838,7 @@ rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetControlle
 {
     NautilusFilesView *view;
     NautilusFile *target_file;
-    g_autofree gchar *name;
+    g_autofree gchar *name = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
@@ -1903,8 +1903,8 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
     NautilusFilesView *view;
     NewFolderData *data;
     GdkPoint *position;
-    g_autofree gchar *parent_uri;
-    g_autofree gchar *name;
+    g_autofree gchar *parent_uri = NULL;
+    g_autofree gchar *name = NULL;
     gboolean with_selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
@@ -2047,12 +2047,12 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
                                              gpointer                          user_data)
 {
     NautilusFilesView *view;
-    g_autofree gchar *name;
+    g_autofree gchar *name = NULL;
     GList *selection;
     GList *source_files = NULL;
     GList *l;
     CompressData *data;
-    g_autoptr (GFile) output;
+    g_autoptr (GFile) output = NULL;
     NautilusCompressionFormat compression_format;
     AutoarFormat format;
     AutoarFilter filter;
@@ -2157,7 +2157,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 
     if (g_list_length (selection) == 1)
     {
-        g_autofree char *display_name;
+        g_autofree char *display_name = NULL;
 
         display_name = nautilus_file_get_display_name (selection->data);
 
@@ -2649,7 +2649,7 @@ set_up_scripts_directory_global (void)
     if (file_type == G_FILE_TYPE_DIRECTORY &&
         !g_file_query_exists (scripts_directory, NULL))
     {
-        g_autoptr (GFile) updated;
+        g_autoptr (GFile) updated = NULL;
         const char *message;
 
         /* test if we already attempted to migrate first */
@@ -2658,9 +2658,10 @@ set_up_scripts_directory_global (void)
                     "this configuration to ~/.local/share/nautilus");
         if (!g_file_query_exists (updated, NULL))
         {
-            g_autoptr (GFile) parent = g_file_get_parent (scripts_directory);
+            g_autoptr (GFile) parent = NULL;
             g_autoptr (GError) error = NULL;
 
+            parent = g_file_get_parent (scripts_directory);
             g_file_make_directory_with_parents (parent, NULL, &error);
 
             if (error == NULL ||
@@ -6131,7 +6132,7 @@ on_extract_destination_dialog_response (GtkDialog *dialog,
 
     if (response_id == GTK_RESPONSE_OK)
     {
-        g_autoptr (GFile) destination_directory;
+        g_autoptr (GFile) destination_directory = NULL;
 
         destination_directory = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (dialog));
 

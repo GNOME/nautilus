@@ -66,7 +66,7 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                            gchar             *initial_name)
 {
     NautilusNewFolderDialogController *self;
-    g_autoptr (GtkBuilder) builder;
+    g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *new_folder_dialog;
     GtkWidget *error_revealer;
     GtkWidget *error_label;

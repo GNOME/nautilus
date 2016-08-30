@@ -97,7 +97,7 @@ nautilus_rename_file_popover_controller_ignore_existing_file (NautilusFileNameWi
                                                               NautilusFile                     *existing_file)
 {
     NautilusRenameFilePopoverController *self;
-    g_autofree gchar *display_name;
+    g_autofree gchar *display_name = NULL;
 
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
 
@@ -112,7 +112,7 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
                                              GtkWidget    *relative_to)
 {
     NautilusRenameFilePopoverController *self;
-    g_autoptr (GtkBuilder) builder;
+    g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *rename_file_popover;
     GtkWidget *error_revealer;
     GtkWidget *error_label;

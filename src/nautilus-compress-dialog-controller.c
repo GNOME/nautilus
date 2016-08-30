@@ -59,7 +59,7 @@ static gchar *
 nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetController *controller)
 {
     NautilusCompressDialogController *self;
-    g_autofree gchar *basename;
+    g_autofree gchar *basename = NULL;
     gchar *error_message = NULL;
     gboolean valid_name;
 
@@ -206,7 +206,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          gchar             *initial_name)
 {
     NautilusCompressDialogController *self;
-    g_autoptr (GtkBuilder) builder;
+    g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *compress_dialog;
     GtkWidget *error_revealer;
     GtkWidget *error_label;

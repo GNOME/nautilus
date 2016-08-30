@@ -8126,7 +8126,7 @@ real_is_special_link (NautilusFile *file)
 gboolean
 nautilus_file_is_archive (NautilusFile *file)
 {
-    g_autofree char *mime_type;
+    g_autofree char *mime_type = NULL;
 
     mime_type = nautilus_file_get_mime_type (file);
 

@@ -767,8 +767,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
     GList *result = NULL;
     GList *selection;
     GList *text_chunks;
-    g_autofree gchar *entry_text;
-    g_autofree gchar *replace_text;
+    g_autofree gchar *entry_text = NULL;
+    g_autofree gchar *replace_text = NULL;
 
     selection = dialog->selection;
     text_chunks = NULL;

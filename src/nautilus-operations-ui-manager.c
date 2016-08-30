@@ -121,8 +121,8 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
     time_t source_mtime;
     time_t destination_mtime;
     g_autofree gchar *message = NULL;
-    g_autofree gchar *destination_name;
-    g_autofree gchar *destination_directory_name;
+    g_autofree gchar *destination_name = NULL;
+    g_autofree gchar *destination_directory_name = NULL;
     gboolean source_is_directory;
     gboolean destination_is_directory;
 
@@ -323,7 +323,7 @@ set_file_labels (FileConflictDialogData *data)
 static void
 set_conflict_name (FileConflictDialogData *data)
 {
-    g_autofree gchar *edit_name;
+    g_autofree gchar *edit_name = NULL;
 
     edit_name = nautilus_file_get_edit_name (data->destination);
 
@@ -358,7 +358,7 @@ copy_move_conflict_on_file_list_ready (GList    *files,
                                        gpointer  user_data)
 {
     FileConflictDialogData *data = user_data;
-    g_autofree gchar *title;
+    g_autofree gchar *title = NULL;
 
     data->handle = NULL;
 

@@ -290,8 +290,8 @@ static NautilusFile *
 get_target_file_for_original_file (NautilusFile *file)
 {
     NautilusFile *target_file;
-    g_autoptr (GFile) location;
-    g_autofree char *uri_to_display;
+    g_autoptr (GFile) location = NULL;
+    g_autofree char *uri_to_display = NULL;
 
     uri_to_display = nautilus_file_get_target_uri (file);
     location = g_file_new_for_uri (uri_to_display);

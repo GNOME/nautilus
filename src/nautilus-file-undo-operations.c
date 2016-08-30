@@ -2156,7 +2156,7 @@ extract_strings_func (NautilusFileUndoInfo  *info,
     if (total_outputs == 1)
     {
         GFile *output;
-        g_autofree gchar *name;
+        g_autofree gchar *name = NULL;
 
         output = self->priv->outputs->data;
         name = g_file_get_parse_name (output);
@@ -2174,7 +2174,7 @@ extract_strings_func (NautilusFileUndoInfo  *info,
     if (total_sources == 1)
     {
         GFile *source;
-        g_autofree gchar *name;
+        g_autofree gchar *name = NULL;
 
         source = self->priv->sources->data;
         name = g_file_get_parse_name (source);
@@ -2319,7 +2319,7 @@ compress_strings_func (NautilusFileUndoInfo  *info,
                        gchar                **redo_description)
 {
     NautilusFileUndoInfoCompress *self = NAUTILUS_FILE_UNDO_INFO_COMPRESS (info);
-    g_autofree gchar *output_name;
+    g_autofree gchar *output_name = NULL;
     gint sources_count;
 
     output_name = g_file_get_parse_name (self->priv->output);
@@ -2329,7 +2329,7 @@ compress_strings_func (NautilusFileUndoInfo  *info,
     if (sources_count == 1)
     {
         GFile *source;
-        g_autofree gchar *source_name;
+        g_autofree gchar *source_name = NULL;
 
         source = self->priv->sources->data;
         source_name = g_file_get_parse_name (source);

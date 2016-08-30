@@ -659,7 +659,7 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
     copy = 1;
     while (g_file_query_exists (child, NULL))
     {
-        g_autofree char *filename;
+        g_autofree char *filename = NULL;
 
         g_object_unref (child);
 

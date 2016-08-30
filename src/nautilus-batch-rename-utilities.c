@@ -280,8 +280,8 @@ batch_rename_format (NautilusFile *file,
     GString *tag;
     GString *new_name;
     gboolean added_tag;
-    g_autofree gchar *file_name;
-    g_autofree gchar *extension;
+    g_autofree gchar *file_name = NULL;
+    g_autofree gchar *extension = NULL;
     gchar *metadata;
     gchar *base_name;
 

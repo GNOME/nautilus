@@ -136,7 +136,7 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
                                               gboolean                         *valid_name)
 {
     NautilusFileNameWidgetControllerPrivate *priv;
-    g_autofree gchar *name;
+    g_autofree gchar *name = NULL;
     gchar *error_message = NULL;
     NautilusFile *existing_file;
     priv = nautilus_file_name_widget_controller_get_instance_private (controller);

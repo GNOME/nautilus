@@ -533,7 +533,7 @@ real_new_file_from_filename (NautilusDirectory *directory,
 static gboolean
 real_handles_location (GFile *location)
 {
-    g_autofree gchar *uri;
+    g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (location);
 

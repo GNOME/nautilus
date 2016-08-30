@@ -759,7 +759,7 @@ search_is_editable (NautilusDirectory *directory)
 static gboolean
 real_handles_location (GFile *location)
 {
-    g_autofree gchar *uri;
+    g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (location);
 

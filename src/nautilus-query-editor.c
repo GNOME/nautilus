@@ -477,7 +477,7 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
                                 priv->date_range_tag);
     if (date_range)
     {
-        g_autofree gchar *text_for_date_range;
+        g_autofree gchar *text_for_date_range = NULL;
 
         text_for_date_range = get_text_for_date_range (date_range);
         gd_tagged_entry_tag_set_label (priv->date_range_tag,
@@ -523,7 +523,7 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
     }
     else
     {
-        g_autofree gchar *display_name;
+        g_autofree gchar *display_name = NULL;
 
         mimetypes = g_list_append (NULL, (gpointer) mimetype);
         display_name = g_content_type_get_description (mimetype);
