@@ -32,8 +32,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
 "s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-08-30 08:37+0000\n"
-"PO-Revision-Date: 2016-08-30 07:35-0200\n"
+"POT-Creation-Date: 2016-08-30 12:35+0000\n"
+"PO-Revision-Date: 2016-08-30 12:13-0200\n"
 "Last-Translator: Rafael Fontenelle <rafaelff@gnome.org>\n"
 "Language-Team: Brazilian Portuguese <gnome-pt_br-list@gnome.org>\n"
 "Language: pt_BR\n"
@@ -254,8 +254,8 @@ msgid ""
 msgstr ""
 "O que fazer com arquivos de texto executáveis quando eles são ativados (por "
 "um clique ou um clique-duplo). Valores possíveis são \"launch\" para abri-"
-"los como programas, \"ask\" para perguntar através de um diálogo e \""
-"display\" para exibi-los como arquivos de texto."
+"los como programas, \"ask\" para perguntar através de um diálogo e \"display"
+"\" para exibi-los como arquivos de texto."
 
 #: data/org.gnome.nautilus.gschema.xml:136
 msgid "Show the package installer for unknown MIME types"
@@ -267,8 +267,8 @@ msgid ""
 "type is opened, in order to search for an application to handle it."
 msgstr ""
 "Se deve mostrar ao usuário um diálogo do instalador de pacote caso um tipo "
-"MIME desconhecido for aberto, a fim de procurar um aplicativo para "
-"manipulá-lo."
+"MIME desconhecido for aberto, a fim de procurar um aplicativo para manipulá-"
+"lo."
 
 #: data/org.gnome.nautilus.gschema.xml:141
 msgid ""
@@ -301,7 +301,8 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:151
 msgid "Mouse button to activate the \"Forward\" command in browser window"
-msgstr "Botão do mouse para ativar o comando \"Avançar\" na janela do navegador"
+msgstr ""
+"Botão do mouse para ativar o comando \"Avançar\" na janela do navegador"
 
 #: data/org.gnome.nautilus.gschema.xml:152
 msgid ""
@@ -342,9 +343,9 @@ msgstr ""
 "Compensação de velocidade quando mostrar uma imagem como miniatura. Se "
 "definido como \"always\", então sempre mostrar a miniatura, mesmo se o "
 "arquivo estiver em um servidor remoto. Se definido como \"local-only\", "
-"mostrar miniatura apenas em sistemas de arquivos locais. Se definido como \""
-"never\", então nunca gerar miniaturas, usar apenas um ícone genérico. Apesar "
-"do que o nome pode sugerir, isso se aplica a qualquer tipo de arquivo "
+"mostrar miniatura apenas em sistemas de arquivos locais. Se definido como "
+"\"never\", então nunca gerar miniaturas, usar apenas um ícone genérico. "
+"Apesar do que o nome pode sugerir, isso se aplica a qualquer tipo de arquivo "
 "visualizável."
 
 #: data/org.gnome.nautilus.gschema.xml:167
@@ -382,8 +383,8 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are \"name"
 "\", \"size\", \"type\" and \"mtime\"."
 msgstr ""
-"A ordenação padrão para itens na visão em lista. Valores possíveis são \""
-"name\" (nome), \"size\" (tamanho), \"type\" (tipo) e \"mtime\" (hora de "
+"A ordenação padrão para itens na visão em lista. Valores possíveis são \"name"
+"\" (nome), \"size\" (tamanho), \"type\" (tipo) e \"mtime\" (hora de "
 "modificação)."
 
 #: data/org.gnome.nautilus.gschema.xml:185
@@ -425,8 +426,8 @@ msgid ""
 "This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
 "Settings.FileChooser\" is now used instead."
 msgstr ""
-"Esta chave está obsoleta e será ignorada. A chave “show-hidden” em "
-"“org.gtk.Settings.FileChooser” é usada agora."
+"Esta chave está obsoleta e será ignorada. A chave “show-hidden” em “org.gtk."
+"Settings.FileChooser” é usada agora."
 
 #: data/org.gnome.nautilus.gschema.xml:206
 msgid "What viewer should be used when searching"
@@ -498,8 +499,8 @@ msgstr ""
 "Uma lista de legendas abaixo de um ícone na visão em ícones e na área de "
 "trabalho. O número de legendas mostradas depende do nível de zoom. Valores "
 "possíveis são: \"size\" (tamanho), \"type\" (tipo), \"date_modified\" (data "
-"da última modificação), \"owner\" (proprietário), \"group\" (grupo), \""
-"permissions\" (permissões) e \"mime_type\" (tipo mime)."
+"da última modificação), \"owner\" (proprietário), \"group\" (grupo), "
+"\"permissions\" (permissões) e \"mime_type\" (tipo mime)."
 
 #: data/org.gnome.nautilus.gschema.xml:237
 msgid "Default icon zoom level"
@@ -547,15 +548,15 @@ msgstr ""
 "entradas da lista é da forma \"Zoom Level:Integer\". Para cada nível de zoom "
 "especificado, se o inteiro dado for maior que 0, o nome de arquivo não "
 "excederá o número dado de linhas. Se o inteiro for 0 ou menor, nenhum limite "
-"é imposto ao nível de zoom especificado. A entrada padrão da forma \""
-"Integer\" sem qualquer nível de zoom especificado também é permitida. Isto "
-"define o número máximo de linhas para todos os outros níveis de zoom. "
-"Exemplos: 0 - sempre exibir nomes muito extensos de arquivos; 3 - encurtar "
-"nomes de arquivos se eles excederem três linhas; menor:5,muito pequeno:4,0 - "
-"encurtar nomes de arquivos ele excederem cinco linhas para o nível de zoom \""
-"menor\". Encurtar nomes de arquivos se eles excederem quatro linhas para o "
-"nível de zoom \"muito pequeno\". Não encurtar os nomes de arquivos para "
-"outros níveis de zoom. Níveis de zoom disponíveis: pequeno, padrão, grande."
+"é imposto ao nível de zoom especificado. A entrada padrão da forma \"Integer"
+"\" sem qualquer nível de zoom especificado também é permitida. Isto define o "
+"número máximo de linhas para todos os outros níveis de zoom. Exemplos: 0 - "
+"sempre exibir nomes muito extensos de arquivos; 3 - encurtar nomes de "
+"arquivos se eles excederem três linhas; menor:5,muito pequeno:4,0 - encurtar "
+"nomes de arquivos ele excederem cinco linhas para o nível de zoom \"menor\". "
+"Encurtar nomes de arquivos se eles excederem quatro linhas para o nível de "
+"zoom \"muito pequeno\". Não encurtar os nomes de arquivos para outros níveis "
+"de zoom. Níveis de zoom disponíveis: pequeno, padrão, grande."
 
 #: data/org.gnome.nautilus.gschema.xml:255
 msgid "Default list zoom level"
@@ -969,12 +970,15 @@ msgstr "E_xecutar"
 
 #: src/nautilus-batch-rename-dialog.c:147
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:184
-msgid "Original name (Ascending)"
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
+#| msgid "Original name (Ascending)"
+msgid "Original Name (Ascending)"
 msgstr "Nome original (ascendente)"
 
 #: src/nautilus-batch-rename-dialog.c:156
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:487
-msgid "Original name (Descending)"
+#| msgid "Original name (Descending)"
+msgid "Original Name (Descending)"
 msgstr "Nome original (descendente)"
 
 #: src/nautilus-batch-rename-dialog.c:165
@@ -997,12 +1001,14 @@ msgstr "Criado por último"
 
 #: src/nautilus-batch-rename-dialog.c:1204
 #, c-format
-msgid "\"%s\" would not be a unique new name"
+#| msgid "\"%s\" would not be a unique new name"
+msgid "“%s” would not be a unique new name."
 msgstr "\"%s\" não seria um novo nome único"
 
 #: src/nautilus-batch-rename-dialog.c:1210
 #, c-format
-msgid "\"%s\" would conflict with an existing file."
+#| msgid "\"%s\" would conflict with an existing file."
+msgid "“%s” would conflict with an existing file."
 msgstr "\"%s\" conflitaria com um arquivo existente."
 
 #: src/nautilus-batch-rename-dialog.c:2075
@@ -1625,7 +1631,6 @@ msgid "Re_name"
 msgstr "Re_nomear"
 
 #: src/nautilus-file-conflict-dialog.c:395
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:278
 msgid "Replace"
 msgstr "Substituir"
 
@@ -1995,7 +2000,8 @@ msgstr ""
 
 #: src/nautilus-file-operations.c:2286
 msgid "This remote location does not support sending items to the trash."
-msgstr "Este local remoto não oferece suporte ao envio de itens para a lixeira."
+msgstr ""
+"Este local remoto não oferece suporte ao envio de itens para a lixeira."
 
 #: src/nautilus-file-operations.c:2550
 msgid "Trashing Files"
@@ -2354,7 +2360,8 @@ msgstr "O arquivo fonte seria sobrescrito pelo destino."
 #: src/nautilus-file-operations.c:5442
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
-msgstr "Não foi possível remover o arquivo já existente com o mesmo nome em %F."
+msgstr ""
+"Não foi possível remover o arquivo já existente com o mesmo nome em %F."
 
 #: src/nautilus-file-operations.c:5521
 #, c-format
@@ -3055,11 +3062,13 @@ msgid "Batch rename '%d' files"
 msgstr "Renomear em lote \"%d\" arquivos"
 
 #: src/nautilus-file-undo-operations.c:1111
-msgid "_Undo Batch rename"
+#| msgid "_Undo Batch rename"
+msgid "_Undo Batch Rename"
 msgstr "_Desfazer renomeação em lote"
 
 #: src/nautilus-file-undo-operations.c:1112
-msgid "_Redo Batch rename"
+#| msgid "_Redo Batch rename"
+msgid "_Redo Batch Rename"
 msgstr "_Refazer renomeação em lote"
 
 #: src/nautilus-file-undo-operations.c:1409
@@ -3903,6 +3912,26 @@ msgstr[1] "_Nomes:"
 msgid "Properties"
 msgstr "Propriedades"
 
+#. To translators: %s is the name of the folder.
+#: src/nautilus-properties-window.c:889
+#, c-format
+msgctxt "folder"
+msgid "%s Properties"
+msgstr "Propriedades de %s"
+
+#. To translators: %s is the name of the file.
+#: src/nautilus-properties-window.c:894
+#, c-format
+msgctxt "file"
+msgid "%s Properties"
+msgstr "Propriedades de %s"
+
+#: src/nautilus-properties-window.c:1336
+#, c-format
+msgctxt "MIME type description (MIME type)"
+msgid "%s (%s)"
+msgstr "%s (%s)"
+
 #: src/nautilus-properties-window.c:1554
 msgid "Cancel Group Change?"
 msgstr "Cancelar alteração de grupo?"
@@ -4088,7 +4117,8 @@ msgstr "Outros:"
 
 #: src/nautilus-properties-window.c:4682
 msgid "You are not the owner, so you cannot change these permissions."
-msgstr "Você não é o proprietário, logo você não pode alterar estas permissões."
+msgstr ""
+"Você não é o proprietário, logo você não pode alterar estas permissões."
 
 #: src/nautilus-properties-window.c:4697
 msgid "Security context:"
@@ -4743,6 +4773,7 @@ msgstr "Localizar e substituir _texto"
 msgid "Add"
 msgstr "Adicionar"
 
+#. Translators: This is a noun, not a verb
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:207
 msgid "Format"
 msgstr "Formatar"
@@ -4754,6 +4785,12 @@ msgstr "Texto existente"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:251
 msgid "Replace With"
 msgstr "Substituir por"
+
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:278
+#| msgid "Replace"
+msgctxt "title"
+msgid "Replace"
+msgstr "Substituir"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:406
 msgid "Automatic Numbers"
@@ -4802,10 +4839,6 @@ msgstr "Nome do álbum"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:465
 msgid "Original File Name"
 msgstr "Nome de arquivo original"
-
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
-msgid "Original name (Ascending) "
-msgstr "Nome original (ascendência) "
 
 #: src/resources/ui/nautilus-compress-dialog.ui:23
 msgid "Archive name"
@@ -5573,6 +5606,9 @@ msgstr "Conectar ao _servidor"
 msgid "Enter server address…"
 msgstr "Insira endereço do servidor…"
 
+#~ msgid "Original name (Ascending) "
+#~ msgstr "Nome original (ascendência) "
+
 #~ msgid "Rena_me"
 #~ msgstr "_Renomear"
 
@@ -5608,18 +5644,6 @@ msgstr "Insira endereço do servidor…"
 #~ msgid "Never manage the desktop (ignore the GSettings preference)."
 #~ msgstr ""
 #~ "Nunca gerenciar a área de trabalho (ignora as preferências do GSettings)."
-
-#~ msgctxt "folder"
-#~ msgid "%s Properties"
-#~ msgstr "Propriedades de %s"
-
-#~ msgctxt "file"
-#~ msgid "%s Properties"
-#~ msgstr "Propriedades de %s"
-
-#~ msgctxt "MIME type description (MIME type)"
-#~ msgid "%s (%s)"
-#~ msgstr "%s (%s)"
 
 #~ msgid "New _Tab"
 #~ msgstr "Nova a_ba"
