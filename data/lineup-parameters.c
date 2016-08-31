@@ -238,6 +238,8 @@ get_function_declaration_length (gchar **lines)
       nb_lines++;
       cur_line++;
     }
+  /* should not be reachable - but silences a compiler warning */
+  return 0;
 }
 
 static GSList *
