@@ -745,6 +745,8 @@ on_cursor_callback (GObject      *object,
     success = tracker_sparql_cursor_next_finish (cursor, result, &error);
     if (!success)
     {
+        g_warning ("Error on batch rename tracker query cursor: %s", error->message);
+
         g_clear_error (&error);
         g_clear_object (&cursor);
 
@@ -1129,6 +1131,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     connection = tracker_sparql_connection_get (NULL, &error);
     if (!connection)
     {
+        g_warning ("Error on batch rename tracker connection: %s", error->message);
         g_error_free (error);
 
         return;
