@@ -7257,7 +7257,12 @@ real_update_actions_state (NautilusFilesView *view)
                                  can_move_files && !selection_contains_recent);
 
     /* Drive menu */
-    show_mount = show_unmount = show_eject = show_start = show_stop = show_detect_media = FALSE;
+    show_mount = (selection != NULL);
+    show_unmount = (selection != NULL);
+    show_eject = (selection != NULL);
+    show_start = (selection != NULL && selection_count == 1);
+    show_stop = (selection != NULL && selection_count == 1);
+    show_detect_media = (selection != NULL && selection_count == 1);
     for (l = selection; l != NULL && (show_mount || show_unmount
                                       || show_eject
                                       || show_start || show_stop
