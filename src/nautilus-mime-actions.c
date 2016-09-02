@@ -1644,6 +1644,7 @@ activate_files (ActivateParameters *parameters)
     gint num_unhandled;
     gint num_files;
     gboolean open_files;
+    gboolean closed_window;
 
     screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
 
@@ -1791,13 +1792,29 @@ activate_files (ActivateParameters *parameters)
     {
         if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0)
         {
-            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-            flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+            /* if CLOSE_BEHIND is set and we have a directory to be activated, we
+             * will first have to open a new window and after that we can open the
+             * rest of files in tabs */
+            if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
+            {
+                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+            }
+            else
+            {
+                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+            }
         }
         else
         {
             flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
         }
+    }
+    else
+    {
+            /* if we want to close the window and activate a single directory, then we will need
+             * the NEW_WINDOW flag set */
+            if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
+                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
     }
 
     if (parameters->slot != NULL &&
@@ -1817,6 +1834,7 @@ activate_files (ActivateParameters *parameters)
             open_in_view_files = g_list_reverse (open_in_view_files);
         }
 
+        closed_window = FALSE;
 
         for (l = open_in_view_files; l != NULL; l = l->next)
         {
@@ -1833,6 +1851,23 @@ activate_files (ActivateParameters *parameters)
              * to make splicit the window we want to use for activating the files */
             nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                                      f, flags, NULL, NULL, parameters->slot);
+
+            /* close only the window from which the action was launched and then open
+             * tabs/windows (depending on parameters->flags) */
+            if (!closed_window && (flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
+            {
+                flags &= (~NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
+
+                /* if NEW_WINDOW is set, we want all files in new windows, not in tabs */
+                if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0)
+                {
+                    flags &= (~NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
+                    flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+                }
+
+                closed_window = TRUE;
+            }
+
             g_object_unref (f);
             g_free (uri);
         }
