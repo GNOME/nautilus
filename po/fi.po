@@ -51,8 +51,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-08-30 20:40+0000\n"
-"PO-Revision-Date: 2016-09-03 01:20+0300\n"
+"POT-Creation-Date: 2016-09-02 22:24+0000\n"
+"PO-Revision-Date: 2016-09-03 08:39+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -288,7 +288,6 @@ msgstr ""
 "ja ”display”, eli tiedosto näytetään tekstitiedostona."
 
 #: data/org.gnome.nautilus.gschema.xml:136
-#| msgid "Show the package installer for unknown mime types"
 msgid "Show the package installer for unknown MIME types"
 msgstr "Näytä pakettiasennin tuntemattomille MIME-tyypeille"
 
@@ -860,7 +859,7 @@ msgstr "Näytä _lisätietoja"
 #: src/nautilus-files-view.c:6165 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:570 src/nautilus-mime-actions.c:574
 #: src/nautilus-mime-actions.c:656 src/nautilus-mime-actions.c:1054
-#: src/nautilus-mime-actions.c:1601 src/nautilus-mime-actions.c:1873
+#: src/nautilus-mime-actions.c:1601 src/nautilus-mime-actions.c:1908
 #: src/nautilus-properties-window.c:4620 src/nautilus-properties-window.c:5719
 #: src/nautilus-search-popover.c:547
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
@@ -1047,23 +1046,19 @@ msgstr "Alkuperäinen nimi (laskeva)"
 
 #: src/nautilus-batch-rename-dialog.c:165
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-#| msgid "_First Modified"
 msgid "First Modified"
 msgstr "Ensin muokattu"
 
 #: src/nautilus-batch-rename-dialog.c:174
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-#| msgid "Last _Modified"
 msgid "Last Modified"
 msgstr "Viimeksi muokattu"
 
 #: src/nautilus-batch-rename-dialog.c:183
-#| msgid "Create"
 msgid "First Created"
 msgstr "Ensin luotu"
 
 #: src/nautilus-batch-rename-dialog.c:192
-#| msgid "Last _Trashed"
 msgid "Last Created"
 msgstr "Viimeksi luotu"
 
@@ -1084,7 +1079,6 @@ msgstr "Automaattinen numerojärjestys"
 
 #: src/nautilus-batch-rename-dialog.c:3225
 #, c-format
-#| msgid "Rename selected item"
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Nimeä %d tiedosto uudelleen"
@@ -2601,7 +2595,7 @@ msgid "Loading…"
 msgstr "Ladataan…"
 
 #: src/nautilus-files-view.c:1063 src/nautilus-mime-actions.c:1042
-#: src/nautilus-mime-actions.c:1869
+#: src/nautilus-mime-actions.c:1904
 msgid "Are you sure you want to open all files?"
 msgstr "Haluatko varmasti avata kaikki tiedostot?"
 
@@ -2621,7 +2615,7 @@ msgstr[1] "Tämä avaa  %d erillistä ikkunaa."
 
 #: src/nautilus-files-view.c:1075 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:1054 src/nautilus-mime-actions.c:1240
-#: src/nautilus-mime-actions.c:1873
+#: src/nautilus-mime-actions.c:1908
 msgid "_OK"
 msgstr "_OK"
 
@@ -3120,21 +3114,18 @@ msgstr "_Tee uudelleen nimenmuutos"
 #: src/nautilus-file-undo-operations.c:1106
 #: src/nautilus-file-undo-operations.c:1110
 #, c-format
-#| msgid "Unable to rename desktop file"
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
-msgstr[0] "Sarjanimeä %d tiedosto"
-msgstr[1] "Sarjanimeä %d tiedostoa"
+msgstr[0] "Massanimeä %d tiedosto"
+msgstr[1] "Massanimeä %d tiedostoa"
 
 #: src/nautilus-file-undo-operations.c:1115
-#| msgid "_Undo Rename"
 msgid "_Undo Batch Rename"
-msgstr "_Kumoa sarjanimitys"
+msgstr "_Kumoa massanimeäminen"
 
 #: src/nautilus-file-undo-operations.c:1116
-#| msgid "_Redo Rename"
 msgid "_Redo Batch Rename"
-msgstr "_Tee uudelleen sarjanimitys"
+msgstr "_Tee uudelleen massanimeäminen"
 
 #: src/nautilus-file-undo-operations.c:1413
 #, c-format
@@ -3643,7 +3634,7 @@ msgstr "_Käynnistä silti"
 msgid "Mark as _Trusted"
 msgstr "Merkitse luo_tetuksi"
 
-#: src/nautilus-mime-actions.c:1870
+#: src/nautilus-mime-actions.c:1905
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
@@ -3651,21 +3642,21 @@ msgstr[0] "Tämä avaa %d erillisen sovelluksen."
 msgstr[1] "Tämä avaa %d erillistä ohjelmaa."
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1956 src/nautilus-mime-actions.c:2251
+#: src/nautilus-mime-actions.c:1991 src/nautilus-mime-actions.c:2286
 #: src/gtk/nautilusgtkplacesview.c:1230 src/gtk/nautilusgtkplacesview.c:1305
 msgid "Unable to access location"
 msgstr "Sijaintiin ei ole pääsyä"
 
-#: src/nautilus-mime-actions.c:2340
+#: src/nautilus-mime-actions.c:2375
 msgid "Unable to start location"
 msgstr "Sijaintia ei voi käynnistää"
 
-#: src/nautilus-mime-actions.c:2431
+#: src/nautilus-mime-actions.c:2466
 #, c-format
 msgid "Opening “%s”."
 msgstr "”%s” avautuu."
 
-#: src/nautilus-mime-actions.c:2436
+#: src/nautilus-mime-actions.c:2471
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -4831,13 +4822,11 @@ msgid "Find and replace _text"
 msgstr "Etsi ja korvaa _teksti"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:138
-#| msgid "_Add"
 msgid "Add"
 msgstr "Lisää"
 
 #. Translators: This is a noun, not a verb
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:207
-#| msgid "_Format…"
 msgid "Format"
 msgstr "Muoto"
 
@@ -4846,12 +4835,10 @@ msgid "Existing Text"
 msgstr "Olemassa oleva teksti"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:251
-#| msgid "Replace with"
 msgid "Replace With"
 msgstr "Korvaa tekstillä"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:278
-#| msgid "Replace"
 msgctxt "title"
 msgid "Replace"
 msgstr "Korvaa"
@@ -4877,7 +4864,6 @@ msgid "Metadata"
 msgstr "Metadata"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:423
-#| msgid "Create"
 msgid "Creation Date"
 msgstr "Luontipäivä"
 
@@ -4894,17 +4880,14 @@ msgid "Track Number"
 msgstr "Kappalenumero"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:448
-#| msgid "File Name"
 msgid "Artist Name"
 msgstr "Esittäjän nimi"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:458
-#| msgid "File Name"
 msgid "Album Name"
 msgstr "Albumin nimi"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:465
-#| msgid "Original file"
 msgid "Original File Name"
 msgstr "Alkuperäinen tiedostonimi"
 
@@ -5045,7 +5028,6 @@ msgid "Restore Icon's Original Size"
 msgstr "Palauta kuvakkeen alkuperäinen koko"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:218
-#| msgid "Rena_me"
 msgid "Rena_me…"
 msgstr "Nime_ä uudelleen…"
 
