@@ -1955,6 +1955,8 @@ update_tags (NautilusBatchRenameDialog *dialog)
 static gboolean
 have_unallowed_character (NautilusBatchRenameDialog *dialog)
 {
+    GList *names;
+    GString *new_name;
     const gchar *entry_text;
     gboolean have_unallowed_character_slash;
     gboolean have_unallowed_character_dot;
@@ -1980,14 +1982,40 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
         have_unallowed_character_slash = TRUE;
     }
 
-    if (g_strcmp0 (entry_text, ".") == 0)
+    if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT && g_strcmp0 (entry_text, ".") == 0)
     {
         have_unallowed_character_dot = TRUE;
     }
+    else if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
+    {
+        for (names = dialog->new_names; names != NULL; names = names->next)
+        {
+            new_name = names->data;
 
-    if (g_strcmp0 (entry_text, "..") == 0)
+            if (g_strcmp0 (new_name->str, ".") == 0)
+            {
+                have_unallowed_character_dot = TRUE;
+                break;
+            }
+        }
+    }
+
+    if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT && g_strcmp0 (entry_text, "..") == 0)
     {
         have_unallowed_character_dotdot = TRUE;
+    }
+    else if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
+    {
+        for (names = dialog->new_names; names != NULL; names = names->next)
+        {
+            new_name = names->data;
+
+            if (g_strcmp0 (new_name->str, "..") == 0)
+            {
+                have_unallowed_character_dotdot = TRUE;
+                break;
+            }
+        }
     }
 
     if (have_unallowed_character_slash)
@@ -2053,11 +2081,6 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         dialog->duplicates = NULL;
     }
 
-    if (have_unallowed_character (dialog))
-    {
-        return;
-    }
-
     update_tags (dialog);
 
     if (dialog->new_names != NULL)
@@ -2078,6 +2101,11 @@ update_display_text (NautilusBatchRenameDialog *dialog)
 
     dialog->new_names = batch_rename_dialog_get_new_names (dialog);
     dialog->checked_parents = 0;
+
+    if (have_unallowed_character (dialog))
+    {
+        return;
+    }
 
     file_names_list_has_duplicates_async (dialog,
                                           file_names_list_has_duplicates_callback,
