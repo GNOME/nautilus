@@ -1103,13 +1103,19 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         if (l == selection)
         {
             g_string_append_printf (query,
-                                    "FILTER (nfo:fileName(?file) = '%s' ",
+                                    "FILTER (nfo:fileName(?file) IN ('%s', ",
+                                    file_name);
+        }
+        else if (l->next == NULL)
+        {
+            g_string_append_printf (query,
+                                    "'%s')) ",
                                     file_name);
         }
         else
         {
             g_string_append_printf (query,
-                                    "|| nfo:fileName(?file) = '%s' ",
+                                    "'%s', ",
                                     file_name);
         }
 
@@ -1129,7 +1135,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         g_free (file_name);
     }
 
-    g_string_append (query, ")} ORDER BY ASC(nie:contentCreated(?file))");
+    g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?file))");
 
     connection = tracker_sparql_connection_get (NULL, &error);
     if (!connection)
