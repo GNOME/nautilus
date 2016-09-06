@@ -110,26 +110,34 @@ update_selected_format (NautilusCompressDialogController *self,
     switch (format)
     {
         case NAUTILUS_COMPRESSION_ZIP:
+        {
             extension = ".zip";
             description = ZIP_DESCRIPTION;
             active_button = self->zip_radio_button;
-            break;
+        }
+        break;
 
         case NAUTILUS_COMPRESSION_TAR_XZ:
+        {
             extension = ".tar.xz";
             description = TAR_XZ_DESCRIPTION;
             active_button = self->tar_xz_radio_button;
-            break;
+        }
+        break;
 
         case NAUTILUS_COMPRESSION_7ZIP:
+        {
             extension = ".7z";
             description = SEVEN_ZIP_DESCRIPTION;
             active_button = self->seven_zip_radio_button;
-            break;
+        }
+        break;
 
         default:
+        {
             g_assert_not_reached ();
-            break;
+        }
+        break;
     }
 
     self->extension = extension;
