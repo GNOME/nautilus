@@ -1939,8 +1939,8 @@ drag_data_received_callback (GtkWidget        *widget,
                         nautilus_file_changes_consume_changes (TRUE);
                         success = TRUE;
                     }
-                    break;
                 } /* NAUTILUS_ICON_DND_XDNDDIRECTSAVE */
+                break;
         }
         gtk_drag_finish (context, success, FALSE, time);
 

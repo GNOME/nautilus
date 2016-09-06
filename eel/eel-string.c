@@ -489,6 +489,7 @@ get_arg_type_from_format (EelPrintfHandler *custom_handlers,
             }
             return ARG_TYPE_INT;
         }
+        break;
 
         case 'e':
         case 'E':
@@ -505,16 +506,21 @@ get_arg_type_from_format (EelPrintfHandler *custom_handlers,
             }
             return ARG_TYPE_DOUBLE;
         }
+        break;
 
         case 'c':
         {
             return ARG_TYPE_INT;
         }
+        break;
 
         case 's':
         case 'p':
         case 'n':
+        {
             return ARG_TYPE_POINTER;
+        }
+        break;
     }
     return ARG_TYPE_INVALID;
 }

@@ -232,7 +232,10 @@ nautilus_desktop_link_new (NautilusDesktopLinkType type)
 
         default:
         case NAUTILUS_DESKTOP_LINK_MOUNT:
+        {
             g_assert_not_reached ();
+        }
+        break;
     }
 
     create_icon_file (link);

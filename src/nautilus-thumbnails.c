@@ -193,8 +193,8 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     g_mutex_lock (&thumbnails_mutex);
 
     /*********************************
-    * MUTEX LOCKED
-    *********************************/
+     * MUTEX LOCKED
+     *********************************/
 
     if (thumbnails_to_make_hash)
     {
@@ -209,8 +209,8 @@ nautilus_thumbnail_remove_from_queue (const char *file_uri)
     }
 
     /*********************************
-    * MUTEX UNLOCKED
-    *********************************/
+     * MUTEX UNLOCKED
+     *********************************/
 
 #ifdef DEBUG_THUMBNAILS
     g_message ("(Remove from queue) Unlocking mutex\n");
@@ -229,8 +229,8 @@ nautilus_thumbnail_prioritize (const char *file_uri)
     g_mutex_lock (&thumbnails_mutex);
 
     /*********************************
-    * MUTEX LOCKED
-    *********************************/
+     * MUTEX LOCKED
+     *********************************/
 
     if (thumbnails_to_make_hash)
     {
@@ -244,8 +244,8 @@ nautilus_thumbnail_prioritize (const char *file_uri)
     }
 
     /*********************************
-    * MUTEX UNLOCKED
-    *********************************/
+     * MUTEX UNLOCKED
+     *********************************/
 
 #ifdef DEBUG_THUMBNAILS
     g_message ("(Prioritize) Unlocking mutex\n");
@@ -255,8 +255,8 @@ nautilus_thumbnail_prioritize (const char *file_uri)
 
 
 /***************************************************************************
-* Thumbnail Thread Functions.
-***************************************************************************/
+ * Thumbnail Thread Functions.
+ ***************************************************************************/
 
 
 /* This is a one-shot idle callback called from the main loop to call
@@ -413,8 +413,8 @@ nautilus_create_thumbnail (NautilusFile *file)
     g_mutex_lock (&thumbnails_mutex);
 
     /*********************************
-    * MUTEX LOCKED
-    *********************************/
+     * MUTEX LOCKED
+     *********************************/
 
     if (thumbnails_to_make_hash == NULL)
     {
@@ -459,8 +459,8 @@ nautilus_create_thumbnail (NautilusFile *file)
     }
 
     /*********************************
-    * MUTEX UNLOCKED
-    *********************************/
+     * MUTEX UNLOCKED
+     *********************************/
 
 #ifdef DEBUG_THUMBNAILS
     g_message ("(Main Thread) Unlocking mutex\n");
@@ -491,8 +491,8 @@ thumbnail_thread_func (GTask        *task,
         g_mutex_lock (&thumbnails_mutex);
 
         /*********************************
-        * MUTEX LOCKED
-        *********************************/
+         * MUTEX LOCKED
+         *********************************/
 
         /* Pop the last thumbnail we just made off the head of the
          *  list and free it. I did this here so we only have to lock
@@ -533,8 +533,8 @@ thumbnail_thread_func (GTask        *task,
         currently_thumbnailing = info;
         current_orig_mtime = info->original_file_mtime;
         /*********************************
-        * MUTEX UNLOCKED
-        *********************************/
+         * MUTEX UNLOCKED
+         *********************************/
 
 #ifdef DEBUG_THUMBNAILS
         g_message ("(Thumbnail Thread) Unlocking mutex\n");

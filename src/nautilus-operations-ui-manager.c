@@ -490,7 +490,8 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
     return data->response;
 }
 
-typedef struct {
+typedef struct
+{
     GtkWindow *parent_window;
     NautilusFile *file;
 } HandleUnsupportedFileData;
@@ -499,7 +500,7 @@ static gboolean
 open_file_in_application (gpointer user_data)
 {
     HandleUnsupportedFileData *data;
-    g_autoptr (GAppInfo) application  = NULL;
+    g_autoptr (GAppInfo) application = NULL;
 
     data = user_data;
 

@@ -3493,7 +3493,7 @@ eel_canvas_set_scroll_region (EelCanvas *canvas,
                     gtk_adjustment_get_value (hadjustment) + canvas->zoom_xofs,
                     gtk_adjustment_get_value (vadjustment) + canvas->zoom_yofs,
                     /*canvas->zoom_xofs,
-                    *   canvas->zoom_yofs,*/
+                     *   canvas->zoom_yofs,*/
                     &wxofs, &wyofs);
 
     canvas->scroll_x1 = x1;

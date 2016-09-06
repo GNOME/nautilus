@@ -366,19 +366,25 @@ nautilus_canvas_container_get_grid_size_for_zoom_level (NautilusCanvasZoomLevel 
         {
             return SMALL_ICON_GRID_WIDTH;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
         {
             return STANDARD_ICON_GRID_WIDTH;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
         {
             return LARGE_ICON_GRID_WIDTH;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+        {
             return LARGER_ICON_GRID_WIDTH;
+        }
+        break;
     }
     g_return_val_if_reached (STANDARD_ICON_GRID_WIDTH);
 }
@@ -392,19 +398,25 @@ nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel 
         {
             return NAUTILUS_CANVAS_ICON_SIZE_SMALL;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD:
         {
             return NAUTILUS_CANVAS_ICON_SIZE_STANDARD;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE:
         {
             return NAUTILUS_CANVAS_ICON_SIZE_LARGE;
         }
+        break;
 
         case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
+        {
             return NAUTILUS_CANVAS_ICON_SIZE_LARGER;
+        }
+        break;
     }
     g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
 }
@@ -3613,7 +3625,10 @@ closest_in_90_degrees (NautilusCanvasContainer *container,
         break;
 
         default:
+        {
             g_assert_not_reached ();
+        }
+        break;
     }
 
     dist = dx * dx + dy * dy;
@@ -6072,8 +6087,11 @@ item_event_callback (EelCanvasItem *item,
         }
 
         default:
+        {
             container->details->double_clicked = FALSE;
             return FALSE;
+        }
+        break;
     }
 }
 
@@ -8058,8 +8076,11 @@ nautilus_canvas_container_accessible_do_action (AtkAction *accessible,
         break;
 
         default:
+        {
             g_warning ("Invalid action passed to NautilusCanvasContainerAccessible::do_action");
             return FALSE;
+        }
+        break;
     }
     return TRUE;
 }

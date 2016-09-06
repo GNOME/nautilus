@@ -5483,10 +5483,10 @@ retry:
         if (is_merge)
         {
             /* On merge we now write in the target directory, which may not
-            *   be in the same directory as the source, even if the parent is
-            *   (if the merged directory is a mountpoint). This could cause
-            *   problems as we then don't transcode filenames.
-            *   We just set same_fs to FALSE which is safe but a bit slower. */
+             *   be in the same directory as the source, even if the parent is
+             *   (if the merged directory is a mountpoint). This could cause
+             *   problems as we then don't transcode filenames.
+             *   We just set same_fs to FALSE which is safe but a bit slower. */
             same_fs = FALSE;
         }
 

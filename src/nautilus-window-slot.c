@@ -104,7 +104,7 @@ typedef struct
     /* Load state */
     GCancellable *find_mount_cancellable;
     /* It could be either the view is loading the files or the search didn't
-    * finish. Used for showing a spinner to provide feedback to the user. */
+     * finish. Used for showing a spinner to provide feedback to the user. */
     gboolean allow_stop;
     gboolean needs_reload;
     gchar *pending_search_text;

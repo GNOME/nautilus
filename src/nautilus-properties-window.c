@@ -869,8 +869,8 @@ select_all_at_idle (gpointer user_data)
 }
 
 static void
-name_field_activate (GtkWidget  *name_field,
-                     gpointer    user_data)
+name_field_activate (GtkWidget *name_field,
+                     gpointer   user_data)
 {
     NautilusPropertiesWindow *window;
 
@@ -2757,7 +2757,7 @@ location_show_original (NautilusPropertiesWindow *window)
     NautilusFile *file;
 
     /* there is no way a recent item will be mixed with
-    *   other items so just pick the first file to check */
+     *   other items so just pick the first file to check */
     file = NAUTILUS_FILE (g_list_nth_data (window->details->original_files, 0));
     return (file != NULL && !nautilus_file_is_in_recent (file));
 }
