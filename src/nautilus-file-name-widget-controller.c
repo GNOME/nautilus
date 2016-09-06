@@ -306,14 +306,19 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
     switch (prop_id)
     {
         case PROP_ERROR_REVEALER:
+        {
             priv->error_revealer = GTK_WIDGET (g_value_get_object (value));
-            break;
+        }
+        break;
 
         case PROP_ERROR_LABEL:
+        {
             priv->error_label = GTK_WIDGET (g_value_get_object (value));
-            break;
+        }
+        break;
 
         case PROP_NAME_ENTRY:
+        {
             priv->name_entry = GTK_WIDGET (g_value_get_object (value));
 
             g_signal_connect_swapped (G_OBJECT (priv->name_entry),
@@ -324,25 +329,32 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
                                       "changed",
                                       (GCallback) file_name_widget_controller_on_changed,
                                       controller);
-            break;
+        }
+        break;
 
         case PROP_ACTION_BUTTON:
+        {
             priv->activate_button = GTK_WIDGET (g_value_get_object (value));
 
             g_signal_connect_swapped (G_OBJECT (priv->activate_button),
                                       "clicked",
                                       (GCallback) file_name_widget_controller_on_activate,
                                       controller);
-            break;
+        }
+        break;
 
         case PROP_CONTAINING_DIRECTORY:
+        {
             priv->containing_directory = NAUTILUS_DIRECTORY (g_value_get_object (value));
             nautilus_directory_ref (priv->containing_directory);
-            break;
+        }
+        break;
 
         default:
+        {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-            break;
+        }
+        break;
     }
 }
 
