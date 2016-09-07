@@ -2295,7 +2295,6 @@ real_batch_rename (GList                         *files,
         new_name = l2->data;
 
         location = nautilus_file_get_location (file);
-        old_files = g_list_append (old_files, location);
 
         new_file_name = nautilus_file_can_rename_file (file,
                                                        new_name->str,
@@ -2306,10 +2305,11 @@ real_batch_rename (GList                         *files,
         {
             op->skipped_files++;
 
-            new_file = nautilus_file_get_location (file);
-            new_files = g_list_append (new_files, new_file);
-
             continue;
+        }
+        else
+        {
+            old_files = g_list_append (old_files, location);
         }
 
         g_assert (G_IS_FILE (location));
@@ -2342,8 +2342,9 @@ real_batch_rename (GList                         *files,
         }
     }
 
-    /* Tell the undo manager a batch rename is taking place */
-    if (!nautilus_file_undo_manager_is_operating ())
+    /* Tell the undo manager a batch rename is taking place if at least
+     * a file has been renamed*/
+    if (!nautilus_file_undo_manager_is_operating () && op->skipped_files != g_list_length (files))
     {
         op->undo_info = nautilus_file_undo_info_batch_rename_new (g_list_length (new_files));
 
