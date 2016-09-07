@@ -1019,7 +1019,11 @@ create_arrow_row_for_label (NautilusBatchRenameDialog *dialog,
 
     g_object_set_data (G_OBJECT (row), "show-separator", GINT_TO_POINTER (show_separator));
 
-    icon = gtk_label_new ("→");
+    if (gtk_widget_get_direction (row) == GTK_TEXT_DIR_RTL)
+        icon = gtk_label_new ("←");
+    else
+        icon = gtk_label_new ("→");
+
     gtk_label_set_xalign (GTK_LABEL (icon), 1.0);
     gtk_widget_set_hexpand (icon, FALSE);
     gtk_widget_set_margin_start (icon, ROW_MARGIN_START);
