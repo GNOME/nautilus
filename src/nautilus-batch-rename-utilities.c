@@ -154,7 +154,7 @@ batch_rename_replace_label_text (gchar       *label,
 
     if (substring == NULL || g_strcmp0 (substring, "") == 0)
     {
-        token = g_markup_escape_text (label, g_utf8_strlen (label, -1));
+        token = g_markup_escape_text (label, -1);
         new_label = g_string_append (new_label, token);
         g_free (token);
 
@@ -164,7 +164,7 @@ batch_rename_replace_label_text (gchar       *label,
     splitted_string = g_strsplit (label, substring, -1);
     if (splitted_string == NULL)
     {
-        token = g_markup_escape_text (label, g_utf8_strlen (label, -1));
+        token = g_markup_escape_text (label, -1);
         new_label = g_string_append (new_label, token);
         g_free (token);
 
@@ -175,14 +175,14 @@ batch_rename_replace_label_text (gchar       *label,
 
     for (i = 0; i < n_splits; i++)
     {
-        token = g_markup_escape_text (splitted_string[i], strlen (splitted_string[i]));
+        token = g_markup_escape_text (splitted_string[i], -1);
         new_label = g_string_append (new_label, token);
 
         g_free (token);
 
         if (i != n_splits - 1)
         {
-            token = g_markup_escape_text (substring, g_utf8_strlen (substring, -1));
+            token = g_markup_escape_text (substring, -1);
             g_string_append_printf (new_label,
                                     "<span background=\'#f57900\' color='white'>%s</span>",
                                     token);
