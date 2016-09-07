@@ -3165,6 +3165,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 {
     NautilusBatchRenameDialog *dialog;
     GString *dialog_title;
+    GList *l;
+    gboolean all_targets_are_folders;
 
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, "use-header-bar", TRUE, NULL);
 
@@ -3175,10 +3177,29 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     gtk_window_set_transient_for (GTK_WINDOW (dialog),
                                   GTK_WINDOW (window));
 
+    all_targets_are_folders = TRUE;
+    for (l = selection; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
+        {
+            all_targets_are_folders = FALSE;
+            break;
+        }
+    }
+
     dialog_title = g_string_new ("");
-    g_string_append_printf (dialog_title,
-                            ngettext ("Rename %d File", "Rename %d Files", g_list_length (selection)),
-                            g_list_length (selection));
+    if (all_targets_are_folders)
+    {
+        g_string_append_printf (dialog_title,
+                                ngettext ("Rename %d Folder", "Rename %d Folders", g_list_length (selection)),
+                                g_list_length (selection));
+    }
+    else
+    {
+        g_string_append_printf (dialog_title,
+                                ngettext ("Rename %d File", "Rename %d Files", g_list_length (selection)),
+                                g_list_length (selection));
+    }
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
