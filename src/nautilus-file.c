@@ -2374,7 +2374,8 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
         nautilus_file_changed (file);
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
                              _("File not found"));
-        (*callback)(file, NULL, error, callback_data);
+        if (callback)
+            (*callback)(file, NULL, error, callback_data);
         g_error_free (error);
         return TRUE;
     }
