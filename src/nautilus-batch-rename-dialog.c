@@ -1559,26 +1559,6 @@ on_file_names_list_has_duplicates (GObject      *object,
         return;
     }
 
-    update_listbox (self);
-}
-
-static void
-on_file_names_list_has_duplicates_distinct_parents (GObject      *object,
-                                                    GAsyncResult *res,
-                                                    gpointer      user_data)
-{
-    NautilusBatchRenameDialog *self;
-    GError *error = NULL;
-    gboolean success;
-
-    self = NAUTILUS_BATCH_RENAME_DIALOG (object);
-    success = file_names_list_has_duplicates_finish (self, res, &error);
-
-    if (!success)
-    {
-        return;
-    }
-
     self->duplicates = g_list_reverse (self->duplicates);
     self->checking_conflicts = FALSE;
     update_listbox (self);
@@ -1618,7 +1598,10 @@ on_directory_conflicts_ready (NautilusDirectory *conflict_directory,
 }
 
 static void
-file_names_list_has_duplicates_distinct_parents (GTask *task)
+file_names_list_has_duplicates_async_thread (GTask        *task,
+                                             gpointer      object,
+                                             gpointer      data,
+                                             GCancellable *cancellable)
 {
     NautilusBatchRenameDialog *self;
     CheckConflictsData *task_data;
@@ -1629,6 +1612,7 @@ file_names_list_has_duplicates_distinct_parents (GTask *task)
 
     self = g_task_get_source_object (task);
     task_data = g_task_get_task_data (task);
+    self->duplicates = NULL;
 
     g_mutex_init (&task_data->wait_ready_mutex);
     g_cond_init (&task_data->wait_ready_condition);
@@ -1668,160 +1652,6 @@ file_names_list_has_duplicates_distinct_parents (GTask *task)
     }
 
   g_task_return_boolean (task, TRUE);
-}
-
-static void
-file_names_list_has_duplicates_async_thread (GTask        *task,
-                                             gpointer      object,
-                                             gpointer      data,
-                                             GCancellable *cancellable)
-{
-    NautilusBatchRenameDialog *dialog;
-    GList *new_names;
-    GList *directory_files;
-    GList *l1;
-    GList *l2;
-    NautilusFile *file;
-    GString *file_name;
-    GString *new_name;
-    gboolean have_conflict;
-    gboolean hash_table_insertion;
-    gboolean same_parent;
-    gchar *name;
-    GHashTable *directory_names_table;
-    GHashTable *new_names_table;
-    GHashTable *names_conflicts_table;
-    gint exists;
-    ConflictData *conflict_data;
-    g_autoptr (GSource) chained_call_source = NULL;
-
-    dialog = NAUTILUS_BATCH_RENAME_DIALOG (object);
-
-    dialog->duplicates = NULL;
-
-    if (g_cancellable_is_cancelled (cancellable))
-    {
-        return;
-    }
-
-    g_return_if_fail (g_list_length (dialog->new_names) == g_list_length (dialog->selection));
-
-    /* If the batch rename is launched in a search, then for each file we have to check for
-     * conflicts with each file in the file's parent directory */
-    same_parent = !NAUTILUS_IS_SEARCH_DIRECTORY (dialog->directory);
-    if (!same_parent)
-    {
-        file_names_list_has_duplicates_distinct_parents (task);
-
-        return;
-    }
-
-    new_names = batch_rename_dialog_get_new_names (dialog);
-
-    directory_names_table = g_hash_table_new_full (g_str_hash,
-                                                   g_str_equal,
-                                                   (GDestroyNotify) g_free,
-                                                   NULL);
-    new_names_table = g_hash_table_new_full (g_str_hash,
-                                             g_str_equal,
-                                             (GDestroyNotify) g_free,
-                                             NULL);
-    names_conflicts_table = g_hash_table_new_full (g_str_hash,
-                                                   g_str_equal,
-                                                   (GDestroyNotify) g_free,
-                                                   NULL);
-
-    directory_files = nautilus_directory_get_file_list (dialog->directory);
-
-    for (l1 = new_names; l1 != NULL; l1 = l1->next)
-    {
-        new_name = l1->data;
-        hash_table_insertion = g_hash_table_insert (new_names_table,
-                                                    g_strdup (new_name->str),
-                                                    GINT_TO_POINTER (TRUE));
-
-        if (!hash_table_insertion)
-        {
-            g_hash_table_insert (names_conflicts_table,
-                                 g_strdup (new_name->str),
-                                 GINT_TO_POINTER (TRUE));
-        }
-    }
-
-    for (l1 = directory_files; l1 != NULL; l1 = l1->next)
-    {
-        file = NAUTILUS_FILE (l1->data);
-        g_hash_table_insert (directory_names_table,
-                             nautilus_file_get_name (file),
-                             GINT_TO_POINTER (TRUE));
-    }
-
-    for (l1 = new_names, l2 = dialog->selection; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
-    {
-        if (g_cancellable_is_cancelled (cancellable))
-        {
-            g_list_free_full (dialog->duplicates, conflict_data_free);
-            break;
-        }
-
-        file = NAUTILUS_FILE (l2->data);
-        new_name = l1->data;
-
-        have_conflict = FALSE;
-
-        name = nautilus_file_get_name (file);
-        file_name = g_string_new (name);
-
-        g_free (name);
-
-        /* check for duplicate only if the name has changed */
-        if (!g_string_equal (new_name, file_name))
-        {
-            /* check with already existing files */
-            exists = GPOINTER_TO_INT (g_hash_table_lookup (directory_names_table, new_name->str));
-
-            if (exists == TRUE &&
-                !file_name_conflicts_with_results (dialog->selection, new_names, new_name, NULL))
-            {
-                conflict_data = g_new (ConflictData, 1);
-                conflict_data->name = g_strdup (new_name->str);
-                conflict_data->index = g_list_index (dialog->selection, l2->data);
-                dialog->duplicates = g_list_prepend (dialog->duplicates,
-                                                     conflict_data);
-                have_conflict = TRUE;
-            }
-
-            /* check with files that will result from the batch rename, unless
-             * this file already has a conflict */
-            if (!have_conflict)
-            {
-                exists = GPOINTER_TO_INT (g_hash_table_lookup (names_conflicts_table, new_name->str));
-
-                if (exists == TRUE)
-                {
-                    conflict_data = g_new (ConflictData, 1);
-                    conflict_data->name = g_strdup (new_name->str);
-                    conflict_data->index = g_list_index (dialog->selection, l2->data);
-                    dialog->duplicates = g_list_prepend (dialog->duplicates,
-                                                         conflict_data);
-                }
-            }
-        }
-
-        g_string_free (file_name, TRUE);
-    }
-
-    g_hash_table_destroy (directory_names_table);
-    g_hash_table_destroy (new_names_table);
-    g_hash_table_destroy (names_conflicts_table);
-    nautilus_file_list_free (directory_files);
-    g_list_free_full (new_names, string_free);
-
-    dialog->duplicates = g_list_reverse (dialog->duplicates);
-
-    dialog->checking_conflicts = FALSE;
-
-    g_task_return_boolean (task, TRUE);
 }
 
 static void
@@ -2162,7 +1992,6 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     TagData *tag_data;
     TagData *tag_data0;
     TagData *tag_data00;
-    gboolean same_parent;
 
     tag_data = g_hash_table_lookup (dialog->tag_info_table, NUMBERING);
     tag_data0 = g_hash_table_lookup (dialog->tag_info_table, NUMBERING0);
@@ -2209,19 +2038,9 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    same_parent = !NAUTILUS_IS_SEARCH_DIRECTORY (dialog->directory);
-    if (same_parent)
-    {
-        file_names_list_has_duplicates_async (dialog,
-                                              on_file_names_list_has_duplicates,
-                                              NULL);
-    }
-    else
-    {
-        file_names_list_has_duplicates_async (dialog,
-                                              on_file_names_list_has_duplicates_distinct_parents,
-                                              NULL);
-    }
+    file_names_list_has_duplicates_async (dialog,
+                                          on_file_names_list_has_duplicates,
+                                          NULL);
 }
 
 static void
