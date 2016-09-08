@@ -1664,15 +1664,8 @@ destroy_conflicts_task_data (gpointer data)
         g_list_free (task_data->directories);
     }
 
-    if (&task_data->wait_ready_mutex)
-    {
-        g_mutex_clear (&task_data->wait_ready_mutex);
-    }
-
-    if (&task_data->wait_ready_condition)
-    {
-        g_cond_clear (&task_data->wait_ready_condition);
-    }
+    g_mutex_clear (&task_data->wait_ready_mutex);
+    g_cond_clear (&task_data->wait_ready_condition);
 }
 
 static void
