@@ -128,7 +128,9 @@ eel_filename_get_extension_offset (const char *filename)
         if (strcmp (end, ".gz") == 0 ||
             strcmp (end, ".bz2") == 0 ||
             strcmp (end, ".sit") == 0 ||
-            strcmp (end, ".Z") == 0)
+            strcmp (end, ".Z") == 0 ||
+            strcmp (end, ".bz") == 0 ||
+            strcmp (end, ".xz") == 0)
         {
             end2 = end - 1;
             while (end2 > start &&
