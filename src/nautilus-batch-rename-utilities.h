@@ -60,4 +60,6 @@ gboolean file_name_conflicts_with_results       (GList        *selection,
 GString* batch_rename_replace_label_text        (gchar             *label,
                                                  const gchar       *substr);
 
+gchar*   batch_rename_get_tag_text_representation (TagConstants tag_constants);
+
 #endif /* NAUTILUS_BATCH_RENAME_UTILITIES_H */

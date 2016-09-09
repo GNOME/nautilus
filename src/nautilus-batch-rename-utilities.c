@@ -35,18 +35,11 @@ typedef struct
 typedef struct
 {
     NautilusBatchRenameDialog *dialog;
-    GHashTable *hash_table;
+    GHashTable *date_order_hash_table;
 
     GList *selection_metadata;
 
-    gboolean have_creation_date;
-    gboolean have_equipment;
-    gboolean have_season;
-    gboolean have_episode_number;
-    gboolean have_track_number;
-    gboolean have_artist_name;
-    gboolean have_title;
-    gboolean have_album_name;
+    gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)];
 } QueryData;
 
 enum
@@ -88,6 +81,12 @@ conflict_data_free (gpointer mem)
 
     g_free (conflict_data->name);
     g_free (conflict_data);
+}
+
+gchar*
+batch_rename_get_tag_text_representation (TagConstants tag_constants)
+{
+    return g_strdup_printf ("[%s]", gettext (tag_constants.label));
 }
 
 static GString *
@@ -197,77 +196,30 @@ batch_rename_replace_label_text (gchar       *label,
 }
 
 static gchar *
-get_metadata (GList *selection_metadata,
-              gchar *file_name,
-              gchar *metadata)
+get_metadata (GList        *selection_metadata,
+              gchar        *file_name,
+              MetadataType  metadata_type)
 {
     GList *l;
     FileMetadata *file_metadata;
+    gchar *metadata = NULL;
 
     for (l = selection_metadata; l != NULL; l = l->next)
     {
         file_metadata = l->data;
         if (g_strcmp0 (file_name, file_metadata->file_name->str) == 0)
         {
-            if (g_strcmp0 (metadata, "creation_date") == 0 &&
-                file_metadata->creation_date != NULL &&
-                file_metadata->creation_date->len != 0)
+            if (file_metadata->metadata[metadata_type] &&
+                file_metadata->metadata[metadata_type]->len > 0)
             {
-                return file_metadata->creation_date->str;
+                metadata = file_metadata->metadata[metadata_type]->str;
             }
 
-            if (g_strcmp0 (metadata, "equipment") == 0 &&
-                file_metadata->equipment != NULL &&
-                file_metadata->equipment->len != 0)
-            {
-                return file_metadata->equipment->str;
-            }
-
-            if (g_strcmp0 (metadata, "season") == 0 &&
-                file_metadata->season != NULL &&
-                file_metadata->season->len != 0)
-            {
-                return file_metadata->season->str;
-            }
-
-            if (g_strcmp0 (metadata, "episode_number") == 0 &&
-                file_metadata->episode_number != NULL &&
-                file_metadata->episode_number->len != 0)
-            {
-                return file_metadata->episode_number->str;
-            }
-
-            if (g_strcmp0 (metadata, "track_number") == 0 &&
-                file_metadata->track_number != NULL &&
-                file_metadata->track_number->len != 0)
-            {
-                return file_metadata->track_number->str;
-            }
-
-            if (g_strcmp0 (metadata, "artist_name") == 0 &&
-                file_metadata->artist_name != NULL &&
-                file_metadata->artist_name->len != 0)
-            {
-                return file_metadata->artist_name->str;
-            }
-
-            if (g_strcmp0 (metadata, "title") == 0 &&
-                file_metadata->title != NULL &&
-                file_metadata->title->len != 0)
-            {
-                return file_metadata->title->str;
-            }
-
-            if (g_strcmp0 (metadata, "album_name") == 0 &&
-                file_metadata->album_name != NULL &&
-                file_metadata->album_name->len != 0)
-            {
-                return file_metadata->album_name->str;
-            }
+            break;
         }
     }
 
-    return NULL;
+    return metadata;
 }
 
 static GString *
@@ -277,11 +229,13 @@ batch_rename_format (NautilusFile *file,
                      gint          count)
 {
     GList *l;
-    GString *tag;
+    GString *tag_string;
     GString *new_name;
     gboolean added_tag;
+    MetadataType metadata_type;
     g_autofree gchar *file_name = NULL;
     g_autofree gchar *extension = NULL;
+    gint i;
     gchar *metadata;
     gchar *base_name;
 
@@ -292,130 +246,99 @@ batch_rename_format (NautilusFile *file,
 
     for (l = text_chunks; l != NULL; l = l->next)
     {
-        tag = l->data;
         added_tag = FALSE;
+        tag_string = l->data;
 
-        if (!added_tag && g_strcmp0 (tag->str, ORIGINAL_FILE_NAME) == 0)
+        for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
         {
-            base_name = eel_filename_strip_extension (file_name);
+            g_autofree gchar *tag_text_representation = NULL;
 
-            new_name = g_string_append (new_name, base_name);
-
-            added_tag = TRUE;
-            g_free (base_name);
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, NUMBERING) == 0)
-        {
-            g_string_append_printf (new_name, "%d", count);
-            added_tag = TRUE;
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, NUMBERING0) == 0)
-        {
-            g_string_append_printf (new_name, "%02d", count);
-
-            added_tag = TRUE;
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, NUMBERING00) == 0)
-        {
-            g_string_append_printf (new_name, "%03d", count);
-
-            added_tag = TRUE;
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, CAMERA_MODEL) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "equipment");
-
-            if (metadata != NULL)
+            tag_text_representation = batch_rename_get_tag_text_representation (numbering_tags_constants[i]);
+            if (g_strcmp0 (tag_string->str, tag_text_representation) == 0)
             {
-                new_name = g_string_append (new_name, metadata);
+                switch (numbering_tags_constants[i].numbering_type)
+                {
+                    case NUMBERING_NO_ZERO_PAD:
+                    {
+                        g_string_append_printf (new_name, "%d", count);
+                    }
+                    break;
+                    case NUMBERING_ONE_ZERO_PAD:
+                    {
+                        g_string_append_printf (new_name, "%02d", count);
+                    }
+                    break;
+                    case NUMBERING_TWO_ZERO_PAD:
+                    {
+                        g_string_append_printf (new_name, "%03d", count);
+                    }
+                    break;
+                    default:
+                    {
+                         g_warn_if_reached ();
+                    }
+                    break;
+                }
+
                 added_tag = TRUE;
+                break;
             }
         }
 
-        if (!added_tag && g_strcmp0 (tag->str, CREATION_DATE) == 0)
+        if (added_tag)
         {
-            metadata = get_metadata (selection_metadata, file_name, "creation_date");
-
-            if (metadata != NULL)
-            {
-                new_name = g_string_append (new_name, metadata);
-                added_tag = TRUE;
-            }
+            continue;
         }
 
-        if (!added_tag && g_strcmp0 (tag->str, SEASON_NUMBER) == 0)
+        for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
         {
-            metadata = get_metadata (selection_metadata, file_name, "season");
+            g_autofree gchar *tag_text_representation = NULL;
 
-            if (metadata != NULL)
+            tag_text_representation = batch_rename_get_tag_text_representation (metadata_tags_constants[i]);
+            if (g_strcmp0 (tag_string->str, tag_text_representation) == 0)
             {
-                new_name = g_string_append (new_name, metadata);
+                metadata_type = metadata_tags_constants[i].metadata_type;
+                metadata = get_metadata (selection_metadata, file_name, metadata_type);
+
+                /* TODO: This is a hack, we should provide a cancellable for checking
+                 * the metadata, and if that is happening don't enter here. We can
+                 * special case original file name upper in the call stack */
+                if (!metadata && metadata_type != ORIGINAL_FILE_NAME)
+                {
+                    g_warning ("Metadata not present in one file, it shouldn't have been added. File name: %s, Metadata: %s",
+                               file_name, metadata_tags_constants[i].label);
+                    continue;
+                }
+
+                switch (metadata_type)
+                {
+                    case ORIGINAL_FILE_NAME:
+                    {
+                        base_name = eel_filename_strip_extension (file_name);
+
+                        new_name = g_string_append (new_name, base_name);
+                    }
+                    break;
+                    case TRACK_NUMBER:
+                    {
+                        g_string_append_printf (new_name, "%02d", atoi (metadata));
+                    }
+                    break;
+                    default:
+                    {
+                        new_name = g_string_append (new_name, metadata);
+                    }
+                    break;
+                }
+
                 added_tag = TRUE;
-            }
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, EPISODE_NUMBER) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "episode_number");
-
-            if (metadata != NULL)
-            {
-                new_name = g_string_append (new_name, metadata);
-                added_tag = TRUE;
-            }
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, TRACK_NUMBER) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "track_number");
-
-            if (metadata != NULL)
-            {
-                g_string_append_printf (new_name, "%02d", atoi (metadata));
-                added_tag = TRUE;
-            }
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, ARTIST_NAME) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "artist_name");
-
-            if (metadata != NULL)
-            {
-                new_name = g_string_append (new_name, metadata);
-                added_tag = TRUE;
-            }
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, TITLE) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "title");
-
-            if (metadata != NULL)
-            {
-                new_name = g_string_append (new_name, metadata);
-                added_tag = TRUE;
-            }
-        }
-
-        if (!added_tag && g_strcmp0 (tag->str, ALBUM_NAME) == 0)
-        {
-            metadata = get_metadata (selection_metadata, file_name, "album_name");
-
-            if (metadata != NULL)
-            {
-                new_name = g_string_append (new_name, metadata);
-                added_tag = TRUE;
+                break;
             }
         }
 
         if (!added_tag)
         {
-            new_name = g_string_append (new_name, tag->str);
+            new_name = g_string_append (new_name, tag_string->str);
         }
     }
 
@@ -458,9 +381,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
     {
         file = NAUTILUS_FILE (l->data);
 
-        file_name = g_string_new ("");
         name = nautilus_file_get_name (file);
-        g_string_append (file_name, name);
+        file_name = g_string_new (name);
 
         /* get the new name here and add it to the list*/
         if (mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
@@ -705,20 +627,59 @@ cursor_next (QueryData           *query_data,
 }
 
 static void
+remove_metadata (QueryData    *query_data,
+                 MetadataType  metadata_type)
+{
+    GList *l;
+    FileMetadata *metadata_to_delete;
+
+    for (l = query_data->selection_metadata; l != NULL; l = l->next)
+    {
+        metadata_to_delete = l->data;
+        if (metadata_to_delete->metadata[metadata_type])
+        {
+            g_string_free (metadata_to_delete->metadata[metadata_type], TRUE);
+            metadata_to_delete->metadata[metadata_type] = NULL;
+        }
+    }
+
+    query_data->has_metadata[metadata_type] = FALSE;
+}
+
+static GString*
+format_date_time (GDateTime *date_time)
+{
+    g_autofree gchar *date = NULL;
+    GString *formated_date;
+
+    date = g_date_time_format (date_time, "%x");
+    if (strstr (date, "/") != NULL)
+    {
+        formated_date = batch_rename_replace (date, "/", "-");
+    }
+    else
+    {
+        formated_date = g_string_new (date);
+    }
+
+    return formated_date;
+}
+
+static void
 on_cursor_callback (GObject      *object,
                     GAsyncResult *result,
                     gpointer      user_data)
 {
-    GHashTable *hash_table;
     TrackerSparqlCursor *cursor;
     gboolean success;
     QueryData *query_data;
+    MetadataType metadata_type;
     GError *error;
     GList *l;
-    FileMetadata *metadata;
-    FileMetadata *metadata_clear;
-    GDateTime *datetime;
-    gchar *date;
+    FileMetadata *file_metadata;
+    GDateTime *date_time;
+    guint i;
+    const gchar *current_metadata;
     const gchar *file_name;
     const gchar *creation_date;
     const gchar *year;
@@ -736,11 +697,10 @@ on_cursor_callback (GObject      *object,
     const gchar *album_name;
 
     error = NULL;
-    metadata = NULL;
+    file_metadata = NULL;
 
     cursor = TRACKER_SPARQL_CURSOR (object);
     query_data = user_data;
-    hash_table = query_data->hash_table;
 
     success = tracker_sparql_cursor_next_finish (cursor, result, &error);
     if (!success)
@@ -754,7 +714,7 @@ on_cursor_callback (GObject      *object,
         g_clear_object (&cursor);
 
         nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                     query_data->hash_table,
+                                                     query_data->date_order_hash_table,
                                                      query_data->selection_metadata);
 
         return;
@@ -776,244 +736,114 @@ on_cursor_callback (GObject      *object,
     title = tracker_sparql_cursor_get_string (cursor, TITLE_INDEX, NULL);
     album_name = tracker_sparql_cursor_get_string (cursor, ALBUM_NAME_INDEX, NULL);
 
-    /* creation date used for sorting criteria */
-    if (creation_date == NULL)
-    {
-        if (hash_table != NULL)
-        {
-            g_hash_table_destroy (hash_table);
-        }
-
-        query_data->hash_table = NULL;
-        query_data->have_creation_date = FALSE;
-    }
-    else
-    {
-        if (query_data->have_creation_date)
-        {
-            g_hash_table_insert (hash_table,
-                                 g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
-                                 GINT_TO_POINTER (g_hash_table_size (hash_table)));
-        }
-    }
+    /* Search for the metadata object corresponding to the file name */
     file_name = tracker_sparql_cursor_get_string (cursor, FILE_NAME_INDEX, NULL);
     for (l = query_data->selection_metadata; l != NULL; l = l->next)
     {
-        metadata = l->data;
+        file_metadata = l->data;
 
-        if (g_strcmp0 (file_name, metadata->file_name->str) == 0)
+        if (g_strcmp0 (file_name, file_metadata->file_name->str) == 0)
         {
             break;
         }
     }
 
-    /* Metadata to be used in file name
-     * creation date */
-    if (query_data->have_creation_date)
+    /* Set metadata when available, and delete for the whole selection when not */
+    for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
-        if (!creation_date)
+        if (query_data->has_metadata[i])
         {
-            query_data->have_creation_date = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
+            metadata_type = metadata_tags_constants[i].metadata_type;
+            current_metadata = NULL;
+            switch (metadata_type)
             {
-                metadata_clear = l->data;
-
-                if (metadata_clear->creation_date != NULL)
+                case ORIGINAL_FILE_NAME:
                 {
-                    g_string_free (metadata_clear->creation_date, TRUE);
-                    metadata_clear->creation_date = NULL;
+                    current_metadata = file_name;
                 }
+                break;
+                case CREATION_DATE:
+                {
+                    current_metadata = creation_date;
+                }
+                break;
+                case EQUIPMENT:
+                {
+                    current_metadata = equipment;
+                }
+                break;
+                case SEASON_NUMBER:
+                {
+                    current_metadata = season_number;
+                }
+                break;
+                case EPISODE_NUMBER:
+                {
+                    current_metadata = episode_number;
+                }
+                break;
+                case ARTIST_NAME:
+                {
+                    current_metadata = artist_name;
+                }
+                break;
+                case ALBUM_NAME:
+                {
+                    current_metadata = album_name;
+                }
+                break;
+                case TITLE:
+                {
+                    current_metadata = title;
+                }
+                break;
+                case TRACK_NUMBER:
+                {
+                    current_metadata = track_number;
+                }
+                break;
+                default:
+                {
+                     g_warn_if_reached();
+                }
+                break;
             }
-        }
-        else
-        {
-            datetime = g_date_time_new_local (atoi (year),
-                                              atoi (month),
-                                              atoi (day),
-                                              atoi (hours),
-                                              atoi (minutes),
-                                              atoi (seconds));
 
-            date = g_date_time_format (datetime, "%x");
-
-            if (strstr (date, "/") != NULL)
+            if (!current_metadata)
             {
-                metadata->creation_date = batch_rename_replace (date, "/", "-");
+                remove_metadata (query_data,
+                                 metadata_type);
+
+                if (metadata_type == CREATION_DATE &&
+                    query_data->date_order_hash_table)
+                {
+                       g_hash_table_destroy (query_data->date_order_hash_table);
+                       query_data->date_order_hash_table = NULL;
+                }
             }
             else
             {
-                metadata->creation_date = g_string_new (date);
-            }
-
-            g_free (date);
-        }
-    }
-
-    /* equipment */
-    if (query_data->have_equipment)
-    {
-        if (equipment == NULL)
-        {
-            query_data->have_equipment = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->equipment != NULL)
+                if (metadata_type == CREATION_DATE)
                 {
-                    g_string_free (metadata_clear->equipment, TRUE);
-                    metadata_clear->equipment = NULL;
+                    /* Add the sort order to the order hash table */
+                    g_hash_table_insert (query_data->date_order_hash_table,
+                                         g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
+                                         GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
+
+                    date_time = g_date_time_new_local (atoi (year),
+                                                       atoi (month),
+                                                       atoi (day),
+                                                       atoi (hours),
+                                                       atoi (minutes),
+                                                       atoi (seconds));
+
+                    file_metadata->metadata[metadata_type] = format_date_time (date_time);
+                }
+                else
+                {
+                    file_metadata->metadata[metadata_type] = g_string_new (current_metadata);
                 }
             }
-        }
-        else
-        {
-            metadata->equipment = g_string_new (equipment);
-        }
-    }
-
-    /* season number */
-    if (query_data->have_season)
-    {
-        if (season_number == NULL)
-        {
-            query_data->have_season = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->season != NULL)
-                {
-                    g_string_free (metadata_clear->season, TRUE);
-                    metadata_clear->season = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->season = g_string_new (season_number);
-        }
-    }
-
-    /* episode number */
-    if (query_data->have_episode_number)
-    {
-        if (episode_number == NULL)
-        {
-            query_data->have_episode_number = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->episode_number != NULL)
-                {
-                    g_string_free (metadata_clear->episode_number, TRUE);
-                    metadata_clear->episode_number = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->episode_number = g_string_new (episode_number);
-        }
-    }
-
-    /* track number */
-    if (query_data->have_track_number)
-    {
-        if (track_number == NULL)
-        {
-            query_data->have_track_number = FALSE;
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->track_number != NULL)
-                {
-                    g_string_free (metadata_clear->track_number, TRUE);
-                    metadata_clear->track_number = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->track_number = g_string_new (track_number);
-        }
-    }
-
-    /* artist name */
-    if (query_data->have_artist_name)
-    {
-        if (artist_name == NULL)
-        {
-            query_data->have_artist_name = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->artist_name != NULL)
-                {
-                    g_string_free (metadata_clear->artist_name, TRUE);
-                    metadata_clear->artist_name = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->artist_name = g_string_new (artist_name);
-        }
-    }
-
-    /* title */
-    if (query_data->have_title)
-    {
-        if (title == NULL)
-        {
-            query_data->have_title = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->title != NULL)
-                {
-                    g_string_free (metadata_clear->title, TRUE);
-                    metadata_clear->title = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->title = g_string_new (title);
-        }
-    }
-
-    /* album name */
-    if (query_data->have_album_name)
-    {
-        if (album_name == NULL)
-        {
-            query_data->have_album_name = FALSE;
-
-            for (l = query_data->selection_metadata; l != NULL; l = l->next)
-            {
-                metadata_clear = l->data;
-
-                if (metadata_clear->album_name != NULL)
-                {
-                    g_string_free (metadata_clear->album_name, TRUE);
-                    metadata_clear->album_name = NULL;
-                }
-            }
-        }
-        else
-        {
-            metadata->album_name = g_string_new (album_name);
         }
     }
 
@@ -1046,7 +876,7 @@ batch_rename_dialog_query_callback (GObject      *object,
         g_error_free (error);
 
         nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                     query_data->hash_table,
+                                                     query_data->date_order_hash_table,
                                                      query_data->selection_metadata);
     }
     else
@@ -1061,14 +891,14 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 {
     TrackerSparqlConnection *connection;
     GString *query;
-    GHashTable *hash_table;
     GList *l;
     NautilusFile *file;
     GError *error;
     QueryData *query_data;
     gchar *file_name;
-    FileMetadata *metadata;
+    FileMetadata *file_metadata;
     GList *selection_metadata;
+    guint i;
 
     error = NULL;
     selection_metadata = NULL;
@@ -1119,18 +949,11 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                     file_name);
         }
 
-        metadata = g_new (FileMetadata, 1);
-        metadata->file_name = g_string_new (file_name);
-        metadata->creation_date = NULL;
-        metadata->equipment = NULL;
-        metadata->season = NULL;
-        metadata->episode_number = NULL;
-        metadata->track_number = NULL;
-        metadata->artist_name = NULL;
-        metadata->title = NULL;
-        metadata->album_name = NULL;
+        file_metadata = g_new0 (FileMetadata, 1);
+        file_metadata->file_name = g_string_new (file_name);
+        file_metadata->metadata[ORIGINAL_FILE_NAME] = g_string_new (file_name);
 
-        selection_metadata = g_list_append (selection_metadata, metadata);
+        selection_metadata = g_list_append (selection_metadata, file_metadata);
 
         g_free (file_name);
     }
@@ -1149,24 +972,17 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         return;
     }
 
-    hash_table = g_hash_table_new_full (g_str_hash,
-                                        g_str_equal,
-                                        (GDestroyNotify) g_free,
-                                        NULL);
-
     query_data = g_new (QueryData, 1);
-    query_data->hash_table = hash_table;
+    query_data->date_order_hash_table = g_hash_table_new_full (g_str_hash,
+                                                               g_str_equal,
+                                                               (GDestroyNotify) g_free,
+                                                               NULL);
     query_data->dialog = dialog;
     query_data->selection_metadata = selection_metadata;
-
-    query_data->have_season = TRUE;
-    query_data->have_creation_date = TRUE;
-    query_data->have_artist_name = TRUE;
-    query_data->have_track_number = TRUE;
-    query_data->have_equipment = TRUE;
-    query_data->have_episode_number = TRUE;
-    query_data->have_title = TRUE;
-    query_data->have_album_name = TRUE;
+    for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
+    {
+        query_data->has_metadata[i] = TRUE;
+    }
 
     /* Make an asynchronous query to the store */
     tracker_sparql_connection_query_async (connection,
