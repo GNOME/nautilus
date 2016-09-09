@@ -38,7 +38,7 @@ GList* file_names_list_has_duplicates                      (NautilusBatchRenameD
                                                             GCancellable                *cancellable);
 
 GList* nautilus_batch_rename_dialog_sort        (GList                       *selection,
-                                                 SortingMode                  mode,
+                                                 SortMode                     mode,
                                                  GHashTable                  *creation_date_table);
 
 void check_metadata_for_selection               (NautilusBatchRenameDialog *dialog,

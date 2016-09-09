@@ -53,7 +53,7 @@ typedef enum {
         LAST_MODIFIED = 3,
         FIRST_CREATED = 4,
         LAST_CREATED = 5,
-} SortingMode;
+} SortMode;
 
 typedef struct
 {

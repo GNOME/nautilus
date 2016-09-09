@@ -622,9 +622,9 @@ compare_files_by_last_created (gconstpointer a,
 }
 
 GList *
-nautilus_batch_rename_dialog_sort (GList       *selection,
-                                   SortingMode  mode,
-                                   GHashTable  *creation_date_table)
+nautilus_batch_rename_dialog_sort (GList      *selection,
+                                   SortMode    mode,
+                                   GHashTable *creation_date_table)
 {
     GList *l, *l2;
     NautilusFile *file;

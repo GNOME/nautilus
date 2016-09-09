@@ -120,6 +120,54 @@ typedef struct
     gboolean just_added;
 } TagData;
 
+typedef struct
+{
+    const gchar *action_target_name;
+    const gchar *tag_text_represencation;
+    const gchar *label;
+} TagConstants;
+
+typedef struct
+{
+    const gchar *action_target_name;
+    const gchar *label;
+    const SortMode sort_mode;
+} SortConstants;
+
+static const SortConstants sorts_constants[] =
+{
+    {
+        "name-ascending",
+        N_("Original Name (Ascending)"),
+        ORIGINAL_ASCENDING,
+    },
+    {
+        "name-descending",
+        N_("Original Name (Descending)"),
+        ORIGINAL_DESCENDING,
+    },
+    {
+        "first-modified",
+        N_("First Modified"),
+        FIRST_MODIFIED,
+    },
+    {
+        "last-modified",
+        N_("Last Modified"),
+        LAST_MODIFIED,
+    },
+    {
+        "first-created",
+        N_("First Created"),
+        FIRST_CREATED,
+    },
+    {
+        "last-created",
+        N_("Last Created"),
+        LAST_CREATED,
+    },
+};
+
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
 
 G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, GTK_TYPE_DIALOG);
@@ -131,63 +179,22 @@ add_numbering_order (GSimpleAction *action,
 {
     NautilusBatchRenameDialog *dialog;
     const gchar *target_name;
+    guint i;
 
     dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
 
     target_name = g_variant_get_string (value, NULL);
 
-    if (g_strcmp0 (target_name, "name-ascending") == 0)
+    for (i = 0; i < G_N_ELEMENTS (sorts_constants); i++)
     {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Original Name (Ascending)"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               ORIGINAL_ASCENDING,
-                                                               NULL);
-    }
-
-    if (g_strcmp0 (target_name, "name-descending") == 0)
-    {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Original Name (Descending)"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               ORIGINAL_DESCENDING,
-                                                               NULL);
-    }
-
-    if (g_strcmp0 (target_name, "first-modified") == 0)
-    {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("First Modified"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               FIRST_MODIFIED,
-                                                               NULL);
-    }
-
-    if (g_strcmp0 (target_name, "last-modified") == 0)
-    {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Last Modified"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               LAST_MODIFIED,
-                                                               NULL);
-    }
-
-    if (g_strcmp0 (target_name, "first-created") == 0)
-    {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("First Created"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               FIRST_CREATED,
-                                                               dialog->create_date);
-    }
-
-    if (g_strcmp0 (target_name, "last-created") == 0)
-    {
-        gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
-                             _("Last Created"));
-        dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
-                                                               LAST_CREATED,
-                                                               dialog->create_date);
+        if (g_strcmp0 (sorts_constants[i].action_target_name, target_name) == 0)
+        {
+            gtk_label_set_label (GTK_LABEL (dialog->numbering_order_label),
+                                 gettext (sorts_constants[i].label));
+            dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
+                                                                   sorts_constants[i].sort_mode,
+                                                                   NULL);
+        }
     }
 
     g_simple_action_set_state (action, value);
