@@ -40,25 +40,25 @@ G_BEGIN_DECLS
 #define ALBUM_NAME "[Album name]"
 
 typedef enum {
-        NAUTILUS_BATCH_RENAME_DIALOG_APPEND = 0,
-        NAUTILUS_BATCH_RENAME_DIALOG_PREPEND = 1,
-        NAUTILUS_BATCH_RENAME_DIALOG_REPLACE = 2,
-        NAUTILUS_BATCH_RENAME_DIALOG_FORMAT = 3,
+    NAUTILUS_BATCH_RENAME_DIALOG_APPEND = 0,
+    NAUTILUS_BATCH_RENAME_DIALOG_PREPEND = 1,
+    NAUTILUS_BATCH_RENAME_DIALOG_REPLACE = 2,
+    NAUTILUS_BATCH_RENAME_DIALOG_FORMAT = 3,
 } NautilusBatchRenameDialogMode;
 
 typedef enum {
-        ORIGINAL_ASCENDING = 0,
-        ORIGINAL_DESCENDING = 1,
-        FIRST_MODIFIED = 2,
-        LAST_MODIFIED = 3,
-        FIRST_CREATED = 4,
-        LAST_CREATED = 5,
+    ORIGINAL_ASCENDING = 0,
+    ORIGINAL_DESCENDING = 1,
+    FIRST_MODIFIED = 2,
+    LAST_MODIFIED = 3,
+    FIRST_CREATED = 4,
+    LAST_CREATED = 5,
 } SortMode;
 
 typedef struct
 {
-        gchar *name;
-        gint index;
+    gchar *name;
+    gint index;
 } ConflictData;
 
 typedef struct {
