@@ -883,6 +883,8 @@ const GOptionEntry options[] =
     /* dummy, only for compatibility reasons */
     { "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
       NULL, NULL },
+    { "no-desktop", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
+      NULL, NULL },
     /* ditto */
     { "geometry", 'g', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, NULL,
       N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
