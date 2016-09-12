@@ -30,8 +30,8 @@ msgstr ""
 "Project-Id-Version: nautilus.master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-09-02 19:08+0000\n"
-"PO-Revision-Date: 2016-09-04 22:49+0200\n"
+"POT-Creation-Date: 2016-09-12 16:39+0000\n"
+"PO-Revision-Date: 2016-09-12 18:44+0200\n"
 "Last-Translator: Mathieu Stumpf Guntz <mathieu@culture-libre.org>\n"
 "Language-Team: GNOME French Team <gnomefr@traduc.org>\n"
 "Language: fr\n"
@@ -919,36 +919,36 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "Effectue de rapides tests de cohérence."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "Create the initial window with the given geometry."
 msgstr "Crée la fenêtre initiale avec la géométrie indiquée."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "GEOMETRY"
 msgstr "GÉOMÉTRIE"
 
-#: src/nautilus-application.c:890
+#: src/nautilus-application.c:892
 msgid "Show the version of the program."
 msgstr "Affiche la version du programme."
 
-#: src/nautilus-application.c:892
+#: src/nautilus-application.c:894
 msgid "Always open a new window for browsing specified URIs"
 msgstr ""
 "Toujours créer de nouvelles fenêtres pour la navigation des URI précisés."
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:896
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Ne crée de nouvelles fenêtres que pour les URI explicitement précisés."
 
-#: src/nautilus-application.c:896
+#: src/nautilus-application.c:898
 msgid "Quit Nautilus."
 msgstr "Quitte Nautilus."
 
-#: src/nautilus-application.c:898
+#: src/nautilus-application.c:900
 msgid "Select specified URI in parent folder."
 msgstr "Sélectionne l'URI spécifié dans le dossier parent."
 
-#: src/nautilus-application.c:899
+#: src/nautilus-application.c:901
 msgid "[URI...]"
 msgstr "[URI...]"
 
@@ -988,63 +988,121 @@ msgstr ""
 msgid "_Run"
 msgstr "_Lancer"
 
-#: src/nautilus-batch-rename-dialog.c:147
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
-msgid "Original Name (Ascending)"
-msgstr "Nom original (croissant)"
-
-#: src/nautilus-batch-rename-dialog.c:156
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
-msgid "Original Name (Descending)"
-msgstr "Nom original (décroissant)"
-
-#: src/nautilus-batch-rename-dialog.c:165
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-msgid "First Modified"
-msgstr "Premier modifié"
-
-#: src/nautilus-batch-rename-dialog.c:174
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-msgid "Last Modified"
-msgstr "Dernier modifié"
-
-#: src/nautilus-batch-rename-dialog.c:183
-msgid "First Created"
-msgstr "Premier créé"
-
-#: src/nautilus-batch-rename-dialog.c:192
-msgid "Last Created"
-msgstr "Dernier créé"
-
-#: src/nautilus-batch-rename-dialog.c:1204
+#: src/nautilus-batch-rename-dialog.c:861
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "« %s » ne serait pas un nouveau nom unique."
 
-#: src/nautilus-batch-rename-dialog.c:1210
+#: src/nautilus-batch-rename-dialog.c:867
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "« %s » créerait un conflit avec un fichier existant. "
 
-#: src/nautilus-batch-rename-dialog.c:2075
+#: src/nautilus-batch-rename-dialog.c:1559
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:159
 msgid "Automatic Numbering Order"
 msgstr "Ordre de numérotation automatique"
 
-#: src/nautilus-batch-rename-dialog.c:3225
+#: src/nautilus-batch-rename-dialog.c:2257
+#, c-format
+msgid "Rename %d Folder"
+msgid_plural "Rename %d Folders"
+msgstr[0] "Renommer %d dossier"
+msgstr[1] "Renommer %d dossiers"
+
+#: src/nautilus-batch-rename-dialog.c:2263
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Renommer %d fichier"
 msgstr[1] "Renommer %d fichiers"
 
+#: src/nautilus-batch-rename-dialog.h:88
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
+msgid "Original Name (Ascending)"
+msgstr "Nom original (croissant)"
+
+#: src/nautilus-batch-rename-dialog.h:93
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
+msgid "Original Name (Descending)"
+msgstr "Nom original (décroissant)"
+
+#: src/nautilus-batch-rename-dialog.h:98
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
+msgid "First Modified"
+msgstr "Premier modifié"
+
+#: src/nautilus-batch-rename-dialog.h:103
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
+msgid "Last Modified"
+msgstr "Dernier modifié"
+
+#: src/nautilus-batch-rename-dialog.h:108
+msgid "First Created"
+msgstr "Premier créé"
+
+#: src/nautilus-batch-rename-dialog.h:113
+msgid "Last Created"
+msgstr "Dernier créé"
+
+#: src/nautilus-batch-rename-dialog.h:122
+msgid "Camera model"
+msgstr "Modèle de l'appareil photo"
+
+#: src/nautilus-batch-rename-dialog.h:129
+msgid "Creation date"
+msgstr "Date de création"
+
+#: src/nautilus-batch-rename-dialog.h:136
+msgid "Season number"
+msgstr "Numéro de saison"
+
+#: src/nautilus-batch-rename-dialog.h:143
+msgid "Episode number"
+msgstr "Numéro d'épisode"
+
+#: src/nautilus-batch-rename-dialog.h:150
+msgid "Track number"
+msgstr "Numéro de piste"
+
+#: src/nautilus-batch-rename-dialog.h:157
+msgid "Artist name"
+msgstr "Nom de l'artiste"
+
+#: src/nautilus-batch-rename-dialog.h:164
+#: src/nautilus-image-properties-page.c:382
+#: src/nautilus-image-properties-page.c:384
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Title"
+msgstr "Titre"
+
+#: src/nautilus-batch-rename-dialog.h:171
+msgid "Album name"
+msgstr "Nom de l'album"
+
+#: src/nautilus-batch-rename-dialog.h:178
+msgid "Original file name"
+msgstr "Nom du fichier original"
+
+#: src/nautilus-batch-rename-dialog.h:189
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: src/nautilus-batch-rename-dialog.h:196
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: src/nautilus-batch-rename-dialog.h:203
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
+
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
 msgid "Other Locations"
 msgstr "Autres emplacements"
 
-#: src/nautilus-canvas-container.c:2760
+#: src/nautilus-canvas-container.c:2772
 msgid "The selection rectangle"
 msgstr "Le rectangle de sélection"
 
@@ -1171,28 +1229,30 @@ msgstr "Pertinence"
 msgid "Relevance rank for search"
 msgstr "Niveau de pertinence pour la recherche"
 
-#: src/nautilus-compress-dialog-controller.c:10
+#: src/nautilus-compress-dialog-controller.c:29
 msgid "Compatible with all operating systems."
 msgstr "Compatible avec tous les systèmes d'exploitation."
 
-#: src/nautilus-compress-dialog-controller.c:11
+#: src/nautilus-compress-dialog-controller.c:30
 msgid "Smaller archives but Linux and Mac only."
 msgstr ""
 "Fichiers d'archive plus légers mais compatibilité restreinte à Linux et Mac."
 
-#: src/nautilus-compress-dialog-controller.c:12
+#: src/nautilus-compress-dialog-controller.c:31
 msgid "Smaller archives but must be installed on Windows and Mac."
-msgstr "Fichiers d'archive plus légers, mais nécessite une installation sur Linux et Mac."
+msgstr ""
+"Fichiers d'archive plus légers, mais nécessite une installation sur Linux et "
+"Mac."
 
-#: src/nautilus-compress-dialog-controller.c:44
+#: src/nautilus-compress-dialog-controller.c:63
 msgid "Archive names cannot contain “/”."
 msgstr "Les noms de fichiers d'archive ne peuvent pas contenir « / »."
 
-#: src/nautilus-compress-dialog-controller.c:48
+#: src/nautilus-compress-dialog-controller.c:67
 msgid "An archive cannot be called “.”."
 msgstr "Impossible d'appeler un fichier d'archive « . »."
 
-#: src/nautilus-compress-dialog-controller.c:52
+#: src/nautilus-compress-dialog-controller.c:71
 msgid "An archive cannot be called “..”."
 msgstr "Impossible d'appeler un fichier d'archive « .. »."
 
@@ -1384,61 +1444,61 @@ msgstr ""
 "Le contenu de ce fichier est probablement un format non-valide de fichier "
 "bureau"
 
-#: src/nautilus-file.c:2376
+#: src/nautilus-file.c:2377
 msgid "File not found"
 msgstr "Fichier non trouvé"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5615
+#: src/nautilus-file.c:5617
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5620
+#: src/nautilus-file.c:5622
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5629
+#: src/nautilus-file.c:5631
 #, no-c-format
 msgid "Yesterday"
 msgstr "Hier"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5638
+#: src/nautilus-file.c:5640
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Hier à %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5645
+#: src/nautilus-file.c:5647
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Hier à %l:%M %p"
 
-#: src/nautilus-file.c:5655
+#: src/nautilus-file.c:5657
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5664
+#: src/nautilus-file.c:5666
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a à %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5671
+#: src/nautilus-file.c:5673
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a à %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5682
+#: src/nautilus-file.c:5684
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1446,7 +1506,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5692
+#: src/nautilus-file.c:5694
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b à %H:%M"
@@ -1454,14 +1514,14 @@ msgstr "%-e %b à %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5700
+#: src/nautilus-file.c:5702
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b à %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5711
+#: src/nautilus-file.c:5713
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1469,7 +1529,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5721
+#: src/nautilus-file.c:5723
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y à %H:%M"
@@ -1477,58 +1537,58 @@ msgstr "%-e %b %Y à %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5729
+#: src/nautilus-file.c:5731
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y à %l:%M %p"
 
-#: src/nautilus-file.c:5741
+#: src/nautilus-file.c:5743
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6176
+#: src/nautilus-file.c:6178
 msgid "Not allowed to set permissions"
 msgstr "Vous n'êtes pas autorisé à définir les permissions"
 
-#: src/nautilus-file.c:6499
+#: src/nautilus-file.c:6501
 msgid "Not allowed to set owner"
 msgstr "Vous n'êtes pas autorisé à définir le propriétaire"
 
-#: src/nautilus-file.c:6518
+#: src/nautilus-file.c:6520
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Le propriétaire indiqué « %s » n'existe pas"
 
-#: src/nautilus-file.c:6803
+#: src/nautilus-file.c:6805
 msgid "Not allowed to set group"
 msgstr "Vous n'êtes pas autorisé à définir le groupe"
 
-#: src/nautilus-file.c:6822
+#: src/nautilus-file.c:6824
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Le groupe indiqué « %s » n'existe pas"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6964
+#: src/nautilus-file.c:6966
 msgid "Me"
 msgstr "Moi"
 
-#: src/nautilus-file.c:6996
+#: src/nautilus-file.c:6998
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u élément"
 msgstr[1] "%'u éléments"
 
-#: src/nautilus-file.c:6997
+#: src/nautilus-file.c:6999
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u dossier"
 msgstr[1] "%'u dossiers"
 
-#: src/nautilus-file.c:6998
+#: src/nautilus-file.c:7000
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1536,87 +1596,87 @@ msgstr[0] "%'u fichier"
 msgstr[1] "%'u fichiers"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7458 src/nautilus-file.c:7478
+#: src/nautilus-file.c:7460 src/nautilus-file.c:7480
 msgid "? items"
 msgstr "? éléments"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7466
+#: src/nautilus-file.c:7468
 msgid "? bytes"
 msgstr "? octets"
 
-#: src/nautilus-file.c:7486 src/nautilus-file.c:7577
+#: src/nautilus-file.c:7488 src/nautilus-file.c:7579
 msgid "Unknown"
 msgstr "Inconnu"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7502 src/nautilus-properties-window.c:1313
+#: src/nautilus-file.c:7504 src/nautilus-properties-window.c:1313
 msgid "unknown"
 msgstr "inconnu"
 
-#: src/nautilus-file.c:7537 src/nautilus-file.c:7545 src/nautilus-file.c:7603
+#: src/nautilus-file.c:7539 src/nautilus-file.c:7547 src/nautilus-file.c:7605
 msgid "Program"
 msgstr "Application"
 
-#: src/nautilus-file.c:7538
+#: src/nautilus-file.c:7540
 msgid "Audio"
 msgstr "Audio"
 
-#: src/nautilus-file.c:7539
+#: src/nautilus-file.c:7541
 msgid "Font"
 msgstr "Police"
 
-#: src/nautilus-file.c:7540 src/nautilus-image-properties-page.c:832
+#: src/nautilus-file.c:7542 src/nautilus-image-properties-page.c:832
 msgid "Image"
 msgstr "Image"
 
-#: src/nautilus-file.c:7541
+#: src/nautilus-file.c:7543
 msgid "Archive"
 msgstr "Archive"
 
-#: src/nautilus-file.c:7542
+#: src/nautilus-file.c:7544
 msgid "Markup"
 msgstr "Balisage"
 
-#: src/nautilus-file.c:7543 src/nautilus-file.c:7544
+#: src/nautilus-file.c:7545 src/nautilus-file.c:7546
 msgid "Text"
 msgstr "Texte"
 
-#: src/nautilus-file.c:7546 src/nautilus-mime-actions.c:202
+#: src/nautilus-file.c:7548 src/nautilus-mime-actions.c:202
 msgid "Video"
 msgstr "Vidéo"
 
-#: src/nautilus-file.c:7547
+#: src/nautilus-file.c:7549
 msgid "Contacts"
 msgstr "Contacts"
 
-#: src/nautilus-file.c:7548
+#: src/nautilus-file.c:7550
 msgid "Calendar"
 msgstr "Agenda"
 
-#: src/nautilus-file.c:7549
+#: src/nautilus-file.c:7551
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:7550 src/nautilus-mime-actions.c:178
+#: src/nautilus-file.c:7552 src/nautilus-mime-actions.c:178
 msgid "Presentation"
 msgstr "Présentation"
 
-#: src/nautilus-file.c:7551 src/nautilus-mime-actions.c:185
+#: src/nautilus-file.c:7553 src/nautilus-mime-actions.c:185
 msgid "Spreadsheet"
 msgstr "Feuille de calcul"
 
-#: src/nautilus-file.c:7605
+#: src/nautilus-file.c:7607
 msgid "Binary"
 msgstr "Binaire"
 
-#: src/nautilus-file.c:7610
+#: src/nautilus-file.c:7612
 msgid "Folder"
 msgstr "Dossier"
 
-#: src/nautilus-file.c:7649
+#: src/nautilus-file.c:7651
 msgid "Link"
 msgstr "Lien"
 
@@ -1625,13 +1685,13 @@ msgstr "Lien"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7655 src/nautilus-file-operations.c:451
+#: src/nautilus-file.c:7657 src/nautilus-file-operations.c:451
 #: src/nautilus-files-view-dnd.c:130
 #, c-format
 msgid "Link to %s"
 msgstr "Lien vers %s"
 
-#: src/nautilus-file.c:7673 src/nautilus-file.c:7689
+#: src/nautilus-file.c:7675 src/nautilus-file.c:7691
 msgid "Link (broken)"
 msgstr "Lien (brisé)"
 
@@ -1662,26 +1722,26 @@ msgstr "Re_nommer"
 msgid "Replace"
 msgstr "Remplacer"
 
-#: src/nautilus-file-name-widget-controller.c:87
-#: src/nautilus-rename-file-popover-controller.c:66
+#: src/nautilus-file-name-widget-controller.c:106
+#: src/nautilus-rename-file-popover-controller.c:85
 msgid "File names cannot contain “/”."
 msgstr "Les noms de fichiers ne peuvent pas contenir « / »."
 
-#: src/nautilus-file-name-widget-controller.c:91
-#: src/nautilus-rename-file-popover-controller.c:77
+#: src/nautilus-file-name-widget-controller.c:110
+#: src/nautilus-rename-file-popover-controller.c:96
 msgid "A file cannot be called “.”."
 msgstr "Impossible d'appeler un fichier « . »."
 
-#: src/nautilus-file-name-widget-controller.c:95
-#: src/nautilus-rename-file-popover-controller.c:88
+#: src/nautilus-file-name-widget-controller.c:114
+#: src/nautilus-rename-file-popover-controller.c:107
 msgid "A file cannot be called “..”."
 msgstr "Impossible d'appeler un fichier « .. »."
 
-#: src/nautilus-file-name-widget-controller.c:117
+#: src/nautilus-file-name-widget-controller.c:136
 msgid "A folder with that name already exists."
 msgstr "Un dossier portant ce nom existe déjà."
 
-#: src/nautilus-file-name-widget-controller.c:122
+#: src/nautilus-file-name-widget-controller.c:141
 msgid "A file with that name already exists."
 msgstr "Un fichier portant ce nom existe déjà."
 
@@ -3332,12 +3392,6 @@ msgstr "Largeur"
 msgid "Height"
 msgstr "Hauteur"
 
-#: src/nautilus-image-properties-page.c:382
-#: src/nautilus-image-properties-page.c:384
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
-msgid "Title"
-msgstr "Titre"
-
 #: src/nautilus-image-properties-page.c:386
 #: src/nautilus-image-properties-page.c:388
 msgid "Author"
@@ -3701,32 +3755,32 @@ msgstr "_Ajouter"
 msgid "Set as default"
 msgstr "Définir par défaut"
 
-#: src/nautilus-new-folder-dialog-controller.c:33
-#: src/nautilus-rename-file-popover-controller.c:62
+#: src/nautilus-new-folder-dialog-controller.c:52
+#: src/nautilus-rename-file-popover-controller.c:81
 msgid "Folder names cannot contain “/”."
 msgstr "Les noms de dossiers ne peuvent pas contenir « / »."
 
-#: src/nautilus-new-folder-dialog-controller.c:37
-#: src/nautilus-rename-file-popover-controller.c:73
+#: src/nautilus-new-folder-dialog-controller.c:56
+#: src/nautilus-rename-file-popover-controller.c:92
 msgid "A folder cannot be called “.”."
 msgstr "Impossible d'appeler un dossier « . »."
 
-#: src/nautilus-new-folder-dialog-controller.c:41
-#: src/nautilus-rename-file-popover-controller.c:84
+#: src/nautilus-new-folder-dialog-controller.c:60
+#: src/nautilus-rename-file-popover-controller.c:103
 msgid "A folder cannot be called “..”."
 msgstr "Impossible d'appeler un dossier « .. »."
 
-#: src/nautilus-new-folder-dialog-controller.c:109
+#: src/nautilus-new-folder-dialog-controller.c:128
 #: src/resources/ui/nautilus-compress-dialog.ui:137
 msgid "Create"
 msgstr "Créer"
 
-#: src/nautilus-new-folder-dialog-controller.c:110
-#: src/nautilus-rename-file-popover-controller.c:171
+#: src/nautilus-new-folder-dialog-controller.c:129
+#: src/nautilus-rename-file-popover-controller.c:190
 msgid "Folder name"
 msgstr "Nom du dossier :"
 
-#: src/nautilus-new-folder-dialog-controller.c:111
+#: src/nautilus-new-folder-dialog-controller.c:130
 msgid "New Folder"
 msgstr "Nouveau dossier"
 
@@ -4242,7 +4296,7 @@ msgstr "Emplacement distant - ne recherche que dans le dossier actuel"
 msgid "Only searching the current folder"
 msgstr "Ne recherche que dans le dossier actuel"
 
-#: src/nautilus-rename-file-popover-controller.c:172
+#: src/nautilus-rename-file-popover-controller.c:191
 msgid "File name"
 msgstr "Nom du fichier"
 
