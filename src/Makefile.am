@@ -122,7 +122,7 @@ endif
 if ENABLE_TRACKER
 nautilus_batch_renaming_tracker_sources = \
 	nautilus-batch-renaming-dialog.c \
-	nautilus-batch-renaming-dialog.h
+	nautilus-batch-renaming-dialog.h \
 	nautilus-batch-renaming-utilities.c \
 	nautilus-batch-renaming-utilities.h
 endif
