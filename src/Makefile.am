@@ -119,6 +119,14 @@ nautilus_tracker_engine_sources = \
 	nautilus-search-engine-tracker.h
 endif
 
+if ENABLE_TRACKER
+nautilus_batch_renaming_tracker_sources = \
+	nautilus-batch-renaming-dialog.c \
+	nautilus-batch-renaming-dialog.h
+	nautilus-batch-renaming-utilities.c \
+	nautilus-batch-renaming-utilities.h
+endif
+
 nautilus_built_sources = \
 	$(dbus_built_sources) \
 	$(dbus_freedesktop_built_sources) \
@@ -136,8 +144,6 @@ nautilus_no_main_sources = \
 	gtk/nautilusgtkplacesviewrowprivate.h		\
 	nautilus-application.c			\
 	nautilus-application.h			\
-	nautilus-batch-rename-dialog.c 		\
-	nautilus-batch-rename-dialog.h 		\
 	nautilus-bookmark-list.c		\
 	nautilus-bookmark-list.h		\
 	nautilus-canvas-view.c			\
@@ -191,8 +197,6 @@ nautilus_no_main_sources = \
 	nautilus-properties-window.h		\
 	nautilus-query-editor.c			\
 	nautilus-query-editor.h			\
-	nautilus-batch-rename-utilities.c 		\
-	nautilus-batch-rename-utilities.h 		\
 	nautilus-search-popover.c		\
 	nautilus-search-popover.h		\
 	nautilus-self-check-functions.c 	\
@@ -335,6 +339,7 @@ nautilus_no_main_sources = \
 	nautilus-file-undo-manager.c \
 	nautilus-file-undo-manager.h \
 	$(nautilus_tracker_engine_sources)	\
+	$(nautilus_batch_renaming_tracker_sources)	\
 	$(NULL)
 
 libnautilus_la_SOURCES = \

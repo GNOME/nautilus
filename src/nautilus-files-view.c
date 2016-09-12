@@ -28,8 +28,10 @@
 #include "nautilus-files-view.h"
 
 #include "nautilus-application.h"
+#ifdef ENABLE_TRACKER
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
+#endif
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-floating-bar.h"
@@ -5935,6 +5937,7 @@ real_action_rename (NautilusFilesView *view)
             {
                 invoke_external_bulk_rename_utility (view, selection);
             }
+#ifdef ENABLE_TRACKER
             else
             {
                 GdkCursor *cursor;
@@ -5952,6 +5955,7 @@ real_action_rename (NautilusFilesView *view)
 
                 gtk_widget_show (GTK_WIDGET (dialog));
             }
+#endif
         }
         else
         {
@@ -7079,8 +7083,12 @@ real_update_actions_state (NautilusFilesView *view)
         }
         else
         {
+#ifdef ENABLE_TRACKER
             g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                          nautilus_file_can_rename_files (selection));
+#else
+            g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
+#endif
         }
     }
     else
