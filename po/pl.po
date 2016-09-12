@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-08 19:24+0000\n"
-"PO-Revision-Date: 2016-09-08 21:44+0200\n"
+"POT-Creation-Date: 2016-09-12 16:39+0000\n"
+"PO-Revision-Date: 2016-09-12 18:48+0200\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -885,35 +885,35 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "Przeprowadza krótkie automatyczne testy sprawdzające."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "Create the initial window with the given geometry."
 msgstr "Tworzy początkowe okno z podaną geometrią."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "GEOMETRY"
 msgstr "GEOMETRIA"
 
-#: src/nautilus-application.c:890
+#: src/nautilus-application.c:892
 msgid "Show the version of the program."
 msgstr "Wyświetla wersję programu."
 
-#: src/nautilus-application.c:892
+#: src/nautilus-application.c:894
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Zawsze otwiera nowe okno do przeglądania podanych adresów URI"
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:896
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Tworzy okna tylko dla jawnie podanych adresów URI."
 
-#: src/nautilus-application.c:896
+#: src/nautilus-application.c:898
 msgid "Quit Nautilus."
 msgstr "Kończy działanie programu Nautilus."
 
-#: src/nautilus-application.c:898
+#: src/nautilus-application.c:900
 msgid "Select specified URI in parent folder."
 msgstr "Zaznacza podany adres URI w katalogu nadrzędnym."
 
-#: src/nautilus-application.c:899
+#: src/nautilus-application.c:901
 msgid "[URI...]"
 msgstr "[URI…]"
 
@@ -953,51 +953,22 @@ msgstr ""
 msgid "_Run"
 msgstr "U_ruchom"
 
-#: src/nautilus-batch-rename-dialog.c:142
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
-msgid "Original Name (Ascending)"
-msgstr "Pierwotna nazwa (rosnąco)"
-
-#: src/nautilus-batch-rename-dialog.c:151
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
-msgid "Original Name (Descending)"
-msgstr "Pierwotna nazwa (malejąco)"
-
-#: src/nautilus-batch-rename-dialog.c:160
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-msgid "First Modified"
-msgstr "Pierwsza modyfikacja"
-
-#: src/nautilus-batch-rename-dialog.c:169
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-msgid "Last Modified"
-msgstr "Ostatnia modyfikacja"
-
-#: src/nautilus-batch-rename-dialog.c:178
-msgid "First Created"
-msgstr "Najpierw utworzone"
-
-#: src/nautilus-batch-rename-dialog.c:187
-msgid "Last Created"
-msgstr "Ostatnio utworzone"
-
-#: src/nautilus-batch-rename-dialog.c:1203
+#: src/nautilus-batch-rename-dialog.c:861
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "„%s” nie jest unikalną nową nazwą."
 
-#: src/nautilus-batch-rename-dialog.c:1209
+#: src/nautilus-batch-rename-dialog.c:867
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "„%s” jest w konflikcie z istniejącym plikiem."
 
-#: src/nautilus-batch-rename-dialog.c:2027
+#: src/nautilus-batch-rename-dialog.c:1559
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:159
 msgid "Automatic Numbering Order"
 msgstr "Automatyczna kolejność numeracji"
 
-#: src/nautilus-batch-rename-dialog.c:3194
+#: src/nautilus-batch-rename-dialog.c:2257
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -1005,13 +976,93 @@ msgstr[0] "Zmiana nazwy %d katalogu"
 msgstr[1] "Zmiana nazwy %d katalogów"
 msgstr[2] "Zmiana nazwy %d katalogów"
 
-#: src/nautilus-batch-rename-dialog.c:3200
+#: src/nautilus-batch-rename-dialog.c:2263
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Zmiana nazwy %d pliku"
 msgstr[1] "Zmiana nazwy %d plików"
 msgstr[2] "Zmiana nazwy %d plików"
+
+#: src/nautilus-batch-rename-dialog.h:88
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
+msgid "Original Name (Ascending)"
+msgstr "Pierwotna nazwa (rosnąco)"
+
+#: src/nautilus-batch-rename-dialog.h:93
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
+msgid "Original Name (Descending)"
+msgstr "Pierwotna nazwa (malejąco)"
+
+#: src/nautilus-batch-rename-dialog.h:98
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
+msgid "First Modified"
+msgstr "Pierwsza modyfikacja"
+
+#: src/nautilus-batch-rename-dialog.h:103
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
+msgid "Last Modified"
+msgstr "Ostatnia modyfikacja"
+
+#: src/nautilus-batch-rename-dialog.h:108
+msgid "First Created"
+msgstr "Najpierw utworzone"
+
+#: src/nautilus-batch-rename-dialog.h:113
+msgid "Last Created"
+msgstr "Ostatnio utworzone"
+
+#: src/nautilus-batch-rename-dialog.h:122
+msgid "Camera model"
+msgstr "Model aparatu"
+
+#: src/nautilus-batch-rename-dialog.h:129
+msgid "Creation date"
+msgstr "Data utworzenia"
+
+#: src/nautilus-batch-rename-dialog.h:136
+msgid "Season number"
+msgstr "Numer serii"
+
+#: src/nautilus-batch-rename-dialog.h:143
+msgid "Episode number"
+msgstr "Numer odcinka"
+
+#: src/nautilus-batch-rename-dialog.h:150
+msgid "Track number"
+msgstr "Numer ścieżki"
+
+#: src/nautilus-batch-rename-dialog.h:157
+msgid "Artist name"
+msgstr "Nazwa wykonawcy"
+
+#: src/nautilus-batch-rename-dialog.h:164
+#: src/nautilus-image-properties-page.c:382
+#: src/nautilus-image-properties-page.c:384
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Title"
+msgstr "Tytuł"
+
+#: src/nautilus-batch-rename-dialog.h:171
+msgid "Album name"
+msgstr "Nazwa albumu"
+
+#: src/nautilus-batch-rename-dialog.h:178
+msgid "Original file name"
+msgstr "Pierwotna nazwa pliku"
+
+#: src/nautilus-batch-rename-dialog.h:189
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: src/nautilus-batch-rename-dialog.h:196
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: src/nautilus-batch-rename-dialog.h:203
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
@@ -3342,12 +3393,6 @@ msgstr "Szerokość"
 #: src/nautilus-image-properties-page.c:367
 msgid "Height"
 msgstr "Wysokość"
-
-#: src/nautilus-image-properties-page.c:382
-#: src/nautilus-image-properties-page.c:384
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
-msgid "Title"
-msgstr "Tytuł"
 
 #: src/nautilus-image-properties-page.c:386
 #: src/nautilus-image-properties-page.c:388
