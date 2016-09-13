@@ -110,9 +110,9 @@
                             <property name="width_request">400</property>
                             <property name="hexpand">True</property>
                             <property name="activates-default">True</property>
-                            <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
                             <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
-                            <signal name="key-press-event" handler="on_key_press_event" swapped="no"/>
+                            <signal name="insert-text" handler="on_insert_text" swapped="no" />
+                            <signal name="delete-text" handler="on_delete_text" swapped="no" />
                           </object>
                         </child>
                         <child>

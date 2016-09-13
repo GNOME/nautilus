@@ -101,12 +101,6 @@ struct _NautilusBatchRenameDialog
 
     gint row_height;
     gboolean rename_clicked;
-
-    /* the numbers of characters from the name entry */
-    gint name_entry_characters;
-    gboolean tags_deleted;
-    gint cursor_position;
-    gboolean use_manual_cursor_position;
 };
 
 typedef struct
@@ -114,8 +108,6 @@ typedef struct
     gboolean available;
     gboolean set;
     gint position;
-    gint original_position;
-    gint new_position;
     /* if the tag was just added, then we shouldn't update it's position */
     gboolean just_added;
     TagConstants tag_constants;
@@ -198,10 +190,15 @@ add_tag (NautilusBatchRenameDialog *self,
     tag_data->just_added = TRUE;
     tag_data->position = cursor_position;
 
+    /* FIXME: We can add a tag when the cursor is inside a tag, which breaks this.
+     * We need to check the cursor movement and update the actions acordingly or
+     * even better add the tag at the end of the previous tag if this happens.
+     */
     gtk_editable_insert_text (GTK_EDITABLE (self->name_entry),
                               tag_text_representation,
                               g_utf8_strlen (tag_text_representation, -1),
                               &cursor_position);
+    tag_data->just_added = FALSE;
     gtk_editable_set_position (GTK_EDITABLE (self->name_entry), cursor_position);
 
     gtk_entry_grab_focus_without_selecting (GTK_ENTRY (self->name_entry));
@@ -322,8 +319,8 @@ row_selected (GtkListBox    *box,
 }
 
 static gint
-compare_tag_position (gconstpointer a,
-                      gconstpointer b)
+compare_int (gconstpointer a,
+             gconstpointer b)
 {
     int *number1 = (int *) a;
     int *number2 = (int *) b;
@@ -366,7 +363,7 @@ split_entry_text (NautilusBatchRenameDialog *self,
         }
     }
 
-    g_array_sort (tag_positions, compare_tag_position);
+    g_array_sort (tag_positions, compare_int);
 
     for (i = 0; i < tags; i++)
     {
@@ -1354,54 +1351,6 @@ file_names_list_has_duplicates_async (NautilusBatchRenameDialog *dialog,
     g_task_run_in_thread (task, file_names_list_has_duplicates_async_thread);
 }
 
-static void
-update_tags (NautilusBatchRenameDialog *dialog)
-{
-    TagData *tag_data;
-    const gchar *entry_text;
-    g_autoptr (GList) tag_info_keys = NULL;
-    GList *l;
-    gint character_difference;
-    gint cursor_position;
-
-    entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->name_entry));
-
-    if (dialog->use_manual_cursor_position)
-    {
-        gtk_editable_set_position (GTK_EDITABLE (dialog->name_entry),
-                                   dialog->cursor_position);
-    }
-
-    if (dialog->tags_deleted)
-    {
-        dialog->tags_deleted = FALSE;
-        gtk_editable_set_position (GTK_EDITABLE (dialog->name_entry),
-                                   g_utf8_strlen (entry_text, -1));
-    }
-
-    g_object_get (dialog->name_entry, "cursor-position", &cursor_position, NULL);
-
-    character_difference = g_utf8_strlen (entry_text, -1) - dialog->name_entry_characters;
-    dialog->name_entry_characters = g_utf8_strlen (entry_text, -1);
-
-    tag_info_keys = g_hash_table_get_keys (dialog->tag_info_table);
-    for (l = tag_info_keys; l != NULL; l = l->next)
-    {
-        tag_data = g_hash_table_lookup (dialog->tag_info_table, l->data);
-        if (tag_data->just_added)
-        {
-            tag_data->just_added = FALSE;
-        }
-        else
-        {
-            if (tag_data->set && cursor_position <= tag_data->position)
-            {
-                tag_data->position += character_difference;
-            }
-        }
-    }
-}
-
 static gboolean
 have_unallowed_character (NautilusBatchRenameDialog *dialog)
 {
@@ -1542,7 +1491,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         dialog->duplicates = NULL;
     }
 
-    update_tags (dialog);
+    //update_tags (dialog);
 
     if (dialog->new_names != NULL)
     {
@@ -1570,12 +1519,6 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     file_names_list_has_duplicates_async (dialog,
                                           on_file_names_list_has_duplicates,
                                           NULL);
-}
-
-static void
-file_names_widget_entry_on_changed (NautilusBatchRenameDialog *dialog)
-{
-    update_display_text (dialog);
 }
 
 static void
@@ -1831,293 +1774,219 @@ file_names_widget_on_activate (NautilusBatchRenameDialog *dialog)
     prepare_batch_rename (dialog);
 }
 
-static gboolean
+static void
 remove_tag (NautilusBatchRenameDialog *dialog,
-            const gchar               *tag_name,
-            const gchar               *action_name,
-            gint                       keyval,
-            gboolean                   is_modifier)
+            TagData                   *tag_data)
 {
-    TagData *tag_data;
-    gint cursor_position;
-    GString *new_entry_text;
-    GString *entry_text;
-    gboolean delete_tag;
     GAction *action;
-
-    delete_tag = FALSE;
-
-    g_object_get (dialog->name_entry, "cursor-position", &cursor_position, NULL);
-    tag_data = g_hash_table_lookup (dialog->tag_info_table, tag_name);
-    entry_text = g_string_new (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
 
     if (!tag_data->set)
     {
-        return FALSE;
+        g_warning ("Trying to remove an already removed tag");
+
+        return;
     }
 
-    if (keyval == GDK_KEY_BackSpace)
-    {
-        if (cursor_position > tag_data->position &&
-            cursor_position <= tag_data->position + g_utf8_strlen (tag_name, -1))
-        {
-            delete_tag = TRUE;
-        }
-    }
-
-    if (keyval == GDK_KEY_Delete)
-    {
-        if (cursor_position >= tag_data->position &&
-            cursor_position < tag_data->position + g_utf8_strlen (tag_name, -1))
-        {
-            delete_tag = TRUE;
-        }
-    }
-
-    if (!is_modifier &&
-        keyval != GDK_KEY_Left &&
-        keyval != GDK_KEY_Right &&
-        keyval != GDK_KEY_Delete &&
-        keyval != GDK_KEY_Return &&
-        keyval != GDK_KEY_Escape &&
-        keyval != GDK_KEY_Tab &&
-        keyval != GDK_KEY_End &&
-        keyval != GDK_KEY_Home)
-    {
-        if (cursor_position > tag_data->position &&
-            cursor_position < tag_data->position + g_utf8_strlen (tag_name, -1))
-        {
-            delete_tag = TRUE;
-        }
-    }
-
-    if (delete_tag)
-    {
-        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                             action_name);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
-
-        new_entry_text = g_string_new ("");
-        new_entry_text = g_string_append_len (new_entry_text,
-                                              entry_text->str,
-                                              tag_data->position);
-        new_entry_text = g_string_append (new_entry_text,
-                                          g_utf8_offset_to_pointer (entry_text->str,
-                                                                    tag_data->position + g_utf8_strlen (tag_name, -1)));
-
-        tag_data->set = FALSE;
-        dialog->cursor_position = tag_data->position;
-        dialog->use_manual_cursor_position = TRUE;
-        gtk_entry_set_text (GTK_ENTRY (dialog->name_entry), new_entry_text->str);
-        gtk_editable_set_position (GTK_EDITABLE (dialog->name_entry), tag_data->position);
-        dialog->use_manual_cursor_position = FALSE;
-
-        g_string_free (new_entry_text, TRUE);
-        g_string_free (entry_text, TRUE);
-
-        return TRUE;
-    }
-
-    return FALSE;
+    tag_data->set = FALSE;
+    tag_data->position = -1;
+    action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
+                                         tag_data->tag_constants.action_name);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
 }
 
-static GString *
-remove_tag_selection (NautilusBatchRenameDialog *dialog,
-                      GString                   *old_entry_text,
-                      const gchar               *action_name,
-                      const gchar               *tag_name,
-                      gint                       start,
-                      gint                       end)
+static gint
+compare_tag_position (gconstpointer a,
+                      gconstpointer b)
 {
+    const TagData *tag_data1 = a;
+    const TagData *tag_data2 = b;
+
+    return tag_data1->position - tag_data2->position;
+}
+
+typedef enum
+{
+    TEXT_WAS_DELETED,
+    TEXT_WAS_INSERTED
+} TextChangedMode;
+
+static GList*
+get_tags_intersecting_sorted (NautilusBatchRenameDialog *self,
+                              gint                       start_position,
+                              gint                       end_position,
+                              TextChangedMode            text_changed_mode)
+{
+    g_autoptr (GList) tag_info_keys = NULL;
     TagData *tag_data;
-    GAction *action;
-    GString *new_entry_text;
+    GList *l;
+    GList *intersecting_tags = NULL;
+    gint tag_end_position;
 
-    new_entry_text = NULL;
-
-    tag_data = g_hash_table_lookup (dialog->tag_info_table, tag_name);
-
-    if (tag_data->set && tag_data->original_position < end &&
-        tag_data->original_position + g_utf8_strlen (tag_name, -1) > start)
+    tag_info_keys = g_hash_table_get_keys (self->tag_info_table);
+    for (l = tag_info_keys; l != NULL; l = l->next)
     {
-        new_entry_text = g_string_new ("");
-        new_entry_text = g_string_append_len (new_entry_text,
-                                              old_entry_text->str,
-                                              tag_data->new_position);
-        new_entry_text = g_string_append (new_entry_text,
-                                          g_utf8_offset_to_pointer (old_entry_text->str,
-                                                                    tag_data->new_position + g_utf8_strlen (tag_name, -1)));
+        g_autofree gchar *tag_text_representation = NULL;
 
-        tag_data->set = FALSE;
+        tag_data = g_hash_table_lookup (self->tag_info_table, l->data);
+        tag_text_representation = batch_rename_get_tag_text_representation (tag_data->tag_constants);
+        tag_end_position = tag_data->position + g_utf8_strlen (tag_text_representation, -1);
+        if (tag_data->set && !tag_data->just_added)
+        {
+            gboolean selection_intersects_tag_start;
+            gboolean selection_intersects_tag_end;
+            gboolean tag_is_contained_in_selection;
 
-        action = g_action_map_lookup_action (G_ACTION_MAP (dialog->action_group),
-                                             action_name);
-        g_simple_action_set_enabled (G_SIMPLE_ACTION (action), TRUE);
+            if (text_changed_mode == TEXT_WAS_DELETED)
+            {
+                selection_intersects_tag_start = end_position > tag_data->position &&
+                                                 end_position <= tag_end_position;
+                selection_intersects_tag_end = start_position >= tag_data->position &&
+                                               start_position < tag_end_position;
+                tag_is_contained_in_selection = start_position <= tag_data->position &&
+                                                end_position >= tag_end_position;
+            }
+            else
+            {
+                selection_intersects_tag_start = start_position > tag_data->position &&
+                                                 start_position < tag_end_position;
+                selection_intersects_tag_end = FALSE;
+                tag_is_contained_in_selection = FALSE;
+
+            }
+            if (selection_intersects_tag_end || selection_intersects_tag_start || tag_is_contained_in_selection)
+            {
+                intersecting_tags = g_list_prepend (intersecting_tags, tag_data);
+            }
+        }
     }
 
-    if (new_entry_text == NULL)
-    {
-        return g_string_new (old_entry_text->str);
-    }
-    return new_entry_text;
+    return g_list_sort (intersecting_tags, compare_tag_position);
 }
 
 static void
-update_tag_position (NautilusBatchRenameDialog *dialog,
-                     const gchar               *tag_name,
-                     GString                   *new_entry_text)
+update_tags_positions (NautilusBatchRenameDialog *self,
+                       gint                       start_position,
+                       gint                       end_position,
+                       TextChangedMode            text_changed_mode)
 {
+    g_autoptr (GList) tag_info_keys = NULL;
     TagData *tag_data;
+    GList *l;
 
-    tag_data = g_hash_table_lookup (dialog->tag_info_table, tag_name);
-
-    if (tag_data->set)
+    tag_info_keys = g_hash_table_get_keys (self->tag_info_table);
+    for (l = tag_info_keys; l != NULL; l = l->next)
     {
-        tag_data->original_position = tag_data->position;
-        tag_data->new_position = g_utf8_pointer_to_offset (new_entry_text->str,
-                                                           g_strrstr (new_entry_text->str, tag_name));
+        tag_data = g_hash_table_lookup (self->tag_info_table, l->data);
+        if (tag_data->set && !tag_data->just_added && tag_data->position >= start_position)
+        {
+            if (text_changed_mode == TEXT_WAS_DELETED)
+            {
+                tag_data->position -= end_position - start_position;
+            }
+            else
+            {
+                tag_data->position += end_position - start_position;
+            }
+        }
     }
 }
 
-static gboolean
-on_key_press_event (GtkWidget   *widget,
-                    GdkEventKey *event,
-                    gpointer     user_data)
+static void
+on_delete_text (GtkEditable *editable,
+                gint         start_position,
+                gint         end_position,
+                gpointer     user_data)
 {
-    NautilusBatchRenameDialog *dialog;
-    gint keyval;
-    GdkEvent *gdk_event;
-    GString *old_entry_text;
-    GString *new_entry_text;
-    gboolean entry_has_selection;
-    gint start;
-    gint end;
-    g_autoptr (GList) tag_info_keys = NULL;
+    NautilusBatchRenameDialog *self;
+    g_autoptr (GList) intersecting_tags = NULL;
+    gint final_start_position;
+    gint final_end_position;
     GList *l;
-    gboolean tag_removed = FALSE;
-    TagData *tag_data;
-    const gchar *action_name;
-    gint minimum_tag_position;
 
-    gdk_event = (GdkEvent *) event;
-    dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
-    keyval = event->keyval;
-    tag_info_keys = g_hash_table_get_keys (dialog->tag_info_table);
-    entry_has_selection = (gtk_editable_get_selection_bounds (GTK_EDITABLE (dialog->name_entry),
-                                                              &start,
-                                                              &end));
-
-    if (event->state & GDK_CONTROL_MASK)
+    self = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+    intersecting_tags = get_tags_intersecting_sorted (self, start_position,
+                                                      end_position, TEXT_WAS_DELETED);
+    if (intersecting_tags)
     {
-        return GDK_EVENT_PROPAGATE;
-    }
+        gint last_tag_end_position;
+        g_autofree gchar *tag_text_representation = NULL;
+        TagData *first_tag = g_list_first (intersecting_tags)->data;
+        TagData *last_tag = g_list_last (intersecting_tags)->data;
 
-
-    if (entry_has_selection &&
-        ((keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) ||
-         (!gdk_event->key.is_modifier &&
-          keyval != GDK_KEY_Left &&
-          keyval != GDK_KEY_Right &&
-          keyval != GDK_KEY_Return &&
-          keyval != GDK_KEY_Escape &&
-          keyval != GDK_KEY_Tab &&
-          keyval != GDK_KEY_End &&
-          keyval != GDK_KEY_Home)))
-    {
-        old_entry_text = g_string_new (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
-
-        minimum_tag_position = G_MAXINT;
-
-        for (l = tag_info_keys; l != NULL; l = l->next)
-        {
-            g_autofree gchar *tag_text_representation = NULL;
-
-            tag_data = g_hash_table_lookup (dialog->tag_info_table, l->data);
-            tag_text_representation = batch_rename_get_tag_text_representation (tag_data->tag_constants);
-            if (tag_data->set)
-            {
-                update_tag_position (dialog, tag_text_representation, old_entry_text);
-                new_entry_text = remove_tag_selection (dialog,
-                                                       old_entry_text,
-                                                       tag_data->tag_constants.action_name,
-                                                       tag_text_representation,
-                                                       start,
-                                                       end);
-
-                if (!g_string_equal (new_entry_text, old_entry_text))
-                {
-                    if (tag_data->position < minimum_tag_position)
-                    {
-                        minimum_tag_position = tag_data->position;
-                    }
-
-                    tag_removed = TRUE;
-                }
-                g_string_free (old_entry_text, TRUE);
-                old_entry_text = new_entry_text;
-            }
-        }
-
-        /* If we removed the numbering tag, we want to enable all numbering actions */
-        if (!numbering_tag_is_some_added (dialog))
-        {
-            guint i;
-
-            for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
-            {
-                enable_action (dialog, numbering_tags_constants[i].action_name);
-            }
-        }
-
-        if (minimum_tag_position != G_MAXINT)
-        {
-            dialog->use_manual_cursor_position = TRUE;
-            dialog->cursor_position = minimum_tag_position;
-
-            gtk_entry_set_text (GTK_ENTRY (dialog->name_entry), new_entry_text->str);
-            gtk_editable_set_position (GTK_EDITABLE (dialog->name_entry), minimum_tag_position);
-
-            dialog->use_manual_cursor_position = FALSE;
-
-            g_string_free (new_entry_text, TRUE);
-        }
+        tag_text_representation = batch_rename_get_tag_text_representation (last_tag->tag_constants);
+        last_tag_end_position = last_tag->position +
+                                g_utf8_strlen (tag_text_representation, -1);
+        final_start_position = MIN (start_position, first_tag->position);
+        final_end_position = MAX (end_position, last_tag_end_position);
     }
     else
     {
-        for (l = tag_info_keys; l != NULL; l = l->next)
-        {
-            g_autofree gchar *tag_text_representation = NULL;
-
-            tag_data = g_hash_table_lookup (dialog->tag_info_table, l->data);
-            action_name = tag_data->tag_constants.action_name;
-            tag_text_representation = batch_rename_get_tag_text_representation (tag_data->tag_constants);
-            if (remove_tag (dialog, tag_text_representation, action_name,
-                            keyval, gdk_event->key.is_modifier))
-            {
-                tag_removed = TRUE;
-
-                break;
-            }
-        }
-
-        /* If we removed the numbering tag, we want to enable all numbering actions */
-        if (!numbering_tag_is_some_added (dialog))
-        {
-            guint i;
-
-            for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
-            {
-                enable_action (dialog, numbering_tags_constants[i].action_name);
-            }
-        }
+        final_start_position = start_position;
+        final_end_position = end_position;
     }
 
-    if ((keyval == GDK_KEY_Delete || keyval == GDK_KEY_BackSpace) && tag_removed)
+    g_signal_handlers_block_by_func (editable, (gpointer) on_delete_text, user_data);
+    gtk_editable_delete_text (editable, final_start_position, final_end_position);
+    g_signal_handlers_unblock_by_func (editable, (gpointer) on_delete_text, user_data);
+
+    /* Mark the tags as removed */
+    for (l = intersecting_tags; l != NULL; l = l->next)
     {
-        return GDK_EVENT_STOP;
+        remove_tag (self, l->data);
     }
 
-    return GDK_EVENT_PROPAGATE;
+    /* If we removed the numbering tag, we want to enable all numbering actions */
+    if (!numbering_tag_is_some_added (self))
+    {
+        guint i;
+
+        for (i = 0; i < G_N_ELEMENTS (numbering_tags_constants); i++)
+        {
+            enable_action (self, numbering_tags_constants[i].action_name);
+        }
+    }
+
+    update_tags_positions (self, final_start_position,
+                           final_end_position, TEXT_WAS_DELETED);
+    update_display_text (self);
+
+    g_signal_stop_emission_by_name (editable, "delete-text");
+}
+
+static void
+on_insert_text (GtkEditable *editable,
+                const gchar *new_text,
+                gint         new_text_length,
+                gpointer     position,
+                gpointer     user_data)
+{
+    NautilusBatchRenameDialog *self;
+    gint start_position;
+    gint end_position;
+    g_autoptr (GList) intersecting_tags = NULL;
+
+    self = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+    start_position = *(int *)position;
+    end_position = start_position + g_utf8_strlen (new_text, -1);
+    intersecting_tags = get_tags_intersecting_sorted (self, start_position,
+                                                      end_position, TEXT_WAS_INSERTED);
+    if (!intersecting_tags)
+    {
+        g_signal_handlers_block_by_func (editable, (gpointer) on_insert_text, user_data);
+        gtk_editable_insert_text (editable, new_text, new_text_length, position);
+        g_signal_handlers_unblock_by_func (editable, (gpointer) on_insert_text, user_data);
+
+        update_tags_positions (self, start_position, end_position, TEXT_WAS_INSERTED);
+        update_display_text (self);
+    }
+
+    g_signal_stop_emission_by_name (editable, "insert-text");
+}
+
+static void
+file_names_widget_entry_on_changed (NautilusBatchRenameDialog *self)
+{
+   update_display_text (self);
 }
 
 static void
@@ -2208,8 +2077,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_tag_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_label);
 
-    gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
+    gtk_widget_class_bind_template_callback (widget_class, file_names_widget_entry_on_changed);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_mode_changed);
     gtk_widget_class_bind_template_callback (widget_class, add_button_clicked);
     gtk_widget_class_bind_template_callback (widget_class, add_popover_closed);
@@ -2218,7 +2087,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_up);
     gtk_widget_class_bind_template_callback (widget_class, select_next_conflict_down);
     gtk_widget_class_bind_template_callback (widget_class, batch_rename_dialog_on_response);
-    gtk_widget_class_bind_template_callback (widget_class, on_key_press_event);
+    gtk_widget_class_bind_template_callback (widget_class, on_insert_text);
+    gtk_widget_class_bind_template_callback (widget_class, on_delete_text);
 }
 
 GtkWidget *
@@ -2264,6 +2134,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
                                 g_list_length (selection));
     }
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
+
+    add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
 
@@ -2333,32 +2205,24 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
         tag_data = g_new (TagData, 1);
         tag_data->available = TRUE;
         tag_data->set = FALSE;
-        tag_data->position = 0;
+        tag_data->position = -1;
         tag_data->tag_constants = numbering_tags_constants[i];
         g_hash_table_insert (self->tag_info_table, g_strdup (tag_text_representation), tag_data);
     }
 
     for (i = 0; i < G_N_ELEMENTS (metadata_tags_constants); i++)
     {
-        gboolean is_original_name;
         g_autofree gchar *tag_text_representation = NULL;
 
         /* Only the original name is available and set at the start */
-        is_original_name = metadata_tags_constants[i].metadata_type == ORIGINAL_FILE_NAME;
         tag_text_representation = batch_rename_get_tag_text_representation (metadata_tags_constants[i]);
 
         tag_data = g_new (TagData, 1);
-        tag_data->available = is_original_name;
-        tag_data->set = is_original_name;
-        tag_data->position = 0;
+        tag_data->available = FALSE;
+        tag_data->set = FALSE;
+        tag_data->position = -1;
         tag_data->tag_constants = metadata_tags_constants[i];
         g_hash_table_insert (self->tag_info_table, g_strdup (tag_text_representation), tag_data);
-
-        if (is_original_name)
-        {
-            gtk_entry_set_text (GTK_ENTRY (self->name_entry), tag_text_representation);
-            self->name_entry_characters = g_utf8_strlen (tag_text_representation, -1);
-        }
     }
 
     self->row_height = -1;
