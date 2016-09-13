@@ -24,16 +24,16 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-09-07 14:11+0000\n"
-"PO-Revision-Date: 2016-09-07 11:14+0100\n"
-"Last-Translator: Justin van Steijn <justin50@live.nl>\n"
+"POT-Creation-Date: 2016-09-13 11:48+0000\n"
+"PO-Revision-Date: 2016-09-13 17:54+0200\n"
+"Last-Translator: Hannie Dumoleyn <hannie@ubuntu-nl.org>\n"
 "Language-Team: Dutch <gnome-nl-list@gnome.org>\n"
 "Language: nl\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.6.10\n"
+"X-Generator: Lokalize 1.5\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -785,9 +785,9 @@ msgstr "Meer _details weergeven"
 
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:379
-#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1075
-#: src/nautilus-files-view.c:1609 src/nautilus-files-view.c:5655
-#: src/nautilus-files-view.c:6165 src/nautilus-location-entry.c:282
+#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1077
+#: src/nautilus-files-view.c:1611 src/nautilus-files-view.c:5657
+#: src/nautilus-files-view.c:6169 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:570 src/nautilus-mime-actions.c:574
 #: src/nautilus-mime-actions.c:656 src/nautilus-mime-actions.c:1054
 #: src/nautilus-mime-actions.c:1601 src/nautilus-mime-actions.c:1908
@@ -896,35 +896,35 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "Enkele snelle zelf-tests uitvoeren."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "Create the initial window with the given geometry."
 msgstr "Initieel venster met de gegeven afmetingen creëren."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "GEOMETRY"
 msgstr "AFMETINGEN"
 
-#: src/nautilus-application.c:890
+#: src/nautilus-application.c:892
 msgid "Show the version of the program."
 msgstr "Toepassingsversie tonen."
 
-#: src/nautilus-application.c:892
+#: src/nautilus-application.c:894
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Altijd een nieuw venster openen voor opgegeven URI's."
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:896
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Alleen vensters creëren voor expliciet gegeven URI's."
 
-#: src/nautilus-application.c:896
+#: src/nautilus-application.c:898
 msgid "Quit Nautilus."
 msgstr "Nautilus afsluiten"
 
-#: src/nautilus-application.c:898
+#: src/nautilus-application.c:900
 msgid "Select specified URI in parent folder."
 msgstr "De opgegeven URI in de bovenliggende map selecteren."
 
-#: src/nautilus-application.c:899
+#: src/nautilus-application.c:901
 msgid "[URI...]"
 msgstr "[URI...]"
 
@@ -963,56 +963,114 @@ msgstr ""
 msgid "_Run"
 msgstr "_Uitvoeren"
 
-#: src/nautilus-batch-rename-dialog.c:142
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
-msgid "Original Name (Ascending)"
-msgstr "Originele naam (oplopend)"
-
-#: src/nautilus-batch-rename-dialog.c:151
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
-msgid "Original Name (Descending)"
-msgstr "Originele naam (aflopend)"
-
-#: src/nautilus-batch-rename-dialog.c:160
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-msgid "First Modified"
-msgstr "Eerst gewijzigd"
-
-#: src/nautilus-batch-rename-dialog.c:169
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-msgid "Last Modified"
-msgstr "Laatst gewijzigd"
-
-#: src/nautilus-batch-rename-dialog.c:178
-msgid "First Created"
-msgstr "Eerst gemaakt"
-
-#: src/nautilus-batch-rename-dialog.c:187
-msgid "Last Created"
-msgstr "Laatst gemaakt"
-
-#: src/nautilus-batch-rename-dialog.c:1199
+#: src/nautilus-batch-rename-dialog.c:861
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "‘%s’ is geen unieke nieuwe naam."
 
-#: src/nautilus-batch-rename-dialog.c:1205
+#: src/nautilus-batch-rename-dialog.c:867
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "‘%s’ heeft een conflict met een bestaand bestand."
 
-#: src/nautilus-batch-rename-dialog.c:2030
+#: src/nautilus-batch-rename-dialog.c:1559
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:159
 msgid "Automatic Numbering Order"
 msgstr "Automatische nummeringsvolgorde"
 
-#: src/nautilus-batch-rename-dialog.c:3183
+#: src/nautilus-batch-rename-dialog.c:2257
+#, c-format
+msgid "Rename %d Folder"
+msgid_plural "Rename %d Folders"
+msgstr[0] "%d map hernoemen"
+msgstr[1] "%d mappen hernoemen"
+
+#: src/nautilus-batch-rename-dialog.c:2263
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "%d bestand hernoemen"
 msgstr[1] "%d bestanden hernoemen"
+
+#: src/nautilus-batch-rename-dialog.h:88
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
+msgid "Original Name (Ascending)"
+msgstr "Originele naam (oplopend)"
+
+#: src/nautilus-batch-rename-dialog.h:93
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
+msgid "Original Name (Descending)"
+msgstr "Originele naam (aflopend)"
+
+#: src/nautilus-batch-rename-dialog.h:98
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
+msgid "First Modified"
+msgstr "Eerst gewijzigd"
+
+#: src/nautilus-batch-rename-dialog.h:103
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
+msgid "Last Modified"
+msgstr "Laatst gewijzigd"
+
+#: src/nautilus-batch-rename-dialog.h:108
+msgid "First Created"
+msgstr "Eerst gemaakt"
+
+#: src/nautilus-batch-rename-dialog.h:113
+msgid "Last Created"
+msgstr "Laatst gemaakt"
+
+#: src/nautilus-batch-rename-dialog.h:122
+msgid "Camera model"
+msgstr "Model camera"
+
+#: src/nautilus-batch-rename-dialog.h:129
+msgid "Creation date"
+msgstr "Aanmaakdatum"
+
+#: src/nautilus-batch-rename-dialog.h:136
+msgid "Season number"
+msgstr "Nummer van seizoen"
+
+#: src/nautilus-batch-rename-dialog.h:143
+msgid "Episode number"
+msgstr "Nummer van episode"
+
+#: src/nautilus-batch-rename-dialog.h:150
+msgid "Track number"
+msgstr "Muzieknummer"
+
+#: src/nautilus-batch-rename-dialog.h:157
+msgid "Artist name"
+msgstr "Artiestennaam"
+
+#: src/nautilus-batch-rename-dialog.h:164
+#: src/nautilus-image-properties-page.c:382
+#: src/nautilus-image-properties-page.c:384
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Title"
+msgstr "Titel"
+
+#: src/nautilus-batch-rename-dialog.h:171
+msgid "Album name"
+msgstr "Albumnaam"
+
+#: src/nautilus-batch-rename-dialog.h:178
+msgid "Original file name"
+msgstr "Oorspronkelijke bestandsnaam"
+
+#: src/nautilus-batch-rename-dialog.h:189
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: src/nautilus-batch-rename-dialog.h:196
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: src/nautilus-batch-rename-dialog.h:203
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
@@ -1361,61 +1419,61 @@ msgid "Probably the content of the file is an invalid desktop file format"
 msgstr ""
 "De inhoud van het bestand is waarschijnlijk in een ongeldig bestandsformaat"
 
-#: src/nautilus-file.c:2376
+#: src/nautilus-file.c:2377
 msgid "File not found"
 msgstr "Bestand niet gevonden"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5615
+#: src/nautilus-file.c:5617
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5620
+#: src/nautilus-file.c:5622
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5629
+#: src/nautilus-file.c:5631
 #, no-c-format
 msgid "Yesterday"
 msgstr "Gisteren"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5638
+#: src/nautilus-file.c:5640
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Gisteren om %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5645
+#: src/nautilus-file.c:5647
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Gisteren om %l:%M %p"
 
-#: src/nautilus-file.c:5655
+#: src/nautilus-file.c:5657
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5664
+#: src/nautilus-file.c:5666
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5671
+#: src/nautilus-file.c:5673
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5682
+#: src/nautilus-file.c:5684
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1423,7 +1481,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5692
+#: src/nautilus-file.c:5694
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b %H:%M"
@@ -1431,14 +1489,14 @@ msgstr "%-e %b %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5700
+#: src/nautilus-file.c:5702
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5711
+#: src/nautilus-file.c:5713
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1446,7 +1504,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5721
+#: src/nautilus-file.c:5723
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
@@ -1454,58 +1512,58 @@ msgstr "%-e %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5729
+#: src/nautilus-file.c:5731
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
-#: src/nautilus-file.c:5741
+#: src/nautilus-file.c:5743
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6176
+#: src/nautilus-file.c:6178
 msgid "Not allowed to set permissions"
 msgstr "Instellen van rechten niet toegestaan"
 
-#: src/nautilus-file.c:6499
+#: src/nautilus-file.c:6501
 msgid "Not allowed to set owner"
 msgstr "Eigenaar instellen niet toegestaan"
 
-#: src/nautilus-file.c:6518
+#: src/nautilus-file.c:6520
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Gespecificeerde eigenaar ‘%s’ bestaat niet"
 
-#: src/nautilus-file.c:6803
+#: src/nautilus-file.c:6805
 msgid "Not allowed to set group"
 msgstr "Groep instellen niet toegestaan"
 
-#: src/nautilus-file.c:6822
+#: src/nautilus-file.c:6824
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Gespecificeerde groep ‘%s’ bestaat niet"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6964
+#: src/nautilus-file.c:6966
 msgid "Me"
 msgstr "Mij"
 
-#: src/nautilus-file.c:6996
+#: src/nautilus-file.c:6998
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u item"
 msgstr[1] "%'u items"
 
-#: src/nautilus-file.c:6997
+#: src/nautilus-file.c:6999
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u map"
 msgstr[1] "%'u mappen"
 
-#: src/nautilus-file.c:6998
+#: src/nautilus-file.c:7000
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1513,88 +1571,88 @@ msgstr[0] "%'u bestand"
 msgstr[1] "%'u bestanden"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7458 src/nautilus-file.c:7478
+#: src/nautilus-file.c:7460 src/nautilus-file.c:7480
 msgid "? items"
 msgstr "? items"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7466
+#: src/nautilus-file.c:7468
 msgid "? bytes"
 msgstr "? bytes"
 
-#: src/nautilus-file.c:7486 src/nautilus-file.c:7577
+#: src/nautilus-file.c:7488 src/nautilus-file.c:7579
 msgid "Unknown"
 msgstr "Onbekend"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7502 src/nautilus-properties-window.c:1313
+#: src/nautilus-file.c:7504 src/nautilus-properties-window.c:1313
 msgid "unknown"
 msgstr "onbekend"
 
-#: src/nautilus-file.c:7537 src/nautilus-file.c:7545 src/nautilus-file.c:7603
+#: src/nautilus-file.c:7539 src/nautilus-file.c:7547 src/nautilus-file.c:7605
 msgid "Program"
 msgstr "Programma"
 
-#: src/nautilus-file.c:7538
+#: src/nautilus-file.c:7540
 msgid "Audio"
 msgstr "Audio"
 
-#: src/nautilus-file.c:7539
+#: src/nautilus-file.c:7541
 msgid "Font"
 msgstr "Lettertype"
 
-#: src/nautilus-file.c:7540 src/nautilus-image-properties-page.c:832
+#: src/nautilus-file.c:7542 src/nautilus-image-properties-page.c:832
 msgid "Image"
 msgstr "Afbeelding"
 
-#: src/nautilus-file.c:7541
+#: src/nautilus-file.c:7543
 msgid "Archive"
 msgstr "Archief"
 
-#: src/nautilus-file.c:7542
+#: src/nautilus-file.c:7544
 msgid "Markup"
 msgstr "Opmaak"
 
-#: src/nautilus-file.c:7543 src/nautilus-file.c:7544
+#: src/nautilus-file.c:7545 src/nautilus-file.c:7546
 msgid "Text"
 msgstr "Tekst"
 
 # beeld/video
-#: src/nautilus-file.c:7546 src/nautilus-mime-actions.c:202
+#: src/nautilus-file.c:7548 src/nautilus-mime-actions.c:202
 msgid "Video"
 msgstr "Video"
 
-#: src/nautilus-file.c:7547
+#: src/nautilus-file.c:7549
 msgid "Contacts"
 msgstr "Contacten"
 
-#: src/nautilus-file.c:7548
+#: src/nautilus-file.c:7550
 msgid "Calendar"
 msgstr "Agenda"
 
-#: src/nautilus-file.c:7549
+#: src/nautilus-file.c:7551
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:7550 src/nautilus-mime-actions.c:178
+#: src/nautilus-file.c:7552 src/nautilus-mime-actions.c:178
 msgid "Presentation"
 msgstr "Presentatie"
 
-#: src/nautilus-file.c:7551 src/nautilus-mime-actions.c:185
+#: src/nautilus-file.c:7553 src/nautilus-mime-actions.c:185
 msgid "Spreadsheet"
 msgstr "Spreadsheet"
 
-#: src/nautilus-file.c:7605
+#: src/nautilus-file.c:7607
 msgid "Binary"
 msgstr "Binair"
 
-#: src/nautilus-file.c:7610
+#: src/nautilus-file.c:7612
 msgid "Folder"
 msgstr "Map"
 
-#: src/nautilus-file.c:7649
+#: src/nautilus-file.c:7651
 msgid "Link"
 msgstr "Verwijzing"
 
@@ -1603,13 +1661,13 @@ msgstr "Verwijzing"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7655 src/nautilus-file-operations.c:451
+#: src/nautilus-file.c:7657 src/nautilus-file-operations.c:451
 #: src/nautilus-files-view-dnd.c:130
 #, c-format
 msgid "Link to %s"
 msgstr "Verwijzing naar %s"
 
-#: src/nautilus-file.c:7673 src/nautilus-file.c:7689
+#: src/nautilus-file.c:7675 src/nautilus-file.c:7691
 msgid "Link (broken)"
 msgstr "Verwijzing (gebroken)"
 
@@ -2045,7 +2103,7 @@ msgid "Do _not Empty Trash"
 msgstr "Prullenbak _niet legen"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2972 src/nautilus-files-view.c:6371
+#: src/nautilus-file-operations.c:2972 src/nautilus-files-view.c:6375
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Niet in staat ‘%s’ te benaderen"
@@ -2542,58 +2600,58 @@ msgstr[1] "%'d bestanden ingepakt naar ‘%B’"
 msgid "Compressing Files"
 msgstr "Bestanden inpakken"
 
-#: src/nautilus-files-view.c:392
+#: src/nautilus-files-view.c:394
 msgid "Searching…"
 msgstr "Zoeken…"
 
-#: src/nautilus-files-view.c:392 src/nautilus-image-properties-page.c:766
+#: src/nautilus-files-view.c:394 src/nautilus-image-properties-page.c:766
 #: src/nautilus-list-model.c:450 src/nautilus-window-slot.c:780
 msgid "Loading…"
 msgstr "Laden…"
 
-#: src/nautilus-files-view.c:1063 src/nautilus-mime-actions.c:1042
+#: src/nautilus-files-view.c:1065 src/nautilus-mime-actions.c:1042
 #: src/nautilus-mime-actions.c:1904
 msgid "Are you sure you want to open all files?"
 msgstr "Weet u zeker dat u alle bestanden wilt openen?"
 
-#: src/nautilus-files-view.c:1066
+#: src/nautilus-files-view.c:1068
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Dit zal %'d afzonderlijk tabblad openen."
 msgstr[1] "Dit zal %'d afzonderlijke tabbladen openen."
 
-#: src/nautilus-files-view.c:1071
+#: src/nautilus-files-view.c:1073
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Dit zal %'d afzonderlijk venster openen."
 msgstr[1] "Dit zal %'d afzonderlijke vensters openen."
 
-#: src/nautilus-files-view.c:1075 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1077 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:1054 src/nautilus-mime-actions.c:1240
 #: src/nautilus-mime-actions.c:1908
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-files-view.c:1606
+#: src/nautilus-files-view.c:1608
 msgid "Select Items Matching"
 msgstr "Items selecteren overeenkomend met"
 
-#: src/nautilus-files-view.c:1611 src/nautilus-files-view.c:5656
-#: src/nautilus-files-view.c:6166
+#: src/nautilus-files-view.c:1613 src/nautilus-files-view.c:5658
+#: src/nautilus-files-view.c:6170
 msgid "_Select"
 msgstr "_Selecteren"
 
-#: src/nautilus-files-view.c:1619
+#: src/nautilus-files-view.c:1621
 msgid "_Pattern:"
 msgstr "_Patroon:"
 
-#: src/nautilus-files-view.c:1625
+#: src/nautilus-files-view.c:1627
 msgid "Examples: "
 msgstr "Voorbeelden: "
 
-#: src/nautilus-files-view.c:2657
+#: src/nautilus-files-view.c:2659
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2601,19 +2659,19 @@ msgstr ""
 "Nautilus 3.6 beschouwt deze map als achterhaald en heeft geprobeerd deze "
 "configuratie te verhuizen naar ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3135 src/nautilus-files-view.c:3182
+#: src/nautilus-files-view.c:3137 src/nautilus-files-view.c:3184
 #, c-format
 msgid "“%s” selected"
 msgstr "‘%s’ geselecteerd"
 
-#: src/nautilus-files-view.c:3139
+#: src/nautilus-files-view.c:3141
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d map geselecteerd"
 msgstr[1] "%'d mappen geselecteerd"
 
-#: src/nautilus-files-view.c:3153
+#: src/nautilus-files-view.c:3155
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2621,14 +2679,14 @@ msgstr[0] "(bevat %'d item)"
 msgstr[1] "(bevat %'d items)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3168
+#: src/nautilus-files-view.c:3170
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(bevatten in totaal %'d item)"
 msgstr[1] "(bevatten in totaal %'d items)"
 
-#: src/nautilus-files-view.c:3187
+#: src/nautilus-files-view.c:3189
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2636,7 +2694,7 @@ msgstr[0] "%'d item geselecteerd"
 msgstr[1] "%'d items geselecteerd"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3196
+#: src/nautilus-files-view.c:3198
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2647,7 +2705,7 @@ msgstr[1] "%'d andere items geselecteerd"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3211
+#: src/nautilus-files-view.c:3213
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2659,119 +2717,119 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3244
+#: src/nautilus-files-view.c:3246
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
 # #-#-#-#-#  nl.po (Nautilus)  #-#-#-#-# titel van bladervenster
-#: src/nautilus-files-view.c:5643
+#: src/nautilus-files-view.c:5645
 msgid "Select Move Destination"
 msgstr "Verplaatsbestemming kiezen"
 
 # #-#-#-#-#  nl.po (Nautilus)  #-#-#-#-# titel van bladervenster
-#: src/nautilus-files-view.c:5647
+#: src/nautilus-files-view.c:5649
 msgid "Select Copy Destination"
 msgstr "Kopieerbestemming kiezen"
 
 # #-#-#-#-#  nl.po (Nautilus)  #-#-#-#-# titel van bladervenster
-#: src/nautilus-files-view.c:6162
+#: src/nautilus-files-view.c:6166
 msgid "Select Extract Destination"
 msgstr "Uitpakbestemming kiezen"
 
 # Kon %s niet aankoppelen
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6399
+#: src/nautilus-files-view.c:6403
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Kan ‘%s’ niet verwijderen"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6427
+#: src/nautilus-files-view.c:6431
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Kan ‘%s’ niet uitwerpen"
 
-#: src/nautilus-files-view.c:6450
+#: src/nautilus-files-view.c:6454
 msgid "Unable to stop drive"
 msgstr "Kan het station niet stoppen"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6562
+#: src/nautilus-files-view.c:6566
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Kan ‘%s’ niet starten"
 
-#: src/nautilus-files-view.c:7397
+#: src/nautilus-files-view.c:7405
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Nieuwe map met selectie (%'d item)"
 msgstr[1] "Nieuwe map met selectie (%'d items)"
 
-#: src/nautilus-files-view.c:7457
+#: src/nautilus-files-view.c:7465
 #, c-format
 msgid "Open With %s"
 msgstr "Openen met %s"
 
-#: src/nautilus-files-view.c:7469
+#: src/nautilus-files-view.c:7477
 msgid "Run"
 msgstr "Uitvoeren"
 
-#: src/nautilus-files-view.c:7474
+#: src/nautilus-files-view.c:7482
 msgid "Extract Here"
 msgstr "Hier uitpakken"
 
-#: src/nautilus-files-view.c:7475
+#: src/nautilus-files-view.c:7483
 msgid "Extract to…"
 msgstr "Uitpakken naar…"
 
-#: src/nautilus-files-view.c:7479
+#: src/nautilus-files-view.c:7487
 msgid "Open"
 msgstr "Openen"
 
-#: src/nautilus-files-view.c:7536
+#: src/nautilus-files-view.c:7544
 #: src/resources/ui/nautilus-files-view-context-menus.ui:125
 msgid "_Start"
 msgstr "_Starten"
 
-#: src/nautilus-files-view.c:7542 src/gtk/nautilusgtkplacesview.c:1728
+#: src/nautilus-files-view.c:7550 src/gtk/nautilusgtkplacesview.c:1728
 msgid "_Connect"
 msgstr "_Verbinden"
 
-#: src/nautilus-files-view.c:7548
+#: src/nautilus-files-view.c:7556
 msgid "_Start Multi-disk Drive"
 msgstr "Multi-schijfstation _starten"
 
-#: src/nautilus-files-view.c:7554
+#: src/nautilus-files-view.c:7562
 msgid "U_nlock Drive"
 msgstr "Station _vrijgeven"
 
-#: src/nautilus-files-view.c:7574
+#: src/nautilus-files-view.c:7582
 msgid "Stop Drive"
 msgstr "Station stoppen"
 
-#: src/nautilus-files-view.c:7580
+#: src/nautilus-files-view.c:7588
 msgid "_Safely Remove Drive"
 msgstr "_Station veilig verwijderen"
 
-#: src/nautilus-files-view.c:7586 src/gtk/nautilusgtkplacesview.c:1718
+#: src/nautilus-files-view.c:7594 src/gtk/nautilusgtkplacesview.c:1718
 msgid "_Disconnect"
 msgstr "Ver_breken"
 
-#: src/nautilus-files-view.c:7592
+#: src/nautilus-files-view.c:7600
 msgid "_Stop Multi-disk Drive"
 msgstr "Multi-schijfstation _stoppen"
 
-#: src/nautilus-files-view.c:7598
+#: src/nautilus-files-view.c:7606
 msgid "_Lock Drive"
 msgstr "Station ver_grendelen"
 
-#: src/nautilus-files-view.c:9171
+#: src/nautilus-files-view.c:9179
 msgid "Content View"
 msgstr "Inhoudsweergave"
 
-#: src/nautilus-files-view.c:9172
+#: src/nautilus-files-view.c:9180
 msgid "View of the current folder"
 msgstr "Weergave van de huidige map"
 
@@ -3315,12 +3373,6 @@ msgstr "Breedte"
 #: src/nautilus-image-properties-page.c:367
 msgid "Height"
 msgstr "Hoogte"
-
-#: src/nautilus-image-properties-page.c:382
-#: src/nautilus-image-properties-page.c:384
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
-msgid "Title"
-msgstr "Titel"
 
 #: src/nautilus-image-properties-page.c:386
 #: src/nautilus-image-properties-page.c:388
