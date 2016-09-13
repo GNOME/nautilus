@@ -18,8 +18,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-09-10 19:20+0000\n"
-"PO-Revision-Date: 2016-09-11 15:44+0700\n"
+"POT-Creation-Date: 2016-09-12 20:29+0000\n"
+"PO-Revision-Date: 2016-09-13 07:53+0700\n"
 "Last-Translator: Trần Ngọc Quân <vnwildman@gmail.com>\n"
 "Language-Team: Vietnamese <gnome-vi-list@gnome.org>\n"
 "Language: vi\n"
@@ -163,12 +163,12 @@ msgstr ""
 "tin đã chép hay chọn không"
 
 #: data/org.gnome.nautilus.gschema.xml:106
-#, fuzzy
 msgid ""
 "If set to true, then Nautilus will show context menu items to create links "
 "from the copied or selected files."
 msgstr ""
-"Đúng thì Nautilus sẽ hỏi xác nhận trước khi xóa tập tin hay đổ Thùng Rác."
+"Nếu được đặt thì Nautilus sẽ hiển thị mục trình đơn ngữ cảnh để tạo liên kết "
+"từ các tập tin đã chép hay chọn."
 
 #: data/org.gnome.nautilus.gschema.xml:110
 msgid ""
@@ -247,14 +247,12 @@ msgid "Show the package installer for unknown MIME types"
 msgstr "Hiển thị bộ cài đặt gói cho những kiểu MIME không biết"
 
 #: data/org.gnome.nautilus.gschema.xml:137
-#, fuzzy
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
 msgstr ""
-"Có hay không cho người dùng xem hộp thoại trình cài đặt gói trong trường hợp "
-"một định dạng tập tin (mine) không biết được mở, để tìm kiếm ứng dụng xử lý "
-"nó."
+"Có hay không hiển thị cho người dùng một hộp thoại trình cài đặt gói trong "
+"trường hợp một kiểu MINE không biết được mở, để tìm kiếm ứng dụng xử lý nó."
 
 #: data/org.gnome.nautilus.gschema.xml:141
 msgid ""
@@ -317,7 +315,6 @@ msgid "When to show thumbnails of files"
 msgstr "Khi để hiển thị ảnh thu nhỏ của tập tin"
 
 #: data/org.gnome.nautilus.gschema.xml:163
-#, fuzzy
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to \"always\" "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -329,8 +326,9 @@ msgstr ""
 "\" (luôn luôn) thì luôn luôn tạo ảnh dạng thu nhỏ, kể cả nếu thư mục ở trên "
 "máy mạng. Đặt \"local-only\" (chỉ tập tin cục bộ) thì chỉ hiển thị ảnh dạng "
 "thu nhỏ đối với hệ thống tập tin cục bộ. Đặt \"never\" (không bao giờ) sẽ "
-"không bao giờ tạo ảnh thu nhỏ, chỉ dùng ảnh biểu tượng chung. Các cài đặt "
-"này áp dụng cho tất cả kiểu tập tin, không như tên gọi."
+"không bao giờ tạo ảnh thu nhỏ, chỉ dùng ảnh biểu tượng chung chung. Mặc dù "
+"rằng tên có thể gợi ý nội dung, các cài đặt này áp dụng cho tất cả kiểu tập "
+"tin xem thử được."
 
 #: data/org.gnome.nautilus.gschema.xml:167
 msgid "Maximum image size for thumbnailing"
@@ -507,7 +505,6 @@ msgid "Text Ellipsis Limit"
 msgstr "Giới hạn cắt chữ"
 
 #: data/org.gnome.nautilus.gschema.xml:248
-#, fuzzy
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -523,8 +520,8 @@ msgid ""
 "not shorten file names for other zoom levels. Available zoom levels: small, "
 "standard, large."
 msgstr ""
-"Một chuỗi xác định phần nào của tên tập tin dài cần được thay bằng dấu ba "
-"chấm, tùy vào độ phóng to. Mỗi mục trong danh sách tuân theo mẫu \"Mức phóng:"
+"Một chuỗi xác định phần nào của tên tập tin dài cần được thay bằng dấu chấm "
+"lửng, tùy vào độ phóng to. Mỗi mục trong danh sách tuân theo mẫu \"Mức phóng:"
 "Số\". Với mỗi mức phóng, nếu số được cho lớn hơn 0, tên tập tin sẽ không "
 "vượt qua số dòng cho phép. Nếu số là 0 hoặc nhỏ hơn, không đặt ra giới hạn ở "
 "mức phóng đó. Mục mặc định theo dạng \"Số\" không có mức phóng cũng có thể "
@@ -532,8 +529,8 @@ msgstr ""
 "Ví dụ: 0 - luôn luôn hiện tên tập tin quá dài; 3 - cắt tên tập tin nếu vượt "
 "quá 3 dòng; smallest:5,smaller:4,0 - cắt tên tập tin nếu vượt quá 5 dòng ở "
 "mức phóng \"smallest\". Cắt tên tập tin nếu vượt quá 4 dòng ở mức phóng "
-"smaller. Không cắt ngắn với các mức phóng to còn lại. Các mức phóng có thể "
-"dùng là: small, standard, large."
+"\"smaller\". Không cắt ngắn với các mức phóng to còn lại. Các mức phóng có "
+"thể dùng là: small, standard, large."
 
 #: data/org.gnome.nautilus.gschema.xml:255
 msgid "Default list zoom level"
@@ -762,9 +759,9 @@ msgstr "Hiện _chi tiết hơn"
 
 #. Put up the timed wait window.
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:379
-#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1075
-#: src/nautilus-files-view.c:1609 src/nautilus-files-view.c:5655
-#: src/nautilus-files-view.c:6165 src/nautilus-location-entry.c:282
+#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1077
+#: src/nautilus-files-view.c:1611 src/nautilus-files-view.c:5657
+#: src/nautilus-files-view.c:6169 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:570 src/nautilus-mime-actions.c:574
 #: src/nautilus-mime-actions.c:656 src/nautilus-mime-actions.c:1054
 #: src/nautilus-mime-actions.c:1601 src/nautilus-mime-actions.c:1908
@@ -873,35 +870,35 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "Thi hành một tập hợp nhanh của tự kiểm tra."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "Create the initial window with the given geometry."
 msgstr "Tạo cửa sổ khởi tạo bằng vị trí và kích cỡ đã cho."
 
-#: src/nautilus-application.c:888
+#: src/nautilus-application.c:890
 msgid "GEOMETRY"
 msgstr "DẠNG HÌNH"
 
-#: src/nautilus-application.c:890
+#: src/nautilus-application.c:892
 msgid "Show the version of the program."
 msgstr "Hiển thị phiên bản của chương trình."
 
-#: src/nautilus-application.c:892
+#: src/nautilus-application.c:894
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Luôn mở trong một cửa sổ mới khi duyệt URIs đã chỉ ra"
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:896
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Chỉ tạo cửa sổ cho URI đã chỉ định rõ ràng."
 
-#: src/nautilus-application.c:896
+#: src/nautilus-application.c:898
 msgid "Quit Nautilus."
 msgstr "Thoát khỏi Nautilus."
 
-#: src/nautilus-application.c:898
+#: src/nautilus-application.c:900
 msgid "Select specified URI in parent folder."
 msgstr "Chọn URI xác định trong thư mục cha."
 
-#: src/nautilus-application.c:899
+#: src/nautilus-application.c:901
 msgid "[URI...]"
 msgstr "[URI…]"
 
@@ -938,61 +935,112 @@ msgstr ""
 msgid "_Run"
 msgstr "_Chạy"
 
-#: src/nautilus-batch-rename-dialog.c:142
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
-msgid "Original Name (Ascending)"
-msgstr "Tên gốc (Tăng dần)"
-
-#: src/nautilus-batch-rename-dialog.c:151
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
-msgid "Original Name (Descending)"
-msgstr "Tên gốc (Giảm dần)"
-
-#: src/nautilus-batch-rename-dialog.c:160
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-msgid "First Modified"
-msgstr "Sửa lần đầu"
-
-#: src/nautilus-batch-rename-dialog.c:169
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-msgid "Last Modified"
-msgstr "Lần sửa cuối"
-
-#: src/nautilus-batch-rename-dialog.c:178
-msgid "First Created"
-msgstr "Tạo lần đầu"
-
-#: src/nautilus-batch-rename-dialog.c:187
-msgid "Last Created"
-msgstr "Tạo lần cuối"
-
-#: src/nautilus-batch-rename-dialog.c:1203
+#: src/nautilus-batch-rename-dialog.c:861
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "“%s” không nên là một tên mới duy nhất."
 
-#: src/nautilus-batch-rename-dialog.c:1209
+#: src/nautilus-batch-rename-dialog.c:867
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "“%s” có lẽ đã xung đột với tập tin sẵn có."
 
-#: src/nautilus-batch-rename-dialog.c:2027
+#: src/nautilus-batch-rename-dialog.c:1559
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:159
 msgid "Automatic Numbering Order"
 msgstr "Thứ tự đánh số tự động"
 
-#: src/nautilus-batch-rename-dialog.c:3194
+#: src/nautilus-batch-rename-dialog.c:2257
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
 msgstr[0] "Đổi tên %d Thư mục"
 
-#: src/nautilus-batch-rename-dialog.c:3200
+#: src/nautilus-batch-rename-dialog.c:2263
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Đổi tên %d tập tin"
+
+#: src/nautilus-batch-rename-dialog.h:88
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:184
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:482
+msgid "Original Name (Ascending)"
+msgstr "Tên gốc (Tăng dần)"
+
+#: src/nautilus-batch-rename-dialog.h:93
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:487
+msgid "Original Name (Descending)"
+msgstr "Tên gốc (Giảm dần)"
+
+#: src/nautilus-batch-rename-dialog.h:98
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:492
+msgid "First Modified"
+msgstr "Sửa lần đầu"
+
+#: src/nautilus-batch-rename-dialog.h:103
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:497
+msgid "Last Modified"
+msgstr "Lần sửa cuối"
+
+#: src/nautilus-batch-rename-dialog.h:108
+msgid "First Created"
+msgstr "Tạo lần đầu"
+
+#: src/nautilus-batch-rename-dialog.h:113
+msgid "Last Created"
+msgstr "Tạo lần cuối"
+
+#: src/nautilus-batch-rename-dialog.h:122
+msgid "Camera model"
+msgstr "Kiểu máy ảnh"
+
+#: src/nautilus-batch-rename-dialog.h:129
+msgid "Creation date"
+msgstr "Ngày tạo"
+
+#: src/nautilus-batch-rename-dialog.h:136
+msgid "Season number"
+msgstr "Số kỳ"
+
+#: src/nautilus-batch-rename-dialog.h:143
+msgid "Episode number"
+msgstr "Số đoạn"
+
+#: src/nautilus-batch-rename-dialog.h:150
+msgid "Track number"
+msgstr "Số rãnh"
+
+#: src/nautilus-batch-rename-dialog.h:157
+msgid "Artist name"
+msgstr "Tên nghệ sỹ"
+
+#: src/nautilus-batch-rename-dialog.h:164
+#: src/nautilus-image-properties-page.c:382
+#: src/nautilus-image-properties-page.c:384
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
+msgid "Title"
+msgstr "Tựa đề"
+
+#: src/nautilus-batch-rename-dialog.h:171
+msgid "Album name"
+msgstr "Tên tập nhạc"
+
+#: src/nautilus-batch-rename-dialog.h:178
+msgid "Original file name"
+msgstr "Tên tập tin gốc"
+
+#: src/nautilus-batch-rename-dialog.h:189
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: src/nautilus-batch-rename-dialog.h:196
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: src/nautilus-batch-rename-dialog.h:203
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
@@ -1059,7 +1107,7 @@ msgstr "Ngày mà tập tin được truy cập."
 
 #: src/nautilus-column-utilities.c:96
 msgid "Owner"
-msgstr "Chủ"
+msgstr "Chủ sở hữu"
 
 #: src/nautilus-column-utilities.c:97
 msgid "The owner of the file."
@@ -1523,7 +1571,7 @@ msgstr "Mã đánh dấu"
 
 #: src/nautilus-file.c:7545 src/nautilus-file.c:7546
 msgid "Text"
-msgstr "Văn bản"
+msgstr "Văn bản thường"
 
 #: src/nautilus-file.c:7548 src/nautilus-mime-actions.c:202
 msgid "Video"
@@ -1986,7 +2034,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Không đổ rác"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2972 src/nautilus-files-view.c:6371
+#: src/nautilus-file-operations.c:2972 src/nautilus-files-view.c:6375
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Không thể truy cập “%s”"
@@ -2451,56 +2499,56 @@ msgstr[0] "Đã nén %'d tập tin thành “%B”"
 msgid "Compressing Files"
 msgstr "Đang chép các tập tin"
 
-#: src/nautilus-files-view.c:392
+#: src/nautilus-files-view.c:394
 msgid "Searching…"
 msgstr "Tìm kiếm…"
 
-#: src/nautilus-files-view.c:392 src/nautilus-image-properties-page.c:766
+#: src/nautilus-files-view.c:394 src/nautilus-image-properties-page.c:766
 #: src/nautilus-list-model.c:450 src/nautilus-window-slot.c:780
 msgid "Loading…"
 msgstr "Đang tải…"
 
-#: src/nautilus-files-view.c:1063 src/nautilus-mime-actions.c:1042
+#: src/nautilus-files-view.c:1065 src/nautilus-mime-actions.c:1042
 #: src/nautilus-mime-actions.c:1904
 msgid "Are you sure you want to open all files?"
 msgstr "Bạn có chắc là muốn mở mọi tập tin không?"
 
-#: src/nautilus-files-view.c:1066
+#: src/nautilus-files-view.c:1068
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Hành động này sẽ mở %'d thanh riêng."
 
-#: src/nautilus-files-view.c:1071
+#: src/nautilus-files-view.c:1073
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Hành động này sẽ mở %'d cửa sổ riêng."
 
-#: src/nautilus-files-view.c:1075 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1077 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:1054 src/nautilus-mime-actions.c:1240
 #: src/nautilus-mime-actions.c:1908
 msgid "_OK"
 msgstr "Đồng _ý"
 
-#: src/nautilus-files-view.c:1606
+#: src/nautilus-files-view.c:1608
 msgid "Select Items Matching"
 msgstr "Chọn các mục tương ứng"
 
-#: src/nautilus-files-view.c:1611 src/nautilus-files-view.c:5656
-#: src/nautilus-files-view.c:6166
+#: src/nautilus-files-view.c:1613 src/nautilus-files-view.c:5658
+#: src/nautilus-files-view.c:6170
 msgid "_Select"
 msgstr "_Chọn"
 
-#: src/nautilus-files-view.c:1619
+#: src/nautilus-files-view.c:1621
 msgid "_Pattern:"
 msgstr "_Mẫu:"
 
-#: src/nautilus-files-view.c:1625
+#: src/nautilus-files-view.c:1627
 msgid "Examples: "
 msgstr "Ví dụ: "
 
-#: src/nautilus-files-view.c:2657
+#: src/nautilus-files-view.c:2659
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2508,38 +2556,38 @@ msgstr ""
 "Nautilus 3.6 sẽ thôi không sử dụng thư mục này nữa mà chuyển cấu hình qua ~/."
 "local/share/nautilus"
 
-#: src/nautilus-files-view.c:3135 src/nautilus-files-view.c:3182
+#: src/nautilus-files-view.c:3137 src/nautilus-files-view.c:3184
 #, c-format
 msgid "“%s” selected"
 msgstr "Đã chọn “%s”"
 
-#: src/nautilus-files-view.c:3139
+#: src/nautilus-files-view.c:3141
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "Đã chọn %'d thư mục"
 
-#: src/nautilus-files-view.c:3153
+#: src/nautilus-files-view.c:3155
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] " (chứa %'d mục)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3168
+#: src/nautilus-files-view.c:3170
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] " (chứa tổng số %'d mục)"
 
-#: src/nautilus-files-view.c:3187
+#: src/nautilus-files-view.c:3189
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "Đã chọn %'d mục"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3196
+#: src/nautilus-files-view.c:3198
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2549,7 +2597,7 @@ msgstr[0] "Đã chọn %'d mục khác"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3211
+#: src/nautilus-files-view.c:3213
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2562,114 +2610,114 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3244
+#: src/nautilus-files-view.c:3246
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:5643
+#: src/nautilus-files-view.c:5645
 msgid "Select Move Destination"
 msgstr "Chọn đích cần chuyển đến"
 
-#: src/nautilus-files-view.c:5647
+#: src/nautilus-files-view.c:5649
 msgid "Select Copy Destination"
 msgstr "Chọn đích cần chép đến"
 
-#: src/nautilus-files-view.c:6162
+#: src/nautilus-files-view.c:6166
 msgid "Select Extract Destination"
 msgstr "Chọn đích cần trích ra"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6399
+#: src/nautilus-files-view.c:6403
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Không thể gắn kết “%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6427
+#: src/nautilus-files-view.c:6431
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Không thể đẩy “%s” ra"
 
-#: src/nautilus-files-view.c:6450
+#: src/nautilus-files-view.c:6454
 msgid "Unable to stop drive"
 msgstr "Không thể dừng ổ đĩa"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6562
+#: src/nautilus-files-view.c:6566
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Không thể chạy “%s”"
 
-#: src/nautilus-files-view.c:7397
+#: src/nautilus-files-view.c:7405
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Thư mục mới với phần chọn (%'d mục)"
 
-#: src/nautilus-files-view.c:7457
+#: src/nautilus-files-view.c:7465
 #, c-format
 msgid "Open With %s"
 msgstr "Mở bằng %s"
 
-#: src/nautilus-files-view.c:7469
+#: src/nautilus-files-view.c:7477
 msgid "Run"
 msgstr "Chạy"
 
-#: src/nautilus-files-view.c:7474
+#: src/nautilus-files-view.c:7482
 msgid "Extract Here"
 msgstr "Giải nén vào đây"
 
-#: src/nautilus-files-view.c:7475
+#: src/nautilus-files-view.c:7483
 msgid "Extract to…"
 msgstr "Giản nén đến…"
 
-#: src/nautilus-files-view.c:7479
+#: src/nautilus-files-view.c:7487
 msgid "Open"
 msgstr "Mở"
 
-#: src/nautilus-files-view.c:7536
+#: src/nautilus-files-view.c:7544
 #: src/resources/ui/nautilus-files-view-context-menus.ui:125
 msgid "_Start"
 msgstr "_Chạy"
 
-#: src/nautilus-files-view.c:7542 src/gtk/nautilusgtkplacesview.c:1728
+#: src/nautilus-files-view.c:7550 src/gtk/nautilusgtkplacesview.c:1728
 msgid "_Connect"
 msgstr "_Kết nối"
 
-#: src/nautilus-files-view.c:7548
+#: src/nautilus-files-view.c:7556
 msgid "_Start Multi-disk Drive"
 msgstr "_Chạy ổ nhiều đĩa"
 
-#: src/nautilus-files-view.c:7554
+#: src/nautilus-files-view.c:7562
 msgid "U_nlock Drive"
 msgstr "Mở _khóa đĩa"
 
-#: src/nautilus-files-view.c:7574
+#: src/nautilus-files-view.c:7582
 msgid "Stop Drive"
 msgstr "Dừng đĩa"
 
-#: src/nautilus-files-view.c:7580
+#: src/nautilus-files-view.c:7588
 msgid "_Safely Remove Drive"
 msgstr "_Gỡ bỏ ổ đĩa một cách an toàn"
 
-#: src/nautilus-files-view.c:7586 src/gtk/nautilusgtkplacesview.c:1718
+#: src/nautilus-files-view.c:7594 src/gtk/nautilusgtkplacesview.c:1718
 msgid "_Disconnect"
 msgstr "_Ngắt kết nối"
 
-#: src/nautilus-files-view.c:7592
+#: src/nautilus-files-view.c:7600
 msgid "_Stop Multi-disk Drive"
 msgstr "Dừng ổ nhiều đĩa"
 
-#: src/nautilus-files-view.c:7598
+#: src/nautilus-files-view.c:7606
 msgid "_Lock Drive"
 msgstr "_Khóa ổ đĩa"
 
-#: src/nautilus-files-view.c:9171
+#: src/nautilus-files-view.c:9179
 msgid "Content View"
 msgstr "Xem nội dung"
 
-#: src/nautilus-files-view.c:9172
+#: src/nautilus-files-view.c:9180
 msgid "View of the current folder"
 msgstr "Thư mục hiện thời"
 
@@ -3184,12 +3232,6 @@ msgstr "Rộng"
 #: src/nautilus-image-properties-page.c:367
 msgid "Height"
 msgstr "Cao"
-
-#: src/nautilus-image-properties-page.c:382
-#: src/nautilus-image-properties-page.c:384
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:453
-msgid "Title"
-msgstr "Tựa đề"
 
 #: src/nautilus-image-properties-page.c:386
 #: src/nautilus-image-properties-page.c:388
