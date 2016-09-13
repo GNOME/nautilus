@@ -1491,8 +1491,6 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         dialog->duplicates = NULL;
     }
 
-    //update_tags (dialog);
-
     if (dialog->new_names != NULL)
     {
         g_list_free_full (dialog->new_names, string_free);
