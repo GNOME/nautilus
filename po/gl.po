@@ -16,8 +16,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus-master-po-gl-54706\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2016-09-10 01:22+0200\n"
-"PO-Revision-Date: 2016-09-10 01:23+0200\n"
+"POT-Creation-Date: 2016-09-13 10:43+0200\n"
+"PO-Revision-Date: 2016-09-13 10:43+0200\n"
 "Last-Translator: Fran Dieguez <frandieguez@gnome.org>\n"
 "Language-Team: Galician\n"
 "Language: gl\n"
@@ -716,9 +716,9 @@ msgstr "Mostrar máis _detalles"
 
 #. Put up the timed wait window.
 #: ../eel/eel-stock-dialogs.c:204 ../src/nautilus-file-conflict-dialog.c:379
-#: ../src/nautilus-file-operations.c:225 ../src/nautilus-files-view.c:1075
-#: ../src/nautilus-files-view.c:1609 ../src/nautilus-files-view.c:5655
-#: ../src/nautilus-files-view.c:6165 ../src/nautilus-location-entry.c:282
+#: ../src/nautilus-file-operations.c:225 ../src/nautilus-files-view.c:1077
+#: ../src/nautilus-files-view.c:1611 ../src/nautilus-files-view.c:5657
+#: ../src/nautilus-files-view.c:6169 ../src/nautilus-location-entry.c:282
 #: ../src/nautilus-mime-actions.c:570 ../src/nautilus-mime-actions.c:574
 #: ../src/nautilus-mime-actions.c:656 ../src/nautilus-mime-actions.c:1054
 #: ../src/nautilus-mime-actions.c:1601 ../src/nautilus-mime-actions.c:1908
@@ -828,35 +828,35 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "Levar a cabo un conxunto conxunto rápido de verificacións de proba."
 
-#: ../src/nautilus-application.c:888
+#: ../src/nautilus-application.c:890
 msgid "Create the initial window with the given geometry."
 msgstr "Crear unha xanela inicial coa xeometría proporcionada."
 
-#: ../src/nautilus-application.c:888
+#: ../src/nautilus-application.c:890
 msgid "GEOMETRY"
 msgstr "XEOMETRÍA"
 
-#: ../src/nautilus-application.c:890
+#: ../src/nautilus-application.c:892
 msgid "Show the version of the program."
 msgstr "Mostrar a versión do programa."
 
-#: ../src/nautilus-application.c:892
+#: ../src/nautilus-application.c:894
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Sempre abrir unha nova xanela para os URI especificados ao navegar"
 
-#: ../src/nautilus-application.c:894
+#: ../src/nautilus-application.c:896
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Só crea xanelas para as URIs explicitamente especificadas."
 
-#: ../src/nautilus-application.c:896
+#: ../src/nautilus-application.c:898
 msgid "Quit Nautilus."
 msgstr "Saír de Nautilus."
 
-#: ../src/nautilus-application.c:898
+#: ../src/nautilus-application.c:900
 msgid "Select specified URI in parent folder."
 msgstr "Seleccionar as URI especificadas no cartafol superior."
 
-#: ../src/nautilus-application.c:899
+#: ../src/nautilus-application.c:901
 msgid "[URI...]"
 msgstr "[URI…]"
 
@@ -895,57 +895,107 @@ msgstr "Se non confía nesta localización ou non está seguro, prema Cancelar."
 msgid "_Run"
 msgstr "_Executar"
 
-#: ../src/nautilus-batch-rename-dialog.c:142
-msgid "Original Name (Ascending)"
-msgstr "Nome orixinal (Ascendente)"
-
-#: ../src/nautilus-batch-rename-dialog.c:151
-msgid "Original Name (Descending)"
-msgstr "Nome orixinal (Descendente)"
-
-#: ../src/nautilus-batch-rename-dialog.c:160
-msgid "First Modified"
-msgstr "Primeiro modificado"
-
-#: ../src/nautilus-batch-rename-dialog.c:169
-msgid "Last Modified"
-msgstr "Último modificado"
-
-#: ../src/nautilus-batch-rename-dialog.c:178
-msgid "First Created"
-msgstr "Primeiro creado"
-
-#: ../src/nautilus-batch-rename-dialog.c:187
-msgid "Last Created"
-msgstr "Último creado"
-
-#: ../src/nautilus-batch-rename-dialog.c:1203
+#: ../src/nautilus-batch-rename-dialog.c:861
 #, c-format
 msgid "“%s” would not be a unique new name."
 msgstr "“%s” debería ser un novo nome único."
 
-#: ../src/nautilus-batch-rename-dialog.c:1209
+#: ../src/nautilus-batch-rename-dialog.c:867
 #, c-format
 msgid "“%s” would conflict with an existing file."
 msgstr "“%s” podería ter un conflito con un ficheiro existente."
 
-#: ../src/nautilus-batch-rename-dialog.c:2027
+#: ../src/nautilus-batch-rename-dialog.c:1559
 msgid "Automatic Numbering Order"
 msgstr "Orde de numeración automático"
 
-#: ../src/nautilus-batch-rename-dialog.c:3194
+#: ../src/nautilus-batch-rename-dialog.c:2257
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
 msgstr[0] "Renomear %d cartafol"
 msgstr[1] "Renomear %d cartafoles"
 
-#: ../src/nautilus-batch-rename-dialog.c:3200
+#: ../src/nautilus-batch-rename-dialog.c:2263
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Renomear %d ficheiro"
 msgstr[1] "Renomear %d ficheiros"
+
+#: ../src/nautilus-batch-rename-dialog.h:88
+msgid "Original Name (Ascending)"
+msgstr "Nome orixinal (Ascendente)"
+
+#: ../src/nautilus-batch-rename-dialog.h:93
+msgid "Original Name (Descending)"
+msgstr "Nome orixinal (Descendente)"
+
+#: ../src/nautilus-batch-rename-dialog.h:98
+msgid "First Modified"
+msgstr "Primeiro modificado"
+
+#: ../src/nautilus-batch-rename-dialog.h:103
+msgid "Last Modified"
+msgstr "Último modificado"
+
+#: ../src/nautilus-batch-rename-dialog.h:108
+msgid "First Created"
+msgstr "Primeiro creado"
+
+#: ../src/nautilus-batch-rename-dialog.h:113
+msgid "Last Created"
+msgstr "Último creado"
+
+#: ../src/nautilus-batch-rename-dialog.h:122
+msgid "Camera model"
+msgstr "Modelo da cámara"
+
+#: ../src/nautilus-batch-rename-dialog.h:129
+msgid "Creation date"
+msgstr "Data de creación"
+
+#: ../src/nautilus-batch-rename-dialog.h:136
+msgid "Season number"
+msgstr "Número de tempada"
+
+#: ../src/nautilus-batch-rename-dialog.h:143
+msgid "Episode number"
+msgstr "Número de episodio"
+
+#: ../src/nautilus-batch-rename-dialog.h:150
+msgid "Track number"
+msgstr "Número de pista"
+
+#: ../src/nautilus-batch-rename-dialog.h:157
+msgid "Artist name"
+msgstr "Nome do artista"
+
+#: ../src/nautilus-batch-rename-dialog.h:164
+#: ../src/nautilus-image-properties-page.c:382
+#: ../src/nautilus-image-properties-page.c:384
+msgid "Title"
+msgstr "Título"
+
+#: ../src/nautilus-batch-rename-dialog.h:171
+msgid "Album name"
+msgstr "Nome do álbum"
+
+#: ../src/nautilus-batch-rename-dialog.h:178
+msgid "Original file name"
+msgstr "Nome do ficheiro orixinal"
+
+#: ../src/nautilus-batch-rename-dialog.h:189
+msgid "1, 2, 3"
+msgstr "1, 2, 3"
+
+#: ../src/nautilus-batch-rename-dialog.h:196
+msgid "01, 02, 03"
+msgstr "01, 02, 03"
+
+#: ../src/nautilus-batch-rename-dialog.h:203
+msgid "001, 002, 003"
+msgstr "001, 002, 003"
 
 #: ../src/nautilus-bookmark.c:110 ../src/nautilus-file-utilities.c:323
 #: ../src/nautilus-pathbar.c:434
@@ -1988,7 +2038,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Non baleirar o lixo"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-file-operations.c:2972 ../src/nautilus-files-view.c:6371
+#: ../src/nautilus-file-operations.c:2972 ../src/nautilus-files-view.c:6375
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Non é posíbel acceder a «%s»"
@@ -2501,58 +2551,58 @@ msgstr[1] "Comprimindo %'d ficheiros en «%B»"
 msgid "Compressing Files"
 msgstr "Comprimindo ficheiros"
 
-#: ../src/nautilus-files-view.c:392
+#: ../src/nautilus-files-view.c:394
 msgid "Searching…"
 msgstr "Buscando…"
 
-#: ../src/nautilus-files-view.c:392 ../src/nautilus-image-properties-page.c:766
+#: ../src/nautilus-files-view.c:394 ../src/nautilus-image-properties-page.c:766
 #: ../src/nautilus-list-model.c:450 ../src/nautilus-window-slot.c:780
 msgid "Loading…"
 msgstr "Cargando…"
 
-#: ../src/nautilus-files-view.c:1063 ../src/nautilus-mime-actions.c:1042
+#: ../src/nautilus-files-view.c:1065 ../src/nautilus-mime-actions.c:1042
 #: ../src/nautilus-mime-actions.c:1904
 msgid "Are you sure you want to open all files?"
 msgstr "Está seguro de que quere abrir todos os ficheiros?"
 
-#: ../src/nautilus-files-view.c:1066
+#: ../src/nautilus-files-view.c:1068
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Isto abrirá %'d lapela independente."
 msgstr[1] "Isto abrirá %'d lapelas independentes."
 
-#: ../src/nautilus-files-view.c:1071
+#: ../src/nautilus-files-view.c:1073
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Isto abrirá %'d xanela independente."
 msgstr[1] "Isto abrirá %'d xanelas independentes."
 
-#: ../src/nautilus-files-view.c:1075 ../src/nautilus-location-entry.c:282
+#: ../src/nautilus-files-view.c:1077 ../src/nautilus-location-entry.c:282
 #: ../src/nautilus-mime-actions.c:1054 ../src/nautilus-mime-actions.c:1240
 #: ../src/nautilus-mime-actions.c:1908
 msgid "_OK"
 msgstr "_Aceptar"
 
-#: ../src/nautilus-files-view.c:1606
+#: ../src/nautilus-files-view.c:1608
 msgid "Select Items Matching"
 msgstr "Seleccionar os elementos coincidentes"
 
-#: ../src/nautilus-files-view.c:1611 ../src/nautilus-files-view.c:5656
-#: ../src/nautilus-files-view.c:6166
+#: ../src/nautilus-files-view.c:1613 ../src/nautilus-files-view.c:5658
+#: ../src/nautilus-files-view.c:6170
 msgid "_Select"
 msgstr "_Seleccionar"
 
-#: ../src/nautilus-files-view.c:1619
+#: ../src/nautilus-files-view.c:1621
 msgid "_Pattern:"
 msgstr "_Patrón:"
 
-#: ../src/nautilus-files-view.c:1625
+#: ../src/nautilus-files-view.c:1627
 msgid "Examples: "
 msgstr "Exemplos: "
 
-#: ../src/nautilus-files-view.c:2657
+#: ../src/nautilus-files-view.c:2659
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2560,19 +2610,19 @@ msgstr ""
 "Nautilus 3.0 fixo obsoleto este cartafol e tentou migrar a súa configuración "
 "a ~/.local/share/nautilus"
 
-#: ../src/nautilus-files-view.c:3135 ../src/nautilus-files-view.c:3182
+#: ../src/nautilus-files-view.c:3137 ../src/nautilus-files-view.c:3184
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» seleccionado"
 
-#: ../src/nautilus-files-view.c:3139
+#: ../src/nautilus-files-view.c:3141
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d cartafol seleccionado"
 msgstr[1] "%'d cartafoles seleccionados"
 
-#: ../src/nautilus-files-view.c:3153
+#: ../src/nautilus-files-view.c:3155
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2580,14 +2630,14 @@ msgstr[0] " (contén %'d elemento)"
 msgstr[1] " (contén %'d elementos)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-files-view.c:3168
+#: ../src/nautilus-files-view.c:3170
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] " (contendo un total de %'d elemento)"
 msgstr[1] " (contendo un total de %'d elementos)"
 
-#: ../src/nautilus-files-view.c:3187
+#: ../src/nautilus-files-view.c:3189
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2595,7 +2645,7 @@ msgstr[0] "%'d elemento seleccionado"
 msgstr[1] "%'d elementos seleccionados"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-files-view.c:3196
+#: ../src/nautilus-files-view.c:3198
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2606,7 +2656,7 @@ msgstr[1] "%'d outros elementos seleccionados"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-files-view.c:3211
+#: ../src/nautilus-files-view.c:3213
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2618,114 +2668,114 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-files-view.c:3244
+#: ../src/nautilus-files-view.c:3246
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-files-view.c:5643
+#: ../src/nautilus-files-view.c:5645
 msgid "Select Move Destination"
 msgstr "Seleccionar o destino de mover"
 
-#: ../src/nautilus-files-view.c:5647
+#: ../src/nautilus-files-view.c:5649
 msgid "Select Copy Destination"
 msgstr "Seleccionar o destino da copia"
 
-#: ../src/nautilus-files-view.c:6162
+#: ../src/nautilus-files-view.c:6166
 msgid "Select Extract Destination"
 msgstr "Seleccione o destino de extracción"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:6399
+#: ../src/nautilus-files-view.c:6403
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Non foi posíbel extraer «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:6427
+#: ../src/nautilus-files-view.c:6431
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Non foi posíbel expulsar «%s»"
 
-#: ../src/nautilus-files-view.c:6450
+#: ../src/nautilus-files-view.c:6454
 msgid "Unable to stop drive"
 msgstr "Non é posíbel deter a unidade"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:6562
+#: ../src/nautilus-files-view.c:6566
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Non foi posíbel iniciar «%s»"
 
-#: ../src/nautilus-files-view.c:7397
+#: ../src/nautilus-files-view.c:7405
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Cartafol novo coa selección (%'d elemento)"
 msgstr[1] "Cartafol novo coa selección (%'d elementos)"
 
-#: ../src/nautilus-files-view.c:7457
+#: ../src/nautilus-files-view.c:7465
 #, c-format
 msgid "Open With %s"
 msgstr "Abrir con %s"
 
-#: ../src/nautilus-files-view.c:7469
+#: ../src/nautilus-files-view.c:7477
 msgid "Run"
 msgstr "Executar"
 
-#: ../src/nautilus-files-view.c:7474
+#: ../src/nautilus-files-view.c:7482
 msgid "Extract Here"
 msgstr "Extraer aquí"
 
-#: ../src/nautilus-files-view.c:7475
+#: ../src/nautilus-files-view.c:7483
 msgid "Extract to…"
 msgstr "Extraer a…"
 
-#: ../src/nautilus-files-view.c:7479
+#: ../src/nautilus-files-view.c:7487
 msgid "Open"
 msgstr "Abrir"
 
-#: ../src/nautilus-files-view.c:7536
+#: ../src/nautilus-files-view.c:7544
 msgid "_Start"
 msgstr "_Iniciar"
 
-#: ../src/nautilus-files-view.c:7542 ../src/gtk/nautilusgtkplacesview.c:1728
+#: ../src/nautilus-files-view.c:7550 ../src/gtk/nautilusgtkplacesview.c:1728
 msgid "_Connect"
 msgstr "_Conectar"
 
-#: ../src/nautilus-files-view.c:7548
+#: ../src/nautilus-files-view.c:7556
 msgid "_Start Multi-disk Drive"
 msgstr "_Iniciar unidade multidisco"
 
-#: ../src/nautilus-files-view.c:7554
+#: ../src/nautilus-files-view.c:7562
 msgid "U_nlock Drive"
 msgstr "De_sbloquear unidade"
 
-#: ../src/nautilus-files-view.c:7574
+#: ../src/nautilus-files-view.c:7582
 msgid "Stop Drive"
 msgstr "Deter unidade"
 
-#: ../src/nautilus-files-view.c:7580
+#: ../src/nautilus-files-view.c:7588
 msgid "_Safely Remove Drive"
 msgstr "Extraer unidade de forma _segura"
 
-#: ../src/nautilus-files-view.c:7586 ../src/gtk/nautilusgtkplacesview.c:1718
+#: ../src/nautilus-files-view.c:7594 ../src/gtk/nautilusgtkplacesview.c:1718
 msgid "_Disconnect"
 msgstr "_Desconectar"
 
-#: ../src/nautilus-files-view.c:7592
+#: ../src/nautilus-files-view.c:7600
 msgid "_Stop Multi-disk Drive"
 msgstr "_Deter unidade multidisco"
 
-#: ../src/nautilus-files-view.c:7598
+#: ../src/nautilus-files-view.c:7606
 msgid "_Lock Drive"
 msgstr "_Bloquear unidade"
 
-#: ../src/nautilus-files-view.c:9171
+#: ../src/nautilus-files-view.c:9179
 msgid "Content View"
 msgstr "Visualización de contido"
 
-#: ../src/nautilus-files-view.c:9172
+#: ../src/nautilus-files-view.c:9180
 msgid "View of the current folder"
 msgstr "Visualización do cartafol actual"
 
@@ -3262,11 +3312,6 @@ msgstr "Anchura"
 #: ../src/nautilus-image-properties-page.c:367
 msgid "Height"
 msgstr "Altura"
-
-#: ../src/nautilus-image-properties-page.c:382
-#: ../src/nautilus-image-properties-page.c:384
-msgid "Title"
-msgstr "Título"
 
 #: ../src/nautilus-image-properties-page.c:386
 #: ../src/nautilus-image-properties-page.c:388
@@ -4809,42 +4854,8 @@ msgstr "Desmontar"
 #~ msgid "Automatic Numbers"
 #~ msgstr "Numeración automática"
 
-#~ msgid "1, 2, 3, 4"
-#~ msgstr "1, 2, 3, 4"
-
-#~ msgid "01, 02, 03, 04"
-#~ msgstr "01, 02, 03, 04"
-
-#~ msgid "001, 002, 003, 004"
-#~ msgstr "001, 002, 003, 004"
-
 #~ msgid "Metadata"
 #~ msgstr "Metadatos"
-
-#~| msgid "Create"
-#~ msgid "Creation Date"
-#~ msgstr "Data de creación"
-
-#~ msgid "Season Number"
-#~ msgstr "Número de tempada"
-
-#~ msgid "Episode Number"
-#~ msgstr "Número de episodio"
-
-#~ msgid "Track Number"
-#~ msgstr "Número de pista"
-
-#~| msgid "File Name"
-#~ msgid "Artist Name"
-#~ msgstr "Nome do artista"
-
-#~| msgid "by _Name"
-#~ msgid "Album Name"
-#~ msgstr "Nome do álbum"
-
-#~| msgid "Original file"
-#~ msgid "Original File Name"
-#~ msgstr "Nome do ficheiro orixinal"
 
 #~| msgid "Archive"
 #~ msgid "Archive name"
