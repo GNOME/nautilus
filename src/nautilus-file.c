@@ -2353,6 +2353,11 @@ real_batch_rename (GList                         *files,
 
         nautilus_file_undo_manager_set_action (op->undo_info);
     }
+
+    if (op->skipped_files == g_list_length (files))
+    {
+        nautilus_file_operation_complete (op, NULL, error);
+    }
 }
 
 gboolean
