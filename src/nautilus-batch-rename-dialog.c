@@ -1288,10 +1288,8 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
         g_mutex_lock (&task_data->wait_ready_mutex);
         task_data->directory_conflicts_ready = FALSE;
 
-        directory_conflict_uri = l->data;
-        conflict_directory = nautilus_directory_get_by_uri (directory_conflict_uri);
 
-        nautilus_directory_call_when_ready (conflict_directory,
+        nautilus_directory_call_when_ready (l->data,
                                             NAUTILUS_FILE_ATTRIBUTE_INFO,
                                             TRUE,
                                             on_directory_conflicts_ready,
@@ -1307,10 +1305,10 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
 
         g_mutex_unlock (&task_data->wait_ready_mutex);
 
-        nautilus_directory_unref (conflict_directory);
     }
 
   g_task_return_boolean (task, TRUE);
+  nautilus_directory_list_free (directories);
 }
 
 static void

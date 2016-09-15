@@ -995,42 +995,39 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     g_string_free (query, TRUE);
 }
 
+static gint
+compare_files (gpointer a,
+               gpointer b)
+{
+    NautilusFile *file1 = NAUTILUS_FILE (a);
+    NautilusFile *file2 = NAUTILUS_FILE (b);
+    g_autoptr (GFile) location1 = nautilus_file_get_location (file1);
+    g_autoptr (GFile) location2 = nautilus_file_get_location (file2);
+
+    return g_file_equal (location1, location2) ? 0 : 1;
+}
+
 GList *
 batch_rename_files_get_distinct_parents (GList *selection)
 {
     GList *result;
     GList *l1;
-    GList *l2;
     NautilusFile *file;
-    gboolean exists;
-    gchar *parent_uri;
+    NautilusFile *directory;
+    GFile *parent;
 
     result = NULL;
-
     for (l1 = selection; l1 != NULL; l1 = l1->next)
     {
-        exists = FALSE;
-
         file = NAUTILUS_FILE (l1->data);
-        parent_uri = nautilus_file_get_parent_uri (file);
-
-        for (l2 = result; l2 != NULL; l2 = l2->next)
+        parent = nautilus_file_get_parent (file);
+        directory = nautilus_directory_get_for_file (parent);
+        if (!g_list_find (result, directory))
         {
-            if (g_strcmp0 (parent_uri, l2->data) == 0)
-            {
-                exists = TRUE;
-                break;
-            }
+            result = g_list_prepend (result, directory);
         }
 
-        if (!exists)
-        {
-            result = g_list_prepend (result, parent_uri);
-        }
-        else
-        {
-            g_free (parent_uri);
-        }
+        nautilus_file_unref (parent);
     }
 
     return result;
