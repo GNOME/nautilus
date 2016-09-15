@@ -1172,8 +1172,16 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
 
     if (nautilus_files_view_supports_extract_here (view))
     {
-        extract_files (view, files_to_extract,
-                       nautilus_view_get_location (NAUTILUS_VIEW (view)));
+        g_autoptr (GFile) location = NULL;
+        g_autoptr (GFile) parent = NULL;
+
+        location = nautilus_file_get_location (NAUTILUS_FILE (g_list_first (files)->data));
+        /* Get a parent from a random file. We assume all files has a common parent.
+         * But don't assume the parent is the view location, since that's not the
+         * case in list view when expand-folder setting is set
+         */
+        parent = g_file_get_parent (location);
+        extract_files (view, files_to_extract, parent);
     }
     else
     {
@@ -1208,8 +1216,16 @@ nautilus_files_view_activate_file (NautilusFilesView       *view,
 
         if (nautilus_files_view_supports_extract_here (view))
         {
-            extract_files (view, files,
-                           nautilus_view_get_location (NAUTILUS_VIEW (view)));
+            g_autoptr (GFile) location = NULL;
+            g_autoptr (GFile) parent = NULL;
+
+            location = nautilus_file_get_location (file);
+            /* Get a parent from a random file. We assume all files has a common parent.
+             * But don't assume the parent is the view location, since that's not the
+             * case in list view when expand-folder setting is set
+             */
+            parent = g_file_get_parent (location);
+            extract_files (view, files, parent);
         }
         else
         {
@@ -2055,6 +2071,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     GList *l;
     CompressData *data;
     g_autoptr (GFile) output = NULL;
+    g_autoptr (GFile) parent = NULL;
     NautilusCompressionFormat compression_format;
     AutoarFormat format;
     AutoarFilter filter;
@@ -2071,7 +2088,12 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     source_files = g_list_reverse (source_files);
 
     name = nautilus_file_name_widget_controller_get_new_name (controller);
-    output = g_file_get_child (view->details->location, name);
+    /* Get a parent from a random file. We assume all files has a common parent.
+     * But don't assume the parent is the view location, since that's not the
+     * case in list view when expand-folder setting is set
+     */
+    parent = g_file_get_parent (G_FILE (g_list_first (source_files)->data));
+    output = g_file_get_child (parent, name);
 
     data = g_new (CompressData, 1);
     data->view = view;
@@ -6197,13 +6219,20 @@ action_extract_here (GSimpleAction *action,
 {
     NautilusFilesView *view;
     GList *selection;
+    g_autoptr (GFile) location = NULL;
+    g_autoptr (GFile) parent = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    location = nautilus_file_get_location (NAUTILUS_FILE (g_list_first (selection)->data));
+    /* Get a parent from a random file. We assume all files has a common parent.
+     * But don't assume the parent is the view location, since that's not the
+     * case in list view when expand-folder setting is set
+     */
+    parent = g_file_get_parent (location);
 
-    extract_files (view, selection,
-                   nautilus_view_get_location (NAUTILUS_VIEW (view)));
+    extract_files (view, selection, parent);
 
     nautilus_file_list_free (selection);
 }
