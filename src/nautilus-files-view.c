@@ -5971,7 +5971,7 @@ real_action_rename (NautilusFilesView *view)
                                        cursor);
                 g_object_unref (cursor);
 
-                dialog = nautilus_batch_rename_dialog_new (nautilus_files_view_get_selection (NAUTILUS_VIEW (view)),
+                dialog = nautilus_batch_rename_dialog_new (selection,
                                                            nautilus_files_view_get_model (view),
                                                            nautilus_files_view_get_window (view));
 

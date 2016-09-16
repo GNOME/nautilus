@@ -2032,6 +2032,9 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     g_list_free_full (dialog->new_names, string_free);
     g_list_free_full (dialog->duplicates, conflict_data_free);
 
+    nautilus_file_list_free (dialog->selection);
+    nautilus_directory_unref (dialog->directory);
+
     G_OBJECT_CLASS (nautilus_batch_rename_dialog_parent_class)->finalize (object);
 }
 
@@ -2100,8 +2103,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, "use-header-bar", TRUE, NULL);
 
-    dialog->selection = selection;
-    dialog->directory = directory;
+    dialog->selection = nautilus_file_list_copy (selection);
+    dialog->directory = nautilus_directory_ref (directory);
     dialog->window = window;
 
     gtk_window_set_transient_for (GTK_WINDOW (dialog),
