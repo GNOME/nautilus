@@ -1282,6 +1282,7 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
     {
         if (g_task_return_error_if_cancelled (task))
         {
+            nautilus_directory_list_free (directories);
             return;
         }
 
