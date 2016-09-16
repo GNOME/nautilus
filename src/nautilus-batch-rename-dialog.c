@@ -1998,7 +1998,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     if (dialog->checking_conflicts)
     {
         g_cancellable_cancel (dialog->conflict_cancellable);
-        g_object_unref (dialog->conflict_cancellable);
+        g_clear_object (&dialog->conflict_cancellable);
     }
 
     g_list_free (dialog->original_name_listbox_rows);
