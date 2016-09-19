@@ -971,6 +971,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     gchar *old_name;
     GtkLabel *label;
     GString *new_name;
+    gboolean empty_name = FALSE;
 
     for (l1 = dialog->new_names, l2 = dialog->listbox_labels_new; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
@@ -978,6 +979,11 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         new_name = l1->data;
 
         gtk_label_set_label (label, new_name->str);
+
+        if (g_strcmp0 (new_name->str, "") == 0)
+        {
+            empty_name = TRUE;
+        }
     }
 
     for (l1 = dialog->selection, l2 = dialog->listbox_labels_old; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
@@ -1004,6 +1010,13 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
 
     update_rows_height (dialog);
+
+    if (empty_name)
+    {
+        gtk_widget_set_sensitive (dialog->rename_button, FALSE);
+
+        return;
+    }
 
     /* check if there are name conflicts and display them if they exist */
     if (dialog->duplicates != NULL)
