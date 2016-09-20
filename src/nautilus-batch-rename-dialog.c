@@ -1226,6 +1226,7 @@ on_file_names_list_has_duplicates (GObject      *object,
 typedef struct
 {
     GList *directories;
+    NautilusDirectory *current_directory;
     GMutex wait_ready_mutex;
     GCond wait_ready_condition;
     gboolean directory_conflicts_ready;
@@ -1254,6 +1255,20 @@ on_directory_conflicts_ready (NautilusDirectory *conflict_directory,
     task_data->directory_conflicts_ready = TRUE;
     g_cond_signal (&task_data->wait_ready_condition);
     g_mutex_unlock (&task_data->wait_ready_mutex);
+}
+
+static gboolean
+check_conflicts_on_main_thread (gpointer user_data)
+{
+    GTask *task = (GTask *) user_data;
+    CheckConflictsData *task_data = g_task_get_task_data (task);
+
+    nautilus_directory_call_when_ready (task_data->current_directory,
+                                        NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                        TRUE,
+                                        on_directory_conflicts_ready,
+                                        task);
+    return FALSE;
 }
 
 static void
@@ -1290,11 +1305,11 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
         task_data->directory_conflicts_ready = FALSE;
 
 
-        nautilus_directory_call_when_ready (l->data,
-                                            NAUTILUS_FILE_ATTRIBUTE_INFO,
-                                            TRUE,
-                                            on_directory_conflicts_ready,
-                                            task);
+        task_data->current_directory = l->data;
+        /* NautilusDirectory and NautilusFile are not thread safe, we need to call
+         * them on the main thread.
+         */
+        g_main_context_invoke (NULL, check_conflicts_on_main_thread, task);
 
         /* We need to block this thread until the call_when_ready call is done,
          * if not the GTask would finalize. */
