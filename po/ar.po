@@ -9,16 +9,16 @@
 # Isam Bayazidi <bayazidi@arabeyes.org>, 2002.
 # Arafat Medini <lumina@silverpen.de>, 2003, 2004.
 # Djihed Afifi <djihed@gmail.com>, 2006.
-# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015.
+# Khaled Hosny <khaledhosny@eglug.org>, 2006, 2007, 2008, 2009, 2010, 2011, 2012, 2013, 2014, 2015, 2016.
 # Ibrahim Saed <ibraheem5000@gmail.com>, 2012.
 # Abderrahim Kitouni <a.kitouni@gmail.com>, 2012.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD\n"
-"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
-"product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
+"Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
+"s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-09-19 18:57+0000\n"
-"PO-Revision-Date: 2015-09-23 23:20+0200\n"
+"PO-Revision-Date: 2016-09-20 02:43+0200\n"
 "Last-Translator: Khaled Hosny <khaledhosny@eglug.org>\n"
 "Language-Team: Arabic <doc@arabeyes.org>\n"
 "Language: ar\n"
@@ -27,7 +27,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=6; plural=n==0 ? 0 : n==1 ? 1 : n==2 ? 2 : n%100>=3 "
 "&& n%100<=10 ? 3 : n%100>=11 ? 4 : 5;\n"
-"X-Generator: Virtaal 0.7.1\n"
+"X-Generator: Virtaal 1.0.0-beta1\n"
 "X-Project-Style: gnome\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
@@ -37,7 +37,7 @@ msgstr "شغّل البرمجيات"
 #. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 #: data/nautilus-autorun-software.desktop.in:7
 msgid "application-x-executable"
-msgstr ""
+msgstr "application-x-executable"
 
 #: data/org.gnome.Nautilus.appdata.xml.in:6
 msgid "Nautilus"
@@ -54,6 +54,8 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
+"نوتلس، أو الملفات، هو مدير الملفات المبدئي لسطح مكتب جنوم. يوفر طريقة سهلة و "
+"متكاملة مع سطح المكتب لتصفح نظام الملفات."
 
 #: data/org.gnome.Nautilus.appdata.xml.in:13
 msgid ""
@@ -63,6 +65,11 @@ msgid ""
 "applications. It has three views: Icon Grid, Icon List, and Tree List. Its "
 "functions can be extended with plugins and scripts."
 msgstr ""
+"يدعم نوتلس كل الوظائف الأساسية لمدير سطح المكتب بالإضافة إلى خصائص أخرى. "
+"يمكنك البحث في ملفاتك و مجلداتك و إدارتها، محليًا أو عبر الشبكة، و قراءة و "
+"كتابة البيانات من و إلى الوسائط المنفصلة، و تشغيل البرامج. لنوتلس ثلاث "
+"منظورات: شبكة الأيقونات، و قائمة الأيقونات، و القائمة الشجرية. يمكنك توسيع "
+"خصائصه باستخدام الملحقات."
 
 #: data/org.gnome.Nautilus.desktop.in:3 src/nautilus-mime-actions.c:103
 #: src/nautilus-properties-window.c:4629 src/nautilus-window.c:2907
@@ -76,22 +83,19 @@ msgstr "مجلد;مدير;ملفات;قرص;تصفح;"
 
 #. Translators: Do NOT translate or transliterate this text (this is an icon file name)!
 #: data/org.gnome.Nautilus.desktop.in:9
-#, fuzzy
 #| msgid "Nautilus"
 msgid "org.gnome.Nautilus"
-msgstr "نوتلس"
+msgstr "org.gnome.Nautilus"
 
 #: data/org.gnome.Nautilus.desktop.in:24
-#, fuzzy
 #| msgid "New _Window"
 msgid "New Window"
-msgstr "نافذة _جديدة"
+msgstr "نافذة جديدة"
 
 #: data/org.gnome.nautilus.gschema.xml:80
-#, fuzzy
 #| msgid "Where to position newly open tabs in browser windows."
 msgid "Where to position newly open tabs in browser windows"
-msgstr "أين ستوضع الألسنة المفتوحة حديثا في نوافذ المتصفح."
+msgstr "أين ستوضع الألسنة المفتوحة حديثا في نوافذ المتصفح"
 
 #: data/org.gnome.nautilus.gschema.xml:81
 msgid ""
@@ -166,7 +170,6 @@ msgstr ""
 "إذا ضبط كصحيح، فسيسأل نوتلس عن التأكيد عند محاولتك وضع ملفات في المهملات."
 
 #: data/org.gnome.nautilus.gschema.xml:110
-#, fuzzy
 #| msgid ""
 #| "Whether to ask for confirmation when deleting files, or emptying Trash"
 msgid ""
@@ -238,10 +241,9 @@ msgstr ""
 "حوار و \"display\" لعرضها كملفات نصيّة."
 
 #: data/org.gnome.nautilus.gschema.xml:136
-#, fuzzy
 #| msgid "Show the package installer for unknown mime types"
 msgid "Show the package installer for unknown MIME types"
-msgstr "اعرض مثبت الحزم لأنواع mime المجهولة"
+msgstr "اعرض مثبت الحزم لأنواع MIME المجهولة"
 
 #: data/org.gnome.nautilus.gschema.xml:137
 msgid ""
@@ -300,7 +302,6 @@ msgid "When to show thumbnails of files"
 msgstr "متى تعرض مُصغّرة للملفّات"
 
 #: data/org.gnome.nautilus.gschema.xml:163
-#, fuzzy
 #| msgid ""
 #| "Speed tradeoff for when to show a file as a thumbnail. If set to \"always"
 #| "\" then always thumbnail, even if the folder is on a remote server. If "
@@ -315,10 +316,10 @@ msgid ""
 "\"never\" then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
-"عند عرض ملف كمُصغّرة. إذا ضبط ل‍ \"always\" فستعرض مُصغّرة دائما حتى و إن كان "
-"المجلد عند خادوم عن بعد. إذا ضبط ل‍ \"local-only\" فلن تعرض مُصغّرات إلا على "
-"نظم الملفات المحلية أما إذا ضبط ل‍ \"never\" فلن تُعرض مُصغّرات أبد، استخدم فقط "
-"أيقونة عامة."
+"عند عرض ملف كمُصغّرة. إذا ضبط ل‍ \"always\" فستعرض مُصغّرة دائما حتى و إن "
+"كان المجلد عند خادوم عن بعد. إذا ضبط ل‍ \"local-only\" فلن تعرض مُصغّرات إلا "
+"على نظم الملفات المحلية أما إذا ضبط ل‍ \"never\" فلن تُعرض مُصغّرات أبد، "
+"استخدم فقط أيقونة عامة."
 
 #: data/org.gnome.nautilus.gschema.xml:167
 msgid "Maximum image size for thumbnailing"
@@ -363,7 +364,6 @@ msgid "Reverse sort order in new windows"
 msgstr "اقلب ترتيب التصنيف في النوافذ الجديدة"
 
 #: data/org.gnome.nautilus.gschema.xml:186
-#, fuzzy
 #| msgid ""
 #| "If true, files in new windows will be sorted in reverse order. ie, if "
 #| "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
@@ -508,16 +508,16 @@ msgstr ""
 "بالاعتماد على مستوى التكبير. إن كل قيمة في القائمة هي من الشكل \"Zoom Level:"
 "Integer\" (مستوى التكبير:عدد صحيح). لكل مستوى تكبير، إذا كان العدد الصحيح "
 "أكبر من 0، لن يتجاوز اسم الملف الرقم المعطى من الأسطر. إذا كان العدد 0 أو "
-"أصغر، لن تطبق أية حدود على مستوى التكبير المحدد. القيمة الافتراضية لصيغة "
-"\"Integer\" دون تحديد أي مستوى تقريب أيضاً مسموحة. وهي تعرّف العدد الأعلى "
+"أصغر، لن تطبق أية حدود على مستوى التكبير المحدد. القيمة الافتراضية لصيغة \""
+"Integer\" دون تحديد أي مستوى تقريب أيضاً مسموحة. وهي تعرّف العدد الأعلى "
 "للأسطر لجميع مستويات التكبير الأخرى. أمثلة: 0- أعرض اسماء الملفات الطويلة "
-"دائماً؛ 3- اختصر اسماء الملفات في حال تجاوزها ثلاثة أسطر؛ smallest:5,"
-"smaller:4,0 - اختصر اسماء الملفات في حال تجاوزها خمسة أسطر لمستوى التكبير "
-"\"smallest\" (الأصغر). اختصر أسماء الملفات في حال تجاوزها أربعة أسطر لمستوى "
+"دائماً؛ 3- اختصر اسماء الملفات في حال تجاوزها ثلاثة أسطر؛ smallest:5,smaller:"
+"4,0 - اختصر اسماء الملفات في حال تجاوزها خمسة أسطر لمستوى التكبير \""
+"smallest\" (الأصغر). اختصر أسماء الملفات في حال تجاوزها أربعة أسطر لمستوى "
 "التكبير \"smaller\" (أصغر). لا تختصر أسماء الملفات لمستويات التكبير الأخرى. "
-"مستويات التكبير المتوفّرة هي: الأصغر (smallest)  (33%)، أصغر (smaller) "
-"(50%) ، صغير (small) (66%)، قياسي (standard) (100%)، كبير (large) (150%)، "
-"أكبر (larger) (200%)، الأكبر (400%) (largest)"
+"مستويات التكبير المتوفّرة هي: الأصغر (smallest)  (33%)، أصغر (smaller) (50%) "
+"، صغير (small) (66%)، قياسي (standard) (100%)، كبير (large) (150%)، أكبر "
+"(larger) (200%)، الأكبر (400%) (largest)"
 
 #: data/org.gnome.nautilus.gschema.xml:255
 msgid "Default list zoom level"
@@ -581,7 +581,6 @@ msgid "Trash icon visible on desktop"
 msgstr "أيقونة مهملات مرئية فوق سطح المكتب"
 
 #: data/org.gnome.nautilus.gschema.xml:289
-#, fuzzy
 #| msgid ""
 #| "If this is set to true, an icon linking to the trash will be put on the "
 #| "desktop."
@@ -612,11 +611,10 @@ msgid ""
 msgstr "إذا ضبط كصحيح، ستوضع أيقونة تصل بخواديم الشبكة فوق سطح المكتب."
 
 #: data/org.gnome.nautilus.gschema.xml:302
-#, fuzzy
 #| msgid "Home"
 msgctxt "home-icon-name"
 msgid "'Home'"
-msgstr "المنزل"
+msgstr "'المنزل'"
 
 #: data/org.gnome.nautilus.gschema.xml:303
 msgid "Desktop home icon name"
@@ -630,20 +628,17 @@ msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة المنزل على سطح المكتب."
 
 #: data/org.gnome.nautilus.gschema.xml:307
-#, fuzzy
 #| msgid "Trash"
 msgctxt "trash-icon-name"
 msgid "'Trash'"
-msgstr "المهملات"
+msgstr "'المهملات'"
 
 #: data/org.gnome.nautilus.gschema.xml:308
-#, fuzzy
 #| msgid "Desktop trash icon name"
 msgid "Desktop Trash icon name"
 msgstr "اسم أيقونة المهملات على سطح المكتب"
 
 #: data/org.gnome.nautilus.gschema.xml:309
-#, fuzzy
 #| msgid ""
 #| "This name can be set if you want a custom name for the trash icon on the "
 #| "desktop."
@@ -654,11 +649,10 @@ msgstr ""
 "يمكن ضبط هذا الاسم إذا كنت تريد اسما خاصا لأيقونة المهملات على سطح المكتب."
 
 #: data/org.gnome.nautilus.gschema.xml:312
-#, fuzzy
 #| msgid "Network servers icon name"
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
-msgstr "اسم أيقونة خواديم الشبكة"
+msgstr "'خواديم الشبكة'"
 
 #: data/org.gnome.nautilus.gschema.xml:313
 msgid "Network servers icon name"
@@ -706,10 +700,9 @@ msgid ""
 msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:337
-#, fuzzy
 #| msgid "Whether the navigation window should be maximized."
 msgid "Whether the navigation window should be maximized"
-msgstr "ما إذا وجب أن تكون نافذة الإبحار مكبّرة."
+msgstr "ما إذا وجب أن تكون نافذة الإبحار مكبّرة"
 
 #: data/org.gnome.nautilus.gschema.xml:338
 msgid "Whether the navigation window should be maximized by default."
@@ -775,9 +768,8 @@ msgid " (invalid Unicode)"
 msgstr " (يونيكود غير صحيح)"
 
 #: nautilus-desktop/nautilus-desktop-application.c:257
-#, fuzzy
 msgid "Always manage the desktop (ignore the GSettings preference)."
-msgstr "لا تدِر سطح المكتب (تجاهل مجموعة التفضيلات في حوار التفضيلات)."
+msgstr "لا تدِر سطح المكتب (تجاهل تفضيلات GSettings)."
 
 #: nautilus-desktop/nautilus-desktop-directory-file.c:444
 #: nautilus-desktop/nautilus-desktop-icon-file.c:158
@@ -934,108 +926,101 @@ msgstr "_شغّل"
 #: src/nautilus-batch-rename-dialog.c:858
 #, c-format
 msgid "“%s” would not be a unique new name."
-msgstr ""
+msgstr "لن يكون ”%s“ اسمًا فريدًا جديدًا"
 
 #: src/nautilus-batch-rename-dialog.c:864
 #, c-format
 msgid "“%s” would conflict with an existing file."
-msgstr ""
+msgstr "سيتعارض ”%s“ مع ملف موجود."
 
 #: src/nautilus-batch-rename-dialog.c:1506
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:159
 msgid "Automatic Numbering Order"
-msgstr ""
+msgstr "ترتيب عددي تلقائي"
 
 #: src/nautilus-batch-rename-dialog.c:2125
-#, fuzzy, c-format
+#, c-format
 #| msgid "Untitled Folder"
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
-msgstr[0] "مجلد دون اسم"
-msgstr[1] "مجلد دون اسم"
-msgstr[2] "مجلد دون اسم"
-msgstr[3] "مجلد دون اسم"
-msgstr[4] "مجلد دون اسم"
-msgstr[5] "مجلد دون اسم"
+msgstr[0] "غيّر اسم مجلد"
+msgstr[1] "غيّر اسم مجلد"
+msgstr[2] "غيّر اسم مجلدين"
+msgstr[3] "غيّر اسم %d مجلدات"
+msgstr[4] "غيّر اسم %d مجلدًا"
+msgstr[5] "غيّر اسم %d مجلد"
 
 #: src/nautilus-batch-rename-dialog.c:2131
-#, fuzzy, c-format
+#, c-format
 #| msgid "Rename selected item"
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
-msgstr[0] "غيّر اسم العنصر المختار"
-msgstr[1] "غيّر اسم العنصر المختار"
-msgstr[2] "غيّر اسم العنصر المختار"
-msgstr[3] "غيّر اسم العنصر المختار"
-msgstr[4] "غيّر اسم العنصر المختار"
-msgstr[5] "غيّر اسم العنصر المختار"
+msgstr[0] "غيّر اسم ملف"
+msgstr[1] "غيّر اسم ملف"
+msgstr[2] "غيّر اسم ملفين"
+msgstr[3] "غيّر اسم %d ملفات"
+msgstr[4] "غيّر اسم %d ملفًا"
+msgstr[5] "غيّر اسم %d ملف"
 
 #: src/nautilus-batch-rename-dialog.h:88
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:184
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:482
 msgid "Original Name (Ascending)"
-msgstr ""
+msgstr "الاسم الأصلي (تصاعديًا)"
 
 #: src/nautilus-batch-rename-dialog.h:93
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:487
 msgid "Original Name (Descending)"
-msgstr ""
+msgstr "الاسم الأصلي (تنازليًا)"
 
 #: src/nautilus-batch-rename-dialog.h:98
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:492
-#, fuzzy
 #| msgid "Last _Modified"
 msgid "First Modified"
-msgstr "آخر _تعديل"
+msgstr "أول تعديل"
 
 #: src/nautilus-batch-rename-dialog.h:103
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:497
-#, fuzzy
 #| msgid "Last _Modified"
 msgid "Last Modified"
-msgstr "آخر _تعديل"
+msgstr "آخر تعديل"
 
 #: src/nautilus-batch-rename-dialog.h:108
-#, fuzzy
 #| msgid "Create"
 msgid "First Created"
-msgstr "أنشئ"
+msgstr "أول إنشاء"
 
 #: src/nautilus-batch-rename-dialog.h:113
-#, fuzzy
 #| msgid "Last _Trashed"
 msgid "Last Created"
-msgstr "آخر _حذف"
+msgstr "آخر إنشاء"
 
 #: src/nautilus-batch-rename-dialog.h:122
-#, fuzzy
 #| msgid "Camera Model"
 msgid "Camera model"
 msgstr "طِراز الكاميرا"
 
 #: src/nautilus-batch-rename-dialog.h:129
-#, fuzzy
 #| msgid "Create"
 msgid "Creation date"
-msgstr "أنشئ"
+msgstr "تاريخ الإنشاء"
 
 #: src/nautilus-batch-rename-dialog.h:136
 msgid "Season number"
-msgstr ""
+msgstr "رقم الجزء"
 
 #: src/nautilus-batch-rename-dialog.h:143
 msgid "Episode number"
-msgstr ""
+msgstr "رقم الحلقة"
 
 #: src/nautilus-batch-rename-dialog.h:150
 msgid "Track number"
-msgstr ""
+msgstr "رقم المقطوعة"
 
 #: src/nautilus-batch-rename-dialog.h:157
-#, fuzzy
 #| msgid "File name"
 msgid "Artist name"
-msgstr "اسم الملف"
+msgstr "اسم الفنان"
 
 #: src/nautilus-batch-rename-dialog.h:164
 #: src/nautilus-image-properties-page.c:382
@@ -1045,28 +1030,26 @@ msgid "Title"
 msgstr "العنوان"
 
 #: src/nautilus-batch-rename-dialog.h:171
-#, fuzzy
 #| msgid "File name"
 msgid "Album name"
-msgstr "اسم الملف"
+msgstr "اسم الألبوم"
 
 #: src/nautilus-batch-rename-dialog.h:178
-#, fuzzy
 #| msgid "Original file"
 msgid "Original file name"
-msgstr "الملف الأصلي"
+msgstr "اسم الملف الأصلي"
 
 #: src/nautilus-batch-rename-dialog.h:189
 msgid "1, 2, 3"
-msgstr ""
+msgstr "١، ٢، ٣"
 
 #: src/nautilus-batch-rename-dialog.h:196
 msgid "01, 02, 03"
-msgstr ""
+msgstr "٠١، ٠٢، ٠٣"
 
 #: src/nautilus-batch-rename-dialog.h:203
 msgid "001, 002, 003"
-msgstr ""
+msgstr "٠٠١، ٠٠٢، ٠٠٣"
 
 #: src/nautilus-bookmark.c:110 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
@@ -1160,10 +1143,9 @@ msgid "MIME Type"
 msgstr "نوع MIME"
 
 #: src/nautilus-column-utilities.c:121
-#, fuzzy
 #| msgid "The type of the file."
 msgid "The MIME type of the file."
-msgstr "نوع الملف."
+msgstr "نوع MIME للملف."
 
 #: src/nautilus-column-utilities.c:128 src/nautilus-image-properties-page.c:452
 msgid "Location"
@@ -1203,33 +1185,30 @@ msgstr "درجة مطابقة البحث"
 
 #: src/nautilus-compress-dialog-controller.c:29
 msgid "Compatible with all operating systems."
-msgstr ""
+msgstr "متوافق مع كل أنظمة التشغيل."
 
 #: src/nautilus-compress-dialog-controller.c:30
 msgid "Smaller archives but Linux and Mac only."
-msgstr ""
+msgstr "ملفات مضغوطة أصغر لكن لينكس و ماك فقط."
 
 #: src/nautilus-compress-dialog-controller.c:31
 msgid "Smaller archives but must be installed on Windows and Mac."
-msgstr ""
+msgstr "ملفات مضغوطة أصغر لكن يجب تثبيته على وندوز و ماك."
 
 #: src/nautilus-compress-dialog-controller.c:63
-#, fuzzy
 #| msgid "Files names cannot contain “/”."
 msgid "Archive names cannot contain “/”."
-msgstr "لا يمكن أن يحتوي اسم الملف على ”/“."
+msgstr "لا يمكن أن يحتوي اسم الملف المضغوط على ”/“."
 
 #: src/nautilus-compress-dialog-controller.c:67
-#, fuzzy
 #| msgid "A file can not be called “.”."
 msgid "An archive cannot be called “.”."
-msgstr "لا يمكن أن يحتوي اسم الملف على ”.“."
+msgstr "لا يمكن أن يحتوي اسم الملف المضغوط على ”.“."
 
 #: src/nautilus-compress-dialog-controller.c:71
-#, fuzzy
 #| msgid "A file can not be called “..”."
 msgid "An archive cannot be called “..”."
-msgstr "لا يمكن أن يحتوي اسم الملف على ”..“."
+msgstr "لا يمكن أن يحتوي اسم الملف المضغوط على ”..“."
 
 #: src/nautilus-desktop-item-properties.c:442
 #: src/nautilus-desktop-item-properties.c:454
@@ -1406,7 +1385,7 @@ msgstr "لا يمكن تغيير اسم ملفات المستوى الأول"
 
 #: src/nautilus-file.c:2222
 msgid "Probably the content of the file is an invalid desktop file format"
-msgstr ""
+msgstr "ربما محتويات الملف ليست بنسق ملفات سطح المكتب."
 
 #: src/nautilus-file.c:2377
 msgid "File not found"
@@ -1683,10 +1662,9 @@ msgstr "صفّر"
 
 #. Setup the checkbox to apply the action to all files
 #: src/nautilus-file-conflict-dialog.c:369
-#, fuzzy
 #| msgid "Apply this action to all files"
 msgid "Apply this action to all files and folders"
-msgstr "طبق هذا الإجراء على كل الملفات"
+msgstr "طبق هذا الإجراء على كل المجلدات"
 
 #: src/nautilus-file-conflict-dialog.c:384 src/nautilus-file-operations.c:226
 msgid "_Skip"
@@ -1702,21 +1680,18 @@ msgstr "استبدل"
 
 #: src/nautilus-file-name-widget-controller.c:106
 #: src/nautilus-rename-file-popover-controller.c:85
-#, fuzzy
 #| msgid "Files names cannot contain “/”."
 msgid "File names cannot contain “/”."
 msgstr "لا يمكن أن يحتوي اسم الملف على ”/“."
 
 #: src/nautilus-file-name-widget-controller.c:110
 #: src/nautilus-rename-file-popover-controller.c:96
-#, fuzzy
 #| msgid "A file can not be called “.”."
 msgid "A file cannot be called “.”."
 msgstr "لا يمكن أن يحتوي اسم الملف على ”.“."
 
 #: src/nautilus-file-name-widget-controller.c:114
 #: src/nautilus-rename-file-popover-controller.c:107
-#, fuzzy
 #| msgid "A file can not be called “..”."
 msgid "A file cannot be called “..”."
 msgstr "لا يمكن أن يحتوي اسم الملف على ”..“."
@@ -2060,30 +2035,26 @@ msgid "Error while deleting."
 msgstr "خطأ أثناء الحذف."
 
 #: src/nautilus-file-operations.c:1983
-#, fuzzy
 #| msgid "There was an error creating the folder “%B”."
 msgid "There was an error deleting the folder “%B”."
-msgstr "حدث خطأ أثناء إنشاء المجلد ”%B“."
+msgstr "حدث خطأ أثناء حذف المجلد ”%B“."
 
 #: src/nautilus-file-operations.c:1985
-#, fuzzy
 #| msgid ""
 #| "You do not have the permissions necessary to view the contents of “%s”."
 msgid "You do not have sufficient permissions to delete the folder “%B”."
-msgstr "لا تملك التصاريح الكافية لعرض محتويات ”%s“."
+msgstr "لا تملك التصاريح الكافية لحذف المجلد ”%s“."
 
 #: src/nautilus-file-operations.c:1991
-#, fuzzy
 #| msgid "There was an error creating the folder “%B”."
 msgid "There was an error deleting the file “%B”."
-msgstr "حدث خطأ أثناء إنشاء المجلد ”%B“."
+msgstr "حدث خطأ أثناء حذف الملف ”%B“."
 
 #: src/nautilus-file-operations.c:1993
-#, fuzzy
 #| msgid ""
 #| "You do not have the permissions necessary to view the contents of “%s”."
 msgid "You do not have sufficient permissions to delete the file “%B”."
-msgstr "لا تملك التصاريح الكافية لعرض محتويات ”%s“."
+msgstr "لا تملك التصاريح الكافية لحذف الملف ”%s“."
 
 #: src/nautilus-file-operations.c:2115
 msgid "Trashing “%B”"
@@ -2207,17 +2178,17 @@ msgstr[4] "يُحضر لنقل %I'd ملفا إلى المهملات"
 msgstr[5] "يُحضر لنقل %I'd ملف إلى المهملات"
 
 #: src/nautilus-file-operations.c:3088
-#, fuzzy, c-format
+#, c-format
 #| msgid "Preparing to move %'d file"
 #| msgid_plural "Preparing to move %'d files"
 msgid "Preparing to compress %'d file"
 msgid_plural "Preparing to compress %'d files"
-msgstr[0] "لا يُحضر لنقل أي ملفات"
-msgstr[1] "يُحضر لنقل ملف واحد"
-msgstr[2] "يُحضر لنقل ملفين"
-msgstr[3] "يُحضر لنقل %I'd ملفات"
-msgstr[4] "يُحضر لنقل %I'd ملفا"
-msgstr[5] "يُحضر لنقل %I'd ملف"
+msgstr[0] "لا يُحضر لضفط أي ملفات"
+msgstr[1] "يُحضر لضفط ملف واحد"
+msgstr[2] "يُحضر لضفط ملفين"
+msgstr[3] "يُحضر لضفط %I'd ملفات"
+msgstr[4] "يُحضر لضفط %I'd ملفا"
+msgstr[5] "يُحضر لضفط %I'd ملف"
 
 #: src/nautilus-file-operations.c:3121 src/nautilus-file-operations.c:4453
 #: src/nautilus-file-operations.c:4619 src/nautilus-file-operations.c:4680
@@ -2234,10 +2205,9 @@ msgid "Error while moving files to trash."
 msgstr "حدث خطأ أثناء نقل الملفات إلى المهملات."
 
 #: src/nautilus-file-operations.c:3140
-#, fuzzy
 #| msgid "Error while creating file %B."
 msgid "Error while compressing files."
-msgstr "خطأ أثناء إنشاء الملف %B."
+msgstr "خطأ أثناء ضغط الملفات."
 
 #: src/nautilus-file-operations.c:3201
 msgid ""
@@ -2491,10 +2461,10 @@ msgid "Error while copying “%B”."
 msgstr "خطأ أثناء نسخ ”%B“."
 
 #: src/nautilus-file-operations.c:4831
-#, fuzzy, c-format
+#, c-format
 #| msgid "Could not remove the already existing file %F."
 msgid "Could not remove the already existing folder %F."
-msgstr "تعذّر إزالة الملف %F الموجود مسبقا."
+msgstr "تعذّر إزالة المجلد %F الموجود مسبقا."
 
 #: src/nautilus-file-operations.c:4836
 #, c-format
@@ -2635,126 +2605,111 @@ msgstr "تعذّر التأشير بالموثوقية على المُطلق (ت
 
 #: src/nautilus-file-operations.c:8143
 msgid "Verifying destination"
-msgstr ""
+msgstr "يتحقق من الوِجهة"
 
 #: src/nautilus-file-operations.c:8183
-#, fuzzy
 #| msgid "Trashing “%B”"
 msgid "Extracting “%B”"
-msgstr "يرسل ”%B“ إلى المهملات"
+msgstr "يستخرج ”%s“"
 
 #: src/nautilus-file-operations.c:8275
-#, fuzzy
 #| msgid "Error while copying “%B”."
 msgid "Error extracting “%B”"
-msgstr "خطأ أثناء نسخ ”%B“."
+msgstr "خطأ أثناء استخراج ”%B“."
 
 #: src/nautilus-file-operations.c:8279
-#, fuzzy
 #| msgid "There was an error deleting %B."
 msgid "There was an error while extracting “%B”."
-msgstr "حدث خطأ أثناء حذف المجلد %B."
+msgstr "حدث خطأ أثناء استخراج المجلد ”%B“."
 
 #: src/nautilus-file-operations.c:8320
-#, fuzzy
 #| msgid "Moved “%B” to “%B”"
 msgid "Extracted “%B” to “%B”"
-msgstr "نقل ”%B“ إلى ”%B“"
+msgstr "استخرج ”%B“ إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8326
-#, fuzzy
 #| msgid "Moved %'d file to “%B”"
 #| msgid_plural "Moved %'d files to “%B”"
 msgid "Extracted %'d file to “%B”"
 msgid_plural "Extracted %'d files to “%B”"
-msgstr[0] "لم ينقل أي ملف إلى المهملات"
-msgstr[1] "نقل ملفًا واحدًا إلى المهملات"
-msgstr[2] "نقل ملفين إلى المهملات"
-msgstr[3] "نقل %'d ملفات إلى المهملات"
-msgstr[4] "نقل %'d ملفًا إلى المهملات"
-msgstr[5] "نقل %'d ملف إلى المهملات"
+msgstr[0] "لم يستخرج أي ملف إلى ”%B“"
+msgstr[1] "استخرج ملفًا واحدًا إلى ”%B“"
+msgstr[2] "استخرج ملفين إلى ”%B“"
+msgstr[3] "استخرج %'d ملفات إلى ”%B“"
+msgstr[4] "استخرج %'d ملفًا إلى ”%B“"
+msgstr[5] "استخرج %'d ملف إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8359
-#, fuzzy
 #| msgid "Preparing to trash %'d file"
 #| msgid_plural "Preparing to trash %'d files"
 msgid "Preparing to extract"
-msgstr "لا يُحضر لنقل أي ملف إلى المهملات"
+msgstr "يحضر للاستخراج"
 
 #: src/nautilus-file-operations.c:8485
-#, fuzzy
 #| msgid "Trashing Files"
 msgid "Extracting Files"
-msgstr "إرسال الملفات للمهملات"
+msgstr "يستخرج الملفات"
 
 #: src/nautilus-file-operations.c:8540
-#, fuzzy
 #| msgid "Copying “%B” to “%B”"
 msgid "Compressing “%B” into “%B”"
-msgstr "ينسخ ”%B“ إلى ”%B“"
+msgstr "يضغط ”%B“ إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8546
-#, fuzzy
 #| msgid "Copying %'d file to “%B”"
 #| msgid_plural "Copying %'d files to “%B”"
 msgid "Compressing %'d file into “%B”"
 msgid_plural "Compressing %'d files into “%B”"
-msgstr[0] "لا ينسخ أي ملفات إلى ”%B“"
-msgstr[1] "ينسخ ملفًا واحدًا إلى ”%B“"
-msgstr[2] "ينسخ ملفين إلى ”%B“"
-msgstr[3] "ينسخ %'d ملفات إلى ”%B“"
-msgstr[4] "ينسخ %'d ملفًا إلى ”%B“"
-msgstr[5] "ينسخ %'d ملف إلى ”%B“"
+msgstr[0] "لا يضغط أي ملفات إلى ”%B“"
+msgstr[1] "يضغط ملفًا واحدًا إلى ”%B“"
+msgstr[2] "يضغط ملفين إلى ”%B“"
+msgstr[3] "يضغط %'d ملفات إلى ”%B“"
+msgstr[4] "يضغط %'d ملفًا إلى ”%B“"
+msgstr[5] "يضغط %'d ملف إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8667
-#, fuzzy
 #| msgid "Copying “%B” to “%B”"
 msgid "Error compressing “%B” into “%B”"
-msgstr "ينسخ ”%B“ إلى ”%B“"
+msgstr "خطأ أثناء ضغط ”%B“ إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8673
-#, fuzzy
 #| msgid "Copying %'d file to “%B”"
 #| msgid_plural "Copying %'d files to “%B”"
 msgid "Error compressing %'d file into “%B”"
 msgid_plural "Error compressing %'d files into “%B”"
-msgstr[0] "لا ينسخ أي ملفات إلى ”%B“"
-msgstr[1] "ينسخ ملفًا واحدًا إلى ”%B“"
-msgstr[2] "ينسخ ملفين إلى ”%B“"
-msgstr[3] "ينسخ %'d ملفات إلى ”%B“"
-msgstr[4] "ينسخ %'d ملفًا إلى ”%B“"
-msgstr[5] "ينسخ %'d ملف إلى ”%B“"
+msgstr[0] "خطأ في ضغط %'d ملفات إلى ”%B“"
+msgstr[1] "خطأ في ضغط %.0sملف إلى ”%B“"
+msgstr[2] "خطأ في ضغط %.0sملفين إلى ”%B“"
+msgstr[3] "خطأ في ضغط %'d ملفات إلى ”%B“"
+msgstr[4] "خطأ في ضغط %'d ملفا إلى ”%B“"
+msgstr[5] "خطأ في ضغط %'d ملف إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8684
-#, fuzzy
 #| msgid "There was an error copying the file into %F."
 msgid "There was an error while compressing files."
-msgstr "حدث خطأ أثناء نسخ الملف إلى %F."
+msgstr "حدث خطأ أثناء ضغط الملفات."
 
 #: src/nautilus-file-operations.c:8704
-#, fuzzy
 #| msgid "Copied “%B” to “%B”"
 msgid "Compressed “%B” into “%B”"
-msgstr "نسخ ”%B“ إلى ”%B“"
+msgstr "ضغط ”%B“ إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8710
-#, fuzzy
 #| msgid "Copied %'d file to “%B”"
 #| msgid_plural "Copied %'d files to “%B”"
 msgid "Compressed %'d file into “%B”"
 msgid_plural "Compressed %'d files into “%B”"
-msgstr[0] "لم ينسخ أي ملف إلى المهملات"
-msgstr[1] "نسخ ملفًا واحدًا إلى المهملات"
-msgstr[2] "نسخ ملفين إلى المهملات"
-msgstr[3] "نسخ %'d ملفات إلى المهملات"
-msgstr[4] "نسخ %'d ملفًا إلى المهملات"
-msgstr[5] "نسخ %'d ملف إلى المهملات"
+msgstr[0] "لم يضغط أي ملفات"
+msgstr[1] "ضُغِط %.0sملف إلى ”%B“"
+msgstr[2] "ضُغِط %.0sملفين إلى ”%B“"
+msgstr[3] "ضُغِطت %'d ملفات إلى ”%B“"
+msgstr[4] "ضُغِط %'d ملفا إلى ”%B“"
+msgstr[5] "ضُغِط %'d ملف إلى ”%B“"
 
 #: src/nautilus-file-operations.c:8801
-#, fuzzy
 #| msgid "Copying Files"
 msgid "Compressing Files"
-msgstr "نسخ الملفات"
+msgstr "يضغط الملفات"
 
 #: src/nautilus-files-view.c:394
 msgid "Searching…"
@@ -2914,10 +2869,9 @@ msgid "Select Copy Destination"
 msgstr "اختر وِجهة النسخ"
 
 #: src/nautilus-files-view.c:6166
-#, fuzzy
 #| msgid "Select Move Destination"
 msgid "Select Extract Destination"
-msgstr "اختر وِجهة النقل"
+msgstr "اختر وِجهة الاستخراج"
 
 #. Translators: %s is a file name formatted for display
 #: src/nautilus-files-view.c:6403
@@ -2962,14 +2916,13 @@ msgid "Run"
 msgstr "شغّل"
 
 #: src/nautilus-files-view.c:7482
-#, fuzzy
 #| msgid "E_xtra Pane"
 msgid "Extract Here"
-msgstr "اللوح الإ_ضافي"
+msgstr "استخرج هنا"
 
 #: src/nautilus-files-view.c:7483
 msgid "Extract to…"
-msgstr ""
+msgstr "استخرج إلى…"
 
 #: src/nautilus-files-view.c:7487
 msgid "Open"
@@ -3383,28 +3336,26 @@ msgstr "أ_عد تغيير الاسم"
 
 #: src/nautilus-file-undo-operations.c:1106
 #: src/nautilus-file-undo-operations.c:1110
-#, fuzzy, c-format
+#, c-format
 #| msgid "Unable to rename desktop file"
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
-msgstr[0] "تعذر تغيير اسم ملف سطح المكتب"
-msgstr[1] "تعذر تغيير اسم ملف سطح المكتب"
-msgstr[2] "تعذر تغيير اسم ملف سطح المكتب"
-msgstr[3] "تعذر تغيير اسم ملف سطح المكتب"
-msgstr[4] "تعذر تغيير اسم ملف سطح المكتب"
-msgstr[5] "تعذر تغيير اسم ملف سطح المكتب"
+msgstr[0] "تغيير جماعي لاسم ملف"
+msgstr[1] "تغيير جماعي لاسم ملف واحد"
+msgstr[2] "تغيير جماعي لاسم ملفين"
+msgstr[3] "تغيير جماعي لاسم %d ملفات"
+msgstr[4] "تغيير جماعي لاسم %d ملفًا"
+msgstr[5] "تغيير جماعي لاسم %d ملف"
 
 #: src/nautilus-file-undo-operations.c:1115
-#, fuzzy
 #| msgid "_Undo Rename"
 msgid "_Undo Batch Rename"
-msgstr "_تراجع عن تغيير الاسم"
+msgstr "_تراجع عن تغيير الاسم الجماعي"
 
 #: src/nautilus-file-undo-operations.c:1116
-#, fuzzy
 #| msgid "_Redo Rename"
 msgid "_Redo Batch Rename"
-msgstr "أ_عد تغيير الاسم"
+msgstr "أ_عد تغيير الاسم الجماعي"
 
 #: src/nautilus-file-undo-operations.c:1413
 #, c-format
@@ -3502,78 +3453,74 @@ msgid "_Redo Change Owner"
 msgstr "أ_عد تغيير المالك"
 
 #: src/nautilus-file-undo-operations.c:2154
-#, fuzzy
 #| msgid "_Undo Trash"
 msgid "_Undo Extract"
-msgstr "_تراجع عن النقل للمُهملات"
+msgstr "_تراجع عن الاستخراج"
 
 #: src/nautilus-file-undo-operations.c:2155
-#, fuzzy
 #| msgid "_Redo Trash"
 msgid "_Redo Extract"
-msgstr "أ_عد النقل للمُهملات"
+msgstr "أ_عد الاستخراج"
 
 #: src/nautilus-file-undo-operations.c:2172
-#, fuzzy, c-format
+#, c-format
 #| msgid "Delete %d copied item"
 #| msgid_plural "Delete %d copied items"
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
-msgstr[0] "احذف %Id عنصر منسوخ"
-msgstr[1] "احذف عنصر واحد منسوخ"
-msgstr[2] "احذف عنصرين منسوخين"
-msgstr[3] "احذف %Id عناصر منسوخة"
-msgstr[4] "احذف %Id عنصرا منسوخا"
-msgstr[5] "احذف %Id عنصر منسوخ"
+msgstr[0] "احذف %Id ملف مُستخرج"
+msgstr[1] "احذف ملف واحد مُستخرج"
+msgstr[2] "احذف ملفين مُستخرجين"
+msgstr[3] "احذف %Id ملفات مُستخرجة"
+msgstr[4] "احذف %Id ملفًا مُستخرجًا"
+msgstr[5] "احذف %Id ملف مُستخرج"
 
 #: src/nautilus-file-undo-operations.c:2186
 #, c-format
 msgid "Extract '%s'"
-msgstr ""
+msgstr "استخرج ’%s‘"
 
 #: src/nautilus-file-undo-operations.c:2190
-#, fuzzy, c-format
+#, c-format
 #| msgid "Trashed %'d file"
 #| msgid_plural "Trashed %'d files"
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
-msgstr[0] "لم يُرسل أي ملف إلى المهملات"
-msgstr[1] "أرسل ملفًا واحدًا إلى المهملات"
-msgstr[2] "أرسل ملفين إلى المهملات"
-msgstr[3] "أرسل %'d ملفات إلى المهملات"
-msgstr[4] "أرسل %'d ملفًا إلى المهملات"
-msgstr[5] "أرسل %'d ملف إلى المهملات"
+msgstr[0] "استُخرِج %d ملف"
+msgstr[1] "استُخرِج ملف واحد"
+msgstr[2] "استُخرِج ملفين"
+msgstr[3] "استُخرِج %d ملفات"
+msgstr[4] "استُخرِج %d ملفًا"
+msgstr[5] "استُخرِج %d ملف"
 
 #: src/nautilus-file-undo-operations.c:2341
-#, fuzzy, c-format
+#, c-format
 #| msgid "Copy '%s' to '%s'"
 msgid "Compress '%s'"
-msgstr "انسخ '%s' إلى '%s'"
+msgstr "اضغط ’%s‘"
 
 #: src/nautilus-file-undo-operations.c:2345
-#, fuzzy, c-format
+#, c-format
 #| msgid "Trashed %'d file"
 #| msgid_plural "Trashed %'d files"
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
-msgstr[0] "لم يُرسل أي ملف إلى المهملات"
-msgstr[1] "أرسل ملفًا واحدًا إلى المهملات"
-msgstr[2] "أرسل ملفين إلى المهملات"
-msgstr[3] "أرسل %'d ملفات إلى المهملات"
-msgstr[4] "أرسل %'d ملفًا إلى المهملات"
-msgstr[5] "أرسل %'d ملف إلى المهملات"
+msgstr[0] "ضُغِط %d ملف"
+msgstr[1] "ضُغِط ملف واحد"
+msgstr[2] "ضُغِط ملفين"
+msgstr[3] "ضُغِط %d ملفات"
+msgstr[4] "ضُغِط %d ملفًا"
+msgstr[5] "ضُغِط %d ملف"
 
 #: src/nautilus-file-undo-operations.c:2351
-#, fuzzy
 #| msgid "_Undo Copy"
 msgid "_Undo Compress"
-msgstr "_تراجع عن النسخ"
+msgstr "_تراجع عن الضغط"
 
 #: src/nautilus-file-undo-operations.c:2352
-#, fuzzy
 #| msgid "_Redo Copy"
 msgid "_Redo Compress"
-msgstr "أ_عد النسخ"
+msgstr "أ_عد الضغط"
 
 #: src/nautilus-file-utilities.c:978
 #, c-format
@@ -3811,10 +3758,9 @@ msgstr[5] "سيفتح هذا %I'd نافذة منفصلة."
 
 #: src/nautilus-mime-actions.c:99
 #: src/resources/ui/nautilus-search-popover.ui:275
-#, fuzzy
 #| msgid "nothing"
 msgid "Anything"
-msgstr "لا شيء"
+msgstr "أي شيء"
 
 #: src/nautilus-mime-actions.c:109 src/nautilus-properties-window.c:4631
 msgid "Folders"
@@ -3833,10 +3779,9 @@ msgid "Music"
 msgstr "موسيقى"
 
 #: src/nautilus-mime-actions.c:154
-#, fuzzy
 #| msgid "Pdf / Postscript"
 msgid "PDF / PostScript"
-msgstr "Pdf / Postscript"
+msgstr "PDF / PostScript"
 
 #: src/nautilus-mime-actions.c:160
 msgid "Picture"
@@ -4051,17 +3996,15 @@ msgstr "لا يمكن أن يحتوي اسم المجلّد على ”/“."
 
 #: src/nautilus-new-folder-dialog-controller.c:56
 #: src/nautilus-rename-file-popover-controller.c:92
-#, fuzzy
 #| msgid "A folder can not be called “.”."
 msgid "A folder cannot be called “.”."
-msgstr "لا يمكن أن يحتوي اسم المجلد على ”.“."
+msgstr "لا يمكن أن يكون اسم المجلد ”.“."
 
 #: src/nautilus-new-folder-dialog-controller.c:60
 #: src/nautilus-rename-file-popover-controller.c:103
-#, fuzzy
 #| msgid "A folder can not be called “..”."
 msgid "A folder cannot be called “..”."
-msgstr "لا يمكن أن يحتوي اسم المجلد على ”..“."
+msgstr "لا يمكن أن يكوم اسم المجلد ”..“."
 
 #: src/nautilus-new-folder-dialog-controller.c:128
 #: src/resources/ui/nautilus-compress-dialog.ui:137
@@ -4148,17 +4091,15 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "هناك ملف آخر بنفس الاسم موجود في ”%s“."
 
 #: src/nautilus-operations-ui-manager.c:267
-#, fuzzy
 #| msgid "Original file"
 msgid "Original folder"
-msgstr "الملف الأصلي"
+msgstr "المجلد الأصلي"
 
 #: src/nautilus-operations-ui-manager.c:268
 #: src/nautilus-operations-ui-manager.c:300
-#, fuzzy
 #| msgid "? items"
 msgid "Items:"
-msgstr "؟ عناصر"
+msgstr "عناصر:"
 
 #: src/nautilus-operations-ui-manager.c:272
 msgid "Original file"
@@ -4182,10 +4123,9 @@ msgid "Last modified:"
 msgstr "آخر تعديل:"
 
 #: src/nautilus-operations-ui-manager.c:299
-#, fuzzy
 #| msgid "Merge"
 msgid "Merge with"
-msgstr "ادمج"
+msgstr "ادمج مع"
 
 #: src/nautilus-operations-ui-manager.c:299
 #: src/nautilus-operations-ui-manager.c:304
@@ -4197,17 +4137,15 @@ msgid "Merge"
 msgstr "ادمج"
 
 #: src/nautilus-operations-ui-manager.c:368
-#, fuzzy
 #| msgid "New Folder"
 msgid "Merge Folder"
-msgstr "مجلّد جديد"
+msgstr "ادمج المجلد"
 
 #: src/nautilus-operations-ui-manager.c:369
 #: src/nautilus-operations-ui-manager.c:374
-#, fuzzy
 #| msgid "File conflict"
 msgid "File and Folder conflict"
-msgstr "تعارض في الملفات"
+msgstr "تعارض في الملفات و المجلدات"
 
 #: src/nautilus-operations-ui-manager.c:375
 msgid "File conflict"
@@ -4253,10 +4191,9 @@ msgid "Details: "
 msgstr "التفاصيل: "
 
 #: src/nautilus-progress-info.c:312
-#, fuzzy
 #| msgid "Cancelled"
 msgid "Canceled"
-msgstr "اُلغي"
+msgstr "أُلغِيَ"
 
 #: src/nautilus-progress-info.c:378 src/nautilus-progress-info.c:399
 msgid "Preparing"
@@ -4584,32 +4521,28 @@ msgid "Search for “%s”"
 msgstr "ابحث عن ”%s“"
 
 #: src/nautilus-query-editor.c:133
-#, fuzzy
 #| msgid "Searching for network locations"
 msgid "Searching locations only"
-msgstr "يبحث عن أماكن الشبكة"
+msgstr "يبحث في الأماكن فقط"
 
 #: src/nautilus-query-editor.c:137
 msgid "Searching devices only"
-msgstr ""
+msgstr "يبحث في الأجهزة فقط"
 
 #: src/nautilus-query-editor.c:141
-#, fuzzy
 #| msgid "Searching for network locations"
 msgid "Searching network locations only"
-msgstr "يبحث عن أماكن الشبكة"
+msgstr "يبحث عن أماكن الشبكة فقط"
 
 #: src/nautilus-query-editor.c:146
-#, fuzzy
 #| msgid "Remote location — only searching the current folder"
 msgid "Remote location - only searching the current folder"
-msgstr "مكان بعيد — يبحث في المجلد الحالي فقط"
+msgstr "مكان بعيد – يبحث في المجلد الحالي فقط"
 
 #: src/nautilus-query-editor.c:150
-#, fuzzy
 #| msgid "Remote location — only searching the current folder"
 msgid "Only searching the current folder"
-msgstr "مكان بعيد — يبحث في المجلد الحالي فقط"
+msgstr "يبحث في المجلد الحالي فقط"
 
 #: src/nautilus-rename-file-popover-controller.c:191
 msgid "File name"
@@ -4621,17 +4554,17 @@ msgstr "تعذّر إكمال البحث المطلوب"
 
 #: src/nautilus-search-popover.c:288
 msgid "Show a list to select the date"
-msgstr ""
+msgstr "اعرض قائمة لاختيار التاريخ"
 
 #: src/nautilus-search-popover.c:294
 #: src/resources/ui/nautilus-search-popover.ui:96
 msgid "Show a calendar to select the date"
-msgstr ""
+msgstr "اعرض تقويم لاختيار التاريخ"
 
 #. Add the no date filter element first
 #: src/nautilus-search-popover.c:390
 msgid "Any time"
-msgstr ""
+msgstr "أي وقت"
 
 #. Other types
 #: src/nautilus-search-popover.c:484
@@ -4648,10 +4581,9 @@ msgstr "اختر"
 
 #: src/nautilus-search-popover.c:633
 #: src/resources/ui/nautilus-search-popover.ui:51
-#, fuzzy
 #| msgid "Select type"
 msgid "Select Dates…"
-msgstr "اختر نوع"
+msgstr "اختر التواريخ…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:215
@@ -4660,16 +4592,17 @@ msgid "Trash"
 msgstr "المهملات"
 
 #: src/nautilus-special-location-bar.c:56
-#, fuzzy
 #| msgid "Files in this folder will appear in the New Document menu."
 msgid "Put files in this folder to use them as templates for new documents."
-msgstr "ستظهر ملفات هذا المجلد في قائمة ”مستند جديد“."
+msgstr "ضع ملفات هذا المجلد لاستخدامهم كقوالب للمستندات الجديدة."
 
 #: src/nautilus-special-location-bar.c:57
 msgid ""
 "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for templates"
 "\">Learn more…</a>"
 msgstr ""
+"<a href=\"help:gnome-help/files-templates\" title=\"مساعدة جنوم للقوالب\">"
+"اطلع على المزيد…</a>"
 
 #: src/nautilus-special-location-bar.c:63
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -4707,49 +4640,49 @@ msgstr "احذف كل العناصر في المهملات"
 #, c-format
 msgid "%d day ago"
 msgid_plural "%d days ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "منذ أقل من يوم"
+msgstr[1] "منذ يوم"
+msgstr[2] "منذ يومين"
+msgstr[3] "منذ %d أيام"
+msgstr[4] "منذ %d يومًا"
+msgstr[5] "منذ %d يوم"
 
 #. weeks
 #: src/nautilus-ui-utilities.c:404
-#, fuzzy, c-format
+#, c-format
 #| msgid "Last _Opened"
 msgid "Last week"
 msgid_plural "%d weeks ago"
-msgstr[0] "آخر _فتح"
-msgstr[1] "آخر _فتح"
-msgstr[2] "آخر _فتح"
-msgstr[3] "آخر _فتح"
-msgstr[4] "آخر _فتح"
-msgstr[5] "آخر _فتح"
+msgstr[0] "آخر أسبوع"
+msgstr[1] "آخر أسبوع"
+msgstr[2] "منذ أسبوعين"
+msgstr[3] "منذ %d أسابيع"
+msgstr[4] "منذ %d أسبوعًا"
+msgstr[5] "منذ %d أسبوع"
 
 #. months
 #: src/nautilus-ui-utilities.c:409
 #, c-format
 msgid "Last month"
 msgid_plural "%d months ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "الشهر الماضي"
+msgstr[1] "الشهر الماضي"
+msgstr[2] "منذ شهرين"
+msgstr[3] "منذ %d أشهر"
+msgstr[4] "منذ %d شهرًا"
+msgstr[5] "منذ %d شهر"
 
 #. years
 #: src/nautilus-ui-utilities.c:414
 #, c-format
 msgid "Last year"
 msgid_plural "%d years ago"
-msgstr[0] ""
-msgstr[1] ""
-msgstr[2] ""
-msgstr[3] ""
-msgstr[4] ""
-msgstr[5] ""
+msgstr[0] "السنة الماضية"
+msgstr[1] "السنة الماضية"
+msgstr[2] "منذ سنتين"
+msgstr[3] "منذ %d سنوات"
+msgstr[4] "منذ %d سنة"
+msgstr[5] "منذ %d سنة"
 
 #: src/nautilus-window.c:1405
 msgid "_Properties"
@@ -4879,372 +4812,325 @@ msgstr "افتح باستخدام:"
 #: src/resources/gtk/help-overlay.ui:13
 msgctxt "shortcut window"
 msgid "General"
-msgstr ""
+msgstr "عام"
 
 #: src/resources/gtk/help-overlay.ui:17
-#, fuzzy
 #| msgid "New _Window"
 msgctxt "shortcut window"
 msgid "New window"
-msgstr "نافذة _جديدة"
+msgstr "نافذة جديدة"
 
 #: src/resources/gtk/help-overlay.ui:24
-#, fuzzy
 #| msgid "Close tab"
 msgctxt "shortcut window"
 msgid "Close window or tab"
-msgstr "أغلق اللسان"
+msgstr "أغلق النافذة أو اللسان"
 
 #: src/resources/gtk/help-overlay.ui:31
-#, fuzzy
 #| msgid "Search"
 msgctxt "shortcut window"
 msgid "Search"
 msgstr "ابحث"
 
 #: src/resources/gtk/help-overlay.ui:38
-#, fuzzy
 #| msgid "Bookmarks"
 msgctxt "shortcut window"
 msgid "Bookmarks"
 msgstr "العلامات"
 
 #: src/resources/gtk/help-overlay.ui:45
-#, fuzzy
 #| msgid "Add a bookmark for the current location"
 msgctxt "shortcut window"
 msgid "Bookmark current location"
-msgstr "أضِف علامة للمكان الحاليّ"
+msgstr "علّم المكان الحاليّ"
 
 #: src/resources/gtk/help-overlay.ui:52
-#, fuzzy
 #| msgid "Show Details"
 msgctxt "shortcut window"
 msgid "Show help"
-msgstr "أظهر التفاصيل"
+msgstr "اعرض المساعدة"
 
 #: src/resources/gtk/help-overlay.ui:59
 msgctxt "shortcut window"
 msgid "Shortcuts"
-msgstr ""
+msgstr "الاختصارات"
 
 #: src/resources/gtk/help-overlay.ui:68
-#, fuzzy
 #| msgid "Open"
 msgctxt "shortcut window"
 msgid "Opening"
-msgstr "افتح"
+msgstr "الفتح"
 
 #: src/resources/gtk/help-overlay.ui:72
-#, fuzzy
 #| msgid "Open"
 msgctxt "shortcut window"
 msgid "Open"
 msgstr "افتح"
 
 #: src/resources/gtk/help-overlay.ui:79
-#, fuzzy
 #| msgid "Open in New _Tab"
 msgctxt "shortcut window"
 msgid "Open in new tab"
-msgstr "افتح في _لسان جديد"
+msgstr "افتح في لسان جديد"
 
 #: src/resources/gtk/help-overlay.ui:86
-#, fuzzy
 #| msgid "Open in New _Window"
 msgctxt "shortcut window"
 msgid "Open in new window"
-msgstr "افتح في _نافذة جديدة"
+msgstr "افتح في نافذة جديدة"
 
 #: src/resources/gtk/help-overlay.ui:93
-#, fuzzy
 #| msgid "Remote location — only searching the current folder"
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
-msgstr "مكان بعيد — يبحث في المجلد الحالي فقط"
+msgstr "افتح مكان العنصر (البحث و الملفات الحديثة فقط)"
 
 #: src/resources/gtk/help-overlay.ui:100
-#, fuzzy
 #| msgid "Open File and Close window"
 msgctxt "shortcut window"
 msgid "Open file and close window"
-msgstr "افتح الملف وأغلق النافذة"
+msgstr "افتح الملف و أغلق النافذة"
 
 #: src/resources/gtk/help-overlay.ui:107
-#, fuzzy
 #| msgid "Open With Other _Application"
 msgctxt "shortcut window"
 msgid "Open with default application"
-msgstr "افتح ب_تطبيق آخر"
+msgstr "افتح بالتطبيق المبدئي"
 
 #: src/resources/gtk/help-overlay.ui:116
-#, fuzzy
 #| msgid "_Tabs"
 msgctxt "shortcut window"
 msgid "Tabs"
-msgstr "أ_لسنة"
+msgstr "الألسنة"
 
 #: src/resources/gtk/help-overlay.ui:120
-#, fuzzy
 #| msgid "New _Tab"
 msgctxt "shortcut window"
 msgid "New tab"
-msgstr "_لسان جديد"
+msgstr "لسان جديد"
 
 #: src/resources/gtk/help-overlay.ui:127
-#, fuzzy
 #| msgid "Activate previous tab"
 msgctxt "shortcut window"
 msgid "Go to previous tab"
-msgstr "نشّط اللسان السابق"
+msgstr "اذهب إلى اللسان السابق"
 
 #: src/resources/gtk/help-overlay.ui:134
-#, fuzzy
 #| msgid "Activate next tab"
 msgctxt "shortcut window"
 msgid "Go to next tab"
-msgstr "نشّط اللسان التالي"
+msgstr "اذهب إلى اللسان التالي"
 
 #: src/resources/gtk/help-overlay.ui:141
-#, fuzzy
 #| msgid "Open With"
 msgctxt "shortcut window"
 msgid "Open tab"
-msgstr "افتح باستخدام"
+msgstr "افتح لسان"
 
 #: src/resources/gtk/help-overlay.ui:148
-#, fuzzy
 #| msgid "Move Tab _Left"
 msgctxt "shortcut window"
 msgid "Move tab left"
-msgstr "انقل اللسان _يسارا"
+msgstr "انقل اللسان يسارا"
 
 #: src/resources/gtk/help-overlay.ui:155
-#, fuzzy
 #| msgid "Move Tab _Right"
 msgctxt "shortcut window"
 msgid "Move tab right"
-msgstr "انقل اللسان ي_مينا"
+msgstr "انقل اللسان يمينا"
 
 #: src/resources/gtk/help-overlay.ui:164
 msgctxt "shortcut window"
 msgid "Navigation"
-msgstr ""
+msgstr "الإبحار"
 
 #: src/resources/gtk/help-overlay.ui:168
 msgctxt "shortcut window"
 msgid "Go back"
-msgstr ""
+msgstr "ارجع للخلف"
 
 #: src/resources/gtk/help-overlay.ui:175
-#, fuzzy
 #| msgid "_Forward"
 msgctxt "shortcut window"
 msgid "Go forward"
-msgstr "للأ_مام"
+msgstr "اذهب للأمام"
 
 #: src/resources/gtk/help-overlay.ui:182
 msgctxt "shortcut window"
 msgid "Go up"
-msgstr ""
+msgstr "اذهب للأعلى"
 
 #: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go down"
-msgstr ""
+msgstr "اذهب للأسفل"
 
 #: src/resources/gtk/help-overlay.ui:196
-#, fuzzy
 #| msgid "Close this folder"
 msgctxt "shortcut window"
 msgid "Go to home folder"
-msgstr "أغلق هذا المجلد"
+msgstr "اذهب إلى مجلد المنزل"
 
 #: src/resources/gtk/help-overlay.ui:203
-#, fuzzy
 #| msgid "Enter _Location"
 msgctxt "shortcut window"
 msgid "Enter location"
-msgstr "أدخل _مكانا"
+msgstr "أدخل مكانا"
 
 #: src/resources/gtk/help-overlay.ui:210
 msgctxt "shortcut window"
 msgid "Location bar with root location"
-msgstr ""
+msgstr "شريط المكان مع الجذر"
 
 #: src/resources/gtk/help-overlay.ui:217
 msgctxt "shortcut window"
 msgid "Location bar with home location"
-msgstr ""
+msgstr "شريط المكان مع المنزل"
 
 #: src/resources/gtk/help-overlay.ui:226
-#, fuzzy
 #| msgid "Views"
 msgctxt "shortcut window"
 msgid "View"
-msgstr "المشاهد"
+msgstr "عرض"
 
 #: src/resources/gtk/help-overlay.ui:230
-#, fuzzy
 #| msgid "Zoom In"
 msgctxt "shortcut window"
 msgid "Zoom in"
 msgstr "قرّب"
 
 #: src/resources/gtk/help-overlay.ui:237
-#, fuzzy
 #| msgid "Zoom Out"
 msgctxt "shortcut window"
 msgid "Zoom out"
 msgstr "بعّد"
 
 #: src/resources/gtk/help-overlay.ui:244
-#, fuzzy
 #| msgid "Reset"
 msgctxt "shortcut window"
 msgid "Reset zoom"
-msgstr "صفّر"
+msgstr "صفّر التقريب"
 
 #: src/resources/gtk/help-overlay.ui:251
-#, fuzzy
 #| msgid "Use tree view"
 msgctxt "shortcut window"
 msgid "Refresh view"
-msgstr "استخدم المنظور الشجري"
+msgstr "أنعش المنظور"
 
 #: src/resources/gtk/help-overlay.ui:258
-#, fuzzy
 #| msgid "Show _Hidden Files"
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
-msgstr "أظهر الملفات ال_مخفيّة"
+msgstr "أظهر أو أخْف الملفات المخفيّة"
 
 #: src/resources/gtk/help-overlay.ui:265
-#, fuzzy
 #| msgid "_Show Sidebar"
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
-msgstr "أظهر ال_شريط الجانبي"
+msgstr "أظهر أو أخْف الشريط الجانبي"
 
 #: src/resources/gtk/help-overlay.ui:272
-#, fuzzy
 #| msgid "Open action menu"
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
-msgstr "افتح قائمة الإجراءات"
+msgstr "افتح أو أغلق قائمة الإجراءات"
 
 #: src/resources/gtk/help-overlay.ui:279
-#, fuzzy
 #| msgid "List View"
 msgctxt "shortcut window"
 msgid "List view"
 msgstr "منظور القائمة"
 
 #: src/resources/gtk/help-overlay.ui:286
-#, fuzzy
 #| msgid "Preview"
 msgctxt "shortcut window"
 msgid "Grid view"
-msgstr "معاينة"
+msgstr "منظور الشبكة"
 
 #: src/resources/gtk/help-overlay.ui:295
-#, fuzzy
 #| msgid "Edit"
 msgctxt "shortcut window"
 msgid "Editing"
-msgstr "حرّر"
+msgstr "التحرير"
 
 #: src/resources/gtk/help-overlay.ui:299
-#, fuzzy
 #| msgid "_Undo Create Folder"
 msgctxt "shortcut window"
 msgid "Create folder"
-msgstr "_تراجع عن إنشاء مجلد"
+msgstr "أنشئ مجلّدا"
 
 #: src/resources/gtk/help-overlay.ui:306
-#, fuzzy
 #| msgid "_Rename"
 msgctxt "shortcut window"
 msgid "Rename"
-msgstr "غيّر الا_سم"
+msgstr "غيّر الاسم"
 
 #: src/resources/gtk/help-overlay.ui:313
-#, fuzzy
 #| msgid "Mo_ve to Trash"
 msgctxt "shortcut window"
 msgid "Move to trash"
-msgstr "ا_نقل إلى المهملات"
+msgstr "انقل إلى المهملات"
 
 #: src/resources/gtk/help-overlay.ui:320
-#, fuzzy
 #| msgid "_Delete Permanently"
 msgctxt "shortcut window"
 msgid "Delete permanently"
-msgstr "ا_حذف نهائيا"
+msgstr "احذف نهائيا"
 
 #: src/resources/gtk/help-overlay.ui:327
-#, fuzzy
 #| msgid "Cu_t"
 msgctxt "shortcut window"
 msgid "Cut"
-msgstr "ق_ص"
+msgstr "قص"
 
 #: src/resources/gtk/help-overlay.ui:334
-#, fuzzy
 #| msgid "_Copy"
 msgctxt "shortcut window"
 msgid "Copy"
-msgstr "ان_سخ"
+msgstr "انسخ"
 
 #: src/resources/gtk/help-overlay.ui:341
-#, fuzzy
 #| msgid "_Paste"
 msgctxt "shortcut window"
 msgid "Paste"
-msgstr "أل_صق"
+msgstr "ألصق"
 
 #: src/resources/gtk/help-overlay.ui:348
-#, fuzzy
 #| msgid "Select All"
 msgctxt "shortcut window"
 msgid "Select all"
 msgstr "اختر الكل"
 
 #: src/resources/gtk/help-overlay.ui:355
-#, fuzzy
 #| msgid "_Invert Selection"
 msgctxt "shortcut window"
 msgid "Invert selection"
-msgstr "اع_كس الاختيار"
+msgstr "اعكس الاختيار"
 
 #: src/resources/gtk/help-overlay.ui:362
-#, fuzzy
 #| msgid "Select Items Matching"
 msgctxt "shortcut window"
 msgid "Select items matching"
 msgstr "اختر العناصر المطابقة"
 
 #: src/resources/gtk/help-overlay.ui:369
-#, fuzzy
 #| msgid "Undo"
 msgctxt "shortcut window"
 msgid "Undo"
 msgstr "تراجع"
 
 #: src/resources/gtk/help-overlay.ui:376
-#, fuzzy
 #| msgid "Redo"
 msgctxt "shortcut window"
 msgid "Redo"
 msgstr "أعِد"
 
 #: src/resources/gtk/help-overlay.ui:383
-#, fuzzy
 #| msgctxt "folder"
 #| msgid "%s Properties"
 msgctxt "shortcut window"
 msgid "Show item properties"
-msgstr "خصائص %s"
+msgstr "اعرض خصائص العنصر"
 
 #: src/resources/gtk/menus.ui:6
 msgid "New _Window"
@@ -5260,7 +5146,7 @@ msgstr "الت_فضيلات"
 
 #: src/resources/gtk/menus.ui:27
 msgid "_Keyboard Shortcuts"
-msgstr ""
+msgstr "ا_ختصارات لوحة المفاتيح"
 
 #: src/resources/gtk/menus.ui:31
 msgid "_Help"
@@ -5281,37 +5167,33 @@ msgstr "غيّر الا_سم"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:54
 msgid "Rename _using a template"
-msgstr ""
+msgstr "غيّر الا_سم باستخدام قالب"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:65
 msgid "Find and replace _text"
-msgstr ""
+msgstr "ابحث و استبدل ال_نص"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:138
-#, fuzzy
 #| msgid "_Add"
 msgid "Add"
-msgstr "أ_ضف"
+msgstr "أضف"
 
 #. Translators: This is a noun, not a verb
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:207
-#, fuzzy
 #| msgid "_Format…"
 msgid "Format"
-msgstr "التهيئة…"
+msgstr "هيّء"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:222
 msgid "Existing Text"
-msgstr ""
+msgstr "النص الحالي"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:251
-#, fuzzy
 #| msgid "Replace with"
 msgid "Replace With"
-msgstr "استبدل"
+msgstr "استبدل ب‍"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:278
-#, fuzzy
 #| msgid "Replace"
 msgctxt "title"
 msgid "Replace"
@@ -5319,69 +5201,64 @@ msgstr "استبدل"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:406
 msgid "Automatic Numbers"
-msgstr ""
+msgstr "أرقام تلقائية"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:408
 msgid "1, 2, 3, 4"
-msgstr ""
+msgstr "١، ٢، ٣، ٤"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:412
 msgid "01, 02, 03, 04"
-msgstr ""
+msgstr "٠١، ٠٢، ٠٣، ٠٤"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:416
 msgid "001, 002, 003, 004"
-msgstr ""
+msgstr "٠٠١، ٠٠٢، ٠٠٣، ٠٠٤"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:421
 msgid "Metadata"
-msgstr ""
+msgstr "البيانات الفوقية"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:423
-#, fuzzy
 #| msgid "Create"
 msgid "Creation Date"
-msgstr "أنشئ"
+msgstr "تاريخ الإنشاء"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:433
 msgid "Season Number"
-msgstr ""
+msgstr "رقم الجزء"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:438
 msgid "Episode Number"
-msgstr ""
+msgstr "رقم الحلقة"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:443
 msgid "Track Number"
-msgstr ""
+msgstr "رقم المقطع"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:448
 msgid "Artist Name"
-msgstr ""
+msgstr "اسم الفنان"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:458
-#, fuzzy
 #| msgid "by _Name"
 msgid "Album Name"
-msgstr "بالا_سم"
+msgstr "اسم الالبوم"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:465
-#, fuzzy
 #| msgid "Original file"
 msgid "Original File Name"
-msgstr "الملف الأصلي"
+msgstr "اسم الملف الأصلي"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
-#, fuzzy
 #| msgid "Archive"
 msgid "Create Archive"
-msgstr "أرشيف"
+msgstr "أنشئ أرشيفًا"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:23
-#, fuzzy
 #| msgid "Archive"
 msgid "Archive name"
-msgstr "أرشيف"
+msgstr "اسم الأرشيف"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:5
 msgid "New _Folder"
@@ -5397,10 +5274,9 @@ msgstr "أل_صق"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:22
 #: src/resources/ui/nautilus-files-view-context-menus.ui:151
-#, fuzzy
 #| msgid "_Undo Create Link"
 msgid "Create _Link"
-msgstr "_تراجع عن إنشاء الرابط"
+msgstr "أنشئ و_صلة"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:29
 msgid "Select _All"
@@ -5518,10 +5394,9 @@ msgid "Restore Icon's Original Size"
 msgstr "استعِد الحجم الأصلي للأيقونة"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:218
-#, fuzzy
 #| msgid "Rename…"
 msgid "Rena_me…"
-msgstr "غيّر الاسم…"
+msgstr "غيّر الا_سم…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:224
 msgid "Set As Wallpaper"
@@ -5533,15 +5408,15 @@ msgstr "اح_ذف من المستخدم حديثا"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:239
 msgid "_Extract Here"
-msgstr ""
+msgstr "استخرج _هنا"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:244
 msgid "E_xtract to…"
-msgstr ""
+msgstr "است_خرج إلى…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:249
 msgid "C_ompress…"
-msgstr ""
+msgstr "ا_ضغط…"
 
 #: src/resources/ui/nautilus-folder-is-empty.ui:30
 msgid "Folder is Empty"
@@ -5670,10 +5545,9 @@ msgid "4 GB"
 msgstr "4 ج.بايت"
 
 #: src/resources/ui/nautilus-preferences-window.ui:170
-#, fuzzy
 #| msgid "Prefere_nces"
 msgid "Preferences"
-msgstr "الت_فضيلات"
+msgstr "التفضيلات"
 
 #: src/resources/ui/nautilus-preferences-window.ui:198
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:98
@@ -5685,19 +5559,16 @@ msgid "Sort _folders before files"
 msgstr "رتّب ال_مجلدات قبل الملفات"
 
 #: src/resources/ui/nautilus-preferences-window.ui:258
-#, fuzzy
 #| msgid "Only show folders in the tree side pane"
 msgid "Allow folders to be _expanded"
-msgstr "اعرض المجلدات فقط في الشريط الشجري الجانبي"
+msgstr "اسمح بتمديد المجلدا_ت"
 
 #: src/resources/ui/nautilus-preferences-window.ui:290
-#, fuzzy
 #| msgid "Icon Captions"
 msgid "Icon View Captions"
-msgstr "العناوين الفرعية للأيقونات"
+msgstr "عناوين منظور الأيقونات"
 
 #: src/resources/ui/nautilus-preferences-window.ui:306
-#, fuzzy
 #| msgid ""
 #| "Choose the order of information to appear beneath icon names. More "
 #| "information will appear when zooming in closer."
@@ -5705,39 +5576,37 @@ msgid ""
 "Add information to be displayed beneath file and folder names.\n"
 "More information will appear when zooming closer."
 msgstr ""
-"اختر ترتيب ظهور المعلومات بجانب أسماء الأيقونات. ستظهر المزيد من المعلومات "
-"عند التكبير."
+"أضف معلومات لتظهر أسفل أسماء الملفات و المجلدات.\n"
+"ستظهر المزيد من المعلومات عند التكبير."
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:425
-#, fuzzy
 #| msgid "%'d second"
 #| msgid_plural "%'d seconds"
 msgctxt "the n-th position of an icon caption"
 msgid "Second"
-msgstr "أقل من ثانية"
+msgstr "ثاني"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:440
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
-msgstr ""
+msgstr "ثالث"
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:455
 msgctxt "the n-th position of an icon caption"
 msgid "First"
-msgstr ""
+msgstr "أول"
 
 #: src/resources/ui/nautilus-preferences-window.ui:489
 msgid "Views"
 msgstr "المشاهد"
 
 #: src/resources/ui/nautilus-preferences-window.ui:512
-#, fuzzy
 #| msgid "Open action menu"
 msgid "Open Action"
-msgstr "افتح قائمة الإجراءات"
+msgstr "إجراء الفتح"
 
 #: src/resources/ui/nautilus-preferences-window.ui:526
 msgid "_Single click to open items"
@@ -5748,42 +5617,37 @@ msgid "_Double click to open items"
 msgstr "_نقر مزدوج لفتح العناصر"
 
 #: src/resources/ui/nautilus-preferences-window.ui:577
-#, fuzzy
 #| msgid "Link target:"
 msgid "Link Creation"
-msgstr "وِجهة الوصلة:"
+msgstr "إنشاء الوصلة"
 
 #: src/resources/ui/nautilus-preferences-window.ui:591
-#, fuzzy
 #| msgid "The target doesn't support symbolic links."
 msgid "Show action to create symbolic _links"
-msgstr "الوِجهة لا تدعم الوصلات الرمزية."
+msgstr "أظهر إجراء إنشاء الوصلات الر_مزية"
 
 #: src/resources/ui/nautilus-preferences-window.ui:623
 msgid "Executable Text Files"
 msgstr "ملفات نصية تنفيذية"
 
 #: src/resources/ui/nautilus-preferences-window.ui:637
-#, fuzzy
 #| msgid "_Display"
 msgid "_Display them"
-msgstr "ا_عرض"
+msgstr "ا_عرضهم"
 
 #: src/resources/ui/nautilus-preferences-window.ui:655
-#, fuzzy
 #| msgid "_Run"
 msgid "_Run them"
-msgstr "_شغّل"
+msgstr "_شغّلهم"
 
 #: src/resources/ui/nautilus-preferences-window.ui:673
 msgid "_Ask what to do"
-msgstr ""
+msgstr "ا_سأل ما الذي يجب فعله"
 
 #: src/resources/ui/nautilus-preferences-window.ui:720
-#, fuzzy
 #| msgid "Ask before _emptying the Trash or deleting files"
 msgid "Ask before _emptying the Trash"
-msgstr "اسأل قبل إ_فراغ المهملات أو حذف الملفات"
+msgstr "اسأل قبل إ_فراغ المهملات"
 
 #: src/resources/ui/nautilus-preferences-window.ui:737
 msgid "Show action to _permanently delete files and folders"
