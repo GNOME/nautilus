@@ -1851,11 +1851,7 @@ nautilus_file_operation_free (NautilusFileOperation *op)
     }
     else
     {
-        for (l = op->files; l != NULL; l = l->next)
-        {
-            file = NAUTILUS_FILE (l->data);
-            nautilus_file_unref (file);
-        }
+        nautilus_file_list_free (op->files);
     }
 
     g_object_unref (op->cancellable);
@@ -2277,7 +2273,7 @@ real_batch_rename (GList                         *files,
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
-    op->files = files;
+    op->files = nautilus_file_list_copy (files);
     op->renamed_files = 0;
     op->skipped_files = 0;
 
