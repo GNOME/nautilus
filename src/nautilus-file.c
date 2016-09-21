@@ -2303,10 +2303,6 @@ real_batch_rename (GList                         *files,
 
             continue;
         }
-        else
-        {
-            old_files = g_list_append (old_files, location);
-        }
 
         g_assert (G_IS_FILE (location));
 
@@ -2319,8 +2315,6 @@ real_batch_rename (GList                         *files,
         data = g_new0 (BatchRenameData, 1);
         data->op = op;
         data->file = file;
-
-        new_files = g_list_append (new_files, new_file);
 
         g_file_query_info_async (new_file,
                                  NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
@@ -2335,6 +2329,13 @@ real_batch_rename (GList                         *files,
             g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (file));
             g_error_free (error);
             error = NULL;
+
+            op->skipped_files++;
+        }
+        else
+        {
+            old_files = g_list_append (old_files, location);
+            new_files = g_list_append (new_files, new_file);
         }
     }
 
