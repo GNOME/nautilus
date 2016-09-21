@@ -258,6 +258,7 @@ struct NautilusFilesViewDetails
 
     /* Empty states */
     GtkWidget *folder_is_empty_widget;
+    GtkWidget *trash_is_empty_widget;
     GtkWidget *no_search_results_widget;
 
     /* Floating bar */
@@ -3353,14 +3354,24 @@ nautilus_files_view_check_empty_states (NautilusFilesView *view)
 static void
 real_check_empty_states (NautilusFilesView *view)
 {
+    g_autofree gchar *uri = NULL;
+
     gtk_widget_hide (view->details->no_search_results_widget);
     gtk_widget_hide (view->details->folder_is_empty_widget);
+    gtk_widget_hide (view->details->trash_is_empty_widget);
+
     if (!view->details->loading &&
         nautilus_files_view_is_empty (view))
     {
+        uri = g_file_get_uri (view->details->location);
+
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
         {
             gtk_widget_show (view->details->no_search_results_widget);
+        }
+        else if (eel_uri_is_trash (uri))
+        {
+            gtk_widget_show (view->details->trash_is_empty_widget);
         }
         else
         {
@@ -9137,6 +9148,14 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->folder_is_empty_widget);
     gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (view->details->overlay),
                                           view->details->folder_is_empty_widget,
+                                          TRUE);
+    g_object_unref (builder);
+
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-trash-is-empty.ui");
+    view->details->trash_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "trash_is_empty"));
+    gtk_overlay_add_overlay (GTK_OVERLAY (view->details->overlay), view->details->trash_is_empty_widget);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (view->details->overlay),
+                                          view->details->trash_is_empty_widget,
                                           TRUE);
     g_object_unref (builder);
 
