@@ -29,6 +29,7 @@
 #include "nautilus-mime-actions.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-trash-bar.h"
+#include "nautilus-trash-monitor.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
 #include "nautilus-x-content-bar.h"
@@ -147,6 +148,10 @@ static void nautilus_window_slot_set_search_visible (NautilusWindowSlot *self,
 static gboolean nautilus_window_slot_get_search_visible (NautilusWindowSlot *self);
 static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
                                                GFile              *location);
+static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
+                                    gboolean              is_empty,
+                                    gpointer              user_data);
+
 gboolean
 nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                        GFile              *location)
@@ -885,6 +890,10 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
 
     priv = nautilus_window_slot_get_instance_private (self);
     app = g_application_get_default ();
+
+    g_signal_connect (nautilus_trash_monitor_get (),
+                      "trash-state-changed",
+                      G_CALLBACK (trash_state_changed_cb), self);
 
     priv->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->slot_action_group),
@@ -2309,6 +2318,30 @@ out:
 }
 
 static void
+trash_state_changed_cb (NautilusTrashMonitor *monitor,
+                        gboolean              is_empty,
+                        gpointer              user_data)
+{
+    GFile *location;
+    NautilusDirectory *directory;
+
+    location = nautilus_window_slot_get_current_location (user_data);
+
+    if (location == NULL)
+    {
+        return;
+    }
+
+    directory = nautilus_directory_get (location);
+
+    if (nautilus_directory_is_in_trash (directory) &&
+        nautilus_trash_monitor_is_empty ())
+    {
+        nautilus_window_slot_remove_extra_location_widgets (user_data);
+    }
+}
+
+static void
 nautilus_window_slot_show_trash_bar (NautilusWindowSlot *self)
 {
     GtkWidget *bar;
@@ -2481,7 +2514,10 @@ nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self)
 
     if (nautilus_directory_is_in_trash (directory))
     {
-        nautilus_window_slot_show_trash_bar (self);
+        if (!nautilus_trash_monitor_is_empty ())
+        {
+            nautilus_window_slot_show_trash_bar (self);
+        }
     }
     else
     {
@@ -2648,6 +2684,8 @@ nautilus_window_slot_dispose (GObject *object)
     nautilus_window_slot_clear_back_list (self);
 
     nautilus_window_slot_remove_extra_location_widgets (self);
+
+    g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), self);
 
     if (priv->content_view)
     {
