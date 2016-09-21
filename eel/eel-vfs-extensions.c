@@ -56,6 +56,12 @@ eel_uri_is_search (const char *uri)
 }
 
 gboolean
+eel_uri_is_other_locations (const char *uri)
+{
+    return g_str_has_prefix (uri, "other-locations:");
+}
+
+gboolean
 eel_uri_is_desktop (const char *uri)
 {
     return g_str_has_prefix (uri, EEL_DESKTOP_URI);

@@ -40,6 +40,7 @@ gboolean           eel_uri_is_trash_folder               (const char           *
 gboolean           eel_uri_is_in_trash                   (const char           *uri);
 gboolean           eel_uri_is_desktop                    (const char           *uri);
 gboolean           eel_uri_is_search                     (const char           *uri);
+gboolean           eel_uri_is_other_locations            (const char           *uri);
 gboolean           eel_uri_is_recent                     (const char           *uri);
 
 char *             eel_make_valid_utf8                   (const char           *name);

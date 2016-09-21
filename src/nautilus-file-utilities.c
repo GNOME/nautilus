@@ -592,6 +592,15 @@ nautilus_is_search_directory (GFile *dir)
     return eel_uri_is_search (uri);
 }
 
+gboolean
+nautilus_is_other_locations_directory (GFile *dir)
+{
+  g_autofree gchar *uri = NULL;
+
+  uri = g_file_get_uri (dir);
+  return eel_uri_is_other_locations (uri);
+}
+
 GMount *
 nautilus_get_mounted_mount_for_root (GFile *location)
 {
