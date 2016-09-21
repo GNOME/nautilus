@@ -2260,7 +2260,6 @@ real_batch_rename (GList                         *files,
     GList *l1, *l2, *old_files, *new_files;
     NautilusFileOperation *op;
     GFile *location;
-    gchar *new_file_name;
     GString *new_name;
     NautilusFile *file;
     GError *error;
@@ -2287,6 +2286,7 @@ real_batch_rename (GList                         *files,
 
     for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
+        g_autofree gchar *new_file_name;
         file = NAUTILUS_FILE (l1->data);
         new_name = l2->data;
 
