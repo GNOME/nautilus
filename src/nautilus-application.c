@@ -1435,8 +1435,8 @@ nautilus_application_window_removed (GtkApplication *app,
 }
 
 /* Manage the local instance command line options. This is only necessary to
- * resolv correctly relative paths, since if the main instance resolv them in
- * command_line, it will do it with its current cwd, which may not be correct for the
+ * resolve correctly relative paths, since if the main instance resolve them in
+ * open(), it will do it with its current cwd, which may not be correct for the
  * non main GApplication instance */
 static gint
 nautilus_application_handle_local_options (GApplication *app,
