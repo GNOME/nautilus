@@ -1014,7 +1014,7 @@ batch_rename_files_get_distinct_parents (GList *selection)
     GList *l1;
     NautilusFile *file;
     NautilusFile *directory;
-    GFile *parent;
+    NautilusFile *parent;
 
     result = NULL;
     for (l1 = selection; l1 != NULL; l1 = l1->next)
