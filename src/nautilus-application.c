@@ -548,8 +548,8 @@ nautilus_application_open_location (NautilusApplication *self,
 
 /* Note: when launched from command line we do not reach this method
  * since we manually handle the command line parameters in order to
- * parse --no-default-window, etc.
- * However this method is called when open() is called via dbus, for
+ * parse --version, --check, etc.
+ * However this method is called when open () is called via dbus, for
  * instance when gtk_uri_open () is called from outside.
  */
 static void
