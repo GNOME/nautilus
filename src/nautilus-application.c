@@ -898,7 +898,7 @@ const GOptionEntry options[] =
       N_("Quit Nautilus."), NULL },
     { "select", 's', 0, G_OPTION_ARG_NONE, NULL,
       N_("Select specified URI in parent folder."), NULL },
-    { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, N_("[URI…]") },
+    { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, N_("[URI...]") },
 
     { NULL }
 };
