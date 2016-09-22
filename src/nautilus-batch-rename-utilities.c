@@ -995,18 +995,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     g_string_free (query, TRUE);
 }
 
-static gint
-compare_files (gpointer a,
-               gpointer b)
-{
-    NautilusFile *file1 = NAUTILUS_FILE (a);
-    NautilusFile *file2 = NAUTILUS_FILE (b);
-    g_autoptr (GFile) location1 = nautilus_file_get_location (file1);
-    g_autoptr (GFile) location2 = nautilus_file_get_location (file2);
-
-    return g_file_equal (location1, location2) ? 0 : 1;
-}
-
 GList *
 batch_rename_files_get_distinct_parents (GList *selection)
 {
