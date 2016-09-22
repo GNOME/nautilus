@@ -1292,10 +1292,8 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
 {
     NautilusBatchRenameDialog *self;
     CheckConflictsData *task_data;
-    NautilusDirectory *conflict_directory;
     GList *directories;
     GList *l;
-    const gchar *directory_conflict_uri = NULL;
 
     self = g_task_get_source_object (task);
     task_data = g_task_get_task_data (task);
