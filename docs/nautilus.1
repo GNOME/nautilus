@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH Nautilus 1 "24 June 2016"
+.TH Nautilus 1 "23 September 2016"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -34,8 +34,13 @@ is a file manager, designed for the GNOME 3 desktop.
 Perform a quick set of self-check tests.
 
 .TP
+.B \-\-version
+Show the version of the program.
+
+.TP
 .BR \-g ", " \-\-geometry=\fIGEOMETRY\fR
-Create the initial window with the given geometry.
+Create the initial window with the given geometry. \fBDeprecated\fR - the geometry
+is saved and loaded using GSettings.
 
 .TP
 .BR \-w ", " \-\-new-window
@@ -47,11 +52,8 @@ Only create windows for explicitly specified URIs.
 
 .TP
 .B \-\-no-desktop
-Never manage the desktop (ignore the GSettings preference).
-
-.TP
-.B \-\-force-desktop
-Always manage the desktop (ignore the GSettings preference).
+Never manage the desktop (ignore the GSettings preference). \fBDeprecated\fR - the
+desktop is managed in a separate binary.
 
 .TP
 .BR \-q ", " \-\-quit
@@ -64,10 +66,6 @@ Select specified URI in parent folder.
 .TP
 .BR \-h ", " \-\-help
 Show a summary of options.
-
-.TP
-.B \-\-version
-Show Nautilus' version.
 
 .TP
 Other standard GNOME options not listed here are also supported.
