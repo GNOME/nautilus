@@ -196,7 +196,7 @@ add_tag (NautilusBatchRenameDialog *self,
      */
     gtk_editable_insert_text (GTK_EDITABLE (self->name_entry),
                               tag_text_representation,
-                              g_utf8_strlen (tag_text_representation, -1),
+                              strlen (tag_text_representation),
                               &cursor_position);
     tag_data->just_added = FALSE;
     gtk_editable_set_position (GTK_EDITABLE (self->name_entry), cursor_position);
