@@ -29,35 +29,12 @@
 #include "nautilus-bookmark.h"
 #include <gio/gio.h>
 
-typedef struct NautilusBookmarkList NautilusBookmarkList;
-typedef struct NautilusBookmarkListClass NautilusBookmarkListClass;
+G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_BOOKMARK_LIST nautilus_bookmark_list_get_type()
-#define NAUTILUS_BOOKMARK_LIST(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkList))
-#define NAUTILUS_BOOKMARK_LIST_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
-#define NAUTILUS_IS_BOOKMARK_LIST(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK_LIST))
-#define NAUTILUS_IS_BOOKMARK_LIST_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK_LIST))
-#define NAUTILUS_BOOKMARK_LIST_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_BOOKMARK_LIST, NautilusBookmarkListClass))
+#define NAUTILUS_TYPE_BOOKMARK_LIST (nautilus_bookmark_list_get_type())
 
-struct NautilusBookmarkList {
-	GObject object;
+G_DECLARE_FINAL_TYPE (NautilusBookmarkList, nautilus_bookmark_list, NAUTILUS, BOOKMARK_LIST, GObject)
 
-	GList *list; 
-	GFileMonitor *monitor;
-	GQueue *pending_ops;
-};
-
-struct NautilusBookmarkListClass {
-	GObjectClass parent_class;
-	void (* changed) (NautilusBookmarkList *bookmarks);
-};
-
-GType                   nautilus_bookmark_list_get_type            (void);
 NautilusBookmarkList *  nautilus_bookmark_list_new                 (void);
 void                    nautilus_bookmark_list_append              (NautilusBookmarkList   *bookmarks,
 								    NautilusBookmark *bookmark);
@@ -67,5 +44,7 @@ NautilusBookmark *      nautilus_bookmark_list_item_with_location  (NautilusBook
 gboolean                nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 								      GFile                *location);
 GList *                 nautilus_bookmark_list_get_all             (NautilusBookmarkList   *bookmarks);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_BOOKMARK_LIST_H */

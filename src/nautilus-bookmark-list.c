@@ -36,6 +36,15 @@
 #define LOAD_JOB 1
 #define SAVE_JOB 2
 
+struct _NautilusBookmarkList
+{
+    GObject parent_instance;
+
+    GList *list; 
+    GFileMonitor *monitor;
+    GQueue *pending_ops;
+};
+
 enum
 {
     CHANGED,
@@ -184,8 +193,7 @@ nautilus_bookmark_list_class_init (NautilusBookmarkListClass *class)
         g_signal_new ("changed",
                       G_TYPE_FROM_CLASS (object_class),
                       G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusBookmarkListClass,
-                                       changed),
+                      0,
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
