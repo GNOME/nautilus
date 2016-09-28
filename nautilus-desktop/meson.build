@@ -1,0 +1,30 @@
+nautilus_desktop_sources = [
+    'main-desktop.c',
+    'nautilus-desktop-application.c',
+    'nautilus-desktop-application.h',
+    'nautilus-desktop-canvas-view.c',
+    'nautilus-desktop-canvas-view.h',
+    'nautilus-desktop-canvas-view-container.c',
+    'nautilus-desktop-canvas-view-container.h',
+    'nautilus-desktop-directory.c',
+    'nautilus-desktop-directory.h',
+    'nautilus-desktop-directory-file.c',
+    'nautilus-desktop-directory-file.h',
+    'nautilus-desktop-icon-file.c',
+    'nautilus-desktop-icon-file.h',
+    'nautilus-desktop-link.c',
+    'nautilus-desktop-link.h',
+    'nautilus-desktop-link-monitor.c',
+    'nautilus-desktop-link-monitor.h',
+    'nautilus-desktop-metadata.c',
+    'nautilus-desktop-metadata.h',
+    'nautilus-desktop-window.c',
+    'nautilus-desktop-window.h',
+    'nautilus-desktop-window-slot.c',
+    'nautilus-desktop-window-slot.h'
+]
+
+nautilus_desktop = executable ('nautilus-desktop',
+                               nautilus_desktop_sources,
+                               dependencies: libnautilus_dep,
+                               install: true)
