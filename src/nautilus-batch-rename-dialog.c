@@ -405,6 +405,10 @@ split_entry_text (NautilusBatchRenameDialog *self,
     {
         result = g_list_prepend (result, normal_text);
     }
+    else
+    {
+        g_string_free (normal_text, TRUE);
+    }
 
     result = g_list_reverse (result);
 
@@ -868,6 +872,7 @@ select_nth_conflict (NautilusBatchRenameDialog *dialog)
                          display_text->str);
 
     g_string_free (conflict_file_name, TRUE);
+    g_string_free (display_text, TRUE);
 }
 
 static void
@@ -1181,7 +1186,7 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
         if (!have_conflict)
         {
             tag_present = g_hash_table_lookup (names_conflicts_table, new_name->str) != NULL;
-            same_parent_directory = g_strcmp0 (nautilus_file_get_parent_uri (file), current_directory) == 0;
+            same_parent_directory = g_strcmp0 (parent_uri, current_directory) == 0;
 
             if (tag_present && same_parent_directory)
             {

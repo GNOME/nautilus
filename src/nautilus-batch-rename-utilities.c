@@ -237,7 +237,6 @@ batch_rename_format (NautilusFile *file,
     g_autofree gchar *extension = NULL;
     gint i;
     gchar *metadata;
-    gchar *base_name;
 
     file_name = nautilus_file_get_display_name (file);
     extension = nautilus_file_get_extension (file);
@@ -314,6 +313,8 @@ batch_rename_format (NautilusFile *file,
                 {
                     case ORIGINAL_FILE_NAME:
                     {
+                        g_autofree gchar *base_name = NULL;
+
                         base_name = eel_filename_strip_extension (file_name);
 
                         new_name = g_string_append (new_name, base_name);
@@ -375,7 +376,6 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
 
     result = NULL;
     count = 1;
-    file_name = g_string_new ("");
 
     for (l = selection; l != NULL; l = l->next)
     {
@@ -421,12 +421,14 @@ file_name_conflicts_with_results (GList   *selection,
     GList *l1;
     GList *l2;
     NautilusFile *selection_file;
-    gchar *name1;
     GString *new_name;
     gchar *selection_parent_uri;
 
     for (l1 = selection, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
+        g_autofree gchar *name1 = NULL;
+        g_autofree gchar *selection_parent_uri = NULL;
+
         selection_file = NAUTILUS_FILE (l1->data);
         name1 = nautilus_file_get_name (selection_file);
 
@@ -448,8 +450,6 @@ file_name_conflicts_with_results (GList   *selection,
              * conflict */
             return TRUE;
         }
-
-        g_free (selection_parent_uri);
     }
 
     /* the case this function searched for doesn't exist, so the file
@@ -899,6 +899,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     FileMetadata *file_metadata;
     GList *selection_metadata;
     guint i;
+    g_autofree gchar *parent_uri = NULL;
 
     error = NULL;
     selection_metadata = NULL;
@@ -921,9 +922,11 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                           "nmm:albumTitle(nmm:musicAlbum(?file)) "
                           "WHERE { ?file a nfo:FileDataObject. ");
 
+    parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
+
     g_string_append_printf (query,
                             "FILTER(tracker:uri-is-parent('%s', nie:url(?file))) ",
-                            nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data)));
+                            parent_uri);
 
     for (l = selection; l != NULL; l = l->next)
     {
