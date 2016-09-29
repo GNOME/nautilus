@@ -648,13 +648,11 @@ static gboolean
 nautilus_location_entry_on_key_press (GtkWidget   *widget,
                                       GdkEventKey *event)
 {
-    NautilusLocationEntry *entry;
     GtkEditable *editable;
     GtkWidgetClass *parent_widget_class;
     int position;
     gboolean result;
 
-    entry = NAUTILUS_LOCATION_ENTRY (widget);
     editable = GTK_EDITABLE (widget);
 
     if (!gtk_editable_get_editable (editable))
