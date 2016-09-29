@@ -1840,9 +1840,6 @@ nautilus_file_operation_remove (NautilusFileOperation *op)
 void
 nautilus_file_operation_free (NautilusFileOperation *op)
 {
-    NautilusFile *file;
-    GList *l;
-
     nautilus_file_operation_remove (op);
 
     if (op->files == NULL)
