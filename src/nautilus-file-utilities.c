@@ -870,6 +870,23 @@ nautilus_trashed_files_get_original_directories (GList  *files,
     return directories;
 }
 
+GList *
+nautilus_file_list_from_uri_list (GList *uris)
+{
+    GList *l;
+    GList *result = NULL;
+
+    for (l = uris; l != NULL; l = l->next)
+    {
+        g_autoptr (GFile) location = NULL;
+
+        location = g_file_new_for_uri (l->data);
+        result = g_list_prepend (result, nautilus_file_get (location));
+    }
+
+    return g_list_reverse (result);
+}
+
 static GList *
 locations_from_file_list (GList *file_list)
 {

@@ -34,7 +34,6 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
-#include "nautilus-clipboard-monitor.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-utilities.h"
@@ -94,14 +93,19 @@ struct NautilusCanvasViewDetails
 
     const SortCriterion *sort;
 
-    gulong clipboard_handler_id;
-
     GtkWidget *canvas_container;
 
     gboolean supports_auto_layout;
     gboolean supports_manual_layout;
     gboolean supports_scaling;
     gboolean supports_keep_aligned;
+
+    /* Needed for async operations. Suposedly we would use cancellable and gtask,
+     * sadly gtkclipboard doesn't support that.
+     * We follow this pattern for checking validity of the object in the views.
+     * Ideally we would connect to a weak reference and do a cancellable.
+     */
+    gboolean destroyed;
 
     GIcon *icon;
 };
@@ -189,6 +193,9 @@ static const SortCriterion *get_sort_criterion_by_sort_type (NautilusFileSortTyp
 static void                 switch_to_manual_layout (NautilusCanvasView *view);
 static const SortCriterion *get_default_sort_order (NautilusFile *file);
 static void                 nautilus_canvas_view_clear (NautilusFilesView *view);
+static void on_clipboard_owner_changed (GtkClipboard *clipboard,
+                                        GdkEvent     *event,
+                                        gpointer      user_data);
 
 G_DEFINE_TYPE (NautilusCanvasView, nautilus_canvas_view, NAUTILUS_TYPE_FILES_VIEW);
 
@@ -196,6 +203,7 @@ static void
 nautilus_canvas_view_destroy (GtkWidget *object)
 {
     NautilusCanvasView *canvas_view;
+    GtkClipboard *clipboard;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (object);
 
@@ -207,12 +215,10 @@ nautilus_canvas_view_destroy (GtkWidget *object)
         canvas_view->details->react_to_canvas_change_idle_id = 0;
     }
 
-    if (canvas_view->details->clipboard_handler_id != 0)
-    {
-        g_signal_handler_disconnect (nautilus_clipboard_monitor_get (),
-                                     canvas_view->details->clipboard_handler_id);
-        canvas_view->details->clipboard_handler_id = 0;
-    }
+    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+    g_signal_handlers_disconnect_by_func (clipboard,
+                                          on_clipboard_owner_changed,
+                                          canvas_view);
 
     if (canvas_view->details->icons_not_positioned)
     {
@@ -754,20 +760,58 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 }
 
 static void
-canvas_view_notify_clipboard_info (NautilusClipboardMonitor *monitor,
-                                   NautilusClipboardInfo    *info,
-                                   NautilusCanvasView       *canvas_view)
+on_clipboard_contents_received (GtkClipboard     *clipboard,
+                                GtkSelectionData *selection_data,
+                                gpointer          user_data)
 {
-    GList *icon_data;
+    NautilusCanvasView *view = NAUTILUS_CANVAS_VIEW (user_data);
 
-    icon_data = NULL;
-    if (info && info->cut)
+    if (view->details->destroyed)
     {
-        icon_data = info->files;
+        /* We've been destroyed since call */
+        g_object_unref (view);
+        return;
     }
 
-    nautilus_canvas_container_set_highlighted_for_clipboard (
-        get_canvas_container (canvas_view), icon_data);
+    if (nautilus_clipboard_is_cut_from_selection_data (selection_data))
+    {
+        GList *uris;
+        GList *files;
+
+        uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data);
+        files = nautilus_file_list_from_uri_list (uris);
+        nautilus_canvas_container_set_highlighted_for_clipboard (get_canvas_container (view),
+                                                                 files);
+
+        nautilus_file_list_free (files);
+        g_list_free_full (uris, g_free);
+    }
+    else
+    {
+        nautilus_canvas_container_set_highlighted_for_clipboard (get_canvas_container (view),
+                                                                 NULL);
+    }
+
+    g_object_unref (view);
+}
+
+static void
+update_clipboard_status (NautilusCanvasView *view)
+{
+
+    g_object_ref (view);     /* Need to keep the object alive until we get the reply */
+    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
+                                    nautilus_clipboard_get_atom (),
+                                    on_clipboard_contents_received,
+                                    view);
+}
+
+static void
+on_clipboard_owner_changed (GtkClipboard *clipboard,
+                            GdkEvent     *event,
+                            gpointer      user_data)
+{
+    update_clipboard_status (NAUTILUS_CANVAS_VIEW (user_data));
 }
 
 static void
@@ -775,19 +819,11 @@ nautilus_canvas_view_end_loading (NautilusFilesView *view,
                                   gboolean           all_files_seen)
 {
     NautilusCanvasView *canvas_view;
-    GtkWidget *canvas_container;
-    NautilusClipboardMonitor *monitor;
-    NautilusClipboardInfo *info;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
-
-    canvas_container = GTK_WIDGET (get_canvas_container (canvas_view));
-    nautilus_canvas_container_end_loading (NAUTILUS_CANVAS_CONTAINER (canvas_container), all_files_seen);
-
-    monitor = nautilus_clipboard_monitor_get ();
-    info = nautilus_clipboard_monitor_get_clipboard_info (monitor);
-
-    canvas_view_notify_clipboard_info (monitor, info, canvas_view);
+    nautilus_canvas_container_end_loading (nautilus_canvas_view_get_canvas_container (canvas_view),
+                                           all_files_seen);
+    update_clipboard_status (canvas_view);
 }
 
 static NautilusCanvasZoomLevel
@@ -1570,8 +1606,7 @@ canvas_view_move_copy_items (NautilusCanvasContainer *container,
                              NautilusFilesView       *view)
 {
     nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
-                                                item_uris,
-                                                nautilus_files_view_get_copied_files_atom (view));
+                                                item_uris);
     nautilus_files_view_move_copy_items (view, item_uris, relative_item_points, target_dir,
                                          copy_action, x, y);
 }
@@ -1916,6 +1951,17 @@ nautilus_canvas_view_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->finalize (object);
 }
 
+static void
+nautilus_canvas_view_dispose (GObject *object)
+{
+    NautilusCanvasView *canvas_view;
+
+    canvas_view = NAUTILUS_CANVAS_VIEW (object);
+    canvas_view->details->destroyed = TRUE;
+
+    G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->dispose (object);
+}
+
 static GIcon *
 nautilus_canvas_view_get_icon (NautilusFilesView *view)
 {
@@ -1935,6 +1981,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 
     oclass->set_property = nautilus_canvas_view_set_property;
     oclass->finalize = nautilus_canvas_view_finalize;
+    oclass->dispose = nautilus_canvas_view_dispose;
 
     GTK_WIDGET_CLASS (klass)->destroy = nautilus_canvas_view_destroy;
 
@@ -2008,10 +2055,12 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 {
     NautilusCanvasContainer *canvas_container;
     GActionGroup *view_action_group;
+    GtkClipboard *clipboard;
 
     canvas_view->details = g_new0 (NautilusCanvasViewDetails, 1);
     canvas_view->details->sort = &sort_criteria[0];
     canvas_view->details->icon = g_themed_icon_new ("view-grid-symbolic");
+    canvas_view->details->destroyed = FALSE;
 
     canvas_container = create_canvas_container (canvas_view);
     initialize_canvas_container (canvas_view, canvas_container);
@@ -2045,10 +2094,10 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
     g_signal_connect_object (canvas_container, "handle-hover",
                              G_CALLBACK (canvas_view_handle_hover), canvas_view, 0);
 
-    canvas_view->details->clipboard_handler_id =
-        g_signal_connect (nautilus_clipboard_monitor_get (),
-                          "clipboard-info",
-                          G_CALLBACK (canvas_view_notify_clipboard_info), canvas_view);
+    /* React to clipboard changes */
+    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
+    g_signal_connect (clipboard, "owner-change",
+                      G_CALLBACK (on_clipboard_owner_changed), canvas_view);
 
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (canvas_view));
     g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),

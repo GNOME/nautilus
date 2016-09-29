@@ -122,4 +122,6 @@ void nautilus_ensure_extension_builtins (void);
 
 gboolean nautilus_file_can_rename_files (GList *files);
 
+GList * nautilus_file_list_from_uri_list (GList *uris);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */

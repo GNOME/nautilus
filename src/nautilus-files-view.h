@@ -280,8 +280,6 @@ char *              nautilus_files_view_get_uri                          (Nautil
 
 void                nautilus_files_view_display_selection_info           (NautilusFilesView *view);
 
-GdkAtom                    nautilus_files_view_get_copied_files_atom     (NautilusFilesView *view);
-
 /* Wrappers for signal emitters. These are normally called
  * only by NautilusFilesView itself. They have corresponding signals
  * that observers might want to connect with.

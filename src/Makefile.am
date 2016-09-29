@@ -229,8 +229,6 @@ nautilus_no_main_sources = \
 	nautilus-canvas-item.c \
 	nautilus-canvas-item.h \
 	nautilus-canvas-private.h \
-	nautilus-clipboard-monitor.c \
-	nautilus-clipboard-monitor.h \
 	nautilus-clipboard.c \
 	nautilus-clipboard.h \
 	nautilus-column-chooser.c \
