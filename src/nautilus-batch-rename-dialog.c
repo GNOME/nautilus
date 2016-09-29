@@ -56,7 +56,6 @@ struct _NautilusBatchRenameDialog
     GtkWidget *scrolled_window;
     GtkWidget *numbering_order_popover;
     GtkWidget *numbering_order_button;
-    GtkWidget *numbering_revealer;
     GtkWidget *conflict_box;
     GtkWidget *conflict_label;
     GtkWidget *conflict_down;
@@ -1525,14 +1524,12 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     if (!numbering_tag_is_some_added (dialog))
     {
         gtk_label_set_label (GTK_LABEL (dialog->numbering_label), "");
-        gtk_widget_hide (dialog->numbering_label);
-        gtk_revealer_set_reveal_child(GTK_REVEALER(dialog->numbering_revealer), FALSE);
+        gtk_widget_hide (dialog->numbering_order_button);
     }
     else
     {
         gtk_label_set_label (GTK_LABEL (dialog->numbering_label), _("Automatic Numbering Order"));
-        gtk_widget_show (dialog->numbering_label);
-        gtk_revealer_set_reveal_child(GTK_REVEALER(dialog->numbering_revealer), TRUE);
+        gtk_widget_show (dialog->numbering_order_button);
     }
 
     dialog->new_names = batch_rename_dialog_get_new_names (dialog);
@@ -2098,7 +2095,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, scrolled_window);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);

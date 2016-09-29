@@ -155,7 +155,7 @@
                     </child>
                     <child>
                       <object class="GtkLabel" id="numbering_label">
-                        <property name="visible">False</property>
+                        <property name="visible">True</property>
                         <property name="label" translatable="yes">Automatic Numbering Order</property>
                         <property name="can_focus">False</property>
                         <property name="height-request">35</property>
@@ -168,33 +168,28 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkRevealer" id="numbering_revealer">
+                      <object class="GtkToggleButton" id="numbering_order_button">
                         <property name="visible">True</property>
+                        <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
                         <child>
-                          <object class="GtkToggleButton" id="numbering_order_button">
+                          <object class="GtkBox">
                             <property name="visible">True</property>
-                            <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
+                            <property name="orientation">horizontal</property>
+                            <property name="spacing">15</property>
                             <child>
-                              <object class="GtkBox">
+                              <object class="GtkLabel" id="numbering_order_label">
                                 <property name="visible">True</property>
-                                <property name="orientation">horizontal</property>
-                                <property name="spacing">15</property>
-                                <child>
-                                  <object class="GtkLabel" id="numbering_order_label">
-                                    <property name="visible">True</property>
-                                    <property name="width-request">180</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Original Name (Ascending)</property>
-                                    <property name="can_focus">False</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkImage" id="action_icon">
-                                    <property name="visible">True</property>
-                                    <property name="icon-name">pan-down-symbolic</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
+                                <property name="width-request">180</property>
+                                <property name="xalign">0</property>
+                                <property name="label" translatable="yes">Original Name (Ascending)</property>
+                                <property name="can_focus">False</property>
+                              </object>
+                            </child>
+                            <child>
+                              <object class="GtkImage" id="action_icon">
+                                <property name="visible">True</property>
+                                <property name="icon-name">pan-down-symbolic</property>
+                                <property name="icon-size">1</property>
                               </object>
                             </child>
                           </object>
