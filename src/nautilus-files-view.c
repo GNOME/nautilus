@@ -2491,9 +2491,7 @@ paste_clipboard_data (NautilusFilesView *view,
                       char              *destination_uri)
 {
     GdkDragAction action;
-    const guchar* data;
 
-    data = gtk_selection_data_get_data (selection_data);
     if (nautilus_clipboard_is_cut_from_selection_data (selection_data))
     {
         action = GDK_ACTION_MOVE;
