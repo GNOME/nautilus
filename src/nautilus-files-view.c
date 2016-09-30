@@ -7048,7 +7048,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean can_copy_files;
     gboolean can_paste_files_into;
     gboolean can_extract_files;
-    gboolean can_compress_files;
     gboolean can_extract_here;
     gboolean item_opens_in_view;
     gboolean is_read_only;
@@ -7098,7 +7097,6 @@ real_update_actions_state (NautilusFilesView *view)
                             can_paste_into_file (NAUTILUS_FILE (selection->data)));
     can_extract_files = selection_count != 0 &&
                         can_extract_all (selection);
-    can_compress_files = selection_count != 0 && !can_extract_files;
     can_extract_here = nautilus_files_view_supports_extract_here (view);
     settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
                                                                NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
@@ -7157,7 +7155,7 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "compress");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_compress_files && can_create_files);
+                                 can_create_files && can_copy_files);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "open-item-location");
