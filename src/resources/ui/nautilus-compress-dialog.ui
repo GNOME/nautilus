@@ -9,7 +9,6 @@
     <property name="destroy_with_parent">True</property>
     <property name="type_hint">dialog</property>
     <property name="use-header-bar">1</property>
-    <property name="width_request">490</property>
     <child internal-child="vbox">
       <object class="GtkBox" id="vbox">
         <property name="orientation">vertical</property>
@@ -109,12 +108,49 @@
           </packing>
         </child>
         <child>
-          <object class="GtkLabel" id="description_label">
+          <object class="GtkStack" id="description_stack">
             <property name="visible">True</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="dim-label"/>
-            </style>
+            <property name="can_focus">False</property>
+            <property name="homogeneous">True</property>
+            <child>
+              <object class="GtkLabel" id="zip_description_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Compatible with all operating systems.</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="name">zip-description-label</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="tar_xz_description_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Smaller archives but Linux and Mac only.</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="name">tar-xz-description-label</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="seven_zip_description_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="name">seven-zip-description-label</property>
+              </packing>
+            </child>
           </object>
           <packing>
             <property name="expand">False</property>
