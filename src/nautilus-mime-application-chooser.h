@@ -26,26 +26,15 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER         (nautilus_mime_application_chooser_get_type ())
-#define NAUTILUS_MIME_APPLICATION_CHOOSER(obj)         (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NautilusMimeApplicationChooser))
-#define NAUTILUS_MIME_APPLICATION_CHOOSER_CLASS(klass) (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER, NautilusMimeApplicationChooserClass))
-#define NAUTILUS_IS_MIME_APPLICATION_CHOOSER(obj)      (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER)
+G_BEGIN_DECLS
 
-typedef struct _NautilusMimeApplicationChooser        NautilusMimeApplicationChooser;
-typedef struct _NautilusMimeApplicationChooserClass   NautilusMimeApplicationChooserClass;
-typedef struct _NautilusMimeApplicationChooserDetails NautilusMimeApplicationChooserDetails;
+#define NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER (nautilus_mime_application_chooser_get_type ())
 
-struct _NautilusMimeApplicationChooser {
-	GtkBox parent;
-	NautilusMimeApplicationChooserDetails *details;
-};
+G_DECLARE_FINAL_TYPE (NautilusMimeApplicationChooser, nautilus_mime_application_chooser, NAUTILUS, MIME_APPLICATION_CHOOSER, GtkBox)
 
-struct _NautilusMimeApplicationChooserClass {
-	GtkBoxClass parent_class;
-};
-
-GType      nautilus_mime_application_chooser_get_type (void);
 GtkWidget * nautilus_mime_application_chooser_new (GList *files,
 						   const char *mime_type);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_MIME_APPLICATION_CHOOSER_H */

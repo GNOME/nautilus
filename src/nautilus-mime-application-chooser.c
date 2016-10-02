@@ -36,8 +36,10 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-struct _NautilusMimeApplicationChooserDetails
+struct _NautilusMimeApplicationChooser
 {
+    GtkBox parent_instance;
+
     GList *files;
 
     char *content_type;
@@ -46,7 +48,7 @@ struct _NautilusMimeApplicationChooserDetails
     GtkWidget *entry;
     GtkWidget *set_as_default_button;
     GtkWidget *open_with_widget;
-    GtkWidget *add_button;
+    GtkWidget *add_button;  
 };
 
 enum
@@ -69,14 +71,14 @@ add_clicked_cb (GtkButton *button,
     gchar *message;
     GError *error = NULL;
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->open_with_widget));
 
     if (info == NULL)
     {
         return;
     }
 
-    g_app_info_set_as_last_used_for_type (info, chooser->details->content_type, &error);
+    g_app_info_set_as_last_used_for_type (info, chooser->content_type, &error);
 
     if (error != NULL)
     {
@@ -90,7 +92,7 @@ add_clicked_cb (GtkButton *button,
     }
     else
     {
-        gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+        gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->open_with_widget));
         g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
     }
 
@@ -105,13 +107,13 @@ remove_clicked_cb (GtkMenuItem *item,
     GError *error;
     GAppInfo *info;
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->open_with_widget));
 
     if (info)
     {
         error = NULL;
         if (!g_app_info_remove_supports_type (info,
-                                              chooser->details->content_type,
+                                              chooser->content_type,
                                               &error))
         {
             eel_show_error_dialog (_("Could not forget association"),
@@ -120,7 +122,7 @@ remove_clicked_cb (GtkMenuItem *item,
             g_error_free (error);
         }
 
-        gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+        gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->open_with_widget));
         g_object_unref (info);
     }
 
@@ -155,8 +157,8 @@ reset_clicked_cb (GtkButton *button,
 
     chooser = NAUTILUS_MIME_APPLICATION_CHOOSER (user_data);
 
-    g_app_info_reset_type_associations (chooser->details->content_type);
-    gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    g_app_info_reset_type_associations (chooser->content_type);
+    gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->open_with_widget));
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 }
@@ -170,9 +172,9 @@ set_as_default_clicked_cb (GtkButton *button,
     GError *error = NULL;
     gchar *message = NULL;
 
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->open_with_widget));
 
-    g_app_info_set_as_default_for_type (info, chooser->details->content_type,
+    g_app_info_set_as_default_for_type (info, chooser->content_type,
                                         &error);
 
     if (error != NULL)
@@ -186,7 +188,7 @@ set_as_default_clicked_cb (GtkButton *button,
 
     g_object_unref (info);
 
-    gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    gtk_app_chooser_refresh (GTK_APP_CHOOSER (chooser->open_with_widget));
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
 }
 
@@ -234,15 +236,15 @@ application_selected_cb (GtkAppChooserWidget *widget,
     NautilusMimeApplicationChooser *chooser = user_data;
     GAppInfo *default_app;
 
-    default_app = g_app_info_get_default_for_type (chooser->details->content_type, FALSE);
+    default_app = g_app_info_get_default_for_type (chooser->content_type, FALSE);
     if (default_app != NULL)
     {
-        gtk_widget_set_sensitive (chooser->details->set_as_default_button,
+        gtk_widget_set_sensitive (chooser->set_as_default_button,
                                   !g_app_info_equal (info, default_app));
         g_object_unref (default_app);
     }
-    gtk_widget_set_sensitive (chooser->details->add_button,
-                              app_info_can_add (info, chooser->details->content_type));
+    gtk_widget_set_sensitive (chooser->add_button,
+                              app_info_can_add (info, chooser->content_type));
 }
 
 static void
@@ -252,11 +254,11 @@ nautilus_mime_application_chooser_apply_labels (NautilusMimeApplicationChooser *
     gint num_files;
     NautilusFile *file;
 
-    num_files = g_list_length (chooser->details->files);
-    file = chooser->details->files->data;
+    num_files = g_list_length (chooser->files);
+    file = chooser->files->data;
 
     /* here we assume all files are of the same content type */
-    if (g_content_type_is_unknown (chooser->details->content_type))
+    if (g_content_type_is_unknown (chooser->content_type))
     {
         extension = nautilus_file_get_extension (file);
 
@@ -265,7 +267,7 @@ nautilus_mime_application_chooser_apply_labels (NautilusMimeApplicationChooser *
     }
     else
     {
-        description = g_content_type_get_description (chooser->details->content_type);
+        description = g_content_type_get_description (chooser->content_type);
     }
 
     if (num_files > 1)
@@ -286,7 +288,7 @@ nautilus_mime_application_chooser_apply_labels (NautilusMimeApplicationChooser *
         g_free (display_name);
     }
 
-    gtk_label_set_markup (GTK_LABEL (chooser->details->label), label);
+    gtk_label_set_markup (GTK_LABEL (chooser->label), label);
 
     g_free (label);
     g_free (extension);
@@ -303,27 +305,27 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
     gtk_box_set_spacing (GTK_BOX (chooser), 0);
     gtk_box_set_homogeneous (GTK_BOX (chooser), FALSE);
 
-    chooser->details->label = gtk_label_new ("");
-    gtk_label_set_xalign (GTK_LABEL (chooser->details->label), 0);
-    gtk_label_set_line_wrap (GTK_LABEL (chooser->details->label), TRUE);
-    gtk_label_set_line_wrap_mode (GTK_LABEL (chooser->details->label),
+    chooser->label = gtk_label_new ("");
+    gtk_label_set_xalign (GTK_LABEL (chooser->label), 0);
+    gtk_label_set_line_wrap (GTK_LABEL (chooser->label), TRUE);
+    gtk_label_set_line_wrap_mode (GTK_LABEL (chooser->label),
                                   PANGO_WRAP_WORD_CHAR);
-    gtk_label_set_max_width_chars (GTK_LABEL (chooser->details->label), 60);
-    gtk_box_pack_start (GTK_BOX (chooser), chooser->details->label,
+    gtk_label_set_max_width_chars (GTK_LABEL (chooser->label), 60);
+    gtk_box_pack_start (GTK_BOX (chooser), chooser->label,
                         FALSE, FALSE, 0);
 
-    gtk_widget_show (chooser->details->label);
+    gtk_widget_show (chooser->label);
 
-    chooser->details->open_with_widget = gtk_app_chooser_widget_new (chooser->details->content_type);
-    gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
+    chooser->open_with_widget = gtk_app_chooser_widget_new (chooser->content_type);
+    gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (chooser->open_with_widget),
                                              TRUE);
-    gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
+    gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (chooser->open_with_widget),
                                               TRUE);
-    gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
+    gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (chooser->open_with_widget),
                                            TRUE);
-    gtk_box_pack_start (GTK_BOX (chooser), chooser->details->open_with_widget,
+    gtk_box_pack_start (GTK_BOX (chooser), chooser->open_with_widget,
                         TRUE, TRUE, 6);
-    gtk_widget_show (chooser->details->open_with_widget);
+    gtk_widget_show (chooser->open_with_widget);
 
     box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_set_spacing (GTK_BOX (box), 6);
@@ -345,7 +347,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                       chooser);
     gtk_widget_show (button);
     gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
-    chooser->details->add_button = button;
+    chooser->add_button = button;
 
     button = gtk_button_new_with_label (_("Set as default"));
     g_signal_connect (button, "clicked",
@@ -354,22 +356,22 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
     gtk_widget_show (button);
     gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
 
-    chooser->details->set_as_default_button = button;
+    chooser->set_as_default_button = button;
 
     /* initialize sensitivity */
-    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->details->open_with_widget));
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (chooser->open_with_widget));
     if (info != NULL)
     {
-        application_selected_cb (GTK_APP_CHOOSER_WIDGET (chooser->details->open_with_widget),
+        application_selected_cb (GTK_APP_CHOOSER_WIDGET (chooser->open_with_widget),
                                  info, chooser);
         g_object_unref (info);
     }
 
-    g_signal_connect (chooser->details->open_with_widget,
+    g_signal_connect (chooser->open_with_widget,
                       "application-selected",
                       G_CALLBACK (application_selected_cb),
                       chooser);
-    g_signal_connect (chooser->details->open_with_widget,
+    g_signal_connect (chooser->open_with_widget,
                       "populate-popup",
                       G_CALLBACK (populate_popup_cb),
                       chooser);
@@ -378,9 +380,6 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
 static void
 nautilus_mime_application_chooser_init (NautilusMimeApplicationChooser *chooser)
 {
-    chooser->details = G_TYPE_INSTANCE_GET_PRIVATE (chooser, NAUTILUS_TYPE_MIME_APPLICATION_CHOOSER,
-                                                    NautilusMimeApplicationChooserDetails);
-
     gtk_orientable_set_orientation (GTK_ORIENTABLE (chooser),
                                     GTK_ORIENTATION_VERTICAL);
 }
@@ -406,8 +405,8 @@ nautilus_mime_application_chooser_finalize (GObject *object)
 
     chooser = NAUTILUS_MIME_APPLICATION_CHOOSER (object);
 
-    g_free (chooser->details->content_type);
-    nautilus_file_list_free (chooser->details->files);
+    g_free (chooser->content_type);
+    nautilus_file_list_free (chooser->files);
 
     G_OBJECT_CLASS (nautilus_mime_application_chooser_parent_class)->finalize (object);
 }
@@ -424,7 +423,7 @@ nautilus_mime_application_chooser_get_property (GObject    *object,
     {
         case PROP_CONTENT_TYPE:
         {
-            g_value_set_string (value, chooser->details->content_type);
+            g_value_set_string (value, chooser->content_type);
         }
         break;
 
@@ -448,13 +447,13 @@ nautilus_mime_application_chooser_set_property (GObject      *object,
     {
         case PROP_CONTENT_TYPE:
         {
-            chooser->details->content_type = g_value_dup_string (value);
+            chooser->content_type = g_value_dup_string (value);
         }
         break;
 
         case PROP_FILES:
         {
-            chooser->details->files = nautilus_file_list_copy (g_value_get_pointer (value));
+            chooser->files = nautilus_file_list_copy (g_value_get_pointer (value));
         }
         break;
 
@@ -490,8 +489,6 @@ nautilus_mime_application_chooser_class_init (NautilusMimeApplicationChooserClas
                                                    G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
-
-    g_type_class_add_private (class, sizeof (NautilusMimeApplicationChooserDetails));
 }
 
 GtkWidget *
