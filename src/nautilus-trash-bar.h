@@ -27,31 +27,11 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_TRASH_BAR         (nautilus_trash_bar_get_type ())
-#define NAUTILUS_TRASH_BAR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBar))
-#define NAUTILUS_TRASH_BAR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarClass))
-#define NAUTILUS_IS_TRASH_BAR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_TRASH_BAR))
-#define NAUTILUS_IS_TRASH_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_TRASH_BAR))
-#define NAUTILUS_TRASH_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarClass))
+#define NAUTILUS_TYPE_TRASH_BAR (nautilus_trash_bar_get_type ())
 
-typedef struct NautilusTrashBarPrivate NautilusTrashBarPrivate;
+G_DECLARE_FINAL_TYPE (NautilusTrashBar, nautilus_trash_bar, NAUTILUS, TRASH_BAR, GtkInfoBar)
 
-typedef struct
-{
-	GtkInfoBar parent;
-
-	NautilusTrashBarPrivate *priv;
-} NautilusTrashBar;
-
-typedef struct
-{
-	GtkInfoBarClass parent_class;
-} NautilusTrashBarClass;
-
-GType		 nautilus_trash_bar_get_type	(void) G_GNUC_CONST;
-
-GtkWidget       *nautilus_trash_bar_new         (NautilusFilesView *view);
-
+GtkWidget *nautilus_trash_bar_new (NautilusFilesView *view);
 
 G_END_DECLS
 

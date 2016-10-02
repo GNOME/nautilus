@@ -31,9 +31,6 @@
 #include "nautilus-file.h"
 #include "nautilus-trash-monitor.h"
 
-#define NAUTILUS_TRASH_BAR_GET_PRIVATE(o) \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_TRASH_BAR, NautilusTrashBarPrivate))
-
 enum
 {
     PROP_VIEW = 1,
@@ -46,13 +43,15 @@ enum
     TRASH_BAR_RESPONSE_RESTORE
 };
 
-struct NautilusTrashBarPrivate
+struct _NautilusTrashBar
 {
+    GtkInfoBar parent_instance;
+
     NautilusFilesView *view;
     gulong selection_handler_id;
 };
 
-G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR);
+G_DEFINE_TYPE (NautilusTrashBar, nautilus_trash_bar, GTK_TYPE_INFO_BAR)
 
 static void
 selection_changed_cb (NautilusFilesView *view,
@@ -74,11 +73,12 @@ selection_changed_cb (NautilusFilesView *view,
 static void
 connect_view_and_update_button (NautilusTrashBar *bar)
 {
-    bar->priv->selection_handler_id =
-        g_signal_connect (bar->priv->view, "selection-changed",
-                          G_CALLBACK (selection_changed_cb), bar);
+    bar->selection_handler_id = g_signal_connect (bar->view,
+                                                  "selection-changed",
+                                                  G_CALLBACK (selection_changed_cb),
+                                                  bar);
 
-    selection_changed_cb (bar->priv->view, bar);
+    selection_changed_cb (bar->view, bar);
 }
 
 static void
@@ -87,16 +87,14 @@ nautilus_trash_bar_set_property (GObject      *object,
                                  const GValue *value,
                                  GParamSpec   *pspec)
 {
-    NautilusTrashBar *bar;
-
-    bar = NAUTILUS_TRASH_BAR (object);
+    NautilusTrashBar *bar = NAUTILUS_TRASH_BAR (object);
 
     switch (prop_id)
     {
         case PROP_VIEW:
         {
-            bar->priv->view = g_value_get_object (value);
-            connect_view_and_update_button (bar);
+            bar->view = g_value_get_object (value);
+            connect_view_and_update_button (NAUTILUS_TRASH_BAR (object));
         }
         break;
 
@@ -111,14 +109,12 @@ nautilus_trash_bar_set_property (GObject      *object,
 static void
 nautilus_trash_bar_dispose (GObject *obj)
 {
-    NautilusTrashBar *bar;
+    NautilusTrashBar *bar = NAUTILUS_TRASH_BAR (obj);
 
-    bar = NAUTILUS_TRASH_BAR (obj);
-
-    if (bar->priv->selection_handler_id)
+    if (bar->selection_handler_id)
     {
-        g_signal_handler_disconnect (bar->priv->view, bar->priv->selection_handler_id);
-        bar->priv->selection_handler_id = 0;
+        g_signal_handler_disconnect (bar->view, bar->selection_handler_id);
+        bar->selection_handler_id = 0;
     }
 
     G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->dispose (obj);
@@ -157,8 +153,6 @@ nautilus_trash_bar_class_init (NautilusTrashBarClass *klass)
                                                           G_PARAM_WRITABLE |
                                                           G_PARAM_CONSTRUCT_ONLY |
                                                           G_PARAM_STATIC_STRINGS));
-
-    g_type_class_add_private (klass, sizeof (NautilusTrashBarPrivate));
 }
 
 static void
@@ -172,7 +166,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
     bar = NAUTILUS_TRASH_BAR (infobar);
     window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
-
+ 
     switch (response_id)
     {
         case TRASH_BAR_RESPONSE_EMPTY:
@@ -183,7 +177,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
         case TRASH_BAR_RESPONSE_RESTORE:
         {
-            files = nautilus_view_get_selection (NAUTILUS_VIEW (bar->priv->view));
+            files = nautilus_view_get_selection (NAUTILUS_VIEW (bar->view));
             nautilus_restore_files_from_trash (files, GTK_WINDOW (window));
             nautilus_file_list_free (files);
         }
@@ -203,7 +197,6 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
     GtkWidget *label;
     PangoAttrList *attrs;
 
-    bar->priv = NAUTILUS_TRASH_BAR_GET_PRIVATE (bar);
     content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
     action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
