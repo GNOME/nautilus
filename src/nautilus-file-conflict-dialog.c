@@ -33,8 +33,10 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-operations-ui-manager.h"
 
-struct _NautilusFileConflictDialogDetails
+struct _NautilusFileConflictDialog
 {
+    GtkDialog parent_instance;
+
     gchar *conflict_name;
 
     /* UI objects */
@@ -51,21 +53,13 @@ struct _NautilusFileConflictDialogDetails
     GtkWidget *src_image;
 };
 
-G_DEFINE_TYPE (NautilusFileConflictDialog,
-               nautilus_file_conflict_dialog,
-               GTK_TYPE_DIALOG);
-
-#define NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE(object)               \
-    (G_TYPE_INSTANCE_GET_PRIVATE ((object), NAUTILUS_TYPE_FILE_CONFLICT_DIALOG, \
-                                  NautilusFileConflictDialogDetails))
-
+G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, GTK_TYPE_DIALOG);
 
 void
 nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
                                         gchar                      *primary_text,
                                         gchar                      *secondary_text)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
     GtkWidget *label;
     PangoAttrList *attr_list;
 
@@ -73,24 +67,20 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-    gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-                        label, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 
     attr_list = pango_attr_list_new ();
     pango_attr_list_insert (attr_list, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
     pango_attr_list_insert (attr_list, pango_attr_scale_new (PANGO_SCALE_LARGE));
-    g_object_set (label,
-                  "attributes", attr_list,
-                  NULL);
+    g_object_set (label, "attributes", attr_list, NULL);
 
     pango_attr_list_unref (attr_list);
 
     label = gtk_label_new (secondary_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-    gtk_box_pack_start (GTK_BOX (details->titles_vbox),
-                        label, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 }
 
@@ -99,32 +89,26 @@ nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
                                           GdkPixbuf                  *destination_pixbuf,
                                           GdkPixbuf                  *source_pixbuf)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
-
-    if (details->dest_image == NULL)
+    if (fcd->dest_image == NULL)
     {
-        details->dest_image = gtk_image_new_from_pixbuf (destination_pixbuf);
-        gtk_box_pack_start (GTK_BOX (details->first_hbox),
-                            details->dest_image, FALSE, FALSE, 0);
-        gtk_widget_show (details->dest_image);
+        fcd->dest_image = gtk_image_new_from_pixbuf (destination_pixbuf);
+        gtk_box_pack_start (GTK_BOX (fcd->first_hbox), fcd->dest_image, FALSE, FALSE, 0);
+        gtk_widget_show (fcd->dest_image);
     }
     else
     {
-        gtk_image_set_from_pixbuf (GTK_IMAGE (details->dest_image),
-                                   destination_pixbuf);
+        gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->dest_image), destination_pixbuf);
     }
 
-    if (details->src_image == NULL)
+    if (fcd->src_image == NULL)
     {
-        details->src_image = gtk_image_new_from_pixbuf (source_pixbuf);
-        gtk_box_pack_start (GTK_BOX (details->second_hbox),
-                            details->src_image, FALSE, FALSE, 0);
-        gtk_widget_show (details->src_image);
+        fcd->src_image = gtk_image_new_from_pixbuf (source_pixbuf);
+        gtk_box_pack_start (GTK_BOX (fcd->second_hbox), fcd->src_image, FALSE, FALSE, 0);
+        gtk_widget_show (fcd->src_image);
     }
     else
     {
-        gtk_image_set_from_pixbuf (GTK_IMAGE (details->src_image),
-                                   source_pixbuf);
+        gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->src_image), source_pixbuf);
     }
 }
 
@@ -133,21 +117,16 @@ nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *fcd,
                                                gchar                      *destination_label,
                                                gchar                      *source_label)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
     GtkWidget *label;
 
     label = gtk_label_new (NULL);
-    gtk_label_set_markup (GTK_LABEL (label),
-                          destination_label);
-    gtk_box_pack_start (GTK_BOX (details->first_hbox),
-                        label, FALSE, FALSE, 0);
+    gtk_label_set_markup (GTK_LABEL (label), destination_label);
+    gtk_box_pack_start (GTK_BOX (fcd->first_hbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 
     label = gtk_label_new (NULL);
-    gtk_label_set_markup (GTK_LABEL (label),
-                          source_label);
-    gtk_box_pack_start (GTK_BOX (details->second_hbox),
-                        label, FALSE, FALSE, 0);
+    gtk_label_set_markup (GTK_LABEL (label), source_label);
+    gtk_box_pack_start (GTK_BOX (fcd->second_hbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 }
 
@@ -155,70 +134,55 @@ void
 nautilus_file_conflict_dialog_set_conflict_name (NautilusFileConflictDialog *fcd,
                                                  gchar                      *conflict_name)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
+    fcd->conflict_name = g_strdup (conflict_name);
 
-    details->conflict_name = g_strdup (conflict_name);
-
-    gtk_entry_set_text (GTK_ENTRY (details->entry), details->conflict_name);
+    gtk_entry_set_text (GTK_ENTRY (fcd->entry), fcd->conflict_name);
 }
 
 void
 nautilus_file_conflict_dialog_set_replace_button_label (NautilusFileConflictDialog *fcd,
                                                         gchar                      *label)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
-
-    gtk_button_set_label (GTK_BUTTON (details->replace_button),
-                          label);
+    gtk_button_set_label (GTK_BUTTON (fcd->replace_button), label);
 }
 
 void
 nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
-
-    gtk_widget_hide (details->skip_button);
+    gtk_widget_hide (fcd->skip_button);
 }
 
 void
 nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd)
 {
-    NautilusFileConflictDialogDetails *details = fcd->details;
-
-    gtk_widget_hide (details->checkbox);
+    gtk_widget_hide (fcd->checkbox);
 }
 
 static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
-    NautilusFileConflictDialogDetails *details;
-
-    details = dialog->details;
-
     /* The rename button is visible only if there's text
      * in the entry.
      */
     if  (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), details->conflict_name) != 0)
+         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
     {
-        gtk_widget_hide (details->replace_button);
-        gtk_widget_show (details->rename_button);
+        gtk_widget_hide (dialog->replace_button);
+        gtk_widget_show (dialog->rename_button);
 
-        gtk_widget_set_sensitive (details->checkbox, FALSE);
+        gtk_widget_set_sensitive (dialog->checkbox, FALSE);
 
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                         CONFLICT_RESPONSE_RENAME);
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_RENAME);
     }
     else
     {
-        gtk_widget_hide (details->rename_button);
-        gtk_widget_show (details->replace_button);
+        gtk_widget_hide (dialog->rename_button);
+        gtk_widget_show (dialog->replace_button);
 
-        gtk_widget_set_sensitive (details->checkbox, TRUE);
+        gtk_widget_set_sensitive (dialog->checkbox, TRUE);
 
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                         CONFLICT_RESPONSE_REPLACE);
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_REPLACE);
     }
 }
 
@@ -226,22 +190,16 @@ static void
 expander_activated_cb (GtkExpander                *w,
                        NautilusFileConflictDialog *dialog)
 {
-    NautilusFileConflictDialogDetails *details;
     int start_pos, end_pos;
-
-    details = dialog->details;
 
     if (!gtk_expander_get_expanded (w))
     {
-        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (details->entry)),
-                       details->conflict_name) == 0)
+        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) == 0)
         {
-            gtk_widget_grab_focus (details->entry);
+            gtk_widget_grab_focus (dialog->entry);
 
-            eel_filename_get_rename_region (details->conflict_name,
-                                            &start_pos, &end_pos);
-            gtk_editable_select_region (GTK_EDITABLE (details->entry),
-                                        start_pos, end_pos);
+            eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
+            gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
         }
     }
 }
@@ -250,28 +208,20 @@ static void
 checkbox_toggled_cb (GtkToggleButton            *t,
                      NautilusFileConflictDialog *dialog)
 {
-    NautilusFileConflictDialogDetails *details;
-
-    details = dialog->details;
-
-    gtk_widget_set_sensitive (details->expander,
-                              !gtk_toggle_button_get_active (t));
-    gtk_widget_set_sensitive (details->rename_button,
-                              !gtk_toggle_button_get_active (t));
+    gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
+    gtk_widget_set_sensitive (dialog->rename_button, !gtk_toggle_button_get_active (t));
 
     if  (!gtk_toggle_button_get_active (t) &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (details->entry)),
-                    "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (details->entry)),
-                    details->conflict_name) != 0)
+         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), "") != 0 &&
+         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) != 0)
     {
-        gtk_widget_hide (details->replace_button);
-        gtk_widget_show (details->rename_button);
+        gtk_widget_hide (dialog->replace_button);
+        gtk_widget_show (dialog->rename_button);
     }
     else
     {
-        gtk_widget_hide (details->rename_button);
-        gtk_widget_show (details->replace_button);
+        gtk_widget_hide (dialog->rename_button);
+        gtk_widget_show (dialog->replace_button);
     }
 }
 
@@ -279,18 +229,12 @@ static void
 reset_button_clicked_cb (GtkButton                  *w,
                          NautilusFileConflictDialog *dialog)
 {
-    NautilusFileConflictDialogDetails *details;
     int start_pos, end_pos;
 
-    details = dialog->details;
-
-    gtk_entry_set_text (GTK_ENTRY (details->entry),
-                        details->conflict_name);
-    gtk_widget_grab_focus (details->entry);
-    eel_filename_get_rename_region (details->conflict_name,
-                                    &start_pos, &end_pos);
-    gtk_editable_select_region (GTK_EDITABLE (details->entry),
-                                start_pos, end_pos);
+    gtk_entry_set_text (GTK_ENTRY (dialog->entry), dialog->conflict_name);
+    gtk_widget_grab_focus (dialog->entry);
+    eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
+    gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
 }
 
 static void
@@ -298,10 +242,8 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 {
     GtkWidget *hbox, *vbox, *vbox2;
     GtkWidget *widget, *dialog_area;
-    NautilusFileConflictDialogDetails *details;
     GtkDialog *dialog;
 
-    details = fcd->details = NAUTILUS_FILE_CONFLICT_DIALOG_GET_PRIVATE (fcd);
     dialog = GTK_DIALOG (fcd);
 
     /* Setup the main hbox */
@@ -323,7 +265,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     /* Setup the vbox for the dialog labels */
     widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
-    details->titles_vbox = widget;
+    fcd->titles_vbox = widget;
 
     /* Setup the hboxes to pack file infos into */
     vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
@@ -333,24 +275,24 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-    details->first_hbox = hbox;
+    fcd->first_hbox = hbox;
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     gtk_box_pack_start (GTK_BOX (vbox2), hbox, FALSE, FALSE, 0);
-    details->second_hbox = hbox;
+    fcd->second_hbox = hbox;
 
     /* Setup the expander for the rename action */
-    details->expander = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
-    gtk_box_pack_start (GTK_BOX (vbox2), details->expander, FALSE, FALSE, 0);
-    g_signal_connect (details->expander, "activate",
+    fcd->expander = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
+    gtk_box_pack_start (GTK_BOX (vbox2), fcd->expander, FALSE, FALSE, 0);
+    g_signal_connect (fcd->expander, "activate",
                       G_CALLBACK (expander_activated_cb), dialog);
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_container_add (GTK_CONTAINER (details->expander), hbox);
+    gtk_container_add (GTK_CONTAINER (fcd->expander), hbox);
 
     widget = gtk_entry_new ();
     gtk_box_pack_start (GTK_BOX (hbox), widget, TRUE, TRUE, 6);
-    details->entry = widget;
+    fcd->entry = widget;
     g_signal_connect (widget, "changed",
                       G_CALLBACK (entry_text_changed_cb), dialog);
 
@@ -364,37 +306,30 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 
     gtk_widget_show_all (vbox2);
 
-
     /* Setup the checkbox to apply the action to all files */
     widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files and folders"));
 
-    gtk_box_pack_start (GTK_BOX (vbox),
-                        widget, FALSE, FALSE, 0);
-    details->checkbox = widget;
+    gtk_box_pack_start (GTK_BOX (vbox), widget, FALSE, FALSE, 0);
+    fcd->checkbox = widget;
     g_signal_connect (widget, "toggled",
                       G_CALLBACK (checkbox_toggled_cb), dialog);
 
     /* Add buttons */
-    gtk_dialog_add_button (dialog,
-                           _("_Cancel"),
-                           GTK_RESPONSE_CANCEL);
+    gtk_dialog_add_button (dialog, _("_Cancel"), GTK_RESPONSE_CANCEL);
 
-    details->skip_button =
-        gtk_dialog_add_button (dialog,
-                               _("_Skip"),
-                               CONFLICT_RESPONSE_SKIP);
+    fcd->skip_button = gtk_dialog_add_button (dialog,
+                                              _("_Skip"),
+                                              CONFLICT_RESPONSE_SKIP);
 
-    details->rename_button =
-        gtk_dialog_add_button (dialog,
-                               _("Re_name"),
-                               CONFLICT_RESPONSE_RENAME);
-    gtk_widget_hide (details->rename_button);
+    fcd->rename_button = gtk_dialog_add_button (dialog,
+                                                _("Re_name"),
+                                                CONFLICT_RESPONSE_RENAME);
+    gtk_widget_hide (fcd->rename_button);
 
-    details->replace_button =
-        gtk_dialog_add_button (dialog,
-                               _("Replace"),
-                               CONFLICT_RESPONSE_REPLACE);
-    gtk_widget_grab_focus (details->replace_button);
+    fcd->replace_button = gtk_dialog_add_button (dialog,
+                                                 _("Replace"),
+                                                CONFLICT_RESPONSE_REPLACE);
+    gtk_widget_grab_focus (fcd->replace_button);
 
     /* Setup HIG properties */
     gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
@@ -407,10 +342,9 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 static void
 do_finalize (GObject *self)
 {
-    NautilusFileConflictDialogDetails *details =
-        NAUTILUS_FILE_CONFLICT_DIALOG (self)->details;
+    NautilusFileConflictDialog *dialog = NAUTILUS_FILE_CONFLICT_DIALOG (self);
 
-    g_free (details->conflict_name);
+    g_free (dialog->conflict_name);
 
     G_OBJECT_CLASS (nautilus_file_conflict_dialog_parent_class)->finalize (self);
 }
@@ -419,22 +353,18 @@ static void
 nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass)
 {
     G_OBJECT_CLASS (klass)->finalize = do_finalize;
-
-    g_type_class_add_private (klass, sizeof (NautilusFileConflictDialogDetails));
 }
 
 char *
 nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
 {
-    return g_strdup (gtk_entry_get_text
-                         (GTK_ENTRY (dialog->details->entry)));
+    return g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->entry)));
 }
 
 gboolean
 nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog)
 {
-    return gtk_toggle_button_get_active
-               (GTK_TOGGLE_BUTTON (dialog->details->checkbox));
+    return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (dialog->checkbox));
 }
 
 NautilusFileConflictDialog *
@@ -447,8 +377,7 @@ nautilus_file_conflict_dialog_new (GtkWindow *parent)
                                                           "modal", TRUE,
                                                           NULL));
 
-    gtk_window_set_transient_for (GTK_WINDOW (dialog),
-                                  parent);
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), parent);
 
     return dialog;
 }
