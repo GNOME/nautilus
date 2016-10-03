@@ -626,7 +626,6 @@ create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
     gtk_label_set_xalign (GTK_LABEL (label_old), 0.0);
     gtk_widget_set_hexpand (label_old, TRUE);
     gtk_widget_set_margin_start (label_old, ROW_MARGIN_START);
-    gtk_widget_set_tooltip_text(label_old, old_text);
     gtk_label_set_ellipsize (GTK_LABEL (label_old), PANGO_ELLIPSIZE_END);
 
     dialog->listbox_labels_old = g_list_prepend (dialog->listbox_labels_old, label_old);
@@ -653,7 +652,6 @@ create_result_row_for_label (NautilusBatchRenameDialog *dialog,
     gtk_label_set_xalign (GTK_LABEL (label_new), 0.0);
     gtk_widget_set_hexpand (label_new, TRUE);
     gtk_widget_set_margin_start (label_new, ROW_MARGIN_START);
-    gtk_widget_set_tooltip_text(label_new, new_text);
     gtk_label_set_ellipsize (GTK_LABEL (label_new), PANGO_ELLIPSIZE_END);
 
     dialog->listbox_labels_new = g_list_prepend (dialog->listbox_labels_new, label_new);
@@ -980,6 +978,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         new_name = l1->data;
 
         gtk_label_set_label (label, new_name->str);
+        gtk_widget_set_tooltip_text(GTK_WIDGET (label), new_name->str);
 
         if (g_strcmp0 (new_name->str, "") == 0)
         {
@@ -993,6 +992,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         file = NAUTILUS_FILE (l1->data);
 
         old_name = nautilus_file_get_name (file);
+        gtk_widget_set_tooltip_text(GTK_WIDGET (label), old_name);
 
         if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
         {
