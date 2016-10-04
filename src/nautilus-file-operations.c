@@ -3145,7 +3145,8 @@ static void
 scan_dir (GFile      *dir,
           SourceInfo *source_info,
           CommonJob  *job,
-          GQueue     *dirs)
+          GQueue     *dirs,
+          GHashTable *scanned)
 {
     GFileInfo *info;
     GError *error;
@@ -3160,6 +3161,7 @@ scan_dir (GFile      *dir,
 retry:
     error = NULL;
     enumerator = g_file_enumerate_children (dir,
+                                            G_FILE_ATTRIBUTE_ID_FILE","
                                             G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                             G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                             G_FILE_ATTRIBUTE_STANDARD_SIZE,
@@ -3171,15 +3173,25 @@ retry:
         error = NULL;
         while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
         {
-            count_file (info, job, source_info);
+            const char *file_id;
 
-            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+            file_id = g_file_info_get_attribute_string (info,
+                                                        G_FILE_ATTRIBUTE_ID_FILE);
+
+            if (file_id && !g_hash_table_contains (scanned, file_id))
             {
-                subdir = g_file_get_child (dir,
-                                           g_file_info_get_name (info));
+                g_hash_table_add (scanned, g_strdup (file_id));
 
-                /* Push to head, since we want depth-first */
-                g_queue_push_head (dirs, subdir);
+                count_file (info, job, source_info);
+
+                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+                {
+                    subdir = g_file_get_child (dir,
+                                               g_file_info_get_name (info));
+
+                    /* Push to head, since we want depth-first */
+                    g_queue_push_head (dirs, subdir);
+                }
             }
 
             g_object_unref (info);
@@ -3299,7 +3311,8 @@ retry:
 static void
 scan_file (GFile      *file,
            SourceInfo *source_info,
-           CommonJob  *job)
+           CommonJob  *job,
+           GHashTable *scanned)
 {
     GFileInfo *info;
     GError *error;
@@ -3315,6 +3328,7 @@ scan_file (GFile      *file,
 retry:
     error = NULL;
     info = g_file_query_info (file,
+                              G_FILE_ATTRIBUTE_ID_FILE","
                               G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                               G_FILE_ATTRIBUTE_STANDARD_SIZE,
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -3323,11 +3337,21 @@ retry:
 
     if (info)
     {
-        count_file (info, job, source_info);
+        const char *file_id;
 
-        if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+        file_id = g_file_info_get_attribute_string (info,
+                                                    G_FILE_ATTRIBUTE_ID_FILE);
+
+        if (file_id && !g_hash_table_contains (scanned, file_id))
         {
-            g_queue_push_head (dirs, g_object_ref (file));
+            g_hash_table_add (scanned, g_strdup (file_id));
+
+            count_file (info, job, source_info);
+
+            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+            {
+                g_queue_push_head (dirs, g_object_ref (file));
+            }
         }
 
         g_object_unref (info);
@@ -3394,7 +3418,7 @@ retry:
     while (!job_aborted (job) &&
            (dir = g_queue_pop_head (dirs)) != NULL)
     {
-        scan_dir (dir, source_info, job, dirs);
+        scan_dir (dir, source_info, job, dirs, scanned);
         g_object_unref (dir);
     }
 
@@ -3411,9 +3435,15 @@ scan_sources (GList      *files,
 {
     GList *l;
     GFile *file;
+    g_autoptr (GHashTable) scanned = NULL;
 
     memset (source_info, 0, sizeof (SourceInfo));
     source_info->op = kind;
+
+    scanned = g_hash_table_new_full (g_str_hash,
+                                     g_str_equal,
+                                     (GDestroyNotify) g_free,
+                                     NULL);
 
     report_preparing_count_progress (job, source_info);
 
@@ -3423,7 +3453,8 @@ scan_sources (GList      *files,
 
         scan_file (file,
                    source_info,
-                   job);
+                   job,
+                   scanned);
     }
 
     /* Make sure we report the final count */
