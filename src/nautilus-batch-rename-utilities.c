@@ -422,7 +422,6 @@ file_name_conflicts_with_results (GList   *selection,
     GList *l2;
     NautilusFile *selection_file;
     GString *new_name;
-    gchar *selection_parent_uri;
 
     for (l1 = selection, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
     {
