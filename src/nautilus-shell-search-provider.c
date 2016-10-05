@@ -181,8 +181,8 @@ search_hit_compare_relevance (gconstpointer a,
     NautilusSearchHit *hit_a, *hit_b;
     gdouble relevance_a, relevance_b;
 
-    hit_a = NAUTILUS_SEARCH_HIT (a);
-    hit_b = NAUTILUS_SEARCH_HIT (b);
+    hit_a = NAUTILUS_SEARCH_HIT ((gpointer) a);
+    hit_b = NAUTILUS_SEARCH_HIT ((gpointer) b);
 
     relevance_a = nautilus_search_hit_get_relevance (hit_a);
     relevance_b = nautilus_search_hit_get_relevance (hit_b);
