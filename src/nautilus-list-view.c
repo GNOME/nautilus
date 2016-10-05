@@ -3223,6 +3223,16 @@ nautilus_list_view_dispose (GObject *object)
 
     clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
     g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, list_view);
+    g_signal_handlers_disconnect_by_func (nautilus_preferences,
+                                          default_sort_order_changed_callback,
+                                          list_view);
+    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+                                          default_visible_columns_changed_callback,
+                                          list_view);
+    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
+                                          default_column_order_changed_callback,
+                                          list_view);
+
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
@@ -3266,16 +3276,6 @@ nautilus_list_view_finalize (GObject *object)
     g_clear_object (&list_view->details->icon);
 
     g_free (list_view->details);
-
-    g_signal_handlers_disconnect_by_func (nautilus_preferences,
-                                          default_sort_order_changed_callback,
-                                          list_view);
-    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
-                                          default_visible_columns_changed_callback,
-                                          list_view);
-    g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
-                                          default_column_order_changed_callback,
-                                          list_view);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
 }
