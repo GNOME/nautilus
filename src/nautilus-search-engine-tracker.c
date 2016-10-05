@@ -329,7 +329,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                            "  nfo:fileLastAccessed ?atime;"
                            "  tracker:available true;");
 
-    g_string_append_printf (sparql, " fts:match '\"%s*\"'", search_text);
+    g_string_append_printf (sparql, " fts:match '\"%s\"*'", search_text);
 
     if (mime_count > 0)
     {
