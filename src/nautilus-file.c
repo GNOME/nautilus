@@ -8064,6 +8064,21 @@ nautilus_file_is_nautilus_link (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_is_regular_file
+ *
+ * Check if this file is a regular file.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file is a regular file.
+ *
+ **/
+gboolean
+nautilus_file_is_regular_file (NautilusFile *file)
+{
+    return nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR;
+}
+
+/**
  * nautilus_file_is_directory
  *
  * Check if this file is a directory.
