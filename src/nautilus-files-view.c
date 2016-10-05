@@ -6786,6 +6786,7 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
                                  can_link_from_copied_files &&
                                  settings_show_create_link);
 
+    g_object_unref (view);
 }
 
 static void
