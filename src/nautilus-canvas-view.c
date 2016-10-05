@@ -1937,6 +1937,17 @@ nautilus_canvas_view_finalize (GObject *object)
 
     g_free (canvas_view->details);
 
+    G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->finalize (object);
+}
+
+static void
+nautilus_canvas_view_dispose (GObject *object)
+{
+    NautilusCanvasView *canvas_view;
+
+    canvas_view = NAUTILUS_CANVAS_VIEW (object);
+    canvas_view->details->destroyed = TRUE;
+
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           default_sort_order_changed_callback,
                                           canvas_view);
@@ -1948,16 +1959,6 @@ nautilus_canvas_view_finalize (GObject *object)
                                           text_attribute_names_changed_callback,
                                           canvas_view);
 
-    G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->finalize (object);
-}
-
-static void
-nautilus_canvas_view_dispose (GObject *object)
-{
-    NautilusCanvasView *canvas_view;
-
-    canvas_view = NAUTILUS_CANVAS_VIEW (object);
-    canvas_view->details->destroyed = TRUE;
 
     G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->dispose (object);
 }
