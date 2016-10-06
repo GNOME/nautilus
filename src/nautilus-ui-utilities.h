@@ -35,8 +35,8 @@ void nautilus_gmenu_merge                          (GMenu             *original,
 						    const gchar       *submodel_name,
 						    gboolean           prepend);
 void nautilus_pop_up_context_menu                  (GtkWidget         *parent,
-						    GMenu             *menu,
-						    GdkEventButton    *event);
+                                                    GMenu             *menu,
+                                                    GdkEventButton    *button_event);
 
 char * nautilus_escape_action_name                 (const char        *action_name,
 						    const char        *prefix);

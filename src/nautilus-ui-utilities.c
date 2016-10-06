@@ -169,11 +169,9 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
 void
 nautilus_pop_up_context_menu (GtkWidget      *parent,
                               GMenu          *menu,
-                              GdkEventButton *event)
+                              GdkEventButton *button_event)
 {
     GtkWidget *gtk_menu;
-
-    int button;
 
     g_return_if_fail (G_IS_MENU (menu));
     g_return_if_fail (GTK_IS_WIDGET (parent));
@@ -181,29 +179,9 @@ nautilus_pop_up_context_menu (GtkWidget      *parent,
     gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (menu));
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), parent, NULL);
 
-    /* The event button needs to be 0 if we're popping up this menu from
-     * a button release, else a 2nd click outside the menu with any button
-     * other than the one that invoked the menu will be ignored (instead
-     * of dismissing the menu). This is a subtle fragility of the GTK menu code.
-     */
-    if (event)
-    {
-        button = event->type == GDK_BUTTON_RELEASE
-                 ? 0
-                 : event->button;
-    }
-    else
-    {
-        button = 0;
-    }
-
-    gtk_menu_popup (GTK_MENU (gtk_menu),                        /* menu */
-                    NULL,                                       /* parent_menu_shell */
-                    NULL,                                       /* parent_menu_item */
-                    NULL,                                       /* popup_position_func */
-                    NULL,                                       /* popup_position_data */
-                    button,                                     /* button */
-                    event ? event->time : gtk_get_current_event_time ());     /* activate_time */
+    gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu),
+                               button_event ? (GdkEvent *) button_event :
+                                              gtk_get_current_event ());
 
     g_object_ref_sink (gtk_menu);
     g_object_unref (gtk_menu);
