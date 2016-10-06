@@ -59,8 +59,10 @@ enum
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL };
 static guint signals[LAST_SIGNAL];
 
-struct NautilusBookmarkDetails
+struct _NautilusBookmark
 {
+    GObject parent_instance;
+
     char *name;
     gboolean has_custom_name;
     GFile *location;
@@ -75,7 +77,7 @@ struct NautilusBookmarkDetails
     GCancellable *cancellable;
 };
 
-static void       nautilus_bookmark_disconnect_file (NautilusBookmark *file);
+static void nautilus_bookmark_disconnect_file (NautilusBookmark *file);
 
 G_DEFINE_TYPE (NautilusBookmark, nautilus_bookmark, G_TYPE_OBJECT);
 
@@ -83,10 +85,10 @@ static void
 nautilus_bookmark_set_name_internal (NautilusBookmark *bookmark,
                                      const char       *new_name)
 {
-    if (g_strcmp0 (bookmark->details->name, new_name) != 0)
+    if (g_strcmp0 (bookmark->name, new_name) != 0)
     {
-        g_free (bookmark->details->name);
-        bookmark->details->name = g_strdup (new_name);
+        g_free (bookmark->name);
+        bookmark->name = g_strdup (new_name);
 
         g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_NAME]);
     }
@@ -98,22 +100,22 @@ bookmark_set_name_from_ready_file (NautilusBookmark *self,
 {
     gchar *display_name;
 
-    if (self->details->has_custom_name)
+    if (self->has_custom_name)
     {
         return;
     }
 
-    display_name = nautilus_file_get_display_name (self->details->file);
+    display_name = nautilus_file_get_display_name (self->file);
 
-    if (nautilus_file_is_other_locations (self->details->file))
+    if (nautilus_file_is_other_locations (self->file))
     {
         nautilus_bookmark_set_name_internal (self, _("Other Locations"));
     }
-    else if (nautilus_file_is_home (self->details->file))
+    else if (nautilus_file_is_home (self->file))
     {
         nautilus_bookmark_set_name_internal (self, _("Home"));
     }
-    else if (g_strcmp0 (self->details->name, display_name) != 0)
+    else if (g_strcmp0 (self->name, display_name) != 0)
     {
         nautilus_bookmark_set_name_internal (self, display_name);
         DEBUG ("%s: name changed to %s", nautilus_bookmark_get_name (self), display_name);
@@ -128,19 +130,19 @@ bookmark_file_changed_callback (NautilusFile     *file,
 {
     GFile *location;
 
-    g_assert (file == bookmark->details->file);
+    g_assert (file == bookmark->file);
 
     DEBUG ("%s: file changed", nautilus_bookmark_get_name (bookmark));
 
     location = nautilus_file_get_location (file);
 
-    if (!g_file_equal (bookmark->details->location, location) &&
+    if (!g_file_equal (bookmark->location, location) &&
         !nautilus_file_is_in_trash (file))
     {
         DEBUG ("%s: file got moved", nautilus_bookmark_get_name (bookmark));
 
-        g_object_unref (bookmark->details->location);
-        bookmark->details->location = g_object_ref (location);
+        g_object_unref (bookmark->location);
+        bookmark->location = g_object_ref (location);
 
         g_object_notify_by_pspec (G_OBJECT (bookmark), properties[PROP_LOCATION]);
         g_signal_emit (bookmark, signals[CONTENTS_CHANGED], 0);
@@ -240,7 +242,7 @@ nautilus_bookmark_get_xdg_type (NautilusBookmark *bookmark,
         }
 
         location = g_file_new_for_path (path);
-        match = g_file_equal (location, bookmark->details->location);
+        match = g_file_equal (location, bookmark->location);
         g_object_unref (location);
 
         if (match)
@@ -264,7 +266,7 @@ get_native_icon (NautilusBookmark *bookmark,
     GUserDirectory xdg_type;
     GIcon *icon = NULL;
 
-    if (bookmark->details->file == NULL)
+    if (bookmark->file == NULL)
     {
         goto out;
     }
@@ -308,7 +310,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
     GIcon *icon, *symbolic_icon;
     char *uri;
 
-    if (g_file_is_native (bookmark->details->location))
+    if (g_file_is_native (bookmark->location))
     {
         symbolic_icon = get_native_icon (bookmark, TRUE);
         icon = get_native_icon (bookmark, FALSE);
@@ -329,7 +331,7 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
         g_free (uri);
     }
 
-    if (!bookmark->details->exists)
+    if (!bookmark->exists)
     {
         DEBUG ("%s: file does not exist, add emblem", nautilus_bookmark_get_name (bookmark));
 
@@ -351,66 +353,66 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
 static void
 nautilus_bookmark_disconnect_file (NautilusBookmark *bookmark)
 {
-    if (bookmark->details->file != NULL)
+    if (bookmark->file != NULL)
     {
         DEBUG ("%s: disconnecting file",
                nautilus_bookmark_get_name (bookmark));
 
-        g_signal_handlers_disconnect_by_func (bookmark->details->file,
+        g_signal_handlers_disconnect_by_func (bookmark->file,
                                               G_CALLBACK (bookmark_file_changed_callback),
                                               bookmark);
-        g_clear_object (&bookmark->details->file);
+        g_clear_object (&bookmark->file);
     }
 
-    if (bookmark->details->cancellable != NULL)
+    if (bookmark->cancellable != NULL)
     {
-        g_cancellable_cancel (bookmark->details->cancellable);
-        g_clear_object (&bookmark->details->cancellable);
+        g_cancellable_cancel (bookmark->cancellable);
+        g_clear_object (&bookmark->cancellable);
     }
 
-    if (bookmark->details->exists_id != 0)
+    if (bookmark->exists_id != 0)
     {
-        g_source_remove (bookmark->details->exists_id);
-        bookmark->details->exists_id = 0;
+        g_source_remove (bookmark->exists_id);
+        bookmark->exists_id = 0;
     }
 }
 
 static void
 nautilus_bookmark_connect_file (NautilusBookmark *bookmark)
 {
-    if (bookmark->details->file != NULL)
+    if (bookmark->file != NULL)
     {
         DEBUG ("%s: file already connected, returning",
                nautilus_bookmark_get_name (bookmark));
         return;
     }
 
-    if (bookmark->details->exists)
+    if (bookmark->exists)
     {
         DEBUG ("%s: creating file", nautilus_bookmark_get_name (bookmark));
 
-        bookmark->details->file = nautilus_file_get (bookmark->details->location);
-        g_assert (!nautilus_file_is_gone (bookmark->details->file));
+        bookmark->file = nautilus_file_get (bookmark->location);
+        g_assert (!nautilus_file_is_gone (bookmark->file));
 
-        g_signal_connect_object (bookmark->details->file, "changed",
+        g_signal_connect_object (bookmark->file, "changed",
                                  G_CALLBACK (bookmark_file_changed_callback), bookmark, 0);
     }
 
-    if (bookmark->details->icon == NULL ||
-        bookmark->details->symbolic_icon == NULL)
+    if (bookmark->icon == NULL ||
+        bookmark->symbolic_icon == NULL)
     {
         nautilus_bookmark_set_icon_to_default (bookmark);
     }
 
-    if (bookmark->details->file != NULL &&
-        nautilus_file_check_if_ready (bookmark->details->file, NAUTILUS_FILE_ATTRIBUTE_INFO))
+    if (bookmark->file != NULL &&
+        nautilus_file_check_if_ready (bookmark->file, NAUTILUS_FILE_ATTRIBUTE_INFO))
     {
-        bookmark_set_name_from_ready_file (bookmark, bookmark->details->file);
+        bookmark_set_name_from_ready_file (bookmark, bookmark->file);
     }
 
-    if (bookmark->details->name == NULL)
+    if (bookmark->name == NULL)
     {
-        bookmark->details->name = nautilus_compute_title_for_location (bookmark->details->location);
+        bookmark->name = nautilus_compute_title_for_location (bookmark->location);
     }
 }
 
@@ -418,12 +420,12 @@ static void
 nautilus_bookmark_set_exists (NautilusBookmark *bookmark,
                               gboolean          exists)
 {
-    if (bookmark->details->exists == exists)
+    if (bookmark->exists == exists)
     {
         return;
     }
 
-    bookmark->details->exists = exists;
+    bookmark->exists = exists;
     DEBUG ("%s: setting bookmark to exist: %d\n",
            nautilus_bookmark_get_name (bookmark), exists);
 
@@ -435,7 +437,7 @@ static gboolean
 exists_non_native_idle_cb (gpointer user_data)
 {
     NautilusBookmark *bookmark = user_data;
-    bookmark->details->exists_id = 0;
+    bookmark->exists_id = 0;
     nautilus_bookmark_set_exists (bookmark, FALSE);
 
     return FALSE;
@@ -466,7 +468,7 @@ exists_query_info_ready_cb (GObject      *source,
         exists = TRUE;
 
         g_object_unref (info);
-        g_clear_object (&bookmark->details->cancellable);
+        g_clear_object (&bookmark->cancellable);
     }
 
     nautilus_bookmark_set_exists (bookmark, exists);
@@ -476,24 +478,24 @@ static void
 nautilus_bookmark_update_exists (NautilusBookmark *bookmark)
 {
     /* Convert to a path, returning FALSE if not local. */
-    if (!g_file_is_native (bookmark->details->location) &&
-        bookmark->details->exists_id == 0)
+    if (!g_file_is_native (bookmark->location) &&
+        bookmark->exists_id == 0)
     {
-        bookmark->details->exists_id =
+        bookmark->exists_id =
             g_idle_add (exists_non_native_idle_cb, bookmark);
         return;
     }
 
-    if (bookmark->details->cancellable != NULL)
+    if (bookmark->cancellable != NULL)
     {
         return;
     }
 
-    bookmark->details->cancellable = g_cancellable_new ();
-    g_file_query_info_async (bookmark->details->location,
+    bookmark->cancellable = g_cancellable_new ();
+    g_file_query_info_async (bookmark->location,
                              G_FILE_ATTRIBUTE_STANDARD_TYPE,
                              0, G_PRIORITY_DEFAULT,
-                             bookmark->details->cancellable,
+                             bookmark->cancellable,
                              exists_query_info_ready_cb, bookmark);
 }
 
@@ -514,10 +516,10 @@ nautilus_bookmark_set_property (GObject      *object,
         {
             new_icon = g_value_get_object (value);
 
-            if (new_icon != NULL && !g_icon_equal (self->details->icon, new_icon))
+            if (new_icon != NULL && !g_icon_equal (self->icon, new_icon))
             {
-                g_clear_object (&self->details->icon);
-                self->details->icon = g_object_ref (new_icon);
+                g_clear_object (&self->icon);
+                self->icon = g_object_ref (new_icon);
             }
         }
         break;
@@ -526,23 +528,23 @@ nautilus_bookmark_set_property (GObject      *object,
         {
             new_icon = g_value_get_object (value);
 
-            if (new_icon != NULL && !g_icon_equal (self->details->symbolic_icon, new_icon))
+            if (new_icon != NULL && !g_icon_equal (self->symbolic_icon, new_icon))
             {
-                g_clear_object (&self->details->symbolic_icon);
-                self->details->symbolic_icon = g_object_ref (new_icon);
+                g_clear_object (&self->symbolic_icon);
+                self->symbolic_icon = g_object_ref (new_icon);
             }
         }
         break;
 
         case PROP_LOCATION:
         {
-            self->details->location = g_value_dup_object (value);
+            self->location = g_value_dup_object (value);
         }
         break;
 
         case PROP_CUSTOM_NAME:
         {
-            self->details->has_custom_name = g_value_get_boolean (value);
+            self->has_custom_name = g_value_get_boolean (value);
         }
         break;
 
@@ -572,31 +574,31 @@ nautilus_bookmark_get_property (GObject    *object,
     {
         case PROP_NAME:
         {
-            g_value_set_string (value, self->details->name);
+            g_value_set_string (value, self->name);
         }
         break;
 
         case PROP_ICON:
         {
-            g_value_set_object (value, self->details->icon);
+            g_value_set_object (value, self->icon);
         }
         break;
 
         case PROP_SYMBOLIC_ICON:
         {
-            g_value_set_object (value, self->details->symbolic_icon);
+            g_value_set_object (value, self->symbolic_icon);
         }
         break;
 
         case PROP_LOCATION:
         {
-            g_value_set_object (value, self->details->location);
+            g_value_set_object (value, self->location);
         }
         break;
 
         case PROP_CUSTOM_NAME:
         {
-            g_value_set_boolean (value, self->details->has_custom_name);
+            g_value_set_boolean (value, self->has_custom_name);
         }
         break;
 
@@ -619,12 +621,12 @@ nautilus_bookmark_finalize (GObject *object)
 
     nautilus_bookmark_disconnect_file (bookmark);
 
-    g_object_unref (bookmark->details->location);
-    g_clear_object (&bookmark->details->icon);
-    g_clear_object (&bookmark->details->symbolic_icon);
+    g_object_unref (bookmark->location);
+    g_clear_object (&bookmark->icon);
+    g_clear_object (&bookmark->symbolic_icon);
 
-    g_free (bookmark->details->name);
-    g_free (bookmark->details->scroll_file);
+    g_free (bookmark->name);
+    g_free (bookmark->scroll_file);
 
     G_OBJECT_CLASS (nautilus_bookmark_parent_class)->finalize (object);
 }
@@ -652,7 +654,7 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
         g_signal_new ("contents-changed",
                       G_TYPE_FROM_CLASS (class),
                       G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusBookmarkClass, contents_changed),
+                      0,
                       NULL, NULL,
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
@@ -693,17 +695,12 @@ nautilus_bookmark_class_init (NautilusBookmarkClass *class)
                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
-
-    g_type_class_add_private (class, sizeof (NautilusBookmarkDetails));
 }
 
 static void
 nautilus_bookmark_init (NautilusBookmark *bookmark)
 {
-    bookmark->details = G_TYPE_INSTANCE_GET_PRIVATE (bookmark, NAUTILUS_TYPE_BOOKMARK,
-                                                     NautilusBookmarkDetails);
-
-    bookmark->details->exists = TRUE;
+    bookmark->exists = TRUE;
 }
 
 const gchar *
@@ -711,7 +708,7 @@ nautilus_bookmark_get_name (NautilusBookmark *bookmark)
 {
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), NULL);
 
-    return bookmark->details->name;
+    return bookmark->name;
 }
 
 gboolean
@@ -719,7 +716,7 @@ nautilus_bookmark_get_has_custom_name (NautilusBookmark *bookmark)
 {
     g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (bookmark), FALSE);
 
-    return (bookmark->details->has_custom_name);
+    return (bookmark->has_custom_name);
 }
 
 /**
@@ -745,14 +742,14 @@ nautilus_bookmark_compare_with (gconstpointer a,
     bookmark_a = NAUTILUS_BOOKMARK (a);
     bookmark_b = NAUTILUS_BOOKMARK (b);
 
-    if (!g_file_equal (bookmark_a->details->location,
-                       bookmark_b->details->location))
+    if (!g_file_equal (bookmark_a->location,
+                       bookmark_b->location))
     {
         return 1;
     }
 
-    if (g_strcmp0 (bookmark_a->details->name,
-                   bookmark_b->details->name) != 0)
+    if (g_strcmp0 (bookmark_a->name,
+                   bookmark_b->name) != 0)
     {
         return 1;
     }
@@ -768,9 +765,9 @@ nautilus_bookmark_get_symbolic_icon (NautilusBookmark *bookmark)
     /* Try to connect a file in case file exists now but didn't earlier. */
     nautilus_bookmark_connect_file (bookmark);
 
-    if (bookmark->details->symbolic_icon)
+    if (bookmark->symbolic_icon)
     {
-        return g_object_ref (bookmark->details->symbolic_icon);
+        return g_object_ref (bookmark->symbolic_icon);
     }
     return NULL;
 }
@@ -783,9 +780,9 @@ nautilus_bookmark_get_icon (NautilusBookmark *bookmark)
     /* Try to connect a file in case file exists now but didn't earlier. */
     nautilus_bookmark_connect_file (bookmark);
 
-    if (bookmark->details->icon)
+    if (bookmark->icon)
     {
-        return g_object_ref (bookmark->details->icon);
+        return g_object_ref (bookmark->icon);
     }
     return NULL;
 }
@@ -803,7 +800,7 @@ nautilus_bookmark_get_location (NautilusBookmark *bookmark)
      */
     nautilus_bookmark_connect_file (bookmark);
 
-    return g_object_ref (bookmark->details->location);
+    return g_object_ref (bookmark->location);
 }
 
 char *
@@ -861,12 +858,12 @@ void
 nautilus_bookmark_set_scroll_pos (NautilusBookmark *bookmark,
                                   const char       *uri)
 {
-    g_free (bookmark->details->scroll_file);
-    bookmark->details->scroll_file = g_strdup (uri);
+    g_free (bookmark->scroll_file);
+    bookmark->scroll_file = g_strdup (uri);
 }
 
 char *
 nautilus_bookmark_get_scroll_pos (NautilusBookmark *bookmark)
 {
-    return g_strdup (bookmark->details->scroll_file);
+    return g_strdup (bookmark->scroll_file);
 }

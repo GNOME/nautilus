@@ -27,41 +27,13 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-typedef struct NautilusBookmark NautilusBookmark;
+
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_BOOKMARK nautilus_bookmark_get_type()
-#define NAUTILUS_BOOKMARK(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_BOOKMARK, NautilusBookmark))
-#define NAUTILUS_BOOKMARK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_BOOKMARK, NautilusBookmarkClass))
-#define NAUTILUS_IS_BOOKMARK(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_BOOKMARK))
-#define NAUTILUS_IS_BOOKMARK_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_BOOKMARK))
-#define NAUTILUS_BOOKMARK_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_BOOKMARK, NautilusBookmarkClass))
 
-typedef struct NautilusBookmarkDetails NautilusBookmarkDetails;
+G_DECLARE_FINAL_TYPE (NautilusBookmark, nautilus_bookmark, NAUTILUS, BOOKMARK, GObject)
 
-struct NautilusBookmark {
-	GObject object;
-	NautilusBookmarkDetails *details;	
-};
-
-struct NautilusBookmarkClass {
-	GObjectClass parent_class;
-
-	/* Signals that clients can connect to. */
-
-	/* The contents-changed signal is emitted when the bookmark's contents
-	 * (custom name or URI) changed.
-	 */
-	void	(* contents_changed) (NautilusBookmark *bookmark);
-};
-
-typedef struct NautilusBookmarkClass NautilusBookmarkClass;
-
-GType                 nautilus_bookmark_get_type               (void);
 NautilusBookmark *    nautilus_bookmark_new                    (GFile *location,
                                                                 const char *custom_name);
 const char *          nautilus_bookmark_get_name               (NautilusBookmark      *bookmark);
@@ -72,7 +44,7 @@ GIcon *               nautilus_bookmark_get_symbolic_icon      (NautilusBookmark
 gboolean              nautilus_bookmark_get_xdg_type           (NautilusBookmark      *bookmark,
 								GUserDirectory        *directory);
 gboolean              nautilus_bookmark_get_is_builtin         (NautilusBookmark      *bookmark);
-gboolean	      nautilus_bookmark_get_has_custom_name    (NautilusBookmark      *bookmark);
+gboolean              nautilus_bookmark_get_has_custom_name    (NautilusBookmark      *bookmark);
 int                   nautilus_bookmark_compare_with           (gconstpointer          a,
 								gconstpointer          b);
 
@@ -80,8 +52,9 @@ void                  nautilus_bookmark_set_scroll_pos         (NautilusBookmark
 								const char            *uri);
 char *                nautilus_bookmark_get_scroll_pos         (NautilusBookmark      *bookmark);
 
-
 /* Helper functions for displaying bookmarks */
 GtkWidget *           nautilus_bookmark_menu_item_new          (NautilusBookmark      *bookmark);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_BOOKMARK_H */
