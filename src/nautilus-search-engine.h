@@ -28,30 +28,23 @@
 #include "nautilus-search-engine-model.h"
 #include "nautilus-search-engine-simple.h"
 
+G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_SEARCH_ENGINE		(nautilus_search_engine_get_type ())
-#define NAUTILUS_SEARCH_ENGINE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_ENGINE, NautilusSearchEngine))
-#define NAUTILUS_SEARCH_ENGINE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_ENGINE, NautilusSearchEngineClass))
-#define NAUTILUS_IS_SEARCH_ENGINE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_ENGINE))
-#define NAUTILUS_IS_SEARCH_ENGINE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_ENGINE))
-#define NAUTILUS_SEARCH_ENGINE_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_ENGINE, NautilusSearchEngineClass))
 
-typedef struct NautilusSearchEngineDetails NautilusSearchEngineDetails;
+G_DECLARE_DERIVABLE_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
 
-typedef struct NautilusSearchEngine {
-	GObject parent;
-	NautilusSearchEngineDetails *details;
-} NautilusSearchEngine;
-
-typedef struct {
-	GObjectClass parent_class;
-} NautilusSearchEngineClass;
-
-GType                 nautilus_search_engine_get_type           (void);
+struct _NautilusSearchEngineClass
+{
+  GObjectClass parent_class;
+};
 
 NautilusSearchEngine *nautilus_search_engine_new                (void);
 NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
 NautilusSearchEngineSimple *
                       nautilus_search_engine_get_simple_provider (NautilusSearchEngine *engine);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_SEARCH_ENGINE_H */
