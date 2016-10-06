@@ -28,47 +28,19 @@
 
 #include "nautilus-window-slot.h"
 
+G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_TOOLBAR nautilus_toolbar_get_type()
-#define NAUTILUS_TOOLBAR(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_TOOLBAR, NautilusToolbar))
-#define NAUTILUS_TOOLBAR_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TOOLBAR, NautilusToolbarClass))
-#define NAUTILUS_IS_TOOLBAR(obj) \
-	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_TOOLBAR))
-#define NAUTILUS_IS_TOOLBAR_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TOOLBAR))
-#define NAUTILUS_TOOLBAR_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_TOOLBAR, NautilusToolbarClass))
 
-typedef struct _NautilusToolbar NautilusToolbar;
-typedef struct _NautilusToolbarPrivate NautilusToolbarPrivate;
-typedef struct _NautilusToolbarClass NautilusToolbarClass;
-
-typedef enum {
-	NAUTILUS_TOOLBAR_MODE_PATH_BAR,
-	NAUTILUS_TOOLBAR_MODE_LOCATION_ENTRY,
-} NautilusToolbarMode;
-
-struct _NautilusToolbar {
-	GtkHeaderBar parent;
-
-	/* private */
-	NautilusToolbarPrivate *priv;
-};
-
-struct _NautilusToolbarClass {
-	GtkHeaderBarClass parent_class;
-};
-
-GType nautilus_toolbar_get_type (void);
+G_DECLARE_FINAL_TYPE (NautilusToolbar, nautilus_toolbar, NAUTILUS, TOOLBAR, GtkHeaderBar)
 
 GtkWidget *nautilus_toolbar_new (void);
 
 GtkWidget *nautilus_toolbar_get_path_bar (NautilusToolbar *self);
 GtkWidget *nautilus_toolbar_get_location_entry (NautilusToolbar *self);
 
-void nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
-					       gboolean show_location_entry);
+void       nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
+                                                     gboolean show_location_entry);
 
 void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
                                                 NautilusWindowSlot *slot);
@@ -76,5 +48,7 @@ void       nautilus_toolbar_set_active_slot    (NautilusToolbar    *toolbar,
 gboolean   nautilus_toolbar_is_operations_button_active (NautilusToolbar *toolbar);
 
 void       nautilus_toolbar_on_window_constructed       (NautilusToolbar *toolbar);
+
+G_END_DECLS
 
 #endif /* __NAUTILUS_TOOLBAR_H__ */
