@@ -7795,7 +7795,7 @@ nautilus_file_is_launchable (NautilusFile *file)
            nautilus_file_can_get_permissions (file) &&
            nautilus_file_can_execute (file) &&
            nautilus_file_is_executable (file) &&
-           !nautilus_file_is_directory (file);
+           nautilus_file_is_regular_file (file);
 }
 
 /**
