@@ -379,6 +379,10 @@ split_entry_text (NautilusBatchRenameDialog *self,
         {
             result = g_list_prepend (result, normal_text);
         }
+        else
+        {
+            g_string_free (normal_text, TRUE);
+        }
 
         for (l = tag_info_keys; l != NULL; l = l->next)
         {
@@ -731,6 +735,7 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
     if (dialog->conflict_cancellable)
     {
         g_cancellable_cancel (dialog->conflict_cancellable);
+        g_clear_object (&dialog->conflict_cancellable);
     }
 
     gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -750,6 +755,7 @@ batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
         if (dialog->conflict_cancellable)
         {
             g_cancellable_cancel (dialog->conflict_cancellable);
+            g_clear_object (&dialog->conflict_cancellable);
         }
 
         gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -1234,6 +1240,7 @@ on_file_names_list_has_duplicates (GObject      *object,
 
     if (!success)
     {
+        g_clear_error (&error);
         return;
     }
 
@@ -1353,6 +1360,8 @@ destroy_conflicts_task_data (gpointer data)
     {
         g_list_free (task_data->directories);
     }
+
+    g_free (task_data);
 
     g_mutex_clear (&task_data->wait_ready_mutex);
     g_cond_clear (&task_data->wait_ready_condition);
@@ -1509,6 +1518,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
     if (dialog->conflict_cancellable != NULL)
     {
         g_cancellable_cancel (dialog->conflict_cancellable);
+        g_clear_object (&dialog->conflict_cancellable);
     }
 
     if(dialog->selection == NULL)
@@ -2051,6 +2061,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
             }
         }
 
+        g_string_free (file_metadata->file_name, TRUE);
         g_free (file_metadata);
     }
 
@@ -2064,6 +2075,10 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
 
     nautilus_file_list_free (dialog->selection);
     nautilus_directory_unref (dialog->directory);
+
+    g_object_unref (dialog->size_group);
+
+    g_hash_table_destroy (dialog->tag_info_table);
 
     G_OBJECT_CLASS (nautilus_batch_rename_dialog_parent_class)->finalize (object);
 }

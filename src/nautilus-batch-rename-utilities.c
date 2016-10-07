@@ -716,6 +716,8 @@ on_cursor_callback (GObject      *object,
                                                      query_data->date_order_hash_table,
                                                      query_data->selection_metadata);
 
+        g_free (query_data);
+
         return;
     }
 
@@ -877,6 +879,8 @@ batch_rename_dialog_query_callback (GObject      *object,
         nautilus_batch_rename_dialog_query_finished (query_data->dialog,
                                                      query_data->date_order_hash_table,
                                                      query_data->selection_metadata);
+
+        g_free (query_data);
     }
     else
     {
@@ -955,10 +959,12 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
         file_metadata->file_name = g_string_new (file_name);
         file_metadata->metadata[ORIGINAL_FILE_NAME] = g_string_new (file_name);
 
-        selection_metadata = g_list_append (selection_metadata, file_metadata);
+        selection_metadata = g_list_prepend (selection_metadata, file_metadata);
 
         g_free (file_name);
     }
+
+    selection_metadata = g_list_reverse (selection_metadata);
 
     g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?file))");
 
