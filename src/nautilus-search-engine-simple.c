@@ -60,14 +60,14 @@ typedef struct
 } SearchThreadData;
 
 
-struct NautilusSearchEngineSimpleDetails
+struct _NautilusSearchEngineSimple
 {
+    GObject parent_instance;
     NautilusQuery *query;
 
     SearchThreadData *active_search;
 
     gboolean recursive;
-    gboolean query_finished;
 };
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
@@ -81,10 +81,8 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineSimple,
 static void
 finalize (GObject *object)
 {
-    NautilusSearchEngineSimple *simple;
-
-    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
-    g_clear_object (&simple->details->query);
+    NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
+    g_clear_object (&simple->query);
 
     G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
@@ -135,7 +133,6 @@ search_thread_done_idle (gpointer user_data)
     SearchThreadData *data = user_data;
     NautilusSearchEngineSimple *engine = data->engine;
 
-
     if (g_cancellable_is_cancelled (data->cancellable))
     {
         DEBUG ("Simple engine finished and cancelled");
@@ -144,7 +141,7 @@ search_thread_done_idle (gpointer user_data)
     {
         DEBUG ("Simple engine finished");
     }
-    engine->details->active_search = NULL;
+    engine->active_search = NULL;
     nautilus_search_provider_finished (NAUTILUS_SEARCH_PROVIDER (engine),
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
 
@@ -325,7 +322,7 @@ visit_directory (GFile            *dir,
             send_batch (data);
         }
 
-        if (data->engine->details->recursive && g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+        if (data->engine->recursive && g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
         {
             id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             visited = FALSE;
@@ -406,17 +403,17 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
-    if (simple->details->active_search != NULL)
+    if (simple->active_search != NULL)
     {
         return;
     }
 
     DEBUG ("Simple engine start");
 
-    data = search_thread_data_new (simple, simple->details->query);
+    data = search_thread_data_new (simple, simple->query);
 
     thread = g_thread_new ("nautilus-search-simple", search_thread_func, data);
-    simple->details->active_search = data;
+    simple->active_search = data;
 
     g_object_notify (G_OBJECT (provider), "running");
 
@@ -426,14 +423,12 @@ nautilus_search_engine_simple_start (NautilusSearchProvider *provider)
 static void
 nautilus_search_engine_simple_stop (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineSimple *simple;
+    NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
-    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
-
-    if (simple->details->active_search != NULL)
+    if (simple->active_search != NULL)
     {
         DEBUG ("Simple engine stop");
-        g_cancellable_cancel (simple->details->active_search->cancellable);
+        g_cancellable_cancel (simple->active_search->cancellable);
     }
 }
 
@@ -441,13 +436,11 @@ static void
 nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
                                          NautilusQuery          *query)
 {
-    NautilusSearchEngineSimple *simple;
-
-    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
+    NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
     g_object_ref (query);
-    g_clear_object (&simple->details->query);
-    simple->details->query = query;
+    g_clear_object (&simple->query);
+    simple->query = query;
 }
 
 static gboolean
@@ -457,7 +450,7 @@ nautilus_search_engine_simple_is_running (NautilusSearchProvider *provider)
 
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
-    return simple->details->active_search != NULL;
+    return simple->active_search != NULL;
 }
 
 static void
@@ -466,15 +459,13 @@ nautilus_search_engine_simple_set_property (GObject      *object,
                                             const GValue *value,
                                             GParamSpec   *pspec)
 {
-    NautilusSearchEngineSimple *engine;
-
-    engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
+    NautilusSearchEngineSimple *engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
 
     switch (arg_id)
     {
         case PROP_RECURSIVE:
         {
-            engine->details->recursive = g_value_get_boolean (value);
+            engine->recursive = g_value_get_boolean (value);
         }
         break;
 
@@ -492,9 +483,7 @@ nautilus_search_engine_simple_get_property (GObject    *object,
                                             GValue     *value,
                                             GParamSpec *pspec)
 {
-    NautilusSearchEngineSimple *engine;
-
-    engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
+    NautilusSearchEngineSimple *engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
 
     switch (arg_id)
     {
@@ -506,7 +495,7 @@ nautilus_search_engine_simple_get_property (GObject    *object,
 
         case PROP_RECURSIVE:
         {
-            g_value_set_boolean (value, engine->details->recursive);
+            g_value_set_boolean (value, engine->recursive);
         }
         break;
     }
@@ -550,15 +539,13 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
      * Whether the search engine is running a search.
      */
     g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
-
-    g_type_class_add_private (class, sizeof (NautilusSearchEngineSimpleDetails));
 }
 
 static void
 nautilus_search_engine_simple_init (NautilusSearchEngineSimple *engine)
 {
-    engine->details = G_TYPE_INSTANCE_GET_PRIVATE (engine, NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE,
-                                                   NautilusSearchEngineSimpleDetails);
+    engine->query = NULL;
+    engine->active_search = NULL;
 }
 
 NautilusSearchEngineSimple *

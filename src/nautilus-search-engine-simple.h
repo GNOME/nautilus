@@ -22,26 +22,14 @@
 #ifndef NAUTILUS_SEARCH_ENGINE_SIMPLE_H
 #define NAUTILUS_SEARCH_ENGINE_SIMPLE_H
 
-#define NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE		(nautilus_search_engine_simple_get_type ())
-#define NAUTILUS_SEARCH_ENGINE_SIMPLE(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE, NautilusSearchEngineSimple))
-#define NAUTILUS_SEARCH_ENGINE_SIMPLE_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE, NautilusSearchEngineSimpleClass))
-#define NAUTILUS_IS_SEARCH_ENGINE_SIMPLE(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE))
-#define NAUTILUS_IS_SEARCH_ENGINE_SIMPLE_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE))
-#define NAUTILUS_SEARCH_ENGINE_SIMPLE_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE, NautilusSearchEngineSimpleClass))
+G_BEGIN_DECLS
 
-typedef struct NautilusSearchEngineSimpleDetails NautilusSearchEngineSimpleDetails;
+#define NAUTILUS_TYPE_SEARCH_ENGINE_SIMPLE (nautilus_search_engine_simple_get_type ())
 
-typedef struct NautilusSearchEngineSimple {
-	GObject parent;
-	NautilusSearchEngineSimpleDetails *details;
-} NautilusSearchEngineSimple;
+G_DECLARE_FINAL_TYPE (NautilusSearchEngineSimple, nautilus_search_engine_simple, NAUTILUS, SEARCH_ENGINE_SIMPLE, GObject);
 
-typedef struct {
-	GObjectClass parent_class;
-} NautilusSearchEngineSimpleClass;
+NautilusSearchEngineSimple* nautilus_search_engine_simple_new (void);
 
-GType          nautilus_search_engine_simple_get_type  (void);
-
-NautilusSearchEngineSimple* nautilus_search_engine_simple_new       (void);
+G_END_DECLS
 
 #endif /* NAUTILUS_SEARCH_ENGINE_SIMPLE_H */
