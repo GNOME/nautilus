@@ -146,7 +146,6 @@ match_parameter (gchar          *line,
 {
   static GRegex *regex = NULL;
   GMatchInfo *match_info;
-  gboolean first_param;
   gint start_pos = 0;
 
   if (G_UNLIKELY (regex == NULL))

@@ -8404,7 +8404,7 @@ extract_task_thread_func (GTask        *task,
         source_file = G_FILE (l->data);
         info = g_file_query_info (source_file,
                                   G_FILE_ATTRIBUTE_STANDARD_SIZE,
-                                  G_FILE_COPY_NOFOLLOW_SYMLINKS,
+                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
                                   extract_job->common.cancellable,
                                   NULL);
 

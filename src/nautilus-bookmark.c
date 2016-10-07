@@ -736,11 +736,11 @@ nautilus_bookmark_compare_with (gconstpointer a,
     NautilusBookmark *bookmark_a;
     NautilusBookmark *bookmark_b;
 
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (a), 1);
-    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK (b), 1);
+    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK ((gpointer) a), 1);
+    g_return_val_if_fail (NAUTILUS_IS_BOOKMARK ((gpointer) b), 1);
 
-    bookmark_a = NAUTILUS_BOOKMARK (a);
-    bookmark_b = NAUTILUS_BOOKMARK (b);
+    bookmark_a = NAUTILUS_BOOKMARK ((gpointer) a);
+    bookmark_b = NAUTILUS_BOOKMARK ((gpointer) b);
 
     if (!g_file_equal (bookmark_a->location,
                        bookmark_b->location))
