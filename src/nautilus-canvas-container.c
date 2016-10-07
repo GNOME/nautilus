@@ -1432,6 +1432,9 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
 
+    /* We can't get the right allocation if the size hasn't been allocated yet */
+    g_return_if_fail (container->details->has_been_allocated);
+
     if (icons == NULL)
     {
         return;
@@ -1938,6 +1941,9 @@ lay_down_icons_vertical_desktop (NautilusCanvasContainer *container,
     EelDRect icon_rect;
     GtkAllocation allocation;
 
+    /* We can't get the right allocation if the size hasn't been allocated yet */
+    g_return_if_fail (container->details->has_been_allocated);
+
     /* Get container dimensions */
     gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
     height = CANVAS_HEIGHT (container, allocation);
@@ -2126,7 +2132,6 @@ lay_down_icons_vertical_desktop (NautilusCanvasContainer *container,
     nautilus_canvas_container_freeze_icon_positions (container);
 }
 
-
 static void
 lay_down_icons (NautilusCanvasContainer *container,
                 GList                   *icons,
@@ -2218,7 +2223,13 @@ static void
 redo_layout (NautilusCanvasContainer *container)
 {
     unschedule_redo_layout (container);
-    redo_layout_internal (container);
+    /* We can't lay out if the size hasn't been allocated yet; wait for it to
+     * be and then we will be called again from size_allocate ()
+     */
+    if (container->details->has_been_allocated)
+    {
+        redo_layout_internal (container);
+    }
 }
 
 static void
@@ -7835,6 +7846,18 @@ nautilus_canvas_container_freeze_icon_positions (NautilusCanvasContainer *contai
     GList *p;
     NautilusCanvasIcon *icon;
     NautilusCanvasPosition position;
+
+    /* This early-exit avoids freezing the icons before they have been properly
+     * positioned, since we won't re-layout if auto_layout is FALSE.
+     *
+     * The container will freeze the icons after it lays them out once we've
+     * been allocated (e.g. in lay_out_icons_vertical_desktop).
+     */
+    if (!container->details->has_been_allocated)
+    {
+        g_debug ("Not freezing icon positions yet; we haven't been allocated");
+        return;
+    }
 
     changed = container->details->auto_layout;
     container->details->auto_layout = FALSE;
