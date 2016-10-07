@@ -140,7 +140,7 @@ change_numbering_order (GSimpleAction *action,
                                  gettext (sorts_constants[i].label));
             dialog->selection = nautilus_batch_rename_dialog_sort (dialog->selection,
                                                                    sorts_constants[i].sort_mode,
-                                                                   NULL);
+                                                                   dialog->create_date);
           break;
         }
     }
