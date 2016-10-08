@@ -31,10 +31,9 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-program-choosing.h"
 
-#define NAUTILUS_X_CONTENT_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBarPrivate))
-
-struct NautilusXContentBarPrivate
+struct _NautilusXContentBar
 {
+    GtkInfoBar parent_instance;
     GtkWidget *label;
 
     char **x_content_types;
@@ -68,17 +67,17 @@ content_bar_response_cb (GtkInfoBar *infobar,
         return;
     }
 
-    if (bar->priv->x_content_types == NULL ||
-        bar->priv->mount == NULL)
+    if (bar->x_content_types == NULL ||
+        bar->mount == NULL)
     {
         return;
     }
 
     /* FIXME */
-    default_app = g_app_info_get_default_for_type (bar->priv->x_content_types[response_id], FALSE);
+    default_app = g_app_info_get_default_for_type (bar->x_content_types[response_id], FALSE);
     if (default_app != NULL)
     {
-        nautilus_launch_application_for_mount (default_app, bar->priv->mount,
+        nautilus_launch_application_for_mount (default_app, bar->mount,
                                                GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (bar))));
         g_object_unref (default_app);
     }
@@ -95,7 +94,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
     GPtrArray *apps;
     GAppInfo *default_app;
 
-    g_strfreev (bar->priv->x_content_types);
+    g_strfreev (bar->x_content_types);
 
     if (!should_handle_content_types (x_content_types))
     {
@@ -121,19 +120,19 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
     num_types = types->len;
     g_ptr_array_add (types, NULL);
 
-    bar->priv->x_content_types = (char **) g_ptr_array_free (types, FALSE);
+    bar->x_content_types = (char **) g_ptr_array_free (types, FALSE);
 
     switch (num_types)
     {
         case 1:
         {
-            message = get_message_for_content_type (bar->priv->x_content_types[0]);
+            message = get_message_for_content_type (bar->x_content_types[0]);
         }
         break;
 
         case 2:
         {
-            message = get_message_for_two_content_types ((const char * const *) bar->priv->x_content_types);
+            message = get_message_for_two_content_types ((const char * const *) bar->x_content_types);
         }
         break;
 
@@ -144,12 +143,12 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         break;
     }
 
-    gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
+    gtk_label_set_text (GTK_LABEL (bar->label), message);
     g_free (message);
 
-    gtk_widget_show (bar->priv->label);
+    gtk_widget_show (bar->label);
 
-    for (n = 0; bar->priv->x_content_types[n] != NULL; n++)
+    for (n = 0; bar->x_content_types[n] != NULL; n++)
     {
         const char *name;
         GIcon *icon;
@@ -205,11 +204,11 @@ static void
 nautilus_x_content_bar_set_mount (NautilusXContentBar *bar,
                                   GMount              *mount)
 {
-    if (bar->priv->mount != NULL)
+    if (bar->mount != NULL)
     {
-        g_object_unref (bar->priv->mount);
+        g_object_unref (bar->mount);
     }
-    bar->priv->mount = mount != NULL ? g_object_ref (mount) : NULL;
+    bar->mount = mount != NULL ? g_object_ref (mount) : NULL;
 }
 
 
@@ -219,9 +218,7 @@ nautilus_x_content_bar_set_property (GObject      *object,
                                      const GValue *value,
                                      GParamSpec   *pspec)
 {
-    NautilusXContentBar *bar;
-
-    bar = NAUTILUS_X_CONTENT_BAR (object);
+    NautilusXContentBar *bar = NAUTILUS_X_CONTENT_BAR (object);
 
     switch (prop_id)
     {
@@ -251,21 +248,19 @@ nautilus_x_content_bar_get_property (GObject    *object,
                                      GValue     *value,
                                      GParamSpec *pspec)
 {
-    NautilusXContentBar *bar;
-
-    bar = NAUTILUS_X_CONTENT_BAR (object);
+    NautilusXContentBar *bar = NAUTILUS_X_CONTENT_BAR (object);
 
     switch (prop_id)
     {
         case PROP_MOUNT:
         {
-            g_value_set_object (value, bar->priv->mount);
+            g_value_set_object (value, bar->mount);
         }
         break;
 
         case PROP_X_CONTENT_TYPES:
         {
-            g_value_set_boxed (value, &bar->priv->x_content_types);
+            g_value_set_boxed (value, &bar->x_content_types);
         }
         break;
 
@@ -282,10 +277,10 @@ nautilus_x_content_bar_finalize (GObject *object)
 {
     NautilusXContentBar *bar = NAUTILUS_X_CONTENT_BAR (object);
 
-    g_strfreev (bar->priv->x_content_types);
-    if (bar->priv->mount != NULL)
+    g_strfreev (bar->x_content_types);
+    if (bar->mount != NULL)
     {
-        g_object_unref (bar->priv->mount);
+        g_object_unref (bar->mount);
     }
 
     G_OBJECT_CLASS (nautilus_x_content_bar_parent_class)->finalize (object);
@@ -300,8 +295,6 @@ nautilus_x_content_bar_class_init (NautilusXContentBarClass *klass)
     object_class->get_property = nautilus_x_content_bar_get_property;
     object_class->set_property = nautilus_x_content_bar_set_property;
     object_class->finalize = nautilus_x_content_bar_finalize;
-
-    g_type_class_add_private (klass, sizeof (NautilusXContentBarPrivate));
 
     g_object_class_install_property (object_class,
                                      PROP_MOUNT,
@@ -328,7 +321,6 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
     GtkWidget *action_area;
     PangoAttrList *attrs;
 
-    bar->priv = NAUTILUS_X_CONTENT_BAR_GET_PRIVATE (bar);
     content_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
     action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
@@ -336,12 +328,12 @@ nautilus_x_content_bar_init (NautilusXContentBar *bar)
 
     attrs = pango_attr_list_new ();
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-    bar->priv->label = gtk_label_new (NULL);
-    gtk_label_set_attributes (GTK_LABEL (bar->priv->label), attrs);
+    bar->label = gtk_label_new (NULL);
+    gtk_label_set_attributes (GTK_LABEL (bar->label), attrs);
     pango_attr_list_unref (attrs);
 
-    gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
-    gtk_container_add (GTK_CONTAINER (content_area), bar->priv->label);
+    gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
+    gtk_container_add (GTK_CONTAINER (content_area), bar->label);
 
     g_signal_connect (bar, "response",
                       G_CALLBACK (content_bar_response_cb),

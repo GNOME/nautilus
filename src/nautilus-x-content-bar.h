@@ -28,31 +28,12 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_X_CONTENT_BAR         (nautilus_x_content_bar_get_type ())
-#define NAUTILUS_X_CONTENT_BAR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBar))
-#define NAUTILUS_X_CONTENT_BAR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBarClass))
-#define NAUTILUS_IS_X_CONTENT_BAR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_X_CONTENT_BAR))
-#define NAUTILUS_IS_X_CONTENT_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_X_CONTENT_BAR))
-#define NAUTILUS_X_CONTENT_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_X_CONTENT_BAR, NautilusXContentBarClass))
+#define NAUTILUS_TYPE_X_CONTENT_BAR (nautilus_x_content_bar_get_type ())
 
-typedef struct NautilusXContentBarPrivate NautilusXContentBarPrivate;
+G_DECLARE_FINAL_TYPE (NautilusXContentBar, nautilus_x_content_bar, NAUTILUS, X_CONTENT_BAR, GtkInfoBar)
 
-typedef struct
-{
-	GtkInfoBar parent;
-
-	NautilusXContentBarPrivate *priv;
-} NautilusXContentBar;
-
-typedef struct
-{
-	GtkInfoBarClass parent_class;
-} NautilusXContentBarClass;
-
-GType		 nautilus_x_content_bar_get_type	(void) G_GNUC_CONST;
-
-GtkWidget	*nautilus_x_content_bar_new		   (GMount              *mount,
-							    const char * const*  x_content_types);
+GtkWidget *nautilus_x_content_bar_new (GMount             *mount,
+                                       const char * const *x_content_types);
 
 G_END_DECLS
 
