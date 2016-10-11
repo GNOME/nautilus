@@ -35,6 +35,7 @@
 #include "gtkintl.h"
 #include "gtklabel.h"
 #include "gtkspinner.h"
+#include "gtkstack.h"
 #include "gtktypebuiltins.h"
 #else
 #include <gtk/gtk.h>
@@ -45,6 +46,7 @@ struct _NautilusGtkPlacesViewRow
   GtkListBoxRow  parent_instance;
 
   GtkLabel      *available_space_label;
+  GtkStack      *mount_stack;
   GtkSpinner    *busy_spinner;
   GtkButton     *eject_button;
   GtkImage      *eject_icon;
@@ -287,15 +289,15 @@ nautilus_gtk_places_view_row_set_property (GObject      *object,
 
     case PROP_MOUNT:
       g_set_object (&self->mount, g_value_get_object (value));
-
-      /*
-       * When we hide the eject button, no size is allocated for it. Since
-       * we want to have alignment between rows, it needs an empty space
-       * when the eject button is not available. So, call then
-       * gtk_widget_set_child_visible(), which makes the button allocate the
-       * size but it stays hidden when needed.
-       */
-      gtk_widget_set_child_visible (GTK_WIDGET (self->eject_button), self->mount != NULL);
+      if (self->mount != NULL)
+        {
+          gtk_stack_set_visible_child (self->mount_stack, GTK_WIDGET (self->eject_button));
+          gtk_widget_set_child_visible (GTK_WIDGET (self->mount_stack), TRUE);
+        }
+      else
+        {
+          gtk_widget_set_child_visible (GTK_WIDGET (self->mount_stack), FALSE);
+        }
       measure_available_space (self);
       break;
 
@@ -378,6 +380,7 @@ nautilus_gtk_places_view_row_class_init (NautilusGtkPlacesViewRowClass *klass)
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/gtk/ui/nautilusgtkplacesviewrow.ui");
 
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, available_space_label);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, mount_stack);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, busy_spinner);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, eject_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkPlacesViewRow, eject_icon);
@@ -449,7 +452,15 @@ nautilus_gtk_places_view_row_set_busy (NautilusGtkPlacesViewRow *row,
 {
   g_return_if_fail (NAUTILUS_IS_GTK_PLACES_VIEW_ROW (row));
 
-  gtk_widget_set_visible (GTK_WIDGET (row->busy_spinner), is_busy);
+  if (is_busy)
+    {
+      gtk_stack_set_visible_child (row->mount_stack, GTK_WIDGET (row->busy_spinner));
+      gtk_widget_set_child_visible (GTK_WIDGET (row->mount_stack), TRUE);
+    }
+  else
+    {
+      gtk_widget_set_child_visible (GTK_WIDGET (row->mount_stack), FALSE);
+    }
 }
 
 gboolean
