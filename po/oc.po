@@ -1,4 +1,4 @@
-# French translation of nautilus.
+# Occitan translation of nautilus.
 # Copyright (C) 2000-2015 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
 # Yannig Marchegay (Kokoyaya) <yannig@marchegay.org>, 2007-2008.
@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
 "s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-10-07 18:04+0000\n"
-"PO-Revision-Date: 2016-10-11 19:23+0200\n"
+"PO-Revision-Date: 2016-10-11 19:41+0200\n"
 "Last-Translator: Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr>\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -21,6 +21,7 @@ msgstr ""
 "X-Generator: Virtaal 0.7.1\n"
 "X-Launchpad-Export-Date: 2015-05-21 18:05+0000\n"
 "X-Project-Style: gnome\n"
+"X-DamnedLies-Scope: partial\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -862,6 +863,7 @@ msgid "on the desktop"
 msgstr "sul burèu"
 
 #: nautilus-desktop/nautilus-desktop-icon-file.c:436
+#, c-format
 msgid "Unable to rename desktop icon"
 msgstr "Impossible de renomenar l'icòna del burèu"
 
@@ -1024,6 +1026,7 @@ msgstr ""
 
 #: src/nautilus-batch-rename-dialog.c:2158
 #, fuzzy, c-format
+#, fuzzy
 #| msgid "Home Folder"
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -1460,10 +1463,12 @@ msgid "This file cannot be stopped"
 msgstr "Impossible d'arrestar lo fichièr"
 
 #: src/nautilus-file.c:2136
+#, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Las barras oblicas son pas permesas dins los noms de fichièrs"
 
 #: src/nautilus-file.c:2180
+#, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Impossible de renomenar los fichièrs raices"
 
@@ -1472,6 +1477,7 @@ msgid "Probably the content of the file is an invalid desktop file format"
 msgstr ""
 
 #: src/nautilus-file.c:2376
+#, c-format
 msgid "File not found"
 msgstr "Impossible de trobar lo fichièr"
 
@@ -1575,10 +1581,12 @@ msgid "%c"
 msgstr "%c"
 
 #: src/nautilus-file.c:6177
+#, c-format
 msgid "Not allowed to set permissions"
 msgstr "Sètz pas autorizat a definir las permissions"
 
 #: src/nautilus-file.c:6500
+#, c-format
 msgid "Not allowed to set owner"
 msgstr "Sètz pas autorizat a definir lo proprietari"
 
@@ -1588,6 +1596,7 @@ msgid "Specified owner '%s' doesn't exist"
 msgstr "Lo proprietari indicat « %s » existís pas"
 
 #: src/nautilus-file.c:6804
+#, c-format
 msgid "Not allowed to set group"
 msgstr "Sètz pas autorizat a definir lo grop"
 
@@ -4100,6 +4109,7 @@ msgstr[0] "_Nom :"
 msgstr[1] "_Noms :"
 
 #: src/nautilus-properties-window.c:900
+#, c-format
 msgid "Properties"
 msgstr "Proprietats"
 
@@ -6998,3 +7008,2111 @@ msgstr "Entrar l'adreça del _servidor…"
 
 #~ msgid "Rename “%s”"
 #~ msgstr "Renomenar lo fichièr « %s »"
+
+#, fuzzy
+#~| msgid "Select _All"
+#~ msgid "Select All"
+#~ msgstr "Seleccionar _tot"
+
+#, fuzzy
+#~| msgid "Accessed"
+#~ msgid "Date Accessed"
+#~ msgstr "Darrièr accès"
+
+#, fuzzy
+#~| msgid "Permissions"
+#~ msgid "Octal Permissions"
+#~ msgstr "Permissions"
+
+#, fuzzy
+#~| msgid "The permissions of the file."
+#~ msgid "The permissions of the file, in octal notation."
+#~ msgstr "Las permissions del fichièr."
+
+#, fuzzy
+#~| msgid "The MIME type of the file."
+#~ msgid "The SELinux security context of the file."
+#~ msgstr "Lo tipe MIME del fichièr."
+
+#, fuzzy, c-format
+#~| msgid "You cannot move the volume “%s” to the trash."
+#~ msgid "You cannot move the volume \"%s\" to the trash."
+#~ msgstr "Podètz pas metre lo volum « %s » a l'escobilhièr."
+
+#, fuzzy
+#~| msgid ""
+#~| "If you want to eject the volume, please use Eject in the popup menu of "
+#~| "the volume."
+#~ msgid ""
+#~ "If you want to eject the volume, please use \"Eject\" in the popup menu of "
+#~ "the volume."
+#~ msgstr ""
+#~ "Se volètz ejectar lo volum, utilizatz « Ejectar » dins lo menú contextual "
+#~ "del volum."
+
+#, fuzzy
+#~| msgid ""
+#~| "If you want to unmount the volume, please use Unmount Volume in the popup "
+#~| "menu of the volume."
+#~ msgid ""
+#~ "If you want to unmount the volume, please use \"Unmount Volume\" in the "
+#~ "popup menu of the volume."
+#~ msgstr ""
+#~ "Se volètz desmontar lo volum, utilizatz « Desmontar lo volum » dins lo menú "
+#~ "contextual del volum."
+
+#, fuzzy, c-format
+#~| msgid "Merge folder “%s”?"
+#~ msgid "Merge folder \"%s\"?"
+#~ msgstr "Fusionar lo dorsièr « %s » ?"
+
+#, fuzzy, c-format
+#~| msgid "An older folder with the same name already exists in “%s”."
+#~ msgid "An older folder with the same name already exists in \"%s\"."
+#~ msgstr "Un dorsièr mai ancian que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "A newer folder with the same name already exists in “%s”."
+#~ msgid "A newer folder with the same name already exists in \"%s\"."
+#~ msgstr "Un dorsièr mai recent que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "Another folder with the same name already exists in “%s”."
+#~ msgid "Another folder with the same name already exists in \"%s\"."
+#~ msgstr "Un autre dorsièr que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "Replace folder “%s”?"
+#~ msgid "Replace folder \"%s\"?"
+#~ msgstr "Remplaçar lo dorsièr « %s » ?"
+
+#, fuzzy, c-format
+#~| msgid "A folder with the same name already exists in “%s”."
+#~ msgid "A folder with the same name already exists in \"%s\"."
+#~ msgstr "Un dorsièr que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "Replace file “%s”?"
+#~ msgid "Replace file \"%s\"?"
+#~ msgstr "Remplaçar lo fichièr « %s » ?"
+
+#, fuzzy, c-format
+#~| msgid "An older file with the same name already exists in “%s”."
+#~ msgid "An older file with the same name already exists in \"%s\"."
+#~ msgstr "Un fichièr mai ancian que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "A newer file with the same name already exists in “%s”."
+#~ msgid "A newer file with the same name already exists in \"%s\"."
+#~ msgstr "Un fichièr mai recent que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy, c-format
+#~| msgid "Another file with the same name already exists in “%s”."
+#~ msgid "Another file with the same name already exists in \"%s\"."
+#~ msgstr "Un autre fichièr que pòrta lo meteis nom existís ja dins « %s »."
+
+#, fuzzy
+#~| msgid "Apply this action to all files and folders"
+#~ msgid "Apply this action to all files"
+#~ msgstr "Aplicar aquesta accion per totes los fichièrs e dorsièrs"
+
+#, fuzzy
+#~| msgid "Are you sure you want to permanently delete “%B” from the trash?"
+#~ msgid "Are you sure you want to permanently delete \"%B\" from the trash?"
+#~ msgstr ""
+#~ "Sètz segur que volètz suprimir definitivament « %B » de l'escobilhièr ?"
+
+#, fuzzy
+#~| msgid "Are you sure you want to permanently delete “%B”?"
+#~ msgid "Are you sure you want to permanently delete \"%B\"?"
+#~ msgstr "Sètz segur que volètz suprimir definitivament « %B » ?"
+
+#, fuzzy
+#~| msgid "Deleting Files"
+#~ msgid "Deleting files"
+#~ msgstr "Supression dels fichièrs"
+
+#, fuzzy
+#~| msgid ""
+#~| "Files in the folder “%B” cannot be deleted because you do not have "
+#~| "permissions to see them."
+#~ msgid ""
+#~ "Files in the folder \"%B\" cannot be deleted because you do not have "
+#~ "permissions to see them."
+#~ msgstr ""
+#~ "Los fichièrs dins lo dorsièr « %B » pòdon èsser suprimits perque avètz pas "
+#~ "la permission de los legir."
+
+#, fuzzy
+#~| msgid ""
+#~| "There was an error getting information about the files in the folder “%B”."
+#~ msgid ""
+#~ "There was an error getting information about the files in the folder \"%B\"."
+#~ msgstr ""
+#~ "Una error s'es produita al moment de l'obtencion de las informacions a "
+#~ "prepaus dels fichièrs dins lo dorsièr « %B »."
+
+#, fuzzy
+#~| msgid ""
+#~| "The folder “%B” cannot be deleted because you do not have permissions to "
+#~| "read it."
+#~ msgid ""
+#~ "The folder \"%B\" cannot be deleted because you do not have permissions to "
+#~ "read it."
+#~ msgstr ""
+#~ "Lo dorsièr « %B » pòt pas èsser suprimit perque avètz pas la permission de "
+#~ "lo legir."
+
+#, fuzzy
+#~| msgid "There was an error reading the folder “%B”."
+#~ msgid "There was an error reading the folder \"%B\"."
+#~ msgstr "Una error s'es produita al moment de la lectura del dorsièr « %B »."
+
+#, fuzzy
+#~| msgid "There was an error deleting the file “%B”."
+#~ msgid "There was an error deleting %B."
+#~ msgstr "Una error s'es produita al moment de la supression del fichièr « %B »."
+
+#, fuzzy
+#~| msgid ""
+#~| "“%B” can't be put in the trash. Do you want to delete it immediately?"
+#~ msgid "Cannot move file to trash, do you want to delete immediately?"
+#~ msgstr ""
+#~ "Impossible de metre lo fichièr a l'escobilhièr. Lo volètz suprimir "
+#~ "immediatament ?"
+
+#, fuzzy
+#~| msgid "The item cannot be restored from trash"
+#~ msgid "The file \"%B\" cannot be moved to the trash."
+#~ msgstr "Impossible de restablir l'element dempuèi l'escobilhièr"
+
+#, fuzzy, c-format
+#~| msgid "Unable to unmount %V"
+#~ msgid "Unable to mount %s"
+#~ msgstr "Impossible de desmontar %V"
+
+#, fuzzy
+#~| msgid ""
+#~| "Files in the folder “%B” cannot be handled because you do not have "
+#~| "permissions to see them."
+#~ msgid ""
+#~ "Files in the folder \"%B\" cannot be handled because you do not have "
+#~ "permissions to see them."
+#~ msgstr ""
+#~ "Impossible de tractar los fichièrs del dorsièr « %B » perque avètz pas la "
+#~ "permission de los legir."
+
+#, fuzzy
+#~| msgid ""
+#~| "The folder “%B” cannot be handled because you do not have permissions to "
+#~| "read it."
+#~ msgid ""
+#~ "The folder \"%B\" cannot be handled because you do not have permissions to "
+#~ "read it."
+#~ msgstr ""
+#~ "Impossible de tractar lo dorsièr « %B » perque avètz pas la permission de lo "
+#~ "legir."
+
+#, fuzzy
+#~| msgid ""
+#~| "The file “%B” cannot be handled because you do not have permissions to "
+#~| "read it."
+#~ msgid ""
+#~ "The file \"%B\" cannot be handled because you do not have permissions to "
+#~ "read it."
+#~ msgstr ""
+#~ "Impossible de tractar lo fichièr « %B » perque avètz pas la permission de lo "
+#~ "legir."
+
+#, fuzzy
+#~| msgid "There was an error getting information about “%B”."
+#~ msgid "There was an error getting information about \"%B\"."
+#~ msgstr "Error al moment de l'obtencion d'informacions a prepaus de « %B »."
+
+#, fuzzy
+#~| msgid "Error while copying to “%B”."
+#~ msgid "Error while copying to \"%B\"."
+#~ msgstr "Error al moment de la còpia cap a « %B »."
+
+#, fuzzy
+#~| msgid "Moving “%B” to “%B”"
+#~ msgid "Moving \"%B\" to \"%B\""
+#~ msgstr "Desplaçament de « %B » cap a « %B »"
+
+#, fuzzy
+#~| msgid "Copying “%B” to “%B”"
+#~ msgid "Copying \"%B\" to \"%B\""
+#~ msgstr "Còpia de « %B » cap a « %B »"
+
+#, fuzzy
+#~| msgid "Duplicating “%B”"
+#~ msgid "Duplicating \"%B\""
+#~ msgstr "Duplicacion de « %B »"
+
+#, fuzzy
+#~| msgid "Moving %'d file to “%B”"
+#~| msgid_plural "Moving %'d files to “%B”"
+#~ msgid "Moving %'d file (in \"%B\") to \"%B\""
+#~ msgid_plural "Moving %'d files (in \"%B\") to \"%B\""
+#~ msgstr[0] "Desplaçament de %'d fichièr cap a « %B »"
+#~ msgstr[1] "Desplaçament de %'d fichièrs cap a « %B »"
+
+#, fuzzy
+#~| msgid "Copying %'d file to “%B”"
+#~| msgid_plural "Copying %'d files to “%B”"
+#~ msgid "Copying %'d file (in \"%B\") to \"%B\""
+#~ msgid_plural "Copying %'d files (in \"%B\") to \"%B\""
+#~ msgstr[0] "Còpia de %'d fichièr cap a « %B »"
+#~ msgstr[1] "Còpia de %'d fichièrs cap a « %B »"
+
+#, fuzzy
+#~| msgid "Duplicating %'d file in “%B”"
+#~| msgid_plural "Duplicating %'d files in “%B”"
+#~ msgid "Duplicating %'d file (in \"%B\")"
+#~ msgid_plural "Duplicating %'d files (in \"%B\")"
+#~ msgstr[0] "Duplicacion de %'d fichièr cap a « %B »"
+#~ msgstr[1] "Duplicacion de %'d fichièrs cap a « %B »"
+
+#, fuzzy
+#~| msgid "Moving %'d file to “%B”"
+#~| msgid_plural "Moving %'d files to “%B”"
+#~ msgid "Moving %'d file to \"%B\""
+#~ msgid_plural "Moving %'d files to \"%B\""
+#~ msgstr[0] "Desplaçament de %'d fichièr cap a « %B »"
+#~ msgstr[1] "Desplaçament de %'d fichièrs cap a « %B »"
+
+#, fuzzy
+#~| msgid "Copying %'d file to “%B”"
+#~| msgid_plural "Copying %'d files to “%B”"
+#~ msgid "Copying %'d file to \"%B\""
+#~ msgid_plural "Copying %'d files to \"%B\""
+#~ msgstr[0] "Còpia de %'d fichièr cap a « %B »"
+#~ msgstr[1] "Còpia de %'d fichièrs cap a « %B »"
+
+#, fuzzy, c-format
+#~| msgid "Deleting %'d file"
+#~| msgid_plural "Deleting %'d files"
+#~ msgid "Duplicating %'d file"
+#~ msgid_plural "Duplicating %'d files"
+#~ msgstr[0] "Supression de %'d fichièr"
+#~ msgstr[1] "Supression de %'d fichièrs"
+
+#, fuzzy
+#~| msgid "%S / %S — %T left (%S/sec)"
+#~| msgid_plural "%S / %S — %T left (%S/sec)"
+#~ msgid "%S of %S — %T left (%S/sec)"
+#~ msgid_plural "%S of %S — %T left (%S/sec)"
+#~ msgstr[0] "%S sus %S — demòra %T (%S/seg)"
+#~ msgstr[1] "%S sus %S — demòran %T (%S/seg)"
+
+#, fuzzy
+#~| msgid ""
+#~| "The folder “%B” cannot be copied because you do not have permissions to "
+#~| "create it in the destination."
+#~ msgid ""
+#~ "The folder \"%B\" cannot be copied because you do not have permissions to "
+#~ "create it in the destination."
+#~ msgstr ""
+#~ "Impossible de copiar lo dorsièr « %B » perque avètz pas la permission de lo "
+#~ "crear dins la destinacion."
+
+#, fuzzy
+#~| msgid "There was an error creating the folder “%B”."
+#~ msgid "There was an error creating the folder \"%B\"."
+#~ msgstr "Una error s'es produita al moment de la creacion del dorsièr « %B »."
+
+#, fuzzy
+#~| msgid ""
+#~| "Files in the folder “%B” cannot be copied because you do not have "
+#~| "permissions to see them."
+#~ msgid ""
+#~ "Files in the folder \"%B\" cannot be copied because you do not have "
+#~ "permissions to see them."
+#~ msgstr ""
+#~ "Impossible de copiar los fichièrs del dorsièr « %B » perque avètz pas la "
+#~ "permission de los legir."
+
+#, fuzzy
+#~| msgid ""
+#~| "The folder “%B” cannot be copied because you do not have permissions to "
+#~| "read it."
+#~ msgid ""
+#~ "The folder \"%B\" cannot be copied because you do not have permissions to "
+#~ "read it."
+#~ msgstr ""
+#~ "Impossible de copiar lo dorsièr « %B » perque avètz pas la permission de lo "
+#~ "legir."
+
+#, fuzzy
+#~| msgid "Error while moving."
+#~ msgid "Error while moving \"%B\"."
+#~ msgstr "Error pendent lo desplaçament."
+
+#, fuzzy
+#~| msgid "Error while copying."
+#~ msgid "Error while copying \"%B\"."
+#~ msgstr "Error al moment de copiar."
+
+#, fuzzy
+#~| msgid "Preparing to move to “%B”"
+#~ msgid "Preparing to Move to \"%B\""
+#~ msgstr "Preparacion del desplaçament cap a « %B »"
+
+#, fuzzy
+#~| msgid "Creating links in “%B”"
+#~ msgid "Creating links in \"%B\""
+#~ msgstr "Creacion dels ligams dins « %B »"
+
+#, fuzzy, c-format
+#~| msgid "Could not determine original location of “%s” "
+#~ msgid "Could not determine original location of \"%s\" "
+#~ msgstr "Impossible de determinar l'emplaçament d'origina de « %s » "
+
+#, fuzzy, c-format
+#~| msgid "Unable to rename desktop icon"
+#~ msgid "Unable to rename desktop file"
+#~ msgstr "Impossible de renomenar l'icòna del burèu"
+
+#, fuzzy
+#~| msgid "%a, %b %e %Y %I:%M:%S %p"
+#~ msgid "today at %-I:%M:%S %p"
+#~ msgstr "%a %e %b %Y %I:%M:%S %p"
+
+#, fuzzy
+#~| msgid "Yesterday %l:%M %p"
+#~ msgid "today at %-I:%M %p"
+#~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday %l:%M %p"
+#~ msgid "today, %-I:%M %p"
+#~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday %l:%M %p"
+#~ msgid "yesterday at %-I:%M:%S %p"
+#~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "yesterday at 00:00 PM"
+#~ msgstr "Ièr a %H:%M"
+
+#, fuzzy
+#~| msgid "Yesterday %l:%M %p"
+#~ msgid "yesterday at %-I:%M %p"
+#~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "yesterday, 00:00 PM"
+#~ msgstr "Ièr a %H:%M"
+
+#, fuzzy
+#~| msgid "Yesterday %l:%M %p"
+#~ msgid "yesterday, %-I:%M %p"
+#~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday"
+#~ msgid "yesterday"
+#~ msgstr "Ièr"
+
+#, fuzzy
+#~| msgid "%a, %b %e %Y %I:%M:%S %p"
+#~ msgid "%A, %B %-d %Y at %-I:%M:%S %p"
+#~ msgstr "%a %e %b %Y %I:%M:%S %p"
+
+#, fuzzy
+#~| msgid "%a, %b %e %Y %I:%M:%S %p"
+#~ msgid "%a, %b %-d %Y at %-I:%M:%S %p"
+#~ msgstr "%a %e %b %Y %I:%M:%S %p"
+
+#, fuzzy
+#~| msgid "%a, %b %e %Y %I:%M:%S %p"
+#~ msgid "%a, %b %-d %Y at %-I:%M %p"
+#~ msgstr "%a %e %b %Y %I:%M:%S %p"
+
+#, fuzzy
+#~| msgid "%-e %b %Y %l:%M %p"
+#~ msgid "%b %-d %Y at %-I:%M %p"
+#~ msgstr "%-e %b %Y a %l:%M %p"
+
+#, fuzzy
+#~| msgid "%-e %b %Y %l:%M %p"
+#~ msgid "%b %-d %Y, %-I:%M %p"
+#~ msgstr "%-e %b %Y a %l:%M %p"
+
+#, fuzzy
+#~| msgid "%-e %b %l:%M %p"
+#~ msgid "%m/%-d/%y, %-I:%M %p"
+#~ msgstr "%-e %b a %l:%M %p"
+
+#, fuzzy
+#~| msgid "%a"
+#~ msgid "%"
+#~ msgstr "%a"
+
+#, fuzzy, c-format
+#~| msgid "%s (%s)"
+#~ msgid "%s (%s bytes)"
+#~ msgstr "%s (%s)"
+
+#, fuzzy
+#~| msgid "unknown"
+#~ msgid "unknown type"
+#~ msgstr "desconegut"
+
+#, fuzzy
+#~| msgid "MIME Type"
+#~ msgid "unknown MIME type"
+#~ msgstr "Tipe MIME"
+
+#, fuzzy
+#~| msgid "Program"
+#~ msgid "program"
+#~ msgstr "Logicial"
+
+#, fuzzy
+#~| msgid "Link (broken)"
+#~ msgid "link (broken)"
+#~ msgstr "Ligam (copat)"
+
+#, fuzzy, c-format
+#~| msgid "Error while adding “%s”: %s"
+#~ msgid "Error while adding \"%s\": %s"
+#~ msgstr "Error al moment de l'apondon de « %s » : %s"
+
+#, fuzzy, c-format
+#~| msgid "Error while setting “%s” as default application: %s"
+#~ msgid "Error while setting \"%s\" as default application: %s"
+#~ msgstr ""
+#~ "Error al moment de la definicion de « %s » en tant qu'aplicacion per "
+#~ "defaut : %s"
+
+#, fuzzy, c-format
+#~| msgid "Open all files of type “%s” with"
+#~ msgid "Open all files of type \"%s\" with"
+#~ msgstr "Dobrir totes los fichièrs de tipe « %s » amb"
+
+#, fuzzy, c-format
+#~| msgid "Select an application to open “%s” and other files of type “%s”"
+#~ msgid "Select an application to open %s and other files of type \"%s\""
+#~ msgstr ""
+#~ "Seleccionatz una aplicacion per dobrir %s e los autres fichièrs del meteis "
+#~ "tipe (« %s »)"
+
+#, fuzzy
+#~| msgid "Other _Application…"
+#~ msgid "Show other applications"
+#~ msgstr "Autra _aplicacion…"
+
+#, fuzzy, c-format
+#~| msgid "Search for files"
+#~ msgid "Search for \"%s\""
+#~ msgstr "Recercar de fichièrs"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Editing"
+#~ msgid "Edit"
+#~ msgstr "Edicion"
+
+#, fuzzy
+#~| msgid "_Undo Extract"
+#~ msgid "Undo Edit"
+#~ msgstr "A_nullar l'extraccion"
+
+#, fuzzy
+#~| msgid "_Undo Move %d item"
+#~| msgid_plural "_Undo Move %d items"
+#~ msgid "Undo the edit"
+#~ msgstr "A_nullar lo desplaçament de %d element"
+
+#, fuzzy
+#~| msgid "_Redo Extract"
+#~ msgid "Redo Edit"
+#~ msgstr "_Restablir l'extraccion"
+
+#, fuzzy
+#~| msgid "_Redo Move %d item"
+#~| msgid_plural "_Redo Move %d items"
+#~ msgid "Redo the edit"
+#~ msgstr "_Restablir lo desplaçament de %d element"
+
+#, fuzzy
+#~| msgid "Where to position newly open tabs in browser windows"
+#~ msgid "Where to position newly open tabs in browser windows."
+#~ msgstr ""
+#~ "Indica ont posicionar los onglets novèlament dobèrts dins de fenèstras del "
+#~ "navigador"
+
+#, fuzzy
+#~| msgid ""
+#~| "Whether to ask for confirmation when deleting files, or emptying the Trash"
+#~ msgid "Whether to ask for confirmation when deleting files, or emptying Trash"
+#~ msgstr ""
+#~ "Indica se cal demandar una confirmacion al moment de suprimir los fichièrs o "
+#~ "de voidar l'escobilhièr"
+
+#, fuzzy
+#~| msgid ""
+#~| "Speed tradeoff for when to show the number of items in a folder. If set "
+#~| "to \"always\" then always show item counts, even if the folder is on a "
+#~| "remote server. If set to \"local-only\" then only show counts for local "
+#~| "file systems. If set to \"never\" then never bother to compute item "
+#~| "counts."
+#~ msgid ""
+#~ "Speed tradeoff for when to show a preview of text file contents in the "
+#~ "file's icon. If set to \"always\" then always show previews, even if the "
+#~ "folder is on a remote server. If set to \"local-only\" then only show "
+#~ "previews for local file systems. If set to \"never\" then never bother to "
+#~ "read preview data."
+#~ msgstr ""
+#~ "Compromés de rapiditat per l'afichatge del nombre d'elements dins un "
+#~ "dorsièr. Definit a « always », lo nombre d'elements es totjorn afichat, "
+#~ "quitament se lo dorsièr es sus un servidor distant. Definit a « local-only "
+#~ "», lo nombre d'elements es pas afichat que pels sistèmas de fichièrs locals. "
+#~ "Definit a « never », lo sistèma se preocupa pas de comptar los elements."
+
+#, fuzzy
+#~| msgid "Show the package installar for unknown MIME types"
+#~ msgid "Show the package installer for unknown mime types"
+#~ msgstr "Afichar lo gestionari de paquets pels tipes MIME desconeguts"
+
+#, fuzzy
+#~| msgid ""
+#~| "Whether to show the user a package installar dialog in case an unknown "
+#~| "MIME type is opened, in order to search for an application to handle it."
+#~ msgid ""
+#~ "Whether to show the user a package installer dialog in case an unknown mime "
+#~ "type is opened, in order to search for an application to handle it."
+#~ msgstr ""
+#~ "Indica se cal afichar lo gestionari de paquets quand un fichièr de tipe MIME "
+#~ "desconegut es dobèrt, per cercar una aplicacion capabla de lo gerir."
+
+#, fuzzy
+#~| msgid "When to show thumbnails of files"
+#~ msgid "When to show thumbnails of image files"
+#~ msgstr "Modalitats d'afichatge de las miniaturas dels fichièrs imatges"
+
+#, fuzzy
+#~| msgid ""
+#~| "Speed tradeoff for when to show a file as a thumbnail. If set to \"always"
+#~| "\" then always thumbnail, even if the folder is on a remote server. If "
+#~| "set to \"local-only\" then only show thumbnails for local file systems. "
+#~| "If set to \"never\" then never bother to thumbnail files, just use a "
+#~| "generic icon. Despite what the name may suggest, this applies to any "
+#~| "previewable file type."
+#~ msgid ""
+#~ "Speed tradeoff for when to show an image file as a thumbnail. If set to "
+#~ "\"always\" then always thumbnail, even if the folder is on a remote server. "
+#~ "If set to \"local-only\" then only show thumbnails for local file systems. "
+#~ "If set to \"never\" then never bother to thumbnail images, just use a "
+#~ "generic icon."
+#~ msgstr ""
+#~ "Compromés de rapiditat per l'afichatge d'un fichièr imatge jos la forma de "
+#~ "vinheta. Definit a « always », la miniatura es totjorn afichada, quitament "
+#~ "se lo dorsièr es sus un servidor distant. Definit a « local-only », las "
+#~ "miniaturas son pas afichadas que pels sistèmas de fichièrs locals. Definit a "
+#~ "« never », lo sistèma se tracassa pas de l'afichatge, sola una icòna "
+#~ "generica es utilizada. Malgrat lo nom utilizat, aquò s'aplica a totes los "
+#~ "tipes de fichièrs pels quals una miniatura pòt èsser creada."
+
+#, fuzzy
+#~| msgid ""
+#~| "Speed tradeoff for when to show the number of items in a folder. If set "
+#~| "to \"always\" then always show item counts, even if the folder is on a "
+#~| "remote server. If set to \"local-only\" then only show counts for local "
+#~| "file systems. If set to \"never\" then never bother to compute item "
+#~| "counts."
+#~ msgid ""
+#~ "Speed tradeoff for when to preview a sound file when mousing over a files "
+#~ "icon. If set to \"always\" then always plays the sound, even if the file is "
+#~ "on a remote server. If set to \"local-only\" then only plays previews on "
+#~ "local file systems. If set to \"never\" then it never previews sound."
+#~ msgstr ""
+#~ "Compromés de rapiditat per l'afichatge del nombre d'elements dins un "
+#~ "dorsièr. Definit a « always », lo nombre d'elements es totjorn afichat, "
+#~ "quitament se lo dorsièr es sus un servidor distant. Definit a « local-only "
+#~ "», lo nombre d'elements es pas afichat que pels sistèmas de fichièrs locals. "
+#~ "Definit a « never », lo sistèma se preocupa pas de comptar los elements."
+
+#, fuzzy
+#~| msgid ""
+#~| "If true, files in new windows will be sorted in reverse order. ie, if "
+#~| "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
+#~| "they will be sorted from \"z\" to \"a\"; if sorted by size, instead of "
+#~| "being incrementally they will be sorted decrementally."
+#~ msgid ""
+#~ "If true, files in new windows will be sorted in reverse order. ie, if sorted "
+#~ "by name, then instead of sorting the files from \"a\" to \"z\", they will be "
+#~ "sorted from \"z\" to \"a\"; if sorted by size, instead of being "
+#~ "incrementally they will be sorted decrementally."
+#~ msgstr ""
+#~ "Se es verai, los fichièrs de las fenèstras novèlas seràn ordenats dins "
+#~ "l'òrdre invèrse, es a dire que se son classats per nom, lo seràn de« z » a « "
+#~ "a » en non pas de « a » a « z ». ; se son ordenats per talha, seràn ordenats "
+#~ "dins l'òrdre descreissent al luòc de l'òrdre creissent."
+
+#, fuzzy
+#~| msgid ""
+#~| "If set to true, then Nautilus will use a fade effect to change the "
+#~| "desktop background."
+#~ msgid ""
+#~ "If set to true, then Nautilus will use the user's home folder as the "
+#~ "desktop. If it is false, then it will use ~/Desktop as the desktop."
+#~ msgstr ""
+#~ "Se verai (marcat d'una crotz), Nautilus utiliza un efèit d'evanescéncia per "
+#~ "modificar lo rèireplan del burèu."
+
+#, fuzzy
+#~| msgid ""
+#~| "When a folder is visited this viewer is used unless you have selected "
+#~| "another view for that particular folder. Possible values are \"list-view"
+#~| "\", and \"icon-view\"."
+#~ msgid ""
+#~ "When a folder is visited this viewer is used unless you have selected "
+#~ "another view for that particular folder. Possible values are \"list-view\", "
+#~ "\"icon-view\" and \"compact-view\"."
+#~ msgstr ""
+#~ "Quand un dorsièr es explorat, un afichatge d'aqueste tipe es utilizat levat "
+#~ "s'avètz seleccionat un autre tipe de vista per aqueste dorsièr particular. "
+#~ "Las valors possiblas son « list-view » e « icon-view »."
+
+#, fuzzy
+#~| msgid "Format"
+#~ msgid "Date Format"
+#~ msgstr "Formatar"
+
+#, fuzzy
+#~| msgid ""
+#~| "The default sort-order for items in the icon view. Possible values are "
+#~| "\"name\", \"size\", \"type\" and \"mtime\"."
+#~ msgid ""
+#~ "The format of file dates. Possible values are \"locale\", \"iso\", and "
+#~ "\"informal\"."
+#~ msgstr ""
+#~ "L'òrdre de triada per defaut pels elements de la vista en icònas. Las valors "
+#~ "possiblas son « name », « size », « type » e « mtime »."
+
+#, fuzzy
+#~| msgid ""
+#~| "A list of captions below an icon in the icon view and the desktop. The "
+#~| "actual number of captions shown depends on the zoom level. Some possible "
+#~| "values are: \"size\", \"type\", \"date_modified\", \"owner\", \"group\", "
+#~| "\"permissions\", and \"mime_type\"."
+#~ msgid ""
+#~ "A list of captions below an icon in the icon view and the desktop. The "
+#~ "actual number of captions shown depends on the zoom level. Some possible "
+#~ "values are: \"size\", \"type\", \"date_modified\", \"date_changed\", "
+#~ "\"date_accessed\", \"owner\", \"group\", \"permissions\", \"octal_permissions"
+#~ "\" and \"mime_type\"."
+#~ msgstr ""
+#~ "Una lista de legendas jos una icòna dins la vista en icònas e sul burèu. Lo "
+#~ "nombre real de legendas afichadas depend del nivèl de zoom. Las valors "
+#~ "possiblas son : « size », « type », « date_modified », « owner », « group », "
+#~ "« permissions » e « mime_type »."
+
+#, fuzzy
+#~| msgid "Default icon zoom level"
+#~ msgid "Default compact view zoom level"
+#~ msgstr "Nivèl de zoom per defaut per las icònas"
+
+#, fuzzy
+#~| msgid "Default zoom level used by the icon view."
+#~ msgid "Default zoom level used by the compact view."
+#~ msgstr "Nivèl de zoom per defaut utilizat per la visualizacion en icònas."
+
+#, fuzzy
+#~| msgid ""
+#~| "If set to true, then Nautilus will show context menu items to create "
+#~| "links from the copied or selected files."
+#~ msgid ""
+#~ "If set to true, Nautilus will only show folders in the tree side pane. "
+#~ "Otherwise it will show both folders and files."
+#~ msgstr ""
+#~ "Se verai, Nautilus demanda una confirmacion quand ensajatz de suprimir de "
+#~ "fichièrs o de voidar l'escobilhièr."
+
+#, fuzzy
+#~| msgid "Home icon visible on desktop"
+#~ msgid "Computer icon visible on desktop"
+#~ msgstr "Icòna del dorsièr personal visibla sul burèu"
+
+#, fuzzy
+#~| msgid ""
+#~| "If this is set to true, an icon linking to the home folder will be put on "
+#~| "the desktop."
+#~ msgid ""
+#~ "If this is set to true, an icon linking to the computer location will be put "
+#~ "on the desktop."
+#~ msgstr ""
+#~ "Se es verai, una icòna ligada al dorsièr personal serà presenta sul burèu."
+
+#, fuzzy
+#~| msgid ""
+#~| "If this is set to true, an icon linking to the trash will be put on the "
+#~| "desktop."
+#~ msgid ""
+#~ "If this is set to true, an icon linking to the trash will be put on the "
+#~ "desktop."
+#~ msgstr "Se verai, una icòna que punta sus l'escobilhièr es presenta sul burèu."
+
+#, fuzzy
+#~| msgid "Desktop home icon name"
+#~ msgid "Desktop computer icon name"
+#~ msgstr "Nom de l'icòna del dorsièr personal sul burèu"
+
+#, fuzzy
+#~| msgid ""
+#~| "This name can be set if you want a custom name for the home icon on the "
+#~| "desktop."
+#~ msgid ""
+#~ "This name can be set if you want a custom name for the computer icon on the "
+#~ "desktop."
+#~ msgstr ""
+#~ "Aqueste nom pòt èsser definit per personalizar l'intitolat de l'icòna del "
+#~ "dorsièr personal sul burèu."
+
+#, fuzzy
+#~| msgid "Desktop trash icon name"
+#~ msgid "Desktop trash icon name"
+#~ msgstr "Nom de l'icòna de l'escobilhièr del burèu"
+
+#, fuzzy
+#~| msgid ""
+#~| "This name can be set if you want a custom name for the trash icon on the "
+#~| "desktop."
+#~ msgid ""
+#~ "This name can be set if you want a custom name for the trash icon on the "
+#~ "desktop."
+#~ msgstr ""
+#~ "Aqueste nom pòt èsser definit per personalizar l'intitolat de l'icòna de "
+#~ "l'escobilhièr sul burèu."
+
+#, fuzzy
+#~| msgid "The geometry string for a navigation window."
+#~ msgid "The geometry string for a navigation window."
+#~ msgstr "La cadena que conten la geometria d'una fenèstra de navigacion."
+
+#, fuzzy
+#~| msgid "Whether the navigation window should be maximized."
+#~ msgid "Whether the navigation window should be maximized."
+#~ msgstr "Indica se la fenèstra de navigacion deu èsser maximizada."
+
+#, fuzzy
+#~| msgid "Show location bar in new windows"
+#~ msgid "Show toolbar in new windows"
+#~ msgstr "Afichar la barra d'emplaçament dins las fenèstras novèlas"
+
+#, fuzzy
+#~| msgid ""
+#~| "If set to true, newly opened windows will have the location bar visible."
+#~ msgid "If set to true, newly opened windows will have toolbars visible."
+#~ msgstr ""
+#~ "Se es verai, la barra d'emplaçament de las fenèstras dobèrtas serà visibla a "
+#~ "partir d'ara."
+
+#, fuzzy
+#~| msgid "Show location bar in new windows"
+#~ msgid "Show status bar in new windows"
+#~ msgstr "Afichar la barra d'emplaçament dins las fenèstras novèlas"
+
+#, fuzzy
+#~| msgid ""
+#~| "If set to true, newly opened windows will have the location bar visible."
+#~ msgid "If set to true, newly opened windows will have the status bar visible."
+#~ msgstr ""
+#~ "Se es verai, la barra d'emplaçament de las fenèstras dobèrtas serà visibla a "
+#~ "partir d'ara."
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Grid view"
+#~ msgid "Side pane view"
+#~ msgstr "Vista en grasilha"
+
+#, fuzzy
+#~| msgid "Show side pane in new windows"
+#~ msgid "The side pane view to show in newly opened windows."
+#~ msgstr "Afichar lo panèl lateral dins las fenèstras novèlas"
+
+#, fuzzy, c-format
+#~| msgid "Could not remove the source folder."
+#~ msgid "Nautilus could not create the required folder \"%s\"."
+#~ msgstr "Impossible de suprimir lo dorsièr font."
+
+#, fuzzy
+#~| msgid ""
+#~| "Unable to create required folders. Please create the following folders, "
+#~| "or set permissions such that they can be created:\n"
+#~| "%s"
+#~ msgid ""
+#~ "Before running Nautilus, please create the following folder, or set "
+#~ "permissions such that Nautilus can create it."
+#~ msgstr ""
+#~ "Impossible de crear un dorsièr requesit. Creatz los dorsièrs seguents o "
+#~ "definissètz las permissions de tal biais que pòscan èsser creats :\n"
+#~ "%s"
+
+#, fuzzy, c-format
+#~| msgid "Could not remove the source folder."
+#~ msgid "Nautilus could not create the following required folders: %s."
+#~ msgstr "Impossible de suprimir lo dorsièr font."
+
+#, fuzzy
+#~| msgid ""
+#~| "Unable to create required folders. Please create the following folders, "
+#~| "or set permissions such that they can be created:\n"
+#~| "%s"
+#~ msgid ""
+#~ "Before running Nautilus, please create these folders, or set permissions "
+#~ "such that Nautilus can create them."
+#~ msgstr ""
+#~ "Impossible de crear un dorsièr requesit. Creatz los dorsièrs seguents o "
+#~ "definissètz las permissions de tal biais que pòscan èsser creats :\n"
+#~ "%s"
+
+#, fuzzy
+#~| msgid "Never manage the desktop (ignore the GSettings preference)."
+#~ msgid ""
+#~ "Do not manage the desktop (ignore the preference set in the preferences "
+#~ "dialog)."
+#~ msgstr "Gerir pas jamai lo burèu (ignòra l'opcion GSettings)."
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "Unable to start the program:\n"
+#~| "%s"
+#~ msgid "Error starting autorun program: %s"
+#~ msgstr ""
+#~ "Impossible d'aviar lo programa :\n"
+#~ "%s"
+
+#, fuzzy
+#~| msgid ""
+#~| "“%s” contains software intended to be automatically started. Would you "
+#~| "like to run it?"
+#~ msgid ""
+#~ "<big><b>This medium contains software intended to be automatically started. "
+#~ "Would you like to run it?</b></big>"
+#~ msgstr ""
+#~ "« %s » conten un logicial previst per èsser aviat automaticament. Lo volètz "
+#~ "aviar ?"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Bookmarks"
+#~ msgid "Edit Bookmarks"
+#~ msgstr "Marcapaginas"
+
+#, fuzzy
+#~| msgid "_Bookmarks"
+#~ msgid "<b>_Bookmarks</b>"
+#~ msgstr "_Favorits"
+
+#, fuzzy
+#~| msgid "Location"
+#~ msgid "<b>_Location</b>"
+#~ msgstr "Emplaçament"
+
+#, fuzzy
+#~| msgid "WebDAV"
+#~ msgid "WebDAV (HTTP)"
+#~ msgstr "WebDAV"
+
+#, fuzzy
+#~| msgid "_Connect"
+#~ msgid "Connecting..."
+#~ msgstr "Se _connectar"
+
+#, fuzzy, c-format
+#~| msgid "This file cannot be mounted"
+#~ msgid "The folder \"%s\" cannot be opened on \"%s\"."
+#~ msgstr "Impossible de montar lo fichièr"
+
+#, fuzzy, c-format
+#~| msgid "This file server type is not recognized."
+#~ msgid "The server at \"%s\" cannot be found."
+#~ msgstr "Ce type de serveur de fichièrs n'est pas reconegut."
+
+#, fuzzy
+#~| msgid "Contains music"
+#~ msgid "Continue"
+#~ msgstr "Conten de musica"
+
+#, fuzzy
+#~| msgid "_Connect"
+#~ msgid "C_onnect"
+#~ msgstr "Se _connectar"
+
+#, fuzzy
+#~| msgid "Connect to _Server"
+#~ msgid "Connect to Server"
+#~ msgstr "Se connectar al _servidor"
+
+#, fuzzy
+#~| msgid "Show Details"
+#~ msgid "Server Details"
+#~ msgstr "Afichar los detalhs"
+
+#, fuzzy
+#~| msgid "Type:"
+#~ msgid "_Type:"
+#~ msgstr "Tipe :"
+
+#, fuzzy
+#~| msgid "Show Details"
+#~ msgid "User Details"
+#~ msgstr "Afichar los detalhs"
+
+#, fuzzy
+#~| msgid "Search _name:"
+#~ msgid "_User name:"
+#~ msgstr "_Nom de la recèrca :"
+
+#, fuzzy
+#~| msgid "Create Archive"
+#~ msgid "Create L_auncher..."
+#~ msgstr "Crear un archiu"
+
+#, fuzzy
+#~| msgid "Create a new folder '%s'"
+#~ msgid "Create a new launcher"
+#~ msgstr "Crear un novèl dorsièr '%s'"
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The desktop view encountered an error."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "You do not have the permissions necessary to view the contents of “%s”."
+#~ msgid ""
+#~ "You do not have the permissions necessary to view the contents of \"%s\"."
+#~ msgstr ""
+#~ "Avètz pas las permissions necessàrias per afichar lo contengut de « %s »."
+
+#, fuzzy, c-format
+#~| msgid "“%s” could not be found. Perhaps it has recently been deleted."
+#~ msgid "\"%s\" could not be found. Perhaps it has recently been deleted."
+#~ msgstr "« %s » es introbable. Benlèu qu'es estat escafat recentament."
+
+#, fuzzy, c-format
+#~| msgid "Sorry, could not display all the contents of “%s”: %s"
+#~ msgid "Sorry, could not display all the contents of \"%s\": %s"
+#~ msgstr "O planhèm, impossible d'afichar tot lo contengut de « %s » : %s"
+
+#, fuzzy
+#~| msgid "This location could not be displayed."
+#~ msgid "The folder contents could not be displayed."
+#~ msgstr "Impossible d'afichar lo contengut d'aqueste emplaçament."
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "You do not have the permissions necessary to change the group of “%s”."
+#~ msgid ""
+#~ "You do not have the permissions necessary to change the group of \"%s\"."
+#~ msgstr "Avètz pas las permissions necessàrias per cambiar lo grop de « %s »."
+
+#, fuzzy, c-format
+#~| msgid "Sorry, could not change the group of “%s”: %s"
+#~ msgid "Sorry, could not change the group of \"%s\": %s"
+#~ msgstr "O planhèm, impossible de cambiar lo grop de « %s » : %s"
+
+#, fuzzy, c-format
+#~| msgid "Sorry, could not change the owner of “%s”: %s"
+#~ msgid "Sorry, could not change the owner of \"%s\": %s"
+#~ msgstr "O planhèm, impossible de cambiar lo proprietari de « %s » : %s"
+
+#, fuzzy, c-format
+#~| msgid "Sorry, could not change the permissions of “%s”: %s"
+#~ msgid "Sorry, could not change the permissions of \"%s\": %s"
+#~ msgstr "O planhèm, impossible de cambiar las permissions de « %s » : %s"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "The name “%s” is already used in this location. Please use a different "
+#~| "name."
+#~ msgid ""
+#~ "The name \"%s\" is already used in this folder. Please use a different name."
+#~ msgstr ""
+#~ "Lo nom « %s » es ja utilizat dins aqueste emplaçament. Utilizatz un nom "
+#~ "diferent."
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "There is no “%s” in this location. Perhaps it was just moved or deleted?"
+#~ msgid ""
+#~ "There is no \"%s\" in this folder. Perhaps it was just moved or deleted?"
+#~ msgstr ""
+#~ "I a pas cap de « %s » dins aqueste emplaçament. Benlèu que ven juste d'èsser "
+#~ "desplaçat o suprimit ?"
+
+#, fuzzy, c-format
+#~| msgid "You do not have the permissions necessary to rename “%s”."
+#~ msgid "You do not have the permissions necessary to rename \"%s\"."
+#~ msgstr "Avètz pas las permissions necessàrias per renomenar « %s »."
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "The name “%s” is not valid because it contains the character “/”. Please "
+#~| "use a different name."
+#~ msgid ""
+#~ "The name \"%s\" is not valid because it contains the character \"/\". Please "
+#~ "use a different name."
+#~ msgstr ""
+#~ "Lo nom « %s » es pas valid perque conten lo caractèr « / ». Utilizatz un nom "
+#~ "diferent."
+
+#, fuzzy, c-format
+#~| msgid "The name “%s” is not valid. Please use a different name."
+#~ msgid "The name \"%s\" is not valid. Please use a different name."
+#~ msgstr "Lo nom « %s » es pas valid. Utilizatz un nom diferent."
+
+#, fuzzy, c-format
+#~| msgid "The name “%s” is too long. Please use a different name."
+#~ msgid "The name \"%s\" is too long. Please use a different name."
+#~ msgstr "Lo nom « %s » es tròp long. Utilizatz un nom diferent."
+
+#, fuzzy, c-format
+#~| msgid "Sorry, could not rename “%s” to “%s”: %s"
+#~ msgid "Sorry, could not rename \"%s\" to \"%s\": %s"
+#~ msgstr "O planhèm, impossible de renomenar « %s » en « %s » : %s"
+
+#, fuzzy, c-format
+#~| msgid "Renaming “%s” to “%s”."
+#~ msgid "Renaming \"%s\" to \"%s\"."
+#~ msgstr "Cambiament de nom de « %s » en « %s »."
+
+#, fuzzy
+#~| msgid "Content View"
+#~ msgid "Compact View"
+#~ msgstr "Vista del conetgut"
+
+#, fuzzy
+#~| msgid "Files Preferences"
+#~ msgid "File Management Preferences"
+#~ msgstr "Preferéncias de Fichièrs"
+
+#, fuzzy
+#~| msgid "Default View"
+#~ msgid "<b>Default View</b>"
+#~ msgstr "Afichatge per defaut"
+
+#, fuzzy
+#~| msgid "Icon View Defaults"
+#~ msgid "<b>Icon View Defaults</b>"
+#~ msgstr "Reglatges per defaut de la vista en icònas"
+
+#, fuzzy
+#~| msgid "List View Defaults"
+#~ msgid "<b>Compact View Defaults</b>"
+#~ msgstr "Reglatges per defaut de la vista en lista"
+
+#, fuzzy
+#~| msgid "D_efault zoom level:"
+#~ msgid "_Default zoom level:"
+#~ msgstr "Nivèl de _zoom per defaut :"
+
+#, fuzzy
+#~| msgid "List View Defaults"
+#~ msgid "<b>List View Defaults</b>"
+#~ msgstr "Reglatges per defaut de la vista en lista"
+
+#, fuzzy
+#~| msgid "Reset View to _Defaults"
+#~ msgid "<b>Tree View Defaults</b>"
+#~ msgstr "Inicializar la vista a las valors per _defaut"
+
+#, fuzzy
+#~| msgid "Search in subfolders:"
+#~ msgid "Show _only folders"
+#~ msgstr "Recercar dins de sosfichièrs"
+
+#, fuzzy
+#~| msgid "Behavior"
+#~ msgid "<b>Behavior</b>"
+#~ msgstr "Compòrtament"
+
+#, fuzzy
+#~| msgid "Open this folder in a navigation window"
+#~ msgid "Open each _folder in its own window"
+#~ msgstr "Dobrir aqueste dorsièr dins una fenèstra de navigacion"
+
+#, fuzzy
+#~| msgid "Executable Text Files"
+#~ msgid "<b>Executable Text Files</b>"
+#~ msgstr "Fichièrs tèxte executables"
+
+#, fuzzy
+#~| msgid "Ask before _emptying the Trash"
+#~ msgid "Ask before _emptying the Trash or deleting files"
+#~ msgstr "Demandar abans de _voidar l'escobilhièr"
+
+#, fuzzy
+#~| msgid "Icon View Captions"
+#~ msgid "<b>Icon Captions</b>"
+#~ msgstr "Libellats de las icònas"
+
+#, fuzzy
+#~| msgid ""
+#~| "Add information to be displayed beneath file and folder names.\n"
+#~| "More information will appear when zooming closer."
+#~ msgid ""
+#~ "Choose the order of information to appear beneath icon names. More "
+#~ "information will appear when zooming in closer."
+#~ msgstr ""
+#~ "Causissètz l'òrdre de las entresenhas que se visualizan jol nom de las "
+#~ "icònas.\n"
+#~ "Mai zoomatz sus un element, mai las entresenhas visualizadas seràn nombrosas."
+
+#, fuzzy
+#~| msgid "Format"
+#~ msgid "_Format:"
+#~ msgstr "Formatar"
+
+#, fuzzy
+#~| msgid "List Columns"
+#~ msgid "<b>List Columns</b>"
+#~ msgstr "Colomnas de la visualizacion en lista"
+
+#, fuzzy
+#~| msgid "Text File"
+#~ msgid "<b>Text Files</b>"
+#~ msgstr "Fichièr tèxt"
+
+#, fuzzy
+#~| msgid "Show thumbnails:"
+#~ msgid "Show _thumbnails:"
+#~ msgstr "Afichar las miniaturas :"
+
+#, fuzzy
+#~| msgid "Onl_y for files smaller than:"
+#~ msgid "_Only for files smaller than:"
+#~ msgstr "_Sonque pels fichièrs pus pichons que :"
+
+#, fuzzy
+#~| msgid "_About Files"
+#~ msgid "<b>Sound Files</b>"
+#~ msgstr "A _prepaus de Files"
+
+#, fuzzy
+#~| msgid "Folders"
+#~ msgid "<b>Folders</b>"
+#~ msgstr "Dorsièrs"
+
+#, fuzzy
+#~| msgid "Count number of files in folders:"
+#~ msgid "Count _number of items:"
+#~ msgstr "Comptar lo _nombre de fichièrs dins los dorsièrs :"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Refresh view"
+#~ msgid "Preview"
+#~ msgstr "Refrescar la vista"
+
+#, fuzzy
+#~| msgid "By _Name"
+#~ msgid "by _Name"
+#~ msgstr "Per _nom"
+
+#, fuzzy
+#~| msgid "By _Size"
+#~ msgid "by _Size"
+#~ msgstr "Per _talha"
+
+#, fuzzy
+#~| msgid "By _Type"
+#~ msgid "by _Type"
+#~ msgstr "Per _tipe"
+
+#, fuzzy
+#~| msgid "By Modification _Date"
+#~ msgid "by Modification _Date"
+#~ msgstr "Per _data de modificacion"
+
+#, fuzzy
+#~| msgid "By T_rash Time"
+#~ msgid "by T_rash Time"
+#~ msgstr "Per data de mesa a l'esco_bilhièr"
+
+#, fuzzy
+#~| msgid "_Arrange items:"
+#~ msgid "Arran_ge Items"
+#~ msgstr "_Arrengar los elements :"
+
+#, fuzzy
+#~| msgid "Resize Icon…"
+#~ msgid "Resize Icon..."
+#~ msgstr "Redimensionar l'icòna…"
+
+#, fuzzy
+#~| msgid "Make the selected icons resizable"
+#~ msgid "Make the selected icon resizable"
+#~ msgstr "Autoriza lo cambiament de talha de l'icòna seleccionada"
+
+#, fuzzy
+#~| msgid "_Organize Desktop by Name"
+#~ msgid "_Organize by Name"
+#~ msgstr "_Organizar lo burèu per nom"
+
+#, fuzzy
+#~| msgid "Icons"
+#~ msgid "_Icons"
+#~ msgstr "Icònas"
+
+#, fuzzy
+#~| msgid "Display icons in the opposite order"
+#~ msgid "Display this location with the compact view."
+#~ msgstr "Aficha las icònas dins l'òrdre invèrs"
+
+#, fuzzy
+#~| msgid "Image Type"
+#~ msgid "Image Type:"
+#~ msgstr "Tipe d'imatge"
+
+#, fuzzy
+#~| msgid "Loading…"
+#~ msgid "loading..."
+#~ msgstr "Cargament…"
+
+#, fuzzy
+#~| msgid "Loading…"
+#~ msgid "Loading..."
+#~ msgstr "Cargament…"
+
+#, fuzzy
+#~| msgid "Visible _Columns…"
+#~ msgid "Visible _Columns..."
+#~ msgstr "_Colomnas visiblas…"
+
+#, fuzzy
+#~| msgid "List"
+#~ msgid "_List"
+#~ msgstr "Lista"
+
+#, fuzzy
+#~| msgid "Default column order in the list view."
+#~ msgid "Display this location with the list view."
+#~ msgstr "Òrdre per defaut de las colomnas dins la visualizacion en lista."
+
+#, fuzzy, c-format
+#~| msgid "The link “%s” is broken."
+#~ msgid "The Link \"%s\" is Broken."
+#~ msgstr "Lo ligam « %s » es copat."
+
+#, fuzzy, c-format
+#~| msgid "The link “%s” is broken. Move it to Trash?"
+#~ msgid "The Link \"%s\" is Broken. Move it to Trash?"
+#~ msgstr "Lo ligam « %s » es copat. Lo volètz metre a l'escobilhièr ?"
+
+#, fuzzy
+#~| msgid "This link cannot be used because it has no target."
+#~ msgid "This link cannot be used, because it has no target."
+#~ msgstr "Impossible d'utilizar aqueste ligam perque punta pas sus res."
+
+#, fuzzy, c-format
+#~| msgid "This link cannot be used because its target “%s” doesn't exist."
+#~ msgid "This link cannot be used, because its target \"%s\" doesn't exist."
+#~ msgstr ""
+#~ "Impossible d'utilizar aqueste ligam perque sa cibla « %s » existís pas."
+
+#, fuzzy, c-format
+#~| msgid "Do you want to run “%s”, or display its contents?"
+#~ msgid "Do you want to run \"%s\", or display its contents?"
+#~ msgstr "Volètz aviar « %s » o afichar son contengut ?"
+
+#, fuzzy, c-format
+#~| msgid "“%s” is an executable text file."
+#~ msgid "\"%s\" is an executable text file."
+#~ msgstr "« %s » es un fichièr tèxte executable."
+
+#, fuzzy, c-format
+#~| msgid "Could not display “%s”."
+#~ msgid "Could not display \"%s\"."
+#~ msgstr "Impossible d'afichar « %s »."
+
+#, fuzzy, c-format
+#~| msgid "There is no application installed for “%s” files"
+#~ msgid "There is no application installed for %s files"
+#~ msgstr "Cap d'aplicacion es pas installada pels fichièrs « %s »"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "There is no application installed for “%s” files.\n"
+#~| "Do you want to search for an application to open this file?"
+#~ msgid ""
+#~ "There is no application installed for %s files.\n"
+#~ "Do you want to search for an application to open this file?"
+#~ msgstr ""
+#~ "Cap d'aplicacion es pas installada pels fichièrs « %s ».\n"
+#~ "Volètz recercar una aplicacion per dobrir aqueste fichièr ?"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "The application launcher “%s” has not been marked as trusted. If you do "
+#~| "not know the source of this file, launching it may be unsafe."
+#~ msgid ""
+#~ "The application launcher \"%s\" has not been marked as trusted. If you do "
+#~ "not know the source of this file, launching it may be unsafe."
+#~ msgstr ""
+#~ "L'aviador d'aplicacion « %s » es pas marcat coma fisable. Se coneissètz pas "
+#~ "la provenéncia d'aqueste fichièr, son aviada es potencialament dangierós."
+
+#, fuzzy
+#~| msgid "Unable to load location"
+#~ msgid "Unable to mount location"
+#~ msgstr "Impossible de cargar l'emplaçament"
+
+#, fuzzy, c-format
+#~| msgid "Opening “%s”."
+#~ msgid "Opening \"%s\"."
+#~ msgstr "Dobertura de « %s »."
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Bookmarks"
+#~ msgid "Bookmarks"
+#~ msgstr "Marcapaginas"
+
+#, fuzzy
+#~| msgid "Open your personal folder"
+#~ msgid "Open the contents of your desktop in a folder"
+#~ msgstr "Dobrir vòstre dorsier personal"
+
+#, fuzzy
+#~| msgid "File Type"
+#~ msgid "File System"
+#~ msgstr "Tipe de fichièr"
+
+#, fuzzy
+#~| msgid "Open With %s"
+#~ msgid "Open the trash"
+#~ msgstr "Dobrir amb %s"
+
+#, fuzzy
+#~| msgid "Networks"
+#~ msgid "Network"
+#~ msgstr "Rets"
+
+#, fuzzy
+#~| msgid "Networks"
+#~ msgid "Browse Network"
+#~ msgstr "Rets"
+
+#, fuzzy
+#~| msgid "Unable to display the contents of this folder."
+#~ msgid "Browse the contents of the network"
+#~ msgstr "Impossible d'afichar lo contengut d'aqueste dorsièr."
+
+#, fuzzy
+#~| msgid "_Connect"
+#~ msgid "_Connect Drive"
+#~ msgstr "Se _connectar"
+
+#, fuzzy
+#~| msgid "_Disconnect"
+#~ msgid "_Disconnect Drive"
+#~ msgstr "Se _desconnectar"
+
+#, fuzzy
+#~| msgid "_Start Multi-disk Drive"
+#~ msgid "_Start Multi-disk Device"
+#~ msgstr "_Aviar lo volum multidisc"
+
+#, fuzzy
+#~| msgid "_Stop Multi-disk Drive"
+#~ msgid "_Stop Multi-disk Device"
+#~ msgstr "_Arrestar lo volum multidisc"
+
+#, fuzzy, c-format
+#~| msgid "Unable to start “%s”"
+#~ msgid "Unable to start %s"
+#~ msgstr "Impossible d'aviar « %s »"
+
+#, fuzzy, c-format
+#~| msgid "Unable to eject %V"
+#~ msgid "Unable to eject %s"
+#~ msgstr "Impossible d'ejectar %V"
+
+#, fuzzy, c-format
+#~| msgid "Unable to stop drive"
+#~ msgid "Unable to stop %s"
+#~ msgstr "Impossible d'arrestar lo volum"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Rename"
+#~ msgid "Rename..."
+#~ msgstr "Renomenar"
+
+#, fuzzy
+#~| msgid "Please drop just one image to set a custom icon."
+#~ msgid "Please drag just one image to set a custom icon."
+#~ msgstr "Seleccionatz un sol imatge per ne far una icòna personalizada."
+
+#, fuzzy
+#~| msgid "write"
+#~ msgid "_Write"
+#~ msgstr "escritura"
+
+#, fuzzy
+#~| msgid "Execute:"
+#~ msgid "E_xecute"
+#~ msgstr "Executar :"
+
+#, fuzzy
+#~| msgid "Permissions"
+#~ msgid "Folder Permissions:"
+#~ msgstr "Permissions"
+
+#, fuzzy
+#~| msgid "Permissions"
+#~ msgid "File Permissions:"
+#~ msgstr "Permissions"
+
+#, fuzzy
+#~| msgid "Text File"
+#~ msgid "Text view:"
+#~ msgstr "Fichièr tèxt"
+
+#, fuzzy
+#~| msgid "Security context:"
+#~ msgid "SELinux context:"
+#~ msgstr "Contèxte de seguretat :"
+
+#, fuzzy
+#~| msgid "Last _Trashed"
+#~ msgid "Last changed:"
+#~ msgstr "Data de darrièr rebu_t"
+
+#, fuzzy
+#~| msgid "Change Permissions for Enclosed Files"
+#~ msgid "Apply Permissions to Enclosed Files"
+#~ msgstr "Cambiar las permissions dels fichièrs incluses"
+
+#, fuzzy, c-format
+#~| msgid "The permissions of “%s” could not be determined."
+#~ msgid "The permissions of \"%s\" could not be determined."
+#~ msgstr "Las permissions de « %s » pòdon pas èsser determinadas."
+
+#, fuzzy
+#~| msgid "Select Folder to Save Search In"
+#~ msgid "Select folder to search in"
+#~ msgstr "Seleccionatz lo dorsièr ont enregistrar la recèrca"
+
+#, fuzzy
+#~| msgid "PDF / PostScript"
+#~ msgid "Pdf / Postscript"
+#~ msgstr "Pdf / Postscript"
+
+#, fuzzy
+#~| msgid "Other Type…"
+#~ msgid "Other Type..."
+#~ msgstr "Autre tipe…"
+
+#, fuzzy
+#~| msgid "Merge Folder"
+#~ msgid "Search Folder"
+#~ msgstr "Dorsièr novèl"
+
+#, fuzzy
+#~| msgid "Saved search"
+#~ msgid "Edit the saved search"
+#~ msgstr "Recèrca enregistrada"
+
+#, fuzzy
+#~| msgid "R_eload"
+#~ msgid "Reload"
+#~ msgstr "R_ecargar"
+
+#, fuzzy
+#~| msgid "Search for files"
+#~ msgid "_Search for:"
+#~ msgstr "Recercar de fichièrs"
+
+#, fuzzy
+#~| msgid "Search files"
+#~ msgid "Search results"
+#~ msgstr "Recercar de fichièrs"
+
+#, fuzzy
+#~| msgid "Search"
+#~ msgid "Search:"
+#~ msgstr "Recercar"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Create folder"
+#~ msgid "Create New _Folder"
+#~ msgstr "Crear un dorsièr"
+
+#, fuzzy, c-format
+#~| msgid "“%s” selected"
+#~ msgid "\"%s\" selected"
+#~ msgstr "« %s » seleccionat"
+
+#, fuzzy, c-format
+#~| msgid "(containing %'d item)"
+#~| msgid_plural "(containing %'d items)"
+#~ msgid " (containing %'d item)"
+#~ msgid_plural " (containing %'d items)"
+#~ msgstr[0] " (contenant %'d element)"
+#~ msgstr[1] " (contenant %'d elements)"
+
+#, fuzzy, c-format
+#~| msgid "(containing a total of %'d item)"
+#~| msgid_plural "(containing a total of %'d items)"
+#~ msgid " (containing a total of %'d item)"
+#~ msgid_plural " (containing a total of %'d items)"
+#~ msgstr[0] " (contenant %'d element al total)"
+#~ msgstr[1] " (contenant %'d elements al total)"
+
+#, fuzzy, c-format
+#~| msgid "Free space:"
+#~ msgid "Free space: %s"
+#~ msgstr "Espaci liure :"
+
+#, fuzzy, c-format
+#~| msgid "Free space:"
+#~ msgid "%s, Free space: %s"
+#~ msgstr "Espaci liure :"
+
+#, fuzzy, c-format
+#~| msgid "%s %s, %s %s"
+#~ msgid "%s, %s"
+#~ msgstr "%s %s, %s %s"
+
+#, fuzzy, c-format
+#~| msgid "%s %s, %s %s"
+#~ msgid "%s%s, %s"
+#~ msgstr "%s %s, %s %s"
+
+#, fuzzy, c-format
+#~| msgid "%s %s, %s %s"
+#~ msgid "%s%s, %s, %s"
+#~ msgstr "%s %s, %s %s"
+
+#, fuzzy, c-format
+#~| msgid "Use “%s” to open the selected item"
+#~| msgid_plural "Use “%s” to open the selected items"
+#~ msgid "Use \"%s\" to open the selected item"
+#~ msgid_plural "Use \"%s\" to open the selected items"
+#~ msgstr[0] "Utiliza « %s » per dobrir l'element seleccionat"
+#~ msgstr[1] "Utiliza « %s » per dobrir los elements seleccionats"
+
+#, fuzzy, c-format
+#~| msgid "Run “%s” on any selected items"
+#~ msgid "Run \"%s\" on any selected items"
+#~ msgstr "Aviar « %s » per totes los elements seleccionats"
+
+#, fuzzy, c-format
+#~| msgid "Create a new document from template “%s”"
+#~ msgid "Create a new document from template \"%s\""
+#~ msgstr "Crear un novèl document a partir del modèl « %s »"
+
+#, fuzzy
+#~| msgid "Executable files in this folder will appear in the Scripts menu."
+#~ msgid "All executable files in this folder will appear in the Scripts menu."
+#~ msgstr ""
+#~ "Los fichièrs executables d'aqueste dorsièr apareisseràn dins lo menú Scripts."
+
+#, fuzzy, c-format
+#~| msgid "Prepare the selected files to be moved with a Paste command"
+#~ msgid "The %'d selected item will be moved if you select the Paste command"
+#~ msgid_plural ""
+#~ "The %'d selected items will be moved if you select the Paste command"
+#~ msgstr[0] ""
+#~ "Preparar lo desplaçament dels fichièrs seleccionats amb una comanda Pegar"
+#~ msgstr[1] ""
+#~ "Preparar lo desplaçament dels fichièrs seleccionats amb una comanda Pegar"
+
+#, fuzzy, c-format
+#~| msgid "Prepare the selected files to be copied with a Paste command"
+#~ msgid "The %'d selected item will be copied if you select the Paste command"
+#~ msgid_plural ""
+#~ "The %'d selected items will be copied if you select the Paste command"
+#~ msgstr[0] "Preparar la còpia dels fichièrs seleccionats amb una comanda Pegar"
+#~ msgstr[1] "Preparar la còpia dels fichièrs seleccionats amb una comanda Pegar"
+
+#, fuzzy
+#~| msgid "Unable to load location"
+#~ msgid "Unable to unmount location"
+#~ msgstr "Impossible de cargar l'emplaçament"
+
+#, fuzzy
+#~| msgid "Unable to start location"
+#~ msgid "Unable to eject location"
+#~ msgstr "Impossible d'aviar l'emplaçament"
+
+#, fuzzy, c-format
+#~| msgid "Connect to _Server"
+#~ msgid "Connect to Server %s"
+#~ msgstr "Se connectar al _servidor"
+
+#, fuzzy
+#~| msgid "Link target:"
+#~ msgid "Link _name:"
+#~ msgstr "Cibla del ligam :"
+
+#, fuzzy
+#~| msgid "New _Document"
+#~ msgid "Create New _Document"
+#~ msgstr "_Document novèl"
+
+#, fuzzy
+#~| msgid "Other _Application…"
+#~ msgid "Other _Application..."
+#~ msgstr "Autra _aplicacion…"
+
+#, fuzzy
+#~| msgid "Open With Other _Application"
+#~ msgid "Open With Other _Application..."
+#~ msgstr "Dobrir amb una autra _aplicacion"
+
+#, fuzzy
+#~| msgid "Copy to…"
+#~ msgid "Cop_y to"
+#~ msgstr "Copiar cap a…"
+
+#, fuzzy
+#~| msgid "Move to…"
+#~ msgid "M_ove to"
+#~ msgstr "Desplaçar cap a…"
+
+# Dialog title
+#, fuzzy
+#~| msgid "Select Items Matching"
+#~ msgid "Select I_tems Matching..."
+#~ msgstr "Seleccion d'elements segon un motiu"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Invert selection"
+#~ msgid "_Invert Selection"
+#~ msgstr "Inversar la seleccion"
+
+#, fuzzy
+#~| msgid "_Undo Duplicate"
+#~ msgid "D_uplicate"
+#~ msgstr "A_nullar la duplicacion"
+
+#, fuzzy
+#~| msgid "Open each selected item in a new tab"
+#~ msgid "Duplicate each selected item"
+#~ msgstr "Dobrir cada element seleccionat dins un onglet novèl"
+
+#, fuzzy
+#~| msgid "_Rename"
+#~ msgid "_Rename..."
+#~ msgstr "_Renomenar"
+
+#, fuzzy
+#~| msgid "Rename selected item"
+#~ msgid "Rename selected item"
+#~ msgstr "Renomena l'element seleccionat"
+
+#, fuzzy
+#~| msgid "Connect to _Server"
+#~ msgid "Connect To This Server"
+#~ msgstr "Se connectar al _servidor"
+
+#, fuzzy
+#~| msgid "Add a new criterion to this search"
+#~ msgid "Make a permanent connection to this server"
+#~ msgstr "Apondre un criteri novèla a la recèrca"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Open file and close window"
+#~ msgid "Open File and Close window"
+#~ msgstr "Dobrir un fichièr e tampar la fenèstra"
+
+#, fuzzy
+#~| msgid "Sa_ve Search As…"
+#~ msgid "Sa_ve Search As..."
+#~ msgstr "Enre_gistrar la recèrca jos…"
+
+#, fuzzy
+#~| msgid "Other Type…"
+#~ msgid "_Other pane"
+#~ msgstr "Autre tipe…"
+
+#, fuzzy
+#~| msgid "Open the selected item in this window"
+#~ msgid "Copy the current selection to the other pane in the window"
+#~ msgstr "Dobrir l'element seleccionat dins aquesta fenèstra"
+
+#, fuzzy
+#~| msgid "Open the selected item in this window"
+#~ msgid "Move the current selection to the other pane in the window"
+#~ msgstr "Dobrir l'element seleccionat dins aquesta fenèstra"
+
+#, fuzzy
+#~| msgid "Stop the volume associated with the open folder"
+#~ msgid "Copy the current selection to the home folder"
+#~ msgstr "Arrèsta lo volum associat al dorsièr dobèrt"
+
+#, fuzzy
+#~| msgid "Mount the volume associated with the open folder"
+#~ msgid "Move the current selection to the home folder"
+#~ msgstr "Montar lo volum associat al dorsièr dobèrt"
+
+#, fuzzy
+#~| msgid "Desktop"
+#~ msgid "_Desktop"
+#~ msgstr "Burèu"
+
+#, fuzzy
+#~| msgid "Copy the selected text to the clipboard"
+#~ msgid "Copy the current selection to the desktop"
+#~ msgstr "Còpia lo tèxte seleccionat dins lo quichapapièrs"
+
+#, fuzzy
+#~| msgid "Move the selected file out of the trash"
+#~ msgid "Move the current selection to the desktop"
+#~ msgstr "Desplaçar l'element seleccionat en defòra de l'escobilhièr"
+
+#, fuzzy, c-format
+#~| msgid "Run or manage scripts"
+#~ msgid "Run or manage scripts from %s"
+#~ msgstr "Executa o organiza los escripts"
+
+#, fuzzy, c-format
+#~| msgid "Move the open folder out of the trash to “%s”"
+#~ msgid "Move the open folder out of the trash to \"%s\""
+#~ msgstr "Desplaça lo dorsièr dobèrt de l'escobilhièr cap a « %s »"
+
+#, fuzzy, c-format
+#~| msgid "Move the selected folder out of the trash to “%s”"
+#~ msgid "Move the selected folder out of the trash to \"%s\""
+#~ msgid_plural "Move the selected folders out of the trash to \"%s\""
+#~ msgstr[0] "Desplaça lo dorsièr seleccionat de l'escobilhièr cap a « %s »"
+#~ msgstr[1] "Desplaça lo dorsièr seleccionat de l'escobilhièr cap a « %s »"
+
+#, fuzzy, c-format
+#~| msgid "Move the selected file out of the trash to “%s”"
+#~ msgid "Move the selected file out of the trash to \"%s\""
+#~ msgid_plural "Move the selected files out of the trash to \"%s\""
+#~ msgstr[0] "Desplaça lo fichièr seleccionat de l'escobilhièr cap a « %s »"
+#~ msgstr[1] "Desplaça lo fichièr seleccionat de l'escobilhièr cap a « %s »"
+
+#, fuzzy, c-format
+#~| msgid "Move the selected item out of the trash to “%s”"
+#~ msgid "Move the selected item out of the trash to \"%s\""
+#~ msgid_plural "Move the selected items out of the trash to \"%s\""
+#~ msgstr[0] "Desplaça l'element seleccionat de l'escobilhièr cap a « %s »"
+#~ msgstr[1] "Desplaça l'element seleccionat de l'escobilhièr cap a « %s »"
+
+#, fuzzy
+#~| msgid "Unable to load location"
+#~ msgid "Download location?"
+#~ msgstr "Impossible de cargar l'emplaçament"
+
+#, fuzzy
+#~| msgid "You cannot move a folder into itself."
+#~ msgid "You can download it or make a link to it."
+#~ msgstr "Podètz pas desplaçar un dorsièr dins el meteis."
+
+#
+#, fuzzy
+#~| msgid "Ma_ke Link"
+#~| msgid_plural "Ma_ke Links"
+#~ msgid "Make a _Link"
+#~ msgstr "_Crear un ligam"
+
+#, fuzzy
+#~| msgid "R_eload"
+#~ msgid "_Download"
+#~ msgstr "R_ecargar"
+
+#, fuzzy
+#~| msgid "Dropped Text.txt"
+#~ msgid "dropped text.txt"
+#~ msgstr "tèxte depausat.txt"
+
+#, fuzzy, c-format
+#~| msgid "The location of the file."
+#~ msgid "The location \"%s\" does not exist."
+#~ msgstr "L'emplaçament del fichièr."
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Bookmark current location"
+#~ msgid "Bookmark for Nonexistent Location"
+#~ msgstr "Apondre un marcapagina per aqueste emplaçament"
+
+#, fuzzy
+#~| msgid "This location could not be displayed."
+#~ msgid "The location cannot be displayed with this viewer."
+#~ msgstr "Impossible d'afichar lo contengut d'aqueste emplaçament."
+
+#, fuzzy
+#~| msgid "Searching…"
+#~ msgid "Searching..."
+#~ msgstr "Recèrca en cors…"
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The location is not a folder."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy, c-format
+#~| msgid "Could not display “%s”."
+#~ msgid "Could not find \"%s\"."
+#~ msgstr "Impossible d'afichar « %s »."
+
+#, fuzzy
+#~| msgid ""
+#~| "Unable to find the requested file. Please check the spelling and try "
+#~| "again."
+#~ msgid "Please check the spelling and try again."
+#~ msgstr ""
+#~ "Impossible de trobar lo fichièr demandat. Verificatz l'ortografia e ensajatz "
+#~ "tornamai."
+
+#, fuzzy
+#~| msgid "Unable to handle this kind of location."
+#~ msgid "Nautilus cannot handle this kind of location."
+#~ msgstr "Impossible de gerir aqueste tipe d'emplaçament."
+
+#, fuzzy
+#~| msgid "Unable to start location"
+#~ msgid "Unable to mount the location."
+#~ msgstr "Impossible d'aviar l'emplaçament"
+
+#, fuzzy
+#~| msgid "Accessed"
+#~ msgid "Access was denied."
+#~ msgstr "Darrièr accès"
+
+#, fuzzy
+#~| msgid ""
+#~| "Files is free software; you can redistribute it and/or modify it under "
+#~| "the terms of the GNU General Public License as published by the Free "
+#~| "Software Foundation; either version 2 of the License, or (at your option) "
+#~| "any later version."
+#~ msgid ""
+#~ "Nautilus is free software; you can redistribute it and/or modify it under "
+#~ "the terms of the GNU General Public License as published by the Free "
+#~ "Software Foundation; either version 2 of the License, or (at your option) "
+#~ "any later version."
+#~ msgstr ""
+#~ "Files es un logicial liure ; lo podètz redistribuir e/o lo modificar segon "
+#~ "los tèrmes de la Licéncia Publica Generala GNU, tal coma publicada per la "
+#~ "Free Software Foundation ; version 2 de la licéncia, o (coma volètz) tota "
+#~ "version ulteriora."
+
+#, fuzzy
+#~| msgid ""
+#~| "Files is distributed in the hope that it will be useful, but WITHOUT ANY "
+#~| "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+#~| "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+#~| "details."
+#~ msgid ""
+#~ "Nautilus is distributed in the hope that it will be useful, but WITHOUT ANY "
+#~ "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
+#~ "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
+#~ "details."
+#~ msgstr ""
+#~ "Files es distribuit dins l'esper que vos serà utile, mas SENS CAP DE "
+#~ "GARANTIDA ; sens la quita garantida implicita de VALOR MERCANDA o "
+#~ "D'ADEQÛACION A UN BESONH PARTICULAR. Consultatz la Licéncia Publica Generala "
+#~ "GNU per mai de detalhs."
+
+#, fuzzy
+#~| msgid "Copyright © %Id–%Id The Files authors"
+#~ msgid "Copyright © 1999-2011 The Nautilus authors"
+#~ msgstr "Copyright © %Id–%Id Los autors de Files"
+
+#, fuzzy
+#~| msgid "Nautilus"
+#~ msgid "Nautilus Web Site"
+#~ msgstr "Nautilus"
+
+#, fuzzy
+#~| msgid "Are you sure you want to permanently delete the %'d selected item?"
+#~| msgid_plural ""
+#~| "Are you sure you want to permanently delete the %'d selected items?"
+#~ msgid "Are you sure you want to clear the list of locations you have visited?"
+#~ msgstr "Sètz segur que volètz suprimir definitivament l'element seleccionat ?"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Editing"
+#~ msgid "_Edit"
+#~ msgstr "Edicion"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Create folder"
+#~ msgid "Close this folder"
+#~ msgstr "Crear un dorsièr"
+
+#, fuzzy
+#~| msgid "Undo the last action"
+#~ msgid "Undo the last text change"
+#~ msgstr "Anullar la darrièra accion"
+
+#, fuzzy
+#~| msgid "View of the current folder"
+#~ msgid "Open the parent folder"
+#~ msgstr "Vista del dorsièr actual"
+
+#, fuzzy
+#~| msgid "R_eload"
+#~ msgid "_Reload"
+#~ msgstr "R_ecargar"
+
+#, fuzzy
+#~| msgid "Stop loading the current location"
+#~ msgid "Reload the current location"
+#~ msgstr "Arrèsta la carga de l'emplaçament actual"
+
+#, fuzzy
+#~| msgid "Contents:"
+#~ msgid "_Contents"
+#~ msgstr "Contenguts :"
+
+#, fuzzy
+#~| msgid "Zoom in"
+#~ msgid "Zoom _In"
+#~ msgstr "Zoom arrièr"
+
+#, fuzzy
+#~| msgid "Zoom out"
+#~ msgid "Zoom _Out"
+#~ msgstr "Zoom avant"
+
+#, fuzzy
+#~| msgid "Connect to _Server"
+#~ msgid "Connect to _Server..."
+#~ msgstr "Se connectar al _servidor"
+
+#, fuzzy
+#~| msgid "Networks"
+#~ msgid "_Network"
+#~ msgstr "Rets"
+
+#, fuzzy
+#~| msgid "Open your personal folder"
+#~ msgid "Open your personal templates folder"
+#~ msgstr "Dobrir vòstre dorsier personal"
+
+#, fuzzy
+#~| msgid "Trash"
+#~ msgid "_Trash"
+#~ msgstr "Escobilhièr"
+
+#, fuzzy
+#~| msgid "Open your personal folder"
+#~ msgid "Open your personal trash folder"
+#~ msgstr "Dobrir vòstre dorsier personal"
+
+#, fuzzy
+#~| msgid "Go"
+#~ msgid "_Go"
+#~ msgstr "Anar"
+
+#, fuzzy
+#~| msgid "New _Tab"
+#~ msgid "_Tabs"
+#~ msgstr "Ongle_t novèl"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Go forward"
+#~ msgid "_Forward"
+#~ msgstr "Seguent"
+
+#, fuzzy
+#~| msgid "Location"
+#~ msgid "_Location..."
+#~ msgstr "Emplaçament"
+
+#, fuzzy
+#~| msgid "The default width of the side pane in new windows."
+#~ msgid "Move focus to the other pane in a split view window"
+#~ msgstr "La largor per defaut del panèl lateral de las fenèstras novèlas."
+
+#, fuzzy
+#~| msgid "The location of the file."
+#~ msgid "Sa_me Location as Other Pane"
+#~ msgstr "L'emplaçament del fichièr."
+
+#, fuzzy
+#~| msgid "_Bookmarks"
+#~ msgid "_Add Bookmark"
+#~ msgstr "_Favorits"
+
+#, fuzzy
+#~| msgid "Add a bookmark for the current location"
+#~ msgid "Add a bookmark for the current location to this menu"
+#~ msgstr "Apondre un marcaoagina per l'emplaçament actual"
+
+#, fuzzy
+#~| msgid "_Bookmarks"
+#~ msgid "_Edit Bookmarks..."
+#~ msgstr "_Favorits"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Go to previous tab"
+#~ msgid "Activate previous tab"
+#~ msgstr "Anar a l'onglet precedent"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Go to next tab"
+#~ msgid "Activate next tab"
+#~ msgstr "Anar a l'onglet seguent"
+
+#, fuzzy
+#~| msgid "Change the visibility of this window's side pane"
+#~ msgid "Change the visibility of this window's main toolbar"
+#~ msgstr "Modificar la visibilitat del panèl lateral d'aquesta fenèstra"
+
+#, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Show/hide sidebar"
+#~ msgid "_Show Sidebar"
+#~ msgstr "Afichar/Amagar la barra laterala"
+
+#, fuzzy
+#~| msgid "Change the visibility of this window's side pane"
+#~ msgid "Change the visibility of this window's statusbar"
+#~ msgstr "Modificar la visibilitat del panèl lateral d'aquesta fenèstra"
+
+#, fuzzy
+#~| msgid "_Search for Files…"
+#~ msgid "_Search for Files..."
+#~ msgstr "_Recèrca de fichièrs…"
+
+#, fuzzy
+#~| msgid "Replace"
+#~ msgid "Places"
+#~ msgstr "Remplaçar"
+
+#, fuzzy
+#~| msgid "Contains digital photos"
+#~ msgid "The media contains digital photos."
+#~ msgstr "Conten de fòtos numericas"
+
+#, fuzzy
+#~| msgid "Contains software"
+#~ msgid "The media contains software."
+#~ msgstr "Conten de logicials"
+
+#, fuzzy
+#~| msgid "Send to…"
+#~ msgid "Send To..."
+#~ msgstr "Mandar cap a…"
+
+#, fuzzy
+#~| msgid "Send files by mail…"
+#~ msgid "Send files by mail, instant message..."
+#~ msgstr "Mandar de fichièrs per corrièr electronic…"
