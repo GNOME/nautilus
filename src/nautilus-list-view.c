@@ -112,6 +112,16 @@ static const char *default_search_columns_order[] =
     "name", "size", "where", NULL
 };
 
+static const char *default_recent_visible_columns[] =
+{
+    "name", "size", "where", NULL
+};
+
+static const char *default_recent_columns_order[] =
+{
+    "name", "size", "where", NULL
+};
+
 static const char *default_trash_visible_columns[] =
 {
     "name", "size", "trash_orig_path", "trashed_on", NULL
@@ -2072,6 +2082,11 @@ get_default_visible_columns (NautilusListView *list_view)
         return g_strdupv ((gchar **) default_trash_visible_columns);
     }
 
+    if (nautilus_file_is_in_recent (file))
+    {
+        return g_strdupv ((gchar **) default_recent_visible_columns);
+    }
+
     directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (list_view));
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
@@ -2125,6 +2140,11 @@ get_default_column_order (NautilusListView *list_view)
     if (nautilus_file_is_in_trash (file))
     {
         return g_strdupv ((gchar **) default_trash_columns_order);
+    }
+
+    if (nautilus_file_is_in_recent (file))
+    {
+        return g_strdupv ((gchar **) default_recent_columns_order);
     }
 
     directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (list_view));
