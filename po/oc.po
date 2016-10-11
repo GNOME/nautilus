@@ -10,7 +10,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?product=nautilu"
 "s&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-10-07 18:04+0000\n"
-"PO-Revision-Date: 2016-10-11 19:41+0200\n"
+"PO-Revision-Date: 2016-10-11 21:05+0200\n"
 "Last-Translator: Cédric Valmary (totenoc.eu) <cvalmary@yahoo.fr>\n"
 "Language-Team: Tot En Òc\n"
 "Language: oc\n"
@@ -400,9 +400,9 @@ msgid ""
 "incrementally they will be sorted decrementally."
 msgstr ""
 "Se es verai, los fichièrs de las fenèstras novèlas seràn ordenats dins "
-"l'òrdre invèrse, es a dire que se son classats per nom, lo seràn de« z » a "
-"« a » en non pas de « a » a « z ». ; se son ordenats per talha, seràn "
-"ordenats dins l'òrdre descreissent al luòc de l'òrdre creissent."
+"l'òrdre invèrse, es a dire que se son classats per nom, lo seràn de« z » a « "
+"a » en non pas de « a » a « z ». ; se son ordenats per talha, seràn ordenats "
+"dins l'òrdre descreissent al luòc de l'òrdre creissent."
 
 #: data/org.gnome.nautilus.gschema.xml:196
 msgid "Default folder viewer"
@@ -1025,21 +1025,20 @@ msgid "“%s” would conflict with an existing file."
 msgstr ""
 
 #: src/nautilus-batch-rename-dialog.c:2158
-#, fuzzy, c-format
-#, fuzzy
+#, c-format
 #| msgid "Home Folder"
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
-msgstr[0] "Dorsièr personal"
-msgstr[1] "Dorsièr personal"
+msgstr[0] "Renomenar %d dorsièr"
+msgstr[1] "Renomenar %d dorsièrs"
 
 #: src/nautilus-batch-rename-dialog.c:2164
-#, fuzzy, c-format
+#, c-format
 #| msgid "Rename selected item"
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
-msgstr[0] "Renomena l'element seleccionat"
-msgstr[1] "Renomena l'element seleccionat"
+msgstr[0] "Renomenar %d fichièr"
+msgstr[1] "Renomenar %d fichièrs"
 
 #: src/nautilus-batch-rename-dialog.h:88
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:186
@@ -1054,41 +1053,35 @@ msgstr ""
 
 #: src/nautilus-batch-rename-dialog.h:98
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:498
-#, fuzzy
 #| msgid "Last _Modified"
 msgid "First Modified"
-msgstr "Darrièra _modificacion :"
+msgstr "Primièra modificacion"
 
 #: src/nautilus-batch-rename-dialog.h:103
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:503
-#, fuzzy
 #| msgid "Last _Modified"
 msgid "Last Modified"
-msgstr "Darrièra _modificacion :"
+msgstr "Darrièra modificacion"
 
 #: src/nautilus-batch-rename-dialog.h:108
-#, fuzzy
 #| msgid "Create"
 msgid "First Created"
-msgstr "Crear"
+msgstr "Primièra creacion"
 
 #: src/nautilus-batch-rename-dialog.h:113
-#, fuzzy
 #| msgid "Last _Trashed"
 msgid "Last Created"
-msgstr "Data de darrièr rebu_t"
+msgstr "Darrièra creacion"
 
 #: src/nautilus-batch-rename-dialog.h:122
-#, fuzzy
 #| msgid "Camera Model"
 msgid "Camera model"
 msgstr "Modèl de l'aparelh de fotografiar"
 
 #: src/nautilus-batch-rename-dialog.h:129
-#, fuzzy
 #| msgid "Create"
 msgid "Creation date"
-msgstr "Crear"
+msgstr "Data de creacion"
 
 #: src/nautilus-batch-rename-dialog.h:136
 msgid "Season number"
@@ -1103,10 +1096,9 @@ msgid "Track number"
 msgstr ""
 
 #: src/nautilus-batch-rename-dialog.h:157
-#, fuzzy
 #| msgid "File name"
 msgid "Artist name"
-msgstr "Nom del fichièr"
+msgstr "Nom de l'artista"
 
 #: src/nautilus-batch-rename-dialog.h:164
 #: src/nautilus-image-properties-page.c:382
@@ -1116,28 +1108,26 @@ msgid "Title"
 msgstr "Títol"
 
 #: src/nautilus-batch-rename-dialog.h:171
-#, fuzzy
 #| msgid "File name"
 msgid "Album name"
-msgstr "Nom del fichièr"
+msgstr "Nom de l'album"
 
 #: src/nautilus-batch-rename-dialog.h:178
-#, fuzzy
 #| msgid "Original file"
 msgid "Original file name"
-msgstr "Fichièr original"
+msgstr "Nom del fichièr original"
 
 #: src/nautilus-batch-rename-dialog.h:189
 msgid "1, 2, 3"
-msgstr ""
+msgstr "1, 2, 3"
 
 #: src/nautilus-batch-rename-dialog.h:196
 msgid "01, 02, 03"
-msgstr ""
+msgstr "01, 02, 03"
 
 #: src/nautilus-batch-rename-dialog.h:203
 msgid "001, 002, 003"
-msgstr ""
+msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:112 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:434
@@ -2333,7 +2323,7 @@ msgstr "Duplicacion de « %B »"
 
 #: src/nautilus-file-operations.c:3748
 msgid "Duplicated “%B”"
-msgstr "« %B » duplicat"
+msgstr "Duplicacion de « %B »"
 
 #: src/nautilus-file-operations.c:3763
 #| msgid "Moving file %'d of %'d to “%B”"
@@ -3419,7 +3409,7 @@ msgstr "DVD àudio"
 
 #: src/nautilus-file-utilities.c:1130
 msgid "Video DVD"
-msgstr "DVD vidèo"
+msgstr "DVD Vidèo"
 
 #
 #: src/nautilus-file-utilities.c:1134
@@ -3497,7 +3487,7 @@ msgstr "Copyright"
 
 #: src/nautilus-image-properties-page.c:393
 msgid "Created On"
-msgstr "Creat lo"
+msgstr "Creat le"
 
 #: src/nautilus-image-properties-page.c:394
 msgid "Created By"
@@ -3765,7 +3755,7 @@ msgstr "_Lancer quand même"
 
 #: src/nautilus-mime-actions.c:1598
 msgid "Mark as _Trusted"
-msgstr "Marcar coma _fiable"
+msgstr "Marcar comme _fisable"
 
 #: src/nautilus-mime-actions.c:1905
 #, c-format
@@ -4374,9 +4364,10 @@ msgid "Search for “%s”"
 msgstr "Recèrca de « %s »"
 
 #: src/nautilus-query-editor.c:133
+#, fuzzy
 #| msgid "Specify a location to open"
 msgid "Searching locations only"
-msgstr ""
+msgstr "Especificatz un emplaçament de dobrir"
 
 #: src/nautilus-query-editor.c:137
 msgid "Searching devices only"
@@ -4391,9 +4382,10 @@ msgid "Remote location - only searching the current folder"
 msgstr ""
 
 #: src/nautilus-query-editor.c:150
+#, fuzzy
 #| msgid "Open the parent folder"
 msgid "Only searching the current folder"
-msgstr ""
+msgstr "Dobrir lo dorsièr parent"
 
 #: src/nautilus-rename-file-popover-controller.c:191
 msgid "File name"
@@ -4542,7 +4534,7 @@ msgstr[0] "%d fichièr suprimit"
 msgstr[1] "%d fichièrs suprimits"
 
 #: src/nautilus-window.c:1805
-#, c-format
+#, c-format, c-format
 #| msgid "Open With %s"
 msgid "Open %s"
 msgstr "Dobrir %s"
@@ -4791,10 +4783,11 @@ msgid "Go down"
 msgstr "Davalar"
 
 #: src/resources/gtk/help-overlay.ui:196
+#, fuzzy
 #| msgid "Close this folder"
 msgctxt "shortcut window"
 msgid "Go to home folder"
-msgstr ""
+msgstr "Tampar aqueste dorsièr"
 
 #: src/resources/gtk/help-overlay.ui:203
 #| msgid "Enter _Location"
@@ -4934,10 +4927,11 @@ msgstr "Inversar la seleccion"
 
 # Dialog title
 #: src/resources/gtk/help-overlay.ui:362
+#, fuzzy
 #| msgid "Select Items Matching"
 msgctxt "shortcut window"
 msgid "Select items matching"
-msgstr ""
+msgstr "Seleccion d'elements segon un motiu"
 
 #: src/resources/gtk/help-overlay.ui:369
 #| msgid "Undo"
@@ -4962,8 +4956,9 @@ msgid "New _Window"
 msgstr "_Fenèstra novèla"
 
 #: src/resources/gtk/menus.ui:13
+#, fuzzy
 msgid "Sidebar"
-msgstr "Panèl lateral"
+msgstr "Panneau latéral"
 
 #: src/resources/gtk/menus.ui:21
 msgid "Prefere_nces"
@@ -5166,7 +5161,7 @@ msgstr "Dobrir dins una novèla _fenèstra"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:102
 msgid "Open With Other _Application"
-msgstr "Dobrir amb una autra _aplicacion"
+msgstr "Dobrir amb una autre _application"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:110
 #: src/gtk/nautilusgtkplacesview.c:1696
@@ -5241,11 +5236,11 @@ msgstr "Reno_mena..."
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:224
 msgid "Set As Wallpaper"
-msgstr "Definir coma papièr pintrat"
+msgstr "Definir comme papier peint"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:231
 msgid "_Remove from Recent"
-msgstr "_Levar dels Utilizats recentament"
+msgstr "_Levar des Utilizats recentament"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:239
 msgid "_Extract Here"
@@ -5265,7 +5260,7 @@ msgstr "Lo dorsièr es void"
 
 #: src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui:11
 msgid "Delete Shortcuts Have Changed"
-msgstr "Los acorchis de supression an cambiat"
+msgstr "Les raccourcis de suppression ont changé"
 
 #: src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui:12
 msgid ""
@@ -5278,7 +5273,7 @@ msgstr ""
 
 #: src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui:15
 msgid "Got it"
-msgstr "Ai comprés"
+msgstr "Ai compris"
 
 #: src/resources/ui/nautilus-no-search-results.ui:30
 msgid "No Results Found"
@@ -5461,9 +5456,10 @@ msgid "Link Creation"
 msgstr "Creacion del ligam"
 
 #: src/resources/ui/nautilus-preferences-window.ui:591
+#, fuzzy
 #| msgid "The target doesn't support symbolic links."
 msgid "Show action to create symbolic _links"
-msgstr ""
+msgstr "La cibla gerís pas los ligams simbolics."
 
 #: src/resources/ui/nautilus-preferences-window.ui:623
 msgid "Executable Text Files"
@@ -5555,9 +5551,10 @@ msgid "Onl_y for files smaller than:"
 msgstr "_Sonque pels fichièrs pus pichons que :"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1138
+#, fuzzy
 #| msgid "File conflict"
 msgid "File count"
-msgstr ""
+msgstr "Conflicte de fichièr"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1154
 #| msgid "Count _number of items:"
@@ -5589,9 +5586,10 @@ msgid "Select a date"
 msgstr "Seleccionatz una data"
 
 #: src/resources/ui/nautilus-search-popover.ui:67
+#, fuzzy
 #| msgid "Reload the current location"
 msgid "Clear the currently selected date"
-msgstr ""
+msgstr "Tornar cargar l'emplaçament actual"
 
 #: src/resources/ui/nautilus-search-popover.ui:127
 msgid "Since…"
@@ -5610,9 +5608,10 @@ msgid "What"
 msgstr ""
 
 #: src/resources/ui/nautilus-search-popover.ui:264
+#, fuzzy
 #| msgid "This file cannot be started"
 msgid "Which file types will be searched"
-msgstr ""
+msgstr "Impossible d'aviar lo fichièr"
 
 #: src/resources/ui/nautilus-search-popover.ui:359
 #| msgid "Text"
@@ -5629,9 +5628,10 @@ msgid "File Name"
 msgstr "Nom del fichièr"
 
 #: src/resources/ui/nautilus-search-popover.ui:381
+#, fuzzy
 #| msgid "Search documents and folders by name"
 msgid "Search only on the file name"
-msgstr ""
+msgstr "Recèrca de documents e de dorsièrs sus aqueste ordenador per lor nom"
 
 #: src/resources/ui/nautilus-toolbar-menu.ui:23
 #| msgid "New Folder"
@@ -5650,7 +5650,7 @@ msgstr "Onglet novèl"
 
 #: src/resources/ui/nautilus-toolbar.ui:92
 msgid "Action menu"
-msgstr "Menu Accion"
+msgstr "Menú Accion"
 
 #: src/resources/ui/nautilus-toolbar.ui:93
 msgid "Open action menu"
@@ -5705,7 +5705,7 @@ msgstr ""
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:127
 msgid "Last _Modified"
-msgstr "Darrièra _modificacion"
+msgstr "Darrièra _modificacion :"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:136
 #| msgid "Last _Modified"
@@ -5739,7 +5739,7 @@ msgstr "R_ecargar"
 
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:206
 msgid "St_op"
-msgstr "Arr_estar"
+msgstr "Arrêt_er"
 
 #: src/resources/ui/nautilus-window.ui:5
 msgid "_Files"
@@ -5781,9 +5781,10 @@ msgid "Open in New _Window"
 msgstr "Dobrir dins una fenèstra novèla"
 
 #: src/gtk/nautilusgtkplacesview.c:1837
+#, fuzzy
 #| msgid "Unable to start location"
 msgid "Unable to get remote server location"
-msgstr ""
+msgstr "Impossible d'aviar l'emplaçament"
 
 #: src/gtk/nautilusgtkplacesview.c:1976 src/gtk/nautilusgtkplacesview.c:1985
 msgid "Networks"
@@ -5791,7 +5792,7 @@ msgstr "Rets"
 
 #: src/gtk/nautilusgtkplacesview.c:1976 src/gtk/nautilusgtkplacesview.c:1985
 msgid "On This Computer"
-msgstr ""
+msgstr "Sus aqueste ordenador"
 
 #. Translators: respectively, free and total space of the drive. The plural form
 #. * should be based on the free space available.
@@ -5880,9 +5881,10 @@ msgstr "dav:// o davs://"
 
 #. Translators: Server as any successfully connected network address
 #: src/gtk/nautilusgtkplacesview.ui:267
+#, fuzzy
 #| msgid "_Recent Servers"
 msgid "No recent servers found"
-msgstr ""
+msgstr "Connexions _recentas"
 
 #: src/gtk/nautilusgtkplacesview.ui:290
 msgid "Recent Servers"
@@ -7030,6 +7032,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Las permissions del fichièr."
 
 #, fuzzy
+#~| msgid "Security context:"
+#~ msgid "SELinux Context"
+#~ msgstr "Contèxte de seguretat :"
+
+#, fuzzy
 #~| msgid "The MIME type of the file."
 #~ msgid "The SELinux security context of the file."
 #~ msgstr "Lo tipe MIME del fichièr."
@@ -7374,9 +7381,19 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Impossible de renomenar l'icòna del burèu"
 
 #, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "today at 00:00:00 PM"
+#~ msgstr "Ièr a %H:%M"
+
+#, fuzzy
 #~| msgid "%a, %b %e %Y %I:%M:%S %p"
 #~ msgid "today at %-I:%M:%S %p"
 #~ msgstr "%a %e %b %Y %I:%M:%S %p"
+
+#, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "today at 00:00 PM"
+#~ msgstr "Ièr a %H:%M"
 
 #, fuzzy
 #~| msgid "Yesterday %l:%M %p"
@@ -7384,9 +7401,19 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Ièr a %l:%M %p"
 
 #, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "today, 00:00 PM"
+#~ msgstr "Ièr a %H:%M"
+
+#, fuzzy
 #~| msgid "Yesterday %l:%M %p"
 #~ msgid "today, %-I:%M %p"
 #~ msgstr "Ièr a %l:%M %p"
+
+#, fuzzy
+#~| msgid "Yesterday %H:%M"
+#~ msgid "yesterday at 00:00:00 PM"
+#~ msgstr "Ièr a %H:%M"
 
 #, fuzzy
 #~| msgid "Yesterday %l:%M %p"
@@ -7637,6 +7664,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ "quitament se lo dorsièr es sus un servidor distant. Definit a « local-only "
 #~ "», lo nombre d'elements es pas afichat que pels sistèmas de fichièrs locals. "
 #~ "Definit a « never », lo sistèma se preocupa pas de comptar los elements."
+
+#, fuzzy
+#~| msgid "The permissions of the file."
+#~ msgid "Show advanced permissions in the file property dialog"
+#~ msgstr "Las permissions del fichièr."
 
 #, fuzzy
 #~| msgid ""
@@ -7890,6 +7922,15 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ "Impossible d'aviar lo programa :\n"
 #~ "%s"
 
+#, fuzzy, c-format
+#~| msgid ""
+#~| "Unable to start the program:\n"
+#~| "%s"
+#~ msgid "Cannot find the autorun program"
+#~ msgstr ""
+#~ "Impossible d'aviar lo programa :\n"
+#~ "%s"
+
 #, fuzzy
 #~| msgid ""
 #~| "“%s” contains software intended to be automatically started. Would you "
@@ -7914,12 +7955,22 @@ msgstr "Entrar l'adreça del _servidor…"
 
 #, fuzzy
 #~| msgid "Location"
+#~ msgid "<b>_Name</b>"
+#~ msgstr "Emplaçament"
+
+#, fuzzy
+#~| msgid "Location"
 #~ msgid "<b>_Location</b>"
 #~ msgstr "Emplaçament"
 
 #, fuzzy
 #~| msgid "WebDAV"
 #~ msgid "WebDAV (HTTP)"
+#~ msgstr "WebDAV"
+
+#, fuzzy
+#~| msgid "WebDAV"
+#~ msgid "Secure WebDAV (HTTPS)"
 #~ msgstr "WebDAV"
 
 #, fuzzy
@@ -7968,6 +8019,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Afichar los detalhs"
 
 #, fuzzy
+#~| msgid "Link target:"
+#~ msgid "_Domain name:"
+#~ msgstr "Cibla del ligam :"
+
+#, fuzzy
 #~| msgid "Search _name:"
 #~ msgid "_User name:"
 #~ msgstr "_Nom de la recèrca :"
@@ -7985,6 +8041,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #, fuzzy
 #~| msgid "The destination is not a folder."
 #~ msgid "The desktop view encountered an error."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The desktop view encountered an error while starting up."
 #~ msgstr "La cibla es pas un dorsièr."
 
 #, fuzzy, c-format
@@ -8148,6 +8209,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Fichièrs tèxte executables"
 
 #, fuzzy
+#~| msgid "Folders"
+#~ msgid "<b>Trash</b>"
+#~ msgstr "Dorsièrs"
+
+#, fuzzy
 #~| msgid "Ask before _emptying the Trash"
 #~ msgid "Ask before _emptying the Trash or deleting files"
 #~ msgstr "Demandar abans de _voidar l'escobilhièr"
@@ -8170,6 +8236,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ "Mai zoomatz sus un element, mai las entresenhas visualizadas seràn nombrosas."
 
 #, fuzzy
+#~| msgid "Default View"
+#~ msgid "<b>Date</b>"
+#~ msgstr "Afichatge per defaut"
+
+#, fuzzy
 #~| msgid "Format"
 #~ msgid "_Format:"
 #~ msgstr "Formatar"
@@ -8183,6 +8254,16 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "Text File"
 #~ msgid "<b>Text Files</b>"
 #~ msgstr "Fichièr tèxt"
+
+#, fuzzy
+#~| msgid "Other _Application…"
+#~ msgid "Show te_xt in icons:"
+#~ msgstr "Autra _aplicacion…"
+
+#, fuzzy
+#~| msgid "Executable Text Files"
+#~ msgid "<b>Other Previewable Files</b>"
+#~ msgstr "Fichièrs tèxte executables"
 
 #, fuzzy
 #~| msgid "Show thumbnails:"
@@ -8260,10 +8341,45 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgid "_Organize by Name"
 #~ msgstr "_Organizar lo burèu per nom"
 
+#, fuzzy, c-format
+#~| msgid "Opening “%s”."
+#~ msgid "pointing at \"%s\""
+#~ msgstr "Dobertura de « %s »."
+
 #, fuzzy
 #~| msgid "Icons"
 #~ msgid "_Icons"
 #~ msgstr "Icònas"
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The icon view encountered an error."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The icon view encountered an error while starting up."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy
+#~| msgid "Default column order in the list view."
+#~ msgid "Display this location with the icon view."
+#~ msgstr "Òrdre per defaut de las colomnas dins la visualizacion en lista."
+
+#, fuzzy
+#~| msgid "Content View"
+#~ msgid "_Compact"
+#~ msgstr "Vista del conetgut"
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The compact view encountered an error."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The compact view encountered an error while starting up."
+#~ msgstr "La cibla es pas un dorsièr."
 
 #, fuzzy
 #~| msgid "Display icons in the opposite order"
@@ -8294,6 +8410,16 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "List"
 #~ msgid "_List"
 #~ msgstr "Lista"
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The list view encountered an error."
+#~ msgstr "La cibla es pas un dorsièr."
+
+#, fuzzy
+#~| msgid "The destination is not a folder."
+#~ msgid "The list view encountered an error while starting up."
+#~ msgstr "La cibla es pas un dorsièr."
 
 #, fuzzy
 #~| msgid "Default column order in the list view."
@@ -8374,12 +8500,6 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Dobertura de « %s »."
 
 #, fuzzy
-#~| msgctxt "shortcut window"
-#~| msgid "Bookmarks"
-#~ msgid "Bookmarks"
-#~ msgstr "Marcapaginas"
-
-#, fuzzy
 #~| msgid "Open your personal folder"
 #~ msgid "Open the contents of your desktop in a folder"
 #~ msgstr "Dobrir vòstre dorsier personal"
@@ -8388,6 +8508,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "File Type"
 #~ msgid "File System"
 #~ msgstr "Tipe de fichièr"
+
+#, fuzzy
+#~| msgid "Unable to display the contents of this folder."
+#~ msgid "Open the contents of the File System"
+#~ msgstr "Impossible d'afichar lo contengut d'aqueste dorsièr."
 
 #, fuzzy
 #~| msgid "Open With %s"
@@ -8544,6 +8669,22 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "Search"
 #~ msgid "Search:"
 #~ msgstr "Recercar"
+
+#, fuzzy
+#~| msgid "Rename selected item"
+#~ msgid "Restore Selected Items"
+#~ msgstr "Renomena l'element seleccionat"
+
+#, fuzzy, c-format
+#~| msgid "Prepare the selected files to be moved with a Paste command"
+#~ msgid "\"%s\" will be moved if you select the Paste command"
+#~ msgstr ""
+#~ "Preparar lo desplaçament dels fichièrs seleccionats amb una comanda Pegar"
+
+#, fuzzy, c-format
+#~| msgid "Prepare the selected files to be copied with a Paste command"
+#~ msgid "\"%s\" will be copied if you select the Paste command"
+#~ msgstr "Preparar la còpia dels fichièrs seleccionats amb una comanda Pegar"
 
 #, fuzzy
 #~| msgctxt "shortcut window"
@@ -8875,6 +9016,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ "Impossible de trobar lo fichièr demandat. Verificatz l'ortografia e ensajatz "
 #~ "tornamai."
 
+#, fuzzy, c-format
+#~| msgid "Unable to handle this kind of location."
+#~ msgid "Nautilus cannot handle \"%s\" locations."
+#~ msgstr "Impossible de gerir aqueste tipe d'emplaçament."
+
 #, fuzzy
 #~| msgid "Unable to handle this kind of location."
 #~ msgid "Nautilus cannot handle this kind of location."
@@ -8889,6 +9035,17 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "Accessed"
 #~ msgid "Access was denied."
 #~ msgstr "Darrièr accès"
+
+#, fuzzy, c-format
+#~| msgid ""
+#~| "Unable to find the requested file. Please check the spelling and try "
+#~| "again."
+#~ msgid ""
+#~ "Error: %s\n"
+#~ "Please select another viewer and try again."
+#~ msgstr ""
+#~ "Impossible de trobar lo fichièr demandat. Verificatz l'ortografia e ensajatz "
+#~ "tornamai."
 
 #, fuzzy
 #~| msgid ""
@@ -9035,6 +9192,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Emplaçament"
 
 #, fuzzy
+#~| msgid "The location of the file."
+#~ msgid "S_witch to Other Pane"
+#~ msgstr "L'emplaçament del fichièr."
+
+#, fuzzy
 #~| msgid "The default width of the side pane in new windows."
 #~ msgid "Move focus to the other pane in a split view window"
 #~ msgstr "La largor per defaut del panèl lateral de las fenèstras novèlas."
@@ -9042,6 +9204,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #, fuzzy
 #~| msgid "The location of the file."
 #~ msgid "Sa_me Location as Other Pane"
+#~ msgstr "L'emplaçament del fichièr."
+
+#, fuzzy
+#~| msgid "The location of the file."
+#~ msgid "Go to the same location as in the extra pane"
 #~ msgstr "L'emplaçament del fichièr."
 
 #, fuzzy
@@ -9098,6 +9265,12 @@ msgstr "Entrar l'adreça del _servidor…"
 #~ msgstr "Remplaçar"
 
 #, fuzzy
+#~| msgctxt "shortcut window"
+#~| msgid "Go forward"
+#~ msgid "Forward history"
+#~ msgstr "Seguent"
+
+#, fuzzy
 #~| msgid "Contains digital photos"
 #~ msgid "The media contains digital photos."
 #~ msgstr "Conten de fòtos numericas"
@@ -9111,6 +9284,11 @@ msgstr "Entrar l'adreça del _servidor…"
 #~| msgid "Send to…"
 #~ msgid "Send To..."
 #~ msgstr "Mandar cap a…"
+
+#, fuzzy
+#~| msgid "Send files by mail…"
+#~ msgid "Send file by mail, instant message..."
+#~ msgstr "Mandar de fichièrs per corrièr electronic…"
 
 #, fuzzy
 #~| msgid "Send files by mail…"
