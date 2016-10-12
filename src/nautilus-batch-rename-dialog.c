@@ -2100,6 +2100,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     GString *dialog_title;
     GList *l;
     gboolean all_targets_are_folders;
+    gboolean all_targets_are_regular_files;
 
     dialog = g_object_new (NAUTILUS_TYPE_BATCH_RENAME_DIALOG, "use-header-bar", TRUE, NULL);
 
@@ -2120,19 +2121,38 @@ nautilus_batch_rename_dialog_new (GList             *selection,
         }
     }
 
-    dialog_title = g_string_new ("");
+    all_targets_are_regular_files = TRUE;
+    for (l = selection; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_regular_file (NAUTILUS_FILE (l->data)))
+        {
+            all_targets_are_regular_files = FALSE;
+            break;
+        }
+    }
+
+    dialog_title = g_string_new ("");   
     if (all_targets_are_folders)
     {
         g_string_append_printf (dialog_title,
                                 ngettext ("Rename %d Folder", "Rename %d Folders", g_list_length (selection)),
                                 g_list_length (selection));
     }
-    else
+    else if (all_targets_are_regular_files)
     {
         g_string_append_printf (dialog_title,
                                 ngettext ("Rename %d File", "Rename %d Files", g_list_length (selection)),
                                 g_list_length (selection));
     }
+    else 
+    {
+        /* To translators: %d is the total number of files and folders.
+         * Singular case of the string is never used */
+        g_string_append_printf (dialog_title,
+                                ("Rename %d Files and Folders"),
+                                g_list_length (selection));   
+    }
+
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
 
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
