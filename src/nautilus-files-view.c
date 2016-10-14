@@ -9247,7 +9247,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Selection menu */
     nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
     nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
-    nautilus_application_set_accelerator (app, "view.open-item-new-window", "<shift><control>w");
+    nautilus_application_set_accelerator (app, "view.open-item-new-window", "<control>Return");
     nautilus_application_set_accelerator (app, "view.move-to-trash", "Delete");
     nautilus_application_set_accelerator (app, "view.delete-from-trash", "Delete");
     nautilus_application_set_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
