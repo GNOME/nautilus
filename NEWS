@@ -1,3 +1,20 @@
+Major changes in 3.22.1:
+* Multiple batch renaming fixes (Alex Pandelea, Carlos Soriano)
+* Multiple compression integration fixes (Razvan Chitu, Carlos Soriano)
+* Fix not showing "eject" and other options for devices in the context menu in the desktop (victoryang)
+* Rework clipboard handling, fixing desktop<->Nautilus interaction (Carlos Soriano)
+* Fix overlaping icons on desktop in some cases, noticeabily in Ubuntu (Ian Lane)
+* Fix wrong progress information in operations when skipping files (Razvan Chitu)
+* Fix gnome-shell search only searching for whole words (Jiri Cerny)
+* Show location as default for list view on Recent (Carlos Soriano)
+* Fix context menu position in Wayland or other non-global coordinates systems (Carlos Soriano)
+* Update man page of nautilus (Ernestas Kulik)
+* Add revealer for warnings in batch rename dialog (Lavinia Stefania)
+* Add tooltips to batch rename dialog file names (Alex Pandelea)
+* Port nautilus classes to G_DECLARE (Lavinia Stefania)
+* Extend Nautilus File API for regular files (Neha Yadav)
+* Don't crash for simple leaks on the views (Carlos Soriano)
+
 Major changes in 3.22.0:
 * Increase gtk+ depencency version (Michael Biebl)
 
