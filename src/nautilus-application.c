@@ -379,6 +379,7 @@ real_open_location_full (NautilusApplication     *self,
     GFile *old_location = NULL;
     char *old_uri, *new_uri;
     gboolean use_same;
+    GdkScreen *screen;
 
     use_same = TRUE;
     /* FIXME: We are having problems on getting the current focused window with
@@ -450,8 +451,11 @@ real_open_location_full (NautilusApplication     *self,
     }
     else
     {
-        target_window = nautilus_application_create_window (self,
-                                                            gtk_window_get_screen (GTK_WINDOW (active_window)));
+        screen = active_window != NULL ?
+                 gtk_window_get_screen (GTK_WINDOW (active_window)) :
+                 gdk_screen_get_default ();
+
+        target_window = nautilus_application_create_window (self, screen);
         /* Whatever the caller says, the slot won't be the same */
         target_slot = NULL;
     }
