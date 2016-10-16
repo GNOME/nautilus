@@ -474,53 +474,7 @@ static void
 begin_batch_rename (NautilusBatchRenameDialog *dialog,
                     GList                     *new_names)
 {
-    GList *new_names_list;
-    GList *files;
-    GList *files2;
-    GList *new_names_list2;
-    gchar *file_name;
-    gchar *old_file_name;
-    GString *new_file_name;
-    GString *new_name;
-    NautilusFile *file;
-
-    /* in the following case:
-     * file1 -> file2
-     * file2 -> file3
-     * file2 must be renamed first, so because of that, the list has to be reordered */
-    for (new_names_list = new_names, files = dialog->selection;
-         new_names_list != NULL && files != NULL;
-         new_names_list = new_names_list->next, files = files->next)
-    {
-        old_file_name = nautilus_file_get_name (NAUTILUS_FILE (files->data));
-        new_file_name = new_names_list->data;
-
-        for (files2 = dialog->selection, new_names_list2 = new_names;
-             files2 != NULL && new_names_list2 != NULL;
-             files2 = files2->next, new_names_list2 = new_names_list2->next)
-        {
-            file_name = nautilus_file_get_name (NAUTILUS_FILE (files2->data));
-            if (files2 != files && g_strcmp0 (file_name, new_file_name->str) == 0)
-            {
-                file = NAUTILUS_FILE (files2->data);
-                new_name = new_names_list2->data;
-
-                dialog->selection = g_list_remove_link (dialog->selection, files2);
-                new_names = g_list_remove_link (new_names, new_names_list2);
-
-                dialog->selection = g_list_prepend (dialog->selection, file);
-                new_names = g_list_prepend (new_names, new_name);
-
-                g_free (file_name);
-
-                break;
-            }
-
-            g_free (file_name);
-        }
-
-        g_free (old_file_name);
-    }
+    batch_rename_sort_lists_for_rename (&dialog->selection, &new_names, NULL, NULL, NULL, FALSE);
 
     /* do the actual rename here */
     nautilus_file_batch_rename (dialog->selection, new_names, NULL, NULL);
