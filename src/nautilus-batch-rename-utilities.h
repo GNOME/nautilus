@@ -62,4 +62,11 @@ GString* batch_rename_replace_label_text        (gchar             *label,
 
 gchar*   batch_rename_get_tag_text_representation (TagConstants tag_constants);
 
+void batch_rename_sort_lists_for_rename (GList    **selection,
+                                         GList    **new_names,
+                                         GList    **old_names,
+                                         GList    **new_files,
+                                         GList    **old_files,
+                                         gboolean   is_undo_redo);
+
 #endif /* NAUTILUS_BATCH_RENAME_UTILITIES_H */
