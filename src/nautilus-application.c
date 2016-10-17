@@ -705,25 +705,33 @@ action_new_window (GSimpleAction *action,
                    GVariant      *parameter,
                    gpointer       user_data)
 {
+    NautilusApplication *application;
+    g_autoptr (GFile) home = NULL;
+
+    application = NAUTILUS_APPLICATION (user_data);
+    home = g_file_new_for_path (g_get_home_dir ());
+
+    nautilus_application_open_location_full (application, home,
+                                             NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW,
+                                             NULL, NULL, NULL);
+}
+
+static void
+action_clone_window (GSimpleAction *action,
+                     GVariant      *parameter,
+                     gpointer       user_data)
+{
     NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window = NULL;
     GtkApplication *application = user_data;
-    g_autoptr (GFile) current_location;
+    g_autoptr (GFile) current_location = NULL;
 
     active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
-    if (active_window)
-    {
-        active_slot = nautilus_window_get_active_slot (active_window);
-        current_location = nautilus_window_slot_get_location (active_slot);
-    }
-    else
-    {
-        current_location = g_file_new_for_path (g_get_home_dir ());
-    }
+    active_slot = nautilus_window_get_active_slot (active_window);
+    current_location = nautilus_window_slot_get_location (active_slot);
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), current_location,
                                              NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
-
 }
 
 static void
@@ -849,6 +857,7 @@ action_show_help_overlay (GSimpleAction *action,
 static GActionEntry app_entries[] =
 {
     { "new-window", action_new_window, NULL, NULL, NULL },
+    { "clone-window", action_clone_window, NULL, NULL, NULL },
     { "preferences", action_preferences, NULL, NULL, NULL },
     { "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
     { "about", action_about, NULL, NULL, NULL },
