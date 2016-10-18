@@ -228,10 +228,13 @@ activate_selected_items (NautilusListView *view)
     GList *file_list;
 
     file_list = nautilus_list_view_get_selection (NAUTILUS_FILES_VIEW (view));
-    nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (view),
-                                        file_list,
-                                        0, TRUE);
-    nautilus_file_list_free (file_list);
+    if (file_list != NULL)
+    {
+        nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (view),
+                                            file_list,
+                                            0, TRUE);
+        nautilus_file_list_free (file_list);
+    }
 }
 
 static void
