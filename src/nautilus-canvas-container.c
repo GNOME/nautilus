@@ -5092,12 +5092,10 @@ handle_popups (NautilusCanvasContainer *container,
                GdkEventKey             *event,
                const char              *signal)
 {
-    GdkEventButton button_event = { 0 };
-
     /* ensure we clear the drag state before showing the menu */
     clear_drag_state (container);
 
-    g_signal_emit_by_name (container, signal, &button_event);
+    g_signal_emit_by_name (container, signal, NULL);
 
     return TRUE;
 }
