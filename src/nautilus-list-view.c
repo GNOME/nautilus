@@ -922,7 +922,6 @@ key_press_callback (GtkWidget   *widget,
                     gpointer     callback_data)
 {
     NautilusFilesView *view;
-    GdkEventButton button_event = { 0 };
     gboolean handled;
     GtkTreeView *tree_view;
     GtkTreePath *path;
@@ -941,7 +940,7 @@ key_press_callback (GtkWidget   *widget,
         {
             if (event->state & GDK_CONTROL_MASK)
             {
-                nautilus_files_view_pop_up_background_context_menu (view, &button_event);
+                nautilus_files_view_pop_up_background_context_menu (view, NULL);
                 handled = TRUE;
             }
         }
