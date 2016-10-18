@@ -231,7 +231,6 @@ overlay_enter_notify_cb (GtkWidget        *parent,
 {
     GtkWidget *widget = user_data;
     CheckPointerData *data;
-    GtkAllocation alloc_parent;
     gint y_pos;
 
     NautilusFloatingBar *self = NAUTILUS_FLOATING_BAR (widget);
@@ -251,7 +250,6 @@ overlay_enter_notify_cb (GtkWidget        *parent,
         return GDK_EVENT_PROPAGATE;
     }
 
-    gtk_widget_get_allocation (parent, &alloc_parent);
     gdk_window_get_position (gtk_widget_get_window (widget), NULL, &y_pos);
 
     data = g_slice_new (CheckPointerData);
@@ -259,7 +257,7 @@ overlay_enter_notify_cb (GtkWidget        *parent,
     data->floating_bar = widget;
     data->device = gdk_event_get_device ((GdkEvent *) event);
     data->y_down_limit = y_pos;
-    data->y_upper_limit = alloc_parent.height;
+    data->y_upper_limit = y_pos + gtk_widget_get_allocated_height (widget);
 
     self->priv->hover_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, HOVER_HIDE_TIMEOUT_INTERVAL,
                                                        check_pointer_timeout, data,
