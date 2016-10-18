@@ -724,13 +724,24 @@ action_clone_window (GSimpleAction *action,
     NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window = NULL;
     GtkApplication *application = user_data;
-    g_autoptr (GFile) current_location = NULL;
+    g_autoptr (GFile) location = NULL;
+    NautilusView *current_view;
 
     active_window = NAUTILUS_WINDOW (gtk_application_get_active_window (application));
     active_slot = nautilus_window_get_active_slot (active_window);
-    current_location = nautilus_window_slot_get_location (active_slot);
+    current_view = nautilus_window_slot_get_current_view (active_slot);
 
-    nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), current_location,
+    if (current_view != NULL &&
+        nautilus_view_is_searching (current_view))
+    {
+        location = g_file_new_for_path (g_get_home_dir ());
+    }
+    else
+    {
+        location = nautilus_window_slot_get_location (active_slot);
+    }
+
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
                                              NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW, NULL, NULL, NULL);
 }
 
