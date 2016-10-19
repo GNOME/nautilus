@@ -2516,50 +2516,31 @@ append_directory_contents_fields (NautilusPropertiesWindow *window,
 }
 
 static GtkWidget *
-create_page_with_hbox (GtkNotebook *notebook,
-                       const char  *title,
-                       const char  *help_uri)
+create_page_with_box (GtkNotebook    *notebook,
+                      GtkOrientation  orientation,
+                      const gchar    *title,
+                      const gchar    *help_uri)
 {
-    GtkWidget *hbox;
+    GtkWidget *box;
 
     g_assert (GTK_IS_NOTEBOOK (notebook));
     g_assert (title != NULL);
 
-    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    gtk_widget_show (hbox);
-    gtk_container_set_border_width (GTK_CONTAINER (hbox), 12);
-    gtk_box_set_spacing (GTK_BOX (hbox), 12);
-    gtk_notebook_append_page (notebook, hbox, gtk_label_new (title));
+    box = gtk_box_new (orientation, 0);
+    gtk_widget_show (box);
+    gtk_container_set_border_width (GTK_CONTAINER (box), 12);
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        gtk_box_set_spacing (GTK_BOX (box), 12);
+    }
+    gtk_notebook_append_page (notebook, box, gtk_label_new (title));
     gtk_container_child_set (GTK_CONTAINER (notebook),
-                             hbox,
+                             box,
                              "tab-expand", TRUE,
                              NULL);
-    g_object_set_data_full (G_OBJECT (hbox), "help-uri", g_strdup (help_uri), g_free);
+    g_object_set_data_full (G_OBJECT (box), "help-uri", g_strdup (help_uri), g_free);
 
-    return hbox;
-}
-
-static GtkWidget *
-create_page_with_vbox (GtkNotebook *notebook,
-                       const char  *title,
-                       const char  *help_uri)
-{
-    GtkWidget *vbox;
-
-    g_assert (GTK_IS_NOTEBOOK (notebook));
-    g_assert (title != NULL);
-
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_show (vbox);
-    gtk_container_set_border_width (GTK_CONTAINER (vbox), 12);
-    gtk_notebook_append_page (notebook, vbox, gtk_label_new (title));
-    gtk_container_child_set (GTK_CONTAINER (notebook),
-                             vbox,
-                             "tab-expand", TRUE,
-                             NULL);
-    g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup (help_uri), g_free);
-
-    return vbox;
+    return box;
 }
 
 static GtkWidget *
@@ -3161,8 +3142,10 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
 
-    hbox = create_page_with_hbox (window->details->notebook, _("Basic"),
-                                  "help:gnome-help/nautilus-file-properties-basic");
+    hbox = create_page_with_box (window->details->notebook,
+                                 GTK_ORIENTATION_HORIZONTAL,
+                                 _("Basic"),
+                                 "help:gnome-help/nautilus-file-properties-basic");
 
     /* Icon pixmap */
 
@@ -4685,9 +4668,10 @@ create_permissions_page (NautilusPropertiesWindow *window)
     char *file_name, *prompt_text;
     GList *file_list;
 
-    vbox = create_page_with_vbox (window->details->notebook,
-                                  _("Permissions"),
-                                  "help:gnome-help/nautilus-file-properties-permissions");
+    vbox = create_page_with_box (window->details->notebook,
+                                 GTK_ORIENTATION_VERTICAL,
+                                 _("Permissions"),
+                                 "help:gnome-help/nautilus-file-properties-permissions");
 
     file_list = window->details->original_files;
 
