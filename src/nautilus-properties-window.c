@@ -338,7 +338,7 @@ add_prompt_and_separator (GtkWidget  *vbox,
 
     separator_line = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_widget_show (separator_line);
-    gtk_box_pack_end (GTK_BOX (vbox), separator_line, TRUE, TRUE, 2 * ROW_PAD);
+    gtk_box_pack_end (GTK_BOX (vbox), separator_line, FALSE, TRUE, 2 * ROW_PAD);
 }
 
 static void
