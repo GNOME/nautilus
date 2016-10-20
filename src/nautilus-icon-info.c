@@ -600,8 +600,13 @@ nautilus_icon_info_get_pixbuf_at_size (NautilusIconInfo *icon,
     }
 
     scale = (double) forced_size / s;
+
+    /* Neither of these can be 0. */
+    w = MAX (w * scale, 1);
+    h = MAX (h * scale, 1);
+
     scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-                                             w * scale, h * scale,
+                                             w, h,
                                              GDK_INTERP_BILINEAR);
     g_object_unref (pixbuf);
     return scaled_pixbuf;
