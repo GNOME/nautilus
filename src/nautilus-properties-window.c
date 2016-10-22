@@ -5496,45 +5496,6 @@ real_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
 
-/* converts
- *  file://foo/foobar/foofoo/bar
- * to
- *  foofoo/bar
- * if
- *  file://foo/foobar
- * is the parent
- *
- * It does not resolve any symlinks.
- * */
-static char *
-make_relative_uri_from_full (const char *uri,
-                             const char *base_uri)
-{
-    g_assert (uri != NULL);
-    g_assert (base_uri != NULL);
-
-    if (g_str_has_prefix (uri, base_uri))
-    {
-        uri += strlen (base_uri);
-        if (*uri != '/')
-        {
-            return NULL;
-        }
-
-        while (*uri == '/')
-        {
-            uri++;
-        }
-
-        if (*uri != '\0')
-        {
-            return g_strdup (uri);
-        }
-    }
-
-    return NULL;
-}
-
 /* icon selection callback to set the image of the file object to the selected file */
 static void
 set_icon (const char               *icon_uri,
@@ -5543,7 +5504,6 @@ set_icon (const char               *icon_uri,
     NautilusFile *file;
     char *file_uri;
     char *icon_path;
-    char *real_icon_uri;
 
     g_assert (icon_uri != NULL);
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (properties_window));
@@ -5571,7 +5531,17 @@ set_icon (const char               *icon_uri,
             }
             else
             {
-                real_icon_uri = make_relative_uri_from_full (icon_uri, file_uri);
+                g_autoptr (GFile) file_location = NULL;
+                g_autoptr (GFile) icon_location = NULL;
+                g_autofree gchar *real_icon_uri = NULL;
+
+                file_location = nautilus_file_get_location (file);
+                icon_location = g_file_new_for_uri (icon_uri);
+
+                /* ’Tis a little bit of a misnomer. Actually a path. */
+                real_icon_uri = g_file_get_relative_path (icon_location,
+                                                          file_location);
+
                 if (real_icon_uri == NULL)
                 {
                     real_icon_uri = g_strdup (icon_uri);
@@ -5579,8 +5549,6 @@ set_icon (const char               *icon_uri,
 
                 nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
                 nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
-
-                g_free (real_icon_uri);
             }
 
             g_free (file_uri);
