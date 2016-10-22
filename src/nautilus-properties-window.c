@@ -2585,19 +2585,6 @@ create_grid_with_standard_properties (void)
 }
 
 static gboolean
-is_merged_trash_directory (NautilusFile *file)
-{
-    char *file_uri;
-    gboolean result;
-
-    file_uri = nautilus_file_get_uri (file);
-    result = strcmp (file_uri, "trash:///") == 0;
-    g_free (file_uri);
-
-    return result;
-}
-
-static gboolean
 is_computer_directory (NautilusFile *file)
 {
     char *file_uri;
@@ -2650,19 +2637,6 @@ is_burn_directory (NautilusFile *file)
 }
 
 static gboolean
-is_recent_directory (NautilusFile *file)
-{
-    char *file_uri;
-    gboolean result;
-
-    file_uri = nautilus_file_get_uri (file);
-    result = strcmp (file_uri, "recent:///") == 0;
-    g_free (file_uri);
-
-    return result;
-}
-
-static gboolean
 should_show_custom_icon_buttons (NautilusPropertiesWindow *window)
 {
     if (is_multi_file_window (window))
@@ -2677,7 +2651,7 @@ static gboolean
 should_show_file_type (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
-        && (is_merged_trash_directory (get_target_file (window)) ||
+        && (nautilus_file_is_in_trash (get_target_file (window)) ||
             is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
@@ -2693,7 +2667,7 @@ static gboolean
 should_show_location_info (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
-        && (is_merged_trash_directory (get_target_file (window)) ||
+        && (nautilus_file_is_in_trash (get_target_file (window)) ||
             is_root_directory (get_target_file (window)) ||
             is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
@@ -2747,10 +2721,10 @@ static gboolean
 should_show_free_space (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
-        && (is_merged_trash_directory (get_target_file (window)) ||
+        && (nautilus_file_is_in_trash (get_target_file (window)) ||
             is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
-            is_recent_directory (get_target_file (window)) ||
+            nautilus_file_is_in_recent (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
     {
         return FALSE;
@@ -4808,8 +4782,8 @@ should_show_permissions (NautilusPropertiesWindow *window)
      * really file system objects.
      */
     if (!is_multi_file_window (window)
-        && (is_merged_trash_directory (file) ||
-            is_recent_directory (file) ||
+        && (nautilus_file_is_in_trash (file) ||
+            nautilus_file_is_in_recent (file) ||
             is_computer_directory (file)))
     {
         return FALSE;
@@ -4905,14 +4879,14 @@ file_changed_callback (NautilusFile *file,
 static gboolean
 is_a_special_file (NautilusFile *file)
 {
-    if (file == NULL ||
-        nautilus_file_is_nautilus_link (file) ||
-        is_merged_trash_directory (file) ||
-        is_computer_directory (file))
-    {
-        return TRUE;
-    }
-    return FALSE;
+    gboolean is_special;
+
+    is_special = file == NULL ||
+                 nautilus_file_is_nautilus_link (file) ||
+                 nautilus_file_is_in_trash (file) ||
+                 is_computer_directory (file);
+
+    return is_special;
 }
 
 static gboolean
