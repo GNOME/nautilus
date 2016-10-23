@@ -604,9 +604,7 @@ nautilus_application_finalize (GObject *object)
     g_clear_object (&priv->progress_handler);
     g_clear_object (&priv->bookmark_list);
 
-    g_clear_object (&priv->dbus_manager);
     g_clear_object (&priv->fdb_manager);
-    g_clear_object (&priv->search_provider);
 
     g_list_free (priv->windows);
 
@@ -1288,11 +1286,13 @@ nautilus_application_dbus_unregister (GApplication    *app,
     if (priv->dbus_manager)
     {
         nautilus_dbus_manager_unregister (priv->dbus_manager);
+        g_clear_object (&priv->dbus_manager);
     }
 
     if (priv->search_provider)
     {
         nautilus_shell_search_provider_unregister (priv->search_provider);
+        g_clear_object (&priv->search_provider);
     }
 }
 
