@@ -796,7 +796,8 @@ update_cursor (NautilusWindow *window)
 
     slot = nautilus_window_get_active_slot (window);
 
-    if (nautilus_window_slot_get_allow_stop (slot))
+    if (slot != NULL &&
+        nautilus_window_slot_get_allow_stop (slot))
     {
         GdkDisplay *display;
 
