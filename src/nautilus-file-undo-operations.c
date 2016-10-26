@@ -1139,6 +1139,8 @@ batch_rename_redo_func (NautilusFileUndoInfo *info,
         files = g_list_prepend (files, file);
     }
 
+    files = g_list_reverse (files);
+
     batch_rename_sort_lists_for_rename (&files,
                                         &self->priv->new_display_names,
                                         &self->priv->old_display_names,
@@ -1168,6 +1170,8 @@ batch_rename_undo_func (NautilusFileUndoInfo *info,
         file = nautilus_file_get (new_file);
         files = g_list_prepend (files, file);
     }
+
+    files = g_list_reverse (files);
 
     batch_rename_sort_lists_for_rename (&files,
                                         &self->priv->old_display_names,
