@@ -206,7 +206,7 @@ gboolean                nautilus_file_is_broken_symbolic_link           (Nautilu
 gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
-gboolean                nautlius_file_is_regular_file                   (NautilusFile                   *file);
+gboolean                nautilus_file_is_regular_file                   (NautilusFile                   *file);
 gboolean                nautilus_file_is_user_special_directory         (NautilusFile                   *file,
 									 GUserDirectory                 special_directory);
 gboolean                nautilus_file_is_special_link                   (NautilusFile                   *file);
