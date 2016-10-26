@@ -123,6 +123,15 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 
     G_OBJECT_CLASS (nautilus_progress_info_widget_parent_class)->constructed (obj);
 
+    if (nautilus_progress_info_get_is_finished (self->priv->info))
+    {
+        gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
+    }
+
+    gtk_widget_set_sensitive (self->priv->button,
+                              !nautilus_progress_info_get_is_finished (self->priv->info) &&
+                              !nautilus_progress_info_get_is_cancelled (self->priv->info));
+
     g_signal_connect_swapped (self->priv->info,
                               "changed",
                               G_CALLBACK (update_data), self);
@@ -210,20 +219,7 @@ nautilus_progress_info_widget_class_init (NautilusProgressInfoWidgetClass *klass
 GtkWidget *
 nautilus_progress_info_widget_new (NautilusProgressInfo *info)
 {
-    NautilusProgressInfoWidget *self;
-
-    self = g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_WIDGET,
+    return g_object_new (NAUTILUS_TYPE_PROGRESS_INFO_WIDGET,
                          "info", info,
                          NULL);
-
-    if (nautilus_progress_info_get_is_finished (self->priv->info))
-    {
-        gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
-    }
-
-    gtk_widget_set_sensitive (self->priv->button,
-                              !nautilus_progress_info_get_is_finished (self->priv->info) &&
-                              !nautilus_progress_info_get_is_cancelled (self->priv->info));
-
-    return GTK_WIDGET (self);
 }
