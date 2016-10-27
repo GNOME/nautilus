@@ -197,7 +197,7 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
     gtk_popover_set_pointing_to (GTK_POPOVER (rename_file_popover), pointing_to);
     gtk_popover_set_relative_to (GTK_POPOVER (rename_file_popover), relative_to);
 
-    gtk_widget_show (rename_file_popover);
+    gtk_popover_popup (GTK_POPOVER (rename_file_popover));
 
     /* Select the name part withouth the file extension */
     eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
@@ -240,7 +240,7 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
                                          self->closed_handler_id);
             self->closed_handler_id = 0;
         }
-        gtk_widget_hide (self->rename_file_popover);
+        gtk_popover_popdown (GTK_POPOVER (self->rename_file_popover));
         self->rename_file_popover = NULL;
     }
 
