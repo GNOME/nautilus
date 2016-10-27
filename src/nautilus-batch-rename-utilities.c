@@ -924,7 +924,10 @@ on_cursor_callback (GObject      *object,
                 break;
             }
 
-            if (!current_metadata)
+            /* TODO: Figure out how to inform the user of why the metadata is
+             * unavailable when one or more contains the unallowed character "/"
+             */
+            if (!current_metadata || g_strrstr (current_metadata, "/"))
             {
                 remove_metadata (query_data,
                                  metadata_type);
