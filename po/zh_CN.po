@@ -14,22 +14,23 @@
 # Tong Hui <tonghuix@gmail.com>, 2014.
 # Aron Xu <happyaron.xu@gmail.com>, 2009, 2010, 2011, 2012, 2015.
 # Jeff Bai <jeffbai@aosc.xyz>, 2015, 2016.
+# Dingzhong Chen <wsxy162@gmail.com>, 2016.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-02-29 15:06+0000\n"
-"PO-Revision-Date: 2016-03-02 13:34+0800\n"
-"Last-Translator: Jeff Bai <jeffbai@aosc.xyz>\n"
-"Language-Team: Chinese (simplified) <i18n-zh@googlegroups.com>\n"
+"POT-Creation-Date: 2016-10-18 13:21+0000\n"
+"PO-Revision-Date: 2016-10-16 16:02-0600\n"
+"Last-Translator: liushuyu <liushuyu011@gmail.com>\n"
+"Language-Team: Chinese (China) <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: ../data/org.gnome.Nautilus.appdata.xml.in.h:1
 msgid "Nautilus"
@@ -66,8 +67,8 @@ msgid "Run Software"
 msgstr "运行软件"
 
 #: ../data/org.gnome.Nautilus.desktop.in.in.h:1
-#: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4197
-#: ../src/nautilus-window.c:2722
+#: ../src/nautilus-mime-actions.c:99 ../src/nautilus-properties-window.c:4198
+#: ../src/nautilus-window.c:2726
 msgid "Files"
 msgstr "文件"
 
@@ -196,8 +197,8 @@ msgid ""
 "\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
 "text files."
 msgstr ""
-"(单击或双击)激活可执行的文本文件时如何操作。可供选择的值有，“launch”可其作"
-"为程序启动，“ask”将显示对话框询问操作，“display”将其作为文本文件显示。"
+"(单击或双击)激活可执行的文本文件时如何操作。可供选择的值有，“launch”可其作为"
+"程序启动，“ask”将显示对话框询问操作，“display”将其作为文本文件显示。"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:21
 msgid "Show the package installer for unknown MIME types"
@@ -290,8 +291,8 @@ msgid ""
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
-"大于此大小(字节数)的图像将不会生成缩略图。此设置的目的是避免处理大图像的缩"
-"略图，因为加载所花的时间太长，占用的内存也太多。"
+"大于此大小(字节数)的图像将不会生成缩略图。此设置的目的是避免处理大图像的缩略"
+"图，因为加载所花的时间太长，占用的内存也太多。"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:35
 msgid "Show folders first in windows"
@@ -407,8 +408,8 @@ msgid ""
 msgstr ""
 "图标视图和桌面中显示在图标下的标题的列表。实际显示的标题数取决于缩放级别。可"
 "供选择的值是：“size”(大小)、“type”(类型)、“date_modified”(修改日"
-"期)、“owner”(所有者)、“group”(组)、“permissions”(权限)"
-"和“mime_type”(MIME 类型)。"
+"期)、“owner”(所有者)、“group”(组)、“permissions”(权限)和“mime_type”(MIME 类"
+"型)。"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:53
 msgid "Default icon zoom level"
@@ -668,15 +669,15 @@ msgstr "显示更多细节(_D)"
 
 #. Put up the timed wait window.
 #: ../eel/eel-stock-dialogs.c:195
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:542
-#: ../libnautilus-private/nautilus-file-operations.c:183
-#: ../src/nautilus-files-view.c:1102 ../src/nautilus-files-view.c:1576
-#: ../src/nautilus-files-view.c:5281 ../src/nautilus-location-entry.c:270
-#: ../src/nautilus-mime-actions.c:560 ../src/nautilus-mime-actions.c:564
-#: ../src/nautilus-mime-actions.c:635 ../src/nautilus-mime-actions.c:978
-#: ../src/nautilus-mime-actions.c:1488 ../src/nautilus-mime-actions.c:1717
-#: ../src/nautilus-properties-window.c:4188
-#: ../src/nautilus-properties-window.c:5170
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:555
+#: ../libnautilus-private/nautilus-file-operations.c:182
+#: ../src/nautilus-files-view.c:1056 ../src/nautilus-files-view.c:1531
+#: ../src/nautilus-files-view.c:5386 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-mime-actions.c:561 ../src/nautilus-mime-actions.c:565
+#: ../src/nautilus-mime-actions.c:636 ../src/nautilus-mime-actions.c:979
+#: ../src/nautilus-mime-actions.c:1486 ../src/nautilus-mime-actions.c:1716
+#: ../src/nautilus-properties-window.c:4189
+#: ../src/nautilus-properties-window.c:5181
 #: ../src/nautilus-search-popover.c:539
 msgid "_Cancel"
 msgstr "取消(_C)"
@@ -690,20 +691,20 @@ msgid " (invalid Unicode)"
 msgstr "(无效的 Unicode)"
 
 #: ../libnautilus-private/nautilus-bookmark.c:107
-#: ../libnautilus-private/nautilus-file-utilities.c:273
-#: ../src/nautilus-pathbar.c:408
+#: ../libnautilus-private/nautilus-file-utilities.c:283
+#: ../src/nautilus-pathbar.c:413
 msgid "Other Locations"
 msgstr "其他位置"
 
 #: ../libnautilus-private/nautilus-bookmark.c:109
 #: ../libnautilus-private/nautilus-desktop-link.c:129
-#: ../libnautilus-private/nautilus-file-utilities.c:265
-#: ../src/nautilus-list-view.c:1490 ../src/nautilus-pathbar.c:406
+#: ../libnautilus-private/nautilus-file-utilities.c:267
+#: ../src/nautilus-list-view.c:1492 ../src/nautilus-pathbar.c:411
 #: ../src/nautilus-shell-search-provider.c:292
 msgid "Home"
 msgstr "主文件夹"
 
-#: ../libnautilus-private/nautilus-canvas-container.c:2481
+#: ../libnautilus-private/nautilus-canvas-container.c:2492
 msgid "The selection rectangle"
 msgstr "矩形选区"
 
@@ -716,7 +717,7 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr "将当前列表栏设置重置为默认设置"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:57
-#: ../src/nautilus-list-view.c:1716
+#: ../src/nautilus-list-view.c:1717
 #: ../src/resources/ui/nautilus-rename-file-popover.ui.h:1
 msgid "Name"
 msgstr "名称"
@@ -775,7 +776,7 @@ msgid "The group of the file."
 msgstr "文件的组。"
 
 #: ../libnautilus-private/nautilus-column-utilities.c:113
-#: ../src/nautilus-properties-window.c:4257
+#: ../src/nautilus-properties-window.c:4258
 msgid "Permissions"
 msgstr "权限"
 
@@ -901,60 +902,60 @@ msgstr "无法重命名桌面图标"
 
 #: ../libnautilus-private/nautilus-file.c:1944
 #, c-format
-msgid "Unable to rename desktop file"
-msgstr "无法重命名桌面文件"
+msgid "Probably the content of the file is an invalid desktop file format"
+msgstr "文件内容可能不是有效的 desktop 文件格式"
 
 #. Translators: Time in 24h format
-#: ../libnautilus-private/nautilus-file.c:4753
+#: ../libnautilus-private/nautilus-file.c:4783
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: ../libnautilus-private/nautilus-file.c:4756
+#: ../libnautilus-private/nautilus-file.c:4786
 msgid "%l:%M %p"
 msgstr "%p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4763
+#: ../libnautilus-private/nautilus-file.c:4793
 #, no-c-format
 msgid "Yesterday"
 msgstr "昨天"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4769
+#: ../libnautilus-private/nautilus-file.c:4799
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "昨天 %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4774
+#: ../libnautilus-private/nautilus-file.c:4804
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "昨天%p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4782
+#: ../libnautilus-private/nautilus-file.c:4812
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: ../libnautilus-private/nautilus-file.c:4788
+#: ../libnautilus-private/nautilus-file.c:4818
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4793
+#: ../libnautilus-private/nautilus-file.c:4823
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %p %l:%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: ../libnautilus-private/nautilus-file.c:4801
+#: ../libnautilus-private/nautilus-file.c:4831
 #, no-c-format
 msgid "%-e %b"
 msgstr "%b %e 日"
@@ -962,7 +963,7 @@ msgstr "%b %e 日"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: ../libnautilus-private/nautilus-file.c:4808
+#: ../libnautilus-private/nautilus-file.c:4838
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%b %e 日 %H:%M"
@@ -970,14 +971,14 @@ msgstr "%b %e 日 %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: ../libnautilus-private/nautilus-file.c:4814
+#: ../libnautilus-private/nautilus-file.c:4844
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%b %e 日 %p %l:%M"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: ../libnautilus-private/nautilus-file.c:4822
+#: ../libnautilus-private/nautilus-file.c:4852
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%Y 年 %b %e 日"
@@ -985,7 +986,7 @@ msgstr "%Y 年 %b %e 日"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: ../libnautilus-private/nautilus-file.c:4829
+#: ../libnautilus-private/nautilus-file.c:4859
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%Y 年 %b %e 日 %H:%M"
@@ -993,156 +994,156 @@ msgstr "%Y 年 %b %e 日 %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: ../libnautilus-private/nautilus-file.c:4835
+#: ../libnautilus-private/nautilus-file.c:4865
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%Y 年 %b %e 日 %p %l:%M"
 
-#: ../libnautilus-private/nautilus-file.c:4844
+#: ../libnautilus-private/nautilus-file.c:4875
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: ../libnautilus-private/nautilus-file.c:5243
+#: ../libnautilus-private/nautilus-file.c:5274
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "不允许设置权限"
 
-#: ../libnautilus-private/nautilus-file.c:5538
+#: ../libnautilus-private/nautilus-file.c:5569
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "不允许设置所有者"
 
-#: ../libnautilus-private/nautilus-file.c:5556
+#: ../libnautilus-private/nautilus-file.c:5587
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "指定的所有者“%s”不存在"
 
-#: ../libnautilus-private/nautilus-file.c:5820
+#: ../libnautilus-private/nautilus-file.c:5851
 #, c-format
 msgid "Not allowed to set group"
 msgstr "不允许设置组"
 
-#: ../libnautilus-private/nautilus-file.c:5838
+#: ../libnautilus-private/nautilus-file.c:5869
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "指定组“%s”不存在"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: ../libnautilus-private/nautilus-file.c:5973
+#: ../libnautilus-private/nautilus-file.c:6004
 msgid "Me"
 msgstr "我"
 
-#: ../libnautilus-private/nautilus-file.c:5997
+#: ../libnautilus-private/nautilus-file.c:6028
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 项"
 
-#: ../libnautilus-private/nautilus-file.c:5998
+#: ../libnautilus-private/nautilus-file.c:6029
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 个文件夹"
 
-#: ../libnautilus-private/nautilus-file.c:5999
+#: ../libnautilus-private/nautilus-file.c:6030
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u 个文件"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6400
-#: ../libnautilus-private/nautilus-file.c:6416
+#: ../libnautilus-private/nautilus-file.c:6431
+#: ../libnautilus-private/nautilus-file.c:6447
 msgid "? items"
 msgstr "? 项"
 
 #. This means no contents at all were readable
-#: ../libnautilus-private/nautilus-file.c:6406
+#: ../libnautilus-private/nautilus-file.c:6437
 msgid "? bytes"
 msgstr "? 字节"
 
-#: ../libnautilus-private/nautilus-file.c:6423
-#: ../libnautilus-private/nautilus-file.c:6504
+#: ../libnautilus-private/nautilus-file.c:6454
+#: ../libnautilus-private/nautilus-file.c:6535
 msgid "Unknown"
 msgstr "未知"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: ../libnautilus-private/nautilus-file.c:6437
-#: ../src/nautilus-properties-window.c:1185
+#: ../libnautilus-private/nautilus-file.c:6468
+#: ../src/nautilus-properties-window.c:1186
 msgid "unknown"
 msgstr "未知"
 
-#: ../libnautilus-private/nautilus-file.c:6468
-#: ../libnautilus-private/nautilus-file.c:6476
-#: ../libnautilus-private/nautilus-file.c:6527
+#: ../libnautilus-private/nautilus-file.c:6499
+#: ../libnautilus-private/nautilus-file.c:6507
+#: ../libnautilus-private/nautilus-file.c:6558
 msgid "Program"
 msgstr "程序"
 
-#: ../libnautilus-private/nautilus-file.c:6469
+#: ../libnautilus-private/nautilus-file.c:6500
 msgid "Audio"
 msgstr "音频"
 
-#: ../libnautilus-private/nautilus-file.c:6470
+#: ../libnautilus-private/nautilus-file.c:6501
 msgid "Font"
 msgstr "字体"
 
-#: ../libnautilus-private/nautilus-file.c:6471
+#: ../libnautilus-private/nautilus-file.c:6502
 #: ../src/nautilus-image-properties-page.c:769
 msgid "Image"
 msgstr "图像"
 
-#: ../libnautilus-private/nautilus-file.c:6472
+#: ../libnautilus-private/nautilus-file.c:6503
 msgid "Archive"
 msgstr "归档"
 
-#: ../libnautilus-private/nautilus-file.c:6473
+#: ../libnautilus-private/nautilus-file.c:6504
 msgid "Markup"
 msgstr "标记"
 
-#: ../libnautilus-private/nautilus-file.c:6474
-#: ../libnautilus-private/nautilus-file.c:6475
+#: ../libnautilus-private/nautilus-file.c:6505
+#: ../libnautilus-private/nautilus-file.c:6506
 msgid "Text"
 msgstr "文字"
 
-#: ../libnautilus-private/nautilus-file.c:6477
+#: ../libnautilus-private/nautilus-file.c:6508
 #: ../src/nautilus-mime-actions.c:216
 msgid "Video"
 msgstr "视频"
 
-#: ../libnautilus-private/nautilus-file.c:6478
+#: ../libnautilus-private/nautilus-file.c:6509
 msgid "Contacts"
 msgstr "联系人"
 
-#: ../libnautilus-private/nautilus-file.c:6479
+#: ../libnautilus-private/nautilus-file.c:6510
 msgid "Calendar"
 msgstr "日历"
 
-#: ../libnautilus-private/nautilus-file.c:6480
+#: ../libnautilus-private/nautilus-file.c:6511
 msgid "Document"
 msgstr "文档"
 
-#: ../libnautilus-private/nautilus-file.c:6481
+#: ../libnautilus-private/nautilus-file.c:6512
 #: ../src/nautilus-mime-actions.c:186
 msgid "Presentation"
 msgstr "演示文稿"
 
-#: ../libnautilus-private/nautilus-file.c:6482
+#: ../libnautilus-private/nautilus-file.c:6513
 #: ../src/nautilus-mime-actions.c:195
 msgid "Spreadsheet"
 msgstr "电子表格"
 
-#: ../libnautilus-private/nautilus-file.c:6529
+#: ../libnautilus-private/nautilus-file.c:6560
 msgid "Binary"
 msgstr "二进制"
 
-#: ../libnautilus-private/nautilus-file.c:6533
+#: ../libnautilus-private/nautilus-file.c:6564
 msgid "Folder"
 msgstr "文件夹"
 
-#: ../libnautilus-private/nautilus-file.c:6564
+#: ../libnautilus-private/nautilus-file.c:6595
 msgid "Link"
 msgstr "链接"
 
@@ -1151,15 +1152,15 @@ msgstr "链接"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file.c:6570
-#: ../libnautilus-private/nautilus-file-operations.c:377
+#: ../libnautilus-private/nautilus-file.c:6601
+#: ../libnautilus-private/nautilus-file-operations.c:381
 #: ../src/nautilus-files-view-dnd.c:125
 #, c-format
 msgid "Link to %s"
 msgstr "到 %s 的链接"
 
-#: ../libnautilus-private/nautilus-file.c:6586
-#: ../libnautilus-private/nautilus-file.c:6600
+#: ../libnautilus-private/nautilus-file.c:6617
+#: ../libnautilus-private/nautilus-file.c:6631
 msgid "Link (broken)"
 msgstr "链接(已断)"
 
@@ -1227,130 +1228,153 @@ msgstr "在“%s”中存在相同名称的较新的文件。"
 msgid "Another file with the same name already exists in “%s”."
 msgstr "在“%s”中存在相同名称的文件。"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:254
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
+msgid "Original folder"
+msgstr "原始文件夹"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:256
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:293
+msgid "Items:"
+msgstr "项目："
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:259
 msgid "Original file"
 msgstr "原始文件"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:255
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:286
-#: ../src/nautilus-properties-window.c:2996
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:260
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:297
+#: ../src/nautilus-properties-window.c:2997
 msgid "Size:"
 msgstr "大小："
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:258
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:289
-#: ../src/nautilus-properties-window.c:2978
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:264
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:301
+#: ../src/nautilus-properties-window.c:2979
 msgid "Type:"
 msgstr "类型："
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:261
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:292
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:267
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:304
 msgid "Last modified:"
 msgstr "最后修改时间："
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:285
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:292
+msgid "Merge with"
+msgstr "合并至"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:292
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:296
 msgid "Replace with"
 msgstr "替换为"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:314
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:326
 msgid "Merge"
 msgstr "合并"
 
 #. Setup the expander for the rename action
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:507
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:519
 msgid "_Select a new name for the destination"
 msgstr "为目标选择新的名称(_S)"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:521
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:533
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:317
 msgid "Reset"
 msgstr "重置"
 
 #. Setup the checkbox to apply the action to all files
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:533
-msgid "Apply this action to all files"
-msgstr "应用此操作到所有文件"
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:545
+msgid "Apply this action to all files and folders"
+msgstr "应用此操作到所有文件和文件夹"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:544
-#: ../libnautilus-private/nautilus-file-operations.c:184
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:557
+#: ../libnautilus-private/nautilus-file-operations.c:183
 msgid "_Skip"
 msgstr "跳过(_S)"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:549
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:562
 msgid "Re_name"
 msgstr "重命名(_N)"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:555
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:568
 msgid "Replace"
 msgstr "替换"
 
-#: ../libnautilus-private/nautilus-file-conflict-dialog.c:629
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:651
+msgid "Merge Folder"
+msgstr "合并文件夹"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:651
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:657
+msgid "File and Folder conflict"
+msgstr "文件和文件夹冲突"
+
+#: ../libnautilus-private/nautilus-file-conflict-dialog.c:657
 msgid "File conflict"
 msgstr "文件冲突"
 
-#: ../libnautilus-private/nautilus-file-operations.c:185
+#: ../libnautilus-private/nautilus-file-operations.c:184
 msgid "S_kip All"
 msgstr "全部跳过(_K)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:186
+#: ../libnautilus-private/nautilus-file-operations.c:185
 msgid "_Retry"
 msgstr "重试(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:187
+#: ../libnautilus-private/nautilus-file-operations.c:186
 msgid "_Delete"
 msgstr "删除(_D)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:188
+#: ../libnautilus-private/nautilus-file-operations.c:187
 msgid "Delete _All"
 msgstr "全部删除(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:189
+#: ../libnautilus-private/nautilus-file-operations.c:188
 msgid "_Replace"
 msgstr "替换(_R)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:190
+#: ../libnautilus-private/nautilus-file-operations.c:189
 msgid "Replace _All"
 msgstr "全部替换(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:191
+#: ../libnautilus-private/nautilus-file-operations.c:190
 msgid "_Merge"
 msgstr "合并(_M)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:192
+#: ../libnautilus-private/nautilus-file-operations.c:191
 msgid "Merge _All"
 msgstr "全部合并(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:193
+#: ../libnautilus-private/nautilus-file-operations.c:192
 msgid "Copy _Anyway"
 msgstr "仍然复制(_A)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:278
+#: ../libnautilus-private/nautilus-file-operations.c:282
 #, c-format
 msgid "%'d second"
 msgid_plural "%'d seconds"
 msgstr[0] "%'d 秒"
 
-#: ../libnautilus-private/nautilus-file-operations.c:283
-#: ../libnautilus-private/nautilus-file-operations.c:294
+#: ../libnautilus-private/nautilus-file-operations.c:287
+#: ../libnautilus-private/nautilus-file-operations.c:298
 #, c-format
 msgid "%'d minute"
 msgid_plural "%'d minutes"
 msgstr[0] "%'d 分"
 
-#: ../libnautilus-private/nautilus-file-operations.c:293
+#: ../libnautilus-private/nautilus-file-operations.c:297
 #, c-format
 msgid "%'d hour"
 msgid_plural "%'d hours"
 msgstr[0] "%'d 小时"
 
-#: ../libnautilus-private/nautilus-file-operations.c:301
+#: ../libnautilus-private/nautilus-file-operations.c:305
 #, c-format
 msgid "approximately %'d hour"
 msgid_plural "approximately %'d hours"
 msgstr[0] "约 %'d 小时"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:381
+#: ../libnautilus-private/nautilus-file-operations.c:385
 #, c-format
 msgid "Another link to %s"
 msgstr "到 %s 的另一个链接"
@@ -1359,25 +1383,25 @@ msgstr "到 %s 的另一个链接"
 #. * if there's no way to do that nicely for a
 #. * particular language.
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:397
+#: ../libnautilus-private/nautilus-file-operations.c:401
 #, c-format
 msgid "%'dst link to %s"
 msgstr "到 %2$s 的第 %1$'d 个链接"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:401
+#: ../libnautilus-private/nautilus-file-operations.c:405
 #, c-format
 msgid "%'dnd link to %s"
 msgstr "到 %2$s 的第 %1$'d 个链接"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:405
+#: ../libnautilus-private/nautilus-file-operations.c:409
 #, c-format
 msgid "%'drd link to %s"
 msgstr "到 %2$s 的第 %1$'d 个链接"
 
 #. appended to new link file
-#: ../libnautilus-private/nautilus-file-operations.c:409
+#: ../libnautilus-private/nautilus-file-operations.c:413
 #, c-format
 msgid "%'dth link to %s"
 msgstr "到 %2$s 的第 %1$'d 个链接"
@@ -1387,12 +1411,12 @@ msgstr "到 %2$s 的第 %1$'d 个链接"
 #. * make some or all of them match.
 #.
 #. localizers: tag used to detect the first copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:448
+#: ../libnautilus-private/nautilus-file-operations.c:452
 msgid " (copy)"
 msgstr "(复件)"
 
 #. localizers: tag used to detect the second copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:450
+#: ../libnautilus-private/nautilus-file-operations.c:454
 msgid " (another copy)"
 msgstr "(另一个复件)"
 
@@ -1400,36 +1424,36 @@ msgstr "(另一个复件)"
 #. localizers: tag used to detect the x12th copy of a file
 #. localizers: tag used to detect the x13th copy of a file
 #. localizers: tag used to detect the xxth copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:453
-#: ../libnautilus-private/nautilus-file-operations.c:455
 #: ../libnautilus-private/nautilus-file-operations.c:457
-#: ../libnautilus-private/nautilus-file-operations.c:467
+#: ../libnautilus-private/nautilus-file-operations.c:459
+#: ../libnautilus-private/nautilus-file-operations.c:461
+#: ../libnautilus-private/nautilus-file-operations.c:471
 msgid "th copy)"
 msgstr "复件)"
 
 #. localizers: tag used to detect the x1st copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:460
+#: ../libnautilus-private/nautilus-file-operations.c:464
 msgid "st copy)"
 msgstr "复件)"
 
 #. localizers: tag used to detect the x2nd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:462
+#: ../libnautilus-private/nautilus-file-operations.c:466
 msgid "nd copy)"
 msgstr "复件)"
 
 #. localizers: tag used to detect the x3rd copy of a file
-#: ../libnautilus-private/nautilus-file-operations.c:464
+#: ../libnautilus-private/nautilus-file-operations.c:468
 msgid "rd copy)"
 msgstr "复件)"
 
 #. localizers: appended to first file copy
-#: ../libnautilus-private/nautilus-file-operations.c:481
+#: ../libnautilus-private/nautilus-file-operations.c:485
 #, c-format
 msgid "%s (copy)%s"
 msgstr "%s(复件)%s"
 
 #. localizers: appended to second file copy
-#: ../libnautilus-private/nautilus-file-operations.c:483
+#: ../libnautilus-private/nautilus-file-operations.c:487
 #, c-format
 msgid "%s (another copy)%s"
 msgstr "%s(另一个复件)%s"
@@ -1438,10 +1462,10 @@ msgstr "%s(另一个复件)%s"
 #. localizers: appended to x12th file copy
 #. localizers: appended to x13th file copy
 #. localizers: appended to xxth file copy
-#: ../libnautilus-private/nautilus-file-operations.c:486
-#: ../libnautilus-private/nautilus-file-operations.c:488
 #: ../libnautilus-private/nautilus-file-operations.c:490
-#: ../libnautilus-private/nautilus-file-operations.c:504
+#: ../libnautilus-private/nautilus-file-operations.c:492
+#: ../libnautilus-private/nautilus-file-operations.c:494
+#: ../libnautilus-private/nautilus-file-operations.c:508
 #, c-format
 msgid "%s (%'dth copy)%s"
 msgstr "%s(第 %'d 个复件)%s"
@@ -1451,39 +1475,39 @@ msgstr "%s(第 %'d 个复件)%s"
 #. * strings look like "%s (copy %'d)%s".
 #.
 #. localizers: appended to x1st file copy
-#: ../libnautilus-private/nautilus-file-operations.c:498
+#: ../libnautilus-private/nautilus-file-operations.c:502
 #, c-format
 msgid "%s (%'dst copy)%s"
 msgstr "%s(第 %'d 个复件)%s"
 
 #. localizers: appended to x2nd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:500
+#: ../libnautilus-private/nautilus-file-operations.c:504
 #, c-format
 msgid "%s (%'dnd copy)%s"
 msgstr "%s(第 %'d 个复件)%s"
 
 #. localizers: appended to x3rd file copy
-#: ../libnautilus-private/nautilus-file-operations.c:502
+#: ../libnautilus-private/nautilus-file-operations.c:506
 #, c-format
 msgid "%s (%'drd copy)%s"
 msgstr "%s(第 %'d 个复件)%s"
 
 #. localizers: opening parentheses to match the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:603
+#: ../libnautilus-private/nautilus-file-operations.c:607
 msgid " ("
 msgstr "("
 
 #. localizers: opening parentheses of the "th copy)" string
-#: ../libnautilus-private/nautilus-file-operations.c:611
+#: ../libnautilus-private/nautilus-file-operations.c:615
 #, c-format
 msgid " (%'d"
 msgstr "(第 %'d 个"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1359
+#: ../libnautilus-private/nautilus-file-operations.c:1388
 msgid "Are you sure you want to permanently delete “%B” from the trash?"
 msgstr "您确定要从回收站中永久删除 %B 吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1362
+#: ../libnautilus-private/nautilus-file-operations.c:1391
 #, c-format
 msgid ""
 "Are you sure you want to permanently delete the %'d selected item from the "
@@ -1493,51 +1517,51 @@ msgid_plural ""
 "trash?"
 msgstr[0] "您确定要从回收站中永久删除选中的这 %'d 项吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1372
-#: ../libnautilus-private/nautilus-file-operations.c:1438
+#: ../libnautilus-private/nautilus-file-operations.c:1401
+#: ../libnautilus-private/nautilus-file-operations.c:1467
 msgid "If you delete an item, it will be permanently lost."
 msgstr "如果您删除了一个项目，则该项将永久丢失。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1392
+#: ../libnautilus-private/nautilus-file-operations.c:1421
 msgid "Empty all items from Trash?"
 msgstr "清空回收站中的全部项目吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1396
+#: ../libnautilus-private/nautilus-file-operations.c:1425
 msgid "All items in the Trash will be permanently deleted."
 msgstr "回收站中的所有项目将被永久删除。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1399
-#: ../libnautilus-private/nautilus-file-operations.c:2482
-#: ../src/nautilus-window.c:1298
+#: ../libnautilus-private/nautilus-file-operations.c:1428
+#: ../libnautilus-private/nautilus-file-operations.c:2504
+#: ../src/nautilus-window.c:1300
 msgid "Empty _Trash"
 msgstr "清空回收站(_T)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1426
+#: ../libnautilus-private/nautilus-file-operations.c:1455
 msgid "Are you sure you want to permanently delete “%B”?"
 msgstr "您确定要永久删除“%B”吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1429
+#: ../libnautilus-private/nautilus-file-operations.c:1458
 #, c-format
 msgid "Are you sure you want to permanently delete the %'d selected item?"
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items?"
 msgstr[0] "您确定要永久删除这 %'d 个选中项目吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1482
+#: ../libnautilus-private/nautilus-file-operations.c:1511
 msgid "Deleted “%B”"
 msgstr "已删除 %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1484
+#: ../libnautilus-private/nautilus-file-operations.c:1513
 msgid "Deleting “%B”"
 msgstr "正在删除 %B"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1492
+#: ../libnautilus-private/nautilus-file-operations.c:1521
 #, c-format
 msgid "Deleted %'d file"
 msgid_plural "Deleted %'d files"
 msgstr[0] "已删除 %'d 个文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1496
+#: ../libnautilus-private/nautilus-file-operations.c:1525
 #, c-format
 msgid "Deleting %'d file"
 msgid_plural "Deleting %'d files"
@@ -1545,15 +1569,15 @@ msgstr[0] "正删除 %'d 个文件"
 
 #. To translators: %'d is the number of files completed for the operation,
 #. * so it will be something like 2/14.
-#: ../libnautilus-private/nautilus-file-operations.c:1518
-#: ../libnautilus-private/nautilus-file-operations.c:1524
-#: ../libnautilus-private/nautilus-file-operations.c:1556
-#: ../libnautilus-private/nautilus-file-operations.c:1914
-#: ../libnautilus-private/nautilus-file-operations.c:1920
-#: ../libnautilus-private/nautilus-file-operations.c:1952
-#: ../libnautilus-private/nautilus-file-operations.c:3306
-#: ../libnautilus-private/nautilus-file-operations.c:3312
-#: ../libnautilus-private/nautilus-file-operations.c:3353
+#: ../libnautilus-private/nautilus-file-operations.c:1547
+#: ../libnautilus-private/nautilus-file-operations.c:1553
+#: ../libnautilus-private/nautilus-file-operations.c:1585
+#: ../libnautilus-private/nautilus-file-operations.c:1943
+#: ../libnautilus-private/nautilus-file-operations.c:1949
+#: ../libnautilus-private/nautilus-file-operations.c:1981
+#: ../libnautilus-private/nautilus-file-operations.c:3329
+#: ../libnautilus-private/nautilus-file-operations.c:3335
+#: ../libnautilus-private/nautilus-file-operations.c:3376
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -1563,115 +1587,115 @@ msgstr "%'d / %'d"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:1539
-#: ../libnautilus-private/nautilus-file-operations.c:1935
+#: ../libnautilus-private/nautilus-file-operations.c:1568
+#: ../libnautilus-private/nautilus-file-operations.c:1964
 msgid "%'d / %'d — %T left"
 msgid_plural "%'d / %'d — %T left"
 msgstr[0] "%'d / %'d — 剩余 %T"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1542
-#: ../libnautilus-private/nautilus-file-operations.c:1938
+#: ../libnautilus-private/nautilus-file-operations.c:1571
+#: ../libnautilus-private/nautilus-file-operations.c:1967
 #, c-format
 msgid "(%d file/sec)"
 msgid_plural "(%d files/sec)"
 msgstr[0] "(%d 个/秒)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1624
-#: ../libnautilus-private/nautilus-file-operations.c:1658
-#: ../libnautilus-private/nautilus-file-operations.c:1697
-#: ../libnautilus-private/nautilus-file-operations.c:1773
-#: ../libnautilus-private/nautilus-file-operations.c:2742
+#: ../libnautilus-private/nautilus-file-operations.c:1653
+#: ../libnautilus-private/nautilus-file-operations.c:1687
+#: ../libnautilus-private/nautilus-file-operations.c:1726
+#: ../libnautilus-private/nautilus-file-operations.c:1802
+#: ../libnautilus-private/nautilus-file-operations.c:2765
 msgid "Error while deleting."
 msgstr "删除时发生错误。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1628
+#: ../libnautilus-private/nautilus-file-operations.c:1657
 msgid ""
 "Files in the folder “%B” cannot be deleted because you do not have "
 "permissions to see them."
 msgstr "文件夹“%B”中的文件无法删除，因为您无权限查看它们。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1631
-#: ../libnautilus-private/nautilus-file-operations.c:2801
-#: ../libnautilus-private/nautilus-file-operations.c:3993
+#: ../libnautilus-private/nautilus-file-operations.c:1660
+#: ../libnautilus-private/nautilus-file-operations.c:2824
+#: ../libnautilus-private/nautilus-file-operations.c:4016
 msgid ""
 "There was an error getting information about the files in the folder “%B”."
 msgstr "获取文件夹“%B”中文件的信息时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1640
-#: ../libnautilus-private/nautilus-file-operations.c:4002
+#: ../libnautilus-private/nautilus-file-operations.c:1669
+#: ../libnautilus-private/nautilus-file-operations.c:4025
 msgid "_Skip files"
 msgstr "跳过文件(_S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1661
+#: ../libnautilus-private/nautilus-file-operations.c:1690
 msgid ""
 "The folder “%B” cannot be deleted because you do not have permissions to "
 "read it."
 msgstr "无法删除文件夹“%B”，因为您没有读取它的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1664
-#: ../libnautilus-private/nautilus-file-operations.c:2840
-#: ../libnautilus-private/nautilus-file-operations.c:4038
+#: ../libnautilus-private/nautilus-file-operations.c:1693
+#: ../libnautilus-private/nautilus-file-operations.c:2863
+#: ../libnautilus-private/nautilus-file-operations.c:4061
 msgid "There was an error reading the folder “%B”."
 msgstr "读取文件夹“%B”时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1698
+#: ../libnautilus-private/nautilus-file-operations.c:1727
 msgid "Could not remove the folder %B."
 msgstr "无法移除文件夹 %B。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1774
+#: ../libnautilus-private/nautilus-file-operations.c:1803
 msgid "There was an error deleting %B."
-msgstr "删除 %B 时出错。"
+msgstr "删除“%B”时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1877
+#: ../libnautilus-private/nautilus-file-operations.c:1906
 msgid "Trashing “%B”"
 msgstr "正在丢弃“%B”到回收站"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1879
+#: ../libnautilus-private/nautilus-file-operations.c:1908
 msgid "Trashed “%B”"
 msgstr "已移动 %B 到回收站"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1887
+#: ../libnautilus-private/nautilus-file-operations.c:1916
 #, c-format
 msgid "Trashing %'d file"
 msgid_plural "Trashing %'d files"
 msgstr[0] "正在移动 %'d 个文件到回收站"
 
-#: ../libnautilus-private/nautilus-file-operations.c:1891
+#: ../libnautilus-private/nautilus-file-operations.c:1920
 #, c-format
 msgid "Trashed %'d file"
 msgid_plural "Trashed %'d files"
 msgstr[0] "已移动 %'d 个文件到回收站"
 
 #. Translators: %B is a file name
-#: ../libnautilus-private/nautilus-file-operations.c:2014
+#: ../libnautilus-private/nautilus-file-operations.c:2043
 msgid "“%B” can't be put in the trash. Do you want to delete it immediately?"
 msgstr "无法将 %B 移动到回收站。您要立即删除它吗？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2020
+#: ../libnautilus-private/nautilus-file-operations.c:2049
 msgid "This remote location does not support sending items to the trash."
 msgstr "该远程位置不支持将项目移动到回收站。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2229
+#: ../libnautilus-private/nautilus-file-operations.c:2252
 msgid "Trashing Files"
 msgstr "正在丢弃文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2231
+#: ../libnautilus-private/nautilus-file-operations.c:2254
 msgid "Deleting Files"
 msgstr "正在删除文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2313
+#: ../libnautilus-private/nautilus-file-operations.c:2335
 msgid "Unable to eject %V"
 msgstr "无法弹出 %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2315
+#: ../libnautilus-private/nautilus-file-operations.c:2337
 msgid "Unable to unmount %V"
 msgstr "无法卸载 %V"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2472
+#: ../libnautilus-private/nautilus-file-operations.c:2494
 msgid "Do you want to empty the trash before you unmount?"
 msgstr "您在卸载之前想清空回收站？"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2474
+#: ../libnautilus-private/nautilus-file-operations.c:2496
 msgid ""
 "In order to regain the free space on this volume the trash must be emptied. "
 "All trashed items on the volume will be permanently lost."
@@ -1679,172 +1703,172 @@ msgstr ""
 "为了重新利用此卷上的剩余空间，必须清空回收站。回收站中的所有项目都将永久丢"
 "失。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2480
+#: ../libnautilus-private/nautilus-file-operations.c:2502
 msgid "Do _not Empty Trash"
 msgstr "不清空回收站(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: ../libnautilus-private/nautilus-file-operations.c:2613
-#: ../src/nautilus-files-view.c:5702
+#: ../libnautilus-private/nautilus-file-operations.c:2636
+#: ../src/nautilus-files-view.c:5812
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "无法访问 %s"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2689
+#: ../libnautilus-private/nautilus-file-operations.c:2712
 #, c-format
 msgid "Preparing to copy %'d file (%S)"
 msgid_plural "Preparing to copy %'d files (%S)"
 msgstr[0] "准备复制 %'d 个文件 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2695
+#: ../libnautilus-private/nautilus-file-operations.c:2718
 #, c-format
 msgid "Preparing to move %'d file (%S)"
 msgid_plural "Preparing to move %'d files (%S)"
 msgstr[0] "准备移动 %'d 个文件 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2701
+#: ../libnautilus-private/nautilus-file-operations.c:2724
 #, c-format
 msgid "Preparing to delete %'d file (%S)"
 msgid_plural "Preparing to delete %'d files (%S)"
 msgstr[0] "准备删除 %'d 个文件 (%S)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2707
+#: ../libnautilus-private/nautilus-file-operations.c:2730
 #, c-format
 msgid "Preparing to trash %'d file"
 msgid_plural "Preparing to trash %'d files"
 msgstr[0] "准备丢弃 %'d 个文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2738
-#: ../libnautilus-private/nautilus-file-operations.c:3853
-#: ../libnautilus-private/nautilus-file-operations.c:3985
-#: ../libnautilus-private/nautilus-file-operations.c:4030
+#: ../libnautilus-private/nautilus-file-operations.c:2761
+#: ../libnautilus-private/nautilus-file-operations.c:3876
+#: ../libnautilus-private/nautilus-file-operations.c:4008
+#: ../libnautilus-private/nautilus-file-operations.c:4053
 msgid "Error while copying."
 msgstr "复制时发生错误。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2740
-#: ../libnautilus-private/nautilus-file-operations.c:3983
-#: ../libnautilus-private/nautilus-file-operations.c:4028
+#: ../libnautilus-private/nautilus-file-operations.c:2763
+#: ../libnautilus-private/nautilus-file-operations.c:4006
+#: ../libnautilus-private/nautilus-file-operations.c:4051
 msgid "Error while moving."
 msgstr "移动时发生错误。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2744
+#: ../libnautilus-private/nautilus-file-operations.c:2767
 msgid "Error while moving files to trash."
 msgstr "将文件移动到回收站时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2798
+#: ../libnautilus-private/nautilus-file-operations.c:2821
 msgid ""
 "Files in the folder “%B” cannot be handled because you do not have "
 "permissions to see them."
 msgstr "无法处理文件夹“%B”中的文件，因为您没有查看它们的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2837
+#: ../libnautilus-private/nautilus-file-operations.c:2860
 msgid ""
 "The folder “%B” cannot be handled because you do not have permissions to "
 "read it."
 msgstr "无法处理文件夹“%B”，因为您没有读取它的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2914
+#: ../libnautilus-private/nautilus-file-operations.c:2937
 msgid ""
 "The file “%B” cannot be handled because you do not have permissions to read "
 "it."
 msgstr "无法处理文件“%B”，因为您没有读取它的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:2917
+#: ../libnautilus-private/nautilus-file-operations.c:2940
 msgid "There was an error getting information about “%B”."
 msgstr "获取关于“%B”的信息时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3019
-#: ../libnautilus-private/nautilus-file-operations.c:3067
-#: ../libnautilus-private/nautilus-file-operations.c:3106
-#: ../libnautilus-private/nautilus-file-operations.c:3136
+#: ../libnautilus-private/nautilus-file-operations.c:3042
+#: ../libnautilus-private/nautilus-file-operations.c:3090
+#: ../libnautilus-private/nautilus-file-operations.c:3129
+#: ../libnautilus-private/nautilus-file-operations.c:3159
 msgid "Error while copying to “%B”."
 msgstr "复制到“%B”时发生错误。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3023
+#: ../libnautilus-private/nautilus-file-operations.c:3046
 msgid "You do not have permissions to access the destination folder."
 msgstr "您没有访问目标文件夹的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3025
+#: ../libnautilus-private/nautilus-file-operations.c:3048
 msgid "There was an error getting information about the destination."
 msgstr "获得关于目标的信息时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3068
+#: ../libnautilus-private/nautilus-file-operations.c:3091
 msgid "The destination is not a folder."
 msgstr "目标位置不是文件夹。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3107
+#: ../libnautilus-private/nautilus-file-operations.c:3130
 msgid ""
 "There is not enough space on the destination. Try to remove files to make "
 "space."
 msgstr "目标位置没有足够空间。请试着移除一些文件以便释放空间。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3109
+#: ../libnautilus-private/nautilus-file-operations.c:3132
 #, c-format
 msgid "%S more space is required to copy to the destination."
 msgstr "要复制到目标位置还需要 %S 空间。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3137
+#: ../libnautilus-private/nautilus-file-operations.c:3160
 msgid "The destination is read-only."
 msgstr "目标是只读的。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3202
+#: ../libnautilus-private/nautilus-file-operations.c:3225
 msgid "Moving “%B” to “%B”"
 msgstr "正在将“%B”移动到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3204
+#: ../libnautilus-private/nautilus-file-operations.c:3227
 msgid "Moved “%B” to “%B”"
 msgstr "已将“%B”移动到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3208
+#: ../libnautilus-private/nautilus-file-operations.c:3231
 msgid "Copying “%B” to “%B”"
 msgstr "正在将“%B”复制到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3210
+#: ../libnautilus-private/nautilus-file-operations.c:3233
 msgid "Copied “%B” to “%B”"
 msgstr "已将“%B”复制到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3221
+#: ../libnautilus-private/nautilus-file-operations.c:3244
 msgid "Duplicating “%B”"
 msgstr "正在原位置复制“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3223
+#: ../libnautilus-private/nautilus-file-operations.c:3246
 msgid "Duplicated “%B”"
 msgstr "已在原位置复制“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3233
+#: ../libnautilus-private/nautilus-file-operations.c:3256
 msgid "Moving %'d file to “%B”"
 msgid_plural "Moving %'d files to “%B”"
 msgstr[0] "正在将 %'d 个文件移动到 “%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3237
+#: ../libnautilus-private/nautilus-file-operations.c:3260
 msgid "Copying %'d file to “%B”"
 msgid_plural "Copying %'d files to “%B”"
 msgstr[0] "正在将 %'d 个文件复制到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3247
+#: ../libnautilus-private/nautilus-file-operations.c:3270
 msgid "Moved %'d file to “%B”"
 msgid_plural "Moved %'d files to “%B”"
 msgstr[0] "已将 %'d 个文件移动到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3251
+#: ../libnautilus-private/nautilus-file-operations.c:3274
 msgid "Copied %'d file to “%B”"
 msgid_plural "Copied %'d files to “%B”"
 msgstr[0] "已将 %'d 个文件复制到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3265
+#: ../libnautilus-private/nautilus-file-operations.c:3288
 msgid "Duplicating %'d file in “%B”"
 msgid_plural "Duplicating %'d files in “%B”"
 msgstr[0] "正在“%B”中复制 %'d 个文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3273
+#: ../libnautilus-private/nautilus-file-operations.c:3296
 msgid "Duplicated %'d file in “%B”"
 msgid_plural "Duplicated %'d files in “%B”"
 msgstr[0] "已在“%B”复制 %'d 个文件"
 
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %S will expand to a size like "2 bytes" or "3 MB".
-#: ../libnautilus-private/nautilus-file-operations.c:3301
-#: ../libnautilus-private/nautilus-file-operations.c:3333
+#: ../libnautilus-private/nautilus-file-operations.c:3324
+#: ../libnautilus-private/nautilus-file-operations.c:3356
 #, c-format
 msgid "%S / %S"
 msgstr "%S / %S"
@@ -1854,7 +1878,7 @@ msgstr "%S / %S"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:3325
+#: ../libnautilus-private/nautilus-file-operations.c:3348
 msgid "%S / %S — %T left (%S/sec)"
 msgid_plural "%S / %S — %T left (%S/sec)"
 msgstr[0] "%S / %S — 剩余 %T(%S/秒)"
@@ -1864,191 +1888,185 @@ msgstr[0] "%S / %S — 剩余 %T(%S/秒)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
 #.
-#: ../libnautilus-private/nautilus-file-operations.c:3344
+#: ../libnautilus-private/nautilus-file-operations.c:3367
 msgid "%'d / %'d — %T left (%S/sec)"
 msgid_plural "%'d / %'d — %T left (%S/sec)"
 msgstr[0] "%'d / %'d — 剩余 %T(%S/秒)"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3857
+#: ../libnautilus-private/nautilus-file-operations.c:3880
 msgid ""
 "The folder “%B” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr "无法复制文件夹“%B”，因为您没有在目标位置创建它的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3860
+#: ../libnautilus-private/nautilus-file-operations.c:3883
 msgid "There was an error creating the folder “%B”."
 msgstr "创建文件夹“%B”时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:3990
+#: ../libnautilus-private/nautilus-file-operations.c:4013
 msgid ""
 "Files in the folder “%B” cannot be copied because you do not have "
 "permissions to see them."
 msgstr "无法复制文件夹“%B”中的文件，因为您没有查看文件夹内容的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4035
+#: ../libnautilus-private/nautilus-file-operations.c:4058
 msgid ""
 "The folder “%B” cannot be copied because you do not have permissions to read "
 "it."
 msgstr "无法复制文件夹“%B”，因为您没有读取它的权限。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4080
-#: ../libnautilus-private/nautilus-file-operations.c:4782
-#: ../libnautilus-private/nautilus-file-operations.c:5402
+#: ../libnautilus-private/nautilus-file-operations.c:4103
+#: ../libnautilus-private/nautilus-file-operations.c:4832
+#: ../libnautilus-private/nautilus-file-operations.c:5446
 msgid "Error while moving “%B”."
 msgstr "移动“%B”时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4081
+#: ../libnautilus-private/nautilus-file-operations.c:4104
 msgid "Could not remove the source folder."
 msgstr "无法移除源文件夹。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4165
-#: ../libnautilus-private/nautilus-file-operations.c:4206
-#: ../libnautilus-private/nautilus-file-operations.c:4784
-#: ../libnautilus-private/nautilus-file-operations.c:4855
+#: ../libnautilus-private/nautilus-file-operations.c:4188
+#: ../libnautilus-private/nautilus-file-operations.c:4229
+#: ../libnautilus-private/nautilus-file-operations.c:4834
+#: ../libnautilus-private/nautilus-file-operations.c:4905
 msgid "Error while copying “%B”."
 msgstr "复制“%B”时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4166
+#: ../libnautilus-private/nautilus-file-operations.c:4189
 #, c-format
 msgid "Could not remove files from the already existing folder %F."
 msgstr "无法从已存在的文件夹 %F 中移除文件。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4207
+#: ../libnautilus-private/nautilus-file-operations.c:4230
 #, c-format
 msgid "Could not remove the already existing file %F."
 msgstr "无法移除已有文件 %F。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4527
-#: ../libnautilus-private/nautilus-file-operations.c:5245
+#: ../libnautilus-private/nautilus-file-operations.c:4577
+#: ../libnautilus-private/nautilus-file-operations.c:5289
 msgid "You cannot move a folder into itself."
 msgstr "您无法将文件夹移入自身。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4528
-#: ../libnautilus-private/nautilus-file-operations.c:5246
+#: ../libnautilus-private/nautilus-file-operations.c:4578
+#: ../libnautilus-private/nautilus-file-operations.c:5290
 msgid "You cannot copy a folder into itself."
 msgstr "您无法将文件夹复制到自身。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4529
-#: ../libnautilus-private/nautilus-file-operations.c:5247
+#: ../libnautilus-private/nautilus-file-operations.c:4579
+#: ../libnautilus-private/nautilus-file-operations.c:5291
 msgid "The destination folder is inside the source folder."
 msgstr "目标文件夹位于源文件夹内。"
 
 #. the run_warning() frees all strings passed in automatically
-#: ../libnautilus-private/nautilus-file-operations.c:4559
+#: ../libnautilus-private/nautilus-file-operations.c:4609
 msgid "You cannot move a file over itself."
 msgstr "您无法将文件夹移入自身。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4560
+#: ../libnautilus-private/nautilus-file-operations.c:4610
 msgid "You cannot copy a file over itself."
 msgstr "您无法将文件夹复制到自身。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4561
+#: ../libnautilus-private/nautilus-file-operations.c:4611
 msgid "The source file would be overwritten by the destination."
 msgstr "源文件将会被目标覆盖。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4786
+#: ../libnautilus-private/nautilus-file-operations.c:4836
 #, c-format
 msgid "Could not remove the already existing file with the same name in %F."
 msgstr "无法移除 %F 中已有的同名文件。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:4856
+#: ../libnautilus-private/nautilus-file-operations.c:4906
 #, c-format
 msgid "There was an error copying the file into %F."
 msgstr "将文件复制到 %F 时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5090
-#: ../libnautilus-private/nautilus-file-operations.c:5127
+#: ../libnautilus-private/nautilus-file-operations.c:5135
+#: ../libnautilus-private/nautilus-file-operations.c:5172
 msgid "Copying Files"
 msgstr "正在复制文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5155
+#: ../libnautilus-private/nautilus-file-operations.c:5199
 msgid "Preparing to move to “%B”"
-msgstr "正在准备移动到“%B”"
+msgstr "准备移动到“%B”"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5159
+#: ../libnautilus-private/nautilus-file-operations.c:5203
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "准备移动 %'d 个文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5403
+#: ../libnautilus-private/nautilus-file-operations.c:5447
 #, c-format
 msgid "There was an error moving the file into %F."
 msgstr "将文件移动到 %F 时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5668
+#: ../libnautilus-private/nautilus-file-operations.c:5707
 msgid "Moving Files"
 msgstr "正在移动文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5703
+#: ../libnautilus-private/nautilus-file-operations.c:5741
 msgid "Creating links in “%B”"
 msgstr "正在“%B”中创建链接"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5707
+#: ../libnautilus-private/nautilus-file-operations.c:5745
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "正在创建 %'d 个文件的链接"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5842
+#: ../libnautilus-private/nautilus-file-operations.c:5880
 msgid "Error while creating link to %B."
 msgstr "在创建到 %B 的链接时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5844
+#: ../libnautilus-private/nautilus-file-operations.c:5882
 msgid "Symbolic links only supported for local files"
 msgstr "符号链接只支持本地文件"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5847
+#: ../libnautilus-private/nautilus-file-operations.c:5885
 msgid "The target doesn't support symbolic links."
 msgstr "目标不支持符号链接。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:5850
+#: ../libnautilus-private/nautilus-file-operations.c:5888
 #, c-format
 msgid "There was an error creating the symlink in %F."
 msgstr "在 %F 中创建符号链接时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6181
+#: ../libnautilus-private/nautilus-file-operations.c:6214
 msgid "Setting permissions"
 msgstr "设置权限"
 
 #. localizers: the initial name of a new folder
-#: ../libnautilus-private/nautilus-file-operations.c:6446
+#: ../libnautilus-private/nautilus-file-operations.c:6473
 msgid "Untitled Folder"
 msgstr "未命名文件夹"
 
-#. localizers: the initial name of a new template document
-#: ../libnautilus-private/nautilus-file-operations.c:6452
-#, c-format
-msgid "Untitled %s"
-msgstr "无标题 %s"
-
 #. localizers: the initial name of a new empty document
-#: ../libnautilus-private/nautilus-file-operations.c:6458
+#: ../libnautilus-private/nautilus-file-operations.c:6485
 msgid "Untitled Document"
 msgstr "无标题文档"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6674
+#: ../libnautilus-private/nautilus-file-operations.c:6701
 msgid "Error while creating directory %B."
 msgstr "创建目录 %B 时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6676
+#: ../libnautilus-private/nautilus-file-operations.c:6703
 msgid "Error while creating file %B."
 msgstr "创建文件 %B 时出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6678
+#: ../libnautilus-private/nautilus-file-operations.c:6705
 #, c-format
 msgid "There was an error creating the directory in %F."
 msgstr "在 %F 中创建目录出错。"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6949
+#: ../libnautilus-private/nautilus-file-operations.c:6965
 msgid "Emptying Trash"
 msgstr "清空回收站"
 
-#: ../libnautilus-private/nautilus-file-operations.c:6997
-#: ../libnautilus-private/nautilus-file-operations.c:7038
-#: ../libnautilus-private/nautilus-file-operations.c:7073
-#: ../libnautilus-private/nautilus-file-operations.c:7108
+#: ../libnautilus-private/nautilus-file-operations.c:7013
+#: ../libnautilus-private/nautilus-file-operations.c:7054
+#: ../libnautilus-private/nautilus-file-operations.c:7089
+#: ../libnautilus-private/nautilus-file-operations.c:7124
 msgid "Unable to mark launcher trusted (executable)"
 msgstr "无法为启动器标记信任(可执行)"
 
@@ -2070,341 +2088,396 @@ msgstr "重做"
 msgid "Redo last undone action"
 msgstr "重做最近撤消的操作"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:365
+#: ../libnautilus-private/nautilus-file-undo-operations.c:366
 #, c-format
 msgid "Move %d item back to '%s'"
 msgid_plural "Move %d items back to '%s'"
 msgstr[0] "将 %d 个项目移回 “%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:368
+#: ../libnautilus-private/nautilus-file-undo-operations.c:369
 #, c-format
 msgid "Move %d item to '%s'"
 msgid_plural "Move %d items to '%s'"
 msgstr[0] "将 %d 个文件移到“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:372
+#: ../libnautilus-private/nautilus-file-undo-operations.c:373
 #, c-format
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
 msgstr[0] "撤消移动 %d 项(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:375
+#: ../libnautilus-private/nautilus-file-undo-operations.c:376
 #, c-format
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
 msgstr[0] "重做移动 %d 项(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:379
+#: ../libnautilus-private/nautilus-file-undo-operations.c:380
 #, c-format
 msgid "Move '%s' back to '%s'"
 msgstr "将“%s”移回“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:380
+#: ../libnautilus-private/nautilus-file-undo-operations.c:381
 #, c-format
 msgid "Move '%s' to '%s'"
 msgstr "将“%s”移到“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:382
+#: ../libnautilus-private/nautilus-file-undo-operations.c:383
 msgid "_Undo Move"
 msgstr "撤消移动(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:383
+#: ../libnautilus-private/nautilus-file-undo-operations.c:384
 msgid "_Redo Move"
 msgstr "重做移动(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:386
+#: ../libnautilus-private/nautilus-file-undo-operations.c:387
 msgid "_Undo Restore from Trash"
 msgstr "撤消从回收站中恢复(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:387
+#: ../libnautilus-private/nautilus-file-undo-operations.c:388
 msgid "_Redo Restore from Trash"
 msgstr "重做从回收站恢复"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:390
+#: ../libnautilus-private/nautilus-file-undo-operations.c:391
 #, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
 msgstr[0] "将 %d 个项目移回回收站"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:393
-#: ../libnautilus-private/nautilus-file-undo-operations.c:989
+#: ../libnautilus-private/nautilus-file-undo-operations.c:394
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1007
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
 msgstr[0] "从回收站恢复 %d 项"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:397
+#: ../libnautilus-private/nautilus-file-undo-operations.c:398
 #, c-format
 msgid "Move '%s' back to trash"
 msgstr "将 “%s”移回回收站"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:398
+#: ../libnautilus-private/nautilus-file-undo-operations.c:399
 #, c-format
 msgid "Restore '%s' from trash"
 msgstr "从回收站恢复“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:402
+#: ../libnautilus-private/nautilus-file-undo-operations.c:403
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
 msgstr[0] "删除 %d 个复制的项目"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:405
+#: ../libnautilus-private/nautilus-file-undo-operations.c:406
 #, c-format
 msgid "Copy %d item to '%s'"
 msgid_plural "Copy %d items to '%s'"
 msgstr[0] "将 %d 项复制到“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:409
+#: ../libnautilus-private/nautilus-file-undo-operations.c:410
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
 msgstr[0] "撤消复制 %d 项(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:412
+#: ../libnautilus-private/nautilus-file-undo-operations.c:413
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
 msgstr[0] "重做复制 %d 项(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:416
-#: ../libnautilus-private/nautilus-file-undo-operations.c:438
-#: ../libnautilus-private/nautilus-file-undo-operations.c:671
+#: ../libnautilus-private/nautilus-file-undo-operations.c:417
+#: ../libnautilus-private/nautilus-file-undo-operations.c:439
+#: ../libnautilus-private/nautilus-file-undo-operations.c:689
 #, c-format
 msgid "Delete '%s'"
 msgstr "删除“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:417
+#: ../libnautilus-private/nautilus-file-undo-operations.c:418
 #, c-format
 msgid "Copy '%s' to '%s'"
 msgstr "将“%s”复制到“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:419
+#: ../libnautilus-private/nautilus-file-undo-operations.c:420
 msgid "_Undo Copy"
 msgstr "撤消复制(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:420
+#: ../libnautilus-private/nautilus-file-undo-operations.c:421
 msgid "_Redo Copy"
 msgstr "重做复制(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:424
+#: ../libnautilus-private/nautilus-file-undo-operations.c:425
 #, c-format
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
 msgstr[0] "删除 %d 个重复项目"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:427
+#: ../libnautilus-private/nautilus-file-undo-operations.c:428
 #, c-format
 msgid "Duplicate %d item in '%s'"
 msgid_plural "Duplicate %d items in '%s'"
 msgstr[0] "就地复制“%2$s”中的 %1$d 个文件"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:431
+#: ../libnautilus-private/nautilus-file-undo-operations.c:432
 #, c-format
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
 msgstr[0] "撤消就地复制 %'d 项(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:434
+#: ../libnautilus-private/nautilus-file-undo-operations.c:435
 #, c-format
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
 msgstr[0] "重做就地复制 %d 项(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:439
+#: ../libnautilus-private/nautilus-file-undo-operations.c:440
 #, c-format
 msgid "Duplicate '%s' in '%s'"
 msgstr "就地复制“%2$s”中的“%1$s”项"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:442
+#: ../libnautilus-private/nautilus-file-undo-operations.c:443
 msgid "_Undo Duplicate"
 msgstr "撤消就地复制(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:443
+#: ../libnautilus-private/nautilus-file-undo-operations.c:444
 msgid "_Redo Duplicate"
 msgstr "重做就地复制(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:447
+#: ../libnautilus-private/nautilus-file-undo-operations.c:448
 #, c-format
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
 msgstr[0] "删除到 %d 项的链接"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:450
+#: ../libnautilus-private/nautilus-file-undo-operations.c:451
 #, c-format
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
 msgstr[0] "创建到 %d 项的链接"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:454
+#: ../libnautilus-private/nautilus-file-undo-operations.c:455
 #, c-format
 msgid "Delete link to '%s'"
 msgstr "删除到“%s”的链接"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:455
+#: ../libnautilus-private/nautilus-file-undo-operations.c:456
 #, c-format
 msgid "Create link to '%s'"
 msgstr "创建“%s”链接"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:457
+#: ../libnautilus-private/nautilus-file-undo-operations.c:458
 msgid "_Undo Create Link"
 msgstr "撤消创建链接(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:458
+#: ../libnautilus-private/nautilus-file-undo-operations.c:459
 msgid "_Redo Create Link"
 msgstr "重做创建链接(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:674
+#: ../libnautilus-private/nautilus-file-undo-operations.c:692
 #, c-format
 msgid "Create an empty file '%s'"
 msgstr "创建一个空文件“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:676
+#: ../libnautilus-private/nautilus-file-undo-operations.c:694
 msgid "_Undo Create Empty File"
 msgstr "撤消创建空文件(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:677
+#: ../libnautilus-private/nautilus-file-undo-operations.c:695
 msgid "_Redo Create Empty File"
 msgstr "重做创建空文件(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:679
+#: ../libnautilus-private/nautilus-file-undo-operations.c:697
 #, c-format
 msgid "Create a new folder '%s'"
 msgstr "创建一个新文件夹“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:681
+#: ../libnautilus-private/nautilus-file-undo-operations.c:699
 msgid "_Undo Create Folder"
 msgstr "撤消创建文件夹(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:682
+#: ../libnautilus-private/nautilus-file-undo-operations.c:700
 msgid "_Redo Create Folder"
 msgstr "重做创建文件夹(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:684
+#: ../libnautilus-private/nautilus-file-undo-operations.c:702
 #, c-format
 msgid "Create new file '%s' from template "
 msgstr "根据模板创建新文档“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:686
+#: ../libnautilus-private/nautilus-file-undo-operations.c:704
 msgid "_Undo Create from Template"
 msgstr "撤消根据模版创建(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:687
+#: ../libnautilus-private/nautilus-file-undo-operations.c:705
 msgid "_Redo Create from Template"
 msgstr "重做根据模版创建(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:872
-#: ../libnautilus-private/nautilus-file-undo-operations.c:873
+#: ../libnautilus-private/nautilus-file-undo-operations.c:890
+#: ../libnautilus-private/nautilus-file-undo-operations.c:891
 #, c-format
 msgid "Rename '%s' as '%s'"
 msgstr "将“%s”重命名为“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:875
+#: ../libnautilus-private/nautilus-file-undo-operations.c:893
 msgid "_Undo Rename"
 msgstr "撤消重命名(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:876
+#: ../libnautilus-private/nautilus-file-undo-operations.c:894
 msgid "_Redo Rename"
 msgstr "重做重命名(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:992
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1010
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "将 %d 项移动到回收站"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1004
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1022
 #, c-format
 msgid "Restore '%s' to '%s'"
 msgstr "将“%s”恢复到“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1011
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1029
 #, c-format
 msgid "Move '%s' to trash"
 msgstr "将“%s”移动到回收站"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1016
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1034
 msgid "_Undo Trash"
 msgstr "撤消丢弃(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1017
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1035
 msgid "_Redo Trash"
 msgstr "重做丢弃(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1310
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1314
 #, c-format
 msgid "Restore original permissions of items enclosed in '%s'"
 msgstr "恢复“%s”中项目的原始权限"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1311
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1315
 #, c-format
 msgid "Set permissions of items enclosed in '%s'"
 msgstr "设置“%s”中项目的权限"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1313
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1464
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1317
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1468
 msgid "_Undo Change Permissions"
 msgstr "撤消更改权限(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1314
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1465
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1318
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1469
 msgid "_Redo Change Permissions"
 msgstr "重做更改权限(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1461
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1465
 #, c-format
 msgid "Restore original permissions of '%s'"
 msgstr "恢复“%s”的原始权限"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1462
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1466
 #, c-format
 msgid "Set permissions of '%s'"
 msgstr "设置“%s”的权限"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1572
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1576
 #, c-format
 msgid "Restore group of '%s' to '%s'"
 msgstr "将“%s”的组恢复为“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1574
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1578
 #, c-format
 msgid "Set group of '%s' to '%s'"
 msgstr "将“%s”的组设置为“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1577
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1581
 msgid "_Undo Change Group"
 msgstr "撤消更改组(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1578
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
 msgid "_Redo Change Group"
 msgstr "重做更改组(_R)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1580
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1584
 #, c-format
 msgid "Restore owner of '%s' to '%s'"
 msgstr "将“%s”的所有者恢复为“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1582
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1586
 #, c-format
 msgid "Set owner of '%s' to '%s'"
 msgstr "将“%s”的所有者设置为“%s”"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1585
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1589
 msgid "_Undo Change Owner"
 msgstr "撤消更改所有者(_U)"
 
-#: ../libnautilus-private/nautilus-file-undo-operations.c:1586
+#: ../libnautilus-private/nautilus-file-undo-operations.c:1590
 msgid "_Redo Change Owner"
 msgstr "重做更改所有者(_R)"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:896
+#: ../libnautilus-private/nautilus-file-utilities.c:915
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "无法确定“%s”的原始位置"
 
-#: ../libnautilus-private/nautilus-file-utilities.c:900
+#: ../libnautilus-private/nautilus-file-utilities.c:919
 msgid "The item cannot be restored from trash"
 msgstr "无法从回收站中恢复该项目"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1023
+msgid "Audio CD"
+msgstr "音频 CD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1025
+msgid "Audio DVD"
+msgstr "音频 DVD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1027
+msgid "Video DVD"
+msgstr "视频 DVD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1029
+msgid "Video CD"
+msgstr "视频 CD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1031
+msgid "Super Video CD"
+msgstr "超级视频 CD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1033
+msgid "Photo CD"
+msgstr "相片 CD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1035
+msgid "Picture CD"
+msgstr "图片 CD"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1037
+#: ../libnautilus-private/nautilus-file-utilities.c:1070
+msgid "Contains digital photos"
+msgstr "包含数码相片"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1039
+msgid "Contains music"
+msgstr "包含音乐"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1041
+msgid "Contains software"
+msgstr "包含软件"
+
+#. fallback to generic greeting
+#: ../libnautilus-private/nautilus-file-utilities.c:1044
+#, c-format
+msgid "Detected as “%s”"
+msgstr "检测为“%s”"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1066
+msgid "Contains music and photos"
+msgstr "包含音乐和相片"
+
+#: ../libnautilus-private/nautilus-file-utilities.c:1068
+msgid "Contains photos and music"
+msgstr "包含相片和音乐"
 
 #: ../libnautilus-private/nautilus-mime-application-chooser.c:80
 #, c-format
@@ -2502,7 +2575,7 @@ msgstr "已取消"
 msgid "Preparing"
 msgstr "正在准备"
 
-#: ../libnautilus-private/nautilus-query.c:463
+#: ../libnautilus-private/nautilus-query.c:470
 #: ../libnautilus-private/nautilus-search-directory-file.c:159
 #: ../libnautilus-private/nautilus-search-directory-file.c:211
 #: ../libnautilus-private/nautilus-search-directory-file.c:256
@@ -2512,7 +2585,7 @@ msgstr "正在准备"
 msgid "Search"
 msgstr "搜索"
 
-#: ../libnautilus-private/nautilus-query.c:466
+#: ../libnautilus-private/nautilus-query.c:473
 #, c-format
 msgid "Search for “%s”"
 msgstr "搜索“%s”"
@@ -2521,25 +2594,53 @@ msgstr "搜索“%s”"
 msgid "Unable to complete the requested search"
 msgstr "无法完成要求的搜索"
 
+#. days
+#: ../libnautilus-private/nautilus-ui-utilities.c:365
+#, c-format
+msgid "%d day ago"
+msgid_plural "%d days ago"
+msgstr[0] "%d 天前"
+
+#. weeks
+#: ../libnautilus-private/nautilus-ui-utilities.c:370
+#, c-format
+msgid "Last week"
+msgid_plural "%d weeks ago"
+msgstr[0] "%d 周前"
+
+#. months
+#: ../libnautilus-private/nautilus-ui-utilities.c:375
+#, c-format
+msgid "Last month"
+msgid_plural "%d months ago"
+msgstr[0] "%d 个月前"
+
+#. years
+#: ../libnautilus-private/nautilus-ui-utilities.c:380
+#, c-format
+msgid "Last year"
+msgid_plural "%d years ago"
+msgstr[0] "%d 年前"
+
 #: ../nautilus-sendto-extension/nautilus-nste.c:96
 #: ../nautilus-sendto-extension/nautilus-nste.c:101
-msgid "Send to..."
-msgstr "发送到..."
+msgid "Send to…"
+msgstr "发送到…"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:97
-msgid "Send file by mail..."
-msgstr "通过邮件发送文件..."
+msgid "Send file by mail…"
+msgstr "通过邮件发送文件…"
 
 #: ../nautilus-sendto-extension/nautilus-nste.c:102
-msgid "Send files by mail..."
-msgstr "通过邮件发送文件..."
+msgid "Send files by mail…"
+msgstr "通过邮件发送文件…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: ../src/nautilus-application.c:158 ../src/nautilus-window-slot.c:1115
+#: ../src/nautilus-application.c:168 ../src/nautilus-window-slot.c:1144
 msgid "Oops! Something went wrong."
 msgstr "糟糕！出错了。"
 
-#: ../src/nautilus-application.c:160
+#: ../src/nautilus-application.c:170
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -2549,7 +2650,7 @@ msgstr ""
 "无法建立需要的文件夹，请创建以下文件夹，或设置好权限以便创建该文件夹：\n"
 "%s"
 
-#: ../src/nautilus-application.c:165
+#: ../src/nautilus-application.c:175
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -2559,23 +2660,23 @@ msgstr ""
 "无法建立需要的文件夹，请创建以下文件夹，或设置好权限以便创建这些文件夹：\n"
 "%s"
 
-#: ../src/nautilus-application.c:546
+#: ../src/nautilus-application.c:572
 msgid "--check cannot be used with other options."
 msgstr "--check 无法和其他选项一起使用。"
 
-#: ../src/nautilus-application.c:553
+#: ../src/nautilus-application.c:579
 msgid "--quit cannot be used with URIs."
 msgstr "--quit 无法和 URI 一起使用。"
 
-#: ../src/nautilus-application.c:561
+#: ../src/nautilus-application.c:587
 msgid "--select must be used with at least an URI."
 msgstr "--select 至少要和一个 URI 一起使用。"
 
-#: ../src/nautilus-application.c:568
+#: ../src/nautilus-application.c:594
 msgid "--no-desktop and --force-desktop cannot be used together."
 msgstr "--no-desktop 和 --force-desktop 不能同时使用。"
 
-#: ../src/nautilus-application.c:681
+#: ../src/nautilus-application.c:707
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -2584,49 +2685,49 @@ msgstr ""
 "显示帮助时出错：\n"
 "%s"
 
-#: ../src/nautilus-application.c:820
+#: ../src/nautilus-application.c:846
 msgid "Perform a quick set of self-check tests."
 msgstr "执行一组快速自检测试。"
 
-#: ../src/nautilus-application.c:827
+#: ../src/nautilus-application.c:853
 msgid "Create the initial window with the given geometry."
 msgstr "用给定的形状参数创建初始窗口。"
 
-#: ../src/nautilus-application.c:827
+#: ../src/nautilus-application.c:853
 msgid "GEOMETRY"
 msgstr "形状"
 
-#: ../src/nautilus-application.c:829
+#: ../src/nautilus-application.c:855
 msgid "Show the version of the program."
 msgstr "显示程序的版本。"
 
-#: ../src/nautilus-application.c:831
+#: ../src/nautilus-application.c:857
 msgid "Always open a new window for browsing specified URIs"
 msgstr "在浏览指定的 URI 时总是打开新窗口"
 
-#: ../src/nautilus-application.c:833
+#: ../src/nautilus-application.c:859
 msgid "Only create windows for explicitly specified URIs."
 msgstr "仅为显式指定的 URI 创建窗口。"
 
-#: ../src/nautilus-application.c:835
+#: ../src/nautilus-application.c:861
 msgid "Never manage the desktop (ignore the GSettings preference)."
 msgstr "不管理桌面(忽略 GSettings 偏好设置)。"
 
-#: ../src/nautilus-application.c:837
+#: ../src/nautilus-application.c:863
 msgid "Always manage the desktop (ignore the GSettings preference)."
 msgstr "始终管理桌面(忽略 GSettings 偏好设置)。"
 
-#: ../src/nautilus-application.c:839
+#: ../src/nautilus-application.c:865
 msgid "Quit Nautilus."
 msgstr "退出 Nautilus。"
 
-#: ../src/nautilus-application.c:841
+#: ../src/nautilus-application.c:867
 msgid "Select specified URI in parent folder."
 msgstr "在上级文件夹中选择指定的 URI。"
 
-#: ../src/nautilus-application.c:842
+#: ../src/nautilus-application.c:868
 msgid "[URI...]"
-msgstr "[URI...]"
+msgstr "[URI…]"
 
 #: ../src/nautilus-autorun-software.c:142
 #: ../src/nautilus-autorun-software.c:145
@@ -2647,18 +2748,18 @@ msgstr "无法定位程序"
 msgid "Oops! There was a problem running this software."
 msgstr "糟糕！执行这个软件时出现问题。"
 
-#: ../src/nautilus-autorun-software.c:201
+#: ../src/nautilus-autorun-software.c:200
 #, c-format
 msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
 "to run it?"
 msgstr "“%s”包含打算自动启动的软件。您是否想要运行它？"
 
-#: ../src/nautilus-autorun-software.c:205
+#: ../src/nautilus-autorun-software.c:204
 msgid "If you don't trust this location or aren't sure, press Cancel."
 msgstr "如果你不信任该位置或不确定，请按取消。"
 
-#: ../src/nautilus-autorun-software.c:240 ../src/nautilus-mime-actions.c:636
+#: ../src/nautilus-autorun-software.c:235 ../src/nautilus-mime-actions.c:637
 msgid "_Run"
 msgstr "运行(_R)"
 
@@ -2689,7 +2790,7 @@ msgid "Command"
 msgstr "命令"
 
 #. hardcode "Desktop"
-#: ../src/nautilus-desktop-window.c:195 ../src/nautilus-desktop-window.c:364
+#: ../src/nautilus-desktop-window.c:200 ../src/nautilus-desktop-window.c:369
 msgid "Desktop"
 msgstr "桌面"
 
@@ -2794,141 +2895,141 @@ msgstr "无法重命名项目。"
 msgid "Renaming “%s” to “%s”."
 msgstr "将“%s”重命名为“%s”。"
 
-#: ../src/nautilus-files-view.c:403
-msgid "Searching..."
-msgstr "正在搜索..."
+#: ../src/nautilus-files-view.c:378
+msgid "Searching…"
+msgstr "正在搜索…"
 
-#: ../src/nautilus-files-view.c:403 ../src/nautilus-image-properties-page.c:708
-#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:628
-msgid "Loading..."
-msgstr "正在加载..."
+#: ../src/nautilus-files-view.c:378 ../src/nautilus-image-properties-page.c:708
+#: ../src/nautilus-list-model.c:375 ../src/nautilus-window-slot.c:657
+msgid "Loading…"
+msgstr "正在加载…"
 
-#: ../src/nautilus-files-view.c:1093 ../src/nautilus-mime-actions.c:969
-#: ../src/nautilus-mime-actions.c:1713
+#: ../src/nautilus-files-view.c:1047 ../src/nautilus-mime-actions.c:970
+#: ../src/nautilus-mime-actions.c:1712
 msgid "Are you sure you want to open all files?"
 msgstr "您确定要打开全部文件吗？"
 
-#: ../src/nautilus-files-view.c:1095
+#: ../src/nautilus-files-view.c:1049
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "这将打开 %'d 个独立的标签页。"
 
-#: ../src/nautilus-files-view.c:1098
+#: ../src/nautilus-files-view.c:1052
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "这将打开 %'d 个独立的窗口。"
 
-#: ../src/nautilus-files-view.c:1102 ../src/nautilus-location-entry.c:270
-#: ../src/nautilus-mime-actions.c:978 ../src/nautilus-mime-actions.c:1155
-#: ../src/nautilus-mime-actions.c:1717
+#: ../src/nautilus-files-view.c:1056 ../src/nautilus-location-entry.c:270
+#: ../src/nautilus-mime-actions.c:979 ../src/nautilus-mime-actions.c:1153
+#: ../src/nautilus-mime-actions.c:1716
 msgid "_OK"
 msgstr "确定(_O)"
 
-#: ../src/nautilus-files-view.c:1573
+#: ../src/nautilus-files-view.c:1528
 msgid "Select Items Matching"
 msgstr "选择匹配的项目"
 
-#: ../src/nautilus-files-view.c:1578 ../src/nautilus-files-view.c:5282
+#: ../src/nautilus-files-view.c:1533 ../src/nautilus-files-view.c:5387
 msgid "_Select"
 msgstr "选择(_S)"
 
-#: ../src/nautilus-files-view.c:1586
+#: ../src/nautilus-files-view.c:1541
 msgid "_Pattern:"
 msgstr "模式(_P)："
 
-#: ../src/nautilus-files-view.c:1592
+#: ../src/nautilus-files-view.c:1547
 msgid "Examples: "
 msgstr "示例："
 
-#: ../src/nautilus-files-view.c:1831
+#: ../src/nautilus-files-view.c:1762
 msgid "A folder with that name already exists."
 msgstr "相同名称的文件夹已存在。"
 
-#: ../src/nautilus-files-view.c:1833
+#: ../src/nautilus-files-view.c:1764
 msgid "A file with that name already exists."
 msgstr "相同名称的文件已存在。"
 
-#: ../src/nautilus-files-view.c:1848
+#: ../src/nautilus-files-view.c:1779
 msgid "Folder names cannot contain “/”."
 msgstr "文件夹名中不能包含“/”。"
 
-#: ../src/nautilus-files-view.c:1850
+#: ../src/nautilus-files-view.c:1781
 msgid "Files names cannot contain “/”."
 msgstr "文件名中不能包含“/”。"
 
-#: ../src/nautilus-files-view.c:1853
+#: ../src/nautilus-files-view.c:1784
 msgid "A folder can not be called “.”."
 msgstr "文件夹不能命名为“.”。"
 
-#: ../src/nautilus-files-view.c:1855
+#: ../src/nautilus-files-view.c:1786
 msgid "A file can not be called “.”."
 msgstr "文件不能命名为“.”。"
 
-#: ../src/nautilus-files-view.c:1858
+#: ../src/nautilus-files-view.c:1789
 msgid "A folder can not be called “..”."
 msgstr "文件夹不能命名为“..”。"
 
-#: ../src/nautilus-files-view.c:1860
+#: ../src/nautilus-files-view.c:1791
 msgid "A file can not be called “..”."
 msgstr "文件不能命名为“..”。"
 
-#: ../src/nautilus-files-view.c:2091 ../src/nautilus-files-view.c:2159
+#: ../src/nautilus-files-view.c:2108 ../src/nautilus-files-view.c:2176
 msgid "Folder name"
 msgstr "文件夹名"
 
-#: ../src/nautilus-files-view.c:2093
+#: ../src/nautilus-files-view.c:2110
 msgid "File name"
 msgstr "文件名"
 
-#: ../src/nautilus-files-view.c:2158
+#: ../src/nautilus-files-view.c:2175
 msgid "Create"
 msgstr "创建"
 
-#: ../src/nautilus-files-view.c:2160
+#: ../src/nautilus-files-view.c:2177
 msgid "New Folder"
 msgstr "新建文件夹"
 
-#: ../src/nautilus-files-view.c:2601
+#: ../src/nautilus-files-view.c:2618
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
 msgstr ""
 "Nautilus 3.6 已废弃该文件夹，并已尝试将该配置迁移至 ~/.local/share/nautilus"
 
-#: ../src/nautilus-files-view.c:3028 ../src/nautilus-files-view.c:3063
+#: ../src/nautilus-files-view.c:3046 ../src/nautilus-files-view.c:3081
 #, c-format
 msgid "“%s” selected"
 msgstr "选中了“%s”"
 
-#: ../src/nautilus-files-view.c:3030
+#: ../src/nautilus-files-view.c:3048
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "选中了 %'d 个文件夹"
 
-#: ../src/nautilus-files-view.c:3040
+#: ../src/nautilus-files-view.c:3058
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(含有 %'d 项)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: ../src/nautilus-files-view.c:3051
+#: ../src/nautilus-files-view.c:3069
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(共含有 %'d 项)"
 
-#: ../src/nautilus-files-view.c:3066
+#: ../src/nautilus-files-view.c:3084
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "选中了 %'d 项"
 
 #. Folders selected also, use "other" terminology
-#: ../src/nautilus-files-view.c:3073
+#: ../src/nautilus-files-view.c:3091
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2938,7 +3039,7 @@ msgstr[0] "选中了其他 %'d 项"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: ../src/nautilus-files-view.c:3087
+#: ../src/nautilus-files-view.c:3105
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2950,102 +3051,102 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: ../src/nautilus-files-view.c:3111
+#: ../src/nautilus-files-view.c:3129
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: ../src/nautilus-files-view.c:5271
+#: ../src/nautilus-files-view.c:5376
 msgid "Select Move Destination"
 msgstr "选择移动的目标位置"
 
-#: ../src/nautilus-files-view.c:5273
+#: ../src/nautilus-files-view.c:5378
 msgid "Select Copy Destination"
 msgstr "选择复制的目标位置"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5729
+#: ../src/nautilus-files-view.c:5839
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "无法移除“%s”"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5756
+#: ../src/nautilus-files-view.c:5866
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "无法弹出“%s”"
 
-#: ../src/nautilus-files-view.c:5778
+#: ../src/nautilus-files-view.c:5888
 msgid "Unable to stop drive"
 msgstr "无法停止驱动器"
 
 #. Translators: %s is a file name formatted for display
-#: ../src/nautilus-files-view.c:5883
+#: ../src/nautilus-files-view.c:5993
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "无法启动“%s”"
 
-#: ../src/nautilus-files-view.c:6640
+#: ../src/nautilus-files-view.c:6736
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "从选择项目新建文件夹(%'d 个项目)"
 
-#: ../src/nautilus-files-view.c:6688
+#: ../src/nautilus-files-view.c:6784
 #, c-format
 msgid "Open With %s"
 msgstr "用 %s 打开"
 
-#: ../src/nautilus-files-view.c:6697
+#: ../src/nautilus-files-view.c:6793
 msgid "Run"
 msgstr "运行"
 
-#: ../src/nautilus-files-view.c:6699
+#: ../src/nautilus-files-view.c:6795
 msgid "Open"
 msgstr "打开"
 
-#: ../src/nautilus-files-view.c:6750
+#: ../src/nautilus-files-view.c:6846
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:19
 msgid "_Start"
 msgstr "启动(_S)"
 
-#: ../src/nautilus-files-view.c:6753 ../src/gtk/gtkplacesview.c:1648
+#: ../src/nautilus-files-view.c:6849 ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Connect"
 msgstr "连接(_C)"
 
-#: ../src/nautilus-files-view.c:6756
+#: ../src/nautilus-files-view.c:6852
 msgid "_Start Multi-disk Drive"
 msgstr "启动多磁盘驱动器(_S)"
 
-#: ../src/nautilus-files-view.c:6759
+#: ../src/nautilus-files-view.c:6855
 msgid "U_nlock Drive"
 msgstr "解锁驱动器(_N)"
 
-#: ../src/nautilus-files-view.c:6775
+#: ../src/nautilus-files-view.c:6871
 msgid "Stop Drive"
 msgstr "停止驱动器"
 
-#: ../src/nautilus-files-view.c:6778
+#: ../src/nautilus-files-view.c:6874
 msgid "_Safely Remove Drive"
 msgstr "安全移除驱动器(_S)"
 
-#: ../src/nautilus-files-view.c:6781 ../src/gtk/gtkplacesview.c:1638
+#: ../src/nautilus-files-view.c:6877 ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Disconnect"
 msgstr "断开连接(_D)"
 
-#: ../src/nautilus-files-view.c:6784
+#: ../src/nautilus-files-view.c:6880
 msgid "_Stop Multi-disk Drive"
 msgstr "停止多磁盘驱动器(_S)"
 
-#: ../src/nautilus-files-view.c:6787
+#: ../src/nautilus-files-view.c:6883
 msgid "_Lock Drive"
 msgstr "锁定驱动器(_L)"
 
-#: ../src/nautilus-files-view.c:8238
+#: ../src/nautilus-files-view.c:8369
 msgid "Content View"
 msgstr "内容视图"
 
-#: ../src/nautilus-files-view.c:8239
+#: ../src/nautilus-files-view.c:8370
 msgid "View of the current folder"
 msgstr "当前文件夹的视图"
 
@@ -3203,21 +3304,21 @@ msgstr "加载图像信息失败"
 msgid "(Empty)"
 msgstr "(空)"
 
-#: ../src/nautilus-list-view.c:1267
+#: ../src/nautilus-list-view.c:1269
 msgid "Use Default"
 msgstr "使用默认值"
 
-#: ../src/nautilus-list-view.c:1821
+#: ../src/nautilus-list-view.c:1822
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:8
 msgid "List View"
 msgstr "列表视图"
 
-#: ../src/nautilus-list-view.c:2641
+#: ../src/nautilus-list-view.c:2646
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s 可见列"
 
-#: ../src/nautilus-list-view.c:2661
+#: ../src/nautilus-list-view.c:2666
 msgid "Choose the order of information to appear in this folder:"
 msgstr "为此文件夹中要显示的信息选择顺序："
 
@@ -3227,7 +3328,7 @@ msgid "Do you want to view %d location?"
 msgid_plural "Do you want to view %d locations?"
 msgstr[0] "您想要查看这 %d 个位置吗？"
 
-#: ../src/nautilus-location-entry.c:259 ../src/nautilus-mime-actions.c:974
+#: ../src/nautilus-location-entry.c:259 ../src/nautilus-mime-actions.c:975
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
@@ -3238,7 +3339,7 @@ msgstr[0] "这将打开 %d 个独立的窗口。"
 msgid "Anything"
 msgstr "所有"
 
-#: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4199
+#: ../src/nautilus-mime-actions.c:106 ../src/nautilus-properties-window.c:4200
 msgid "Folders"
 msgstr "文件夹"
 
@@ -3266,60 +3367,60 @@ msgstr "图片"
 msgid "Text File"
 msgstr "文本文件"
 
-#: ../src/nautilus-mime-actions.c:544
+#: ../src/nautilus-mime-actions.c:545
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "链接“%s”已断。将其移动到回收站中吗？"
 
-#: ../src/nautilus-mime-actions.c:546
+#: ../src/nautilus-mime-actions.c:547
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "链接“%s”已断。"
 
-#: ../src/nautilus-mime-actions.c:552
+#: ../src/nautilus-mime-actions.c:553
 msgid "This link cannot be used because it has no target."
 msgstr "无法使用此链接，因为它没有目标。"
 
-#: ../src/nautilus-mime-actions.c:554
+#: ../src/nautilus-mime-actions.c:555
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn't exist."
 msgstr "无法使用此链接，因为其目标“%s”不存在。"
 
-#: ../src/nautilus-mime-actions.c:564
+#: ../src/nautilus-mime-actions.c:565
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:27
 msgid "Mo_ve to Trash"
 msgstr "移动到回收站(_V)"
 
-#: ../src/nautilus-mime-actions.c:624
+#: ../src/nautilus-mime-actions.c:625
 #, c-format
 msgid "Do you want to run “%s”, or display its contents?"
 msgstr "您是要运行“%s”，还是显示它的内容？"
 
-#: ../src/nautilus-mime-actions.c:626
+#: ../src/nautilus-mime-actions.c:627
 #, c-format
 msgid "“%s” is an executable text file."
 msgstr "“%s”是可执行的文本文件。"
 
-#: ../src/nautilus-mime-actions.c:632
+#: ../src/nautilus-mime-actions.c:633
 msgid "Run in _Terminal"
 msgstr "在终端中运行(_T)"
 
-#: ../src/nautilus-mime-actions.c:633
+#: ../src/nautilus-mime-actions.c:634
 msgid "_Display"
 msgstr "显示(_D)"
 
-#: ../src/nautilus-mime-actions.c:971
+#: ../src/nautilus-mime-actions.c:972
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "这将打开 %d 个独立的标签页。"
 
-#: ../src/nautilus-mime-actions.c:1036
+#: ../src/nautilus-mime-actions.c:1037
 #, c-format
 msgid "Could not display “%s”."
 msgstr "无法显示“%s”。"
 
-#: ../src/nautilus-mime-actions.c:1134
+#: ../src/nautilus-mime-actions.c:1135
 msgid "The file is of an unknown type"
 msgstr "文件是未知类型"
 
@@ -3328,19 +3429,19 @@ msgstr "文件是未知类型"
 msgid "There is no application installed for “%s” files"
 msgstr "没有安装用于“%s”文件的应用程序"
 
-#: ../src/nautilus-mime-actions.c:1153
+#: ../src/nautilus-mime-actions.c:1151
 msgid "_Select Application"
 msgstr "选择程序(_S)"
 
-#: ../src/nautilus-mime-actions.c:1189
+#: ../src/nautilus-mime-actions.c:1187
 msgid "There was an internal error trying to search for applications:"
 msgstr "试图搜索应用程序时发生了内部错误："
 
-#: ../src/nautilus-mime-actions.c:1191
+#: ../src/nautilus-mime-actions.c:1189
 msgid "Unable to search for application"
 msgstr "无法搜索应用程序"
 
-#: ../src/nautilus-mime-actions.c:1314
+#: ../src/nautilus-mime-actions.c:1312
 #, c-format
 msgid ""
 "There is no application installed for “%s” files.\n"
@@ -3349,11 +3450,11 @@ msgstr ""
 "没有安装处理“%s”文件的应用程序。\n"
 "您是否想要搜索可打开此文件的应用程序?"
 
-#: ../src/nautilus-mime-actions.c:1464
+#: ../src/nautilus-mime-actions.c:1462
 msgid "Untrusted application launcher"
 msgstr "未信任的应用程序启动器"
 
-#: ../src/nautilus-mime-actions.c:1467
+#: ../src/nautilus-mime-actions.c:1465
 #, c-format
 msgid ""
 "The application launcher “%s” has not been marked as trusted. If you do not "
@@ -3362,50 +3463,50 @@ msgstr ""
 "应用程序启动器 “%s“ 还没有被标记为 信任。如果您不知道这个文件的来源，那么启动"
 "它可能会不安全。"
 
-#: ../src/nautilus-mime-actions.c:1482
+#: ../src/nautilus-mime-actions.c:1480
 msgid "_Launch Anyway"
 msgstr "仍然启动(_L)"
 
-#: ../src/nautilus-mime-actions.c:1485
+#: ../src/nautilus-mime-actions.c:1483
 msgid "Mark as _Trusted"
 msgstr "标记为信任(_T)"
 
-#: ../src/nautilus-mime-actions.c:1714
+#: ../src/nautilus-mime-actions.c:1713
 #, c-format
 msgid "This will open %d separate application."
 msgid_plural "This will open %d separate applications."
 msgstr[0] "这将打开 %d 个独立的应用程序。"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/nautilus-mime-actions.c:1791 ../src/nautilus-mime-actions.c:2055
-#: ../src/gtk/gtkplacesview.c:1161 ../src/gtk/gtkplacesview.c:1204
-#: ../src/gtk/gtkplacesview.c:1251
+#: ../src/nautilus-mime-actions.c:1790 ../src/nautilus-mime-actions.c:2054
+#: ../src/gtk/nautilusgtkplacesview.c:1162
+#: ../src/gtk/nautilusgtkplacesview.c:1235
 msgid "Unable to access location"
 msgstr "无法访问位置"
 
-#: ../src/nautilus-mime-actions.c:2134
+#: ../src/nautilus-mime-actions.c:2133
 msgid "Unable to start location"
 msgstr "无法启动位置"
 
-#: ../src/nautilus-mime-actions.c:2218
+#: ../src/nautilus-mime-actions.c:2217
 #, c-format
 msgid "Opening “%s”."
 msgstr "正在打开“%s”。"
 
-#: ../src/nautilus-mime-actions.c:2221
+#: ../src/nautilus-mime-actions.c:2220
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
 msgstr[0] "正在打开 %d 项。"
 
-#: ../src/nautilus-notebook.c:322
+#: ../src/nautilus-notebook.c:321
 msgid "Close tab"
 msgstr "关闭标签页"
 
 #. Translators: this is referred to captions under icons.
 #: ../src/nautilus-preferences-window.c:151
-#: ../src/nautilus-properties-window.c:3772
-#: ../src/nautilus-properties-window.c:3799
+#: ../src/nautilus-properties-window.c:3773
+#: ../src/nautilus-properties-window.c:3800
 msgid "None"
 msgstr "无"
 
@@ -3429,80 +3530,80 @@ msgstr[0] "有 %'d 项文件操作正在进行中"
 msgid "All file operations have been successfully completed"
 msgstr "所有文件操作都已成功执行"
 
-#: ../src/nautilus-properties-window.c:491
+#: ../src/nautilus-properties-window.c:492
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "您不能一次指定多个自定义图标！"
 
-#: ../src/nautilus-properties-window.c:492
+#: ../src/nautilus-properties-window.c:493
 msgid "Please drop just one image to set a custom icon."
 msgstr "请一次只拖放一个图像文件来设置自定义图标。"
 
-#: ../src/nautilus-properties-window.c:503
+#: ../src/nautilus-properties-window.c:504
 msgid "The file that you dropped is not local."
 msgstr "您拖放的文件不是本地文件。"
 
-#: ../src/nautilus-properties-window.c:504
-#: ../src/nautilus-properties-window.c:510
+#: ../src/nautilus-properties-window.c:505
+#: ../src/nautilus-properties-window.c:511
 msgid "You can only use local images as custom icons."
 msgstr "您只能使用本地的图像文件作为自定义图标。"
 
-#: ../src/nautilus-properties-window.c:509
+#: ../src/nautilus-properties-window.c:510
 msgid "The file that you dropped is not an image."
 msgstr "您拖放的文件不是图像文件。"
 
-#: ../src/nautilus-properties-window.c:624
+#: ../src/nautilus-properties-window.c:625
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "名称(_N)："
 
-#: ../src/nautilus-properties-window.c:819
+#: ../src/nautilus-properties-window.c:820
 #, c-format
 msgid "Properties"
 msgstr "属性"
 
 #. To translators: %s is the name of the folder.
-#: ../src/nautilus-properties-window.c:829
+#: ../src/nautilus-properties-window.c:830
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
 msgstr "%s 属性"
 
 #. To translators: %s is the name of the file.
-#: ../src/nautilus-properties-window.c:832
+#: ../src/nautilus-properties-window.c:833
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
 msgstr "%s 属性"
 
-#: ../src/nautilus-properties-window.c:1226
+#: ../src/nautilus-properties-window.c:1227
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
-#: ../src/nautilus-properties-window.c:1428
+#: ../src/nautilus-properties-window.c:1429
 msgid "Cancel Group Change?"
 msgstr "取消更改组？"
 
-#: ../src/nautilus-properties-window.c:1825
+#: ../src/nautilus-properties-window.c:1826
 msgid "Cancel Owner Change?"
 msgstr "取消更改所有者？"
 
-#: ../src/nautilus-properties-window.c:2124
+#: ../src/nautilus-properties-window.c:2125
 msgid "nothing"
 msgstr "无内容"
 
-#: ../src/nautilus-properties-window.c:2126
+#: ../src/nautilus-properties-window.c:2127
 msgid "unreadable"
 msgstr "不可读"
 
-#: ../src/nautilus-properties-window.c:2134
+#: ../src/nautilus-properties-window.c:2135
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
 msgstr[0] "%'d 项，共 %s"
 
-#: ../src/nautilus-properties-window.c:2143
+#: ../src/nautilus-properties-window.c:2144
 msgid "(some contents unreadable)"
 msgstr "(某些内容不可读)"
 
@@ -3512,198 +3613,199 @@ msgstr "(某些内容不可读)"
 #. * 2-line value. Maybe there's a better way to do this, but I
 #. * couldn't think of one.
 #.
-#: ../src/nautilus-properties-window.c:2160
+#: ../src/nautilus-properties-window.c:2161
 msgid "Contents:"
 msgstr "内容："
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: ../src/nautilus-properties-window.c:2770
+#: ../src/nautilus-properties-window.c:2771
 msgid "used"
 msgstr "已用"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: ../src/nautilus-properties-window.c:2780
+#: ../src/nautilus-properties-window.c:2781
 msgid "free"
 msgstr "剩余"
 
-#: ../src/nautilus-properties-window.c:2782
+#: ../src/nautilus-properties-window.c:2783
 msgid "Total capacity:"
 msgstr "总容量："
 
-#: ../src/nautilus-properties-window.c:2785
+#: ../src/nautilus-properties-window.c:2786
 msgid "Filesystem type:"
 msgstr "文件系统类型："
 
-#: ../src/nautilus-properties-window.c:2921
+#: ../src/nautilus-properties-window.c:2922
 msgid "Basic"
 msgstr "基本"
 
-#: ../src/nautilus-properties-window.c:2986
+#: ../src/nautilus-properties-window.c:2987
 msgid "Link target:"
 msgstr "链接目标："
 
-#: ../src/nautilus-properties-window.c:3005
+#: ../src/nautilus-properties-window.c:3006
 msgid "Parent Folder:"
 msgstr "父文件夹："
 
-#: ../src/nautilus-properties-window.c:3013
+#: ../src/nautilus-properties-window.c:3014
 msgid "Volume:"
 msgstr "卷："
 
-#: ../src/nautilus-properties-window.c:3022
+#: ../src/nautilus-properties-window.c:3023
 msgid "Accessed:"
 msgstr "访问："
 
-#: ../src/nautilus-properties-window.c:3026
+#: ../src/nautilus-properties-window.c:3027
 msgid "Modified:"
 msgstr "修改："
 
-#: ../src/nautilus-properties-window.c:3036
+#: ../src/nautilus-properties-window.c:3037
 msgid "Free space:"
 msgstr "剩余空间："
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: ../src/nautilus-properties-window.c:3689
-#: ../src/nautilus-properties-window.c:3700
-#: ../src/nautilus-properties-window.c:3712
+#: ../src/nautilus-properties-window.c:3690
+#: ../src/nautilus-properties-window.c:3701
+#: ../src/nautilus-properties-window.c:3713
 msgid "no "
 msgstr "无"
 
-#: ../src/nautilus-properties-window.c:3692
+#: ../src/nautilus-properties-window.c:3693
 msgid "list"
 msgstr "列表"
 
-#: ../src/nautilus-properties-window.c:3694
+#: ../src/nautilus-properties-window.c:3695
 msgid "read"
 msgstr "读取"
 
-#: ../src/nautilus-properties-window.c:3703
+#: ../src/nautilus-properties-window.c:3704
 msgid "create/delete"
 msgstr "创建/删除"
 
-#: ../src/nautilus-properties-window.c:3705
+#: ../src/nautilus-properties-window.c:3706
 msgid "write"
 msgstr "写入"
 
-#: ../src/nautilus-properties-window.c:3714
+#: ../src/nautilus-properties-window.c:3715
 msgid "access"
 msgstr "访问"
 
-#: ../src/nautilus-properties-window.c:3779
+#: ../src/nautilus-properties-window.c:3780
 msgid "List files only"
 msgstr "只能列出文件"
 
-#: ../src/nautilus-properties-window.c:3785
+#: ../src/nautilus-properties-window.c:3786
 msgid "Access files"
 msgstr "访问文件"
 
-#: ../src/nautilus-properties-window.c:3791
+#: ../src/nautilus-properties-window.c:3792
 msgid "Create and delete files"
 msgstr "创建和删除文件"
 
-#: ../src/nautilus-properties-window.c:3806
+#: ../src/nautilus-properties-window.c:3807
 msgid "Read-only"
 msgstr "只读"
 
-#: ../src/nautilus-properties-window.c:3812
+#: ../src/nautilus-properties-window.c:3813
 msgid "Read and write"
 msgstr "读写"
 
-#: ../src/nautilus-properties-window.c:3839
+#: ../src/nautilus-properties-window.c:3840
 msgid "Access:"
 msgstr "访问："
 
-#: ../src/nautilus-properties-window.c:3841
+#: ../src/nautilus-properties-window.c:3842
 msgid "Folder access:"
 msgstr "文件夹访问："
 
-#: ../src/nautilus-properties-window.c:3843
+#: ../src/nautilus-properties-window.c:3844
 msgid "File access:"
 msgstr "文件访问："
 
-#: ../src/nautilus-properties-window.c:3932
+#: ../src/nautilus-properties-window.c:3933
 msgid "_Owner:"
 msgstr "所有者(_O)："
 
-#: ../src/nautilus-properties-window.c:3940
-#: ../src/nautilus-properties-window.c:4202
+#: ../src/nautilus-properties-window.c:3941
+#: ../src/nautilus-properties-window.c:4203
 msgid "Owner:"
 msgstr "所有者："
 
-#: ../src/nautilus-properties-window.c:3962
+#: ../src/nautilus-properties-window.c:3963
 msgid "_Group:"
 msgstr "组(_G)："
 
-#: ../src/nautilus-properties-window.c:3970
-#: ../src/nautilus-properties-window.c:4216
+#: ../src/nautilus-properties-window.c:3971
+#: ../src/nautilus-properties-window.c:4217
 msgid "Group:"
 msgstr "组："
 
-#: ../src/nautilus-properties-window.c:3991
+#: ../src/nautilus-properties-window.c:3992
 msgid "Others"
 msgstr "其他"
 
-#: ../src/nautilus-properties-window.c:4006
+#: ../src/nautilus-properties-window.c:4007
 msgid "Execute:"
 msgstr "执行："
 
-#: ../src/nautilus-properties-window.c:4009
+#: ../src/nautilus-properties-window.c:4010
 msgid "Allow _executing file as program"
 msgstr "允许作为程序执行文件(_E)"
 
-#: ../src/nautilus-properties-window.c:4185
+#: ../src/nautilus-properties-window.c:4186
 msgid "Change Permissions for Enclosed Files"
 msgstr "更改包含文件的权限"
 
-#: ../src/nautilus-properties-window.c:4189
+#: ../src/nautilus-properties-window.c:4190
 msgid "Change"
 msgstr "更改"
 
-#: ../src/nautilus-properties-window.c:4230
+#: ../src/nautilus-properties-window.c:4231
 msgid "Others:"
 msgstr "其他："
 
-#: ../src/nautilus-properties-window.c:4271
+#: ../src/nautilus-properties-window.c:4272
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "您不是所有者，所以您不能更改这些权限。"
 
-#: ../src/nautilus-properties-window.c:4286
+#: ../src/nautilus-properties-window.c:4287
 msgid "Security context:"
 msgstr "安全上下文："
 
-#: ../src/nautilus-properties-window.c:4301
-msgid "Change Permissions for Enclosed Files..."
-msgstr "更改附加文件的权限"
+#: ../src/nautilus-properties-window.c:4302
+msgid "Change Permissions for Enclosed Files…"
+msgstr "更改包含文件的权限…"
 
-#: ../src/nautilus-properties-window.c:4311
+#: ../src/nautilus-properties-window.c:4312
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "无法确定“%s”的权限。"
 
-#: ../src/nautilus-properties-window.c:4314
+#: ../src/nautilus-properties-window.c:4315
 msgid "The permissions of the selected file could not be determined."
 msgstr "无法确定选中文件的权限。"
 
-#: ../src/nautilus-properties-window.c:4562
+#: ../src/nautilus-properties-window.c:4565
 msgid "Open With"
 msgstr "打开方式"
 
-#: ../src/nautilus-properties-window.c:4883
+#: ../src/nautilus-properties-window.c:4894
 msgid "Creating Properties window."
 msgstr "正在创建属性窗口。"
 
-#: ../src/nautilus-properties-window.c:5167
+#: ../src/nautilus-properties-window.c:5178
 msgid "Select Custom Icon"
 msgstr "选择自定义图标"
 
-#: ../src/nautilus-properties-window.c:5169
+#: ../src/nautilus-properties-window.c:5180
 msgid "_Revert"
 msgstr "还原(_R)"
 
 #. Open item is always present
-#: ../src/nautilus-properties-window.c:5171 ../src/gtk/gtkplacesview.c:1593
+#: ../src/nautilus-properties-window.c:5182
+#: ../src/gtk/nautilusgtkplacesview.c:1577
 msgid "_Open"
 msgstr "打开(_O)"
 
@@ -3736,10 +3838,15 @@ msgstr "显示列表以选择日期"
 msgid "Show a calendar to select the date"
 msgstr "显示日历以选择日期"
 
+#. Add the no date filter element first
+#: ../src/nautilus-search-popover.c:387
+msgid "Any time"
+msgstr "任何时间"
+
 #. Other types
 #: ../src/nautilus-search-popover.c:476
-msgid "Other Type..."
-msgstr "其他类型..."
+msgid "Other Type…"
+msgstr "其他类型…"
 
 #: ../src/nautilus-search-popover.c:536
 msgid "Select type"
@@ -3751,8 +3858,8 @@ msgstr "选择"
 
 #: ../src/nautilus-search-popover.c:625
 #: ../src/resources/ui/nautilus-search-popover.ui.h:3
-msgid "Select Dates..."
-msgstr "选择日期..."
+msgid "Select Dates…"
+msgstr "选择日期…"
 
 #. trash
 #: ../src/nautilus-shell-search-provider.c:297 ../src/nautilus-trash-bar.c:198
@@ -3762,7 +3869,7 @@ msgstr "回收站"
 
 #: ../src/nautilus-special-location-bar.c:51
 msgid "Files in this folder will appear in the New Document menu."
-msgstr "该文件夹中所有的文件都将显示在“新建文档”菜单中。"
+msgstr "该文件夹中所有的可执行文件都将显示在“新建文档”菜单中。"
 
 #: ../src/nautilus-special-location-bar.c:54
 msgid "Executable files in this folder will appear in the Scripts menu."
@@ -3785,50 +3892,50 @@ msgstr "清空(_E)"
 msgid "Delete all items in the Trash"
 msgstr "删除回收站中的所有项目"
 
-#: ../src/nautilus-window.c:1316
+#: ../src/nautilus-window.c:1318
 msgid "_Properties"
 msgstr "属性(_P)"
 
-#: ../src/nautilus-window.c:1326
-msgid "_Format..."
-msgstr "格式化(_F)..."
+#: ../src/nautilus-window.c:1328
+msgid "_Format…"
+msgstr "格式化(_F)…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: ../src/nautilus-window.c:1582
+#: ../src/nautilus-window.c:1584
 #, c-format
 msgid "“%s” deleted"
 msgstr "已删除“%s”"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: ../src/nautilus-window.c:1587
+#: ../src/nautilus-window.c:1589
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "已删除 %d 个文件"
 
-#: ../src/nautilus-window.c:1687
+#: ../src/nautilus-window.c:1691
 #, c-format
 msgid "Open %s"
 msgstr "打开 %s"
 
-#: ../src/nautilus-window.c:1775
+#: ../src/nautilus-window.c:1779
 msgid "_New Tab"
 msgstr "新建标签页(_N)"
 
-#: ../src/nautilus-window.c:1785
+#: ../src/nautilus-window.c:1789
 msgid "Move Tab _Left"
 msgstr "左移标签页(_L)"
 
-#: ../src/nautilus-window.c:1793
+#: ../src/nautilus-window.c:1797
 msgid "Move Tab _Right"
 msgstr "右移标签页(_R)"
 
-#: ../src/nautilus-window.c:1804
+#: ../src/nautilus-window.c:1808
 msgid "_Close Tab"
 msgstr "关闭标签页(_C)"
 
-#: ../src/nautilus-window.c:2724
+#: ../src/nautilus-window.c:2728
 msgid "Access and organize your files."
 msgstr "访问和组织你的文件。"
 
@@ -3836,7 +3943,7 @@ msgstr "访问和组织你的文件。"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: ../src/nautilus-window.c:2733
+#: ../src/nautilus-window.c:2737
 msgid "translator-credits"
 msgstr ""
 "Wang Jian <lark@linux.net.cn>\n"
@@ -3855,33 +3962,33 @@ msgstr ""
 "Mingye Wang <arthur2e5@gmail.com>\n"
 "Jeff Bai <jeffbai@aosc.xyz>"
 
-#: ../src/nautilus-window-slot.c:1119
+#: ../src/nautilus-window-slot.c:1148
 msgid "Unable to display the contents of this folder."
 msgstr "无法显示该文件夹的内容。"
 
-#: ../src/nautilus-window-slot.c:1121
+#: ../src/nautilus-window-slot.c:1150
 msgid "This location doesn't appear to be a folder."
 msgstr "该位置似乎不是文件夹。"
 
-#: ../src/nautilus-window-slot.c:1126
+#: ../src/nautilus-window-slot.c:1155
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "无法找到请求的文件。请检查拼写后重试。"
 
-#: ../src/nautilus-window-slot.c:1131
+#: ../src/nautilus-window-slot.c:1160
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "不支持位置“%s”。"
 
-#: ../src/nautilus-window-slot.c:1134
+#: ../src/nautilus-window-slot.c:1163
 msgid "Unable to handle this kind of location."
 msgstr "无法处理这种类型的位置。"
 
-#: ../src/nautilus-window-slot.c:1139
+#: ../src/nautilus-window-slot.c:1168
 msgid "Unable to access the requested location."
 msgstr "无法访问请求的位置。"
 
-#: ../src/nautilus-window-slot.c:1142
+#: ../src/nautilus-window-slot.c:1171
 msgid "Don't have permission to access the requested location."
 msgstr "没有访问所要求文件夹的权限。"
 
@@ -3890,77 +3997,23 @@ msgstr "没有访问所要求文件夹的权限。"
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: ../src/nautilus-window-slot.c:1150
+#: ../src/nautilus-window-slot.c:1179
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr "无法找到请求的位置。请检查拼写或网络设置。"
 
-#: ../src/nautilus-window-slot.c:1161
+#: ../src/nautilus-window-slot.c:1190
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "无法处理的错误消息：%s"
 
-#: ../src/nautilus-window-slot.c:1309
+#: ../src/nautilus-window-slot.c:1338
 #, c-format
 msgid "Unable to load location"
 msgstr "无法加载位置"
 
-#: ../src/nautilus-x-content-bar.c:92
-msgid "Audio CD"
-msgstr "音频 CD"
-
-#: ../src/nautilus-x-content-bar.c:94
-msgid "Audio DVD"
-msgstr "音频 DVD"
-
-#: ../src/nautilus-x-content-bar.c:96
-msgid "Video DVD"
-msgstr "视频 DVD"
-
-#: ../src/nautilus-x-content-bar.c:98
-msgid "Video CD"
-msgstr "视频 CD"
-
-#: ../src/nautilus-x-content-bar.c:100
-msgid "Super Video CD"
-msgstr "超级视频 CD"
-
-#: ../src/nautilus-x-content-bar.c:102
-msgid "Photo CD"
-msgstr "相片 CD"
-
-#: ../src/nautilus-x-content-bar.c:104
-msgid "Picture CD"
-msgstr "图片 CD"
-
-#: ../src/nautilus-x-content-bar.c:106 ../src/nautilus-x-content-bar.c:139
-msgid "Contains digital photos"
-msgstr "包含数码相片"
-
-#: ../src/nautilus-x-content-bar.c:108
-msgid "Contains music"
-msgstr "包含音乐"
-
-#: ../src/nautilus-x-content-bar.c:110
-msgid "Contains software"
-msgstr "包含软件"
-
-#. fallback to generic greeting
-#: ../src/nautilus-x-content-bar.c:113
-#, c-format
-msgid "Detected as “%s”"
-msgstr "检测为“%s”"
-
-#: ../src/nautilus-x-content-bar.c:135
-msgid "Contains music and photos"
-msgstr "包含音乐和相片"
-
-#: ../src/nautilus-x-content-bar.c:137
-msgid "Contains photos and music"
-msgstr "包含相片和音乐"
-
-#: ../src/nautilus-x-content-bar.c:201
+#: ../src/nautilus-x-content-bar.c:124
 msgid "Open with:"
 msgstr "打开方式："
 
@@ -4328,12 +4381,12 @@ msgid "Open With Other _Application"
 msgstr "使用其他程序打开(_A)"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:16
-#: ../src/gtk/gtkplacesview.c:1648
+#: ../src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Mount"
 msgstr "挂载(_M)"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:17
-#: ../src/gtk/gtkplacesview.c:1638
+#: ../src/gtk/nautilusgtkplacesview.c:1622
 msgid "_Unmount"
 msgstr "卸载(_U)"
 
@@ -4362,12 +4415,12 @@ msgid "_Paste Into Folder"
 msgstr "粘贴到文件夹中(_P)"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:25
-msgid "Move to..."
-msgstr "移动到..."
+msgid "Move to…"
+msgstr "移动到…"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:26
-msgid "Copy to..."
-msgstr "复制到..."
+msgid "Copy to…"
+msgstr "复制到…"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:28
 msgid "_Delete from Trash"
@@ -4386,8 +4439,8 @@ msgid "_Restore From Trash"
 msgstr "从回收站中恢复(_R)"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:32
-msgid "Resize Icon..."
-msgstr "缩放图标..."
+msgid "Resize Icon…"
+msgstr "缩放图标…"
 
 #: ../src/resources/ui/nautilus-files-view-context-menus.ui.h:33
 msgid "Restore Icon's Original Size"
@@ -4429,7 +4482,7 @@ msgid "No Results Found"
 msgstr "未找到结果"
 
 #: ../src/resources/ui/nautilus-no-search-results.ui.h:2
-#: ../src/gtk/gtkplacesview.ui.h:5
+#: ../src/gtk/nautilusgtkplacesview.ui.h:5
 msgid "Try a different search"
 msgstr "尝试不同的搜索"
 
@@ -4551,14 +4604,17 @@ msgstr ""
 "信息量会随着缩放级别变化。"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:32
+msgctxt "the n-th position of an icon caption"
 msgid "Second"
 msgstr "第二"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:33
+msgctxt "the n-th position of an icon caption"
 msgid "Third"
 msgstr "第三"
 
 #: ../src/resources/ui/nautilus-preferences-window.ui.h:34
+msgctxt "the n-th position of an icon caption"
 msgid "First"
 msgstr "第一"
 
@@ -4703,8 +4759,8 @@ msgid "Clear the currently selected date"
 msgstr "清除当前选定的日期"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:6
-msgid "Since..."
-msgstr "起始日期..."
+msgid "Since…"
+msgstr "起始日期…"
 
 #: ../src/resources/ui/nautilus-search-popover.ui.h:7
 msgid "Last _modified"
@@ -4809,8 +4865,8 @@ msgid "Re_verse Order"
 msgstr "逆序(_V)"
 
 #: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:10
-msgid "_Visible Columns..."
-msgstr "可见列(_V)..."
+msgid "_Visible Columns…"
+msgstr "可见列(_V)…"
 
 #: ../src/resources/ui/nautilus-toolbar-view-menu.ui.h:11
 msgid "Show _Hidden Files"
@@ -4828,84 +4884,521 @@ msgstr "停止(_O)"
 msgid "_Files"
 msgstr "文件(_F)"
 
-#: ../src/gtk/gtkplacesview.c:879
+#: ../src/gtk/nautilusgtkplacesview.c:880
 msgid "Searching for network locations"
 msgstr "搜索网络位置"
 
-#: ../src/gtk/gtkplacesview.c:886
+#: ../src/gtk/nautilusgtkplacesview.c:887
 msgid "No network locations found"
 msgstr "未找到网络位置"
 
-#: ../src/gtk/gtkplacesview.c:1051
+#: ../src/gtk/nautilusgtkplacesview.c:1052
 msgid "Computer"
 msgstr "计算机"
 
 #. Restore from Cancel to Connect
-#: ../src/gtk/gtkplacesview.c:1178 ../src/gtk/gtkplacesview.ui.h:7
+#: ../src/gtk/nautilusgtkplacesview.c:1179
+#: ../src/gtk/nautilusgtkplacesview.ui.h:7
 msgid "Con_nect"
 msgstr "连接(_N)"
 
 #. if it wasn't cancelled show a dialog
-#: ../src/gtk/gtkplacesview.c:1314
+#: ../src/gtk/nautilusgtkplacesview.c:1298
 msgid "Unable to unmount volume"
 msgstr "无法卸载卷"
 
 #. Allow to cancel the operation
-#: ../src/gtk/gtkplacesview.c:1396
+#: ../src/gtk/nautilusgtkplacesview.c:1380
 msgid "Cance_l"
 msgstr "取消(_L)"
 
-#: ../src/gtk/gtkplacesview.c:1603
+#: ../src/gtk/nautilusgtkplacesview.c:1587
 msgid "Open in New _Tab"
 msgstr "在新标签页中打开(_T)"
 
-#: ../src/gtk/gtkplacesview.c:1614
+#: ../src/gtk/nautilusgtkplacesview.c:1598
 msgid "Open in New _Window"
 msgstr "在新窗口中打开(_W)"
 
-#: ../src/gtk/gtkplacesview.c:1813
+#: ../src/gtk/nautilusgtkplacesview.c:1797
 msgid "Unable to get remote server location"
 msgstr "无法获取远程服务器地址"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "Networks"
 msgstr "网络"
 
-#: ../src/gtk/gtkplacesview.c:1950 ../src/gtk/gtkplacesview.c:1959
+#: ../src/gtk/nautilusgtkplacesview.c:1934
+#: ../src/gtk/nautilusgtkplacesview.c:1943
 msgid "On This Computer"
 msgstr "位于本机"
 
-#. Translators: respectively, free and total space of the drive
-#: ../src/gtk/gtkplacesviewrow.c:110
+#. Translators: respectively, free and total space of the drive. The plural form
+#. * should be based on the free space available.
+#. * i.e. 1 GB / 24 GB available.
+#.
+#: ../src/gtk/nautilusgtkplacesviewrow.c:134
 #, c-format
 msgid "%s / %s available"
-msgstr "%s / %s 可用"
+msgid_plural "%s / %s available"
+msgstr[0] "%s / %s 可用"
 
-#: ../src/gtk/gtkplacesviewrow.c:449
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
 msgid "Disconnect"
 msgstr "断开连接"
 
-#: ../src/gtk/gtkplacesviewrow.c:449 ../src/gtk/gtkplacesviewrow.ui.h:1
+#: ../src/gtk/nautilusgtkplacesviewrow.c:472
+#: ../src/gtk/nautilusgtkplacesviewrow.ui.h:1
 msgid "Unmount"
 msgstr "卸载"
 
 #. Translators: Server as any successfully connected network address
-#: ../src/gtk/gtkplacesview.ui.h:2
+#: ../src/gtk/nautilusgtkplacesview.ui.h:2
 msgid "No recent servers found"
 msgstr "找不到最近的服务器"
 
-#: ../src/gtk/gtkplacesview.ui.h:3
+#: ../src/gtk/nautilusgtkplacesview.ui.h:3
 msgid "Recent Servers"
 msgstr "最近的服务器"
 
-#: ../src/gtk/gtkplacesview.ui.h:4
+#: ../src/gtk/nautilusgtkplacesview.ui.h:4
 msgid "No results found"
 msgstr "未找到结果"
 
-#: ../src/gtk/gtkplacesview.ui.h:6
+#: ../src/gtk/nautilusgtkplacesview.ui.h:6
 msgid "Connect to _Server"
 msgstr "连接到服务器(_S)"
 
-#: ../src/gtk/gtkplacesview.ui.h:8
-msgid "Enter server address..."
-msgstr "输入服务器地址..."
+#: ../src/gtk/nautilusgtkplacesview.ui.h:8
+msgid "Enter server address…"
+msgstr "输入服务器地址…"
+
+#~ msgid "application-x-executable"
+#~ msgstr "application-x-executable"
+
+#~ msgid "org.gnome.Nautilus"
+#~ msgstr "org.gnome.Nautilus"
+
+#~ msgid ""
+#~ "Whether to extract compressed files instead of opening them in another "
+#~ "application"
+#~ msgstr "是否提取压缩文件而不是在其他应用程序中打开它们"
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will automatically extract compressed files "
+#~ "instead of opening them in another application"
+#~ msgstr ""
+#~ "如果设为 true，Nautilus 将会自动提取压缩文件来而不是在其他应用程序中打开它"
+#~ "们"
+
+#~ msgid "Default format for compressing files"
+#~ msgstr "压缩文件的默认格式"
+
+#~ msgid "The format that will be selected when compressing files."
+#~ msgstr "当压缩文件时会使用的格式。"
+
+#~ msgid "“%s” would not be a unique new name."
+#~ msgstr "“%s”将不会是唯一的新名称。"
+
+#~ msgid "“%s” would conflict with an existing file."
+#~ msgstr "“%s”将会跟一个现有文件冲突。"
+
+#~ msgid "Rename %d Folder"
+#~ msgid_plural "Rename %d Folders"
+#~ msgstr[0] "重命名 %d 个文件夹"
+
+#~ msgid "Rename %d File"
+#~ msgid_plural "Rename %d Files"
+#~ msgstr[0] "重命名 %d 个文件"
+
+#~ msgid "Original Name (Ascending)"
+#~ msgstr "原名称(升序)"
+
+#~ msgid "Original Name (Descending)"
+#~ msgstr "原名称(降序)"
+
+#~ msgid "First Modified"
+#~ msgstr "最先修改"
+
+#~ msgid "Last Modified"
+#~ msgstr "最后修改"
+
+#~ msgid "First Created"
+#~ msgstr "最先创建"
+
+#~ msgid "Last Created"
+#~ msgstr "最后创建"
+
+#~ msgid "Camera model"
+#~ msgstr "照相机型号"
+
+#~ msgid "Creation date"
+#~ msgstr "创建日期"
+
+#~ msgid "Season number"
+#~ msgstr "剧季编号"
+
+#~ msgid "Episode number"
+#~ msgstr "剧集编号"
+
+#~ msgid "Track number"
+#~ msgstr "曲目编号"
+
+#~ msgid "Artist name"
+#~ msgstr "艺术家名称"
+
+#~ msgid "Album name"
+#~ msgstr "专辑名称"
+
+#~ msgid "Original file name"
+#~ msgstr "原文件名称"
+
+#~ msgid "1, 2, 3"
+#~ msgstr "1, 2, 3"
+
+#~ msgid "01, 02, 03"
+#~ msgstr "01, 02, 03"
+
+#~ msgid "001, 002, 003"
+#~ msgstr "001, 002, 003"
+
+#~ msgid "Archive names cannot contain “/”."
+#~ msgstr "存档名中不能包含“/”。"
+
+#~ msgid "An archive cannot be called “.”."
+#~ msgstr "存档文件不能命名为“.”。"
+
+#~ msgid "An archive cannot be called “..”."
+#~ msgstr "存档文件不能命名为“..”。"
+
+#~ msgid "There was an error deleting the folder “%B”."
+#~ msgstr "删除文件夹“%B”时出错。"
+
+#~ msgid "You do not have sufficient permissions to delete the folder “%B”."
+#~ msgstr "您没有足够的权限来删除文件夹“%B”。"
+
+#~ msgid "You do not have sufficient permissions to delete the file “%B”."
+#~ msgstr "您没有足够的权限来删除文件“%B”。"
+
+#~ msgid "Preparing to compress %'d file"
+#~ msgid_plural "Preparing to compress %'d files"
+#~ msgstr[0] "准备压缩 %'d 个文件"
+
+#~ msgid "Error while compressing files."
+#~ msgstr "压缩文件时出错。"
+
+#~ msgid "Could not remove the already existing folder %F."
+#~ msgstr "无法移除已有文件夹 %F。"
+
+#~ msgid "Verifying destination"
+#~ msgstr "正在验证目标"
+
+#~ msgid "Extracting “%B”"
+#~ msgstr "正在提取“%B”"
+
+#~ msgid "Error extracting “%B”"
+#~ msgstr "提取“%B”时出错"
+
+#~ msgid "There was an error while extracting “%B”."
+#~ msgstr "提取“%B”时出错。"
+
+#~ msgid "Extracted “%B” to “%B”"
+#~ msgstr "已将“%B”提取到“%B”"
+
+#~ msgid "Extracted %'d file to “%B”"
+#~ msgid_plural "Extracted %'d files to “%B”"
+#~ msgstr[0] "已将 %'d 个文件提取到“%B”"
+
+#~ msgid "Preparing to extract"
+#~ msgstr "准备提取"
+
+#~ msgid "Extracting Files"
+#~ msgstr "正在提取文件"
+
+#~ msgid "Compressing “%B” into “%B”"
+#~ msgstr "正在将“%B”压缩成“%B”"
+
+#~ msgid "Compressing %'d file into “%B”"
+#~ msgid_plural "Compressing %'d files into “%B”"
+#~ msgstr[0] "正在将 %'d 个文件压缩成“%B”"
+
+#~ msgid "Error compressing “%B” into “%B”"
+#~ msgstr "压缩“%B”成“%B”时出错"
+
+#~ msgid "Error compressing %'d file into “%B”"
+#~ msgid_plural "Error compressing %'d files into “%B”"
+#~ msgstr[0] "压缩 %'d 个文件成“%B”时出错"
+
+#~ msgid "There was an error while compressing files."
+#~ msgstr "压缩文件时出错。"
+
+#~ msgid "Compressed “%B” into “%B”"
+#~ msgstr "已将“%B”压缩成“%B”"
+
+#~ msgid "Compressed %'d file into “%B”"
+#~ msgid_plural "Compressed %'d files into “%B”"
+#~ msgstr[0] "已将 %'d 个文件压缩成“%B”"
+
+#~ msgid "Compressing Files"
+#~ msgstr "正在压缩文件"
+
+#~ msgid "Select Extract Destination"
+#~ msgstr "选择提取目标位置"
+
+#~ msgid "Extract Here"
+#~ msgstr "提取到此处"
+
+#~ msgid "Extract to…"
+#~ msgstr "提取到…"
+
+#~ msgid "Batch rename %d file"
+#~ msgid_plural "Batch rename %d files"
+#~ msgstr[0] "批量重命名 %d 个文件"
+
+#~ msgid "_Undo Batch Rename"
+#~ msgstr "撤消批量重命名(_U)"
+
+#~ msgid "_Redo Batch Rename"
+#~ msgstr "重做批量重命名(_R)"
+
+#~ msgid "_Undo Extract"
+#~ msgstr "撤消提取(_U)"
+
+#~ msgid "_Redo Extract"
+#~ msgstr "重做提取(_R)"
+
+#~ msgid "Delete %d extracted file"
+#~ msgid_plural "Delete %d extracted files"
+#~ msgstr[0] "删除 %d 个提取的文件"
+
+#~ msgid "Extract '%s'"
+#~ msgstr "提取 '%s'"
+
+#~ msgid "Extract %d file"
+#~ msgid_plural "Extract %d files"
+#~ msgstr[0] "提取 %d 个文件"
+
+#~ msgid "Compress '%s'"
+#~ msgstr "压缩 '%s'"
+
+#~ msgid "Compress %d file"
+#~ msgid_plural "Compress %d files"
+#~ msgstr[0] "压缩 %d 个文件"
+
+#~ msgid "_Undo Compress"
+#~ msgstr "撤消压缩(_U)"
+
+#~ msgid "_Redo Compress"
+#~ msgstr "重做压缩(_R)"
+
+#~ msgid "Put files in this folder to use them as templates for new documents."
+#~ msgstr "将文件放入此文件夹并用作新文档的模板。"
+
+#~ msgid ""
+#~ "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+#~ "templates\">Learn more…</a>"
+#~ msgstr ""
+#~ "<a href=\"help:gnome-help/files-templates\" title=\"GNOME help for "
+#~ "templates\">获取详情…</a>"
+
+#~ msgid "_Undo"
+#~ msgstr "撤消(_U)"
+
+#~ msgid "_Redo"
+#~ msgstr "重做(_R)"
+
+#~ msgctxt "shortcut window"
+#~ msgid "Cut"
+#~ msgstr "剪切"
+
+#~ msgid "Rename _using a template"
+#~ msgstr "使用模板重命名(_U)"
+
+#~ msgid "Find and replace _text"
+#~ msgstr "查找并替换文本(_T)"
+
+#~ msgid "Add"
+#~ msgstr "添加"
+
+#~ msgid "Automatic Numbering Order"
+#~ msgstr "自动编号顺序"
+
+#~ msgid "Format"
+#~ msgstr "格式"
+
+#~ msgid "Existing Text"
+#~ msgstr "现有文本"
+
+#~ msgid "Replace With"
+#~ msgstr "替换为"
+
+#~ msgctxt "title"
+#~ msgid "Replace"
+#~ msgstr "替换"
+
+#~ msgid "Automatic Numbers"
+#~ msgstr "自动编号"
+
+#~ msgid "1, 2, 3, 4"
+#~ msgstr "1, 2, 3, 4"
+
+#~ msgid "01, 02, 03, 04"
+#~ msgstr "01, 02, 03, 04"
+
+#~ msgid "001, 002, 003, 004"
+#~ msgstr "001, 002, 003, 004"
+
+#~ msgid "Metadata"
+#~ msgstr "元数据"
+
+#~ msgid "Creation Date"
+#~ msgstr "创建日期"
+
+#~ msgid "Season Number"
+#~ msgstr "剧季编号"
+
+#~ msgid "Episode Number"
+#~ msgstr "剧集编号"
+
+#~ msgid "Track Number"
+#~ msgstr "曲目编号"
+
+#~ msgid "Artist Name"
+#~ msgstr "艺术家名称"
+
+#~ msgid "Album Name"
+#~ msgstr "专辑名称"
+
+#~ msgid "Original File Name"
+#~ msgstr "原文件名称"
+
+#~ msgid "Create Archive"
+#~ msgstr "创建归档"
+
+#~ msgid "Archive name"
+#~ msgstr "归档名称"
+
+#~ msgid "Compatible with all operating systems."
+#~ msgstr "与所有系统兼容。"
+
+#~ msgid "Smaller archives but Linux and Mac only."
+#~ msgstr "更小的存档但只有 Linux 和 Mac 支持。"
+
+#~ msgid "Smaller archives but must be installed on Windows and Mac."
+#~ msgstr "更小的存档但必须在 Windows 和 Mac 上安装。"
+
+#~ msgid "Rena_me…"
+#~ msgstr "重命名(_M)…"
+
+#~ msgid "_Extract Here"
+#~ msgstr "提取到此处(_E)"
+
+#~ msgid "E_xtract to…"
+#~ msgstr "提取到(_X)…"
+
+#~ msgid "C_ompress…"
+#~ msgstr "压缩(_O)…"
+
+#~ msgid "Compressed Files"
+#~ msgstr "已压缩文件"
+
+#~ msgid "E_xtract the files on open"
+#~ msgstr "打开时提取文件(_X)"
+
+#~ msgid "New folder"
+#~ msgstr "新建文件夹"
+
+#~ msgid "New tab"
+#~ msgstr "新建标签页"
+
+#~ msgid "View mode toggle"
+#~ msgstr "切换视图"
+
+#~ msgid "Toggle between grid and list view"
+#~ msgstr "切换网格和列表视图"
+
+#~ msgid "Zoom out"
+#~ msgstr "缩小"
+
+#~ msgid "Reset zoom"
+#~ msgstr "重置缩放"
+
+#~ msgid "Zoom in"
+#~ msgstr "放大"
+
+#~ msgctxt "Sort Criterion"
+#~ msgid "_A-Z"
+#~ msgstr "顺序(_A-Z)"
+
+#~ msgctxt "Sort Criterion"
+#~ msgid "_Z-A"
+#~ msgstr "倒序(_Z-A)"
+
+#~ msgid "_First Modified"
+#~ msgstr "最初修改(_M)"
+
+#~ msgid "Server Addresses"
+#~ msgstr "服务器地址"
+
+#~ msgid ""
+#~ "Server addresses are made up of a protocol prefix and an address. "
+#~ "Examples:"
+#~ msgstr "服务器由一个协议前缀和一个地址组成。示例："
+
+#~ msgid "smb://foo.example.com, ssh://192.168.0.1"
+#~ msgstr "smb://foo.example.com、ssh://192.168.0.1"
+
+#~ msgid "Available Protocols"
+#~ msgstr "可用协议"
+
+#~ msgid "AppleTalk"
+#~ msgstr "AppleTalk"
+
+#~ msgid "File Transfer Protocol"
+#~ msgstr "文件传输协议 (FTP)"
+
+#~ msgid "Network File System"
+#~ msgstr "网络文件系统 (NFS)"
+
+#~ msgid "Samba"
+#~ msgstr "Samba"
+
+#~ msgid "SSH File Transfer Protocol"
+#~ msgstr "SSH 文件传输协议 (SFTP)"
+
+#~ msgid "WebDAV"
+#~ msgstr "WebDAV"
+
+#~ msgid "Prefix"
+#~ msgstr "前缀"
+
+#~ msgid "ftp:// or ftps://"
+#~ msgstr "ftp:// 或 ftps://"
+
+#~ msgid "smb://"
+#~ msgstr "smb://"
+
+#~ msgid "sftp:// or ssh://"
+#~ msgstr "sftp:// 或 ssh://"
+
+#~ msgid "dav:// or davs://"
+#~ msgstr "dav:// 或 davs://"
+
+#~ msgid "Untitled %s"
+#~ msgstr "无标题 %s"
+
+#~ msgid "Change Permissions for Enclosed Files..."
+#~ msgstr "更改附加文件的权限"
+
+#~ msgid "New Tab"
+#~ msgstr "新建标签页"
+
+#~ msgid "Zoom Out"
+#~ msgstr "缩小"
+
+#~ msgid "Reset Zoom"
+#~ msgstr "重置缩放"
+
+#~ msgid "Zoom In"
+#~ msgstr "放大"
