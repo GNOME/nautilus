@@ -355,6 +355,52 @@ prepare_string_for_compare (const gchar *string)
 }
 
 gdouble
+nautilus_query_matches_tags (NautilusQuery *query,
+                               const gchar *tags_string)
+{
+    gchar *prepared_string;
+    gchar **tags;
+    gboolean found;
+    gint idx, k;
+    if (!query->text) {
+        return -1;
+    }
+
+    g_mutex_lock(&query->prepared_words_mutex);
+    if (!query->prepared_words) {
+        prepared_string = prepare_string_for_compare(query->text);
+        query->prepared_words = g_strsplit(prepared_string, " ", -1);
+        g_free(prepared_string);
+    }
+
+    prepared_string = prepare_string_for_compare(tags_string);
+
+    tags = g_strsplit(prepared_string, ",", -1);
+    g_free (prepared_string);
+    for (k = 0; tags[k] != NULL; k++) {
+        g_strstrip(tags[k]);
+    }
+
+    found = FALSE;
+    for (idx = 0; query->prepared_words[idx] != NULL && found == FALSE; idx++) {
+        for (k = 0; tags[k] != NULL && found == FALSE; k++) {
+            if (g_strcmp0(query->prepared_words[idx], tags[k]) == 0) {
+                found = TRUE;
+            }
+        }
+    }
+    g_mutex_unlock(&query->prepared_words_mutex);
+
+    g_strfreev(tags);
+    if (!found)
+    {
+        return -1;
+    }
+
+    return 10;
+}
+
+gdouble
 nautilus_query_matches_string (NautilusQuery *query,
                                const gchar   *string)
 {

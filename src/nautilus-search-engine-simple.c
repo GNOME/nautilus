@@ -194,6 +194,7 @@ send_batch (SearchThreadData *thread_data)
     thread_data->hits = NULL;
 }
 
+#define G_FILE_ATTRIBUTE_XATTR_XDG_TAGS "xattr::xdg.tags"
 #define STD_ATTRIBUTES \
     G_FILE_ATTRIBUTE_STANDARD_NAME "," \
     G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME "," \
@@ -202,7 +203,8 @@ send_batch (SearchThreadData *thread_data)
     G_FILE_ATTRIBUTE_STANDARD_TYPE "," \
     G_FILE_ATTRIBUTE_TIME_MODIFIED "," \
     G_FILE_ATTRIBUTE_TIME_ACCESS "," \
-    G_FILE_ATTRIBUTE_ID_FILE
+    G_FILE_ATTRIBUTE_ID_FILE "," \
+    G_FILE_ATTRIBUTE_XATTR_XDG_TAGS
 
 static void
 visit_directory (GFile            *dir,
@@ -211,7 +213,7 @@ visit_directory (GFile            *dir,
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
-    const char *mime_type, *display_name;
+    const char *mime_type, *display_name, *tags;
     gdouble match;
     gboolean is_hidden, found;
     GList *l;
@@ -255,6 +257,17 @@ visit_directory (GFile            *dir,
 
         child = g_file_get_child (dir, g_file_info_get_name (info));
         match = nautilus_query_matches_string (data->query, display_name);
+
+        tags = g_file_info_get_attribute_string(info, G_FILE_ATTRIBUTE_XATTR_XDG_TAGS);
+        if (tags != NULL) {
+            gdouble match_tags = nautilus_query_matches_tags(data->query, tags);
+            if (match_tags > 0) {
+                match += match_tags;
+            } else {
+                match = match_tags;
+            }
+        }
+
         found = (match > -1);
 
         if (found && data->mime_types)
