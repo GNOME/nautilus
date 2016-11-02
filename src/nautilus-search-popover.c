@@ -443,7 +443,7 @@ fill_fuzzy_dates_listbox (NautilusSearchPopover *popover)
         date_range = g_ptr_array_new_full (2, (GDestroyNotify) g_date_time_unref);
         g_ptr_array_add (date_range, g_date_time_ref (current_date));
         g_ptr_array_add (date_range, g_date_time_ref (now));
-        label = get_text_for_date_range (date_range);
+        label = get_text_for_date_range (date_range, FALSE);
         row = create_row_for_label (label, normalized == 1);
         g_object_set_data_full (G_OBJECT (row),
                                 "date",
@@ -620,7 +620,7 @@ update_date_label (NautilusSearchPopover *popover,
         end_date = g_ptr_array_index (date_range, 0);
         days = g_date_time_difference (end_date, initial_date) / G_TIME_SPAN_DAY;
 
-        label = get_text_for_date_range (date_range);
+        label = get_text_for_date_range (date_range, TRUE);
 
         gtk_entry_set_text (GTK_ENTRY (popover->date_entry), days < 1 ? label : "");
 

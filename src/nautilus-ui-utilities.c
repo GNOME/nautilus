@@ -369,32 +369,40 @@ nautilus_file_date_in_between (guint64    unix_file_time,
 }
 
 static const gchar *
-get_text_for_days_ago (gint days)
+get_text_for_days_ago (gint     days,
+                       gboolean prefix_with_since)
 {
     if (days < 7)
     {
         /* days */
-        return ngettext ("%d day ago", "%d days ago", days);
+        return prefix_with_since ?
+               ngettext ("Since %d day ago", "Since %d days ago", days) :
+               ngettext ("%d day ago", "%d days ago", days);
     }
-    else if (days < 30)
+    if (days < 30)
     {
         /* weeks */
-        return ngettext ("Last week", "%d weeks ago", days / 7);
+        return prefix_with_since ?
+               ngettext ("Since last week", "Since %d weeks ago", days / 7) :
+               ngettext ("Last week", "%d weeks ago", days / 7);
     }
-    else if (days < 365)
+    if (days < 365)
     {
         /* months */
-        return ngettext ("Last month", "%d months ago", days / 30);
+        return prefix_with_since ?
+               ngettext ("Since last month", "Since %d months ago", days / 30) :
+               ngettext ("Last month", "%d months ago", days / 30);
     }
-    else
-    {
-        /* years */
-        return ngettext ("Last year", "%d years ago", days / 365);
-    }
+
+    /* years */
+    return prefix_with_since ?
+           ngettext ("Since last year", "Since %d years ago", days / 365) :
+           ngettext ("Last year", "%d years ago", days / 365);
 }
 
 gchar *
-get_text_for_date_range (GPtrArray *date_range)
+get_text_for_date_range (GPtrArray *date_range,
+                         gboolean   prefix_with_since)
 {
     gint days;
     gint normalized;
@@ -442,7 +450,9 @@ get_text_for_date_range (GPtrArray *date_range)
 
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wformat-nonliteral"
-        label = g_strdup_printf (get_text_for_days_ago (days), normalized);
+        label = g_strdup_printf (get_text_for_days_ago (days,
+                                                        prefix_with_since),
+                                 normalized);
 #pragma GCC diagnostic pop
     }
 

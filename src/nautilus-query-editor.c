@@ -493,7 +493,7 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
     {
         g_autofree gchar *text_for_date_range = NULL;
 
-        text_for_date_range = get_text_for_date_range (date_range);
+        text_for_date_range = get_text_for_date_range (date_range, TRUE);
         gd_tagged_entry_tag_set_label (priv->date_range_tag,
                                        text_for_date_range);
         gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (priv->entry),
