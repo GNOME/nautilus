@@ -29,44 +29,16 @@
 
 #include "nautilus-file-undo-operations.h"
 
-typedef struct _NautilusFileUndoManager NautilusFileUndoManager;
-typedef struct _NautilusFileUndoManagerClass NautilusFileUndoManagerClass;
-typedef struct _NautilusFileUndoManagerPrivate NautilusFileUndoManagerPrivate;
-
 #define NAUTILUS_TYPE_FILE_UNDO_MANAGER\
 	(nautilus_file_undo_manager_get_type())
-#define NAUTILUS_FILE_UNDO_MANAGER(object)\
-	(G_TYPE_CHECK_INSTANCE_CAST((object), NAUTILUS_TYPE_FILE_UNDO_MANAGER,\
-				    NautilusFileUndoManager))
-#define NAUTILUS_FILE_UNDO_MANAGER_CLASS(klass)\
-	(G_TYPE_CHECK_CLASS_CAST((klass), NAUTILUS_TYPE_FILE_UNDO_MANAGER,\
-				 NautilusFileUndoManagerClass))
-#define NAUTILUS_IS_FILE_UNDO_MANAGER(object)\
-	(G_TYPE_CHECK_INSTANCE_TYPE((object), NAUTILUS_TYPE_FILE_UNDO_MANAGER))
-#define NAUTILUS_IS_FILE_UNDO_MANAGER_CLASS(klass)\
-	(G_TYPE_CHECK_CLASS_TYPE((klass), NAUTILUS_TYPE_FILE_UNDO_MANAGER))
-#define NAUTILUS_FILE_UNDO_MANAGER_GET_CLASS(object)\
-	(G_TYPE_INSTANCE_GET_CLASS((object), NAUTILUS_TYPE_FILE_UNDO_MANAGER,\
-				   NautilusFileUndoManagerClass))
+
+G_DECLARE_FINAL_TYPE (NautilusFileUndoManager, nautilus_file_undo_manager, NAUTILUS, FILE_UNDO_MANAGER, GObject)
 
 typedef enum {
 	NAUTILUS_FILE_UNDO_MANAGER_STATE_NONE,
 	NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO,
 	NAUTILUS_FILE_UNDO_MANAGER_STATE_REDO
 } NautilusFileUndoManagerState;
-
-struct _NautilusFileUndoManager {
-	GObject parent_instance;
-
-	/* < private > */
-	NautilusFileUndoManagerPrivate* priv;
-};
-
-struct _NautilusFileUndoManagerClass {
-	GObjectClass parent_class;
-};
-
-GType nautilus_file_undo_manager_get_type (void) G_GNUC_CONST;
 
 NautilusFileUndoManager *nautilus_file_undo_manager_new (void);
 NautilusFileUndoManager * nautilus_file_undo_manager_get (void);
