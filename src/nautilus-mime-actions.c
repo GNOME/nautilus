@@ -1621,38 +1621,34 @@ activate_desktop_file (ActivateParameters *parameters,
 static void
 activate_files (ActivateParameters *parameters)
 {
+    NautilusFile *file;
     NautilusWindow *window;
     NautilusWindowOpenFlags flags;
-    NautilusFile *file;
-    GList *launch_desktop_files;
-    GList *launch_files;
-    GList *launch_in_terminal_files;
-    GList *open_in_app_uris;
-    GList *open_in_app_parameters;
-    GList *unhandled_open_in_app_uris;
+    g_autoptr (GList) open_in_app_parameters = NULL;
+    g_autoptr (GList) unhandled_open_in_app_uris = NULL;
     ApplicationLaunchParameters *one_parameters;
-    GList *open_in_view_files;
-    GList *l;
     int count;
-    char *uri;
-    char *executable_path, *quoted_path;
-    char *old_working_dir;
-    ActivationAction action;
+    g_autofree char *old_working_dir = NULL;
     GdkScreen *screen;
-    LaunchLocation *location;
     gint num_apps;
     gint num_unhandled;
     gint num_files;
     gboolean open_files;
     gboolean closed_window;
+    g_autoptr (GQueue) launch_desktop_files = NULL;
+    g_autoptr (GQueue) launch_files = NULL;
+    g_autoptr (GQueue) launch_in_terminal_files = NULL;
+    g_autoptr (GQueue) open_in_app_uris = NULL;
+    g_autoptr (GQueue) open_in_view_files = NULL;
+    GList *l;
+    ActivationAction action;
+    LaunchLocation *location;
 
-    screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-
-    launch_desktop_files = NULL;
-    launch_files = NULL;
-    launch_in_terminal_files = NULL;
-    open_in_app_uris = NULL;
-    open_in_view_files = NULL;
+    launch_desktop_files = g_queue_new ();
+    launch_files = g_queue_new ();
+    launch_in_terminal_files = g_queue_new ();
+    open_in_view_files = g_queue_new ();
+    open_in_app_uris = g_queue_new ();
 
     for (l = parameters->locations; l != NULL; l = l->next)
     {
@@ -1678,74 +1674,77 @@ activate_files (ActivateParameters *parameters)
         switch (action)
         {
             case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE:
-                {
-                    launch_desktop_files = g_list_prepend (launch_desktop_files, file);
-                }
-                break;
+            {
+                g_queue_push_tail (launch_desktop_files, file);
+            }
+            break;
 
             case ACTIVATION_ACTION_LAUNCH:
-                {
-                    launch_files = g_list_prepend (launch_files, file);
-                }
-                break;
+            {
+                g_queue_push_tail (launch_files, file);
+            }
+            break;
 
             case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL:
-                {
-                    launch_in_terminal_files = g_list_prepend (launch_in_terminal_files, file);
-                }
-                break;
+            {
+                g_queue_push_tail (launch_in_terminal_files, file);
+            }
+            break;
 
             case ACTIVATION_ACTION_OPEN_IN_VIEW:
-                {
-                    open_in_view_files = g_list_prepend (open_in_view_files, file);
-                }
-                break;
+            {
+                g_queue_push_tail (open_in_view_files, file);
+            }
+            break;
 
             case ACTIVATION_ACTION_OPEN_IN_APPLICATION:
-                {
-                    open_in_app_uris = g_list_prepend (open_in_app_uris, location->uri);
-                }
-                break;
+            {
+                g_queue_push_tail (open_in_app_uris, location->uri);
+            }
+            break;
 
             case ACTIVATION_ACTION_DO_NOTHING:
-                {
-                }
-                break;
+            {
+            }
+            break;
 
             case ACTIVATION_ACTION_EXTRACT:
-                {
-                    /* Extraction of files should be handled in the view */
-                    g_assert_not_reached ();
-                }
-                break;
+            {
+               /* Extraction of files should be handled in the view */
+               g_assert_not_reached ();
+            }
+            break;
 
             case ACTIVATION_ACTION_ASK:
-                {
-                    g_assert_not_reached ();
-                }
-                break;
+            {
+                g_assert_not_reached ();
+            }
+            break;
         }
     }
 
-    launch_desktop_files = g_list_reverse (launch_desktop_files);
-    for (l = launch_desktop_files; l != NULL; l = l->next)
+    for (l = launch_desktop_files->head; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
 
         activate_desktop_file (parameters, file);
     }
 
-    old_working_dir = NULL;
     if (parameters->activation_directory &&
-        (launch_files != NULL || launch_in_terminal_files != NULL))
+        (!g_queue_is_empty (launch_files) ||
+         !g_queue_is_empty (launch_in_terminal_files)))
     {
         old_working_dir = g_get_current_dir ();
         g_chdir (parameters->activation_directory);
     }
 
-    launch_files = g_list_reverse (launch_files);
-    for (l = launch_files; l != NULL; l = l->next)
+    screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
+    for (l = launch_files->head; l != NULL; l = l->next)
     {
+        g_autofree char *uri = NULL;
+        g_autofree char *executable_path = NULL;
+        g_autofree char *quoted_path = NULL;
+
         file = NAUTILUS_FILE (l->data);
 
         uri = nautilus_file_get_activation_uri (file);
@@ -1755,14 +1754,14 @@ activate_files (ActivateParameters *parameters)
         DEBUG ("Launching file path %s", quoted_path);
 
         nautilus_launch_application_from_command (screen, quoted_path, FALSE, NULL);
-        g_free (quoted_path);
-        g_free (executable_path);
-        g_free (uri);
     }
 
-    launch_in_terminal_files = g_list_reverse (launch_in_terminal_files);
-    for (l = launch_in_terminal_files; l != NULL; l = l->next)
+    for (l = launch_in_terminal_files->head; l != NULL; l = l->next)
     {
+        g_autofree char *uri = NULL;
+        g_autofree char *executable_path = NULL;
+        g_autofree char *quoted_path = NULL;
+
         file = NAUTILUS_FILE (l->data);
 
         uri = nautilus_file_get_activation_uri (file);
@@ -1772,20 +1771,14 @@ activate_files (ActivateParameters *parameters)
         DEBUG ("Launching in terminal file quoted path %s", quoted_path);
 
         nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
-
-        g_free (quoted_path);
-        g_free (executable_path);
-        g_free (uri);
     }
 
     if (old_working_dir != NULL)
     {
         g_chdir (old_working_dir);
-        g_free (old_working_dir);
     }
 
-    open_in_view_files = g_list_reverse (open_in_view_files);
-    count = g_list_length (open_in_view_files);
+    count = g_queue_get_length (open_in_view_files);
 
     flags = parameters->flags;
     if (count > 1)
@@ -1831,12 +1824,12 @@ activate_files (ActivateParameters *parameters)
              * Each of them is appended to the current tab, i.e.
              * prepended to the list of tabs to open.
              */
-            open_in_view_files = g_list_reverse (open_in_view_files);
+            g_queue_reverse (open_in_view_files);
         }
 
         closed_window = FALSE;
 
-        for (l = open_in_view_files; l != NULL; l = l->next)
+        for (l = open_in_view_files->head; l != NULL; l = l->next)
         {
             g_autofree char *uri = NULL;
             g_autoptr (GFile) location = NULL;
@@ -1885,30 +1878,25 @@ activate_files (ActivateParameters *parameters)
         }
     }
 
-    open_in_app_parameters = NULL;
-    unhandled_open_in_app_uris = NULL;
-
     if (open_in_app_uris != NULL)
     {
-        open_in_app_uris = g_list_reverse (open_in_app_uris);
-
-        open_in_app_parameters = make_activation_parameters
-                                     (open_in_app_uris, &unhandled_open_in_app_uris);
+        open_in_app_parameters = make_activation_parameters (open_in_app_uris->head,
+                                                             &unhandled_open_in_app_uris);
     }
 
     num_apps = g_list_length (open_in_app_parameters);
     num_unhandled = g_list_length (unhandled_open_in_app_uris);
-    num_files = g_list_length (open_in_app_uris);
+    num_files = g_queue_get_length (open_in_app_uris);
     open_files = TRUE;
 
-    if (open_in_app_uris != NULL &&
+    if (g_queue_is_empty (open_in_app_uris) &&
         (!parameters->user_confirmation ||
          num_files + num_unhandled > SILENT_OPEN_LIMIT) &&
         num_apps > 1)
     {
         GtkDialog *dialog;
         char *prompt;
-        char *detail;
+        g_autofree char *detail = NULL;
         int response;
 
         pause_activation_timed_cancel (parameters);
@@ -1919,8 +1907,6 @@ activate_files (ActivateParameters *parameters)
         dialog = eel_show_yes_no_dialog (prompt, detail,
                                          _("_OK"), _("_Cancel"),
                                          parameters->parent_window);
-        g_free (detail);
-
         response = gtk_dialog_run (dialog);
         gtk_widget_destroy (GTK_WIDGET (dialog));
 
@@ -1946,7 +1932,7 @@ activate_files (ActivateParameters *parameters)
 
         for (l = unhandled_open_in_app_uris; l != NULL; l = l->next)
         {
-            uri = l->data;
+            char *uri = l->data;
 
             /* this does not block */
             application_unhandled_uri (parameters, uri);
@@ -1968,14 +1954,6 @@ activate_files (ActivateParameters *parameters)
             nautilus_window_close (window);
         }
     }
-
-    g_list_free (launch_desktop_files);
-    g_list_free (launch_files);
-    g_list_free (launch_in_terminal_files);
-    g_list_free (open_in_view_files);
-    g_list_free (open_in_app_uris);
-    g_list_free (open_in_app_parameters);
-    g_list_free (unhandled_open_in_app_uris);
 
     activation_parameters_free (parameters);
 }
