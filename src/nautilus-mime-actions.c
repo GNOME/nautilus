@@ -1838,19 +1838,34 @@ activate_files (ActivateParameters *parameters)
 
         for (l = open_in_view_files; l != NULL; l = l->next)
         {
-            GFile *f;
+            g_autofree char *uri = NULL;
+            g_autoptr (GFile) location = NULL;
+            g_autoptr (GFile) location_with_permissions = NULL;
             /* The ui should ask for navigation or object windows
              * depending on what the current one is */
             file = NAUTILUS_FILE (l->data);
-
             uri = nautilus_file_get_activation_uri (file);
-            f = g_file_new_for_uri (uri);
+            location = g_file_new_for_uri (uri);
+            if (g_file_is_native (location) &&
+                (nautilus_file_is_in_admin (file) ||
+                 !nautilus_file_can_read (file) ||
+                 !nautilus_file_can_execute (file)))
+            {
+                g_autofree gchar *file_path = NULL;
+
+                g_free (uri);
+
+                file_path = g_file_get_path (location);
+                uri = g_strconcat ("admin://", file_path, NULL);
+            }
+
+            location_with_permissions = g_file_new_for_uri (uri);
             /* FIXME: we need to pass the parent_window, but we only use it for the current active window,
              * which nautilus-application should take care of. However is not working and creating regressions
              * in some cases. Until we figure out what's going on, continue to use the parameters->slot
              * to make splicit the window we want to use for activating the files */
             nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                                     f, flags, NULL, NULL, parameters->slot);
+                                                     location_with_permissions, flags, NULL, NULL, parameters->slot);
 
             /* close only the window from which the action was launched and then open
              * tabs/windows (depending on parameters->flags) */
@@ -1867,9 +1882,6 @@ activate_files (ActivateParameters *parameters)
 
                 closed_window = TRUE;
             }
-
-            g_object_unref (f);
-            g_free (uri);
         }
     }
 

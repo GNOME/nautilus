@@ -225,6 +225,7 @@ gboolean           nautilus_directory_is_local_or_fuse         (NautilusDirector
 
 gboolean           nautilus_directory_is_in_trash              (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_in_recent             (NautilusDirectory         *directory);
+gboolean           nautilus_directory_is_in_admin              (NautilusDirectory         *directory);
 gboolean           nautilus_directory_is_remote                (NautilusDirectory         *directory);
 
 /* Return false if directory contains anything besides a Nautilus metafile.

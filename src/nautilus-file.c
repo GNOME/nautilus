@@ -8242,6 +8242,23 @@ nautilus_file_is_other_locations (NautilusFile *file)
     return is_other_locations;
 }
 
+/**
+ * nautilus_file_is_in_admin
+ *
+ * Check if this file is using admin backend.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file is using admin backend.
+ *
+ **/
+gboolean
+nautilus_file_is_in_admin (NautilusFile *file)
+{
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    return nautilus_directory_is_in_admin (file->details->directory);
+}
+
 GError *
 nautilus_file_get_file_info_error (NautilusFile *file)
 {
