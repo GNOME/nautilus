@@ -199,13 +199,19 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
 
     gtk_popover_popup (GTK_POPOVER (rename_file_popover));
 
-    /* Select the name part withouth the file extension */
-    eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
-                                    &start_offset, &end_offset);
-    n_chars = g_utf8_strlen (nautilus_file_get_display_name (target_file), -1);
-    gtk_entry_set_width_chars (GTK_ENTRY (name_entry),
-                               MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS), RENAME_ENTRY_MAX_CHARS));
-    gtk_editable_select_region (GTK_EDITABLE (name_entry), start_offset, end_offset);
+    if (nautilus_file_is_regular_file (target_file))
+    {
+        /* Select the name part without the file extension */
+        eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
+                                        &start_offset, &end_offset);
+        n_chars = g_utf8_strlen (nautilus_file_get_display_name (target_file),
+                                 -1);
+        gtk_entry_set_width_chars (GTK_ENTRY (name_entry),
+                                   MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
+                                        RENAME_ENTRY_MAX_CHARS));
+        gtk_editable_select_region (GTK_EDITABLE (name_entry),
+                                    start_offset, end_offset);
+    }
 
     nautilus_directory_unref (containing_directory);
 
