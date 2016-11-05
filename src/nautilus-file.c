@@ -4121,15 +4121,13 @@ nautilus_file_list_filter (GList                   *files,
 {
     GList *filtered = NULL;
     GList *l;
-    GList *last;
     GList *reversed;
 
     *failed = NULL;
     /* Avoid using g_list_append since it's O(n) */
     reversed = g_list_copy (files);
     reversed = g_list_reverse (reversed);
-    last = g_list_last (reversed);
-    for (l = last; l != NULL; l = l->prev)
+    for (l = reversed; l != NULL; l = l->next)
     {
         if (filter_function (l->data, user_data))
         {
