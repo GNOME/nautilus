@@ -477,28 +477,15 @@ static void bind_builder_radio(GtkBuilder  *builder,
     }
 }
 
-static void set_gtk_filechooser_sort_first(GObject    *object,
-                                           GParamSpec *pspec)
-{
-    g_settings_set_boolean (
-        gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
-        gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (object)));
-}
-
 static void nautilus_preferences_window_setup(GtkBuilder *builder,
                                               GtkWindow  *parent_window)
 {
     GtkWidget *window;
 
     /* setup preferences */
-    bind_builder_bool (builder, nautilus_preferences,
+    bind_builder_bool (builder, gtk_filechooser_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET,
                        NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
-    g_signal_connect (
-        gtk_builder_get_object (builder,
-                                NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET),
-        "notify::active", G_CALLBACK (set_gtk_filechooser_sort_first), NULL);
-
     bind_builder_bool (builder, nautilus_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET,
                        NAUTILUS_PREFERENCES_CONFIRM_TRASH);

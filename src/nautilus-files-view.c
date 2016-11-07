@@ -2593,7 +2593,7 @@ sort_directories_first_changed_callback (gpointer callback_data)
     view = NAUTILUS_FILES_VIEW (callback_data);
 
     preference_value =
-        g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+        g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
 
     if (preference_value != view->details->sort_directories_first)
     {
@@ -3013,7 +3013,7 @@ nautilus_files_view_destroy (GtkWidget *object)
                                           schedule_update_context_menus, view);
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           click_policy_changed_callback, view);
-    g_signal_handlers_disconnect_by_func (nautilus_preferences,
+    g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           sort_directories_first_changed_callback, view);
     g_signal_handlers_disconnect_by_func (gtk_filechooser_preferences,
                                           show_hidden_files_changed_callback, view);
@@ -9164,7 +9164,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     update_templates_directory (view);
 
     view->details->sort_directories_first =
-        g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
+        g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
     view->details->show_hidden_files =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
@@ -9186,7 +9186,7 @@ nautilus_files_view_init (NautilusFilesView *view)
                               "changed::" NAUTILUS_PREFERENCES_CLICK_POLICY,
                               G_CALLBACK (click_policy_changed_callback),
                               view);
-    g_signal_connect_swapped (nautilus_preferences,
+    g_signal_connect_swapped (gtk_filechooser_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST,
                               G_CALLBACK (sort_directories_first_changed_callback), view);
     g_signal_connect_swapped (gtk_filechooser_preferences,
