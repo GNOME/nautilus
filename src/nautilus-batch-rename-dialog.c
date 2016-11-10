@@ -2135,13 +2135,17 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     if (all_targets_are_folders)
     {
         g_string_append_printf (dialog_title,
-                                ngettext ("Rename %d Folder", "Rename %d Folders", g_list_length (selection)),
+                                ngettext ("Rename %d Folder",
+                                          "Rename %d Folders",
+                                          g_list_length (selection)),
                                 g_list_length (selection));
     }
     else if (all_targets_are_regular_files)
     {
         g_string_append_printf (dialog_title,
-                                ngettext ("Rename %d File", "Rename %d Files", g_list_length (selection)),
+                                ngettext ("Rename %d File",
+                                          "Rename %d Files",
+                                          g_list_length (selection)),
                                 g_list_length (selection));
     }
     else 
@@ -2149,7 +2153,9 @@ nautilus_batch_rename_dialog_new (GList             *selection,
         /* To translators: %d is the total number of files and folders.
          * Singular case of the string is never used */
         g_string_append_printf (dialog_title,
-                                ("Rename %d Files and Folders"),
+                                ngettext ("Rename %d File and Folder",
+                                          "Rename %d Files and Folders",
+                                          g_list_length (selection)),
                                 g_list_length (selection));   
     }
 
