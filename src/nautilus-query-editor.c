@@ -143,7 +143,7 @@ update_information_label (NautilusQueryEditor *editor)
         else if (nautilus_file_is_remote (file) &&
                  !settings_search_is_recursive (editor))
         {
-            label = _("Remote location - only searching the current folder");
+            label = _("Remote location — only searching the current folder");
         }
         else if (!settings_search_is_recursive (editor))
         {

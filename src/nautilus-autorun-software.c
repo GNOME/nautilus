@@ -221,7 +221,7 @@ present_autorun_for_software_dialog (GMount *mount)
                                      mount_name);
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               "%s",
-                                              _("If you don't trust this location or aren't sure, press Cancel."));
+                                              _("If you don’t trust this location or aren’t sure, press Cancel."));
 
     /* This is required because we don't show dialogs in the
      *  window picker and if the window pops under another window

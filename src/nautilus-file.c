@@ -6514,7 +6514,7 @@ nautilus_file_set_owner (NautilusFile                  *file,
          */
         nautilus_file_changed (file);
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
-                             _("Specified owner '%s' doesn't exist"), user_name_or_id);
+                             _("Specified owner “%s” doesn’t exist"), user_name_or_id);
         (*callback)(file, NULL, error, callback_data);
         g_error_free (error);
         return;
@@ -6818,7 +6818,7 @@ nautilus_file_set_group (NautilusFile                  *file,
          */
         nautilus_file_changed (file);
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
-                             _("Specified group '%s' doesn't exist"), group_name_or_id);
+                             _("Specified group “%s” doesn’t exist"), group_name_or_id);
         (*callback)(file, NULL, error, callback_data);
         g_error_free (error);
         return;

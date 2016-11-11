@@ -2274,7 +2274,7 @@ trash_file (CommonJob     *job,
     }
 
     /* Translators: %B is a file name */
-    primary = f (_("“%B” can't be put in the trash. Do you want to delete it immediately?"), file);
+    primary = f (_("“%B” can’t be put in the trash. Do you want to delete it immediately?"), file);
     details = NULL;
     secondary = NULL;
     if (!IS_IO_ERROR (error, NOT_SUPPORTED))
@@ -6657,7 +6657,7 @@ retry:
         }
         else if (IS_IO_ERROR (error, NOT_SUPPORTED))
         {
-            secondary = f (_("The target doesn't support symbolic links."));
+            secondary = f (_("The target doesn’t support symbolic links."));
             details = NULL;
         }
         else

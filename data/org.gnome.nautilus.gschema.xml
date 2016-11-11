@@ -78,7 +78,7 @@
       </aliases>
       <default>'after-current-tab'</default>
       <summary>Where to position newly open tabs in browser windows</summary>
-      <description>If set to "after-current-tab", then new tabs are inserted after the current tab. If set to "end", then new tabs are appended to the end of the tab list.</description>
+      <description>If set to “after-current-tab”, then new tabs are inserted after the current tab. If set to “end”, then new tabs are appended to the end of the tab list.</description>
     </key>
     <key type="b" name="always-use-location-entry">
       <default>false</default>
@@ -88,7 +88,7 @@
     <key name="recursive-search" enum="org.gnome.nautilus.SpeedTradeoff">
       <default>'local-only'</default>
       <summary>Where to perform recursive search</summary>
-      <description>In which locations Nautilus should search on subfolders. Available values are 'local-only', 'always', 'never'.</description>
+      <description>In which locations Nautilus should search on subfolders. Available values are “local-only”, “always”, “never”.</description>
     </key>
     <key name="search-filter-time-type" enum="org.gnome.nautilus.SearchFilterTimeType">
       <default>'last_modified'</default>
@@ -119,17 +119,17 @@
       <aliases><alias value='local_only' target='local-only'/></aliases>
       <default>'local-only'</default>
       <summary>When to show number of items in a folder</summary>
-      <description>Speed tradeoff for when to show the number of items in a folder. If set to "always" then always show item counts, even if the folder is on a remote server. If set to "local-only" then only show counts for local file systems. If set to "never" then never bother to compute item counts.</description>
+      <description>Speed tradeoff for when to show the number of items in a folder. If set to “always” then always show item counts, even if the folder is on a remote server. If set to “local-only” then only show counts for local file systems. If set to “never” then never bother to compute item counts.</description>
     </key>
     <key name="click-policy" enum="org.gnome.nautilus.ClickPolicy">
       <default>'double'</default>
       <summary>Type of click used to launch/open files</summary>
-      <description>Possible values are "single" to launch files on a single click, or "double" to launch them on a double click.</description>
+      <description>Possible values are “single” to launch files on a single click, or “double” to launch them on a double click.</description>
     </key>
     <key name="executable-text-activation" enum="org.gnome.nautilus.ActivationChoice">
       <default>'display'</default>
       <summary>What to do with executable text files when activated</summary>
-      <description>What to do with executable text files when they are activated (single or double clicked). Possible values are "launch" to launch them as programs, "ask" to ask what to do via a dialog, and "display" to display them as text files.</description>
+      <description>What to do with executable text files when they are activated (single or double clicked). Possible values are “launch” to launch them as programs, “ask” to ask what to do via a dialog, and “display” to display them as text files.</description>
     </key>
     <key type="b" name="install-mime-activation">
       <default>true</default>
@@ -143,29 +143,29 @@
     </key>
     <key type="b" name="mouse-use-extra-buttons">
       <default>true</default>
-      <summary>Use extra mouse button events in Nautilus' browser window</summary>
-      <description>For users with mice that have "Forward" and "Back" buttons, this key will determine if any action is taken inside of Nautilus when either is pressed.</description>
+      <summary>Use extra mouse button events in Nautilus’ browser window</summary>
+      <description>For users with mice that have “Forward” and “Back” buttons, this key will determine if any action is taken inside of Nautilus when either is pressed.</description>
     </key>
     <key type="i" name="mouse-forward-button">
       <default>9</default>
-      <summary>Mouse button to activate the "Forward" command in browser window</summary>
-      <description>For users with mice that have buttons for "Forward" and "Back", this key will set which button activates the "Forward" command in a browser window. Possible values range between 6 and 14.</description>
+      <summary>Mouse button to activate the “Forward” command in browser window</summary>
+      <description>For users with mice that have buttons for “Forward” and “Back”, this key will set which button activates the “Forward” command in a browser window. Possible values range between 6 and 14.</description>
     </key>
     <key type="i" name="mouse-back-button">
       <default>8</default>
-      <summary>Mouse button to activate the "Back" command in browser window</summary>
-      <description>For users with mice that have buttons for "Forward" and "Back", this key will set which button activates the "Back" command in a browser window. Possible values range between 6 and 14.</description>
+      <summary>Mouse button to activate the “Back” command in browser window</summary>
+      <description>For users with mice that have buttons for “Forward” and “Back”, this key will set which button activates the “Back” command in a browser window. Possible values range between 6 and 14.</description>
     </key>
     <key name="show-image-thumbnails" enum="org.gnome.nautilus.SpeedTradeoff">
       <aliases><alias value='local_only' target='local-only'/></aliases>
       <default>'local-only'</default>
       <summary>When to show thumbnails of files</summary>
-      <description>Speed trade-off for when to show a file as a thumbnail. If set to "always" then always thumbnail, even if the folder is on a remote server. If set to "local-only" then only show thumbnails for local file systems. If set to "never" then never bother to thumbnail files, just use a generic icon. Despite what the name may suggest, this applies to any previewable file type.</description>
+      <description>Speed trade-off for when to show a file as a thumbnail. If set to “always” then always thumbnail, even if the folder is on a remote server. If set to “local-only” then only show thumbnails for local file systems. If set to “never” then never bother to thumbnail files, just use a generic icon. Despite what the name may suggest, this applies to any previewable file type.</description>
     </key>
     <key type="t" name="thumbnail-limit">
       <default>10485760</default>
       <summary>Maximum image size for thumbnailing</summary>
-      <description>Images over this size (in bytes) won't be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory.</description>
+      <description>Images over this size (in bytes) won’t be thumbnailed. The purpose of this setting is to avoid thumbnailing large images that may take a long time to load or use lots of memory.</description>
     </key>
     <key name="default-sort-order" enum="org.gnome.nautilus.SortOrder">
       <aliases>
@@ -173,12 +173,12 @@
       </aliases>
       <default>'name'</default>
       <summary>Default sort order</summary>
-      <description>The default sort-order for items in the icon view. Possible values are "name", "size", "type" and "mtime".</description>
+      <description>The default sort-order for items in the icon view. Possible values are “name”, “size”, “type” and “mtime”.</description>
     </key>
     <key type="b" name="default-sort-in-reverse-order">
       <default>false</default>
       <summary>Reverse sort order in new windows</summary>
-      <description>If true, files in new windows will be sorted in reverse order. I.e., if sorted by name, then instead of sorting the files from "a" to "z", they will be sorted from "z" to "a"; if sorted by size, instead of being incrementally they will be sorted decrementally.</description>
+      <description>If true, files in new windows will be sorted in reverse order. I.e., if sorted by name, then instead of sorting the files from “a” to “z”, they will be sorted from “z” to “a”; if sorted by size, instead of being incrementally they will be sorted decrementally.</description>
     </key>
     <key name="default-folder-viewer" enum="org.gnome.nautilus.FolderView">
       <aliases>
@@ -189,12 +189,12 @@
       </aliases>
       <default>'icon-view'</default>
       <summary>Default folder viewer</summary>
-      <description>When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are "list-view", and "icon-view".</description>
+      <description>When a folder is visited this viewer is used unless you have selected another view for that particular folder. Possible values are “list-view”, and “icon-view”.</description>
     </key>
     <key type="b" name="show-hidden-files">
       <default>false</default>
       <summary>Whether to show hidden files</summary>
-      <description>This key is deprecated and ignored. The "show-hidden" key from "org.gtk.Settings.FileChooser" is now used instead.</description>
+      <description>This key is deprecated and ignored. The “show-hidden” key from “org.gtk.Settings.FileChooser” is now used instead.</description>
     </key>
     <key name="search-view" enum="org.gnome.nautilus.FolderView">
       <default>'icon-view'</default>
@@ -225,7 +225,7 @@
     <key type="as" name="captions">
       <default>[ 'none', 'none', 'none' ]</default>
       <summary>List of possible captions on icons</summary>
-      <description>A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Some possible values are: "size", "type", "date_modified", "owner", "group", "permissions", and "mime_type".</description>
+      <description>A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Some possible values are: “size”, “type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”.</description>
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
       <default>'large'</default>
@@ -240,7 +240,7 @@
     <key type="as" name="text-ellipsis-limit">
       <default>[ '3' ]</default>
       <summary>Text Ellipsis Limit</summary>
-      <description>A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form "Zoom Level:Integer". For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form "Integer" without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 - always display overlong file names; 3 - shorten file names if they exceed three lines; smallest:5,smaller:4,0 - shorten file names if they exceed five lines for zoom level "smallest". Shorten file names if they exceed four lines for zoom level "smaller". Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large.</description>
+      <description>A string specifying how parts of overlong file names should be replaced by ellipses, depending on the zoom level. Each of the list entries is of the form “Zoom Level:Integer”. For each specified zoom level, if the given integer is larger than 0, the file name will not exceed the given number of lines. If the integer is 0 or smaller, no limit is imposed on the specified zoom level. A default entry of the form “Integer” without any specified zoom level is also allowed. It defines the maximum number of lines for all other zoom levels. Examples: 0 — always display overlong file names; 3 — shorten file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file names if they exceed five lines for zoom level “smallest”. Shorten file names if they exceed four lines for zoom level “smaller”. Do not shorten file names for other zoom levels. Available zoom levels: small, standard, large.</description>
     </key>
   </schema>
 

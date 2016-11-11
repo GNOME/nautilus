@@ -561,7 +561,7 @@ report_broken_symbolic_link (GtkWindow    *parent_window,
     else
     {
         detail = g_strdup_printf (_("This link cannot be used because its target "
-                                    "“%s” doesn't exist."), target_path);
+                                    "“%s” doesn’t exist."), target_path);
     }
 
     if (!can_trash)

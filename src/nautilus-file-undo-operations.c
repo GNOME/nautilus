@@ -407,11 +407,11 @@ ext_strings_func (NautilusFileUndoInfo  *info,
     {
         if (count > 1)
         {
-            *undo_description = g_strdup_printf (ngettext ("Move %d item back to '%s'",
-                                                           "Move %d items back to '%s'", count),
+            *undo_description = g_strdup_printf (ngettext ("Move %d item back to “%s”",
+                                                           "Move %d items back to “%s”", count),
                                                  count, source);
-            *redo_description = g_strdup_printf (ngettext ("Move %d item to '%s'",
-                                                           "Move %d items to '%s'", count),
+            *redo_description = g_strdup_printf (ngettext ("Move %d item to “%s”",
+                                                           "Move %d items to “%s”", count),
                                                  count, destination);
 
             *undo_label = g_strdup_printf (ngettext ("_Undo Move %d item",
@@ -423,8 +423,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
         }
         else
         {
-            *undo_description = g_strdup_printf (_("Move '%s' back to '%s'"), name, source);
-            *redo_description = g_strdup_printf (_("Move '%s' to '%s'"), name, destination);
+            *undo_description = g_strdup_printf (_("Move “%s” back to “%s”"), name, source);
+            *redo_description = g_strdup_printf (_("Move “%s” to “%s”"), name, destination);
 
             *undo_label = g_strdup (_("_Undo Move"));
             *redo_label = g_strdup (_("_Redo Move"));
@@ -446,8 +446,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
         }
         else
         {
-            *undo_description = g_strdup_printf (_("Move '%s' back to trash"), name);
-            *redo_description = g_strdup_printf (_("Restore '%s' from trash"), name);
+            *undo_description = g_strdup_printf (_("Move “%s” back to trash"), name);
+            *redo_description = g_strdup_printf (_("Restore “%s” from trash"), name);
         }
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_COPY)
@@ -457,8 +457,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
             *undo_description = g_strdup_printf (ngettext ("Delete %d copied item",
                                                            "Delete %d copied items", count),
                                                  count);
-            *redo_description = g_strdup_printf (ngettext ("Copy %d item to '%s'",
-                                                           "Copy %d items to '%s'", count),
+            *redo_description = g_strdup_printf (ngettext ("Copy %d item to “%s”",
+                                                           "Copy %d items to “%s”", count),
                                                  count, destination);
 
             *undo_label = g_strdup_printf (ngettext ("_Undo Copy %d item",
@@ -470,8 +470,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
         }
         else
         {
-            *undo_description = g_strdup_printf (_("Delete '%s'"), name);
-            *redo_description = g_strdup_printf (_("Copy '%s' to '%s'"), name, destination);
+            *undo_description = g_strdup_printf (_("Delete “%s”"), name);
+            *redo_description = g_strdup_printf (_("Copy “%s” to “%s”"), name, destination);
 
             *undo_label = g_strdup (_("_Undo Copy"));
             *redo_label = g_strdup (_("_Redo Copy"));
@@ -484,8 +484,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
             *undo_description = g_strdup_printf (ngettext ("Delete %d duplicated item",
                                                            "Delete %d duplicated items", count),
                                                  count);
-            *redo_description = g_strdup_printf (ngettext ("Duplicate %d item in '%s'",
-                                                           "Duplicate %d items in '%s'", count),
+            *redo_description = g_strdup_printf (ngettext ("Duplicate %d item in “%s”",
+                                                           "Duplicate %d items in “%s”", count),
                                                  count, destination);
 
             *undo_label = g_strdup_printf (ngettext ("_Undo Duplicate %d item",
@@ -497,8 +497,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
         }
         else
         {
-            *undo_description = g_strdup_printf (_("Delete '%s'"), name);
-            *redo_description = g_strdup_printf (_("Duplicate '%s' in '%s'"),
+            *undo_description = g_strdup_printf (_("Delete “%s”"), name);
+            *redo_description = g_strdup_printf (_("Duplicate “%s” in “%s”"),
                                                  name, destination);
 
             *undo_label = g_strdup (_("_Undo Duplicate"));
@@ -518,8 +518,8 @@ ext_strings_func (NautilusFileUndoInfo  *info,
         }
         else
         {
-            *undo_description = g_strdup_printf (_("Delete link to '%s'"), name);
-            *redo_description = g_strdup_printf (_("Create link to '%s'"), name);
+            *undo_description = g_strdup_printf (_("Delete link to “%s”"), name);
+            *redo_description = g_strdup_printf (_("Create link to “%s”"), name);
 
             *undo_label = g_strdup (_("_Undo Create Link"));
             *redo_label = g_strdup (_("_Redo Create Link"));
@@ -772,25 +772,25 @@ create_strings_func (NautilusFileUndoInfo  *info,
     char *name;
 
     name = g_file_get_parse_name (self->priv->target_file);
-    *undo_description = g_strdup_printf (_("Delete '%s'"), name);
+    *undo_description = g_strdup_printf (_("Delete “%s”"), name);
 
     if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_EMPTY_FILE)
     {
-        *redo_description = g_strdup_printf (_("Create an empty file '%s'"), name);
+        *redo_description = g_strdup_printf (_("Create an empty file “%s”"), name);
 
         *undo_label = g_strdup (_("_Undo Create Empty File"));
         *redo_label = g_strdup (_("_Redo Create Empty File"));
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_FOLDER)
     {
-        *redo_description = g_strdup_printf (_("Create a new folder '%s'"), name);
+        *redo_description = g_strdup_printf (_("Create a new folder “%s”"), name);
 
         *undo_label = g_strdup (_("_Undo Create Folder"));
         *redo_label = g_strdup (_("_Redo Create Folder"));
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_CREATE_FILE_FROM_TEMPLATE)
     {
-        *redo_description = g_strdup_printf (_("Create new file '%s' from template "), name);
+        *redo_description = g_strdup_printf (_("Create new file “%s” from template "), name);
 
         *undo_label = g_strdup (_("_Undo Create from Template"));
         *redo_label = g_strdup (_("_Redo Create from Template"));
@@ -987,8 +987,8 @@ rename_strings_func (NautilusFileUndoInfo  *info,
     new_name = g_file_get_parse_name (self->priv->new_file);
     old_name = g_file_get_parse_name (self->priv->old_file);
 
-    *undo_description = g_strdup_printf (_("Rename '%s' as '%s'"), new_name, old_name);
-    *redo_description = g_strdup_printf (_("Rename '%s' as '%s'"), old_name, new_name);
+    *undo_description = g_strdup_printf (_("Rename “%s” as “%s”"), new_name, old_name);
+    *redo_description = g_strdup_printf (_("Rename “%s” as “%s”"), old_name, new_name);
 
     *undo_label = g_strdup (_("_Undo Rename"));
     *redo_label = g_strdup (_("_Redo Rename"));
@@ -1341,14 +1341,14 @@ trash_strings_func (NautilusFileUndoInfo  *info,
         file = keys->data;
         name = g_file_get_basename (file);
         orig_path = g_file_get_path (file);
-        *undo_description = g_strdup_printf (_("Restore '%s' to '%s'"), name, orig_path);
+        *undo_description = g_strdup_printf (_("Restore “%s” to “%s”"), name, orig_path);
 
         g_free (name);
         g_free (orig_path);
         g_list_free (keys);
 
         name = g_file_get_parse_name (file);
-        *redo_description = g_strdup_printf (_("Move '%s' to trash"), name);
+        *redo_description = g_strdup_printf (_("Move “%s” to trash"), name);
 
         g_free (name);
     }
@@ -1649,8 +1649,8 @@ rec_permissions_strings_func (NautilusFileUndoInfo  *info,
 
     name = g_file_get_path (self->priv->dest_dir);
 
-    *undo_description = g_strdup_printf (_("Restore original permissions of items enclosed in '%s'"), name);
-    *redo_description = g_strdup_printf (_("Set permissions of items enclosed in '%s'"), name);
+    *undo_description = g_strdup_printf (_("Restore original permissions of items enclosed in “%s”"), name);
+    *redo_description = g_strdup_printf (_("Set permissions of items enclosed in “%s”"), name);
 
     *undo_label = g_strdup (_("_Undo Change Permissions"));
     *redo_label = g_strdup (_("_Redo Change Permissions"));
@@ -1803,8 +1803,8 @@ permissions_strings_func (NautilusFileUndoInfo  *info,
     gchar *name;
 
     name = g_file_get_parse_name (self->priv->target_file);
-    *undo_description = g_strdup_printf (_("Restore original permissions of '%s'"), name);
-    *redo_description = g_strdup_printf (_("Set permissions of '%s'"), name);
+    *undo_description = g_strdup_printf (_("Restore original permissions of “%s”"), name);
+    *redo_description = g_strdup_printf (_("Set permissions of “%s”"), name);
 
     *undo_label = g_strdup (_("_Undo Change Permissions"));
     *redo_label = g_strdup (_("_Redo Change Permissions"));
@@ -1916,9 +1916,9 @@ ownership_strings_func (NautilusFileUndoInfo  *info,
 
     if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_OWNER)
     {
-        *undo_description = g_strdup_printf (_("Restore group of '%s' to '%s'"),
+        *undo_description = g_strdup_printf (_("Restore group of “%s” to “%s”"),
                                              name, self->priv->original_ownership);
-        *redo_description = g_strdup_printf (_("Set group of '%s' to '%s'"),
+        *redo_description = g_strdup_printf (_("Set group of “%s” to “%s”"),
                                              name, self->priv->new_ownership);
 
         *undo_label = g_strdup (_("_Undo Change Group"));
@@ -1926,9 +1926,9 @@ ownership_strings_func (NautilusFileUndoInfo  *info,
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_CHANGE_GROUP)
     {
-        *undo_description = g_strdup_printf (_("Restore owner of '%s' to '%s'"),
+        *undo_description = g_strdup_printf (_("Restore owner of “%s” to “%s”"),
                                              name, self->priv->original_ownership);
-        *redo_description = g_strdup_printf (_("Set owner of '%s' to '%s'"),
+        *redo_description = g_strdup_printf (_("Set owner of “%s” to “%s”"),
                                              name, self->priv->new_ownership);
 
         *undo_label = g_strdup (_("_Undo Change Owner"));
@@ -2082,7 +2082,7 @@ extract_strings_func (NautilusFileUndoInfo  *info,
         output = self->priv->outputs->data;
         name = g_file_get_parse_name (output);
 
-        *undo_description = g_strdup_printf (_("Delete '%s'"), name);
+        *undo_description = g_strdup_printf (_("Delete “%s”"), name);
     }
     else
     {
@@ -2100,7 +2100,7 @@ extract_strings_func (NautilusFileUndoInfo  *info,
         source = self->priv->sources->data;
         name = g_file_get_parse_name (source);
 
-        *redo_description = g_strdup_printf (_("Extract '%s'"), name);
+        *redo_description = g_strdup_printf (_("Extract “%s”"), name);
     }
     else
     {
@@ -2244,7 +2244,7 @@ compress_strings_func (NautilusFileUndoInfo  *info,
     gint sources_count;
 
     output_name = g_file_get_parse_name (self->priv->output);
-    *undo_description = g_strdup_printf (_("Delete '%s'"), output_name);
+    *undo_description = g_strdup_printf (_("Delete “%s”"), output_name);
 
     sources_count = g_list_length (self->priv->sources);
     if (sources_count == 1)
@@ -2255,7 +2255,7 @@ compress_strings_func (NautilusFileUndoInfo  *info,
         source = self->priv->sources->data;
         source_name = g_file_get_parse_name (source);
 
-        *redo_description = g_strdup_printf (_("Compress '%s'"), source_name);
+        *redo_description = g_strdup_printf (_("Compress “%s”"), source_name);
     }
     else
     {

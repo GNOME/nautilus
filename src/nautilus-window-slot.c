@@ -1363,7 +1363,7 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         }
         else
         {
-            detail_message = g_strdup (_("This location doesn't appear to be a folder."));
+            detail_message = g_strdup (_("This location doesn’t appear to be a folder."));
         }
     }
     else if (error->domain == G_IO_ERROR)
@@ -1400,7 +1400,7 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
 
             case G_IO_ERROR_PERMISSION_DENIED:
                 {
-                    detail_message = g_strdup (_("Don't have permission to access the requested location."));
+                    detail_message = g_strdup (_("Don’t have permission to access the requested location."));
                 }
                 break;
 
