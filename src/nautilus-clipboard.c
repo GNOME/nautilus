@@ -213,21 +213,15 @@ gboolean
 nautilus_clipboard_is_cut_from_selection_data (GtkSelectionData *selection_data)
 {
     GList *items;
+    gboolean is_cut_from_selection_data;
 
     items = get_item_list_from_selection_data (selection_data);
-    if (items == NULL)
-    {
-        return FALSE;
-    }
+    is_cut_from_selection_data = items != NULL &&
+                                 g_strcmp0 ((gchar *)items->data, "cut") == 0;
 
-    if (strcmp ((gchar *) items->data, "cut") == 0)
-    {
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
+    g_list_free_full (items, g_free);
+
+    return is_cut_from_selection_data;
 }
 
 static void
