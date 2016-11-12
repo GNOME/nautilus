@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-11-07 15:38+0000\n"
-"PO-Revision-Date: 2016-11-08 12:43+0100\n"
+"POT-Creation-Date: 2016-11-10 12:43+0000\n"
+"PO-Revision-Date: 2016-11-12 12:08+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -951,7 +951,7 @@ msgstr "„%s“ by nebyl jedinečný nový název."
 msgid "“%s” would conflict with an existing file."
 msgstr "„%s“ bylo v konfliktu s již existujícím souborem."
 
-#: src/nautilus-batch-rename-dialog.c:2127
+#: src/nautilus-batch-rename-dialog.c:2138
 #, c-format
 msgid "Rename %d Folder"
 msgid_plural "Rename %d Folders"
@@ -959,13 +959,21 @@ msgstr[0] "Přejmenovat %d složku"
 msgstr[1] "Přejmenovat %d složky"
 msgstr[2] "Přejmenovat %d složek"
 
-#: src/nautilus-batch-rename-dialog.c:2133
+#: src/nautilus-batch-rename-dialog.c:2146
 #, c-format
 msgid "Rename %d File"
 msgid_plural "Rename %d Files"
 msgstr[0] "Přejmenovat %d soubor"
 msgstr[1] "Přejmenovat %d soubory"
 msgstr[2] "Přejmenovat %d souborů"
+
+#: src/nautilus-batch-rename-dialog.c:2156
+#, c-format
+msgid "Rename %d File and Folder"
+msgid_plural "Rename %d Files and Folders"
+msgstr[0] "Přejmenovat %d soubor a složku"
+msgstr[1] "Přejmenovat %d soubory a složky"
+msgstr[2] "Přejmenovat %d souborů a složek"
 
 #: src/nautilus-batch-rename-dialog.h:88
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:186
@@ -1376,56 +1384,56 @@ msgid "File not found"
 msgstr "Soubor nenalezen"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5616
+#: src/nautilus-file.c:5614
 msgid "%H:%M"
 msgstr "%-H∶%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5621
+#: src/nautilus-file.c:5619
 msgid "%l:%M %p"
 msgstr "%-l∶%M %p"
 
-#: src/nautilus-file.c:5630
+#: src/nautilus-file.c:5628
 #, no-c-format
 msgid "Yesterday"
 msgstr "včera"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5639
+#: src/nautilus-file.c:5637
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "včera, %-H∶%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5646
+#: src/nautilus-file.c:5644
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "včera, %-l∶%M %p"
 
-#: src/nautilus-file.c:5656
+#: src/nautilus-file.c:5654
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5665
+#: src/nautilus-file.c:5663
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a, %-H∶%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5672
+#: src/nautilus-file.c:5670
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %-l∶%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5683
+#: src/nautilus-file.c:5681
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e. %B"
@@ -1433,7 +1441,7 @@ msgstr "%-e. %B"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5693
+#: src/nautilus-file.c:5691
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e. %B %-H∶%M"
@@ -1441,14 +1449,14 @@ msgstr "%-e. %B %-H∶%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5701
+#: src/nautilus-file.c:5699
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e. %B %-l∶%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5712
+#: src/nautilus-file.c:5710
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e. %B %Y"
@@ -1456,7 +1464,7 @@ msgstr "%-e. %B %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5722
+#: src/nautilus-file.c:5720
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e. %B %Y %-H∶%M"
@@ -1464,50 +1472,53 @@ msgstr "%-e. %B %Y %-H∶%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5730
+#: src/nautilus-file.c:5728
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e. %B %Y %-l∶%M %p"
 
-#: src/nautilus-file.c:5742
+#: src/nautilus-file.c:5740
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6177
+#: src/nautilus-file.c:6175
 msgid "Not allowed to set permissions"
 msgstr "Není dovoleno nastavit oprávnění"
 
-#: src/nautilus-file.c:6500
+#: src/nautilus-file.c:6498
 msgid "Not allowed to set owner"
 msgstr "Nedostatečná oprávnění pro nastavení vlastníka"
 
-#: src/nautilus-file.c:6519
+#: src/nautilus-file.c:6517
 #, c-format
 msgid "Specified owner '%s' doesn't exist"
 msgstr "Uvedený vlastník '%s' neexistuje"
 
-#: src/nautilus-file.c:6804
+#: src/nautilus-file.c:6802
 msgid "Not allowed to set group"
 msgstr "Nedostatečná oprávnění pro nastavení skupiny"
 
-#: src/nautilus-file.c:6823
+#: src/nautilus-file.c:6821
 #, c-format
 msgid "Specified group '%s' doesn't exist"
 msgstr "Vybraná skupina '%s' neexistuje"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6965
+#: src/nautilus-file.c:6963
 msgid "Me"
 msgstr "Já"
 
+#. Translators: "file and folder" is a string that will never
+#. * happen, since this is only used when there are minimum 2 items
+#.
 #: src/nautilus-file.c:6997
 #, c-format
-msgid "%'u item"
-msgid_plural "%'u items"
-msgstr[0] "%'u položka"
-msgstr[1] "%'u položky"
-msgstr[2] "%'u položek"
+msgid "%'u file and folder"
+msgid_plural "%'u files and folders"
+msgstr[0] "%'u soubor a složka"
+msgstr[1] "%'u soubory a složky"
+msgstr[2] "%'u souborů a složek"
 
 #: src/nautilus-file.c:6998
 #, c-format
