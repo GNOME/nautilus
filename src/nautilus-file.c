@@ -5104,7 +5104,6 @@ apply_emblems_to_icon (NautilusFile          *file,
                        NautilusFileIconFlags  flags)
 {
     GIcon *emblemed_icon;
-    GEmblem *emblem;
     GList *emblems, *l;
 
     emblemed_icon = NULL;
@@ -5112,6 +5111,8 @@ apply_emblems_to_icon (NautilusFile          *file,
 
     for (l = emblems; l != NULL; l = l->next)
     {
+        g_autoptr (GEmblem) emblem = NULL;
+
         if (g_icon_equal (l->data, icon))
         {
             continue;
