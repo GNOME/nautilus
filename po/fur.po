@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-11-12 16:45+0000\n"
-"PO-Revision-Date: 2016-11-12 23:25+0100\n"
+"PO-Revision-Date: 2016-11-12 23:52+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur\n"
@@ -2020,11 +2020,8 @@ msgstr[1] "Mots te Scovacere %'d file"
 
 #. Translators: %B is a file name
 #: src/nautilus-file-operations.c:2277
-#, fuzzy
-#| msgid ""
-#| "“%B” can't be put in the trash. Do you want to delete it immediately?"
 msgid "“%B” can’t be put in the trash. Do you want to delete it immediately?"
-msgstr "No si pues movi te scovacere \"%B\". Vuelistu eliminâlu daurman?"
+msgstr "No si pues butâ te scovacere “%B”. Eliminâlu daurman?"
 
 #: src/nautilus-file-operations.c:2286
 msgid "This remote location does not support sending items to the trash."
@@ -2864,10 +2861,9 @@ msgid "Move “%s” back to “%s”"
 msgstr "Spostât \"%B\" in \"%B\""
 
 #: src/nautilus-file-undo-operations.c:427
-#, fuzzy, c-format
-#| msgid "Moved “%B” to “%B”"
+#, c-format
 msgid "Move “%s” to “%s”"
-msgstr "Spostât \"%B\" in \"%B\""
+msgstr "Sposte “%s” su “%s”"
 
 #: src/nautilus-file-undo-operations.c:429
 msgid "_Undo Move"
@@ -2901,10 +2897,9 @@ msgstr[0] "Tire fûr %d element de scovacere"
 msgstr[1] "Tire fûr %d elements de scovacere"
 
 #: src/nautilus-file-undo-operations.c:449
-#, fuzzy, c-format
-#| msgid "Move '%s' back to trash"
+#, c-format
 msgid "Move “%s” back to trash"
-msgstr "Torne movi '%s' te scovacere"
+msgstr "Torne meti “%s” te scovacere"
 
 #: src/nautilus-file-undo-operations.c:450
 #, c-format
@@ -2919,13 +2914,11 @@ msgstr[0] "Scancele %d element copiât"
 msgstr[1] "Scancele %d elements copiâts"
 
 #: src/nautilus-file-undo-operations.c:460
-#, fuzzy, c-format
-#| msgid "Copy %d item to '%s'"
-#| msgid_plural "Copy %d items to '%s'"
+#, c-format
 msgid "Copy %d item to “%s”"
 msgid_plural "Copy %d items to “%s”"
-msgstr[0] "Copie %d element su '%s'"
-msgstr[1] "Copie %d elements su '%s'"
+msgstr[0] "Copie %d element su “%s”"
+msgstr[1] "Copie %d elements su “%s”"
 
 #: src/nautilus-file-undo-operations.c:464
 #, c-format
@@ -2946,16 +2939,14 @@ msgstr[1] "_Torne Copie %d elements"
 #: src/nautilus-file-undo-operations.c:775
 #: src/nautilus-file-undo-operations.c:2085
 #: src/nautilus-file-undo-operations.c:2247
-#, fuzzy, c-format
-#| msgid "Deleted “%B”"
+#, c-format
 msgid "Delete “%s”"
-msgstr "\"%B\" eliminât"
+msgstr "Elimine “%s”"
 
 #: src/nautilus-file-undo-operations.c:474
-#, fuzzy, c-format
-#| msgid "Copying “%B” to “%B”"
+#, c-format
 msgid "Copy “%s” to “%s”"
-msgstr "Daûr a copiâ \"%B\" in \"%B\""
+msgstr "Copie “%s” su “%s”"
 
 #: src/nautilus-file-undo-operations.c:476
 msgid "_Undo Copy"
@@ -2973,13 +2964,11 @@ msgstr[0] "Elimine %d element dopleât"
 msgstr[1] "Elimine %d elements dopleâts"
 
 #: src/nautilus-file-undo-operations.c:487
-#, fuzzy, c-format
-#| msgid "Duplicated %'d file in “%B”"
-#| msgid_plural "Duplicated %'d files in “%B”"
+#, c-format
 msgid "Duplicate %d item in “%s”"
 msgid_plural "Duplicate %d items in “%s”"
-msgstr[0] "Dopleât %'d file in “%B”"
-msgstr[1] "Dopleâts %'d file in “%B”"
+msgstr[0] "Doplee %d element in “%s”"
+msgstr[1] "Doplee %d elements in “%s”"
 
 #: src/nautilus-file-undo-operations.c:491
 #, c-format
@@ -2996,11 +2985,9 @@ msgstr[0] "_Torne doplee %d element"
 msgstr[1] "_Torne doplee %d elements"
 
 #: src/nautilus-file-undo-operations.c:501
-#, fuzzy, c-format
-#| msgid "Duplicated %'d file in “%B”"
-#| msgid_plural "Duplicated %'d files in “%B”"
+#, c-format
 msgid "Duplicate “%s” in “%s”"
-msgstr "Dopleât %'d file in “%B”"
+msgstr "Doplee “%s” in “%s”"
 
 #: src/nautilus-file-undo-operations.c:504
 msgid "_Undo Duplicate"
@@ -3083,10 +3070,9 @@ msgstr "_Torne cree dal model"
 
 #: src/nautilus-file-undo-operations.c:990
 #: src/nautilus-file-undo-operations.c:991
-#, fuzzy, c-format
-#| msgid "Renaming “%s” to “%s”."
+#, c-format
 msgid "Rename “%s” as “%s”"
-msgstr "Modifiche dal non di “%s” in “%s”."
+msgstr "Modifiche non di “%s” come “%s”"
 
 #: src/nautilus-file-undo-operations.c:993
 msgid "_Undo Rename"
