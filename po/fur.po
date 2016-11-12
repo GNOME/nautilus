@@ -8,7 +8,7 @@ msgstr ""
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
 "POT-Creation-Date: 2016-11-12 16:45+0000\n"
-"PO-Revision-Date: 2016-11-12 23:03+0100\n"
+"PO-Revision-Date: 2016-11-12 23:25+0100\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian Language Team\n"
 "Language: fur\n"
@@ -352,12 +352,6 @@ msgid "Reverse sort order in new windows"
 msgstr "Invertìs l'ordin intai gnûfs barcons"
 
 #: data/org.gnome.nautilus.gschema.xml:181
-#, fuzzy
-#| msgid ""
-#| "If true, files in new windows will be sorted in reverse order. I.e., if "
-#| "sorted by name, then instead of sorting the files from \"a\" to \"z\", "
-#| "they will be sorted from \"z\" to \"a\"; if sorted by size, instead of "
-#| "being incrementally they will be sorted decrementally."
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from “a” to “z”, they will "
@@ -365,20 +359,15 @@ msgid ""
 "they will be sorted decrementally."
 msgstr ""
 "Se metût a VÊR, i file tai gnûfs barcons a vegnin metûts in ordin inviers. "
-"Par esempli, se si ordenin par non, invezit di ordenâju de \"a\" ae \"z\", a "
-"vegnin metûts de \"z\" ae \"a\"; se metûts par dimension, invezit che in "
-"ordin a cressi a vegnaran metûts in ordin a diminuî."
+"Par esempli, se si ordenin par non, invezit di ordenâju de “a” ae “z”, a "
+"vegnin metûts de “z” ae “a”; se metûts par dimension, invezit che in ordin a "
+"cressi a vegnaran metûts in ordin a diminuî."
 
 #: data/org.gnome.nautilus.gschema.xml:191
 msgid "Default folder viewer"
 msgstr "Viodude de cartele predefinide"
 
 #: data/org.gnome.nautilus.gschema.xml:192
-#, fuzzy
-#| msgid ""
-#| "When a folder is visited this viewer is used unless you have selected "
-#| "another view for that particular folder. Possible values are \"list-view"
-#| "\", and \"icon-view\"."
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are “list-view”, "
@@ -386,23 +375,19 @@ msgid ""
 msgstr ""
 "La viodude chi metude e ven doprade tal visitâ lis cartelis, a mancul che no "
 "sedi stade selezionade une viodude divierse par une cartele in particolâr. I "
-"valôrs pussibii a son \"list-view\" e \"icon-view\"."
+"valôrs pussibii a son “list-view” e “icon-view”."
 
 #: data/org.gnome.nautilus.gschema.xml:196
 msgid "Whether to show hidden files"
 msgstr "indiche se mostrâ i file platâts"
 
 #: data/org.gnome.nautilus.gschema.xml:197
-#, fuzzy
-#| msgid ""
-#| "This key is deprecated and ignored. The \"show-hidden\" key from \"org."
-#| "gtk.Settings.FileChooser\" is now used instead."
 msgid ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
 msgstr ""
-"Cheste clâf e je deprecade e ignorade. La clâf \"show-hidden\" di \"org.gtk."
-"Settings.FileChooser\" e ven doprade al so puest, cumò."
+"Cheste clâf e je deprecade e ignorade. La clâf “show-hidden” di “org.gtk."
+"Settings.FileChooser” e ven doprade al so puest, cumò."
 
 #: data/org.gnome.nautilus.gschema.xml:201
 msgid "What viewer should be used when searching"
@@ -464,12 +449,6 @@ msgid "List of possible captions on icons"
 msgstr "Liste di pussibilis didascaliis des iconis"
 
 #: data/org.gnome.nautilus.gschema.xml:228
-#, fuzzy
-#| msgid ""
-#| "A list of captions below an icon in the icon view and the desktop. The "
-#| "actual number of captions shown depends on the zoom level. Some possible "
-#| "values are: \"size\", \"type\", \"date_modified\", \"owner\", \"group\", "
-#| "\"permissions\", and \"mime_type\"."
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -478,8 +457,8 @@ msgid ""
 msgstr ""
 "Une liste di didascaliis sot di une icone te viodude a iconis e sul "
 "scritori. Il numar efetîf di didascaliis mostradis al dipent dal nivel di "
-"ingrandiment. Valôrs pussibii a son: \"size\", \"type\", \"date_modified\", "
-"\"owner\", \"group\", \"permissions\" e \"mime_type\"."
+"ingrandiment. Valôrs pussibii a son: “size”, “type”, “date_modified”, "
+"“owner”, “group”, “permissions” e “mime_type”."
 
 #: data/org.gnome.nautilus.gschema.xml:232
 msgid "Default icon zoom level"
@@ -3147,10 +3126,9 @@ msgid "Restore “%s” to “%s”"
 msgstr "Modifiche dal non di “%s” in “%s”."
 
 #: src/nautilus-file-undo-operations.c:1351
-#, fuzzy, c-format
-#| msgid "Move '%s' to trash"
+#, c-format
 msgid "Move “%s” to trash"
-msgstr "Môf '%s' te scovacere"
+msgstr "Môf “%s” te scovacere"
 
 #: src/nautilus-file-undo-operations.c:1356
 msgid "_Undo Trash"
@@ -3161,16 +3139,14 @@ msgid "_Redo Trash"
 msgstr "_Torne môf te Scovacere"
 
 #: src/nautilus-file-undo-operations.c:1652
-#, fuzzy, c-format
-#| msgid "Restore original permissions of items enclosed in '%s'"
+#, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
-msgstr "Torne met i permès origjinâi ai elements contignûts in '%s'"
+msgstr "Torne met i permès origjinâi ai elements contignûts in “%s”"
 
 #: src/nautilus-file-undo-operations.c:1653
-#, fuzzy, c-format
-#| msgid "Set permissions of items enclosed in '%s'"
+#, c-format
 msgid "Set permissions of items enclosed in “%s”"
-msgstr "Stabilìs i permès dai elements contignûts in '%s'"
+msgstr "Stabilìs i permès dai elements contignûts in “%s”"
 
 #: src/nautilus-file-undo-operations.c:1655
 #: src/nautilus-file-undo-operations.c:1809
@@ -3183,22 +3159,19 @@ msgid "_Redo Change Permissions"
 msgstr "_Torne cambie i permès"
 
 #: src/nautilus-file-undo-operations.c:1806
-#, fuzzy, c-format
-#| msgid "Restore original permissions of '%s'"
+#, c-format
 msgid "Restore original permissions of “%s”"
-msgstr "Torne met i permès origjinâi a '%s'"
+msgstr "Torne met i permès origjinâi a “%s”"
 
 #: src/nautilus-file-undo-operations.c:1807
-#, fuzzy, c-format
-#| msgid "Set permissions of '%s'"
+#, c-format
 msgid "Set permissions of “%s”"
-msgstr "Stabilìs i permès di '%s'"
+msgstr "Stabilìs i permès di “%s”"
 
 #: src/nautilus-file-undo-operations.c:1919
-#, fuzzy, c-format
-#| msgid "Restore group of '%s' to '%s'"
+#, c-format
 msgid "Restore group of “%s” to “%s”"
-msgstr "Torne met come grup di '%s' '%s'"
+msgstr "Torne met come grup di “%s” “%s”"
 
 #: src/nautilus-file-undo-operations.c:1921
 #, fuzzy, c-format
@@ -3215,10 +3188,9 @@ msgid "_Redo Change Group"
 msgstr "_Torne cambie grup"
 
 #: src/nautilus-file-undo-operations.c:1929
-#, fuzzy, c-format
-#| msgid "Restore owner of '%s' to '%s'"
+#, c-format
 msgid "Restore owner of “%s” to “%s”"
-msgstr "Torne met come proprietari di '%s' '%s'"
+msgstr "Torne met come proprietari di “%s” “%s”"
 
 #: src/nautilus-file-undo-operations.c:1931
 #, fuzzy, c-format
