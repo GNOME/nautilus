@@ -1836,7 +1836,7 @@ report_delete_progress (CommonJob    *job,
                          source_info->num_files);
         }
     }
-    nautilus_progress_info_set_details (job->progress, details);
+    nautilus_progress_info_take_details (job->progress, details);
 
     if (elapsed > SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE)
     {
