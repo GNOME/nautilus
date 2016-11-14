@@ -205,7 +205,7 @@ real_get_view_for_location (NautilusWindowSlot *self,
          * which is not the one we are interested in */
         if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID)
         {
-            priv->view_mode_before_search = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
+            priv->view_mode_before_search = nautilus_files_view_get_view_id (priv->content_view);
         }
         view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
     }
@@ -221,7 +221,7 @@ real_get_view_for_location (NautilusWindowSlot *self,
         }
         else
         {
-            view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
+            view_id = nautilus_files_view_get_view_id (priv->content_view);
         }
     }
 
@@ -261,7 +261,7 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
 
     if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view))
     {
-        return nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view)) == id;
+        return nautilus_files_view_get_view_id (priv->content_view) == id;
     }
     else
     {
@@ -336,7 +336,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group), "files-view-mode");
     if (g_action_get_enabled (action))
     {
-        variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (nautilus_window_slot_get_current_view (self))));
+        variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (nautilus_window_slot_get_current_view (self)));
         g_action_change_state (action, variant);
     }
 }
@@ -842,7 +842,7 @@ action_files_view_mode_toggle (GSimpleAction *action,
         return;
     }
 
-    current_view_id = nautilus_files_view_get_view_id (NAUTILUS_FILES_VIEW (priv->content_view));
+    current_view_id = nautilus_files_view_get_view_id (priv->content_view);
     if (current_view_id == NAUTILUS_VIEW_LIST_ID)
     {
         change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
@@ -3076,13 +3076,26 @@ nautilus_window_slot_new (NautilusWindow *window)
 GIcon *
 nautilus_window_slot_get_icon (NautilusWindowSlot *self)
 {
-    NautilusView *view;
+    guint current_view_id;
+    NautilusWindowSlotPrivate *priv;
 
     g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
 
-    view = nautilus_window_slot_get_current_view (self);
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view == NULL)
+    {
+        return NULL;
+    }
 
-    return view ? nautilus_view_get_icon (view) : NULL;
+    current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (priv->content_view));
+    if (current_view_id != NAUTILUS_VIEW_INVALID_ID)
+    {
+        return nautilus_view_get_icon (current_view_id);
+    }
+    else
+    {
+        return NULL;
+    }
 }
 
 NautilusToolbarMenuSections *

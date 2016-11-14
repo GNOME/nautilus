@@ -27,6 +27,7 @@
 #include "nautilus-error-reporting.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-toolbar.h"
+#include "nautilus-view.h"
 
 #include <stdlib.h>
 #include <errno.h>
@@ -106,8 +107,6 @@ struct NautilusCanvasViewDetails
      * Ideally we would connect to a weak reference and do a cancellable.
      */
     gboolean destroyed;
-
-    GIcon *icon;
 };
 
 /* Note that the first item in this list is the default sort,
@@ -1933,8 +1932,6 @@ nautilus_canvas_view_finalize (GObject *object)
 
     canvas_view = NAUTILUS_CANVAS_VIEW (object);
 
-    g_clear_object (&canvas_view->details->icon);
-
     g_free (canvas_view->details);
 
     G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->finalize (object);
@@ -1961,14 +1958,6 @@ nautilus_canvas_view_dispose (GObject *object)
 
 
     G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->dispose (object);
-}
-
-static GIcon *
-nautilus_canvas_view_get_icon (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
-
-    return NAUTILUS_CANVAS_VIEW (view)->details->icon;
 }
 
 static void
@@ -2017,7 +2006,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->get_view_id = nautilus_canvas_view_get_id;
     nautilus_files_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = canvas_view_scroll_to_file;
-    nautilus_files_view_class->get_icon = nautilus_canvas_view_get_icon;
 
     properties[PROP_SUPPORTS_AUTO_LAYOUT] =
         g_param_spec_boolean ("supports-auto-layout",
@@ -2060,7 +2048,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 
     canvas_view->details = g_new0 (NautilusCanvasViewDetails, 1);
     canvas_view->details->sort = &sort_criteria[0];
-    canvas_view->details->icon = g_themed_icon_new ("view-grid-symbolic");
     canvas_view->details->destroyed = FALSE;
 
     canvas_container = create_canvas_container (canvas_view);

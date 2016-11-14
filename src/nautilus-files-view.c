@@ -644,22 +644,6 @@ nautilus_files_view_using_manual_layout (NautilusFilesView *view)
 }
 
 /**
- * nautilus_files_view_get_icon:
- * @view: a #NautilusView
- *
- * Retrieves the #GIcon that represents @view.
- *
- * Returns: (transfer none): the #Gicon that represents @view
- */
-static GIcon *
-nautilus_files_view_get_icon (NautilusView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_icon (NAUTILUS_FILES_VIEW (view));
-}
-
-/**
  * nautilus_files_view_get_toolbar_menu_sections:
  * @view: a #NautilusFilesView
  *
@@ -843,9 +827,9 @@ nautilus_files_view_is_searching (NautilusView *view)
 }
 
 guint
-nautilus_files_view_get_view_id (NautilusFilesView *view)
+nautilus_files_view_get_view_id (NautilusView *view)
 {
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_view_id (view);
+    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_view_id (NAUTILUS_FILES_VIEW (view));
 }
 
 char *
@@ -8501,12 +8485,6 @@ nautilus_files_view_get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_ICON:
-            {
-                g_value_set_object (value, nautilus_view_get_icon (NAUTILUS_VIEW (view)));
-            }
-            break;
-
         case PROP_IS_LOADING:
             {
                 g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
@@ -8910,7 +8888,6 @@ nautilus_files_view_is_loading (NautilusView *view)
 static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
-    iface->get_icon = nautilus_files_view_get_icon;
     iface->get_location = nautilus_files_view_get_location;
     iface->set_location = nautilus_files_view_set_location;
     iface->get_selection = nautilus_files_view_get_selection;
@@ -8920,6 +8897,7 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->get_toolbar_menu_sections = nautilus_files_view_get_toolbar_menu_sections;
     iface->is_searching = nautilus_files_view_is_searching;
     iface->is_loading = nautilus_files_view_is_loading;
+    iface->get_view_id = nautilus_files_view_get_view_id;
 }
 
 static void
@@ -9042,7 +9020,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
                               G_PARAM_STATIC_STRINGS));
 
-    g_object_class_override_property (oclass, PROP_ICON, "icon");
     g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
     g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");

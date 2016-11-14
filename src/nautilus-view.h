@@ -26,6 +26,16 @@
 #include "nautilus-query.h"
 #include "nautilus-toolbar-menu-sections.h"
 
+enum
+{
+    NAUTILUS_VIEW_GRID_ID,
+    NAUTILUS_VIEW_LIST_ID,
+    NAUTILUS_VIEW_DESKTOP_ID,
+    NAUTILUS_VIEW_EMPTY_ID,
+    NAUTILUS_VIEW_OTHER_LOCATIONS_ID,
+    NAUTILUS_VIEW_INVALID_ID,
+};
+
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_VIEW (nautilus_view_get_type ())
@@ -36,9 +46,7 @@ struct _NautilusViewInterface
 {
         GTypeInterface parent;
 
-        /* The icon that represents the view */
-        GIcon*                          (*get_icon)                  (NautilusView         *view);
-
+        guint                           (*get_view_id)               (NautilusView         *view);
         /*
          * Returns the menu sections that should be shown in the toolbar menu
          * when this view is active. Implementations must not return %NULL
@@ -67,7 +75,9 @@ struct _NautilusViewInterface
         gboolean                        (*is_searching)              (NautilusView         *view);
 };
 
-GIcon *                        nautilus_view_get_icon                  (NautilusView         *view);
+GIcon *                        nautilus_view_get_icon                  (guint                 view_id);
+
+guint                          nautilus_view_get_view_id               (NautilusView         *view);
 
 NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
 

@@ -26,18 +26,6 @@ static void
 nautilus_view_default_init (NautilusViewInterface *iface)
 {
     /**
-     * NautilusView::icon:
-     *
-     * The #GIcon that represents the view, or %NULL.
-     */
-    g_object_interface_install_property (iface,
-                                         g_param_spec_object ("icon",
-                                                              "Icon that represents the view",
-                                                              "The icon that represents the view",
-                                                              G_TYPE_ICON,
-                                                              G_PARAM_READABLE));
-
-    /**
      * NautilusView::is-loading:
      *
      * %TRUE if the view is loading the location, %FALSE otherwise.
@@ -92,14 +80,43 @@ nautilus_view_default_init (NautilusViewInterface *iface)
  *
  * Retrieves the #GIcon that represents @view.
  *
- * Returns: (transfer none): a #GIcon
+ * Returns: (transfer full): a #GIcon
  */
 GIcon *
-nautilus_view_get_icon (NautilusView *view)
+nautilus_view_get_icon (guint view_id)
 {
-    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_icon, NULL);
+    if (view_id == NAUTILUS_VIEW_GRID_ID)
+    {
+        return g_themed_icon_new ("view-grid-symbolic");
+    }
+    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    {
+        return g_themed_icon_new ("view-list-symbolic");
+    }
+    else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
+    {
+        return g_themed_icon_new_with_default_fallbacks ("view-list-symbolic");
+    }
+    else
+    {
+        return NULL;
+    }
+}
 
-    return NAUTILUS_VIEW_GET_IFACE (view)->get_icon (view);
+/**
+ * nautilus_view_get_view_id:
+ * @view: a #NautilusView
+ *
+ * Retrieves the view id that represents the @view type.
+ *
+ * Returns: a guint representing the view type
+ */
+guint
+nautilus_view_get_view_id (NautilusView *view)
+{
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_view_id, NAUTILUS_VIEW_INVALID_ID);
+
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_view_id (view);
 }
 
 /**

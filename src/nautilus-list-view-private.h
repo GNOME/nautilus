@@ -64,7 +64,5 @@ struct NautilusListViewDetails {
   gulong clipboard_handler_id;
 
   GQuark last_sort_attr;
-
-  GIcon *icon;
 };
 
