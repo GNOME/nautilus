@@ -3050,13 +3050,27 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
     }
 
     current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (priv->content_view));
-    if (current_view_id != NAUTILUS_VIEW_INVALID_ID)
+    switch (current_view_id)
     {
-        return nautilus_view_get_icon (current_view_id);
-    }
-    else
-    {
-        return NULL;
+        case NAUTILUS_VIEW_LIST_ID:
+        {
+            return nautilus_view_get_icon (NAUTILUS_VIEW_GRID_ID);
+        }
+        break;
+        case NAUTILUS_VIEW_GRID_ID:
+        {
+            return nautilus_view_get_icon (NAUTILUS_VIEW_LIST_ID);
+        }
+        break;
+        case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
+        {
+            return nautilus_view_get_icon (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
+        }
+        break;
+        default:
+        {
+            return NULL;
+        }
     }
 }
 
