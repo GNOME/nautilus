@@ -31,6 +31,7 @@
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-list-view-dnd.h"
+#include "nautilus-view.h"
 
 #include <string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -3295,8 +3296,6 @@ nautilus_list_view_finalize (GObject *object)
         gtk_widget_destroy (list_view->details->column_editor);
     }
 
-    g_clear_object (&list_view->details->icon);
-
     g_free (list_view->details);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
@@ -3488,14 +3487,6 @@ nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
     return rect;
 }
 
-static GIcon *
-nautilus_list_view_get_icon (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NULL);
-
-    return NAUTILUS_LIST_VIEW (view)->details->icon;
-}
-
 static void
 nautilus_list_view_class_init (NautilusListViewClass *class)
 {
@@ -3535,7 +3526,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;
     nautilus_files_view_class->compute_rename_popover_pointing_to = nautilus_list_view_compute_rename_popover_pointing_to;
-    nautilus_files_view_class->get_icon = nautilus_list_view_get_icon;
 }
 
 static void
@@ -3545,8 +3535,6 @@ nautilus_list_view_init (NautilusListView *list_view)
     GtkClipboard *clipboard;
 
     list_view->details = g_new0 (NautilusListViewDetails, 1);
-
-    list_view->details->icon = g_themed_icon_new ("view-list-symbolic");
 
     /* ensure that the zoom level is always set before settings up the tree view columns */
     list_view->details->zoom_level = get_default_zoom_level ();

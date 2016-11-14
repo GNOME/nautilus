@@ -36,15 +36,8 @@ typedef struct NautilusFilesView NautilusFilesView;
 typedef struct NautilusFilesViewClass NautilusFilesViewClass;
 
 #include "nautilus-window.h"
+#include "nautilus-view.h"
 #include "nautilus-window-slot.h"
-
-enum {
-  NAUTILUS_VIEW_GRID_ID,
-  NAUTILUS_VIEW_LIST_ID,
-  NAUTILUS_VIEW_DESKTOP_ID,
-  NAUTILUS_VIEW_EMPTY_ID,
-  NAUTILUS_VIEW_INVALID_ID,
-};
 
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
 #define NAUTILUS_FILES_VIEW(obj)\
@@ -322,8 +315,7 @@ void                nautilus_files_view_remove_subdirectory             (Nautilu
 gboolean            nautilus_files_view_is_editable              (NautilusFilesView      *view);
 NautilusWindow *    nautilus_files_view_get_window               (NautilusFilesView      *view);
 
-/* NautilusFilesView methods */
-guint               nautilus_files_view_get_view_id                (NautilusFilesView      *view);
+guint               nautilus_files_view_get_view_id                (NautilusView      *view);
 
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);
