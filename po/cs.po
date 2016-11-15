@@ -22,8 +22,8 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: http://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2016-11-10 12:43+0000\n"
-"PO-Revision-Date: 2016-11-12 12:08+0100\n"
+"POT-Creation-Date: 2016-11-13 20:28+0000\n"
+"PO-Revision-Date: 2016-11-15 11:41+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -105,9 +105,8 @@ msgstr "Kam umisťovat nově otevřené karty v okně prohlížeče"
 
 #: data/org.gnome.nautilus.gschema.xml:81
 msgid ""
-"If set to \"after-current-tab\", then new tabs are inserted after the "
-"current tab. If set to \"end\", then new tabs are appended to the end of the "
-"tab list."
+"If set to “after-current-tab”, then new tabs are inserted after the current "
+"tab. If set to “end”, then new tabs are appended to the end of the tab list."
 msgstr ""
 "Je-li nastaveno na „after_current_tab“, nové karty jsou vkládány za aktuální "
 "kartu. Je-li nastaveno na „end“, pak jsou nové karty přidávány na konec "
@@ -132,7 +131,7 @@ msgstr "Zda provádět rekurzivní hledání"
 #: data/org.gnome.nautilus.gschema.xml:91
 msgid ""
 "In which locations Nautilus should search on subfolders. Available values "
-"are 'local-only', 'always', 'never'."
+"are “local-only”, “always”, “never”."
 msgstr ""
 "Ve kterých umístěních by měl Nautilus hledat v podsložkách. Možné hodnoty "
 "jsou „local-only“ (jen v místních), „always“ (vždy), „never“ (nikdy)."
@@ -211,9 +210,9 @@ msgstr "Kdy zobrazovat počet položek ve složce"
 #: data/org.gnome.nautilus.gschema.xml:122
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
-"\"always\" then always show item counts, even if the folder is on a remote "
-"server. If set to \"local-only\" then only show counts for local file "
-"systems. If set to \"never\" then never bother to compute item counts."
+"“always” then always show item counts, even if the folder is on a remote "
+"server. If set to “local-only” then only show counts for local file systems. "
+"If set to “never” then never bother to compute item counts."
 msgstr ""
 "Rozhodnutí, kdy zobrazovat počet položek ve složce. Je-li nastaveno na "
 "„always“, tak vždy zobrazovat počty položek, i když je složka na vzdáleném "
@@ -227,8 +226,8 @@ msgstr "Typ kliknutí používaný pro spuštění/otevření souborů"
 
 #: data/org.gnome.nautilus.gschema.xml:127
 msgid ""
-"Possible values are \"single\" to launch files on a single click, or \"double"
-"\" to launch them on a double click."
+"Possible values are “single” to launch files on a single click, or “double” "
+"to launch them on a double click."
 msgstr ""
 "Možné hodnoty jsou „single“ pro spouštění souborů jednoduchým kliknutím, "
 "nebo „double“ pro jejich spouštění dvojitým kliknutím."
@@ -240,9 +239,9 @@ msgstr "Co dělat se spustitelnými textovými soubory, když jsou aktivovány"
 #: data/org.gnome.nautilus.gschema.xml:132
 msgid ""
 "What to do with executable text files when they are activated (single or "
-"double clicked). Possible values are \"launch\" to launch them as programs, "
-"\"ask\" to ask what to do via a dialog, and \"display\" to display them as "
-"text files."
+"double clicked). Possible values are “launch” to launch them as programs, "
+"“ask” to ask what to do via a dialog, and “display” to display them as text "
+"files."
 msgstr ""
 "Co dělat se spustitelnými textovými soubory, když jsou aktivovány (je na ně "
 "jednou nebo dvakrát kliknuto). Možné hodnoty jsou „launch“ pro jejich "
@@ -277,27 +276,26 @@ msgstr ""
 "přesun do koše z kombinace kláves Ctrl+Delete na samostatnou klávesu Delete."
 
 #: data/org.gnome.nautilus.gschema.xml:146
-msgid "Use extra mouse button events in Nautilus' browser window"
+msgid "Use extra mouse button events in Nautilus’ browser window"
 msgstr "Použít extra události tlačítek myši v okně prohlížeče Nautilus"
 
 #: data/org.gnome.nautilus.gschema.xml:147
 msgid ""
-"For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-"will determine if any action is taken inside of Nautilus when either is "
-"pressed."
+"For users with mice that have “Forward” and “Back” buttons, this key will "
+"determine if any action is taken inside of Nautilus when either is pressed."
 msgstr ""
 "Pro uživatele, kteří mají myš s tlačítky „Vpřed“ a „Zpět“, slouží tento klíč "
 "k rozpoznání, zda spustit v Nautilu nějakou akci, pokud je jedno z nich "
 "stisknuto."
 
 #: data/org.gnome.nautilus.gschema.xml:151
-msgid "Mouse button to activate the \"Forward\" command in browser window"
+msgid "Mouse button to activate the “Forward” command in browser window"
 msgstr "Tlačítko aktivující v okně prohlížeče funkci „Vpřed“"
 
 #: data/org.gnome.nautilus.gschema.xml:152
 msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Forward\" command in a browser window. "
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
 "Pro uživatele, kteří mají myš s tlačítky „Vpřed“ a „Zpět“, slouží tento klíč "
@@ -305,13 +303,13 @@ msgstr ""
 "hodnoty jsou mezi 6 a 14."
 
 #: data/org.gnome.nautilus.gschema.xml:156
-msgid "Mouse button to activate the \"Back\" command in browser window"
+msgid "Mouse button to activate the “Back” command in browser window"
 msgstr "Tlačítko aktivující v okně prohlížeče funkci „Zpět“"
 
 #: data/org.gnome.nautilus.gschema.xml:157
 msgid ""
-"For users with mice that have buttons for \"Forward\" and \"Back\", this key "
-"will set which button activates the \"Back\" command in a browser window. "
+"For users with mice that have buttons for “Forward” and “Back”, this key "
+"will set which button activates the “Back” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
 "Pro uživatele, kteří mají myš s tlačítky „Vpřed“ a „Zpět“, slouží tento klíč "
@@ -324,10 +322,10 @@ msgstr "Kdy zobrazovat miniatury souborů"
 
 #: data/org.gnome.nautilus.gschema.xml:163
 msgid ""
-"Speed trade-off for when to show a file as a thumbnail. If set to \"always\" "
+"Speed trade-off for when to show a file as a thumbnail. If set to “always” "
 "then always thumbnail, even if the folder is on a remote server. If set to "
-"\"local-only\" then only show thumbnails for local file systems. If set to "
-"\"never\" then never bother to thumbnail files, just use a generic icon. "
+"“local-only” then only show thumbnails for local file systems. If set to "
+"“never” then never bother to thumbnail files, just use a generic icon. "
 "Despite what the name may suggest, this applies to any previewable file type."
 msgstr ""
 "Jak rozhodnout, kdy zobrazovat soubory jako miniatury. Je-li nastaveno na "
@@ -343,7 +341,7 @@ msgstr "Maximální velikost obrázku pro miniatury"
 
 #: data/org.gnome.nautilus.gschema.xml:168
 msgid ""
-"Images over this size (in bytes) won't be thumbnailed. The purpose of this "
+"Images over this size (in bytes) won’t be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
 "load or use lots of memory."
 msgstr ""
@@ -357,8 +355,8 @@ msgstr "Výchozí pořadí řazení"
 
 #: data/org.gnome.nautilus.gschema.xml:176
 msgid ""
-"The default sort-order for items in the icon view. Possible values are \"name"
-"\", \"size\", \"type\" and \"mtime\"."
+"The default sort-order for items in the icon view. Possible values are "
+"“name”, “size”, “type” and “mtime”."
 msgstr ""
 "Výchozí způsob řazení položek při ikonovém zobrazení. Možné hodnoty jsou "
 "„name“ (název), „size“ (velikost), „type“ (typ) a „mtime“ (čas změny)."
@@ -370,9 +368,9 @@ msgstr "Obrátit pořadí řazení v nových oknech"
 #: data/org.gnome.nautilus.gschema.xml:181
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
-"sorted by name, then instead of sorting the files from \"a\" to \"z\", they "
-"will be sorted from \"z\" to \"a\"; if sorted by size, instead of being "
-"incrementally they will be sorted decrementally."
+"sorted by name, then instead of sorting the files from “a” to “z”, they will "
+"be sorted from “z” to “a”; if sorted by size, instead of being incrementally "
+"they will be sorted decrementally."
 msgstr ""
 "Je-li nastaveno na pravda (true), budou soubory v nových oknech řazeny v "
 "obráceném pořadí, tj. jsou-li řazeny podle názvu, tak budou místo řazení od "
@@ -386,8 +384,8 @@ msgstr "Výchozí prohlížeč složek"
 #: data/org.gnome.nautilus.gschema.xml:192
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
-"another view for that particular folder. Possible values are \"list-view\", "
-"and \"icon-view\"."
+"another view for that particular folder. Possible values are “list-view”, "
+"and “icon-view”."
 msgstr ""
 "Při zobrazování složky se používá tento prohlížeč, pokud jste pro tuto "
 "konkrétní složku nevybrali jiné zobrazení. Možné hodnoty jsou „list-"
@@ -399,8 +397,8 @@ msgstr "Jestli zobrazovat skryté soubory"
 
 #: data/org.gnome.nautilus.gschema.xml:197
 msgid ""
-"This key is deprecated and ignored. The \"show-hidden\" key from \"org.gtk."
-"Settings.FileChooser\" is now used instead."
+"This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
+"Settings.FileChooser” is now used instead."
 msgstr ""
 "Tento klíč je zastaralý a je ignorován. Místo něj je nyní použit klíč „show-"
 "hidden“ z „org.gtk.Settings.FileChooser“."
@@ -466,8 +464,8 @@ msgstr "Seznam možných titulků ikon"
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
-"values are: \"size\", \"type\", \"date_modified\", \"owner\", \"group\", "
-"\"permissions\", and \"mime_type\"."
+"values are: “size”, “type”, “date_modified”, “owner”, “group”, "
+"“permissions”, and “mime_type”."
 msgstr ""
 "Seznam titulků pod ikonou a na pracovní ploše při zobrazení s ikonami. "
 "Skutečný počet zobrazovaných titulků závisí na úrovni zvětšení. Možné "
@@ -504,17 +502,17 @@ msgstr "Limit výpustky textu"
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
-"form \"Zoom Level:Integer\". For each specified zoom level, if the given "
+"form “Zoom Level:Integer”. For each specified zoom level, if the given "
 "integer is larger than 0, the file name will not exceed the given number of "
 "lines. If the integer is 0 or smaller, no limit is imposed on the specified "
-"zoom level. A default entry of the form \"Integer\" without any specified "
-"zoom level is also allowed. It defines the maximum number of lines for all "
-"other zoom levels. Examples: 0 - always display overlong file names; 3 - "
-"shorten file names if they exceed three lines; smallest:5,smaller:4,0 - "
-"shorten file names if they exceed five lines for zoom level \"smallest\". "
-"Shorten file names if they exceed four lines for zoom level \"smaller\". Do "
-"not shorten file names for other zoom levels. Available zoom levels: small, "
-"standard, large."
+"zoom level. A default entry of the form “Integer” without any specified zoom "
+"level is also allowed. It defines the maximum number of lines for all other "
+"zoom levels. Examples: 0 — always display overlong file names; 3 — shorten "
+"file names if they exceed three lines; smallest:5,smaller:4,0 — shorten file "
+"names if they exceed five lines for zoom level “smallest”. Shorten file "
+"names if they exceed four lines for zoom level “smaller”. Do not shorten "
+"file names for other zoom levels. Available zoom levels: small, standard, "
+"large."
 msgstr ""
 "Řetězec určující, jakým způsobem mají být příliš dlouhé části názvů souborů "
 "nahrazeny výpustkou, v závislosti na úrovni přiblížení. Každá z položek "
@@ -862,7 +860,7 @@ msgstr "--quit nelze použít spolu s adresami URI."
 msgid "--select must be used with at least an URI."
 msgstr "--select musí být použit s alespoň jednou adresou URI."
 
-#: src/nautilus-application.c:771
+#: src/nautilus-application.c:790
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -871,40 +869,40 @@ msgstr ""
 "Při zobrazování nápovědy se vyskytla chyba: \n"
 "%s"
 
-#: src/nautilus-application.c:894
+#: src/nautilus-application.c:914
 msgid "Perform a quick set of self-check tests."
 msgstr "Provést rychlou sadu kontrol sebe sama."
 
-#: src/nautilus-application.c:903
+#: src/nautilus-application.c:923
 msgid "Create the initial window with the given geometry."
 msgstr "Vytvořit první okno se zadanou geometrií."
 
-#: src/nautilus-application.c:903
+#: src/nautilus-application.c:923
 msgid "GEOMETRY"
 msgstr "GEOMETRIE"
 
-#: src/nautilus-application.c:905
+#: src/nautilus-application.c:925
 msgid "Show the version of the program."
 msgstr "Zobrazit verzi programu."
 
-#: src/nautilus-application.c:907
+#: src/nautilus-application.c:927
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Vždy otvírat nová okna pro výslovně zadané adresy URI."
 
-#: src/nautilus-application.c:909
+#: src/nautilus-application.c:929
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Vytvořit jen okna pro výslovně zadané adresy URI."
 
-#: src/nautilus-application.c:911
+#: src/nautilus-application.c:931
 msgid "Quit Nautilus."
 msgstr "Ukončit Nautilus."
 
-#: src/nautilus-application.c:913
+#: src/nautilus-application.c:933
 msgid "Select specified URI in parent folder."
 msgstr "Zvolte adresu URI v nadřazené složce."
 
-#: src/nautilus-application.c:914
-msgid "[URI...]"
+#: src/nautilus-application.c:934
+msgid "[URI…]"
 msgstr "[URI…]"
 
 #: src/nautilus-autorun-software.c:158 src/nautilus-autorun-software.c:161
@@ -933,7 +931,7 @@ msgstr ""
 "„%s“ obsahuje software navržený pro automatické spuštění. Chcete jej spustit?"
 
 #: src/nautilus-autorun-software.c:224
-msgid "If you don't trust this location or aren't sure, press Cancel."
+msgid "If you don’t trust this location or aren’t sure, press Cancel."
 msgstr ""
 "Pokud tomuto umístění nedůvěřujete nebo si nejste jisti, stiskněte Zrušit."
 
@@ -1159,7 +1157,7 @@ msgid "The location of the file."
 msgstr "Umístění souboru"
 
 #: src/nautilus-column-utilities.c:135
-msgid "Modified - Time"
+msgid "Modified — Time"
 msgstr "Změněný – čas"
 
 #: src/nautilus-column-utilities.c:180
@@ -1492,8 +1490,8 @@ msgstr "Nedostatečná oprávnění pro nastavení vlastníka"
 
 #: src/nautilus-file.c:6517
 #, c-format
-msgid "Specified owner '%s' doesn't exist"
-msgstr "Uvedený vlastník '%s' neexistuje"
+msgid "Specified owner “%s” doesn’t exist"
+msgstr "Uvedený vlastník „%s“ neexistuje"
 
 #: src/nautilus-file.c:6802
 msgid "Not allowed to set group"
@@ -1501,8 +1499,8 @@ msgstr "Nedostatečná oprávnění pro nastavení skupiny"
 
 #: src/nautilus-file.c:6821
 #, c-format
-msgid "Specified group '%s' doesn't exist"
-msgstr "Vybraná skupina '%s' neexistuje"
+msgid "Specified group “%s” doesn’t exist"
+msgstr "Vybraná skupina „%s“ neexistuje"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
 #: src/nautilus-file.c:6963
@@ -2029,8 +2027,8 @@ msgstr[2] "Vyhozeno %'d souborů do koše"
 
 #. Translators: %B is a file name
 #: src/nautilus-file-operations.c:2277
-msgid "“%B” can't be put in the trash. Do you want to delete it immediately?"
-msgstr "Soubor „%B“ nelze přesunout do koše, chcete jej smazat ihned?"
+msgid "“%B” can’t be put in the trash. Do you want to delete it immediately?"
+msgstr "Soubor „%B“ nelze přesunout do koše, chcete jej hned přímo smazat?"
 
 #: src/nautilus-file-operations.c:2286
 msgid "This remote location does not support sending items to the trash."
@@ -2451,7 +2449,7 @@ msgid "Symbolic links only supported for local files"
 msgstr "Symbolické odkazy jsou podporovány pouze pro místní soubory"
 
 #: src/nautilus-file-operations.c:6660
-msgid "The target doesn't support symbolic links."
+msgid "The target doesn’t support symbolic links."
 msgstr "Tento cíl nepodporuje symbolické odkazy."
 
 #: src/nautilus-file-operations.c:6665
@@ -2852,19 +2850,19 @@ msgstr "Znovu vykonat poslední vrácenou akci"
 
 #: src/nautilus-file-undo-operations.c:410
 #, c-format
-msgid "Move %d item back to '%s'"
-msgid_plural "Move %d items back to '%s'"
+msgid "Move %d item back to “%s”"
+msgid_plural "Move %d items back to “%s”"
 msgstr[0] "Přesunout %d položku zpět do „%s“"
 msgstr[1] "Přesunout %d položky zpět do „%s“"
 msgstr[2] "Přesunout %d položek zpět do „%s“"
 
 #: src/nautilus-file-undo-operations.c:413
 #, c-format
-msgid "Move %d item to '%s'"
-msgid_plural "Move %d items to '%s'"
-msgstr[0] "Přesunout %d položku do „%s“"
-msgstr[1] "Přesunout %d položky do „%s“"
-msgstr[2] "Přesunout %d položek do „%s“"
+msgid "Move %d item to “%s”"
+msgid_plural "Move %d items to “%s”"
+msgstr[0] "Přesunut %d soubor do „%B“"
+msgstr[1] "Přesunuty %d soubory do „%B“"
+msgstr[2] "Přesunuto %d souborů do „%B“"
 
 #: src/nautilus-file-undo-operations.c:417
 #, c-format
@@ -2884,13 +2882,13 @@ msgstr[2] "_Opakovat přesun %d položek"
 
 #: src/nautilus-file-undo-operations.c:426
 #, c-format
-msgid "Move '%s' back to '%s'"
-msgstr "Přesunout „%s“ zpět do „%s“"
+msgid "Move “%s” back to “%s”"
+msgstr "Přesunuto „%s“ do „%s“"
 
 #: src/nautilus-file-undo-operations.c:427
 #, c-format
-msgid "Move '%s' to '%s'"
-msgstr "Přesunout „%s“ do „%s“"
+msgid "Move “%s” to “%s”"
+msgstr "Přesunuto „%s“ do „%s“"
 
 #: src/nautilus-file-undo-operations.c:429
 msgid "_Undo Move"
@@ -2927,12 +2925,12 @@ msgstr[2] "Obnovit %d položek z koše"
 
 #: src/nautilus-file-undo-operations.c:449
 #, c-format
-msgid "Move '%s' back to trash"
+msgid "Move “%s” back to trash"
 msgstr "Přesunout „%s“ zpět do koše"
 
 #: src/nautilus-file-undo-operations.c:450
 #, c-format
-msgid "Restore '%s' from trash"
+msgid "Restore “%s” from trash"
 msgstr "Obnovit „%s“ z koše"
 
 #: src/nautilus-file-undo-operations.c:457
@@ -2945,8 +2943,8 @@ msgstr[2] "Smazat %d zkopírovaných položek"
 
 #: src/nautilus-file-undo-operations.c:460
 #, c-format
-msgid "Copy %d item to '%s'"
-msgid_plural "Copy %d items to '%s'"
+msgid "Copy %d item to “%s”"
+msgid_plural "Copy %d items to “%s”"
 msgstr[0] "Kopírovat %d položku do „%s“"
 msgstr[1] "Kopírovat %d položky do „%s“"
 msgstr[2] "Kopírovat %d položek do „%s“"
@@ -2973,12 +2971,12 @@ msgstr[2] "_Opakovat kopírování %d položek"
 #: src/nautilus-file-undo-operations.c:2085
 #: src/nautilus-file-undo-operations.c:2247
 #, c-format
-msgid "Delete '%s'"
+msgid "Delete “%s”"
 msgstr "Smazat „%s“"
 
 #: src/nautilus-file-undo-operations.c:474
 #, c-format
-msgid "Copy '%s' to '%s'"
+msgid "Copy “%s” to “%s”"
 msgstr "Kopírovat „%s“ do „%s“"
 
 #: src/nautilus-file-undo-operations.c:476
@@ -2999,8 +2997,8 @@ msgstr[2] "Smazat %d zdvojených položek"
 
 #: src/nautilus-file-undo-operations.c:487
 #, c-format
-msgid "Duplicate %d item in '%s'"
-msgid_plural "Duplicate %d items in '%s'"
+msgid "Duplicate %d item in “%s”"
+msgid_plural "Duplicate %d items in “%s”"
 msgstr[0] "Zdvojit %d položku v „%s“"
 msgstr[1] "Zdvojit %d položky v „%s“"
 msgstr[2] "Zdvojit %d položek v „%s“"
@@ -3023,7 +3021,7 @@ msgstr[2] "_Opakovat zdvojení %d položek"
 
 #: src/nautilus-file-undo-operations.c:501
 #, c-format
-msgid "Duplicate '%s' in '%s'"
+msgid "Duplicate “%s” in “%s”"
 msgstr "Zdvojit „%s“ v „%s“"
 
 #: src/nautilus-file-undo-operations.c:504
@@ -3052,12 +3050,12 @@ msgstr[2] "Vytvořit odkazy na %d položek"
 
 #: src/nautilus-file-undo-operations.c:521
 #, c-format
-msgid "Delete link to '%s'"
+msgid "Delete link to “%s”"
 msgstr "Smazat odkaz na „%s“"
 
 #: src/nautilus-file-undo-operations.c:522
 #, c-format
-msgid "Create link to '%s'"
+msgid "Create link to “%s”"
 msgstr "Vytvořit odkaz na „%s“"
 
 #: src/nautilus-file-undo-operations.c:524
@@ -3070,7 +3068,7 @@ msgstr "_Opakovat vytvoření odkazu"
 
 #: src/nautilus-file-undo-operations.c:779
 #, c-format
-msgid "Create an empty file '%s'"
+msgid "Create an empty file “%s”"
 msgstr "Vytvořit prázdný soubor „%s“"
 
 #: src/nautilus-file-undo-operations.c:781
@@ -3083,7 +3081,7 @@ msgstr "_Opakovat vytvoření prázdného souboru"
 
 #: src/nautilus-file-undo-operations.c:786
 #, c-format
-msgid "Create a new folder '%s'"
+msgid "Create a new folder “%s”"
 msgstr "Vytvořit novou složku „%s“"
 
 #: src/nautilus-file-undo-operations.c:788
@@ -3096,7 +3094,7 @@ msgstr "_Opakovat vytvoření složky"
 
 #: src/nautilus-file-undo-operations.c:793
 #, c-format
-msgid "Create new file '%s' from template "
+msgid "Create new file “%s” from template "
 msgstr "Vytvořit nový soubor „%s“ ze šablony "
 
 #: src/nautilus-file-undo-operations.c:795
@@ -3110,8 +3108,8 @@ msgstr "_Opakovat vytvoření ze šablony"
 #: src/nautilus-file-undo-operations.c:990
 #: src/nautilus-file-undo-operations.c:991
 #, c-format
-msgid "Rename '%s' as '%s'"
-msgstr "Přejmenovat „%s“ na „%s“"
+msgid "Rename “%s” as “%s”"
+msgstr "Přejmenovat „%s“ na „%s“."
 
 #: src/nautilus-file-undo-operations.c:993
 msgid "_Undo Rename"
@@ -3148,12 +3146,12 @@ msgstr[2] "Přesunout %d položek do koše"
 
 #: src/nautilus-file-undo-operations.c:1344
 #, c-format
-msgid "Restore '%s' to '%s'"
+msgid "Restore “%s” to “%s”"
 msgstr "Obnovit „%s“ do „%s“"
 
 #: src/nautilus-file-undo-operations.c:1351
 #, c-format
-msgid "Move '%s' to trash"
+msgid "Move “%s” to trash"
 msgstr "Přesunout „%s“ do koše"
 
 #: src/nautilus-file-undo-operations.c:1356
@@ -3166,12 +3164,12 @@ msgstr "_Opakovat přesun do koše"
 
 #: src/nautilus-file-undo-operations.c:1652
 #, c-format
-msgid "Restore original permissions of items enclosed in '%s'"
+msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Obnovit původní oprávnění položek v „%s“"
 
 #: src/nautilus-file-undo-operations.c:1653
 #, c-format
-msgid "Set permissions of items enclosed in '%s'"
+msgid "Set permissions of items enclosed in “%s”"
 msgstr "Nastavit oprávnění položek v „%s“"
 
 #: src/nautilus-file-undo-operations.c:1655
@@ -3186,23 +3184,23 @@ msgstr "_Opakovat změnu oprávnění"
 
 #: src/nautilus-file-undo-operations.c:1806
 #, c-format
-msgid "Restore original permissions of '%s'"
+msgid "Restore original permissions of “%s”"
 msgstr "Vrátit původní oprávnění „%s“"
 
 #: src/nautilus-file-undo-operations.c:1807
 #, c-format
-msgid "Set permissions of '%s'"
+msgid "Set permissions of “%s”"
 msgstr "Nastavit oprávnění „%s“"
 
 #: src/nautilus-file-undo-operations.c:1919
 #, c-format
-msgid "Restore group of '%s' to '%s'"
-msgstr "Obnovit skupinu položky „%s“ na „%s“"
+msgid "Restore group of “%s” to “%s”"
+msgstr "Obnovit u „%s“ skupinu na „%s“"
 
 #: src/nautilus-file-undo-operations.c:1921
 #, c-format
-msgid "Set group of '%s' to '%s'"
-msgstr "Nastavit skupinu položky „%s“ na „%s“"
+msgid "Set group of “%s” to “%s”"
+msgstr "Nastavit u „%s“ skupinu na „%s“."
 
 #: src/nautilus-file-undo-operations.c:1924
 msgid "_Undo Change Group"
@@ -3214,13 +3212,13 @@ msgstr "_Opakovat změnu skupiny"
 
 #: src/nautilus-file-undo-operations.c:1929
 #, c-format
-msgid "Restore owner of '%s' to '%s'"
-msgstr "Obnovit vlastníka „%s“ na „%s“"
+msgid "Restore owner of “%s” to “%s”"
+msgstr "Obnovit u „%s“ vlastníka na „%s“"
 
 #: src/nautilus-file-undo-operations.c:1931
 #, c-format
-msgid "Set owner of '%s' to '%s'"
-msgstr "Nastavit vlastníka „%s“ na „%s“"
+msgid "Set owner of “%s” to “%s”"
+msgstr "Nastavit u „%s“ vlastníka na „%s“."
 
 #: src/nautilus-file-undo-operations.c:1934
 msgid "_Undo Change Owner"
@@ -3248,7 +3246,7 @@ msgstr[2] "Smazat %d rozbalených souborů"
 
 #: src/nautilus-file-undo-operations.c:2103
 #, c-format
-msgid "Extract '%s'"
+msgid "Extract “%s”"
 msgstr "Rozbalit „%s“"
 
 #: src/nautilus-file-undo-operations.c:2107
@@ -3261,7 +3259,7 @@ msgstr[2] "Rozbalit %d souborů"
 
 #: src/nautilus-file-undo-operations.c:2258
 #, c-format
-msgid "Compress '%s'"
+msgid "Compress “%s”"
 msgstr "Zkomprimovat „%s“"
 
 #: src/nautilus-file-undo-operations.c:2262
@@ -3554,7 +3552,7 @@ msgstr "Tento odkaz nelze použít, protože nemá cíl."
 
 #: src/nautilus-mime-actions.c:563
 #, c-format
-msgid "This link cannot be used because its target “%s” doesn't exist."
+msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr "Tento odkaz nelze použít, protože jeho cíl „%s“ neexistuje."
 
 #: src/nautilus-mime-actions.c:574
@@ -4257,7 +4255,7 @@ msgid "Searching network locations only"
 msgstr "Prohledávají se jen síťová umístění"
 
 #: src/nautilus-query-editor.c:146
-msgid "Remote location - only searching the current folder"
+msgid "Remote location — only searching the current folder"
 msgstr "Vzdálené umístění — prohledává se jen aktuální složka"
 
 #: src/nautilus-query-editor.c:150
@@ -4492,7 +4490,7 @@ msgid "Unable to display the contents of this folder."
 msgstr "Nelze zobrazit obsah této složky"
 
 #: src/nautilus-window-slot.c:1366
-msgid "This location doesn't appear to be a folder."
+msgid "This location doesn’t appear to be a folder."
 msgstr "Toto umístění se nezdá být složkou."
 
 #: src/nautilus-window-slot.c:1375
@@ -4516,7 +4514,7 @@ msgid "Unable to access the requested location."
 msgstr "Nelze přistupovat k požadovanému místění."
 
 #: src/nautilus-window-slot.c:1403
-msgid "Don't have permission to access the requested location."
+msgid "Don’t have permission to access the requested location."
 msgstr "Nemáte oprávnění přistupovat k požadovanému místění."
 
 #. This case can be hit for user-typed strings like "foo" due to
@@ -5079,7 +5077,7 @@ msgid "Resize Icon…"
 msgstr "Roztáhnout ikonu…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:211
-msgid "Restore Icon's Original Size"
+msgid "Restore Icon’s Original Size"
 msgstr "Obnovit původní velikost ikony"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:218
