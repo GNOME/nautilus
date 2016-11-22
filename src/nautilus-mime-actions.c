@@ -1723,7 +1723,7 @@ activate_files (ActivateParameters *parameters)
         }
     }
 
-    for (l = launch_desktop_files->head; l != NULL; l = l->next)
+    for (l = g_queue_peek_head_link (launch_desktop_files); l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
 
@@ -1739,7 +1739,7 @@ activate_files (ActivateParameters *parameters)
     }
 
     screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-    for (l = launch_files->head; l != NULL; l = l->next)
+    for (l = g_queue_peek_head_link (launch_files); l != NULL; l = l->next)
     {
         g_autofree char *uri = NULL;
         g_autofree char *executable_path = NULL;
@@ -1756,7 +1756,7 @@ activate_files (ActivateParameters *parameters)
         nautilus_launch_application_from_command (screen, quoted_path, FALSE, NULL);
     }
 
-    for (l = launch_in_terminal_files->head; l != NULL; l = l->next)
+    for (l = g_queue_peek_head_link (launch_in_terminal_files); l != NULL; l = l->next)
     {
         g_autofree char *uri = NULL;
         g_autofree char *executable_path = NULL;
@@ -1829,7 +1829,7 @@ activate_files (ActivateParameters *parameters)
 
         closed_window = FALSE;
 
-        for (l = open_in_view_files->head; l != NULL; l = l->next)
+        for (l = g_queue_peek_head_link (open_in_view_files); l != NULL; l = l->next)
         {
             g_autofree char *uri = NULL;
             g_autoptr (GFile) location = NULL;
@@ -1880,7 +1880,7 @@ activate_files (ActivateParameters *parameters)
 
     if (open_in_app_uris != NULL)
     {
-        open_in_app_parameters = make_activation_parameters (open_in_app_uris->head,
+        open_in_app_parameters = make_activation_parameters (g_queue_peek_head_link (open_in_app_uris),
                                                              &unhandled_open_in_app_uris);
     }
 
