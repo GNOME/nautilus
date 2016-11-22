@@ -6990,12 +6990,10 @@ format_item_count_for_display (guint    item_count,
 {
     g_assert (includes_directories || includes_files);
 
-    return g_strdup_printf (includes_directories ? (includes_files
-                                                    /* Translators: "file and folder" is a string that will never
-                                                     * happen, since this is only used when there are minimum 2 items
-                                                     */
-                                                    ? ngettext ("%'u file and folder", "%'u files and folders", item_count)
-                                                    : ngettext ("%'u folder", "%'u folders", item_count))
+    return g_strdup_printf (includes_directories
+                            ? (includes_files
+                               ? ngettext ("%'u item", "%'u items", item_count)
+                               : ngettext ("%'u folder", "%'u folders", item_count))
                             : ngettext ("%'u file", "%'u files", item_count), item_count);
 }
 
