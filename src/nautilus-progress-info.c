@@ -83,6 +83,11 @@ G_LOCK_DEFINE_STATIC (progress_info);
 
 G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
 
+static void set_details (NautilusProgressInfo *info,
+                         const char           *details);
+static void set_status  (NautilusProgressInfo *info,
+                         const char           *status);
+
 static void
 nautilus_progress_info_finalize (GObject *object)
 {
@@ -309,7 +314,7 @@ set_details_in_thread (GTask                *task,
 {
     if (!g_cancellable_is_cancelled (cancellable))
     {
-        nautilus_progress_info_set_details (info, _("Canceled"));
+        set_details (info, _("Canceled"));
         G_LOCK (progress_info);
         info->cancel_at_idle = TRUE;
         g_timer_stop (info->progress_timer);
@@ -566,26 +571,32 @@ nautilus_progress_info_finish (NautilusProgressInfo *info)
     G_UNLOCK (progress_info);
 }
 
+static void
+set_status (NautilusProgressInfo *info,
+            const char           *status)
+{
+    g_free (info->status);
+    info->status = g_strdup (status);
+
+    info->changed_at_idle = TRUE;
+    queue_idle (info, FALSE);
+}
+
 void
 nautilus_progress_info_take_status (NautilusProgressInfo *info,
                                     char                 *status)
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->status, status) != 0)
+    if (g_strcmp0 (info->status, status) != 0 &&
+        !g_cancellable_is_cancelled (info->cancellable))
     {
-        g_free (info->status);
-        info->status = status;
-
-        info->changed_at_idle = TRUE;
-        queue_idle (info, FALSE);
-    }
-    else
-    {
-        g_free (status);
+        set_status (info, status);
     }
 
     G_UNLOCK (progress_info);
+
+    g_free (status);
 }
 
 void
@@ -594,18 +605,25 @@ nautilus_progress_info_set_status (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->status, status) != 0)
+    if (g_strcmp0 (info->status, status) != 0 &&
+        !g_cancellable_is_cancelled (info->cancellable))
     {
-        g_free (info->status);
-        info->status = g_strdup (status);
-
-        info->changed_at_idle = TRUE;
-        queue_idle (info, FALSE);
+        set_status (info, status);
     }
 
     G_UNLOCK (progress_info);
 }
 
+static void
+set_details (NautilusProgressInfo *info,
+             const char           *details)
+{
+    g_free (info->details);
+    info->details = g_strdup (details);
+
+    info->changed_at_idle = TRUE;
+    queue_idle (info, FALSE);
+}
 
 void
 nautilus_progress_info_take_details (NautilusProgressInfo *info,
@@ -613,20 +631,15 @@ nautilus_progress_info_take_details (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->details, details) != 0)
+    if (g_strcmp0 (info->details, details) != 0 &&
+        !g_cancellable_is_cancelled (info->cancellable))
     {
-        g_free (info->details);
-        info->details = details;
-
-        info->changed_at_idle = TRUE;
-        queue_idle (info, FALSE);
-    }
-    else
-    {
-        g_free (details);
+        set_details (info, details);
     }
 
     G_UNLOCK (progress_info);
+
+    g_free (details);
 }
 
 void
@@ -635,13 +648,10 @@ nautilus_progress_info_set_details (NautilusProgressInfo *info,
 {
     G_LOCK (progress_info);
 
-    if (g_strcmp0 (info->details, details) != 0)
+    if (g_strcmp0 (info->details, details) != 0 &&
+        !g_cancellable_is_cancelled (info->cancellable))
     {
-        g_free (info->details);
-        info->details = g_strdup (details);
-
-        info->changed_at_idle = TRUE;
-        queue_idle (info, FALSE);
+        set_details (info, details);
     }
 
     G_UNLOCK (progress_info);
@@ -688,9 +698,9 @@ nautilus_progress_info_set_progress (NautilusProgressInfo *info,
 
     G_LOCK (progress_info);
 
-    if (info->activity_mode ||     /* emit on switch from activity mode */
-        fabs (current_percent - info->progress) > 0.005     /* Emit on change of 0.5 percent */
-        )
+    if ((info->activity_mode ||     /* emit on switch from activity mode */
+        fabs (current_percent - info->progress) > 0.005) &&     /* Emit on change of 0.5 percent */
+        !g_cancellable_is_cancelled (info->cancellable))
     {
         info->activity_mode = FALSE;
         info->progress = current_percent;
