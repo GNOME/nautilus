@@ -3161,7 +3161,6 @@ scan_dir (GFile      *dir,
 retry:
     error = NULL;
     enumerator = g_file_enumerate_children (dir,
-                                            G_FILE_ATTRIBUTE_ID_FILE","
                                             G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                             G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                             G_FILE_ATTRIBUTE_STANDARD_SIZE,
@@ -3173,14 +3172,16 @@ retry:
         error = NULL;
         while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
         {
-            const char *file_id;
+            g_autoptr (GFile) file = NULL;
+            g_autofree char *file_uri = NULL;
 
-            file_id = g_file_info_get_attribute_string (info,
-                                                        G_FILE_ATTRIBUTE_ID_FILE);
+            file = g_file_enumerator_get_child (enumerator, info);
+            file_uri = g_file_get_uri (file);
+            g_warn_if_fail (file_uri != NULL);
 
-            if (file_id && !g_hash_table_contains (scanned, file_id))
+            if (!g_hash_table_contains (scanned, file_uri))
             {
-                g_hash_table_add (scanned, g_strdup (file_id));
+                g_hash_table_add (scanned, g_strdup (file_uri));
 
                 count_file (info, job, source_info);
 
@@ -3193,7 +3194,6 @@ retry:
                     g_queue_push_head (dirs, subdir);
                 }
             }
-
             g_object_unref (info);
         }
         g_file_enumerator_close (enumerator, job->cancellable, NULL);
@@ -3328,7 +3328,6 @@ scan_file (GFile      *file,
 retry:
     error = NULL;
     info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_ID_FILE","
                               G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                               G_FILE_ATTRIBUTE_STANDARD_SIZE,
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -3337,14 +3336,13 @@ retry:
 
     if (info)
     {
-        const char *file_id;
+        g_autofree char *file_uri = NULL;
 
-        file_id = g_file_info_get_attribute_string (info,
-                                                    G_FILE_ATTRIBUTE_ID_FILE);
-
-        if (file_id && !g_hash_table_contains (scanned, file_id))
+        file_uri = g_file_get_uri (file);
+        g_warn_if_fail (file_uri != NULL);
+        if (!g_hash_table_contains (scanned, file_uri))
         {
-            g_hash_table_add (scanned, g_strdup (file_id));
+            g_hash_table_add (scanned, g_strdup (file_uri));
 
             count_file (info, job, source_info);
 
@@ -3355,7 +3353,6 @@ retry:
                 g_queue_push_head (dirs, g_object_ref (file));
             }
         }
-
         g_object_unref (info);
     }
     else if (job->skip_all_error)
