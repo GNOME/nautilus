@@ -3505,7 +3505,7 @@ initial_permission_state_consistent (NautilusPropertiesWindow *window,
             first_permissions = permissions;
             first = FALSE;
         }
-        else if ((permissions & mask) != first_permissions)
+        else if ((permissions & mask) != (first_permissions & mask))
         {
             /* Not same permissions as first -> inconsistent */
             return FALSE;
