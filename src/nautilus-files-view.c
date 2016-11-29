@@ -1067,18 +1067,6 @@ nautilus_files_view_confirm_multiple (GtkWindow *parent_window,
     return response == GTK_RESPONSE_YES;
 }
 
-static gboolean
-selection_not_empty_in_menu_callback (NautilusFilesView *view,
-                                      GList             *selection)
-{
-    if (selection != NULL)
-    {
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
 static char *
 get_view_directory (NautilusFilesView *view)
 {
@@ -5919,7 +5907,7 @@ real_action_rename (NautilusFilesView *view)
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
-    if (selection_not_empty_in_menu_callback (view, selection))
+    if (selection != NULL)
     {
         /* If there is more than one file selected, invoke a batch renamer */
         if (selection->next != NULL)
@@ -6318,8 +6306,7 @@ action_set_as_wallpaper (GSimpleAction *action,
 
     selection = nautilus_view_get_selection (user_data);
 
-    if (can_set_wallpaper (selection)
-        && selection_not_empty_in_menu_callback (user_data, selection))
+    if (can_set_wallpaper (selection))
     {
         NautilusFile *file;
         char *target_uri;
