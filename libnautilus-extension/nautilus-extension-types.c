@@ -33,20 +33,20 @@ nautilus_operation_result_get_type (void)
         static const GEnumValue values[] =
         {
             {
-             NAUTILUS_OPERATION_COMPLETE,
-             "NAUTILUS_OPERATION_COMPLETE",
-             "complete",
-},
+                NAUTILUS_OPERATION_COMPLETE,
+                "NAUTILUS_OPERATION_COMPLETE",
+                "complete",
+            },
             {
-             NAUTILUS_OPERATION_FAILED,
-             "NAUTILUS_OPERATION_FAILED",
-             "failed",
-},
+                NAUTILUS_OPERATION_FAILED,
+                "NAUTILUS_OPERATION_FAILED",
+                "failed",
+            },
             {
-             NAUTILUS_OPERATION_IN_PROGRESS,
-             "NAUTILUS_OPERATION_IN_PROGRESS",
-             "in_progress",
-},
+                NAUTILUS_OPERATION_IN_PROGRESS,
+                "NAUTILUS_OPERATION_IN_PROGRESS",
+                "in_progress",
+            },
             { 0, NULL, NULL }
         };
 

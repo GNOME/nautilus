@@ -96,20 +96,20 @@ struct
 } mimetype_groups[] =
 {
     {
-     N_("Anything"),
-     { NULL }
-},
+        N_("Anything"),
+        { NULL }
+    },
     {
-     N_("Files"),
-     { "application/octet-stream",
-       "text/plain",
-       NULL}
-},
+        N_("Files"),
+        { "application/octet-stream",
+          "text/plain",
+          NULL}
+    },
     {
-     N_("Folders"),
-     { "inode/directory",
-       NULL}
-},
+        N_("Folders"),
+        { "inode/directory",
+          NULL}
+    },
     { N_("Documents"),
       { "application/rtf",
         "application/msword",
@@ -620,19 +620,19 @@ get_executable_text_file_action (GtkWindow    *parent_window,
     switch (preferences_value)
     {
         case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
-            {
-                return ACTIVATION_ACTION_LAUNCH;
-            }
+        {
+            return ACTIVATION_ACTION_LAUNCH;
+        }
 
         case NAUTILUS_EXECUTABLE_TEXT_DISPLAY:
-            {
-                return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-            }
+        {
+            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
+        }
 
         case NAUTILUS_EXECUTABLE_TEXT_ASK:
-            {
-            }
-            break;
+        {
+        }
+        break;
 
         default:
             /* Complain non-fatally, since preference data can't be trusted */
@@ -667,19 +667,19 @@ get_executable_text_file_action (GtkWindow    *parent_window,
     switch (response)
     {
         case RESPONSE_RUN:
-            {
-                return ACTIVATION_ACTION_LAUNCH;
-            }
+        {
+            return ACTIVATION_ACTION_LAUNCH;
+        }
 
         case RESPONSE_RUN_IN_TERMINAL:
-            {
-                return ACTIVATION_ACTION_LAUNCH_IN_TERMINAL;
-            }
+        {
+            return ACTIVATION_ACTION_LAUNCH_IN_TERMINAL;
+        }
 
         case RESPONSE_DISPLAY:
-            {
-                return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-            }
+        {
+            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
+        }
 
         default:
             return ACTIVATION_ACTION_DO_NOTHING;
@@ -696,14 +696,14 @@ get_default_executable_text_file_action (void)
     switch (preferences_value)
     {
         case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
-            {
-                return ACTIVATION_ACTION_LAUNCH;
-            }
+        {
+            return ACTIVATION_ACTION_LAUNCH;
+        }
 
         case NAUTILUS_EXECUTABLE_TEXT_DISPLAY:
-            {
-                return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-            }
+        {
+            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
+        }
 
         case NAUTILUS_EXECUTABLE_TEXT_ASK:
         default:
@@ -1518,32 +1518,32 @@ untrusted_launcher_response_callback (GtkDialog                 *dialog,
     switch (response_id)
     {
         case RESPONSE_RUN:
-            {
-                screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-                uri = nautilus_file_get_uri (parameters->file);
-                DEBUG ("Launching untrusted launcher %s", uri);
-                nautilus_launch_desktop_file (screen, uri, NULL,
-                                              parameters->parent_window);
-                g_free (uri);
-            }
-            break;
+        {
+            screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
+            uri = nautilus_file_get_uri (parameters->file);
+            DEBUG ("Launching untrusted launcher %s", uri);
+            nautilus_launch_desktop_file (screen, uri, NULL,
+                                          parameters->parent_window);
+            g_free (uri);
+        }
+        break;
 
         case RESPONSE_MARK_TRUSTED:
-            {
-                file = nautilus_file_get_location (parameters->file);
-                nautilus_file_mark_desktop_file_trusted (file,
-                                                         parameters->parent_window,
-                                                         TRUE,
-                                                         NULL, NULL);
-                g_object_unref (file);
-            }
-            break;
+        {
+            file = nautilus_file_get_location (parameters->file);
+            nautilus_file_mark_desktop_file_trusted (file,
+                                                     parameters->parent_window,
+                                                     TRUE,
+                                                     NULL, NULL);
+            g_object_unref (file);
+        }
+        break;
 
         default:
-            {
-                /* Just destroy dialog */
-            }
-            break;
+        {
+            /* Just destroy dialog */
+        }
+        break;
     }
 
     gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -1710,8 +1710,8 @@ activate_files (ActivateParameters *parameters)
 
             case ACTIVATION_ACTION_EXTRACT:
             {
-               /* Extraction of files should be handled in the view */
-               g_assert_not_reached ();
+                /* Extraction of files should be handled in the view */
+                g_assert_not_reached ();
             }
             break;
 
@@ -1804,10 +1804,12 @@ activate_files (ActivateParameters *parameters)
     }
     else
     {
-            /* if we want to close the window and activate a single directory, then we will need
-             * the NEW_WINDOW flag set */
-            if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
-                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        /* if we want to close the window and activate a single directory, then we will need
+         * the NEW_WINDOW flag set */
+        if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
+        {
+            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
+        }
     }
 
     if (parameters->slot != NULL &&

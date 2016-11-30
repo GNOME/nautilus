@@ -1371,60 +1371,60 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         switch (error->code)
         {
             case G_IO_ERROR_NOT_FOUND:
-                {
-                    detail_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
-                }
-                break;
+            {
+                detail_message = g_strdup (_("Unable to find the requested file. Please check the spelling and try again."));
+            }
+            break;
 
             case G_IO_ERROR_NOT_SUPPORTED:
+            {
+                scheme_string = g_file_get_uri_scheme (location);
+                if (scheme_string != NULL)
                 {
-                    scheme_string = g_file_get_uri_scheme (location);
-                    if (scheme_string != NULL)
-                    {
-                        detail_message = g_strdup_printf (_("“%s” locations are not supported."),
-                                                          scheme_string);
-                    }
-                    else
-                    {
-                        detail_message = g_strdup (_("Unable to handle this kind of location."));
-                    }
-                    g_free (scheme_string);
+                    detail_message = g_strdup_printf (_("“%s” locations are not supported."),
+                                                      scheme_string);
                 }
-                break;
+                else
+                {
+                    detail_message = g_strdup (_("Unable to handle this kind of location."));
+                }
+                g_free (scheme_string);
+            }
+            break;
 
             case G_IO_ERROR_NOT_MOUNTED:
-                {
-                    detail_message = g_strdup (_("Unable to access the requested location."));
-                }
-                break;
+            {
+                detail_message = g_strdup (_("Unable to access the requested location."));
+            }
+            break;
 
             case G_IO_ERROR_PERMISSION_DENIED:
-                {
-                    detail_message = g_strdup (_("Don’t have permission to access the requested location."));
-                }
-                break;
+            {
+                detail_message = g_strdup (_("Don’t have permission to access the requested location."));
+            }
+            break;
 
             case G_IO_ERROR_HOST_NOT_FOUND:
-                {
-                    /* This case can be hit for user-typed strings like "foo" due to
-                     * the code that guesses web addresses when there's no initial "/".
-                     * But this case is also hit for legitimate web addresses when
-                     * the proxy is set up wrong.
-                     */
-                    detail_message = g_strdup (_("Unable to find the requested location. Please check the spelling or the network settings."));
-                }
-                break;
+            {
+                /* This case can be hit for user-typed strings like "foo" due to
+                 * the code that guesses web addresses when there's no initial "/".
+                 * But this case is also hit for legitimate web addresses when
+                 * the proxy is set up wrong.
+                 */
+                detail_message = g_strdup (_("Unable to find the requested location. Please check the spelling or the network settings."));
+            }
+            break;
 
             case G_IO_ERROR_CANCELLED:
             case G_IO_ERROR_FAILED_HANDLED:
-                {
-                    goto done;
-                }
+            {
+                goto done;
+            }
 
             default:
-                {
-                }
-                break;
+            {
+            }
+            break;
         }
     }
 
@@ -2200,22 +2200,22 @@ update_history (NautilusWindowSlot         *self,
     switch (type)
     {
         case NAUTILUS_LOCATION_CHANGE_STANDARD:
-            {
-                handle_go_elsewhere (self, new_location);
-                return;
-            }
+        {
+            handle_go_elsewhere (self, new_location);
+            return;
+        }
 
         case NAUTILUS_LOCATION_CHANGE_RELOAD:
-            {
-                /* for reload there is no work to do */
-                return;
-            }
+        {
+            /* for reload there is no work to do */
+            return;
+        }
 
         case NAUTILUS_LOCATION_CHANGE_BACK:
-            {
-                handle_go_direction (self, new_location, FALSE);
-                return;
-            }
+        {
+            handle_go_direction (self, new_location, FALSE);
+            return;
+        }
 
         case NAUTILUS_LOCATION_CHANGE_FORWARD:
             handle_go_direction (self, new_location, TRUE);
@@ -3095,16 +3095,19 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
             return nautilus_view_get_icon (NAUTILUS_VIEW_GRID_ID);
         }
         break;
+
         case NAUTILUS_VIEW_GRID_ID:
         {
             return nautilus_view_get_icon (NAUTILUS_VIEW_LIST_ID);
         }
         break;
+
         case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
         {
             return nautilus_view_get_icon (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
         }
         break;
+
         default:
         {
             return NULL;

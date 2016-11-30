@@ -48,7 +48,7 @@ struct _NautilusMimeApplicationChooser
     GtkWidget *entry;
     GtkWidget *set_as_default_button;
     GtkWidget *open_with_widget;
-    GtkWidget *add_button;  
+    GtkWidget *add_button;
 };
 
 enum

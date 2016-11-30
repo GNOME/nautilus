@@ -3416,7 +3416,6 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
 static void
 update_clipboard_status (NautilusListView *view)
 {
-
     g_object_ref (view);     /* Need to keep the object alive until we get the reply */
     gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
                                     nautilus_clipboard_get_atom (),

@@ -551,35 +551,35 @@ get_drop_action (NautilusTreeViewDragDest *dest,
     switch (dest->details->drag_type)
     {
         case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-            {
-                nautilus_drag_default_drop_action_for_icons
-                    (context,
-                    drop_target,
-                    dest->details->drag_list,
-                    0,
-                    &action);
-            }
-            break;
+        {
+            nautilus_drag_default_drop_action_for_icons
+                (context,
+                drop_target,
+                dest->details->drag_list,
+                0,
+                &action);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_NETSCAPE_URL:
-            {
-                action = nautilus_drag_default_drop_action_for_netscape_url (context);
-            }
-            break;
+        {
+            action = nautilus_drag_default_drop_action_for_netscape_url (context);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_URI_LIST:
-            {
-                action = gdk_drag_context_get_suggested_action (context);
-            }
-            break;
+        {
+            action = gdk_drag_context_get_suggested_action (context);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_TEXT:
         case NAUTILUS_ICON_DND_RAW:
         case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-            {
-                action = GDK_ACTION_COPY;
-            }
-            break;
+        {
+            action = GDK_ACTION_COPY;
+        }
+        break;
     }
 
     g_free (drop_target);
@@ -1001,48 +1001,48 @@ drag_data_received_callback (GtkWidget        *widget,
         switch (info)
         {
             case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-                {
-                    receive_dropped_icons (dest, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_icons (dest, context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_NETSCAPE_URL:
-                {
-                    receive_dropped_netscape_url (dest, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_netscape_url (dest, context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_URI_LIST:
-                {
-                    receive_dropped_uri_list (dest, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_uri_list (dest, context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_TEXT:
-                {
-                    receive_dropped_text (dest, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_text (dest, context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_RAW:
-                {
-                    length = gtk_selection_data_get_length (selection_data);
-                    tmp = (const gchar *) gtk_selection_data_get_data (selection_data);
-                    receive_dropped_raw (dest, tmp, length, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                length = gtk_selection_data_get_length (selection_data);
+                tmp = (const gchar *) gtk_selection_data_get_data (selection_data);
+                receive_dropped_raw (dest, tmp, length, context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-                {
-                    finished = receive_xds (dest, widget, time, context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                finished = receive_xds (dest, widget, time, context, x, y);
+                success = TRUE;
+            }
+            break;
         }
 
         if (finished)

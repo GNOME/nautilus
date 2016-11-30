@@ -2281,16 +2281,16 @@ nautilus_window_set_property (GObject      *object,
     switch (arg_id)
     {
         case PROP_DISABLE_CHROME:
-            {
-                window->priv->disable_chrome = g_value_get_boolean (value);
-            }
-            break;
+        {
+            window->priv->disable_chrome = g_value_get_boolean (value);
+        }
+        break;
 
         default:
-            {
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
-            }
-            break;
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
+        }
+        break;
     }
 }
 
@@ -2307,10 +2307,10 @@ nautilus_window_get_property (GObject    *object,
     switch (arg_id)
     {
         case PROP_DISABLE_CHROME:
-            {
-                g_value_set_boolean (value, window->priv->disable_chrome);
-            }
-            break;
+        {
+            g_value_set_boolean (value, window->priv->disable_chrome);
+        }
+        break;
     }
 }
 

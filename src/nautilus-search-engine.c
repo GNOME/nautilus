@@ -33,7 +33,8 @@
 #include "nautilus-search-engine-tracker.h"
 #endif
 
-typedef struct {
+typedef struct
+{
 #ifdef ENABLE_TRACKER
     NautilusSearchEngineTracker *tracker;
 #endif

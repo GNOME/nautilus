@@ -425,14 +425,14 @@ get_dir_name (ButtonData *button_data)
     switch (button_data->type)
     {
         case HOME_BUTTON:
-            {
-                return _("Home");
-            }
+        {
+            return _("Home");
+        }
 
         case OTHER_LOCATIONS_BUTTON:
-            {
-                return _("Other Locations");
-            }
+        {
+            return _("Other Locations");
+        }
 
         default:
             return button_data->dir_name;
@@ -912,22 +912,22 @@ nautilus_path_bar_scroll (GtkWidget      *widget,
     {
         case GDK_SCROLL_RIGHT:
         case GDK_SCROLL_DOWN:
-            {
-                nautilus_path_bar_scroll_down (path_bar);
-                return TRUE;
-            }
+        {
+            nautilus_path_bar_scroll_down (path_bar);
+            return TRUE;
+        }
 
         case GDK_SCROLL_LEFT:
         case GDK_SCROLL_UP:
-            {
-                nautilus_path_bar_scroll_up (path_bar);
-                return TRUE;
-            }
+        {
+            nautilus_path_bar_scroll_up (path_bar);
+            return TRUE;
+        }
 
         case GDK_SCROLL_SMOOTH:
-            {
-            }
-            break;
+        {
+        }
+        break;
     }
 
     return FALSE;
@@ -1699,19 +1699,19 @@ get_gicon (ButtonData *button_data)
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-            {
-                return g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
-            }
+        {
+            return g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
+        }
 
         case HOME_BUTTON:
-            {
-                return g_themed_icon_new (NAUTILUS_ICON_HOME);
-            }
+        {
+            return g_themed_icon_new (NAUTILUS_ICON_HOME);
+        }
 
         case MOUNT_BUTTON:
-            {
-                return get_gicon_for_mount (button_data);
-            }
+        {
+            return get_gicon_for_mount (button_data);
+        }
 
         default:
             return NULL;
@@ -2052,23 +2052,23 @@ make_button_data (NautilusPathBar *path_bar,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-            {
-                child = button_data->image;
-                button_data->label = NULL;
-            }
-            break;
+        {
+            child = button_data->image;
+            button_data->label = NULL;
+        }
+        break;
 
         case HOME_BUTTON:
         case MOUNT_BUTTON:
         case NORMAL_BUTTON:
         default:
-            {
-                button_data->label = gtk_label_new (NULL);
-                child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-                gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-                gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            }
-            break;
+        {
+            button_data->label = gtk_label_new (NULL);
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+        }
+        break;
     }
 
     if (button_data->label != NULL)

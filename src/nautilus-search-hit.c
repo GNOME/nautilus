@@ -376,7 +376,6 @@ nautilus_search_hit_class_init (NautilusSearchHitClass *class)
                                                           -G_MAXDOUBLE, G_MAXDOUBLE,
                                                           0,
                                                           G_PARAM_READWRITE));
-
 }
 
 static void

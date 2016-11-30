@@ -328,7 +328,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
 
     fcd->replace_button = gtk_dialog_add_button (dialog,
                                                  _("Replace"),
-                                                CONFLICT_RESPONSE_REPLACE);
+                                                 CONFLICT_RESPONSE_REPLACE);
     gtk_widget_grab_focus (fcd->replace_button);
 
     /* Setup HIG properties */

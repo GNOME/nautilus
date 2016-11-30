@@ -5363,16 +5363,16 @@ real_response (GtkDialog *dialog,
         case GTK_RESPONSE_NONE:
         case GTK_RESPONSE_CLOSE:
         case GTK_RESPONSE_DELETE_EVENT:
-            {
-                gtk_widget_destroy (GTK_WIDGET (dialog));
-            }
-            break;
+        {
+            gtk_widget_destroy (GTK_WIDGET (dialog));
+        }
+        break;
 
         default:
-            {
-                g_assert_not_reached ();
-            }
-            break;
+        {
+            g_assert_not_reached ();
+        }
+        break;
     }
 }
 
@@ -5592,30 +5592,30 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
     switch (response)
     {
         case GTK_RESPONSE_NO:
+        {
+            reset_icon (window);
+        }
+        break;
+
+        case GTK_RESPONSE_OK:
+        {
+            uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
+            if (uri != NULL)
+            {
+                set_icon (uri, window);
+            }
+            else
             {
                 reset_icon (window);
             }
-            break;
-
-        case GTK_RESPONSE_OK:
-            {
-                uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
-                if (uri != NULL)
-                {
-                    set_icon (uri, window);
-                }
-                else
-                {
-                    reset_icon (window);
-                }
-                g_free (uri);
-            }
-            break;
+            g_free (uri);
+        }
+        break;
 
         default:
-            {
-            }
-            break;
+        {
+        }
+        break;
     }
 
     gtk_widget_hide (GTK_WIDGET (dialog));

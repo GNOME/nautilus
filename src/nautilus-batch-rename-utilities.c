@@ -83,7 +83,7 @@ conflict_data_free (gpointer mem)
     g_free (conflict_data);
 }
 
-gchar*
+gchar *
 batch_rename_get_tag_text_representation (TagConstants tag_constants)
 {
     return g_strdup_printf ("[%s]", gettext (tag_constants.label));
@@ -376,19 +376,22 @@ batch_rename_format (NautilusFile *file,
                         g_string_append_printf (new_name, "%d", count);
                     }
                     break;
+
                     case NUMBERING_ONE_ZERO_PAD:
                     {
                         g_string_append_printf (new_name, "%02d", count);
                     }
                     break;
+
                     case NUMBERING_TWO_ZERO_PAD:
                     {
                         g_string_append_printf (new_name, "%03d", count);
                     }
                     break;
+
                     default:
                     {
-                         g_warn_if_reached ();
+                        g_warn_if_reached ();
                     }
                     break;
                 }
@@ -434,11 +437,13 @@ batch_rename_format (NautilusFile *file,
                         new_name = g_string_append (new_name, base_name);
                     }
                     break;
+
                     case TRACK_NUMBER:
                     {
                         g_string_append_printf (new_name, "%02d", atoi (metadata));
                     }
                     break;
+
                     default:
                     {
                         new_name = g_string_append (new_name, metadata);
@@ -759,7 +764,7 @@ remove_metadata (QueryData    *query_data,
     query_data->has_metadata[metadata_type] = FALSE;
 }
 
-static GString*
+static GString *
 format_date_time (GDateTime *date_time)
 {
     g_autofree gchar *date = NULL;
@@ -877,49 +882,58 @@ on_cursor_callback (GObject      *object,
                     current_metadata = file_name;
                 }
                 break;
+
                 case CREATION_DATE:
                 {
                     current_metadata = creation_date;
                 }
                 break;
+
                 case EQUIPMENT:
                 {
                     current_metadata = equipment;
                 }
                 break;
+
                 case SEASON_NUMBER:
                 {
                     current_metadata = season_number;
                 }
                 break;
+
                 case EPISODE_NUMBER:
                 {
                     current_metadata = episode_number;
                 }
                 break;
+
                 case ARTIST_NAME:
                 {
                     current_metadata = artist_name;
                 }
                 break;
+
                 case ALBUM_NAME:
                 {
                     current_metadata = album_name;
                 }
                 break;
+
                 case TITLE:
                 {
                     current_metadata = title;
                 }
                 break;
+
                 case TRACK_NUMBER:
                 {
                     current_metadata = track_number;
                 }
                 break;
+
                 default:
                 {
-                     g_warn_if_reached();
+                    g_warn_if_reached ();
                 }
                 break;
             }
@@ -935,8 +949,8 @@ on_cursor_callback (GObject      *object,
                 if (metadata_type == CREATION_DATE &&
                     query_data->date_order_hash_table)
                 {
-                       g_hash_table_destroy (query_data->date_order_hash_table);
-                       query_data->date_order_hash_table = NULL;
+                    g_hash_table_destroy (query_data->date_order_hash_table);
+                    query_data->date_order_hash_table = NULL;
                 }
             }
             else

@@ -293,7 +293,7 @@ navigation_button_press_cb (GtkButton *button,
     NautilusToolbar *self = user_data;
     GdkEventButton *button_event;
 
-    button_event = (GdkEventButton *)event;
+    button_event = (GdkEventButton *) event;
 
     if (button_event->button == 3)
     {

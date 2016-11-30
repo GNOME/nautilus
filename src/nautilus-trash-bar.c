@@ -166,7 +166,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 
     bar = NAUTILUS_TRASH_BAR (infobar);
     window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
- 
+
     switch (response_id)
     {
         case TRASH_BAR_RESPONSE_EMPTY:

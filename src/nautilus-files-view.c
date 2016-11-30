@@ -6773,9 +6773,9 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
 
 static void
 on_clipboard_targets_received (GtkClipboard *clipboard,
-                            GdkAtom      *targets,
-                            int           n_targets,
-                            gpointer      user_data)
+                               GdkAtom      *targets,
+                               int           n_targets,
+                               gpointer      user_data)
 {
     NautilusFilesView *view;
     gboolean is_data_copied;
@@ -7569,28 +7569,28 @@ update_selection_menu (NautilusFilesView *view)
             default:
             case G_DRIVE_START_STOP_TYPE_UNKNOWN:
             case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-                {
-                    item_label = _("_Start");
-                }
-                break;
+            {
+                item_label = _("_Start");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_NETWORK:
-                {
-                    item_label = _("_Connect");
-                }
-                break;
+            {
+                item_label = _("_Connect");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-                {
-                    item_label = _("_Start Multi-disk Drive");
-                }
-                break;
+            {
+                item_label = _("_Start Multi-disk Drive");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_PASSWORD:
-                {
-                    item_label = _("U_nlock Drive");
-                }
-                break;
+            {
+                item_label = _("U_nlock Drive");
+            }
+            break;
         }
 
         menu_item = g_menu_item_new (item_label, "view.start-volume");
@@ -7607,34 +7607,34 @@ update_selection_menu (NautilusFilesView *view)
         {
             default:
             case G_DRIVE_START_STOP_TYPE_UNKNOWN:
-                {
-                    item_label = _("Stop Drive");
-                }
-                break;
+            {
+                item_label = _("Stop Drive");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_SHUTDOWN:
-                {
-                    item_label = _("_Safely Remove Drive");
-                }
-                break;
+            {
+                item_label = _("_Safely Remove Drive");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_NETWORK:
-                {
-                    item_label = _("_Disconnect");
-                }
-                break;
+            {
+                item_label = _("_Disconnect");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_MULTIDISK:
-                {
-                    item_label = _("_Stop Multi-disk Drive");
-                }
-                break;
+            {
+                item_label = _("_Stop Multi-disk Drive");
+            }
+            break;
 
             case G_DRIVE_START_STOP_TYPE_PASSWORD:
-                {
-                    item_label = _("_Lock Drive");
-                }
-                break;
+            {
+                item_label = _("_Lock Drive");
+            }
+            break;
         }
 
         menu_item = g_menu_item_new (item_label, "view.stop-volume");
@@ -8473,28 +8473,28 @@ nautilus_files_view_get_property (GObject    *object,
     switch (prop_id)
     {
         case PROP_IS_LOADING:
-            {
-                g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
-            }
-            break;
+        {
+            g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
+        }
+        break;
 
         case PROP_IS_SEARCH:
-            {
-                g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
-            }
-            break;
+        {
+            g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
+        }
+        break;
 
         case PROP_LOCATION:
-            {
-                g_value_set_object (value, nautilus_view_get_location (NAUTILUS_VIEW (view)));
-            }
-            break;
+        {
+            g_value_set_object (value, nautilus_view_get_location (NAUTILUS_VIEW (view)));
+        }
+        break;
 
         case PROP_SEARCH_QUERY:
-            {
-                g_value_set_object (value, view->details->search_query);
-            }
-            break;
+        {
+            g_value_set_object (value, view->details->search_query);
+        }
+        break;
 
         default:
             g_assert_not_reached ();
@@ -8515,44 +8515,44 @@ nautilus_files_view_set_property (GObject      *object,
     switch (prop_id)
     {
         case PROP_WINDOW_SLOT:
-            {
-                g_assert (directory_view->details->slot == NULL);
+        {
+            g_assert (directory_view->details->slot == NULL);
 
-                slot = NAUTILUS_WINDOW_SLOT (g_value_get_object (value));
-                directory_view->details->slot = slot;
+            slot = NAUTILUS_WINDOW_SLOT (g_value_get_object (value));
+            directory_view->details->slot = slot;
 
-                g_signal_connect_object (directory_view->details->slot,
-                                         "active", G_CALLBACK (slot_active),
-                                         directory_view, 0);
-                g_signal_connect_object (directory_view->details->slot,
-                                         "inactive", G_CALLBACK (slot_inactive),
-                                         directory_view, 0);
-            }
-            break;
+            g_signal_connect_object (directory_view->details->slot,
+                                     "active", G_CALLBACK (slot_active),
+                                     directory_view, 0);
+            g_signal_connect_object (directory_view->details->slot,
+                                     "inactive", G_CALLBACK (slot_inactive),
+                                     directory_view, 0);
+        }
+        break;
 
         case PROP_SUPPORTS_ZOOMING:
-            {
-                directory_view->details->supports_zooming = g_value_get_boolean (value);
-            }
-            break;
+        {
+            directory_view->details->supports_zooming = g_value_get_boolean (value);
+        }
+        break;
 
         case PROP_LOCATION:
-            {
-                nautilus_view_set_location (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
-            }
-            break;
+        {
+            nautilus_view_set_location (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+        }
+        break;
 
         case PROP_SEARCH_QUERY:
-            {
-                nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
-            }
-            break;
+        {
+            nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+        }
+        break;
 
         default:
-            {
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-            }
-            break;
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
     }
 }
 
@@ -8569,53 +8569,53 @@ nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
         switch (event->direction)
         {
             case GDK_SCROLL_UP:
-                {
-                    /* Zoom In */
-                    nautilus_files_view_bump_zoom_level (directory_view, 1);
-                    return TRUE;
-                }
+            {
+                /* Zoom In */
+                nautilus_files_view_bump_zoom_level (directory_view, 1);
+                return TRUE;
+            }
 
             case GDK_SCROLL_DOWN:
+            {
+                /* Zoom Out */
+                nautilus_files_view_bump_zoom_level (directory_view, -1);
+                return TRUE;
+            }
+
+            case GDK_SCROLL_SMOOTH:
+            {
+                gdk_event_get_scroll_deltas ((const GdkEvent *) event,
+                                             &delta_x, &delta_y);
+
+                /* try to emulate a normal scrolling event by summing deltas */
+                total_delta_y += delta_y;
+
+                if (total_delta_y >= 1)
                 {
-                    /* Zoom Out */
+                    total_delta_y = 0;
+                    /* emulate scroll down */
                     nautilus_files_view_bump_zoom_level (directory_view, -1);
                     return TRUE;
                 }
-
-            case GDK_SCROLL_SMOOTH:
+                else if (total_delta_y <= -1)
                 {
-                    gdk_event_get_scroll_deltas ((const GdkEvent *) event,
-                                                 &delta_x, &delta_y);
-
-                    /* try to emulate a normal scrolling event by summing deltas */
-                    total_delta_y += delta_y;
-
-                    if (total_delta_y >= 1)
-                    {
-                        total_delta_y = 0;
-                        /* emulate scroll down */
-                        nautilus_files_view_bump_zoom_level (directory_view, -1);
-                        return TRUE;
-                    }
-                    else if (total_delta_y <= -1)
-                    {
-                        total_delta_y = 0;
-                        /* emulate scroll up */
-                        nautilus_files_view_bump_zoom_level (directory_view, 1);
-                        return TRUE;
-                    }
-                    else
-                    {
-                        /* eat event */
-                        return TRUE;
-                    }
+                    total_delta_y = 0;
+                    /* emulate scroll up */
+                    nautilus_files_view_bump_zoom_level (directory_view, 1);
+                    return TRUE;
                 }
+                else
+                {
+                    /* eat event */
+                    return TRUE;
+                }
+            }
 
             case GDK_SCROLL_LEFT:
             case GDK_SCROLL_RIGHT:
-                {
-                }
-                break;
+            {
+            }
+            break;
 
             default:
                 g_assert_not_reached ();
@@ -9268,23 +9268,23 @@ nautilus_files_view_new (guint               id,
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
-            {
-                view = nautilus_canvas_view_new (slot);
-            }
-            break;
+        {
+            view = nautilus_canvas_view_new (slot);
+        }
+        break;
 
         case NAUTILUS_VIEW_LIST_ID:
-            {
-                view = nautilus_list_view_new (slot);
-            }
-            break;
+        {
+            view = nautilus_list_view_new (slot);
+        }
+        break;
 
 #if ENABLE_EMPTY_VIEW
         case NAUTILUS_VIEW_EMPTY_ID:
-            {
-                view = nautilus_empty_view_new (slot);
-            }
-            break;
+        {
+            view = nautilus_empty_view_new (slot);
+        }
+        break;
 #endif
     }
 

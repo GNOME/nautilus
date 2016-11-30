@@ -337,13 +337,13 @@ drag_data_get_callback (GtkWidget        *widget,
     {
         case NAUTILUS_DND_URI_LIST:
         case NAUTILUS_DND_TEXT_PLAIN:
-            {
-                gtk_selection_data_set (selection_data,
-                                        gtk_selection_data_get_target (selection_data),
-                                        8, (guchar *) uri,
-                                        strlen (uri));
-            }
-            break;
+        {
+            gtk_selection_data_set (selection_data,
+                                    gtk_selection_data_get_target (selection_data),
+                                    8, (guchar *) uri,
+                                    strlen (uri));
+        }
+        break;
 
         default:
             g_assert_not_reached ();
@@ -428,9 +428,9 @@ entry_would_have_inserted_characters (const GdkEventKey *event)
         case GDK_KEY_KP_Left:
         case GDK_KEY_KP_Right:
         case GDK_KEY_Return:
-            {
-                return FALSE;
-            }
+        {
+            return FALSE;
+        }
 
         default:
             if (event->keyval >= 0x20 && event->keyval <= 0xFF)
@@ -609,16 +609,16 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
     switch (priv->secondary_action)
     {
         case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
-            {
-                g_signal_emit_by_name (gentry, "activate", gentry);
-            }
-            break;
+        {
+            g_signal_emit_by_name (gentry, "activate", gentry);
+        }
+        break;
 
         case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
-            {
-                gtk_entry_set_text (gentry, "");
-            }
-            break;
+        {
+            gtk_entry_set_text (gentry, "");
+        }
+        break;
 
         default:
             g_assert_not_reached ();
@@ -780,20 +780,20 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *entry
     switch (secondary_action)
     {
         case NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR:
-            {
-                gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
-                                                   GTK_ENTRY_ICON_SECONDARY,
-                                                   "edit-clear-symbolic");
-            }
-            break;
+        {
+            gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
+                                               GTK_ENTRY_ICON_SECONDARY,
+                                               "edit-clear-symbolic");
+        }
+        break;
 
         case NAUTILUS_LOCATION_ENTRY_ACTION_GOTO:
-            {
-                gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
-                                                   GTK_ENTRY_ICON_SECONDARY,
-                                                   "go-next-symbolic");
-            }
-            break;
+        {
+            gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry),
+                                               GTK_ENTRY_ICON_SECONDARY,
+                                               "go-next-symbolic");
+        }
+        break;
 
         default:
             g_assert_not_reached ();

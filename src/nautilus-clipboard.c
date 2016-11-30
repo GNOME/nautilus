@@ -217,7 +217,7 @@ nautilus_clipboard_is_cut_from_selection_data (GtkSelectionData *selection_data)
 
     items = get_item_list_from_selection_data (selection_data);
     is_cut_from_selection_data = items != NULL &&
-                                 g_strcmp0 ((gchar *)items->data, "cut") == 0;
+                                 g_strcmp0 ((gchar *) items->data, "cut") == 0;
 
     g_list_free_full (items, g_free);
 
@@ -293,7 +293,6 @@ nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
                                       GList        *files,
                                       gboolean      cut)
 {
-
     GtkTargetList *target_list;
     GtkTargetEntry *targets;
     int n_targets;

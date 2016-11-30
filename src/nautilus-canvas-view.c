@@ -116,67 +116,67 @@ struct NautilusCanvasViewDetails
 static const SortCriterion sort_criteria[] =
 {
     {
-     NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-     "name",
-     "name",
-     FALSE
-},
+        NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+        "name",
+        "name",
+        FALSE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-     "name",
-     "name-desc",
-     TRUE
-},
+        NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+        "name",
+        "name-desc",
+        TRUE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_SIZE,
-     "size",
-     "size",
-     TRUE
-},
+        NAUTILUS_FILE_SORT_BY_SIZE,
+        "size",
+        "size",
+        TRUE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_TYPE,
-     "type",
-     "type",
-     FALSE
-},
+        NAUTILUS_FILE_SORT_BY_TYPE,
+        "type",
+        "type",
+        FALSE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_MTIME,
-     "modification date",
-     "modification-date",
-     FALSE
-},
+        NAUTILUS_FILE_SORT_BY_MTIME,
+        "modification date",
+        "modification-date",
+        FALSE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_MTIME,
-     "modification date",
-     "modification-date-desc",
-     TRUE
-},
+        NAUTILUS_FILE_SORT_BY_MTIME,
+        "modification date",
+        "modification-date-desc",
+        TRUE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_ATIME,
-     "access date",
-     "access-date",
-     FALSE
-},
+        NAUTILUS_FILE_SORT_BY_ATIME,
+        "access date",
+        "access-date",
+        FALSE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_ATIME,
-     "access date",
-     "access-date-desc",
-     TRUE
-},
+        NAUTILUS_FILE_SORT_BY_ATIME,
+        "access date",
+        "access-date-desc",
+        TRUE
+    },
     {
-     NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-     "trashed",
-     "trash-time",
-     TRUE,
-     nautilus_file_is_in_trash
-},
+        NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
+        "trashed",
+        "trash-time",
+        TRUE,
+        nautilus_file_is_in_trash
+    },
     {
-     NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-     NULL,
-     "search-relevance",
-     TRUE,
-     nautilus_file_is_in_search
-}
+        NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
+        NULL,
+        "search-relevance",
+        TRUE,
+        nautilus_file_is_in_search
+    }
 };
 
 static void                 nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView  *canvas_view,
@@ -797,7 +797,6 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
 static void
 update_clipboard_status (NautilusCanvasView *view)
 {
-
     g_object_ref (view);     /* Need to keep the object alive until we get the reply */
     gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
                                     nautilus_clipboard_get_atom (),
@@ -1894,34 +1893,34 @@ nautilus_canvas_view_set_property (GObject      *object,
     switch (prop_id)
     {
         case PROP_SUPPORTS_AUTO_LAYOUT:
-            {
-                canvas_view->details->supports_auto_layout = g_value_get_boolean (value);
-            }
-            break;
+        {
+            canvas_view->details->supports_auto_layout = g_value_get_boolean (value);
+        }
+        break;
 
         case PROP_SUPPORTS_MANUAL_LAYOUT:
-            {
-                canvas_view->details->supports_manual_layout = g_value_get_boolean (value);
-            }
-            break;
+        {
+            canvas_view->details->supports_manual_layout = g_value_get_boolean (value);
+        }
+        break;
 
         case PROP_SUPPORTS_SCALING:
-            {
-                canvas_view->details->supports_scaling = g_value_get_boolean (value);
-            }
-            break;
+        {
+            canvas_view->details->supports_scaling = g_value_get_boolean (value);
+        }
+        break;
 
         case PROP_SUPPORTS_KEEP_ALIGNED:
-            {
-                canvas_view->details->supports_keep_aligned = g_value_get_boolean (value);
-            }
-            break;
+        {
+            canvas_view->details->supports_keep_aligned = g_value_get_boolean (value);
+        }
+        break;
 
         default:
-            {
-                G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-            }
-            break;
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+        break;
     }
 }
 

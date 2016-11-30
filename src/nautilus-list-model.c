@@ -149,27 +149,27 @@ nautilus_list_model_get_column_type (GtkTreeModel *tree_model,
     switch (index)
     {
         case NAUTILUS_LIST_MODEL_FILE_COLUMN:
-            {
-                return NAUTILUS_TYPE_FILE;
-            }
+        {
+            return NAUTILUS_TYPE_FILE;
+        }
 
         case NAUTILUS_LIST_MODEL_SUBDIRECTORY_COLUMN:
-            {
-                return NAUTILUS_TYPE_DIRECTORY;
-            }
+        {
+            return NAUTILUS_TYPE_DIRECTORY;
+        }
 
         case NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
-            {
-                return CAIRO_GOBJECT_TYPE_SURFACE;
-            }
+        {
+            return CAIRO_GOBJECT_TYPE_SURFACE;
+        }
 
         case NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
-            {
-                return G_TYPE_BOOLEAN;
-            }
+        {
+            return G_TYPE_BOOLEAN;
+        }
 
         default:
             if (index < NAUTILUS_LIST_MODEL_NUM_COLUMNS + NAUTILUS_LIST_MODEL (tree_model)->details->columns->len)
@@ -291,19 +291,19 @@ nautilus_list_model_get_icon_size_for_zoom_level (NautilusListZoomLevel zoom_lev
     switch (zoom_level)
     {
         case NAUTILUS_LIST_ZOOM_LEVEL_SMALL:
-            {
-                return NAUTILUS_LIST_ICON_SIZE_SMALL;
-            }
+        {
+            return NAUTILUS_LIST_ICON_SIZE_SMALL;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_STANDARD:
-            {
-                return NAUTILUS_LIST_ICON_SIZE_STANDARD;
-            }
+        {
+            return NAUTILUS_LIST_ICON_SIZE_STANDARD;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
-            {
-                return NAUTILUS_LIST_ICON_SIZE_LARGE;
-            }
+        {
+            return NAUTILUS_LIST_ICON_SIZE_LARGE;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_LARGER:
             return NAUTILUS_LIST_ICON_SIZE_LARGER;
@@ -338,89 +338,89 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     switch (column)
     {
         case NAUTILUS_LIST_MODEL_FILE_COLUMN:
-            {
-                g_value_init (value, NAUTILUS_TYPE_FILE);
+        {
+            g_value_init (value, NAUTILUS_TYPE_FILE);
 
-                g_value_set_object (value, file);
-            }
-            break;
+            g_value_set_object (value, file);
+        }
+        break;
 
         case NAUTILUS_LIST_MODEL_SUBDIRECTORY_COLUMN:
-            {
-                g_value_init (value, NAUTILUS_TYPE_DIRECTORY);
+        {
+            g_value_init (value, NAUTILUS_TYPE_DIRECTORY);
 
-                g_value_set_object (value, file_entry->subdirectory);
-            }
-            break;
+            g_value_set_object (value, file_entry->subdirectory);
+        }
+        break;
 
         case NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
+        {
+            g_value_init (value, CAIRO_GOBJECT_TYPE_SURFACE);
+
+            if (file != NULL)
             {
-                g_value_init (value, CAIRO_GOBJECT_TYPE_SURFACE);
+                zoom_level = nautilus_list_model_get_zoom_level_from_column_id (column);
+                icon_size = nautilus_list_model_get_icon_size_for_zoom_level (zoom_level);
+                icon_scale = nautilus_list_model_get_icon_scale (model);
 
-                if (file != NULL)
+                flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
+                        NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
+                        NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
+                        NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
+
+                if (model->details->drag_view != NULL)
                 {
-                    zoom_level = nautilus_list_model_get_zoom_level_from_column_id (column);
-                    icon_size = nautilus_list_model_get_icon_size_for_zoom_level (zoom_level);
-                    icon_scale = nautilus_list_model_get_icon_scale (model);
+                    GtkTreePath *path_a, *path_b;
 
-                    flags = NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                            NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE |
-                            NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
-                            NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
-
-                    if (model->details->drag_view != NULL)
+                    gtk_tree_view_get_drag_dest_row (model->details->drag_view,
+                                                     &path_a,
+                                                     NULL);
+                    if (path_a != NULL)
                     {
-                        GtkTreePath *path_a, *path_b;
+                        path_b = gtk_tree_model_get_path (tree_model, iter);
 
-                        gtk_tree_view_get_drag_dest_row (model->details->drag_view,
-                                                         &path_a,
-                                                         NULL);
-                        if (path_a != NULL)
+                        if (gtk_tree_path_compare (path_a, path_b) == 0)
                         {
-                            path_b = gtk_tree_model_get_path (tree_model, iter);
-
-                            if (gtk_tree_path_compare (path_a, path_b) == 0)
-                            {
-                                flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
-                            }
-
-                            gtk_tree_path_free (path_a);
-                            gtk_tree_path_free (path_b);
+                            flags |= NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT;
                         }
+
+                        gtk_tree_path_free (path_a);
+                        gtk_tree_path_free (path_b);
                     }
-
-                    icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, icon_scale, flags);
-
-                    if (model->details->highlight_files != NULL &&
-                        g_list_find_custom (model->details->highlight_files,
-                                            file, (GCompareFunc) nautilus_file_compare_location))
-                    {
-                        rendered_icon = eel_create_spotlight_pixbuf (icon);
-
-                        if (rendered_icon != NULL)
-                        {
-                            g_object_unref (icon);
-                            icon = rendered_icon;
-                        }
-                    }
-
-                    surface = gdk_cairo_surface_create_from_pixbuf (icon, icon_scale, NULL);
-                    g_value_take_boxed (value, surface);
-                    g_object_unref (icon);
                 }
+
+                icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, icon_scale, flags);
+
+                if (model->details->highlight_files != NULL &&
+                    g_list_find_custom (model->details->highlight_files,
+                                        file, (GCompareFunc) nautilus_file_compare_location))
+                {
+                    rendered_icon = eel_create_spotlight_pixbuf (icon);
+
+                    if (rendered_icon != NULL)
+                    {
+                        g_object_unref (icon);
+                        icon = rendered_icon;
+                    }
+                }
+
+                surface = gdk_cairo_surface_create_from_pixbuf (icon, icon_scale, NULL);
+                g_value_take_boxed (value, surface);
+                g_object_unref (icon);
             }
-            break;
+        }
+        break;
 
         case NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN:
-            {
-                g_value_init (value, G_TYPE_BOOLEAN);
+        {
+            g_value_init (value, G_TYPE_BOOLEAN);
 
-                g_value_set_boolean (value, file != NULL && nautilus_file_can_rename (file));
-            }
-            break;
+            g_value_set_boolean (value, file != NULL && nautilus_file_can_rename (file));
+        }
+        break;
 
         default:
             if (column >= NAUTILUS_LIST_MODEL_NUM_COLUMNS || column < NAUTILUS_LIST_MODEL_NUM_COLUMNS + model->details->columns->len)
@@ -1447,19 +1447,19 @@ nautilus_list_model_get_zoom_level_from_column_id (int column)
     switch (column)
     {
         case NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN:
-            {
-                return NAUTILUS_LIST_ZOOM_LEVEL_SMALL;
-            }
+        {
+            return NAUTILUS_LIST_ZOOM_LEVEL_SMALL;
+        }
 
         case NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN:
-            {
-                return NAUTILUS_LIST_ZOOM_LEVEL_STANDARD;
-            }
+        {
+            return NAUTILUS_LIST_ZOOM_LEVEL_STANDARD;
+        }
 
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
-            {
-                return NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
-            }
+        {
+            return NAUTILUS_LIST_ZOOM_LEVEL_LARGE;
+        }
 
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
             return NAUTILUS_LIST_ZOOM_LEVEL_LARGER;
@@ -1474,19 +1474,19 @@ nautilus_list_model_get_column_id_from_zoom_level (NautilusListZoomLevel zoom_le
     switch (zoom_level)
     {
         case NAUTILUS_LIST_ZOOM_LEVEL_SMALL:
-            {
-                return NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN;
-            }
+        {
+            return NAUTILUS_LIST_MODEL_SMALL_ICON_COLUMN;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_STANDARD:
-            {
-                return NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN;
-            }
+        {
+            return NAUTILUS_LIST_MODEL_STANDARD_ICON_COLUMN;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_LARGE:
-            {
-                return NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN;
-            }
+        {
+            return NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN;
+        }
 
         case NAUTILUS_LIST_ZOOM_LEVEL_LARGER:
             return NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN;

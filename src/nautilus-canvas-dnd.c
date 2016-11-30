@@ -1273,42 +1273,42 @@ nautilus_canvas_container_get_drop_action (NautilusCanvasContainer *container,
     switch (container->details->dnd_info->drag_info.data_type)
     {
         case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+        {
+            if (container->details->dnd_info->drag_info.selection_list != NULL)
             {
-                if (container->details->dnd_info->drag_info.selection_list != NULL)
-                {
-                    nautilus_drag_default_drop_action_for_icons (context, drop_target,
-                                                                 container->details->dnd_info->drag_info.selection_list,
-                                                                 0,
-                                                                 action);
-                }
+                nautilus_drag_default_drop_action_for_icons (context, drop_target,
+                                                             container->details->dnd_info->drag_info.selection_list,
+                                                             0,
+                                                             action);
             }
-            break;
+        }
+        break;
 
         case NAUTILUS_ICON_DND_URI_LIST:
-            {
-                *action = nautilus_drag_default_drop_action_for_uri_list (context, drop_target);
-            }
-            break;
+        {
+            *action = nautilus_drag_default_drop_action_for_uri_list (context, drop_target);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_NETSCAPE_URL:
-            {
-                *action = nautilus_drag_default_drop_action_for_netscape_url (context);
-            }
-            break;
+        {
+            *action = nautilus_drag_default_drop_action_for_netscape_url (context);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-            {
-                *action = gdk_drag_context_get_suggested_action (context);
-            }
-            break;
+        {
+            *action = gdk_drag_context_get_suggested_action (context);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_TEXT:
         case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
         case NAUTILUS_ICON_DND_RAW:
-            {
-                *action = GDK_ACTION_COPY;
-            }
-            break;
+        {
+            *action = GDK_ACTION_COPY;
+        }
+        break;
     }
 
     g_free (drop_target);
@@ -1797,41 +1797,41 @@ drag_data_received_callback (GtkWidget        *widget,
     switch (info)
     {
         case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-            {
-                nautilus_canvas_container_dropped_canvas_feedback (widget, data, x, y);
-            }
-            break;
+        {
+            nautilus_canvas_container_dropped_canvas_feedback (widget, data, x, y);
+        }
+        break;
 
         case NAUTILUS_ICON_DND_URI_LIST:
         case NAUTILUS_ICON_DND_TEXT:
         case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
         case NAUTILUS_ICON_DND_RAW:
+        {
+            /* Save the data so we can do the actual work on drop. */
+            if (drag_info->selection_data != NULL)
             {
-                /* Save the data so we can do the actual work on drop. */
-                if (drag_info->selection_data != NULL)
-                {
-                    gtk_selection_data_free (drag_info->selection_data);
-                }
-                drag_info->selection_data = gtk_selection_data_copy (data);
+                gtk_selection_data_free (drag_info->selection_data);
             }
-            break;
+            drag_info->selection_data = gtk_selection_data_copy (data);
+        }
+        break;
 
         /* Netscape keeps sending us the data, even though we accept the first drag */
         case NAUTILUS_ICON_DND_NETSCAPE_URL:
+        {
+            if (drag_info->selection_data != NULL)
             {
-                if (drag_info->selection_data != NULL)
-                {
-                    gtk_selection_data_free (drag_info->selection_data);
-                    drag_info->selection_data = gtk_selection_data_copy (data);
-                }
+                gtk_selection_data_free (drag_info->selection_data);
+                drag_info->selection_data = gtk_selection_data_copy (data);
             }
-            break;
+        }
+        break;
 
         case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-            {
-                /* Do nothing, this won't even happen, since we don't want to call get_data twice */
-            }
-            break;
+        {
+            /* Do nothing, this won't even happen, since we don't want to call get_data twice */
+        }
+        break;
     }
 
     /* this is the second use case of this callback.
@@ -1843,104 +1843,104 @@ drag_data_received_callback (GtkWidget        *widget,
         switch (info)
         {
             case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-                {
-                    nautilus_canvas_container_receive_dropped_icons
-                        (NAUTILUS_CANVAS_CONTAINER (widget),
-                        context, x, y);
-                }
-                break;
+            {
+                nautilus_canvas_container_receive_dropped_icons
+                    (NAUTILUS_CANVAS_CONTAINER (widget),
+                    context, x, y);
+            }
+            break;
 
             case NAUTILUS_ICON_DND_NETSCAPE_URL:
-                {
-                    receive_dropped_netscape_url
-                        (NAUTILUS_CANVAS_CONTAINER (widget),
-                        (char *) gtk_selection_data_get_data (data), context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_netscape_url
+                    (NAUTILUS_CANVAS_CONTAINER (widget),
+                    (char *) gtk_selection_data_get_data (data), context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_URI_LIST:
-                {
-                    receive_dropped_uri_list
-                        (NAUTILUS_CANVAS_CONTAINER (widget),
-                        (char *) gtk_selection_data_get_data (data), context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                receive_dropped_uri_list
+                    (NAUTILUS_CANVAS_CONTAINER (widget),
+                    (char *) gtk_selection_data_get_data (data), context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_TEXT:
-                {
-                    tmp = gtk_selection_data_get_text (data);
-                    receive_dropped_text
-                        (NAUTILUS_CANVAS_CONTAINER (widget),
-                        (char *) tmp, context, x, y);
-                    success = TRUE;
-                    g_free (tmp);
-                }
-                break;
+            {
+                tmp = gtk_selection_data_get_text (data);
+                receive_dropped_text
+                    (NAUTILUS_CANVAS_CONTAINER (widget),
+                    (char *) tmp, context, x, y);
+                success = TRUE;
+                g_free (tmp);
+            }
+            break;
 
             case NAUTILUS_ICON_DND_RAW:
-                {
-                    length = gtk_selection_data_get_length (data);
-                    tmp_raw = gtk_selection_data_get_data (data);
-                    receive_dropped_raw
-                        (NAUTILUS_CANVAS_CONTAINER (widget),
-                        (const gchar *) tmp_raw, length, drag_info->direct_save_uri,
-                        context, x, y);
-                    success = TRUE;
-                }
-                break;
+            {
+                length = gtk_selection_data_get_length (data);
+                tmp_raw = gtk_selection_data_get_data (data);
+                receive_dropped_raw
+                    (NAUTILUS_CANVAS_CONTAINER (widget),
+                    (const gchar *) tmp_raw, length, drag_info->direct_save_uri,
+                    context, x, y);
+                success = TRUE;
+            }
+            break;
 
             case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-                {
-                    /* Do nothing, everything is done by the sender */
-                }
-                break;
+            {
+                /* Do nothing, everything is done by the sender */
+            }
+            break;
 
             case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
+            {
+                const guchar *selection_data;
+                gint selection_length;
+                gint selection_format;
+
+                selection_data = gtk_selection_data_get_data (drag_info->selection_data);
+                selection_length = gtk_selection_data_get_length (drag_info->selection_data);
+                selection_format = gtk_selection_data_get_format (drag_info->selection_data);
+
+                if (selection_format == 8 &&
+                    selection_length == 1 &&
+                    selection_data[0] == 'F')
                 {
-                    const guchar *selection_data;
-                    gint selection_length;
-                    gint selection_format;
+                    gtk_drag_get_data (widget, context,
+                                       gdk_atom_intern (NAUTILUS_ICON_DND_RAW_TYPE,
+                                                        FALSE),
+                                       time);
+                    return;
+                }
+                else if (selection_format == 8 &&
+                         selection_length == 1 &&
+                         selection_data[0] == 'F' &&
+                         drag_info->direct_save_uri != NULL)
+                {
+                    GdkPoint p;
+                    GFile *location;
 
-                    selection_data = gtk_selection_data_get_data (drag_info->selection_data);
-                    selection_length = gtk_selection_data_get_length (drag_info->selection_data);
-                    selection_format = gtk_selection_data_get_format (drag_info->selection_data);
+                    location = g_file_new_for_uri (drag_info->direct_save_uri);
 
-                    if (selection_format == 8 &&
-                        selection_length == 1 &&
-                        selection_data[0] == 'F')
-                    {
-                        gtk_drag_get_data (widget, context,
-                                           gdk_atom_intern (NAUTILUS_ICON_DND_RAW_TYPE,
-                                                            FALSE),
-                                           time);
-                        return;
-                    }
-                    else if (selection_format == 8 &&
-                             selection_length == 1 &&
-                             selection_data[0] == 'F' &&
-                             drag_info->direct_save_uri != NULL)
-                    {
-                        GdkPoint p;
-                        GFile *location;
-
-                        location = g_file_new_for_uri (drag_info->direct_save_uri);
-
-                        nautilus_file_changes_queue_file_added (location);
-                        p.x = x;
-                        p.y = y;
-                        nautilus_file_changes_queue_schedule_position_set (
-                            location,
-                            p,
-                            gdk_screen_get_number (
-                                gtk_widget_get_screen (widget)));
-                        g_object_unref (location);
-                        nautilus_file_changes_consume_changes (TRUE);
-                        success = TRUE;
-                    }
-                } /* NAUTILUS_ICON_DND_XDNDDIRECTSAVE */
-                break;
+                    nautilus_file_changes_queue_file_added (location);
+                    p.x = x;
+                    p.y = y;
+                    nautilus_file_changes_queue_schedule_position_set (
+                        location,
+                        p,
+                        gdk_screen_get_number (
+                            gtk_widget_get_screen (widget)));
+                    g_object_unref (location);
+                    nautilus_file_changes_consume_changes (TRUE);
+                    success = TRUE;
+                }
+            }     /* NAUTILUS_ICON_DND_XDNDDIRECTSAVE */
+            break;
         }
         gtk_drag_finish (context, success, FALSE, time);
 

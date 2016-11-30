@@ -85,8 +85,8 @@ G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
 
 static void set_details (NautilusProgressInfo *info,
                          const char           *details);
-static void set_status  (NautilusProgressInfo *info,
-                         const char           *status);
+static void set_status (NautilusProgressInfo *info,
+                        const char           *status);
 
 static void
 nautilus_progress_info_finalize (GObject *object)
@@ -699,7 +699,7 @@ nautilus_progress_info_set_progress (NautilusProgressInfo *info,
     G_LOCK (progress_info);
 
     if ((info->activity_mode ||     /* emit on switch from activity mode */
-        fabs (current_percent - info->progress) > 0.005) &&     /* Emit on change of 0.5 percent */
+         fabs (current_percent - info->progress) > 0.005) &&    /* Emit on change of 0.5 percent */
         !g_cancellable_is_cancelled (info->cancellable))
     {
         info->activity_mode = FALSE;

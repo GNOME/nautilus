@@ -3049,40 +3049,40 @@ report_preparing_count_progress (CommonJob  *job,
     {
         default:
         case OP_KIND_COPY:
-            {
-                s = f (ngettext ("Preparing to copy %'d file (%S)",
-                                 "Preparing to copy %'d files (%S)",
-                                 source_info->num_files),
-                       source_info->num_files, source_info->num_bytes);
-            }
-            break;
+        {
+            s = f (ngettext ("Preparing to copy %'d file (%S)",
+                             "Preparing to copy %'d files (%S)",
+                             source_info->num_files),
+                   source_info->num_files, source_info->num_bytes);
+        }
+        break;
 
         case OP_KIND_MOVE:
-            {
-                s = f (ngettext ("Preparing to move %'d file (%S)",
-                                 "Preparing to move %'d files (%S)",
-                                 source_info->num_files),
-                       source_info->num_files, source_info->num_bytes);
-            }
-            break;
+        {
+            s = f (ngettext ("Preparing to move %'d file (%S)",
+                             "Preparing to move %'d files (%S)",
+                             source_info->num_files),
+                   source_info->num_files, source_info->num_bytes);
+        }
+        break;
 
         case OP_KIND_DELETE:
-            {
-                s = f (ngettext ("Preparing to delete %'d file (%S)",
-                                 "Preparing to delete %'d files (%S)",
-                                 source_info->num_files),
-                       source_info->num_files, source_info->num_bytes);
-            }
-            break;
+        {
+            s = f (ngettext ("Preparing to delete %'d file (%S)",
+                             "Preparing to delete %'d files (%S)",
+                             source_info->num_files),
+                   source_info->num_files, source_info->num_bytes);
+        }
+        break;
 
         case OP_KIND_TRASH:
-            {
-                s = f (ngettext ("Preparing to trash %'d file",
-                                 "Preparing to trash %'d files",
-                                 source_info->num_files),
-                       source_info->num_files);
-            }
-            break;
+        {
+            s = f (ngettext ("Preparing to trash %'d file",
+                             "Preparing to trash %'d files",
+                             source_info->num_files),
+                   source_info->num_files);
+        }
+        break;
 
         case OP_KIND_COMPRESS:
             s = f (ngettext ("Preparing to compress %'d file",
@@ -3117,24 +3117,24 @@ get_scan_primary (OpKind kind)
     {
         default:
         case OP_KIND_COPY:
-            {
-                return f (_("Error while copying."));
-            }
+        {
+            return f (_("Error while copying."));
+        }
 
         case OP_KIND_MOVE:
-            {
-                return f (_("Error while moving."));
-            }
+        {
+            return f (_("Error while moving."));
+        }
 
         case OP_KIND_DELETE:
-            {
-                return f (_("Error while deleting."));
-            }
+        {
+            return f (_("Error while deleting."));
+        }
 
         case OP_KIND_TRASH:
-            {
-                return f (_("Error while moving files to trash."));
-            }
+        {
+            return f (_("Error while moving files to trash."));
+        }
 
         case OP_KIND_COMPRESS:
             return f (_("Error while compressing files."));
@@ -3161,7 +3161,7 @@ scan_dir (GFile      *dir,
 retry:
     error = NULL;
     enumerator = g_file_enumerate_children (dir,
-                                            G_FILE_ATTRIBUTE_ID_FILE","
+                                            G_FILE_ATTRIBUTE_ID_FILE ","
                                             G_FILE_ATTRIBUTE_STANDARD_NAME ","
                                             G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                                             G_FILE_ATTRIBUTE_STANDARD_SIZE,
@@ -3328,7 +3328,7 @@ scan_file (GFile      *file,
 retry:
     error = NULL;
     info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_ID_FILE","
+                              G_FILE_ATTRIBUTE_ID_FILE ","
                               G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                               G_FILE_ATTRIBUTE_STANDARD_SIZE,
                               G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
@@ -4574,25 +4574,25 @@ copy_move_directory (CopyMoveJob   *copy_job,
         switch (create_dest_dir (job, src, dest, same_fs, parent_dest_fs_type))
         {
             case CREATE_DEST_DIR_RETRY:
-                {
-                    /* next time copy_move_directory() is called,
-                     * create_dest will be FALSE if a directory already
-                     * exists under the new name (i.e. WOULD_RECURSE)
-                     */
-                    return FALSE;
-                }
+            {
+                /* next time copy_move_directory() is called,
+                 * create_dest will be FALSE if a directory already
+                 * exists under the new name (i.e. WOULD_RECURSE)
+                 */
+                return FALSE;
+            }
 
             case CREATE_DEST_DIR_FAILED:
-                {
-                    *skipped_file = TRUE;
-                    return TRUE;
-                }
+            {
+                *skipped_file = TRUE;
+                return TRUE;
+            }
 
             case CREATE_DEST_DIR_SUCCESS:
             default:
-                {
-                }
-                break;
+            {
+            }
+            break;
         }
 
         if (debuting_files)

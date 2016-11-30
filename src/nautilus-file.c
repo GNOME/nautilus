@@ -2375,7 +2375,9 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
                              _("File not found"));
         if (callback)
+        {
             (*callback)(file, NULL, error, callback_data);
+        }
         g_error_free (error);
         return TRUE;
     }
@@ -8207,7 +8209,7 @@ static const gchar * const remote_types[] =
 gboolean
 nautilus_file_is_remote (NautilusFile *file)
 {
-    g_autofree char* filesystem_type = NULL;
+    g_autofree char *filesystem_type = NULL;
 
     g_assert (NAUTILUS_IS_FILE (file));
 
@@ -8765,35 +8767,35 @@ nautilus_file_dump (NautilusFile *file)
         switch (file->details->type)
         {
             case G_FILE_TYPE_REGULAR:
-                {
-                    file_kind = "regular file";
-                }
-                break;
+            {
+                file_kind = "regular file";
+            }
+            break;
 
             case G_FILE_TYPE_DIRECTORY:
-                {
-                    file_kind = "folder";
-                }
-                break;
+            {
+                file_kind = "folder";
+            }
+            break;
 
             case G_FILE_TYPE_SPECIAL:
-                {
-                    file_kind = "special";
-                }
-                break;
+            {
+                file_kind = "special";
+            }
+            break;
 
             case G_FILE_TYPE_SYMBOLIC_LINK:
-                {
-                    file_kind = "symbolic link";
-                }
-                break;
+            {
+                file_kind = "symbolic link";
+            }
+            break;
 
             case G_FILE_TYPE_UNKNOWN:
             default:
-                {
-                    file_kind = "unknown";
-                }
-                break;
+            {
+                file_kind = "unknown";
+            }
+            break;
         }
         g_print ("kind: %s \n", file_kind);
         if (file->details->type == G_FILE_TYPE_SYMBOLIC_LINK)
@@ -9475,27 +9477,27 @@ nautilus_drag_can_accept_info (NautilusFile              *drop_target_item,
     switch (drag_type)
     {
         case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-            {
-                return nautilus_drag_can_accept_items (drop_target_item, items);
-            }
+        {
+            return nautilus_drag_can_accept_items (drop_target_item, items);
+        }
 
         case NAUTILUS_ICON_DND_URI_LIST:
         case NAUTILUS_ICON_DND_NETSCAPE_URL:
         case NAUTILUS_ICON_DND_TEXT:
-            {
-                return nautilus_drag_can_accept_files (drop_target_item);
-            }
+        {
+            return nautilus_drag_can_accept_files (drop_target_item);
+        }
 
         case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
         case NAUTILUS_ICON_DND_RAW:
-            {
-                return nautilus_drag_can_accept_files (drop_target_item);         /* Check if we can accept files at this location */
-            }
+        {
+            return nautilus_drag_can_accept_files (drop_target_item);             /* Check if we can accept files at this location */
+        }
 
         case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-            {
-                return FALSE;
-            }
+        {
+            return FALSE;
+        }
 
         default:
             g_assert_not_reached ();
