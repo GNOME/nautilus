@@ -114,6 +114,8 @@
 #define MAX_MENU_LEVELS 5
 #define TEMPLATE_LIMIT 30
 
+#define SHORTCUTS_PATH "/nautilus/scripts-accels"
+
 enum {
 	ADD_FILE,
 	BEGIN_FILE_CHANGES,
@@ -143,6 +145,8 @@ static GdkAtom copied_files_atom;
 
 static char *scripts_directory_uri = NULL;
 static int scripts_directory_uri_length;
+
+static GHashTable *script_accels = NULL;
 
 struct NautilusViewDetails
 {
@@ -4186,6 +4190,11 @@ add_script_to_scripts_menus (NautilusView *view,
 	}
 
 	g_menu_append_item (menu, menu_item);
+    
+	gchar *shortcut = NULL;
+	if (shortcut = g_hash_table_lookup (script_accels, name)) {
+		nautilus_application_add_accelerator (g_application_get_default(), detailed_action_name, shortcut);       
+	}
 
 	g_free (name);
 	g_free (action_name);
@@ -4217,6 +4226,31 @@ directory_belongs_in_scripts_menu (const char *uri)
 	return TRUE;
 }
 
+/* Expected format: accel script_name */
+static void
+nautilus_load_custom_accel_for_scripts (void)
+{
+	gchar *path = g_build_filename (g_get_user_config_dir (), SHORTCUTS_PATH, NULL);
+	gchar *contents;
+	GError *error = NULL;
+	const int max_len = 100;
+	int i;
+	if (g_file_get_contents (path, &contents, NULL, &error)) {
+		gchar **lines = g_strsplit (contents, "\n", -1);
+		g_free (contents);
+		for (i = 0; lines[i] && (strstr (lines[i], " ") > 0); i++) {
+			gchar **result = g_strsplit (lines[i], " ", 2);
+			g_hash_table_insert (script_accels, g_strndup (result[1], max_len), g_strndup (result[0], max_len));
+			g_free (result);
+		}
+		g_free (lines);
+	} else {
+		DEBUG ("Unable to open '%s', error message: %s", path, error->message);
+		g_clear_error (&error);
+	}
+	g_free (path);
+}
+
 static GMenu *
 update_directory_in_scripts_menu (NautilusView *view,
 				  NautilusDirectory *directory)
@@ -4234,6 +4268,11 @@ update_directory_in_scripts_menu (NautilusView *view,
 	g_return_val_if_fail (NAUTILUS_IS_VIEW (view), NULL);
 	g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
+	if (script_accels == NULL) {
+		script_accels = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, g_free);
+		nautilus_load_custom_accel_for_scripts ();
+	}
+	
 	file_list = nautilus_directory_get_file_list (directory);
 	filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
 	nautilus_file_list_free (file_list);
