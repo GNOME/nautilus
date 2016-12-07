@@ -27,6 +27,8 @@ main (int   argc,
 
     g_set_prgname ("nautilus-desktop");
 
+    gdk_set_allowed_backends ("x11");
+
     nautilus_register_resource ();
     application = nautilus_desktop_application_new ();
 
