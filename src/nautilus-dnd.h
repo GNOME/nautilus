@@ -64,8 +64,8 @@ typedef struct {
          * come from another nautilus process, like the desktop. */
         NautilusFileListHandle *file_list_info_handler;
 
-	/* has the drop occured ? */
-	gboolean drop_occured;
+	/* has the drop occurred ? */
+	gboolean drop_occurred;
 
 	/* whether or not need to clean up the previous dnd data */
 	gboolean need_to_destroy;

@@ -72,7 +72,7 @@ nautilus_drag_init (NautilusDragInfo     *drag_info,
                                           NAUTILUS_ICON_DND_TEXT);
     }
 
-    drag_info->drop_occured = FALSE;
+    drag_info->drop_occurred = FALSE;
     drag_info->need_to_destroy = FALSE;
 }
 

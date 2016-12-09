@@ -35,7 +35,7 @@ typedef struct
     gboolean have_data;
     gboolean have_valid_data;
 
-    gboolean drop_occured;
+    gboolean drop_occurred;
 
     unsigned int info;
     union
@@ -326,7 +326,7 @@ out:
     drag_info->have_data = FALSE;
     drag_info->have_valid_data = FALSE;
 
-    drag_info->drop_occured = FALSE;
+    drag_info->drop_occurred = FALSE;
 }
 
 static void
@@ -357,7 +357,7 @@ slot_proxy_drag_drop (GtkWidget      *widget,
     drag_info = user_data;
     g_assert (!drag_info->have_data);
 
-    drag_info->drop_occured = TRUE;
+    drag_info->drop_occurred = TRUE;
 
     target = gtk_drag_dest_find_target (widget, context, NULL);
     gtk_drag_get_data (widget, context, target, time);
@@ -519,7 +519,7 @@ slot_proxy_drag_data_received (GtkWidget        *widget,
         drag_info->have_valid_data = drag_info->data.selection_data != NULL;
     }
 
-    if (drag_info->drop_occured)
+    if (drag_info->drop_occurred)
     {
         slot_proxy_handle_drop (widget, context, time, drag_info);
     }

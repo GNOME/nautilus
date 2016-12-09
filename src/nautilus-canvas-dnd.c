@@ -561,7 +561,7 @@ get_data_on_first_target_we_support (GtkWidget      *widget,
         /* Don't get_data for destructive ops */
         if ((info == NAUTILUS_ICON_DND_ROOTWINDOW_DROP ||
              info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE) &&
-            !drag_info->drop_occured)
+            !drag_info->drop_occurred)
         {
             /* We can't call get_data here, because that would
              *  make the source execute the rootwin action or the direct save */
@@ -1742,11 +1742,11 @@ drag_drop_callback (GtkWidget      *widget,
     dnd_info = NAUTILUS_CANVAS_CONTAINER (widget)->details->dnd_info;
 
     /* tell the drag_data_received callback that
-     *  the drop occured and that it can actually
+     *  the drop occurred and that it can actually
      *  process the actions.
      *  make sure it is going to be called at least once.
      */
-    dnd_info->drag_info.drop_occured = TRUE;
+    dnd_info->drag_info.drop_occurred = TRUE;
 
     get_data_on_first_target_we_support (widget, context, time, x, y);
 
@@ -1840,7 +1840,7 @@ drag_data_received_callback (GtkWidget        *widget,
     /* this is the second use case of this callback.
      * we have to do the actual work for the drop.
      */
-    if (drag_info->drop_occured)
+    if (drag_info->drop_occurred)
     {
         success = FALSE;
         switch (info)
@@ -1952,7 +1952,7 @@ drag_data_received_callback (GtkWidget        *widget,
         set_drop_target (NAUTILUS_CANVAS_CONTAINER (widget), NULL);
 
         /* reinitialise it for the next dnd */
-        drag_info->drop_occured = FALSE;
+        drag_info->drop_occurred = FALSE;
     }
 }
 
