@@ -24,8 +24,8 @@
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "build-options" : {
-        "cflags": "-O2 -g",
-        "cxxflags": "-O2 -g"
+        "cflags": "-Wno-deprecated-declarations -Og",
+        "cxxflags": "-Wno-deprecated-declarations -Og"
     },
     "cleanup": [ "/include", "/share/bash-completion" ],
     "modules": [
