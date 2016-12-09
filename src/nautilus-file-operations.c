@@ -3177,7 +3177,6 @@ retry:
 
             file = g_file_enumerator_get_child (enumerator, info);
             file_uri = g_file_get_uri (file);
-            g_warn_if_fail (file_uri != NULL);
 
             if (!g_hash_table_contains (scanned, file_uri))
             {
@@ -3339,7 +3338,6 @@ retry:
         g_autofree char *file_uri = NULL;
 
         file_uri = g_file_get_uri (file);
-        g_warn_if_fail (file_uri != NULL);
         if (!g_hash_table_contains (scanned, file_uri))
         {
             g_hash_table_add (scanned, g_strdup (file_uri));
