@@ -32,6 +32,7 @@
 
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <eel/eel-vfs-extensions.h>
 
 #include <glib/gi18n.h>
 
@@ -166,7 +167,7 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
 {
     char *url, *title;
     char *link_name;
-    GArray *points;
+    GArray *points = NULL;
     char **bits;
     GList *uri_list = NULL;
     GFile *f;
@@ -257,10 +258,12 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
     {
         GdkPoint tmp_point = { 0, 0 };
 
-        /* pass in a 1-item array of icon positions, relative to x, y */
-        points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-        g_array_append_val (points, tmp_point);
-
+        if (eel_uri_is_desktop (target_uri))
+        {
+            /* pass in a 1-item array of icon positions, relative to x, y */
+            points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
+            g_array_append_val (points, tmp_point);
+        }
         uri_list = g_list_append (uri_list, url);
 
         nautilus_files_view_move_copy_items (view, uri_list, points,
@@ -286,6 +289,7 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
     gchar **uri_list;
     GList *real_uri_list = NULL;
     char *container_uri;
+    const char *real_target_uri;
     int n_uris, i;
     GArray *points;
 
@@ -343,7 +347,8 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
         return;
     }
 
-    if (n_uris == 1)
+    real_target_uri = target_uri != NULL ? target_uri : container_uri;
+    if (n_uris == 1 && eel_uri_is_desktop (real_target_uri))
     {
         GdkPoint tmp_point = { 0, 0 };
 
@@ -359,7 +364,7 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
     view_widget_to_file_operation_position_xy (view, &x, &y);
 
     nautilus_files_view_move_copy_items (view, real_uri_list, points,
-                                         target_uri != NULL ? target_uri : container_uri,
+                                         real_target_uri,
                                          action, x, y);
 
     g_list_free_full (real_uri_list, g_free);

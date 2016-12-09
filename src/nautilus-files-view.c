@@ -1726,9 +1726,12 @@ new_folder_done (GFile    *new_folder,
 
 
     file = nautilus_file_get (new_folder);
-    nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_SCREEN,
-                                NULL,
-                                screen_string);
+    if (nautilus_file_is_child_of_desktop_directory (file))
+    {
+        nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_SCREEN,
+                                    NULL,
+                                    screen_string);
+    }
 
     if (data->selection != NULL)
     {
@@ -1902,9 +1905,10 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
 {
     NautilusFilesView *view;
     NewFolderData *data;
-    GdkPoint *position;
+    GdkPoint *position = NULL;
     g_autofree gchar *parent_uri = NULL;
     g_autofree gchar *name = NULL;
+    NautilusFile *parent;
     gboolean with_selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
@@ -1922,14 +1926,18 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
                            (GClosureNotify) NULL,
                            G_CONNECT_AFTER);
 
-    position = context_menu_to_file_operation_position (view);
-
     parent_uri = nautilus_files_view_get_backing_uri (view);
+    parent = nautilus_file_get_by_uri (parent_uri);
+    if (nautilus_file_is_desktop_directory (parent))
+    {
+        position = context_menu_to_file_operation_position (view);
+    }
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
                                          position, parent_uri, name,
                                          new_folder_done, data);
 
     g_clear_object (&view->details->new_folder_controller);
+    g_object_unref (parent);
 }
 
 static void
