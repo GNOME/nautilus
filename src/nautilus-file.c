@@ -1622,6 +1622,30 @@ nautilus_file_is_desktop_directory (NautilusFile *file)
     return nautilus_is_desktop_directory_file (dir, eel_ref_str_peek (file->details->name));
 }
 
+/**
+ * nautilus_file_is_child_of_desktop_directory:
+ *
+ * Check whether this file is a direct child of the desktop directory.
+ *
+ * @file: The file to check.
+ *
+ * Return value: TRUE if this file is a direct child of the desktop directory.
+ */
+gboolean
+nautilus_file_is_child_of_desktop_directory (NautilusFile *file)
+{
+    GFile *dir;
+
+    dir = file->details->directory->details->location;
+
+    if (dir == NULL)
+    {
+        return FALSE;
+    }
+
+    return nautilus_is_desktop_directory (dir);
+}
+
 static gboolean
 is_desktop_file (NautilusFile *file)
 {

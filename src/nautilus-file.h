@@ -219,6 +219,7 @@ gboolean                nautilus_file_is_remote                         (Nautilu
 gboolean                nautilus_file_is_other_locations                (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);
+gboolean                nautilus_file_is_child_of_desktop_directory     (NautilusFile                   *file);
 GError *                nautilus_file_get_file_info_error               (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,
 									 guint                          *count,

@@ -987,7 +987,7 @@ handle_nonlocal_move (NautilusCanvasContainer *container,
                       gboolean                 icon_hit)
 {
     GList *source_uris, *p;
-    GArray *source_item_locations;
+    GArray *source_item_locations = NULL;
     gboolean free_target_uri, is_rtl;
     int index, item_x;
     GtkAllocation allocation;
@@ -1007,12 +1007,12 @@ handle_nonlocal_move (NautilusCanvasContainer *container,
 
     is_rtl = nautilus_canvas_container_is_layout_rtl (container);
 
-    source_item_locations = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-    if (!icon_hit)
+    if (!icon_hit && eel_uri_is_desktop (target_uri))
     {
         /* Drop onto a container. Pass along the item points to allow placing
          * the items in their same relative positions in the new container.
          */
+        source_item_locations = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
         source_item_locations = g_array_set_size (source_item_locations,
                                                   g_list_length (container->details->dnd_info->drag_info.selection_list));
 
@@ -1058,7 +1058,10 @@ handle_nonlocal_move (NautilusCanvasContainer *container,
     }
 
     g_list_free (source_uris);
-    g_array_free (source_item_locations, TRUE);
+    if (source_item_locations != NULL)
+    {
+        g_array_free (source_item_locations, TRUE);
+    }
 }
 
 static char *

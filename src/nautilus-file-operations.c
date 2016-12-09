@@ -5085,6 +5085,7 @@ copy_move_file (CopyMoveJob   *copy_job,
                 gboolean       readonly_source_fs)
 {
     GFile *dest, *new_dest;
+    g_autofree gchar *dest_uri = NULL;
     GError *error;
     GFileCopyFlags flags;
     char *primary, *secondary, *details;
@@ -5267,11 +5268,12 @@ retry:
 
         if (debuting_files)
         {
+            dest_uri = g_file_get_uri (dest);
             if (position)
             {
                 nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
             }
-            else
+            else if (eel_uri_is_desktop (dest_uri))
             {
                 nautilus_file_changes_queue_schedule_position_remove (dest);
             }
@@ -5948,6 +5950,7 @@ move_file_prepare (CopyMoveJob  *move_job,
                    int           files_left)
 {
     GFile *dest, *new_dest;
+    g_autofree gchar *dest_uri = NULL;
     GError *error;
     CommonJob *job;
     gboolean overwrite;
@@ -6030,11 +6033,12 @@ retry:
 
         nautilus_file_changes_queue_file_moved (src, dest);
 
+        dest_uri = g_file_get_uri (dest);
         if (position)
         {
             nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
         }
-        else
+        else if (eel_uri_is_desktop (dest_uri))
         {
             nautilus_file_changes_queue_schedule_position_remove (dest);
         }
@@ -6542,6 +6546,7 @@ link_file (CopyMoveJob  *job,
            int           files_left)
 {
     GFile *src_dir, *dest, *new_dest;
+    g_autofree gchar *dest_uri = NULL;
     int count;
     char *path;
     gboolean not_local;
@@ -6593,11 +6598,12 @@ retry:
         }
 
         nautilus_file_changes_queue_file_added (dest);
+        dest_uri = g_file_get_uri (dest);
         if (position)
         {
             nautilus_file_changes_queue_schedule_position_set (dest, *position, common->screen_num);
         }
-        else
+        else if (eel_uri_is_desktop (dest_uri))
         {
             nautilus_file_changes_queue_schedule_position_remove (dest);
         }
@@ -7257,6 +7263,7 @@ create_task_thread_func (GTask        *task,
     CommonJob *common;
     int count;
     GFile *dest;
+    g_autofree gchar *dest_uri = NULL;
     char *basename;
     char *filename, *filename2, *new_filename;
     char *filename_base, *suffix;
@@ -7471,11 +7478,12 @@ retry:
     {
         job->created_file = g_object_ref (dest);
         nautilus_file_changes_queue_file_added (dest);
+        dest_uri = g_file_get_uri (dest);
         if (job->has_position)
         {
             nautilus_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
         }
-        else
+        else if (eel_uri_is_desktop (dest_uri))
         {
             nautilus_file_changes_queue_schedule_position_remove (dest);
         }
