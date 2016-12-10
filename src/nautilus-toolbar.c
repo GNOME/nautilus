@@ -1224,6 +1224,18 @@ nautilus_toolbar_set_active_slot (NautilusToolbar    *toolbar,
 }
 
 gboolean
+nautilus_toolbar_is_menu_visible (NautilusToolbar *self)
+{
+    GtkPopover *popover;
+
+    g_return_val_if_fail (NAUTILUS_IS_TOOLBAR (self), FALSE);
+
+    popover = GTK_POPOVER (gtk_menu_button_get_popover (GTK_MENU_BUTTON (self->view_button)));
+
+    return gtk_widget_is_visible (GTK_WIDGET (popover));
+}
+
+gboolean
 nautilus_toolbar_is_operations_button_active (NautilusToolbar *self)
 {
     return gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (self->operations_button));

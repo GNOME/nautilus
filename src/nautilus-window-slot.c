@@ -28,6 +28,7 @@
 #include "nautilus-list-view.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-special-location-bar.h"
+#include "nautilus-toolbar.h"
 #include "nautilus-trash-bar.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
@@ -2403,7 +2404,13 @@ view_started_loading (NautilusWindowSlot *self,
         nautilus_window_slot_set_allow_stop (self, TRUE);
     }
 
-    gtk_widget_grab_focus (GTK_WIDGET (priv->window));
+    /* Only grab focus if the menu isn't showing. Otherwise the menu disappears
+     * e.g. when the user toggles Show Hidden Files
+     */
+    if (!nautilus_toolbar_is_menu_visible (NAUTILUS_TOOLBAR (nautilus_window_get_toolbar (priv->window))))
+    {
+        gtk_widget_grab_focus (GTK_WIDGET (priv->window));
+    }
 
     gtk_widget_show (GTK_WIDGET (priv->window));
 
