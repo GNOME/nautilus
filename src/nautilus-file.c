@@ -1990,6 +1990,7 @@ rename_get_info_callback (GObject      *source_object,
     }
 }
 
+#ifdef ENABLE_TRACKER
 typedef struct
 {
     NautilusFileOperation *op;
@@ -2077,6 +2078,7 @@ batch_rename_get_info_callback (GObject      *source_object,
         g_error_free (error);
     }
 }
+#endif /* ENABLE_TRACKER */
 
 static void
 rename_callback (GObject      *source_object,
@@ -2272,6 +2274,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
     return new_file_name;
 }
 
+#ifdef ENABLE_TRACKER
 static void
 real_batch_rename (GList                         *files,
                    GList                         *new_names,
@@ -2380,6 +2383,7 @@ real_batch_rename (GList                         *files,
         nautilus_file_operation_complete (op, NULL, error);
     }
 }
+#endif /* ENABLE_TRACKER */
 
 gboolean
 nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
@@ -2409,6 +2413,7 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
     return FALSE;
 }
 
+#ifdef ENABLE_TRACKER
 void
 nautilus_file_batch_rename (GList                         *files,
                             GList                         *new_names,
@@ -2420,6 +2425,7 @@ nautilus_file_batch_rename (GList                         *files,
                        callback,
                        callback_data);
 }
+#endif /* ENABLE_TRACKER */
 
 static void
 real_rename (NautilusFile                  *file,
