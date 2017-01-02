@@ -1056,13 +1056,13 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                           "nmm:artistName(nmm:performer(?file)) "
                           "nie:title(?file) "
                           "nmm:albumTitle(nmm:musicAlbum(?file)) "
-                          "WHERE { ?file a nfo:FileDataObject. ");
+                          "WHERE { ?file a nfo:FileDataObject. ?file nie:url ?url. ");
 
     parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
     parent_uri_escaped = g_markup_escape_text (parent_uri, -1);
 
     g_string_append_printf (query,
-                            "FILTER(tracker:uri-is-parent('%s', nie:url(?file))) ",
+                            "FILTER(tracker:uri-is-parent('%s', ?url)) ",
                             parent_uri_escaped);
 
     for (l = selection; l != NULL; l = l->next)
