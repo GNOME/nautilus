@@ -872,50 +872,6 @@ nautilus_window_get_notebook (NautilusWindow *window)
     return window->priv->notebook;
 }
 
-/* Code should never force the window taller than this size.
- * (The user can still stretch the window taller if desired).
- */
-static guint
-get_max_forced_height (GdkScreen *screen)
-{
-    return (gdk_screen_get_height (screen) * 90) / 100;
-}
-
-/* Code should never force the window wider than this size.
- * (The user can still stretch the window wider if desired).
- */
-static guint
-get_max_forced_width (GdkScreen *screen)
-{
-    return (gdk_screen_get_width (screen) * 90) / 100;
-}
-
-/* This must be called when construction of NautilusWindow is finished,
- * since it depends on the type of the argument, which isn't decided at
- * construction time.
- */
-static void
-nautilus_window_set_initial_window_geometry (NautilusWindow *window)
-{
-    GdkScreen *screen;
-    guint max_width_for_screen, max_height_for_screen;
-    guint default_width, default_height;
-
-    screen = gtk_window_get_screen (GTK_WINDOW (window));
-
-    max_width_for_screen = get_max_forced_width (screen);
-    max_height_for_screen = get_max_forced_height (screen);
-
-    default_width = NAUTILUS_WINDOW_DEFAULT_WIDTH;
-    default_height = NAUTILUS_WINDOW_DEFAULT_HEIGHT;
-
-    gtk_window_set_default_size (GTK_WINDOW (window),
-                                 MIN (default_width,
-                                      max_width_for_screen),
-                                 MIN (default_height,
-                                      max_height_for_screen));
-}
-
 static gboolean
 save_sidebar_width_cb (gpointer user_data)
 {
@@ -2243,7 +2199,10 @@ nautilus_window_constructed (GObject *self)
 
     setup_toolbar (window);
 
-    nautilus_window_set_initial_window_geometry (window);
+    gtk_window_set_default_size (GTK_WINDOW (window),
+                                 NAUTILUS_WINDOW_DEFAULT_WIDTH,
+                                 NAUTILUS_WINDOW_DEFAULT_HEIGHT);
+
     setup_notebook (window);
     nautilus_window_set_up_sidebar (window);
 
