@@ -2,26 +2,26 @@ include $(top_srcdir)/Makefile.shared
 
 SUBDIRS = icons
 
-AM_CPPFLAGS=\
-	$(COMMON_CFLAGS)					\
+AM_CPPFLAGS=			\
+	$(COMMON_CFLAGS)	\
 	$(NULL)
 
-noinst_PROGRAMS=				\
-	lineup-parameters			\
+noinst_PROGRAMS=		\
+	lineup-parameters	\
 	$(NULL)
 
-lineup_parameters_SOURCES=			\
-	lineup-parameters.c			\
+lineup_parameters_SOURCES=	\
+	lineup-parameters.c	\
 	$(NULL)
 
-lineup_parameters_LDADD=			\
-	$(CORE_LIBS)				\
-	$(COMMON_LIBS) \
+lineup_parameters_LDADD=	\
+	$(CORE_LIBS)		\
+	$(COMMON_LIBS)		\
 	$(NULL)
 
 desktopdir       = $(datadir)/applications
-desktop_in_files = 					\
-	org.gnome.Nautilus.desktop.in			\
+desktop_in_files = 				\
+	org.gnome.Nautilus.desktop.in		\
 	nautilus-autorun-software.desktop.in
 
 autostart_in_files = nautilus-autostart.desktop.in
@@ -61,16 +61,16 @@ gsettings_SCHEMAS = org.gnome.nautilus.gschema.xml
 
 @GSETTINGS_RULES@
 
-EXTRA_DIST =				\
-	dbus-interfaces.xml		\
-	freedesktop-dbus-interfaces.xml	\
-	shell-search-provider-dbus-interfaces.xml \
-	$(gsettings_SCHEMAS)     \
-	$(desktop_in_files)		\
-	$(service_in_files)		\
-	$(autostart_in_files)		\
-	$(searchprovider_DATA)		\
-	$(appdata_in_files)		\
+EXTRA_DIST =						\
+	dbus-interfaces.xml				\
+	freedesktop-dbus-interfaces.xml			\
+	shell-search-provider-dbus-interfaces.xml	\
+	$(gsettings_SCHEMAS)				\
+	$(desktop_in_files)				\
+	$(service_in_files)				\
+	$(autostart_in_files)				\
+	$(searchprovider_DATA)				\
+	$(appdata_in_files)				\
 	$(NULL)
 
 CLEANFILES =			\
