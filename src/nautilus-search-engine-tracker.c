@@ -327,7 +327,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                            "  ?urn a nfo:FileDataObject;"
                            "  nfo:fileLastModified ?mtime;"
                            "  nfo:fileLastAccessed ?atime;"
-                           "  tracker:available true;");
+                           "  tracker:available true;"
+                           "  nie:url ?url;");
 
     g_string_append_printf (sparql, " fts:match '\"%s\"*'", search_text);
 
@@ -340,11 +341,11 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     if (!tracker->details->recursive)
     {
-        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', nie:url(?urn)) && ", location_uri);
+        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url) && ", location_uri);
     }
     else
     {
-        g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', nie:url(?urn)) && ", location_uri);
+        g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url) && ", location_uri);
     }
 
     g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
