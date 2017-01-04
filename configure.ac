@@ -321,8 +321,6 @@ LIBGD_INIT([
 AC_CONFIG_FILES([
 Makefile
 data/Makefile
-data/org.freedesktop.FileManager1.service
-data/org.gnome.Nautilus.service
 data/icons/Makefile
 docs/Makefile
 docs/reference/Makefile
