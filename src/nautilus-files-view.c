@@ -1951,7 +1951,7 @@ rename_file_on_name_accepted (gpointer user_data)
 
         nautilus_rename_file (data->target_file, name, NULL, NULL);
 
-        gtk_popover_popdown (GTK_POPOVER (data->widget));
+        gtk_widget_hide (data->widget);
 
         g_free (name);
 }
@@ -2116,7 +2116,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         gtk_popover_set_pointing_to (GTK_POPOVER (widget_data->widget), relative_to);
         gtk_popover_set_relative_to (GTK_POPOVER (widget_data->widget),
                                      GTK_WIDGET (view));
-        gtk_popover_popup (GTK_POPOVER (widget_data->widget));
+        gtk_widget_show (widget_data->widget);
         gtk_widget_grab_focus (widget_data->name_entry);
 
         /* Select the name part withouth the file extension */
