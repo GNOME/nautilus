@@ -5749,6 +5749,16 @@ handle_focus_out_event (GtkWidget     *widget,
     return FALSE;
 }
 
+static void
+handle_scale_factor_changed (GObject    *object,
+                             GParamSpec *pspec,
+                             gpointer    user_data)
+{
+    nautilus_canvas_container_request_update_all_internal (NAUTILUS_CANVAS_CONTAINER (object),
+                                                           TRUE);
+}
+
+
 
 static int text_ellipsis_limits[NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES];
 static int desktop_text_ellipsis_limit;
@@ -5860,6 +5870,9 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
                       G_CALLBACK (handle_focus_in_event), NULL);
     g_signal_connect (container, "focus-out-event",
                       G_CALLBACK (handle_focus_out_event), NULL);
+
+    g_signal_connect (container, "notify::scale-factor",
+                      G_CALLBACK (handle_scale_factor_changed), NULL);
 
     if (!setup_prefs)
     {
