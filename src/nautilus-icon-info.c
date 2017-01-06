@@ -162,12 +162,14 @@ nautilus_icon_info_new_for_icon_info (GtkIconInfo *icon_info,
 typedef struct
 {
     GIcon *icon;
+    int scale;
     int size;
 } LoadableIconKey;
 
 typedef struct
 {
     char *filename;
+    int scale;
     int size;
 } ThemedIconKey;
 
@@ -266,7 +268,7 @@ nautilus_icon_info_clear_caches (void)
 static guint
 loadable_icon_key_hash (LoadableIconKey *key)
 {
-    return g_icon_hash (key->icon) ^ key->size;
+    return g_icon_hash (key->icon) ^ key->scale ^ key->size;
 }
 
 static gboolean
@@ -274,17 +276,20 @@ loadable_icon_key_equal (const LoadableIconKey *a,
                          const LoadableIconKey *b)
 {
     return a->size == b->size &&
+           a->scale == b->scale &&
            g_icon_equal (a->icon, b->icon);
 }
 
 static LoadableIconKey *
 loadable_icon_key_new (GIcon *icon,
+                       int    scale,
                        int    size)
 {
     LoadableIconKey *key;
 
     key = g_slice_new (LoadableIconKey);
     key->icon = g_object_ref (icon);
+    key->scale = scale;
     key->size = size;
 
     return key;
@@ -308,17 +313,20 @@ themed_icon_key_equal (const ThemedIconKey *a,
                        const ThemedIconKey *b)
 {
     return a->size == b->size &&
+           a->scale == b->scale &&
            g_str_equal (a->filename, b->filename);
 }
 
 static ThemedIconKey *
 themed_icon_key_new (const char *filename,
+                     int         scale,
                      int         size)
 {
     ThemedIconKey *key;
 
     key = g_slice_new (ThemedIconKey);
     key->filename = g_strdup (filename);
+    key->scale = scale;
     key->size = size;
 
     return key;
@@ -355,7 +363,8 @@ nautilus_icon_info_lookup (GIcon *icon,
         }
 
         lookup_key.icon = icon;
-        lookup_key.size = size;
+        lookup_key.scale = scale;
+        lookup_key.size = size * scale;
 
         icon_info = g_hash_table_lookup (loadable_icon_cache, &lookup_key);
         if (icon_info)
@@ -379,7 +388,7 @@ nautilus_icon_info_lookup (GIcon *icon,
 
         icon_info = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
 
-        key = loadable_icon_key_new (icon, size);
+        key = loadable_icon_key_new (icon, scale, size);
         g_hash_table_insert (loadable_icon_cache, key, icon_info);
 
         return g_object_ref (icon_info);
@@ -421,6 +430,7 @@ nautilus_icon_info_lookup (GIcon *icon,
         }
 
         lookup_key.filename = (char *) filename;
+        lookup_key.scale = scale;
         lookup_key.size = size;
 
         icon_info = g_hash_table_lookup (themed_icon_cache, &lookup_key);
@@ -432,7 +442,7 @@ nautilus_icon_info_lookup (GIcon *icon,
 
         icon_info = nautilus_icon_info_new_for_icon_info (gtkicon_info, scale);
 
-        key = themed_icon_key_new (filename, size);
+        key = themed_icon_key_new (filename, scale, size);
         g_hash_table_insert (themed_icon_cache, key, icon_info);
 
         g_object_unref (gtkicon_info);
