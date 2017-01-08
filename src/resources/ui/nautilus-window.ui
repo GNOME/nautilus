@@ -3,7 +3,7 @@
   <template class="NautilusWindow" parent="GtkApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
-    <property name="icon-name">system-file-manager</property>
+    <property name="icon-name">org.gnome.Nautilus</property>
     <child type="titlebar">
       <object class="NautilusToolbar" id="toolbar">
         <!-- We override the title widget so the GtkHeaderBar stop managing the

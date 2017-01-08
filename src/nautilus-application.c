@@ -1231,7 +1231,7 @@ nautilus_application_startup_common (NautilusApplication *self)
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
-    gtk_window_set_default_icon_name ("system-file-manager");
+    gtk_window_set_default_icon_name ("org.gnome.Nautilus");
 
     setup_theme_extensions ();
 

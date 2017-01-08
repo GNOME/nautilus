@@ -535,7 +535,7 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     window = GTK_WIDGET (gtk_builder_get_object (builder, "preferences_window"));
     preferences_window = window;
 
-    gtk_window_set_icon_name (GTK_WINDOW (preferences_window), "system-file-manager");
+    gtk_window_set_icon_name (GTK_WINDOW (preferences_window), "org.gnome.Nautilus");
 
     g_object_add_weak_pointer (G_OBJECT (window), (gpointer *) &preferences_window);
 

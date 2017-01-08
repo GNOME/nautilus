@@ -2917,7 +2917,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                             * box to give credit to the translator(s).
                             */
                            "translator-credits", _("translator-credits"),
-                           "logo-icon-name", "system-file-manager",
+                           "logo-icon-name", "org.gnome.Nautilus",
                            NULL);
 }
 
