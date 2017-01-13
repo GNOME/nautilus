@@ -1136,6 +1136,11 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
     GList *files_to_activate;
     char *path;
 
+    if (files == NULL)
+    {
+        return;
+    }
+
     files_to_extract = nautilus_file_list_filter (files,
                                                   &files_to_activate,
                                                   (NautilusFileFilterFunc) nautilus_mime_file_extracts,
