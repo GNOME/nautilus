@@ -1037,7 +1037,7 @@ update_listbox (NautilusBatchRenameDialog *dialog)
     }
 }
 
-void
+static void
 check_conflict_for_files (NautilusBatchRenameDialog *dialog,
                           NautilusDirectory         *directory,
                           GList                     *files)

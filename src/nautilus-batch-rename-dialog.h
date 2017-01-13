@@ -230,10 +230,6 @@ void            nautilus_batch_rename_dialog_query_finished           (NautilusB
                                                                        GHashTable                *hash_table,
                                                                        GList                     *selection_metadata);
 
-void            check_conflict_for_files                               (NautilusBatchRenameDialog *dialog,
-                                                                        NautilusDirectory         *directory,
-                                                                        GList                     *files);
-
 G_END_DECLS
 
 #endif
