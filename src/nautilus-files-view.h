@@ -32,34 +32,17 @@
 #include "nautilus-file.h"
 #include "nautilus-link.h"
 
-typedef struct NautilusFilesView NautilusFilesView;
-typedef struct NautilusFilesViewClass NautilusFilesViewClass;
-
 #include "nautilus-window.h"
 #include "nautilus-view.h"
 #include "nautilus-window-slot.h"
 
+G_BEGIN_DECLS
+
 #define NAUTILUS_TYPE_FILES_VIEW nautilus_files_view_get_type()
-#define NAUTILUS_FILES_VIEW(obj)\
-        (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_FILES_VIEW, NautilusFilesView))
-#define NAUTILUS_FILES_VIEW_CLASS(klass)\
-        (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FILES_VIEW, NautilusFilesViewClass))
-#define NAUTILUS_IS_FILES_VIEW(obj)\
-        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_FILES_VIEW))
-#define NAUTILUS_IS_FILES_VIEW_CLASS(klass)\
-        (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_FILES_VIEW))
-#define NAUTILUS_FILES_VIEW_GET_CLASS(obj)\
-        (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FILES_VIEW, NautilusFilesViewClass))
 
-typedef struct NautilusFilesViewDetails NautilusFilesViewDetails;
+G_DECLARE_DERIVABLE_TYPE (NautilusFilesView, nautilus_files_view, NAUTILUS, FILES_VIEW, GtkGrid)
 
-struct NautilusFilesView {
-        GtkGrid parent;
-
-        NautilusFilesViewDetails *details;
-};
-
-struct NautilusFilesViewClass {
+struct _NautilusFilesViewClass {
         GtkGridClass parent_class;
 
         /* The 'clear' signal is emitted to empty the view of its contents.
@@ -261,9 +244,6 @@ struct NautilusFilesViewClass {
         void           (* check_empty_states)          (NautilusFilesView *view);
 };
 
-/* GObject support */
-GType               nautilus_files_view_get_type                         (void);
-
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
                                                                           NautilusWindowSlot *slot);
 
@@ -359,5 +339,7 @@ void              nautilus_files_view_action_show_hidden_files   (NautilusFilesV
 
 GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_FILES_VIEW_H */
