@@ -1990,96 +1990,6 @@ rename_get_info_callback (GObject      *source_object,
     }
 }
 
-#ifdef ENABLE_TRACKER
-typedef struct
-{
-    NautilusFileOperation *op;
-    NautilusFile *file;
-} BatchRenameData;
-
-static void
-batch_rename_get_info_callback (GObject      *source_object,
-                                GAsyncResult *res,
-                                gpointer      callback_data)
-{
-    NautilusFileOperation *op;
-    NautilusDirectory *directory;
-    NautilusFile *existing_file;
-    char *old_uri;
-    char *new_uri;
-    const char *new_name;
-    GFileInfo *new_info;
-    GError *error;
-    BatchRenameData *data;
-
-    data = callback_data;
-
-    op = data->op;
-    op->file = data->file;
-
-    error = NULL;
-    new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
-    if (new_info != NULL)
-    {
-        old_uri = nautilus_file_get_uri (op->file);
-
-        new_name = g_file_info_get_name (new_info);
-
-        directory = op->file->details->directory;
-
-        /* If there was another file by the same name in this
-         * directory and it is not the same file that we are
-         * renaming, mark it gone.
-         */
-        existing_file = nautilus_directory_find_file_by_name (directory, new_name);
-        if (existing_file != NULL && existing_file != op->file)
-        {
-            nautilus_file_mark_gone (existing_file);
-            nautilus_file_changed (existing_file);
-        }
-
-        update_info_and_name (op->file, new_info);
-
-        new_uri = nautilus_file_get_uri (op->file);
-        nautilus_directory_moved (old_uri, new_uri);
-        g_free (new_uri);
-        g_free (old_uri);
-
-        /* the rename could have affected the display name if e.g.
-         * we're in a vfolder where the name comes from a desktop file
-         * and a rename affects the contents of the desktop file.
-         */
-        if (op->file->details->got_custom_display_name)
-        {
-            nautilus_file_invalidate_attributes (op->file,
-                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-        }
-
-        g_object_unref (new_info);
-    }
-
-    op->renamed_files++;
-
-    if (op->renamed_files + op->skipped_files == g_list_length (op->files))
-    {
-        nautilus_file_operation_complete (op, NULL, error);
-    }
-
-    if (op->files == NULL)
-    {
-        nautilus_file_operation_complete (op, NULL, error);
-    }
-
-    g_free (data);
-
-    if (error)
-    {
-        g_error_free (error);
-    }
-}
-#endif /* ENABLE_TRACKER */
-
 static void
 rename_callback (GObject      *source_object,
                  GAsyncResult *res,
@@ -2274,7 +2184,123 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
     return new_file_name;
 }
 
+gboolean
+nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
+                                       NautilusFileOperationCallback  callback,
+                                       gpointer                       callback_data)
+{
+    GError *error;
+
+    if (nautilus_file_is_gone (file))
+    {
+        /* Claim that something changed even if the rename
+         * failed. This makes it easier for some clients who
+         * see the "reverting" to the old name as "changing
+         * back".
+         */
+        nautilus_file_changed (file);
+        error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
+                             _("File not found"));
+        if (callback)
+        {
+            (*callback)(file, NULL, error, callback_data);
+        }
+        g_error_free (error);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
 #ifdef ENABLE_TRACKER
+typedef struct
+{
+    NautilusFileOperation *op;
+    NautilusFile *file;
+} BatchRenameData;
+
+static void
+batch_rename_get_info_callback (GObject      *source_object,
+                                GAsyncResult *res,
+                                gpointer      callback_data)
+{
+    NautilusFileOperation *op;
+    NautilusDirectory *directory;
+    NautilusFile *existing_file;
+    char *old_uri;
+    char *new_uri;
+    const char *new_name;
+    GFileInfo *new_info;
+    GError *error;
+    BatchRenameData *data;
+
+    data = callback_data;
+
+    op = data->op;
+    op->file = data->file;
+
+    error = NULL;
+    new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
+    if (new_info != NULL)
+    {
+        old_uri = nautilus_file_get_uri (op->file);
+
+        new_name = g_file_info_get_name (new_info);
+
+        directory = op->file->details->directory;
+
+        /* If there was another file by the same name in this
+         * directory and it is not the same file that we are
+         * renaming, mark it gone.
+         */
+        existing_file = nautilus_directory_find_file_by_name (directory, new_name);
+        if (existing_file != NULL && existing_file != op->file)
+        {
+            nautilus_file_mark_gone (existing_file);
+            nautilus_file_changed (existing_file);
+        }
+
+        update_info_and_name (op->file, new_info);
+
+        new_uri = nautilus_file_get_uri (op->file);
+        nautilus_directory_moved (old_uri, new_uri);
+        g_free (new_uri);
+        g_free (old_uri);
+
+        /* the rename could have affected the display name if e.g.
+         * we're in a vfolder where the name comes from a desktop file
+         * and a rename affects the contents of the desktop file.
+         */
+        if (op->file->details->got_custom_display_name)
+        {
+            nautilus_file_invalidate_attributes (op->file,
+                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
+                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
+        }
+
+        g_object_unref (new_info);
+    }
+
+    op->renamed_files++;
+
+    if (op->renamed_files + op->skipped_files == g_list_length (op->files))
+    {
+        nautilus_file_operation_complete (op, NULL, error);
+    }
+
+    if (op->files == NULL)
+    {
+        nautilus_file_operation_complete (op, NULL, error);
+    }
+
+    g_free (data);
+
+    if (error)
+    {
+        g_error_free (error);
+    }
+}
+
 static void
 real_batch_rename (GList                         *files,
                    GList                         *new_names,
@@ -2383,37 +2409,7 @@ real_batch_rename (GList                         *files,
         nautilus_file_operation_complete (op, NULL, error);
     }
 }
-#endif /* ENABLE_TRACKER */
 
-gboolean
-nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
-                                       NautilusFileOperationCallback  callback,
-                                       gpointer                       callback_data)
-{
-    GError *error;
-
-    if (nautilus_file_is_gone (file))
-    {
-        /* Claim that something changed even if the rename
-         * failed. This makes it easier for some clients who
-         * see the "reverting" to the old name as "changing
-         * back".
-         */
-        nautilus_file_changed (file);
-        error = g_error_new (G_IO_ERROR, G_IO_ERROR_NOT_FOUND,
-                             _("File not found"));
-        if (callback)
-        {
-            (*callback)(file, NULL, error, callback_data);
-        }
-        g_error_free (error);
-        return TRUE;
-    }
-
-    return FALSE;
-}
-
-#ifdef ENABLE_TRACKER
 void
 nautilus_file_batch_rename (GList                         *files,
                             GList                         *new_names,
@@ -2425,6 +2421,7 @@ nautilus_file_batch_rename (GList                         *files,
                        callback,
                        callback_data);
 }
+
 #endif /* ENABLE_TRACKER */
 
 static void
