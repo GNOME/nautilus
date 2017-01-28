@@ -4077,10 +4077,10 @@ create_permissions_combo_box (PermissionType type,
         if (type != PERMISSION_USER)
         {
             gtk_list_store_append (store, &iter);
-            /* Translators: this is referred to the permissions
-             * the user has in a directory.
-             */
             gtk_list_store_set (store, &iter,
+                                /* Translators: this is referred to the permissions
+                                 * the user has in a directory.
+                                 */
                                 COLUMN_NAME, _("None"),
                                 COLUMN_VALUE, 0,
                                 COLUMN_ID, "none",

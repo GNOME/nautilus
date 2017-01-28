@@ -2152,9 +2152,9 @@ nautilus_batch_rename_dialog_new (GList             *selection,
     }
     else
     {
-        /* To translators: %d is the total number of files and folders.
-         * Singular case of the string is never used */
         g_string_append_printf (dialog_title,
+                                /* To translators: %d is the total number of files and folders.
+                                 * Singular case of the string is never used */
                                 ngettext ("Rename %d File and Folder",
                                           "Rename %d Files and Folders",
                                           g_list_length (selection)),

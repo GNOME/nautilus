@@ -1116,9 +1116,9 @@ get_message_for_content_type (const char *content_type)
     description = g_content_type_get_description (content_type);
 
     /* Customize greeting for well-known content types */
-    /* translators: these describe the contents of removable media */
     if (strcmp (content_type, "x-content/audio-cdda") == 0)
     {
+        /* translators: these describe the contents of removable media */
         message = g_strdup (_("Audio CD"));
     }
     else if (strcmp (content_type, "x-content/audio-dvd") == 0)
@@ -1180,9 +1180,9 @@ get_message_for_two_content_types (const char * const *content_types)
     if (strcmp (content_types[0], "x-content/image-dcf") == 0
         || strcmp (content_types[1], "x-content/image-dcf") == 0)
     {
-        /* translators: these describe the contents of removable media */
         if (strcmp (content_types[0], "x-content/audio-player") == 0)
         {
+            /* translators: these describe the contents of removable media */
             message = g_strdup (_("Contains music and photos"));
         }
         else if (strcmp (content_types[1], "x-content/audio-player") == 0)
