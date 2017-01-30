@@ -86,7 +86,7 @@ typedef enum
     MENU_ITEM_TYPE_TREE
 } MenuItemType;
 
-struct NautilusCanvasViewDetails
+typedef struct
 {
     GList *icons_not_positioned;
 
@@ -107,7 +107,7 @@ struct NautilusCanvasViewDetails
      * Ideally we would connect to a weak reference and do a cancellable.
      */
     gboolean destroyed;
-};
+} NautilusCanvasViewPrivate;
 
 /* Note that the first item in this list is the default sort,
  * and that the items show up in the menu in the order they
@@ -179,6 +179,8 @@ static const SortCriterion sort_criteria[] =
     }
 };
 
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusCanvasView, nautilus_canvas_view, NAUTILUS_TYPE_FILES_VIEW);
+
 static void                 nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView  *canvas_view,
                                                                         NautilusFile        *file,
                                                                         const SortCriterion *sort);
@@ -196,22 +198,22 @@ static void on_clipboard_owner_changed (GtkClipboard *clipboard,
                                         GdkEvent     *event,
                                         gpointer      user_data);
 
-G_DEFINE_TYPE (NautilusCanvasView, nautilus_canvas_view, NAUTILUS_TYPE_FILES_VIEW);
-
 static void
 nautilus_canvas_view_destroy (GtkWidget *object)
 {
     NautilusCanvasView *canvas_view;
+    NautilusCanvasViewPrivate *priv;
     GtkClipboard *clipboard;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (object);
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
 
     nautilus_canvas_view_clear (NAUTILUS_FILES_VIEW (object));
 
-    if (canvas_view->details->react_to_canvas_change_idle_id != 0)
+    if (priv->react_to_canvas_change_idle_id != 0)
     {
-        g_source_remove (canvas_view->details->react_to_canvas_change_idle_id);
-        canvas_view->details->react_to_canvas_change_idle_id = 0;
+        g_source_remove (priv->react_to_canvas_change_idle_id);
+        priv->react_to_canvas_change_idle_id = 0;
     }
 
     clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
@@ -219,10 +221,10 @@ nautilus_canvas_view_destroy (GtkWidget *object)
                                           on_clipboard_owner_changed,
                                           canvas_view);
 
-    if (canvas_view->details->icons_not_positioned)
+    if (priv->icons_not_positioned)
     {
-        nautilus_file_list_free (canvas_view->details->icons_not_positioned);
-        canvas_view->details->icons_not_positioned = NULL;
+        nautilus_file_list_free (priv->icons_not_positioned);
+        priv->icons_not_positioned = NULL;
     }
 
     GTK_WIDGET_CLASS (nautilus_canvas_view_parent_class)->destroy (object);
@@ -231,7 +233,11 @@ nautilus_canvas_view_destroy (GtkWidget *object)
 static NautilusCanvasContainer *
 get_canvas_container (NautilusCanvasView *canvas_view)
 {
-    return NAUTILUS_CANVAS_CONTAINER (canvas_view->details->canvas_container);
+    NautilusCanvasViewPrivate *priv;
+
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
+
+    return NAUTILUS_CANVAS_CONTAINER (priv->canvas_container);
 }
 
 NautilusCanvasContainer *
@@ -243,9 +249,13 @@ nautilus_canvas_view_get_canvas_container (NautilusCanvasView *canvas_view)
 static gboolean
 nautilus_canvas_view_supports_manual_layout (NautilusCanvasView *view)
 {
+    NautilusCanvasViewPrivate *priv;
+
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
-    return view->details->supports_manual_layout;
+    priv = nautilus_canvas_view_get_instance_private (view);
+
+    return priv->supports_manual_layout;
 }
 
 static gboolean
@@ -306,9 +316,11 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
                        gboolean             set_metadata)
 {
     NautilusFile *file;
+    NautilusCanvasViewPrivate *priv;
     const SortCriterion *overrided_sort_criterion;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
 
     /* Make sure we use the default one and not one that the user used previously
      * of the change to not allow sorting on search and recent, or the
@@ -317,7 +329,7 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
     {
         overrided_sort_criterion = get_default_sort_order (file);
     }
-    else if (sort != NULL && canvas_view->details->sort != sort)
+    else if (sort != NULL && priv->sort != sort)
     {
         overrided_sort_criterion = sort;
         if (set_metadata)
@@ -333,7 +345,7 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
         return;
     }
 
-    canvas_view->details->sort = overrided_sort_criterion;
+    priv->sort = overrided_sort_criterion;
 }
 
 void
@@ -480,25 +492,37 @@ nautilus_canvas_view_file_changed (NautilusFilesView *view,
 static gboolean
 nautilus_canvas_view_supports_auto_layout (NautilusCanvasView *view)
 {
+    NautilusCanvasViewPrivate *priv;
+
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
-    return view->details->supports_auto_layout;
+    priv = nautilus_canvas_view_get_instance_private (view);
+
+    return priv->supports_auto_layout;
 }
 
 static gboolean
 nautilus_canvas_view_supports_scaling (NautilusCanvasView *view)
 {
+    NautilusCanvasViewPrivate *priv;
+
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
-    return view->details->supports_scaling;
+    priv = nautilus_canvas_view_get_instance_private (view);
+
+    return priv->supports_scaling;
 }
 
 static gboolean
 nautilus_canvas_view_supports_keep_aligned (NautilusCanvasView *view)
 {
+    NautilusCanvasViewPrivate *priv;
+
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
 
-    return view->details->supports_keep_aligned;
+    priv = nautilus_canvas_view_get_instance_private (view);
+
+    return priv->supports_keep_aligned;
 }
 
 static const SortCriterion *
@@ -763,9 +787,12 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
                                 GtkSelectionData *selection_data,
                                 gpointer          user_data)
 {
+    NautilusCanvasViewPrivate *priv;
     NautilusCanvasView *view = NAUTILUS_CANVAS_VIEW (user_data);
 
-    if (view->details->destroyed)
+    priv = nautilus_canvas_view_get_instance_private (view);
+
+    if (priv->destroyed)
     {
         /* We've been destroyed since call */
         g_object_unref (view);
@@ -1017,13 +1044,17 @@ action_zoom_to_level (GSimpleAction *action,
 static void
 switch_to_manual_layout (NautilusCanvasView *canvas_view)
 {
+    NautilusCanvasViewPrivate *priv;
+
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
+
     if (!nautilus_canvas_view_using_auto_layout (canvas_view) ||
         !nautilus_files_view_is_editable (NAUTILUS_FILES_VIEW (canvas_view)))
     {
         return;
     }
 
-    canvas_view->details->sort = &sort_criteria[0];
+    priv->sort = &sort_criteria[0];
 
     nautilus_canvas_container_set_auto_layout
         (get_canvas_container (canvas_view), FALSE);
@@ -1120,8 +1151,10 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
     GAction *action;
     gboolean keep_aligned;
     NautilusCanvasView *canvas_view;
+    NautilusCanvasViewPrivate *priv;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
 
     NAUTILUS_FILES_VIEW_CLASS (nautilus_canvas_view_parent_class)->update_actions_state (view);
 
@@ -1141,11 +1174,11 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
         sort_state = g_action_group_get_action_state (view_action_group, "sort");
 
         if (g_strcmp0 (g_variant_get_string (sort_state, NULL),
-                       NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name) != 0)
+                       priv->sort->action_target_name) != 0)
         {
             g_action_group_change_action_state (view_action_group,
                                                 "sort",
-                                                g_variant_new_string (NAUTILUS_CANVAS_VIEW (view)->details->sort->action_target_name));
+                                                g_variant_new_string (priv->sort->action_target_name));
         }
 
         g_variant_unref (sort_state);
@@ -1157,8 +1190,8 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
                                  !showing_search_directory (view));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 canvas_view->details->supports_keep_aligned);
-    if (canvas_view->details->supports_keep_aligned)
+                                 priv->supports_keep_aligned);
+    if (priv->supports_keep_aligned)
     {
         keep_aligned = nautilus_canvas_container_is_keep_aligned (get_canvas_container (canvas_view));
         g_action_change_state (action, g_variant_new_boolean (keep_aligned));
@@ -1398,11 +1431,15 @@ nautilus_canvas_view_compare_files (NautilusCanvasView *canvas_view,
                                     NautilusFile       *a,
                                     NautilusFile       *b)
 {
+    NautilusCanvasViewPrivate *priv;
+
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
+
     return nautilus_file_compare_for_sort
-               (a, b, canvas_view->details->sort->sort_type,
+               (a, b, priv->sort->sort_type,
                /* Use type-unsafe cast for performance */
                nautilus_files_view_should_sort_directories_first ((NautilusFilesView *) canvas_view),
-               canvas_view->details->sort->reverse_order);
+               priv->sort->reverse_order);
 }
 
 static int
@@ -1705,11 +1742,14 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
                              NautilusCanvasContainer *canvas_container)
 {
     GtkWidget *content_widget;
+    NautilusCanvasViewPrivate *priv;
+
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (canvas_view));
-    canvas_view->details->canvas_container = GTK_WIDGET (canvas_container);
+    priv->canvas_container = GTK_WIDGET (canvas_container);
     g_object_add_weak_pointer (G_OBJECT (canvas_container),
-                               (gpointer *) &canvas_view->details->canvas_container);
+                               (gpointer *) &priv->canvas_container);
 
     gtk_widget_set_can_focus (GTK_WIDGET (canvas_container), TRUE);
 
@@ -1887,32 +1927,34 @@ nautilus_canvas_view_set_property (GObject      *object,
                                    GParamSpec   *pspec)
 {
     NautilusCanvasView *canvas_view;
+    NautilusCanvasViewPrivate *priv;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (object);
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
 
     switch (prop_id)
     {
         case PROP_SUPPORTS_AUTO_LAYOUT:
         {
-            canvas_view->details->supports_auto_layout = g_value_get_boolean (value);
+            priv->supports_auto_layout = g_value_get_boolean (value);
         }
         break;
 
         case PROP_SUPPORTS_MANUAL_LAYOUT:
         {
-            canvas_view->details->supports_manual_layout = g_value_get_boolean (value);
+            priv->supports_manual_layout = g_value_get_boolean (value);
         }
         break;
 
         case PROP_SUPPORTS_SCALING:
         {
-            canvas_view->details->supports_scaling = g_value_get_boolean (value);
+            priv->supports_scaling = g_value_get_boolean (value);
         }
         break;
 
         case PROP_SUPPORTS_KEEP_ALIGNED:
         {
-            canvas_view->details->supports_keep_aligned = g_value_get_boolean (value);
+            priv->supports_keep_aligned = g_value_get_boolean (value);
         }
         break;
 
@@ -1925,24 +1967,14 @@ nautilus_canvas_view_set_property (GObject      *object,
 }
 
 static void
-nautilus_canvas_view_finalize (GObject *object)
-{
-    NautilusCanvasView *canvas_view;
-
-    canvas_view = NAUTILUS_CANVAS_VIEW (object);
-
-    g_free (canvas_view->details);
-
-    G_OBJECT_CLASS (nautilus_canvas_view_parent_class)->finalize (object);
-}
-
-static void
 nautilus_canvas_view_dispose (GObject *object)
 {
     NautilusCanvasView *canvas_view;
+    NautilusCanvasViewPrivate *priv;
 
     canvas_view = NAUTILUS_CANVAS_VIEW (object);
-    canvas_view->details->destroyed = TRUE;
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
+    priv->destroyed = TRUE;
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           default_sort_order_changed_callback,
@@ -1969,7 +2001,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     oclass = G_OBJECT_CLASS (klass);
 
     oclass->set_property = nautilus_canvas_view_set_property;
-    oclass->finalize = nautilus_canvas_view_finalize;
     oclass->dispose = nautilus_canvas_view_dispose;
 
     GTK_WIDGET_CLASS (klass)->destroy = nautilus_canvas_view_destroy;
@@ -2041,13 +2072,15 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
 static void
 nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 {
+    NautilusCanvasViewPrivate *priv;
     NautilusCanvasContainer *canvas_container;
     GActionGroup *view_action_group;
     GtkClipboard *clipboard;
 
-    canvas_view->details = g_new0 (NautilusCanvasViewDetails, 1);
-    canvas_view->details->sort = &sort_criteria[0];
-    canvas_view->details->destroyed = FALSE;
+    priv = nautilus_canvas_view_get_instance_private (canvas_view);
+
+    priv->sort = &sort_criteria[0];
+    priv->destroyed = FALSE;
 
     canvas_container = create_canvas_container (canvas_view);
     initialize_canvas_container (canvas_view, canvas_container);

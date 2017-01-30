@@ -28,36 +28,18 @@
 #include "nautilus-files-view.h"
 #include "nautilus-canvas-container.h"
 
-typedef struct NautilusCanvasView NautilusCanvasView;
-typedef struct NautilusCanvasViewClass NautilusCanvasViewClass;
+G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_CANVAS_VIEW nautilus_canvas_view_get_type()
-#define NAUTILUS_CANVAS_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_CANVAS_VIEW, NautilusCanvasView))
-#define NAUTILUS_CANVAS_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_CANVAS_VIEW, NautilusCanvasViewClass))
-#define NAUTILUS_IS_CANVAS_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_CANVAS_VIEW))
-#define NAUTILUS_IS_CANVAS_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_CANVAS_VIEW))
-#define NAUTILUS_CANVAS_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CANVAS_VIEW, NautilusCanvasViewClass))
 
-typedef struct NautilusCanvasViewDetails NautilusCanvasViewDetails;
+G_DECLARE_DERIVABLE_TYPE (NautilusCanvasView, nautilus_canvas_view, NAUTILUS, CANVAS_VIEW, NautilusFilesView)
 
-struct NautilusCanvasView {
-	NautilusFilesView parent;
-	NautilusCanvasViewDetails *details;
-};
-
-struct NautilusCanvasViewClass {
+struct _NautilusCanvasViewClass {
 	NautilusFilesViewClass parent_class;
 
         NautilusCanvasContainer * (* create_canvas_container) (NautilusCanvasView *canvas_view);
 };
 
-/* GObject support */
-GType   nautilus_canvas_view_get_type      (void);
 int     nautilus_canvas_view_compare_files (NautilusCanvasView   *canvas_view,
 					  NautilusFile *a,
 					  NautilusFile *b);
@@ -68,5 +50,7 @@ void    nautilus_canvas_view_clean_up_by_name (NautilusCanvasView *canvas_view);
 NautilusFilesView * nautilus_canvas_view_new (NautilusWindowSlot *slot);
 
 NautilusCanvasContainer * nautilus_canvas_view_get_canvas_container (NautilusCanvasView *view);
+
+G_END_DECLS
 
 #endif /* NAUTILUS_CANVAS_VIEW_H */
