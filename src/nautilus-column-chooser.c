@@ -28,8 +28,10 @@
 
 #include "nautilus-column-utilities.h"
 
-struct _NautilusColumnChooserDetails
+struct _NautilusColumnChooser
 {
+    GtkBox parent;
+
     GtkTreeView *view;
     GtkListStore *store;
 
@@ -64,7 +66,6 @@ enum
 };
 static guint signals[LAST_SIGNAL];
 
-
 G_DEFINE_TYPE (NautilusColumnChooser, nautilus_column_chooser, GTK_TYPE_BOX);
 
 static void nautilus_column_chooser_constructed (GObject *object);
@@ -83,7 +84,7 @@ nautilus_column_chooser_set_property (GObject      *object,
     {
         case PROP_FILE:
         {
-            chooser->details->file = g_value_get_object (value);
+            chooser->file = g_value_get_object (value);
         }
         break;
 
@@ -109,9 +110,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                            ("changed",
                            G_TYPE_FROM_CLASS (chooser_class),
                            G_SIGNAL_RUN_LAST,
-                           G_STRUCT_OFFSET (NautilusColumnChooserClass,
-                                            changed),
-                           NULL, NULL,
+                           0, NULL, NULL,
                            g_cclosure_marshal_VOID__VOID,
                            G_TYPE_NONE, 0);
 
@@ -119,9 +118,7 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                                ("use-default",
                                G_TYPE_FROM_CLASS (chooser_class),
                                G_SIGNAL_RUN_LAST,
-                               G_STRUCT_OFFSET (NautilusColumnChooserClass,
-                                                use_default),
-                               NULL, NULL,
+                               0, NULL, NULL,
                                g_cclosure_marshal_VOID__VOID,
                                G_TYPE_NONE, 0);
 
@@ -134,7 +131,6 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                                                           G_PARAM_CONSTRUCT_ONLY |
                                                           G_PARAM_WRITABLE));
 
-    g_type_class_add_private (chooser_class, sizeof (NautilusColumnChooserDetails));
 }
 
 static void
@@ -143,7 +139,7 @@ update_buttons (NautilusColumnChooser *chooser)
     GtkTreeSelection *selection;
     GtkTreeIter iter;
 
-    selection = gtk_tree_view_get_selection (chooser->details->view);
+    selection = gtk_tree_view_get_selection (chooser->view);
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
@@ -153,12 +149,12 @@ update_buttons (NautilusColumnChooser *chooser)
         GtkTreePath *first;
         GtkTreePath *path;
 
-        gtk_tree_model_get (GTK_TREE_MODEL (chooser->details->store),
+        gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
                             &iter,
                             COLUMN_VISIBLE, &visible,
                             -1);
 
-        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->details->store),
+        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->store),
                                         &iter);
         first = gtk_tree_path_new_first ();
 
@@ -167,19 +163,19 @@ update_buttons (NautilusColumnChooser *chooser)
         gtk_tree_path_free (path);
         gtk_tree_path_free (first);
 
-        bottom = !gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store),
+        bottom = !gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store),
                                             &iter);
 
-        gtk_widget_set_sensitive (chooser->details->move_up_button,
+        gtk_widget_set_sensitive (chooser->move_up_button,
                                   !top);
-        gtk_widget_set_sensitive (chooser->details->move_down_button,
+        gtk_widget_set_sensitive (chooser->move_down_button,
                                   !bottom);
     }
     else
     {
-        gtk_widget_set_sensitive (chooser->details->move_up_button,
+        gtk_widget_set_sensitive (chooser->move_up_button,
                                   FALSE);
-        gtk_widget_set_sensitive (chooser->details->move_down_button,
+        gtk_widget_set_sensitive (chooser->move_down_button,
                                   FALSE);
     }
 }
@@ -198,11 +194,11 @@ toggle_path (NautilusColumnChooser *chooser,
     GtkTreeIter iter;
     gboolean visible;
 
-    gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->details->store),
+    gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store),
                              &iter, path);
-    gtk_tree_model_get (GTK_TREE_MODEL (chooser->details->store),
+    gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
                         &iter, COLUMN_VISIBLE, &visible, -1);
-    gtk_list_store_set (chooser->details->store,
+    gtk_list_store_set (chooser->store,
                         &iter, COLUMN_VISIBLE, !visible, -1);
     list_changed (chooser);
 }
@@ -301,8 +297,8 @@ add_tree_view (NautilusColumnChooser *chooser)
                                                  "sensitive", COLUMN_SENSITIVE,
                                                  NULL);
 
-    chooser->details->view = GTK_TREE_VIEW (view);
-    chooser->details->store = store;
+    chooser->view = GTK_TREE_VIEW (view);
+    chooser->store = store;
 
     gtk_widget_show (view);
 
@@ -315,7 +311,7 @@ add_tree_view (NautilusColumnChooser *chooser)
     gtk_widget_show (GTK_WIDGET (scrolled));
 
     gtk_container_add (GTK_CONTAINER (scrolled), view);
-    gtk_box_pack_start (GTK_BOX (chooser->details->main_box), scrolled, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (chooser->main_box), scrolled, TRUE, TRUE, 0);
 }
 
 static void
@@ -328,18 +324,18 @@ move_up_clicked_callback (GtkWidget *button,
 
     chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
 
-    selection = gtk_tree_view_get_selection (chooser->details->view);
+    selection = gtk_tree_view_get_selection (chooser->view);
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
         GtkTreePath *path;
         GtkTreeIter prev;
 
-        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->details->store), &iter);
+        path = gtk_tree_model_get_path (GTK_TREE_MODEL (chooser->store), &iter);
         gtk_tree_path_prev (path);
-        if (gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->details->store), &prev, path))
+        if (gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store), &prev, path))
         {
-            gtk_list_store_move_before (chooser->details->store,
+            gtk_list_store_move_before (chooser->store,
                                         &iter,
                                         &prev);
         }
@@ -359,7 +355,7 @@ move_down_clicked_callback (GtkWidget *button,
 
     chooser = NAUTILUS_COLUMN_CHOOSER (user_data);
 
-    selection = gtk_tree_view_get_selection (chooser->details->view);
+    selection = gtk_tree_view_get_selection (chooser->view);
 
     if (gtk_tree_selection_get_selected (selection, NULL, &iter))
     {
@@ -367,9 +363,9 @@ move_down_clicked_callback (GtkWidget *button,
 
         next = iter;
 
-        if (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &next))
+        if (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &next))
         {
-            gtk_list_store_move_after (chooser->details->store,
+            gtk_list_store_move_after (chooser->store,
                                        &iter,
                                        &next);
         }
@@ -399,7 +395,7 @@ add_buttons (NautilusColumnChooser *chooser)
 
     style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
     gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
-    gtk_box_pack_start (GTK_BOX (chooser->details->main_box), inline_toolbar,
+    gtk_box_pack_start (GTK_BOX (chooser->main_box), inline_toolbar,
                         FALSE, FALSE, 0);
 
     box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
@@ -407,21 +403,21 @@ add_buttons (NautilusColumnChooser *chooser)
     gtk_container_add (GTK_CONTAINER (tool_item), box);
     gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
 
-    chooser->details->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic",
-                                                                      GTK_ICON_SIZE_SMALL_TOOLBAR);
-    g_signal_connect (chooser->details->move_up_button,
+    chooser->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic",
+                                                             GTK_ICON_SIZE_SMALL_TOOLBAR);
+    g_signal_connect (chooser->move_up_button,
                       "clicked", G_CALLBACK (move_up_clicked_callback),
                       chooser);
-    gtk_widget_set_sensitive (chooser->details->move_up_button, FALSE);
-    gtk_container_add (GTK_CONTAINER (box), chooser->details->move_up_button);
+    gtk_widget_set_sensitive (chooser->move_up_button, FALSE);
+    gtk_container_add (GTK_CONTAINER (box), chooser->move_up_button);
 
-    chooser->details->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic",
-                                                                        GTK_ICON_SIZE_SMALL_TOOLBAR);
-    g_signal_connect (chooser->details->move_down_button,
+    chooser->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic",
+                                                               GTK_ICON_SIZE_SMALL_TOOLBAR);
+    g_signal_connect (chooser->move_down_button,
                       "clicked", G_CALLBACK (move_down_clicked_callback),
                       chooser);
-    gtk_widget_set_sensitive (chooser->details->move_down_button, FALSE);
-    gtk_container_add (GTK_CONTAINER (box), chooser->details->move_down_button);
+    gtk_widget_set_sensitive (chooser->move_down_button, FALSE);
+    gtk_container_add (GTK_CONTAINER (box), chooser->move_down_button);
 
     tool_item = gtk_separator_tool_item_new ();
     gtk_separator_tool_item_set_draw (GTK_SEPARATOR_TOOL_ITEM (tool_item), FALSE);
@@ -433,13 +429,13 @@ add_buttons (NautilusColumnChooser *chooser)
     gtk_container_add (GTK_CONTAINER (tool_item), box);
     gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
 
-    chooser->details->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
-    gtk_widget_set_tooltip_text (chooser->details->use_default_button,
+    chooser->use_default_button = gtk_button_new_with_mnemonic (_("Reset to De_fault"));
+    gtk_widget_set_tooltip_text (chooser->use_default_button,
                                  _("Replace the current List Columns settings with the default settings"));
-    g_signal_connect (chooser->details->use_default_button,
+    g_signal_connect (chooser->use_default_button,
                       "clicked", G_CALLBACK (use_default_clicked_callback),
                       chooser);
-    gtk_container_add (GTK_CONTAINER (box), chooser->details->use_default_button);
+    gtk_container_add (GTK_CONTAINER (box), chooser->use_default_button);
 
     gtk_widget_show_all (inline_toolbar);
 }
@@ -450,7 +446,7 @@ populate_tree (NautilusColumnChooser *chooser)
     GList *columns;
     GList *l;
 
-    columns = nautilus_get_columns_for_file (chooser->details->file);
+    columns = nautilus_get_columns_for_file (chooser->file);
 
     for (l = columns; l != NULL; l = l->next)
     {
@@ -473,8 +469,8 @@ populate_tree (NautilusColumnChooser *chooser)
             sensitive = FALSE;
         }
 
-        gtk_list_store_append (chooser->details->store, &iter);
-        gtk_list_store_set (chooser->details->store, &iter,
+        gtk_list_store_append (chooser->store, &iter);
+        gtk_list_store_set (chooser->store, &iter,
                             COLUMN_VISIBLE, visible,
                             COLUMN_LABEL, label,
                             COLUMN_NAME, name,
@@ -497,25 +493,23 @@ nautilus_column_chooser_constructed (GObject *object)
 
     populate_tree (chooser);
 
-    g_signal_connect (chooser->details->store, "row-deleted",
+    g_signal_connect (chooser->store, "row-deleted",
                       G_CALLBACK (row_deleted_callback), chooser);
 }
 
 static void
 nautilus_column_chooser_init (NautilusColumnChooser *chooser)
 {
-    chooser->details = G_TYPE_INSTANCE_GET_PRIVATE ((chooser), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooserDetails);
-
     g_object_set (G_OBJECT (chooser),
                   "homogeneous", FALSE,
                   "spacing", 8,
                   "orientation", GTK_ORIENTATION_HORIZONTAL,
                   NULL);
 
-    chooser->details->main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_set_hexpand (chooser->details->main_box, TRUE);
-    gtk_widget_show (chooser->details->main_box);
-    gtk_container_add (GTK_CONTAINER (chooser), chooser->details->main_box);
+    chooser->main_box = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_hexpand (chooser->main_box, TRUE);
+    gtk_widget_show (chooser->main_box);
+    gtk_container_add (GTK_CONTAINER (chooser), chooser->main_box);
 
     add_tree_view (chooser);
     add_buttons (chooser);
@@ -539,7 +533,7 @@ set_visible_columns (NautilusColumnChooser  *chooser,
                              visible_columns[i]);
     }
 
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->details->store),
+    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
                                        &iter))
     {
         do
@@ -547,20 +541,20 @@ set_visible_columns (NautilusColumnChooser  *chooser,
             char *name;
             gboolean visible;
 
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->details->store),
+            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
                                 &iter,
                                 COLUMN_NAME, &name,
                                 -1);
 
             visible = (g_hash_table_lookup (visible_columns_hash, name) != NULL);
 
-            gtk_list_store_set (chooser->details->store,
+            gtk_list_store_set (chooser->store,
                                 &iter,
                                 COLUMN_VISIBLE, visible,
                                 -1);
             g_free (name);
         }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &iter));
+        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &iter));
     }
 
     g_hash_table_destroy (visible_columns_hash);
@@ -574,14 +568,14 @@ get_column_names (NautilusColumnChooser *chooser,
     GtkTreeIter iter;
 
     ret = g_ptr_array_new ();
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->details->store),
+    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
                                        &iter))
     {
         do
         {
             char *name;
             gboolean visible;
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->details->store),
+            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
                                 &iter,
                                 COLUMN_VISIBLE, &visible,
                                 COLUMN_NAME, &name,
@@ -596,7 +590,7 @@ get_column_names (NautilusColumnChooser *chooser,
                 g_free (name);
             }
         }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), &iter));
+        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), &iter));
     }
     g_ptr_array_add (ret, NULL);
 
@@ -612,15 +606,14 @@ get_column_iter (NautilusColumnChooser *chooser,
 
     g_object_get (NAUTILUS_COLUMN (column), "name", &column_name, NULL);
 
-    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->details->store),
+    if (gtk_tree_model_get_iter_first (GTK_TREE_MODEL (chooser->store),
                                        iter))
     {
         do
         {
             char *name;
 
-
-            gtk_tree_model_get (GTK_TREE_MODEL (chooser->details->store),
+            gtk_tree_model_get (GTK_TREE_MODEL (chooser->store),
                                 iter,
                                 COLUMN_NAME, &name,
                                 -1);
@@ -633,7 +626,7 @@ get_column_iter (NautilusColumnChooser *chooser,
 
             g_free (name);
         }
-        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->details->store), iter));
+        while (gtk_tree_model_iter_next (GTK_TREE_MODEL (chooser->store), iter));
     }
     g_free (column_name);
     return FALSE;
@@ -647,10 +640,10 @@ set_column_order (NautilusColumnChooser  *chooser,
     GList *l;
     GtkTreePath *path;
 
-    columns = nautilus_get_columns_for_file (chooser->details->file);
+    columns = nautilus_get_columns_for_file (chooser->file);
     columns = nautilus_sort_columns (columns, column_order);
 
-    g_signal_handlers_block_by_func (chooser->details->store,
+    g_signal_handlers_block_by_func (chooser->store,
                                      G_CALLBACK (row_deleted_callback),
                                      chooser);
 
@@ -664,21 +657,21 @@ set_column_order (NautilusColumnChooser  *chooser,
             GtkTreeIter before;
             if (path)
             {
-                gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->details->store),
+                gtk_tree_model_get_iter (GTK_TREE_MODEL (chooser->store),
                                          &before, path);
-                gtk_list_store_move_after (chooser->details->store,
+                gtk_list_store_move_after (chooser->store,
                                            &iter, &before);
                 gtk_tree_path_next (path);
             }
             else
             {
-                gtk_list_store_move_after (chooser->details->store,
+                gtk_list_store_move_after (chooser->store,
                                            &iter, NULL);
             }
         }
     }
     gtk_tree_path_free (path);
-    g_signal_handlers_unblock_by_func (chooser->details->store,
+    g_signal_handlers_unblock_by_func (chooser->store,
                                        G_CALLBACK (row_deleted_callback),
                                        chooser);
 

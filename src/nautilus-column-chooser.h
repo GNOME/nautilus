@@ -27,33 +27,9 @@
 #include "nautilus-file.h"
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()
-#define NAUTILUS_COLUMN_CHOOSER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooser))
-#define NAUTILUS_COLUMN_CHOOSER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooserClass))
-#define NAUTILUS_IS_COLUMN_CHOOSER(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_COLUMN_CHOOSER))
-#define NAUTILUS_IS_COLUMN_CHOOSER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_COLUMN_CHOOSER))
-#define NAUTILUS_COLUMN_CHOOSER_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_COLUMN_CHOOSER, NautilusColumnChooserClass))
 
-typedef struct _NautilusColumnChooserDetails NautilusColumnChooserDetails;
+G_DECLARE_FINAL_TYPE (NautilusColumnChooser, nautilus_column_chooser, NAUTILUS, COLUMN_CHOOSER, GtkBox);
 
-typedef struct {
-	GtkBox parent;
-	
-	NautilusColumnChooserDetails *details;
-} NautilusColumnChooser;
-
-typedef struct {
-        GtkBoxClass parent_slot;
-
-	void (*changed) (NautilusColumnChooser *chooser);
-	void (*use_default) (NautilusColumnChooser *chooser);
-} NautilusColumnChooserClass;
-
-GType      nautilus_column_chooser_get_type            (void);
 GtkWidget *nautilus_column_chooser_new                 (NautilusFile *file);
 void       nautilus_column_chooser_set_settings    (NautilusColumnChooser   *chooser,
 						    char                   **visible_columns, 
