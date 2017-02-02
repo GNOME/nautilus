@@ -30,7 +30,7 @@
 #include <eel/eel-string.h>
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
-	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*"
+	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*"
 
 /* These are in the typical sort order. Known things come first, then
  * things where we can't know, finally things where we don't yet know.
@@ -205,6 +205,7 @@ struct NautilusFileDetails
         eel_ref_str     filesystem_type;
 
 	time_t trash_time; /* 0 is unknown */
+	time_t recency; /* 0 is unknown */
 
 	gdouble search_relevance;
 

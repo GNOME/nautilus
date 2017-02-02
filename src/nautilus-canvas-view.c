@@ -176,6 +176,13 @@ static const SortCriterion sort_criteria[] =
         "search-relevance",
         TRUE,
         nautilus_file_is_in_search
+    },
+    {
+        NAUTILUS_FILE_SORT_BY_RECENCY,
+        NULL,
+        "recency",
+        TRUE,
+        nautilus_file_is_in_recent
     }
 };
 

@@ -147,6 +147,7 @@ static GQuark attribute_name_q,
               attribute_trashed_on_q,
               attribute_trashed_on_full_q,
               attribute_trash_orig_path_q,
+              attribute_recency_q,
               attribute_permissions_q,
               attribute_selinux_context_q,
               attribute_octal_permissions_q,
@@ -531,6 +532,7 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->mtime = 0;
     file->details->atime = 0;
     file->details->trash_time = 0;
+    file->details->recency = 0;
     g_free (file->details->symlink_name);
     file->details->symlink_name = NULL;
     eel_ref_str_unref (file->details->mime_type);
@@ -2634,6 +2636,7 @@ update_info_internal (NautilusFile *file,
     int sort_order;
     time_t atime, mtime;
     time_t trash_time;
+    time_t recency;
     GTimeVal g_trash_time;
     const char *time_string;
     const char *symlink_name, *mime_type, *selinux_context, *name, *thumbnail_path;
@@ -3063,6 +3066,13 @@ update_info_internal (NautilusFile *file,
         file->details->trash_time = trash_time;
     }
 
+    recency = g_file_info_get_attribute_int64 (info, G_FILE_ATTRIBUTE_RECENT_MODIFIED);
+    if (file->details->recency != recency)
+    {
+        changed = TRUE;
+        file->details->recency = recency;
+    }
+
     trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
     if (g_strcmp0 (file->details->trash_orig_path, trash_orig_path) != 0)
     {
@@ -3344,6 +3354,12 @@ get_time (NautilusFile     *file,
         case NAUTILUS_DATE_TYPE_TRASHED:
         {
             time = file->details->trash_time;
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_RECENCY:
+        {
+            time = file->details->recency;
         }
         break;
 
@@ -3890,6 +3906,16 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
+            case NAUTILUS_FILE_SORT_BY_RECENCY:
+            {
+                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_RECENCY);
+                if (result == 0)
+                {
+                    result = compare_by_full_path (file_1, file_2);
+                }
+            }
+            break;
+
             default:
                 g_return_val_if_reached (0);
         }
@@ -3966,6 +3992,13 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
+                                               directories_first,
+                                               reversed);
+    }
+    else if (attribute == attribute_recency_q)
+    {
+        return nautilus_file_compare_for_sort (file_1, file_2,
+                                               NAUTILUS_FILE_SORT_BY_RECENCY,
                                                directories_first,
                                                reversed);
     }
@@ -5541,7 +5574,8 @@ nautilus_file_get_date (NautilusFile     *file,
 
     g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_ACCESSED
                           || date_type == NAUTILUS_DATE_TYPE_MODIFIED
-                          || date_type == NAUTILUS_DATE_TYPE_TRASHED,
+                          || date_type == NAUTILUS_DATE_TYPE_TRASHED
+                          || date_type == NAUTILUS_DATE_TYPE_RECENCY,
                           FALSE);
 
     if (file == NULL)
@@ -7280,7 +7314,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * "deep_file_count", "deep_total_count", "date_modified", "date_accessed",
  * "date_modified_full", "date_accessed_full",
  * "owner", "group", "permissions", "octal_permissions", "uri", "where",
- * "link_target", "volume", "free_space", "selinux_context", "trashed_on", "trashed_on_full", "trashed_orig_path"
+ * "link_target", "volume", "free_space", "selinux_context", "trashed_on", "trashed_on_full", "trashed_orig_path",
+ * "recency"
  *
  * Returns: Newly allocated string ready to display to the user, or NULL
  * if the value is unknown or @attribute_name is not supported.
@@ -7377,6 +7412,12 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
         return nautilus_file_get_date_as_string (file,
                                                  NAUTILUS_DATE_TYPE_TRASHED,
                                                  NAUTILUS_DATE_FORMAT_FULL);
+    }
+    if (attribute_q == attribute_recency_q)
+    {
+        return nautilus_file_get_date_as_string (file,
+                                                 NAUTILUS_DATE_TYPE_RECENCY,
+                                                 NAUTILUS_DATE_FORMAT_REGULAR);
     }
     if (attribute_q == attribute_permissions_q)
     {
@@ -7531,6 +7572,11 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
         /* If n/a */
         return g_strdup ("");
     }
+    if (attribute_q == attribute_recency_q)
+    {
+        /* If n/a */
+        return g_strdup ("");
+    }
 
     /* Fallback, use for both unknown attributes and attributes
      * for which we have no more appropriate default.
@@ -7556,7 +7602,8 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
         attribute_q == attribute_date_accessed_q ||
         attribute_q == attribute_date_accessed_full_q ||
         attribute_q == attribute_trashed_on_q ||
-        attribute_q == attribute_trashed_on_full_q)
+        attribute_q == attribute_trashed_on_full_q ||
+        attribute_q == attribute_recency_q)
     {
         return TRUE;
     }
@@ -8961,7 +9008,7 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     {
         if (is_recent)
         {
-            retval = NAUTILUS_FILE_SORT_BY_ATIME;
+            retval = NAUTILUS_FILE_SORT_BY_RECENCY;
         }
         else if (is_download)
         {
@@ -8998,7 +9045,11 @@ nautilus_file_get_default_sort_attribute (NautilusFile *file,
 
     if (res)
     {
-        if (is_recent || is_download)
+        if (is_recent)
+        {
+            retval = g_quark_to_string (attribute_recency_q);
+        }
+        else if (is_download)
         {
             retval = g_quark_to_string (attribute_date_modified_q);
         }
@@ -9259,6 +9310,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_date_modified_q = g_quark_from_static_string ("date_modified");
     attribute_date_modified_full_q = g_quark_from_static_string ("date_modified_full");
     attribute_date_modified_with_time_q = g_quark_from_static_string ("date_modified_with_time");
+    attribute_recency_q = g_quark_from_static_string ("recency");
     attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
     attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
     attribute_date_accessed_full_q = g_quark_from_static_string ("date_accessed_full");

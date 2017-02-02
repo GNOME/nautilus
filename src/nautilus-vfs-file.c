@@ -337,6 +337,18 @@ vfs_file_get_date (NautilusFile     *file,
                 *date = file->details->trash_time;
             }
             return TRUE;
+
+        case NAUTILUS_DATE_TYPE_RECENCY:
+            /* Before we have info on a file, the date is unknown. */
+            if (file->details->recency == 0)
+            {
+                return FALSE;
+            }
+            if (date != NULL)
+            {
+                *date = file->details->recency;
+            }
+            return TRUE;
     }
     return FALSE;
 }

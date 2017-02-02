@@ -58,7 +58,8 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_MTIME,
         NAUTILUS_FILE_SORT_BY_ATIME,
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
-	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE
+	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
+	NAUTILUS_FILE_SORT_BY_RECENCY
 } NautilusFileSortType;	
 
 typedef enum {
@@ -527,7 +528,8 @@ struct NautilusFile {
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
 	NAUTILUS_DATE_TYPE_ACCESSED,
-	NAUTILUS_DATE_TYPE_TRASHED
+	NAUTILUS_DATE_TYPE_TRASHED,
+	NAUTILUS_DATE_TYPE_RECENCY
 } NautilusDateType;
 
 gboolean                nautilus_file_get_date                          (NautilusFile                   *file,
