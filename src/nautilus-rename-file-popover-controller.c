@@ -125,6 +125,62 @@ nautilus_rename_file_popover_controller_ignore_existing_file (NautilusFileNameWi
     return nautilus_file_compare_display_name (self->target_file, display_name) == 0;
 }
 
+/* Albeit a misnomer, this only handles presses of the F2 key.
+ * This is to restore functionality, lost in the introduction of the popover,
+ * where pressing F2 while renaming would select all text.
+ * The bug reporter also requested switching between selecting the name
+ * and the name with extension.
+ *
+ * See https://bugzilla.gnome.org/show_bug.cgi?id=774361
+ */
+static gboolean
+name_entry_on_key_pressed (GtkWidget *widget,
+                           GdkEvent  *event,
+                           gpointer   user_data)
+{
+    GdkEventKey *key_event;
+    NautilusRenameFilePopoverController *self;
+    guint text_length;
+    gint start_pos;
+    gint end_pos;
+    gboolean all_selected;
+
+    key_event = (GdkEventKey *)event;
+    if (key_event->keyval != GDK_KEY_F2)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
+    text_length = (guint)gtk_entry_get_text_length (GTK_ENTRY (widget));
+    if (text_length == 0)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    gtk_editable_get_selection_bounds (GTK_EDITABLE (widget),
+                                       &start_pos, &end_pos);
+
+    all_selected = (start_pos == 0) && ((guint)end_pos == text_length);
+    if (!all_selected || !nautilus_file_is_regular_file (self->target_file))
+    {
+        gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
+    }
+    else
+    {
+        gint start_offset;
+        gint end_offset;
+
+        /* Select the name part without the file extension */
+        eel_filename_get_rename_region (gtk_entry_get_text (GTK_ENTRY (widget)),
+                                        &start_offset, &end_offset);
+        gtk_editable_select_region (GTK_EDITABLE (widget),
+                                    start_offset, end_offset);
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
 NautilusRenameFilePopoverController *
 nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
                                              GdkRectangle *pointing_to,
@@ -184,6 +240,11 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
                       "unmap",
                       (GCallback) gtk_widget_destroy,
                       NULL);
+
+    g_signal_connect (name_entry,
+                      "key-press-event",
+                      G_CALLBACK (name_entry_on_key_pressed),
+                      self);
 
     gtk_label_set_text (GTK_LABEL (name_label),
                         self->target_is_folder ? _("Folder name") :
