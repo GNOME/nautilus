@@ -30,6 +30,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-link.h"
 #include "nautilus-profile.h"
+#include "nautilus-metadata.h"
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
@@ -3580,13 +3581,17 @@ is_link_trusted (NautilusFile *file,
 {
     GFile *location;
     gboolean res;
+    g_autofree gchar* trusted = NULL;
 
     if (!is_launcher)
     {
         return TRUE;
     }
 
-    if (nautilus_file_can_execute (file))
+    trusted = nautilus_file_get_metadata (file,
+                                          NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED,
+                                          NULL);
+    if (nautilus_file_can_execute (file) && trusted != NULL)
     {
         return TRUE;
     }

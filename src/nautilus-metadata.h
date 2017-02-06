@@ -67,6 +67,8 @@
 #define NAUTILUS_METADATA_KEY_SCREEN				"screen"
 #define NAUTILUS_METADATA_KEY_EMBLEMS				"emblems"
 
+#define NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED				"trusted"
+
 guint nautilus_metadata_get_id (const char *metadata);
 
 #endif /* NAUTILUS_METADATA_H */

@@ -42,6 +42,7 @@
 #include "nautilus-program-choosing.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-signaller.h"
+#include "nautilus-metadata.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_MIME
 #include "nautilus-debug.h"
@@ -221,7 +222,6 @@ struct
 #define RESPONSE_RUN 1000
 #define RESPONSE_DISPLAY 1001
 #define RESPONSE_RUN_IN_TERMINAL 1002
-#define RESPONSE_MARK_TRUSTED 1003
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 #define SILENT_OPEN_LIMIT 5
@@ -1517,24 +1517,35 @@ untrusted_launcher_response_callback (GtkDialog                 *dialog,
 
     switch (response_id)
     {
-        case RESPONSE_RUN:
+        case GTK_RESPONSE_OK:
         {
+            file = nautilus_file_get_location (parameters->file);
+
+            /* We need to do this in order to prevent malicious desktop files
+             * with the executable bit already set.
+             * See https://bugzilla.gnome.org/show_bug.cgi?id=777991
+             */
+            nautilus_file_set_metadata (parameters->file, NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED,
+                                        NULL,
+                                        "yes");
+
+            nautilus_file_mark_desktop_file_executable (file,
+                                                        parameters->parent_window,
+                                                        TRUE,
+                                                        NULL, NULL);
+
+            /* Need to force a reload of the attributes so is_trusted is marked
+             * correctly. Not sure why the general monitor doesn't fire in this
+             * case when setting the metadata
+             */
+            nautilus_file_invalidate_all_attributes (parameters->file);
+
             screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
             uri = nautilus_file_get_uri (parameters->file);
             DEBUG ("Launching untrusted launcher %s", uri);
             nautilus_launch_desktop_file (screen, uri, NULL,
                                           parameters->parent_window);
             g_free (uri);
-        }
-        break;
-
-        case RESPONSE_MARK_TRUSTED:
-        {
-            file = nautilus_file_get_location (parameters->file);
-            nautilus_file_mark_desktop_file_trusted (file,
-                                                     parameters->parent_window,
-                                                     TRUE,
-                                                     NULL, NULL);
             g_object_unref (file);
         }
         break;
@@ -1590,17 +1601,16 @@ activate_desktop_file (ActivateParameters *parameters,
                       "text", primary,
                       "secondary-text", secondary,
                       NULL);
+
         gtk_dialog_add_button (GTK_DIALOG (dialog),
-                               _("_Launch Anyway"), RESPONSE_RUN);
+                               _("_Cancel"), GTK_RESPONSE_CANCEL);
+
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
         if (nautilus_file_can_set_permissions (file))
         {
             gtk_dialog_add_button (GTK_DIALOG (dialog),
-                                   _("Mark as _Trusted"), RESPONSE_MARK_TRUSTED);
+                                   _("Trust and _Launch"), GTK_RESPONSE_OK);
         }
-        gtk_dialog_add_button (GTK_DIALOG (dialog),
-                               _("_Cancel"), GTK_RESPONSE_CANCEL);
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
-
         g_signal_connect (dialog, "response",
                           G_CALLBACK (untrusted_launcher_response_callback),
                           parameters_desktop);

@@ -235,10 +235,10 @@ typedef struct
 #define COPY_FORCE _("Copy _Anyway")
 
 static void
-mark_desktop_file_trusted (CommonJob    *common,
-                           GCancellable *cancellable,
-                           GFile        *file,
-                           gboolean      interactive);
+mark_desktop_file_executable (CommonJob    *common,
+                              GCancellable *cancellable,
+                              GFile        *file,
+                              gboolean      interactive);
 
 static gboolean
 is_all_button_text (const char *button_text)
@@ -5290,10 +5290,10 @@ retry:
             g_file_equal (copy_job->desktop_location, dest_dir) &&
             is_trusted_desktop_file (src, job->cancellable))
         {
-            mark_desktop_file_trusted (job,
-                                       job->cancellable,
-                                       dest,
-                                       FALSE);
+            mark_desktop_file_executable (job,
+                                          job->cancellable,
+                                          dest,
+                                          FALSE);
         }
 
         if (job->undo_info != NULL)
@@ -7887,9 +7887,9 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 }
 
 static void
-mark_trusted_task_done (GObject      *source_object,
-                        GAsyncResult *res,
-                        gpointer      user_data)
+mark_desktop_file_executable_task_done (GObject      *source_object,
+                                        GAsyncResult *res,
+                                        gpointer      user_data)
 {
     MarkTrustedJob *job = user_data;
 
@@ -7907,110 +7907,19 @@ mark_trusted_task_done (GObject      *source_object,
 #define TRUSTED_SHEBANG "#!/usr/bin/env xdg-open\n"
 
 static void
-mark_desktop_file_trusted (CommonJob    *common,
-                           GCancellable *cancellable,
-                           GFile        *file,
-                           gboolean      interactive)
+mark_desktop_file_executable (CommonJob    *common,
+                              GCancellable *cancellable,
+                              GFile        *file,
+                              gboolean      interactive)
 {
-    char *contents, *new_contents;
-    gsize length, new_length;
     GError *error;
     guint32 current_perms, new_perms;
     int response;
     GFileInfo *info;
 
 retry:
+
     error = NULL;
-    if (!g_file_load_contents (file,
-                               cancellable,
-                               &contents, &length,
-                               NULL, &error))
-    {
-        if (interactive)
-        {
-            response = run_error (common,
-                                  g_strdup (_("Unable to mark launcher trusted (executable)")),
-                                  error->message,
-                                  NULL,
-                                  FALSE,
-                                  CANCEL, RETRY,
-                                  NULL);
-        }
-        else
-        {
-            response = 0;
-        }
-
-
-        if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
-        {
-            abort_job (common);
-        }
-        else if (response == 1)
-        {
-            goto retry;
-        }
-        else
-        {
-            g_assert_not_reached ();
-        }
-
-        goto out;
-    }
-
-    if (!g_str_has_prefix (contents, "#!"))
-    {
-        new_length = length + strlen (TRUSTED_SHEBANG);
-        new_contents = g_malloc (new_length);
-
-        strcpy (new_contents, TRUSTED_SHEBANG);
-        memcpy (new_contents + strlen (TRUSTED_SHEBANG),
-                contents, length);
-
-        if (!g_file_replace_contents (file,
-                                      new_contents,
-                                      new_length,
-                                      NULL,
-                                      FALSE, 0,
-                                      NULL, cancellable, &error))
-        {
-            g_free (contents);
-            g_free (new_contents);
-
-            if (interactive)
-            {
-                response = run_error (common,
-                                      g_strdup (_("Unable to mark launcher trusted (executable)")),
-                                      error->message,
-                                      NULL,
-                                      FALSE,
-                                      CANCEL, RETRY,
-                                      NULL);
-            }
-            else
-            {
-                response = 0;
-            }
-
-            if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
-            {
-                abort_job (common);
-            }
-            else if (response == 1)
-            {
-                goto retry;
-            }
-            else
-            {
-                g_assert_not_reached ();
-            }
-
-            goto out;
-        }
-        g_free (new_contents);
-    }
-    g_free (contents);
-
     info = g_file_query_info (file,
                               G_FILE_ATTRIBUTE_STANDARD_TYPE ","
                               G_FILE_ATTRIBUTE_UNIX_MODE,
@@ -8101,10 +8010,10 @@ out:
 }
 
 static void
-mark_trusted_task_thread_func (GTask        *task,
-                               gpointer      source_object,
-                               gpointer      task_data,
-                               GCancellable *cancellable)
+mark_desktop_file_executable_task_thread_func (GTask        *task,
+                                               gpointer      source_object,
+                                               gpointer      task_data,
+                                               GCancellable *cancellable)
 {
     MarkTrustedJob *job = task_data;
     CommonJob *common;
@@ -8113,18 +8022,18 @@ mark_trusted_task_thread_func (GTask        *task,
 
     nautilus_progress_info_start (job->common.progress);
 
-    mark_desktop_file_trusted (common,
-                               cancellable,
-                               job->file,
-                               job->interactive);
+    mark_desktop_file_executable (common,
+                                  cancellable,
+                                  job->file,
+                                  job->interactive);
 }
 
 void
-nautilus_file_mark_desktop_file_trusted (GFile              *file,
-                                         GtkWindow          *parent_window,
-                                         gboolean            interactive,
-                                         NautilusOpCallback  done_callback,
-                                         gpointer            done_callback_data)
+nautilus_file_mark_desktop_file_executable (GFile              *file,
+                                            GtkWindow          *parent_window,
+                                            gboolean            interactive,
+                                            NautilusOpCallback  done_callback,
+                                            gpointer            done_callback_data)
 {
     GTask *task;
     MarkTrustedJob *job;
@@ -8135,9 +8044,9 @@ nautilus_file_mark_desktop_file_trusted (GFile              *file,
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
 
-    task = g_task_new (NULL, NULL, mark_trusted_task_done, job);
+    task = g_task_new (NULL, NULL, mark_desktop_file_executable_task_done, job);
     g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, mark_trusted_task_thread_func);
+    g_task_run_in_thread (task, mark_desktop_file_executable_task_thread_func);
     g_object_unref (task);
 }
 
