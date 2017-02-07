@@ -36,7 +36,6 @@
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>
-#include <eel/eel-stock-dialogs.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
@@ -45,6 +44,7 @@
 #include "nautilus-monitor.h"
 #include "nautilus-profile.h"
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
+#include "nautilus-ui-utilities.h"
 
 enum
 {
@@ -1434,7 +1434,8 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         detail_message = g_strdup_printf (_("Unhandled error message: %s"), error->message);
     }
 
-    eel_show_error_dialog (error_message, detail_message, GTK_WINDOW (window));
+    show_error_dialog (error_message, detail_message, GTK_WINDOW (window));
+
 done:
     g_free (error_message);
     g_free (detail_message);
