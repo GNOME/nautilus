@@ -29,9 +29,10 @@
 #include "nautilus-file-utilities.h"
 #include <eel/eel-vfs-extensions.h>
 
-struct NautilusEmptyViewDetails
+struct _NautilusEmptyView
 {
-    int number_of_files;
+	NautilusFilesView parent_instance;
+	int number_of_files;
 };
 
 static GList *nautilus_empty_view_get_selection (NautilusFilesView *view);
@@ -48,7 +49,7 @@ nautilus_empty_view_add_file (NautilusFilesView *view,
 {
     static GTimer *timer = NULL;
     static gdouble cumu = 0, elaps;
-    NAUTILUS_EMPTY_VIEW (view)->details->number_of_files++;
+    NAUTILUS_EMPTY_VIEW (view)->number_of_files++;
     GdkPixbuf *icon;
 
     if (!timer)
@@ -103,7 +104,7 @@ nautilus_empty_view_get_selection_for_file_transfer (NautilusFilesView *view)
 static gboolean
 nautilus_empty_view_is_empty (NautilusFilesView *view)
 {
-    return NAUTILUS_EMPTY_VIEW (view)->details->number_of_files == 0;
+    return NAUTILUS_EMPTY_VIEW (view)->number_of_files == 0;
 }
 
 static void
@@ -116,8 +117,8 @@ nautilus_empty_view_remove_file (NautilusFilesView *view,
                                  NautilusFile      *file,
                                  NautilusDirectory *directory)
 {
-    NAUTILUS_EMPTY_VIEW (view)->details->number_of_files--;
-    g_assert (NAUTILUS_EMPTY_VIEW (view)->details->number_of_files >= 0);
+    NAUTILUS_EMPTY_VIEW (view)->number_of_files--;
+    g_assert (NAUTILUS_EMPTY_VIEW (view)->number_of_files >= 0);
 }
 
 static void
@@ -254,8 +255,6 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 {
     NautilusFilesViewClass *nautilus_files_view_class;
 
-    g_type_class_add_private (class, sizeof (NautilusEmptyViewDetails));
-
     nautilus_files_view_class = NAUTILUS_FILES_VIEW_CLASS (class);
 
     nautilus_files_view_class->add_file = nautilus_empty_view_add_file;
@@ -292,8 +291,7 @@ nautilus_empty_view_class_init (NautilusEmptyViewClass *class)
 static void
 nautilus_empty_view_init (NautilusEmptyView *empty_view)
 {
-    empty_view->details = G_TYPE_INSTANCE_GET_PRIVATE (empty_view, NAUTILUS_TYPE_EMPTY_VIEW,
-                                                       NautilusEmptyViewDetails);
+    empty_view->number_of_files = 0;
 }
 
 NautilusFilesView *

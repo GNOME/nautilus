@@ -26,29 +26,8 @@
 #include "nautilus-files-view.h"
 
 #define NAUTILUS_TYPE_EMPTY_VIEW nautilus_empty_view_get_type()
-#define NAUTILUS_EMPTY_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyView))
-#define NAUTILUS_EMPTY_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyViewClass))
-#define NAUTILUS_IS_EMPTY_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_EMPTY_VIEW))
-#define NAUTILUS_IS_EMPTY_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_EMPTY_VIEW))
-#define NAUTILUS_EMPTY_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_EMPTY_VIEW, NautilusEmptyViewClass))
+G_DECLARE_FINAL_TYPE (NautilusEmptyView, nautilus_empty_view, NAUTILUS, EMPTY_VIEW, NautilusFilesView)
 
-typedef struct NautilusEmptyViewDetails NautilusEmptyViewDetails;
-
-typedef struct {
-	NautilusFilesView parent_instance;
-	NautilusEmptyViewDetails *details;
-} NautilusEmptyView;
-
-typedef struct {
-	NautilusFilesViewClass parent_class;
-} NautilusEmptyViewClass;
-
-GType nautilus_empty_view_get_type (void);
 NautilusFilesView * nautilus_empty_view_new (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_EMPTY_VIEW_H */
