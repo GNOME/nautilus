@@ -41,7 +41,6 @@
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -1067,7 +1066,7 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
-    eel_show_error_dialog (primary, secondary, GTK_WINDOW (window));
+    show_error_dialog (primary, secondary, GTK_WINDOW (window));
 }
 
 static void
