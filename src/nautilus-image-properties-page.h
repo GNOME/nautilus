@@ -24,29 +24,9 @@
 #include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE nautilus_image_properties_page_get_type()
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE, NautilusImagePropertiesPage))
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE, NautilusImagePropertiesPageClass))
-#define NAUTILUS_IS_IMAGE_PROPERTIES_PAGE(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE))
-#define NAUTILUS_IS_IMAGE_PROPERTIES_PAGE_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE))
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE, NautilusImagePropertiesPageClass))
+G_DECLARE_FINAL_TYPE (NautilusImagePropertiesPage, nautilus_image_properties_page, NAUTILUS, IMAGE_PROPERTIES_PAGE, GtkBox)
 
-typedef struct NautilusImagePropertiesPageDetails NautilusImagePropertiesPageDetails;
 
-typedef struct {
-	GtkBox parent;
-	NautilusImagePropertiesPageDetails *details;
-} NautilusImagePropertiesPage;
-
-typedef struct {
-	GtkBoxClass parent;
-} NautilusImagePropertiesPageClass;
-
-GType nautilus_image_properties_page_get_type (void);
 void  nautilus_image_properties_page_register (void);
 
 #endif /* NAUTILUS_IMAGE_PROPERTIES_PAGE_H */

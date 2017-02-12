@@ -42,8 +42,9 @@
 
 #define LOAD_BUFFER_SIZE 8192
 
-struct NautilusImagePropertiesPageDetails
+struct _NautilusImagePropertiesPage
 {
+    GtkBox parent;
     GCancellable *cancellable;
     GtkWidget *grid;
     GdkPixbufLoader *loader;
@@ -102,11 +103,11 @@ nautilus_image_properties_page_finalize (GObject *object)
 
     page = NAUTILUS_IMAGE_PROPERTIES_PAGE (object);
 
-    if (page->details->cancellable)
+    if (page->cancellable)
     {
-        g_cancellable_cancel (page->details->cancellable);
-        g_object_unref (page->details->cancellable);
-        page->details->cancellable = NULL;
+        g_cancellable_cancel (page->cancellable);
+        g_object_unref (page->cancellable);
+        page->cancellable = NULL;
     }
 
     G_OBJECT_CLASS (nautilus_image_properties_page_parent_class)->finalize (object);
@@ -125,8 +126,8 @@ file_close_callback (GObject      *object,
 
     g_input_stream_close_finish (stream, res, NULL);
 
-    g_object_unref (page->details->cancellable);
-    page->details->cancellable = NULL;
+    g_object_unref (page->cancellable);
+    page->cancellable = NULL;
 }
 
 static void
@@ -145,7 +146,7 @@ append_item (NautilusImagePropertiesPage *page,
     pango_attr_list_unref (attrs);
     gtk_label_set_xalign (GTK_LABEL (name_label), 0);
     gtk_label_set_yalign (GTK_LABEL (name_label), 0);
-    gtk_container_add (GTK_CONTAINER (page->details->grid), name_label);
+    gtk_container_add (GTK_CONTAINER (page->grid), name_label);
     gtk_widget_show (name_label);
 
     if (value != NULL)
@@ -154,7 +155,7 @@ append_item (NautilusImagePropertiesPage *page,
         gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
         gtk_label_set_xalign (GTK_LABEL (label), 0);
         gtk_label_set_yalign (GTK_LABEL (label), 0);
-        gtk_grid_attach_next_to (GTK_GRID (page->details->grid), label,
+        gtk_grid_attach_next_to (GTK_GRID (page->grid), label,
                                  name_label, GTK_POS_RIGHT,
                                  1, 1);
         gtk_widget_show (label);
@@ -345,7 +346,7 @@ append_basic_info (NautilusImagePropertiesPage *page)
     char *desc;
     char *value;
 
-    format = gdk_pixbuf_loader_get_format (page->details->loader);
+    format = gdk_pixbuf_loader_get_format (page->loader);
 
     name = gdk_pixbuf_format_get_name (format);
     desc = gdk_pixbuf_format_get_description (format);
@@ -356,14 +357,14 @@ append_basic_info (NautilusImagePropertiesPage *page)
     g_free (value);
     value = g_strdup_printf (ngettext ("%d pixel",
                                        "%d pixels",
-                                       page->details->width),
-                             page->details->width);
+                                       page->width),
+                             page->width);
     append_item (page, _("Width"), value);
     g_free (value);
     value = g_strdup_printf (ngettext ("%d pixel",
                                        "%d pixels",
-                                       page->details->height),
-                             page->details->height);
+                                       page->height),
+                             page->height);
     append_item (page, _("Height"), value);
     g_free (value);
 }
@@ -373,7 +374,7 @@ append_options_info (NautilusImagePropertiesPage *page)
 {
     GdkPixbuf *pixbuf;
 
-    pixbuf = gdk_pixbuf_loader_get_pixbuf (page->details->loader);
+    pixbuf = gdk_pixbuf_loader_get_pixbuf (page->loader);
     if (pixbuf == NULL)
     {
         return;
@@ -406,7 +407,7 @@ append_exif_info (NautilusImagePropertiesPage *page)
 #ifdef HAVE_EXIF
     ExifData *exifdata;
 
-    exifdata = exif_loader_get_data (page->details->exifldr);
+    exifdata = exif_loader_get_data (page->exifldr);
     if (exifdata == NULL)
     {
         return;
@@ -444,17 +445,17 @@ static void
 append_xmp_info (NautilusImagePropertiesPage *page)
 {
 #ifdef HAVE_EXEMPI
-    if (page->details->xmp == NULL)
+    if (page->xmp == NULL)
     {
         return;
     }
 
-    append_xmp_value_pair (page, page->details->xmp, NS_IPTC4XMP, "Location", _("Location"));
-    append_xmp_value_pair (page, page->details->xmp, NS_DC, "description", _("Description"));
-    append_xmp_value_pair (page, page->details->xmp, NS_DC, "subject", _("Keywords"));
-    append_xmp_value_pair (page, page->details->xmp, NS_DC, "creator", _("Creator"));
-    append_xmp_value_pair (page, page->details->xmp, NS_DC, "rights", _("Copyright"));
-    append_xmp_value_pair (page, page->details->xmp, NS_XAP, "Rating", _("Rating"));
+    append_xmp_value_pair (page, page->xmp, NS_IPTC4XMP, "Location", _("Location"));
+    append_xmp_value_pair (page, page->xmp, NS_DC, "description", _("Description"));
+    append_xmp_value_pair (page, page->xmp, NS_DC, "subject", _("Keywords"));
+    append_xmp_value_pair (page, page->xmp, NS_DC, "creator", _("Creator"));
+    append_xmp_value_pair (page, page->xmp, NS_DC, "rights", _("Copyright"));
+    append_xmp_value_pair (page, page->xmp, NS_XAP, "Rating", _("Rating"));
     /* TODO add CC licenses */
 #endif /*HAVE EXEMPI*/
 }
@@ -464,15 +465,15 @@ load_finished (NautilusImagePropertiesPage *page)
 {
     GtkWidget *label;
 
-    label = gtk_grid_get_child_at (GTK_GRID (page->details->grid), 0, 0);
-    gtk_container_remove (GTK_CONTAINER (page->details->grid), label);
+    label = gtk_grid_get_child_at (GTK_GRID (page->grid), 0, 0);
+    gtk_container_remove (GTK_CONTAINER (page->grid), label);
 
-    if (page->details->loader != NULL)
+    if (page->loader != NULL)
     {
-        gdk_pixbuf_loader_close (page->details->loader, NULL);
+        gdk_pixbuf_loader_close (page->loader, NULL);
     }
 
-    if (page->details->got_size)
+    if (page->got_size)
     {
         append_basic_info (page);
         append_options_info (page);
@@ -484,23 +485,23 @@ load_finished (NautilusImagePropertiesPage *page)
         append_item (page, _("Failed to load image information"), NULL);
     }
 
-    if (page->details->loader != NULL)
+    if (page->loader != NULL)
     {
-        g_object_unref (page->details->loader);
-        page->details->loader = NULL;
+        g_object_unref (page->loader);
+        page->loader = NULL;
     }
 #ifdef HAVE_EXIF
-    if (page->details->exifldr != NULL)
+    if (page->exifldr != NULL)
     {
-        exif_loader_unref (page->details->exifldr);
-        page->details->exifldr = NULL;
+        exif_loader_unref (page->exifldr);
+        page->exifldr = NULL;
     }
 #endif /*HAVE_EXIF*/
 #ifdef HAVE_EXEMPI
-    if (page->details->xmp != NULL)
+    if (page->xmp != NULL)
     {
-        xmp_free (page->details->xmp);
-        page->details->xmp = NULL;
+        xmp_free (page->xmp);
+        page->xmp = NULL;
     }
 #endif
 }
@@ -526,35 +527,35 @@ file_read_callback (GObject      *object,
 
     if (count_read > 0)
     {
-        g_assert (count_read <= sizeof (page->details->buffer));
+        g_assert (count_read <= sizeof (page->buffer));
 
 #ifdef HAVE_EXIF
-        exif_still_loading = exif_loader_write (page->details->exifldr,
-                                                (guchar *) page->details->buffer,
+        exif_still_loading = exif_loader_write (page->exifldr,
+                                                (guchar *) page->buffer,
                                                 count_read);
 #else
         exif_still_loading = 0;
 #endif
 
-        if (page->details->pixbuf_still_loading)
+        if (page->pixbuf_still_loading)
         {
-            if (!gdk_pixbuf_loader_write (page->details->loader,
-                                          (const guchar *) page->details->buffer,
+            if (!gdk_pixbuf_loader_write (page->loader,
+                                          (const guchar *) page->buffer,
                                           count_read,
                                           NULL))
             {
-                page->details->pixbuf_still_loading = FALSE;
+                page->pixbuf_still_loading = FALSE;
             }
         }
 
-        if (page->details->pixbuf_still_loading ||
+        if (page->pixbuf_still_loading ||
             (exif_still_loading == 1))
         {
             g_input_stream_read_async (G_INPUT_STREAM (stream),
-                                       page->details->buffer,
-                                       sizeof (page->details->buffer),
+                                       page->buffer,
+                                       sizeof (page->buffer),
                                        0,
-                                       page->details->cancellable,
+                                       page->cancellable,
                                        file_read_callback,
                                        page);
         }
@@ -582,7 +583,7 @@ file_read_callback (GObject      *object,
         load_finished (page);
         g_input_stream_close_async (stream,
                                     0,
-                                    page->details->cancellable,
+                                    page->cancellable,
                                     file_close_callback,
                                     page);
     }
@@ -598,10 +599,10 @@ size_prepared_callback (GdkPixbufLoader *loader,
 
     page = NAUTILUS_IMAGE_PROPERTIES_PAGE (callback_data);
 
-    page->details->height = height;
-    page->details->width = width;
-    page->details->got_size = TRUE;
-    page->details->pixbuf_still_loading = FALSE;
+    page->height = height;
+    page->width = width;
+    page->got_size = TRUE;
+    page->pixbuf_still_loading = FALSE;
 }
 
 typedef struct
@@ -632,30 +633,30 @@ file_open_callback (GObject      *object,
         char *mime_type;
 
         mime_type = nautilus_file_info_get_mime_type (data->info);
-        page->details->loader = gdk_pixbuf_loader_new_with_mime_type (mime_type, &error);
+        page->loader = gdk_pixbuf_loader_new_with_mime_type (mime_type, &error);
         if (error != NULL)
         {
             g_warning ("Error creating loader for %s: %s", uri, error->message);
             g_clear_error (&error);
         }
-        page->details->pixbuf_still_loading = TRUE;
-        page->details->width = 0;
-        page->details->height = 0;
+        page->pixbuf_still_loading = TRUE;
+        page->width = 0;
+        page->height = 0;
 #ifdef HAVE_EXIF
-        page->details->exifldr = exif_loader_new ();
+        page->exifldr = exif_loader_new ();
 #endif /*HAVE_EXIF*/
         g_free (mime_type);
 
-        g_signal_connect (page->details->loader,
+        g_signal_connect (page->loader,
                           "size-prepared",
                           G_CALLBACK (size_prepared_callback),
                           page);
 
         g_input_stream_read_async (G_INPUT_STREAM (stream),
-                                   page->details->buffer,
-                                   sizeof (page->details->buffer),
+                                   page->buffer,
+                                   sizeof (page->buffer),
                                    0,
-                                   page->details->cancellable,
+                                   page->cancellable,
                                    file_read_callback,
                                    page);
 
@@ -683,7 +684,7 @@ load_location (NautilusImagePropertiesPage *page,
     g_assert (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE (page));
     g_assert (info != NULL);
 
-    page->details->cancellable = g_cancellable_new ();
+    page->cancellable = g_cancellable_new ();
 
     uri = nautilus_file_info_get_uri (info);
     file = g_file_new_for_uri (uri);
@@ -699,13 +700,13 @@ load_location (NautilusImagePropertiesPage *page,
         if (localname)
         {
             xf = xmp_files_open_new (localname, 0);
-            page->details->xmp = xmp_files_get_new_xmp (xf);             /* only load when loading */
+            page->xmp = xmp_files_get_new_xmp (xf);             /* only load when loading */
             xmp_files_close (xf, 0);
             g_free (localname);
         }
         else
         {
-            page->details->xmp = NULL;
+            page->xmp = NULL;
         }
     }
 #endif /*HAVE_EXEMPI*/
@@ -716,7 +717,7 @@ load_location (NautilusImagePropertiesPage *page,
 
     g_file_read_async (file,
                        0,
-                       page->details->cancellable,
+                       page->cancellable,
                        file_open_callback,
                        data);
 
@@ -732,18 +733,12 @@ nautilus_image_properties_page_class_init (NautilusImagePropertiesPageClass *cla
     object_class = G_OBJECT_CLASS (class);
 
     object_class->finalize = nautilus_image_properties_page_finalize;
-
-    g_type_class_add_private (object_class, sizeof (NautilusImagePropertiesPageDetails));
 }
 
 static void
 nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
 {
     GtkWidget *sw;
-
-    page->details = G_TYPE_INSTANCE_GET_PRIVATE (page,
-                                                 NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE,
-                                                 NautilusImagePropertiesPageDetails);
 
     gtk_orientable_set_orientation (GTK_ORIENTABLE (page), GTK_ORIENTATION_VERTICAL);
     gtk_box_set_homogeneous (GTK_BOX (page), FALSE);
@@ -758,13 +753,13 @@ nautilus_image_properties_page_init (NautilusImagePropertiesPage *page)
                                     GTK_POLICY_AUTOMATIC);
     gtk_box_pack_start (GTK_BOX (page), sw, FALSE, TRUE, 2);
 
-    page->details->grid = gtk_grid_new ();
-    gtk_container_set_border_width (GTK_CONTAINER (page->details->grid), 6);
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (page->details->grid), GTK_ORIENTATION_VERTICAL);
-    gtk_grid_set_row_spacing (GTK_GRID (page->details->grid), 6);
-    gtk_grid_set_column_spacing (GTK_GRID (page->details->grid), 20);
+    page->grid = gtk_grid_new ();
+    gtk_container_set_border_width (GTK_CONTAINER (page->grid), 6);
+    gtk_orientable_set_orientation (GTK_ORIENTABLE (page->grid), GTK_ORIENTATION_VERTICAL);
+    gtk_grid_set_row_spacing (GTK_GRID (page->grid), 6);
+    gtk_grid_set_column_spacing (GTK_GRID (page->grid), 20);
     append_item (page, _("Loading…"), NULL);
-    gtk_container_add (GTK_CONTAINER (sw), page->details->grid);
+    gtk_container_add (GTK_CONTAINER (sw), page->grid);
 
     gtk_widget_show_all (GTK_WIDGET (page));
 }
