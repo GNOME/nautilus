@@ -37,12 +37,18 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-toolbar-menu-sections.h"
 
+#include "animation/ide-box-theatric.h"
+#include "animation/egg-animation.h"
+
 #include <glib/gi18n.h>
 #include <math.h>
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
 #define REMOVE_FINISHED_OPERATIONS_TIEMOUT 3 /*s */
+
+#define ANIMATION_X_GROW 30
+#define ANIMATION_Y_GROW 30
 
 typedef enum
 {
@@ -574,8 +580,32 @@ update_operations (NautilusToolbar *self)
          * property set. */
         if (gtk_widget_is_visible (GTK_WIDGET (self)))
         {
-            gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->operations_button),
-                                          TRUE);
+            GtkAllocation rect;
+            IdeBoxTheatric *theatric;
+
+            gtk_widget_get_allocation (GTK_WIDGET (self->operations_button), &rect);
+            theatric = g_object_new (IDE_TYPE_BOX_THEATRIC,
+                                     "alpha", 0.9,
+                                     "background", "#fdfdfd",
+                                     "target", self->operations_button,
+                                     "height", rect.height,
+                                     "width", rect.width,
+                                     "x", rect.x,
+                                     "y", rect.y,
+                                     NULL);
+
+            egg_object_animate_full (theatric,
+                                     EGG_ANIMATION_EASE_IN_CUBIC,
+                                     250,
+                                     gtk_widget_get_frame_clock (GTK_WIDGET (self->operations_button)),
+                                     g_object_unref,
+                                     theatric,
+                                     "x", rect.x - ANIMATION_X_GROW,
+                                     "width", rect.width + (ANIMATION_X_GROW * 2),
+                                     "y", rect.y - ANIMATION_Y_GROW,
+                                     "height", rect.height + (ANIMATION_Y_GROW * 2),
+                                     "alpha", 0.0,
+                                     NULL);
         }
     }
 

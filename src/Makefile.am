@@ -138,6 +138,14 @@ nautilus_built_sources = \
 	$(NULL)
 
 nautilus_no_main_sources = \
+	animation/egg-animation.c				\
+	animation/egg-animation.h				\
+	animation/egg-frame-source.c				\
+	animation/egg-frame-source.h				\
+	animation/ide-box-theatric.c				\
+	animation/ide-box-theatric.h				\
+	animation/ide-cairo.c					\
+	animation/ide-cairo.h					\
 	gtk/nautilusgtkplacesview.c			\
 	gtk/nautilusgtkplacesviewprivate.h		\
 	gtk/nautilusgtkplacesviewrow.c			\
