@@ -858,7 +858,7 @@ nautilus_canvas_view_end_loading (NautilusFilesView *view,
 static NautilusCanvasZoomLevel
 nautilus_canvas_view_get_zoom_level (NautilusFilesView *view)
 {
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD);
+    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE);
 
     return nautilus_canvas_container_get_zoom_level (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)));
 }
