@@ -15,6 +15,7 @@ typedef enum {
 	NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD,
 	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE,
 	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER,
+	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST,
 } NautilusCanvasZoomLevel;
 
 typedef enum {
@@ -25,7 +26,7 @@ typedef enum {
 } NautilusListZoomLevel;
 
 #define NAUTILUS_LIST_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_LIST_ZOOM_LEVEL_LARGER + 1)
-#define NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER + 1)
+#define NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST + 1)
 
 /* Nominal icon sizes for each Nautilus zoom level.
  * This scheme assumes that icons are designed to
@@ -42,6 +43,7 @@ typedef enum {
 #define NAUTILUS_CANVAS_ICON_SIZE_STANDARD	64
 #define NAUTILUS_CANVAS_ICON_SIZE_LARGE		96
 #define NAUTILUS_CANVAS_ICON_SIZE_LARGER	128
+#define NAUTILUS_CANVAS_ICON_SIZE_LARGEST	256
 
 /* Maximum size of an icon that the icon factory will ever produce */
 #define NAUTILUS_ICON_MAXIMUM_SIZE     320

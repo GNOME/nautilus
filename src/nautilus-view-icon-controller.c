@@ -445,7 +445,7 @@ real_bump_zoom_level (NautilusFilesView *files_view,
     new_level = self->zoom_level + zoom_increment;
 
     if (new_level >= NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL &&
-        new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER)
+        new_level <= NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST)
     {
         g_action_group_change_action_state (self->action_group,
                                             "zoom-to-level",
@@ -479,6 +479,12 @@ get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
         case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER:
         {
             return NAUTILUS_CANVAS_ICON_SIZE_LARGER;
+        }
+        break;
+
+        case NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST:
+        {
+            return NAUTILUS_CANVAS_ICON_SIZE_LARGEST;
         }
         break;
     }
