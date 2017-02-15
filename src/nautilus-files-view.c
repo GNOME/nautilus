@@ -3723,8 +3723,8 @@ pre_copy_move (NautilusFilesView *directory_view)
      * operate on. The ADD_FILES signal is registered as G_SIGNAL_RUN_LAST, so we
      * must use connect_after.
      */
-    g_signal_connect (directory_view, "add-files",
-                      G_CALLBACK (pre_copy_move_add_files_callback), copy_move_done_data);
+    g_signal_connect_after (directory_view, "add-files",
+                            G_CALLBACK (pre_copy_move_add_files_callback), copy_move_done_data);
 
     return copy_move_done_data;
 }
