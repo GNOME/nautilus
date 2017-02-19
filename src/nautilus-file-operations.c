@@ -269,11 +269,11 @@ static void empty_trash_task_done (GObject      *source_object,
 static char *query_fs_type (GFile        *file,
                             GCancellable *cancellable);
 
-/* keep in time with format_time()
+/* keep in time with get_formatted_time ()
  *
  * This counts and outputs the number of “time units”
- * formatted and displayed by format_time().
- * For instance, if format_time outputs “3 hours, 4 minutes”
+ * formatted and displayed by get_formatted_time ().
+ * For instance, if get_formatted_time outputs “3 hours, 4 minutes”
  * it yields 7.
  */
 static int
@@ -313,12 +313,12 @@ seconds_count_format_time_units (int seconds)
     return hours;
 }
 
-static char *
-format_time (int seconds)
+static gchar *
+get_formatted_time (int seconds)
 {
     int minutes;
     int hours;
-    char *res;
+    gchar *res;
 
     if (seconds < 0)
     {
@@ -341,7 +341,7 @@ format_time (int seconds)
 
     if (seconds < 60 * 60 * 4)
     {
-        char *h, *m;
+        gchar *h, *m;
 
         minutes = (seconds - hours * 60 * 60) / 60;
 
@@ -1060,7 +1060,7 @@ custom_time_to_string (char    *format,
     int secs;
 
     secs = va_arg (va, int);
-    return format_time (secs);
+    return get_formatted_time (secs);
 }
 
 static void
