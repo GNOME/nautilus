@@ -1182,6 +1182,7 @@ do_run_simple_dialog (gpointer _data)
     RunSimpleDialogData *data = _data;
     const char *button_title;
     GtkWidget *dialog;
+    GtkWidget *button;
     int result;
     int response_id;
 
@@ -1209,8 +1210,14 @@ do_run_simple_dialog (gpointer _data)
             continue;
         }
 
-        gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
+        button = gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
+
+        if (g_strcmp0(button_title, DELETE) == 0)
+        {
+            gtk_style_context_add_class(gtk_widget_get_style_context(button),
+                                        "destructive-action");
+        }
     }
 
     if (data->details_text)
