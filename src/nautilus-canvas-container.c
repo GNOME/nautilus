@@ -6760,8 +6760,10 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
         icon = p->data;
         if (icon->has_lazy_position)
         {
-            assign_icon_position (container, icon);
-            semi_position_icons = g_list_prepend (semi_position_icons, icon);
+            if (!assign_icon_position (container, icon))
+            {
+                semi_position_icons = g_list_prepend (semi_position_icons, icon);
+            }
         }
         else if (!assign_icon_position (container, icon))
         {
