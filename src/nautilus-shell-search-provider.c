@@ -690,7 +690,7 @@ handle_activate_result (NautilusShellSearchProvider2  *skeleton,
     gboolean res;
     GFile *file;
 
-    res = gtk_show_uri (NULL, result, timestamp, NULL);
+    res = gtk_show_uri_on_window (NULL, result, timestamp, NULL);
 
     if (!res)
     {

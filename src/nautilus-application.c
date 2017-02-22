@@ -775,11 +775,8 @@ action_help (GSimpleAction *action,
     GError *error = NULL;
 
     window = gtk_application_get_active_window (application);
-    gtk_show_uri (window ?
-                  gtk_window_get_screen (GTK_WINDOW (window)) :
-                  gdk_screen_get_default (),
-                  "help:gnome-help/files",
-                  gtk_get_current_event_time (), &error);
+    gtk_show_uri_on_window (window, "help:gnome-help/files",
+                            gtk_get_current_event_time (), &error);
 
     if (error)
     {
