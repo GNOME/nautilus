@@ -1,5 +1,6 @@
 #include <gtk/gtk.h>
 #include <src/nautilus-directory.h>
+#include <src/nautilus-file-utilities.h>
 #include <src/nautilus-search-directory.h>
 #include <src/nautilus-file.h>
 #include <unistd.h>
@@ -62,6 +63,8 @@ main (int    argc,
     client2 = g_new0 (int, 1);
 
     gtk_init (&argc, &argv);
+
+    nautilus_ensure_extension_points ();
 
     if (argv[1] == NULL)
     {

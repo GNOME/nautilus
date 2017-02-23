@@ -1,3 +1,4 @@
+#include <src/nautilus-file-utilities.h>
 #include <src/nautilus-search-provider.h>
 #include <src/nautilus-search-engine.h>
 #include <gtk/gtk.h>
@@ -33,6 +34,8 @@ main (int   argc,
     GFile *location;
 
     gtk_init (&argc, &argv);
+
+    nautilus_ensure_extension_points ();
 
     engine = nautilus_search_engine_new ();
     g_signal_connect (engine, "hits-added",
