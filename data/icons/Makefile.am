@@ -24,5 +24,3 @@ update-icon-cache:
 EXTRA_DIST = \
 	$(nobase_icon_DATA) \
 	$(srcdir)/src/org.gnome.Nautilus.svg
-
--include $(top_srcdir)/git.mk

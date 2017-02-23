@@ -45,5 +45,3 @@ TESTS = test-file-utilities-get-common-filename-prefix \
 EXTRA_DIST = \
 	test.h \
 	$(NULL)
-
--include $(top_srcdir)/git.mk

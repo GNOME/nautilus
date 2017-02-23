@@ -89,5 +89,3 @@ CLEANFILES =			\
 if ENABLE_DESKTOP
 CLEANFILES += $(autostart_DATA)
 endif
-
--include $(top_srcdir)/git.mk

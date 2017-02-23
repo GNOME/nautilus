@@ -21,5 +21,3 @@ EXTRA_DIST = \
 	style-guide.html \
 	key_mouse_navigation.txt \
 	$(NULL)
-
--include $(top_srcdir)/git.mk

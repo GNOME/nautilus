@@ -53,5 +53,3 @@ nautilus_desktop_SOURCES= 				\
 	nautilus-desktop-window-slot.c		\
 	nautilus-desktop-window-slot.h		\
 	$(NULL)
-
--include $(top_srcdir)/git.mk
