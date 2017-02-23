@@ -2,7 +2,7 @@ AC_PREREQ(2.60)
 
 dnl ===========================================================================
 
-m4_define(glib_minver,                 2.49.1)
+m4_define(glib_minver,                 2.51.2)
 m4_define(gnome_desktop_minver,        3.0.0)
 m4_define(pango_minver,                1.28.3)
 m4_define(gtk_minver,                  3.21.6)
