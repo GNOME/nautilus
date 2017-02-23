@@ -1890,7 +1890,7 @@ file_deleted_callback (GFile    *file,
     if (file_type == G_FILE_TYPE_DIRECTORY)
     {
         secondary = IS_IO_ERROR (error, PERMISSION_DENIED) ?
-                    g_strdup_printf (_("There was an error deleting the"
+                    g_strdup_printf (_("There was an error deleting the "
                                        "folder “%s”."),
                                      basename) :
                     g_strdup_printf (_("You do not have sufficient permissions "
