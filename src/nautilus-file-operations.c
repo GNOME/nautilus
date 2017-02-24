@@ -3645,7 +3645,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
     guint64 now;
     CommonJob *job;
     gboolean is_move;
-    g_autofree gchar *status = NULL;
+    gchar *status;
     char *details;
     gchar *tmp;
 
