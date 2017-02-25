@@ -64,7 +64,7 @@
 
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
-    "preview_image_size_combobox"
+    "preview_image_size_spinbutton"
 
 static const char * const speed_tradeoff_values[] =
 {
@@ -104,12 +104,6 @@ static const char * const thumbnails_components[] =
 static const char * const count_components[] =
 {
     "count_only_this_computer_radiobutton", "count_all_files_radiobutton", "count_never_radiobutton", NULL
-};
-
-static const guint64 thumbnail_limit_values[] =
-{
-    102400, 512000, 1048576, 3145728, 5242880,
-    10485760, 104857600, 1073741824, 2147483648U, 4294967295U
 };
 
 static const char * const icon_captions_components[] =
@@ -360,6 +354,32 @@ nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
     gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
+static gboolean format_spin_button(GtkSpinButton *spin_button,
+                                   gpointer user_data)
+{
+    GtkAdjustment *adjustment;
+    int value;
+    gchar *text;
+
+    adjustment = gtk_spin_button_get_adjustment (spin_button);
+    value = (int)gtk_adjustment_get_value (adjustment);
+    text = g_strdup_printf ("%d MB",value);
+    gtk_entry_set_text (GTK_ENTRY (spin_button), text);
+
+    return TRUE;
+}
+
+static void nautilus_preferences_window_setup_thumbnail_limit_formatting (GtkBuilder *builder)
+{
+    GtkSpinButton *spin;
+
+    spin = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "preview_image_size_spinbutton"));
+
+    g_signal_connect (spin, "output", G_CALLBACK (format_spin_button),
+                      spin);
+
+}
+
 static void bind_builder_bool(GtkBuilder *builder,
                               GSettings  *settings,
                               const char *widget_name,
@@ -369,59 +389,13 @@ static void bind_builder_bool(GtkBuilder *builder,
                      "active", G_SETTINGS_BIND_DEFAULT);
 }
 
-typedef struct
-{
-    const guint64 *values;
-    int n_values;
-} UIntEnumBinding;
-
-static gboolean uint_enum_get_mapping(GValue   *value,
-                                      GVariant *variant,
-                                      gpointer  user_data)
-{
-    UIntEnumBinding *binding = user_data;
-    guint64 v;
-    int i;
-
-    v = g_variant_get_uint64 (variant);
-    for (i = 0; i < binding->n_values; i++)
-    {
-        if (binding->values[i] >= v)
-        {
-            g_value_set_int (value, i);
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
-static GVariant *uint_enum_set_mapping(const GValue       *value,
-                                       const GVariantType *expected_type,
-                                       gpointer            user_data)
-{
-    UIntEnumBinding *binding = user_data;
-
-    return g_variant_new_uint64 (binding->values[g_value_get_int (value)]);
-}
-
-static void bind_builder_uint_enum(GtkBuilder    *builder,
-                                   GSettings     *settings,
-                                   const char    *widget_name,
-                                   const char    *prefs,
-                                   const guint64 *values,
-                                   int            n_values)
-{
-    UIntEnumBinding *binding;
-
-    binding = g_new (UIntEnumBinding, 1);
-    binding->values = values;
-    binding->n_values = n_values;
-
-    g_settings_bind_with_mapping (
-        settings, prefs, gtk_builder_get_object (builder, widget_name), "active",
-        G_SETTINGS_BIND_DEFAULT, uint_enum_get_mapping, uint_enum_set_mapping,
-        binding, g_free);
+static void bind_builder_uint_spin(GtkBuilder *builder,
+                                   GSettings  *settings,
+                                   const char *widget_name,
+                                   const char *prefs)
+{    
+    g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
+                     "value", G_SETTINGS_BIND_DEFAULT);
 }
 
 static GVariant *radio_mapping_set(const GValue       *gvalue,
@@ -527,12 +501,11 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
                         NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
                         (const char **) speed_tradeoff_values);
 
-    bind_builder_uint_enum (builder, nautilus_preferences,
+    bind_builder_uint_spin (builder, nautilus_preferences,
                             NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET,
-                            NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
-                            thumbnail_limit_values,
-                            G_N_ELEMENTS (thumbnail_limit_values));
+                            NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
 
+    nautilus_preferences_window_setup_thumbnail_limit_formatting (builder);
     nautilus_preferences_window_setup_icon_caption_page (builder);
     nautilus_preferences_window_setup_list_column_page (builder);
 

@@ -85,6 +85,8 @@
 #define DEBUG_REF_PRINTF printf
 #endif
 
+#define MEGA_TO_BASE_RATE 1048576
+
 /* Files that start with these characters sort after files that don't. */
 #define SORT_LAST_CHAR1 '.'
 #define SORT_LAST_CHAR2 '#'
@@ -9230,9 +9232,11 @@ nautilus_file_list_cancel_call_when_ready (NautilusFileListHandle *handle)
 static void
 thumbnail_limit_changed_callback (gpointer user_data)
 {
-    g_settings_get (nautilus_preferences,
-                    NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
-                    "t", &cached_thumbnail_limit);
+    cached_thumbnail_limit = g_settings_get_uint64 (nautilus_preferences,
+                                                    NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
+
+    //Converts the obtained limit in MB to bytes
+    cached_thumbnail_limit *= MEGA_TO_BASE_RATE;;
 
     /* Tell the world that icons might have changed. We could invent a narrower-scope
      * signal to mean only "thumbnails might have changed" if this ends up being slow

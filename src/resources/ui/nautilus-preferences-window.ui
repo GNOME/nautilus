@@ -2,168 +2,11 @@
 <!-- Generated with glade 3.20.0 -->
 <interface>
   <requires lib="gtk+" version="3.16"/>
-  <object class="GtkListStore" id="icon_view_zoom_levels">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="list_view_zoom_levels">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Small</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Large</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model1">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Icon View</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">List View</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model10">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model2">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">By Name</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Size</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Type</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Modification Date</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Access Date</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">By Trashed Date</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model3">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Small</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Standard</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Large</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model7">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">Always</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Local Files Only</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">Never</col>
-      </row>
-    </data>
-  </object>
-  <object class="GtkListStore" id="model8">
-    <columns>
-      <!-- column-name gchararray -->
-      <column type="gchararray"/>
-    </columns>
-    <data>
-      <row>
-        <col id="0" translatable="yes">100 KB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">500 KB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">1 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">3 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">5 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">10 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">100 MB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">1 GB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">2 GB</col>
-      </row>
-      <row>
-        <col id="0" translatable="yes">4 GB</col>
-      </row>
-    </data>
+  <object class="GtkAdjustment" id="adjustment1">
+    <property name="lower">1</property>
+    <property name="upper">4096</property>
+    <property name="step_increment">1</property>
+    <property name="page_increment">10</property>
   </object>
   <object class="GtkDialog" id="preferences_window">
     <property name="can_focus">False</property>
@@ -1126,16 +969,13 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkComboBox" id="preview_image_size_combobox">
+                          <object class="GtkSpinButton" id="preview_image_size_spinbutton">
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="model">model8</property>
-                            <child>
-                              <object class="GtkCellRendererText" id="renderer8"/>
-                              <attributes>
-                                <attribute name="text">0</attribute>
-                              </attributes>
-                            </child>
+                            <property name="can_focus">True</property>
+                            <property name="width_chars">8</property>
+                            <property name="input_purpose">number</property>
+                            <property name="adjustment">adjustment1</property>
+                            <property name="climb_rate">10</property>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -1271,5 +1111,133 @@
         </child>
       </object>
     </child>
+    <child type="titlebar">
+      <placeholder/>
+    </child>
+  </object>
+  <object class="GtkListStore" id="icon_view_zoom_levels">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="list_view_zoom_levels">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Small</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Standard</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Large</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model1">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Icon View</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">List View</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model10">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model2">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">By Name</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Size</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Type</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Modification Date</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Access Date</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">By Trashed Date</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model3">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Small</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Standard</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Large</col>
+      </row>
+    </data>
+  </object>
+  <object class="GtkListStore" id="model7">
+    <columns>
+      <!-- column-name gchararray -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">Always</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Local Files Only</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Never</col>
+      </row>
+    </data>
   </object>
 </interface>
