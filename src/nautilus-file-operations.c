@@ -1719,10 +1719,10 @@ report_delete_progress (CommonJob    *job,
             gchar *concat_detail;
             g_autofree gchar *formatted_time = NULL;
 
-            /* To translators: %T will expand to a time duration like "2 minutes".
+            /* To translators: %s will expand to a time duration like "2 minutes".
              * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
              *
-             * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+             * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
              */
             time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %s left",
                                           "%'d / %'d \xE2\x80\x94 %s left",
@@ -2106,10 +2106,10 @@ report_trash_progress (CommonJob    *job,
             gchar *concat_detail;
             g_autofree gchar *formatted_time = NULL;
 
-            /* To translators: %T will expand to a time duration like "2 minutes".
+            /* To translators: %s will expand to a time duration like "2 minutes".
              * So the whole thing will be something like "1 / 5 -- 2 hours left (4 files/sec)"
              *
-             * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+             * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
              */
             time_left_message = ngettext ("%'d / %'d \xE2\x80\x94 %s left",
                                           "%'d / %'d \xE2\x80\x94 %s left",
@@ -2202,7 +2202,7 @@ trash_file (CommonJob     *job,
     }
 
     basename = get_basename (file);
-    /* Translators: %B is a file name */
+    /* Translators: %s is a file name */
     primary = g_strdup_printf (_("“%s” can’t be put in the trash. Do you want "
                                  "to delete it immediately?"),
                                basename);
@@ -3861,7 +3861,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
             g_autofree gchar *formatted_size_num_bytes = NULL;
             g_autofree gchar *formatted_size_total_size = NULL;
 
-            /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
+            /* To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
             formatted_size_num_bytes = g_format_size (transfer_info->num_bytes);
             formatted_size_total_size = g_format_size (total_size);
             details = g_strdup_printf (_("%s / %s"),
@@ -3899,10 +3899,10 @@ report_copy_progress (CopyMoveJob  *copy_job,
                 g_autofree gchar *formatted_size_total_size = NULL;
                 g_autofree gchar *formatted_size_transfer_rate = NULL;
 
-                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
+                /* To translators: %s will expand to a size like "2 bytes" or "3 MB", %s to a time duration like
                  * "2 minutes". So the whole thing will be something like "2 kb / 4 MB -- 2 hours left (4kb/sec)"
                  *
-                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                 * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
                  */
                 formatted_time = get_formatted_time (remaining_time);
                 formatted_size_num_bytes = g_format_size (transfer_info->num_bytes);
@@ -3921,7 +3921,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
                 g_autofree gchar *formatted_size_num_bytes = NULL;
                 g_autofree gchar *formatted_size_total_size = NULL;
 
-                /* To translators: %S will expand to a size like "2 bytes" or "3 MB". */
+                /* To translators: %s will expand to a size like "2 bytes" or "3 MB". */
                 formatted_size_num_bytes = g_format_size (transfer_info->num_bytes);
                 formatted_size_total_size = g_format_size (total_size);
                 details = g_strdup_printf (_("%s / %s"),
@@ -3935,10 +3935,10 @@ report_copy_progress (CopyMoveJob  *copy_job,
             {
                 g_autofree gchar *formatted_time = NULL;
                 g_autofree gchar *formatted_size = NULL;
-                /* To translators: %T will expand to a time duration like "2 minutes".
+                /* To translators: %s will expand to a time duration like "2 minutes".
                  * So the whole thing will be something like "1 / 5 -- 2 hours left (4kb/sec)"
                  *
-                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                 * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
                  */
                 formatted_time = get_formatted_time (remaining_time);
                 formatted_size = g_format_size ((goffset) transfer_rate);
@@ -8276,7 +8276,7 @@ extract_job_on_progress (AutoarExtractor *extractor,
     if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE ||
         transfer_rate == 0)
     {
-        /* To translators: %S will expand to a size like "2 bytes" or
+        /* To translators: %s will expand to a size like "2 bytes" or
          * "3 MB", so something like "4 kb / 4 MB"
          */
         details = g_strdup_printf (_("%s / %s"), formatted_size_job_completed_size,
@@ -8287,13 +8287,13 @@ extract_job_on_progress (AutoarExtractor *extractor,
         g_autofree gchar *formatted_time = NULL;
         g_autofree gchar *formatted_size_transfer_rate = NULL;
 
-        /* To translators: %S will expand to a size like "2 bytes" or
-         * "3 MB", %T to a time duration like "2 minutes". So the whole
+        /* To translators: %s will expand to a size like "2 bytes" or
+         * "3 MB", %s to a time duration like "2 minutes". So the whole
          * thing will be something like
          * "2 kb / 4 MB -- 2 hours left (4kb/sec)"
          *
          * The singular/plural form will be used depending on the
-         * remaining time (i.e. the %T argument).
+         * remaining time (i.e. the %s argument).
          */
         formatted_time = get_formatted_time (remaining_time);
         formatted_size_transfer_rate = g_format_size ((goffset) transfer_rate);
@@ -8657,7 +8657,7 @@ compress_job_on_progress (AutoarCompressor *compressor,
             g_autofree gchar *formatted_size_completed_size = NULL;
             g_autofree gchar *formatted_size_total_size = NULL;
 
-            /* To translators: %S will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
+            /* To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB" */
             formatted_size_completed_size = g_format_size (completed_size);
             formatted_size_total_size = g_format_size (compress_job->total_size);
             details = g_strdup_printf (_("%s / %s"), formatted_size_completed_size,
@@ -8685,10 +8685,10 @@ compress_job_on_progress (AutoarCompressor *compressor,
                 g_autofree gchar *formatted_time = NULL;
                 g_autofree gchar *formatted_size_transfer_rate = NULL;
 
-                /* To translators: %S will expand to a size like "2 bytes" or "3 MB", %T to a time duration like
+                /* To translators: %s will expand to a size like "2 bytes" or "3 MB", %s to a time duration like
                  * "2 minutes". So the whole thing will be something like "2 kb / 4 MB -- 2 hours left (4kb/sec)"
                  *
-                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                 * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
                  */
                 formatted_time = get_formatted_time (remaining_time);
                 formatted_size_transfer_rate = g_format_size ((goffset) transfer_rate);
@@ -8702,7 +8702,7 @@ compress_job_on_progress (AutoarCompressor *compressor,
             }
             else
             {
-                /* To translators: %S will expand to a size like "2 bytes" or "3 MB". */
+                /* To translators: %s will expand to a size like "2 bytes" or "3 MB". */
                 details = g_strdup_printf (_("%s / %s"),
                                            formatted_size_completed_size,
                                            formatted_size_total_size);
@@ -8715,10 +8715,10 @@ compress_job_on_progress (AutoarCompressor *compressor,
                 g_autofree gchar *formatted_time = NULL;
                 g_autofree gchar *formatted_size = NULL;
 
-                /* To translators: %T will expand to a time duration like "2 minutes".
+                /* To translators: %s will expand to a time duration like "2 minutes".
                  * So the whole thing will be something like "1 / 5 -- 2 hours left (4kb/sec)"
                  *
-                 * The singular/plural form will be used depending on the remaining time (i.e. the %T argument).
+                 * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
                  */
                 formatted_time = get_formatted_time (remaining_time);
                 formatted_size = g_format_size ((goffset) transfer_rate);
