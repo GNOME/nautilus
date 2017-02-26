@@ -9,7 +9,7 @@
 # Joan Duran <jodufi@gmail.com>, 2008-2013.
 # Jordi Serratosa <jordis@softcatala.cat>, 2012.
 # Josep Sànchez <papapep@gmx.com>, 2013.
-# Jordi Mas <jmas@softcatala.org>, 2015-2016.
+# Jordi Mas <jmas@softcatala.org>, 2015-2017.
 # Walter Garcia-Fontes <walter.garcia@upf.edu>, 2016.
 #
 # Recull de termes
@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2017-02-24 19:08+0100\n"
-"PO-Revision-Date: 2016-12-20 08:36+0100\n"
+"POT-Creation-Date: 2017-02-26 09:07+0100\n"
+"PO-Revision-Date: 2017-02-26 12:30+0100\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -31,7 +31,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 1.8.9\n"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:1
 msgid "Where to position newly open tabs in browser windows"
@@ -404,13 +404,15 @@ msgstr ""
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:51
 msgid "Enable new experimental views"
-msgstr ""
+msgstr "Habilita les noves vistes experimentals"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:52
 msgid ""
 "Whether to use the new experimental views using the latest GTK+ widgets to "
 "help giving feedback and shaping their future."
 msgstr ""
+"Si s'han d'usar les noves vistes experimentals utilitzant els últims ginys de GTK+ "
+"per ajudar aportant suggeriments i definint el futur"
 
 #: ../data/org.gnome.nautilus.gschema.xml.h:53
 msgid "Default format for compressing files"
@@ -2485,19 +2487,19 @@ msgid "Untitled Document"
 msgstr "Document sense nom"
 
 #: ../src/nautilus-file-operations.c:7691
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating directory %s."
-msgstr "S'ha produït un error en crear el directori %B."
+msgstr "S'ha produït un error en crear el directori %s."
 
 #: ../src/nautilus-file-operations.c:7696
-#, fuzzy, c-format
+#, c-format
 msgid "Error while creating file %s."
-msgstr "S'ha produït un error en crear el fitxer %B."
+msgstr "S'ha produït un error en crear el fitxer %s."
 
 #: ../src/nautilus-file-operations.c:7700
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error creating the directory in %s."
-msgstr "S'ha produït un error en crear el directori a %F."
+msgstr "S'ha produït un error en crear el directori a %s."
 
 #: ../src/nautilus-file-operations.c:7989
 msgid "Emptying Trash"
@@ -2513,31 +2515,31 @@ msgid "Verifying destination"
 msgstr "S'està verificant la destinació"
 
 #: ../src/nautilus-file-operations.c:8240
-#, fuzzy, c-format
+#, c-format
 msgid "Extracting “%s”"
-msgstr "S'està extraient «%B»"
+msgstr "S'està extraient «%s»"
 
 #: ../src/nautilus-file-operations.c:8344
-#, fuzzy, c-format
+#, c-format
 msgid "Error extracting “%s”"
-msgstr "S'ha produït un error en extraure «%B»"
+msgstr "S'ha produït un error en extreure «%s»"
 
 #: ../src/nautilus-file-operations.c:8348
-#, fuzzy, c-format
+#, c-format
 msgid "There was an error while extracting “%s”."
-msgstr "S'ha produït un error durant l'extracció de «%B»."
+msgstr "S'ha produït un error durant l'extracció de «%s»."
 
 #: ../src/nautilus-file-operations.c:8394
-#, fuzzy, c-format
+#, c-format
 msgid "Extracted “%s” to “%s”"
-msgstr "S'ha extret «%B» a «%B»"
+msgstr "S'ha extret «%s» a «%s»"
 
 #: ../src/nautilus-file-operations.c:8400
-#, fuzzy, c-format
+#, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
-msgstr[0] "Extret %'d fitxer a «%B»"
-msgstr[1] "Extrets %'d fitxers a «%B»"
+msgstr[0] "Extret %'d fitxer a «%s»"
+msgstr[1] "Extrets %'d fitxers a «%s»"
 
 #: ../src/nautilus-file-operations.c:8434
 msgid "Preparing to extract"
@@ -2548,44 +2550,44 @@ msgid "Extracting Files"
 msgstr "S'estan extraient els fitxers"
 
 #: ../src/nautilus-file-operations.c:8619
-#, fuzzy, c-format
+#, c-format
 msgid "Compressing “%s” into “%s”"
-msgstr "S'està comprimint «%B» a «%B»"
+msgstr "S'està comprimint «%s» a «%s»"
 
 #: ../src/nautilus-file-operations.c:8625
-#, fuzzy, c-format
+#, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
-msgstr[0] "S'està comprimint %'d fitxer a «%B»"
-msgstr[1] "S'estan comprimint %'d fitxers a «%B»"
+msgstr[0] "S'està comprimint %'d fitxer a «%s»"
+msgstr[1] "S'estan comprimint %'d fitxers a «%s»"
 
 #: ../src/nautilus-file-operations.c:8773
-#, fuzzy, c-format
+#, c-format
 msgid "Error compressing “%s” into “%s”"
-msgstr "S'ha produït un error en comprimir el fitxer «%B» a «%B»"
+msgstr "S'ha produït un error en comprimir el fitxer «%s» a «%s»"
 
 #: ../src/nautilus-file-operations.c:8779
-#, fuzzy, c-format
+#, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
-msgstr[0] "S'ha produït un error en comprimir %'d fitxer a «%B»"
-msgstr[1] "S'ha produït un error en comprimir %'d fitxers a «%B»"
+msgstr[0] "S'ha produït un error en comprimir %'d fitxer a «%s»"
+msgstr[1] "S'ha produït un error en comprimir %'d fitxers a «%s»"
 
 #: ../src/nautilus-file-operations.c:8789
 msgid "There was an error while compressing files."
 msgstr "S'ha produït un error en comprimir els fitxers."
 
 #: ../src/nautilus-file-operations.c:8814
-#, fuzzy, c-format
+#, c-format
 msgid "Compressed “%s” into “%s”"
-msgstr "Comprimit «%B» a «%B»"
+msgstr "Comprimit «%s» a «%s»"
 
 #: ../src/nautilus-file-operations.c:8820
-#, fuzzy, c-format
+#, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
-msgstr[0] "Comprimit %'d fitxer a «%B»"
-msgstr[1] "Comprimits %'d fitxers a «%B»"
+msgstr[0] "Comprimit %'d fitxer a «%s»"
+msgstr[1] "Comprimits %'d fitxers a «%s»"
 
 #: ../src/nautilus-file-operations.c:8911
 msgid "Compressing Files"
@@ -3628,7 +3630,7 @@ msgstr ""
 
 #: ../src/nautilus-mime-actions.c:1612
 msgid "Trust and _Launch"
-msgstr ""
+msgstr "Confia i _executa"
 
 #: ../src/nautilus-mime-actions.c:1917
 #, c-format
