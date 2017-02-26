@@ -326,7 +326,6 @@ void              nautilus_files_view_bump_zoom_level            (NautilusFilesV
                                                                   int                     zoom_increment);
 gboolean          nautilus_files_view_can_zoom_in                (NautilusFilesView      *view);
 gboolean          nautilus_files_view_can_zoom_out               (NautilusFilesView      *view);
-void              nautilus_files_view_update_menus               (NautilusFilesView      *view);
 
 void              nautilus_files_view_update_context_menus       (NautilusFilesView      *view);
 void              nautilus_files_view_update_toolbar_menus       (NautilusFilesView      *view);
