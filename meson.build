@@ -53,10 +53,6 @@ gsettings_desktop_schemas = dependency ('gsettings-desktop-schemas',
 
 libm = cc.find_library ('libm')
 
-if get_option ('enable-update-mimedb')
-    update_mime_database = find_program ('update-mime-database', required: true)
-endif
-
 exif = dependency ('libexif',
                    version: exif_ver,
                    required: get_option ('enable-exif'))
