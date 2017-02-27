@@ -774,7 +774,9 @@ nautilus_desktop_canvas_view_init (NautilusDesktopCanvasView *desktop_canvas_vie
 NautilusFilesView *
 nautilus_desktop_canvas_view_new (NautilusWindowSlot *slot)
 {
-    return g_object_new (NAUTILUS_TYPE_DESKTOP_CANVAS_VIEW,
+    NautilusFilesView *view;
+
+    view = g_object_new (NAUTILUS_TYPE_DESKTOP_CANVAS_VIEW,
                          "window-slot", slot,
                          "supports-zooming", FALSE,
                          "supports-auto-layout", FALSE,
@@ -782,4 +784,11 @@ nautilus_desktop_canvas_view_new (NautilusWindowSlot *slot)
                          "supports-scaling", TRUE,
                          "supports-keep-aligned", TRUE,
                          NULL);
+
+    if (g_object_is_floating (view))
+    {
+        g_object_ref_sink (view);
+    }
+
+    return view;
 }
