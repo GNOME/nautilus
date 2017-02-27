@@ -3,6 +3,8 @@ project ('nautilus', 'c',
          meson_version: '>=0.37.0',
          license: 'GPL2+')
 
+add_global_arguments ('-Wno-deprecated-declarations', language:'c')
+
 bindir = get_option ('bindir')
 datadir = get_option ('datadir')
 appdatadir = join_paths (datadir, 'appdata')
