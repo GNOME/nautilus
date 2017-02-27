@@ -153,15 +153,6 @@ AS_IF([test "$enable_selinux" != "no"],
                          ])
       ])
 
-
-AC_ARG_ENABLE(empty_view,
- AS_HELP_STRING([--enable-empty-view],[Enable empty view]),
- [ENABLE_EMPTY_VIEW=1
-  AC_DEFINE(ENABLE_EMPTY_VIEW, 1, [define to enable the empty view that is used for performance measurement])])
-
-AC_SUBST(ENABLE_EMPTY_VIEW)
-AM_CONDITIONAL(ENABLE_EMPTY_VIEW, test "x$ENABLE_EMPTY_VIEW" = "x1")
-
 dnl ==========================================================================
 
 dnl *********************************

@@ -45,10 +45,6 @@
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
 
-#if ENABLE_EMPTY_VIEW
-#include "nautilus-empty-view.h"
-#endif
-
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
 #endif
@@ -9714,14 +9710,6 @@ nautilus_files_view_new (guint               id,
             view = nautilus_list_view_new (slot);
         }
         break;
-
-#if ENABLE_EMPTY_VIEW
-        case NAUTILUS_VIEW_EMPTY_ID:
-        {
-            view = nautilus_empty_view_new (slot);
-        }
-        break;
-#endif
     }
 
     if (view == NULL)

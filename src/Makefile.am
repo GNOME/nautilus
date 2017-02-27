@@ -369,14 +369,6 @@ nautilus_SOURCES = \
 	nautilus-main.c				\
 	$(NULL)
 
-EMPTY_VIEW_SOURCES = \
-	nautilus-empty-view.c 			\
-	nautilus-empty-view.h
-
-if ENABLE_EMPTY_VIEW
-nautilus_SOURCES += $(EMPTY_VIEW_SOURCES)
-endif
-
 nautilus_autorun_software_SOURCES= 			\
 	nautilus-autorun-software.c			\
 	$(NULL)

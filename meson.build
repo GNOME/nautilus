@@ -79,10 +79,6 @@ if get_option ('enable-selinux')
     conf.set10 ('HAVE_SELINUX', true)
 endif
 
-if get_option ('enable-empty-view')
-    conf.set10 ('ENABLE_EMPTY_VIEW', true)
-endif
-
 if get_option ('enable-desktop')
     conf.set10 ('ENABLE_DESKTOP', true)
 endif
