@@ -385,8 +385,13 @@ nautilus_canvas_container_get_grid_size_for_zoom_level (NautilusCanvasZoomLevel 
             return LARGER_ICON_GRID_WIDTH;
         }
         break;
+
+        default:
+        {
+            g_return_val_if_reached (STANDARD_ICON_GRID_WIDTH);
+        }
+        break;
     }
-    g_return_val_if_reached (STANDARD_ICON_GRID_WIDTH);
 }
 
 guint
@@ -417,8 +422,13 @@ nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel 
             return NAUTILUS_CANVAS_ICON_SIZE_LARGER;
         }
         break;
+
+        default:
+        {
+            g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
+        }
+        break;
     }
-    g_return_val_if_reached (NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
 }
 
 static void
