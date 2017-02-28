@@ -139,8 +139,7 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
     GtkWidget *activate_button;
     GtkWidget *name_label;
     NautilusDirectory *containing_directory;
-    gint start_offset;
-    gint end_offset;
+    g_autofree char *display_name = NULL;
     gint n_chars;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-rename-file-popover.ui");
@@ -190,8 +189,9 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
                         self->target_is_folder ? _("Folder name") :
                         _("File name"));
 
-    gtk_entry_set_text (GTK_ENTRY (name_entry),
-                        nautilus_file_get_display_name (target_file));
+    display_name = nautilus_file_get_display_name (target_file);
+
+    gtk_entry_set_text (GTK_ENTRY (name_entry), display_name);
 
     gtk_popover_set_default_widget (GTK_POPOVER (rename_file_popover), name_entry);
     gtk_popover_set_pointing_to (GTK_POPOVER (rename_file_popover), pointing_to);
@@ -201,17 +201,20 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
 
     if (nautilus_file_is_regular_file (target_file))
     {
+        gint start_offset;
+        gint end_offset;
+
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (nautilus_file_get_display_name (target_file),
+        eel_filename_get_rename_region (display_name,
                                         &start_offset, &end_offset);
-        n_chars = g_utf8_strlen (nautilus_file_get_display_name (target_file),
-                                 -1);
-        gtk_entry_set_width_chars (GTK_ENTRY (name_entry),
-                                   MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
-                                        RENAME_ENTRY_MAX_CHARS));
         gtk_editable_select_region (GTK_EDITABLE (name_entry),
                                     start_offset, end_offset);
     }
+
+    n_chars = g_utf8_strlen (display_name, -1);
+    gtk_entry_set_width_chars (GTK_ENTRY (name_entry),
+                               MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
+                                    RENAME_ENTRY_MAX_CHARS));
 
     nautilus_directory_unref (containing_directory);
 
