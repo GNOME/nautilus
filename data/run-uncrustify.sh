@@ -1,13 +1,14 @@
 #!/bin/bash
-if [ -x "lineup-parameters" ];
+DATA=$(dirname "$BASH_SOURCE")
+if [ -x "$DATA/lineup-parameters" ];
 then
-    for DIR in ../src ../nautilus-desktop ../test ../libnautilus-extension ../eel ../nautilus-sendto-extension
+    for DIR in "$DATA/../"{src,nautilus-desktop,test,libnautilus-extension,eel,nautilus-sendto-extension}
     do
-        for FILE in $(find $DIR -name "*.c")
+        for FILE in $(find "$DIR" -name "*.c")
         do
             # Aligning prototypes is not working yet, so avoid headers
-            uncrustify -c uncrustify.cfg --no-backup $FILE
-            ./lineup-parameters $FILE > $FILE.temp && mv $FILE.temp $FILE
+            uncrustify -c "$DATA/uncrustify.cfg" --no-backup "$FILE"
+            "$DATA/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE"
        done
     done
 else
