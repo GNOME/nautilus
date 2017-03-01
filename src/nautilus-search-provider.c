@@ -18,7 +18,7 @@
 
 #include <config.h>
 #include "nautilus-search-provider.h"
-#include "nautilus-enum-types.c"
+#include "nautilus-enum-types.h"
 
 #include <glib-object.h>
 
