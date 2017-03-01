@@ -116,7 +116,10 @@ subdir ('src')
 subdir ('test')
 subdir ('data')
 subdir ('po')
-subdir ('docs')
+
+if get_option ('enable-gtk-doc')
+    subdir ('docs')
+endif
 
 if get_option ('enable-desktop')
     subdir ('nautilus-desktop')
