@@ -59,7 +59,7 @@ pkgconfig_data.set ('exec_prefix', '${prefix}')
 pkgconfig_data.set ('libdir', join_paths ('${exec_prefix}', libdir))
 pkgconfig_data.set ('includedir', join_paths ('${prefix}', includedir))
 pkgconfig_data.set ('extensiondir', join_paths ('${exec_prefix}', extensiondir))
-pkgconfig_data.set ('VERSION', nautilus_extension_version)
+pkgconfig_data.set ('VERSION', meson.project_version ())
 
 configure_file (input: 'libnautilus-extension.pc.in',
                 output: 'libnautilus-extension.pc',
