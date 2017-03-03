@@ -1,3 +1,11 @@
+Major changes in 3.23.91:
+* Fix long-time, hard to reproduce, and common crash on desktop with "auto layout" icons (Alex Pandelea)
+* Port building system to meson (Ernestas Kulik)
+* Make F2 toggle between selection modes, full file name or only file name withouth extension (Ernestas Kulik)
+* Recent files are now always files that only the user used, rather than any program/daemon like Dropbox updating the access time (Carlos Soriano)
+* Fix Nautilus tests with extexnsions points (Jan Tojnar)
+* Fix crash on desktop when refreshing (Alex Pandelea)
+
 Major changes in 3.23.90:
 * Add <ctrl> Return as shortcut to open selected folder in new window (Felipe Borges)
 * <ctrl> N now opens the window in the same location as the current view (Felibe Borges)
