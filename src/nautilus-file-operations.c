@@ -1608,6 +1608,8 @@ confirm_delete_directly (CommonJob *job,
     return response == 1;
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static void
 report_delete_progress (CommonJob    *job,
                         SourceInfo   *source_info,
@@ -1765,6 +1767,7 @@ report_delete_progress (CommonJob    *job,
         nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
     }
 }
+#pragma GCC diagnostic pop
 
 typedef void (*DeleteCallback) (GFile   *file,
                                 GError  *error,
@@ -1994,6 +1997,8 @@ delete_files (CommonJob *job,
     }
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static void
 report_trash_progress (CommonJob    *job,
                        SourceInfo   *source_info,
@@ -2152,6 +2157,7 @@ report_trash_progress (CommonJob    *job,
         nautilus_progress_info_set_progress (job->progress, transfer_info->num_files, source_info->num_files);
     }
 }
+#pragma GCC diagnostic pop
 
 static void
 trash_file (CommonJob     *job,
@@ -3633,6 +3639,8 @@ retry:
     g_object_unref (fsinfo);
 }
 
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wformat-nonliteral"
 static void
 report_copy_progress (CopyMoveJob  *copy_job,
                       SourceInfo   *source_info,
@@ -3971,6 +3979,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
 
     nautilus_progress_info_set_progress (job->progress, transfer_info->num_bytes, total_size);
 }
+#pragma GCC diagnostic pop
 
 static int
 get_max_name_length (GFile *file_dir)
