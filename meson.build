@@ -29,7 +29,7 @@ exif_ver = '>=0.6.20'
 exempi_ver = '>=2.1.0'
 notify_ver = '0.7.0'
 schemas_ver = '>=3.8.0'
-autoar_ver = '>=0.1'
+autoar_ver = '>=0.2.1'
 selinux_ver = '>=2.0'
 
 cc = meson.get_compiler ('c')
