@@ -1740,7 +1740,7 @@ typedef struct
 
 static void
 track_newly_added_locations (NautilusFilesView *view,
-                             NautilusFile      *new_file,
+                             GList             *new_files,
                              NautilusDirectory *directory,
                              gpointer           user_data)
 {
@@ -1748,7 +1748,17 @@ track_newly_added_locations (NautilusFilesView *view,
 
     added_locations = user_data;
 
-    g_hash_table_add (added_locations, nautilus_file_get_location (new_file));
+    while (new_files)
+    {
+        NautilusFile *new_file;
+
+        new_file = NAUTILUS_FILE (new_files->data);
+
+        g_hash_table_add (added_locations,
+                          nautilus_file_get_location (new_file));
+
+        new_files = new_files->next;
+    }
 }
 
 static void
@@ -1994,7 +2004,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
 
     name = nautilus_file_name_widget_controller_get_new_name (controller);
     g_signal_connect_data (view,
-                           "add-file",
+                           "add-files",
                            G_CALLBACK (track_newly_added_locations),
                            data->added_locations,
                            (GClosureNotify) NULL,
@@ -2177,7 +2187,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
                                (gpointer *) &data->view);
 
     g_signal_connect_data (view,
-                           "add-file",
+                           "add-files",
                            G_CALLBACK (track_newly_added_locations),
                            data->added_locations,
                            NULL,
@@ -2303,7 +2313,7 @@ setup_new_folder_data (NautilusFilesView *directory_view)
     data = new_folder_data_new (directory_view, FALSE);
 
     g_signal_connect_data (directory_view,
-                           "add-file",
+                           "add-files",
                            G_CALLBACK (track_newly_added_locations),
                            data->added_locations,
                            (GClosureNotify) NULL,
@@ -6378,7 +6388,7 @@ extract_files (NautilusFilesView *view,
                                    (gpointer *) &data->view);
 
         g_signal_connect_data (view,
-                               "add-file",
+                               "add-files",
                                G_CALLBACK (track_newly_added_locations),
                                data->added_locations,
                                NULL,
