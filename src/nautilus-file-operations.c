@@ -41,7 +41,6 @@
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-vfs-extensions.h>
 
 #include <glib/gi18n.h>
@@ -60,6 +59,7 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
+#include "nautilus-ui-utilities.h"
 
 /* TODO: TESTING!!! */
 
@@ -2590,9 +2590,9 @@ unmount_mount_callback (GObject      *source_object,
                 primary = g_strdup_printf (_("Unable to unmount %s"),
                                            mount_name);
             }
-            eel_show_error_dialog (primary,
-                                   error->message,
-                                   data->parent_window);
+            show_error_dialog (primary,
+                               error->message,
+                               data->parent_window);
             g_free (primary);
         }
     }
@@ -2915,9 +2915,9 @@ volume_mount_cb (GObject      *source_object,
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
             g_free (name);
             success = FALSE;
-            eel_show_error_dialog (primary,
-                                   error->message,
-                                   parent);
+            show_error_dialog (primary,
+                               error->message,
+                               parent);
             g_free (primary);
         }
         g_error_free (error);

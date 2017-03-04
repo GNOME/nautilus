@@ -49,4 +49,8 @@ gboolean   nautilus_file_date_in_between           (guint64           file_unix_
 gchar*     get_text_for_date_range                 (GPtrArray         *date_range,
                                                     gboolean           prefix_with_since);
 
+GtkDialog *    show_error_dialog                   (const gchar *primary_text,
+                                                    const gchar *secondary_text,
+                                                    GtkWindow   *parent);
+
 #endif /* NAUTILUS_UI_UTILITIES_H */

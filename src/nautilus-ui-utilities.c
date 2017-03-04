@@ -460,3 +460,31 @@ get_text_for_date_range (GPtrArray *date_range,
 
     return label;
 }
+
+GtkDialog *
+show_error_dialog (const gchar *primary_text,
+                   const gchar *secondary_text,
+                   GtkWindow   *parent)
+{
+    GtkWidget *dialog;
+
+    g_return_val_if_fail (parent != NULL, NULL);
+
+    dialog = gtk_message_dialog_new (parent,
+                                     GTK_DIALOG_MODAL,
+                                     GTK_MESSAGE_ERROR,
+                                     GTK_BUTTONS_OK,
+                                     "%s", primary_text);
+
+    gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
+                                              "%s", secondary_text);
+
+    gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_OK);
+
+    gtk_widget_show (dialog);
+
+    g_signal_connect (GTK_DIALOG (dialog), "response",
+                      G_CALLBACK (gtk_widget_destroy), NULL);
+
+    return GTK_DIALOG (dialog);
+}
