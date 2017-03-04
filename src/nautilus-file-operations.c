@@ -2262,9 +2262,9 @@ skip:
 }
 
 static void
-transfer_add_file_to_count (GFile        *file,
-                            CommonJob    *job,
-                            TransferInfo *transfer_info)
+source_info_remove_file_from_count (GFile        *file,
+                                    CommonJob    *job,
+                                    SourceInfo   *source_info)
 {
     g_autoptr (GFileInfo) file_info = NULL;
 
@@ -2279,10 +2279,10 @@ transfer_add_file_to_count (GFile        *file,
                                    job->cancellable,
                                    NULL);
 
-    transfer_info->num_files++;
+    source_info->num_files--;
     if (file_info != NULL)
     {
-        transfer_info->num_bytes += g_file_info_get_size (file_info);
+        source_info->num_bytes -= g_file_info_get_size (file_info);
     }
 }
 
@@ -2332,7 +2332,7 @@ trash_files (CommonJob *job,
         if (skipped_file)
         {
             (*files_skipped)++;
-            transfer_add_file_to_count (file, job, &transfer_info);
+            source_info_remove_file_from_count (file, job, &source_info);
             report_trash_progress (job, &source_info, &transfer_info);
         }
     }
@@ -4679,7 +4679,7 @@ retry:
 
             if (local_skipped_file)
             {
-                transfer_add_file_to_count (src_file, job, transfer_info);
+                source_info_remove_file_from_count (src_file, job, source_info);
                 report_copy_progress (copy_job, source_info, transfer_info);
             }
 
@@ -5757,7 +5757,7 @@ copy_files (CopyMoveJob  *job,
 
             if (skipped_file)
             {
-                transfer_add_file_to_count (src, common, transfer_info);
+                source_info_remove_file_from_count (src, common, source_info);
                 report_copy_progress (job, source_info, transfer_info);
             }
         }
@@ -6412,7 +6412,7 @@ move_files (CopyMoveJob   *job,
 
         if (skipped_file)
         {
-            transfer_add_file_to_count (src, common, transfer_info);
+            source_info_remove_file_from_count (src, common, source_info);
             report_copy_progress (job, source_info, transfer_info);
         }
     }
