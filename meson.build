@@ -102,8 +102,8 @@ nautilus_include_dirs = include_directories ('.')
 subdir ('eel')
 subdir ('libnautilus-extension')
 
-message ('Updating libgd submodule…')
-run_command ('git', '--git-dir="$MESON_SOURCE_ROOT/.git"', 'submodule', 'update', '--init', 'libgd')
+message ('Checking for libgd…')
+run_command ('check_libgd.sh')
 
 libgd_options = ['static=true',
                  'with-gtk-hacks=true',
