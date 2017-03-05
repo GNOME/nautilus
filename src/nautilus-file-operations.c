@@ -5168,6 +5168,8 @@ copy_move_file (CopyMoveJob   *copy_job,
 
     job = (CommonJob *) copy_job;
 
+    *skipped_file = FALSE;
+
     if (should_skip_file (job, src))
     {
         *skipped_file = TRUE;
