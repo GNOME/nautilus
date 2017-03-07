@@ -128,3 +128,6 @@ endif
 if get_option ('enable-nst-extension')
     subdir ('nautilus-sendto-extension')
 endif
+
+# Compile GSettings schemas when installing from source.
+meson.add_install_script ('compile_gschemas.sh')
