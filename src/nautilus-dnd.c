@@ -889,8 +889,8 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
 
     gtk_grab_add (menu);
 
-    gtk_menu_popup (GTK_MENU (menu), NULL, NULL,
-                    NULL, NULL, 0, GDK_CURRENT_TIME);
+    gtk_menu_popup_at_pointer (GTK_MENU (menu),
+                               NULL);
 
     g_main_loop_run (damd.loop);
 
