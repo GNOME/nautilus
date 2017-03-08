@@ -279,7 +279,7 @@ nautilus_list_model_get_icon_scale (NautilusListModel *model)
 
     if (retval == -1)
     {
-        retval = gdk_screen_get_monitor_scale_factor (gdk_screen_get_default (), 0);
+        retval = gdk_monitor_get_scale_factor (gdk_display_get_monitor (gdk_display_get_default (), 0));
     }
 
     return retval;
