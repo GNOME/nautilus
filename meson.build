@@ -55,20 +55,6 @@ gsettings_desktop_schemas = dependency ('gsettings-desktop-schemas',
 
 libm = cc.find_library ('libm')
 
-exif = dependency ('libexif',
-                   version: exif_ver,
-                   required: get_option ('enable-exif'))
-exempi = dependency ('exempi-2.0',
-                     version: exempi_ver,
-                     required: get_option ('enable-xmp'))
-selinux = dependency ('libselinux',
-                      version: selinux_ver,
-                      required: get_option ('enable-selinux'))
-
-if get_option ('enable-tracker')
-    tracker_sparql = dependency ('tracker-sparql-1.0')
-endif
-
 conf = configuration_data ()
 conf.set_quoted ('VERSION', meson.project_version ())
 conf.set_quoted ('PACKAGE_VERSION', meson.project_version ())
@@ -77,20 +63,32 @@ conf.set_quoted ('LOCALEDIR', join_paths (prefix, localedir))
 conf.set_quoted ('NAUTILUS_DATADIR', join_paths (datadir, 'nautilus'))
 conf.set_quoted ('NAUTILUS_EXTENSIONDIR', join_paths (prefix, extensiondir))
 
-if get_option ('enable-selinux')
-    conf.set10 ('HAVE_SELINUX', true)
-endif
-
 if get_option ('enable-desktop')
     conf.set10 ('ENABLE_DESKTOP', true)
+endif
+
+if get_option ('enable-exif')
+    exif = dependency ('libexif', version: exif_ver)
+    conf.set10 ('HAVE_EXIF', true)
 endif
 
 if get_option ('enable-packagekit')
     conf.set10 ('ENABLE_PACKAGEKIT', true)
 endif
 
+if get_option ('enable-selinux')
+    selinux = dependency ('libselinux', version: selinux_ver)
+    conf.set10 ('HAVE_SELINUX', true)
+endif
+
 if get_option ('enable-tracker')
+    tracker_sparql = dependency ('tracker-sparql-1.0')
     conf.set10 ('ENABLE_TRACKER', true)
+endif
+
+if get_option ('enable-xmp')
+    exempi = dependency ('exempi-2.0', version: exempi_ver)
+    conf.set10 ('HAVE_EXEMPI', true)
 endif
 
 configure_file (input: 'config.h.meson',

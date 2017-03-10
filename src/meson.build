@@ -280,12 +280,20 @@ nautilus_deps = [glib,
                  x11,
                  gmodule_no_export]
 
+if get_option ('enable-exif')
+    nautilus_deps += exif
+endif
+
 if get_option ('enable-tracker')
     nautilus_deps += tracker_sparql
 endif
 
 if get_option ('enable-selinux')
     nautilus_deps += selinux
+endif
+
+if get_option ('enable-xmp')
+    nautilus_deps += exempi
 endif
 
 libnautilus = static_library ('nautilus',
