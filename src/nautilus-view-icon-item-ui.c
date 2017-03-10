@@ -143,7 +143,7 @@ constructed (GObject *object)
 
     label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
     gtk_widget_show (GTK_WIDGET (label));
-    gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_END);
+    gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_line_wrap (label, TRUE);
     gtk_label_set_line_wrap_mode (label, PANGO_WRAP_WORD_CHAR);
     gtk_label_set_lines (label, 4);
