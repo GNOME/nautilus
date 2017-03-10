@@ -250,7 +250,7 @@ real_clear (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
-    g_list_store_remove_all (nautilus_view_model_get_g_model (self->model));
+    nautilus_view_model_remove_all_items (self->model);
 }
 
 
@@ -279,13 +279,17 @@ real_get_selection (NautilusFilesView *files_view)
     NautilusViewIconController *self;
     GList *selected_files = NULL;
     GList *l;
-    g_autoptr (GQueue) selected_items = NULL;
+    g_autoptr (GList) selected_items = NULL;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    selected_items = nautilus_view_model_get_selected (self->model);
-    for (l = g_queue_peek_head_link (selected_items); l != NULL; l = l->next)
+    selected_items = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+    for (l = selected_items; l != NULL; l = l->next)
     {
-        selected_files = g_list_prepend (selected_files, l->data);
+        NautilusViewItemModel *item_model;
+
+        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (l->data));
+        selected_files = g_list_prepend (selected_files,
+                                         g_object_ref (nautilus_view_item_model_get_file (item_model)));
     }
 
     return selected_files;
@@ -378,7 +382,7 @@ real_set_selection (NautilusFilesView *files_view,
 
     selection_files = convert_glist_to_queue (selection);
     selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
-    nautilus_view_model_set_selected (self->model, selection_item_models);
+    nautilus_view_icon_ui_set_selection (self->view_ui, selection_item_models);
     nautilus_files_view_notify_selection_changed (files_view);
 }
 
@@ -603,27 +607,53 @@ on_button_press_event (GtkWidget *widget,
                        gpointer   user_data)
 {
     NautilusViewIconController *self;
-    GList *selection;
+    g_autoptr (GList) selection = NULL;
     GtkWidget *child_at_pos;
-    NautilusViewItemModel *item_model;
     GdkEventButton *event_button;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     event_button = (GdkEventButton *) event;
 
-    if ((event_button->button == GDK_BUTTON_SECONDARY))
+    /* Need to update the selection so the popup has the right actions enabled */
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
+                                                              event_button->x, event_button->y));
+    if (child_at_pos != NULL)
     {
-        /* Need to update the selection so the popup has the right actions enabled */
-        selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-        child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
-                                                                  event_button->x, event_button->y));
+        NautilusFile *selected_file;
+        NautilusViewItemModel *item_model;
+
         item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child_at_pos));
-        selection = g_list_prepend (selection, nautilus_view_item_model_get_file (item_model));
+        selected_file = nautilus_view_item_model_get_file (item_model);
+        if (g_list_find (selection, selected_file) == NULL)
+        {
+            g_list_foreach (selection, (GFunc) g_object_unref, NULL);
+            selection = g_list_append (NULL, selected_file);
+        }
+        else
+        {
+            selection = g_list_prepend (selection, g_object_ref (selected_file));
+        }
+
         nautilus_view_set_selection (NAUTILUS_VIEW (self), selection);
 
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                           event_button);
+        if (event_button->button == GDK_BUTTON_SECONDARY)
+        {
+            nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                               event_button);
+        }
     }
+    else
+    {
+        nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+        if (event_button->button == GDK_BUTTON_SECONDARY)
+        {
+            nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                                event_button);
+        }
+    }
+
+    g_list_foreach (selection, (GFunc) g_object_unref, NULL);
 
     return GDK_EVENT_STOP;
 }
@@ -727,7 +757,7 @@ real_add_files (NautilusFilesView *files_view,
 
     files_queue = convert_glist_to_queue (files);
     item_models = convert_files_to_item_models (self, files_queue);
-    nautilus_view_model_set_items (self->model, item_models);
+    nautilus_view_model_add_items (self->model, item_models);
 }
 
 

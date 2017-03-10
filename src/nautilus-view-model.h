@@ -28,13 +28,15 @@ NautilusViewItemModel * nautilus_view_model_get_item_from_file (NautilusViewMode
                                                                 NautilusFile      *file);
 GQueue * nautilus_view_model_get_items_from_files (NautilusViewModel *self,
                                                    GQueue            *files);
+/* Don't use inside a loop, use nautilus_view_model_remove_all_items instead. */
 void nautilus_view_model_remove_item (NautilusViewModel     *self,
                                       NautilusViewItemModel *item);
+void nautilus_view_model_remove_all_items (NautilusViewModel *self);
+/* Don't use inside a loop, use nautilus_view_model_add_items instead. */
 void nautilus_view_model_add_item (NautilusViewModel     *self,
                                    NautilusViewItemModel *item);
-void nautilus_view_model_set_selected (NautilusViewModel *self,
-                                       GQueue            *item_models);
-GQueue * nautilus_view_model_get_selected (NautilusViewModel *self);
+void nautilus_view_model_add_items (NautilusViewModel *self,
+                                    GQueue            *items);
 void nautilus_view_model_set_items (NautilusViewModel *self,
                                     GQueue            *items);
 G_END_DECLS

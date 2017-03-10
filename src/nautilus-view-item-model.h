@@ -25,11 +25,6 @@ void nautilus_view_item_model_set_file (NautilusViewItemModel *self,
 
 NautilusFile * nautilus_view_item_model_get_file (NautilusViewItemModel *self);
 
-void nautilus_view_item_model_set_selected (NautilusViewItemModel *self,
-                                            gboolean               selected);
-
-gboolean nautilus_view_item_model_get_is_selected (NautilusViewItemModel *self);
-
 void nautilus_view_item_model_set_item_ui (NautilusViewItemModel *self,
                                            GtkWidget             *item_ui);
 

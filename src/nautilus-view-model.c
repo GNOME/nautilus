@@ -233,67 +233,57 @@ nautilus_view_model_remove_item (NautilusViewModel     *self,
 
     if (item_model != NULL)
     {
+        NautilusFile *file;
+
+        file = nautilus_view_item_model_get_file (item_model);
         g_list_store_remove (self->internal_model, i);
+        g_hash_table_remove (self->map_files_to_model, file);
     }
+}
+
+void
+nautilus_view_model_remove_all_items (NautilusViewModel *self)
+{
+    g_list_store_remove_all (self->internal_model);
+    g_hash_table_remove_all (self->map_files_to_model);
 }
 
 void
 nautilus_view_model_add_item (NautilusViewModel     *self,
                               NautilusViewItemModel *item)
 {
+    g_hash_table_insert (self->map_files_to_model,
+                         nautilus_view_item_model_get_file (item),
+                         item);
     g_list_store_insert_sorted (self->internal_model, item, compare_data_func, self);
 }
 
 void
-nautilus_view_model_set_selected (NautilusViewModel *self,
-                                  GQueue            *item_models)
+nautilus_view_model_add_items (NautilusViewModel *self,
+                               GQueue            *items)
 {
+    g_autofree gpointer *array = NULL;
     GList *l;
-    NautilusViewItemModel *item_model;
+    int i = 0;
 
-    gint i = 0;
-    while ((item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i)))
+    array = g_malloc_n (g_queue_get_length (items),
+                        sizeof (NautilusViewItemModel *));
+
+    g_hash_table_remove_all (self->map_files_to_model);
+    for (l = g_queue_peek_head_link (items); l != NULL; l = l->next)
     {
-        gboolean selected;
-
-        selected = FALSE;
-        for (l = g_queue_peek_head_link (item_models); l != NULL; l = l->next)
-        {
-            NautilusViewItemModel *selected_item_model;
-
-            selected_item_model = NAUTILUS_VIEW_ITEM_MODEL (l->data);
-            if (item_model == selected_item_model)
-            {
-                selected = TRUE;
-                break;
-            }
-        }
-        i++;
-
-        nautilus_view_item_model_set_selected (item_model, selected);
-    }
-}
-
-GQueue *
-nautilus_view_model_get_selected (NautilusViewModel *self)
-{
-    NautilusViewItemModel *item_model;
-    GQueue *selected_items;
-    gint i;
-
-    i = 0;
-    selected_items = g_queue_new ();
-    while ((item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i)))
-    {
-        if (nautilus_view_item_model_get_is_selected (item_model))
-        {
-            g_queue_push_tail (selected_items,
-                               g_object_ref (nautilus_view_item_model_get_file (item_model)));
-        }
+        array[i] = l->data;
+        g_hash_table_insert (self->map_files_to_model,
+                             nautilus_view_item_model_get_file (l->data),
+                             l->data);
         i++;
     }
 
-    return selected_items;
+    g_list_store_splice (self->internal_model,
+                         g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
+                         0, array, g_queue_get_length (items));
+
+    g_list_store_sort (self->internal_model, compare_data_func, self);
 }
 
 void
@@ -318,8 +308,8 @@ nautilus_view_model_set_items (NautilusViewModel *self,
     }
 
     g_list_store_splice (self->internal_model,
-                         g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
-                         0, array, g_queue_get_length (items));
+                         0, g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
+                         array, g_queue_get_length (items));
 
     g_list_store_sort (self->internal_model, compare_data_func, self);
 }

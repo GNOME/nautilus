@@ -7,7 +7,6 @@ struct _NautilusViewItemModel
     guint icon_size;
     NautilusFile *file;
     GtkLabel *label;
-    gboolean selected;
     GtkWidget *item_ui;
 };
 
@@ -18,7 +17,6 @@ enum
     PROP_0,
     PROP_FILE,
     PROP_ICON_SIZE,
-    PROP_SELECTED,
     PROP_ITEM_UI,
     N_PROPS
 };
@@ -48,12 +46,6 @@ nautilus_view_item_model_get_property (GObject    *object,
         case PROP_ICON_SIZE:
         {
             g_value_set_int (value, self->icon_size);
-        }
-        break;
-
-        case PROP_SELECTED:
-        {
-            g_value_set_boolean (value, self->selected);
         }
         break;
 
@@ -89,12 +81,6 @@ nautilus_view_item_model_set_property (GObject      *object,
         case PROP_ICON_SIZE:
         {
             nautilus_view_item_model_set_icon_size (self, g_value_get_int (value));
-        }
-        break;
-
-        case PROP_SELECTED:
-        {
-            nautilus_view_item_model_set_selected (self, g_value_get_boolean (value));
         }
         break;
 
@@ -141,13 +127,6 @@ nautilus_view_item_model_class_init (NautilusViewItemModelClass *klass)
                                                           "The file the icon item represents",
                                                           NAUTILUS_TYPE_FILE,
                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT));
-    g_object_class_install_property (object_class,
-                                     PROP_SELECTED,
-                                     g_param_spec_boolean ("selected",
-                                                           "Selected",
-                                                           "Sets the item as selected",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
 
     g_object_class_install_property (object_class,
                                      PROP_ITEM_UI,
@@ -205,27 +184,6 @@ nautilus_view_item_model_set_file (NautilusViewItemModel *self,
     self->file = g_object_ref (file);
 
     g_object_notify (G_OBJECT (self), "file");
-}
-
-gboolean
-nautilus_view_item_model_get_is_selected (NautilusViewItemModel *self)
-{
-    g_return_val_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self), FALSE);
-
-    return self->selected;
-}
-
-void
-nautilus_view_item_model_set_selected (NautilusViewItemModel *self,
-                                       gboolean               selected)
-{
-    g_return_if_fail (NAUTILUS_IS_VIEW_ITEM_MODEL (self));
-
-    if (self->selected != !!selected)
-    {
-        self->selected = !!selected;
-        g_object_notify (G_OBJECT (self), "selected");
-    }
 }
 
 GtkWidget *
