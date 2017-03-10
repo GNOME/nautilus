@@ -295,13 +295,6 @@ real_get_selection (NautilusFilesView *files_view)
     return selected_files;
 }
 
-
-static GList *
-real_get_selection_for_file_transfer (NautilusFilesView *files_view)
-{
-    return NULL;
-}
-
 static gboolean
 real_is_empty (NautilusFilesView *files_view)
 {
@@ -868,7 +861,10 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->clear = real_clear;
     files_view_class->file_changed = real_file_changed;
     files_view_class->get_selection = real_get_selection;
-    files_view_class->get_selection_for_file_transfer = real_get_selection_for_file_transfer;
+    /* TODO: remove this get_selection_for_file_transfer, this doesn't even
+     * take into account we could us the view for recursive search :/
+     * CanvasView has the same issue. */
+    files_view_class->get_selection_for_file_transfer = real_get_selection;
     files_view_class->is_empty = real_is_empty;
     files_view_class->remove_file = real_remove_file;
     files_view_class->update_actions_state = real_update_actions_state;
