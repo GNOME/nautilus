@@ -111,9 +111,9 @@ get_preferred_width (GtkWidget *widget,
     *natural_size = self->max_width == -1 ? *natural_size :
                     MAX (*minimum_size, MIN (self->max_width, *natural_size));
 
-    style_context = gtk_widget_get_style_context (child);
+    style_context = gtk_widget_get_style_context (widget);
     gtk_style_context_get_padding (style_context,
-                                   gtk_widget_get_state_flags (child),
+                                   gtk_widget_get_state_flags (widget),
                                    &padding);
     *minimum_size += padding.left + padding.right;
     *natural_size += padding.left + padding.right;
@@ -139,9 +139,9 @@ get_preferred_height (GtkWidget *widget,
 
     gtk_widget_get_preferred_height_for_width (child, natural_width, minimum_size, natural_size);
 
-    style_context = gtk_widget_get_style_context (child);
+    style_context = gtk_widget_get_style_context (widget);
     gtk_style_context_get_padding (style_context,
-                                   gtk_widget_get_state_flags (child),
+                                   gtk_widget_get_state_flags (widget),
                                    &padding);
     *minimum_size += padding.top + padding.bottom;
     *natural_size += padding.top + padding.bottom;
