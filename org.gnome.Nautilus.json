@@ -117,14 +117,13 @@
             ]
         },
         {
-            "buildsystem": "meson",
-            "builddir": true,
             "name": "nautilus",
             "config-opts": [
-                "-Denable-desktop=false",
-                "-Denable-selinux=false",
-                "-Denable-xmp=true",
-                "-Denable-libexif=true",
+                "--disable-static",
+                "--disable-desktop",
+                "--disable-selinux",
+                "--enable-xmp",
+                "--enable-libexif",
             ],
             "sources": [
                 {
