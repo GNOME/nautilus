@@ -16,6 +16,7 @@ struct _NautilusViewIconController
 
     NautilusViewIconUi *view_ui;
     NautilusViewModel *model;
+    GtkEventBox *event_box;
 
     GIcon *view_icon;
     GActionGroup *action_group;
@@ -816,13 +817,16 @@ constructed (GObject *object)
 
     self->model = nautilus_view_model_new ();
     self->view_ui = nautilus_view_icon_ui_new (self);
-    g_signal_connect_after (GTK_WIDGET (self->view_ui), "button-press-event",
-                            (GCallback) on_button_press_event, self);
     gtk_widget_show (GTK_WIDGET (self->view_ui));
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
+    self->event_box = GTK_EVENT_BOX (gtk_event_box_new ());
+    gtk_container_add (GTK_CONTAINER (self->event_box), GTK_WIDGET (self->view_ui));
+    g_signal_connect (GTK_WIDGET (self->event_box), "button-press-event",
+                      (GCallback) on_button_press_event, self);
+
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->view_ui));
+    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->event_box));
 
     self->action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
