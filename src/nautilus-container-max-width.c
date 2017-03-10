@@ -1,5 +1,7 @@
 #include "nautilus-container-max-width.h"
 
+#define DEFAULT_MAX_SIZE 120
+
 struct _NautilusContainerMaxWidth
 {
     GtkBin parent_instance;
@@ -105,7 +107,7 @@ get_preferred_width (GtkWidget *widget,
     *minimum_size = 0;
     gtk_widget_get_preferred_width (child, minimum_size, natural_size);
 
-    *minimum_size = self->max_width == -1 ? *minimum_size : 96;
+    *minimum_size = self->max_width == -1 ? *minimum_size : DEFAULT_MAX_SIZE;
     *natural_size = self->max_width == -1 ? *natural_size :
                     MAX (*minimum_size, MIN (self->max_width, *natural_size));
 
