@@ -146,7 +146,7 @@ constructed (GObject *object)
     gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_line_wrap (label, TRUE);
     gtk_label_set_line_wrap_mode (label, PANGO_WRAP_WORD_CHAR);
-    gtk_label_set_lines (label, 4);
+    gtk_label_set_lines (label, 3);
     gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
     gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
     gtk_box_pack_end (container, GTK_WIDGET (label), TRUE, TRUE, 0);
