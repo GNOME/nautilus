@@ -982,7 +982,7 @@ notify_unmount_done (GMountOperation *op,
         gchar **strings;
 
         strings = g_strsplit (message, "\n", 0);
-        icon = g_themed_icon_new ("media-removable");
+        icon = g_themed_icon_new ("media-removable-symbolic");
         unplug = g_notification_new (strings[0]);
         g_notification_set_body (unplug, strings[1]);
         g_notification_set_icon (unplug, icon);
