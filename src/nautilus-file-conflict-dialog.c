@@ -153,6 +153,12 @@ nautilus_file_conflict_dialog_disable_skip (NautilusFileConflictDialog *fcd)
 }
 
 void
+nautilus_file_conflict_dialog_disable_replace (NautilusFileConflictDialog *fcd)
+{
+    gtk_widget_set_sensitive (fcd->replace_button, FALSE);
+}
+
+void
 nautilus_file_conflict_dialog_disable_apply_to_all (NautilusFileConflictDialog *fcd)
 {
     gtk_widget_hide (fcd->checkbox);
