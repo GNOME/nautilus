@@ -185,6 +185,7 @@ extern GSettings *nautilus_window_state;
 extern GSettings *gtk_filechooser_preferences;
 extern GSettings *gnome_lockdown_preferences;
 extern GSettings *gnome_background_preferences;
+extern GSettings *gnome_screensaver_preferences;
 extern GSettings *gnome_interface_preferences;
 extern GSettings *gnome_privacy_preferences;
 

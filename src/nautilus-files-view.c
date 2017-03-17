@@ -6261,6 +6261,30 @@ set_uri_as_wallpaper (const char *uri)
 }
 
 static void
+set_uri_as_lockscreen(const char *uri)
+{
+    GSettings *settings;
+
+    settings = gnome_screensaver_preferences;
+
+    g_settings_delay (settings);
+
+    if (uri == NULL)
+    {
+        uri = "";
+    }
+
+    g_settings_set_string (settings, BG_KEY_PICTURE_URI, uri);
+    g_settings_set_string (settings, BG_KEY_PRIMARY_COLOR, "#000000");
+    g_settings_set_string (settings, BG_KEY_SECONDARY_COLOR, "#000000");
+    g_settings_set_enum (settings, BG_KEY_COLOR_TYPE, G_DESKTOP_BACKGROUND_SHADING_SOLID);
+    g_settings_set_enum (settings, BG_KEY_PICTURE_PLACEMENT, G_DESKTOP_BACKGROUND_STYLE_ZOOM);
+
+    /* Apply changes atomically. */
+    g_settings_apply (settings);
+}
+
+static void
 wallpaper_copy_done_callback (GHashTable *debuting_files,
                               gboolean    success,
                               gpointer    data)
@@ -6340,6 +6364,35 @@ action_set_as_wallpaper (GSimpleAction *action,
                                             NULL);
         g_free (target_uri);
         g_list_free_full (uris, g_free);
+    }
+
+    nautilus_file_list_free (selection);
+}
+
+static void
+action_set_as_lockscreen (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+    GList *selection;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    selection = nautilus_view_get_selection (user_data);
+
+    if (can_set_wallpaper (selection))
+    {
+        NautilusFile *file;
+
+        file = NAUTILUS_FILE (selection->data);
+
+	char *target_uri;
+
+	target_uri = nautilus_file_get_uri (file);
+
+	set_uri_as_lockscreen (target_uri);
+
+	g_free (target_uri);
     }
 
     nautilus_file_list_free (selection);
@@ -6694,6 +6747,7 @@ const GActionEntry view_entries[] =
     { "compress", action_compress },
     { "properties", action_properties},
     { "set-as-wallpaper", action_set_as_wallpaper },
+    { "set-as-lockscreen", action_set_as_lockscreen},
     { "mount-volume", action_mount_volume },
     { "unmount-volume", action_unmount_volume },
     { "eject-volume", action_eject_volume },
@@ -7196,6 +7250,9 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), item_opens_in_view);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "set-as-wallpaper");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_set_wallpaper (selection));
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "set-as-lockscreen");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_set_wallpaper (selection));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "restore-from-trash");

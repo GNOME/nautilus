@@ -41,6 +41,7 @@ GSettings *nautilus_window_state;
 GSettings *gtk_filechooser_preferences;
 GSettings *gnome_lockdown_preferences;
 GSettings *gnome_background_preferences;
+GSettings *gnome_screensaver_preferences;
 GSettings *gnome_interface_preferences;
 GSettings *gnome_privacy_preferences;
 
