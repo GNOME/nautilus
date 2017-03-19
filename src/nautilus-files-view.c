@@ -5956,6 +5956,7 @@ copy_or_move_selection (NautilusFilesView *view,
     CopyCallbackData *copy_data;
     GList *selection;
     const gchar *title;
+    NautilusDirectory *directory;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -6007,7 +6008,17 @@ copy_or_move_selection (NautilusFilesView *view,
         gtk_file_chooser_set_filter (GTK_FILE_CHOOSER (dialog), filter);
     }
 
-    uri = nautilus_directory_get_uri (priv->model);
+
+    if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
+    {
+        directory = nautilus_search_directory_get_base_model (NAUTILUS_SEARCH_DIRECTORY (priv->model));
+        uri = nautilus_directory_get_uri (directory);
+    }
+    else
+    {
+        uri = nautilus_directory_get_uri (priv->model);
+    }
+
     gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog), uri);
     g_free (uri);
     g_signal_connect (dialog, "current-folder-changed",
