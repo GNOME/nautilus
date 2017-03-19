@@ -74,11 +74,6 @@ struct _NautilusProgressInfo
     GFile *destination;
 };
 
-struct _NautilusProgressInfoClass
-{
-    GObjectClass parent_class;
-};
-
 G_LOCK_DEFINE_STATIC (progress_info);
 
 G_DEFINE_TYPE (NautilusProgressInfo, nautilus_progress_info, G_TYPE_OBJECT)
