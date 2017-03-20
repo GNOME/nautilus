@@ -2021,6 +2021,13 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
                                          new_folder_done, data);
 
     g_clear_object (&priv->new_folder_controller);
+    
+    /* After the dialog is destroyed the focus, is probably in the menu item
+     * that created the dialog, but we want the focus to be in the newly created
+     * folder.
+     */
+    gtk_widget_grab_focus (GTK_WIDGET (view));
+
     g_object_unref (parent);
 }
 
