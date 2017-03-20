@@ -82,8 +82,12 @@ static void
 sanity_check_window_position (int *left,
                               int *top)
 {
+    GdkRectangle geometry;
+
     g_assert (left != NULL);
     g_assert (top != NULL);
+
+    gdk_monitor_get_geometry (gdk_display_get_monitor (gdk_display_get_default (), 0), &geometry); 
 
     /* Make sure the top of the window is on screen, for
      * draggability (might not be necessary with all window managers,
@@ -91,7 +95,7 @@ sanity_check_window_position (int *left,
      * isn't off the bottom of the screen, or so close to the bottom
      * that it might be obscured by the panel.
      */
-    *top = CLAMP (*top, 0, gdk_screen_height () - MINIMUM_ON_SCREEN_HEIGHT);
+    *top = CLAMP (*top, 0, geometry.height - MINIMUM_ON_SCREEN_HEIGHT);
 
     /* FIXME bugzilla.eazel.com 669:
      * If window has negative left coordinate, set_uposition sends it
@@ -104,23 +108,27 @@ sanity_check_window_position (int *left,
      * the screen, or so close to the right edge that it might be
      * obscured by the panel.
      */
-    *left = CLAMP (*left, 0, gdk_screen_width () - MINIMUM_ON_SCREEN_WIDTH);
+    *left = CLAMP (*left, 0, geometry.width - MINIMUM_ON_SCREEN_WIDTH);
 }
 
 static void
 sanity_check_window_dimensions (guint *width,
                                 guint *height)
 {
+    GdkRectangle geometry;
+
     g_assert (width != NULL);
     g_assert (height != NULL);
+
+    gdk_monitor_get_geometry (gdk_display_get_monitor (gdk_display_get_default (), 0), &geometry); 
 
     /* Pin the size of the window to the screen, so we don't end up in
      * a state where the window is so big essential parts of it can't
      * be reached (might not be necessary with all window managers,
      * but seems reasonable anyway).
      */
-    *width = MIN (*width, gdk_screen_width ());
-    *height = MIN (*height, gdk_screen_height ());
+    *width = MIN (*width, geometry.width);
+    *height = MIN (*height, geometry.height);
 }
 
 /**
@@ -148,6 +156,9 @@ eel_gtk_window_set_initial_geometry (GtkWindow           *window,
                                      guint                height)
 {
     GdkScreen *screen;
+    GdkDisplay *display;
+    GdkMonitor *monitor;
+    GdkRectangle geometry;
     int real_left, real_top;
     int screen_width, screen_height;
 
@@ -165,8 +176,13 @@ eel_gtk_window_set_initial_geometry (GtkWindow           *window,
         real_top = top;
 
         screen = gtk_window_get_screen (window);
-        screen_width = gdk_screen_get_width (screen);
-        screen_height = gdk_screen_get_height (screen);
+        display = gdk_screen_get_display (screen);
+        monitor = gdk_display_get_monitor (display, 0);
+
+        gdk_monitor_get_geometry (monitor, &geometry);
+
+        screen_width = geometry.width;
+        screen_height = geometry.height;
 
         /* This is sub-optimal. GDK doesn't allow us to set win_gravity
          * to South/East types, which should be done if using negative
@@ -252,60 +268,6 @@ eel_gtk_window_set_initial_geometry_from_string (GtkWindow  *window,
     }
 
     eel_gtk_window_set_initial_geometry (window, geometry_flags, left, top, width, height);
-}
-
-/**
- * eel_pop_up_context_menu:
- *
- * Pop up a context menu under the mouse.
- * The menu is sunk after use, so it will be destroyed unless the
- * caller first ref'ed it.
- *
- * This function is more of a helper function than a gtk extension,
- * so perhaps it belongs in a different file.
- *
- * @menu: The menu to pop up under the mouse.
- * @offset_x: Ignored.
- * @offset_y: Ignored.
- * @event: The event that invoked this popup menu, or #NULL if there
- * is no event available.  This is used to get the timestamp for the menu's popup.
- * In case no event is provided, gtk_get_current_event_time() will be used automatically.
- **/
-void
-eel_pop_up_context_menu (GtkMenu        *menu,
-                         GdkEventButton *event)
-{
-    int button;
-
-    g_return_if_fail (GTK_IS_MENU (menu));
-
-    /* The event button needs to be 0 if we're popping up this menu from
-     * a button release, else a 2nd click outside the menu with any button
-     * other than the one that invoked the menu will be ignored (instead
-     * of dismissing the menu). This is a subtle fragility of the GTK menu code.
-     */
-
-    if (event)
-    {
-        button = event->type == GDK_BUTTON_RELEASE
-                 ? 0
-                 : event->button;
-    }
-    else
-    {
-        button = 0;
-    }
-
-    gtk_menu_popup (menu,                                       /* menu */
-                    NULL,                                       /* parent_menu_shell */
-                    NULL,                                       /* parent_menu_item */
-                    NULL,                                       /* popup_position_func */
-                    NULL,                                       /* popup_position_data */
-                    button,                                     /* button */
-                    event ? event->time : gtk_get_current_event_time ());     /* activate_time */
-
-    g_object_ref_sink (menu);
-    g_object_unref (menu);
 }
 
 GtkMenuItem *
