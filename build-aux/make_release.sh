@@ -1,5 +1,5 @@
 #!/bin/sh
-test -n "$srcdir" || srcdir=$(dirname "$0")
+test -n "$srcdir" || srcdir=$1
 test -n "$srcdir" || srcdir=.
 
 cd $srcdir

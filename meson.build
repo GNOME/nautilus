@@ -101,7 +101,7 @@ subdir ('eel')
 subdir ('libnautilus-extension')
 
 message ('Checking for libgd…')
-run_command ('build-scripts/check_libgd.sh')
+run_command ('build-aux/meson/check_libgd.sh')
 
 libgd_options = ['static=true',
                  'with-gtk-hacks=true',
@@ -128,4 +128,4 @@ if get_option ('enable-nst-extension')
 endif
 
 # Compile GSettings schemas when installing from source.
-meson.add_install_script ('build-scripts/compile_gschemas.sh')
+meson.add_install_script ('build-aux/meson/postinstall.sh')
