@@ -11,6 +11,9 @@ also owns those files.
 Window slot is the creator of the file if the file was already not present due
 to be a bookmark.
 
+The window has a queue with information of the closed tabs, owning references
+to previous files.
+
 = Directory Ownership =
 Every file has a directory associated, that is usually the parent. However, when
 the file is a root and has no parent, the file is called self_owned, and the directory

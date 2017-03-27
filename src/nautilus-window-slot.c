@@ -153,6 +153,54 @@ static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
                                     gboolean              is_empty,
                                     gpointer              user_data);
 
+void
+nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
+                                             RestoreTabData     *data)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->back_list = g_list_copy_deep (data->back_list, (GCopyFunc) g_object_ref, NULL);
+
+    priv->forward_list = g_list_copy_deep (data->forward_list, (GCopyFunc) g_object_ref, NULL);
+
+    priv->view_mode_before_search = data->view_before_search;
+
+    priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
+}
+
+RestoreTabData*
+nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+    RestoreTabData *data;
+    GList *back_list;
+    GList *forward_list;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    back_list = g_list_copy_deep (priv->back_list,
+                                  (GCopyFunc) g_object_ref,
+                                  NULL);
+    forward_list = g_list_copy_deep (priv->forward_list,
+                                     (GCopyFunc) g_object_ref,
+                                     NULL);
+
+    /* This data is used to restore a tab after it was closed.
+     * In order to do that we need to keep the history, what was
+     * the view mode before search and a reference to the file.
+     * A GFile isn't enough, as the NautilusFile also keeps a
+     * reference to the search directory */
+    data = g_new0 (RestoreTabData, 1);
+    data->back_list = back_list;
+    data->forward_list = forward_list;
+    data->file = nautilus_file_get (priv->location);
+    data->view_before_search = priv->view_mode_before_search;
+
+    return data;
+}
+
 gboolean
 nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                        GFile              *location)
@@ -204,7 +252,7 @@ real_get_view_for_location (NautilusWindowSlot *self,
         /* If it's already set, is because we already made the change to search mode,
          * so the view mode of the current view will be the one search is using,
          * which is not the one we are interested in */
-        if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID)
+        if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID && priv->content_view)
         {
             priv->view_mode_before_search = nautilus_files_view_get_view_id (priv->content_view);
         }
@@ -2170,8 +2218,10 @@ handle_go_elsewhere (NautilusWindowSlot *self,
     NautilusWindowSlotPrivate *priv;
 
     priv = nautilus_window_slot_get_instance_private (self);
+
     /* Clobber the entire forward list, and move displayed location to back list */
     nautilus_window_slot_clear_forward_list (self);
+
     slot_location = nautilus_window_slot_get_location (self);
 
     if (slot_location != NULL)

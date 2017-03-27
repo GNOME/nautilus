@@ -81,6 +81,8 @@ static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window)
 static void close_slot (NautilusWindow     *window,
                         NautilusWindowSlot *slot,
                         gboolean            remove_from_notebook);
+static void free_restore_tab_data (gpointer data,
+                                   gpointer user_data);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -139,6 +141,8 @@ typedef struct
 
     guint sidebar_width_handler_id;
     guint bookmarks_id;
+
+    GQueue *tab_data_queue;
 } NautilusWindowPrivate;
 
 enum
@@ -1344,6 +1348,43 @@ should_show_format_command (GVolume *volume)
 }
 
 static void
+action_restore_tab (GSimpleAction *action,
+                    GVariant      *state,
+                    gpointer       user_data)
+{
+    NautilusWindowPrivate *priv;
+    NautilusWindow *window = NAUTILUS_WINDOW (user_data);
+    NautilusWindowOpenFlags flags;
+    g_autoptr (GFile) location = NULL;
+    NautilusWindowSlot *slot;
+    RestoreTabData *data;
+
+    priv = nautilus_window_get_instance_private (window);
+
+    if (g_queue_get_length (priv->tab_data_queue) == 0)
+    {
+        return;
+    }
+
+    flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
+
+    flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
+    flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+
+    data = g_queue_pop_head (priv->tab_data_queue);
+
+    location = nautilus_file_get_location (data->file);
+
+    slot = nautilus_window_create_slot (window, location);
+    nautilus_window_initialize_slot (window, slot, flags);
+
+    nautilus_window_slot_open_location_full (slot, location, flags, NULL);
+    nautilus_window_slot_restore_from_data (slot, data);
+
+    free_restore_tab_data (data, NULL);
+}
+
+static void
 action_format (GSimpleAction *action,
                GVariant      *variant,
                gpointer       user_data)
@@ -1552,6 +1593,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
 {
     NautilusWindowPrivate *priv;
     NautilusWindowSlot *next_slot;
+    RestoreTabData *data;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL)
@@ -1566,6 +1608,9 @@ nautilus_window_slot_close (NautilusWindow     *window,
         next_slot = get_first_inactive_slot (window);
         nautilus_window_set_active_slot (window, next_slot);
     }
+
+    data = nautilus_window_slot_get_restore_tab_data (slot);
+    g_queue_push_head (priv->tab_data_queue, data);
 
     close_slot (window, slot, TRUE);
 
@@ -2244,6 +2289,7 @@ const GActionEntry win_entries[] =
     { "empty-trash", action_empty_trash },
     { "properties", action_properties },
     { "format", action_format },
+    { "restore-tab", action_restore_tab },
 };
 
 static void
@@ -2289,6 +2335,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.prompt-root-location", "slash");
     nautilus_application_set_accelerator (app, "win.prompt-home-location", "asciitilde");
     nautilus_application_set_accelerator (app, "win.view-menu", "F10");
+    nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
     /* Alt+N for the first 9 tabs */
     for (i = 0; i < 9; ++i)
@@ -2478,6 +2525,19 @@ nautilus_window_destroy (GtkWidget *object)
 }
 
 static void
+free_restore_tab_data (gpointer data,
+                       gpointer user_data)
+{
+    RestoreTabData *tab_data = data;
+
+    g_list_free_full (tab_data->back_list, g_object_unref);
+    g_list_free_full (tab_data->forward_list, g_object_unref);
+    nautilus_file_unref (tab_data->file);
+
+    g_free (tab_data);
+}
+
+static void
 nautilus_window_finalize (GObject *object)
 {
     NautilusWindow *window;
@@ -2510,6 +2570,9 @@ nautilus_window_finalize (GObject *object)
     g_signal_handlers_disconnect_by_func (nautilus_file_undo_manager_get (),
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
+
+    g_queue_foreach (priv->tab_data_queue, (GFunc) free_restore_tab_data, NULL);
+    g_queue_free (priv->tab_data_queue);
 
     /* nautilus_window_close() should have run */
     g_assert (priv->slots == NULL);
@@ -2840,6 +2903,8 @@ nautilus_window_init (NautilusWindow *window)
     window_group = gtk_window_group_new ();
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));
     g_object_unref (window_group);
+
+    priv->tab_data_queue = g_queue_new();
 }
 
 static void

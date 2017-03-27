@@ -42,6 +42,13 @@ G_DECLARE_DERIVABLE_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WI
 #include "nautilus-window.h"
 #include "nautilus-toolbar-menu-sections.h"
 
+typedef struct
+{
+    NautilusFile *file;
+    gint view_before_search;
+    GList *back_list;
+    GList *forward_list;
+} RestoreTabData;
 
 struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
@@ -109,6 +116,11 @@ void     nautilus_window_slot_search                       (NautilusWindowSlot *
 
 gboolean nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                                 GFile              *location);
+
+void nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
+                                             RestoreTabData     *data);
+
+RestoreTabData* nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self);
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
