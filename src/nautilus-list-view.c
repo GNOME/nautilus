@@ -2063,8 +2063,7 @@ create_and_set_up_tree_view (NautilusListView *view)
 
 static void
 nautilus_list_view_add_files (NautilusFilesView *view,
-                              GList      *files,
-                              NautilusDirectory *directory)
+                              GList             *files)
 {
     NautilusListModel *model;
     GList *l;
@@ -2072,7 +2071,16 @@ nautilus_list_view_add_files (NautilusFilesView *view,
     model = NAUTILUS_LIST_VIEW (view)->details->model;
     for (l = files; l != NULL; l = l->next)
     {
+        NautilusFile *parent;
+        NautilusDirectory *directory;
+
+        parent = nautilus_file_get_parent (NAUTILUS_FILE (l->data));
+        directory = nautilus_directory_get_for_file (parent);
+        g_print ("file %s parent %s directory %s\n", nautilus_file_get_uri (l->data), nautilus_file_get_uri (parent), nautilus_directory_get_uri (directory));
         nautilus_list_model_add_file (model, NAUTILUS_FILE (l->data), directory);
+
+        nautilus_file_unref (parent);
+        nautilus_directory_unref (directory);
     }
 }
 

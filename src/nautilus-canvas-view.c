@@ -455,14 +455,11 @@ nautilus_canvas_view_remove_file (NautilusFilesView *view,
 
 static void
 nautilus_canvas_view_add_files (NautilusFilesView *view,
-                                GList             *files,
-                                NautilusDirectory *directory)
+                                GList             *files)
 {
     NautilusCanvasView *canvas_view;
     NautilusCanvasContainer *canvas_container;
     GList *l;
-
-    g_assert (directory == nautilus_files_view_get_model (view));
 
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
     canvas_container = get_canvas_container (canvas_view);
