@@ -34,8 +34,10 @@
 #include "nautilus-progress-info.h"
 #include "nautilus-progress-info-manager.h"
 
-struct _NautilusProgressPersistenceHandlerPriv
+struct _NautilusProgressPersistenceHandler
 {
+    GObject parent_instance;
+
     NautilusProgressInfoManager *manager;
 
     NautilusApplication *app;
@@ -69,7 +71,7 @@ show_file_transfers (NautilusProgressPersistenceHandler *self)
     GFile *home;
 
     home = g_file_new_for_path (g_get_home_dir ());
-    nautilus_application_open_location (self->priv->app, home, NULL, NULL);
+    nautilus_application_open_location (self->app, home, NULL, NULL);
 
     g_object_unref (home);
 }
@@ -108,11 +110,11 @@ progress_persistence_handler_update_notification (NautilusProgressPersistenceHan
 
     body = g_strdup_printf (ngettext ("%'d file operation active",
                                       "%'d file operations active",
-                                      self->priv->active_infos),
-                            self->priv->active_infos);
+                                      self->active_infos),
+                            self->active_infos);
     g_notification_set_body (notification, body);
 
-    nautilus_application_send_notification (self->priv->app,
+    nautilus_application_send_notification (self->app,
                                             "progress", notification);
 
     g_object_unref (notification);
@@ -124,8 +126,8 @@ nautilus_progress_persistence_handler_make_persistent (NautilusProgressPersisten
 {
     GList *windows;
 
-    windows = nautilus_application_get_windows (self->priv->app);
-    if (self->priv->active_infos > 0 &&
+    windows = nautilus_application_get_windows (self->app);
+    if (self->active_infos > 0 &&
         g_list_length (windows) == 0)
     {
         progress_persistence_handler_update_notification (self);
@@ -145,7 +147,7 @@ progress_persistence_handler_show_complete_notification (NautilusProgressPersist
     complete_notification = g_notification_new (_("File Operations"));
     g_notification_set_body (complete_notification,
                              _("All file operations have been successfully completed"));
-    nautilus_application_send_notification (self->priv->app,
+    nautilus_application_send_notification (self->app,
                                             "transfer-complete",
                                             complete_notification);
 
@@ -160,7 +162,7 @@ progress_persistence_handler_hide_notification (NautilusProgressPersistenceHandl
         return;
     }
 
-    nautilus_application_withdraw_notification (self->priv->app,
+    nautilus_application_withdraw_notification (self->app,
                                                 "progress");
 }
 
@@ -170,10 +172,10 @@ progress_info_finished_cb (NautilusProgressInfo               *info,
 {
     GList *windows;
 
-    self->priv->active_infos--;
+    self->active_infos--;
 
-    windows = nautilus_application_get_windows (self->priv->app);
-    if (self->priv->active_infos > 0)
+    windows = nautilus_application_get_windows (self->app);
+    if (self->active_infos > 0)
     {
         if (g_list_length (windows) == 0)
         {
@@ -195,8 +197,8 @@ handle_new_progress_info (NautilusProgressPersistenceHandler *self,
     g_signal_connect (info, "finished",
                       G_CALLBACK (progress_info_finished_cb), self);
 
-    self->priv->active_infos++;
-    windows = nautilus_application_get_windows (self->priv->app);
+    self->active_infos++;
+    windows = nautilus_application_get_windows (self->app);
 
     if (g_list_length (windows) == 0)
     {
@@ -295,7 +297,7 @@ nautilus_progress_persistence_handler_dispose (GObject *obj)
 {
     NautilusProgressPersistenceHandler *self = NAUTILUS_PROGRESS_PERSISTENCE_HANDLER (obj);
 
-    g_clear_object (&self->priv->manager);
+    g_clear_object (&self->manager);
 
     G_OBJECT_CLASS (nautilus_progress_persistence_handler_parent_class)->dispose (obj);
 }
@@ -350,11 +352,8 @@ server_has_persistence (void)
 static void
 nautilus_progress_persistence_handler_init (NautilusProgressPersistenceHandler *self)
 {
-    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER,
-                                              NautilusProgressPersistenceHandlerPriv);
-
-    self->priv->manager = nautilus_progress_info_manager_dup_singleton ();
-    g_signal_connect (self->priv->manager, "new-progress-info",
+    self->manager = nautilus_progress_info_manager_dup_singleton ();
+    g_signal_connect (self->manager, "new-progress-info",
                       G_CALLBACK (new_progress_info_cb), self);
 }
 
@@ -365,8 +364,6 @@ nautilus_progress_persistence_handler_class_init (NautilusProgressPersistenceHan
 
     oclass = G_OBJECT_CLASS (klass);
     oclass->dispose = nautilus_progress_persistence_handler_dispose;
-
-    g_type_class_add_private (klass, sizeof (NautilusProgressPersistenceHandlerPriv));
 }
 
 NautilusProgressPersistenceHandler *
@@ -375,9 +372,9 @@ nautilus_progress_persistence_handler_new (GObject *app)
     NautilusProgressPersistenceHandler *self;
 
     self = g_object_new (NAUTILUS_TYPE_PROGRESS_PERSISTENCE_HANDLER, NULL);
-    self->priv->app = NAUTILUS_APPLICATION (app);
+    self->app = NAUTILUS_APPLICATION (app);
 
-    g_action_map_add_action_entries (G_ACTION_MAP (self->priv->app),
+    g_action_map_add_action_entries (G_ACTION_MAP (self->app),
                                      progress_persistence_entries, G_N_ELEMENTS (progress_persistence_entries),
                                      self);
     return self;
