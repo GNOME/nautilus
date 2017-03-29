@@ -362,8 +362,6 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
         {
             nautilus_files_view_activate_selection (NAUTILUS_FILES_VIEW (priv->content_view));
         }
-
-        nautilus_window_slot_set_search_visible (self, FALSE);
     }
 }
 
