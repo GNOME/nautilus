@@ -28,33 +28,7 @@
 #include "nautilus-progress-info.h"
 
 #define NAUTILUS_TYPE_PROGRESS_INFO_MANAGER nautilus_progress_info_manager_get_type()
-#define NAUTILUS_PROGRESS_INFO_MANAGER(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NautilusProgressInfoManager))
-#define NAUTILUS_PROGRESS_INFO_MANAGER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NautilusProgressInfoManagerClass))
-#define NAUTILUS_IS_PROGRESS_INFO_MANAGER(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PROGRESS_INFO_MANAGER))
-#define NAUTILUS_IS_PROGRESS_INFO_MANAGER_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PROGRESS_INFO_MANAGER))
-#define NAUTILUS_PROGRESS_INFO_MANAGER_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_PROGRESS_INFO_MANAGER, NautilusProgressInfoManagerClass))
-
-typedef struct _NautilusProgressInfoManager NautilusProgressInfoManager;
-typedef struct _NautilusProgressInfoManagerClass NautilusProgressInfoManagerClass;
-typedef struct _NautilusProgressInfoManagerPriv NautilusProgressInfoManagerPriv;
-
-struct _NautilusProgressInfoManager {
-  GObject parent;
-
-  /* private */
-  NautilusProgressInfoManagerPriv *priv;
-};
-
-struct _NautilusProgressInfoManagerClass {
-  GObjectClass parent_class;
-};
-
-GType nautilus_progress_info_manager_get_type (void);
+G_DECLARE_FINAL_TYPE (NautilusProgressInfoManager, nautilus_progress_info_manager, NAUTILUS, PROGRESS_INFO_MANAGER, GObject)
 
 NautilusProgressInfoManager* nautilus_progress_info_manager_dup_singleton (void);
 
