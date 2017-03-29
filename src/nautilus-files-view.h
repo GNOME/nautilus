@@ -61,8 +61,7 @@ struct _NautilusFilesViewClass {
          * It must be replaced by each subclass.
          */
         void    (* add_files)                    (NautilusFilesView *view,
-                                                  GList             *files,
-                                                  NautilusDirectory *directory);
+                                                  GList             *files);
         void    (* remove_file)                 (NautilusFilesView *view,
                                                  NautilusFile      *file,
                                                  NautilusDirectory *directory);

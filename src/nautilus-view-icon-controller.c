@@ -742,8 +742,7 @@ action_sort_order_changed (GSimpleAction *action,
 
 static void
 real_add_files (NautilusFilesView *files_view,
-                GList             *files,
-                NautilusDirectory *directory)
+                GList             *files)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     g_autoptr (GQueue) files_queue;

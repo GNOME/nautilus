@@ -4106,7 +4106,7 @@ process_old_files (NautilusFilesView *view)
         if (files_added != NULL)
         {
             g_signal_emit (view,
-                           signals[ADD_FILES], 0, pending_additions, pending->directory);
+                           signals[ADD_FILES], 0, pending_additions);
         }
 
         for (node = files_changed; node != NULL; node = node->next)
@@ -9359,7 +9359,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       G_STRUCT_OFFSET (NautilusFilesViewClass, add_files),
                       NULL, NULL,
                       g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 2, G_TYPE_POINTER, NAUTILUS_TYPE_DIRECTORY);
+                      G_TYPE_NONE, 1, G_TYPE_POINTER);
     signals[BEGIN_FILE_CHANGES] =
         g_signal_new ("begin-file-changes",
                       G_TYPE_FROM_CLASS (klass),
