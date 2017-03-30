@@ -269,7 +269,6 @@ nautilus_view_model_add_items (NautilusViewModel *self,
     array = g_malloc_n (g_queue_get_length (items),
                         sizeof (NautilusViewItemModel *));
 
-    g_hash_table_remove_all (self->map_files_to_model);
     for (l = g_queue_peek_head_link (items); l != NULL; l = l->next)
     {
         array[i] = l->data;
