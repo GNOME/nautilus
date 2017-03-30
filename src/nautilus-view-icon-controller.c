@@ -399,6 +399,11 @@ real_reveal_selection (NautilusFilesView *files_view)
     GtkAdjustment *vadjustment;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
+    if (selection == NULL)
+    {
+        return;
+    }
+
     item_model = nautilus_view_model_get_item_from_file (self->model,
                                                          NAUTILUS_FILE (selection->data));
     item_ui = nautilus_view_item_model_get_item_ui (item_model);
