@@ -3593,7 +3593,7 @@ done_loading (NautilusFilesView *view,
 
         if (do_reveal)
         {
-            if (NAUTILUS_IS_LIST_VIEW (view))
+            if (NAUTILUS_IS_LIST_VIEW (view) || NAUTILUS_IS_VIEW_ICON_CONTROLLER (view))
             {
                 /* HACK: We should be able to directly call reveal_selection here,
                  * but at this point the GtkTreeView hasn't allocated the new nodes
