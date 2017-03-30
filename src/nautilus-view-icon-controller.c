@@ -390,6 +390,24 @@ real_select_all (NautilusFilesView *files_view)
 static void
 real_reveal_selection (NautilusFilesView *files_view)
 {
+    GList *selection;
+    NautilusViewItemModel *item_model;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkWidget *item_ui;
+    GtkAllocation allocation;
+    GtkWidget *content_widget;
+    GtkAdjustment *vadjustment;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
+    item_model = nautilus_view_model_get_item_from_file (self->model,
+                                                         NAUTILUS_FILE (selection->data));
+    item_ui = nautilus_view_item_model_get_item_ui (item_model);
+    gtk_widget_get_allocation (item_ui, &allocation);
+    content_widget = nautilus_files_view_get_content_widget (files_view);
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+    gtk_adjustment_set_value (vadjustment, allocation.y);
+
+    g_list_foreach (selection, (GFunc) g_object_unref, NULL);
 }
 
 static gboolean
