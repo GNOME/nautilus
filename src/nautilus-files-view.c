@@ -1745,7 +1745,6 @@ typedef struct
 static void
 track_newly_added_locations (NautilusFilesView *view,
                              GList             *new_files,
-                             NautilusDirectory *directory,
                              gpointer           user_data)
 {
     GHashTable *added_locations;
@@ -3651,7 +3650,6 @@ debuting_files_data_free (DebutingFilesData *data)
 static void
 debuting_files_add_files_callback (NautilusFilesView *view,
                                    GList             *new_files,
-                                   NautilusDirectory *directory,
                                    DebutingFilesData *data)
 {
     GFile *location;
@@ -3708,7 +3706,6 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 static void
 pre_copy_move_add_files_callback (NautilusFilesView *view,
                                  GList             *new_files,
-                                 NautilusDirectory *directory,
                                  CopyMoveDoneData  *data)
 {
     GList *l;
