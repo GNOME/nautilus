@@ -1363,7 +1363,8 @@ action_open_item_location (GSimpleAction *action,
     NautilusFile *item;
     GFile *activation_location;
     NautilusFile *activation_file;
-    NautilusFile *location;
+    NautilusFile *parent;
+    g_autoptr (GFile) parent_location = NULL;
 
     view = NAUTILUS_FILES_VIEW (user_data);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
@@ -1376,11 +1377,14 @@ action_open_item_location (GSimpleAction *action,
     item = NAUTILUS_FILE (selection->data);
     activation_location = nautilus_file_get_activation_location (item);
     activation_file = nautilus_file_get (activation_location);
-    location = nautilus_file_get_parent (activation_file);
+    parent = nautilus_file_get_parent (activation_file);
+    parent_location = nautilus_file_get_location (parent);
 
-    nautilus_files_view_activate_file (view, location, 0);
+    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
+                                             parent_location, 0, selection, NULL,
+                                             nautilus_files_view_get_nautilus_window_slot (view));
 
-    nautilus_file_unref (location);
+    nautilus_file_unref (parent);
     nautilus_file_unref (activation_file);
     g_object_unref (activation_location);
     nautilus_file_list_free (selection);
