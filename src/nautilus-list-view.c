@@ -2076,7 +2076,6 @@ nautilus_list_view_add_files (NautilusFilesView *view,
 
         parent = nautilus_file_get_parent (NAUTILUS_FILE (l->data));
         directory = nautilus_directory_get_for_file (parent);
-        g_print ("file %s parent %s directory %s\n", nautilus_file_get_uri (l->data), nautilus_file_get_uri (parent), nautilus_directory_get_uri (directory));
         nautilus_list_model_add_file (model, NAUTILUS_FILE (l->data), directory);
 
         nautilus_file_unref (parent);
