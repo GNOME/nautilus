@@ -295,6 +295,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     fcd->entry = widget;
     g_signal_connect (widget, "changed",
                       G_CALLBACK (entry_text_changed_cb), dialog);
+    gtk_entry_set_activates_default (GTK_ENTRY (widget), TRUE);
 
     widget = gtk_button_new_with_label (_("Reset"));
     gtk_button_set_image (GTK_BUTTON (widget),
