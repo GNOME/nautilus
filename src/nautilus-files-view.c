@@ -7098,7 +7098,8 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
     is_read_only = nautilus_files_view_is_read_only (view);
     selection_contains_recent = showing_recent_directory (view);
     can_link_from_copied_files = !nautilus_clipboard_is_cut_from_selection_data (selection_data) &&
-                                 !selection_contains_recent && !is_read_only;
+                                 !selection_contains_recent && !is_read_only &&
+                                 gtk_selection_data_get_length (selection_data) > 0;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "create-link");
