@@ -1,6 +1,6 @@
 
 /* nautilus-program-choosing.h - functions for selecting and activating
- 				 programs for opening/viewing particular files.
+                                 programs for opening/viewing particular files.
 
    Copyright (C) 2000 Eazel, Inc.
 
@@ -28,29 +28,29 @@
 #include <gio/gio.h>
 #include "nautilus-file.h"
 
-typedef void (*NautilusApplicationChoiceCallback) (GAppInfo                      *application,
-						   gpointer			  callback_data);
+typedef void (*NautilusApplicationChoiceCallback)   (GAppInfo                          *application,
+                                                     gpointer                           callback_data);
 
-void nautilus_launch_application                 (GAppInfo                          *application,
-						  GList                             *files,
-						  GtkWindow                         *parent_window);
-void nautilus_launch_application_by_uri          (GAppInfo                          *application,
-						  GList                             *uris,
-						  GtkWindow                         *parent_window);
-void nautilus_launch_application_for_mount       (GAppInfo                          *app_info,
-						  GMount                            *mount,
-						  GtkWindow                         *parent_window);
-void nautilus_launch_application_from_command    (GdkScreen                         *screen,
-						  const char                        *command_string,
-						  gboolean                           use_terminal,
-						  ...) G_GNUC_NULL_TERMINATED;
+void nautilus_launch_application                    (GAppInfo                          *application,
+                                                     GList                             *files,
+                                                     GtkWindow                         *parent_window);
+void nautilus_launch_application_by_uri             (GAppInfo                          *application,
+                                                     GList                             *uris,
+                                                     GtkWindow                         *parent_window);
+void nautilus_launch_application_for_mount          (GAppInfo                          *app_info,
+                                                     GMount                            *mount,
+                                                     GtkWindow                         *parent_window);
+void nautilus_launch_application_from_command       (GdkScreen                         *screen,
+                                                     const char                        *command_string,
+                                                     gboolean                           use_terminal,
+                                                     ...) G_GNUC_NULL_TERMINATED;
 void nautilus_launch_application_from_command_array (GdkScreen                         *screen,
-						     const char                        *command_string,
-						     gboolean                           use_terminal,
-						     const char * const *               parameters);
-void nautilus_launch_desktop_file		 (GdkScreen                         *screen,
-						  const char                        *desktop_file_uri,
-						  const GList                       *parameter_uris,
-						  GtkWindow                         *parent_window);
-						  
+                                                     const char                        *command_string,
+                                                     gboolean                           use_terminal,
+                                                     const char * const *               parameters);
+void nautilus_launch_desktop_file                   (GdkScreen                         *screen,
+                                                     const char                        *desktop_file_uri,
+                                                     const GList                       *parameter_uris,
+                                                     GtkWindow                         *parent_window);
+
 #endif /* NAUTILUS_PROGRAM_CHOOSING_H */
