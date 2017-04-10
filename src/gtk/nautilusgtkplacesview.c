@@ -55,6 +55,7 @@ struct _NautilusGtkPlacesViewPrivate
 
     GFile *server_list_file;
     GFileMonitor *server_list_monitor;
+    GFileMonitor *network_monitor;
 
     GCancellable *cancellable;
 
@@ -416,6 +417,7 @@ nautilus_gtk_places_view_destroy (GtkWidget *widget)
     priv->destroyed = 1;
 
     g_signal_handlers_disconnect_by_func (priv->volume_monitor, update_places, widget);
+    g_signal_handlers_disconnect_by_func (priv->network_monitor, update_places, widget);
 
     g_cancellable_cancel (priv->cancellable);
     g_cancellable_cancel (priv->networks_fetching_cancellable);
@@ -438,6 +440,7 @@ nautilus_gtk_places_view_finalize (GObject *object)
     g_clear_object (&priv->server_list_file);
     g_clear_object (&priv->server_list_monitor);
     g_clear_object (&priv->volume_monitor);
+    g_clear_object (&priv->network_monitor);
     g_clear_object (&priv->cancellable);
     g_clear_object (&priv->networks_fetching_cancellable);
     g_clear_object (&priv->path_size_group);
@@ -944,6 +947,40 @@ update_network_state (NautilusGtkPlacesView *view)
 }
 
 static void
+monitor_network (NautilusGtkPlacesView *self)
+{
+  NautilusGtkPlacesViewPrivate *priv;
+  GFile *network_file;
+  GError *error;
+
+  priv = nautilus_gtk_places_view_get_instance_private (self);
+
+  if (priv->network_monitor)
+    return;
+
+  error = NULL;
+  network_file = g_file_new_for_uri ("network:///");
+  priv->network_monitor = g_file_monitor (network_file,
+                                          G_FILE_MONITOR_NONE,
+                                          NULL,
+                                          &error);
+
+  g_clear_object (&network_file);
+
+  if (error)
+  {
+      g_warning ("Error monitoring network: %s", error->message);
+      g_clear_error (&error);
+      return;
+  }
+
+  g_signal_connect_swapped (priv->network_monitor,
+                            "changed",
+                            G_CALLBACK (update_places),
+                            self);
+}
+
+static void
 populate_networks (NautilusGtkPlacesView *view,
                    GFileEnumerator       *enumerator,
                    GList                 *detected_networks)
@@ -1022,6 +1059,7 @@ network_enumeration_next_files_finished (GObject      *source_object,
     if (!priv->destroyed)
     {
         update_network_state (view);
+        monitor_network (view);
         update_loading (view);
     }
 }
