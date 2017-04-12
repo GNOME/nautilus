@@ -1456,10 +1456,7 @@ column_header_clicked (GtkWidget        *column_button,
                       list_view);
 
     gtk_widget_show_all (menu);
-    gtk_menu_popup_for_device (GTK_MENU (menu),
-                               gdk_event_get_device ((GdkEvent *) event),
-                               NULL, NULL, NULL, NULL, NULL,
-                               event->button, event->time);
+    gtk_menu_popup_at_pointer (GTK_MENU (menu), (GdkEvent *) event);
 
     g_hash_table_destroy (visible_columns_hash);
     nautilus_column_list_free (all_columns);
