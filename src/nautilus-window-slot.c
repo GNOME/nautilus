@@ -45,6 +45,7 @@
 #include "nautilus-profile.h"
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 #include "nautilus-ui-utilities.h"
+#include <eel/eel-vfs-extensions.h>
 
 enum
 {
@@ -214,10 +215,13 @@ real_handles_location (NautilusWindowSlot *self,
 {
     NautilusFile *file;
     gboolean handles_location;
+    g_autofree char *uri = NULL;
+
+    uri = g_file_get_uri(location);
 
     file = nautilus_file_get (location);
     handles_location = !nautilus_file_is_other_locations (file) &&
-                       !nautilus_file_is_desktop_directory (file);
+                       !eel_uri_is_desktop (uri);
     nautilus_file_unref (file);
 
     return handles_location;

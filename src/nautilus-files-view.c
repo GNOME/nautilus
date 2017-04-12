@@ -2015,7 +2015,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
 
     parent_uri = nautilus_files_view_get_backing_uri (view);
     parent = nautilus_file_get_by_uri (parent_uri);
-    if (nautilus_file_is_desktop_directory (parent))
+    if (eel_uri_is_desktop (parent_uri))
     {
         position = context_menu_to_file_operation_position (view);
     }
