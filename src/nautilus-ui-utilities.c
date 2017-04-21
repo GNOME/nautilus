@@ -121,13 +121,15 @@ nautilus_gmenu_merge (GMenu       *original,
 
     for (i = 0; i < n_items; i++)
     {
-        item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge), i);
         if (prepend)
         {
+            item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge),
+                                               n_items - i - 1);
             g_menu_prepend_item (G_MENU (submodel), item);
         }
         else
         {
+            item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge), i);
             g_menu_append_item (G_MENU (submodel), item);
         }
         g_object_unref (item);
