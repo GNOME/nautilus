@@ -137,15 +137,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 
     if (destination_is_directory)
     {
-        if (nautilus_file_is_symbolic_link (data->source)
-            && !nautilus_file_is_symbolic_link (data->destination))
-        {
-            primary_text = g_strdup_printf (_("You are trying to replace the destination folder “%s” with a symbolic link."),
-                                            destination_name);
-            message = g_strdup_printf(_("This is not allowed in order to avoid the deletion of the destination folder's contents."));
-            message_extra = _("Please rename the symbolic link or press the skip button.");
-        }
-        else if (source_is_directory)
+        if (source_is_directory)
         {
             primary_text = g_strdup_printf (_("Merge folder “%s”?"),
                                             destination_name);
@@ -347,19 +339,10 @@ set_replace_button_label (FileConflictDialogData *data)
     source_is_directory = nautilus_file_is_directory (data->source);
     destination_is_directory = nautilus_file_is_directory (data->destination);
 
-    if (destination_is_directory)
+    if (source_is_directory && destination_is_directory)
     {
-        if (nautilus_file_is_symbolic_link (data->source)
-            && !nautilus_file_is_symbolic_link (data->destination))
-        {
-            nautilus_file_conflict_dialog_disable_replace (data->dialog);
-            nautilus_file_conflict_dialog_disable_apply_to_all (data->dialog);
-        }
-        else if (source_is_directory)
-        {
-            nautilus_file_conflict_dialog_set_replace_button_label (data->dialog,
-                                                                    _("Merge"));
-        }
+        nautilus_file_conflict_dialog_set_replace_button_label (data->dialog,
+                                                                _("Merge"));
     }
 }
 
