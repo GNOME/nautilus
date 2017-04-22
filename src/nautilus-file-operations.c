@@ -8384,51 +8384,6 @@ extract_job_on_completed (AutoarExtractor *extractor,
 }
 
 static void
-extract_job_on_scanned (AutoarExtractor *extractor,
-                        guint            total_files,
-                        gpointer         user_data)
-{
-    guint64 total_size;
-    ExtractJob *extract_job;
-    GFile *source_file;
-    g_autofree gchar *basename;
-    GFileInfo *fsinfo;
-    guint64 free_size;
-
-    extract_job = user_data;
-    total_size = autoar_extractor_get_total_size (extractor);
-    source_file = autoar_extractor_get_source_file (extractor);
-    basename = get_basename (source_file);
-
-    fsinfo = g_file_query_filesystem_info (source_file,
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_FREE ","
-                                           G_FILE_ATTRIBUTE_FILESYSTEM_READONLY,
-                                           extract_job->common.cancellable,
-                                           NULL);
-    free_size = g_file_info_get_attribute_uint64 (fsinfo,
-                                                  G_FILE_ATTRIBUTE_FILESYSTEM_FREE);
-
-    /* FIXME: G_MAXUINT64 is the value used by autoar when the file size cannot
-     * be determined. Ideally an API should be used instead.
-     */
-    if (total_size != G_MAXUINT64 && total_size > free_size )
-    {
-      nautilus_progress_info_take_status (extract_job->common.progress,
-                                          g_strdup_printf (_("Error extracting “%s”"),
-                                                           basename));
-      run_error (&extract_job->common,
-                 g_strdup_printf (_("Not enough free space to extract %s"),basename),
-                 NULL,
-                 NULL,
-                 FALSE,
-                 CANCEL,
-                 NULL);
-
-      abort_job ((CommonJob *) extract_job);
-    }
-}
-
-static void
 report_extract_final_progress (ExtractJob *extract_job,
                                gint        total_files)
 {
@@ -8528,9 +8483,7 @@ extract_task_thread_func (GTask        *task,
 
         autoar_extractor_set_notify_interval (extractor,
                                               PROGRESS_NOTIFY_INTERVAL);
-        g_signal_connect (extractor, "scanned",
-                          G_CALLBACK (extract_job_on_scanned),
-                          extract_job);
+
         g_signal_connect (extractor, "error",
                           G_CALLBACK (extract_job_on_error),
                           extract_job);
