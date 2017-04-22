@@ -27,7 +27,7 @@
 #include "nautilusgtkplacesviewprivate.h"
 #include "nautilusgtkplacesviewrowprivate.h"
 
-/*
+/**
  * SECTION:nautilusgtkplacesview
  * @Short_description: Widget that displays persistent drives and manages mounted networks
  * @Title: NautilusGtkPlacesView
@@ -187,7 +187,7 @@ server_list_load (NautilusGtkPlacesView *view)
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
   bookmarks = g_bookmark_file_new ();
-  datadir = g_build_filename (g_get_user_config_dir (), "gtk-4.0", NULL);
+  datadir = g_build_filename (g_get_user_config_dir (), "gtk-3.0", NULL);
   filename = g_build_filename (datadir, "servers", NULL);
 
   g_mkdir_with_parents (datadir, 0700);
@@ -245,7 +245,7 @@ server_list_save (GBookmarkFile *bookmarks)
 {
   gchar *filename;
 
-  filename = g_build_filename (g_get_user_config_dir (), "gtk-4.0", "servers", NULL);
+  filename = g_build_filename (g_get_user_config_dir (), "gtk-3.0", "servers", NULL);
   g_bookmark_file_to_file (bookmarks, filename, NULL);
   g_free (filename);
 }
@@ -573,6 +573,7 @@ populate_servers (NautilusGtkPlacesView *view)
 
       grid = g_object_new (GTK_TYPE_GRID,
                            "orientation", GTK_ORIENTATION_VERTICAL,
+                           "border-width", 3,
                            NULL);
 
       /* name of the connected uri, if any */
@@ -613,6 +614,8 @@ populate_servers (NautilusGtkPlacesView *view)
                                 "clicked",
                                 G_CALLBACK (on_remove_server_button_clicked),
                                 data);
+
+      gtk_widget_show_all (row);
 
       g_free (name);
     }
@@ -885,14 +888,14 @@ update_network_state (NautilusGtkPlacesView *view)
        * otherwise just show the spinner in the header */
       if (!has_networks (view))
         {
-          gtk_widget_show (priv->network_placeholder);
+          gtk_widget_show_all (priv->network_placeholder);
           gtk_label_set_text (GTK_LABEL (priv->network_placeholder_label),
                               _("Searching for network locations"));
         }
     }
   else if (!has_networks (view))
     {
-      gtk_widget_show (priv->network_placeholder);
+      gtk_widget_show_all (priv->network_placeholder);
       gtk_label_set_text (GTK_LABEL (priv->network_placeholder_label),
                           _("No network locations found"));
     }
@@ -1629,6 +1632,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
                     "activate",
                     G_CALLBACK (open_cb),
                     row);
+  gtk_widget_show (item);
   gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
 
   if (priv->open_flags & GTK_PLACES_OPEN_NEW_TAB)
@@ -1638,6 +1642,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
                         "activate",
                         G_CALLBACK (open_in_new_tab_cb),
                         row);
+      gtk_widget_show (item);
       gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
     }
 
@@ -1648,6 +1653,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
                         "activate",
                         G_CALLBACK (open_in_new_window_cb),
                         row);
+      gtk_widget_show (item);
       gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
     }
 
@@ -1660,6 +1666,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
 
   /* Separator */
   item = gtk_separator_menu_item_new ();
+  gtk_widget_show (item);
   gtk_menu_shell_insert (GTK_MENU_SHELL (priv->popup_menu), item, -1);
 
   /* Mount/Unmount items */
@@ -1670,6 +1677,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
                         "activate",
                         G_CALLBACK (unmount_cb),
                         row);
+      gtk_widget_show (item);
       gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
     }
   else
@@ -1679,6 +1687,7 @@ build_popup_menu (NautilusGtkPlacesView    *view,
                         "activate",
                         G_CALLBACK (mount_cb),
                         row);
+      gtk_widget_show (item);
       gtk_menu_shell_append (GTK_MENU_SHELL (priv->popup_menu), item);
     }
 }
@@ -2016,6 +2025,7 @@ listbox_header_func (GtkListBoxRow *row,
         }
 
       gtk_container_add (GTK_CONTAINER (header), separator);
+      gtk_widget_show_all (header);
 
       gtk_list_box_row_set_header (row, header);
 
@@ -2147,7 +2157,7 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
   widget_class->destroy = nautilus_gtk_places_view_destroy;
   widget_class->map = nautilus_gtk_places_view_map;
 
-  /*
+  /**
    * NautilusGtkPlacesView::open-location:
    * @view: the object which received the signal.
    * @location: (type Gio.File): #GFile to which the caller should switch.
@@ -2171,7 +2181,7 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
                         G_TYPE_OBJECT,
                         GTK_TYPE_PLACES_OPEN_FLAGS);
 
-  /*
+  /**
    * NautilusGtkPlacesView::show-error-message:
    * @view: the object which received the signal.
    * @primary: primary message with a summary of the error to show.
@@ -2266,7 +2276,7 @@ nautilus_gtk_places_view_init (NautilusGtkPlacesView *self)
   gtk_widget_init_template (GTK_WIDGET (self));
 }
 
-/*
+/**
  * nautilus_gtk_places_view_new:
  *
  * Creates a new #NautilusGtkPlacesView widget.
@@ -2285,7 +2295,7 @@ nautilus_gtk_places_view_new (void)
   return g_object_new (NAUTILUS_TYPE_GTK_PLACES_VIEW, NULL);
 }
 
-/*
+/**
  * nautilus_gtk_places_view_set_open_flags:
  * @view: a #NautilusGtkPlacesView
  * @flags: Bitmask of modes in which the calling application can open locations
@@ -2325,7 +2335,7 @@ nautilus_gtk_places_view_set_open_flags (NautilusGtkPlacesView      *view,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_view_get_open_flags:
  * @view: a #GtkPlacesSidebar
  *
@@ -2347,7 +2357,7 @@ nautilus_gtk_places_view_get_open_flags (NautilusGtkPlacesView *view)
   return priv->open_flags;
 }
 
-/*
+/**
  * nautilus_gtk_places_view_get_search_query:
  * @view: a #NautilusGtkPlacesView
  *
@@ -2367,7 +2377,7 @@ nautilus_gtk_places_view_get_search_query (NautilusGtkPlacesView *view)
   return priv->search_query;
 }
 
-/*
+/**
  * nautilus_gtk_places_view_set_search_query:
  * @view: a #NautilusGtkPlacesView
  * @query_text: the query, or NULL.
@@ -2397,7 +2407,7 @@ nautilus_gtk_places_view_set_search_query (NautilusGtkPlacesView *view,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_view_get_loading:
  * @view: a #NautilusGtkPlacesView
  *
@@ -2479,7 +2489,7 @@ nautilus_gtk_places_view_set_fetching_networks (NautilusGtkPlacesView *view,
     }
 }
 
-/*
+/**
  * nautilus_gtk_places_view_get_local_only:
  * @view: a #NautilusGtkPlacesView
  *
@@ -2502,7 +2512,7 @@ nautilus_gtk_places_view_get_local_only (NautilusGtkPlacesView *view)
   return priv->local_only;
 }
 
-/*
+/**
  * nautilus_gtk_places_view_set_local_only:
  * @view: a #NautilusGtkPlacesView
  * @local_only: %TRUE to hide remote locations, %FALSE to show.
