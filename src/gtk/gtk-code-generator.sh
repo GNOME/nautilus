@@ -7,6 +7,7 @@
 
 URL=https://git.gnome.org/browse/gtk+/plain/gtk/
 URLUI=https://git.gnome.org/browse/gtk+/plain/gtk/ui/
+SUFIX=?h=gtk-3-22
 
 # Since comments are not allowed inside the sed line, this is what it will do
 # by order:
@@ -46,9 +47,9 @@ update_file () {
         > "${_dest}"
 }
 
-update_file "${URL}/gtkplacesview.c" "nautilusgtkplacesview.c"
-update_file "${URL}/gtkplacesviewprivate.h" "nautilusgtkplacesviewprivate.h"
-update_file "${URLUI}/gtkplacesview.ui" "nautilusgtkplacesview.ui"
+update_file "${URL}/gtkplacesview.c${SUFIX}" "nautilusgtkplacesview.c"
+update_file "${URL}/gtkplacesviewprivate.h${SUFIX}" "nautilusgtkplacesviewprivate.h"
+update_file "${URLUI}/gtkplacesview.ui${SUFIX}" "nautilusgtkplacesview.ui"
 
 # Since comments are not allowed inside the sed line, this is what it will do
 # by order:
@@ -85,6 +86,6 @@ update_file () {
  > "${_dest}"
 }
 
-update_file "${URL}/gtkplacesviewrow.c" "nautilusgtkplacesviewrow.c"
-update_file "${URL}/gtkplacesviewrowprivate.h" "nautilusgtkplacesviewrowprivate.h"
-update_file "${URLUI}/gtkplacesviewrow.ui" "nautilusgtkplacesviewrow.ui"
+update_file "${URL}/gtkplacesviewrow.c${SUFIX}" "nautilusgtkplacesviewrow.c"
+update_file "${URL}/gtkplacesviewrowprivate.h${SUFIX}" "nautilusgtkplacesviewrowprivate.h"
+update_file "${URLUI}/gtkplacesviewrow.ui${SUFIX}" "nautilusgtkplacesviewrow.ui"
