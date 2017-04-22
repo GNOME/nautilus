@@ -1354,10 +1354,12 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
     GList *names;
     GString *new_name;
     const gchar *entry_text;
+    gboolean have_empty_name;
     gboolean have_unallowed_character_slash;
     gboolean have_unallowed_character_dot;
     gboolean have_unallowed_character_dotdot;
 
+    have_empty_name = FALSE;
     have_unallowed_character_slash = FALSE;
     have_unallowed_character_dot = FALSE;
     have_unallowed_character_dotdot = FALSE;
@@ -1404,12 +1406,24 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
         {
             new_name = names->data;
 
+            if (g_strcmp0 (new_name->str, "") == 0)
+            {
+                have_empty_name = TRUE;
+                break;
+            }
+
             if (g_strcmp0 (new_name->str, "..") == 0)
             {
                 have_unallowed_character_dotdot = TRUE;
                 break;
             }
         }
+    }
+
+    if (have_empty_name)
+    {
+        gtk_label_set_label (GTK_LABEL (dialog->conflict_label),
+                             _("A file must have a name"));
     }
 
     if (have_unallowed_character_slash)
@@ -1430,7 +1444,8 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
                              "“..” is an unallowed file name");
     }
 
-    if (have_unallowed_character_slash || have_unallowed_character_dot || have_unallowed_character_dotdot)
+    if (have_unallowed_character_slash || have_unallowed_character_dot || have_unallowed_character_dotdot
+        || have_empty_name)
     {
         gtk_widget_set_sensitive (dialog->rename_button, FALSE);
         gtk_widget_set_sensitive (dialog->conflict_down, FALSE);
