@@ -1,6 +1,6 @@
 project ('nautilus', 'c',
          version: '3.23.91',
-         meson_version: '>=0.37.0',
+         meson_version: '>=0.40.0',
          license: 'GPL2+')
 
 add_global_arguments ('-Wno-deprecated-declarations', language:'c')
@@ -99,9 +99,6 @@ nautilus_include_dirs = include_directories ('.')
 
 subdir ('eel')
 subdir ('libnautilus-extension')
-
-message ('Checking for libgd…')
-run_command ('build-aux/meson/check_libgd.sh')
 
 libgd_options = ['static=true',
                  'with-gtk-hacks=true',
