@@ -1,4 +1,7 @@
 #!/bin/sh
+
+set -e
+
 test -n "$srcdir" || srcdir=$1
 test -n "$srcdir" || srcdir=.
 
@@ -13,19 +16,19 @@ git submodule update --init
 echo "Creating git tree archive…"
 git archive --prefix="${NAME}/" --format=tar HEAD > nautilus.tar
 
-cd libgd
+cd subprojects/libgd
 
-git archive --prefix="${NAME}/libgd/" --format=tar HEAD > libgd.tar
+git archive --prefix="${NAME}/subprojects/libgd/" --format=tar HEAD > libgd.tar
 
-cd ..
+cd ../..
 
 rm -f "${NAME}.tar"
 
 tar -Af "${NAME}.tar" nautilus.tar
-tar -Af "${NAME}.tar" libgd/libgd.tar
+tar -Af "${NAME}.tar" subprojects/libgd/libgd.tar
 
 rm -f nautilus.tar
-rm -f libgd/libgd.tar
+rm -f subprojects/libgd/libgd.tar
 
 echo "Compressing archive…"
-xz -f "${NAME}.tar"
+xz --verbose -f "${NAME}.tar"
