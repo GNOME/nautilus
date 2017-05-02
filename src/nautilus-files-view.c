@@ -1449,7 +1449,7 @@ choose_program (NautilusFilesView *view,
                 GList             *files)
 {
     GtkWidget *dialog;
-    gchar *mime_type;
+    g_autofree gchar *mime_type = NULL;
     GtkWindow *parent_window;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
