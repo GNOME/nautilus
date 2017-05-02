@@ -125,4 +125,4 @@ if get_option ('enable-nst-extension')
 endif
 
 # Compile GSettings schemas when installing from source.
-meson.add_install_script ('build-aux/meson/postinstall.sh')
+meson.add_install_script ('build-aux/meson/postinstall.py')
