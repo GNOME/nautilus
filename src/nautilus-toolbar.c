@@ -853,10 +853,18 @@ undo_manager_changed (NautilusToolbar *self)
 
     /* Set the label of the undo and redo menu items, and activate them appropriately
      */
-    undo_label = undo_active && undo_label != NULL ? undo_label : g_strdup (_("_Undo"));
+    if (!undo_active || undo_label == NULL)
+    {
+        g_free (undo_label);
+        undo_label = g_strdup (_("_Undo"));
+    }
     update_menu_item (self->undo_button, self, "undo", undo_active, undo_label);
 
-    redo_label = redo_active && redo_label != NULL ? redo_label : g_strdup (_("_Redo"));
+    if (!redo_active || redo_label == NULL)
+    {
+        g_free (redo_label);
+        redo_label = g_strdup (_("_Redo"));
+    }
     update_menu_item (self->redo_button, self, "redo", redo_active, redo_label);
 }
 
