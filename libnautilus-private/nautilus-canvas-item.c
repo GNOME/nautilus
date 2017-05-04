@@ -1324,11 +1324,6 @@ nautilus_canvas_item_draw (EelCanvasItem *item,
 
 #define ZERO_WIDTH_SPACE "\xE2\x80\x8B"
 
-#define ZERO_OR_THREE_DIGITS(p)			\
-	(!g_ascii_isdigit (*(p)) ||		\
-	 (g_ascii_isdigit (*(p+1)) &&		\
-	  g_ascii_isdigit (*(p+2))))
-
 
 static PangoLayout *
 create_label_layout (NautilusCanvasItem *item,
@@ -1357,11 +1352,9 @@ create_label_layout (NautilusCanvasItem *item,
 		for (p = text; *p != '\0'; p++) {
 			str = g_string_append_c (str, *p);
 
-			if (*p == '_' || *p == '-' || (*p == '.' && ZERO_OR_THREE_DIGITS (p+1))) {
+			if (*p == '_' || *p == '-' || (*p == '.' && !g_ascii_isdigit(*(p+1)))) {
 				/* Ensure that we allow to break after '_' or '.' characters,
-				 * if they are not likely to be part of a version information, to
-				 * not break wrapping of foobar-0.0.1.
-				 * Wrap before IPs and long numbers, though. */
+				 * if they are not followed by a number */
 				str = g_string_append (str, ZERO_WIDTH_SPACE);
 			}
 		}
