@@ -32,9 +32,7 @@
 #include "nautilus-bookmark.h"
 #include "nautilus-search-directory.h"
 
-typedef struct NautilusWindow NautilusWindow;
-typedef struct NautilusWindowClass NautilusWindowClass;
-typedef struct NautilusWindowDetails NautilusWindowDetails;
+G_BEGIN_DECLS
 
 typedef enum {
         NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1 << 0,
@@ -44,6 +42,9 @@ typedef enum {
         NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 4
 } NautilusWindowOpenFlags;
 
+#define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type ())
+G_DECLARE_DERIVABLE_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, GtkApplicationWindow);
+
 typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GFile *location,
                                                  GError *error,
@@ -51,18 +52,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 
 #include "nautilus-files-view.h"
 #include "nautilus-window-slot.h"
-
-#define NAUTILUS_TYPE_WINDOW nautilus_window_get_type()
-#define NAUTILUS_WINDOW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindow))
-#define NAUTILUS_WINDOW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
-#define NAUTILUS_IS_WINDOW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_WINDOW))
-#define NAUTILUS_IS_WINDOW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_WINDOW))
-#define NAUTILUS_WINDOW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_WINDOW, NautilusWindowClass))
 
 #define NAUTILUS_WINDOW_SIDEBAR_PLACES "places"
 #define NAUTILUS_WINDOW_SIDEBAR_TREE "tree"
@@ -79,7 +68,8 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
 
 
-struct NautilusWindowClass {
+struct _NautilusWindowClass
+{
         GtkApplicationWindowClass parent_spot;
 
 	/* Function pointers for overriding, without corresponding signals */
@@ -93,15 +83,6 @@ struct NautilusWindowClass {
                                               GFile          *location);
 };
 
-typedef struct _NautilusWindowPrivate NautilusWindowPrivate;
-
-struct NautilusWindow {
-        GtkApplicationWindow parent_object;
-        
-        NautilusWindowPrivate *priv;
-};
-
-GType            nautilus_window_get_type             (void);
 NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
 
@@ -159,4 +140,7 @@ void nautilus_window_search (NautilusWindow *window,
 void nautilus_window_initialize_slot (NautilusWindow          *window,
                                       NautilusWindowSlot      *slot,
                                       NautilusWindowOpenFlags  flags);
+
+G_END_DECLS
+
 #endif
