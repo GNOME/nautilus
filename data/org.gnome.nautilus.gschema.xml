@@ -216,6 +216,16 @@
       <summary>Whether to have full text search enabled by default when opening a new window/tab</summary>
       <description>If set to true, then Nautilus will also match the file contents besides the name. This toggles the default active state, which can still be overridden in the search popover</description>
     </key>
+    <key type="i" name="task-limit">
+      <range min="0" max="64"/>
+      <default>16</default>
+      <summary>
+        Active concurrent task limit
+      </summary>
+      <description>
+        Limits the maximum number of tasks that can be running at any moment.
+      </description>
+    </key>
   </schema>
 
   <schema path="/org/gnome/nautilus/compression/" id="org.gnome.nautilus.compression" gettext-domain="nautilus">
