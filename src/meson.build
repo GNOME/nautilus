@@ -264,7 +264,9 @@ libnautilus_sources = [
   'nautilus-tag-manager.c',
   'nautilus-tag-manager.h',
   'nautilus-favorite-directory.c',
-  'nautilus-favorite-directory.h'
+  'nautilus-favorite-directory.h',
+  'nautilus-task.c',
+  'nautilus-task.h'
 ]
 
 nautilus_deps = [
