@@ -266,7 +266,9 @@ libnautilus_sources = [
   'nautilus-favorite-directory.c',
   'nautilus-favorite-directory.h',
   'nautilus-task.c',
-  'nautilus-task.h'
+  'nautilus-task.h',
+  'nautilus-task-manager.c',
+  'nautilus-task-manager.h'
 ]
 
 nautilus_deps = [
