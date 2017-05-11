@@ -177,6 +177,8 @@ typedef enum
 /* Full Text Search as default */
 #define NAUTILUS_PREFERENCES_FTS_DEFAULT "fts-default"
 
+#define NAUTILUS_PREFERENCES_TASK_LIMIT "task-limit"
+
 void nautilus_global_preferences_init                      (void);
 
 extern GSettings *nautilus_preferences;

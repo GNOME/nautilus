@@ -262,6 +262,8 @@ libnautilus_sources = [
     'nautilus-search-engine-tracker.h',
     'nautilus-task.c',
     'nautilus-task.h',
+    'nautilus-task-manager.c',
+    'nautilus-task-manager.h'
 ]
 
 nautilus_deps = [glib,
