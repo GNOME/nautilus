@@ -34,6 +34,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-view-icon-controller.h"
+#include "nautilus-view-list-controller.h"
 #include "nautilus-list-view.h"
 #include "nautilus-canvas-view.h"
 #include "nautilus-mime-actions.h"
@@ -9724,7 +9725,14 @@ nautilus_files_view_new (guint               id,
 
         case NAUTILUS_VIEW_LIST_ID:
         {
-            view = nautilus_list_view_new (slot);
+            if (use_experimental_views)
+            {
+                view = NAUTILUS_FILES_VIEW (nautilus_view_list_controller_new (slot));
+            }
+            else
+            {
+              view = nautilus_list_view_new (slot);
+            }
         }
         break;
     }
