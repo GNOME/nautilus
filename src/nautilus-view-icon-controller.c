@@ -645,7 +645,7 @@ on_button_press_event (GtkWidget *widget,
         if (g_list_find (selection, selected_file) == NULL)
         {
             g_list_foreach (selection, (GFunc) g_object_unref, NULL);
-            selection = g_list_append (NULL, selected_file);
+            selection = g_list_append (NULL, g_object_ref (selected_file));
         }
         else
         {
