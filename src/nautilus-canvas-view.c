@@ -950,6 +950,18 @@ nautilus_canvas_view_get_zoom_level_percentage (NautilusFilesView *view)
 }
 
 static gboolean
+nautilus_canvas_view_is_zoom_level_default (NautilusFilesView *view)
+{
+    guint icon_size;
+    NautilusCanvasZoomLevel zoom_level;
+
+    zoom_level = nautilus_canvas_view_get_zoom_level (view);
+    icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (zoom_level);
+
+    return icon_size == NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+}
+
+static gboolean
 nautilus_canvas_view_is_empty (NautilusFilesView *view)
 {
     g_assert (NAUTILUS_IS_CANVAS_VIEW (view));
@@ -2015,6 +2027,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->can_zoom_in = nautilus_canvas_view_can_zoom_in;
     nautilus_files_view_class->can_zoom_out = nautilus_canvas_view_can_zoom_out;
     nautilus_files_view_class->get_zoom_level_percentage = nautilus_canvas_view_get_zoom_level_percentage;
+    nautilus_files_view_class->is_zoom_level_default = nautilus_canvas_view_is_zoom_level_default;
     nautilus_files_view_class->clear = nautilus_canvas_view_clear;
     nautilus_files_view_class->end_loading = nautilus_canvas_view_end_loading;
     nautilus_files_view_class->file_changed = nautilus_canvas_view_file_changed;

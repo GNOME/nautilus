@@ -570,6 +570,18 @@ real_get_zoom_level_percentage (NautilusFilesView *files_view)
 }
 
 static gboolean
+real_is_zoom_level_default (NautilusFilesView *files_view)
+{
+    NautilusViewIconController *self;
+    guint icon_size;
+
+    self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    icon_size = get_icon_size_for_zoom_level (self->zoom_level);
+
+    return icon_size == NAUTILUS_CANVAS_ICON_SIZE_LARGE;
+}
+
+static gboolean
 real_can_zoom_in (NautilusFilesView *files_view)
 {
     return TRUE;
@@ -909,6 +921,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->select_first = real_select_first;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->get_zoom_level_percentage = real_get_zoom_level_percentage;
+    files_view_class->is_zoom_level_default = real_is_zoom_level_default;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
 }
 

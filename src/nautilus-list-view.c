@@ -3170,6 +3170,18 @@ nautilus_list_view_get_zoom_level_percentage (NautilusFilesView *view)
     return (gfloat) icon_size / NAUTILUS_LIST_ICON_SIZE_STANDARD;
 }
 
+static gboolean
+nautilus_list_view_is_zoom_level_default (NautilusFilesView *view)
+{
+    NautilusListView *list_view;
+    guint icon_size;
+
+    list_view = NAUTILUS_LIST_VIEW (view);
+    icon_size = nautilus_list_model_get_icon_size_for_zoom_level (list_view->details->zoom_level);
+
+    return icon_size == NAUTILUS_LIST_ICON_SIZE_STANDARD;
+}
+
 static void
 nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
 {
@@ -3560,6 +3572,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->can_zoom_in = nautilus_list_view_can_zoom_in;
     nautilus_files_view_class->can_zoom_out = nautilus_list_view_can_zoom_out;
     nautilus_files_view_class->get_zoom_level_percentage = nautilus_list_view_get_zoom_level_percentage;
+    nautilus_files_view_class->is_zoom_level_default = nautilus_list_view_is_zoom_level_default;
     nautilus_files_view_class->click_policy_changed = nautilus_list_view_click_policy_changed;
     nautilus_files_view_class->clear = nautilus_list_view_clear;
     nautilus_files_view_class->file_changed = nautilus_list_view_file_changed;
