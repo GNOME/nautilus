@@ -1415,19 +1415,19 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
     if (have_unallowed_character_slash)
     {
         gtk_label_set_label (GTK_LABEL (dialog->conflict_label),
-                             _("“/” is an unallowed character"));
+                             _("File names cannot contain “/”."));
     }
 
     if (have_unallowed_character_dot)
     {
         gtk_label_set_label (GTK_LABEL (dialog->conflict_label),
-                             _("“.” is an unallowed file name"));
+                             _("A file cannot be called “.”."));
     }
 
     if (have_unallowed_character_dotdot)
     {
         gtk_label_set_label (GTK_LABEL (dialog->conflict_label),
-                             _("“..” is an unallowed file name"));
+                             _("A file cannot be called “..”."));
     }
 
     if (have_unallowed_character_slash || have_unallowed_character_dot || have_unallowed_character_dotdot)
