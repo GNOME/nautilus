@@ -854,6 +854,14 @@ nautilus_files_view_get_zoom_level_percentage (NautilusFilesView *view)
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_zoom_level_percentage (view);
 }
 
+static gboolean
+nautilus_files_view_is_zoom_level_default (NautilusFilesView *view)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
+
+    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->is_zoom_level_default (view);
+}
+
 gboolean
 nautilus_files_view_is_searching (NautilusView *view)
 {
@@ -7364,6 +7372,7 @@ real_update_actions_state (NautilusFilesView *view)
     GList *selection, *l;
     NautilusFile *file;
     gint selection_count;
+    gboolean zoom_level_is_default;
     gboolean selection_contains_special_link;
     gboolean selection_contains_desktop_or_home_dir;
     gboolean selection_contains_recent;
@@ -7407,6 +7416,7 @@ real_update_actions_state (NautilusFilesView *view)
                              (!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
                               !nautilus_file_has_activation_uri (NAUTILUS_FILE (selection->data)));
     selection_all_in_trash = all_in_trash (selection);
+    zoom_level_is_default = nautilus_files_view_is_zoom_level_default (view);
 
     is_read_only = nautilus_files_view_is_read_only (view);
     can_create_files = nautilus_files_view_supports_creating_files (view);
@@ -7725,7 +7735,7 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "zoom-standard");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 nautilus_files_view_supports_zooming (view));
+                                 nautilus_files_view_supports_zooming (view) && !zoom_level_is_default);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "zoom-to-level");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
