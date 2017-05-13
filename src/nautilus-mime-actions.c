@@ -1540,7 +1540,7 @@ on_launch_default_for_uri (GObject      *source_object,
     sandboxed = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
 
     nautilus_launch_default_for_uri_finish (res, &error);
-    if (!sandboxed && error->code != G_IO_ERROR_CANCELLED)
+    if (!sandboxed && error != NULL && error->code != G_IO_ERROR_CANCELLED)
     {
         g_queue_push_tail (params->unhandled_uris, uri);
     }
