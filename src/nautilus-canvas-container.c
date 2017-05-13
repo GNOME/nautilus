@@ -5193,22 +5193,6 @@ key_press_event (GtkWidget   *widget,
         }
         break;
 
-        case GDK_KEY_Return:
-        case GDK_KEY_KP_Enter:
-        {
-            if ((event->state & GDK_SHIFT_MASK) != 0)
-            {
-                activate_selected_items_alternate (container, NULL);
-            }
-            else
-            {
-                activate_selected_items (container);
-            }
-
-            handled = TRUE;
-        }
-        break;
-
         case GDK_KEY_Escape:
         {
             handled = undo_stretching (container);

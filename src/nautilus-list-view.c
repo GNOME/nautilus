@@ -1008,21 +1008,6 @@ key_press_callback (GtkWidget   *widget,
         }
         break;
 
-        case GDK_KEY_Return:
-        case GDK_KEY_KP_Enter:
-        {
-            if ((event->state & GDK_SHIFT_MASK) != 0)
-            {
-                activate_selected_items_alternate (NAUTILUS_LIST_VIEW (view), NULL, TRUE);
-            }
-            else
-            {
-                activate_selected_items (NAUTILUS_LIST_VIEW (view));
-            }
-            handled = TRUE;
-        }
-        break;
-
         case GDK_KEY_v:
         {
             /* Eat Control + v to not enable type ahead */

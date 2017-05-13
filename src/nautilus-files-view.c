@@ -9471,6 +9471,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     GApplication *app;
     const gchar *open_accels[] =
     {
+        "Return",
+        "KP_Enter",
         "<control>o",
         "<alt>Down",
         NULL
@@ -9680,8 +9682,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.create-link", "<control>m");
     /* Selection menu */
     nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
-    nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<shift><control>t");
-    nautilus_application_set_accelerator (app, "view.open-item-new-window", "<control>Return");
+    nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<control>Return");
+    nautilus_application_set_accelerator (app, "view.open-item-new-window", "<Shift>Return");
     nautilus_application_set_accelerator (app, "view.move-to-trash", "Delete");
     nautilus_application_set_accelerator (app, "view.delete-from-trash", "Delete");
     nautilus_application_set_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");

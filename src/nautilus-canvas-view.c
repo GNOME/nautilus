@@ -1361,7 +1361,7 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
     GdkEvent *event;
     GdkEventButton *button_event;
     GdkEventKey *key_event;
-    gboolean open_in_tab, open_in_window, close_behind;
+    gboolean open_in_tab, open_in_window;
     NautilusWindowOpenFlags flags;
 
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
@@ -1371,7 +1371,6 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
     event = gtk_get_current_event ();
     open_in_tab = FALSE;
     open_in_window = FALSE;
-    close_behind = FALSE;
 
     if (event->type == GDK_BUTTON_PRESS ||
         event->type == GDK_BUTTON_RELEASE ||
@@ -1400,13 +1399,8 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
         flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
     }
 
-    if (close_behind)
-    {
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-    }
-
-    DEBUG ("Activate alternate, open in tab %d, close behind %d, new window %d\n",
-           open_in_tab, close_behind, open_in_window);
+    DEBUG ("Activate alternate, open in tab %d, new window %d\n",
+           open_in_tab, open_in_window);
 
     nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (canvas_view),
                                         file_list,
