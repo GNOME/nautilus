@@ -7938,7 +7938,7 @@ empty_trash_thread_func (GTask        *task,
 void
 nautilus_file_operations_empty_trash (GtkWidget *parent_view)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     EmptyTrashJob *job;
     GtkWindow *parent_window;
 
@@ -7958,7 +7958,6 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
     task = g_task_new (NULL, NULL, empty_trash_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, empty_trash_thread_func);
-    g_object_unref (task);
 }
 
 static void
