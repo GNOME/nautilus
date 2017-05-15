@@ -5812,13 +5812,11 @@ copy_task_thread_func (GTask        *task,
     CommonJob *common;
     SourceInfo source_info;
     TransferInfo transfer_info;
-    char *dest_fs_id;
+    g_autofree char *dest_fs_id = NULL;
     GFile *dest;
 
     job = task_data;
     common = &job->common;
-
-    dest_fs_id = NULL;
 
     nautilus_progress_info_start (job->common.progress);
 
@@ -5828,7 +5826,7 @@ copy_task_thread_func (GTask        *task,
                   OP_KIND_COPY);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     if (job->destination)
@@ -5850,7 +5848,7 @@ copy_task_thread_func (GTask        *task,
     g_object_unref (dest);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     g_timer_start (job->common.time);
@@ -5859,10 +5857,6 @@ copy_task_thread_func (GTask        *task,
     copy_files (job,
                 dest_fs_id,
                 &source_info, &transfer_info);
-
-aborted:
-
-    g_free (dest_fs_id);
 }
 
 void
