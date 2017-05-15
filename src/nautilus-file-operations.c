@@ -6642,7 +6642,9 @@ link_file (CopyMoveJob  *job,
            GdkPoint     *position,
            int           files_left)
 {
-    GFile *src_dir, *dest, *new_dest;
+    GFile *src_dir;
+    GFile *new_dest;
+    g_autoptr (GFile) dest = NULL;
     g_autofree gchar *dest_uri = NULL;
     int count;
     char *path;
@@ -6705,8 +6707,6 @@ retry:
             nautilus_file_changes_queue_schedule_position_remove (dest);
         }
 
-        g_object_unref (dest);
-
         return;
     }
     g_free (path);
@@ -6754,7 +6754,7 @@ retry:
 
         if (common->skip_all_error)
         {
-            goto out;
+            return;
         }
         basename = get_basename (src);
         primary = g_strdup_printf (_("Error while creating link to %s."),
@@ -6808,9 +6808,6 @@ retry:
             g_assert_not_reached ();
         }
     }
-
-out:
-    g_object_unref (dest);
 }
 
 static void
@@ -6848,15 +6845,13 @@ link_task_thread_func (GTask        *task,
     CommonJob *common;
     GFile *src;
     GdkPoint *point;
-    char *dest_fs_type;
+    g_autofree char *dest_fs_type = NULL;
     int total, left;
     int i;
     GList *l;
 
     job = task_data;
     common = &job->common;
-
-    dest_fs_type = NULL;
 
     nautilus_progress_info_start (job->common.progress);
 
@@ -6866,7 +6861,7 @@ link_task_thread_func (GTask        *task,
                         -1);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     total = left = g_list_length (job->files);
@@ -6896,9 +6891,6 @@ link_task_thread_func (GTask        *task,
         report_preparing_link_progress (job, total, --left);
         i++;
     }
-
-aborted:
-    g_free (dest_fs_type);
 }
 
 void
@@ -6909,7 +6901,7 @@ nautilus_file_operations_link (GList                *files,
                                NautilusCopyCallback  done_callback,
                                gpointer              done_callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     CopyMoveJob *job;
 
     job = op_job_new (CopyMoveJob, parent_window);
@@ -6944,7 +6936,6 @@ nautilus_file_operations_link (GList                *files,
     task = g_task_new (NULL, job->common.cancellable, link_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, link_task_thread_func);
-    g_object_unref (task);
 }
 
 
