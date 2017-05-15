@@ -6928,9 +6928,9 @@ nautilus_file_operations_duplicate (GList                *files,
                                     NautilusCopyCallback  done_callback,
                                     gpointer              done_callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     CopyMoveJob *job;
-    GFile *parent;
+    g_autoptr (GFile) parent = NULL;
 
     job = op_job_new (CopyMoveJob, parent_window);
     job->done_callback = done_callback;
@@ -6968,9 +6968,6 @@ nautilus_file_operations_duplicate (GList                *files,
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, copy_task_thread_func);
-    g_object_unref (task);
-
-    g_object_unref (parent);
 }
 
 static void
