@@ -7120,7 +7120,7 @@ nautilus_file_set_permissions_recursive (const char         *directory,
                                          NautilusOpCallback  callback,
                                          gpointer            callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     SetPermissionsJob *job;
 
     job = op_job_new (SetPermissionsJob, NULL);
@@ -7143,7 +7143,6 @@ nautilus_file_set_permissions_recursive (const char         *directory,
     task = g_task_new (NULL, NULL, set_permissions_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, set_permissions_thread_func);
-    g_object_unref (task);
 }
 
 static GList *
