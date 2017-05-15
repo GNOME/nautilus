@@ -6455,15 +6455,12 @@ move_task_thread_func (GTask        *task,
     GList *fallbacks;
     SourceInfo source_info;
     TransferInfo transfer_info;
-    char *dest_fs_id;
-    char *dest_fs_type;
+    g_autofree char *dest_fs_id = NULL;
+    g_autofree char *dest_fs_type = NULL;
     GList *fallback_files;
 
     job = task_data;
     common = &job->common;
-
-    dest_fs_id = NULL;
-    dest_fs_type = NULL;
 
     fallbacks = NULL;
 
@@ -6518,9 +6515,6 @@ move_task_thread_func (GTask        *task,
 
 aborted:
     g_list_free_full (fallbacks, g_free);
-
-    g_free (dest_fs_id);
-    g_free (dest_fs_type);
 }
 
 void
