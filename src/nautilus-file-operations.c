@@ -7367,12 +7367,11 @@ create_task_thread_func (GTask        *task,
     CreateJob *job;
     CommonJob *common;
     int count;
-    GFile *dest;
+    g_autoptr (GFile) dest = NULL;
     g_autofree gchar *dest_uri = NULL;
-    char *basename;
-    char *filename, *filename2, *new_filename;
-    char *filename_base, *suffix;
-    char *dest_fs_type;
+    g_autofree char *filename = NULL;
+    char *filename_base;
+    g_autofree char *dest_fs_type = NULL;
     GError *error;
     gboolean res;
     gboolean filename_is_utf8;
@@ -7391,10 +7390,6 @@ create_task_thread_func (GTask        *task,
 
     handled_invalid_filename = FALSE;
 
-    dest_fs_type = NULL;
-    filename = NULL;
-    dest = NULL;
-
     max_length = get_max_name_length (job->dest_dir);
 
     verify_destination (common,
@@ -7402,7 +7397,7 @@ create_task_thread_func (GTask        *task,
                         NULL, -1);
     if (job_aborted (common))
     {
-        goto aborted;
+        return;
     }
 
     filename = g_strdup (job->filename);
@@ -7423,11 +7418,10 @@ create_task_thread_func (GTask        *task,
         {
             if (job->src != NULL)
             {
-                basename = g_file_get_basename (job->src);
-                /* localizers: the initial name of a new template document */
-                filename = g_strdup_printf ("%s", basename);
+                g_autofree char *basename = NULL;
 
-                g_free (basename);
+                basename = g_file_get_basename (job->src);
+                filename = g_strdup_printf ("%s", basename);
             }
             if (filename == NULL)
             {
@@ -7509,13 +7503,11 @@ retry:
 
             if (res && common->undo_info != NULL)
             {
-                gchar *uri;
+                g_autofree gchar *uri = NULL;
 
                 uri = g_file_get_uri (job->src);
                 nautilus_file_undo_info_create_set_data (NAUTILUS_FILE_UNDO_INFO_CREATE (common->undo_info),
                                                          dest, uri, 0);
-
-                g_free (uri);
             }
         }
         else
@@ -7600,6 +7592,8 @@ retry:
         if (IS_IO_ERROR (error, INVALID_FILENAME) &&
             !handled_invalid_filename)
         {
+            g_autofree gchar *new_filename = NULL;
+
             handled_invalid_filename = TRUE;
 
             g_assert (dest_fs_type == NULL);
@@ -7611,6 +7605,9 @@ retry:
             }
             else
             {
+                g_autofree char *filename2 = NULL;
+                g_autofree char *suffix = NULL;
+
                 filename_base = eel_filename_strip_extension (filename);
                 offset = strlen (filename_base);
                 suffix = g_strdup (filename + offset);
@@ -7627,9 +7624,6 @@ retry:
                 {
                     new_filename = g_strdup (filename2);
                 }
-
-                g_free (filename2);
-                g_free (suffix);
             }
 
             if (make_file_name_valid_for_dest_fs (new_filename, dest_fs_type))
@@ -7645,17 +7639,17 @@ retry:
                     dest = g_file_get_child (job->dest_dir, new_filename);
                 }
 
-                g_free (new_filename);
                 g_error_free (error);
                 goto retry;
             }
-            g_free (new_filename);
         }
 
         if (IS_IO_ERROR (error, EXISTS))
         {
-            g_object_unref (dest);
-            dest = NULL;
+            g_autofree char *suffix = NULL;
+            g_autofree gchar *filename2 = NULL;
+
+            g_clear_object (&dest);
             filename_base = eel_filename_strip_extension (filename);
             offset = strlen (filename_base);
             suffix = g_strdup (filename + offset);
@@ -7664,6 +7658,8 @@ retry:
 
             if (max_length > 0 && strlen (filename2) > max_length)
             {
+                g_autofree char *new_filename = NULL;
+
                 new_filename = shorten_utf8_string (filename2, strlen (filename2) - max_length);
                 if (new_filename != NULL)
                 {
@@ -7681,8 +7677,6 @@ retry:
             {
                 dest = g_file_get_child (job->dest_dir, filename2);
             }
-            g_free (filename2);
-            g_free (suffix);
             g_error_free (error);
             goto retry;
         }
@@ -7736,14 +7730,6 @@ retry:
             }
         }
     }
-
-aborted:
-    if (dest)
-    {
-        g_object_unref (dest);
-    }
-    g_free (filename);
-    g_free (dest_fs_type);
 }
 
 void
@@ -7754,7 +7740,7 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
                                      NautilusCreateCallback  done_callback,
                                      gpointer                done_callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     CreateJob *job;
     GtkWindow *parent_window;
 
@@ -7784,7 +7770,6 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
     task = g_task_new (NULL, job->common.cancellable, create_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, create_task_thread_func);
-    g_object_unref (task);
 }
 
 void
@@ -7796,7 +7781,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
                                                  NautilusCreateCallback  done_callback,
                                                  gpointer                done_callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     CreateJob *job;
     GtkWindow *parent_window;
 
@@ -7830,7 +7815,6 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
     task = g_task_new (NULL, job->common.cancellable, create_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, create_task_thread_func);
-    g_object_unref (task);
 }
 
 void
@@ -7843,7 +7827,7 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
                                    NautilusCreateCallback  done_callback,
                                    gpointer                done_callback_data)
 {
-    GTask *task;
+    g_autoptr (GTask) task = NULL;
     CreateJob *job;
     GtkWindow *parent_window;
 
@@ -7874,7 +7858,6 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
     task = g_task_new (NULL, job->common.cancellable, create_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, create_task_thread_func);
-    g_object_unref (task);
 }
 
 
