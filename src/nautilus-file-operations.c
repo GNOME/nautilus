@@ -2376,8 +2376,8 @@ delete_task_thread_func (GTask        *task,
                          GCancellable *cancellable)
 {
     DeleteJob *job = task_data;
-    GList *to_trash_files;
-    GList *to_delete_files;
+    g_autoptr (GList) to_trash_files = NULL;
+    g_autoptr (GList) to_delete_files = NULL;
     GList *l;
     GFile *file;
     gboolean confirmed;
@@ -2389,9 +2389,6 @@ delete_task_thread_func (GTask        *task,
     common = (CommonJob *) job;
 
     nautilus_progress_info_start (job->common.progress);
-
-    to_trash_files = NULL;
-    to_delete_files = NULL;
 
     must_confirm_delete_in_trash = FALSE;
     must_confirm_delete = FALSE;
@@ -2453,9 +2450,6 @@ delete_task_thread_func (GTask        *task,
 
         trash_files (common, to_trash_files, &files_skipped);
     }
-
-    g_list_free (to_trash_files);
-    g_list_free (to_delete_files);
 
     if (files_skipped == g_list_length (job->files))
     {
