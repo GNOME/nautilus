@@ -54,6 +54,8 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
 #include "nautilus-debug.h"
 
+#include "nautilus-task-manager.h"
+
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -80,6 +82,7 @@ typedef struct
     GHashTable *notifications;
 
     NautilusFileUndoManager *undo_manager;
+    NautilusTaskManager *task_manager;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -611,6 +614,7 @@ nautilus_application_finalize (GObject *object)
     g_hash_table_destroy (priv->notifications);
 
     g_clear_object (&priv->undo_manager);
+    g_clear_object (&priv->task_manager);
 
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
@@ -1076,6 +1080,7 @@ nautilus_application_init (NautilusApplication *self)
                                                  NULL);
 
     priv->undo_manager = nautilus_file_undo_manager_new ();
+    priv->task_manager = nautilus_task_manager_dup_singleton ();
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 
