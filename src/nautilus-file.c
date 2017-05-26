@@ -922,6 +922,8 @@ finalize (GObject *object)
         metadata_hash_free (file->details->metadata);
     }
 
+    g_free (file->details->fts_snippet);
+
     G_OBJECT_CLASS (nautilus_file_parent_class)->finalize (object);
 }
 
@@ -6147,6 +6149,19 @@ nautilus_file_set_search_relevance (NautilusFile *file,
                                     gdouble       relevance)
 {
     file->details->search_relevance = relevance;
+}
+
+void
+nautilus_file_set_search_fts_snippet (NautilusFile *file,
+                                      const gchar  *fts_snippet)
+{
+    file->details->fts_snippet = g_strdup (fts_snippet);
+}
+
+const gchar*
+nautilus_file_get_search_fts_snippet (NautilusFile *file)
+{
+    return file->details->fts_snippet;
 }
 
 /**

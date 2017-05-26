@@ -115,6 +115,7 @@ static void
 update_information_label (NautilusQueryEditor *editor)
 {
     NautilusQueryEditorPrivate *priv;
+    gboolean fts_sensitive = TRUE;
 
     priv = nautilus_query_editor_get_instance_private (editor);
 
@@ -131,6 +132,7 @@ update_information_label (NautilusQueryEditor *editor)
         if (nautilus_file_is_other_locations (file))
         {
             label = _("Searching locations only");
+            fts_sensitive = FALSE;
         }
         else if (g_str_has_prefix (uri, "computer://"))
         {
@@ -139,16 +141,21 @@ update_information_label (NautilusQueryEditor *editor)
         else if (g_str_has_prefix (uri, "network://"))
         {
             label = _("Searching network locations only");
+            fts_sensitive = FALSE;
         }
         else if (nautilus_file_is_remote (file) &&
                  !settings_search_is_recursive (editor))
         {
             label = _("Remote location — only searching the current folder");
+            fts_sensitive = FALSE;
         }
         else if (!settings_search_is_recursive (editor))
         {
             label = _("Only searching the current folder");
         }
+
+        nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (priv->popover),
+                                                   fts_sensitive);
 
         gtk_widget_set_visible (priv->label, label != NULL);
         gtk_label_set_label (GTK_LABEL (priv->label), label);
@@ -376,13 +383,18 @@ create_query (NautilusQueryEditor *editor)
     NautilusQuery *query;
     NautilusFile *file;
     gboolean recursive;
+    gboolean fts_enabled;
 
     priv = nautilus_query_editor_get_instance_private (editor);
 
     g_return_if_fail (!priv->query);
 
+    fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (priv->popover));
+
     file = nautilus_file_get (priv->location);
     query = nautilus_query_new ();
+
+    nautilus_query_set_search_content (query, fts_enabled);
 
     recursive = settings_search_is_recursive (editor);
 
@@ -571,6 +583,29 @@ search_popover_time_type_changed_cb (NautilusSearchPopover   *popover,
 }
 
 static void
+search_popover_fts_changed_cb (GObject                    *popover,
+                               GParamSpec                 *pspec,
+                               gpointer                    user_data)
+{
+    NautilusQueryEditorPrivate *priv;
+    NautilusQueryEditor *editor;
+
+    editor = user_data;
+
+    priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
+
+    if (!priv->query)
+    {
+        create_query (editor);
+    }
+
+    nautilus_query_set_search_content (priv->query,
+                                       nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (popover)));
+
+    nautilus_query_editor_changed (editor);
+}
+
+static void
 entry_tag_clicked (NautilusQueryEditor *editor)
 {
     NautilusQueryEditorPrivate *priv;
@@ -672,6 +707,8 @@ setup_widgets (NautilusQueryEditor *editor)
                       G_CALLBACK (search_popover_mime_type_changed_cb), editor);
     g_signal_connect (priv->popover, "time-type",
                       G_CALLBACK (search_popover_time_type_changed_cb), editor);
+    g_signal_connect (priv->popover, "notify::fts-enabled",
+                      G_CALLBACK (search_popover_fts_changed_cb), editor);
 
     /* show everything */
     gtk_widget_show_all (vbox);

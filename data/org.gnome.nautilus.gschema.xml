@@ -217,6 +217,11 @@
       <summary>Enable new experimental views</summary>
       <description>Whether to use the new experimental views using the latest GTK+ widgets to help giving feedback and shaping their future.</description>
     </key>
+    <key type="b" name="fts-default">
+      <default>true</default>
+      <summary>Whether to have full text search enabled by default when opening a new window/tab</summary>
+      <description>If set to true, then Nautilus will also match the file contents besides the name. This toggles the default active state, which can still be overriden in the search popover</description>
+    </key>
   </schema>
 
   <schema path="/org/gnome/nautilus/compression/" id="org.gnome.nautilus.compression" gettext-domain="nautilus">

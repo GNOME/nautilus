@@ -41,6 +41,7 @@ struct NautilusSearchEngineTrackerDetails
     GQueue *hits_pending;
 
     gboolean recursive;
+    gboolean fts_enabled;
 
     GCancellable *cancellable;
 };
@@ -174,6 +175,7 @@ cursor_callback (GObject      *object,
     const char *uri;
     const char *mtime_str;
     const char *atime_str;
+    const gchar *snippet;
     GTimeVal tv;
     gdouble rank, match;
     gboolean success;
@@ -205,6 +207,12 @@ cursor_callback (GObject      *object,
     match = nautilus_query_matches_string (tracker->details->query, basename);
     nautilus_search_hit_set_fts_rank (hit, rank + match);
     g_free (basename);
+
+    if (tracker->details->fts_enabled)
+    {
+        snippet = tracker_sparql_cursor_get_string (cursor, 4, NULL);
+        nautilus_search_hit_set_fts_snippet (hit, snippet);
+    }
 
     if (g_time_val_from_iso8601 (mtime_str, &tv))
     {
@@ -311,6 +319,8 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                 g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
     tracker->details->recursive = recursive;
 
+    tracker->details->fts_enabled = nautilus_query_get_search_content (tracker->details->query);
+
     query_text = nautilus_query_get_text (tracker->details->query);
     downcase = g_utf8_strdown (query_text, -1);
     search_text = tracker_sparql_escape_string (downcase);
@@ -322,13 +332,19 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     mimetypes = nautilus_query_get_mime_types (tracker->details->query);
     mime_count = g_list_length (mimetypes);
 
-    sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)\n"
-                           "WHERE {"
-                           "  ?urn a nfo:FileDataObject;"
-                           "  nfo:fileLastModified ?mtime;"
-                           "  nfo:fileLastAccessed ?atime;"
-                           "  tracker:available true;"
-                           "  nie:url ?url");
+    sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)");
+
+    if (tracker->details->fts_enabled)
+    {
+        g_string_append (sparql, " fts:snippet(?urn)");
+    }
+
+    g_string_append (sparql, "\nWHERE {"
+                             "  ?urn a nfo:FileDataObject;"
+                             "  nfo:fileLastModified ?mtime;"
+                             "  nfo:fileLastAccessed ?atime;"
+                             "  tracker:available true;"
+                             "  nie:url ?url");
 
     if (*search_text)
     {
@@ -344,14 +360,17 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     if (!tracker->details->recursive)
     {
-        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url) && ", location_uri);
+        g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url)", location_uri);
     }
     else
     {
-        g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url) && ", location_uri);
+        g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url)", location_uri);
     }
 
-    g_string_append_printf (sparql, "fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
+    if (!tracker->details->fts_enabled)
+    {
+            g_string_append_printf (sparql, " && fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
+    }
 
     date_range = nautilus_query_get_date_range (tracker->details->query);
     if (date_range)

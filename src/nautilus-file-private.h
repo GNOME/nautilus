@@ -208,6 +208,7 @@ struct NautilusFileDetails
 	time_t recency; /* 0 is unknown */
 
 	gdouble search_relevance;
+	gchar *fts_snippet;
 
 	guint64 free_space; /* (guint)-1 for unknown */
 	time_t free_space_read; /* The time free_space was updated, or 0 for never */

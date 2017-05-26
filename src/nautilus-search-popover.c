@@ -45,8 +45,12 @@ struct _NautilusSearchPopover
     GtkWidget *type_stack;
     GtkWidget *last_used_button;
     GtkWidget *last_modified_button;
+    GtkWidget *full_text_search_button;
+    GtkWidget *filename_search_button;
 
     NautilusQuery *query;
+
+    gboolean fts_enabled;
 };
 
 static void          show_date_selection_widgets (NautilusSearchPopover *popover,
@@ -63,6 +67,7 @@ enum
 {
     PROP_0,
     PROP_QUERY,
+    PROP_FTS_ENABLED,
     LAST_PROP
 };
 
@@ -344,6 +349,24 @@ search_time_type_changed (GtkToggleButton       *button,
     g_settings_set_enum (nautilus_preferences, "search-filter-time-type", type);
 
     g_signal_emit_by_name (popover, "time-type", type, NULL);
+}
+
+static void
+search_fts_mode_changed (GtkToggleButton       *button,
+                         NautilusSearchPopover *popover)
+{
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->full_text_search_button)) &&
+        popover->fts_enabled == FALSE)
+    {
+        popover->fts_enabled = TRUE;
+        g_object_notify (G_OBJECT (popover), "fts-enabled");
+    }
+    else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->filename_search_button)) &&
+             popover->fts_enabled == TRUE)
+    {
+        popover->fts_enabled = FALSE;
+        g_object_notify (G_OBJECT (popover), "fts-enabled");
+    }
 }
 
 /* Auxiliary methods */
@@ -639,6 +662,14 @@ update_date_label (NautilusSearchPopover *popover,
     }
 }
 
+void
+nautilus_search_popover_set_fts_sensitive (NautilusSearchPopover *popover,
+                                           gboolean               sensitive)
+{
+    gtk_widget_set_sensitive (popover->full_text_search_button, sensitive);
+    gtk_widget_set_sensitive (popover->filename_search_button, sensitive);
+}
+
 static void
 nautilus_search_popover_closed (GtkPopover *popover)
 {
@@ -690,6 +721,12 @@ nautilus_search_popover_get_property (GObject    *object,
         }
         break;
 
+        case PROP_FTS_ENABLED:
+        {
+            g_value_set_boolean (value, self->fts_enabled);
+        }
+        break;
+
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
@@ -710,6 +747,12 @@ nautilus_search_popover_set_property (GObject      *object,
         case PROP_QUERY:
         {
             nautilus_search_popover_set_query (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_FTS_ENABLED:
+        {
+            self->fts_enabled = g_value_get_boolean (value);
         }
         break;
 
@@ -778,6 +821,14 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                                           NAUTILUS_TYPE_QUERY,
                                                           G_PARAM_READWRITE));
 
+    g_object_class_install_property (object_class,
+                                     PROP_FTS_ENABLED,
+                                     g_param_spec_boolean ("fts-enabled",
+                                                           "fts enabled",
+                                                           "fts enabled",
+                                                           FALSE,
+                                                           G_PARAM_READWRITE));
+
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-search-popover.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, around_revealer);
@@ -794,6 +845,8 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, type_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_used_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, last_modified_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, full_text_search_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusSearchPopover, filename_search_button);
 
     gtk_widget_class_bind_template_callback (widget_class, calendar_day_selected);
     gtk_widget_class_bind_template_callback (widget_class, clear_date_button_clicked);
@@ -804,6 +857,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
     gtk_widget_class_bind_template_callback (widget_class, toggle_calendar_icon_clicked);
     gtk_widget_class_bind_template_callback (widget_class, types_listbox_row_activated);
     gtk_widget_class_bind_template_callback (widget_class, search_time_type_changed);
+    gtk_widget_class_bind_template_callback (widget_class, search_fts_mode_changed);
 }
 
 static void
@@ -839,6 +893,16 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
     {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_modified_button), FALSE);
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
+    }
+
+    self->fts_enabled = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_DEFAULT);
+    if (self->fts_enabled)
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->full_text_search_button), TRUE);
+    }
+    else
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->filename_search_button), TRUE);
     }
 }
 
@@ -936,4 +1000,10 @@ nautilus_search_popover_reset_date_range (NautilusSearchPopover *popover)
     update_date_label (popover, NULL);
     show_date_selection_widgets (popover, FALSE);
     g_signal_emit_by_name (popover, "date-range", NULL);
+}
+
+gboolean
+nautilus_search_popover_get_fts_enabled (NautilusSearchPopover *popover)
+{
+    return popover->fts_enabled;
 }

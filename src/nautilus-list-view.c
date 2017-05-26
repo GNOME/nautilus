@@ -37,6 +37,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
+#include <eel/eel-string.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -1552,12 +1553,36 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                          NautilusListView  *view)
 {
     char *text;
+    g_autofree gchar *escaped_text = NULL;
+    g_autofree gchar *escaped_name = NULL;
+    g_autofree gchar *replaced_text = NULL;
     GtkTreePath *path;
     PangoUnderline underline;
+    GString *display_text;
+    NautilusDirectory *directory;
+    NautilusQuery *query = NULL;
+    NautilusQuerySearchContent content;
+    NautilusFile *file;
+    const gchar *snippet;
 
     gtk_tree_model_get (model, iter,
                         view->details->file_name_column_num, &text,
                         -1);
+
+    escaped_name = g_markup_escape_text (text, -1);
+    display_text = g_string_new(escaped_name);
+
+    directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (view));
+
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    {
+        query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+    }
+
+    if (query)
+    {
+        content = nautilus_query_get_search_content (query);
+    }
 
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
     {
@@ -1580,11 +1605,30 @@ filename_cell_data_func (GtkTreeViewColumn *column,
         underline = PANGO_UNDERLINE_NONE;
     }
 
+    if (query && content == NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT)
+    {
+        gtk_tree_model_get (model, iter,
+                            NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
+                            -1);
+
+        snippet = nautilus_file_get_search_fts_snippet (file);
+        if (snippet)
+        {
+            replaced_text = eel_str_replace_substring (snippet, "\n", "");
+            escaped_text = g_markup_escape_text (replaced_text, -1);
+            g_string_append_printf (display_text, "\n<small><span color='grey'>%s</span></small>", escaped_text);
+        }
+
+        nautilus_file_unref (file);
+    }
+
     g_object_set (G_OBJECT (renderer),
-                  "text", text,
+                  "markup", display_text->str,
                   "underline", underline,
                   NULL);
+
     g_free (text);
+    g_string_free (display_text, TRUE);
 }
 
 static void
@@ -1798,6 +1842,9 @@ create_and_set_up_tree_view (NautilusListView *view)
     GList *l;
     gchar **default_column_order, **default_visible_columns;
     GtkWidget *content_widget;
+    NautilusDirectory *directory = NULL;
+    NautilusQuery *query = NULL;
+    NautilusQuerySearchContent content;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (view));
     view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -1953,10 +2000,27 @@ create_and_set_up_tree_view (NautilusListView *view)
             view->details->file_name_cell = (GtkCellRendererText *) cell;
             g_object_set (cell,
                           "ellipsize", PANGO_ELLIPSIZE_END,
-                          "single-paragraph-mode", TRUE,
+                          "single-paragraph-mode", FALSE,
                           "width-chars", 30,
                           "xpad", 5,
                           NULL);
+
+            directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (view));
+            if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+            {
+                query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
+            }
+
+            if (query)
+            {
+                content = nautilus_query_get_search_content (query);
+            }
+
+            if (query && content == NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT)
+            {
+                gtk_cell_renderer_text_set_fixed_height_from_font (GTK_CELL_RENDERER_TEXT (cell), 2);
+                g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_MIDDLE, NULL);
+            }
 
             gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
             gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,

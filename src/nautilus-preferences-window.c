@@ -61,6 +61,8 @@
     "automatic_decompression_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET                    \
     "use_new_views_checkbutton"
+#define NAUTILUS_PREFERENCES_FTS_DEFAULT_WIDGET                                \
+    "fts_checkbutton"
 
 /* int enums */
 #define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
@@ -506,6 +508,9 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     bind_builder_bool (builder, nautilus_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET,
                        NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
+    bind_builder_bool (builder, nautilus_preferences,
+                       NAUTILUS_PREFERENCES_FTS_DEFAULT_WIDGET,
+                       NAUTILUS_PREFERENCES_FTS_DEFAULT);
 
     bind_builder_radio (
         builder, nautilus_preferences, (const char **) click_behavior_components,

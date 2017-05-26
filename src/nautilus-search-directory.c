@@ -628,6 +628,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
 
         file = nautilus_file_get_by_uri (uri);
         nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
+        nautilus_file_set_search_fts_snippet (file, nautilus_search_hit_get_fts_snippet (hit));
 
         for (monitor_list = search->details->monitor_list; monitor_list; monitor_list = monitor_list->next)
         {

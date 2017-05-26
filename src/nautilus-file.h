@@ -237,6 +237,10 @@ gboolean                nautilus_file_should_show_directory_item_count  (Nautilu
 
 void                    nautilus_file_set_search_relevance              (NautilusFile                   *file,
 									 gdouble                         relevance);
+void                    nautilus_file_set_search_fts_snippet            (NautilusFile                   *file,
+                                                                         const gchar                    *fts_snippet);
+const gchar*            nautilus_file_get_search_fts_snippet            (NautilusFile                   *file);
+
 void                    nautilus_file_set_attributes                    (NautilusFile                   *file, 
 									 GFileInfo                      *attributes,
 									 NautilusFileOperationCallback   callback,
