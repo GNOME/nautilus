@@ -518,6 +518,19 @@ nautilus_window_create_slot (NautilusWindow *window,
 }
 
 static NautilusWindowSlot *
+nautilus_window_create_and_init_slot (NautilusWindow          *window,
+                                      GFile                   *location,
+                                      NautilusWindowOpenFlags  flags)
+{
+    NautilusWindowSlot *slot;
+
+    slot = nautilus_window_create_slot (window, location);
+    nautilus_window_initialize_slot (window, slot, flags);
+
+    return slot;
+}
+
+static NautilusWindowSlot *
 real_create_slot (NautilusWindow *window,
                   GFile          *location)
 {
@@ -553,8 +566,7 @@ replace_active_slot (NautilusWindow          *window,
     NautilusWindowSlot *new_slot;
     NautilusWindowSlot *active_slot;
 
-    new_slot = nautilus_window_create_slot (window, location);
-    nautilus_window_initialize_slot (window, new_slot, flags);
+    new_slot = nautilus_window_create_and_init_slot (window, location, flags);
     active_slot = nautilus_window_get_active_slot (window);
     if (active_slot)
     {
@@ -631,8 +643,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 
     if (target_slot == NULL || (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0)
     {
-        target_slot = nautilus_window_create_slot (window, location);
-        nautilus_window_initialize_slot (window, target_slot, flags);
+        target_slot = nautilus_window_create_and_init_slot (window, location, flags);
     }
     else if (!nautilus_window_slot_handles_location (target_slot, location))
     {
@@ -1375,8 +1386,7 @@ action_restore_tab (GSimpleAction *action,
 
     location = nautilus_file_get_location (data->file);
 
-    slot = nautilus_window_create_slot (window, location);
-    nautilus_window_initialize_slot (window, slot, flags);
+    slot = nautilus_window_create_and_init_slot (window, location, flags);
 
     nautilus_window_slot_open_location_full (slot, location, flags, NULL);
     nautilus_window_slot_restore_from_data (slot, data);
@@ -2391,8 +2401,7 @@ nautilus_window_constructed (GObject *self)
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
 
-    slot = nautilus_window_create_slot (window, NULL);
-    nautilus_window_initialize_slot (window, slot, 0);
+    slot = nautilus_window_create_and_init_slot (window, NULL, 0);
     nautilus_window_set_active_slot (window, slot);
 
     priv->bookmarks_id =
