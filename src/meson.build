@@ -271,6 +271,8 @@ libnautilus_sources = [
     'tasks/nautilus-create-task.c',
     'tasks/nautilus-new-folder-task.h',
     'tasks/nautilus-new-folder-task.c'
+    'tasks/nautilus-extract-task.h',
+    'tasks/nautilus-extract-task.c'
 ]
 
 nautilus_deps = [glib,
