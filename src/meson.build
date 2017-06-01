@@ -267,10 +267,10 @@ libnautilus_sources = [
     'tasks/nautilus-file-task.h',
     'tasks/nautilus-file-task.c',
     'tasks/nautilus-file-task-private.h',
-    'tasks/nautilus-create-task.h',
-    'tasks/nautilus-create-task.c',
-    'tasks/nautilus-new-folder-task.h',
-    'tasks/nautilus-new-folder-task.c'
+#    'tasks/nautilus-create-task.h',
+#    'tasks/nautilus-create-task.c',
+#    'tasks/nautilus-new-folder-task.h',
+#    'tasks/nautilus-new-folder-task.c',
     'tasks/nautilus-extract-task.h',
     'tasks/nautilus-extract-task.c'
 ]
