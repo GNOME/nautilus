@@ -83,4 +83,5 @@ char *         nautilus_query_to_readable_string (NautilusQuery *query);
 
 gboolean       nautilus_query_is_empty           (NautilusQuery *query);
 
+gdouble        nautilus_query_matches_tags       (NautilusQuery *query, const gchar *tags);
 #endif /* NAUTILUS_QUERY_H */
