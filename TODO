@@ -1,0 +1,27 @@
+Progress notifications + idle tasks:
+    File ops use their own timers for some reason, even though
+    NautilusProgressInfo has a perfectly usable one. No need to be anal
+    about shaving off milliseconds (the preparation). Although,
+    having two timers would allow to have exactly what is needed -
+    the progress info timer could be started so that the widget appears
+    in the popover, but that seems needlessly wasteful.
+
+    Status??????????????? A possible hack is signaling a task from the
+    manager so that file tasks can set up the status for waiting, but
+    the signal doesn’t yet seem to be useful outside file tasks.
+    Crazy idea: redo the progress widgets so that they always show
+    the file(s) on which tasks are being performed. Something like:
+        Foo.bar
+        [small, dim text] Duplicating…
+        (======================>  )
+        33 MiB/44 MiB - 3 hours remaining (1 KiB/s)
+    That would lighten the load on tasks/operations/whatchamacallits when
+    creating progress strings.
+    The downside is wasting some vertical space, but that might look better
+    in the end.
+
+    A good thing would be minimizing the degree of separation between
+    tasks and progress info (and their managers), but a problem to solve would
+    be the viewer stuff in the progress info manager.
+
+    Not doing anything about all this for now.
