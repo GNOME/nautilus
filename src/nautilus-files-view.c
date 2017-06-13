@@ -9489,12 +9489,6 @@ nautilus_files_view_init (NautilusFilesView *view)
         "<control>plus",
         NULL
     };
-    const gchar *rename_shortcuts[] =
-    {
-        "<control>m",
-        "F2",
-        NULL
-    };
 
     nautilus_profile_start (NULL);
 
@@ -9694,7 +9688,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
     nautilus_application_set_accelerators (app, "view.properties", open_properties);
     nautilus_application_set_accelerator (app, "view.open-item-location", "<control><alt>o");
-    nautilus_application_set_accelerators (app, "view.rename", rename_shortcuts);
+    nautilus_application_set_accelerator (app, "view.rename", "F2");
     nautilus_application_set_accelerator (app, "view.cut", "<control>x");
     nautilus_application_set_accelerator (app, "view.copy", "<control>c");
     nautilus_application_set_accelerator (app, "view.create-link-in-place", "<control><shift>m");
