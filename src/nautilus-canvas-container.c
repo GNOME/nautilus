@@ -2741,6 +2741,10 @@ get_rubber_color (NautilusCanvasContainer *container,
 }
 
 static void
+stop_rubberbanding (NautilusCanvasContainer *container,
+                    GdkEventButton          *event);
+
+static void
 start_rubberbanding (NautilusCanvasContainer *container,
                      GdkEventButton          *event)
 {
@@ -2753,6 +2757,12 @@ start_rubberbanding (NautilusCanvasContainer *container,
 
     details = container->details;
     band_info = &details->rubberband_info;
+
+    if (band_info->active)
+    {
+        g_debug ("Canceling active rubberband by device %s", gdk_device_get_name (band_info->device));
+        stop_rubberbanding (container, NULL);
+    }
 
     g_signal_emit (container,
                    signals[BAND_SELECT_STARTED], 0);
@@ -2811,13 +2821,19 @@ start_rubberbanding (NautilusCanvasContainer *container,
 }
 
 static void
-stop_rubberbanding (NautilusCanvasContainer *container)
+stop_rubberbanding (NautilusCanvasContainer *container,
+                    GdkEventButton          *event)
 {
     NautilusCanvasRubberbandInfo *band_info;
     GList *icons;
     gboolean enable_animation;
 
     band_info = &container->details->rubberband_info;
+
+    if (event != NULL && event->device != band_info->device)
+    {
+        return;
+    }
 
     g_assert (band_info->timer_id != 0);
     g_source_remove (band_info->timer_id);
@@ -4960,7 +4976,7 @@ button_release_event (GtkWidget      *widget,
 
     if (event->button == RUBBERBAND_BUTTON && details->rubberband_info.active)
     {
-        stop_rubberbanding (container);
+        stop_rubberbanding (container, event);
         return TRUE;
     }
 
@@ -5304,7 +5320,7 @@ grab_notify_cb  (GtkWidget *widget,
          * up (e.g. authentication or an error). Stop
          * the rubberbanding so that we can handle the
          * dialog. */
-        stop_rubberbanding (container);
+        stop_rubberbanding (container, NULL);
     }
 }
 
