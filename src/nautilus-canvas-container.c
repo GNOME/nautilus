@@ -2537,8 +2537,6 @@ rubberband_timeout_callback (gpointer data)
     double world_x, world_y;
     int x_scroll, y_scroll;
     int adj_x, adj_y;
-    GdkDisplay *display;
-    GdkSeat *seat;
     gboolean adj_changed;
     GtkAllocation allocation;
 
@@ -2567,11 +2565,8 @@ rubberband_timeout_callback (gpointer data)
         adj_changed = TRUE;
     }
 
-    display = gtk_widget_get_display (widget);
-    seat = gdk_display_get_default_seat (display);
-
     gdk_window_get_device_position (gtk_widget_get_window (widget),
-                                    gdk_seat_get_pointer (seat),
+                                    band_info->device,
                                     &x, &y, NULL);
 
     if (x < RUBBERBAND_SCROLL_THRESHOLD)
@@ -2762,6 +2757,8 @@ start_rubberbanding (NautilusCanvasContainer *container,
     g_signal_emit (container,
                    signals[BAND_SELECT_STARTED], 0);
 
+    band_info->device = event->device;
+
     for (p = details->icons; p != NULL; p = p->next)
     {
         icon = p->data;
@@ -2827,6 +2824,8 @@ stop_rubberbanding (NautilusCanvasContainer *container)
     band_info->timer_id = 0;
 
     band_info->active = FALSE;
+
+    band_info->device = NULL;
 
     g_object_get (gtk_settings_get_default (), "gtk-enable-animations", &enable_animation, NULL);
 
