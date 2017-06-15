@@ -75,6 +75,7 @@ typedef struct {
 	double start_x, start_y;
 
 	EelCanvasItem *selection_rectangle;
+	GdkDevice *device;
 
 	guint timer_id;
 
