@@ -2287,12 +2287,8 @@ batch_rename_get_info_callback (GObject      *source_object,
 
     op->renamed_files++;
 
-    if (op->renamed_files + op->skipped_files == g_list_length (op->files))
-    {
-        nautilus_file_operation_complete (op, NULL, error);
-    }
-
-    if (op->files == NULL)
+    if (op->files == NULL ||
+        op->renamed_files + op->skipped_files == g_list_length (op->files))
     {
         nautilus_file_operation_complete (op, NULL, error);
     }
