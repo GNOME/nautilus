@@ -1522,32 +1522,37 @@ button_event_cb (GtkWidget      *button,
 
     button_data = BUTTON_DATA (data);
     path_bar = NAUTILUS_PATH_BAR (gtk_widget_get_parent (button));
+    mask = event->state & gtk_accelerator_get_default_mod_mask ();
 
     if (event->type == GDK_BUTTON_PRESS)
     {
         g_object_set_data (G_OBJECT (button), "handle-button-release", GINT_TO_POINTER (TRUE));
 
-        if (event->button == 3)
+        if (event->button == GDK_BUTTON_SECONDARY)
         {
             pop_up_pathbar_context_menu (path_bar, event, button_data->file);
-            return TRUE;
+            return GDK_EVENT_STOP;
+        }
+        else if (event->button == GDK_BUTTON_MIDDLE && mask == 0)
+        {
+            g_signal_emit (path_bar,
+                           path_bar_signals[OPEN_LOCATION],
+                           0,
+                           button_data->path,
+                           GTK_PLACES_OPEN_NEW_TAB);
+            return GDK_EVENT_STOP;
         }
     }
     else if (event->type == GDK_BUTTON_RELEASE)
     {
-        mask = event->state & gtk_accelerator_get_default_mod_mask ();
         flags = 0;
 
         if (!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (button), "handle-button-release")))
         {
-            return FALSE;
+            return GDK_EVENT_PROPAGATE;
         }
 
-        if (event->button == 2 && mask == 0)
-        {
-            flags = GTK_PLACES_OPEN_NEW_TAB;
-        }
-        else if (event->button == 1 && mask == GDK_CONTROL_MASK)
+        if (event->button == GDK_BUTTON_PRIMARY && mask == GDK_CONTROL_MASK)
         {
             flags = GTK_PLACES_OPEN_NEW_WINDOW;
         }
@@ -1557,10 +1562,10 @@ button_event_cb (GtkWidget      *button,
             g_signal_emit (path_bar, path_bar_signals[OPEN_LOCATION], 0, button_data->path, flags);
         }
 
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static GIcon *
