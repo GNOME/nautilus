@@ -272,7 +272,9 @@ libnautilus_sources = [
 #    'tasks/nautilus-new-folder-task.h',
 #    'tasks/nautilus-new-folder-task.c',
     'tasks/nautilus-extract-task.h',
-    'tasks/nautilus-extract-task.c'
+    'tasks/nautilus-extract-task.c',
+#    'tasks/nautilus-deep-count-task.c',
+#    'tasks/nautilus-deep-count-task.h'
 ]
 
 nautilus_deps = [glib,
