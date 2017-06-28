@@ -82,7 +82,7 @@ if get_option ('enable-selinux')
 endif
 
 if get_option ('enable-tracker')
-    tracker_sparql = dependency ('tracker-sparql-1.0')
+    tracker_sparql = dependency ('tracker-sparql-2.0')
     conf.set10 ('ENABLE_TRACKER', true)
 endif
 
