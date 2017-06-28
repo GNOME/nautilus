@@ -42,6 +42,7 @@
 #include "nautilus-window.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
+#include "nautilus-tag-manager.h"
 
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
@@ -70,6 +71,7 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-search-directory.h"
+#include "nautilus-favorite-directory.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-attributes.h"
@@ -254,6 +256,7 @@ typedef struct
     GtkWidget *folder_is_empty_widget;
     GtkWidget *trash_is_empty_widget;
     GtkWidget *no_search_results_widget;
+    GtkWidget *starred_is_empty_widget;
 
     /* Floating bar */
     guint floating_bar_set_status_timeout_id;
@@ -273,6 +276,9 @@ typedef struct
 
     gulong stop_signal_handler;
     gulong reload_signal_handler;
+
+    GCancellable *favorite_cancellable;
+    NautilusTagManager *tag_manager;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -748,13 +754,27 @@ showing_recent_directory (NautilusFilesView *view)
 }
 
 static gboolean
+showing_starred_directory (NautilusFilesView *view)
+{
+    NautilusFile *file;
+
+    file = nautilus_files_view_get_directory_as_file (view);
+    if (file != NULL)
+    {
+        return nautilus_file_is_in_starred (file);
+    }
+    return FALSE;
+}
+
+static gboolean
 nautilus_files_view_supports_creating_files (NautilusFilesView *view)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
 
     return !nautilus_files_view_is_read_only (view)
            && !showing_trash_directory (view)
-           && !showing_recent_directory (view);
+           && !showing_recent_directory (view)
+           && !showing_starred_directory (view);
 }
 
 static gboolean
@@ -1559,6 +1579,46 @@ action_delete (GSimpleAction *action,
                gpointer       user_data)
 {
     delete_selected_files (NAUTILUS_FILES_VIEW (user_data));
+}
+
+static void
+action_star (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GList *selection;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    nautilus_tag_manager_star_files (priv->tag_manager,
+                                     G_OBJECT (view),
+                                     selection,
+                                     NULL,
+                                     priv->favorite_cancellable);
+}
+
+static void
+action_unstar (GSimpleAction *action,
+               GVariant      *state,
+               gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GList *selection;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    nautilus_tag_manager_unstar_files (priv->tag_manager,
+                                       G_OBJECT (view),
+                                       selection,
+                                       NULL,
+                                       priv->favorite_cancellable);
 }
 
 static void
@@ -3226,6 +3286,9 @@ nautilus_files_view_finalize (GObject *object)
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
 
+    g_cancellable_cancel (priv->favorite_cancellable);
+    g_clear_object (&priv->favorite_cancellable);
+
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
 
@@ -3474,6 +3537,10 @@ nautilus_files_view_set_location (NautilusView *view,
         set_search_query_internal (files_view, previous_query, base_model);
         g_object_unref (previous_query);
     }
+    else if (NAUTILUS_IS_FAVORITE_DIRECTORY (directory))
+    {
+        load_directory (NAUTILUS_FILES_VIEW (view), directory);
+    }
     else
     {
         load_directory (NAUTILUS_FILES_VIEW (view), directory);
@@ -3514,6 +3581,7 @@ real_check_empty_states (NautilusFilesView *view)
     gtk_widget_hide (priv->no_search_results_widget);
     gtk_widget_hide (priv->folder_is_empty_widget);
     gtk_widget_hide (priv->trash_is_empty_widget);
+    gtk_widget_hide (priv->starred_is_empty_widget);
 
     if (!priv->loading &&
         nautilus_files_view_is_empty (view))
@@ -3527,6 +3595,10 @@ real_check_empty_states (NautilusFilesView *view)
         else if (eel_uri_is_trash (uri))
         {
             gtk_widget_show (priv->trash_is_empty_widget);
+        }
+        else if (eel_uri_is_favorites (uri))
+        {
+            gtk_widget_show (priv->starred_is_empty_widget);
         }
         else
         {
@@ -7014,6 +7086,8 @@ const GActionEntry view_entries[] =
     { "copy-to", action_copy_to},
     { "move-to-trash", action_move_to_trash},
     { "delete-from-trash", action_delete },
+    { "star", action_star},
+    { "unstar", action_unstar},
     /* We separate the shortcut and the menu item since we want the shortcut
      * to always be available, but we don't want the menu item shown if not
      * completely necesary. Since the visibility of the menu item is based on
@@ -7093,6 +7167,7 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
     gboolean settings_show_create_link;
     gboolean is_read_only;
     gboolean selection_contains_recent;
+    gboolean selection_contains_starred;
     GAction *action;
 
     view = NAUTILUS_FILES_VIEW (user_data);
@@ -7110,9 +7185,10 @@ on_clipboard_contents_received (GtkClipboard     *clipboard,
                                                         NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
     is_read_only = nautilus_files_view_is_read_only (view);
     selection_contains_recent = showing_recent_directory (view);
+    selection_contains_starred = showing_starred_directory (view);
     can_link_from_copied_files = !nautilus_clipboard_is_cut_from_selection_data (selection_data) &&
-                                 !selection_contains_recent && !is_read_only &&
-                                 gtk_selection_data_get_length (selection_data) > 0;
+                                 !selection_contains_recent && !selection_contains_starred &&
+                                 !is_read_only && gtk_selection_data_get_length (selection_data) > 0;
 
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
                                          "create-link");
@@ -7399,6 +7475,7 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean selection_contains_desktop_or_home_dir;
     gboolean selection_contains_recent;
     gboolean selection_contains_search;
+    gboolean selection_contains_starred;
     gboolean selection_all_in_trash;
     gboolean selection_is_read_only;
     gboolean can_create_files;
@@ -7423,6 +7500,9 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean settings_show_delete_permanently;
     gboolean settings_show_create_link;
     GDriveStartStopType start_stop_type;
+    gboolean show_star;
+    gboolean show_unstar;
+    gchar *uri;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -7433,6 +7513,7 @@ real_update_actions_state (NautilusFilesView *view)
     selection_contains_special_link = nautilus_files_view_special_link_in_selection (view, selection);
     selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
     selection_contains_recent = showing_recent_directory (view);
+    selection_contains_starred = showing_starred_directory (view);
     selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
     selection_is_read_only = selection_count == 1 &&
                              (!nautilus_file_can_write (NAUTILUS_FILE (selection->data)) &&
@@ -7454,8 +7535,10 @@ real_update_actions_state (NautilusFilesView *view)
         !selection_contains_desktop_or_home_dir;
     can_copy_files = selection_count != 0
                      && !selection_contains_special_link;
-    can_move_files = can_delete_files && !selection_contains_recent;
+    can_move_files = can_delete_files && !selection_contains_recent &&
+                     !selection_contains_starred;
     can_paste_files_into = (!selection_contains_recent &&
+                            !selection_contains_starred &&
                             selection_count == 1 &&
                             can_paste_into_file (NAUTILUS_FILE (selection->data)));
     can_extract_files = selection_count != 0 &&
@@ -7471,7 +7554,8 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder-with-selection");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_create_files && can_delete_files && (selection_count > 1) && !selection_contains_recent);
+                                 can_create_files && can_delete_files && (selection_count > 1) && !selection_contains_recent
+                                 && !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "rename");
@@ -7519,7 +7603,8 @@ real_update_actions_state (NautilusFilesView *view)
 
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  selection_count == 1 &&
-                                 (selection_contains_recent || selection_contains_search));
+                                 (selection_contains_recent || selection_contains_search ||
+                                  selection_contains_starred));
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "new-folder");
@@ -7585,14 +7670,16 @@ real_update_actions_state (NautilusFilesView *view)
                                          "delete-permanently-menu-item");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_delete_files && !can_trash_files &&
-                                 !selection_all_in_trash && !selection_contains_recent);
+                                 !selection_all_in_trash && !selection_contains_recent &&
+                                 !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "permanent-delete-permanently-menu-item");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_delete_files && can_trash_files &&
                                  settings_show_delete_permanently &&
-                                 !selection_all_in_trash && !selection_contains_recent);
+                                 !selection_all_in_trash && !selection_contains_recent &&
+                                 !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "remove-from-recent");
@@ -7602,7 +7689,8 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "cut");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_move_files && !selection_contains_recent);
+                                 can_move_files && !selection_contains_recent &&
+                                 !selection_contains_starred);
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "copy");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
@@ -7620,7 +7708,8 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "move-to");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_move_files && !selection_contains_recent);
+                                 can_move_files && !selection_contains_recent &&
+                                 !selection_contains_starred);
 
     /* Drive menu */
     show_mount = (selection != NULL);
@@ -7697,13 +7786,14 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !is_read_only && !selection_contains_recent);
+                                 !is_read_only && !selection_contains_recent &&
+                                 !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "paste-into");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !selection_is_read_only && !selection_contains_recent &&
-                                 can_paste_files_into);
+                                 can_paste_files_into && !selection_contains_starred);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "properties");
@@ -7714,6 +7804,7 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_create_files &&
                                  !selection_contains_recent &&
+                                 !selection_contains_starred &&
                                  priv->templates_present);
 
     /* Actions that are related to the clipboard need request, request the data
@@ -7756,6 +7847,38 @@ real_update_actions_state (NautilusFilesView *view)
                                          "zoom-to-level");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view));
+
+    show_star = (selection != NULL);
+    show_unstar = (selection != NULL);
+    for (l = selection; l != NULL; l = l->next)
+    {
+        file = NAUTILUS_FILE (l->data);
+        uri = nautilus_file_get_uri (file);
+
+        if (!show_star && !show_unstar)
+        {
+            break;
+        }
+
+        if (nautilus_tag_manager_file_is_favorite (priv->tag_manager, uri))
+        {
+            show_star = FALSE;
+        }
+        else
+        {
+            show_unstar = FALSE;
+        }
+
+        g_free (uri);
+    }
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "star");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_star);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "unstar");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_unstar);
 
     nautilus_file_list_free (selection);
 }
@@ -8031,7 +8154,8 @@ static void
 update_background_menu (NautilusFilesView *view)
 {
     if (nautilus_files_view_supports_creating_files (view) &&
-        !showing_recent_directory (view))
+        !showing_recent_directory (view) &&
+        !showing_starred_directory (view))
     {
         update_templates_menu (view);
     }
@@ -9601,6 +9725,14 @@ nautilus_files_view_init (NautilusFilesView *view)
                                           TRUE);
     g_object_unref (builder);
 
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-starred-is-empty.ui");
+    priv->starred_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "starred_is_empty"));
+    gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->starred_is_empty_widget);
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->starred_is_empty_widget,
+                                          TRUE);
+    g_object_unref (builder);
+
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-trash-is-empty.ui");
     priv->trash_is_empty_widget = GTK_WIDGET (gtk_builder_get_object (builder, "trash_is_empty"));
     gtk_overlay_add_overlay (GTK_OVERLAY (priv->overlay), priv->trash_is_empty_widget);
@@ -9741,6 +9873,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Show a warning dialog to inform the user that the shorcut for move to trash
      * changed */
     nautilus_application_set_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
+
+    priv->favorite_cancellable = g_cancellable_new ();
+    priv->tag_manager = nautilus_tag_manager_get ();
 
     nautilus_profile_end (NULL);
 }

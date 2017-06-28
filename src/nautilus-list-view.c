@@ -32,6 +32,7 @@
 #include "nautilus-toolbar.h"
 #include "nautilus-list-view-dnd.h"
 #include "nautilus-view.h"
+#include "nautilus-tag-manager.h"
 
 #include <string.h>
 #include <eel/eel-vfs-extensions.h>
@@ -457,6 +458,90 @@ row_activated_callback (GtkTreeView       *treeview,
     activate_selected_items (view);
 }
 
+gboolean
+check_starred_status (GtkTreeModel *model,
+                      GtkTreePath  *path,
+                      GtkTreeIter  *iter,
+                      gpointer      data)
+{
+    NautilusFile *file;
+    GList *l;
+    GList *changed_files;
+
+    changed_files = data;
+
+    gtk_tree_model_get (GTK_TREE_MODEL (model),
+                        iter,
+                        NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
+                        -1);
+
+    if (!file)
+    {
+        return FALSE;
+    }
+
+    for (l = changed_files; l != NULL; l = l->next)
+    {
+        if (nautilus_file_compare_location (NAUTILUS_FILE (l->data), file) == 0)
+        {
+            gtk_tree_model_row_changed (model, path, iter);
+        }
+    }
+
+    nautilus_file_unref (file);
+
+    return FALSE;
+}
+
+static void
+on_favorites_files_changed (NautilusTagManager *tag_manager,
+                            GList              *changed_files,
+                            gpointer            user_data)
+{
+    NautilusListView *list_view;
+
+    list_view = NAUTILUS_LIST_VIEW (user_data);
+
+    gtk_tree_model_foreach (GTK_TREE_MODEL (list_view->details->model),
+                            check_starred_status,
+                            changed_files);
+}
+
+static void
+on_star_cell_renderer_clicked (GtkTreePath      *path,
+                               NautilusListView *list_view)
+{
+    NautilusListModel *list_model;
+    NautilusFile *file;
+    g_autofree gchar *uri = NULL;
+    GList *selection;
+
+    list_model = list_view->details->model;
+
+    file = nautilus_list_model_file_for_path (list_model, path);
+    uri = nautilus_file_get_uri (file);
+    selection = g_list_prepend (NULL, file);
+
+    if (nautilus_tag_manager_file_is_favorite (list_view->details->tag_manager, uri))
+    {
+        nautilus_tag_manager_unstar_files (list_view->details->tag_manager,
+                                           G_OBJECT (list_view),
+                                           selection,
+                                           NULL,
+                                           list_view->details->favorite_cancellable);
+    }
+    else
+    {
+        nautilus_tag_manager_star_files (list_view->details->tag_manager,
+                                         G_OBJECT (list_view),
+                                         selection,
+                                         NULL,
+                                         list_view->details->favorite_cancellable);
+    }
+
+    nautilus_file_list_free (selection);
+}
+
 static gboolean
 button_press_callback (GtkWidget      *widget,
                        GdkEventButton *event,
@@ -700,6 +785,32 @@ button_press_callback (GtkWidget      *widget,
         if (event->button == 3)
         {
             do_popup_menu (widget, view, event);
+        }
+    }
+
+    if (is_simple_click)
+    {
+        GtkTreeViewColumn *column = NULL;
+        gdouble cell_middle_x;
+
+        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (view->details->tree_view),
+                                       event->x,
+                                       event->y,
+                                       NULL,
+                                       &column,
+                                       NULL,
+                                       NULL);
+
+        if (g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
+        {
+            cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
+                            gtk_tree_view_column_get_x_offset (column);
+
+            if (event->x > cell_middle_x - 10 &&
+                event->x < cell_middle_x + 10)
+            {
+                on_star_cell_renderer_clicked (path, view);
+            }
         }
     }
 
@@ -1547,6 +1658,45 @@ apply_columns_settings (NautilusListView  *list_view,
 }
 
 static void
+favorite_cell_data_func (GtkTreeViewColumn *column,
+                         GtkCellRenderer   *renderer,
+                         GtkTreeModel      *model,
+                         GtkTreeIter       *iter,
+                         NautilusListView  *view)
+{
+    g_autofree gchar *text = NULL;
+    g_autofree gchar *uri = NULL;
+    NautilusFile *file;
+
+    gtk_tree_model_get (model, iter,
+                        view->details->file_name_column_num, &text,
+                        -1);
+
+    gtk_tree_model_get (GTK_TREE_MODEL (model),
+                        iter,
+                        NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
+                        -1);
+
+    uri = nautilus_file_get_uri (file);
+
+    if (nautilus_tag_manager_file_is_favorite (view->details->tag_manager, uri))
+    {
+        g_object_set (renderer,
+                      "icon-name", "starred-symbolic",
+                      NULL);
+    }
+    else
+    {
+        g_object_set (renderer,
+                      "icon-name", "non-starred-symbolic",
+                      NULL);
+
+    }
+
+    nautilus_file_unref (file);
+}
+
+static void
 filename_cell_data_func (GtkTreeViewColumn *column,
                          GtkCellRenderer   *renderer,
                          GtkTreeModel      *model,
@@ -2040,13 +2190,34 @@ create_and_set_up_tree_view (NautilusListView *view)
         }
         else
         {
-            /* We need to use libgd */
-            cell = gd_styled_text_renderer_new ();
-            /* FIXME: should be just dim-label.
-             * See https://bugzilla.gnome.org/show_bug.cgi?id=744397
-             */
-            gd_styled_text_renderer_add_class (GD_STYLED_TEXT_RENDERER (cell),
-                                               "nautilus-list-dim-label");
+            if (g_strcmp0 (name, "favorite") == 0)
+            {
+                cell = gtk_cell_renderer_pixbuf_new ();
+                g_object_set (cell,
+                              "icon-name", "non-starred-symbolic",
+                              "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
+                              NULL);
+
+                column = gtk_tree_view_column_new_with_attributes (label,
+                                                                   cell,
+                                                                   NULL);
+            }
+            else
+            {
+                /* We need to use libgd */
+                cell = gd_styled_text_renderer_new ();
+                /* FIXME: should be just dim-label.
+                 * See https://bugzilla.gnome.org/show_bug.cgi?id=744397
+                 */
+                gd_styled_text_renderer_add_class (GD_STYLED_TEXT_RENDERER (cell),
+                                                   "nautilus-list-dim-label");
+
+                column = gtk_tree_view_column_new_with_attributes (label,
+                                                                   cell,
+                                                                   "text", column_num,
+                                                                   NULL);
+            }
+
 
             g_object_set (cell,
                           "xalign", xalign,
@@ -2060,10 +2231,7 @@ create_and_set_up_tree_view (NautilusListView *view)
             }
             view->details->cells = g_list_append (view->details->cells,
                                                   cell);
-            column = gtk_tree_view_column_new_with_attributes (label,
-                                                               cell,
-                                                               "text", column_num,
-                                                               NULL);
+
             gtk_tree_view_append_column (view->details->tree_view, column);
             gtk_tree_view_column_set_sort_column_id (column, column_num);
             g_hash_table_insert (view->details->columns,
@@ -2088,6 +2256,12 @@ create_and_set_up_tree_view (NautilusListView *view)
             {
                 gtk_tree_view_column_set_cell_data_func (column, cell,
                                                          (GtkTreeCellDataFunc) trash_orig_path_cell_data_func,
+                                                         view, NULL);
+            }
+            else if (!strcmp (name, "favorite"))
+            {
+                gtk_tree_view_column_set_cell_data_func (column, cell,
+                                                         (GtkTreeCellDataFunc) favorite_cell_data_func,
                                                          view, NULL);
             }
         }
@@ -3378,6 +3552,13 @@ nautilus_list_view_finalize (GObject *object)
 
     g_regex_unref (list_view->details->regex);
 
+    g_cancellable_cancel (list_view->details->favorite_cancellable);
+    g_clear_object (&list_view->details->favorite_cancellable);
+
+    g_signal_handlers_disconnect_by_func (list_view->details->tag_manager,
+                                          on_favorites_files_changed,
+                                          list_view);
+
     g_free (list_view->details);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
@@ -3664,6 +3845,14 @@ nautilus_list_view_init (NautilusListView *list_view)
                                         "zoom-to-level", g_variant_new_int32 (get_default_zoom_level ()));
 
     list_view->details->regex = g_regex_new ("\\R+", 0, G_REGEX_MATCH_NEWLINE_ANY, NULL);
+
+    list_view->details->tag_manager = nautilus_tag_manager_get ();
+    list_view->details->favorite_cancellable = g_cancellable_new ();
+
+    g_signal_connect (list_view->details->tag_manager,
+                      "favorites-changed",
+                      (GCallback) on_favorites_files_changed,
+                      list_view);
 }
 
 NautilusFilesView *

@@ -27,6 +27,7 @@
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-tag-manager.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 
@@ -139,6 +140,7 @@ model_directory_ready_cb (NautilusDirectory *directory,
     GDateTime *initial_date;
     GDateTime *end_date;
     GPtrArray *date_range;
+    NautilusTagManager *tag_manager;
 
     files = nautilus_directory_get_file_list (directory);
     mime_types = nautilus_query_get_mime_types (model->query);
@@ -191,12 +193,27 @@ model_directory_ready_cb (NautilusDirectory *directory,
             g_ptr_array_unref (date_range);
         }
 
+        if (nautilus_query_get_search_favorite (model->query))
+        {
+            tag_manager = nautilus_tag_manager_get ();
+
+            uri = nautilus_file_get_uri (file);
+
+            if (!nautilus_tag_manager_file_is_favorite (tag_manager, uri))
+            {
+                found = FALSE;
+            }
+
+            g_free (uri);
+        }
+
         if (found)
         {
             uri = nautilus_file_get_uri (file);
             hit = nautilus_search_hit_new (uri);
             nautilus_search_hit_set_fts_rank (hit, match);
             hits = g_list_prepend (hits, hit);
+
             g_free (uri);
         }
 
