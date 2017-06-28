@@ -264,7 +264,15 @@ if get_option ('enable-tracker')
                             'nautilus-batch-rename-utilities.c',
                             'nautilus-batch-rename-utilities.h',
                             'nautilus-search-engine-tracker.c',
-                            'nautilus-search-engine-tracker.h']
+                            'nautilus-search-engine-tracker.h',
+                            'nautilus-tags-dialog.c',
+                            'nautilus-tags-dialog.h',
+                            'nautilus-tag-manager.c',
+                            'nautilus-tag-manager.h',
+                            'nautilus-tag-widget.c',
+                            'nautilus-tag-widget.h',
+                            'nautilus-favorite-directory.c',
+                            'nautilus-favorite-directory.h']
 endif
 
 nautilus_deps = [glib,

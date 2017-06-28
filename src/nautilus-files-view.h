@@ -338,6 +338,10 @@ void              nautilus_files_view_action_show_hidden_files   (NautilusFilesV
 GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesView      *view);
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
 
+void              on_favorite_tags_updated                       (GObject      *object,
+                                                                  GAsyncResult *res,
+                                                                  gpointer      user_data);
+
 G_END_DECLS
 
 #endif /* NAUTILUS_FILES_VIEW_H */

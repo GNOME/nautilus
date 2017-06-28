@@ -21,6 +21,7 @@
 #include "nautilus-list-model.h"
 #include "nautilus-tree-view-drag-dest.h"
 #include "nautilus-dnd.h"
+#include "nautilus-tag-manager.h"
 
 struct NautilusListViewDetails {
   GtkTreeView *tree_view;
@@ -64,5 +65,8 @@ struct NautilusListViewDetails {
   gulong clipboard_handler_id;
 
   GQuark last_sort_attr;
+
+  NautilusTagManager *tag_manager;
+  GCancellable *favorite_cancellable;
 };
 

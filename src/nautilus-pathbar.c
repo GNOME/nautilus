@@ -47,7 +47,8 @@ typedef enum
     OTHER_LOCATIONS_BUTTON,
     ROOT_BUTTON,
     HOME_BUTTON,
-    MOUNT_BUTTON
+    MOUNT_BUTTON,
+    FAVORITE_LOCATION_BUTTON
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -329,6 +330,11 @@ get_dir_name (ButtonData *button_data)
         case OTHER_LOCATIONS_BUTTON:
         {
             return _("Other Locations");
+        }
+
+        case FAVORITE_LOCATION_BUTTON:
+        {
+            return _("Favorite Files");
         }
 
         default:
@@ -1722,6 +1728,10 @@ setup_button_type (ButtonData      *button_data,
         button_data->is_root = TRUE;
 
         g_object_unref (mount);
+    }
+    else if (g_strcmp0 (uri, "favorites:///") == 0)
+    {
+        button_data->type = FAVORITE_LOCATION_BUTTON;
     }
     else
     {

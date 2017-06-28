@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <template class="NautilusTagsDialog" parent="GtkDialog">
+    <property name="resizable">False</property>
+    <property name="modal">True</property>
+    <property name="window_position">center-on-parent</property>
+    <property name="destroy_with_parent">True</property>
+    <signal name="response" handler="nautilus_tags_dialog_on_response"/>
+    <child type="action">
+      <object class="GtkButton" id="cancel_button">
+        <property name="label" translatable="yes">_Cancel</property>
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="use_underline">True</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="update_tags_button">
+        <property name="label" translatable="yes">_Update Tags</property>
+        <property name="visible">True</property>
+        <property name="use_underline">True</property>
+        <style>
+          <class name="suggested-action"/>
+        </style>
+      </object>
+    </child>
+    <action-widgets>
+      <action-widget response="ok">update_tags_button</action-widget>
+      <action-widget response="cancel">cancel_button</action-widget>
+    </action-widgets>
+    <child internal-child="vbox">
+      <object class="GtkBox" id="vbox">
+        <property name="border-width">0</property>
+        <child>
+          <object class="GtkGrid" id="grid">
+            <property name="visible">True</property>
+            <property name="margin">10</property>
+            <property name="row-spacing">6</property>
+            <property name="column-spacing">6</property>
+            <property name="hexpand">True</property>
+            <property name="row-homogeneous">False</property>
+            <property name="column-homogeneous">False</property>
+            <child>
+              <object class="GtkScrolledWindow" id="scrolled_tags">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="hexpand">False</property>
+                <property name="vexpand">True</property>
+                <property name="shadow_type">in</property>
+                <child>
+                  <object class="GtkViewport">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkBox" id="selection_tags_box">
+                        <property name="orientation">horizontal</property>
+                        <property name="visible">True</property>
+                        <property name="spacing">5</property>
+                        <property name="halign">start</property>
+                      </object>
+                    </child>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="orientation">horizontal</property>
+                <property name="spacing">0</property>
+                <property name="visible">True</property>
+                <property name="halign">center</property>
+                <child>
+                  <object class="GtkEntry" id="tags_entry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="has_focus">True</property>
+                    <property name="width_request">250</property>
+                    <property name="hexpand">True</property>
+                    <property name="activates-default">True</property>
+                    <signal name="activate" handler="on_tags_entry_activate" swapped="yes" />
+                    <signal name="changed" handler="on_tags_entry_changed" swapped="yes" />
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkButton" id="add_tag_button">
+                    <property name="visible">True</property>
+                    <property name="sensitive">False</property>
+                    <property name="label" translatable="yes">Add</property>
+                    <signal name="clicked" handler="on_add_button_clicked" swapped="no" />
+                  </object>
+                </child>
+                <style>
+                  <class name="linked"/>
+                </style>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkBox">
+                <property name="visible">True</property>
+                <property name="orientation">horizontal</property>
+                <child>
+                  <object class="GtkLabel" id="color_label">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">New Tag Color: </property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+                <child>
+                  <object class="GtkColorButton" id="color_button">
+                    <property name="visible">True</property>
+                    <property name="xalign">0</property>
+                  </object>
+                </child>
+              </object>
+              <packing>
+                <property name="left-attach">0</property>
+                <property name="top-attach">2</property>
+              </packing>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="GtkScrolledWindow" id="scrolled_window">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="hexpand">False</property>
+            <property name="vexpand">True</property>
+            <property name="shadow_type">in</property>
+            <property name="max-content-height">200</property>
+            <property name="min-content-height">200</property>
+            <property name="max-content-width">150</property>
+            <property name="min-content-width">150</property>
+            <child>
+              <object class="GtkViewport">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <child>
+                  <object class="GtkListBox" id="tags_listbox">
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+          </object>
+        </child>
+      </object>
+    </child>
+  </template>
+</interface>

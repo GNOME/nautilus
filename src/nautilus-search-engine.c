@@ -106,6 +106,7 @@ search_engine_start_real (NautilusSearchEngine *engine)
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
     priv->providers_running++;
 #endif
+
     if (nautilus_search_engine_model_get_model (priv->model))
     {
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->model));

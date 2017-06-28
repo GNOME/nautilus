@@ -641,6 +641,7 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
         g_signal_connect (file, "changed", G_CALLBACK (file_changed), search),
 
         file_list = g_list_prepend (file_list, file);
+
         g_hash_table_add (search->details->files_hash, file);
     }
 

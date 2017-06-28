@@ -31,6 +31,7 @@
 #ifdef ENABLE_TRACKER
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
+#include "nautilus-tags-dialog.h"
 #endif
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-undo-manager.h"
@@ -44,6 +45,7 @@
 #include "nautilus-window.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
+#include "nautilus-tag-manager.h"
 
 #ifdef HAVE_X11_XF86KEYSYM_H
 #include <X11/XF86keysym.h>
@@ -72,6 +74,7 @@
 #include <libnautilus-extension/nautilus-menu-provider.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-search-directory.h"
+#include "nautilus-favorite-directory.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-attributes.h"
@@ -274,6 +277,9 @@ typedef struct
 
     gulong stop_signal_handler;
     gulong reload_signal_handler;
+
+    GCancellable *favorite_cancellable;
+    NautilusTagManager *tag_manager;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -1577,6 +1583,85 @@ action_delete (GSimpleAction *action,
                gpointer       user_data)
 {
     delete_selected_files (NAUTILUS_FILES_VIEW (user_data));
+}
+
+static void
+action_edit_tags (GSimpleAction *action,
+                  GVariant      *state,
+                  gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GtkWidget *dialog;
+    NautilusWindow *window;
+    GList *selection;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+
+    window = nautilus_files_view_get_window (view);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    dialog = nautilus_tags_dialog_new (selection, window);
+    gtk_widget_show (GTK_WIDGET (dialog));
+}
+
+void
+on_favorite_tags_updated (GObject      *object,
+                          GAsyncResult *res,
+                          gpointer      user_data)
+{
+    GTask *task;
+    NautilusFilesView *view;
+
+    view = NAUTILUS_FILES_VIEW (object);
+
+    if (NAUTILUS_IS_LIST_VIEW (view))
+    {
+        nautilus_list_view_redraw_tree_view (view);
+    }
+
+    task = user_data;
+    g_clear_object (&task);
+}
+
+static void
+action_star (GSimpleAction *action,
+             GVariant      *state,
+             gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GList *selection;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    nautilus_tag_manager_star_files (priv->tag_manager,
+                                     G_OBJECT (view),
+                                     selection,
+                                     on_favorite_tags_updated,
+                                     priv->favorite_cancellable);
+}
+
+static void
+action_unstar (GSimpleAction *action,
+               GVariant      *state,
+               gpointer       user_data)
+{
+    NautilusFilesView *view;
+    GList *selection;
+    NautilusFilesViewPrivate *priv;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    nautilus_tag_manager_unstar_files (priv->tag_manager,
+                                       G_OBJECT (view),
+                                       selection,
+                                       on_favorite_tags_updated,
+                                       priv->favorite_cancellable);
 }
 
 static void
@@ -3236,6 +3321,9 @@ nautilus_files_view_finalize (GObject *object)
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
 
+    g_cancellable_cancel (priv->favorite_cancellable);
+    g_clear_object (&priv->favorite_cancellable);
+
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
 
@@ -3483,6 +3571,10 @@ nautilus_files_view_set_location (NautilusView *view,
         previous_query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
         set_search_query_internal (files_view, previous_query, base_model);
         g_object_unref (previous_query);
+    }
+    else if (NAUTILUS_IS_FAVORITE_DIRECTORY (directory))
+    {
+        load_directory (NAUTILUS_FILES_VIEW (view), directory);
     }
     else
     {
@@ -7009,6 +7101,9 @@ const GActionEntry view_entries[] =
     { "copy-to", action_copy_to},
     { "move-to-trash", action_move_to_trash},
     { "delete-from-trash", action_delete },
+    { "edit-tags", action_edit_tags},
+    { "star", action_star},
+    { "unstar", action_unstar},
     /* We separate the shortcut and the menu item since we want the shortcut
      * to always be available, but we don't want the menu item shown if not
      * completely necesary. Since the visibility of the menu item is based on
@@ -7401,6 +7496,9 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean settings_show_create_link;
     gboolean settings_automatic_decompression;
     GDriveStartStopType start_stop_type;
+    gboolean show_star;
+    gboolean show_unstar;
+    gchar *uri;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -7740,6 +7838,33 @@ real_update_actions_state (NautilusFilesView *view)
                                          "zoom-to-level");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view));
+
+    show_star = (selection != NULL);
+    show_unstar = (selection != NULL);
+    for (l = selection; l != NULL; l = l->next)
+    {
+        file = NAUTILUS_FILE (l->data);
+        uri = nautilus_file_get_uri (file);
+
+        if (nautilus_tag_manager_file_is_favorite (priv->tag_manager, uri))
+        {
+            show_star = FALSE;
+        }
+        else
+        {
+            show_unstar = FALSE;
+        }
+
+        g_free (uri);
+    }
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "star");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_star);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "unstar");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), show_unstar);
 
     nautilus_file_list_free (selection);
 }
@@ -9713,6 +9838,9 @@ nautilus_files_view_init (NautilusFilesView *view)
     /* Show a warning dialog to inform the user that the shorcut for move to trash
      * changed */
     nautilus_application_set_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
+
+    priv->favorite_cancellable = g_cancellable_new ();
+    priv->tag_manager = nautilus_tag_manager_new (NULL, NULL, NULL);
 
     nautilus_profile_end (NULL);
 }
