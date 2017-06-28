@@ -55,6 +55,7 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
 	NAUTILUS_FILE_SORT_BY_SIZE,
 	NAUTILUS_FILE_SORT_BY_TYPE,
+	NAUTILUS_FILE_SORT_BY_FAVORITE,
 	NAUTILUS_FILE_SORT_BY_MTIME,
         NAUTILUS_FILE_SORT_BY_ATIME,
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
@@ -215,9 +216,11 @@ gboolean		nautilus_file_is_archive			(NautilusFile			*file);
 gboolean                nautilus_file_is_in_search                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_recent                      (NautilusFile                   *file);
+gboolean                nautilus_file_is_in_starred                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_admin                       (NautilusFile                   *file);
 gboolean                nautilus_file_is_remote                         (NautilusFile                   *file);
 gboolean                nautilus_file_is_other_locations                (NautilusFile                   *file);
+gboolean                nautilus_file_is_favorite_location              (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);
 gboolean                nautilus_file_is_child_of_desktop_directory     (NautilusFile                   *file);

@@ -1140,6 +1140,19 @@ places_sidebar_show_other_locations_with_flags (NautilusWindow     *window,
     g_object_unref (location);
 }
 
+static void
+places_sidebar_show_starred_location (NautilusWindow    *window,
+                                      GtkPlacesOpenFlags open_flags)
+{
+    GFile *location;
+
+    location = g_file_new_for_uri ("favorites:///");
+
+    open_location_cb (window, location, open_flags);
+
+    g_object_unref (location);
+}
+
 static GList *
 build_selection_list_from_gfile_list (GList *gfile_list)
 {
@@ -2947,6 +2960,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notification_operation_close);
 
     gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_other_locations_with_flags);
+    gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_starred_location);
 
     properties[PROP_DISABLE_CHROME] =
         g_param_spec_boolean ("disable-chrome",

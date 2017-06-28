@@ -40,6 +40,7 @@
 #include "nautilus-vfs-file.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
+#include "nautilus-tag-manager.h"
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
@@ -159,7 +160,8 @@ static GQuark attribute_name_q,
               attribute_where_q,
               attribute_link_target_q,
               attribute_volume_q,
-              attribute_free_space_q;
+              attribute_free_space_q,
+              attribute_favorite_q;
 
 static void     nautilus_file_info_iface_init (NautilusFileInfoIface *iface);
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
@@ -3660,6 +3662,39 @@ compare_by_type (NautilusFile *file_1,
     return result;
 }
 
+static int
+compare_by_favorite (NautilusFile *file_1,
+                     NautilusFile *file_2)
+{
+    NautilusTagManager *tag_manager;
+    g_autofree gchar *uri_1 = NULL;
+    g_autofree gchar *uri_2 = NULL;
+    gboolean file_1_is_favorite;
+    gboolean file_2_is_favorite;
+
+    tag_manager = nautilus_tag_manager_get ();
+
+    uri_1 = nautilus_file_get_uri (file_1);
+    uri_2 = nautilus_file_get_uri (file_2);
+
+    file_1_is_favorite = nautilus_tag_manager_file_is_favorite (tag_manager,
+                                                                uri_1);
+    file_2_is_favorite = nautilus_tag_manager_file_is_favorite (tag_manager,
+                                                                uri_2);
+    if (!!file_1_is_favorite == !!file_2_is_favorite)
+    {
+        return 0;
+    }
+    else if (file_1_is_favorite && !file_2_is_favorite)
+    {
+        return -1;
+    }
+    else
+    {
+        return 1;
+    }
+}
+
 static Knowledge
 get_search_relevance (NautilusFile *file,
                       gdouble      *relevance_out)
@@ -3863,6 +3898,16 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
+            case NAUTILUS_FILE_SORT_BY_FAVORITE:
+            {
+                result = compare_by_favorite (file_1, file_2);
+                if (result == 0)
+                {
+                    result = compare_by_full_path (file_1, file_2);
+                }
+            }
+            break;
+
             case NAUTILUS_FILE_SORT_BY_MTIME:
             {
                 result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_MODIFIED);
@@ -3964,6 +4009,13 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                NAUTILUS_FILE_SORT_BY_TYPE,
+                                               directories_first,
+                                               reversed);
+    }
+    else if (attribute == attribute_favorite_q)
+    {
+        return nautilus_file_compare_for_sort (file_1, file_2,
+                                               NAUTILUS_FILE_SORT_BY_FAVORITE,
                                                directories_first,
                                                reversed);
     }
@@ -4576,6 +4628,11 @@ nautilus_file_peek_display_name (NautilusFile *file)
 char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
+    if (nautilus_file_is_other_locations (file))
+        return g_strdup (_("Other Locations"));
+    if (nautilus_file_is_favorite_location (file))
+        return g_strdup (_("Starred"));
+
     return g_strdup (nautilus_file_peek_display_name (file));
 }
 
@@ -7608,6 +7665,11 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
         /* If n/a */
         return g_strdup ("");
     }
+    if (attribute_q == attribute_favorite_q)
+    {
+        /* If n/a */
+        return g_strdup ("");
+    }
 
     /* Fallback, use for both unknown attributes and attributes
      * for which we have no more appropriate default.
@@ -8298,6 +8360,23 @@ nautilus_file_is_in_recent (NautilusFile *file)
     return nautilus_directory_is_in_recent (file->details->directory);
 }
 
+/**
+ * nautilus_file_is_in_starred
+ *
+ * Check if this file is a file in Starred.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file is in Starred.
+ *
+ **/
+gboolean
+nautilus_file_is_in_starred (NautilusFile *file)
+{
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    return nautilus_directory_is_in_starred (file->details->directory);
+}
+
 static const gchar * const remote_types[] =
 {
     "afp",
@@ -8354,6 +8433,27 @@ nautilus_file_is_other_locations (NautilusFile *file)
     g_free (uri);
 
     return is_other_locations;
+}
+
+/**
+ * nautilus_file_is_favorite_location
+ *
+ * Check if this file is the Favorite location.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file is the Favorite location.
+ *
+ **/
+gboolean
+nautilus_file_is_favorite_location (NautilusFile *file)
+{
+    g_autofree gchar *uri = NULL;
+
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    uri = nautilus_file_get_uri (file);
+
+    return eel_uri_is_favorites (uri);
 }
 
 /**
@@ -9371,6 +9471,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_link_target_q = g_quark_from_static_string ("link_target");
     attribute_volume_q = g_quark_from_static_string ("volume");
     attribute_free_space_q = g_quark_from_static_string ("free_space");
+    attribute_favorite_q = g_quark_from_static_string ("favorite");
 
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;

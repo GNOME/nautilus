@@ -253,6 +253,23 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">Tags</attribute>
+        <attribute name="action">view.edit-tags</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Star</attribute>
+        <attribute name="action">view.star</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Unstar</attribute>
+        <attribute name="action">view.unstar</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
         <attribute name="label" translatable="yes">P_roperties</attribute>
         <attribute name="action">view.properties</attribute>
       </item>

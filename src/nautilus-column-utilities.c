@@ -42,6 +42,7 @@ static const char *default_column_order[] =
     "date_modified",
     "date_accessed",
     "recency",
+    "favorite",
     NULL
 };
 
@@ -147,6 +148,16 @@ get_builtin_columns (void)
                                            "description", _("The date the file was accessed by the user."),
                                            "default-sort-order", GTK_SORT_DESCENDING,
                                            "xalign", 1.0,
+                                           NULL));
+
+    columns = g_list_append (columns,
+                             g_object_new (NAUTILUS_TYPE_COLUMN,
+                                           "name", "favorite",
+                                           "attribute", "favorite",
+                                           "label", _("Star"),
+                                           "description", _("Shows if file is favorite."),
+                                           "default-sort-order", GTK_SORT_DESCENDING,
+                                           "xalign", 0.5,
                                            NULL));
 
     return columns;
