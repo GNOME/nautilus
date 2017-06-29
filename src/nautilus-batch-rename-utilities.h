@@ -42,7 +42,8 @@ GList* nautilus_batch_rename_dialog_sort        (GList                       *se
                                                  GHashTable                  *creation_date_table);
 
 void check_metadata_for_selection               (NautilusBatchRenameDialog *dialog,
-                                                 GList                     *selection);
+                                                 GList                     *selection,
+                                                 GCancellable              *cancellable);
 
 gboolean selection_has_single_parent            (GList *selection);
 

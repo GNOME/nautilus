@@ -102,6 +102,8 @@ struct _NautilusBatchRenameDialog
 
     gint row_height;
     gboolean rename_clicked;
+
+    GCancellable *metadata_cancellable;
 };
 
 typedef struct
@@ -1774,7 +1776,8 @@ nautilus_batch_rename_dialog_initialize_actions (NautilusBatchRenameDialog *dial
                                          metadata_tags_constants[ORIGINAL_FILE_NAME].action_name);
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), FALSE);
 
-    check_metadata_for_selection (dialog, dialog->selection);
+    check_metadata_for_selection (dialog, dialog->selection,
+                                  dialog->metadata_cancellable);
 }
 
 static void
@@ -2051,6 +2054,9 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
 
     g_hash_table_destroy (dialog->tag_info_table);
 
+    g_cancellable_cancel (dialog->metadata_cancellable);
+    g_clear_object (&dialog->metadata_cancellable);
+
     G_OBJECT_CLASS (nautilus_batch_rename_dialog_parent_class)->finalize (object);
 }
 
@@ -2301,4 +2307,6 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
                       "leave-notify-event",
                       G_CALLBACK (on_leave_event),
                       self);
+
+    self->metadata_cancellable = g_cancellable_new ();
 }
