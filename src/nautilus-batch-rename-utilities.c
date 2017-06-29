@@ -40,6 +40,8 @@ typedef struct
     GList *selection_metadata;
 
     gboolean has_metadata[G_N_ELEMENTS (metadata_tags_constants)];
+
+    GCancellable *cancellable;
 } QueryData;
 
 enum
@@ -747,7 +749,7 @@ cursor_next (QueryData           *query_data,
              TrackerSparqlCursor *cursor)
 {
     tracker_sparql_cursor_next_async (cursor,
-                                      NULL,
+                                      query_data->cancellable,
                                       on_cursor_callback,
                                       query_data);
 }
@@ -800,7 +802,7 @@ on_cursor_callback (GObject      *object,
     gboolean success;
     QueryData *query_data;
     MetadataType metadata_type;
-    GError *error;
+    g_autoptr (GError) error = NULL;
     GList *l;
     FileMetadata *file_metadata;
     GDateTime *date_time;
@@ -822,7 +824,6 @@ on_cursor_callback (GObject      *object,
     const gchar *title;
     const gchar *album_name;
 
-    error = NULL;
     file_metadata = NULL;
 
     cursor = TRACKER_SPARQL_CURSOR (object);
@@ -831,17 +832,21 @@ on_cursor_callback (GObject      *object,
     success = tracker_sparql_cursor_next_finish (cursor, result, &error);
     if (!success)
     {
-        if (error)
+        if (error != NULL)
         {
             g_warning ("Error on batch rename tracker query cursor: %s", error->message);
-            g_error_free (error);
         }
 
         g_clear_object (&cursor);
 
-        nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                     query_data->date_order_hash_table,
-                                                     query_data->selection_metadata);
+        /* The dialog is going away at the time of cancellation */
+        if (error == NULL ||
+            (error != NULL && error->code != G_IO_ERROR_CANCELLED))
+        {
+            nautilus_batch_rename_dialog_query_finished (query_data->dialog,
+                                                         query_data->date_order_hash_table,
+                                                         query_data->selection_metadata);
+        }
 
         g_free (query_data);
 
@@ -999,9 +1004,7 @@ batch_rename_dialog_query_callback (GObject      *object,
     TrackerSparqlConnection *connection;
     TrackerSparqlCursor *cursor;
     QueryData *query_data;
-    GError *error;
-
-    error = NULL;
+    g_autoptr (GError) error = NULL;
 
     connection = TRACKER_SPARQL_CONNECTION (object);
     query_data = user_data;
@@ -1013,11 +1016,14 @@ batch_rename_dialog_query_callback (GObject      *object,
     if (error != NULL)
     {
         g_warning ("Error on batch rename query for metadata: %s", error->message);
-        g_error_free (error);
 
-        nautilus_batch_rename_dialog_query_finished (query_data->dialog,
-                                                     query_data->date_order_hash_table,
-                                                     query_data->selection_metadata);
+        /* The dialog is being finalized at this point */
+        if (error->code != G_IO_ERROR_CANCELLED)
+        {
+            nautilus_batch_rename_dialog_query_finished (query_data->dialog,
+                                                         query_data->date_order_hash_table,
+                                                         query_data->selection_metadata);
+        }
 
         g_free (query_data);
     }
@@ -1029,7 +1035,8 @@ batch_rename_dialog_query_callback (GObject      *object,
 
 void
 check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
-                              GList                     *selection)
+                              GList                     *selection,
+                              GCancellable              *cancellable)
 {
     TrackerSparqlConnection *connection;
     GString *query;
@@ -1135,11 +1142,12 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     {
         query_data->has_metadata[i] = TRUE;
     }
+    query_data->cancellable = cancellable;
 
     /* Make an asynchronous query to the store */
     tracker_sparql_connection_query_async (connection,
                                            query->str,
-                                           NULL,
+                                           cancellable,
                                            batch_rename_dialog_query_callback,
                                            query_data);
 
