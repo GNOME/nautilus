@@ -279,6 +279,8 @@ libnautilus_sources = [
     'tasks/nautilus-attribute-task.h',
 #    'tasks/nautilus-info-attribute-task.c',
 #    'tasks/nautilus-info-attribute-task.h'
+    'nautilus-task-batch.c',
+    'nautilus-task-batch.h'
 ]
 
 nautilus_deps = [glib,
