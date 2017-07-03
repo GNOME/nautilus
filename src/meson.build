@@ -271,7 +271,9 @@ libnautilus_sources = [
   'nautilus-task-manager.h',
   'tasks/nautilus-file-task.c',
   'tasks/nautilus-file-task.h',
-  'tasks/nautilus-file-task-private.h'
+  'tasks/nautilus-file-task-private.h',
+  'nautilus-task-private.c',
+  'nautilus-task-private.h'
 ]
 
 nautilus_deps = [
