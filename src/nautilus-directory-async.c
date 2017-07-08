@@ -1073,7 +1073,7 @@ drain:
     return FALSE;
 }
 
-void
+static void
 nautilus_directory_schedule_dequeue_pending (NautilusDirectory *directory)
 {
     if (directory->details->dequeue_pending_idle_id == 0)
