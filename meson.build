@@ -124,5 +124,7 @@ if get_option ('enable-nst-extension')
     subdir ('nautilus-sendto-extension')
 endif
 
+subdir ('src-ng')
+
 # Compile GSettings schemas when installing from source.
 meson.add_install_script ('build-aux/meson/postinstall.py')
