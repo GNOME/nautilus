@@ -124,8 +124,6 @@ struct NautilusDirectoryDetails
 	FilesystemInfoState *filesystem_info_state;
 	
 	LinkInfoReadState *link_info_read_state;
-
-	GList *file_operations_in_progress; /* list of FileOperation * */
 };
 
 NautilusDirectory *nautilus_directory_get_existing                    (GFile                     *location);
@@ -167,7 +165,6 @@ gboolean           nautilus_directory_has_active_request_for_file     (NautilusD
 								       NautilusFile              *file);
 void               nautilus_directory_remove_file_monitor_link        (NautilusDirectory         *directory,
 								       GList                     *link);
-void               nautilus_directory_schedule_dequeue_pending        (NautilusDirectory         *directory);
 void               nautilus_directory_stop_monitoring_file_list       (NautilusDirectory         *directory);
 void               nautilus_directory_cancel                          (NautilusDirectory         *directory);
 void               nautilus_async_destroying_file                     (NautilusFile              *file);
