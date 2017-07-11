@@ -6,6 +6,8 @@ nautilus_ng_sources = ['nautilus-task.c',
                        'nautilus-file.h',
                        'tasks/nautilus-attribute-task.c',
                        'tasks/nautilus-attribute-task.h',
+                       'nautilus-directory.c',
+                       'nautilus-directory.h',
                        'main.c']
 
 nautilus_ng_dependencies = [gio, glib]
