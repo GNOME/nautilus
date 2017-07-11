@@ -18,6 +18,7 @@
 
 #include "nautilus-file.h"
 
+#include "nautilus-directory.h"
 #include "nautilus-task-manager.h"
 #include "tasks/nautilus-attribute-task.h"
 
@@ -49,6 +50,54 @@ enum
 static GParamSpec *properties[N_PROPERTIES] = { NULL };
 static GHashTable *files = NULL;
 static GMutex files_mutex;
+
+static GObject *
+constructor (GType                  type,
+             guint                  n_construct_properties,
+             GObjectConstructParam *construct_properties)
+{
+    GFile *location = NULL;
+    gpointer instance;
+
+    for (guint i = 0; i < n_construct_properties; i++)
+    {
+        if (construct_properties[i].pspec == properties[PROP_LOCATION])
+        {
+            location = g_value_get_object (construct_properties[i].value);
+        }
+    }
+
+    g_assert (location != NULL);
+
+    g_mutex_lock (&files_mutex);
+
+    if (files == NULL)
+    {
+        files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
+                                       g_object_unref, NULL);
+    }
+
+
+    instance = g_hash_table_lookup (files, location);
+    if (instance != NULL)
+    {
+        instance = g_object_ref (instance);
+    }
+    else
+    {
+        GObjectClass *parent_class;
+
+        parent_class = G_OBJECT_CLASS (nautilus_file_parent_class);
+        instance = parent_class->constructor (type, n_construct_properties,
+                                              construct_properties);
+
+        g_assert (g_hash_table_insert (files, location, instance));
+    }
+
+    g_mutex_unlock (&files_mutex);
+
+    return instance;
+}
 
 static void
 set_property (GObject      *object,
@@ -98,6 +147,7 @@ nautilus_file_class_init (NautilusFileClass *klass)
 
     object_class = G_OBJECT_CLASS (klass);
 
+    object_class->constructor = constructor;
     object_class->set_property = set_property;
     object_class->finalize = finalize;
 
@@ -211,32 +261,26 @@ nautilus_file_query_info (NautilusFile             *file,
 NautilusFile *
 nautilus_file_new (GFile *location)
 {
-    NautilusFile *file;
+    GFileType file_type;
 
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    g_mutex_lock (&files_mutex);
-
-    if (files == NULL)
+    /* TODO: extension points? */
+    file_type = g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE,
+                                        NULL);
+    /* File does not exist.
+     * Search directory URIs also fall under this category.
+     * TODO: creation?
+     */
+    if (file_type == G_FILE_TYPE_UNKNOWN)
     {
-        files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                       g_object_unref, NULL);
+        return NULL;
+    }
+    else if (file_type == G_FILE_TYPE_DIRECTORY)
+    {
+        /* Asserts that the constructed file is a directory. */
+        return nautilus_directory_new (location);
     }
 
-
-    file = g_hash_table_lookup (files, location);
-    if (file != NULL)
-    {
-        file = g_object_ref (file);
-    }
-    else
-    {
-        file = g_object_new (NAUTILUS_TYPE_FILE, "location", location, NULL);
-
-        g_assert (g_hash_table_insert (files, location, file));
-    }
-
-    g_mutex_unlock (&files_mutex);
-
-    return file;
+    return g_object_new (NAUTILUS_TYPE_FILE, "location", location, NULL);
 }
