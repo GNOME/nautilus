@@ -2,6 +2,7 @@
 
 #include <glib.h>
 
+#include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-task-manager.h"
 
@@ -11,8 +12,9 @@ got_info (NautilusFile *file,
           GError       *error,
           gpointer      user_data)
 {
-    g_message ("Got info for %p\n\tDisplay name: %s",
-               (gpointer) file,
+    g_message ("Got info for %p",
+               (gpointer) file);
+    g_message ("\tDisplay name: %s\n",
                g_file_info_get_display_name (info));
 
     g_object_unref (info);
@@ -41,11 +43,13 @@ main (int    argc,
 
     g_message ("Creating NautilusFile");
     file = nautilus_file_new (location);
-    g_message ("Got %p\n", (gpointer) file);
+    g_message ("\tGot %p", (gpointer) file);
+    g_message ("\tFile is directory: %s\n",
+               NAUTILUS_IS_DIRECTORY (file)? "yes" : "no");
 
     g_message ("Creating another NautilusFile for the same location");
     duplicate_file = nautilus_file_new (location);
-    g_message ("Got %p, which is %s\n",
+    g_message ("\tGot %p, which is %s\n",
                (gpointer) duplicate_file,
                file == duplicate_file? "the same" : "not the same");
 
