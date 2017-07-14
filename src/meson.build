@@ -258,7 +258,7 @@ libnautilus_sources = [
     'nautilus-file-undo-manager.h'
 ]
 
-if get_option ('enable-tracker')
+if tracker_sparql.found()
     libnautilus_sources += ['nautilus-batch-rename-dialog.c',
                             'nautilus-batch-rename-dialog.h',
                             'nautilus-batch-rename-utilities.c',
@@ -284,7 +284,7 @@ if get_option ('enable-exif')
     nautilus_deps += exif
 endif
 
-if get_option ('enable-tracker')
+if tracker_sparql.found()
     nautilus_deps += tracker_sparql
 endif
 

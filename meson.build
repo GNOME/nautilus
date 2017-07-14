@@ -81,9 +81,13 @@ if get_option ('enable-selinux')
     conf.set10 ('HAVE_SELINUX', true)
 endif
 
-if get_option ('enable-tracker')
-    tracker_sparql = dependency ('tracker-sparql-2.0')
-    conf.set10 ('ENABLE_TRACKER', true)
+tracker_option = get_option ('enable-tracker')
+if tracker_option != 'no'
+    tracker_sparql = dependency ('tracker-sparql-2.0', required: (tracker_option == 'yes'))
+    if not tracker_sparql.found()
+      tracker_sparql = dependency ('tracker-sparql-1.0', required: (tracker_option == 'yes'))
+    endif
+    conf.set10 ('ENABLE_TRACKER', tracker_sparql.found())
 endif
 
 if get_option ('enable-xmp')
