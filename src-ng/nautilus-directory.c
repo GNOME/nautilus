@@ -18,7 +18,24 @@
 
 #include "nautilus-directory.h"
 
-G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, NAUTILUS_TYPE_FILE)
+#include "nautilus-cache.h"
+#include "nautilus-task-manager.h"
+#include "tasks/nautilus-enumerate-children-task.h"
+
+enum
+{
+    CHILDREN,
+    N_ITEMS
+};
+
+typedef struct
+{
+    NautilusCache *cache;
+    gssize cache_items[N_ITEMS];
+} NautilusDirectoryPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusDirectory, nautilus_directory,
+                            NAUTILUS_TYPE_FILE)
 
 static void
 nautilus_directory_class_init (NautilusDirectoryClass *klass)
@@ -26,8 +43,149 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 }
 
 static void
+file_list_free (gpointer data)
+{
+    g_autoptr (GList) list = NULL;
+
+    list = data;
+
+    for (GList *i = list; i != NULL; i = i->next)
+    {
+        g_object_unref (i->data);
+    }
+}
+
+static void
 nautilus_directory_init (NautilusDirectory *self)
 {
+    NautilusDirectoryPrivate *priv;
+
+    priv = nautilus_directory_get_instance_private (self);
+
+    priv->cache = nautilus_cache_new ();
+    priv->cache_items[CHILDREN] =
+        nautilus_cache_install_item (priv->cache,
+                                     (GDestroyNotify) file_list_free);
+}
+
+typedef struct
+{
+    NautilusDirectory *directory;
+
+    NautilusEnumerateChildrenCallback callback;
+    gpointer callback_data;
+} EnumerateChildrenDetails;
+
+static void
+create_file_list (gpointer key,
+                  gpointer value,
+                  gpointer user_data)
+{
+    GList **list;
+
+    list = user_data;
+
+    *list = g_list_prepend (*list,
+                            nautilus_file_new_with_info (G_FILE (key),
+                                                         G_FILE_INFO (value)));
+}
+
+static void
+on_enumerate_children_finished (NautilusEnumerateChildrenTask *task,
+                                GFile      *file,
+                                GHashTable *files,
+                                GError     *error,
+                                gpointer    user_data)
+{
+    EnumerateChildrenDetails *details;
+    NautilusDirectoryPrivate *priv;
+    NautilusCacheState cache_state;
+    GList *children = NULL;
+
+    details = user_data;
+    priv = nautilus_directory_get_instance_private (details->directory);
+    cache_state = nautilus_cache_item_get_state (priv->cache,
+                                                 priv->cache_items[CHILDREN]);
+
+    if (cache_state == NAUTILUS_CACHE_INVALID)
+    {
+        /* TODO: restart */
+        return;
+    }
+
+    g_hash_table_foreach (files, create_file_list, &children);
+
+    nautilus_cache_item_set_value (priv->cache, priv->cache_items[CHILDREN],
+                                   children);
+
+    details->callback (details->directory, g_list_copy (children), error,
+                       details->callback_data);
+
+    g_free (details);
+}
+
+void
+nautilus_directory_enumerate_children (NautilusDirectory                 *directory,
+                                       GCancellable                      *cancellable,
+                                       NautilusEnumerateChildrenCallback  callback,
+                                       gpointer                           user_data)
+{
+    NautilusDirectoryPrivate *priv;
+    NautilusCacheState cache_state;
+    g_autoptr (GFile) location = NULL;
+    g_autoptr (NautilusTask) task = NULL;
+    EnumerateChildrenDetails *details;
+    g_autoptr (NautilusTaskManager) task_manager = NULL;
+
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
+
+    priv = nautilus_directory_get_instance_private (directory);
+    cache_state = nautilus_cache_item_get_state (priv->cache,
+                                                 priv->cache_items[CHILDREN]);
+
+    if (cache_state == NAUTILUS_CACHE_PENDING ||
+        cache_state == NAUTILUS_CACHE_VALID)
+    {
+        callback (directory,
+                  nautilus_cache_item_get_value (priv->cache,
+                                                 priv->cache_items[CHILDREN],
+                                                 (NautilusCopyFunc) g_list_copy),
+                  NULL, user_data);
+
+        return;
+    }
+
+    nautilus_cache_item_set_pending (priv->cache,
+                                     priv->cache_items[CHILDREN]);
+
+    location = nautilus_file_get_location (NAUTILUS_FILE (directory));
+    task = nautilus_enumerate_children_task_new (location,
+                                                 "standard::*,"
+                                                 "access::*,"
+                                                 "mountable::*,"
+                                                 "time::*,"
+                                                 "unix::*,"
+                                                 "owner::*,"
+                                                 "selinux::*,"
+                                                 "thumbnail::*,"
+                                                 "id::filesystem,"
+                                                 "trash::orig-path,"
+                                                 "trash::deletion-date,"
+                                                 "metadata::*,"
+                                                 "recent::*",
+                                                 G_FILE_QUERY_INFO_NONE,
+                                                 cancellable);
+    details = g_new0 (EnumerateChildrenDetails, 1);
+    task_manager = nautilus_task_manager_dup_singleton ();
+
+    details->directory = directory;
+    details->callback = callback;
+    details->callback_data = user_data;
+
+    g_signal_connect (task, "finished",
+                      G_CALLBACK (on_enumerate_children_finished), details);
+
+    nautilus_task_manager_queue_task (task_manager, task);
 }
 
 NautilusFile *
