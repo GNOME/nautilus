@@ -733,14 +733,9 @@ nautilus_files_view_supports_creating_files (NautilusFilesView *view)
 static gboolean
 nautilus_files_view_supports_extract_here (NautilusFilesView *view)
 {
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
 
     return nautilus_files_view_supports_creating_files (view)
-           && !nautilus_directory_is_remote (priv->model)
            && !nautilus_view_is_searching (NAUTILUS_VIEW (view));
 }
 
