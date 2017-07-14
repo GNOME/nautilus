@@ -65,6 +65,8 @@ finalize (GObject *object)
     self = NAUTILUS_TASK_MANAGER (object);
 
     g_thread_pool_free (self->thread_pool, TRUE, TRUE);
+
+    G_OBJECT_CLASS (nautilus_task_manager_parent_class)->finalize (object);
 }
 
 static void

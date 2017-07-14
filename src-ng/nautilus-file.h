@@ -42,6 +42,13 @@ void nautilus_file_query_info (NautilusFile             *file,
                                NautilusFileInfoCallback  callback,
                                gpointer                  user_data);
 
-NautilusFile *nautilus_file_new (GFile *location);
+GFile *nautilus_file_get_location (NautilusFile *file);
+
+/* Overwrites the info if the file exists in cache.
+ * Used by NautilusDirectory when enumerating children.
+ */
+NautilusFile *nautilus_file_new_with_info (GFile     *location,
+                                           GFileInfo *info);
+NautilusFile *nautilus_file_new           (GFile     *location);
 
 #endif

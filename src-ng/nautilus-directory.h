@@ -24,9 +24,19 @@ G_DECLARE_DERIVABLE_TYPE (NautilusDirectory, nautilus_directory,
                           NAUTILUS, DIRECTORY,
                           NautilusFile)
 
+typedef void (*NautilusEnumerateChildrenCallback) (NautilusDirectory *directory,
+                                                   GList             *children,
+                                                   GError            *error,
+                                                   gpointer           user_data);
+
 struct _NautilusDirectoryClass
 {
     NautilusFileClass parent_class;
 };
+
+void nautilus_directory_enumerate_children (NautilusDirectory                 *directory,
+                                            GCancellable                      *cancellable,
+                                            NautilusEnumerateChildrenCallback  callback,
+                                            gpointer                           user_data);
 
 NautilusFile *nautilus_directory_new (GFile *location);
