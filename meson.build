@@ -1,5 +1,5 @@
 project ('nautilus', 'c',
-         version: '3.24.2',
+         version: '3.24.2.1',
          meson_version: '>=0.37.0',
          license: 'GPL2+')
 
