@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "nautilus-directory.h"
@@ -37,9 +37,34 @@ typedef struct
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusDirectory, nautilus_directory,
                             NAUTILUS_TYPE_FILE)
 
+enum
+{
+    CHILDREN_CHANGED,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL] = { 0 };
+
+static void
+children_changed (NautilusDirectory *directory)
+{
+    g_message ("Children changed in NautilusDirectory %p",
+               (gpointer) directory);
+}
+
 static void
 nautilus_directory_class_init (NautilusDirectoryClass *klass)
 {
+    klass->children_changed = children_changed;
+
+    signals[CHILDREN_CHANGED] = g_signal_new ("children-changed",
+                                              G_TYPE_FROM_CLASS (klass),
+                                              G_SIGNAL_RUN_LAST,
+                                              G_STRUCT_OFFSET (NautilusDirectoryClass, children_changed),
+                                              NULL, NULL,
+                                              g_cclosure_marshal_VOID__VOID,
+                                              G_TYPE_NONE,
+                                              0);
 }
 
 static void
