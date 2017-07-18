@@ -3102,7 +3102,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "version", VERSION,
                            "comments", _("Access and organize your files."),
                            "copyright", "Copyright © 1999–2016 The Files Authors",
-                           "license-type", GTK_LICENSE_GPL_2_0,
+                           "license-type", GTK_LICENSE_GPL_3_0,
                            "authors", authors,
                            "documenters", documenters,
                            /* Translators should localize the following string
