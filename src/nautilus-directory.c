@@ -757,21 +757,6 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
 }
 
 gboolean
-nautilus_directory_is_remote (NautilusDirectory *directory)
-{
-    NautilusFile *file;
-    gboolean is_remote;
-
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-
-    file = nautilus_directory_get_corresponding_file (directory);
-    is_remote = nautilus_file_is_remote (file);
-    nautilus_file_unref (file);
-
-    return is_remote;
-}
-
-gboolean
 nautilus_directory_is_in_admin (NautilusDirectory *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
