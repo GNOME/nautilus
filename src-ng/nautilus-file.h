@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #ifndef NAUTILUS_FILE_H_INCLUDED
@@ -32,9 +32,18 @@ typedef void (*NautilusFileInfoCallback) (NautilusFile *file,
                                           GError       *error,
                                           gpointer      user_data);
 
+typedef enum
+{
+    NAUTILUS_FILE_CHANGE_MOVED,
+    NAUTILUS_FILE_CHANGE_RENAMED
+} NautilusFileChange;
+
 struct _NautilusFileClass
 {
     GObjectClass parent_class;
+
+    void (*renamed) (NautilusFile *file,
+                     GFile        *new_location);
 };
 
 void nautilus_file_query_info (NautilusFile             *file,
@@ -42,7 +51,9 @@ void nautilus_file_query_info (NautilusFile             *file,
                                NautilusFileInfoCallback  callback,
                                gpointer                  user_data);
 
-GFile *nautilus_file_get_location (NautilusFile *file);
+NautilusFile *nautilus_file_get_existing (GFile        *location);
+GFile        *nautilus_file_get_location (NautilusFile *file);
+NautilusFile *nautilus_file_get_parent   (NautilusFile *file);
 
 /* Overwrites the info if the file exists in cache.
  * Used by NautilusDirectory when enumerating children.

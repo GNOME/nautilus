@@ -13,12 +13,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "nautilus-attribute-task.h"
 
 #include "nautilus-marshallers.h"
+#include "nautilus-task-private.h"
 
 struct _NautilusAttributeTask
 {
@@ -60,19 +61,17 @@ execute (NautilusTask *task)
     g_autoptr (GCancellable) cancellable = NULL;
     GError *error = NULL;
     GFileInfo *info;
-    NautilusTaskClass *klass;
 
     self = NAUTILUS_ATTRIBUTE_TASK (task);
-    cancellable = nautilus_task_get_cancellable (NAUTILUS_TASK (self));
+    cancellable = nautilus_task_get_cancellable (task);
     info = g_file_query_info (self->file,
                               self->attributes,
                               self->flags,
                               cancellable,
                               &error);
-    klass = NAUTILUS_TASK_CLASS (G_OBJECT_GET_CLASS (self));
 
-    klass->emit_signal_in_main_context (task, signals[FINISHED],
-                                        self->file, info, error);
+    nautilus_task_emit_signal_in_main_context (task, signals[FINISHED], 0,
+                                               self->file, info, error);
 }
 
 static void

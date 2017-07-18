@@ -16,30 +16,12 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_TASK_H_INCLUDED
-#define NAUTILUS_TASK_H_INCLUDED
+#ifndef NAUTILUS_FILE_CHANGES_H_INCLUDED
+#define NAUTILUS_FILE_CHANGES_H_INCLUDED
 
 #include <gio/gio.h>
-#include <glib-object.h>
 
-#define NAUTILUS_TYPE_TASK (nautilus_task_get_type ())
-
-G_DECLARE_DERIVABLE_TYPE (NautilusTask, nautilus_task,
-                          NAUTILUS, TASK,
-                          GObject)
-
-typedef void (*NautilusTaskCallback) (NautilusTask *task,
-                                      gpointer      user_data);
-
-struct _NautilusTaskClass
-{
-    GObjectClass parent_class;
-
-    void (*execute) (NautilusTask *task);
-};
-
-GCancellable *nautilus_task_get_cancellable (NautilusTask *task);
-
-void nautilus_task_execute (NautilusTask *task);
+void nautilus_notify_file_renamed (GFile *location,
+                                   GFile *new_location);
 
 #endif
