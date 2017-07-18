@@ -1,5 +1,6 @@
 nautilus_ng_sources = ['nautilus-task.c',
                        'nautilus-task.h',
+                       'nautilus-task-private.h',
                        'nautilus-task-manager.c',
                        'nautilus-task-manager.h',
                        'nautilus-file.c',
@@ -12,6 +13,12 @@ nautilus_ng_sources = ['nautilus-task.c',
                        'tasks/nautilus-enumerate-children-task.h',
                        'nautilus-cache.c',
                        'nautilus-cache.h',
+                       'tasks/nautilus-rename-task.c',
+                       'tasks/nautilus-rename-task.h',
+                       'nautilus-file-changes.c',
+                       'nautilus-file-changes.h',
+                       'nautilus-signal-utilities.c',
+                       'nautilus-signal-utilities.h',
                        'main.c']
 
 nautilus_ng_dependencies = [gio, glib]

@@ -13,12 +13,13 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "nautilus-enumerate-children-task.h"
 
 #include "nautilus-marshallers.h"
+#include "nautilus-task-private.h"
 
 struct _NautilusEnumerateChildrenTask
 {
@@ -45,7 +46,6 @@ execute (NautilusTask *task)
 {
     NautilusEnumerateChildrenTask *self;
     g_autoptr (GCancellable) cancellable = NULL;
-    NautilusTaskClass *klass;
     GError *error = NULL;
     g_autoptr (GFileEnumerator) enumerator = NULL;
     GHashTable *hash_table;
@@ -53,14 +53,14 @@ execute (NautilusTask *task)
 
     self = NAUTILUS_ENUMERATE_CHILDREN_TASK (task);
     cancellable = nautilus_task_get_cancellable (NAUTILUS_TASK (self));
-    klass = NAUTILUS_TASK_CLASS (G_OBJECT_GET_CLASS (self));
     enumerator = g_file_enumerate_children (self->file, self->attributes,
                                             self->flags, cancellable, &error);
 
     if (error != NULL)
     {
-        klass->emit_signal_in_main_context (task, signals[FINISHED],
-                                            self->file, NULL, error);
+        nautilus_task_emit_signal_in_main_context (task,
+                                                   signals[FINISHED], 0,
+                                                   self->file, NULL, error);
     }
 
     hash_table = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
@@ -76,8 +76,9 @@ execute (NautilusTask *task)
         {
             g_hash_table_destroy (hash_table);
 
-            klass->emit_signal_in_main_context (task, signals[FINISHED],
-                                                self->file, NULL, error);
+            nautilus_task_emit_signal_in_main_context (task,
+                                                       signals[FINISHED], 0,
+                                                       self->file, NULL, error);
 
             return;
         }
@@ -90,8 +91,8 @@ execute (NautilusTask *task)
         }
     } while (info != NULL);
 
-    klass->emit_signal_in_main_context (task, signals[FINISHED],
-                                        self->file, hash_table, error);
+    nautilus_task_emit_signal_in_main_context (task, signals[FINISHED], 0,
+                                               self->file, hash_table, error);
 }
 
 static void
