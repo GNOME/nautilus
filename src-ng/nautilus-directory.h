@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "nautilus-file.h"
@@ -32,6 +32,8 @@ typedef void (*NautilusEnumerateChildrenCallback) (NautilusDirectory *directory,
 struct _NautilusDirectoryClass
 {
     NautilusFileClass parent_class;
+
+    void (*children_changed) (NautilusDirectory *directory);
 };
 
 void nautilus_directory_enumerate_children (NautilusDirectory                 *directory,

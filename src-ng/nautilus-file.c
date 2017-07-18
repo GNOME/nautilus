@@ -13,7 +13,7 @@
  * GNU General Public License for more details.
  *
  * You should have received a copy of the GNU General Public License
- * along with Nautilus.  If not, see <http://www.gnu.org/licenses/>.
+ * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
 #include "nautilus-file.h"
@@ -45,9 +45,16 @@ enum
     N_PROPERTIES
 };
 
+enum
+{
+    RENAMED,
+    LAST_SIGNAL
+};
+
 static GParamSpec *properties[N_PROPERTIES] = { NULL };
-static GHashTable *files = NULL;
-static GMutex files_mutex;
+static guint       signals[LAST_SIGNAL]     = { 0 };
+static GHashTable *files                    = NULL;
+static GMutex      files_mutex;
 
 static GObject *
 constructor (GType                  type,
@@ -137,6 +144,32 @@ finalize (GObject *object)
 }
 
 static void
+renamed (NautilusFile *file,
+         GFile        *new_location)
+{
+    NautilusFilePrivate *priv;
+
+    priv = nautilus_file_get_instance_private (file);
+
+    g_message ("NautilusFile %p renamed; changing location: %p -> %p",
+               (gpointer) file, (gpointer) priv->location,
+               (gpointer) new_location);
+
+    g_mutex_lock (&files_mutex);
+
+    g_hash_table_remove (files, priv->location);
+
+    priv->location = g_object_ref (new_location);
+
+    g_assert (g_hash_table_insert (files, new_location, file));
+
+    g_mutex_unlock (&files_mutex);
+
+    nautilus_cache_item_invalidate (priv->cache, priv->cache_items[INFO],
+                                    FALSE);
+}
+
+static void
 nautilus_file_class_init (NautilusFileClass *klass)
 {
     GObjectClass *object_class;
@@ -147,12 +180,24 @@ nautilus_file_class_init (NautilusFileClass *klass)
     object_class->set_property = set_property;
     object_class->finalize = finalize;
 
+    klass->renamed = renamed;
+
     properties[PROP_LOCATION] =
         g_param_spec_object ("location", "Location", "Location",
                              G_TYPE_FILE,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_STATIC_NAME);
 
     g_object_class_install_properties (object_class, N_PROPERTIES, properties);
+
+    signals[RENAMED] = g_signal_new ("renamed",
+                                     G_TYPE_FROM_CLASS (klass),
+                                     G_SIGNAL_RUN_LAST,
+                                     G_STRUCT_OFFSET (NautilusFileClass, renamed),
+                                     NULL, NULL,
+                                     g_cclosure_marshal_VOID__OBJECT,
+                                     G_TYPE_NONE,
+                                     1,
+                                     G_TYPE_OBJECT);
 }
 
 static void
@@ -278,6 +323,29 @@ nautilus_file_query_info (NautilusFile             *file,
     nautilus_task_manager_queue_task (manager, task);
 }
 
+NautilusFile *
+nautilus_file_get_existing (GFile *location)
+{
+    NautilusFile *file = NULL;
+
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
+
+    g_mutex_lock (&files_mutex);
+
+    if (files != NULL)
+    {
+        file = g_hash_table_lookup (files, location);
+        if (file != NULL)
+        {
+            file = g_object_ref (file);
+        }
+    }
+
+    g_mutex_unlock (&files_mutex);
+
+    return file;
+}
+
 GFile *
 nautilus_file_get_location (NautilusFile *file)
 {
@@ -288,6 +356,26 @@ nautilus_file_get_location (NautilusFile *file)
     priv = nautilus_file_get_instance_private (file);
 
     return g_object_ref (priv->location);
+}
+
+NautilusFile *
+nautilus_file_get_parent (NautilusFile *file)
+{
+    NautilusFilePrivate *priv;
+    g_autoptr (GFile) parent_location = NULL;
+    NautilusFile *parent = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    priv = nautilus_file_get_instance_private (file);
+    parent_location = g_file_get_parent (priv->location);
+
+    if (parent_location != NULL)
+    {
+        parent = nautilus_file_new (parent_location);
+    }
+
+    return parent;
 }
 
 NautilusFile *
@@ -314,9 +402,16 @@ nautilus_file_new_with_info (GFile     *location,
 NautilusFile *
 nautilus_file_new (GFile *location)
 {
+    NautilusFile *file;
     GFileType file_type;
 
     g_return_val_if_fail (G_IS_FILE (location), NULL);
+
+    file = nautilus_file_get_existing (location);
+    if (file != NULL)
+    {
+        return g_object_ref (file);
+    }
 
     /* TODO: extension points? */
     file_type = g_file_query_file_type (location, G_FILE_QUERY_INFO_NONE,
