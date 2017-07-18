@@ -1,7 +1,7 @@
 project ('nautilus', 'c',
          version: '3.25.1',
          meson_version: '>=0.40.0',
-         license: 'GPL2+')
+         license: 'GPL3+')
 
 add_global_arguments ('-Wno-deprecated-declarations', language:'c')
 
