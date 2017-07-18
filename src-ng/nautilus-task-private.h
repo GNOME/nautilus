@@ -16,30 +16,14 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_TASK_H_INCLUDED
-#define NAUTILUS_TASK_H_INCLUDED
+#ifndef NAUTILUS_TASK_PRIVATE_H_INCLUDED
+#define NAUTILUS_TASK_PRIVATE_H_INCLUDED
 
-#include <gio/gio.h>
-#include <glib-object.h>
+#include "nautilus-task.h"
 
-#define NAUTILUS_TYPE_TASK (nautilus_task_get_type ())
-
-G_DECLARE_DERIVABLE_TYPE (NautilusTask, nautilus_task,
-                          NAUTILUS, TASK,
-                          GObject)
-
-typedef void (*NautilusTaskCallback) (NautilusTask *task,
-                                      gpointer      user_data);
-
-struct _NautilusTaskClass
-{
-    GObjectClass parent_class;
-
-    void (*execute) (NautilusTask *task);
-};
-
-GCancellable *nautilus_task_get_cancellable (NautilusTask *task);
-
-void nautilus_task_execute (NautilusTask *task);
+void nautilus_task_emit_signal_in_main_context (NautilusTask *task,
+                                                guint         signal_id,
+                                                GQuark        detail,
+                                                ...);
 
 #endif
