@@ -31,10 +31,8 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file.h"
 #include "nautilus-file-undo-manager.h"
-#ifdef ENABLE_TRACKER
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
-#endif /* ENABLE_TRACKER */
 
 
 /* Since we use g_get_current_time for setting "orig_trash_time" in the undo
@@ -1088,7 +1086,6 @@ nautilus_file_undo_info_rename_set_data_post (NautilusFileUndoInfoRename *self,
     self->priv->new_file = g_object_ref (new_file);
 }
 
-#ifdef ENABLE_TRACKER
 /* batch rename */
 G_DEFINE_TYPE (NautilusFileUndoInfoBatchRename, nautilus_file_undo_info_batch_rename, NAUTILUS_TYPE_FILE_UNDO_INFO);
 
@@ -1306,7 +1303,6 @@ nautilus_file_undo_info_batch_rename_set_data_post (NautilusFileUndoInfoBatchRen
 
     self->priv->new_display_names = g_list_reverse (self->priv->new_display_names);
 }
-#endif /* ENABLE_TRACKER */
 
 /* trash */
 G_DEFINE_TYPE (NautilusFileUndoInfoTrash, nautilus_file_undo_info_trash, NAUTILUS_TYPE_FILE_UNDO_INFO)

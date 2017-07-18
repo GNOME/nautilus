@@ -255,17 +255,14 @@ libnautilus_sources = [
     'nautilus-file-undo-operations.c',
     'nautilus-file-undo-operations.h',
     'nautilus-file-undo-manager.c',
-    'nautilus-file-undo-manager.h'
+    'nautilus-file-undo-manager.h',
+    'nautilus-batch-rename-dialog.c',
+    'nautilus-batch-rename-dialog.h',
+    'nautilus-batch-rename-utilities.c',
+    'nautilus-batch-rename-utilities.h',
+    'nautilus-search-engine-tracker.c',
+    'nautilus-search-engine-tracker.h'
 ]
-
-if tracker_sparql.found()
-    libnautilus_sources += ['nautilus-batch-rename-dialog.c',
-                            'nautilus-batch-rename-dialog.h',
-                            'nautilus-batch-rename-utilities.c',
-                            'nautilus-batch-rename-utilities.h',
-                            'nautilus-search-engine-tracker.c',
-                            'nautilus-search-engine-tracker.h']
-endif
 
 nautilus_deps = [glib,
                  gtk,
@@ -278,14 +275,11 @@ nautilus_deps = [glib,
                  eel_2,
                  nautilus_extension,
                  x11,
-                 gmodule_no_export]
+                 gmodule_no_export,
+                 tracker_sparql]
 
 if get_option ('enable-exif')
     nautilus_deps += exif
-endif
-
-if tracker_sparql.found()
-    nautilus_deps += tracker_sparql
 endif
 
 if get_option ('enable-selinux')

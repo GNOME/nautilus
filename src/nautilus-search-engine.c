@@ -28,16 +28,11 @@
 #include "nautilus-search-engine-model.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
-
-#ifdef ENABLE_TRACKER
 #include "nautilus-search-engine-tracker.h"
-#endif
 
 typedef struct
 {
-#ifdef ENABLE_TRACKER
     NautilusSearchEngineTracker *tracker;
-#endif
     NautilusSearchEngineSimple *simple;
     NautilusSearchEngineModel *model;
 
@@ -78,9 +73,7 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
 
-#ifdef ENABLE_TRACKER
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->tracker), query);
-#endif
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->model), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->simple), query);
 }
@@ -102,10 +95,9 @@ search_engine_start_real (NautilusSearchEngine *engine)
 
     g_object_ref (engine);
 
-#ifdef ENABLE_TRACKER
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
     priv->providers_running++;
-#endif
+
     if (nautilus_search_engine_model_get_model (priv->model))
     {
         nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->model));
@@ -166,9 +158,7 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 
     DEBUG ("Search engine stop");
 
-#ifdef ENABLE_TRACKER
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
-#endif
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->model));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 
@@ -343,9 +333,7 @@ nautilus_search_engine_finalize (GObject *object)
 
     g_hash_table_destroy (priv->uris);
 
-#ifdef ENABLE_TRACKER
     g_clear_object (&priv->tracker);
-#endif
     g_clear_object (&priv->model);
     g_clear_object (&priv->simple);
 
@@ -399,10 +387,9 @@ nautilus_search_engine_init (NautilusSearchEngine *engine)
     priv = nautilus_search_engine_get_instance_private (engine);
     priv->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-#ifdef ENABLE_TRACKER
     priv->tracker = nautilus_search_engine_tracker_new ();
     connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->tracker));
-#endif
+
     priv->model = nautilus_search_engine_model_new ();
     connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->model));
 
