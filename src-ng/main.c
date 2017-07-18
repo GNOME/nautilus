@@ -1,3 +1,4 @@
+#include <locale.h>
 #include <stdlib.h>
 
 #include <glib.h>
@@ -5,6 +6,7 @@
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-task-manager.h"
+#include "tasks/nautilus-rename-task.h"
 
 static void
 got_info (NautilusFile *file,
@@ -12,12 +14,12 @@ got_info (NautilusFile *file,
           GError       *error,
           gpointer      user_data)
 {
-    g_message ("Got info for %p",
-               (gpointer) file);
-    g_message ("\tDisplay name: %s",
-               g_file_info_get_display_name (info));
-    g_message ("\tFile is directory: %s\n",
-               NAUTILUS_IS_DIRECTORY (file)? "yes" : "no");
+    g_print ("Got info for %p\n"
+             "\tDisplay name: %s\n"
+             "\tFile is directory: %s\n\n",
+             (gpointer) file,
+             g_file_info_get_display_name (info),
+             NAUTILUS_IS_DIRECTORY (file)? "yes" : "no");
 
     g_object_unref (info);
 
@@ -33,7 +35,7 @@ got_children (NautilusDirectory *directory,
               GError            *error,
               gpointer           user_data)
 {
-    g_message ("Got children for %p", (gpointer) directory);
+    g_print ("Got children for %p\n", (gpointer) directory);
 
     if (children == NULL)
     {
@@ -61,34 +63,25 @@ got_children (NautilusDirectory *directory,
     g_list_free (children);
 }
 
-int
-main (int    argc,
-      char **argv)
+static void
+perform_self_test_checks (const gchar *path)
 {
-    g_autoptr (NautilusTaskManager) manager = NULL;
     g_autoptr (GFile) location = NULL;
     g_autoptr (NautilusFile) file = NULL;
     g_autoptr (NautilusFile) duplicate_file = NULL;
     GMainLoop *loop;
 
-    if (!(argc > 1))
-    {
-        g_message ("No file provided, exiting");
-        return EXIT_SUCCESS;
-    }
+    location = g_file_new_for_path (path);
 
-    manager = nautilus_task_manager_dup_singleton ();
-    location = g_file_new_for_commandline_arg (argv[1]);
-
-    g_message ("Creating NautilusFile");
+    g_print ("Creating NautilusFile\n");
     file = nautilus_file_new (location);
-    g_message ("\tGot %p\n", (gpointer) file);
+    g_print ("\tGot %p\n\n", (gpointer) file);
 
-    g_message ("Creating another NautilusFile for the same location");
+    g_print ("Creating another NautilusFile for the same location\n");
     duplicate_file = nautilus_file_new (location);
-    g_message ("\tGot %p, which is %s\n",
-               (gpointer) duplicate_file,
-               file == duplicate_file? "the same" : "not the same");
+    g_print ("\tGot %p, which is %s\n\n",
+             (gpointer) duplicate_file,
+             file == duplicate_file? "the same" : "not the same");
 
     loop = g_main_loop_new (NULL, TRUE);
 
@@ -110,6 +103,94 @@ main (int    argc,
     }
 
     g_main_loop_run (loop);
+}
+
+static void
+rename (const gchar *target,
+        const gchar *name)
+{
+    g_autoptr (GFile) location = NULL;
+    g_autoptr (NautilusFile) file = NULL;
+    g_autoptr (NautilusTaskManager) manager = NULL;
+    g_autoptr (NautilusTask) task = NULL;
+    GMainLoop *loop;
+
+    location = g_file_new_for_path (target);
+    g_message ("Constructed GFile %p for path %s",
+               (gpointer) location, target);
+    file = nautilus_file_new (location);
+    g_message ("Constructed NautilusFile %p for location %p",
+               (gpointer) file, (gpointer) location);
+    manager = nautilus_task_manager_dup_singleton ();
+    task = nautilus_rename_task_new ();
+    loop = g_main_loop_new (NULL, TRUE);
+
+    nautilus_rename_task_add_target (NAUTILUS_RENAME_TASK (task),
+                                     location, name);
+
+    nautilus_task_manager_queue_task (manager, task);
+
+    g_main_loop_run (loop);
+}
+
+int
+main (int    argc,
+      char **argv)
+{
+    g_autoptr (GOptionContext) option_context = NULL;
+    gchar **files = NULL;
+    gboolean check = FALSE;
+    gchar *new_name = NULL;
+    const GOptionEntry option_entries[] =
+    {
+        {
+            G_OPTION_REMAINING, 0, G_OPTION_FLAG_NONE,
+            G_OPTION_ARG_FILENAME_ARRAY, &files, NULL, NULL
+        },
+        {
+            "check", 'c', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &check,
+            "Perform self-test checks with FILE as input", NULL
+        },
+        {
+            "rename", 'n', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &new_name,
+            "Rename FILE to NAME", "NAME"
+        },
+        { NULL }
+    };
+    GError *error = NULL;
+    g_autoptr (NautilusTaskManager) manager = NULL;
+
+    setlocale (LC_ALL, "");
+
+    option_context = g_option_context_new ("[FILE]");
+
+    g_option_context_add_main_entries (option_context, option_entries, NULL);
+
+    if (!g_option_context_parse (option_context, &argc, &argv, &error))
+    {
+        g_print ("%s\n", error->message);
+
+        return EXIT_FAILURE;
+    }
+
+    if (files == NULL)
+    {
+        g_print ("No input file specified\n");
+
+        return EXIT_FAILURE;
+    }
+
+    manager = nautilus_task_manager_dup_singleton ();
+
+    if (check)
+    {
+        perform_self_test_checks (files[0]);
+    }
+
+    if (new_name != NULL && new_name[0] != '\0')
+    {
+        rename (files[0], new_name);
+    }
 
     return EXIT_SUCCESS;
 }
