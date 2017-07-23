@@ -181,6 +181,11 @@ nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
 
     priv = nautilus_window_slot_get_instance_private (self);
 
+    if (priv->location == NULL)
+    {
+        return NULL;
+    }
+
     back_list = g_list_copy_deep (priv->back_list,
                                   (GCopyFunc) g_object_ref,
                                   NULL);

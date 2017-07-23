@@ -1620,7 +1620,10 @@ nautilus_window_slot_close (NautilusWindow     *window,
     }
 
     data = nautilus_window_slot_get_restore_tab_data (slot);
-    g_queue_push_head (priv->tab_data_queue, data);
+    if (data != NULL)
+    {
+        g_queue_push_head (priv->tab_data_queue, data);
+    }
 
     close_slot (window, slot, TRUE);
 
