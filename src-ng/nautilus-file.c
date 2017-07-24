@@ -191,7 +191,7 @@ nautilus_file_class_init (NautilusFileClass *klass)
 
     signals[RENAMED] = g_signal_new ("renamed",
                                      G_TYPE_FROM_CLASS (klass),
-                                     G_SIGNAL_RUN_LAST,
+                                     G_SIGNAL_RUN_FIRST,
                                      G_STRUCT_OFFSET (NautilusFileClass, renamed),
                                      NULL, NULL,
                                      g_cclosure_marshal_VOID__OBJECT,
