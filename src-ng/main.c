@@ -106,11 +106,19 @@ perform_self_test_checks (const gchar *path)
 }
 
 static void
-rename (const gchar *target,
-        const gchar *name)
+on_children_changed (NautilusDirectory *directory,
+                     gpointer           user_data)
+{
+    g_main_loop_quit ((GMainLoop *) user_data);
+}
+
+static void
+_rename (const gchar *target,
+         const gchar *name)
 {
     g_autoptr (GFile) location = NULL;
     g_autoptr (NautilusFile) file = NULL;
+    g_autoptr (NautilusFile) parent = NULL;
     g_autoptr (NautilusTaskManager) manager = NULL;
     g_autoptr (NautilusTask) task = NULL;
     GMainLoop *loop;
@@ -119,11 +127,15 @@ rename (const gchar *target,
     g_message ("Constructed GFile %p for path %s",
                (gpointer) location, target);
     file = nautilus_file_new (location);
+    parent = nautilus_file_get_parent (file);
     g_message ("Constructed NautilusFile %p for location %p",
                (gpointer) file, (gpointer) location);
     manager = nautilus_task_manager_dup_singleton ();
     task = nautilus_rename_task_new ();
     loop = g_main_loop_new (NULL, TRUE);
+
+    g_signal_connect (parent, "children-changed",
+                      G_CALLBACK (on_children_changed), loop);
 
     nautilus_rename_task_add_target (NAUTILUS_RENAME_TASK (task),
                                      location, name);
@@ -189,7 +201,7 @@ main (int    argc,
 
     if (new_name != NULL && new_name[0] != '\0')
     {
-        rename (files[0], new_name);
+        _rename (files[0], new_name);
     }
 
     return EXIT_SUCCESS;

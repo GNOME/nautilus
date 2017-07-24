@@ -73,6 +73,8 @@ execute (NautilusTask *task)
         g_autoptr (GFile) location_to = NULL;
 
         location_from = G_FILE (key);
+        g_message ("Renaming GFile %p",
+                   (gpointer) location_from);
         location_to = g_file_set_display_name (location_from,
                                                (const gchar *) value,
                                                cancellable, &error);
@@ -83,6 +85,12 @@ execute (NautilusTask *task)
                        (gpointer) location_from,
                        (gpointer) location_to);
             nautilus_notify_file_renamed (location_from, location_to);
+        }
+        else
+        {
+            g_message ("Renaming GFile %p failed: %s",
+                       (gpointer) location_from,
+                       error->message);
         }
     }
 

@@ -38,9 +38,6 @@ static void move_change_free (MoveChange *change);
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC (MoveChange, move_change_free)
 
-static guint source = 0;
-static GMutex source_mutex;
-
 static void
 move_change_free (MoveChange *change)
 {
@@ -49,94 +46,48 @@ move_change_free (MoveChange *change)
     g_free (change);
 }
 
-static gpointer
-init_default_queue (gpointer data)
-{
-    return g_async_queue_new ();
-}
-
-static GAsyncQueue *
-get_default_queue (void)
-{
-    static GOnce once = G_ONCE_INIT;
-
-    g_once (&once, init_default_queue, NULL);
-
-    return once.retval;
-}
-
-static gboolean
-emit_signals (gpointer user_data)
-{
-    GAsyncQueue *queue;
-    Change *change;
-
-    queue = user_data;
-
-    g_async_queue_lock (queue);
-
-    while ((change = g_async_queue_try_pop_unlocked (queue)) != NULL)
-    {
-        g_autoptr (NautilusFile) file = NULL;
-        g_autoptr (NautilusFile) parent = NULL;
-
-        file = nautilus_file_new (change->location);
-        if (file == NULL)
-        {
-            continue;
-        }
-        parent = nautilus_file_get_parent (file);
-
-        switch (change->type)
-        {
-            case NAUTILUS_FILE_CHANGE_RENAMED:
-            {
-                g_autoptr (MoveChange) move_change = NULL;
-
-                move_change = (MoveChange *) change;
-
-                nautilus_emit_signal_in_main_context_by_name (file,
-                                                              NULL,
-                                                              "renamed",
-                                                              move_change->location_to);
-
-                if (parent == NULL)
-                {
-                    break;
-                }
-
-                nautilus_emit_signal_in_main_context_by_name (parent,
-                                                              NULL,
-                                                              "children-changed");
-            }
-            break;
-        }
-    }
-
-    g_async_queue_unlock (queue);
-
-    g_mutex_lock (&source_mutex);
-    source = 0;
-    g_mutex_unlock (&source_mutex);
-
-    return G_SOURCE_REMOVE;
-}
-
 static void
-schedule_signal_emission (void)
+emit_signal_for_change (Change *change)
 {
-    g_mutex_lock (&source_mutex);
+    g_autoptr (NautilusFile) file = NULL;
+    g_autoptr (NautilusFile) parent = NULL;
 
-    if (source == 0)
+    file = nautilus_file_new (change->location);
+    if (file == NULL)
     {
-        source = g_timeout_add (100, emit_signals, get_default_queue ());
+        return;
     }
-    else
-    {
-        g_source_remove (source);
-    }
+    parent = nautilus_file_get_parent (file);
 
-    g_mutex_unlock (&source_mutex);
+    switch (change->type)
+    {
+        case NAUTILUS_FILE_CHANGE_RENAMED:
+        {
+            g_autoptr (MoveChange) move_change = NULL;
+
+            move_change = (MoveChange *) change;
+
+            nautilus_emit_signal_in_main_context_by_name (file,
+                                                          NULL,
+                                                          "renamed",
+                                                          move_change->location_to);
+
+            if (parent == NULL)
+            {
+                break;
+            }
+
+            nautilus_emit_signal_in_main_context_by_name (parent,
+                                                          NULL,
+                                                          "children-changed");
+        }
+        break;
+
+        case NAUTILUS_FILE_CHANGE_MOVED:
+        {
+        }
+        break;
+    }
 }
 
 static void
@@ -145,19 +96,15 @@ notify_file_moved_or_renamed (GFile    *from,
                               gboolean  move_is_rename)
 {
     MoveChange *change;
-    GAsyncQueue *queue;
 
     change = g_new0 (MoveChange, 1);
-    queue = get_default_queue ();
 
     change->type = move_is_rename? NAUTILUS_FILE_CHANGE_RENAMED
                                  : NAUTILUS_FILE_CHANGE_MOVED;
     change->location_from = g_object_ref (from);
     change->location_to = g_object_ref (to);
 
-    g_async_queue_push (queue, change);
-
-    schedule_signal_emission ();
+    emit_signal_for_change ((Change *) change);
 }
 
 void
