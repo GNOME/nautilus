@@ -4322,21 +4322,13 @@ has_fs_id (GFile      *file,
 static gboolean
 is_dir (GFile *file)
 {
-    GFileInfo *info;
-    gboolean res;
+    GFileType file_type;
 
-    res = FALSE;
-    info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_STANDARD_TYPE,
-                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                              NULL, NULL);
-    if (info)
-    {
-        res = g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY;
-        g_object_unref (info);
-    }
+    file_type = g_file_query_file_type (file,
+                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                        NULL);
 
-    return res;
+    return file_type == G_FILE_TYPE_DIRECTORY;
 }
 
 static GFile *
@@ -4883,80 +4875,6 @@ typedef struct
     GFile *source;
 } DeleteExistingFileData;
 
-static void
-existing_file_removed_callback (GFile    *file,
-                                GError   *error,
-                                gpointer  callback_data)
-{
-    DeleteExistingFileData *data = callback_data;
-    CommonJob *job;
-    GFile *source;
-    GFileType file_type;
-    char *primary;
-    char *secondary;
-    char *details = NULL;
-    int response;
-    g_autofree gchar *basename = NULL;
-    g_autofree gchar *filename = NULL;
-
-    job = data->job;
-    source = data->source;
-
-    if (error == NULL)
-    {
-        nautilus_file_changes_queue_file_removed (file);
-
-        return;
-    }
-
-    if (job_aborted (job) || job->skip_all_error)
-    {
-        return;
-    }
-
-    basename = get_basename (source);
-    primary = g_strdup_printf (_("Error while copying “%s”."), basename);
-
-    file_type = g_file_query_file_type (file,
-                                        G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                        job->cancellable);
-
-    filename = g_file_get_parse_name (file);
-    if (file_type == G_FILE_TYPE_DIRECTORY)
-    {
-        secondary = g_strdup_printf (_("Could not remove the already existing folder %s."),
-                                     filename);
-    }
-    else
-    {
-        secondary = g_strdup_printf (_("Could not remove the already existing file %s."),
-                                     filename);
-    }
-
-    details = error->message;
-
-    /* set show_all to TRUE here, as we don't know how many
-     * files we'll end up processing yet.
-     */
-    response = run_warning (job,
-                            primary,
-                            secondary,
-                            details,
-                            TRUE,
-                            CANCEL, SKIP_ALL, SKIP,
-                            NULL);
-
-    if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
-    {
-        abort_job (job);
-    }
-    else if (response == 1)
-    {
-        /* skip all */
-        job->skip_all_error = TRUE;
-    }
-}
-
 typedef struct
 {
     CopyMoveJob *job;
@@ -5411,8 +5329,13 @@ retry:
     if (!overwrite &&
         IS_IO_ERROR (error, EXISTS))
     {
+        gboolean source_is_directory;
+        gboolean destination_is_directory;
         gboolean is_merge;
         FileConflictResponse *response;
+
+        source_is_directory = is_dir (src);
+        destination_is_directory = is_dir (dest);
 
         g_error_free (error);
 
@@ -5425,9 +5348,15 @@ retry:
 
         is_merge = FALSE;
 
-        if (is_dir (dest) && is_dir (src))
+        if (source_is_directory && destination_is_directory)
         {
             is_merge = TRUE;
+        }
+        else if (!source_is_directory && destination_is_directory)
+        {
+            /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
+            overwrite = TRUE;
+            goto retry;
         }
 
         if ((is_merge && job->merge_all) ||
@@ -5486,28 +5415,6 @@ retry:
         else
         {
             g_assert_not_reached ();
-        }
-    }
-    else if (overwrite &&
-             IS_IO_ERROR (error, IS_DIRECTORY))
-    {
-        gboolean existing_file_deleted;
-        DeleteExistingFileData data;
-
-        g_error_free (error);
-
-        data.job = job;
-        data.source = src;
-
-        existing_file_deleted =
-            delete_file_recursively (dest,
-                                     job->cancellable,
-                                     existing_file_removed_callback,
-                                     &data);
-
-        if (existing_file_deleted)
-        {
-            goto retry;
         }
     }
     /* Needs to recurse */
@@ -6154,15 +6061,26 @@ retry:
     else if (!overwrite &&
              IS_IO_ERROR (error, EXISTS))
     {
+        gboolean source_is_directory;
+        gboolean destination_is_directory;
         gboolean is_merge;
         FileConflictResponse *response;
+
+        source_is_directory = is_dir (src);
+        destination_is_directory = is_dir (dest);
 
         g_error_free (error);
 
         is_merge = FALSE;
-        if (is_dir (dest) && is_dir (src))
+        if (source_is_directory && destination_is_directory)
         {
             is_merge = TRUE;
+        }
+        else if (!source_is_directory && destination_is_directory)
+        {
+            /* Any sane backend will fail with G_IO_ERROR_IS_DIRECTORY. */
+            overwrite = TRUE;
+            goto retry;
         }
 
         if ((is_merge && job->merge_all) ||
@@ -6225,8 +6143,7 @@ retry:
     }
     else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
              IS_IO_ERROR (error, WOULD_MERGE) ||
-             IS_IO_ERROR (error, NOT_SUPPORTED) ||
-             (overwrite && IS_IO_ERROR (error, IS_DIRECTORY)))
+             IS_IO_ERROR (error, NOT_SUPPORTED))
     {
         g_error_free (error);
 
