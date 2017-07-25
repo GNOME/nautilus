@@ -143,6 +143,8 @@ typedef struct
     guint bookmarks_id;
 
     GQueue *tab_data_queue;
+
+    GtkPadController *pad_controller;
 } NautilusWindowPrivate;
 
 enum
@@ -184,6 +186,15 @@ static const struct
     { XF86XK_Back, "back" },
     { XF86XK_Forward, "forward" },
 #endif
+};
+
+static const GtkPadActionEntry pad_actions[] = {
+    { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Parent folder"), "up" },
+    { GTK_PAD_ACTION_BUTTON, 1, -1, N_("Home"), "go-home" },
+    { GTK_PAD_ACTION_BUTTON, 2, -1, N_("New tab"), "new-tab" },
+    { GTK_PAD_ACTION_BUTTON, 3, -1, N_("Close current view"), "close-current-view" },
+    { GTK_PAD_ACTION_BUTTON, 4, -1, N_("Back"), "back" },
+    { GTK_PAD_ACTION_BUTTON, 5, -1, N_("Forward"), "forward" },
 };
 
 static void
@@ -2586,6 +2597,8 @@ nautilus_window_finalize (GObject *object)
     g_queue_foreach (priv->tab_data_queue, (GFunc) free_restore_tab_data, NULL);
     g_queue_free (priv->tab_data_queue);
 
+    g_object_unref (priv->pad_controller);
+
     /* nautilus_window_close() should have run */
     g_assert (priv->slots == NULL);
 
@@ -2917,6 +2930,12 @@ nautilus_window_init (NautilusWindow *window)
     g_object_unref (window_group);
 
     priv->tab_data_queue = g_queue_new();
+
+    priv->pad_controller = gtk_pad_controller_new (GTK_WINDOW (window),
+                                                   G_ACTION_GROUP (window),
+                                                   NULL);
+    gtk_pad_controller_set_action_entries (priv->pad_controller,
+                                           pad_actions, G_N_ELEMENTS (pad_actions));
 }
 
 static void
