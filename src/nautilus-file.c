@@ -8439,14 +8439,17 @@ nautilus_file_mark_gone (NautilusFile *file)
     /* Drop it from the symlink hash ! */
     remove_from_link_hash_table (file);
 
+    /* Removing the file from the directory can result in dropping the last
+     * reference, and so clearing the info then will result in a crash.
+     */
+    nautilus_file_clear_info (file);
+
     /* Let the directory know it's gone. */
     directory = file->details->directory;
     if (!nautilus_file_is_self_owned (file))
     {
         nautilus_directory_remove_file (directory, file);
     }
-
-    nautilus_file_clear_info (file);
 
     /* FIXME bugzilla.gnome.org 42429:
      * Maybe we can get rid of the name too eventually, but
