@@ -334,7 +334,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     gtk_widget_hide (fcd->rename_button);
 
     fcd->replace_button = gtk_dialog_add_button (dialog,
-                                                 _("Replace"),
+                                                 _("Re_place"),
                                                  CONFLICT_RESPONSE_REPLACE);
     gtk_widget_grab_focus (fcd->replace_button);
 
