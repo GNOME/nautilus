@@ -8457,18 +8457,18 @@ finish_loading (NautilusFilesView *view)
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
-    nautilus_directory_file_monitor_add (priv->model,
-                                         &priv->model,
-                                         priv->show_hidden_files,
-                                         attributes,
-                                         files_added_callback, view);
-
     priv->files_added_handler_id = g_signal_connect
                                                 (priv->model, "files-added",
                                                 G_CALLBACK (files_added_callback), view);
     priv->files_changed_handler_id = g_signal_connect
                                                   (priv->model, "files-changed",
                                                   G_CALLBACK (files_changed_callback), view);
+
+    nautilus_directory_file_monitor_add (priv->model,
+                                         &priv->model,
+                                         priv->show_hidden_files,
+                                         attributes,
+                                         files_added_callback, view);
 
     nautilus_profile_end (NULL);
 }
