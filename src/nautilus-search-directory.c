@@ -173,8 +173,6 @@ set_hidden_files (NautilusSearchDirectory *search)
 static void
 start_search (NautilusSearchDirectory *search)
 {
-    NautilusSearchEngineModel *model_provider;
-    NautilusSearchEngineSimple *simple_provider;
     gboolean recursive;
 
     if (!search->details->query)
@@ -200,12 +198,11 @@ start_search (NautilusSearchDirectory *search)
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (search->details->engine),
                                         search->details->query);
 
-    model_provider = nautilus_search_engine_get_model_provider (search->details->engine);
-    nautilus_search_engine_model_set_model (model_provider, search->details->base_model);
+    nautilus_search_engine_set_model (search->details->engine,
+                                      search->details->base_model);
 
-    simple_provider = nautilus_search_engine_get_simple_provider (search->details->engine);
     recursive = nautilus_query_get_recursive (search->details->query);
-    g_object_set (simple_provider, "recursive", recursive, NULL);
+    g_object_set (search->details->engine, "recursive", recursive, NULL);
 
     reset_file_list (search);
 

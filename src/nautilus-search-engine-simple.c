@@ -453,6 +453,16 @@ nautilus_search_engine_simple_is_running (NautilusSearchProvider *provider)
     return simple->active_search != NULL;
 }
 
+static gboolean
+nautilus_search_engine_simple_is_finished (NautilusSearchProvider *provider)
+{
+    NautilusSearchEngineSimple *simple;
+
+    simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
+
+    return simple->active_search == NULL;
+}
+
 static void
 nautilus_search_engine_simple_set_property (GObject      *object,
                                             guint         arg_id,
@@ -508,6 +518,7 @@ nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
     iface->start = nautilus_search_engine_simple_start;
     iface->stop = nautilus_search_engine_simple_stop;
     iface->is_running = nautilus_search_engine_simple_is_running;
+    iface->is_finished = nautilus_search_engine_simple_is_finished;
 }
 
 static void
