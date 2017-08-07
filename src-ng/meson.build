@@ -19,6 +19,8 @@ nautilus_ng_sources = ['nautilus-task.c',
                        'nautilus-file-changes.h',
                        'nautilus-signal-utilities.c',
                        'nautilus-signal-utilities.h',
+                       'nautilus-file-table.c',
+                       'nautilus-file-table.h',
                        'main.c']
 
 nautilus_ng_dependencies = [gio, glib]
