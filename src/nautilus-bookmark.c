@@ -318,16 +318,8 @@ nautilus_bookmark_set_icon_to_default (NautilusBookmark *bookmark)
     else
     {
         uri = nautilus_bookmark_get_uri (bookmark);
-        if (g_str_has_prefix (uri, EEL_SEARCH_URI))
-        {
-            symbolic_icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER_SAVED_SEARCH);
-            icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_SAVED_SEARCH);
-        }
-        else
-        {
-            symbolic_icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
-            icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_REMOTE);
-        }
+        symbolic_icon = g_themed_icon_new (NAUTILUS_ICON_FOLDER_REMOTE);
+        icon = g_themed_icon_new (NAUTILUS_ICON_FULLCOLOR_FOLDER_REMOTE);
         g_free (uri);
     }
 

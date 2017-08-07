@@ -20,7 +20,6 @@
 #define NAUTILUS_ICON_FOLDER_PUBLIC_SHARE "folder-publicshare-symbolic"
 #define NAUTILUS_ICON_FOLDER_TEMPLATES  "folder-templates-symbolic"
 #define NAUTILUS_ICON_FOLDER_VIDEOS     "folder-videos-symbolic"
-#define NAUTILUS_ICON_FOLDER_SAVED_SEARCH "folder-saved-search-symbolic"
 
 /* Icons for desktop */
 #define NAUTILUS_DESKTOP_ICON_DESKTOP    "user-desktop"
@@ -39,7 +38,6 @@
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_PUBLIC_SHARE "folder-publicshare"
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_TEMPLATES    "folder-templates"
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_VIDEOS       "folder-videos"
-#define NAUTILUS_ICON_FULLCOLOR_FOLDER_SAVED_SEARCH "folder-saved-search"
 
 /* Other icons */
 #define NAUTILUS_ICON_TEMPLATE		"text-x-generic-template"

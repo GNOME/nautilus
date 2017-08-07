@@ -618,11 +618,6 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
         const char *uri;
 
         uri = nautilus_search_hit_get_uri (hit);
-        if (g_str_has_suffix (uri, NAUTILUS_SAVED_SEARCH_EXTENSION))
-        {
-            /* Never return saved searches themselves as hits */
-            continue;
-        }
 
         nautilus_search_hit_compute_scores (hit, search->details->query);
 

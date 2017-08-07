@@ -26,9 +26,6 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#define NAUTILUS_SAVED_SEARCH_EXTENSION ".savedSearch"
-#define NAUTILUS_SAVED_SEARCH_MIMETYPE "application/x-gnome-saved-search"
-
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
