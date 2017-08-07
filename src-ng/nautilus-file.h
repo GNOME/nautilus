@@ -21,6 +21,7 @@
 
 #include <glib-object.h>
 
+#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gio/gio.h>
 
 #define NAUTILUS_TYPE_FILE (nautilus_file_get_type ())
@@ -31,6 +32,9 @@ typedef void (*NautilusFileInfoCallback) (NautilusFile *file,
                                           GFileInfo    *info,
                                           GError       *error,
                                           gpointer      user_data);
+typedef void (*NautilusThumbnailCallback) (NautilusFile *file,
+                                           GdkPixbuf    *pixbuf,
+                                           gpointer      user_data);
 
 typedef enum
 {
@@ -46,10 +50,13 @@ struct _NautilusFileClass
                      GFile        *new_location);
 };
 
-void nautilus_file_query_info (NautilusFile             *file,
-                               GCancellable             *cancellable,
-                               NautilusFileInfoCallback  callback,
-                               gpointer                  user_data);
+void nautilus_file_query_info    (NautilusFile              *file,
+                                  GCancellable              *cancellable,
+                                  NautilusFileInfoCallback   callback,
+                                  gpointer                   user_data);
+void nautilus_file_get_thumbnail (NautilusFile              *file,
+                                  NautilusThumbnailCallback  callback,
+                                  gpointer                   user_data);
 
 NautilusFile *nautilus_file_get_existing (GFile        *location);
 GFile        *nautilus_file_get_location (NautilusFile *file);
