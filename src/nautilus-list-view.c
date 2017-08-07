@@ -1623,7 +1623,10 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                                              NULL);
 
             escaped_text = g_markup_escape_text (replaced_text, -1);
-            g_string_append_printf (display_text, "\n<small><span color='grey'>%s</span></small>", escaped_text);
+
+            g_string_append_printf (display_text,
+                                    " <small><span color='grey'><b>%s</b></span></small>",
+                                    escaped_text);
         }
 
         nautilus_file_unref (file);
