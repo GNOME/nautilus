@@ -2,11 +2,13 @@
 #include <stdlib.h>
 
 #include <glib.h>
+#include <gtk/gtk.h>
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
 #include "nautilus-task-manager.h"
 #include "tasks/nautilus-rename-task.h"
+#include "tasks/nautilus-thumbnail-task.h"
 
 static void
 got_info (NautilusFile *file,
@@ -145,6 +147,60 @@ _rename (const gchar *target,
     g_main_loop_run (loop);
 }
 
+static void
+on_thumbnail_finished (NautilusThumbnailTask *task,
+                       GFile                 *location,
+                       GdkPixbuf             *thumbnail,
+                       gpointer               user_data)
+{
+    GtkWidget *image;
+
+    image = gtk_image_new_from_pixbuf (thumbnail);
+
+    gtk_widget_set_halign (image, GTK_ALIGN_CENTER);
+    gtk_widget_set_valign (image, GTK_ALIGN_CENTER);
+    gtk_widget_set_visible (image, TRUE);
+
+    gtk_container_add (GTK_CONTAINER (user_data), image);
+
+    g_object_unref (thumbnail);
+}
+
+static gboolean
+on_window_deleted (GtkWidget *widget,
+                   GdkEvent  *event,
+                   gpointer   user_data)
+{
+    gtk_main_quit ();
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static void
+display_thumbnail (const gchar *path)
+{
+    GtkWidget *window;
+    g_autoptr (GFile) location = NULL;
+    g_autoptr (NautilusTask) task = NULL;
+    g_autoptr (NautilusTaskManager) task_manager = NULL;
+
+    gtk_init (NULL, NULL);
+
+    window = gtk_window_new (GTK_WINDOW_TOPLEVEL);
+    location = g_file_new_for_path (path);
+    task = nautilus_thumbnail_task_new (location, TRUE);
+    task_manager = nautilus_task_manager_dup_singleton ();
+
+    gtk_widget_show_all (window);
+
+    g_signal_connect_after (window, "delete-event", on_window_deleted, NULL);
+    g_signal_connect (task, "finished", on_thumbnail_finished, window);
+
+    nautilus_task_manager_queue_task (task_manager, task);
+
+    gtk_main ();
+}
+
 int
 main (int    argc,
       char **argv)
@@ -153,6 +209,7 @@ main (int    argc,
     gchar **files = NULL;
     gboolean check = FALSE;
     gchar *new_name = NULL;
+    gboolean thumbnail = FALSE;
     const GOptionEntry option_entries[] =
     {
         {
@@ -166,6 +223,10 @@ main (int    argc,
         {
             "rename", 'n', G_OPTION_FLAG_NONE, G_OPTION_ARG_STRING, &new_name,
             "Rename FILE to NAME", "NAME"
+        },
+        {
+            "thumbnail", 't', G_OPTION_FLAG_NONE, G_OPTION_ARG_NONE, &thumbnail,
+            "Display thumbnail for FILE", NULL
         },
         { NULL }
     };
@@ -202,6 +263,11 @@ main (int    argc,
     if (new_name != NULL && new_name[0] != '\0')
     {
         _rename (files[0], new_name);
+    }
+
+    if (thumbnail)
+    {
+        display_thumbnail (files[0]);
     }
 
     return EXIT_SUCCESS;
