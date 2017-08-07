@@ -1,4 +1,9 @@
-nautilus_ng_sources = ['nautilus-task.c',
+resources = gnome.compile_resources ('nautilus-ng-resources',
+                                     join_paths ('res', 'org.gnome.Nautilus.gresource.xml'),
+                                     source_dir: 'res')
+
+nautilus_ng_sources = [resources,
+                       'nautilus-task.c',
                        'nautilus-task.h',
                        'nautilus-task-private.h',
                        'nautilus-task-manager.c',
@@ -21,9 +26,11 @@ nautilus_ng_sources = ['nautilus-task.c',
                        'nautilus-signal-utilities.h',
                        'nautilus-file-table.c',
                        'nautilus-file-table.h',
+                       'tasks/nautilus-thumbnail-task.c',
+                       'tasks/nautilus-thumbnail-task.h',
                        'main.c']
 
-nautilus_ng_dependencies = [gio, glib]
+nautilus_ng_dependencies = [gio, glib, gnome_desktop, gtk]
 
 nautilus_marshallers = gnome.genmarshal ('nautilus-marshallers',
                                          sources: 'nautilus-marshallers.list',
