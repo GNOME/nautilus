@@ -20,6 +20,7 @@
 
 #include "nautilus-cache.h"
 #include "nautilus-directory.h"
+#include "nautilus-file-table.h"
 #include "nautilus-task-manager.h"
 #include "tasks/nautilus-attribute-task.h"
 
@@ -53,8 +54,6 @@ enum
 
 static GParamSpec *properties[N_PROPERTIES] = { NULL };
 static guint       signals[LAST_SIGNAL]     = { 0 };
-static GHashTable *files                    = NULL;
-static GMutex      files_mutex;
 
 static GObject *
 constructor (GType                  type,
@@ -74,16 +73,7 @@ constructor (GType                  type,
 
     g_assert (location != NULL);
 
-    g_mutex_lock (&files_mutex);
-
-    if (files == NULL)
-    {
-        files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal,
-                                       g_object_unref, NULL);
-    }
-
-
-    instance = g_hash_table_lookup (files, location);
+    instance = nautilus_file_table_lookup (location);
     if (instance != NULL)
     {
         instance = g_object_ref (instance);
@@ -96,10 +86,8 @@ constructor (GType                  type,
         instance = parent_class->constructor (type, n_construct_properties,
                                               construct_properties);
 
-        g_assert (g_hash_table_insert (files, location, instance));
+        g_assert (nautilus_file_table_insert (location, instance));
     }
-
-    g_mutex_unlock (&files_mutex);
 
     return instance;
 }
@@ -136,9 +124,7 @@ finalize (GObject *object)
 
     priv = nautilus_file_get_instance_private (NAUTILUS_FILE (object));
 
-    g_mutex_lock (&files_mutex);
-    g_hash_table_remove (files, priv->location);
-    g_mutex_unlock (&files_mutex);
+    g_assert (nautilus_file_table_remove (priv->location));
 
     G_OBJECT_CLASS (nautilus_file_parent_class)->finalize (object);
 }
@@ -155,15 +141,11 @@ renamed (NautilusFile *file,
                (gpointer) file, (gpointer) priv->location,
                (gpointer) new_location);
 
-    g_mutex_lock (&files_mutex);
-
-    g_hash_table_remove (files, priv->location);
+    g_assert (nautilus_file_table_remove (priv->location));
 
     priv->location = g_object_ref (new_location);
 
-    g_assert (g_hash_table_insert (files, new_location, file));
-
-    g_mutex_unlock (&files_mutex);
+    g_assert (nautilus_file_table_insert (new_location, file));
 
     nautilus_cache_item_invalidate (priv->cache, priv->cache_items[INFO],
                                     FALSE);
@@ -326,22 +308,15 @@ nautilus_file_query_info (NautilusFile             *file,
 NautilusFile *
 nautilus_file_get_existing (GFile *location)
 {
-    NautilusFile *file = NULL;
+    NautilusFile *file;
 
     g_return_val_if_fail (G_IS_FILE (location), NULL);
 
-    g_mutex_lock (&files_mutex);
-
-    if (files != NULL)
+    file = nautilus_file_table_lookup (location);
+    if (file != NULL)
     {
-        file = g_hash_table_lookup (files, location);
-        if (file != NULL)
-        {
-            file = g_object_ref (file);
-        }
+        file = g_object_ref (file);
     }
-
-    g_mutex_unlock (&files_mutex);
 
     return file;
 }
