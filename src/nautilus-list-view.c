@@ -1614,7 +1614,14 @@ filename_cell_data_func (GtkTreeViewColumn *column,
         snippet = nautilus_file_get_search_fts_snippet (file);
         if (snippet)
         {
-            replaced_text = eel_str_replace_substring (snippet, "\n", "");
+            replaced_text = g_regex_replace (view->details->regex,
+                                             snippet,
+                                             -1,
+                                             0,
+                                             " ",
+                                             G_REGEX_MATCH_NEWLINE_ANY,
+                                             NULL);
+
             escaped_text = g_markup_escape_text (replaced_text, -1);
             g_string_append_printf (display_text, "\n<small><span color='grey'>%s</span></small>", escaped_text);
         }
@@ -3367,6 +3374,8 @@ nautilus_list_view_finalize (GObject *object)
 
     g_free (list_view->details);
 
+    g_regex_unref (list_view->details->regex);
+
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
 }
 
@@ -3650,6 +3659,8 @@ nautilus_list_view_init (NautilusListView *list_view)
     /* Keep the action synced with the actual value, so the toolbar can poll it */
     g_action_group_change_action_state (nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (list_view)),
                                         "zoom-to-level", g_variant_new_int32 (get_default_zoom_level ()));
+
+    list_view->details->regex = g_regex_new ("\\R+", 0, G_REGEX_MATCH_NEWLINE_ANY, NULL);
 }
 
 NautilusFilesView *
