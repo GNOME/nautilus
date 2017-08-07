@@ -23,6 +23,7 @@
 #include "nautilus-file-table.h"
 #include "nautilus-task-manager.h"
 #include "tasks/nautilus-attribute-task.h"
+#include "tasks/nautilus-thumbnail-task.h"
 
 enum
 {
@@ -301,6 +302,34 @@ nautilus_file_query_info (NautilusFile             *file,
 
     g_signal_connect (task, "finished",
                       G_CALLBACK (on_query_info_finished), details);
+
+    nautilus_task_manager_queue_task (manager, task);
+}
+
+typedef struct
+{
+    NautilusFile *file;
+
+    NautilusFileInfoCallback callback;
+    gpointer callback_data;
+} GetThumbnailDetails;
+
+void
+nautilus_file_get_thumbnail (NautilusFile              *file,
+                             NautilusThumbnailCallback  callback,
+                             gpointer                   user_data)
+{
+    g_autoptr (GFile) location = NULL;
+    g_autoptr (NautilusTask) task = NULL;
+    GetThumbnailDetails *details;
+    g_autoptr (NautilusTaskManager) manager = NULL;
+
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+
+    location = nautilus_file_get_location (file);
+    task = nautilus_thumbnail_task_new (location, TRUE);
+    details = g_new0 (GetThumbnailDetails, 1);
+    manager = nautilus_task_manager_dup_singleton ();
 
     nautilus_task_manager_queue_task (manager, task);
 }
