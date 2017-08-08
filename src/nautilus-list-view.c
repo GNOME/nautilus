@@ -3375,9 +3375,9 @@ nautilus_list_view_finalize (GObject *object)
         gtk_widget_destroy (list_view->details->column_editor);
     }
 
-    g_free (list_view->details);
-
     g_regex_unref (list_view->details->regex);
+
+    g_free (list_view->details);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->finalize (object);
 }
