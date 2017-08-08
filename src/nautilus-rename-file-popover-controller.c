@@ -126,34 +126,16 @@ nautilus_rename_file_popover_controller_ignore_existing_file (NautilusFileNameWi
     return nautilus_file_compare_display_name (self->target_file, display_name) == 0;
 }
 
-/* Albeit a misnomer, this only handles presses of the F2 key.
- * This is to restore functionality, lost in the introduction of the popover,
- * where pressing F2 while renaming would select all text.
- * The bug reporter also requested switching between selecting the name
- * and the name with extension.
- *
- * See https://bugzilla.gnome.org/show_bug.cgi?id=774361
- */
 static gboolean
-name_entry_on_key_pressed (GtkWidget *widget,
-                           GdkEvent  *event,
-                           gpointer   user_data)
+name_entry_on_f2_pressed (GtkWidget                           *widget,
+                          NautilusRenameFilePopoverController *self)
 {
-    GdkEventKey *key_event;
-    NautilusRenameFilePopoverController *self;
     guint text_length;
     gint start_pos;
     gint end_pos;
     gboolean all_selected;
 
-    key_event = (GdkEventKey *)event;
-    if (key_event->keyval != GDK_KEY_F2)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
-    text_length = (guint)gtk_entry_get_text_length (GTK_ENTRY (widget));
+    text_length = (guint) gtk_entry_get_text_length (GTK_ENTRY (widget));
     if (text_length == 0)
     {
         return GDK_EVENT_PROPAGATE;
@@ -162,7 +144,7 @@ name_entry_on_key_pressed (GtkWidget *widget,
     gtk_editable_get_selection_bounds (GTK_EDITABLE (widget),
                                        &start_pos, &end_pos);
 
-    all_selected = (start_pos == 0) && ((guint)end_pos == text_length);
+    all_selected = (start_pos == 0) && ((guint) end_pos == text_length);
     if (!all_selected || !nautilus_file_is_regular_file (self->target_file))
     {
         gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
@@ -177,6 +159,45 @@ name_entry_on_key_pressed (GtkWidget *widget,
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (widget),
                                     start_offset, end_offset);
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+name_entry_on_undo (GtkWidget                           *widget,
+                    NautilusRenameFilePopoverController *self)
+{
+    g_autofree gchar *display_name = NULL;
+
+    display_name = nautilus_file_get_display_name (self->target_file);
+
+    gtk_entry_set_text (GTK_ENTRY (widget), display_name);
+
+    gtk_editable_select_region (GTK_EDITABLE (widget), 0, -1);
+
+    return GDK_EVENT_STOP;
+}
+
+static gboolean
+name_entry_on_key_pressed (GtkWidget *widget,
+                           GdkEvent  *event,
+                           gpointer   user_data)
+{
+    GdkEventKey *key_event;
+    NautilusRenameFilePopoverController *self;
+
+    key_event = (GdkEventKey *) event;
+    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
+
+    if (key_event->keyval == GDK_KEY_F2)
+    {
+        return name_entry_on_f2_pressed (widget, self);
+    }
+    else if (key_event->keyval == GDK_KEY_z &&
+             key_event->state == GDK_CONTROL_MASK)
+    {
+        return name_entry_on_undo (widget, self);
     }
 
     return GDK_EVENT_PROPAGATE;
