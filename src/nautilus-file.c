@@ -5237,10 +5237,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
     int i;
     gboolean is_folder = FALSE, is_inode_directory = FALSE;
 
-    if (file == NULL)
-    {
-        return NULL;
-    }
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     icon = get_custom_or_link_icon (file);
     if (icon != NULL)
@@ -5248,23 +5245,11 @@ nautilus_file_get_gicon (NautilusFile          *file,
         return icon;
     }
 
-    if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON)
-    {
-        icon = get_mount_icon (file);
-
-        if (icon != NULL)
-        {
-            goto out;
-        }
-    }
-
     if (file->details->icon)
     {
         icon = NULL;
 
         if (((flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)) &&
             G_IS_THEMED_ICON (file->details->icon))
         {
@@ -5293,10 +5278,6 @@ nautilus_file_get_gicon (NautilusFile          *file,
             {
                 g_ptr_array_add (prepend_array, "folder");
             }
-            if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER))
-            {
-                g_ptr_array_add (prepend_array, "folder-open");
-            }
             if (is_folder &&
                 (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT))
             {
@@ -5320,7 +5301,6 @@ nautilus_file_get_gicon (NautilusFile          *file,
         }
     }
 
-out:
     if (icon == NULL)
     {
         icon = g_object_ref (get_default_file_icon ());
