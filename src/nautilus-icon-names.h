@@ -42,8 +42,5 @@
 /* Other icons */
 #define NAUTILUS_ICON_TEMPLATE		"text-x-generic-template"
 
-/* Icons not provided by fd.o naming spec or nautilus itself */
-#define NAUTILUS_ICON_BURN		"nautilus-cd-burner"
-
 #endif /* NAUTILUS_ICON_NAMES_H */
 
