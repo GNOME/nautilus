@@ -69,18 +69,14 @@ typedef enum {
 } NautilusRequestStatus;
 
 typedef enum {
-	NAUTILUS_FILE_ICON_FLAGS_NONE = 0,
-	NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS = (1<<0),
-	NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING = (1<<1),
-	NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT = (1<<2),
-	NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER = (1<<3),
+	NAUTILUS_FILE_ICON_FLAGS_NONE                 = 0,
+	NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS       = 1 << 0,
+	NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT      = 1 << 1,
 	/* whether the thumbnail size must match the display icon size */
-	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = (1<<4),
-	/* uses the icon of the mount if present */
-	NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON = (1<<5),
+	NAUTILUS_FILE_ICON_FLAGS_FORCE_THUMBNAIL_SIZE = 1 << 2,
 	/* render emblems */
-	NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS = (1<<6),
-	NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM = (1<<7)
+	NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS          = 1 << 3,
+	NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM       = 1 << 4
 } NautilusFileIconFlags;	
 
 /* Standard Drag & Drop types. */
@@ -120,12 +116,6 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GFile         *result_location,
 					       GError        *error,
 					       gpointer       callback_data);
-typedef int (*NautilusWidthMeasureCallback)   (const char    *string,
-					       void	     *context);
-typedef char * (*NautilusTruncateCallback)    (const char    *string,
-					       int	      width,
-					       void	     *context);
-
 
 #define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL)
 
