@@ -158,8 +158,6 @@ libnautilus_sources = [
     'nautilus-column-utilities.h',
     'nautilus-debug.c',
     'nautilus-debug.h',
-    'nautilus-default-file-icon.c',
-    'nautilus-default-file-icon.h',
     'nautilus-directory-async.c',
     'nautilus-directory-notify.h',
     'nautilus-directory-private.h',

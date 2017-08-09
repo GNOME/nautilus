@@ -3070,6 +3070,11 @@ nautilus_event_get_window_open_flags (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
+    const gchar *artists[] =
+    {
+        "The GNOME Project",
+        NULL
+    };
     const gchar *authors[] =
     {
         "Alexander Larsson",
@@ -3125,6 +3130,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "comments", _("Access and organize your files."),
                            "copyright", "Copyright © 1999–2016 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
+                           "artists", artists,
                            "authors", authors,
                            "documenters", documenters,
                            /* Translators should localize the following string
