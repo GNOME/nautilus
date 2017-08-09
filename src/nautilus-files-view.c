@@ -6453,7 +6453,24 @@ extract_files_to_chosen_location (NautilusFilesView *view,
     gtk_window_set_destroy_with_parent (GTK_WINDOW (dialog), TRUE);
     gtk_window_set_modal (GTK_WINDOW (dialog), TRUE);
 
-    uri = nautilus_directory_get_uri (priv->model);
+    /* The file chooser will not be able to display the search directory,
+     * so we need to get the base directory of the search if we are, in fact,
+     * in search.
+     */
+    if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
+    {
+        NautilusSearchDirectory *search_directory;
+        NautilusDirectory *directory;
+
+        search_directory = NAUTILUS_SEARCH_DIRECTORY (priv->model);
+        directory = nautilus_search_directory_get_base_model (search_directory);
+        uri = nautilus_directory_get_uri (directory);
+    }
+    else
+    {
+        uri = nautilus_directory_get_uri (priv->model);
+    }
+
     gtk_file_chooser_set_current_folder_uri (GTK_FILE_CHOOSER (dialog), uri);
 
     data->view = view;
