@@ -1237,53 +1237,15 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
     g_list_free (files_to_activate);
 }
 
-static void
+void
 nautilus_files_view_activate_file (NautilusFilesView       *view,
                                    NautilusFile            *file,
                                    NautilusWindowOpenFlags  flags)
 {
-    NautilusFilesViewPrivate *priv;
-    char *path;
+    g_autoptr (GList) files = NULL;
 
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (nautilus_mime_file_extracts (file))
-    {
-        GList *files = NULL;
-
-        files = g_list_prepend (files, file);
-
-        if (nautilus_files_view_supports_extract_here (view))
-        {
-            g_autoptr (GFile) location = NULL;
-            g_autoptr (GFile) parent = NULL;
-
-            location = nautilus_file_get_location (file);
-            /* Get a parent from a random file. We assume all files has a common parent.
-             * But don't assume the parent is the view location, since that's not the
-             * case in list view when expand-folder setting is set
-             */
-            parent = g_file_get_parent (location);
-            extract_files (view, files, parent);
-        }
-        else
-        {
-            extract_files_to_chosen_location (view, files);
-        }
-
-        g_list_free (files);
-
-        return;
-    }
-
-    path = get_view_directory (view);
-    nautilus_mime_activate_file (nautilus_files_view_get_containing_window (view),
-                                 priv->slot,
-                                 file,
-                                 path,
-                                 flags);
-
-    g_free (path);
+    files = g_list_append (files, file);
+    nautilus_files_view_activate_files (view, files, flags, FALSE);
 }
 
 static void
@@ -7344,6 +7306,23 @@ can_extract_all (GList *files)
     return TRUE;
 }
 
+static gboolean
+nautilus_handles_all_files_to_extract (GList *files)
+{
+    NautilusFile *file;
+    GList *l;
+
+    for (l = files; l != NULL; l = l->next)
+    {
+        file = l->data;
+        if (!nautilus_mime_file_extracts (file))
+        {
+            return FALSE;
+        }
+    }
+    return TRUE;
+}
+
 GActionGroup *
 nautilus_files_view_get_action_group (NautilusFilesView *view)
 {
@@ -7377,6 +7356,7 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean can_copy_files;
     gboolean can_paste_files_into;
     gboolean can_extract_files;
+    gboolean handles_all_files_to_extract;
     gboolean can_extract_here;
     gboolean item_opens_in_view;
     gboolean is_read_only;
@@ -7390,7 +7370,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean show_detect_media;
     gboolean settings_show_delete_permanently;
     gboolean settings_show_create_link;
-    gboolean settings_automatic_decompression;
     GDriveStartStopType start_stop_type;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -7430,13 +7409,11 @@ real_update_actions_state (NautilusFilesView *view)
     can_extract_files = selection_count != 0 &&
                         can_extract_all (selection);
     can_extract_here = nautilus_files_view_supports_extract_here (view);
+    handles_all_files_to_extract = nautilus_handles_all_files_to_extract (selection);
     settings_show_delete_permanently = g_settings_get_boolean (nautilus_preferences,
                                                                NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
     settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
                                                         NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
-    settings_automatic_decompression = g_settings_get_boolean (nautilus_preferences,
-                                                               NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION);
-
     /* Right click actions */
     /* Selection menu actions */
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
@@ -7470,14 +7447,14 @@ real_update_actions_state (NautilusFilesView *view)
                                          "extract-here");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_extract_files &&
-                                 !settings_automatic_decompression &&
+                                 !handles_all_files_to_extract &&
                                  can_extract_here);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "extract-to");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  can_extract_files &&
-                                 (!settings_automatic_decompression ||
+                                 (!handles_all_files_to_extract ||
                                   can_extract_here));
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),

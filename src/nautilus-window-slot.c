@@ -118,6 +118,7 @@ typedef struct
     guint location_change_distance;
     char *pending_scroll_to;
     GList *pending_selection;
+    NautilusFile *pending_file_to_activate;
     NautilusFile *determine_view_file;
     GCancellable *mount_cancellable;
     GError *mount_error;
@@ -985,6 +986,7 @@ static gboolean setup_view (NautilusWindowSlot *self,
 static void load_new_location (NautilusWindowSlot *slot,
                                GFile              *location,
                                GList              *selection,
+                               NautilusFile       *file_to_activate,
                                gboolean            tell_current_content_view,
                                gboolean            tell_new_content_view);
 
@@ -1580,10 +1582,18 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
         }
 
         g_clear_object (&priv->pending_location);
+        g_clear_object (&priv->pending_file_to_activate);
         g_free (priv->pending_scroll_to);
 
         priv->pending_location = nautilus_file_get_parent_location (file);
-        priv->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
+        if (nautilus_file_is_archive (file))
+        {
+            priv->pending_file_to_activate = nautilus_file_ref (file);
+        }
+        else
+        {
+            priv->pending_selection = g_list_prepend (NULL, nautilus_file_ref (file));
+        }
         priv->determine_view_file = nautilus_file_ref (parent_file);
         priv->pending_scroll_to = nautilus_file_get_uri (file);
 
@@ -1777,6 +1787,7 @@ setup_view (NautilusWindowSlot *self,
         load_new_location (self,
                            priv->pending_location,
                            priv->pending_selection,
+                           priv->pending_file_to_activate,
                            FALSE,
                            TRUE);
 
@@ -1792,6 +1803,7 @@ setup_view (NautilusWindowSlot *self,
         load_new_location (self,
                            old_location,
                            selection,
+                           NULL,
                            FALSE,
                            TRUE);
         nautilus_file_list_free (selection);
@@ -1815,6 +1827,7 @@ static void
 load_new_location (NautilusWindowSlot *self,
                    GFile              *location,
                    GList              *selection,
+                   NautilusFile       *file_to_activate,
                    gboolean            tell_current_content_view,
                    gboolean            tell_new_content_view)
 {
@@ -1845,6 +1858,20 @@ load_new_location (NautilusWindowSlot *self,
     if (view)
     {
         nautilus_view_set_selection (view, selection);
+        if (file_to_activate != NULL)
+        {
+            g_autoptr (GAppInfo) app_info = NULL;
+            const gchar *app_id;
+
+            g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+            app_info = nautilus_mime_get_default_application_for_file (file_to_activate);
+            app_id = g_app_info_get_id (app_info);
+            if (g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0)
+            {
+                nautilus_files_view_activate_file (NAUTILUS_FILES_VIEW (view),
+                                                   file_to_activate, 0);
+            }
+        }
     }
 
     nautilus_profile_end (NULL);
@@ -1882,6 +1909,7 @@ free_location_change (NautilusWindowSlot *self)
 
     priv = nautilus_window_slot_get_instance_private (self);
     g_clear_object (&priv->pending_location);
+    g_clear_object (&priv->pending_file_to_activate);
     nautilus_file_list_free (priv->pending_selection);
     priv->pending_selection = NULL;
 
@@ -2769,6 +2797,7 @@ nautilus_window_slot_dispose (GObject *object)
     nautilus_window_slot_set_viewed_file (self, NULL);
 
     g_clear_object (&priv->location);
+    g_clear_object (&priv->pending_file_to_activate);
 
     nautilus_file_list_free (priv->pending_selection);
     priv->pending_selection = NULL;
@@ -3066,6 +3095,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
         load_new_location (self,
                            location,
                            selection,
+                           NULL,
                            TRUE,
                            FALSE);
         nautilus_file_list_free (selection);

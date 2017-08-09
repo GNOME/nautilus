@@ -37,6 +37,7 @@
 
 #include "nautilus-file-attributes.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-metadata.h"
 #include "nautilus-program-choosing.h"
@@ -709,11 +710,14 @@ get_activation_action (NautilusFile *file)
 {
     ActivationAction action;
     char *activation_uri;
-    gboolean can_extract;
-    can_extract = g_settings_get_boolean (nautilus_preferences,
-                                          NAUTILUS_PREFERENCES_AUTOMATIC_DECOMPRESSION);
+    gboolean handles_extract;
+    g_autoptr (GAppInfo) app_info = NULL;
+    const gchar* app_id;
 
-    if (can_extract && nautilus_file_is_archive (file))
+    app_info = nautilus_mime_get_default_application_for_file (file);
+    app_id = g_app_info_get_id (app_info);
+    handles_extract = g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0;
+    if (handles_extract && nautilus_file_is_archive (file))
     {
         return ACTIVATION_ACTION_EXTRACT;
     }

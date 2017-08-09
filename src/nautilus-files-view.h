@@ -267,6 +267,9 @@ void                nautilus_files_view_activate_files                   (Nautil
                                                                           GList                   *files,
                                                                           NautilusWindowOpenFlags  flags,
                                                                           gboolean                 confirm_multiple);
+void                nautilus_files_view_activate_file                    (NautilusFilesView       *view,
+                                                                          NautilusFile            *file,
+                                                                          NautilusWindowOpenFlags  flags);
 void                nautilus_files_view_preview_files                    (NautilusFilesView *view,
                                                                           GList             *files,
                                                                           GArray            *locations);
