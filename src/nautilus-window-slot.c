@@ -1844,8 +1844,6 @@ load_new_location (NautilusWindowSlot *self,
     }
     if (view)
     {
-        /* new_content_view might have changed here if
-         *  report_load_underway was called from load_location */
         nautilus_view_set_selection (view, selection);
     }
 
