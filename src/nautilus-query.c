@@ -31,6 +31,10 @@
 #include "nautilus-query.h"
 #include "nautilus-enum-types.h"
 
+#define RANK_SCALE_FACTOR 100
+#define MIN_RANK 10.0
+#define MAX_RANK 50.0
+
 struct _NautilusQuery
 {
     GObject parent;
@@ -399,7 +403,12 @@ nautilus_query_matches_string (NautilusQuery *query,
         return -1;
     }
 
-    retval = MAX (10.0, 50.0 - (gdouble) (ptr - prepared_string) - nonexact_malus);
+    /* The rank value depends on the numbers of letters before and after the match.
+     * To make the prefix matches prefered over sufix ones, the number of letters
+     * after the match is divided by a factor, so that it decreases the rank by a
+     * smaller amount.
+     */
+    retval = MAX (MIN_RANK, MAX_RANK - (gdouble) (ptr - prepared_string) - (gdouble) nonexact_malus / RANK_SCALE_FACTOR);
     g_free (prepared_string);
 
     return retval;
