@@ -710,13 +710,16 @@ get_activation_action (NautilusFile *file)
 {
     ActivationAction action;
     char *activation_uri;
-    gboolean handles_extract;
+    gboolean handles_extract = FALSE;
     g_autoptr (GAppInfo) app_info = NULL;
     const gchar* app_id;
 
     app_info = nautilus_mime_get_default_application_for_file (file);
-    app_id = g_app_info_get_id (app_info);
-    handles_extract = g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0;
+    if (app_info != NULL)
+    {
+        app_id = g_app_info_get_id (app_info);
+        handles_extract = g_strcmp0 (app_id, NAUTILUS_DESKTOP_ID) == 0;
+    }
     if (handles_extract && nautilus_file_is_archive (file))
     {
         return ACTIVATION_ACTION_EXTRACT;
