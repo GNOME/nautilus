@@ -23,7 +23,7 @@ sysconfdir = get_option ('sysconfdir')
 glib_ver = '>=2.51.2'
 gnome_desktop_ver = '>=3.0.0'
 pango_ver = '1.28.3'
-gtk_ver = '>=3.21.6'
+gtk_ver = '>=3.22.6'
 xml_ver = '>=2.7.8'
 exif_ver = '>=0.6.20'
 exempi_ver = '>=2.1.0'
