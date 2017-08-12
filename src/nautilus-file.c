@@ -7541,7 +7541,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
         {
             nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
         }
-        return g_strdup (count_unreadable ? _("? items") : "...");
+        return g_strdup (count_unreadable ? "--" : "...");
     }
     if (attribute_q == attribute_deep_size_q)
     {
