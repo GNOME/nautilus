@@ -503,6 +503,7 @@ GList *                 nautilus_file_list_filter                       (GList  
                                                                          GList                         **failed,
                                                                          NautilusFileFilterFunc          filter_function,
                                                                          gpointer                        user_data);
+gboolean                nautilus_file_list_are_all_folders              (const GList                    *files);
 /* DND */
 gboolean                nautilus_drag_can_accept_item                   (NautilusFile                   *drop_target_item,
                                                                          const char                     *item_uri);

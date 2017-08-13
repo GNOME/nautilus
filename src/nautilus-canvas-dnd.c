@@ -1459,6 +1459,7 @@ drag_begin_callback (GtkWidget      *widget,
     double x1, y1, x2, y2, winx, winy;
     int x_offset, y_offset;
     int start_x, start_y;
+    GList *dragged_files;
 
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (container)));
@@ -1491,7 +1492,12 @@ drag_begin_callback (GtkWidget      *widget,
     container->details->dnd_source_info->selection_cache = nautilus_drag_create_selection_cache (widget,
                                                                                                  each_icon_get_data_binder);
 
-    nautilus_window_start_dnd (window, context);
+    dragged_files = nautilus_drag_file_list_from_selection_list (drag_info->selection_cache);
+    if (nautilus_file_list_are_all_folders (dragged_files))
+    {
+        nautilus_window_start_dnd (window, context);
+    }
+    g_list_free_full (dragged_files, g_object_unref);
 }
 
 void

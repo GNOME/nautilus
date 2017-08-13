@@ -176,6 +176,7 @@ drag_begin_callback (GtkWidget        *widget,
 {
     cairo_surface_t *surface;
     NautilusWindow *window;
+    GList *dragged_files;
 
     window = nautilus_files_view_get_window (NAUTILUS_FILES_VIEW (view));
     surface = get_drag_surface (view);
@@ -195,7 +196,12 @@ drag_begin_callback (GtkWidget        *widget,
     view->details->drag_source_info->selection_cache = nautilus_drag_create_selection_cache (view,
                                                                                              each_item_get_data_binder);
 
-    nautilus_window_start_dnd (window, context);
+    dragged_files = nautilus_drag_file_list_from_selection_list (view->details->drag_source_info->selection_cache);
+    if (nautilus_file_list_are_all_folders (dragged_files))
+    {
+        nautilus_window_start_dnd (window, context);
+    }
+    g_list_free_full (dragged_files, g_object_unref);
 }
 
 static void
