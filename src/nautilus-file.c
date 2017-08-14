@@ -7534,14 +7534,14 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
     {
         if (!nautilus_file_should_show_directory_item_count (file))
         {
-            return g_strdup ("--");
+            return g_strdup ("—");
         }
         count_unreadable = FALSE;
         if (nautilus_file_is_directory (file))
         {
             nautilus_file_get_directory_item_count (file, &item_count, &count_unreadable);
         }
-        return g_strdup (count_unreadable ? "--" : "...");
+        return g_strdup (count_unreadable ? "—" : "…");
     }
     if (attribute_q == attribute_deep_size_q)
     {
@@ -7551,7 +7551,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
             /* This means no contents at all were readable */
             return g_strdup (_("? bytes"));
         }
-        return g_strdup ("...");
+        return g_strdup ("…");
     }
     if (attribute_q == attribute_deep_file_count_q
         || attribute_q == attribute_deep_directory_count_q
@@ -7563,7 +7563,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
             /* This means no contents at all were readable */
             return g_strdup (_("? items"));
         }
-        return g_strdup ("...");
+        return g_strdup ("…");
     }
     if (attribute_q == attribute_type_q
         || attribute_q == attribute_detailed_type_q
