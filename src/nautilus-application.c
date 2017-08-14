@@ -828,11 +828,12 @@ action_quit (GSimpleAction *action,
 }
 
 static void
-action_show_hide_sidebar (GSimpleAction *action,
-                          GVariant      *state,
-                          gpointer       user_data)
+action_show_hide_sidebar (GObject    *object,
+                          GParamSpec *pspec,
+                          gpointer   *user_data)
 {
     GList *window, *windows;
+    GVariant *state = g_action_get_state (G_ACTION (object));
 
     windows = gtk_application_get_windows (GTK_APPLICATION (user_data));
 
@@ -847,8 +848,6 @@ action_show_hide_sidebar (GSimpleAction *action,
             nautilus_window_hide_sidebar (window->data);
         }
     }
-
-    g_simple_action_set_state (action, state);
 }
 
 static void
@@ -862,12 +861,29 @@ action_show_help_overlay (GSimpleAction *action,
     g_action_group_activate_action (G_ACTION_GROUP (window), "show-help-overlay", NULL);
 }
 
+static gboolean
+variant_get_mapping (GValue   *value,
+                     GVariant *variant,
+                     gpointer  user_data)
+{
+    g_value_set_variant (value, variant);
+    return TRUE;
+}
+
+static GVariant *
+variant_set_mapping (const GValue       *value,
+                     const GVariantType *expected_type,
+                     gpointer            user_data)
+{
+    return g_value_get_variant (value);
+}
+
 static GActionEntry app_entries[] =
 {
     { "new-window", action_new_window, NULL, NULL, NULL },
     { "clone-window", action_clone_window, NULL, NULL, NULL },
     { "preferences", action_preferences, NULL, NULL, NULL },
-    { "show-hide-sidebar", NULL, NULL, "true", action_show_hide_sidebar },
+    { "show-hide-sidebar", NULL, NULL, "true", NULL },
     { "about", action_about, NULL, NULL, NULL },
     { "help", action_help, NULL, NULL, NULL },
     { "quit", action_quit, NULL, NULL, NULL },
@@ -878,8 +894,8 @@ static GActionEntry app_entries[] =
 static void
 nautilus_init_application_actions (NautilusApplication *app)
 {
-    gboolean show_sidebar;
     const gchar *debug_no_app_menu;
+    GAction *sidebar_action;
 
     g_action_map_add_action_entries (G_ACTION_MAP (app),
                                      app_entries, G_N_ELEMENTS (app_entries),
@@ -894,12 +910,22 @@ nautilus_init_application_actions (NautilusApplication *app)
                       NULL);
     }
 
-    show_sidebar = g_settings_get_boolean (nautilus_window_state,
-                                           NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR);
 
-    g_action_group_change_action_state (G_ACTION_GROUP (app),
-                                        "show-hide-sidebar",
-                                        g_variant_new_boolean (show_sidebar));
+
+    sidebar_action = g_action_map_lookup_action (G_ACTION_MAP (app),
+                                                 "show-hide-sidebar");
+    g_signal_connect (sidebar_action,
+                      "notify::state",
+                      G_CALLBACK (action_show_hide_sidebar),
+                      app);
+    g_settings_bind_with_mapping (nautilus_window_state,
+                                  NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR,
+                                  sidebar_action,
+                                  "state",
+                                  G_SETTINGS_BIND_DEFAULT,
+                                  variant_get_mapping,
+                                  variant_set_mapping,
+                                  NULL, NULL);
 
     nautilus_application_set_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
 }
