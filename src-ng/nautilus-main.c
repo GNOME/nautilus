@@ -6,9 +6,8 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
-#include "nautilus-task-manager.h"
-#include "tasks/nautilus-rename-task.h"
-#include "tasks/nautilus-thumbnail-task.h"
+#include "nautilus-task.h"
+#include "nautilus-tasks.h"
 
 static void
 got_info (NautilusFile *file,
@@ -121,7 +120,7 @@ _rename (const gchar *target,
     g_autoptr (GFile) location = NULL;
     g_autoptr (NautilusFile) file = NULL;
     g_autoptr (NautilusFile) parent = NULL;
-    g_autoptr (NautilusTaskManager) manager = NULL;
+    GHashTable *targets;
     g_autoptr (NautilusTask) task = NULL;
     GMainLoop *loop;
 
@@ -132,21 +131,22 @@ _rename (const gchar *target,
     parent = nautilus_file_get_parent (file);
     g_message ("Constructed NautilusFile %p for location %p",
                (gpointer) file, (gpointer) location);
-    manager = nautilus_task_manager_dup_singleton ();
-    task = nautilus_rename_task_new ();
+    targets = g_hash_table_new_full (g_str_hash, g_str_equal, NULL, NULL);
+    task = nautilus_task_new_with_func (nautilus_rename_task_func, targets,
+                                        (GDestroyNotify) g_hash_table_destroy, NULL);
     loop = g_main_loop_new (NULL, TRUE);
+
+    (void) g_hash_table_insert (targets, location, (gpointer) name);
 
     g_signal_connect (parent, "children-changed",
                       G_CALLBACK (on_children_changed), loop);
 
-    nautilus_rename_task_add_target (NAUTILUS_RENAME_TASK (task),
-                                     location, name);
-
-    nautilus_task_manager_queue_task (manager, task);
+    nautilus_task_run (task);
 
     g_main_loop_run (loop);
 }
 
+#if 0
 static void
 on_thumbnail_finished (NautilusThumbnailTask *task,
                        GFile                 *location,
@@ -175,10 +175,12 @@ on_window_deleted (GtkWidget *widget,
 
     return GDK_EVENT_PROPAGATE;
 }
+#endif
 
 static void
 display_thumbnail (const gchar *path)
 {
+#if 0
     GtkWidget *window;
     g_autoptr (GFile) location = NULL;
     g_autoptr (NautilusTask) task = NULL;
@@ -199,6 +201,7 @@ display_thumbnail (const gchar *path)
     nautilus_task_manager_queue_task (task_manager, task);
 
     gtk_main ();
+#endif
 }
 
 int
@@ -231,7 +234,6 @@ main (int    argc,
         { NULL }
     };
     GError *error = NULL;
-    g_autoptr (NautilusTaskManager) manager = NULL;
 
     setlocale (LC_ALL, "");
 
@@ -252,8 +254,6 @@ main (int    argc,
 
         return EXIT_FAILURE;
     }
-
-    manager = nautilus_task_manager_dup_singleton ();
 
     if (check)
     {

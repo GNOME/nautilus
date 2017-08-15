@@ -16,19 +16,22 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_THUMBNAIL_TASK_H_INCLUDED
-#define NAUTILUS_THUMBNAIL_TASK_H_INCLUDED
+#ifndef NAUTILUS_CONTEXT_SCHEDULER_H_INCLUDED
+#define NAUTILUS_CONTEXT_SCHEDULER_H_INCLUDED
 
-#include "nautilus-task.h"
+#include "nautilus-scheduler.h"
 
-#include <gio/gio.h>
+#define NAUTILUS_TYPE_CONTEXT_SCHEDULER (nautilus_context_scheduler_get_type ())
 
-#define NAUTILUS_TYPE_THUMBNAIL_TASK (nautilus_thumbnail_task_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusContextScheduler, nautilus_context_scheduler,
+                      NAUTILUS, CONTEXT_SCHEDULER, NautilusScheduler)
 
-G_DECLARE_FINAL_TYPE (NautilusThumbnailTask, nautilus_thumbnail_task,
-                      NAUTILUS, THUMBNAIL_TASK, NautilusTask)
-
-NautilusTask *nautilus_thumbnail_task_new (GFile    *location,
-                                           gboolean  use_external_thumbnailer);
+/**
+ * nautilus_context_scheduler_get_for_context:
+ * @context: a valid main context
+ *
+ * Returns: (transfer none): the scheduler for @context
+ */
+NautilusScheduler *nautilus_context_scheduler_get_for_context (GMainContext *context);
 
 #endif

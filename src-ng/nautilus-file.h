@@ -55,6 +55,7 @@ void nautilus_file_query_info    (NautilusFile              *file,
                                   NautilusFileInfoCallback   callback,
                                   gpointer                   user_data);
 void nautilus_file_get_thumbnail (NautilusFile              *file,
+                                  GCancellable              *cancellable,
                                   NautilusThumbnailCallback  callback,
                                   gpointer                   user_data);
 

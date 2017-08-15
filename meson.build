@@ -27,7 +27,7 @@ i18n = import('i18n')
 #
 
 # Dependencies
-glib_ver = '>= 2.51.2'
+glib_ver = '>= 2.53.6'
 
 libgd = subproject(
   'libgd',
