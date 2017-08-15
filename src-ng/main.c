@@ -193,8 +193,8 @@ display_thumbnail (const gchar *path)
 
     gtk_widget_show_all (window);
 
-    g_signal_connect_after (window, "delete-event", on_window_deleted, NULL);
-    g_signal_connect (task, "finished", on_thumbnail_finished, window);
+    g_signal_connect_after (window, "delete-event", G_CALLBACK (on_window_deleted), NULL);
+    g_signal_connect (task, "finished", G_CALLBACK (on_thumbnail_finished), window);
 
     nautilus_task_manager_queue_task (task_manager, task);
 
