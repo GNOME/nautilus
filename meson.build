@@ -20,7 +20,7 @@ searchproviderdir = join_paths (datadir, 'gnome-shell', 'search-providers')
 servicedir = join_paths (datadir, 'dbus-1', 'services')
 sysconfdir = get_option ('sysconfdir')
 
-glib_ver = '>=2.51.2'
+glib_ver = '>=2.53.5'
 gnome_desktop_ver = '>=3.0.0'
 pango_ver = '1.28.3'
 gtk_ver = '>=3.22.6'

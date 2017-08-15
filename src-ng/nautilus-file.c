@@ -21,9 +21,8 @@
 #include "nautilus-cache.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-table.h"
-#include "nautilus-task-manager.h"
-#include "tasks/nautilus-attribute-task.h"
-#include "tasks/nautilus-thumbnail-task.h"
+#include "nautilus-task.h"
+#include "nautilus-tasks.h"
 
 enum
 {
@@ -203,7 +202,7 @@ typedef struct
     gpointer callback_data;
 } QueryInfoDetails;
 
-static void
+/*static void
 on_query_info_finished (NautilusAttributeTask *task,
                         GFile                 *file,
                         GFileInfo             *info,
@@ -220,9 +219,9 @@ on_query_info_finished (NautilusAttributeTask *task,
                                                  priv->cache_items[INFO]);
 
     if (cache_state == NAUTILUS_CACHE_INVALID)
-    {
+    {*/
         /* TODO: restart */
-        return;
+        /*return;
     }
 
     nautilus_cache_item_set_value (priv->cache, priv->cache_items[INFO],
@@ -232,7 +231,7 @@ on_query_info_finished (NautilusAttributeTask *task,
                        details->callback_data);
 
     g_free (details);
-}
+}*/
 
 void
 nautilus_file_query_info (NautilusFile             *file,
@@ -242,9 +241,9 @@ nautilus_file_query_info (NautilusFile             *file,
 {
     NautilusFilePrivate *priv;
     NautilusCacheState cache_state;
+    GFile *location;
     g_autoptr (NautilusTask) task = NULL;
     QueryInfoDetails *details;
-    g_autoptr (NautilusTaskManager) manager = NULL;
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
@@ -277,61 +276,34 @@ nautilus_file_query_info (NautilusFile             *file,
 
     nautilus_cache_item_set_pending (priv->cache, priv->cache_items[INFO]);
 
-    task = nautilus_attribute_task_new (priv->location,
-                                        "standard::*,"
-                                        "access::*,"
-                                        "mountable::*,"
-                                        "time::*,"
-                                        "unix::*,"
-                                        "owner::*,"
-                                        "selinux::*,"
-                                        "thumbnail::*,"
-                                        "id::filesystem,"
-                                        "trash::orig-path,"
-                                        "trash::deletion-date,"
-                                        "metadata::*,"
-                                        "recent::*",
-                                        G_FILE_QUERY_INFO_NONE,
-                                        cancellable);
+    location = nautilus_file_get_location (file);
+    task = nautilus_task_new_with_func (nautilus_query_info_func, location, cancellable);
+
     details = g_new0 (QueryInfoDetails, 1);
-    manager = nautilus_task_manager_dup_singleton ();
 
     details->file = file;
     details->callback = callback;
     details->callback_data = user_data;
 
-    g_signal_connect (task, "finished",
-                      G_CALLBACK (on_query_info_finished), details);
-
-    nautilus_task_manager_queue_task (manager, task);
+    nautilus_task_run (task);
 }
-
-typedef struct
-{
-    NautilusFile *file;
-
-    NautilusFileInfoCallback callback;
-    gpointer callback_data;
-} GetThumbnailDetails;
 
 void
 nautilus_file_get_thumbnail (NautilusFile              *file,
+                             GCancellable              *cancellable,
                              NautilusThumbnailCallback  callback,
                              gpointer                   user_data)
 {
     g_autoptr (GFile) location = NULL;
     g_autoptr (NautilusTask) task = NULL;
-    GetThumbnailDetails *details;
-    g_autoptr (NautilusTaskManager) manager = NULL;
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     location = nautilus_file_get_location (file);
-    task = nautilus_thumbnail_task_new (location, TRUE);
-    details = g_new0 (GetThumbnailDetails, 1);
-    manager = nautilus_task_manager_dup_singleton ();
+    task = nautilus_task_new_with_func (nautilus_thumbnail_task_func,
+                                        g_object_ref (location), cancellable);
 
-    nautilus_task_manager_queue_task (manager, task);
+    nautilus_task_run (task);
 }
 
 NautilusFile *

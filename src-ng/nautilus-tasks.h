@@ -16,20 +16,20 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_RENAME_TASK_H_INCLUDED
-#define NAUTILUS_RENAME_TASK_H_INCLUDED
+#ifndef NAUTILUS_TASKS_H_INCLUDED
+#define NAUTILUS_TASKS_H_INCLUDED
 
 #include "nautilus-task.h"
 
-#define NAUTILUS_TYPE_RENAME_TASK (nautilus_rename_task_get_type ())
-
-G_DECLARE_FINAL_TYPE (NautilusRenameTask, nautilus_rename_task,
-                      NAUTILUS, RENAME_TASK, NautilusTask)
-
-void nautilus_rename_task_add_target (NautilusRenameTask *task,
-                                      GFile              *file,
-                                      const gchar        *name);
-
-NautilusTask *nautilus_rename_task_new (void);
+void nautilus_enumerate_children_task_func (NautilusTask *task,
+                                            gpointer      task_data);
+void nautilus_load_pixbuf_func             (NautilusTask *task,
+                                            gpointer      task_data);
+void nautilus_rename_task_func             (NautilusTask *task,
+                                            gpointer      task_data);
+void nautilus_thumbnail_task_func          (NautilusTask *task,
+                                            gpointer      task_data);
+void nautilus_query_info_func              (NautilusTask *task,
+                                            gpointer      task_data);
 
 #endif
