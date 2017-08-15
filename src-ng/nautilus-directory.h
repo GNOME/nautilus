@@ -16,6 +16,9 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#ifndef NAUTILUS_DIRECTORY_H_INCLUDED
+#define NAUTILUS_DIRECTORY_H_INCLUDED
+
 #include "nautilus-file.h"
 
 #define NAUTILUS_TYPE_DIRECTORY (nautilus_directory_get_type ())
@@ -42,3 +45,5 @@ void nautilus_directory_enumerate_children (NautilusDirectory                 *d
                                             gpointer                           user_data);
 
 NautilusFile *nautilus_directory_new (GFile *location);
+
+#endif
