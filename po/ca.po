@@ -23,8 +23,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2017-07-07 00:44+0000\n"
-"PO-Revision-Date: 2017-07-08 11:03+0200\n"
+"POT-Creation-Date: 2017-08-15 04:00+0000\n"
+"PO-Revision-Date: 2017-08-16 20:49+0200\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
 "Language: ca\n"
@@ -77,8 +77,8 @@ msgstr ""
 "graella d'icones, llista d'icones i llista d'arbre. Es poden ampliar les "
 "seves funcions mitjançant connectors i scripts."
 
-#: data/org.gnome.Nautilus.desktop.in:3 src/nautilus-mime-actions.c:105
-#: src/nautilus-properties-window.c:4586 src/nautilus-window.c:3101
+#: data/org.gnome.Nautilus.desktop.in:3 src/nautilus-mime-actions.c:106
+#: src/nautilus-properties-window.c:4586 src/nautilus-window.c:3128
 msgid "Files"
 msgstr "Fitxers"
 
@@ -189,28 +189,12 @@ msgstr ""
 "Si s'estableix a «True» (cert), el Nautilus demanarà que es confirmi quan "
 "intenteu suprimir fitxers, o buidar la paperera."
 
-#: data/org.gnome.nautilus.gschema.xml:116
-msgid ""
-"Whether to extract compressed files instead of opening them in another "
-"application"
-msgstr ""
-"Si cal extreure els fitxers comprimits en comptes d'obrir-los en una altra "
-"aplicació"
-
 #: data/org.gnome.nautilus.gschema.xml:117
-msgid ""
-"If set to true, then Nautilus will automatically extract compressed files "
-"instead of opening them in another application"
-msgstr ""
-"Si s'estableix a cert, llavors el Nautilus extraurà automàticament fitxers "
-"comprimits en comptes d'obrir-los en una altra aplicació"
-
-#: data/org.gnome.nautilus.gschema.xml:122
 msgid "When to show number of items in a folder"
 msgstr "Quan s'ha de mostrar el nombre d'elements d'una carpeta"
 
 #
-#: data/org.gnome.nautilus.gschema.xml:123
+#: data/org.gnome.nautilus.gschema.xml:118
 msgid ""
 "Speed tradeoff for when to show the number of items in a folder. If set to "
 "“always” then always show item counts, even if the folder is on a remote "
@@ -224,11 +208,11 @@ msgstr ""
 "sistemes de fitxers locals. Si s'estableix a «never» (mai), no es comptaran "
 "mai els elements."
 
-#: data/org.gnome.nautilus.gschema.xml:127
+#: data/org.gnome.nautilus.gschema.xml:122
 msgid "Type of click used to launch/open files"
 msgstr "Tipus de clic utilitzat per executar/obrir fitxers"
 
-#: data/org.gnome.nautilus.gschema.xml:128
+#: data/org.gnome.nautilus.gschema.xml:123
 msgid ""
 "Possible values are “single” to launch files on a single click, or “double” "
 "to launch them on a double click."
@@ -236,11 +220,11 @@ msgstr ""
 "Els valors possibles són «single» per executar fitxers amb un sol clic, o "
 "«double» per executar-los amb un doble clic."
 
-#: data/org.gnome.nautilus.gschema.xml:132
+#: data/org.gnome.nautilus.gschema.xml:127
 msgid "What to do with executable text files when activated"
 msgstr "Què fer amb fitxers de text executables quan s'activen"
 
-#: data/org.gnome.nautilus.gschema.xml:133
+#: data/org.gnome.nautilus.gschema.xml:128
 msgid ""
 "What to do with executable text files when they are activated (single or "
 "double clicked). Possible values are “launch” to launch them as programs, "
@@ -252,11 +236,11 @@ msgstr ""
 "«ask» per preguntar què fer mitjançant un diàleg, i «display» per mostrar-"
 "los com a fitxers de text."
 
-#: data/org.gnome.nautilus.gschema.xml:137
+#: data/org.gnome.nautilus.gschema.xml:132
 msgid "Show the package installer for unknown MIME types"
 msgstr "Mostra l'instal·lador de paquets per als tipus MIME desconeguts"
 
-#: data/org.gnome.nautilus.gschema.xml:138
+#: data/org.gnome.nautilus.gschema.xml:133
 msgid ""
 "Whether to show the user a package installer dialog in case an unknown MIME "
 "type is opened, in order to search for an application to handle it."
@@ -265,14 +249,14 @@ msgstr ""
 "cas que s'obri un tipus MIME desconegut per cercar una aplicació per "
 "gestionar-lo."
 
-#: data/org.gnome.nautilus.gschema.xml:142
+#: data/org.gnome.nautilus.gschema.xml:137
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash"
 msgstr ""
 "Mostra un diàleg d'advertiment quan es canviï la drecera per moure a la "
 "paperera"
 
-#: data/org.gnome.nautilus.gschema.xml:143
+#: data/org.gnome.nautilus.gschema.xml:138
 msgid ""
 "Show a warning dialog for the change of the shortcut for move to the Trash "
 "from Control + Delete to just Delete."
@@ -280,13 +264,13 @@ msgstr ""
 "Mostra un diàleg d'advertiment quan es canviï la drecera per moure a la "
 "paperera de control + suprimir a només suprimir."
 
-#: data/org.gnome.nautilus.gschema.xml:147
+#: data/org.gnome.nautilus.gschema.xml:142
 msgid "Use extra mouse button events in Nautilus’ browser window"
 msgstr ""
 "Utilitza els esdeveniments dels botons del ratolí addicionals en la finestra "
 "del navegador del Nautilus"
 
-#: data/org.gnome.nautilus.gschema.xml:148
+#: data/org.gnome.nautilus.gschema.xml:143
 msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Nautilus when either is pressed."
@@ -295,12 +279,12 @@ msgstr ""
 "aquesta clau determinarà si es produirà una acció dins del Nautilus quan es "
 "premi qualsevol dels botons."
 
-#: data/org.gnome.nautilus.gschema.xml:152
+#: data/org.gnome.nautilus.gschema.xml:147
 msgid "Mouse button to activate the “Forward” command in browser window"
 msgstr ""
 "Botó del ratolí per activar l'ordre «Endavant» a la finestra del navegador"
 
-#: data/org.gnome.nautilus.gschema.xml:153
+#: data/org.gnome.nautilus.gschema.xml:148
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Forward” command in a browser window. "
@@ -310,12 +294,12 @@ msgstr ""
 "aquesta clau establirà quin botó activarà l'ordre «Endavant» en una finestra "
 "del navegador. El rang de valors possibles és entre 6 i 14."
 
-#: data/org.gnome.nautilus.gschema.xml:157
+#: data/org.gnome.nautilus.gschema.xml:152
 msgid "Mouse button to activate the “Back” command in browser window"
 msgstr ""
 "Botó del ratolí per activar l'ordre «Endarrere» a la finestra del navegador"
 
-#: data/org.gnome.nautilus.gschema.xml:158
+#: data/org.gnome.nautilus.gschema.xml:153
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Back” command in a browser window. "
@@ -325,12 +309,12 @@ msgstr ""
 "aquesta clau establirà quin botó activarà l'ordre «Endarrere» en una "
 "finestra del navegador. El rang de valors possibles és entre 6 i 14."
 
-#: data/org.gnome.nautilus.gschema.xml:163
+#: data/org.gnome.nautilus.gschema.xml:158
 msgid "When to show thumbnails of files"
 msgstr "Quan s'han de mostrar miniatures de fitxers"
 
 #
-#: data/org.gnome.nautilus.gschema.xml:164
+#: data/org.gnome.nautilus.gschema.xml:159
 msgid ""
 "Speed trade-off for when to show a file as a thumbnail. If set to “always” "
 "then always thumbnail, even if the folder is on a remote server. If set to "
@@ -346,11 +330,11 @@ msgstr ""
 "miniatures i s'utilitzarà una icona genèrica. Tot i el que pot suggerir el "
 "nom, això s'aplica a qualsevol tipus de fitxer que es pugui previsualitzar."
 
-#: data/org.gnome.nautilus.gschema.xml:168
+#: data/org.gnome.nautilus.gschema.xml:163
 msgid "Maximum image size for thumbnailing"
 msgstr "Mida màxima de les imatges a miniaturitzar"
 
-#: data/org.gnome.nautilus.gschema.xml:169
+#: data/org.gnome.nautilus.gschema.xml:164
 msgid ""
 "Images over this size (in bytes) won’t be thumbnailed. The purpose of this "
 "setting is to avoid thumbnailing large images that may take a long time to "
@@ -360,11 +344,11 @@ msgstr ""
 "aquesta. La finalitat d'aquest paràmetre és evitar la creació de miniatures "
 "d'imatges grans que podrien trigar molt, o consumir massa memòria."
 
-#: data/org.gnome.nautilus.gschema.xml:176
+#: data/org.gnome.nautilus.gschema.xml:171
 msgid "Default sort order"
 msgstr "Criteri d'ordenació per defecte"
 
-#: data/org.gnome.nautilus.gschema.xml:177
+#: data/org.gnome.nautilus.gschema.xml:172
 msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type” and “mtime”."
@@ -373,11 +357,11 @@ msgstr ""
 "valors possibles són «name» (nom), «size» (mida), «type» (tipus) i "
 "«mtime» (data de modificació)."
 
-#: data/org.gnome.nautilus.gschema.xml:181
+#: data/org.gnome.nautilus.gschema.xml:176
 msgid "Reverse sort order in new windows"
 msgstr "Inverteix el criteri d'ordenació a les finestres noves"
 
-#: data/org.gnome.nautilus.gschema.xml:182
+#: data/org.gnome.nautilus.gschema.xml:177
 msgid ""
 "If true, files in new windows will be sorted in reverse order. I.e., if "
 "sorted by name, then instead of sorting the files from “a” to “z”, they will "
@@ -390,11 +374,11 @@ msgstr ""
 "es fa per mida, en comptes d'ordenar-se incrementalment s'ordenaran "
 "decrementalment."
 
-#: data/org.gnome.nautilus.gschema.xml:192
+#: data/org.gnome.nautilus.gschema.xml:187
 msgid "Default folder viewer"
 msgstr "Visualitzador de carpetes per defecte"
 
-#: data/org.gnome.nautilus.gschema.xml:193
+#: data/org.gnome.nautilus.gschema.xml:188
 msgid ""
 "When a folder is visited this viewer is used unless you have selected "
 "another view for that particular folder. Possible values are “list-view”, "
@@ -405,11 +389,11 @@ msgstr ""
 "valors possibles són «list-view» (vista de llista)  i «icon-view» (vista "
 "d'icones)."
 
-#: data/org.gnome.nautilus.gschema.xml:197
+#: data/org.gnome.nautilus.gschema.xml:192
 msgid "Whether to show hidden files"
 msgstr "Si s'han de mostrar els fitxers ocults"
 
-#: data/org.gnome.nautilus.gschema.xml:198
+#: data/org.gnome.nautilus.gschema.xml:193
 msgid ""
 "This key is deprecated and ignored. The “show-hidden” key from “org.gtk."
 "Settings.FileChooser” is now used instead."
@@ -417,22 +401,22 @@ msgstr ""
 "Aquesta clau és obsoleta i s'ignora. En el seu lloc s'utilitza la clau «show-"
 "hidden» que es troba a «org.gtk.Settings.FileChooser»."
 
-#: data/org.gnome.nautilus.gschema.xml:202
+#: data/org.gnome.nautilus.gschema.xml:197
 msgid "What viewer should be used when searching"
 msgstr "Quin visualitzador s'hauria d'usar quan es cerca"
 
-#: data/org.gnome.nautilus.gschema.xml:203
+#: data/org.gnome.nautilus.gschema.xml:198
 msgid ""
 "When searching Nautilus will switch to the type of view in this setting."
 msgstr ""
 "Quan es cerca el Nautilus canviarà al tipus de visualització d'aquest "
 "paràmetre de configuració."
 
-#: data/org.gnome.nautilus.gschema.xml:207
+#: data/org.gnome.nautilus.gschema.xml:202
 msgid "Bulk rename utility"
 msgstr "Eina de canvi de nom en gran quantitat"
 
-#: data/org.gnome.nautilus.gschema.xml:208
+#: data/org.gnome.nautilus.gschema.xml:203
 msgid ""
 "If set, Nautilus will append URIs of selected files and treat the result as "
 "a command line for bulk renaming. Bulk rename applications can register "
@@ -447,7 +431,7 @@ msgstr ""
 "executable i les opcions de la línia d'ordres. Si el nom de l'executable no "
 "s'estableix com a camí complet, se cercarà en el camí de cerca."
 
-#: data/org.gnome.nautilus.gschema.xml:212
+#: data/org.gnome.nautilus.gschema.xml:207
 msgid ""
 "Whether to open the hovered folder after a timeout when drag and drop "
 "operation"
@@ -456,7 +440,7 @@ msgstr ""
 "sobre després d'un temps d'espera durant una operació d'arrossegar i deixar "
 "anar"
 
-#: data/org.gnome.nautilus.gschema.xml:213
+#: data/org.gnome.nautilus.gschema.xml:208
 msgid ""
 "If this is set to true, when performing a drag and drop operation the "
 "hovered folder will open automatically after a timeout."
@@ -465,11 +449,11 @@ msgstr ""
 "deixar anar el fitxer al qual se li ha passat el punter del ratolí per sobre "
 "s'obrirà automàticament després d'un temps d'espera."
 
-#: data/org.gnome.nautilus.gschema.xml:217
+#: data/org.gnome.nautilus.gschema.xml:212
 msgid "Enable new experimental views"
 msgstr "Habilita les noves vistes experimentals"
 
-#: data/org.gnome.nautilus.gschema.xml:218
+#: data/org.gnome.nautilus.gschema.xml:213
 msgid ""
 "Whether to use the new experimental views using the latest GTK+ widgets to "
 "help giving feedback and shaping their future."
@@ -477,32 +461,36 @@ msgstr ""
 "Si s'han d'usar les noves vistes experimentals utilitzant els últims ginys "
 "de GTK+ per ajudar aportant suggeriments i definint el futur"
 
-#: data/org.gnome.nautilus.gschema.xml:222
+#: data/org.gnome.nautilus.gschema.xml:217
 msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
 msgstr ""
+"Si la cerca de text complet està activada per defecte en obrir una nova "
+"finestra/pestanya"
 
-#: data/org.gnome.nautilus.gschema.xml:223
+#: data/org.gnome.nautilus.gschema.xml:218
 msgid ""
 "If set to true, then Nautilus will also match the file contents besides the "
 "name. This toggles the default active state, which can still be overriden in "
 "the search popover"
 msgstr ""
+"Si s'estableix a «True» (cert), aleshores Nautilus també farà coincidir el contingut del fitxer a part del "
+"el nom. Això canvia l'estat actiu per defecte, que encara pot ser sobreescrit en la cerca diàleg contextual"
 
-#: data/org.gnome.nautilus.gschema.xml:230
+#: data/org.gnome.nautilus.gschema.xml:225
 msgid "Default format for compressing files"
 msgstr "Format per defecte per la compressió de fitxers"
 
-#: data/org.gnome.nautilus.gschema.xml:231
+#: data/org.gnome.nautilus.gschema.xml:226
 msgid "The format that will be selected when compressing files."
 msgstr "El format que serà seleccionat al comprimir fitxers."
 
-#: data/org.gnome.nautilus.gschema.xml:238
+#: data/org.gnome.nautilus.gschema.xml:233
 msgid "List of possible captions on icons"
 msgstr "Llista dels títols possibles a les icones"
 
-#: data/org.gnome.nautilus.gschema.xml:239
+#: data/org.gnome.nautilus.gschema.xml:234
 msgid ""
 "A list of captions below an icon in the icon view and the desktop. The "
 "actual number of captions shown depends on the zoom level. Some possible "
@@ -515,19 +503,19 @@ msgstr ""
 "de modificació), «owner» (propietari), «group» (grup), "
 "«permissions» (permisos) i «mime_type» (tipus MIME)."
 
-#: data/org.gnome.nautilus.gschema.xml:243
+#: data/org.gnome.nautilus.gschema.xml:238
 msgid "Default icon zoom level"
 msgstr "Nivell d'ampliació per defecte"
 
-#: data/org.gnome.nautilus.gschema.xml:244
+#: data/org.gnome.nautilus.gschema.xml:239
 msgid "Default zoom level used by the icon view."
 msgstr "Nivell d'ampliació per defecte utilitzat en la vista d'icones."
 
-#: data/org.gnome.nautilus.gschema.xml:248
+#: data/org.gnome.nautilus.gschema.xml:243
 msgid "Default Thumbnail Icon Size"
 msgstr "Mida per defecte de les icones de les miniatures"
 
-#: data/org.gnome.nautilus.gschema.xml:249
+#: data/org.gnome.nautilus.gschema.xml:244
 msgid ""
 "The default size of an icon for a thumbnail in the icon view when using "
 "NAUTILUS_ICON_SIZE_STANDARD size."
@@ -535,12 +523,12 @@ msgstr ""
 "La mida per defecte de les icones de les miniatures en la vista d'icones "
 "quan s'utilitza la mida «NAUTILUS_ICON_SIZE_SMALL»."
 
-#: data/org.gnome.nautilus.gschema.xml:253
-#: data/org.gnome.nautilus.gschema.xml:324
+#: data/org.gnome.nautilus.gschema.xml:248
+#: data/org.gnome.nautilus.gschema.xml:319
 msgid "Text Ellipsis Limit"
 msgstr "Límit de text per als punts suspensius"
 
-#: data/org.gnome.nautilus.gschema.xml:254
+#: data/org.gnome.nautilus.gschema.xml:249
 msgid ""
 "A string specifying how parts of overlong file names should be replaced by "
 "ellipses, depending on the zoom level. Each of the list entries is of the "
@@ -573,35 +561,35 @@ msgstr ""
 "nivells d'ampliació. Nivells d'ampliació disponibles: petit, estàndard i "
 "gran."
 
-#: data/org.gnome.nautilus.gschema.xml:261
+#: data/org.gnome.nautilus.gschema.xml:256
 msgid "Default list zoom level"
 msgstr "Nivell d'ampliació per defecte de la llista"
 
-#: data/org.gnome.nautilus.gschema.xml:262
+#: data/org.gnome.nautilus.gschema.xml:257
 msgid "Default zoom level used by the list view."
 msgstr "Nivell d'ampliació per defecte utilitzat en la vista de llista."
 
-#: data/org.gnome.nautilus.gschema.xml:266
+#: data/org.gnome.nautilus.gschema.xml:261
 msgid "Default list of columns visible in the list view"
 msgstr "Llista per defecte de les columnes visibles a la vista de llista"
 
-#: data/org.gnome.nautilus.gschema.xml:267
+#: data/org.gnome.nautilus.gschema.xml:262
 msgid "Default list of columns visible in the list view."
 msgstr "Llista per defecte de les columnes visibles a la vista de llista."
 
-#: data/org.gnome.nautilus.gschema.xml:271
+#: data/org.gnome.nautilus.gschema.xml:266
 msgid "Default column order in the list view"
 msgstr "Ordre per defecte de les columnes a la vista de llista"
 
-#: data/org.gnome.nautilus.gschema.xml:272
+#: data/org.gnome.nautilus.gschema.xml:267
 msgid "Default column order in the list view."
 msgstr "Ordre per defecte de les columnes a la vista de llista."
 
-#: data/org.gnome.nautilus.gschema.xml:276
+#: data/org.gnome.nautilus.gschema.xml:271
 msgid "Use tree view"
 msgstr "Utilitza la vista d'arbre"
 
-#: data/org.gnome.nautilus.gschema.xml:277
+#: data/org.gnome.nautilus.gschema.xml:272
 msgid ""
 "Whether a tree should be used for list view navigation instead of a flat "
 "list."
@@ -609,26 +597,26 @@ msgstr ""
 "Indica si s'hauria d'utilitzar un arbre per a la navegació de la vista de "
 "llista en lloc d'una llista plana."
 
-#: data/org.gnome.nautilus.gschema.xml:283
+#: data/org.gnome.nautilus.gschema.xml:278
 msgctxt "desktop-font"
 msgid "''"
 msgstr "''"
 
-#: data/org.gnome.nautilus.gschema.xml:284
+#: data/org.gnome.nautilus.gschema.xml:279
 msgid "Desktop font"
 msgstr "Tipus de lletra de l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:285
+#: data/org.gnome.nautilus.gschema.xml:280
 msgid "The font description used for the icons on the desktop."
 msgstr ""
 "La descripció del tipus de lletra utilitzada per a les icones de "
 "l'escriptori."
 
-#: data/org.gnome.nautilus.gschema.xml:289
+#: data/org.gnome.nautilus.gschema.xml:284
 msgid "Home icon visible on desktop"
 msgstr "La icona de carpeta de l'usuari és visible a l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:290
+#: data/org.gnome.nautilus.gschema.xml:285
 msgid ""
 "If this is set to true, an icon linking to the home folder will be put on "
 "the desktop."
@@ -636,11 +624,11 @@ msgstr ""
 "Si s'estableix a «True» (cert), s'afegirà una icona a l'escriptori amb un "
 "enllaç a la carpeta de l'usuari."
 
-#: data/org.gnome.nautilus.gschema.xml:294
+#: data/org.gnome.nautilus.gschema.xml:289
 msgid "Trash icon visible on desktop"
 msgstr "La icona de la paperera és visible a l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:295
+#: data/org.gnome.nautilus.gschema.xml:290
 msgid ""
 "If this is set to true, an icon linking to the Trash will be put on the "
 "desktop."
@@ -648,11 +636,11 @@ msgstr ""
 "Si això s'estableix a true (cert), s'afegirà a l'escriptori una icona amb un "
 "enllaç a la paperera."
 
-#: data/org.gnome.nautilus.gschema.xml:299
+#: data/org.gnome.nautilus.gschema.xml:294
 msgid "Show mounted volumes on the desktop"
 msgstr "Mostra els volums muntats a l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:300
+#: data/org.gnome.nautilus.gschema.xml:295
 msgid ""
 "If this is set to true, icons linking to mounted volumes will be put on the "
 "desktop."
@@ -660,11 +648,11 @@ msgstr ""
 "Si s'estableix a «True» (cert), s'afegiran a l'escriptori icones amb "
 "enllaços als volums muntats."
 
-#: data/org.gnome.nautilus.gschema.xml:304
+#: data/org.gnome.nautilus.gschema.xml:299
 msgid "Network Servers icon visible on the desktop"
 msgstr "La icona de servidors de xarxa és visible a l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:305
+#: data/org.gnome.nautilus.gschema.xml:300
 msgid ""
 "If this is set to true, an icon linking to the Network Servers view will be "
 "put on the desktop."
@@ -672,16 +660,16 @@ msgstr ""
 "Si s'estableix a «True» (cert), s'afegirà a l'escriptori una icona amb un "
 "enllaç a la vista de servidors de xarxa."
 
-#: data/org.gnome.nautilus.gschema.xml:308
+#: data/org.gnome.nautilus.gschema.xml:303
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "'Carpeta de l'usuari'"
 
-#: data/org.gnome.nautilus.gschema.xml:309
+#: data/org.gnome.nautilus.gschema.xml:304
 msgid "Desktop home icon name"
 msgstr "Nom de la icona de la carpeta de l'usuari de l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:310
+#: data/org.gnome.nautilus.gschema.xml:305
 msgid ""
 "This name can be set if you want a custom name for the home icon on the "
 "desktop."
@@ -689,16 +677,16 @@ msgstr ""
 "Aquest nom es pot definir si voleu un nom personalitzat per a la icona de la "
 "carpeta de l'usuari."
 
-#: data/org.gnome.nautilus.gschema.xml:313
+#: data/org.gnome.nautilus.gschema.xml:308
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "'Paperera'"
 
-#: data/org.gnome.nautilus.gschema.xml:314
+#: data/org.gnome.nautilus.gschema.xml:309
 msgid "Desktop Trash icon name"
 msgstr "Nom de la icona de la paperera de l'escriptori"
 
-#: data/org.gnome.nautilus.gschema.xml:315
+#: data/org.gnome.nautilus.gschema.xml:310
 msgid ""
 "This name can be set if you want a custom name for the Trash icon on the "
 "desktop."
@@ -706,16 +694,16 @@ msgstr ""
 "Aquest nom es pot establir si voleu un nom personalitzat per a la icona de "
 "la paperera a l'escriptori."
 
-#: data/org.gnome.nautilus.gschema.xml:318
+#: data/org.gnome.nautilus.gschema.xml:313
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "'Servidors de xarxa'"
 
-#: data/org.gnome.nautilus.gschema.xml:319
+#: data/org.gnome.nautilus.gschema.xml:314
 msgid "Network servers icon name"
 msgstr "Nom de la icona dels servidors de xarxa"
 
-#: data/org.gnome.nautilus.gschema.xml:320
+#: data/org.gnome.nautilus.gschema.xml:315
 msgid ""
 "This name can be set if you want a custom name for the network servers icon "
 "on the desktop."
@@ -723,7 +711,7 @@ msgstr ""
 "Es pot definir aquest nom si en voleu un de personalitzat per a la icona "
 "dels servidors de xarxa a l'escriptori."
 
-#: data/org.gnome.nautilus.gschema.xml:325
+#: data/org.gnome.nautilus.gschema.xml:320
 msgid ""
 "An integer specifying how parts of overlong file names should be replaced by "
 "ellipses on the desktop. If the number is larger than 0, the file name will "
@@ -736,11 +724,11 @@ msgstr ""
 "el número és 0 o inferior, no s'imposarà cap límit en el nombre de línies "
 "mostrades."
 
-#: data/org.gnome.nautilus.gschema.xml:329
+#: data/org.gnome.nautilus.gschema.xml:324
 msgid "Fade the background on change"
 msgstr "Esvaeix el fons en canviar-lo"
 
-#: data/org.gnome.nautilus.gschema.xml:330
+#: data/org.gnome.nautilus.gschema.xml:325
 msgid ""
 "If set to true, then Nautilus will use a fade effect to change the desktop "
 "background."
@@ -749,11 +737,11 @@ msgstr ""
 "per canviar el fons de l'escriptori."
 
 #
-#: data/org.gnome.nautilus.gschema.xml:338
+#: data/org.gnome.nautilus.gschema.xml:333
 msgid "The geometry string for a navigation window"
 msgstr "La cadena de caràcters de geometria per a una finestra de navegació."
 
-#: data/org.gnome.nautilus.gschema.xml:339
+#: data/org.gnome.nautilus.gschema.xml:334
 msgid ""
 "A string containing the saved geometry and coordinates string for navigation "
 "windows."
@@ -761,39 +749,39 @@ msgstr ""
 "Una cadena de caràcters que conté la geometria i les coordenades desades per "
 "a les finestres de navegació."
 
-#: data/org.gnome.nautilus.gschema.xml:343
+#: data/org.gnome.nautilus.gschema.xml:338
 msgid "Whether the navigation window should be maximized"
 msgstr "Si la finestra de navegació s'hauria de maximitzar."
 
-#: data/org.gnome.nautilus.gschema.xml:344
+#: data/org.gnome.nautilus.gschema.xml:339
 msgid "Whether the navigation window should be maximized by default."
 msgstr "Si la finestra de navegació s'hauria de maximitzar per defecte."
 
-#: data/org.gnome.nautilus.gschema.xml:348
+#: data/org.gnome.nautilus.gschema.xml:343
 msgid "Width of the side pane"
 msgstr "Amplada de la subfinestra lateral"
 
-#: data/org.gnome.nautilus.gschema.xml:349
+#: data/org.gnome.nautilus.gschema.xml:344
 msgid "The default width of the side pane in new windows."
 msgstr ""
 "L'amplada per defecte de la subfinestra lateral de les finestres noves."
 
-#: data/org.gnome.nautilus.gschema.xml:353
+#: data/org.gnome.nautilus.gschema.xml:348
 msgid "Show location bar in new windows"
 msgstr "Mostra la barra d'ubicació a les finestres noves"
 
-#: data/org.gnome.nautilus.gschema.xml:354
+#: data/org.gnome.nautilus.gschema.xml:349
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Si s'estableix a «True» (cert), a les finestres noves que s'obrin s'hi podrà "
 "veure la barra d'ubicació."
 
-#: data/org.gnome.nautilus.gschema.xml:358
+#: data/org.gnome.nautilus.gschema.xml:353
 msgid "Show side pane in new windows"
 msgstr "Mostra la subfinestra lateral a les finestres noves"
 
-#: data/org.gnome.nautilus.gschema.xml:359
+#: data/org.gnome.nautilus.gschema.xml:354
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Si s'estableix a «True» (cert), les finestres noves que s'obrin tindran la "
@@ -814,12 +802,12 @@ msgstr "Mostra més _detalls"
 #. Put up the timed wait window.
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
-#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1121
-#: src/nautilus-files-view.c:1680 src/nautilus-files-view.c:5986
-#: src/nautilus-files-view.c:6492 src/nautilus-location-entry.c:282
-#: src/nautilus-mime-actions.c:563 src/nautilus-mime-actions.c:567
-#: src/nautilus-mime-actions.c:649 src/nautilus-mime-actions.c:949
-#: src/nautilus-mime-actions.c:1501 src/nautilus-properties-window.c:4577
+#: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1114
+#: src/nautilus-files-view.c:1635 src/nautilus-files-view.c:5941
+#: src/nautilus-files-view.c:6445 src/nautilus-location-entry.c:282
+#: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
+#: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:956
+#: src/nautilus-mime-actions.c:1508 src/nautilus-properties-window.c:4577
 #: src/nautilus-properties-window.c:5645 src/nautilus-search-popover.c:573
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 msgid "_Cancel"
@@ -847,8 +835,9 @@ msgid "Unable to rename desktop icon"
 msgstr "No s'ha pogut canviar el nom de la icona de l'escriptori"
 
 #: nautilus-desktop/nautilus-desktop-link.c:142 src/nautilus-bookmark.c:116
-#: src/nautilus-file-utilities.c:304 src/nautilus-list-view.c:1729
+#: src/nautilus-file-utilities.c:304 src/nautilus-list-view.c:1739
 #: src/nautilus-pathbar.c:326 src/nautilus-shell-search-provider.c:315
+#: src/nautilus-window.c:193
 msgid "Home"
 msgstr "Carpeta de l'usuari"
 
@@ -872,7 +861,7 @@ msgid "Send files by mail…"
 msgstr "Envia els fitxers per correu electrònic…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:175 src/nautilus-window-slot.c:1407
+#: src/nautilus-application.c:175 src/nautilus-window-slot.c:1414
 msgid "Oops! Something went wrong."
 msgstr "Alguna cosa no ha funcionat correctament."
 
@@ -986,7 +975,7 @@ msgid "If you don’t trust this location or aren’t sure, press Cancel."
 msgstr ""
 "Si no confieu en aquesta ubicació o no n'esteu segur, premeu «Cancel·la»."
 
-#: src/nautilus-autorun-software.c:255 src/nautilus-mime-actions.c:650
+#: src/nautilus-autorun-software.c:255 src/nautilus-mime-actions.c:651
 msgid "_Run"
 msgstr "E_xecuta"
 
@@ -1149,7 +1138,7 @@ msgstr ""
 "Reemplaça la configuració actual de la llista de columnes amb la "
 "configuració per defecte"
 
-#: src/nautilus-column-utilities.c:57 src/nautilus-list-view.c:1976
+#: src/nautilus-column-utilities.c:57 src/nautilus-list-view.c:1986
 #: src/resources/ui/nautilus-rename-file-popover.ui:14
 msgid "Name"
 msgstr "Nom"
@@ -1465,56 +1454,56 @@ msgid "File not found"
 msgstr "No s'ha trobat el fitxer"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5684
+#: src/nautilus-file.c:5681
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5689
+#: src/nautilus-file.c:5686
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5698
+#: src/nautilus-file.c:5695
 #, no-c-format
 msgid "Yesterday"
 msgstr "Ahir"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5707
+#: src/nautilus-file.c:5704
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Ahir a les %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5714
+#: src/nautilus-file.c:5711
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Ahir a les %l:%M %p"
 
-#: src/nautilus-file.c:5724
+#: src/nautilus-file.c:5721
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5733
+#: src/nautilus-file.c:5730
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a a les %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5740
+#: src/nautilus-file.c:5737
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a a les %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5751
+#: src/nautilus-file.c:5748
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1522,7 +1511,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5761
+#: src/nautilus-file.c:5758
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b a les %H:%M"
@@ -1530,14 +1519,14 @@ msgstr "%-e %b a les %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5769
+#: src/nautilus-file.c:5766
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b a les %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5780
+#: src/nautilus-file.c:5777
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1545,7 +1534,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5790
+#: src/nautilus-file.c:5787
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y a les %H:%M"
@@ -1553,58 +1542,58 @@ msgstr "%-e %b %Y a les %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5798
+#: src/nautilus-file.c:5795
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y a les %l:%M %p"
 
-#: src/nautilus-file.c:5810
+#: src/nautilus-file.c:5807
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6258
+#: src/nautilus-file.c:6255
 msgid "Not allowed to set permissions"
 msgstr "No podeu establir els permisos"
 
-#: src/nautilus-file.c:6581
+#: src/nautilus-file.c:6578
 msgid "Not allowed to set owner"
 msgstr "No podeu establir el propietari"
 
-#: src/nautilus-file.c:6600
+#: src/nautilus-file.c:6597
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "No existeix el propietari especificat «%s»"
 
-#: src/nautilus-file.c:6885
+#: src/nautilus-file.c:6882
 msgid "Not allowed to set group"
 msgstr "No podeu establir el grup"
 
-#: src/nautilus-file.c:6904
+#: src/nautilus-file.c:6901
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "No existeix el grup especificat «%s»"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:7046
+#: src/nautilus-file.c:7043
 msgid "Me"
 msgstr "Jo"
 
-#: src/nautilus-file.c:7078
+#: src/nautilus-file.c:7075
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u element"
 msgstr[1] "%'u elements"
 
-#: src/nautilus-file.c:7079
+#: src/nautilus-file.c:7076
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u carpeta"
 msgstr[1] "%'u carpetes"
 
-#: src/nautilus-file.c:7080
+#: src/nautilus-file.c:7077
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1612,87 +1601,87 @@ msgstr[0] "%'u fitxer"
 msgstr[1] "%'u fitxers"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7547 src/nautilus-file.c:7567
+#: src/nautilus-file.c:7544 src/nautilus-file.c:7564
 msgid "? items"
 msgstr "? elements"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7555
+#: src/nautilus-file.c:7552
 msgid "? bytes"
 msgstr "? bytes"
 
-#: src/nautilus-file.c:7575 src/nautilus-file.c:7672
+#: src/nautilus-file.c:7572 src/nautilus-file.c:7669
 msgid "Unknown"
 msgstr "Desconegut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7596 src/nautilus-properties-window.c:1313
+#: src/nautilus-file.c:7593 src/nautilus-properties-window.c:1313
 msgid "unknown"
 msgstr "desconegut"
 
-#: src/nautilus-file.c:7632 src/nautilus-file.c:7640 src/nautilus-file.c:7698
+#: src/nautilus-file.c:7629 src/nautilus-file.c:7637 src/nautilus-file.c:7695
 msgid "Program"
 msgstr "Programa"
 
-#: src/nautilus-file.c:7633
+#: src/nautilus-file.c:7630
 msgid "Audio"
 msgstr "Àudio"
 
-#: src/nautilus-file.c:7634
+#: src/nautilus-file.c:7631
 msgid "Font"
 msgstr "Tipus de lletra"
 
-#: src/nautilus-file.c:7635 src/nautilus-image-properties-page.c:827
+#: src/nautilus-file.c:7632 src/nautilus-image-properties-page.c:827
 msgid "Image"
 msgstr "Imatge"
 
-#: src/nautilus-file.c:7636
+#: src/nautilus-file.c:7633
 msgid "Archive"
 msgstr "Arxiu"
 
-#: src/nautilus-file.c:7637
+#: src/nautilus-file.c:7634
 msgid "Markup"
 msgstr "Marcatge"
 
-#: src/nautilus-file.c:7638 src/nautilus-file.c:7639
+#: src/nautilus-file.c:7635 src/nautilus-file.c:7636
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:7641 src/nautilus-mime-actions.c:204
+#: src/nautilus-file.c:7638 src/nautilus-mime-actions.c:205
 msgid "Video"
 msgstr "Vídeo"
 
-#: src/nautilus-file.c:7642
+#: src/nautilus-file.c:7639
 msgid "Contacts"
 msgstr "Contactes"
 
-#: src/nautilus-file.c:7643
+#: src/nautilus-file.c:7640
 msgid "Calendar"
 msgstr "Calendari"
 
-#: src/nautilus-file.c:7644
+#: src/nautilus-file.c:7641
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:7645 src/nautilus-mime-actions.c:180
+#: src/nautilus-file.c:7642 src/nautilus-mime-actions.c:181
 msgid "Presentation"
 msgstr "Presentació"
 
-#: src/nautilus-file.c:7646 src/nautilus-mime-actions.c:187
+#: src/nautilus-file.c:7643 src/nautilus-mime-actions.c:188
 msgid "Spreadsheet"
 msgstr "Full de càlcul"
 
-#: src/nautilus-file.c:7700
+#: src/nautilus-file.c:7697
 msgid "Binary"
 msgstr "Binari"
 
-#: src/nautilus-file.c:7705
+#: src/nautilus-file.c:7702
 msgid "Folder"
 msgstr "Carpeta"
 
-#: src/nautilus-file.c:7744
+#: src/nautilus-file.c:7741
 msgid "Link"
 msgstr "Enllaç"
 
@@ -1701,13 +1690,13 @@ msgstr "Enllaç"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7750 src/nautilus-file-operations.c:451
+#: src/nautilus-file.c:7747 src/nautilus-file-operations.c:451
 #: src/nautilus-files-view-dnd.c:131
 #, c-format
 msgid "Link to %s"
 msgstr "Enllaç a %s"
 
-#: src/nautilus-file.c:7768 src/nautilus-file.c:7784
+#: src/nautilus-file.c:7765 src/nautilus-file.c:7781
 msgid "Link (broken)"
 msgstr "Enllaç (trencat)"
 
@@ -1970,7 +1959,7 @@ msgid "All items in the Trash will be permanently deleted."
 msgstr "Se suprimiran de forma permanent tots els elements de la paperera."
 
 #: src/nautilus-file-operations.c:1555 src/nautilus-file-operations.c:2767
-#: src/nautilus-window.c:1467
+#: src/nautilus-window.c:1478
 msgid "Empty _Trash"
 msgstr "Buida la _paperera"
 
@@ -2137,7 +2126,7 @@ msgid "Do _not Empty Trash"
 msgstr "_No buidis la paperera"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2909 src/nautilus-files-view.c:6704
+#: src/nautilus-file-operations.c:2909 src/nautilus-files-view.c:6674
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "No s'ha pogut accedir a «%s»"
@@ -2673,56 +2662,56 @@ msgstr[1] "Comprimits %'d fitxers a «%s»"
 msgid "Compressing Files"
 msgstr "S'estan comprimint fitxers"
 
-#: src/nautilus-files-view.c:398
+#: src/nautilus-files-view.c:396
 msgid "Searching…"
 msgstr "S'està cercant…"
 
-#: src/nautilus-files-view.c:398 src/nautilus-image-properties-page.c:761
-#: src/nautilus-list-model.c:450 src/nautilus-window-slot.c:836
+#: src/nautilus-files-view.c:396 src/nautilus-image-properties-page.c:761
+#: src/nautilus-list-model.c:450 src/nautilus-window-slot.c:842
 msgid "Loading…"
 msgstr "S'està carregant…"
 
-#: src/nautilus-files-view.c:1109 src/nautilus-mime-actions.c:937
+#: src/nautilus-files-view.c:1102 src/nautilus-mime-actions.c:944
 msgid "Are you sure you want to open all files?"
 msgstr "Segur de voler obrir tots els fitxers?"
 
-#: src/nautilus-files-view.c:1112
+#: src/nautilus-files-view.c:1105
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Això obrirà %'d pestanya separada."
 msgstr[1] "Això obrirà %'d pestanyes separades."
 
-#: src/nautilus-files-view.c:1117
+#: src/nautilus-files-view.c:1110
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Això obrirà %'d finestra nova."
 msgstr[1] "Això obrirà %'d finestres noves."
 
-#: src/nautilus-files-view.c:1121 src/nautilus-location-entry.c:282
-#: src/nautilus-mime-actions.c:949 src/nautilus-mime-actions.c:1135
+#: src/nautilus-files-view.c:1114 src/nautilus-location-entry.c:282
+#: src/nautilus-mime-actions.c:956 src/nautilus-mime-actions.c:1142
 msgid "_OK"
 msgstr "_D'acord"
 
-#: src/nautilus-files-view.c:1677
+#: src/nautilus-files-view.c:1632
 msgid "Select Items Matching"
 msgstr "Selecciona els elements que coincideixin"
 
-#: src/nautilus-files-view.c:1682 src/nautilus-files-view.c:5987
-#: src/nautilus-files-view.c:6493
+#: src/nautilus-files-view.c:1637 src/nautilus-files-view.c:5942
+#: src/nautilus-files-view.c:6446
 msgid "_Select"
 msgstr "_Selecciona"
 
-#: src/nautilus-files-view.c:1690
+#: src/nautilus-files-view.c:1645
 msgid "_Pattern:"
 msgstr "_Patró:"
 
-#: src/nautilus-files-view.c:1696
+#: src/nautilus-files-view.c:1651
 msgid "Examples: "
 msgstr "Exemples:"
 
-#: src/nautilus-files-view.c:2809
+#: src/nautilus-files-view.c:2764
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2730,19 +2719,19 @@ msgstr ""
 "El Nautilus 3.6 ha deixat aquest directori en desús i ha intentat migrar "
 "aquesta configuració al directori ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3325 src/nautilus-files-view.c:3372
+#: src/nautilus-files-view.c:3280 src/nautilus-files-view.c:3327
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» seleccionat"
 
-#: src/nautilus-files-view.c:3329
+#: src/nautilus-files-view.c:3284
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d carpeta seleccionada"
 msgstr[1] "%'d carpetes seleccionades"
 
-#: src/nautilus-files-view.c:3343
+#: src/nautilus-files-view.c:3298
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2750,14 +2739,14 @@ msgstr[0] "(conté %'d element)"
 msgstr[1] "(conté %'d elements)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3358
+#: src/nautilus-files-view.c:3313
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(contenen un total de  %'d element)"
 msgstr[1] "(contenen un total de %'d elements)"
 
-#: src/nautilus-files-view.c:3377
+#: src/nautilus-files-view.c:3332
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2765,7 +2754,7 @@ msgstr[0] "%'d element seleccionat"
 msgstr[1] "%'d elements seleccionats"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3386
+#: src/nautilus-files-view.c:3341
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2776,7 +2765,7 @@ msgstr[1] "%'d altres elements seleccionats"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3401
+#: src/nautilus-files-view.c:3356
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2788,115 +2777,115 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3434
+#: src/nautilus-files-view.c:3389
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s, %s"
 
-#: src/nautilus-files-view.c:5974
+#: src/nautilus-files-view.c:5929
 msgid "Select Move Destination"
 msgstr "Seleccioneu la destinació del moviment"
 
-#: src/nautilus-files-view.c:5978
+#: src/nautilus-files-view.c:5933
 msgid "Select Copy Destination"
 msgstr "Seleccioneu la destinació de la còpia"
 
-#: src/nautilus-files-view.c:6489
+#: src/nautilus-files-view.c:6442
 msgid "Select Extract Destination"
 msgstr "Seleccioneu una destinació per l'extracció"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6732
+#: src/nautilus-files-view.c:6702
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "No s'ha pogut suprimir «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6760
+#: src/nautilus-files-view.c:6730
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "No s'ha pogut expulsar «%s»"
 
-#: src/nautilus-files-view.c:6783
+#: src/nautilus-files-view.c:6753
 msgid "Unable to stop drive"
 msgstr "No s'ha pogut aturar la unitat"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6895
+#: src/nautilus-files-view.c:6865
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "No s'ha pogut iniciar «%s»"
 
-#: src/nautilus-files-view.c:7795
+#: src/nautilus-files-view.c:7776
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Carpeta nova amb la selecció (%'d element)"
 msgstr[1] "Carpeta nova amb la selecció (%'d elements)"
 
-#: src/nautilus-files-view.c:7855
+#: src/nautilus-files-view.c:7836
 #, c-format
 msgid "Open With %s"
 msgstr "Obre amb %s"
 
-#: src/nautilus-files-view.c:7867
+#: src/nautilus-files-view.c:7848
 msgid "Run"
 msgstr "Executa"
 
-#: src/nautilus-files-view.c:7872
+#: src/nautilus-files-view.c:7853
 msgid "Extract Here"
 msgstr "Extreu aquí"
 
-#: src/nautilus-files-view.c:7873
+#: src/nautilus-files-view.c:7854
 msgid "Extract to…"
 msgstr "Extreu a..."
 
-#: src/nautilus-files-view.c:7877
+#: src/nautilus-files-view.c:7858
 msgid "Open"
 msgstr "Obre"
 
-#: src/nautilus-files-view.c:7934
+#: src/nautilus-files-view.c:7915
 #: src/resources/ui/nautilus-files-view-context-menus.ui:125
 msgid "_Start"
 msgstr "_Inicia"
 
-#: src/nautilus-files-view.c:7940 src/gtk/nautilusgtkplacesview.c:1685
+#: src/nautilus-files-view.c:7921 src/gtk/nautilusgtkplacesview.c:1685
 msgid "_Connect"
 msgstr "_Connecta"
 
-#: src/nautilus-files-view.c:7946
+#: src/nautilus-files-view.c:7927
 msgid "_Start Multi-disk Drive"
 msgstr "_Inicia la unitat multi disc"
 
-#: src/nautilus-files-view.c:7952
+#: src/nautilus-files-view.c:7933
 msgid "U_nlock Drive"
 msgstr "_Desbloca la unitat"
 
-#: src/nautilus-files-view.c:7972
+#: src/nautilus-files-view.c:7953
 msgid "Stop Drive"
 msgstr "Atura la unitat"
 
-#: src/nautilus-files-view.c:7978
+#: src/nautilus-files-view.c:7959
 msgid "_Safely Remove Drive"
 msgstr "_Treu la unitat de forma segura"
 
-#: src/nautilus-files-view.c:7984 src/gtk/nautilusgtkplacesview.c:1675
+#: src/nautilus-files-view.c:7965 src/gtk/nautilusgtkplacesview.c:1675
 msgid "_Disconnect"
 msgstr "_Desconnecta"
 
-#: src/nautilus-files-view.c:7990
+#: src/nautilus-files-view.c:7971
 msgid "_Stop Multi-disk Drive"
 msgstr "_Atura la unitat multi disc"
 
-#: src/nautilus-files-view.c:7996
+#: src/nautilus-files-view.c:7977
 msgid "_Lock Drive"
 msgstr "_Bloca la unitat"
 
-#: src/nautilus-files-view.c:9667
+#: src/nautilus-files-view.c:9648
 msgid "Content View"
 msgstr "Vista de contingut"
 
-#: src/nautilus-files-view.c:9668
+#: src/nautilus-files-view.c:9649
 msgid "View of the current folder"
 msgstr "Visualització de la carpeta actual"
 
@@ -2926,429 +2915,429 @@ msgstr "Text arrossegat.txt"
 msgid "dropped data"
 msgstr "dades arrossegades"
 
-#: src/nautilus-file-undo-operations.c:166
+#: src/nautilus-file-undo-operations.c:164
 #: src/resources/ui/nautilus-window.ui:89
 msgid "Undo"
 msgstr "Desfés"
 
-#: src/nautilus-file-undo-operations.c:170
+#: src/nautilus-file-undo-operations.c:168
 msgid "Undo last action"
 msgstr "Desfés l'última acció"
 
-#: src/nautilus-file-undo-operations.c:175
+#: src/nautilus-file-undo-operations.c:173
 msgid "Redo"
 msgstr "Refés"
 
-#: src/nautilus-file-undo-operations.c:179
+#: src/nautilus-file-undo-operations.c:177
 msgid "Redo last undone action"
 msgstr "Refés l'última acció desfeta"
 
-#: src/nautilus-file-undo-operations.c:412
+#: src/nautilus-file-undo-operations.c:410
 #, c-format
 msgid "Move %d item back to “%s”"
 msgid_plural "Move %d items back to “%s”"
 msgstr[0] "Retorna %d element a «%s»"
 msgstr[1] "Retorna %d elements a «%s»"
 
-#: src/nautilus-file-undo-operations.c:415
+#: src/nautilus-file-undo-operations.c:413
 #, c-format
 msgid "Move %d item to “%s”"
 msgid_plural "Move %d items to “%s”"
 msgstr[0] "Mou %d element a «%s»"
 msgstr[1] "Mou %d elements a «%s»"
 
-#: src/nautilus-file-undo-operations.c:419
+#: src/nautilus-file-undo-operations.c:417
 #, c-format
 msgid "_Undo Move %d item"
 msgid_plural "_Undo Move %d items"
 msgstr[0] "_Desfés el moviment d'%d element"
 msgstr[1] "_Desfés el moviment de %d elements"
 
-#: src/nautilus-file-undo-operations.c:422
+#: src/nautilus-file-undo-operations.c:420
 #, c-format
 msgid "_Redo Move %d item"
 msgid_plural "_Redo Move %d items"
 msgstr[0] "_Refés el moviment d'%d element"
 msgstr[1] "_Refés el moviment de %d elements"
 
-#: src/nautilus-file-undo-operations.c:428
+#: src/nautilus-file-undo-operations.c:426
 #, c-format
 msgid "Move “%s” back to “%s”"
 msgstr "Mou «%s» i torna'l a «%s»"
 
-#: src/nautilus-file-undo-operations.c:429
+#: src/nautilus-file-undo-operations.c:427
 #, c-format
 msgid "Move “%s” to “%s”"
 msgstr "Mou «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:431
+#: src/nautilus-file-undo-operations.c:429
 msgid "_Undo Move"
 msgstr "_Desfés el moviment"
 
-#: src/nautilus-file-undo-operations.c:432
+#: src/nautilus-file-undo-operations.c:430
 msgid "_Redo Move"
 msgstr "_Refés el moviment"
 
-#: src/nautilus-file-undo-operations.c:437
+#: src/nautilus-file-undo-operations.c:435
 msgid "_Undo Restore from Trash"
 msgstr "_Desfés la restauració des de la paperera"
 
-#: src/nautilus-file-undo-operations.c:438
+#: src/nautilus-file-undo-operations.c:436
 msgid "_Redo Restore from Trash"
 msgstr "_Refés la restauració des de la paperera"
 
-#: src/nautilus-file-undo-operations.c:442
+#: src/nautilus-file-undo-operations.c:440
 #, c-format
 msgid "Move %d item back to trash"
 msgid_plural "Move %d items back to trash"
 msgstr[0] "Retorna %d element a la paperera"
 msgstr[1] "Retorna %d elements a la paperera"
 
-#: src/nautilus-file-undo-operations.c:445
-#: src/nautilus-file-undo-operations.c:1331
+#: src/nautilus-file-undo-operations.c:443
+#: src/nautilus-file-undo-operations.c:1327
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
 msgstr[0] "Restaura %d element de la paperera"
 msgstr[1] "Restaura %d elements de la paperera"
 
-#: src/nautilus-file-undo-operations.c:451
+#: src/nautilus-file-undo-operations.c:449
 #, c-format
 msgid "Move “%s” back to trash"
 msgstr "Retorna «%s» a la paperera"
 
-#: src/nautilus-file-undo-operations.c:452
+#: src/nautilus-file-undo-operations.c:450
 #, c-format
 msgid "Restore “%s” from trash"
 msgstr "Restaura «%s» de la paperera"
 
-#: src/nautilus-file-undo-operations.c:459
+#: src/nautilus-file-undo-operations.c:457
 #, c-format
 msgid "Delete %d copied item"
 msgid_plural "Delete %d copied items"
 msgstr[0] "Suprimeix %d element copiat"
 msgstr[1] "Suprimeix %d elements copiats"
 
-#: src/nautilus-file-undo-operations.c:462
+#: src/nautilus-file-undo-operations.c:460
 #, c-format
 msgid "Copy %d item to “%s”"
 msgid_plural "Copy %d items to “%s”"
 msgstr[0] "Copia %d element a «%s»"
 msgstr[1] "Copia %d elements a «%s»"
 
-#: src/nautilus-file-undo-operations.c:466
+#: src/nautilus-file-undo-operations.c:464
 #, c-format
 msgid "_Undo Copy %d item"
 msgid_plural "_Undo Copy %d items"
 msgstr[0] "_Desfés la còpia d'%d element"
 msgstr[1] "_Desfés la còpia de %d elements"
 
-#: src/nautilus-file-undo-operations.c:469
+#: src/nautilus-file-undo-operations.c:467
 #, c-format
 msgid "_Redo Copy %d item"
 msgid_plural "_Redo Copy %d items"
 msgstr[0] "_Refés la còpia d'%d element"
 msgstr[1] "_Refés la còpia de %d elements"
 
-#: src/nautilus-file-undo-operations.c:475
-#: src/nautilus-file-undo-operations.c:502
-#: src/nautilus-file-undo-operations.c:777
-#: src/nautilus-file-undo-operations.c:2089
-#: src/nautilus-file-undo-operations.c:2251
+#: src/nautilus-file-undo-operations.c:473
+#: src/nautilus-file-undo-operations.c:500
+#: src/nautilus-file-undo-operations.c:775
+#: src/nautilus-file-undo-operations.c:2085
+#: src/nautilus-file-undo-operations.c:2247
 #, c-format
 msgid "Delete “%s”"
 msgstr "Suprimeix «%s»"
 
-#: src/nautilus-file-undo-operations.c:476
+#: src/nautilus-file-undo-operations.c:474
 #, c-format
 msgid "Copy “%s” to “%s”"
 msgstr "Copia «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:478
+#: src/nautilus-file-undo-operations.c:476
 msgid "_Undo Copy"
 msgstr "_Desfés la còpia"
 
-#: src/nautilus-file-undo-operations.c:479
+#: src/nautilus-file-undo-operations.c:477
 msgid "_Redo Copy"
 msgstr "_Refés la còpia"
 
-#: src/nautilus-file-undo-operations.c:486
+#: src/nautilus-file-undo-operations.c:484
 #, c-format
 msgid "Delete %d duplicated item"
 msgid_plural "Delete %d duplicated items"
 msgstr[0] "Suprimeix %d element duplicat"
 msgstr[1] "Suprimeix %d elements duplicats"
 
-#: src/nautilus-file-undo-operations.c:489
+#: src/nautilus-file-undo-operations.c:487
 #, c-format
 msgid "Duplicate %d item in “%s”"
 msgid_plural "Duplicate %d items in “%s”"
 msgstr[0] "Duplica %d element a «%s»"
 msgstr[1] "Duplica %d elements a «%s»"
 
-#: src/nautilus-file-undo-operations.c:493
+#: src/nautilus-file-undo-operations.c:491
 #, c-format
 msgid "_Undo Duplicate %d item"
 msgid_plural "_Undo Duplicate %d items"
 msgstr[0] "_Desfés la duplicació d'%d element"
 msgstr[1] "_Desfés la duplicació de %d elements"
 
-#: src/nautilus-file-undo-operations.c:496
+#: src/nautilus-file-undo-operations.c:494
 #, c-format
 msgid "_Redo Duplicate %d item"
 msgid_plural "_Redo Duplicate %d items"
 msgstr[0] "_Refés la duplicació d'%d element"
 msgstr[1] "_Refés la duplicació de %d elements"
 
-#: src/nautilus-file-undo-operations.c:503
+#: src/nautilus-file-undo-operations.c:501
 #, c-format
 msgid "Duplicate “%s” in “%s”"
 msgstr "Duplica «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:506
+#: src/nautilus-file-undo-operations.c:504
 msgid "_Undo Duplicate"
 msgstr "_Desfés el duplicat"
 
-#: src/nautilus-file-undo-operations.c:507
+#: src/nautilus-file-undo-operations.c:505
 msgid "_Redo Duplicate"
 msgstr "_Refés el duplicat"
 
-#: src/nautilus-file-undo-operations.c:514
+#: src/nautilus-file-undo-operations.c:512
 #, c-format
 msgid "Delete links to %d item"
 msgid_plural "Delete links to %d items"
 msgstr[0] "Suprimeix els enllaços a %d element"
 msgstr[1] "Suprimeix els enllaços a %d elements"
 
-#: src/nautilus-file-undo-operations.c:517
+#: src/nautilus-file-undo-operations.c:515
 #, c-format
 msgid "Create links to %d item"
 msgid_plural "Create links to %d items"
 msgstr[0] "Crea enllaços a %d element"
 msgstr[1] "Crea enllaços a %d elements"
 
-#: src/nautilus-file-undo-operations.c:523
+#: src/nautilus-file-undo-operations.c:521
 #, c-format
 msgid "Delete link to “%s”"
 msgstr "Suprimeix l'enllaç a «%s»"
 
-#: src/nautilus-file-undo-operations.c:524
+#: src/nautilus-file-undo-operations.c:522
 #, c-format
 msgid "Create link to “%s”"
 msgstr "Crea l'enllaç a «%s»"
 
-#: src/nautilus-file-undo-operations.c:526
+#: src/nautilus-file-undo-operations.c:524
 msgid "_Undo Create Link"
 msgstr "_Desfés la creació de l'enllaç"
 
-#: src/nautilus-file-undo-operations.c:527
+#: src/nautilus-file-undo-operations.c:525
 msgid "_Redo Create Link"
 msgstr "_Refés la creació de l'enllaç"
 
-#: src/nautilus-file-undo-operations.c:781
+#: src/nautilus-file-undo-operations.c:779
 #, c-format
 msgid "Create an empty file “%s”"
 msgstr "Crea el fitxer buit «%s»"
 
-#: src/nautilus-file-undo-operations.c:783
+#: src/nautilus-file-undo-operations.c:781
 msgid "_Undo Create Empty File"
 msgstr "_Desfés la creació d'un fitxer buit"
 
-#: src/nautilus-file-undo-operations.c:784
+#: src/nautilus-file-undo-operations.c:782
 msgid "_Redo Create Empty File"
 msgstr "_Refés la creació d'un fitxer buit"
 
-#: src/nautilus-file-undo-operations.c:788
+#: src/nautilus-file-undo-operations.c:786
 #, c-format
 msgid "Create a new folder “%s”"
 msgstr "Crea la carpeta nova «%s»"
 
-#: src/nautilus-file-undo-operations.c:790
+#: src/nautilus-file-undo-operations.c:788
 msgid "_Undo Create Folder"
 msgstr "_Desfés la creació d'una carpeta"
 
-#: src/nautilus-file-undo-operations.c:791
+#: src/nautilus-file-undo-operations.c:789
 msgid "_Redo Create Folder"
 msgstr "_Refés la creació d'una carpeta"
 
-#: src/nautilus-file-undo-operations.c:795
+#: src/nautilus-file-undo-operations.c:793
 #, c-format
 msgid "Create new file “%s” from template "
 msgstr "Crea un fitxer nou «%s» a partir de la plantilla "
 
-#: src/nautilus-file-undo-operations.c:797
+#: src/nautilus-file-undo-operations.c:795
 msgid "_Undo Create from Template"
 msgstr "_Desfés la creació des de la plantilla"
 
-#: src/nautilus-file-undo-operations.c:798
+#: src/nautilus-file-undo-operations.c:796
 msgid "_Redo Create from Template"
 msgstr "_Refés la creació des de la plantilla"
 
-#: src/nautilus-file-undo-operations.c:992
-#: src/nautilus-file-undo-operations.c:993
+#: src/nautilus-file-undo-operations.c:990
+#: src/nautilus-file-undo-operations.c:991
 #, c-format
 msgid "Rename “%s” as “%s”"
 msgstr "Canvia el nom de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:995
+#: src/nautilus-file-undo-operations.c:993
 msgid "_Undo Rename"
 msgstr "_Desfés el canvi de nom"
 
-#: src/nautilus-file-undo-operations.c:996
+#: src/nautilus-file-undo-operations.c:994
 msgid "_Redo Rename"
 msgstr "_Refés el canvi de nom"
 
-#: src/nautilus-file-undo-operations.c:1112
-#: src/nautilus-file-undo-operations.c:1116
+#: src/nautilus-file-undo-operations.c:1109
+#: src/nautilus-file-undo-operations.c:1113
 #, c-format
 msgid "Batch rename %d file"
 msgid_plural "Batch rename %d files"
 msgstr[0] "Canvi de nom en lots d'%d fitxer"
 msgstr[1] "Canvi de noms en lots de %d fitxers"
 
-#: src/nautilus-file-undo-operations.c:1121
+#: src/nautilus-file-undo-operations.c:1118
 msgid "_Undo Batch Rename"
 msgstr "_Desfés el canvi de nom en lots"
 
-#: src/nautilus-file-undo-operations.c:1122
+#: src/nautilus-file-undo-operations.c:1119
 msgid "_Redo Batch Rename"
 msgstr "_Refés el canvi de nom en lots"
 
-#: src/nautilus-file-undo-operations.c:1334
+#: src/nautilus-file-undo-operations.c:1330
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "Mou %d element a la paperera"
 msgstr[1] "Mou %d elements a la paperera"
 
-#: src/nautilus-file-undo-operations.c:1348
+#: src/nautilus-file-undo-operations.c:1344
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "Restaura «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1355
+#: src/nautilus-file-undo-operations.c:1351
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Mou «%s» a la paperera"
 
-#: src/nautilus-file-undo-operations.c:1360
+#: src/nautilus-file-undo-operations.c:1356
 msgid "_Undo Trash"
 msgstr "_Desfés el moviment a la paperera"
 
-#: src/nautilus-file-undo-operations.c:1361
+#: src/nautilus-file-undo-operations.c:1357
 msgid "_Redo Trash"
 msgstr "_Refés el moviment a la paperera"
 
-#: src/nautilus-file-undo-operations.c:1656
+#: src/nautilus-file-undo-operations.c:1652
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Restaura els permisos originals dels elements seleccionats a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1657
+#: src/nautilus-file-undo-operations.c:1653
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Estableix els permisos dels elements seleccionats a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1659
-#: src/nautilus-file-undo-operations.c:1813
+#: src/nautilus-file-undo-operations.c:1655
+#: src/nautilus-file-undo-operations.c:1809
 msgid "_Undo Change Permissions"
 msgstr "_Desfés el canvi de permisos"
 
-#: src/nautilus-file-undo-operations.c:1660
-#: src/nautilus-file-undo-operations.c:1814
+#: src/nautilus-file-undo-operations.c:1656
+#: src/nautilus-file-undo-operations.c:1810
 msgid "_Redo Change Permissions"
 msgstr "_Refés el canvi de permisos"
 
-#: src/nautilus-file-undo-operations.c:1810
+#: src/nautilus-file-undo-operations.c:1806
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Restaura els permisos originals de «%s»"
 
-#: src/nautilus-file-undo-operations.c:1811
+#: src/nautilus-file-undo-operations.c:1807
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Estableix els permisos de «%s»"
 
-#: src/nautilus-file-undo-operations.c:1923
+#: src/nautilus-file-undo-operations.c:1919
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Restaura el grup de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1925
+#: src/nautilus-file-undo-operations.c:1921
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Canvia el grup de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1928
+#: src/nautilus-file-undo-operations.c:1924
 msgid "_Undo Change Group"
 msgstr "_Desfés el canvi de grup"
 
-#: src/nautilus-file-undo-operations.c:1929
+#: src/nautilus-file-undo-operations.c:1925
 msgid "_Redo Change Group"
 msgstr "_Refés el canvi de grup"
 
-#: src/nautilus-file-undo-operations.c:1933
+#: src/nautilus-file-undo-operations.c:1929
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Restaura el propietari de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1935
+#: src/nautilus-file-undo-operations.c:1931
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Estableix el propietari de «%s» a «%s»"
 
-#: src/nautilus-file-undo-operations.c:1938
+#: src/nautilus-file-undo-operations.c:1934
 msgid "_Undo Change Owner"
 msgstr "_Desfés el canvi de propietari"
 
-#: src/nautilus-file-undo-operations.c:1939
+#: src/nautilus-file-undo-operations.c:1935
 msgid "_Redo Change Owner"
 msgstr "_Refés el canvi de propietari"
 
-#: src/nautilus-file-undo-operations.c:2075
+#: src/nautilus-file-undo-operations.c:2071
 msgid "_Undo Extract"
 msgstr "_Desfés l'extracció"
 
-#: src/nautilus-file-undo-operations.c:2076
+#: src/nautilus-file-undo-operations.c:2072
 msgid "_Redo Extract"
 msgstr "_Refés l'extracció"
 
-#: src/nautilus-file-undo-operations.c:2093
+#: src/nautilus-file-undo-operations.c:2089
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
 msgstr[0] "Suprimeix %d fitxer extret"
 msgstr[1] "Suprimeix %d fitxers extrets"
 
-#: src/nautilus-file-undo-operations.c:2107
+#: src/nautilus-file-undo-operations.c:2103
 #, c-format
 msgid "Extract “%s”"
 msgstr "Extreu «%s»"
 
-#: src/nautilus-file-undo-operations.c:2111
+#: src/nautilus-file-undo-operations.c:2107
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
 msgstr[0] "Extreu %d fitxer"
 msgstr[1] "Extreu %d fitxers"
 
-#: src/nautilus-file-undo-operations.c:2262
+#: src/nautilus-file-undo-operations.c:2258
 #, c-format
 msgid "Compress “%s”"
 msgstr "Comprimeix «%s»"
 
-#: src/nautilus-file-undo-operations.c:2266
+#: src/nautilus-file-undo-operations.c:2262
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
 msgstr[0] "Comprimeix '%d' fitxer"
 msgstr[1] "Comprimeix '%d' fitxers"
 
-#: src/nautilus-file-undo-operations.c:2272
+#: src/nautilus-file-undo-operations.c:2268
 msgid "_Undo Compress"
 msgstr "_Desfés la compressió"
 
-#: src/nautilus-file-undo-operations.c:2273
+#: src/nautilus-file-undo-operations.c:2269
 msgid "_Redo Compress"
 msgstr "_Refés la compressió"
 
@@ -3548,18 +3537,18 @@ msgstr "(Buit)"
 msgid "Use Default"
 msgstr "Utilitza el valor per defecte"
 
-#: src/nautilus-list-view.c:2104
+#: src/nautilus-list-view.c:2114
 #: src/resources/ui/nautilus-preferences-window.ui:49
 #: src/resources/ui/nautilus-preferences-window.ui:247
 msgid "List View"
 msgstr "Vista de llista"
 
-#: src/nautilus-list-view.c:3013
+#: src/nautilus-list-view.c:3023
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnes visibles"
 
-#: src/nautilus-list-view.c:3033
+#: src/nautilus-list-view.c:3043
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Trieu l'ordre en què ha d'aparèixer la informació d'aquesta carpeta:"
 
@@ -3570,123 +3559,123 @@ msgid_plural "Do you want to view %d locations?"
 msgstr[0] "Voleu visualitzar %d ubicació?"
 msgstr[1] "Voleu visualitzar %d ubicacions?"
 
-#: src/nautilus-location-entry.c:271 src/nautilus-mime-actions.c:945
+#: src/nautilus-location-entry.c:271 src/nautilus-mime-actions.c:952
 #, c-format
 msgid "This will open %d separate window."
 msgid_plural "This will open %d separate windows."
 msgstr[0] "Això obrirà %d finestra nova."
 msgstr[1] "Això obrirà %d finestres noves."
 
-#: src/nautilus-mime-actions.c:101
+#: src/nautilus-mime-actions.c:102
 #: src/resources/ui/nautilus-search-popover.ui:275
 msgid "Anything"
 msgstr "Tot"
 
-#: src/nautilus-mime-actions.c:111 src/nautilus-properties-window.c:4588
+#: src/nautilus-mime-actions.c:112 src/nautilus-properties-window.c:4588
 msgid "Folders"
 msgstr "Carpetes"
 
-#: src/nautilus-mime-actions.c:115
+#: src/nautilus-mime-actions.c:116
 msgid "Documents"
 msgstr "Documents"
 
-#: src/nautilus-mime-actions.c:131
+#: src/nautilus-mime-actions.c:132
 msgid "Illustration"
 msgstr "Il·lustració"
 
-#: src/nautilus-mime-actions.c:143
+#: src/nautilus-mime-actions.c:144
 msgid "Music"
 msgstr "Música"
 
-#: src/nautilus-mime-actions.c:156
+#: src/nautilus-mime-actions.c:157
 msgid "PDF / PostScript"
 msgstr "PDF / PostScript"
 
-#: src/nautilus-mime-actions.c:162
+#: src/nautilus-mime-actions.c:163
 msgid "Picture"
 msgstr "Imatge"
 
-#: src/nautilus-mime-actions.c:201
+#: src/nautilus-mime-actions.c:202
 msgid "Text File"
 msgstr "Fitxer de text"
 
-#: src/nautilus-mime-actions.c:541
+#: src/nautilus-mime-actions.c:542
 #, c-format
 msgid "The link “%s” is broken. Move it to Trash?"
 msgstr "L'enllaç «%s» està trencat. Voleu moure'l a la paperera?"
 
-#: src/nautilus-mime-actions.c:545
+#: src/nautilus-mime-actions.c:546
 #, c-format
 msgid "The link “%s” is broken."
 msgstr "L'enllaç «%s» està trencat."
 
-#: src/nautilus-mime-actions.c:552
+#: src/nautilus-mime-actions.c:553
 msgid "This link cannot be used because it has no target."
 msgstr "No es pot utilitzar l'enllaç perquè no té cap destinació."
 
-#: src/nautilus-mime-actions.c:556
+#: src/nautilus-mime-actions.c:557
 #, c-format
 msgid "This link cannot be used because its target “%s” doesn’t exist."
 msgstr ""
 "No es pot utilitzar l'enllaç perquè la seva destinació, «%s», no existeix."
 
-#: src/nautilus-mime-actions.c:567
+#: src/nautilus-mime-actions.c:568
 #: src/resources/ui/nautilus-files-view-context-menus.ui:174
 msgid "Mo_ve to Trash"
 msgstr "Mo_u a la paperera"
 
-#: src/nautilus-mime-actions.c:638
+#: src/nautilus-mime-actions.c:639
 #, c-format
 msgid "Do you want to run “%s”, or display its contents?"
 msgstr "Voleu executar «%s», o mostrar-ne el contingut?"
 
-#: src/nautilus-mime-actions.c:640
+#: src/nautilus-mime-actions.c:641
 #, c-format
 msgid "“%s” is an executable text file."
 msgstr "«%s» és un fitxer de text executable."
 
-#: src/nautilus-mime-actions.c:646
+#: src/nautilus-mime-actions.c:647
 msgid "Run in _Terminal"
 msgstr "Executa en un _terminal"
 
-#: src/nautilus-mime-actions.c:647
+#: src/nautilus-mime-actions.c:648
 msgid "_Display"
 msgstr "_Mostra"
 
-#: src/nautilus-mime-actions.c:940
+#: src/nautilus-mime-actions.c:947
 #, c-format
 msgid "This will open %d separate tab."
 msgid_plural "This will open %d separate tabs."
 msgstr[0] "Això obrirà %d pestanya separada."
 msgstr[1] "Això obrirà %d pestanyes separades."
 
-#: src/nautilus-mime-actions.c:1012
+#: src/nautilus-mime-actions.c:1019
 #, c-format
 msgid "Could not display “%s”."
 msgstr "No s'ha pogut mostrar «%s»."
 
-#: src/nautilus-mime-actions.c:1115
+#: src/nautilus-mime-actions.c:1122
 msgid "The file is of an unknown type"
 msgstr "El fitxer és d'un tipus desconegut"
 
-#: src/nautilus-mime-actions.c:1120
+#: src/nautilus-mime-actions.c:1127
 #, c-format
 msgid "There is no application installed for “%s” files"
 msgstr "No hi ha cap aplicació instal·lada per als fitxers «%s»"
 
-#: src/nautilus-mime-actions.c:1133
+#: src/nautilus-mime-actions.c:1140
 msgid "_Select Application"
 msgstr "_Seleccioneu una aplicació"
 
-#: src/nautilus-mime-actions.c:1171
+#: src/nautilus-mime-actions.c:1178
 msgid "There was an internal error trying to search for applications:"
 msgstr "S'ha produït un error intern en intentar cercar les aplicacions:"
 
-#: src/nautilus-mime-actions.c:1173
+#: src/nautilus-mime-actions.c:1180
 msgid "Unable to search for application"
 msgstr "No s'ha pogut cercar l'aplicació"
 
-#: src/nautilus-mime-actions.c:1304
+#: src/nautilus-mime-actions.c:1311
 #, c-format
 msgid ""
 "There is no application installed for “%s” files.\n"
@@ -3695,11 +3684,11 @@ msgstr ""
 "No hi ha cap aplicació instal·lada per als fitxers «%s».\n"
 "Voleu cercar una aplicació per obrir aquest fitxer?"
 
-#: src/nautilus-mime-actions.c:1482
+#: src/nautilus-mime-actions.c:1489
 msgid "Untrusted application launcher"
 msgstr "Llançadora d'aplicacions en la qual no es confia"
 
-#: src/nautilus-mime-actions.c:1485
+#: src/nautilus-mime-actions.c:1492
 #, c-format
 msgid ""
 "The application launcher “%s” has not been marked as trusted. If you do not "
@@ -3708,26 +3697,26 @@ msgstr ""
 "La llançadora d'aplicacions «%s» no s'ha marcat com de confiança. Si no "
 "coneixeu l'origen d'aquest fitxer, pot ser que no sigui segur executar-lo."
 
-#: src/nautilus-mime-actions.c:1507
+#: src/nautilus-mime-actions.c:1514
 msgid "Trust and _Launch"
 msgstr "Confia i _executa"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1889 src/nautilus-mime-actions.c:2184
+#: src/nautilus-mime-actions.c:1896 src/nautilus-mime-actions.c:2191
 #: src/gtk/nautilusgtkplacesview.c:1228 src/gtk/nautilusgtkplacesview.c:1303
 msgid "Unable to access location"
 msgstr "No s'ha pogut accedir a la ubicació"
 
-#: src/nautilus-mime-actions.c:2273
+#: src/nautilus-mime-actions.c:2280
 msgid "Unable to start location"
 msgstr "No s'ha pogut iniciar la ubicació"
 
-#: src/nautilus-mime-actions.c:2364
+#: src/nautilus-mime-actions.c:2371
 #, c-format
 msgid "Opening “%s”."
 msgstr "S'està obrint «%s»."
 
-#: src/nautilus-mime-actions.c:2369
+#: src/nautilus-mime-actions.c:2376
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3808,7 +3797,7 @@ msgid "Create"
 msgstr "Crea"
 
 #: src/nautilus-new-folder-dialog-controller.c:129
-#: src/nautilus-rename-file-popover-controller.c:275
+#: src/nautilus-rename-file-popover-controller.c:296
 msgid "Folder name"
 msgstr "Nom de la carpeta"
 
@@ -3965,7 +3954,7 @@ msgstr "Conflicte de fitxers"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:159 src/nautilus-properties-window.c:4084
+#: src/nautilus-preferences-window.c:157 src/nautilus-properties-window.c:4084
 #: src/nautilus-properties-window.c:4114
 msgid "None"
 msgstr "Cap"
@@ -4314,7 +4303,7 @@ msgstr "_Obre"
 #: src/nautilus-query.c:517 src/nautilus-search-directory-file.c:167
 #: src/nautilus-search-directory-file.c:222
 #: src/nautilus-search-directory-file.c:268
-#: src/resources/ui/nautilus-preferences-window.ui:955
+#: src/resources/ui/nautilus-preferences-window.ui:909
 #: src/resources/ui/nautilus-search-popover.ui:341
 #: src/resources/ui/nautilus-toolbar.ui:143
 msgid "Search"
@@ -4345,11 +4334,11 @@ msgstr "Ubicació remota — sols s'està cercant la carpeta actual"
 msgid "Only searching the current folder"
 msgstr "Sols s'està cercant la carpeta actual"
 
-#: src/nautilus-rename-file-popover-controller.c:276
+#: src/nautilus-rename-file-popover-controller.c:297
 msgid "File name"
 msgstr "Nom del fitxer"
 
-#: src/nautilus-search-engine.c:239
+#: src/nautilus-search-engine.c:229
 msgid "Unable to complete the requested search"
 msgstr "No s'ha pogut completar la cerca sol·licitada"
 
@@ -4491,51 +4480,71 @@ msgid_plural "%d years ago"
 msgstr[0] "Fa un any"
 msgstr[1] "Fa %d anys"
 
-#: src/nautilus-window.c:1486
+#: src/nautilus-window.c:192
+msgid "Parent folder"
+msgstr "Carpeta pare"
+
+#: src/nautilus-window.c:194 src/resources/ui/nautilus-toolbar-menu.ui:61
+msgid "New tab"
+msgstr "Pestanya nova"
+
+#: src/nautilus-window.c:195
+msgid "Close current view"
+msgstr "Tanca la vista actual"
+
+#: src/nautilus-window.c:196
+msgid "Back"
+msgstr "Enrere"
+
+#: src/nautilus-window.c:197
+msgid "Forward"
+msgstr "Endavant"
+
+#: src/nautilus-window.c:1497
 msgid "_Properties"
 msgstr "_Propietats"
 
-#: src/nautilus-window.c:1498
+#: src/nautilus-window.c:1509
 msgid "_Format…"
 msgstr "_Formata…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1803
+#: src/nautilus-window.c:1817
 #, c-format
 msgid "“%s” deleted"
 msgstr "«%s» suprimit"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: src/nautilus-window.c:1810
+#: src/nautilus-window.c:1824
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d fitxer suprimit"
 msgstr[1] "%d fitxers suprimits"
 
-#: src/nautilus-window.c:1933
+#: src/nautilus-window.c:1947
 #, c-format
 msgid "Open %s"
 msgstr "Obre %s"
 
-#: src/nautilus-window.c:2035
+#: src/nautilus-window.c:2049
 msgid "_New Tab"
 msgstr "_Pestanya nova"
 
-#: src/nautilus-window.c:2045
+#: src/nautilus-window.c:2059
 msgid "Move Tab _Left"
 msgstr "Mou la pestanya a l'_esquerra"
 
-#: src/nautilus-window.c:2053
+#: src/nautilus-window.c:2067
 msgid "Move Tab _Right"
 msgstr "Mou la pestanya a la _dreta"
 
-#: src/nautilus-window.c:2064
+#: src/nautilus-window.c:2078
 msgid "_Close Tab"
 msgstr "Tan_ca la pestanya"
 
-#: src/nautilus-window.c:3103
+#: src/nautilus-window.c:3130
 msgid "Access and organize your files."
 msgstr "Organitzeu i accediu els fitxers."
 
@@ -4543,7 +4552,7 @@ msgstr "Organitzeu i accediu els fitxers."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:3112
+#: src/nautilus-window.c:3140
 msgid "translator-credits"
 msgstr ""
 "Valentín Trilles <vtrilles@yahoo.es>\n"
@@ -4553,35 +4562,35 @@ msgstr ""
 "Jordi Mas i Hernàndez <jmas@softcatala.org>"
 
 #
-#: src/nautilus-window-slot.c:1413
+#: src/nautilus-window-slot.c:1420
 msgid "Unable to display the contents of this folder."
 msgstr "No s'ha pogut visualitzar el contingut d'aquesta carpeta."
 
-#: src/nautilus-window-slot.c:1417
+#: src/nautilus-window-slot.c:1424
 msgid "This location doesn’t appear to be a folder."
 msgstr "Aquesta ubicació no sembla que sigui una carpeta."
 
-#: src/nautilus-window-slot.c:1426
+#: src/nautilus-window-slot.c:1433
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "No s'ha pogut trobar el fitxer sol·licitat. Comproveu l'ortografia i torneu-"
 "ho a intentar."
 
-#: src/nautilus-window-slot.c:1435
+#: src/nautilus-window-slot.c:1442
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "No s'admeten ubicacions «%s»."
 
-#: src/nautilus-window-slot.c:1440
+#: src/nautilus-window-slot.c:1447
 msgid "Unable to handle this kind of location."
 msgstr "No s'ha pogut gestionar aquest tipus d'ubicació."
 
-#: src/nautilus-window-slot.c:1448
+#: src/nautilus-window-slot.c:1455
 msgid "Unable to access the requested location."
 msgstr "No s'ha pogut accedir a la ubicació sol·licitada."
 
-#: src/nautilus-window-slot.c:1454
+#: src/nautilus-window-slot.c:1461
 msgid "Don’t have permission to access the requested location."
 msgstr "No teniu permís per accedir a la carpeta de destinació."
 
@@ -4590,7 +4599,7 @@ msgstr "No teniu permís per accedir a la carpeta de destinació."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1465
+#: src/nautilus-window-slot.c:1472
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4598,12 +4607,12 @@ msgstr ""
 "No s'ha pogut trobar la ubicació sol·licitada. Comproveu l'ortografia o la "
 "configuració de xarxa."
 
-#: src/nautilus-window-slot.c:1484
+#: src/nautilus-window-slot.c:1491
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Missatge d'error no gestionat: %s"
 
-#: src/nautilus-window-slot.c:1656
+#: src/nautilus-window-slot.c:1671
 msgid "Unable to load location"
 msgstr "No s'ha pogut carregar la ubicació"
 
@@ -5347,7 +5356,7 @@ msgstr "Títols de les visualitzacions de les icones"
 
 #: src/resources/ui/nautilus-preferences-window.ui:355
 msgid ""
-"Add information to be displayed beneath file and folder names.More "
+"Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
 msgstr ""
 "Afegiu la informació a mostrar a sota dels noms dels fitxers i les carpetes. "
@@ -5421,96 +5430,88 @@ msgid "Show action to _permanently delete files and folders"
 msgstr "Mostra l'acció per esborrar _permanentment fitxers i carpetes"
 
 #: src/resources/ui/nautilus-preferences-window.ui:817
-msgid "Compressed Files"
-msgstr "Fitxers comprimits"
-
-#: src/resources/ui/nautilus-preferences-window.ui:831
-msgid "E_xtract the files on open"
-msgstr "_Extreu els fitxers en obrir-los"
-
-#: src/resources/ui/nautilus-preferences-window.ui:863
 msgid "Behavior"
 msgstr "Comportament"
 
-#: src/resources/ui/nautilus-preferences-window.ui:893
+#: src/resources/ui/nautilus-preferences-window.ui:847
 msgid "Choose the order of information to appear in the list view."
 msgstr ""
 "Trieu l'ordre de la informació que ha d'aparèixer a la vista de llista."
 
-#: src/resources/ui/nautilus-preferences-window.ui:931
+#: src/resources/ui/nautilus-preferences-window.ui:885
 msgid "List Columns"
 msgstr "Columnes de la llista"
 
-#: src/resources/ui/nautilus-preferences-window.ui:971
+#: src/resources/ui/nautilus-preferences-window.ui:925
 msgid "Search in subfolders:"
 msgstr "Cerca a les subcarpetes:"
 
-#: src/resources/ui/nautilus-preferences-window.ui:982
+#: src/resources/ui/nautilus-preferences-window.ui:936
 msgid "_On this computer only"
 msgstr "Sols _en aquest ordinador"
 
-#: src/resources/ui/nautilus-preferences-window.ui:999
+#: src/resources/ui/nautilus-preferences-window.ui:953
 msgid "_All locations"
 msgstr "_Totes les ubicacions"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1016
+#: src/resources/ui/nautilus-preferences-window.ui:970
 msgid "_Never"
 msgstr "_Mai"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1035
+#: src/resources/ui/nautilus-preferences-window.ui:989
 msgid "Full Text Search:"
 msgstr "Cerca de text complet:"
 
 #
-#: src/resources/ui/nautilus-preferences-window.ui:1046
+#: src/resources/ui/nautilus-preferences-window.ui:1000
 msgid "Set as _default"
 msgstr "_Estableix per defecte"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1078
+#: src/resources/ui/nautilus-preferences-window.ui:1032
 msgid "Thumbnails"
 msgstr "Miniatures"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1094
+#: src/resources/ui/nautilus-preferences-window.ui:1048
 msgid "Show thumbnails:"
 msgstr "Mostra les miniatures:"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1105
+#: src/resources/ui/nautilus-preferences-window.ui:1059
 msgid "_Files on this computer only"
 msgstr "_Fitxers sols a aquest ordinador"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1122
+#: src/resources/ui/nautilus-preferences-window.ui:1076
 msgid "A_ll files"
 msgstr "Tots e_ls fitxers"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1139
+#: src/resources/ui/nautilus-preferences-window.ui:1093
 msgid "N_ever"
 msgstr "M_ai"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1163
+#: src/resources/ui/nautilus-preferences-window.ui:1117
 msgid "Onl_y for files smaller than:"
 msgstr "_Només per a fitxers més petits de:"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1216
+#: src/resources/ui/nautilus-preferences-window.ui:1170
 msgid "File count"
 msgstr "Nombre de fitxers"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1232
+#: src/resources/ui/nautilus-preferences-window.ui:1186
 msgid "Count number of files in folders:"
 msgstr "Compta el nombre d'elements:"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1243
+#: src/resources/ui/nautilus-preferences-window.ui:1197
 msgid "F_olders in this computer only"
 msgstr "S_ols carpetes a aquest ordinador"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1260
+#: src/resources/ui/nautilus-preferences-window.ui:1214
 msgid "All folder_s"
 msgstr "Totes les carpete_s"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1277
+#: src/resources/ui/nautilus-preferences-window.ui:1231
 msgid "Ne_ver"
 msgstr "_Mai"
 
-#: src/resources/ui/nautilus-preferences-window.ui:1309
+#: src/resources/ui/nautilus-preferences-window.ui:1263
 msgid "Search & Preview"
 msgstr "Cerca i previsualitza"
 
@@ -5569,10 +5570,6 @@ msgstr "Carpeta nova"
 #: src/resources/ui/nautilus-toolbar-menu.ui:42
 msgid "Bookmark this location"
 msgstr "Afegeix aquesta ubicació a les adreces d'interès"
-
-#: src/resources/ui/nautilus-toolbar-menu.ui:61
-msgid "New tab"
-msgstr "Pestanya nova"
 
 #: src/resources/ui/nautilus-toolbar.ui:92
 msgid "Action menu"
@@ -5815,6 +5812,26 @@ msgstr "_Connecta al servidor"
 #: src/gtk/nautilusgtkplacesview.ui:472
 msgid "Enter server address…"
 msgstr "Introduïu l'adreça del servidor..."
+
+#~ msgid ""
+#~ "Whether to extract compressed files instead of opening them in another "
+#~ "application"
+#~ msgstr ""
+#~ "Si cal extreure els fitxers comprimits en comptes d'obrir-los en una "
+#~ "altra aplicació"
+
+#~ msgid ""
+#~ "If set to true, then Nautilus will automatically extract compressed files "
+#~ "instead of opening them in another application"
+#~ msgstr ""
+#~ "Si s'estableix a cert, llavors el Nautilus extraurà automàticament "
+#~ "fitxers comprimits en comptes d'obrir-los en una altra aplicació"
+
+#~ msgid "Compressed Files"
+#~ msgstr "Fitxers comprimits"
+
+#~ msgid "E_xtract the files on open"
+#~ msgstr "_Extreu els fitxers en obrir-los"
 
 #~ msgid "This will open %d separate application."
 #~ msgid_plural "This will open %d separate applications."
@@ -6876,9 +6893,6 @@ msgstr "Introduïu l'adreça del servidor..."
 
 #~ msgid "Close all Navigation windows"
 #~ msgstr "Tanca totes les finestres de navegació"
-
-#~ msgid "_Back"
-#~ msgstr "_Enrere"
 
 #~ msgid "Go to the previous visited location"
 #~ msgstr "Vés a la ubicació visitada anterior"
