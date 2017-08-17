@@ -283,7 +283,7 @@ real_get_selection (NautilusFilesView *files_view)
     g_autoptr (GList) selected_items = NULL;
 
     self = NAUTILUS_VIEW_LIST_CONTROLLER (files_view);
-    selected_items = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+    selected_items = gtk_list_box_get_selected_rows (GTK_LIST_BOX (self->view_ui));
     for (l = selected_items; l != NULL; l = l->next)
     {
         NautilusViewItemModel *item_model;
@@ -564,6 +564,18 @@ real_get_zoom_level_percentage (NautilusFilesView *files_view)
 }
 
 static gboolean
+real_is_zoom_level_default (NautilusFilesView *files_view)
+{
+    NautilusViewListController *self;
+    guint icon_size;
+
+    self = NAUTILUS_VIEW_LIST_CONTROLLER (files_view);
+    icon_size = get_icon_size_for_zoom_level (self->zoom_level);
+
+    return icon_size == NAUTILUS_LIST_ICON_SIZE_STANDARD;
+}
+
+static gboolean
 real_can_zoom_in (NautilusFilesView *files_view)
 {
     return TRUE;
@@ -627,8 +639,8 @@ on_button_press_event (GtkWidget *widget,
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
-                                                              event_button->x, event_button->y));
+    child_at_pos = GTK_WIDGET (gtk_list_box_get_row_at_y (GTK_LIST_BOX (self->view_ui),
+                                                          event_button->y));
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
@@ -903,6 +915,7 @@ nautilus_view_list_controller_class_init (NautilusViewListControllerClass *klass
     files_view_class->select_first = real_select_first;
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->get_zoom_level_percentage = real_get_zoom_level_percentage;
+    files_view_class->is_zoom_level_default = real_is_zoom_level_default;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
 }
 
