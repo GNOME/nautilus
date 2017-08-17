@@ -47,5 +47,6 @@ GType          nautilus_search_engine_model_get_type  (void);
 NautilusSearchEngineModel* nautilus_search_engine_model_new       (void);
 void                       nautilus_search_engine_model_set_model (NautilusSearchEngineModel *model,
 								   NautilusDirectory         *directory);
+NautilusDirectory *        nautilus_search_engine_model_get_model (NautilusSearchEngineModel *model);
 
 #endif /* NAUTILUS_SEARCH_ENGINE_MODEL_H */

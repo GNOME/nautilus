@@ -32,23 +32,22 @@
 
 typedef struct
 {
-    GQueue *providers;
+    NautilusSearchEngineTracker *tracker;
+    NautilusSearchEngineSimple *simple;
+    NautilusSearchEngineModel *model;
 
     GHashTable *uris;
+    guint providers_running;
+    guint providers_finished;
     guint providers_error;
 
     gboolean running;
     gboolean restart;
-
-    NautilusDirectory *directory;
-    NautilusQuery *query;
-    gboolean recursive;
 } NautilusSearchEnginePrivate;
 
 enum
 {
     PROP_0,
-    PROP_RECURSIVE,
     PROP_RUNNING,
     LAST_PROP
 };
@@ -57,47 +56,12 @@ static void nautilus_search_provider_init (NautilusSearchProviderInterface *ifac
 
 static gboolean nautilus_search_engine_is_running (NautilusSearchProvider *provider);
 
-static void connect_provider_signals (NautilusSearchEngine   *engine,
-                                      NautilusSearchProvider *provider);
-
-static void disconnect_provider_signals (NautilusSearchEngine   *engine,
-                                         NautilusSearchProvider *provider);
-
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngine,
                          nautilus_search_engine,
                          G_TYPE_OBJECT,
                          G_ADD_PRIVATE (NautilusSearchEngine)
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
-
-static void
-clear_providers_queue (NautilusSearchEngine *engine)
-{
-    NautilusSearchEnginePrivate *priv;
-    GList *l;
-
-    priv = nautilus_search_engine_get_instance_private (engine);
-
-    for (l = g_queue_peek_head_link (priv->providers); l != NULL; l = l->next)
-    {
-        disconnect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (l->data));
-        g_clear_object (&l->data);
-    }
-
-    g_queue_clear (priv->providers);
-}
-
-void
-nautilus_search_engine_set_model (NautilusSearchEngine *engine,
-                                  NautilusDirectory    *directory)
-{
-    NautilusSearchEnginePrivate *priv;
-
-    priv = nautilus_search_engine_get_instance_private (engine);
-
-    g_clear_object (&priv->directory);
-    priv->directory = g_object_ref (directory);
-}
 
 static void
 nautilus_search_engine_set_query (NautilusSearchProvider *provider,
@@ -109,41 +73,20 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
 
-    g_object_ref (query);
-    g_clear_object (&priv->query);
-    priv->query = query;
+    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->tracker), query);
+    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->model), query);
+    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->simple), query);
 }
 
 static void
 search_engine_start_real (NautilusSearchEngine *engine)
 {
     NautilusSearchEnginePrivate *priv;
-    NautilusSearchEngineTracker *tracker;
-    NautilusSearchEngineSimple *simple;
-    NautilusSearchEngineModel *model;
-    GList *l;
 
     priv = nautilus_search_engine_get_instance_private (engine);
 
-    clear_providers_queue (engine);
-
-    tracker = nautilus_search_engine_tracker_new ();
-    g_queue_push_head (priv->providers, tracker);
-    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (tracker));
-
-    simple = nautilus_search_engine_simple_new ();
-    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (simple));
-    g_object_set (simple, "recursive", priv->recursive, NULL);
-    g_queue_push_head (priv->providers, simple);
-
-    if (priv->directory)
-    {
-        model = nautilus_search_engine_model_new ();
-        connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (model));
-        nautilus_search_engine_model_set_model (model, priv->directory);
-        g_queue_push_head (priv->providers, model);
-    }
-
+    priv->providers_running = 0;
+    priv->providers_finished = 0;
     priv->providers_error = 0;
 
     priv->restart = FALSE;
@@ -152,12 +95,17 @@ search_engine_start_real (NautilusSearchEngine *engine)
 
     g_object_ref (engine);
 
-    for (l = g_queue_peek_head_link (priv->providers); l != NULL; l = l->next)
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+    priv->providers_running++;
+
+    if (nautilus_search_engine_model_get_model (priv->model))
     {
-        nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (l->data),
-                                            priv->query);
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (l->data));
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->model));
+        priv->providers_running++;
     }
+
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->simple));
+    priv->providers_running++;
 }
 
 static void
@@ -165,23 +113,18 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *engine;
     NautilusSearchEnginePrivate *priv;
-    gboolean all_providers_finished;
-    GList *l;
+    gint num_finished;
 
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
 
     DEBUG ("Search engine start");
 
-    all_providers_finished = TRUE;
-    for (l = g_queue_peek_head_link (priv->providers); l != NULL; l = l->next)
-    {
-        all_providers_finished &= nautilus_search_provider_is_finished (NAUTILUS_SEARCH_PROVIDER (l->data));
-    }
+    num_finished = priv->providers_error + priv->providers_finished;
 
     if (priv->running)
     {
-        if (all_providers_finished &&
+        if (num_finished == priv->providers_running &&
             priv->restart)
         {
             search_engine_start_real (engine);
@@ -194,7 +137,7 @@ nautilus_search_engine_start (NautilusSearchProvider *provider)
 
     g_object_notify (G_OBJECT (provider), "running");
 
-    if (!all_providers_finished)
+    if (num_finished < priv->providers_running)
     {
         priv->restart = TRUE;
     }
@@ -209,17 +152,15 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *engine;
     NautilusSearchEnginePrivate *priv;
-    GList *l;
 
     engine = NAUTILUS_SEARCH_ENGINE (provider);
     priv = nautilus_search_engine_get_instance_private (engine);
 
     DEBUG ("Search engine stop");
 
-    for (l = g_queue_peek_head_link (priv->providers); l != NULL; l = l->next)
-    {
-        nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (l->data));
-    }
+    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->model));
+    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 
     priv->running = FALSE;
     priv->restart = FALSE;
@@ -271,23 +212,17 @@ static void
 check_providers_status (NautilusSearchEngine *engine)
 {
     NautilusSearchEnginePrivate *priv;
-    gboolean all_providers_finished;
-    GList *l;
+    gint num_finished;
 
     priv = nautilus_search_engine_get_instance_private (engine);
+    num_finished = priv->providers_error + priv->providers_finished;
 
-    all_providers_finished = TRUE;
-    for (l = g_queue_peek_head_link (priv->providers); l != NULL; l = l->next)
-    {
-        all_providers_finished &= nautilus_search_provider_is_finished (NAUTILUS_SEARCH_PROVIDER (l->data));
-    }
-
-    if (!all_providers_finished)
+    if (num_finished < priv->providers_running)
     {
         return;
     }
 
-    if (g_queue_get_length (priv->providers) == priv->providers_error)
+    if (num_finished == priv->providers_error)
     {
         DEBUG ("Search engine error");
         nautilus_search_provider_error (NAUTILUS_SEARCH_PROVIDER (engine),
@@ -341,7 +276,12 @@ search_provider_finished (NautilusSearchProvider       *provider,
                           NautilusSearchProviderStatus  status,
                           NautilusSearchEngine         *engine)
 {
+    NautilusSearchEnginePrivate *priv;
+
     DEBUG ("Search provider finished");
+
+    priv = nautilus_search_engine_get_instance_private (engine);
+    priv->providers_finished++;
 
     check_providers_status (engine);
 }
@@ -359,21 +299,6 @@ connect_provider_signals (NautilusSearchEngine   *engine,
     g_signal_connect (provider, "error",
                       G_CALLBACK (search_provider_error),
                       engine);
-}
-
-static void
-disconnect_provider_signals (NautilusSearchEngine   *engine,
-                             NautilusSearchProvider *provider)
-{
-    g_signal_handlers_disconnect_by_func (provider,
-                                          search_provider_hits_added,
-                                          engine);
-    g_signal_handlers_disconnect_by_func (provider,
-                                          search_provider_finished,
-                                          engine);
-    g_signal_handlers_disconnect_by_func (provider,
-                                          search_provider_error,
-                                          engine);
 }
 
 static gboolean
@@ -408,11 +333,9 @@ nautilus_search_engine_finalize (GObject *object)
 
     g_hash_table_destroy (priv->uris);
 
-    clear_providers_queue (engine);
-    g_queue_free (priv->providers);
-
-    g_clear_object (&priv->directory);
-    g_clear_object (&priv->query);
+    g_clear_object (&priv->tracker);
+    g_clear_object (&priv->model);
+    g_clear_object (&priv->simple);
 
     G_OBJECT_CLASS (nautilus_search_engine_parent_class)->finalize (object);
 }
@@ -423,10 +346,7 @@ nautilus_search_engine_get_property (GObject    *object,
                                      GValue     *value,
                                      GParamSpec *pspec)
 {
-    NautilusSearchEnginePrivate *priv;
     NautilusSearchProvider *self = NAUTILUS_SEARCH_PROVIDER (object);
-
-    priv = nautilus_search_engine_get_instance_private (NAUTILUS_SEARCH_ENGINE (self));
 
     switch (prop_id)
     {
@@ -436,41 +356,8 @@ nautilus_search_engine_get_property (GObject    *object,
         }
         break;
 
-        case PROP_RECURSIVE:
-        {
-            g_value_set_boolean (value, priv->recursive);
-        }
-        break;
-
         default:
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-    }
-}
-
-static void
-nautilus_search_engine_set_property (GObject      *object,
-                                     guint         arg_id,
-                                     const GValue *value,
-                                     GParamSpec   *pspec)
-{
-    NautilusSearchEnginePrivate *priv;
-    NautilusSearchEngine *engine = NAUTILUS_SEARCH_ENGINE (object);
-
-    priv = nautilus_search_engine_get_instance_private (NAUTILUS_SEARCH_ENGINE (engine));
-
-    switch (arg_id)
-    {
-        case PROP_RECURSIVE:
-        {
-            priv->recursive = g_value_get_boolean (value);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
-        }
-        break;
     }
 }
 
@@ -483,20 +370,6 @@ nautilus_search_engine_class_init (NautilusSearchEngineClass *class)
 
     object_class->finalize = nautilus_search_engine_finalize;
     object_class->get_property = nautilus_search_engine_get_property;
-    object_class->set_property = nautilus_search_engine_set_property;
-
-    /**
-     * NautilusSearchEngine::recursive:
-     *
-     * Whether the search is recursive or not.
-     */
-    g_object_class_install_property (object_class,
-                                     PROP_RECURSIVE,
-                                     g_param_spec_boolean ("recursive",
-                                                           "recursive",
-                                                           "recursive",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
     /**
      * NautilusSearchEngine::running:
@@ -514,7 +387,14 @@ nautilus_search_engine_init (NautilusSearchEngine *engine)
     priv = nautilus_search_engine_get_instance_private (engine);
     priv->uris = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
-    priv->providers = g_queue_new ();
+    priv->tracker = nautilus_search_engine_tracker_new ();
+    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+
+    priv->model = nautilus_search_engine_model_new ();
+    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->model));
+
+    priv->simple = nautilus_search_engine_simple_new ();
+    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->simple));
 }
 
 NautilusSearchEngine *
@@ -525,4 +405,24 @@ nautilus_search_engine_new (void)
     engine = g_object_new (NAUTILUS_TYPE_SEARCH_ENGINE, NULL);
 
     return engine;
+}
+
+NautilusSearchEngineModel *
+nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine)
+{
+    NautilusSearchEnginePrivate *priv;
+
+    priv = nautilus_search_engine_get_instance_private (engine);
+
+    return priv->model;
+}
+
+NautilusSearchEngineSimple *
+nautilus_search_engine_get_simple_provider (NautilusSearchEngine *engine)
+{
+    NautilusSearchEnginePrivate *priv;
+
+    priv = nautilus_search_engine_get_instance_private (engine);
+
+    return priv->simple;
 }

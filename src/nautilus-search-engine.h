@@ -30,7 +30,7 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SEARCH_ENGINE     (nautilus_search_engine_get_type ())
+#define NAUTILUS_TYPE_SEARCH_ENGINE		(nautilus_search_engine_get_type ())
 
 G_DECLARE_DERIVABLE_TYPE (NautilusSearchEngine, nautilus_search_engine, NAUTILUS, SEARCH_ENGINE, GObject)
 
@@ -39,9 +39,11 @@ struct _NautilusSearchEngineClass
   GObjectClass parent_class;
 };
 
-NautilusSearchEngine *nautilus_search_engine_new (void);
-void nautilus_search_engine_set_model            (NautilusSearchEngine *engine,
-                                                  NautilusDirectory    *directory);
+NautilusSearchEngine *nautilus_search_engine_new                (void);
+NautilusSearchEngineModel *
+                      nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
+NautilusSearchEngineSimple *
+                      nautilus_search_engine_get_simple_provider (NautilusSearchEngine *engine);
 
 G_END_DECLS
 

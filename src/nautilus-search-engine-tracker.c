@@ -485,17 +485,6 @@ nautilus_search_engine_tracker_is_running (NautilusSearchProvider *provider)
     return tracker->details->query_pending;
 }
 
-static gboolean
-nautilus_search_engine_tracker_is_finished (NautilusSearchProvider *provider)
-{
-    NautilusSearchEngineTracker *tracker;
-
-    tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
-
-    return !tracker->details->query_pending;
-}
-
-
 static void
 nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
 {
@@ -503,7 +492,6 @@ nautilus_search_provider_init (NautilusSearchProviderInterface *iface)
     iface->start = nautilus_search_engine_tracker_start;
     iface->stop = nautilus_search_engine_tracker_stop;
     iface->is_running = nautilus_search_engine_tracker_is_running;
-    iface->is_finished = nautilus_search_engine_tracker_is_finished;
 }
 
 static void

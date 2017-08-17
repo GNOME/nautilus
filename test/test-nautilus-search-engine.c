@@ -28,6 +28,7 @@ main (int   argc,
       char *argv[])
 {
     NautilusSearchEngine *engine;
+    NautilusSearchEngineModel *model;
     NautilusDirectory *directory;
     NautilusQuery *query;
     GFile *location;
@@ -51,7 +52,8 @@ main (int   argc,
     directory = nautilus_directory_get (location);
     g_object_unref (location);
 
-    nautilus_search_engine_set_model (engine, directory);
+    model = nautilus_search_engine_get_model_provider (engine);
+    nautilus_search_engine_model_set_model (model, directory);
     g_object_unref (directory);
 
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine));
