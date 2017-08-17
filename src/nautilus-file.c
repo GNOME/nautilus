@@ -4207,16 +4207,17 @@ nautilus_file_list_filter (GList                   *files,
 gboolean
 nautilus_file_list_are_all_folders (const GList *files)
 {
-  const GList *l;
+    const GList *l;
 
-  for (l = files; l != NULL; l = l->next)
-  {
-    if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
+    for (l = files; l != NULL; l = l->next)
     {
-        return FALSE;
+        if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
+        {
+            return FALSE;
+        }
     }
-  }
-  return TRUE;
+
+    return TRUE;
 }
 
 char *
