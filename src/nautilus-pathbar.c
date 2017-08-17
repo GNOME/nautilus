@@ -1671,15 +1671,6 @@ button_event_cb (GtkWidget      *button,
     return GDK_EVENT_PROPAGATE;
 }
 
-static void
-button_drag_begin_cb (GtkWidget      *widget,
-                      GdkDragContext *drag_context,
-                      gpointer        user_data)
-{
-    g_object_set_data (G_OBJECT (widget), "handle-button-release",
-                       GINT_TO_POINTER (FALSE));
-}
-
 static GIcon *
 get_gicon_for_mount (ButtonData *button_data)
 {
@@ -1841,66 +1832,6 @@ setup_button_type (ButtonData      *button_data,
     }
 
     g_free (uri);
-}
-
-static void
-button_drag_data_get_cb (GtkWidget        *widget,
-                         GdkDragContext   *context,
-                         GtkSelectionData *selection_data,
-                         guint             info,
-                         guint             time_,
-                         gpointer          user_data)
-{
-    ButtonData *button_data;
-    char *uri_list[2];
-    char *tmp;
-
-    button_data = user_data;
-
-    uri_list[0] = g_file_get_uri (button_data->path);
-    uri_list[1] = NULL;
-
-    if (info == NAUTILUS_ICON_DND_GNOME_ICON_LIST)
-    {
-        tmp = g_strdup_printf ("%s\r\n", uri_list[0]);
-        gtk_selection_data_set (selection_data, gtk_selection_data_get_target (selection_data),
-                                8, (const guchar *) tmp, strlen (tmp));
-        g_free (tmp);
-    }
-    else if (info == NAUTILUS_ICON_DND_URI_LIST)
-    {
-        gtk_selection_data_set_uris (selection_data, uri_list);
-    }
-
-    g_free (uri_list[0]);
-}
-
-static void
-setup_button_drag_source (ButtonData *button_data)
-{
-    GtkTargetList *target_list;
-    const GtkTargetEntry targets[] =
-    {
-        { NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST }
-    };
-
-    gtk_drag_source_set (button_data->button,
-                         GDK_BUTTON1_MASK |
-                         GDK_BUTTON2_MASK,
-                         NULL, 0,
-                         GDK_ACTION_MOVE |
-                         GDK_ACTION_COPY |
-                         GDK_ACTION_LINK |
-                         GDK_ACTION_ASK);
-
-    target_list = gtk_target_list_new (targets, G_N_ELEMENTS (targets));
-    gtk_target_list_add_uri_targets (target_list, NAUTILUS_ICON_DND_URI_LIST);
-    gtk_drag_source_set_target_list (button_data->button, target_list);
-    gtk_target_list_unref (target_list);
-
-    g_signal_connect (button_data->button, "drag-data-get",
-                      G_CALLBACK (button_drag_data_get_cb),
-                      button_data);
 }
 
 static void
@@ -2114,10 +2045,7 @@ make_button_data (NautilusPathBar *path_bar,
     g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
     g_signal_connect (button_data->button, "button-press-event", G_CALLBACK (button_event_cb), button_data);
     g_signal_connect (button_data->button, "button-release-event", G_CALLBACK (button_event_cb), button_data);
-    g_signal_connect (button_data->button, "drag-begin", G_CALLBACK (button_drag_begin_cb), button_data);
     g_object_weak_ref (G_OBJECT (button_data->button), (GWeakNotify) button_data_free, button_data);
-
-    setup_button_drag_source (button_data);
 
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
 
