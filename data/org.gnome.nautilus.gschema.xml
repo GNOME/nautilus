@@ -235,8 +235,7 @@
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
       <default>'large'</default>
-      <summary>Default icon zoom level</summary>
-      <description>Default zoom level used by the icon view.</description>
+      <summary>Default icon view zoom level</summary>
     </key>
     <key type="i" name="thumbnail-size">
       <default>64</default>
@@ -253,18 +252,15 @@
   <schema path="/org/gnome/nautilus/list-view/" id="org.gnome.nautilus.list-view" gettext-domain="nautilus">
     <key name="default-zoom-level" enum="org.gnome.nautilus.ListZoomLevel">
       <default>'standard'</default>
-      <summary>Default list zoom level</summary>
-      <description>Default zoom level used by the list view.</description>
+      <summary>Default list view zoom level</summary>
     </key>
     <key type="as" name="default-visible-columns">
       <default>[ 'name', 'size', 'date_modified' ]</default>
-      <summary>Default list of columns visible in the list view</summary>
-      <description>Default list of columns visible in the list view.</description>
+      <summary>Columns visible in list view</summary>
     </key>
     <key type="as" name="default-column-order">
       <default>[ 'name', 'size', 'type', 'owner', 'group', 'permissions', 'mime_type', 'where', 'date_modified', 'date_modified_with_time', 'date_accessed' ]</default>
-      <summary>Default column order in the list view</summary>
-      <description>Default column order in the list view.</description>
+      <summary>Column order in list view</summary>
     </key>
     <key type="b" name="use-tree-view">
       <default>false</default>
