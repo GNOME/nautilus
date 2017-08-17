@@ -265,7 +265,15 @@ static void
 select_type_button_clicked (GtkButton             *button,
                             NautilusSearchPopover *popover)
 {
+    GtkListBoxRow *selected_row;
+
+    selected_row = gtk_list_box_get_selected_row (GTK_LIST_BOX (popover->type_listbox));
+
     gtk_stack_set_visible_child_name (GTK_STACK (popover->type_stack), "type-list");
+    if (selected_row != NULL)
+    {
+        gtk_widget_grab_focus (GTK_WIDGET (selected_row));
+    }
 
     /* Hide the date selection widgets when the type selection
      * listbox is shown.
@@ -882,6 +890,9 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
                                   NULL);
 
     fill_types_listbox (self);
+
+    gtk_list_box_select_row (GTK_LIST_BOX (self->type_listbox),
+                             gtk_list_box_get_row_at_index (GTK_LIST_BOX (self->type_listbox), 0));
 
     filter_time_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     if (filter_time_type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_MODIFIED)
