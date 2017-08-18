@@ -674,33 +674,6 @@ nautilus_window_open_location_full (NautilusWindow          *window,
     g_object_unref (location);
 }
 
-static int
-bookmark_list_get_uri_index (GList *list,
-                             GFile *location)
-{
-    NautilusBookmark *bookmark;
-    GList *l;
-    GFile *tmp;
-    int i;
-
-    g_return_val_if_fail (location != NULL, -1);
-
-    for (i = 0, l = list; l != NULL; i++, l = l->next)
-    {
-        bookmark = NAUTILUS_BOOKMARK (l->data);
-
-        tmp = nautilus_bookmark_get_location (bookmark);
-        if (g_file_equal (location, tmp))
-        {
-            g_object_unref (tmp);
-            return i;
-        }
-        g_object_unref (tmp);
-    }
-
-    return -1;
-}
-
 static void
 unset_focus_widget (NautilusWindow *window)
 {
@@ -1964,22 +1937,7 @@ path_bar_location_changed_callback (GtkWidget      *widget,
                                     GFile          *location,
                                     NautilusWindow *window)
 {
-    NautilusWindowPrivate *priv;
-    NautilusWindowSlot *slot;
-    int i;
-
-    priv = nautilus_window_get_instance_private (window);
-    slot = priv->active_slot;
-    /* check whether we already visited the target location */
-    i = bookmark_list_get_uri_index (nautilus_window_slot_get_back_history (slot), location);
-    if (i >= 0)
-    {
-        nautilus_window_back_or_forward (window, TRUE, i, 0);
-    }
-    else
-    {
-        nautilus_window_open_location_full (window, location, 0, NULL, NULL);
-    }
+    nautilus_window_open_location_full (window, location, 0, NULL, NULL);
 }
 
 static void
