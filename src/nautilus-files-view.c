@@ -9481,6 +9481,18 @@ nautilus_files_view_init (NautilusFilesView *view)
         "<control>plus",
         NULL
     };
+      const gchar *move_to_trash_accels[] =
+    {
+        "Delete",
+        "KP_Delete",
+        NULL
+    };
+      const gchar *delete_permanently_accels[] =
+    {
+        "<shift>Delete",
+        "<shift>KP_Delete",
+        NULL
+    };
 
     nautilus_profile_start (NULL);
 
@@ -9670,14 +9682,14 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
     nautilus_application_set_accelerator (app, "view.open-item-new-tab", "<control>Return");
     nautilus_application_set_accelerator (app, "view.open-item-new-window", "<Shift>Return");
-    nautilus_application_set_accelerator (app, "view.move-to-trash", "Delete");
-    nautilus_application_set_accelerator (app, "view.delete-from-trash", "Delete");
-    nautilus_application_set_accelerator (app, "view.delete-permanently-shortcut", "<shift>Delete");
-    /* When trash is not available, allow the "Delete" key to delete permanently, that is, when
+    nautilus_application_set_accelerators (app, "view.move-to-trash", move_to_trash_accels);
+    nautilus_application_set_accelerators (app, "view.delete-from-trash", move_to_trash_accels);
+    nautilus_application_set_accelerators (app, "view.delete-permanently-shortcut", delete_permanently_accels);
+    /* When trash is not available, allow the "Delete" keys to delete permanently, that is, when
      * the menu item is available, since we never make both the trash and delete-permanently-menu-item
      * actions active */
-    nautilus_application_set_accelerator (app, "view.delete-permanently-menu-item", "Delete");
-    nautilus_application_set_accelerator (app, "view.permanent-delete-permanently-menu-item", "<shift>Delete");
+    nautilus_application_set_accelerators (app, "view.delete-permanently-menu-item", move_to_trash_accels);
+    nautilus_application_set_accelerators (app, "view.permanent-delete-permanently-menu-item", delete_permanently_accels);
     nautilus_application_set_accelerators (app, "view.properties", open_properties);
     nautilus_application_set_accelerator (app, "view.open-item-location", "<control><alt>o");
     nautilus_application_set_accelerator (app, "view.rename", "F2");
