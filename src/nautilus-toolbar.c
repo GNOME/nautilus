@@ -69,6 +69,7 @@ struct _NautilusToolbar
     GtkWidget *location_entry;
 
     gboolean show_location_entry;
+    gboolean location_entry_should_auto_hide;
 
     guint popup_timeout_id;
     guint start_operations_timeout_id;
@@ -868,6 +869,51 @@ undo_manager_changed (NautilusToolbar *self)
     update_menu_item (self->redo_button, self, "redo", redo_active, redo_label);
 }
 
+static gboolean
+on_location_entry_populate_popup (GtkEntry  *entry,
+                                  GtkWidget *widget,
+                                  gpointer   user_data)
+{
+    NautilusToolbar *toolbar;
+
+    toolbar = user_data;
+
+    toolbar->location_entry_should_auto_hide = FALSE;
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+on_location_entry_focus_out_event (GtkWidget *widget,
+                                   GdkEvent  *event,
+                                   gpointer   user_data)
+{
+    NautilusToolbar *toolbar;
+
+    toolbar = user_data;
+
+    if (toolbar->location_entry_should_auto_hide)
+    {
+        nautilus_toolbar_set_show_location_entry (toolbar, FALSE);
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+on_location_entry_focus_in_event (GtkWidget *widget,
+                                  GdkEvent  *event,
+                                  gpointer   user_data)
+{
+    NautilusToolbar *toolbar;
+
+    toolbar = user_data;
+
+    toolbar->location_entry_should_auto_hide = TRUE;
+
+    return GDK_EVENT_PROPAGATE;
+}
+
 static void
 nautilus_toolbar_init (NautilusToolbar *self)
 {
@@ -878,6 +924,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-menu.ui");
     menu_popover = GTK_WIDGET (gtk_builder_get_object (builder, "menu_popover"));
+
+    self->window = NULL;
     self->view_menu_zoom_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_zoom_section"));
     self->view_menu_undo_redo_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_undo_redo_section"));
     self->view_menu_extended_section = GTK_WIDGET (gtk_builder_get_object (builder, "view_menu_extended_section"));
@@ -918,6 +966,12 @@ nautilus_toolbar_init (NautilusToolbar *self)
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
                               (GCallback) gtk_widget_grab_focus, self);
+    g_signal_connect (self->location_entry, "populate-popup",
+                      G_CALLBACK (on_location_entry_populate_popup), self);
+    g_signal_connect (self->location_entry, "focus-out-event",
+                      G_CALLBACK (on_location_entry_focus_out_event), self);
+    g_signal_connect (self->location_entry, "focus-in-event",
+                      G_CALLBACK (on_location_entry_focus_in_event), self);
 
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
@@ -962,6 +1016,58 @@ nautilus_toolbar_get_property (GObject    *object,
     }
 }
 
+/* The working assumption being made here is, if the location entry is visible,
+ * the user must have switched windows while having keyboard focus on the entry
+ * (because otherwise it would be invisible),
+ * so we focus the entry explicitly to reset the “should auto-hide” flag.
+ */
+static gboolean
+on_window_focus_in_event (GtkWidget *widget,
+                          GdkEvent  *event,
+                          gpointer   user_data)
+{
+    NautilusToolbar *toolbar;
+
+    toolbar = user_data;
+
+    if (g_settings_get_boolean (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (toolbar->show_location_entry)
+    {
+        gtk_widget_grab_focus (toolbar->location_entry);
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+/* The location entry in general is hidden when it loses focus,
+ * but hiding it when switching windows could be undesirable, as the user
+ * might want to copy a path from somewhere. This here prevents that from happening.
+ */
+static gboolean
+on_window_focus_out_event (GtkWidget *widget,
+                           GdkEvent  *event,
+                           gpointer   user_data)
+{
+    NautilusToolbar *toolbar;
+
+    toolbar = user_data;
+
+    if (g_settings_get_boolean (nautilus_preferences,
+                                NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    toolbar->location_entry_should_auto_hide = FALSE;
+
+    return GDK_EVENT_PROPAGATE;
+}
+
 static void
 nautilus_toolbar_set_property (GObject      *object,
                                guint         property_id,
@@ -974,7 +1080,21 @@ nautilus_toolbar_set_property (GObject      *object,
     {
         case PROP_WINDOW:
         {
+            if (self->window != NULL)
+            {
+                g_signal_handlers_disconnect_by_func (self->window,
+                                                      on_window_focus_in_event, self);
+                g_signal_handlers_disconnect_by_func (self->window,
+                                                      on_window_focus_out_event, self);
+            }
             self->window = g_value_get_object (value);
+            if (self->window != NULL)
+            {
+                g_signal_connect (self->window, "focus-in-event",
+                                  G_CALLBACK (on_window_focus_in_event), self);
+                g_signal_connect (self->window, "focus-out-event",
+                                  G_CALLBACK (on_window_focus_out_event), self);
+            }
         }
         break;
 
@@ -1007,6 +1127,11 @@ nautilus_toolbar_finalize (GObject *obj)
 
     g_signal_handlers_disconnect_by_data (self->progress_manager, self);
     g_clear_object (&self->progress_manager);
+
+    g_signal_handlers_disconnect_by_func (self->window,
+                                          on_window_focus_in_event, self);
+    g_signal_handlers_disconnect_by_func (self->window,
+                                          on_window_focus_out_event, self);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }
