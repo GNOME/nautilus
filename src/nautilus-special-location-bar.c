@@ -25,10 +25,10 @@
 #include "nautilus-special-location-bar.h"
 #include "nautilus-enum-types.h"
 
-#define NAUTILUS_SPECIAL_LOCATION_BAR_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR, NautilusSpecialLocationBarPrivate))
-
-struct NautilusSpecialLocationBarPrivate
+struct _NautilusSpecialLocationBar
 {
+    GtkInfoBar parent_instance;
+
     GtkWidget *label;
     GtkWidget *learn_more_label;
     NautilusSpecialLocation special_location;
@@ -68,21 +68,21 @@ set_special_location (NautilusSpecialLocationBar *bar,
             g_assert_not_reached ();
     }
 
-    gtk_label_set_text (GTK_LABEL (bar->priv->label), message);
+    gtk_label_set_text (GTK_LABEL (bar->label), message);
     g_free (message);
 
-    gtk_widget_show (bar->priv->label);
+    gtk_widget_show (bar->label);
 
     if (learn_more_markup)
     {
-        gtk_label_set_markup (GTK_LABEL (bar->priv->learn_more_label),
+        gtk_label_set_markup (GTK_LABEL (bar->learn_more_label),
                               learn_more_markup);
-        gtk_widget_show (bar->priv->learn_more_label);
+        gtk_widget_show (bar->learn_more_label);
         g_free (learn_more_markup);
     }
     else
     {
-        gtk_widget_hide (bar->priv->learn_more_label);
+        gtk_widget_hide (bar->learn_more_label);
     }
 }
 
@@ -126,7 +126,7 @@ nautilus_special_location_bar_get_property (GObject    *object,
     {
         case PROP_SPECIAL_LOCATION:
         {
-            g_value_set_enum (value, bar->priv->special_location);
+            g_value_set_enum (value, bar->special_location);
         }
         break;
 
@@ -147,8 +147,6 @@ nautilus_special_location_bar_class_init (NautilusSpecialLocationBarClass *klass
     object_class->get_property = nautilus_special_location_bar_get_property;
     object_class->set_property = nautilus_special_location_bar_set_property;
 
-    g_type_class_add_private (klass, sizeof (NautilusSpecialLocationBarPrivate));
-
     g_object_class_install_property (object_class,
                                      PROP_SPECIAL_LOCATION,
                                      g_param_spec_enum ("special-location",
@@ -166,7 +164,6 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
     GtkWidget *action_area;
     PangoAttrList *attrs;
 
-    bar->priv = NAUTILUS_SPECIAL_LOCATION_BAR_GET_PRIVATE (bar);
     location_area = gtk_info_bar_get_content_area (GTK_INFO_BAR (bar));
     action_area = gtk_info_bar_get_action_area (GTK_INFO_BAR (bar));
 
@@ -174,17 +171,17 @@ nautilus_special_location_bar_init (NautilusSpecialLocationBar *bar)
 
     attrs = pango_attr_list_new ();
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-    bar->priv->label = gtk_label_new (NULL);
-    gtk_label_set_attributes (GTK_LABEL (bar->priv->label), attrs);
+    bar->label = gtk_label_new (NULL);
+    gtk_label_set_attributes (GTK_LABEL (bar->label), attrs);
     pango_attr_list_unref (attrs);
 
-    gtk_label_set_ellipsize (GTK_LABEL (bar->priv->label), PANGO_ELLIPSIZE_END);
-    gtk_container_add (GTK_CONTAINER (location_area), bar->priv->label);
+    gtk_label_set_ellipsize (GTK_LABEL (bar->label), PANGO_ELLIPSIZE_END);
+    gtk_container_add (GTK_CONTAINER (location_area), bar->label);
 
-    bar->priv->learn_more_label = gtk_label_new (NULL);
-    gtk_widget_set_hexpand (bar->priv->learn_more_label, TRUE);
-    gtk_widget_set_halign (bar->priv->learn_more_label, GTK_ALIGN_END);
-    gtk_container_add (GTK_CONTAINER (location_area), bar->priv->learn_more_label);
+    bar->learn_more_label = gtk_label_new (NULL);
+    gtk_widget_set_hexpand (bar->learn_more_label, TRUE);
+    gtk_widget_set_halign (bar->learn_more_label, GTK_ALIGN_END);
+    gtk_container_add (GTK_CONTAINER (location_area), bar->learn_more_label);
 }
 
 GtkWidget *

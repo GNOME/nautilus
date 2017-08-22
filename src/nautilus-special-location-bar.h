@@ -24,33 +24,13 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SPECIAL_LOCATION_BAR         (nautilus_special_location_bar_get_type ())
-#define NAUTILUS_SPECIAL_LOCATION_BAR(o)           (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR, NautilusSpecialLocationBar))
-#define NAUTILUS_SPECIAL_LOCATION_BAR_CLASS(k)     (G_TYPE_CHECK_CLASS_CAST((k), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR, NautilusSpecialLocationBarClass))
-#define NAUTILUS_IS_SPECIAL_LOCATION_BAR(o)        (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR))
-#define NAUTILUS_IS_SPECIAL_LOCATION_BAR_CLASS(k)  (G_TYPE_CHECK_CLASS_TYPE ((k), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR))
-#define NAUTILUS_SPECIAL_LOCATION_BAR_GET_CLASS(o) (G_TYPE_INSTANCE_GET_CLASS ((o), NAUTILUS_TYPE_SPECIAL_LOCATION_BAR, NautilusSpecialLocationBarClass))
-
-typedef struct NautilusSpecialLocationBarPrivate NautilusSpecialLocationBarPrivate;
-
-typedef struct
-{
-	GtkInfoBar parent;
-
-	NautilusSpecialLocationBarPrivate *priv;
-} NautilusSpecialLocationBar;
+#define NAUTILUS_TYPE_SPECIAL_LOCATION_BAR (nautilus_special_location_bar_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusSpecialLocationBar, nautilus_special_location_bar, NAUTILUS, SPECIAL_LOCATION_BAR, GtkInfoBar)
 
 typedef enum {
 	NAUTILUS_SPECIAL_LOCATION_TEMPLATES,
 	NAUTILUS_SPECIAL_LOCATION_SCRIPTS,
 } NautilusSpecialLocation;
-
-typedef struct
-{
-	GtkInfoBarClass parent_class;
-} NautilusSpecialLocationBarClass;
-
-GType		 nautilus_special_location_bar_get_type	(void) G_GNUC_CONST;
 
 GtkWidget	*nautilus_special_location_bar_new (NautilusSpecialLocation location);
 
