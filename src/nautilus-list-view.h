@@ -27,30 +27,17 @@
 
 #include "nautilus-files-view.h"
 
-#define NAUTILUS_TYPE_LIST_VIEW nautilus_list_view_get_type()
-#define NAUTILUS_LIST_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LIST_VIEW, NautilusListView))
-#define NAUTILUS_LIST_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_LIST_VIEW, NautilusListViewClass))
-#define NAUTILUS_IS_LIST_VIEW(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LIST_VIEW))
-#define NAUTILUS_IS_LIST_VIEW_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_LIST_VIEW))
-#define NAUTILUS_LIST_VIEW_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_LIST_VIEW, NautilusListViewClass))
+#define NAUTILUS_TYPE_LIST_VIEW (nautilus_list_view_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusListView, nautilus_list_view, NAUTILUS, LIST_VIEW, NautilusFilesView)
 
 typedef struct NautilusListViewDetails NautilusListViewDetails;
 
-typedef struct {
+struct _NautilusListView
+{
 	NautilusFilesView parent_instance;
 	NautilusListViewDetails *details;
-} NautilusListView;
+};
 
-typedef struct {
-	NautilusFilesViewClass parent_class;
-} NautilusListViewClass;
-
-GType nautilus_list_view_get_type (void);
 NautilusFilesView * nautilus_list_view_new (NautilusWindowSlot *slot);
 
 #endif /* NAUTILUS_LIST_VIEW_H */
