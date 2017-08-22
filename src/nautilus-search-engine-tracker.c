@@ -32,8 +32,10 @@
 #include <gio/gio.h>
 #include <libtracker-sparql/tracker-sparql.h>
 
-struct NautilusSearchEngineTrackerDetails
+struct _NautilusSearchEngineTracker
 {
+    GObject parent_instance;
+
     TrackerSparqlConnection *connection;
     NautilusQuery *query;
 
@@ -68,15 +70,15 @@ finalize (GObject *object)
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (object);
 
-    if (tracker->details->cancellable)
+    if (tracker->cancellable)
     {
-        g_cancellable_cancel (tracker->details->cancellable);
-        g_clear_object (&tracker->details->cancellable);
+        g_cancellable_cancel (tracker->cancellable);
+        g_clear_object (&tracker->cancellable);
     }
 
-    g_clear_object (&tracker->details->query);
-    g_clear_object (&tracker->details->connection);
-    g_queue_free_full (tracker->details->hits_pending, g_object_unref);
+    g_clear_object (&tracker->query);
+    g_clear_object (&tracker->connection);
+    g_queue_free_full (tracker->hits_pending, g_object_unref);
 
     G_OBJECT_CLASS (nautilus_search_engine_tracker_parent_class)->finalize (object);
 }
@@ -93,12 +95,12 @@ check_pending_hits (NautilusSearchEngineTracker *tracker,
     DEBUG ("Tracker engine add hits");
 
     if (!force_send &&
-        g_queue_get_length (tracker->details->hits_pending) < BATCH_SIZE)
+        g_queue_get_length (tracker->hits_pending) < BATCH_SIZE)
     {
         return;
     }
 
-    while ((hit = g_queue_pop_head (tracker->details->hits_pending)))
+    while ((hit = g_queue_pop_head (tracker->hits_pending)))
     {
         hits = g_list_prepend (hits, hit);
     }
@@ -119,11 +121,11 @@ search_finished (NautilusSearchEngineTracker *tracker,
     }
     else
     {
-        g_queue_foreach (tracker->details->hits_pending, (GFunc) g_object_unref, NULL);
-        g_queue_clear (tracker->details->hits_pending);
+        g_queue_foreach (tracker->hits_pending, (GFunc) g_object_unref, NULL);
+        g_queue_clear (tracker->hits_pending);
     }
 
-    tracker->details->query_pending = FALSE;
+    tracker->query_pending = FALSE;
 
     g_object_notify (G_OBJECT (tracker), "running");
 
@@ -158,7 +160,7 @@ cursor_next (NautilusSearchEngineTracker *tracker,
              TrackerSparqlCursor         *cursor)
 {
     tracker_sparql_cursor_next_async (cursor,
-                                      tracker->details->cancellable,
+                                      tracker->cancellable,
                                       cursor_callback,
                                       tracker);
 }
@@ -204,11 +206,11 @@ cursor_callback (GObject      *object,
     basename = g_path_get_basename (uri);
 
     hit = nautilus_search_hit_new (uri);
-    match = nautilus_query_matches_string (tracker->details->query, basename);
+    match = nautilus_query_matches_string (tracker->query, basename);
     nautilus_search_hit_set_fts_rank (hit, rank + match);
     g_free (basename);
 
-    if (tracker->details->fts_enabled)
+    if (tracker->fts_enabled)
     {
         snippet = tracker_sparql_cursor_get_string (cursor, 4, NULL);
         nautilus_search_hit_set_fts_snippet (hit, snippet);
@@ -237,7 +239,7 @@ cursor_callback (GObject      *object,
         g_warning ("unable to parse atime: %s", atime_str);
     }
 
-    g_queue_push_head (tracker->details->hits_pending, hit);
+    g_queue_push_head (tracker->hits_pending, hit);
     check_pending_hits (tracker, FALSE);
 
     /* Get next */
@@ -298,18 +300,18 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
-    if (tracker->details->query_pending)
+    if (tracker->query_pending)
     {
         return;
     }
 
     DEBUG ("Tracker engine start");
     g_object_ref (tracker);
-    tracker->details->query_pending = TRUE;
+    tracker->query_pending = TRUE;
 
     g_object_notify (G_OBJECT (provider), "running");
 
-    if (tracker->details->connection == NULL)
+    if (tracker->connection == NULL)
     {
         g_idle_add (search_finished_idle, provider);
         return;
@@ -317,24 +319,24 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
                 g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
-    tracker->details->recursive = recursive;
+    tracker->recursive = recursive;
 
-    tracker->details->fts_enabled = nautilus_query_get_search_content (tracker->details->query);
+    tracker->fts_enabled = nautilus_query_get_search_content (tracker->query);
 
-    query_text = nautilus_query_get_text (tracker->details->query);
+    query_text = nautilus_query_get_text (tracker->query);
     downcase = g_utf8_strdown (query_text, -1);
     search_text = tracker_sparql_escape_string (downcase);
     g_free (query_text);
     g_free (downcase);
 
-    location = nautilus_query_get_location (tracker->details->query);
+    location = nautilus_query_get_location (tracker->query);
     location_uri = location ? g_file_get_uri (location) : NULL;
-    mimetypes = nautilus_query_get_mime_types (tracker->details->query);
+    mimetypes = nautilus_query_get_mime_types (tracker->query);
     mime_count = g_list_length (mimetypes);
 
     sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)");
 
-    if (tracker->details->fts_enabled)
+    if (tracker->fts_enabled)
     {
         g_string_append (sparql, " fts:snippet(?urn)");
     }
@@ -358,7 +360,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     g_string_append_printf (sparql, " . FILTER( ");
 
-    if (!tracker->details->recursive)
+    if (!tracker->recursive)
     {
         g_string_append_printf (sparql, "tracker:uri-is-parent('%s', ?url)", location_uri);
     }
@@ -367,12 +369,12 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url)", location_uri);
     }
 
-    if (!tracker->details->fts_enabled)
+    if (!tracker->fts_enabled)
     {
             g_string_append_printf (sparql, " && fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
     }
 
-    date_range = nautilus_query_get_date_range (tracker->details->query);
+    date_range = nautilus_query_get_date_range (tracker->query);
     if (date_range)
     {
         NautilusQuerySearchType type;
@@ -388,7 +390,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
          * For that, add a day to it */
         shifted_end_date = g_date_time_add_days (end_date, 1);
 
-        type = nautilus_query_get_search_type (tracker->details->query);
+        type = nautilus_query_get_search_type (tracker->query);
         initial_date_format = g_date_time_format (initial_date, "%Y-%m-%dT%H:%M:%S");
         end_date_format = g_date_time_format (shifted_end_date, "%Y-%m-%dT%H:%M:%S");
 
@@ -430,10 +432,10 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     g_string_append (sparql, ")} ORDER BY DESC (fts:rank(?urn))");
 
-    tracker->details->cancellable = g_cancellable_new ();
-    tracker_sparql_connection_query_async (tracker->details->connection,
+    tracker->cancellable = g_cancellable_new ();
+    tracker_sparql_connection_query_async (tracker->connection,
                                            sparql->str,
-                                           tracker->details->cancellable,
+                                           tracker->cancellable,
                                            query_callback,
                                            tracker);
     g_string_free (sparql, TRUE);
@@ -451,12 +453,12 @@ nautilus_search_engine_tracker_stop (NautilusSearchProvider *provider)
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
-    if (tracker->details->query_pending)
+    if (tracker->query_pending)
     {
         DEBUG ("Tracker engine stop");
-        g_cancellable_cancel (tracker->details->cancellable);
-        g_clear_object (&tracker->details->cancellable);
-        tracker->details->query_pending = FALSE;
+        g_cancellable_cancel (tracker->cancellable);
+        g_clear_object (&tracker->cancellable);
+        tracker->query_pending = FALSE;
 
         g_object_notify (G_OBJECT (provider), "running");
     }
@@ -471,8 +473,8 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
     g_object_ref (query);
-    g_clear_object (&tracker->details->query);
-    tracker->details->query = query;
+    g_clear_object (&tracker->query);
+    tracker->query = query;
 }
 
 static gboolean
@@ -482,7 +484,7 @@ nautilus_search_engine_tracker_is_running (NautilusSearchProvider *provider)
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
-    return tracker->details->query_pending;
+    return tracker->query_pending;
 }
 
 static void
@@ -531,7 +533,6 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
      */
     g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 
-    g_type_class_add_private (class, sizeof (NautilusSearchEngineTrackerDetails));
 }
 
 static void
@@ -539,11 +540,9 @@ nautilus_search_engine_tracker_init (NautilusSearchEngineTracker *engine)
 {
     GError *error = NULL;
 
-    engine->details = G_TYPE_INSTANCE_GET_PRIVATE (engine, NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER,
-                                                   NautilusSearchEngineTrackerDetails);
-    engine->details->hits_pending = g_queue_new ();
+    engine->hits_pending = g_queue_new ();
 
-    engine->details->connection = tracker_sparql_connection_get (NULL, &error);
+    engine->connection = tracker_sparql_connection_get (NULL, &error);
 
     if (error)
     {

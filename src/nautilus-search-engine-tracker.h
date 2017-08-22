@@ -24,25 +24,8 @@
 
 #include "nautilus-search-engine.h"
 
-#define NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER		(nautilus_search_engine_tracker_get_type ())
-#define NAUTILUS_SEARCH_ENGINE_TRACKER(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NautilusSearchEngineTracker))
-#define NAUTILUS_SEARCH_ENGINE_TRACKER_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NautilusSearchEngineTrackerClass))
-#define NAUTILUS_IS_SEARCH_ENGINE_TRACKER(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER))
-#define NAUTILUS_IS_SEARCH_ENGINE_TRACKER_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER))
-#define NAUTILUS_SEARCH_ENGINE_TRACKER_GET_CLASS(obj)   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER, NautilusSearchEngineTrackerClass))
-
-typedef struct NautilusSearchEngineTrackerDetails NautilusSearchEngineTrackerDetails;
-
-typedef struct NautilusSearchEngineTracker {
-	GObject parent;
-	NautilusSearchEngineTrackerDetails *details;
-} NautilusSearchEngineTracker;
-
-typedef struct {
-	GObjectClass parent_class;
-} NautilusSearchEngineTrackerClass;
-
-GType nautilus_search_engine_tracker_get_type (void);
+#define NAUTILUS_TYPE_SEARCH_ENGINE_TRACKER (nautilus_search_engine_tracker_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusSearchEngineTracker, nautilus_search_engine_tracker, NAUTILUS, SEARCH_ENGINE_TRACKER, GObject)
 
 NautilusSearchEngineTracker* nautilus_search_engine_tracker_new (void);
 
