@@ -19,11 +19,13 @@
 #ifndef NAUTILUS_ATTRIBUTE_H_INCLUDED
 #define NAUTILUS_ATTRIBUTE_H_INCLUDED
 
+#include "nautilus-task.h"
+
 #include <glib-object.h>
 
 #define NAUTILUS_TYPE_ATTRIBUTE (nautilus_attribute_get_type ())
 
-G_DECLARE_DERIVABLE_TYPE (NautilusAttribute, nautilus_attribute, NAUTILUS, ATTRIBUTE, GObject)
+G_DECLARE_FINAL_TYPE (NautilusAttribute, nautilus_attribute, NAUTILUS, ATTRIBUTE, GObject)
 
 /* GCopyFunc has too many parameters for our taste. */
 typedef gpointer (*NautilusCopyFunc) (gpointer data);
@@ -39,13 +41,6 @@ typedef enum
     NAUTILUS_ATTRIBUTE_STATE_PENDING,
     NAUTILUS_ATTRIBUTE_STATE_VALID
 } NautilusAttributeState;
-
-struct _NautilusAttributeClass
-{
-    GObjectClass parent_class;
-
-    void (*update) (NautilusAttribute *attribute);
-};
 
 /**
  * nautilus_attribute_get_state:
@@ -65,12 +60,10 @@ void                   nautilus_attribute_invalidate (NautilusAttribute *attribu
 /**
  * nautilus_attribute_get_value:
  * @attribute: an initialized #NautilusAttribute
- * @update: whether the value should be updated if invalid
- * @callback: the function to call with the value of @attribute
- * @user_data: additional data to pass to @callback
+ * @callback: (nullable): the function to call with the value of @attribute
+ * @user_data: (nullable): additional data to pass to @callback
  */
 void nautilus_attribute_get_value (NautilusAttribute                    *attribute,
-                                   gboolean                              update,
                                    NautilusAttributeUpdateValueCallback  callback,
                                    gpointer                              user_data);
 /**
@@ -83,12 +76,14 @@ void nautilus_attribute_set_value (NautilusAttribute *attribute,
 
 /**
  * nautilus_attribute_new:
+ * @update_func: the function to call to update invalid values
  * @copy_func: (nullable): the function to call when copying the value
  * @destroy_func: (nullable): the function to call when destroying the value
  *
  * Returns: a new #NautilusAttribute
  */
-NautilusAttribute *nautilus_attribute_new (NautilusCopyFunc copy_func,
+NautilusAttribute *nautilus_attribute_new (NautilusTaskFunc update_func,
+                                           NautilusCopyFunc copy_func,
                                            GDestroyNotify   destroy_func);
 
 #endif

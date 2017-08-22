@@ -18,24 +18,17 @@
 
 #include "nautilus-file.h"
 
-#include "nautilus-cache.h"
+#include "nautilus-attribute.h"
 #include "nautilus-directory.h"
 #include "nautilus-file-table.h"
 #include "nautilus-task.h"
 #include "nautilus-tasks.h"
 
-enum
-{
-    INFO,
-    N_ITEMS
-};
-
 typedef struct
 {
     GFile *location;
 
-    NautilusCache *cache;
-    gssize cache_items[N_ITEMS];
+    NautilusAttribute *attribute_info;
 } NautilusFilePrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusFile, nautilus_file, G_TYPE_OBJECT)
@@ -147,8 +140,7 @@ renamed (NautilusFile *file,
 
     g_assert (nautilus_file_table_insert (new_location, file));
 
-    nautilus_cache_item_invalidate (priv->cache, priv->cache_items[INFO],
-                                    FALSE);
+    nautilus_attribute_item_invalidate (priv->attribute_info);
 }
 
 static void
@@ -189,9 +181,9 @@ nautilus_file_init (NautilusFile *self)
 
     priv = nautilus_file_get_instance_private (self);
 
-    priv->cache = nautilus_cache_new ();
-    priv->cache_items[INFO] = nautilus_cache_install_item (priv->cache,
-                                                           g_object_unref);
+    priv->attribute_info = nautilus_attribute_new (nautilus_query_info_func,
+                                                   NAUTILUS_COPY_FUNC (g_file_info_dup),
+                                                   g_object_unref);
 }
 
 typedef struct
@@ -202,12 +194,9 @@ typedef struct
     gpointer callback_data;
 } QueryInfoDetails;
 
-/*static void
-on_query_info_finished (NautilusAttributeTask *task,
-                        GFile                 *file,
-                        GFileInfo             *info,
-                        GError                *error,
-                        gpointer               data)
+static void
+query_info_task_callback (NautilusTask *task,
+                          gpointer      user_data)
 {
     QueryInfoDetails *details;
     NautilusFilePrivate *priv;
@@ -218,20 +207,11 @@ on_query_info_finished (NautilusAttributeTask *task,
     cache_state = nautilus_cache_item_get_state (priv->cache,
                                                  priv->cache_items[INFO]);
 
-    if (cache_state == NAUTILUS_CACHE_INVALID)
-    {*/
-        /* TODO: restart */
-        /*return;
-    }
-
-    nautilus_cache_item_set_value (priv->cache, priv->cache_items[INFO],
-                                   info);
-
     details->callback (details->file, g_file_info_dup (info), error,
                        details->callback_data);
 
     g_free (details);
-}*/
+}
 
 void
 nautilus_file_query_info (NautilusFile             *file,
@@ -277,13 +257,16 @@ nautilus_file_query_info (NautilusFile             *file,
     nautilus_cache_item_set_pending (priv->cache, priv->cache_items[INFO]);
 
     location = nautilus_file_get_location (file);
-    task = nautilus_task_new_with_func (nautilus_query_info_func, location, cancellable);
+    task = nautilus_task_new_with_func (nautilus_query_info_func, location, g_object_unref,
+                                        cancellable);
 
     details = g_new0 (QueryInfoDetails, 1);
 
     details->file = file;
     details->callback = callback;
     details->callback_data = user_data;
+
+    nautilus_task_add_callback (task, query_info_task_callback, details);
 
     nautilus_task_run (task);
 }
@@ -301,7 +284,8 @@ nautilus_file_get_thumbnail (NautilusFile              *file,
 
     location = nautilus_file_get_location (file);
     task = nautilus_task_new_with_func (nautilus_thumbnail_task_func,
-                                        g_object_ref (location), cancellable);
+                                        g_object_ref (location), g_object_unref,
+                                        cancellable);
 
     nautilus_task_run (task);
 }

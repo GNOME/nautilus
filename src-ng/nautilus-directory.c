@@ -157,7 +157,7 @@ nautilus_directory_enumerate_children (NautilusDirectory                 *direct
 {
     NautilusDirectoryPrivate *priv;
     NautilusCacheState cache_state;
-    g_autoptr (GFile) location = NULL;
+    GFile *location;
     g_autoptr (NautilusTask) task = NULL;
 
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
@@ -183,7 +183,7 @@ nautilus_directory_enumerate_children (NautilusDirectory                 *direct
 
     location = nautilus_file_get_location (NAUTILUS_FILE (directory));
     task = nautilus_task_new_with_func (nautilus_enumerate_children_task_func, location,
-                                        cancellable);
+                                        g_object_unref, cancellable);
 
     nautilus_task_run (task);
 }

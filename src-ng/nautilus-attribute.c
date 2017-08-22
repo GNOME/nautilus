@@ -18,34 +18,41 @@
 
 #include "nautilus-attribute.h"
 
-typedef struct
+struct _NautilusAttribute
 {
+    GRecMutex mutex;
+
     gpointer value;
     NautilusAttributeState state;
+
+    NautilusTaskFunc update_func;
+    NautilusTask *update_task;
 
     NautilusCopyFunc copy_func;
     GDestroyNotify destroy_func;
 
-    GMutex mutex;
-} NautilusAttributePrivate;
+    GCancellable *cancellable;
+};
 
-G_DEFINE_TYPE_WITH_PRIVATE (NautilusAttribute, nautilus_attribute, G_TYPE_OBJECT)
+G_DEFINE_TYPE (NautilusAttribute, nautilus_attribute, G_TYPE_OBJECT)
 
 static void
 finalize (GObject *object)
 {
     NautilusAttribute *self;
-    NautilusAttributePrivate *priv;
 
     self = NAUTILUS_ATTRIBUTE (object);
-    priv = nautilus_attribute_get_instance_private (self);
 
-    if (priv->destroy_func != NULL && priv->value != NULL)
+    g_rec_mutex_clear (&self->mutex);
+
+    if (self->value != NULL)
     {
-        g_clear_pointer (&priv->value, priv->destroy_func);
+        g_clear_pointer (&self->value, self->destroy_func);
     }
 
-    g_mutex_clear (&priv->mutex);
+    g_cancellable_cancel (self->cancellable);
+
+    g_object_unref (self->cancellable);
 
     G_OBJECT_CLASS (nautilus_attribute_parent_class)->finalize (object);
 }
@@ -63,90 +70,159 @@ nautilus_attribute_class_init (NautilusAttributeClass *klass)
 static void
 nautilus_attribute_init (NautilusAttribute *self)
 {
-    NautilusAttributePrivate *priv;
+    g_rec_mutex_init (&self->mutex);
 
-    priv = nautilus_attribute_get_instance_private (self);
+    self->update_task = NULL;
+    self->cancellable = g_cancellable_new ();
+}
 
-    g_mutex_init (&priv->mutex);
+typedef struct
+{
+    NautilusAttribute *attribute;
+
+    NautilusAttributeUpdateValueCallback callback;
+    gpointer user_data;
+} GetValueCallbackDetails;
+
+static void
+update_task_callback (NautilusTask *task,
+                      gpointer      user_data)
+{
+    GetValueCallbackDetails *details;
+
+    details = user_data;
+
+    g_rec_mutex_lock (&attribute->mutex);
+
+    if (attribute->update_task == task)
+    {
+        if (attribute->state == NAUTILUS_ATTRIBUTE_STATE_PENDING)
+        {
+            attribute->state = NAUTILUS_ATTRIBUTE_STATE_VALID;
+        }
+
+        
+
+        details->callback (details->attribute, nautilus_task_get_result (task),
+                           details->user_data);
+    }
+
+    g_rec_mutex_lock (&attribute->mutex);
+
+    g_object_unref (details->attribute);
+    g_free (details);
 }
 
 void
 nautilus_attribute_get_value (NautilusAttribute                    *attribute,
-                              gboolean                              update,
                               NautilusAttributeUpdateValueCallback  callback,
                               gpointer                              user_data)
 {
-    NautilusAttributePrivate *priv;
     gpointer value;
 
     g_return_if_fail (NAUTILUS_IS_ATTRIBUTE (attribute));
 
-    if (callback == NULL)
+    g_rec_mutex_lock (&attribute->mutex);
+
+    switch (attribute->state)
     {
-        return;
+        case NAUTILUS_ATTRIBUTE_STATE_PENDING:
+        {
+            GetValueCallbackDetails *details;
+
+            details = g_new0 (GetValueCallbackDetails, 1);
+
+            details->attribute = g_object_ref (attribute);
+            details->callback = callback;
+            details->user_data = user_data;
+
+            nautilus_task_add_callback (attribute->update_task, update_task_callback, details);
+        }
+        break;
+
+        case NAUTILUS_ATTRIBUTE_STATE_VALID:
+        {
+            callback (attribute, attribute->copy_func (attribute->value), user_data);
+        };
+        break;
+
+        case NAUTILUS_ATTRIBUTE_STATE_INVALID:
+        {
+            if (attribute->update_task != NULL)
+            {
+                g_object_unref (attribute->update_task);
+            }
+
+            attribute->update_task = nautilus_task_new_with_func (attribute->update_func,
+                                                                  g_object_ref (attribute),
+                                                                  g_object_unref,
+                                                                  attribute->cancellable);
+
+            nautilus_task_add_callback (
+        }
+        break;
     }
 
-    priv = nautilus_attribute_get_instance_private (attribute);
-
-    if (!update)
-    {
-        if (priv->copy_func != NULL && priv->value != NULL)
-        {
-            value = priv->copy_func (priv->value);
-        }
-        else
-        {
-            value = priv->value;
-        }
-    }
+    g_rec_mutex_unlock (&attribute->mutex);
 }
 
 void
 nautilus_attribute_set_value (NautilusAttribute *attribute,
                               gpointer           value)
 {
-    NautilusAttributePrivate *priv;
-
     g_return_if_fail (NAUTILUS_IS_ATTRIBUTE (attribute));
 
-    priv = nautilus_attribute_get_instance_private (attribute);
+    g_rec_mutex_lock (&attribute->mutex);
 
-    g_mutex_lock (&priv->mutex);
-
-    if (priv->destroy_func != NULL && priv->value != NULL)
+    if (attribute->value != NULL)
     {
-        priv->destroy_func (priv->value);
+        attribute->destroy_func (attribute->value);
     }
 
-    if (priv->copy_func != NULL)
-    {
-        priv->value = priv->copy_func (value);
-    }
-    else
-    {
-        priv->value = value;
-    }
+    attribute->value = attribute->copy_func (value);
 
     /* If an update is pending,
      * the new value divined shall be discarded after the state check.
      */
-    priv->state = NAUTILUS_ATTRIBUTE_STATE_VALID;
+    attribute->state = NAUTILUS_ATTRIBUTE_STATE_VALID;
 
-    g_mutex_unlock (&priv->mutex);
+    g_rec_mutex_unlock (&attribute->mutex);
+}
+
+static gpointer
+dummy_copy_func (gpointer data)
+{
+    return data;
+}
+
+static void
+dummy_destroy_func (gpointer data)
+{
+    (void) data;
 }
 
 NautilusAttribute *
-nautilus_attribute_new (NautilusCopyFunc copy_func,
+nautilus_attribute_new (NautilusTaskFunc update_func,
+                        NautilusCopyFunc copy_func,
                         GDestroyNotify   destroy_func)
 {
     NautilusAttribute *instance;
-    NautilusAttributePrivate *priv;
+
+    g_return_val_if_fail (update_func != NULL, NULL);
 
     instance = g_object_new (NAUTILUS_TYPE_ATTRIBUTE, NULL);
-    priv = nautilus_attribute_get_instance_private (instance);
 
-    priv->copy_func = copy_func;
-    priv->destroy_func = destroy_func;
+    instance->update_func = update_func;
+    if (copy_func == NULL)
+    {
+        copy_func = dummy_copy_func;
+    }
+    instance->copy_func = copy_func;
+    if (destroy_func == NULL)
+    {
+        destroy_func = dummy_destroy_func;
+    }
+    instance->destroy_func = destroy_func;
 
     return instance;
 }
