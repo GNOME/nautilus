@@ -24,25 +24,8 @@
 
 #include "nautilus-directory.h"
 
-#define NAUTILUS_TYPE_SEARCH_ENGINE_MODEL		(nautilus_search_engine_model_get_type ())
-#define NAUTILUS_SEARCH_ENGINE_MODEL(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_MODEL, NautilusSearchEngineModel))
-#define NAUTILUS_SEARCH_ENGINE_MODEL_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_MODEL, NautilusSearchEngineModelClass))
-#define NAUTILUS_IS_SEARCH_ENGINE_MODEL(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_MODEL))
-#define NAUTILUS_IS_SEARCH_ENGINE_MODEL_CLASS(klass)	(G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_ENGINE_MODEL))
-#define NAUTILUS_SEARCH_ENGINE_MODEL_GET_CLASS(obj)    (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_ENGINE_MODEL, NautilusSearchEngineModelClass))
-
-typedef struct NautilusSearchEngineModelDetails NautilusSearchEngineModelDetails;
-
-typedef struct NautilusSearchEngineModel {
-	GObject parent;
-	NautilusSearchEngineModelDetails *details;
-} NautilusSearchEngineModel;
-
-typedef struct {
-	GObjectClass parent_class;
-} NautilusSearchEngineModelClass;
-
-GType          nautilus_search_engine_model_get_type  (void);
+#define NAUTILUS_TYPE_SEARCH_ENGINE_MODEL (nautilus_search_engine_model_get_type ())
+G_DECLARE_FINAL_TYPE (NautilusSearchEngineModel, nautilus_search_engine_model, NAUTILUS, SEARCH_ENGINE_MODEL, GObject)
 
 NautilusSearchEngineModel* nautilus_search_engine_model_new       (void);
 void                       nautilus_search_engine_model_set_model (NautilusSearchEngineModel *model,
