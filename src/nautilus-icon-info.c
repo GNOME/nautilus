@@ -35,11 +35,6 @@ struct _NautilusIconInfo
     gint orig_scale;
 };
 
-struct _NautilusIconInfoClass
-{
-    GObjectClass parent_class;
-};
-
 static void schedule_reap_cache (void);
 
 G_DEFINE_TYPE (NautilusIconInfo,
