@@ -273,7 +273,7 @@ set_file_labels (FileConflictDialogData *data)
     if (destination_is_directory)
     {
         g_string_append_printf (destination_label, "<b>%s</b>\n", _("Original folder"));
-        g_string_append_printf (destination_label, "%s %s\n", _("Items:"), destination_size);
+        g_string_append_printf (destination_label, "%s %s\n", _("Contents:"), destination_size);
     }
     else
     {
@@ -305,7 +305,7 @@ set_file_labels (FileConflictDialogData *data)
         g_string_append_printf (source_label, "<b>%s</b>\n",
                                 destination_is_directory ?
                                 _("Merge with") : _("Replace with"));
-        g_string_append_printf (source_label, "%s %s\n", _("Items:"), source_size);
+        g_string_append_printf (source_label, "%s %s\n", _("Contents:"), source_size);
     }
     else
     {
