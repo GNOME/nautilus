@@ -625,6 +625,18 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group),
                                          "search-visible");
 
+    if (event->keyval == GDK_KEY_Escape)
+    {
+        g_autoptr (GVariant) state = NULL;
+
+        state = g_action_get_state (action);
+
+        if (g_variant_get_boolean (state))
+        {
+            nautilus_window_slot_set_search_visible (self, FALSE);
+        }
+    }
+
     /* If the action is not enabled, don't try to handle search */
     if (g_action_get_enabled (action))
     {
