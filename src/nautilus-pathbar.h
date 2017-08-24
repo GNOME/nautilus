@@ -22,23 +22,8 @@
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
-typedef struct _NautilusPathBar      NautilusPathBar;
-typedef struct _NautilusPathBarClass NautilusPathBarClass;
-typedef struct _NautilusPathBarDetails NautilusPathBarDetails;
-
-#define NAUTILUS_TYPE_PATH_BAR                 (nautilus_path_bar_get_type ())
-#define NAUTILUS_PATH_BAR(obj)                 (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PATH_BAR, NautilusPathBar))
-#define NAUTILUS_PATH_BAR_CLASS(klass)         (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PATH_BAR, NautilusPathBarClass))
-#define NAUTILUS_IS_PATH_BAR(obj)              (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PATH_BAR))
-#define NAUTILUS_IS_PATH_BAR_CLASS(klass)      (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_PATH_BAR))
-#define NAUTILUS_PATH_BAR_GET_CLASS(obj)       (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_PATH_BAR, NautilusPathBarClass))
-
-struct _NautilusPathBar
-{
-	GtkContainer parent;
-	
-	NautilusPathBarDetails *priv;
-};
+#define NAUTILUS_TYPE_PATH_BAR (nautilus_path_bar_get_type ())
+G_DECLARE_DERIVABLE_TYPE (NautilusPathBar, nautilus_path_bar, NAUTILUS, PATH_BAR, GtkContainer)
 
 struct _NautilusPathBarClass
 {
@@ -50,9 +35,6 @@ struct _NautilusPathBarClass
                                      GFile             *location,
                                      GtkPlacesOpenFlags flags);
 };
-
-GType    nautilus_path_bar_get_type (void) G_GNUC_CONST;
-
 void     nautilus_path_bar_set_path    (NautilusPathBar *path_bar, GFile *file);
 
 #endif /* NAUTILUS_PATHBAR_H */
