@@ -1616,16 +1616,17 @@ nautilus_file_poll_for_media (NautilusFile *file)
 gboolean
 nautilus_file_is_desktop_directory (NautilusFile *file)
 {
-    GFile *dir;
+    g_autoptr (GFile) location = NULL;
 
-    dir = file->details->directory->details->location;
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    if (dir == NULL)
+    location = nautilus_directory_get_location (file->details->directory);
+    if (location == NULL)
     {
         return FALSE;
     }
 
-    return nautilus_is_desktop_directory_file (dir, eel_ref_str_peek (file->details->name));
+    return nautilus_is_desktop_directory_file (location, eel_ref_str_peek (file->details->name));
 }
 
 /**
@@ -1640,16 +1641,15 @@ nautilus_file_is_desktop_directory (NautilusFile *file)
 gboolean
 nautilus_file_is_child_of_desktop_directory (NautilusFile *file)
 {
-    GFile *dir;
+    g_autoptr (GFile) location = NULL;
 
-    dir = file->details->directory->details->location;
-
-    if (dir == NULL)
+    location = nautilus_directory_get_location (file->details->directory);
+    if (location == NULL)
     {
         return FALSE;
     }
 
-    return nautilus_is_desktop_directory (dir);
+    return nautilus_is_desktop_directory (location);
 }
 
 static gboolean
@@ -1766,18 +1766,18 @@ nautilus_file_can_trash (NautilusFile *file)
 GFile *
 nautilus_file_get_location (NautilusFile *file)
 {
-    GFile *dir;
+    g_autoptr (GFile) location = NULL;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    dir = file->details->directory->details->location;
+    location = nautilus_directory_get_location (file->details->directory);
 
     if (nautilus_file_is_self_owned (file))
     {
-        return g_object_ref (dir);
+        return g_object_ref (location);
     }
 
-    return g_file_get_child (dir, eel_ref_str_peek (file->details->name));
+    return g_file_get_child (location, eel_ref_str_peek (file->details->name));
 }
 
 /* Return the actual uri associated with the passed-in file. */
@@ -1799,20 +1799,22 @@ nautilus_file_get_uri (NautilusFile *file)
 char *
 nautilus_file_get_uri_scheme (NautilusFile *file)
 {
-    GFile *loc;
+    g_autoptr (GFile) location = NULL;
     char *scheme;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->directory == NULL ||
-        file->details->directory->details->location == NULL)
+    if (file->details->directory == NULL)
     {
         return NULL;
     }
 
-    loc = nautilus_directory_get_location (file->details->directory);
-    scheme = g_file_get_uri_scheme (loc);
-    g_object_unref (loc);
+    location = nautilus_directory_get_location (file->details->directory);
+    if (location == NULL)
+    {
+        return NULL;
+    }
+    scheme = g_file_get_uri_scheme (location);
 
     return scheme;
 }
@@ -4112,15 +4114,17 @@ nautilus_file_should_show (NautilusFile *file,
 gboolean
 nautilus_file_is_home (NautilusFile *file)
 {
-    GFile *dir;
+    g_autoptr (GFile) location = NULL;
 
-    dir = file->details->directory->details->location;
-    if (dir == NULL)
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    location = nautilus_directory_get_location (file->details->directory);
+    if (location == NULL)
     {
         return FALSE;
     }
 
-    return nautilus_is_home_directory_file (dir,
+    return nautilus_is_home_directory_file (location,
                                             eel_ref_str_peek (file->details->name));
 }
 
