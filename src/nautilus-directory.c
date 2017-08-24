@@ -59,22 +59,153 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static GHashTable *directories;
 
-static void               nautilus_directory_finalize (GObject *object);
 static NautilusDirectory *nautilus_directory_new (GFile *location);
-static GList *real_get_file_list (NautilusDirectory *directory);
-static gboolean           real_is_editable (NautilusDirectory *directory);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
-static gboolean      real_contains_file          (NautilusDirectory *directory,
-                                                  NautilusFile      *file);
-static gboolean      real_are_all_files_seen     (NautilusDirectory *directory);
-static gboolean      real_is_not_empty           (NautilusDirectory *directory);
-static NautilusFile *real_new_file_from_filename (NautilusDirectory *directory,
-                                                  const char        *filename,
-                                                  gboolean           self_owned);
-static gboolean           real_handles_location (GFile *location);
 
 G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
+
+static gboolean
+real_contains_file (NautilusDirectory *directory,
+                    NautilusFile      *file)
+{
+    return file->details->directory == directory;
+}
+
+static gboolean
+real_are_all_files_seen (NautilusDirectory *directory)
+{
+    return directory->details->directory_loaded;
+}
+
+static gboolean
+real_is_not_empty (NautilusDirectory *directory)
+{
+    return directory->details->file_list != NULL;
+}
+
+static gboolean
+is_tentative (NautilusFile *file,
+              gpointer      callback_data)
+{
+    g_assert (callback_data == NULL);
+
+    /* Avoid returning files with !is_added, because these
+     * will later be sent with the files_added signal, and a
+     * user doing get_file_list + files_added monitoring will
+     * then see the file twice */
+    return !file->details->got_file_info || !file->details->is_added;
+}
+
+static GList *
+real_get_file_list (NautilusDirectory *directory)
+{
+    GList *tentative_files, *non_tentative_files;
+
+    tentative_files = nautilus_file_list_filter (directory->details->file_list,
+                                                 &non_tentative_files, is_tentative, NULL);
+    nautilus_file_list_free (tentative_files);
+
+    return non_tentative_files;
+}
+
+static gboolean
+real_is_editable (NautilusDirectory *directory)
+{
+    return TRUE;
+}
+
+static NautilusFile *
+real_new_file_from_filename (NautilusDirectory *directory,
+                             const char        *filename,
+                             gboolean           self_owned)
+{
+    NautilusFile *file;
+
+    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+    g_assert (filename != NULL);
+    g_assert (filename[0] != '\0');
+
+    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
+    {
+        if (self_owned)
+        {
+            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
+        }
+        else
+        {
+            /* This doesn't normally happen, unless the user somehow types in a uri
+             * that references a file like this. (See #349840) */
+            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+        }
+    }
+    else
+    {
+        file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
+    }
+    nautilus_file_set_directory (file, directory);
+
+    return file;
+}
+
+static gboolean
+real_handles_location (GFile *location)
+{
+    /* This class is the fallback on handling any location */
+    return TRUE;
+}
+
+static void
+nautilus_directory_finalize (GObject *object)
+{
+    NautilusDirectory *directory;
+
+    directory = NAUTILUS_DIRECTORY (object);
+
+    g_hash_table_remove (directories, directory->details->location);
+
+    nautilus_directory_cancel (directory);
+    g_assert (directory->details->count_in_progress == NULL);
+
+    if (directory->details->monitor_list != NULL)
+    {
+        g_warning ("destroying a NautilusDirectory while it's being monitored");
+        g_list_free_full (directory->details->monitor_list, g_free);
+    }
+
+    if (directory->details->monitor != NULL)
+    {
+        nautilus_monitor_cancel (directory->details->monitor);
+    }
+
+    if (directory->details->dequeue_pending_idle_id != 0)
+    {
+        g_source_remove (directory->details->dequeue_pending_idle_id);
+    }
+
+    if (directory->details->call_ready_idle_id != 0)
+    {
+        g_source_remove (directory->details->call_ready_idle_id);
+    }
+
+    if (directory->details->location)
+    {
+        g_object_unref (directory->details->location);
+    }
+
+    g_assert (directory->details->file_list == NULL);
+    g_hash_table_destroy (directory->details->file_hash);
+
+    nautilus_file_queue_destroy (directory->details->high_priority_queue);
+    nautilus_file_queue_destroy (directory->details->low_priority_queue);
+    nautilus_file_queue_destroy (directory->details->extension_queue);
+    g_assert (directory->details->directory_load_in_progress == NULL);
+    g_assert (directory->details->count_in_progress == NULL);
+    g_assert (directory->details->dequeue_pending_idle_id == 0);
+    g_list_free_full (directory->details->pending_file_info, g_object_unref);
+
+    G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
+}
 
 static void
 nautilus_directory_set_property (GObject      *object,
@@ -134,7 +265,10 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
     klass->contains_file = real_contains_file;
     klass->are_all_files_seen = real_are_all_files_seen;
     klass->is_not_empty = real_is_not_empty;
+    klass->get_file_list = real_get_file_list;
+    klass->is_editable = real_is_editable;
     klass->new_file_from_filename = real_new_file_from_filename;
+    klass->handles_location = real_handles_location;
 
     object_class->finalize = nautilus_directory_finalize;
     object_class->set_property = nautilus_directory_set_property;
@@ -180,10 +314,6 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
                              G_TYPE_FILE,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
 
-    klass->get_file_list = real_get_file_list;
-    klass->is_editable = real_is_editable;
-    klass->handles_location = real_handles_location;
-
     g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }
@@ -223,58 +353,6 @@ nautilus_directory_unref (NautilusDirectory *directory)
     g_return_if_fail (NAUTILUS_IS_DIRECTORY (directory));
 
     g_object_unref (directory);
-}
-
-static void
-nautilus_directory_finalize (GObject *object)
-{
-    NautilusDirectory *directory;
-
-    directory = NAUTILUS_DIRECTORY (object);
-
-    g_hash_table_remove (directories, directory->details->location);
-
-    nautilus_directory_cancel (directory);
-    g_assert (directory->details->count_in_progress == NULL);
-
-    if (directory->details->monitor_list != NULL)
-    {
-        g_warning ("destroying a NautilusDirectory while it's being monitored");
-        g_list_free_full (directory->details->monitor_list, g_free);
-    }
-
-    if (directory->details->monitor != NULL)
-    {
-        nautilus_monitor_cancel (directory->details->monitor);
-    }
-
-    if (directory->details->dequeue_pending_idle_id != 0)
-    {
-        g_source_remove (directory->details->dequeue_pending_idle_id);
-    }
-
-    if (directory->details->call_ready_idle_id != 0)
-    {
-        g_source_remove (directory->details->call_ready_idle_id);
-    }
-
-    if (directory->details->location)
-    {
-        g_object_unref (directory->details->location);
-    }
-
-    g_assert (directory->details->file_list == NULL);
-    g_hash_table_destroy (directory->details->file_hash);
-
-    nautilus_file_queue_destroy (directory->details->high_priority_queue);
-    nautilus_file_queue_destroy (directory->details->low_priority_queue);
-    nautilus_file_queue_destroy (directory->details->extension_queue);
-    g_assert (directory->details->directory_load_in_progress == NULL);
-    g_assert (directory->details->count_in_progress == NULL);
-    g_assert (directory->details->dequeue_pending_idle_id == 0);
-    g_list_free_full (directory->details->pending_file_info, g_object_unref);
-
-    G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
 }
 
 static void
@@ -598,13 +676,6 @@ nautilus_directory_get_location (NautilusDirectory *directory)
     return g_object_ref (directory->details->location);
 }
 
-static gboolean
-real_handles_location (GFile *location)
-{
-    /* This class is the fallback on handling any location */
-    return TRUE;
-}
-
 NautilusFile *
 nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
                                            const char        *filename,
@@ -613,58 +684,6 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
                                                                                               filename,
                                                                                               self_owned);
-}
-
-static gboolean
-real_contains_file (NautilusDirectory *directory,
-                    NautilusFile      *file)
-{
-    return file->details->directory == directory;
-}
-
-static gboolean
-real_are_all_files_seen (NautilusDirectory *directory)
-{
-    return directory->details->directory_loaded;
-}
-
-static gboolean
-real_is_not_empty (NautilusDirectory *directory)
-{
-    return directory->details->file_list != NULL;
-}
-
-static NautilusFile *
-real_new_file_from_filename (NautilusDirectory *directory,
-                             const char        *filename,
-                             gboolean           self_owned)
-{
-    NautilusFile *file;
-
-    g_assert (NAUTILUS_IS_DIRECTORY (directory));
-    g_assert (filename != NULL);
-    g_assert (filename[0] != '\0');
-
-    if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
-    {
-        if (self_owned)
-        {
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_SEARCH_DIRECTORY_FILE, NULL));
-        }
-        else
-        {
-            /* This doesn't normally happen, unless the user somehow types in a uri
-             * that references a file like this. (See #349840) */
-            file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-        }
-    }
-    else
-    {
-        file = NAUTILUS_FILE (g_object_new (NAUTILUS_TYPE_VFS_FILE, NULL));
-    }
-    nautilus_file_set_directory (file, directory);
-
-    return file;
 }
 
 static GList *
@@ -1802,41 +1821,10 @@ nautilus_directory_is_not_empty (NautilusDirectory *directory)
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->is_not_empty (directory);
 }
 
-static gboolean
-is_tentative (NautilusFile *file,
-              gpointer      callback_data)
-{
-    g_assert (callback_data == NULL);
-
-    /* Avoid returning files with !is_added, because these
-     * will later be sent with the files_added signal, and a
-     * user doing get_file_list + files_added monitoring will
-     * then see the file twice */
-    return !file->details->got_file_info || !file->details->is_added;
-}
-
 GList *
 nautilus_directory_get_file_list (NautilusDirectory *directory)
 {
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->get_file_list (directory);
-}
-
-static GList *
-real_get_file_list (NautilusDirectory *directory)
-{
-    GList *tentative_files, *non_tentative_files;
-
-    tentative_files = nautilus_file_list_filter (directory->details->file_list,
-                                                 &non_tentative_files, is_tentative, NULL);
-    nautilus_file_list_free (tentative_files);
-
-    return non_tentative_files;
-}
-
-static gboolean
-real_is_editable (NautilusDirectory *directory)
-{
-    return TRUE;
 }
 
 gboolean
