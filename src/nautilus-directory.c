@@ -65,6 +65,10 @@ static GList *real_get_file_list (NautilusDirectory *directory);
 static gboolean           real_is_editable (NautilusDirectory *directory);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
+static gboolean      real_contains_file          (NautilusDirectory *directory,
+                                                  NautilusFile      *file);
+static gboolean      real_are_all_files_seen     (NautilusDirectory *directory);
+static gboolean      real_is_not_empty           (NautilusDirectory *directory);
 static NautilusFile *real_new_file_from_filename (NautilusDirectory *directory,
                                                   const char        *filename,
                                                   gboolean           self_owned);
@@ -127,6 +131,9 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
 
     object_class = G_OBJECT_CLASS (klass);
 
+    klass->contains_file = real_contains_file;
+    klass->are_all_files_seen = real_are_all_files_seen;
+    klass->is_not_empty = real_is_not_empty;
     klass->new_file_from_filename = real_new_file_from_filename;
 
     object_class->finalize = nautilus_directory_finalize;
@@ -606,6 +613,25 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
                                                                                               filename,
                                                                                               self_owned);
+}
+
+static gboolean
+real_contains_file (NautilusDirectory *directory,
+                    NautilusFile      *file)
+{
+    return file->details->directory == directory;
+}
+
+static gboolean
+real_are_all_files_seen (NautilusDirectory *directory)
+{
+    return directory->details->directory_loaded;
+}
+
+static gboolean
+real_is_not_empty (NautilusDirectory *directory)
+{
+    return directory->details->file_list != NULL;
 }
 
 static NautilusFile *
