@@ -29,12 +29,12 @@ struct _NautilusPathBarClass
 {
 	GtkContainerClass parent_class;
 
-	void     (* path_clicked)   (NautilusPathBar  *path_bar,
+	void     (* path_clicked)   (NautilusPathBar  *self,
 				     GFile            *location);
-        void     (* open_location)  (NautilusPathBar   *path_bar,
+        void     (* open_location)  (NautilusPathBar   *self,
                                      GFile             *location,
                                      GtkPlacesOpenFlags flags);
 };
-void     nautilus_path_bar_set_path    (NautilusPathBar *path_bar, GFile *file);
+void     nautilus_path_bar_set_path    (NautilusPathBar *self, GFile *file);
 
 #endif /* NAUTILUS_PATHBAR_H */
