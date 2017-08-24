@@ -33,13 +33,13 @@ G_DECLARE_FINAL_TYPE (NautilusSearchDirectory, nautilus_search_directory,
 
 char   *nautilus_search_directory_generate_new_uri     (void);
 
-NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *search);
-void           nautilus_search_directory_set_query       (NautilusSearchDirectory *search,
+NautilusQuery *nautilus_search_directory_get_query       (NautilusSearchDirectory *self);
+void           nautilus_search_directory_set_query       (NautilusSearchDirectory *self,
 							  NautilusQuery           *query);
 
 NautilusDirectory *
-               nautilus_search_directory_get_base_model (NautilusSearchDirectory  *search);
-void           nautilus_search_directory_set_base_model (NautilusSearchDirectory  *search,
+               nautilus_search_directory_get_base_model (NautilusSearchDirectory  *self);
+void           nautilus_search_directory_set_base_model (NautilusSearchDirectory  *self,
 							 NautilusDirectory        *base_model);
 
 #endif /* NAUTILUS_SEARCH_DIRECTORY_H */
