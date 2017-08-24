@@ -7688,7 +7688,8 @@ get_basic_type_for_mime_type (const char *mime_type)
 
     if (basic_type == NULL)
     {
-        basic_type = g_strdup (_("Unknown"));
+        /* Refers to a file type which is known but not one of the basic types */
+        basic_type = g_strdup (_("Other"));
     }
 
     g_free (icon_name);
