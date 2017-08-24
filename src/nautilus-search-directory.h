@@ -26,31 +26,10 @@
 #include "nautilus-query.h"
 
 #define NAUTILUS_SEARCH_DIRECTORY_PROVIDER_NAME "search-directory-provider"
+#define NAUTILUS_TYPE_SEARCH_DIRECTORY (nautilus_search_directory_get_type ())
 
-#define NAUTILUS_TYPE_SEARCH_DIRECTORY nautilus_search_directory_get_type()
-#define NAUTILUS_SEARCH_DIRECTORY(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SEARCH_DIRECTORY, NautilusSearchDirectory))
-#define NAUTILUS_SEARCH_DIRECTORY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SEARCH_DIRECTORY, NautilusSearchDirectoryClass))
-#define NAUTILUS_IS_SEARCH_DIRECTORY(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SEARCH_DIRECTORY))
-#define NAUTILUS_IS_SEARCH_DIRECTORY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SEARCH_DIRECTORY))
-#define NAUTILUS_SEARCH_DIRECTORY_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SEARCH_DIRECTORY, NautilusSearchDirectoryClass))
-
-typedef struct NautilusSearchDirectoryDetails NautilusSearchDirectoryDetails;
-
-typedef struct {
-	NautilusDirectory parent_slot;
-	NautilusSearchDirectoryDetails *details;
-} NautilusSearchDirectory;
-
-typedef struct {
-	NautilusDirectoryClass parent_slot;
-} NautilusSearchDirectoryClass;
-
-GType   nautilus_search_directory_get_type             (void);
+G_DECLARE_FINAL_TYPE (NautilusSearchDirectory, nautilus_search_directory,
+                      NAUTILUS, SEARCH_DIRECTORY, NautilusDirectory)
 
 char   *nautilus_search_directory_generate_new_uri     (void);
 
