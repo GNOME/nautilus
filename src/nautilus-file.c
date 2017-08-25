@@ -556,6 +556,14 @@ nautilus_file_clear_info (NautilusFile *file)
     clear_metadata (file);
 }
 
+NautilusDirectory *
+nautilus_file_get_directory (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    return file->details->directory;
+}
+
 void
 nautilus_file_set_directory (NautilusFile      *file,
                              NautilusDirectory *directory)
