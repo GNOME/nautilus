@@ -327,7 +327,8 @@ static void
 nautilus_directory_init (NautilusDirectory *directory)
 {
     directory->details = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryDetails);
-    directory->details->file_hash = g_hash_table_new (g_str_hash, g_str_equal);
+    directory->details->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+                                                           g_free, NULL);
     directory->details->high_priority_queue = nautilus_file_queue_new ();
     directory->details->low_priority_queue = nautilus_file_queue_new ();
     directory->details->extension_queue = nautilus_file_queue_new ();
@@ -845,24 +846,25 @@ add_to_hash_table (NautilusDirectory *directory,
                    NautilusFile      *file,
                    GList             *node)
 {
-    const char *name;
+    gchar *name;
 
-    name = eel_ref_str_peek (file->details->name);
+    name = nautilus_file_get_name (file);
 
+    g_assert (name != NULL);
     g_assert (node != NULL);
     g_assert (g_hash_table_lookup (directory->details->file_hash,
                                    name) == NULL);
-    g_hash_table_insert (directory->details->file_hash, (char *) name, node);
+    g_hash_table_insert (directory->details->file_hash, name, node);
 }
 
 static GList *
 extract_from_hash_table (NautilusDirectory *directory,
                          NautilusFile      *file)
 {
-    const char *name;
+    g_autofree gchar *name = NULL;
     GList *node;
 
-    name = eel_ref_str_peek (file->details->name);
+    name = nautilus_file_get_name (file);
     if (name == NULL)
     {
         return NULL;
@@ -884,7 +886,6 @@ nautilus_directory_add_file (NautilusDirectory *directory,
 
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (file->details->name != NULL);
 
     /* Add to list. */
     node = g_list_prepend (directory->details->file_list, file);
@@ -924,7 +925,6 @@ nautilus_directory_remove_file (NautilusDirectory *directory,
 
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (NAUTILUS_IS_FILE (file));
-    g_assert (file->details->name != NULL);
 
     /* Find the list node in the hash table. */
     node = extract_from_hash_table (directory, file);
