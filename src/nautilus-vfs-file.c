@@ -296,18 +296,28 @@ vfs_file_get_date (NautilusFile     *file,
                    NautilusDateType  date_type,
                    time_t           *date)
 {
+    time_t atime;
+    time_t mtime;
+    time_t recency;
+    time_t trash_time;
+
+    atime = nautilus_file_get_atime (file);
+    mtime = nautilus_file_get_mtime (file);
+    recency = nautilus_file_get_recency (file);
+    trash_time = nautilus_file_get_trash_time (file);
+
     switch (date_type)
     {
         case NAUTILUS_DATE_TYPE_ACCESSED:
         {
             /* Before we have info on a file, the date is unknown. */
-            if (file->details->atime == 0)
+            if (atime == 0)
             {
                 return FALSE;
             }
             if (date != NULL)
             {
-                *date = file->details->atime;
+                *date = atime;
             }
             return TRUE;
         }
@@ -315,38 +325,38 @@ vfs_file_get_date (NautilusFile     *file,
         case NAUTILUS_DATE_TYPE_MODIFIED:
         {
             /* Before we have info on a file, the date is unknown. */
-            if (file->details->mtime == 0)
+            if (mtime == 0)
             {
                 return FALSE;
             }
             if (date != NULL)
             {
-                *date = file->details->mtime;
+                *date = mtime;
             }
             return TRUE;
         }
 
         case NAUTILUS_DATE_TYPE_TRASHED:
             /* Before we have info on a file, the date is unknown. */
-            if (file->details->trash_time == 0)
+            if (trash_time == 0)
             {
                 return FALSE;
             }
             if (date != NULL)
             {
-                *date = file->details->trash_time;
+                *date = trash_time;
             }
             return TRUE;
 
         case NAUTILUS_DATE_TYPE_RECENCY:
             /* Before we have info on a file, the date is unknown. */
-            if (file->details->recency == 0)
+            if (recency == 0)
             {
                 return FALSE;
             }
             if (date != NULL)
             {
-                *date = file->details->recency;
+                *date = recency;
             }
             return TRUE;
     }

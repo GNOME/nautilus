@@ -192,6 +192,8 @@ gboolean                nautilus_file_can_get_size                      (Nautilu
 goffset                 nautilus_file_get_size                          (NautilusFile                   *file);
 time_t                  nautilus_file_get_mtime                         (NautilusFile                   *file);
 time_t                  nautilus_file_get_atime                         (NautilusFile                   *file);
+time_t                  nautilus_file_get_recency                       (NautilusFile                   *file);
+time_t                  nautilus_file_get_trash_time                    (NautilusFile                   *file);
 GFileType               nautilus_file_get_file_type                     (NautilusFile                   *file);
 char *                  nautilus_file_get_mime_type                     (NautilusFile                   *file);
 char *                  nautilus_file_get_extension                     (NautilusFile                   *file);

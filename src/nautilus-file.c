@@ -6139,6 +6139,21 @@ nautilus_file_get_atime (NautilusFile *file)
     return file->details->atime;
 }
 
+time_t
+nautilus_file_get_recency (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
+
+    return file->details->recency;
+}
+
+time_t
+nautilus_file_get_trash_time (NautilusFile *file)
+{
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
+
+    return file->details->trash_time;
+}
 
 static void
 set_attributes_get_info_callback (GObject      *source_object,
