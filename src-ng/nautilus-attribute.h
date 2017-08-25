@@ -31,10 +31,6 @@ G_DECLARE_FINAL_TYPE (NautilusAttribute, nautilus_attribute, NAUTILUS, ATTRIBUTE
 typedef gpointer (*NautilusCopyFunc) (gpointer data);
 #define NAUTILUS_COPY_FUNC(x) ((NautilusCopyFunc) x)
 
-typedef void (*NautilusAttributeUpdateValueCallback) (NautilusAttribute *attribute,
-                                                      gpointer           value,
-                                                      gpointer           user_data);
-
 typedef enum
 {
     NAUTILUS_ATTRIBUTE_STATE_INVALID,
@@ -46,44 +42,45 @@ typedef enum
  * nautilus_attribute_get_state:
  * @attribute: an initialized #NautilusAttribute
  *
- * Returns: the current state of @attribute
+ * Returns: the current state of the attribute
  */
-NautilusAttributeState nautilus_attribute_get_state  (NautilusAttribute *attribute);
+NautilusAttributeState nautilus_attribute_get_state  (NautilusAttribute *self);
 /**
  * nautilus_attribute_invalidate:
- * @attribute: an initialized #NautilusAttribute
+ * @self: a #NautilusAttribute instance
  *
  * Mark the value of @attribute as no longer valid.
  */
-void                   nautilus_attribute_invalidate (NautilusAttribute *attribute);
+void                   nautilus_attribute_invalidate (NautilusAttribute *self);
 
 /**
  * nautilus_attribute_get_value:
- * @attribute: an initialized #NautilusAttribute
- * @callback: (nullable): the function to call with the value of @attribute
- * @user_data: (nullable): additional data to pass to @callback
+ * @self: a #NautilusAttribute instance
+ *
+ * Returns: (transfer full): the value of the attribute
  */
-void nautilus_attribute_get_value (NautilusAttribute                    *attribute,
-                                   NautilusAttributeUpdateValueCallback  callback,
-                                   gpointer                              user_data);
+gpointer nautilus_attribute_get_value           (NautilusAttribute *self)
 /**
  * nautilus_attribute_set_value:
- * @attribute: an initialized #NautilusAttribute
- * @value: (nullable) (transfer full): the new value of @attribute
+ * @self: a #NautilusAttribute instance
+ * @value: (nullable) (transfer full): the new value of the attribute
  */
-void nautilus_attribute_set_value (NautilusAttribute *attribute,
-                                   gpointer           value);
+void     nautilus_attribute_set_value           (NautilusAttribute *self,
+                                                 gpointer           value);
+/**
+ * nautilus_attribute_set_value_from_task:
+ * @self: a #NautilusAttribute instance
+ * @task: an idle #NautilusTask
+ */
+void     nautilus_attribute_set_value_from_task (NautilusAttribute *self,
+                                                 NautilusTask      *task
 
 /**
  * nautilus_attribute_new:
- * @update_func: the function to call to update invalid values
- * @copy_func: (nullable): the function to call when copying the value
  * @destroy_func: (nullable): the function to call when destroying the value
  *
- * Returns: a new #NautilusAttribute
+ * Returns: (transfer full): a #NautilusAttribute instance
  */
-NautilusAttribute *nautilus_attribute_new (NautilusTaskFunc update_func,
-                                           NautilusCopyFunc copy_func,
-                                           GDestroyNotify   destroy_func);
+NautilusAttribute *nautilus_attribute_new (GDestroyNotify destroy_func);
 
 #endif

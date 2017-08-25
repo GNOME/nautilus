@@ -18,6 +18,7 @@
 
 #include "nautilus-tasks.h"
 
+#include "nautilus-file.h"
 #include "nautilus-file-changes.h"
 
 #include <gdk-pixbuf/gdk-pixbuf.h>

@@ -23,13 +23,13 @@
 
 void nautilus_enumerate_children_task_func (NautilusTask *task,
                                             gpointer      task_data);
-void nautilus_load_pixbuf_func             (NautilusTask *task,
+void nautilus_load_pixbuf_task_func        (NautilusTask *task,
+                                            gpointer      task_data);
+void nautilus_query_info_task_func         (NautilusTask *task,
                                             gpointer      task_data);
 void nautilus_rename_task_func             (NautilusTask *task,
                                             gpointer      task_data);
 void nautilus_thumbnail_task_func          (NautilusTask *task,
-                                            gpointer      task_data);
-void nautilus_query_info_func              (NautilusTask *task,
                                             gpointer      task_data);
 
 #endif

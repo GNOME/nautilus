@@ -20,18 +20,13 @@
 
 struct _NautilusAttribute
 {
-    GRecMutex mutex;
+    GMutex mutex;
 
     gpointer value;
     NautilusAttributeState state;
 
-    NautilusTaskFunc update_func;
-    NautilusTask *update_task;
-
     NautilusCopyFunc copy_func;
     GDestroyNotify destroy_func;
-
-    GCancellable *cancellable;
 };
 
 G_DEFINE_TYPE (NautilusAttribute, nautilus_attribute, G_TYPE_OBJECT)
@@ -43,16 +38,12 @@ finalize (GObject *object)
 
     self = NAUTILUS_ATTRIBUTE (object);
 
-    g_rec_mutex_clear (&self->mutex);
+    g_mutex_clear (&self->mutex);
 
     if (self->value != NULL)
     {
         g_clear_pointer (&self->value, self->destroy_func);
     }
-
-    g_cancellable_cancel (self->cancellable);
-
-    g_object_unref (self->cancellable);
 
     G_OBJECT_CLASS (nautilus_attribute_parent_class)->finalize (object);
 }
@@ -70,100 +61,26 @@ nautilus_attribute_class_init (NautilusAttributeClass *klass)
 static void
 nautilus_attribute_init (NautilusAttribute *self)
 {
-    g_rec_mutex_init (&self->mutex);
-
-    self->update_task = NULL;
-    self->cancellable = g_cancellable_new ();
+    g_mutex_init (&self->mutex);
 }
 
-typedef struct
+gpointer
+nautilus_attribute_get_value (NautilusAttribute *attribute)
 {
-    NautilusAttribute *attribute;
-
-    NautilusAttributeUpdateValueCallback callback;
-    gpointer user_data;
-} GetValueCallbackDetails;
-
-static void
-update_task_callback (NautilusTask *task,
-                      gpointer      user_data)
-{
-    GetValueCallbackDetails *details;
-
-    details = user_data;
-
-    g_rec_mutex_lock (&attribute->mutex);
-
-    if (attribute->update_task == task)
-    {
-        if (attribute->state == NAUTILUS_ATTRIBUTE_STATE_PENDING)
-        {
-            attribute->state = NAUTILUS_ATTRIBUTE_STATE_VALID;
-        }
-
-        
-
-        details->callback (details->attribute, nautilus_task_get_result (task),
-                           details->user_data);
-    }
-
-    g_rec_mutex_lock (&attribute->mutex);
-
-    g_object_unref (details->attribute);
-    g_free (details);
-}
-
-void
-nautilus_attribute_get_value (NautilusAttribute                    *attribute,
-                              NautilusAttributeUpdateValueCallback  callback,
-                              gpointer                              user_data)
-{
-    gpointer value;
+    gpointer value = NULL;
 
     g_return_if_fail (NAUTILUS_IS_ATTRIBUTE (attribute));
 
-    g_rec_mutex_lock (&attribute->mutex);
+    g_mutex_lock (&attribute->mutex);
 
-    switch (attribute->state)
+    if (attribute->value != NULL)
     {
-        case NAUTILUS_ATTRIBUTE_STATE_PENDING:
-        {
-            GetValueCallbackDetails *details;
-
-            details = g_new0 (GetValueCallbackDetails, 1);
-
-            details->attribute = g_object_ref (attribute);
-            details->callback = callback;
-            details->user_data = user_data;
-
-            nautilus_task_add_callback (attribute->update_task, update_task_callback, details);
-        }
-        break;
-
-        case NAUTILUS_ATTRIBUTE_STATE_VALID:
-        {
-            callback (attribute, attribute->copy_func (attribute->value), user_data);
-        };
-        break;
-
-        case NAUTILUS_ATTRIBUTE_STATE_INVALID:
-        {
-            if (attribute->update_task != NULL)
-            {
-                g_object_unref (attribute->update_task);
-            }
-
-            attribute->update_task = nautilus_task_new_with_func (attribute->update_func,
-                                                                  g_object_ref (attribute),
-                                                                  g_object_unref,
-                                                                  attribute->cancellable);
-
-            nautilus_task_add_callback (
-        }
-        break;
+        value = attribute->copy_func (attribute->value);
     }
 
-    g_rec_mutex_unlock (&attribute->mutex);
+    g_mutex_unlock (&attribute->mutex);
+
+    return value;
 }
 
 void
@@ -172,7 +89,7 @@ nautilus_attribute_set_value (NautilusAttribute *attribute,
 {
     g_return_if_fail (NAUTILUS_IS_ATTRIBUTE (attribute));
 
-    g_rec_mutex_lock (&attribute->mutex);
+    g_mutex_lock (&attribute->mutex);
 
     if (attribute->value != NULL)
     {
@@ -186,7 +103,7 @@ nautilus_attribute_set_value (NautilusAttribute *attribute,
      */
     attribute->state = NAUTILUS_ATTRIBUTE_STATE_VALID;
 
-    g_rec_mutex_unlock (&attribute->mutex);
+    g_mutex_unlock (&attribute->mutex);
 }
 
 static gpointer
@@ -203,6 +120,7 @@ dummy_destroy_func (gpointer data)
 
 NautilusAttribute *
 nautilus_attribute_new (NautilusTaskFunc update_func,
+                        gpointer         update_func_data,
                         NautilusCopyFunc copy_func,
                         GDestroyNotify   destroy_func)
 {
@@ -217,6 +135,7 @@ nautilus_attribute_new (NautilusTaskFunc update_func,
     {
         copy_func = dummy_copy_func;
     }
+    instance->update_func_data = update_func_data;
     instance->copy_func = copy_func;
     if (destroy_func == NULL)
     {

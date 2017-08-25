@@ -140,7 +140,7 @@ renamed (NautilusFile *file,
 
     g_assert (nautilus_file_table_insert (new_location, file));
 
-    nautilus_attribute_item_invalidate (priv->attribute_info);
+    nautilus_attribute_invalidate (priv->attribute_info);
 }
 
 static void
@@ -182,6 +182,7 @@ nautilus_file_init (NautilusFile *self)
     priv = nautilus_file_get_instance_private (self);
 
     priv->attribute_info = nautilus_attribute_new (nautilus_query_info_func,
+                                                   self,
                                                    NAUTILUS_COPY_FUNC (g_file_info_dup),
                                                    g_object_unref);
 }
@@ -230,34 +231,9 @@ nautilus_file_query_info (NautilusFile             *file,
     g_debug ("%s: called for %p", __func__, (gpointer) file);
 
     priv = nautilus_file_get_instance_private (file);
-    cache_state = nautilus_cache_item_get_state (priv->cache,
-                                                 priv->cache_items[INFO]);
-
-    /* This is not the right thing to do if a cache update is pending.
-     * A task reference could be stored and we could connect to the signal,
-     * but there might be a better way.
-     */
-    if (cache_state == NAUTILUS_CACHE_PENDING ||
-        cache_state == NAUTILUS_CACHE_VALID)
-    {
-        GFileInfo *info;
-
-        g_debug ("%s: info for %p is either pending or valid",
-                 __func__, (gpointer) file);
-
-        info = nautilus_cache_item_get_value (priv->cache,
-                                              priv->cache_items[INFO],
-                                              NAUTILUS_COPY_FUNC (g_file_info_dup));
-
-        callback (file, info, NULL, user_data);
-
-        return;
-    }
-
-    nautilus_cache_item_set_pending (priv->cache, priv->cache_items[INFO]);
-
     location = nautilus_file_get_location (file);
-    task = nautilus_task_new_with_func (nautilus_query_info_func, location, g_object_unref,
+    task = nautilus_task_new_with_func (nautilus_query_info_task_func,
+                                        location, g_object_unref,
                                         cancellable);
 
     details = g_new0 (QueryInfoDetails, 1);
@@ -266,9 +242,9 @@ nautilus_file_query_info (NautilusFile             *file,
     details->callback = callback;
     details->callback_data = user_data;
 
-    nautilus_task_add_callback (task, query_info_task_callback, details);
+    nautilus_attribute_set_value_from_task (priv->attribute_info, task);
 
-    nautilus_task_run (task);
+    nautilus_task_add_callback (task, query_info_task_callback, details);
 }
 
 void
@@ -284,8 +260,8 @@ nautilus_file_get_thumbnail (NautilusFile              *file,
 
     location = nautilus_file_get_location (file);
     task = nautilus_task_new_with_func (nautilus_thumbnail_task_func,
-                                        g_object_ref (location), g_object_unref,
-                                        cancellable);
+                                        g_object_ref (location),
+                                        g_object_unref, cancellable);
 
     nautilus_task_run (task);
 }
@@ -351,10 +327,7 @@ nautilus_file_new_with_info (GFile     *location,
     instance = nautilus_file_new (location);
     priv = nautilus_file_get_instance_private (instance);
 
-    /* Ergh. */
-    nautilus_cache_item_set_pending (priv->cache, priv->cache_items[INFO]);
-    nautilus_cache_item_set_value (priv->cache, priv->cache_items[INFO],
-                                   info);
+    nautilus_attribute_set_value (priv->attribute_info, info);
 
     return instance;
 }
