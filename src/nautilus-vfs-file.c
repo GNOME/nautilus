@@ -35,17 +35,23 @@ vfs_file_monitor_add (NautilusFile           *file,
                       gconstpointer           client,
                       NautilusFileAttributes  attributes)
 {
-    nautilus_directory_monitor_add_internal
-        (file->details->directory, file,
-        client, TRUE, attributes, NULL, NULL);
+    NautilusDirectory *directory;
+
+    directory = nautilus_file_get_directory (file);
+
+    nautilus_directory_monitor_add_internal (directory, file, client, TRUE,
+                                             attributes, NULL, NULL);
 }
 
 static void
 vfs_file_monitor_remove (NautilusFile  *file,
                          gconstpointer  client)
 {
-    nautilus_directory_monitor_remove_internal
-        (file->details->directory, file, client);
+    NautilusDirectory *directory;
+
+    directory = nautilus_file_get_directory (file);
+
+    nautilus_directory_monitor_remove_internal (directory, file, client);
 }
 
 static void
@@ -54,9 +60,12 @@ vfs_file_call_when_ready (NautilusFile           *file,
                           NautilusFileCallback    callback,
                           gpointer                callback_data)
 {
-    nautilus_directory_call_when_ready_internal
-        (file->details->directory, file,
-        file_attributes, FALSE, NULL, callback, callback_data);
+    NautilusDirectory *directory;
+
+    directory = nautilus_file_get_directory (file);
+
+    nautilus_directory_call_when_ready_internal (directory, file, file_attributes,
+                                                 FALSE, NULL, callback, callback_data);
 }
 
 static void
@@ -64,18 +73,24 @@ vfs_file_cancel_call_when_ready (NautilusFile         *file,
                                  NautilusFileCallback  callback,
                                  gpointer              callback_data)
 {
-    nautilus_directory_cancel_callback_internal
-        (file->details->directory, file,
-        NULL, callback, callback_data);
+    NautilusDirectory *directory;
+
+    directory = nautilus_file_get_directory (file);
+
+    nautilus_directory_cancel_callback_internal (directory, file, NULL,
+                                                 callback, callback_data);
 }
 
 static gboolean
 vfs_file_check_if_ready (NautilusFile           *file,
                          NautilusFileAttributes  file_attributes)
 {
-    return nautilus_directory_check_if_ready_internal
-               (file->details->directory, file,
-               file_attributes);
+    NautilusDirectory *directory;
+
+    directory = nautilus_file_get_directory (file);
+
+    return nautilus_directory_check_if_ready_internal (directory, file,
+                                                       file_attributes);
 }
 
 static void
