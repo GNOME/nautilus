@@ -99,7 +99,10 @@ search_directory_file_get_item_count (NautilusFile *file,
 
     if (count)
     {
-        file_list = nautilus_directory_get_file_list (file->details->directory);
+        NautilusDirectory *directory;
+
+        directory = nautilus_file_get_directory (file);
+        file_list = nautilus_directory_get_file_list (directory);
 
         *count = g_list_length (file_list);
 
@@ -116,12 +119,14 @@ search_directory_file_get_deep_counts (NautilusFile *file,
                                        guint        *unreadable_directory_count,
                                        goffset      *total_size)
 {
+    NautilusDirectory *directory;
     NautilusFile *dir_file;
     GList *file_list, *l;
     guint dirs, files;
     GFileType type;
 
-    file_list = nautilus_directory_get_file_list (file->details->directory);
+    directory = nautilus_file_get_directory (file);
+    file_list = nautilus_directory_get_file_list (directory);
 
     dirs = files = 0;
     for (l = file_list; l != NULL; l = l->next)
@@ -197,6 +202,7 @@ void
 nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile *search_file)
 {
     NautilusFile *file;
+    NautilusDirectory *directory;
     NautilusSearchDirectory *search_dir;
     NautilusQuery *query;
     char *display_name;
@@ -205,9 +211,10 @@ nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile 
 
     display_name = NULL;
     file = NAUTILUS_FILE (search_file);
-    if (file->details->directory)
+    directory = nautilus_file_get_directory (file);
+    if (directory != NULL)
     {
-        search_dir = NAUTILUS_SEARCH_DIRECTORY (file->details->directory);
+        search_dir = NAUTILUS_SEARCH_DIRECTORY (directory);
         query = nautilus_search_directory_get_query (search_dir);
 
         if (query != NULL)
