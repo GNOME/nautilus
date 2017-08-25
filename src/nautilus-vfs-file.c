@@ -435,11 +435,13 @@ vfs_file_mount (NautilusFile                  *file,
                 NautilusFileOperationCallback  callback,
                 gpointer                       callback_data)
 {
+    GFileType type;
     NautilusFileOperation *op;
     GError *error;
     GFile *location;
 
-    if (file->details->type != G_FILE_TYPE_MOUNTABLE)
+    type = nautilus_file_get_file_type (file);
+    if (type != G_FILE_TYPE_MOUNTABLE)
     {
         if (callback)
         {
@@ -624,11 +626,13 @@ vfs_file_start (NautilusFile                  *file,
                 NautilusFileOperationCallback  callback,
                 gpointer                       callback_data)
 {
+    GFileType type;
     NautilusFileOperation *op;
     GError *error;
     GFile *location;
 
-    if (file->details->type != G_FILE_TYPE_MOUNTABLE)
+    type = nautilus_file_get_file_type (file);
+    if (type != G_FILE_TYPE_MOUNTABLE)
     {
         if (callback)
         {
