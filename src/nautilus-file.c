@@ -9439,6 +9439,97 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
+static gboolean
+real_get_item_count (NautilusFile *file,
+                     guint        *count,
+                     gboolean     *count_unreadable)
+{
+    if (count_unreadable != NULL)
+    {
+        *count_unreadable = file->details->directory_count_failed;
+    }
+
+    if (!file->details->got_directory_count)
+    {
+        if (count != NULL)
+        {
+            *count = 0;
+        }
+        return FALSE;
+    }
+
+    if (count != NULL)
+    {
+        *count = file->details->directory_count;
+    }
+
+    return TRUE;
+}
+
+static NautilusRequestStatus
+real_get_deep_counts (NautilusFile *file,
+                      guint        *directory_count,
+                      guint        *file_count,
+                      guint        *unreadable_directory_count,
+                      goffset      *total_size)
+{
+    GFileType type;
+
+    type = nautilus_file_get_file_type (file);
+
+    if (directory_count != NULL)
+    {
+        *directory_count = 0;
+    }
+    if (file_count != NULL)
+    {
+        *file_count = 0;
+    }
+    if (unreadable_directory_count != NULL)
+    {
+        *unreadable_directory_count = 0;
+    }
+    if (total_size != NULL)
+    {
+        *total_size = 0;
+    }
+
+    if (type != G_FILE_TYPE_DIRECTORY)
+    {
+        return NAUTILUS_REQUEST_DONE;
+    }
+
+    if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED)
+    {
+        if (directory_count != NULL)
+        {
+            *directory_count = file->details->deep_directory_count;
+        }
+        if (file_count != NULL)
+        {
+            *file_count = file->details->deep_file_count;
+        }
+        if (unreadable_directory_count != NULL)
+        {
+            *unreadable_directory_count = file->details->deep_unreadable_count;
+        }
+        if (total_size != NULL)
+        {
+            *total_size = file->details->deep_size;
+        }
+        return file->details->deep_counts_status;
+    }
+
+    /* For directories, or before we know the type, we haven't started. */
+    if (type == G_FILE_TYPE_UNKNOWN || type == G_FILE_TYPE_DIRECTORY)
+    {
+        return NAUTILUS_REQUEST_NOT_STARTED;
+    }
+
+    /* For other types, we are done, and the zeros are permanent. */
+    return NAUTILUS_REQUEST_DONE;
+}
+
 static void
 real_set_metadata (NautilusFile *file,
                    const char   *key,
@@ -9499,6 +9590,8 @@ nautilus_file_class_init (NautilusFileClass *class)
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;
 
+    class->get_item_count = real_get_item_count;
+    class->get_deep_counts = real_get_deep_counts;
     class->set_metadata = real_set_metadata;
     class->set_metadata_as_list = real_set_metadata_as_list;
     class->can_rename = real_can_rename;

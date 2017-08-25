@@ -219,94 +219,6 @@ vfs_file_set_metadata_as_list (NautilusFile  *file,
 }
 
 static gboolean
-vfs_file_get_item_count (NautilusFile *file,
-                         guint        *count,
-                         gboolean     *count_unreadable)
-{
-    if (count_unreadable != NULL)
-    {
-        *count_unreadable = file->details->directory_count_failed;
-    }
-    if (!file->details->got_directory_count)
-    {
-        if (count != NULL)
-        {
-            *count = 0;
-        }
-        return FALSE;
-    }
-    if (count != NULL)
-    {
-        *count = file->details->directory_count;
-    }
-    return TRUE;
-}
-
-static NautilusRequestStatus
-vfs_file_get_deep_counts (NautilusFile *file,
-                          guint        *directory_count,
-                          guint        *file_count,
-                          guint        *unreadable_directory_count,
-                          goffset      *total_size)
-{
-    GFileType type;
-
-    if (directory_count != NULL)
-    {
-        *directory_count = 0;
-    }
-    if (file_count != NULL)
-    {
-        *file_count = 0;
-    }
-    if (unreadable_directory_count != NULL)
-    {
-        *unreadable_directory_count = 0;
-    }
-    if (total_size != NULL)
-    {
-        *total_size = 0;
-    }
-
-    if (!nautilus_file_is_directory (file))
-    {
-        return NAUTILUS_REQUEST_DONE;
-    }
-
-    if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED)
-    {
-        if (directory_count != NULL)
-        {
-            *directory_count = file->details->deep_directory_count;
-        }
-        if (file_count != NULL)
-        {
-            *file_count = file->details->deep_file_count;
-        }
-        if (unreadable_directory_count != NULL)
-        {
-            *unreadable_directory_count = file->details->deep_unreadable_count;
-        }
-        if (total_size != NULL)
-        {
-            *total_size = file->details->deep_size;
-        }
-        return file->details->deep_counts_status;
-    }
-
-    /* For directories, or before we know the type, we haven't started. */
-    type = nautilus_file_get_file_type (file);
-    if (type == G_FILE_TYPE_UNKNOWN
-        || type == G_FILE_TYPE_DIRECTORY)
-    {
-        return NAUTILUS_REQUEST_NOT_STARTED;
-    }
-
-    /* For other types, we are done, and the zeros are permanent. */
-    return NAUTILUS_REQUEST_DONE;
-}
-
-static gboolean
 vfs_file_get_date (NautilusFile     *file,
                    NautilusDateType  date_type,
                    time_t           *date)
@@ -782,8 +694,6 @@ nautilus_vfs_file_class_init (NautilusVFSFileClass *klass)
     file_class->call_when_ready = vfs_file_call_when_ready;
     file_class->cancel_call_when_ready = vfs_file_cancel_call_when_ready;
     file_class->check_if_ready = vfs_file_check_if_ready;
-    file_class->get_item_count = vfs_file_get_item_count;
-    file_class->get_deep_counts = vfs_file_get_deep_counts;
     file_class->get_date = vfs_file_get_date;
     file_class->get_where_string = vfs_file_get_where_string;
     file_class->set_metadata = vfs_file_set_metadata;
