@@ -56,7 +56,7 @@ static int nautilus_list_model_file_entry_compare_func (gconstpointer a,
 static void nautilus_list_model_tree_model_init (GtkTreeModelIface *iface);
 static void nautilus_list_model_sortable_init (GtkTreeSortableIface *iface);
 
-struct NautilusListModelDetails
+typedef struct
 {
     GSequence *files;
     GHashTable *directory_reverse_map;     /* map from directory to GSequenceIter's */
@@ -76,7 +76,7 @@ struct NautilusListModelDetails
     GPtrArray *columns;
 
     GList *highlight_files;
-};
+} NautilusListModelPrivate;
 
 typedef struct
 {
@@ -102,7 +102,8 @@ G_DEFINE_TYPE_WITH_CODE (NautilusListModel, nautilus_list_model, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_MODEL,
                                                 nautilus_list_model_tree_model_init)
                          G_IMPLEMENT_INTERFACE (GTK_TYPE_TREE_SORTABLE,
-                                                nautilus_list_model_sortable_init));
+                                                nautilus_list_model_sortable_init)
+                         G_ADD_PRIVATE (NautilusListModel));
 
 static const GtkTargetEntry drag_types [] =
 {
@@ -139,13 +140,23 @@ nautilus_list_model_get_flags (GtkTreeModel *tree_model)
 static int
 nautilus_list_model_get_n_columns (GtkTreeModel *tree_model)
 {
-    return NAUTILUS_LIST_MODEL_NUM_COLUMNS + NAUTILUS_LIST_MODEL (tree_model)->details->columns->len;
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (NAUTILUS_LIST_MODEL (tree_model));
+
+    return NAUTILUS_LIST_MODEL_NUM_COLUMNS + priv->columns->len;
 }
 
 static GType
 nautilus_list_model_get_column_type (GtkTreeModel *tree_model,
                                      int           index)
 {
+    NautilusListModel *model;
+    NautilusListModelPrivate *priv;
+
+    model = NAUTILUS_LIST_MODEL (tree_model);
+    priv = nautilus_list_model_get_instance_private (model);
+
     switch (index)
     {
         case NAUTILUS_LIST_MODEL_FILE_COLUMN:
@@ -172,7 +183,7 @@ nautilus_list_model_get_column_type (GtkTreeModel *tree_model,
         }
 
         default:
-            if (index < NAUTILUS_LIST_MODEL_NUM_COLUMNS + NAUTILUS_LIST_MODEL (tree_model)->details->columns->len)
+            if (index < NAUTILUS_LIST_MODEL_NUM_COLUMNS + priv->columns->len)
             {
                 return G_TYPE_STRING;
             }
@@ -188,10 +199,15 @@ nautilus_list_model_ptr_to_iter (NautilusListModel *model,
                                  GSequenceIter     *ptr,
                                  GtkTreeIter       *iter)
 {
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
     g_assert (!g_sequence_iter_is_end (ptr));
+
     if (iter != NULL)
     {
-        iter->stamp = model->details->stamp;
+        iter->stamp = priv->stamp;
         iter->user_data = ptr;
     }
 }
@@ -202,15 +218,17 @@ nautilus_list_model_get_iter (GtkTreeModel *tree_model,
                               GtkTreePath  *path)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     GSequence *files;
     GSequenceIter *ptr;
     FileEntry *file_entry;
     int i, d;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
     ptr = NULL;
 
-    files = model->details->files;
+    files = priv->files;
     for (d = 0; d < gtk_tree_path_get_depth (path); d++)
     {
         i = gtk_tree_path_get_indices (path)[d];
@@ -236,13 +254,14 @@ nautilus_list_model_get_path (GtkTreeModel *tree_model,
 {
     GtkTreePath *path;
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     GSequenceIter *ptr;
     FileEntry *file_entry;
 
-
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
-    g_return_val_if_fail (iter->stamp == model->details->stamp, NULL);
+    g_return_val_if_fail (iter->stamp == priv->stamp, NULL);
 
     if (g_sequence_iter_is_end (iter->user_data))
     {
@@ -318,6 +337,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                                GValue       *value)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     FileEntry *file_entry;
     NautilusFile *file;
     char *str;
@@ -328,8 +348,9 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     cairo_surface_t *surface;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
-    g_return_if_fail (model->details->stamp == iter->stamp);
+    g_return_if_fail (priv->stamp == iter->stamp);
     g_return_if_fail (!g_sequence_iter_is_end (iter->user_data));
 
     file_entry = g_sequence_get (iter->user_data);
@@ -371,11 +392,11 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                         NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
                         NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
 
-                if (model->details->drag_view != NULL)
+                if (priv->drag_view != NULL)
                 {
                     GtkTreePath *path_a, *path_b;
 
-                    gtk_tree_view_get_drag_dest_row (model->details->drag_view,
+                    gtk_tree_view_get_drag_dest_row (priv->drag_view,
                                                      &path_a,
                                                      NULL);
                     if (path_a != NULL)
@@ -394,8 +415,8 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
 
                 icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, icon_scale, flags);
 
-                if (model->details->highlight_files != NULL &&
-                    g_list_find_custom (model->details->highlight_files,
+                if (priv->highlight_files != NULL &&
+                    g_list_find_custom (priv->highlight_files,
                                         file, (GCompareFunc) nautilus_file_compare_location))
                 {
                     rendered_icon = eel_create_spotlight_pixbuf (icon);
@@ -423,11 +444,11 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
         break;
 
         default:
-            if (column >= NAUTILUS_LIST_MODEL_NUM_COLUMNS || column < NAUTILUS_LIST_MODEL_NUM_COLUMNS + model->details->columns->len)
+            if (column >= NAUTILUS_LIST_MODEL_NUM_COLUMNS || column < NAUTILUS_LIST_MODEL_NUM_COLUMNS + priv->columns->len)
             {
                 NautilusColumn *nautilus_column;
                 GQuark attribute;
-                nautilus_column = model->details->columns->pdata[column - NAUTILUS_LIST_MODEL_NUM_COLUMNS];
+                nautilus_column = priv->columns->pdata[column - NAUTILUS_LIST_MODEL_NUM_COLUMNS];
 
                 g_value_init (value, G_TYPE_STRING);
                 g_object_get (nautilus_column,
@@ -463,10 +484,12 @@ nautilus_list_model_iter_next (GtkTreeModel *tree_model,
                                GtkTreeIter  *iter)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
-    g_return_val_if_fail (model->details->stamp == iter->stamp, FALSE);
+    g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
 
     iter->user_data = g_sequence_iter_next (iter->user_data);
 
@@ -479,14 +502,16 @@ nautilus_list_model_iter_children (GtkTreeModel *tree_model,
                                    GtkTreeIter  *parent)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     GSequence *files;
     FileEntry *file_entry;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
     if (parent == NULL)
     {
-        files = model->details->files;
+        files = priv->files;
     }
     else
     {
@@ -499,7 +524,7 @@ nautilus_list_model_iter_children (GtkTreeModel *tree_model,
         return FALSE;
     }
 
-    iter->stamp = model->details->stamp;
+    iter->stamp = priv->stamp;
     iter->user_data = g_sequence_get_begin_iter (files);
 
     return TRUE;
@@ -526,14 +551,16 @@ nautilus_list_model_iter_n_children (GtkTreeModel *tree_model,
                                      GtkTreeIter  *iter)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     GSequence *files;
     FileEntry *file_entry;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
     if (iter == NULL)
     {
-        files = model->details->files;
+        files = priv->files;
     }
     else
     {
@@ -551,11 +578,13 @@ nautilus_list_model_iter_nth_child (GtkTreeModel *tree_model,
                                     int           n)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     GSequenceIter *child;
     GSequence *files;
     FileEntry *file_entry;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
     if (parent != NULL)
     {
@@ -564,7 +593,7 @@ nautilus_list_model_iter_nth_child (GtkTreeModel *tree_model,
     }
     else
     {
-        files = model->details->files;
+        files = priv->files;
     }
 
     child = g_sequence_get_iter_at_pos (files, n);
@@ -574,7 +603,7 @@ nautilus_list_model_iter_nth_child (GtkTreeModel *tree_model,
         return FALSE;
     }
 
-    iter->stamp = model->details->stamp;
+    iter->stamp = priv->stamp;
     iter->user_data = child;
 
     return TRUE;
@@ -586,9 +615,11 @@ nautilus_list_model_iter_parent (GtkTreeModel *tree_model,
                                  GtkTreeIter  *child)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     FileEntry *file_entry;
 
     model = (NautilusListModel *) tree_model;
+    priv = nautilus_list_model_get_instance_private (model);
 
     file_entry = g_sequence_get (child->user_data);
 
@@ -597,7 +628,7 @@ nautilus_list_model_iter_parent (GtkTreeModel *tree_model,
         return FALSE;
     }
 
-    iter->stamp = model->details->stamp;
+    iter->stamp = priv->stamp;
     iter->user_data = file_entry->parent->ptr;
 
     return TRUE;
@@ -608,13 +639,16 @@ lookup_file (NautilusListModel *model,
              NautilusFile      *file,
              NautilusDirectory *directory)
 {
+    NautilusListModelPrivate *priv;
     FileEntry *file_entry;
     GSequenceIter *ptr, *parent_ptr;
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     parent_ptr = NULL;
     if (directory)
     {
-        parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
+        parent_ptr = g_hash_table_lookup (priv->directory_reverse_map,
                                           directory);
     }
 
@@ -625,7 +659,7 @@ lookup_file (NautilusListModel *model,
     }
     else
     {
-        ptr = g_hash_table_lookup (model->details->top_reverse_map, file);
+        ptr = g_hash_table_lookup (priv->top_reverse_map, file);
     }
 
     if (ptr)
@@ -678,13 +712,15 @@ nautilus_list_model_get_all_iters_for_file (NautilusListModel *model,
                                             NautilusFile      *file)
 {
     struct GetIters data;
-
+    NautilusListModelPrivate *priv;
     data.file = file;
     data.model = model;
     data.iters = NULL;
 
-    dir_to_iters (&data, model->details->top_reverse_map);
-    g_hash_table_foreach (model->details->directory_reverse_map,
+    priv = nautilus_list_model_get_instance_private (model);
+
+    dir_to_iters (&data, priv->top_reverse_map);
+    g_hash_table_foreach (priv->directory_reverse_map,
                           file_to_iter_cb, &data);
 
     return g_list_reverse (data.iters);
@@ -739,9 +775,11 @@ nautilus_list_model_file_entry_compare_func (gconstpointer a,
     FileEntry *file_entry1;
     FileEntry *file_entry2;
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     int result;
 
     model = (NautilusListModel *) user_data;
+    priv = nautilus_list_model_get_instance_private (model);
 
     file_entry1 = (FileEntry *) a;
     file_entry2 = (FileEntry *) b;
@@ -749,9 +787,9 @@ nautilus_list_model_file_entry_compare_func (gconstpointer a,
     if (file_entry1->file != NULL && file_entry2->file != NULL)
     {
         result = nautilus_file_compare_for_sort_by_attribute_q (file_entry1->file, file_entry2->file,
-                                                                model->details->sort_attribute,
-                                                                model->details->sort_directories_first,
-                                                                (model->details->order == GTK_SORT_DESCENDING));
+                                                                priv->sort_attribute,
+                                                                priv->sort_directories_first,
+                                                                (priv->order == GTK_SORT_DESCENDING));
     }
     else if (file_entry1->file == NULL)
     {
@@ -770,12 +808,14 @@ nautilus_list_model_compare_func (NautilusListModel *model,
                                   NautilusFile      *file1,
                                   NautilusFile      *file2)
 {
+    NautilusListModelPrivate *priv;
     int result;
 
+    priv = nautilus_list_model_get_instance_private (model);
     result = nautilus_file_compare_for_sort_by_attribute_q (file1, file2,
-                                                            model->details->sort_attribute,
-                                                            model->details->sort_directories_first,
-                                                            (model->details->order == GTK_SORT_DESCENDING));
+                                                            priv->sort_attribute,
+                                                            priv->sort_directories_first,
+                                                            (priv->order == GTK_SORT_DESCENDING));
 
     return result;
 }
@@ -852,10 +892,12 @@ static void
 nautilus_list_model_sort (NautilusListModel *model)
 {
     GtkTreePath *path;
+    NautilusListModelPrivate *priv;
 
     path = gtk_tree_path_new ();
+    priv = nautilus_list_model_get_instance_private (model);
 
-    nautilus_list_model_sort_file_entries (model, model->details->files, path);
+    nautilus_list_model_sort_file_entries (model, priv->files, path);
 
     gtk_tree_path_free (path);
 }
@@ -866,12 +908,12 @@ nautilus_list_model_get_sort_column_id (GtkTreeSortable *sortable,
                                         GtkSortType     *order)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     int id;
 
     model = (NautilusListModel *) sortable;
-
-    id = nautilus_list_model_get_sort_column_id_from_attribute
-             (model, model->details->sort_attribute);
+    priv = nautilus_list_model_get_instance_private (model);
+    id = nautilus_list_model_get_sort_column_id_from_attribute (model, priv->sort_attribute);
 
     if (id == -1)
     {
@@ -885,7 +927,7 @@ nautilus_list_model_get_sort_column_id (GtkTreeSortable *sortable,
 
     if (order != NULL)
     {
-        *order = model->details->order;
+        *order = priv->order;
     }
 
     return TRUE;
@@ -897,12 +939,14 @@ nautilus_list_model_set_sort_column_id (GtkTreeSortable *sortable,
                                         GtkSortType      order)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
 
     model = (NautilusListModel *) sortable;
+    priv = nautilus_list_model_get_instance_private (model);
 
-    model->details->sort_attribute = nautilus_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
+    priv->sort_attribute = nautilus_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
 
-    model->details->order = order;
+    priv->order = order;
 
     nautilus_list_model_sort (model);
     gtk_tree_sortable_sort_column_changed (sortable);
@@ -918,15 +962,17 @@ static void
 add_dummy_row (NautilusListModel *model,
                FileEntry         *parent_entry)
 {
+    NautilusListModelPrivate *priv;
     FileEntry *dummy_file_entry;
     GtkTreeIter iter;
     GtkTreePath *path;
 
+    priv = nautilus_list_model_get_instance_private (model);
     dummy_file_entry = g_new0 (FileEntry, 1);
     dummy_file_entry->parent = parent_entry;
     dummy_file_entry->ptr = g_sequence_insert_sorted (parent_entry->files, dummy_file_entry,
                                                       nautilus_list_model_file_entry_compare_func, model);
-    iter.stamp = model->details->stamp;
+    iter.stamp = priv->stamp;
     iter.user_data = dummy_file_entry->ptr;
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
@@ -939,6 +985,7 @@ nautilus_list_model_add_file (NautilusListModel *model,
                               NautilusFile      *file,
                               NautilusDirectory *directory)
 {
+    NautilusListModelPrivate *priv;
     GtkTreeIter iter;
     GtkTreePath *path;
     FileEntry *file_entry;
@@ -947,7 +994,9 @@ nautilus_list_model_add_file (NautilusListModel *model,
     gboolean replace_dummy;
     GHashTable *parent_hash;
 
-    parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
+    priv = nautilus_list_model_get_instance_private (model);
+
+    parent_ptr = g_hash_table_lookup (priv->directory_reverse_map,
                                       directory);
     if (parent_ptr)
     {
@@ -957,7 +1006,7 @@ nautilus_list_model_add_file (NautilusListModel *model,
     else
     {
         file_entry = NULL;
-        ptr = g_hash_table_lookup (model->details->top_reverse_map, file);
+        ptr = g_hash_table_lookup (priv->top_reverse_map, file);
     }
 
     if (ptr != NULL)
@@ -972,8 +1021,8 @@ nautilus_list_model_add_file (NautilusListModel *model,
     file_entry->subdirectory = NULL;
     file_entry->files = NULL;
 
-    files = model->details->files;
-    parent_hash = model->details->top_reverse_map;
+    files = priv->files;
+    parent_hash = priv->top_reverse_map;
 
     replace_dummy = FALSE;
 
@@ -994,7 +1043,7 @@ nautilus_list_model_add_file (NautilusListModel *model,
             if (dummy_entry->file == NULL)
             {
                 /* replace the dummy loading entry */
-                model->details->stamp++;
+                priv->stamp++;
                 g_sequence_remove (dummy_ptr);
 
                 replace_dummy = TRUE;
@@ -1008,7 +1057,7 @@ nautilus_list_model_add_file (NautilusListModel *model,
 
     g_hash_table_insert (parent_hash, file, file_entry->ptr);
 
-    iter.stamp = model->details->stamp;
+    iter.stamp = priv->stamp;
     iter.user_data = file_entry->ptr;
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
@@ -1040,6 +1089,7 @@ nautilus_list_model_file_changed (NautilusListModel *model,
                                   NautilusFile      *file,
                                   NautilusDirectory *directory)
 {
+    NautilusListModelPrivate *priv;
     FileEntry *parent_file_entry;
     GtkTreeIter iter;
     GtkTreePath *path, *parent_path;
@@ -1048,6 +1098,8 @@ nautilus_list_model_file_changed (NautilusListModel *model,
     int *new_order;
     gboolean has_iter;
     GSequence *files;
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     ptr = lookup_file (model, file, directory);
     if (!ptr)
@@ -1072,7 +1124,7 @@ nautilus_list_model_file_changed (NautilusListModel *model,
         {
             has_iter = FALSE;
             parent_path = gtk_tree_path_new ();
-            files = model->details->files;
+            files = priv->files;
         }
         else
         {
@@ -1117,18 +1169,24 @@ nautilus_list_model_file_changed (NautilusListModel *model,
 gboolean
 nautilus_list_model_is_empty (NautilusListModel *model)
 {
-    return (g_sequence_get_length (model->details->files) == 0);
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
+    return (g_sequence_get_length (priv->files) == 0);
 }
 
 static void
 nautilus_list_model_remove (NautilusListModel *model,
                             GtkTreeIter       *iter)
 {
+    NautilusListModelPrivate *priv;
     GSequenceIter *ptr, *child_ptr;
     FileEntry *file_entry, *child_file_entry, *parent_file_entry;
     GtkTreePath *path;
     GtkTreeIter parent_iter;
 
+    priv = nautilus_list_model_get_instance_private (model);
     ptr = iter->user_data;
     file_entry = g_sequence_get (ptr);
 
@@ -1148,14 +1206,14 @@ nautilus_list_model_remove (NautilusListModel *model,
             {
                 path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
                 gtk_tree_path_append_index (path, 0);
-                model->details->stamp++;
+                priv->stamp++;
                 g_sequence_remove (child_ptr);
                 gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
                 gtk_tree_path_free (path);
             }
 
             /* the parent iter didn't actually change */
-            iter->stamp = model->details->stamp;
+            iter->stamp = priv->stamp;
         }
     }
 
@@ -1167,7 +1225,7 @@ nautilus_list_model_remove (NautilusListModel *model,
         }
         else
         {
-            g_hash_table_remove (model->details->top_reverse_map, file_entry->file);
+            g_hash_table_remove (priv->top_reverse_map, file_entry->file);
         }
     }
 
@@ -1187,21 +1245,21 @@ nautilus_list_model_remove (NautilusListModel *model,
         g_signal_emit (model,
                        list_model_signals[SUBDIRECTORY_UNLOADED], 0,
                        file_entry->subdirectory);
-        g_hash_table_remove (model->details->directory_reverse_map,
+        g_hash_table_remove (priv->directory_reverse_map,
                              file_entry->subdirectory);
     }
 
     path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), iter);
 
     g_sequence_remove (ptr);
-    model->details->stamp++;
+    priv->stamp++;
     gtk_tree_model_row_deleted (GTK_TREE_MODEL (model), path);
 
     gtk_tree_path_free (path);
 
     if (parent_file_entry && g_sequence_get_length (parent_file_entry->files) == 0)
     {
-        parent_iter.stamp = model->details->stamp;
+        parent_iter.stamp = priv->stamp;
         parent_iter.user_data = parent_file_entry->ptr;
         path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &parent_iter);
         gtk_tree_model_row_has_child_toggled (GTK_TREE_MODEL (model),
@@ -1227,8 +1285,11 @@ static void
 nautilus_list_model_clear_directory (NautilusListModel *model,
                                      GSequence         *files)
 {
+    NautilusListModelPrivate *priv;
     GtkTreeIter iter;
     FileEntry *file_entry;
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     while (g_sequence_get_length (files) > 0)
     {
@@ -1240,7 +1301,7 @@ nautilus_list_model_clear_directory (NautilusListModel *model,
             nautilus_list_model_clear_directory (model, file_entry->files);
         }
 
-        iter.stamp = model->details->stamp;
+        iter.stamp = priv->stamp;
         nautilus_list_model_remove (model, &iter);
     }
 }
@@ -1248,9 +1309,13 @@ nautilus_list_model_clear_directory (NautilusListModel *model,
 void
 nautilus_list_model_clear (NautilusListModel *model)
 {
+    NautilusListModelPrivate *priv;
+
     g_return_if_fail (model != NULL);
 
-    nautilus_list_model_clear_directory (model, model->details->files);
+    priv = nautilus_list_model_get_instance_private (model);
+
+    nautilus_list_model_clear_directory (model, priv->files);
 }
 
 NautilusFile *
@@ -1277,9 +1342,12 @@ nautilus_list_model_load_subdirectory (NautilusListModel  *model,
                                        GtkTreePath        *path,
                                        NautilusDirectory **directory)
 {
+    NautilusListModelPrivate *priv;
     GtkTreeIter iter;
     FileEntry *file_entry;
     NautilusDirectory *subdirectory;
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     if (!gtk_tree_model_get_iter (GTK_TREE_MODEL (model), &iter, path))
     {
@@ -1295,8 +1363,7 @@ nautilus_list_model_load_subdirectory (NautilusListModel  *model,
 
     subdirectory = nautilus_directory_get_for_file (file_entry->file);
 
-    if (g_hash_table_lookup (model->details->directory_reverse_map,
-                             subdirectory) != NULL)
+    if (g_hash_table_lookup (priv->directory_reverse_map, subdirectory) != NULL)
     {
         nautilus_directory_unref (subdirectory);
         g_warning ("Already in directory_reverse_map, failing\n");
@@ -1304,7 +1371,7 @@ nautilus_list_model_load_subdirectory (NautilusListModel  *model,
     }
 
     file_entry->subdirectory = subdirectory,
-    g_hash_table_insert (model->details->directory_reverse_map,
+    g_hash_table_insert (priv->directory_reverse_map,
                          subdirectory, file_entry->ptr);
     file_entry->reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
 
@@ -1320,9 +1387,12 @@ void
 nautilus_list_model_unload_subdirectory (NautilusListModel *model,
                                          GtkTreeIter       *iter)
 {
+    NautilusListModelPrivate *priv;
     GSequenceIter *child_ptr;
     FileEntry *file_entry, *child_file_entry;
     GtkTreeIter child_iter;
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     file_entry = g_sequence_get (iter->user_data);
     if (file_entry->file == NULL ||
@@ -1356,7 +1426,7 @@ nautilus_list_model_unload_subdirectory (NautilusListModel *model,
                    file_entry->subdirectory);
 
     /* actually unload */
-    g_hash_table_remove (model->details->directory_reverse_map,
+    g_hash_table_remove (priv->directory_reverse_map,
                          file_entry->subdirectory);
     nautilus_directory_unref (file_entry->subdirectory);
     file_entry->subdirectory = NULL;
@@ -1372,12 +1442,16 @@ void
 nautilus_list_model_set_should_sort_directories_first (NautilusListModel *model,
                                                        gboolean           sort_directories_first)
 {
-    if (model->details->sort_directories_first == sort_directories_first)
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
+    if (priv->sort_directories_first == sort_directories_first)
     {
         return;
     }
 
-    model->details->sort_directories_first = sort_directories_first;
+    priv->sort_directories_first = sort_directories_first;
     nautilus_list_model_sort (model);
 }
 
@@ -1385,12 +1459,15 @@ int
 nautilus_list_model_get_sort_column_id_from_attribute (NautilusListModel *model,
                                                        GQuark             attribute)
 {
+    NautilusListModelPrivate *priv;
     guint i;
 
     if (attribute == 0)
     {
         return -1;
     }
+
+    priv = nautilus_list_model_get_instance_private (model);
 
     /* Hack - the preferences dialog sets modification_date for some
      * rather than date_modified for some reason.  Make sure that
@@ -1400,13 +1477,12 @@ nautilus_list_model_get_sort_column_id_from_attribute (NautilusListModel *model,
         attribute = attribute_date_modified_q;
     }
 
-    for (i = 0; i < model->details->columns->len; i++)
+    for (i = 0; i < priv->columns->len; i++)
     {
         NautilusColumn *column;
         GQuark column_attribute;
 
-        column =
-            NAUTILUS_COLUMN (model->details->columns->pdata[i]);
+        column = NAUTILUS_COLUMN (priv->columns->pdata[i]);
         g_object_get (G_OBJECT (column),
                       "attribute_q", &column_attribute,
                       NULL);
@@ -1423,19 +1499,21 @@ GQuark
 nautilus_list_model_get_attribute_from_sort_column_id (NautilusListModel *model,
                                                        int                sort_column_id)
 {
+    NautilusListModelPrivate *priv;
     NautilusColumn *column;
     int index;
     GQuark attribute;
 
+    priv = nautilus_list_model_get_instance_private (model);
     index = sort_column_id - NAUTILUS_LIST_MODEL_NUM_COLUMNS;
 
-    if (index < 0 || index >= model->details->columns->len)
+    if (index < 0 || index >= priv->columns->len)
     {
         g_warning ("unknown sort column id: %d", sort_column_id);
         return 0;
     }
 
-    column = NAUTILUS_COLUMN (model->details->columns->pdata[index]);
+    column = NAUTILUS_COLUMN (priv->columns->pdata[index]);
     g_object_get (G_OBJECT (column), "attribute_q", &attribute, NULL);
 
     return attribute;
@@ -1501,13 +1579,17 @@ nautilus_list_model_set_drag_view (NautilusListModel *model,
                                    int                drag_begin_x,
                                    int                drag_begin_y)
 {
+    NautilusListModelPrivate *priv;
+
     g_return_if_fail (model != NULL);
     g_return_if_fail (NAUTILUS_IS_LIST_MODEL (model));
     g_return_if_fail (!view || GTK_IS_TREE_VIEW (view));
 
-    model->details->drag_view = view;
-    model->details->drag_begin_x = drag_begin_x;
-    model->details->drag_begin_y = drag_begin_y;
+    priv = nautilus_list_model_get_instance_private (model);
+
+    priv->drag_view = view;
+    priv->drag_begin_x = drag_begin_x;
+    priv->drag_begin_y = drag_begin_y;
 }
 
 GtkTreeView *
@@ -1515,17 +1597,21 @@ nautilus_list_model_get_drag_view (NautilusListModel *model,
                                    int               *drag_begin_x,
                                    int               *drag_begin_y)
 {
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
     if (drag_begin_x != NULL)
     {
-        *drag_begin_x = model->details->drag_begin_x;
+        *drag_begin_x = priv->drag_begin_x;
     }
 
     if (drag_begin_y != NULL)
     {
-        *drag_begin_y = model->details->drag_begin_y;
+        *drag_begin_y = priv->drag_begin_y;
     }
 
-    return model->details->drag_view;
+    return priv->drag_view;
 }
 
 GtkTargetList *
@@ -1543,45 +1629,51 @@ int
 nautilus_list_model_add_column (NautilusListModel *model,
                                 NautilusColumn    *column)
 {
-    g_ptr_array_add (model->details->columns, column);
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
+    g_ptr_array_add (priv->columns, column);
     g_object_ref (column);
 
-    return NAUTILUS_LIST_MODEL_NUM_COLUMNS + (model->details->columns->len - 1);
+    return NAUTILUS_LIST_MODEL_NUM_COLUMNS + (priv->columns->len - 1);
 }
 
 static void
 nautilus_list_model_dispose (GObject *object)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
     int i;
 
     model = NAUTILUS_LIST_MODEL (object);
+    priv = nautilus_list_model_get_instance_private (model);
 
-    if (model->details->columns)
+    if (priv->columns)
     {
-        for (i = 0; i < model->details->columns->len; i++)
+        for (i = 0; i < priv->columns->len; i++)
         {
-            g_object_unref (model->details->columns->pdata[i]);
+            g_object_unref (priv->columns->pdata[i]);
         }
-        g_ptr_array_free (model->details->columns, TRUE);
-        model->details->columns = NULL;
+        g_ptr_array_free (priv->columns, TRUE);
+        priv->columns = NULL;
     }
 
-    if (model->details->files)
+    if (priv->files)
     {
-        g_sequence_free (model->details->files);
-        model->details->files = NULL;
+        g_sequence_free (priv->files);
+        priv->files = NULL;
     }
 
-    if (model->details->top_reverse_map)
+    if (priv->top_reverse_map)
     {
-        g_hash_table_destroy (model->details->top_reverse_map);
-        model->details->top_reverse_map = NULL;
+        g_hash_table_destroy (priv->top_reverse_map);
+        priv->top_reverse_map = NULL;
     }
-    if (model->details->directory_reverse_map)
+    if (priv->directory_reverse_map)
     {
-        g_hash_table_destroy (model->details->directory_reverse_map);
-        model->details->directory_reverse_map = NULL;
+        g_hash_table_destroy (priv->directory_reverse_map);
+        priv->directory_reverse_map = NULL;
     }
 
     G_OBJECT_CLASS (nautilus_list_model_parent_class)->dispose (object);
@@ -1591,16 +1683,16 @@ static void
 nautilus_list_model_finalize (GObject *object)
 {
     NautilusListModel *model;
+    NautilusListModelPrivate *priv;
 
     model = NAUTILUS_LIST_MODEL (object);
+    priv = nautilus_list_model_get_instance_private (model);
 
-    if (model->details->highlight_files != NULL)
+    if (priv->highlight_files != NULL)
     {
-        nautilus_file_list_free (model->details->highlight_files);
-        model->details->highlight_files = NULL;
+        nautilus_file_list_free (priv->highlight_files);
+        priv->highlight_files = NULL;
     }
-
-    g_free (model->details);
 
     G_OBJECT_CLASS (nautilus_list_model_parent_class)->finalize (object);
 }
@@ -1608,13 +1700,16 @@ nautilus_list_model_finalize (GObject *object)
 static void
 nautilus_list_model_init (NautilusListModel *model)
 {
-    model->details = g_new0 (NautilusListModelDetails, 1);
-    model->details->files = g_sequence_new ((GDestroyNotify) file_entry_free);
-    model->details->top_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
-    model->details->directory_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
-    model->details->stamp = g_random_int ();
-    model->details->sort_attribute = 0;
-    model->details->columns = g_ptr_array_new ();
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
+    priv->files = g_sequence_new ((GDestroyNotify) file_entry_free);
+    priv->top_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
+    priv->directory_reverse_map = g_hash_table_new (g_direct_hash, g_direct_equal);
+    priv->stamp = g_random_int ();
+    priv->sort_attribute = 0;
+    priv->columns = g_ptr_array_new ();
 }
 
 static void
@@ -1678,17 +1773,20 @@ void
 nautilus_list_model_subdirectory_done_loading (NautilusListModel *model,
                                                NautilusDirectory *directory)
 {
+    NautilusListModelPrivate *priv;
     GtkTreeIter iter;
     GtkTreePath *path;
     FileEntry *file_entry, *dummy_entry;
     GSequenceIter *parent_ptr, *dummy_ptr;
     GSequence *files;
 
-    if (model == NULL || model->details->directory_reverse_map == NULL)
+    priv = nautilus_list_model_get_instance_private (model);
+
+    if (model == NULL || priv->directory_reverse_map == NULL)
     {
         return;
     }
-    parent_ptr = g_hash_table_lookup (model->details->directory_reverse_map,
+    parent_ptr = g_hash_table_lookup (priv->directory_reverse_map,
                                       directory);
     if (parent_ptr == NULL)
     {
@@ -1711,7 +1809,7 @@ nautilus_list_model_subdirectory_done_loading (NautilusListModel *model,
             /* was the dummy file */
             file_entry->loaded = 1;
 
-            iter.stamp = model->details->stamp;
+            iter.stamp = priv->stamp;
             iter.user_data = dummy_ptr;
 
             path = gtk_tree_model_get_path (GTK_TREE_MODEL (model), &iter);
@@ -1749,18 +1847,20 @@ void
 nautilus_list_model_set_highlight_for_files (NautilusListModel *model,
                                              GList             *files)
 {
-    if (model->details->highlight_files != NULL)
+    NautilusListModelPrivate *priv;
+
+    priv = nautilus_list_model_get_instance_private (model);
+
+    if (priv->highlight_files != NULL)
     {
-        g_list_foreach (model->details->highlight_files,
-                        refresh_row, model);
-        nautilus_file_list_free (model->details->highlight_files);
-        model->details->highlight_files = NULL;
+        g_list_foreach (priv->highlight_files, refresh_row, model);
+        nautilus_file_list_free (priv->highlight_files);
+        priv->highlight_files = NULL;
     }
 
     if (files != NULL)
     {
-        model->details->highlight_files = nautilus_file_list_copy (files);
-        g_list_foreach (model->details->highlight_files,
-                        refresh_row, model);
+        priv->highlight_files = nautilus_file_list_copy (files);
+        g_list_foreach (priv->highlight_files, refresh_row, model);
     }
 }
