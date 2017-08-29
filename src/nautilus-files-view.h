@@ -217,7 +217,7 @@ struct _NautilusFilesViewClass {
         void (* widget_to_file_operation_position) (NautilusFilesView *view,
                                                     GdkPoint     *position);
 
-        /* Preference change callbacks, overriden by icon and list views.
+        /* Preference change callbacks, overridden by icon and list views.
          * Icon and list views respond by synchronizing to the new preference
          * values and forcing an update if appropriate.
          */
