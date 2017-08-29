@@ -9,5 +9,7 @@ gnome.gtkdoc ('libnautilus-extension',
               main_xml: 'libnautilus-extension-docs.xml',
               src_dir: join_paths (meson.source_root (), 'libnautilus-extension'),
               dependencies: nautilus_extension,
+              gobject_typesfile: 'libnautilus-extension.types',
               install: true,
-              scan_args: ['--ignore-headers=nautilus-extension-private.h'])
+              scan_args: ['--ignore-headers=nautilus-extension-private.h',
+                          '--rebuild-types'])
