@@ -224,7 +224,7 @@ nautilus_list_model_get_iter (GtkTreeModel *tree_model,
     FileEntry *file_entry;
     int i, d;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
     ptr = NULL;
 
@@ -258,7 +258,7 @@ nautilus_list_model_get_path (GtkTreeModel *tree_model,
     GSequenceIter *ptr;
     FileEntry *file_entry;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     g_return_val_if_fail (iter->stamp == priv->stamp, NULL);
@@ -347,7 +347,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     NautilusFileIconFlags flags;
     cairo_surface_t *surface;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     g_return_if_fail (priv->stamp == iter->stamp);
@@ -486,7 +486,7 @@ nautilus_list_model_iter_next (GtkTreeModel *tree_model,
     NautilusListModel *model;
     NautilusListModelPrivate *priv;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     g_return_val_if_fail (priv->stamp == iter->stamp, FALSE);
@@ -506,7 +506,7 @@ nautilus_list_model_iter_children (GtkTreeModel *tree_model,
     GSequence *files;
     FileEntry *file_entry;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     if (parent == NULL)
@@ -555,7 +555,7 @@ nautilus_list_model_iter_n_children (GtkTreeModel *tree_model,
     GSequence *files;
     FileEntry *file_entry;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     if (iter == NULL)
@@ -583,7 +583,7 @@ nautilus_list_model_iter_nth_child (GtkTreeModel *tree_model,
     GSequence *files;
     FileEntry *file_entry;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     if (parent != NULL)
@@ -618,7 +618,7 @@ nautilus_list_model_iter_parent (GtkTreeModel *tree_model,
     NautilusListModelPrivate *priv;
     FileEntry *file_entry;
 
-    model = (NautilusListModel *) tree_model;
+    model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
 
     file_entry = g_sequence_get (child->user_data);
@@ -778,7 +778,7 @@ nautilus_list_model_file_entry_compare_func (gconstpointer a,
     NautilusListModelPrivate *priv;
     int result;
 
-    model = (NautilusListModel *) user_data;
+    model = NAUTILUS_LIST_MODEL (user_data);
     priv = nautilus_list_model_get_instance_private (model);
 
     file_entry1 = (FileEntry *) a;
@@ -911,7 +911,7 @@ nautilus_list_model_get_sort_column_id (GtkTreeSortable *sortable,
     NautilusListModelPrivate *priv;
     int id;
 
-    model = (NautilusListModel *) sortable;
+    model = NAUTILUS_LIST_MODEL (sortable);
     priv = nautilus_list_model_get_instance_private (model);
     id = nautilus_list_model_get_sort_column_id_from_attribute (model, priv->sort_attribute);
 
@@ -941,7 +941,7 @@ nautilus_list_model_set_sort_column_id (GtkTreeSortable *sortable,
     NautilusListModel *model;
     NautilusListModelPrivate *priv;
 
-    model = (NautilusListModel *) sortable;
+    model = NAUTILUS_LIST_MODEL (sortable);
     priv = nautilus_list_model_get_instance_private (model);
 
     priv->sort_attribute = nautilus_list_model_get_attribute_from_sort_column_id (model, sort_column_id);
