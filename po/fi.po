@@ -51,8 +51,8 @@ msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://bugzilla.gnome.org/enter_bug.cgi?"
 "product=nautilus&keywords=I18N+L10N&component=Internationalization (i18n)\n"
-"POT-Creation-Date: 2017-08-28 16:50+0000\n"
-"PO-Revision-Date: 2017-08-29 14:45+0300\n"
+"POT-Creation-Date: 2017-08-29 11:49+0000\n"
+"PO-Revision-Date: 2017-09-02 21:15+0300\n"
 "Last-Translator: Jiri Grönroos <jiri.gronroos+l10n@iki.fi>\n"
 "Language-Team: suomi <lokalisointi-lista@googlegroups.com>\n"
 "Language: fi\n"
@@ -60,7 +60,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Gtranslator 2.91.7\n"
+"X-Generator: Poedit 1.8.7.1\n"
 "X-DamnedLies-Scope: partial\n"
 "X-Launchpad-Export-Date: 2010-09-20 05:28+0000\n"
 "X-POT-Import-Date: 2012-02-19 15:25:27+0000\n"
@@ -340,44 +340,30 @@ msgid "Use extra mouse button events in Nautilus’ browser window"
 msgstr "Käytetäänkö Nautiluksen selainikkunoissa hiiren lisäpainikkeita"
 
 #: data/org.gnome.nautilus.gschema.xml:143
-#, fuzzy
-#| msgid ""
-#| "For users with mice that have \"Forward\" and \"Back\" buttons, this key "
-#| "will determine if any action is taken inside of Nautilus when either is "
-#| "pressed."
 msgid ""
 "For users with mice that have “Forward” and “Back” buttons, this key will "
 "determine if any action is taken inside of Nautilus when either is pressed."
 msgstr ""
-"Jos käyttäjän hiiressä on ”Eteenpäin”- ja ”Taaksepäin”-napit, tämä avain "
-"määrittää mitä tapahtuu painettaessa näitä nappeja nautiluksessa."
+"Jos käyttäjän hiiressä on “Eteenpäin”- ja “Taaksepäin”-napit, tämä avain "
+"määrittää mitä Nautiluksessa tapahtuu painettaessa näitä nappeja."
 
 #: data/org.gnome.nautilus.gschema.xml:147
-#, fuzzy
-#| msgid "Mouse button to activate the \"Forward\" command in browser window"
 msgid "Mouse button to activate the “Forward” command in browser window"
-msgstr "Selainikkunassa ”Eteenpäin”-toiminnon käynnistävä hiiren nappi"
+msgstr "Selainikkunassa “Eteenpäin”-toiminnon käynnistävä hiiren nappi"
 
 #: data/org.gnome.nautilus.gschema.xml:148
-#, fuzzy
-#| msgid ""
-#| "For users with mice that have buttons for \"Forward\" and \"Back\", this "
-#| "key will set which button activates the \"Forward\" command in a browser "
-#| "window. Possible values range between 6 and 14."
 msgid ""
 "For users with mice that have buttons for “Forward” and “Back”, this key "
 "will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"Jos käyttäjän hiiressä on ”Eteenpäin”- ja ”Taaksepäin”-napit, tämä avain "
+"Jos käyttäjän hiiressä on “Eteenpäin”- ja “Taaksepäin”-napit, tämä avain "
 "määrittää mikä nappi käynnistää ”Eteenpäin”-komennon selainikkunassa. "
 "Mahdolliset arvot ovat väliltä 6-14."
 
 #: data/org.gnome.nautilus.gschema.xml:152
-#, fuzzy
-#| msgid "Mouse button to activate the \"Back\" command in browser window"
 msgid "Mouse button to activate the “Back” command in browser window"
-msgstr "Selainikkunassa ”Takaisin”-toiminnon käynnistävä hiiren nappi"
+msgstr "Selainikkunassa “Takaisin”-toiminnon käynnistävä hiiren nappi"
 
 #: data/org.gnome.nautilus.gschema.xml:153
 #, fuzzy
@@ -754,7 +740,6 @@ msgstr ""
 "verkkopalvelimet-näkymän."
 
 #: data/org.gnome.nautilus.gschema.xml:303
-#| msgid "Home"
 msgctxt "home-icon-name"
 msgid "'Home'"
 msgstr "'Home'"
@@ -772,13 +757,11 @@ msgstr ""
 "jotakin muuta."
 
 #: data/org.gnome.nautilus.gschema.xml:308
-#| msgid "Trash"
 msgctxt "trash-icon-name"
 msgid "'Trash'"
 msgstr "'Trash'"
 
 #: data/org.gnome.nautilus.gschema.xml:309
-#| msgid "Desktop trash icon name"
 msgid "Desktop Trash icon name"
 msgstr "Roskakori-työpöytäkuvakkeen nimi"
 
@@ -795,7 +778,6 @@ msgstr ""
 "nimeksi jotakin muuta."
 
 #: data/org.gnome.nautilus.gschema.xml:313
-#| msgid "Network servers icon name"
 msgctxt "network-icon-name"
 msgid "'Network Servers'"
 msgstr "'Network Servers'"
@@ -1035,7 +1017,6 @@ msgid "Select specified URI in parent folder."
 msgstr "Valitse tässä kansiossa näkyvät sarakkeet"
 
 #: src/nautilus-application.c:957
-#, fuzzy
 #| msgid "[URI...]"
 msgid "[URI…]"
 msgstr "[URI…]"
@@ -1089,17 +1070,14 @@ msgid "Name cannot be empty."
 msgstr "Nimi ei voi olla tyhjä."
 
 #: src/nautilus-batch-rename-dialog.c:1434
-#| msgid "File names cannot contain “/”."
 msgid "Name cannot contain “/”."
 msgstr "Nimi ei voi sisältää merkkiä “/”."
 
 #: src/nautilus-batch-rename-dialog.c:1440
-#| msgid "“%s” would not be a unique new name."
 msgid "“.” is not a valid name."
 msgstr "“.” ei ole kelvollinen nimi."
 
 #: src/nautilus-batch-rename-dialog.c:1446
-#| msgid "“%s” would not be a unique new name."
 msgid "“..” is not a valid name."
 msgstr "“..” ei ole kelvollinen nimi."
 
@@ -1815,7 +1793,6 @@ msgid "Re_name"
 msgstr "_Nimeä uudelleen"
 
 #: src/nautilus-file-conflict-dialog.c:337
-#| msgid "Replace"
 msgid "Re_place"
 msgstr "Kor_vaa"
 
@@ -4566,7 +4543,6 @@ msgstr[0] "Viime vuonna"
 msgstr[1] "%d vuotta sitten"
 
 #: src/nautilus-window.c:192
-#| msgid "Parent Folder:"
 msgid "Parent folder"
 msgstr "Ylätason kansio"
 
@@ -4575,18 +4551,14 @@ msgid "New tab"
 msgstr "Uusi välilehti"
 
 #: src/nautilus-window.c:195
-#| msgid "Use tree view"
 msgid "Close current view"
 msgstr "Sulje nykyinen näkymä"
 
 #: src/nautilus-window.c:196
-#| msgid "_Back"
 msgid "Back"
 msgstr "Takaisin"
 
 #: src/nautilus-window.c:197
-#| msgctxt "shortcut window"
-#| msgid "Go forward"
 msgid "Forward"
 msgstr "Eteenpäin"
 
@@ -4827,7 +4799,6 @@ msgid "Move tab right"
 msgstr "Siirrä välilehteä oikealle"
 
 #: src/resources/gtk/help-overlay.ui:155
-#| msgid "Restore"
 msgctxt "shortcut window"
 msgid "Restore tab"
 msgstr "Palauta välilehti"
@@ -5343,7 +5314,6 @@ msgid "Experimental"
 msgstr "Kokeellinen"
 
 #: src/resources/ui/nautilus-preferences-window.ui:150
-#| msgid "Use tree view"
 msgid "Use the new _views"
 msgstr "Käytä uusia näk_ymiä"
 
@@ -5352,9 +5322,6 @@ msgid "Icon View Captions"
 msgstr "Kuvakenäkymän lisätiedot"
 
 #: src/resources/ui/nautilus-preferences-window.ui:198
-#| msgid ""
-#| "Add information to be displayed beneath file and folder names.\n"
-#| "More information will appear when zooming closer."
 msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
@@ -5457,12 +5424,10 @@ msgid "_Never"
 msgstr "_Ei koskaan"
 
 #: src/resources/ui/nautilus-preferences-window.ui:832
-#| msgid "Full Text"
 msgid "Full Text Search:"
 msgstr "Koko tekstin haku:"
 
 #: src/resources/ui/nautilus-preferences-window.ui:843
-#| msgid "Set as default"
 msgid "Set as _default"
 msgstr "Aseta o_letukseksi"
 
