@@ -18,6 +18,6 @@ https://mail.gnome.org/mailman/listinfo/nautilus-list
 
 # How to report bugs
 
-Bugs should be reported to the GNOME bug tracking system
-(https://gitlab.gnome.org), in the "GNOME/Nautilus" product.
+Bugs should be reported to the GNOME bug tracking system at
+https://gitlab.gnome.org/GNOME/nautilus/issues.
 
