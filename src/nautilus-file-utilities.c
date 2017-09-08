@@ -1404,15 +1404,16 @@ gchar *
 nautilus_uri_to_native_uri (const gchar *uri)
 {
     g_autoptr (GFile) file = NULL;
-    g_autofree gchar *path;
-    gchar *native_uri;
+    g_autofree gchar *path = NULL;
 
     file = g_file_new_for_uri (uri);
     path = g_file_get_path (file);
 
     if (path != NULL)
-      return g_filename_to_uri (path, NULL, NULL);
-    else
-      return NULL;
+    {
+        return g_filename_to_uri (path, NULL, NULL);
+    }
+
+    return NULL;
 }
 

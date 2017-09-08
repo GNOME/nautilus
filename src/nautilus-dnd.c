@@ -712,7 +712,9 @@ cache_one_item (const char *uri,
     item->uri = nautilus_uri_to_native_uri (uri);
 
     if (item->uri == NULL)
-      item->uri = g_strdup (uri);
+    {
+        item->uri = g_strdup (uri);
+    }
 
     item->file = nautilus_file_get_by_uri (uri);
     item->icon_x = x;
