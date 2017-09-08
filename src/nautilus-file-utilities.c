@@ -1396,3 +1396,23 @@ nautilus_file_can_rename_files (GList *files)
 
     return TRUE;
 }
+
+/* Try to get a native file:// URI instead of any other GVFS
+ * scheme, for interoperability with apps only handling file:// URIs.
+ */
+gchar *
+nautilus_uri_to_native_uri (const gchar *uri)
+{
+    g_autoptr (GFile) file = NULL;
+    g_autofree gchar *path;
+    gchar *native_uri;
+
+    file = g_file_new_for_uri (uri);
+    path = g_file_get_path (file);
+
+    if (path != NULL)
+      return g_filename_to_uri (path, NULL, NULL);
+    else
+      return NULL;
+}
+
