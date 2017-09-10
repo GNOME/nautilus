@@ -59,7 +59,7 @@ create_icon (NautilusViewIconItemUi *self)
         nautilus_file_should_show_thumbnail (file))
     {
         style_context = gtk_widget_get_style_context (GTK_WIDGET (fixed_height_box));
-        gtk_style_context_add_class (style_context, "icon-background");
+        gtk_style_context_add_class (style_context, "icon-item-background");
     }
 
     gtk_box_pack_start (fixed_height_box, GTK_WIDGET (icon), FALSE, FALSE, 0);
