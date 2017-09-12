@@ -217,6 +217,7 @@ nautilus_directory_finalize (GObject *object)
     nautilus_file_queue_destroy (directory->details->high_priority_queue);
     nautilus_file_queue_destroy (directory->details->low_priority_queue);
     nautilus_file_queue_destroy (directory->details->extension_queue);
+    g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
     g_assert (directory->details->directory_load_in_progress == NULL);
     g_assert (directory->details->count_in_progress == NULL);
     g_assert (directory->details->dequeue_pending_idle_id == 0);
@@ -1319,6 +1320,8 @@ nautilus_directory_notify_files_changed (GList *files)
     GHashTable *changed_lists;
     GList *node;
     GFile *location;
+    g_autoptr (GFile) parent = NULL;
+    g_autoptr (NautilusDirectory) dir = NULL;
     NautilusFile *file;
 
     /* Make a list of changed files in each directory. */
@@ -1344,6 +1347,18 @@ nautilus_directory_notify_files_changed (GList *files)
             nautilus_file_invalidate_extension_info_internal (file);
 
             hash_table_list_prepend (changed_lists, directory, file);
+        }
+        else
+        {
+            parent = g_file_get_parent (location);
+            dir = nautilus_directory_get_existing (parent);
+            if (dir != NULL && dir->details->new_files_in_progress != NULL &&
+                files != dir->details->files_changed_while_adding)
+            {
+                dir->details->files_changed_while_adding =
+                    g_list_prepend (dir->details->files_changed_while_adding,
+                                    g_object_ref (location));
+            }
         }
     }
 

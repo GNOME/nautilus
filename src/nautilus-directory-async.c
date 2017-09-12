@@ -931,6 +931,22 @@ should_skip_file (NautilusDirectory *directory,
     return FALSE;
 }
 
+static void
+notify_files_changed_while_being_added (NautilusDirectory *directory)
+{
+    if (directory->details->files_changed_while_adding == NULL)
+    {
+        return;
+    }
+
+    directory->details->files_changed_while_adding =
+        g_list_reverse (directory->details->files_changed_while_adding);
+
+    nautilus_directory_notify_files_changed (directory->details->files_changed_while_adding);
+
+    g_clear_list (&directory->details->files_changed_while_adding, g_object_unref);
+}
+
 static gboolean
 dequeue_pending_idle_callback (gpointer callback_data)
 {
@@ -1083,6 +1099,10 @@ dequeue_pending_idle_callback (gpointer callback_data)
 
         directory->details->directory_loaded_sent_notification = TRUE;
     }
+
+    /* Process changes received for files while they were still being added.
+     * See Bug 703179 and issue #1576 for a situation this happens. */
+    notify_files_changed_while_being_added (directory);
 
 drain:
     g_list_free_full (pending_file_info, g_object_unref);

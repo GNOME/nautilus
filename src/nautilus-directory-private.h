@@ -100,6 +100,12 @@ struct NautilusDirectoryDetails
 
 	GList *new_files_in_progress; /* list of NewFilesState * */
 
+	/* List of GFile's that received CHANGE events while new files were being added in
+	 * that same folder. We will process this CHANGE events after new_files_in_progress
+	 * list is finished. See Bug 703179 and issue #1576 for a case when this happens.
+	 */
+	GList *files_changed_while_adding;
+
 	DirectoryCountState *count_in_progress;
 
 	NautilusFile *deep_count_file;
