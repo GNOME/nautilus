@@ -17,6 +17,7 @@
             <property name="visible">True</property>
             <property name="sensitive">True</property>
             <property name="action_name">win.back</property>
+            <property name="tooltip-text" translatable="yes">Go back</property>
             <style>
               <class name="image-button"/>
             </style>
@@ -37,6 +38,7 @@
             <property name="visible">True</property>
             <property name="sensitive">True</property>
             <property name="action_name">win.forward</property>
+            <property name="tooltip-text" translatable="yes">Go forward</property>
             <style>
               <class name="image-button"/>
             </style>
@@ -76,6 +78,7 @@
         <property name="visible">True</property>
         <property name="sensitive">True</property>
         <property name="action_name">win.view-menu</property>
+        <property name="tooltip-text" translatable="yes">Open menu</property>
         <!-- Popover defined in nautilus-toolbar-menu.ui -->
         <style>
           <class name="image-button"/>
@@ -103,6 +106,7 @@
         <property name="visible">True</property>
         <property name="sensitive">True</property>
         <property name="action_name">slot.files-view-mode-toggle</property>
+        <property name="tooltip-text" translatable="yes">Toggle view</property>
         <style>
           <class name="image-button"/>
         </style>
@@ -128,6 +132,7 @@
         <property name="visible">True</property>
         <property name="sensitive">True</property>
         <property name="action_name">slot.search-visible</property>
+        <property name="tooltip-text" translatable="yes">Search</property>
         <style>
           <class name="image-button"/>
         </style>
@@ -157,6 +162,7 @@
           <object class="GtkMenuButton" id="operations_button">
             <property name="visible">False</property>
             <property name="popover">operations_popover</property>
+            <property name="tooltip-text" translatable="yes">Show operations</property>
             <signal name="toggled" handler="on_operations_button_toggled" object="NautilusToolbar" swapped="yes"/>
             <style>
               <class name="button"/>
@@ -174,7 +180,7 @@
             <child internal-child="accessible">
               <object class="AtkObject">
                 <property name="accessible-name" translatable="yes">Operations in progress</property>
-                <property name="accessible-description" translatable="yes">Open operations in progress</property>
+                <property name="accessible-description" translatable="yes">Show operations in progress</property>
               </object>
             </child>
           </object>
