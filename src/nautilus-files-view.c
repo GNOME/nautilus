@@ -531,6 +531,17 @@ floating_bar_set_status_timeout_cb (gpointer data)
     return FALSE;
 }
 
+static gboolean
+remove_floating_bar_passthrough (gpointer data)
+{
+    NautilusFilesViewPrivate *priv;
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (data));
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->floating_bar, FALSE);
+    return G_SOURCE_REMOVE;
+}
+
 static void
 set_floating_bar_status (NautilusFilesView *view,
                          const gchar       *primary_status,
@@ -558,6 +569,12 @@ set_floating_bar_status (NautilusFilesView *view,
     status_data->primary_status = g_strdup (primary_status);
     status_data->detail_status = g_strdup (detail_status);
     status_data->view = view;
+
+    /* Activate passthrough on the floating bar just long enough for a
+     * potential double click to happen, so to not interfere with it */
+    gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
+                                          priv->floating_bar, TRUE);
+    g_timeout_add ((guint) double_click_time, remove_floating_bar_passthrough, view);
 
     /* waiting for half of the double-click-time before setting
      * the status seems to be a good approximation of not setting it
