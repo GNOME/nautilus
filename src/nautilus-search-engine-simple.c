@@ -24,6 +24,7 @@
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-simple.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-global-preferences.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 
@@ -68,6 +69,8 @@ struct _NautilusSearchEngineSimple
     SearchThreadData *active_search;
 
     gboolean recursive;
+    GPtrArray *ignored_directories;
+    GPtrArray *ignored_files;
 };
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
@@ -83,6 +86,17 @@ finalize (GObject *object)
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
     g_clear_object (&simple->query);
+
+    for (guint i = 0; i < simple->ignored_directories->len; i++)
+    {
+        g_pattern_spec_free (g_ptr_array_index (simple->ignored_directories, i));
+    }
+    for (guint i = 0; i < simple->ignored_files->len; i++)
+    {
+        g_pattern_spec_free (g_ptr_array_index (simple->ignored_files, i));
+    }
+    g_clear_object (&simple->ignored_directories);
+    g_clear_object (&simple->ignored_files);
 
     G_OBJECT_CLASS (nautilus_search_engine_simple_parent_class)->finalize (object);
 }
@@ -212,8 +226,10 @@ visit_directory (GFile            *dir,
     GFileInfo *info;
     GFile *child;
     const char *mime_type, *display_name;
+    char *display_name_reversed;
+    guint display_name_len;
     gdouble match;
-    gboolean is_hidden, found;
+    gboolean is_hidden, found, is_ignored, show_hidden_files;
     GList *l;
     const char *id;
     gboolean visited;
@@ -222,6 +238,7 @@ visit_directory (GFile            *dir,
     GPtrArray *date_range;
     GDateTime *initial_date;
     GDateTime *end_date;
+    GPtrArray *ignore_patterns;
 
 
     enumerator = g_file_enumerate_children (dir,
@@ -239,16 +256,20 @@ visit_directory (GFile            *dir,
         return;
     }
 
+    show_hidden_files = nautilus_query_get_show_hidden_files (data->query);
+
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
-            goto next;
+            goto next_no_display_name;
         }
+        display_name_len = strlen (display_name);
+        display_name_reversed = g_utf8_strreverse (display_name, display_name_len);
 
         is_hidden = g_file_info_get_is_hidden (info) || g_file_info_get_is_backup (info);
-        if (is_hidden && !nautilus_query_get_show_hidden_files (data->query))
+        if (is_hidden && !show_hidden_files)
         {
             goto next;
         }
@@ -274,6 +295,34 @@ visit_directory (GFile            *dir,
 
         mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
         atime = g_file_info_get_attribute_uint64 (info, "time::access");
+
+        if (!show_hidden_files)
+        {
+            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+            {
+                ignore_patterns = data->engine->ignored_directories;
+            }
+            else
+            {
+                ignore_patterns = data->engine->ignored_files;
+            }
+
+            is_ignored = FALSE;
+            for (guint i = 0; i < ignore_patterns->len; i++)
+            {
+                GPatternSpec *pspec = g_ptr_array_index (ignore_patterns, i);
+                if (g_pattern_match (pspec, display_name_len, display_name, display_name_reversed))
+                {
+                    is_ignored = TRUE;
+                    break;
+                }
+            }
+
+            if (is_ignored)
+            {
+                goto next;
+            }
+        }
 
         date_range = nautilus_query_get_date_range (data->query);
         if (found && date_range != NULL)
@@ -347,6 +396,8 @@ visit_directory (GFile            *dir,
 
         g_object_unref (child);
 next:
+        g_free (display_name_reversed);
+next_no_display_name:
         g_object_unref (info);
     }
 
@@ -541,11 +592,34 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
     g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
 }
 
+static GPtrArray *
+load_pattern_array (const char *name)
+{
+    gchar **pattern_strings;
+    guint length;
+    GPtrArray *array;
+
+    pattern_strings = g_settings_get_strv (tracker_files_preferences, name);
+    length = g_strv_length (pattern_strings);
+    array = g_ptr_array_sized_new (length);
+    for (guint i = 0; i < length; i++)
+    {
+        g_ptr_array_add (array, g_pattern_spec_new (pattern_strings[i]));
+    }
+
+    g_strfreev (pattern_strings);
+    return array;
+}
+
 static void
 nautilus_search_engine_simple_init (NautilusSearchEngineSimple *engine)
 {
     engine->query = NULL;
     engine->active_search = NULL;
+
+    engine->ignored_directories = load_pattern_array("ignored-directories");
+    engine->ignored_files = load_pattern_array("ignored-files");
+
 }
 
 NautilusSearchEngineSimple *

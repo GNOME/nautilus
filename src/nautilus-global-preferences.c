@@ -43,6 +43,7 @@ GSettings *gnome_lockdown_preferences;
 GSettings *gnome_background_preferences;
 GSettings *gnome_interface_preferences;
 GSettings *gnome_privacy_preferences;
+GSettings *tracker_files_preferences;
 
 void
 nautilus_global_preferences_init (void)
@@ -69,4 +70,5 @@ nautilus_global_preferences_init (void)
     gnome_background_preferences = g_settings_new ("org.gnome.desktop.background");
     gnome_interface_preferences = g_settings_new ("org.gnome.desktop.interface");
     gnome_privacy_preferences = g_settings_new ("org.gnome.desktop.privacy");
+    tracker_files_preferences = g_settings_new ("org.freedesktop.Tracker.Miner.Files");
 }
