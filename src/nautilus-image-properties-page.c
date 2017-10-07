@@ -1,6 +1,7 @@
 /*
  * Copyright (C) 2004 Red Hat, Inc
  * Copyright (c) 2007 Novell, Inc.
+ * Copyright (c) 2017 Thomas Bechtold <thomasbechtold@jpberlin.de>
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -30,15 +31,7 @@
 #include "nautilus-module.h"
 #include <string.h>
 
-#ifdef HAVE_EXIF
-  #include <libexif/exif-data.h>
-  #include <libexif/exif-ifd.h>
-  #include <libexif/exif-loader.h>
-#endif
-#ifdef HAVE_EXEMPI
-  #include <exempi/xmp.h>
-  #include <exempi/xmpconsts.h>
-#endif
+#include <gexiv2/gexiv2.h>
 
 #define LOAD_BUFFER_SIZE 8192
 
@@ -53,22 +46,10 @@ struct _NautilusImagePropertiesPage
     char buffer[LOAD_BUFFER_SIZE];
     int width;
     int height;
-#ifdef HAVE_EXIF
-    ExifLoader *exifldr;
-#endif /*HAVE_EXIF*/
-#ifdef HAVE_EXEMPI
-    XmpPtr xmp;
-#endif
-};
 
-#ifdef HAVE_EXIF
-struct ExifAttribute
-{
-    ExifTag tag;
-    char *value;
-    gboolean found;
+    GExiv2Metadata *md;
+    gboolean md_ready;
 };
-#endif /*HAVE_EXIF*/
 
 enum
 {
@@ -162,182 +143,6 @@ append_item (NautilusImagePropertiesPage *page,
     }
 }
 
-#ifdef HAVE_EXIF
-static char *
-exif_string_to_utf8 (const char *exif_str)
-{
-    char *utf8_str;
-
-    if (g_utf8_validate (exif_str, -1, NULL))
-    {
-        return g_strdup (exif_str);
-    }
-
-    utf8_str = g_locale_to_utf8 (exif_str, -1, NULL, NULL, NULL);
-    if (utf8_str != NULL)
-    {
-        return utf8_str;
-    }
-
-    return eel_make_valid_utf8 (exif_str);
-}
-
-static void
-exif_content_callback (ExifContent *content,
-                       gpointer     data)
-{
-    struct ExifAttribute *attribute;
-    char b[1024];
-
-    attribute = (struct ExifAttribute *) data;
-    if (attribute->found)
-    {
-        return;
-    }
-
-    attribute->value = g_strdup (exif_content_get_value (content, attribute->tag, b, sizeof (b)));
-
-    if (attribute->value != NULL)
-    {
-        attribute->found = TRUE;
-    }
-}
-
-static char *
-exifdata_get_tag_name_utf8 (ExifTag tag)
-{
-    return exif_string_to_utf8 (exif_tag_get_name (tag));
-}
-
-static char *
-exifdata_get_tag_value_utf8 (ExifData *data,
-                             ExifTag   tag)
-{
-    struct ExifAttribute attribute;
-    char *utf8_value;
-
-    attribute.tag = tag;
-    attribute.value = NULL;
-    attribute.found = FALSE;
-
-    exif_data_foreach_content (data, exif_content_callback, &attribute);
-
-    if (attribute.found)
-    {
-        utf8_value = exif_string_to_utf8 (attribute.value);
-        g_free (attribute.value);
-    }
-    else
-    {
-        utf8_value = NULL;
-    }
-
-    return utf8_value;
-}
-
-static gboolean
-append_tag_value_pair (NautilusImagePropertiesPage *page,
-                       ExifData                    *data,
-                       ExifTag                      tag,
-                       char                        *description)
-{
-    char *utf_attribute;
-    char *utf_value;
-
-    utf_attribute = exifdata_get_tag_name_utf8 (tag);
-    utf_value = exifdata_get_tag_value_utf8 (data, tag);
-
-    if ((utf_attribute == NULL) || (utf_value == NULL))
-    {
-        g_free (utf_attribute);
-        g_free (utf_value);
-        return FALSE;
-    }
-
-    append_item (page,
-                 description ? description : utf_attribute,
-                 utf_value);
-
-    g_free (utf_attribute);
-    g_free (utf_value);
-
-    return TRUE;
-}
-#endif /*HAVE_EXIF*/
-
-
-#ifdef HAVE_EXEMPI
-static void
-append_xmp_value_pair (NautilusImagePropertiesPage *page,
-                       XmpPtr                       xmp,
-                       const char                  *ns,
-                       const char                  *propname,
-                       char                        *descr)
-{
-    uint32_t options;
-    XmpStringPtr value;
-
-    value = xmp_string_new ();
-    if (xmp_get_property (xmp, ns, propname, value, &options))
-    {
-        if (XMP_IS_PROP_SIMPLE (options))
-        {
-            append_item (page, descr, xmp_string_cstr (value));
-        }
-        else if (XMP_IS_PROP_ARRAY (options))
-        {
-            XmpIteratorPtr iter;
-
-            iter = xmp_iterator_new (xmp, ns, propname, XMP_ITER_JUSTLEAFNODES);
-            if (iter)
-            {
-                GString *str;
-                gboolean first = TRUE;
-
-                str = g_string_new (NULL);
-
-                while (xmp_iterator_next (iter, NULL, NULL, value, &options)
-                       && !XMP_IS_PROP_QUALIFIER (options))
-                {
-                    if (!first)
-                    {
-                        g_string_append_printf (str, ", ");
-                    }
-                    else
-                    {
-                        first = FALSE;
-                    }
-                    g_string_append_printf (str,
-                                            "%s",
-                                            xmp_string_cstr (value));
-                }
-                xmp_iterator_free (iter);
-                append_item (page, descr, g_string_free (str, FALSE));
-            }
-        }
-    }
-    xmp_string_free (value);
-}
-#endif /*HAVE EXEMPI*/
-
-static gboolean
-append_option_value_pair (NautilusImagePropertiesPage *page,
-                          GdkPixbuf                   *pixbuf,
-                          const char                  *key,
-                          char                        *description)
-{
-    const char *value;
-
-    value = gdk_pixbuf_get_option (pixbuf, key);
-    if (value == NULL)
-    {
-        return FALSE;
-    }
-
-    append_item (page, description, value);
-    return TRUE;
-}
-
 static void
 append_basic_info (NautilusImagePropertiesPage *page)
 {
@@ -370,94 +175,86 @@ append_basic_info (NautilusImagePropertiesPage *page)
 }
 
 static void
-append_options_info (NautilusImagePropertiesPage *page)
+append_gexiv2_tag (NautilusImagePropertiesPage *page,
+                   const gchar **tag_names,
+                   gchar *description)
 {
-    GdkPixbuf *pixbuf;
-
-    pixbuf = gdk_pixbuf_loader_get_pixbuf (page->loader);
-    if (pixbuf == NULL)
+  gchar *tag_value;
+  while (*tag_names)
     {
-        return;
-    }
-
-    if (!append_option_value_pair (page, pixbuf, "Title", _("Title")))
-    {
-        append_option_value_pair (page, pixbuf, "tEXt::Title", _("Title"));
-    }
-    if (!append_option_value_pair (page, pixbuf, "Author", _("Author")))
-    {
-        append_option_value_pair (page, pixbuf, "tEXt::Author", _("Author"));
-    }
-
-    append_option_value_pair (page, pixbuf, "tEXt::Description", _("Description"));
-    append_option_value_pair (page, pixbuf, "tEXt::Copyright", _("Copyright"));
-    append_option_value_pair (page, pixbuf, "tEXt::Creation Time", _("Created On"));
-    append_option_value_pair (page, pixbuf, "tEXt::Software", _("Created By"));
-    /* Translators: this refers to a legal disclaimer string embedded in
-     * the metadata of an image */
-    append_option_value_pair (page, pixbuf, "tEXt::Disclaimer", _("Disclaimer"));
-    append_option_value_pair (page, pixbuf, "tEXt::Warning", _("Warning"));
-    append_option_value_pair (page, pixbuf, "tEXt::Source", _("Source"));
-    append_option_value_pair (page, pixbuf, "tEXt::Comment", _("Comment"));
-}
-
-static void
-append_exif_info (NautilusImagePropertiesPage *page)
-{
-#ifdef HAVE_EXIF
-    ExifData *exifdata;
-
-    exifdata = exif_loader_get_data (page->exifldr);
-    if (exifdata == NULL)
-    {
-        return;
-    }
-
-    if (exifdata->ifd[0] && exifdata->ifd[0]->count)
-    {
-        append_tag_value_pair (page, exifdata, EXIF_TAG_MAKE, _("Camera Brand"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_MODEL, _("Camera Model"));
-
-        /* Choose which date to show in order of relevance */
-        if (!append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME_ORIGINAL, _("Date Taken")))
+      if (gexiv2_metadata_has_tag (page->md, *tag_names))
         {
-            if (!append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME_DIGITIZED, _("Date Digitized")))
+          tag_value = gexiv2_metadata_get_tag_interpreted_string (page->md, *tag_names);
+          if (!description)
+            description = gexiv2_metadata_get_tag_description (*tag_names);
+          /* don't add empty tags - try next one */
+          if (strlen (tag_value) > 0)
             {
-                append_tag_value_pair (page, exifdata, EXIF_TAG_DATE_TIME, _("Date Modified"));
+              append_item (page, description, tag_value);
+              g_free (tag_value);
+              break;
             }
+          g_free (tag_value);
         }
-
-        append_tag_value_pair (page, exifdata, EXIF_TAG_EXPOSURE_TIME, _("Exposure Time"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_APERTURE_VALUE, _("Aperture Value"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_ISO_SPEED_RATINGS, _("ISO Speed Rating"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_FLASH, _("Flash Fired"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_METERING_MODE, _("Metering Mode"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_EXPOSURE_PROGRAM, _("Exposure Program"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_FOCAL_LENGTH, _("Focal Length"));
-        append_tag_value_pair (page, exifdata, EXIF_TAG_SOFTWARE, _("Software"));
+      *tag_names++;
     }
-
-    exif_data_unref (exifdata);
-#endif
 }
 
 static void
-append_xmp_info (NautilusImagePropertiesPage *page)
+append_gexiv2_info(NautilusImagePropertiesPage *page)
 {
-#ifdef HAVE_EXEMPI
-    if (page->xmp == NULL)
+  gdouble longitude, latitude, altitude;
+  gchar *gps_coords;
+
+  /* define tags and its alternatives */
+  const char *title[] = { "Xmp.dc.title", NULL };
+  const char *camera_brand[] = { "Exif.Image.Make", NULL };
+  const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
+  const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
+  const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
+  const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
+  const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
+  const char *flash[] = { "Exif.Photo.Flash", NULL };
+  const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
+  const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
+  const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
+  const char *software[] = { "Exif.Image.Software", NULL };
+  const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
+  const char *subject[] = { "Xmp.dc.subject", NULL };
+  const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
+  const char *rights[] = { "Xmp.dc.rights", NULL };
+  const char *rating[] = { "Xmp.xmp.Rating", NULL };
+
+  if (!page->md_ready)
     {
-        return;
+      return;
     }
 
-    append_xmp_value_pair (page, page->xmp, NS_IPTC4XMP, "Location", _("Location"));
-    append_xmp_value_pair (page, page->xmp, NS_DC, "description", _("Description"));
-    append_xmp_value_pair (page, page->xmp, NS_DC, "subject", _("Keywords"));
-    append_xmp_value_pair (page, page->xmp, NS_DC, "creator", _("Creator"));
-    append_xmp_value_pair (page, page->xmp, NS_DC, "rights", _("Copyright"));
-    append_xmp_value_pair (page, page->xmp, NS_XAP, "Rating", _("Rating"));
-    /* TODO add CC licenses */
-#endif /*HAVE EXEMPI*/
+  append_gexiv2_tag (page, camera_brand, _("Camera Brand"));
+  append_gexiv2_tag (page, camera_model, _("Camera Model"));
+  append_gexiv2_tag (page, exposure_time, _("Exposure Time"));
+  append_gexiv2_tag (page, exposure_mode, _("Exposure Program"));
+  append_gexiv2_tag (page, aperture_value, _("Aperture Value"));
+  append_gexiv2_tag (page, iso_speed_ratings, _("ISO Speed Rating"));
+  append_gexiv2_tag (page, flash, _("Flash Fired"));
+  append_gexiv2_tag (page, metering_mode, _("Metering Mode"));
+  append_gexiv2_tag (page, focal_length, _("Focal Length"));
+  append_gexiv2_tag (page, software, _("Software"));
+  append_gexiv2_tag (page, title, _("Title"));
+  append_gexiv2_tag (page, description, _("Description"));
+  append_gexiv2_tag (page, subject, _("Keywords"));
+  append_gexiv2_tag (page, creator, _("Creator"));
+  append_gexiv2_tag (page, created_on, _("Created On"));
+  append_gexiv2_tag (page, rights, _("Copyright"));
+  append_gexiv2_tag (page, rating, _("Rating"));
+
+  if (gexiv2_metadata_get_gps_info (page->md, &longitude, &latitude, &altitude))
+    {
+      gps_coords = g_strdup_printf ("%f N / %f W (%.0f m)", latitude, longitude, altitude);
+      append_item (page, _("Coordinates"), gps_coords);
+      g_free (gps_coords);
+    }
+  /* TODO add CC licenses */
 }
 
 static void
@@ -476,9 +273,7 @@ load_finished (NautilusImagePropertiesPage *page)
     if (page->got_size)
     {
         append_basic_info (page);
-        append_options_info (page);
-        append_exif_info (page);
-        append_xmp_info (page);
+        append_gexiv2_info (page);
     }
     else
     {
@@ -490,20 +285,8 @@ load_finished (NautilusImagePropertiesPage *page)
         g_object_unref (page->loader);
         page->loader = NULL;
     }
-#ifdef HAVE_EXIF
-    if (page->exifldr != NULL)
-    {
-        exif_loader_unref (page->exifldr);
-        page->exifldr = NULL;
-    }
-#endif /*HAVE_EXIF*/
-#ifdef HAVE_EXEMPI
-    if (page->xmp != NULL)
-    {
-        xmp_free (page->xmp);
-        page->xmp = NULL;
-    }
-#endif
+    page->md_ready = FALSE;
+    g_clear_object (&page->md);
 }
 
 static void
@@ -515,7 +298,6 @@ file_read_callback (GObject      *object,
     GInputStream *stream;
     gssize count_read;
     GError *error;
-    int exif_still_loading;
     gboolean done_reading;
 
     page = NAUTILUS_IMAGE_PROPERTIES_PAGE (data);
@@ -529,14 +311,6 @@ file_read_callback (GObject      *object,
     {
         g_assert (count_read <= sizeof (page->buffer));
 
-#ifdef HAVE_EXIF
-        exif_still_loading = exif_loader_write (page->exifldr,
-                                                (guchar *) page->buffer,
-                                                count_read);
-#else
-        exif_still_loading = 0;
-#endif
-
         if (page->pixbuf_still_loading)
         {
             if (!gdk_pixbuf_loader_write (page->loader,
@@ -548,8 +322,7 @@ file_read_callback (GObject      *object,
             }
         }
 
-        if (page->pixbuf_still_loading ||
-            (exif_still_loading == 1))
+        if (page->pixbuf_still_loading)
         {
             g_input_stream_read_async (G_INPUT_STREAM (stream),
                                        page->buffer,
@@ -642,9 +415,6 @@ file_open_callback (GObject      *object,
         page->pixbuf_still_loading = TRUE;
         page->width = 0;
         page->height = 0;
-#ifdef HAVE_EXIF
-        page->exifldr = exif_loader_new ();
-#endif /*HAVE_EXIF*/
         g_free (mime_type);
 
         g_signal_connect (page->loader,
@@ -679,37 +449,43 @@ load_location (NautilusImagePropertiesPage *page,
 {
     GFile *file;
     char *uri;
+    gchar *file_path;
     FileOpenData *data;
+    GError *err;
 
     g_assert (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE (page));
     g_assert (info != NULL);
 
+    err = NULL;
     page->cancellable = g_cancellable_new ();
 
     uri = nautilus_file_info_get_uri (info);
     file = g_file_new_for_uri (uri);
+    file_path = g_file_get_path (file);
 
-#ifdef HAVE_EXEMPI
-    {
-        /* Current Exempi does not support setting custom IO to be able to use Gnome-vfs */
-        /* So it will only work with local files. Future version might remove this limitation */
-        XmpFilePtr xf;
-        char *localname;
-
-        localname = g_filename_from_uri (uri, NULL, NULL);
-        if (localname)
-        {
-            xf = xmp_files_open_new (localname, 0);
-            page->xmp = xmp_files_get_new_xmp (xf);             /* only load when loading */
-            xmp_files_close (xf, 0);
-            g_free (localname);
-        }
+    /* gexiv2 metadata init */
+    page->md_ready = gexiv2_initialize ();
+    if (!page->md_ready)
+      {
+        g_warning ("Unable to initialize gexiv2");
+      }
+    else
+      {
+        page->md = gexiv2_metadata_new ();
+        if (file_path)
+          {
+            if (!gexiv2_metadata_open_path (page->md, file_path, &err))
+              {
+                g_warning ("gexiv2 metadata not supported for '%s': %s", file_path, err->message);
+                g_clear_error (&err);
+                page->md_ready = FALSE;
+              }
+          }
         else
-        {
-            page->xmp = NULL;
-        }
-    }
-#endif /*HAVE_EXEMPI*/
+          {
+            page->md_ready = FALSE;
+          }
+      }
 
     data = g_new0 (FileOpenData, 1);
     data->page = page;
@@ -723,6 +499,7 @@ load_location (NautilusImagePropertiesPage *page,
 
     g_object_unref (file);
     g_free (uri);
+    g_free (file_path);
 }
 
 static void

@@ -274,7 +274,8 @@ nautilus_deps = [glib,
                  nautilus_extension,
                  x11,
                  gmodule_no_export,
-                 tracker_sparql]
+                 tracker_sparql,
+                 gexiv2]
 
 if get_option ('enable-exif')
     nautilus_deps += exif
