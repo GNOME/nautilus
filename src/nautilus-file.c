@@ -5695,7 +5695,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
                  G_DESKTOP_CLOCK_FORMAT_24H;
 
         /* Show only the time if date is on today */
-        if (days_ago < 1)
+        if (days_ago == 0)
         {
             if (use_24)
             {
@@ -5709,7 +5709,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
         }
         /* Show the word "Yesterday" and time if date is on yesterday */
-        else if (days_ago < 2)
+        else if (days_ago == 1)
         {
             if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
             {
@@ -5735,7 +5735,7 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
             }
         }
         /* Show a week day and time if date is in the last week */
-        else if (days_ago < 7)
+        else if (days_ago > 1 && days_ago < 7)
         {
             if (date_format == NAUTILUS_DATE_FORMAT_REGULAR)
             {
