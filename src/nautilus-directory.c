@@ -81,7 +81,17 @@ real_are_all_files_seen (NautilusDirectory *directory)
 static gboolean
 real_is_not_empty (NautilusDirectory *directory)
 {
-    return directory->details->file_list != NULL;
+    gboolean show_hidden_files;
+    gboolean empty;
+    GList *files;
+
+    show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
+                                                NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
+    files = nautilus_file_list_filter_hidden (directory->details->file_list, show_hidden_files);
+    empty = (files == NULL);
+    nautilus_file_list_unref (files);
+
+    return !empty;
 }
 
 static gboolean
