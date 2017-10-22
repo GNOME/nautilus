@@ -89,6 +89,7 @@ static void   nautilus_list_view_set_zoom_level (NautilusListView     *view,
                                                  NautilusListZoomLevel new_level);
 static void   nautilus_list_view_scroll_to_file (NautilusListView *view,
                                                  NautilusFile     *file);
+static void   nautilus_list_view_sort_directories_first_changed (NautilusFilesView *view);
 
 static void   apply_columns_settings (NautilusListView *list_view,
                                       char            **column_order,
@@ -2382,6 +2383,7 @@ nautilus_list_view_begin_loading (NautilusFilesView *view)
 
     list_view = NAUTILUS_LIST_VIEW (view);
 
+    nautilus_list_view_sort_directories_first_changed (NAUTILUS_FILES_VIEW (list_view));
     set_sort_order_from_metadata_and_preferences (list_view);
     set_columns_settings_from_metadata_and_preferences (list_view);
     check_allow_sort (list_view);
@@ -3651,7 +3653,6 @@ nautilus_list_view_init (NautilusListView *list_view)
 
     nautilus_list_view_click_policy_changed (NAUTILUS_FILES_VIEW (list_view));
 
-    nautilus_list_view_sort_directories_first_changed (NAUTILUS_FILES_VIEW (list_view));
     nautilus_list_view_set_zoom_level (list_view, get_default_zoom_level ());
 
     list_view->details->hover_path = NULL;
