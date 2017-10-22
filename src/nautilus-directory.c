@@ -87,8 +87,7 @@ real_is_not_empty (NautilusDirectory *directory)
 
     show_hidden_files = g_settings_get_boolean (gtk_filechooser_preferences,
                                                 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
-    files = nautilus_directory_get_file_list (directory);
-    files = nautilus_file_list_filter_hidden (files, show_hidden_files);
+    files = nautilus_file_list_filter_hidden (directory->details->file_list, show_hidden_files);
     empty = (files == NULL);
     nautilus_file_list_unref (files);
 
