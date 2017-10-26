@@ -258,6 +258,7 @@ typedef struct
     /* Floating bar */
     guint floating_bar_set_status_timeout_id;
     guint floating_bar_loading_timeout_id;
+    guint floating_bar_set_passthrough_timeout_id;
     GtkWidget *floating_bar;
 
     /* Toolbar menu */
@@ -539,6 +540,8 @@ remove_floating_bar_passthrough (gpointer data)
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (data));
     gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
                                           priv->floating_bar, FALSE);
+    priv->floating_bar_set_passthrough_timeout_id = 0;
+
     return G_SOURCE_REMOVE;
 }
 
@@ -570,11 +573,18 @@ set_floating_bar_status (NautilusFilesView *view,
     status_data->detail_status = g_strdup (detail_status);
     status_data->view = view;
 
+    if (priv->floating_bar_set_passthrough_timeout_id != 0)
+    {
+        g_source_remove (priv->floating_bar_set_passthrough_timeout_id);
+        priv->floating_bar_set_passthrough_timeout_id = 0;
+    }
     /* Activate passthrough on the floating bar just long enough for a
      * potential double click to happen, so to not interfere with it */
     gtk_overlay_set_overlay_pass_through (GTK_OVERLAY (priv->overlay),
                                           priv->floating_bar, TRUE);
-    g_timeout_add ((guint) double_click_time, remove_floating_bar_passthrough, view);
+    priv->floating_bar_set_passthrough_timeout_id = g_timeout_add ((guint) double_click_time,
+                                                                   remove_floating_bar_passthrough,
+                                                                   view);
 
     /* waiting for half of the double-click-time before setting
      * the status seems to be a good approximation of not setting it
@@ -3157,6 +3167,12 @@ nautilus_files_view_destroy (GtkWidget *object)
     {
         g_source_remove (priv->floating_bar_loading_timeout_id);
         priv->floating_bar_loading_timeout_id = 0;
+    }
+
+    if (priv->floating_bar_set_passthrough_timeout_id != 0)
+    {
+        g_source_remove (priv->floating_bar_set_passthrough_timeout_id);
+        priv->floating_bar_set_passthrough_timeout_id = 0;
     }
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
