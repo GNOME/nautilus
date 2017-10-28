@@ -1,0 +1,17 @@
+image: fedora:26
+
+stages:
+ - build
+
+before_script:
+  - dnf install -y gcc meson gettext itstool redhat-rpm-config git
+                   gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                   gobject-introspection-devel gsettings-desktop-schemas-devel
+                   libselinux-devel libxml2-devel tracker-devel
+                   desktop-file-utils
+
+build-nautilus:
+  stage: build
+  script:
+    - meson _build .
+    - ninja -C _build install
