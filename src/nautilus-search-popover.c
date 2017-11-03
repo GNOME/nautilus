@@ -367,12 +367,14 @@ search_fts_mode_changed (GtkToggleButton       *button,
         popover->fts_enabled == FALSE)
     {
         popover->fts_enabled = TRUE;
+        g_settings_set_boolean(nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, TRUE);
         g_object_notify (G_OBJECT (popover), "fts-enabled");
     }
     else if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (popover->filename_search_button)) &&
              popover->fts_enabled == TRUE)
     {
         popover->fts_enabled = FALSE;
+        g_settings_set_boolean(nautilus_preferences, NAUTILUS_PREFERENCES_FTS_ENABLED, FALSE);
         g_object_notify (G_OBJECT (popover), "fts-enabled");
     }
 }
@@ -906,7 +908,8 @@ nautilus_search_popover_init (NautilusSearchPopover *self)
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->last_used_button), TRUE);
     }
 
-    self->fts_enabled = g_settings_get_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_FTS_DEFAULT);
+    self->fts_enabled = g_settings_get_boolean (nautilus_preferences,
+                                                NAUTILUS_PREFERENCES_FTS_ENABLED);
     if (self->fts_enabled)
     {
         gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->full_text_search_button), TRUE);
