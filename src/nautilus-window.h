@@ -31,6 +31,7 @@
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-bookmark.h"
 #include "nautilus-search-directory.h"
+#include "gtk/nautilusgtkplacessidebar.h"
 
 G_BEGIN_DECLS
 
