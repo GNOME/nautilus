@@ -14,6 +14,9 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors : Adam Hukalowicz (procing3r at gmail dot com)
+ *
  */
 #ifndef NAUTILUS_GTK_SIDEBAR_ROW_PRIVATE_H
 #define NAUTILUS_GTK_SIDEBAR_ROW_PRIVATE_H

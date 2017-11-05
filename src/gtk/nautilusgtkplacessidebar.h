@@ -19,6 +19,7 @@
  *
  * Authors : Mr Jamie McCracken (jamiemcc at blueyonder dot co dot uk)
  *           Federico Mena Quintero <federico@gnome.org>
+ *           Adam Hukalowicz (procing3r at gmail dot com)
  */
 
 #ifndef NAUTILUS_GTK_PLACES_SIDEBAR_H

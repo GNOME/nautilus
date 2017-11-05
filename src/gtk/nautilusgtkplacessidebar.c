@@ -19,6 +19,7 @@
  *           Cosimo Cecchi <cosimoc@gnome.org>
  *           Federico Mena Quintero <federico@gnome.org>
  *           Carlos Soriano <csoriano@gnome.org>
+ *           Adam Hukalowicz (procing3r at gmail dot com)
  */
 
 #include "config.h"
@@ -473,7 +474,9 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
            gpointer                    *cloud_provider_account,
 #endif
            const gint                   index,
-           const gchar                 *tooltip)
+           const gchar                 *tooltip,
+	   const gchar			*free_space,
+	   gdouble			free_space_bar)
 {
   gboolean show_eject, show_unmount;
   gboolean show_eject_button;
@@ -505,6 +508,8 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
 #ifdef HAVE_CLOUDPROVIDERS
                       "cloud-provider", cloud_provider_account,
 #endif
+                      "free-space", free_space,
+		      "free-space-bar", free_space_bar,
                       NULL);
 
   eject_button = nautilus_gtk_sidebar_row_get_eject_button (NAUTILUS_GTK_SIDEBAR_ROW (row));
@@ -517,7 +522,8 @@ add_place (NautilusGtkPlacesSidebar            *sidebar,
                     G_CALLBACK (on_button_release_event), row);
 
   gtk_container_add (GTK_CONTAINER (sidebar->list_box), GTK_WIDGET (row));
-  gtk_widget_show_all (row);
+  gtk_widget_show (GTK_WIDGET (sidebar->list_box));
+  gtk_widget_show (GTK_WIDGET (row));
 
   return row;
 }
@@ -662,8 +668,8 @@ add_special_dirs (NautilusGtkPlacesSidebar *sidebar)
       add_place (sidebar, PLACES_XDG_DIR,
                  SECTION_COMPUTER,
                  name, start_icon, NULL, mount_uri,
-                 NULL, NULL, NULL, NULL, 0,
-                 tooltip);
+                 NULL, NULL, NULL, NULL, NULL, 0,
+                 tooltip, 0);
       g_free (name);
       g_object_unref (root);
       g_object_unref (start_icon);
@@ -789,7 +795,7 @@ on_app_shortcuts_query_complete (GObject      *source,
                  name, start_icon, NULL, uri,
                  NULL, NULL, NULL, NULL,
                  pos,
-                 tooltip);
+                 tooltip, NULL, 0);
 
       g_free (uri);
       g_free (tooltip);
@@ -874,7 +880,7 @@ on_bookmark_query_info_complete (GObject      *source,
              SECTION_BOOKMARKS,
              bookmark_name, start_icon, NULL, mount_uri,
              NULL, NULL, NULL, NULL, clos->index,
-             tooltip);
+             tooltip, NULL, 0);
 
   g_free (mount_uri);
   g_free (tooltip);
@@ -1008,6 +1014,10 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
   gchar *cloudprovider_path;
 #endif
   GtkStyleContext *context;
+  GFileInfo *filesystem_info;
+  gchar *free_space;
+  gchar *total_space;
+  gdouble free_space_bar = 0;
 
   /* save original selection */
   selected = gtk_list_box_get_selected_row (GTK_LIST_BOX (sidebar->list_box));
@@ -1038,7 +1048,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                  SECTION_COMPUTER,
                  _("Recent"), start_icon, NULL, "recent:///",
                  NULL, NULL, NULL, NULL, 0,
-                 _("Recent files"));
+                 _("Recent files"), NULL, 0);
       g_object_unref (start_icon);
     }
 
@@ -1049,7 +1059,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
              SECTION_COMPUTER,
              _("Home"), start_icon, NULL, home_uri,
              NULL, NULL, NULL, NULL, 0,
-             _("Open your personal folder"));
+             _("Open your personal folder"), NULL, 0);
   g_object_unref (start_icon);
   g_free (home_uri);
 
@@ -1064,7 +1074,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                      SECTION_COMPUTER,
                      _("Desktop"), start_icon, NULL, mount_uri,
                      NULL, NULL, NULL, NULL, 0,
-                     _("Open the contents of your desktop in a folder"));
+                     _("Open the contents of your desktop in a folder"), NULL, 0);
           g_object_unref (start_icon);
           g_free (mount_uri);
         }
@@ -1080,7 +1090,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                  SECTION_COMPUTER,
                  _("Enter Location"), start_icon, NULL, NULL,
                  NULL, NULL, NULL, NULL, 0,
-                 _("Manually enter a location"));
+                 _("Manually enter a location"), NULL, 0);
       g_object_unref (start_icon);
     }
 
@@ -1092,7 +1102,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                                       SECTION_COMPUTER,
                                       _("Trash"), start_icon, NULL, "trash:///",
                                       NULL, NULL, NULL, NULL, 0,
-                                      _("Open the trash"));
+                                      _("Open the trash"), NULL, 0);
       g_object_add_weak_pointer (G_OBJECT (sidebar->trash_row),
                                  (gpointer *) &sidebar->trash_row);
       g_object_unref (start_icon);
@@ -1142,7 +1152,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                                SECTION_CLOUD,
                                name, start_icon, end_icon, cloudprovider_path,
                                NULL, NULL, NULL, l->data, 0,
-                               tooltip);
+                               tooltip, NULL, 0);
 
       g_signal_connect (l->data, "changed", G_CALLBACK (cloud_row_update), cloud_row);
       g_signal_connect (cloud_row, "destroy", G_CALLBACK (cloud_row_destroy), sidebar);
@@ -1196,7 +1206,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   add_place (sidebar, PLACES_MOUNTED_VOLUME,
                              SECTION_MOUNTS,
                              name, start_icon, NULL, mount_uri,
-                             drive, volume, mount, NULL, 0, tooltip);
+                             drive, volume, mount, NULL, 0, tooltip, NULL, 0);
                   g_object_unref (root);
                   g_object_unref (mount);
                   g_object_unref (start_icon);
@@ -1221,7 +1231,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                   add_place (sidebar, PLACES_MOUNTED_VOLUME,
                              SECTION_MOUNTS,
                              name, start_icon, NULL, NULL,
-                             drive, volume, NULL, NULL, 0, tooltip);
+                             drive, volume, NULL, NULL, 0, tooltip, NULL, 0);
                   g_object_unref (start_icon);
                   g_free (name);
                   g_free (tooltip);
@@ -1249,7 +1259,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
               add_place (sidebar, PLACES_BUILT_IN,
                          SECTION_MOUNTS,
                          name, start_icon, NULL, NULL,
-                         drive, NULL, NULL, NULL, 0, tooltip);
+                         drive, NULL, NULL, NULL, 0, tooltip, NULL, 0);
               g_object_unref (start_icon);
               g_free (tooltip);
               g_free (name);
@@ -1300,7 +1310,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           add_place (sidebar, PLACES_MOUNTED_VOLUME,
                      SECTION_MOUNTS,
                      name, start_icon, NULL, mount_uri,
-                     NULL, volume, mount, NULL, 0, tooltip);
+                     NULL, volume, mount, NULL, 0, tooltip, NULL, 0);
           g_object_unref (mount);
           g_object_unref (root);
           g_object_unref (start_icon);
@@ -1316,7 +1326,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           add_place (sidebar, PLACES_MOUNTED_VOLUME,
                      SECTION_MOUNTS,
                      name, start_icon, NULL, NULL,
-                     NULL, volume, NULL, NULL, 0, name);
+                     NULL, volume, NULL, NULL, 0, name, NULL, 0);
           g_object_unref (start_icon);
           g_free (name);
         }
@@ -1332,7 +1342,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                  SECTION_MOUNTS,
                  sidebar->hostname, start_icon, NULL, "file:///",
                  NULL, NULL, NULL, NULL, 0,
-                 _("Open the contents of the file system"));
+                 _("Open the contents of the file system"), NULL, 0);
       g_object_unref (start_icon);
     }
 
@@ -1365,6 +1375,18 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           continue;
         }
 
+      filesystem_info = g_file_query_filesystem_info (root, "filesystem::*", NULL, NULL);
+      if (filesystem_info)
+      {
+        free_space = g_format_size (g_file_info_get_attribute_uint64 (filesystem_info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE));
+        total_space = g_format_size (g_file_info_get_attribute_uint64 (filesystem_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE));
+        free_space = g_strdup_printf ("%s/%s", free_space, total_space);
+        free_space_bar = (gdouble) g_file_info_get_attribute_uint64 (filesystem_info, G_FILE_ATTRIBUTE_FILESYSTEM_FREE) / g_file_info_get_attribute_uint64 (filesystem_info, G_FILE_ATTRIBUTE_FILESYSTEM_SIZE);
+
+        g_free (total_space);
+        g_object_unref (filesystem_info);
+      }
+
       start_icon = g_mount_get_symbolic_icon (mount);
       mount_uri = g_file_get_uri (root);
       name = g_mount_get_name (mount);
@@ -1372,13 +1394,15 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       add_place (sidebar, PLACES_MOUNTED_VOLUME,
                  SECTION_COMPUTER,
                  name, start_icon, NULL, mount_uri,
-                 NULL, NULL, mount, NULL, 0, tooltip);
+                 NULL, NULL, mount, NULL, 0, tooltip, free_space, free_space_bar); //123
       g_object_unref (root);
       g_object_unref (mount);
       g_object_unref (start_icon);
       g_free (name);
       g_free (mount_uri);
       g_free (tooltip);
+      g_free (free_space);
+
     }
   g_list_free (mounts);
 
@@ -1420,7 +1444,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
                                          SECTION_BOOKMARKS,
                                          _("New bookmark"), new_bookmark_icon, NULL, NULL,
                                          NULL, NULL, NULL, NULL, 0,
-                                         _("Add a new bookmark"));
+                                         _("Add a new bookmark"), NULL, 0);
   context = gtk_widget_get_style_context (sidebar->new_bookmark_row);
   gtk_style_context_add_class (context, "sidebar-new-bookmark-row");
   g_object_unref (new_bookmark_icon);
@@ -1448,7 +1472,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
               add_place (sidebar, PLACES_MOUNTED_VOLUME,
                          SECTION_MOUNTS,
                          name, start_icon, NULL, NULL,
-                         NULL, volume, NULL, NULL, 0, tooltip);
+                         NULL, volume, NULL, NULL, 0, tooltip, NULL, 0);
               g_object_unref (start_icon);
               g_free (name);
               g_free (tooltip);
@@ -1469,7 +1493,7 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
           add_place (sidebar, PLACES_MOUNTED_VOLUME,
                      SECTION_MOUNTS,
                      name, start_icon, NULL, mount_uri,
-                     NULL, NULL, mount, NULL, 0, tooltip);
+                     NULL, NULL, mount, NULL, 0, tooltip, NULL, 0);
           g_object_unref (root);
           g_object_unref (start_icon);
           g_free (name);
@@ -1489,12 +1513,12 @@ update_places (NautilusGtkPlacesSidebar *sidebar)
       add_place (sidebar, PLACES_OTHER_LOCATIONS,
                  SECTION_OTHER_LOCATIONS,
                  _("Other Locations"), start_icon, NULL, "other-locations:///",
-                 NULL, NULL, NULL, NULL, 0, _("Show other locations"));
+                 NULL, NULL, NULL, NULL, 0, _("Show other locations"), NULL, 0);
 
       g_object_unref (start_icon);
     }
 
-  gtk_widget_show_all (GTK_WIDGET (sidebar));
+  gtk_widget_show (GTK_WIDGET (sidebar));
   /* We want this hidden by default, but need to do it after the show_all call */
   nautilus_gtk_sidebar_row_hide (NAUTILUS_GTK_SIDEBAR_ROW (sidebar->new_bookmark_row), TRUE);
 

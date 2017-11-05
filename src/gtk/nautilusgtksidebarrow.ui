@@ -19,6 +19,12 @@
           <object class="GtkEventBox" id="event_box">
             <property name="visible">1</property>
             <child>
+
+              <object class="GtkBox">
+                <property name="visible">1</property>
+                <property name="orientation">vertical</property>
+                <child>
+
               <object class="GtkBox">
                 <property name="visible">1</property>
                 <child>
@@ -72,6 +78,37 @@
                   </object>
                 </child>
               </object>
+
+
+              </child>
+              <child>
+                <object class="GtkBox" id="disk_info_box">
+                  <property name="visible">False</property>
+                  <child>
+                    <object class="GtkLabel" id="disk_space_label">
+                    <property name="visible">True</property>
+                    <property name="hexpand">1</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                    </object>
+                  </child>
+                  <child>
+                    <object class="GtkProgressBar" id="disk_space_progress">
+                      <property name="visible">True</property>
+                      <property name="valign">center</property>
+                      <property name="margin_left">5</property>
+                      <property name="margin_right">5</property>
+                      <property name="can_focus">False</property>
+                      <property name="fraction">0.12</property>
+                    </object>
+                  </child>
+                </object>
+              </child>
+            </object>
+
+
             </child>
           </object>
         </child>

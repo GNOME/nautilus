@@ -14,6 +14,9 @@
  *
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ * Authors : Adam Hukalowicz (procing3r at gmail dot com)
+ *
  */
 
 #include "config.h"
@@ -51,6 +54,11 @@ struct _NautilusGtkSidebarRow
   gboolean placeholder;
   GtkPlacesSidebar *sidebar;
   GtkWidget *revealer;
+  GtkWidget *disk_info_box;
+  GtkWidget *disk_space_label;
+  GtkWidget *disk_space_progress;
+  gchar *free_space;
+  gdouble free_space_bar;
 };
 
 G_DEFINE_TYPE (NautilusGtkSidebarRow, nautilus_gtk_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
@@ -73,7 +81,9 @@ enum
   PROP_MOUNT,
   PROP_CLOUD_PROVIDER,
   PROP_PLACEHOLDER,
-  LAST_PROP
+  PROP_FREE_SPACE,
+  PROP_FREE_SPACE_BAR,
+  LAST_PROP,
 };
 
 static GParamSpec *properties [LAST_PROP];
@@ -148,7 +158,15 @@ nautilus_gtk_sidebar_row_get_property (GObject    *object,
       g_value_set_boolean (value, self->placeholder);
       break;
 
-    default:
+    case PROP_FREE_SPACE:
+      g_value_set_string (value, self->free_space);
+      break;
+
+    case PROP_FREE_SPACE_BAR:
+      g_value_set_double (value, self->free_space_bar);
+      break;
+
+      default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
@@ -220,10 +238,13 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
 
     case PROP_EJECTABLE:
       self->ejectable = g_value_get_boolean (value);
-      if (self->ejectable)
+      if (self->ejectable) {
         gtk_widget_show (self->eject_button);
-      else
+        gtk_widget_show (self->disk_info_box);
+      } else {
         gtk_widget_hide (self->eject_button);
+        gtk_widget_hide (self->disk_info_box);
+      }
       break;
 
     case PROP_ORDER_INDEX:
@@ -298,6 +319,16 @@ nautilus_gtk_sidebar_row_set_property (GObject      *object,
 
         break;
       }
+
+    case PROP_FREE_SPACE:
+      g_free (self->free_space);
+      self->free_space = g_strdup (g_value_get_string (value));
+      gtk_label_set_text (GTK_LABEL (self->disk_space_label), self->free_space);
+      break;
+
+    case PROP_FREE_SPACE_BAR:
+      self->free_space_bar = g_value_get_double (value);
+      gtk_progress_bar_set_fraction (GTK_PROGRESS_BAR (self->disk_space_progress), self->free_space_bar);
 
     default:
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
@@ -394,6 +425,9 @@ nautilus_gtk_sidebar_row_finalize (GObject *object)
   g_clear_object (&self->volume);
   g_clear_object (&self->mount);
   g_clear_object (&self->cloud_provider);
+
+  g_free (self->free_space);
+  self->free_space = NULL;
 
   G_OBJECT_CLASS (nautilus_gtk_sidebar_row_parent_class)->finalize (object);
 }
@@ -542,6 +576,24 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
                            G_PARAM_CONSTRUCT_ONLY |
                            G_PARAM_STATIC_STRINGS));
 
+  properties [PROP_FREE_SPACE] =
+    g_param_spec_string ("free-space",
+                          "free-space",
+                          "free disk space",
+                          NULL,
+                          (G_PARAM_READWRITE |
+                          G_PARAM_STATIC_STRINGS));
+
+  properties [PROP_FREE_SPACE_BAR] =
+    g_param_spec_double ("free-space-bar",
+                          "free-space-bar",
+                          "free disk space progressbar",
+                          0,
+                          1,
+                          0,
+                          (G_PARAM_READWRITE |
+                          G_PARAM_STATIC_STRINGS));
+
   g_object_class_install_properties (object_class, LAST_PROP, properties);
 
   gtk_widget_class_set_template_from_resource (widget_class,
@@ -552,7 +604,9 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, label_widget);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, eject_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, revealer);
-
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, disk_info_box);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, disk_space_label);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, disk_space_progress);
   gtk_widget_class_bind_template_callback (widget_class, on_child_revealed);
   gtk_widget_class_set_css_name (widget_class, "row");
 }
@@ -575,6 +629,8 @@ nautilus_gtk_sidebar_row_clone (NautilusGtkSidebarRow *self)
                       "volume", self->volume,
                       "mount", self->mount,
                       "cloud-provider", self->cloud_provider,
+		      "free-space", self->free_space,
+		      "free-space-bar", self->free_space_bar,
                       NULL);
 }
 
