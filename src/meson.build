@@ -259,7 +259,11 @@ libnautilus_sources = [
     'nautilus-batch-rename-utilities.c',
     'nautilus-batch-rename-utilities.h',
     'nautilus-search-engine-tracker.c',
-    'nautilus-search-engine-tracker.h'
+    'nautilus-search-engine-tracker.h',
+    'nautilus-tag-manager.c',
+    'nautilus-tag-manager.h',
+    'nautilus-favorite-directory.c',
+    'nautilus-favorite-directory.h'
 ]
 
 nautilus_deps = [glib,

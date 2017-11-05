@@ -38,6 +38,12 @@
 #include <stdlib.h>
 
 gboolean
+eel_uri_is_favorites (const gchar *uri)
+{
+    return g_str_has_prefix (uri, "favorites:");
+}
+
+gboolean
 eel_uri_is_trash (const char *uri)
 {
     return g_str_has_prefix (uri, "trash:");

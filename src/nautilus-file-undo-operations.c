@@ -33,6 +33,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
+#include "nautilus-tag-manager.h"
 
 
 /* Since we use g_get_current_time for setting "orig_trash_time" in the undo
@@ -1302,6 +1303,226 @@ nautilus_file_undo_info_batch_rename_set_data_post (NautilusFileUndoInfoBatchRen
     }
 
     self->priv->new_display_names = g_list_reverse (self->priv->new_display_names);
+}
+
+/* favorite files */
+G_DEFINE_TYPE (NautilusFileUndoInfoFavorites, nautilus_file_undo_info_favorites, NAUTILUS_TYPE_FILE_UNDO_INFO);
+
+struct _NautilusFileUndoInfoFavoritesDetails
+{
+    GList *files;
+    /* Whether the action was starring or unstarring */
+    gboolean starred;
+};
+
+enum
+{
+    PROP_FILES = 1,
+    PROP_STARRED,
+    NUM_PROPERTIES
+};
+
+static void
+favorites_strings_func (NautilusFileUndoInfo  *info,
+                        gchar                **undo_label,
+                        gchar                **undo_description,
+                        gchar                **redo_label,
+                        gchar                **redo_description)
+{
+    NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_FAVORITES (info);
+
+    if (self->priv->starred)
+    {
+        *undo_description = g_strdup_printf (ngettext ("Unstar %d file",
+                                                       "Unstar %d files",
+                                                       g_list_length (self->priv->files)),
+                                             g_list_length (self->priv->files));
+        *redo_description = g_strdup_printf (ngettext ("Star %d file",
+                                                       "Star %d files",
+                                                       g_list_length (self->priv->files)),
+                                             g_list_length (self->priv->files));
+        *undo_label = g_strdup (_("_Undo Starring"));
+        *redo_label = g_strdup (_("_Redo Starring"));
+    }
+    else
+    {
+        *undo_description = g_strdup_printf (ngettext ("Star %d file",
+                                                       "Star %d files",
+                                                       g_list_length (self->priv->files)),
+                                             g_list_length (self->priv->files));
+        *redo_description = g_strdup_printf (ngettext ("Unstar %d file",
+                                                       "Unstar %d files",
+                                                       g_list_length (self->priv->files)),
+                                             g_list_length (self->priv->files));
+        *undo_label = g_strdup (_("_Undo Unstarring"));
+        *redo_label = g_strdup (_("_Redo Unstarring"));
+    }
+}
+
+static void
+on_undo_favorite_tags_updated (GObject      *object,
+                               GAsyncResult *res,
+                               gpointer      user_data)
+{
+    GTask *task;
+    NautilusFileUndoInfo *undo_info;
+
+    undo_info = NAUTILUS_FILE_UNDO_INFO (object);
+
+    task = user_data;
+    g_clear_object (&task);
+
+    file_undo_info_operation_callback (NULL, NULL, NULL, undo_info);
+}
+
+static void
+favorites_redo_func (NautilusFileUndoInfo *info,
+                     GtkWindow            *parent_window)
+{
+    NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_FAVORITES (info);
+    NautilusTagManager *tag_manager;
+
+    tag_manager = nautilus_tag_manager_get ();
+
+    if (self->priv->starred)
+    {
+        nautilus_tag_manager_star_files (tag_manager,
+                                         G_OBJECT (info),
+                                         self->priv->files,
+                                         on_undo_favorite_tags_updated,
+                                         NULL);
+    }
+    else
+    {
+
+        nautilus_tag_manager_unstar_files (tag_manager,
+                                           G_OBJECT (info),
+                                           self->priv->files,
+                                           on_undo_favorite_tags_updated,
+                                           NULL);
+    }
+}
+
+static void
+favorites_undo_func (NautilusFileUndoInfo *info,
+                     GtkWindow            *parent_window)
+{
+    NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_FAVORITES (info);
+    NautilusTagManager *tag_manager;
+
+    tag_manager = nautilus_tag_manager_get ();
+
+    if (self->priv->starred)
+    {
+        nautilus_tag_manager_unstar_files (tag_manager,
+                                           G_OBJECT (info),
+                                           self->priv->files,
+                                           on_undo_favorite_tags_updated,
+                                           NULL);
+    }
+    else
+    {
+        nautilus_tag_manager_star_files (tag_manager,
+                                         G_OBJECT (info),
+                                         self->priv->files,
+                                         on_undo_favorite_tags_updated,
+                                         NULL);
+    }
+}
+
+static void
+nautilus_file_undo_info_favorites_set_property (GObject      *object,
+                                                guint         prop_id,
+                                                const GValue *value,
+                                                GParamSpec   *pspec)
+{
+    NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_FAVORITES (object);
+
+    switch (prop_id)
+    {
+        case PROP_FILES:
+        {
+            self->priv->files = nautilus_file_list_copy (g_value_get_pointer (value));
+        }
+        break;
+
+        case PROP_STARRED:
+        {
+            self->priv->starred = g_value_get_boolean (value);
+        }
+        break;
+
+        default:
+        {
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        }
+    }
+}
+
+static void
+nautilus_file_undo_info_favorites_init (NautilusFileUndoInfoFavorites *self)
+{
+    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, nautilus_file_undo_info_favorites_get_type (),
+                                              NautilusFileUndoInfoFavoritesDetails);
+}
+
+static void
+nautilus_file_undo_info_favorites_finalize (GObject *obj)
+{
+    NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_FAVORITES (obj);
+
+    nautilus_file_list_free (self->priv->files);
+
+    G_OBJECT_CLASS (nautilus_file_undo_info_favorites_parent_class)->finalize (obj);
+}
+
+static void
+nautilus_file_undo_info_favorites_class_init (NautilusFileUndoInfoFavoritesClass *klass)
+{
+    GObjectClass *oclass = G_OBJECT_CLASS (klass);
+    NautilusFileUndoInfoClass *iclass = NAUTILUS_FILE_UNDO_INFO_CLASS (klass);
+
+    oclass->finalize = nautilus_file_undo_info_favorites_finalize;
+    oclass->set_property = nautilus_file_undo_info_favorites_set_property;
+
+    iclass->undo_func = favorites_undo_func;
+    iclass->redo_func = favorites_redo_func;
+    iclass->strings_func = favorites_strings_func;
+
+    g_type_class_add_private (klass, sizeof (NautilusFileUndoInfoFavoritesDetails));
+
+    g_object_class_install_property (oclass,
+                                     PROP_FILES,
+                                     g_param_spec_pointer ("files",
+                                                           "files",
+                                                           "The files for which to undo star/unstar",
+                                                           G_PARAM_WRITABLE |
+                                                           G_PARAM_CONSTRUCT_ONLY));
+    g_object_class_install_property (oclass,
+                                     PROP_STARRED,
+                                     g_param_spec_boolean ("starred",
+                                                           "starred",
+                                                           "Whether the files were starred or unstarred",
+                                                           FALSE,
+                                                           G_PARAM_WRITABLE |
+                                                           G_PARAM_CONSTRUCT_ONLY));
+
+}
+
+NautilusFileUndoInfo *
+nautilus_file_undo_info_favorites_new (GList   *files,
+                                       gboolean starred)
+{
+    NautilusFileUndoInfoFavorites *self;
+
+    self = g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO_FAVORITES,
+                         "op-type", NAUTILUS_FILE_UNDO_OP_FAVORITES,
+                         "item-count", g_list_length (files),
+                         "files", files,
+                         "starred", starred,
+                         NULL);
+
+    return NAUTILUS_FILE_UNDO_INFO (self);
 }
 
 /* trash */

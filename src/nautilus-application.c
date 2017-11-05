@@ -39,6 +39,7 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-preferences-window.h"
+#include "nautilus-tag-manager.h"
 
 #include "nautilus-directory-private.h"
 #include "nautilus-file-utilities.h"
@@ -80,6 +81,9 @@ typedef struct
     GHashTable *notifications;
 
     NautilusFileUndoManager *undo_manager;
+
+    NautilusTagManager *tag_manager;
+    GCancellable *tag_manager_cancellable;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -612,6 +616,11 @@ nautilus_application_finalize (GObject *object)
 
     g_clear_object (&priv->undo_manager);
 
+    g_clear_object (&priv->tag_manager);
+
+    g_cancellable_cancel (priv->tag_manager_cancellable);
+    g_clear_object (&priv->tag_manager_cancellable);
+
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
 
@@ -1102,6 +1111,11 @@ nautilus_application_init (NautilusApplication *self)
                                                  NULL);
 
     priv->undo_manager = nautilus_file_undo_manager_new ();
+
+    priv->tag_manager_cancellable = g_cancellable_new ();
+    priv->tag_manager = nautilus_tag_manager_get ();
+    nautilus_tag_manager_set_cancellable (priv->tag_manager,
+                                          priv->tag_manager_cancellable);
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 

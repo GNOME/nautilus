@@ -27,6 +27,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-directory.h"
+#include "nautilus-favorite-directory.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-vfs-file.h"
 #include "nautilus-global-preferences.h"
@@ -799,6 +800,19 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
     }
 
     return g_file_has_uri_scheme (directory->details->location, "recent");
+}
+
+gboolean
+nautilus_directory_is_in_starred (NautilusDirectory *directory)
+{
+    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+    if (directory->details->location == NULL)
+    {
+        return FALSE;
+    }
+
+    return g_file_has_uri_scheme (directory->details->location, "favorites");
 }
 
 gboolean
