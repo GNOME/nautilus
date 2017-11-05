@@ -469,7 +469,7 @@ on_location_changed (NautilusWindow *window)
 
     priv = nautilus_window_get_instance_private (window);
 
-    gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (priv->places_sidebar),
+    nautilus_gtk_places_sidebar_set_location (NAUTILUS_GTK_PLACES_SIDEBAR (priv->places_sidebar),
                                      nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
 }
 
@@ -1172,7 +1172,7 @@ nautilus_window_start_dnd (NautilusWindow *window,
 
     priv = nautilus_window_get_instance_private (window);
 
-    gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (priv->places_sidebar),
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (NAUTILUS_GTK_PLACES_SIDEBAR (priv->places_sidebar),
                                                  TRUE,
                                                  context);
 }
@@ -1185,7 +1185,7 @@ nautilus_window_end_dnd (NautilusWindow *window,
 
     priv = nautilus_window_get_instance_private (window);
 
-    gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (priv->places_sidebar),
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (NAUTILUS_GTK_PLACES_SIDEBAR (priv->places_sidebar),
                                                  FALSE,
                                                  context);
 }
@@ -1509,7 +1509,7 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                       G_CALLBACK (side_pane_size_allocate_callback),
                       window);
 
-    gtk_places_sidebar_set_open_flags (GTK_PLACES_SIDEBAR (priv->places_sidebar),
+    nautilus_gtk_places_sidebar_set_open_flags (NAUTILUS_GTK_PLACES_SIDEBAR (priv->places_sidebar),
                                        (GTK_PLACES_OPEN_NORMAL
                                         | GTK_PLACES_OPEN_NEW_TAB
                                         | GTK_PLACES_OPEN_NEW_WINDOW));
