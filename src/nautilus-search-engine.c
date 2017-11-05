@@ -95,17 +95,17 @@ search_engine_start_real (NautilusSearchEngine *engine)
 
     g_object_ref (engine);
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
     priv->providers_running++;
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
 
     if (nautilus_search_engine_model_get_model (priv->model))
     {
-        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->model));
         priv->providers_running++;
+        nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->model));
     }
 
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->simple));
     priv->providers_running++;
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 }
 
 static void
