@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2017-11-06 08:00+0000\n"
-"PO-Revision-Date: 2017-11-06 17:37+0100\n"
+"POT-Creation-Date: 2017-11-06 18:03+0000\n"
+"PO-Revision-Date: 2017-11-06 21:14+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -1185,13 +1185,12 @@ msgid "The date the file was accessed by the user."
 msgstr "Datum, kdy byl soubor naposledy použit uživatelem."
 
 #: src/nautilus-column-utilities.c:157
-#: src/resources/ui/nautilus-files-view-context-menus.ui:261
 msgid "Star"
-msgstr "Hvězdička"
+msgstr "Oblíbené"
 
 #: src/nautilus-column-utilities.c:158
 msgid "Shows if file is favorite."
-msgstr "Zobrazuje, jestli je soubor oblíbený."
+msgstr "Zobrazuje, jestli má soubor přidělenou hvězdičku."
 
 #: src/nautilus-column-utilities.c:203
 msgid "Trashed On"
@@ -1417,7 +1416,7 @@ msgstr "Soubor nenalezen"
 #: src/nautilus-file.c:4634 src/nautilus-file-utilities.c:327
 #: src/nautilus-pathbar.c:460
 msgid "Starred"
-msgstr "S hvězdičkou"
+msgstr "Oblíbené"
 
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5760
@@ -3228,34 +3227,34 @@ msgstr "_Opakovat dávkové přejmenování"
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
-msgstr[0] "Odebrat %d souboru zvězdičku"
-msgstr[1] "Odebrat %d souborům hvězdičku"
-msgstr[2] "Odebrat %d souborům hvězdičku"
+msgstr[0] "Odebrat %d soubor z oblíbených"
+msgstr[1] "Odebrat %d soubory z oblíbených"
+msgstr[2] "Odebrat %d souborů z oblíbených"
 
 #: src/nautilus-file-undo-operations.c:1340
 #: src/nautilus-file-undo-operations.c:1349
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
-msgstr[0] "Označit %d soubor hvězdičkou"
-msgstr[1] "Označit %d soubory hvězdičkou"
-msgstr[2] "Označit %d souborů hvězdičkou"
+msgstr[0] "Označit %d soubor jako oblíbený"
+msgstr[1] "Označit %d soubory jako oblíbené"
+msgstr[2] "Označit %d souborů jako oblíbené"
 
 #: src/nautilus-file-undo-operations.c:1344
 msgid "_Undo Starring"
-msgstr "_Vrátit zpět ozančení hvězdičkou"
+msgstr "_Vrátit zpět označení jako oblíbený"
 
 #: src/nautilus-file-undo-operations.c:1345
 msgid "_Redo Starring"
-msgstr "Z_novu označit hvězdičkou"
+msgstr "Z_novu označit jako oblíbený"
 
 #: src/nautilus-file-undo-operations.c:1357
 msgid "_Undo Unstarring"
-msgstr "_Vrátit zpět odebrání zvězdičky"
+msgstr "_Vrátit zpět odebrání z oblíbených"
 
 #: src/nautilus-file-undo-operations.c:1358
 msgid "_Redo Unstarring"
-msgstr "Z_novu označit zvězdičkou"
+msgstr "Z_novu odebrat z oblíbených"
 
 #: src/nautilus-file-undo-operations.c:1551
 #, c-format
@@ -5261,17 +5260,21 @@ msgstr "K_omprimovat…"
 msgid "Tags"
 msgstr "Štítky"
 
+#. Marks a file as starred (favorite)
+#: src/resources/ui/nautilus-files-view-context-menus.ui:261
+msgctxt "menu item"
+msgid "Star"
+msgstr "Označit jako oblíbené"
+
+#. Unmarks a file as starred (favorite)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:266
+msgctxt "menu item"
 msgid "Unstar"
-msgstr "Odebrat hvězdičku"
+msgstr "Odebrat z oblíbených"
 
 #: src/resources/ui/nautilus-folder-is-empty.ui:30
 msgid "Folder is Empty"
 msgstr "Složka je prázdná"
-
-#: src/resources/ui/nautilus-trash-is-empty.ui:30
-msgid "Trash is Empty"
-msgstr "Koš je prázdný"
 
 #: src/resources/ui/nautilus-move-to-trash-shortcut-changed.ui:11
 msgid "Delete Shortcuts Have Changed"
@@ -5582,6 +5585,10 @@ msgstr "Název souboru"
 msgid "Search only on the file name"
 msgstr "Hledat jen v názvu souboru"
 
+#: src/resources/ui/nautilus-starred-is-empty.ui:30
+msgid "Starred files will appear here"
+msgstr "Oblíbené soubory se objeví zde"
+
 #: src/resources/ui/nautilus-toolbar-menu.ui:23
 msgid "New folder"
 msgstr "Nová složka"
@@ -5697,6 +5704,10 @@ msgstr "Znovu _načíst"
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:206
 msgid "St_op"
 msgstr "Zas_tavit"
+
+#: src/resources/ui/nautilus-trash-is-empty.ui:30
+msgid "Trash is Empty"
+msgstr "Koš je prázdný"
 
 #: src/resources/ui/nautilus-window.ui:5
 msgid "_Files"
