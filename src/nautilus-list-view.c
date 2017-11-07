@@ -519,6 +519,13 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
     list_model = list_view->details->model;
 
     file = nautilus_list_model_file_for_path (list_model, path);
+
+    if (file == NULL)
+    {
+        /* This row is a label, not a file */
+        return;
+    }
+
     uri = nautilus_file_get_uri (file);
     selection = g_list_prepend (NULL, file);
 
@@ -1677,6 +1684,16 @@ favorite_cell_data_func (GtkTreeViewColumn *column,
                         NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
                         -1);
 
+    if (file == NULL)
+    {
+        /* This row is a label, not a file */
+        g_object_set (renderer,
+                      "icon-name", NULL,
+                      "mode", GTK_CELL_RENDERER_MODE_INERT,
+                      NULL);
+        return;
+    }
+
     uri = nautilus_file_get_uri (file);
 
     if (nautilus_tag_manager_file_is_favorite (view->details->tag_manager, uri))
@@ -2194,7 +2211,6 @@ create_and_set_up_tree_view (NautilusListView *view)
             {
                 cell = gtk_cell_renderer_pixbuf_new ();
                 g_object_set (cell,
-                              "icon-name", "non-starred-symbolic",
                               "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
                               NULL);
 
