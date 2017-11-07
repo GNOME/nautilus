@@ -1762,24 +1762,27 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                             NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
                             -1);
 
-        snippet = nautilus_file_get_search_fts_snippet (file);
-        if (snippet)
+        /* Rule out dummy row */
+        if (file != NULL)
         {
-            replaced_text = g_regex_replace (view->details->regex,
-                                             snippet,
-                                             -1,
-                                             0,
-                                             " ",
-                                             G_REGEX_MATCH_NEWLINE_ANY,
-                                             NULL);
+            snippet = nautilus_file_get_search_fts_snippet (file);
+            if (snippet)
+            {
+                replaced_text = g_regex_replace (view->details->regex,
+                                                 snippet,
+                                                 -1,
+                                                 0,
+                                                 " ",
+                                                 G_REGEX_MATCH_NEWLINE_ANY,
+                                                 NULL);
 
-            escaped_text = g_markup_escape_text (replaced_text, -1);
+                escaped_text = g_markup_escape_text (replaced_text, -1);
 
-            g_string_append_printf (display_text,
-                                    " <small><span color='grey'><b>%s</b></span></small>",
-                                    escaped_text);
+                g_string_append_printf (display_text,
+                                        " <small><span color='grey'><b>%s</b></span></small>",
+                                        escaped_text);
+            }
         }
-
         nautilus_file_unref (file);
     }
 
