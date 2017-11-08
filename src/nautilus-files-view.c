@@ -1390,6 +1390,15 @@ action_open_item_location (GSimpleAction *action,
     parent = nautilus_file_get_parent (activation_file);
     parent_location = nautilus_file_get_location (parent);
 
+    if (nautilus_file_is_in_recent (item))
+    {
+        /* Selection logic will check against a NautilusFile of the
+         * activation uri, not the recent:// one. Fixes bug 784516 */
+        nautilus_file_unref (item);
+        item = nautilus_file_ref (activation_file);
+        selection->data = item;
+    }
+
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                              parent_location, 0, selection, NULL,
                                              nautilus_files_view_get_nautilus_window_slot (view));
