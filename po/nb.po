@@ -9,8 +9,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.27.x\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2017-11-06 18:03+0000\n"
-"PO-Revision-Date: 2017-11-09 20:03+0100\n"
+"POT-Creation-Date: 2017-11-09 19:04+0000\n"
+"PO-Revision-Date: 2017-11-11 16:17+0100\n"
 "Last-Translator: Kjartan Maraas <kmaraas@gnome.org>\n"
 "Language-Team: Norwegian bokmål <i18n-nb@lister.ping.uio.no>\n"
 "Language: nb\n"
@@ -751,8 +751,8 @@ msgstr "Vis flere _detaljer"
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
 #: src/nautilus-file-operations.c:225 src/nautilus-files-view.c:1161
-#: src/nautilus-files-view.c:1722 src/nautilus-files-view.c:6048
-#: src/nautilus-files-view.c:6552 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1731 src/nautilus-files-view.c:6057
+#: src/nautilus-files-view.c:6561 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:956
 #: src/nautilus-mime-actions.c:1508 src/nautilus-properties-window.c:4577
@@ -783,7 +783,7 @@ msgid "Unable to rename desktop icon"
 msgstr "Klarte ikke å endre navn på skrivebordsikon"
 
 #: nautilus-desktop/nautilus-desktop-link.c:142 src/nautilus-bookmark.c:116
-#: src/nautilus-file-utilities.c:304 src/nautilus-list-view.c:1890
+#: src/nautilus-file-utilities.c:304 src/nautilus-list-view.c:1910
 #: src/nautilus-pathbar.c:450 src/nautilus-shell-search-provider.c:315
 #: src/nautilus-window.c:193
 msgid "Home"
@@ -1079,7 +1079,7 @@ msgstr "Tilbakestill til sta_ndardverdi"
 msgid "Replace the current List Columns settings with the default settings"
 msgstr "Erstatt gjeldende oppsett for listekolonner med standardoppsett"
 
-#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2137
+#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2157
 #: src/resources/ui/nautilus-rename-file-popover.ui:14
 msgid "Name"
 msgstr "Navn"
@@ -2095,7 +2095,7 @@ msgid "Do _not Empty Trash"
 msgstr "Ikke tø_m papirkurv"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:2914 src/nautilus-files-view.c:6781
+#: src/nautilus-file-operations.c:2914 src/nautilus-files-view.c:6790
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Fikk ikke tilgang til «%s»"
@@ -2650,24 +2650,24 @@ msgstr[1] "Dette åpner %'d separate vinduer."
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-files-view.c:1719
+#: src/nautilus-files-view.c:1728
 msgid "Select Items Matching"
 msgstr "Velg oppføringer med treff"
 
-#: src/nautilus-files-view.c:1724 src/nautilus-files-view.c:6049
-#: src/nautilus-files-view.c:6553
+#: src/nautilus-files-view.c:1733 src/nautilus-files-view.c:6058
+#: src/nautilus-files-view.c:6562
 msgid "_Select"
 msgstr "_Velg"
 
-#: src/nautilus-files-view.c:1732
+#: src/nautilus-files-view.c:1741
 msgid "_Pattern:"
 msgstr "_Mønster:"
 
-#: src/nautilus-files-view.c:1738
+#: src/nautilus-files-view.c:1747
 msgid "Examples: "
 msgstr "Eksempler: "
 
-#: src/nautilus-files-view.c:2853
+#: src/nautilus-files-view.c:2862
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2675,19 +2675,19 @@ msgstr ""
 "Nautilus 3.6 bruker ikke denne mappen lenger, og prøvde å flytte oppsettet "
 "til ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3378 src/nautilus-files-view.c:3425
+#: src/nautilus-files-view.c:3387 src/nautilus-files-view.c:3434
 #, c-format
 msgid "“%s” selected"
 msgstr "«%s» valgt"
 
-#: src/nautilus-files-view.c:3382
+#: src/nautilus-files-view.c:3391
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d mappe valgt"
 msgstr[1] "%'d mapper valgt"
 
-#: src/nautilus-files-view.c:3396
+#: src/nautilus-files-view.c:3405
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2695,14 +2695,14 @@ msgstr[0] "(med %'d oppføring)"
 msgstr[1] "(med %'d oppføringer)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3411
+#: src/nautilus-files-view.c:3420
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(med totalt %'d oppføring)"
 msgstr[1] "(med totalt %'d oppføringer)"
 
-#: src/nautilus-files-view.c:3430
+#: src/nautilus-files-view.c:3439
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2710,7 +2710,7 @@ msgstr[0] "%'d oppføring valgt"
 msgstr[1] "%'d oppføringer valgt"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3439
+#: src/nautilus-files-view.c:3448
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2721,7 +2721,7 @@ msgstr[1] "%'d andre oppføringer valgt"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3454
+#: src/nautilus-files-view.c:3463
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2733,115 +2733,115 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3487
+#: src/nautilus-files-view.c:3496
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s, %s"
 
-#: src/nautilus-files-view.c:6036
+#: src/nautilus-files-view.c:6045
 msgid "Select Move Destination"
 msgstr "Velg mål for flytting"
 
-#: src/nautilus-files-view.c:6040
+#: src/nautilus-files-view.c:6049
 msgid "Select Copy Destination"
 msgstr "Velg mål for kopiering"
 
-#: src/nautilus-files-view.c:6549
+#: src/nautilus-files-view.c:6558
 msgid "Select Extract Destination"
 msgstr "Velg mål for utpakking"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6809
+#: src/nautilus-files-view.c:6818
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Klarte ikke å fjerne «%s»"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6837
+#: src/nautilus-files-view.c:6846
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Klarte ikke å løse ut «%s»"
 
-#: src/nautilus-files-view.c:6860
+#: src/nautilus-files-view.c:6869
 msgid "Unable to stop drive"
 msgstr "Klarte ikke å stoppe stasjon"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6972
+#: src/nautilus-files-view.c:6981
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Klarte ikke å starte «%s»"
 
-#: src/nautilus-files-view.c:7934
+#: src/nautilus-files-view.c:7943
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Ny mappe med utvalg (%'d oppføring)"
 msgstr[1] "Ny mappe med utvalg (%'d oppføringer)"
 
-#: src/nautilus-files-view.c:7994
+#: src/nautilus-files-view.c:8003
 #, c-format
 msgid "Open With %s"
 msgstr "Åpne med %s"
 
-#: src/nautilus-files-view.c:8006
+#: src/nautilus-files-view.c:8015
 msgid "Run"
 msgstr "Kjør"
 
-#: src/nautilus-files-view.c:8011
+#: src/nautilus-files-view.c:8020
 msgid "Extract Here"
 msgstr "Pakk ut her"
 
-#: src/nautilus-files-view.c:8012
+#: src/nautilus-files-view.c:8021
 msgid "Extract to…"
 msgstr "Pakk ut til …"
 
-#: src/nautilus-files-view.c:8016
+#: src/nautilus-files-view.c:8025
 msgid "Open"
 msgstr "Åpne"
 
-#: src/nautilus-files-view.c:8073
+#: src/nautilus-files-view.c:8082
 #: src/resources/ui/nautilus-files-view-context-menus.ui:125
 msgid "_Start"
 msgstr "_Start"
 
-#: src/nautilus-files-view.c:8079 src/gtk/nautilusgtkplacesview.c:1685
+#: src/nautilus-files-view.c:8088 src/gtk/nautilusgtkplacesview.c:1685
 msgid "_Connect"
 msgstr "_Koble til"
 
-#: src/nautilus-files-view.c:8085
+#: src/nautilus-files-view.c:8094
 msgid "_Start Multi-disk Drive"
 msgstr "_Start stasjon med flere disker"
 
-#: src/nautilus-files-view.c:8091
+#: src/nautilus-files-view.c:8100
 msgid "U_nlock Drive"
 msgstr "_Lås opp stasjon"
 
-#: src/nautilus-files-view.c:8111
+#: src/nautilus-files-view.c:8120
 msgid "Stop Drive"
 msgstr "Stopp stasjon"
 
-#: src/nautilus-files-view.c:8117
+#: src/nautilus-files-view.c:8126
 msgid "_Safely Remove Drive"
 msgstr "_Fjern stasjon på en trygg måte"
 
-#: src/nautilus-files-view.c:8123 src/gtk/nautilusgtkplacesview.c:1675
+#: src/nautilus-files-view.c:8132 src/gtk/nautilusgtkplacesview.c:1675
 msgid "_Disconnect"
 msgstr "_Koble fra"
 
-#: src/nautilus-files-view.c:8129
+#: src/nautilus-files-view.c:8138
 msgid "_Stop Multi-disk Drive"
 msgstr "_Stopp stasjon med flere disker"
 
-#: src/nautilus-files-view.c:8135
+#: src/nautilus-files-view.c:8144
 msgid "_Lock Drive"
 msgstr "_Lås stasjon"
 
-#: src/nautilus-files-view.c:9827
+#: src/nautilus-files-view.c:9836
 msgid "Content View"
 msgstr "Innholdsvisning"
 
-#: src/nautilus-files-view.c:9828
+#: src/nautilus-files-view.c:9837
 msgid "View of the current folder"
 msgstr "Visning for aktiv mappe"
 
@@ -3180,7 +3180,7 @@ msgstr "Angre _merking med stjerne"
 
 #: src/nautilus-file-undo-operations.c:1345
 msgid "_Redo Starring"
-msgstr ""
+msgstr "_Gjenta merking med stjerne"
 
 #: src/nautilus-file-undo-operations.c:1357
 msgid "_Undo Unstarring"
@@ -3188,7 +3188,7 @@ msgstr "Angre fjerning av _stjerne"
 
 #: src/nautilus-file-undo-operations.c:1358
 msgid "_Redo Unstarring"
-msgstr ""
+msgstr "_Gjenta fjerning av stjerne"
 
 #: src/nautilus-file-undo-operations.c:1551
 #, c-format
@@ -3519,22 +3519,22 @@ msgstr "Klarte ikke å laste inn bildeinformasjon"
 msgid "(Empty)"
 msgstr "(Tom)"
 
-#: src/nautilus-list-view.c:1548
+#: src/nautilus-list-view.c:1555
 msgid "Use Default"
 msgstr "Bruk forvalg"
 
-#: src/nautilus-list-view.c:2289
+#: src/nautilus-list-view.c:2308
 #: src/resources/ui/nautilus-preferences-window.ui:90
 #: src/resources/ui/nautilus-preferences-window.ui:1132
 msgid "List View"
 msgstr "Listevisning"
 
-#: src/nautilus-list-view.c:3199
+#: src/nautilus-list-view.c:3218
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s synlige kolonner"
 
-#: src/nautilus-list-view.c:3219
+#: src/nautilus-list-view.c:3238
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Velg rekkefølgen for informasjonen som skal vises i denne mappen"
 
@@ -5484,7 +5484,7 @@ msgstr "Søk kun på filnavn"
 
 #: src/resources/ui/nautilus-starred-is-empty.ui:30
 msgid "Starred files will appear here"
-msgstr ""
+msgstr "Filer som er merket med stjerne vil vises her"
 
 #: src/resources/ui/nautilus-toolbar-menu.ui:23
 msgid "New folder"
