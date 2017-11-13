@@ -25,30 +25,9 @@ G_BEGIN_DECLS
 
 #define NAUTILUS_FAVORITE_DIRECTORY_PROVIDER_NAME "favorite-directory-provider"
 
-#define NAUTILUS_TYPE_FAVORITE_DIRECTORY nautilus_favorite_directory_get_type()
-#define NAUTILUS_FAVORITE_DIRECTORY(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_FAVORITE_DIRECTORY, NautilusFavoriteDirectory))
-#define NAUTILUS_FAVORITE_DIRECTORY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_FAVORITE_DIRECTORY, NautilusFavoriteDirectoryClass))
-#define NAUTILUS_IS_FAVORITE_DIRECTORY(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_FAVORITE_DIRECTORY))
-#define NAUTILUS_IS_FAVORITE_DIRECTORY_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_FAVORITE_DIRECTORY))
-#define NAUTILUS_FAVORITE_DIRECTORY_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FAVORITE_DIRECTORY, NautilusFavoriteDirectoryClass))
+#define NAUTILUS_TYPE_FAVORITE_DIRECTORY (nautilus_favorite_directory_get_type ())
 
-typedef struct NautilusFavoriteDirectoryDetails NautilusFavoriteDirectoryDetails;
-
-typedef struct {
-	NautilusDirectory parent_slot;
-	NautilusFavoriteDirectoryDetails *details;
-} NautilusFavoriteDirectory;
-
-typedef struct {
-	NautilusDirectoryClass parent_slot;
-} NautilusFavoriteDirectoryClass;
-
-GType   				   nautilus_favorite_directory_get_type (void);
+G_DECLARE_FINAL_TYPE (NautilusFavoriteDirectory, nautilus_favorite_directory, NAUTILUS, FAVORITE_DIRECTORY, NautilusDirectory);
 
 NautilusFavoriteDirectory* nautilus_favorite_directory_new      ();
 
