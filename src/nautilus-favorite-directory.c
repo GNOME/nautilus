@@ -22,8 +22,9 @@
 #include "nautilus-directory-private.h"
 #include <glib/gi18n.h>
 
-struct NautilusFavoriteDirectoryDetails
-{
+struct _NautilusFavoriteDirectory {
+    NautilusDirectory parent_slot;
+
     NautilusTagManager *tag_manager;
     GList *files;
 
@@ -93,12 +94,12 @@ nautilus_favorite_directory_update_files (NautilusFavoriteDirectory *self)
                                        (GDestroyNotify) g_free,
                                        NULL);
 
-    for (l = self->details->files; l != NULL; l = l->next)
+    for (l = self->files; l != NULL; l = l->next)
     {
         g_hash_table_add (uri_table, nautilus_file_get_uri (NAUTILUS_FILE (l->data)));
     }
 
-    new_favorite_files = nautilus_tag_manager_get_favorite_files (self->details->tag_manager);
+    new_favorite_files = nautilus_tag_manager_get_favorite_files (self->tag_manager);
 
     for (l = new_favorite_files; l != NULL; l = l->next)
     {
@@ -106,7 +107,7 @@ nautilus_favorite_directory_update_files (NautilusFavoriteDirectory *self)
         {
             file = nautilus_file_get_by_uri ((gchar*) l->data);
 
-            for (monitor_list = self->details->monitor_list; monitor_list; monitor_list = monitor_list->next)
+            for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
             {
                 monitor = monitor_list->data;
 
@@ -120,12 +121,12 @@ nautilus_favorite_directory_update_files (NautilusFavoriteDirectory *self)
         }
     }
 
-    l = self->details->files;
+    l = self->files;
     while (l != NULL)
     {
         uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
 
-        if (!nautilus_tag_manager_file_is_favorite (self->details->tag_manager, uri))
+        if (!nautilus_tag_manager_file_is_favorite (self->tag_manager, uri))
         {
             files_removed = g_list_prepend (files_removed,
                                             nautilus_file_ref (NAUTILUS_FILE (l->data)));
@@ -135,22 +136,22 @@ nautilus_favorite_directory_update_files (NautilusFavoriteDirectory *self)
                                                   self);
 
             /* Remove monitors */
-            for (monitor_list = self->details->monitor_list; monitor_list;
+            for (monitor_list = self->monitor_list; monitor_list;
                  monitor_list = monitor_list->next)
             {
                 monitor = monitor_list->data;
                 nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), monitor);
             }
 
-            if (l == self->details->files)
+            if (l == self->files)
             {
-                self->details->files = g_list_delete_link (self->details->files, l);
-                l = self->details->files;
+                self->files = g_list_delete_link (self->files, l);
+                l = self->files;
             }
             else
             {
                 tmp_l = l->prev;
-                self->details->files = g_list_delete_link (self->details->files, l);
+                self->files = g_list_delete_link (self->files, l);
                 l = tmp_l->next;
             }
         }
@@ -168,7 +169,7 @@ nautilus_favorite_directory_update_files (NautilusFavoriteDirectory *self)
 
         for (l = files_added; l != NULL; l = l->next)
         {
-            self->details->files = g_list_prepend (self->details->files, nautilus_file_ref (NAUTILUS_FILE (l->data)));
+            self->files = g_list_prepend (self->files, nautilus_file_ref (NAUTILUS_FILE (l->data)));
         }
     }
 
@@ -205,7 +206,7 @@ real_contains_file (NautilusDirectory *directory,
 
     uri = nautilus_file_get_uri (file);
 
-    return nautilus_tag_manager_file_is_favorite (self->details->tag_manager, uri);
+    return nautilus_tag_manager_file_is_favorite (self->tag_manager, uri);
 }
 
 static gboolean
@@ -232,7 +233,7 @@ real_call_when_ready (NautilusDirectory         *directory,
 
     favorite = NAUTILUS_FAVORITE_DIRECTORY (directory);
 
-    file_list = nautilus_file_list_copy (favorite->details->files);
+    file_list = nautilus_file_list_copy (favorite->files);
 
     callback (NAUTILUS_DIRECTORY (directory),
                                   file_list,
@@ -265,14 +266,14 @@ real_file_monitor_add (NautilusDirectory         *directory,
     monitor->monitor_attributes = file_attributes;
     monitor->client = client;
 
-    favorite->details->monitor_list = g_list_prepend (favorite->details->monitor_list, monitor);
+    favorite->monitor_list = g_list_prepend (favorite->monitor_list, monitor);
 
     if (callback != NULL)
     {
-        (*callback) (directory, favorite->details->files, callback_data);
+        (*callback) (directory, favorite->files, callback_data);
     }
 
-    for (list = favorite->details->files; list != NULL; list = list->next)
+    for (list = favorite->files; list != NULL; list = list->next)
     {
         file = list->data;
 
@@ -288,7 +289,7 @@ favorite_monitor_destroy (FavoriteMonitor           *monitor,
     GList *l;
     NautilusFile *file;
 
-    for (l = favorite->details->files; l != NULL; l = l->next)
+    for (l = favorite->files; l != NULL; l = l->next)
     {
         file = l->data;
 
@@ -308,14 +309,14 @@ real_monitor_remove (NautilusDirectory *directory,
 
     favorite = NAUTILUS_FAVORITE_DIRECTORY (directory);
 
-    for (list = favorite->details->monitor_list; list != NULL; list = list->next)
+    for (list = favorite->monitor_list; list != NULL; list = list->next)
     {
         monitor = list->data;
 
         if (monitor->client != client)
             continue;
 
-        favorite->details->monitor_list = g_list_delete_link (favorite->details->monitor_list, list);
+        favorite->monitor_list = g_list_delete_link (favorite->monitor_list, list);
 
         favorite_monitor_destroy (monitor, favorite);
 
@@ -346,7 +347,7 @@ favorite_callback_find_pending (NautilusFavoriteDirectory *favorite,
     FavoriteCallback *favorite_callback;
     GList *list;
 
-    for (list = favorite->details->pending_callback_list; list != NULL; list = list->next)
+    for (list = favorite->pending_callback_list; list != NULL; list = list->next)
     {
         favorite_callback = list->data;
 
@@ -368,7 +369,7 @@ favorite_callback_find (NautilusFavoriteDirectory *favorite,
     FavoriteCallback *favorite_callback;
     GList *list;
 
-    for (list = favorite->details->callback_list; list != NULL; list = list->next)
+    for (list = favorite->callback_list; list != NULL; list = list->next)
     {
         favorite_callback = list->data;
 
@@ -403,7 +404,7 @@ real_cancel_callback (NautilusDirectory        *directory,
 
     if (favorite_callback)
     {
-        favorite->details->callback_list = g_list_remove (favorite->details->callback_list, favorite_callback);
+        favorite->callback_list = g_list_remove (favorite->callback_list, favorite_callback);
 
         favorite_callback_destroy (favorite_callback);
 
@@ -415,7 +416,7 @@ real_cancel_callback (NautilusDirectory        *directory,
 
     if (favorite_callback)
     {
-        favorite->details->pending_callback_list = g_list_remove (favorite->details->pending_callback_list, favorite_callback);
+        favorite->pending_callback_list = g_list_remove (favorite->pending_callback_list, favorite_callback);
 
         favorite_callback_destroy (favorite_callback);
     }
@@ -428,7 +429,7 @@ real_get_file_list (NautilusDirectory *directory)
 
     favorite = NAUTILUS_FAVORITE_DIRECTORY (directory);
 
-    return nautilus_file_list_copy (favorite->details->files);
+    return nautilus_file_list_copy (favorite->files);
 }
 
 static void
@@ -443,7 +444,7 @@ nautilus_favorite_directory_set_files (NautilusFavoriteDirectory *self)
 
     file_list = NULL;
 
-    favorite_files = nautilus_tag_manager_get_favorite_files (self->details->tag_manager);
+    favorite_files = nautilus_tag_manager_get_favorite_files (self->tag_manager);
 
     for (l = favorite_files; l != NULL; l = l->next)
     {
@@ -451,7 +452,7 @@ nautilus_favorite_directory_set_files (NautilusFavoriteDirectory *self)
 
         g_signal_connect (file, "changed", G_CALLBACK (file_changed), self);
 
-        for (monitor_list = self->details->monitor_list; monitor_list; monitor_list = monitor_list->next)
+        for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
         {
             monitor = monitor_list->data;
 
@@ -464,7 +465,7 @@ nautilus_favorite_directory_set_files (NautilusFavoriteDirectory *self)
 
     nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (self), file_list);
 
-    self->details->files = file_list;
+    self->files = file_list;
 }
 
 static void
@@ -474,12 +475,12 @@ nautilus_favorite_directory_finalize (GObject *object)
 
     self = NAUTILUS_FAVORITE_DIRECTORY (object);
 
-    g_signal_handlers_disconnect_by_func (self->details->tag_manager,
+    g_signal_handlers_disconnect_by_func (self->tag_manager,
                                           on_favorites_files_changed,
                                           self);
 
-    g_object_unref (self->details->tag_manager);
-    nautilus_file_list_free (self->details->files);
+    g_object_unref (self->tag_manager);
+    nautilus_file_list_free (self->files);
 
     G_OBJECT_CLASS (nautilus_favorite_directory_parent_class)->finalize (object);
 }
@@ -496,7 +497,7 @@ nautilus_favorite_directory_dispose (GObject *object)
     favorite = NAUTILUS_FAVORITE_DIRECTORY (object);
 
     /* Remove file connections */
-    for (l = favorite->details->files; l != NULL; l = l->next)
+    for (l = favorite->files; l != NULL; l = l->next)
     {
         file = l->data;
 
@@ -504,7 +505,7 @@ nautilus_favorite_directory_dispose (GObject *object)
         g_signal_handlers_disconnect_by_func (file, file_changed, favorite);
 
         /* Remove monitors */
-        for (monitor_list = favorite->details->monitor_list; monitor_list;
+        for (monitor_list = favorite->monitor_list; monitor_list;
              monitor_list = monitor_list->next)
         {
             monitor = monitor_list->data;
@@ -513,15 +514,15 @@ nautilus_favorite_directory_dispose (GObject *object)
     }
 
     /* Remove search monitors */
-    if (favorite->details->monitor_list)
+    if (favorite->monitor_list)
     {
-        for (l = favorite->details->monitor_list; l != NULL; l = l->next)
+        for (l = favorite->monitor_list; l != NULL; l = l->next)
         {
             favorite_monitor_destroy ((FavoriteMonitor*) l->data, favorite);
         }
 
-        g_list_free (favorite->details->monitor_list);
-        favorite->details->monitor_list = NULL;
+        g_list_free (favorite->monitor_list);
+        favorite->monitor_list = NULL;
     }
 
     G_OBJECT_CLASS (nautilus_favorite_directory_parent_class)->dispose (object);
@@ -549,8 +550,6 @@ nautilus_favorite_directory_class_init (NautilusFavoriteDirectoryClass *klass)
     directory_class->file_monitor_remove = real_monitor_remove;
     directory_class->cancel_callback = real_cancel_callback;
     directory_class->get_file_list = real_get_file_list;
-
-    g_type_class_add_private (klass, sizeof (NautilusFavoriteDirectoryDetails));
 }
 
 NautilusFavoriteDirectory*
@@ -568,9 +567,6 @@ nautilus_favorite_directory_init (NautilusFavoriteDirectory *self)
 {
     NautilusTagManager *tag_manager;
 
-    self->details = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_FAVORITE_DIRECTORY,
-                                                 NautilusFavoriteDirectoryDetails);
-
     tag_manager = nautilus_tag_manager_get ();
 
     g_signal_connect (tag_manager,
@@ -578,7 +574,7 @@ nautilus_favorite_directory_init (NautilusFavoriteDirectory *self)
                       (GCallback) on_favorites_files_changed,
                       self);
 
-    self->details->tag_manager = tag_manager;
+    self->tag_manager = tag_manager;
 
     nautilus_favorite_directory_set_files (self);
 
