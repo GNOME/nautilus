@@ -175,86 +175,88 @@ append_basic_info (NautilusImagePropertiesPage *page)
 }
 
 static void
-append_gexiv2_tag (NautilusImagePropertiesPage *page,
-                   const gchar **tag_names,
-                   gchar *description)
+append_gexiv2_tag (NautilusImagePropertiesPage  *page,
+                   const gchar                 **tag_names,
+                   const gchar                  *description)
 {
-  gchar *tag_value;
-  while (*tag_names)
+    gchar *tag_value;
+
+    while (*tag_names)
     {
-      if (gexiv2_metadata_has_tag (page->md, *tag_names))
+        if (gexiv2_metadata_has_tag (page->md, *tag_names))
         {
-          tag_value = gexiv2_metadata_get_tag_interpreted_string (page->md, *tag_names);
-          if (!description)
-            description = gexiv2_metadata_get_tag_description (*tag_names);
-          /* don't add empty tags - try next one */
-          if (strlen (tag_value) > 0)
+            tag_value = gexiv2_metadata_get_tag_interpreted_string (page->md, *tag_names);
+            if (!description)
             {
-              append_item (page, description, tag_value);
-              g_free (tag_value);
-              break;
+                description = gexiv2_metadata_get_tag_description (*tag_names);
             }
-          g_free (tag_value);
+            /* don't add empty tags - try next one */
+            if (strlen (tag_value) > 0)
+            {
+                append_item (page, description, tag_value);
+                g_free (tag_value);
+                break;
+            }
+            g_free (tag_value);
         }
-      *tag_names++;
+        tag_names++;
     }
 }
 
 static void
 append_gexiv2_info(NautilusImagePropertiesPage *page)
 {
-  gdouble longitude, latitude, altitude;
-  gchar *gps_coords;
+    gdouble longitude, latitude, altitude;
+    gchar *gps_coords;
 
-  /* define tags and its alternatives */
-  const char *title[] = { "Xmp.dc.title", NULL };
-  const char *camera_brand[] = { "Exif.Image.Make", NULL };
-  const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
-  const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
-  const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
-  const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
-  const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
-  const char *flash[] = { "Exif.Photo.Flash", NULL };
-  const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
-  const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
-  const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
-  const char *software[] = { "Exif.Image.Software", NULL };
-  const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
-  const char *subject[] = { "Xmp.dc.subject", NULL };
-  const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
-  const char *rights[] = { "Xmp.dc.rights", NULL };
-  const char *rating[] = { "Xmp.xmp.Rating", NULL };
+    /* define tags and its alternatives */
+    const char *title[] = { "Xmp.dc.title", NULL };
+    const char *camera_brand[] = { "Exif.Image.Make", NULL };
+    const char *camera_model[] = { "Exif.Image.Model", "Exif.Image.UniqueCameraModel", NULL };
+    const char *created_on[] = { "Exif.Photo.DateTimeOriginal", "Xmp.xmp.CreateDate", "Exif.Image.DateTime", NULL };
+    const char *exposure_time[] = { "Exif.Photo.ExposureTime", NULL };
+    const char *aperture_value[] = { "Exif.Photo.ApertureValue", NULL };
+    const char *iso_speed_ratings[] = { "Exif.Photo.ISOSpeedRatings", "Xmp.exifEX.ISOSpeed", NULL };
+    const char *flash[] = { "Exif.Photo.Flash", NULL };
+    const char *metering_mode[] = { "Exif.Photo.MeteringMode", NULL };
+    const char *exposure_mode[] = { "Exif.Photo.ExposureMode", NULL };
+    const char *focal_length[] = { "Exif.Photo.FocalLength", NULL };
+    const char *software[] = { "Exif.Image.Software", NULL };
+    const char *description[] = { "Xmp.dc.description", "Exif.Photo.UserComment", NULL };
+    const char *subject[] = { "Xmp.dc.subject", NULL };
+    const char *creator[] = { "Xmp.dc.creator", "Exif.Image.Artist", NULL };
+    const char *rights[] = { "Xmp.dc.rights", NULL };
+    const char *rating[] = { "Xmp.xmp.Rating", NULL };
 
-  if (!page->md_ready)
+    if (!page->md_ready)
     {
-      return;
+        return;
     }
 
-  append_gexiv2_tag (page, camera_brand, _("Camera Brand"));
-  append_gexiv2_tag (page, camera_model, _("Camera Model"));
-  append_gexiv2_tag (page, exposure_time, _("Exposure Time"));
-  append_gexiv2_tag (page, exposure_mode, _("Exposure Program"));
-  append_gexiv2_tag (page, aperture_value, _("Aperture Value"));
-  append_gexiv2_tag (page, iso_speed_ratings, _("ISO Speed Rating"));
-  append_gexiv2_tag (page, flash, _("Flash Fired"));
-  append_gexiv2_tag (page, metering_mode, _("Metering Mode"));
-  append_gexiv2_tag (page, focal_length, _("Focal Length"));
-  append_gexiv2_tag (page, software, _("Software"));
-  append_gexiv2_tag (page, title, _("Title"));
-  append_gexiv2_tag (page, description, _("Description"));
-  append_gexiv2_tag (page, subject, _("Keywords"));
-  append_gexiv2_tag (page, creator, _("Creator"));
-  append_gexiv2_tag (page, created_on, _("Created On"));
-  append_gexiv2_tag (page, rights, _("Copyright"));
-  append_gexiv2_tag (page, rating, _("Rating"));
+    append_gexiv2_tag (page, camera_brand, _("Camera Brand"));
+    append_gexiv2_tag (page, camera_model, _("Camera Model"));
+    append_gexiv2_tag (page, exposure_time, _("Exposure Time"));
+    append_gexiv2_tag (page, exposure_mode, _("Exposure Program"));
+    append_gexiv2_tag (page, aperture_value, _("Aperture Value"));
+    append_gexiv2_tag (page, iso_speed_ratings, _("ISO Speed Rating"));
+    append_gexiv2_tag (page, flash, _("Flash Fired"));
+    append_gexiv2_tag (page, metering_mode, _("Metering Mode"));
+    append_gexiv2_tag (page, focal_length, _("Focal Length"));
+    append_gexiv2_tag (page, software, _("Software"));
+    append_gexiv2_tag (page, title, _("Title"));
+    append_gexiv2_tag (page, description, _("Description"));
+    append_gexiv2_tag (page, subject, _("Keywords"));
+    append_gexiv2_tag (page, creator, _("Creator"));
+    append_gexiv2_tag (page, created_on, _("Created On"));
+    append_gexiv2_tag (page, rights, _("Copyright"));
+    append_gexiv2_tag (page, rating, _("Rating"));
 
-  if (gexiv2_metadata_get_gps_info (page->md, &longitude, &latitude, &altitude))
+    if (gexiv2_metadata_get_gps_info (page->md, &longitude, &latitude, &altitude))
     {
-      gps_coords = g_strdup_printf ("%f N / %f W (%.0f m)", latitude, longitude, altitude);
-      append_item (page, _("Coordinates"), gps_coords);
-      g_free (gps_coords);
+        gps_coords = g_strdup_printf ("%f N / %f W (%.0f m)", latitude, longitude, altitude);
+        append_item (page, _("Coordinates"), gps_coords);
+        g_free (gps_coords);
     }
-  /* TODO add CC licenses */
 }
 
 static void
