@@ -253,7 +253,8 @@ append_gexiv2_info(NautilusImagePropertiesPage *page)
 
     if (gexiv2_metadata_get_gps_info (page->md, &longitude, &latitude, &altitude))
     {
-        gps_coords = g_strdup_printf ("%f N / %f W (%.0f m)", latitude, longitude, altitude);
+        /* Translators: These are the coordinates of a position where a picture was taken. */
+        gps_coords = g_strdup_printf (_("%f N / %f W (%.0f m)"), latitude, longitude, altitude);
         append_item (page, _("Coordinates"), gps_coords);
         g_free (gps_coords);
     }
