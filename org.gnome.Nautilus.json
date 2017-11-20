@@ -23,31 +23,21 @@
     "cleanup": [ "/include", "/share/bash-completion" ],
     "modules": [
         {
-            "name": "libexif",
+            "name": "exiv2",
+            "buildsystem": "cmake",
             "sources": [
                 {
-                    "type": "archive",
-                    "url": "https://downloads.sourceforge.net/libexif/libexif-0.6.21.tar.bz2",
-                    "sha256": "16cdaeb62eb3e6dfab2435f7d7bccd2f37438d21c5218ec4e58efa9157d4d41a"
-                },
-                {
-                    "type": "shell",
-                    "commands": [
-                        "cp -f /usr/share/gnu-config/config.sub .",
-                        "cp -f /usr/share/gnu-config/config.guess ."
-                    ]
+                    "type": "git",
+                    "url": "https://github.com/Exiv2/exiv2.git"
                 }
             ]
         },
         {
-            "name": "exempi",
-            "config-opts": [
-                "--disable-unittest"
-            ],
+            "name": "gexiv2",
             "sources": [
                 {
                     "type": "git",
-                    "url": "https://anongit.freedesktop.org/git/exempi.git"
+                    "url": "https://git.gnome.org/browse/gexiv2"
                 }
             ]
 
@@ -93,8 +83,6 @@
             "config-opts": [
                 "-Denable-desktop=false",
                 "-Denable-selinux=false",
-                "-Denable-xmp=true",
-                "-Denable-exif=true",
                 "--libdir=/app/lib"
             ],
             "sources": [
