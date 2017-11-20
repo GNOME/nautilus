@@ -25,12 +25,12 @@ gnome_desktop_ver = '>=3.0.0'
 pango_ver = '1.28.3'
 gtk_ver = '>=3.22.6'
 xml_ver = '>=2.7.8'
-exif_ver = '>=0.6.20'
 exempi_ver = '>=2.1.0'
 notify_ver = '0.7.0'
 schemas_ver = '>=3.8.0'
 autoar_ver = '>=0.2.1'
 selinux_ver = '>=2.0'
+gexiv2_ver = '>= 0.10.0'
 
 cc = meson.get_compiler ('c')
 
@@ -52,6 +52,7 @@ gio = dependency ('gio-2.0', version: glib_ver)
 gio_unix = dependency ('gio-unix-2.0', version: glib_ver)
 gsettings_desktop_schemas = dependency ('gsettings-desktop-schemas',
                                         version: schemas_ver)
+gexiv2 = dependency('gexiv2', version : gexiv2_ver)
 
 libm = cc.find_library ('libm')
 
@@ -65,11 +66,6 @@ conf.set_quoted ('NAUTILUS_EXTENSIONDIR', join_paths (prefix, extensiondir))
 
 if get_option ('enable-desktop')
     conf.set10 ('ENABLE_DESKTOP', true)
-endif
-
-if get_option ('enable-exif')
-    exif = dependency ('libexif', version: exif_ver)
-    conf.set10 ('HAVE_EXIF', true)
 endif
 
 if get_option ('enable-packagekit')
