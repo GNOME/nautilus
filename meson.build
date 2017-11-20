@@ -25,7 +25,6 @@ gnome_desktop_ver = '>=3.0.0'
 pango_ver = '1.28.3'
 gtk_ver = '>=3.22.6'
 xml_ver = '>=2.7.8'
-exempi_ver = '>=2.1.0'
 notify_ver = '0.7.0'
 schemas_ver = '>=3.8.0'
 autoar_ver = '>=0.2.1'
@@ -80,11 +79,6 @@ endif
 tracker_sparql = dependency ('tracker-sparql-2.0', required: false)
 if not tracker_sparql.found()
   tracker_sparql = dependency ('tracker-sparql-1.0')
-endif
-
-if get_option ('enable-xmp')
-    exempi = dependency ('exempi-2.0', version: exempi_ver)
-    conf.set10 ('HAVE_EXEMPI', true)
 endif
 
 configure_file (input: 'config.h.meson',
