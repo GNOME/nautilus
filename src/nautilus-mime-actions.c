@@ -92,6 +92,7 @@ typedef struct
     GQueue *unhandled_uris;
 } ApplicationLaunchParameters;
 
+/* Microsoft mime types at https://blogs.msdn.microsoft.com/vsofficedeveloper/2008/05/08/office-2007-file-format-mime-types-for-http-content-streaming-2/ */
 struct
 {
     char *name;
@@ -128,6 +129,7 @@ struct
         "application/x-kword",
         "application/x-kword-crypt",
         "application/x-lyx",
+        "application/vnd.openxmlformats-officedocument.wordprocessingml.document",
         NULL}},
     { N_("Illustration"),
       { "application/illustrator",
@@ -184,6 +186,7 @@ struct
         "application/vnd.oasis.opendocument.presentation",
         "application/x-magicpoint",
         "application/x-kpresenter",
+        "application/vnd.openxmlformats-officedocument.presentationml.presentation",
         NULL}},
     { N_("Spreadsheet"),
       { "application/vnd.lotus-1-2-3",
@@ -198,6 +201,7 @@ struct
         "application/x-quattropro",
         "application/x-sc",
         "application/x-siag",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
         NULL}},
     { N_("Text File"),
       { "text/plain",
