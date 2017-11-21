@@ -161,6 +161,7 @@ struct
         "application/postscript",
         "application/x-dvi",
         "image/x-eps",
+        "image/vnd.djvu+multipage",
         NULL}},
     { N_("Picture"),
       { "application/vnd.oasis.opendocument.image",
