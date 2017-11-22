@@ -2768,12 +2768,10 @@ gboolean
 nautilus_files_view_should_sort_directories_first (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    gboolean is_search;
 
     priv = nautilus_files_view_get_instance_private (view);
-    is_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
 
-    return priv->sort_directories_first && !is_search;
+    return priv->sort_directories_first;
 }
 
 static void
