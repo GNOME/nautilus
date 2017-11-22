@@ -3856,6 +3856,23 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
         return 0;
     }
 
+    if (directories_first && sort_type == NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE)
+    {
+        gdouble r_1, r_2;
+
+        get_search_relevance (file_1, &r_1);
+        get_search_relevance (file_2, &r_2);
+
+        /* Make sure files from current directory are easy to find, even when 
+         * sorting directories first, by sorting them like this:
+         * 1- folders from current directory
+         * 2- files from current directory
+         * 3- folders from subdirectories
+         * 4- files from subdirectories
+         */
+        directories_first = ((r_1 >= 10000) == (r_2 >= 10000));
+    }
+
     result = nautilus_file_compare_for_sort_internal (file_1, file_2, directories_first, reversed);
 
     if (result == 0)
