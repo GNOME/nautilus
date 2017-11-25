@@ -403,6 +403,7 @@ nautilus_notebook_add_tab (NautilusNotebook   *notebook,
     gtk_container_child_set (GTK_CONTAINER (notebook),
                              GTK_WIDGET (slot),
                              "tab-expand", TRUE,
+                             "detachable", FALSE,
                              NULL);
 
     nautilus_notebook_sync_tab_label (notebook, slot);
