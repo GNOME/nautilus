@@ -7,7 +7,7 @@ add_global_arguments ('-Wno-deprecated-declarations', language:'c')
 
 bindir = get_option ('bindir')
 datadir = get_option ('datadir')
-appdatadir = join_paths (datadir, 'appdata')
+appdatadir = join_paths (datadir, 'metainfo')
 desktopdir = join_paths (datadir, 'applications')
 icondir = join_paths (datadir, 'icons')
 includedir = get_option ('includedir')
