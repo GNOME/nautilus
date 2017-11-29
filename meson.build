@@ -81,6 +81,10 @@ if not tracker_sparql.found()
   tracker_sparql = dependency ('tracker-sparql-1.0')
 endif
 
+if cc.has_header('X11/XF86keysym.h')
+    conf.set10 ('HAVE_X11_XF86KEYSYM_H', true)
+endif
+
 configure_file (input: 'config.h.meson',
                 output: 'config.h',
                 configuration: conf)
