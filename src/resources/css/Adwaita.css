@@ -127,44 +127,6 @@
     border-style: none;
 }
 
-/* Libgd tag entries in the search. Sadly it requires this copy pasted css style.
- * https://git.gnome.org/browse/libgd/tree/libgd/gd-tagged-entry-default.css
- */
-@define-color entry_tag_bg #3465a4;
-@define-color entry_tag_fg #ffffff;
-
-.documents-entry-tag {
-    background-image: none;
-    background-color: @entry_tag_bg;
-    color: @entry_tag_fg;
-
-    border-radius: 4px;
-    border-width: 0;
-
-    margin: 2px;
-    padding: 4px;
-}
-
-.documents-entry-tag:hover {
-    background-color: shade(@entry_tag_bg, 1.10);
-    color: @entry_tag_fg;
-}
-
-.documents-entry-tag.button,
-.documents-entry-tag.button:hover,
-.documents-entry-tag.button:active,
-.documents-entry-tag.button:active:hover {
-    background-color: transparent;
-    background-image: none;
-    box-shadow: none;
-    border-image: none;
-    border-width: 0;
-}
-
-.documents-entry-tag.button:hover {
-    color: shade(@entry_tag_bg, 2.10);
-}
-
 /* Workaround for the double border of the searchbar since we use a revealer which
  * always allocates at least 1 pixel */
 searchbar { border-top: 1px solid @borders; }
