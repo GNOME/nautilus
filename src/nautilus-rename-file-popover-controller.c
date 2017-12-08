@@ -195,7 +195,7 @@ name_entry_on_key_pressed (GtkWidget *widget,
         return name_entry_on_f2_pressed (widget, self);
     }
     else if (key_event->keyval == GDK_KEY_z &&
-             key_event->state == GDK_CONTROL_MASK)
+             (key_event->state & GDK_CONTROL_MASK) != 0)
     {
         return name_entry_on_undo (widget, self);
     }
