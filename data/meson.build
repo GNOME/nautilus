@@ -22,24 +22,6 @@ desktop_autorun_software = i18n.merge_file ('desktop-autorun-software',
                                             po_dir: po_dir,
                                             type: 'desktop')
 
-desktop_autostart = i18n.merge_file ('desktop-autostart',
-                                     input: 'nautilus-autostart.desktop.in',
-                                     output: 'nautilus-autostart.desktop',
-                                     install: true,
-                                     install_dir: join_paths (sysconfdir, 'xdg', 'autostart'),
-                                     po_dir: po_dir,
-                                     type: 'desktop')
-
-if get_option ('enable-desktop')
-    desktop_classic = i18n.merge_file ('desktop-classic',
-                                       input: 'nautilus-classic.desktop.in',
-                                       output: 'nautilus-classic.desktop',
-                                       install: true,
-                                       install_dir: desktopdir,
-                                       po_dir: po_dir,
-                                       type: 'desktop')
-endif
-
 appdata = i18n.merge_file ('appdata',
                            input: 'org.gnome.Nautilus.appdata.xml.in',
                            output: 'org.gnome.Nautilus.appdata.xml',
@@ -72,12 +54,6 @@ if desktop_file_validate.found ()
           args: [desktop.full_path ()])
     test ('validate-desktop-autorun-software', desktop_file_validate,
           args: [desktop_autorun_software.full_path ()])
-    test ('validate-desktop-autostart', desktop_file_validate,
-          args: [desktop_autostart.full_path ()])
-    if get_option ('enable-desktop')
-        test ('validate-desktop-classic', desktop_file_validate,
-          args: [desktop_classic.full_path ()])
-    endif
 endif
 
 appstream_util = find_program ('appstream-util', required: false)
