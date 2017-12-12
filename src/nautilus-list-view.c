@@ -3489,14 +3489,6 @@ nautilus_list_view_compare_files (NautilusFilesView *view,
     return nautilus_list_model_compare_func (list_view->details->model, file1, file2);
 }
 
-static gboolean
-nautilus_list_view_using_manual_layout (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), FALSE);
-
-    return FALSE;
-}
-
 static void
 nautilus_list_view_dispose (GObject *object)
 {
@@ -3803,7 +3795,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->compare_files = nautilus_list_view_compare_files;
     nautilus_files_view_class->sort_directories_first_changed = nautilus_list_view_sort_directories_first_changed;
     nautilus_files_view_class->end_file_changes = nautilus_list_view_end_file_changes;
-    nautilus_files_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;
     nautilus_files_view_class->get_view_id = nautilus_list_view_get_id;
     nautilus_files_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;

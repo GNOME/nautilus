@@ -537,14 +537,7 @@ get_data_on_first_target_we_support (GtkWidget      *widget,
         gtk_target_list_add_text_targets (drop_types_list_root, NAUTILUS_ICON_DND_TEXT);
     }
 
-    if (nautilus_canvas_container_get_is_desktop (NAUTILUS_CANVAS_CONTAINER (widget)))
-    {
-        list = drop_types_list_root;
-    }
-    else
-    {
-        list = drop_types_list;
-    }
+    list = drop_types_list;
 
     target = gtk_drag_dest_find_target (widget, context, list);
     if (target != GDK_NONE)
@@ -910,75 +903,6 @@ stop_auto_scroll (NautilusCanvasContainer *container)
 }
 
 static void
-handle_local_move (NautilusCanvasContainer *container,
-                   double                   world_x,
-                   double                   world_y)
-{
-    GList *moved_icons, *p;
-    NautilusDragSelectionItem *item;
-    NautilusCanvasIcon *icon;
-    NautilusFile *file;
-    char screen_string[32];
-    GdkScreen *screen;
-    time_t now;
-
-    if (container->details->auto_layout)
-    {
-        return;
-    }
-
-    time (&now);
-
-    /* Move and select the icons. */
-    moved_icons = NULL;
-    for (p = container->details->dnd_info->drag_info.selection_list; p != NULL; p = p->next)
-    {
-        item = p->data;
-
-        icon = nautilus_canvas_container_get_icon_by_uri
-                   (container, item->uri);
-
-        if (icon == NULL)
-        {
-            /* probably dragged from another screen.  Add it to
-             * this screen
-             */
-
-            file = nautilus_file_get_by_uri (item->uri);
-
-            screen = gtk_widget_get_screen (GTK_WIDGET (container));
-            g_snprintf (screen_string, sizeof (screen_string), "%d",
-                        gdk_screen_get_number (screen));
-            nautilus_file_set_metadata (file,
-                                        NAUTILUS_METADATA_KEY_SCREEN,
-                                        NULL, screen_string);
-            nautilus_file_set_time_metadata (file,
-                                             NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP, now);
-
-            nautilus_canvas_container_add (container, NAUTILUS_CANVAS_ICON_DATA (file));
-
-            icon = nautilus_canvas_container_get_icon_by_uri
-                       (container, item->uri);
-        }
-
-        if (item->got_icon_position)
-        {
-            nautilus_canvas_container_move_icon
-                (container, icon,
-                world_x + item->icon_x, world_y + item->icon_y,
-                icon->scale,
-                TRUE, TRUE, TRUE);
-        }
-        moved_icons = g_list_prepend (moved_icons, icon);
-    }
-    nautilus_canvas_container_select_list_unselect_others
-        (container, moved_icons);
-    /* Might have been moved in a way that requires adjusting scroll region. */
-    nautilus_canvas_container_update_scroll_region (container);
-    g_list_free (moved_icons);
-}
-
-static void
 handle_nonlocal_move (NautilusCanvasContainer *container,
                       GdkDragAction            action,
                       int                      x,
@@ -1220,11 +1144,7 @@ nautilus_canvas_container_receive_dropped_icons (NautilusCanvasContainer *contai
                                   (container, container->details->dnd_info->drag_info.selection_list);
         }
 
-        if (local_move_only)
-        {
-            handle_local_move (container, world_x, world_y);
-        }
-        else
+        if (!local_move_only)
         {
             handle_nonlocal_move (container, real_action, world_x, world_y, drop_target, icon_hit);
         }
@@ -1674,11 +1594,6 @@ check_hover_timer (NautilusCanvasContainer *container,
         return;
     }
 
-    if (nautilus_canvas_container_get_is_desktop (container))
-    {
-        return;
-    }
-
     remove_hover_timer (dnd_info);
 
     settings = gtk_widget_get_settings (GTK_WIDGET (container));
@@ -1980,12 +1895,7 @@ nautilus_canvas_dnd_init (NautilusCanvasContainer *container)
      * (But not a source, as drags starting from this widget will be
      * implemented by dealing with events manually.)
      */
-    n_elements = G_N_ELEMENTS (drop_types);
-    if (!nautilus_canvas_container_get_is_desktop (container))
-    {
-        /* Don't set up rootwindow drop */
-        n_elements -= 1;
-    }
+    n_elements = G_N_ELEMENTS (drop_types) - 1;
     gtk_drag_dest_set (GTK_WIDGET (container),
                        0,
                        drop_types, n_elements,

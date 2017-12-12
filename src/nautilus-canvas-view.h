@@ -45,7 +45,6 @@ int     nautilus_canvas_view_compare_files (NautilusCanvasView   *canvas_view,
 					  NautilusFile *b);
 void    nautilus_canvas_view_filter_by_screen (NautilusCanvasView *canvas_view,
 					     gboolean filter);
-void    nautilus_canvas_view_clean_up_by_name (NautilusCanvasView *canvas_view);
 
 NautilusFilesView * nautilus_canvas_view_new (NautilusWindowSlot *slot);
 

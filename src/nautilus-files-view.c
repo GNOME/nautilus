@@ -689,14 +689,6 @@ nautilus_files_view_reveal_selection (NautilusFilesView *view)
     NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
 }
 
-static gboolean
-nautilus_files_view_using_manual_layout (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
-
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->using_manual_layout (view);
-}
-
 /**
  * nautilus_files_view_get_toolbar_menu_sections:
  * @view: a #NautilusFilesView
@@ -1935,29 +1927,6 @@ new_folder_data_new (NautilusFilesView *directory_view,
     return data;
 }
 
-static GdkPoint *
-context_menu_to_file_operation_position (NautilusFilesView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (nautilus_files_view_using_manual_layout (view)
-        && priv->context_menu_position.x >= 0
-        && priv->context_menu_position.y >= 0)
-    {
-        NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->widget_to_file_operation_position
-            (view, &priv->context_menu_position);
-        return &priv->context_menu_position;
-    }
-    else
-    {
-        return NULL;
-    }
-}
-
 static GdkRectangle *
 nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 {
@@ -2042,7 +2011,6 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     NewFolderData *data;
-    GdkPoint *position = NULL;
     g_autofree gchar *parent_uri = NULL;
     g_autofree gchar *name = NULL;
     NautilusFile *parent;
@@ -2066,12 +2034,8 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
 
     parent_uri = nautilus_files_view_get_backing_uri (view);
     parent = nautilus_file_get_by_uri (parent_uri);
-    if (eel_uri_is_desktop (parent_uri))
-    {
-        position = context_menu_to_file_operation_position (view);
-    }
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
-                                         position, parent_uri, name,
+                                         NULL, parent_uri, name,
                                          new_folder_done, data);
 
     g_clear_object (&priv->new_folder_controller);
@@ -2397,13 +2361,8 @@ nautilus_files_view_new_file_with_initial_contents (NautilusFilesView *view,
 
     data = setup_new_folder_data (view);
 
-    if (pos == NULL)
-    {
-        pos = context_menu_to_file_operation_position (view);
-    }
-
     nautilus_file_operations_new_file (GTK_WIDGET (view),
-                                       pos, parent_uri, filename,
+                                       NULL, parent_uri, filename,
                                        initial_contents, length,
                                        new_folder_done, data);
 }
@@ -2413,7 +2372,6 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
                               const char        *parent_uri,
                               NautilusFile      *source)
 {
-    GdkPoint *pos;
     NewFolderData *data;
     char *source_uri;
     char *container_uri;
@@ -2439,14 +2397,12 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
 
     g_return_if_fail (nautilus_file_is_local (source));
 
-    pos = context_menu_to_file_operation_position (directory_view);
-
     data = setup_new_folder_data (directory_view);
 
     source_uri = nautilus_file_get_uri (source);
 
     nautilus_file_operations_new_file_from_template (GTK_WIDGET (directory_view),
-                                                     pos,
+                                                     NULL,
                                                      parent_uri != NULL ? parent_uri : container_uri,
                                                      NULL,
                                                      source_uri,
@@ -8861,14 +8817,6 @@ nautilus_files_view_should_show_file (NautilusFilesView *view,
                                       priv->show_foreign_files);
 }
 
-static gboolean
-real_using_manual_layout (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), FALSE);
-
-    return FALSE;
-}
-
 void
 nautilus_files_view_ignore_hidden_file_preferences (NautilusFilesView *view)
 {
@@ -9579,7 +9527,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       G_TYPE_NONE, 0);
 
     klass->get_backing_uri = real_get_backing_uri;
-    klass->using_manual_layout = real_using_manual_layout;
     klass->get_window = nautilus_files_view_get_window;
     klass->update_context_menus = real_update_context_menus;
     klass->update_actions_state = real_update_actions_state;

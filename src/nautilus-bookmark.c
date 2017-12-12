@@ -213,8 +213,7 @@ nautilus_bookmark_get_is_builtin (NautilusBookmark *bookmark)
     }
 
     /* exclude XDG locations which are not in our builtin list */
-    if (xdg_type == G_USER_DIRECTORY_DESKTOP &&
-        !g_settings_get_boolean (gnome_background_preferences, NAUTILUS_PREFERENCES_SHOW_DESKTOP))
+    if (xdg_type == G_USER_DIRECTORY_DESKTOP)
     {
         return FALSE;
     }

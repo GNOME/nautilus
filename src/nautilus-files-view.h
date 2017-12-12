@@ -196,13 +196,6 @@ struct _NautilusFilesViewClass {
                                               NautilusFile      *a,
                                               NautilusFile      *b);
 
-        /* using_manual_layout is a function pointer that subclasses may
-         * override to control whether or not items can be freely positioned
-         * on the user-visible area.
-         * Note that this value is not guaranteed to be constant within the
-         * view's lifecycle. */
-        gboolean (* using_manual_layout)     (NautilusFilesView *view);
-
         /* is_empty is a function pointer that subclasses must
          * override to report whether the view contains any items.
          */
