@@ -63,10 +63,6 @@ conf.set_quoted ('LOCALEDIR', join_paths (prefix, localedir))
 conf.set_quoted ('NAUTILUS_DATADIR', join_paths (datadir, 'nautilus'))
 conf.set_quoted ('NAUTILUS_EXTENSIONDIR', join_paths (prefix, extensiondir))
 
-if get_option ('enable-desktop')
-    conf.set10 ('ENABLE_DESKTOP', true)
-endif
-
 if get_option ('enable-packagekit')
     conf.set10 ('ENABLE_PACKAGEKIT', true)
 endif
@@ -104,10 +100,6 @@ subdir ('po')
 
 if get_option ('enable-gtk-doc')
     subdir ('docs')
-endif
-
-if get_option ('enable-desktop')
-    subdir ('nautilus-desktop')
 endif
 
 if get_option ('enable-nst-extension')

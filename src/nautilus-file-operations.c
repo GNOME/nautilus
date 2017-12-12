@@ -67,7 +67,6 @@ typedef struct
 {
     GTimer *time;
     GtkWindow *parent_window;
-    int screen_num;
     guint inhibit_cookie;
     NautilusProgressInfo *progress;
     GCancellable *cancellable;
@@ -87,10 +86,7 @@ typedef struct
     gboolean is_move;
     GList *files;
     GFile *destination;
-    GFile *desktop_location;
     GFile *fake_display_source;
-    GdkPoint *icon_positions;
-    int n_icon_positions;
     GHashTable *debuting_files;
     gchar *target_name;
     NautilusCopyCallback done_callback;
@@ -116,8 +112,6 @@ typedef struct
     GFile *src;
     char *src_data;
     int length;
-    GdkPoint position;
-    gboolean has_position;
     GFile *created_file;
     NautilusCreateCallback done_callback;
     gpointer done_callback_data;
@@ -1019,7 +1013,6 @@ init_common (gsize      job_size,
              GtkWindow *parent_window)
 {
     CommonJob *common;
-    GdkScreen *screen;
 
     common = g_malloc0 (job_size);
 
@@ -1033,12 +1026,6 @@ init_common (gsize      job_size,
     common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
     common->time = g_timer_new ();
     common->inhibit_cookie = 0;
-    common->screen_num = 0;
-    if (parent_window)
-    {
-        screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
-        common->screen_num = gdk_screen_get_number (screen);
-    }
 
     return common;
 }
@@ -1135,8 +1122,7 @@ static gboolean
 can_delete_without_confirm (GFile *file)
 {
     if (g_file_has_uri_scheme (file, "burn") ||
-        g_file_has_uri_scheme (file, "recent") ||
-        g_file_has_uri_scheme (file, "x-nautilus-desktop"))
+        g_file_has_uri_scheme (file, "recent"))
     {
         return TRUE;
     }
@@ -4449,7 +4435,6 @@ static void copy_move_file (CopyMoveJob  *job,
                             SourceInfo   *source_info,
                             TransferInfo *transfer_info,
                             GHashTable   *debuting_files,
-                            GdkPoint     *point,
                             gboolean      overwrite,
                             gboolean     *skipped_file,
                             gboolean      readonly_source_fs);
@@ -4681,7 +4666,7 @@ retry:
             src_file = g_file_get_child (src,
                                          g_file_info_get_name (info));
             copy_move_file (copy_job, src_file, *dest, same_fs, FALSE, &dest_fs_type,
-                            source_info, transfer_info, NULL, NULL, FALSE, &local_skipped_file,
+                            source_info, transfer_info, NULL, FALSE, &local_skipped_file,
                             readonly_source_fs);
 
             if (local_skipped_file)
@@ -4981,56 +4966,6 @@ query_fs_type (GFile        *file,
     return ret;
 }
 
-static gboolean
-is_trusted_desktop_file (GFile        *file,
-                         GCancellable *cancellable)
-{
-    char *basename;
-    gboolean res;
-    GFileInfo *info;
-
-    /* Don't trust non-local files */
-    if (!g_file_is_native (file))
-    {
-        return FALSE;
-    }
-
-    basename = g_file_get_basename (file);
-    if (!g_str_has_suffix (basename, ".desktop"))
-    {
-        g_free (basename);
-        return FALSE;
-    }
-    g_free (basename);
-
-    info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                              G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE,
-                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                              cancellable,
-                              NULL);
-
-    if (info == NULL)
-    {
-        return FALSE;
-    }
-
-    res = FALSE;
-
-    /* Weird file => not trusted,
-     *  Already executable => no need to mark trusted */
-    if (g_file_info_get_file_type (info) == G_FILE_TYPE_REGULAR &&
-        !g_file_info_get_attribute_boolean (info,
-                                            G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE) &&
-        nautilus_is_in_system_dir (file))
-    {
-        res = TRUE;
-    }
-    g_object_unref (info);
-
-    return res;
-}
-
 static FileConflictResponse *
 handle_copy_move_conflict (CommonJob *job,
                            GFile     *src,
@@ -5081,7 +5016,6 @@ copy_move_file (CopyMoveJob   *copy_job,
                 SourceInfo    *source_info,
                 TransferInfo  *transfer_info,
                 GHashTable    *debuting_files,
-                GdkPoint      *position,
                 gboolean       overwrite,
                 gboolean      *skipped_file,
                 gboolean       readonly_source_fs)
@@ -5273,14 +5207,6 @@ retry:
         if (debuting_files)
         {
             dest_uri = g_file_get_uri (dest);
-            if (position)
-            {
-                nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
-            }
-            else if (eel_uri_is_desktop (dest_uri))
-            {
-                nautilus_file_changes_queue_schedule_position_remove (dest);
-            }
 
             g_hash_table_replace (debuting_files, g_object_ref (dest), GINT_TO_POINTER (TRUE));
         }
@@ -5291,18 +5217,6 @@ retry:
         else
         {
             nautilus_file_changes_queue_file_added (dest);
-        }
-
-        /* If copying a trusted desktop file to the desktop,
-         *  mark it as trusted. */
-        if (copy_job->desktop_location != NULL &&
-            g_file_equal (copy_job->desktop_location, dest_dir) &&
-            is_trusted_desktop_file (src, job->cancellable))
-        {
-            mark_desktop_file_executable (job,
-                                          job->cancellable,
-                                          dest,
-                                          FALSE);
         }
 
         if (job->undo_info != NULL)
@@ -5604,7 +5518,6 @@ copy_files (CopyMoveJob  *job,
     GFile *src;
     gboolean same_fs;
     int i;
-    GdkPoint *point;
     gboolean skipped_file;
     gboolean unique_names;
     GFile *dest;
@@ -5641,16 +5554,6 @@ copy_files (CopyMoveJob  *job,
     {
         src = l->data;
 
-        if (i < job->n_icon_positions)
-        {
-            point = &job->icon_positions[i];
-        }
-        else
-        {
-            point = NULL;
-        }
-
-
         same_fs = FALSE;
         if (dest_fs_id)
         {
@@ -5673,7 +5576,7 @@ copy_files (CopyMoveJob  *job,
                             &dest_fs_type,
                             source_info, transfer_info,
                             job->debuting_files,
-                            point, FALSE, &skipped_file,
+                            FALSE, &skipped_file,
                             readonly_source_fs);
             g_object_unref (dest);
 
@@ -5709,12 +5612,7 @@ copy_task_done (GObject      *source_object,
     {
         g_object_unref (job->destination);
     }
-    if (job->desktop_location)
-    {
-        g_object_unref (job->desktop_location);
-    }
     g_hash_table_unref (job->debuting_files);
-    g_free (job->icon_positions);
     g_free (job->target_name);
 
     g_clear_object (&job->fake_display_source);
@@ -5824,7 +5722,6 @@ nautilus_file_operations_copy_file (GFile                *source_file,
 
 void
 nautilus_file_operations_copy (GList                *files,
-                               GArray               *relative_item_points,
                                GFile                *target_dir,
                                GtkWindow            *parent_window,
                                NautilusCopyCallback  done_callback,
@@ -5834,7 +5731,6 @@ nautilus_file_operations_copy (GList                *files,
     CopyMoveJob *job;
 
     job = op_job_new (CopyMoveJob, parent_window);
-    job->desktop_location = nautilus_get_desktop_location ();
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -5842,14 +5738,6 @@ nautilus_file_operations_copy (GList                *files,
     /* Need to indicate the destination for the operation notification open
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
-    if (relative_item_points != NULL &&
-        relative_item_points->len > 0)
-    {
-        job->icon_positions =
-            g_memdup (relative_item_points->data,
-                      sizeof (GdkPoint) * relative_item_points->len);
-        job->n_icon_positions = relative_item_points->len;
-    }
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
 
     inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
@@ -5900,29 +5788,17 @@ typedef struct
 {
     GFile *file;
     gboolean overwrite;
-    gboolean has_position;
-    GdkPoint position;
 } MoveFileCopyFallback;
 
 static MoveFileCopyFallback *
 move_copy_file_callback_new (GFile    *file,
-                             gboolean  overwrite,
-                             GdkPoint *position)
+                             gboolean  overwrite)
 {
     MoveFileCopyFallback *fallback;
 
     fallback = g_new (MoveFileCopyFallback, 1);
     fallback->file = file;
     fallback->overwrite = overwrite;
-    if (position)
-    {
-        fallback->has_position = TRUE;
-        fallback->position = *position;
-    }
-    else
-    {
-        fallback->has_position = FALSE;
-    }
 
     return fallback;
 }
@@ -5949,7 +5825,6 @@ move_file_prepare (CopyMoveJob  *move_job,
                    gboolean      same_fs,
                    char        **dest_fs_type,
                    GHashTable   *debuting_files,
-                   GdkPoint     *position,
                    GList       **fallback_files,
                    int           files_left)
 {
@@ -6038,14 +5913,6 @@ retry:
         nautilus_file_changes_queue_file_moved (src, dest);
 
         dest_uri = g_file_get_uri (dest);
-        if (position)
-        {
-            nautilus_file_changes_queue_schedule_position_set (dest, *position, job->screen_num);
-        }
-        else if (eel_uri_is_desktop (dest_uri))
-        {
-            nautilus_file_changes_queue_schedule_position_remove (dest);
-        }
 
         if (job->undo_info != NULL)
         {
@@ -6169,8 +6036,7 @@ retry:
         g_error_free (error);
 
         fallback = move_copy_file_callback_new (src,
-                                                overwrite,
-                                                position);
+                                                overwrite);
         *fallback_files = g_list_prepend (*fallback_files, fallback);
     }
     else if (IS_IO_ERROR (error, CANCELLED))
@@ -6238,7 +6104,6 @@ move_files_prepare (CopyMoveJob  *job,
     GFile *src;
     gboolean same_fs;
     int i;
-    GdkPoint *point;
     int total, left;
 
     common = &job->common;
@@ -6254,16 +6119,6 @@ move_files_prepare (CopyMoveJob  *job,
     {
         src = l->data;
 
-        if (i < job->n_icon_positions)
-        {
-            point = &job->icon_positions[i];
-        }
-        else
-        {
-            point = NULL;
-        }
-
-
         same_fs = FALSE;
         if (dest_fs_id)
         {
@@ -6273,7 +6128,6 @@ move_files_prepare (CopyMoveJob  *job,
         move_file_prepare (job, src, job->destination,
                            same_fs, dest_fs_type,
                            job->debuting_files,
-                           point,
                            fallbacks,
                            left);
         report_preparing_move_progress (job, total, --left);
@@ -6296,7 +6150,6 @@ move_files (CopyMoveJob   *job,
     GFile *src;
     gboolean same_fs;
     int i;
-    GdkPoint *point;
     gboolean skipped_file;
     MoveFileCopyFallback *fallback;
     common = &job->common;
@@ -6311,15 +6164,6 @@ move_files (CopyMoveJob   *job,
         fallback = l->data;
         src = fallback->file;
 
-        if (fallback->has_position)
-        {
-            point = &fallback->position;
-        }
-        else
-        {
-            point = NULL;
-        }
-
         same_fs = FALSE;
         if (dest_fs_id)
         {
@@ -6333,7 +6177,7 @@ move_files (CopyMoveJob   *job,
                         same_fs, FALSE, dest_fs_type,
                         source_info, transfer_info,
                         job->debuting_files,
-                        point, fallback->overwrite, &skipped_file, FALSE);
+                        fallback->overwrite, &skipped_file, FALSE);
         i++;
 
         if (skipped_file)
@@ -6363,7 +6207,6 @@ move_task_done (GObject      *source_object,
     g_list_free_full (job->files, g_object_unref);
     g_object_unref (job->destination);
     g_hash_table_unref (job->debuting_files);
-    g_free (job->icon_positions);
 
     finalize_common ((CommonJob *) job);
 
@@ -6445,7 +6288,6 @@ aborted:
 
 void
 nautilus_file_operations_move (GList                *files,
-                               GArray               *relative_item_points,
                                GFile                *target_dir,
                                GtkWindow            *parent_window,
                                NautilusCopyCallback  done_callback,
@@ -6463,14 +6305,6 @@ nautilus_file_operations_move (GList                *files,
     /* Need to indicate the destination for the operation notification open
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
-    if (relative_item_points != NULL &&
-        relative_item_points->len > 0)
-    {
-        job->icon_positions =
-            g_memdup (relative_item_points->data,
-                      sizeof (GdkPoint) * relative_item_points->len);
-        job->n_icon_positions = relative_item_points->len;
-    }
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
 
     inhibit_power_manager ((CommonJob *) job, _("Moving Files"));
@@ -6559,7 +6393,6 @@ link_file (CopyMoveJob  *job,
            GFile        *dest_dir,
            char        **dest_fs_type,
            GHashTable   *debuting_files,
-           GdkPoint     *position,
            int           files_left)
 {
     GFile *src_dir;
@@ -6618,14 +6451,6 @@ retry:
 
         nautilus_file_changes_queue_file_added (dest);
         dest_uri = g_file_get_uri (dest);
-        if (position)
-        {
-            nautilus_file_changes_queue_schedule_position_set (dest, *position, common->screen_num);
-        }
-        else if (eel_uri_is_desktop (dest_uri))
-        {
-            nautilus_file_changes_queue_schedule_position_remove (dest);
-        }
 
         return;
     }
@@ -6748,7 +6573,6 @@ link_task_done (GObject      *source_object,
     g_list_free_full (job->files, g_object_unref);
     g_object_unref (job->destination);
     g_hash_table_unref (job->debuting_files);
-    g_free (job->icon_positions);
 
     finalize_common ((CommonJob *) job);
 
@@ -6764,7 +6588,6 @@ link_task_thread_func (GTask        *task,
     CopyMoveJob *job;
     CommonJob *common;
     GFile *src;
-    GdkPoint *point;
     g_autofree char *dest_fs_type = NULL;
     int total, left;
     int i;
@@ -6795,19 +6618,9 @@ link_task_thread_func (GTask        *task,
     {
         src = l->data;
 
-        if (i < job->n_icon_positions)
-        {
-            point = &job->icon_positions[i];
-        }
-        else
-        {
-            point = NULL;
-        }
-
-
         link_file (job, src, job->destination,
                    &dest_fs_type, job->debuting_files,
-                   point, left);
+                   left);
         report_preparing_link_progress (job, total, --left);
         i++;
     }
@@ -6815,7 +6628,6 @@ link_task_thread_func (GTask        *task,
 
 void
 nautilus_file_operations_link (GList                *files,
-                               GArray               *relative_item_points,
                                GFile                *target_dir,
                                GtkWindow            *parent_window,
                                NautilusCopyCallback  done_callback,
@@ -6832,14 +6644,6 @@ nautilus_file_operations_link (GList                *files,
     /* Need to indicate the destination for the operation notification open
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
-    if (relative_item_points != NULL &&
-        relative_item_points->len > 0)
-    {
-        job->icon_positions =
-            g_memdup (relative_item_points->data,
-                      sizeof (GdkPoint) * relative_item_points->len);
-        job->n_icon_positions = relative_item_points->len;
-    }
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
 
     if (!nautilus_file_undo_manager_is_operating ())
@@ -6861,7 +6665,6 @@ nautilus_file_operations_link (GList                *files,
 
 void
 nautilus_file_operations_duplicate (GList                *files,
-                                    GArray               *relative_item_points,
                                     GtkWindow            *parent_window,
                                     NautilusCopyCallback  done_callback,
                                     gpointer              done_callback_data)
@@ -6881,14 +6684,6 @@ nautilus_file_operations_duplicate (GList                *files,
     /* Need to indicate the destination for the operation notification open
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, parent);
-    if (relative_item_points != NULL &&
-        relative_item_points->len > 0)
-    {
-        job->icon_positions =
-            g_memdup (relative_item_points->data,
-                      sizeof (GdkPoint) * relative_item_points->len);
-        job->n_icon_positions = relative_item_points->len;
-    }
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
 
     if (!nautilus_file_undo_manager_is_operating ())
@@ -7117,7 +6912,6 @@ callback_for_move_to_trash (GHashTable      *debuting_uris,
 
 void
 nautilus_file_operations_copy_move (const GList          *item_uris,
-                                    GArray               *relative_item_points,
                                     const char           *target_dir,
                                     GdkDragAction         copy_action,
                                     GtkWidget            *parent_view,
@@ -7176,14 +6970,12 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
              g_file_equal (src_dir, dest)))
         {
             nautilus_file_operations_duplicate (locations,
-                                                relative_item_points,
                                                 parent_window,
                                                 done_callback, done_callback_data);
         }
         else
         {
             nautilus_file_operations_copy (locations,
-                                           relative_item_points,
                                            dest,
                                            parent_window,
                                            done_callback, done_callback_data);
@@ -7211,7 +7003,6 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
         else
         {
             nautilus_file_operations_move (locations,
-                                           relative_item_points,
                                            dest,
                                            parent_window,
                                            done_callback, done_callback_data);
@@ -7220,7 +7011,6 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
     else
     {
         nautilus_file_operations_link (locations,
-                                       relative_item_points,
                                        dest,
                                        parent_window,
                                        done_callback, done_callback_data);
@@ -7483,14 +7273,6 @@ retry:
         job->created_file = g_object_ref (dest);
         nautilus_file_changes_queue_file_added (dest);
         dest_uri = g_file_get_uri (dest);
-        if (job->has_position)
-        {
-            nautilus_file_changes_queue_schedule_position_set (dest, job->position, common->screen_num);
-        }
-        else if (eel_uri_is_desktop (dest_uri))
-        {
-            nautilus_file_changes_queue_schedule_position_remove (dest);
-        }
     }
     else
     {
@@ -7666,7 +7448,6 @@ retry:
 
 void
 nautilus_file_operations_new_folder (GtkWidget              *parent_view,
-                                     GdkPoint               *target_point,
                                      const char             *parent_dir,
                                      const char             *folder_name,
                                      NautilusCreateCallback  done_callback,
@@ -7688,11 +7469,6 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
     job->dest_dir = g_file_new_for_uri (parent_dir);
     job->filename = g_strdup (folder_name);
     job->make_dir = TRUE;
-    if (target_point != NULL)
-    {
-        job->position = *target_point;
-        job->has_position = TRUE;
-    }
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
@@ -7706,7 +7482,6 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
 
 void
 nautilus_file_operations_new_file_from_template (GtkWidget              *parent_view,
-                                                 GdkPoint               *target_point,
                                                  const char             *parent_dir,
                                                  const char             *target_filename,
                                                  const char             *template_uri,
@@ -7727,11 +7502,6 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
-    if (target_point != NULL)
-    {
-        job->position = *target_point;
-        job->has_position = TRUE;
-    }
     job->filename = g_strdup (target_filename);
 
     if (template_uri)
@@ -7751,7 +7521,6 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
 
 void
 nautilus_file_operations_new_file (GtkWidget              *parent_view,
-                                   GdkPoint               *target_point,
                                    const char             *parent_dir,
                                    const char             *target_filename,
                                    const char             *initial_contents,
@@ -7773,11 +7542,6 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
-    if (target_point != NULL)
-    {
-        job->position = *target_point;
-        job->has_position = TRUE;
-    }
     job->src_data = g_memdup (initial_contents, length);
     job->length = length;
     job->filename = g_strdup (target_filename);

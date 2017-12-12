@@ -32,14 +32,12 @@
 G_BEGIN_DECLS
 
 #define	EEL_TRASH_URI "trash:"
-#define EEL_DESKTOP_URI "x-nautilus-desktop:"
 #define EEL_SEARCH_URI "x-nautilus-search:"
 
 gboolean           eel_uri_is_favorites                  (const char           *uri);
 gboolean           eel_uri_is_trash                      (const char           *uri);
 gboolean           eel_uri_is_trash_folder               (const char           *uri);
 gboolean           eel_uri_is_in_trash                   (const char           *uri);
-gboolean           eel_uri_is_desktop                    (const char           *uri);
 gboolean           eel_uri_is_search                     (const char           *uri);
 gboolean           eel_uri_is_other_locations            (const char           *uri);
 gboolean           eel_uri_is_recent                     (const char           *uri);

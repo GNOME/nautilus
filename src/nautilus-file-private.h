@@ -176,7 +176,6 @@ struct NautilusFileDetails
 
 	eel_boolean_bit is_launcher                   : 1;
 	eel_boolean_bit is_trusted_link               : 1;
-	eel_boolean_bit is_foreign_link               : 1;
 	eel_boolean_bit is_symlink                    : 1;
 	eel_boolean_bit is_mountpoint                 : 1;
 	eel_boolean_bit is_hidden                     : 1;

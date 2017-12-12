@@ -134,8 +134,6 @@ typedef struct
     /* focus widget before the location bar has been shown temporarily */
     GtkWidget *last_focus_widget;
 
-    gboolean disable_chrome;
-
     guint sidebar_width_handler_id;
     guint bookmarks_id;
 
@@ -146,19 +144,12 @@ typedef struct
 
 enum
 {
-    PROP_DISABLE_CHROME = 1,
-    NUM_PROPERTIES,
-};
-
-enum
-{
     SLOT_ADDED,
     SLOT_REMOVED,
     LAST_SIGNAL
 };
 
 static guint signals[LAST_SIGNAL] = { 0 };
-static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusWindow, nautilus_window, GTK_TYPE_APPLICATION_WINDOW);
 
@@ -1286,7 +1277,7 @@ places_sidebar_drag_perform_drop_cb (GtkPlacesSidebar *sidebar,
     dest_uri = g_file_get_uri (dest_file);
     source_uri_list = build_uri_list_from_gfile_list (source_file_list);
 
-    nautilus_file_operations_copy_move (source_uri_list, NULL, dest_uri, action, GTK_WIDGET (sidebar), NULL, NULL);
+    nautilus_file_operations_copy_move (source_uri_list, dest_uri, action, GTK_WIDGET (sidebar), NULL, NULL);
 
     g_free (dest_uri);
     g_list_free_full (source_uri_list, g_free);
@@ -1559,11 +1550,6 @@ nautilus_window_show_sidebar (NautilusWindow *window)
 
     priv = nautilus_window_get_instance_private (window);
 
-    if (priv->disable_chrome)
-    {
-        return;
-    }
-
     gtk_widget_show (priv->sidebar);
     setup_side_pane_width (window);
 }
@@ -1824,8 +1810,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 
     if (undo_info != NULL &&
         state == NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO &&
-        nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH &&
-        !priv->disable_chrome)
+        nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH)
     {
         files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
 
@@ -1908,8 +1893,7 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
     priv = nautilus_window_get_instance_private (window);
     current_location = nautilus_window_slot_get_location (priv->active_slot);
-    if (gtk_window_has_toplevel_focus (GTK_WINDOW (window)) &&
-        !priv->disable_chrome)
+    if (gtk_window_has_toplevel_focus (GTK_WINDOW (window)))
     {
         remove_notifications (window);
         gtk_label_set_text (GTK_LABEL (priv->notification_operation_label),
@@ -2107,9 +2091,6 @@ setup_toolbar (NautilusWindow *window)
     priv = nautilus_window_get_instance_private (window);
 
     g_object_set (priv->toolbar, "window", window, NULL);
-    g_object_bind_property (window, "disable-chrome",
-                            priv->toolbar, "visible",
-                            G_BINDING_INVERT_BOOLEAN);
 
     /* connect to the pathbar signals */
     path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (priv->toolbar));
@@ -2391,56 +2372,6 @@ nautilus_window_constructed (GObject *self)
     nautilus_toolbar_on_window_constructed (NAUTILUS_TOOLBAR (priv->toolbar));
 
     nautilus_profile_end (NULL);
-}
-
-static void
-nautilus_window_set_property (GObject      *object,
-                              guint         arg_id,
-                              const GValue *value,
-                              GParamSpec   *pspec)
-{
-    NautilusWindow *window;
-    window = NAUTILUS_WINDOW (object);
-    NautilusWindowPrivate *priv;
-
-    priv = nautilus_window_get_instance_private (window);
-
-    switch (arg_id)
-    {
-        case PROP_DISABLE_CHROME:
-        {
-            priv->disable_chrome = g_value_get_boolean (value);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
-        }
-        break;
-    }
-}
-
-static void
-nautilus_window_get_property (GObject    *object,
-                              guint       arg_id,
-                              GValue     *value,
-                              GParamSpec *pspec)
-{
-    NautilusWindow *window;
-    window = NAUTILUS_WINDOW (object);
-    NautilusWindowPrivate *priv;
-
-    priv = nautilus_window_get_instance_private (window);
-
-    switch (arg_id)
-    {
-        case PROP_DISABLE_CHROME:
-        {
-            g_value_set_boolean (value, priv->disable_chrome);
-        }
-        break;
-    }
 }
 
 static gint
@@ -2922,8 +2853,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     oclass->finalize = nautilus_window_finalize;
     oclass->constructed = nautilus_window_constructed;
-    oclass->get_property = nautilus_window_get_property;
-    oclass->set_property = nautilus_window_set_property;
 
     wclass->destroy = nautilus_window_destroy;
     wclass->show = nautilus_window_show;
@@ -2957,13 +2886,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_other_locations_with_flags);
     gtk_widget_class_bind_template_callback (wclass, places_sidebar_show_starred_location);
 
-    properties[PROP_DISABLE_CHROME] =
-        g_param_spec_boolean ("disable-chrome",
-                              "Disable chrome",
-                              "Disable window chrome, for the desktop",
-                              FALSE,
-                              G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY |
-                              G_PARAM_STATIC_STRINGS);
     signals[SLOT_ADDED] =
         g_signal_new ("slot-added",
                       G_TYPE_FROM_CLASS (class),
@@ -2998,8 +2920,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     gtk_widget_class_bind_template_callback (wclass, on_notification_operation_open_clicked);
     gtk_widget_class_bind_template_callback (wclass, on_notification_operation_close_clicked);
-
-    g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 NautilusWindow *

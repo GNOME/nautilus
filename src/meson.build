@@ -1,4 +1,3 @@
-built_sources = []
 gdbus_sources = []
 enums = []
 
@@ -6,8 +5,6 @@ gdbus_sources += gnome.gdbus_codegen ('nautilus-freedesktop-generated',
                                       join_paths (meson.source_root (), 'data', 'freedesktop-dbus-interfaces.xml'),
                                       interface_prefix: 'org.freedesktop',
                                       namespace: 'NautilusFreedesktop')
-# The header is used in nautilus-desktop.
-built_sources += gdbus_sources
 
 gdbus_sources += gnome.gdbus_codegen ('nautilus-generated',
                                       join_paths (meson.source_root (), 'data', 'dbus-interfaces.xml'),
@@ -36,12 +33,11 @@ resources = gnome.compile_resources ('nautilus-resources',
                                      source_dir: 'resources',
                                      c_name: 'nautilus',
                                      extra_args: '--manual-register')
-built_sources += resources[1]
 
 libnautilus_sources = [
     enums,
     gdbus_sources,
-    resources[0],
+    resources,
     'animation/egg-animation.c',
     'animation/egg-animation.h',
     'animation/egg-frame-source.c',
@@ -295,8 +291,7 @@ libnautilus_include_dirs = include_directories ('.')
 libnautilus_dep = declare_dependency (link_with: libnautilus,
                                       include_directories: [nautilus_include_dirs,
                                                             libnautilus_include_dirs],
-                                      dependencies: nautilus_deps,
-                                      sources: built_sources)
+                                      dependencies: nautilus_deps)
 
 nautilus = executable ('nautilus',
                        'nautilus-main.c',
