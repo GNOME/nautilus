@@ -196,13 +196,6 @@ struct _NautilusFilesViewClass {
                                               NautilusFile      *a,
                                               NautilusFile      *b);
 
-        /* using_manual_layout is a function pointer that subclasses may
-         * override to control whether or not items can be freely positioned
-         * on the user-visible area.
-         * Note that this value is not guaranteed to be constant within the
-         * view's lifecycle. */
-        gboolean (* using_manual_layout)     (NautilusFilesView *view);
-
         /* is_empty is a function pointer that subclasses must
          * override to report whether the view contains any items.
          */
@@ -305,17 +298,13 @@ guint               nautilus_files_view_get_view_id                (NautilusView
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);
 void              nautilus_files_view_move_copy_items            (NautilusFilesView      *view,
                                                                   const GList            *item_uris,
-                                                                  GArray                 *relative_item_points,
                                                                   const char             *target_uri,
-                                                                  int                     copy_action,
-                                                                  int                     x,
-                                                                  int                     y);
+                                                                  int                     copy_action);
 void              nautilus_files_view_new_file_with_initial_contents (NautilusFilesView  *view,
                                                                       const char         *parent_uri,
                                                                       const char         *filename,
                                                                       const char         *initial_contents,
-                                                                      int                 length,
-                                                                      GdkPoint           *pos);
+                                                                      int                 length);
 
 /* selection handling */
 void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);

@@ -705,12 +705,6 @@ real_compare_files (NautilusFilesView *files_view,
     return 0;
 }
 
-static gboolean
-real_using_manual_layout (NautilusFilesView *files_view)
-{
-    return FALSE;
-}
-
 static void
 real_end_loading (NautilusFilesView *files_view,
                   gboolean           all_files_seen)
@@ -912,7 +906,6 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->compare_files = real_compare_files;
     files_view_class->sort_directories_first_changed = real_sort_directories_first_changed;
     files_view_class->end_file_changes = real_end_file_changes;
-    files_view_class->using_manual_layout = real_using_manual_layout;
     files_view_class->end_loading = real_end_loading;
     files_view_class->get_view_id = real_get_view_id;
     files_view_class->get_first_visible_file = real_get_first_visible_file;

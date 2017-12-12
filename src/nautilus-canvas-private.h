@@ -47,9 +47,6 @@ typedef struct {
 	 * to the nautilus metafile. 
 	 */
 	 double saved_ltr_x;
-	
-	/* Scale factor (stretches icon). */
-	double scale;
 
 	/* Position in the view */
 	int position;
@@ -62,8 +59,6 @@ typedef struct {
 
 	/* Whether this item is visible in the view. */
 	eel_boolean_bit is_visible : 1;
-
-	eel_boolean_bit has_lazy_position : 1;
 } NautilusCanvasIcon;
 
 
@@ -130,11 +125,6 @@ struct NautilusCanvasContainerDetails {
 	/* Starting icon for keyboard rubberbanding. */
 	NautilusCanvasIcon *keyboard_rubberband_start;
 
-	/* Current icon with stretch handles, so we have only one. */
-	NautilusCanvasIcon *stretch_icon;
-	double stretch_initial_x, stretch_initial_y;
-	guint stretch_initial_size;
-	
 	/* Last highlighted drop target. */
 	NautilusCanvasIcon *drop_target;
 
@@ -165,7 +155,6 @@ struct NautilusCanvasContainerDetails {
 	int drag_x, drag_y;
 	DragState drag_state;
 	gboolean drag_started;
-	StretchState stretch_start;
 
 	gboolean icon_selected_on_button_down;
 	gboolean double_clicked;
@@ -176,9 +165,6 @@ struct NautilusCanvasContainerDetails {
 	
 	/* Idle ID. */
 	guint idle_id;
-
-	/* Idle handler for stretch code */
-	guint stretch_idle_id;
 
 	/* Align idle id */
 	guint align_idle_id;
@@ -201,10 +187,6 @@ struct NautilusCanvasContainerDetails {
 
 	/* Mode settings. */
 	gboolean single_click_mode;
-	gboolean auto_layout;
-
-	/* Should the container keep icons aligned to a grid */
-	gboolean keep_aligned;
 
         /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
@@ -212,24 +194,8 @@ struct NautilusCanvasContainerDetails {
 	int size_allocation_count;
 	guint size_allocation_count_id;
 	
-	/* Is the container fixed or resizable */
-	gboolean is_fixed_size;
-	
-	/* Is the container for a desktop window */
-	gboolean is_desktop;
-
 	/* Ignore the visible area the next time the scroll region is recomputed */
 	gboolean reset_scroll_region_trigger;
-	
-	/* The position we are scaling to on stretch */
-	double world_x;
-	double world_y;
-
-	/* margins to follow, used for the desktop panel avoidance */
-	int left_margin;
-	int right_margin;
-	int top_margin;
-	int bottom_margin;
 
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;
@@ -238,23 +204,11 @@ struct NautilusCanvasContainerDetails {
 	eel_boolean_bit is_loading : 1;
 	eel_boolean_bit needs_resort : 1;
 	eel_boolean_bit selection_needs_resort : 1;
-
-	eel_boolean_bit store_layout_timestamps : 1;
-	eel_boolean_bit store_layout_timestamps_when_finishing_new_icons : 1;
-	time_t layout_timestamp;
 };
 
 /* Private functions shared by mutiple files. */
 NautilusCanvasIcon *nautilus_canvas_container_get_icon_by_uri             (NautilusCanvasContainer *container,
 									 const char            *uri);
-void          nautilus_canvas_container_move_icon                   (NautilusCanvasContainer *container,
-								       NautilusCanvasIcon      *icon,
-								       int                    x,
-								       int                    y,
-								       double                 scale,
-								       gboolean               raise,
-								       gboolean               snap,
-								       gboolean		  update_position);
 void          nautilus_canvas_container_select_list_unselect_others (NautilusCanvasContainer *container,
 								     GList                 *icons);
 char *        nautilus_canvas_container_get_icon_uri                (NautilusCanvasContainer *container,

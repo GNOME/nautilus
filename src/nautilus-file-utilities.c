@@ -946,7 +946,7 @@ ensure_dirs_task_ready_cb (GObject      *_source,
         locations = locations_from_file_list (files);
 
         nautilus_file_operations_move
-            (locations, NULL,
+            (locations,
             original_dir_location,
             data->parent_window,
             NULL, NULL);

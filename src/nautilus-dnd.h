@@ -106,7 +106,6 @@ gboolean		    nautilus_drag_items_local			(const char			      *target_uri,
 									 const GList			      *selection_list);
 gboolean		    nautilus_drag_uris_local			(const char			      *target_uri,
 									 const GList			      *source_uri_list);
-gboolean		    nautilus_drag_items_on_desktop		(const GList			      *selection_list);
 void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *context,
 									 const char			      *target_uri,
 									 const GList			      *items,
@@ -137,8 +136,6 @@ void			    nautilus_drag_autoscroll_start		(NautilusDragInfo		      *drag_info,
 									 GSourceFunc			       callback,
 									 gpointer			       user_data);
 void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
-
-gboolean		    nautilus_drag_selection_includes_special_link (GList			      *selection_list);
 
 NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDragContext                     *context);
 

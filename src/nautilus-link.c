@@ -189,7 +189,6 @@ nautilus_link_local_create (const char     *directory_uri,
                             const char     *display_name,
                             const char     *image,
                             const char     *target_uri,
-                            const GdkPoint *point,
                             int             screen,
                             gboolean        unique_filename)
 {
@@ -197,7 +196,6 @@ nautilus_link_local_create (const char     *directory_uri,
     char *contents;
     GFile *file;
     GList dummy_list;
-    NautilusFileChangesQueuePosition item;
     g_autofree char *link_name = NULL;
     g_autoptr (GFile) directory = NULL;
 
@@ -212,14 +210,7 @@ nautilus_link_local_create (const char     *directory_uri,
         return FALSE;
     }
 
-    if (eel_uri_is_desktop (directory_uri))
-    {
-        real_directory_uri = nautilus_get_desktop_directory_uri ();
-    }
-    else
-    {
-        real_directory_uri = g_strdup (directory_uri);
-    }
+    real_directory_uri = g_strdup (directory_uri);
 
     link_name = g_strdup_printf ("%s.desktop", base_name);
     directory = g_file_new_for_uri (real_directory_uri);
@@ -267,20 +258,6 @@ nautilus_link_local_create (const char     *directory_uri,
     dummy_list.next = NULL;
     dummy_list.prev = NULL;
     nautilus_directory_notify_files_added (&dummy_list);
-
-    if (point != NULL)
-    {
-        item.location = file;
-        item.set = TRUE;
-        item.point.x = point->x;
-        item.point.y = point->y;
-        item.screen = screen;
-        dummy_list.data = &item;
-        dummy_list.next = NULL;
-        dummy_list.prev = NULL;
-
-        nautilus_directory_schedule_position_set (&dummy_list);
-    }
 
     g_object_unref (file);
     return TRUE;

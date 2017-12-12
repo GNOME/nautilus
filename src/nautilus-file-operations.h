@@ -52,7 +52,6 @@ typedef void (* NautilusExtractCallback)   (GList    *outputs,
 /* FIXME: int copy_action should be an enum */
 
 void nautilus_file_operations_copy_move   (const GList               *item_uris,
-					   GArray                    *relative_item_points,
 					   const char                *target_dir_uri,
 					   GdkDragAction              copy_action,
 					   GtkWidget                 *parent_view,
@@ -67,13 +66,11 @@ void nautilus_file_operations_copy_file (GFile *source_file,
 					 gpointer done_callback_data);
 void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
-					   GdkPoint                  *target_point,
 					   const char                *parent_dir_uri,
 					   const char                *folder_name,
 					   NautilusCreateCallback     done_callback,
 					   gpointer                   done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
-					   GdkPoint                  *target_point,
 					   const char                *parent_dir,
 					   const char                *target_filename,
 					   const char                *initial_contents,
@@ -81,7 +78,6 @@ void nautilus_file_operations_new_file    (GtkWidget                 *parent_vie
 					   NautilusCreateCallback     done_callback,
 					   gpointer                   data);
 void nautilus_file_operations_new_file_from_template (GtkWidget               *parent_view,
-					   	      GdkPoint                *target_point,
 						      const char              *parent_dir,
 						      const char              *target_filename,
 						      const char              *template_uri,
@@ -124,24 +120,20 @@ void nautilus_file_operations_mount_volume_full (GtkWindow                      
 						 GObject                        *mount_callback_data_object);
 
 void nautilus_file_operations_copy      (GList                *files,
-					 GArray               *relative_item_points,
 					 GFile                *target_dir,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
 void nautilus_file_operations_move      (GList                *files,
-					 GArray               *relative_item_points,
 					 GFile                *target_dir,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
 void nautilus_file_operations_duplicate (GList                *files,
-					 GArray               *relative_item_points,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
 void nautilus_file_operations_link      (GList                *files,
-					 GArray               *relative_item_points,
 					 GFile                *target_dir,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,

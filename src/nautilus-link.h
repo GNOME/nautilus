@@ -29,7 +29,6 @@ gboolean         nautilus_link_local_create                      (const char    
 								  const char        *display_name,
 								  const char        *image,
 								  const char        *target_uri,
-								  const GdkPoint    *point,
 								  int                screen,
 								  gboolean           unique_filename);
 gboolean         nautilus_link_local_set_text                    (const char        *uri,

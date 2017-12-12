@@ -21,13 +21,6 @@
 #define NAUTILUS_ICON_FOLDER_TEMPLATES  "folder-templates-symbolic"
 #define NAUTILUS_ICON_FOLDER_VIDEOS     "folder-videos-symbolic"
 
-/* Icons for desktop */
-#define NAUTILUS_DESKTOP_ICON_DESKTOP    "user-desktop"
-#define NAUTILUS_DESKTOP_ICON_TRASH      "user-trash"
-#define NAUTILUS_DESKTOP_ICON_TRASH_FULL "user-trash-full"
-#define NAUTILUS_DESKTOP_ICON_HOME       "user-home"
-#define NAUTILUS_DESKTOP_ICON_NETWORK    "network-workgroup"
-
 /* Fullcolor icons */
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER              "folder"
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_REMOTE       "folder-remote"
