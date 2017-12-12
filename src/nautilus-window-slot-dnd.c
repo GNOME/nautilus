@@ -451,8 +451,7 @@ slot_proxy_handle_drop (GtkWidget                 *widget,
             nautilus_files_view_handle_netscape_url_drop (target_view,
                                                           drag_info->data.netscape_url,
                                                           target_uri,
-                                                          gdk_drag_context_get_selected_action (context),
-                                                          0, 0);
+                                                          gdk_drag_context_get_selected_action (context));
         }
 
 

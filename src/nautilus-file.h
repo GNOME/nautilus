@@ -225,7 +225,6 @@ gboolean                nautilus_file_is_other_locations                (Nautilu
 gboolean                nautilus_file_is_favorite_location              (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
 gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);
-gboolean                nautilus_file_is_child_of_desktop_directory     (NautilusFile                   *file);
 GError *                nautilus_file_get_file_info_error               (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,
 									 guint                          *count,
@@ -454,8 +453,7 @@ int                     nautilus_file_compare_display_name              (Nautilu
 /* filtering functions for use by various directory views */
 gboolean                nautilus_file_is_hidden_file                    (NautilusFile                   *file);
 gboolean                nautilus_file_should_show                       (NautilusFile                   *file,
-									 gboolean                        show_hidden,
-									 gboolean                        show_foreign);
+									 gboolean                        show_hidden);
 GList                  *nautilus_file_list_filter_hidden                (GList                          *files,
 									 gboolean                        show_hidden);
 
@@ -464,7 +462,6 @@ GList                  *nautilus_file_list_filter_hidden                (GList  
  * Getting this can require reading the contents of the file.
  */
 gboolean                nautilus_file_is_launcher                       (NautilusFile                   *file);
-gboolean                nautilus_file_is_foreign_link                   (NautilusFile                   *file);
 gboolean                nautilus_file_is_trusted_link                   (NautilusFile                   *file);
 gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);

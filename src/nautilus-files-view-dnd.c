@@ -43,39 +43,12 @@
 #define GET_ANCESTOR(obj) \
     GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
 
-static inline void
-view_widget_to_file_operation_position (NautilusFilesView *view,
-                                        GdkPoint          *position)
-{
-    NautilusFilesViewClass *class = NAUTILUS_FILES_VIEW_GET_CLASS (view);
-
-    if (class->widget_to_file_operation_position != NULL)
-    {
-        class->widget_to_file_operation_position (view, position);
-    }
-}
-
-static void
-view_widget_to_file_operation_position_xy (NautilusFilesView *view,
-                                           int               *x,
-                                           int               *y)
-{
-    GdkPoint position;
-
-    position.x = *x;
-    position.y = *y;
-    view_widget_to_file_operation_position (view, &position);
-    *x = position.x;
-    *y = position.y;
-}
-
 typedef struct
 {
     NautilusFilesView *view;
     char *link_name;
     char *target_uri;
     char *url;
-    GdkPoint point;
 } NetscapeUrlDropLink;
 
 static void
@@ -142,7 +115,6 @@ handle_netscape_url_drop_link_cb (GObject      *source_object,
                                 link_display_name,
                                 icon_name,
                                 data->url,
-                                &data->point,
                                 screen_num,
                                 TRUE);
 
@@ -161,13 +133,10 @@ void
 nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
                                               const char        *encoded_url,
                                               const char        *target_uri,
-                                              GdkDragAction      action,
-                                              int                x,
-                                              int                y)
+                                              GdkDragAction      action)
 {
     char *url, *title;
     char *link_name;
-    GArray *points = NULL;
     char **bits;
     GList *uri_list = NULL;
     GFile *f;
@@ -209,8 +178,6 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
 
     f = g_file_new_for_uri (url);
 
-    view_widget_to_file_operation_position_xy (view, &x, &y);
-
     /* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
      * and we don't support combinations either. */
     if ((action != GDK_ACTION_DEFAULT) &&
@@ -241,8 +208,6 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
 
             data = g_slice_new0 (NetscapeUrlDropLink);
             data->link_name = link_name;
-            data->point.x = x;
-            data->point.y = y;
             data->view = g_object_ref (view);
             data->target_uri = g_strdup (target_uri);
             data->url = g_strdup (url);
@@ -256,22 +221,13 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
     }
     else
     {
-        GdkPoint tmp_point = { 0, 0 };
-
-        if (eel_uri_is_desktop (target_uri))
-        {
-            /* pass in a 1-item array of icon positions, relative to x, y */
-            points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-            g_array_append_val (points, tmp_point);
-        }
         uri_list = g_list_append (uri_list, url);
 
-        nautilus_files_view_move_copy_items (view, uri_list, points,
+        nautilus_files_view_move_copy_items (view, uri_list,
                                              target_uri,
-                                             action, x, y);
+                                             action);
 
         g_list_free (uri_list);
-        g_array_free (points, TRUE);
     }
 
     g_object_unref (f);
@@ -282,16 +238,13 @@ void
 nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
                                           const char        *item_uris,
                                           const char        *target_uri,
-                                          GdkDragAction      action,
-                                          int                x,
-                                          int                y)
+                                          GdkDragAction      action)
 {
     gchar **uri_list;
     GList *real_uri_list = NULL;
     char *container_uri;
     const char *real_target_uri;
     int n_uris, i;
-    GArray *points;
 
     if (item_uris == NULL)
     {
@@ -348,31 +301,12 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
     }
 
     real_target_uri = target_uri != NULL ? target_uri : container_uri;
-    if (n_uris == 1 && eel_uri_is_desktop (real_target_uri))
-    {
-        GdkPoint tmp_point = { 0, 0 };
 
-        /* pass in a 1-item array of icon positions, relative to x, y */
-        points = g_array_new (FALSE, TRUE, sizeof (GdkPoint));
-        g_array_append_val (points, tmp_point);
-    }
-    else
-    {
-        points = NULL;
-    }
-
-    view_widget_to_file_operation_position_xy (view, &x, &y);
-
-    nautilus_files_view_move_copy_items (view, real_uri_list, points,
+    nautilus_files_view_move_copy_items (view, real_uri_list,
                                          real_target_uri,
-                                         action, x, y);
+                                         action);
 
     g_list_free_full (real_uri_list, g_free);
-
-    if (points != NULL)
-    {
-        g_array_free (points, TRUE);
-    }
 
     g_free (container_uri);
 }
@@ -455,13 +389,10 @@ void
 nautilus_files_view_handle_text_drop (NautilusFilesView *view,
                                       const char        *text,
                                       const char        *target_uri,
-                                      GdkDragAction      action,
-                                      int                x,
-                                      int                y)
+                                      GdkDragAction      action)
 {
     int length;
     char *container_uri;
-    GdkPoint pos;
     char *filename;
 
     if (text == NULL)
@@ -480,10 +411,6 @@ nautilus_files_view_handle_text_drop (NautilusFilesView *view,
 
     length = strlen (text);
 
-    pos.x = x;
-    pos.y = y;
-    view_widget_to_file_operation_position (view, &pos);
-
     /* try to get text to use as a filename */
     filename = get_drop_filename (text);
 
@@ -491,8 +418,7 @@ nautilus_files_view_handle_text_drop (NautilusFilesView *view,
                                                         target_uri != NULL ? target_uri : container_uri,
                                                         filename,
                                                         text,
-                                                        length,
-                                                        &pos);
+                                                        length);
     g_free (filename);
     g_free (container_uri);
 }
@@ -503,13 +429,10 @@ nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
                                      int                length,
                                      const char        *target_uri,
                                      const char        *direct_save_uri,
-                                     GdkDragAction      action,
-                                     int                x,
-                                     int                y)
+                                     GdkDragAction      action)
 {
     char *container_uri, *filename;
     GFile *direct_save_full;
-    GdkPoint pos;
 
     if (raw_data == NULL)
     {
@@ -524,10 +447,6 @@ nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
         container_uri = nautilus_files_view_get_backing_uri (view);
         g_assert (container_uri != NULL);
     }
-
-    pos.x = x;
-    pos.y = y;
-    view_widget_to_file_operation_position (view, &pos);
 
     filename = NULL;
     if (direct_save_uri != NULL)
@@ -545,7 +464,7 @@ nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
 
     nautilus_files_view_new_file_with_initial_contents (
         view, target_uri != NULL ? target_uri : container_uri,
-        filename, raw_data, length, &pos);
+        filename, raw_data, length);
 
     g_free (container_uri);
     g_free (filename);
@@ -580,9 +499,9 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
     nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
                                                 source_uri_list);
 
-    nautilus_files_view_move_copy_items (view, source_uri_list, NULL,
+    nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
-                                         action, 0, 0);
+                                         action);
 
     g_free (container_uri);
 }

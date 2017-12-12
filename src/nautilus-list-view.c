@@ -1304,12 +1304,10 @@ list_view_handle_netscape_url (NautilusTreeViewDragDest *dest,
                                const char               *encoded_url,
                                const char               *target_uri,
                                GdkDragAction             action,
-                               int                       x,
-                               int                       y,
                                NautilusListView         *view)
 {
     nautilus_files_view_handle_netscape_url_drop (NAUTILUS_FILES_VIEW (view),
-                                                  encoded_url, target_uri, action, x, y);
+                                                  encoded_url, target_uri, action);
 }
 
 static void
@@ -1317,12 +1315,10 @@ list_view_handle_uri_list (NautilusTreeViewDragDest *dest,
                            const char               *item_uris,
                            const char               *target_uri,
                            GdkDragAction             action,
-                           int                       x,
-                           int                       y,
                            NautilusListView         *view)
 {
     nautilus_files_view_handle_uri_list_drop (NAUTILUS_FILES_VIEW (view),
-                                              item_uris, target_uri, action, x, y);
+                                              item_uris, target_uri, action);
 }
 
 static void
@@ -1330,12 +1326,10 @@ list_view_handle_text (NautilusTreeViewDragDest *dest,
                        const char               *text,
                        const char               *target_uri,
                        GdkDragAction             action,
-                       int                       x,
-                       int                       y,
                        NautilusListView         *view)
 {
     nautilus_files_view_handle_text_drop (NAUTILUS_FILES_VIEW (view),
-                                          text, target_uri, action, x, y);
+                                          text, target_uri, action);
 }
 
 static void
@@ -1345,13 +1339,11 @@ list_view_handle_raw (NautilusTreeViewDragDest *dest,
                       const char               *target_uri,
                       const char               *direct_save_uri,
                       GdkDragAction             action,
-                      int                       x,
-                      int                       y,
                       NautilusListView         *view)
 {
     nautilus_files_view_handle_raw_drop (NAUTILUS_FILES_VIEW (view),
                                          raw_data, length, target_uri, direct_save_uri,
-                                         action, x, y);
+                                         action);
 }
 
 static void
@@ -1367,8 +1359,6 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
                           const GList              *item_uris,
                           const char               *target_uri,
                           guint                     action,
-                          int                       x,
-                          int                       y,
                           gpointer                  user_data)
 {
     NautilusFilesView *view = user_data;
@@ -1377,10 +1367,8 @@ move_copy_items_callback (NautilusTreeViewDragDest *dest,
                                                 item_uris);
     nautilus_files_view_move_copy_items (view,
                                          item_uris,
-                                         NULL,
                                          target_uri,
-                                         action,
-                                         x, y);
+                                         action);
 }
 
 static void
@@ -3489,14 +3477,6 @@ nautilus_list_view_compare_files (NautilusFilesView *view,
     return nautilus_list_model_compare_func (list_view->details->model, file1, file2);
 }
 
-static gboolean
-nautilus_list_view_using_manual_layout (NautilusFilesView *view)
-{
-    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), FALSE);
-
-    return FALSE;
-}
-
 static void
 nautilus_list_view_dispose (GObject *object)
 {
@@ -3803,7 +3783,6 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->compare_files = nautilus_list_view_compare_files;
     nautilus_files_view_class->sort_directories_first_changed = nautilus_list_view_sort_directories_first_changed;
     nautilus_files_view_class->end_file_changes = nautilus_list_view_end_file_changes;
-    nautilus_files_view_class->using_manual_layout = nautilus_list_view_using_manual_layout;
     nautilus_files_view_class->get_view_id = nautilus_list_view_get_id;
     nautilus_files_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;
