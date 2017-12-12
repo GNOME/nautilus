@@ -101,7 +101,6 @@ typedef enum
 
 /* ellipsization preferences */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
-#define NAUTILUS_PREFERENCES_DESKTOP_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 
 /* List View */
 #define NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_ZOOM_LEVEL		"default-zoom-level"
@@ -139,24 +138,11 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-#define NAUTILUS_PREFERENCES_DESKTOP_FONT		   "font"
-#define NAUTILUS_PREFERENCES_DESKTOP_HOME_VISIBLE          "home-icon-visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_HOME_NAME             "home-icon-name"
-#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_VISIBLE         "trash-icon-visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_TRASH_NAME            "trash-icon-name"
-#define NAUTILUS_PREFERENCES_DESKTOP_VOLUMES_VISIBLE	   "volumes-visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_VISIBLE       "network-icon-visible"
-#define NAUTILUS_PREFERENCES_DESKTOP_NETWORK_NAME          "network-icon-name"
-#define NAUTILUS_PREFERENCES_DESKTOP_BACKGROUND_FADE       "background-fade"
-
 /* bulk rename utility */
 #define NAUTILUS_PREFERENCES_BULK_RENAME_TOOL              "bulk-rename-tool"
 
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"
-
-/* Desktop background */
-#define NAUTILUS_PREFERENCES_SHOW_DESKTOP		   "show-desktop-icons"
 
 /* Recent files */
 #define NAUTILUS_PREFERENCES_RECENT_FILES_ENABLED          "remember-recent-files"

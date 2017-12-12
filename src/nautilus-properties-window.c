@@ -466,9 +466,6 @@ reset_icon (NautilusPropertiesWindow *properties_window)
         file = NAUTILUS_FILE (l->data);
 
         nautilus_file_set_metadata (file,
-                                    NAUTILUS_METADATA_KEY_ICON_SCALE,
-                                    NULL, NULL);
-        nautilus_file_set_metadata (file,
                                     NAUTILUS_METADATA_KEY_CUSTOM_ICON,
                                     NULL, NULL);
     }
@@ -5522,7 +5519,6 @@ set_icon (const char               *icon_uri,
                 }
 
                 nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
-                nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_ICON_SCALE, NULL, NULL);
             }
 
             g_free (file_uri);

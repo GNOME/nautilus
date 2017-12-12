@@ -404,62 +404,6 @@ get_desktop_path (void)
     return desktop_path;
 }
 
-/**
- * nautilus_get_desktop_directory:
- *
- * Get the path for the directory containing files on the desktop.
- *
- * Return value: the directory path.
- **/
-char *
-nautilus_get_desktop_directory (void)
-{
-    const char *desktop_directory;
-
-    desktop_directory = get_desktop_path ();
-
-    /* Don't try to create a home directory */
-    if (!g_file_test (desktop_directory, G_FILE_TEST_EXISTS))
-    {
-        g_mkdir (desktop_directory, DEFAULT_DESKTOP_DIRECTORY_MODE);
-        /* FIXME bugzilla.gnome.org 41286:
-         * How should we handle the case where this mkdir fails?
-         * Note that nautilus_application_startup will refuse to launch if this
-         * directory doesn't get created, so that case is OK. But the directory
-         * could be deleted after Nautilus was launched, and perhaps
-         * there is some bad side-effect of not handling that case.
-         */
-    }
-
-    return g_strdup (desktop_directory);
-}
-
-GFile *
-nautilus_get_desktop_location (void)
-{
-    return g_file_new_for_path (get_desktop_path ());
-}
-
-/**
- * nautilus_get_desktop_directory_uri:
- *
- * Get the uri for the directory containing files on the desktop.
- *
- * Return value: the directory path.
- **/
-char *
-nautilus_get_desktop_directory_uri (void)
-{
-    char *desktop_path;
-    char *desktop_uri;
-
-    desktop_path = nautilus_get_desktop_directory ();
-    desktop_uri = g_filename_to_uri (desktop_path, NULL, NULL);
-    g_free (desktop_path);
-
-    return desktop_uri;
-}
-
 char *
 nautilus_get_home_directory_uri (void)
 {
@@ -946,7 +890,7 @@ ensure_dirs_task_ready_cb (GObject      *_source,
         locations = locations_from_file_list (files);
 
         nautilus_file_operations_move
-            (locations, NULL,
+            (locations,
             original_dir_location,
             data->parent_window,
             NULL, NULL);

@@ -507,7 +507,6 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->thumbnailing_failed = FALSE;
 
     file->details->is_launcher = FALSE;
-    file->details->is_foreign_link = FALSE;
     file->details->is_trusted_link = FALSE;
     file->details->is_symlink = FALSE;
     file->details->is_hidden = FALSE;
@@ -1637,29 +1636,6 @@ nautilus_file_is_desktop_directory (NautilusFile *file)
     }
 
     return nautilus_is_desktop_directory_file (location, eel_ref_str_peek (file->details->name));
-}
-
-/**
- * nautilus_file_is_child_of_desktop_directory:
- *
- * Check whether this file is a direct child of the desktop directory.
- *
- * @file: The file to check.
- *
- * Return value: TRUE if this file is a direct child of the desktop directory.
- */
-gboolean
-nautilus_file_is_child_of_desktop_directory (NautilusFile *file)
-{
-    g_autoptr (GFile) location = NULL;
-
-    location = nautilus_directory_get_location (file->details->directory);
-    if (location == NULL)
-    {
-        return FALSE;
-    }
-
-    return nautilus_is_desktop_directory (location);
 }
 
 static gboolean
@@ -4140,7 +4116,6 @@ nautilus_file_is_hidden_file (NautilusFile *file)
  * nautilus_file_should_show:
  * @file: the file to check
  * @show_hidden: whether we want to show hidden files or not
- * @show_foreign: whether we want to show foreign files or not
  *
  * Determines if a #NautilusFile should be shown. Note that when browsing
  * a trash directory, this function will always return %TRUE.
@@ -4149,8 +4124,7 @@ nautilus_file_is_hidden_file (NautilusFile *file)
  */
 gboolean
 nautilus_file_should_show (NautilusFile *file,
-                           gboolean      show_hidden,
-                           gboolean      show_foreign)
+                           gboolean      show_hidden)
 {
     /* Never hide any files in trash. */
     if (nautilus_file_is_in_trash (file))
@@ -4159,11 +4133,6 @@ nautilus_file_should_show (NautilusFile *file,
     }
 
     if (!show_hidden && nautilus_file_is_hidden_file (file))
-    {
-        return FALSE;
-    }
-
-    if (!show_foreign && nautilus_file_is_foreign_link (file))
     {
         return FALSE;
     }
@@ -4210,8 +4179,7 @@ filter_hidden_partition_callback (NautilusFile *file,
     options = GPOINTER_TO_INT (callback_data);
 
     return nautilus_file_should_show (file,
-                                      options & SHOW_HIDDEN,
-                                      TRUE);
+                                      options & SHOW_HIDDEN);
 }
 
 GList *
@@ -4705,12 +4673,6 @@ gboolean
 nautilus_file_is_launcher (NautilusFile *file)
 {
     return file->details->is_launcher;
-}
-
-gboolean
-nautilus_file_is_foreign_link (NautilusFile *file)
-{
-    return file->details->is_foreign_link;
 }
 
 gboolean

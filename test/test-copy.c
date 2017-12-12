@@ -75,7 +75,6 @@ main (int   argc,
     manager = nautilus_progress_info_manager_dup_singleton ();
 
     nautilus_file_operations_copy (sources,
-                                   NULL /* GArray *relative_item_points */,
                                    dest,
                                    GTK_WINDOW (window),
                                    copy_done, NULL);
