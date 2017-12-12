@@ -18,29 +18,6 @@
     color: mix (@theme_selected_fg_color, @theme_selected_bg_color, 0.20);
 }
 
-.nautilus-desktop.nautilus-canvas-item {
-    color: @theme_selected_fg_color;
-    text-shadow: 1px 1px black;
-}
-
-.nautilus-desktop.nautilus-canvas-item:active {
-    color: @theme_text_color;
-}
-
-.nautilus-desktop.nautilus-canvas-item:selected {
-    color: @theme_selected_fg_color;
-}
-
-.nautilus-desktop.nautilus-canvas-item:active,
-.nautilus-desktop.nautilus-canvas-item:hover,
-.nautilus-desktop.nautilus-canvas-item:selected {
-    text-shadow: none;
-}
-
-.nautilus-desktop.nautilus-canvas-item:selected:backdrop {
-    color: @theme_unfocused_selected_fg_color;
-}
-
 /* Toolbar */
 
 /* Here we use the .button background-image colors from Adwaita, but ligthen them,

@@ -203,9 +203,6 @@ struct NautilusCanvasContainerDetails {
 	gboolean single_click_mode;
 	gboolean auto_layout;
 
-	/* Should the container keep icons aligned to a grid */
-	gboolean keep_aligned;
-
         /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
 
@@ -215,21 +212,12 @@ struct NautilusCanvasContainerDetails {
 	/* Is the container fixed or resizable */
 	gboolean is_fixed_size;
 	
-	/* Is the container for a desktop window */
-	gboolean is_desktop;
-
 	/* Ignore the visible area the next time the scroll region is recomputed */
 	gboolean reset_scroll_region_trigger;
 	
 	/* The position we are scaling to on stretch */
 	double world_x;
 	double world_y;
-
-	/* margins to follow, used for the desktop panel avoidance */
-	int left_margin;
-	int right_margin;
-	int top_margin;
-	int bottom_margin;
 
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;

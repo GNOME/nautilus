@@ -56,17 +56,6 @@
 #include <sys/wait.h>
 #include <unistd.h>
 
-enum
-{
-    PROP_SUPPORTS_AUTO_LAYOUT = 1,
-    PROP_SUPPORTS_SCALING,
-    PROP_SUPPORTS_KEEP_ALIGNED,
-    PROP_SUPPORTS_MANUAL_LAYOUT,
-    NUM_PROPERTIES
-};
-
-static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
-
 typedef gboolean (*SortCriterionMatchFunc) (NautilusFile *file);
 
 typedef struct
@@ -95,11 +84,6 @@ typedef struct
     const SortCriterion *sort;
 
     GtkWidget *canvas_container;
-
-    gboolean supports_auto_layout;
-    gboolean supports_manual_layout;
-    gboolean supports_scaling;
-    gboolean supports_keep_aligned;
 
     /* FIXME: Needed for async operations. Suposedly we would use cancellable and gtask,
      * sadly gtkclipboard doesn't support that.
@@ -192,7 +176,6 @@ static void                 nautilus_canvas_view_set_directory_sort_by (Nautilus
                                                                         NautilusFile        *file,
                                                                         const SortCriterion *sort);
 static void                 nautilus_canvas_view_update_click_mode (NautilusCanvasView *canvas_view);
-static gboolean             nautilus_canvas_view_supports_scaling (NautilusCanvasView *canvas_view);
 static void                 nautilus_canvas_view_reveal_selection (NautilusFilesView *view);
 static const SortCriterion *get_sort_criterion_by_metadata_text (const char *metadata_text,
                                                                  gboolean    reversed);
@@ -254,24 +237,12 @@ nautilus_canvas_view_get_canvas_container (NautilusCanvasView *canvas_view)
 }
 
 static gboolean
-nautilus_canvas_view_supports_manual_layout (NautilusCanvasView *view)
-{
-    NautilusCanvasViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
-
-    priv = nautilus_canvas_view_get_instance_private (view);
-
-    return priv->supports_manual_layout;
-}
-
-static gboolean
 get_stored_icon_position_callback (NautilusCanvasContainer *container,
                                    NautilusFile            *file,
                                    NautilusCanvasPosition  *position,
                                    NautilusCanvasView      *canvas_view)
 {
-    char *position_string, *scale_string;
+    char *position_string;
     gboolean position_good;
     char c;
 
@@ -279,11 +250,6 @@ get_stored_icon_position_callback (NautilusCanvasContainer *container,
     g_assert (NAUTILUS_IS_FILE (file));
     g_assert (position != NULL);
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
-
-    if (!nautilus_canvas_view_supports_manual_layout (canvas_view))
-    {
-        return FALSE;
-    }
 
     /* Get the current position of this canvas from the metadata. */
     position_string = nautilus_file_get_metadata
@@ -293,26 +259,7 @@ get_stored_icon_position_callback (NautilusCanvasContainer *container,
                         &position->x, &position->y, &c) == 2;
     g_free (position_string);
 
-    /* If it is the desktop directory, maybe the gnome-libs metadata has information about it */
-
-    /* Disable scaling if not on the desktop */
-    if (nautilus_canvas_view_supports_scaling (canvas_view))
-    {
-        /* Get the scale of the canvas from the metadata. */
-        scale_string = nautilus_file_get_metadata
-                           (file, NAUTILUS_METADATA_KEY_ICON_SCALE, "1");
-        position->scale = g_ascii_strtod (scale_string, NULL);
-        if (errno != 0)
-        {
-            position->scale = 1.0;
-        }
-
-        g_free (scale_string);
-    }
-    else
-    {
-        position->scale = 1.0;
-    }
+    position->scale = 1.0;
 
     return position_good;
 }
@@ -497,42 +444,6 @@ nautilus_canvas_view_file_changed (NautilusFilesView *view,
         NAUTILUS_CANVAS_ICON_DATA (file));
 }
 
-static gboolean
-nautilus_canvas_view_supports_auto_layout (NautilusCanvasView *view)
-{
-    NautilusCanvasViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
-
-    priv = nautilus_canvas_view_get_instance_private (view);
-
-    return priv->supports_auto_layout;
-}
-
-static gboolean
-nautilus_canvas_view_supports_scaling (NautilusCanvasView *view)
-{
-    NautilusCanvasViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
-
-    priv = nautilus_canvas_view_get_instance_private (view);
-
-    return priv->supports_scaling;
-}
-
-static gboolean
-nautilus_canvas_view_supports_keep_aligned (NautilusCanvasView *view)
-{
-    NautilusCanvasViewPrivate *priv;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), FALSE);
-
-    priv = nautilus_canvas_view_get_instance_private (view);
-
-    return priv->supports_keep_aligned;
-}
-
 static const SortCriterion *
 nautilus_canvas_view_get_directory_sort_by (NautilusCanvasView *canvas_view,
                                             NautilusFile       *file)
@@ -540,11 +451,6 @@ nautilus_canvas_view_get_directory_sort_by (NautilusCanvasView *canvas_view,
     const SortCriterion *default_sort;
     g_autofree char *sort_by = NULL;
     gboolean reversed;
-
-    if (!nautilus_canvas_view_supports_auto_layout (canvas_view))
-    {
-        return get_sort_criterion_by_metadata_text ("name", FALSE);
-    }
 
     default_sort = get_default_sort_order (file);
     g_return_val_if_fail (default_sort != NULL, NULL);
@@ -592,11 +498,6 @@ nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView  *canvas_view,
 {
     const SortCriterion *default_sort_criterion;
 
-    if (!nautilus_canvas_view_supports_auto_layout (canvas_view))
-    {
-        return;
-    }
-
     default_sort_criterion = get_default_sort_order (file);
     g_return_if_fail (default_sort_criterion != NULL);
 
@@ -611,56 +512,9 @@ nautilus_canvas_view_set_directory_sort_by (NautilusCanvasView  *canvas_view,
 }
 
 static gboolean
-get_default_directory_keep_aligned (void)
-{
-    return TRUE;
-}
-
-static gboolean
-nautilus_canvas_view_get_directory_keep_aligned (NautilusCanvasView *canvas_view,
-                                                 NautilusFile       *file)
-{
-    if (!nautilus_canvas_view_supports_keep_aligned (canvas_view))
-    {
-        return FALSE;
-    }
-
-    return nautilus_file_get_boolean_metadata
-               (file,
-               NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED,
-               get_default_directory_keep_aligned ());
-}
-
-static void
-nautilus_canvas_view_set_directory_keep_aligned (NautilusCanvasView *canvas_view,
-                                                 NautilusFile       *file,
-                                                 gboolean            keep_aligned)
-{
-    if (!nautilus_canvas_view_supports_keep_aligned (canvas_view))
-    {
-        return;
-    }
-
-    nautilus_file_set_boolean_metadata
-        (file, NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED,
-        get_default_directory_keep_aligned (),
-        keep_aligned);
-}
-
-static gboolean
 nautilus_canvas_view_get_directory_auto_layout (NautilusCanvasView *canvas_view,
                                                 NautilusFile       *file)
 {
-    if (!nautilus_canvas_view_supports_auto_layout (canvas_view))
-    {
-        return FALSE;
-    }
-
-    if (!nautilus_canvas_view_supports_manual_layout (canvas_view))
-    {
-        return TRUE;
-    }
-
     return nautilus_file_get_boolean_metadata
                (file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT, TRUE);
 }
@@ -670,12 +524,6 @@ nautilus_canvas_view_set_directory_auto_layout (NautilusCanvasView *canvas_view,
                                                 NautilusFile       *file,
                                                 gboolean            auto_layout)
 {
-    if (!nautilus_canvas_view_supports_auto_layout (canvas_view) ||
-        !nautilus_canvas_view_supports_manual_layout (canvas_view))
-    {
-        return;
-    }
-
     nautilus_file_set_boolean_metadata
         (file, NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT,
         TRUE,
@@ -771,10 +619,6 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
      */
     sort = nautilus_canvas_view_get_directory_sort_by (canvas_view, file);
     update_sort_criterion (canvas_view, sort, FALSE);
-
-    nautilus_canvas_container_set_keep_aligned
-        (get_canvas_container (canvas_view),
-        nautilus_canvas_view_get_directory_keep_aligned (canvas_view, file));
 
     /* We must set auto-layout last, because it invokes the layout_changed
      * callback, which works incorrectly if the other layout criteria are
@@ -984,28 +828,6 @@ nautilus_canvas_view_get_selection (NautilusFilesView *view)
 }
 
 static void
-action_keep_aligned (GSimpleAction *action,
-                     GVariant      *state,
-                     gpointer       user_data)
-{
-    NautilusFile *file;
-    NautilusCanvasView *canvas_view;
-    gboolean keep_aligned;
-
-    canvas_view = NAUTILUS_CANVAS_VIEW (user_data);
-    file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (canvas_view));
-    keep_aligned = g_variant_get_boolean (state);
-
-    nautilus_canvas_view_set_directory_keep_aligned (canvas_view,
-                                                     file,
-                                                     keep_aligned);
-    nautilus_canvas_container_set_keep_aligned (get_canvas_container (canvas_view),
-                                                keep_aligned);
-
-    g_simple_action_set_state (action, state);
-}
-
-static void
 action_sort_order_changed (GSimpleAction *action,
                            GVariant      *value,
                            gpointer       user_data)
@@ -1102,7 +924,6 @@ layout_changed_callback (NautilusCanvasContainer *container,
 
 const GActionEntry canvas_view_entries[] =
 {
-    { "keep-aligned", NULL, NULL, "true", action_keep_aligned },
     { "sort", NULL, "s", "'name'", action_sort_order_changed },
     { "zoom-to-level", NULL, NULL, "1", action_zoom_to_level }
 };
@@ -1168,8 +989,8 @@ static void
 nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
 {
     GActionGroup *view_action_group;
+    GVariant *sort_state;
     GAction *action;
-    gboolean keep_aligned;
     NautilusCanvasView *canvas_view;
     NautilusCanvasViewPrivate *priv;
 
@@ -1179,45 +1000,33 @@ nautilus_canvas_view_update_actions_state (NautilusFilesView *view)
     NAUTILUS_FILES_VIEW_CLASS (nautilus_canvas_view_parent_class)->update_actions_state (view);
 
     view_action_group = nautilus_files_view_get_action_group (view);
-    if (nautilus_canvas_view_supports_auto_layout (canvas_view))
+
+    /* When we change the sort action state, even using the same value, it triggers
+     * the sort action changed handler, which reveals the selection, since we expect
+     * the selection to be visible when the user changes the sort order. But we may
+     * need to update the actions state for others reason than an actual sort change,
+     * so we need to prevent to trigger the sort action changed handler for those cases.
+     * To achieve this, check if the action state value actually changed before setting
+     * it
+     */
+    sort_state = g_action_group_get_action_state (view_action_group, "sort");
+
+    if (g_strcmp0 (g_variant_get_string (sort_state, NULL),
+                   priv->sort->action_target_name) != 0)
     {
-        GVariant *sort_state;
-
-        /* When we change the sort action state, even using the same value, it triggers
-         * the sort action changed handler, which reveals the selection, since we expect
-         * the selection to be visible when the user changes the sort order. But we may
-         * need to update the actions state for others reason than an actual sort change,
-         * so we need to prevent to trigger the sort action changed handler for those cases.
-         * To achieve this, check if the action state value actually changed before setting
-         * it
-         */
-        sort_state = g_action_group_get_action_state (view_action_group, "sort");
-
-        if (g_strcmp0 (g_variant_get_string (sort_state, NULL),
-                       priv->sort->action_target_name) != 0)
-        {
-            g_action_group_change_action_state (view_action_group,
-                                                "sort",
-                                                g_variant_new_string (priv->sort->action_target_name));
-        }
-
-        g_variant_unref (sort_state);
+        g_action_group_change_action_state (view_action_group,
+                                            "sort",
+                                            g_variant_new_string (priv->sort->action_target_name));
     }
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "sort");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !showing_recent_directory (view) &&
                                  !showing_search_directory (view));
-    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group), "keep-aligned");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 priv->supports_keep_aligned);
-    if (priv->supports_keep_aligned)
-    {
-        keep_aligned = nautilus_canvas_container_is_keep_aligned (get_canvas_container (canvas_view));
-        g_action_change_state (action, g_variant_new_boolean (keep_aligned));
-    }
 
     update_sort_action_state_hint (canvas_view);
+
+    g_variant_unref (sort_state);
 }
 
 static void
@@ -1935,52 +1744,6 @@ nautilus_canvas_view_get_id (NautilusFilesView *view)
 }
 
 static void
-nautilus_canvas_view_set_property (GObject      *object,
-                                   guint         prop_id,
-                                   const GValue *value,
-                                   GParamSpec   *pspec)
-{
-    NautilusCanvasView *canvas_view;
-    NautilusCanvasViewPrivate *priv;
-
-    canvas_view = NAUTILUS_CANVAS_VIEW (object);
-    priv = nautilus_canvas_view_get_instance_private (canvas_view);
-
-    switch (prop_id)
-    {
-        case PROP_SUPPORTS_AUTO_LAYOUT:
-        {
-            priv->supports_auto_layout = g_value_get_boolean (value);
-        }
-        break;
-
-        case PROP_SUPPORTS_MANUAL_LAYOUT:
-        {
-            priv->supports_manual_layout = g_value_get_boolean (value);
-        }
-        break;
-
-        case PROP_SUPPORTS_SCALING:
-        {
-            priv->supports_scaling = g_value_get_boolean (value);
-        }
-        break;
-
-        case PROP_SUPPORTS_KEEP_ALIGNED:
-        {
-            priv->supports_keep_aligned = g_value_get_boolean (value);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
-        }
-        break;
-    }
-}
-
-static void
 nautilus_canvas_view_dispose (GObject *object)
 {
     NautilusCanvasView *canvas_view;
@@ -2014,7 +1777,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class = NAUTILUS_FILES_VIEW_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
 
-    oclass->set_property = nautilus_canvas_view_set_property;
     oclass->dispose = nautilus_canvas_view_dispose;
 
     GTK_WIDGET_CLASS (klass)->destroy = nautilus_canvas_view_destroy;
@@ -2051,37 +1813,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->get_view_id = nautilus_canvas_view_get_id;
     nautilus_files_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = canvas_view_scroll_to_file;
-
-    properties[PROP_SUPPORTS_AUTO_LAYOUT] =
-        g_param_spec_boolean ("supports-auto-layout",
-                              "Supports auto layout",
-                              "Whether this view supports auto layout",
-                              TRUE,
-                              G_PARAM_WRITABLE |
-                              G_PARAM_CONSTRUCT_ONLY);
-    properties[PROP_SUPPORTS_MANUAL_LAYOUT] =
-        g_param_spec_boolean ("supports-manual-layout",
-                              "Supports manual layout",
-                              "Whether this view supports manual layout",
-                              FALSE,
-                              G_PARAM_WRITABLE |
-                              G_PARAM_CONSTRUCT_ONLY);
-    properties[PROP_SUPPORTS_SCALING] =
-        g_param_spec_boolean ("supports-scaling",
-                              "Supports scaling",
-                              "Whether this view supports scaling",
-                              FALSE,
-                              G_PARAM_WRITABLE |
-                              G_PARAM_CONSTRUCT_ONLY);
-    properties[PROP_SUPPORTS_KEEP_ALIGNED] =
-        g_param_spec_boolean ("supports-keep-aligned",
-                              "Supports keep aligned",
-                              "Whether this view supports keep aligned",
-                              FALSE,
-                              G_PARAM_WRITABLE |
-                              G_PARAM_CONSTRUCT_ONLY);
-
-    g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 }
 
 static void

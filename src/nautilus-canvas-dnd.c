@@ -537,14 +537,7 @@ get_data_on_first_target_we_support (GtkWidget      *widget,
         gtk_target_list_add_text_targets (drop_types_list_root, NAUTILUS_ICON_DND_TEXT);
     }
 
-    if (nautilus_canvas_container_get_is_desktop (NAUTILUS_CANVAS_CONTAINER (widget)))
-    {
-        list = drop_types_list_root;
-    }
-    else
-    {
-        list = drop_types_list;
-    }
+    list = drop_types_list;
 
     target = gtk_drag_dest_find_target (widget, context, list);
     if (target != GDK_NONE)
@@ -1674,11 +1667,6 @@ check_hover_timer (NautilusCanvasContainer *container,
         return;
     }
 
-    if (nautilus_canvas_container_get_is_desktop (container))
-    {
-        return;
-    }
-
     remove_hover_timer (dnd_info);
 
     settings = gtk_widget_get_settings (GTK_WIDGET (container));
@@ -1980,12 +1968,7 @@ nautilus_canvas_dnd_init (NautilusCanvasContainer *container)
      * (But not a source, as drags starting from this widget will be
      * implemented by dealing with events manually.)
      */
-    n_elements = G_N_ELEMENTS (drop_types);
-    if (!nautilus_canvas_container_get_is_desktop (container))
-    {
-        /* Don't set up rootwindow drop */
-        n_elements -= 1;
-    }
+    n_elements = G_N_ELEMENTS (drop_types) - 1;
     gtk_drag_dest_set (GTK_WIDGET (container),
                        0,
                        drop_types, n_elements,

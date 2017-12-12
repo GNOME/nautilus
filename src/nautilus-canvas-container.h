@@ -243,9 +243,6 @@ gboolean          nautilus_canvas_container_is_auto_layout                (Nauti
 void              nautilus_canvas_container_set_auto_layout               (NautilusCanvasContainer  *container,
 									   gboolean                auto_layout);
 
-gboolean          nautilus_canvas_container_is_keep_aligned               (NautilusCanvasContainer  *container);
-void              nautilus_canvas_container_set_keep_aligned              (NautilusCanvasContainer  *container,
-									   gboolean                keep_aligned);
 void              nautilus_canvas_container_sort                          (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_freeze_icon_positions         (NautilusCanvasContainer  *container);
 
@@ -286,9 +283,6 @@ void              nautilus_canvas_container_enable_linger_selection       (Nauti
 gboolean          nautilus_canvas_container_get_is_fixed_size             (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_is_fixed_size             (NautilusCanvasContainer  *container,
 									   gboolean                is_fixed_size);
-gboolean          nautilus_canvas_container_get_is_desktop                (NautilusCanvasContainer  *container);
-void              nautilus_canvas_container_set_is_desktop                (NautilusCanvasContainer  *container,
-									   gboolean                is_desktop);
 void              nautilus_canvas_container_reset_scroll_region           (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_font                      (NautilusCanvasContainer  *container,
 									   const char             *font); 
@@ -301,7 +295,6 @@ char*             nautilus_canvas_container_get_icon_description          (Nauti
 									     NautilusCanvasIconData       *data);
 
 gboolean	  nautilus_canvas_container_is_layout_rtl			(NautilusCanvasContainer  *container);
-gboolean	  nautilus_canvas_container_is_layout_vertical		(NautilusCanvasContainer  *container);
 
 gboolean          nautilus_canvas_container_get_store_layout_timestamps   (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_store_layout_timestamps   (NautilusCanvasContainer  *container,
@@ -311,14 +304,10 @@ void              nautilus_canvas_container_widget_to_file_operation_position (N
 									       GdkPoint              *position);
 guint             nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level);
 
-#define CANVAS_WIDTH(container,allocation) ((allocation.width		\
-					     - container->details->left_margin \
-					     - container->details->right_margin) \
+#define CANVAS_WIDTH(container,allocation) (allocation.width		\
 					    /  EEL_CANVAS (container)->pixels_per_unit)
 
-#define CANVAS_HEIGHT(container,allocation) ((allocation.height		\
-					      - container->details->top_margin \
-					      - container->details->bottom_margin) \
+#define CANVAS_HEIGHT(container,allocation) (allocation.height		\
 					     / EEL_CANVAS (container)->pixels_per_unit)
 
 #endif /* NAUTILUS_CANVAS_CONTAINER_H */
