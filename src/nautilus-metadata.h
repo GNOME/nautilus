@@ -37,10 +37,7 @@
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_AUTO_LAYOUT      	"nautilus-icon-view-auto-layout"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"nautilus-icon-view-sort-by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"nautilus-icon-view-sort-reversed"
-#define NAUTILUS_METADATA_KEY_ICON_VIEW_KEEP_ALIGNED            "nautilus-icon-view-keep-aligned"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_LAYOUT_TIMESTAMP	"nautilus-icon-view-layout-timestamp"
-
-#define NAUTILUS_METADATA_KEY_DESKTOP_ICON_SIZE           "nautilus-desktop-icon-size"
 
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_COLUMN      	"nautilus-list-view-sort-column"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_SORT_REVERSED    	"nautilus-list-view-sort-reversed"
@@ -58,7 +55,6 @@
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE   	"nautilus-sidebar-background-image"
 #define NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS			"nautilus-sidebar-buttons"
 
-#define NAUTILUS_METADATA_KEY_ICON_POSITION              	"nautilus-icon-position"
 #define NAUTILUS_METADATA_KEY_ICON_POSITION_TIMESTAMP		"nautilus-icon-position-timestamp"
 #define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_ICON_SCALE                 	"icon-scale"

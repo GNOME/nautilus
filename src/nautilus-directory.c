@@ -1704,11 +1704,6 @@ nautilus_directory_schedule_position_set (GList *position_setting_list)
         {
             str[0] = 0;
         }
-        nautilus_file_set_metadata
-            (file,
-            NAUTILUS_METADATA_KEY_ICON_POSITION,
-            NULL,
-            str);
 
         if (item->set)
         {

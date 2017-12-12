@@ -130,11 +130,6 @@ struct NautilusCanvasContainerDetails {
 	/* Starting icon for keyboard rubberbanding. */
 	NautilusCanvasIcon *keyboard_rubberband_start;
 
-	/* Current icon with stretch handles, so we have only one. */
-	NautilusCanvasIcon *stretch_icon;
-	double stretch_initial_x, stretch_initial_y;
-	guint stretch_initial_size;
-	
 	/* Last highlighted drop target. */
 	NautilusCanvasIcon *drop_target;
 
@@ -201,10 +196,6 @@ struct NautilusCanvasContainerDetails {
 
 	/* Mode settings. */
 	gboolean single_click_mode;
-	gboolean auto_layout;
-
-	/* Should the container keep icons aligned to a grid */
-	gboolean keep_aligned;
 
         /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
@@ -212,24 +203,12 @@ struct NautilusCanvasContainerDetails {
 	int size_allocation_count;
 	guint size_allocation_count_id;
 	
-	/* Is the container fixed or resizable */
-	gboolean is_fixed_size;
-	
-	/* Is the container for a desktop window */
-	gboolean is_desktop;
-
 	/* Ignore the visible area the next time the scroll region is recomputed */
 	gboolean reset_scroll_region_trigger;
 	
 	/* The position we are scaling to on stretch */
 	double world_x;
 	double world_y;
-
-	/* margins to follow, used for the desktop panel avoidance */
-	int left_margin;
-	int right_margin;
-	int top_margin;
-	int bottom_margin;
 
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;
@@ -247,14 +226,6 @@ struct NautilusCanvasContainerDetails {
 /* Private functions shared by mutiple files. */
 NautilusCanvasIcon *nautilus_canvas_container_get_icon_by_uri             (NautilusCanvasContainer *container,
 									 const char            *uri);
-void          nautilus_canvas_container_move_icon                   (NautilusCanvasContainer *container,
-								       NautilusCanvasIcon      *icon,
-								       int                    x,
-								       int                    y,
-								       double                 scale,
-								       gboolean               raise,
-								       gboolean               snap,
-								       gboolean		  update_position);
 void          nautilus_canvas_container_select_list_unselect_others (NautilusCanvasContainer *container,
 								     GList                 *icons);
 char *        nautilus_canvas_container_get_icon_uri                (NautilusCanvasContainer *container,
