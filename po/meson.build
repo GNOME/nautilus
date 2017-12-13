@@ -1,1 +1,1 @@
-i18n.gettext ('nautilus', preset: 'glib')
+i18n.gettext('nautilus', preset: 'glib')
