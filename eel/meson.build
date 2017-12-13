@@ -30,18 +30,28 @@ libeel_2_sources = [
     'eel-lib-self-check-functions.c',
 ]
 
-libeel_2_deps = [glib, gtk, gail, libm, x11]
+libeel_2_deps = [
+    gail,
+    glib,
+    gtk,
+    libm,
+    x11
+]
 
-libeel_2 = static_library ('eel-2', libeel_2_sources,
-                           dependencies: libeel_2_deps,
-                           include_directories: nautilus_include_dirs)
+libeel_2 = static_library('eel-2', libeel_2_sources,
+    dependencies: libeel_2_deps,
+    include_directories: nautilus_include_dirs)
 
-eel_2 = declare_dependency (link_with: libeel_2,
-                            include_directories: nautilus_include_dirs,
-                            dependencies: libeel_2_deps)
+eel_2 = declare_dependency(link_with: libeel_2,
+    include_directories: nautilus_include_dirs,
+    dependencies: libeel_2_deps
+)
 
-check_eel = executable ('check-eel',
-                        'check-program.c',
-                        dependencies: [eel_2, xml])
+check_eel = executable('check-eel', 'check-program.c',
+    dependencies: [
+        eel_2,
+        xml
+    ]
+)
 
-test ('check-eel', check_eel)
+test('check-eel', check_eel)
