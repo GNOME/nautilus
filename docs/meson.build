@@ -1,3 +1,3 @@
-install_man ('nautilus.1')
+install_man('nautilus.1')
 
-subdir ('reference')
+subdir('reference')

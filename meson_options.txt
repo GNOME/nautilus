@@ -1,15 +1,5 @@
-option ('enable-profiling',
-        type: 'boolean',
-        value: false)
-option ('enable-nst-extension',
-        type: 'boolean',
-        value: true)
-option ('enable-selinux',
-        type: 'boolean',
-        value: true)
-option ('enable-packagekit',
-        type: 'boolean',
-        value: true)
-option ('enable-gtk-doc',
-        type: 'boolean',
-        value: false)
+option('docs', type: 'boolean', value: false)
+option('profiling', type: 'boolean', value: false)
+option('nst_extension', type: 'boolean', value: true)
+option('packagekit', type: 'boolean', value: true)
+option('selinux', type: 'boolean', value: true)
