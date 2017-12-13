@@ -1,1 +1,1 @@
-subdir ('libnautilus-extension')
+subdir('libnautilus-extension')
