@@ -302,7 +302,14 @@ test('nautilus', nautilus,
     ]
 )
 
-executable('nautilus-autorun-software', 'nautilus-autorun-software.c',
-    dependencies: libnautilus_dep,
+nautilus_autorun_software_sources = [
+    'nautilus-autorun-software.c',
+    'nautilus-icon-info.c',
+    'nautilus-icon-info.h'
+]
+
+executable('nautilus-autorun-software', nautilus_autorun_software_sources,
+    include_directories: nautilus_include_dirs,
+    dependencies: gtk,
     install: true
 )
