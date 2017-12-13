@@ -1,38 +1,38 @@
-gdbus_sources = []
-enums = []
-
-gdbus_sources += gnome.gdbus_codegen ('nautilus-freedesktop-generated',
-                                      join_paths (meson.source_root (), 'data', 'freedesktop-dbus-interfaces.xml'),
-                                      interface_prefix: 'org.freedesktop',
-                                      namespace: 'NautilusFreedesktop')
-
-gdbus_sources += gnome.gdbus_codegen ('nautilus-generated',
-                                      join_paths (meson.source_root (), 'data', 'dbus-interfaces.xml'),
-                                      interface_prefix: 'org.gnome.Nautilus',
-                                      namespace: 'NautilusDBus')
-
-gdbus_sources += gnome.gdbus_codegen ('nautilus-shell-search-provider-generated',
-                                      join_paths (meson.source_root (), 'data', 'shell-search-provider-dbus-interfaces.xml'),
-                                      interface_prefix: 'org.gnome',
-                                      namespace: 'Nautilus')
-
-enum_headers = [
-    'nautilus-search-popover.h',
-    'nautilus-special-location-bar.h',
-    'nautilus-query.h',
-    'nautilus-search-provider.h'
+gdbus_sources = [
+    gnome.gdbus_codegen('nautilus-freedesktop-generated',
+        join_paths(meson.source_root(), 'data', 'freedesktop-dbus-interfaces.xml'),
+        interface_prefix: 'org.freedesktop',
+        namespace: 'NautilusFreedesktop'
+    ),
+    gnome.gdbus_codegen('nautilus-generated',
+        join_paths(meson.source_root(), 'data', 'dbus-interfaces.xml'),
+        interface_prefix: 'org.gnome.Nautilus',
+        namespace: 'NautilusDBus'
+    ),
+    gnome.gdbus_codegen('nautilus-shell-search-provider-generated',
+        join_paths(meson.source_root(), 'data', 'shell-search-provider-dbus-interfaces.xml'),
+        interface_prefix: 'org.gnome',
+        namespace: 'Nautilus'
+    )
 ]
 
-enums += gnome.mkenums ('nautilus-enum-types',
-                        c_template: 'nautilus-enum-types.c.template',
-                        h_template: 'nautilus-enum-types.h.template',
-                        sources: enum_headers)
+enums = gnome.mkenums ('nautilus-enum-types',
+    c_template: 'nautilus-enum-types.c.template',
+    h_template: 'nautilus-enum-types.h.template',
+    sources: [
+        'nautilus-search-popover.h',
+        'nautilus-special-location-bar.h',
+        'nautilus-query.h',
+        'nautilus-search-provider.h'
+    ]
+)
 
 resources = gnome.compile_resources ('nautilus-resources',
-                                     'resources/nautilus.gresource.xml',
-                                     source_dir: 'resources',
-                                     c_name: 'nautilus',
-                                     extra_args: '--manual-register')
+    'resources/nautilus.gresource.xml',
+    source_dir: 'resources',
+    c_name: 'nautilus',
+    extra_args: '--manual-register'
+)
 
 libnautilus_sources = [
     enums,
@@ -260,45 +260,49 @@ libnautilus_sources = [
     'nautilus-favorite-directory.h'
 ]
 
-nautilus_deps = [glib,
-                 gtk,
-                 autoar,
-                 xml,
-                 gsettings_desktop_schemas,
-                 libgd_dep,
-                 gail,
-                 gnome_desktop,
-                 eel_2,
-                 nautilus_extension,
-                 x11,
-                 gmodule_no_export,
-                 tracker_sparql,
-                 gexiv2]
+nautilus_deps = [
+    eel_2,
+    gexiv,
+    gmodule,
+    gnome_autoar,
+    gnome_desktop,
+    gsettings_desktop_schemas,
+    libgd_dep,
+    nautilus_extension,
+    selinux,
+    tracker_sparql,
+    xml
+]
 
-if get_option ('enable-selinux')
-    nautilus_deps += selinux
-endif
+libnautilus = static_library('nautilus',
+    libnautilus_sources,
+    dependencies: nautilus_deps,
+    include_directories: nautilus_include_dirs
+)
 
-libnautilus = static_library ('nautilus',
-                              libnautilus_sources,
-                              dependencies: nautilus_deps,
-                              include_directories: nautilus_include_dirs)
+libnautilus_include_dirs = include_directories('.')
 
-libnautilus_include_dirs = include_directories ('.')
+libnautilus_dep = declare_dependency(link_with: libnautilus,
+    include_directories: [
+        nautilus_include_dirs,
+        libnautilus_include_dirs
+    ],
+    dependencies: nautilus_deps
+)
 
-libnautilus_dep = declare_dependency (link_with: libnautilus,
-                                      include_directories: [nautilus_include_dirs,
-                                                            libnautilus_include_dirs],
-                                      dependencies: nautilus_deps)
+nautilus = executable('nautilus',
+    'nautilus-main.c',
+    dependencies: libnautilus_dep,
+    install: true
+)
 
-nautilus = executable ('nautilus',
-                       'nautilus-main.c',
-                       dependencies: libnautilus_dep,
-                       install: true)
+test('nautilus', nautilus,
+    args: [
+        '--check', '--g-fatal-warnings'
+    ]
+)
 
-test ('nautilus', nautilus, args: ['--check', '--g-fatal-warnings'])
-
-nautilus_autorun_software = executable ('nautilus-autorun-software',
-                                        'nautilus-autorun-software.c',
-                                        dependencies: libnautilus_dep,
-                                        install: true)
+executable('nautilus-autorun-software', 'nautilus-autorun-software.c',
+    dependencies: libnautilus_dep,
+    install: true
+)
