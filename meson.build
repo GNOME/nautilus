@@ -86,10 +86,6 @@ if not tracker_sparql.found()
     tracker_sparql = dependency ('tracker-sparql-1.0')
 endif
 
-if cc.has_header ('X11/XF86keysym.h')
-    conf.set10 ('HAVE_X11_XF86KEYSYM_H', true)
-endif
-
 if get_option ('enable-xmp')
     exempi = dependency ('exempi-2.0', version: exempi_ver)
     conf.set10 ('HAVE_EXEMPI', true)
