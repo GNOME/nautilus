@@ -43,11 +43,6 @@
 #include "nautilus-toolbar.h"
 #include "nautilus-view.h"
 #include "nautilus-tag-manager.h"
-
-#ifdef HAVE_X11_XF86KEYSYM_H
-#include <X11/XF86keysym.h>
-#endif
-
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
@@ -351,12 +346,9 @@ static const struct
     const char *action;
 } extra_view_keybindings [] =
 {
-#ifdef HAVE_X11_XF86KEYSYM_H
     /* View actions */
-    { XF86XK_ZoomIn, "zoom-in" },
-    { XF86XK_ZoomOut, "zoom-out" },
-
-#endif
+    { GDK_KEY_ZoomIn, "zoom-in" },
+    { GDK_KEY_ZoomOut, "zoom-out" },
 };
 
 /*

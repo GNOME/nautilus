@@ -46,9 +46,6 @@
 #include <gdk/gdkkeysyms.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#ifdef HAVE_X11_XF86KEYSYM_H
-#include <X11/XF86keysym.h>
-#endif
 #include "nautilus-dnd.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-attributes.h"
@@ -171,21 +168,19 @@ static const struct
     const char *action;
 } extra_window_keybindings [] =
 {
-#ifdef HAVE_X11_XF86KEYSYM_H
     /* Window actions */
-    { XF86XK_AddFavorite, "bookmark-current-location" },
-    { XF86XK_Favorites, "bookmarks" },
-    { XF86XK_Go, "enter-location" },
-    { XF86XK_HomePage, "go-home" },
-    { XF86XK_OpenURL, "enter-location" },
-    { XF86XK_Refresh, "reload" },
-    { XF86XK_Reload, "reload" },
-    { XF86XK_Search, "search" },
-    { XF86XK_Start, "go-home" },
-    { XF86XK_Stop, "stop" },
-    { XF86XK_Back, "back" },
-    { XF86XK_Forward, "forward" },
-#endif
+    { GDK_KEY_AddFavorite, "bookmark-current-location" },
+    { GDK_KEY_Favorites, "bookmarks" },
+    { GDK_KEY_Go, "enter-location" },
+    { GDK_KEY_HomePage, "go-home" },
+    { GDK_KEY_OpenURL, "enter-location" },
+    { GDK_KEY_Refresh, "reload" },
+    { GDK_KEY_Reload, "reload" },
+    { GDK_KEY_Search, "search" },
+    { GDK_KEY_Start, "go-home" },
+    { GDK_KEY_Stop, "stop" },
+    { GDK_KEY_Back, "back" },
+    { GDK_KEY_Forward, "forward" },
 };
 
 static const GtkPadActionEntry pad_actions[] = {
