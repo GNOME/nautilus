@@ -2320,7 +2320,7 @@ real_batch_rename (GList                         *files,
                    NautilusFileOperationCallback  callback,
                    gpointer                       callback_data)
 {
-    GList *l1, *l2, *old_files, *new_files;
+    GList *l1, *l2, *l3, *forward_lookup, *old_files, *new_files;
     NautilusFileOperation *op;
     GFile *location;
     GString *new_name;
@@ -2335,11 +2335,12 @@ real_batch_rename (GList                         *files,
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
-    op->files = nautilus_file_list_copy (files);
     op->renamed_files = 0;
     op->skipped_files = 0;
+    l3 = nautilus_file_list_copy (files);
+    op->files = l3;
 
-    for (l1 = files->next; l1 != NULL; l1 = l1->next)
+    for (l1 = files; l1 != NULL; l1 = l1->next)
     {
         file = NAUTILUS_FILE (l1->data);
 
@@ -2347,7 +2348,7 @@ real_batch_rename (GList                         *files,
                                                                 op);
     }
 
-    for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; l1 = l1->next, l2 = l2->next)
+    for (l1 = files, l2 = new_names; l1 != NULL && l2 != NULL; )
     {
         g_autofree gchar *new_file_name;
         file = NAUTILUS_FILE (l1->data);
@@ -2363,7 +2364,9 @@ real_batch_rename (GList                         *files,
         if (new_file_name == NULL)
         {
             op->skipped_files++;
-
+            l1 = l1->next;
+            l2 = l2->next;
+            l3 = l3->next;
             continue;
         }
 
@@ -2375,31 +2378,94 @@ real_batch_rename (GList                         *files,
                                             op->cancellable,
                                             &error);
 
-        data = g_new0 (BatchRenameData, 1);
-        data->op = op;
-        data->file = file;
-
-        g_file_query_info_async (new_file,
-                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
-                                 G_PRIORITY_DEFAULT,
-                                 op->cancellable,
-                                 batch_rename_get_info_callback,
-                                 data);
-
-        if (error != NULL)
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
         {
-            g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (file));
             g_error_free (error);
             error = NULL;
 
+            NautilusFile *actual_file;
+            forward_lookup = l1->next;
+
+            while (forward_lookup)
+            {
+                actual_file = NAUTILUS_FILE (forward_lookup->data);
+
+                /* find the file with the same name and rename it to a random string */
+                if (strcmp (actual_file->details->name, new_name->str) == 0)
+                {
+                    GFile *random_named_file = NULL;
+                    GFile *collision_location = nautilus_file_get_location(actual_file);
+
+                    /* try until finding a filename which is unique in the file path */
+                    while (random_named_file == NULL)
+                    {
+                        gchar random_string[32];
+                        random_string_generator(random_string, 31);
+
+                        new_file_name = nautilus_file_can_rename_file (actual_file,
+                                                                       random_string,
+                                                                       callback,
+                                                                       callback_data);
+                        if (new_file_name != NULL)
+                        {
+                            random_named_file = g_file_set_display_name (collision_location,
+                                                                         new_file_name,
+                                                                         op->cancellable,
+                                                                         &error);
+                        }
+
+                        if (random_named_file == NULL)
+                        {
+                            g_warning ("Temporary rename for file \"%s\" failed, trying with another name.",
+                                       nautilus_file_get_name (actual_file));
+                        }
+
+                        if (error != NULL) {
+                            g_error_free (error);
+                            error = NULL;
+                        }
+                    }
+
+                    forward_lookup->data = nautilus_file_get (random_named_file);
+                    break;
+                }
+                forward_lookup = forward_lookup->next;
+            }
+
+            /* do not iterate to the next files!
+             * we fixed collusion by renaming the other colliding file.
+             * now we need to rename the current file to the intended name.
+             */
+            continue;
+        }
+        else if (error != NULL)
+        {
+            g_warning ("Batch rename for file \"%s\" failed: %s", nautilus_file_get_name (file), error->message);
+            g_error_free (error);
+            error = NULL;
             op->skipped_files++;
         }
         else
         {
-            old_files = g_list_append (old_files, location);
+            data = g_new0 (BatchRenameData, 1);
+            data->op = op;
+            data->file = file;
+
+            g_file_query_info_async (new_file,
+                                     NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                     0,
+                                     G_PRIORITY_DEFAULT,
+                                     op->cancellable,
+                                     batch_rename_get_info_callback,
+                                     data);
+
+            old_files = g_list_append (old_files, nautilus_file_get_location(l3->data));
             new_files = g_list_append (new_files, new_file);
         }
+
+        l1 = l1->next;
+        l2 = l2->next;
+        l3 = l3->next;
     }
 
     /* Tell the undo manager a batch rename is taking place if at least
