@@ -1433,3 +1433,19 @@ nautilus_uri_to_native_uri (const gchar *uri)
     return NULL;
 }
 
+gchar *
+random_string_generator (gchar *str, gint len)
+{
+    gchar alphanum[] = "0ab1cd2ef3gh4ij5kl6mn7op8qr9st0uvwxyz0AB1CD2EF3GH4IJ5KL6MN7OP8QR9ST0UVWXYZ";
+    gint i, alnum_len;
+
+    alnum_len = strlen (alphanum);
+    str[len] = 0;
+
+    for (i = 0; i < len; i++)
+    {
+        str[i] = alphanum [(gint) ((((float) alnum_len) * rand() / (RAND_MAX + 1.0)))];
+    }
+
+    return str;
+}
