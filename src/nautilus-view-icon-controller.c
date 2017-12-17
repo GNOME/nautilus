@@ -669,7 +669,7 @@ on_button_press_event (GtkWidget *widget,
         if (event_button->button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                               event_button);
+                                                               event);
         }
     }
     else
@@ -678,7 +678,7 @@ on_button_press_event (GtkWidget *widget,
         if (event_button->button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
-                                                                event_button);
+                                                                event);
         }
     }
 
