@@ -4734,7 +4734,7 @@ open_one_in_new_window (gpointer data,
 
 static void
 update_context_menu_position_from_event (NautilusFilesView *view,
-                                         GdkEventButton    *event)
+                                         const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -4743,8 +4743,13 @@ update_context_menu_position_from_event (NautilusFilesView *view,
     priv = nautilus_files_view_get_instance_private (view);
     if (event != NULL)
     {
-        priv->context_menu_position.x = event->x;
-        priv->context_menu_position.y = event->y;
+        gdouble x;
+        gdouble y;
+
+        gdk_event_get_coords (event, &x, &y);
+
+        priv->context_menu_position.x = x;
+        priv->context_menu_position.y = y;
     }
     else
     {
@@ -8134,7 +8139,7 @@ nautilus_files_view_update_toolbar_menus (NautilusFilesView *view)
  **/
 void
 nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
-                                                    GdkEventButton    *event)
+                                                    const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8161,7 +8166,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
  **/
 void
 nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
-                                                    GdkEventButton    *event)
+                                                    GdkEvent          *event)
 {
     NautilusFilesViewPrivate *priv;
 

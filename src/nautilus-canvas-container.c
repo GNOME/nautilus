@@ -3621,13 +3621,13 @@ nautilus_canvas_container_get_icon_text (NautilusCanvasContainer  *container,
 
 static gboolean
 handle_popups (NautilusCanvasContainer *container,
-               GdkEventKey             *event,
+               GdkEvent                *event,
                const char              *signal)
 {
     /* ensure we clear the drag state before showing the menu */
     clear_drag_state (container);
 
-    g_signal_emit_by_name (container, signal, NULL);
+    g_signal_emit_by_name (container, signal, event);
 
     return TRUE;
 }
@@ -3723,7 +3723,7 @@ key_press_event (GtkWidget   *widget,
              */
             if (event->state & GDK_CONTROL_MASK)
             {
-                handled = handle_popups (container, event,
+                handled = handle_popups (container, (GdkEvent *) event,
                                          "context_click_background");
             }
         }
