@@ -436,7 +436,7 @@ enter_notify_callback (GtkWidget        *widget,
 static void
 do_popup_menu (GtkWidget        *widget,
                NautilusListView *view,
-               GdkEventButton   *event)
+               GdkEvent         *event)
 {
     if (tree_view_has_selection (GTK_TREE_VIEW (widget)))
     {
@@ -634,7 +634,7 @@ button_press_callback (GtkWidget      *widget,
 
         if (event->button == 3)
         {
-            do_popup_menu (widget, view, event);
+            do_popup_menu (widget, view, (GdkEvent *) event);
         }
 
         return TRUE;
@@ -790,7 +790,7 @@ button_press_callback (GtkWidget      *widget,
 
         if (event->button == 3)
         {
-            do_popup_menu (widget, view, event);
+            do_popup_menu (widget, view, (GdkEvent *) event);
         }
     }
 
@@ -2001,6 +2001,27 @@ get_icon_scale_callback (NautilusListModel *model,
 }
 
 static void
+on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
+                                    gdouble              x,
+                                    gdouble              y,
+                                    gpointer             user_data)
+{
+    GdkEventSequence *event_sequence;
+    GdkEvent *event;
+    NautilusListView *view = user_data;
+
+    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
+    if (event_sequence == NULL)
+    {
+        return;
+    }
+
+    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
+
+    do_popup_menu (GTK_WIDGET (view->details->tree_view), view, event);
+}
+
+static void
 create_and_set_up_tree_view (NautilusListView *view)
 {
     GtkCellRenderer *cell;
@@ -2013,6 +2034,7 @@ create_and_set_up_tree_view (NautilusListView *view)
     NautilusDirectory *directory = NULL;
     NautilusQuery *query = NULL;
     NautilusQuerySearchContent content;
+    GtkGesture *longpress_gesture;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (view));
     view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -2089,6 +2111,16 @@ create_and_set_up_tree_view (NautilusListView *view)
 
     g_signal_connect_object (view->details->model, "get-icon-scale",
                              G_CALLBACK (get_icon_scale_callback), view, 0);
+
+    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (content_widget));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
+                                       TRUE);
+    g_signal_connect (longpress_gesture,
+                      "pressed",
+                      (GCallback) on_longpress_gesture_pressed_event,
+                      view);
 
     gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
 
