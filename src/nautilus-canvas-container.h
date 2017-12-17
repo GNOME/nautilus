@@ -274,6 +274,8 @@ gboolean          nautilus_canvas_container_has_stretch_handles           (Nauti
 gboolean          nautilus_canvas_container_is_stretched                  (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_show_stretch_handles          (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_unstretch                     (NautilusCanvasContainer  *container);
+gboolean          nautilus_canvas_container_popup_menu                    (NautilusCanvasContainer  *container,
+									   const GdkEvent           *event);
 
 /* options */
 NautilusCanvasZoomLevel nautilus_canvas_container_get_zoom_level                (NautilusCanvasContainer  *view);

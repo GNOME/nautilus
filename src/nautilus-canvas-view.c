@@ -1476,7 +1476,7 @@ selection_changed_callback (NautilusCanvasContainer *container,
 
 static void
 canvas_container_context_click_selection_callback (NautilusCanvasContainer *container,
-                                                   GdkEventButton          *event,
+                                                   const GdkEvent          *event,
                                                    NautilusCanvasView      *canvas_view)
 {
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
@@ -1487,7 +1487,7 @@ canvas_container_context_click_selection_callback (NautilusCanvasContainer *cont
 
 static void
 canvas_container_context_click_background_callback (NautilusCanvasContainer *container,
-                                                    GdkEventButton          *event,
+                                                    const GdkEvent          *event,
                                                     NautilusCanvasView      *canvas_view)
 {
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
@@ -1752,10 +1752,26 @@ real_create_canvas_container (NautilusCanvasView *canvas_view)
 }
 
 static void
+canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
+                                                     gdouble              x,
+                                                     gdouble              y,
+                                                     gpointer             user_data)
+{
+    GdkEventSequence *event_sequence;
+    const GdkEvent *event;
+
+    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
+
+    nautilus_canvas_container_popup_menu(NAUTILUS_CANVAS_CONTAINER(user_data), event);
+}
+
+static void
 initialize_canvas_container (NautilusCanvasView      *canvas_view,
                              NautilusCanvasContainer *canvas_container)
 {
     GtkWidget *content_widget;
+    GtkGesture *longpress_gesture;
     NautilusCanvasViewPrivate *priv;
 
     priv = nautilus_canvas_view_get_instance_private (canvas_view);
@@ -1764,6 +1780,12 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
     priv->canvas_container = GTK_WIDGET (canvas_container);
     g_object_add_weak_pointer (G_OBJECT (canvas_container),
                                (gpointer *) &priv->canvas_container);
+
+    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (content_widget));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture), GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture), TRUE);
+    g_signal_connect (longpress_gesture, "pressed",
+                      (GCallback) canvas_container_longpress_gesture_pressed_callback, canvas_container);
 
     gtk_widget_set_can_focus (GTK_WIDGET (canvas_container), TRUE);
 

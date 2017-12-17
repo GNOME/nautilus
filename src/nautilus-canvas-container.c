@@ -5114,13 +5114,13 @@ nautilus_canvas_container_get_icon_text (NautilusCanvasContainer  *container,
 
 static gboolean
 handle_popups (NautilusCanvasContainer *container,
-               GdkEventKey             *event,
+               GdkEvent                *event,
                const char              *signal)
 {
     /* ensure we clear the drag state before showing the menu */
     clear_drag_state (container);
 
-    g_signal_emit_by_name (container, signal, NULL);
+    g_signal_emit_by_name (container, signal, event);
 
     return TRUE;
 }
@@ -5237,7 +5237,7 @@ key_press_event (GtkWidget   *widget,
              */
             if (event->state & GDK_CONTROL_MASK)
             {
-                handled = handle_popups (container, event,
+                handled = handle_popups (container, (GdkEvent *) event,
                                          "context_click_background");
             }
         }
@@ -5267,25 +5267,28 @@ key_press_event (GtkWidget   *widget,
     return handled;
 }
 
-static gboolean
-popup_menu (GtkWidget *widget)
+gboolean
+nautilus_canvas_container_popup_menu (NautilusCanvasContainer *container,
+                                      const GdkEvent          *event)
 {
-    NautilusCanvasContainer *container;
-
-    container = NAUTILUS_CANVAS_CONTAINER (widget);
-
     if (has_selection (container))
     {
-        handle_popups (container, NULL,
+        handle_popups (container, event,
                        "context_click_selection");
     }
     else
     {
-        handle_popups (container, NULL,
+        handle_popups (container, event,
                        "context_click_background");
     }
 
     return TRUE;
+}
+
+static gboolean
+popup_menu (GtkWidget *widget)
+{
+    return nautilus_canvas_container_popup_menu (NAUTILUS_CANVAS_CONTAINER (widget), NULL);
 }
 
 static void
