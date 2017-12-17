@@ -171,7 +171,7 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
 void
 nautilus_pop_up_context_menu (GtkWidget      *parent,
                               GMenu          *menu,
-                              GdkEventButton *button_event)
+                              GdkEvent       *event)
 {
     GtkWidget *gtk_menu;
 
@@ -182,7 +182,7 @@ nautilus_pop_up_context_menu (GtkWidget      *parent,
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), parent, NULL);
 
     gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu),
-                               button_event ? (GdkEvent *) button_event :
+                               event ? (GdkEvent *) event :
                                gtk_get_current_event ());
 
     g_object_ref_sink (gtk_menu);
