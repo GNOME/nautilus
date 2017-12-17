@@ -36,7 +36,7 @@ void nautilus_gmenu_merge                          (GMenu             *original,
 						    gboolean           prepend);
 void nautilus_pop_up_context_menu                  (GtkWidget         *parent,
                                                     GMenu             *menu,
-                                                    GdkEventButton    *button_event);
+                                                    const GdkEvent    *event);
 
 void   nautilus_ui_frame_image                     (GdkPixbuf        **pixbuf);
 void   nautilus_ui_frame_video                     (GdkPixbuf        **pixbuf);

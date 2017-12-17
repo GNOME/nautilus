@@ -257,6 +257,8 @@ void              nautilus_canvas_container_set_selection                 (Nauti
 									   GList                  *selection);
 GArray    *       nautilus_canvas_container_get_selected_icon_locations   (NautilusCanvasContainer  *view);
 GArray    *       nautilus_canvas_container_get_selected_icons_bounding_box (NautilusCanvasContainer *container);
+gboolean          nautilus_canvas_container_popup_menu                    (NautilusCanvasContainer  *container,
+									   const GdkEvent           *event);
 
 /* options */
 NautilusCanvasZoomLevel nautilus_canvas_container_get_zoom_level                (NautilusCanvasContainer  *view);
