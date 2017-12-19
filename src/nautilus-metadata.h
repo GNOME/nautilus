@@ -31,9 +31,6 @@
 
 /* Per-file */
 
-#define NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_COLOR 	"folder-background-color"
-#define NAUTILUS_METADATA_KEY_LOCATION_BACKGROUND_IMAGE 	"folder-background-image"
-
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_BY          	"nautilus-icon-view-sort-by"
 #define NAUTILUS_METADATA_KEY_ICON_VIEW_SORT_REVERSED    	"nautilus-icon-view-sort-reversed"
 
@@ -42,18 +39,6 @@
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS    	"nautilus-list-view-visible-columns"
 #define NAUTILUS_METADATA_KEY_LIST_VIEW_COLUMN_ORDER    	"nautilus-list-view-column-order"
 
-#define NAUTILUS_METADATA_KEY_WINDOW_GEOMETRY			"nautilus-window-geometry"
-#define NAUTILUS_METADATA_KEY_WINDOW_SCROLL_POSITION		"nautilus-window-scroll-position"
-#define NAUTILUS_METADATA_KEY_WINDOW_SHOW_HIDDEN_FILES		"nautilus-window-show-hidden-files"
-#define NAUTILUS_METADATA_KEY_WINDOW_MAXIMIZED			"nautilus-window-maximized"
-#define NAUTILUS_METADATA_KEY_WINDOW_STICKY			"nautilus-window-sticky"
-#define NAUTILUS_METADATA_KEY_WINDOW_KEEP_ABOVE			"nautilus-window-keep-above"
-
-#define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_COLOR   	"nautilus-sidebar-background-color"
-#define NAUTILUS_METADATA_KEY_SIDEBAR_BACKGROUND_IMAGE   	"nautilus-sidebar-background-image"
-#define NAUTILUS_METADATA_KEY_SIDEBAR_BUTTONS			"nautilus-sidebar-buttons"
-
-#define NAUTILUS_METADATA_KEY_ANNOTATION                 	"annotation"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON                	"custom-icon"
 #define NAUTILUS_METADATA_KEY_CUSTOM_ICON_NAME                	"custom-icon-name"
 #define NAUTILUS_METADATA_KEY_EMBLEMS				"emblems"
