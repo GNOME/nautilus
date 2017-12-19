@@ -194,7 +194,6 @@ static void     add_all_files_to_work_queue (NautilusDirectory *directory);
 static void     link_info_done (NautilusDirectory *directory,
                                 NautilusFile      *file,
                                 const char        *uri,
-                                const char        *name,
                                 GIcon             *icon,
                                 gboolean           is_launcher);
 static void     move_file_to_low_priority_queue (NautilusDirectory *directory,
@@ -1811,7 +1810,7 @@ lacks_link_info (NautilusFile *file)
         }
         else
         {
-            link_info_done (file->details->directory, file, NULL, NULL, NULL, FALSE);
+            link_info_done (file->details->directory, file, NULL, NULL, FALSE);
             return FALSE;
         }
     }
@@ -3588,7 +3587,6 @@ static void
 link_info_done (NautilusDirectory *directory,
                 NautilusFile      *file,
                 const char        *uri,
-                const char        *name,
                 GIcon             *icon,
                 gboolean           is_launcher)
 {
@@ -3597,15 +3595,6 @@ link_info_done (NautilusDirectory *directory,
     file->details->link_info_is_up_to_date = TRUE;
 
     is_trusted = is_link_trusted (file, is_launcher);
-
-    if (is_trusted)
-    {
-        nautilus_file_set_display_name (file, name, name, TRUE);
-    }
-    else
-    {
-        nautilus_file_set_display_name (file, NULL, NULL, TRUE);
-    }
 
     file->details->got_link_info = TRUE;
     g_clear_object (&file->details->custom_icon);
@@ -3660,14 +3649,13 @@ link_info_got_data (NautilusDirectory *directory,
                     goffset            bytes_read,
                     char              *file_contents)
 {
-    char *link_uri, *uri, *name;
+    char *link_uri, *uri;
     GIcon *icon;
     gboolean is_launcher;
 
     nautilus_directory_ref (directory);
 
     uri = NULL;
-    name = NULL;
     icon = NULL;
     is_launcher = FALSE;
 
@@ -3676,7 +3664,7 @@ link_info_got_data (NautilusDirectory *directory,
     {
         link_uri = nautilus_file_get_uri (file);
         nautilus_link_get_link_info_given_file_contents (file_contents, bytes_read, link_uri,
-                                                         &uri, &name, &icon, &is_launcher);
+                                                         &uri, &icon, &is_launcher);
         g_free (link_uri);
     }
     else
@@ -3685,12 +3673,11 @@ link_info_got_data (NautilusDirectory *directory,
     }
 
     nautilus_file_ref (file);
-    link_info_done (directory, file, uri, name, icon, is_launcher);
+    link_info_done (directory, file, uri, icon, is_launcher);
     nautilus_file_changed (file);
     nautilus_file_unref (file);
 
     g_free (uri);
-    g_free (name);
 
     if (icon != NULL)
     {
@@ -3779,7 +3766,7 @@ link_info_start (NautilusDirectory *directory,
     /* If it's not a link we are done. If it is, we need to read it. */
     if (!nautilus_style_link)
     {
-        link_info_done (directory, file, NULL, NULL, NULL, FALSE);
+        link_info_done (directory, file, NULL, NULL, FALSE);
     }
     else
     {
