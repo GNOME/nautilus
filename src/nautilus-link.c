@@ -320,14 +320,6 @@ nautilus_link_local_set_key (const char *uri,
 }
 
 gboolean
-nautilus_link_local_set_text (const char *uri,
-                              const char *text)
-{
-    return nautilus_link_local_set_key (uri, "Name", text, TRUE);
-}
-
-
-gboolean
 nautilus_link_local_set_icon (const char *uri,
                               const char *icon)
 {
@@ -398,12 +390,6 @@ nautilus_link_get_link_uri_from_desktop (GKeyFile   *key_file,
     }
 
     return retval;
-}
-
-static char *
-nautilus_link_get_link_name_from_desktop (GKeyFile *key_file)
-{
-    return g_key_file_get_locale_string (key_file, MAIN_GROUP, "Name", NULL, NULL);
 }
 
 static GIcon *
@@ -525,7 +511,6 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
                                                  int          link_file_size,
                                                  const char  *file_uri,
                                                  char       **uri,
-                                                 char       **name,
                                                  GIcon      **icon,
                                                  gboolean    *is_launcher)
 {
@@ -544,7 +529,6 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
     }
 
     *uri = nautilus_link_get_link_uri_from_desktop (key_file, file_uri);
-    *name = nautilus_link_get_link_name_from_desktop (key_file);
     *icon = nautilus_link_get_link_icon_from_desktop (key_file);
 
     *is_launcher = FALSE;
