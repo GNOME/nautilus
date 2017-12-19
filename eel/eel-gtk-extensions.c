@@ -331,20 +331,17 @@ void
 eel_gtk_message_dialog_set_details_label (GtkMessageDialog *dialog,
                                           const gchar      *details_text)
 {
-    GtkWidget *content_area, *expander, *label;
-
+    GtkWidget *content_area, *details_container, *label;
     content_area = gtk_message_dialog_get_message_area (dialog);
-    expander = gtk_expander_new_with_mnemonic (_("Show more _details"));
-    gtk_expander_set_spacing (GTK_EXPANDER (expander), 6);
+    details_container = gtk_box_new(GTK_ORIENTATION_VERTICAL, 0);
 
     label = gtk_label_new (details_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_selectable (GTK_LABEL (label), TRUE);
     gtk_label_set_xalign (GTK_LABEL (label), 0);
 
-    gtk_container_add (GTK_CONTAINER (expander), label);
-    gtk_box_pack_start (GTK_BOX (content_area), expander, FALSE, FALSE, 0);
+    gtk_container_add (GTK_CONTAINER (details_container), label);
+    gtk_box_pack_start (GTK_BOX (content_area), details_container, FALSE, FALSE, 0);
 
     gtk_widget_show (label);
-    gtk_widget_show (expander);
 }
