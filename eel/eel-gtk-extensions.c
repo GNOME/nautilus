@@ -27,7 +27,6 @@
 #include "eel-gtk-extensions.h"
 
 #include "eel-glib-extensions.h"
-#include "eel-gnome-extensions.h"
 #include "eel-string.h"
 
 #include <X11/Xlib.h>
