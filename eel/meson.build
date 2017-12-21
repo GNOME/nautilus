@@ -11,8 +11,6 @@ libeel_2_sources = [
   'eel-gdk-extensions.c',
   'eel-glib-extensions.h',
   'eel-glib-extensions.c',
-  'eel-gnome-extensions.h',
-  'eel-gnome-extensions.c',
   'eel-graphic-effects.h',
   'eel-graphic-effects.c',
   'eel-gtk-extensions.h',
