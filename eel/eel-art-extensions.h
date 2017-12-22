@@ -40,12 +40,7 @@ typedef struct  {
 extern const EelDRect eel_drect_empty;
 extern const EelIRect eel_irect_empty;
 
-void     eel_irect_copy              (EelIRect       *dest,
-				      const EelIRect *src);
 void     eel_irect_union             (EelIRect       *dest,
-				      const EelIRect *src1,
-				      const EelIRect *src2);
-void     eel_irect_intersect         (EelIRect       *dest,
 				      const EelIRect *src1,
 				      const EelIRect *src2);
 gboolean eel_irect_equal             (EelIRect        rectangle_a,
@@ -57,10 +52,6 @@ EelIRect eel_irect_offset_by         (EelIRect        rectangle,
 				      int             y);
 EelIRect eel_irect_scale_by          (EelIRect        rectangle,
 				      double          scale);
-gboolean eel_irect_is_empty          (const EelIRect *rectangle);
-gboolean eel_irect_contains_point    (EelIRect        outer_rectangle,
-				      int             x,
-				      int             y);
 int      eel_irect_get_width         (EelIRect        rectangle);
 int      eel_irect_get_height        (EelIRect        rectangle);
 
