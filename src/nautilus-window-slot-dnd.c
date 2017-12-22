@@ -220,9 +220,12 @@ slot_proxy_drag_motion (GtkWidget      *widget,
     if (target_uri != NULL)
     {
         NautilusFile *file;
+        NautilusDirectory *directory;
         gboolean can;
         file = nautilus_file_get_existing_by_uri (target_uri);
-        can = nautilus_file_can_write (file);
+        directory = nautilus_directory_get_for_file (file);
+        can = nautilus_file_can_write (file) && nautilus_directory_is_editable (directory);
+        nautilus_directory_unref (directory);
         g_object_unref (file);
         if (!can)
         {
