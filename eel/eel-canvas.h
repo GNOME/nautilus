@@ -192,18 +192,10 @@ EelCanvasItem *eel_canvas_item_new (EelCanvasGroup *parent, GType type,
 
 void eel_canvas_item_destroy (EelCanvasItem *item);
 
-/* Constructors for use in derived classes and language wrappers */
-void eel_canvas_item_construct (EelCanvasItem *item, EelCanvasGroup *parent,
-				const gchar *first_arg_name, va_list args);
-
 /* Configure an item using the standard Gtk argument mechanism.  The last
  * argument must be a NULL pointer.
  */
 void eel_canvas_item_set (EelCanvasItem *item, const gchar *first_arg_name, ...);
-
-/* Used only for language wrappers and the like */
-void eel_canvas_item_set_valist (EelCanvasItem *item,
-				 const gchar *first_arg_name, va_list args);
 
 /* Move an item by the specified amount */
 void eel_canvas_item_move (EelCanvasItem *item, double dx, double dy);
@@ -256,24 +248,7 @@ void eel_canvas_item_ungrab (EelCanvasItem *item);
 /* These functions convert from a coordinate system to another.  "w" is world
  * coordinates and "i" is item coordinates.
  */
-void eel_canvas_item_w2i (EelCanvasItem *item, double *x, double *y);
 void eel_canvas_item_i2w (EelCanvasItem *item, double *x, double *y);
-
-/* Remove the item from its parent group and make the new group its parent.  The
- * item will be put on top of all the items in the new group.  The item's
- * coordinates relative to its new parent to *not* change -- this means that the
- * item could potentially move on the screen.
- * 
- * The item and the group must be in the same canvas.  An item cannot be
- * reparented to a group that is the item itself or that is an inferior of the
- * item.
- */
-void eel_canvas_item_reparent (EelCanvasItem *item, EelCanvasGroup *new_group);
-
-/* Used to send all of the keystroke events to a specific item as well as
- * GDK_FOCUS_CHANGE events.
- */
-void eel_canvas_item_grab_focus (EelCanvasItem *item);
 
 /* Fetch the bounding box of the item.  The bounding box may not be exactly
  * tight, but the canvas items will do the best they can.  The returned bounding
@@ -455,27 +430,11 @@ void eel_canvas_get_scroll_region (EelCanvas *canvas,
 /* Sets the number of pixels that correspond to one unit in world coordinates */
 void eel_canvas_set_pixels_per_unit (EelCanvas *canvas, double n);
 
-/* Wether the canvas centers the scroll region if it is smaller than the window  */
-void eel_canvas_set_center_scroll_region (EelCanvas *canvas, gboolean center_scroll_region);
-
-/* Scrolls the canvas to the specified offsets, given in canvas pixel coordinates */
-void eel_canvas_scroll_to (EelCanvas *canvas, int cx, int cy);
-
 /* Returns the scroll offsets of the canvas in canvas pixel coordinates.  You
  * can specify NULL for any of the values, in which case that value will not be
  * queried.
  */
 void eel_canvas_get_scroll_offsets (EelCanvas *canvas, int *cx, int *cy);
-
-/* Requests that the canvas be repainted immediately instead of in the idle
- * loop.
- */
-void eel_canvas_update_now (EelCanvas *canvas);
-
-/* Returns the item that is at the specified position in world coordinates, or
- * NULL if no item is there.
- */
-EelCanvasItem *eel_canvas_get_item_at (EelCanvas *canvas, double x, double y);
 
 /* For use only by item type implementations.  Request that the canvas
  * eventually redraw the specified region, specified in canvas pixel

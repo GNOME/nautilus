@@ -29,7 +29,7 @@
 const EelDRect eel_drect_empty = { 0.0, 0.0, 0.0, 0.0 };
 const EelIRect eel_irect_empty = { 0, 0, 0, 0 };
 
-void
+static void
 eel_irect_copy (EelIRect       *dest,
                 const EelIRect *src)
 {
@@ -37,6 +37,13 @@ eel_irect_copy (EelIRect       *dest,
     dest->y0 = src->y0;
     dest->x1 = src->x1;
     dest->y1 = src->y1;
+}
+
+static gboolean
+eel_irect_is_empty (const EelIRect *src)
+{
+    return (src->x1 <= src->x0 ||
+            src->y1 <= src->y0);
 }
 
 void
@@ -61,7 +68,7 @@ eel_irect_union (EelIRect       *dest,
     }
 }
 
-void
+static void
 eel_irect_intersect (EelIRect       *dest,
                      const EelIRect *src1,
                      const EelIRect *src2)
@@ -70,13 +77,6 @@ eel_irect_intersect (EelIRect       *dest,
     dest->y0 = MAX (src1->y0, src2->y0);
     dest->x1 = MIN (src1->x1, src2->x1);
     dest->y1 = MIN (src1->y1, src2->y1);
-}
-
-gboolean
-eel_irect_is_empty (const EelIRect *src)
-{
-    return (src->x1 <= src->x0 ||
-            src->y1 <= src->y0);
 }
 
 /**
@@ -144,29 +144,6 @@ eel_drect_union (EelDRect       *dest,
         dest->x1 = MAX (src1->x1, src2->x1);
         dest->y1 = MAX (src1->y1, src2->y1);
     }
-}
-
-
-/**
- * eel_irect_contains_point:
- *
- * @rectangle: An EelIRect.
- * @x: X coordinate to test.
- * @y: Y coordinate to test.
- *
- * Returns: A boolean value indicating whether the rectangle
- *          contains the x,y coordinate.
- *
- */
-gboolean
-eel_irect_contains_point (EelIRect rectangle,
-                          int      x,
-                          int      y)
-{
-    return x >= rectangle.x0
-           && x <= rectangle.x1
-           && y >= rectangle.y0
-           && y <= rectangle.y1;
 }
 
 gboolean
