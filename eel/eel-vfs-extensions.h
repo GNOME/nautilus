@@ -42,8 +42,6 @@ gboolean           eel_uri_is_search                     (const char           *
 gboolean           eel_uri_is_other_locations            (const char           *uri);
 gboolean           eel_uri_is_recent                     (const char           *uri);
 
-char *             eel_make_valid_utf8                   (const char           *name);
-
 char *             eel_filename_strip_extension          (const char           *filename);
 void               eel_filename_get_rename_region        (const char           *filename,
 							  int                  *start_offset,

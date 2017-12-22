@@ -37,10 +37,6 @@
  *
  * - Allow to specify whether EelCanvasImage sizes are in units or pixels (scale or don't scale).
  *
- * - Implement a flag for eel_canvas_item_reparent() that tells the function to keep the item
- *   visually in the same place, that is, to keep it in the same place with respect to the canvas
- *   origin.
- *
  * - GC put functions for items.
  *
  * - Widget item (finish it).
@@ -81,12 +77,10 @@ static void redraw_and_repick_if_mapped (EelCanvasItem *item);
 
 /* Some convenience stuff */
 #define GCI_UPDATE_MASK (EEL_CANVAS_UPDATE_REQUESTED | EEL_CANVAS_UPDATE_DEEP)
-#define GCI_EPSILON 1e-18
 
 enum
 {
     ITEM_PROP_0,
-    ITEM_PROP_PARENT,
     ITEM_PROP_VISIBLE
 };
 
@@ -154,6 +148,17 @@ eel_canvas_item_init (EelCanvasItem *item)
     item->flags |= EEL_CANVAS_ITEM_VISIBLE;
 }
 
+/* Performs post-creation operations on a canvas item (adding it to its parent
+ * group, etc.)
+ */
+static void
+item_post_create_setup (EelCanvasItem *item)
+{
+    group_add (EEL_CANVAS_GROUP (item->parent), item);
+
+    redraw_and_repick_if_mapped (item);
+}
+
 /**
  * eel_canvas_item_new:
  * @parent: The parent group for the new item.
@@ -185,23 +190,16 @@ eel_canvas_item_new (EelCanvasGroup *parent,
 
     item = EEL_CANVAS_ITEM (g_object_new (type, NULL));
 
+    item->parent = EEL_CANVAS_ITEM (parent);
+    item->canvas = item->parent->canvas;
+
     va_start (args, first_arg_name);
-    eel_canvas_item_construct (item, parent, first_arg_name, args);
+    g_object_set_valist (G_OBJECT (item), first_arg_name, args);
     va_end (args);
 
+    item_post_create_setup (item);
+
     return item;
-}
-
-
-/* Performs post-creation operations on a canvas item (adding it to its parent
- * group, etc.)
- */
-static void
-item_post_create_setup (EelCanvasItem *item)
-{
-    group_add (EEL_CANVAS_GROUP (item->parent), item);
-
-    redraw_and_repick_if_mapped (item);
 }
 
 /* Set_property handler for canvas items */
@@ -219,22 +217,6 @@ eel_canvas_item_set_property (GObject      *gobject,
 
     switch (param_id)
     {
-        case ITEM_PROP_PARENT:
-        {
-            if (item->parent != NULL)
-            {
-                g_warning ("Cannot set `parent' argument after item has "
-                           "already been constructed.");
-            }
-            else if (g_value_get_object (value))
-            {
-                item->parent = EEL_CANVAS_ITEM (g_value_get_object (value));
-                item->canvas = item->parent->canvas;
-                item_post_create_setup (item);
-            }
-        }
-        break;
-
         case ITEM_PROP_VISIBLE:
         {
             if (g_value_get_boolean (value))
@@ -284,33 +266,6 @@ eel_canvas_item_get_property (GObject    *gobject,
         break;
     }
 }
-
-/**
- * eel_canvas_item_construct:
- * @item: An unconstructed canvas item.
- * @parent: The parent group for the item.
- * @first_arg_name: The name of the first argument for configuring the item.
- * @args: The list of arguments used to configure the item.
- *
- * Constructs a canvas item; meant for use only by item implementations.
- **/
-void
-eel_canvas_item_construct (EelCanvasItem  *item,
-                           EelCanvasGroup *parent,
-                           const gchar    *first_arg_name,
-                           va_list         args)
-{
-    g_return_if_fail (EEL_IS_CANVAS_GROUP (parent));
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-
-    item->parent = EEL_CANVAS_ITEM (parent);
-    item->canvas = item->parent->canvas;
-
-    g_object_set_valist (G_OBJECT (item), first_arg_name, args);
-
-    item_post_create_setup (item);
-}
-
 
 static void
 redraw_and_repick_if_mapped (EelCanvasItem *item)
@@ -539,32 +494,11 @@ eel_canvas_item_set (EelCanvasItem *item,
     va_list args;
 
     va_start (args, first_arg_name);
-    eel_canvas_item_set_valist (item, first_arg_name, args);
-    va_end (args);
-}
-
-
-/**
- * eel_canvas_item_set_valist:
- * @item: A canvas item.
- * @first_arg_name: The name of the first argument used to configure the item.
- * @args: The list of object argument name/value pairs used to configure the item.
- *
- * Configures a canvas item.  The arguments in the item are set to the specified
- * values, and the item is repainted as appropriate.
- **/
-void
-eel_canvas_item_set_valist (EelCanvasItem *item,
-                            const gchar   *first_arg_name,
-                            va_list        args)
-{
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-
     g_object_set_valist (G_OBJECT (item), first_arg_name, args);
+    va_end (args);
 
     item->canvas->need_repick = TRUE;
 }
-
 
 /**
  * eel_canvas_item_move:
@@ -1079,38 +1013,6 @@ eel_canvas_item_ungrab (EelCanvasItem *item)
 }
 
 /**
- * eel_canvas_item_w2i:
- * @item: A canvas item.
- * @x: X coordinate to convert (input/output value).
- * @y: Y coordinate to convert (input/output value).
- *
- * Converts a coordinate pair from world coordinates to item-relative
- * coordinates.
- **/
-void
-eel_canvas_item_w2i (EelCanvasItem *item,
-                     double        *x,
-                     double        *y)
-{
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-    g_return_if_fail (x != NULL);
-    g_return_if_fail (y != NULL);
-
-    item = item->parent;
-    while (item)
-    {
-        if (EEL_IS_CANVAS_GROUP (item))
-        {
-            *x -= EEL_CANVAS_GROUP (item)->xpos;
-            *y -= EEL_CANVAS_GROUP (item)->ypos;
-        }
-
-        item = item->parent;
-    }
-}
-
-
-/**
  * eel_canvas_item_i2w:
  * @item: A canvas item.
  * @x: X coordinate to convert (input/output value).
@@ -1158,48 +1060,6 @@ is_descendant (EelCanvasItem *item,
 }
 
 /**
- * eel_canvas_item_reparent:
- * @item: A canvas item.
- * @new_group: A canvas group.
- *
- * Changes the parent of the specified item to be the new group.  The item keeps
- * its group-relative coordinates as for its old parent, so the item may change
- * its absolute position within the canvas.
- **/
-void
-eel_canvas_item_reparent (EelCanvasItem  *item,
-                          EelCanvasGroup *new_group)
-{
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-    g_return_if_fail (EEL_IS_CANVAS_GROUP (new_group));
-
-    /* Both items need to be in the same canvas */
-    g_return_if_fail (item->canvas == EEL_CANVAS_ITEM (new_group)->canvas);
-
-    /* The group cannot be an inferior of the item or be the item itself --
-     * this also takes care of the case where the item is the root item of
-     * the canvas.  */
-    g_return_if_fail (!is_descendant (EEL_CANVAS_ITEM (new_group), item));
-
-    /* Everything is ok, now actually reparent the item */
-
-    g_object_ref (G_OBJECT (item));     /* protect it from the unref in group_remove */
-
-    eel_canvas_item_request_redraw (item);
-
-    group_remove (EEL_CANVAS_GROUP (item->parent), item);
-    item->parent = EEL_CANVAS_ITEM (new_group);
-    /* item->canvas is unchanged.  */
-    group_add (new_group, item);
-
-    /* Redraw and repick */
-
-    redraw_and_repick_if_mapped (item);
-
-    g_object_unref (G_OBJECT (item));
-}
-
-/**
  * eel_canvas_item_grab_focus:
  * @item: A canvas item.
  *
@@ -1207,7 +1067,7 @@ eel_canvas_item_reparent (EelCanvasItem  *item,
  * be sent to it.  If the canvas widget itself did not have the focus, it grabs
  * it as well.
  **/
-void
+static void
 eel_canvas_item_grab_focus (EelCanvasItem *item)
 {
     EelCanvasItem *focused_item;
@@ -1850,7 +1710,7 @@ eel_canvas_group_point (EelCanvasItem  *item,
     return best;
 }
 
-void
+static void
 eel_canvas_group_translate (EelCanvasItem *item,
                             double         dx,
                             double         dy)
@@ -3555,25 +3415,6 @@ eel_canvas_get_scroll_region (EelCanvas *canvas,
     }
 }
 
-void
-eel_canvas_set_center_scroll_region (EelCanvas *canvas,
-                                     gboolean   center_scroll_region)
-{
-    GtkAdjustment *vadjustment, *hadjustment;
-
-    g_return_if_fail (EEL_IS_CANVAS (canvas));
-
-    canvas->center_scroll_region = center_scroll_region != 0;
-
-    hadjustment = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (&canvas->layout));
-    vadjustment = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (&canvas->layout));
-
-    scroll_to (canvas,
-               gtk_adjustment_get_value (hadjustment),
-               gtk_adjustment_get_value (vadjustment));
-}
-
-
 /**
  * eel_canvas_set_pixels_per_unit:
  * @canvas: A canvas.
@@ -3669,27 +3510,6 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas,
 }
 
 /**
- * eel_canvas_scroll_to:
- * @canvas: A canvas.
- * @cx: Horizontal scrolling offset in canvas pixel units.
- * @cy: Vertical scrolling offset in canvas pixel units.
- *
- * Makes a canvas scroll to the specified offsets, given in canvas pixel units.
- * The canvas will adjust the view so that it is not outside the scrolling
- * region.  This function is typically not used, as it is better to hook
- * scrollbars to the canvas layout's scrolling adjusments.
- **/
-void
-eel_canvas_scroll_to (EelCanvas *canvas,
-                      int        cx,
-                      int        cy)
-{
-    g_return_if_fail (EEL_IS_CANVAS (canvas));
-
-    scroll_to (canvas, cx, cy);
-}
-
-/**
  * eel_canvas_get_scroll_offsets:
  * @canvas: A canvas.
  * @cx: Horizontal scrolling offset (return value).
@@ -3718,64 +3538,6 @@ eel_canvas_get_scroll_offsets (EelCanvas *canvas,
     if (cy)
     {
         *cy = gtk_adjustment_get_value (vadjustment);
-    }
-}
-
-/**
- * eel_canvas_update_now:
- * @canvas: A canvas.
- *
- * Forces an immediate update and redraw of a canvas.  If the canvas does not
- * have any pending update or redraw requests, then no action is taken.  This is
- * typically only used by applications that need explicit control of when the
- * display is updated, like games.  It is not needed by normal applications.
- */
-void
-eel_canvas_update_now (EelCanvas *canvas)
-{
-    g_return_if_fail (EEL_IS_CANVAS (canvas));
-
-    if (!(canvas->need_update || canvas->need_redraw))
-    {
-        return;
-    }
-    remove_idle (canvas);
-    do_update (canvas);
-}
-
-/**
- * eel_canvas_get_item_at:
- * @canvas: A canvas.
- * @x: X position in world coordinates.
- * @y: Y position in world coordinates.
- *
- * Looks for the item that is under the specified position, which must be
- * specified in world coordinates.
- *
- * Return value: The sought item, or NULL if no item is at the specified
- * coordinates.
- **/
-EelCanvasItem *
-eel_canvas_get_item_at (EelCanvas *canvas,
-                        double     x,
-                        double     y)
-{
-    EelCanvasItem *item;
-    double dist;
-    int cx, cy;
-
-    g_return_val_if_fail (EEL_IS_CANVAS (canvas), NULL);
-
-    eel_canvas_w2c (canvas, x, y, &cx, &cy);
-
-    dist = eel_canvas_item_invoke_point (canvas->root, x, y, cx, cy, &item);
-    if ((int) (dist * canvas->pixels_per_unit + 0.5) <= canvas->close_enough)
-    {
-        return item;
-    }
-    else
-    {
-        return NULL;
     }
 }
 
@@ -4354,12 +4116,6 @@ eel_canvas_item_class_init (EelCanvasItemClass *klass)
     gobject_class->set_property = eel_canvas_item_set_property;
     gobject_class->get_property = eel_canvas_item_get_property;
     gobject_class->dispose = eel_canvas_item_dispose;
-
-    g_object_class_install_property
-        (gobject_class, ITEM_PROP_PARENT,
-        g_param_spec_object ("parent", NULL, NULL,
-                             EEL_TYPE_CANVAS_ITEM,
-                             G_PARAM_READWRITE));
 
     g_object_class_install_property
         (gobject_class, ITEM_PROP_VISIBLE,

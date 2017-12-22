@@ -31,8 +31,6 @@
 
 void eel_accessibility_set_up_label_widget_relation (GtkWidget *label, GtkWidget *widget);
 
-gpointer      eel_accessibility_get_gobject           (AtkObject            *object);
-
 char*         eel_accessibility_text_get_text         (AtkText              *text,
                                                        gint                 start_pos,
                                                        gint                 end_pos);

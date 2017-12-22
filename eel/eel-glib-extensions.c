@@ -100,52 +100,6 @@ eel_g_lists_sort_and_check_for_intersection (GList **list_1,
     return FALSE;
 }
 
-typedef struct
-{
-    GList *keys;
-    GList *values;
-} FlattenedHashTable;
-
-static void
-flatten_hash_table_element (gpointer key,
-                            gpointer value,
-                            gpointer callback_data)
-{
-    FlattenedHashTable *flattened_table;
-
-    flattened_table = callback_data;
-    flattened_table->keys = g_list_prepend
-                                (flattened_table->keys, key);
-    flattened_table->values = g_list_prepend
-                                  (flattened_table->values, value);
-}
-
-void
-eel_g_hash_table_safe_for_each (GHashTable *hash_table,
-                                GHFunc      callback,
-                                gpointer    callback_data)
-{
-    FlattenedHashTable flattened;
-    GList *p, *q;
-
-    flattened.keys = NULL;
-    flattened.values = NULL;
-
-    g_hash_table_foreach (hash_table,
-                          flatten_hash_table_element,
-                          &flattened);
-
-    for (p = flattened.keys, q = flattened.values;
-         p != NULL;
-         p = p->next, q = q->next)
-    {
-        (*callback)(p->data, q->data, callback_data);
-    }
-
-    g_list_free (flattened.keys);
-    g_list_free (flattened.values);
-}
-
 #if !defined (EEL_OMIT_SELF_CHECK)
 
 #endif /* !EEL_OMIT_SELF_CHECK */
