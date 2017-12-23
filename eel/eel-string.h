@@ -57,14 +57,6 @@ char *   eel_str_strip_substring_and_after (const char    *str,
 char *   eel_str_replace_substring         (const char    *str,
 					    const char    *substring,
 					    const char    *replacement);
-/**
- * eel_str_rtrim_punctuation:
- * @str: string
- *
- * Returns: a copy of str with trailing punctuation characters removed
- */
-char *   eel_str_rtrim_punctuation         (char *str);
-
 
 /**
  * eel_str_get_common_prefix:
