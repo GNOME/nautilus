@@ -224,42 +224,6 @@ eel_str_replace_substring (const char *string,
     return result;
 }
 
-char *
-eel_str_rtrim_punctuation (char *str)
-{
-    int num_punctuation_chars;
-    int str_len;
-    int num_chars_left;
-    char *current_char_pos;
-    gunichar current_char;
-
-    num_punctuation_chars = 0;
-    str_len = g_utf8_strlen (str, -1);
-    current_char_pos = g_utf8_offset_to_pointer (str, str_len);
-
-    while (num_punctuation_chars <= str_len)
-    {
-        current_char_pos = g_utf8_prev_char (current_char_pos);
-        current_char = g_utf8_get_char (current_char_pos);
-
-        if (!g_unichar_ispunct (current_char) && !g_unichar_isspace (current_char))
-        {
-            break;
-        }
-
-        ++num_punctuation_chars;
-    }
-
-    if (num_punctuation_chars == 0)
-    {
-        return g_strdup (str);
-    }
-
-    num_chars_left = str_len - num_punctuation_chars;
-
-    return g_utf8_substring (str, 0, num_chars_left);
-}
-
 /**
  * get_common_prefix_length:
  * @str_a: first string
