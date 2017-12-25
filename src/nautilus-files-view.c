@@ -2514,6 +2514,39 @@ action_properties (GSimpleAction *action,
     nautilus_file_list_free (selection);
 }
 
+static gboolean
+check_is_folder_empty_state (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv;
+    g_autofree gchar *uri = NULL;
+
+    priv = nautilus_files_view_get_instance_private (view);
+
+    if (!priv->loading &&
+        nautilus_files_view_is_empty (view))
+    {
+        uri = g_file_get_uri (priv->location);
+
+        if (nautilus_view_is_searching (NAUTILUS_VIEW (view)))
+        {
+            return FALSE;
+        }
+        else if (eel_uri_is_trash (uri))
+        {
+            return FALSE;
+        }
+        else if (eel_uri_is_favorites (uri))
+        {
+            return FALSE;
+        }
+        else
+        {
+            return TRUE;
+        }
+    }
+    return FALSE;
+}
+
 static void
 nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                            gboolean           show_hidden)
@@ -2535,7 +2568,7 @@ nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                 NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES,
                                 show_hidden);
 
-        if (priv->model != NULL)
+        if (priv->model != NULL && !(check_is_folder_empty_state (view)))
         {
             load_directory (view, priv->model);
         }
