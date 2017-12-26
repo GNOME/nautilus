@@ -93,6 +93,7 @@ struct _NautilusToolbar
 
     GtkWidget *forward_button;
     GtkWidget *back_button;
+    GtkWidget *location_entry_close_button;
 
     NautilusProgressInfoManager *progress_manager;
 
@@ -125,7 +126,7 @@ toolbar_update_appearance (NautilusToolbar *self)
                           g_settings_get_boolean (nautilus_preferences,
                                                   NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
-    gtk_widget_set_visible (self->location_entry,
+    gtk_widget_set_visible (self->location_entry_container,
                             show_location_entry);
     gtk_widget_set_visible (self->path_bar,
                             !show_location_entry);
@@ -869,6 +870,13 @@ undo_manager_changed (NautilusToolbar *self)
     update_menu_item (self->redo_button, self, "redo", redo_active, redo_label);
 }
 
+static void
+on_location_entry_close (GtkWidget       *close_button,
+                         NautilusToolbar *self)
+{
+    nautilus_toolbar_set_show_location_entry (self, FALSE);
+}
+
 static gboolean
 on_location_entry_populate_popup (GtkEntry  *entry,
                                   GtkWidget *widget,
@@ -941,6 +949,12 @@ nautilus_toolbar_init (NautilusToolbar *self)
     self->location_entry = nautilus_location_entry_new ();
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry);
+    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic",
+                                                                        GTK_ICON_SIZE_BUTTON);
+    gtk_container_add (GTK_CONTAINER (self->location_entry_container),
+                       self->location_entry_close_button);
+    g_signal_connect (self->location_entry_close_button, "clicked",
+                      G_CALLBACK (on_location_entry_close), self);
 
     self->progress_manager = nautilus_progress_info_manager_dup_singleton ();
     g_signal_connect (self->progress_manager, "new-progress-info",
