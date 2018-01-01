@@ -1227,8 +1227,18 @@ do_run_simple_dialog (gpointer _data)
 
     if (data->details_text)
     {
-        eel_gtk_message_dialog_set_details_label (GTK_MESSAGE_DIALOG (dialog),
-                                                  data->details_text);
+	GtkWidget *content_area, *label;
+  	content_area = gtk_message_dialog_get_message_area (dialog);
+
+        label = gtk_label_new (data->details_text);
+        gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+        gtk_label_set_selectable (GTK_LABEL (label), TRUE);
+        gtk_label_set_xalign (GTK_LABEL (label), 0);
+
+        gtk_container_add (GTK_CONTAINER (content_area), label);
+        gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 0);
+
+        gtk_widget_show (label);
     }
 
     /* Run it. */

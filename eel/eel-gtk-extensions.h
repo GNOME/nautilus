@@ -44,8 +44,4 @@ GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu  
 GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
 								       int                   index);
 
-/* GtkMessageDialog */
-void                  eel_gtk_message_dialog_set_details_label        (GtkMessageDialog          *dialog,
-								       const gchar               *details_text);
-
 #endif /* EEL_GTK_EXTENSIONS_H */
