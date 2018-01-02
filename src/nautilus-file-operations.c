@@ -40,7 +40,6 @@
 #include "nautilus-progress-info.h"
 
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 
 #include <glib/gi18n.h>
