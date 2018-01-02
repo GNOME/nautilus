@@ -9,6 +9,7 @@ before_script:
                    gobject-introspection-devel gsettings-desktop-schemas-devel
                    libselinux-devel libxml2-devel tracker-devel
                    desktop-file-utils libgexiv2-devel
+  - pip install meson
 
 build-nautilus:
   stage: build
