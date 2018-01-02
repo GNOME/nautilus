@@ -897,7 +897,7 @@ handle_nonlocal_move (NautilusCanvasContainer *container,
                       gboolean                 icon_hit)
 {
     GList *source_uris, *p;
-    gboolean free_target_uri, is_rtl;
+    gboolean free_target_uri;
 
     if (container->details->dnd_info->drag_info.selection_list == NULL)
     {
@@ -911,8 +911,6 @@ handle_nonlocal_move (NautilusCanvasContainer *container,
         source_uris = g_list_prepend (source_uris, ((NautilusDragSelectionItem *) p->data)->uri);
     }
     source_uris = g_list_reverse (source_uris);
-
-    is_rtl = nautilus_canvas_container_is_layout_rtl (container);
 
     free_target_uri = FALSE;
 

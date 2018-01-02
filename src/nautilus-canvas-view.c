@@ -523,7 +523,6 @@ static void
 nautilus_canvas_view_begin_loading (NautilusFilesView *view)
 {
     NautilusCanvasView *canvas_view;
-    GtkWidget *canvas_container;
     NautilusFile *file;
     char *uri;
     const SortCriterion *sort;
@@ -533,7 +532,6 @@ nautilus_canvas_view_begin_loading (NautilusFilesView *view)
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
     file = nautilus_files_view_get_directory_as_file (view);
     uri = nautilus_file_get_uri (file);
-    canvas_container = GTK_WIDGET (get_canvas_container (canvas_view));
 
     g_free (uri);
 

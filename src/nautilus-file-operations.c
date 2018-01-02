@@ -1212,8 +1212,8 @@ do_run_simple_dialog (gpointer _data)
 
     if (data->details_text)
     {
-	GtkWidget *content_area, *label;
-  	content_area = gtk_message_dialog_get_message_area (dialog);
+        GtkWidget *content_area, *label;
+        content_area = gtk_message_dialog_get_message_area (GTK_MESSAGE_DIALOG (dialog));
 
         label = gtk_label_new (data->details_text);
         gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);

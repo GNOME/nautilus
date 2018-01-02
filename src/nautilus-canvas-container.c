@@ -250,14 +250,10 @@ icon_set_position (NautilusCanvasIcon *icon,
                    double              x,
                    double              y)
 {
-    NautilusCanvasContainer *container;
-
     if (icon->x == x && icon->y == y)
     {
         return;
     }
-
-    container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (icon->item)->canvas);
 
     if (icon->x == ICON_UNPOSITIONED_VALUE)
     {
