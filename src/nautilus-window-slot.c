@@ -226,8 +226,7 @@ real_handles_location (NautilusWindowSlot *self,
     uri = g_file_get_uri(location);
 
     file = nautilus_file_get (location);
-    handles_location = !nautilus_file_is_other_locations (file) &&
-                       !eel_uri_is_desktop (uri);
+    handles_location = !nautilus_file_is_other_locations (file);
     nautilus_file_unref (file);
 
     return handles_location;

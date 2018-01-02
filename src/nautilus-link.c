@@ -189,7 +189,6 @@ nautilus_link_local_create (const char     *directory_uri,
                             const char     *display_name,
                             const char     *image,
                             const char     *target_uri,
-                            const GdkPoint *point,
                             int             screen,
                             gboolean        unique_filename)
 {
@@ -197,7 +196,6 @@ nautilus_link_local_create (const char     *directory_uri,
     char *contents;
     GFile *file;
     GList dummy_list;
-    NautilusFileChangesQueuePosition item;
     g_autofree char *link_name = NULL;
     g_autoptr (GFile) directory = NULL;
 
@@ -212,14 +210,7 @@ nautilus_link_local_create (const char     *directory_uri,
         return FALSE;
     }
 
-    if (eel_uri_is_desktop (directory_uri))
-    {
-        real_directory_uri = nautilus_get_desktop_directory_uri ();
-    }
-    else
-    {
-        real_directory_uri = g_strdup (directory_uri);
-    }
+    real_directory_uri = g_strdup (directory_uri);
 
     link_name = g_strdup_printf ("%s.desktop", base_name);
     directory = g_file_new_for_uri (real_directory_uri);
@@ -267,20 +258,6 @@ nautilus_link_local_create (const char     *directory_uri,
     dummy_list.next = NULL;
     dummy_list.prev = NULL;
     nautilus_directory_notify_files_added (&dummy_list);
-
-    if (point != NULL)
-    {
-        item.location = file;
-        item.set = TRUE;
-        item.point.x = point->x;
-        item.point.y = point->y;
-        item.screen = screen;
-        dummy_list.data = &item;
-        dummy_list.next = NULL;
-        dummy_list.prev = NULL;
-
-        nautilus_directory_schedule_position_set (&dummy_list);
-    }
 
     g_object_unref (file);
     return TRUE;
@@ -341,14 +318,6 @@ nautilus_link_local_set_key (const char *uri,
     g_object_unref (file);
     return success;
 }
-
-gboolean
-nautilus_link_local_set_text (const char *uri,
-                              const char *text)
-{
-    return nautilus_link_local_set_key (uri, "Name", text, TRUE);
-}
-
 
 gboolean
 nautilus_link_local_set_icon (const char *uri,
@@ -421,12 +390,6 @@ nautilus_link_get_link_uri_from_desktop (GKeyFile   *key_file,
     }
 
     return retval;
-}
-
-static char *
-nautilus_link_get_link_name_from_desktop (GKeyFile *key_file)
-{
-    return g_key_file_get_locale_string (key_file, MAIN_GROUP, "Name", NULL, NULL);
 }
 
 static GIcon *
@@ -543,63 +506,16 @@ nautilus_link_local_get_link_uri (const char *uri)
     return retval;
 }
 
-static gboolean
-string_array_contains (gchar **array,
-                       gchar **desktop_names)
-{
-    gchar **p;
-    gchar **desktop;
-
-    if (!array)
-    {
-        return FALSE;
-    }
-
-    for (p = array; *p; p++)
-    {
-        for (desktop = desktop_names; *desktop; desktop++)
-        {
-            if (g_ascii_strcasecmp (*p, *desktop) == 0)
-            {
-                return TRUE;
-            }
-        }
-    }
-
-    return FALSE;
-}
-
-static gchar **
-get_desktop_names (void)
-{
-    const gchar *current_desktop;
-
-    current_desktop = g_getenv ("XDG_CURRENT_DESKTOP");
-
-    if (current_desktop == NULL || current_desktop[0] == 0)
-    {
-        /* historic behavior */
-        current_desktop = "GNOME";
-    }
-
-    return g_strsplit (current_desktop, ":", -1);
-}
-
 void
 nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
                                                  int          link_file_size,
                                                  const char  *file_uri,
                                                  char       **uri,
-                                                 char       **name,
                                                  GIcon      **icon,
-                                                 gboolean    *is_launcher,
-                                                 gboolean    *is_foreign)
+                                                 gboolean    *is_launcher)
 {
     GKeyFile *key_file;
-    gchar **desktop_names;
     char *type;
-    char **only_show_in;
-    char **not_show_in;
 
     key_file = g_key_file_new ();
     if (!g_key_file_load_from_data (key_file,
@@ -612,10 +528,7 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
         return;
     }
 
-    desktop_names = get_desktop_names ();
-
     *uri = nautilus_link_get_link_uri_from_desktop (key_file, file_uri);
-    *name = nautilus_link_get_link_name_from_desktop (key_file);
     *icon = nautilus_link_get_link_icon_from_desktop (key_file);
 
     *is_launcher = FALSE;
@@ -627,23 +540,5 @@ nautilus_link_get_link_info_given_file_contents (const char  *file_contents,
     }
     g_free (type);
 
-    *is_foreign = FALSE;
-    only_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
-                                               "OnlyShowIn", NULL, NULL);
-    if (only_show_in && !string_array_contains (only_show_in, desktop_names))
-    {
-        *is_foreign = TRUE;
-    }
-    g_strfreev (only_show_in);
-
-    not_show_in = g_key_file_get_string_list (key_file, MAIN_GROUP,
-                                              "NotShowIn", NULL, NULL);
-    if (not_show_in && string_array_contains (not_show_in, desktop_names))
-    {
-        *is_foreign = TRUE;
-    }
-    g_strfreev (not_show_in);
-
-    g_strfreev (desktop_names);
     g_key_file_free (key_file);
 }

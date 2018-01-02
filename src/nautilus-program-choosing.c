@@ -26,7 +26,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
-#include <eel/eel-gnome-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -200,29 +199,32 @@ launch_application_from_command_internal (const gchar *full_command,
                                           GdkScreen   *screen,
                                           gboolean     use_terminal)
 {
-    GAppInfo *app;
-    GdkAppLaunchContext *ctx;
-    GdkDisplay *display;
+    GAppInfoCreateFlags flags;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GAppInfo) app = NULL;
 
+    flags = G_APP_INFO_CREATE_NONE;
     if (use_terminal)
     {
-        eel_gnome_open_terminal_on_screen (full_command, screen);
+        flags = G_APP_INFO_CREATE_NEEDS_TERMINAL;
     }
-    else
+
+    app = g_app_info_create_from_commandline (full_command, NULL, flags, &error);
+    if (app != NULL && !(use_terminal && screen == NULL))
     {
-        app = g_app_info_create_from_commandline (full_command, NULL, 0, NULL);
+        GdkDisplay *display;
+        g_autoptr (GdkAppLaunchContext) context = NULL;
 
-        if (app != NULL)
-        {
-            display = gdk_screen_get_display (screen);
-            ctx = gdk_display_get_app_launch_context (display);
-            gdk_app_launch_context_set_screen (ctx, screen);
+        display = gdk_screen_get_display (screen);
+        context = gdk_display_get_app_launch_context (display);
+        gdk_app_launch_context_set_screen (context, screen);
 
-            g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (ctx), NULL);
+        g_app_info_launch (app, NULL, G_APP_LAUNCH_CONTEXT (context), &error);
+    }
 
-            g_object_unref (app);
-            g_object_unref (ctx);
-        }
+    if (error != NULL)
+    {
+        g_message ("Could not start application: %s", error->message);
     }
 }
 

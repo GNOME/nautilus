@@ -68,7 +68,6 @@
     <child schema="org.gnome.nautilus.compression" name="compression"/>
     <child schema="org.gnome.nautilus.icon-view" name="icon-view"/>
     <child schema="org.gnome.nautilus.list-view" name="list-view"/>
-    <child schema="org.gnome.nautilus.desktop" name="desktop"/>
     <child schema="org.gnome.nautilus.window-state" name="window-state"/>
   </schema>
 
@@ -231,7 +230,7 @@
     <key type="as" name="captions">
       <default>[ 'none', 'none', 'none' ]</default>
       <summary>List of possible captions on icons</summary>
-      <description>A list of captions below an icon in the icon view and the desktop. The actual number of captions shown depends on the zoom level. Some possible values are: “size”, “type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”.</description>
+      <description>A list of captions below an icon in the icon view. The actual number of captions shown depends on the zoom level. Some possible values are: “size”, “type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”.</description>
     </key>
     <key name="default-zoom-level" enum="org.gnome.nautilus.CanvasZoomLevel">
       <default>'large'</default>
@@ -266,59 +265,6 @@
       <default>false</default>
       <summary>Use tree view</summary>
       <description>Whether a tree should be used for list view navigation instead of a flat list.</description>
-    </key>
-  </schema>
-
-  <schema path="/org/gnome/nautilus/desktop/" id="org.gnome.nautilus.desktop" gettext-domain="nautilus">
-    <key type="s" name="font">
-      <default l10n="messages" context="desktop-font">''</default>
-      <summary>Desktop font</summary>
-      <description>The font description used for the icons on the desktop.</description>
-    </key>
-    <key type="b" name="home-icon-visible">
-      <default>true</default>
-      <summary>Home icon visible on desktop</summary>
-      <description>If this is set to true, an icon linking to the home folder will be put on the desktop.</description>
-    </key>
-    <key type="b" name="trash-icon-visible">
-      <default>true</default>
-      <summary>Trash icon visible on desktop</summary>
-      <description>If this is set to true, an icon linking to the Trash will be put on the desktop.</description>
-    </key>
-    <key type="b" name="volumes-visible">
-      <default>true</default>
-      <summary>Show mounted volumes on the desktop</summary>
-      <description>If this is set to true, icons linking to mounted volumes will be put on the desktop.</description>
-    </key>
-    <key type="b" name="network-icon-visible">
-      <default>false</default>
-      <summary>Network Servers icon visible on the desktop</summary>
-      <description>If this is set to true, an icon linking to the Network Servers view will be put on the desktop.</description>
-    </key>
-    <key type="s" name="home-icon-name">
-      <default l10n="messages" context="home-icon-name">'Home'</default>
-      <summary>Desktop home icon name</summary>
-      <description>This name can be set if you want a custom name for the home icon on the desktop.</description>
-    </key>
-    <key type="s" name="trash-icon-name">
-      <default l10n="messages" context="trash-icon-name">'Trash'</default>
-      <summary>Desktop Trash icon name</summary>
-      <description>This name can be set if you want a custom name for the Trash icon on the desktop.</description>
-    </key>
-    <key type="s" name="network-icon-name">
-      <default l10n="messages" context="network-icon-name">'Network Servers'</default>
-      <summary>Network servers icon name</summary>
-      <description>This name can be set if you want a custom name for the network servers icon on the desktop.</description>
-    </key>
-    <key type="i" name="text-ellipsis-limit">
-      <default>3</default>
-      <summary>Text Ellipsis Limit</summary>
-      <description>An integer specifying how parts of overlong file names should be replaced by ellipses on the desktop. If the number is larger than 0, the file name will not exceed the given number of lines. If the number is 0 or smaller, no limit is imposed on the number of displayed lines.</description>
-    </key>
-    <key type="b" name="background-fade">
-      <default>true</default>
-      <summary>Fade the background on change</summary>
-      <description>If set to true, then Nautilus will use a fade effect to change the desktop background.</description>
     </key>
   </schema>
 

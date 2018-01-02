@@ -26,7 +26,6 @@
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-gnome-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-self-checks.h>

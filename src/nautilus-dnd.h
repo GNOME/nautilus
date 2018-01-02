@@ -32,7 +32,6 @@
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE	"x-special/gnome-icon-list"
 #define NAUTILUS_ICON_DND_URI_LIST_TYPE		"text/uri-list"
 #define NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE	"_NETSCAPE_URL"
-#define NAUTILUS_ICON_DND_BGIMAGE_TYPE		"property/bgimage"
 #define NAUTILUS_ICON_DND_ROOTWINDOW_DROP_TYPE	"application/x-rootwindow-drop"
 #define NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE	"XdndDirectSave0" /* XDS Protocol Type */
 #define NAUTILUS_ICON_DND_RAW_TYPE	"application/octet-stream"
@@ -106,7 +105,6 @@ gboolean		    nautilus_drag_items_local			(const char			      *target_uri,
 									 const GList			      *selection_list);
 gboolean		    nautilus_drag_uris_local			(const char			      *target_uri,
 									 const GList			      *source_uri_list);
-gboolean		    nautilus_drag_items_on_desktop		(const GList			      *selection_list);
 void			    nautilus_drag_default_drop_action_for_icons (GdkDragContext			      *context,
 									 const char			      *target_uri,
 									 const GList			      *items,
@@ -137,8 +135,6 @@ void			    nautilus_drag_autoscroll_start		(NautilusDragInfo		      *drag_info,
 									 GSourceFunc			       callback,
 									 gpointer			       user_data);
 void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
-
-gboolean		    nautilus_drag_selection_includes_special_link (GList			      *selection_list);
 
 NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDragContext                     *context);
 

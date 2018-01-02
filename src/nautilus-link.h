@@ -29,11 +29,8 @@ gboolean         nautilus_link_local_create                      (const char    
 								  const char        *display_name,
 								  const char        *image,
 								  const char        *target_uri,
-								  const GdkPoint    *point,
 								  int                screen,
 								  gboolean           unique_filename);
-gboolean         nautilus_link_local_set_text                    (const char        *uri,
-								 const char        *text);
 gboolean         nautilus_link_local_set_icon                    (const char        *uri,
 								  const char        *icon);
 char *           nautilus_link_local_get_text                    (const char        *uri);
@@ -42,9 +39,7 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  int                link_file_size,
 								  const char        *file_uri,
 								  char             **uri,
-								  char             **name,
 								  GIcon            **icon,
-								  gboolean          *is_launcher,
-								  gboolean          *is_foreign);
+								  gboolean          *is_launcher);
 
 #endif /* NAUTILUS_LINK_H */
