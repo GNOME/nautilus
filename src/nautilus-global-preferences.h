@@ -169,13 +169,11 @@ extern GSettings *nautilus_preferences;
 extern GSettings *nautilus_compression_preferences;
 extern GSettings *nautilus_icon_view_preferences;
 extern GSettings *nautilus_list_view_preferences;
-extern GSettings *nautilus_desktop_preferences;
 extern GSettings *nautilus_window_state;
 extern GSettings *gtk_filechooser_preferences;
 extern GSettings *gnome_lockdown_preferences;
 extern GSettings *gnome_background_preferences;
 extern GSettings *gnome_interface_preferences;
-extern GSettings *gnome_privacy_preferences;
 
 G_END_DECLS
 
