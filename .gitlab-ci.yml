@@ -4,15 +4,14 @@ stages:
  - build
 
 before_script:
-  - dnf install -y gcc meson gettext itstool redhat-rpm-config git
+  - dnf install -y gcc gettext itstool redhat-rpm-config git
                    gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                    gobject-introspection-devel libselinux-devel
                    libxml2-devel tracker-devel desktop-file-utils
                    libgexiv2-devel
-  - pip install meson
+  - pip3 install meson --user
 
 build-nautilus:
   stage: build
   script:
     - meson _build .
-    - ninja -C _build install
