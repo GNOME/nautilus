@@ -6607,7 +6607,7 @@ action_set_as_wallpaper (GSimpleAction *action,
 {
     GList *selection;
 
-    /* Copy the item to Pictures/Wallpaper since it may be
+    /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
      *  remote. Then set it as the current wallpaper. */
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
@@ -6625,7 +6625,7 @@ action_set_as_wallpaper (GSimpleAction *action,
         file = NAUTILUS_FILE (selection->data);
 
         parent = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
-        target = g_file_get_child (parent, "Wallpapers");
+        target = g_file_get_child (parent, _("Wallpapers"));
         g_object_unref (parent);
         g_file_make_directory_with_parents (target, NULL, NULL);
         target_uri = g_file_get_uri (target);
