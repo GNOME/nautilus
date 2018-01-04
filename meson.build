@@ -55,10 +55,7 @@ selinux = disabler()
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
 endif
-tracker_sparql = dependency('tracker-sparql-2.0', required: false)
-if not tracker_sparql.found()
-  tracker_sparql = dependency('tracker-sparql-1.0')
-endif
+tracker_sparql = dependency('tracker-sparql-2.0')
 x11 = dependency('x11')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
 #
