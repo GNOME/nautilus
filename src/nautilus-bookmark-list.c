@@ -625,26 +625,22 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 
     if (nautilus_bookmark_list_item_with_location (list, location, NULL))
     {
-        return FALSE;
-    }
-
-    if (nautilus_is_home_directory (location))
-    {
+        /* Already bookmarked */
         return FALSE;
     }
 
     if (nautilus_is_search_directory (location))
     {
+        /* Can't bookmark searches */
         return FALSE;
     }
 
-    if (nautilus_is_other_locations_directory (location))
+    if (nautilus_is_recent_directory (location) ||
+        nautilus_is_favorite_directory (location) ||
+        nautilus_is_home_directory (location) ||
+        nautilus_is_other_locations_directory (location))
     {
-        return FALSE;
-    }
-
-    if (nautilus_is_favorite_directory (location))
-    {
+        /* Already in the sidebar */
         return FALSE;
     }
 
@@ -652,7 +648,13 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
     is_builtin = nautilus_bookmark_get_is_builtin (bookmark);
     g_object_unref (bookmark);
 
-    return !is_builtin;
+    if (is_builtin)
+    {
+        /* Already in the sidebar */
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 /**

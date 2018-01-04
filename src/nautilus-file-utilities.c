@@ -540,6 +540,16 @@ nautilus_is_search_directory (GFile *dir)
 }
 
 gboolean
+nautilus_is_recent_directory (GFile *dir)
+{
+    g_autofree gchar *uri = NULL;
+
+    uri = g_file_get_uri (dir);
+
+    return eel_uri_is_recent (uri);
+}
+
+gboolean
 nautilus_is_favorite_directory (GFile *dir)
 {
     g_autofree gchar *uri = NULL;
