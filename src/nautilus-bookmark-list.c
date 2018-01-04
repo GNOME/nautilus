@@ -625,11 +625,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
 
     if (nautilus_bookmark_list_item_with_location (list, location, NULL))
     {
-        return FALSE;
-    }
-
-    if (nautilus_is_home_directory (location))
-    {
+        /* Already bookmarked */
         return FALSE;
     }
 
@@ -638,23 +634,13 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
-    if (nautilus_is_other_locations_directory (location))
+    if (nautilus_is_recent_directory (location) ||
+        nautilus_is_favorite_directory (location) ||
+        nautilus_is_home_directory (location) ||
+        nautilus_is_trash_directory (location) ||
+        nautilus_is_other_locations_directory (location))
     {
-        return FALSE;
-    }
-
-    if (nautilus_is_recent_directory (location))
-    {
-        return FALSE;
-    }
-
-    if (nautilus_is_trash_directory (location))
-    {
-        return FALSE;
-    }
-
-    if (nautilus_is_favorite_directory (location))
-    {
+        /* Already in the sidebar */
         return FALSE;
     }
 
