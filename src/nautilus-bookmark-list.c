@@ -643,6 +643,16 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
         return FALSE;
     }
 
+    if (nautilus_is_recent_directory (location))
+    {
+        return FALSE;
+    }
+
+    if (nautilus_is_trash_directory (location))
+    {
+        return FALSE;
+    }
+
     if (nautilus_is_favorite_directory (location))
     {
         return FALSE;
