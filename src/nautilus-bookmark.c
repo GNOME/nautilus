@@ -212,12 +212,9 @@ nautilus_bookmark_get_is_builtin (NautilusBookmark *bookmark)
     }
 
     /* exclude XDG locations which are not in our builtin list */
-    if (xdg_type == G_USER_DIRECTORY_DESKTOP)
-    {
-        return FALSE;
-    }
-
-    return (xdg_type != G_USER_DIRECTORY_TEMPLATES) && (xdg_type != G_USER_DIRECTORY_PUBLIC_SHARE);
+    return (xdg_type != G_USER_DIRECTORY_DESKTOP) &&
+           (xdg_type != G_USER_DIRECTORY_TEMPLATES) &&
+           (xdg_type != G_USER_DIRECTORY_PUBLIC_SHARE);
 }
 
 gboolean
