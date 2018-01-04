@@ -4925,7 +4925,8 @@ build_menu_for_extension_menu_items (NautilusFilesView *view,
         NautilusMenu *menu;
         GMenuItem *menu_item;
         char *name, *label;
-        char *extension_id, *prefix, *parsed_name, *detailed_action_name;
+        g_autofree gchar *escaped_name = NULL;
+        char *extension_id, *detailed_action_name;
 
         item = NAUTILUS_MENU_ITEM (l->data);
 
@@ -4935,12 +4936,12 @@ build_menu_for_extension_menu_items (NautilusFilesView *view,
                       "name", &name,
                       NULL);
 
-        extension_id = g_strdup_printf ("%s_%d", extension_prefix, idx);
-        prefix = g_strdup_printf ("extension_%s_", extension_id);
-        parsed_name = nautilus_escape_action_name (name, prefix);
-        add_extension_action (view, item, parsed_name);
+        escaped_name = g_uri_escape_string (name, NULL, TRUE);
+        extension_id = g_strdup_printf ("extension_%s_%d_%s",
+                                        extension_prefix, idx, escaped_name);
+        add_extension_action (view, item, extension_id);
 
-        detailed_action_name = g_strconcat ("view.", parsed_name, NULL);
+        detailed_action_name = g_strconcat ("view.", extension_id, NULL);
         menu_item = g_menu_item_new (label, detailed_action_name);
 
         if (menu != NULL)
@@ -4960,8 +4961,6 @@ build_menu_for_extension_menu_items (NautilusFilesView *view,
         idx++;
 
         g_free (extension_id);
-        g_free (parsed_name);
-        g_free (prefix);
         g_free (detailed_action_name);
         g_free (name);
         g_free (label);
@@ -5272,6 +5271,8 @@ add_script_to_scripts_menus (NautilusFilesView *view,
 {
     NautilusFilesViewPrivate *priv;
     gchar *name;
+    g_autofree gchar *uri = NULL;
+    g_autofree gchar *escaped_uri = NULL;
     GdkPixbuf *mimetype_icon;
     gchar *action_name, *detailed_action_name;
     ScriptLaunchParameters *launch_parameters;
@@ -5283,7 +5284,10 @@ add_script_to_scripts_menus (NautilusFilesView *view,
     launch_parameters = script_launch_parameters_new (file, view);
 
     name = nautilus_file_get_display_name (file);
-    action_name = nautilus_escape_action_name (name, "script_");
+
+    uri = nautilus_file_get_uri (file);
+    escaped_uri = g_uri_escape_string (uri, NULL, TRUE);
+    action_name = g_strconcat ("script_", escaped_uri, NULL);
 
     action = G_ACTION (g_simple_action_new (action_name, NULL));
 
@@ -5528,6 +5532,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
 {
     NautilusFilesViewPrivate *priv;
     char *tmp, *uri, *name;
+    g_autofree gchar *escaped_uri = NULL;
     GdkPixbuf *mimetype_icon;
     char *action_name, *detailed_action_name;
     CreateTemplateParameters *parameters;
@@ -5540,7 +5545,8 @@ add_template_to_templates_menus (NautilusFilesView *view,
     g_free (tmp);
 
     uri = nautilus_file_get_uri (file);
-    action_name = nautilus_escape_action_name (uri, "template_");
+    escaped_uri = g_uri_escape_string (uri, NULL, TRUE);
+    action_name = g_strconcat ("template_", escaped_uri, NULL);
     action = G_ACTION (g_simple_action_new (action_name, NULL));
     parameters = create_template_parameters_new (file, view);
 
