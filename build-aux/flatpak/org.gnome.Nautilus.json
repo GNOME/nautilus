@@ -19,20 +19,6 @@
     "cleanup": [ "/include", "/share/bash-completion" ],
     "modules": [
         {
-            "name": "meson",
-            "buildsystem": "simple",
-             "build-commands": [
-                "python3 setup.py install --prefix=/app"
-            ],
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "https://github.com/mesonbuild/meson/releases/download/0.44.0/meson-0.44.0.tar.gz",
-                    "sha256": "50f9b12b77272ef6ab064d26b7e06667f07fa9f931e6a20942bba2216ba4281b"
-                }
-            ]
-        },
-        {
             "name": "exiv2",
             "sources": [
                 {
