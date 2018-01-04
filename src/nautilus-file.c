@@ -175,7 +175,6 @@ static const char *nautilus_file_peek_display_name_collation_key (NautilusFile *
 static void file_mount_unmounted (GMount  *mount,
                                   gpointer data);
 static void metadata_hash_free (GHashTable *hash);
-static gboolean real_drag_can_accept_files (NautilusFile *drop_target_item);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
@@ -1671,12 +1670,6 @@ can_rename_desktop_file (NautilusFile *file)
 gboolean
 nautilus_file_can_rename (NautilusFile *file)
 {
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->can_rename (file);
-}
-
-static gboolean
-real_can_rename (NautilusFile *file)
-{
     gboolean can_rename;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
@@ -1808,12 +1801,6 @@ nautilus_file_get_uri_scheme (NautilusFile *file)
 
 gboolean
 nautilus_file_opens_in_view (NautilusFile *file)
-{
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->opens_in_view (file);
-}
-
-static gboolean
-real_opens_in_view (NautilusFile *file)
 {
     return nautilus_file_is_directory (file);
 }
@@ -2029,18 +2016,6 @@ name_is (NautilusFile *file,
     return strcmp (new_name, old_name) == 0;
 }
 
-void
-nautilus_file_rename (NautilusFile                  *file,
-                      const char                    *new_name,
-                      NautilusFileOperationCallback  callback,
-                      gpointer                       callback_data)
-{
-    NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->rename (file,
-                                                             new_name,
-                                                             callback,
-                                                             callback_data);
-}
-
 static gchar *
 nautilus_file_can_rename_file (NautilusFile                  *file,
                                const char                    *new_name,
@@ -2176,6 +2151,58 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
     }
 
     return new_file_name;
+}
+
+void
+nautilus_file_rename (NautilusFile                  *file,
+                      const char                    *new_name,
+                      NautilusFileOperationCallback  callback,
+                      gpointer                       callback_data)
+{
+    NautilusFileOperation *op;
+    char *old_name;
+    char *new_file_name;
+    GFile *location;
+
+    g_return_if_fail (NAUTILUS_IS_FILE (file));
+    g_return_if_fail (new_name != NULL);
+    g_return_if_fail (callback != NULL);
+
+    new_file_name = nautilus_file_can_rename_file (file,
+                                                   new_name,
+                                                   callback,
+                                                   callback_data);
+
+    if (new_file_name == NULL)
+    {
+        return;
+    }
+
+    /* Set up a renaming operation. */
+    op = nautilus_file_operation_new (file, callback, callback_data);
+    op->is_rename = TRUE;
+    location = nautilus_file_get_location (file);
+
+    /* Tell the undo manager a rename is taking place */
+    if (!nautilus_file_undo_manager_is_operating ())
+    {
+        op->undo_info = nautilus_file_undo_info_rename_new ();
+
+        old_name = nautilus_file_get_display_name (file);
+        nautilus_file_undo_info_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
+                                                     location, old_name, new_file_name);
+        g_free (old_name);
+    }
+
+    /* Do the renaming. */
+    g_file_set_display_name_async (location,
+                                   new_file_name,
+                                   G_PRIORITY_DEFAULT,
+                                   op->cancellable,
+                                   rename_callback,
+                                   op);
+    g_free (new_file_name);
+    g_object_unref (location);
 }
 
 gboolean
@@ -2409,58 +2436,6 @@ nautilus_file_batch_rename (GList                         *files,
                        new_names,
                        callback,
                        callback_data);
-}
-
-static void
-real_rename (NautilusFile                  *file,
-             const char                    *new_name,
-             NautilusFileOperationCallback  callback,
-             gpointer                       callback_data)
-{
-    NautilusFileOperation *op;
-    char *old_name;
-    char *new_file_name;
-    GFile *location;
-
-    g_return_if_fail (NAUTILUS_IS_FILE (file));
-    g_return_if_fail (new_name != NULL);
-    g_return_if_fail (callback != NULL);
-
-    new_file_name = nautilus_file_can_rename_file (file,
-                                                   new_name,
-                                                   callback,
-                                                   callback_data);
-
-    if (new_file_name == NULL)
-    {
-        return;
-    }
-
-    /* Set up a renaming operation. */
-    op = nautilus_file_operation_new (file, callback, callback_data);
-    op->is_rename = TRUE;
-    location = nautilus_file_get_location (file);
-
-    /* Tell the undo manager a rename is taking place */
-    if (!nautilus_file_undo_manager_is_operating ())
-    {
-        op->undo_info = nautilus_file_undo_info_rename_new ();
-
-        old_name = nautilus_file_get_display_name (file);
-        nautilus_file_undo_info_rename_set_data_pre (NAUTILUS_FILE_UNDO_INFO_RENAME (op->undo_info),
-                                                     location, old_name, new_file_name);
-        g_free (old_name);
-    }
-
-    /* Do the renaming. */
-    g_file_set_display_name_async (location,
-                                   new_file_name,
-                                   G_PRIORITY_DEFAULT,
-                                   op->cancellable,
-                                   rename_callback,
-                                   op);
-    g_free (new_file_name);
-    g_object_unref (location);
 }
 
 gboolean
@@ -4721,12 +4696,6 @@ nautilus_file_get_activation_location (NautilusFile *file)
 
 char *
 nautilus_file_get_target_uri (NautilusFile *file)
-{
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_target_uri (file);
-}
-
-static char *
-real_get_target_uri (NautilusFile *file)
 {
     char *uri, *target_uri;
     GFile *location;
@@ -8289,18 +8258,6 @@ nautilus_file_is_user_special_directory (NautilusFile   *file,
 }
 
 gboolean
-nautilus_file_is_special_link (NautilusFile *file)
-{
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->is_special_link (file);
-}
-
-static gboolean
-real_is_special_link (NautilusFile *file)
-{
-    return FALSE;
-}
-
-gboolean
 nautilus_file_is_archive (NautilusFile *file)
 {
     g_autofree char *mime_type = NULL;
@@ -8817,13 +8774,6 @@ nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 void
 nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
                                               NautilusFileAttributes  file_attributes)
-{
-    NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->invalidate_attributes_internal (file, file_attributes);
-}
-
-static void
-real_invalidate_attributes_internal (NautilusFile           *file,
-                                     NautilusFileAttributes  file_attributes)
 {
     Request request;
 
@@ -9556,13 +9506,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     class->get_deep_counts = real_get_deep_counts;
     class->set_metadata = real_set_metadata;
     class->set_metadata_as_list = real_set_metadata_as_list;
-    class->can_rename = real_can_rename;
-    class->rename = real_rename;
-    class->get_target_uri = real_get_target_uri;
-    class->drag_can_accept_files = real_drag_can_accept_files;
-    class->invalidate_attributes_internal = real_invalidate_attributes_internal;
-    class->opens_in_view = real_opens_in_view;
-    class->is_special_link = real_is_special_link;
 
     signals[CHANGED] =
         g_signal_new ("changed",
@@ -9694,12 +9637,6 @@ nautilus_file_info_providers_done (NautilusFile *file)
 
 static gboolean
 nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
-{
-    return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (drop_target_item))->drag_can_accept_files (drop_target_item);
-}
-
-static gboolean
-real_drag_can_accept_files (NautilusFile *drop_target_item)
 {
     if (nautilus_file_is_directory (drop_target_item))
     {

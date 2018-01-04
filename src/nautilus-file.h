@@ -121,11 +121,6 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       GFile         *result_location,
 					       GError        *error,
 					       gpointer       callback_data);
-typedef int (*NautilusWidthMeasureCallback)   (const char    *string,
-					       void	     *context);
-typedef char * (*NautilusTruncateCallback)    (const char    *string,
-					       int	      width,
-					       void	     *context);
 
 
 #define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL)
@@ -213,7 +208,6 @@ gboolean                nautilus_file_is_directory                      (Nautilu
 gboolean                nautilus_file_is_regular_file                   (NautilusFile                   *file);
 gboolean                nautilus_file_is_user_special_directory         (NautilusFile                   *file,
 									 GUserDirectory                 special_directory);
-gboolean                nautilus_file_is_special_link                   (NautilusFile                   *file);
 gboolean		nautilus_file_is_archive			(NautilusFile			*file);
 gboolean                nautilus_file_is_in_search                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_trash                       (NautilusFile                   *file);
@@ -619,27 +613,6 @@ typedef struct {
 							  gpointer                        callback_data);
 
 	void                 (* poll_for_media)          (NautilusFile                   *file);
-
-        gboolean             (* can_rename)              (NautilusFile                   *file);
-
-        void                 (* rename)                  (NautilusFile                   *file,
-                                                          const char                     *new_name,
-                                                          NautilusFileOperationCallback   callback,
-                                                          gpointer                        callback_data);
-
-       char*                 (* get_target_uri)          (NautilusFile                   *file);
-
-       gboolean              (* drag_can_accept_files)   (NautilusFile                   *drop_target_item);
-
-       void                  (* invalidate_attributes_internal) (NautilusFile            *file,
-                                                                 NautilusFileAttributes   file_attributes);
-
-       gboolean              (* opens_in_view)           (NautilusFile                   *file);
-
-       /* Use this if the custom file class doesn't support usual operations like
-        * copy, delete or move.
-        */
-       gboolean              (* is_special_link)          (NautilusFile                  *file);
 } NautilusFileClass;
 
 #endif /* NAUTILUS_FILE_H */

@@ -4651,31 +4651,6 @@ nautilus_files_view_get_content_widget (NautilusFilesView *view)
     return priv->scrolled_window;
 }
 
-static gboolean
-nautilus_files_view_special_link_in_selection (NautilusFilesView *view,
-                                               GList             *selection)
-{
-    gboolean saw_link;
-    GList *node;
-    NautilusFile *file;
-
-    saw_link = FALSE;
-
-    for (node = selection; node != NULL; node = node->next)
-    {
-        file = NAUTILUS_FILE (node->data);
-
-        saw_link = nautilus_file_is_special_link (file);
-
-        if (saw_link)
-        {
-            break;
-        }
-    }
-
-    return saw_link;
-}
-
 /* desktop_or_home_dir_in_selection
  *
  * Return TRUE if either the desktop or the home directory is in the selection.
@@ -7363,7 +7338,6 @@ real_update_actions_state (NautilusFilesView *view)
     NautilusFile *file;
     gint selection_count;
     gboolean zoom_level_is_default;
-    gboolean selection_contains_special_link;
     gboolean selection_contains_desktop_or_home_dir;
     gboolean selection_contains_recent;
     gboolean selection_contains_search;
@@ -7402,7 +7376,6 @@ real_update_actions_state (NautilusFilesView *view)
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     selection_count = g_list_length (selection);
-    selection_contains_special_link = nautilus_files_view_special_link_in_selection (view, selection);
     selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
     selection_contains_recent = showing_recent_directory (view);
     selection_contains_starred = showing_starred_directory (view);
@@ -7418,15 +7391,12 @@ real_update_actions_state (NautilusFilesView *view)
     can_delete_files =
         can_delete_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_special_link &&
         !selection_contains_desktop_or_home_dir;
     can_trash_files =
         can_trash_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_special_link &&
         !selection_contains_desktop_or_home_dir;
-    can_copy_files = selection_count != 0
-                     && !selection_contains_special_link;
+    can_copy_files = selection_count != 0;
     can_move_files = can_delete_files && !selection_contains_recent &&
                      !selection_contains_starred;
     can_paste_files_into = (!selection_contains_recent &&
