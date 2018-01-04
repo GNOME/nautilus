@@ -51,7 +51,7 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.26')
-selinux = disabler()
+selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
 endif
