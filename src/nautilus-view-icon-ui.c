@@ -190,6 +190,7 @@ constructed (GObject *object)
     gtk_flow_box_set_max_children_per_line (GTK_FLOW_BOX (self), 20);
     gtk_flow_box_set_selection_mode (GTK_FLOW_BOX (self), GTK_SELECTION_MULTIPLE);
     gtk_flow_box_set_homogeneous (GTK_FLOW_BOX (self), FALSE);
+    gtk_widget_set_can_focus (GTK_WIDGET (self), TRUE);
     gtk_widget_set_valign (GTK_WIDGET (self), GTK_ALIGN_START);
     gtk_widget_set_margin_top (GTK_WIDGET (self), 10);
     gtk_widget_set_margin_start (GTK_WIDGET (self), 10);
