@@ -124,7 +124,6 @@ static guint signals[LAST_SIGNAL];
 static GHashTable *symbolic_links;
 
 static guint64 cached_thumbnail_limit;
-int cached_thumbnail_size;
 static NautilusSpeedTradeoffValue show_file_thumbs;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
@@ -5366,9 +5365,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     }
     else
     {
-        modified_size = size * scale * cached_thumbnail_size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
-        DEBUG ("Modifying icon size to %d, as our cached thumbnail size is %d",
-               modified_size, cached_thumbnail_size);
+        modified_size = size * scale * NAUTILUS_CANVAS_ICON_SIZE_STANDARD / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
     }
 
     if (file->details->thumbnail)
@@ -5378,7 +5375,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
         s = MAX (w, h);
         /* Don't scale up small thumbnails in the standard view */
-        if (s <= cached_thumbnail_size)
+        if (s <= NAUTILUS_CANVAS_ICON_SIZE_STANDARD)
         {
             thumb_scale = (double) size / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
         }
@@ -9302,19 +9299,6 @@ thumbnail_limit_changed_callback (gpointer user_data)
 }
 
 static void
-thumbnail_size_changed_callback (gpointer user_data)
-{
-    cached_thumbnail_size = g_settings_get_int (nautilus_icon_view_preferences,
-                                                NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE);
-
-    /* Tell the world that icons might have changed. We could invent a narrower-scope
-     * signal to mean only "thumbnails might have changed" if this ends up being slow
-     * for some reason.
-     */
-    emit_change_signals_for_all_files_in_all_directories ();
-}
-
-static void
 show_thumbnails_changed_callback (gpointer user_data)
 {
     show_file_thumbs = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS);
@@ -9531,11 +9515,6 @@ nautilus_file_class_init (NautilusFileClass *class)
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
                               G_CALLBACK (thumbnail_limit_changed_callback),
-                              NULL);
-    thumbnail_size_changed_callback (NULL);
-    g_signal_connect_swapped (nautilus_preferences,
-                              "changed::" NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE,
-                              G_CALLBACK (thumbnail_size_changed_callback),
                               NULL);
     show_thumbnails_changed_callback (NULL);
     g_signal_connect_swapped (nautilus_preferences,
