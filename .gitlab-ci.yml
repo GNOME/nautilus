@@ -11,10 +11,13 @@ before_script:
                    libxml2-devel tracker-devel desktop-file-utils
                    libgexiv2-devel
 
-build-nautilus:
+build:
   stage: build
   script:
     - meson _build .
+  cache:
+    paths:
+      - _build
 test:
   stage: test
   script:
