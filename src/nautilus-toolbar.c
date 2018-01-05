@@ -871,11 +871,10 @@ undo_manager_changed (NautilusToolbar *self)
 }
 
 static void
-on_location_entry_close (GtkWidget *close_button,
+on_location_entry_close (GtkWidget       *close_button,
                          NautilusToolbar *self)
 {
     nautilus_toolbar_set_show_location_entry (self, FALSE);
-
 }
 
 static gboolean
@@ -950,7 +949,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
     self->location_entry = nautilus_location_entry_new ();
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry);
-    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close", 1);
+    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_BUTTON);
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",
