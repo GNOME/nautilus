@@ -133,21 +133,6 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_strin
 }
 
 static void
-test_has_large_enough_common_prefix_until_punctuation_removed ()
-{
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "tes$%^");
-    list = g_list_append (list, "tes$%something");
-
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_null (actual);
-
-    free_list_and_result (list, actual);
-}
-
-static void
 test_has_large_enough_common_prefix_until_extension_removed ()
 {
     GList *list = NULL;
@@ -155,21 +140,6 @@ test_has_large_enough_common_prefix_until_extension_removed ()
 
     list = g_list_append (list, "tes.txt");
     list = g_list_append (list, "tes.tar");
-
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_null (actual);
-
-    free_list_and_result (list, actual);
-}
-
-static void
-test_has_large_enough_common_prefix_until_extension_and_punctuation_removed ()
-{
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "tux$&&&.txt");
-    list = g_list_append (list, "tux$&&&.tar");
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
     g_assert_null (actual);
@@ -193,21 +163,6 @@ test_extension_is_removed ()
 }
 
 static void
-test_punctuation_is_removed ()
-{
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "nautilus((&&£");
-    list = g_list_append (list, "nautilus((&&xyz");
-
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("nautilus", ==, actual);
-
-    free_list_and_result (list, actual);
-}
-
-static void
 test_whitespace_is_removed ()
 {
     GList *list = NULL;
@@ -223,61 +178,31 @@ test_whitespace_is_removed ()
 }
 
 static void
-test_punctuation_and_whitespace_are_removed ()
+test_whitespace_and_extension_are_removed ()
 {
     GList *list = NULL;
     char *actual;
 
-    list = g_list_append (list, "nautilus! £ $\"TTR");
-    list = g_list_append (list, "nautilus! £ $\"");
+    list = g_list_append (list, "nautilus !£ $\"    foo.tar.gz");
+    list = g_list_append (list, "nautilus !£ $\"  .lzma");
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("nautilus", ==, actual);
+    g_assert_cmpstr ("nautilus !£ $\"", ==, actual);
 
     free_list_and_result (list, actual);
 }
 
 static void
-test_whitespace_and_punctuation_are_removed ()
+test_punctuation_is_preserved (void)
 {
     GList *list = NULL;
     char *actual;
 
-    list = g_list_append (list, "nautilus !£ $\"TTR");
-    list = g_list_append (list, "nautilus !£ $\"");
+    list = g_list_append (list, "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".mp4");
+    list = g_list_append (list, "nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\".srt");
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("nautilus", ==, actual);
-
-    free_list_and_result (list, actual);
-}
-
-static void
-test_puctuation_and_extension_are_removed ()
-{
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "nautilus!£$%^&*()_+-={}[];':@#~<>?,./\".tar");
-    list = g_list_append (list, "nautilus!£$%^&*()_+-={}[];':@#~<>?,./\".tat");
-
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("nautilus", ==, actual);
-
-    free_list_and_result (list, actual);
-}
-
-static void
-test_puctuation_extension_and_whitespace_are_removed ()
-{
-    GList *list = NULL;
-    char *actual;
-
-    list = g_list_append (list, "nautilus!£$%^&* ()_+-={}[ ];':@#~<>?,./\".tar");
-    list = g_list_append (list, "nautilus!£$%^&* ()_+-={}[ ];':@#~<>?,./\".tat");
-
-    actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("nautilus", ==, actual);
+    g_assert_cmpstr ("nautilus (2018!£$%^&* ()_+-={}[ ];':@#~<>?,./\"", ==, actual);
 
     free_list_and_result (list, actual);
 }
@@ -352,7 +277,7 @@ test_unicode_with_punctuation ()
     list = g_list_append (list, "ǣȸʸ- ͻͻΎΘ$%%&");
 
     actual = nautilus_get_common_filename_prefix_from_filenames (list, 4);
-    g_assert_cmpstr ("ǣȸʸ- ͻͻΎΘ", ==, actual);
+    g_assert_cmpstr ("ǣȸʸ- ͻͻΎΘ$%%", ==, actual);
 
     free_list_and_result (list, actual);
 }
@@ -485,26 +410,16 @@ setup_test_suite ()
                      test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string);
 
     g_test_add_func ("/get-common-filename-prefix/3.0",
-                     test_has_large_enough_common_prefix_until_punctuation_removed);
-    g_test_add_func ("/get-common-filename-prefix/3.1",
                      test_has_large_enough_common_prefix_until_extension_removed);
-    g_test_add_func ("/get-common-filename-prefix/3.2",
-                     test_has_large_enough_common_prefix_until_extension_and_punctuation_removed);
 
     g_test_add_func ("/get-common-filename-prefix/4.0",
                      test_extension_is_removed);
     g_test_add_func ("/get-common-filename-prefix/4.1",
-                     test_punctuation_is_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.2",
                      test_whitespace_is_removed);
+    g_test_add_func ("/get-common-filename-prefix/4.2",
+                     test_whitespace_and_extension_are_removed);
     g_test_add_func ("/get-common-filename-prefix/4.3",
-                     test_punctuation_and_whitespace_are_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.4",
-                     test_whitespace_and_punctuation_are_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.5",
-                     test_puctuation_and_extension_are_removed);
-    g_test_add_func ("/get-common-filename-prefix/4.6",
-                     test_puctuation_extension_and_whitespace_are_removed);
+                     test_punctuation_is_preserved);
 
     g_test_add_func ("/get-common-filename-prefix/5.0",
                      test_unicode_on_inside);
