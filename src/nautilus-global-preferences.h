@@ -96,9 +96,6 @@ typedef enum
 /* Which text attributes appear beneath icon names */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_CAPTIONS				"captions"
 
-/* The default size for thumbnail icons */
-#define NAUTILUS_PREFERENCES_ICON_VIEW_THUMBNAIL_SIZE			"thumbnail-size"
-
 /* ellipsization preferences */
 #define NAUTILUS_PREFERENCES_ICON_VIEW_TEXT_ELLIPSIS_LIMIT		"text-ellipsis-limit"
 
