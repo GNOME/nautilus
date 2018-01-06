@@ -935,7 +935,7 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
 }
 
 static GdkRectangle *
-nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
+nautilus_canvas_view_get_rectangle_for_popup (NautilusFilesView *view)
 {
     GArray *bounding_boxes;
     GdkRectangle *bounding_box;
@@ -1496,7 +1496,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->clear = nautilus_canvas_view_clear;
     nautilus_files_view_class->end_loading = nautilus_canvas_view_end_loading;
     nautilus_files_view_class->file_changed = nautilus_canvas_view_file_changed;
-    nautilus_files_view_class->compute_rename_popover_pointing_to = nautilus_canvas_view_compute_rename_popover_pointing_to;
+    nautilus_files_view_class->get_rectangle_for_popup = nautilus_canvas_view_get_rectangle_for_popup;
     nautilus_files_view_class->get_selection = nautilus_canvas_view_get_selection;
     nautilus_files_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
     nautilus_files_view_class->is_empty = nautilus_canvas_view_is_empty;

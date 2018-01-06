@@ -3706,7 +3706,7 @@ nautilus_list_view_get_id (NautilusFilesView *view)
 }
 
 static GdkRectangle *
-nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
+nautilus_list_view_get_rectangle_for_popup (NautilusFilesView *view)
 {
     GtkTreeSelection *selection;
     GtkTreePath *path;
@@ -3785,7 +3785,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->get_view_id = nautilus_list_view_get_id;
     nautilus_files_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;
-    nautilus_files_view_class->compute_rename_popover_pointing_to = nautilus_list_view_compute_rename_popover_pointing_to;
+    nautilus_files_view_class->get_rectangle_for_popup = nautilus_list_view_get_rectangle_for_popup;
 }
 
 static void
