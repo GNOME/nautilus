@@ -229,7 +229,9 @@ struct _NautilusFilesViewClass {
 
         NautilusWindow * (*get_window)       (NautilusFilesView *view);
 
-        GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
+        /* Use this to point a popover or anchor a context menu to the
+           selected item(s) */
+        GdkRectangle * (* get_rectangle_for_popup) (NautilusFilesView *view);
 
         GIcon *        (* get_icon)          (NautilusFilesView *view);
 
