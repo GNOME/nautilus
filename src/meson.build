@@ -305,13 +305,15 @@ nautilus = executable(
   install: true
 )
 
-test(
-  'nautilus', nautilus,
-  args: [
-    '--check',
-    '--g-fatal-warnings'
-  ]
-)
+if get_option('display-tests')
+  test(
+    'nautilus', nautilus,
+    args: [
+      '--check',
+      '--g-fatal-warnings'
+    ]
+  )
+endif
 
 nautilus_autorun_software_sources = [
   'nautilus-autorun-software.c',

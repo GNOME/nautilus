@@ -58,4 +58,6 @@ check_eel = executable(
   ]
 )
 
-test('check-eel', check_eel)
+if get_option('display-tests')
+  test('check-eel', check_eel)
+endif
