@@ -13,5 +13,5 @@ before_script:
 test:
   stage: test
   script:
-    - meson _build .
+    - meson _build . -Ddisplay-tests=false
     - ninja test -C _build
