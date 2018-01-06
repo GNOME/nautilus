@@ -1948,6 +1948,11 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         return;
     }
 
+    /* Make sure the whole item is visible. The selection is a single item, the
+     * one to rename with the popover, so we can use reveal_selection() for this.
+     */
+    nautilus_files_view_reveal_selection (view);
+
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
     priv->rename_file_controller =
