@@ -3731,6 +3731,27 @@ nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 
     g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 
+    /* FIXME Due to smooth scrolling, we get the cell area while the view is
+     * still scrolling (and still outside the view), not at the final position
+     * of the cell after scrolling.
+     * https://bugzilla.gnome.org/show_bug.cgi?id=746773
+     * The following workaround guesses the final "y" coordinate by clamping it
+     * to the widget edge. Note that the top edge has got columns header, which
+     * is private, so first guess the header height from the difference between
+     * widget coordinates and bin cooridinates.
+     */
+    {
+        int header_height;
+
+        gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
+                                                           0, 0,
+                                                           NULL, &header_height);
+
+        rect->y = CLAMP (rect->y,
+                         header_height,
+                         gtk_widget_get_allocated_height (GTK_WIDGET (view)) - rect->height);
+    }
+
     return rect;
 }
 
