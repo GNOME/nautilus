@@ -1887,9 +1887,9 @@ new_folder_data_new (NautilusFilesView *directory_view,
 }
 
 static GdkRectangle *
-nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
+nautilus_files_view_get_rectangle_for_popup (NautilusFilesView *view)
 {
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->compute_rename_popover_pointing_to (view);
+    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_rectangle_for_popup (view);
 }
 
 static void
@@ -1946,7 +1946,7 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         return;
     }
 
-    pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
+    pointing_to = nautilus_files_view_get_rectangle_for_popup (view);
 
     priv->rename_file_controller =
         nautilus_rename_file_popover_controller_new (target_file,
