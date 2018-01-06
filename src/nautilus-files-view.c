@@ -236,8 +236,6 @@ typedef struct
 
     GList *subdirectory_list;
 
-    GdkPoint context_menu_position;
-
     GMenu *selection_menu;
     GMenu *background_menu;
 
@@ -4732,27 +4730,6 @@ open_one_in_new_window (gpointer data,
                                        NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
 }
 
-static void
-update_context_menu_position_from_event (NautilusFilesView *view,
-                                         GdkEventButton    *event)
-{
-    NautilusFilesViewPrivate *priv;
-
-    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
-
-    priv = nautilus_files_view_get_instance_private (view);
-    if (event != NULL)
-    {
-        priv->context_menu_position.x = event->x;
-        priv->context_menu_position.y = event->y;
-    }
-    else
-    {
-        priv->context_menu_position.x = -1;
-        priv->context_menu_position.y = -1;
-    }
-}
-
 NautilusFile *
 nautilus_files_view_get_directory_as_file (NautilusFilesView *view)
 {
@@ -8147,8 +8124,6 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    update_context_menu_position_from_event (view, event);
-
     nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->selection_menu, event);
 }
 
@@ -8173,8 +8148,6 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      * etc. states by forcing menus to update now.
      */
     update_context_menus_if_pending (view);
-
-    update_context_menu_position_from_event (view, event);
 
     nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event);
 }
