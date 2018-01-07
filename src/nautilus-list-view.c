@@ -59,12 +59,6 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
 #include "nautilus-debug.h"
 
-/* We use a rectangle to make the popover point to the right column. In an
- * ideal world with GtkListBox we would just point to the GtkListBoxRow. In our case, we
- * need to use a rectangle and we provide some width to not make the popover arrow pointy
- * in the edges if the window is small */
-#define RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH 40
-
 struct SelectionForeachData
 {
     GList *list;
@@ -3708,39 +3702,32 @@ nautilus_list_view_get_id (NautilusFilesView *view)
 static GdkRectangle *
 nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 {
-    GtkTreeSelection *selection;
-    GtkTreePath *path;
-    GdkRectangle *rect;
-    GtkTreeModel *model;
-    GtkTreeView *tree_view;
-    GList *list;
     NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *selection;
+    GList *list;
+    GtkTreePath *path;
+    GdkRectangle *rect = g_malloc0 (sizeof (GdkRectangle));
 
-    rect = g_malloc0 (sizeof (GdkRectangle));
     list_view = NAUTILUS_LIST_VIEW (view);
     tree_view = list_view->details->tree_view;
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list_view->details->tree_view));
-    model = GTK_TREE_MODEL (list_view->details->model);
-    list = gtk_tree_selection_get_selected_rows (selection, &model);
+    selection = gtk_tree_view_get_selection (tree_view);
+    list = gtk_tree_selection_get_selected_rows (selection, NULL);
     path = list->data;
-    gtk_tree_view_get_cell_area (tree_view, path, NULL, rect);
+    gtk_tree_view_get_cell_area (tree_view,
+                                 path,
+                                 list_view->details->file_name_column,
+                                 rect);
     gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
                                                        rect->x, rect->y,
                                                        &rect->x, &rect->y);
 
     if (list_view->details->last_event_button_x > 0)
     {
+        /* Point to the position in the row where it was clicked. */
         rect->x = list_view->details->last_event_button_x;
+        rect->width = 0; /* This makes sure popovers point to rect->x.*/
     }
-    else
-    {
-        rect->x = CLAMP (gtk_tree_view_column_get_width (list_view->details->file_name_column) * 0.5 -
-                         RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH * 0.5,
-                         0,
-                         gtk_tree_view_column_get_width (list_view->details->file_name_column) -
-                         RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH);
-    }
-    rect->width = RENAME_POPOVER_RELATIVE_TO_RECTANGLE_WIDTH;
 
     g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 
