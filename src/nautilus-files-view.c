@@ -8124,9 +8124,35 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
-                                             priv->selection_menu,
-                                             event);
+    if (event != NULL)
+    {
+        nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
+                                                 priv->selection_menu,
+                                                 event);
+    }
+    else
+    {
+        /* If triggered from the keyboard, popup at selection, not pointer */
+        g_autoptr (GtkWidget) gtk_menu = NULL;
+        g_autofree GdkRectangle *rectangle = NULL;
+
+        gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu));
+        gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
+
+        rectangle = nautilus_files_view_get_rectangle_for_popup (view);
+        /* Don't popup from outside the view area */
+        rectangle->y = CLAMP (rectangle->y,
+                              0 - rectangle->height,
+                              gtk_widget_get_allocated_height (GTK_WIDGET (view)));
+
+        gtk_menu_popup_at_rect (GTK_MENU (gtk_menu),
+                                gtk_widget_get_window (GTK_WIDGET (view)),
+                                rectangle,
+                                GDK_GRAVITY_SOUTH_WEST,
+                                GDK_GRAVITY_NORTH_WEST,
+                                NULL);
+        g_object_ref_sink (gtk_menu);
+    }
 }
 
 /**
