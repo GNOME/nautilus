@@ -231,6 +231,8 @@ struct _NautilusFilesViewClass {
 
         GdkRectangle * (* compute_rename_popover_pointing_to) (NautilusFilesView *view);
 
+        GdkRectangle * (* reveal_for_selection_context_menu) (NautilusFilesView *view);
+
         GIcon *        (* get_icon)          (NautilusFilesView *view);
 
         /* Use this to show an optional visual feedback when the directory is empty.

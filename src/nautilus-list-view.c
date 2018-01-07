@@ -3695,6 +3695,72 @@ nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
     return rect;
 }
 
+static GdkRectangle *
+nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
+{
+    NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *tree_selection;
+    GtkTreePath *path;
+    GdkRectangle *rect;
+    int header_height;
+
+    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NULL);
+
+    list_view = NAUTILUS_LIST_VIEW (view);
+    tree_view = list_view->details->tree_view;
+    tree_selection = gtk_tree_view_get_selection (tree_view);
+    g_return_val_if_fail (tree_selection != NULL, NULL);
+
+    /* Get the path to the last focused item, if selected. Otherwise, get
+     * the path to the selected item which is sorted the lowest.
+     */
+    gtk_tree_view_get_cursor (tree_view, &path, NULL);
+    if (path == NULL || !gtk_tree_selection_path_is_selected (tree_selection, path))
+    {
+        GList *list;
+
+        list = gtk_tree_selection_get_selected_rows (tree_selection, NULL);
+        list = g_list_last (list);
+        path = g_steal_pointer(&list->data);
+
+        g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+    }
+
+    gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0.0, 0.0);
+
+    rect = g_malloc0 (sizeof (GdkRectangle));
+    gtk_tree_view_get_cell_area (tree_view,
+                                 path,
+                                 list_view->details->file_name_column,
+                                 rect);
+    gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
+                                                       rect->x, rect->y,
+                                                       &rect->x, &rect->y);
+
+    /* FIXME Due to smooth scrolling, we may get the cell area while the view is
+     * still scrolling (and still outside the view), not at the final position
+     * of the cell after scrolling.
+     * https://bugzilla.gnome.org/show_bug.cgi?id=746773
+     * The following workaround guesses the final "y" coordinate by clamping it
+     * to the widget edge. Note that the top edge has got columns header, which
+     * is private, so first guess the header height from the difference between
+     * widget coordinates and bin cooridinates.
+     */
+    gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
+                                                       0, 0,
+                                                       NULL, &header_height);
+
+    rect->y = CLAMP (rect->y,
+                     header_height,
+                     gtk_widget_get_allocated_height (GTK_WIDGET (list_view)) - rect->height);
+    /* End of workaround */
+
+    gtk_tree_path_free (path);
+
+    return rect;
+}
+
 static void
 nautilus_list_view_class_init (NautilusListViewClass *class)
 {
@@ -3734,6 +3800,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->get_first_visible_file = nautilus_list_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;
     nautilus_files_view_class->compute_rename_popover_pointing_to = nautilus_list_view_compute_rename_popover_pointing_to;
+    nautilus_files_view_class->reveal_for_selection_context_menu = nautilus_list_view_reveal_for_selection_context_menu;
 }
 
 static void
