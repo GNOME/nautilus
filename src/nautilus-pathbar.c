@@ -1628,7 +1628,8 @@ real_pop_up_pathbar_context_menu (NautilusPathBar *self)
 
     nautilus_pop_up_context_menu (GTK_WIDGET (self),
                                   priv->context_menu,
-                                  priv->context_menu_event);
+                                  priv->context_menu_event,
+                                  NULL);
 }
 
 static void
