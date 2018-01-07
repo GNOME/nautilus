@@ -959,6 +959,54 @@ nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view
     return bounding_box;
 }
 
+static GdkRectangle *
+nautilus_canvas_view_reveal_rectangle_for_context_menu (NautilusFilesView *view)
+{
+    GList *selection;
+    NautilusCanvasContainer *container;
+    NautilusCanvasIconData *data;
+    GdkRectangle *rectangle;
+
+    g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    g_return_val_if_fail (selection != NULL, NULL);
+
+    container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
+
+    /* Update the icon ordering to reveal the rigth selection */
+    nautilus_canvas_container_layout_now (container);
+
+    /* Get the data of the focused item, if selected. Otherwise, get the
+     * data of the last selected item.*/
+    data = nautilus_canvas_container_get_focused_icon (container);
+    if (!data || g_list_index (selection, NAUTILUS_FILE (data)) == -1)
+    {
+        selection = g_list_last (selection);
+        data = NAUTILUS_CANVAS_ICON_DATA (selection->data);
+    }
+    nautilus_file_list_free (selection);
+
+    nautilus_canvas_container_reveal (container, data);
+
+    rectangle = nautilus_canvas_container_get_icon_bounding_box (container, data);
+    if (rectangle != NULL)
+    {
+        GtkScrolledWindow *parent_container;
+        GtkAdjustment *vadjustment;
+        GtkAdjustment *hadjustment;
+
+        parent_container = GTK_SCROLLED_WINDOW (nautilus_files_view_get_content_widget (view));
+        vadjustment = gtk_scrolled_window_get_vadjustment (parent_container);
+        hadjustment = gtk_scrolled_window_get_hadjustment (parent_container);
+
+        rectangle->x -= gtk_adjustment_get_value (hadjustment);
+        rectangle->y -= gtk_adjustment_get_value (vadjustment);
+    }
+
+    return rectangle;
+}
+
 static void
 nautilus_canvas_view_set_selection (NautilusFilesView *view,
                                     GList             *selection)
@@ -1515,6 +1563,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->get_view_id = nautilus_canvas_view_get_id;
     nautilus_files_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = canvas_view_scroll_to_file;
+    nautilus_files_view_class->reveal_rectangle_for_context_menu = nautilus_canvas_view_reveal_rectangle_for_context_menu;
 }
 
 static void

@@ -226,6 +226,9 @@ void              nautilus_canvas_container_reveal                        (Nauti
 									   NautilusCanvasIconData       *data);
 gboolean          nautilus_canvas_container_is_empty                      (NautilusCanvasContainer  *container);
 NautilusCanvasIconData *nautilus_canvas_container_get_first_visible_icon        (NautilusCanvasContainer  *container);
+NautilusCanvasIconData *nautilus_canvas_container_get_focused_icon              (NautilusCanvasContainer  *container);
+GdkRectangle      *nautilus_canvas_container_get_icon_bounding_box          (NautilusCanvasContainer  *container,
+									     NautilusCanvasIconData       *data);
 void              nautilus_canvas_container_scroll_to_canvas                (NautilusCanvasContainer  *container,
 									     NautilusCanvasIconData       *data);
 
