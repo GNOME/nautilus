@@ -639,6 +639,56 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
     return allocation;
 }
 
+static GdkRectangle *
+real_reveal_rectangle_for_context_menu (NautilusFilesView *files_view)
+{
+    g_autoptr (GList) selection = NULL;
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkWidget *item_ui;
+    GdkRectangle *rectangle;
+    GtkWidget *content_widget;
+    GtkAdjustment *vadjustment;
+    int view_height;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
+    g_return_val_if_fail (selection != NULL, NULL);
+    nautilus_file_list_unref (selection);
+
+    /* Get the focused item_ui, if selected.
+     * Otherwise, get the selected item_ui which is sorted the lowest.*/
+    item_ui = gtk_container_get_focus_child (GTK_CONTAINER (self->view_ui));
+    if (!item_ui || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
+    {
+        g_autoptr (GList) list = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+
+        list = g_list_last (list);
+        item_ui = GTK_WIDGET (list->data);
+    }
+
+    rectangle = g_malloc0 (sizeof (GdkRectangle));
+    gtk_widget_get_allocation (item_ui, (GtkAllocation *) rectangle);
+    content_widget = nautilus_files_view_get_content_widget (files_view);
+    view_height = gtk_widget_get_allocated_height (content_widget);
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+
+    /* Scroll only as necessary. TODO: Would be nice to have this as part of
+     * GtkFlowBox. GtkTreeView has something similar. */
+    if (rectangle->y < gtk_adjustment_get_value (vadjustment))
+    {
+        gtk_adjustment_set_value (vadjustment, rectangle->y);
+    }
+    else if (rectangle->y + rectangle->height >
+                gtk_adjustment_get_value (vadjustment) + view_height)
+    {
+        gtk_adjustment_set_value (vadjustment,
+                                  rectangle->y + rectangle->height - view_height);
+    }
+
+    rectangle->y -= gtk_adjustment_get_value (vadjustment);
+
+    return rectangle;
+}
+
 static void
 real_click_policy_changed (NautilusFilesView *files_view)
 {
@@ -930,6 +980,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->get_zoom_level_percentage = real_get_zoom_level_percentage;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
+    files_view_class->reveal_rectangle_for_context_menu = real_reveal_rectangle_for_context_menu;
 }
 
 static void

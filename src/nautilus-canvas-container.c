@@ -4594,6 +4594,21 @@ nautilus_canvas_container_get_first_visible_icon (NautilusCanvasContainer *conta
     return best_icon ? best_icon->data : NULL;
 }
 
+NautilusCanvasIconData *
+nautilus_canvas_container_get_focused_icon (NautilusCanvasContainer *container)
+{
+    NautilusCanvasIcon *icon;
+
+    icon = container->details->focus;
+
+    if (icon != NULL)
+    {
+        return icon->data;
+    }
+
+    return NULL;
+}
+
 /* puts the icon at the top of the screen */
 void
 nautilus_canvas_container_scroll_to_canvas (NautilusCanvasContainer *container,
@@ -5328,6 +5343,32 @@ nautilus_canvas_container_get_icon_locations (NautilusCanvasContainer *container
     }
 
     return result;
+}
+
+/* Returns a GdkRectangle of the icon. The bounding box is adjusted with the
+ * pixels_per_unit already, so they are the final positions on the canvas */
+GdkRectangle *
+nautilus_canvas_container_get_icon_bounding_box (NautilusCanvasContainer *container,
+                                                 NautilusCanvasIconData  *data)
+{
+    NautilusCanvasIcon *icon;
+    int x1, x2, y1, y2;
+    GdkRectangle *bounding_box;
+
+    g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), NULL);
+    g_return_val_if_fail (data != NULL, NULL);
+
+    icon = g_hash_table_lookup (container->details->icon_set, data);
+    icon_get_bounding_box (icon,
+                           &x1, &y1, &x2, &y2,
+                           BOUNDS_USAGE_FOR_DISPLAY);
+    bounding_box = g_malloc0 (sizeof (GdkRectangle));
+    bounding_box->x = x1 * EEL_CANVAS (container)->pixels_per_unit;
+    bounding_box->width = (x2 - x1) * EEL_CANVAS (container)->pixels_per_unit;
+    bounding_box->y = y1 * EEL_CANVAS (container)->pixels_per_unit;
+    bounding_box->height = (y2 - y1) * EEL_CANVAS (container)->pixels_per_unit;
+
+    return bounding_box;
 }
 
 /* Returns an array of GdkRectangles of the icons. The bounding box is adjusted
