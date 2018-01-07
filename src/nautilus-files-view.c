@@ -8114,6 +8114,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
                                                     GdkEventButton    *event)
 {
     NautilusFilesViewPrivate *priv;
+    g_autofree GdkRectangle *rectangle = NULL;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -8124,7 +8125,17 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->selection_menu, event);
+    if (!event)
+    {
+        /* If triggered from the keyboard, popup at selection, not pointer */
+        rectangle = nautilus_files_view_get_rectangle_for_popup (view);
+        /* Don't popup from outside the view area */
+        rectangle->y = CLAMP (rectangle->y,
+                              0 - rectangle->height,
+                              gtk_widget_get_allocated_height (GTK_WIDGET (view)));
+    }
+
+    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->selection_menu, event, rectangle);
 }
 
 /**
@@ -8149,7 +8160,7 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event);
+    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event, NULL);
 }
 
 static void
