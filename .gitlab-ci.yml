@@ -1,17 +1,29 @@
 image: fedora:27
 
 stages:
- - test
+  - test
 
 before_script:
   - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                    gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                    gobject-introspection-devel libselinux-devel
                    libxml2-devel tracker-devel desktop-file-utils
-                   libgexiv2-devel
+                   libgexiv2-devel gcovr
 
 test:
   stage: test
   script:
-    - meson _build . -Ddisplay-tests=false
+    - meson _build . -Db_coverage=true -Ddisplay-tests=false
     - ninja test -C _build
+    - gcovr --root=.
+      # Out-of-tree builds result in relative paths being used.
+      --exclude=build/../data/
+      --exclude=build/../eel/check-program.c
+      --exclude=build/../eel/eel-debug.c
+      --exclude=build/../eel/eel-lib-self-check-functions.c
+      --exclude=build/../eel/eel-self-checks.c
+      --exclude=build/../src/animation/
+      --exclude=build/../src/gtk/
+      --exclude=build/../subprojects/libgd/
+      --exclude=build/../test/
+  coverage: '/^TOTAL.*\s+(\d+\%)$/'
