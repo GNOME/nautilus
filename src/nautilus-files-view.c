@@ -1946,6 +1946,8 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         return;
     }
 
+    nautilus_files_view_reveal_selection (view);
+
     pointing_to = nautilus_files_view_get_rectangle_for_popup (view);
 
     priv->rename_file_controller =
@@ -8128,12 +8130,12 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
     rectangle = NULL;
     if (!event)
     {
-        /* If triggered from the keyboard, popup at selection, not pointer */
+        /* It was triggered from the keyboard, so we need to popup at selection,
+         * not pointer. But first make sure the selection is scrolled into view.
+         */
+        nautilus_files_view_reveal_selection (view);
+
         rectangle = nautilus_files_view_get_rectangle_for_popup (view);
-        /* Don't popup from outside the view area */
-        rectangle->y = CLAMP (rectangle->y,
-                              0 - rectangle->height,
-                              gtk_widget_get_allocated_height (GTK_WIDGET (view)));
     }
 
     nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->selection_menu, event, rectangle);
