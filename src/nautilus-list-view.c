@@ -3731,6 +3731,16 @@ nautilus_list_view_get_rectangle_for_popup (NautilusFilesView *view)
 
     g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 
+    /* Due to smooth scrolling, the rectangle may still be outside the
+     * view area. https://bugzilla.gnome.org/show_bug.cgi?id=746773
+     * Clamp it to the expected y coordinate after scrolling.
+     * FIXME: Should also subtract the height of the header, but that's private
+     * to GtkTreeView.
+     */
+    rect->y = CLAMP (rect->y,
+                          0,
+                          gtk_widget_get_allocated_height (GTK_WIDGET (view)) - rect->height);
+
     return rect;
 }
 
