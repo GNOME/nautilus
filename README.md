@@ -1,5 +1,8 @@
 # Nautilus
-![Pipeline status](https://gitlab.gnome.org/GNOME/nautilus/badges/master/build.svg)
+[![Pipeline status](https://gitlab.gnome.org/GNOME/nautilus/badges/master/build.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
+[![Code coverage](https://gitlab.gnome.org/GNOME/nautilus/badges/master/coverage.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
+
+
 
 This is [Nautilus](https://wiki.gnome.org/Apps/Nautilus), the file manager for
 GNOME.
