@@ -33,6 +33,7 @@ static const char *default_column_order[] =
     "name",
     "size",
     "type",
+    "detailed_type",
     "owner",
     "group",
     "permissions",
@@ -71,6 +72,13 @@ get_builtin_columns (void)
                                            "attribute", "type",
                                            "label", _("Type"),
                                            "description", _("The type of the file."),
+                                           NULL));
+    columns = g_list_append (columns,
+                             g_object_new (NAUTILUS_TYPE_COLUMN,
+                                           "name", "detailed_type",
+                                           "attribute", "detailed_type",
+                                           "label", _("Detailed Type"),
+                                           "description", _("The detailed type of the file."),
                                            NULL));
     columns = g_list_append (columns,
                              g_object_new (NAUTILUS_TYPE_COLUMN,
