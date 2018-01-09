@@ -8137,7 +8137,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 /**
  * nautilus_files_view_pop_up_background_context_menu
  *
- * Pop up a context menu appropriate to the view globally at the last right click location.
+ * Pop up a context menu appropriate to the location in view.
  * @view: NautilusFilesView of interest.
  *
  **/
@@ -8156,9 +8156,28 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
-                                             priv->background_menu,
-                                             event);
+    if (event != NULL)
+    {
+        nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
+                                                 priv->background_menu,
+                                                 event);
+    }
+    else
+    {
+        /* It was triggered from the keyboard, so pop up from the center of view.
+         */
+        g_autoptr (GtkWidget) gtk_menu = NULL;
+
+        gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu));
+        gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
+
+        gtk_menu_popup_at_widget (GTK_MENU (gtk_menu),
+                                  GTK_WIDGET (view),
+                                  GDK_GRAVITY_CENTER,
+                                  GDK_GRAVITY_CENTER,
+                                  NULL);
+        g_object_ref_sink (gtk_menu);
+    }
 }
 
 static gboolean
