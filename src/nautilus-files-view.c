@@ -8144,7 +8144,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
 /**
  * nautilus_files_view_pop_up_background_context_menu
  *
- * Pop up a context menu appropriate to the view globally at the last right click location.
+ * Pop up a context menu appropriate to the location in view.
  * @view: NautilusFilesView of interest.
  *
  **/
@@ -8153,7 +8153,7 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                     GdkEventButton    *event)
 {
     NautilusFilesViewPrivate *priv;
-
+    GdkRectangle             *rectangle;
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -8163,7 +8163,21 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event, NULL);
+    rectangle = NULL;
+    if (!event)
+    {
+        /* It was triggered from the keyboard, so pop up from the starting
+         * corner of the view.
+         */
+        gboolean rtl;
+
+        rtl = gtk_widget_get_direction (GTK_WIDGET (view)) == GTK_TEXT_DIR_RTL;
+        rectangle = g_new0 (GdkRectangle, 1);
+        rectangle->x = rtl ? gtk_widget_get_allocated_width (view) : 0;
+        rectangle->y = 0;
+    }
+
+    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event, rectangle);
 }
 
 static void
