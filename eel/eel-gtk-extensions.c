@@ -82,12 +82,17 @@ static void
 sanity_check_window_position (int *left,
                               int *top)
 {
+    GdkDisplay *display;
+    GdkMonitor *monitor;
     GdkRectangle geometry;
 
     g_assert (left != NULL);
     g_assert (top != NULL);
 
-    gdk_monitor_get_geometry (gdk_display_get_monitor (gdk_display_get_default (), 0), &geometry); 
+    display = gdk_display_get_default ();
+    monitor = gdk_display_get_monitor_at_point (display, *left, *top);
+
+    gdk_monitor_get_geometry (monitor, &geometry);
 
     /* Make sure the top of the window is on screen, for
      * draggability (might not be necessary with all window managers,
@@ -95,7 +100,9 @@ sanity_check_window_position (int *left,
      * isn't off the bottom of the screen, or so close to the bottom
      * that it might be obscured by the panel.
      */
-    *top = CLAMP (*top, 0, geometry.height - MINIMUM_ON_SCREEN_HEIGHT);
+    *top = CLAMP (*top,
+                  geometry.y,
+                  geometry.y + geometry.height - MINIMUM_ON_SCREEN_HEIGHT);
 
     /* FIXME bugzilla.eazel.com 669:
      * If window has negative left coordinate, set_uposition sends it
@@ -108,7 +115,9 @@ sanity_check_window_position (int *left,
      * the screen, or so close to the right edge that it might be
      * obscured by the panel.
      */
-    *left = CLAMP (*left, 0, geometry.width - MINIMUM_ON_SCREEN_WIDTH);
+    *left = CLAMP (*left,
+                   geometry.x,
+                   geometry.x + geometry.width - MINIMUM_ON_SCREEN_WIDTH);
 }
 
 static void
