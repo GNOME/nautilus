@@ -242,9 +242,11 @@ nautilus_application_create_window (NautilusApplication *self,
 {
     NautilusApplicationPrivate *priv;
     NautilusWindow *window;
-    char *geometry_string;
     gboolean maximized;
     gint n_windows;
+    g_autoptr (GVariant) default_size = NULL;
+    gint default_width = 0;
+    gint default_height = 0;
 
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
@@ -263,24 +265,14 @@ nautilus_application_create_window (NautilusApplication *self,
     {
         gtk_window_unmaximize (GTK_WINDOW (window));
     }
+    default_size = g_settings_get_value (nautilus_window_state,
+                                         NAUTILUS_WINDOW_STATE_INITIAL_SIZE);
 
-    geometry_string = g_settings_get_string
-                          (nautilus_window_state, NAUTILUS_WINDOW_STATE_GEOMETRY);
-    if (geometry_string != NULL &&
-        geometry_string[0] != 0)
-    {
-        /* Ignore saved window position if another window is already showing.
-         * That way the two windows wont appear at the exact same
-         * location on the screen.
-         */
-        eel_gtk_window_set_initial_geometry_from_string
-            (GTK_WINDOW (window),
-            geometry_string,
-            NAUTILUS_WINDOW_MIN_WIDTH,
-            NAUTILUS_WINDOW_MIN_HEIGHT,
-            n_windows > 0);
-    }
-    g_free (geometry_string);
+    g_variant_get (default_size, "(ii)", &default_width, &default_height);
+
+    gtk_window_set_default_size (GTK_WINDOW (window),
+                                 MAX (NAUTILUS_WINDOW_MIN_WIDTH, default_width),
+                                 MAX (NAUTILUS_WINDOW_MIN_HEIGHT, default_height));
 
     DEBUG ("Creating a new navigation window");
     nautilus_profile_end (NULL);

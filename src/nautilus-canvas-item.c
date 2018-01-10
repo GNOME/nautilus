@@ -28,7 +28,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-canvas-private.h"
 #include <eel/eel-art-extensions.h>
-#include <eel/eel-gdk-extensions.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>

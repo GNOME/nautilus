@@ -28,16 +28,6 @@
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
-#include <eel/eel-gdk-extensions.h>
-
-/* GtkWindow */
-void                  eel_gtk_window_set_initial_geometry_from_string (GtkWindow            *window,
-								       const char           *geometry_string,
-								       guint                 minimum_width,
-								       guint                 minimum_height,
-								       gboolean		     ignore_position);
-char *                eel_gtk_window_get_geometry_string              (GtkWindow            *window);
-
 
 /* GtkMenu and GtkMenuItem */
 GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu              *menu);
