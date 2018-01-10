@@ -2505,24 +2505,28 @@ nautilus_window_finalize (GObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
-    char *geometry_string;
     gboolean is_maximized;
 
     g_assert (NAUTILUS_IS_WINDOW (window));
 
     if (gtk_widget_get_window (GTK_WIDGET (window)))
     {
-        geometry_string = eel_gtk_window_get_geometry_string (GTK_WINDOW (window));
+        gint width;
+        gint height;
+        GVariant *initial_size;
+
+        gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
+        initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
         is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)))
                        & GDK_WINDOW_STATE_MAXIMIZED;
 
         if (!is_maximized)
         {
-            g_settings_set_string
-                (nautilus_window_state, NAUTILUS_WINDOW_STATE_GEOMETRY,
-                geometry_string);
+            g_settings_set_value
+                (nautilus_window_state, NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
+                initial_size);
         }
-        g_free (geometry_string);
 
         g_settings_set_boolean
             (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
