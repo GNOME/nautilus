@@ -1149,26 +1149,20 @@ test_expand_row_callback (GtkTreeView *tree_view,
                                     NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
 }
 
-
 static void
-get_revealed_rectangle (NautilusFilesView *view,
-                        GdkRectangle      *rect)
+get_revealed_rectangle (NautilusListView *list_view,
+                        GtkTreePath      *path,
+                        GdkRectangle     *rect)
 {
-    GtkTreeSelection *selection;
-    GtkTreePath *path;
-    GtkTreeModel *model;
     GtkTreeView *tree_view;
-    GList *list;
-    NautilusListView *list_view;
-    int header_h;
+    gint header_h;
 
-    list_view = NAUTILUS_LIST_VIEW (view);
-    tree_view = list_view->details->tree_view;
-    selection = gtk_tree_view_get_selection (GTK_TREE_VIEW (list_view->details->tree_view));
-    model = GTK_TREE_MODEL (list_view->details->model);
-    list = gtk_tree_selection_get_selected_rows (selection, &model);
-    path = list->data;
-    gtk_tree_view_get_cell_area (tree_view, path, list_view->details->file_name_column, rect);
+    tree_view = GTK_TREE_VIEW(list_view->details->tree_view);
+
+    gtk_tree_view_get_cell_area (tree_view,
+                                 path,
+                                 list_view->details->file_name_column,
+                                 rect);
     gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
                                                        rect->x, rect->y,
                                                        &rect->x, &rect->y);
@@ -1178,8 +1172,6 @@ get_revealed_rectangle (NautilusFilesView *view,
         rect->x = list_view->details->last_event_button_x;
         rect->width = 0;
     }
-
-    g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
 
     /* Workaround to https://bugzilla.gnome.org/show_bug.cgi?id=746773
      * In short: due to smooth scrolling, we get the cell area while the view is
@@ -1196,14 +1188,14 @@ get_revealed_rectangle (NautilusFilesView *view,
 
     rect->y = CLAMP (rect->y,
                      header_h,
-                     gtk_widget_get_allocated_height (GTK_WIDGET (view)) - rect->height);
+                     gtk_widget_get_allocated_height (GTK_WIDGET (list_view)) - rect->height);
 }
 
 static void
 nautilus_list_view_reveal_selection (NautilusFilesView *view,
                                      GdkRectangle      *revealed_area)
 {
-    GList *selection;
+    g_autoptr (GList) selection = NULL;
 
     g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
 
@@ -1213,28 +1205,37 @@ nautilus_list_view_reveal_selection (NautilusFilesView *view,
     if (selection != NULL)
     {
         NautilusListView *list_view;
-        NautilusFile *file;
-        GtkTreeIter iter;
+        GtkTreeView *tree_view;
+        GtkTreeSelection *tree_selection;
         GtkTreePath *path;
 
         list_view = NAUTILUS_LIST_VIEW (view);
-        file = selection->data;
-        if (nautilus_list_model_get_first_iter_for_file (list_view->details->model, file, &iter))
+        tree_view = GTK_TREE_VIEW (list_view->details->tree_view);
+        tree_selection = gtk_tree_view_get_selection (tree_view);
+
+        /* Get the path to the last focused item, if selected. Otherwise, get
+         * the path to the last selected item.*/
+        gtk_tree_view_get_cursor (tree_view, &path, NULL);
+        if (!path || !gtk_tree_selection_path_is_selected (tree_selection, path))
         {
-            path = gtk_tree_model_get_path (GTK_TREE_MODEL (list_view->details->model), &iter);
+            GList *list;
 
-            gtk_tree_view_scroll_to_cell (list_view->details->tree_view, path, NULL, FALSE, 0.0, 0.0);
+            list = gtk_tree_selection_get_selected_rows (tree_selection, NULL);
+            list = g_list_last (list);
+            path = g_steal_pointer(&list->data);
 
-            gtk_tree_path_free (path);
+            g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
         }
+
+        gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0.0, 0.0);
 
         if (revealed_area)
         {
-            get_revealed_rectangle (view, revealed_area);
+            get_revealed_rectangle (list_view, path, revealed_area);
         }
-    }
 
-    nautilus_file_list_free (selection);
+        gtk_tree_path_free (path);
+    }
 }
 
 static gboolean
