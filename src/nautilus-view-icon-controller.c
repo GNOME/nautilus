@@ -387,8 +387,43 @@ real_select_all (NautilusFilesView *files_view)
     gtk_flow_box_select_all (GTK_FLOW_BOX (self->view_ui));
 }
 
+
 static void
-real_reveal_selection (NautilusFilesView *files_view)
+get_revealed_rectangle (NautilusFilesView *files_view,
+                        GdkRectangle      *rect)
+{
+    NautilusViewIconController *self;
+    GdkRectangle *allocation;
+    GtkAdjustment *vadjustment;
+    GtkAdjustment *hadjustment;
+    GtkWidget *parent_container;
+    g_autoptr (GQueue) selection_files = NULL;
+    g_autoptr (GQueue) selection_item_models = NULL;
+    GList *selection;
+    GtkWidget *icon_item_ui;
+
+    self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    allocation = g_new0 (GdkRectangle, 1);
+
+    parent_container = nautilus_files_view_get_content_widget (files_view);
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
+    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
+    selection_files = convert_glist_to_queue (selection);
+    selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
+    /* We only allow one item to be renamed with a popover */
+    icon_item_ui = nautilus_view_item_model_get_item_ui (g_queue_peek_head (selection_item_models));
+    gtk_widget_get_allocation (icon_item_ui, allocation);
+
+    rect->x = allocation->x - gtk_adjustment_get_value (hadjustment);
+    rect->y = allocation->y - gtk_adjustment_get_value (vadjustment);
+    rect->width =allocation->width;
+    rect->height =allocation->height;
+}
+
+static void
+real_reveal_selection (NautilusFilesView *files_view,
+                       GdkRectangle      *revealed_area)
 {
     GList *selection;
     NautilusViewItemModel *item_model;
@@ -411,6 +446,11 @@ real_reveal_selection (NautilusFilesView *files_view)
     content_widget = nautilus_files_view_get_content_widget (files_view);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
     gtk_adjustment_set_value (vadjustment, allocation.y);
+
+    if (revealed_area)
+    {
+        get_revealed_rectangle (files_view, revealed_area);
+    }
 
     g_list_foreach (selection, (GFunc) g_object_unref, NULL);
 }
@@ -591,38 +631,6 @@ static gboolean
 real_can_zoom_out (NautilusFilesView *files_view)
 {
     return TRUE;
-}
-
-static GdkRectangle *
-real_get_rectangle_for_popup (NautilusFilesView *files_view)
-{
-    NautilusViewIconController *self;
-    GdkRectangle *allocation;
-    GtkAdjustment *vadjustment;
-    GtkAdjustment *hadjustment;
-    GtkWidget *parent_container;
-    g_autoptr (GQueue) selection_files = NULL;
-    g_autoptr (GQueue) selection_item_models = NULL;
-    GList *selection;
-    GtkWidget *icon_item_ui;
-
-    self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    allocation = g_new0 (GdkRectangle, 1);
-
-    parent_container = nautilus_files_view_get_content_widget (files_view);
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
-    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
-    selection_files = convert_glist_to_queue (selection);
-    selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
-    /* We only allow one item to be renamed with a popover */
-    icon_item_ui = nautilus_view_item_model_get_item_ui (g_queue_peek_head (selection_item_models));
-    gtk_widget_get_allocation (icon_item_ui, allocation);
-
-    allocation->x -= gtk_adjustment_get_value (hadjustment);
-    allocation->y -= gtk_adjustment_get_value (vadjustment);
-
-    return allocation;
 }
 
 static void
@@ -915,7 +923,6 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->restore_standard_zoom_level = real_restore_standard_zoom_level;
     files_view_class->get_zoom_level_percentage = real_get_zoom_level_percentage;
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
-    files_view_class->get_rectangle_for_popup = real_get_rectangle_for_popup;
 }
 
 static void
