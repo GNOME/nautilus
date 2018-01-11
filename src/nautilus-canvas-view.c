@@ -178,7 +178,8 @@ static void                 nautilus_canvas_view_set_directory_sort_by (Nautilus
                                                                         NautilusFile        *file,
                                                                         const SortCriterion *sort);
 static void                 nautilus_canvas_view_update_click_mode (NautilusCanvasView *canvas_view);
-static void                 nautilus_canvas_view_reveal_selection (NautilusFilesView *view);
+static void                 nautilus_canvas_view_reveal_selection (NautilusFilesView *view,
+                                                                   GdkRectangle      *revealed_area);
 static const SortCriterion *get_sort_criterion_by_metadata_text (const char *metadata_text,
                                                                  gboolean    reversed);
 static const SortCriterion *get_sort_criterion_by_sort_type (NautilusFileSortType sort_type,
@@ -756,7 +757,7 @@ action_sort_order_changed (GSimpleAction *action,
     update_sort_criterion (user_data, sort_criterion, TRUE);
 
     nautilus_canvas_container_sort (get_canvas_container (user_data));
-    nautilus_canvas_view_reveal_selection (NAUTILUS_FILES_VIEW (user_data));
+    nautilus_canvas_view_reveal_selection (NAUTILUS_FILES_VIEW (user_data), NULL);
 
     g_simple_action_set_state (action, value);
 }
@@ -913,7 +914,33 @@ nautilus_canvas_view_select_first (NautilusFilesView *view)
 }
 
 static void
-nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
+get_revealed_rectangle (NautilusFilesView *view,
+                        GdkRectangle      *rect)
+{
+    GArray *bounding_boxes;
+    g_autofree GdkRectangle *bounding_box;
+    NautilusCanvasContainer *canvas_container;
+    GtkAdjustment *vadjustment, *hadjustment;
+    GtkWidget *parent_container;
+
+    canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
+    bounding_boxes = nautilus_canvas_container_get_selected_icons_bounding_box (canvas_container);
+    bounding_box = &g_array_index (bounding_boxes, GdkRectangle, 0);
+    parent_container = nautilus_files_view_get_content_widget (view);
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
+    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
+
+    rect->x = bounding_box->x - gtk_adjustment_get_value (hadjustment);
+    rect->y = bounding_box->y - gtk_adjustment_get_value (vadjustment);
+    rect->width = bounding_box->width;
+    rect->height = bounding_box->height;
+
+    g_array_free (bounding_boxes, FALSE);
+}
+
+static void
+nautilus_canvas_view_reveal_selection (NautilusFilesView *view,
+                                       GdkRectangle      *revealed_area)
 {
     GList *selection;
 
@@ -929,34 +956,14 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
         nautilus_canvas_container_reveal
             (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)),
             selection->data);
+
+        if (revealed_area)
+        {
+            get_revealed_rectangle (view, revealed_area);
+        }
     }
 
     nautilus_file_list_free (selection);
-}
-
-static GdkRectangle *
-nautilus_canvas_view_get_rectangle_for_popup (NautilusFilesView *view)
-{
-    GArray *bounding_boxes;
-    GdkRectangle *bounding_box;
-    NautilusCanvasContainer *canvas_container;
-    GtkAdjustment *vadjustment, *hadjustment;
-    GtkWidget *parent_container;
-
-    canvas_container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
-    bounding_boxes = nautilus_canvas_container_get_selected_icons_bounding_box (canvas_container);
-    /* We only allow renaming one item at once */
-    bounding_box = &g_array_index (bounding_boxes, GdkRectangle, 0);
-    parent_container = nautilus_files_view_get_content_widget (view);
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
-    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
-
-    bounding_box->x -= gtk_adjustment_get_value (hadjustment);
-    bounding_box->y -= gtk_adjustment_get_value (vadjustment);
-
-    g_array_free (bounding_boxes, FALSE);
-
-    return bounding_box;
 }
 
 static void
@@ -1496,7 +1503,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->clear = nautilus_canvas_view_clear;
     nautilus_files_view_class->end_loading = nautilus_canvas_view_end_loading;
     nautilus_files_view_class->file_changed = nautilus_canvas_view_file_changed;
-    nautilus_files_view_class->get_rectangle_for_popup = nautilus_canvas_view_get_rectangle_for_popup;
     nautilus_files_view_class->get_selection = nautilus_canvas_view_get_selection;
     nautilus_files_view_class->get_selection_for_file_transfer = nautilus_canvas_view_get_selection;
     nautilus_files_view_class->is_empty = nautilus_canvas_view_is_empty;
