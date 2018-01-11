@@ -176,8 +176,11 @@ struct _NautilusFilesViewClass {
          * override to make sure the selected items are sufficiently
          * apparent to the user (e.g., scrolled into view). By default,
          * this does nothing.
+         * Optionally, it will fill a GdkRectangle with the area of a revealed
+         * item, relative to the view widget.
          */
-        void     (* reveal_selection)        (NautilusFilesView *view);
+        void     (* reveal_selection)        (NautilusFilesView *view,
+                                              GdkRectangle      *revealed_area);
 
         /* update_menus is a function pointer that subclasses can override to
          * update the sensitivity or wording of menu items in the menu bar.
@@ -228,10 +231,6 @@ struct _NautilusFilesViewClass {
                                               const char        *uri);
 
         NautilusWindow * (*get_window)       (NautilusFilesView *view);
-
-        /* Use this to point a popover or anchor a context menu to the
-           selected item(s) */
-        GdkRectangle * (* get_rectangle_for_popup) (NautilusFilesView *view);
 
         GIcon *        (* get_icon)          (NautilusFilesView *view);
 
