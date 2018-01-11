@@ -657,14 +657,17 @@ nautilus_files_view_invert_selection (NautilusFilesView *view)
 /**
  * nautilus_files_view_reveal_selection:
  *
- * Scroll as necessary to reveal the selected items.
+ * Scroll as necessary to reveal the selected items. Optionally, fill a
+ * GdkRectangle with the area of a revealed item, relative to the view widget.
  **/
 static void
-nautilus_files_view_reveal_selection (NautilusFilesView *view)
+nautilus_files_view_reveal_selection (NautilusFilesView *view,
+                                      GdkRectangle      *revealed_area)
 {
     g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
 
-    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view);
+    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_selection (view,
+                                                                             revealed_area);
 }
 
 /**
@@ -1654,7 +1657,7 @@ pattern_select_response_cb (GtkWidget *dialog,
                 nautilus_files_view_call_set_selection (view, selection);
                 nautilus_file_list_free (selection);
 
-                nautilus_files_view_reveal_selection (view);
+                nautilus_files_view_reveal_selection (view, NULL);
             }
             /* fall through */
         }
@@ -1837,7 +1840,7 @@ new_folder_done (GFile    *new_folder,
     {
         /* The file was already added */
         nautilus_files_view_select_file (directory_view, file);
-        nautilus_files_view_reveal_selection (directory_view);
+        nautilus_files_view_reveal_selection (directory_view, NULL);
     }
     else
     {
@@ -1886,12 +1889,6 @@ new_folder_data_new (NautilusFilesView *directory_view,
     return data;
 }
 
-static GdkRectangle *
-nautilus_files_view_get_rectangle_for_popup (NautilusFilesView *view)
-{
-    return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_rectangle_for_popup (view);
-}
-
 static void
 rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
                                                  gpointer                          user_data)
@@ -1936,8 +1933,8 @@ static void
 nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
                                              NautilusFile      *target_file)
 {
-    GdkRectangle *pointing_to;
     NautilusFilesViewPrivate *priv;
+    g_autofree GdkRectangle *pointing_to = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -1946,9 +1943,8 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
         return;
     }
 
-    nautilus_files_view_reveal_selection (view);
-
-    pointing_to = nautilus_files_view_get_rectangle_for_popup (view);
+    pointing_to = g_new0 (GdkRectangle, 1);
+    nautilus_files_view_reveal_selection (view, pointing_to);
 
     priv->rename_file_controller =
         nautilus_rename_file_popover_controller_new (target_file,
@@ -2106,7 +2102,7 @@ compress_done (GFile    *new_file,
     {
         /* The file was already added */
         nautilus_files_view_select_file (view, file);
-        nautilus_files_view_reveal_selection (view);
+        nautilus_files_view_reveal_selection (view, NULL);
     }
     else
     {
@@ -3044,7 +3040,7 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
          * and reveal the new selection.
          */
         nautilus_files_view_call_set_selection (view, selection);
-        nautilus_files_view_reveal_selection (view);
+        nautilus_files_view_reveal_selection (view, NULL);
     }
     else
     {
@@ -3473,7 +3469,7 @@ reveal_selection_idle_callback (gpointer data)
     priv = nautilus_files_view_get_instance_private (view);
 
     priv->reveal_selection_idle_id = 0;
-    nautilus_files_view_reveal_selection (view);
+    nautilus_files_view_reveal_selection (view, NULL);
 
     return FALSE;
 }
@@ -3594,7 +3590,7 @@ done_loading (NautilusFilesView *view,
             }
             else
             {
-                nautilus_files_view_reveal_selection (view);
+                nautilus_files_view_reveal_selection (view, NULL);
             }
         }
         nautilus_files_view_display_selection_info (view);
@@ -3657,7 +3653,7 @@ debuting_files_add_files_callback (NautilusFilesView *view,
     if (g_hash_table_size (data->debuting_files) == 0)
     {
         nautilus_files_view_call_set_selection (view, data->added_files);
-        nautilus_files_view_reveal_selection (view);
+        nautilus_files_view_reveal_selection (view, NULL);
         g_signal_handlers_disconnect_by_func (view,
                                               G_CALLBACK (debuting_files_add_files_callback),
                                               data);
@@ -3822,7 +3818,7 @@ copy_move_done_callback (GHashTable *debuting_files,
             {
                 nautilus_files_view_call_set_selection (directory_view,
                                                         debuting_files_data->added_files);
-                nautilus_files_view_reveal_selection (directory_view);
+                nautilus_files_view_reveal_selection (directory_view, NULL);
             }
             debuting_files_data_free (debuting_files_data);
         }
@@ -4047,7 +4043,7 @@ on_end_file_changes (NautilusFilesView *view)
         if (all_files_acknowledged)
         {
             nautilus_files_view_set_selection (NAUTILUS_VIEW (view), keys);
-            nautilus_files_view_reveal_selection (view);
+            nautilus_files_view_reveal_selection (view, NULL);
             g_hash_table_remove_all (priv->pending_reveal);
         }
 
@@ -6252,7 +6248,7 @@ extract_done (GList    *outputs,
 
         nautilus_files_view_set_selection (NAUTILUS_VIEW (data->view),
                                            selection);
-        nautilus_files_view_reveal_selection (data->view);
+        nautilus_files_view_reveal_selection (data->view, NULL);
 
         nautilus_file_list_free (selection);
     }
@@ -8144,9 +8140,8 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
         gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
 
         /* Make sure the selection is in view. */
-        nautilus_files_view_reveal_selection (view);
-
-        rectangle = nautilus_files_view_get_rectangle_for_popup (view);
+        rectangle = g_new0 (GdkRectangle, 1);
+        nautilus_files_view_reveal_selection (view, rectangle);
 
         gtk_menu_popup_at_rect (GTK_MENU (gtk_menu),
                                 gtk_widget_get_window (GTK_WIDGET (view)),
