@@ -146,6 +146,8 @@ static void          handle_hadjustment_changed (GtkAdjustment           *adjust
 static void          handle_vadjustment_changed (GtkAdjustment           *adjustment,
                                                  NautilusCanvasContainer *container);
 static GList *nautilus_canvas_container_get_selected_icons (NautilusCanvasContainer *container);
+static GArray *nautilus_canvas_container_get_icons_bounding_box (NautilusCanvasContainer *container,
+                                                                 GList                   *icons);
 static void          nautilus_canvas_container_update_visible_icons (NautilusCanvasContainer *container);
 static void          reveal_icon (NautilusCanvasContainer *container,
                                   NautilusCanvasIcon      *icon);
@@ -4614,6 +4616,40 @@ nautilus_canvas_container_get_first_visible_icon (NautilusCanvasContainer *conta
     }
 
     return best_icon ? best_icon->data : NULL;
+}
+
+NautilusCanvasIconData *
+nautilus_canvas_container_get_focused_icon (NautilusCanvasContainer  *container)
+{
+    NautilusCanvasIcon *icon;
+
+    icon = container->details->focus;
+
+    if (icon != NULL)
+    {
+        return icon->data;
+    }
+
+    return NULL;
+}
+
+GdkRectangle *
+nautilus_canvas_container_get_icon_bounding_box (NautilusCanvasContainer  *container,
+                                                 NautilusCanvasIconData       *data)
+{
+    NautilusCanvasIcon *icon;
+
+    g_autoptr (GList) list = NULL;
+    g_autoptr (GArray) bounding_boxes = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), NULL);
+    g_return_val_if_fail (data != NULL, NULL);
+
+    icon = g_hash_table_lookup (container->details->icon_set, data);
+    list = g_list_prepend (list, icon);
+    bounding_boxes = nautilus_canvas_container_get_icons_bounding_box (container, list);
+
+    return g_memdup (&g_array_index (bounding_boxes, GdkRectangle, 0), sizeof (GdkRectangle));
 }
 
 /* puts the icon at the top of the screen */
