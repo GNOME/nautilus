@@ -5454,7 +5454,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (pixbuf != NULL)
     {
-        gicon = g_object_ref (pixbuf);
+        gicon = G_ICON(g_object_ref (pixbuf));
     }
     else if (file->details->is_thumbnailing)
     {

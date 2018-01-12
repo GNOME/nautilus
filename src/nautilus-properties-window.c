@@ -1596,7 +1596,7 @@ schedule_group_change (NautilusPropertiesWindow *window,
 
     change->file = nautilus_file_ref (file);
     change->group = g_strdup (group);
-    change->window = g_object_ref (G_OBJECT (window));
+    change->window = GTK_WINDOW(g_object_ref (G_OBJECT (window)));
     change->timeout =
         g_timeout_add (CHOWN_CHGRP_TIMEOUT,
                        (GSourceFunc) schedule_group_change_timeout,
@@ -2017,7 +2017,7 @@ schedule_owner_change (NautilusPropertiesWindow *window,
 
     change->file = nautilus_file_ref (file);
     change->owner = g_strdup (owner);
-    change->window = g_object_ref (G_OBJECT (window));
+    change->window = GTK_WINDOW(g_object_ref (G_OBJECT (window)));
     change->timeout =
         g_timeout_add (CHOWN_CHGRP_TIMEOUT,
                        (GSourceFunc) schedule_owner_change_timeout,
