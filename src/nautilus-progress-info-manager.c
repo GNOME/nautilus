@@ -78,7 +78,7 @@ nautilus_progress_info_manager_constructor (GType                  type,
 
     if (singleton != NULL)
     {
-        return g_object_ref (singleton);
+        return G_OBJECT (g_object_ref (singleton));
     }
 
     retval = G_OBJECT_CLASS (nautilus_progress_info_manager_parent_class)->constructor

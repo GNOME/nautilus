@@ -9492,8 +9492,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-view-menu.ui");
     priv->toolbar_menu_sections = g_new0 (NautilusToolbarMenuSections, 1);
     priv->toolbar_menu_sections->supports_undo_redo = TRUE;
-    priv->toolbar_menu_sections->zoom_section = g_object_ref_sink (gtk_builder_get_object (builder, "zoom_section"));
-    priv->toolbar_menu_sections->extended_section = g_object_ref_sink (gtk_builder_get_object (builder, "extended_section"));
+    priv->toolbar_menu_sections->zoom_section = GTK_WIDGET (g_object_ref_sink (gtk_builder_get_object (builder, "zoom_section")));
+    priv->toolbar_menu_sections->extended_section = GTK_WIDGET (g_object_ref_sink (gtk_builder_get_object (builder, "extended_section")));
     priv->zoom_controls_box = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_controls_box"));
     priv->zoom_level_label = GTK_WIDGET (gtk_builder_get_object (builder, "zoom_level_label"));
 
