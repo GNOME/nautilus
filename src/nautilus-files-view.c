@@ -8161,6 +8161,25 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                              event);
 }
 
+static gboolean
+popup_menu_callback (NautilusFilesView *view)
+{
+    g_autoptr (GList) selection = NULL;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    if (selection != NULL)
+    {
+        nautilus_files_view_pop_up_selection_context_menu (view, NULL);
+    }
+    else
+    {
+        nautilus_files_view_pop_up_background_context_menu (view, NULL);
+    }
+
+    return TRUE;
+}
+
 static void
 schedule_update_context_menus (NautilusFilesView *view)
 {
@@ -9517,6 +9536,10 @@ nautilus_files_view_init (NautilusFilesView *view)
     g_signal_connect_swapped (priv->scrolled_window,
                               "scroll-event",
                               G_CALLBACK (nautilus_files_view_scroll_event),
+                              view);
+    g_signal_connect_swapped (priv->scrolled_window,
+                              "popup-menu",
+                              G_CALLBACK (popup_menu_callback),
                               view);
 
     gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
