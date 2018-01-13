@@ -3719,7 +3719,7 @@ key_press_event (GtkWidget   *widget,
         {
             /* handle Ctrl+F10 because we want to display the
              * background popup even if something is selected.
-             * The other cases are handled by popup_menu().
+             * The other cases are handled by the "popup-menu" GtkWidget signal.
              */
             if (event->state & GDK_CONTROL_MASK)
             {
@@ -3751,27 +3751,6 @@ key_press_event (GtkWidget   *widget,
     }
 
     return handled;
-}
-
-static gboolean
-popup_menu (GtkWidget *widget)
-{
-    NautilusCanvasContainer *container;
-
-    container = NAUTILUS_CANVAS_CONTAINER (widget);
-
-    if (has_selection (container))
-    {
-        handle_popups (container, NULL,
-                       "context_click_selection");
-    }
-    else
-    {
-        handle_popups (container, NULL,
-                       "context_click_background");
-    }
-
-    return TRUE;
 }
 
 static void
@@ -4100,7 +4079,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->button_release_event = button_release_event;
     widget_class->motion_notify_event = motion_notify_event;
     widget_class->key_press_event = key_press_event;
-    widget_class->popup_menu = popup_menu;
     widget_class->style_updated = style_updated;
     widget_class->grab_notify = grab_notify_cb;
 
