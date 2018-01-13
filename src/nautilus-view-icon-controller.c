@@ -394,7 +394,7 @@ real_reveal_selection (NautilusFilesView *files_view,
     g_autoptr (GList) selection;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkWidget *item_ui;
-    GtkAllocation allocation;
+    GtkAllocation item_allocation, view_allocation;
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
 
@@ -415,17 +415,29 @@ real_reveal_selection (NautilusFilesView *files_view,
         item_ui = GTK_WIDGET (list->data);
     }
 
-    gtk_widget_get_allocation (item_ui, &allocation);
+    gtk_widget_get_allocation (item_ui, &item_allocation);
     content_widget = nautilus_files_view_get_content_widget (files_view);
+    gtk_widget_get_allocation (content_widget, &view_allocation);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
-    gtk_adjustment_set_value (vadjustment, allocation.y);
+
+    /* Scroll only as necessary */
+    if (item_allocation.y < gtk_adjustment_get_value (vadjustment))
+    {
+        gtk_adjustment_set_value (vadjustment, item_allocation.y);
+    }
+    else if (item_allocation.y + item_allocation.height >
+                gtk_adjustment_get_value (vadjustment) + view_allocation.height)
+    {
+        gtk_adjustment_set_value (vadjustment,
+                                  item_allocation.y + item_allocation.height - view_allocation.height);
+    }
 
     if (revealed_area)
     {
-        revealed_area->x = allocation.x;
-        revealed_area->y = allocation.y - gtk_adjustment_get_value (vadjustment);
-        revealed_area->width = allocation.width;
-        revealed_area->height = allocation.height;
+        revealed_area->x = item_allocation.x;
+        revealed_area->y = item_allocation.y - gtk_adjustment_get_value (vadjustment);
+        revealed_area->width = item_allocation.width;
+        revealed_area->height = item_allocation.height;
     }
 
     g_list_foreach (selection, (GFunc) g_object_unref, NULL);
