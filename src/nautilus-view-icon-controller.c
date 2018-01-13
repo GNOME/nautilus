@@ -392,7 +392,6 @@ real_reveal_selection (NautilusFilesView *files_view,
                        GdkRectangle      *revealed_area)
 {
     g_autoptr (GList) selection = NULL;
-    NautilusViewItemModel *item_model;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkWidget *item_ui;
     GtkAllocation allocation;
@@ -405,9 +404,17 @@ real_reveal_selection (NautilusFilesView *files_view,
         return;
     }
 
-    item_model = nautilus_view_model_get_item_from_file (self->model,
-                                                         NAUTILUS_FILE (selection->data));
-    item_ui = nautilus_view_item_model_get_item_ui (item_model);
+    /* Get the focused item_ui, if selected.
+     * Otherwise, get the last selected item_ui.*/
+    item_ui = gtk_container_get_focus_child (GTK_CONTAINER (self->view_ui));
+    if (!item_ui || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
+    {
+        g_autoptr (GList) list = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+
+        list = g_list_last (list);
+        item_ui = GTK_WIDGET (list->data);
+    }
+
     gtk_widget_get_allocation (item_ui, &allocation);
     content_widget = nautilus_files_view_get_content_widget (files_view);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
