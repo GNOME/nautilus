@@ -175,35 +175,6 @@ list_selection_changed_callback (GtkTreeSelection *selection,
     nautilus_files_view_notify_selection_changed (view);
 }
 
-/* Move these to eel? */
-
-static void
-tree_selection_foreach_set_boolean (GtkTreeModel *model,
-                                    GtkTreePath  *path,
-                                    GtkTreeIter  *iter,
-                                    gpointer      callback_data)
-{
-    *(gboolean *) callback_data = TRUE;
-}
-
-static gboolean
-tree_selection_not_empty (GtkTreeSelection *selection)
-{
-    gboolean not_empty;
-
-    not_empty = FALSE;
-    gtk_tree_selection_selected_foreach (selection,
-                                         tree_selection_foreach_set_boolean,
-                                         &not_empty);
-    return not_empty;
-}
-
-static gboolean
-tree_view_has_selection (GtkTreeView *view)
-{
-    return tree_selection_not_empty (gtk_tree_view_get_selection (view));
-}
-
 static void
 preview_selected_items (NautilusListView *view)
 {
@@ -428,21 +399,6 @@ enter_notify_callback (GtkWidget        *widget,
 }
 
 static void
-do_popup_menu (GtkWidget        *widget,
-               NautilusListView *view,
-               GdkEventButton   *event)
-{
-    if (tree_view_has_selection (GTK_TREE_VIEW (widget)))
-    {
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), event);
-    }
-    else
-    {
-        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), event);
-    }
-}
-
-static void
 row_activated_callback (GtkTreeView       *treeview,
                         GtkTreePath       *path,
                         GtkTreeViewColumn *column,
@@ -628,7 +584,7 @@ button_press_callback (GtkWidget      *widget,
 
         if (event->button == 3)
         {
-            do_popup_menu (widget, view, event);
+            nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), event);
         }
 
         return TRUE;
@@ -784,7 +740,7 @@ button_press_callback (GtkWidget      *widget,
 
         if (event->button == 3)
         {
-            do_popup_menu (widget, view, event);
+            nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), event);
         }
     }
 
@@ -840,19 +796,6 @@ button_release_callback (GtkWidget      *widget,
         }
     }
     return FALSE;
-}
-
-static gboolean
-popup_menu_callback (GtkWidget *widget,
-                     gpointer   callback_data)
-{
-    NautilusListView *view;
-
-    view = NAUTILUS_LIST_VIEW (callback_data);
-
-    do_popup_menu (widget, view, NULL);
-
-    return TRUE;
 }
 
 static void
@@ -2060,8 +2003,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                              G_CALLBACK (key_press_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "test-expand-row",
                              G_CALLBACK (test_expand_row_callback), view, 0);
-    g_signal_connect_object (view->details->tree_view, "popup-menu",
-                             G_CALLBACK (popup_menu_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "row-expanded",
                              G_CALLBACK (row_expanded_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "row-collapsed",
