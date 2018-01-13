@@ -397,6 +397,7 @@ real_reveal_selection (NautilusFilesView *files_view,
     GtkAllocation allocation;
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
+    int view_height;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
     if (selection == NULL)
@@ -417,8 +418,20 @@ real_reveal_selection (NautilusFilesView *files_view,
 
     gtk_widget_get_allocation (item_ui, &allocation);
     content_widget = nautilus_files_view_get_content_widget (files_view);
+    view_height = gtk_widget_get_allocated_height (content_widget);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
-    gtk_adjustment_set_value (vadjustment, allocation.y);
+
+    /* Scroll only as necessary */
+    if (allocation.y < gtk_adjustment_get_value (vadjustment))
+    {
+        gtk_adjustment_set_value (vadjustment, allocation.y);
+    }
+    else if (allocation.y + allocation.height >
+                gtk_adjustment_get_value (vadjustment) + view_height)
+    {
+        gtk_adjustment_set_value (vadjustment,
+                                  allocation.y + allocation.height - view_height);
+    }
 
     if (revealed_area)
     {
