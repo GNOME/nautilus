@@ -695,6 +695,27 @@ on_button_press_event (GtkWidget *widget,
     return GDK_EVENT_STOP;
 }
 
+static gboolean
+popup_menu_callback (GtkWidget *widget,
+                     gpointer   user_data)
+{
+    NautilusViewIconController *self;
+    g_autoptr (GList) selection;
+
+    self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    selection = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+    if (selection != NULL)
+    {
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self), NULL);
+    }
+    else
+    {
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self), NULL);
+    }
+
+    return TRUE;
+}
+
 static int
 real_compare_files (NautilusFilesView *files_view,
                     NautilusFile      *file1,
@@ -860,6 +881,8 @@ constructed (GObject *object)
     gtk_container_add (GTK_CONTAINER (self->event_box), GTK_WIDGET (self->view_ui));
     g_signal_connect (GTK_WIDGET (self->event_box), "button-press-event",
                       (GCallback) on_button_press_event, self);
+    g_signal_connect (GTK_WIDGET (self->event_box), "popup-menu",
+                      (GCallback) popup_menu_callback, self);
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->event_box));
