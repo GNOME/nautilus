@@ -11,9 +11,8 @@
         "--socket=wayland",
         "--talk-name=org.gnome.OnlineAccounts",
         "--talk-name=org.freedesktop.Tracker1",
-        "--filesystem=home",
+        "--filesystem=host",
         "--talk-name=org.gtk.vfs", "--talk-name=org.gtk.vfs.*",
-        "--filesystem=xdg-run/dconf", "--filesystem=~/.config/dconf:ro",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "cleanup": [ "/include", "/share/bash-completion" ],
