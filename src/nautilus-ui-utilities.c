@@ -168,12 +168,18 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
     g_object_unref (submodel);
 }
 
+/**
+ * nautilus_pop_up_context_menu_at_pointer:
+ *
+ * Pop up a context menu at the pointer's position. If @event_button is NULL,
+ * the current even will be assumed by gtk_menu_popup_at_pointer().
+ */
 void
-nautilus_pop_up_context_menu (GtkWidget      *parent,
-                              GMenu          *menu,
-                              GdkEventButton *button_event)
+nautilus_pop_up_context_menu_at_pointer (GtkWidget            *parent,
+                                         GMenu                *menu,
+                                         const GdkEventButton *button_event)
 {
-    GtkWidget *gtk_menu;
+    g_autoptr (GtkWidget) gtk_menu = NULL;
 
     g_return_if_fail (G_IS_MENU (menu));
     g_return_if_fail (GTK_IS_WIDGET (parent));
@@ -181,12 +187,9 @@ nautilus_pop_up_context_menu (GtkWidget      *parent,
     gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (menu));
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), parent, NULL);
 
-    gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu),
-                               button_event ? (GdkEvent *) button_event :
-                               gtk_get_current_event ());
+    gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu), (GdkEvent *) button_event);
 
     g_object_ref_sink (gtk_menu);
-    g_object_unref (gtk_menu);
 }
 
 #define NAUTILUS_THUMBNAIL_FRAME_LEFT 3
