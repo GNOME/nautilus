@@ -8129,7 +8129,9 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->selection_menu, event);
+    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
+                                             priv->selection_menu,
+                                             event);
 }
 
 /**
@@ -8154,7 +8156,9 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (view), priv->background_menu, event);
+    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (view),
+                                             priv->background_menu,
+                                             event);
 }
 
 static void

@@ -1626,9 +1626,9 @@ real_pop_up_pathbar_context_menu (NautilusPathBar *self)
 
     priv = nautilus_path_bar_get_instance_private (self);
 
-    nautilus_pop_up_context_menu (GTK_WIDGET (self),
-                                  priv->context_menu,
-                                  priv->context_menu_event);
+    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (self),
+                                             priv->context_menu,
+                                             priv->context_menu_event);
 }
 
 static void
