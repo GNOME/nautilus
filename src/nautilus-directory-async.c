@@ -47,14 +47,6 @@
 /* Keep async. jobs down to this number for all directories. */
 #define MAX_ASYNC_JOBS 10
 
-struct TopLeftTextReadState
-{
-    NautilusDirectory *directory;
-    NautilusFile *file;
-    gboolean large;
-    GCancellable *cancellable;
-};
-
 struct LinkInfoReadState
 {
     NautilusDirectory *directory;
