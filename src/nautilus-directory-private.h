@@ -29,7 +29,6 @@
 #include <libxml/tree.h>
 
 typedef struct LinkInfoReadState LinkInfoReadState;
-typedef struct TopLeftTextReadState TopLeftTextReadState;
 typedef struct FileMonitors FileMonitors;
 typedef struct DirectoryLoadState DirectoryLoadState;
 typedef struct DirectoryCountState DirectoryCountState;
