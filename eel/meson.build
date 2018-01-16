@@ -7,8 +7,6 @@ libeel_2_sources = [
   'eel-canvas.c',
   'eel-debug.h',
   'eel-debug.c',
-  'eel-gdk-extensions.h',
-  'eel-gdk-extensions.c',
   'eel-glib-extensions.h',
   'eel-glib-extensions.c',
   'eel-graphic-effects.h',

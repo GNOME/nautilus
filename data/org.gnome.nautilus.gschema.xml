@@ -264,11 +264,10 @@
   </schema>
 
   <schema path="/org/gnome/nautilus/window-state/" id="org.gnome.nautilus.window-state" gettext-domain="nautilus">
-    <key type="s" name="geometry">
-      <default>''</default>
-
-      <summary>The geometry string for a navigation window</summary>
-      <description>A string containing the saved geometry and coordinates string for navigation windows.</description>
+    <key type="(ii)" name="initial-size">
+      <default>(890, 550)</default>
+      <summary>Initial size of the window</summary>
+      <description>A tuple containing the initial width and height of the application window.</description>
     </key>
     <key type="b" name="maximized">
       <default>false</default>
