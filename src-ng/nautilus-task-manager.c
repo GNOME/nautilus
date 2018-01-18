@@ -88,7 +88,7 @@ execute_task (gpointer data,
 
     task = NAUTILUS_TASK (data);
 
-    nautilus_task_execute (task);
+    nautilus_task_run_sync (task);
 }
 
 static void

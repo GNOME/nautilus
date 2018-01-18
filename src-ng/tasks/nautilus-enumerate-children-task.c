@@ -42,7 +42,7 @@ enum
 static guint signals[LAST_SIGNAL] = { 0 };
 
 static void
-execute (NautilusTask *task)
+run_sync (NautilusTask *task)
 {
     NautilusEnumerateChildrenTask *self;
     g_autoptr (GCancellable) cancellable = NULL;
@@ -102,7 +102,7 @@ nautilus_enumerate_children_task_class_init (NautilusEnumerateChildrenTaskClass 
 
     task_class = NAUTILUS_TASK_CLASS (klass);
 
-    task_class->execute = execute;
+    task_class->run_sync = run_sync;
 
     signals[FINISHED] = g_signal_new ("finished",
                                       G_TYPE_FROM_CLASS (klass),

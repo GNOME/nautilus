@@ -130,7 +130,7 @@ nautilus_task_get_cancellable (NautilusTask *task)
 }
 
 void
-nautilus_task_execute (NautilusTask *task)
+nautilus_task_run_sync (NautilusTask *task)
 {
     NautilusTaskClass *klass;
 
@@ -138,9 +138,9 @@ nautilus_task_execute (NautilusTask *task)
 
     klass = NAUTILUS_TASK_GET_CLASS (task);
 
-    g_return_if_fail (klass->execute != NULL);
+    g_return_if_fail (klass->run_sync != NULL);
 
-    klass->execute (task);
+    klass->run_sync (task);
 }
 
 void

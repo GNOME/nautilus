@@ -53,7 +53,7 @@ finalize (GObject *object)
 }
 
 static void
-execute (NautilusTask *task)
+run_sync (NautilusTask *task)
 {
     NautilusRenameTask *self;
     GHashTableIter iter;
@@ -111,7 +111,7 @@ nautilus_rename_task_class_init (NautilusRenameTaskClass *klass)
 
     object_class->finalize = finalize;
 
-    task_class->execute = execute;
+    task_class->run_sync = run_sync;
 
     signals[FINISHED] = g_signal_new ("finished",
                                       G_TYPE_FROM_CLASS (klass),

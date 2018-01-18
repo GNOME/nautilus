@@ -211,7 +211,7 @@ thumbnail_gdk_pixbuf (GFile *location)
 }
 
 static void
-execute (NautilusTask *task)
+run_sync (NautilusTask *task)
 {
     NautilusThumbnailTask *self;
     g_autoptr (GdkPixbuf) pixbuf = NULL;
@@ -253,7 +253,7 @@ nautilus_thumbnail_task_class_init (NautilusThumbnailTaskClass *klass)
 
     object_class->finalize = finalize;
 
-    task_class->execute = execute;
+    task_class->run_sync = run_sync;
 
     signals[FINISHED] = g_signal_new ("finished",
                                       G_TYPE_FROM_CLASS (klass),

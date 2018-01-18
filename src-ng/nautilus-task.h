@@ -35,11 +35,11 @@ struct _NautilusTaskClass
 {
     GObjectClass parent_class;
 
-    void (*execute) (NautilusTask *task);
+    void (*run_sync) (NautilusTask *task);
 };
 
 GCancellable *nautilus_task_get_cancellable (NautilusTask *task);
 
-void nautilus_task_execute (NautilusTask *task);
+void nautilus_task_run_sync (NautilusTask *task);
 
 #endif

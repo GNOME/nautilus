@@ -55,7 +55,7 @@ finalize (GObject *object)
 }
 
 static void
-execute (NautilusTask *task)
+run_sync (NautilusTask *task)
 {
     NautilusAttributeTask *self;
     g_autoptr (GCancellable) cancellable = NULL;
@@ -85,7 +85,7 @@ nautilus_attribute_task_class_init (NautilusAttributeTaskClass *klass)
 
     object_class->finalize = finalize;
 
-    task_class->execute = execute;
+    task_class->run_sync = run_sync;
 
     signals[FINISHED] = g_signal_new ("finished",
                                       G_TYPE_FROM_CLASS (klass),
