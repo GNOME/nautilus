@@ -56,7 +56,6 @@ rename_file_popover_controller_on_closed (GtkPopover *popover,
     g_signal_handler_disconnect (controller->rename_file_popover,
                                  controller->closed_handler_id);
     controller->closed_handler_id = 0;
-    controller->rename_file_popover = NULL;
 
     g_signal_emit_by_name (controller, "cancelled");
 }
@@ -282,11 +281,6 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
                                                       G_CALLBACK (target_file_on_changed),
                                                       self);
 
-    g_signal_connect (rename_file_popover,
-                      "unmap",
-                      (GCallback) gtk_widget_destroy,
-                      NULL);
-
     g_signal_connect (name_entry,
                       "key-press-event",
                       G_CALLBACK (name_entry_on_key_pressed),
@@ -357,7 +351,7 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
             self->closed_handler_id = 0;
         }
         gtk_popover_popdown (GTK_POPOVER (self->rename_file_popover));
-        self->rename_file_popover = NULL;
+        g_clear_pointer (&self->rename_file_popover, gtk_widget_destroy);
     }
 
     if (self->file_changed_handler_id != 0)
