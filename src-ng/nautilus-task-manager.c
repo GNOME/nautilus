@@ -51,6 +51,12 @@ constructor (GType                  type,
                                                                  construct_properties));
 
     g_object_add_weak_pointer (G_OBJECT (instance), (gpointer *) &instance);
+    /* The task manager should be like a daemon, always present while
+     * Nautilus is running, so we avoid the memory handling all around
+     * and have a way to know statistics an status of the task management in
+     * general during the whole Nautilus proccess duration.
+     */
+    g_object_ref (instance);
 
     g_mutex_unlock (&mutex);
 
