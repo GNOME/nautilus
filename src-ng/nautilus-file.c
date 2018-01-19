@@ -294,7 +294,6 @@ nautilus_file_query_info (NautilusFile             *file,
                                         G_FILE_QUERY_INFO_NONE,
                                         cancellable);
     details = g_new0 (QueryInfoDetails, 1);
-    manager = nautilus_task_manager_dup_singleton ();
 
     details->file = file;
     details->callback = callback;
@@ -303,6 +302,7 @@ nautilus_file_query_info (NautilusFile             *file,
     g_signal_connect (task, "finished",
                       G_CALLBACK (on_query_info_finished), details);
 
+    manager = nautilus_task_manager_dup_singleton ();
     nautilus_task_manager_queue_task (manager, task);
 }
 
