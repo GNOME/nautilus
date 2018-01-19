@@ -28,6 +28,7 @@
 enum
 {
     INFO,
+    THUMBNAIL,
     N_ITEMS
 };
 
@@ -310,9 +311,40 @@ typedef struct
 {
     NautilusFile *file;
 
-    NautilusFileInfoCallback callback;
+    NautilusThumbnailCallback callback;
     gpointer callback_data;
 } GetThumbnailDetails;
+
+static void
+on_thumbnail_task_finished (NautilusAttributeTask *task,
+                            GFile                 *file,
+                            GdkPixbuf             *pixbuf,
+                            gpointer               data)
+{
+    GetThumbnailDetails *details;
+    NautilusFilePrivate *priv;
+    NautilusCacheState cache_state;
+
+    details = data;
+    priv = nautilus_file_get_instance_private (details->file);
+    cache_state = nautilus_cache_item_get_state (priv->cache,
+                                                 priv->cache_items[THUMBNAIL]);
+
+    if (cache_state == NAUTILUS_CACHE_INVALID)
+    {
+        /* TODO: restart */
+        return;
+    }
+
+    nautilus_cache_item_set_value (priv->cache, priv->cache_items[THUMBNAIL],
+                                   pixbuf);
+
+
+    details->callback (details->file, pixbuf,
+                       details->callback_data);
+
+    g_free (details);
+}
 
 void
 nautilus_file_get_thumbnail (NautilusFile              *file,
@@ -323,14 +355,50 @@ nautilus_file_get_thumbnail (NautilusFile              *file,
     g_autoptr (NautilusTask) task = NULL;
     GetThumbnailDetails *details;
     g_autoptr (NautilusTaskManager) manager = NULL;
+    NautilusFilePrivate *priv;
+    NautilusCacheState cache_state;
 
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
+    priv = nautilus_file_get_instance_private (file);
     location = nautilus_file_get_location (file);
-    task = nautilus_thumbnail_task_new (location, TRUE);
     details = g_new0 (GetThumbnailDetails, 1);
-    manager = nautilus_task_manager_dup_singleton ();
+    task = nautilus_thumbnail_task_new (location, TRUE);
 
+    cache_state = nautilus_cache_item_get_state (priv->cache,
+                                                 priv->cache_items[THUMBNAIL]);
+
+    /* FIXME: This is not the right thing to do if a cache update is pending.
+     * A task reference could be stored and we could connect to the signal,
+     * but there might be a better way.
+     */
+    if (cache_state == NAUTILUS_CACHE_PENDING ||
+        cache_state == NAUTILUS_CACHE_VALID)
+    {
+        GdkPixbuf *thumbnail;
+
+        g_debug ("%s: thumbnail for %p is either pending or valid",
+                 __func__, (gpointer) file);
+
+        thumbnail = nautilus_cache_item_get_value (priv->cache,
+                                                   priv->cache_items[THUMBNAIL],
+                                                   NAUTILUS_COPY_FUNC (g_object_ref));
+
+        callback (file, thumbnail, user_data);
+
+        return;
+    }
+
+    nautilus_cache_item_set_pending (priv->cache, priv->cache_items[THUMBNAIL]);
+
+    details->file = file;
+    details->callback = callback;
+    details->callback_data = user_data;
+
+    g_signal_connect (task, "finished",
+                      G_CALLBACK (on_thumbnail_task_finished), details);
+
+    manager = nautilus_task_manager_dup_singleton ();
     nautilus_task_manager_queue_task (manager, task);
 }
 
