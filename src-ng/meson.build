@@ -2,7 +2,7 @@ resources = gnome.compile_resources ('nautilus-ng-resources',
                                      join_paths ('res', 'org.gnome.Nautilus.gresource.xml'),
                                      source_dir: 'res')
 
-nautilus_ng_sources = [resources,
+libnautilus_ng_sources = [resources,
                        'nautilus-task.c',
                        'nautilus-task.h',
                        'nautilus-task-private.h',
@@ -30,14 +30,34 @@ nautilus_ng_sources = [resources,
                        'tasks/nautilus-thumbnail-task.h',
                        'main.c']
 
-nautilus_ng_dependencies = [gio, glib, gnome_desktop, gtk]
+libnautilus_ng_deps = [gio, glib, gnome_desktop, gtk]
 
-nautilus_marshallers = gnome.genmarshal ('nautilus-marshallers',
-                                         sources: 'nautilus-marshallers.list',
-                                         prefix: 'nautilus_cclosure_marshal')
+libnautilus_ng_marshallers = gnome.genmarshal ('nautilus-marshallers',
+                                               sources: 'nautilus-marshallers.list',
+                                               prefix: 'nautilus_cclosure_marshal')
 
-nautilus_ng_sources += nautilus_marshallers
+libnautilus_ng_sources += libnautilus_ng_marshallers
 
-nautilus_ng = executable ('nautilus-ng', nautilus_ng_sources,
-                          dependencies: nautilus_ng_dependencies,
-                          install: true)
+libnautilus_ng_include_dirs = include_directories('.')
+
+libnautilus_ng = static_library(
+  'nautilus-ng',
+  libnautilus_ng_sources,
+  dependencies: libnautilus_ng_deps,
+  include_directories: libnautilus_ng_include_dirs
+)
+
+libnautilus_ng_dep = declare_dependency(
+  link_with: libnautilus_ng,
+  include_directories: [
+    libnautilus_ng_include_dirs
+  ],
+  dependencies: libnautilus_ng_deps
+)
+
+nautilus = executable(
+  'nautilus-ng',
+  'main.c',
+  dependencies: libnautilus_ng_dep,
+  install: true
+)

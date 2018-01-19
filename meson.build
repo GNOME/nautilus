@@ -89,6 +89,7 @@ subdir('eel')
 subdir('libnautilus-extension')
 
 subdir('src')
+subdir ('src-ng')
 subdir('test')
 subdir('data')
 subdir('po')
@@ -99,7 +100,6 @@ if get_option('nst_extension')
   subdir('nautilus-sendto-extension')
 endif
 
-subdir ('src-ng')
 
 # Compile GSettings schemas when installing from source.
 meson.add_install_script('build-aux/meson/postinstall.py')
