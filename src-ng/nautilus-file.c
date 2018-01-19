@@ -254,7 +254,7 @@ nautilus_file_query_info (NautilusFile             *file,
     cache_state = nautilus_cache_item_get_state (priv->cache,
                                                  priv->cache_items[INFO]);
 
-    /* This is not the right thing to do if a cache update is pending.
+    /* FIXME: This is not the right thing to do if a cache update is pending.
      * A task reference could be stored and we could connect to the signal,
      * but there might be a better way.
      */
