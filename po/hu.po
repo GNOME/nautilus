@@ -1,5 +1,5 @@
 # Hungarian translation for nautilus.
-# Copyright (C) 2000-2017 Free Software Foundation, Inc.
+# Copyright (C) 2000-2018 Free Software Foundation, Inc.
 # This file is distributed under the same license as the nautilus package.
 #
 # Szabolcs Ban <shooby at gnome dot hu>, 2000, 2001.
@@ -11,22 +11,22 @@
 # Mate Ory <orymate at gmail dot com>, 2006, 2008.
 # Andras Timar <timar at gnome dot hu>, 2002, 2004.
 # Lukács Bence <lukacs.bence1 at gmail dot com>, 2012.
-# Balázs Úr <urbalazs at gmail dot com>, 2013, 2015, 2016, 2017.
+# Balázs Úr <urbalazs at gmail dot com>, 2013, 2015, 2016, 2017, 2018.
 # Meskó Balázs <meskobalazs at gmail dot com>, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2018-01-05 21:46+0000\n"
-"PO-Revision-Date: 2018-01-11 21:40+0100\n"
-"Last-Translator: Meskó Balázs <meskobalazs@fedoraproject.org>\n"
+"POT-Creation-Date: 2018-01-18 17:43+0000\n"
+"PO-Revision-Date: 2018-01-21 21:09+0100\n"
+"Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <openscope at googlegroups dot com>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.3\n"
+"X-Generator: Lokalize 1.2\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
@@ -72,7 +72,7 @@ msgstr ""
 "parancsfájlokkal bővíthető."
 
 #: data/org.gnome.Nautilus.desktop.in:3 src/nautilus-mime-actions.c:107
-#: src/nautilus-properties-window.c:4582 src/nautilus-window.c:3015
+#: src/nautilus-properties-window.c:4582 src/nautilus-window.c:3019
 msgid "Files"
 msgstr "Fájlok"
 
@@ -537,50 +537,51 @@ msgid ""
 "list."
 msgstr "A listanézet navigációjához fa használandó-e egyszerű lista helyett."
 
+#: data/org.gnome.nautilus.gschema.xml:269
+msgid "Initial size of the window"
+msgstr "Az ablak kezdeti mérete"
+
 #: data/org.gnome.nautilus.gschema.xml:270
-msgid "The geometry string for a navigation window"
-msgstr "Egy navigációs ablak geometria karakterlánca"
-
-#: data/org.gnome.nautilus.gschema.xml:271
+#| msgid ""
+#| "A string containing the saved geometry and coordinates string for "
+#| "navigation windows."
 msgid ""
-"A string containing the saved geometry and coordinates string for navigation "
-"windows."
+"A tuple containing the initial width and height of the application window."
 msgstr ""
-"A navigációs ablakok mentett geometriáját és koordinátáit tartalmazó "
-"karakterlánc."
+"Az alkalmazásablak kezdeti szélességét és magasságát tartalmazó értékek."
 
-#: data/org.gnome.nautilus.gschema.xml:275
+#: data/org.gnome.nautilus.gschema.xml:274
 msgid "Whether the navigation window should be maximized"
 msgstr "A navigációs ablak teljes méretű legyen-e"
 
-#: data/org.gnome.nautilus.gschema.xml:276
+#: data/org.gnome.nautilus.gschema.xml:275
 msgid "Whether the navigation window should be maximized by default."
 msgstr "A navigációs ablak alapértelmezésben teljes méretű legyen-e."
 
-#: data/org.gnome.nautilus.gschema.xml:280
+#: data/org.gnome.nautilus.gschema.xml:279
 msgid "Width of the side pane"
 msgstr "Az oldalsáv szélessége"
 
-#: data/org.gnome.nautilus.gschema.xml:281
+#: data/org.gnome.nautilus.gschema.xml:280
 msgid "The default width of the side pane in new windows."
 msgstr "Az oldalsáv alapértelmezett szélessége az új ablakokban."
 
-#: data/org.gnome.nautilus.gschema.xml:285
+#: data/org.gnome.nautilus.gschema.xml:284
 msgid "Show location bar in new windows"
 msgstr "Helysáv megjelenítése az új ablakokban"
 
-#: data/org.gnome.nautilus.gschema.xml:286
+#: data/org.gnome.nautilus.gschema.xml:285
 msgid ""
 "If set to true, newly opened windows will have the location bar visible."
 msgstr ""
 "Ha ez igazra van állítva, akkor az újonnan megnyitott ablakokban a helysáv "
 "látható lesz."
 
-#: data/org.gnome.nautilus.gschema.xml:290
+#: data/org.gnome.nautilus.gschema.xml:289
 msgid "Show side pane in new windows"
 msgstr "Oldalsáv megjelenítése az új ablakokban"
 
-#: data/org.gnome.nautilus.gschema.xml:291
+#: data/org.gnome.nautilus.gschema.xml:290
 msgid "If set to true, newly opened windows will have the side pane visible."
 msgstr ""
 "Ha ez igazra van állítva, akkor az újonnan megnyitott ablakokban az oldalsáv "
@@ -652,19 +653,19 @@ msgstr ""
 "állítsa be a jogosultságokat úgy, hogy létre lehessen hozni:\n"
 "%s"
 
-#: src/nautilus-application.c:638
+#: src/nautilus-application.c:630
 msgid "--check cannot be used with other options."
 msgstr "a --check nem használható más kapcsolókkal."
 
-#: src/nautilus-application.c:646
+#: src/nautilus-application.c:638
 msgid "--quit cannot be used with URIs."
 msgstr "a --quit nem használható URI-címekkel."
 
-#: src/nautilus-application.c:655
+#: src/nautilus-application.c:647
 msgid "--select must be used with at least an URI."
 msgstr "a --select legalább egy URI-címmel használandó."
 
-#: src/nautilus-application.c:796
+#: src/nautilus-application.c:788
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -673,39 +674,39 @@ msgstr ""
 "Hiba történt a súgó megjelenítése közben: \n"
 "%s"
 
-#: src/nautilus-application.c:946
+#: src/nautilus-application.c:938
 msgid "Perform a quick set of self-check tests."
 msgstr "Néhány gyors ellenőrzőrutin futtatása."
 
-#: src/nautilus-application.c:953
+#: src/nautilus-application.c:945
 msgid "Create the initial window with the given geometry."
 msgstr "Az indulóablak létrehozása adott helyen és méretekkel."
 
-#: src/nautilus-application.c:953
+#: src/nautilus-application.c:945
 msgid "GEOMETRY"
 msgstr "GEOMETRIA"
 
-#: src/nautilus-application.c:955
+#: src/nautilus-application.c:947
 msgid "Show the version of the program."
 msgstr "A program verziószámának megjelenítése."
 
-#: src/nautilus-application.c:957
+#: src/nautilus-application.c:949
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Mindig nyisson új ablakot a megadott URI címek tallózásához."
 
-#: src/nautilus-application.c:959
+#: src/nautilus-application.c:951
 msgid "Only create windows for explicitly specified URIs."
 msgstr "Csak a közvetlenül megadott URI címek számára hozzon létre ablakot."
 
-#: src/nautilus-application.c:961
+#: src/nautilus-application.c:953
 msgid "Quit Nautilus."
 msgstr "Kilépés a Nautilusból."
 
-#: src/nautilus-application.c:963
+#: src/nautilus-application.c:955
 msgid "Select specified URI in parent folder."
 msgstr "A megadott URI kiválasztása a szülőmappában."
 
-#: src/nautilus-application.c:964
+#: src/nautilus-application.c:956
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -879,7 +880,7 @@ msgid "Other Locations"
 msgstr "Egyéb helyek"
 
 #: src/nautilus-bookmark.c:115 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1898 src/nautilus-pathbar.c:450
+#: src/nautilus-list-view.c:1897 src/nautilus-pathbar.c:450
 #: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:179
 msgid "Home"
 msgstr "Saját mappa"
@@ -902,7 +903,7 @@ msgid "Replace the current List Columns settings with the default settings"
 msgstr ""
 "A jelenlegi oszlopok listázása beállítások cseréje az alapértelmezettekre"
 
-#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2145
+#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2144
 #: src/resources/ui/nautilus-rename-file-popover.ui:14
 msgid "Name"
 msgstr "Név"
@@ -3308,22 +3309,22 @@ msgstr "Nem sikerült betölteni a képinformációkat"
 msgid "(Empty)"
 msgstr "(Üres)"
 
-#: src/nautilus-list-view.c:1543
+#: src/nautilus-list-view.c:1542
 msgid "Use Default"
 msgstr "Alapértelmezett használata"
 
-#: src/nautilus-list-view.c:2296
+#: src/nautilus-list-view.c:2295
 #: src/resources/ui/nautilus-preferences-window.ui:90
 #: src/resources/ui/nautilus-preferences-window.ui:1132
 msgid "List View"
 msgstr "Listanézet"
 
-#: src/nautilus-list-view.c:3206
+#: src/nautilus-list-view.c:3205
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s látható oszlop"
 
-#: src/nautilus-list-view.c:3226
+#: src/nautilus-list-view.c:3225
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Válassza ki az információk megjelenési sorrendjét a mappában:"
 
@@ -4069,8 +4070,8 @@ msgstr "_Megnyitás"
 #: src/nautilus-search-directory-file.c:275
 #: src/resources/ui/nautilus-preferences-window.ui:752
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:135
-#: src/resources/ui/nautilus-toolbar.ui:148
+#: src/resources/ui/nautilus-toolbar.ui:138
+#: src/resources/ui/nautilus-toolbar.ui:151
 msgid "Search"
 msgstr "Keresés"
 
@@ -4165,11 +4166,11 @@ msgstr ""
 "A mappában található végrehajtható fájlok megjelennek a Parancsfájlok "
 "menüben."
 
-#: src/nautilus-toolbar.c:860 src/resources/ui/nautilus-toolbar-menu.ui:103
+#: src/nautilus-toolbar.c:861 src/resources/ui/nautilus-toolbar-menu.ui:103
 msgid "_Undo"
 msgstr "_Visszavonás"
 
-#: src/nautilus-toolbar.c:867 src/resources/ui/nautilus-toolbar-menu.ui:111
+#: src/nautilus-toolbar.c:868 src/resources/ui/nautilus-toolbar-menu.ui:111
 msgid "_Redo"
 msgstr "Mé_gis"
 
@@ -4310,7 +4311,7 @@ msgstr "Lap mozgatása j_obbra"
 msgid "_Close Tab"
 msgstr "Lap _bezárása"
 
-#: src/nautilus-window.c:3017
+#: src/nautilus-window.c:3021
 msgid "Access and organize your files."
 msgstr "Fájlok elérése és rendszerezése."
 
@@ -4318,7 +4319,7 @@ msgstr "Fájlok elérése és rendszerezése."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:3027
+#: src/nautilus-window.c:3031
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -5282,43 +5283,43 @@ msgstr "Ugrás vissza"
 msgid "Go forward"
 msgstr "Ugrás előre"
 
-#: src/resources/ui/nautilus-toolbar.ui:81
+#: src/resources/ui/nautilus-toolbar.ui:84
 msgid "Open menu"
 msgstr "Menü megnyitása"
 
-#: src/resources/ui/nautilus-toolbar.ui:95
+#: src/resources/ui/nautilus-toolbar.ui:98
 msgid "Action menu"
 msgstr "Művelet menü"
 
-#: src/resources/ui/nautilus-toolbar.ui:96
+#: src/resources/ui/nautilus-toolbar.ui:99
 msgid "Open action menu"
 msgstr "Művelet menü megnyitása"
 
-#: src/resources/ui/nautilus-toolbar.ui:109
+#: src/resources/ui/nautilus-toolbar.ui:112
 msgid "Toggle view"
 msgstr "Nézet átváltása"
 
-#: src/resources/ui/nautilus-toolbar.ui:121
+#: src/resources/ui/nautilus-toolbar.ui:124
 msgid "View mode toggle"
 msgstr "Nézetmód váltás"
 
-#: src/resources/ui/nautilus-toolbar.ui:122
+#: src/resources/ui/nautilus-toolbar.ui:125
 msgid "Toggle between grid and list view"
 msgstr "Váltás a rács- és a listanézet között"
 
-#: src/resources/ui/nautilus-toolbar.ui:149
+#: src/resources/ui/nautilus-toolbar.ui:152
 msgid "Search files"
 msgstr "Fájlok keresése"
 
-#: src/resources/ui/nautilus-toolbar.ui:165
+#: src/resources/ui/nautilus-toolbar.ui:168
 msgid "Show operations"
 msgstr "Műveletek megjelenítése"
 
-#: src/resources/ui/nautilus-toolbar.ui:182
+#: src/resources/ui/nautilus-toolbar.ui:185
 msgid "Operations in progress"
 msgstr "Műveletek folyamatban"
 
-#: src/resources/ui/nautilus-toolbar.ui:183
+#: src/resources/ui/nautilus-toolbar.ui:186
 msgid "Show operations in progress"
 msgstr "Folyamatban lévő műveletek megjelenítése"
 
@@ -5539,208 +5540,3 @@ msgstr "Kapcsolódás _kiszolgálóhoz"
 msgid "Enter server address…"
 msgstr "Adja meg a kiszolgáló címét…"
 
-#~ msgid "Default zoom level used by the icon view."
-#~ msgstr "Az ikonnézet alapértelmezett nagyítása."
-
-#~ msgid "Default Thumbnail Icon Size"
-#~ msgstr "Alapértelmezett bélyegkép-ikon méret"
-
-#~ msgid ""
-#~ "The default size of an icon for a thumbnail in the icon view when using "
-#~ "NAUTILUS_ICON_SIZE_STANDARD size."
-#~ msgstr ""
-#~ "Bélyegkép ikonjának alapértelmezett mérete az ikonnézetben a "
-#~ "NAUTILUS_ICON_SIZE_STANDARD méret használatakor."
-
-#~ msgid "Default zoom level used by the list view."
-#~ msgstr "Az alapértelmezett listanézet nagyítása."
-
-#~ msgid "Default list of columns visible in the list view."
-#~ msgstr "A listanézetben megjelenő oszlopok alapértelmezett listája."
-
-#~ msgid "Default column order in the list view."
-#~ msgstr "Alapértelmezett oszlopsorrend a listanézetben."
-
-#~ msgctxt "desktop-font"
-#~ msgid "''"
-#~ msgstr "''"
-
-#~ msgid "Desktop font"
-#~ msgstr "Asztal betűkészlete"
-
-#~ msgid "The font description used for the icons on the desktop."
-#~ msgstr "Az asztal ikonjaihoz használandó betűkészlet-leírás."
-
-#~ msgid "Home icon visible on desktop"
-#~ msgstr "A Saját mappa ikon látható az asztalon"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the home folder will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Ha ez igazra van állítva, akkor a saját mappára hivatkozó ikon lesz "
-#~ "elhelyezve az asztalon."
-
-#~ msgid "Trash icon visible on desktop"
-#~ msgstr "A Kuka ikon megjelenítése az asztalon"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Trash will be put on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ha ez igazra van állítva, akkor a Kukára hivatkozó ikon lesz elhelyezve "
-#~ "az asztalon."
-
-#~ msgid "Show mounted volumes on the desktop"
-#~ msgstr "Csatolt kötetek megjelenítése az asztalon"
-
-#~ msgid ""
-#~ "If this is set to true, icons linking to mounted volumes will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Ha ez igazra van állítva, akkor a csatolt kötetekre hivatkozó ikonok "
-#~ "lesznek elhelyezve az asztalon."
-
-#~ msgid "Network Servers icon visible on the desktop"
-#~ msgstr "A Hálózati kiszolgálók ikon látható az asztalon"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Network Servers view will "
-#~ "be put on the desktop."
-#~ msgstr ""
-#~ "Ha ez igazra van állítva, akkor a Hálózati helyekre hivatkozó ikon lesz "
-#~ "elhelyezve az asztalon."
-
-#~ msgctxt "home-icon-name"
-#~ msgid "'Home'"
-#~ msgstr "'Saját mappa'"
-
-#~ msgid "Desktop home icon name"
-#~ msgstr "Az asztal Saját mappa ikonjának neve"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the home icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ezen kulcs segítségével egyéni név adható az asztalon található Saját "
-#~ "mappa ikonnak."
-
-#~ msgctxt "trash-icon-name"
-#~ msgid "'Trash'"
-#~ msgstr "'Kuka'"
-
-#~ msgid "Desktop Trash icon name"
-#~ msgstr "Az asztali Kuka ikon neve"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the Trash icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ezen kulcs segítségével egyéni név adható az asztalon található Kuka "
-#~ "ikonnak."
-
-#~ msgctxt "network-icon-name"
-#~ msgid "'Network Servers'"
-#~ msgstr "'Hálózati kiszolgálók'"
-
-#~ msgid "Network servers icon name"
-#~ msgstr "Hálózati kiszolgálók ikon neve"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the network servers "
-#~ "icon on the desktop."
-#~ msgstr ""
-#~ "Ezen kulcs segítségével egyéni név adható az asztalon található hálózati "
-#~ "kiszolgálók ikonnak."
-
-#~ msgid ""
-#~ "An integer specifying how parts of overlong file names should be replaced "
-#~ "by ellipses on the desktop. If the number is larger than 0, the file name "
-#~ "will not exceed the given number of lines. If the number is 0 or smaller, "
-#~ "no limit is imposed on the number of displayed lines."
-#~ msgstr ""
-#~ "Egész szám, amely megadja hogy a túl hosszú fájlnevek hogyan legyenek "
-#~ "csonkítva. Ha az érték nagyobb mint 0, akkor a fájlnév nem lesz hosszabb "
-#~ "a megadott számú sornál. Ha az érték 0 vagy kisebb, a megjelenő sorok "
-#~ "száma nem lesz korlátozva."
-
-#~ msgid "Fade the background on change"
-#~ msgstr "A háttér elhalványítása változtatáskor"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will use a fade effect to change the "
-#~ "desktop background."
-#~ msgstr ""
-#~ "Ha ez igazra van állítva, akkor a Nautilus elhalványítási effektust "
-#~ "használ az asztalháttér megváltoztatásához."
-
-#~ msgid "Show more _details"
-#~ msgstr "Több _részlet megjelenítése"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (érvénytelen Unicode)"
-
-#~ msgid "Always manage the desktop (ignore the GSettings preference)."
-#~ msgstr ""
-#~ "Mindig kezelje az asztalt (figyelmen kívül hagyja a GSettings "
-#~ "beállításokat)."
-
-#~ msgid "on the desktop"
-#~ msgstr "az asztalon"
-
-#~ msgid "Unable to rename desktop icon"
-#~ msgstr "Az asztali ikon nem nevezhető át"
-
-#~ msgid "Desktop"
-#~ msgstr "Asztal"
-
-#~ msgid "Author"
-#~ msgstr "Szerző"
-
-#~ msgid "Created By"
-#~ msgstr "Készítette"
-
-#~ msgid "Disclaimer"
-#~ msgstr "Jognyilatkozat"
-
-#~ msgid "Warning"
-#~ msgstr "Figyelmeztetés"
-
-#~ msgid "Source"
-#~ msgstr "Forrás"
-
-#~ msgid "Date Taken"
-#~ msgstr "Felvétel dátuma"
-
-#~ msgid "Date Digitized"
-#~ msgstr "Digitalizálás dátuma"
-
-#~ msgid "Date Modified"
-#~ msgstr "Módosítás dátuma"
-
-#~ msgid "_Keep aligned"
-#~ msgstr "_Rendezettség megtartása"
-
-#~ msgid "Organize _Desktop by Name"
-#~ msgstr "_Asztal rendezése név szerint"
-
-#~ msgid "Change _Background"
-#~ msgstr "_Háttér módosítása"
-
-#~ msgid "Empty Trash"
-#~ msgstr "Kuka ürítése"
-
-#~ msgid "Resize Icon…"
-#~ msgstr "Ikon átméretezése…"
-
-#~ msgid "Restore Icon’s Original Size"
-#~ msgstr "Eredeti ikonméret visszaállítása"
-
-#~ msgid "Full Text Search:"
-#~ msgstr "Teljes szöveges keresés:"
-
-#~ msgid "Set as _default"
-#~ msgstr "Beállítás _alapértelmezettként"
-
-#~ msgid "Open operations in progress"
-#~ msgstr "Folyamatban lévő műveletek megnyitása"
