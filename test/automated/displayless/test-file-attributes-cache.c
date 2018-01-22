@@ -37,7 +37,6 @@ on_query_info_finished (NautilusFile *file,
     result->success = error == NULL;
     g_cond_signal (&cond);
     g_mutex_unlock (&mutex);
-    g_print ("unlocking\n");
 }
 
 static void
@@ -89,8 +88,8 @@ on_get_thumbnail_finished (NautilusFile *file,
     result->completed = TRUE;
     width = gdk_pixbuf_get_width (thumbnail);
     height = gdk_pixbuf_get_height (thumbnail);
-    g_assert_cmpint (width, THUMBNAIL_EXPECT_WIDTH);
-    g_assert_cmpint (height, THUMBNAIL_EXPECT_HEIGHT);
+    g_assert_cmpint (width, ==, THUMBNAIL_EXPECT_WIDTH);
+    g_assert_cmpint (height, ==, THUMBNAIL_EXPECT_HEIGHT);
     result->success = TRUE;
     g_cond_signal (&cond);
     g_mutex_unlock (&mutex);
