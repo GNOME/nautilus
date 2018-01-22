@@ -168,8 +168,6 @@ struct NautilusFileDetails
 	eel_boolean_bit got_custom_activation_uri     : 1;
 
 	eel_boolean_bit thumbnail_is_up_to_date       : 1;
-	eel_boolean_bit thumbnail_wants_original      : 1;
-	eel_boolean_bit thumbnail_tried_original      : 1;
 	eel_boolean_bit thumbnailing_failed           : 1;
 	
 	eel_boolean_bit is_thumbnailing               : 1;

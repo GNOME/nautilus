@@ -5427,19 +5427,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
             file->details->thumbnail_scale = thumb_scale;
         }
 
-        /* Don't scale up if more than 25%, then read the original
-         *  image instead. We don't want to compare to exactly 100%,
-         *  since the zoom level 150% gives thumbnails at 144, which is
-         *  ok to scale up from 128. */
-        if (modified_size > 128 * 1.25 * scale &&
-            !file->details->thumbnail_wants_original &&
-            nautilus_can_thumbnail_internally (file))
-        {
-            /* Invalidate if we resize upward */
-            file->details->thumbnail_wants_original = TRUE;
-            nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL);
-        }
-
         DEBUG ("Returning thumbnailed image, at size %d %d",
                (int) (w * thumb_scale), (int) (h * thumb_scale));
     }

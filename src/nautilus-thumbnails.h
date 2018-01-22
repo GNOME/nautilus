@@ -28,7 +28,6 @@
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
 gboolean   nautilus_can_thumbnail                   (NautilusFile *file);
-gboolean   nautilus_can_thumbnail_internally        (NautilusFile *file);
 gboolean   nautilus_thumbnail_is_mimetype_limited_by_size
 						    (const char *mime_type);
 
