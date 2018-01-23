@@ -1304,11 +1304,21 @@ canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gestur
 {
     GdkEventSequence *event_sequence;
     const GdkEvent *event;
+    NautilusCanvasView *view = NAUTILUS_CANVAS_VIEW (user_data);
 
     event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
-    nautilus_canvas_container_popup_menu(NAUTILUS_CANVAS_CONTAINER(user_data), event);
+    if (nautilus_view_get_selection (NAUTILUS_VIEW (view)))
+    {
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
+                                                           event);
+    }
+    else
+    {
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
+                                                           (GdkEvent *) event);
+    }
 }
 
 static void
@@ -1330,7 +1340,7 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
                                        TRUE);
     g_signal_connect (longpress_gesture, "pressed",
                       (GCallback) canvas_container_longpress_gesture_pressed_callback,
-                      canvas_container);
+                      canvas_view);
 
     gtk_widget_set_can_focus (GTK_WIDGET (canvas_container), TRUE);
 
