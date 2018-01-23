@@ -185,7 +185,6 @@ nautilus_pop_up_context_menu (GtkWidget      *parent,
                                event ? (GdkEvent *) event :
                                gtk_get_current_event ());
 
-
     g_object_ref_sink (gtk_menu);
     g_object_unref (gtk_menu);
 }

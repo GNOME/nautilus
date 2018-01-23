@@ -410,7 +410,6 @@ enter_notify_callback (GtkWidget        *widget,
 {
     NautilusListView *view;
 
-
     view = NAUTILUS_LIST_VIEW (callback_data);
 
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
@@ -441,11 +440,11 @@ do_popup_menu (GtkWidget        *widget,
 {
     if (tree_view_has_selection (GTK_TREE_VIEW (widget)))
     {
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), (GdkEvent *) event);
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view), event);
     }
     else
     {
-        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), (GdkEvent *) event);
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), event);
     }
 }
 
@@ -455,7 +454,6 @@ row_activated_callback (GtkTreeView       *treeview,
                         GtkTreeViewColumn *column,
                         NautilusListView  *view)
 {
-
     activate_selected_items (view);
 }
 
