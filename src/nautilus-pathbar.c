@@ -102,7 +102,7 @@ typedef struct
 
     GMenu *context_menu;
     NautilusFile *context_menu_file;
-    GdkEventButton *context_menu_event;
+    GdkEvent *context_menu_event;
 } NautilusPathBarPrivate;
 
 
@@ -1680,7 +1680,7 @@ schedule_pop_up_context_menu (NautilusPathBar *self,
     {
         gdk_event_free ((GdkEvent *) priv->context_menu_event);
     }
-    priv->context_menu_event = (GdkEventButton *) gdk_event_copy ((GdkEvent *) event);
+    priv->context_menu_event = gdk_event_copy ((GdkEvent *) event);
 
     if (file == priv->context_menu_file)
     {
