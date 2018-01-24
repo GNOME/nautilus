@@ -687,6 +687,61 @@ on_button_press_event (GtkWidget *widget,
     return GDK_EVENT_STOP;
 }
 
+static void
+on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
+                                       gdouble              x,
+                                       gdouble              y,
+                                       gpointer             user_data)
+{
+    NautilusViewIconController *self;
+    g_autoptr (GList) selection = NULL;
+    GtkWidget *child_at_pos;
+    GdkEventButton *event_button;
+    GdkEventSequence *event_sequence;
+    GdkEvent *event;
+
+    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
+    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
+
+    self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
+    event_button = (GdkEventButton *) event;
+
+    /* Need to update the selection so the popup has the right actions enabled */
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
+                                                              event_button->x, event_button->y));
+    if (child_at_pos != NULL)
+    {
+        NautilusFile *selected_file;
+        NautilusViewItemModel *item_model;
+
+        item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child_at_pos));
+        selected_file = nautilus_view_item_model_get_file (item_model);
+        if (g_list_find (selection, selected_file) == NULL)
+        {
+            g_list_foreach (selection, (GFunc) g_object_unref, NULL);
+            selection = g_list_append (NULL, g_object_ref (selected_file));
+        }
+        else
+        {
+            selection = g_list_prepend (selection, g_object_ref (selected_file));
+        }
+
+        nautilus_view_set_selection (NAUTILUS_VIEW (self), selection);
+
+        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                           event);
+    }
+    else
+    {
+        nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
+        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
+                                                            event);
+    }
+
+    g_list_foreach (selection, (GFunc) g_object_unref, NULL);
+}
+
 static int
 real_compare_files (NautilusFilesView *files_view,
                     NautilusFile      *file1,
@@ -842,6 +897,7 @@ constructed (GObject *object)
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
     GtkWidget *content_widget;
     GActionGroup *view_action_group;
+    GtkGesture *longpress_gesture;
 
     self->model = nautilus_view_model_new ();
     self->view_ui = nautilus_view_icon_ui_new (self);
@@ -852,6 +908,16 @@ constructed (GObject *object)
     gtk_container_add (GTK_CONTAINER (self->event_box), GTK_WIDGET (self->view_ui));
     g_signal_connect (GTK_WIDGET (self->event_box), "button-press-event",
                       (GCallback) on_button_press_event, self);
+
+    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->event_box));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
+                                       TRUE);
+    g_signal_connect (longpress_gesture, "pressed",
+                      (GCallback) on_longpress_gesture_pressed_callback,
+                      self);
+
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->event_box));
