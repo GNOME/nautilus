@@ -71,7 +71,6 @@ struct _NautilusToolbar
     gboolean show_location_entry;
     gboolean location_entry_should_auto_hide;
 
-    guint popup_timeout_id;
     guint start_operations_timeout_id;
     guint remove_finished_operations_timeout_id;
     guint operations_button_attention_timeout_id;
@@ -92,8 +91,13 @@ struct _NautilusToolbar
     GtkWidget *operations_icon;
 
     GtkWidget *forward_button;
+    GtkGesture *forward_button_longpress_gesture;
+
     GtkWidget *back_button;
+    GtkGesture *back_button_longpress_gesture;
+
     GtkWidget *location_entry_close_button;
+
 
     NautilusProgressInfoManager *progress_manager;
 
@@ -114,7 +118,6 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, GTK_TYPE_HEADER_BAR);
 
-static void unschedule_menu_popup_timeout (NautilusToolbar *self);
 static void update_operations (NautilusToolbar *self);
 
 static void
@@ -235,64 +238,6 @@ show_menu (NautilusToolbar *self,
                               event);
 }
 
-#define MENU_POPUP_TIMEOUT 1200
-
-typedef struct
-{
-    NautilusToolbar *self;
-    GtkWidget *widget;
-    GdkEvent *event;
-} ScheduleMenuData;
-
-static void
-schedule_menu_data_free (ScheduleMenuData *data)
-{
-    gdk_event_free (data->event);
-    g_slice_free (ScheduleMenuData, data);
-}
-
-static gboolean
-popup_menu_timeout_cb (gpointer user_data)
-{
-    ScheduleMenuData *data = user_data;
-
-    show_menu (data->self, data->widget, data->event);
-
-    /* Need to also reset the ID here. */
-    unschedule_menu_popup_timeout (data->self);
-
-    return G_SOURCE_REMOVE;
-}
-
-static void
-unschedule_menu_popup_timeout (NautilusToolbar *self)
-{
-    if (self->popup_timeout_id != 0)
-    {
-        g_source_remove (self->popup_timeout_id);
-        self->popup_timeout_id = 0;
-    }
-}
-
-static void
-schedule_menu_popup_timeout (NautilusToolbar *self,
-                             GtkWidget       *widget,
-                             GdkEvent        *event)
-{
-    ScheduleMenuData *data;
-
-    /* unschedule any previous timeouts */
-    unschedule_menu_popup_timeout (self);
-
-    data = g_slice_new0 (ScheduleMenuData);
-    data->self = self;
-    data->widget = widget;
-    data->event = gdk_event_copy (event);
-
-    self->popup_timeout_id = g_timeout_add_full (G_PRIORITY_DEFAULT, MENU_POPUP_TIMEOUT,
-                                                 popup_menu_timeout_cb, data,
-                                                 (GDestroyNotify) schedule_menu_data_free);
-}
 static gboolean
 navigation_button_press_cb (GtkButton *button,
                             GdkEvent  *event,
@@ -310,24 +255,39 @@ navigation_button_press_cb (GtkButton *button,
         return TRUE;
     }
 
-    if (button_event->button == 1)
-    {
-        schedule_menu_popup_timeout (self, GTK_WIDGET (button), event);
-    }
-
     return FALSE;
 }
 
-static gboolean
-navigation_button_release_cb (GtkButton      *button,
-                              GdkEventButton *event,
-                              gpointer        user_data)
+static void
+back_button_longpress_cb (GtkGestureLongPress *gesture,
+                          double               x,
+                          double               y,
+                          gpointer             user_data)
 {
-    NautilusToolbar *self = user_data;
+  NautilusToolbar *self = user_data;
+  GdkEventSequence *sequence;
+  const GdkEvent *event;
 
-    unschedule_menu_popup_timeout (self);
+  sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+  event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    return FALSE;
+  show_menu (self, self->back_button, event);
+}
+
+static void
+forward_button_longpress_cb (GtkGestureLongPress *gesture,
+                             double               x,
+                             double               y,
+                             gpointer             user_data)
+{
+  NautilusToolbar *self = user_data;
+  GdkEventSequence *sequence;
+  const GdkEvent *event;
+
+  sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+  event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+
+  show_menu (self, self->forward_button, event);
 }
 
 static gboolean
@@ -964,18 +924,22 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
     update_operations (self);
 
+    self->back_button_longpress_gesture = gtk_gesture_long_press_new (self->back_button);
+    g_signal_connect (self->back_button_longpress_gesture, "pressed",
+                      G_CALLBACK (back_button_longpress_cb), self);
+
+    self->forward_button_longpress_gesture = gtk_gesture_long_press_new (self->forward_button);
+    g_signal_connect (self->forward_button_longpress_gesture, "pressed",
+                      G_CALLBACK (forward_button_longpress_cb), self);
+
     g_object_set_data (G_OBJECT (self->back_button), "nav-direction",
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
     g_object_set_data (G_OBJECT (self->forward_button), "nav-direction",
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
     g_signal_connect (self->back_button, "button-press-event",
                       G_CALLBACK (navigation_button_press_cb), self);
-    g_signal_connect (self->back_button, "button-release-event",
-                      G_CALLBACK (navigation_button_release_cb), self);
     g_signal_connect (self->forward_button, "button-press-event",
                       G_CALLBACK (navigation_button_press_cb), self);
-    g_signal_connect (self->forward_button, "button-release-event",
-                      G_CALLBACK (navigation_button_release_cb), self);
     g_signal_connect (self->operations_popover, "show",
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
@@ -1134,7 +1098,6 @@ nautilus_toolbar_finalize (GObject *obj)
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           toolbar_update_appearance, self);
     disconnect_progress_infos (self);
-    unschedule_menu_popup_timeout (self);
     unschedule_remove_finished_operations (self);
     unschedule_operations_start (self);
     unschedule_operations_button_attention_style (self);
@@ -1146,6 +1109,9 @@ nautilus_toolbar_finalize (GObject *obj)
                                           on_window_focus_in_event, self);
     g_signal_handlers_disconnect_by_func (self->window,
                                           on_window_focus_out_event, self);
+
+    g_clear_object (&self->back_button_longpress_gesture);
+    g_clear_object (&self->forward_button_longpress_gesture);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }
