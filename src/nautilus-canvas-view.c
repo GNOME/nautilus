@@ -1134,26 +1134,24 @@ selection_changed_callback (NautilusCanvasContainer *container,
 
 static void
 canvas_container_context_click_selection_callback (NautilusCanvasContainer *container,
-                                                   const GdkEvent          *event,
+                                                   GdkEventButton          *event,
                                                    NautilusCanvasView      *canvas_view)
 {
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
 
-    nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (canvas_view),
-                                                       (GdkEvent *) event);
+    nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (canvas_view), event);
 }
 
 static void
 canvas_container_context_click_background_callback (NautilusCanvasContainer *container,
-                                                    const GdkEvent          *event,
+                                                    GdkEventButton          *event,
                                                     NautilusCanvasView      *canvas_view)
 {
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
 
-    nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (canvas_view),
-                                                        (GdkEvent *) event);
+    nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (canvas_view), event);
 }
 
 static char *
@@ -1298,50 +1296,15 @@ nautilus_canvas_view_update_click_mode (NautilusCanvasView *canvas_view)
 }
 
 static void
-canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
-                                                     gdouble              x,
-                                                     gdouble              y,
-                                                     gpointer             user_data)
-{
-    GdkEventSequence *event_sequence;
-    GdkEvent *event;
-    NautilusCanvasView *view = NAUTILUS_CANVAS_VIEW (user_data);
-
-    event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
-    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
-
-    if (nautilus_view_get_selection (NAUTILUS_VIEW (view)))
-    {
-        nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                           event);
-    }
-    else
-    {
-        nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                           (GdkEvent *) event);
-    }
-}
-
-static void
 initialize_canvas_container (NautilusCanvasView      *canvas_view,
                              NautilusCanvasContainer *canvas_container)
 {
     GtkWidget *content_widget;
-    GtkGesture *longpress_gesture;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (canvas_view));
     canvas_view->canvas_container = GTK_WIDGET (canvas_container);
     g_object_add_weak_pointer (G_OBJECT (canvas_container),
                                (gpointer *) &canvas_view->canvas_container);
-
-    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (content_widget));
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
-                                                GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
-                                       TRUE);
-    g_signal_connect (longpress_gesture, "pressed",
-                      (GCallback) canvas_container_longpress_gesture_pressed_callback,
-                      canvas_view);
 
     gtk_widget_set_can_focus (GTK_WIDGET (canvas_container), TRUE);
 
