@@ -240,10 +240,8 @@ NautilusWindow *
 nautilus_application_create_window (NautilusApplication *self,
                                     GdkScreen           *screen)
 {
-    NautilusApplicationPrivate *priv;
     NautilusWindow *window;
     gboolean maximized;
-    gint n_windows;
     g_autoptr (GVariant) default_size = NULL;
     gint default_width = 0;
     gint default_height = 0;
@@ -251,8 +249,6 @@ nautilus_application_create_window (NautilusApplication *self,
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
 
-    priv = nautilus_application_get_instance_private (self);
-    n_windows = g_list_length (priv->windows);
     window = nautilus_window_new (screen);
 
     maximized = g_settings_get_boolean
