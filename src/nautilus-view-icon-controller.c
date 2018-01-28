@@ -387,29 +387,38 @@ real_select_all (NautilusFilesView *files_view)
     gtk_flow_box_select_all (GTK_FLOW_BOX (self->view_ui));
 }
 
-static void
-real_reveal_selection (NautilusFilesView *files_view)
+static GtkWidget *
+get_first_selected_item_ui (NautilusViewIconController *self)
 {
     GList *selection;
+    NautilusFile *file;
     NautilusViewItemModel *item_model;
-    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    GtkWidget *item_ui;
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
+    if (selection == NULL)
+    {
+        return NULL;
+    }
+
+    file = NAUTILUS_FILE (selection->data);
+    item_model = nautilus_view_model_get_item_from_file (self->model, file);
+
+    nautilus_file_list_free (selection);
+
+    return nautilus_view_item_model_get_item_ui (item_model);
+}
+
+static void
+reveal_item_ui (NautilusViewIconController *self,
+                GtkWidget                  *item_ui)
+{
     GtkAllocation allocation;
     GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
     int view_height;
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
-    if (selection == NULL)
-    {
-        return;
-    }
-
-    item_model = nautilus_view_model_get_item_from_file (self->model,
-                                                         NAUTILUS_FILE (selection->data));
-    item_ui = nautilus_view_item_model_get_item_ui (item_model);
     gtk_widget_get_allocation (item_ui, &allocation);
-    content_widget = nautilus_files_view_get_content_widget (files_view);
+    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
     view_height = gtk_widget_get_allocated_height (content_widget);
     vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
 
@@ -425,8 +434,20 @@ real_reveal_selection (NautilusFilesView *files_view)
         gtk_adjustment_set_value (vadjustment,
                                   allocation.y + allocation.height - view_height);
     }
+}
 
-    g_list_foreach (selection, (GFunc) g_object_unref, NULL);
+static void
+real_reveal_selection (NautilusFilesView *files_view)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkWidget *item_ui;
+
+    item_ui = get_first_selected_item_ui (self);
+
+    if (item_ui != NULL)
+    {
+        reveal_item_ui (self, item_ui);
+    }
 }
 
 static gboolean
@@ -608,35 +629,38 @@ real_can_zoom_out (NautilusFilesView *files_view)
 }
 
 static GdkRectangle *
-real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
+get_rectangle_for_item_ui (NautilusViewIconController *self,
+                           GtkWidget                  *item_ui)
 {
-    NautilusViewIconController *self;
-    GdkRectangle *allocation;
+    GdkRectangle *rectangle;
+    GtkWidget *content_widget;
     GtkAdjustment *vadjustment;
     GtkAdjustment *hadjustment;
-    GtkWidget *parent_container;
-    g_autoptr (GQueue) selection_files = NULL;
-    g_autoptr (GQueue) selection_item_models = NULL;
-    GList *selection;
-    GtkWidget *icon_item_ui;
 
-    self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    allocation = g_new0 (GdkRectangle, 1);
+    rectangle = g_new0 (GdkRectangle, 1);
+    gtk_widget_get_allocation (item_ui, rectangle);
 
-    parent_container = nautilus_files_view_get_content_widget (files_view);
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (parent_container));
-    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (parent_container));
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
-    selection_files = convert_glist_to_queue (selection);
-    selection_item_models = nautilus_view_model_get_items_from_files (self->model, selection_files);
+    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
+
+    rectangle->x -= gtk_adjustment_get_value (hadjustment);
+    rectangle->y -= gtk_adjustment_get_value (vadjustment);
+
+    return rectangle;
+}
+
+static GdkRectangle *
+real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkWidget *item_ui;
+
     /* We only allow one item to be renamed with a popover */
-    icon_item_ui = nautilus_view_item_model_get_item_ui (g_queue_peek_head (selection_item_models));
-    gtk_widget_get_allocation (icon_item_ui, allocation);
+    item_ui = get_first_selected_item_ui (self);
+    g_return_val_if_fail (item_ui != NULL, NULL);
 
-    allocation->x -= gtk_adjustment_get_value (hadjustment);
-    allocation->y -= gtk_adjustment_get_value (vadjustment);
-
-    return allocation;
+    return get_rectangle_for_item_ui (self, item_ui);
 }
 
 static GdkRectangle *
@@ -645,10 +669,6 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
     g_autoptr (GList) selection = NULL;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkWidget *item_ui;
-    GdkRectangle *rectangle;
-    GtkWidget *content_widget;
-    GtkAdjustment *vadjustment;
-    int view_height;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
     g_return_val_if_fail (selection != NULL, NULL);
@@ -665,28 +685,9 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
         item_ui = GTK_WIDGET (list->data);
     }
 
-    rectangle = g_malloc0 (sizeof (GdkRectangle));
-    gtk_widget_get_allocation (item_ui, (GtkAllocation *) rectangle);
-    content_widget = nautilus_files_view_get_content_widget (files_view);
-    view_height = gtk_widget_get_allocated_height (content_widget);
-    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+    reveal_item_ui (self, item_ui);
 
-    /* Scroll only as necessary. TODO: Would be nice to have this as part of
-     * GtkFlowBox. GtkTreeView has something similar. */
-    if (rectangle->y < gtk_adjustment_get_value (vadjustment))
-    {
-        gtk_adjustment_set_value (vadjustment, rectangle->y);
-    }
-    else if (rectangle->y + rectangle->height >
-                gtk_adjustment_get_value (vadjustment) + view_height)
-    {
-        gtk_adjustment_set_value (vadjustment,
-                                  rectangle->y + rectangle->height - view_height);
-    }
-
-    rectangle->y -= gtk_adjustment_get_value (vadjustment);
-
-    return rectangle;
+    return get_rectangle_for_item_ui (self, item_ui);
 }
 
 static void
