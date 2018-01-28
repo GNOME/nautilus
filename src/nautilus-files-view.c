@@ -8122,7 +8122,7 @@ nautilus_files_view_reveal_rectangle_for_context_menu (NautilusFilesView *view)
  **/
 void
 nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
-                                                    GdkEvent          *event)
+                                                    const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
 
@@ -8172,7 +8172,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
  **/
 void
 nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
-                                                    GdkEvent          *event)
+                                                    const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
 

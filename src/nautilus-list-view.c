@@ -1946,7 +1946,7 @@ on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
                                     gpointer             user_data)
 {
     GdkEventSequence *event_sequence;
-    GdkEvent *event;
+    const GdkEvent *event;
     NautilusListView *view = user_data;
     GList *selection;
 
@@ -1956,7 +1956,7 @@ on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
         return;
     }
 
-    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     if (selection != NULL)
