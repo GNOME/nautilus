@@ -3641,95 +3641,13 @@ nautilus_list_view_get_id (NautilusFilesView *view)
 }
 
 static GdkRectangle *
-nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
+get_rectangle_for_path (NautilusListView *list_view,
+                        GtkTreePath      *path)
 {
-    NautilusListView *list_view;
-    GtkTreeView *tree_view;
-    GtkTreeSelection *selection;
-    GList *list;
-    GtkTreePath *path;
+    GtkTreeView *tree_view = list_view->details->tree_view;
     GdkRectangle *rect = g_malloc0 (sizeof (GdkRectangle));
     int header_height;
 
-    list_view = NAUTILUS_LIST_VIEW (view);
-    tree_view = list_view->details->tree_view;
-    selection = gtk_tree_view_get_selection (tree_view);
-    list = gtk_tree_selection_get_selected_rows (selection, NULL);
-    path = list->data;
-    gtk_tree_view_get_cell_area (tree_view,
-                                 path,
-                                 list_view->details->file_name_column,
-                                 rect);
-    gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
-                                                       rect->x, rect->y,
-                                                       &rect->x, &rect->y);
-
-    if (list_view->details->last_event_button_x > 0)
-    {
-        /* Point to the position in the row where it was clicked. */
-        rect->x = list_view->details->last_event_button_x;
-        /* Make it zero width to point exactly at rect->x.*/
-        rect->width = 0;
-    }
-
-    g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
-
-    /* FIXME Due to smooth scrolling, we get the cell area while the view is
-     * still scrolling (and still outside the view), not at the final position
-     * of the cell after scrolling.
-     * https://bugzilla.gnome.org/show_bug.cgi?id=746773
-     * The following workaround guesses the final "y" coordinate by clamping it
-     * to the widget edge. Note that the top edge has got columns header, which
-     * is private, so first guess the header height from the difference between
-     * widget coordinates and bin cooridinates.
-     */
-    gtk_tree_view_convert_bin_window_to_widget_coords (tree_view,
-                                                       0, 0,
-                                                       NULL, &header_height);
-
-    rect->y = CLAMP (rect->y,
-                     header_height,
-                     gtk_widget_get_allocated_height (GTK_WIDGET (view)) - rect->height);
-    /* End of workaround */
-
-    return rect;
-}
-
-static GdkRectangle *
-nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
-{
-    NautilusListView *list_view;
-    GtkTreeView *tree_view;
-    GtkTreeSelection *tree_selection;
-    GtkTreePath *path;
-    GdkRectangle *rect;
-    int header_height;
-
-    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NULL);
-
-    list_view = NAUTILUS_LIST_VIEW (view);
-    tree_view = list_view->details->tree_view;
-    tree_selection = gtk_tree_view_get_selection (tree_view);
-    g_return_val_if_fail (tree_selection != NULL, NULL);
-
-    /* Get the path to the last focused item, if selected. Otherwise, get
-     * the path to the selected item which is sorted the lowest.
-     */
-    gtk_tree_view_get_cursor (tree_view, &path, NULL);
-    if (path == NULL || !gtk_tree_selection_path_is_selected (tree_selection, path))
-    {
-        GList *list;
-
-        list = gtk_tree_selection_get_selected_rows (tree_selection, NULL);
-        list = g_list_last (list);
-        path = g_steal_pointer(&list->data);
-
-        g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
-    }
-
-    gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0.0, 0.0);
-
-    rect = g_malloc0 (sizeof (GdkRectangle));
     gtk_tree_view_get_cell_area (tree_view,
                                  path,
                                  list_view->details->file_name_column,
@@ -3755,6 +3673,74 @@ nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
                      header_height,
                      gtk_widget_get_allocated_height (GTK_WIDGET (list_view)) - rect->height);
     /* End of workaround */
+
+    return rect;
+}
+
+static GdkRectangle *
+nautilus_list_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
+{
+    NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *selection;
+    GList *list;
+    GtkTreePath *path;
+    GdkRectangle *rect;
+
+    list_view = NAUTILUS_LIST_VIEW (view);
+    tree_view = list_view->details->tree_view;
+    selection = gtk_tree_view_get_selection (tree_view);
+    list = gtk_tree_selection_get_selected_rows (selection, NULL);
+    path = list->data;
+    rect = get_rectangle_for_path (list_view, path);
+
+    if (list_view->details->last_event_button_x > 0)
+    {
+        /* Point to the position in the row where it was clicked. */
+        rect->x = list_view->details->last_event_button_x;
+        /* Make it zero width to point exactly at rect->x.*/
+        rect->width = 0;
+    }
+
+    g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+
+    return rect;
+}
+
+static GdkRectangle *
+nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
+{
+    NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *tree_selection;
+    GtkTreePath *path;
+    GdkRectangle *rect;
+
+    g_return_val_if_fail (NAUTILUS_IS_LIST_VIEW (view), NULL);
+
+    list_view = NAUTILUS_LIST_VIEW (view);
+    tree_view = list_view->details->tree_view;
+    tree_selection = gtk_tree_view_get_selection (tree_view);
+    g_return_val_if_fail (tree_selection != NULL, NULL);
+
+    /* Get the path to the last focused item, if selected. Otherwise, get
+     * the path to the selected item which is sorted the lowest.
+     */
+    gtk_tree_view_get_cursor (tree_view, &path, NULL);
+    if (path == NULL || !gtk_tree_selection_path_is_selected (tree_selection, path))
+    {
+        GList *list;
+
+        list = gtk_tree_selection_get_selected_rows (tree_selection, NULL);
+        list = g_list_last (list);
+        path = g_steal_pointer(&list->data);
+
+        g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+    }
+
+    gtk_tree_view_scroll_to_cell (tree_view, path, NULL, FALSE, 0.0, 0.0);
+
+    rect = get_rectangle_for_path (list_view, path);
 
     gtk_tree_path_free (path);
 
