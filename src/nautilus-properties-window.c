@@ -2426,7 +2426,7 @@ attach_directory_contents_value_field (NautilusPropertiesWindow *window,
     g_assert (window->details->directory_contents_value_field == NULL);
     window->details->directory_contents_value_field = value_field;
 
-    gtk_label_set_line_wrap (value_field, TRUE);
+    gtk_label_set_line_wrap (value_field, FALSE);
 
     return value_field;
 }
