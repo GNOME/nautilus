@@ -1189,7 +1189,7 @@ canvas_container_context_click_selection_callback (NautilusCanvasContainer *cont
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
 
     nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (canvas_view),
-                                                       (GdkEvent *) event);
+                                                       event);
 }
 
 static void
@@ -1201,7 +1201,7 @@ canvas_container_context_click_background_callback (NautilusCanvasContainer *con
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
 
     nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (canvas_view),
-                                                        (GdkEvent *) event);
+                                                        event);
 }
 
 static char *
@@ -1352,11 +1352,11 @@ canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gestur
                                                      gpointer             user_data)
 {
     GdkEventSequence *event_sequence;
-    GdkEvent *event;
+    const GdkEvent *event;
     NautilusCanvasView *view = NAUTILUS_CANVAS_VIEW (user_data);
 
     event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
-    event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
     if (nautilus_view_get_selection (NAUTILUS_VIEW (view)))
     {
@@ -1366,7 +1366,7 @@ canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gestur
     else
     {
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                           (GdkEvent *) event);
+                                                           event);
     }
 }
 
