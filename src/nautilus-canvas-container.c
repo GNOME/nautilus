@@ -5371,49 +5371,6 @@ nautilus_canvas_container_get_icon_bounding_box (NautilusCanvasContainer *contai
     return bounding_box;
 }
 
-/* Returns an array of GdkRectangles of the icons. The bounding box is adjusted
- * with the pixels_per_unit already, so they are the final positions on the canvas */
-static GArray *
-nautilus_canvas_container_get_icons_bounding_box (NautilusCanvasContainer *container,
-                                                  GList                   *icons)
-{
-    GArray *result;
-    GList *node;
-    int index;
-    int x1, x2, y1, y2;
-
-    result = g_array_new (FALSE, TRUE, sizeof (GdkRectangle));
-    result = g_array_set_size (result, g_list_length (icons));
-
-    for (index = 0, node = icons; node != NULL; index++, node = node->next)
-    {
-        icon_get_bounding_box ((NautilusCanvasIcon *) node->data,
-                               &x1, &y1, &x2, &y2,
-                               BOUNDS_USAGE_FOR_DISPLAY);
-        g_array_index (result, GdkRectangle, index).x = x1 * EEL_CANVAS (container)->pixels_per_unit;
-        g_array_index (result, GdkRectangle, index).width = (x2 - x1) * EEL_CANVAS (container)->pixels_per_unit;
-        g_array_index (result, GdkRectangle, index).y = y1 * EEL_CANVAS (container)->pixels_per_unit;
-        g_array_index (result, GdkRectangle, index).height = (y2 - y1) * EEL_CANVAS (container)->pixels_per_unit;
-    }
-
-    return result;
-}
-
-GArray *
-nautilus_canvas_container_get_selected_icons_bounding_box (NautilusCanvasContainer *container)
-{
-    GArray *result;
-    GList *icons;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), NULL);
-
-    icons = nautilus_canvas_container_get_selected_icons (container);
-    result = nautilus_canvas_container_get_icons_bounding_box (container, icons);
-    g_list_free (icons);
-
-    return result;
-}
-
 /**
  * nautilus_canvas_container_get_selected_icon_locations:
  * @container: An canvas container widget.
