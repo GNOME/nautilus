@@ -29,7 +29,7 @@
 #include <gio/gio.h>
 #include <string.h>
 
-#define UPDATE_RATE_SECONDS 5
+#define UPDATE_RATE_SECONDS 1
 
 struct NautilusTrashMonitorDetails
 {
