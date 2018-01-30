@@ -39,7 +39,7 @@ appdata = i18n.merge_file(
   input: 'org.gnome.Nautilus.appdata.xml.in',
   output: 'org.gnome.Nautilus.appdata.xml',
   install: true,
-  install_dir: join_paths(datadir, 'appdata'),
+  install_dir: join_paths(datadir, 'metainfo'),
   po_dir: po_dir
 )
 
