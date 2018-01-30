@@ -24,6 +24,7 @@ cc = meson.get_compiler('c')
 # Imports
 gnome = import('gnome')
 i18n = import('i18n')
+pkgconfig = import('pkgconfig')
 #
 
 # Dependencies

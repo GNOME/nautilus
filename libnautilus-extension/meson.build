@@ -70,18 +70,24 @@ nautilus_extension = declare_dependency(
   include_directories: nautilus_include_dirs
 )
 
-pkgconfig_data = configuration_data()
-
-pkgconfig_data.set('prefix', prefix)
-pkgconfig_data.set('exec_prefix', '${prefix}')
-pkgconfig_data.set('libdir', join_paths('${exec_prefix}', libdir))
-pkgconfig_data.set('includedir', join_paths('${prefix}', includedir))
-pkgconfig_data.set('extensiondir', join_paths('${exec_prefix}', extensiondir))
-pkgconfig_data.set('VERSION', meson.project_version())
-
-configure_file(
-  input: 'libnautilus-extension.pc.in',
-  output: 'libnautilus-extension.pc',
-  configuration: pkgconfig_data,
-  install_dir: join_paths(libdir, 'pkgconfig')
+pkgconfig.generate(
+  description: 'A library to create Nautilus view extensions',
+  filebase: 'libnautilus-extension',
+  libraries: [
+    libnautilus_extension
+  ],
+  name: 'libnautilus-extension',
+  subdirs: [
+    'nautilus'
+  ],
+  requires: [
+    'gio-2.0',
+    'glib-2.0',
+    'gtk+-3.0'
+  ],
+  variables: [
+    'exec_prefix=${prefix}',
+    'extensiondir=${libdir}/nautilus/extensions-3.0'
+  ],
+  version: meson.project_version()
 )
