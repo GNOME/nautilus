@@ -44,7 +44,9 @@ libgd_dep = libgd.get_variable('libgd_dep')
 libm = cc.find_library('libm')
 
 gail = dependency('gail-3.0')
-gexiv = dependency('gexiv2', version: '>= 0.10.0')
+if get_option('extensions')
+  gexiv = dependency('gexiv2', version: '>= 0.10.0')
+endif
 gio = dependency('gio-2.0', version: glib_ver)
 gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)
@@ -99,9 +101,8 @@ subdir('po')
 if get_option('docs')
   subdir('docs')
 endif
-subdir('extensions')
-if get_option('nst_extension')
-  subdir('nautilus-sendto-extension')
+if get_option('extensions')
+  subdir('extensions')
 endif
 
 # Compile GSettings schemas when installing from source.
