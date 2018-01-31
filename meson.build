@@ -84,7 +84,10 @@ endif
 configure_file(output: 'config.h', configuration: conf)
 #
 
-nautilus_include_dirs = include_directories('.')
+nautilus_include_dirs = include_directories(
+  '.',
+  'libnautilus-extension'
+)
 
 subdir('eel')
 subdir('libnautilus-extension')
@@ -96,6 +99,7 @@ subdir('po')
 if get_option('docs')
   subdir('docs')
 endif
+subdir('extensions')
 if get_option('nst_extension')
   subdir('nautilus-sendto-extension')
 endif
