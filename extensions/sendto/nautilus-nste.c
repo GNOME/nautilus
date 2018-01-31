@@ -23,9 +23,7 @@
 #include <config.h>
 #include <string.h>
 #include <glib/gi18n-lib.h>
-#include <libnautilus-extension/nautilus-extension-types.h>
-#include <libnautilus-extension/nautilus-file-info.h>
-#include <libnautilus-extension/nautilus-menu-provider.h>
+#include <nautilus-extension.h>
 #include "nautilus-nste.h"
 
 
@@ -130,7 +128,7 @@ nautilus_nste_get_file_items (NautilusMenuProvider *provider,
 }
 
 static void
-nautilus_nste_menu_provider_iface_init (NautilusMenuProviderIface *iface)
+nautilus_nste_menu_provider_iface_init (NautilusMenuProviderInterface *iface)
 {
     iface->get_file_items = nautilus_nste_get_file_items;
 }
