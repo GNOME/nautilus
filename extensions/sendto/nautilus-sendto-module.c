@@ -21,8 +21,7 @@
  */
 
 #include <config.h>
-#include <libnautilus-extension/nautilus-extension-types.h>
-#include <libnautilus-extension/nautilus-column-provider.h>
+#include <nautilus-extension.h>
 #include <glib/gi18n-lib.h>
 #include "nautilus-nste.h"
 
