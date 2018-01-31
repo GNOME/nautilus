@@ -31,7 +31,6 @@
 #include "nautilus-dbus-manager.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-freedesktop-dbus.h"
-#include "nautilus-image-properties-page.h"
 #include "nautilus-previewer.h"
 #include "nautilus-progress-persistence-handler.h"
 #include "nautilus-self-check-functions.h"
@@ -1261,9 +1260,6 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     /* initialize preferences and create the global GSettings objects */
     nautilus_global_preferences_init ();
-
-    /* register property pages */
-    nautilus_image_properties_page_register ();
 
     /* initialize nautilus modules */
     nautilus_profile_start ("Modules");
