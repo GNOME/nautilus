@@ -1,6 +1,4 @@
-
-/* 
- * Copyright (C) 2004 Red Hat, Inc
+/* Copyright (C) 2004 Red Hat, Inc
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
@@ -23,10 +21,18 @@
 
 #include <gtk/gtk.h>
 
-#define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE nautilus_image_properties_page_get_type()
-G_DECLARE_FINAL_TYPE (NautilusImagePropertiesPage, nautilus_image_properties_page, NAUTILUS, IMAGE_PROPERTIES_PAGE, GtkBox)
+#include <nautilus-extension.h>
 
+#define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE (nautilus_image_properties_page_get_type ())
 
-void  nautilus_image_properties_page_register (void);
+G_DECLARE_FINAL_TYPE (NautilusImagesPropertiesPage,
+                      nautilus_image_properties_page,
+                      NAUTILUS, IMAGE_PROPERTIES_PAGE,
+                      GtkGrid)
 
-#endif /* NAUTILUS_IMAGE_PROPERTIES_PAGE_H */
+void                          nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage *page,
+                                                                                  NautilusFileInfo             *file_info);
+
+NautilusImagesPropertiesPage *nautilus_image_properties_page_new                 (void);
+
+#endif

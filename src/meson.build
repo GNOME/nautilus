@@ -81,8 +81,6 @@ libnautilus_sources = [
   'nautilus-floating-bar.h',
   'nautilus-freedesktop-dbus.c',
   'nautilus-freedesktop-dbus.h',
-  'nautilus-image-properties-page.c',
-  'nautilus-image-properties-page.h',
   'nautilus-list-model.c',
   'nautilus-list-model.h',
   'nautilus-list-view.c',
@@ -269,7 +267,6 @@ libnautilus_sources = [
 
 nautilus_deps = [
   eel_2,
-  gexiv,
   gmodule,
   gnome_autoar,
   gnome_desktop,
