@@ -35,20 +35,21 @@ enum
     LAST_PROP
 };
 
-struct _NautilusPropertyPageDetails
+struct _NautilusPropertyPage
 {
+    GObject parent_instance;
+
     char *name;
     GtkWidget *label;
     GtkWidget *page;
 };
 
-static GObjectClass *parent_class = NULL;
+G_DEFINE_TYPE (NautilusPropertyPage, nautilus_property_page, G_TYPE_OBJECT)
 
 /**
  * SECTION:nautilus-property-page
  * @title: NautilusPropertyPage
  * @short_description: Property page descriptor object
- * @include: libnautilus-extension/nautilus-property-page.h
  *
  * #NautilusPropertyPage is an object that describes a page in the file
  * properties dialog. Extensions can provide #NautilusPropertyPage objects
@@ -75,9 +76,8 @@ nautilus_property_page_new (const char *name,
     NautilusPropertyPage *page;
 
     g_return_val_if_fail (name != NULL, NULL);
-    g_return_val_if_fail (label != NULL && GTK_IS_WIDGET (label), NULL);
-    g_return_val_if_fail (page_widget != NULL && GTK_IS_WIDGET (page_widget),
-                          NULL);
+    g_return_val_if_fail (GTK_IS_WIDGET (label), NULL);
+    g_return_val_if_fail (GTK_IS_WIDGET (page_widget), NULL);
 
     page = g_object_new (NAUTILUS_TYPE_PROPERTY_PAGE,
                          "name", name,
@@ -102,19 +102,19 @@ nautilus_property_page_get_property (GObject    *object,
     {
         case PROP_NAME:
         {
-            g_value_set_string (value, page->details->name);
+            g_value_set_string (value, page->name);
         }
         break;
 
         case PROP_LABEL:
         {
-            g_value_set_object (value, page->details->label);
+            g_value_set_object (value, page->label);
         }
         break;
 
         case PROP_PAGE:
         {
-            g_value_set_object (value, page->details->page);
+            g_value_set_object (value, page->page);
         }
         break;
 
@@ -140,32 +140,32 @@ nautilus_property_page_set_property (GObject      *object,
     {
         case PROP_NAME:
         {
-            g_free (page->details->name);
-            page->details->name = g_strdup (g_value_get_string (value));
+            g_free (page->name);
+            page->name = g_strdup (g_value_get_string (value));
             g_object_notify (object, "name");
         }
         break;
 
         case PROP_LABEL:
         {
-            if (page->details->label)
+            if (page->label)
             {
-                g_object_unref (page->details->label);
+                g_object_unref (page->label);
             }
 
-            page->details->label = g_object_ref (g_value_get_object (value));
+            page->label = g_object_ref (g_value_get_object (value));
             g_object_notify (object, "label");
         }
         break;
 
         case PROP_PAGE:
         {
-            if (page->details->page)
+            if (page->page)
             {
-                g_object_unref (page->details->page);
+                g_object_unref (page->page);
             }
 
-            page->details->page = g_object_ref (g_value_get_object (value));
+            page->page = g_object_ref (g_value_get_object (value));
             g_object_notify (object, "page");
         }
         break;
@@ -185,15 +185,15 @@ nautilus_property_page_dispose (GObject *object)
 
     page = NAUTILUS_PROPERTY_PAGE (object);
 
-    if (page->details->label)
+    if (page->label)
     {
-        g_object_unref (page->details->label);
-        page->details->label = NULL;
+        g_object_unref (page->label);
+        page->label = NULL;
     }
-    if (page->details->page)
+    if (page->page)
     {
-        g_object_unref (page->details->page);
-        page->details->page = NULL;
+        g_object_unref (page->page);
+        page->page = NULL;
     }
 }
 
@@ -204,24 +204,19 @@ nautilus_property_page_finalize (GObject *object)
 
     page = NAUTILUS_PROPERTY_PAGE (object);
 
-    g_free (page->details->name);
+    g_free (page->name);
 
-    g_free (page->details);
-
-    G_OBJECT_CLASS (parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_property_page_parent_class)->finalize (object);
 }
 
 static void
-nautilus_property_page_instance_init (NautilusPropertyPage *page)
+nautilus_property_page_init (NautilusPropertyPage *page)
 {
-    page->details = g_new0 (NautilusPropertyPageDetails, 1);
 }
 
 static void
 nautilus_property_page_class_init (NautilusPropertyPageClass *class)
 {
-    parent_class = g_type_class_peek_parent (class);
-
     G_OBJECT_CLASS (class)->finalize = nautilus_property_page_finalize;
     G_OBJECT_CLASS (class)->dispose = nautilus_property_page_dispose;
     G_OBJECT_CLASS (class)->get_property = nautilus_property_page_get_property;
@@ -248,33 +243,4 @@ nautilus_property_page_class_init (NautilusPropertyPageClass *class)
                                                           "Widget for the property page",
                                                           GTK_TYPE_WIDGET,
                                                           G_PARAM_READWRITE));
-}
-
-GType
-nautilus_property_page_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusPropertyPageClass),
-            NULL,
-            NULL,
-            (GClassInitFunc) nautilus_property_page_class_init,
-            NULL,
-            NULL,
-            sizeof (NautilusPropertyPage),
-            0,
-            (GInstanceInitFunc) nautilus_property_page_instance_init
-        };
-
-        type = g_type_register_static
-                   (G_TYPE_OBJECT,
-                   "NautilusPropertyPage",
-                   &info, 0);
-    }
-
-    return type;
 }

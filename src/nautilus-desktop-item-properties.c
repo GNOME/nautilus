@@ -29,8 +29,7 @@
 #include <eel/eel-glib-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <libnautilus-extension/nautilus-extension-types.h>
-#include <libnautilus-extension/nautilus-file-info.h>
+#include <nautilus-extension.h>
 #include "nautilus-file.h"
 #include "nautilus-file-attributes.h"
 

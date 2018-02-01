@@ -26,6 +26,8 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
+#include <nautilus-extension.h>
+
 #include "nautilus-column-utilities.h"
 
 struct _NautilusColumnChooser
