@@ -29,26 +29,63 @@
 #ifndef NAUTILUS_INFO_PROVIDER_H
 #define NAUTILUS_INFO_PROVIDER_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
-#include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_INFO_PROVIDER           (nautilus_info_provider_get_type ())
-#define NAUTILUS_INFO_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_INFO_PROVIDER, NautilusInfoProvider))
-#define NAUTILUS_IS_INFO_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_INFO_PROVIDER))
-#define NAUTILUS_INFO_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_INFO_PROVIDER, NautilusInfoProviderIface))
+#define NAUTILUS_TYPE_INFO_PROVIDER (nautilus_info_provider_get_type ())
 
-typedef struct _NautilusInfoProvider       NautilusInfoProvider;
-typedef struct _NautilusInfoProviderIface  NautilusInfoProviderIface;
+G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
+                     NAUTILUS, INFO_PROVIDER,
+                     GObject)
 
-typedef void (*NautilusInfoProviderUpdateComplete) (NautilusInfoProvider    *provider,
-						    NautilusOperationHandle *handle,
-						    NautilusOperationResult  result,
-						    gpointer                 user_data);
+/* For compatibility reasons, remove once the API is broken. */
+typedef NautilusInfoProviderInterface NautilusInfoProviderIface;
+
 /**
- * NautilusInfoProviderIface:
+ * NautilusOperationHandle:
+ *
+ * Handle for asynchronous interfaces. These are opaque handles that must
+ * be unique within an extension object. These are returned by operations
+ * that return #NAUTILUS_OPERATION_IN_PROGRESS.
+ */
+typedef struct _NautilusOperationHandle NautilusOperationHandle;
+
+/**
+ * NautilusOperationResult:
+ * @NAUTILUS_OPERATION_COMPLETE: the operation succeeded, and the extension
+ *  is done with the request.
+ * @NAUTILUS_OPERATION_FAILED: the operation failed.
+ * @NAUTILUS_OPERATION_IN_PROGRESS: the extension has begin an async operation.
+ *  When this value is returned, the extension must set the handle parameter
+ *  and call the callback closure when the operation is complete.
+ *
+ * Return values for asynchronous operations performed by the extension.
+ * See nautilus_info_provider_update_file_info().
+ */
+typedef enum
+{
+    /* Returned if the call succeeded, and the extension is done 
+     * with the request */
+    NAUTILUS_OPERATION_COMPLETE,
+
+    /* Returned if the call failed */
+    NAUTILUS_OPERATION_FAILED,
+
+    /* Returned if the extension has begun an async operation. 
+     * If this is returned, the extension must set the handle 
+     * parameter and call the callback closure when the 
+     * operation is complete. */
+    NAUTILUS_OPERATION_IN_PROGRESS
+} NautilusOperationResult;
+
+/**
+ * NautilusInfoProviderInterface:
  * @g_iface: The parent interface.
  * @update_file_info: Returns a #NautilusOperationResult.
  *   See nautilus_info_provider_update_file_info() for details.
@@ -57,33 +94,33 @@ typedef void (*NautilusInfoProviderUpdateComplete) (NautilusInfoProvider    *pro
  *
  * Interface for extensions to provide additional information about files.
  */
-struct _NautilusInfoProviderIface {
-	GTypeInterface g_iface;
+struct _NautilusInfoProviderInterface
+{
+    GTypeInterface g_iface;
 
-	NautilusOperationResult (*update_file_info) (NautilusInfoProvider     *provider,
-						     NautilusFileInfo         *file,
-						     GClosure                 *update_complete,
-						     NautilusOperationHandle **handle);
-	void                    (*cancel_update)    (NautilusInfoProvider     *provider,
-						     NautilusOperationHandle  *handle);
+    NautilusOperationResult (*update_file_info) (NautilusInfoProvider     *provider,
+                                                 NautilusFileInfo         *file,
+                                                 GClosure                 *update_complete,
+                                                 NautilusOperationHandle **handle);
+    void                    (*cancel_update)    (NautilusInfoProvider     *provider,
+                                                 NautilusOperationHandle  *handle);
 };
 
 /* Interface Functions */
-GType                   nautilus_info_provider_get_type               (void);
 NautilusOperationResult nautilus_info_provider_update_file_info       (NautilusInfoProvider     *provider,
-								       NautilusFileInfo         *file,
-								       GClosure                 *update_complete,
-								       NautilusOperationHandle **handle);
+                                                                       NautilusFileInfo         *file,
+                                                                       GClosure                 *update_complete,
+                                                                       NautilusOperationHandle **handle);
 void                    nautilus_info_provider_cancel_update          (NautilusInfoProvider     *provider,
-								       NautilusOperationHandle  *handle);
+                                                                       NautilusOperationHandle  *handle);
 
 
 
 /* Helper functions for implementations */
 void                    nautilus_info_provider_update_complete_invoke (GClosure                 *update_complete,
-								       NautilusInfoProvider     *provider,
-								       NautilusOperationHandle  *handle,
-								       NautilusOperationResult   result);
+                                                                       NautilusInfoProvider     *provider,
+                                                                       NautilusOperationHandle  *handle,
+                                                                       NautilusOperationResult   result);
 
 G_END_DECLS
 

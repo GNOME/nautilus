@@ -21,53 +21,23 @@
  *
  */
 
-#include <config.h>
 #include "nautilus-location-widget-provider.h"
 
-#include <glib-object.h>
+G_DEFINE_INTERFACE (NautilusLocationWidgetProvider, nautilus_location_widget_provider,
+                    G_TYPE_OBJECT)
 
 /**
  * SECTION:nautilus-location-widget-provider
  * @title: NautilusLocationWidgetProvider
  * @short_description: Interface to provide additional location widgets
- * @include: libnautilus-extension/nautilus-location-widget-provider.h
  *
  * #NautilusLocationWidgetProvider allows extension to provide additional location
  * widgets in the file manager views.
  */
 
 static void
-nautilus_location_widget_provider_base_init (gpointer g_class)
+nautilus_location_widget_provider_default_init (NautilusLocationWidgetProviderInterface *klass)
 {
-}
-
-GType
-nautilus_location_widget_provider_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusLocationWidgetProviderIface),
-            nautilus_location_widget_provider_base_init,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            0,
-            0,
-            NULL
-        };
-
-        type = g_type_register_static (G_TYPE_INTERFACE,
-                                       "NautilusLocationWidgetProvider",
-                                       &info, 0);
-        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-    }
-
-    return type;
 }
 
 /**
@@ -83,8 +53,13 @@ nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider *pr
                                               const char                     *uri,
                                               GtkWidget                      *window)
 {
+    NautilusLocationWidgetProviderInterface *iface;
+
     g_return_val_if_fail (NAUTILUS_IS_LOCATION_WIDGET_PROVIDER (provider), NULL);
 
-    return NAUTILUS_LOCATION_WIDGET_PROVIDER_GET_IFACE (provider)->get_widget
-               (provider, uri, window);
+    iface = NAUTILUS_LOCATION_WIDGET_PROVIDER_GET_IFACE (provider);
+
+    g_return_val_if_fail (iface->get_widget != NULL, NULL);
+
+    return iface->get_widget (provider, uri, window);
 }

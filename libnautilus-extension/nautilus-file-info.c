@@ -18,9 +18,11 @@
  *
  */
 
-#include <config.h>
 #include "nautilus-file-info.h"
+
 #include "nautilus-extension-private.h"
+
+G_DEFINE_INTERFACE (NautilusFileInfo, nautilus_file_info, G_TYPE_OBJECT)
 
 NautilusFileInfo *(*nautilus_file_info_getter)(GFile * location, gboolean create);
 
@@ -28,7 +30,6 @@ NautilusFileInfo *(*nautilus_file_info_getter)(GFile * location, gboolean create
  * SECTION:nautilus-file-info
  * @title: NautilusFileInfo
  * @short_description: File interface for nautilus extensions
- * @include: libnautilus-extension/nautilus-file-info.h
  *
  * #NautilusFileInfo provides methods to get and modify information
  * about file objects in the file manager.
@@ -76,246 +77,309 @@ nautilus_file_info_list_free (GList *files)
 }
 
 static void
-nautilus_file_info_base_init (gpointer g_class)
+nautilus_file_info_default_init (NautilusFileInfoInterface *klass)
 {
-}
-
-GType
-nautilus_file_info_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusFileInfoIface),
-            nautilus_file_info_base_init,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            0,
-            0,
-            NULL
-        };
-
-        type = g_type_register_static (G_TYPE_INTERFACE,
-                                       "NautilusFileInfo",
-                                       &info, 0);
-        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-    }
-
-    return type;
 }
 
 gboolean
-nautilus_file_info_is_gone (NautilusFileInfo *file)
+nautilus_file_info_is_gone (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->is_gone != NULL, FALSE);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_gone (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), FALSE);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->is_gone != NULL, FALSE);
+
+    return iface->is_gone (file_info);
 }
 
 GFileType
-nautilus_file_info_get_file_type (NautilusFileInfo *file)
+nautilus_file_info_get_file_type (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), G_FILE_TYPE_UNKNOWN);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_file_type != NULL, G_FILE_TYPE_UNKNOWN);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_file_type (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), G_FILE_TYPE_UNKNOWN);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_file_type != NULL, G_FILE_TYPE_UNKNOWN);
+
+    return iface->get_file_type (file_info);
 }
 
 char *
-nautilus_file_info_get_name (NautilusFileInfo *file)
+nautilus_file_info_get_name (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_name != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_name (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_name != NULL, NULL);
+
+    return iface->get_name (file_info);
 }
 
 /**
  * nautilus_file_info_get_location:
- * @file: a #NautilusFileInfo
+ * @file_info: a #NautilusFileInfo
  *
- * Returns: (transfer full): a #GFile for the location of @file
+ * Returns: (transfer full): a #GFile for the location of @file_info
  */
 GFile *
-nautilus_file_info_get_location (NautilusFileInfo *file)
+nautilus_file_info_get_location (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_location != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_location (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_location != NULL, NULL);
+
+    return iface->get_location (file_info);
 }
 char *
-nautilus_file_info_get_uri (NautilusFileInfo *file)
+nautilus_file_info_get_uri (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_uri != NULL, NULL);
+
+    return iface->get_uri (file_info);
 }
 
 char *
-nautilus_file_info_get_activation_uri (NautilusFileInfo *file)
+nautilus_file_info_get_activation_uri (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_activation_uri (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_activation_uri != NULL, NULL);
+
+    return iface->get_activation_uri (file_info);
 }
 
 /**
  * nautilus_file_info_get_parent_location:
- * @file: a #NautilusFileInfo
+ * @file_info: a #NautilusFileInfo
  *
- * Returns: (allow-none) (transfer full): a #GFile for the parent location of @file,
- *   or %NULL if @file has no parent
+ * Returns: (allow-none) (transfer full): a #GFile for the parent location of @file_info,
+ *   or %NULL if @file_info has no parent
  */
 GFile *
-nautilus_file_info_get_parent_location (NautilusFileInfo *file)
+nautilus_file_info_get_parent_location (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_location != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_location (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_parent_location != NULL, NULL);
+
+    return iface->get_parent_location (file_info);
 }
 
 char *
-nautilus_file_info_get_parent_uri (NautilusFileInfo *file)
+nautilus_file_info_get_parent_uri (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_uri (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_parent_uri != NULL, NULL);
+
+    return iface->get_parent_uri (file_info);
 }
 
 /**
  * nautilus_file_info_get_parent_info:
- * @file: a #NautilusFileInfo
+ * @file_info: a #NautilusFileInfo
  *
- * Returns: (allow-none) (transfer full): a #NautilusFileInfo for the parent of @file,
- *   or %NULL if @file has no parent
+ * Returns: (allow-none) (transfer full): a #NautilusFileInfo for the parent of @file_info,
+ *   or %NULL if @file_info has no parent
  */
 NautilusFileInfo *
-nautilus_file_info_get_parent_info (NautilusFileInfo *file)
+nautilus_file_info_get_parent_info (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_info != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_parent_info (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_parent_info != NULL, NULL);
+
+    return iface->get_parent_info (file_info);
 }
 
 /**
  * nautilus_file_info_get_mount:
- * @file: a #NautilusFileInfo
+ * @file_info: a #NautilusFileInfo
  *
- * Returns: (allow-none) (transfer full): a #GMount for the mount of @file,
- *   or %NULL if @file has no mount
+ * Returns: (allow-none) (transfer full): a #GMount for the mount of @file_info,
+ *   or %NULL if @file_info has no mount
  */
 GMount *
-nautilus_file_info_get_mount (NautilusFileInfo *file)
+nautilus_file_info_get_mount (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mount != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mount (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_mount != NULL, NULL);
+
+    return iface->get_mount (file_info);
 }
 
 char *
-nautilus_file_info_get_uri_scheme (NautilusFileInfo *file)
+nautilus_file_info_get_uri_scheme (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri_scheme != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_uri_scheme (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_uri_scheme != NULL, NULL);
+
+    return iface->get_uri_scheme (file_info);
 }
 
 char *
-nautilus_file_info_get_mime_type (NautilusFileInfo *file)
+nautilus_file_info_get_mime_type (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mime_type != NULL, NULL);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_mime_type (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_mime_type != NULL, NULL);
+
+    return iface->get_mime_type (file_info);
 }
 
 gboolean
-nautilus_file_info_is_mime_type (NautilusFileInfo *file,
+nautilus_file_info_is_mime_type (NautilusFileInfo *file_info,
                                  const char       *mime_type)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
+    NautilusFileInfoInterface *iface;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), FALSE);
     g_return_val_if_fail (mime_type != NULL, FALSE);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->is_mime_type != NULL, FALSE);
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_mime_type (file,
-                                                              mime_type);
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->is_mime_type != NULL, FALSE);
+
+    return iface->is_mime_type (file_info, mime_type);
 }
 
 gboolean
-nautilus_file_info_is_directory (NautilusFileInfo *file)
+nautilus_file_info_is_directory (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->is_directory != NULL, FALSE);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->is_directory (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), FALSE);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->is_directory != NULL, FALSE);
+
+    return iface->is_directory (file_info);
 }
 
 gboolean
-nautilus_file_info_can_write (NautilusFileInfo *file)
+nautilus_file_info_can_write (NautilusFileInfo *file_info)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), FALSE);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->can_write != NULL, FALSE);
+    NautilusFileInfoInterface *iface;
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->can_write (file);
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), FALSE);
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->can_write != NULL, FALSE);
+
+    return iface->can_write (file_info);
 }
 
 void
-nautilus_file_info_add_emblem (NautilusFileInfo *file,
+nautilus_file_info_add_emblem (NautilusFileInfo *file_info,
                                const char       *emblem_name)
 {
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file));
-    g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->add_emblem != NULL);
+    NautilusFileInfoInterface *iface;
 
-    NAUTILUS_FILE_INFO_GET_IFACE (file)->add_emblem (file, emblem_name);
+    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file_info));
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_if_fail (iface->add_emblem != NULL);
+
+    iface->add_emblem (file_info, emblem_name);
 }
 
 char *
-nautilus_file_info_get_string_attribute (NautilusFileInfo *file,
+nautilus_file_info_get_string_attribute (NautilusFileInfo *file_info,
                                          const char       *attribute_name)
 {
-    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file), NULL);
-    g_return_val_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->get_string_attribute != NULL, NULL);
+    NautilusFileInfoInterface *iface;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE_INFO (file_info), NULL);
     g_return_val_if_fail (attribute_name != NULL, NULL);
 
-    return NAUTILUS_FILE_INFO_GET_IFACE (file)->get_string_attribute
-               (file, attribute_name);
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_val_if_fail (iface->get_string_attribute != NULL, NULL);
+
+    return iface->get_string_attribute (file_info, attribute_name);
 }
 
 void
-nautilus_file_info_add_string_attribute (NautilusFileInfo *file,
+nautilus_file_info_add_string_attribute (NautilusFileInfo *file_info,
                                          const char       *attribute_name,
                                          const char       *value)
 {
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file));
-    g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->add_string_attribute != NULL);
+    NautilusFileInfoInterface *iface;
+
+    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file_info));
     g_return_if_fail (attribute_name != NULL);
     g_return_if_fail (value != NULL);
 
-    NAUTILUS_FILE_INFO_GET_IFACE (file)->add_string_attribute
-        (file, attribute_name, value);
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_if_fail (iface->add_string_attribute != NULL);
+
+    iface->add_string_attribute (file_info, attribute_name, value);
 }
 
 void
-nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
+nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file_info)
 {
-    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file));
-    g_return_if_fail (NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info != NULL);
+    NautilusFileInfoInterface *iface;
 
-    NAUTILUS_FILE_INFO_GET_IFACE (file)->invalidate_extension_info (file);
+    g_return_if_fail (NAUTILUS_IS_FILE_INFO (file_info));
+
+    iface = NAUTILUS_FILE_INFO_GET_IFACE (file_info);
+
+    g_return_if_fail (iface->invalidate_extension_info != NULL);
+
+    iface->invalidate_extension_info (file_info);
 }
 
 /**
@@ -327,6 +391,8 @@ nautilus_file_info_invalidate_extension_info (NautilusFileInfo *file)
 NautilusFileInfo *
 nautilus_file_info_lookup (GFile *location)
 {
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
+
     return nautilus_file_info_getter (location, FALSE);
 }
 
@@ -339,6 +405,8 @@ nautilus_file_info_lookup (GFile *location)
 NautilusFileInfo *
 nautilus_file_info_create (GFile *location)
 {
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
+
     return nautilus_file_info_getter (location, TRUE);
 }
 
@@ -351,14 +419,13 @@ nautilus_file_info_create (GFile *location)
 NautilusFileInfo *
 nautilus_file_info_lookup_for_uri (const char *uri)
 {
-    GFile *location;
-    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
+
+    g_return_val_if_fail (uri != NULL, NULL);
 
     location = g_file_new_for_uri (uri);
-    file = nautilus_file_info_lookup (location);
-    g_object_unref (location);
 
-    return file;
+    return nautilus_file_info_lookup (location);
 }
 
 /**
@@ -370,12 +437,11 @@ nautilus_file_info_lookup_for_uri (const char *uri)
 NautilusFileInfo *
 nautilus_file_info_create_for_uri (const char *uri)
 {
-    GFile *location;
-    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
+
+    g_return_val_if_fail (uri != NULL, NULL);
 
     location = g_file_new_for_uri (uri);
-    file = nautilus_file_info_create (location);
-    g_object_unref (location);
 
-    return file;
+    return nautilus_file_info_create (location);
 }

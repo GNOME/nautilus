@@ -23,7 +23,6 @@
 #define NAUTILUS_UI_UTILITIES_H
 
 #include <gtk/gtk.h>
-#include <libnautilus-extension/nautilus-menu-item.h>
 
 
 void nautilus_gmenu_add_item_in_submodel 	   (GMenu             *menu,

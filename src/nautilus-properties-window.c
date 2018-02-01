@@ -44,7 +44,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 
-#include <libnautilus-extension/nautilus-property-page-provider.h>
+#include <nautilus-extension.h>
 #include "nautilus-file-attributes.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"

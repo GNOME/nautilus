@@ -23,7 +23,6 @@
 #ifndef NAUTILUS_COLUMN_UTILITIES_H
 #define NAUTILUS_COLUMN_UTILITIES_H
 
-#include <libnautilus-extension/nautilus-column.h>
 #include "nautilus-file.h"
 
 GList *nautilus_get_all_columns       (void);
