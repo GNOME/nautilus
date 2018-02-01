@@ -29,7 +29,7 @@
 void
 nautilus_module_initialize (GTypeModule *module)
 {
-    nautilus_nste_register_type (module);
+    nautilus_nste_load (module);
 
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
