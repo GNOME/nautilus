@@ -30,37 +30,37 @@
 #ifndef NAUTILUS_COLUMN_PROVIDER_H
 #define NAUTILUS_COLUMN_PROVIDER_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
-#include "nautilus-extension-types.h"
-#include "nautilus-column.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_COLUMN_PROVIDER           (nautilus_column_provider_get_type ())
-#define NAUTILUS_COLUMN_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_COLUMN_PROVIDER, NautilusColumnProvider))
-#define NAUTILUS_IS_COLUMN_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_COLUMN_PROVIDER))
-#define NAUTILUS_COLUMN_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_COLUMN_PROVIDER, NautilusColumnProviderIface))
+#define NAUTILUS_TYPE_COLUMN_PROVIDER (nautilus_column_provider_get_type ())
 
-typedef struct _NautilusColumnProvider       NautilusColumnProvider;
-typedef struct _NautilusColumnProviderIface  NautilusColumnProviderIface;
+G_DECLARE_INTERFACE (NautilusColumnProvider, nautilus_column_provider,
+                     NAUTILUS, COLUMN_PROVIDER,
+                     GObject)
 
 /**
- * NautilusColumnProviderIface:
+ * NautilusColumnProviderInterface:
  * @g_iface: The parent interface.
  * @get_columns: Returns a #GList of #NautilusColumn.
  *   See nautilus_column_provider_get_columns() for details.
  *
  * Interface for extensions to provide additional list view columns.
  */
-struct _NautilusColumnProviderIface {
-	GTypeInterface g_iface;
+struct _NautilusColumnProviderInterface
+{
+    GTypeInterface g_iface;
 
-	GList *(*get_columns) (NautilusColumnProvider *provider);
+    GList *(*get_columns) (NautilusColumnProvider *provider);
 };
 
 /* Interface Functions */
-GType                   nautilus_column_provider_get_type       (void);
-GList                  *nautilus_column_provider_get_columns    (NautilusColumnProvider *provider);
+GList *nautilus_column_provider_get_columns (NautilusColumnProvider *provider);
 
 G_END_DECLS
 
