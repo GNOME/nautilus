@@ -26,55 +26,55 @@
 #include <nautilus-extension.h>
 #include "nautilus-nste.h"
 
+struct _NautilusNste
+{
+    GObject parent_instance;
 
-static GObjectClass *parent_class;
+    gboolean nst_present;
+};
+
+static void menu_provider_iface_init (NautilusMenuProviderInterface *iface);
+
+G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusNste, nautilus_nste, G_TYPE_OBJECT, 0,
+                                G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_MENU_PROVIDER,
+                                                               menu_provider_iface_init))
 
 static void
 sendto_callback (NautilusMenuItem *item,
                  gpointer          user_data)
 {
-    GList *files, *scan;
-    gchar *uri;
-    GString *cmd;
+    GList *files;
+    g_autoptr (GString) command = NULL;
 
     files = g_object_get_data (G_OBJECT (item), "files");
-    cmd = g_string_new ("nautilus-sendto");
+    command = g_string_new ("nautilus-sendto");
 
-    for (scan = files; scan; scan = scan->next)
+    for (GList *l = files; l != NULL; l = l->next)
     {
-        NautilusFileInfo *file = scan->data;
+        g_autofree char *uri = NULL;
 
-        uri = nautilus_file_info_get_uri (file);
-        g_string_append_printf (cmd, " \"%s\"", uri);
-        g_free (uri);
+        uri = nautilus_file_info_get_uri (l->data);
+
+        g_string_append_printf (command, " \"%s\"", uri);
     }
 
-    g_spawn_command_line_async (cmd->str, NULL);
-
-    g_string_free (cmd, TRUE);
+    g_spawn_command_line_async (command->str, NULL);
 }
 
 static gboolean
 check_available_mailer ()
 {
-    GAppInfo *app_info;
+    g_autoptr (GAppInfo) app_info = NULL;
 
     app_info = g_app_info_get_default_for_uri_scheme ("mailto");
-    if (app_info)
-    {
-        g_clear_object (&app_info);
-        return TRUE;
-    }
-    else
-    {
-        return FALSE;
-    }
+
+    return app_info != NULL;
 }
 
 static GList *
-nautilus_nste_get_file_items (NautilusMenuProvider *provider,
-                              GtkWidget            *window,
-                              GList                *files)
+get_file_items (NautilusMenuProvider *provider,
+                GtkWidget            *window,
+                GList                *files)
 {
     GList *items = NULL;
     gboolean one_item;
@@ -127,66 +127,42 @@ nautilus_nste_get_file_items (NautilusMenuProvider *provider,
     return items;
 }
 
-static void
-nautilus_nste_menu_provider_iface_init (NautilusMenuProviderInterface *iface)
+static GList *
+get_background_items (NautilusMenuProvider *provider,
+                      GtkWidget            *window,
+                      NautilusFileInfo     *current_folder)
 {
-    iface->get_file_items = nautilus_nste_get_file_items;
+    return NULL;
 }
 
 static void
-nautilus_nste_instance_init (NautilusNste *nste)
+menu_provider_iface_init (NautilusMenuProviderInterface *iface)
 {
-    char *path;
+    iface->get_file_items = get_file_items;
+    iface->get_background_items = get_background_items;
+}
+
+static void
+nautilus_nste_init (NautilusNste *nste)
+{
+    g_autofree char *path = NULL;
 
     path = g_find_program_in_path ("nautilus-sendto");
     nste->nst_present = (path != NULL);
-    g_free (path);
 }
 
 static void
-nautilus_nste_class_init (NautilusNsteClass *class)
+nautilus_nste_class_init (NautilusNsteClass *klass)
 {
-    parent_class = g_type_class_peek_parent (class);
 }
 
-static GType nste_type = 0;
-
-GType
-nautilus_nste_get_type (void)
+static void
+nautilus_nste_class_finalize (NautilusNsteClass *klass)
 {
-    return nste_type;
 }
 
 void
-nautilus_nste_register_type (GTypeModule *module)
+nautilus_nste_load (GTypeModule *module)
 {
-    static const GTypeInfo info =
-    {
-        sizeof (NautilusNsteClass),
-        (GBaseInitFunc) NULL,
-        (GBaseFinalizeFunc) NULL,
-        (GClassInitFunc) nautilus_nste_class_init,
-        NULL,
-        NULL,
-        sizeof (NautilusNste),
-        0,
-        (GInstanceInitFunc) nautilus_nste_instance_init,
-    };
-
-    static const GInterfaceInfo menu_provider_iface_info =
-    {
-        (GInterfaceInitFunc) nautilus_nste_menu_provider_iface_init,
-        NULL,
-        NULL
-    };
-
-    nste_type = g_type_module_register_type (module,
-                                             G_TYPE_OBJECT,
-                                             "NautilusNste",
-                                             &info, 0);
-
-    g_type_module_add_interface (module,
-                                 nste_type,
-                                 NAUTILUS_TYPE_MENU_PROVIDER,
-                                 &menu_provider_iface_info);
+    nautilus_nste_register_type (module);
 }
