@@ -23,7 +23,6 @@
 #ifndef NAUTILUS_COLUMN_CHOOSER_H
 #define NAUTILUS_COLUMN_CHOOSER_H
 
-#include <gtk/gtk.h>
 #include "nautilus-file.h"
 
 #define NAUTILUS_TYPE_COLUMN_CHOOSER nautilus_column_chooser_get_type()

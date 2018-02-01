@@ -31,41 +31,46 @@
 #ifndef NAUTILUS_LOCATION_WIDGET_PROVIDER_H
 #define NAUTILUS_LOCATION_WIDGET_PROVIDER_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER           (nautilus_location_widget_provider_get_type ())
-#define NAUTILUS_LOCATION_WIDGET_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER, NautilusLocationWidgetProvider))
-#define NAUTILUS_IS_LOCATION_WIDGET_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER))
-#define NAUTILUS_LOCATION_WIDGET_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER, NautilusLocationWidgetProviderIface))
+#define NAUTILUS_TYPE_LOCATION_WIDGET_PROVIDER (nautilus_location_widget_provider_get_type ())
 
-typedef struct _NautilusLocationWidgetProvider       NautilusLocationWidgetProvider;
-typedef struct _NautilusLocationWidgetProviderIface  NautilusLocationWidgetProviderIface;
+G_DECLARE_INTERFACE (NautilusLocationWidgetProvider, nautilus_location_widget_provider,
+                     NAUTILUS, LOCATION_WIDGET_PROVIDER,
+                     GObject)
+
+/* For compatibility reasons, remove once the API is broken. */
+typedef NautilusLocationWidgetProviderInterface NautilusLocationWidgetProviderIface;
 
 /**
- * NautilusLocationWidgetProviderIface:
+ * NautilusLocationWidgetProviderInterface:
  * @g_iface: The parent interface.
  * @get_widget: Returns a #GtkWidget.
  *   See nautilus_location_widget_provider_get_widget() for details.
  *
  * Interface for extensions to provide additional location widgets.
  */
-struct _NautilusLocationWidgetProviderIface {
-	GTypeInterface g_iface;
+struct _NautilusLocationWidgetProviderInterface
+{
+    GTypeInterface g_iface;
 
-	GtkWidget * (*get_widget) (NautilusLocationWidgetProvider *provider,
-				   const char                     *uri,
-				   GtkWidget                      *window);
+    GtkWidget *(*get_widget) (NautilusLocationWidgetProvider *provider,
+                              const char                     *uri,
+                              GtkWidget                      *window);
 };
 
 /* Interface Functions */
-GType       nautilus_location_widget_provider_get_type      (void);
-GtkWidget * nautilus_location_widget_provider_get_widget    (NautilusLocationWidgetProvider     *provider,
-							     const char                         *uri,
-							     GtkWidget                          *window);
+GtkWidget *nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider *provider,
+                                                         const char                     *uri,
+                                                         GtkWidget                      *window);
+
 G_END_DECLS
 
 #endif
