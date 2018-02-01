@@ -517,33 +517,31 @@ static gboolean
 open_file_in_application (gpointer user_data)
 {
     HandleUnsupportedFileData *data;
+    g_autofree gchar *mime_type = NULL;
+    GtkWidget *dialog;
+    const char *heading;
     g_autoptr (GAppInfo) application = NULL;
 
     data = user_data;
+    mime_type = nautilus_file_get_mime_type (data->file);
+    dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
+                                                          GTK_DIALOG_MODAL |
+                                                          GTK_DIALOG_DESTROY_WITH_PARENT |
+                                                          GTK_DIALOG_USE_HEADER_BAR,
+                                                          mime_type);
+    heading = _("Password-protected archives are not yet supported. "
+                "Please choose another application, if you have one installed.");
 
-    application = nautilus_mime_get_default_application_for_file (data->file);
+    gtk_app_chooser_dialog_set_heading (GTK_APP_CHOOSER_DIALOG (dialog), heading);
 
-    if (!application)
+    if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
     {
-        GtkWidget *dialog;
-        g_autofree gchar *mime_type = NULL;
-
-        mime_type = nautilus_file_get_mime_type (data->file);
-
-        dialog = gtk_app_chooser_dialog_new_for_content_type (data->parent_window,
-                                                              GTK_DIALOG_MODAL |
-                                                              GTK_DIALOG_DESTROY_WITH_PARENT |
-                                                              GTK_DIALOG_USE_HEADER_BAR,
-                                                              mime_type);
-        if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
-        {
-            application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
-        }
-
-        gtk_widget_destroy (dialog);
+        application = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (dialog));
     }
 
-    if (application)
+    gtk_widget_destroy (dialog);
+
+    if (application != NULL)
     {
         g_autoptr (GList) files = NULL;
 
