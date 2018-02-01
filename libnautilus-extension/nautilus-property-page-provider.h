@@ -30,40 +30,42 @@
 #ifndef NAUTILUS_PROPERTY_PAGE_PROVIDER_H
 #define NAUTILUS_PROPERTY_PAGE_PROVIDER_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
-#include "nautilus-extension-types.h"
-#include "nautilus-file-info.h"
-#include "nautilus-property-page.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER           (nautilus_property_page_provider_get_type ())
-#define NAUTILUS_PROPERTY_PAGE_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER, NautilusPropertyPageProvider))
-#define NAUTILUS_IS_PROPERTY_PAGE_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER))
-#define NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER, NautilusPropertyPageProviderIface))
+#define NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER (nautilus_property_page_provider_get_type ())
 
-typedef struct _NautilusPropertyPageProvider       NautilusPropertyPageProvider;
-typedef struct _NautilusPropertyPageProviderIface  NautilusPropertyPageProviderIface;
+G_DECLARE_INTERFACE (NautilusPropertyPageProvider, nautilus_property_page_provider,
+                     NAUTILUS, PROPERTY_PAGE_PROVIDER,
+                     GObject)
+
+/* For compatibility reasons, remove this once you start introducing breaking changes. */
+typedef NautilusPropertyPageProviderInterface NautilusPropertyPageProviderIface;
 
 /**
- * NautilusPropertyPageProviderIface:
+ * NautilusPropertyPageProviderInterface:
  * @g_iface: The parent interface.
  * @get_pages: Returns a #GList of #NautilusPropertyPage.
  *   See nautilus_property_page_provider_get_pages() for details.
  *
  * Interface for extensions to provide additional property pages.
  */
-struct _NautilusPropertyPageProviderIface {
-	GTypeInterface g_iface;
+struct _NautilusPropertyPageProviderInterface
+{
+    GTypeInterface g_iface;
 
-	GList *(*get_pages) (NautilusPropertyPageProvider *provider,
-			     GList                        *files);
+    GList *(*get_pages) (NautilusPropertyPageProvider *provider,
+                         GList                        *files);
 };
 
 /* Interface Functions */
-GType                   nautilus_property_page_provider_get_type  (void);
-GList                  *nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
-								   GList                        *files);
+GList *nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
+                                                  GList                        *files);
 
 G_END_DECLS
 

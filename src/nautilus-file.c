@@ -54,9 +54,8 @@
 #include <glib.h>
 #include <gnome-autoar/gnome-autoar.h>
 #include <gdesktop-enums.h>
-#include <libnautilus-extension/nautilus-file-info.h>
-#include <libnautilus-extension/nautilus-extension-private.h>
 #include <libxml/parser.h>
+#include <libnautilus-extension/nautilus-extension-private.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <sys/time.h>
@@ -162,7 +161,7 @@ static GQuark attribute_name_q,
               attribute_free_space_q,
               attribute_favorite_q;
 
-static void     nautilus_file_info_iface_init (NautilusFileInfoIface *iface);
+static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface);
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
                                                 gboolean      include_real_name);
 static char *nautilus_file_get_type_as_string (NautilusFile *file);
@@ -711,7 +710,7 @@ nautilus_file_new_from_info (NautilusDirectory *directory,
     return file;
 }
 
-static NautilusFile *
+static NautilusFileInfo *
 nautilus_file_get_internal (GFile    *location,
                             gboolean  create)
 {
@@ -782,45 +781,39 @@ nautilus_file_get_internal (GFile    *location,
     g_free (basename);
     nautilus_directory_unref (directory);
 
-    return file;
+    return NAUTILUS_FILE_INFO (file);
 }
 
 NautilusFile *
 nautilus_file_get (GFile *location)
 {
-    return nautilus_file_get_internal (location, TRUE);
+    return NAUTILUS_FILE (nautilus_file_get_internal (location, TRUE));
 }
 
 NautilusFile *
 nautilus_file_get_existing (GFile *location)
 {
-    return nautilus_file_get_internal (location, FALSE);
+    return NAUTILUS_FILE (nautilus_file_get_internal (location, FALSE));
 }
 
 NautilusFile *
 nautilus_file_get_existing_by_uri (const char *uri)
 {
-    GFile *location;
-    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
 
     location = g_file_new_for_uri (uri);
-    file = nautilus_file_get_internal (location, FALSE);
-    g_object_unref (location);
 
-    return file;
+    return nautilus_file_get_existing (location);
 }
 
 NautilusFile *
 nautilus_file_get_by_uri (const char *uri)
 {
-    GFile *location;
-    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
 
     location = g_file_new_for_uri (uri);
-    file = nautilus_file_get_internal (location, TRUE);
-    g_object_unref (location);
 
-    return file;
+    return nautilus_file_get (location);
 }
 
 gboolean
@@ -1017,41 +1010,29 @@ nautilus_file_get_parent_uri_for_display (NautilusFile *file)
 char *
 nautilus_file_get_parent_uri (NautilusFile *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (nautilus_file_is_self_owned (file))
-    {
-        /* Callers expect an empty string, not a NULL. */
-        return g_strdup ("");
-    }
-
-    return nautilus_directory_get_uri (file->details->directory);
+    return nautilus_file_info_get_parent_uri (NAUTILUS_FILE_INFO (file));
 }
 
 GFile *
 nautilus_file_get_parent_location (NautilusFile *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (nautilus_file_is_self_owned (file))
-    {
-        return NULL;
-    }
-
-    return nautilus_directory_get_location (file->details->directory);
+    return nautilus_file_info_get_parent_location (NAUTILUS_FILE_INFO (file));
 }
 
 NautilusFile *
 nautilus_file_get_parent (NautilusFile *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
+    NautilusFileInfo *file_info;
 
-    if (nautilus_file_is_self_owned (file))
-    {
-        return NULL;
-    }
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return nautilus_directory_get_corresponding_file (file->details->directory);
+    file_info = NAUTILUS_FILE_INFO (file);
+
+    return NAUTILUS_FILE (nautilus_file_info_get_parent_info (file_info));
 }
 
 /**
@@ -1091,7 +1072,7 @@ nautilus_file_can_write (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_write;
+    return nautilus_file_info_can_write (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -1744,57 +1725,26 @@ nautilus_file_can_trash (NautilusFile *file)
 GFile *
 nautilus_file_get_location (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    location = nautilus_directory_get_location (file->details->directory);
-
-    if (nautilus_file_is_self_owned (file))
-    {
-        return g_object_ref (location);
-    }
-
-    return g_file_get_child (location, eel_ref_str_peek (file->details->name));
+    return nautilus_file_info_get_location (NAUTILUS_FILE_INFO (file));
 }
 
 /* Return the actual uri associated with the passed-in file. */
 char *
 nautilus_file_get_uri (NautilusFile *file)
 {
-    char *uri;
-    GFile *loc;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    loc = nautilus_file_get_location (file);
-    uri = g_file_get_uri (loc);
-    g_object_unref (loc);
-
-    return uri;
+    return nautilus_file_info_get_uri (NAUTILUS_FILE_INFO (file));
 }
 
 char *
 nautilus_file_get_uri_scheme (NautilusFile *file)
 {
-    g_autoptr (GFile) location = NULL;
-    char *scheme;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->directory == NULL)
-    {
-        return NULL;
-    }
-
-    location = nautilus_directory_get_location (file->details->directory);
-    if (location == NULL)
-    {
-        return NULL;
-    }
-    scheme = g_file_get_uri_scheme (location);
-
-    return scheme;
+    return nautilus_file_info_get_uri_scheme (NAUTILUS_FILE_INFO (file));
 }
 
 
@@ -4603,7 +4553,9 @@ nautilus_file_get_edit_name (NautilusFile *file)
 char *
 nautilus_file_get_name (NautilusFile *file)
 {
-    return g_strdup (eel_ref_str_peek (file->details->name));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    return nautilus_file_info_get_name (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -4671,12 +4623,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->activation_uri != NULL)
-    {
-        return g_strdup (file->details->activation_uri);
-    }
-
-    return nautilus_file_get_uri (file);
+    return nautilus_file_info_get_uri (NAUTILUS_FILE_INFO (file));
 }
 
 GFile *
@@ -7507,7 +7454,9 @@ char *
 nautilus_file_get_string_attribute (NautilusFile *file,
                                     const char   *attribute_name)
 {
-    return nautilus_file_get_string_attribute_q (file, g_quark_from_string (attribute_name));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    return nautilus_file_info_get_string_attribute (NAUTILUS_FILE_INFO (file), attribute_name);
 }
 
 
@@ -7819,12 +7768,9 @@ nautilus_file_get_detailed_type_as_string (NautilusFile *file)
 GFileType
 nautilus_file_get_file_type (NautilusFile *file)
 {
-    if (file == NULL)
-    {
-        return G_FILE_TYPE_UNKNOWN;
-    }
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_FILE_TYPE_UNKNOWN);
 
-    return file->details->type;
+    return nautilus_file_info_get_file_type (NAUTILUS_FILE_INFO (file));;
 }
 
 /**
@@ -7839,15 +7785,9 @@ nautilus_file_get_file_type (NautilusFile *file)
 char *
 nautilus_file_get_mime_type (NautilusFile *file)
 {
-    if (file != NULL)
-    {
-        g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-        if (file->details->mime_type != NULL)
-        {
-            return g_strdup (eel_ref_str_peek (file->details->mime_type));
-        }
-    }
-    return g_strdup ("application/octet-stream");
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    return nautilus_file_info_get_mime_type (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -7869,12 +7809,7 @@ nautilus_file_is_mime_type (NautilusFile *file,
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
     g_return_val_if_fail (mime_type != NULL, FALSE);
 
-    if (file->details->mime_type == NULL)
-    {
-        return FALSE;
-    }
-    return g_content_type_is_a (eel_ref_str_peek (file->details->mime_type),
-                                mime_type);
+    return nautilus_file_info_is_mime_type (NAUTILUS_FILE_INFO (file), mime_type);
 }
 
 char *
@@ -7930,11 +7865,9 @@ nautilus_file_is_symbolic_link (NautilusFile *file)
 GMount *
 nautilus_file_get_mount (NautilusFile *file)
 {
-    if (file->details->mount)
-    {
-        return g_object_ref (file->details->mount);
-    }
-    return NULL;
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
+
+    return nautilus_file_info_get_mount (NAUTILUS_FILE_INFO (file));
 }
 
 static void
@@ -8204,7 +8137,9 @@ nautilus_file_is_regular_file (NautilusFile *file)
 gboolean
 nautilus_file_is_directory (NautilusFile *file)
 {
-    return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    return nautilus_file_info_is_directory (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -8614,7 +8549,7 @@ nautilus_file_is_gone (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->is_gone;
+    return nautilus_file_info_is_gone (NAUTILUS_FILE_INFO (file));
 }
 
 /**
@@ -9521,66 +9456,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                       NULL);
 }
 
-static void
-nautilus_file_add_emblem (NautilusFile *file,
-                          const char   *emblem_name)
-{
-    if (file->details->pending_info_providers)
-    {
-        file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
-                                                                   g_strdup (emblem_name));
-    }
-    else
-    {
-        file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
-                                                           g_strdup (emblem_name));
-    }
-
-    nautilus_file_changed (file);
-}
-
-static void
-nautilus_file_add_string_attribute (NautilusFile *file,
-                                    const char   *attribute_name,
-                                    const char   *value)
-{
-    if (file->details->pending_info_providers)
-    {
-        /* Lazily create hashtable */
-        if (!file->details->pending_extension_attributes)
-        {
-            file->details->pending_extension_attributes =
-                g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                       NULL,
-                                       (GDestroyNotify) g_free);
-        }
-        g_hash_table_insert (file->details->pending_extension_attributes,
-                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
-                             g_strdup (value));
-    }
-    else
-    {
-        if (!file->details->extension_attributes)
-        {
-            file->details->extension_attributes =
-                g_hash_table_new_full (g_direct_hash, g_direct_equal,
-                                       NULL,
-                                       (GDestroyNotify) g_free);
-        }
-        g_hash_table_insert (file->details->extension_attributes,
-                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
-                             g_strdup (value));
-    }
-
-    nautilus_file_changed (file);
-}
-
-static void
-nautilus_file_invalidate_extension_info (NautilusFile *file)
-{
-    nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO);
-}
-
 void
 nautilus_file_info_providers_done (NautilusFile *file)
 {
@@ -9710,28 +9585,327 @@ nautilus_drag_can_accept_info (NautilusFile              *drop_target_item,
     }
 }
 
-static void
-nautilus_file_info_iface_init (NautilusFileInfoIface *iface)
+static gboolean
+is_gone (NautilusFileInfo *file_info)
 {
-    iface->is_gone = nautilus_file_is_gone;
-    iface->get_name = nautilus_file_get_name;
-    iface->get_file_type = nautilus_file_get_file_type;
-    iface->get_location = nautilus_file_get_location;
-    iface->get_uri = nautilus_file_get_uri;
-    iface->get_parent_location = nautilus_file_get_parent_location;
-    iface->get_parent_uri = nautilus_file_get_parent_uri;
-    iface->get_parent_info = nautilus_file_get_parent;
-    iface->get_mount = nautilus_file_get_mount;
-    iface->get_uri_scheme = nautilus_file_get_uri_scheme;
-    iface->get_activation_uri = nautilus_file_get_activation_uri;
-    iface->get_mime_type = nautilus_file_get_mime_type;
-    iface->is_mime_type = nautilus_file_is_mime_type;
-    iface->is_directory = nautilus_file_is_directory;
-    iface->can_write = nautilus_file_can_write;
-    iface->add_emblem = nautilus_file_add_emblem;
-    iface->get_string_attribute = nautilus_file_get_string_attribute;
-    iface->add_string_attribute = nautilus_file_add_string_attribute;
-    iface->invalidate_extension_info = nautilus_file_invalidate_extension_info;
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return file->details->is_gone;
+}
+
+static char *
+get_name (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return g_strdup (eel_ref_str_peek (file->details->name));
+}
+
+static char *
+get_uri (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
+
+    file = NAUTILUS_FILE (file_info);
+    location = nautilus_file_get_location (file);
+
+    return g_file_get_uri (location);
+}
+
+static char *
+get_parent_uri (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (nautilus_file_is_self_owned (file))
+    {
+        /* Callers expect an empty string, not a NULL. */
+        return g_strdup ("");
+    }
+
+    return nautilus_directory_get_uri (file->details->directory);
+}
+
+static char *
+get_uri_scheme (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->directory == NULL)
+    {
+        return NULL;
+    }
+
+    location = nautilus_directory_get_location (file->details->directory);
+    if (location == NULL)
+    {
+        return NULL;
+    }
+
+    return g_file_get_uri_scheme (location);
+}
+
+static char *
+get_mime_type (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->mime_type != NULL)
+    {
+        return g_strdup (eel_ref_str_peek (file->details->mime_type));
+    }
+
+    return g_strdup ("application/octet-stream");
+}
+
+static gboolean
+is_mime_type (NautilusFileInfo *file_info,
+              const char       *mime_type)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->mime_type == NULL)
+    {
+        return FALSE;
+    }
+
+    return g_content_type_is_a (eel_ref_str_peek (file->details->mime_type), mime_type);
+}
+
+static gboolean
+is_directory (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_file_type (file) == G_FILE_TYPE_DIRECTORY;
+}
+
+static void
+add_emblem (NautilusFileInfo *file_info,
+            const char       *emblem_name)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->pending_info_providers)
+    {
+        file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
+                                                                   g_strdup (emblem_name));
+    }
+    else
+    {
+        file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
+                                                           g_strdup (emblem_name));
+    }
+
+    nautilus_file_changed (file);
+}
+
+static char *
+get_string_attribute (NautilusFileInfo *file_info,
+                      const char       *attribute_name)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return nautilus_file_get_string_attribute_q (file, g_quark_from_string (attribute_name));
+}
+
+static void
+add_string_attribute (NautilusFileInfo *file_info,
+                      const char       *attribute_name,
+                      const char       *value)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->pending_info_providers != NULL)
+    {
+        /* Lazily create hashtable */
+        if (file->details->pending_extension_attributes == NULL)
+        {
+            file->details->pending_extension_attributes =
+                g_hash_table_new_full (g_direct_hash, g_direct_equal,
+                                       NULL,
+                                       (GDestroyNotify) g_free);
+        }
+        g_hash_table_insert (file->details->pending_extension_attributes,
+                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
+                             g_strdup (value));
+    }
+    else
+    {
+        if (file->details->extension_attributes == NULL)
+        {
+            file->details->extension_attributes =
+                g_hash_table_new_full (g_direct_hash, g_direct_equal,
+                                       NULL,
+                                       (GDestroyNotify) g_free);
+        }
+        g_hash_table_insert (file->details->extension_attributes,
+                             GINT_TO_POINTER (g_quark_from_string (attribute_name)),
+                             g_strdup (value));
+    }
+
+    nautilus_file_changed (file);
+}
+
+static void
+invalidate_extension_info (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    nautilus_file_invalidate_attributes (file, NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO);
+}
+
+static char *
+get_activation_uri (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->activation_uri != NULL)
+    {
+        return g_strdup (file->details->activation_uri);
+    }
+
+    return nautilus_file_get_uri (file);
+}
+
+static GFileType
+get_file_type (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return file->details->type;
+}
+
+static GFile *
+get_location (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+    g_autoptr (GFile) location = NULL;
+
+    file = NAUTILUS_FILE (file_info);
+    location = nautilus_directory_get_location (file->details->directory);
+
+    if (nautilus_file_is_self_owned (file))
+    {
+        return g_object_ref (location);
+    }
+
+    return g_file_get_child (location, eel_ref_str_peek (file->details->name));
+}
+
+static GFile *
+get_parent_location (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (nautilus_file_is_self_owned (file))
+    {
+        return NULL;
+    }
+
+    return nautilus_directory_get_location (file->details->directory);
+}
+
+static NautilusFileInfo *
+get_parent_info (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+    NautilusFile *parent_file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (nautilus_file_is_self_owned (file))
+    {
+        return NULL;
+    }
+
+    parent_file = nautilus_directory_get_corresponding_file (file->details->directory);
+
+    return NAUTILUS_FILE_INFO (parent_file);
+}
+
+static GMount *
+get_mount (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    if (file->details->mount)
+    {
+        return g_object_ref (file->details->mount);
+    }
+
+    return NULL;
+}
+
+static gboolean
+can_write (NautilusFileInfo *file_info)
+{
+    NautilusFile *file;
+
+    file = NAUTILUS_FILE (file_info);
+
+    return file->details->can_write;
+}
+
+static void
+nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
+{
+    iface->is_gone = is_gone;
+
+    iface->get_name = get_name;
+    iface->get_uri = get_uri;
+    iface->get_parent_uri = get_parent_uri;
+    iface->get_uri_scheme = get_uri_scheme;
+
+    iface->get_mime_type = get_mime_type;
+    iface->is_mime_type = is_mime_type;
+    iface->is_directory = is_directory;
+
+    iface->add_emblem = add_emblem;
+    iface->get_string_attribute = get_string_attribute;
+    iface->add_string_attribute = add_string_attribute;
+    iface->invalidate_extension_info = invalidate_extension_info;
+
+    iface->get_activation_uri = get_activation_uri;
+
+    iface->get_file_type = get_file_type;
+    iface->get_location = get_location;
+    iface->get_parent_location = get_parent_location;
+    iface->get_parent_info = get_parent_info;
+    iface->get_mount = get_mount;
+    iface->can_write = can_write;
 }
 
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)

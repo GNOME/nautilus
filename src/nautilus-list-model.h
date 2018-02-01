@@ -24,7 +24,7 @@
 #include <gdk/gdk.h>
 #include "nautilus-file.h"
 #include "nautilus-directory.h"
-#include <libnautilus-extension/nautilus-column.h>
+#include <nautilus-extension.h>
 
 #ifndef NAUTILUS_LIST_MODEL_H
 #define NAUTILUS_LIST_MODEL_H

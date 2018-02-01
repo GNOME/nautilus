@@ -25,6 +25,19 @@
 #include <glib/gi18n-lib.h>
 #include "nautilus-menu.h"
 
+typedef struct
+{
+    char *name;
+    char *label;
+    char *tip;
+    char *icon;
+    NautilusMenu *menu;
+    gboolean sensitive;
+    gboolean priority;
+} NautilusMenuItemPrivate;
+
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusMenuItem, nautilus_menu_item, G_TYPE_OBJECT)
+
 enum
 {
     ACTIVATE,
@@ -44,26 +57,12 @@ enum
     LAST_PROP
 };
 
-struct _NautilusMenuItemDetails
-{
-    char *name;
-    char *label;
-    char *tip;
-    char *icon;
-    NautilusMenu *menu;
-    gboolean sensitive;
-    gboolean priority;
-};
-
 static guint signals[LAST_SIGNAL];
-
-static GObjectClass *parent_class = NULL;
 
 /**
  * SECTION:nautilus-menu-item
  * @title: NautilusMenuItem
  * @short_description: Menu item descriptor object
- * @include: libnautilus-extension/nautilus-menu-item.h
  *
  * #NautilusMenuItem is an object that describes an item in a file manager
  * menu. Extensions can provide #NautilusMenuItem objects by registering a
@@ -113,9 +112,11 @@ nautilus_menu_item_new (const char *name,
  * emits the activate signal.
  */
 void
-nautilus_menu_item_activate (NautilusMenuItem *item)
+nautilus_menu_item_activate (NautilusMenuItem *self)
 {
-    g_signal_emit (item, signals[ACTIVATE], 0);
+    g_return_if_fail (NAUTILUS_IS_MENU_ITEM (self));
+
+    g_signal_emit (self, signals[ACTIVATE], 0);
 }
 
 /**
@@ -126,10 +127,12 @@ nautilus_menu_item_activate (NautilusMenuItem *item)
  * Attachs a menu to the given #NautilusMenuItem.
  */
 void
-nautilus_menu_item_set_submenu (NautilusMenuItem *item,
+nautilus_menu_item_set_submenu (NautilusMenuItem *self,
                                 NautilusMenu     *menu)
 {
-    g_object_set (item, "menu", menu, NULL);
+    g_return_if_fail (NAUTILUS_IS_MENU_ITEM (self));
+
+    g_object_set (self, "menu", menu, NULL);
 }
 
 static void
@@ -139,50 +142,52 @@ nautilus_menu_item_get_property (GObject    *object,
                                  GParamSpec *pspec)
 {
     NautilusMenuItem *item;
+    NautilusMenuItemPrivate *priv;
 
     item = NAUTILUS_MENU_ITEM (object);
+    priv = nautilus_menu_item_get_instance_private (item);
 
     switch (param_id)
     {
         case PROP_NAME:
         {
-            g_value_set_string (value, item->details->name);
+            g_value_set_string (value, priv->name);
         }
         break;
 
         case PROP_LABEL:
         {
-            g_value_set_string (value, item->details->label);
+            g_value_set_string (value, priv->label);
         }
         break;
 
         case PROP_TIP:
         {
-            g_value_set_string (value, item->details->tip);
+            g_value_set_string (value, priv->tip);
         }
         break;
 
         case PROP_ICON:
         {
-            g_value_set_string (value, item->details->icon);
+            g_value_set_string (value, priv->icon);
         }
         break;
 
         case PROP_SENSITIVE:
         {
-            g_value_set_boolean (value, item->details->sensitive);
+            g_value_set_boolean (value, priv->sensitive);
         }
         break;
 
         case PROP_PRIORITY:
         {
-            g_value_set_boolean (value, item->details->priority);
+            g_value_set_boolean (value, priv->priority);
         }
         break;
 
         case PROP_MENU:
         {
-            g_value_set_object (value, item->details->menu);
+            g_value_set_object (value, priv->menu);
         }
         break;
 
@@ -201,64 +206,66 @@ nautilus_menu_item_set_property (GObject      *object,
                                  GParamSpec   *pspec)
 {
     NautilusMenuItem *item;
+    NautilusMenuItemPrivate *priv;
 
     item = NAUTILUS_MENU_ITEM (object);
+    priv = nautilus_menu_item_get_instance_private (item);
 
     switch (param_id)
     {
         case PROP_NAME:
         {
-            g_free (item->details->name);
-            item->details->name = g_strdup (g_value_get_string (value));
+            g_free (priv->name);
+            priv->name = g_strdup (g_value_get_string (value));
             g_object_notify (object, "name");
         }
         break;
 
         case PROP_LABEL:
         {
-            g_free (item->details->label);
-            item->details->label = g_strdup (g_value_get_string (value));
+            g_free (priv->label);
+            priv->label = g_strdup (g_value_get_string (value));
             g_object_notify (object, "label");
         }
         break;
 
         case PROP_TIP:
         {
-            g_free (item->details->tip);
-            item->details->tip = g_strdup (g_value_get_string (value));
+            g_free (priv->tip);
+            priv->tip = g_strdup (g_value_get_string (value));
             g_object_notify (object, "tip");
         }
         break;
 
         case PROP_ICON:
         {
-            g_free (item->details->icon);
-            item->details->icon = g_strdup (g_value_get_string (value));
+            g_free (priv->icon);
+            priv->icon = g_strdup (g_value_get_string (value));
             g_object_notify (object, "icon");
         }
         break;
 
         case PROP_SENSITIVE:
         {
-            item->details->sensitive = g_value_get_boolean (value);
+            priv->sensitive = g_value_get_boolean (value);
             g_object_notify (object, "sensitive");
         }
         break;
 
         case PROP_PRIORITY:
         {
-            item->details->priority = g_value_get_boolean (value);
+            priv->priority = g_value_get_boolean (value);
             g_object_notify (object, "priority");
         }
         break;
 
         case PROP_MENU:
         {
-            if (item->details->menu)
+            if (priv->menu)
             {
-                g_object_unref (item->details->menu);
+                g_object_unref (priv->menu);
             }
-            item->details->menu = g_object_ref (g_value_get_object (value));
+            priv->menu = g_object_ref (g_value_get_object (value));
             g_object_notify (object, "menu");
         }
         break;
@@ -275,36 +282,37 @@ static void
 nautilus_menu_item_finalize (GObject *object)
 {
     NautilusMenuItem *item;
+    NautilusMenuItemPrivate *priv;
 
     item = NAUTILUS_MENU_ITEM (object);
+    priv = nautilus_menu_item_get_instance_private (item);
 
-    g_free (item->details->name);
-    g_free (item->details->label);
-    g_free (item->details->tip);
-    g_free (item->details->icon);
-    if (item->details->menu)
+    g_free (priv->name);
+    g_free (priv->label);
+    g_free (priv->tip);
+    g_free (priv->icon);
+    if (priv->menu)
     {
-        g_object_unref (item->details->menu);
+        g_object_unref (priv->menu);
     }
 
-    g_free (item->details);
-
-    G_OBJECT_CLASS (parent_class)->finalize (object);
+    G_OBJECT_CLASS (nautilus_menu_item_parent_class)->finalize (object);
 }
 
 static void
-nautilus_menu_item_instance_init (NautilusMenuItem *item)
+nautilus_menu_item_init (NautilusMenuItem *self)
 {
-    item->details = g_new0 (NautilusMenuItemDetails, 1);
-    item->details->sensitive = TRUE;
-    item->details->menu = NULL;
+    NautilusMenuItemPrivate *priv;
+
+    priv = nautilus_menu_item_get_instance_private (self);
+
+    priv->sensitive = TRUE;
+    priv->menu = NULL;
 }
 
 static void
 nautilus_menu_item_class_init (NautilusMenuItemClass *class)
 {
-    parent_class = g_type_class_peek_parent (class);
-
     G_OBJECT_CLASS (class)->finalize = nautilus_menu_item_finalize;
     G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
     G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;
@@ -369,33 +377,4 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
                                                           "The menu belonging to this item. May be null.",
                                                           NAUTILUS_TYPE_MENU,
                                                           G_PARAM_READWRITE));
-}
-
-GType
-nautilus_menu_item_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusMenuItemClass),
-            NULL,
-            NULL,
-            (GClassInitFunc) nautilus_menu_item_class_init,
-            NULL,
-            NULL,
-            sizeof (NautilusMenuItem),
-            0,
-            (GInstanceInitFunc) nautilus_menu_item_instance_init
-        };
-
-        type = g_type_register_static
-                   (G_TYPE_OBJECT,
-                   "NautilusMenuItem",
-                   &info, 0);
-    }
-
-    return type;
 }

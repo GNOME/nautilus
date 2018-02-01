@@ -25,7 +25,7 @@
 #include <string.h>
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
-#include <libnautilus-extension/nautilus-column-provider.h>
+#include <nautilus-extension.h>
 #include "nautilus-module.h"
 
 static const char *default_column_order[] =

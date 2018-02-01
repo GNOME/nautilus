@@ -29,24 +29,27 @@
 #ifndef NAUTILUS_MENU_PROVIDER_H
 #define NAUTILUS_MENU_PROVIDER_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
-#include "nautilus-menu.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_MENU_PROVIDER           (nautilus_menu_provider_get_type ())
-#define NAUTILUS_MENU_PROVIDER(obj)           (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_MENU_PROVIDER, NautilusMenuProvider))
-#define NAUTILUS_IS_MENU_PROVIDER(obj)        (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_MENU_PROVIDER))
-#define NAUTILUS_MENU_PROVIDER_GET_IFACE(obj) (G_TYPE_INSTANCE_GET_INTERFACE ((obj), NAUTILUS_TYPE_MENU_PROVIDER, NautilusMenuProviderIface))
+#define NAUTILUS_TYPE_MENU_PROVIDER (nautilus_menu_provider_get_type ())
 
-typedef struct _NautilusMenuProvider       NautilusMenuProvider;
-typedef struct _NautilusMenuProviderIface  NautilusMenuProviderIface;
+G_DECLARE_INTERFACE (NautilusMenuProvider, nautilus_menu_provider,
+                     NAUTILUS, MENU_PROVIDER,
+                     GObject)
+
+/* For compatibility reasons, remove this once you start introducing breaking changes. */
+typedef NautilusMenuProviderInterface NautilusMenuProviderIface;
 
 /**
- * NautilusMenuProviderIface:
+ * NautilusMenuProviderInterface:
  * @g_iface: The parent interface.
  * @get_file_items: Returns a #GList of #NautilusMenuItem.
  *   See nautilus_menu_provider_get_file_items() for details.
@@ -55,28 +58,28 @@ typedef struct _NautilusMenuProviderIface  NautilusMenuProviderIface;
  *
  * Interface for extensions to provide additional menu items.
  */
-struct _NautilusMenuProviderIface {
-	GTypeInterface g_iface;
+struct _NautilusMenuProviderInterface
+{
+    GTypeInterface g_iface;
 
-	GList *(*get_file_items)       (NautilusMenuProvider *provider,
-					GtkWidget            *window,
-					GList                *files);
-	GList *(*get_background_items) (NautilusMenuProvider *provider,
-					GtkWidget            *window,
-					NautilusFileInfo     *current_folder);
+    GList *(*get_file_items)       (NautilusMenuProvider *provider,
+                                    GtkWidget            *window,
+                                    GList                *files);
+    GList *(*get_background_items) (NautilusMenuProvider *provider,
+                                    GtkWidget            *window,
+                                    NautilusFileInfo     *current_folder);
 };
 
 /* Interface Functions */
-GType                   nautilus_menu_provider_get_type             (void);
-GList                  *nautilus_menu_provider_get_file_items       (NautilusMenuProvider *provider,
-								     GtkWidget            *window,
-								     GList                *files);
-GList                  *nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
-								     GtkWidget            *window,
-								     NautilusFileInfo     *current_folder);
+GList  *nautilus_menu_provider_get_file_items           (NautilusMenuProvider *provider,
+                                                         GtkWidget            *window,
+                                                         GList                *files);
+GList *nautilus_menu_provider_get_background_items      (NautilusMenuProvider *provider,
+                                                         GtkWidget            *window,
+                                                         NautilusFileInfo     *current_folder);
 
 /* This function emit a signal to inform nautilus that its item list has changed. */
-void                    nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
+void   nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
 
 G_END_DECLS
 

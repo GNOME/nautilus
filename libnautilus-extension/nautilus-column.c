@@ -21,8 +21,6 @@
  *
  */
 
-#include <config.h>
-#include <glib/gi18n-lib.h>
 #include <gtk/gtk.h>
 #include "nautilus-column.h"
 
@@ -39,8 +37,10 @@ enum
     LAST_PROP
 };
 
-struct _NautilusColumnDetails
+struct _NautilusColumn
 {
+    GObject parent_instance;
+
     char *name;
     GQuark attribute;
     char *label;
@@ -55,7 +55,6 @@ G_DEFINE_TYPE (NautilusColumn, nautilus_column, G_TYPE_OBJECT);
  * SECTION:nautilus-column
  * @title: NautilusColumn
  * @short_description: List view column descriptor object
- * @include: libnautilus-extension/nautilus-column.h
  *
  * #NautilusColumn is an object that describes a column in the file manager
  * list view. Extensions can provide #NautilusColumn by registering a
@@ -112,43 +111,43 @@ nautilus_column_get_property (GObject    *object,
     {
         case PROP_NAME:
         {
-            g_value_set_string (value, column->details->name);
+            g_value_set_string (value, column->name);
         }
         break;
 
         case PROP_ATTRIBUTE:
         {
-            g_value_set_string (value, g_quark_to_string (column->details->attribute));
+            g_value_set_string (value, g_quark_to_string (column->attribute));
         }
         break;
 
         case PROP_ATTRIBUTE_Q:
         {
-            g_value_set_uint (value, column->details->attribute);
+            g_value_set_uint (value, column->attribute);
         }
         break;
 
         case PROP_LABEL:
         {
-            g_value_set_string (value, column->details->label);
+            g_value_set_string (value, column->label);
         }
         break;
 
         case PROP_DESCRIPTION:
         {
-            g_value_set_string (value, column->details->description);
+            g_value_set_string (value, column->description);
         }
         break;
 
         case PROP_XALIGN:
         {
-            g_value_set_float (value, column->details->xalign);
+            g_value_set_float (value, column->xalign);
         }
         break;
 
         case PROP_DEFAULT_SORT_ORDER:
         {
-            g_value_set_enum (value, column->details->default_sort_order);
+            g_value_set_enum (value, column->default_sort_order);
         }
         break;
 
@@ -174,15 +173,15 @@ nautilus_column_set_property (GObject      *object,
     {
         case PROP_NAME:
         {
-            g_free (column->details->name);
-            column->details->name = g_strdup (g_value_get_string (value));
+            g_free (column->name);
+            column->name = g_strdup (g_value_get_string (value));
             g_object_notify (object, "name");
         }
         break;
 
         case PROP_ATTRIBUTE:
         {
-            column->details->attribute = g_quark_from_string (g_value_get_string (value));
+            column->attribute = g_quark_from_string (g_value_get_string (value));
             g_object_notify (object, "attribute");
             g_object_notify (object, "attribute_q");
         }
@@ -190,30 +189,30 @@ nautilus_column_set_property (GObject      *object,
 
         case PROP_LABEL:
         {
-            g_free (column->details->label);
-            column->details->label = g_strdup (g_value_get_string (value));
+            g_free (column->label);
+            column->label = g_strdup (g_value_get_string (value));
             g_object_notify (object, "label");
         }
         break;
 
         case PROP_DESCRIPTION:
         {
-            g_free (column->details->description);
-            column->details->description = g_strdup (g_value_get_string (value));
+            g_free (column->description);
+            column->description = g_strdup (g_value_get_string (value));
             g_object_notify (object, "description");
         }
         break;
 
         case PROP_XALIGN:
         {
-            column->details->xalign = g_value_get_float (value);
+            column->xalign = g_value_get_float (value);
             g_object_notify (object, "xalign");
         }
         break;
 
         case PROP_DEFAULT_SORT_ORDER:
         {
-            column->details->default_sort_order = g_value_get_enum (value);
+            column->default_sort_order = g_value_get_enum (value);
             g_object_notify (object, "default-sort-order");
         }
         break;
@@ -233,11 +232,9 @@ nautilus_column_finalize (GObject *object)
 
     column = NAUTILUS_COLUMN (object);
 
-    g_free (column->details->name);
-    g_free (column->details->label);
-    g_free (column->details->description);
-
-    g_free (column->details);
+    g_free (column->name);
+    g_free (column->label);
+    g_free (column->description);
 
     G_OBJECT_CLASS (nautilus_column_parent_class)->finalize (object);
 }
@@ -245,8 +242,7 @@ nautilus_column_finalize (GObject *object)
 static void
 nautilus_column_init (NautilusColumn *column)
 {
-    column->details = g_new0 (NautilusColumnDetails, 1);
-    column->details->xalign = 0.0;
+    column->xalign = 0.0;
 }
 
 static void
