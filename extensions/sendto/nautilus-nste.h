@@ -27,24 +27,11 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_NSTE  (nautilus_nste_get_type ())
-#define NAUTILUS_NSTE(o)    (G_TYPE_CHECK_INSTANCE_CAST ((o), NAUTILUS_TYPE_NSTE, NautilusNste))
-#define NAUTILUS_IS_NSTE(o) (G_TYPE_CHECK_INSTANCE_TYPE ((o), NAUTILUS_TYPE_NSTE))
+#define NAUTILUS_TYPE_NSTE (nautilus_nste_get_type ())
 
-typedef struct _NautilusNste      NautilusNste;
-typedef struct _NautilusNsteClass NautilusNsteClass;
+G_DECLARE_FINAL_TYPE (NautilusNste, nautilus_nste, NAUTILUS, NSTE, GObject)
 
-struct _NautilusNste {
-	GObject  __parent;
-	gboolean nst_present;
-};
-
-struct _NautilusNsteClass {
-	GObjectClass __parent;
-};
-
-GType nautilus_nste_get_type      (void);
-void  nautilus_nste_register_type (GTypeModule *module);
+void nautilus_nste_load (GTypeModule *module);
 
 G_END_DECLS
 
