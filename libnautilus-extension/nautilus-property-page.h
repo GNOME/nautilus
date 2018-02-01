@@ -24,39 +24,24 @@
 #ifndef NAUTILUS_PROPERTY_PAGE_H
 #define NAUTILUS_PROPERTY_PAGE_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
 #include <gtk/gtk.h>
-#include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_PROPERTY_PAGE            (nautilus_property_page_get_type())
-#define NAUTILUS_PROPERTY_PAGE(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_PROPERTY_PAGE, NautilusPropertyPage))
-#define NAUTILUS_PROPERTY_PAGE_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_PROPERTY_PAGE, NautilusPropertyPageClass))
-#define NAUTILUS_IS_PROPERTY_PAGE(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_PROPERTY_PAGE))
-#define NAUTILUS_IS_PROPERTY_PAGE_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_PROPERTY_PAGE))
-#define NAUTILUS_PROPERTY_PAGE_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), NAUTILUS_TYPE_PROPERTY_PAGE, NautilusPropertyPageClass))
+#define NAUTILUS_TYPE_PROPERTY_PAGE (nautilus_property_page_get_type ())
 
-typedef struct _NautilusPropertyPage        NautilusPropertyPage;
-typedef struct _NautilusPropertyPageDetails NautilusPropertyPageDetails;
-typedef struct _NautilusPropertyPageClass   NautilusPropertyPageClass;
+G_DECLARE_FINAL_TYPE (NautilusPropertyPage, nautilus_property_page,
+                      NAUTILUS, PROPERTY_PAGE,
+                      GObject)
 
-struct _NautilusPropertyPage
-{
-	GObject parent;
-
-	NautilusPropertyPageDetails *details;
-};
-
-struct _NautilusPropertyPageClass 
-{
-	GObjectClass parent;
-};
-
-GType                 nautilus_property_page_get_type  (void);
-NautilusPropertyPage *nautilus_property_page_new       (const char           *name,
-							GtkWidget            *label,
-							GtkWidget            *page);
+NautilusPropertyPage *nautilus_property_page_new (const char *name,
+                                                  GtkWidget  *label,
+                                                  GtkWidget  *page);
 
 /* NautilusPropertyPage has the following properties:
  *   name (string)        - the identifier for the property page

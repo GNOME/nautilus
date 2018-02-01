@@ -24,37 +24,22 @@
 #ifndef NAUTILUS_COLUMN_H
 #define NAUTILUS_COLUMN_H
 
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
+#warning "Only <nautilus-extension.h> should be included directly."
+#endif
+
 #include <glib-object.h>
-#include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_COLUMN            (nautilus_column_get_type())
-#define NAUTILUS_COLUMN(obj)            (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_COLUMN, NautilusColumn))
-#define NAUTILUS_COLUMN_CLASS(klass)    (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_COLUMN, NautilusColumnClass))
-#define NAUTILUS_INFO_IS_COLUMN(obj)         (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_COLUMN))
-#define NAUTILUS_INFO_IS_COLUMN_CLASS(klass) (G_TYPE_CHECK_CLASS_TYPE ((obj), NAUTILUS_TYPE_COLUMN))
-#define NAUTILUS_COLUMN_GET_CLASS(obj)  (G_TYPE_INSTANCE_GET_CLASS((obj), NAUTILUS_TYPE_COLUMN, NautilusColumnClass))
+#define NAUTILUS_TYPE_COLUMN (nautilus_column_get_type())
 
-typedef struct _NautilusColumn        NautilusColumn;
-typedef struct _NautilusColumnDetails NautilusColumnDetails;
-typedef struct _NautilusColumnClass   NautilusColumnClass;
+G_DECLARE_FINAL_TYPE (NautilusColumn, nautilus_column, NAUTILUS, COLUMN, GObject)
 
-struct _NautilusColumn {
-	GObject parent;
-
-	NautilusColumnDetails *details;
-};
-
-struct _NautilusColumnClass {
-	GObjectClass parent;
-};
-
-GType             nautilus_column_get_type        (void);
-NautilusColumn *  nautilus_column_new             (const char     *name,
-						   const char     *attribute,
-						   const char     *label,
-						   const char     *description);
+NautilusColumn *nautilus_column_new  (const char *name,
+                                      const char *attribute,
+                                      const char *label,
+                                      const char *description);
 
 /* NautilusColumn has the following properties:
  *   name (string)        - the identifier for the column

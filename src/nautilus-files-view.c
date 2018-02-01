@@ -62,7 +62,7 @@
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 
-#include <libnautilus-extension/nautilus-menu-provider.h>
+#include <nautilus-extension.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-favorite-directory.h"
@@ -4814,12 +4814,14 @@ get_extension_background_menu_items (NautilusFilesView *view)
     for (l = providers; l != NULL; l = l->next)
     {
         NautilusMenuProvider *provider;
+        NautilusFileInfo *file_info;
         GList *file_items;
 
         provider = NAUTILUS_MENU_PROVIDER (l->data);
+        file_info = NAUTILUS_FILE_INFO (priv->directory_as_file);
         file_items = nautilus_menu_provider_get_background_items (provider,
                                                                   GTK_WIDGET (window),
-                                                                  priv->directory_as_file);
+                                                                  file_info);
         items = g_list_concat (items, file_items);
     }
 

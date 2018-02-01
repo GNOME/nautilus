@@ -44,7 +44,6 @@
 #include <glib/gi18n.h>
 #include <glib-object.h>
 #include <libgd/gd.h>
-#include <libnautilus-extension/nautilus-column-provider.h>
 #include "nautilus-column-chooser.h"
 #include "nautilus-column-utilities.h"
 #include "nautilus-dnd.h"
