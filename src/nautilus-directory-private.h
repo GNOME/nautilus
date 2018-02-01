@@ -25,7 +25,7 @@
 #include "nautilus-file-queue.h"
 #include "nautilus-file.h"
 #include "nautilus-monitor.h"
-#include <libnautilus-extension/nautilus-info-provider.h>
+#include <nautilus-extension.h>
 #include <libxml/tree.h>
 
 typedef struct LinkInfoReadState LinkInfoReadState;

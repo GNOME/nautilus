@@ -50,7 +50,8 @@
 #include "nautilus-profile.h"
 #include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
-#include <libnautilus-extension/nautilus-menu-provider.h>
+
+#include <nautilus-extension.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
 #include "nautilus-debug.h"

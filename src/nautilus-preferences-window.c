@@ -34,6 +34,8 @@
 
 #include <eel/eel-glib-extensions.h>
 
+#include <nautilus-extension.h>
+
 #include "nautilus-column-chooser.h"
 #include "nautilus-column-utilities.h"
 #include "nautilus-global-preferences.h"

@@ -21,16 +21,16 @@
  *
  */
 
-#include <config.h>
 #include "nautilus-info-provider.h"
 
-#include <glib-object.h>
+#include "nautilus-extension-enum-types.h"
+
+G_DEFINE_INTERFACE (NautilusInfoProvider, nautilus_info_provider, G_TYPE_OBJECT)
 
 /**
  * SECTION:nautilus-info-provider
  * @title: NautilusInfoProvider
  * @short_description: Interface to provide additional information about files
- * @include: libnautilus-extension/nautilus-column-provider.h
  *
  * #NautilusInfoProvider allows extension to provide additional information about
  * files. When nautilus_info_provider_update_file_info() is called by the application,
@@ -39,68 +39,46 @@
  */
 
 static void
-nautilus_info_provider_base_init (gpointer g_class)
+nautilus_info_provider_default_init (NautilusInfoProviderInterface *klass)
 {
-}
-
-GType
-nautilus_info_provider_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusInfoProviderIface),
-            nautilus_info_provider_base_init,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            0,
-            0,
-            NULL
-        };
-
-        type = g_type_register_static (G_TYPE_INTERFACE,
-                                       "NautilusInfoProvider",
-                                       &info, 0);
-        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-    }
-
-    return type;
 }
 
 NautilusOperationResult
-nautilus_info_provider_update_file_info (NautilusInfoProvider     *provider,
+nautilus_info_provider_update_file_info (NautilusInfoProvider     *self,
                                          NautilusFileInfo         *file,
                                          GClosure                 *update_complete,
                                          NautilusOperationHandle **handle)
 {
-    g_return_val_if_fail (NAUTILUS_IS_INFO_PROVIDER (provider),
-                          NAUTILUS_OPERATION_FAILED);
-    g_return_val_if_fail (NAUTILUS_INFO_PROVIDER_GET_IFACE (provider)->update_file_info != NULL,
+    NautilusInfoProviderInterface *iface;
+
+    g_return_val_if_fail (NAUTILUS_IS_INFO_PROVIDER (self),
                           NAUTILUS_OPERATION_FAILED);
     g_return_val_if_fail (update_complete != NULL,
                           NAUTILUS_OPERATION_FAILED);
     g_return_val_if_fail (handle != NULL, NAUTILUS_OPERATION_FAILED);
 
-    return NAUTILUS_INFO_PROVIDER_GET_IFACE (provider)->update_file_info
-               (provider, file, update_complete, handle);
+    iface = NAUTILUS_INFO_PROVIDER_GET_IFACE (self);
+
+    g_return_val_if_fail (iface->update_file_info != NULL,
+                          NAUTILUS_OPERATION_FAILED);
+
+    return iface->update_file_info (self, file, update_complete, handle);
 }
 
 void
-nautilus_info_provider_cancel_update (NautilusInfoProvider    *provider,
+nautilus_info_provider_cancel_update (NautilusInfoProvider    *self,
                                       NautilusOperationHandle *handle)
 {
-    g_return_if_fail (NAUTILUS_IS_INFO_PROVIDER (provider));
-    g_return_if_fail (NAUTILUS_INFO_PROVIDER_GET_IFACE (provider)->cancel_update != NULL);
-    g_return_if_fail (NAUTILUS_INFO_PROVIDER_GET_IFACE (provider)->cancel_update != NULL);
+    NautilusInfoProviderInterface *iface;
+
+    g_return_if_fail (NAUTILUS_IS_INFO_PROVIDER (self));
     g_return_if_fail (handle != NULL);
 
-    NAUTILUS_INFO_PROVIDER_GET_IFACE (provider)->cancel_update (provider,
-                                                                handle);
+    iface = NAUTILUS_INFO_PROVIDER_GET_IFACE (self);
+
+    g_return_if_fail (iface->cancel_update != NULL);
+
+    iface->cancel_update (self, handle);
 }
 
 void
