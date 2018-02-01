@@ -30,29 +30,29 @@
  * SECTION:nautilus-menu
  * @title: NautilusMenu
  * @short_description: Menu descriptor object
- * @include: libnautilus-extension/nautilus-menu.h
  *
  * #NautilusMenu is an object that describes a submenu in a file manager
  * menu. Extensions can provide #NautilusMenu objects by attaching them to
  * #NautilusMenuItem objects, using nautilus_menu_item_set_submenu().
  */
 
-#define NAUTILUS_MENU_GET_PRIVATE(o) (G_TYPE_INSTANCE_GET_PRIVATE ((o), NAUTILUS_TYPE_MENU, NautilusMenuPrivate))
-G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
-
-struct _NautilusMenuPrivate
+struct _NautilusMenu
 {
+    GObject parent_instance;
+
     GList *item_list;
 };
 
+G_DEFINE_TYPE (NautilusMenu, nautilus_menu, G_TYPE_OBJECT);
+
 void
 nautilus_menu_append_item (NautilusMenu     *menu,
-                           NautilusMenuItem *item)
+                           NautilusMenuItem *menu_item)
 {
-    g_return_if_fail (menu != NULL);
-    g_return_if_fail (item != NULL);
+    g_return_if_fail (NAUTILUS_IS_MENU (menu));
+    g_return_if_fail (NAUTILUS_IS_MENU_ITEM (menu_item));
 
-    menu->priv->item_list = g_list_append (menu->priv->item_list, g_object_ref (item));
+    menu->item_list = g_list_append (menu->item_list, g_object_ref (menu_item));
 }
 
 /**
@@ -66,9 +66,9 @@ nautilus_menu_get_items (NautilusMenu *menu)
 {
     GList *item_list;
 
-    g_return_val_if_fail (menu != NULL, NULL);
+    g_return_val_if_fail (NAUTILUS_IS_MENU (menu), NULL);
 
-    item_list = g_list_copy (menu->priv->item_list);
+    item_list = g_list_copy (menu->item_list);
     g_list_foreach (item_list, (GFunc) g_object_ref, NULL);
 
     return item_list;
@@ -95,10 +95,7 @@ nautilus_menu_finalize (GObject *object)
 {
     NautilusMenu *menu = NAUTILUS_MENU (object);
 
-    if (menu->priv->item_list)
-    {
-        g_list_free (menu->priv->item_list);
-    }
+    g_clear_pointer (&menu->item_list, g_list_free);
 
     G_OBJECT_CLASS (nautilus_menu_parent_class)->finalize (object);
 }
@@ -106,17 +103,13 @@ nautilus_menu_finalize (GObject *object)
 static void
 nautilus_menu_init (NautilusMenu *menu)
 {
-    menu->priv = NAUTILUS_MENU_GET_PRIVATE (menu);
-
-    menu->priv->item_list = NULL;
+    menu->item_list = NULL;
 }
 
 static void
 nautilus_menu_class_init (NautilusMenuClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-    g_type_class_add_private (klass, sizeof (NautilusMenuPrivate));
 
     object_class->finalize = nautilus_menu_finalize;
 }
@@ -126,9 +119,5 @@ nautilus_menu_class_init (NautilusMenuClass *klass)
 NautilusMenu *
 nautilus_menu_new (void)
 {
-    NautilusMenu *obj;
-
-    obj = NAUTILUS_MENU (g_object_new (NAUTILUS_TYPE_MENU, NULL));
-
-    return obj;
+    return g_object_new (NAUTILUS_TYPE_MENU, NULL);
 }

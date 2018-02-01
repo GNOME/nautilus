@@ -22,53 +22,23 @@
  *
  */
 
-#include <config.h>
 #include "nautilus-property-page-provider.h"
 
-#include <glib-object.h>
+G_DEFINE_INTERFACE (NautilusPropertyPageProvider, nautilus_property_page_provider,
+                    G_TYPE_OBJECT)
 
 /**
  * SECTION:nautilus-property-page-provider
  * @title: NautilusPropertyPageProvider
  * @short_description: Interface to provide additional property pages
- * @include: libnautilus-extension/nautilus-property-page-provider.h
  *
  * #NautilusPropertyPageProvider allows extension to provide additional pages
  * for the file properties dialog.
  */
 
 static void
-nautilus_property_page_provider_base_init (gpointer g_class)
+nautilus_property_page_provider_default_init (NautilusPropertyPageProviderInterface *klass)
 {
-}
-
-GType
-nautilus_property_page_provider_get_type (void)
-{
-    static GType type = 0;
-
-    if (!type)
-    {
-        const GTypeInfo info =
-        {
-            sizeof (NautilusPropertyPageProviderIface),
-            nautilus_property_page_provider_base_init,
-            NULL,
-            NULL,
-            NULL,
-            NULL,
-            0,
-            0,
-            NULL
-        };
-
-        type = g_type_register_static (G_TYPE_INTERFACE,
-                                       "NautilusPropertyPageProvider",
-                                       &info, 0);
-        g_type_interface_add_prerequisite (type, G_TYPE_OBJECT);
-    }
-
-    return type;
 }
 
 /**
@@ -88,9 +58,13 @@ GList *
 nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
                                            GList                        *files)
 {
-    g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_PROVIDER (provider), NULL);
-    g_return_val_if_fail (NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages != NULL, NULL);
+    NautilusPropertyPageProviderInterface *iface;
 
-    return NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider)->get_pages
-               (provider, files);
+    g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_PROVIDER (provider), NULL);
+
+    iface = NAUTILUS_PROPERTY_PAGE_PROVIDER_GET_IFACE (provider);
+
+    g_return_val_if_fail (iface->get_pages != NULL, NULL);
+
+    return iface->get_pages (provider, files);
 }
