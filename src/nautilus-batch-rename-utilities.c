@@ -1049,7 +1049,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     GList *selection_metadata;
     guint i;
     g_autofree gchar *parent_uri = NULL;
-    g_autofree gchar *parent_uri_escaped = NULL;
     gchar *file_name_escaped;
 
     error = NULL;
@@ -1074,34 +1073,33 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                           "WHERE { ?file a nfo:FileDataObject. ?file nie:url ?url. ");
 
     parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
-    parent_uri_escaped = g_markup_escape_text (parent_uri, -1);
 
     g_string_append_printf (query,
-                            "FILTER(tracker:uri-is-parent('%s', ?url)) ",
-                            parent_uri_escaped);
+                            "FILTER(tracker:uri-is-parent(<%s>, ?url)) ",
+                            parent_uri);
 
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
         file_name = nautilus_file_get_name (file);
-        file_name_escaped = g_markup_escape_text (file_name, -1);
+        file_name_escaped = tracker_sparql_escape_string (file_name);
 
         if (l == selection)
         {
             g_string_append_printf (query,
-                                    "FILTER (nfo:fileName(?file) IN ('%s', ",
+                                    "FILTER (nfo:fileName(?file) IN (\"%s\", ",
                                     file_name_escaped);
         }
         else if (l->next == NULL)
         {
             g_string_append_printf (query,
-                                    "'%s')) ",
+                                    "\"%s\")) ",
                                     file_name_escaped);
         }
         else
         {
             g_string_append_printf (query,
-                                    "'%s', ",
+                                    "\"%s\", ",
                                     file_name_escaped);
         }
 
