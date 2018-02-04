@@ -41,6 +41,7 @@
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
@@ -789,7 +790,7 @@ nautilus_window_new_tab (NautilusWindow *window)
     NautilusWindowSlot *current_slot;
     NautilusWindowOpenFlags flags;
     GFile *location;
-    char *scheme;
+    g_autofree gchar *uri = NULL;
 
     current_slot = nautilus_window_get_active_slot (window);
     location = nautilus_window_slot_get_location (current_slot);
@@ -798,8 +799,8 @@ nautilus_window_new_tab (NautilusWindow *window)
     {
         flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
 
-        scheme = g_file_get_uri_scheme (location);
-        if (strcmp (scheme, "x-nautilus-search") == 0)
+        uri = g_file_get_uri (location);
+        if (eel_uri_is_search (uri))
         {
             location = g_file_new_for_path (g_get_home_dir ());
         }
@@ -807,8 +808,6 @@ nautilus_window_new_tab (NautilusWindow *window)
         {
             g_object_ref (location);
         }
-
-        g_free (scheme);
 
         flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
         nautilus_window_open_location_full (window, location, flags, NULL, NULL);
