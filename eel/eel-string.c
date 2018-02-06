@@ -89,14 +89,21 @@ eel_str_capitalize (const char *string)
     return capitalized;
 }
 
-/* Note: eel_string_ellipsize_* that use a length in pixels
- * rather than characters can be found in eel_gdk_extensions.h
+/**
+ * eel_str_middle_truncate:
+ * @string: the original string
+ * @truncate_length: the number of characters of the truncated string (min. 3).
  *
- * FIXME bugzilla.eazel.com 5089:
- * we should coordinate the names of eel_string_ellipsize_*
- * and eel_str_*_truncate so that they match better and reflect
- * their different behavior.
- */
+ * Replaces a number of characters in the middle of a @string with an ellipsis
+ * character, to obtain a number of characters equal to @truncate_length, if the
+ * original @string is longer than that.
+ *
+ * Useful to ellipsise a variable substring (such as a file name) with variable
+ * lengh. Do not use this for full labels, use PangoLayout instead.
+ *
+ * Returns: (transfer full): a newly allocated truncated string, or a copy of
+ * @string if it was not longer than @truncate_length.
+ **/
 char *
 eel_str_middle_truncate (const char *string,
                          guint       truncate_length)
