@@ -263,7 +263,7 @@ nautilus_notebook_sync_tab_label (NautilusNotebook   *notebook,
          */
         location_name = g_file_get_parse_name (location);
         title_name = nautilus_window_slot_get_title (slot);
-        if (g_str_has_prefix (location_name, EEL_SEARCH_URI))
+        if (eel_uri_is_search (location_name))
         {
             gtk_widget_set_tooltip_text (gtk_widget_get_parent (label), title_name);
         }
