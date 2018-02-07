@@ -1215,7 +1215,7 @@ places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
     }
     uri = g_file_get_uri (dest_file);
 
-    if (g_list_length (items) < 1)
+    if (items == NULL)
     {
         goto out;
     }
@@ -1848,7 +1848,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             /* Don't pop up a notification if user canceled the operation or the focus
              * is not in the this window. This is an easy way to know from which window
              * was the delete operation made */
-            if (g_list_length (files) > 0 && gtk_window_has_toplevel_focus (GTK_WINDOW (window)))
+            if (files != NULL && gtk_window_has_toplevel_focus (GTK_WINDOW (window)))
             {
                 popup_notification = TRUE;
                 label = in_app_notification_undo_deleted_get_label (undo_info);

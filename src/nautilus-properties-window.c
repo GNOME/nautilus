@@ -2303,7 +2303,7 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
         }
     }
 
-    deep_count_active = (g_list_length (window->details->deep_count_files) > 0);
+    deep_count_active = (window->details->deep_count_files != NULL);
     /* If we've already displayed the total once, don't do another visible
      * count-up if the deep_count happens to get invalidated.
      * But still display the new total, since it might have changed.
