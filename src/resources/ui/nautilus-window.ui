@@ -61,7 +61,7 @@
                   </object>
                 </child>
                 <child type="overlay">
-                  <object class="GtkRevealer" id="notification_delete">
+                  <object class="GtkRevealer" id="in_app_notification_undo">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
@@ -78,7 +78,7 @@
                             <property name="margin_start">12</property>
                             <property name="margin_end">4</property>
                             <child>
-                              <object class="GtkLabel" id="notification_delete_label">
+                              <object class="GtkLabel" id="in_app_notification_undo_label">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <property name="max_width_chars">50</property>
@@ -87,7 +87,7 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkButton" id="notification_delete_undo">
+                              <object class="GtkButton" id="in_app_notification_undo_undo_button">
                                 <property name="label" translatable="yes">Undo</property>
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
@@ -100,7 +100,7 @@
                               </object>
                             </child>
                             <child>
-                              <object class="GtkButton" id="notification_delete_close">
+                              <object class="GtkButton" id="in_app_notification_undo_close_button">
                                 <property name="visible">True</property>
                                 <property name="can_focus">True</property>
                                 <property name="receives_default">True</property>
