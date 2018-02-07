@@ -242,6 +242,8 @@ struct _NautilusFileUndoInfoFavoritesClass {
 GType nautilus_file_undo_info_favorites_get_type (void) G_GNUC_CONST;
 NautilusFileUndoInfo *nautilus_file_undo_info_favorites_new (GList   *files,
                                                              gboolean starred);
+GList *nautilus_file_undo_info_favorites_get_files (NautilusFileUndoInfoFavorites *self);
+gboolean nautilus_file_undo_info_favorites_is_favorited (NautilusFileUndoInfoFavorites *self);
 
 /* trash */
 #define NAUTILUS_TYPE_FILE_UNDO_INFO_TRASH         (nautilus_file_undo_info_trash_get_type ())

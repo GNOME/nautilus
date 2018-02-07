@@ -1504,6 +1504,18 @@ nautilus_file_undo_info_favorites_class_init (NautilusFileUndoInfoFavoritesClass
 
 }
 
+GList *
+nautilus_file_undo_info_favorites_get_files (NautilusFileUndoInfoFavorites *self)
+{
+    return self->priv->files;
+}
+
+gboolean
+nautilus_file_undo_info_favorites_is_favorited (NautilusFileUndoInfoFavorites *self)
+{
+    return self->priv->starred;
+}
+
 NautilusFileUndoInfo *
 nautilus_file_undo_info_favorites_new (GList   *files,
                                        gboolean starred)
