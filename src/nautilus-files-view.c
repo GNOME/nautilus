@@ -7694,8 +7694,21 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view));
 
-    show_star = (selection != NULL);
-    show_unstar = (selection != NULL);
+
+    GFile *current_location;
+    gboolean current_directory_in_xdg_folders = FALSE;
+
+    /* FIXME: We are assuming tracker indexes XDG folders and ignore the search
+     * setting. This should be fixed in a better way for Nautilus 3.30.
+     * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
+     */
+    current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
+    current_directory_in_xdg_folders = eel_uri_is_in_xdg_dirs (g_file_get_uri (current_location));
+
+    show_star = (selection != NULL) &&
+                (current_directory_in_xdg_folders || selection_contains_starred);
+    show_unstar = (selection != NULL) &&
+                  (current_directory_in_xdg_folders || selection_contains_starred);
     for (l = selection; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
