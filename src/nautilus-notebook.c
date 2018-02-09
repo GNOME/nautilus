@@ -320,6 +320,7 @@ build_tab_label (NautilusNotebook   *notebook,
     label = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
     gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
+    gtk_label_set_width_chars (GTK_LABEL (label), 6);
     gtk_box_set_center_widget (GTK_BOX (box), label);
     gtk_widget_show (label);
 
