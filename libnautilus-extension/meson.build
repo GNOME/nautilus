@@ -27,15 +27,17 @@ install_headers(
   subdir: join_paths('nautilus', 'libnautilus-extension')
 )
 
+libnautilus_extension_enums = gnome.mkenums_simple(
+  'nautilus-extension-enum-types',
+  install_header: true,
+  install_dir: join_paths(includedir, 'nautilus', 'libnautilus-extension'),
+  sources: [
+    'nautilus-info-provider.h'
+  ]
+)
+
 libnautilus_extension_sources = [
-  gnome.mkenums_simple(
-    'nautilus-extension-enum-types',
-    install_header: true,
-    install_dir: join_paths(includedir, 'nautilus', 'libnautilus-extension'),
-    sources: [
-      'nautilus-info-provider.h'
-    ]
-  ),
+  libnautilus_extension_enums,
   libnautilus_extension_headers,
   'nautilus-column-provider.c',
   'nautilus-column.c',
@@ -88,6 +90,7 @@ gnome.generate_gir(
 )
 
 nautilus_extension = declare_dependency(
+  sources: libnautilus_extension_enums[1],
   link_with: libnautilus_extension,
   dependencies: libnautilus_extension_deps,
   include_directories: nautilus_include_dirs
