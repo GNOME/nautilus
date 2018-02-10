@@ -126,4 +126,6 @@ GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gchar * nautilus_uri_to_native_uri (const gchar *uri);
 
+gchar * random_string_generator (gchar *str, gint len);
+
 #endif /* NAUTILUS_FILE_UTILITIES_H */
