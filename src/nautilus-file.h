@@ -1,21 +1,21 @@
 /*
    nautilus-file.h: Nautilus file model.
- 
+
    Copyright (C) 1999, 2000, 2001 Eazel, Inc.
-  
+
    This program is free software; you can redistribute it and/or
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
-  
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-  
+
    You should have received a copy of the GNU General Public
    License along with this program; if not, see <http://www.gnu.org/licenses/>.
-  
+
    Author: Darin Adler <darin@bentspoon.com>
 */
 
@@ -61,7 +61,7 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
 	NAUTILUS_FILE_SORT_BY_RECENCY
-} NautilusFileSortType;	
+} NautilusFileSortType;
 
 typedef enum {
 	NAUTILUS_REQUEST_NOT_STARTED,
@@ -82,7 +82,7 @@ typedef enum {
 	/* render emblems */
 	NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS = (1<<6),
 	NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM = (1<<7)
-} NautilusFileIconFlags;	
+} NautilusFileIconFlags;
 
 /* Standard Drag & Drop types. */
 typedef enum {
@@ -239,7 +239,7 @@ void                    nautilus_file_set_search_fts_snippet            (Nautilu
                                                                          const gchar                    *fts_snippet);
 const gchar*            nautilus_file_get_search_fts_snippet            (NautilusFile                   *file);
 
-void                    nautilus_file_set_attributes                    (NautilusFile                   *file, 
+void                    nautilus_file_set_attributes                    (NautilusFile                   *file,
 									 GFileInfo                      *attributes,
 									 NautilusFileOperationCallback   callback,
 									 gpointer                        callback_data);
@@ -542,8 +542,8 @@ typedef struct {
 	   it will be used as the default file type. This is useful when creating
 	   a "virtual" NautilusFile subclass that you can't actually get real
 	   information about. For exaple NautilusDesktopDirectoryFile. */
-	GFileType default_file_type; 
-	
+	GFileType default_file_type;
+
 	/* Called when the file notices any change. */
 	void                  (* changed)                (NautilusFile *file);
 
@@ -584,7 +584,7 @@ typedef struct {
 	void                  (* set_metadata_as_list)   (NautilusFile           *file,
 							  const char             *key,
 							  char                  **value);
-	
+
 	void                  (* mount)                  (NautilusFile                   *file,
 							  GMountOperation                *mount_op,
 							  GCancellable                   *cancellable,
@@ -614,5 +614,12 @@ typedef struct {
 
 	void                 (* poll_for_media)          (NautilusFile                   *file);
 } NautilusFileClass;
+
+
+typedef struct {
+	NautilusFile *file;
+    NautilusFile *original_file;
+	gchar *new_name;
+} BatchRenameCouple;
 
 #endif /* NAUTILUS_FILE_H */
