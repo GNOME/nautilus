@@ -2182,12 +2182,6 @@ nautilus_file_rename_handle_file_gone (NautilusFile                  *file,
     return FALSE;
 }
 
-typedef struct
-{
-    NautilusFileOperation *op;
-    NautilusFile *file;
-} BatchRenameData;
-
 static void
 batch_rename_get_info_callback (GObject      *source_object,
                                 GAsyncResult *res,
@@ -2201,22 +2195,16 @@ batch_rename_get_info_callback (GObject      *source_object,
     const char *new_name;
     GFileInfo *new_info;
     GError *error;
-    BatchRenameData *data;
 
-    data = callback_data;
-
-    op = data->op;
-    op->file = data->file;
+    op = callback_data;
 
     error = NULL;
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
-        old_uri = nautilus_file_get_uri (op->file);
+        directory = op->file->details->directory;
 
         new_name = g_file_info_get_name (new_info);
-
-        directory = op->file->details->directory;
 
         /* If there was another file by the same name in this
          * directory and it is not the same file that we are
@@ -2228,6 +2216,8 @@ batch_rename_get_info_callback (GObject      *source_object,
             nautilus_file_mark_gone (existing_file);
             nautilus_file_changed (existing_file);
         }
+
+        old_uri = nautilus_file_get_uri (op->file);
 
         update_info_and_name (op->file, new_info);
 
@@ -2258,8 +2248,6 @@ batch_rename_get_info_callback (GObject      *source_object,
         nautilus_file_operation_complete (op, NULL, error);
     }
 
-    g_free (data);
-
     if (error)
     {
         g_error_free (error);
@@ -2272,18 +2260,19 @@ real_batch_rename (GList                         *files,
                    NautilusFileOperationCallback  callback,
                    gpointer                       callback_data)
 {
-    GList *l1, *l2, *old_files, *new_files;
+    GList *l1, *l2, *old_files, *new_files, *colliding_files, *fixed_filenames;
     NautilusFileOperation *op;
     GFile *location;
     GString *new_name;
     NautilusFile *file;
     GError *error;
     GFile *new_file;
-    BatchRenameData *data;
 
     error = NULL;
     old_files = NULL;
     new_files = NULL;
+    colliding_files = NULL;
+    fixed_filenames = NULL;
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
@@ -2315,7 +2304,6 @@ real_batch_rename (GList                         *files,
         if (new_file_name == NULL)
         {
             op->skipped_files++;
-
             continue;
         }
 
@@ -2327,35 +2315,295 @@ real_batch_rename (GList                         *files,
                                             op->cancellable,
                                             &error);
 
-        data = g_new0 (BatchRenameData, 1);
-        data->op = op;
-        data->file = file;
+        /* if collision occurs, push file-newname couples to the colliding_files to be handled later */
+        if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+        {
+            BatchRenameCouple *rename_couple = g_new(BatchRenameCouple, 1);
 
-        g_file_query_info_async (new_file,
-                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
-                                 G_PRIORITY_DEFAULT,
-                                 op->cancellable,
-                                 batch_rename_get_info_callback,
-                                 data);
+            rename_couple->file = file;
+            rename_couple->original_file = file;
+            rename_couple->new_name = new_name->str;
+
+            colliding_files = g_list_prepend(colliding_files, rename_couple);
+        }
 
         if (error != NULL)
         {
-            g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (file));
             g_error_free (error);
             error = NULL;
-
-            op->skipped_files++;
         }
         else
         {
-            old_files = g_list_append (old_files, location);
-            new_files = g_list_append (new_files, new_file);
+            op->file = file;
+
+            g_file_query_info_async (new_file,
+                                     NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                     0,
+                                     G_PRIORITY_DEFAULT,
+                                     op->cancellable,
+                                     batch_rename_get_info_callback,
+                                     op);
+
+            old_files = g_list_prepend (old_files, location);
+            new_files = g_list_prepend (new_files, new_file);
+
+            fixed_filenames = g_list_prepend (fixed_filenames, nautilus_file_get_name (file));
+
+            g_debug ("first: %s -> name: %s",
+                     g_file_get_path (location),
+                     new_name->str);
         }
     }
 
+    gint colliding_count = g_list_length(colliding_files);
+
+    g_debug ("colliding_files length: %d\n fixed_filenames length: %d", colliding_count, g_list_length(fixed_filenames));
+
+    /* loop over the old filenames to detect and fix possible collision cycles */
+    while (fixed_filenames != NULL)
+    {
+        gchar *fixed_filename = fixed_filenames->data;
+        fixed_filenames = g_list_delete_link(fixed_filenames, fixed_filenames);
+        GList *l1 = colliding_files;
+
+        /* find BatchRenameCouple whose collusion is solved and do its rename operation */
+        while (l1)
+        {
+            BatchRenameCouple* rename_couple = l1->data;
+
+            if (strcmp(rename_couple->new_name, fixed_filename) == 0)
+            {
+                file = NAUTILUS_FILE (rename_couple->file);
+                location = nautilus_file_get_location (file);
+
+                gchar *new_file_name = nautilus_file_can_rename_file (file,
+                                                                      rename_couple->new_name,
+                                                                      callback,
+                                                                      callback_data);
+                if (new_file_name == NULL)
+                {
+                    op->skipped_files++;
+                    l1 = l1->next;
+                    continue;
+                }
+
+                g_assert (G_IS_FILE (location));
+
+                /* Do the renaming. */
+                new_file = g_file_set_display_name (location,
+                                                    new_file_name,
+                                                    op->cancellable,
+                                                    &error);
+
+                if (error == NULL)
+                {
+                    g_debug ("middle: %s -> name: %s",
+                             g_file_get_path (location),
+                             rename_couple->new_name);
+
+                    colliding_files = g_list_delete_link(colliding_files, l1);
+                    colliding_count--;
+
+                    if (colliding_count > 0)
+                    {
+                        fixed_filenames = g_list_prepend (fixed_filenames, nautilus_file_get_name (file));
+                    }
+
+                    op->file = file;
+
+                    g_file_query_info_async (new_file,
+                                             NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                             0,
+                                             G_PRIORITY_DEFAULT,
+                                             op->cancellable,
+                                             batch_rename_get_info_callback,
+                                             op);
+
+                    old_files = g_list_prepend (old_files, location);
+                    new_files = g_list_prepend (new_files, new_file);
+                }
+                else
+                {
+                    g_warning ("Batch rename failed for file \"%s\": %s",
+                               nautilus_file_get_name(file),
+                               error->message);
+
+                    op->skipped_files++;
+                }
+
+                g_free (new_file_name);
+                new_file_name = NULL;
+
+                break;
+            }
+
+            l1 = l1->next;
+        }
+    }
+
+    /* start handling remaining colliding files. now, use temporary renaming if required. */
+    while (colliding_files != NULL)
+    {
+        g_autofree gchar *new_file_name;
+
+        BatchRenameCouple *rename_couple = colliding_files->data;
+        file = rename_couple->file;
+
+        new_file_name = nautilus_file_can_rename_file (file,
+                                                       rename_couple->new_name,
+                                                       callback,
+                                                       callback_data);
+
+        if (new_file_name == NULL)
+        {
+            colliding_files = g_list_remove (colliding_files, rename_couple);
+            op->skipped_files++;
+            continue;
+        }
+
+        location = nautilus_file_get_location (file);
+        g_assert (G_IS_FILE (location));
+
+        new_file = g_file_set_display_name (location,
+                                            rename_couple->new_name,
+                                            op->cancellable,
+                                            &error);
+
+        if (error == NULL)
+        {
+            g_debug ("colliding: %s -> name: %s",
+                     g_file_get_path (location),
+                     rename_couple->new_name);
+
+            colliding_files = g_list_remove (colliding_files, rename_couple);
+
+            op->file = rename_couple->original_file;
+
+            g_file_query_info_async (new_file,
+                                     NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                     0,
+                                     G_PRIORITY_DEFAULT,
+                                     op->cancellable,
+                                     batch_rename_get_info_callback,
+                                     op);
+
+            old_files = g_list_prepend (old_files, nautilus_file_get_location(rename_couple->original_file));
+            new_files = g_list_prepend (new_files, new_file);
+
+        }
+        else if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+        {
+            /* no other choice left. fix collusion with adding a suffix to the colliding filename. */
+
+            g_error_free (error);
+            error = NULL;
+
+            /* generate colliding file uri and get the file */
+
+            GFile *random_named_file = NULL;
+
+            GFile *colliding_file_parent = g_file_get_parent (location);
+            gchar *colliding_file_parent_uri = g_file_get_uri (colliding_file_parent);
+
+            GString *colliding_file_uri = g_string_new (colliding_file_parent_uri);
+
+            colliding_file_uri = g_string_append (colliding_file_uri, "/");
+            colliding_file_uri = g_string_append (colliding_file_uri, rename_couple->new_name);
+
+            NautilusFile *collision_file = nautilus_file_get_by_uri (colliding_file_uri->str);
+            GFile *collision_location = nautilus_file_get_location (collision_file);
+
+            g_object_unref (colliding_file_parent);
+            g_free (colliding_file_parent_uri);
+            g_string_free(colliding_file_uri, TRUE);
+            colliding_file_parent_uri = NULL;
+            colliding_file_uri = NULL;
+
+            /* try until finding a filename which is unique in the file path */
+            while (random_named_file == NULL)
+            {
+                gchar random_string[6];
+                random_string_generator(random_string, 5);
+
+                gchar *collision_file_name = nautilus_file_get_name(collision_file);
+
+                GString *name_with_suffix = g_string_new (collision_file_name);
+
+                g_free (collision_file_name);
+                collision_file_name = NULL;
+
+                name_with_suffix = g_string_append (name_with_suffix, ".tmp_batch_rename_");
+                name_with_suffix = g_string_append (name_with_suffix, random_string);
+
+                new_file_name = nautilus_file_can_rename_file (collision_file,
+                                                               name_with_suffix->str,
+                                                               callback,
+                                                               callback_data);
+                if (new_file_name != NULL)
+                {
+                    random_named_file = g_file_set_display_name (collision_location,
+                                                                 new_file_name,
+                                                                 op->cancellable,
+                                                                 &error);
+                }
+
+                if (random_named_file == NULL)
+                {
+                    g_warning ("Temporary rename for file \"%s\" failed, trying with another name.",
+                               nautilus_file_get_name (file));
+                }
+                else
+                {
+                    g_debug ("randomize: %s -> name: %s",
+                             g_file_get_path (collision_location),
+                             name_with_suffix->str);
+
+                    gchar *new_name = nautilus_file_get_display_name(file);
+
+                    /* find the colliding file in the list and update its link with the randomized file */
+                    l1 = colliding_files;
+
+                    while (l1)
+                    {
+                        BatchRenameCouple *randomized_file = l1->data;
+
+                        if (strcmp(randomized_file->new_name, new_name) == 0)
+                        {
+                            randomized_file->file = nautilus_file_get(random_named_file);
+                            break;
+                        }
+
+                        l1 = l1->next;
+                    }
+
+                    g_free (new_name);
+                    new_name = NULL;
+                }
+
+                if (error != NULL) {
+                    g_error_free (error);
+                    error = NULL;
+                }
+
+                g_string_free (name_with_suffix, TRUE);
+                name_with_suffix = NULL;
+            }
+
+            g_object_unref (collision_location);
+        }
+
+        if (error != NULL)
+        {
+            g_warning ("Batch rename failed: %s", error->message);
+            g_error_free (error);
+            error = NULL;
+            break;
+        }
+
+    }
+
     /* Tell the undo manager a batch rename is taking place if at least
-     * a file has been renamed*/
+     * a file has been renamed */
     if (!nautilus_file_undo_manager_is_operating () && op->skipped_files != g_list_length (files))
     {
         op->undo_info = nautilus_file_undo_info_batch_rename_new (g_list_length (new_files));
@@ -2373,6 +2621,10 @@ real_batch_rename (GList                         *files,
     {
         nautilus_file_operation_complete (op, NULL, error);
     }
+
+    g_list_free_full (fixed_filenames, g_free);
+    g_list_free_full (colliding_files, g_free);
+
 }
 
 void
