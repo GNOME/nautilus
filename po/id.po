@@ -12,8 +12,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2018-01-30 11:29+0000\n"
-"PO-Revision-Date: 2018-01-31 14:26+0700\n"
+"POT-Creation-Date: 2018-02-08 14:08+0000\n"
+"PO-Revision-Date: 2018-02-09 16:54+0700\n"
 "Last-Translator: Kukuh Syafaat <syafaatkukuh@gmail.com>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -68,7 +68,7 @@ msgstr ""
 "dan skrip."
 
 #: data/org.gnome.Nautilus.desktop.in:3 src/nautilus-mime-actions.c:107
-#: src/nautilus-properties-window.c:4582 src/nautilus-window.c:3019
+#: src/nautilus-properties-window.c:4582 src/nautilus-window.c:3075
 msgid "Files"
 msgstr "Berkas"
 
@@ -879,7 +879,7 @@ msgstr "Lokasi Lain"
 
 #: src/nautilus-bookmark.c:115 src/nautilus-file-utilities.c:304
 #: src/nautilus-list-view.c:1836 src/nautilus-pathbar.c:450
-#: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:179
+#: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:180
 msgid "Home"
 msgstr "Rumah"
 
@@ -1737,7 +1737,7 @@ msgid "All items in the Trash will be permanently deleted."
 msgstr "Semua isi Tempat Sampah akan dihapus permanen."
 
 #: src/nautilus-file-operations.c:1555 src/nautilus-file-operations.c:2767
-#: src/nautilus-window.c:1450
+#: src/nautilus-window.c:1449
 msgid "Empty _Trash"
 msgstr "Kosongkan _Tempat Sampah"
 
@@ -2726,7 +2726,7 @@ msgid_plural "Move %d items back to trash"
 msgstr[0] "Mengembalikan %d item ke tempat sampah"
 
 #: src/nautilus-file-undo-operations.c:444
-#: src/nautilus-file-undo-operations.c:1543
+#: src/nautilus-file-undo-operations.c:1555
 #, c-format
 msgid "Restore %d item from trash"
 msgid_plural "Restore %d items from trash"
@@ -2769,8 +2769,8 @@ msgstr[0] "_Jadi Lagi Menyalin %d item"
 #: src/nautilus-file-undo-operations.c:474
 #: src/nautilus-file-undo-operations.c:501
 #: src/nautilus-file-undo-operations.c:771
-#: src/nautilus-file-undo-operations.c:2301
-#: src/nautilus-file-undo-operations.c:2463
+#: src/nautilus-file-undo-operations.c:2313
+#: src/nautilus-file-undo-operations.c:2475
 #, c-format
 msgid "Delete “%s”"
 msgstr "Menghapus “%s”"
@@ -2953,137 +2953,137 @@ msgstr "Tak _Jadi Hapus Bintang"
 msgid "_Redo Unstarring"
 msgstr "Jadi _Lagi Hapus Bintang"
 
-#: src/nautilus-file-undo-operations.c:1546
+#: src/nautilus-file-undo-operations.c:1558
 #, c-format
 msgid "Move %d item to trash"
 msgid_plural "Move %d items to trash"
 msgstr[0] "Memindahkan %d item ke tempat sampah"
 
-#: src/nautilus-file-undo-operations.c:1560
+#: src/nautilus-file-undo-operations.c:1572
 #, c-format
 msgid "Restore “%s” to “%s”"
 msgstr "Mengembalikan  \"%s\" menjadi \"%s\"."
 
-#: src/nautilus-file-undo-operations.c:1567
+#: src/nautilus-file-undo-operations.c:1579
 #, c-format
 msgid "Move “%s” to trash"
 msgstr "Memindahkan “%s” ke tempat sampah"
 
-#: src/nautilus-file-undo-operations.c:1572
+#: src/nautilus-file-undo-operations.c:1584
 msgid "_Undo Trash"
 msgstr "Tak Jadi Memb_uang ke Tempat Sampah"
 
-#: src/nautilus-file-undo-operations.c:1573
+#: src/nautilus-file-undo-operations.c:1585
 msgid "_Redo Trash"
 msgstr "_Jadi Lagi Membuat ke Tempat Sampah"
 
-#: src/nautilus-file-undo-operations.c:1868
+#: src/nautilus-file-undo-operations.c:1880
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
 msgstr "Mengembalikan hak akses asli semua item pada “%s”"
 
-#: src/nautilus-file-undo-operations.c:1869
+#: src/nautilus-file-undo-operations.c:1881
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
 msgstr "Mengatur hak akses semua item pada \"%s\""
 
-#: src/nautilus-file-undo-operations.c:1871
-#: src/nautilus-file-undo-operations.c:2025
+#: src/nautilus-file-undo-operations.c:1883
+#: src/nautilus-file-undo-operations.c:2037
 msgid "_Undo Change Permissions"
 msgstr "Tak Jadi Meng_ubah Hak Akses"
 
-#: src/nautilus-file-undo-operations.c:1872
-#: src/nautilus-file-undo-operations.c:2026
+#: src/nautilus-file-undo-operations.c:1884
+#: src/nautilus-file-undo-operations.c:2038
 msgid "_Redo Change Permissions"
 msgstr "_Jadi Lagi Mengubah Hak Akses"
 
-#: src/nautilus-file-undo-operations.c:2022
+#: src/nautilus-file-undo-operations.c:2034
 #, c-format
 msgid "Restore original permissions of “%s”"
 msgstr "Mengembalikan hak akses asli pada “%s”"
 
-#: src/nautilus-file-undo-operations.c:2023
+#: src/nautilus-file-undo-operations.c:2035
 #, c-format
 msgid "Set permissions of “%s”"
 msgstr "Mengatur hak akses “%s”"
 
-#: src/nautilus-file-undo-operations.c:2135
+#: src/nautilus-file-undo-operations.c:2147
 #, c-format
 msgid "Restore group of “%s” to “%s”"
 msgstr "Mengembalikan kelompok dari “%s” menjadi “%s”"
 
-#: src/nautilus-file-undo-operations.c:2137
+#: src/nautilus-file-undo-operations.c:2149
 #, c-format
 msgid "Set group of “%s” to “%s”"
 msgstr "Mengatur kelompok dari “%s” menjadi “%s”"
 
-#: src/nautilus-file-undo-operations.c:2140
+#: src/nautilus-file-undo-operations.c:2152
 msgid "_Undo Change Group"
 msgstr "Tak Jadi Meng_ubah Kelompok"
 
-#: src/nautilus-file-undo-operations.c:2141
+#: src/nautilus-file-undo-operations.c:2153
 msgid "_Redo Change Group"
 msgstr "_Jadi Lagi Mengubah Kelompok"
 
-#: src/nautilus-file-undo-operations.c:2145
+#: src/nautilus-file-undo-operations.c:2157
 #, c-format
 msgid "Restore owner of “%s” to “%s”"
 msgstr "Mengembalikan pemilik dari “%s” menjadi “%s”"
 
-#: src/nautilus-file-undo-operations.c:2147
+#: src/nautilus-file-undo-operations.c:2159
 #, c-format
 msgid "Set owner of “%s” to “%s”"
 msgstr "Mengatur pemilik dari “%s” menjadi “%s”"
 
-#: src/nautilus-file-undo-operations.c:2150
+#: src/nautilus-file-undo-operations.c:2162
 msgid "_Undo Change Owner"
 msgstr "Tak Jadi Meng_ubah Pemilik"
 
-#: src/nautilus-file-undo-operations.c:2151
+#: src/nautilus-file-undo-operations.c:2163
 msgid "_Redo Change Owner"
 msgstr "_Jadi Lagi Mengubah Pemilik"
 
-#: src/nautilus-file-undo-operations.c:2287
+#: src/nautilus-file-undo-operations.c:2299
 msgid "_Undo Extract"
 msgstr "_Tak Jadi Ekstrak"
 
-#: src/nautilus-file-undo-operations.c:2288
+#: src/nautilus-file-undo-operations.c:2300
 msgid "_Redo Extract"
 msgstr "_Jadi Lagi Ekstrak"
 
-#: src/nautilus-file-undo-operations.c:2305
+#: src/nautilus-file-undo-operations.c:2317
 #, c-format
 msgid "Delete %d extracted file"
 msgid_plural "Delete %d extracted files"
 msgstr[0] "Menghapus %d berkas yang diekstrak"
 
-#: src/nautilus-file-undo-operations.c:2319
+#: src/nautilus-file-undo-operations.c:2331
 #, c-format
 msgid "Extract “%s”"
 msgstr "Ekstrak “%s”"
 
-#: src/nautilus-file-undo-operations.c:2323
+#: src/nautilus-file-undo-operations.c:2335
 #, c-format
 msgid "Extract %d file"
 msgid_plural "Extract %d files"
 msgstr[0] "Ekstrak %d berkas"
 
-#: src/nautilus-file-undo-operations.c:2474
+#: src/nautilus-file-undo-operations.c:2486
 #, c-format
 msgid "Compress “%s”"
 msgstr "Kompres “%s”"
 
-#: src/nautilus-file-undo-operations.c:2478
+#: src/nautilus-file-undo-operations.c:2490
 #, c-format
 msgid "Compress %d file"
 msgid_plural "Compress %d files"
 msgstr[0] "Kompres %d berkas"
 
-#: src/nautilus-file-undo-operations.c:2484
+#: src/nautilus-file-undo-operations.c:2496
 msgid "_Undo Compress"
 msgstr "_Tak Jadi Mengompres"
 
-#: src/nautilus-file-undo-operations.c:2485
+#: src/nautilus-file-undo-operations.c:2497
 msgid "_Redo Compress"
 msgstr "_Jadi Lagi Mengompres"
 
@@ -4178,31 +4178,31 @@ msgid "Last year"
 msgid_plural "%d years ago"
 msgstr[0] "%d tahun yang lalu"
 
-#: src/nautilus-window.c:178
+#: src/nautilus-window.c:179
 msgid "Parent folder"
 msgstr "Folder induk"
 
-#: src/nautilus-window.c:180 src/resources/ui/nautilus-toolbar-menu.ui:61
+#: src/nautilus-window.c:181 src/resources/ui/nautilus-toolbar-menu.ui:61
 msgid "New tab"
 msgstr "Tab baru"
 
-#: src/nautilus-window.c:181
+#: src/nautilus-window.c:182
 msgid "Close current view"
 msgstr "Tutup tampilan saat ini"
 
-#: src/nautilus-window.c:182
+#: src/nautilus-window.c:183
 msgid "Back"
 msgstr "Kembali"
 
-#: src/nautilus-window.c:183
+#: src/nautilus-window.c:184
 msgid "Forward"
 msgstr "Maju"
 
-#: src/nautilus-window.c:1469
+#: src/nautilus-window.c:1468
 msgid "_Properties"
 msgstr "_Properti"
 
-#: src/nautilus-window.c:1481
+#: src/nautilus-window.c:1480
 msgid "_Format…"
 msgstr "_Format…"
 
@@ -4220,30 +4220,44 @@ msgid "%d file deleted"
 msgid_plural "%d files deleted"
 msgstr[0] "%d berkas dihapus"
 
-#: src/nautilus-window.c:1912
+#. Translators: one item has been unstarred and %s is its name.
+#: src/nautilus-window.c:1812
+#, c-format
+msgid "“%s” unstarred"
+msgstr "\"%s\" tak dibintangi"
+
+#. Translators: one or more items have been unstarred, and %d
+#. * is the count.
+#: src/nautilus-window.c:1818
+#, c-format
+msgid "%d file unstarred"
+msgid_plural "%d files unstarred"
+msgstr[0] "%d berkas tak dibintangi"
+
+#: src/nautilus-window.c:1968
 #, c-format
 msgid "Open %s"
 msgstr "Buka %s"
 
-#: src/nautilus-window.c:1999
+#: src/nautilus-window.c:2055
 msgid "_New Tab"
 msgstr "_Tab Baru"
 
 # Salah satu opsi pada menu konteks saat menklik kanan tab dalam jendela Nautilus. Jadi, sudah jelas fungsinya untuk apa.
-#: src/nautilus-window.c:2009
+#: src/nautilus-window.c:2065
 msgid "Move Tab _Left"
 msgstr "_Pindahkan ke Kiri"
 
 # Salah satu opsi pada menu konteks saat menklik kanan tab dalam jendela Nautilus. Jadi, sudah jelas fungsinya untuk apa.
-#: src/nautilus-window.c:2017
+#: src/nautilus-window.c:2073
 msgid "Move Tab _Right"
 msgstr "Pindahkan _ke Kanan"
 
-#: src/nautilus-window.c:2028
+#: src/nautilus-window.c:2084
 msgid "_Close Tab"
 msgstr "_Tutup Tab"
 
-#: src/nautilus-window.c:3021
+#: src/nautilus-window.c:3077
 msgid "Access and organize your files."
 msgstr "Mengakses dan mengelola berkas Anda."
 
@@ -4251,7 +4265,7 @@ msgstr "Mengakses dan mengelola berkas Anda."
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:3031
+#: src/nautilus-window.c:3087
 msgid "translator-credits"
 msgstr ""
 "Yohanes Nugroho <yohanes@opensource.or.id>, 2003.\n"
