@@ -615,4 +615,10 @@ typedef struct {
 	void                 (* poll_for_media)          (NautilusFile                   *file);
 } NautilusFileClass;
 
+typedef struct {
+	NautilusFile *file;
+	NautilusFile *original_file;
+	gchar *new_name;
+} BatchRenameCouple;
+
 #endif /* NAUTILUS_FILE_H */
