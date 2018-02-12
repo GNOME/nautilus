@@ -135,9 +135,6 @@ typedef enum
 	NAUTILUS_SIMPLE_SEARCH_BAR
 } NautilusSearchBarMode;
 
-/* bulk rename utility */
-#define NAUTILUS_PREFERENCES_BULK_RENAME_TOOL              "bulk-rename-tool"
-
 /* Lockdown */
 #define NAUTILUS_PREFERENCES_LOCKDOWN_COMMAND_LINE         "disable-command-line"
 
