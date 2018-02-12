@@ -3060,26 +3060,6 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
     }
 }
 
-static char *
-get_bulk_rename_tool ()
-{
-    char *bulk_rename_tool;
-    g_settings_get (nautilus_preferences, NAUTILUS_PREFERENCES_BULK_RENAME_TOOL, "^ay", &bulk_rename_tool);
-    return g_strstrip (bulk_rename_tool);
-}
-
-static gboolean
-have_bulk_rename_tool ()
-{
-    char *bulk_rename_tool;
-    gboolean have_tool;
-
-    bulk_rename_tool = get_bulk_rename_tool ();
-    have_tool = ((bulk_rename_tool != NULL) && (*bulk_rename_tool != '\0'));
-    g_free (bulk_rename_tool);
-    return have_tool;
-}
-
 static void
 nautilus_files_view_destroy (GtkWidget *object)
 {
@@ -6117,38 +6097,6 @@ action_paste_files_into (GSimpleAction *action,
 }
 
 static void
-invoke_external_bulk_rename_utility (NautilusFilesView *view,
-                                     GList             *selection)
-{
-    GString *cmd;
-    char *parameter;
-    char *quoted_parameter;
-    char *bulk_rename_tool;
-    GList *walk;
-    NautilusFile *file;
-
-    /* assemble command line */
-    bulk_rename_tool = get_bulk_rename_tool ();
-    cmd = g_string_new (bulk_rename_tool);
-    g_free (bulk_rename_tool);
-    for (walk = selection; walk; walk = walk->next)
-    {
-        file = walk->data;
-        parameter = nautilus_file_get_uri (file);
-        quoted_parameter = g_shell_quote (parameter);
-        g_free (parameter);
-        cmd = g_string_append (cmd, " ");
-        cmd = g_string_append (cmd, quoted_parameter);
-        g_free (quoted_parameter);
-    }
-
-    /* spawning and error handling */
-    nautilus_launch_application_from_command (gtk_widget_get_screen (GTK_WIDGET (view)),
-                                              cmd->str, FALSE, NULL);
-    g_string_free (cmd, TRUE);
-}
-
-static void
 real_action_rename (NautilusFilesView *view)
 {
     NautilusFile *file;
@@ -6164,27 +6112,20 @@ real_action_rename (NautilusFilesView *view)
         /* If there is more than one file selected, invoke a batch renamer */
         if (selection->next != NULL)
         {
-            if (have_bulk_rename_tool ())
-            {
-                invoke_external_bulk_rename_utility (view, selection);
-            }
-            else
-            {
-                GdkCursor *cursor;
-                GdkDisplay *display;
+            GdkCursor *cursor;
+            GdkDisplay *display;
 
-                display = gtk_widget_get_display (GTK_WIDGET (nautilus_files_view_get_window (view)));
-                cursor = gdk_cursor_new_from_name (display, "progress");
-                gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (nautilus_files_view_get_window (view))),
-                                       cursor);
-                g_object_unref (cursor);
+            display = gtk_widget_get_display (GTK_WIDGET (nautilus_files_view_get_window (view)));
+            cursor = gdk_cursor_new_from_name (display, "progress");
+            gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (nautilus_files_view_get_window (view))),
+                                   cursor);
+            g_object_unref (cursor);
 
-                dialog = nautilus_batch_rename_dialog_new (selection,
-                                                           nautilus_files_view_get_model (view),
-                                                           nautilus_files_view_get_window (view));
+            dialog = nautilus_batch_rename_dialog_new (selection,
+                                                       nautilus_files_view_get_model (view),
+                                                       nautilus_files_view_get_window (view));
 
-                gtk_widget_show (GTK_WIDGET (dialog));
-            }
+            gtk_widget_show (GTK_WIDGET (dialog));
         }
         else
         {
@@ -7407,16 +7348,8 @@ real_update_actions_state (NautilusFilesView *view)
                                          "rename");
     if (selection_count > 1)
     {
-        if (have_bulk_rename_tool ())
-        {
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                         have_bulk_rename_tool ());
-        }
-        else
-        {
-            g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                         nautilus_file_can_rename_files (selection));
-        }
+        g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                     nautilus_file_can_rename_files (selection));
     }
     else
     {
