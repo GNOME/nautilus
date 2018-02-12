@@ -703,6 +703,7 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
 
     self = NAUTILUS_TAG_MANAGER (user_data);
 
+    g_print ("new events %d\n", events->len);
     for (i = 0; i < events->len; i++)
     {
         event = g_ptr_array_index (events, i);
@@ -720,6 +721,7 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
                                                                           location_uri);
         if (new_location_uri)
         {
+            g_print ("new location %s\n", new_location_uri);
             id = g_new0 (gint64, 1);
             *id = tracker_notifier_event_get_id (event);
 
