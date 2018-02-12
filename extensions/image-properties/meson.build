@@ -1,4 +1,4 @@
-shared_library (
+shared_module (
   'nautilus-image-properties', [
     'nautilus-image-properties-module.c',
     'nautilus-image-properties-page.c',
