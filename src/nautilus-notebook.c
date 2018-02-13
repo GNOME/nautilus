@@ -293,41 +293,37 @@ close_button_clicked_cb (GtkWidget          *widget,
 }
 
 static GtkWidget *
-build_tab_label (NautilusNotebook   *nb,
+build_tab_label (NautilusNotebook   *notebook,
                  NautilusWindowSlot *slot)
 {
-    GtkWidget *hbox, *label, *close_button, *image, *spinner, *icon;
     GtkWidget *box;
+    GtkWidget *label;
+    GtkWidget *close_button;
+    GtkWidget *image;
+    GtkWidget *spinner;
+    GtkWidget *icon;
 
+    /* When porting to Gtk+4, use GtkCenterBox instead */
     box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
     gtk_widget_show (box);
 
-    /* set hbox spacing and label padding (see below) so that there's an
-     * equal amount of space around the label */
-    hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_widget_show (hbox);
-    gtk_widget_set_halign (hbox, GTK_ALIGN_CENTER);
-    gtk_box_pack_start (GTK_BOX (box), hbox, TRUE, TRUE, 0);
-
-    /* setup load feedback */
+    /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
-    gtk_box_pack_start (GTK_BOX (hbox), spinner, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), spinner, FALSE, FALSE, 0);
 
-    /* setup site icon, empty by default */
+    /* Dummy icon to allocate space for spinner */
     icon = gtk_image_new ();
-    gtk_box_pack_start (GTK_BOX (hbox), icon, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), icon, FALSE, FALSE, 0);
     /* don't show the icon */
 
-    /* setup label */
+    /* Tab title */
     label = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
     gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
-    gtk_label_set_xalign (GTK_LABEL (label), 0.5);
-    gtk_label_set_yalign (GTK_LABEL (label), 0.5);
-    gtk_box_pack_start (GTK_BOX (hbox), label, FALSE, FALSE, 0);
+    gtk_box_set_center_widget (GTK_BOX (box), label);
     gtk_widget_show (label);
 
-    /* setup close button */
+    /* Tab close button */
     close_button = gtk_button_new ();
     gtk_button_set_relief (GTK_BUTTON (close_button),
                            GTK_RELIEF_NONE);
@@ -344,7 +340,7 @@ build_tab_label (NautilusNotebook   *nb,
     gtk_container_add (GTK_CONTAINER (close_button), image);
     gtk_widget_show (image);
 
-    gtk_box_pack_start (GTK_BOX (box), close_button, FALSE, FALSE, 0);
+    gtk_box_pack_end (GTK_BOX (box), close_button, FALSE, FALSE, 0);
     gtk_widget_show (close_button);
 
     g_object_set_data (G_OBJECT (box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
