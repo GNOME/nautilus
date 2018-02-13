@@ -1014,7 +1014,7 @@ nautilus_path_bar_realize (GtkWidget *widget)
     attributes_mask = GDK_WA_X | GDK_WA_Y;
 
     priv->event_window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                                                   &attributes, attributes_mask);
+                                         &attributes, attributes_mask);
     gdk_window_set_user_data (priv->event_window, widget);
 }
 
@@ -1954,7 +1954,7 @@ button_data_file_changed (NautilusFile *file,
     gboolean renamed, child;
 
     self = (NautilusPathBar *) gtk_widget_get_ancestor (button_data->button,
-                                                            NAUTILUS_TYPE_PATH_BAR);
+                                                        NAUTILUS_TYPE_PATH_BAR);
     priv = nautilus_path_bar_get_instance_private (self);
 
     if (self == NULL)

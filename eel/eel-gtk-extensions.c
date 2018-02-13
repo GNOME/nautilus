@@ -95,4 +95,3 @@ eel_gtk_menu_insert_separator (GtkMenu *menu,
 
     return GTK_MENU_ITEM (menu_item);
 }
-

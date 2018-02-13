@@ -264,6 +264,7 @@ vfs_file_get_date (NautilusFile     *file,
         }
 
         case NAUTILUS_DATE_TYPE_TRASHED:
+        {
             /* Before we have info on a file, the date is unknown. */
             if (trash_time == 0)
             {
@@ -274,6 +275,7 @@ vfs_file_get_date (NautilusFile     *file,
                 *date = trash_time;
             }
             return TRUE;
+        }
 
         case NAUTILUS_DATE_TYPE_RECENCY:
             /* Before we have info on a file, the date is unknown. */

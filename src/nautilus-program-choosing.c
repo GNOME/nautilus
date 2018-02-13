@@ -457,9 +457,9 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
 #include <gdk/gdkwayland.h>
 #endif
 
-typedef void (*GtkWindowHandleExported) (GtkWindow               *window,
-                                         const char              *handle,
-                                         gpointer                 user_data);
+typedef void (*GtkWindowHandleExported) (GtkWindow  *window,
+                                         const char *handle,
+                                         gpointer    user_data);
 
 #ifdef GDK_WINDOWING_WAYLAND
 typedef struct
@@ -488,7 +488,6 @@ window_export_handle (GtkWindow               *window,
                       GtkWindowHandleExported  callback,
                       gpointer                 user_data)
 {
-
 #ifdef GDK_WINDOWING_X11
     if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
     {
@@ -625,11 +624,11 @@ launch_default_for_uri_thread_func (GTask        *task,
 }
 
 void
-nautilus_launch_default_for_uri_async  (const char          *uri,
-                                        GtkWindow           *parent_window,
-                                        GCancellable        *cancellable,
-                                        GAsyncReadyCallback  callback,
-                                        gpointer             callback_data)
+nautilus_launch_default_for_uri_async  (const char         *uri,
+                                        GtkWindow          *parent_window,
+                                        GCancellable       *cancellable,
+                                        GAsyncReadyCallback callback,
+                                        gpointer            callback_data)
 {
     g_autoptr (GdkAppLaunchContext) launch_context = NULL;
     g_autoptr (GTask) task = NULL;

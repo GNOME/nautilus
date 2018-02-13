@@ -717,7 +717,7 @@ get_activation_action (NautilusFile *file)
     char *activation_uri;
     gboolean handles_extract = FALSE;
     g_autoptr (GAppInfo) app_info = NULL;
-    const gchar* app_id;
+    const gchar *app_id;
 
     app_info = nautilus_mime_get_default_application_for_file (file);
     if (app_info != NULL)

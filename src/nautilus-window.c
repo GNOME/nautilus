@@ -175,7 +175,8 @@ static const struct
     { GDK_KEY_Forward, "forward" },
 };
 
-static const GtkPadActionEntry pad_actions[] = {
+static const GtkPadActionEntry pad_actions[] =
+{
     { GTK_PAD_ACTION_BUTTON, 0, -1, N_("Parent folder"), "up" },
     { GTK_PAD_ACTION_BUTTON, 1, -1, N_("Home"), "go-home" },
     { GTK_PAD_ACTION_BUTTON, 2, -1, N_("New tab"), "new-tab" },
@@ -1126,8 +1127,8 @@ places_sidebar_show_other_locations_with_flags (NautilusWindow     *window,
 }
 
 static void
-places_sidebar_show_starred_location (NautilusWindow    *window,
-                                      GtkPlacesOpenFlags open_flags)
+places_sidebar_show_starred_location (NautilusWindow     *window,
+                                      GtkPlacesOpenFlags  open_flags)
 {
     GFile *location;
 
@@ -1841,7 +1842,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
 
         if (nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_MOVE_TO_TRASH)
         {
-            g_autoptr(GList) files = NULL;
+            g_autoptr (GList) files = NULL;
 
             files = nautilus_file_undo_info_trash_get_files (NAUTILUS_FILE_UNDO_INFO_TRASH (undo_info));
 
@@ -1975,8 +1976,8 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
         gtk_revealer_set_reveal_child (GTK_REVEALER (priv->notification_operation), TRUE);
         priv->notification_operation_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
-                                                                                 (GSourceFunc) on_notification_operation_timeout,
-                                                                                 window);
+                                                                         (GSourceFunc) on_notification_operation_timeout,
+                                                                         window);
     }
 }
 
@@ -2090,7 +2091,7 @@ notebook_popup_menu_show (NautilusWindow *window,
     gtk_widget_show_all (popup);
 
     gtk_menu_popup_at_pointer (GTK_MENU (popup),
-                               (GdkEvent*) event);
+                               (GdkEvent *) event);
 }
 
 /* emitted when the user clicks the "close" button of tabs */
@@ -2886,7 +2887,7 @@ nautilus_window_init (NautilusWindow *window)
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));
     g_object_unref (window_group);
 
-    priv->tab_data_queue = g_queue_new();
+    priv->tab_data_queue = g_queue_new ();
 
     priv->pad_controller = gtk_pad_controller_new (GTK_WINDOW (window),
                                                    G_ACTION_GROUP (window),

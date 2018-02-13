@@ -3547,7 +3547,7 @@ is_link_trusted (NautilusFile *file,
 {
     GFile *location;
     gboolean res;
-    g_autofree gchar* trusted = NULL;
+    g_autofree gchar *trusted = NULL;
 
     if (!is_launcher)
     {

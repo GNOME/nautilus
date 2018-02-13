@@ -1366,7 +1366,7 @@ canvas_container_longpress_gesture_pressed_callback (GtkGestureLongPress *gestur
     else
     {
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                           event);
+                                                            event);
     }
 }
 

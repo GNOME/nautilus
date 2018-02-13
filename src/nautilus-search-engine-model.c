@@ -38,7 +38,7 @@
 struct _NautilusSearchEngineModel
 {
     GObject parent;
-    
+
     NautilusQuery *query;
 
     GList *hits;
@@ -344,7 +344,6 @@ nautilus_search_engine_model_class_init (NautilusSearchEngineModelClass *class)
      * Whether the search engine is running a search.
      */
     g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
-
 }
 
 static void

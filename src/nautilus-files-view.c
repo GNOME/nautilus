@@ -2003,7 +2003,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
                                          new_folder_done, data);
 
     g_clear_object (&priv->new_folder_controller);
-    
+
     /* After the dialog is destroyed the focus, is probably in the menu item
      * that created the dialog, but we want the focus to be in the newly created
      * folder.
@@ -3632,7 +3632,6 @@ debuting_files_add_files_callback (NautilusFilesView *view,
         {
             nautilus_file_ref (NAUTILUS_FILE (l->data));
             data->added_files = g_list_prepend (data->added_files, NAUTILUS_FILE (l->data));
-
         }
         g_object_unref (location);
     }
@@ -3672,8 +3671,8 @@ copy_move_done_data_free (CopyMoveDoneData *data)
 
 static void
 pre_copy_move_add_files_callback (NautilusFilesView *view,
-                                 GList             *new_files,
-                                 CopyMoveDoneData  *data)
+                                  GList             *new_files,
+                                  CopyMoveDoneData  *data)
 {
     GList *l;
 
@@ -8411,8 +8410,8 @@ load_directory (NautilusFilesView *view,
                                attributes);
 
     priv->file_changed_handler_id = g_signal_connect
-                                                 (priv->directory_as_file, "changed",
-                                                 G_CALLBACK (file_changed_callback), view);
+                                        (priv->directory_as_file, "changed",
+                                        G_CALLBACK (file_changed_callback), view);
 
     nautilus_profile_end (NULL);
 }
@@ -8449,12 +8448,10 @@ finish_loading (NautilusFilesView *view)
     /* Start loading. */
 
     /* Connect handlers to learn about loading progress. */
-    priv->done_loading_handler_id = g_signal_connect
-                                                 (priv->model, "done-loading",
-                                                 G_CALLBACK (done_loading_callback), view);
-    priv->load_error_handler_id = g_signal_connect
-                                               (priv->model, "load-error",
-                                               G_CALLBACK (load_error_callback), view);
+    priv->done_loading_handler_id = g_signal_connect (priv->model, "done-loading",
+                                        G_CALLBACK (done_loading_callback), view);
+    priv->load_error_handler_id = g_signal_connect (priv->model, "load-error",
+                                      G_CALLBACK (load_error_callback), view);
 
     /* Monitor the things needed to get the right icon. Also
      * monitor a directory's item count because the "size"
@@ -8470,11 +8467,11 @@ finish_loading (NautilusFilesView *view)
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
     priv->files_added_handler_id = g_signal_connect
-                                                (priv->model, "files-added",
-                                                G_CALLBACK (files_added_callback), view);
+                                       (priv->model, "files-added",
+                                       G_CALLBACK (files_added_callback), view);
     priv->files_changed_handler_id = g_signal_connect
-                                                  (priv->model, "files-changed",
-                                                  G_CALLBACK (files_changed_callback), view);
+                                         (priv->model, "files-changed",
+                                         G_CALLBACK (files_changed_callback), view);
 
     nautilus_directory_file_monitor_add (priv->model,
                                          &priv->model,
@@ -9468,13 +9465,13 @@ nautilus_files_view_init (NautilusFilesView *view)
         "<control>plus",
         NULL
     };
-      const gchar *move_to_trash_accels[] =
+    const gchar *move_to_trash_accels[] =
     {
         "Delete",
         "KP_Delete",
         NULL
     };
-      const gchar *delete_permanently_accels[] =
+    const gchar *delete_permanently_accels[] =
     {
         "<shift>Delete",
         "<shift>KP_Delete",

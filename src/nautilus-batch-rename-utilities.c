@@ -355,7 +355,7 @@ batch_rename_format (NautilusFile *file,
     gchar *metadata;
 
     file_name = nautilus_file_get_display_name (file);
-    if (!nautilus_file_is_directory(file))
+    if (!nautilus_file_is_directory (file))
     {
         extension = nautilus_file_get_extension (file);
     }
@@ -435,7 +435,7 @@ batch_rename_format (NautilusFile *file,
                 {
                     case ORIGINAL_FILE_NAME:
                     {
-                        if (nautilus_file_is_directory(file))
+                        if (nautilus_file_is_directory (file))
                         {
                             new_name = g_string_append (new_name, file_name);
                         }

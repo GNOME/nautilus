@@ -1319,10 +1319,10 @@ enum
 
 static void
 starred_strings_func (NautilusFileUndoInfo  *info,
-                        gchar                **undo_label,
-                        gchar                **undo_description,
-                        gchar                **redo_label,
-                        gchar                **redo_description)
+                      gchar                **undo_label,
+                      gchar                **undo_description,
+                      gchar                **redo_label,
+                      gchar                **redo_description)
 {
     NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
 
@@ -1356,8 +1356,8 @@ starred_strings_func (NautilusFileUndoInfo  *info,
 
 static void
 on_undo_starred_tags_updated (GObject      *object,
-                               GAsyncResult *res,
-                               gpointer      user_data)
+                              GAsyncResult *res,
+                              gpointer      user_data)
 {
     GTask *task;
     NautilusFileUndoInfo *undo_info;
@@ -1372,7 +1372,7 @@ on_undo_starred_tags_updated (GObject      *object,
 
 static void
 starred_redo_func (NautilusFileUndoInfo *info,
-                     GtkWindow            *parent_window)
+                   GtkWindow            *parent_window)
 {
     NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
     NautilusTagManager *tag_manager;
@@ -1389,7 +1389,6 @@ starred_redo_func (NautilusFileUndoInfo *info,
     }
     else
     {
-
         nautilus_tag_manager_unstar_files (tag_manager,
                                            G_OBJECT (info),
                                            self->priv->files,
@@ -1400,7 +1399,7 @@ starred_redo_func (NautilusFileUndoInfo *info,
 
 static void
 starred_undo_func (NautilusFileUndoInfo *info,
-                     GtkWindow            *parent_window)
+                   GtkWindow            *parent_window)
 {
     NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
     NautilusTagManager *tag_manager;
@@ -1427,9 +1426,9 @@ starred_undo_func (NautilusFileUndoInfo *info,
 
 static void
 nautilus_file_undo_info_starred_set_property (GObject      *object,
-                                                guint         prop_id,
-                                                const GValue *value,
-                                                GParamSpec   *pspec)
+                                              guint         prop_id,
+                                              const GValue *value,
+                                              GParamSpec   *pspec)
 {
     NautilusFileUndoInfoFavorites *self = NAUTILUS_FILE_UNDO_INFO_STARRED (object);
 
@@ -1501,7 +1500,6 @@ nautilus_file_undo_info_starred_class_init (NautilusFileUndoInfoFavoritesClass *
                                                            FALSE,
                                                            G_PARAM_WRITABLE |
                                                            G_PARAM_CONSTRUCT_ONLY));
-
 }
 
 GList *
@@ -1517,8 +1515,8 @@ nautilus_file_undo_info_starred_is_starred (NautilusFileUndoInfoFavorites *self)
 }
 
 NautilusFileUndoInfo *
-nautilus_file_undo_info_starred_new (GList   *files,
-                                       gboolean starred)
+nautilus_file_undo_info_starred_new (GList    *files,
+                                     gboolean  starred)
 {
     NautilusFileUndoInfoFavorites *self;
 

@@ -264,14 +264,14 @@ back_button_longpress_cb (GtkGestureLongPress *gesture,
                           double               y,
                           gpointer             user_data)
 {
-  NautilusToolbar *self = user_data;
-  GdkEventSequence *sequence;
-  const GdkEvent *event;
+    NautilusToolbar *self = user_data;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
 
-  sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-  event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-  show_menu (self, self->back_button, event);
+    show_menu (self, self->back_button, event);
 }
 
 static void
@@ -280,14 +280,14 @@ forward_button_longpress_cb (GtkGestureLongPress *gesture,
                              double               y,
                              gpointer             user_data)
 {
-  NautilusToolbar *self = user_data;
-  GdkEventSequence *sequence;
-  const GdkEvent *event;
+    NautilusToolbar *self = user_data;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
 
-  sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-  event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-  show_menu (self, self->forward_button, event);
+    show_menu (self, self->forward_button, event);
 }
 
 static gboolean
@@ -910,7 +910,7 @@ nautilus_toolbar_init (NautilusToolbar *self)
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry);
     self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic",
-                                                                        GTK_ICON_SIZE_BUTTON);
+                                                                       GTK_ICON_SIZE_BUTTON);
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",

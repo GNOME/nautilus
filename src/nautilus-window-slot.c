@@ -157,7 +157,7 @@ static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                             RestoreTabData     *data)
+                                        RestoreTabData     *data)
 {
     NautilusWindowSlotPrivate *priv;
 
@@ -172,7 +172,7 @@ nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
     priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
 
-RestoreTabData*
+RestoreTabData *
 nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -223,7 +223,7 @@ real_handles_location (NautilusWindowSlot *self,
     gboolean handles_location;
     g_autofree char *uri = NULL;
 
-    uri = g_file_get_uri(location);
+    uri = g_file_get_uri (location);
 
     file = nautilus_file_get (location);
     handles_location = !nautilus_file_is_other_locations (file);

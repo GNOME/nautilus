@@ -3572,7 +3572,7 @@ compare_by_type (NautilusFile *file_1,
 
 static int
 compare_by_starred (NautilusFile *file_1,
-                     NautilusFile *file_2)
+                    NautilusFile *file_2)
 {
     NautilusTagManager *tag_manager;
     g_autofree gchar *uri_1 = NULL;
@@ -3586,9 +3586,9 @@ compare_by_starred (NautilusFile *file_1,
     uri_2 = nautilus_file_get_uri (file_2);
 
     file_1_is_starred = nautilus_tag_manager_file_is_starred (tag_manager,
-                                                                uri_1);
+                                                              uri_1);
     file_2_is_starred = nautilus_tag_manager_file_is_starred (tag_manager,
-                                                                uri_2);
+                                                              uri_2);
     if (!!file_1_is_starred == !!file_2_is_starred)
     {
         return 0;
@@ -4529,9 +4529,13 @@ char *
 nautilus_file_get_display_name (NautilusFile *file)
 {
     if (nautilus_file_is_other_locations (file))
+    {
         return g_strdup (_("Other Locations"));
+    }
     if (nautilus_file_is_starred_location (file))
+    {
         return g_strdup (_("Starred"));
+    }
 
     return g_strdup (nautilus_file_peek_display_name (file));
 }
@@ -6115,7 +6119,7 @@ nautilus_file_set_search_fts_snippet (NautilusFile *file,
     file->details->fts_snippet = g_strdup (fts_snippet);
 }
 
-const gchar*
+const gchar *
 nautilus_file_get_search_fts_snippet (NautilusFile *file)
 {
     return file->details->fts_snippet;
@@ -7770,7 +7774,8 @@ nautilus_file_get_file_type (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_FILE_TYPE_UNKNOWN);
 
-    return nautilus_file_info_get_file_type (NAUTILUS_FILE_INFO (file));;
+    return nautilus_file_info_get_file_type (NAUTILUS_FILE_INFO (file));
+    ;
 }
 
 /**
@@ -9210,8 +9215,9 @@ thumbnail_limit_changed_callback (gpointer user_data)
     cached_thumbnail_limit = g_settings_get_uint64 (nautilus_preferences,
                                                     NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
 
-    //Converts the obtained limit in MB to bytes
-    cached_thumbnail_limit *= MEGA_TO_BASE_RATE;;
+    /*Converts the obtained limit in MB to bytes */
+    cached_thumbnail_limit *= MEGA_TO_BASE_RATE;
+    ;
 
     /* Tell the world that icons might have changed. We could invent a narrower-scope
      * signal to mean only "thumbnails might have changed" if this ends up being slow

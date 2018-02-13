@@ -1485,7 +1485,7 @@ create_label_layout (NautilusCanvasItem *item,
         {
             str = g_string_append_c (str, *p);
 
-            if (*p == '_' || *p == '-' || (*p == '.' && !g_ascii_isdigit(*(p+1))))
+            if (*p == '_' || *p == '-' || (*p == '.' && !g_ascii_isdigit (*(p + 1))))
             {
                 /* Ensure that we allow to break after '_' or '.' characters,
                  * if they are not followed by a number */

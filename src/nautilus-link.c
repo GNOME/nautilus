@@ -184,13 +184,13 @@ slurp_key_string (const char *uri,
 }
 
 gboolean
-nautilus_link_local_create (const char     *directory_uri,
-                            const char     *base_name,
-                            const char     *display_name,
-                            const char     *image,
-                            const char     *target_uri,
-                            int             screen,
-                            gboolean        unique_filename)
+nautilus_link_local_create (const char *directory_uri,
+                            const char *base_name,
+                            const char *display_name,
+                            const char *image,
+                            const char *target_uri,
+                            int         screen,
+                            gboolean    unique_filename)
 {
     char *real_directory_uri;
     char *contents;

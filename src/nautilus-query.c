@@ -562,7 +562,7 @@ nautilus_query_get_search_starred (NautilusQuery *query)
 
 void
 nautilus_query_set_search_starred (NautilusQuery *query,
-                                    gboolean       search_starred)
+                                   gboolean       search_starred)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 

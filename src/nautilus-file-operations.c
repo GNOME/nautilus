@@ -1203,10 +1203,10 @@ do_run_simple_dialog (gpointer _data)
         button = gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
 
-        if (g_strcmp0(button_title, DELETE) == 0)
+        if (g_strcmp0 (button_title, DELETE) == 0)
         {
-            gtk_style_context_add_class(gtk_widget_get_style_context(button),
-                                        "destructive-action");
+            gtk_style_context_add_class (gtk_widget_get_style_context (button),
+                                         "destructive-action");
         }
     }
 
@@ -2262,9 +2262,9 @@ skip:
 }
 
 static void
-source_info_remove_file_from_count (GFile        *file,
-                                    CommonJob    *job,
-                                    SourceInfo   *source_info)
+source_info_remove_file_from_count (GFile      *file,
+                                    CommonJob  *job,
+                                    SourceInfo *source_info)
 {
     g_autoptr (GFileInfo) file_info = NULL;
 
@@ -7949,10 +7949,10 @@ extract_job_on_progress (AutoarExtractor *extractor,
         details = g_strdup_printf (ngettext ("%s / %s \xE2\x80\x94 %s left (%s/sec)",
                                              "%s / %s \xE2\x80\x94 %s left (%s/sec)",
                                              seconds_count_format_time_units (remaining_time)),
-                                             formatted_size_job_completed_size,
-                                             formatted_size_total_compressed_size,
-                                             formatted_time,
-                                             formatted_size_transfer_rate);
+                                   formatted_size_job_completed_size,
+                                   formatted_size_total_compressed_size,
+                                   formatted_time,
+                                   formatted_size_transfer_rate);
     }
 
     nautilus_progress_info_take_details (common->progress, details);
@@ -8049,20 +8049,20 @@ extract_job_on_scanned (AutoarExtractor *extractor,
     /* FIXME: G_MAXUINT64 is the value used by autoar when the file size cannot
      * be determined. Ideally an API should be used instead.
      */
-    if (total_size != G_MAXUINT64 && total_size > free_size )
+    if (total_size != G_MAXUINT64 && total_size > free_size)
     {
-      nautilus_progress_info_take_status (extract_job->common.progress,
-                                          g_strdup_printf (_("Error extracting “%s”"),
-                                                           basename));
-      run_error (&extract_job->common,
-                 g_strdup_printf (_("Not enough free space to extract %s"),basename),
-                 NULL,
-                 NULL,
-                 FALSE,
-                 CANCEL,
-                 NULL);
+        nautilus_progress_info_take_status (extract_job->common.progress,
+                                            g_strdup_printf (_("Error extracting “%s”"),
+                                                             basename));
+        run_error (&extract_job->common,
+                   g_strdup_printf (_("Not enough free space to extract %s"), basename),
+                   NULL,
+                   NULL,
+                   FALSE,
+                   CANCEL,
+                   NULL);
 
-      abort_job ((CommonJob *) extract_job);
+        abort_job ((CommonJob *) extract_job);
     }
 }
 
@@ -8081,7 +8081,7 @@ report_extract_final_progress (ExtractJob *extract_job,
     if (total_files == 1)
     {
         GFile *source_file;
-        g_autofree gchar * basename = NULL;
+        g_autofree gchar *basename = NULL;
 
         source_file = G_FILE (extract_job->source_files->data);
         basename = get_basename (source_file);

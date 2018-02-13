@@ -355,15 +355,15 @@ nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
 }
 
 static gboolean format_spin_button(GtkSpinButton *spin_button,
-                                   gpointer user_data)
+                                   gpointer       user_data)
 {
     GtkAdjustment *adjustment;
     int value;
     gchar *text;
 
     adjustment = gtk_spin_button_get_adjustment (spin_button);
-    value = (int)gtk_adjustment_get_value (adjustment);
-    text = g_strdup_printf ("%d MB",value);
+    value = (int) gtk_adjustment_get_value (adjustment);
+    text = g_strdup_printf ("%d MB", value);
     gtk_entry_set_text (GTK_ENTRY (spin_button), text);
 
     return TRUE;
@@ -377,7 +377,6 @@ static void nautilus_preferences_window_setup_thumbnail_limit_formatting (GtkBui
 
     g_signal_connect (spin, "output", G_CALLBACK (format_spin_button),
                       spin);
-
 }
 
 static void bind_builder_bool(GtkBuilder *builder,
@@ -393,7 +392,7 @@ static void bind_builder_uint_spin(GtkBuilder *builder,
                                    GSettings  *settings,
                                    const char *widget_name,
                                    const char *prefs)
-{    
+{
     g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
                      "value", G_SETTINGS_BIND_DEFAULT);
 }

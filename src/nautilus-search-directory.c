@@ -588,7 +588,7 @@ search_directory_add_pending_files_callbacks (NautilusSearchDirectory *self)
     g_list_foreach (self->pending_callback_list,
                     (GFunc) search_callback_add_pending_file_callbacks, NULL);
     self->callback_list = g_list_concat (self->callback_list,
-                                                    self->pending_callback_list);
+                                         self->pending_callback_list);
 
     g_list_free (self->pending_callback_list);
     self->pending_callback_list = NULL;
@@ -1051,8 +1051,8 @@ nautilus_search_directory_set_query (NautilusSearchDirectory *self,
         if (query)
         {
             self->binding = g_object_bind_property (self->engine, "running",
-                                                               query, "searching",
-                                                               G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+                                                    query, "searching",
+                                                    G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_QUERY]);

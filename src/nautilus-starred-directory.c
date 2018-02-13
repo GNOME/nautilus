@@ -22,7 +22,8 @@
 #include "nautilus-directory-private.h"
 #include <glib/gi18n.h>
 
-struct _NautilusFavoriteDirectory {
+struct _NautilusFavoriteDirectory
+{
     NautilusDirectory parent_slot;
 
     NautilusTagManager *tag_manager;
@@ -105,7 +106,7 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
     {
         if (!g_hash_table_contains (uri_table, l->data))
         {
-            file = nautilus_file_get_by_uri ((gchar*) l->data);
+            file = nautilus_file_get_by_uri ((gchar *) l->data);
 
             for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
             {
@@ -184,9 +185,9 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
 }
 
 static void
-on_starred_files_changed (NautilusTagManager        *tag_manager,
-                            GList                     *changed_files,
-                            gpointer                   user_data)
+on_starred_files_changed (NautilusTagManager *tag_manager,
+                          GList              *changed_files,
+                          gpointer            user_data)
 {
     NautilusFavoriteDirectory *self;
 
@@ -236,8 +237,8 @@ real_call_when_ready (NautilusDirectory         *directory,
     file_list = nautilus_file_list_copy (starred->files);
 
     callback (NAUTILUS_DIRECTORY (directory),
-                                  file_list,
-                                  callback_data);
+              file_list,
+              callback_data);
 }
 
 static gboolean
@@ -270,7 +271,7 @@ real_file_monitor_add (NautilusDirectory         *directory,
 
     if (callback != NULL)
     {
-        (*callback) (directory, starred->files, callback_data);
+        (*callback)(directory, starred->files, callback_data);
     }
 
     for (list = starred->files; list != NULL; list = list->next)
@@ -284,7 +285,7 @@ real_file_monitor_add (NautilusDirectory         *directory,
 
 static void
 starred_monitor_destroy (FavoriteMonitor           *monitor,
-                          NautilusFavoriteDirectory *starred)
+                         NautilusFavoriteDirectory *starred)
 {
     GList *l;
     NautilusFile *file;
@@ -314,7 +315,9 @@ real_monitor_remove (NautilusDirectory *directory,
         monitor = list->data;
 
         if (monitor->client != client)
+        {
             continue;
+        }
 
         starred->monitor_list = g_list_delete_link (starred->monitor_list, list);
 
@@ -339,10 +342,10 @@ real_handles_location (GFile *location)
     return FALSE;
 }
 
-static FavoriteCallback*
+static FavoriteCallback *
 starred_callback_find_pending (NautilusFavoriteDirectory *starred,
-                                NautilusDirectoryCallback  callback,
-                                gpointer                   callback_data)
+                               NautilusDirectoryCallback  callback,
+                               gpointer                   callback_data)
 {
     FavoriteCallback *starred_callback;
     GList *list;
@@ -361,10 +364,10 @@ starred_callback_find_pending (NautilusFavoriteDirectory *starred,
     return NULL;
 }
 
-static FavoriteCallback*
+static FavoriteCallback *
 starred_callback_find (NautilusFavoriteDirectory *starred,
-                        NautilusDirectoryCallback  callback,
-                        gpointer                   callback_data)
+                       NautilusDirectoryCallback  callback,
+                       gpointer                   callback_data)
 {
     FavoriteCallback *starred_callback;
     GList *list;
@@ -392,9 +395,9 @@ starred_callback_destroy (FavoriteCallback *starred_callback)
 }
 
 static void
-real_cancel_callback (NautilusDirectory        *directory,
-                      NautilusDirectoryCallback callback,
-                      gpointer                  callback_data)
+real_cancel_callback (NautilusDirectory         *directory,
+                      NautilusDirectoryCallback  callback,
+                      gpointer                   callback_data)
 {
     NautilusFavoriteDirectory *starred;
     FavoriteCallback *starred_callback;
@@ -422,7 +425,7 @@ real_cancel_callback (NautilusDirectory        *directory,
     }
 }
 
-static GList*
+static GList *
 real_get_file_list (NautilusDirectory *directory)
 {
     NautilusFavoriteDirectory *starred;
@@ -448,7 +451,7 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
 
     for (l = starred_files; l != NULL; l = l->next)
     {
-        file = nautilus_file_get_by_uri ((gchar*) l->data);
+        file = nautilus_file_get_by_uri ((gchar *) l->data);
 
         g_signal_connect (file, "changed", G_CALLBACK (file_changed), self);
 
@@ -518,7 +521,7 @@ nautilus_starred_directory_dispose (GObject *object)
     {
         for (l = starred->monitor_list; l != NULL; l = l->next)
         {
-            starred_monitor_destroy ((FavoriteMonitor*) l->data, starred);
+            starred_monitor_destroy ((FavoriteMonitor *) l->data, starred);
         }
 
         g_list_free (starred->monitor_list);
@@ -552,7 +555,7 @@ nautilus_starred_directory_class_init (NautilusFavoriteDirectoryClass *klass)
     directory_class->get_file_list = real_get_file_list;
 }
 
-NautilusFavoriteDirectory*
+NautilusFavoriteDirectory *
 nautilus_starred_directory_new ()
 {
     NautilusFavoriteDirectory *self;
@@ -577,5 +580,4 @@ nautilus_starred_directory_init (NautilusFavoriteDirectory *self)
     self->tag_manager = tag_manager;
 
     nautilus_starred_directory_set_files (self);
-
 }

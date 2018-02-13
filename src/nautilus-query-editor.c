@@ -583,9 +583,9 @@ search_popover_time_type_changed_cb (NautilusSearchPopover   *popover,
 }
 
 static void
-search_popover_fts_changed_cb (GObject                    *popover,
-                               GParamSpec                 *pspec,
-                               gpointer                    user_data)
+search_popover_fts_changed_cb (GObject    *popover,
+                               GParamSpec *pspec,
+                               gpointer    user_data)
 {
     NautilusQueryEditorPrivate *priv;
     NautilusQueryEditor *editor;

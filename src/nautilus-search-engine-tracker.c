@@ -341,12 +341,13 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_string_append (sparql, " fts:snippet(?urn)");
     }
 
-    g_string_append (sparql, "\nWHERE {"
-                             "  ?urn a nfo:FileDataObject;"
-                             "  nfo:fileLastModified ?mtime;"
-                             "  nfo:fileLastAccessed ?atime;"
-                             "  tracker:available true;"
-                             "  nie:url ?url");
+    g_string_append (sparql,
+                     "\nWHERE {"
+                     "  ?urn a nfo:FileDataObject;"
+                     "  nfo:fileLastModified ?mtime;"
+                     "  nfo:fileLastAccessed ?atime;"
+                     "  tracker:available true;"
+                     "  nie:url ?url");
 
     if (*search_text)
     {
@@ -376,7 +377,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     if (!tracker->fts_enabled)
     {
-            g_string_append_printf (sparql, " && fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
+        g_string_append_printf (sparql, " && fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
     }
 
     date_range = nautilus_query_get_date_range (tracker->query);
@@ -537,7 +538,6 @@ nautilus_search_engine_tracker_class_init (NautilusSearchEngineTrackerClass *cla
      * Whether the search engine is running a search.
      */
     g_object_class_override_property (gobject_class, PROP_RUNNING, "running");
-
 }
 
 static void

@@ -132,7 +132,6 @@ nautilus_column_chooser_class_init (NautilusColumnChooserClass *chooser_class)
                                                           NAUTILUS_TYPE_FILE,
                                                           G_PARAM_CONSTRUCT_ONLY |
                                                           G_PARAM_WRITABLE));
-
 }
 
 static void

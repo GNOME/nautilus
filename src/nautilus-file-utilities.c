@@ -557,7 +557,9 @@ nautilus_is_starred_directory (GFile *dir)
     uri = g_file_get_uri (dir);
 
     if (eel_uri_is_starred (uri))
+    {
         return TRUE;
+    }
 
     return FALSE;
 }
@@ -1436,4 +1438,3 @@ nautilus_uri_to_native_uri (const gchar *uri)
 
     return NULL;
 }
-

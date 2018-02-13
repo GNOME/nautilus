@@ -71,7 +71,7 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-static const gchar*
+static const gchar *
 nautilus_tag_manager_file_with_id_changed_url (GHashTable  *hash_table,
                                                gint64       id,
                                                const gchar *url)
@@ -102,7 +102,7 @@ destroy_insert_task_data (gpointer data)
     g_free (data);
 }
 
-static GString*
+static GString *
 add_selection_filter (GList   *selection,
                       GString *query)
 {
@@ -176,12 +176,12 @@ start_query_or_update (GString             *query,
 }
 
 static void
-on_query_callback (GObject              *object,
-                   GAsyncResult         *result,
-                   gpointer              user_data,
-                   GAsyncReadyCallback   callback,
-                   OperationType         op_type,
-                   GCancellable         *cancellable)
+on_query_callback (GObject             *object,
+                   GAsyncResult        *result,
+                   gpointer             user_data,
+                   GAsyncReadyCallback  callback,
+                   OperationType        op_type,
+                   GCancellable        *cancellable)
 {
     TrackerSparqlCursor *cursor;
     g_autoptr (GError) error = NULL;
@@ -289,7 +289,7 @@ on_update_callback (GObject      *object,
     }
     else if (error && error->code == G_IO_ERROR_CANCELLED)
     {
-       g_error_free (error);
+        g_error_free (error);
     }
     else
     {
@@ -343,7 +343,7 @@ get_query_status (TrackerSparqlCursor *cursor,
     return success;
 }
 
-GList*
+GList *
 nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
 {
     return g_hash_table_get_keys (self->starred_files);
@@ -351,8 +351,8 @@ nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
 
 static void
 on_get_starred_files_cursor_callback (GObject      *object,
-                                       GAsyncResult *result,
-                                       gpointer      user_data)
+                                      GAsyncResult *result,
+                                      gpointer      user_data)
 {
     TrackerSparqlCursor *cursor;
     const gchar *url;
@@ -396,8 +396,8 @@ on_get_starred_files_cursor_callback (GObject      *object,
 
 static void
 on_get_starred_files_query_callback (GObject      *object,
-                                      GAsyncResult *result,
-                                      gpointer      user_data)
+                                     GAsyncResult *result,
+                                     gpointer      user_data)
 {
     NautilusTagManager *self;
 
@@ -413,7 +413,7 @@ on_get_starred_files_query_callback (GObject      *object,
 
 static void
 nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
-                                           GCancellable       *cancellable)
+                                          GCancellable       *cancellable)
 {
     GString *query;
 
@@ -431,21 +431,20 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
 }
 
 static gpointer
-nautilus_tag_manager_gpointer_task_finish (GObject      *source_object,
-                                           GAsyncResult *res,
-                                           GError      **error)
+nautilus_tag_manager_gpointer_task_finish (GObject       *source_object,
+                                           GAsyncResult  *res,
+                                           GError       **error)
 {
     g_return_val_if_fail (g_task_is_valid (res, source_object), FALSE);
 
     return g_task_propagate_pointer (G_TASK (res), error);
 }
 
-static GString*
-nautilus_tag_manager_delete_tag (NautilusTagManager  *self,
-                                 GList               *selection,
-                                 GString             *query)
+static GString *
+nautilus_tag_manager_delete_tag (NautilusTagManager *self,
+                                 GList              *selection,
+                                 GString            *query)
 {
-
     g_string_append (query,
                      "DELETE { ?urn nao:hasTag nao:predefined-tag-favorite }"
                      "WHERE { ?urn a nfo:FileDataObject ; nie:url ?url .");
@@ -457,10 +456,10 @@ nautilus_tag_manager_delete_tag (NautilusTagManager  *self,
     return query;
 }
 
-static GString*
-nautilus_tag_manager_insert_tag (NautilusTagManager  *self,
-                                 GList               *selection,
-                                 GString             *query)
+static GString *
+nautilus_tag_manager_insert_tag (NautilusTagManager *self,
+                                 GList              *selection,
+                                 GString            *query)
 {
     g_string_append (query,
                      "INSERT { ?urn nao:hasTag nao:predefined-tag-favorite }"
@@ -475,7 +474,7 @@ nautilus_tag_manager_insert_tag (NautilusTagManager  *self,
 
 gboolean
 nautilus_tag_manager_file_is_starred (NautilusTagManager *self,
-                                       const gchar        *file_name)
+                                      const gchar        *file_name)
 {
     return g_hash_table_contains (self->starred_files, file_name);
 }
@@ -532,7 +531,6 @@ on_get_file_ids_for_urls_cursor_callback (GObject      *object,
                                       g_task_get_cancellable (task),
                                       on_get_file_ids_for_urls_cursor_callback,
                                       task);
-
 }
 
 
@@ -683,9 +681,9 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
 }
 
 void
-on_tracker_notifier_events(TrackerNotifier *notifier,
-                           GPtrArray       *events,
-                           gpointer         user_data)
+on_tracker_notifier_events (TrackerNotifier *notifier,
+                            GPtrArray       *events,
+                            gpointer         user_data)
 {
     TrackerNotifierEvent *event;
     NautilusTagManager *self;
@@ -803,7 +801,6 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
 
         g_string_free (query, TRUE);
     }
-
 }
 
 static void
@@ -833,18 +830,18 @@ nautilus_tag_manager_class_init (NautilusTagManagerClass *klass)
     oclass->finalize = nautilus_tag_manager_finalize;
 
     signals[STARRED_CHANGED] = g_signal_new ("starred-changed",
-                                               NAUTILUS_TYPE_TAG_MANAGER,
-                                               G_SIGNAL_RUN_LAST,
-                                               0,
-                                               NULL,
-                                               NULL,
-                                               g_cclosure_marshal_VOID__POINTER,
-                                               G_TYPE_NONE,
-                                               1,
-                                               G_TYPE_POINTER);
+                                             NAUTILUS_TYPE_TAG_MANAGER,
+                                             G_SIGNAL_RUN_LAST,
+                                             0,
+                                             NULL,
+                                             NULL,
+                                             g_cclosure_marshal_VOID__POINTER,
+                                             G_TYPE_NONE,
+                                             1,
+                                             G_TYPE_POINTER);
 }
 
-NautilusTagManager* nautilus_tag_manager_get ()
+NautilusTagManager *nautilus_tag_manager_get ()
 {
     if (tag_manager != NULL)
     {
@@ -852,13 +849,13 @@ NautilusTagManager* nautilus_tag_manager_get ()
     }
 
     tag_manager = g_object_new (NAUTILUS_TYPE_TAG_MANAGER, NULL);
-    g_object_add_weak_pointer (G_OBJECT (tag_manager), (gpointer)&tag_manager);
+    g_object_add_weak_pointer (G_OBJECT (tag_manager), (gpointer) & tag_manager);
 
     return tag_manager;
 }
 
 void nautilus_tag_manager_set_cancellable (NautilusTagManager *tag_manager,
-                                           GCancellable *cancellable)
+                                           GCancellable       *cancellable)
 {
     nautilus_tag_manager_query_starred_files (tag_manager, cancellable);
 
@@ -871,14 +868,13 @@ void nautilus_tag_manager_set_cancellable (NautilusTagManager *tag_manager,
                       "events",
                       G_CALLBACK (on_tracker_notifier_events),
                       tag_manager);
-
 }
 
 static void
 nautilus_tag_manager_init (NautilusTagManager *self)
 {
     self->starred_files = g_hash_table_new_full (g_str_hash,
-                                                  g_str_equal,
-                                                  (GDestroyNotify) g_free,
-                                                  (GDestroyNotify) g_free);
+                                                 g_str_equal,
+                                                 (GDestroyNotify) g_free,
+                                                 (GDestroyNotify) g_free);
 }

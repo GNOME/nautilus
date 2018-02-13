@@ -142,7 +142,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
         {
             primary_text = g_strdup_printf (_("You are trying to replace the destination folder “%s” with a symbolic link."),
                                             destination_name);
-            message = g_strdup_printf(_("This is not allowed in order to avoid the deletion of the destination folder’s contents."));
+            message = g_strdup_printf (_("This is not allowed in order to avoid the deletion of the destination folder’s contents."));
             message_extra = _("Please rename the symbolic link or press the skip button.");
         }
         else if (source_is_directory)

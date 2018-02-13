@@ -443,8 +443,8 @@ check_starred_status (GtkTreeModel *model,
 
 static void
 on_starred_files_changed (NautilusTagManager *tag_manager,
-                            GList              *changed_files,
-                            gpointer            user_data)
+                          GList              *changed_files,
+                          gpointer            user_data)
 {
     NautilusListView *list_view;
 
@@ -1591,10 +1591,10 @@ apply_columns_settings (NautilusListView  *list_view,
 
 static void
 starred_cell_data_func (GtkTreeViewColumn *column,
-                         GtkCellRenderer   *renderer,
-                         GtkTreeModel      *model,
-                         GtkTreeIter       *iter,
-                         NautilusListView  *view)
+                        GtkCellRenderer   *renderer,
+                        GtkTreeModel      *model,
+                        GtkTreeIter       *iter,
+                        NautilusListView  *view)
 {
     g_autofree gchar *text = NULL;
     g_autofree gchar *uri = NULL;
@@ -1632,7 +1632,6 @@ starred_cell_data_func (GtkTreeViewColumn *column,
         g_object_set (renderer,
                       "icon-name", "non-starred-symbolic",
                       NULL);
-
     }
 
     nautilus_file_unref (file);
@@ -1663,7 +1662,7 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                         -1);
 
     escaped_name = g_markup_escape_text (text, -1);
-    display_text = g_string_new(escaped_name);
+    display_text = g_string_new (escaped_name);
 
     directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (view));
 
@@ -2326,8 +2325,8 @@ get_default_visible_columns (NautilusListView *list_view)
                                 NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
 }
 
-static GList*
-default_column_array_as_list (gchar** array)
+static GList *
+default_column_array_as_list (gchar **array)
 {
     GList *res = NULL;
     gint i = 0;
@@ -2348,7 +2347,7 @@ get_visible_columns (NautilusListView *list_view)
     g_autoptr (GList) visible_columns = NULL;
     GPtrArray *res;
     GList *l;
-    g_autofree gchar* uri = NULL;
+    g_autofree gchar *uri = NULL;
     gboolean in_xdg_dirs;
     gboolean is_starred;
 
@@ -3802,7 +3801,7 @@ nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
 
         list = gtk_tree_selection_get_selected_rows (tree_selection, NULL);
         list = g_list_last (list);
-        path = g_steal_pointer(&list->data);
+        path = g_steal_pointer (&list->data);
 
         g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
     }
