@@ -2326,36 +2326,62 @@ get_default_visible_columns (NautilusListView *list_view)
                                 NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
 }
 
+static GList*
+default_column_array_as_list (gchar** array)
+{
+    GList *res = NULL;
+    gint i = 0;
+
+    while (array[i] != NULL)
+    {
+        res = g_list_prepend (res, array[i]);
+        i++;
+    }
+
+    return res;
+}
+
 static char **
 get_visible_columns (NautilusListView *list_view)
 {
     NautilusFile *file;
-    GList *visible_columns;
+    g_autoptr (GList) visible_columns = NULL;
+    GPtrArray *res;
+    GList *l;
+    g_autofree gchar* uri = NULL;
+    gboolean in_xdg_dirs;
+    gboolean is_favorite;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
+    uri = nautilus_file_get_uri (file);
 
-    visible_columns = nautilus_file_get_metadata_list
-                          (file,
-                          NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+    /* FIXME: We are assuming tracker indexes XDG folders and ignore the search
+     * setting. This should be fixed in a better way for Nautilus 3.30.
+     * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
+     */
+    in_xdg_dirs = eel_uri_is_in_xdg_dirs (uri);
+    is_favorite = eel_uri_is_favorites (uri);
 
-    if (visible_columns)
+    visible_columns = nautilus_file_get_metadata_list (file,
+                                                       NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
+    if (visible_columns == NULL)
     {
-        GPtrArray *res;
-        GList *l;
+        visible_columns = default_column_array_as_list (get_default_visible_columns (list_view));
+    }
 
-        res = g_ptr_array_new ();
-        for (l = visible_columns; l != NULL; l = l->next)
+    res = g_ptr_array_new ();
+    for (l = visible_columns; l != NULL; l = l->next)
+    {
+        if (g_strcmp0 (l->data, "favorite") != 0 ||
+            (g_strcmp0 (l->data, "favorite") == 0 && (in_xdg_dirs || is_favorite)))
         {
             g_ptr_array_add (res, l->data);
         }
-        g_ptr_array_add (res, NULL);
-
-        g_list_free (visible_columns);
-
-        return (char **) g_ptr_array_free (res, FALSE);
     }
 
-    return get_default_visible_columns (list_view);
+    g_ptr_array_add (res, NULL);
+
+    return (char **) g_ptr_array_free (res, FALSE);
 }
 
 static char **
