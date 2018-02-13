@@ -30,6 +30,8 @@
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
+/* This should be removed at some point. */
+#include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
 
