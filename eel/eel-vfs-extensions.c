@@ -38,9 +38,9 @@
 #include <stdlib.h>
 
 gboolean
-eel_uri_is_favorites (const gchar *uri)
+eel_uri_is_starred (const gchar *uri)
 {
-    return g_str_has_prefix (uri, "favorites:");
+    return g_str_has_prefix (uri, "starred:");
 }
 
 gboolean

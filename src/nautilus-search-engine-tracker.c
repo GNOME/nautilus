@@ -353,7 +353,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_string_append_printf (sparql, "; fts:match '\"%s\"*'", search_text);
     }
 
-    if (nautilus_query_get_search_favorite (tracker->query))
+    if (nautilus_query_get_search_starred (tracker->query))
     {
         g_string_append_printf (sparql, "; nao:hasTag nao:predefined-tag-favorite");
     }

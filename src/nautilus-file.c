@@ -159,7 +159,7 @@ static GQuark attribute_name_q,
               attribute_link_target_q,
               attribute_volume_q,
               attribute_free_space_q,
-              attribute_favorite_q;
+              attribute_starred_q;
 
 static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface);
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
@@ -3571,29 +3571,29 @@ compare_by_type (NautilusFile *file_1,
 }
 
 static int
-compare_by_favorite (NautilusFile *file_1,
+compare_by_starred (NautilusFile *file_1,
                      NautilusFile *file_2)
 {
     NautilusTagManager *tag_manager;
     g_autofree gchar *uri_1 = NULL;
     g_autofree gchar *uri_2 = NULL;
-    gboolean file_1_is_favorite;
-    gboolean file_2_is_favorite;
+    gboolean file_1_is_starred;
+    gboolean file_2_is_starred;
 
     tag_manager = nautilus_tag_manager_get ();
 
     uri_1 = nautilus_file_get_uri (file_1);
     uri_2 = nautilus_file_get_uri (file_2);
 
-    file_1_is_favorite = nautilus_tag_manager_file_is_favorite (tag_manager,
+    file_1_is_starred = nautilus_tag_manager_file_is_starred (tag_manager,
                                                                 uri_1);
-    file_2_is_favorite = nautilus_tag_manager_file_is_favorite (tag_manager,
+    file_2_is_starred = nautilus_tag_manager_file_is_starred (tag_manager,
                                                                 uri_2);
-    if (!!file_1_is_favorite == !!file_2_is_favorite)
+    if (!!file_1_is_starred == !!file_2_is_starred)
     {
         return 0;
     }
-    else if (file_1_is_favorite && !file_2_is_favorite)
+    else if (file_1_is_starred && !file_2_is_starred)
     {
         return -1;
     }
@@ -3806,9 +3806,9 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
-            case NAUTILUS_FILE_SORT_BY_FAVORITE:
+            case NAUTILUS_FILE_SORT_BY_STARRED:
             {
-                result = compare_by_favorite (file_1, file_2);
+                result = compare_by_starred (file_1, file_2);
                 if (result == 0)
                 {
                     result = compare_by_full_path (file_1, file_2);
@@ -3920,10 +3920,10 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
                                                directories_first,
                                                reversed);
     }
-    else if (attribute == attribute_favorite_q)
+    else if (attribute == attribute_starred_q)
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
-                                               NAUTILUS_FILE_SORT_BY_FAVORITE,
+                                               NAUTILUS_FILE_SORT_BY_STARRED,
                                                directories_first,
                                                reversed);
     }
@@ -4530,7 +4530,7 @@ nautilus_file_get_display_name (NautilusFile *file)
 {
     if (nautilus_file_is_other_locations (file))
         return g_strdup (_("Other Locations"));
-    if (nautilus_file_is_favorite_location (file))
+    if (nautilus_file_is_starred_location (file))
         return g_strdup (_("Starred"));
 
     return g_strdup (nautilus_file_peek_display_name (file));
@@ -7552,7 +7552,7 @@ nautilus_file_get_string_attribute_with_default_q (NautilusFile *file,
         /* If n/a */
         return g_strdup ("");
     }
-    if (attribute_q == attribute_favorite_q)
+    if (attribute_q == attribute_starred_q)
     {
         /* If n/a */
         return g_strdup ("");
@@ -8297,7 +8297,7 @@ nautilus_file_is_other_locations (NautilusFile *file)
 }
 
 /**
- * nautilus_file_is_favorite_location
+ * nautilus_file_is_starred_location
  *
  * Check if this file is the Favorite location.
  * @file: NautilusFile representing the file in question.
@@ -8306,7 +8306,7 @@ nautilus_file_is_other_locations (NautilusFile *file)
  *
  **/
 gboolean
-nautilus_file_is_favorite_location (NautilusFile *file)
+nautilus_file_is_starred_location (NautilusFile *file)
 {
     g_autofree gchar *uri = NULL;
 
@@ -8314,7 +8314,7 @@ nautilus_file_is_favorite_location (NautilusFile *file)
 
     uri = nautilus_file_get_uri (file);
 
-    return eel_uri_is_favorites (uri);
+    return eel_uri_is_starred (uri);
 }
 
 /**
@@ -9403,7 +9403,7 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_link_target_q = g_quark_from_static_string ("link_target");
     attribute_volume_q = g_quark_from_static_string ("volume");
     attribute_free_space_q = g_quark_from_static_string ("free_space");
-    attribute_favorite_q = g_quark_from_static_string ("favorite");
+    attribute_starred_q = g_quark_from_static_string ("starred");
 
     G_OBJECT_CLASS (class)->finalize = finalize;
     G_OBJECT_CLASS (class)->constructor = nautilus_file_constructor;

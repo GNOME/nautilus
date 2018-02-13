@@ -635,7 +635,7 @@ nautilus_bookmark_list_can_bookmark_location (NautilusBookmarkList *list,
     }
 
     if (nautilus_is_recent_directory (location) ||
-        nautilus_is_favorite_directory (location) ||
+        nautilus_is_starred_directory (location) ||
         nautilus_is_home_directory (location) ||
         nautilus_is_trash_directory (location) ||
         nautilus_is_other_locations_directory (location))

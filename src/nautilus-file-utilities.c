@@ -322,7 +322,7 @@ nautilus_compute_title_for_location (GFile *location)
         {
             title = g_strdup (_("Other Locations"));
         }
-        else if (nautilus_file_is_favorite_location (file))
+        else if (nautilus_file_is_starred_location (file))
         {
             title = g_strdup (_("Starred"));
         }
@@ -550,13 +550,13 @@ nautilus_is_recent_directory (GFile *dir)
 }
 
 gboolean
-nautilus_is_favorite_directory (GFile *dir)
+nautilus_is_starred_directory (GFile *dir)
 {
     g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (dir);
 
-    if (eel_uri_is_favorites (uri))
+    if (eel_uri_is_starred (uri))
         return TRUE;
 
     return FALSE;

@@ -34,7 +34,7 @@ G_BEGIN_DECLS
 #define	EEL_TRASH_URI "trash:"
 #define EEL_SEARCH_URI "x-nautilus-search:"
 
-gboolean           eel_uri_is_favorites                  (const char           *uri);
+gboolean           eel_uri_is_starred                  (const char           *uri);
 gboolean           eel_uri_is_trash                      (const char           *uri);
 gboolean           eel_uri_is_search                     (const char           *uri);
 gboolean           eel_uri_is_other_locations            (const char           *uri);

@@ -65,7 +65,7 @@
 #include <nautilus-extension.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-search-directory.h"
-#include "nautilus-favorite-directory.h"
+#include "nautilus-starred-directory.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-attributes.h"
@@ -268,7 +268,7 @@ typedef struct
     gulong stop_signal_handler;
     gulong reload_signal_handler;
 
-    GCancellable *favorite_cancellable;
+    GCancellable *starred_cancellable;
     NautilusTagManager *tag_manager;
 } NautilusFilesViewPrivate;
 
@@ -1564,7 +1564,7 @@ action_star (GSimpleAction *action,
                                      G_OBJECT (view),
                                      selection,
                                      NULL,
-                                     priv->favorite_cancellable);
+                                     priv->starred_cancellable);
 }
 
 static void
@@ -1584,7 +1584,7 @@ action_unstar (GSimpleAction *action,
                                        G_OBJECT (view),
                                        selection,
                                        NULL,
-                                       priv->favorite_cancellable);
+                                       priv->starred_cancellable);
 }
 
 static void
@@ -3183,8 +3183,8 @@ nautilus_files_view_finalize (GObject *object)
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
 
-    g_cancellable_cancel (priv->favorite_cancellable);
-    g_clear_object (&priv->favorite_cancellable);
+    g_cancellable_cancel (priv->starred_cancellable);
+    g_clear_object (&priv->starred_cancellable);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
@@ -3434,7 +3434,7 @@ nautilus_files_view_set_location (NautilusView *view,
         set_search_query_internal (files_view, previous_query, base_model);
         g_object_unref (previous_query);
     }
-    else if (NAUTILUS_IS_FAVORITE_DIRECTORY (directory))
+    else if (NAUTILUS_IS_STARRED_DIRECTORY (directory))
     {
         load_directory (NAUTILUS_FILES_VIEW (view), directory);
     }
@@ -3493,7 +3493,7 @@ real_check_empty_states (NautilusFilesView *view)
         {
             gtk_widget_show (priv->trash_is_empty_widget);
         }
-        else if (eel_uri_is_favorites (uri))
+        else if (eel_uri_is_starred (uri))
         {
             gtk_widget_show (priv->starred_is_empty_widget);
         }
@@ -7652,7 +7652,7 @@ real_update_actions_state (NautilusFilesView *view)
             break;
         }
 
-        if (nautilus_tag_manager_file_is_favorite (priv->tag_manager, uri))
+        if (nautilus_tag_manager_file_is_starred (priv->tag_manager, uri))
         {
             show_star = FALSE;
         }
@@ -9703,7 +9703,7 @@ nautilus_files_view_init (NautilusFilesView *view)
      * changed */
     nautilus_application_set_accelerator (app, "view.show-move-to-trash-shortcut-changed-dialog", "<control>Delete");
 
-    priv->favorite_cancellable = g_cancellable_new ();
+    priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();
 
     nautilus_profile_end (NULL);

@@ -1131,7 +1131,7 @@ places_sidebar_show_starred_location (NautilusWindow    *window,
 {
     GFile *location;
 
-    location = g_file_new_for_uri ("favorites:///");
+    location = g_file_new_for_uri ("starred:///");
 
     open_location_cb (window, location, open_flags);
 
@@ -1801,7 +1801,7 @@ in_app_notification_undo_unstar_get_label (NautilusFileUndoInfo *undo_info)
     gchar *label;
     gint length;
 
-    files = nautilus_file_undo_info_favorites_get_files (NAUTILUS_FILE_UNDO_INFO_FAVORITES (undo_info));
+    files = nautilus_file_undo_info_starred_get_files (NAUTILUS_FILE_UNDO_INFO_STARRED (undo_info));
     length = g_list_length (files);
     if (length == 1)
     {
@@ -1854,7 +1854,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
                 label = in_app_notification_undo_deleted_get_label (undo_info);
             }
         }
-        else if (nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_FAVORITES)
+        else if (nautilus_file_undo_info_get_op_type (undo_info) == NAUTILUS_FILE_UNDO_OP_STARRED)
         {
             NautilusWindowSlot *active_slot;
             GFile *location;
@@ -1864,9 +1864,9 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
              * unstart operation made */
-            if (eel_uri_is_favorites (g_file_get_uri (location)) &&
+            if (eel_uri_is_starred (g_file_get_uri (location)) &&
                 gtk_window_has_toplevel_focus (GTK_WINDOW (window)) &&
-                !nautilus_file_undo_info_favorites_is_favorited (NAUTILUS_FILE_UNDO_INFO_FAVORITES (undo_info)))
+                !nautilus_file_undo_info_starred_is_starred (NAUTILUS_FILE_UNDO_INFO_STARRED (undo_info)))
             {
                 popup_notification = TRUE;
                 label = in_app_notification_undo_unstar_get_label (undo_info);

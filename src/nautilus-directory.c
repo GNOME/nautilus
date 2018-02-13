@@ -27,7 +27,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-search-directory.h"
-#include "nautilus-favorite-directory.h"
+#include "nautilus-starred-directory.h"
 #include "nautilus-search-directory-file.h"
 #include "nautilus-vfs-file.h"
 #include "nautilus-global-preferences.h"
@@ -817,7 +817,7 @@ nautilus_directory_is_in_starred (NautilusDirectory *directory)
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "favorites");
+    return g_file_has_uri_scheme (directory->details->location, "starred");
 }
 
 gboolean

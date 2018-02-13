@@ -301,13 +301,13 @@ visit_directory (GFile            *dir,
             g_ptr_array_unref (date_range);
         }
 
-        if (nautilus_query_get_search_favorite (data->query))
+        if (nautilus_query_get_search_starred (data->query))
         {
             tag_manager = nautilus_tag_manager_get ();
 
             uri = g_file_get_uri (child);
 
-            if (!nautilus_tag_manager_file_is_favorite (tag_manager, uri))
+            if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
             {
                 found = FALSE;
             }

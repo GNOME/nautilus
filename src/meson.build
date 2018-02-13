@@ -261,8 +261,8 @@ libnautilus_sources = [
   'nautilus-search-engine-tracker.h',
   'nautilus-tag-manager.c',
   'nautilus-tag-manager.h',
-  'nautilus-favorite-directory.c',
-  'nautilus-favorite-directory.h'
+  'nautilus-starred-directory.c',
+  'nautilus-starred-directory.h'
 ]
 
 nautilus_deps = [

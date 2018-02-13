@@ -1,4 +1,4 @@
-/* nautilus-favorite-directory.h
+/* nautilus-starred-directory.h
  *
  * Copyright (C) 2017 Alexandru Pandelea <alexandru.pandelea@gmail.com>
  *
@@ -16,20 +16,20 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_FAVORITE_DIRECTORY_H
-#define NAUTILUS_FAVORITE_DIRECTORY_H
+#ifndef NAUTILUS_STARRED_DIRECTORY_H
+#define NAUTILUS_STARRED_DIRECTORY_H
 
 #include "nautilus-directory.h"
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_FAVORITE_DIRECTORY_PROVIDER_NAME "favorite-directory-provider"
+#define NAUTILUS_STARRED_DIRECTORY_PROVIDER_NAME "starred-directory-provider"
 
-#define NAUTILUS_TYPE_FAVORITE_DIRECTORY (nautilus_favorite_directory_get_type ())
+#define NAUTILUS_TYPE_STARRED_DIRECTORY (nautilus_starred_directory_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusFavoriteDirectory, nautilus_favorite_directory, NAUTILUS, FAVORITE_DIRECTORY, NautilusDirectory);
+G_DECLARE_FINAL_TYPE (NautilusFavoriteDirectory, nautilus_starred_directory, NAUTILUS, STARRED_DIRECTORY, NautilusDirectory);
 
-NautilusFavoriteDirectory* nautilus_favorite_directory_new      ();
+NautilusFavoriteDirectory* nautilus_starred_directory_new      ();
 
 G_END_DECLS
 

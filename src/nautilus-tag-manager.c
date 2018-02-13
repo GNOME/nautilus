@@ -30,7 +30,7 @@ struct _NautilusTagManager
     TrackerNotifier *notifier;
     GError *notifier_error;
 
-    GHashTable *favorite_files;
+    GHashTable *starred_files;
     GCancellable *cancellable;
 };
 
@@ -40,7 +40,7 @@ static NautilusTagManager *tag_manager = NULL;
 
 typedef enum
 {
-    GET_FAVORITE_FILES,
+    GET_STARRED_FILES,
     GET_IDS_FOR_URLS
 } OperationType;
 
@@ -65,7 +65,7 @@ typedef struct
 
 enum
 {
-    FAVORITES_CHANGED,
+    STARRED_CHANGED,
     LAST_SIGNAL
 };
 
@@ -200,9 +200,9 @@ on_query_callback (GObject              *object,
     {
         if (error->code != G_IO_ERROR_CANCELLED)
         {
-            if (op_type == GET_FAVORITE_FILES)
+            if (op_type == GET_STARRED_FILES)
             {
-                g_warning ("Error on getting favorite files: %s", error->message);
+                g_warning ("Error on getting starred files: %s", error->message);
             }
             else if (op_type == GET_IDS_FOR_URLS)
             {
@@ -259,14 +259,14 @@ on_update_callback (GObject      *object,
                     id = g_new0 (gint64, 1);
 
                     *id = (gint64) g_hash_table_lookup (data->ids, uri);
-                    g_hash_table_insert (data->tag_manager->favorite_files,
+                    g_hash_table_insert (data->tag_manager->starred_files,
                                          nautilus_file_get_uri (NAUTILUS_FILE (l->data)),
                                          id);
                 }
             }
             else
             {
-                g_hash_table_remove (data->tag_manager->favorite_files, uri);
+                g_hash_table_remove (data->tag_manager->starred_files, uri);
             }
 
             g_free (uri);
@@ -276,13 +276,13 @@ on_update_callback (GObject      *object,
         {
             NautilusFileUndoInfo *undo_info;
 
-            undo_info = nautilus_file_undo_info_favorites_new (data->selection, data->star);
+            undo_info = nautilus_file_undo_info_starred_new (data->selection, data->star);
             nautilus_file_undo_manager_set_action (undo_info);
 
             g_object_unref (undo_info);
         }
 
-        g_signal_emit_by_name (data->tag_manager, "favorites-changed", nautilus_file_list_copy (data->selection));
+        g_signal_emit_by_name (data->tag_manager, "starred-changed", nautilus_file_list_copy (data->selection));
 
         g_task_return_boolean (data->task, TRUE);
         g_object_unref (data->task);
@@ -344,13 +344,13 @@ get_query_status (TrackerSparqlCursor *cursor,
 }
 
 GList*
-nautilus_tag_manager_get_favorite_files (NautilusTagManager *self)
+nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
 {
-    return g_hash_table_get_keys (self->favorite_files);
+    return g_hash_table_get_keys (self->starred_files);
 }
 
 static void
-on_get_favorite_files_cursor_callback (GObject      *object,
+on_get_starred_files_cursor_callback (GObject      *object,
                                        GAsyncResult *result,
                                        gpointer      user_data)
 {
@@ -366,7 +366,7 @@ on_get_favorite_files_cursor_callback (GObject      *object,
 
     self = NAUTILUS_TAG_MANAGER (user_data);
 
-    success = get_query_status (cursor, result, GET_FAVORITE_FILES, NULL);
+    success = get_query_status (cursor, result, GET_STARRED_FILES, NULL);
     if (!success)
     {
         return;
@@ -377,25 +377,25 @@ on_get_favorite_files_cursor_callback (GObject      *object,
     url = tracker_sparql_cursor_get_string (cursor, 0, NULL);
     *id = tracker_sparql_cursor_get_integer (cursor, 1);
 
-    g_hash_table_insert (self->favorite_files,
+    g_hash_table_insert (self->starred_files,
                          g_strdup (url),
                          id);
 
     file = nautilus_file_get_by_uri (url);
     changed_files = g_list_prepend (NULL, file);
 
-    g_signal_emit_by_name (self, "favorites-changed", changed_files);
+    g_signal_emit_by_name (self, "starred-changed", changed_files);
 
     nautilus_file_list_free (changed_files);
 
     tracker_sparql_cursor_next_async (cursor,
                                       self->cancellable,
-                                      on_get_favorite_files_cursor_callback,
+                                      on_get_starred_files_cursor_callback,
                                       self);
 }
 
 static void
-on_get_favorite_files_query_callback (GObject      *object,
+on_get_starred_files_query_callback (GObject      *object,
                                       GAsyncResult *result,
                                       gpointer      user_data)
 {
@@ -406,13 +406,13 @@ on_get_favorite_files_query_callback (GObject      *object,
     on_query_callback (object,
                        result,
                        user_data,
-                       on_get_favorite_files_cursor_callback,
-                       GET_FAVORITE_FILES,
+                       on_get_starred_files_cursor_callback,
+                       GET_STARRED_FILES,
                        self->cancellable);
 }
 
 static void
-nautilus_tag_manager_query_favorite_files (NautilusTagManager *self,
+nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
                                            GCancellable       *cancellable)
 {
     GString *query;
@@ -422,7 +422,7 @@ nautilus_tag_manager_query_favorite_files (NautilusTagManager *self,
     query = g_string_new ("SELECT ?url tracker:id(?urn) WHERE { ?urn nie:url ?url ; nao:hasTag nao:predefined-tag-favorite}");
 
     start_query_or_update (query,
-                           on_get_favorite_files_query_callback,
+                           on_get_starred_files_query_callback,
                            self,
                            TRUE,
                            cancellable);
@@ -474,10 +474,10 @@ nautilus_tag_manager_insert_tag (NautilusTagManager  *self,
 }
 
 gboolean
-nautilus_tag_manager_file_is_favorite (NautilusTagManager *self,
+nautilus_tag_manager_file_is_starred (NautilusTagManager *self,
                                        const gchar        *file_name)
 {
-    return g_hash_table_contains (self->favorite_files, file_name);
+    return g_hash_table_contains (self->starred_files, file_name);
 }
 
 static void
@@ -715,7 +715,7 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
                                 tracker_notifier_event_get_id (event));
 
         /* check if the file changed it's location and update hash table if so */
-        new_location_uri = nautilus_tag_manager_file_with_id_changed_url (self->favorite_files,
+        new_location_uri = nautilus_tag_manager_file_with_id_changed_url (self->starred_files,
                                                                           tracker_notifier_event_get_id (event),
                                                                           location_uri);
         if (new_location_uri)
@@ -723,15 +723,15 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
             id = g_new0 (gint64, 1);
             *id = tracker_notifier_event_get_id (event);
 
-            g_hash_table_remove (self->favorite_files, new_location_uri);
-            g_hash_table_insert (self->favorite_files,
+            g_hash_table_remove (self->starred_files, new_location_uri);
+            g_hash_table_insert (self->starred_files,
                                  g_strdup (location_uri),
                                  id);
 
             file = nautilus_file_get_by_uri (location_uri);
             changed_files = g_list_prepend (NULL, file);
 
-            g_signal_emit_by_name (self, "favorites-changed", changed_files);
+            g_signal_emit_by_name (self, "starred-changed", changed_files);
 
             nautilus_file_list_free (changed_files);
         }
@@ -765,33 +765,33 @@ on_tracker_notifier_events(TrackerNotifier *notifier,
         {
             query_has_results = tracker_sparql_cursor_next (cursor, NULL, &error);
 
-            /* if no results are found, then the file isn't marked as favorite.
+            /* if no results are found, then the file isn't marked as starred.
              * If needed, update the hashtable.
              */
-            if (!query_has_results && location_uri && g_hash_table_contains (self->favorite_files, location_uri))
+            if (!query_has_results && location_uri && g_hash_table_contains (self->starred_files, location_uri))
             {
-                g_hash_table_remove (self->favorite_files, location_uri);
+                g_hash_table_remove (self->starred_files, location_uri);
 
                 file = nautilus_file_get_by_uri (location_uri);
                 changed_files = g_list_prepend (NULL, file);
 
-                g_signal_emit_by_name (self, "favorites-changed", changed_files);
+                g_signal_emit_by_name (self, "starred-changed", changed_files);
 
                 nautilus_file_list_free (changed_files);
             }
-            else if (query_has_results && location_uri && !g_hash_table_contains (self->favorite_files, location_uri))
+            else if (query_has_results && location_uri && !g_hash_table_contains (self->starred_files, location_uri))
             {
                 id = g_new0 (gint64, 1);
                 *id = tracker_notifier_event_get_id (event);
 
-                g_hash_table_insert (self->favorite_files,
+                g_hash_table_insert (self->starred_files,
                                      g_strdup (location_uri),
                                      id);
 
                 file = nautilus_file_get_by_uri (location_uri);
                 changed_files = g_list_prepend (NULL, file);
 
-                g_signal_emit_by_name (self, "favorites-changed", changed_files);
+                g_signal_emit_by_name (self, "starred-changed", changed_files);
 
                 nautilus_file_list_free (changed_files);
             }
@@ -818,7 +818,7 @@ nautilus_tag_manager_finalize (GObject *object)
                                           self);
     g_clear_object (&self->notifier);
 
-    g_hash_table_destroy (self->favorite_files);
+    g_hash_table_destroy (self->starred_files);
 
     G_OBJECT_CLASS (nautilus_tag_manager_parent_class)->finalize (object);
 }
@@ -832,7 +832,7 @@ nautilus_tag_manager_class_init (NautilusTagManagerClass *klass)
 
     oclass->finalize = nautilus_tag_manager_finalize;
 
-    signals[FAVORITES_CHANGED] = g_signal_new ("favorites-changed",
+    signals[STARRED_CHANGED] = g_signal_new ("starred-changed",
                                                NAUTILUS_TYPE_TAG_MANAGER,
                                                G_SIGNAL_RUN_LAST,
                                                0,
@@ -860,7 +860,7 @@ NautilusTagManager* nautilus_tag_manager_get ()
 void nautilus_tag_manager_set_cancellable (NautilusTagManager *tag_manager,
                                            GCancellable *cancellable)
 {
-    nautilus_tag_manager_query_favorite_files (tag_manager, cancellable);
+    nautilus_tag_manager_query_starred_files (tag_manager, cancellable);
 
     tag_manager->notifier = tracker_notifier_new (NULL,
                                                   TRACKER_NOTIFIER_FLAG_QUERY_LOCATION,
@@ -877,7 +877,7 @@ void nautilus_tag_manager_set_cancellable (NautilusTagManager *tag_manager,
 static void
 nautilus_tag_manager_init (NautilusTagManager *self)
 {
-    self->favorite_files = g_hash_table_new_full (g_str_hash,
+    self->starred_files = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
                                                   (GDestroyNotify) g_free,
                                                   (GDestroyNotify) g_free);

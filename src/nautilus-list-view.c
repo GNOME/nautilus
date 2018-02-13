@@ -442,7 +442,7 @@ check_starred_status (GtkTreeModel *model,
 }
 
 static void
-on_favorites_files_changed (NautilusTagManager *tag_manager,
+on_starred_files_changed (NautilusTagManager *tag_manager,
                             GList              *changed_files,
                             gpointer            user_data)
 {
@@ -477,13 +477,13 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
     uri = nautilus_file_get_uri (file);
     selection = g_list_prepend (NULL, file);
 
-    if (nautilus_tag_manager_file_is_favorite (list_view->details->tag_manager, uri))
+    if (nautilus_tag_manager_file_is_starred (list_view->details->tag_manager, uri))
     {
         nautilus_tag_manager_unstar_files (list_view->details->tag_manager,
                                            G_OBJECT (list_view),
                                            selection,
                                            NULL,
-                                           list_view->details->favorite_cancellable);
+                                           list_view->details->starred_cancellable);
     }
     else
     {
@@ -491,7 +491,7 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
                                          G_OBJECT (list_view),
                                          selection,
                                          NULL,
-                                         list_view->details->favorite_cancellable);
+                                         list_view->details->starred_cancellable);
     }
 
     nautilus_file_list_free (selection);
@@ -1590,7 +1590,7 @@ apply_columns_settings (NautilusListView  *list_view,
 }
 
 static void
-favorite_cell_data_func (GtkTreeViewColumn *column,
+starred_cell_data_func (GtkTreeViewColumn *column,
                          GtkCellRenderer   *renderer,
                          GtkTreeModel      *model,
                          GtkTreeIter       *iter,
@@ -1621,7 +1621,7 @@ favorite_cell_data_func (GtkTreeViewColumn *column,
 
     uri = nautilus_file_get_uri (file);
 
-    if (nautilus_tag_manager_file_is_favorite (view->details->tag_manager, uri))
+    if (nautilus_tag_manager_file_is_starred (view->details->tag_manager, uri))
     {
         g_object_set (renderer,
                       "icon-name", "starred-symbolic",
@@ -2175,7 +2175,7 @@ create_and_set_up_tree_view (NautilusListView *view)
         }
         else
         {
-            if (g_strcmp0 (name, "favorite") == 0)
+            if (g_strcmp0 (name, "starred") == 0)
             {
                 cell = gtk_cell_renderer_pixbuf_new ();
                 g_object_set (cell,
@@ -2242,10 +2242,10 @@ create_and_set_up_tree_view (NautilusListView *view)
                                                          (GtkTreeCellDataFunc) trash_orig_path_cell_data_func,
                                                          view, NULL);
             }
-            else if (!strcmp (name, "favorite"))
+            else if (!strcmp (name, "starred"))
             {
                 gtk_tree_view_column_set_cell_data_func (column, cell,
-                                                         (GtkTreeCellDataFunc) favorite_cell_data_func,
+                                                         (GtkTreeCellDataFunc) starred_cell_data_func,
                                                          view, NULL);
             }
         }
@@ -2350,7 +2350,7 @@ get_visible_columns (NautilusListView *list_view)
     GList *l;
     g_autofree gchar* uri = NULL;
     gboolean in_xdg_dirs;
-    gboolean is_favorite;
+    gboolean is_starred;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
     uri = nautilus_file_get_uri (file);
@@ -2360,7 +2360,7 @@ get_visible_columns (NautilusListView *list_view)
      * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
      */
     in_xdg_dirs = eel_uri_is_in_xdg_dirs (uri);
-    is_favorite = eel_uri_is_favorites (uri);
+    is_starred = eel_uri_is_starred (uri);
 
     visible_columns = nautilus_file_get_metadata_list (file,
                                                        NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
@@ -2372,8 +2372,8 @@ get_visible_columns (NautilusListView *list_view)
     res = g_ptr_array_new ();
     for (l = visible_columns; l != NULL; l = l->next)
     {
-        if (g_strcmp0 (l->data, "favorite") != 0 ||
-            (g_strcmp0 (l->data, "favorite") == 0 && (in_xdg_dirs || is_favorite)))
+        if (g_strcmp0 (l->data, "starred") != 0 ||
+            (g_strcmp0 (l->data, "starred") == 0 && (in_xdg_dirs || is_starred)))
         {
             g_ptr_array_add (res, l->data);
         }
@@ -3554,11 +3554,11 @@ nautilus_list_view_finalize (GObject *object)
 
     g_regex_unref (list_view->details->regex);
 
-    g_cancellable_cancel (list_view->details->favorite_cancellable);
-    g_clear_object (&list_view->details->favorite_cancellable);
+    g_cancellable_cancel (list_view->details->starred_cancellable);
+    g_clear_object (&list_view->details->starred_cancellable);
 
     g_signal_handlers_disconnect_by_func (list_view->details->tag_manager,
-                                          on_favorites_files_changed,
+                                          on_starred_files_changed,
                                           list_view);
 
     g_free (list_view->details);
@@ -3914,11 +3914,11 @@ nautilus_list_view_init (NautilusListView *list_view)
     list_view->details->regex = g_regex_new ("\\R+", 0, G_REGEX_MATCH_NEWLINE_ANY, NULL);
 
     list_view->details->tag_manager = nautilus_tag_manager_get ();
-    list_view->details->favorite_cancellable = g_cancellable_new ();
+    list_view->details->starred_cancellable = g_cancellable_new ();
 
     g_signal_connect (list_view->details->tag_manager,
-                      "favorites-changed",
-                      (GCallback) on_favorites_files_changed,
+                      "starred-changed",
+                      (GCallback) on_starred_files_changed,
                       list_view);
 }
 

@@ -34,7 +34,7 @@ NautilusTagManager* nautilus_tag_manager_get                ();
 void                nautilus_tag_manager_set_cancellable    (NautilusTagManager *tag_manager,
                                                              GCancellable *cancellable);
 
-GList*              nautilus_tag_manager_get_favorite_files (NautilusTagManager *self);
+GList*              nautilus_tag_manager_get_starred_files (NautilusTagManager *self);
 
 void                nautilus_tag_manager_star_files         (NautilusTagManager  *self,
                                                              GObject             *object,
@@ -49,7 +49,7 @@ void                nautilus_tag_manager_unstar_files       (NautilusTagManager 
                                                              GCancellable        *cancellable);
 
 
-gboolean            nautilus_tag_manager_file_is_favorite   (NautilusTagManager *self,
+gboolean            nautilus_tag_manager_file_is_starred   (NautilusTagManager *self,
                                                              const gchar        *file_name);
 
 G_END_DECLS

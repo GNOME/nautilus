@@ -46,7 +46,7 @@ struct _NautilusQuery
     GPtrArray *date_range;
     NautilusQuerySearchType search_type;
     NautilusQuerySearchContent search_content;
-    gboolean search_favorite;
+    gboolean search_starred;
 
     gboolean searching;
     gboolean recursive;
@@ -344,7 +344,7 @@ nautilus_query_init (NautilusQuery *query)
     query->location = g_file_new_for_path (g_get_home_dir ());
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
-    query->search_favorite = FALSE;
+    query->search_starred = FALSE;
     g_mutex_init (&query->prepared_words_mutex);
 }
 
@@ -553,20 +553,20 @@ nautilus_query_set_search_content (NautilusQuery              *query,
 }
 
 gboolean
-nautilus_query_get_search_favorite (NautilusQuery *query)
+nautilus_query_get_search_starred (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
 
-    return query->search_favorite;
+    return query->search_starred;
 }
 
 void
-nautilus_query_set_search_favorite (NautilusQuery *query,
-                                    gboolean       search_favorite)
+nautilus_query_set_search_starred (NautilusQuery *query,
+                                    gboolean       search_starred)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    query->search_favorite = search_favorite;
+    query->search_starred = search_starred;
 }
 
 NautilusQuerySearchType
