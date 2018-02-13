@@ -26,6 +26,8 @@
 #define NAUTILUS_MENU_H
 
 #include <glib-object.h>
+/* This should be removed at some point. */
+#include "nautilus-extension-types.h"
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."

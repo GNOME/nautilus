@@ -29,6 +29,8 @@
 #endif
 
 #include <glib-object.h>
+/* This should be removed at some point. */
+#include "nautilus-extension-types.h"
 
 G_BEGIN_DECLS
 

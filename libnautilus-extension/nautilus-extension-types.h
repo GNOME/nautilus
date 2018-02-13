@@ -27,8 +27,10 @@
 #ifndef NAUTILUS_EXTENSION_TYPES_H
 #define NAUTILUS_EXTENSION_TYPES_H
 
-#include <nautilus-extension.h>
-
+#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "This header is deprecated, include <nautilus-extension.h> instead."
+#endif
+
+#include <nautilus-extension.h>
 
 #endif
