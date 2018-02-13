@@ -108,24 +108,24 @@ add_selection_filter (GList   *selection,
 {
     NautilusFile *file;
     GList *l;
-    gchar *uri;
 
     g_string_append (query, " FILTER(?url IN (");
 
     for (l = selection; l != NULL; l = l->next)
     {
+        g_autofree gchar *uri = NULL;
+        g_autofree gchar *escaped_uri = NULL;
+
         file = l->data;
 
         uri = nautilus_file_get_uri (file);
-
-        g_string_append_printf (query, "'%s'", uri);
+        escaped_uri = tracker_sparql_escape_string (uri);
+        g_string_append_printf (query, "'%s'", escaped_uri);
 
         if (l->next != NULL)
         {
             g_string_append (query, ", ");
         }
-
-        g_free (uri);
     }
 
     g_string_append (query, "))");
