@@ -146,7 +146,7 @@ button_press_cb (NautilusNotebook *notebook,
     tab_clicked = find_tab_num_at_pos (notebook, event->x_root, event->y_root);
 
     if (event->type == GDK_BUTTON_PRESS &&
-        event->button == 3 &&
+        event->button == GDK_BUTTON_SECONDARY &&
         (event->state & gtk_accelerator_get_default_mod_mask ()) == 0)
     {
         if (tab_clicked == -1)
