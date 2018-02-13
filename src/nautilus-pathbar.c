@@ -1469,7 +1469,7 @@ nautilus_path_bar_slider_button_press (GtkWidget       *widget,
         gtk_widget_grab_focus (widget);
     }
 
-    if (event->type != GDK_BUTTON_PRESS || event->button != 1)
+    if (event->type != GDK_BUTTON_PRESS || event->button != GDK_BUTTON_PRIMARY)
     {
         return FALSE;
     }

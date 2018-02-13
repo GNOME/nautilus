@@ -267,7 +267,7 @@ nautilus_list_view_did_not_drag (NautilusListView *view,
     if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
                                        &path, NULL, NULL, NULL))
     {
-        if ((event->button == 1 || event->button == 2)
+        if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE)
             && ((event->state & GDK_CONTROL_MASK) != 0 ||
                 (event->state & GDK_SHIFT_MASK) == 0)
             && view->details->row_selected_on_button_down)
@@ -286,11 +286,11 @@ nautilus_list_view_did_not_drag (NautilusListView *view,
         if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
             && !button_event_modifies_selection (event))
         {
-            if (event->button == 1)
+            if (event->button == GDK_BUTTON_PRIMARY)
             {
                 activate_selected_items (view);
             }
-            else if (event->button == 2)
+            else if (event->button == GDK_BUTTON_MIDDLE)
             {
                 activate_selected_items_alternate (view, NULL, TRUE);
             }
@@ -563,7 +563,7 @@ button_press_callback (GtkWidget      *widget,
     }
 
     view->details->ignore_button_release = FALSE;
-    is_simple_click = ((event->button == 1 || event->button == 2) && (event->type == GDK_BUTTON_PRESS));
+    is_simple_click = ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) && (event->type == GDK_BUTTON_PRESS));
 
     /* No item at this position */
     if (!gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
@@ -581,7 +581,7 @@ button_press_callback (GtkWidget      *widget,
         gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
         tree_view_class->button_press_event (widget, event);
 
-        if (event->button == 3)
+        if (event->button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                 (GdkEvent *) event);
@@ -630,7 +630,7 @@ button_press_callback (GtkWidget      *widget,
             view->details->double_click_path[1] &&
             gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0)
         {
-            if ((event->button == 1) && button_event_modifies_selection (event))
+            if ((event->button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
             {
                 file = nautilus_list_model_file_for_path (view->details->model, path);
                 if (file != NULL)
@@ -641,11 +641,11 @@ button_press_callback (GtkWidget      *widget,
             }
             else
             {
-                if ((event->button == 1 || event->button == 3))
+                if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_SECONDARY))
                 {
                     activate_selected_items (view);
                 }
-                else if (event->button == 2)
+                else if (event->button == GDK_BUTTON_MIDDLE)
                 {
                     activate_selected_items_alternate (view, NULL, TRUE);
                 }
@@ -664,12 +664,12 @@ button_press_callback (GtkWidget      *widget,
          * want that; we want the right click menu or single
          * click to apply to everything that's currently selected.
          */
-        if (event->button == 3 && path_selected)
+        if (event->button == GDK_BUTTON_SECONDARY && path_selected)
         {
             call_parent = FALSE;
         }
 
-        if ((event->button == 1 || event->button == 2) &&
+        if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
             ((event->state & GDK_CONTROL_MASK) != 0 || (event->state & GDK_SHIFT_MASK) == 0))
         {
             view->details->row_selected_on_button_down = path_selected;
@@ -738,7 +738,7 @@ button_press_callback (GtkWidget      *widget,
             view->details->drag_y = event->y;
         }
 
-        if (event->button == 3)
+        if (event->button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                (GdkEvent *) event);

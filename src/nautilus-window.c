@@ -2109,7 +2109,7 @@ notebook_button_press_cb (GtkWidget      *widget,
 {
     NautilusWindow *window = user_data;
 
-    if (GDK_BUTTON_PRESS == event->type && 3 == event->button)
+    if (GDK_BUTTON_PRESS == event->type && event->button == GDK_BUTTON_SECONDARY)
     {
         notebook_popup_menu_show (window, event);
         return TRUE;
@@ -3004,7 +3004,7 @@ nautilus_event_get_window_open_flags (void)
     }
 
     if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
-        (event->button.button == 2))
+        (event->button.button == GDK_BUTTON_MIDDLE))
     {
         flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
     }

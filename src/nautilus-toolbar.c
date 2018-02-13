@@ -248,7 +248,7 @@ navigation_button_press_cb (GtkButton *button,
 
     button_event = (GdkEventButton *) event;
 
-    if (button_event->button == 3)
+    if (button_event->button == GDK_BUTTON_SECONDARY)
     {
         /* right click */
         show_menu (self, GTK_WIDGET (button), event);
