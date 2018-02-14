@@ -2,7 +2,7 @@
 DATA=$(dirname "$BASH_SOURCE")
 if [ -x "$DATA/lineup-parameters" ];
 then
-    for DIR in "$DATA/../"{src,test,libnautilus-extension,eel,nautilus-sendto-extension}
+    for DIR in "$DATA/../"{src,test,libnautilus-extension,eel,extensions}
     do
         for FILE in $(find "$DIR" -name "*.c")
         do
