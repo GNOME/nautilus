@@ -2052,8 +2052,7 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
     priv->new_folder_controller =
         nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
                                                    containing_directory,
-                                                   with_selection,
-                                                   common_prefix);
+                                                   with_selection);
 
     g_signal_connect (priv->new_folder_controller,
                       "name-accepted",

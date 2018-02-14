@@ -81,8 +81,7 @@ new_folder_dialog_controller_on_response (GtkDialog *dialog,
 NautilusNewFolderDialogController *
 nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                            NautilusDirectory *destination_directory,
-                                           gboolean           with_selection,
-                                           gchar             *initial_name)
+                                           gboolean           with_selection)
 {
     NautilusNewFolderDialogController *self;
     g_autoptr (GtkBuilder) builder = NULL;
@@ -119,11 +118,6 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                                   "response",
                                                   (GCallback) new_folder_dialog_controller_on_response,
                                                   self);
-
-    if (initial_name != NULL)
-    {
-        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
-    }
 
     gtk_button_set_label (GTK_BUTTON (activate_button), _("Create"));
     gtk_label_set_text (GTK_LABEL (name_label), _("Folder name"));

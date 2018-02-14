@@ -31,8 +31,7 @@ G_DECLARE_FINAL_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dia
 
 NautilusNewFolderDialogController * nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
                                                                                NautilusDirectory *destination_directory,
-                                                                               gboolean           with_selection,
-                                                                               gchar             *initial_name);
+                                                                               gboolean           with_selection);
 
 gboolean nautilus_new_folder_dialog_controller_get_with_selection (NautilusNewFolderDialogController *controller);
 
