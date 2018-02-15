@@ -252,4 +252,18 @@ NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirector
                                                                 const char        *filename,
                                                                 gboolean           self_owned);
 
+/**
+ * nautilus_directory_get_max_child_name_length:
+ * @directory: a #NautilusDirectory
+ * @error: (nullable): a #GError or %NULL
+ *
+ * Gets the maximum file name length for files inside @directory.
+ *
+ * This call does blocking I/O.
+ *
+ * Returns: The maximum file name length in bytes or -1 if an error occured.
+ */
+glong nautilus_directory_get_max_child_name_length (NautilusDirectory  *directory,
+                                                    GError            **error);
+
 #endif /* NAUTILUS_DIRECTORY_H */

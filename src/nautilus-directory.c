@@ -40,6 +40,8 @@
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 
+#include <errno.h>
+
 enum
 {
     FILES_ADDED,
@@ -690,6 +692,47 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
     return NAUTILUS_DIRECTORY_CLASS (G_OBJECT_GET_CLASS (directory))->new_file_from_filename (directory,
                                                                                               filename,
                                                                                               self_owned);
+}
+
+glong
+nautilus_directory_get_max_child_name_length (NautilusDirectory  *self,
+                                              GError            **error)
+{
+    g_autoptr (GFile) location = NULL;
+    g_autofree char *path = NULL;
+    glong result;
+
+    g_assert (NAUTILUS_IS_DIRECTORY (self));
+
+    location = nautilus_directory_get_location (self);
+    path = g_file_get_path (location);
+
+    g_assert (path != NULL);
+
+    /* pathconf() can return -1 if the maximum length is indefinite,
+     * in that case, errno is not set, so the only way to know is to
+     * check if errno is 0.
+     */
+    errno = 0;
+
+    result = pathconf (path, _PC_NAME_MAX);
+    if (result == -1)
+    {
+        int errsv;
+
+        errsv = errno;
+
+        if (errsv == 0)
+        {
+            return FILENAME_MAX;
+        }
+
+        g_set_error (error, G_IO_ERROR, g_io_error_from_errno (errsv),
+                     "Could not get maximum name length for children in %s: %s",
+                     path, g_strerror (errsv));
+    }
+
+    return result;
 }
 
 static GList *
