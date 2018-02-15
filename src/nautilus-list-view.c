@@ -1978,9 +1978,6 @@ create_and_set_up_tree_view (NautilusListView *view)
     GList *l;
     gchar **default_column_order, **default_visible_columns;
     GtkWidget *content_widget;
-    NautilusDirectory *directory = NULL;
-    NautilusQuery *query = NULL;
-    NautilusQuerySearchContent content;
     GtkGesture *longpress_gesture;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (view));
@@ -2149,23 +2146,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                           "width-chars", 30,
                           "xpad", 5,
                           NULL);
-
-            directory = nautilus_files_view_get_model (NAUTILUS_FILES_VIEW (view));
-            if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
-            {
-                query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-            }
-
-            if (query)
-            {
-                content = nautilus_query_get_search_content (query);
-            }
-
-            if (query && content == NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT)
-            {
-                gtk_cell_renderer_text_set_fixed_height_from_font (GTK_CELL_RENDERER_TEXT (cell), 2);
-                g_object_set (cell, "ellipsize", PANGO_ELLIPSIZE_MIDDLE, NULL);
-            }
 
             gtk_tree_view_column_pack_start (view->details->file_name_column, cell, TRUE);
             gtk_tree_view_column_set_cell_data_func (view->details->file_name_column, cell,
