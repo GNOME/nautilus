@@ -1282,6 +1282,11 @@ nautilus_get_common_filename_prefix (GList *file_list,
         return NULL;
     }
 
+    if(file_list->next == NULL)
+    {
+	return NULL;
+    }
+
     for (l = file_list; l != NULL; l = l->next)
     {
         g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
