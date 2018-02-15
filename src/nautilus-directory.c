@@ -692,6 +692,36 @@ nautilus_directory_new_file_from_filename (NautilusDirectory *directory,
                                                                                               self_owned);
 }
 
+glong
+nautilus_directory_get_max_child_name_length (NautilusDirectory *self)
+{
+    g_autoptr (GFile) location = NULL;
+    g_autofree gchar *path = NULL;
+    glong path_length;
+    glong name_max;
+    glong path_max;
+    glong result;
+
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (self), -1);
+
+    location = nautilus_directory_get_location (self);
+    path = g_file_get_path (location);
+    path_length = strlen (path);
+
+    g_assert (path != NULL);
+
+    name_max = pathconf (path, _PC_NAME_MAX);
+    if (name_max == -1)
+    {
+        return -1;
+    }
+    path_max = pathconf (path, _PC_PATH_MAX);
+    /* Subtracting one from NAME_MAX, since the length excludes the null terminator. */
+    result = MAX (MIN (path_max - path_length, name_max - 1), 0);
+
+    return result;
+}
+
 static GList *
 nautilus_directory_provider_get_all (void)
 {
