@@ -2032,7 +2032,6 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
 {
     NautilusDirectory *containing_directory;
     NautilusFilesViewPrivate *priv;
-    GList *selection;
     g_autofree char *uri = NULL;
     g_autofree char *common_prefix = NULL;
 
@@ -2046,8 +2045,13 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
     uri = nautilus_files_view_get_backing_uri (view);
     containing_directory = nautilus_directory_get_by_uri (uri);
 
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
+    if (with_selection)
+    {
+        GList *selection;
+        selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+        common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
+        nautilus_file_list_free (selection);
+    }
 
     priv->new_folder_controller =
         nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
@@ -2064,7 +2068,6 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
                       (GCallback) new_folder_dialog_controller_on_cancelled,
                       view);
 
-    nautilus_file_list_free (selection);
     nautilus_directory_unref (containing_directory);
 }
 
