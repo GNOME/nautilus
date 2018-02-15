@@ -2047,7 +2047,11 @@ nautilus_files_view_new_folder_dialog_new (NautilusFilesView *view,
     containing_directory = nautilus_directory_get_by_uri (uri);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
+
+    if (g_list_length (selection) > 1)
+    {
+        common_prefix = nautilus_get_common_filename_prefix (selection, MIN_COMMON_FILENAME_PREFIX_LENGTH);
+    }
 
     priv->new_folder_controller =
         nautilus_new_folder_dialog_controller_new (nautilus_files_view_get_containing_window (view),
