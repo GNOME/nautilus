@@ -2923,13 +2923,18 @@ nautilus_list_view_set_selection (NautilusFilesView *view,
                                   GList             *selection)
 {
     NautilusListView *list_view;
+    NautilusListModel *model;
+    GtkTreeView *tree_view;
     GtkTreeSelection *tree_selection;
     GList *node;
+    gboolean cursor_is_set_on_selection = FALSE;
     GList *iters, *l;
     NautilusFile *file;
 
     list_view = NAUTILUS_LIST_VIEW (view);
-    tree_selection = gtk_tree_view_get_selection (list_view->details->tree_view);
+    model = list_view->details->model;
+    tree_view = list_view->details->tree_view;
+    tree_selection = gtk_tree_view_get_selection (tree_view);
 
     g_signal_handlers_block_by_func (tree_selection, list_selection_changed_callback, view);
 
@@ -2937,10 +2942,23 @@ nautilus_list_view_set_selection (NautilusFilesView *view,
     for (node = selection; node != NULL; node = node->next)
     {
         file = node->data;
-        iters = nautilus_list_model_get_all_iters_for_file (list_view->details->model, file);
+        iters = nautilus_list_model_get_all_iters_for_file (model, file);
 
         for (l = iters; l != NULL; l = l->next)
         {
+            if (!cursor_is_set_on_selection)
+            {
+                GtkTreePath *path;
+
+                path = gtk_tree_model_get_path (GTK_TREE_MODEL (model),
+                                                (GtkTreeIter *) l->data);
+                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+                gtk_tree_path_free (path);
+
+                cursor_is_set_on_selection = TRUE;
+                continue;
+            }
+
             gtk_tree_selection_select_iter (tree_selection,
                                             (GtkTreeIter *) l->data);
         }
