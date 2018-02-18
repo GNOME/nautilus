@@ -336,6 +336,13 @@ nautilus_rename_file_popover_controller_init (NautilusRenameFilePopoverControlle
 }
 
 static void
+nautilus_rename_file_popover_controller_on_hide (GtkWidget *widget,
+                                                 gpointer user_data)
+{
+    g_clear_pointer (&widget, gtk_widget_destroy);
+}
+
+static void
 nautilus_rename_file_popover_controller_finalize (GObject *object)
 {
     NautilusRenameFilePopoverController *self;
@@ -350,8 +357,12 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
                                          self->closed_handler_id);
             self->closed_handler_id = 0;
         }
+
+        g_signal_connect (self->rename_file_popover,
+                          "hide",
+                          G_CALLBACK (nautilus_rename_file_popover_controller_on_hide),
+                          NULL);
         gtk_popover_popdown (GTK_POPOVER (self->rename_file_popover));
-        g_clear_pointer (&self->rename_file_popover, gtk_widget_destroy);
     }
 
     if (self->file_changed_handler_id != 0)
