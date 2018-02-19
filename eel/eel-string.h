@@ -41,12 +41,17 @@ char *   eel_str_double_underscores        (const char    *str);
 /* Capitalize a string */
 char *   eel_str_capitalize                (const char    *str);
 
-/* Middle truncate a string to a maximum of truncate_length characters.
- * The resulting string will be truncated in the middle with a "..."
- * delimiter.
+/**
+ * eel_str_middle_truncate:
+ * @string: the string to truncate
+ * @truncate_length: the length limit at which to truncate
+ *
+ * Replaces the middle of @string with an ellipsis so it fits into @truncate_length characters.
+ *
+ * Returns: @string, truncated at the middle to @truncate_length
  */
-char *   eel_str_middle_truncate           (const char    *str,
-					    guint          truncate_length);
+gchar   *eel_str_middle_truncate           (const gchar   *string,
+                                            gsize          truncate_length);
 
 
 /* Remove all characters after the passed-in substring. */
