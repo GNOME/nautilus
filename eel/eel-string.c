@@ -89,67 +89,47 @@ eel_str_capitalize (const char *string)
     return capitalized;
 }
 
-/**
- * eel_str_middle_truncate:
- * @string: the original string
- * @truncate_length: the number of characters of the truncated string (min. 3).
- *
- * Replaces a number of characters in the middle of a @string with an ellipsis
- * character, to obtain a number of characters equal to @truncate_length, if the
- * original @string is longer than that.
- *
- * Useful to ellipsise a variable substring (such as a file name) with variable
- * lengh. Do not use this for full labels, use PangoLayout instead.
- *
- * Returns: (transfer full): a newly allocated truncated string, or a copy of
- * @string if it was not longer than @truncate_length.
- **/
-char *
-eel_str_middle_truncate (const char *string,
-                         guint       truncate_length)
+gchar *
+eel_str_middle_truncate (const gchar *string,
+                         guint        truncate_length)
 {
-    char *truncated;
-    guint length;
-    guint num_left_chars;
-    guint num_right_chars;
+    const gchar ellipsis[] = "…";
+    glong ellipsis_length;
+    glong length;
+    glong num_left_chars;
+    glong num_right_chars;
+    g_autofree gchar *left_substring = NULL;
+    g_autofree gchar *right_substring = NULL;
 
-    const char delimter[] = "…";
-    const guint delimter_length = strlen (delimter);
-    const guint min_truncate_length = delimter_length + 2;
+    g_return_val_if_fail (string != NULL, NULL);
+    g_return_val_if_fail (truncate_length > 0, NULL);
+    g_return_val_if_fail (truncate_length <= G_MAXLONG, NULL);
 
-    if (string == NULL)
-    {
-        return NULL;
-    }
+    ellipsis_length = g_utf8_strlen (ellipsis, -1);
 
-    /* It doesnt make sense to truncate strings to less than
-     * the size of the delimiter plus 2 characters (one on each
-     * side)
-     */
-    if (truncate_length < min_truncate_length)
+    /* Our ellipsis string + one character on each side. */
+    if (truncate_length < ellipsis_length + 2)
     {
         return g_strdup (string);
     }
 
     length = g_utf8_strlen (string, -1);
 
-    /* Make sure the string is not already small enough. */
     if (length <= truncate_length)
     {
         return g_strdup (string);
     }
 
-    /* Find the 'middle' where the truncation will occur. */
-    num_left_chars = (truncate_length - delimter_length) / 2;
-    num_right_chars = truncate_length - num_left_chars - delimter_length;
+    num_left_chars = (truncate_length - ellipsis_length) / 2;
+    num_right_chars = truncate_length - num_left_chars - ellipsis_length;
 
-    truncated = g_new (char, strlen (string) + 1);
+    g_assert (num_left_chars > 0);
+    g_assert (num_right_chars > 0);
 
-    g_utf8_strncpy (truncated, string, num_left_chars);
-    strcat (truncated, delimter);
-    strcat (truncated, g_utf8_offset_to_pointer (string, length - num_right_chars));
+    left_substring = g_utf8_substring (string, 0, num_left_chars);
+    right_substring = g_utf8_substring (string, length - num_right_chars, length);
 
-    return truncated;
+    return g_strconcat (left_substring, ellipsis, right_substring, NULL);
 }
 
 char *
