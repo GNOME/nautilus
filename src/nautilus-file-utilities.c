@@ -1273,9 +1273,11 @@ nautilus_get_common_filename_prefix (GList *file_list,
                                      int    min_required_len)
 {
     GList *l;
-    GList *strs = NULL;
+    GList *file_names = NULL;
+    GList *directory_names = NULL;
     char *name;
-    char *result;
+    char *result_files;
+    char *result_all;
 
     if (file_list == NULL)
     {
@@ -1287,13 +1289,28 @@ nautilus_get_common_filename_prefix (GList *file_list,
         g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
 
         name = nautilus_file_get_display_name (l->data);
-        strs = g_list_append (strs, name);
+
+        /*filter files because _from_filenames() strips extension but we don't want to do that for folder*/
+        if (nautilus_file_is_directory (l->data))
+        {
+           directory_names = g_list_append (directory_names, name);
+        }
+        else
+        {
+           file_names = g_list_append (file_names, name);
+        }
     }
 
-    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
-    g_list_free_full (strs, g_free);
+    result_files = nautilus_get_common_filename_prefix_from_filenames (file_names, min_required_len);
 
-    return result;
+    directory_names = g_list_append (directory_names,result_files);
+
+    result_all = eel_str_get_common_prefix (directory_names, min_required_len);
+
+    g_list_free_full (file_names, g_free);
+    g_list_free_full (directory_names, g_free);
+
+    return result_all;
 }
 
 static char *
@@ -1349,6 +1366,7 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
     }
 
     common_prefix = eel_str_get_common_prefix (stripped_filenames, min_required_len);
+
     if (common_prefix == NULL)
     {
         return NULL;
