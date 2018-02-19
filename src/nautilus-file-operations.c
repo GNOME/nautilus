@@ -49,6 +49,7 @@
 #include <gio/gio.h>
 #include <glib.h>
 
+#include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
@@ -1005,6 +1006,18 @@ get_basename (GFile *file)
     return name;
 }
 
+static gchar *
+get_truncated_parse_name (GFile *file)
+{
+    g_autofree gchar *parse_name = NULL;
+
+    g_assert (G_IS_FILE (file));
+
+    parse_name = g_file_get_parse_name (file);
+
+    return eel_str_middle_truncate (parse_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
+}
+
 #define op_job_new(__type, parent_window) ((__type *) (init_common (sizeof (__type), parent_window)))
 
 static gpointer
@@ -1219,6 +1232,10 @@ do_run_simple_dialog (gpointer _data)
         gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
         gtk_label_set_selectable (GTK_LABEL (label), TRUE);
         gtk_label_set_xalign (GTK_LABEL (label), 0);
+        /* Ideally, we wouldn’t truncate each string like madmen, but things. */
+        gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_MIDDLE);
+        gtk_label_set_max_width_chars (GTK_LABEL (label),
+                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         gtk_container_add (GTK_CONTAINER (content_area), label);
 
@@ -5384,7 +5401,7 @@ retry:
                 {
                     primary = g_strdup_printf (_("Error while copying “%s”."), basename);
                 }
-                filename = g_file_get_parse_name (dest_dir);
+                filename = get_truncated_parse_name (dest_dir);
                 secondary = g_strdup_printf (_("Could not remove the already existing file "
                                                "with the same name in %s."),
                                              filename);
@@ -5470,7 +5487,7 @@ retry:
         }
         basename = get_basename (src);
         primary = g_strdup_printf (_("Error while copying “%s”."), basename);
-        filename = g_file_get_parse_name (dest_dir);
+        filename = get_truncated_parse_name (dest_dir);
         secondary = g_strdup_printf (_("There was an error copying the file into %s."),
                                      filename);
         details = error->message;
@@ -6054,7 +6071,7 @@ retry:
         }
         basename = get_basename (src);
         primary = g_strdup_printf (_("Error while moving “%s”."), basename);
-        filename = g_file_get_parse_name (dest_dir);
+        filename = get_truncated_parse_name (dest_dir);
         secondary = g_strdup_printf (_("There was an error moving the file into %s."),
                                      filename);
 
@@ -6516,7 +6533,7 @@ retry:
         {
             g_autofree gchar *filename = NULL;
 
-            filename = g_file_get_parse_name (dest_dir);
+            filename = get_truncated_parse_name (dest_dir);
             secondary = g_strdup_printf (_("There was an error creating the symlink in %s."),
                                          filename);
             details = error->message;
@@ -7413,7 +7430,7 @@ retry:
                 primary = g_strdup_printf (_("Error while creating file %s."),
                                            basename);
             }
-            filename = g_file_get_parse_name (job->dest_dir);
+            filename = get_truncated_parse_name (job->dest_dir);
             secondary = g_strdup_printf (_("There was an error creating the directory in %s."),
                                          filename);
 
