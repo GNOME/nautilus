@@ -1268,34 +1268,6 @@ nautilus_file_selection_equal (GList *selection_a,
     return selection_matches;
 }
 
-char *
-nautilus_get_common_filename_prefix (GList *file_list,
-                                     int    min_required_len)
-{
-    GList *l;
-    GList *strs = NULL;
-    char *name;
-    char *result;
-
-    if (file_list == NULL)
-    {
-        return NULL;
-    }
-
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
-
-        name = nautilus_file_get_display_name (l->data);
-        strs = g_list_append (strs, name);
-    }
-
-    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
-    g_list_free_full (strs, g_free);
-
-    return result;
-}
-
 static char *
 trim_whitespace (const gchar *string)
 {
@@ -1328,6 +1300,57 @@ trim_whitespace (const gchar *string)
     }
 
     return g_utf8_substring (string, 0, length - space_count);
+}
+
+char *
+nautilus_get_common_filename_prefix (GList *file_list,
+                                     int    min_required_len)
+{
+    GList *l;
+    GList *file_names = NULL;
+    GList *directory_names = NULL;
+    g_autofree char *result_files = NULL;
+    g_autofree char *result_all = NULL;
+    g_autofree char *result_trimmed = NULL;
+
+    if (file_list == NULL)
+    {
+        return NULL;
+    }
+
+    for (l = file_list; l != NULL; l = l->next)
+    {
+        g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
+
+        char *name;
+        name = nautilus_file_get_display_name (l->data);
+
+        /*filter files because _from_filenames() strips extension but we don't want to do that for folder*/
+        if (nautilus_file_is_directory (l->data))
+        {
+           directory_names = g_list_prepend (directory_names, name);
+        }
+        else
+        {
+           file_names = g_list_prepend (file_names, name);
+        }
+    }
+
+    result_files = nautilus_get_common_filename_prefix_from_filenames (file_names, min_required_len);
+
+    if (result_files != NULL)
+       {
+           directory_names = g_list_prepend (directory_names, result_files);
+       }
+
+    result_trimmed = eel_str_get_common_prefix (directory_names, min_required_len);
+
+    result_all = trim_whitespace (result_trimmed);
+
+    g_list_free_full (file_names, g_free);
+    g_list_free_full (directory_names, g_free);
+
+    return g_steal_pointer (&result_all);
 }
 
 char *
