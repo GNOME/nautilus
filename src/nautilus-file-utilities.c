@@ -1268,34 +1268,6 @@ nautilus_file_selection_equal (GList *selection_a,
     return selection_matches;
 }
 
-char *
-nautilus_get_common_filename_prefix (GList *file_list,
-                                     int    min_required_len)
-{
-    GList *l;
-    GList *strs = NULL;
-    char *name;
-    char *result;
-
-    if (file_list == NULL)
-    {
-        return NULL;
-    }
-
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
-
-        name = nautilus_file_get_display_name (l->data);
-        strs = g_list_append (strs, name);
-    }
-
-    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
-    g_list_free_full (strs, g_free);
-
-    return result;
-}
-
 static char *
 trim_whitespace (const gchar *string)
 {
@@ -1328,6 +1300,74 @@ trim_whitespace (const gchar *string)
     }
 
     return g_utf8_substring (string, 0, length - space_count);
+}
+
+char *
+nautilus_get_common_filename_prefix (GList *file_list,
+                                     int    min_required_len)
+{
+    GList *file_names = NULL;
+    GList *directory_names = NULL;
+    char *result_files;
+    g_autofree char *result = NULL;
+    g_autofree char *result_trimmed = NULL;
+
+    if (file_list == NULL)
+    {
+        return NULL;
+    }
+
+    for (GList *l = file_list; l != NULL; l = l->next)
+    {
+        char *name;
+
+        g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
+
+        name = nautilus_file_get_display_name (l->data);
+
+        /* Since the concept of file extensions does not apply to directories,
+         * we filter those out.
+         */
+        if (nautilus_file_is_directory (l->data))
+        {
+            directory_names = g_list_prepend (directory_names, name);
+        }
+        else
+        {
+            file_names = g_list_prepend (file_names, name);
+        }
+    }
+
+    result_files = nautilus_get_common_filename_prefix_from_filenames (file_names, min_required_len);
+
+    if (directory_names == NULL)
+    {
+        return result_files;
+    }
+
+    if (result_files != NULL)
+    {
+        directory_names = g_list_prepend (directory_names, result_files);
+    }
+
+    result = eel_str_get_common_prefix (directory_names, min_required_len);
+
+    g_list_free_full (file_names, g_free);
+    g_list_free_full (directory_names, g_free);
+
+    if (result == NULL)
+    {
+        return NULL;
+    }
+
+    result_trimmed = trim_whitespace (result);
+
+    if (g_utf8_strlen (result_trimmed, -1) < min_required_len)
+    {
+        return NULL;
+    }
+
+    return g_steal_pointer (&result_trimmed);
 }
 
 char *
