@@ -2264,7 +2264,14 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
 
         display_name = nautilus_file_get_display_name (selection->data);
 
-        common_prefix = eel_filename_strip_extension (display_name);
+        if (nautilus_file_is_directory (selection->data))
+        {
+            common_prefix = g_steal_pointer (&display_name);
+        }
+        else
+        {
+            common_prefix = eel_filename_strip_extension (display_name);
+        }
     }
     else
     {
