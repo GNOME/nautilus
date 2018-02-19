@@ -143,6 +143,30 @@ eel_str_middle_truncate (const char *string,
 }
 
 char *
+eel_str_end_truncate (const char *string,
+                      size_t      truncate_length)
+{
+    const char ellipsis[] = "…";
+    const size_t min_truncate_length = G_N_ELEMENTS (ellipsis) + 1;
+    g_autofree char *substring = NULL;
+
+    g_return_val_if_fail (string != NULL, NULL);
+    g_return_val_if_fail (truncate_length > 0, NULL);
+
+    if (truncate_length < min_truncate_length ||
+        g_utf8_strlen (string, -1) <= min_truncate_length)
+    {
+        return g_strdup (string);
+    }
+
+    substring = g_utf8_substring (string,
+                                  0, MIN (truncate_length - G_N_ELEMENTS (ellipsis),
+                                          SSIZE_MAX));
+
+    return g_strconcat (substring, ellipsis, NULL);
+}
+
+char *
 eel_str_strip_substring_and_after (const char *string,
                                    const char *substring)
 {
