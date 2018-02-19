@@ -1274,6 +1274,7 @@ nautilus_get_common_filename_prefix (GList *file_list,
 {
     GList *l;
     GList *strs = NULL;
+    GList *strs2 = NULL;
     char *name;
     char *result;
 
@@ -1287,10 +1288,23 @@ nautilus_get_common_filename_prefix (GList *file_list,
         g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
 
         name = nautilus_file_get_display_name (l->data);
-        strs = g_list_append (strs, name);
+
+        if (!nautilus_file_is_directory (l->data))
+        {
+           strs = g_list_append (strs, name);
+        }
+        else
+        {
+           strs2 = g_list_append (strs2, name);
+        }
     }
 
-    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
+    result = eel_str_get_common_prefix (strs, min_required_len);
+
+    strs2 = g_list_append (strs2,result);
+
+    result = eel_str_get_common_prefix (strs2, min_required_len);
+
     g_list_free_full (strs, g_free);
 
     return result;
@@ -1349,6 +1363,8 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
     }
 
     common_prefix = eel_str_get_common_prefix (stripped_filenames, min_required_len);
+
+
     if (common_prefix == NULL)
     {
         return NULL;
