@@ -3110,7 +3110,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *hbox, *vbox, *button;
 
     hbox = create_page_with_box (window->details->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3133,6 +3133,10 @@ create_basic_page (NautilusPropertiesWindow *window)
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_show (vbox);
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
+
+    button = gtk_button_new_with_label ("Disk");
+    gtk_container_add (GTK_CONTAINER (vbox), button);
+    gtk_widget_show_all (vbox);
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
