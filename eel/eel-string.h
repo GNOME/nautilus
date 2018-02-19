@@ -52,7 +52,8 @@ char *   eel_str_capitalize                (const char    *str);
  */
 char    *eel_str_middle_truncate           (const char    *string,
                                             size_t         truncate_length);
-
+char    *eel_str_end_truncate              (const char    *string,
+                                            size_t         truncate_length);
 
 /* Remove all characters after the passed-in substring. */
 char *   eel_str_strip_substring_and_after (const char    *str,
