@@ -3110,7 +3110,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *hbox, *vbox, *button;
 
     hbox = create_page_with_box (window->details->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
