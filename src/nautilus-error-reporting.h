@@ -27,6 +27,9 @@
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
 
+#define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH      50
+#define MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH  400
+
 void nautilus_report_error_loading_directory	 (NautilusFile   *file,
 						  GError         *error,
 						  GtkWindow	 *parent_window);

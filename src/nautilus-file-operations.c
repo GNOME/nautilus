@@ -49,6 +49,7 @@
 #include <gio/gio.h>
 #include <glib.h>
 
+#include "nautilus-error-reporting.h"
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
@@ -210,8 +211,6 @@ typedef struct
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define NSEC_PER_MICROSEC 1000
 #define PROGRESS_NOTIFY_INTERVAL 100 * NSEC_PER_MICROSEC
-
-#define MAXIMUM_DISPLAYED_FILE_NAME_LENGTH 50
 
 #define IS_IO_ERROR(__error, KIND) (((__error)->domain == G_IO_ERROR && (__error)->code == G_IO_ERROR_ ## KIND))
 
@@ -1863,7 +1862,7 @@ file_deleted_callback (GFile    *file,
     GFileType file_type;
     char *primary;
     char *secondary;
-    char *details = NULL;
+    g_autofree char *details = NULL;
     int response;
     g_autofree gchar *basename = NULL;
 
@@ -1918,8 +1917,8 @@ file_deleted_callback (GFile    *file,
                                      basename);
     }
 
-    details = error->message;
-
+    details = eel_str_middle_truncate (error->message,
+                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     response = run_cancel_or_skip_warning (job,
                                            primary,
                                            secondary,
@@ -2169,7 +2168,8 @@ trash_file (CommonJob     *job,
             GList        **to_delete)
 {
     GError *error;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
+    g_autofree char *details = NULL;
     int response;
     g_autofree gchar *basename = NULL;
 
@@ -2213,11 +2213,11 @@ trash_file (CommonJob     *job,
                                  "to delete it immediately?"),
                                basename);
 
-    details = NULL;
     secondary = NULL;
     if (!IS_IO_ERROR (error, NOT_SUPPORTED))
     {
-        details = error->message;
+        details = eel_str_middle_truncate (error->message,
+                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     }
     else if (!g_file_is_native (file))
     {
@@ -2572,8 +2572,10 @@ unmount_mount_callback (GObject      *source_object,
         if (error->code != G_IO_ERROR_FAILED_HANDLED)
         {
             g_autofree gchar *mount_name = NULL;
+            g_autofree char *details = NULL;
 
             mount_name = g_mount_get_name (G_MOUNT (source_object));
+            details = eel_str_middle_truncate (error->message, MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
             if (data->eject)
             {
                 primary = g_strdup_printf (_("Unable to eject %s"),
@@ -2584,9 +2586,7 @@ unmount_mount_callback (GObject      *source_object,
                 primary = g_strdup_printf (_("Unable to unmount %s"),
                                            mount_name);
             }
-            show_error_dialog (primary,
-                               error->message,
-                               data->parent_window);
+            show_error_dialog (primary, details, data->parent_window);
             g_free (primary);
         }
     }
@@ -2903,15 +2903,16 @@ volume_mount_cb (GObject      *source_object,
             error->code != G_IO_ERROR_ALREADY_MOUNTED)
         {
             GtkWindow *parent;
+            g_autofree char *details = NULL;
 
             parent = gtk_mount_operation_get_parent (GTK_MOUNT_OPERATION (mount_op));
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
             name = g_volume_get_name (G_VOLUME (source_object));
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
             g_free (name);
             success = FALSE;
-            show_error_dialog (primary,
-                               error->message,
-                               parent);
+            show_error_dialog (primary, details, parent);
             g_free (primary);
         }
         g_error_free (error);
@@ -3101,7 +3102,7 @@ scan_dir (GFile      *dir,
     GError *error;
     GFile *subdir;
     GFileEnumerator *enumerator;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     SourceInfo saved_info;
 
@@ -3154,6 +3155,7 @@ retry:
         else if (error)
         {
             g_autofree gchar *basename = NULL;
+            g_autofree char *details = NULL;
 
             primary = get_scan_primary (source_info->op);
             details = NULL;
@@ -3169,7 +3171,8 @@ retry:
             {
                 secondary = g_strdup_printf (_("There was an error getting information about the "
                                                "files in the folder “%s”."), basename);
-                details = error->message;
+                details = eel_str_middle_truncate (error->message,
+                                                   MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
             }
 
             response = run_warning (job,
@@ -3213,6 +3216,7 @@ retry:
     else
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         primary = get_scan_primary (source_info->op);
         details = NULL;
@@ -3227,7 +3231,8 @@ retry:
         {
             secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
                                          basename);
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
         /* set show_all to TRUE here, as we don't know how many
          * files we'll end up processing yet.
@@ -3277,7 +3282,6 @@ scan_file (GFile      *file,
     GFile *dir;
     char *primary;
     char *secondary;
-    char *details;
     int response;
 
     dirs = g_queue_new ();
@@ -3323,6 +3327,7 @@ retry:
     else
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         primary = get_scan_primary (source_info->op);
         details = NULL;
@@ -3337,7 +3342,8 @@ retry:
         {
             secondary = g_strdup_printf (_("There was an error getting information about “%s”."),
                                          basename);
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
         /* set show_all to TRUE here, as we don't know how many
          * files we'll end up processing yet.
@@ -3430,7 +3436,7 @@ verify_destination (CommonJob  *job,
     GError *error;
     guint64 free_size;
     guint64 size_difference;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     GFileType file_type;
     gboolean dest_is_symlink = FALSE;
@@ -3453,6 +3459,7 @@ retry:
     if (info == NULL)
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         if (IS_IO_ERROR (error, CANCELLED))
         {
@@ -3471,7 +3478,8 @@ retry:
         else
         {
             secondary = g_strdup (_("There was an error getting information about the destination."));
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
 
         response = run_error (job,
@@ -3567,6 +3575,7 @@ retry:
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *formatted_size = NULL;
+            g_autofree char *details = NULL;
 
             basename = get_basename (dest);
             size_difference = required_size - free_size;
@@ -4454,7 +4463,7 @@ create_dest_dir (CommonJob  *job,
 {
     GError *error;
     GFile *new_dest, *dest_dir;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     gboolean handled_invalid_filename;
     gboolean res;
@@ -4487,6 +4496,7 @@ retry:
     if (!res)
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         if (IS_IO_ERROR (error, CANCELLED))
         {
@@ -4524,7 +4534,6 @@ retry:
         }
 
         primary = g_strdup (_("Error while copying."));
-        details = NULL;
         basename = get_basename (src);
 
         if (IS_IO_ERROR (error, PERMISSION_DENIED))
@@ -4537,7 +4546,8 @@ retry:
         {
             secondary = g_strdup_printf (_("There was an error creating the folder “%s”."),
                                          basename);
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
 
         response = run_warning (job,
@@ -4602,7 +4612,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
     GError *error;
     GFile *src_file;
     GFileEnumerator *enumerator;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     char *dest_fs_type;
     int response;
     gboolean skip_error;
@@ -4687,6 +4697,7 @@ retry:
         else if (error)
         {
             g_autofree gchar *basename = NULL;
+            g_autofree char *details = NULL;
 
             if (copy_job->is_move)
             {
@@ -4696,7 +4707,6 @@ retry:
             {
                 primary = g_strdup (_("Error while copying."));
             }
-            details = NULL;
             basename = get_basename (src);
 
             if (IS_IO_ERROR (error, PERMISSION_DENIED))
@@ -4709,7 +4719,8 @@ retry:
                 secondary = g_strdup_printf (_("There was an error getting information about "
                                                "the files in the folder “%s”."),
                                              basename);
-                details = error->message;
+                details = eel_str_middle_truncate (error->message,
+                                                   MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
             }
 
             response = run_warning (job,
@@ -4753,6 +4764,7 @@ retry:
     else
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         if (copy_job->is_move)
         {
@@ -4775,7 +4787,8 @@ retry:
             secondary = g_strdup_printf (_("There was an error reading the folder “%s”."),
                                          basename);
 
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
 
         response = run_warning (job,
@@ -4824,6 +4837,7 @@ retry:
         if (!g_file_delete (src, job->cancellable, &error))
         {
             g_autofree gchar *basename = NULL;
+            g_autofree char *details = NULL;
 
             if (job->skip_all_error)
             {
@@ -4832,7 +4846,8 @@ retry:
             basename = get_basename (src);
             primary = g_strdup_printf (_("Error while moving “%s”."), basename);
             secondary = g_strdup (_("Could not remove the source folder."));
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
             response = run_cancel_or_skip_warning (job,
                                                    primary,
@@ -5023,7 +5038,7 @@ copy_move_file (CopyMoveJob   *copy_job,
     g_autofree gchar *dest_uri = NULL;
     GError *error;
     GFileCopyFlags flags;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     ProgressData pdata;
     gboolean would_recurse, is_merge;
@@ -5369,6 +5384,7 @@ retry:
             {
                 g_autofree gchar *basename = NULL;
                 g_autofree gchar *filename = NULL;
+                g_autofree char *details = NULL;
 
                 if (job->skip_all_error)
                 {
@@ -5389,7 +5405,8 @@ retry:
                 secondary = g_strdup_printf (_("Could not remove the already existing file "
                                                "with the same name in %s."),
                                              filename);
-                details = error->message;
+                details = eel_str_middle_truncate (error->message,
+                                                   MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
                 /* setting TRUE on show_all here, as we could have
                  * another error on the same file later.
@@ -5463,6 +5480,7 @@ retry:
     {
         g_autofree gchar *basename = NULL;
         g_autofree gchar *filename = NULL;
+        g_autofree char *details = NULL;
 
         if (job->skip_all_error)
         {
@@ -5474,7 +5492,8 @@ retry:
         filename = g_file_get_parse_name (dest_dir);
         secondary = g_strdup_printf (_("There was an error copying the file into %s."),
                                      filename);
-        details = error->message;
+        details = eel_str_middle_truncate (error->message,
+                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         response = run_cancel_or_skip_warning (job,
                                                primary,
@@ -5832,7 +5851,7 @@ move_file_prepare (CopyMoveJob  *move_job,
     GError *error;
     CommonJob *job;
     gboolean overwrite;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     GFileCopyFlags flags;
     MoveFileCopyFallback *fallback;
@@ -6047,6 +6066,7 @@ retry:
     {
         g_autofree gchar *basename = NULL;
         g_autofree gchar *filename = NULL;
+        g_autofree char *details = NULL;
 
         if (job->skip_all_error)
         {
@@ -6059,7 +6079,8 @@ retry:
         secondary = g_strdup_printf (_("There was an error moving the file into %s."),
                                      filename);
 
-        details = error->message;
+        details = eel_str_middle_truncate (error->message,
+                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
         response = run_warning (job,
                                 primary,
@@ -6403,7 +6424,7 @@ link_file (CopyMoveJob  *job,
     gboolean not_local;
     GError *error;
     CommonJob *common;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     gboolean handled_invalid_filename;
 
@@ -6495,6 +6516,7 @@ retry:
     else if (error != NULL)
     {
         g_autofree gchar *basename = NULL;
+        g_autofree char *details = NULL;
 
         if (common->skip_all_error)
         {
@@ -6520,7 +6542,8 @@ retry:
             filename = g_file_get_parse_name (dest_dir);
             secondary = g_strdup_printf (_("There was an error creating the symlink in %s."),
                                          filename);
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
         }
 
         response = run_warning (common,
@@ -7071,7 +7094,7 @@ create_task_thread_func (GTask        *task,
     GError *error;
     gboolean res;
     gboolean filename_is_utf8;
-    char *primary, *secondary, *details;
+    char *primary, *secondary;
     int response;
     char *data;
     int length;
@@ -7402,6 +7425,7 @@ retry:
         {
             g_autofree gchar *basename = NULL;
             g_autofree gchar *filename = NULL;
+            g_autofree char *details = NULL;
 
             basename = get_basename (dest);
             if (job->make_dir)
@@ -7417,8 +7441,8 @@ retry:
             filename = g_file_get_parse_name (job->dest_dir);
             secondary = g_strdup_printf (_("There was an error creating the directory in %s."),
                                          filename);
-
-            details = error->message;
+            details = eel_str_middle_truncate (error->message,
+                                               MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
 
             response = run_warning (common,
                                     primary,
@@ -7739,9 +7763,14 @@ retry:
 
     if (interactive && error != NULL)
     {
+        g_autofree char *details = NULL;
+
+        details = eel_str_middle_truncate (error->message,
+                                           MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+
         response = run_error (common,
                               g_strdup (_("Unable to mark launcher trusted (executable)")),
-                              error->message,
+                              details,
                               NULL,
                               FALSE,
                               CANCEL, RETRY,
@@ -7975,6 +8004,7 @@ extract_job_on_error (AutoarExtractor *extractor,
 {
     ExtractJob *extract_job = user_data;
     GFile *source_file;
+    g_autofree char *details = NULL;
     gint response_id;
     g_autofree gchar *basename = NULL;
 
@@ -7992,11 +8022,12 @@ extract_job_on_error (AutoarExtractor *extractor,
     nautilus_progress_info_take_status (extract_job->common.progress,
                                         g_strdup_printf (_("Error extracting “%s”"),
                                                          basename));
-
+    details = eel_str_middle_truncate (error->message,
+                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
     response_id = run_warning ((CommonJob *) extract_job,
                                g_strdup_printf (_("There was an error while extracting “%s”."),
                                                 basename),
-                               g_strdup (error->message),
+                               details,
                                NULL,
                                FALSE,
                                CANCEL,
@@ -8459,8 +8490,12 @@ compress_job_on_error (AutoarCompressor *compressor,
     CompressJob *compress_job = user_data;
     char *status;
     g_autofree gchar *basename_output_file = NULL;
+    g_autofree char *details = NULL;
 
     basename_output_file = get_basename (compress_job->output_file);
+    details = eel_str_middle_truncate (error->message,
+                                       MAXIMUM_DISPLAYED_ERROR_MESSAGE_LENGTH);
+
     if (compress_job->total_files == 1)
     {
         g_autofree gchar *basename_data = NULL;
@@ -8483,7 +8518,7 @@ compress_job_on_error (AutoarCompressor *compressor,
 
     run_error ((CommonJob *) compress_job,
                g_strdup (_("There was an error while compressing files.")),
-               g_strdup (error->message),
+               details,
                NULL,
                FALSE,
                CANCEL,
