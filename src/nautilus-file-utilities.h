@@ -115,7 +115,8 @@ char * nautilus_get_common_filename_prefix (GList *file_list,
  * there isn't a common prefix of length min_required_len
  */
 char * nautilus_get_common_filename_prefix_from_filenames (GList *filename_list,
-                                                           int    min_required_len);
+                                                           int    min_required_len,
+							   gboolean ignore_extension);
 
 void nautilus_ensure_extension_points (void);
 void nautilus_ensure_extension_builtins (void);

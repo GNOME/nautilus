@@ -1287,10 +1287,27 @@ nautilus_get_common_filename_prefix (GList *file_list,
         g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
 
         name = nautilus_file_get_display_name (l->data);
+
+        if (!nautilus_file_is_directory (l->data))
         strs = g_list_append (strs, name);
     }
 
-    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len);
+    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len, FALSE);
+
+    for (l = file_list; l != NULL; l = l->next)
+    {
+        g_return_val_if_fail (NAUTILUS_IS_FILE (l->data), NULL);
+
+        name = nautilus_file_get_display_name (l->data);
+
+        if (nautilus_file_is_directory (l->data))
+        strs = g_list_append (strs, name);
+    }
+
+    strs = g_list_append (strs,result);
+
+    result = nautilus_get_common_filename_prefix_from_filenames (strs, min_required_len, TRUE);
+
     g_list_free_full (strs, g_free);
 
     return result;
@@ -1332,23 +1349,31 @@ trim_whitespace (const gchar *string)
 
 char *
 nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
-                                                    int    min_required_len)
+                                                    int    min_required_len,
+						    gboolean ignore_extension)
 {
     GList *stripped_filenames = NULL;
     char *common_prefix;
     char *truncated;
     int common_prefix_len;
 
-    for (GList *i = filenames; i != NULL; i = i->next)
+    if (ignore_extension)
     {
-        gchar *stripped_filename;
+        common_prefix = eel_str_get_common_prefix (filenames, min_required_len);
+    }
+    else
+    {
+        for (GList *i = filenames; i != NULL; i = i->next)
+        {
+          gchar *stripped_filename;
 
-        stripped_filename = eel_filename_strip_extension (i->data);
+          stripped_filename = eel_filename_strip_extension (i->data);
+          stripped_filenames = g_list_prepend (stripped_filenames, stripped_filename);
+        }
 
-        stripped_filenames = g_list_prepend (stripped_filenames, stripped_filename);
+        common_prefix = eel_str_get_common_prefix (stripped_filenames, min_required_len);
     }
 
-    common_prefix = eel_str_get_common_prefix (stripped_filenames, min_required_len);
     if (common_prefix == NULL)
     {
         return NULL;
