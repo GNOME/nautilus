@@ -1095,7 +1095,7 @@ test_expand_row_callback (GtkTreeView *tree_view,
 static void
 nautilus_list_view_reveal_selection (NautilusFilesView *view)
 {
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     g_return_if_fail (NAUTILUS_IS_LIST_VIEW (view));
 
@@ -1120,8 +1120,6 @@ nautilus_list_view_reveal_selection (NautilusFilesView *view)
             gtk_tree_path_free (path);
         }
     }
-
-    nautilus_file_list_free (selection);
 }
 
 static gboolean
@@ -1946,7 +1944,7 @@ on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
     GdkEventSequence *event_sequence;
     const GdkEvent *event;
     NautilusListView *view = user_data;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     event_sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
     if (event_sequence == NULL)
@@ -1965,7 +1963,6 @@ on_longpress_gesture_pressed_event (GtkGestureLongPress *gesture,
     {
         nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view), event);
     }
-    nautilus_file_list_free (selection);
 }
 
 static void
