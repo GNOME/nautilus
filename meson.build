@@ -28,7 +28,7 @@ pkgconfig = import('pkgconfig')
 #
 
 # Dependencies
-glib_ver = '>= 2.51.2'
+glib_ver = '>= 2.55.1'
 
 libgd = subproject(
   'libgd',
