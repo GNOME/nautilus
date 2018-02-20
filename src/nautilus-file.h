@@ -149,6 +149,8 @@ NautilusFile *          nautilus_file_get_existing_by_uri               (const c
 NautilusFile *          nautilus_file_ref                               (NautilusFile                   *file);
 void                    nautilus_file_unref                             (NautilusFile                   *file);
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusFile, nautilus_file_unref)
+
 /* Monitor the file. */
 void                    nautilus_file_monitor_add                       (NautilusFile                   *file,
 									 gconstpointer                   client,
