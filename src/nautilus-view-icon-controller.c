@@ -390,7 +390,7 @@ real_select_all (NautilusFilesView *files_view)
 static GtkWidget *
 get_first_selected_item_ui (NautilusViewIconController *self)
 {
-    g_autoptr (GList) selection = NULL;
+    g_autolist (NautilusFile) selection = NULL;
     NautilusFile *file;
     NautilusViewItemModel *item_model;
 
@@ -664,7 +664,7 @@ real_compute_rename_popover_pointing_to (NautilusFilesView *files_view)
 static GdkRectangle *
 real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 {
-    g_autoptr (GList) selection = NULL;
+    g_autolist (NautilusFile) selection = NULL;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkWidget *item_ui;
 
@@ -698,7 +698,7 @@ on_button_press_event (GtkWidget *widget,
                        gpointer   user_data)
 {
     NautilusViewIconController *self;
-    g_autoptr (GList) selection = NULL;
+    g_autolist (NautilusFile) selection = NULL;
     GtkWidget *child_at_pos;
     GdkEventButton *event_button;
 

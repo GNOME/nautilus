@@ -467,7 +467,7 @@ hide_query_editor (NautilusWindowSlot *self)
 
     if (nautilus_view_is_searching (view))
     {
-        GList *selection;
+        g_autolist (NautilusFile) selection = NULL;
 
         selection = nautilus_view_get_selection (view);
 
@@ -476,8 +476,6 @@ hide_query_editor (NautilusWindowSlot *self)
                                                  nautilus_view_get_location (view),
                                                  0,
                                                  selection);
-
-        nautilus_file_list_free (selection);
     }
 
     if (nautilus_window_slot_get_active (self))
@@ -1009,7 +1007,7 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *self,
 {
     NautilusWindowSlotPrivate *priv;
     GFile *old_location;
-    GList *old_selection;
+    g_autolist (NautilusFile) old_selection = NULL;
 
     priv = nautilus_window_slot_get_instance_private (self);
     old_selection = NULL;
@@ -1029,7 +1027,6 @@ nautilus_window_slot_open_location_full (NautilusWindowSlot      *self,
                            NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
 
 done:
-    nautilus_file_list_free (old_selection);
     nautilus_profile_end (NULL);
 }
 
@@ -1807,7 +1804,7 @@ setup_view (NautilusWindowSlot *self,
     }
     else if (old_location != NULL)
     {
-        GList *selection;
+        g_autolist (NautilusFile) selection = NULL;
 
         selection = nautilus_view_get_selection (priv->content_view);
 
@@ -1817,7 +1814,6 @@ setup_view (NautilusWindowSlot *self,
                            NULL,
                            FALSE,
                            TRUE);
-        nautilus_file_list_free (selection);
     }
     else
     {
@@ -1948,7 +1944,7 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
                                        guint               id)
 {
     NautilusFilesView *view;
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
     char *uri;
     NautilusWindowSlotPrivate *priv;
 
@@ -2052,7 +2048,6 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
 {
     GFile *location;
     char *current_pos;
-    GList *selection;
     NautilusWindowSlotPrivate *priv;
 
     g_assert (NAUTILUS_IS_WINDOW_SLOT (self));
@@ -2069,9 +2064,9 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
      */
     g_object_ref (location);
     current_pos = NULL;
-    selection = NULL;
     if (priv->new_content_view)
     {
+        g_autolist (NautilusFile) selection = NULL;
         selection = nautilus_view_get_selection (priv->content_view);
 
         if (NAUTILUS_IS_FILES_VIEW (priv->new_content_view))
@@ -2084,7 +2079,6 @@ nautilus_window_slot_force_reload (NautilusWindowSlot *self)
         NAUTILUS_LOCATION_CHANGE_RELOAD, 0, current_pos);
     g_free (current_pos);
     g_object_unref (location);
-    nautilus_file_list_free (selection);
 }
 
 void
@@ -3076,7 +3070,6 @@ nautilus_window_slot_set_allow_stop (NautilusWindowSlot *self,
 void
 nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
 {
-    GList *selection;
     GFile *location;
     NautilusDirectory *directory;
     NautilusWindowSlotPrivate *priv;
@@ -3102,6 +3095,7 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
          * be told, or it is the very pending change we wish
          * to cancel.
          */
+        g_autolist (NautilusFile) selection = NULL;
         selection = nautilus_view_get_selection (priv->content_view);
         load_new_location (self,
                            location,
@@ -3109,7 +3103,6 @@ nautilus_window_slot_stop_loading (NautilusWindowSlot *self)
                            NULL,
                            TRUE,
                            FALSE);
-        nautilus_file_list_free (selection);
     }
 
     end_location_change (self);
