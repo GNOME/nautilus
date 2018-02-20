@@ -915,7 +915,7 @@ nautilus_canvas_view_select_first (NautilusFilesView *view)
 static void
 nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
 {
-    GList *selection;
+    g_autolist (NautilusFile) selection = NULL;
 
     g_return_if_fail (NAUTILUS_IS_CANVAS_VIEW (view));
 
@@ -930,8 +930,6 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
             (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)),
             selection->data);
     }
-
-    nautilus_file_list_free (selection);
 }
 
 static GdkRectangle *
@@ -962,7 +960,7 @@ get_rectangle_for_data (NautilusFilesView      *view,
 static GdkRectangle *
 nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 {
-    g_autoptr (GList) selection = NULL;
+    g_autolist (NautilusFile) selection = NULL;
     NautilusCanvasIconData *data;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
@@ -979,7 +977,7 @@ nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view
 static GdkRectangle *
 nautilus_canvas_view_reveal_for_selection_context_menu (NautilusFilesView *view)
 {
-    g_autoptr (GList) selection = NULL;
+    g_autolist (NautilusFile) selection = NULL;
     NautilusCanvasContainer *container;
     NautilusCanvasIconData *data;
 
