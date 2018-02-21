@@ -36,9 +36,9 @@ struct _NautilusSearchEngineRecent
 {
     GObject parent_instance;
 
-    gboolean running;
     NautilusQuery *query;
-    GtkRecentManager *recent;
+    GCancellable *cancellable;
+    GtkRecentManager *recent_manager;
 };
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
@@ -48,6 +48,13 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineRecent,
                          G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
+
+enum
+{
+  PROP_0,
+  PROP_RUNNING,
+  LAST_PROP
+};
 
 
 NautilusSearchEngineRecent *
@@ -61,37 +68,84 @@ nautilus_search_engine_recent_finalize (GObject *object)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
 
+    if (self->cancellable)
+        g_cancellable_cancel (self->cancellable);
+
     g_clear_object (&self->query);
+    g_clear_object (&self->cancellable);
 
     G_OBJECT_CLASS (nautilus_search_engine_recent_parent_class)->finalize (object);
 }
 
-static void
-nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
+typedef struct
 {
-    GList *items, *hits, *l;
+    NautilusSearchEngineRecent *recent;
+    GList *hits;
+} SearchHitsData;
 
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
 
-    g_return_if_fail (self->query);
+static gboolean
+search_thread_add_hits_idle (gpointer user_data)
+{
+    SearchHitsData *search_hits = user_data;
+    NautilusSearchEngineRecent *self = search_hits->recent;
+    NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
+
+    if (!g_cancellable_is_cancelled (self->cancellable))
+    {
+        nautilus_search_provider_hits_added (provider, search_hits->hits);
+        DEBUG ("Recent engine add hits");
+    }
+
+    g_list_free_full (search_hits->hits, g_object_unref);
+    g_object_unref (self->query);
+    g_clear_object (&self->cancellable);
+    g_object_unref (self);
+    g_free (search_hits);
+
+    nautilus_search_provider_finished (provider,
+                                       NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+    g_object_notify (G_OBJECT (provider), "running");
+
+    return FALSE;
+}
+
+static gpointer
+recent_thread_func (gpointer user_data)
+{
+    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
+    SearchHitsData *search_hits;
+    GList *recent_items, *hits, *l;
+
+    g_return_val_if_fail (self->query, NULL);
 
     hits = NULL;
-    items = gtk_recent_manager_get_items (self->recent);
-    self->running = TRUE;
+    recent_items = gtk_recent_manager_get_items (self->recent_manager);
 
-    for (l = items; l; l = l->next)
+    for (l = recent_items; l; l = l->next)
     {
         GtkRecentInfo *info = l->data;
         const gchar *name = gtk_recent_info_get_display_name (info);
-        gdouble rank = nautilus_query_matches_string (self->query, name);
+        const gchar *uri = gtk_recent_info_get_uri (info);
+        g_autofree gchar *path = NULL;
+        gdouble rank;
+
+        path = g_filename_from_uri (uri, NULL, NULL);
+
+        if (!path || !g_file_test (path, G_FILE_TEST_EXISTS))
+            continue;
+
+        if (g_cancellable_is_cancelled (self->cancellable))
+            break;
+
+        rank = nautilus_query_matches_string (self->query, name);
 
         if (rank > 0)
         {
             NautilusSearchHit *hit;
-            GDateTime *gmodified, *gvisited;
             time_t modified, visited;
-
-            hit = nautilus_search_hit_new (gtk_recent_info_get_uri (info));
+            g_autoptr (GDateTime) gmodified = NULL;
+            g_autoptr (GDateTime) gvisited = NULL;
 
             modified = gtk_recent_info_get_modified (info);
             visited = gtk_recent_info_get_visited (info);
@@ -99,27 +153,57 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
             gmodified = g_date_time_new_from_unix_local (modified);
             gvisited = g_date_time_new_from_unix_local (visited);
 
-            hits = g_list_prepend (hits, hit);
+            hit = nautilus_search_hit_new (uri);
+            nautilus_search_hit_set_modification_time (hit, gmodified);
+            nautilus_search_hit_set_access_time (hit, gvisited);
 
-            g_date_time_unref (gmodified);
-            g_date_time_unref (gvisited);
+            hits = g_list_prepend (hits, hit);
         }
     }
 
-    nautilus_search_provider_hits_added (provider, hits);
+    search_hits = g_new0 (SearchHitsData, 1);
+    search_hits->recent = self;
+    search_hits->hits = hits;
 
-    nautilus_search_provider_finished (provider,
-                                       NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
+    g_idle_add (search_thread_add_hits_idle, search_hits);
 
-    self->running = FALSE;
+    g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
 
-    g_list_free_full (items, (GDestroyNotify) gtk_recent_info_unref);
-    g_list_free_full (hits, g_object_unref);
+    return NULL;
+}
+
+static void
+nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
+{
+    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
+    GThread *thread;
+
+    g_return_if_fail (self->query);
+    g_return_if_fail (self->cancellable == NULL);
+
+    g_object_ref (self);
+    g_object_ref (self->query);
+    self->cancellable = g_cancellable_new ();
+
+    thread = g_thread_new ("nautilus-search-recent", recent_thread_func, self);
+    g_object_notify (G_OBJECT (provider), "running");
+
+    g_thread_unref (thread);
 }
 
 static void
 nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
 {
+    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
+
+    if (self->cancellable != NULL)
+    {
+        DEBUG ("Recent engine stop");
+        g_cancellable_cancel (self->cancellable);
+        g_clear_object (&self->cancellable);
+
+        g_object_notify (G_OBJECT (provider), "running");
+    }
 }
 
 static void
@@ -135,11 +219,33 @@ nautilus_search_engine_recent_set_query (NautilusSearchProvider *provider,
 static gboolean
 nautilus_search_engine_recent_is_running (NautilusSearchProvider *provider)
 {
-    NautilusSearchEngineRecent *self;
+    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
 
-    self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
+    return self->cancellable != NULL &&
+           !g_cancellable_is_cancelled (self->cancellable);
+}
 
-    return self->running;
+static void
+nautilus_search_engine_recent_get_property (GObject    *object,
+                                            guint       prop_id,
+                                            GValue     *value,
+                                            GParamSpec *pspec)
+{
+    NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (object);
+
+    switch (prop_id)
+    {
+        case PROP_RUNNING:
+        {
+            gboolean running;
+            running = nautilus_search_engine_recent_is_running (provider);
+            g_value_set_boolean (value, running);
+        }
+        break;
+
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+    }
 }
 
 static void
@@ -157,10 +263,13 @@ nautilus_search_engine_recent_class_init (NautilusSearchEngineRecentClass *klass
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->finalize = nautilus_search_engine_recent_finalize;
+    object_class->get_property = nautilus_search_engine_recent_get_property;
+
+    g_object_class_override_property (object_class, PROP_RUNNING, "running");
 }
 
 static void
 nautilus_search_engine_recent_init (NautilusSearchEngineRecent *self)
 {
-    self->recent = gtk_recent_manager_get_default ();
+    self->recent_manager = gtk_recent_manager_get_default ();
 }
