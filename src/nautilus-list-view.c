@@ -505,6 +505,7 @@ button_press_callback (GtkWidget      *widget,
     NautilusListView *view;
     GtkTreeView *tree_view;
     GtkTreePath *path;
+    GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
     GtkWidgetClass *tree_view_class;
     gint64 current_time;
@@ -567,7 +568,7 @@ button_press_callback (GtkWidget      *widget,
 
     /* No item at this position */
     if (!gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
-                                        &path, NULL, NULL, NULL))
+                                        &path, &column, NULL, NULL))
     {
         if (is_simple_click)
         {
@@ -598,17 +599,18 @@ button_press_callback (GtkWidget      *widget,
 
     if (show_expanders)
     {
-        int expander_size, horizontal_separator;
-        gtk_widget_style_get (widget,
-                              "expander-size", &expander_size,
-                              "horizontal-separator", &horizontal_separator,
-                              NULL);
-        /* TODO we should not hardcode this extra padding. It is
-         * EXPANDER_EXTRA_PADDING from GtkTreeView.
-         */
-        expander_size += 4;
-        on_expander = (event->x <= horizontal_separator / 2 +
-                       gtk_tree_path_get_depth (path) * expander_size);
+        g_autofree GdkRectangle *cell_area = g_malloc0 (sizeof (GdkRectangle));
+
+        gtk_tree_view_get_cell_area (tree_view, path, column, cell_area);
+
+        if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
+        {
+            on_expander = event->x > (cell_area->x + cell_area->width);
+        }
+        else
+        {
+            on_expander = event->x < cell_area->x;
+        }
     }
 
     /* Keep track of path of last click so double clicks only happen
@@ -747,7 +749,6 @@ button_press_callback (GtkWidget      *widget,
 
     if (is_simple_click)
     {
-        GtkTreeViewColumn *column = NULL;
         gdouble cell_middle_x;
 
         gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (view->details->tree_view),
