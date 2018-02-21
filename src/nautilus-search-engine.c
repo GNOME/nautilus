@@ -29,11 +29,13 @@
 #include <glib/gi18n.h>
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
+#include "nautilus-search-engine-recent.h"
 #include "nautilus-search-engine-tracker.h"
 
 typedef struct
 {
     NautilusSearchEngineTracker *tracker;
+    NautilusSearchEngineRecent *recent;
     NautilusSearchEngineSimple *simple;
     NautilusSearchEngineModel *model;
 
@@ -75,6 +77,7 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
     priv = nautilus_search_engine_get_instance_private (engine);
 
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->tracker), query);
+    nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->recent), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->model), query);
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->simple), query);
 }
@@ -98,6 +101,9 @@ search_engine_start_real (NautilusSearchEngine *engine)
 
     priv->providers_running++;
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+
+    priv->providers_running++;
+    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->recent));
 
     if (nautilus_search_engine_model_get_model (priv->model))
     {
@@ -160,6 +166,7 @@ nautilus_search_engine_stop (NautilusSearchProvider *provider)
     DEBUG ("Search engine stop");
 
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+    nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->recent));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->model));
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 
@@ -335,6 +342,7 @@ nautilus_search_engine_finalize (GObject *object)
     g_hash_table_destroy (priv->uris);
 
     g_clear_object (&priv->tracker);
+    g_clear_object (&priv->recent);
     g_clear_object (&priv->model);
     g_clear_object (&priv->simple);
 
@@ -396,6 +404,9 @@ nautilus_search_engine_init (NautilusSearchEngine *engine)
 
     priv->simple = nautilus_search_engine_simple_new ();
     connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->simple));
+
+    priv->recent = nautilus_search_engine_recent_new ();
+    connect_provider_signals (engine, NAUTILUS_SEARCH_PROVIDER (priv->recent));
 }
 
 NautilusSearchEngine *
