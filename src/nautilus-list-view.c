@@ -599,16 +599,32 @@ button_press_callback (GtkWidget      *widget,
     if (show_expanders)
     {
         int expander_size, horizontal_separator;
+
         gtk_widget_style_get (widget,
                               "expander-size", &expander_size,
                               "horizontal-separator", &horizontal_separator,
                               NULL);
-        /* TODO we should not hardcode this extra padding. It is
-         * EXPANDER_EXTRA_PADDING from GtkTreeView.
-         */
-        expander_size += 4;
-        on_expander = (event->x <= horizontal_separator / 2 +
-                       gtk_tree_path_get_depth (path) * expander_size);
+
+        GdkRectangle *temp_cell_area = g_malloc0 (sizeof (GdkRectangle));
+        GtkTreeViewColumn *temp_column;
+
+        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (view->details->tree_view),
+                                       event->x,
+                                       event->y,
+                                       NULL,
+                                       &temp_column,
+                                       NULL,
+                                       NULL);
+
+        gtk_tree_view_get_cell_area (tree_view, path, temp_column, temp_cell_area);
+	if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
+        {
+            on_expander = (event->x > temp_cell_area->x + temp_cell_area->width);
+        }
+        else
+        {
+            on_expander = (event->x < temp_cell_area->x);
+        }
     }
 
     /* Keep track of path of last click so double clicks only happen
