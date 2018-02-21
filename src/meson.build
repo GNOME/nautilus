@@ -228,6 +228,8 @@ libnautilus_sources = [
   'nautilus-search-engine-private.h',
   'nautilus-search-engine-model.c',
   'nautilus-search-engine-model.h',
+  'nautilus-search-engine-recent.c',
+  'nautilus-search-engine-recent.h',
   'nautilus-search-engine-simple.c',
   'nautilus-search-engine-simple.h',
   'nautilus-search-hit.c',
