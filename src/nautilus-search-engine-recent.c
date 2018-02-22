@@ -126,14 +126,16 @@ recent_thread_func (gpointer user_data)
     {
         GtkRecentInfo *info = l->data;
         const gchar *uri = gtk_recent_info_get_uri (info);
-        g_autofree gchar *path = NULL;
         const gchar *name;
         gdouble rank;
 
-        path = g_filename_from_uri (uri, NULL, NULL);
+        if (gtk_recent_info_is_local (info))
+        {
+            g_autofree gchar *path = g_filename_from_uri (uri, NULL, NULL);
 
-        if (!path || !g_file_test (path, G_FILE_TEST_EXISTS))
-            continue;
+            if (!path || !g_file_test (path, G_FILE_TEST_EXISTS))
+                continue;
+        }
 
         if (g_cancellable_is_cancelled (self->cancellable))
             break;
