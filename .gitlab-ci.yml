@@ -8,7 +8,8 @@ before_script:
                    gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                    gobject-introspection-devel libselinux-devel
                    libxml2-devel tracker-devel desktop-file-utils
-                   libgexiv2-devel gcovr
+                   libgexiv2-devel python3-pip
+  - pip3 install gcovr
 
 # Coverage data contains paths relative to the build directory,
 # so changing to it makes writing filter expressions easier.
