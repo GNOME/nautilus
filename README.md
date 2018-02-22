@@ -3,6 +3,7 @@
 [![Code coverage](https://gitlab.gnome.org/GNOME/nautilus/badges/master/coverage.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
 
 
+Test
 
 This is [Nautilus](https://wiki.gnome.org/Apps/Nautilus), the file manager for
 GNOME.
