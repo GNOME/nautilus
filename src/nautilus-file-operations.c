@@ -346,8 +346,8 @@ get_formatted_time (int seconds)
         return res;
     }
 
-    return g_strdup_printf (ngettext ("approximately %'d hour",
-                                      "approximately %'d hours",
+    return g_strdup_printf (ngettext ("%'d hour",
+                                      "%'d hours",
                                       hours), hours);
 }
 
