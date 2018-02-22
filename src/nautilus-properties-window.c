@@ -3105,12 +3105,24 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
 }
 
 static void
+on_change_volume_clicked (GtkWidget                *button,
+                          NautilusPropertiesWindow *window)
+{
+    GAppInfo *app_info;
+
+    app_info = g_app_info_create_from_commandline ("gnome-disks", NULL, 0, NULL);
+    g_app_info_launch (app_info, NULL, NULL, NULL);
+
+    g_clear_object (&app_info);
+}
+
+static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *hbox, *vbox, *button;
 
     hbox = create_page_with_box (window->details->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3215,6 +3227,15 @@ create_basic_page (NautilusPropertiesWindow *window)
                                             "volume",
                                             INCONSISTENT_STATE_STRING,
                                             FALSE);
+
+        button = gtk_button_new_with_mnemonic (_("Edit volume"));
+        gtk_widget_show (button);
+        gtk_box_pack_start (GTK_BOX (vbox), button, FALSE, FALSE, 0);
+
+        g_signal_connect (button, "clicked",
+                              G_CALLBACK (on_change_volume_clicked),
+                              window);
+
     }
 
     if (should_show_accessed_date (window))
