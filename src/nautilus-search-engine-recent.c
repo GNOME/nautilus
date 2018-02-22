@@ -125,9 +125,9 @@ recent_thread_func (gpointer user_data)
     for (l = recent_items; l; l = l->next)
     {
         GtkRecentInfo *info = l->data;
-        const gchar *name = gtk_recent_info_get_display_name (info);
         const gchar *uri = gtk_recent_info_get_uri (info);
         g_autofree gchar *path = NULL;
+        const gchar *name;
         gdouble rank;
 
         path = g_filename_from_uri (uri, NULL, NULL);
@@ -138,7 +138,14 @@ recent_thread_func (gpointer user_data)
         if (g_cancellable_is_cancelled (self->cancellable))
             break;
 
+        name = gtk_recent_info_get_display_name (info);
         rank = nautilus_query_matches_string (self->query, name);
+
+        if (rank <= 0)
+        {
+            name = gtk_recent_info_get_short_name (info);
+            rank = nautilus_query_matches_string (self->query, name);
+        }
 
         if (rank > 0)
         {
