@@ -216,6 +216,10 @@ void               nautilus_directory_end_file_name_change            (NautilusD
 								       GList                     *node);
 void               nautilus_directory_moved                           (const char                *from_uri,
 								       const char                *to_uri);
+void               nautilus_directory_recent_update                   (const char                *from_uri,
+								       const char                *to_uri,
+								       const char                *old_display_name,
+								       const char                *new_display_name);
 /* Interface to the work queue. */
 
 void               nautilus_directory_add_file_to_work_queue          (NautilusDirectory *directory,
