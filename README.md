@@ -1,4 +1,4 @@
-# Nautilus Test
+# Nautilus Te
 [![Pipeline status](https://gitlab.gnome.org/GNOME/nautilus/badges/master/build.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
 [![Code coverage](https://gitlab.gnome.org/GNOME/nautilus/badges/master/coverage.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
 
