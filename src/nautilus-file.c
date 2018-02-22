@@ -1842,6 +1842,8 @@ rename_get_info_callback (GObject      *source_object,
     NautilusFile *existing_file;
     char *old_uri;
     char *new_uri;
+    char *new_display_name;
+    char *old_display_name;
     const char *new_name;
     GFileInfo *new_info;
     GError *error;
@@ -1868,13 +1870,20 @@ rename_get_info_callback (GObject      *source_object,
         }
 
         old_uri = nautilus_file_get_uri (op->file);
+        old_display_name = nautilus_file_get_display_name (op->file);
 
         update_info_and_name (op->file, new_info);
 
         new_uri = nautilus_file_get_uri (op->file);
+        new_display_name = nautilus_file_get_display_name (op->file);
         nautilus_directory_moved (old_uri, new_uri);
+        nautilus_directory_recent_update (old_uri, new_uri,
+                                          old_display_name, new_display_name);
+
         g_free (new_uri);
         g_free (old_uri);
+        g_free (new_display_name);
+        g_free (old_display_name);
 
         /* the rename could have affected the display name if e.g.
          * we're in a vfolder where the name comes from a desktop file
