@@ -1577,6 +1577,8 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
         pair = p->data;
         from_location = pair->from;
         to_location = pair->to;
+        g_autofree char *from_uri = g_file_get_uri (from_location);
+        g_autofree char *to_uri = g_file_get_uri (to_location);
 
         /* Handle overwriting a file. */
         file = nautilus_file_get_existing (to_location);
@@ -1659,6 +1661,8 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             /* Unref each file once to balance out nautilus_file_get_by_uri. */
             unref_list = g_list_prepend (unref_list, file);
         }
+
+        nautilus_directory_recent_update (from_uri, to_uri, NULL, NULL);
     }
 
     /* Now send out the changed and added signals for existing file objects. */
@@ -1677,6 +1681,112 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
     /* Separate handling for brand new file objects. */
     nautilus_directory_notify_files_added (new_files_list);
     g_list_free (new_files_list);
+}
+
+void
+nautilus_directory_recent_update (const char   *old_uri,
+                                  const char   *new_uri,
+                                  const char   *old_display_name,
+                                  const char   *new_dispaly_name)
+{
+    GtkRecentManager *recent_manager = gtk_recent_manager_get_default ();
+    NautilusFile *file;
+    NautilusFile *existing_file;
+
+    existing_file = nautilus_file_get_existing_by_uri (new_uri);
+
+    if (!new_uri || !old_uri)
+        return;
+
+    if (existing_file)
+        file = g_object_ref (existing_file);
+    else
+        file = nautilus_file_get_by_uri (new_uri);
+
+    if (nautilus_file_is_directory (file))
+    {
+        GList *recent_items, *l;
+
+        recent_items = gtk_recent_manager_get_items (recent_manager);
+
+        for (l = recent_items; l; l = l->next)
+        {
+            GtkRecentInfo *info = l->data;
+            const char *item_uri = gtk_recent_info_get_uri (info);
+
+            if (g_str_has_prefix (item_uri, old_uri))
+            {
+                const char *relative_path = item_uri + strlen (old_uri);
+                g_autofree char *new_item_uri = NULL;
+
+                new_item_uri = g_build_filename (new_uri, relative_path, NULL);
+
+                gtk_recent_manager_move_item (recent_manager,
+                                              item_uri, new_item_uri, NULL);
+            }
+        }
+
+        g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
+    }
+    else
+    {
+        GtkRecentInfo *old_recent =
+            gtk_recent_manager_lookup_item (recent_manager, old_uri, NULL);
+
+        if (old_recent)
+        {
+            gboolean recreated = FALSE;
+
+            if ((new_dispaly_name != NULL && old_display_name == NULL) ||
+                (g_strcmp0 (old_display_name, new_dispaly_name) != 0 &&
+                 g_strcmp0 (old_display_name,
+                            gtk_recent_info_get_display_name (old_recent)) == 0))
+            {
+                /* If old display name, matches the one in the recent file
+                 * We can't just move it, but we need to recreate the
+                 * GtkRecentInfo
+                 */
+                GtkRecentData recent_data = {
+                    .display_name = (char *) new_dispaly_name,
+                    .description = (char *) gtk_recent_info_get_description (old_recent),
+                    .mime_type = (char *) gtk_recent_info_get_mime_type (old_recent),
+                    .app_name = gtk_recent_info_last_application (old_recent),
+                    .groups = gtk_recent_info_get_groups (old_recent, NULL),
+                    .is_private = gtk_recent_info_get_private_hint (old_recent),
+                };
+
+                if (recent_data.app_name)
+                {
+                    gtk_recent_info_get_application_info (old_recent,
+                                                          recent_data.app_name,
+                                                          (const char **)
+                                                          &(recent_data.app_exec),
+                                                          NULL, NULL);
+                }
+
+                if (gtk_recent_manager_add_full (recent_manager,
+                                                 new_uri,
+                                                 &recent_data))
+                {
+                    recreated = gtk_recent_manager_remove_item (recent_manager,
+                                                                old_uri,
+                                                                NULL);
+                }
+            }
+
+            if (!recreated)
+            {
+                gtk_recent_manager_move_item (recent_manager,
+                                              old_uri, new_uri, NULL);
+            }
+        }
+        else
+        {
+            gtk_recent_manager_remove_item (recent_manager, old_uri, NULL);
+        }
+    }
+
+    g_object_unref (file);
 }
 
 gboolean
