@@ -603,7 +603,9 @@ button_press_callback (GtkWidget      *widget,
 
         gtk_tree_view_get_cell_area (tree_view, path, column, &cell_area);
 
-        /* We assume that the cell area exclude the expander itself. */
+        /* We assume that the cell area excludes the expander itself. 
+         * Explanatory link for future reference: 
+         * https://gitlab.gnome.org/GNOME/nautilus/merge_requests/97#note_58649 */
 
         if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
         {
