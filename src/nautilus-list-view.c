@@ -1713,7 +1713,7 @@ filename_cell_data_func (GtkTreeViewColumn *column,
                 escaped_text = g_markup_escape_text (replaced_text, -1);
 
                 g_string_append_printf (display_text,
-                                        " <small><span color='grey'><b>%s</b></span></small>",
+                                        " <small><span alpha='50%%'><b>%s</b></span></small>",
                                         escaped_text);
             }
         }
