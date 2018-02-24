@@ -70,6 +70,7 @@ struct SelectionForeachData
  * that works well with the set of emblems we've designed.
  */
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT    28
+#define STAR_ICON_SIZE 10
 
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2
@@ -498,6 +499,22 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
 }
 
 static gboolean
+check_click_on_star (GtkTreeViewColumn *column,
+                     GdkEventButton *event)
+{
+    gdouble cell_middle_x;
+
+    cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
+                    gtk_tree_view_column_get_x_offset (column);
+
+    if (event->x > cell_middle_x - STAR_ICON_SIZE &&
+        event->x < cell_middle_x + STAR_ICON_SIZE)
+        return TRUE;
+    
+    return FALSE;
+}
+
+static gboolean
 button_press_callback (GtkWidget      *widget,
                        GdkEventButton *event,
                        gpointer        callback_data)
@@ -626,7 +643,20 @@ button_press_callback (GtkWidget      *widget,
         view->details->double_click_path[0] = gtk_tree_path_copy (path);
     }
 
-    if (event->type == GDK_2BUTTON_PRESS)
+
+    if (is_simple_click &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
+        click_count <= 0)
+    {
+        if (check_click_on_star (column, event))
+            on_star_cell_renderer_clicked (path, view);
+    }
+
+    if ((event->type == GDK_2BUTTON_PRESS &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") != 0) ||
+        (event->type == GDK_2BUTTON_PRESS &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
+        check_click_on_star (column, event) == FALSE))
     {
         /* Double clicking does not trigger a D&D action. */
         view->details->drag_button = 0;
@@ -748,21 +778,6 @@ button_press_callback (GtkWidget      *widget,
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                (GdkEvent *) event);
-        }
-    }
-
-    if (is_simple_click &&
-        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
-    {
-        gdouble cell_middle_x;
-
-        cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
-                        gtk_tree_view_column_get_x_offset (column);
-
-        if (event->x > cell_middle_x - 10 &&
-            event->x < cell_middle_x + 10)
-        {
-            on_star_cell_renderer_clicked (path, view);
         }
     }
 
