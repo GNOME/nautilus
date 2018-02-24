@@ -444,7 +444,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
         break;
 
         default:
-            if (column >= NAUTILUS_LIST_MODEL_NUM_COLUMNS || column < NAUTILUS_LIST_MODEL_NUM_COLUMNS + priv->columns->len)
+            if (column >= NAUTILUS_LIST_MODEL_NUM_COLUMNS && column < NAUTILUS_LIST_MODEL_NUM_COLUMNS + priv->columns->len)
             {
                 NautilusColumn *nautilus_column;
                 GQuark attribute;
