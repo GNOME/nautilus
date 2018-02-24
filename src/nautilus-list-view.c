@@ -515,6 +515,7 @@ button_press_callback (GtkWidget      *widget,
     gboolean call_parent, on_expander, show_expanders;
     gboolean is_simple_click, path_selected;
     NautilusFile *file;
+    gboolean on_star;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
     tree_view = GTK_TREE_VIEW (widget);
@@ -616,6 +617,17 @@ button_press_callback (GtkWidget      *widget,
             on_expander = event->x < cell_area.x;
         }
     }
+    if (gtk_tree_view_is_blank_at_pos (tree_view,
+                                       event->x,
+                                       event->y,
+                                       &path,
+                                       &column,
+                                       NULL,
+                                       NULL) == FALSE &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
+        on_star = TRUE;
+    else
+        on_star = FALSE;
 
     /* Keep track of path of last click so double clicks only happen
      * on the same item */
@@ -625,146 +637,140 @@ button_press_callback (GtkWidget      *widget,
         view->details->double_click_path[1] = view->details->double_click_path[0];
         view->details->double_click_path[0] = gtk_tree_path_copy (path);
     }
-
+    if (is_simple_click && click_count <= 0)
+    {
+        if (on_star)
+        {
+            on_star_cell_renderer_clicked (path, view);
+        }
+    }
     if (event->type == GDK_2BUTTON_PRESS)
     {
-        /* Double clicking does not trigger a D&D action. */
-        view->details->drag_button = 0;
-
-        /* NOTE: Activation can actually destroy the view if we're switching */
-        if (!on_expander &&
-            view->details->double_click_path[1] &&
-            gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0)
+        if (on_star == FALSE)
         {
-            if ((event->button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
+            /* Double clicking does not trigger a D&D action. */
+            view->details->drag_button = 0;
+
+            /* NOTE: Activation can actually destroy the view if we're switching */
+            if (!on_expander &&
+                view->details->double_click_path[1] &&
+                gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0)
             {
-                file = nautilus_list_model_file_for_path (view->details->model, path);
-                if (file != NULL)
+                if ((event->button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
                 {
-                    activate_selected_items_alternate (view, file, TRUE);
-                    nautilus_file_unref (file);
+                    file = nautilus_list_model_file_for_path (view->details->model, path);
+                    if (file != NULL)
+                    {
+                        activate_selected_items_alternate (view, file, TRUE);
+                        nautilus_file_unref (file);
+                    }
+                }
+                else
+                {
+                    if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_SECONDARY))
+                    {
+                        activate_selected_items (view);
+                    }
+                    else if (event->button == GDK_BUTTON_MIDDLE)
+                    {
+                        activate_selected_items_alternate (view, NULL, TRUE);
+                    }
                 }
             }
             else
             {
-                if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_SECONDARY))
-                {
-                    activate_selected_items (view);
-                }
-                else if (event->button == GDK_BUTTON_MIDDLE)
-                {
-                    activate_selected_items_alternate (view, NULL, TRUE);
-                }
+                tree_view_class->button_press_event (widget, event);
             }
-        }
-        else
-        {
-            tree_view_class->button_press_event (widget, event);
         }
     }
-    else
-    {
-        /* We're going to filter out some situations where
-         * we can't let the default code run because all
-         * but one row would be would be deselected. We don't
-         * want that; we want the right click menu or single
-         * click to apply to everything that's currently selected.
-         */
-        if (event->button == GDK_BUTTON_SECONDARY && path_selected)
+        else
         {
-            call_parent = FALSE;
-        }
-
-        if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
-            ((event->state & GDK_CONTROL_MASK) != 0 || (event->state & GDK_SHIFT_MASK) == 0))
-        {
-            view->details->row_selected_on_button_down = path_selected;
-
-            if (path_selected)
+            /* We're going to filter out some situations where
+             * we can't let the default code run because all
+             * but one row would be would be deselected. We don't
+             * want that; we want the right click menu or single
+             * click to apply to everything that's currently selected.
+             */
+            if (event->button == GDK_BUTTON_SECONDARY && path_selected)
             {
-                call_parent = on_expander;
-                view->details->ignore_button_release = on_expander;
-            }
-            else if ((event->state & GDK_CONTROL_MASK) != 0)
-            {
-                GList *selected_rows, *l;
-
                 call_parent = FALSE;
-                if ((event->state & GDK_SHIFT_MASK) != 0)
+            }
+
+            if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
+                ((event->state & GDK_CONTROL_MASK) != 0 || (event->state & GDK_SHIFT_MASK) == 0))
+            {
+                view->details->row_selected_on_button_down = path_selected;
+
+                if (path_selected)
                 {
-                    GtkTreePath *cursor;
-                    gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
-                    if (cursor != NULL)
+                    call_parent = on_expander;
+                    view->details->ignore_button_release = on_expander;
+                }
+                else if ((event->state & GDK_CONTROL_MASK) != 0)
+                {
+                    GList *selected_rows, *l;
+
+                    call_parent = FALSE;
+                    if ((event->state & GDK_SHIFT_MASK) != 0)
                     {
-                        gtk_tree_selection_select_range (selection, cursor, path);
+                        GtkTreePath *cursor;
+                        gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
+                        if (cursor != NULL)
+                        {
+                            gtk_tree_selection_select_range (selection, cursor, path);
+                        }
+                        else
+                        {
+                            gtk_tree_selection_select_path (selection, path);
+                        }
                     }
                     else
                     {
                         gtk_tree_selection_select_path (selection, path);
                     }
+                    selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+                    /* This unselects everything */
+                    gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+
+                    /* So select it again */
+                    for (l = selected_rows; l != NULL; l = l->next)
+                    {
+                        gtk_tree_selection_select_path (selection, l->data);
+                    }
+                    g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
                 }
                 else
                 {
-                    gtk_tree_selection_select_path (selection, path);
+                    view->details->ignore_button_release = on_expander;
                 }
-                selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
-
-                /* This unselects everything */
-                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
-
-                /* So select it again */
-                for (l = selected_rows; l != NULL; l = l->next)
-                {
-                    gtk_tree_selection_select_path (selection, l->data);
-                }
-                g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
             }
-            else
+
+            if (call_parent)
             {
-                view->details->ignore_button_release = on_expander;
+                g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
+                tree_view_class->button_press_event (widget, event);
+                g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
+            }
+            else if (path_selected)
+            {
+                gtk_widget_grab_focus (widget);
+            }
+
+            if (is_simple_click && !on_expander)
+            {
+                view->details->drag_started = FALSE;
+                view->details->drag_button = event->button;
+                view->details->drag_x = event->x;
+                view->details->drag_y = event->y;
+            }
+
+            if (event->button == GDK_BUTTON_SECONDARY)
+            {
+                nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
+                                                                   (GdkEvent *) event);
             }
         }
-
-        if (call_parent)
-        {
-            g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            tree_view_class->button_press_event (widget, event);
-            g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
-        }
-        else if (path_selected)
-        {
-            gtk_widget_grab_focus (widget);
-        }
-
-        if (is_simple_click && !on_expander)
-        {
-            view->details->drag_started = FALSE;
-            view->details->drag_button = event->button;
-            view->details->drag_x = event->x;
-            view->details->drag_y = event->y;
-        }
-
-        if (event->button == GDK_BUTTON_SECONDARY)
-        {
-            nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                               (GdkEvent *) event);
-        }
-    }
-
-    if (is_simple_click &&
-        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
-    {
-        gdouble cell_middle_x;
-
-        cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
-                        gtk_tree_view_column_get_x_offset (column);
-
-        if (event->x > cell_middle_x - 10 &&
-            event->x < cell_middle_x + 10)
-        {
-            on_star_cell_renderer_clicked (path, view);
-        }
-    }
 
     gtk_tree_path_free (path);
 
