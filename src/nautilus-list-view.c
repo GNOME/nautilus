@@ -515,6 +515,7 @@ button_press_callback (GtkWidget      *widget,
     gboolean call_parent, on_expander, show_expanders;
     gboolean is_simple_click, path_selected;
     NautilusFile *file;
+    gboolean on_star;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
     tree_view = GTK_TREE_VIEW (widget);
@@ -626,7 +627,20 @@ button_press_callback (GtkWidget      *widget,
         view->details->double_click_path[0] = gtk_tree_path_copy (path);
     }
 
-    if (event->type == GDK_2BUTTON_PRESS)
+    on_star = (g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
+               !gtk_tree_view_is_blank_at_pos (tree_view,
+                                               event->x,
+                                               event->y,
+                                               NULL,
+                                               NULL,
+                                               NULL,
+                                               NULL));
+
+    if (is_simple_click && click_count <= 0 && on_star)
+    {
+            on_star_cell_renderer_clicked (path, view);
+    }
+    if (event->type == GDK_2BUTTON_PRESS && !on_star)
     {
         /* Double clicking does not trigger a D&D action. */
         view->details->drag_button = 0;
@@ -704,7 +718,7 @@ button_press_callback (GtkWidget      *widget,
                     }
                 }
                 else
-                {
+                    {
                     gtk_tree_selection_select_path (selection, path);
                 }
                 selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
@@ -748,21 +762,6 @@ button_press_callback (GtkWidget      *widget,
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                (GdkEvent *) event);
-        }
-    }
-
-    if (is_simple_click &&
-        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
-    {
-        gdouble cell_middle_x;
-
-        cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
-                        gtk_tree_view_column_get_x_offset (column);
-
-        if (event->x > cell_middle_x - 10 &&
-            event->x < cell_middle_x + 10)
-        {
-            on_star_cell_renderer_clicked (path, view);
         }
     }
 
