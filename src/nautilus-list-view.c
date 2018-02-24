@@ -624,7 +624,25 @@ button_press_callback (GtkWidget      *widget,
         view->details->double_click_path[0] = gtk_tree_path_copy (path);
     }
 
-    if (event->type == GDK_2BUTTON_PRESS)
+
+    if (is_simple_click &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
+        click_count <= 0)
+    {
+        gdouble cell_middle_x;
+
+        cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
+                        gtk_tree_view_column_get_x_offset (column);
+
+        if (event->x > cell_middle_x - 10 &&
+            event->x < cell_middle_x + 10)
+        {
+                on_star_cell_renderer_clicked (path, view);
+        }
+    }
+
+    if (event->type == GDK_2BUTTON_PRESS &&
+        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") != 0)
     {
         /* Double clicking does not trigger a D&D action. */
         view->details->drag_button = 0;
@@ -746,21 +764,6 @@ button_press_callback (GtkWidget      *widget,
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                (GdkEvent *) event);
-        }
-    }
-
-    if (is_simple_click &&
-        g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0)
-    {
-        gdouble cell_middle_x;
-
-        cell_middle_x = gtk_tree_view_column_get_width (column) / 2 +
-                        gtk_tree_view_column_get_x_offset (column);
-
-        if (event->x > cell_middle_x - 10 &&
-            event->x < cell_middle_x + 10)
-        {
-            on_star_cell_renderer_clicked (path, view);
         }
     }
 
