@@ -1671,8 +1671,9 @@ schedule_pop_up_context_menu (NautilusPathBar *self,
                               GdkEventButton  *event,
                               NautilusFile    *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
     NautilusPathBarPrivate *priv;
+
+    g_assert (NAUTILUS_IS_FILE (file));
 
     priv = nautilus_path_bar_get_instance_private (self);
 

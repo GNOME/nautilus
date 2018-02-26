@@ -4367,11 +4367,6 @@ on_change_permissions_response (GtkDialog                *dialog,
                                 int                       response,
                                 NautilusPropertiesWindow *window)
 {
-    if (response != GTK_RESPONSE_OK)
-    {
-        gtk_widget_destroy (GTK_WIDGET (dialog));
-        return;
-    }
     guint32 file_permission, file_permission_mask;
     guint32 dir_permission, dir_permission_mask;
     guint32 vfs_mask, vfs_new_perm;
@@ -4382,6 +4377,12 @@ on_change_permissions_response (GtkDialog                *dialog,
     GtkTreeIter iter;
     PermissionType type;
     int new_perm, mask;
+
+    if (response != GTK_RESPONSE_OK)
+    {
+        gtk_widget_destroy (GTK_WIDGET (dialog));
+        return;
+    }
 
     file_permission = 0;
     file_permission_mask = 0;
