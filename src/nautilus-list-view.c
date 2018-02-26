@@ -406,7 +406,7 @@ row_activated_callback (GtkTreeView       *treeview,
     activate_selected_items (view);
 }
 
-gboolean
+static gboolean
 check_starred_status (GtkTreeModel *model,
                       GtkTreePath  *path,
                       GtkTreeIter  *iter,
