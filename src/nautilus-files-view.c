@@ -7264,6 +7264,8 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean settings_show_delete_permanently;
     gboolean settings_show_create_link;
     GDriveStartStopType start_stop_type;
+    GFile *current_location;
+    gboolean current_directory_in_xdg_folders;
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
@@ -7600,10 +7602,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view));
 
-
-    GFile *current_location;
-    gboolean current_directory_in_xdg_folders = FALSE;
-
     /* FIXME: We are assuming tracker indexes XDG folders and ignore the search
      * setting. This should be fixed in a better way for Nautilus 3.30.
      * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
@@ -7750,10 +7748,10 @@ update_selection_menu (NautilusFilesView *view)
         app = nautilus_mime_get_default_application_for_files (selection);
     }
 
-    char *escaped_app;
-
     if (app != NULL)
     {
+        char *escaped_app;
+
         escaped_app = eel_str_double_underscores (g_app_info_get_name (app));
         item_label = g_strdup_printf (_("Open With %s"), escaped_app);
 
@@ -7927,14 +7925,14 @@ static void
 real_update_context_menus (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
+    GtkBuilder *builder;
 
     priv = nautilus_files_view_get_instance_private (view);
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
 
     g_clear_object (&priv->background_menu);
     g_clear_object (&priv->selection_menu);
 
-    GtkBuilder *builder;
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
     priv->background_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
     priv->selection_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
     g_object_unref (builder);
