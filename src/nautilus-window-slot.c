@@ -244,15 +244,13 @@ real_get_view_for_location (NautilusWindowSlot *self,
                             GFile              *location)
 {
     NautilusWindowSlotPrivate *priv;
-
-    NautilusView *view;
     NautilusFile *file;
+    NautilusView *view;
+    guint view_id;
 
     priv = nautilus_window_slot_get_instance_private (self);
     file = nautilus_file_get (location);
     view = NULL;
-    guint view_id;
-
     view_id = NAUTILUS_VIEW_INVALID_ID;
 
     /* If we are in search, try to use by default list view. */
@@ -1107,12 +1105,13 @@ save_scroll_position_for_history (NautilusWindowSlot *self)
     NautilusWindowSlotPrivate *priv;
 
     priv = nautilus_window_slot_get_instance_private (self);
-    char *current_pos;
     /* Set current_bookmark scroll pos */
     if (priv->current_location_bookmark != NULL &&
         priv->content_view != NULL &&
         NAUTILUS_IS_FILES_VIEW (priv->content_view))
     {
+        char *current_pos;
+
         current_pos = nautilus_files_view_get_first_visible_file (NAUTILUS_FILES_VIEW (priv->content_view));
         nautilus_bookmark_set_scroll_pos (priv->current_location_bookmark, current_pos);
         g_free (current_pos);
