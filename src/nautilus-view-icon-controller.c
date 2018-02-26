@@ -546,7 +546,7 @@ get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level)
 }
 
 static gint
-get_default_zoom_level ()
+get_default_zoom_level (void)
 {
     NautilusCanvasZoomLevel default_zoom_level;
 

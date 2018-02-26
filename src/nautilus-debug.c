@@ -55,7 +55,7 @@ static GDebugKey keys[] =
 };
 
 static void
-nautilus_debug_set_flags_from_env ()
+nautilus_debug_set_flags_from_env (void)
 {
     guint nkeys;
     const gchar *flags_string;
