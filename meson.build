@@ -4,8 +4,6 @@ project('nautilus', 'c',
   license: 'GPL3+'
 )
 
-add_global_arguments('-Wno-deprecated-declarations', language: 'c')
-
 # Directory variables
 bindir = get_option('bindir')
 datadir = get_option('datadir')
@@ -20,6 +18,34 @@ servicedir = join_paths(datadir, 'dbus-1', 'services')
 # Compiler variables
 cc = meson.get_compiler('c')
 #
+
+add_global_arguments(
+  cc.get_supported_arguments([
+    '-Wno-deprecated-declarations',
+  ]),
+  language: 'c'
+)
+add_project_arguments(
+  cc.get_supported_arguments([
+    '-Wall',
+    '-Wduplicated-branches',
+    '-Wlogical-op',
+    '-Werror=declaration-after-statement',
+    '-Werror=empty-body',
+    '-Werror=format=2',
+    '-Werror=implicit-function-declaration',
+    '-Werror=init-self',
+    '-Werror=missing-include-dirs',
+    '-Werror=missing-prototypes',
+    '-Werror=pointer-arith',
+    '-Werror=sequence-point',
+    '-Werror=shadow',
+    '-Werror=strict-prototypes',
+    '-Werror=undef',
+    '-Werror=uninitialized',
+  ]),
+  language: 'c'
+)
 
 # Imports
 gnome = import('gnome')
