@@ -1221,7 +1221,6 @@ do_run_simple_dialog (gpointer _data)
         gtk_label_set_xalign (GTK_LABEL (label), 0);
 
         gtk_container_add (GTK_CONTAINER (content_area), label);
-        gtk_box_pack_start (GTK_BOX (content_area), label, FALSE, FALSE, 0);
 
         gtk_widget_show (label);
     }
