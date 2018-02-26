@@ -3105,12 +3105,34 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
 }
 
 static void
+open_disk (GtkButton                *button,
+           NautilusPropertiesWindow *self)
+{
+    g_autofree char *message = NULL;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GAppInfo) app_info = NULL;
+
+    app_info = g_app_info_create_from_commandline ("gnome-disks", NULL, G_APP_INFO_CREATE_NONE, NULL);
+    g_app_info_launch (app_info, NULL, NULL, &error);
+
+    if (error != NULL)
+    {
+        message = g_strconcat (_("Details: "), error->message, NULL);
+        eel_show_error_dialog
+            (_("There was an error launching the application."),
+            message,
+            self);
+    }
+}
+
+static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
+    GtkWidget *button;
 
     hbox = create_page_with_box (window->details->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3133,6 +3155,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_show (vbox);
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
+
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
@@ -3252,6 +3275,14 @@ create_basic_page (NautilusPropertiesWindow *window)
                                                "width", 3,
                                                NULL);
         }
+
+       button = gtk_button_new_with_label ("Open in Disks");
+       g_signal_connect (button, "clicked", G_CALLBACK (open_disk), NULL);
+       gtk_container_add_with_properties (GTK_CONTAINER (grid),
+                                               button,
+                                               "width", 3,
+                                               NULL);
+       gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
 
