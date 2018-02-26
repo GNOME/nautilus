@@ -91,7 +91,7 @@ nautilus_tag_manager_file_with_id_changed_url (GHashTable  *hash_table,
     return NULL;
 }
 
-void
+static void
 destroy_insert_task_data (gpointer data)
 {
     InsertTaskData *task_data;
@@ -680,7 +680,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
     g_string_free (query, TRUE);
 }
 
-void
+static void
 on_tracker_notifier_events (TrackerNotifier *notifier,
                             GPtrArray       *events,
                             gpointer         user_data)
