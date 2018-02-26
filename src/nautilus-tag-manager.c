@@ -841,7 +841,8 @@ nautilus_tag_manager_class_init (NautilusTagManagerClass *klass)
                                              G_TYPE_POINTER);
 }
 
-NautilusTagManager *nautilus_tag_manager_get ()
+NautilusTagManager *
+nautilus_tag_manager_get (void)
 {
     if (tag_manager != NULL)
     {

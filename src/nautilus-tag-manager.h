@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusTagManager, nautilus_tag_manager, NAUTILUS, TAG_MANAGER, GObject);
 
-NautilusTagManager* nautilus_tag_manager_get                ();
+NautilusTagManager* nautilus_tag_manager_get                (void);
 
 void                nautilus_tag_manager_set_cancellable    (NautilusTagManager *tag_manager,
                                                              GCancellable *cancellable);

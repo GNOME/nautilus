@@ -29,7 +29,7 @@ G_BEGIN_DECLS
 
 G_DECLARE_FINAL_TYPE (NautilusFavoriteDirectory, nautilus_starred_directory, NAUTILUS, STARRED_DIRECTORY, NautilusDirectory);
 
-NautilusFavoriteDirectory* nautilus_starred_directory_new      ();
+NautilusFavoriteDirectory* nautilus_starred_directory_new      (void);
 
 G_END_DECLS
 

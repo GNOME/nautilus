@@ -13,7 +13,7 @@ free_list_and_result (GList *list,
 }
 
 static void
-test_has_large_enough_common_prefix ()
+test_has_large_enough_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -28,7 +28,7 @@ test_has_large_enough_common_prefix ()
 }
 
 static void
-test_has_common_prefix_that_equals_the_min_required_length ()
+test_has_common_prefix_that_equals_the_min_required_length (void)
 {
     GList *list = NULL;
     char *actual;
@@ -43,7 +43,7 @@ test_has_common_prefix_that_equals_the_min_required_length ()
 }
 
 static void
-test_has_common_prefix_that_equals_the_min_required_length2 ()
+test_has_common_prefix_that_equals_the_min_required_length2 (void)
 {
     GList *list = NULL;
     char *actual;
@@ -58,7 +58,7 @@ test_has_common_prefix_that_equals_the_min_required_length2 ()
 }
 
 static void
-test_many_strings_with_common_prefix ()
+test_many_strings_with_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -77,7 +77,7 @@ test_many_strings_with_common_prefix ()
 }
 
 static void
-test_strings_with_unicode_characters_that_have_common_prefix ()
+test_strings_with_unicode_characters_that_have_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -92,7 +92,7 @@ test_strings_with_unicode_characters_that_have_common_prefix ()
 }
 
 static void
-test_no_common_prefix ()
+test_no_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -107,7 +107,7 @@ test_no_common_prefix ()
 }
 
 static void
-test_has_common_prefix_but_smaller_than_min_required_length ()
+test_has_common_prefix_but_smaller_than_min_required_length (void)
 {
     GList *list = NULL;
     char *actual;
@@ -122,7 +122,7 @@ test_has_common_prefix_but_smaller_than_min_required_length ()
 }
 
 static void
-test_first_character_differs ()
+test_first_character_differs (void)
 {
     GList *list = NULL;
     char *actual;
@@ -137,7 +137,7 @@ test_first_character_differs ()
 }
 
 static void
-test_strings_with_unicode_characters_that_dont_have_common_prefix ()
+test_strings_with_unicode_characters_that_dont_have_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -153,7 +153,7 @@ test_strings_with_unicode_characters_that_dont_have_common_prefix ()
 
 
 static void
-setup_test_suite ()
+setup_test_suite (void)
 {
     g_test_add_func ("/get-common-prefix/1.0",
                      test_has_large_enough_common_prefix);
