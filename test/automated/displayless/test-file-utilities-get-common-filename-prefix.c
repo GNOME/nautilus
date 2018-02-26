@@ -13,7 +13,7 @@ free_list_and_result (GList *list,
 }
 
 static void
-test_has_large_enough_common_prefix ()
+test_has_large_enough_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -28,7 +28,7 @@ test_has_large_enough_common_prefix ()
 }
 
 static void
-test_has_large_enough_common_prefix_with_spaces_in_middle ()
+test_has_large_enough_common_prefix_with_spaces_in_middle (void)
 {
     GList *list = NULL;
     char *actual;
@@ -43,7 +43,7 @@ test_has_large_enough_common_prefix_with_spaces_in_middle ()
 }
 
 static void
-test_has_large_enough_common_prefix_with_punctuation_in_middle ()
+test_has_large_enough_common_prefix_with_punctuation_in_middle (void)
 {
     GList *list = NULL;
     char *actual;
@@ -58,7 +58,7 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle ()
 }
 
 static void
-test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension ()
+test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension (void)
 {
     GList *list = NULL;
     char *actual;
@@ -73,7 +73,7 @@ test_has_large_enough_common_prefix_with_punctuation_in_middle_and_extension ()
 }
 
 static void
-test_doesnt_have_large_enough_common_prefix ()
+test_doesnt_have_large_enough_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -88,7 +88,7 @@ test_doesnt_have_large_enough_common_prefix ()
 }
 
 static void
-test_doesnt_have_large_enough_common_prefix_completely_different_strings ()
+test_doesnt_have_large_enough_common_prefix_completely_different_strings (void)
 {
     GList *list = NULL;
     char *actual;
@@ -103,7 +103,7 @@ test_doesnt_have_large_enough_common_prefix_completely_different_strings ()
 }
 
 static void
-test_doesnt_have_large_enough_common_prefix_first_character_differs ()
+test_doesnt_have_large_enough_common_prefix_first_character_differs (void)
 {
     GList *list = NULL;
     char *actual;
@@ -118,7 +118,7 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs ()
 }
 
 static void
-test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string ()
+test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_string (void)
 {
     GList *list = NULL;
     char *actual;
@@ -133,7 +133,7 @@ test_doesnt_have_large_enough_common_prefix_first_character_differs_longer_strin
 }
 
 static void
-test_has_large_enough_common_prefix_until_extension_removed ()
+test_has_large_enough_common_prefix_until_extension_removed (void)
 {
     GList *list = NULL;
     char *actual;
@@ -148,7 +148,7 @@ test_has_large_enough_common_prefix_until_extension_removed ()
 }
 
 static void
-test_extension_is_removed ()
+test_extension_is_removed (void)
 {
     GList *list = NULL;
     char *actual;
@@ -163,7 +163,7 @@ test_extension_is_removed ()
 }
 
 static void
-test_whitespace_is_removed ()
+test_whitespace_is_removed (void)
 {
     GList *list = NULL;
     char *actual;
@@ -178,7 +178,7 @@ test_whitespace_is_removed ()
 }
 
 static void
-test_whitespace_and_extension_are_removed ()
+test_whitespace_and_extension_are_removed (void)
 {
     GList *list = NULL;
     char *actual;
@@ -208,7 +208,7 @@ test_punctuation_is_preserved (void)
 }
 
 static void
-test_unicode_on_outside ()
+test_unicode_on_outside (void)
 {
     GList *list = NULL;
     char *actual;
@@ -223,7 +223,7 @@ test_unicode_on_outside ()
 }
 
 static void
-test_unicode_on_inside ()
+test_unicode_on_inside (void)
 {
     GList *list = NULL;
     char *actual;
@@ -238,7 +238,7 @@ test_unicode_on_inside ()
 }
 
 static void
-test_unicode_whole_string ()
+test_unicode_whole_string (void)
 {
     GList *list = NULL;
     char *actual;
@@ -253,7 +253,7 @@ test_unicode_whole_string ()
 }
 
 static void
-test_unicode_extension ()
+test_unicode_extension (void)
 {
     GList *list = NULL;
     char *actual;
@@ -268,7 +268,7 @@ test_unicode_extension ()
 }
 
 static void
-test_unicode_with_punctuation ()
+test_unicode_with_punctuation (void)
 {
     GList *list = NULL;
     char *actual;
@@ -283,7 +283,7 @@ test_unicode_with_punctuation ()
 }
 
 static void
-test_many_strings ()
+test_many_strings (void)
 {
     GList *list = NULL;
     char *actual;
@@ -304,7 +304,7 @@ test_many_strings ()
 }
 
 static void
-test_many_strings_last_differs ()
+test_many_strings_last_differs (void)
 {
     GList *list = NULL;
     char *actual;
@@ -331,7 +331,7 @@ test_many_strings_last_differs ()
 }
 
 static void
-test_many_strings_first_differs ()
+test_many_strings_first_differs (void)
 {
     GList *list = NULL;
     char *actual;
@@ -358,7 +358,7 @@ test_many_strings_first_differs ()
 }
 
 static void
-test_smaller_min_length_and_does_have_common_prefix ()
+test_smaller_min_length_and_does_have_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -373,7 +373,7 @@ test_smaller_min_length_and_does_have_common_prefix ()
 }
 
 static void
-test_smaller_min_length_and_doesnt_have_common_prefix ()
+test_smaller_min_length_and_doesnt_have_common_prefix (void)
 {
     GList *list = NULL;
     char *actual;
@@ -389,7 +389,7 @@ test_smaller_min_length_and_doesnt_have_common_prefix ()
 
 
 static void
-setup_test_suite ()
+setup_test_suite (void)
 {
     g_test_add_func ("/get-common-filename-prefix/1.0",
                      test_has_large_enough_common_prefix);

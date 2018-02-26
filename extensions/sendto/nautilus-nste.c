@@ -62,7 +62,7 @@ sendto_callback (NautilusMenuItem *item,
 }
 
 static gboolean
-check_available_mailer ()
+check_available_mailer (void)
 {
     g_autoptr (GAppInfo) app_info = NULL;
 
