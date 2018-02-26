@@ -3429,10 +3429,6 @@ nautilus_files_view_set_location (NautilusView *view,
         set_search_query_internal (files_view, previous_query, base_model);
         g_object_unref (previous_query);
     }
-    else if (NAUTILUS_IS_STARRED_DIRECTORY (directory))
-    {
-        load_directory (NAUTILUS_FILES_VIEW (view), directory);
-    }
     else
     {
         load_directory (NAUTILUS_FILES_VIEW (view), directory);
