@@ -532,7 +532,7 @@ window_export_handle (GtkWindow               *window,
     return FALSE;
 }
 
-void
+static void
 gtk_window_unexport_handle (GtkWindow *window)
 {
 #ifdef GDK_WINDOWING_WAYLAND
