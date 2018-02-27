@@ -54,15 +54,6 @@
 #include "nautilus-mime-application-chooser.h"
 #include "nautilus-module.h"
 
-#if HAVE_SYS_VFS_H
-#include <sys/vfs.h>
-#elif HAVE_SYS_MOUNT_H
-#if HAVE_SYS_PARAM_H
-#include <sys/param.h>
-#endif
-#include <sys/mount.h>
-#endif
-
 #define PREVIEW_IMAGE_WIDTH 96
 
 #define ROW_PAD 6
