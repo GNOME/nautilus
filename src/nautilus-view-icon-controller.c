@@ -805,7 +805,7 @@ action_sort_order_changed (GSimpleAction *action,
                            gpointer       user_data)
 {
     const gchar *target_name;
-    const SortConstants *sorts_constants;
+    const SortConstants *sort_constants;
     NautilusViewModelSortData sort_data;
     NautilusViewIconController *self;
 
@@ -817,14 +817,14 @@ action_sort_order_changed (GSimpleAction *action,
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
     target_name = g_variant_get_string (value, NULL);
-    sorts_constants = get_sorts_constants_from_action_target_name (target_name);
-    sort_data.sort_type = sorts_constants->sort_type;
-    sort_data.reversed = sorts_constants->reversed;
+    sort_constants = get_sorts_constants_from_action_target_name (target_name);
+    sort_data.sort_type = sort_constants->sort_type;
+    sort_data.reversed = sort_constants->reversed;
     sort_data.directories_first = nautilus_files_view_should_sort_directories_first (NAUTILUS_FILES_VIEW (self));
 
     nautilus_view_model_set_sort_type (self->model, &sort_data);
     set_directory_sort_metadata (nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self)),
-                                 sorts_constants);
+                                 sort_constants);
 
     g_simple_action_set_state (action, value);
 }

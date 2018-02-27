@@ -2769,7 +2769,6 @@ set_up_scripts_directory_global (void)
         if (!g_file_query_exists (updated, NULL))
         {
             g_autoptr (GFile) parent = NULL;
-            g_autoptr (GError) error = NULL;
 
             parent = g_file_get_parent (scripts_directory);
             g_file_make_directory_with_parents (parent, NULL, &error);
@@ -7233,7 +7232,6 @@ real_update_actions_state (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
-    NautilusFile *file;
     gint selection_count;
     gboolean zoom_level_is_default;
     gboolean selection_contains_desktop_or_home_dir;
@@ -7478,6 +7476,7 @@ real_update_actions_state (NautilusFilesView *view)
                                       || show_detect_media);
          l = l->next)
     {
+        NautilusFile *file;
         gboolean show_mount_one;
         gboolean show_unmount_one;
         gboolean show_eject_one;
@@ -7615,6 +7614,8 @@ real_update_actions_state (NautilusFilesView *view)
                   (current_directory_in_xdg_folders || selection_contains_starred);
     for (l = selection; l != NULL; l = l->next)
     {
+        NautilusFile *file;
+
         file = NAUTILUS_FILE (l->data);
         uri = nautilus_file_get_uri (file);
 
@@ -7663,7 +7664,6 @@ update_selection_menu (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
-    NautilusFile *file;
     gint selection_count;
     gboolean show_app;
     gboolean show_run;
@@ -7799,6 +7799,7 @@ update_selection_menu (NautilusFilesView *view)
                                       || show_detect_media);
          l = l->next)
     {
+        NautilusFile *file;
         gboolean show_mount_one;
         gboolean show_unmount_one;
         gboolean show_eject_one;

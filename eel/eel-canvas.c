@@ -3470,7 +3470,6 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas,
     window = NULL;
     if (gtk_widget_get_mapped (widget))
     {
-        GtkAllocation allocation;
         attributes.window_type = GDK_WINDOW_CHILD;
         gtk_widget_get_allocation (widget, &allocation);
         attributes.x = allocation.x;
