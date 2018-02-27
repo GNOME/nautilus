@@ -927,33 +927,6 @@ nautilus_init_application_actions (NautilusApplication *app)
     nautilus_application_set_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
 }
 
-const GOptionEntry options[] =
-{
-        #ifndef NAUTILUS_OMIT_SELF_CHECK
-    { "check", 'c', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Perform a quick set of self-check tests."), NULL },
-        #endif
-    /* dummy, only for compatibility reasons */
-    { "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
-      NULL, NULL },
-    /* ditto */
-    { "geometry", 'g', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, NULL,
-      N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
-    { "version", '\0', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Show the version of the program."), NULL },
-    { "new-window", 'w', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Always open a new window for browsing specified URIs"), NULL },
-    { "no-default-window", 'n', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Only create windows for explicitly specified URIs."), NULL },
-    { "quit", 'q', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Quit Nautilus."), NULL },
-    { "select", 's', 0, G_OPTION_ARG_NONE, NULL,
-      N_("Select specified URI in parent folder."), NULL },
-    { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, N_("[URI…]") },
-
-    { NULL }
-};
-
 static void
 nautilus_application_activate (GApplication *app)
 {
@@ -1087,6 +1060,32 @@ out:
 static void
 nautilus_application_init (NautilusApplication *self)
 {
+    static const GOptionEntry options[] =
+    {
+#ifndef NAUTILUS_OMIT_SELF_CHECK
+        { "check", 'c', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Perform a quick set of self-check tests."), NULL },
+#endif
+        /* dummy, only for compatibility reasons */
+        { "browser", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
+          NULL, NULL },
+        /* ditto */
+        { "geometry", 'g', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_STRING, NULL,
+          N_("Create the initial window with the given geometry."), N_("GEOMETRY") },
+        { "version", '\0', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Show the version of the program."), NULL },
+        { "new-window", 'w', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Always open a new window for browsing specified URIs"), NULL },
+        { "no-default-window", 'n', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Only create windows for explicitly specified URIs."), NULL },
+        { "quit", 'q', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Quit Nautilus."), NULL },
+        { "select", 's', 0, G_OPTION_ARG_NONE, NULL,
+          N_("Select specified URI in parent folder."), NULL },
+        { G_OPTION_REMAINING, 0, 0, G_OPTION_ARG_STRING_ARRAY, NULL, NULL, N_("[URI…]") },
+
+        { NULL }
+    };
     NautilusApplicationPrivate *priv;
 
     priv = nautilus_application_get_instance_private (self);
