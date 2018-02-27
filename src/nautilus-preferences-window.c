@@ -178,7 +178,7 @@ static void create_icon_caption_combo_box_items(GtkComboBoxText *combo_box,
                             (GDestroyNotify) free_column_names_array);
 }
 
-static void icon_captions_changed_callback(GtkComboBox *combo_box,
+static void icon_captions_changed_callback(GtkComboBox *widget,
                                            gpointer     user_data)
 {
     GPtrArray *captions;

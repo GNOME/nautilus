@@ -1338,7 +1338,6 @@ nautilus_directory_notify_files_removed (GList *files)
 {
     GHashTable *changed_lists;
     GList *p;
-    NautilusDirectory *directory;
     GHashTable *parent_directories;
     NautilusFile *file;
     GFile *location;
@@ -1352,6 +1351,8 @@ nautilus_directory_notify_files_removed (GList *files)
     /* Go through all the notifications. */
     for (p = files; p != NULL; p = p->next)
     {
+        NautilusDirectory *directory;
+
         location = p->data;
 
         /* Update file count for parent directory if anyone might care. */
@@ -1366,8 +1367,6 @@ nautilus_directory_notify_files_removed (GList *files)
         file = nautilus_file_get_existing (location);
         if (file != NULL && !nautilus_file_rename_in_progress (file))
         {
-            NautilusDirectory *directory;
-
             directory = nautilus_file_get_directory (file);
 
             /* Mark it gone and prepare to send the changed signal. */

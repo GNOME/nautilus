@@ -5024,9 +5024,8 @@ copy_move_file (CopyMoveJob   *copy_job,
     GError *error;
     GFileCopyFlags flags;
     char *primary, *secondary, *details;
-    int response;
     ProgressData pdata;
-    gboolean would_recurse, is_merge;
+    gboolean would_recurse;
     CommonJob *job;
     gboolean res;
     int unique_name_nr;
@@ -5068,6 +5067,8 @@ copy_move_file (CopyMoveJob   *copy_job,
      * detect and report it at this level) */
     if (test_dir_is_parent (dest_dir, src))
     {
+        int response;
+
         if (job->skip_all_error)
         {
             goto out;
@@ -5108,6 +5109,8 @@ copy_move_file (CopyMoveJob   *copy_job,
      */
     if (test_dir_is_parent (src, dest))
     {
+        int response;
+
         if (job->skip_all_error)
         {
             goto out;
@@ -5355,6 +5358,8 @@ retry:
     else if (IS_IO_ERROR (error, WOULD_RECURSE) ||
              IS_IO_ERROR (error, WOULD_MERGE))
     {
+        gboolean is_merge;
+
         is_merge = error->code == G_IO_ERROR_WOULD_MERGE;
         would_recurse = error->code == G_IO_ERROR_WOULD_RECURSE;
         g_error_free (error);
@@ -5369,6 +5374,7 @@ retry:
             {
                 g_autofree gchar *basename = NULL;
                 g_autofree gchar *filename = NULL;
+                int response;
 
                 if (job->skip_all_error)
                 {
@@ -5463,6 +5469,7 @@ retry:
     {
         g_autofree gchar *basename = NULL;
         g_autofree gchar *filename = NULL;
+        int response;
 
         if (job->skip_all_error)
         {
@@ -5833,7 +5840,6 @@ move_file_prepare (CopyMoveJob  *move_job,
     CommonJob *job;
     gboolean overwrite;
     char *primary, *secondary, *details;
-    int response;
     GFileCopyFlags flags;
     MoveFileCopyFallback *fallback;
     gboolean handled_invalid_filename;
@@ -5851,6 +5857,8 @@ move_file_prepare (CopyMoveJob  *move_job,
      * detect and report it at this level) */
     if (test_dir_is_parent (dest_dir, src))
     {
+        int response;
+
         if (job->skip_all_error)
         {
             goto out;
@@ -6047,6 +6055,7 @@ retry:
     {
         g_autofree gchar *basename = NULL;
         g_autofree gchar *filename = NULL;
+        int response;
 
         if (job->skip_all_error)
         {
@@ -7401,7 +7410,7 @@ retry:
         else
         {
             g_autofree gchar *basename = NULL;
-            g_autofree gchar *filename = NULL;
+            g_autofree gchar *parse_name = NULL;
 
             basename = get_basename (dest);
             if (job->make_dir)
@@ -7414,9 +7423,9 @@ retry:
                 primary = g_strdup_printf (_("Error while creating file %s."),
                                            basename);
             }
-            filename = g_file_get_parse_name (job->dest_dir);
+            parse_name = g_file_get_parse_name (job->dest_dir);
             secondary = g_strdup_printf (_("There was an error creating the directory in %s."),
-                                         filename);
+                                         parse_name);
 
             details = error->message;
 

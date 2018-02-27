@@ -36,8 +36,6 @@ struct _NautilusTagManager
 
 G_DEFINE_TYPE (NautilusTagManager, nautilus_tag_manager, G_TYPE_OBJECT);
 
-static NautilusTagManager *tag_manager = NULL;
-
 typedef enum
 {
     GET_STARRED_FILES,
@@ -844,6 +842,8 @@ nautilus_tag_manager_class_init (NautilusTagManagerClass *klass)
 NautilusTagManager *
 nautilus_tag_manager_get (void)
 {
+    static NautilusTagManager *tag_manager = NULL;
+
     if (tag_manager != NULL)
     {
         return g_object_ref (tag_manager);
@@ -855,20 +855,21 @@ nautilus_tag_manager_get (void)
     return tag_manager;
 }
 
-void nautilus_tag_manager_set_cancellable (NautilusTagManager *tag_manager,
-                                           GCancellable       *cancellable)
+void
+nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
+                                      GCancellable       *cancellable)
 {
-    nautilus_tag_manager_query_starred_files (tag_manager, cancellable);
+    nautilus_tag_manager_query_starred_files (self, cancellable);
 
-    tag_manager->notifier = tracker_notifier_new (NULL,
-                                                  TRACKER_NOTIFIER_FLAG_QUERY_LOCATION,
-                                                  cancellable,
-                                                  &tag_manager->notifier_error);
+    self->notifier = tracker_notifier_new (NULL,
+                                           TRACKER_NOTIFIER_FLAG_QUERY_LOCATION,
+                                           cancellable,
+                                           &self->notifier_error);
 
-    g_signal_connect (tag_manager->notifier,
+    g_signal_connect (self->notifier,
                       "events",
                       G_CALLBACK (on_tracker_notifier_events),
-                      tag_manager);
+                      self);
 }
 
 static void
