@@ -337,10 +337,10 @@ nautilus_icon_info_lookup (GIcon *icon,
                            int    scale)
 {
     NautilusIconInfo *icon_info;
-    GdkPixbuf *pixbuf;
 
     if (G_IS_LOADABLE_ICON (icon))
     {
+        GdkPixbuf *pixbuf;
         LoadableIconKey lookup_key;
         LoadableIconKey *key;
         GInputStream *stream;
