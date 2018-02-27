@@ -460,7 +460,7 @@ run_file_conflict_dialog (gpointer user_data)
         data->response->new_name =
             nautilus_file_conflict_dialog_get_new_name (data->dialog);
     }
-    else if (response_id != GTK_RESPONSE_CANCEL ||
+    else if (response_id != GTK_RESPONSE_CANCEL &&
              response_id != GTK_RESPONSE_NONE)
     {
         data->response->apply_to_all =
