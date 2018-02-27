@@ -36,7 +36,7 @@ static const char *default_column_order[] =
     "owner",
     "group",
     "permissions",
-    "mime_type",
+    "detailed_type",
     "where",
     "date_modified_with_time",
     "date_modified",
@@ -83,6 +83,13 @@ get_builtin_columns (void)
                                            NULL));
     columns = g_list_append (columns,
                              g_object_new (NAUTILUS_TYPE_COLUMN,
+                                           "name", "detailed_type",
+                                           "attribute", "detailed_type",
+                                           "label", _("Detailed Type"),
+                                           "description", _("The detailed type of the file."),
+                                           NULL));
+    columns = g_list_append (columns,
+                             g_object_new (NAUTILUS_TYPE_COLUMN,
                                            "name", "date_accessed",
                                            "attribute", "date_accessed",
                                            "label", _("Accessed"),
@@ -113,14 +120,6 @@ get_builtin_columns (void)
                                            "attribute", "permissions",
                                            "label", _("Permissions"),
                                            "description", _("The permissions of the file."),
-                                           NULL));
-
-    columns = g_list_append (columns,
-                             g_object_new (NAUTILUS_TYPE_COLUMN,
-                                           "name", "mime_type",
-                                           "attribute", "mime_type",
-                                           "label", _("MIME Type"),
-                                           "description", _("The MIME type of the file."),
                                            NULL));
 
     columns = g_list_append (columns,
