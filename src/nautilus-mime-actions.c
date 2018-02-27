@@ -1607,7 +1607,6 @@ activate_files (ActivateParameters *parameters)
     g_autoptr (GQueue) open_in_view_files = NULL;
     GList *l;
     ActivationAction action;
-    LaunchLocation *location;
 
     launch_desktop_files = g_queue_new ();
     launch_files = g_queue_new ();
@@ -1617,6 +1616,8 @@ activate_files (ActivateParameters *parameters)
 
     for (l = parameters->locations; l != NULL; l = l->next)
     {
+        LaunchLocation *location;
+
         location = l->data;
         file = location->file;
 

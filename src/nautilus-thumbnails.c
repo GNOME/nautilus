@@ -92,8 +92,6 @@ static GHashTable *thumbnails_to_make_hash = NULL;
  * to avoid adding it again. Lock thumbnails_mutex when accessing this. */
 static NautilusThumbnailInfo *currently_thumbnailing = NULL;
 
-static GnomeDesktopThumbnailFactory *thumbnail_factory = NULL;
-
 static gboolean
 get_file_mtime (const char *file_uri,
                 time_t     *mtime)
@@ -152,12 +150,6 @@ static gboolean
 thumbnail_thread_starter_cb (gpointer data)
 {
     GTask *task;
-
-    /* Don't do this in thread, since g_object_ref is not threadsafe */
-    if (thumbnail_factory == NULL)
-    {
-        thumbnail_factory = get_thumbnail_factory ();
-    }
 
     g_debug ("(Main Thread) Creating thumbnails thread\n");
 
@@ -447,11 +439,14 @@ thumbnail_thread_func (GTask        *task,
                        gpointer      task_data,
                        GCancellable *cancellable)
 {
+    GnomeDesktopThumbnailFactory *thumbnail_factory;
     NautilusThumbnailInfo *info = NULL;
     GdkPixbuf *pixbuf;
     time_t current_orig_mtime = 0;
     time_t current_time;
     GList *node;
+
+    thumbnail_factory = get_thumbnail_factory ();
 
     /* We loop until there are no more thumbails to make, at which point
      *  we exit the thread. */
