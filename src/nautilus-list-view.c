@@ -640,7 +640,7 @@ button_press_callback (GtkWidget      *widget,
     {
             on_star_cell_renderer_clicked (path, view);
     }
-    if (event->type == GDK_2BUTTON_PRESS && !on_star)
+    else if (event->type == GDK_2BUTTON_PRESS && !on_star)
     {
         /* Double clicking does not trigger a D&D action. */
         view->details->drag_button = 0;
@@ -718,7 +718,7 @@ button_press_callback (GtkWidget      *widget,
                     }
                 }
                 else
-                    {
+                {
                     gtk_tree_selection_select_path (selection, path);
                 }
                 selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
