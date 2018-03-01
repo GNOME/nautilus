@@ -163,6 +163,7 @@ recent_thread_func (gpointer user_data)
             gvisited = g_date_time_new_from_unix_local (visited);
 
             hit = nautilus_search_hit_new (uri);
+            nautilus_search_hit_set_fts_rank (hit, rank);
             nautilus_search_hit_set_modification_time (hit, gmodified);
             nautilus_search_hit_set_access_time (hit, gvisited);
 
