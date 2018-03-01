@@ -220,7 +220,6 @@ visit_directory (GFile            *dir,
     gboolean visited;
     guint64 atime;
     guint64 mtime;
-    GPtrArray *date_range;
     GDateTime *initial_date;
     GDateTime *end_date;
     NautilusTagManager *tag_manager;
@@ -243,6 +242,8 @@ visit_directory (GFile            *dir,
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
+        g_autoptr (GPtrArray) date_range = NULL;
+
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
@@ -298,7 +299,6 @@ visit_directory (GFile            *dir,
             found = nautilus_file_date_in_between (current_file_time,
                                                    initial_date,
                                                    end_date);
-            g_ptr_array_unref (date_range);
         }
 
         if (nautilus_query_get_search_starred (data->query))
