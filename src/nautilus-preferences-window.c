@@ -354,16 +354,17 @@ nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
     gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
-static gboolean format_spin_button(GtkSpinButton *spin_button,
-                                   gpointer       user_data)
+static gboolean
+format_spin_button (GtkSpinButton *spin_button,
+                    gpointer       user_data)
 {
     GtkAdjustment *adjustment;
-    int value;
+    gint value;
     gchar *text;
 
     adjustment = gtk_spin_button_get_adjustment (spin_button);
-    value = (int) gtk_adjustment_get_value (adjustment);
-    text = g_strdup_printf ("%d MB", value);
+    value = (gint) gtk_adjustment_get_value (adjustment);
+    text = g_strdup_printf (_("%d MB"), value);
     gtk_entry_set_text (GTK_ENTRY (spin_button), text);
 
     return TRUE;
