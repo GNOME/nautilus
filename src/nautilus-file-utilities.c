@@ -29,6 +29,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-search-directory.h"
+#include "nautilus-starred-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
@@ -1419,7 +1420,12 @@ nautilus_self_check_file_utilities (void)
 void
 nautilus_ensure_extension_builtins (void)
 {
+    /* Please add new extension types here, even if you can guarantee
+     * that they will be registered by the time the extension point
+     * is iterating over its extensions.
+     */
     g_type_ensure (NAUTILUS_TYPE_SEARCH_DIRECTORY);
+    g_type_ensure (NAUTILUS_TYPE_STARRED_DIRECTORY);
 }
 
 void
