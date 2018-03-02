@@ -56,6 +56,12 @@ typedef struct
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFavoriteDirectory, nautilus_starred_directory, NAUTILUS_TYPE_DIRECTORY,
                          nautilus_ensure_extension_points ();
+                         /* It looks like you’re implementing an extension point.
+                          * Did you modify nautilus_ensure_extension_builtins() accordingly?
+                          *
+                          * • Yes
+                          * • Doing it right now
+                          */
                          g_io_extension_point_implement (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME,
                                                          g_define_type_id,
                                                          NAUTILUS_STARRED_DIRECTORY_PROVIDER_NAME,
