@@ -3412,6 +3412,12 @@ nautilus_files_view_set_location (NautilusView *view,
     files_view = NAUTILUS_FILES_VIEW (view);
     directory = nautilus_directory_get (location);
 
+    /* This used to be done by the NAUTILUS_IS_STARRED_DIRECTORY macro,
+     * but using that below in an if substatement made no sense, so this
+     * needs to go somewhere.
+     */
+    g_type_ensure (NAUTILUS_TYPE_STARRED_DIRECTORY);
+
     nautilus_files_view_stop_loading (files_view);
     /* In case we want to load a previous search we need to extract the real
      * location and the search location, and load the directory when everything
