@@ -65,7 +65,6 @@
 #include <nautilus-extension.h>
 #include "nautilus-clipboard.h"
 #include "nautilus-search-directory.h"
-#include "nautilus-starred-directory.h"
 #include "nautilus-directory.h"
 #include "nautilus-dnd.h"
 #include "nautilus-file-attributes.h"
