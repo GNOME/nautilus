@@ -4,6 +4,8 @@ stages:
   - test
 
 before_script:
+# This helps avoid errors until a F28 stable image materializes.
+  - rpm --import https://pagure.io/fedora-repos/raw/master/f/RPM-GPG-KEY-fedora-29-primary
   - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                    gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                    gobject-introspection-devel libselinux-devel
