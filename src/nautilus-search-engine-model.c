@@ -193,20 +193,6 @@ model_directory_ready_cb (NautilusDirectory *directory,
             g_ptr_array_unref (date_range);
         }
 
-        if (nautilus_query_get_search_starred (model->query))
-        {
-            tag_manager = nautilus_tag_manager_get ();
-
-            uri = nautilus_file_get_uri (file);
-
-            if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
-            {
-                found = FALSE;
-            }
-
-            g_free (uri);
-        }
-
         if (found)
         {
             uri = nautilus_file_get_uri (file);

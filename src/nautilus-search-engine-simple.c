@@ -301,20 +301,6 @@ visit_directory (GFile            *dir,
                                                    end_date);
         }
 
-        if (nautilus_query_get_search_starred (data->query))
-        {
-            tag_manager = nautilus_tag_manager_get ();
-
-            uri = g_file_get_uri (child);
-
-            if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
-            {
-                found = FALSE;
-            }
-
-            g_free (uri);
-        }
-
         if (found)
         {
             NautilusSearchHit *hit;
