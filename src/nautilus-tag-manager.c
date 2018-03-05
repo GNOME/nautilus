@@ -67,6 +67,8 @@ enum
     LAST_SIGNAL
 };
 
+#define STARRED_TAG "nao:predefined-tag-favorite"
+
 static guint signals[LAST_SIGNAL];
 
 static const gchar *
@@ -417,7 +419,8 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
 
     self->cancellable = cancellable;
 
-    query = g_string_new ("SELECT ?url tracker:id(?urn) WHERE { ?urn nie:url ?url ; nao:hasTag nao:predefined-tag-favorite}");
+    query = g_string_new ("SELECT ?url tracker:id(?urn) "
+                          "WHERE { ?urn nie:url ?url ; nao:hasTag " STARRED_TAG "}");
 
     start_query_or_update (query,
                            on_get_starred_files_query_callback,
@@ -444,7 +447,7 @@ nautilus_tag_manager_delete_tag (NautilusTagManager *self,
                                  GString            *query)
 {
     g_string_append (query,
-                     "DELETE { ?urn nao:hasTag nao:predefined-tag-favorite }"
+                     "DELETE { ?urn nao:hasTag " STARRED_TAG " }"
                      "WHERE { ?urn a nfo:FileDataObject ; nie:url ?url .");
 
     query = add_selection_filter (selection, query);
@@ -460,7 +463,7 @@ nautilus_tag_manager_insert_tag (NautilusTagManager *self,
                                  GString            *query)
 {
     g_string_append (query,
-                     "INSERT { ?urn nao:hasTag nao:predefined-tag-favorite }"
+                     "INSERT { ?urn nao:hasTag " STARRED_TAG " }"
                      "WHERE { ?urn a nfo:FileDataObject ; nie:url ?url .");
 
     query = add_selection_filter (selection, query);
@@ -707,7 +710,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 
         query = g_string_new ("");
         g_string_append_printf (query,
-                                "SELECT ?url WHERE { ?urn nie:url ?url; nao:hasTag nao:predefined-tag-favorite . FILTER (tracker:id(?urn) = %" G_GINT64_FORMAT ")}",
+                                "SELECT ?url WHERE { ?urn nie:url ?url; nao:hasTag " STARRED_TAG " . FILTER (tracker:id(?urn) = %" G_GINT64_FORMAT ")}",
                                 tracker_notifier_event_get_id (event));
 
         /* check if the file changed it's location and update hash table if so */
