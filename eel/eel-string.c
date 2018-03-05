@@ -103,7 +103,6 @@ eel_str_middle_truncate (const gchar *string,
 
     g_return_val_if_fail (string != NULL, NULL);
     g_return_val_if_fail (truncate_length > 0, NULL);
-    g_return_val_if_fail (truncate_length <= G_MAXLONG, NULL);
 
     ellipsis_length = g_utf8_strlen (ellipsis, -1);
 
