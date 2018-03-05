@@ -1645,7 +1645,6 @@ filename_cell_data_func (GtkTreeViewColumn *column,
     GString *display_text;
     NautilusDirectory *directory;
     NautilusQuery *query = NULL;
-    NautilusQuerySearchContent content;
     NautilusFile *file;
     const gchar *snippet;
 
@@ -1661,11 +1660,6 @@ filename_cell_data_func (GtkTreeViewColumn *column,
     if (NAUTILUS_IS_SEARCH_DIRECTORY (directory))
     {
         query = nautilus_search_directory_get_query (NAUTILUS_SEARCH_DIRECTORY (directory));
-    }
-
-    if (query)
-    {
-        content = nautilus_query_get_search_content (query);
     }
 
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
@@ -1689,7 +1683,8 @@ filename_cell_data_func (GtkTreeViewColumn *column,
         underline = PANGO_UNDERLINE_NONE;
     }
 
-    if (query && content == NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT)
+    if (query &&
+        nautilus_query_get_search_content (query) == NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT)
     {
         gtk_tree_model_get (model, iter,
                             NAUTILUS_LIST_MODEL_FILE_COLUMN, &file,
