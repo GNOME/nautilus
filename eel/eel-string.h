@@ -88,18 +88,4 @@ void        eel_ref_str_unref      (eel_ref_str  str);
 
 #define eel_ref_str_peek(__str) ((const char *)(__str))
 
-
-typedef struct {
-  char character;
-  char *(*to_string) (char *format, va_list va);
-  void (*skip) (va_list *va);
-} EelPrintfHandler;
-
-char *eel_strdup_printf_with_custom (EelPrintfHandler *handlers,
-				     const char *format,
-				     ...);
-char *eel_strdup_vprintf_with_custom (EelPrintfHandler *custom,
-				      const char *format,
-				      va_list va);
-
 #endif /* EEL_STRING_H */
