@@ -707,7 +707,7 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
 
         query = g_string_new ("");
         g_string_append_printf (query,
-                                "SELECT ?url WHERE { ?urn nie:url ?url; nao:hasTag nao:predefined-tag-favorite . FILTER (tracker:id(?urn) = %ld)}",
+                                "SELECT ?url WHERE { ?urn nie:url ?url; nao:hasTag nao:predefined-tag-favorite . FILTER (tracker:id(?urn) = " G_GINT64_FORMAT ")}",
                                 tracker_notifier_event_get_id (event));
 
         /* check if the file changed it's location and update hash table if so */
