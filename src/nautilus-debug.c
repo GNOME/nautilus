@@ -99,6 +99,7 @@ nautilus_debug (DebugFlags   flag,
     va_end (args);
 }
 
+__attribute__((__format__ (__printf__, 2, 0)))
 void
 nautilus_debug_valist (DebugFlags   flag,
                        const gchar *format,
@@ -115,6 +116,7 @@ nautilus_debug_valist (DebugFlags   flag,
     }
 }
 
+__attribute__((__format__ (__printf__, 3, 0)))
 static void
 nautilus_debug_files_valist (DebugFlags   flag,
                              GList       *files,
