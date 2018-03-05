@@ -80,7 +80,7 @@ nautilus_tag_manager_file_with_id_changed_url (GHashTable  *hash_table,
     g_hash_table_iter_init (&iter, hash_table);
     while (g_hash_table_iter_next (&iter, &key, &value))
     {
-        if ((gint64) value == id && g_strcmp0 (url, key) != 0)
+        if (*((gint64 *) value) == id && g_strcmp0 (url, key) != 0)
         {
             return key;
         }
@@ -256,7 +256,7 @@ on_update_callback (GObject      *object,
                 {
                     id = g_new0 (gint64, 1);
 
-                    *id = (gint64) g_hash_table_lookup (data->ids, uri);
+                    *id = *((gint64 *) g_hash_table_lookup (data->ids, uri));
                     g_hash_table_insert (data->tag_manager->starred_files,
                                          nautilus_file_get_uri (NAUTILUS_FILE (l->data)),
                                          id);
