@@ -24,7 +24,6 @@
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-simple.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-tag-manager.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 
@@ -222,7 +221,6 @@ visit_directory (GFile            *dir,
     guint64 mtime;
     GDateTime *initial_date;
     GDateTime *end_date;
-    NautilusTagManager *tag_manager;
     gchar *uri;
 
     enumerator = g_file_enumerate_children (dir,
@@ -299,20 +297,6 @@ visit_directory (GFile            *dir,
             found = nautilus_file_date_in_between (current_file_time,
                                                    initial_date,
                                                    end_date);
-        }
-
-        if (nautilus_query_get_search_starred (data->query))
-        {
-            tag_manager = nautilus_tag_manager_get ();
-
-            uri = g_file_get_uri (child);
-
-            if (!nautilus_tag_manager_file_is_starred (tag_manager, uri))
-            {
-                found = FALSE;
-            }
-
-            g_free (uri);
         }
 
         if (found)
