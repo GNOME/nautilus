@@ -59,10 +59,6 @@ NautilusQuerySearchContent nautilus_query_get_search_content (NautilusQuery *que
 void                       nautilus_query_set_search_content (NautilusQuery              *query,
                                                               NautilusQuerySearchContent  content);
 
-gboolean nautilus_query_get_search_starred (NautilusQuery *query);
-void     nautilus_query_set_search_starred (NautilusQuery *query,
-                                             gboolean       search_starred);
-
 NautilusQuerySearchType nautilus_query_get_search_type (NautilusQuery *query);
 void                    nautilus_query_set_search_type (NautilusQuery           *query,
                                                         NautilusQuerySearchType  type);
