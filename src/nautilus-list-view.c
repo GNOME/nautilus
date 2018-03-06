@@ -110,12 +110,12 @@ static const char *default_search_columns_order[] =
 
 static const char *default_recent_visible_columns[] =
 {
-    "name", "size", "where", NULL
+    "name", "Recency", "where", NULL
 };
 
 static const char *default_recent_columns_order[] =
 {
-    "name", "size", "where", NULL
+    "name", "Recency", "where", NULL
 };
 
 static const char *default_trash_visible_columns[] =
