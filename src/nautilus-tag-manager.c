@@ -67,7 +67,7 @@ enum
     LAST_SIGNAL
 };
 
-#define STARRED_TAG "nao:predefined-tag-favorite"
+#define STARRED_TAG "<urn:gnome:nautilus:starred>"
 
 static guint signals[LAST_SIGNAL];
 
@@ -463,6 +463,7 @@ nautilus_tag_manager_insert_tag (NautilusTagManager *self,
                                  GString            *query)
 {
     g_string_append (query,
+                     "INSERT DATA { " STARRED_TAG " a nao:Tag .}\n"
                      "INSERT { ?urn nao:hasTag " STARRED_TAG " }"
                      "WHERE { ?urn a nfo:FileDataObject ; nie:url ?url .");
 
