@@ -678,13 +678,53 @@ button_press_callback (GtkWidget      *widget,
     }
     else
     {
+        GList *selected_rows, *l;
         /* We're going to filter out some situations where
          * we can't let the default code run because all
          * but one row would be would be deselected. We don't
          * want that; we want the right click menu or single
          * click to apply to everything that's currently selected.
          */
-        if (event->button == GDK_BUTTON_SECONDARY && path_selected)
+        if (event->button == GDK_BUTTON_SECONDARY && !path_selected)
+        {
+            call_parent = FALSE;
+            
+            if ((event->state & GDK_SHIFT_MASK) != 0)
+            {
+                GtkTreePath *cursor;
+
+                gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
+                if (cursor != NULL)
+                {
+                    gtk_tree_selection_select_range (selection, cursor, path);
+                }
+                else
+                {
+                    gtk_tree_selection_select_path (selection, path);
+                }
+            }
+            else if ((event->state & GDK_CONTROL_MASK) != 0)
+            {
+                gtk_tree_selection_select_path (selection, path);
+            }
+            else
+            {
+                gtk_tree_selection_unselect_all (selection);
+                gtk_tree_selection_select_path (selection, path);
+            }
+            selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+            /* This unselects everything */
+            gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+
+            /* So select it again */
+            for (l = selected_rows; l != NULL; l = l->next)
+            {
+                gtk_tree_selection_select_path (selection, l->data);
+            }
+            g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
+        }
+        else if (event->button == GDK_BUTTON_SECONDARY && path_selected)
         {
             call_parent = FALSE;
         }
@@ -701,7 +741,6 @@ button_press_callback (GtkWidget      *widget,
             }
             else if ((event->state & GDK_CONTROL_MASK) != 0)
             {
-                GList *selected_rows, *l;
 
                 call_parent = FALSE;
                 if ((event->state & GDK_SHIFT_MASK) != 0)
