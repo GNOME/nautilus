@@ -1215,6 +1215,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     GList *p, *line_start;
     NautilusCanvasIcon *icon;
     double canvas_width, y;
+    double available_width;
     GArray *positions;
     IconPositions *position;
     EelDRect bounds;
@@ -1246,8 +1247,10 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
     grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
 
-    num_columns = MAX (1.0, floor (canvas_width / grid_width));
-    grid_width = MAX (grid_width, floor (canvas_width / num_columns) - 1.0); /* -1 prevents jitter. */
+    available_width = canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT;
+
+    num_columns = MAX (1.0, floor (available_width / grid_width));
+    grid_width = MAX (grid_width, floor (available_width / num_columns) - 1.0); /* -1 prevents jitter. */
 
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
