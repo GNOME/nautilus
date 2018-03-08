@@ -1223,6 +1223,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     double height_above, height_below;
     double line_width;
     double grid_width;
+    double num_columns;
     int icon_width, icon_size;
     int i;
     GtkAllocation allocation;
@@ -1244,6 +1245,10 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     canvas_width = CANVAS_WIDTH (container, allocation);
 
     grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
+
+    num_columns = floor(canvas_width / grid_width);
+    grid_width = floor(canvas_width / num_columns) - 1.0; /* -1 prevents jitter */
+
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
     line_width = 0;
