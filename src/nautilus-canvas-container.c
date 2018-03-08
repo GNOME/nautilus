@@ -1246,8 +1246,8 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
     grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
 
-    num_columns = floor(canvas_width / grid_width);
-    grid_width = floor(canvas_width / num_columns) - 1.0; /* -1 prevents jitter */
+    num_columns = MAX (1.0, floor (canvas_width / grid_width));
+    grid_width = MAX (grid_width, floor (canvas_width / num_columns) - 1.0); /* -1 prevents jitter. */
 
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
