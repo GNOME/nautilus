@@ -1208,6 +1208,50 @@ lay_down_one_line (NautilusCanvasContainer *container,
 }
 
 static void
+distribute_line (NautilusCanvasContainer *container,
+                 GArray                  *positions)
+{
+    GtkAllocation allocation;
+    double available_width;
+    double used_width;
+    double free_width;
+    double average_icon_width;
+    double num_columns;
+    double spacing;
+    double padding;
+    int i;
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+
+    available_width = CANVAS_WIDTH (container, allocation);
+    available_width -= ICON_PAD_LEFT;
+    available_width -= ICON_PAD_RIGHT;
+
+    used_width = 0.0;
+    for (i = 0; i < positions->len; i++)
+    {
+        IconPositions *position = &g_array_index (positions, IconPositions, i);
+        used_width += position->width;
+    }
+
+    average_icon_width = used_width / (double)positions->len;
+
+    num_columns = floor(available_width / average_icon_width);
+
+    free_width = MAX (0.0, available_width - num_columns * average_icon_width);
+
+    spacing = floor(free_width / (double)num_columns);
+    padding = floor(spacing / 2.0);
+
+    for (i = 0; i < positions->len; i++)
+    {
+        IconPositions *position = &g_array_index (positions, IconPositions, i);
+        position->width += spacing;
+        position->x_offset += padding;
+    }
+}
+
+static void
 lay_down_icons_horizontal (NautilusCanvasContainer *container,
                            GList                   *icons,
                            double                   start_y)
@@ -1280,6 +1324,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
             /* Advance to the baseline. */
             y += ICON_PAD_TOP + max_height_above;
 
+            distribute_line (container, positions);
             lay_down_one_line (container, line_start, p, y, max_height_above, positions, FALSE);
 
             /* Advance to next line. */
@@ -1322,6 +1367,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
         /* Advance to the baseline. */
         y += ICON_PAD_TOP + max_height_above;
 
+        distribute_line (container, positions);
         lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, TRUE);
     }
 
