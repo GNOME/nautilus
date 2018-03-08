@@ -267,6 +267,7 @@ libnautilus_sources = [
 
 nautilus_deps = [
   eel_2,
+  gio_unix,
   gmodule,
   gnome_autoar,
   gnome_desktop,
