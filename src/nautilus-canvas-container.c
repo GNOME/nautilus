@@ -108,6 +108,12 @@
 /* Copied from NautilusFile */
 #define UNDEFINED_TIME ((time_t) (-1))
 
+static double
+nautilus_mix (double x, double y, double fraction)
+{
+    return x * (1.0 - fraction) + y * fraction;
+}
+
 enum
 {
     ACTION_ACTIVATE,
@@ -1223,6 +1229,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     double max_height_above, max_height_below;
     double height_above, height_below;
     double line_width;
+    double min_grid_width;
     double grid_width;
     double num_columns;
     int icon_width, icon_size;
@@ -1244,15 +1251,36 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
     /* Lay out icons a line at a time. */
     canvas_width = CANVAS_WIDTH (container, allocation);
-
-    grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
-
-    available_width = canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT;
-
-    num_columns = MAX (1.0, floor (available_width / grid_width));
-    grid_width = MAX (grid_width, floor (available_width / num_columns) - 1.0); /* -1 prevents jitter. */
-
+    min_grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
+
+    available_width = MAX (1.0, canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT);
+    num_columns = MAX (1.0, floor (available_width / min_grid_width));
+
+    if (g_list_nth (icons, num_columns) != NULL)
+    {
+        grid_width = available_width / num_columns;
+    }
+    else
+    {
+        /* It does not look good when the icons jump around when new columns are
+         * added to the grid while there is only one line. It does not look good
+         * either when the icons do not move at all when the window is resized.
+         * This code is probably overly complicated for what it does, but it
+         * provides nice results and does not allow the spacing between the
+         * icons to become way too large.
+         */
+
+        double num_icons = MAX (1.0, g_list_length (icons));
+        double grid_width_for_num_icons = available_width / num_icons;
+        double used_fraction = MAX (0.0, MIN (1.0, (num_icons * min_grid_width) / available_width));
+        double mix_fraction = pow(used_fraction * pow(0.9, 1.0 / 3.0), 3.0) + 0.1;
+
+        grid_width = nautilus_mix (min_grid_width, grid_width_for_num_icons, mix_fraction);
+    }
+
+    /* Subtracting 1.0 prevents the jitter. */
+    grid_width = MAX (min_grid_width, floor (grid_width) - 1.0);
 
     line_width = 0;
     line_start = icons;
