@@ -18,6 +18,76 @@
     color: mix (@theme_selected_fg_color, @theme_selected_bg_color, 0.20);
 }
 
+/* Path bar */
+
+.path-bar button {
+	background: none;
+	border: 1px solid transparent;
+	box-shadow: none;
+	padding: 0;
+}
+
+.path-bar button:not(:first-child) {
+	border-left: 5px solid transparent;
+}
+
+.path-bar button:not(:last-child) {
+	border-right: 4px solid transparent;
+}
+
+.path-bar button:not(:first-child) {
+	background-image: image(mix(@theme_bg_color, @borders, 1.0));
+	background-size: 1px 12px;
+	background-repeat: no-repeat;
+	background-position: -5px 50%
+}
+
+.path-bar button:not(:first-child):backdrop {
+	background-image: image(mix(@theme_bg_color, @borders, 0.5));
+}
+
+.path-bar button:checked,
+.path-bar button:active {
+	box-shadow: inset 0 -2px 0 @theme_selected_bg_color;
+}
+
+.path-bar button:not(:checked):hover,
+.path-bar button:checked:backdrop {
+	box-shadow: inset 0 -2px 0 mix(@theme_bg_color, @borders, 0.5);
+}
+
+.path-bar button.slider-button:disabled {
+	color: mix(@theme_bg_color, @theme_fg_color, 0.2);
+}
+
+/* Sidebar */
+
+.sidebar-row:selected {
+    background: linear-gradient(
+        to bottom,
+        shade(@theme_bg_color, 0.85),
+        shade(@theme_bg_color, 0.93) 3px,
+        shade(@theme_bg_color, 0.93));
+}
+
+.sidebar-row:selected,
+.sidebar-row:selected label {
+    color: shade(@theme_fg_color, 0.4);
+}
+
+.sidebar-row:selected:backdrop {
+    background: linear-gradient(
+        to bottom,
+        shade(@theme_bg_color, 0.95),
+        shade(@theme_bg_color, 0.95) 3px,
+        shade(@theme_bg_color, 0.95));
+}
+
+.sidebar-row:selected:backdrop,
+.sidebar-row:selected:backdrop label {
+    color: shade(@theme_unfocused_fg_color, 0.85);
+}
+
 /* Toolbar */
 
 /* Here we use the .button background-image colors from Adwaita, but ligthen them,
