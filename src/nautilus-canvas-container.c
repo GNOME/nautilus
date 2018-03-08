@@ -1208,6 +1208,41 @@ lay_down_one_line (NautilusCanvasContainer *container,
 }
 
 static void
+distribute_line (NautilusCanvasContainer *container,
+                 GArray                  *positions,
+                 double                   icon_width,
+                 int                      num_columns)
+{
+    GtkAllocation allocation;
+    double available_width;
+    double used_width;
+    double unused_width;
+    double spacing;
+    double padding;
+    int i;
+
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+
+    num_columns = MAX (positions->len, num_columns);
+
+    available_width = CANVAS_WIDTH (container, allocation);
+    available_width -= ICON_PAD_LEFT;
+    available_width -= ICON_PAD_RIGHT;
+    used_width = icon_width * num_columns;
+    unused_width = MAX (0.0, available_width - used_width);
+
+    spacing = floor(unused_width / (double)num_columns);
+    padding = floor(spacing / 2);
+
+    for (i = 0; i < positions->len; i++)
+    {
+        IconPositions *position = &g_array_index (positions, IconPositions, i);
+        position->width += spacing;
+        position->x_offset += padding;
+    }
+}
+
+static void
 lay_down_icons_horizontal (NautilusCanvasContainer *container,
                            GList                   *icons,
                            double                   start_y)
@@ -1225,6 +1260,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     double grid_width;
     int icon_width, icon_size;
     int i;
+    int num_columns;
     GtkAllocation allocation;
 
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
@@ -1250,6 +1286,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     line_start = icons;
     y = start_y + CONTAINER_PAD_TOP;
     i = 0;
+    num_columns = 0;
 
     max_height_above = 0;
     max_height_below = 0;
@@ -1280,6 +1317,9 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
             /* Advance to the baseline. */
             y += ICON_PAD_TOP + max_height_above;
 
+            num_columns = MAX (num_columns, i);
+
+            distribute_line (container, positions, icon_width, num_columns);
             lay_down_one_line (container, line_start, p, y, max_height_above, positions, FALSE);
 
             /* Advance to next line. */
@@ -1322,6 +1362,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
         /* Advance to the baseline. */
         y += ICON_PAD_TOP + max_height_above;
 
+        distribute_line (container, positions, icon_width, num_columns);
         lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, TRUE);
     }
 
