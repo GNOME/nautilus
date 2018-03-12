@@ -113,4 +113,7 @@ void              nautilus_list_model_subdirectory_done_loading (NautilusListMod
 void              nautilus_list_model_set_highlight_for_files (NautilusListModel *model,
 							       GList *files);
 						   
+
+GList *directory_is_empty_for_ui (NautilusDirectory *directory);
+
 #endif /* NAUTILUS_LIST_MODEL_H */

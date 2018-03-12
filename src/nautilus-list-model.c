@@ -33,6 +33,7 @@
 
 #include <eel/eel-graphic-effects.h>
 #include "nautilus-dnd.h"
+#include "nautilus-directory-utilities.h"
 
 enum
 {
@@ -1778,7 +1779,7 @@ nautilus_list_model_subdirectory_done_loading (NautilusListModel *model,
     GtkTreePath *path;
     FileEntry *file_entry, *dummy_entry;
     GSequenceIter *parent_ptr, *dummy_ptr;
-    GSequence *files;
+    GList *files;
 
     priv = nautilus_list_model_get_instance_private (model);
 
@@ -1794,13 +1795,12 @@ nautilus_list_model_subdirectory_done_loading (NautilusListModel *model,
     }
 
     file_entry = g_sequence_get (parent_ptr);
-    files = file_entry->files;
-
+    files = directory_is_empty_for_ui (directory);
     /* Only swap loading -> empty if we saw no files yet at "done",
      * otherwise, toggle loading at first added file to the model.
      */
     if (!nautilus_directory_is_not_empty (directory) &&
-        g_sequence_get_length (files) == 1)
+        g_list_length (files) == 1)
     {
         dummy_ptr = g_sequence_get_iter_at_pos (file_entry->files, 0);
         dummy_entry = g_sequence_get (dummy_ptr);
