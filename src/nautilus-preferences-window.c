@@ -59,7 +59,7 @@
     "use_tree_view_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
     "trash_confirm_checkbutton"
-#define NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET                    \
+#define NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET                       \
     "use_new_views_checkbutton"
 
 /* int enums */
