@@ -8537,6 +8537,7 @@ nautilus_file_emit_changed (NautilusFile *file)
         g_autolist (NautilusFile) link_targets = NULL;
         NautilusDirectory *directory;
 
+        /* Files can be links to themselves. */
         if (p->data == file)
         {
             continue;
