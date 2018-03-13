@@ -8581,10 +8581,29 @@ nautilus_file_emit_changed (NautilusFile *file)
     link_files = get_link_files (file);
     for (p = link_files; p != NULL; p = p->next)
     {
-        if (p->data != file)
+        /* Looking for directly recursive links. */
+        g_autolist (NautilusFile) link_targets = NULL;
+        NautilusDirectory *directory;
+
+        if (p->data == file)
         {
-            nautilus_file_changed (NAUTILUS_FILE (p->data));
+            continue;
         }
+
+        link_targets = get_link_files (p->data);
+        directory = nautilus_file_get_directory (p->data);
+
+        /* Reiterating (heh) that this will break with more complex cycles.
+         * Users, stop trying to break things on purpose.
+         */
+        if (g_list_find (link_targets, file) != NULL &&
+            directory == nautilus_file_get_directory (file))
+        {
+            g_signal_emit (p->data, signals[CHANGED], 0, p->data);
+            continue;
+        }
+
+        nautilus_file_changed (NAUTILUS_FILE (p->data));
     }
     nautilus_file_list_free (link_files);
 }
