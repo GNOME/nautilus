@@ -713,16 +713,8 @@ button_press_callback (GtkWidget      *widget,
                 {
                     gtk_tree_view_set_cursor (tree_view, path, column, FALSE);
                 }
+
                 selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
-
-                /* This unselects everything */
-                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
-
-                /* So select it again */
-                for (l = selected_rows; l != NULL; l = l->next)
-                {
-                    gtk_tree_selection_select_path (selection, l->data);
-                }
                 g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
             }
             else
