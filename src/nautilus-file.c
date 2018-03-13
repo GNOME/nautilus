@@ -8533,10 +8533,21 @@ nautilus_file_emit_changed (NautilusFile *file)
     link_files = get_link_files (file);
     for (p = link_files; p != NULL; p = p->next)
     {
-        if (p->data != file)
+        /* Looking for recursive links. */
+        g_autolist (NautilusFile) link_targets = NULL;
+
+        if (p->data == file)
         {
-            nautilus_file_changed (NAUTILUS_FILE (p->data));
+            continue;
         }
+
+        link_targets = get_link_files (p->data);
+        if (g_list_find (link_targets, file) != NULL)
+        {
+            continue;
+        }
+
+        nautilus_file_changed (NAUTILUS_FILE (p->data));
     }
     nautilus_file_list_free (link_files);
 }
