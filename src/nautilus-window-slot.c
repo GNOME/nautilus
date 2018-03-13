@@ -2817,6 +2817,15 @@ nautilus_window_slot_dispose (GObject *object)
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
 
+    if (priv->window)
+    {
+        gtk_widget_insert_action_group (GTK_WIDGET (priv->window), "slot", NULL);
+        priv->window = NULL;
+    }
+
+    g_free (priv->title);
+    priv->title = NULL;
+
     free_location_change (self);
 
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->dispose (object);
