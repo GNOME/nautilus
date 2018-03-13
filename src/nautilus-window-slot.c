@@ -2809,6 +2809,7 @@ nautilus_window_slot_dispose (GObject *object)
 
     g_clear_object (&priv->current_location_bookmark);
     g_clear_object (&priv->last_location_bookmark);
+    g_clear_object (&priv->slot_action_group);
 
     if (priv->find_mount_cancellable != NULL)
     {
@@ -2816,7 +2817,11 @@ nautilus_window_slot_dispose (GObject *object)
         priv->find_mount_cancellable = NULL;
     }
 
-    priv->window = NULL;
+    if (priv->window)
+    {
+        gtk_widget_insert_action_group (GTK_WIDGET (priv->window), "slot", NULL);
+        priv->window = NULL;
+    }
 
     g_free (priv->title);
     priv->title = NULL;
