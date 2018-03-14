@@ -165,6 +165,8 @@ static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
                                                 gboolean      include_real_name);
 static char *nautilus_file_get_type_as_string (NautilusFile *file);
+static char *get_description (NautilusFile *file,
+                              gboolean      detailed);
 static char *nautilus_file_get_detailed_type_as_string (NautilusFile *file);
 static gboolean update_info_and_name (NautilusFile *file,
                                       GFileInfo    *info);
@@ -3509,8 +3511,8 @@ compare_by_type (NautilusFile *file_1,
 {
     gboolean is_directory_1;
     gboolean is_directory_2;
-    char *type_string_1;
-    char *type_string_2;
+    char *type_string_1 = NULL;
+    char *type_string_2 = NULL;
     int result;
 
     /* Directories go first. Then, if mime types are identical,
@@ -3544,22 +3546,40 @@ compare_by_type (NautilusFile *file_1,
         return 0;
     }
 
-    type_string_1 = nautilus_file_get_type_as_string (file_1);
-    type_string_2 = nautilus_file_get_type_as_string (file_2);
-
-    if (type_string_1 == NULL || type_string_2 == NULL)
+    if (file_1 == NULL || file_2 == NULL)
     {
-        if (type_string_1 != NULL)
-        {
-            return -1;
-        }
+        if (file_1 == NULL)
+            type_string_1 = NULL;
+        else
+            type_string_2 = NULL;
+    }
+    else if (nautilus_file_is_broken_symbolic_link (file_1) ||
+             nautilus_file_is_broken_symbolic_link (file_2))
+    {
+        if (nautilus_file_is_broken_symbolic_link (file_1))
+            type_string_1 = g_strdup (_("Link (broken)"));
+        else
+            type_string_2 = g_strdup (_("Link (broken)"));
+    }
+    else
+    {
+        type_string_1 = get_description (file_1, FALSE);
+        type_string_2 = get_description (file_2, FALSE);
 
-        if (type_string_2 != NULL)
+        if (type_string_1 == NULL || type_string_2 == NULL)
         {
-            return 1;
-        }
+            if (type_string_1 != NULL)
+            {
+                return -1;
+            }
 
-        return 0;
+            if (type_string_2 != NULL)
+            {
+                return 1;
+            }
+
+            return 0;
+        }
     }
 
     result = g_utf8_collate (type_string_1, type_string_2);
