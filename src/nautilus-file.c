@@ -165,6 +165,7 @@ static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
                                                 gboolean      include_real_name);
 static char *nautilus_file_get_type_as_string (NautilusFile *file);
+static char *nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file);
 static char *nautilus_file_get_detailed_type_as_string (NautilusFile *file);
 static gboolean update_info_and_name (NautilusFile *file,
                                       GFileInfo    *info);
@@ -3544,8 +3545,8 @@ compare_by_type (NautilusFile *file_1,
         return 0;
     }
 
-    type_string_1 = nautilus_file_get_type_as_string (file_1);
-    type_string_2 = nautilus_file_get_type_as_string (file_2);
+    type_string_1 = nautilus_file_get_type_as_string_no_extra_text (file_1);
+    type_string_2 = nautilus_file_get_type_as_string_no_extra_text (file_2);
 
     if (type_string_1 == NULL || type_string_2 == NULL)
     {
@@ -7742,6 +7743,22 @@ nautilus_file_get_type_as_string (NautilusFile *file)
     }
 
     return update_description_for_link (file, get_description (file, FALSE));
+}
+
+static char *
+nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file)
+{
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    if (nautilus_file_is_broken_symbolic_link (file))
+    {
+        return g_strdup (_("Link (broken)"));
+    }
+
+    return get_description (file, FALSE);
 }
 
 static char *
