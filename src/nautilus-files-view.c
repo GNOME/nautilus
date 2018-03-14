@@ -3031,6 +3031,7 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
+    GList *pending_selection;
 
     view = NAUTILUS_FILES_VIEW (nautilus_files_view);
     priv = nautilus_files_view_get_instance_private (view);
@@ -3048,9 +3049,11 @@ nautilus_files_view_set_selection (NautilusView *nautilus_files_view,
         /* If we are still loading, set the list of pending URIs instead.
          * done_loading() will eventually select the pending URIs and reveal them.
          */
+        pending_selection = g_list_copy_deep (selection,
+                                              (GCopyFunc) g_object_ref, NULL);
         g_list_free_full (priv->pending_selection, g_object_unref);
-        priv->pending_selection =
-            g_list_copy_deep (selection, (GCopyFunc) g_object_ref, NULL);
+
+        priv->pending_selection = pending_selection;
     }
 }
 
