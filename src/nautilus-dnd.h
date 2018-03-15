@@ -22,8 +22,7 @@
 	    Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef NAUTILUS_DND_H
-#define NAUTILUS_DND_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
@@ -139,5 +138,3 @@ void			    nautilus_drag_autoscroll_stop		(NautilusDragInfo		      *drag_info);
 NautilusDragInfo *          nautilus_drag_get_source_data                 (GdkDragContext                     *context);
 
 GList *                     nautilus_drag_file_list_from_selection_list   (const GList                        *selection_list);
-
-#endif
