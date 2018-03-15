@@ -24,13 +24,10 @@
  * needs information about a file.  They are passed a NautilusFileInfo 
  * object which should be filled with relevant information */
 
-#ifndef NAUTILUS_EXTENSION_TYPES_H
-#define NAUTILUS_EXTENSION_TYPES_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "This header is deprecated, include <nautilus-extension.h> instead."
 #endif
 
 #include <nautilus-extension.h>
-
-#endif

@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef NAUTILUS_SEARCH_ENGINE_SIMPLE_H
-#define NAUTILUS_SEARCH_ENGINE_SIMPLE_H
+#pragma once
 
 G_BEGIN_DECLS
 
@@ -31,5 +30,3 @@ G_DECLARE_FINAL_TYPE (NautilusSearchEngineSimple, nautilus_search_engine_simple,
 NautilusSearchEngineSimple* nautilus_search_engine_simple_new (void);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_SEARCH_ENGINE_SIMPLE_H */

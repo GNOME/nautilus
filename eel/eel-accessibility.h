@@ -19,8 +19,7 @@
    Authors: Anders Carlsson <andersca@gnu.org>
 */
 
-#ifndef EEL_ACCESSIBILITY_H
-#define EEL_ACCESSIBILITY_H
+#pragma once
 
 #include <glib-object.h>
 #include <atk/atkobject.h>
@@ -75,5 +74,3 @@ typedef struct {
 } EelAccessibleTextIface;
 
 GType eel_accessible_text_get_type      (void);
-
-#endif /* EEL_ACCESSIBILITY_H */

@@ -21,13 +21,6 @@
  *
  */
 
-#ifndef NAUTILUS_MENU_ITEM_H
-#define NAUTILUS_MENU_ITEM_H
-
-#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
-#warning "Only <nautilus-extension.h> should be included directly."
-#endif
+#pragma once
 
 #include "nautilus-menu.h"
-
-#endif

@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_SEARCH_POPOVER_H
-#define NAUTILUS_SEARCH_POPOVER_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -51,5 +50,3 @@ void                 nautilus_search_popover_set_fts_sensitive   (NautilusSearch
                                                                   gboolean               sensitive);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_SEARCH_POPOVER_H */

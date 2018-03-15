@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef __NAUTILUS_PREVIEWER_H__
-#define __NAUTILUS_PREVIEWER_H__
+#pragma once
 
 #include <glib.h>
 
@@ -33,5 +32,3 @@ void nautilus_previewer_call_show_file (const gchar *uri,
 void nautilus_previewer_call_close     (void);
 
 G_END_DECLS
-
-#endif /* __NAUTILUS_PREVIEWER_H__ */

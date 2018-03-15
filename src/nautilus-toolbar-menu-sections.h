@@ -14,8 +14,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NAUTILUS_TOOLBAR_MENU_SECTIONS_H
-#define NAUTILUS_TOOLBAR_MENU_SECTIONS_H
+
+#pragma once
 
 #include <glib.h>
 
@@ -30,5 +30,3 @@ struct _NautilusToolbarMenuSections {
 };
 
 G_END_DECLS
-
-#endif /* NAUTILUS_TOOLBAR_MENU_SECTIONS_H */

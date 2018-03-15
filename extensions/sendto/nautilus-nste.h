@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef NAUTILUS_NSTE_H
-#define NAUTILUS_NSTE_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -34,5 +33,3 @@ G_DECLARE_FINAL_TYPE (NautilusNste, nautilus_nste, NAUTILUS, NSTE, GObject)
 void nautilus_nste_load (GTypeModule *module);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_NSTE_H */

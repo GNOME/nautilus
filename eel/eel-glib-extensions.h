@@ -22,8 +22,7 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef EEL_GLIB_EXTENSIONS_H
-#define EEL_GLIB_EXTENSIONS_H
+#pragma once
 
 #include <glib.h>
 
@@ -37,5 +36,3 @@ gboolean    eel_g_lists_sort_and_check_for_intersection (GList                **
 /* NULL terminated string arrays (strv). */
 gboolean    eel_g_strv_equal                            (char                 **a,
 							 char                 **b);
-
-#endif /* EEL_GLIB_EXTENSIONS_H */

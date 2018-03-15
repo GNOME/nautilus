@@ -21,8 +21,7 @@
             Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef EEL_ART_EXTENSIONS_H
-#define EEL_ART_EXTENSIONS_H
+#pragma once
 
 #include <glib.h>
 
@@ -60,5 +59,3 @@ void eel_drect_union (EelDRect       *dest,
 		      const EelDRect *src2);
 
 G_END_DECLS
-
-#endif /* EEL_ART_EXTENSIONS_H */

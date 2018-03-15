@@ -26,12 +26,7 @@
  * Nautilus constructs the context menu for a file.  They are passed a
  * list of NautilusFileInfo objects which holds the current selection */
 
-#ifndef NAUTILUS_MENU_PROVIDER_H
-#define NAUTILUS_MENU_PROVIDER_H
-
-#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
-#warning "Only <nautilus-extension.h> should be included directly."
-#endif
+#pragma once
 
 #include <glib-object.h>
 #include <gtk/gtk.h>
@@ -85,5 +80,3 @@ GList *nautilus_menu_provider_get_background_items      (NautilusMenuProvider *p
 void   nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
 
 G_END_DECLS
-
-#endif

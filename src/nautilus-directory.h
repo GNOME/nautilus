@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_DIRECTORY_H
-#define NAUTILUS_DIRECTORY_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -251,5 +250,3 @@ void               nautilus_directory_dump                     (NautilusDirector
 NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
                                                                 const char        *filename,
                                                                 gboolean           self_owned);
-
-#endif /* NAUTILUS_DIRECTORY_H */
