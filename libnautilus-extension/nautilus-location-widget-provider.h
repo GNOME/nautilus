@@ -28,8 +28,7 @@
  * Extensions are called when Nautilus displays a location.
  */
 
-#ifndef NAUTILUS_LOCATION_WIDGET_PROVIDER_H
-#define NAUTILUS_LOCATION_WIDGET_PROVIDER_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."
@@ -74,5 +73,3 @@ GtkWidget *nautilus_location_widget_provider_get_widget (NautilusLocationWidgetP
                                                          GtkWidget                      *window);
 
 G_END_DECLS
-
-#endif

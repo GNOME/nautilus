@@ -16,8 +16,7 @@
  * Author: Alexander Larsson <alexl@redhat.com>
  */
 
-#ifndef NAUTILUS_IMAGE_PROPERTIES_PAGE_H
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE_H
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -34,5 +33,3 @@ void                          nautilus_image_properties_page_load_from_file_info
                                                                                   NautilusFileInfo             *file_info);
 
 NautilusImagesPropertiesPage *nautilus_image_properties_page_new                 (void);
-
-#endif

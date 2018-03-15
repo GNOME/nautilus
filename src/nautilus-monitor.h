@@ -22,8 +22,7 @@
             Carlos Soriano <csoriano@gnome.org>
 */
 
-#ifndef NAUTILUS_MONITOR_H
-#define NAUTILUS_MONITOR_H
+#pragma once
 
 #include <glib.h>
 #include <gio/gio.h>
@@ -32,5 +31,3 @@ typedef struct NautilusMonitor NautilusMonitor;
 
 NautilusMonitor *nautilus_monitor_directory (GFile *location);
 void             nautilus_monitor_cancel    (NautilusMonitor *monitor);
-
-#endif /* NAUTILUS_MONITOR_H */

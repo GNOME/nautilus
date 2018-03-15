@@ -20,8 +20,7 @@
    Authors: Dave Camp <dave@ximian.com>
 */
 
-#ifndef NAUTILUS_COLUMN_CHOOSER_H
-#define NAUTILUS_COLUMN_CHOOSER_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
@@ -37,5 +36,3 @@ void       nautilus_column_chooser_set_settings    (NautilusColumnChooser   *cho
 void       nautilus_column_chooser_get_settings    (NautilusColumnChooser *chooser,
 						    char                  ***visible_columns, 
 						    char                  ***column_order);
-
-#endif /* NAUTILUS_COLUMN_CHOOSER_H */

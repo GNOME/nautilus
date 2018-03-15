@@ -22,8 +22,7 @@
  *
  */
 
-#ifndef NAUTILUS_NOTEBOOK_H
-#define NAUTILUS_NOTEBOOK_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -56,6 +55,3 @@ gboolean        nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
                                                  NautilusWindowSlot *slot);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_NOTEBOOK_H */
-

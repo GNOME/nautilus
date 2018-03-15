@@ -18,8 +18,7 @@
  * License along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef __NAUTILUS_APPLICATION_H__
-#define __NAUTILUS_APPLICATION_H__
+#pragma once
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
@@ -90,5 +89,3 @@ void nautilus_application_search (NautilusApplication *application,
                                   const gchar         *text);
 void nautilus_application_startup_common (NautilusApplication *application);
 G_END_DECLS
-
-#endif /* __NAUTILUS_APPLICATION_H__ */

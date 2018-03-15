@@ -21,8 +21,7 @@
  *
  */
 
-#ifndef NAUTILUS_COLUMN_H
-#define NAUTILUS_COLUMN_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."
@@ -54,5 +53,3 @@ NautilusColumn *nautilus_column_new  (const char *name,
  */
 
 G_END_DECLS
-
-#endif

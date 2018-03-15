@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_OTHER_LOCATIONS_WINDOW_SLOT_H
-#define NAUTILUS_OTHER_LOCATIONS_WINDOW_SLOT_H
+#pragma once
 
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
@@ -31,6 +30,3 @@ G_DECLARE_FINAL_TYPE (NautilusOtherLocationsWindowSlot, nautilus_other_locations
 NautilusOtherLocationsWindowSlot *nautilus_other_locations_window_slot_new (NautilusWindow *window);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_OTHER_LOCATIONS_WINDOW_SLOT_H */
-

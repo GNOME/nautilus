@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_TAG_MANAGER_H
-#define NAUTILUS_TAG_MANAGER_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -53,5 +52,3 @@ gboolean            nautilus_tag_manager_file_is_starred   (NautilusTagManager *
                                                              const gchar        *file_name);
 
 G_END_DECLS
-
-#endif

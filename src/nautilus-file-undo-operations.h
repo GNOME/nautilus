@@ -22,8 +22,7 @@
  *
  */
 
-#ifndef __NAUTILUS_FILE_UNDO_OPERATIONS_H__
-#define __NAUTILUS_FILE_UNDO_OPERATIONS_H__
+#pragma once
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -409,6 +408,3 @@ NautilusFileUndoInfo * nautilus_file_undo_info_compress_new (GList        *sourc
                                                              GFile        *output,
                                                              AutoarFormat  format,
                                                              AutoarFilter  filter);
-
-
-#endif /* __NAUTILUS_FILE_UNDO_OPERATIONS_H__ */

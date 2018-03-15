@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef NAUTILUS_SEARCH_ENGINE_H
-#define NAUTILUS_SEARCH_ENGINE_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -46,5 +45,3 @@ NautilusSearchEngineSimple *
                       nautilus_search_engine_get_simple_provider (NautilusSearchEngine *engine);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_SEARCH_ENGINE_H */

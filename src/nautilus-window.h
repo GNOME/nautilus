@@ -24,8 +24,7 @@
  */
 /* nautilus-window.h: Interface of the main window object */
 
-#ifndef NAUTILUS_WINDOW_H
-#define NAUTILUS_WINDOW_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <eel/eel-glib-extensions.h>
@@ -142,5 +141,3 @@ void nautilus_window_initialize_slot (NautilusWindow          *window,
                                       NautilusWindowOpenFlags  flags);
 
 G_END_DECLS
-
-#endif

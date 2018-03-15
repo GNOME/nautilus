@@ -17,8 +17,7 @@
  *
  */
 
-#ifndef NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER_H
-#define NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -34,5 +33,3 @@ NautilusRenameFilePopoverController * nautilus_rename_file_popover_controller_ne
                                                                                    GtkWidget    *relative_to);
 
 NautilusFile * nautilus_rename_file_popover_controller_get_target_file (NautilusRenameFilePopoverController *controller);
-
-#endif /* NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER_H */
