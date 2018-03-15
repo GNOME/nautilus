@@ -19,8 +19,7 @@
    Author: Andy Hertzfeld <andy@eazel.com>
 */
 
-#ifndef NAUTILUS_THUMBNAILS_H
-#define NAUTILUS_THUMBNAILS_H
+#pragma once
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-file.h"
@@ -34,6 +33,3 @@ gboolean   nautilus_thumbnail_is_mimetype_limited_by_size
 /* Queue handling: */
 void       nautilus_thumbnail_remove_from_queue     (const char   *file_uri);
 void       nautilus_thumbnail_prioritize            (const char   *file_uri);
-
-
-#endif /* NAUTILUS_THUMBNAILS_H */

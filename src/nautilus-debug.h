@@ -21,8 +21,7 @@
  * Based on Empathy's empathy-debug.
  */
 
-#ifndef __NAUTILUS_DEBUG_H__
-#define __NAUTILUS_DEBUG_H__
+#pragma once
 
 #include <config.h>
 #include <glib.h>
@@ -75,5 +74,3 @@ void nautilus_debug_files (DebugFlags flag, GList *files,
 #endif /* DEBUG_FLAG */
 
 G_END_DECLS
-
-#endif /* __NAUTILUS_DEBUG_H__ */

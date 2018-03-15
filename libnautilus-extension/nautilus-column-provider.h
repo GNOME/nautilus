@@ -27,8 +27,7 @@
  * returned column refers to a string attribute which can be filled in
  * by NautilusInfoProvider */
 
-#ifndef NAUTILUS_COLUMN_PROVIDER_H
-#define NAUTILUS_COLUMN_PROVIDER_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."
@@ -69,5 +68,3 @@ struct _NautilusColumnProviderInterface
 GList *nautilus_column_provider_get_columns (NautilusColumnProvider *provider);
 
 G_END_DECLS
-
-#endif

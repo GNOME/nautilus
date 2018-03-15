@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_CONTAINER_MAX_WIDTH_H
-#define NAUTILUS_CONTAINER_MAX_WIDTH_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -17,6 +16,3 @@ void nautilus_container_max_width_set_max_width (NautilusContainerMaxWidth *self
 guint nautilus_container_max_width_get_max_width (NautilusContainerMaxWidth *self);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_CONTAINER_MAX_WIDTH_H */
-

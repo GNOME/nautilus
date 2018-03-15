@@ -22,8 +22,7 @@
  *
  */
 
-#ifndef NAUTILUS_CANVAS_VIEW_H
-#define NAUTILUS_CANVAS_VIEW_H
+#pragma once
 
 #include "nautilus-files-view.h"
 #include "nautilus-canvas-container.h"
@@ -43,5 +42,3 @@ NautilusFilesView * nautilus_canvas_view_new (NautilusWindowSlot *slot);
 NautilusCanvasContainer * nautilus_canvas_view_get_canvas_container (NautilusCanvasView *view);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_CANVAS_VIEW_H */

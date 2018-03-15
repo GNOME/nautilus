@@ -26,12 +26,7 @@
  * needs information about a file.  They are passed a NautilusFileInfo 
  * object which should be filled with relevant information */
 
-#ifndef NAUTILUS_INFO_PROVIDER_H
-#define NAUTILUS_INFO_PROVIDER_H
-
-#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
-#warning "Only <nautilus-extension.h> should be included directly."
-#endif
+#pragma once
 
 #include <glib-object.h>
 #include "nautilus-file-info.h"
@@ -125,5 +120,3 @@ void                    nautilus_info_provider_update_complete_invoke (GClosure 
                                                                        NautilusOperationResult   result);
 
 G_END_DECLS
-
-#endif

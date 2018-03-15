@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef IDE_BOX_THEATRIC_H
-#define IDE_BOX_THEATRIC_H
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -29,5 +28,3 @@ G_DECLARE_FINAL_TYPE (IdeBoxTheatric, ide_box_theatric,
                       IDE, BOX_THEATRIC, GObject)
 
 G_END_DECLS
-
-#endif /* IDE_BOX_THEATRIC_H */
