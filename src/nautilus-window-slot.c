@@ -2770,40 +2770,29 @@ static void
 nautilus_window_slot_dispose (GObject *object)
 {
     NautilusWindowSlot *self;
-
-    self = NAUTILUS_WINDOW_SLOT (object);
-
-    g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), self);
-
-    G_OBJECT_CLASS (nautilus_window_slot_parent_class)->dispose (object);
-}
-
-static void
-nautilus_window_slot_finalize (GObject *object)
-{
-    NautilusWindowSlot *self;
-    GtkWidget *widget;
     NautilusWindowSlotPrivate *priv;
 
     self = NAUTILUS_WINDOW_SLOT (object);
     priv = nautilus_window_slot_get_instance_private (self);
+
+    g_signal_handlers_disconnect_by_data (nautilus_trash_monitor_get (), self);
 
     nautilus_window_slot_clear_forward_list (self);
     nautilus_window_slot_clear_back_list (self);
 
     nautilus_window_slot_remove_extra_location_widgets (self);
 
+    nautilus_window_slot_set_active (self, FALSE);
+
     if (priv->content_view)
     {
-        widget = GTK_WIDGET (priv->content_view);
-        gtk_widget_destroy (widget);
+        gtk_widget_destroy (GTK_WIDGET (priv->content_view));
         g_clear_object (&priv->content_view);
     }
 
     if (priv->new_content_view)
     {
-        widget = GTK_WIDGET (priv->new_content_view);
-        gtk_widget_destroy (widget);
+        gtk_widget_destroy (GTK_WIDGET (priv->new_content_view));
         g_clear_object (&priv->new_content_view);
     }
 
@@ -2819,14 +2808,21 @@ nautilus_window_slot_finalize (GObject *object)
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
 
-    if (priv->window)
-    {
-        gtk_widget_insert_action_group (GTK_WIDGET (priv->window), "slot", NULL);
-        priv->window = NULL;
-    }
+    free_location_change (self);
+
+    G_OBJECT_CLASS (nautilus_window_slot_parent_class)->dispose (object);
+}
+
+static void
+nautilus_window_slot_finalize (GObject *object)
+{
+    NautilusWindowSlot *self;
+    NautilusWindowSlotPrivate *priv;
+
+    self = NAUTILUS_WINDOW_SLOT (object);
+    priv = nautilus_window_slot_get_instance_private (self);
 
     g_clear_pointer (&priv->title, g_free);
-    free_location_change (self);
 
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->finalize (object);
 }
