@@ -22,16 +22,11 @@
  *
  */
 
-#ifndef NAUTILUS_MENU_H
-#define NAUTILUS_MENU_H
+#pragma once
 
 #include <glib-object.h>
 /* This should be removed at some point. */
 #include "nautilus-extension-types.h"
-
-#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
-#warning "Only <nautilus-extension.h> should be included directly."
-#endif
 
 G_BEGIN_DECLS
 
@@ -81,5 +76,3 @@ void              nautilus_menu_item_set_submenu (NautilusMenuItem *item,
  */
 
 G_END_DECLS
-
-#endif /* NAUTILUS_MENU_H */

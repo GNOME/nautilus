@@ -16,8 +16,7 @@
  * License along with libnautilus-extension.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_EXTENSION_H
-#define NAUTILUS_EXTENSION_H
+#pragma once
 
 #include <libnautilus-extension/nautilus-column-provider.h>
 #include <libnautilus-extension/nautilus-column.h>
@@ -39,5 +38,3 @@ void nautilus_module_initialize (GTypeModule  *module);
 void nautilus_module_shutdown   (void);
 void nautilus_module_list_types (const GType **types,
                                  int          *num_types);
-
-#endif

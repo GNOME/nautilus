@@ -22,8 +22,7 @@
  *         Ettore Perazzoli <ettore@gnu.org>
  */
 
-#ifndef NAUTILUS_LOCATION_ENTRY_H
-#define NAUTILUS_LOCATION_ENTRY_H
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -50,5 +49,3 @@ void       nautilus_location_entry_set_secondary_action (NautilusLocationEntry *
 							 NautilusLocationEntryAction secondary_action);
 void       nautilus_location_entry_set_location         (NautilusLocationEntry *entry,
 							 GFile                 *location);
-
-#endif /* NAUTILUS_LOCATION_ENTRY_H */

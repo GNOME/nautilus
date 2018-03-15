@@ -24,8 +24,7 @@
             John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef EEL_VFS_EXTENSIONS_H
-#define EEL_VFS_EXTENSIONS_H
+#pragma once
 
 #include <glib.h>
 
@@ -48,5 +47,3 @@ void               eel_filename_get_rename_region        (const char           *
 char *             eel_filename_get_extension_offset     (const char           *filename);
 
 G_END_DECLS
-
-#endif /* EEL_VFS_EXTENSIONS_H */

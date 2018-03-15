@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_FILE_H
-#define NAUTILUS_FILE_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -616,5 +615,3 @@ typedef struct {
 
 	void                 (* poll_for_media)          (NautilusFile                   *file);
 } NautilusFileClass;
-
-#endif /* NAUTILUS_FILE_H */
