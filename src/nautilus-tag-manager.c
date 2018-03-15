@@ -67,7 +67,7 @@ enum
     LAST_SIGNAL
 };
 
-#define STARRED_TAG "<urn:gnome:nautilus:starred>"
+#define STARRED_TAG "<urn:gnome:tag-files-starred>"
 
 static guint signals[LAST_SIGNAL];
 
