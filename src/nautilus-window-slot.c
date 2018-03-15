@@ -2793,6 +2793,8 @@ nautilus_window_slot_dispose (GObject *object)
 
     nautilus_window_slot_remove_extra_location_widgets (self);
 
+    nautilus_window_slot_set_active (self, FALSE);
+
     if (priv->content_view)
     {
         gtk_widget_destroy (GTK_WIDGET (priv->content_view));
@@ -2816,15 +2818,6 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&priv->slot_action_group);
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
-
-    if (priv->window)
-    {
-        gtk_widget_insert_action_group (GTK_WIDGET (priv->window), "slot", NULL);
-        priv->window = NULL;
-    }
-
-    g_free (priv->title);
-    priv->title = NULL;
 
     free_location_change (self);
 
