@@ -16,6 +16,8 @@
  * License along with libnautilus-extension.  If not, see <https://www.gnu.org/licenses/>.
  */
 
+#pragma once
+
 #ifndef NAUTILUS_EXTENSION_H
 #define NAUTILUS_EXTENSION_H
 
@@ -39,5 +41,3 @@ void nautilus_module_initialize (GTypeModule  *module);
 void nautilus_module_shutdown   (void);
 void nautilus_module_list_types (const GType **types,
                                  int          *num_types);
-
-#endif

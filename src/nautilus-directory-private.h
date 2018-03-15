@@ -19,6 +19,8 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
+#pragma once
+
 #include <gio/gio.h>
 #include <eel/eel-vfs-extensions.h>
 #include "nautilus-directory.h"

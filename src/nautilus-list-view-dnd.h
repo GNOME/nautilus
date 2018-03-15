@@ -15,8 +15,8 @@
  * You should have received a copy of the GNU General Public License
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
-#ifndef NAUTILUS_LIST_VIEW_DND_H
-#define NAUTILUS_LIST_VIEW_DND_H
+
+#pragma once
 
 #include <gdk/gdk.h>
 
@@ -30,5 +30,3 @@ gboolean nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
 NautilusDragInfo *
 nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
                                              GdkDragContext   *context);
-
-#endif /* NAUTILUS_LIST_VIEW_DND_H */

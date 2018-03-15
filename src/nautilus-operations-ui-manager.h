@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_OPERATIONS_UI_MANAGER
-#define NAUTILUS_OPERATIONS_UI_MANAGER
+#pragma once
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -26,5 +25,3 @@ enum
 
 void handle_unsupported_compressed_file (GtkWindow *parent_window,
                                          GFile     *compressed_file);
-
-#endif /* NAUTILUS_OPERATIONS_UI_MANAGER */

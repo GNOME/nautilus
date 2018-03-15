@@ -23,8 +23,7 @@
 /* nautilus-bookmark-list.h - interface for centralized list of bookmarks.
  */
 
-#ifndef NAUTILUS_BOOKMARK_LIST_H
-#define NAUTILUS_BOOKMARK_LIST_H
+#pragma once
 
 #include "nautilus-bookmark.h"
 #include <gio/gio.h>
@@ -46,5 +45,3 @@ gboolean                nautilus_bookmark_list_can_bookmark_location (NautilusBo
 GList *                 nautilus_bookmark_list_get_all             (NautilusBookmarkList   *bookmarks);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_BOOKMARK_LIST_H */

@@ -19,8 +19,7 @@
    Authors: Jonathan Blandford <jrb@redhat.com>
 */
 
-#ifndef NAUTILUS_LINK_H
-#define NAUTILUS_LINK_H
+#pragma once
 
 #include <gdk/gdk.h>
 
@@ -44,5 +43,3 @@ void             nautilus_link_get_link_info_given_file_contents (const char    
 								  char             **name,
 								  GIcon            **icon,
 								  gboolean          *is_launcher);
-
-#endif /* NAUTILUS_LINK_H */

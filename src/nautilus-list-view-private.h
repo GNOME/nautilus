@@ -18,6 +18,8 @@
 
 /* Data and functions shared between list view and list view dnd */
 
+#pragma once
+
 #include "nautilus-list-model.h"
 #include "nautilus-tree-view-drag-dest.h"
 #include "nautilus-dnd.h"
