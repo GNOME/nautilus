@@ -678,15 +678,33 @@ button_press_callback (GtkWidget      *widget,
     }
     else
     {
+        GList *selected_rows = NULL;
         /* We're going to filter out some situations where
          * we can't let the default code run because all
          * but one row would be would be deselected. We don't
          * want that; we want the right click menu or single
          * click to apply to everything that's currently selected.
          */
-        if (event->button == GDK_BUTTON_SECONDARY && path_selected)
+        if (event->button == GDK_BUTTON_SECONDARY)
         {
             call_parent = FALSE;
+
+            if (!path_selected)
+            {
+
+                if ((event->state & GDK_SHIFT_MASK) != 0)
+                {
+                    gtk_tree_view_set_cursor (tree_view, path, column, FALSE);
+                }
+                else if ((event->state & GDK_CONTROL_MASK) != 0)
+                {
+                    gtk_tree_selection_select_path (selection, path);
+                }
+                else
+                {
+                    gtk_tree_view_set_cursor (tree_view, path, column, FALSE);
+                }
+            }
         }
 
         if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
@@ -701,7 +719,7 @@ button_press_callback (GtkWidget      *widget,
             }
             else if ((event->state & GDK_CONTROL_MASK) != 0)
             {
-                GList *selected_rows, *l;
+                GList *l;
 
                 call_parent = FALSE;
                 if ((event->state & GDK_SHIFT_MASK) != 0)
