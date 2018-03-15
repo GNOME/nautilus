@@ -38,12 +38,51 @@ struct _NautilusRenameFilePopoverController
     gboolean target_is_folder;
 
     GtkWidget *rename_file_popover;
+    GtkWidget *name_entry;
+    GtkWidget *name_label;
 
     gint closed_handler_id;
     gint file_changed_handler_id;
+    gint key_press_event_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
+
+static void
+disconnect_signal_handlers (NautilusRenameFilePopoverController *self)
+{
+    g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
+
+    if (self->closed_handler_id != 0)
+    {
+        g_signal_handler_disconnect (self->rename_file_popover, self->closed_handler_id);
+        self->closed_handler_id = 0;
+    }
+
+    if (self->file_changed_handler_id != 0)
+    {
+        g_signal_handler_disconnect (self->target_file, self->file_changed_handler_id);
+        self->file_changed_handler_id = 0;
+    }
+
+    if (self->key_press_event_handler_id != 0)
+    {
+        g_signal_handler_disconnect (self->name_entry, self->key_press_event_handler_id);
+        self->key_press_event_handler_id = 0;
+    }
+}
+
+static void
+reset_state (NautilusRenameFilePopoverController *self)
+{
+    g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
+
+    disconnect_signal_handlers (self);
+
+    g_clear_object (&self->target_file);
+
+    gtk_popover_popdown (GTK_POPOVER (self->rename_file_popover));
+}
 
 static void
 rename_file_popover_controller_on_closed (GtkPopover *popover,
@@ -53,9 +92,7 @@ rename_file_popover_controller_on_closed (GtkPopover *popover,
 
     controller = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
 
-    g_signal_handler_disconnect (controller->rename_file_popover,
-                                 controller->closed_handler_id);
-    controller->closed_handler_id = 0;
+    reset_state (controller);
 
     g_signal_emit_by_name (controller, "cancelled");
 }
@@ -137,7 +174,7 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
     text_length = (guint) gtk_entry_get_text_length (GTK_ENTRY (widget));
     if (text_length == 0)
     {
-        return GDK_EVENT_PROPAGATE;
+        return GDK_EVENT_STOP;
     }
 
     gtk_editable_get_selection_bounds (GTK_EDITABLE (widget),
@@ -160,7 +197,7 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
                                     start_offset, end_offset);
     }
 
-    return GDK_EVENT_PROPAGATE;
+    return GDK_EVENT_STOP;
 }
 
 static gboolean
@@ -212,18 +249,14 @@ target_file_on_changed (NautilusFile *file,
 
     if (nautilus_file_is_gone (file))
     {
-        g_signal_handler_disconnect (controller->target_file,
-                                     controller->file_changed_handler_id);
-        controller->file_changed_handler_id = 0;
+        reset_state (controller);
 
         g_signal_emit_by_name (controller, "cancelled");
     }
 }
 
 NautilusRenameFilePopoverController *
-nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
-                                             GdkRectangle *pointing_to,
-                                             GtkWidget    *relative_to)
+nautilus_rename_file_popover_controller_new (void)
 {
     NautilusRenameFilePopoverController *self;
     g_autoptr (GtkBuilder) builder = NULL;
@@ -233,9 +266,6 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
     GtkWidget *name_entry;
     GtkWidget *activate_button;
     GtkWidget *name_label;
-    NautilusDirectory *containing_directory;
-    g_autofree char *display_name = NULL;
-    gint n_chars;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-rename-file-popover.ui");
     rename_file_popover = GTK_WIDGET (gtk_builder_get_object (builder, "rename_file_popover"));
@@ -245,79 +275,20 @@ nautilus_rename_file_popover_controller_new (NautilusFile *target_file,
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "rename_button"));
     name_label = GTK_WIDGET (gtk_builder_get_object (builder, "name_label"));
 
-    if (!nautilus_file_is_self_owned (target_file))
-    {
-        NautilusFile *parent_location;
-
-        parent_location = nautilus_file_get_parent (target_file);
-        containing_directory = nautilus_directory_get_for_file (parent_location);
-
-        nautilus_file_unref (parent_location);
-    }
-    else
-    {
-        containing_directory = nautilus_directory_get_for_file (target_file);
-    }
-
     self = g_object_new (NAUTILUS_TYPE_RENAME_FILE_POPOVER_CONTROLLER,
                          "error-revealer", error_revealer,
                          "error-label", error_label,
                          "name-entry", name_entry,
                          "activate-button", activate_button,
-                         "containing-directory", containing_directory, NULL);
+                         NULL);
 
-    self->target_is_folder = nautilus_file_is_directory (target_file);
-    self->target_file = nautilus_file_ref (target_file);
-
-    self->rename_file_popover = rename_file_popover;
-
-    self->closed_handler_id = g_signal_connect (rename_file_popover,
-                                                "closed",
-                                                (GCallback) rename_file_popover_controller_on_closed,
-                                                self);
-
-    self->file_changed_handler_id = g_signal_connect (self->target_file,
-                                                      "changed",
-                                                      G_CALLBACK (target_file_on_changed),
-                                                      self);
-
-    g_signal_connect (name_entry,
-                      "key-press-event",
-                      G_CALLBACK (name_entry_on_key_pressed),
-                      self);
-
-    gtk_label_set_text (GTK_LABEL (name_label),
-                        self->target_is_folder ? _("Folder name") :
-                        _("File name"));
-
-    display_name = nautilus_file_get_display_name (target_file);
-
-    gtk_entry_set_text (GTK_ENTRY (name_entry), display_name);
+    self->rename_file_popover = g_object_ref_sink (rename_file_popover);
+    self->name_entry = name_entry;
+    self->name_label = name_label;
 
     gtk_popover_set_default_widget (GTK_POPOVER (rename_file_popover), name_entry);
-    gtk_popover_set_pointing_to (GTK_POPOVER (rename_file_popover), pointing_to);
-    gtk_popover_set_relative_to (GTK_POPOVER (rename_file_popover), relative_to);
 
-    gtk_popover_popup (GTK_POPOVER (rename_file_popover));
-
-    if (nautilus_file_is_regular_file (target_file))
-    {
-        gint start_offset;
-        gint end_offset;
-
-        /* Select the name part without the file extension */
-        eel_filename_get_rename_region (display_name,
-                                        &start_offset, &end_offset);
-        gtk_editable_select_region (GTK_EDITABLE (name_entry),
-                                    start_offset, end_offset);
-    }
-
-    n_chars = g_utf8_strlen (display_name, -1);
-    gtk_entry_set_width_chars (GTK_ENTRY (name_entry),
-                               MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
-                                    RENAME_ENTRY_MAX_CHARS));
-
-    nautilus_directory_unref (containing_directory);
+    g_clear_object (&builder);
 
     return self;
 }
@@ -330,9 +301,100 @@ nautilus_rename_file_popover_controller_get_target_file (NautilusRenameFilePopov
     return self->target_file;
 }
 
+void
+nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopoverController *self,
+                                                         NautilusFile                        *target_file,
+                                                         GdkRectangle                        *pointing_to,
+                                                         GtkWidget                           *relative_to)
+{
+    g_autoptr (NautilusDirectory) containing_directory = NULL;
+    g_autofree gchar *display_name = NULL;
+    gint n_chars;
+
+    g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
+    g_assert (NAUTILUS_IS_FILE (target_file));
+
+    reset_state (self);
+
+    self->target_file = g_object_ref (target_file);
+
+    if (!nautilus_file_is_self_owned (self->target_file))
+    {
+        g_autoptr (NautilusFile) parent = NULL;
+
+        parent = nautilus_file_get_parent (self->target_file);
+        containing_directory = nautilus_directory_get_for_file (parent);
+    }
+    else
+    {
+        containing_directory = nautilus_directory_get_for_file (self->target_file);
+    }
+
+    nautilus_file_name_widget_controller_set_containing_directory (NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (self),
+                                                                   containing_directory);
+
+    self->target_is_folder = nautilus_file_is_directory (self->target_file);
+
+    self->closed_handler_id = g_signal_connect (self->rename_file_popover,
+                                                "closed",
+                                                G_CALLBACK (rename_file_popover_controller_on_closed),
+                                                self);
+
+    self->file_changed_handler_id = g_signal_connect (self->target_file,
+                                                      "changed",
+                                                      G_CALLBACK (target_file_on_changed),
+                                                      self);
+
+    self->key_press_event_handler_id = g_signal_connect (self->name_entry,
+                                                         "key-press-event",
+                                                         G_CALLBACK (name_entry_on_key_pressed),
+                                                         self);
+
+    gtk_label_set_text (GTK_LABEL (self->name_label),
+                        self->target_is_folder ? _("Folder name") :
+                        _("File name"));
+
+    display_name = nautilus_file_get_display_name (self->target_file);
+
+    gtk_entry_set_text (GTK_ENTRY (self->name_entry), display_name);
+
+    gtk_popover_set_pointing_to (GTK_POPOVER (self->rename_file_popover), pointing_to);
+    gtk_popover_set_relative_to (GTK_POPOVER (self->rename_file_popover), relative_to);
+
+    gtk_popover_popup (GTK_POPOVER (self->rename_file_popover));
+
+    if (nautilus_file_is_regular_file (self->target_file))
+    {
+        gint start_offset;
+        gint end_offset;
+
+        /* Select the name part without the file extension */
+        eel_filename_get_rename_region (display_name,
+                                        &start_offset, &end_offset);
+        gtk_editable_select_region (GTK_EDITABLE (self->name_entry),
+                                    start_offset, end_offset);
+    }
+
+    n_chars = g_utf8_strlen (display_name, -1);
+    gtk_entry_set_width_chars (GTK_ENTRY (self->name_entry),
+                               MIN (MAX (n_chars, RENAME_ENTRY_MIN_CHARS),
+                                    RENAME_ENTRY_MAX_CHARS));
+}
+
+static void
+on_name_accepted (NautilusFileNameWidgetController *controller)
+{
+    NautilusRenameFilePopoverController *self;
+
+    self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
+
+    reset_state (self);
+}
+
 static void
 nautilus_rename_file_popover_controller_init (NautilusRenameFilePopoverController *self)
 {
+    g_signal_connect_after (self, "name-accepted", G_CALLBACK (on_name_accepted), self);
 }
 
 static void
@@ -342,25 +404,10 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
 
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (object);
 
-    if (self->rename_file_popover)
-    {
-        if (self->closed_handler_id)
-        {
-            g_signal_handler_disconnect (self->rename_file_popover,
-                                         self->closed_handler_id);
-            self->closed_handler_id = 0;
-        }
-        gtk_popover_popdown (GTK_POPOVER (self->rename_file_popover));
-        g_clear_pointer (&self->rename_file_popover, gtk_widget_destroy);
-    }
+    reset_state (self);
 
-    if (self->file_changed_handler_id != 0)
-    {
-        g_signal_handler_disconnect (self->target_file,
-                                     self->file_changed_handler_id);
-        self->file_changed_handler_id = 0;
-    }
-    nautilus_file_unref (self->target_file);
+    gtk_widget_destroy (self->rename_file_popover);
+    g_clear_object (&self->rename_file_popover);
 
     G_OBJECT_CLASS (nautilus_rename_file_popover_controller_parent_class)->finalize (object);
 }
