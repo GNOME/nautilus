@@ -19,8 +19,8 @@
 
    Authors: Alexander Larsson <alexl@redhat.com>
 */
-#ifndef NAUTILUS_UI_UTILITIES_H
-#define NAUTILUS_UI_UTILITIES_H
+
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -49,5 +49,3 @@ gchar*     get_text_for_date_range                 (GPtrArray         *date_rang
 GtkDialog *    show_error_dialog                   (const gchar *primary_text,
                                                     const gchar *secondary_text,
                                                     GtkWindow   *parent);
-
-#endif /* NAUTILUS_UI_UTILITIES_H */

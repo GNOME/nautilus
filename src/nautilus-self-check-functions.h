@@ -23,7 +23,8 @@
 /* nautilus-self-check-functions.h: Wrapper and prototypes for all self
  * check functions in Nautilus proper.
  */
-  
+
+#pragma once
 
 void nautilus_run_self_checks (void);
 

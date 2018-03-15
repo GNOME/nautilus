@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef NAUTILUS_QUERY_H
-#define NAUTILUS_QUERY_H
+#pragma once
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -82,5 +81,3 @@ gdouble        nautilus_query_matches_string     (NautilusQuery *query, const gc
 char *         nautilus_query_to_readable_string (NautilusQuery *query);
 
 gboolean       nautilus_query_is_empty           (NautilusQuery *query);
-
-#endif /* NAUTILUS_QUERY_H */

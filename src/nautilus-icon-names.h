@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_ICON_NAMES_H
-#define NAUTILUS_ICON_NAMES_H
+#pragma once
 
 /* Icons for places */
 #define NAUTILUS_ICON_FILESYSTEM	"drive-harddisk-symbolic"
@@ -25,6 +24,3 @@
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_PUBLIC_SHARE "folder-publicshare"
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_TEMPLATES    "folder-templates"
 #define NAUTILUS_ICON_FULLCOLOR_FOLDER_VIDEOS       "folder-videos"
-
-#endif /* NAUTILUS_ICON_NAMES_H */
-

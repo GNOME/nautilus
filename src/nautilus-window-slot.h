@@ -19,8 +19,7 @@
    Author: Christian Neumair <cneumair@gnome.org>
 */
 
-#ifndef NAUTILUS_WINDOW_SLOT_H
-#define NAUTILUS_WINDOW_SLOT_H
+#pragma once
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
@@ -124,5 +123,3 @@ RestoreTabData* nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *s
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
-
-#endif /* NAUTILUS_WINDOW_SLOT_H */

@@ -27,12 +27,7 @@
  * list of NautilusFileInfo objects for which information should
  * be displayed  */
 
-#ifndef NAUTILUS_PROPERTY_PAGE_PROVIDER_H
-#define NAUTILUS_PROPERTY_PAGE_PROVIDER_H
-
-#if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
-#warning "Only <nautilus-extension.h> should be included directly."
-#endif
+#pragma once
 
 #include <glib-object.h>
 /* These should be removed at some point. */
@@ -73,5 +68,3 @@ GList *nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *
                                                   GList                        *files);
 
 G_END_DECLS
-
-#endif

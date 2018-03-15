@@ -21,8 +21,7 @@
  *
  */
 
-#ifndef __NAUTILUS_SHELL_SEARCH_PROVIDER_H__
-#define __NAUTILUS_SHELL_SEARCH_PROVIDER_H__
+#pragma once
 
 #define NAUTILUS_TYPE_SHELL_SEARCH_PROVIDER nautilus_shell_search_provider_get_type()
 #define NAUTILUS_SHELL_SEARCH_PROVIDER(obj) \
@@ -38,5 +37,3 @@ gboolean nautilus_shell_search_provider_register   (NautilusShellSearchProvider 
                                                     GDBusConnection             *connection,
                                                     GError                     **error);
 void     nautilus_shell_search_provider_unregister (NautilusShellSearchProvider *self);
-
-#endif /* __NAUTILUS_SHELL_SEARCH_PROVIDER_H__ */
