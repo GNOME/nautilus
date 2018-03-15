@@ -121,7 +121,9 @@ subdir('eel')
 subdir('libnautilus-extension')
 
 subdir('src')
-subdir('test')
+if get_option('tests') != 'none'
+  subdir('test')
+endif
 subdir('data')
 subdir('po')
 if get_option('docs')
