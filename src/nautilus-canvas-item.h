@@ -19,8 +19,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_CANVAS_ITEM_H
-#define NAUTILUS_CANVAS_ITEM_H
+#pragma once
 
 #include <eel/eel-canvas.h>
 #include <eel/eel-art-extensions.h>
@@ -95,5 +94,3 @@ void        nautilus_canvas_item_set_entire_text          (NautilusCanvasItem   
 							   gboolean                  entire_text);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_CANVAS_ITEM_H */

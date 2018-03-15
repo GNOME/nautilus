@@ -20,8 +20,7 @@
  * 
  */
 
-#ifndef NAUTILUS_DESKTOP_ITEM_PROPERTIES_H
-#define NAUTILUS_DESKTOP_ITEM_PROPERTIES_H
+#pragma once
 
 #include <glib.h>
 #include <glib-object.h>
@@ -42,5 +41,3 @@ GtkWidget *nautilus_desktop_item_properties_make_box (GtkSizeGroup *label_size_g
 gboolean   nautilus_desktop_item_properties_should_show (GList *files);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_DESKTOP_ITEM_PROPERTIES_H */

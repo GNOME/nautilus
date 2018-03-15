@@ -21,8 +21,7 @@
  *
  */
 
-#ifndef NAUTILUS_PROPERTY_PAGE_H
-#define NAUTILUS_PROPERTY_PAGE_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."
@@ -52,5 +51,3 @@ NautilusPropertyPage *nautilus_property_page_new (const char *name,
  */
 
 G_END_DECLS
-
-#endif

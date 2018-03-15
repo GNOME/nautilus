@@ -20,8 +20,7 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef NAUTILUS_FILE_UTILITIES_H
-#define NAUTILUS_FILE_UTILITIES_H
+#pragma once
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
@@ -127,5 +126,3 @@ gboolean nautilus_file_can_rename_files (GList *files);
 GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gchar * nautilus_uri_to_native_uri (const gchar *uri);
-
-#endif /* NAUTILUS_FILE_UTILITIES_H */

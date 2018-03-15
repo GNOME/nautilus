@@ -20,8 +20,7 @@
  * Authors: Cosimo Cecchi <cosimoc@redhat.com>
  */
 
-#ifndef __NAUTILUS_KEYFILE_METADATA_H__
-#define __NAUTILUS_KEYFILE_METADATA_H__
+#pragma once
 
 #include <glib.h>
 
@@ -42,5 +41,3 @@ void nautilus_keyfile_metadata_set_stringv (NautilusFile *file,
 gboolean nautilus_keyfile_metadata_update_from_keyfile (NautilusFile *file,
                                                         const char *keyfile_filename,
                                                         const gchar *name);
-
-#endif /* __NAUTILUS_KEYFILE_METADATA_H__ */

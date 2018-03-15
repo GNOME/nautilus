@@ -20,8 +20,7 @@
    Author: Ettore Perazzoli <ettore@gnu.org>
 */
 
-#ifndef NAUTILUS_CANVAS_CONTAINER_PRIVATE_H
-#define NAUTILUS_CANVAS_CONTAINER_PRIVATE_H
+#pragma once
 
 #include <eel/eel-glib-extensions.h>
 #include "nautilus-canvas-item.h"
@@ -223,5 +222,3 @@ gboolean      nautilus_canvas_container_scroll                      (NautilusCan
 								     int                    delta_x,
 								     int                    delta_y);
 void          nautilus_canvas_container_update_scroll_region        (NautilusCanvasContainer *container);
-
-#endif /* NAUTILUS_CANVAS_CONTAINER_PRIVATE_H */

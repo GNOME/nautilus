@@ -16,8 +16,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_STARRED_DIRECTORY_H
-#define NAUTILUS_STARRED_DIRECTORY_H
+#pragma once
 
 #include "nautilus-directory.h"
 
@@ -32,5 +31,3 @@ G_DECLARE_FINAL_TYPE (NautilusFavoriteDirectory, nautilus_starred_directory, NAU
 NautilusFavoriteDirectory* nautilus_starred_directory_new      (void);
 
 G_END_DECLS
-
-#endif

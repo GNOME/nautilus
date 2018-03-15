@@ -22,8 +22,7 @@
  * provides access to the asynchronous data in the NautilusFile.
  * Extensions are passed objects of this type for operations. */
 
-#ifndef NAUTILUS_FILE_INFO_H
-#define NAUTILUS_FILE_INFO_H
+#pragma once
 
 #if !defined (NAUTILUS_EXTENSION_H) && !defined (NAUTILUS_COMPILATION)
 #warning "Only <nautilus-extension.h> should be included directly."
@@ -172,5 +171,3 @@ NautilusFileInfo *nautilus_file_info_lookup_for_uri        (const char *uri);
 NautilusFileInfo *nautilus_file_info_create_for_uri        (const char *uri);
 
 G_END_DECLS
-
-#endif

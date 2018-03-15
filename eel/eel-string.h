@@ -20,8 +20,7 @@
    Authors: Darin Adler <darin@eazel.com>
 */
 
-#ifndef EEL_STRING_H
-#define EEL_STRING_H
+#pragma once
 
 #include <glib.h>
 #include <string.h>
@@ -87,5 +86,3 @@ eel_ref_str eel_ref_str_ref        (eel_ref_str  str);
 void        eel_ref_str_unref      (eel_ref_str  str);
 
 #define eel_ref_str_peek(__str) ((const char *)(__str))
-
-#endif /* EEL_STRING_H */

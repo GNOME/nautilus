@@ -16,8 +16,7 @@
  * along with Nautilus.  If not, see <https://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_IMAGE_PROPERTIES_PAGE_PROVIDER_H
-#define NAUTILUS_IMAGE_PROPERTIES_PAGE_PROVIDER_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -29,5 +28,3 @@ G_DECLARE_FINAL_TYPE (NautilusImagesPropertiesPageProvider,
                       GObject)
 
 void nautilus_image_properties_page_provider_load (GTypeModule *module);
-
-#endif

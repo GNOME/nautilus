@@ -20,8 +20,7 @@
    Author: Pavel Cisler <pavel@eazel.com>
 */
 
-#ifndef NAUTILUS_TRASH_MONITOR_H
-#define NAUTILUS_TRASH_MONITOR_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -59,5 +58,3 @@ GType			nautilus_trash_monitor_get_type				(void);
 NautilusTrashMonitor   *nautilus_trash_monitor_get 				(void);
 gboolean		nautilus_trash_monitor_is_empty 			(void);
 GIcon                  *nautilus_trash_monitor_get_icon                         (void);
-
-#endif

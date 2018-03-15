@@ -20,8 +20,7 @@
    Author: Michael Meeks <michael@ximian.com>
 */
 
-#ifndef NAUTILUS_CANVAS_VIEW_CONTAINER_H
-#define NAUTILUS_CANVAS_VIEW_CONTAINER_H
+#pragma once
 
 #include "nautilus-canvas-view.h"
 
@@ -60,5 +59,3 @@ GType                  nautilus_canvas_view_container_get_type         (void);
 NautilusCanvasContainer *nautilus_canvas_view_container_construct        (NautilusCanvasViewContainer *canvas_container,
 								      NautilusCanvasView      *view);
 NautilusCanvasContainer *nautilus_canvas_view_container_new              (NautilusCanvasView      *view);
-
-#endif /* NAUTILUS_CANVAS_VIEW_CONTAINER_H */
