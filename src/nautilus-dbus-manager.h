@@ -20,8 +20,7 @@
  *
  */
 
-#ifndef __NAUTILUS_DBUS_MANAGER_H__
-#define __NAUTILUS_DBUS_MANAGER_H__
+#pragma once
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -36,5 +35,3 @@ gboolean nautilus_dbus_manager_register   (NautilusDBusManager *self,
                                            GDBusConnection     *connection,
                                            GError             **error);
 void     nautilus_dbus_manager_unregister (NautilusDBusManager *self);
-
-#endif /* __NAUTILUS_DBUS_MANAGER_H__ */

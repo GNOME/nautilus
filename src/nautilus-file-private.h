@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_FILE_PRIVATE_H
-#define NAUTILUS_FILE_PRIVATE_H
+#pragma once
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
@@ -288,5 +287,3 @@ void                   nautilus_file_operation_complete (NautilusFileOperation  
 							 GFile                         *result_location,
 							 GError                        *error);
 void                   nautilus_file_operation_cancel   (NautilusFileOperation         *op);
-
-#endif

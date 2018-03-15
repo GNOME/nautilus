@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@eazel.com>
 */
 
-#ifndef EEL_DEBUG_H
-#define EEL_DEBUG_H
+#pragma once
 
 #include <glib.h>
 
@@ -39,5 +38,3 @@ void eel_debug_call_at_shutdown_with_data             (GFreeFunc   function,
 						       gpointer    data);
 
 G_END_DECLS
-
-#endif /* EEL_DEBUG_H */

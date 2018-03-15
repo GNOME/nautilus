@@ -19,6 +19,8 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
+#pragma once
+
 #include <gdk/gdk.h>
 #include "nautilus-file.h"
 

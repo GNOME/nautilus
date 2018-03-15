@@ -24,8 +24,7 @@
  * correspond to any particular object.
  */
 
-#ifndef NAUTILUS_SIGNALLER_H
-#define NAUTILUS_SIGNALLER_H
+#pragma once
 
 #include <glib-object.h>
 
@@ -40,5 +39,3 @@
 
 /* Get the one and only NautilusSignaller to connect with or emit signals for */
 GObject *nautilus_signaller_get_current (void);
-
-#endif /* NAUTILUS_SIGNALLER_H */

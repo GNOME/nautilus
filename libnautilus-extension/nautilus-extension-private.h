@@ -20,8 +20,7 @@
  * 
  */
 
-#ifndef NAUTILUS_EXTENSION_PRIVATE_H
-#define NAUTILUS_EXTENSION_PRIVATE_H
+#pragma once
 
 #include <libnautilus-extension/nautilus-file-info.h>
 
@@ -30,5 +29,3 @@ G_BEGIN_DECLS
 extern NautilusFileInfo *(*nautilus_file_info_getter) (GFile *location, gboolean create);
 
 G_END_DECLS
-
-#endif
