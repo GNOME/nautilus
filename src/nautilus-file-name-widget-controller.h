@@ -47,5 +47,6 @@ struct _NautilusFileNameWidgetControllerClass
 
 gchar * nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *controller);
 
-
+void    nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *controller,
+                                                                       NautilusDirectory                *directory);
 #endif /* NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_H */

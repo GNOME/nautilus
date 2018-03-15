@@ -269,6 +269,9 @@ typedef struct
 
     GCancellable *starred_cancellable;
     NautilusTagManager *tag_manager;
+
+    gint name_accepted_handler_id;
+    gint cancelled_handler_id;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -1885,6 +1888,29 @@ nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 }
 
 static void
+disconnect_rename_controller_signals (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (self));
+
+    priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->name_accepted_handler_id != 0)
+    {
+        g_signal_handler_disconnect (priv->rename_file_controller, priv->name_accepted_handler_id);
+        priv->name_accepted_handler_id = 0;
+    }
+
+    if (priv->cancelled_handler_id != 0)
+    {
+        g_signal_handler_disconnect (priv->rename_file_controller,
+                                     priv->cancelled_handler_id);
+        priv->cancelled_handler_id = 0;
+    }
+}
+
+static void
 rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
                                                  gpointer                          user_data)
 {
@@ -1908,7 +1934,7 @@ rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetControlle
 
     nautilus_rename_file (target_file, name, NULL, NULL);
 
-    g_clear_object (&priv->rename_file_controller);
+    disconnect_rename_controller_signals (view);
 }
 
 static void
@@ -1916,12 +1942,10 @@ rename_file_popover_controller_on_cancelled (NautilusFileNameWidgetController *c
                                              gpointer                          user_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
 
-    g_clear_object (&priv->rename_file_controller);
+    disconnect_rename_controller_signals (view);
 }
 
 static void
@@ -1933,11 +1957,6 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->rename_file_controller != NULL)
-    {
-        return;
-    }
-
     /* Make sure the whole item is visible. The selection is a single item, the
      * one to rename with the popover, so we can use reveal_selection() for this.
      */
@@ -1945,19 +1964,19 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
-    priv->rename_file_controller =
-        nautilus_rename_file_popover_controller_new (target_file,
-                                                     pointing_to,
-                                                     GTK_WIDGET (view));
+    nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
+                                                           target_file,
+                                                           pointing_to,
+                                                           GTK_WIDGET (view));
 
-    g_signal_connect (priv->rename_file_controller,
-                      "name-accepted",
-                      (GCallback) rename_file_popover_controller_on_name_accepted,
-                      view);
-    g_signal_connect (priv->rename_file_controller,
-                      "cancelled",
-                      (GCallback) rename_file_popover_controller_on_cancelled,
-                      view);
+    priv->name_accepted_handler_id = g_signal_connect (priv->rename_file_controller,
+                                                       "name-accepted",
+                                                       G_CALLBACK (rename_file_popover_controller_on_name_accepted),
+                                                       view);
+    priv->cancelled_handler_id = g_signal_connect (priv->rename_file_controller,
+                                                   "cancelled",
+                                                   G_CALLBACK (rename_file_popover_controller_on_cancelled),
+                                                   view);
 }
 
 static void
@@ -9661,6 +9680,8 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();
+
+    priv->rename_file_controller = nautilus_rename_file_popover_controller_new ();
 
     nautilus_profile_end (NULL);
 }
