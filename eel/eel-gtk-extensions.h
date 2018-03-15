@@ -23,8 +23,7 @@
             Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef EEL_GTK_EXTENSIONS_H
-#define EEL_GTK_EXTENSIONS_H
+#pragma once
 
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
@@ -36,5 +35,3 @@ char *                eel_gtk_window_get_geometry_string              (GtkWindow
 GtkMenuItem *         eel_gtk_menu_append_separator                   (GtkMenu              *menu);
 GtkMenuItem *         eel_gtk_menu_insert_separator                   (GtkMenu              *menu,
 								       int                   index);
-
-#endif /* EEL_GTK_EXTENSIONS_H */

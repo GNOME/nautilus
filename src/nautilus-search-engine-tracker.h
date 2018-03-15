@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef NAUTILUS_SEARCH_ENGINE_TRACKER_H
-#define NAUTILUS_SEARCH_ENGINE_TRACKER_H
+#pragma once
 
 #include "nautilus-search-engine.h"
 
@@ -28,5 +27,3 @@
 G_DECLARE_FINAL_TYPE (NautilusSearchEngineTracker, nautilus_search_engine_tracker, NAUTILUS, SEARCH_ENGINE_TRACKER, GObject)
 
 NautilusSearchEngineTracker* nautilus_search_engine_tracker_new (void);
-
-#endif /* NAUTILUS_SEARCH_ENGINE_TRACKER_H */
