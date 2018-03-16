@@ -1,15 +1,6 @@
 stages:
 - build
 - test
-    
-before_script:
-- dnf install -y gcc meson gettext itstool redhat-rpm-config git
-                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                 gobject-introspection-devel libselinux-devel
-                 libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel gcovr
-# Waiting for gcovr 3.5 to be released.
-- pip install git+https://github.com/gcovr/gcovr.git
 
 build:fedora:
     image: fedora:28
@@ -23,6 +14,7 @@ build:fedora:
     - meson _build . -Ddisplay-tests=false
 
 test:fedora:
+    image: fedora:28
     stage: test
     script:
     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
@@ -30,6 +22,8 @@ test:fedora:
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
                  libgexiv2-devel gcovr
+    # Waiting for gcovr 3.5 to be released.
+    - pip install git+https://github.com/gcovr/gcovr.git
     - meson _build . -Db_coverage=true -Ddisplay-tests=false
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
