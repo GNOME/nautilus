@@ -52,6 +52,7 @@ build:flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
     stage: build
     script:
+    # This should be removed once the base image works with git submodules
     - dnf install -y git
     - export
     - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
@@ -69,7 +70,7 @@ build:rawhide:
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel gcovr
+                 libgexiv2-devel
     - meson _build .
     - cd _build
     - ninja test
@@ -84,7 +85,7 @@ build:ubuntu:
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel gcovr
+                 libgexiv2-devel
     - meson _build .
     - cd _build
     - ninja test
@@ -99,7 +100,7 @@ build:suse:
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel gcovr
+                 libgexiv2-devel
     - meson _build .
     - cd _build
     - ninja test
