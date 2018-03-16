@@ -51,8 +51,14 @@ build:flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
     stage: build
     script:
+    - dnf install -y git
     - export
     - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak build-bundle app nautilus-dev.flatpak build-aux/flatpak/org.gnome.Nautilus.json
+    artifacts:
+        paths:
+          - nautilus-dev.flatpak
+
     
 build:rawhide:
     image: fedora:rawhide
