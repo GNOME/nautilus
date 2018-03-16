@@ -45,8 +45,6 @@ test:fedora:
         --exclude=../subprojects/libgd/
         --exclude=../test/
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
-    only:
-    - master
       
 build:flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
@@ -54,5 +52,3 @@ build:flatpak:
     script:
     - export
     - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
-    only:
-    - master
