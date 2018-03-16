@@ -1,11 +1,11 @@
 stages:
-- build
-- test
-- weeklytest
+- Build
+- Test
+- WeeklyTest
 
 build:fedora:
     image: fedora:28
-    stage: build
+    stage: Build
     script:
     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -16,7 +16,7 @@ build:fedora:
 
 test:fedora:
     image: fedora:28
-    stage: test
+    stage: Test
     script:
     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -48,7 +48,7 @@ test:fedora:
       
 build:flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
-    stage: build
+    stage: Build
     script:
     # This should be removed once the base image works with git submodules
     - dnf install -y git
@@ -63,7 +63,7 @@ build:flatpak:
     
 build:rawhide:
     image: fedora:rawhide
-    stage: weeklytest
+    stage: WeeklyTest
     script:
     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -77,7 +77,7 @@ build:rawhide:
     
 build:ubuntu:
     image: ubuntu:devel
-    stage: weeklytest
+    stage: WeeklyTest
     script:
     - apt install -y gcc meson gettext itstool git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -92,7 +92,7 @@ build:ubuntu:
     
 build:suse:
     image: opensuse:tumbleweed
-    stage: weeklytest
+    stage: WeeklyTest
     script:
     - zypper install -y gcc meson gettext itstool git gtk3-devel
                         gnome-autoar-devel libgnome-desktop-3-devel
