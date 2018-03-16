@@ -1,6 +1,7 @@
 stages:
 - build
 - test
+- deploy
 
 build:fedora:
     image: fedora:28
@@ -52,3 +53,48 @@ build:flatpak:
     script:
     - export
     - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    
+build:rawhide:
+    image: fedora:rawhide
+    stage: test
+    script:
+    - dnf install -y gcc meson gettext itstool redhat-rpm-config git
+                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                 gobject-introspection-devel libselinux-devel
+                 libxml2-devel tracker-devel desktop-file-utils
+                 libgexiv2-devel gcovr
+    - meson _build . -Ddisplay-tests=false
+    - cd _build
+    - ninja test
+    only:
+    -schedules
+    
+build:ubuntu:
+    image: ubuntu:devel
+    stage: test
+    script:
+    - apt install -y gcc meson gettext itstool git
+                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                 gobject-introspection-devel libselinux-devel
+                 libxml2-devel tracker-devel desktop-file-utils
+                 libgexiv2-devel gcovr
+    - meson _build . -Ddisplay-tests=false
+    - cd _build
+    - ninja test
+    only:
+    -schedules
+    
+build:suse:
+    image: opensuse:tumbleweed
+    stage: test
+    script:
+    - dnf install -y gcc meson gettext itstool git
+                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                 gobject-introspection-devel libselinux-devel
+                 libxml2-devel tracker-devel desktop-file-utils
+                 libgexiv2-devel gcovr
+    - meson _build . -Ddisplay-tests=false
+    - cd _build
+    - ninja test
+    only:
+    -schedules
