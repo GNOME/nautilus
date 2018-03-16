@@ -2,7 +2,6 @@ stages:
 - build
 - test
 - weeklytest
-- deploy
 
 build:fedora:
     image: fedora:28
@@ -12,25 +11,25 @@ build:fedora:
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel gcovr
-    # Waiting for gcovr 3.5 to be released.
-    - pip install git+https://github.com/gcovr/gcovr.git
-    - meson _build . -Db_coverage=true
-    artifacts:
-        paths:
-        - _build
+                 libgexiv2-devel
+    - meson _build .
 
 test:fedora:
     image: fedora:28
     stage: test
-    dependencies:
-    - build:fedora
     script:
-    - dnf install -y gcc meson git
+     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
+                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                 gobject-introspection-devel libselinux-devel
+                 libxml2-devel tracker-devel desktop-file-utils
+                 libgexiv2-devel gcovr
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
     # _build/src/ contains generated sources, so that is filtered out as well.
+    # Waiting for gcovr 3.5 to be released.
+    - pip install git+https://github.com/gcovr/gcovr.git
+    - meson _build . -Db_coverage=true
     - cd _build
     - ninja test
     - gcovr --root=.
