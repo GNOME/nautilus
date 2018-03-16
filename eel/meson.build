@@ -27,6 +27,7 @@ libeel_2_sources = [
 ]
 
 libeel_2_deps = [
+  config_h,
   gail,
   glib,
   gtk,
