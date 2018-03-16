@@ -1,7 +1,45 @@
-install_subdir(
-  join_paths('icons', 'hicolor'),
-  install_dir: join_paths(datadir, 'icons')
+########## EVIL EVIL EVIL
+# See https://github.com/mesonbuild/meson/issues/1487
+# and https://github.com/mesonbuild/meson/pull/3223
+#
+# This is primarily for the “build profiles” feature,
+# to be able to have icons even if we change the application ID.
+#
+# https://gitlab.gnome.org/GNOME/nautilus/merge_requests/144
+##########
+foreach icon_size: ['16x16', '22x22', '24x24', '32x32', '48x48', '512x512']
+  configure_file(
+    command: [
+      'cp', '@INPUT@', '@OUTPUT@'
+    ],
+    input: files(
+      join_paths('icons', 'hicolor', icon_size, 'apps', 'org.gnome.Nautilus.png')
+    ),
+    install_dir: join_paths(datadir, 'icons', 'hicolor', icon_size, 'apps'),
+    output: '@0@.png'.format(application_id)
+  )
+endforeach
+
+configure_file(
+  command: [
+    'cp', '@INPUT@', '@OUTPUT@'
+  ],
+  input: files(
+    join_paths('icons', 'hicolor', 'symbolic', 'apps', 'org.gnome.Nautilus-symbolic.svg')
+  ),
+  install_dir: join_paths(datadir, 'icons', 'hicolor', 'symbolic', 'apps'),
+  output: '@0@-symbolic.svg'.format(application_id)
 )
+
+configure_file(
+  command: [
+    'cp', '@INPUT@', '@OUTPUT@'
+  ],
+  input: files('org.gnome.Nautilus.search-provider.ini'),
+  install_dir: join_paths(datadir, 'gnome-shell', 'search-providers'),
+  output: '@0@.search-provider.ini'.format(application_id)
+)
+##########
 
 po_dir = join_paths(meson.source_root(), 'po')
 
@@ -14,10 +52,18 @@ line_up_parameters = executable(
   ]
 )
 
+desktop_conf = configuration_data()
+
+desktop_conf.set('icon', application_id)
+
 desktop = i18n.merge_file(
   'desktop',
-  input: 'org.gnome.Nautilus.desktop.in',
-  output: 'org.gnome.Nautilus.desktop',
+  input: configure_file(
+    input: files('org.gnome.Nautilus.desktop.in.in'),
+    output: 'org.gnome.Nautilus.desktop.in',
+    configuration: desktop_conf
+  ),
+  output: '@0@.desktop'.format(application_id),
   install: true,
   install_dir: desktopdir,
   po_dir: po_dir,
@@ -44,11 +90,12 @@ appdata = i18n.merge_file(
 )
 
 service_conf = configuration_data()
+service_conf.set('appid', application_id)
 service_conf.set('bindir', join_paths(prefix, bindir))
 
 configure_file(
   input: 'org.gnome.Nautilus.service.in',
-  output: 'org.gnome.Nautilus.service',
+  output: '@0@.service'.format(application_id),
   configuration: service_conf,
   install_dir: servicedir
 )
@@ -58,11 +105,6 @@ configure_file(
   output: 'org.freedesktop.FileManager1.service',
   configuration: service_conf,
   install_dir: servicedir
-)
-
-install_data(
-  'org.gnome.Nautilus.search-provider.ini',
-  install_dir: join_paths(datadir, 'gnome-shell', 'search-providers')
 )
 
 install_data(
