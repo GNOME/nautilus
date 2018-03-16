@@ -44,11 +44,12 @@ appdata = i18n.merge_file(
 )
 
 service_conf = configuration_data()
+service_conf.set('appid', application_id)
 service_conf.set('bindir', join_paths(prefix, bindir))
 
 configure_file(
   input: 'org.gnome.Nautilus.service.in',
-  output: 'org.gnome.Nautilus.service',
+  output: '@0@.service'.format(application_id),
   configuration: service_conf,
   install_dir: servicedir
 )

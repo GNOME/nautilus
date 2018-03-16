@@ -3071,9 +3071,16 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
         "Sun Microsystems",
         NULL
     };
+    g_autofree gchar *program_name = NULL;
+
+    /* “Files” is the generic application name and the suffix is
+     * an arbitrary and deliberately unlocalized string only shown
+     * in development builds.
+     */
+    program_name = g_strconcat (_("Files"), NAME_SUFFIX, NULL);
 
     gtk_show_about_dialog (window ? GTK_WINDOW (window) : NULL,
-                           "program-name", _("Files"),
+                           "program-name", program_name,
                            "version", VERSION,
                            "comments", _("Access and organize your files."),
                            "copyright", "Copyright © 1999–2016 The Files Authors",

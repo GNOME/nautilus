@@ -92,12 +92,26 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 # Configuration
 conf = configuration_data()
 
-conf.set_quoted('VERSION', meson.project_version())
+if get_option('profile') == 'development'
+  conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
+  conf.set_quoted('NAME_SUFFIX', ' (Development Snapshot)')
+  application_id = 'org.gnome.NautilusDevel'
+else
+  if get_option('profile') == 'stable-flatpak'
+    conf.set_quoted('VERSION', '@0@-flatpak'.format(meson.project_version()))
+    application_id = 'org.gnome.NautilusStable'
+  else
+    conf.set_quoted('VERSION', meson.project_version())
+    application_id = 'org.gnome.Nautilus'
+  endif
+  conf.set_quoted('NAME_SUFFIX', '')
+endif
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
 conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
+conf.set_quoted('APPLICATION_ID', application_id)
 
 if get_option('packagekit')
   conf.set10('ENABLE_PACKAGEKIT', true)
@@ -109,7 +123,22 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
-configure_file(output: 'config.h', configuration: conf)
+if get_option('profile') == 'development'
+  config_h = vcs_tag(
+    command: ['git', 'rev-parse', '--short', 'HEAD'],
+    fallback: 'devel',
+    input: configure_file(
+      output: 'config.h.in',
+      configuration: conf
+    ),
+    output: 'config.h'
+  )
+else
+  config_h = configure_file(
+    output: 'config.h',
+    configuration: conf
+  )
+endif
 #
 
 nautilus_include_dirs = include_directories(
