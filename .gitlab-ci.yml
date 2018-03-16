@@ -1,6 +1,7 @@
 stages:
 - build
 - test
+- weeklytest
 - deploy
 
 build:fedora:
@@ -62,7 +63,7 @@ build:flatpak:
     
 build:rawhide:
     image: fedora:rawhide
-    stage: test
+    stage: weeklytest
     script:
     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -77,7 +78,7 @@ build:rawhide:
     
 build:ubuntu:
     image: ubuntu:devel
-    stage: test
+    stage: weeklytest
     script:
     - apt install -y gcc meson gettext itstool git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
@@ -92,7 +93,7 @@ build:ubuntu:
     
 build:suse:
     image: opensuse:tumbleweed
-    stage: test
+    stage: weeklytest
     script:
     - dnf install -y gcc meson gettext itstool git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
