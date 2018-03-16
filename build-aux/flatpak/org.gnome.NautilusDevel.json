@@ -1,5 +1,5 @@
 {
-    "app-id": "org.gnome.Nautilus",
+    "app-id": "org.gnome.NautilusDevel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "master",
     "sdk": "org.gnome.Sdk",
@@ -83,7 +83,8 @@
             "builddir": true,
             "name": "nautilus",
             "config-opts": [
-                "--libdir=/app/lib"
+                "--libdir=/app/lib",
+                "-Dprofile=development"
             ],
             "sources": [
                 {
