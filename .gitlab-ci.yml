@@ -67,7 +67,7 @@ build:rawhide:
     - cd _build
     - ninja test
     only:
-    -schedules
+    - schedules
     
 build:ubuntu:
     image: ubuntu:devel
@@ -82,7 +82,7 @@ build:ubuntu:
     - cd _build
     - ninja test
     only:
-    -schedules
+    - schedules
     
 build:suse:
     image: opensuse:tumbleweed
@@ -97,4 +97,4 @@ build:suse:
     - cd _build
     - ninja test
     only:
-    -schedules
+    - schedules
