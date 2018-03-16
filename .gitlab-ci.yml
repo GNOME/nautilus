@@ -7,6 +7,7 @@ build:fedora:
     image: fedora:28
     stage: Build
     script:
+    - dnf install -y 'dnf-command(builddep)'
     - dnf builddep nautilus
     - meson _build .
     - ninja -C _build
@@ -15,8 +16,8 @@ test:fedora:
     image: fedora:28
     stage: Test
     script:
+    - dnf install -y gcovr 'dnf-command(builddep)'
     - dnf builddep nautilus
-    - dnf install gcovr
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
@@ -60,6 +61,7 @@ build:rawhide:
     image: fedora:rawhide
     stage: WeeklyTest
     script:
+    - dnf install -y 'dnf-command(builddep)'
     - dnf builddep nautilus
     - meson _build .
     - cd _build
