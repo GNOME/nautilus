@@ -4,3 +4,13 @@ option('extensions', type: 'boolean', value: true)
 option('packagekit', type: 'boolean', value: true)
 option('selinux', type: 'boolean', value: false)
 option('tests', type: 'combo', choices: ['none', 'headless', 'all'], value: 'headless')
+option(
+  'profile',
+  type: 'combo',
+  choices: [
+    'default',
+    'stable-flatpak',
+    'development'
+  ],
+  value: 'default'
+)

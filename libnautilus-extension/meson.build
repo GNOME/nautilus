@@ -54,6 +54,7 @@ libnautilus_extension_sources = [
 ]
 
 libnautilus_extension_deps = [
+  config_h,
   glib,
   gtk
 ]

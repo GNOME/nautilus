@@ -171,7 +171,7 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
                                 GError              **error)
 {
     return g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations),
-                                             connection, "/org/gnome/Nautilus", error);
+                                             connection, "/org/gnome/Nautilus" PROFILE, error);
 }
 
 void
