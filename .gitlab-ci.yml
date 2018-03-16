@@ -26,7 +26,7 @@ test:fedora:
     dependencies:
     - build:fedora
     script:
-    - dnf install -y gcc meson
+    - dnf install -y gcc meson git
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
