@@ -12,7 +12,7 @@ build:fedora:
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
                  libgexiv2-devel gcovr
-    - meson _build . -Ddisplay-tests=false
+    - meson _build .
 
 test:fedora:
     image: fedora:28
@@ -25,7 +25,7 @@ test:fedora:
                  libgexiv2-devel gcovr
     # Waiting for gcovr 3.5 to be released.
     - pip install git+https://github.com/gcovr/gcovr.git
-    - meson _build . -Db_coverage=true -Ddisplay-tests=false
+    - meson _build . -Db_coverage=true
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
@@ -69,7 +69,7 @@ build:rawhide:
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
                  libgexiv2-devel gcovr
-    - meson _build . -Ddisplay-tests=false
+    - meson _build .
     - cd _build
     - ninja test
     only:
@@ -84,7 +84,7 @@ build:ubuntu:
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
                  libgexiv2-devel gcovr
-    - meson _build . -Ddisplay-tests=false
+    - meson _build .
     - cd _build
     - ninja test
     only:
@@ -99,7 +99,7 @@ build:suse:
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
                  libgexiv2-devel gcovr
-    - meson _build . -Ddisplay-tests=false
+    - meson _build .
     - cd _build
     - ninja test
     only:
