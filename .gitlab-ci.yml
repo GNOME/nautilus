@@ -1,49 +1,54 @@
+stages:
+- build
+- test
+    
+before_script:
+- dnf install -y gcc meson gettext itstool redhat-rpm-config git
+                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                 gobject-introspection-devel libselinux-devel
+                 libxml2-devel tracker-devel desktop-file-utils
+                 libgexiv2-devel gcovr
+# Waiting for gcovr 3.5 to be released.
+- pip install git+https://github.com/gcovr/gcovr.git
+
 build:fedora:
     image: fedora:28
-    
-    stages:
-      - test
-    
-    before_script:
-      - dnf install -y gcc meson gettext itstool redhat-rpm-config git
-                       gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                       gobject-introspection-devel libselinux-devel
-                       libxml2-devel tracker-devel desktop-file-utils
-                       libgexiv2-devel gcovr
-    # Waiting for gcovr 3.5 to be released.
-      - pip install git+https://github.com/gcovr/gcovr.git
-    
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
     # _build/src/ contains generated sources, so that is filtered out as well.
-    test:
-      stage: test
-      script:
-        - meson _build . -Db_coverage=true -Ddisplay-tests=false
-        - cd _build
-        - ninja test
-        - gcovr --root=.
-          --exclude=src/
-          --exclude=../data/
-          --exclude=../eel/check-program.c
-          --exclude=../eel/eel-debug.c
-          --exclude=../eel/eel-lib-self-check-functions.c
-          --exclude=../eel/eel-self-checks.c
-          --exclude=../src/animation/
-          --exclude=../src/gtk/
-          --exclude=../src/nautilus-lib-self-check-functions.c
-          --exclude=../src/nautilus-self-check-functions.c
-          --exclude=../subprojects/libgd/
-          --exclude=../test/
-      coverage: '/^TOTAL.*\s+(\d+\%)$/'
+    stage: build
+    script:
+    - meson _build . -Ddisplay-tests=false
+
+test:fedora:
+    stage: test
+    script:
+    - meson _build . -Db_coverage=true -Ddisplay-tests=false
+    - cd _build
+    - ninja test
+    - gcovr --root=.
+        --exclude=src/
+        --exclude=../data/
+        --exclude=../eel/check-program.c
+        --exclude=../eel/eel-debug.c
+        --exclude=../eel/eel-lib-self-check-functions.c
+        --exclude=../eel/eel-self-checks.c
+        --exclude=../src/animation/
+        --exclude=../src/gtk/
+        --exclude=../src/nautilus-lib-self-check-functions.c
+        --exclude=../src/nautilus-self-check-functions.c
+        --exclude=../subprojects/libgd/
+        --exclude=../test/
+    coverage: '/^TOTAL.*\s+(\d+\%)$/'
+    only:
+    - master
       
 build:flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
-    stages:
-      - test
-    test:
-      stage: test
-      script:
-        - export
-        - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    stage: build
+    script:
+    - export
+    - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    only:
+    - master
