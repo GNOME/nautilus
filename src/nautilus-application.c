@@ -1536,7 +1536,9 @@ nautilus_application_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_APPLICATION,
                          "application-id", "org.gnome.Nautilus",
-                         "flags", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
+                         "flags", G_APPLICATION_HANDLES_COMMAND_LINE |
+                                  G_APPLICATION_HANDLES_OPEN         |
+                                  G_APPLICATION_CAN_OVERRIDE_APP_ID,
                          "inactivity-timeout", 12000,
                          NULL);
 }

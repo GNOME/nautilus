@@ -1,11 +1,13 @@
 {
-    "app-id": "org.gnome.Nautilus",
+    "app-id": "org.gnome.NautilusDevel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.28",
     "sdk": "org.gnome.Sdk",
     "command": "nautilus",
     "tags": ["devel", "development", "nightly"],
     "desktop-file-name-prefix": "(Development) ",
+    "rename-desktop-file": "org.gnome.Nautilus.desktop",
+    "rename-icon": "org.gnome.Nautilus",
     "finish-args": [
         "--share=ipc", "--socket=x11",
         "--socket=wayland",
@@ -89,7 +91,31 @@
                 {
                     "type": "git",
                     "url": "https://gitlab.gnome.org/GNOME/nautilus.git"
-                }
+                },
+                {
+                    "type": "patch",
+                    "path": "service.patch",
+                    "use-git": true
+                },
+                {
+                    "type": "patch",
+                    "path": "theme.patch",
+                    "use-git": true
+                },
+                {
+                    "type" : "script",
+                    "commands" : [
+                        "nautilus --gapplication-app-id=org.gnome.NautilusDevel"
+                    ],
+                    "dest-filename" : "nautilus-wrapper"
+                },
+                {
+                    "type" : "shell",
+                    "commands" : [
+                        "install -t /app/bin nautilus-wrapper"
+                    ]
+                 }
+
             ]
         }
     ]

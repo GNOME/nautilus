@@ -1,0 +1,23 @@
+diff --git a/data/meson.build b/data/meson.build
+index 6924668da..86f6d3569 100644
+--- a/data/meson.build
++++ b/data/meson.build
+@@ -48,7 +48,7 @@ service_conf.set('bindir', join_paths(prefix, bindir))
+ 
+ configure_file(
+   input: 'org.gnome.Nautilus.service.in',
+-  output: 'org.gnome.Nautilus.service',
++  output: 'org.gnome.NautilusDevel.service',
+   configuration: service_conf,
+   install_dir: servicedir
+ )
+diff --git a/data/org.gnome.Nautilus.service.in b/data/org.gnome.Nautilus.service.in
+index 48fe6fce2..c1e0c9ba8 100644
+--- a/data/org.gnome.Nautilus.service.in
++++ b/data/org.gnome.Nautilus.service.in
+@@ -1,3 +1,3 @@
+ [D-BUS Service]
+-Name=org.gnome.Nautilus
+-Exec=@bindir@/nautilus --gapplication-service
++Name=org.gnome.NautilusDevel
++Exec=@bindir@/nautilus --gapplication-app-id=org.gnome.NautilusDevel --gapplication-service
