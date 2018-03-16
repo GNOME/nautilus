@@ -4,6 +4,121 @@
     background: @theme_base_color;
 }
 
+.nautilus-window.devel headerbar {
+    background: #cbd2d9 -gtk-icontheme("system-run-symbolic") 70% 0/64px 64px no-repeat, linear-gradient(to top, #a5b1bd, #c5cdd5 2px, #cbd2d9 3px);
+    box-shadow: inset 0 1px #f1f3f5;
+    border-color: #909fae;
+    color: rgba(46, 52, 54, 0.2);
+}
+.nautilus-window.devel headerbar > * {
+    color: #2e3436;
+}
+.nautilus-window.devel headerbar > *:backdrop {
+    color: #8b8e8f;
+}
+.nautilus-window.devel headerbar:backdrop {
+    background-image: -gtk-icontheme("system-run-symbolic"), image(#cbd2d9);
+    box-shadow: inset 0 1px #f1f3f5;
+    color: rgba(139, 142, 143, 0.1);
+}
+.nautilus-window.devel headerbar button {
+    color: #2e3436;
+    outline-color: rgba(46, 52, 54, 0.3);
+    border-color: #909fae;
+    border-bottom-color: #738698;
+    background-image: linear-gradient(to bottom, #cbd2d9, #bfc8d0 60%, #aeb9c3);
+    text-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+    -gtk-icon-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+}
+.nautilus-window.devel headerbar button.flat,
+.nautilus-window.devel headerbar button.titlebutton {
+    border-color: transparent;
+    background-color: transparent;
+    background-image: none;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+}
+.nautilus-window.devel headerbar button.titlebutton {
+    text-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+    -gtk-icon-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+}
+.nautilus-window.devel headerbar button:hover {
+    color: #2e3436;
+    outline-color: rgba(46, 52, 54, 0.3);
+    border-color: #909fae;
+    border-bottom-color: #738698;
+    text-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+    -gtk-icon-shadow: 0 1px rgba(255, 255, 255, 0.76923);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0.6);
+    background-image: linear-gradient(to bottom, #dde1e6, #cbd2d9 60%, #bfc8d0);
+}
+.nautilus-window.devel headerbar button:active,
+.nautilus-window.devel headerbar button:checked {
+    color: #2e3436;
+    outline-color: rgba(46, 52, 54, 0.3);
+    border-color: #909fae;
+    background-image: image(#b9c3cc);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+}
+.nautilus-window.devel headerbar button:disabled {
+    border-color: #909fae;
+    background-image: image(#d3d9df);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+}
+.nautilus-window.devel headerbar button:disabled label,
+.nautilus-window.devel headerbar button:disabled {
+    color: #8b8e8f;
+}
+.nautilus-window.devel headerbar button:backdrop {
+    border-color: #cbd2d9;
+    background-image: image(#cbd2d9);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    border-color: #909fae;
+}
+.nautilus-window.devel headerbar button:backdrop label,
+.nautilus-window.devel headerbar button:backdrop {
+    color: #8b8e8f;
+}
+.nautilus-window.devel headerbar button:backdrop:active {
+    border-color: #bbc5ce;
+    background-image: image(#bbc5ce);
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    border-color: #909fae;
+}
+.nautilus-window.devel headerbar button:backdrop:active label,
+.nautilus-window.devel headerbar button:backdrop:active {
+        color: #8b8e8f;
+}
+.nautilus-window.devel headerbar button:backdrop:disabled {
+    border-color: #d3d9df;
+    background-image: image(#d3d9df);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    border-color: #909fae;
+}
+.nautilus-window.devel headerbar button:backdrop:disabled label,
+.nautilus-window.devel headerbar button:backdrop:disabled {
+    color: #999fa4;
+}
+.nautilus-window.devel headerbar button.flat:backdrop,
+.nautilus-window.devel headerbar button.titlebutton:backdrop {
+    border-color: transparent;
+    background-color: transparent;
+    background-image: none;
+    box-shadow: inset 0 1px rgba(255, 255, 255, 0);
+    text-shadow: none;
+    -gtk-icon-shadow: none;
+}
+
 .nautilus-canvas-item {
     border-radius: 5px;
 }
