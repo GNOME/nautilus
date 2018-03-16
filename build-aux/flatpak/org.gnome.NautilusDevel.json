@@ -1,11 +1,13 @@
 {
-    "app-id": "org.gnome.Nautilus",
+    "app-id": "org.gnome.NautilusDevel",
     "runtime": "org.gnome.Platform",
     "runtime-version": "3.28",
     "sdk": "org.gnome.Sdk",
-    "command": "nautilus",
+    "command": "nautilus-devel",
     "tags": ["devel", "development", "nightly"],
     "desktop-file-name-prefix": "(Development) ",
+    "rename-desktop-file": "org.gnome.Nautilus.desktop",
+    "rename-icon": "org.gnome.Nautilus",
     "finish-args": [
         "--share=ipc", "--socket=x11",
         "--socket=wayland",
@@ -83,7 +85,8 @@
             "builddir": true,
             "name": "nautilus",
             "config-opts": [
-                "--libdir=/app/lib"
+                "--libdir=/app/lib",
+                "-Ddevel=true"
             ],
             "sources": [
                 {
