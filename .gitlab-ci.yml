@@ -18,7 +18,7 @@ test:fedora:
     image: fedora:28
     stage: test
     script:
-     - dnf install -y gcc meson gettext itstool redhat-rpm-config git
+    - dnf install -y gcc meson gettext itstool redhat-rpm-config git
                  gtk3-devel gnome-autoar-devel gnome-desktop3-devel
                  gobject-introspection-devel libselinux-devel
                  libxml2-devel tracker-devel desktop-file-utils
