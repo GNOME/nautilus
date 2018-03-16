@@ -303,7 +303,7 @@ nautilus = executable(
   install: true
 )
 
-if get_option('display-tests')
+if get_option('tests') == 'all'
   test(
     'nautilus', nautilus,
     args: [
