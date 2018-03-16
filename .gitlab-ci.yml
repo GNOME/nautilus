@@ -7,10 +7,7 @@ build:fedora:
     image: fedora:28
     stage: Build
     script:
-    - dnf install -y gcc meson gettext itstool redhat-rpm-config git
-                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                 gobject-introspection-devel libxml2-devel tracker-devel 
-                 desktop-file-utils libgexiv2-devel
+    - dnf builddep nautilus
     - meson _build .
     - ninja -C _build
 
@@ -18,10 +15,8 @@ test:fedora:
     image: fedora:28
     stage: Test
     script:
-    - dnf install -y gcc meson gettext itstool redhat-rpm-config git
-                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                 gobject-introspection-devel libxml2-devel tracker-devel 
-                 desktop-file-utils libgexiv2-devel gcovr
+    - dnf builddep nautilus
+    - dnf install gcovr
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
@@ -65,10 +60,7 @@ build:rawhide:
     image: fedora:rawhide
     stage: WeeklyTest
     script:
-    - dnf install -y gcc meson gettext itstool redhat-rpm-config git
-                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                 gobject-introspection-devel libxml2-devel tracker-devel 
-                 desktop-file-utils libgexiv2-devel
+    - dnf builddep nautilus
     - meson _build .
     - cd _build
     - ninja test
@@ -80,10 +72,10 @@ build:ubuntu:
     stage: WeeklyTest
     script:
     - apt install -y gcc meson gettext itstool git
-                 gtk3-devel gnome-autoar-devel gnome-desktop3-devel
-                 gobject-introspection-devel libselinux-devel
-                 libxml2-devel tracker-devel desktop-file-utils
-                 libgexiv2-devel
+                     gtk3-devel gnome-autoar-devel gnome-desktop3-devel
+                     gobject-introspection-devel libselinux-devel
+                     libxml2-devel tracker-devel desktop-file-utils
+                     libgexiv2-devel
     - meson _build .
     - cd _build
     - ninja test
