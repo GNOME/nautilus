@@ -135,3 +135,11 @@ endif
 
 # Compile GSettings schemas when installing from source.
 meson.add_install_script('build-aux/meson/postinstall.py')
+
+if get_option('devel')
+  install_data(
+    'build-aux/meson/nautilus-devel',
+    install_dir: bindir,
+    install_mode: 'rwxr-xr-x'
+  )
+endif
