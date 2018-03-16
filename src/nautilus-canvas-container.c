@@ -109,7 +109,7 @@
 #define UNDEFINED_TIME ((time_t) (-1))
 
 static double
-nautilus_mix (double x, double y, double fraction)
+mix (double x, double y, double fraction)
 {
     return x * (1.0 - fraction) + y * fraction;
 }
@@ -1274,12 +1274,14 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
         double num_icons = MAX (1.0, g_list_length (icons));
         double grid_width_for_num_icons = available_width / num_icons;
         double used_fraction = MAX (0.0, MIN (1.0, (num_icons * min_grid_width) / available_width));
-        double mix_fraction = pow(used_fraction * pow(0.9, 1.0 / 3.0), 3.0) + 0.1;
+        double mix_fraction = pow(used_fraction, 3.0) * 0.9 + 0.1;
 
-        grid_width = nautilus_mix (min_grid_width, grid_width_for_num_icons, mix_fraction);
+        grid_width = mix (min_grid_width, grid_width_for_num_icons, mix_fraction);
     }
 
-    /* Subtracting 1.0 prevents the jitter. */
+    /* Subtracting 1.0 prevents the jitter due to the code not being able to
+     * decide how many columns should be there (this fix is adapted from Nemo).
+     */
     grid_width = MAX (min_grid_width, floor (grid_width) - 1.0);
 
     line_width = 0;
