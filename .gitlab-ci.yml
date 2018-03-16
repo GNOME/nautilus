@@ -54,7 +54,7 @@ build:flatpak:
     - dnf install -y git
     - export
     - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
-    - flatpak build-bundle app nautilus-dev.flatpak build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
     artifacts:
         paths:
           - nautilus-dev.flatpak
