@@ -62,7 +62,7 @@ configure_file(
 )
 
 install_data(
-  'nautilus-search-provider.ini',
+  'org.gnome.Nautilus.search-provider.ini',
   install_dir: join_paths(datadir, 'gnome-shell', 'search-providers')
 )
 
