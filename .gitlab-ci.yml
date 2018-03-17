@@ -75,6 +75,8 @@ ubuntu:devel:
                      libgnome-autoar-0-dev libgnome-desktop-3-dev
                      gobject-introspection libxml2-dev
                      libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
+                     libgail-3-dev libtracker-sparql-2.0-dev
+                     libgirepository1.0-dev
     - meson _build .
     - cd _build
     - ninja test
