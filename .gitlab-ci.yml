@@ -1,20 +1,10 @@
 stages:
-- Build
-- Test
-- WeeklyTest
+- test
+- cross_distro
 
-build:Fedora:
+fedora:stable:
     image: fedora:28
-    stage: Build
-    script:
-    - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep -y nautilus
-    - meson _build .
-    - ninja -C _build
-
-test:Fedora:
-    image: fedora:28
-    stage: Test
+    stage: test
     script:
     - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config git
     - dnf builddep -y nautilus
@@ -41,10 +31,16 @@ test:Fedora:
         --exclude=../subprojects/libgd/
         --exclude=../test/
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
+    artifacts:
+        when: on_failure
+        paths:
+        - meson-logs/meson-log.txt
+        - meson-logs/testslog.txt
+
       
-build:Flatpak:
+flatpak:master:
     image: flatpak/flatpak-builder:gnome-3-28
-    stage: Build
+    stage: test
     script:
     # This should be removed once the base image works with git submodules
     - dnf install -y git
@@ -57,9 +53,9 @@ build:Flatpak:
         expire_in: 2 days
 
     
-test:FedoraRawhide:
+fedora:rawhide:
     image: fedora:rawhide
-    stage: WeeklyTest
+    stage: cross_distro
     script:
     - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
     - dnf builddep -y nautilus
@@ -69,9 +65,9 @@ test:FedoraRawhide:
     only:
     - schedules
     
-test:Ubuntu:
+ubuntu:devel:
     image: ubuntu:devel
-    stage: WeeklyTest
+    stage: cross_distro
     script:
     # Ubuntu requires running update to fetch metadata and find packges
     - apt update
@@ -85,9 +81,9 @@ test:Ubuntu:
     only:
     - schedules
     
-test:OpenSuse:
+opensuse:tumbleweed:
     image: opensuse:tumbleweed
-    stage: WeeklyTest
+    stage: cross_distro
     script:
     - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
                         gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
