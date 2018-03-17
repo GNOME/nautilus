@@ -78,3 +78,5 @@ gboolean           nautilus_gtk_places_view_get_loading                   (Nauti
 GtkWidget *        nautilus_gtk_places_view_new                           (void);
 
 G_END_DECLS
+
+#endif
