@@ -13,9 +13,6 @@ flatpak:master:
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
     # Run automatic tests inside the Flatpak env
     - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json sh
-    - cd /
-    - tree -L 3
-    - pwd
     - cd /run/build/nautilus/_flatpak_build
     - ninja test
     artifacts:
