@@ -8,7 +8,7 @@ build:fedora:
     stage: Build
     script:
     - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep nautilus
+    - dnf builddep -y nautilus
     - meson _build .
     - ninja -C _build
 
@@ -17,7 +17,7 @@ test:fedora:
     stage: Test
     script:
     - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep nautilus
+    - dnf builddep -y nautilus
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
     #
@@ -62,7 +62,7 @@ build:rawhide:
     stage: WeeklyTest
     script:
     - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep nautilus
+    - dnf builddep -y nautilus
     - meson _build .
     - cd _build
     - ninja test
