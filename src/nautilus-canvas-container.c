@@ -1247,12 +1247,13 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     min_grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
-    /* Subtracting 1.0 adds some room for errror to prevent the jitter due to
+    /* Subtracting 1.0 adds some room for error to prevent the jitter due to
      * the code not being able to decide how many columns should be there, as
-     * "double" is not perfectly precise and resizing the window by one pixel
-     * could make it so that the space taken by the icons and the padding is
-     * actually greater than the canvas with by like 0.01, causing an entire
-     * column to be dropped. This fix is adapted from Nemo.
+     * "double" is not perfectly precise and increasing the size of the the
+     * window by one pixel could well make it so that the space taken by the
+     * icons and the padding is actually greater than the canvas with by like
+     * 0.01, causing an entire column to be dropped unnecessarily. This fix is
+     * adapted from Nemo.
      */
     available_width = MAX (1.0, canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT - 1.0);
     num_columns = MAX (1.0, floor (available_width / min_grid_width));
@@ -1268,7 +1269,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
          * not look good either when the icons do not move at all when the
          * window is resized.
          *
-         * To do this, we first computr the maximum extra fraction we can add to
+         * To do this, we first compute the maximum extra fraction we can add to
          * the grid width. Adding this much, however, would simply distribute
          * the icons evenly, which looks bad when there's a wide window with
          * only a few icons.
@@ -1280,14 +1281,18 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
          *
          * f(x) = ∜(x + 1) - 1
          *
-         * The +1 and -1 are there skip the 0 to 1 part of ∜ where it makes the
-         * number larger.
+         * The +1 and -1 are there to skip the 0 to 1 part of ∜ where it makes
+         * the number larger.
          */
+
         double num_icons = MAX (1.0, g_list_length (icons));
+
         double used_width = num_icons * min_grid_width;
         double unused_width = available_width - used_width;
+
         double max_extra_fraction = (unused_width / num_icons) / min_grid_width;
         double extra_fraction = pow(max_extra_fraction + 1.0, 1.0 / 4.0) - 1.0;
+
         grid_width = min_grid_width * (1 + extra_fraction);
     }
 
