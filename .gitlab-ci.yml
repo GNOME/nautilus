@@ -3,7 +3,7 @@ stages:
 - Test
 - WeeklyTest
 
-build:fedora:
+build:Fedora:
     image: fedora:28
     stage: Build
     script:
@@ -12,11 +12,11 @@ build:fedora:
     - meson _build .
     - ninja -C _build
 
-test:fedora:
+test:Fedora:
     image: fedora:28
     stage: Test
     script:
-    - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config git
+    - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config
     - dnf builddep -y nautilus
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
@@ -42,7 +42,7 @@ test:fedora:
         --exclude=../test/
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
       
-build:flatpak:
+build:Flatpak:
     image: flatpak/flatpak-builder:gnome-3-28
     stage: Build
     script:
@@ -57,7 +57,7 @@ build:flatpak:
         expire_in: 2 days
 
     
-build:rawhide:
+test:FedoraRawhide:
     image: fedora:rawhide
     stage: WeeklyTest
     script:
@@ -69,7 +69,7 @@ build:rawhide:
     only:
     - schedules
     
-build:ubuntu:
+test:Ubuntu:
     image: ubuntu:devel
     stage: WeeklyTest
     script:
@@ -84,7 +84,7 @@ build:ubuntu:
     only:
     - schedules
     
-build:suse:
+test:OpenSuse:
     image: opensuse:tumbleweed
     stage: WeeklyTest
     script:
