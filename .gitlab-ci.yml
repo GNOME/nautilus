@@ -16,7 +16,7 @@ test:fedora:
     image: fedora:28
     stage: Test
     script:
-    - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config
+    - dnf install -y gcovr 'dnf-command(builddep)' redhat-rpm-config git
     - dnf builddep -y nautilus
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
