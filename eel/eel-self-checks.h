@@ -48,26 +48,26 @@ void eel_exit_if_self_checks_failed (void);
 void eel_before_check_function      (const char    *name);
 void eel_after_check_function       (void);
 void eel_before_check               (const char    *expression,
-                     const char    *file_name,
-                     int            line_number);
+                                     const char    *file_name,
+                                     int            line_number);
 void eel_after_check                (void);
 
 /* Both 'result' and 'expected' get freed with g_free */
 void eel_report_check_failure       (char          *result,
-                     char          *expected);
+                                     char          *expected);
 void eel_check_boolean_result       (gboolean       result,
-                     gboolean       expected_value);
+                                     gboolean       expected_value);
 void eel_check_integer_result       (long           result,
-                     long           expected_value);
+                                     long           expected_value);
 void eel_check_double_result        (double         result,
-                     double         expected_value);
+                                     double         expected_value);
 void eel_check_rectangle_result     (EelIRect       result,
-                     int            expected_x0,
-                     int            expected_y0,
-                     int            expected_x1,
-                     int            expected_y1);
+                                     int            expected_x0,
+                                     int            expected_y0,
+                                     int            expected_x1,
+                                     int            expected_y1);
 void eel_check_string_result        (char          *result,
-                     const char    *expected_value);
+                                     const char    *expected_value);
 
 #define EEL_SELF_CHECK_FUNCTION_PROTOTYPE(function) \
     void function (void);
