@@ -108,12 +108,6 @@
 /* Copied from NautilusFile */
 #define UNDEFINED_TIME ((time_t) (-1))
 
-static double
-mix (double x, double y, double fraction)
-{
-    return x * (1.0 - fraction) + y * fraction;
-}
-
 enum
 {
     ACTION_ACTIVATE,
@@ -1184,7 +1178,7 @@ lay_down_one_line (NautilusCanvasContainer *container,
 {
     GList *p;
     NautilusCanvasIcon *icon;
-    double x, y_offset;
+    double x, ltr_icon_x, icon_x, y_offset;
     IconPositions *position;
     int i;
     gboolean is_rtl;
@@ -1199,15 +1193,14 @@ lay_down_one_line (NautilusCanvasContainer *container,
         icon = p->data;
 
         position = &g_array_index (positions, IconPositions, i++);
+        ltr_icon_x = x + position->x_offset;
+        icon_x = is_rtl ? get_mirror_x_position (container, icon, ltr_icon_x) : ltr_icon_x;
         y_offset = position->y_offset;
 
-        icon_set_position
-            (icon,
-            is_rtl ? get_mirror_x_position (container, icon, x + position->x_offset) : x + position->x_offset,
-            y + y_offset);
+        icon_set_position (icon, icon_x, y + y_offset);
         nautilus_canvas_item_set_entire_text (icon->item, whole_text);
 
-        icon->saved_ltr_x = is_rtl ? get_mirror_x_position (container, icon, icon->x) : icon->x;
+        icon->saved_ltr_x = is_rtl ? ltr_icon_x : icon->x;
 
         x += position->width;
     }
@@ -1232,7 +1225,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     double min_grid_width;
     double grid_width;
     double num_columns;
-    int icon_width, icon_size;
+    double icon_width, icon_size;
     int i;
     GtkAllocation allocation;
 
@@ -1254,7 +1247,14 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     min_grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
 
-    available_width = MAX (1.0, canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT);
+    /* Subtracting 1.0 adds some room for errror to prevent the jitter due to
+     * the code not being able to decide how many columns should be there, as
+     * "double" is not perfectly precise and resizing the window by one pixel
+     * could make it so that the space taken by the icons and the padding is
+     * actually greater than the canvas with by like 0.01, causing an entire
+     * column to be dropped. This fix is adapted from Nemo.
+     */
+    available_width = MAX (1.0, canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT - 1.0);
     num_columns = MAX (1.0, floor (available_width / min_grid_width));
 
     if (g_list_nth (icons, num_columns) != NULL)
@@ -1264,25 +1264,34 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     else
     {
         /* It does not look good when the icons jump around when new columns are
-         * added to the grid while there is only one line. It does not look good
-         * either when the icons do not move at all when the window is resized.
-         * This code is probably overly complicated for what it does, but it
-         * provides nice results and does not allow the spacing between the
-         * icons to become way too large.
+         * added or removed to the grid while there is only one line. It does
+         * not look good either when the icons do not move at all when the
+         * window is resized.
+         *
+         * To do this, we first computr the maximum extra fraction we can add to
+         * the grid width. Adding this much, however, would simply distribute
+         * the icons evenly, which looks bad when there's a wide window with
+         * only a few icons.
+         *
+         * To fix this, we need to apply a function to the fraction which never
+         * makes it larger and instead makes its growth slow down quickly but
+         * smoothly as the window gets wider and wider. Here's the function used
+         * by this code:
+         *
+         * f(x) = ∜(x + 1) - 1
+         *
+         * The +1 and -1 are there skip the 0 to 1 part of ∜ where it makes the
+         * number larger.
          */
-
         double num_icons = MAX (1.0, g_list_length (icons));
-        double grid_width_for_num_icons = available_width / num_icons;
-        double used_fraction = MAX (0.0, MIN (1.0, (num_icons * min_grid_width) / available_width));
-        double mix_fraction = pow(used_fraction, 3.0) * 0.9 + 0.1;
-
-        grid_width = mix (min_grid_width, grid_width_for_num_icons, mix_fraction);
+        double used_width = num_icons * min_grid_width;
+        double unused_width = available_width - used_width;
+        double max_extra_fraction = (unused_width / num_icons) / min_grid_width;
+        double extra_fraction = pow(max_extra_fraction + 1.0, 1.0 / 4.0) - 1.0;
+        grid_width = min_grid_width * (1 + extra_fraction);
     }
 
-    /* Subtracting 1.0 prevents the jitter due to the code not being able to
-     * decide how many columns should be there (this fix is adapted from Nemo).
-     */
-    grid_width = MAX (min_grid_width, floor (grid_width) - 1.0);
+    grid_width = MAX (min_grid_width, grid_width);
 
     line_width = 0;
     line_start = icons;
