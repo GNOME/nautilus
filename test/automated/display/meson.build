@@ -4,7 +4,9 @@ tests = [
   ]],
   ['test-nautilus-directory-async', [
     'test-nautilus-directory-async.c'
-  ]]
+  ]],
+  ['test-nautilus-file-utilities', [
+    'test-nautilus-file-utilities.c']]
 ]
 
 foreach t: tests
