@@ -44,7 +44,7 @@ flatpak:master:
     script:
     # This should be removed once the base image works with git submodules
     - dnf install -y git
-    - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak-builder --force-clean --repo=repo app build-aux/flatpak/org.gnome.NautilusDevel.json
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
     artifacts:
         paths:
