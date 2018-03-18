@@ -8,13 +8,15 @@ flatpak:master:
     script:
     # This should be removed once the base image works with git submodules
     - dnf install -y git
-    - flatpak-builder --force-clean --keep-build-dirs --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json meson --prefix=/app --libdir=/app/lib _build
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build install
+    - flatpak-builder --finish-only app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak build-export repo app
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
     # Run automatic tests inside the Flatpak env
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json sh
-    - cd /run/build/nautilus/_flatpak_build
-    - ninja test
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build test
     artifacts:
         paths:
           - nautilus-dev.flatpak
