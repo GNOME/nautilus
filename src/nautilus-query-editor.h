@@ -43,12 +43,44 @@ struct _NautilusQueryEditorClass
 
 GtkWidget     *nautilus_query_editor_new          (void);
 
+/**
+ * nautilus_query_editor_get_query:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ *
+ * Returns: (nullable) (transfer full): The #NautilusQuery for the editor.
+ */
 NautilusQuery *nautilus_query_editor_get_query    (NautilusQueryEditor *editor);
+/**
+ * nautilus_query_editor_set_query:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ * @query: (nullable) (transfer full): The #NautilusQuery for the search.
+ */
 void           nautilus_query_editor_set_query    (NautilusQueryEditor *editor,
                                                    NautilusQuery       *query);
+/**
+ * nautilus_query_editor_get_location:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ *
+ * Returns: (nullable) (transfer full): The location of the current search.
+ */
 GFile         *nautilus_query_editor_get_location (NautilusQueryEditor *editor);
+/**
+ * nautilus_query_editor_set_location:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ * @location: (nullable) (transfer full): The location in which the search will take place.
+ */
 void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
                                                    GFile               *location);
+/**
+ * nautilus_query_editor_set_text:
+ *
+ * @editor: A #NautilusQueryEditor instance.
+ * @text: (not nullable) (transfer none): The search text.
+ */
 void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
 
