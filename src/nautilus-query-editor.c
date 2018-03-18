@@ -391,6 +391,11 @@ create_query (NautilusQueryEditor *editor)
 
     fts_enabled = nautilus_search_popover_get_fts_enabled (NAUTILUS_SEARCH_POPOVER (priv->popover));
 
+    if (priv->location == NULL)
+    {
+        return;
+    }
+
     file = nautilus_file_get (priv->location);
     query = nautilus_query_new ();
 
