@@ -4,7 +4,13 @@ variables:
 stages:
 - test
 - cross_distro
-      
+
+.test_template: &distro_test
+  script:
+    - meson _build .
+    - cd _build
+    - ninja test
+
 flatpak:master:
     image: flatpak/flatpak-builder:gnome-3-28
     stage: test
@@ -66,7 +72,7 @@ fedora:rawhide:
 ubuntu:devel:
     image: ubuntu:devel
     stage: cross_distro
-    script:
+    before_script:
     # Ubuntu requires running update to fetch metadata and find packges
     - apt update
     - apt install -y gcc meson gettext itstool git libgtk-3-dev
@@ -75,22 +81,18 @@ ubuntu:devel:
                      libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
                      libgail-3-dev libtracker-sparql-2.0-dev
                      libgirepository1.0-dev
-    - meson _build .
-    - cd _build
-    - ninja test
+    <<: *distro_test
     only:
     - schedules
 
 opensuse:tumbleweed:
     image: opensuse:tumbleweed
     stage: cross_distro
-    script:
+    before_script:
     - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
                         gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
                         gobject-introspection-devel libxml2-devel tracker-devel
                         desktop-file-utils libgexiv2-devel
-    - meson _build .
-    - cd _build
-    - ninja test
+    <<: *distro_test
     only:
     - schedules
