@@ -4,6 +4,9 @@ tests = [
   ]],
   ['test-nautilus-directory-async', [
     'test-nautilus-directory-async.c'
+  ]],
+  ['test-nautilus-file', [
+    'test-nautilus-file.c'
   ]]
 ]
 
