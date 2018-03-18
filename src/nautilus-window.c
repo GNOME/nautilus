@@ -40,6 +40,7 @@
 #include "nautilus-other-locations-window-slot.h"
 
 #include <eel/eel-debug.h>
+#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -742,6 +743,24 @@ location_entry_location_changed_callback (GtkWidget      *widget,
                                           NautilusWindow *window)
 {
     NautilusWindowPrivate *priv;
+    g_autofree gchar *uri = NULL;
+    const char *error_string;
+    const char *detail_string;
+
+    if (location != NULL)
+    {
+        uri = g_file_get_uri (location);
+        if (eel_uri_is_search (uri))
+        {
+            error_string = _("The entered location cannot be opened.");
+            detail_string = g_strdup_printf (_("“%s” is an internal protocol. "
+                                               "Opening this location directly is not supported."),
+                                             EEL_SEARCH_URI);
+
+            eel_show_error_dialog (error_string, detail_string, GTK_WINDOW (window));
+        }
+        g_object_unref (location);
+    }
 
     priv = nautilus_window_get_instance_private (window);
 
