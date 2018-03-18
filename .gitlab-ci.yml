@@ -9,8 +9,6 @@ flatpak:master:
     image: flatpak/flatpak-builder:gnome-3-28
     stage: test
     script:
-    # This should be removed once the base image works with git submodules
-    - dnf install -y git
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.NautilusDevel.json
     - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
     - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json ninja -C _build install
