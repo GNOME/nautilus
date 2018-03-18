@@ -30,24 +30,25 @@
 
 G_DECLARE_DERIVABLE_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkSearchBar)
 
-struct _NautilusQueryEditorClass {
-        GtkSearchBarClass parent_class;
+struct _NautilusQueryEditorClass
+{
+    GtkSearchBarClass parent_class;
 
-	void (* changed)   (NautilusQueryEditor  *editor,
-			    NautilusQuery        *query,
-			    gboolean              reload);
-	void (* cancel)    (NautilusQueryEditor *editor);
-	void (* activated) (NautilusQueryEditor *editor);
+    void (* changed)   (NautilusQueryEditor  *editor,
+                        NautilusQuery        *query,
+                        gboolean              reload);
+    void (* cancel)    (NautilusQueryEditor *editor);
+    void (* activated) (NautilusQueryEditor *editor);
 };
 
-GtkWidget* nautilus_query_editor_new          	   (void);
+GtkWidget     *nautilus_query_editor_new          (void);
 
-NautilusQuery *nautilus_query_editor_get_query   (NautilusQueryEditor *editor);
-void           nautilus_query_editor_set_query   (NautilusQueryEditor *editor,
-						  NautilusQuery       *query);
-GFile *        nautilus_query_editor_get_location (NautilusQueryEditor *editor);
+NautilusQuery *nautilus_query_editor_get_query    (NautilusQueryEditor *editor);
+void           nautilus_query_editor_set_query    (NautilusQueryEditor *editor,
+                                                   NautilusQuery       *query);
+GFile         *nautilus_query_editor_get_location (NautilusQueryEditor *editor);
 void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
-						   GFile               *location);
+                                                   GFile               *location);
 void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
 
