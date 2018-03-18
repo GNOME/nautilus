@@ -14,8 +14,7 @@ flatpak:master:
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
     - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json meson --prefix=/app --libdir=/app/lib _build
     - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build install
-    - flatpak-builder --finish-only app build-aux/flatpak/org.gnome.Nautilus.json
-    - flatpak build-export repo app
+    - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
     # Run automatic tests inside the Flatpak env
