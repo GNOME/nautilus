@@ -30,8 +30,8 @@ flatpak:master:
     artifacts:
         when: on_failure
         paths:
-        - .flatpak-builder/build/nautilus/_flatpak_build/meson-logs/meson-log.txt
-        - .flatpak-builder/build/nautilus/_flatpak_build/meson-logs/testslog.txt
+        - _build/meson-logs/meson-log.txt
+        - _build/meson-logs/testslog.txt
 
     cache:
         paths:
