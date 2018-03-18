@@ -18,6 +18,24 @@
     color: mix (@theme_selected_fg_color, @theme_selected_bg_color, 0.20);
 }
 
+/* Path bar */
+
+.path-bar button label.selected-label {
+    font-weight: bold;
+}
+
+/* CSS in Adwaita sets paddings incorrectly now that the labels are inside a
+ * GtkStack; set the correct paddings. */
+
+.path-bar button label {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+.path-bar button.image-button label {
+    padding-left: 0;
+}
+
 /* Toolbar */
 
 /* Here we use the .button background-image colors from Adwaita, but ligthen them,
