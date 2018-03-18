@@ -7,7 +7,7 @@ flatpak:master:
     stage: test
     script:
     # This should be removed once the base image works with git submodules
-    - dnf install -y git
+    - dnf install -y git tree
     - flatpak-builder --force-clean --keep-build-dirs --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.Nautilus
