@@ -67,6 +67,8 @@ fedora:rawhide:
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
     only:
     - schedules
+    - web
+    - tags
 
 ubuntu:devel:
     image: ubuntu:devel
@@ -83,6 +85,8 @@ ubuntu:devel:
     <<: *distro_test
     only:
     - schedules
+    - web
+    - tags
 
 opensuse:tumbleweed:
     image: opensuse:tumbleweed
@@ -95,3 +99,5 @@ opensuse:tumbleweed:
     <<: *distro_test
     only:
     - schedules
+    - web
+    - tags
