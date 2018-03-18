@@ -40,9 +40,6 @@ struct _NautilusQueryEditorClass {
 	void (* activated) (NautilusQueryEditor *editor);
 };
 
-#include "nautilus-window-slot.h"
-
-GType      nautilus_query_editor_get_type     	   (void);
 GtkWidget* nautilus_query_editor_new          	   (void);
 
 NautilusQuery *nautilus_query_editor_get_query   (NautilusQueryEditor *editor);
