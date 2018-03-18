@@ -50,7 +50,7 @@
 #include <unistd.h>
 
 int
-main (int   argc,
+pain (int   argc,
       char *argv[])
 {
     gint retval;
