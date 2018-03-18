@@ -509,6 +509,10 @@ show_query_editor (NautilusWindowSlot *self)
 
     priv = nautilus_window_slot_get_instance_private (self);
     view = nautilus_window_slot_get_current_view (self);
+    if (view == NULL)
+    {
+        return;
+    }
 
     if (nautilus_view_is_searching (view))
     {
@@ -2781,8 +2785,6 @@ nautilus_window_slot_dispose (GObject *object)
     nautilus_window_slot_clear_back_list (self);
 
     nautilus_window_slot_remove_extra_location_widgets (self);
-
-    nautilus_window_slot_set_active (self, FALSE);
 
     if (priv->content_view)
     {
