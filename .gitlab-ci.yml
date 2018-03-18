@@ -35,6 +35,10 @@ flatpak:master:
         - .flatpak-builder/build/nautilus/_flatpak_build/meson-logs/meson-log.txt
         - .flatpak-builder/build/nautilus/_flatpak_build/meson-logs/testslog.txt
 
+    cache:
+        paths:
+        - .flatpak-builder/cache
+
 # Pick any distro to build the coverage
 fedora:rawhide:
     image: fedora:rawhide
