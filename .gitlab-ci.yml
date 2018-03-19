@@ -12,7 +12,7 @@ stages:
     - ninja test
 
 flatpak:master:
-    image: flatpak/flatpak-builder:gnome-3-28
+    image: registry.gitlab.com/alatiera/gnome-nightly-oci/gnome-master:latest
     stage: test
     script:
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.NautilusDevel.json
