@@ -1,5 +1,5 @@
 project('nautilus', 'c',
-  version: '3.27.92.1',
+  version: '3.28.0',
   meson_version: '>= 0.41.0',
   license: 'GPL3+'
 )
@@ -121,7 +121,9 @@ subdir('eel')
 subdir('libnautilus-extension')
 
 subdir('src')
-subdir('test')
+if get_option('tests') != 'none'
+  subdir('test')
+endif
 subdir('data')
 subdir('po')
 if get_option('docs')

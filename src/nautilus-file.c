@@ -165,6 +165,7 @@ static void     nautilus_file_info_iface_init (NautilusFileInfoInterface *iface)
 static char *nautilus_file_get_owner_as_string (NautilusFile *file,
                                                 gboolean      include_real_name);
 static char *nautilus_file_get_type_as_string (NautilusFile *file);
+static char *nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file);
 static char *nautilus_file_get_detailed_type_as_string (NautilusFile *file);
 static gboolean update_info_and_name (NautilusFile *file,
                                       GFileInfo    *info);
@@ -3544,8 +3545,8 @@ compare_by_type (NautilusFile *file_1,
         return 0;
     }
 
-    type_string_1 = nautilus_file_get_type_as_string (file_1);
-    type_string_2 = nautilus_file_get_type_as_string (file_2);
+    type_string_1 = nautilus_file_get_type_as_string_no_extra_text (file_1);
+    type_string_2 = nautilus_file_get_type_as_string_no_extra_text (file_2);
 
     if (type_string_1 == NULL || type_string_2 == NULL)
     {
@@ -7745,6 +7746,22 @@ nautilus_file_get_type_as_string (NautilusFile *file)
 }
 
 static char *
+nautilus_file_get_type_as_string_no_extra_text (NautilusFile *file)
+{
+    if (file == NULL)
+    {
+        return NULL;
+    }
+
+    if (nautilus_file_is_broken_symbolic_link (file))
+    {
+        return g_strdup (_("Link (broken)"));
+    }
+
+    return get_description (file, FALSE);
+}
+
+static char *
 nautilus_file_get_detailed_type_as_string (NautilusFile *file)
 {
     if (file == NULL)
@@ -8533,10 +8550,30 @@ nautilus_file_emit_changed (NautilusFile *file)
     link_files = get_link_files (file);
     for (p = link_files; p != NULL; p = p->next)
     {
-        if (p->data != file)
+        /* Looking for directly recursive links. */
+        g_autolist (NautilusFile) link_targets = NULL;
+        NautilusDirectory *directory;
+
+        /* Files can be links to themselves. */
+        if (p->data == file)
         {
-            nautilus_file_changed (NAUTILUS_FILE (p->data));
+            continue;
         }
+
+        link_targets = get_link_files (p->data);
+        directory = nautilus_file_get_directory (p->data);
+
+        /* Reiterating (heh) that this will break with more complex cycles.
+         * Users, stop trying to break things on purpose.
+         */
+        if (g_list_find (link_targets, file) != NULL &&
+            directory == nautilus_file_get_directory (file))
+        {
+            g_signal_emit (p->data, signals[CHANGED], 0, p->data);
+            continue;
+        }
+
+        nautilus_file_changed (NAUTILUS_FILE (p->data));
     }
     nautilus_file_list_free (link_files);
 }

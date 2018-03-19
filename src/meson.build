@@ -267,6 +267,7 @@ libnautilus_sources = [
 
 nautilus_deps = [
   eel_2,
+  gio_unix,
   gmodule,
   gnome_autoar,
   gnome_desktop,
@@ -302,7 +303,7 @@ nautilus = executable(
   install: true
 )
 
-if get_option('display-tests')
+if get_option('tests') == 'all'
   test(
     'nautilus', nautilus,
     args: [

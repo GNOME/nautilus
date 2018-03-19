@@ -3096,12 +3096,37 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
 }
 
 static void
+open_in_disks (GtkButton                *button,
+               NautilusPropertiesWindow *self)
+{
+    g_autofree char *message = NULL;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GAppInfo) app_info = NULL;
+
+    app_info = g_app_info_create_from_commandline ("gnome-disks",
+                                                    NULL,
+                                                    G_APP_INFO_CREATE_NONE,
+                                                    NULL);
+
+    g_app_info_launch (app_info, NULL, NULL, &error);
+
+    if (error != NULL)
+    {
+        message = g_strdup_printf (_("Details: %s"), error->message);
+        eel_show_error_dialog (_("There was an error launching the application."),
+                               message,
+                               GTK_WINDOW (self));
+    }
+}
+
+static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
+    GtkWidget *button;
 
     hbox = create_page_with_box (window->details->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3243,6 +3268,15 @@ create_basic_page (NautilusPropertiesWindow *window)
                                                "width", 3,
                                                NULL);
         }
+
+       /*Translators: Here Disks mean the name of application GNOME Disks.*/
+       button = gtk_button_new_with_label (_("Open in Disks"));
+       g_signal_connect (button, "clicked", G_CALLBACK (open_in_disks), NULL);
+       gtk_container_add_with_properties (GTK_CONTAINER (grid),
+                                          button,
+                                          "width", 3,
+                                          NULL);
+       gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
 
