@@ -25,13 +25,10 @@ flatpak:master:
     - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json ninja -C _build test
     artifacts:
         paths:
-          - nautilus-dev.flatpak
-        expire_in: 2 days
-    artifacts:
-        when: on_failure
-        paths:
+        - nautilus-dev.flatpak
         - _build/meson-logs/meson-log.txt
         - _build/meson-logs/testslog.txt
+        expire_in: 2 days
 
     cache:
         paths:
