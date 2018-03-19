@@ -38,7 +38,7 @@ flatpak:master:
 fedora:rawhide:
     image: fedora:rawhide
     stage: cross_distro
-    script:
+    before_script:
     - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
     - dnf builddep -y nautilus
     <<: *distro_test
