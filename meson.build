@@ -128,26 +128,17 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
-if true or get_option('profile') == 'development'
-  config_h = declare_dependency(
-    sources: vcs_tag(
-      command: ['git', 'rev-parse', '--short', 'HEAD'],
-      fallback: 'devel',
-      input: configure_file(
-        output: 'config.h.in',
-        configuration: conf
-      ),
-      output: 'config.h'
-    )
+config_h = declare_dependency(
+  sources: vcs_tag(
+    command: ['git', 'rev-parse', '--short', 'HEAD'],
+    fallback: 'devel',
+    input: configure_file(
+      output: 'config.h.in',
+      configuration: conf
+    ),
+    output: 'config.h'
   )
-else
-  configure_file(
-    output: 'config.h',
-    configuration: conf
-  )
-  config_h = dependency('', required: false)
-endif
-#
+)
 
 nautilus_include_dirs = include_directories(
   '.',
