@@ -37,13 +37,9 @@ flatpak:master:
 
 # Pick any distro to build the coverage
 fedora:rawhide:
-    image: fedora:rawhide
+    image: registry.gitlab.com/alatiera/natutilus-oci-images/amd64/fedora:rawhide
     stage: cross_distro
     script:
-    - dnf install -y 'dnf-command(builddep)' redhat-rpm-config gcovr
-    # Waiting for gcovr 3.5 to be released.
-    - pip install git+https://github.com/gcovr/gcovr.git
-    - dnf builddep -y nautilus
     - meson _build . -Db_coverage=true
     # Coverage data contains paths relative to the build directory,
     # so changing to it makes writing filter expressions easier.
@@ -71,17 +67,9 @@ fedora:rawhide:
     - tags
 
 ubuntu:devel:
-    image: ubuntu:devel
+    image: registry.gitlab.com/alatiera/natutilus-oci-images/amd64/ubuntu:devel
     stage: cross_distro
     before_script:
-    # Ubuntu requires running update to fetch metadata and find packges
-    - apt update
-    - apt install -y gcc meson gettext itstool git libgtk-3-dev
-                     libgnome-autoar-0-dev libgnome-desktop-3-dev
-                     gobject-introspection libxml2-dev
-                     libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
-                     libgail-3-dev libtracker-sparql-2.0-dev
-                     libgirepository1.0-dev
     <<: *distro_test
     only:
     - schedules
@@ -89,13 +77,8 @@ ubuntu:devel:
     - tags
 
 opensuse:tumbleweed:
-    image: opensuse:tumbleweed
+    image: registry.gitlab.com/alatiera/natutilus-oci-images/amd64/opensuse:tumbleweed
     stage: cross_distro
-    before_script:
-    - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
-                        gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
-                        gobject-introspection-devel libxml2-devel tracker-devel
-                        desktop-file-utils libgexiv2-devel
     <<: *distro_test
     only:
     - schedules
