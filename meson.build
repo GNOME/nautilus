@@ -93,23 +93,19 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 conf = configuration_data()
 
 if get_option('profile') == 'development'
-  version = '@0@-@VCS_TAG@'.format(meson.project_version())
-  conf.set_quoted('NAME_SUFFIX', ' (Development Snapshot)')
   profile = 'Devel'
+  name_suffix = ' (Development Snapshot)'
+elif get_option('profile') == 'stable-flatpak'
+  profile = 'StableFlatpak'
+  name_suffix = ' (3.28 Flatpak)'
 else
-  if get_option('profile') == 'stable-flatpak'
-    version = '@0@-flatpak'.format(meson.project_version())
-    profile = 'Stable'
-  else
-    version = meson.project_version()
-    profile = ''
-  endif
-  conf.set_quoted('NAME_SUFFIX', '')
+  profile = ''
+  name_suffix = ''
 endif
 
 application_id = 'org.gnome.Nautilus@0@'.format(profile)
 
-conf.set_quoted('VERSION', version)
+conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
@@ -117,6 +113,7 @@ conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('PROFILE', profile)
+conf.set_quoted('NAME_SUFFIX', name_suffix)
 
 if get_option('packagekit')
   conf.set10('ENABLE_PACKAGEKIT', true)
@@ -128,25 +125,17 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
-if get_option('profile') == 'development'
-  config_h = declare_dependency(
-    sources: vcs_tag(
-      command: ['git', 'rev-parse', '--short', 'HEAD'],
-      fallback: 'devel',
-      input: configure_file(
-        output: 'config.h.in',
-        configuration: conf
-      ),
-      output: 'config.h'
-    )
+config_h = declare_dependency(
+  sources: vcs_tag(
+    command: ['git', 'rev-parse', '--short', 'HEAD'],
+    fallback: get_option('profile') != 'default'? 'devel' : 'stable',
+    input: configure_file(
+      output: 'config.h.in',
+      configuration: conf
+    ),
+    output: 'config.h'
   )
-else
-  configure_file(
-    output: 'config.h',
-    configuration: conf
-  )
-  config_h = dependency('', required: false)
-endif
+)
 #
 
 nautilus_include_dirs = include_directories(
