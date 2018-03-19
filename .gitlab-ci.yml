@@ -16,6 +16,8 @@ flatpak:master:
     stage: test
     script:
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.NautilusDevel.json
+    # Make sure to keep this in sync with the Flatpak manifest, all arguments
+    # are passed except the config-args because we build it ourselves
     - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json meson --prefix=/app --libdir=/app/lib -Dprofile=stable-flatpak _build
     - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json ninja -C _build install
     - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.NautilusDevel.json
@@ -31,7 +33,7 @@ flatpak:master:
         when: on_failure
         paths:
         - _build/meson-logs/meson-log.txt
-        - _build/meson-logs/testslog.txt
+        - _build/meson-logs/testlog.txt
 
     cache:
         paths:
