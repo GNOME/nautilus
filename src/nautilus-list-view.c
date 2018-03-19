@@ -678,15 +678,68 @@ button_press_callback (GtkWidget      *widget,
     }
     else
     {
-        /* We're going to filter out some situations where
-         * we can't let the default code run because all
-         * but one row would be would be deselected. We don't
-         * want that; we want the right click menu or single
-         * click to apply to everything that's currently selected.
-         */
-        if (event->button == GDK_BUTTON_SECONDARY && path_selected)
+        GtkTreePath *cursor;
+
+        GList *selected_rows = NULL;
+        if (event->button == GDK_BUTTON_SECONDARY)
         {
-            call_parent = FALSE;
+            if (path_selected)
+            {     
+            /* We're going to filter out some situations where
+             * we can't let the default code run because all
+             * but one row would be would be deselected. We don't
+             * want that; we want the right click menu or single
+             * click to apply to everything that's currently selected.
+             */
+                call_parent = FALSE;
+            }
+            else if ((event->state & GDK_CONTROL_MASK) != 0)
+            {
+                GList *l;
+                /* If CTRL is pressed, we don't allow the parent
+                 * class to handle it, since GtkTreeView doesn't
+                 * do it as intended currently.
+                 */
+                call_parent = FALSE;
+                if ((event->state & GDK_SHIFT_MASK) != 0)
+                {
+                    /* This is the CTRL+SHIFT selection mode which
+                     * we handleourselves, as the parent class would
+                     * otherwise do an unexpected selection.
+                     */
+                    gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
+                    if (cursor != NULL)
+                    {
+                        gtk_tree_selection_select_range (selection, cursor, path);
+                    }
+                    else
+                    {
+                        gtk_tree_selection_select_path (selection, path);
+                    }
+                }
+                else
+                {
+                    gtk_tree_selection_select_path (selection, path);
+                }
+                selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+                /* This unselects everything */
+                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+
+                /* So select it again */
+                for (l = selected_rows; l != NULL; l = l->next)
+                {
+                    gtk_tree_selection_select_path (selection, l->data);
+                }
+                g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
+            }
+            else if (on_expander)
+            {
+                /* If the right click happened on an expander, we should
+                 * fully change the selection on that row solely.
+                 */
+                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+            }
         }
 
         if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
@@ -701,12 +754,11 @@ button_press_callback (GtkWidget      *widget,
             }
             else if ((event->state & GDK_CONTROL_MASK) != 0)
             {
-                GList *selected_rows, *l;
+                GList *l;
 
                 call_parent = FALSE;
                 if ((event->state & GDK_SHIFT_MASK) != 0)
                 {
-                    GtkTreePath *cursor;
                     gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
                     if (cursor != NULL)
                     {
