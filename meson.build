@@ -99,7 +99,8 @@ if get_option('profile') == 'development'
 else
   if get_option('profile') == 'stable-flatpak'
     version = '@0@-flatpak'.format(meson.project_version())
-    profile = 'Stable'
+    conf.set_quoted('NAME_SUFFIX', ' (3.28 Flatpak)')
+    profile = 'StableFlatpak'
   else
     version = meson.project_version()
     profile = ''
@@ -128,7 +129,7 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
-if get_option('profile') == 'development'
+if true or get_option('profile') == 'development'
   config_h = declare_dependency(
     sources: vcs_tag(
       command: ['git', 'rev-parse', '--short', 'HEAD'],
