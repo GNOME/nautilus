@@ -818,7 +818,7 @@ row_expanded_callback (GtkTreeView *treeview,
     }
 
     uri = nautilus_directory_get_uri (directory);
-    DEBUG ("Row expaded callback for uri %s", uri);
+    DEBUG ("Row expanded callback for uri %s", uri);
     g_free (uri);
 
     nautilus_files_view_add_subdirectory (NAUTILUS_FILES_VIEW (view), directory);
