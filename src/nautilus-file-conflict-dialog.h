@@ -20,8 +20,7 @@
    Authors: Cosimo Cecchi <cosimoc@gnome.org>
 */
 
-#ifndef NAUTILUS_FILE_CONFLICT_DIALOG_H
-#define NAUTILUS_FILE_CONFLICT_DIALOG_H
+#pragma once
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -57,5 +56,3 @@ char*      nautilus_file_conflict_dialog_get_new_name     (NautilusFileConflictD
 gboolean   nautilus_file_conflict_dialog_get_apply_to_all (NautilusFileConflictDialog *dialog);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_FILE_CONFLICT_DIALOG_H */

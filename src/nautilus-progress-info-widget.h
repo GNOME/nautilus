@@ -21,8 +21,7 @@
  *
  */
 
-#ifndef __NAUTILUS_PROGRESS_INFO_WIDGET_H__
-#define __NAUTILUS_PROGRESS_INFO_WIDGET_H__
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -56,5 +55,3 @@ typedef struct {
 GType nautilus_progress_info_widget_get_type (void);
 
 GtkWidget * nautilus_progress_info_widget_new (NautilusProgressInfo *info);
-
-#endif /* __NAUTILUS_PROGRESS_INFO_WIDGET_H__ */

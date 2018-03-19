@@ -17,8 +17,7 @@
  *
  */
 
-#ifndef NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER_H
-#define NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -35,5 +34,3 @@ NautilusNewFolderDialogController * nautilus_new_folder_dialog_controller_new (G
                                                                                gchar             *initial_name);
 
 gboolean nautilus_new_folder_dialog_controller_get_with_selection (NautilusNewFolderDialogController *controller);
-
-#endif /* NAUTILUS_NEW_FOLDER_DIALOG_CONTROLLER_H */

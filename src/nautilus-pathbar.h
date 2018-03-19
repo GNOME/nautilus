@@ -16,8 +16,7 @@
  * 
  */
 
-#ifndef NAUTILUS_PATHBAR_H
-#define NAUTILUS_PATHBAR_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -36,5 +35,3 @@ struct _NautilusPathBarClass
                                      GtkPlacesOpenFlags flags);
 };
 void     nautilus_path_bar_set_path    (NautilusPathBar *self, GFile *file);
-
-#endif /* NAUTILUS_PATHBAR_H */

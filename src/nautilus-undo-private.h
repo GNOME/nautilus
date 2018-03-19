@@ -19,8 +19,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_UNDO_PRIVATE_H
-#define NAUTILUS_UNDO_PRIVATE_H
+#pragma once
 
 #include "nautilus-undo.h"
 #include "nautilus-undo-manager.h"
@@ -29,5 +28,3 @@
 NautilusUndoManager * nautilus_undo_get_undo_manager    (GObject               *attached_object);
 void                  nautilus_undo_attach_undo_manager (GObject               *object,
 							 NautilusUndoManager   *manager);
-
-#endif /* NAUTILUS_UNDO_PRIVATE_H */

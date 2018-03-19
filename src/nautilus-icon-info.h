@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_ICON_INFO_H
-#define NAUTILUS_ICON_INFO_H
+#pragma once
 
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -76,6 +75,3 @@ void                  nautilus_icon_info_clear_caches                 (void);
 gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_ICON_INFO_H */
-

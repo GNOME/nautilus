@@ -17,8 +17,7 @@
  *
  */
 
-#ifndef NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_H
-#define NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -46,6 +45,3 @@ struct _NautilusFileNameWidgetControllerClass
 };
 
 gchar * nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *controller);
-
-
-#endif /* NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_H */

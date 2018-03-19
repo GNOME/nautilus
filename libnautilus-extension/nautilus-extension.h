@@ -15,7 +15,6 @@
  * You should have received a copy of the GNU Lesser General Public
  * License along with libnautilus-extension.  If not, see <https://www.gnu.org/licenses/>.
  */
-
 #ifndef NAUTILUS_EXTENSION_H
 #define NAUTILUS_EXTENSION_H
 

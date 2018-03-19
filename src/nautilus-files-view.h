@@ -22,8 +22,7 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#ifndef NAUTILUS_FILES_VIEW_H
-#define NAUTILUS_FILES_VIEW_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -331,5 +330,3 @@ GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesV
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_FILES_VIEW_H */

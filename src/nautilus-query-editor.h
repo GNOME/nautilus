@@ -19,8 +19,7 @@
  *
  */
 
-#ifndef NAUTILUS_QUERY_EDITOR_H
-#define NAUTILUS_QUERY_EDITOR_H
+#pragma once
 
 #include <gtk/gtk.h>
 
@@ -83,5 +82,3 @@ void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
  */
 void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
-
-#endif /* NAUTILUS_QUERY_EDITOR_H */

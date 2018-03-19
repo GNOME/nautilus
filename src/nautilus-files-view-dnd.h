@@ -24,8 +24,7 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#ifndef __NAUTILUS_FILES_VIEW_DND_H__
-#define __NAUTILUS_FILES_VIEW_DND_H__
+#pragma once
 
 #include "nautilus-files-view.h"
 
@@ -54,6 +53,3 @@ void nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                                    const GList       *uris,
                                                    const char        *target_location,
                                                    GdkDragAction      action);
-
-
-#endif /* __NAUTILUS_FILES_VIEW_DND_H__ */

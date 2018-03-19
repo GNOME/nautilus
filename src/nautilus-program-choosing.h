@@ -21,8 +21,7 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef NAUTILUS_PROGRAM_CHOOSING_H
-#define NAUTILUS_PROGRAM_CHOOSING_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -59,5 +58,3 @@ void nautilus_launch_default_for_uri_async          (const char                 
                                                      gpointer                           callback_data);
 gboolean nautilus_launch_default_for_uri_finish     (GAsyncResult                      *result,
                                                      GError                           **error);
-
-#endif /* NAUTILUS_PROGRAM_CHOOSING_H */

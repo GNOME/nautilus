@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_FILE_ATTRIBUTES_H
-#define NAUTILUS_FILE_ATTRIBUTES_H
+#pragma once
 
 /* Names for NautilusFile attributes. These are used when registering
  * interest in changes to the attributes or when waiting for them.
@@ -37,5 +36,3 @@ typedef enum {
 	NAUTILUS_FILE_ATTRIBUTE_MOUNT = 1 << 7,
 	NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO = 1 << 8,
 } NautilusFileAttributes;
-
-#endif /* NAUTILUS_FILE_ATTRIBUTES_H */

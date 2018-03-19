@@ -22,8 +22,7 @@
             Anders Carlsson <andersca@gnu.org>
 */
 
-#ifndef NAUTILUS_LIST_VIEW_H
-#define NAUTILUS_LIST_VIEW_H
+#pragma once
 
 #include "nautilus-files-view.h"
 
@@ -39,5 +38,3 @@ struct _NautilusListView
 };
 
 NautilusFilesView * nautilus_list_view_new (NautilusWindowSlot *slot);
-
-#endif /* NAUTILUS_LIST_VIEW_H */

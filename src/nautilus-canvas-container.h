@@ -21,8 +21,7 @@
    Authors: Ettore Perazzoli <ettore@gnu.org>, Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_CANVAS_CONTAINER_H
-#define NAUTILUS_CANVAS_CONTAINER_H
+#pragma once
 
 #include <eel/eel-canvas.h>
 #include "nautilus-icon-info.h"
@@ -292,5 +291,3 @@ guint             nautilus_canvas_container_get_icon_size_for_zoom_level (Nautil
 
 #define CANVAS_HEIGHT(container,allocation) (allocation.height		\
 					     / EEL_CANVAS (container)->pixels_per_unit)
-
-#endif /* NAUTILUS_CANVAS_CONTAINER_H */

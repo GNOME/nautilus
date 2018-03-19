@@ -21,8 +21,7 @@
             Pavel Cisler <pavel@eazel.com>
 */
 
-#ifndef NAUTILUS_FILE_OPERATIONS_H
-#define NAUTILUS_FILE_OPERATIONS_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -155,6 +154,3 @@ void nautilus_file_operations_compress (GList                  *files,
                                         GtkWindow              *parent_window,
                                         NautilusCreateCallback  done_callback,
                                         gpointer                done_callback_data);
-
-
-#endif /* NAUTILUS_FILE_OPERATIONS_H */

@@ -17,8 +17,7 @@
    Author: Pavel Cisler <pavel@eazel.com>  
 */
 
-#ifndef NAUTILUS_FILE_CHANGES_QUEUE_H
-#define NAUTILUS_FILE_CHANGES_QUEUE_H
+#pragma once
 
 #include <gdk/gdk.h>
 #include <gio/gio.h>
@@ -30,6 +29,3 @@ void nautilus_file_changes_queue_file_moved                      (GFile      *fr
 								  GFile      *to);
 
 void nautilus_file_changes_consume_changes                       (gboolean    consume_all);
-
-
-#endif /* NAUTILUS_FILE_CHANGES_QUEUE_H */
