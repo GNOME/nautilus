@@ -678,11 +678,56 @@ button_press_callback (GtkWidget      *widget,
     }
     else
     {
+        GtkTreePath *cursor;
+
+        GList *selected_rows = NULL;
         if (event->button == GDK_BUTTON_SECONDARY)
         {
+        /* We handle two different cases here:
+         * first, we allow the parent class to
+         * handle this, except the SHIFT+CTRL case
+         * which we handle ourselves. The other one
+         * is right click happening on an expander,
+         * where we can't let the default code run
+         * as it would not select anything and open
+         * the context menu for the current selection.
+         */
             if (path_selected)
             {
                 call_parent = FALSE;
+            }
+            else if ((event->state & GDK_CONTROL_MASK) != 0)
+            {
+                GList *l;
+
+                call_parent = FALSE;
+                if ((event->state & GDK_SHIFT_MASK) != 0)
+                {
+                    gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
+                    if (cursor != NULL)
+                    {
+                        gtk_tree_selection_select_range (selection, cursor, path);
+                    }
+                    else
+                    {
+                        gtk_tree_selection_select_path (selection, path);
+                    }
+                }
+                else
+                {
+                    gtk_tree_selection_select_path (selection, path);
+                }
+                selected_rows = gtk_tree_selection_get_selected_rows (selection, NULL);
+
+                /* This unselects everything */
+                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+
+                /* So select it again */
+                for (l = selected_rows; l != NULL; l = l->next)
+                {
+                    gtk_tree_selection_select_path (selection, l->data);
+                }
+                g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
             }
             else if (on_expander)
             {
@@ -706,9 +751,7 @@ button_press_callback (GtkWidget      *widget,
             else if ((event->state & GDK_CONTROL_MASK) != 0)
             {
                 GList *l;
-                GtkTreePath *cursor;
 
-                GList *selected_rows = NULL;
                 call_parent = FALSE;
                 if ((event->state & GDK_SHIFT_MASK) != 0)
                 {
