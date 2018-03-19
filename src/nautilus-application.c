@@ -245,6 +245,7 @@ nautilus_application_create_window (NautilusApplication *self,
     g_autoptr (GVariant) default_size = NULL;
     gint default_width = 0;
     gint default_height = 0;
+    const gchar *application_id;
 
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
@@ -269,6 +270,17 @@ nautilus_application_create_window (NautilusApplication *self,
     gtk_window_set_default_size (GTK_WINDOW (window),
                                  MAX (NAUTILUS_WINDOW_MIN_WIDTH, default_width),
                                  MAX (NAUTILUS_WINDOW_MIN_HEIGHT, default_height));
+
+    application_id = g_application_get_application_id (G_APPLICATION (self));
+    if (g_strcmp0 (application_id, "org.gnome.NautilusDevel") == 0 ||
+        g_strcmp0 (application_id, "org.gnome.NautilusStableFlatpak") == 0)
+    {
+        GtkStyleContext *style_context;
+
+        style_context = gtk_widget_get_style_context (GTK_WIDGET (window));
+
+        gtk_style_context_add_class (style_context, "devel");
+    }
 
     DEBUG ("Creating a new navigation window");
     nautilus_profile_end (NULL);
@@ -1253,7 +1265,7 @@ nautilus_application_startup_common (NautilusApplication *self)
      */
     G_APPLICATION_CLASS (nautilus_application_parent_class)->startup (G_APPLICATION (self));
 
-    gtk_window_set_default_icon_name ("org.gnome.Nautilus");
+    gtk_window_set_default_icon_name (APPLICATION_ID);
 
     setup_theme_extensions ();
 
@@ -1535,7 +1547,7 @@ NautilusApplication *
 nautilus_application_new (void)
 {
     return g_object_new (NAUTILUS_TYPE_APPLICATION,
-                         "application-id", "org.gnome.Nautilus",
+                         "application-id", APPLICATION_ID,
                          "flags", G_APPLICATION_HANDLES_COMMAND_LINE | G_APPLICATION_HANDLES_OPEN,
                          "inactivity-timeout", 12000,
                          NULL);

@@ -779,7 +779,7 @@ nautilus_shell_search_provider_register (NautilusShellSearchProvider  *self,
 {
     return g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->skeleton),
                                              connection,
-                                             "/org/gnome/Nautilus/SearchProvider", error);
+                                             "/org/gnome/Nautilus" PROFILE "/SearchProvider", error);
 }
 
 void

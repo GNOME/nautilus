@@ -266,6 +266,7 @@ libnautilus_sources = [
 ]
 
 nautilus_deps = [
+  config_h,
   eel_2,
   gio_unix,
   gmodule,
@@ -303,7 +304,7 @@ nautilus = executable(
   install: true
 )
 
-if get_option('display-tests')
+if get_option('tests') == 'all'
   test(
     'nautilus', nautilus,
     args: [
@@ -323,6 +324,9 @@ executable(
   'nautilus-autorun-software',
   nautilus_autorun_software_sources,
   include_directories: nautilus_include_dirs,
-  dependencies: gtk,
+  dependencies: [
+    config_h,
+    gtk
+  ],
   install: true
 )
