@@ -280,6 +280,14 @@ nautilus_application_create_window (NautilusApplication *self,
 
         gtk_style_context_add_class (style_context, "devel");
     }
+    else if (g_strcmp0 (application_id, "org.gnome.NautilusStableFlatpak") == 0)
+    {
+        GtkStyleContext *style_context;
+
+        style_context = gtk_widget_get_style_context (GTK_WIDGET (window));
+
+        gtk_style_context_add_class (style_context, "stableflatpak");
+    }
 
     DEBUG ("Creating a new navigation window");
     nautilus_profile_end (NULL);
