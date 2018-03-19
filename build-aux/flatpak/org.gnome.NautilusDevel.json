@@ -1,11 +1,11 @@
 {
-    "app-id": "org.gnome.NautilusDevel",
+    "app-id": "org.gnome.NautilusStableFlatpak",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "master",
+    "runtime-version": "3.28",
     "sdk": "org.gnome.Sdk",
     "command": "nautilus",
-    "tags": ["devel", "development", "nightly"],
-    "desktop-file-name-prefix": "(Development) ",
+    "tags": ["test", "stable"],
+    "desktop-file-name-prefix": "(3.28 Flatpak) ",
     "finish-args": [
         "--share=ipc", "--socket=x11",
         "--socket=wayland",
@@ -15,7 +15,6 @@
         "--talk-name=org.gtk.vfs", "--talk-name=org.gtk.vfs.*",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
-    "cleanup": [ "/include", "/share/bash-completion" ],
     "modules": [
         {
             "name": "exiv2",
@@ -84,7 +83,7 @@
             "name": "nautilus",
             "config-opts": [
                 "--libdir=/app/lib",
-                "-Dprofile=development"
+                "-Dprofile=stable-flatpak"
             ],
             "sources": [
                 {
