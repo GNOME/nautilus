@@ -1,7 +1,6 @@
 # Steps to reproduce
 <!--
-    Explain in detail what you were doing when the issue manifested.
-    If the issue affects only certain files, a sample would be appreciated.
+    Explain in detail the steps on how the issue can be reproduced.
 -->
 1.
 2.
@@ -9,31 +8,35 @@
 
 Reproducible in:
 <!--
-    To test, first install Flatpak following the steps in https://flatpak.org/getting.html.
+    Please test if the issue was already fixed in the unstable version of the app.
+    For that, follow these steps:
+    1. Make sure Flatpak is installed or install it following these steps https://flatpak.org/setup
+    2. Install the unstable version of the app following this link 
+    https://git.gnome.org/browse/gnome-apps-nightly/plain/nautilus.flatpakref
 
-    Ubuntu users should perform these steps:
-        http://docs.flatpak.org/en/latest/using-flatpak.html#add-a-remote
-        http://docs.flatpak.org/en/latest/using-flatpak.html#install-applications (use the links below to install)
-
-    The stable version can be installed from https://flathub.org/repo/appstream/org.gnome.Nautilus.flatpakref.
-    The unstable version can be installed from https://git.gnome.org/browse/gnome-apps-nightly/plain/nautilus.flatpakref.
-
-    If these steps failed, write down the distribution you’re using and the version of Nautilus.
+    If these steps failed, write in 'Other' the distribution you’re using and
+    the version of the app.
 -->
-* [ ] Flatpak stable
 * [ ] Flatpak unstable
+* [ ] Other: 
+
 
 # Current behavior
-<!-- Describe the current (incorrect) behavior. -->
+<!-- Describe the current behavior. -->
+
 
 # Expected behavior
-<!-- Describe the expected (correct) behavior. -->
+<!-- Describe the expected behavior. -->
+
 
 # Additional information
 <!--
+    Provide more information that could be relevant.
+    
     If the issue is a crash, provide a stack trace following the steps in:
     https://wiki.gnome.org/Community/GettingInTouch/Bugzilla/GettingTraces
 -->
 
-<!-- Ignore everything under this line. -->
+
+<!-- Ignore the text under this line. -->
 /label ~"1. Bug"

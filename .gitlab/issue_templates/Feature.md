@@ -1,23 +1,22 @@
-# Desired behavior
-<!-- In as much detail as possible, describe the functionality that you feel is missing. -->
+### Use cases
+<!-- Describe what problem(s) the user is experiencing and that this request
+is trying to solve. -->
 
-…
 
-# Use case
-<!-- Explain how the lack of this functionality affects your workflow. -->
+### Desired behavior
+<!-- Describe the desired functionality. -->
 
-…
 
-<!-- Explain how the implementation of the functionality will improve your workflow. -->
+### Benefits of the solution
+<!-- List the possible benefits of the solution and how it fits in the project. -->
 
-…
 
-# Possible drawbacks
+### Possible drawbacks
 <!--
-    This is equally important; please consider how the feature could affect the project as a whole.
-    Do you believe that the average user will benefit from it? In other words, is it a niche use case?
-    By your estimations, would this incur a large technical debt to the developers?
+     Describe possible drawbacks of the feature and list how it could affect
+     the project i.e. UI discoverability, complexity, impact in more or less
+     number of users, etc.
 -->
 
-<!-- Ignore everything under this line. -->
+<!-- Ignore the text under this line. -->
 /label ~"1. Feature"
