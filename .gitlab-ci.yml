@@ -15,16 +15,16 @@ flatpak:master:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/gnome-master:latest
     stage: test
     script:
-    - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.NautilusDevel.json
+    - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
     # Make sure to keep this in sync with the Flatpak manifest, all arguments
     # are passed except the config-args because we build it ourselves
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json ninja -C _build install
-    - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.NautilusDevel.json
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build install
+    - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak org.gnome.NautilusDevel
     # Run automatic tests inside the Flatpak env
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.NautilusDevel.json ninja -C _build test
+    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build test
     artifacts:
         paths:
         - nautilus-dev.flatpak
