@@ -93,22 +93,19 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 conf = configuration_data()
 
 if get_option('profile') == 'development'
-  version = '@0@-@VCS_TAG@'.format(meson.project_version())
   profile = 'Devel'
   name_suffix = ' (Development Snapshot)'
 elif get_option('profile') == 'stable-flatpak'
-  version = '@0@-flatpak'.format(meson.project_version())
   profile = 'StableFlatpak'
   name_suffix = ' (3.28 Flatpak)'
 else
-  version = meson.project_version()
   profile = ''
   name_suffix = ''
 endif
 
 application_id = 'org.gnome.Nautilus@0@'.format(profile)
 
-conf.set_quoted('VERSION', version)
+conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
@@ -131,7 +128,7 @@ endif
 config_h = declare_dependency(
   sources: vcs_tag(
     command: ['git', 'rev-parse', '--short', 'HEAD'],
-    fallback: 'devel',
+    fallback: get_option('profile') != 'default'? 'devel' : 'stable',
     input: configure_file(
       output: 'config.h.in',
       configuration: conf
