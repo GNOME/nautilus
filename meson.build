@@ -97,7 +97,8 @@ if get_option('profile') == 'development'
   name_suffix = ' (Development Snapshot)'
 elif get_option('profile') == 'stable-flatpak'
   profile = 'StableFlatpak'
-  name_suffix = ' (3.28 Flatpak)'
+  version_array = meson.project_version().split('.')
+  name_suffix = ' (@0@.@1@ Flatpak)'.format(version_array[0], version_array[1])
 else
   profile = ''
   name_suffix = ''
