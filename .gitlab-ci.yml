@@ -32,6 +32,8 @@ flatpak:master:
         - _build/meson-logs/testlog.txt
         expire_in: 2 days
     cache:
+        key: "$CI_COMMIT_REF_SLUG"
+        untracked: true
         paths:
         - .flatpak-builder/cache
 
