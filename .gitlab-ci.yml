@@ -15,16 +15,18 @@ flatpak:master:
     image: registry.gitlab.com/alatiera/gnome-nightly-oci/gnome-master:latest
     stage: test
     script:
+    - dnf install -y xorg-x11-server-Xvfb
+
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
     # Make sure to keep this in sync with the Flatpak manifest, all arguments
     # are passed except the config-args because we build it ourselves
-    - flatpak build app meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
+    - flatpak build app meson --prefix=/app --libdir=/app/lib -Dprofile=development -Dtests=all _build
     - flatpak build app ninja -C _build install
     - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak --runtime-repo=https://sdk.gnome.org/gnome-nightly.flatpakrepo org.gnome.NautilusDevel
     # Run automatic tests inside the Flatpak env
-    - flatpak build app ninja -C _build test
+    - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
         - nautilus-dev.flatpak
