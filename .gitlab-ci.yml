@@ -18,8 +18,8 @@ flatpak:master:
     - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
     # Make sure to keep this in sync with the Flatpak manifest, all arguments
     # are passed except the config-args because we build it ourselves
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
-    - flatpak-builder --run app build-aux/flatpak/org.gnome.Nautilus.json ninja -C _build install
+    - flatpak build app meson --prefix=/app --libdir=/app/lib -Dprofile=development _build
+    - flatpak build app ninja -C _build install
     - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
     # Make a Flatpak Nautilus bundle for people to test
     - flatpak build-bundle repo nautilus-dev.flatpak --runtime-repo=https://sdk.gnome.org/gnome-nightly.flatpakrepo org.gnome.NautilusDevel
