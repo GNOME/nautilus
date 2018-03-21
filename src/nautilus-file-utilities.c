@@ -365,7 +365,7 @@ nautilus_get_user_directory (void)
 
     if (!g_file_test (user_directory, G_FILE_TEST_EXISTS))
     {
-        g_mkdir (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
+        g_mkdir_with_parents (user_directory, DEFAULT_NAUTILUS_DIRECTORY_MODE);
         /* FIXME bugzilla.gnome.org 41286:
          * How should we handle the case where this mkdir fails?
          * Note that nautilus_application_startup will refuse to launch if this
