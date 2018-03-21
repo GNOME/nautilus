@@ -162,8 +162,9 @@ check_required_directories (NautilusApplication *self)
         int failed_count;
         GString *directories_as_string;
         GSList *l;
-        char *error_string;
-        const char *detail_string;
+        char *error_string = NULL;
+        g_autofree char *detail_string = NULL;
+
         GtkDialog *dialog;
 
         ret = FALSE;
