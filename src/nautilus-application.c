@@ -159,7 +159,7 @@ check_required_directories (NautilusApplication *self)
         GString *directories_as_string;
         GSList *l;
         char *error_string;
-        const char *detail_string;
+        g_autofree char *detail_string = NULL;
         GtkDialog *dialog;
 
         ret = FALSE;
