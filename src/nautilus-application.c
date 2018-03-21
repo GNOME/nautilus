@@ -162,8 +162,9 @@ check_required_directories (NautilusApplication *self)
         int failed_count;
         GString *directories_as_string;
         GSList *l;
-        char *error_string;
-        const char *detail_string;
+        g_autofree char *error_string = NULL;
+        g_autofree char *detail_string = NULL;
+
         GtkDialog *dialog;
 
         ret = FALSE;
@@ -245,7 +246,7 @@ nautilus_application_create_window (NautilusApplication *self,
     g_autoptr (GVariant) default_size = NULL;
     gint default_width = 0;
     gint default_height = 0;
-    const gchar *application_id;
+    g_autofree const gchar *application_id;
 
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
@@ -902,7 +903,7 @@ static GActionEntry app_entries[] =
 static void
 nautilus_init_application_actions (NautilusApplication *app)
 {
-    const gchar *debug_no_app_menu;
+    g_autofree const gchar *debug_no_app_menu;
     GAction *sidebar_action;
 
     g_action_map_add_action_entries (G_ACTION_MAP (app),
@@ -960,7 +961,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
     GFile **files;
     GFile *file;
     gint idx, len;
-    const gchar * const *remaining = NULL;
+    g_autofree gchar * const *remaining = NULL;
     GPtrArray *file_array;
 
     g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&s", &remaining);
@@ -1233,7 +1234,7 @@ on_application_shutdown (GApplication *application,
     NautilusApplicationPrivate *priv;
     GList *notification_ids;
     GList *l;
-    gchar *notification_id;
+    g_autofree char *notification_id = NULL;
 
     priv = nautilus_application_get_instance_private (self);
     notification_ids = g_hash_table_get_keys (priv->notifications);
