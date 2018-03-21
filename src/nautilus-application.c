@@ -984,7 +984,20 @@ nautilus_application_handle_file_args (NautilusApplication *self,
                 file = g_file_new_for_commandline_arg_and_cwd (remaining[idx], cwd);
                 g_free (cwd);
             }
-            g_ptr_array_add (file_array, file);
+
+            if (nautilus_is_search_directory (file))
+            {
+                g_autofree char *error_string = NULL;
+                error_string = g_strdup_printf (_("“%s” is an internal protocol. "
+                                                  "Opening this location directly is not supported."),
+                                                EEL_SEARCH_URI);
+
+                g_printerr ("%s\n", error_string);
+            }
+            else
+            {
+                g_ptr_array_add (file_array, file);
+            }
         }
     }
     else if (g_variant_dict_contains (options, "new-window"))
