@@ -262,4 +262,13 @@ actionbar
   border-top: 1px solid @borders;
   /* Same as sidebar_bg_color in gtk */
   background-color: mix(@theme_bg_color, @theme_base_color, 0.5);
-} 
+}
+
+.border-box
+{
+  border-width: 0px 0px 0px 1px;
+  border-style: solid;
+  border-color: @borders;
+  /* Same as spacing between icons */
+  padding-left: 6px;
+}
