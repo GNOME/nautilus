@@ -8632,7 +8632,11 @@ nautilus_files_view_key_press_event (GtkWidget   *widget,
 static GtkWidget *
 nautilus_files_view_get_action_bar (NautilusView *view)
 {
-    return NAUTILUS_FILES_VIEW (view)->details->actionbar;
+    NautilusFilesViewPrivate *priv;
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    return priv->actionbar;
 }
 
 static NautilusQuery *
@@ -8992,7 +8996,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
 
     /* Actionbar */
-    view->details->actionbar = nautilus_action_bar_new (NAUTILUS_VIEW (view));
+    priv->actionbar = nautilus_action_bar_new (NAUTILUS_VIEW (view));
 
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
