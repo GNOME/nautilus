@@ -195,7 +195,7 @@ setup_multiple_files_selection (NautilusActionBar *actionbar,
           if (!folder_item_count_known)
             folder_item_count_str = g_strdup ("");
           else
-            folder_item_count_str = g_strdup_printf (ngettext("(containing %'d item)", "(containing %'d items)", folder_item_count),
+            folder_item_count_str = g_strdup_printf (ngettext("(%'d item)", "(%'d items)", folder_item_count),
                                                      folder_item_count);
         }
       else
@@ -207,8 +207,8 @@ setup_multiple_files_selection (NautilusActionBar *actionbar,
           else
             {
               /* translators: this is preceded with a string of form 'N folders' (N more than 1) */
-              folder_item_count_str = g_strdup_printf (ngettext("(containing a total of %'d item)",
-                                                                "(containing a total of %'d items)",
+              folder_item_count_str = g_strdup_printf (ngettext("(total of %'d item)",
+                                                                "(total of %'d items)",
                                                                 folder_item_count),
                                                        folder_item_count);
             }
@@ -310,7 +310,7 @@ setup_single_file_selection (NautilusActionBar *actionbar,
 
       if (nautilus_file_get_directory_item_count (file, &folder_children, NULL))
         {
-          description = g_strdup_printf (ngettext("Contains %'d item", "Contains %'d items", folder_children),
+          description = g_strdup_printf (ngettext("%'d item", "%'d items", folder_children),
                                          folder_children);
         }
     }
