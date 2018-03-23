@@ -4618,35 +4618,23 @@ nautilus_files_view_get_content_widget (NautilusFilesView *view)
     return priv->scrolled_window;
 }
 
-/* desktop_or_home_dir_in_selection
+/* home_dir_in_selection()
  *
- * Return TRUE if either the desktop or the home directory is in the selection.
+ * Return TRUE if the home directory is in the selection.
  */
 
 static gboolean
-desktop_or_home_dir_in_selection (GList *selection)
+home_dir_in_selection (GList *selection)
 {
-    gboolean saw_desktop_or_home_dir;
-    GList *node;
-    NautilusFile *file;
-
-    saw_desktop_or_home_dir = FALSE;
-
-    for (node = selection; node != NULL; node = node->next)
+    for (GList *node = selection; node != NULL; node = node->next)
     {
-        file = NAUTILUS_FILE (node->data);
-
-        saw_desktop_or_home_dir =
-            nautilus_file_is_home (file)
-            || nautilus_file_is_desktop_directory (file);
-
-        if (saw_desktop_or_home_dir)
+        if (nautilus_file_is_home (NAUTILUS_FILE (node->data)))
         {
-            break;
+            return TRUE;
         }
     }
 
-    return saw_desktop_or_home_dir;
+    return FALSE;
 }
 
 static void
@@ -7236,7 +7224,7 @@ real_update_actions_state (NautilusFilesView *view)
     GList *l;
     gint selection_count;
     gboolean zoom_level_is_default;
-    gboolean selection_contains_desktop_or_home_dir;
+    gboolean selection_contains_home_dir;
     gboolean selection_contains_recent;
     gboolean selection_contains_search;
     gboolean selection_contains_starred;
@@ -7276,7 +7264,7 @@ real_update_actions_state (NautilusFilesView *view)
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     selection_count = g_list_length (selection);
-    selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
+    selection_contains_home_dir = home_dir_in_selection (selection);
     selection_contains_recent = showing_recent_directory (view);
     selection_contains_starred = showing_starred_directory (view);
     selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
@@ -7291,11 +7279,11 @@ real_update_actions_state (NautilusFilesView *view)
     can_delete_files =
         can_delete_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_desktop_or_home_dir;
+        !selection_contains_home_dir;
     can_trash_files =
         can_trash_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_desktop_or_home_dir;
+        !selection_contains_home_dir;
     can_copy_files = selection_count != 0;
     can_move_files = can_delete_files && !selection_contains_recent &&
                      !selection_contains_starred;
