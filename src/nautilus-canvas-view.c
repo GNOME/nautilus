@@ -1530,7 +1530,7 @@ canvas_view_scroll_to_file (NautilusFilesView *view,
 static guint
 nautilus_canvas_view_get_id (NautilusFilesView *view)
 {
-    return NAUTILUS_VIEW_GRID_ID;
+    return NAUTILUS_VIEW_CANVAS_ID;
 }
 
 static void
