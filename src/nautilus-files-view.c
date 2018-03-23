@@ -8926,13 +8926,16 @@ nautilus_files_view_set_property (GObject      *object,
     }
 }
 
-
-gboolean
-nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
-                                         GdkEventScroll    *event)
+/* handle Shift+Scroll, which will cause a zoom-in/out */
+static gboolean
+nautilus_files_view_scroll_event (GtkWidget      *widget,
+                                  GdkEventScroll *event)
 {
+    NautilusFilesView *directory_view;
     static gdouble total_delta_y = 0;
     gdouble delta_x, delta_y;
+
+    directory_view = NAUTILUS_FILES_VIEW (widget);
 
     if (event->state & GDK_CONTROL_MASK)
     {
@@ -8990,22 +8993,6 @@ nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
             default:
                 g_assert_not_reached ();
         }
-    }
-
-    return FALSE;
-}
-
-/* handle Shift+Scroll, which will cause a zoom-in/out */
-static gboolean
-nautilus_files_view_scroll_event (GtkWidget      *widget,
-                                  GdkEventScroll *event)
-{
-    NautilusFilesView *directory_view;
-
-    directory_view = NAUTILUS_FILES_VIEW (widget);
-    if (nautilus_files_view_handle_scroll_event (directory_view, event))
-    {
-        return TRUE;
     }
 
     return FALSE;
