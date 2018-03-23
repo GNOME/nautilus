@@ -22,8 +22,9 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">center</property>
-            <property name="border-width">6</property>
-            <property name="spacing">6</property>
+            <property name="border-width">2</property>
+            <property name="margin-start">6</property>
+            <property name="spacing">0</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -72,72 +73,30 @@
               </packing>
             </child>
             <child>
-              <object class="GtkBox">
+              <object class="GtkMenuButton">
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="spacing">6</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="valign">center</property>
+                <property name="menu_model">selection-menu</property>
+                <property name="margin-start">6</property>
                 <child>
-                  <object class="GtkMenuButton">
+                  <object class="GtkImage">
                     <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="valign">center</property>
-                    <property name="menu_model">selection-menu</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">view-more-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                      <class name="flat"/>
-                    </style>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">view-more-symbolic</property>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="valign">center</property>
-                    <property name="tooltip_text" translatable="yes">Create a new folder</property>
-                    <property name="action_name">view.new-folder</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">folder-new-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                      <class name="flat"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
                 </child>
                 <style>
-                  <class name="border-box"/>
+                  <class name="image-button"/>
+                  <class name="flat"/>
                 </style>
               </object>
               <packing>
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="pack_type">end</property>
-                <property name="position">1</property>
+                <property name="position">0</property>
               </packing>
             </child>
             <child>
@@ -172,6 +131,7 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Open the selected items</property>
                     <property name="action_name">view.open-with-default-application</property>
+                    <property name="margin-end">6</property>
                     <style>
                       <class name="suggested-action"/>
                       <class name="flat"/>
@@ -281,6 +241,7 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Move to trash</property>
                     <property name="action_name">view.move-to-trash</property>
+                    <property name="margin-end">6</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -299,6 +260,9 @@
                     <property name="position">3</property>
                   </packing>
                 </child>
+                <style>
+                  <class name="border-box"/>
+                </style>
               </object>
               <packing>
                 <property name="expand">False</property>
@@ -379,6 +343,7 @@
       </object>
     </child>
   </template>
+
   <menu id="selection-menu">
     <section>
       <item>
