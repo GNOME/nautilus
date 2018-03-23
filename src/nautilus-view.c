@@ -85,7 +85,8 @@ nautilus_view_default_init (NautilusViewInterface *iface)
 GIcon *
 nautilus_view_get_icon (guint view_id)
 {
-    if (view_id == NAUTILUS_VIEW_GRID_ID)
+    if (view_id == NAUTILUS_VIEW_CANVAS_ID ||
+        view_id == NAUTILUS_VIEW_ICON_CONTROLLER_ID)
     {
         return g_themed_icon_new ("view-grid-symbolic");
     }

@@ -895,6 +895,31 @@ change_files_view_mode (NautilusWindowSlot *self,
 }
 
 static void
+use_experimental_views_changed_callback (gpointer callback_data)
+{
+    NautilusWindowSlot *self;
+    NautilusWindowSlotPrivate *priv;
+    guint view_id;
+
+    self = NAUTILUS_WINDOW_SLOT (callback_data);
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view == NULL)
+    {
+        return;
+    }
+
+    view_id = nautilus_files_view_get_view_id (priv->content_view);
+    if (view_id == 0)
+    {
+        change_files_view_mode (self, 1);
+    }
+    else if (view_id == 1)
+    {
+        change_files_view_mode (self, 0);
+    }
+}
+
+static void
 action_files_view_mode_toggle (GSimpleAction *action,
                                GVariant      *value,
                                gpointer       user_data)
@@ -913,7 +938,18 @@ action_files_view_mode_toggle (GSimpleAction *action,
     current_view_id = nautilus_files_view_get_view_id (priv->content_view);
     if (current_view_id == NAUTILUS_VIEW_LIST_ID)
     {
-        change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
+        gboolean use_experimental_views;
+
+        use_experimental_views = g_settings_get_boolean (nautilus_preferences,
+                                                         NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
+        if (use_experimental_views)
+        {
+            change_files_view_mode (self, NAUTILUS_VIEW_ICON_CONTROLLER_ID);
+        }
+        else
+        {
+            change_files_view_mode (self, NAUTILUS_VIEW_CANVAS_ID);
+        }
     }
     else
     {
@@ -937,15 +973,33 @@ action_files_view_mode (GSimpleAction *action,
         return;
     }
 
-    change_files_view_mode (self, view_id);
+    if (view_id == 2)
+    {
+        gboolean use_experimental_views;
+
+        use_experimental_views = g_settings_get_boolean (nautilus_preferences,
+                                                         NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
+        if (use_experimental_views)
+        {
+            change_files_view_mode (self, 1);
+        }
+        else
+        {
+            change_files_view_mode (self, 0);
+        }
+    }
+    else
+    {
+        change_files_view_mode (self, view_id);
+    }
 
     g_simple_action_set_state (action, value);
 }
 
 const GActionEntry slot_entries[] =
 {
-    /* 4 is NAUTILUS_VIEW_INVALID_ID */
-    { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
+    /* 5 is NAUTILUS_VIEW_INVALID_ID */
+    { "files-view-mode", NULL, "u", "uint32 5", action_files_view_mode },
     { "files-view-mode-toggle", action_files_view_mode_toggle },
     { "search-visible", NULL, NULL, "false", action_search_visible },
 };
@@ -962,6 +1016,9 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect (nautilus_trash_monitor_get (),
                       "trash-state-changed",
                       G_CALLBACK (trash_state_changed_cb), self);
+    g_signal_connect_swapped (gtk_filechooser_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS,
+                              G_CALLBACK (use_experimental_views_changed_callback), self);
 
     priv->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->slot_action_group),
@@ -971,7 +1028,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     gtk_widget_insert_action_group (GTK_WIDGET (self),
                                     "slot",
                                     G_ACTION_GROUP (priv->slot_action_group));
-    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
+    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 2)", "<control>1");
     nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
     nautilus_application_set_accelerator (app, "slot.search-visible", "<control>f");
 
@@ -3194,11 +3251,17 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
     {
         case NAUTILUS_VIEW_LIST_ID:
         {
-            return nautilus_view_get_icon (NAUTILUS_VIEW_GRID_ID);
+            return nautilus_view_get_icon (NAUTILUS_VIEW_CANVAS_ID);
         }
         break;
 
-        case NAUTILUS_VIEW_GRID_ID:
+        case NAUTILUS_VIEW_CANVAS_ID:
+        {
+            return nautilus_view_get_icon (NAUTILUS_VIEW_LIST_ID);
+        }
+        break;
+
+        case NAUTILUS_VIEW_ICON_CONTROLLER_ID:
         {
             return nautilus_view_get_icon (NAUTILUS_VIEW_LIST_ID);
         }

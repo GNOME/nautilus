@@ -901,7 +901,7 @@ real_add_files (NautilusFilesView *files_view,
 static guint
 real_get_view_id (NautilusFilesView *files_view)
 {
-    return NAUTILUS_VIEW_GRID_ID;
+    return NAUTILUS_VIEW_ICON_CONTROLLER_ID;
 }
 
 static GIcon *
