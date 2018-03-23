@@ -8952,7 +8952,7 @@ get_attributes_for_default_sort_type (NautilusFile *file,
                                       gboolean     *is_trash,
                                       gboolean     *is_search)
 {
-    gboolean is_recent_dir, is_download_dir, is_desktop_dir, is_trash_dir, is_search_dir, retval;
+    gboolean is_recent_dir, is_download_dir, is_trash_dir, is_search_dir, retval;
 
     *is_recent = FALSE;
     *is_download = FALSE;
@@ -8967,14 +8967,12 @@ get_attributes_for_default_sort_type (NautilusFile *file,
             nautilus_file_is_in_recent (file);
         is_download_dir =
             nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD);
-        is_desktop_dir =
-            nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DESKTOP);
         is_trash_dir =
             nautilus_file_is_in_trash (file);
         is_search_dir =
             nautilus_file_is_in_search (file);
 
-        if (is_download_dir && !is_desktop_dir)
+        if (is_download_dir)
         {
             *is_download = TRUE;
             retval = TRUE;
