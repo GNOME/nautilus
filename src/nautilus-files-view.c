@@ -8927,7 +8927,7 @@ nautilus_files_view_set_property (GObject      *object,
 }
 
 
-gboolean
+static gboolean
 nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
                                          GdkEventScroll    *event)
 {
