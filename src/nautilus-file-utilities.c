@@ -391,20 +391,6 @@ nautilus_get_scripts_directory_path (void)
     return g_build_filename (g_get_user_data_dir (), "nautilus", "scripts", NULL);
 }
 
-static const char *
-get_desktop_path (void)
-{
-    const char *desktop_path;
-
-    desktop_path = g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
-    if (desktop_path == NULL)
-    {
-        desktop_path = g_get_home_dir ();
-    }
-
-    return desktop_path;
-}
-
 char *
 nautilus_get_home_directory_uri (void)
 {
@@ -438,26 +424,6 @@ nautilus_get_templates_directory_uri (void)
     uri = g_filename_to_uri (directory, NULL, NULL);
     g_free (directory);
     return uri;
-}
-
-/* These need to be reset to NULL when desktop_is_home_dir changes */
-static GFile *desktop_dir = NULL;
-static GFile *desktop_dir_dir = NULL;
-static char *desktop_dir_filename = NULL;
-
-static void
-update_desktop_dir (void)
-{
-    const char *path;
-    char *dirname;
-
-    path = get_desktop_path ();
-    desktop_dir = g_file_new_for_path (path);
-
-    dirname = g_path_get_dirname (path);
-    desktop_dir_dir = g_file_new_for_path (dirname);
-    g_free (dirname);
-    desktop_dir_filename = g_path_get_basename (path);
 }
 
 gboolean
@@ -504,31 +470,6 @@ nautilus_is_root_directory (GFile *dir)
     }
 
     return g_file_equal (dir, root_dir);
-}
-
-
-gboolean
-nautilus_is_desktop_directory_file (GFile      *dir,
-                                    const char *file)
-{
-    if (desktop_dir == NULL)
-    {
-        update_desktop_dir ();
-    }
-
-    return (g_file_equal (dir, desktop_dir_dir) &&
-            strcmp (file, desktop_dir_filename) == 0);
-}
-
-gboolean
-nautilus_is_desktop_directory (GFile *dir)
-{
-    if (desktop_dir == NULL)
-    {
-        update_desktop_dir ();
-    }
-
-    return g_file_equal (dir, desktop_dir);
 }
 
 gboolean

@@ -1593,31 +1593,6 @@ nautilus_file_poll_for_media (NautilusFile *file)
     }
 }
 
-/**
- * nautilus_file_is_desktop_directory:
- *
- * Check whether this file is the desktop directory.
- *
- * @file: The file to check.
- *
- * Return value: TRUE if this is the physical desktop directory.
- */
-gboolean
-nautilus_file_is_desktop_directory (NautilusFile *file)
-{
-    g_autoptr (GFile) location = NULL;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    location = nautilus_directory_get_location (file->details->directory);
-    if (location == NULL)
-    {
-        return FALSE;
-    }
-
-    return nautilus_is_desktop_directory_file (location, eel_ref_str_peek (file->details->name));
-}
-
 static gboolean
 is_desktop_file (NautilusFile *file)
 {
