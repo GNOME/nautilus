@@ -33,7 +33,6 @@
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
 char *   nautilus_get_user_directory                 (void);
-GFile *  nautilus_get_desktop_location               (void);
 char *   nautilus_get_home_directory_uri             (void);
 gboolean nautilus_is_root_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory                  (GFile *dir);

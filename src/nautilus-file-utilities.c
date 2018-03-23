@@ -44,7 +44,6 @@
 
 #define NAUTILUS_USER_DIRECTORY_NAME "nautilus"
 #define DEFAULT_NAUTILUS_DIRECTORY_MODE (0755)
-#define DEFAULT_DESKTOP_DIRECTORY_MODE (0755)
 
 /* Allowed characters outside alphanumeric for unreserved. */
 #define G_URI_OTHER_UNRESERVED "-._~"
