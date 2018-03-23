@@ -387,7 +387,7 @@ update_status (NautilusActionBar *actionbar)
 }
 
 static void
-nautilus_action_bar_finalize (GObject *object)
+nautilus_action_bar_dispose (GObject *object)
 {
   NautilusActionBar *self = NAUTILUS_ACTION_BAR (object);
 
@@ -396,11 +396,17 @@ nautilus_action_bar_finalize (GObject *object)
       g_source_remove (self->update_status_timeout_id);
       self->update_status_timeout_id = 0;
     }
-
-  //g_signal_handlers_disconnect_by_func (nautilus_clipboard_monitor_get (), update_paste_button, self);
   g_signal_handlers_disconnect_by_func (self->view, update_status, self);
-
   g_clear_object (&self->view);
+
+  G_OBJECT_CLASS (nautilus_action_bar_parent_class)->dispose (object);
+}
+
+static void
+nautilus_action_bar_finalize (GObject *object)
+{
+  //g_signal_handlers_disconnect_by_func (nautilus_clipboard_monitor_get (), update_paste_button, self);
+
 
   G_OBJECT_CLASS (nautilus_action_bar_parent_class)->finalize (object);
 }
@@ -457,6 +463,7 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
   object_class->finalize = nautilus_action_bar_finalize;
+  object_class->dispose = nautilus_action_bar_dispose;
   object_class->get_property = nautilus_action_bar_get_property;
   object_class->set_property = nautilus_action_bar_set_property;
 

@@ -2896,6 +2896,7 @@ nautilus_files_view_destroy (GtkWidget *object)
 
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location);
+    g_clear_object (&priv->actionbar);
 
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
@@ -8996,7 +8997,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
 
     /* Actionbar */
-    priv->actionbar = nautilus_action_bar_new (NAUTILUS_VIEW (view));
+    priv->actionbar = g_object_ref_sink (nautilus_action_bar_new (NAUTILUS_VIEW (view)));
 
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");

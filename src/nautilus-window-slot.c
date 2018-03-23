@@ -2755,14 +2755,6 @@ change_view (NautilusWindowSlot *self)
     view = priv->new_content_view;
     view_changed = priv->content_view != view;
 
-    /* Switch to the new content view.
-     * Destroy the extra location widgets first, since they might hold
-     * a pointer to the old view, which will possibly be destroyed inside
-     * nautilus_window_slot_switch_new_content_view().
-     */
-    nautilus_window_slot_remove_extra_location_widgets (self);
-    nautilus_window_slot_switch_new_content_view (self);
-
     /* Remove the old actionbar before switching to the new view */
     if (view_changed &&
         priv->content_view &&
@@ -2770,6 +2762,14 @@ change_view (NautilusWindowSlot *self)
     {
         gtk_container_remove (GTK_CONTAINER (self), nautilus_view_get_action_bar (priv->content_view));
     }
+
+    /* Switch to the new content view.
+     * Destroy the extra location widgets first, since they might hold
+     * a pointer to the old view, which will possibly be destroyed inside
+     * nautilus_window_slot_switch_new_content_view().
+     */
+    nautilus_window_slot_remove_extra_location_widgets (self);
+    nautilus_window_slot_switch_new_content_view (self);
 
     if (priv->pending_location != NULL)
     {
