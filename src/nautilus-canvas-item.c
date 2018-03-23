@@ -1497,7 +1497,6 @@ create_label_layout (NautilusCanvasItem *item,
     }
 
     pango_layout_set_text (layout, zeroified_text, -1);
-    pango_layout_set_auto_dir (layout, FALSE);
     pango_layout_set_alignment (layout, PANGO_ALIGN_CENTER);
 
     pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
