@@ -218,9 +218,10 @@ actionbar
 
 .border-box
 {
-  border-width: 0px 0px 0px 1px;
-  border-style: solid;
-  border-color: @borders;
   /* Same as spacing between icons */
   padding-left: 6px;
+  background-image: image(mix(@theme_bg_color, @borders, 1.0));
+  background-size: 1px 12px;
+  background-repeat: no-repeat;
+  background-position: 100%
 }
