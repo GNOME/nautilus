@@ -362,7 +362,7 @@ format_spin_button (GtkSpinButton *spin_button,
     gchar *text;
 
     value = gtk_spin_button_get_value_as_int (spin_button);
-    text = g_strdup_printf (_("%d MB"), value);
+    text = g_strdup_printf (_("%d MiB"), value);
     gtk_entry_set_text (GTK_ENTRY (spin_button), text);
 
     return TRUE;
