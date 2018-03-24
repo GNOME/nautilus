@@ -34,7 +34,6 @@ struct _NautilusActionBar
   GtkWidget          *loading_label;
   GtkWidget          *paste_button;
   GtkWidget          *primary_label;
-  GtkWidget          *secondary_label;
   GtkWidget          *stack;
 
   NautilusView       *view;
@@ -276,7 +275,6 @@ setup_multiple_files_selection (NautilusActionBar *actionbar,
     }
 
   gtk_label_set_label (GTK_LABEL (actionbar->primary_label), primary_text ? primary_text : "");
-  gtk_label_set_label (GTK_LABEL (actionbar->secondary_label), secondary_text ? secondary_text : "");
 
   g_free (first_item_name);
   g_free (folder_count_str);
@@ -323,8 +321,6 @@ setup_single_file_selection (NautilusActionBar *actionbar,
    * If there is no description available, we hide the second label so
    * the filename is vertically centralized against the icon.
    */
-  gtk_widget_set_visible (actionbar->secondary_label, description != NULL);
-  gtk_label_set_label (GTK_LABEL (actionbar->secondary_label), description ? description : "");
 
   g_clear_pointer (&description, g_free);
   g_clear_pointer (&file, nautilus_file_unref);
@@ -353,7 +349,6 @@ real_update_status (gpointer data)
       if (number_of_files == 0)
         {
           gtk_label_set_label (GTK_LABEL (actionbar->primary_label), "");
-          gtk_label_set_label (GTK_LABEL (actionbar->secondary_label), "");
         }
       else if (number_of_files == 1)
         {
@@ -488,7 +483,6 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, loading_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, paste_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, primary_label);
-  gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, secondary_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, stack);
 
   gtk_widget_class_bind_template_callback (widget_class, open_preview_cb);
