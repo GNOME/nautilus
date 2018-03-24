@@ -204,7 +204,7 @@ nautilus_link_local_create (const char *directory_uri,
     g_return_val_if_fail (display_name != NULL, FALSE);
     g_return_val_if_fail (target_uri != NULL, FALSE);
 
-    if (eel_uri_is_trash (directory_uri) ||
+    if (uri_is_trash (directory_uri) ||
         eel_uri_is_search (directory_uri))
     {
         return FALSE;

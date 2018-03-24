@@ -17,6 +17,7 @@
 
 #include "config.h"
 #include "nautilus-recent.h"
+#include "nautilus-file-utilities.h"
 
 #include <eel/eel-vfs-extensions.h>
 
@@ -49,7 +50,7 @@ nautilus_recent_add_file (NautilusFile *file,
     }
 
     /* do not add trash:// etc */
-    if (eel_uri_is_trash (uri) ||
+    if (uri_is_trash (uri) ||
         eel_uri_is_search (uri) ||
         eel_uri_is_recent (uri))
     {

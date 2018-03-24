@@ -3500,7 +3500,7 @@ real_check_empty_states (NautilusFilesView *view)
         {
             gtk_widget_show (priv->no_search_results_widget);
         }
-        else if (eel_uri_is_trash (uri))
+        else if (uri_is_trash (uri))
         {
             gtk_widget_show (priv->trash_is_empty_widget);
         }
@@ -5087,7 +5087,7 @@ get_strings_for_environment_variables (NautilusFilesView  *view,
      */
     directory_uri = nautilus_directory_get_uri (priv->model);
     if (g_str_has_prefix (directory_uri, "file:") ||
-        eel_uri_is_trash (directory_uri))
+        uri_is_trash (directory_uri))
     {
         *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
     }

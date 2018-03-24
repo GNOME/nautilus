@@ -504,7 +504,7 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
      * Passing 0 permissions as gnome-vfs would override the permissions
      * passed with 700 while creating .Trash directory
      */
-    if (eel_uri_is_trash (target_uri_string))
+    if (uri_is_trash (target_uri_string))
     {
         /* Only move to Trash */
         if (actions & GDK_ACTION_MOVE)
@@ -586,7 +586,7 @@ GdkDragAction
 nautilus_drag_default_drop_action_for_uri_list (GdkDragContext *context,
                                                 const char     *target_uri_string)
 {
-    if (eel_uri_is_trash (target_uri_string) && (gdk_drag_context_get_actions (context) & GDK_ACTION_MOVE))
+    if (uri_is_trash (target_uri_string) && (gdk_drag_context_get_actions (context) & GDK_ACTION_MOVE))
     {
         /* Only move to Trash */
         return GDK_ACTION_MOVE;
