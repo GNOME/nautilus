@@ -699,6 +699,10 @@ nautilus_directory_provider_get_all (void)
     GList *extensions;
 
     extension_point = g_io_extension_point_lookup (NAUTILUS_DIRECTORY_PROVIDER_EXTENSION_POINT_NAME);
+    if (extension_point == NULL)
+    {
+        g_warning ("Directory provider extension point not registered. Did you call nautilus_ensure_extension_points()?");
+    }
     extensions = g_io_extension_point_get_extensions (extension_point);
 
     return extensions;
