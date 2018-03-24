@@ -114,175 +114,27 @@ static void
 setup_multiple_files_selection (NautilusActionBar *actionbar,
                                 GList             *selection)
 {
-  NautilusFile *file;
-  goffset non_folder_size;
-  gboolean non_folder_size_known;
-  guint non_folder_count, folder_count, folder_item_count;
-  gboolean folder_item_count_known;
-  guint file_item_count;
-  GList *p;
+  guint count;
   char *first_item_name;
-  char *non_folder_count_str;
-  char *non_folder_item_count_str;
-  char *folder_count_str;
-  char *folder_item_count_str;
-  gchar *primary_text;
-  gchar *secondary_text;
+  g_autofree gchar *primary_text = NULL;
 
-  folder_item_count_known = TRUE;
-  folder_count = 0;
-  folder_item_count = 0;
-  non_folder_count = 0;
-  non_folder_size_known = FALSE;
-  non_folder_size = 0;
+  count = 0;
   first_item_name = NULL;
-  folder_count_str = NULL;
-  folder_item_count_str = NULL;
-  non_folder_count_str = NULL;
-  non_folder_item_count_str = NULL;
 
-  for (p = selection; p != NULL; p = p->next)
+  count = g_list_length (selection);
+  if (count == 1)
     {
-      file = p->data;
-
-      if (nautilus_file_is_directory (file))
-        {
-          folder_count++;
-
-          if (nautilus_file_get_directory_item_count (file, &file_item_count, NULL))
-            folder_item_count += file_item_count;
-          else
-            folder_item_count_known = FALSE;
-        }
-      else
-        {
-          non_folder_count++;
-
-          if (!nautilus_file_can_get_size (file))
-            {
-              non_folder_size_known = TRUE;
-              non_folder_size += nautilus_file_get_size (file);
-            }
-        }
-
-      if (first_item_name == NULL)
-        first_item_name = nautilus_file_get_display_name (file);
+       first_item_name = nautilus_file_get_display_name (selection->data);
+       primary_text = g_strdup_printf (_("“%s” selected"), first_item_name);
+    }
+  else
+    {
+       primary_text = g_strdup_printf (_("%'d items selected"), count);
     }
 
   nautilus_file_list_free (selection);
 
-  /*
-   * Break out cases for localization's sake. But note that there are still pieces
-   * being assembled in a particular order, which may be a problem for some localizers.
-   */
-  if (folder_count != 0)
-    {
-      if (folder_count == 1 && non_folder_count == 0)
-        {
-          folder_count_str = g_strdup_printf (_("“%s” selected"), first_item_name);
-        }
-      else
-        {
-          folder_count_str = g_strdup_printf (ngettext("%'d folder selected",
-                                                       "%'d folders selected",
-                                                       folder_count),
-                                              folder_count);
-        }
-
-      if (folder_count == 1)
-        {
-          if (!folder_item_count_known)
-            folder_item_count_str = g_strdup ("");
-          else
-            folder_item_count_str = g_strdup_printf (ngettext("(%'d item)", "(%'d items)", folder_item_count),
-                                                     folder_item_count);
-        }
-      else
-        {
-          if (!folder_item_count_known)
-            {
-              folder_item_count_str = g_strdup ("");
-            }
-          else
-            {
-              /* translators: this is preceded with a string of form 'N folders' (N more than 1) */
-              folder_item_count_str = g_strdup_printf (ngettext("(total of %'d item)",
-                                                                "(total of %'d items)",
-                                                                folder_item_count),
-                                                       folder_item_count);
-            }
-        }
-    }
-
-  if (non_folder_count != 0)
-    {
-      if (folder_count == 0)
-        {
-          if (non_folder_count == 1) {
-                  non_folder_count_str = g_strdup_printf (_("“%s” selected"), first_item_name);
-          } else {
-                  non_folder_count_str = g_strdup_printf (ngettext("%'d item selected",
-                                                                   "%'d items selected",
-                                                                   non_folder_count),
-                                                          non_folder_count);
-          }
-        }
-      else
-        {
-          /* Folders selected also, use "other" terminology */
-          non_folder_count_str = g_strdup_printf (ngettext("%'d other item selected",
-                                                           "%'d other items selected",
-                                                           non_folder_count),
-                                                  non_folder_count);
-        }
-
-      if (non_folder_size_known)
-        {
-          char *size_string;
-
-          size_string = g_format_size (non_folder_size);
-          /* This is marked for translation in case a localiser
-           * needs to use something other than parentheses. The
-           * the message in parentheses is the size of the selected items.
-           */
-          non_folder_item_count_str = g_strdup_printf (_("(%s)"), size_string);
-          g_free (size_string);
-        }
-      else
-        {
-          non_folder_item_count_str = g_strdup ("");
-        }
-    }
-
-  if (folder_count == 0 && non_folder_count == 0)
-    {
-      primary_text = secondary_text = NULL;
-    }
-  else if (folder_count == 0)
-    {
-      primary_text = g_strdup_printf ("%s, %s", non_folder_count_str, non_folder_item_count_str);
-      secondary_text = NULL;
-    }
-  else if (non_folder_count == 0)
-    {
-      primary_text = g_strdup_printf ("%s %s", folder_count_str, folder_item_count_str);
-      secondary_text = NULL;
-    }
-  else
-    {
-      primary_text = g_strdup_printf ("%s %s", folder_count_str, folder_item_count_str);
-      secondary_text = g_strdup_printf ("%s, %s", non_folder_count_str, non_folder_item_count_str);
-    }
-
   gtk_label_set_label (GTK_LABEL (actionbar->primary_label), primary_text ? primary_text : "");
-
-  g_free (first_item_name);
-  g_free (folder_count_str);
-  g_free (folder_item_count_str);
-  g_free (non_folder_count_str);
-  g_free (non_folder_item_count_str);
-  g_free (secondary_text);
-  g_free (primary_text);
 }
 
 static void

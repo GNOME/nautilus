@@ -19,7 +19,7 @@
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="valign">center</property>
-            <property name="border_width">6</property>
+            <property name="border_width">4</property>
             <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
@@ -115,6 +115,11 @@
                       <class name="image-button"/>
                     </style>
                   </object>
+                  <packing>
+                    <property name="expand">False</property>
+                    <property name="fill">True</property>
+                    <property name="position">3</property>
+                  </packing>
                 </child>
                 <child>
                   <object class="GtkButton">
@@ -126,7 +131,7 @@
                       <object class="GtkImage">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="icon_name">star-new-symbolic</property>
+                        <property name="icon_name">non-starred-symbolic</property>
                       </object>
                     </child>
                     <style>
@@ -154,126 +159,22 @@
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
+                <property name="valign">center</property>
                 <property name="spacing">6</property>
+                <property name="homogeneous">True</property>
                 <child>
-                  <object class="GtkButton">
+                  <object class="GtkButton" id="move_to_button">
+                    <property name="label" translatable="yes">New Folder…</property>
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="always_show_image">True</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">folder-new-symbolic</property>
-                        <style>
-                          <class name="image-button"/>
-                        </style>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                    </style>
+                    <property name="tooltip_text" translatable="yes">Create a folder in the current view</property>
+                    <property name="action_name">view.new-folder</property>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="trash_button2">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Move to trash</property>
-                    <property name="action_name">view.move-to-trash</property>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">user-trash-symbolic</property>
-                      </object>
-                    </child>
-                    <style>
-                      <class name="image-button"/>
-                    </style>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="padding">6</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkLabel" id="primary_label">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="ellipsize">end</property>
-              </object>
-              <packing>
-                <property name="expand">True</property>
-                <property name="fill">True</property>
-                <property name="position">3</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="spacing">6</property>
-                <child>
-                  <object class="GtkButton" id="copy_to_button">
-                    <property name="label" translatable="yes">Copy to…</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Copy files to a different place</property>
-                    <property name="action_name">view.copy-to</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="move_to_button">
-                    <property name="label" translatable="yes">Move to…</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Move files to a different place</property>
-                    <property name="action_name">view.move-to</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkButton" id="properties_button">
-                    <property name="label" translatable="yes">Properties</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Show properties</property>
-                    <property name="action_name">view.properties</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -284,9 +185,6 @@
                     <property name="receives_default">True</property>
                     <property name="tooltip_text" translatable="yes">Open the selected items</property>
                     <property name="action_name">view.open-with-default-application</property>
-                    <style>
-                      <class name="suggested-action"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -299,6 +197,75 @@
                 <property name="expand">False</property>
                 <property name="fill">True</property>
                 <property name="pack_type">end</property>
+                <property name="position">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkMenuButton">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">View more actions</property>
+                <property name="margin_right">6</property>
+                <property name="menu_model">selection-menu</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">view-more-symbolic</property>
+                  </object>
+                </child>
+                <style>
+                  <class name="image-button"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="pack_type">end</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkButton" id="trash_button2">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Move to trash</property>
+                <property name="margin_left">6</property>
+                <property name="action_name">view.move-to-trash</property>
+                <child>
+                  <object class="GtkImage">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <property name="icon_name">user-trash-symbolic</property>
+                  </object>
+                </child>
+                <style>
+                  <class name="image-button"/>
+                </style>
+              </object>
+              <packing>
+                <property name="expand">False</property>
+                <property name="fill">True</property>
+                <property name="position">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="primary_label">
+                <property name="width_request">200</property>
+                <property name="height_request">-1</property>
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_left">12</property>
+                <property name="margin_right">12</property>
+                <property name="margin_start">12</property>
+                <property name="margin_end">12</property>
+                <property name="ellipsize">middle</property>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
                 <property name="position">4</property>
               </packing>
             </child>
@@ -314,7 +281,6 @@
             <property name="valign">center</property>
             <property name="border_width">6</property>
             <property name="spacing">6</property>
-            <property name="valign">center</property>
             <child>
               <object class="GtkSpinner">
                 <property name="visible">True</property>
