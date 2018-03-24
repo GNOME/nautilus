@@ -23,6 +23,7 @@
 
 #include "nautilus-mime-actions.h"
 
+#include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-application.h"
 
@@ -1182,8 +1183,8 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
             message = g_strdup_printf ("%s\n%s",
                                        _("There was an internal error trying to search for applications:"),
                                        error->message);
-            eel_show_error_dialog (_("Unable to search for application"), message,
-                                   parameters_install->parent_window);
+            show_error_dialog (_("Unable to search for application"), message,
+                               parameters_install->parent_window);
             g_free (message);
         }
         else
@@ -1899,7 +1900,7 @@ activation_mount_not_mounted_callback (GObject      *source_object,
              error->code != G_IO_ERROR_FAILED_HANDLED &&
              error->code != G_IO_ERROR_ALREADY_MOUNTED))
         {
-            eel_show_error_dialog (_("Unable to access location"), error->message, parameters->parent_window);
+            show_error_dialog (_("Unable to access location"), error->message, parameters->parent_window);
         }
 
         if (error->domain != G_IO_ERROR ||
@@ -2194,8 +2195,8 @@ activation_mountable_mounted (NautilusFile *file,
              error->code != G_IO_ERROR_FAILED_HANDLED &&
              error->code != G_IO_ERROR_ALREADY_MOUNTED))
         {
-            eel_show_error_dialog (_("Unable to access location"),
-                                   error->message, parameters->parent_window);
+            show_error_dialog (_("Unable to access location"),
+                               error->message, parameters->parent_window);
         }
 
         if (error->code == G_IO_ERROR_CANCELLED)
@@ -2283,8 +2284,8 @@ activation_mountable_started (NautilusFile *file,
             (error->code != G_IO_ERROR_CANCELLED &&
              error->code != G_IO_ERROR_FAILED_HANDLED))
         {
-            eel_show_error_dialog (_("Unable to start location"),
-                                   error->message, NULL);
+            show_error_dialog (_("Unable to start location"),
+                               error->message, NULL);
         }
 
         if (error->code == G_IO_ERROR_CANCELLED)

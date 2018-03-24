@@ -23,6 +23,7 @@
 #include <config.h>
 #include "nautilus-program-choosing.h"
 
+#include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
@@ -335,7 +336,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     {
         g_free (desktop_file_path);
         g_object_unref (desktop_file);
-        eel_show_error_dialog
+        show_error_dialog
             (_("Sorry, but you cannot execute commands from "
                "a remote site."),
             _("This is disabled due to security considerations."),
@@ -349,7 +350,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     g_free (desktop_file_path);
     if (app_info == NULL)
     {
-        eel_show_error_dialog
+        show_error_dialog
             (_("There was an error launching the application."),
             NULL,
             parent_window);
@@ -378,7 +379,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
         if (count == 0)
         {
             /* all files are non-local */
-            eel_show_error_dialog
+            show_error_dialog
                 (_("This drop target only supports local files."),
                 _("To open non-local files copy them to a local folder and then"
                   " drop them again."),
@@ -427,7 +428,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     if (error != NULL)
     {
         message = g_strconcat (_("Details: "), error->message, NULL);
-        eel_show_error_dialog
+        show_error_dialog
             (_("There was an error launching the application."),
             message,
             parent_window);

@@ -62,7 +62,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 
@@ -192,7 +191,7 @@ check_required_directories (NautilusApplication *self)
                                              directories_as_string->str);
         }
 
-        dialog = eel_show_error_dialog (error_string, detail_string, NULL);
+        dialog = show_error_dialog (error_string, detail_string, NULL);
         /* We need the main event loop so the user has a chance to see the dialog. */
         gtk_application_add_window (GTK_APPLICATION (self),
                                     GTK_WINDOW (dialog));
