@@ -67,7 +67,7 @@ libgd = subproject(
 )
 libgd_dep = libgd.get_variable('libgd_dep')
 
-libm = cc.find_library('libm')
+libm = cc.find_library('m')
 
 gail = dependency('gail-3.0')
 if get_option('extensions')
