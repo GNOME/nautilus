@@ -85,7 +85,7 @@
 #define DEBUG_REF_PRINTF printf
 #endif
 
-#define MEGA_TO_BASE_RATE 1048576
+#define MEGA_TO_BASE_RATE 1000000
 
 /* Files that start with these characters sort after files that don't. */
 #define SORT_LAST_CHAR1 '.'
