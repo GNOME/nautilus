@@ -9259,20 +9259,6 @@ mime_type_data_changed_callback (GObject  *signaller,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
-static void
-icon_theme_changed_callback (GtkIconTheme *icon_theme,
-                             gpointer      user_data)
-{
-    /* Clear all pixmap caches as the icon => pixmap lookup changed */
-    nautilus_icon_info_clear_caches ();
-
-    /* Tell the world that icons might have changed. We could invent a narrower-scope
-     * signal to mean only "thumbnails might have changed" if this ends up being slow
-     * for some reason.
-     */
-    emit_change_signals_for_all_files_in_all_directories ();
-}
-
 static gboolean
 real_get_item_count (NautilusFile *file,
                      guint        *count,
@@ -9383,8 +9369,6 @@ real_set_metadata_as_list (NautilusFile  *file,
 static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
-    GtkIconTheme *icon_theme;
-
     nautilus_file_info_getter = nautilus_file_get_internal;
 
     attribute_name_q = g_quark_from_static_string ("name");
@@ -9459,12 +9443,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                               "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
                               G_CALLBACK (show_thumbnails_changed_callback),
                               NULL);
-
-    icon_theme = gtk_icon_theme_get_default ();
-    g_signal_connect_object (icon_theme,
-                             "changed",
-                             G_CALLBACK (icon_theme_changed_callback),
-                             NULL, 0);
 
     g_signal_connect (nautilus_signaller_get_current (),
                       "mime-data-changed",

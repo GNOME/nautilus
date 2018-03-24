@@ -1262,6 +1262,20 @@ on_application_shutdown (GApplication *application,
     nautilus_icon_info_clear_caches ();
 }
 
+static void
+icon_theme_changed_callback (GtkIconTheme *icon_theme,
+                             gpointer      user_data)
+{
+    /* Clear all pixmap caches as the icon => pixmap lookup changed */
+    nautilus_icon_info_clear_caches ();
+
+    /* Tell the world that icons might have changed. We could invent a narrower-scope
+     * signal to mean only "thumbnails might have changed" if this ends up being slow
+     * for some reason.
+     */
+    emit_change_signals_for_all_files_in_all_directories ();
+}
+
 void
 nautilus_application_startup_common (NautilusApplication *self)
 {
@@ -1305,6 +1319,11 @@ nautilus_application_startup_common (NautilusApplication *self)
     nautilus_profile_end (NULL);
 
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
+
+    g_signal_connect_object (gtk_icon_theme_get_default (),
+                             "changed",
+                             G_CALLBACK (icon_theme_changed_callback),
+                             NULL, 0);
 }
 
 static void
