@@ -9225,7 +9225,7 @@ thumbnail_limit_changed_callback (gpointer user_data)
     cached_thumbnail_limit = g_settings_get_uint64 (nautilus_preferences,
                                                     NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
 
-    /*Converts the obtained limit in MB to bytes */
+    /*Converts the obtained limit in MiB to bytes */
     cached_thumbnail_limit *= MEGA_TO_BASE_RATE;
     ;
 
