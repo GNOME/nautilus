@@ -1,10 +1,10 @@
 #include <glib.h>
 #include <glib/gprintf.h>
-#include <src/nautilus-directory.h>
-#include <src/nautilus-file-utilities.h>
-#include <src/nautilus-search-directory.h>
-#include <src/nautilus-file.h>
-#include <src/nautlius-file.c>
+#include "src/nautilus-directory.h"
+#include "src/nautilus-file-utilities.h"
+#include "src/nautilus-search-directory.h"
+#include "src/nautilus-file.h"
+#include "src/nautilus-file.c"
 #include <unistd.h>
 #include "eel/eel-string.h"
 
@@ -33,8 +33,8 @@ test_either_null (void)
     g_assert (NAUTILUS_IS_FILE (file));
 
     selection = g_list_append (selection, file);
-    g_assert (nautilus_file_selection_equal (NULL, files) == FALSE);
-    g_assert (nautilus_file_selection_equal (files, NULL) == FALSE);
+    g_assert (nautilus_file_selection_equal (NULL, selection) == FALSE);
+    g_assert (nautilus_file_selection_equal (selection, NULL) == FALSE);
 }
 
 /* Tests the function for 2 different selections, each containing one file */
@@ -53,14 +53,14 @@ test_one_file_different (void)
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
     one_file_first = nautilus_file_new_from_filename (directory, "one_file_first", FALSE);
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_assert (NAUTILUS_IS_FILE (one_file_first));
 
     one_file_second = nautilus_file_new_from_filename (directory, "one_file_second", FALSE);
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_assert (NAUTILUS_IS_FILE (one_file_first));
 
     first_selection = g_list_append (first_selection, one_file_first);
-    second_selection = g_list_appennd (second_selection, one_file_second);
-    g_assert (nautilus_file_new_from_filename (first_selection, second_selection) == FALSE);
+    second_selection = g_list_append (second_selection, one_file_second);
+    g_assert (nautilus_file_selection_equal (first_selection, second_selection) == FALSE);
 }
 
 /* tests the function for 2 identical selections, each containing one file */
@@ -80,8 +80,8 @@ test_one_file_equal (void)
     file = nautilus_file_new_from_filename (directory, "one_file_equal", FALSE);
     g_assert (NAUTILUS_IS_FILE (file));
 
-    selection = g_list_append (first_selection, file);
-    g_assert (nautilus_file_new_from_filename (selection, selection) == TRUE);
+    selection = g_list_append (selection, file);
+    g_assert (nautilus_file_selection_equal (selection, selection) == TRUE);
 }
 
 /* Tests the function for 2 identical selections, each containing 50 files */
@@ -101,14 +101,14 @@ test_multiple_files_equal_medium (void)
     {
         gchar *file_name;
 
-        filename = g_strdup_printf ("multiple_files_equal_medium_%i", index);
-        file = nautilus_file_new_from_filename (directory, filename, FALSE);
+        file_name = g_strdup_printf ("multiple_files_equal_medium_%i", index);
+        file = nautilus_file_new_from_filename (directory, file_name, FALSE);
         g_free (file_name);
         g_assert (NAUTILUS_IS_FILE (file));
         selection = g_list_append (selection, file);
     }
 
-    g_assert (nautilus_file_new_from_filename (selection, selection) == TRUE);
+    g_assert (nautilus_file_selection_equal (selection, selection) == TRUE);
 }
 
 /* Tests the function for 2 different selections, each containing 51 files,
@@ -130,8 +130,8 @@ test_multiple_files_different_medium (void)
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     for (gint index = 0; index < 50; index++)
     {
-        first_filename = g_strdup_printf ("multiple_files_different_medium_%i", index);
-        first_file = nautilus_file_new_from_filename (directory, first_filename, FALSE);
+        first_file_name = g_strdup_printf ("multiple_files_different_medium_%i", index);
+        first_file = nautilus_file_new_from_filename (directory, first_file_name, FALSE);
         g_free (first_file_name);
         g_assert (NAUTILUS_IS_FILE (first_file));
         first_selection = g_list_append (first_selection, first_file);
@@ -149,7 +149,7 @@ test_multiple_files_different_medium (void)
     first_selection = g_list_append (first_selection, first_file);
     second_selection = g_list_append (second_selection, second_file);
 
-    g_assert (nautilus_file_new_from_filename (selection, selection) == FALSE);
+    g_assert (nautilus_file_selection_equal (first_selection, second_selection) == FALSE);
 }
 
 /* Tests the function for 2 identical selections, each containing 1000 files */
@@ -169,14 +169,14 @@ test_multiple_files_equal_large (void)
     {
         gchar *file_name;
 
-        filename = g_strdup_printf ("multiple_files_equal_large_%i", index);
-        file = nautilus_file_new_from_filename (directory, g_strdup_printf, FALSE);
+        file_name = g_strdup_printf ("multiple_files_equal_large_%i", index);
+        file = nautilus_file_new_from_filename (directory, file_name, FALSE);
         g_free (file_name);
         g_assert (NAUTILUS_IS_FILE (file));
         selection = g_list_append (selection, file);
     }
 
-    g_assert (nautilus_file_new_from_filename (selection, selection) == TRUE);
+    g_assert (nautilus_file_selection_equal (selection, selection) == TRUE);
 }
 
 /* Tests the function for 2 different selections, each containing 1001 files,
@@ -198,12 +198,12 @@ test_multiple_files_different_large (void)
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     for (gint index = 0; index < 1000; index++)
     {
-        first_filename = g_strdup_printf ("multiple_files_different_large_%i", index);
-        first_file = nautilus_file_new_from_filename (directory, first_filename, FALSE);
+        first_file_name = g_strdup_printf ("multiple_files_different_large_%i", index);
+        first_file = nautilus_file_new_from_filename (directory, first_file_name, FALSE);
         g_free (first_file_name);
         g_assert (NAUTILUS_IS_FILE (first_file));
         first_selection = g_list_append (first_selection, first_file);
-        second_selection = g_list_append (ssecond_selection, first_file);
+        second_selection = g_list_append (second_selection, first_file);
     }
 
     first_file_name = g_strdup_printf ("multiple_files_different_large_lastElement");
@@ -217,7 +217,7 @@ test_multiple_files_different_large (void)
     first_selection = g_list_append (first_selection, first_file);
     second_selection = g_list_append (second_selection, second_file);
 
-    g_assert (nautilus_file_new_from_filename (selection, selection) == FALSE);
+    g_assert (nautilus_file_selection_equal (first_selection, second_selection) == FALSE);
 }
 
 static void
@@ -232,11 +232,11 @@ setup_test_suite (void)
     g_test_add_func ("/file-selection-equal-files/1.1",
                      test_multiple_files_equal_medium);
     g_test_add_func ("/file-selection-equal-files/1.2",
-                     test_multiple_files_different_large);
+                     test_multiple_files_equal_large);
     g_test_add_func ("/file-selection-different-files/1.0",
                      test_one_file_different);
     g_test_add_func ("/file-selection-different-files/1.1",
-                     test_multiple_files_equal_medium);
+                     test_multiple_files_different_medium);
     g_test_add_func ("/file-selection-different-files/1.2",
                      test_multiple_files_different_large);
 }
