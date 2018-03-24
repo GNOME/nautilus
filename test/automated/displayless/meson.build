@@ -4,6 +4,9 @@ tests = [
   ]],
   ['test-eel-string-get-common-prefix', [
     'test-eel-string-get-common-prefix.c'
+  ]],
+  ['test-nautilus-file', [
+    'test-nautilus-file.c'
   ]]
 ]
 
