@@ -886,7 +886,10 @@ change_files_view_mode (NautilusWindowSlot *self,
 {
     const gchar *preferences_key;
 
-    nautilus_window_slot_set_content_view (self, view_id);
+    if (!nautilus_window_slot_content_view_matches (self, view_id))
+    {
+        nautilus_window_slot_set_content_view (self, view_id);
+    }
     preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
                       NAUTILUS_PREFERENCES_SEARCH_VIEW :
                       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
@@ -951,6 +954,27 @@ const GActionEntry slot_entries[] =
 };
 
 static void
+use_experimental_views_changed_callback (GSettings *settings,
+                                         gchar     *key,
+                                         gpointer   callback_data)
+{
+    NautilusWindowSlot *self;
+    NautilusView *view;
+
+    self = callback_data;
+    view = nautilus_window_slot_get_current_view (self);
+
+    if (NAUTILUS_IS_FILES_VIEW (view) &&
+        nautilus_window_slot_content_view_matches (self, NAUTILUS_VIEW_GRID_ID))
+    {
+        /* Note that although this call does not change the view id,
+         * it changes the canvas view between new and old.
+         */
+        nautilus_window_slot_set_content_view (self, NAUTILUS_VIEW_GRID_ID);
+    }
+}
+
+static void
 nautilus_window_slot_init (NautilusWindowSlot *self)
 {
     GApplication *app;
@@ -962,6 +986,9 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect (nautilus_trash_monitor_get (),
                       "trash-state-changed",
                       G_CALLBACK (trash_state_changed_cb), self);
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS,
+                             G_CALLBACK (use_experimental_views_changed_callback), self, 0);
 
     priv->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->slot_action_group),
@@ -1942,6 +1969,12 @@ free_location_change (NautilusWindowSlot *self)
     }
 }
 
+/* This sets up a new view, for the current location, with the provided id. Used
+ * whenever the user changes the type of view to use.
+ *
+ * Note that the current view will be thrown away, even if it has the same id.
+ * Callers may first check if !nautilus_window_slot_content_view_matches().
+ */
 static void
 nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
                                        guint               id)
@@ -1957,11 +1990,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
     uri = nautilus_window_slot_get_location_uri (self);
     DEBUG ("Change view of window %s to %d", uri, id);
     g_free (uri);
-
-    if (nautilus_window_slot_content_view_matches (self, id))
-    {
-        return;
-    }
 
     selection = nautilus_view_get_selection (priv->content_view);
     view = nautilus_files_view_new (id, self);
