@@ -154,6 +154,7 @@ static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
 static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
                                     gboolean              is_empty,
                                     gpointer              user_data);
+static void use_experimental_views_changed_callback (gpointer callback_data);
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
@@ -886,7 +887,10 @@ change_files_view_mode (NautilusWindowSlot *self,
 {
     const gchar *preferences_key;
 
-    nautilus_window_slot_set_content_view (self, view_id);
+    if (!nautilus_window_slot_content_view_matches (self, view_id))
+    {
+        nautilus_window_slot_set_content_view (self, view_id);   
+    }
     preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
                       NAUTILUS_PREFERENCES_SEARCH_VIEW :
                       NAUTILUS_PREFERENCES_DEFAULT_FOLDER_VIEWER;
@@ -962,6 +966,10 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect (nautilus_trash_monitor_get (),
                       "trash-state-changed",
                       G_CALLBACK (trash_state_changed_cb), self);
+    g_signal_connect_swapped (gtk_filechooser_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS,
+                              G_CALLBACK (use_experimental_views_changed_callback), self);
+
 
     priv->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->slot_action_group),
@@ -1624,6 +1632,19 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
 }
 
 static void
+use_experimental_views_changed_callback (gpointer callback_data)
+{
+    NautilusWindowSlot *self;
+    NautilusWindowSlotPrivate *priv;
+    guint current_view_id;
+
+    self = callback_data;
+    priv = nautilus_window_slot_get_instance_private (self);
+    current_view_id = nautilus_files_view_get_view_id (priv->content_view);
+    nautilus_window_slot_set_content_view (self, current_view_id);
+}
+
+static void
 got_file_info_for_view_selection_callback (NautilusFile *file,
                                            gpointer      callback_data)
 {
@@ -1957,11 +1978,6 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
     uri = nautilus_window_slot_get_location_uri (self);
     DEBUG ("Change view of window %s to %d", uri, id);
     g_free (uri);
-
-    if (nautilus_window_slot_content_view_matches (self, id))
-    {
-        return;
-    }
 
     selection = nautilus_view_get_selection (priv->content_view);
     view = nautilus_files_view_new (id, self);
