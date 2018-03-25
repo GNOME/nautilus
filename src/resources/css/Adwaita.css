@@ -216,12 +216,20 @@ actionbar
   background-color: mix(@theme_bg_color, @theme_base_color, 0.5);
 }
 
-.border-box
+actionbar button,
+actionbar button:hover
 {
-  /* Same as spacing between icons */
-  padding-left: 6px;
-  background-image: image(mix(@theme_bg_color, @borders, 1.0));
-  background-size: 1px 12px;
-  background-repeat: no-repeat;
-  background-position: 100%
+  margin: 2px;
+  border-color: transparent;
+  border-width: 0px;
+  border-radius: 0px;
+}
+
+actionbar button:hover
+{
+  background-image: none;
+  border-color: transparent;
+  box-shadow: none;
+  background-color: mix (@theme_bg_color, black, 0.06);
+  transition-duration: 100ms;
 }
