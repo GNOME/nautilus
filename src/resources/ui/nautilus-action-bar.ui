@@ -29,28 +29,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.open-with-default-application</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -60,28 +43,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.cut</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -91,28 +57,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.copy</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
                   </packing>
                 </child>
                 <child>
@@ -122,28 +71,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.star</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">6</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">7</property>
                   </packing>
                 </child>
                 <child>
@@ -153,28 +85,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.rename</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">8</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">9</property>
                   </packing>
                 </child>
                 <child>
@@ -184,10 +99,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.move-to-trash</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -233,20 +144,6 @@
                   </packing>
                 </child>
                 <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
                   <object class="GtkLabel" id="primary_label">
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
@@ -275,46 +172,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="height_request">15</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="margin_left">2</property>
-                <property name="margin_right">2</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">2</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="margin_left">2</property>
-                    <property name="margin_right">2</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="margin_left">4</property>
+                <property name="margin_right">4</property>
                 <child>
                   <object class="GtkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="relief">none</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -323,7 +190,6 @@
                       </object>
                     </child>
                     <style>
-                      <class name="flat"/>
                       <class name="image-button"/>
                     </style>
                   </object>
@@ -382,7 +248,6 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
                 <property name="action_name">view.stop-loading</property>
-                <property name="relief">none</property>
                 <child>
                   <object class="GtkImage">
                     <property name="visible">True</property>
@@ -392,7 +257,6 @@
                 </child>
                 <style>
                   <class name="image-button"/>
-                  <class name="circle"/>
                   <class name="flat"/>
                 </style>
               </object>
@@ -425,28 +289,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.new-folder</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
                   </packing>
                 </child>
                 <child>
@@ -456,28 +303,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.paste</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">3</property>
                   </packing>
                 </child>
                 <child>
@@ -487,28 +317,11 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.select-all</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
                     <property name="fill">True</property>
                     <property name="position">4</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">5</property>
                   </packing>
                 </child>
                 <child>
@@ -518,10 +331,6 @@
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
                     <property name="action_name">view.properties</property>
-                    <property name="relief">none</property>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">True</property>
@@ -537,46 +346,16 @@
               </packing>
             </child>
             <child>
-              <object class="GtkSeparator">
-                <property name="height_request">15</property>
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="valign">center</property>
-                <property name="margin_left">2</property>
-                <property name="margin_right">2</property>
-              </object>
-              <packing>
-                <property name="expand">False</property>
-                <property name="fill">True</property>
-                <property name="position">1</property>
-              </packing>
-            </child>
-            <child>
               <object class="GtkBox">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkSeparator">
-                    <property name="height_request">15</property>
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="valign">center</property>
-                    <property name="margin_left">2</property>
-                    <property name="margin_right">2</property>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="pack_type">end</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
+                <property name="margin_left">4</property>
+                <property name="margin_right">4</property>
                 <child>
                   <object class="GtkButton">
                     <property name="visible">True</property>
                     <property name="can_focus">True</property>
                     <property name="receives_default">True</property>
-                    <property name="relief">none</property>
                     <child>
                       <object class="GtkImage">
                         <property name="visible">True</property>
@@ -584,9 +363,6 @@
                         <property name="icon_name">view-more-symbolic</property>
                       </object>
                     </child>
-                    <style>
-                      <class name="flat"/>
-                    </style>
                   </object>
                   <packing>
                     <property name="expand">False</property>

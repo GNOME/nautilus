@@ -216,20 +216,7 @@ actionbar
   background-color: mix(@theme_bg_color, @theme_base_color, 0.5);
 }
 
-actionbar button,
-actionbar button:hover
+actionbar stack
 {
-  margin: 2px;
-  border-color: transparent;
-  border-width: 0px;
-  border-radius: 0px;
-}
-
-actionbar button:hover
-{
-  background-image: none;
-  border-color: transparent;
-  box-shadow: none;
-  background-color: mix (@theme_bg_color, black, 0.06);
-  transition-duration: 100ms;
+  margin: 4px;
 }
