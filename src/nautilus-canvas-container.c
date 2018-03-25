@@ -401,9 +401,6 @@ icon_set_selected (NautilusCanvasContainer *container,
                    NautilusCanvasIcon      *icon,
                    gboolean                 select)
 {
-    g_assert (select == FALSE || select == TRUE);
-    g_assert (icon->is_selected == FALSE || icon->is_selected == TRUE);
-
     if (select == icon->is_selected)
     {
         return FALSE;
