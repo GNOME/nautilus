@@ -188,7 +188,7 @@ real_update_status (gpointer data)
       gtk_label_set_label (GTK_LABEL (actionbar->loading_label),
                            nautilus_view_is_searching (actionbar->view) ? _("Searching") : _("Loading"));
 
-      gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "loading");
+      gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "loading_bar");
     }
   else
     {
@@ -201,17 +201,18 @@ real_update_status (gpointer data)
       if (number_of_files == 0)
         {
           gtk_label_set_label (GTK_LABEL (actionbar->primary_label), "");
+          gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "background_bar");
         }
       else if (number_of_files == 1)
         {
           setup_single_file_selection (actionbar, selection->data);
+          gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "selection_bar");
         }
       else
         {
           setup_multiple_files_selection (actionbar, selection);
+          gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "selection_bar");
         }
-
-      gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "main");
     }
 
   actionbar->update_status_timeout_id = 0;
