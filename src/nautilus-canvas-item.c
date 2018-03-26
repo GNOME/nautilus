@@ -105,7 +105,6 @@ struct NautilusCanvasItemDetails
     guint is_highlighted_as_keyboard_focus : 1;
     guint is_highlighted_for_drop : 1;
     guint is_highlighted_for_clipboard : 1;
-    guint show_stretch_handles : 1;
     guint is_prelit : 1;
 
     guint rendered_is_highlighted_for_selection : 1;
@@ -166,17 +165,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusCanvasItem, nautilus_canvas_item, EEL_TYPE_CANV
 /* private */
 static void     get_icon_rectangle (NautilusCanvasItem *item,
                                     EelIRect           *rect);
-static void     draw_pixbuf (GdkPixbuf *pixbuf,
-                             cairo_t   *cr,
-                             int        x,
-                             int        y);
 static PangoLayout *get_label_layout (PangoLayout       **layout,
                                       NautilusCanvasItem *item,
                                       const char         *text);
-static gboolean hit_test_stretch_handle (NautilusCanvasItem *item,
-                                         EelIRect            icon_rect,
-                                         GtkCornerType      *corner);
-;
 
 static void       nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item);
 
@@ -1194,81 +1185,6 @@ nautilus_canvas_item_invalidate_label (NautilusCanvasItem *item)
     }
 }
 
-static GdkPixbuf *
-get_knob_pixbuf (void)
-{
-    GdkPixbuf *knob_pixbuf = NULL;
-    GInputStream *stream = g_resources_open_stream ("/org/gnome/nautilus/icons/knob.png", 0, NULL);
-
-    if (stream != NULL)
-    {
-        knob_pixbuf = gdk_pixbuf_new_from_stream (stream, NULL, NULL);
-        g_object_unref (stream);
-    }
-
-    return knob_pixbuf;
-}
-
-static void
-draw_stretch_handles (NautilusCanvasItem *item,
-                      cairo_t            *cr,
-                      const EelIRect     *rect)
-{
-    GtkWidget *widget;
-    GdkPixbuf *knob_pixbuf;
-    int knob_width, knob_height;
-    double dash = { 2.0 };
-    GtkStyleContext *style;
-    GdkRGBA color;
-
-    if (!item->details->show_stretch_handles)
-    {
-        return;
-    }
-
-    widget = GTK_WIDGET (EEL_CANVAS_ITEM (item)->canvas);
-    style = gtk_widget_get_style_context (widget);
-
-    cairo_save (cr);
-    knob_pixbuf = get_knob_pixbuf ();
-    knob_width = gdk_pixbuf_get_width (knob_pixbuf);
-    knob_height = gdk_pixbuf_get_height (knob_pixbuf);
-
-    /* first draw the box */
-    gtk_style_context_get_color (style, GTK_STATE_FLAG_SELECTED, &color);
-    gdk_cairo_set_source_rgba (cr, &color);
-    cairo_set_dash (cr, &dash, 1, 0);
-    cairo_set_line_width (cr, 1.0);
-    cairo_rectangle (cr,
-                     rect->x0 + 0.5,
-                     rect->y0 + 0.5,
-                     rect->x1 - rect->x0 - 1,
-                     rect->y1 - rect->y0 - 1);
-    cairo_stroke (cr);
-
-    cairo_restore (cr);
-
-    /* draw the stretch handles themselves */
-    draw_pixbuf (knob_pixbuf, cr, rect->x0, rect->y0);
-    draw_pixbuf (knob_pixbuf, cr, rect->x0, rect->y1 - knob_height);
-    draw_pixbuf (knob_pixbuf, cr, rect->x1 - knob_width, rect->y0);
-    draw_pixbuf (knob_pixbuf, cr, rect->x1 - knob_width, rect->y1 - knob_height);
-
-    g_object_unref (knob_pixbuf);
-}
-
-static void
-draw_pixbuf (GdkPixbuf *pixbuf,
-             cairo_t   *cr,
-             int        x,
-             int        y)
-{
-    cairo_save (cr);
-    gdk_cairo_set_source_pixbuf (cr, pixbuf, x, y);
-    cairo_paint (cr);
-    cairo_restore (cr);
-}
-
 /* shared code to highlight or dim the passed-in pixbuf */
 static cairo_surface_t *
 real_map_surface (NautilusCanvasItem *canvas_item)
@@ -1445,9 +1361,6 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
                              icon_rect.x0, icon_rect.y0);
     cairo_surface_destroy (temp_surface);
 
-    /* Draw stretching handles (if necessary). */
-    draw_stretch_handles (canvas_item, cr, &icon_rect);
-
     /* Draw the label text. */
     draw_label_text (canvas_item, cr, icon_rect);
 
@@ -1619,12 +1532,6 @@ hit_test (NautilusCanvasItem *canvas_item,
         && (!eel_irect_hits_irect (details->text_rect, icon_rect)))
     {
         return FALSE;
-    }
-
-    /* Check for hits in the stretch handles. */
-    if (hit_test_stretch_handle (canvas_item, icon_rect, NULL))
-    {
-        return TRUE;
     }
 
     /* Check for hit in the canvas. */
@@ -1885,105 +1792,6 @@ get_icon_rectangle (NautilusCanvasItem *item,
 
     rect->x1 = rect->x0 + width;
     rect->y1 = rect->y0 + height;
-}
-
-void
-nautilus_canvas_item_set_show_stretch_handles (NautilusCanvasItem *item,
-                                               gboolean            show_stretch_handles)
-{
-    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (item));
-    g_return_if_fail (show_stretch_handles == FALSE || show_stretch_handles == TRUE);
-
-    if (!item->details->show_stretch_handles == !show_stretch_handles)
-    {
-        return;
-    }
-
-    item->details->show_stretch_handles = show_stretch_handles;
-    eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
-}
-
-/* Check if one of the stretch handles was hit. */
-static gboolean
-hit_test_stretch_handle (NautilusCanvasItem *item,
-                         EelIRect            probe_icon_rect,
-                         GtkCornerType      *corner)
-{
-    EelIRect icon_rect;
-    GdkPixbuf *knob_pixbuf;
-    int knob_width, knob_height;
-    int hit_corner;
-
-    g_assert (NAUTILUS_IS_CANVAS_ITEM (item));
-
-    /* Make sure there are handles to hit. */
-    if (!item->details->show_stretch_handles)
-    {
-        return FALSE;
-    }
-
-    /* Quick check to see if the rect hits the canvas at all. */
-    icon_rect = item->details->icon_rect;
-    if (!eel_irect_hits_irect (probe_icon_rect, icon_rect))
-    {
-        return FALSE;
-    }
-
-    knob_pixbuf = get_knob_pixbuf ();
-    knob_width = gdk_pixbuf_get_width (knob_pixbuf);
-    knob_height = gdk_pixbuf_get_height (knob_pixbuf);
-    g_object_unref (knob_pixbuf);
-
-    /* Check for hits in the stretch handles. */
-    hit_corner = -1;
-    if (probe_icon_rect.x0 < icon_rect.x0 + knob_width)
-    {
-        if (probe_icon_rect.y0 < icon_rect.y0 + knob_height)
-        {
-            hit_corner = GTK_CORNER_TOP_LEFT;
-        }
-        else if (probe_icon_rect.y1 >= icon_rect.y1 - knob_height)
-        {
-            hit_corner = GTK_CORNER_BOTTOM_LEFT;
-        }
-    }
-    else if (probe_icon_rect.x1 >= icon_rect.x1 - knob_width)
-    {
-        if (probe_icon_rect.y0 < icon_rect.y0 + knob_height)
-        {
-            hit_corner = GTK_CORNER_TOP_RIGHT;
-        }
-        else if (probe_icon_rect.y1 >= icon_rect.y1 - knob_height)
-        {
-            hit_corner = GTK_CORNER_BOTTOM_RIGHT;
-        }
-    }
-    if (corner)
-    {
-        *corner = hit_corner;
-    }
-
-    return hit_corner != -1;
-}
-
-gboolean
-nautilus_canvas_item_hit_test_stretch_handles (NautilusCanvasItem *item,
-                                               gdouble             world_x,
-                                               gdouble             world_y,
-                                               GtkCornerType      *corner)
-{
-    EelIRect icon_rect;
-
-    g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), FALSE);
-
-    eel_canvas_w2c (EEL_CANVAS_ITEM (item)->canvas,
-                    world_x,
-                    world_y,
-                    &icon_rect.x0,
-                    &icon_rect.y0);
-    icon_rect.x1 = icon_rect.x0 + 1;
-    icon_rect.y1 = icon_rect.y0 + 1;
-    return hit_test_stretch_handle (item, icon_rect, corner);
 }
 
 /* nautilus_canvas_item_hit_test_rectangle
