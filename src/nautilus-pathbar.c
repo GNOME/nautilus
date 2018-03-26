@@ -2113,6 +2113,7 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+            gtk_widget_set_valign (child, GTK_ALIGN_CENTER);
             gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
         }
