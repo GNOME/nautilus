@@ -4,6 +4,9 @@ tests = [
   ]],
   ['test-eel-string-get-common-prefix', [
     'test-eel-string-get-common-prefix.c'
+  ]],
+  ['test-directory-creation', [
+    'test-directory-creation.c'
   ]]
 ]
 
