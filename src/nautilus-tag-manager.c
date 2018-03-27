@@ -343,6 +343,12 @@ get_query_status (TrackerSparqlCursor *cursor,
     return success;
 }
 
+/**
+ * nautilus_tag_manager_get_starred_files:
+ * @self: (element-type NautilusTagManager): the tag manager singleton
+ *
+ * Returns: (element-type gchar*) (transfer container): A list of the starred urls.
+ */
 GList *
 nautilus_tag_manager_get_starred_files (NautilusTagManager *self)
 {
