@@ -23,6 +23,7 @@
 
 #include "nautilus-properties-window.h"
 
+#include "nautilus-ui-utilities.h"
 #include "nautilus-desktop-item-properties.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-mime-actions.h"
@@ -485,10 +486,9 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
 
     if (!exactly_one)
     {
-        eel_show_error_dialog
-            (_("You cannot assign more than one custom icon at a time!"),
-            _("Please drop just one image to set a custom icon."),
-            window);
+        show_error_dialog(_("You cannot assign more than one custom icon at a time!"),
+            			  _("Please drop just one image to set a custom icon."),
+            			  window);
     }
     else
     {
@@ -503,17 +503,15 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
             f = g_file_new_for_uri (uris[0]);
             if (!g_file_is_native (f))
             {
-                eel_show_error_dialog
-                    (_("The file that you dropped is not local."),
-                    _("You can only use local images as custom icons."),
-                    window);
+                show_error_dialog(_("The file that you dropped is not local."),
+                    			  _("You can only use local images as custom icons."),
+                    			  window);
             }
             else
             {
-                eel_show_error_dialog
-                    (_("The file that you dropped is not an image."),
-                    _("You can only use local images as custom icons."),
-                    window);
+                show_error_dialog(_("The file that you dropped is not an image."),
+                    			  _("You can only use local images as custom icons."),
+                    			  window);
             }
             g_object_unref (f);
         }
@@ -3113,9 +3111,9 @@ open_in_disks (GtkButton                *button,
     if (error != NULL)
     {
         message = g_strdup_printf (_("Details: %s"), error->message);
-        eel_show_error_dialog (_("There was an error launching the application."),
-                               message,
-                               GTK_WINDOW (self));
+        show_error_dialog (_("There was an error launching the application."),
+                           message,
+                           GTK_WINDOW (self));
     }
 }
 
