@@ -11,7 +11,7 @@ msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
 "POT-Creation-Date: 2018-03-26 17:07+0000\n"
-"PO-Revision-Date: 2018-03-27 20:56+0200\n"
+"PO-Revision-Date: 2018-03-27 21:30+0200\n"
 "Last-Translator: Matej Urbančič <mateju@svn.gnome.org>\n"
 "Language-Team: Slovenian GNOME Translation Team <gnome-si@googlegroups.com>\n"
 "Language: sl_SI\n"
@@ -423,17 +423,12 @@ msgstr ""
 "zavihka"
 
 #: data/org.gnome.nautilus.gschema.xml:212
-#, fuzzy
-#| msgid ""
-#| "If set to true, then Nautilus will also match the file contents besides "
-#| "the name. This toggles the default active state, which can still be "
-#| "overriden in the search popover"
 msgid ""
 "If set to true, then Nautilus will also match the file contents besides the "
 "name. This toggles the default active state, which can still be overridden "
 "in the search popover"
 msgstr ""
-"Izbrana možnost določa, da bo program ob imenu poskusil preiskati tudi "
+"Izbrana možnost določa, da bo program ob imenu poskusil pokazati tudi "
 "vsebino. S tem se preklopi privzeti dejavni način, ki ga je še vedno mogoče "
 "preklicati s pojavnim oknom iskanja."
 
@@ -450,27 +445,19 @@ msgid "List of possible captions on icons"
 msgstr "Seznam mogočih oznak ikon"
 
 #: data/org.gnome.nautilus.gschema.xml:228
-#, fuzzy
-#| msgid ""
-#| "A list of captions below an icon in the icon view and the desktop. The "
-#| "actual number of captions shown depends on the zoom level. Some possible "
-#| "values are: “size”, “type”, “date_modified”, “owner”, “group”, "
-#| "“permissions”, and “mime_type”."
 msgid ""
 "A list of captions below an icon in the icon view. The actual number of "
 "captions shown depends on the zoom level. Some possible values are: “size”, "
 "“type”, “date_modified”, “owner”, “group”, “permissions”, and “mime_type”."
 msgstr ""
-"Seznam oznak pod ikonami v ikonskem pogledu in na namizju. Dejansko število "
-"prikazanih oznak je odvisno od ravni približanja. Možne vrednosti so "
-"»velikost«, »vrsta«, »datum zadnje spremembe«, »lastnik«, »skupina«, "
-"»dovoljenja«, in »vrsta MIME«."
+"Seznam oznak pod ikonami v ikonskem pogledu. Dejansko število prikazanih "
+"oznak je odvisno od ravni približanja. Možne vrednosti so »velikost«, "
+"»vrsta«, »datum zadnje spremembe«, »lastnik«, »skupina«, »dovoljenja«, in "
+"»vrsta MIME«."
 
 #: data/org.gnome.nautilus.gschema.xml:232
-#, fuzzy
-#| msgid "Default icon zoom level"
 msgid "Default icon view zoom level"
-msgstr "Privzeto približanje ikon"
+msgstr "Privzeta raven približanja ikonskega pogleda"
 
 # http://en.wikipedia.org/wiki/Ellipsis
 #: data/org.gnome.nautilus.gschema.xml:236
@@ -508,22 +495,16 @@ msgstr ""
 "običajno in veliko."
 
 #: data/org.gnome.nautilus.gschema.xml:244
-#, fuzzy
-#| msgid "Default list zoom level"
 msgid "Default list view zoom level"
-msgstr "Privzeto približanje seznamov"
+msgstr "Privzeta raven približanja seznamskega pogleda"
 
 #: data/org.gnome.nautilus.gschema.xml:248
-#, fuzzy
-#| msgid "Default list of columns visible in the list view"
 msgid "Columns visible in list view"
-msgstr "Privzet seznam stolpcev vidnih v seznamskem prikazu."
+msgstr "Stolpci vidni v seznamskem pogledu"
 
 #: data/org.gnome.nautilus.gschema.xml:252
-#, fuzzy
-#| msgid "Default column order in the list view"
 msgid "Column order in list view"
-msgstr "Privzet vrstni red stolpcev v seznamskem prikazu"
+msgstr "Vrstni red stolpcev v seznamskem pogledu"
 
 #: data/org.gnome.nautilus.gschema.xml:256
 msgid "Use tree view"
@@ -610,7 +591,7 @@ msgstr "To dejanje lahko zaustavite s klikom na tipko preklica."
 #: src/nautilus-files-view.c:378 src/nautilus-list-model.c:471
 #: src/nautilus-window-slot.c:853
 msgid "Loading…"
-msgstr "Nalaganje ..."
+msgstr "Poteka nalaganje ..."
 
 #: extensions/image-properties/nautilus-image-properties-page.c:148
 msgid "Image Type"
@@ -728,15 +709,15 @@ msgstr "Slika"
 
 #: extensions/sendto/nautilus-nste.c:105 extensions/sendto/nautilus-nste.c:112
 msgid "Send to…"
-msgstr "Pošlji na ..."
+msgstr "Pošlji na …"
 
 #: extensions/sendto/nautilus-nste.c:106
 msgid "Send file by mail…"
-msgstr "Pošlji datoteko kot elektronsko pošto ..."
+msgstr "Pošlji datoteko z elektronsko pošto …"
 
 #: extensions/sendto/nautilus-nste.c:113
 msgid "Send files by mail…"
-msgstr "Pošlji datoteke kot elektronsko pošto ..."
+msgstr "Pošlji datoteke z elektronsko pošto …"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
 #: src/nautilus-application.c:179 src/nautilus-window-slot.c:1425
@@ -1042,7 +1023,7 @@ msgstr "Vrsta datoteke."
 
 #: src/nautilus-column-utilities.c:79
 msgid "Modified"
-msgstr "Spremenjeno"
+msgstr "Datum spremembe"
 
 #: src/nautilus-column-utilities.c:80 src/nautilus-column-utilities.c:139
 msgid "The date the file was modified."
@@ -1050,7 +1031,7 @@ msgstr "Datum spremembe datoteke."
 
 #: src/nautilus-column-utilities.c:88
 msgid "Accessed"
-msgstr "Dostopano"
+msgstr "Zadnji dostop"
 
 #: src/nautilus-column-utilities.c:89
 msgid "The date the file was accessed."
@@ -1098,25 +1079,23 @@ msgstr "Mesto datoteke."
 
 #: src/nautilus-column-utilities.c:138
 msgid "Modified — Time"
-msgstr "Spremenjeno – Čas"
+msgstr "Datum in čas spremembe"
 
 #: src/nautilus-column-utilities.c:147
 msgid "Recency"
-msgstr "Nedavno"
+msgstr "Nedavnost"
 
 #: src/nautilus-column-utilities.c:148
 msgid "The date the file was accessed by the user."
 msgstr "Datum, ko je uporabnik dostopil do datoteke."
 
 #: src/nautilus-column-utilities.c:157
-#, fuzzy
-#| msgid "_Start"
 msgid "Star"
-msgstr "_Zaženi"
+msgstr "Zvezdica"
 
 #: src/nautilus-column-utilities.c:158
 msgid "Shows if file is starred."
-msgstr ""
+msgstr "Pokaži, ali je datoteka označena z zvezdico."
 
 #: src/nautilus-column-utilities.c:203
 msgid "Trashed On"
@@ -1339,10 +1318,8 @@ msgstr "Datoteke ni mogoče najti"
 
 #: src/nautilus-file.c:4537 src/nautilus-file-utilities.c:328
 #: src/nautilus-pathbar.c:460
-#, fuzzy
-#| msgid "_Start"
 msgid "Starred"
-msgstr "_Zaženi"
+msgstr "Označeno z zvezdico"
 
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5634
@@ -1572,10 +1549,8 @@ msgstr "Preglednica"
 
 #. Refers to a file type which is known but not one of the basic types
 #: src/nautilus-file.c:7645
-#, fuzzy
-#| msgid "Others"
 msgid "Other"
-msgstr "Drugi"
+msgstr "Drugo"
 
 #: src/nautilus-file.c:7673
 msgid "Binary"
@@ -2000,7 +1975,7 @@ msgstr "Ni ustreznih dovoljen za brisanje datoteke »%s«."
 #: src/nautilus-file-operations.c:2063
 #, c-format
 msgid "Trashing “%s”"
-msgstr "Poteka premikanje »%s« v smeti"
+msgstr "Poteka premikanje »%s« v smeti."
 
 #: src/nautilus-file-operations.c:2067
 #, c-format
@@ -2662,7 +2637,7 @@ msgstr "_V redu"
 
 #: src/nautilus-files-view.c:1677
 msgid "Select Items Matching"
-msgstr "Izberite skladne predmete"
+msgstr "Izbor skladnih predmetov"
 
 #: src/nautilus-files-view.c:1682 src/nautilus-files-view.c:5864
 #: src/nautilus-files-view.c:6325
@@ -2688,7 +2663,7 @@ msgstr ""
 #: src/nautilus-files-view.c:3271 src/nautilus-files-view.c:3318
 #, c-format
 msgid "“%s” selected"
-msgstr "»%s«"
+msgstr "»%s« izbrano"
 
 #: src/nautilus-files-view.c:3275
 #, c-format
@@ -2760,11 +2735,11 @@ msgstr "%s %s, %s %s"
 
 #: src/nautilus-files-view.c:5851
 msgid "Select Move Destination"
-msgstr "Izberite ciljno mesto za premikanje"
+msgstr "Izbor ciljnega mesta za premikanje"
 
 #: src/nautilus-files-view.c:5855
 msgid "Select Copy Destination"
-msgstr "Izberite ciljno mesto za kopiranje"
+msgstr "Izbor ciljnega mesta za kopiranje"
 
 #: src/nautilus-files-view.c:6321
 msgid "Select Extract Destination"
@@ -3239,24 +3214,20 @@ msgstr[2] "Dodaj zvezdico %d datotekama"
 msgstr[3] "Dodaj zvezdico %d datotekam"
 
 #: src/nautilus-file-undo-operations.c:1339
-#, fuzzy
-#| msgid "Undo last action"
 msgid "_Undo Starring"
-msgstr "Razveljavi zadnje dejanje"
+msgstr "_Razveljavi označevanje z zvezdico"
 
 #: src/nautilus-file-undo-operations.c:1340
 msgid "_Redo Starring"
-msgstr ""
+msgstr "_Ponovi označevanje z zvezdico"
 
 #: src/nautilus-file-undo-operations.c:1352
-#, fuzzy
-#| msgid "Undo last action"
 msgid "_Undo Unstarring"
-msgstr "Razveljavi zadnje dejanje"
+msgstr "_Razveljavi odstranjevanje oznake zvezdice"
 
 #: src/nautilus-file-undo-operations.c:1353
 msgid "_Redo Unstarring"
-msgstr ""
+msgstr "_Ponovi odstranjevanje oznake zvezdice"
 
 #: src/nautilus-file-undo-operations.c:1556
 #, c-format
@@ -3490,7 +3461,7 @@ msgstr "%s vidni stolpci"
 
 #: src/nautilus-list-view.c:3212
 msgid "Choose the order of information to appear in this folder:"
-msgstr "Izberite vrstni red podatkov, ki naj se pojavijo v tej mapi:"
+msgstr "Izberite vrstni red stolpcev, prikazanih v tej mapi"
 
 #: src/nautilus-location-entry.c:267
 #, c-format
@@ -3712,7 +3683,7 @@ msgstr "Odpri vse datoteke vrste  »%s« s programom"
 #: src/nautilus-mime-application-chooser.c:285
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
-msgstr "Izberite program za odpiranje »%s« in drugih datotek vrste  »%s«"
+msgstr "Izbor programa za odpiranje »%s« in drugih datotek vrste »%s«"
 
 #: src/nautilus-mime-application-chooser.c:344
 msgid "_Add"
@@ -3906,6 +3877,8 @@ msgid ""
 "Password-protected archives are not yet supported. This list contains "
 "applications that can open the archive."
 msgstr ""
+"Z geslom zaščiteni arhivi še niso podprti. Na seznamu so izpisani programi, "
+"s katerimi je mogoče arhiv odpreti."
 
 #. Translators: this is referred to captions under icons.
 #. Translators: this is referred to the permissions
@@ -4103,7 +4076,7 @@ msgstr "Zadnji dostop:"
 
 #: src/nautilus-properties-window.c:3219
 msgid "Modified:"
-msgstr "Spremenjena:"
+msgstr "Spremenjeno:"
 
 #: src/nautilus-properties-window.c:3230
 msgid "Free space:"
@@ -4191,7 +4164,7 @@ msgstr "Drugi"
 
 #: src/nautilus-properties-window.c:4335
 msgid "Execute:"
-msgstr "Izvedi:"
+msgstr "Izvajanje:"
 
 #: src/nautilus-properties-window.c:4338
 msgid "Allow _executing file as program"
@@ -4232,7 +4205,7 @@ msgstr "Dovoljenj za izbrano datoteko ni mogoče določiti."
 
 #: src/nautilus-properties-window.c:4972
 msgid "Open With"
-msgstr "Odpri z"
+msgstr "Programi"
 
 #: src/nautilus-properties-window.c:5331
 msgid "Creating Properties window."
@@ -4492,23 +4465,20 @@ msgstr[3] "%d izbrisane datoteke"
 
 #. Translators: one item has been unstarred and %s is its name.
 #: src/nautilus-window.c:1813
-#, fuzzy, c-format
-#| msgid "“%s” selected"
+#, c-format
 msgid "“%s” unstarred"
-msgstr "»%s«"
+msgstr "Datoteki »%s« je odstranjena oznaka z zvezdico."
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
 #: src/nautilus-window.c:1819
-#, fuzzy, c-format
-#| msgid "%d file deleted"
-#| msgid_plural "%d files deleted"
+#, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
-msgstr[0] "%d izbrisanih datotek"
-msgstr[1] "%d izbrisana datoteka"
-msgstr[2] "%d izbrisani datoteki"
-msgstr[3] "%d izbrisane datoteke"
+msgstr[0] "%d datotekam je odstranjena oznaka z zvezdico"
+msgstr[1] "%d datoteki je odstranjena oznaka z zvezdico"
+msgstr[2] "%d datotekama je odstranjena oznaka z zvezdico"
+msgstr[3] "%d datotekam je odstranjena oznaka z zvezdico"
 
 #: src/nautilus-window.c:1969
 #, c-format
@@ -4616,12 +4586,12 @@ msgstr "Novo okno"
 #: src/resources/gtk/help-overlay.ui:24
 msgctxt "shortcut window"
 msgid "Close window or tab"
-msgstr "Zapri okno ali zavihek"
+msgstr "Zapre okno ali zavihek"
 
 #: src/resources/gtk/help-overlay.ui:31
 msgctxt "shortcut window"
 msgid "Search"
-msgstr "Iskanje"
+msgstr "Odpre okno za iskanje"
 
 #: src/resources/gtk/help-overlay.ui:38
 msgctxt "shortcut window"
@@ -4631,12 +4601,12 @@ msgstr "Ustvari zaznamek trenutnega mesta"
 #: src/resources/gtk/help-overlay.ui:45
 msgctxt "shortcut window"
 msgid "Show help"
-msgstr "Pokaži pomoč"
+msgstr "Pokaže pomoč"
 
 #: src/resources/gtk/help-overlay.ui:52
 msgctxt "shortcut window"
 msgid "Shortcuts"
-msgstr "Tipkovne bližnjice"
+msgstr "Pokaže tipkovne bližnjice"
 
 #: src/resources/gtk/help-overlay.ui:61
 msgctxt "shortcut window"
@@ -4646,32 +4616,32 @@ msgstr "Odpiranje"
 #: src/resources/gtk/help-overlay.ui:65
 msgctxt "shortcut window"
 msgid "Open"
-msgstr "Odpri"
+msgstr "Odpre predmet"
 
 #: src/resources/gtk/help-overlay.ui:72
 msgctxt "shortcut window"
 msgid "Open in new tab"
-msgstr "Odpri v novem zavihku"
+msgstr "Odpre predmet v novem zavihku"
 
 #: src/resources/gtk/help-overlay.ui:79
 msgctxt "shortcut window"
 msgid "Open in new window"
-msgstr "Odpri v novem oknu"
+msgstr "Odpre predmet v novem oknu"
 
 #: src/resources/gtk/help-overlay.ui:86
 msgctxt "shortcut window"
 msgid "Open item location (search and recent only)"
-msgstr "Odpri mesto predmeta (iskalnik in nedavne datoteke)"
+msgstr "Odpre mesto predmeta (iskalnik in nedavne datoteke)"
 
 #: src/resources/gtk/help-overlay.ui:93
 msgctxt "shortcut window"
 msgid "Open file and close window"
-msgstr "Odpri datoteko in zapri okno"
+msgstr "Odpre datoteko in zapre okno"
 
 #: src/resources/gtk/help-overlay.ui:100
 msgctxt "shortcut window"
 msgid "Open with default application"
-msgstr "Odpri s privzetim programom"
+msgstr "Odpre s privzetim programom"
 
 #: src/resources/gtk/help-overlay.ui:109
 msgctxt "shortcut window"
@@ -4696,17 +4666,17 @@ msgstr "Skoči na naslednji zavihek"
 #: src/resources/gtk/help-overlay.ui:134
 msgctxt "shortcut window"
 msgid "Open tab"
-msgstr "Odpri zavihek"
+msgstr "Odpre zavihek"
 
 #: src/resources/gtk/help-overlay.ui:141
 msgctxt "shortcut window"
 msgid "Move tab left"
-msgstr "Premakni zavihek levo"
+msgstr "Premakne zavihek levo"
 
 #: src/resources/gtk/help-overlay.ui:148
 msgctxt "shortcut window"
 msgid "Move tab right"
-msgstr "Premakni zavihek desno"
+msgstr "Premakne zavihek desno"
 
 #: src/resources/gtk/help-overlay.ui:155
 msgctxt "shortcut window"
@@ -4721,22 +4691,22 @@ msgstr "Krmarjenje"
 #: src/resources/gtk/help-overlay.ui:168
 msgctxt "shortcut window"
 msgid "Go back"
-msgstr "Nazaj"
+msgstr "Skoči na predhodni pogled"
 
 #: src/resources/gtk/help-overlay.ui:175
 msgctxt "shortcut window"
 msgid "Go forward"
-msgstr "Naprej"
+msgstr "Pojdi na naslednji pogled"
 
 #: src/resources/gtk/help-overlay.ui:182
 msgctxt "shortcut window"
 msgid "Go up"
-msgstr "Pojdi višje"
+msgstr "Skoči raven višje"
 
 #: src/resources/gtk/help-overlay.ui:189
 msgctxt "shortcut window"
 msgid "Go down"
-msgstr "Pojdi nižje"
+msgstr "Skoči raven nižje"
 
 #: src/resources/gtk/help-overlay.ui:196
 msgctxt "shortcut window"
@@ -4746,32 +4716,32 @@ msgstr "Skoči na osebno mapo"
 #: src/resources/gtk/help-overlay.ui:203
 msgctxt "shortcut window"
 msgid "Enter location"
-msgstr "Vpis mesta"
+msgstr "Odpre vnosno polje za vpis mesta"
 
 #: src/resources/gtk/help-overlay.ui:210
 msgctxt "shortcut window"
 msgid "Location bar with root location"
-msgstr "Vrstica naslova z mestom korenske mape"
+msgstr "V naslovni vrstici odpre korensko mapo"
 
 #: src/resources/gtk/help-overlay.ui:217
 msgctxt "shortcut window"
 msgid "Location bar with home location"
-msgstr "Vrstica naslova z mestom osebne mape"
+msgstr "V naslovni vrstici odpre osebno mapo"
 
 #: src/resources/gtk/help-overlay.ui:226
 msgctxt "shortcut window"
 msgid "View"
-msgstr "Poglej"
+msgstr "Pogled"
 
 #: src/resources/gtk/help-overlay.ui:230
 msgctxt "shortcut window"
 msgid "Zoom in"
-msgstr "Približaj"
+msgstr "Približa pogled"
 
 #: src/resources/gtk/help-overlay.ui:237
 msgctxt "shortcut window"
 msgid "Zoom out"
-msgstr "Oddalji"
+msgstr "Oddalji pogled"
 
 #: src/resources/gtk/help-overlay.ui:244
 msgctxt "shortcut window"
@@ -4786,27 +4756,27 @@ msgstr "Osveži pogled"
 #: src/resources/gtk/help-overlay.ui:258
 msgctxt "shortcut window"
 msgid "Show/hide hidden files"
-msgstr "Pokaži/Skrij skrite datoteke"
+msgstr "Pokaže/Skrije skrite datoteke"
 
 #: src/resources/gtk/help-overlay.ui:265
 msgctxt "shortcut window"
 msgid "Show/hide sidebar"
-msgstr "Pokaži/Skrij bočno vrstico"
+msgstr "Pokaže/Skrije bočno vrstico"
 
 #: src/resources/gtk/help-overlay.ui:272
 msgctxt "shortcut window"
 msgid "Show/hide action menu"
-msgstr "Pokaži/Skrij meni dejanj"
+msgstr "Pokaže/Skrije meni dejanj"
 
 #: src/resources/gtk/help-overlay.ui:279
 msgctxt "shortcut window"
 msgid "List view"
-msgstr "Seznamski pikaz"
+msgstr "Pokaže seznamski pogled"
 
 #: src/resources/gtk/help-overlay.ui:286
 msgctxt "shortcut window"
 msgid "Grid view"
-msgstr "Mrežni prikaz"
+msgstr "pokaže mrežni pogled"
 
 #: src/resources/gtk/help-overlay.ui:295
 msgctxt "shortcut window"
@@ -4821,62 +4791,62 @@ msgstr "Ustvari mapo"
 #: src/resources/gtk/help-overlay.ui:306
 msgctxt "shortcut window"
 msgid "Rename"
-msgstr "Preimenuj"
+msgstr "Preimenuje predmet"
 
 #: src/resources/gtk/help-overlay.ui:313
 msgctxt "shortcut window"
 msgid "Move to trash"
-msgstr "Premakni v smeti"
+msgstr "Premakne predmet v smeti"
 
 #: src/resources/gtk/help-overlay.ui:320
 msgctxt "shortcut window"
 msgid "Delete permanently"
-msgstr "Trajno izbriši"
+msgstr "Trajno izbriše izbor"
 
 #: src/resources/gtk/help-overlay.ui:327
 msgctxt "shortcut window"
 msgid "Cut"
-msgstr "Izreži"
+msgstr "Izreže izbor"
 
 #: src/resources/gtk/help-overlay.ui:334
 msgctxt "shortcut window"
 msgid "Copy"
-msgstr "Kopiraj"
+msgstr "Kopira izbor"
 
 #: src/resources/gtk/help-overlay.ui:341
 msgctxt "shortcut window"
 msgid "Paste"
-msgstr "Prilepi"
+msgstr "Prilepi izbor"
 
 #: src/resources/gtk/help-overlay.ui:348
 msgctxt "shortcut window"
 msgid "Select all"
-msgstr "Izberi vse"
+msgstr "Izbere vse predmete"
 
 #: src/resources/gtk/help-overlay.ui:355
 msgctxt "shortcut window"
 msgid "Invert selection"
-msgstr "Obrni izbor"
+msgstr "Obrne izbor predmetov"
 
 #: src/resources/gtk/help-overlay.ui:362
 msgctxt "shortcut window"
 msgid "Select items matching"
-msgstr "Izberi skladne predmete"
+msgstr "Izbere skladne predmete"
 
 #: src/resources/gtk/help-overlay.ui:369
 msgctxt "shortcut window"
 msgid "Undo"
-msgstr "Razveljavi"
+msgstr "Razveljavi dejanje"
 
 #: src/resources/gtk/help-overlay.ui:376
 msgctxt "shortcut window"
 msgid "Redo"
-msgstr "Ponovno uveljavi"
+msgstr "Ponovno uveljavi dejanje"
 
 #: src/resources/gtk/help-overlay.ui:383
 msgctxt "shortcut window"
 msgid "Show item properties"
-msgstr "Pokaži lastnosti predmeta"
+msgstr "Pokaže lastnosti predmeta"
 
 #: src/resources/gtk/menus.ui:6
 msgid "New _Window"
@@ -5151,11 +5121,9 @@ msgstr "Oznake"
 
 #. Marks a file as starred (starred)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:225
-#, fuzzy
-#| msgid "_Start"
 msgctxt "menu item"
 msgid "Star"
-msgstr "_Zaženi"
+msgstr "Zvezdica"
 
 #. Unmarks a file as starred (starred)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:230
@@ -5227,8 +5195,8 @@ msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
 msgstr ""
-"Dodajte podrobnosti, ki bodo prikazane pod imeni datotek in map. Več "
-"podrobnosti bo prikazanih pri približanju pogleda."
+"Izbor podrobnosti, prikazanih pod imeni datotek in map. Več podrobnosti se "
+"prikaže pri približanju pogleda."
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:316
@@ -5302,7 +5270,7 @@ msgstr "Obnašanje"
 
 #: src/resources/ui/nautilus-preferences-window.ui:690
 msgid "Choose the order of information to appear in the list view."
-msgstr "Vrstni red prikaza podatkov v seznamskem pogledu."
+msgstr "Izbor vrstnega reda prikaza stolpcev v seznamskem pogledu"
 
 #: src/resources/ui/nautilus-preferences-window.ui:728
 msgid "List Columns"
@@ -5443,7 +5411,7 @@ msgstr "Počisti trenutno izbran datum"
 
 #: src/resources/ui/nautilus-search-popover.ui:127
 msgid "Since…"
-msgstr "Od ..."
+msgstr "Od …"
 
 #: src/resources/ui/nautilus-search-popover.ui:194
 msgid "Last _modified"
@@ -5479,7 +5447,7 @@ msgstr "Poišči le po imenu datoteke"
 
 #: src/resources/ui/nautilus-starred-is-empty.ui:30
 msgid "Starred files will appear here"
-msgstr ""
+msgstr "Datoteke, označene z zvezdico, bodo prikazane na tem mestu."
 
 #: src/resources/ui/nautilus-toolbar-menu.ui:23
 msgid "New folder"
@@ -5511,7 +5479,7 @@ msgstr "Odpri meni dejanj"
 
 #: src/resources/ui/nautilus-toolbar.ui:112
 msgid "Toggle view"
-msgstr ""
+msgstr "Preklop pogled"
 
 #: src/resources/ui/nautilus-toolbar.ui:124
 msgid "View mode toggle"
