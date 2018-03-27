@@ -58,7 +58,6 @@ typedef enum
 
 static guint path_bar_signals [LAST_SIGNAL] = { 0 };
 
-#define NAUTILUS_PATH_BAR_ICON_SIZE 16
 #define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 175
 
 typedef struct
