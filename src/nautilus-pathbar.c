@@ -72,10 +72,10 @@ typedef struct
 
     GtkWidget *image;
     GtkWidget *label;
-    GtkWidget *bold_label;
 
     guint ignore_changes : 1;
     guint is_root : 1;
+    guint is_current : 1;
 } ButtonData;
 
 typedef struct
@@ -121,7 +121,7 @@ static gboolean nautilus_path_bar_slider_button_release (GtkWidget       *widget
 static void     nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
 static void     nautilus_path_bar_update_button_appearance (ButtonData *button_data);
 static void     nautilus_path_bar_update_button_state (ButtonData *button_data,
-                                                       gboolean    current_dir);
+                                                       gboolean    is_current);
 static void     nautilus_path_bar_update_path (NautilusPathBar *self,
                                                GFile           *file_path);
 static void     unschedule_pop_up_context_menu (NautilusPathBar *self);
@@ -465,6 +465,42 @@ get_dir_name (ButtonData *button_data)
     }
 }
 
+static gboolean
+remove_weights (PangoAttribute *attr,
+                gpointer        user_data)
+{
+    return attr->klass->type == ((PangoAttribute *)user_data)->klass->type;
+}
+
+static PangoAttrList *
+copy_label_attrs (GtkLabel *label)
+{
+    PangoAttrList *attrs = gtk_label_get_attributes (GTK_LABEL (label));
+
+    if (!attrs)
+    {
+        return pango_attr_list_new ();
+    }
+
+    return pango_attr_list_copy (attrs);
+}
+
+static void
+set_label_bold (GtkLabel *label,
+                gboolean  bold)
+{
+    PangoWeight weight = bold ? PANGO_WEIGHT_BOLD : PANGO_WEIGHT_NORMAL;
+    PangoAttrList *attrs;
+    PangoAttribute *attr;
+
+    attrs = copy_label_attrs (GTK_LABEL (label));
+    attr = pango_attr_weight_new (weight);
+    pango_attr_list_filter (attrs, remove_weights, attr);
+    pango_attr_list_insert (attrs, attr);
+    gtk_label_set_attributes (GTK_LABEL (label), attrs);
+    pango_attr_list_unref (attrs);
+}
+
 /* We always want to request the same size for the label, whether
  * or not the contents are bold
  */
@@ -480,7 +516,23 @@ set_label_size_request (ButtonData *button_data)
     }
 
     gtk_widget_get_preferred_size (button_data->label, NULL, &nat_req);
-    gtk_widget_get_preferred_size (button_data->bold_label, &bold_req, NULL);
+
+    if (button_data->is_current)
+    {
+        /* Already bold. */
+        bold_req.width = nat_req.width;
+        bold_req.height = nat_req.height;
+    }
+    else
+    {
+        PangoAttrList *attrs = copy_label_attrs (GTK_LABEL (button_data->label));
+
+        set_label_bold (GTK_LABEL (button_data->label), TRUE);
+        gtk_widget_get_preferred_size (button_data->label, NULL, &bold_req);
+
+        gtk_label_set_attributes (GTK_LABEL (button_data->label), attrs);
+        pango_attr_list_unref (attrs);
+    }
 
     width = MAX (nat_req.width, bold_req.width);
     width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
@@ -1845,21 +1897,8 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
 
     if (button_data->label != NULL)
     {
-        char *markup;
-
-        markup = g_markup_printf_escaped ("<b>%s</b>", dir_name);
-
-        if (gtk_label_get_use_markup (GTK_LABEL (button_data->label)))
-        {
-            gtk_label_set_markup (GTK_LABEL (button_data->label), markup);
-        }
-        else
-        {
-            gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
-        }
-
-        gtk_label_set_markup (GTK_LABEL (button_data->bold_label), markup);
-        g_free (markup);
+        gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
+        set_label_bold (GTK_LABEL (button_data->label), button_data->is_current);
     }
 
     icon = get_gicon (button_data);
@@ -1881,21 +1920,20 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
 
 static void
 nautilus_path_bar_update_button_state (ButtonData *button_data,
-                                       gboolean    current_dir)
+                                       gboolean    is_current)
 {
     if (button_data->label != NULL)
     {
         gtk_label_set_label (GTK_LABEL (button_data->label), NULL);
-        gtk_label_set_label (GTK_LABEL (button_data->bold_label), NULL);
-        gtk_label_set_use_markup (GTK_LABEL (button_data->label), current_dir);
+        button_data->is_current = is_current;
     }
 
     nautilus_path_bar_update_button_appearance (button_data);
 
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_data->button)) != current_dir)
+    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_data->button)) != is_current)
     {
         button_data->ignore_changes = TRUE;
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_data->button), current_dir);
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_data->button), is_current);
         button_data->ignore_changes = FALSE;
     }
 }
@@ -2075,7 +2113,7 @@ button_data_file_changed (NautilusFile *file,
 static ButtonData *
 make_button_data (NautilusPathBar *self,
                   NautilusFile    *file,
-                  gboolean         current_dir)
+                  gboolean         is_current)
 {
     GFile *path;
     GtkWidget *child;
@@ -2097,47 +2135,31 @@ make_button_data (NautilusPathBar *self,
 
     button_data->image = gtk_image_new ();
 
-    switch (button_data->type)
+    if (button_data->type == ROOT_BUTTON)
     {
-        case ROOT_BUTTON:
-        {
-            child = button_data->image;
-            button_data->label = NULL;
-        }
-        break;
-
-        case HOME_BUTTON:
-        case MOUNT_BUTTON:
-        case NORMAL_BUTTON:
-        default:
-        {
-            button_data->label = gtk_label_new (NULL);
-            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-        }
-        break;
+        child = button_data->image;
+        button_data->label = NULL;
     }
-
-    if (button_data->label != NULL)
+    else
     {
+        button_data->label = gtk_label_new (NULL);
         gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_MIDDLE);
         gtk_label_set_single_line_mode (GTK_LABEL (button_data->label), TRUE);
-
-        button_data->bold_label = gtk_label_new (NULL);
-        gtk_widget_set_no_show_all (button_data->bold_label, TRUE);
-        gtk_label_set_single_line_mode (GTK_LABEL (button_data->bold_label), TRUE);
-        gtk_box_pack_start (GTK_BOX (child), button_data->bold_label, FALSE, FALSE, 0);
+        child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+        gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
     }
 
     if (button_data->path == NULL)
     {
         button_data->path = g_object_ref (path);
     }
+
     if (button_data->dir_name == NULL)
     {
         button_data->dir_name = nautilus_file_get_display_name (file);
     }
+
     if (button_data->file == NULL)
     {
         button_data->file = nautilus_file_ref (file);
@@ -2152,7 +2174,7 @@ make_button_data (NautilusPathBar *self,
     gtk_container_add (GTK_CONTAINER (button_data->button), child);
     gtk_widget_show_all (button_data->button);
 
-    nautilus_path_bar_update_button_state (button_data, current_dir);
+    nautilus_path_bar_update_button_state (button_data, is_current);
 
     g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
     g_signal_connect (button_data->button, "button-press-event", G_CALLBACK (button_event_cb), button_data);
