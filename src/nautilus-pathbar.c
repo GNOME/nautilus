@@ -480,7 +480,13 @@ set_label_size_request (ButtonData *button_data)
     }
 
     gtk_widget_get_preferred_size (button_data->label, NULL, &nat_req);
+
+    /* We need to show the bold label first before measuring it, because
+     * invisible widgets always return 0 when their size is requested.
+     */
+    gtk_widget_show (button_data->bold_label);
     gtk_widget_get_preferred_size (button_data->bold_label, &bold_req, NULL);
+    gtk_widget_hide (button_data->bold_label);
 
     width = MAX (nat_req.width, bold_req.width);
     width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
