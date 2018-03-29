@@ -36,6 +36,8 @@ struct _NautilusFreedesktopDBus
 {
     GObject parent;
 
+    GDBusConnection *connection;
+
     /* Id from g_dbus_own_name() */
     guint owner_id;
 
@@ -142,27 +144,6 @@ skeleton_handle_show_item_properties_cb (NautilusFreedesktopFileManager1 *object
 }
 
 static void
-bus_acquired_cb (GDBusConnection *conn,
-                 const gchar     *name,
-                 gpointer         user_data)
-{
-    NautilusFreedesktopDBus *fdb = user_data;
-
-    DEBUG ("Bus acquired at %s", name);
-
-    fdb->skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
-
-    g_signal_connect (fdb->skeleton, "handle-show-items",
-                      G_CALLBACK (skeleton_handle_show_items_cb), fdb);
-    g_signal_connect (fdb->skeleton, "handle-show-folders",
-                      G_CALLBACK (skeleton_handle_show_folders_cb), fdb);
-    g_signal_connect (fdb->skeleton, "handle-show-item-properties",
-                      G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
-
-    g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton), conn, NAUTILUS_FDO_DBUS_PATH, NULL);
-}
-
-static void
 name_acquired_cb (GDBusConnection *connection,
                   const gchar     *name,
                   gpointer         user_data)
@@ -210,14 +191,35 @@ nautilus_freedesktop_dbus_class_init (NautilusFreedesktopDBusClass *klass)
 static void
 nautilus_freedesktop_dbus_init (NautilusFreedesktopDBus *fdb)
 {
-    fdb->owner_id = g_bus_own_name (G_BUS_TYPE_SESSION,
-                                    NAUTILUS_FDO_DBUS_NAME,
-                                    G_BUS_NAME_OWNER_FLAGS_NONE,
-                                    bus_acquired_cb,
-                                    name_acquired_cb,
-                                    name_lost_cb,
-                                    fdb,
-                                    NULL);
+
+    fdb->connection = g_bus_get_sync (G_BUS_TYPE_SESSION, NULL, NULL);
+    if (fdb->connection == NULL)
+    {
+        fdb->owner_id = 0;
+
+        return;
+    }
+    fdb->owner_id = g_bus_own_name_on_connection (fdb->connection,
+                                                  NAUTILUS_FDO_DBUS_NAME,
+                                                  G_BUS_NAME_OWNER_FLAGS_NONE,
+                                                  name_acquired_cb,
+                                                  name_lost_cb,
+                                                  fdb,
+                                                  NULL);
+
+    fdb->skeleton = nautilus_freedesktop_file_manager1_skeleton_new ();
+
+    g_signal_connect (fdb->skeleton, "handle-show-items",
+                      G_CALLBACK (skeleton_handle_show_items_cb), fdb);
+    g_signal_connect (fdb->skeleton, "handle-show-folders",
+                      G_CALLBACK (skeleton_handle_show_folders_cb), fdb);
+    g_signal_connect (fdb->skeleton, "handle-show-item-properties",
+                      G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
+
+    g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton),
+                                      fdb->connection,
+                                      NAUTILUS_FDO_DBUS_PATH,
+                                      NULL);
 }
 
 void
