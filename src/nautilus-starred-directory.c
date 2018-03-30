@@ -340,7 +340,7 @@ real_handles_location (GFile *location)
 
     uri = g_file_get_uri (location);
 
-    if (eel_uri_is_starred (uri))
+    if (uri_is_starred (uri))
     {
         return TRUE;
     }
