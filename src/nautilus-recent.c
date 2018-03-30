@@ -52,7 +52,7 @@ nautilus_recent_add_file (NautilusFile *file,
     /* do not add trash:// etc */
     if (uri_is_trash (uri) ||
         uri_is_search (uri) ||
-        eel_uri_is_recent (uri))
+        uri_is_recent (uri))
     {
         g_free (uri);
         return;
