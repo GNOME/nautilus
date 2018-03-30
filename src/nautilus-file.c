@@ -8336,7 +8336,7 @@ nautilus_file_is_starred_location (NautilusFile *file)
 
     uri = nautilus_file_get_uri (file);
 
-    return eel_uri_is_starred (uri);
+    return uri_is_starred (uri);
 }
 
 /**

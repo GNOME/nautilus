@@ -3485,7 +3485,7 @@ real_check_empty_states (NautilusFilesView *view)
         {
             gtk_widget_show (priv->trash_is_empty_widget);
         }
-        else if (eel_uri_is_starred (uri))
+        else if (uri_is_starred (uri))
         {
             gtk_widget_show (priv->starred_is_empty_widget);
         }

@@ -130,3 +130,5 @@ gchar * nautilus_uri_to_native_uri (const gchar *uri);
 gboolean uri_is_trash (const char *uri);
 
 gboolean uri_is_search (const char *uri);
+
+gboolean uri_is_starred (const char *uri);

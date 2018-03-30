@@ -557,7 +557,7 @@ nautilus_is_starred_directory (GFile *dir)
 
     uri = g_file_get_uri (dir);
 
-    if (eel_uri_is_starred (uri))
+    if (uri_is_starred (uri))
     {
         return TRUE;
     }
@@ -1495,4 +1495,10 @@ gboolean
 uri_is_search (const char *uri)
 {
     return g_str_has_prefix (uri, EEL_SEARCH_URI);
+}
+
+gboolean
+uri_is_starred (const gchar *uri)
+{
+    return g_str_has_prefix (uri, "starred:");
 }
