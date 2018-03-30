@@ -201,7 +201,7 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
     uri = g_file_get_uri (location);
     formatted_uri = g_file_get_parse_name (location);
 
-    if (eel_uri_is_search (uri))
+    if (uri_is_search (uri))
     {
         nautilus_location_entry_set_special_text (entry, "");
     }
