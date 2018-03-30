@@ -29,7 +29,7 @@
 #include "nautilus-window.h"
 #include "nautilus-window-slot.h"
 #include "nautilus-window-slot-dnd.h"
-
+#include "nautilus-file-utilities.h"
 #include <eel/eel-vfs-extensions.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -271,7 +271,7 @@ nautilus_notebook_sync_tab_label (NautilusNotebook   *notebook,
          */
         location_name = g_file_get_parse_name (location);
         title_name = nautilus_window_slot_get_title (slot);
-        if (eel_uri_is_search (location_name))
+        if (uri_is_search (location_name))
         {
             gtk_widget_set_tooltip_text (gtk_widget_get_parent (label), title_name);
         }

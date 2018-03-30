@@ -801,7 +801,7 @@ nautilus_window_new_tab (NautilusWindow *window)
         flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
 
         uri = g_file_get_uri (location);
-        if (eel_uri_is_search (uri))
+        if (uri_is_search (uri))
         {
             location = g_file_new_for_path (g_get_home_dir ());
         }

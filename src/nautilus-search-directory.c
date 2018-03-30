@@ -767,7 +767,7 @@ real_handles_location (GFile *location)
 
     uri = g_file_get_uri (location);
 
-    return eel_uri_is_search (uri);
+    return uri_is_search (uri);
 }
 
 static void

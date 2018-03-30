@@ -4089,7 +4089,7 @@ nautilus_file_is_in_search (NautilusFile *file)
     gboolean ret;
 
     uri = nautilus_file_get_uri (file);
-    ret = eel_uri_is_search (uri);
+    ret = uri_is_search (uri);
     g_free (uri);
 
     return ret;

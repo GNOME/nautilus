@@ -1,32 +1,39 @@
 {
-    "app-id": "org.gnome.NautilusDevel",
-    "runtime": "org.gnome.Platform",
-    "runtime-version": "master",
-    "sdk": "org.gnome.Sdk",
-    "command": "nautilus",
-    "tags": ["devel", "development", "nightly"],
-    "desktop-file-name-prefix": "(Development) ",
-    "finish-args": [
-        "--share=ipc", "--socket=x11",
+    "app-id" : "org.gnome.NautilusDevel",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "master",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "nautilus",
+    "tags" : [
+        "devel",
+        "development",
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Development) ",
+    "finish-args" : [
+        "--share=ipc",
+        "--socket=x11",
         "--socket=wayland",
         "--talk-name=org.gnome.OnlineAccounts",
         "--talk-name=org.freedesktop.Tracker1",
         "--filesystem=host",
-        "--talk-name=org.gtk.vfs", "--talk-name=org.gtk.vfs.*",
-        "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+        "--talk-name=org.gtk.vfs",
+        "--talk-name=org.gtk.vfs.*",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
-    "modules": [
+    "modules" : [
         {
-            "name": "exiv2",
-            "sources": [
+            "name" : "exiv2",
+            "sources" : [
                 {
-                    "type": "archive",
-                    "url": "http://exiv2.org/builds/exiv2-0.26-trunk.tar.gz",
-                    "sha256": "c75e3c4a0811bf700d92c82319373b7a825a2331c12b8b37d41eb58e4f18eafb"
+                    "type" : "archive",
+                    "url" : "http://exiv2.org/builds/exiv2-0.26-trunk.tar.gz",
+                    "sha256" : "c75e3c4a0811bf700d92c82319373b7a825a2331c12b8b37d41eb58e4f18eafb"
                 },
                 {
-                    "type": "shell",
-                    "commands": [
+                    "type" : "shell",
+                    "commands" : [
                         "cp -f /usr/share/gnu-config/config.sub ./config/",
                         "cp -f /usr/share/gnu-config/config.guess ./config/"
                     ]
@@ -34,63 +41,82 @@
             ]
         },
         {
-            "name": "gexiv2",
-            "config-opts": [ "--disable-introspection" ],
-            "sources": [
+            "name" : "gexiv2",
+            "config-opts" : [
+                "--disable-introspection"
+            ],
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://git.gnome.org/browse/gexiv2"
+                    "type" : "git",
+                    "url" : "https://git.gnome.org/browse/gexiv2"
                 }
             ]
         },
         {
-            "name": "tracker",
-            "cleanup": [ "/bin", "/etc", "/libexec" ],
-            "config-opts": [ "--disable-miner-apps", "--disable-static",
-                             "--disable-tracker-extract", "--disable-tracker-needle",
-                             "--disable-tracker-preferences", "--disable-artwork",
-                             "--disable-tracker-writeback", "--disable-miner-user-guides",
-                             "--with-bash-completion-dir=no" ],
-            "sources": [
+            "name" : "tracker",
+            "cleanup" : [
+                "/bin",
+                "/etc",
+                "/libexec"
+            ],
+            "config-opts" : [
+                "--disable-miner-apps",
+                "--disable-static",
+                "--disable-tracker-extract",
+                "--disable-tracker-needle",
+                "--disable-tracker-preferences",
+                "--disable-artwork",
+                "--disable-tracker-writeback",
+                "--disable-miner-user-guides",
+                "--with-bash-completion-dir=no"
+            ],
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://git.gnome.org/browse/tracker"
+                    "type" : "git",
+                    "url" : "https://git.gnome.org/browse/tracker"
                 }
             ]
         },
         {
-            "name": "gnome-desktop",
-            "config-opts": ["--disable-debug-tools", "--disable-udev"],
-            "sources": [
+            "name" : "gnome-desktop",
+            "config-opts" : [
+                "--disable-debug-tools",
+                "--disable-udev"
+            ],
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://git.gnome.org/browse/gnome-desktop"
+                    "type" : "git",
+                    "url" : "https://git.gnome.org/browse/gnome-desktop"
                 }
             ]
         },
         {
-            "name": "gnome-autoar",
-            "sources": [
+            "name" : "gnome-autoar",
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://git.gnome.org/browse/gnome-autoar"
+                    "type" : "git",
+                    "url" : "https://git.gnome.org/browse/gnome-autoar"
                 }
             ]
         },
         {
-            "buildsystem": "meson",
-            "builddir": true,
-            "name": "nautilus",
-            "config-opts": [
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "name" : "nautilus",
+            "config-opts" : [
                 "--libdir=/app/lib",
                 "-Dprofile=development"
             ],
-            "sources": [
+            "sources" : [
                 {
-                    "type": "git",
-                    "url": "https://gitlab.gnome.org/GNOME/nautilus.git"
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/nautilus.git"
                 }
             ]
         }
-    ]
+    ],
+    "build-options" : {
+        "env" : {
+        }
+    }
 }

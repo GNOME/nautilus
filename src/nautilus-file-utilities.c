@@ -537,7 +537,7 @@ nautilus_is_search_directory (GFile *dir)
     g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (dir);
-    return eel_uri_is_search (uri);
+    return uri_is_search (uri);
 }
 
 gboolean
@@ -1489,4 +1489,10 @@ gboolean
 uri_is_trash (const char *uri)
 {
   return g_str_has_prefix (uri, "trash:");
+}
+
+gboolean
+uri_is_search (const char *uri)
+{
+    return g_str_has_prefix (uri, EEL_SEARCH_URI);
 }
