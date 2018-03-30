@@ -134,3 +134,5 @@ gboolean uri_is_search (const char *uri);
 gboolean uri_is_starred (const char *uri);
 
 gboolean uri_is_recent (const char *uri);
+
+gboolean uri_is_other_locations (const char *uri);
