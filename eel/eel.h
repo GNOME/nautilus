@@ -20,8 +20,7 @@
    Authors: Maciej Stachowiak <mjs@eazel.com>
 */
 
-#ifndef EEL_H
-#define EEL_H
+#pragma once
 
 #include <eel/eel-art-extensions.h>
 #include <eel/eel-glib-extensions.h>
@@ -31,5 +30,3 @@
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-
-#endif /* EEL_H */

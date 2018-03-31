@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_VIEW_ITEM_MODEL_H
-#define NAUTILUS_VIEW_ITEM_MODEL_H
+#pragma once
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -31,6 +30,3 @@ void nautilus_view_item_model_set_item_ui (NautilusViewItemModel *self,
 GtkWidget * nautilus_view_item_model_get_item_ui (NautilusViewItemModel *self);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_VIEW_ITEM_MODEL_H */
-

@@ -17,8 +17,7 @@
  *
  */
 
-#ifndef NAUTILUS_SEARCH_HIT_H
-#define NAUTILUS_SEARCH_HIT_H
+#pragma once
 
 #include <glib-object.h>
 #include "nautilus-query.h"
@@ -47,5 +46,3 @@ gdouble             nautilus_search_hit_get_relevance         (NautilusSearchHit
 const gchar *       nautilus_search_hit_get_fts_snippet       (NautilusSearchHit *hit);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_SEARCH_HIT_H */

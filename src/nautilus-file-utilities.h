@@ -20,24 +20,21 @@
    Authors: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef NAUTILUS_FILE_UTILITIES_H
-#define NAUTILUS_FILE_UTILITIES_H
+#pragma once
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#define NAUTILUS_DESKTOP_ID "org.gnome.Nautilus.desktop"
+#include <config.h>
+
+#define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"
 
 /* These functions all return something something that needs to be
  * freed with g_free, is not NULL, and is guaranteed to exist.
  */
 char *   nautilus_get_user_directory                 (void);
-GFile *  nautilus_get_desktop_location               (void);
 char *   nautilus_get_home_directory_uri             (void);
-gboolean nautilus_is_desktop_directory_file          (GFile *dir,
-						      const char *filename);
 gboolean nautilus_is_root_directory                  (GFile *dir);
-gboolean nautilus_is_desktop_directory               (GFile *dir);
 gboolean nautilus_is_home_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
@@ -125,5 +122,3 @@ gboolean nautilus_file_can_rename_files (GList *files);
 GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gchar * nautilus_uri_to_native_uri (const gchar *uri);
-
-#endif /* NAUTILUS_FILE_UTILITIES_H */

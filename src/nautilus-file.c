@@ -1593,31 +1593,6 @@ nautilus_file_poll_for_media (NautilusFile *file)
     }
 }
 
-/**
- * nautilus_file_is_desktop_directory:
- *
- * Check whether this file is the desktop directory.
- *
- * @file: The file to check.
- *
- * Return value: TRUE if this is the physical desktop directory.
- */
-gboolean
-nautilus_file_is_desktop_directory (NautilusFile *file)
-{
-    g_autoptr (GFile) location = NULL;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    location = nautilus_directory_get_location (file->details->directory);
-    if (location == NULL)
-    {
-        return FALSE;
-    }
-
-    return nautilus_is_desktop_directory_file (location, eel_ref_str_peek (file->details->name));
-}
-
 static gboolean
 is_desktop_file (NautilusFile *file)
 {
@@ -8977,7 +8952,7 @@ get_attributes_for_default_sort_type (NautilusFile *file,
                                       gboolean     *is_trash,
                                       gboolean     *is_search)
 {
-    gboolean is_recent_dir, is_download_dir, is_desktop_dir, is_trash_dir, is_search_dir, retval;
+    gboolean is_recent_dir, is_download_dir, is_trash_dir, is_search_dir, retval;
 
     *is_recent = FALSE;
     *is_download = FALSE;
@@ -8992,14 +8967,12 @@ get_attributes_for_default_sort_type (NautilusFile *file,
             nautilus_file_is_in_recent (file);
         is_download_dir =
             nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DOWNLOAD);
-        is_desktop_dir =
-            nautilus_file_is_user_special_directory (file, G_USER_DIRECTORY_DESKTOP);
         is_trash_dir =
             nautilus_file_is_in_trash (file);
         is_search_dir =
             nautilus_file_is_in_search (file);
 
-        if (is_download_dir && !is_desktop_dir)
+        if (is_download_dir)
         {
             *is_download = TRUE;
             retval = TRUE;
@@ -9286,20 +9259,6 @@ mime_type_data_changed_callback (GObject  *signaller,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
-static void
-icon_theme_changed_callback (GtkIconTheme *icon_theme,
-                             gpointer      user_data)
-{
-    /* Clear all pixmap caches as the icon => pixmap lookup changed */
-    nautilus_icon_info_clear_caches ();
-
-    /* Tell the world that icons might have changed. We could invent a narrower-scope
-     * signal to mean only "thumbnails might have changed" if this ends up being slow
-     * for some reason.
-     */
-    emit_change_signals_for_all_files_in_all_directories ();
-}
-
 static gboolean
 real_get_item_count (NautilusFile *file,
                      guint        *count,
@@ -9410,8 +9369,6 @@ real_set_metadata_as_list (NautilusFile  *file,
 static void
 nautilus_file_class_init (NautilusFileClass *class)
 {
-    GtkIconTheme *icon_theme;
-
     nautilus_file_info_getter = nautilus_file_get_internal;
 
     attribute_name_q = g_quark_from_static_string ("name");
@@ -9486,12 +9443,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                               "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
                               G_CALLBACK (show_thumbnails_changed_callback),
                               NULL);
-
-    icon_theme = gtk_icon_theme_get_default ();
-    g_signal_connect_object (icon_theme,
-                             "changed",
-                             G_CALLBACK (icon_theme_changed_callback),
-                             NULL, 0);
 
     g_signal_connect (nautilus_signaller_get_current (),
                       "mime-data-changed",

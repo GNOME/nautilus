@@ -32,8 +32,7 @@
  *          Raph Levien <raph@gimp.org>
  */
 
-#ifndef EEL_CANVAS_H
-#define EEL_CANVAS_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gtk/gtk-a11y.h>
@@ -496,5 +495,3 @@ struct _EelCanvasItemAccessibleClass
 };
 
 G_END_DECLS
-
-#endif

@@ -22,8 +22,7 @@
  *          Pavel Cisler <pavel@eazel.com>
  */
 
-#ifndef NAUTILUS_FILES_VIEW_H
-#define NAUTILUS_FILES_VIEW_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -281,8 +280,6 @@ gboolean            nautilus_files_view_should_show_file                 (Nautil
                                                                           NautilusFile      *file);
 gboolean            nautilus_files_view_should_sort_directories_first    (NautilusFilesView *view);
 void                nautilus_files_view_ignore_hidden_file_preferences   (NautilusFilesView *view);
-gboolean            nautilus_files_view_handle_scroll_event              (NautilusFilesView *view,
-                                                                          GdkEventScroll    *event);
 
 void                nautilus_files_view_add_subdirectory                (NautilusFilesView *view,
                                                                          NautilusDirectory *directory);
@@ -331,5 +328,3 @@ GActionGroup *    nautilus_files_view_get_action_group           (NautilusFilesV
 GtkWidget*        nautilus_files_view_get_content_widget         (NautilusFilesView      *view);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_FILES_VIEW_H */

@@ -401,9 +401,6 @@ icon_set_selected (NautilusCanvasContainer *container,
                    NautilusCanvasIcon      *icon,
                    gboolean                 select)
 {
-    g_assert (select == FALSE || select == TRUE);
-    g_assert (icon->is_selected == FALSE || icon->is_selected == TRUE);
-
     if (select == icon->is_selected)
     {
         return FALSE;
@@ -1178,7 +1175,7 @@ lay_down_one_line (NautilusCanvasContainer *container,
 {
     GList *p;
     NautilusCanvasIcon *icon;
-    double x, y_offset;
+    double x, ltr_icon_x, icon_x, y_offset;
     IconPositions *position;
     int i;
     gboolean is_rtl;
@@ -1193,15 +1190,14 @@ lay_down_one_line (NautilusCanvasContainer *container,
         icon = p->data;
 
         position = &g_array_index (positions, IconPositions, i++);
+        ltr_icon_x = x + position->x_offset;
+        icon_x = is_rtl ? get_mirror_x_position (container, icon, ltr_icon_x) : ltr_icon_x;
         y_offset = position->y_offset;
 
-        icon_set_position
-            (icon,
-            is_rtl ? get_mirror_x_position (container, icon, x + position->x_offset) : x + position->x_offset,
-            y + y_offset);
+        icon_set_position (icon, icon_x, y + y_offset);
         nautilus_canvas_item_set_entire_text (icon->item, whole_text);
 
-        icon->saved_ltr_x = is_rtl ? get_mirror_x_position (container, icon, icon->x) : icon->x;
+        icon->saved_ltr_x = is_rtl ? ltr_icon_x : icon->x;
 
         x += position->width;
     }
@@ -1215,6 +1211,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     GList *p, *line_start;
     NautilusCanvasIcon *icon;
     double canvas_width, y;
+    double available_width;
     GArray *positions;
     IconPositions *position;
     EelDRect bounds;
@@ -1222,8 +1219,10 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
     double max_height_above, max_height_below;
     double height_above, height_below;
     double line_width;
+    double min_grid_width;
     double grid_width;
-    int icon_width, icon_size;
+    double num_columns;
+    double icon_width, icon_size;
     int i;
     GtkAllocation allocation;
 
@@ -1242,9 +1241,59 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
 
     /* Lay out icons a line at a time. */
     canvas_width = CANVAS_WIDTH (container, allocation);
-
-    grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
+    min_grid_width = nautilus_canvas_container_get_grid_size_for_zoom_level (container->details->zoom_level);
     icon_size = nautilus_canvas_container_get_icon_size_for_zoom_level (container->details->zoom_level);
+
+    /* Subtracting 1.0 adds some room for error to prevent the jitter due to
+     * the code not being able to decide how many columns should be there, as
+     * "double" is not perfectly precise and increasing the size of the the
+     * window by one pixel could well make it so that the space taken by the
+     * icons and the padding is actually greater than the canvas with by like
+     * 0.01, causing an entire column to be dropped unnecessarily. This fix is
+     * adapted from Nemo.
+     */
+    available_width = MAX (1.0, canvas_width - ICON_PAD_LEFT - ICON_PAD_RIGHT - 1.0);
+    num_columns = MAX (1.0, floor (available_width / min_grid_width));
+
+    if (g_list_nth (icons, num_columns) != NULL)
+    {
+        grid_width = available_width / num_columns;
+    }
+    else
+    {
+        /* It does not look good when the icons jump around when new columns are
+         * added or removed to the grid while there is only one line. It does
+         * not look good either when the icons do not move at all when the
+         * window is resized.
+         *
+         * To do this, we first compute the maximum extra fraction we can add to
+         * the grid width. Adding this much, however, would simply distribute
+         * the icons evenly, which looks bad when there's a wide window with
+         * only a few icons.
+         *
+         * To fix this, we need to apply a function to the fraction which never
+         * makes it larger and instead makes its growth slow down quickly but
+         * smoothly as the window gets wider and wider. Here's the function used
+         * by this code:
+         *
+         * f(x) = ∜(x + 1) - 1
+         *
+         * The +1 and -1 are there to skip the 0 to 1 part of ∜ where it makes
+         * the number larger.
+         */
+
+        double num_icons = MAX (1.0, g_list_length (icons));
+
+        double used_width = num_icons * min_grid_width;
+        double unused_width = available_width - used_width;
+
+        double max_extra_fraction = (unused_width / num_icons) / min_grid_width;
+        double extra_fraction = pow(max_extra_fraction + 1.0, 1.0 / 4.0) - 1.0;
+
+        grid_width = min_grid_width * (1 + extra_fraction);
+    }
+
+    grid_width = MAX (min_grid_width, grid_width);
 
     line_width = 0;
     line_start = icons;

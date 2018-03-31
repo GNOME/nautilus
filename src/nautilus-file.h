@@ -19,8 +19,7 @@
    Author: Darin Adler <darin@bentspoon.com>
 */
 
-#ifndef NAUTILUS_FILE_H
-#define NAUTILUS_FILE_H
+#pragma once
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
@@ -220,7 +219,6 @@ gboolean                nautilus_file_is_remote                         (Nautilu
 gboolean                nautilus_file_is_other_locations                (NautilusFile                   *file);
 gboolean                nautilus_file_is_starred_location              (NautilusFile                   *file);
 gboolean		nautilus_file_is_home				(NautilusFile                   *file);
-gboolean                nautilus_file_is_desktop_directory              (NautilusFile                   *file);
 GError *                nautilus_file_get_file_info_error               (NautilusFile                   *file);
 gboolean                nautilus_file_get_directory_item_count          (NautilusFile                   *file,
 									 guint                          *count,
@@ -616,5 +614,3 @@ typedef struct {
 
 	void                 (* poll_for_media)          (NautilusFile                   *file);
 } NautilusFileClass;
-
-#endif /* NAUTILUS_FILE_H */

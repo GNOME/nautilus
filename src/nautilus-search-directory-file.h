@@ -20,8 +20,7 @@
    Author: Alexander Larsson <alexl@redhat.com>
 */
 
-#ifndef NAUTILUS_SEARCH_DIRECTORY_FILE_H
-#define NAUTILUS_SEARCH_DIRECTORY_FILE_H
+#pragma once
 
 #include "nautilus-file.h"
 
@@ -50,5 +49,3 @@ typedef struct {
 
 GType   nautilus_search_directory_file_get_type (void);
 void    nautilus_search_directory_file_update_display_name (NautilusSearchDirectoryFile *search_file);
-
-#endif /* NAUTILUS_SEARCH_DIRECTORY_FILE_H */

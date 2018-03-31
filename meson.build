@@ -79,7 +79,7 @@ glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
-gtk = dependency('gtk+-3.0', version: '>= 3.22.26')
+gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -92,12 +92,29 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 # Configuration
 conf = configuration_data()
 
-conf.set_quoted('VERSION', meson.project_version())
+if get_option('profile') == 'development'
+  profile = 'Devel'
+  name_suffix = ' (Development Snapshot)'
+elif get_option('profile') == 'stable-flatpak'
+  profile = 'StableFlatpak'
+  version_array = meson.project_version().split('.')
+  name_suffix = ' (@0@.@1@ Flatpak)'.format(version_array[0], version_array[1])
+else
+  profile = ''
+  name_suffix = ''
+endif
+
+application_id = 'org.gnome.Nautilus@0@'.format(profile)
+
+conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
 conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
+conf.set_quoted('APPLICATION_ID', application_id)
+conf.set_quoted('PROFILE', profile)
+conf.set_quoted('NAME_SUFFIX', name_suffix)
 
 if get_option('packagekit')
   conf.set10('ENABLE_PACKAGEKIT', true)
@@ -109,7 +126,17 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
-configure_file(output: 'config.h', configuration: conf)
+config_h = declare_dependency(
+  sources: vcs_tag(
+    command: ['git', 'rev-parse', '--short', 'HEAD'],
+    fallback: get_option('profile') != 'default'? 'devel' : 'stable',
+    input: configure_file(
+      output: 'config.h.in',
+      configuration: conf
+    ),
+    output: 'config.h'
+  )
+)
 #
 
 nautilus_include_dirs = include_directories(

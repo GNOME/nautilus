@@ -1,5 +1,4 @@
-#ifndef NAUTILUS_ICON_INFO_H
-#define NAUTILUS_ICON_INFO_H
+#pragma once
 
 #include <glib-object.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
@@ -31,8 +30,7 @@ typedef enum {
 /* Nominal icon sizes for each Nautilus zoom level.
  * This scheme assumes that icons are designed to
  * fit in a square space, though each image needn't
- * be square. Since individual icons can be stretched,
- * each icon is not constrained to this nominal size.
+ * be square.
  */
 #define NAUTILUS_LIST_ICON_SIZE_SMALL		16
 #define NAUTILUS_LIST_ICON_SIZE_STANDARD	32
@@ -76,6 +74,3 @@ void                  nautilus_icon_info_clear_caches                 (void);
 gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_ICON_INFO_H */
-

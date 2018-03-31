@@ -19,8 +19,7 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef NAUTILUS_CANVAS_ITEM_H
-#define NAUTILUS_CANVAS_ITEM_H
+#pragma once
 
 #include <eel/eel-canvas.h>
 #include <eel/eel-art-extensions.h>
@@ -69,16 +68,10 @@ void        nautilus_canvas_item_set_image                (NautilusCanvasItem   
 cairo_surface_t* nautilus_canvas_item_get_drag_surface    (NautilusCanvasItem       *item);
 void        nautilus_canvas_item_set_emblems              (NautilusCanvasItem       *item,
 							   GList                    *emblem_pixbufs);
-void        nautilus_canvas_item_set_show_stretch_handles (NautilusCanvasItem       *item,
-							   gboolean                  show_stretch_handles);
 
 /* geometry and hit testing */
 gboolean    nautilus_canvas_item_hit_test_rectangle       (NautilusCanvasItem       *item,
 							   EelIRect                  canvas_rect);
-gboolean    nautilus_canvas_item_hit_test_stretch_handles (NautilusCanvasItem       *item,
-							   gdouble                   world_x,
-							   gdouble                   world_y,
-							   GtkCornerType            *corner);
 void        nautilus_canvas_item_invalidate_label         (NautilusCanvasItem       *item);
 void        nautilus_canvas_item_invalidate_label_size    (NautilusCanvasItem       *item);
 EelDRect    nautilus_canvas_item_get_icon_rectangle     (const NautilusCanvasItem *item);
@@ -95,5 +88,3 @@ void        nautilus_canvas_item_set_entire_text          (NautilusCanvasItem   
 							   gboolean                  entire_text);
 
 G_END_DECLS
-
-#endif /* NAUTILUS_CANVAS_ITEM_H */

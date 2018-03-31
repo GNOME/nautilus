@@ -38,6 +38,7 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-list-view.h"
 #include "nautilus-other-locations-window-slot.h"
+#include "nautilus-tag-manager.h"
 
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
@@ -109,6 +110,7 @@ typedef struct
     int side_pane_width;
     GtkWidget *sidebar;            /* container for the GtkPlacesSidebar */
     GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
+    NautilusTagManager *starred_manager; /* For the starred sidbear item */
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
 
@@ -1496,6 +1498,19 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 }
 
 static void
+on_starred_changed (NautilusWindow *self)
+{
+    g_autoptr (GList) starred_files = NULL;
+    NautilusWindowPrivate *priv;
+
+    priv = nautilus_window_get_instance_private (self);
+
+    starred_files = nautilus_tag_manager_get_starred_files (priv->starred_manager);
+    gtk_places_sidebar_set_show_starred_location (GTK_PLACES_SIDEBAR (priv->places_sidebar),
+                                                  starred_files != NULL);
+}
+
+static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
     NautilusWindowPrivate *priv;
@@ -1527,6 +1542,12 @@ nautilus_window_set_up_sidebar (NautilusWindow *window)
                       G_CALLBACK (places_sidebar_populate_popup_cb), window);
     g_signal_connect (priv->places_sidebar, "unmount",
                       G_CALLBACK (places_sidebar_unmount_operation_cb), window);
+
+
+    priv->starred_manager = nautilus_tag_manager_get ();
+    g_signal_connect_swapped (priv->starred_manager, "starred-changed",
+                              G_CALLBACK (on_starred_changed), window);
+    on_starred_changed (window);
 }
 
 void
@@ -2556,6 +2577,9 @@ nautilus_window_finalize (GObject *object)
     /* nautilus_window_close() should have run */
     g_assert (priv->slots == NULL);
 
+    g_signal_handlers_disconnect_by_data (priv->starred_manager, window);
+    g_clear_object (&priv->starred_manager);
+
     G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
 
@@ -2902,6 +2926,7 @@ real_window_close (NautilusWindow *window)
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
     nautilus_window_save_geometry (window);
+    nautilus_window_set_active_slot (window, NULL);
 
     gtk_widget_destroy (GTK_WIDGET (window));
 }
@@ -2987,6 +3012,7 @@ NautilusWindow *
 nautilus_window_new (GdkScreen *screen)
 {
     return g_object_new (NAUTILUS_TYPE_WINDOW,
+                         "icon-name", APPLICATION_ID,
                          "screen", screen,
                          NULL);
 }
@@ -3071,12 +3097,19 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
         "Sun Microsystems",
         NULL
     };
+    g_autofree gchar *program_name = NULL;
+
+    /* “Files” is the generic application name and the suffix is
+     * an arbitrary and deliberately unlocalized string only shown
+     * in development builds.
+     */
+    program_name = g_strconcat (_("Files"), NAME_SUFFIX, NULL);
 
     gtk_show_about_dialog (window ? GTK_WINDOW (window) : NULL,
-                           "program-name", _("Files"),
+                           "program-name", program_name,
                            "version", VERSION,
-                           "comments", _("Access and organize your files."),
-                           "copyright", "Copyright © 1999–2016 The Files Authors",
+                           "comments", _("Access and organize your files"),
+                           "copyright", "© 1999–2018 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
                            "artists", artists,
                            "authors", authors,
@@ -3086,7 +3119,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                             * box to give credit to the translator(s).
                             */
                            "translator-credits", _("translator-credits"),
-                           "logo-icon-name", "org.gnome.Nautilus",
+                           "logo-icon-name", APPLICATION_ID,
                            NULL);
 }
 

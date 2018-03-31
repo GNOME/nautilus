@@ -21,8 +21,7 @@
    Authors: Ramiro Estrugo <ramiro@eazel.com>
 */
 
-#ifndef NAUTILUS_GLOBAL_PREFERENCES_H
-#define NAUTILUS_GLOBAL_PREFERENCES_H
+#pragma once
 
 #include "nautilus-global-preferences.h"
 #include <gio/gio.h>
@@ -170,5 +169,3 @@ extern GSettings *gnome_background_preferences;
 extern GSettings *gnome_interface_preferences;
 
 G_END_DECLS
-
-#endif /* NAUTILUS_GLOBAL_PREFERENCES_H */

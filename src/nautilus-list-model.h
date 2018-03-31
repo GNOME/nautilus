@@ -20,14 +20,13 @@
    Authors: Anders Carlsson <andersca@gnu.org>
 */
 
+#pragma once
+
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include "nautilus-file.h"
 #include "nautilus-directory.h"
 #include <nautilus-extension.h>
-
-#ifndef NAUTILUS_LIST_MODEL_H
-#define NAUTILUS_LIST_MODEL_H
 
 #define NAUTILUS_TYPE_LIST_MODEL nautilus_list_model_get_type()
 G_DECLARE_DERIVABLE_TYPE (NautilusListModel, nautilus_list_model, NAUTILUS, LIST_MODEL, GObject);
@@ -112,5 +111,3 @@ void              nautilus_list_model_subdirectory_done_loading (NautilusListMod
 
 void              nautilus_list_model_set_highlight_for_files (NautilusListModel *model,
 							       GList *files);
-						   
-#endif /* NAUTILUS_LIST_MODEL_H */

@@ -1,7 +1,7 @@
 {
-    "app-id": "org.gnome.Nautilus",
+    "app-id": "org.gnome.NautilusDevel",
     "runtime": "org.gnome.Platform",
-    "runtime-version": "3.28",
+    "runtime-version": "master",
     "sdk": "org.gnome.Sdk",
     "command": "nautilus",
     "tags": ["devel", "development", "nightly"],
@@ -15,7 +15,6 @@
         "--talk-name=org.gtk.vfs", "--talk-name=org.gtk.vfs.*",
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
-    "cleanup": [ "/include", "/share/bash-completion" ],
     "modules": [
         {
             "name": "exiv2",
@@ -83,7 +82,8 @@
             "builddir": true,
             "name": "nautilus",
             "config-opts": [
-                "--libdir=/app/lib"
+                "--libdir=/app/lib",
+                "-Dprofile=development"
             ],
             "sources": [
                 {

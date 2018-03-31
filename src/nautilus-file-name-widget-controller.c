@@ -63,6 +63,15 @@ nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetControl
     return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_new_name (self);
 }
 
+void
+nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *self,
+                                                               NautilusDirectory                *directory)
+{
+    g_assert (NAUTILUS_IS_DIRECTORY (directory));
+
+    g_object_set (self, "containing-directory", directory, NULL);
+}
+
 static gboolean
 nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
                                                     gchar                             *name,
@@ -159,6 +168,8 @@ file_name_widget_controller_process_new_name (NautilusFileNameWidgetController *
     gchar *error_message = NULL;
     NautilusFile *existing_file;
     priv = nautilus_file_name_widget_controller_get_instance_private (controller);
+
+    g_return_if_fail (NAUTILUS_IS_DIRECTORY (priv->containing_directory));
 
     name = nautilus_file_name_widget_controller_get_new_name (controller);
     *valid_name = nautilus_file_name_widget_controller_name_is_valid (controller,
@@ -289,6 +300,11 @@ file_name_widget_controller_on_activate (gpointer user_data)
 static void
 nautilus_file_name_widget_controller_init (NautilusFileNameWidgetController *self)
 {
+    NautilusFileNameWidgetControllerPrivate *priv;
+
+    priv = nautilus_file_name_widget_controller_get_instance_private (self);
+
+    priv->containing_directory = NULL;
 }
 
 static void
@@ -345,8 +361,9 @@ nautilus_file_name_widget_controller_set_property (GObject      *object,
 
         case PROP_CONTAINING_DIRECTORY:
         {
-            priv->containing_directory = NAUTILUS_DIRECTORY (g_value_get_object (value));
-            nautilus_directory_ref (priv->containing_directory);
+            g_clear_object (&priv->containing_directory);
+
+            priv->containing_directory = NAUTILUS_DIRECTORY (g_value_dup_object (value));
         }
         break;
 
@@ -460,6 +477,5 @@ nautilus_file_name_widget_controller_class_init (NautilusFileNameWidgetControlle
                              "Containing Directory",
                              "The directory used to check for duplicate names",
                              NAUTILUS_TYPE_DIRECTORY,
-                             G_PARAM_WRITABLE |
-                             G_PARAM_CONSTRUCT_ONLY));
+                             G_PARAM_WRITABLE));
 }

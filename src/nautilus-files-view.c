@@ -269,6 +269,9 @@ typedef struct
 
     GCancellable *starred_cancellable;
     NautilusTagManager *tag_manager;
+
+    gint name_accepted_handler_id;
+    gint cancelled_handler_id;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -1885,6 +1888,29 @@ nautilus_files_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 }
 
 static void
+disconnect_rename_controller_signals (NautilusFilesView *self)
+{
+    NautilusFilesViewPrivate *priv;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (self));
+
+    priv = nautilus_files_view_get_instance_private (self);
+
+    if (priv->name_accepted_handler_id != 0)
+    {
+        g_signal_handler_disconnect (priv->rename_file_controller, priv->name_accepted_handler_id);
+        priv->name_accepted_handler_id = 0;
+    }
+
+    if (priv->cancelled_handler_id != 0)
+    {
+        g_signal_handler_disconnect (priv->rename_file_controller,
+                                     priv->cancelled_handler_id);
+        priv->cancelled_handler_id = 0;
+    }
+}
+
+static void
 rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetController *controller,
                                                  gpointer                          user_data)
 {
@@ -1908,7 +1934,7 @@ rename_file_popover_controller_on_name_accepted (NautilusFileNameWidgetControlle
 
     nautilus_rename_file (target_file, name, NULL, NULL);
 
-    g_clear_object (&priv->rename_file_controller);
+    disconnect_rename_controller_signals (view);
 }
 
 static void
@@ -1916,12 +1942,10 @@ rename_file_popover_controller_on_cancelled (NautilusFileNameWidgetController *c
                                              gpointer                          user_data)
 {
     NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
 
-    g_clear_object (&priv->rename_file_controller);
+    disconnect_rename_controller_signals (view);
 }
 
 static void
@@ -1933,11 +1957,6 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->rename_file_controller != NULL)
-    {
-        return;
-    }
-
     /* Make sure the whole item is visible. The selection is a single item, the
      * one to rename with the popover, so we can use reveal_selection() for this.
      */
@@ -1945,19 +1964,19 @@ nautilus_files_view_rename_file_popover_new (NautilusFilesView *view,
 
     pointing_to = nautilus_files_view_compute_rename_popover_pointing_to (view);
 
-    priv->rename_file_controller =
-        nautilus_rename_file_popover_controller_new (target_file,
-                                                     pointing_to,
-                                                     GTK_WIDGET (view));
+    nautilus_rename_file_popover_controller_show_for_file (priv->rename_file_controller,
+                                                           target_file,
+                                                           pointing_to,
+                                                           GTK_WIDGET (view));
 
-    g_signal_connect (priv->rename_file_controller,
-                      "name-accepted",
-                      (GCallback) rename_file_popover_controller_on_name_accepted,
-                      view);
-    g_signal_connect (priv->rename_file_controller,
-                      "cancelled",
-                      (GCallback) rename_file_popover_controller_on_cancelled,
-                      view);
+    priv->name_accepted_handler_id = g_signal_connect (priv->rename_file_controller,
+                                                       "name-accepted",
+                                                       G_CALLBACK (rename_file_popover_controller_on_name_accepted),
+                                                       view);
+    priv->cancelled_handler_id = g_signal_connect (priv->rename_file_controller,
+                                                   "cancelled",
+                                                   G_CALLBACK (rename_file_popover_controller_on_cancelled),
+                                                   view);
 }
 
 static void
@@ -4618,35 +4637,23 @@ nautilus_files_view_get_content_widget (NautilusFilesView *view)
     return priv->scrolled_window;
 }
 
-/* desktop_or_home_dir_in_selection
+/* home_dir_in_selection()
  *
- * Return TRUE if either the desktop or the home directory is in the selection.
+ * Return TRUE if the home directory is in the selection.
  */
 
 static gboolean
-desktop_or_home_dir_in_selection (GList *selection)
+home_dir_in_selection (GList *selection)
 {
-    gboolean saw_desktop_or_home_dir;
-    GList *node;
-    NautilusFile *file;
-
-    saw_desktop_or_home_dir = FALSE;
-
-    for (node = selection; node != NULL; node = node->next)
+    for (GList *node = selection; node != NULL; node = node->next)
     {
-        file = NAUTILUS_FILE (node->data);
-
-        saw_desktop_or_home_dir =
-            nautilus_file_is_home (file)
-            || nautilus_file_is_desktop_directory (file);
-
-        if (saw_desktop_or_home_dir)
+        if (nautilus_file_is_home (NAUTILUS_FILE (node->data)))
         {
-            break;
+            return TRUE;
         }
     }
 
-    return saw_desktop_or_home_dir;
+    return FALSE;
 }
 
 static void
@@ -7236,7 +7243,7 @@ real_update_actions_state (NautilusFilesView *view)
     GList *l;
     gint selection_count;
     gboolean zoom_level_is_default;
-    gboolean selection_contains_desktop_or_home_dir;
+    gboolean selection_contains_home_dir;
     gboolean selection_contains_recent;
     gboolean selection_contains_search;
     gboolean selection_contains_starred;
@@ -7276,7 +7283,7 @@ real_update_actions_state (NautilusFilesView *view)
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     selection_count = g_list_length (selection);
-    selection_contains_desktop_or_home_dir = desktop_or_home_dir_in_selection (selection);
+    selection_contains_home_dir = home_dir_in_selection (selection);
     selection_contains_recent = showing_recent_directory (view);
     selection_contains_starred = showing_starred_directory (view);
     selection_contains_search = nautilus_view_is_searching (NAUTILUS_VIEW (view));
@@ -7291,11 +7298,11 @@ real_update_actions_state (NautilusFilesView *view)
     can_delete_files =
         can_delete_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_desktop_or_home_dir;
+        !selection_contains_home_dir;
     can_trash_files =
         can_trash_all (selection) &&
         selection_count != 0 &&
-        !selection_contains_desktop_or_home_dir;
+        !selection_contains_home_dir;
     can_copy_files = selection_count != 0;
     can_move_files = can_delete_files && !selection_contains_recent &&
                      !selection_contains_starred;
@@ -8926,13 +8933,16 @@ nautilus_files_view_set_property (GObject      *object,
     }
 }
 
-
-gboolean
-nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
-                                         GdkEventScroll    *event)
+/* handle Ctrl+Scroll, which will cause a zoom-in/out */
+static gboolean
+nautilus_files_view_scroll_event (GtkWidget      *widget,
+                                  GdkEventScroll *event)
 {
+    NautilusFilesView *directory_view;
     static gdouble total_delta_y = 0;
     gdouble delta_x, delta_y;
+
+    directory_view = NAUTILUS_FILES_VIEW (widget);
 
     if (event->state & GDK_CONTROL_MASK)
     {
@@ -8990,22 +9000,6 @@ nautilus_files_view_handle_scroll_event (NautilusFilesView *directory_view,
             default:
                 g_assert_not_reached ();
         }
-    }
-
-    return FALSE;
-}
-
-/* handle Shift+Scroll, which will cause a zoom-in/out */
-static gboolean
-nautilus_files_view_scroll_event (GtkWidget      *widget,
-                                  GdkEventScroll *event)
-{
-    NautilusFilesView *directory_view;
-
-    directory_view = NAUTILUS_FILES_VIEW (widget);
-    if (nautilus_files_view_handle_scroll_event (directory_view, event))
-    {
-        return TRUE;
     }
 
     return FALSE;
@@ -9673,6 +9667,8 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();
+
+    priv->rename_file_controller = nautilus_rename_file_popover_controller_new ();
 
     nautilus_profile_end (NULL);
 }

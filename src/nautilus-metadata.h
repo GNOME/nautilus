@@ -19,8 +19,7 @@
    Author: John Sullivan <sullivan@eazel.com>
 */
 
-#ifndef NAUTILUS_METADATA_H
-#define NAUTILUS_METADATA_H
+#pragma once
 
 /* Keys for getting/setting Nautilus metadata. All metadata used in Nautilus
  * should define its key here, so we can keep track of the whole set easily.
@@ -46,5 +45,3 @@
 #define NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED				"trusted"
 
 guint nautilus_metadata_get_id (const char *metadata);
-
-#endif /* NAUTILUS_METADATA_H */
