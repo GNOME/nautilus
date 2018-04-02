@@ -25,14 +25,14 @@
 #include <gtk/gtk.h>
 
 
-void nautilus_gmenu_add_item_in_submodel 	   (GMenu             *menu,
-						    GMenuItem         *item,
-						    const gchar       *section_name,
-						    gboolean           prepend);
+void nautilus_gmenu_add_item_in_submodel     (GMenu             *menu,
+                GMenuItem         *item,
+                const gchar       *section_name,
+                gboolean           prepend);
 void nautilus_gmenu_merge                          (GMenu             *original,
-						    GMenu             *gmenu_to_merge,
-						    const gchar       *submodel_name,
-						    gboolean           prepend);
+                GMenu             *gmenu_to_merge,
+                const gchar       *submodel_name,
+                gboolean           prepend);
 void nautilus_pop_up_context_menu_at_pointer       (GtkWidget         *parent,
                                                     GMenu             *menu,
                                                     const GdkEvent    *event);
@@ -46,6 +46,7 @@ gboolean   nautilus_file_date_in_between           (guint64           file_unix_
 gchar*     get_text_for_date_range                 (GPtrArray         *date_range,
                                                     gboolean           prefix_with_since);
 
-GtkDialog *    show_error_dialog                   (const gchar *primary_text,
-                                                    const gchar *secondary_text,
-                                                    GtkWindow   *parent);
+GtkDialog *    show_custom_dialog                   (const gchar *primary_text,
+                                                     const gchar *secondary_text,
+                                                     GtkWindow   *parent,
+                                                     GtkMessageType type);
