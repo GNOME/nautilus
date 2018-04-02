@@ -336,9 +336,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     {
         g_free (desktop_file_path);
         g_object_unref (desktop_file);
-        show_error_dialog(_("Sorry, but you cannot execute commands from a remote site."),
-                          _("This is disabled due to security considerations."),
-                          parent_window);
+        show_dialog (_("Sorry, but you cannot execute commands from a remote site."),
+                     _("This is disabled due to security considerations."),
+                     parent_window,
+                     GTK_MESSAGE_ERROR);
 
         return;
     }
@@ -348,9 +349,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     g_free (desktop_file_path);
     if (app_info == NULL)
     {
-        show_error_dialog(_("There was an error launching the application."),
-                          NULL,
-                          parent_window);
+        show_dialog (_("There was an error launching the application."),
+                     NULL,
+                     parent_window,
+                     GTK_MESSAGE_ERROR);
         return;
     }
 
@@ -376,10 +378,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
         if (count == 0)
         {
             /* all files are non-local */
-            show_error_dialog(_("This drop target only supports local files."),
-                              _("To open non-local files copy them to a local folder and then"
-                              " drop them again."),
-                              parent_window);
+            show_dialog (_("This drop target only supports local files."),
+                         _("To open non-local files copy them to a local folder and then drop them again."),
+                         parent_window,
+                         GTK_MESSAGE_ERROR);
 
             g_list_free_full (files, g_object_unref);
             g_object_unref (app_info);
@@ -423,9 +425,10 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     if (error != NULL)
     {
         message = g_strconcat (_("Details: "), error->message, NULL);
-        show_error_dialog(_("There was an error launching the application."),
-                          message,
-                          parent_window);
+        show_dialog (_("There was an error launching the application."),
+                     message,
+                     parent_window,
+                     GTK_MESSAGE_ERROR);
 
         g_error_free (error);
         g_free (message);
