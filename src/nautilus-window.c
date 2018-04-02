@@ -1110,7 +1110,7 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
-    show_error_dialog (primary, secondary, GTK_WINDOW (window));
+    show_dialog (primary, secondary, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
 }
 
 static void
