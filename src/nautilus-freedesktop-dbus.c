@@ -41,6 +41,10 @@ struct _NautilusFreedesktopDBus
 
     /* Our DBus implementation skeleton */
     NautilusFreedesktopFileManager1 *skeleton;
+
+    GStrv pending_open_locations;
+
+    gboolean name_lost;
 };
 
 struct _NautilusFreedesktopDBusClass
@@ -160,6 +164,15 @@ bus_acquired_cb (GDBusConnection *conn,
                       G_CALLBACK (skeleton_handle_show_item_properties_cb), fdb);
 
     g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (fdb->skeleton), conn, NAUTILUS_FDO_DBUS_PATH, NULL);
+
+    if (G_UNLIKELY (fdb->pending_open_locations != NULL))
+    {
+        g_auto (GStrv) locations = NULL;
+
+        locations = g_steal_pointer (&fdb->pending_open_locations);
+
+        nautilus_freedesktop_dbus_set_open_locations (fdb, (const gchar **) locations);
+    }
 }
 
 static void
@@ -175,7 +188,13 @@ name_lost_cb (GDBusConnection *connection,
               const gchar     *name,
               gpointer         user_data)
 {
+    NautilusFreedesktopDBus *fdb;
+
     DEBUG ("Lost (or failed to acquire) the name %s on the session message bus\n", name);
+
+    fdb = NAUTILUS_FREEDESKTOP_DBUS (user_data);
+
+    fdb->name_lost = TRUE;
 }
 
 static void
@@ -200,11 +219,22 @@ nautilus_freedesktop_dbus_dispose (GObject *object)
 }
 
 static void
+nautilus_freedesktop_dbus_finalize (GObject *object)
+{
+    NautilusFreedesktopDBus *fdb;
+
+    fdb = NAUTILUS_FREEDESKTOP_DBUS (object);
+
+    g_clear_pointer (&fdb->pending_open_locations, g_strfreev);
+}
+
+static void
 nautilus_freedesktop_dbus_class_init (NautilusFreedesktopDBusClass *klass)
 {
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
 
     object_class->dispose = nautilus_freedesktop_dbus_dispose;
+    object_class->finalize = nautilus_freedesktop_dbus_finalize;
 }
 
 static void
@@ -218,6 +248,9 @@ nautilus_freedesktop_dbus_init (NautilusFreedesktopDBus *fdb)
                                     name_lost_cb,
                                     fdb,
                                     NULL);
+    fdb->skeleton = NULL;
+    fdb->pending_open_locations = NULL;
+    fdb->name_lost = FALSE;
 }
 
 void
@@ -226,7 +259,21 @@ nautilus_freedesktop_dbus_set_open_locations (NautilusFreedesktopDBus  *fdb,
 {
     g_return_if_fail (NAUTILUS_IS_FREEDESKTOP_DBUS (fdb));
 
-    nautilus_freedesktop_file_manager1_set_open_locations (fdb->skeleton, locations);
+    if (G_UNLIKELY (fdb->skeleton == NULL))
+    {
+        if (G_LIKELY (fdb->name_lost))
+        {
+            return;
+        }
+
+        g_clear_pointer (&fdb->pending_open_locations, g_strfreev);
+
+        fdb->pending_open_locations = g_strdupv ((gchar **) locations);
+    }
+    else
+    {
+        nautilus_freedesktop_file_manager1_set_open_locations (fdb->skeleton, locations);
+    }
 }
 
 /* Tries to own the org.freedesktop.FileManager1 service name */
