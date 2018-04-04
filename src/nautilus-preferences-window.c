@@ -378,11 +378,26 @@ static void nautilus_preferences_window_setup_thumbnail_limit_formatting (GtkBui
                       spin);
 }
 
+static void
+on_setting_changed (GtkToggleButton *button,
+                    GParamSpec          *pspec,
+                    gpointer             user_data)
+{
+  g_print ("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+  g_print ("Widget changed!!! %d\n", gtk_toggle_button_get_active (button));
+  g_print ("~~~~~~~~~~~~~~~~~~~~~~~~~\n");
+}
+
 static void bind_builder_bool(GtkBuilder *builder,
                               GSettings  *settings,
                               const char *widget_name,
                               const char *prefs)
 {
+  if (g_strcmp0 (prefs, NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS) == 0)
+    {
+      GtkToggleButton *widget = GTK_TOGGLE_BUTTON (gtk_builder_get_object (builder, widget_name));
+      g_signal_connect (G_OBJECT (widget), "notify::active", G_CALLBACK (on_setting_changed), NULL);
+    }
     g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
                      "active", G_SETTINGS_BIND_DEFAULT);
 }

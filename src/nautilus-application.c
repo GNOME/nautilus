@@ -1276,6 +1276,22 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
+
+static void
+on_setting_changed (GSettings *settings,
+                    gchar     *key,
+                    gpointer   user_data)
+{
+  gchar *schema_id;
+
+        g_object_get (G_OBJECT (settings),
+                      "schema-id", &schema_id,
+                      NULL);
+    g_print ("#########################\n");
+    g_print ("setting changed %s %s %d %d\n", key,  schema_id, g_settings_get_has_unapplied (nautilus_preferences), g_settings_get_boolean (nautilus_preferences, 	NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS));
+    g_print ("#########################\n");
+}
+
 void
 nautilus_application_startup_common (NautilusApplication *self)
 {
@@ -1324,6 +1340,7 @@ nautilus_application_startup_common (NautilusApplication *self)
                              "changed",
                              G_CALLBACK (icon_theme_changed_callback),
                              NULL, 0);
+    g_signal_connect (nautilus_preferences, "changed::"NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS, G_CALLBACK (on_setting_changed), NULL);
 }
 
 static void

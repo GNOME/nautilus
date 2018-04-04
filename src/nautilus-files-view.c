@@ -9679,9 +9679,15 @@ nautilus_files_view_new (guint               id,
 {
     NautilusFilesView *view = NULL;
     gboolean use_experimental_views;
+  gboolean unapplied;
 
     use_experimental_views = g_settings_get_boolean (nautilus_preferences,
                                                      NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
+  unapplied = g_settings_get_has_unapplied (nautilus_preferences);
+      g_print ("##$$$$\n");
+          g_print ("use experimental views? %d %d\n", use_experimental_views, unapplied);
+      g_print ("##$$$$\n");
+
     switch (id)
     {
         case NAUTILUS_VIEW_GRID_ID:
@@ -9712,6 +9718,11 @@ nautilus_files_view_new (guint               id,
     {
         g_object_ref_sink (view);
     }
+
+  //g_settings_set_boolean (nautilus_preferences, NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS, TRUE);
+      g_print ("##$$$$\n");
+          g_print ("22222 use experimental views? %d %d\n", use_experimental_views, unapplied);
+      g_print ("##$$$$\n");
 
     return view;
 }
