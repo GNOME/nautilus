@@ -253,12 +253,6 @@ nautilus_places_view_set_location (NautilusView *view,
     }
 }
 
-static GtkWidget *
-nautilus_places_view_get_action_bar (NautilusView *view)
-{
-    return NULL;
-}
-
 static GList *
 nautilus_places_view_get_selection (NautilusView *view)
 {
@@ -340,7 +334,6 @@ nautilus_places_view_get_view_id (NautilusView *view)
 static void
 nautilus_places_view_iface_init (NautilusViewInterface *iface)
 {
-    iface->get_action_bar = nautilus_places_view_get_action_bar;
     iface->get_location = nautilus_places_view_get_location;
     iface->set_location = nautilus_places_view_set_location;
     iface->get_selection = nautilus_places_view_get_selection;
