@@ -262,9 +262,6 @@ typedef struct
 
     gint name_accepted_handler_id;
     gint cancelled_handler_id;
-
-    /* Action bar */
-    GtkWidget *actionbar;
 } NautilusFilesViewPrivate;
 
 typedef struct
@@ -2915,7 +2912,6 @@ nautilus_files_view_destroy (GtkWidget *object)
 
     g_clear_object (&priv->search_query);
     g_clear_object (&priv->location);
-    g_clear_object (&priv->actionbar);
 
     /* We don't own the slot, so no unref */
     priv->slot = NULL;
@@ -8623,16 +8619,6 @@ nautilus_files_view_key_press_event (GtkWidget   *widget,
     return GDK_EVENT_PROPAGATE;
 }
 
-static GtkWidget *
-nautilus_files_view_get_action_bar (NautilusView *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
-
-    return priv->actionbar;
-}
-
 static NautilusQuery *
 nautilus_files_view_get_search_query (NautilusView *view)
 {
@@ -8757,7 +8743,6 @@ nautilus_files_view_is_loading (NautilusView *view)
 static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
-    iface->get_action_bar = nautilus_files_view_get_action_bar;
     iface->get_location = nautilus_files_view_get_location;
     iface->set_location = nautilus_files_view_set_location;
     iface->get_selection = nautilus_files_view_get_selection;
@@ -8988,9 +8973,6 @@ nautilus_files_view_init (NautilusFilesView *view)
                               view);
 
     gtk_container_add (GTK_CONTAINER (priv->overlay), priv->scrolled_window);
-
-    /* Actionbar */
-    priv->actionbar = g_object_ref_sink (nautilus_action_bar_new (NAUTILUS_VIEW (view)));
 
     /* Empty states */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-no-search-results.ui");
