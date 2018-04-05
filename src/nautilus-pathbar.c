@@ -47,6 +47,8 @@ typedef enum
     OTHER_LOCATIONS_BUTTON,
     ROOT_BUTTON,
     HOME_BUTTON,
+    STARRED_BUTTON,
+    RECENT_BUTTON,
     MOUNT_BUTTON,
     STARRED_LOCATION_BUTTON
 } ButtonType;
@@ -1818,6 +1820,16 @@ get_gicon (ButtonData *button_data)
             return get_gicon_for_mount (button_data);
         }
 
+        case STARRED_BUTTON:
+        {
+            return g_themed_icon_new ("starred-symbolic");
+        }
+
+        case RECENT_BUTTON:
+        {
+            return g_themed_icon_new ("document-open-recent-symbolic");
+        }
+
         default:
             return NULL;
     }
@@ -1926,6 +1938,16 @@ setup_button_type (ButtonData      *button_data,
     else if (nautilus_is_home_directory (location))
     {
         button_data->type = HOME_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (nautilus_is_recent_directory (location))
+    {
+        button_data->type = RECENT_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (nautilus_is_starred_directory (location))
+    {
+        button_data->type = STARRED_BUTTON;
         button_data->is_root = TRUE;
     }
     else if ((mount = nautilus_get_mounted_mount_for_root (location)) != NULL)
@@ -2113,6 +2135,8 @@ make_button_data (NautilusPathBar *self,
 
         case HOME_BUTTON:
         case MOUNT_BUTTON:
+        case RECENT_BUTTON:
+        case STARRED_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
