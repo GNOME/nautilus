@@ -138,8 +138,8 @@ enum
     PROP_WINDOW_SLOT = 1,
     PROP_SUPPORTS_ZOOMING,
     PROP_ICON,
-    PROP_IS_SEARCH,
-    PROP_IS_LOADING,
+    PROP_SEARCHING,
+    PROP_LOADING,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
     PROP_SELECTION,
@@ -3118,7 +3118,7 @@ done_loading (NautilusFilesView *view,
 
     priv->loading = FALSE;
     g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-    g_object_notify (G_OBJECT (view), "is-loading");
+    g_object_notify (G_OBJECT (view), "loading");
 
     if (!priv->in_destruction)
     {
@@ -7822,8 +7822,8 @@ load_directory (NautilusFilesView *view,
     priv->location = nautilus_directory_get_location (directory);
 
     g_object_notify (G_OBJECT (view), "location");
-    g_object_notify (G_OBJECT (view), "is-loading");
-    g_object_notify (G_OBJECT (view), "is-searching");
+    g_object_notify (G_OBJECT (view), "loading");
+    g_object_notify (G_OBJECT (view), "searching");
 
     /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
      * well as doing a call when ready), in case external forces
@@ -8315,13 +8315,13 @@ nautilus_files_view_get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_IS_LOADING:
+        case PROP_LOADING:
         {
             g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
         }
         break;
 
-        case PROP_IS_SEARCH:
+        case PROP_SEARCHING:
         {
             g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
         }
@@ -8675,7 +8675,7 @@ set_search_query_internal (NautilusFilesView *files_view,
 
             load_directory (files_view, directory);
 
-            g_object_notify (G_OBJECT (files_view), "is-searching");
+            g_object_notify (G_OBJECT (files_view), "searching");
 
             nautilus_directory_unref (directory);
             g_free (uri);
@@ -8864,8 +8864,8 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
                               G_PARAM_STATIC_STRINGS));
 
-    g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
-    g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
+    g_object_class_override_property (oclass, PROP_LOADING, "loading");
+    g_object_class_override_property (oclass, PROP_SEARCHING, "searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
     g_object_class_override_property (oclass, PROP_SELECTION, "selection");
