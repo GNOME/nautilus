@@ -26,24 +26,24 @@ static void
 nautilus_view_default_init (NautilusViewInterface *iface)
 {
     /**
-     * NautilusView::is-loading:
+     * NautilusView::loading:
      *
      * %TRUE if the view is loading the location, %FALSE otherwise.
      */
     g_object_interface_install_property (iface,
-                                         g_param_spec_boolean ("is-loading",
+                                         g_param_spec_boolean ("loading",
                                                                "Current view is loading",
                                                                "Whether the current view is loading the location or not",
                                                                FALSE,
                                                                G_PARAM_READABLE));
 
     /**
-     * NautilusView::is-searching:
+     * NautilusView::searching:
      *
      * %TRUE if the view is searching, %FALSE otherwise.
      */
     g_object_interface_install_property (iface,
-                                         g_param_spec_boolean ("is-searching",
+                                         g_param_spec_boolean ("searching",
                                                                "Current view is searching",
                                                                "Whether the current view is searching or not",
                                                                FALSE,
@@ -60,6 +60,17 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                                               "The current location displayed by the view",
                                                               G_TYPE_FILE,
                                                               G_PARAM_READWRITE));
+
+    /**
+     * NautilusView::selection:
+     *
+     * The current selection of the view.
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_pointer ("selection",
+                                                               "Selection of the view",
+                                                               "The current selection of the view",
+                                                               G_PARAM_READWRITE));
 
     /**
      * NautilusView::search-query:
