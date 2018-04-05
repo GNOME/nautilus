@@ -73,6 +73,8 @@ typedef struct
     GtkWidget *image;
     GtkWidget *label;
     GtkWidget *bold_label;
+    GtkWidget *separator;
+    GtkWidget *container;
 
     guint ignore_changes : 1;
     guint is_root : 1;
@@ -520,8 +522,8 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
         button_data = BUTTON_DATA (list->data);
         set_label_size_request (button_data);
 
-        gtk_widget_get_preferred_width (button_data->button, &child_min, &child_nat);
-        gtk_widget_get_preferred_height (button_data->button, &child_height, NULL);
+        gtk_widget_get_preferred_width (button_data->container, &child_min, &child_nat);
+        gtk_widget_get_preferred_height (button_data->container, &child_height, NULL);
         height = MAX (height, child_height);
 
         if (button_data->type == NORMAL_BUTTON)
@@ -574,7 +576,7 @@ nautilus_path_bar_get_preferred_height (GtkWidget *widget,
         button_data = BUTTON_DATA (list->data);
         set_label_size_request (button_data);
 
-        gtk_widget_get_preferred_height (button_data->button, &child_min, &child_nat);
+        gtk_widget_get_preferred_height (button_data->container, &child_min, &child_nat);
 
         *minimum = MAX (*minimum, child_min);
         *natural = MAX (*natural, child_nat);
@@ -590,10 +592,10 @@ nautilus_path_bar_update_slider_buttons (NautilusPathBar *self)
 
     if (priv->button_list)
     {
-        GtkWidget *button;
+        GtkWidget *container;
 
-        button = BUTTON_DATA (priv->button_list->data)->button;
-        if (gtk_widget_get_child_visible (button))
+        container = BUTTON_DATA (priv->button_list->data)->container;
+        if (gtk_widget_get_child_visible (container))
         {
             gtk_widget_set_sensitive (priv->down_slider_button, FALSE);
         }
@@ -601,8 +603,8 @@ nautilus_path_bar_update_slider_buttons (NautilusPathBar *self)
         {
             gtk_widget_set_sensitive (priv->down_slider_button, TRUE);
         }
-        button = BUTTON_DATA (g_list_last (priv->button_list)->data)->button;
-        if (gtk_widget_get_child_visible (button))
+        container = BUTTON_DATA (g_list_last (priv->button_list)->data)->container;
+        if (gtk_widget_get_child_visible (container))
         {
             gtk_widget_set_sensitive (priv->up_slider_button, FALSE);
         }
@@ -722,7 +724,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     /* First, we check to see if we need the scrollbars. */
     width = 0;
 
-    gtk_widget_get_preferred_size (BUTTON_DATA (priv->button_list->data)->button,
+    gtk_widget_get_preferred_size (BUTTON_DATA (priv->button_list->data)->container,
                                    &child_requisition, NULL);
     width += child_requisition.width;
 
@@ -759,13 +761,13 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
          * button, then count backwards.
          */
         /* Count down the path chain towards the end. */
-        gtk_widget_get_preferred_size (BUTTON_DATA (first_button->data)->button,
+        gtk_widget_get_preferred_size (BUTTON_DATA (first_button->data)->container,
                                        &child_requisition, NULL);
         width = child_requisition.width;
         list = first_button->prev;
         while (list && !reached_end)
         {
-            child = BUTTON_DATA (list->data)->button;
+            child = BUTTON_DATA (list->data)->container;
             gtk_widget_get_preferred_size (child, &child_requisition, NULL);
 
             if (width + child_requisition.width + slider_space > allocation->width)
@@ -831,7 +833,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
     for (list = first_button; list; list = list->prev)
     {
-        child = BUTTON_DATA (list->data)->button;
+        child = BUTTON_DATA (list->data)->container;
         gtk_widget_get_preferred_size (child, &child_requisition, NULL);
 
         child_allocation.width = MIN (child_requisition.width, largest_width);
@@ -874,13 +876,13 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     /* Now we go hide all the widgets that don't fit */
     while (list)
     {
-        child = BUTTON_DATA (list->data)->button;
+        child = BUTTON_DATA (list->data)->container;
         gtk_widget_set_child_visible (child, FALSE);
         list = list->prev;
     }
     for (list = first_button->next; list; list = list->next)
     {
-        child = BUTTON_DATA (list->data)->button;
+        child = BUTTON_DATA (list->data)->container;
         gtk_widget_set_child_visible (child, FALSE);
     }
 
@@ -1081,7 +1083,7 @@ nautilus_path_bar_remove (GtkContainer *container,
     children = priv->button_list;
     while (children)
     {
-        if (widget == BUTTON_DATA (children->data)->button)
+        if (widget == BUTTON_DATA (children->data)->container)
         {
             nautilus_path_bar_remove_1 (container, widget);
             priv->button_list = g_list_remove_link (priv->button_list, children);
@@ -1110,7 +1112,7 @@ nautilus_path_bar_forall (GtkContainer *container,
     while (children)
     {
         GtkWidget *child;
-        child = BUTTON_DATA (children->data)->button;
+        child = BUTTON_DATA (children->data)->container;
         children = children->next;
         (*callback)(child, callback_data);
     }
@@ -1183,10 +1185,10 @@ nautilus_path_bar_get_path_for_child (GtkContainer *container,
         {
             ButtonData *data = l->data;
 
-            if (gtk_widget_get_visible (data->button) &&
-                gtk_widget_get_child_visible (data->button))
+            if (gtk_widget_get_visible (data->container) &&
+                gtk_widget_get_child_visible (data->container))
             {
-                visible_children = g_list_prepend (visible_children, data->button);
+                visible_children = g_list_prepend (visible_children, data->container);
             }
         }
 
@@ -1324,7 +1326,7 @@ nautilus_path_bar_scroll_down (NautilusPathBar *self)
     /* visible */
     for (list = priv->button_list; list; list = list->next)
     {
-        if (list->next && gtk_widget_get_child_visible (BUTTON_DATA (list->next->data)->button))
+        if (list->next && gtk_widget_get_child_visible (BUTTON_DATA (list->next->data)->container))
         {
             down_button = list;
             break;
@@ -1346,7 +1348,7 @@ nautilus_path_bar_scroll_down (NautilusPathBar *self)
         }
     }
 
-    gtk_widget_get_allocation (BUTTON_DATA (down_button->data)->button, &button_allocation);
+    gtk_widget_get_allocation (BUTTON_DATA (down_button->data)->container, &button_allocation);
     gtk_widget_get_allocation (GTK_WIDGET (self), &allocation);
     gtk_widget_get_allocation (priv->down_slider_button, &slider_allocation);
 
@@ -1393,7 +1395,7 @@ nautilus_path_bar_scroll_up (NautilusPathBar *self)
 
     for (list = g_list_last (priv->button_list); list; list = list->prev)
     {
-        if (list->prev && gtk_widget_get_child_visible (BUTTON_DATA (list->prev->data)->button))
+        if (list->prev && gtk_widget_get_child_visible (BUTTON_DATA (list->prev->data)->container))
         {
             priv->first_scrolled_button = list;
             return;
@@ -1587,7 +1589,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 
     while (priv->button_list != NULL)
     {
-        gtk_container_remove (GTK_CONTAINER (self), BUTTON_DATA (priv->button_list->data)->button);
+        gtk_container_remove (GTK_CONTAINER (self), BUTTON_DATA (priv->button_list->data)->container);
     }
     priv->first_scrolled_button = NULL;
 }
@@ -1607,7 +1609,7 @@ button_clicked_cb (GtkWidget *button,
         return;
     }
 
-    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (button));
+    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (gtk_widget_get_parent (button)));
     priv = nautilus_path_bar_get_instance_private (self);
 
     button_list = g_list_find (priv->button_list, button_data);
@@ -1824,6 +1826,7 @@ get_gicon (ButtonData *button_data)
 static void
 button_data_free (ButtonData *button_data)
 {
+    g_print ("data free %p\n", button_data);
     g_object_unref (button_data->path);
     g_free (button_data->dir_name);
     if (button_data->file != NULL)
@@ -2046,7 +2049,7 @@ button_data_file_changed (NautilusFile *file,
                 for (idx = 0; idx <= position; idx++)
                 {
                     gtk_container_remove (GTK_CONTAINER (self),
-                                          BUTTON_DATA (priv->button_list->data)->button);
+                                          BUTTON_DATA (priv->button_list->data)->container);
                 }
             }
         }
@@ -2108,13 +2111,25 @@ make_button_data (NautilusPathBar *self,
 
         case HOME_BUTTON:
         case MOUNT_BUTTON:
-        case NORMAL_BUTTON:
-        default:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+        }
+        break;
+
+        case NORMAL_BUTTON:
+        default:
+        {
+            button_data->label = gtk_label_new (NULL);
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S), FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
         }
         break;
     }
@@ -2150,7 +2165,7 @@ make_button_data (NautilusPathBar *self,
     }
 
     gtk_container_add (GTK_CONTAINER (button_data->button), child);
-    gtk_widget_show_all (button_data->button);
+    gtk_widget_show_all (button_data->container);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
@@ -2187,7 +2202,7 @@ nautilus_path_bar_check_parent_path (NautilusPathBar  *self,
             current_data = button_data;
             is_active = TRUE;
 
-            if (!gtk_widget_get_child_visible (current_data->button))
+            if (!gtk_widget_get_child_visible (current_data->container))
             {
                 priv->first_scrolled_button = list;
                 gtk_widget_queue_resize (GTK_WIDGET (self));
@@ -2260,9 +2275,9 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
 
     for (l = priv->button_list; l; l = l->next)
     {
-        GtkWidget *button;
-        button = BUTTON_DATA (l->data)->button;
-        gtk_container_add (GTK_CONTAINER (self), button);
+        GtkWidget *container;
+        container = BUTTON_DATA (l->data)->container;
+        gtk_container_add (GTK_CONTAINER (self), container);
     }
 
     gtk_widget_pop_composite_child ();

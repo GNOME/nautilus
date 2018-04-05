@@ -45,6 +45,46 @@
   animation-iteration-count: 3;
 }
 
+/* Path bar */
+
+.path-bar button { /* undecorate the buttons */
+  border-color: transparent;
+  background-color: transparent;
+  background-image: none;
+  box-shadow: none;
+  border-radius: 0;
+  text-shadow: none;
+  -gtk-icon-shadow: none;
+}
+
+.path-bar .slider-button { /* margins are for the round keynav indicator */
+  margin-top: 10px;
+  margin-bottom: 11px;
+  -gtk-outline-radius: 50px;
+  opacity: 0.7;
+}
+
+.path-bar .slider-button:not(:backdrop):hover {
+  opacity: 1;
+}
+
+.path-bar .slider-button:disabled { /* hide insensitive overflow buttons */
+  opacity: 0;
+}
+
+.path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
+
+.path-bar button:not(:checked) { /* Undecorate unchecked highlight */
+    box-shadow:none;
+}
+
+.path-bar button:not(.slider-button):not(:backdrop):hover > * { box-shadow: 0 3px @borders; }
+
+.path-bar button:not(.slider-button):not(:backdrop):checked > *,
+.path-bar button.text-button:not(.slider-button):backdrop:checked > * {
+  box-shadow: 0 3px @theme_selected_bg_color;
+}
+
 /* Floating status bar */
 .floating-bar {
   padding: 1px;
