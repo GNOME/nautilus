@@ -85,6 +85,26 @@
   box-shadow: 0 3px @theme_selected_bg_color;
 }
 
+/* Sidebar */
+
+.sidebar-row:selected {
+    background: shade(@theme_bg_color, 0.93);
+}
+
+.sidebar-row:selected,
+.sidebar-row:selected label {
+    color: shade(@theme_fg_color, 0.5);
+}
+
+.sidebar-row:selected:backdrop {
+    background: shade(@theme_bg_color, 0.96);
+}
+
+.sidebar-row:selected:backdrop,
+.sidebar-row:selected:backdrop label {
+    color: shade(@theme_unfocused_fg_color, 0.85);
+}
+
 /* Floating status bar */
 .floating-bar {
   padding: 1px;
