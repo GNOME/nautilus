@@ -61,6 +61,8 @@ enum
     PROP_ICON,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_LOADING,
+    PROP_SEARCHING,
+    PROP_SELECTION,
     PROP_LOCATION,
     NUM_PROPERTIES
 };
@@ -124,6 +126,12 @@ typedef struct
     GError *mount_error;
     gboolean tried_mount;
     gint view_mode_before_search;
+
+    /* View bindings */
+    GBinding *searching_binding;
+    GBinding *selection_binding;
+    gboolean searching;
+    GList *selection;
 } NautilusWindowSlotPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
@@ -728,6 +736,29 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
 }
 
 static void
+nautilus_window_slot_set_searching (NautilusWindowSlot *self,
+                                    gboolean            searching)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->searching = searching;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCHING]);
+}
+
+static void
+nautilus_window_slot_set_selection (NautilusWindowSlot *self,
+                                    GList              *selection)
+{
+    NautilusWindowSlotPrivate *priv;
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->selection = selection;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SELECTION]);
+}
+
+static void
 nautilus_window_slot_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
@@ -752,6 +783,18 @@ nautilus_window_slot_set_property (GObject      *object,
         case PROP_LOCATION:
         {
             nautilus_window_slot_set_location (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SEARCHING:
+        {
+            nautilus_window_slot_set_searching (self, g_value_get_boolean (value));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
         }
         break;
 
@@ -818,6 +861,26 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
     }
+}
+
+gboolean
+nautilus_window_slot_get_searching (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->searching;
+}
+
+GList*
+nautilus_window_slot_get_selection (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->selection;
 }
 
 static void
@@ -2702,7 +2765,7 @@ nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self)
     if (priv->new_content_view)
     {
         g_signal_connect (priv->new_content_view,
-                          "notify::is-loading",
+                          "notify::loading",
                           G_CALLBACK (view_is_loading_changed_cb),
                           self);
     }
@@ -2742,6 +2805,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
 
     if (priv->content_view != NULL)
     {
+        g_binding_unbind (priv->searching_binding);
+        g_binding_unbind (priv->selection_binding);
         widget = GTK_WIDGET (priv->content_view);
         gtk_widget_destroy (widget);
         g_object_unref (priv->content_view);
@@ -2757,7 +2822,12 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         gtk_container_add (GTK_CONTAINER (self), widget);
         gtk_widget_set_vexpand (widget, TRUE);
         gtk_widget_show (widget);
-
+        priv->searching_binding = g_object_bind_property (priv->content_view, "searching",
+                                                          self, "searching",
+                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        priv->selection_binding = g_object_bind_property (priv->content_view, "selection",
+                                                          self, "selection",
+                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
     }
@@ -2923,12 +2993,26 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               "Whether the slot is the active slot of the window",
                               FALSE,
                               G_PARAM_READWRITE);
+
     properties[PROP_LOADING] =
         g_param_spec_boolean ("loading",
                               "Whether the slot loading",
                               "Whether the slot is loading a new location",
                               FALSE,
                               G_PARAM_READABLE);
+
+    properties[PROP_SEARCHING] =
+        g_param_spec_boolean ("searching",
+                              "Whether the current view of the slot is searching",
+                              "Whether the current view of the slot is searching. Proxy property from the view",
+                              FALSE,
+                              G_PARAM_READWRITE);
+
+    properties[PROP_SELECTION] =
+        g_param_spec_pointer ("selection",
+                              "Selection of the current view of the slot",
+                              "The selection of the current view of the slot. Proxy property from the view",
+                              G_PARAM_READWRITE);
 
     properties[PROP_WINDOW] =
         g_param_spec_object ("window",
