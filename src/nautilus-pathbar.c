@@ -1609,6 +1609,7 @@ button_clicked_cb (GtkWidget *button,
         return;
     }
 
+    /* FIXME: This get_parent play is... whatever */
     self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (gtk_widget_get_parent (button)));
     priv = nautilus_path_bar_get_instance_private (self);
 
@@ -1731,7 +1732,8 @@ button_event_cb (GtkWidget      *button,
     int mask;
 
     button_data = BUTTON_DATA (data);
-    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (button));
+    /* FIXME: This get_parent play is... whatever */
+    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (gtk_widget_get_parent (button)));
     mask = event->state & gtk_accelerator_get_default_mod_mask ();
 
     if (event->type == GDK_BUTTON_PRESS)
