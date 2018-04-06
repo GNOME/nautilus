@@ -21,15 +21,18 @@
 
 #include <gtk/gtk.h>
 
-#include "nautilus-view.h"
+#include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_ACTION_BAR (nautilus_action_bar_get_type())
 
-G_DECLARE_FINAL_TYPE (NautilusActionBar, nautilus_action_bar, NAUTILUS, ACTION_BAR, GtkFrame)
+G_DECLARE_FINAL_TYPE (NautilusActionBar, nautilus_action_bar, NAUTILUS, ACTION_BAR, GtkBox)
 
-GtkWidget*           nautilus_action_bar_new                     (NautilusView      *view);
+NautilusActionBar*   nautilus_action_bar_new                     (void);
+
+void                 nautilus_action_bar_set_slot                (NautilusActionBar  *self,
+                                                                  NautilusWindowSlot *slot);
 
 void                 nautilus_action_bar_set_show_thumbnail      (NautilusActionBar *actionbar,
                                                                   gboolean           show_thumbnail);
