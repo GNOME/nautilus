@@ -60,6 +60,7 @@
 #include "nautilus-signaller.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-action-bar.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
@@ -113,6 +114,9 @@ typedef struct
     NautilusTagManager *starred_manager; /* For the starred sidbear item */
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
     GFile *selected_file;     /* the selected file in the sidebar popup callback */
+
+    /* Action bar */
+    NautilusActionBar *action_bar;
 
     /* Main view */
     GtkWidget *main_view;
@@ -2447,6 +2451,8 @@ nautilus_window_constructed (GObject *self)
         g_signal_connect_swapped (nautilus_application_get_bookmarks (application), "changed",
                                   G_CALLBACK (nautilus_window_sync_bookmarks), window);
 
+    priv->action_bar = nautilus_action_bar_new ();
+
     nautilus_toolbar_on_window_constructed (NAUTILUS_TOOLBAR (priv->toolbar));
 
     nautilus_profile_end (NULL);
@@ -2651,6 +2657,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     {
         /* inform slot & view */
         nautilus_window_slot_set_active (old_slot, FALSE);
+        nautilus_action_bar_set_slot (priv->action_bar, NULL);
     }
 
     priv->active_slot = new_slot;
@@ -2659,6 +2666,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     if (new_slot)
     {
         nautilus_toolbar_set_active_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
+        nautilus_action_bar_set_slot (priv->action_bar, new_slot);
 
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
@@ -2958,6 +2966,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, content_paned);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, places_sidebar);
+    gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, action_bar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, main_view);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, notebook);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, in_app_notification_undo);

@@ -16,8 +16,9 @@
       </object>
     </child>
     <child>
-      <object class="GtkGrid">
+      <object class="GtkBox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
         <child>
           <object class="GtkPaned" id="content_paned">
             <property name="visible">True</property>
@@ -201,6 +202,12 @@
                 <property name="shrink">False</property>
               </packing>
             </child>
+          </object>
+        </child>
+        <child>
+          <object class="NautilusActionBar" id="action_bar">
+            <property name="visible">True</property>
+            <property name="hexpand">True</property>
           </object>
         </child>
       </object>

@@ -25,31 +25,31 @@
 
 #include <glib/gi18n.h>
 
-#define               UPDATE_STATUS_TIMEOUT  200 //ms
+#define               UPDATE_STATUS_TIMEOUT  300 //ms
 
 struct _NautilusActionBar
 {
-  GtkFrame            parent;
+  GtkBox              parent;
 
   GtkWidget          *loading_label;
   GtkWidget          *paste_button;
   GtkWidget          *primary_label;
   GtkWidget          *stack;
 
-  NautilusView       *view;
+  NautilusWindowSlot       *slot;
   gint                update_status_timeout_id;
 };
 
-G_DEFINE_TYPE (NautilusActionBar, nautilus_action_bar, GTK_TYPE_FRAME)
+G_DEFINE_TYPE (NautilusActionBar, nautilus_action_bar, GTK_TYPE_BOX)
 
 enum {
   PROP_0,
-  PROP_VIEW,
+  PROP_SLOT,
   N_PROPS
 };
 
 static void
-open_preview_cb (NautilusActionBar *actionbar)
+open_preslot_cb (NautilusActionBar *actionbar)
 {
   GtkWidget *toplevel;
   GdkWindow *window;
@@ -59,9 +59,9 @@ open_preview_cb (NautilusActionBar *actionbar)
 
   xid = 0;
   uri = NULL;
-  selection = nautilus_view_get_selection (actionbar->view);
+  selection = nautilus_window_slot_get_selection (actionbar->slot);
 
-  /* Only preview if exact 1 file is selected */
+  /* Only preslot if exact 1 file is selected */
   if (g_list_length (selection) != 1)
     goto out;
 
@@ -134,7 +134,10 @@ setup_multiple_files_selection (NautilusActionBar *actionbar,
 
   nautilus_file_list_free (selection);
 
-  gtk_label_set_label (GTK_LABEL (actionbar->primary_label), primary_text ? primary_text : "");
+  if (primary_text != NULL)
+  {
+      gtk_label_set_label (GTK_LABEL (actionbar->primary_label), primary_text);
+  }
 }
 
 static void
@@ -183,24 +186,26 @@ real_update_status (gpointer data)
 {
   NautilusActionBar *actionbar = data;
 
-  if (nautilus_view_is_loading (actionbar->view))
+  if (actionbar->slot != NULL && nautilus_window_slot_get_loading (actionbar->slot))
     {
       gtk_label_set_label (GTK_LABEL (actionbar->loading_label),
-                           nautilus_view_is_searching (actionbar->view) ? _("Searching") : _("Loading"));
+                           nautilus_window_slot_get_searching (actionbar->slot) ? _("Searching") : _("Loading"));
 
       gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "loading_bar");
     }
   else
     {
       GList *selection;
-      gint number_of_files;
+      gint number_of_files = 0;
 
-      selection = nautilus_view_get_selection (actionbar->view);
-      number_of_files = g_list_length (selection);
+      if (actionbar->slot != NULL)
+      {
+        selection = nautilus_window_slot_get_selection (actionbar->slot);
+        number_of_files = g_list_length (selection);
+      }
 
       if (number_of_files == 0)
         {
-          gtk_label_set_label (GTK_LABEL (actionbar->primary_label), "");
           gtk_stack_set_visible_child_name (GTK_STACK (actionbar->stack), "background_bar");
         }
       else if (number_of_files == 1)
@@ -223,6 +228,7 @@ real_update_status (gpointer data)
 static void
 update_status (NautilusActionBar *actionbar)
 {
+  g_print ("update status\n");
   if (actionbar->update_status_timeout_id > 0)
     {
       g_source_remove (actionbar->update_status_timeout_id);
@@ -244,13 +250,20 @@ nautilus_action_bar_dispose (GObject *object)
       g_source_remove (self->update_status_timeout_id);
       self->update_status_timeout_id = 0;
     }
-  if (self->view != NULL)
+  if (self->slot != NULL)
   {
-    g_signal_handlers_disconnect_by_data (self->view, self);
-    g_clear_object (&self->view);
+    g_signal_handlers_disconnect_by_data (self->slot, self);
+    g_clear_object (&self->slot);
   }
 
   G_OBJECT_CLASS (nautilus_action_bar_parent_class)->dispose (object);
+}
+
+void
+nautilus_action_bar_set_slot (NautilusActionBar  *self,
+                              NautilusWindowSlot *slot)
+{
+    g_object_set (self, "slot", slot, NULL);
 }
 
 static void
@@ -272,8 +285,8 @@ nautilus_action_bar_get_property (GObject    *object,
 
   switch (prop_id)
     {
-    case PROP_VIEW:
-      g_value_set_object (value, self->view);
+    case PROP_SLOT:
+      g_value_set_object (value, self->slot);
       break;
 
     default:
@@ -290,21 +303,34 @@ nautilus_action_bar_set_property (GObject      *object,
   NautilusActionBar *self = NAUTILUS_ACTION_BAR (object);
 
   switch (prop_id)
+  {
+    case PROP_SLOT:
     {
-    case PROP_VIEW:
-      if (g_set_object (&self->view, g_value_get_object (value)))
+      g_print ("setting slot\n");
+        if (self->slot != NULL)
         {
-          g_signal_connect_swapped (self->view, "notify::selection", G_CALLBACK (update_status), self);
-          g_signal_connect_swapped (self->view, "notify::is-loading", G_CALLBACK (update_status), self);
-          g_signal_connect_swapped (self->view, "notify::is-searching", G_CALLBACK (update_status), self);
-          g_object_notify (object, "view");
+          g_signal_handlers_disconnect_by_data (self->slot, self);
         }
+        g_set_object (&self->slot, g_value_get_object (value));
+        if (self->slot != NULL)
+        {
+          g_signal_connect_swapped (self->slot, "notify::selection",
+                                    G_CALLBACK (update_status), self);
+          g_signal_connect_swapped (self->slot, "notify::loading",
+                                    G_CALLBACK (update_status), self);
+          g_signal_connect_swapped (self->slot, "notify::searching",
+                                    G_CALLBACK (update_status), self);
 
-      break;
+          g_object_notify (object, "slot");
+        }
+    }
+    break;
 
     default:
+    {
       G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
+  }
 }
 
 static void
@@ -319,17 +345,17 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   object_class->set_property = nautilus_action_bar_set_property;
 
   /**
-   * NautilusActionBar::view:
+   * NautilusActionBar::slot:
    *
-   * The view related to this actionbar.
+   * The slot related to this actionbar.
    */
   g_object_class_install_property (object_class,
-                                   PROP_VIEW,
-                                   g_param_spec_object ("view",
-                                                        "View of the actionbar",
-                                                        "The view related to this actionbar",
-                                                        NAUTILUS_TYPE_VIEW,
-                                                        G_PARAM_READWRITE | G_PARAM_CONSTRUCT_ONLY));
+                                   PROP_SLOT,
+                                   g_param_spec_object ("slot",
+                                                        "Current slot of the window",
+                                                        "Current slot of the window",
+                                                        NAUTILUS_TYPE_WINDOW_SLOT,
+                                                        G_PARAM_READWRITE));
 
   gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-action-bar.ui");
 
@@ -338,7 +364,7 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, primary_label);
   gtk_widget_class_bind_template_child (widget_class, NautilusActionBar, stack);
 
-  gtk_widget_class_bind_template_callback (widget_class, open_preview_cb);
+  gtk_widget_class_bind_template_callback (widget_class, open_preslot_cb);
 
   gtk_widget_class_set_css_name (widget_class, "actionbar");
 }
@@ -356,18 +382,9 @@ nautilus_action_bar_init (NautilusActionBar *self)
 #endif
 }
 
-/**
- * nautilus_action_bar_new:
- * @view: a #NautilusView
- *
- * Creates a new actionbar related to @view.
- *
- * Returns: (transfer full): a #NautilusActionBar
- */
-GtkWidget*
-nautilus_action_bar_new (NautilusView *view)
+NautilusActionBar*
+nautilus_action_bar_new (void)
 {
-  return g_object_new (NAUTILUS_TYPE_ACTION_BAR,
-                       "view", view,
-                       NULL);
+  return NAUTILUS_ACTION_BAR (g_object_new (NAUTILUS_TYPE_ACTION_BAR,
+                                            NULL));
 }
