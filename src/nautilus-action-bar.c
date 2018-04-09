@@ -20,6 +20,7 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-file.h"
 #include "nautilus-previewer.h"
+#include "nautilus-action-bar-box.h"
 
 #include <gdk/gdkx.h>
 
@@ -372,7 +373,9 @@ nautilus_action_bar_class_init (NautilusActionBarClass *klass)
 static void
 nautilus_action_bar_init (NautilusActionBar *self)
 {
-  gtk_widget_init_template (GTK_WIDGET (self));
+    g_type_ensure (NAUTILUS_TYPE_ACTION_BAR_BOX);
+
+    gtk_widget_init_template (GTK_WIDGET (self));
 
 #if 0
   update_paste_button (self);
@@ -385,6 +388,6 @@ nautilus_action_bar_init (NautilusActionBar *self)
 NautilusActionBar*
 nautilus_action_bar_new (void)
 {
-  return NAUTILUS_ACTION_BAR (g_object_new (NAUTILUS_TYPE_ACTION_BAR,
-                                            NULL));
+    return NAUTILUS_ACTION_BAR (g_object_new (NAUTILUS_TYPE_ACTION_BAR,
+                                              NULL));
 }

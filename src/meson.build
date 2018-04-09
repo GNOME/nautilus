@@ -57,6 +57,8 @@ libnautilus_sources = [
   'gtk/nautilusgtkplacesviewrowprivate.h',
   'nautilus-action-bar.c',
   'nautilus-action-bar.h',
+  'nautilus-action-bar-box.c',
+  'nautilus-action-bar-box.h',
   'nautilus-application.c',
   'nautilus-application.h',
   'nautilus-bookmark-list.c',
