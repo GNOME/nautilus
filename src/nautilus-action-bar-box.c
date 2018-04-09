@@ -94,10 +94,13 @@ nautilus_action_bar_box_size_allocate (GtkWidget     *widget,
     gint available_width = 0;
     gint margin_sizes = 0;
     GtkRequestedSize *sizes;
+    GtkRequestedSize *sizes_test;
     gint n_visible_children;
     GtkAllocation child_allocation;
     gint current_x = 0;
     gint i;
+    gint min_width;
+    gint nat_width;
 
     children = gtk_container_get_children (GTK_CONTAINER (self));
 
@@ -106,9 +109,13 @@ nautilus_action_bar_box_size_allocate (GtkWidget     *widget,
     n_visible_children = 2;
 
     sizes = g_newa (GtkRequestedSize, g_list_length (children));
+    sizes_test = g_newa (GtkRequestedSize, g_list_length (children));
     available_width = allocation->width;
 
     gtk_widget_get_preferred_size (widget, &minimum_size, &natural_size);
+    gtk_widget_get_preferred_width_for_height (widget, allocation->height, &min_width, &nat_width);
+
+    g_print ("preferred alloc %d %d\n", min_width, nat_width);
 
     gtk_widget_set_allocation (widget, allocation);
 
@@ -119,15 +126,12 @@ nautilus_action_bar_box_size_allocate (GtkWidget     *widget,
                                                    &sizes[i].minimum_size,
                                                    &sizes[i].natural_size);
         sizes[i].data = child->data;
-        margin_sizes += gtk_widget_get_margin_end (child->data) +
-                        gtk_widget_get_margin_start (child->data);
     }
 
-    g_print ("allocation width %d %d\n", allocation->width, margin_sizes);
-    available_width -= margin_sizes;
-    if ((sizes[INFO_SECTION_CHILD_POSITION_INDEX].natural_size +
-         sizes[ACTION_SECTION_CHILD_POSITION_INDEX].natural_size)
-        < available_width)
+    g_print ("allocation width %d %d %d %d\n", allocation->width, margin_sizes, sizes[INFO_SECTION_CHILD_POSITION_INDEX].natural_size, sizes[ACTION_SECTION_CHILD_POSITION_INDEX].natural_size);
+    available_width -= gtk_box_get_spacing (GTK_BOX (self)) * (n_visible_children - 1);
+    if (sizes[INFO_SECTION_CHILD_POSITION_INDEX].natural_size < INFO_SECTION_WIDTH_RATIO * available_width &&
+        sizes[ACTION_SECTION_CHILD_POSITION_INDEX].natural_size < (1.0 - INFO_SECTION_WIDTH_RATIO) * available_width)
     {
         /* Info section */
         sizes[INFO_SECTION_CHILD_POSITION_INDEX].minimum_size = MAX (INFO_SECTION_WIDTH_RATIO * available_width,
@@ -143,22 +147,29 @@ nautilus_action_bar_box_size_allocate (GtkWidget     *widget,
     }
     available_width -= sizes[INFO_SECTION_CHILD_POSITION_INDEX].minimum_size +
                        sizes[ACTION_SECTION_CHILD_POSITION_INDEX].minimum_size;
-    g_print ("available width %d\n", available_width);
+    g_print ("available width and mins %d %d %d\n", available_width, sizes[INFO_SECTION_CHILD_POSITION_INDEX].minimum_size, sizes[ACTION_SECTION_CHILD_POSITION_INDEX].minimum_size);
 
     gtk_distribute_natural_allocation (MAX (0, available_width),
                                        n_visible_children, sizes);
 
     for (child = children, i = 0; child != NULL; child = child->next, i++)
     {
-        child_allocation.x = current_x + gtk_widget_get_margin_start (child->data);
+        child_allocation.x = current_x;
         child_allocation.y = allocation->y;
-        child_allocation.width = sizes[i].minimum_size;
+        if (i == INFO_SECTION_CHILD_POSITION_INDEX)
+        {
+            child_allocation.width = sizes[i].minimum_size;
+        }
+        else
+        {
+            child_allocation.width = allocation->width - current_x;
+        }
         child_allocation.height = allocation->height;
 
         g_print ("child alloc %d %d %d %d %d\n", current_x, child_allocation.x, sizes[i].minimum_size, gtk_widget_get_margin_end (child->data), gtk_widget_get_margin_start (child->data));
         gtk_widget_size_allocate (child->data, &child_allocation);
 
-        current_x += sizes[i].minimum_size + gtk_widget_get_margin_end (child->data);
+        current_x += sizes[i].minimum_size + gtk_box_get_spacing (GTK_BOX (self));
     }
 }
 
