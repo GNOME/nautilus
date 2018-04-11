@@ -120,6 +120,7 @@ recent_thread_func (gpointer user_data)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
+    g_autoptr (GFile) query_location = NULL;
     SearchHitsData *search_hits;
     GList *recent_items;
     GList *mime_types;
@@ -132,21 +133,29 @@ recent_thread_func (gpointer user_data)
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
     mime_types = nautilus_query_get_mime_types (self->query);
     date_range = nautilus_query_get_date_range (self->query);
+    query_location = nautilus_query_get_location (self->query);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
         GtkRecentInfo *info = l->data;
-        const gchar *uri = gtk_recent_info_get_uri (info);
+        g_autoptr (GFile) file = NULL;
+        const gchar *uri;
         const gchar *name;
         gdouble rank;
 
+        uri = gtk_recent_info_get_uri (info);
+        file = g_file_new_for_uri (uri);
+
+        if (!g_file_has_prefix (file, query_location))
+        {
+            continue;
+        }
+
         if (gtk_recent_info_is_local (info))
         {
-            g_autoptr (GFile) file = NULL;
             g_autoptr (GFileInfo) file_info = NULL;
             g_autoptr (GError) error = NULL;
 
-            file = g_file_new_for_uri (uri);
             file_info = g_file_query_info (file, FILE_ATTRIBS,
                                            G_FILE_QUERY_INFO_NONE,
                                            self->cancellable, &error);
