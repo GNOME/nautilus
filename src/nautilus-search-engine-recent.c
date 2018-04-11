@@ -23,7 +23,6 @@
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-recent.h"
 #include "nautilus-ui-utilities.h"
-#include "nautilus-tag-manager.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 
