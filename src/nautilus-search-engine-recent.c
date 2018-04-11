@@ -119,6 +119,7 @@ static gpointer
 recent_thread_func (gpointer user_data)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
+    g_autoptr (GPtrArray) date_range = NULL;
     SearchHitsData *search_hits;
     GList *recent_items;
     GList *mime_types;
@@ -130,6 +131,7 @@ recent_thread_func (gpointer user_data)
     hits = NULL;
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
     mime_types = nautilus_query_get_mime_types (self->query);
+    date_range = nautilus_query_get_date_range (self->query);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
@@ -226,6 +228,26 @@ recent_thread_func (gpointer user_data)
 
             gmodified = g_date_time_new_from_unix_local (modified);
             gvisited = g_date_time_new_from_unix_local (visited);
+
+            if (date_range != NULL)
+            {
+                NautilusQuerySearchType type;
+                guint64 target_time;
+                GDateTime *initial_date;
+                GDateTime *end_date;
+
+                initial_date = g_ptr_array_index (date_range, 0);
+                end_date = g_ptr_array_index (date_range, 1);
+                type = nautilus_query_get_search_type (self->query);
+                target_time = (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) ?
+                               visited : modified;
+
+                if (!nautilus_file_date_in_between (target_time,
+                                                    initial_date, end_date))
+                {
+                    continue;
+                }
+            }
 
             hit = nautilus_search_hit_new (uri);
             nautilus_search_hit_set_fts_rank (hit, rank);
