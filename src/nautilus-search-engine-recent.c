@@ -31,6 +31,10 @@
 #include <glib.h>
 #include <gio/gio.h>
 
+#define FILE_ATTRIBS G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
+                     G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP "," \
+                     G_FILE_ATTRIBUTE_ACCESS_CAN_READ ","
+
 struct _NautilusSearchEngineRecent
 {
     GObject parent_instance;
@@ -134,9 +138,39 @@ recent_thread_func (gpointer user_data)
 
         if (gtk_recent_info_is_local (info))
         {
-            g_autofree gchar *path = g_filename_from_uri (uri, NULL, NULL);
+            g_autoptr (GFile) file = NULL;
+            g_autoptr (GFileInfo) file_info = NULL;
+            g_autoptr (GError) error = NULL;
 
-            if (!path || !g_file_test (path, G_FILE_TEST_EXISTS))
+            file = g_file_new_for_uri (uri);
+            file_info = g_file_query_info (file, FILE_ATTRIBS,
+                                           G_FILE_QUERY_INFO_NONE,
+                                           self->cancellable, &error);
+            if (error != NULL)
+            {
+                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                {
+                    break;
+                }
+
+                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                {
+                    g_debug("Impossible to read locate file info: %s",
+                            error->message);
+                }
+
+                continue;
+            }
+
+            if (!g_file_info_get_attribute_boolean (file_info,
+                                                    G_FILE_ATTRIBUTE_ACCESS_CAN_READ))
+            {
+                continue;
+            }
+
+            if (!nautilus_query_get_show_hidden_files (self->query) &&
+                (g_file_info_get_is_hidden (file_info) ||
+                 g_file_info_get_is_backup (file_info)))
             {
                 continue;
             }
