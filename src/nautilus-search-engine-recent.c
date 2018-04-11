@@ -121,6 +121,7 @@ recent_thread_func (gpointer user_data)
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     SearchHitsData *search_hits;
     GList *recent_items;
+    GList *mime_types;
     GList *hits;
     GList *l;
 
@@ -128,6 +129,7 @@ recent_thread_func (gpointer user_data)
 
     hits = NULL;
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
+    mime_types = nautilus_query_get_mime_types (self->query);
 
     for (l = recent_items; l != NULL; l = l->next)
     {
@@ -197,6 +199,28 @@ recent_thread_func (gpointer user_data)
             g_autoptr (GDateTime) gmodified = NULL;
             g_autoptr (GDateTime) gvisited = NULL;
 
+            if (mime_types)
+            {
+                GList *ml;
+                const gchar *mime_type = gtk_recent_info_get_mime_type (info);
+                gboolean found = FALSE;
+
+                for (ml = mime_types; mime_type != NULL && ml != NULL;
+                     ml = ml->next)
+                {
+                    if (g_content_type_is_a (mime_type, ml->data))
+                    {
+                        found = TRUE;
+                        break;
+                    }
+                }
+
+                if (!found)
+                {
+                    continue;
+                }
+            }
+
             modified = gtk_recent_info_get_modified (info);
             visited = gtk_recent_info_get_visited (info);
 
@@ -219,6 +243,7 @@ recent_thread_func (gpointer user_data)
     g_idle_add (search_thread_add_hits_idle, search_hits);
 
     g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
+    g_list_free_full (mime_types, g_free);
 
     return NULL;
 }
