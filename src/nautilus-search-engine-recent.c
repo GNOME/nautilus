@@ -153,6 +153,7 @@ recent_thread_func (gpointer user_data)
 
         if (gtk_recent_info_is_local (info))
         {
+            g_autofree gchar *path = NULL;
             g_autoptr (GFileInfo) file_info = NULL;
             g_autoptr (GError) error = NULL;
 
@@ -181,9 +182,12 @@ recent_thread_func (gpointer user_data)
                 continue;
             }
 
+            path = g_file_get_path (file);
+
             if (!nautilus_query_get_show_hidden_files (self->query) &&
                 (g_file_info_get_is_hidden (file_info) ||
-                 g_file_info_get_is_backup (file_info)))
+                 g_file_info_get_is_backup (file_info) ||
+                 g_strrstr (path, G_DIR_SEPARATOR_S ".") != NULL))
             {
                 continue;
             }
