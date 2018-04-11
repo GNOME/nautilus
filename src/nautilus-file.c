@@ -1837,14 +1837,12 @@ rename_get_info_callback (GObject      *source_object,
                           GAsyncResult *res,
                           gpointer      callback_data)
 {
+    g_autoptr (GFileInfo) new_info = NULL;
+    g_autoptr (GError) error = NULL;
     NautilusFileOperation *op;
     NautilusDirectory *directory;
     NautilusFile *existing_file;
-    char *old_uri;
-    char *new_uri;
     const char *new_name;
-    GFileInfo *new_info;
-    GError *error;
 
     op = callback_data;
 
@@ -1852,8 +1850,10 @@ rename_get_info_callback (GObject      *source_object,
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
-        directory = op->file->details->directory;
+        g_autofree char *old_uri = NULL;
+        g_autofree char *new_uri = NULL;
 
+        directory = op->file->details->directory;
         new_name = g_file_info_get_name (new_info);
 
         /* If there was another file by the same name in this
@@ -1873,8 +1873,6 @@ rename_get_info_callback (GObject      *source_object,
 
         new_uri = nautilus_file_get_uri (op->file);
         nautilus_directory_moved (old_uri, new_uri);
-        g_free (new_uri);
-        g_free (old_uri);
 
         /* the rename could have affected the display name if e.g.
          * we're in a vfolder where the name comes from a desktop file
@@ -1886,14 +1884,8 @@ rename_get_info_callback (GObject      *source_object,
                                                  NAUTILUS_FILE_ATTRIBUTE_INFO |
                                                  NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
         }
-
-        g_object_unref (new_info);
     }
     nautilus_file_operation_complete (op, NULL, error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 static void
