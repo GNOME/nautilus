@@ -3,7 +3,7 @@
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
+ * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
  * Nautilus is distributed in the hope that it will be useful,
@@ -16,7 +16,6 @@
  * see <http://www.gnu.org/licenses/>.
  *
  * Author: Marco Trevisan <marco.trevisan@canonical.com>
- *
  */
 
 #ifndef __NAUTILUS_SEARCH_ENGINE_RECENT_H__

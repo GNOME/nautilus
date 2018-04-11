@@ -3,7 +3,7 @@
  *
  * Nautilus is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License as
- * published by the Free Software Foundation; either version 2 of the
+ * published by the Free Software Foundation; either version 3 of the
  * License, or (at your option) any later version.
  *
  * Nautilus is distributed in the hope that it will be useful,
@@ -16,7 +16,6 @@
  * see <http://www.gnu.org/licenses/>.
  *
  * Author: Marco Trevisan <marco.trevisan@canonical.com>
- *
  */
 
 #include <config.h>
@@ -69,7 +68,9 @@ nautilus_search_engine_recent_finalize (GObject *object)
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
 
     if (self->cancellable)
+    {
         g_cancellable_cancel (self->cancellable);
+    }
 
     g_clear_object (&self->query);
     g_clear_object (&self->cancellable);
@@ -115,14 +116,16 @@ recent_thread_func (gpointer user_data)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     SearchHitsData *search_hits;
-    GList *recent_items, *hits, *l;
+    GList *recent_items;
+    GList *hits;
+    GList *l;
 
     g_return_val_if_fail (self->query, NULL);
 
     hits = NULL;
     recent_items = gtk_recent_manager_get_items (self->recent_manager);
 
-    for (l = recent_items; l; l = l->next)
+    for (l = recent_items; l != NULL; l = l->next)
     {
         GtkRecentInfo *info = l->data;
         const gchar *uri = gtk_recent_info_get_uri (info);
@@ -134,11 +137,15 @@ recent_thread_func (gpointer user_data)
             g_autofree gchar *path = g_filename_from_uri (uri, NULL, NULL);
 
             if (!path || !g_file_test (path, G_FILE_TEST_EXISTS))
+            {
                 continue;
+            }
         }
 
         if (g_cancellable_is_cancelled (self->cancellable))
+        {
             break;
+        }
 
         name = gtk_recent_info_get_display_name (info);
         rank = nautilus_query_matches_string (self->query, name);
