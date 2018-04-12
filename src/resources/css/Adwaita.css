@@ -4,12 +4,14 @@
     background: @theme_base_color;
 }
 
+/*
 .nautilus-window.devel headerbar {
     background: #cbd2d9 -gtk-icontheme("system-run-symbolic") 70% 0/64px 64px no-repeat, linear-gradient(to left, #a5b1bd 0%, #a5b1bd 8%, @theme_bg_color 25%);
     box-shadow: inset 0 1px #f1f3f5;
     border-color: #909fae;
     color: rgba(46, 52, 54, 0.2);
 }
+*/
 
 .nautilus-canvas-item {
     border-radius: 5px;
@@ -47,42 +49,96 @@
 
 /* Path bar */
 
-.path-bar button { /* undecorate the buttons */
-  border-color: transparent;
-  background-color: transparent;
-  background-image: none;
-  box-shadow: none;
-  border-radius: 0;
-  text-shadow: none;
-  -gtk-icon-shadow: none;
+.path-bar button {
+    /* undecorate the buttons */
+    border-color: transparent;
+    background-color: transparent;
+    background-image: none;
+    box-shadow: none;
+    border-radius: 0;
+    text-shadow: none;
+    -gtk-icon-shadow: none;
 }
 
-.path-bar .slider-button { /* margins are for the round keynav indicator */
-  margin-top: 10px;
-  margin-bottom: 11px;
-  -gtk-outline-radius: 50px;
-  opacity: 0.7;
+.path-bar .slider-button {
+    /* margins are for the round keynav indicator */
+    margin-top: 10px;
+    margin-bottom: 11px;
+    -gtk-outline-radius: 50px;
+    opacity: 0.7;
 }
 
 .path-bar .slider-button:not(:backdrop):hover {
-  opacity: 1;
+    opacity: 1;
 }
 
-.path-bar .slider-button:disabled { /* hide insensitive overflow buttons */
-  opacity: 0;
+.path-bar .slider-button:disabled {
+    /* hide insensitive overflow buttons */
+    opacity: 0;
 }
 
-.path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
-
-.path-bar button:not(:checked) { /* Undecorate unchecked highlight */
-    box-shadow:none;
+.path-bar button:not(:checked) image {
+    /* dim the icon when not checked */
+    opacity: 0.8;
 }
 
-.path-bar button:not(.slider-button):not(:backdrop):hover > * { box-shadow: 0 3px @borders; }
+.path-bar label.path-separator {
+    /* make the path separator dimmer */
+    color: @borders;
+}
+
+.path-bar button:not(.slider-button) label {
+    /* remove horizontal padding from the labels so that the underlines align
+     * with the actual text (at least when the label is bold) */
+    padding-left: 0;
+    padding-right: 0;
+
+    /* add 4px vertical padding, this ensures that the underline (3px) is at
+     * least 1px away from the text */
+    padding-top: 4px;
+    padding-bottom: 4px;
+}
+
+.path-bar button:not(.slider-button) {
+    /* remove top and bottom padding so that the buttons do not increase the
+     * height of the header bar, now that the labels themselves are vertically
+     * padded */
+    padding-top: 0;
+    padding-bottom: 0;
+
+    /* add horizontal padding to the button now that the labes are not
+     * horizontally padded */
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+/* we want some padding between the label an the icon */
+.path-bar button:not(.text-button) label:dir(ltr) { padding-left: 4px; }
+.path-bar button:not(.text-button) label:dir(rtl) { padding-right: 4px; }
+
+.path-bar button label.selected-label {
+    font-weight: bold;
+}
+
+.path-bar button:not(.slider-button) > * {
+    /* set up underline properties; the initial background size is smaller than
+     * the final one by 24px, making for nice Firefox-style transitions */
+    background-size: calc(100% - 24px) 3px;
+    background-repeat: no-repeat;
+    background-position: 50% 100%;
+    transition: 0.1s;
+}
+
+.path-bar button:not(.slider-button):not(:backdrop):hover > * {
+    background-image: image(@borders);
+    background-size: 100% 3px;
+    transition: background-size 0.2s;
+}
 
 .path-bar button:not(.slider-button):not(:backdrop):checked > *,
 .path-bar button.text-button:not(.slider-button):backdrop:checked > * {
-  box-shadow: 0 3px @theme_selected_bg_color;
+    background-image: image(@theme_selected_bg_color);
+    background-size: 100% 3px;
 }
 
 /* Sidebar */
