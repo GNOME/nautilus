@@ -34,6 +34,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-profile.h"
+#include "nautilus-recent.h"
 #include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
@@ -1607,9 +1608,14 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
 
     for (p = file_pairs; p != NULL; p = p->next)
     {
+        g_autofree char *from_uri = NULL;
+        g_autofree char *to_uri = NULL;
+
         pair = p->data;
         from_location = pair->from;
         to_location = pair->to;
+        from_uri = g_file_get_uri (from_location);
+        to_uri = g_file_get_uri (to_location);
 
         /* Handle overwriting a file. */
         file = nautilus_file_get_existing (to_location);
@@ -1692,6 +1698,8 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             /* Unref each file once to balance out nautilus_file_get_by_uri. */
             unref_list = g_list_prepend (unref_list, file);
         }
+
+        nautilus_recent_update_file_moved (from_uri, to_uri, NULL, NULL);
     }
 
     /* Now send out the changed and added signals for existing file objects. */
