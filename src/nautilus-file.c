@@ -33,6 +33,7 @@
 #include "nautilus-lib-self-check-functions.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
+#include "nautilus-recent.h"
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-video-mime-types.h"
@@ -1832,6 +1833,8 @@ rename_get_info_callback (GObject      *source_object,
     {
         g_autofree char *old_uri = NULL;
         g_autofree char *new_uri = NULL;
+        g_autofree char *new_display_name = NULL;
+        g_autofree char *old_display_name = NULL;
 
         directory = op->file->details->directory;
         new_name = g_file_info_get_name (new_info);
@@ -1848,11 +1851,16 @@ rename_get_info_callback (GObject      *source_object,
         }
 
         old_uri = nautilus_file_get_uri (op->file);
+        old_display_name = nautilus_file_get_display_name (op->file);
 
         update_info_and_name (op->file, new_info);
 
         new_uri = nautilus_file_get_uri (op->file);
+        new_display_name = nautilus_file_get_display_name (op->file);
+
         nautilus_directory_moved (old_uri, new_uri);
+        nautilus_recent_update_file_moved (old_uri, new_uri,
+                                           old_display_name, new_display_name);
     }
     nautilus_file_operation_complete (op, NULL, error);
 }
