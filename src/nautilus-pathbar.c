@@ -76,6 +76,7 @@ typedef struct
     GtkWidget *label;
     GtkWidget *bold_label;
     GtkWidget *separator;
+    GtkWidget *disclosure_arrow;
     GtkWidget *container;
 
     guint ignore_changes : 1;
@@ -107,6 +108,8 @@ typedef struct
     GMenu *context_menu;
     NautilusFile *context_menu_file;
     GdkEvent *context_menu_event;
+
+    GtkPopover *current_view_menu;
 } NautilusPathBarPrivate;
 
 
@@ -322,6 +325,11 @@ nautilus_path_bar_init (NautilusPathBar *self)
 {
     NautilusPathBarPrivate *priv;
     GtkBuilder *builder;
+    GMenu *menu;
+    GMenu *section_1;
+    GMenu *section_2;
+    GMenu *section_3;
+    GMenu *section_4;
 
     priv = nautilus_path_bar_get_instance_private (self);
 
@@ -386,6 +394,26 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                  GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "path-bar");
+
+    menu = g_menu_new ();
+    section_1 = g_menu_new ();
+    section_2 = g_menu_new ();
+    section_3 = g_menu_new ();
+    section_4 = g_menu_new ();
+    g_menu_insert (section_1, 0, _("New Folder…"), "view.new-folder");
+    g_menu_insert (section_2, 0, _("Add to Bookmarks"), "view.bookmark");
+    g_menu_insert (section_2, 1, _("Star"), "view.star");
+    g_menu_insert (section_3, 0, _("Paste"), "view.paste");
+    g_menu_insert (section_3, 1, _("Select All"), "view.select-all");
+    g_menu_insert (section_4, 0, _("Properties"), "view.properties");
+
+    g_menu_insert_section (menu, 0, NULL, G_MENU_MODEL (section_1));
+    g_menu_insert_section (menu, 1, NULL, G_MENU_MODEL (section_2));
+    g_menu_insert_section (menu, 2, NULL, G_MENU_MODEL (section_3));
+    g_menu_insert_section (menu, 3, NULL, G_MENU_MODEL (section_4));
+
+    priv->current_view_menu = GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
+                                                                       G_MENU_MODEL (menu)));
 }
 
 static void
@@ -1620,9 +1648,16 @@ button_clicked_cb (GtkWidget *button,
     button_list = g_list_find (priv->button_list, button_data);
     g_assert (button_list != NULL);
 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
+    if (g_file_equal (button_data->path, priv->current_path))
+    {
+        gtk_popover_popup (priv->current_view_menu);
+    }
+    else
+    {
+        g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0, button_data->path, 0);
+    }
 
-    g_signal_emit (self, path_bar_signals [PATH_CLICKED], 0, button_data->path);
+
 }
 
 
@@ -2108,7 +2143,9 @@ make_button_data (NautilusPathBar *self,
     GFile *path;
     GtkWidget *child;
     ButtonData *button_data;
+    NautilusPathBarPrivate *priv;
 
+    priv = nautilus_path_bar_get_instance_private (self);
     path = nautilus_file_get_location (file);
     child = NULL;
 
@@ -2128,7 +2165,20 @@ make_button_data (NautilusPathBar *self,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-        /* Fall through */
+        {
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+            button_data->label = gtk_label_new (NULL);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+        }
+        break;
+
         case HOME_BUTTON:
         /* Fall through */
         case MOUNT_BUTTON:
@@ -2137,10 +2187,14 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
 
@@ -2150,12 +2204,23 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S), FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
+    }
+
+    gtk_widget_set_no_show_all (button_data->disclosure_arrow, TRUE);
+    if (current_dir)
+    {
+        gtk_widget_show (button_data->disclosure_arrow);
+        gtk_popover_set_relative_to (priv->current_view_menu, button_data->button);
     }
 
     if (button_data->label != NULL)
@@ -2203,49 +2268,6 @@ make_button_data (NautilusPathBar *self,
     g_object_unref (path);
 
     return button_data;
-}
-
-static gboolean
-nautilus_path_bar_check_parent_path (NautilusPathBar  *self,
-                                     GFile            *location,
-                                     ButtonData      **current_button_data)
-{
-    GList *list;
-    NautilusPathBarPrivate *priv;
-    ButtonData *button_data, *current_data;
-    gboolean is_active;
-
-    priv = nautilus_path_bar_get_instance_private (self);
-    current_data = NULL;
-
-    for (list = priv->button_list; list; list = list->next)
-    {
-        button_data = list->data;
-        if (g_file_equal (location, button_data->path))
-        {
-            current_data = button_data;
-            is_active = TRUE;
-
-            if (!gtk_widget_get_child_visible (current_data->container))
-            {
-                priv->first_scrolled_button = list;
-                gtk_widget_queue_resize (GTK_WIDGET (self));
-            }
-        }
-        else
-        {
-            is_active = FALSE;
-        }
-
-        nautilus_path_bar_update_button_state (button_data, is_active);
-    }
-
-    if (current_button_data != NULL)
-    {
-        *current_button_data = current_data;
-    }
-
-    return (current_data != NULL);
 }
 
 static void
@@ -2321,11 +2343,8 @@ nautilus_path_bar_set_path (NautilusPathBar *self,
 
     /* Check whether the new path is already present in the pathbar as buttons.
      * This could be a parent directory or a previous selected subdirectory. */
-    if (!nautilus_path_bar_check_parent_path (self, file_path, &button_data))
-    {
-        nautilus_path_bar_update_path (self, file_path);
-        button_data = g_list_nth_data (priv->button_list, 0);
-    }
+    nautilus_path_bar_update_path (self, file_path);
+    button_data = g_list_nth_data (priv->button_list, 0);
 
     if (priv->current_path != NULL)
     {
