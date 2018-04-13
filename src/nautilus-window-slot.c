@@ -3399,3 +3399,15 @@ nautilus_window_slot_get_loading (NautilusWindowSlot *self)
 
     return priv->loading;
 }
+
+NautilusQueryEditor *
+nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->query_editor;
+}
