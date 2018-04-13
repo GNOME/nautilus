@@ -635,8 +635,8 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     /* If the action is not enabled, don't try to handle search */
     if (g_action_get_enabled (action))
     {
-        retval = gtk_search_bar_handle_event (GTK_SEARCH_BAR (priv->query_editor),
-                                              (GdkEvent *) event);
+        retval = nautilus_query_editor_handle_event (priv->query_editor,
+                                                     (GdkEvent *) event);
     }
 
     if (retval)
@@ -888,12 +888,12 @@ action_search_visible (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
-            g_object_set (self, "searching", TRUE, NULL);
+            nautilus_window_slot_set_searching (self, TRUE);
         }
         else
         {
             hide_query_editor (self);
-            g_object_set (self, "searching", FALSE, NULL);
+            nautilus_window_slot_set_searching (self, FALSE);
         }
     }
 
@@ -3359,4 +3359,16 @@ nautilus_window_slot_get_loading (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->loading;
+}
+
+NautilusQueryEditor *
+nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->query_editor;
 }

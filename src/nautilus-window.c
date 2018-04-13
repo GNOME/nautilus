@@ -2081,6 +2081,8 @@ setup_toolbar (NautilusWindow *window)
                              G_CALLBACK (location_entry_location_changed_callback), window, 0);
     g_signal_connect_object (location_entry, "cancel",
                              G_CALLBACK (location_entry_cancel_callback), window, 0);
+
+    gtk_window_set_titlebar (GTK_WINDOW (window), priv->toolbar);
 }
 
 static void
@@ -2544,6 +2546,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     {
         /* inform slot & view */
         nautilus_window_slot_set_active (old_slot, FALSE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), NULL);
     }
 
     priv->active_slot = new_slot;
@@ -2551,10 +2554,10 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     /* make new slot active, if it exists */
     if (new_slot)
     {
-        nautilus_toolbar_set_active_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
 
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
 
         on_location_changed (window);
     }
@@ -2800,6 +2803,8 @@ nautilus_window_init (NautilusWindow *window)
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
                                  "nautilus-window");
 
+    priv->toolbar = nautilus_toolbar_new ();
+
     window_group = gtk_window_group_new ();
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));
     g_object_unref (window_group);
@@ -2847,7 +2852,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
-    gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, content_paned);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, places_sidebar);
