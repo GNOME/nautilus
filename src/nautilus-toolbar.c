@@ -65,6 +65,7 @@ struct _NautilusToolbar
 
     GtkWidget *path_bar_container;
     GtkWidget *location_entry_container;
+    GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
 
@@ -129,10 +130,14 @@ toolbar_update_appearance (NautilusToolbar *self)
                           g_settings_get_boolean (nautilus_preferences,
                                                   NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
-    gtk_widget_set_visible (self->location_entry_container,
-                            show_location_entry);
-    gtk_widget_set_visible (self->path_bar,
-                            !show_location_entry);
+    if (show_location_entry)
+    {
+        gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "location");
+    }
+    else
+    {
+        gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
+    }
 }
 
 static void
@@ -1157,6 +1162,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
 
@@ -1168,9 +1174,6 @@ GtkWidget *
 nautilus_toolbar_new ()
 {
     return g_object_new (NAUTILUS_TYPE_TOOLBAR,
-                         "show-close-button", TRUE,
-                         "custom-title", gtk_label_new (NULL),
-                         "valign", GTK_ALIGN_CENTER,
                          NULL);
 }
 
