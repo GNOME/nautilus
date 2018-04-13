@@ -451,8 +451,6 @@ hide_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
     view = nautilus_window_slot_get_current_view (self);
 
-    gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (priv->query_editor), FALSE);
-
     if (priv->qe_changed_id > 0)
     {
         g_signal_handler_disconnect (priv->query_editor, priv->qe_changed_id);
@@ -534,7 +532,6 @@ show_query_editor (NautilusWindowSlot *self)
         }
     }
 
-    gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (priv->query_editor), TRUE);
     gtk_widget_grab_focus (GTK_WIDGET (priv->query_editor));
 
     if (priv->qe_changed_id == 0)
@@ -907,7 +904,6 @@ nautilus_window_slot_constructed (GObject *object)
 
     priv->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
     gtk_widget_show (GTK_WIDGET (priv->query_editor));
-    nautilus_window_slot_add_extra_location_widget (self, GTK_WIDGET (priv->query_editor));
 
     g_object_bind_property (self, "location",
                             priv->query_editor, "location",
@@ -933,10 +929,12 @@ action_search_visible (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
+            g_object_set (self, "searching", TRUE, NULL);
         }
         else
         {
             hide_query_editor (self);
+            g_object_set (self, "searching", FALSE, NULL);
         }
     }
 
