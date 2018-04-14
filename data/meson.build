@@ -7,16 +7,28 @@
 #
 # https://gitlab.gnome.org/GNOME/nautilus/merge_requests/144
 ##########
+
+cp = find_program('cp')
+mkdir = find_program('mkdir')
+
 foreach icon_size: ['16x16', '22x22', '24x24', '32x32', '48x48', '512x512']
-  configure_file(
-    command: [
-      'cp', '@INPUT@', '@OUTPUT@'
-    ],
-    input: files(
-      join_paths('icons', 'hicolor', icon_size, 'apps', 'org.gnome.Nautilus.png')
-    ),
-    install_dir: join_paths(datadir, 'icons', 'hicolor', icon_size, 'apps'),
-    output: '@0@.png'.format(application_id)
+  icon_path = join_paths('icons', 'hicolor', icon_size, 'apps')
+  output_icon_path = join_paths(meson.build_root(), 'data', icon_path)
+
+  run_command(
+    mkdir, [
+      '-p', output_icon_path
+    ]
+  )
+  run_command(
+    cp,
+    join_paths(icon_path, 'org.gnome.Nautilus.png'),
+    join_paths(output_icon_path, '@0@.png'.format(application_id))
+  )
+
+  install_subdir(
+    join_paths(meson.build_root(), 'data', 'icons'),
+    install_dir: datadir
   )
 endforeach
 
