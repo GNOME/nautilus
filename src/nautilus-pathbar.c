@@ -1842,7 +1842,6 @@ get_gicon (ButtonData *button_data)
 static void
 button_data_free (ButtonData *button_data)
 {
-    g_print ("data free %p\n", button_data);
     g_object_unref (button_data->path);
     g_free (button_data->dir_name);
     if (button_data->file != NULL)
