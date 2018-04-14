@@ -465,7 +465,9 @@ get_dir_name (ButtonData *button_data)
         }
 
         default:
+        {
             return button_data->dir_name;
+        }
     }
 }
 
