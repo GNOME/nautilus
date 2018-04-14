@@ -2128,13 +2128,9 @@ make_button_data (NautilusPathBar *self,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-        {
-            child = button_data->image;
-            button_data->label = NULL;
-        }
-        break;
-
+        /* Fall through */
         case HOME_BUTTON:
+        /* Fall through */
         case MOUNT_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
@@ -2149,6 +2145,7 @@ make_button_data (NautilusPathBar *self,
         break;
 
         case NORMAL_BUTTON:
+        /* Fall through */
         default:
         {
             button_data->label = gtk_label_new (NULL);
