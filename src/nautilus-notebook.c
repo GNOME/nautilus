@@ -88,13 +88,10 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
                      gint              abs_x,
                      gint              abs_y)
 {
-    GtkPositionType tab_pos;
     int page_num = 0;
     GtkNotebook *nb = GTK_NOTEBOOK (notebook);
     GtkWidget *page;
     GtkAllocation allocation;
-
-    tab_pos = gtk_notebook_get_tab_pos (GTK_NOTEBOOK (notebook));
 
     while ((page = gtk_notebook_get_nth_page (nb, page_num)))
     {
@@ -118,15 +115,7 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
         max_x = x_root + allocation.x + allocation.width;
         max_y = y_root + allocation.y + allocation.height;
 
-        if (((tab_pos == GTK_POS_TOP)
-             || (tab_pos == GTK_POS_BOTTOM))
-            && (abs_x <= max_x))
-        {
-            return page_num;
-        }
-        else if (((tab_pos == GTK_POS_LEFT)
-                  || (tab_pos == GTK_POS_RIGHT))
-                 && (abs_y <= max_y))
+        if (abs_x <= max_x && abs_y <= max_y)
         {
             return page_num;
         }
@@ -154,7 +143,7 @@ button_press_cb (NautilusNotebook *notebook,
             /* consume event, so that we don't pop up the context menu when
              * the mouse if not over a tab label
              */
-            return TRUE;
+            return GDK_EVENT_STOP;
         }
 
         /* switch to the page the mouse is over, but don't consume the event */
@@ -165,11 +154,16 @@ button_press_cb (NautilusNotebook *notebook,
     {
         GtkWidget *slot;
 
+        if (tab_clicked == -1)
+        {
+            return GDK_EVENT_PROPAGATE;
+        }
+
         slot = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), tab_clicked);
         g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, slot);
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
