@@ -65,6 +65,7 @@ struct _NautilusToolbar
 
     GtkWidget *path_bar_container;
     GtkWidget *location_entry_container;
+    GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
@@ -99,6 +100,7 @@ struct _NautilusToolbar
 
     GtkWidget *location_entry_close_button;
 
+    NautilusWindowSlot *window_slot;
 
     NautilusProgressInfoManager *progress_manager;
 
@@ -112,6 +114,7 @@ enum
 {
     PROP_WINDOW = 1,
     PROP_SHOW_LOCATION_ENTRY,
+    PROP_WINDOW_SLOT,
     NUM_PROPERTIES
 };
 
@@ -130,7 +133,13 @@ toolbar_update_appearance (NautilusToolbar *self)
                           g_settings_get_boolean (nautilus_preferences,
                                                   NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
-    if (show_location_entry)
+
+    if (self->window_slot != NULL &&
+        nautilus_window_slot_get_searching (self->window_slot))
+    {
+        gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "search");
+    }
+    else if (show_location_entry)
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "location");
     }
@@ -999,6 +1008,15 @@ nautilus_toolbar_get_property (GObject    *object,
     }
 }
 
+static void
+on_window_slot_destroyed (gpointer  data,
+                          GObject  *where_the_object_was)
+{
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (data);
+
+    nautilus_toolbar_set_active_slot (self, NULL);
+}
+
 /* The working assumption being made here is, if the location entry is visible,
  * the user must have switched windows while having keyboard focus on the entry
  * (because otherwise it would be invisible),
@@ -1087,6 +1105,12 @@ nautilus_toolbar_set_property (GObject      *object,
         }
         break;
 
+        case PROP_WINDOW_SLOT:
+        {
+            nautilus_toolbar_set_window_slot (self, g_value_get_object (value));
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
@@ -1102,6 +1126,13 @@ nautilus_toolbar_finalize (GObject *obj)
 
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           toolbar_update_appearance, self);
+
+    if (self->window_slot != NULL)
+    {
+        g_signal_handlers_disconnect_by_data (self->window_slot, self);
+        g_object_weak_unref (G_OBJECT (self->window_slot),
+                             on_window_slot_destroyed, self);
+    }
     disconnect_progress_infos (self);
     unschedule_remove_finished_operations (self);
     unschedule_operations_start (self);
@@ -1147,6 +1178,14 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
+        properties [PROP_WINDOW_SLOT] =
+          g_param_spec_object ("window-slot",
+                               "Whether to show the location entry",
+                               "Whether to show the location entry instead of the pathbar",
+                               NAUTILUS_TYPE_WINDOW_SLOT,
+                               (G_PARAM_READWRITE |
+                                G_PARAM_STATIC_STRINGS));
+
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
     gtk_widget_class_set_template_from_resource (widget_class,
@@ -1157,6 +1196,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
@@ -1199,6 +1239,43 @@ nautilus_toolbar_set_show_location_entry (NautilusToolbar *self,
         toolbar_update_appearance (self);
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SHOW_LOCATION_ENTRY]);
+    }
+}
+
+void
+nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
+                                  NautilusWindowSlot *window_slot)
+{
+    if (window_slot != self->window_slot)
+    {
+        GList *children;
+
+        if (self->window_slot != NULL)
+        {
+            g_signal_handlers_disconnect_by_data (self->window_slot, self);
+            g_object_weak_unref (G_OBJECT (self->window_slot),
+                                 on_window_slot_destroyed, self);
+        }
+        g_print ("setting window slot\n");
+        self->window_slot = window_slot;
+        g_object_weak_ref (G_OBJECT (self->window_slot),
+                           on_window_slot_destroyed,
+                           self);
+        g_signal_connect_swapped (window_slot, "notify::searching",
+                                  G_CALLBACK (toolbar_update_appearance), self);
+
+        children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
+        if (children != NULL)
+        {
+            gtk_container_remove (GTK_CONTAINER (self->search_container),
+                                  children->data);
+        }
+        gtk_container_add (GTK_CONTAINER (self->search_container),
+                           GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
+
+        toolbar_update_appearance (self);
+
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
     }
 }
 

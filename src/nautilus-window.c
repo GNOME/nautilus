@@ -2629,6 +2629,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     {
         /* inform slot & view */
         nautilus_window_slot_set_active (old_slot, FALSE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), NULL);
     }
 
     priv->active_slot = new_slot;
@@ -2640,6 +2641,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
 
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
 
         on_location_changed (window);
     }

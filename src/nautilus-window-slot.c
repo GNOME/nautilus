@@ -644,8 +644,8 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     /* If the action is not enabled, don't try to handle search */
     if (g_action_get_enabled (action))
     {
-        retval = gtk_search_bar_handle_event (GTK_SEARCH_BAR (priv->query_editor),
-                                              (GdkEvent *) event);
+        retval = nautilus_query_editor_handle_event (priv->query_editor,
+                                                     (GdkEvent *) event);
     }
 
     if (retval)
@@ -929,12 +929,12 @@ action_search_visible (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
-            g_object_set (self, "searching", TRUE, NULL);
+            nautilus_window_slot_set_searching (self, TRUE);
         }
         else
         {
             hide_query_editor (self);
-            g_object_set (self, "searching", FALSE, NULL);
+            nautilus_window_slot_set_searching (self, FALSE);
         }
     }
 
