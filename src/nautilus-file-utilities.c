@@ -30,8 +30,8 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
+#include "nautilus-ui-utilities.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-vfs-extensions.h>
@@ -926,9 +926,10 @@ nautilus_restore_files_from_trash (GList     *files,
         message = g_strdup_printf (_("Could not determine original location of “%s” "), file_name);
         g_free (file_name);
 
-        eel_show_warning_dialog (message,
-                                 _("The item cannot be restored from trash"),
-                                 parent_window);
+        show_dialog (message,
+                     _("The item cannot be restored from trash"),
+                     parent_window,
+                     GTK_MESSAGE_WARNING);
         g_free (message);
     }
 
