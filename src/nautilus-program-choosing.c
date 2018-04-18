@@ -27,7 +27,6 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-recent.h"
 #include "nautilus-ui-utilities.h"
-#include <eel/eel-stock-dialogs.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -390,10 +389,11 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
         else if (count != total)
         {
             /* some files are non-local */
-            eel_show_warning_dialog(_("This drop target only supports local files."),
-                                    _("To open non-local files copy them to a local folder and then"
-                                    " drop them again. The local files you dropped have already been opened."),
-                                    parent_window);
+            show_dialog (_("This drop target only supports local files."),
+                         _("To open non-local files copy them to a local folder and then"
+                         " drop them again. The local files you dropped have already been opened."),
+                         parent_window,
+                         GTK_MESSAGE_WARNING);
         }
     }
 
