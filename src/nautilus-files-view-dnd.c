@@ -30,7 +30,6 @@
 #include "nautilus-files-view.h"
 #include "nautilus-application.h"
 
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
 
@@ -39,6 +38,7 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-ui-utilities.h"
 
 #define GET_ANCESTOR(obj) \
     GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
@@ -145,9 +145,10 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
 
     if (!g_file_is_native (f))
     {
-        eel_show_warning_dialog (_("Drag and drop is not supported."),
-                                 _("Drag and drop is only supported on local file systems."),
-                                 GET_ANCESTOR (view));
+        show_dialog (_("Drag and drop is not supported."),
+                     _("Drag and drop is only supported on local file systems."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
         g_object_unref (f);
         return;
     }
@@ -185,9 +186,10 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
         (action != GDK_ACTION_MOVE) &&
         (action != GDK_ACTION_LINK))
     {
-        eel_show_warning_dialog (_("Drag and drop is not supported."),
-                                 _("An invalid drag type was used."),
-                                 GET_ANCESTOR (view));
+        show_dialog (_("Drag and drop is not supported."),
+                     _("An invalid drag type was used."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
         return;
     }
 
@@ -277,9 +279,10 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
         (action != GDK_ACTION_MOVE) &&
         (action != GDK_ACTION_LINK))
     {
-        eel_show_warning_dialog (_("Drag and drop is not supported."),
-                                 _("An invalid drag type was used."),
-                                 GET_ANCESTOR (view));
+        show_dialog (_("Drag and drop is not supported."),
+                     _("An invalid drag type was used."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
         g_free (container_uri);
         return;
     }
