@@ -1592,11 +1592,7 @@ handle_regular_file_if_needed (NautilusWindowSlot *self,
     if ((parent_file != NULL) &&
         nautilus_file_get_file_type (file) == G_FILE_TYPE_REGULAR)
     {
-        if (priv->pending_selection != NULL)
-        {
-            nautilus_file_list_free (priv->pending_selection);
-        }
-
+        g_clear_pointer (&priv->pending_selection, nautilus_file_list_free);
         g_clear_object (&priv->pending_location);
         g_clear_object (&priv->pending_file_to_activate);
         g_free (priv->pending_scroll_to);
