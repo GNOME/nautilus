@@ -6965,6 +6965,7 @@ nautilus_canvas_container_add (NautilusCanvasContainer *container,
 void
 nautilus_canvas_container_layout_now (NautilusCanvasContainer *container)
 {
+    container->details->in_layout_now = TRUE;
     if (container->details->idle_id != 0)
     {
         unschedule_redo_layout (container);
@@ -6975,6 +6976,7 @@ nautilus_canvas_container_layout_now (NautilusCanvasContainer *container)
      * newly added files may trigger a change in the size allocation and
      * thus toggle scrollbars on */
     gtk_container_check_resize (GTK_CONTAINER (gtk_widget_get_parent (GTK_WIDGET (container))));
+    container->details->in_layout_now = FALSE;
 }
 
 /**
@@ -8240,6 +8242,10 @@ nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *con
     NautilusCanvasIcon *icon;
     AtkObject *atk_parent;
     AtkObject *atk_child;
+
+    /* We don't want to emit children_changed signals during the initial load. */
+    if (!container->details->in_layout_now)
+        return;
 
     icon = g_hash_table_lookup (container->details->icon_set, icon_data);
     if (icon)

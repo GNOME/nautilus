@@ -235,6 +235,7 @@ struct NautilusCanvasContainerDetails {
 	guint a11y_item_action_idle_handler;
 	GQueue* a11y_item_action_queue;
 
+	eel_boolean_bit in_layout_now : 1;
 	eel_boolean_bit is_loading : 1;
 	eel_boolean_bit needs_resort : 1;
 	eel_boolean_bit selection_needs_resort : 1;
