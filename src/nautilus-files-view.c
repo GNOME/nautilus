@@ -6551,10 +6551,8 @@ file_mount_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to access “%s”"), name);
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
-                     GTK_MESSAGE_ERROR);
+        show_error_dialog (text, error->message,
+                           GTK_WINDOW (nautilus_files_view_get_window (view)));
         g_free (text);
         g_free (name);
     }
@@ -6581,10 +6579,8 @@ file_unmount_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to remove “%s”"), name);
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
-                     GTK_MESSAGE_ERROR);
+        show_error_dialog (text, error->message,
+                           GTK_WINDOW (nautilus_files_view_get_window (view)));
         g_free (text);
         g_free (name);
     }
@@ -6611,10 +6607,8 @@ file_eject_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to eject “%s”"), name);
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
-                     GTK_MESSAGE_ERROR);
+        show_error_dialog (text, error->message,
+                           GTK_WINDOW (nautilus_files_view_get_window (view)));
         g_free (text);
         g_free (name);
     }
@@ -6635,10 +6629,9 @@ file_stop_callback (NautilusFile *file,
          (error->code != G_IO_ERROR_CANCELLED &&
           error->code != G_IO_ERROR_FAILED_HANDLED)))
     {
-        show_dialog (_("Unable to stop drive"),
-                     error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
-                     GTK_MESSAGE_ERROR);
+        show_error_dialog (_("Unable to stop drive"),
+                           error->message,
+                           GTK_WINDOW (nautilus_files_view_get_window (view)));
     }
 }
 
@@ -6749,10 +6742,8 @@ file_start_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to start “%s”"), name);
-        show_dialog (text,
-                     error->message,
-                     GTK_WINDOW (nautilus_files_view_get_window (view)),
-                     GTK_MESSAGE_ERROR);
+        show_error_dialog (text, error->message,
+                           GTK_WINDOW (nautilus_files_view_get_window (view)));
         g_free (text);
         g_free (name);
     }

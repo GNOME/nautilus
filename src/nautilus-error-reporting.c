@@ -112,10 +112,7 @@ nautilus_report_error_loading_directory (NautilusFile *file,
         message = g_strdup (error->message);
     }
 
-    show_dialog (_("This location could not be displayed."),
-                 message,
-                 parent_window,
-                 GTK_MESSAGE_ERROR);
+    show_error_dialog (_("This location could not be displayed."), message, parent_window);
 }
 
 void
@@ -167,7 +164,7 @@ nautilus_report_error_setting_group (NautilusFile *file,
     }
 
 
-    show_dialog (_("The group could not be changed."), message, parent_window, GTK_MESSAGE_ERROR);
+    show_error_dialog (_("The group could not be changed."), message, parent_window);
 }
 
 void
@@ -191,7 +188,7 @@ nautilus_report_error_setting_owner (NautilusFile *file,
     message = g_strdup_printf (_("Sorry, could not change the owner of “%s”: %s"),
                                truncated_name, truncated_error_message);
 
-    show_dialog (_("The owner could not be changed."), message, parent_window, GTK_MESSAGE_ERROR);
+    show_error_dialog (_("The owner could not be changed."), message, parent_window);
 }
 
 void
@@ -215,10 +212,7 @@ nautilus_report_error_setting_permissions (NautilusFile *file,
     message = g_strdup_printf (_("Sorry, could not change the permissions of “%s”: %s"),
                                truncated_name, truncated_error_message);
 
-    show_dialog (_("The permissions could not be changed."),
-                 message,
-                 parent_window,
-                 GTK_MESSAGE_ERROR);
+    show_error_dialog (_("The permissions could not be changed."), message, parent_window);
 }
 
 typedef struct _NautilusRenameData
@@ -319,7 +313,7 @@ nautilus_report_error_renaming_file (NautilusFile *file,
                                    truncated_error_message);
     }
 
-    show_dialog (_("The item could not be renamed."), message, parent_window, GTK_MESSAGE_ERROR);
+    show_error_dialog (_("The item could not be renamed."), message, parent_window);
 }
 
 static void

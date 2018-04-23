@@ -393,10 +393,9 @@ get_text_for_date_range (GPtrArray *date_range,
 }
 
 GtkDialog *
-show_dialog (const gchar *primary_text,
-             const gchar *secondary_text,
-             GtkWindow   *parent,
-             GtkMessageType type)
+show_error_dialog (const gchar *primary_text,
+                   const gchar *secondary_text,
+                   GtkWindow   *parent)
 {
     GtkWidget *dialog;
 
@@ -404,7 +403,7 @@ show_dialog (const gchar *primary_text,
 
     dialog = gtk_message_dialog_new (parent,
                                      GTK_DIALOG_MODAL,
-                                     type,
+                                     GTK_MESSAGE_ERROR,
                                      GTK_BUTTONS_OK,
                                      "%s", primary_text);
 
