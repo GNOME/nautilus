@@ -286,6 +286,7 @@ nautilus_canvas_item_set_property (GObject      *object,
     NautilusCanvasItem *item;
     NautilusCanvasItemDetails *details;
     AtkObject *accessible;
+    gboolean is_rename;
 
     item = NAUTILUS_CANVAS_ITEM (object);
     accessible = atk_gobject_accessible_for_object (G_OBJECT (item));
@@ -301,13 +302,15 @@ nautilus_canvas_item_set_property (GObject      *object,
                 return;
             }
 
+            is_rename = details->editable_text != NULL;
             g_free (details->editable_text);
             details->editable_text = g_strdup (g_value_get_string (value));
             if (details->text_util)
             {
                 gail_text_util_text_setup (details->text_util,
                                            details->editable_text);
-                g_object_notify (G_OBJECT (accessible), "accessible-name");
+                if (is_rename)
+                    g_object_notify (G_OBJECT (accessible), "accessible-name");
             }
 
             nautilus_canvas_item_invalidate_label_size (item);
