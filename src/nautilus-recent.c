@@ -127,9 +127,11 @@ nautilus_recent_update_file_moved (const gchar *old_uri,
 
     if (nautilus_file_is_directory (file))
     {
+        g_autoptr (GFile) location = NULL;
         GList *recent_items;
         GList *l;
 
+        location = g_file_new_for_uri (old_uri);
         recent_items = gtk_recent_manager_get_items (recent_manager);
 
         for (l = recent_items; l; l = l->next)
@@ -139,9 +141,12 @@ nautilus_recent_update_file_moved (const gchar *old_uri,
 
             if (g_str_has_prefix (item_uri, old_uri))
             {
-                const gchar *relative_path = item_uri + strlen (old_uri);
+                g_autoptr (GFile) item_file = NULL;
+                g_autofree gchar *relative_path = NULL;
                 g_autofree gchar *new_item_uri = NULL;
 
+                item_file = g_file_new_for_uri (item_uri);
+                relative_path = g_file_get_relative_path (location, item_file);
                 new_item_uri = g_build_filename (new_uri, relative_path, NULL);
 
                 gtk_recent_manager_move_item (recent_manager,
