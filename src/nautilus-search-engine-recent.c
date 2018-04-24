@@ -168,7 +168,7 @@ recent_thread_func (gpointer user_data)
 
                 if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
                 {
-                    g_debug("Impossible to read locate file info: %s",
+                    g_debug("Impossible to read recent file info: %s",
                             error->message);
                 }
 
