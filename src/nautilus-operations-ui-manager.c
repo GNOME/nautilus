@@ -431,7 +431,7 @@ run_file_conflict_dialog (gpointer user_data)
     files = g_list_prepend (files, data->destination_directory);
 
     nautilus_file_list_call_when_ready (files,
-                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
                                         &data->handle,
                                         data->on_file_list_ready,
                                         data);
