@@ -401,6 +401,9 @@ nautilus_gtk_places_view_destroy (GtkWidget *widget)
   if (priv->network_monitor)
     g_signal_handlers_disconnect_by_func (priv->network_monitor, update_places, widget);
 
+  if (priv->server_list_monitor)
+    g_signal_handlers_disconnect_by_func (priv->server_list_monitor, server_file_changed_cb, widget);
+
   g_cancellable_cancel (priv->cancellable);
   g_cancellable_cancel (priv->networks_fetching_cancellable);
 
@@ -1182,8 +1185,7 @@ update_places (NautilusGtkPlacesView *view)
   populate_servers (view);
 
   /* fetch networks and add them asynchronously */
-  if (!nautilus_gtk_places_view_get_local_only (view))
-    fetch_networks (view);
+  fetch_networks (view);
 
   update_view_mode (view);
   /* Check whether we still are in a loading state */
@@ -1405,6 +1407,7 @@ pulse_entry_cb (gpointer user_data)
     {
       gtk_entry_set_progress_pulse_step (GTK_ENTRY (priv->address_entry), 0.0);
       gtk_entry_set_progress_fraction (GTK_ENTRY (priv->address_entry), 0.0);
+      priv->entry_pulse_timeout_id = 0;
 
       return G_SOURCE_REMOVE;
     }
@@ -1420,7 +1423,6 @@ unmount_mount (NautilusGtkPlacesView *view,
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
   toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-  operation = gtk_mount_operation_new (GTK_WINDOW (toplevel));
 
   g_cancellable_cancel (priv->cancellable);
   g_clear_object (&priv->cancellable);
@@ -1898,10 +1900,45 @@ on_listbox_row_activated (NautilusGtkPlacesView    *view,
                           GtkWidget        *listbox)
 {
   NautilusGtkPlacesViewPrivate *priv;
+  GdkEvent *event;
+  guint button;
+  GtkPlacesOpenFlags open_flags;
 
   priv = nautilus_gtk_places_view_get_instance_private (view);
 
-  activate_row (view, row, priv->current_open_flags);
+  event = gtk_get_current_event ();
+  gdk_event_get_button (event, &button);
+
+  if (gdk_event_get_event_type (event) == GDK_BUTTON_RELEASE && button == GDK_BUTTON_MIDDLE)
+    open_flags = GTK_PLACES_OPEN_NEW_TAB;
+  else
+    open_flags = priv->current_open_flags;
+
+  activate_row (view, row, open_flags);
+}
+
+static gboolean
+is_mount_locally_accessible (GMount *mount)
+{
+  GFile *base_file;
+  gchar *path;
+
+  if (mount == NULL)
+    return FALSE;
+
+  base_file = g_mount_get_root (mount);
+
+  if (base_file == NULL)
+    return FALSE;
+
+  path = g_file_get_path (base_file);
+  g_object_unref (base_file);
+
+  if (path == NULL)
+    return FALSE;
+
+  g_free (path);
+  return TRUE;
 }
 
 static gboolean
@@ -1911,6 +1948,7 @@ listbox_filter_func (GtkListBoxRow *row,
   NautilusGtkPlacesViewPrivate *priv;
   gboolean is_network;
   gboolean is_placeholder;
+  gboolean is_local = FALSE;
   gboolean retval;
   gboolean searching;
   gchar *name;
@@ -1923,7 +1961,20 @@ listbox_filter_func (GtkListBoxRow *row,
   is_network = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "is-network"));
   is_placeholder = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (row), "is-placeholder"));
 
-  if (is_network && priv->local_only)
+  if (NAUTILUS_IS_GTK_PLACES_VIEW_ROW (row))
+    {
+      NautilusGtkPlacesViewRow *placesviewrow;
+      GMount *mount;
+
+      placesviewrow = NAUTILUS_GTK_PLACES_VIEW_ROW (row);
+      g_object_get(G_OBJECT (placesviewrow), "mount", &mount, NULL);
+
+      is_local = is_mount_locally_accessible (mount);
+
+      g_clear_object (&mount);
+    }
+
+  if (is_network && priv->local_only && !is_local)
     return FALSE;
 
   if (is_placeholder && searching)
