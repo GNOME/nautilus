@@ -258,15 +258,15 @@ set_file_labels (FileConflictDialogData *data)
     should_show_type = !nautilus_file_is_mime_type (data->source,
                                                     destination_mime_type);
 
-    destination_date = nautilus_file_get_string_attribute (data->destination,
-                                                           "date_modified");
-    destination_size = nautilus_file_get_string_attribute (data->destination,
-                                                           "size");
+    destination_date = nautilus_file_get_string_attribute_with_default (data->destination,
+                                                                        "date_modified");
+    destination_size = nautilus_file_get_string_attribute_with_default (data->destination,
+                                                                        "size");
 
     if (should_show_type)
     {
-        destination_type = nautilus_file_get_string_attribute (data->destination,
-                                                               "type");
+        destination_type = nautilus_file_get_string_attribute_with_default (data->destination,
+                                                                            "type");
     }
 
     destination_label = g_string_new (NULL);
@@ -288,15 +288,15 @@ set_file_labels (FileConflictDialogData *data)
 
     g_string_append_printf (destination_label, "%s %s", _("Last modified:"), destination_date);
 
-    source_date = nautilus_file_get_string_attribute (data->source,
-                                                      "date_modified");
-    source_size = nautilus_file_get_string_attribute (data->source,
-                                                      "size");
+    source_date = nautilus_file_get_string_attribute_with_default (data->source,
+                                                                   "date_modified");
+    source_size = nautilus_file_get_string_attribute_with_default (data->source,
+                                                                   "size");
 
     if (should_show_type)
     {
-        source_type = nautilus_file_get_string_attribute (data->source,
-                                                          "type");
+        source_type = nautilus_file_get_string_attribute_with_default (data->source,
+                                                                       "type");
     }
 
     source_label = g_string_new (NULL);
