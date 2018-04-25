@@ -33,6 +33,7 @@
 #include <stdlib.h>
 
 #include "nautilus-file-operations.h"
+#include "nautilus-application.h"
 
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-lib-self-check-functions.h"
@@ -2626,6 +2627,89 @@ unmount_mount_callback (GObject      *source_object,
 }
 
 static void
+notify_unmount_done (GMountOperation *op,
+                     const gchar     *message)
+{
+    NautilusApplication *application;
+    gchar *notification_id;
+
+    application = nautilus_application_get_default ();
+    notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
+    nautilus_application_withdraw_notification (application, notification_id);
+
+    if (message != NULL)
+    {
+        GNotification *unplug;
+        GIcon *icon;
+        gchar **strings;
+
+        strings = g_strsplit (message, "\n", 0);
+        icon = g_themed_icon_new ("media-removable-symbolic");
+        unplug = g_notification_new (strings[0]);
+        g_notification_set_body (unplug, strings[1]);
+        g_notification_set_icon (unplug, icon);
+
+        nautilus_application_send_notification (application, notification_id, unplug);
+        g_object_unref (unplug);
+        g_object_unref (icon);
+        g_strfreev (strings);
+    }
+
+    g_free (notification_id);
+}
+
+static void
+notify_unmount_show (GMountOperation *op,
+                     const gchar     *message)
+{
+    NautilusApplication *application;
+    GNotification *unmount;
+    gchar *notification_id;
+    GIcon *icon;
+    gchar **strings;
+
+    application = nautilus_application_get_default ();
+    strings = g_strsplit (message, "\n", 0);
+    icon = g_themed_icon_new ("media-removable");
+
+    unmount = g_notification_new (strings[0]);
+    g_notification_set_body (unmount, strings[1]);
+    g_notification_set_icon (unmount, icon);
+    g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
+
+    notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
+    nautilus_application_send_notification (application, notification_id, unmount);
+    g_object_unref (unmount);
+    g_object_unref (icon);
+    g_strfreev (strings);
+    g_free (notification_id);
+}
+
+static void
+show_unmount_progress_cb (GMountOperation *op,
+                          const gchar     *message,
+                          gint64           time_left,
+                          gint64           bytes_left,
+                          gpointer         user_data)
+{
+    if (bytes_left == 0)
+    {
+        notify_unmount_done (op, message);
+    }
+    else
+    {
+        notify_unmount_show (op, message);
+    }
+}
+
+static void
+show_unmount_progress_aborted_cb (GMountOperation *op,
+                                  gpointer         user_data)
+{
+    notify_unmount_done (op, NULL);
+}
+
+static void
 do_unmount (UnmountData *data)
 {
     GMountOperation *mount_op;
@@ -2638,6 +2722,12 @@ do_unmount (UnmountData *data)
     {
         mount_op = gtk_mount_operation_new (data->parent_window);
     }
+
+    g_signal_connect (mount_op, "show-unmount-progress",
+                      G_CALLBACK (show_unmount_progress_cb), NULL);
+    g_signal_connect (mount_op, "aborted",
+                      G_CALLBACK (show_unmount_progress_aborted_cb), NULL);
+
     if (data->eject)
     {
         g_mount_eject_with_operation (data->mount,
