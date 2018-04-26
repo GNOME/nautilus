@@ -50,3 +50,11 @@ GtkDialog * show_dialog                             (const gchar       *primary_
                                                      const gchar       *secondary_text,
                                                      GtkWindow         *parent,
                                                      GtkMessageType     type);
+
+void        show_unmount_progress_cb                (GMountOperation   *op,
+                                                     const gchar       *message,
+                                                     gint64             time_left,
+                                                     gint64             bytes_left,
+                                                     gpointer           user_data);
+void        show_unmount_progress_aborted_cb        (GMountOperation   *op,
+                                                     gpointer           user_data);

@@ -2638,6 +2638,12 @@ do_unmount (UnmountData *data)
     {
         mount_op = gtk_mount_operation_new (data->parent_window);
     }
+
+    g_signal_connect (mount_op, "show-unmount-progress",
+                      G_CALLBACK (show_unmount_progress_cb), NULL);
+    g_signal_connect (mount_op, "aborted",
+                      G_CALLBACK (show_unmount_progress_aborted_cb), NULL);
+
     if (data->eject)
     {
         g_mount_eject_with_operation (data->mount,
