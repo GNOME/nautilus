@@ -232,6 +232,9 @@
                               <object class="GtkComboBoxText" id="captions_0_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label8"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -264,6 +267,9 @@
                               <object class="GtkComboBoxText" id="captions_2_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label11"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -296,6 +302,9 @@
                               <object class="GtkComboBoxText" id="captions_1_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label9"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -318,6 +327,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_1_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -333,6 +345,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_2_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -348,6 +363,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_0_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
