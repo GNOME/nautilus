@@ -11,23 +11,30 @@ stages:
     - cd _build
     - ninja test
 
-flatpak:master:
-    image: registry.gitlab.com/alatiera/gnome-nightly-oci/gnome-master:latest
+flatpak:
+    image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
     stage: test
+    variables:
+        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
+        MESON_ARGS: "-Dprofile=development -Dtests=all"
+        FLATPAK_MODULE: "nautilus"
+        BUNDLE: "nautilus-dev.flatpak"
+        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+
     script:
-    - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
     # Make sure to keep this in sync with the Flatpak manifest, all arguments
     # are passed except the config-args because we build it ourselves
-    - flatpak build app meson --prefix=/app --libdir=/app/lib -Dprofile=development -Dtests=all _build
+    - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
     - flatpak build app ninja -C _build install
-    - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
+    - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
     # Make a Flatpak Nautilus bundle for people to test
-    - flatpak build-bundle repo nautilus-dev.flatpak --runtime-repo=https://sdk.gnome.org/gnome-nightly.flatpakrepo org.gnome.NautilusDevel
+    - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} org.gnome.NautilusDevel
     # Run automatic tests inside the Flatpak env
     - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
-        - nautilus-dev.flatpak
+        - ${BUNDLE}
         - _build/meson-logs/meson-log.txt
         - _build/meson-logs/testlog.txt
         expire_in: 2 days
