@@ -1,4 +1,4 @@
-########## EVIL EVIL EVIL
+########## FIXME
 # See https://github.com/mesonbuild/meson/issues/1487
 # and https://github.com/mesonbuild/meson/pull/3223
 #
