@@ -35,7 +35,7 @@
 #include <sys/stat.h>
 
 #define GNOME_DESKTOP_USE_UNSTABLE_API
-#include <libgnome-desktop/gnome-desktop-thumbnail.h>
+#include "gnome-desktop-thumbnail.h"
 
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"

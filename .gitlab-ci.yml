@@ -91,11 +91,11 @@ ubuntu:devel:
         # Ubuntu requires running update to fetch metadata and find packges
         - apt update
         - apt install -y gcc meson gettext itstool git libgtk-3-dev
-                        libgnome-autoar-0-dev libgnome-desktop-3-dev
-                        gobject-introspection libxml2-dev
-                        libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
-                        libgail-3-dev libtracker-sparql-2.0-dev
-                        libgirepository1.0-dev
+                         libgnome-autoar-0-dev
+                         gobject-introspection libxml2-dev
+                         libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
+                         libgail-3-dev libtracker-sparql-2.0-dev
+                         libgirepository1.0-dev
     <<: *distro_test
     only:
         - schedules
@@ -107,7 +107,7 @@ opensuse:tumbleweed:
     stage: cross_distro
     before_script:
         - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
-                            gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
+                            gtk3-devel gnome-autoar-devel
                             gobject-introspection-devel libxml2-devel tracker-devel
                             desktop-file-utils libgexiv2-devel
     <<: *distro_test
