@@ -3,6 +3,7 @@ variables:
 
 stages:
 - test
+- review
 - cross_distro
 
 .test_template: &distro_test
@@ -41,6 +42,21 @@ flatpak:
     cache:
         paths:
         - .flatpak-builder/cache
+
+review:
+  stage: review
+  script:
+    - sh
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    url: http://gitlab.gnome.org/
+    on_stop: stop_review
+  only:
+    - branches
+  except:
+    - master
+  tags:
+    - review-apps
 
 fedora:rawhide:
     image: fedora:rawhide
