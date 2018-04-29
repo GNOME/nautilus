@@ -3,7 +3,6 @@ variables:
 
 stages:
 - test
-- review
 - cross_distro
 
 .test_template: &distro_test
@@ -44,7 +43,7 @@ flatpak:
         - .flatpak-builder/cache
     environment:
        name: review/$CI_BUILD_REF_NAME
-       url: https://gitlab.gnome.org/GNOME/nautilus/-/jobs/$CI_JOB_ID
+       url: https://gitlab.gnome.org/GNOME/nautilus/-/jobs/$CI_JOB_ID/artifacts/file/${BUNDLE}
 
 fedora:rawhide:
     image: fedora:rawhide
