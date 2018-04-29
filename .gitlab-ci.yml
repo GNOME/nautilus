@@ -42,30 +42,9 @@ flatpak:
     cache:
         paths:
         - .flatpak-builder/cache
-
-review:
-  stage: review
-  script:
-    - sh
-  environment:
-    name: review/$CI_BUILD_REF_NAME
-    url: http://gitlab.gnome.org/
-    on_stop: stop_review
-  only:
-    - branches
-  except:
-    - master
-    
-stop_review:
-  stage: review
-  script:
-    - sh
-  variables:
-    GIT_STRATEGY: none
-  when: manual
-  environment:
-    name: review/$CI_BUILD_REF_NAME
-    action: stop
+    environment:
+       name: review/$CI_BUILD_REF_NAME
+       url: https://gitlab.gnome.org/GNOME/nautilus/-/jobs/$CI_JOB_ID
 
 fedora:rawhide:
     image: fedora:rawhide
