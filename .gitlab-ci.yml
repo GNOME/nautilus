@@ -55,8 +55,6 @@ review:
     - branches
   except:
     - master
-  tags:
-    - review-apps
     
 stop_review:
   stage: review
@@ -68,8 +66,6 @@ stop_review:
   environment:
     name: review/$CI_BUILD_REF_NAME
     action: stop
-  tags:
-    - review-apps
 
 fedora:rawhide:
     image: fedora:rawhide
