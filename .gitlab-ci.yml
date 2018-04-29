@@ -57,6 +57,19 @@ review:
     - master
   tags:
     - review-apps
+    
+stop_review:
+  stage: review
+  script:
+    - sh
+  variables:
+    GIT_STRATEGY: none
+  when: manual
+  environment:
+    name: review/$CI_BUILD_REF_NAME
+    action: stop
+  tags:
+    - review-apps
 
 fedora:rawhide:
     image: fedora:rawhide
