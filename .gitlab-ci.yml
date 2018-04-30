@@ -28,7 +28,7 @@ flatpak:
         - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
         - flatpak build app ninja -C _build install
         - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-        # Make a Flatpak Nautilus bundle for people to test
+        # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} org.gnome.NautilusDevel
         # Run automatic tests inside the Flatpak env
         - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
@@ -45,7 +45,7 @@ flatpak:
         name: review/$CI_BUILD_REF_NAME
         url: $CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
     tags:
-        -aws
+        - aws
 
 fedora:rawhide:
     image: fedora:rawhide
