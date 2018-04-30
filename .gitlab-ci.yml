@@ -45,21 +45,9 @@ flatpak:
     cache:
         paths:
             - .flatpak-builder/cache
-review:
-    stage: review
-    script:
-        - echo "Exposing Flatpak bundle as review app"
-        - echo $CI_PROJECT_PATH
-        - echo $REVIEW_JOB_ID
-        - echo $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
     environment:
         name: review/$CI_COMMIT_REF_NAME
-        url: $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
-    only:
-      - branches
-    except:
-      - master
-
+        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
 
 fedora:rawhide:
     image: fedora:rawhide
