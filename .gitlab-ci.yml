@@ -3,6 +3,7 @@ variables:
 
 stages:
     - test
+    - review
     - cross_distro
 
 .test_template: &distro_test
@@ -48,6 +49,7 @@ flatpak:
 review:
     stage: review
     script:
+        - echo "Exposing Flatpak bundle as review app"
     environment:
         name: review/$CI_BUILD_REF_NAME
         url: $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
