@@ -35,5 +35,7 @@ projects, pictures, links to other code, etc.
 -->
 
 # Proposal & plan
-<-- What's the solution and how should be achieved? It can be split in smaller
+<!-- What's the solution and how should be achieved? It can be split in smaller
 tasks of minimum change, so they can be delivered across several releases. -->
+
+/label ~"1. Epic"
