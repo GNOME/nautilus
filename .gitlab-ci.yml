@@ -10,6 +10,9 @@ stages:
       - meson _build .
       - cd _build
       - ninja test
+variables:
+    REVIEW_JOB_ID: "unknown"
+    REVIEW_JOB_BUNDLE: "unknown"
 
 flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
@@ -32,6 +35,7 @@ flatpak:
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} org.gnome.NautilusDevel
         # Run automatic tests inside the Flatpak env
         - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
+        - export REVIEW_JOB_ID=$CI_JOB_ID
     artifacts:
         paths:
             - ${BUNDLE}
@@ -41,11 +45,12 @@ flatpak:
     cache:
         paths:
             - .flatpak-builder/cache
+review:
+    stage: review
+    script:
     environment:
         name: review/$CI_BUILD_REF_NAME
-        url: $CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
-    tags:
-        - aws
+        url: $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
 
 fedora:rawhide:
     image: fedora:rawhide
