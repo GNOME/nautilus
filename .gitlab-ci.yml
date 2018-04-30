@@ -1,5 +1,7 @@
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
+    GIT_SUBMODULE_STRATEGY: normal
+    REVIEW_JOB_ID: "unknown"
+    REVIEW_JOB_BUNDLE: "unknown"
 
 stages:
     - test
@@ -11,9 +13,6 @@ stages:
       - meson _build .
       - cd _build
       - ninja test
-variables:
-    REVIEW_JOB_ID: "unknown"
-    REVIEW_JOB_BUNDLE: "unknown"
 
 flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
