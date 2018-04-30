@@ -49,9 +49,17 @@ review:
     stage: review
     script:
         - echo "Exposing Flatpak bundle as review app"
+        - echo $CI_PROJECT_PATH
+        - echo $REVIEW_JOB_ID
+        - echo $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
     environment:
-        name: review/$CI_BUILD_REF_NAME
+        name: review/$CI_COMMIT_REF_NAME
         url: $CI_PROJECT_PATH/-/jobs/$REVIEW_JOB_ID/artifacts/raw/${BUNDLE}
+    only:
+      - branches
+    except:
+      - master
+
 
 fedora:rawhide:
     image: fedora:rawhide
