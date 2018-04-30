@@ -284,31 +284,3 @@ nautilus_view_model_add_items (NautilusViewModel *self,
 
     g_list_store_sort (self->internal_model, compare_data_func, self);
 }
-
-void
-nautilus_view_model_set_items (NautilusViewModel *self,
-                               GQueue            *items)
-{
-    g_autofree gpointer *array = NULL;
-    GList *l;
-    int i = 0;
-
-    array = g_malloc_n (g_queue_get_length (items),
-                        sizeof (NautilusViewItemModel *));
-
-    g_hash_table_remove_all (self->map_files_to_model);
-    for (l = g_queue_peek_head_link (items); l != NULL; l = l->next)
-    {
-        array[i] = l->data;
-        g_hash_table_insert (self->map_files_to_model,
-                             nautilus_view_item_model_get_file (l->data),
-                             l->data);
-        i++;
-    }
-
-    g_list_store_splice (self->internal_model,
-                         0, g_list_model_get_n_items (G_LIST_MODEL (self->internal_model)),
-                         array, g_queue_get_length (items));
-
-    g_list_store_sort (self->internal_model, compare_data_func, self);
-}
