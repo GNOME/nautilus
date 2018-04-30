@@ -44,6 +44,8 @@ flatpak:
     environment:
         name: review/$CI_BUILD_REF_NAME
         url: $CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
+    tags:
+        -aws
 
 fedora:rawhide:
     image: fedora:rawhide
