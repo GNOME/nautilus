@@ -1624,6 +1624,11 @@ get_gicon (ButtonData *button_data)
             return g_themed_icon_new ("document-open-recent-symbolic");
         }
 
+        case OTHER_LOCATIONS_BUTTON:
+        {
+            return g_themed_icon_new ("list-add-symbolic");
+        }
+
         default:
             return NULL;
     }
@@ -1720,11 +1725,7 @@ setup_button_type (ButtonData      *button_data,
 
     uri = g_file_get_uri (location);
 
-    if (g_strcmp0 (uri, "other-locations:///") == 0)
-    {
-        button_data->type = OTHER_LOCATIONS_BUTTON;
-    }
-    else if (nautilus_is_root_directory (location))
+    if (nautilus_is_root_directory (location))
     {
         button_data->type = ROOT_BUTTON;
     }
@@ -1751,9 +1752,10 @@ setup_button_type (ButtonData      *button_data,
 
         g_object_unref (mount);
     }
-    else if (nautilus_is_starred_directory (location))
+    else if (nautilus_is_other_locations_directory (location))
     {
-        button_data->type = STARRED_LOCATION_BUTTON;
+        button_data->type = OTHER_LOCATIONS_BUTTON;
+        button_data->is_root = TRUE;
     }
     else
     {
@@ -1937,10 +1939,10 @@ make_button_data (NautilusPathBar *self,
         break;
 
         case HOME_BUTTON:
-        /* Fall through */
         case MOUNT_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
+        case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
