@@ -50,7 +50,6 @@ typedef enum
     STARRED_BUTTON,
     RECENT_BUTTON,
     MOUNT_BUTTON,
-    STARRED_LOCATION_BUTTON
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -349,7 +348,7 @@ get_dir_name (ButtonData *button_data)
             return _("Other Locations");
         }
 
-        case STARRED_LOCATION_BUTTON:
+        case STARRED_BUTTON:
         {
             return _("Starred");
         }
