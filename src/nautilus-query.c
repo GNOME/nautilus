@@ -663,6 +663,8 @@ nautilus_query_set_recursive (NautilusQuery *query,
 gboolean
 nautilus_query_is_empty (NautilusQuery *query)
 {
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+
     if (!query)
     {
         return TRUE;
