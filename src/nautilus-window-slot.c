@@ -355,7 +355,6 @@ update_search_visible (NautilusWindowSlot *self)
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
         }
-        g_object_unref (query);
     }
 
     if (priv->pending_search_text)
@@ -860,6 +859,9 @@ nautilus_window_slot_constructed (GObject *object)
     gtk_widget_show (extras_vbox);
 
     priv->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
+    /* We want to keep alive the query editor betwen additions and removals on the
+     * UI, specifically when the toolbar adds or removes it */
+    g_object_ref_sink (priv->query_editor);
     gtk_widget_show (GTK_WIDGET (priv->query_editor));
 
     g_object_bind_property (self, "location",
@@ -2855,6 +2857,12 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&priv->slot_action_group);
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
+
+    if (priv->query_editor)
+    {
+        gtk_widget_destroy (GTK_WIDGET (priv->query_editor));
+        g_clear_object (&priv->query_editor);
+    }
 
     free_location_change (self);
 

@@ -746,7 +746,7 @@ nautilus_query_editor_get_query (NautilusQueryEditor *editor)
         return NULL;
     }
 
-    return g_object_ref (priv->query);
+    return priv->query;
 }
 
 GtkWidget *
