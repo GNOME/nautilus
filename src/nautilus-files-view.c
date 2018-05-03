@@ -2977,53 +2977,43 @@ remove_directory_from_templates_directory_list (NautilusFilesView *view,
 }
 
 static void
-slot_active (NautilusWindowSlot *slot,
-             NautilusFilesView  *view)
+slot_active_changed (NautilusWindowSlot *slot,
+                     GParamSpec         *pspec,
+                     NautilusFilesView  *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->active == nautilus_window_slot_get_active (slot))
+    {
+        return;
+    }
+
+    priv->active = nautilus_window_slot_get_active (slot);
 
     if (priv->active)
     {
-        return;
+      /* Avoid updating the toolbar withouth making sure the toolbar
+       * zoom slider has the correct adjustment that changes when the
+       * view mode changes
+       */
+      nautilus_files_view_update_context_menus (view);
+      nautilus_files_view_update_toolbar_menus (view);
+
+      schedule_update_context_menus (view);
+
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      G_ACTION_GROUP (priv->view_action_group));
     }
-
-    priv->active = TRUE;
-
-    /* Avoid updating the toolbar withouth making sure the toolbar
-     * zoom slider has the correct adjustment that changes when the
-     * view mode changes
-     */
-    nautilus_files_view_update_context_menus (view);
-    nautilus_files_view_update_toolbar_menus (view);
-
-    schedule_update_context_menus (view);
-
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    G_ACTION_GROUP (priv->view_action_group));
-}
-
-static void
-slot_inactive (NautilusWindowSlot *slot,
-               NautilusFilesView  *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (!priv->active)
+    else
     {
-        return;
+      remove_update_context_menus_timeout_callback (view);
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      NULL);
     }
-
-    priv->active = FALSE;
-
-    remove_update_context_menus_timeout_callback (view);
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    NULL);
 }
 
 static void
@@ -8915,10 +8905,7 @@ nautilus_files_view_set_property (GObject      *object,
             priv->slot = slot;
 
             g_signal_connect_object (priv->slot,
-                                     "active", G_CALLBACK (slot_active),
-                                     directory_view, 0);
-            g_signal_connect_object (priv->slot,
-                                     "inactive", G_CALLBACK (slot_inactive),
+                                     "notify::active", G_CALLBACK (slot_active_changed),
                                      directory_view, 0);
         }
         break;

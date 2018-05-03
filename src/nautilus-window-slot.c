@@ -49,13 +49,6 @@
 
 enum
 {
-    ACTIVE,
-    INACTIVE,
-    LAST_SIGNAL
-};
-
-enum
-{
     PROP_ACTIVE = 1,
     PROP_WINDOW,
     PROP_ICON,
@@ -136,7 +129,6 @@ typedef struct
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
 
-static guint signals[LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
@@ -654,41 +646,6 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     }
 
     return retval;
-}
-
-static void
-real_active (NautilusWindowSlot *self)
-{
-    NautilusWindowSlotPrivate *priv;
-    NautilusWindow *window;
-    int page_num;
-
-    priv = nautilus_window_slot_get_instance_private (self);
-    window = priv->window;
-    page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
-                                      GTK_WIDGET (self));
-    g_assert (page_num >= 0);
-
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
-
-    /* sync window to new slot */
-    nautilus_window_sync_allow_stop (window, self);
-    nautilus_window_sync_title (window, self);
-    nautilus_window_sync_location_widgets (window);
-    nautilus_window_slot_sync_actions (self);
-
-    gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", priv->slot_action_group);
-}
-
-static void
-real_inactive (NautilusWindowSlot *self)
-{
-    NautilusWindow *window;
-
-    window = nautilus_window_slot_get_window (self);
-    g_assert (self == nautilus_window_get_active_slot (window));
-
-    gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
 }
 
 static void
@@ -2949,8 +2906,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
     GObjectClass *oclass = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-    klass->active = real_active;
-    klass->inactive = real_inactive;
     klass->get_view_for_location = real_get_view_for_location;
     klass->handles_location = real_handles_location;
 
@@ -2961,24 +2916,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
     oclass->get_property = nautilus_window_slot_get_property;
 
     widget_class->grab_focus = nautilus_window_slot_grab_focus;
-
-    signals[ACTIVE] =
-        g_signal_new ("active",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusWindowSlotClass, active),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
-    signals[INACTIVE] =
-        g_signal_new ("inactive",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusWindowSlotClass, inactive),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
 
     properties[PROP_ACTIVE] =
         g_param_spec_boolean ("active",
@@ -3349,6 +3286,7 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
                                  gboolean            active)
 {
     NautilusWindowSlotPrivate *priv;
+    NautilusWindow *window;
 
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (self));
 
@@ -3359,11 +3297,30 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
         if (active)
         {
-            g_signal_emit (self, signals[ACTIVE], 0);
+            int page_num;
+
+            priv = nautilus_window_slot_get_instance_private (self);
+            window = priv->window;
+            page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
+                                              GTK_WIDGET (self));
+            g_assert (page_num >= 0);
+
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
+
+            /* sync window to new slot */
+            nautilus_window_sync_allow_stop (window, self);
+            nautilus_window_sync_title (window, self);
+            nautilus_window_sync_location_widgets (window);
+            nautilus_window_slot_sync_actions (self);
+
+            gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", priv->slot_action_group);
         }
         else
         {
-            g_signal_emit (self, signals[INACTIVE], 0);
+            window = nautilus_window_slot_get_window (self);
+            g_assert (self == nautilus_window_get_active_slot (window));
+
+            gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE]);
