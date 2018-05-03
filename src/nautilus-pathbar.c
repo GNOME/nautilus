@@ -103,10 +103,6 @@ typedef struct
     unsigned int drag_slider_timeout;
     gboolean drag_slider_timeout_for_up_button;
 
-    GActionGroup *action_group;
-
-    GMenu *context_menu;
-
     GtkPopover *current_view_menu;
 } NautilusPathBarPrivate;
 
@@ -232,17 +228,12 @@ nautilus_path_bar_init (NautilusPathBar *self)
 {
     NautilusPathBarPrivate *priv;
     GtkBuilder *builder;
-    GMenu *menu;
-    GMenu *section_1;
-    GMenu *section_2;
-    GMenu *section_3;
-    GMenu *section_4;
 
     priv = nautilus_path_bar_get_instance_private (self);
 
     /* Context menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    priv->context_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
+    priv->current_view_menu = g_object_ref (GTK_POPOVER (gtk_builder_get_object (builder, "menu_popover"))),
     g_object_unref (builder);
 
     gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
@@ -291,26 +282,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                  GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "path-bar");
-
-    menu = g_menu_new ();
-    section_1 = g_menu_new ();
-    section_2 = g_menu_new ();
-    section_3 = g_menu_new ();
-    section_4 = g_menu_new ();
-    g_menu_insert (section_1, 0, _("New Folder…"), "view.new-folder");
-    g_menu_insert (section_2, 0, _("Add to Bookmarks"), "view.bookmark");
-    g_menu_insert (section_2, 1, _("Star"), "view.star");
-    g_menu_insert (section_3, 0, _("Paste"), "view.paste");
-    g_menu_insert (section_3, 1, _("Select All"), "view.select-all");
-    g_menu_insert (section_4, 0, _("Properties"), "view.properties");
-
-    g_menu_insert_section (menu, 0, NULL, G_MENU_MODEL (section_1));
-    g_menu_insert_section (menu, 1, NULL, G_MENU_MODEL (section_2));
-    g_menu_insert_section (menu, 2, NULL, G_MENU_MODEL (section_3));
-    g_menu_insert_section (menu, 3, NULL, G_MENU_MODEL (section_4));
-
-    priv->current_view_menu = GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
-                                                                       G_MENU_MODEL (menu)));
 }
 
 static void
