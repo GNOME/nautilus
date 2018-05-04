@@ -7341,7 +7341,7 @@ retry:
                 }
                 else
                 {
-                    filename_base = eel_filename_strip_extension (filename);
+                    filename_base = filename_strip_extension (filename);
                 }
 
                 nautilus_file_unref (file);
@@ -7396,7 +7396,7 @@ retry:
             }
             else
             {
-                filename_base = eel_filename_strip_extension (filename);
+                filename_base = filename_strip_extension (filename);
             }
 
             nautilus_file_unref (file);

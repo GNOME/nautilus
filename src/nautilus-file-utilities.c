@@ -582,7 +582,7 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
     g_return_val_if_fail (basename != NULL, NULL);
     g_return_val_if_fail (g_file_query_exists (directory, NULL), NULL);
 
-    basename_without_extension = eel_filename_strip_extension (basename);
+    basename_without_extension = filename_strip_extension (basename);
     extension = filename_get_extension_offset (basename);
 
     child = g_file_get_child (directory, basename);
@@ -1325,7 +1325,7 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
     {
         gchar *stripped_filename;
 
-        stripped_filename = eel_filename_strip_extension (i->data);
+        stripped_filename = filename_strip_extension (i->data);
 
         stripped_filenames = g_list_prepend (stripped_filenames, stripped_filename);
     }
@@ -1531,4 +1531,25 @@ filename_get_extension_offset (const char *filename)
     }
 
     return end;
+}
+
+char *
+filename_strip_extension (const char *filename_with_extension)
+{
+    char *filename, *end;
+
+    if (filename_with_extension == NULL)
+    {
+        return NULL;
+    }
+
+    filename = g_strdup (filename_with_extension);
+    end = filename_get_extension_offset (filename);
+
+    if (end && end != filename)
+    {
+        *end = '\0';
+    }
+
+    return filename;
 }

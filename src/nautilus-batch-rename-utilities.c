@@ -19,6 +19,7 @@
 #include "nautilus-batch-rename-dialog.h"
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -442,7 +443,7 @@ batch_rename_format (NautilusFile *file,
                         else
                         {
                             g_autofree gchar *base_name = NULL;
-                            base_name = eel_filename_strip_extension (file_name);
+                            base_name = filename_strip_extension (file_name);
                             new_name = g_string_append (new_name, base_name);
                         }
                     }

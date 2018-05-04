@@ -2280,7 +2280,7 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
         }
         else
         {
-            common_prefix = eel_filename_strip_extension (display_name);
+            common_prefix = filename_strip_extension (display_name);
         }
     }
     else
@@ -5469,7 +5469,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
 
     priv = nautilus_files_view_get_instance_private (view);
     tmp = nautilus_file_get_display_name (file);
-    name = eel_filename_strip_extension (tmp);
+    name = filename_strip_extension (tmp);
     g_free (tmp);
 
     uri = nautilus_file_get_uri (file);

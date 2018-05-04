@@ -132,3 +132,4 @@ gboolean uri_is_other_locations (const char *uri);
 gboolean uri_is_in_xdg_dirs (const char *uri);
 
 char * filename_get_extension_offset (const char *filename);
+char * filename_strip_extension (const char *filename);
