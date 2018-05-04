@@ -487,7 +487,7 @@ nautilus_is_recent_directory (GFile *dir)
 
     uri = g_file_get_uri (dir);
 
-    return eel_uri_is_recent (uri);
+    return uri_is_recent (uri);
 }
 
 gboolean
@@ -1436,4 +1436,10 @@ gboolean
 uri_is_trash (const char *uri)
 {
     return g_str_has_prefix (uri, "trash:");
+}
+
+gboolean
+uri_is_recent (const char *uri)
+{
+    return g_str_has_prefix (uri, "recent:");
 }

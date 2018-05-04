@@ -37,14 +37,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-
-
-gboolean
-eel_uri_is_recent (const char *uri)
-{
-    return g_str_has_prefix (uri, "recent:");
-}
-
 gboolean
 eel_uri_is_search (const char *uri)
 {

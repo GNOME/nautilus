@@ -35,7 +35,6 @@ G_BEGIN_DECLS
 
 gboolean           eel_uri_is_search                     (const char           *uri);
 gboolean           eel_uri_is_other_locations            (const char           *uri);
-gboolean           eel_uri_is_recent                     (const char           *uri);
 gboolean           eel_uri_is_in_xdg_dirs                (const char           *uri);
 
 char *             eel_filename_strip_extension          (const char           *filename);
