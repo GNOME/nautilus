@@ -520,7 +520,7 @@ nautilus_is_other_locations_directory (GFile *dir)
     g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (dir);
-    return eel_uri_is_other_locations (uri);
+    return uri_is_other_locations (uri);
 }
 
 GMount *
@@ -1448,4 +1448,10 @@ gboolean
 uri_is_search (const char *uri)
 {
     return g_str_has_prefix (uri, EEL_SEARCH_URI);
+}
+
+gboolean
+uri_is_other_locations (const char *uri)
+{
+    return g_str_has_prefix (uri, "other-locations:");
 }

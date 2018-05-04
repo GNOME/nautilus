@@ -39,12 +39,6 @@
 
 
 gboolean
-eel_uri_is_other_locations (const char *uri)
-{
-    return g_str_has_prefix (uri, "other-locations:");
-}
-
-gboolean
 eel_uri_is_in_xdg_dirs (const gchar *uri)
 {
     GUserDirectory dir;
