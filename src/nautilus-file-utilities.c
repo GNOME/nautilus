@@ -583,7 +583,7 @@ nautilus_generate_unique_file_in_directory (GFile      *directory,
     g_return_val_if_fail (g_file_query_exists (directory, NULL), NULL);
 
     basename_without_extension = eel_filename_strip_extension (basename);
-    extension = eel_filename_get_extension_offset (basename);
+    extension = filename_get_extension_offset (basename);
 
     child = g_file_get_child (directory, basename);
 
@@ -1486,4 +1486,49 @@ uri_is_in_xdg_dirs (const gchar *uri)
     }
 
     return has_prefix;
+}
+
+char *
+filename_get_extension_offset (const char *filename)
+{
+    char *end, *end2;
+    const char *start;
+
+    if (filename == NULL || filename[0] == '\0')
+    {
+        return NULL;
+    }
+
+    /* basename must have at least one char */
+    start = filename + 1;
+
+    end = strrchr (start, '.');
+    if (end == NULL || end[1] == '\0')
+    {
+        return NULL;
+    }
+
+    if (end != start)
+    {
+        if (strcmp (end, ".gz") == 0 ||
+            strcmp (end, ".bz2") == 0 ||
+            strcmp (end, ".sit") == 0 ||
+            strcmp (end, ".Z") == 0 ||
+            strcmp (end, ".bz") == 0 ||
+            strcmp (end, ".xz") == 0)
+        {
+            end2 = end - 1;
+            while (end2 > start &&
+                   *end2 != '.')
+            {
+                end2--;
+            }
+            if (end2 != start)
+            {
+                end = end2;
+            }
+        }
+    }
+
+    return end;
 }

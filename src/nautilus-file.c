@@ -7818,7 +7818,7 @@ nautilus_file_get_extension (NautilusFile *file)
     name = nautilus_file_get_name (file);
     if (name != NULL)
     {
-        extension = g_strdup (eel_filename_get_extension_offset (name));
+        extension = g_strdup (filename_get_extension_offset (name));
         g_free (name);
     }
 
