@@ -33,11 +33,4 @@ G_BEGIN_DECLS
 #define	EEL_TRASH_URI "trash:"
 #define EEL_SEARCH_URI "x-nautilus-search:"
 
-
-char *             eel_filename_strip_extension          (const char           *filename);
-void               eel_filename_get_rename_region        (const char           *filename,
-							  int                  *start_offset,
-							  int                  *end_offset);
-char *             eel_filename_get_extension_offset     (const char           *filename);
-
 G_END_DECLS
