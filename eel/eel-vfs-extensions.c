@@ -37,11 +37,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-gboolean
-eel_uri_is_starred (const gchar *uri)
-{
-    return g_str_has_prefix (uri, "starred:");
-}
 
 gboolean
 eel_uri_is_trash (const char *uri)

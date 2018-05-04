@@ -1782,7 +1782,7 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             /* Don't pop up a notification if the focus is not in the this
              * window. This is an easy way to know from which window was the
              * unstart operation made */
-            if (eel_uri_is_starred (g_file_get_uri (location)) &&
+            if (uri_is_starred (g_file_get_uri (location)) &&
                 gtk_window_has_toplevel_focus (GTK_WINDOW (window)) &&
                 !nautilus_file_undo_info_starred_is_starred (NAUTILUS_FILE_UNDO_INFO_STARRED (undo_info)))
             {
