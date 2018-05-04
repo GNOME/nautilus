@@ -7624,7 +7624,7 @@ real_update_actions_state (NautilusFilesView *view)
      * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
      */
     current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
-    current_directory_in_xdg_folders = eel_uri_is_in_xdg_dirs (g_file_get_uri (current_location));
+    current_directory_in_xdg_folders = uri_is_in_xdg_dirs (g_file_get_uri (current_location));
 
     show_star = (selection != NULL) &&
                 (current_directory_in_xdg_folders || selection_contains_starred);

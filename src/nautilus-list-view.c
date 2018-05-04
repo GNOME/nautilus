@@ -2372,7 +2372,7 @@ get_visible_columns (NautilusListView *list_view)
      * setting. This should be fixed in a better way for Nautilus 3.30.
      * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
      */
-    in_xdg_dirs = eel_uri_is_in_xdg_dirs (uri);
+    in_xdg_dirs = uri_is_in_xdg_dirs (uri);
     is_starred = uri_is_starred (uri);
 
     visible_columns = nautilus_file_get_metadata_list (file,

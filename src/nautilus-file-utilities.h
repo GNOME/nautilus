@@ -128,3 +128,5 @@ gboolean uri_is_trash (const char *uri);
 gboolean uri_is_recent (const char *uri);
 gboolean uri_is_search (const char *uri);
 gboolean uri_is_other_locations (const char *uri);
+
+gboolean uri_is_in_xdg_dirs (const char *uri);
