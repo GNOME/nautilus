@@ -37,11 +37,6 @@
 #include <string.h>
 #include <stdlib.h>
 
-gboolean
-eel_uri_is_search (const char *uri)
-{
-    return g_str_has_prefix (uri, EEL_SEARCH_URI);
-}
 
 gboolean
 eel_uri_is_other_locations (const char *uri)
