@@ -25,7 +25,7 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-file-private.h"
-
+#include "nautilus-file-utilities.h"
 
 #define RENAME_ENTRY_MIN_CHARS 20
 #define RENAME_ENTRY_MAX_CHARS 35
@@ -191,7 +191,7 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
         gint end_offset;
 
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (gtk_entry_get_text (GTK_ENTRY (widget)),
+        filename_get_rename_region (gtk_entry_get_text (GTK_ENTRY (widget)),
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (widget),
                                     start_offset, end_offset);
@@ -367,7 +367,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
         gint end_offset;
 
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (display_name,
+        filename_get_rename_region (display_name,
                                         &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (self->name_entry),
                                     start_offset, end_offset);

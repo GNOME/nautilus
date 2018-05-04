@@ -32,6 +32,7 @@
 #include "nautilus-file.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-operations-ui-manager.h"
+#include "nautilus-file-utilities.h"
 
 struct _NautilusFileConflictDialog
 {
@@ -204,7 +205,7 @@ expander_activated_cb (GtkExpander                *w,
         {
             gtk_widget_grab_focus (dialog->entry);
 
-            eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
+            filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
             gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
         }
     }
@@ -239,7 +240,7 @@ reset_button_clicked_cb (GtkButton                  *w,
 
     gtk_entry_set_text (GTK_ENTRY (dialog->entry), dialog->conflict_name);
     gtk_widget_grab_focus (dialog->entry);
-    eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
+    filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
     gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
 }
 

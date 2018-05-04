@@ -133,3 +133,6 @@ gboolean uri_is_in_xdg_dirs (const char *uri);
 
 char * filename_get_extension_offset (const char *filename);
 char * filename_strip_extension (const char *filename);
+void filename_get_rename_region (const char *filename,
+                int *start_offset,
+                int *end_offset);
