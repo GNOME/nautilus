@@ -511,7 +511,7 @@ nautilus_is_trash_directory (GFile *dir)
     g_autofree gchar *uri = NULL;
 
     uri = g_file_get_uri (dir);
-    return eel_uri_is_trash (uri);
+    return uri_is_trash (uri);
 }
 
 gboolean
@@ -1430,4 +1430,10 @@ gboolean
 uri_is_starred (const gchar *uri)
 {
     return g_str_has_prefix (uri, "starred:");
+}
+
+gboolean
+uri_is_trash (const char *uri)
+{
+    return g_str_has_prefix (uri, "trash:");
 }

@@ -482,7 +482,7 @@ set_direct_save_uri (GtkWidget        *widget,
     drop_target = nautilus_canvas_container_find_drop_target (NAUTILUS_CANVAS_CONTAINER (widget),
                                                               context, x, y, NULL);
 
-    if (drop_target && eel_uri_is_trash (drop_target))
+    if (drop_target && uri_is_trash (drop_target))
     {
         g_free (drop_target);
         drop_target = NULL;         /* Cannot save to trash ...*/
