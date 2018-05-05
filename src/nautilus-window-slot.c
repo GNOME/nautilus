@@ -919,11 +919,13 @@ action_search_visible_popup (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
+            nautilus_window_slot_set_searching (self, TRUE);
             nautilus_query_editor_show_popover (priv->query_editor);
         }
         else
         {
             hide_query_editor (self);
+            nautilus_window_slot_set_searching (self, FALSE);
         }
     }
 
