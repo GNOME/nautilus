@@ -27,11 +27,11 @@
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 
-G_DECLARE_DERIVABLE_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkSearchBar)
+G_DECLARE_DERIVABLE_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkBox)
 
 struct _NautilusQueryEditorClass
 {
-    GtkSearchBarClass parent_class;
+    GtkBoxClass parent_class;
 
     void (* changed)   (NautilusQueryEditor  *editor,
                         NautilusQuery        *query,
@@ -83,4 +83,9 @@ void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
 void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
 
+
 void           nautilus_query_editor_show_popover (NautilusQueryEditor *editor);
+
+gboolean
+nautilus_query_editor_handle_event (NautilusQueryEditor *self,
+                                    GdkEvent            *event);

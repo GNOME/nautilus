@@ -1,15 +1,15 @@
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
+    GIT_SUBMODULE_STRATEGY: normal
 
 stages:
-- test
-- cross_distro
+    - test
+    - cross_distro
 
 .test_template: &distro_test
   script:
-    - meson _build .
-    - cd _build
-    - ninja test
+      - meson _build .
+      - cd _build
+      - ninja test
 
 flatpak:
     image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
@@ -22,66 +22,69 @@ flatpak:
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
 
     script:
-    - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-    # Make sure to keep this in sync with the Flatpak manifest, all arguments
-    # are passed except the config-args because we build it ourselves
-    - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
-    - flatpak build app ninja -C _build install
-    - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-    # Make a Flatpak Nautilus bundle for people to test
-    - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} org.gnome.NautilusDevel
-    # Run automatic tests inside the Flatpak env
-    - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
+        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
+        # Make sure to keep this in sync with the Flatpak manifest, all arguments
+        # are passed except the config-args because we build it ourselves
+        - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
+        - flatpak build app ninja -C _build install
+        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
+        # Generate a Flatpak bundle
+        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} org.gnome.NautilusDevel
+        # Run automatic tests inside the Flatpak env
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
-        - ${BUNDLE}
-        - _build/meson-logs/meson-log.txt
-        - _build/meson-logs/testlog.txt
+            - ${BUNDLE}
+            - _build/meson-logs/meson-log.txt
+            - _build/meson-logs/testlog.txt
         expire_in: 2 days
     cache:
         paths:
-        - .flatpak-builder/cache
+            - .flatpak-builder/cache
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
 
 fedora:rawhide:
     image: fedora:rawhide
     stage: cross_distro
     before_script:
-    - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep -y nautilus
+        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
+        - dnf builddep -y nautilus
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags
 
 ubuntu:devel:
     image: ubuntu:devel
     stage: cross_distro
     before_script:
-    # Ubuntu requires running update to fetch metadata and find packges
-    - apt update
-    - apt install -y gcc meson gettext itstool git libgtk-3-dev
-                     libgnome-autoar-0-dev libgnome-desktop-3-dev
-                     gobject-introspection libxml2-dev
-                     libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
-                     libgail-3-dev libtracker-sparql-2.0-dev
-                     libgirepository1.0-dev
+        # Ubuntu requires running update to fetch metadata and find packges
+        - apt update
+        - apt install -y gcc meson gettext itstool git libgtk-3-dev
+                        libgnome-autoar-0-dev libgnome-desktop-3-dev
+                        gobject-introspection libxml2-dev
+                        libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
+                        libgail-3-dev libtracker-sparql-2.0-dev
+                        libgirepository1.0-dev
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags
 
 opensuse:tumbleweed:
     image: opensuse:tumbleweed
     stage: cross_distro
     before_script:
-    - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
-                        gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
-                        gobject-introspection-devel libxml2-devel tracker-devel
-                        desktop-file-utils libgexiv2-devel
+        - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
+                            gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
+                            gobject-introspection-devel libxml2-devel tracker-devel
+                            desktop-file-utils libgexiv2-devel
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags

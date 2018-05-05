@@ -110,6 +110,10 @@ void     nautilus_window_slot_set_active                   (NautilusWindowSlot *
                                                             gboolean            active);
 gboolean nautilus_window_slot_get_loading                  (NautilusWindowSlot *slot);
 
+gboolean nautilus_window_slot_get_searching                (NautilusWindowSlot *slot);
+
+GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot);
+
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,
                                                             const gchar        *text);
 
@@ -120,6 +124,8 @@ void nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
                                              RestoreTabData     *data);
 
 RestoreTabData* nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self);
+
+NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *self);
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);

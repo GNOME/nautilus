@@ -51,6 +51,7 @@ static GDebugKey keys[] =
     { "Smclient", NAUTILUS_DEBUG_SMCLIENT },
     { "Window", NAUTILUS_DEBUG_WINDOW },
     { "Undo", NAUTILUS_DEBUG_UNDO },
+    { "Thumbnails", NAUTILUS_DEBUG_THUMBNAILS },
     { 0, }
 };
 

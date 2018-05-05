@@ -78,7 +78,7 @@ static void entry_changed_cb (GtkWidget           *entry,
                               NautilusQueryEditor *editor);
 static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
-G_DEFINE_TYPE_WITH_PRIVATE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_SEARCH_BAR);
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_BOX);
 
 static gboolean
 settings_search_is_recursive (NautilusQueryEditor *editor)
@@ -428,7 +428,7 @@ entry_changed_cb (GtkWidget           *entry,
 
     priv = nautilus_query_editor_get_instance_private (editor);
 
-    if (priv->change_frozen || !gtk_search_bar_get_search_mode (GTK_SEARCH_BAR (editor)))
+    if (priv->change_frozen)
     {
         return;
     }
@@ -468,27 +468,12 @@ entry_key_press_event_cb (GtkWidget           *widget,
                           GdkEventKey         *event,
                           NautilusQueryEditor *editor)
 {
-    if (event->keyval == GDK_KEY_Down)
+    if (event->keyval == GDK_KEY_Down )
     {
         gtk_widget_grab_focus (gtk_widget_get_toplevel (GTK_WIDGET (widget)));
     }
+
     return FALSE;
-}
-
-static void
-search_mode_changed_cb (GObject    *editor,
-                        GParamSpec *pspec,
-                        gpointer    user_data)
-{
-    NautilusQueryEditorPrivate *priv;
-
-    priv = nautilus_query_editor_get_instance_private (NAUTILUS_QUERY_EDITOR (editor));
-
-    if (!gtk_search_bar_get_search_mode (GTK_SEARCH_BAR (editor)))
-    {
-        g_signal_emit (editor, signals[CANCEL], 0);
-        gtk_widget_hide (priv->popover);
-    }
 }
 
 static void
@@ -668,8 +653,7 @@ setup_widgets (NautilusQueryEditor *editor)
 
     /* create the search entry */
     priv->entry = GTK_WIDGET (gd_tagged_entry_new ());
-    gtk_widget_set_size_request (GTK_WIDGET (priv->entry), 400, -1);
-    gtk_search_bar_connect_entry (GTK_SEARCH_BAR (editor), GTK_ENTRY (priv->entry));
+    gtk_widget_set_hexpand (priv->entry, TRUE);
 
     gtk_container_add (GTK_CONTAINER (hbox), priv->entry);
 
@@ -707,8 +691,6 @@ setup_widgets (NautilusQueryEditor *editor)
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (priv->dropdown_button), priv->popover);
     gtk_container_add (GTK_CONTAINER (hbox), priv->dropdown_button);
 
-    g_signal_connect (editor, "notify::search-mode-enabled",
-                      G_CALLBACK (search_mode_changed_cb), NULL);
     g_signal_connect (priv->entry, "key-press-event",
                       G_CALLBACK (entry_key_press_event_cb), editor);
     g_signal_connect (priv->entry, "activate",
@@ -757,7 +739,7 @@ nautilus_query_editor_get_query (NautilusQueryEditor *editor)
         return NULL;
     }
 
-    return g_object_ref (priv->query);
+    return priv->query;
 }
 
 GtkWidget *
@@ -868,4 +850,15 @@ nautilus_query_editor_set_text (NautilusQueryEditor *editor,
 
     /* The handler of the entry will take care of everything */
     gtk_entry_set_text (GTK_ENTRY (priv->entry), text);
+}
+
+gboolean
+nautilus_query_editor_handle_event (NautilusQueryEditor *self,
+                                    GdkEvent            *event)
+{
+    NautilusQueryEditorPrivate *priv;
+
+    priv = nautilus_query_editor_get_instance_private (self);
+
+    return gtk_search_entry_handle_event (GTK_SEARCH_ENTRY (priv->entry), event);
 }

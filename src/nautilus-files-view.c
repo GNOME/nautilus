@@ -142,8 +142,9 @@ enum
     PROP_WINDOW_SLOT = 1,
     PROP_SUPPORTS_ZOOMING,
     PROP_ICON,
-    PROP_IS_SEARCH,
-    PROP_IS_LOADING,
+    PROP_SEARCHING,
+    PROP_LOADING,
+    PROP_SELECTION,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
     NUM_PROPERTIES
@@ -2976,53 +2977,43 @@ remove_directory_from_templates_directory_list (NautilusFilesView *view,
 }
 
 static void
-slot_active (NautilusWindowSlot *slot,
-             NautilusFilesView  *view)
+slot_active_changed (NautilusWindowSlot *slot,
+                     GParamSpec         *pspec,
+                     NautilusFilesView  *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->active == nautilus_window_slot_get_active (slot))
+    {
+        return;
+    }
+
+    priv->active = nautilus_window_slot_get_active (slot);
 
     if (priv->active)
     {
-        return;
+      /* Avoid updating the toolbar withouth making sure the toolbar
+       * zoom slider has the correct adjustment that changes when the
+       * view mode changes
+       */
+      nautilus_files_view_update_context_menus (view);
+      nautilus_files_view_update_toolbar_menus (view);
+
+      schedule_update_context_menus (view);
+
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      G_ACTION_GROUP (priv->view_action_group));
     }
-
-    priv->active = TRUE;
-
-    /* Avoid updating the toolbar withouth making sure the toolbar
-     * zoom slider has the correct adjustment that changes when the
-     * view mode changes
-     */
-    nautilus_files_view_update_context_menus (view);
-    nautilus_files_view_update_toolbar_menus (view);
-
-    schedule_update_context_menus (view);
-
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    G_ACTION_GROUP (priv->view_action_group));
-}
-
-static void
-slot_inactive (NautilusWindowSlot *slot,
-               NautilusFilesView  *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (!priv->active)
+    else
     {
-        return;
+      remove_update_context_menus_timeout_callback (view);
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      NULL);
     }
-
-    priv->active = FALSE;
-
-    remove_update_context_menus_timeout_callback (view);
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    NULL);
 }
 
 static void
@@ -3591,7 +3582,7 @@ done_loading (NautilusFilesView *view,
 
     priv->loading = FALSE;
     g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-    g_object_notify (G_OBJECT (view), "is-loading");
+    g_object_notify (G_OBJECT (view), "loading");
 
     if (!priv->in_destruction)
     {
@@ -8363,8 +8354,8 @@ load_directory (NautilusFilesView *view,
     priv->location = nautilus_directory_get_location (directory);
 
     g_object_notify (G_OBJECT (view), "location");
-    g_object_notify (G_OBJECT (view), "is-loading");
-    g_object_notify (G_OBJECT (view), "is-searching");
+    g_object_notify (G_OBJECT (view), "loading");
+    g_object_notify (G_OBJECT (view), "searching");
 
     /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
      * well as doing a call when ready), in case external forces
@@ -8856,13 +8847,13 @@ nautilus_files_view_get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_IS_LOADING:
+        case PROP_LOADING:
         {
             g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
         }
         break;
 
-        case PROP_IS_SEARCH:
+        case PROP_SEARCHING:
         {
             g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
         }
@@ -8871,6 +8862,12 @@ nautilus_files_view_get_property (GObject    *object,
         case PROP_LOCATION:
         {
             g_value_set_object (value, nautilus_view_get_location (NAUTILUS_VIEW (view)));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            g_value_set_pointer (value, nautilus_view_get_selection (NAUTILUS_VIEW (view)));
         }
         break;
 
@@ -8908,10 +8905,7 @@ nautilus_files_view_set_property (GObject      *object,
             priv->slot = slot;
 
             g_signal_connect_object (priv->slot,
-                                     "active", G_CALLBACK (slot_active),
-                                     directory_view, 0);
-            g_signal_connect_object (priv->slot,
-                                     "inactive", G_CALLBACK (slot_inactive),
+                                     "notify::active", G_CALLBACK (slot_active_changed),
                                      directory_view, 0);
         }
         break;
@@ -8931,6 +8925,12 @@ nautilus_files_view_set_property (GObject      *object,
         case PROP_SEARCH_QUERY:
         {
             nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            nautilus_view_set_selection (NAUTILUS_VIEW (directory_view), g_value_get_pointer (value));
         }
         break;
 
@@ -9204,7 +9204,7 @@ set_search_query_internal (NautilusFilesView *files_view,
 
             load_directory (files_view, directory);
 
-            g_object_notify (G_OBJECT (files_view), "is-searching");
+            g_object_notify (G_OBJECT (files_view), "searching");
 
             nautilus_directory_unref (directory);
             g_free (uri);
@@ -9402,9 +9402,10 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
                               G_PARAM_STATIC_STRINGS));
 
-    g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
-    g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
+    g_object_class_override_property (oclass, PROP_LOADING, "loading");
+    g_object_class_override_property (oclass, PROP_SEARCHING, "searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
+    g_object_class_override_property (oclass, PROP_SELECTION, "selection");
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
 }
 

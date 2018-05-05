@@ -5075,6 +5075,8 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
 
     new_icons = container->details->new_icons;
     container->details->new_icons = NULL;
+    container->details->is_populating_container = g_list_length (new_icons) ==
+        g_hash_table_size (container->details->icon_set);
 
     /* Position most icons (not unpositioned manual-layout icons). */
     new_icons = g_list_reverse (new_icons);
@@ -6045,8 +6047,8 @@ nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *con
     AtkObject *atk_parent;
     AtkObject *atk_child;
 
-    /* We don't want to emit children_changed signals during the initial load. */
-    if (!container->details->in_layout_now)
+    /* We don't want to emit children_changed signals during any type of load. */
+    if (!container->details->in_layout_now || container->details->is_populating_container)
         return;
 
     icon = g_hash_table_lookup (container->details->icon_set, icon_data);
