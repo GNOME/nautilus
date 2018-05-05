@@ -82,3 +82,5 @@ void           nautilus_query_editor_set_location (NautilusQueryEditor *editor,
  */
 void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
                                                    const gchar         *text);
+
+void           nautilus_query_editor_show_popover (NautilusQueryEditor *editor);
