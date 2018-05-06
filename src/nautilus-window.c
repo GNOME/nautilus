@@ -2273,7 +2273,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
     /* Special case reload, since users are used to use two shortcuts instead of one */
-    gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
+    nautilus_application_set_accelerators (app, "win.reload", reload_accels);
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
