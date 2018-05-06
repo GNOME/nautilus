@@ -1,9 +1,11 @@
 variables:
     GIT_SUBMODULE_STRATEGY: normal
+    BUNDLE: "nautilus-dev.flatpak"
 
 stages:
     - test
     - cross_distro
+    - deploy
 
 .test_template: &distro_test
   script:
@@ -18,7 +20,6 @@ flatpak:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
         MESON_ARGS: "-Dprofile=development -Dtests=all"
         FLATPAK_MODULE: "nautilus"
-        BUNDLE: "nautilus-dev.flatpak"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
 
@@ -42,9 +43,34 @@ flatpak:
     cache:
         paths:
             - .flatpak-builder/cache
+
+review:
+    stage: deploy
+    dependencies:
+        - flatpak
+    script:
+        - echo "Generating flatpak deployment"
+    artifacts:
+        paths:
+            - ${BUNDLE}
+        expire_in: 2 days
     environment:
         name: review/$CI_COMMIT_REF_NAME
         url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
+        on_stop: stop_review
+    except:
+        - master@GNOME/nautilus
+
+stop_review:
+    stage: deploy
+    script:
+        - echo "Stopping flatpak deployment"
+    when: manual
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        action: stop
+    except:
+        - master@GNOME/nautilus
 
 fedora:rawhide:
     image: fedora:rawhide
