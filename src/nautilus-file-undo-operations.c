@@ -632,7 +632,7 @@ ext_move_undo_func (NautilusFileUndoInfoExt *self,
 }
 
 static void
-ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt *self,
+ext_duplicate_undo_func (NautilusFileUndoInfoExt *self,
                               GtkWindow               *parent_window)
 {
     GList *files;
@@ -647,17 +647,35 @@ ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt *self,
 }
 
 static void
+ext_copy_undo_func (NautilusFileUndoInfoExt *self,
+                              GtkWindow               *parent_window)
+{
+    GList *files;
+
+    files = g_list_copy (g_queue_peek_head_link (self->priv->destinations));
+    files = g_list_reverse (files);     /* Deleting must be done in reverse */
+
+    nautilus_file_operations_force_delete (files, parent_window,
+                                           file_undo_info_delete_callback, self);
+
+    g_list_free (files);
+}
+
+static void
 ext_undo_func (NautilusFileUndoInfo *info,
                GtkWindow            *parent_window)
 {
     NautilusFileUndoInfoExt *self = NAUTILUS_FILE_UNDO_INFO_EXT (info);
     NautilusFileUndoOp op_type = nautilus_file_undo_info_get_op_type (info);
 
-    if (op_type == NAUTILUS_FILE_UNDO_OP_COPY ||
-        op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE ||
-        op_type == NAUTILUS_FILE_UNDO_OP_CREATE_LINK)
+    if (op_type == NAUTILUS_FILE_UNDO_OP_COPY)
     {
-        ext_copy_duplicate_undo_func (self, parent_window);
+        ext_copy_undo_func (self, parent_window);
+    }
+    else if (op_type == NAUTILUS_FILE_UNDO_OP_DUPLICATE ||
+             op_type == NAUTILUS_FILE_UNDO_OP_CREATE_LINK)
+    {
+        ext_duplicate_undo_func (self, parent_window);
     }
     else if (op_type == NAUTILUS_FILE_UNDO_OP_MOVE)
     {

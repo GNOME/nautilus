@@ -8,15 +8,15 @@
    modify it under the terms of the GNU General Public License as
    published by the Free Software Foundation; either version 2 of the
    License, or (at your option) any later version.
-   
+
    This program is distributed in the hope that it will be useful,
    but WITHOUT ANY WARRANTY; without even the implied warranty of
    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
    General Public License for more details.
-   
+
    You should have received a copy of the GNU General Public
    License along with this program; if not, see <http://www.gnu.org/licenses/>.
-   
+
    Authors: Ettore Perazzoli <ettore@gnu.org>,
             Pavel Cisler <pavel@eazel.com>
 */
@@ -83,10 +83,14 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 						      NautilusCreateCallback   done_callback,
 						      gpointer                 data);
 
-void nautilus_file_operations_delete          (GList                  *files,
-					       GtkWindow              *parent_window,
-					       NautilusDeleteCallback  done_callback,
-					       gpointer                done_callback_data);
+void nautilus_file_operations_delete				(GList                  *files,
+					GtkWindow              *parent_window,
+					NautilusDeleteCallback  done_callback,
+					gpointer                done_callback_data);
+void nautilus_file_operations_force_delete	(GList                  *files,
+					GtkWindow              *parent_window,
+					NautilusDeleteCallback  done_callback,
+					gpointer                done_callback_data);
 void nautilus_file_operations_trash_or_delete (GList                  *files,
 					       GtkWindow              *parent_window,
 					       NautilusDeleteCallback  done_callback,

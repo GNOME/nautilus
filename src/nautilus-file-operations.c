@@ -98,6 +98,7 @@ typedef struct
     CommonJob common;
     GList *files;
     gboolean try_trash;
+    gboolean forced;
     gboolean user_cancel;
     NautilusDeleteCallback done_callback;
     gpointer done_callback_data;
@@ -2424,7 +2425,7 @@ delete_task_thread_func (GTask        *task,
             must_confirm_delete_in_trash = TRUE;
             to_delete_files = g_list_prepend (to_delete_files, file);
         }
-        else if (can_delete_without_confirm (file))
+        else if (can_delete_without_confirm (file) || job->forced)
         {
             to_delete_files = g_list_prepend (to_delete_files, file);
         }
@@ -2517,6 +2518,30 @@ trash_or_delete_internal (GList                  *files,
     g_object_unref (task);
 }
 
+static void
+force_delete_internal (GList                  *files,
+                       GtkWindow              *parent_window,
+                       NautilusDeleteCallback  done_callback,
+                       gpointer                done_callback_data)
+{
+    GTask *task;
+    DeleteJob *job;
+
+    job = op_job_new (DeleteJob, parent_window);
+    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+    job->forced = TRUE;
+    job->user_cancel = FALSE;
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+
+    inhibit_power_manager ((CommonJob *) job, _("Deleting Files"));
+
+    task = g_task_new (NULL, NULL, delete_task_done, job);
+    g_task_set_task_data (task, job, NULL);
+    g_task_run_in_thread (task, delete_task_thread_func);
+    g_object_unref (task);
+}
+
 void
 nautilus_file_operations_trash_or_delete (GList                  *files,
                                           GtkWindow              *parent_window,
@@ -2529,17 +2554,25 @@ nautilus_file_operations_trash_or_delete (GList                  *files,
 }
 
 void
-nautilus_file_operations_delete (GList                  *files,
-                                 GtkWindow              *parent_window,
-                                 NautilusDeleteCallback  done_callback,
-                                 gpointer                done_callback_data)
+nautilus_file_operations_delete       (GList                  *files,
+          GtkWindow              *parent_window,
+          NautilusDeleteCallback  done_callback,
+          gpointer                done_callback_data)
 {
     trash_or_delete_internal (files, parent_window,
                               FALSE,
                               done_callback, done_callback_data);
 }
 
-
+void
+nautilus_file_operations_force_delete (GList                  *files,
+          GtkWindow              *parent_window,
+          NautilusDeleteCallback  done_callback,
+          gpointer                done_callback_data)
+{
+    force_delete_internal   (files, parent_window,
+                             done_callback, done_callback_data);
+}
 
 typedef struct
 {
