@@ -2254,6 +2254,12 @@ nautilus_window_initialize_actions (NautilusWindow *window)
         "<ctrl>r",
         NULL
     };
+    const gchar *prompt_home_location_accels[] =
+    {
+        "asciitilde",
+        "dead_tilde",
+        NULL
+    };
 
     g_action_map_add_action_entries (G_ACTION_MAP (window),
                                      win_entries, G_N_ELEMENTS (win_entries),
@@ -2280,7 +2286,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerator (app, "win.prompt-root-location", "slash");
-    nautilus_application_set_accelerator (app, "win.prompt-home-location", "asciitilde");
+    /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
+    nautilus_application_set_accelerators (app, "win.prompt-home-location", prompt_home_location_accels);
     nautilus_application_set_accelerator (app, "win.view-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
