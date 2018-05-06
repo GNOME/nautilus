@@ -4603,7 +4603,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return nautilus_file_info_get_uri (NAUTILUS_FILE_INFO (file));
+    return nautilus_file_info_get_activation_uri (NAUTILUS_FILE_INFO (file));
 }
 
 GFile *
