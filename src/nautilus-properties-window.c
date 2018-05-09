@@ -4871,7 +4871,7 @@ is_a_special_file (NautilusFile *file)
 {
     gboolean is_special;
 
-    is_special = file == NULL || nautilus_file_is_in_trash (file) ||
+    is_special = file == NULL || nautilus_file_is_in_trash (file);
 
     return is_special;
 }
