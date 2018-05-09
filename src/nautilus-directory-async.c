@@ -3541,39 +3541,6 @@ file_info_start (NautilusDirectory *directory,
     g_object_unref (location);
 }
 
-static gboolean
-is_link_trusted (NautilusFile *file,
-                 gboolean      is_launcher)
-{
-    GFile *location;
-    gboolean res;
-    g_autofree gchar *trusted = NULL;
-
-    if (!is_launcher)
-    {
-        return TRUE;
-    }
-
-    trusted = nautilus_file_get_metadata (file,
-                                          NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED,
-                                          NULL);
-    if (nautilus_file_can_execute (file) && trusted != NULL)
-    {
-        return TRUE;
-    }
-
-    res = FALSE;
-
-    if (nautilus_file_is_local (file))
-    {
-        location = nautilus_file_get_location (file);
-        res = nautilus_is_in_system_dir (location);
-        g_object_unref (location);
-    }
-
-    return res;
-}
-
 static void
 link_info_done (NautilusDirectory *directory,
                 NautilusFile      *file,
@@ -3582,20 +3549,9 @@ link_info_done (NautilusDirectory *directory,
                 GIcon             *icon,
                 gboolean           is_launcher)
 {
-    gboolean is_trusted;
-
     file->details->link_info_is_up_to_date = TRUE;
 
-    is_trusted = is_link_trusted (file, is_launcher);
-
-    if (is_trusted)
-    {
         nautilus_file_set_display_name (file, name, name, TRUE);
-    }
-    else
-    {
-        nautilus_file_set_display_name (file, NULL, NULL, TRUE);
-    }
 
     file->details->got_link_info = TRUE;
     g_clear_object (&file->details->custom_icon);
@@ -3607,12 +3563,11 @@ link_info_done (NautilusDirectory *directory,
         file->details->got_custom_activation_uri = TRUE;
         file->details->activation_uri = g_strdup (uri);
     }
-    if (is_trusted && (icon != NULL))
+    if (icon != NULL)
     {
         file->details->custom_icon = g_object_ref (icon);
     }
     file->details->is_launcher = is_launcher;
-    file->details->is_trusted_link = is_trusted;
 
     nautilus_directory_async_state_changed (directory);
 }
