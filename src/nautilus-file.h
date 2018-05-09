@@ -459,9 +459,6 @@ gboolean                nautilus_file_is_trusted_link                   (Nautilu
 gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);
-
-char *                  nautilus_file_get_target_uri                    (NautilusFile                   *file);
-
 GIcon *                 nautilus_file_get_gicon                         (NautilusFile                   *file,
 									 NautilusFileIconFlags           flags);
 NautilusIconInfo *      nautilus_file_get_icon                          (NautilusFile                   *file,
