@@ -3550,9 +3550,6 @@ link_info_done (NautilusDirectory *directory,
                 gboolean           is_launcher)
 {
     file->details->link_info_is_up_to_date = TRUE;
-
-        nautilus_file_set_display_name (file, name, name, TRUE);
-
     file->details->got_link_info = TRUE;
     g_clear_object (&file->details->custom_icon);
 
