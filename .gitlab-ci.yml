@@ -39,7 +39,7 @@ flatpak:
             - ${BUNDLE}
             - _build/meson-logs/meson-log.txt
             - _build/meson-logs/testlog.txt
-        expire_in: 2 days
+        expire_in: 30 days
     cache:
         paths:
             - .flatpak-builder/cache
@@ -53,7 +53,7 @@ review:
     artifacts:
         paths:
             - ${BUNDLE}
-        expire_in: 2 days
+        expire_in: 30 days
     environment:
         name: review/$CI_COMMIT_REF_NAME
         url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
