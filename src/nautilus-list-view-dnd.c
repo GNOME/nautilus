@@ -130,14 +130,7 @@ item_get_data_binder (GtkTreeModel *model,
                                  column,
                                  &cell_area);
 
-    if (nautilus_file_is_nautilus_link (file))
-    {
-        uri = nautilus_file_get_uri (file);
-    }
-    else
-    {
-        uri = nautilus_file_get_activation_uri (file);
-    }
+    uri = nautilus_file_get_activation_uri (file);
 
     nautilus_file_unref (file);
 

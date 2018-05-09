@@ -31,7 +31,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
 #include "nautilus-thumbnails.h"
@@ -1593,24 +1592,6 @@ nautilus_file_poll_for_media (NautilusFile *file)
     }
 }
 
-static gboolean
-is_desktop_file (NautilusFile *file)
-{
-    return nautilus_file_is_mime_type (file, "application/x-desktop");
-}
-
-static gboolean
-can_rename_desktop_file (NautilusFile *file)
-{
-    GFile *location;
-    gboolean res;
-
-    location = nautilus_file_get_location (file);
-    res = g_file_is_native (location);
-    g_object_unref (location);
-    return res;
-}
-
 /**
  * nautilus_file_can_rename:
  *
@@ -1936,11 +1917,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
                                gpointer                       callback_data)
 {
     GError *error;
-    gboolean success;
-    gboolean name_changed;
     gchar *new_file_name;
-    gchar *uri;
-    gchar *old_name;
 
     /* Return an error for incoming names containing path separators.
      * But not for .desktop files as '/' are allowed for them */
@@ -4535,33 +4512,14 @@ nautilus_file_get_activation_location (NautilusFile *file)
     return nautilus_file_get_location (file);
 }
 
-
 char *
 nautilus_file_get_target_uri (NautilusFile *file)
 {
-    char *uri, *target_uri;
-    GFile *location;
+    char *uri;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
     uri = nautilus_file_get_uri (file);
-
-    /* Check for Nautilus link */
-    if (nautilus_file_is_nautilus_link (file))
-    {
-        location = nautilus_file_get_location (file);
-        /* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-        if (g_file_is_native (location))
-        {
-            target_uri = nautilus_link_local_get_link_uri (uri);
-            if (target_uri != NULL)
-            {
-                g_free (uri);
-                uri = target_uri;
-            }
-        }
-        g_object_unref (location);
-    }
 
     return uri;
 }
@@ -8000,27 +7958,6 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
         }
         return target_uri;
     }
-}
-
-/**
- * nautilus_file_is_nautilus_link
- *
- * Check if this file is a "nautilus link", meaning a historical
- * nautilus xml link file or a desktop file.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: True if the file is a nautilus link.
- *
- **/
-gboolean
-nautilus_file_is_nautilus_link (NautilusFile *file)
-{
-    if (file->details->mime_type == NULL)
-    {
-        return FALSE;
-    }
-    return g_content_type_equals (eel_ref_str_peek (file->details->mime_type),
-                                  "application/x-desktop");
 }
 
 /**
