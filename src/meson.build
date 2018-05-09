@@ -70,8 +70,6 @@ libnautilus_sources = [
   'nautilus-container-max-width.h',
   'nautilus-dbus-manager.c',
   'nautilus-dbus-manager.h',
-  'nautilus-desktop-item-properties.c',
-  'nautilus-desktop-item-properties.h',
   'nautilus-error-reporting.c',
   'nautilus-error-reporting.h',
   'nautilus-preferences-window.c',
