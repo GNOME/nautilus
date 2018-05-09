@@ -247,14 +247,6 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer  *containe
         return;
     }
 
-    if (nautilus_file_is_nautilus_link (file))
-    {
-        /* Don't show the normal extra information for desktop files,
-         * it doesn't make sense. */
-        *additional_text = NULL;
-        return;
-    }
-
     /* Find out what attributes go below each icon. */
     attributes = nautilus_canvas_view_container_get_icon_text_attribute_names (container,
                                                                                &num_attributes);
