@@ -134,10 +134,6 @@ update_information_label (NautilusQueryEditor *editor)
             label = _("Searching locations only");
             fts_sensitive = FALSE;
         }
-        else if (g_str_has_prefix (uri, "computer://"))
-        {
-            label = _("Searching devices only");
-        }
         else if (g_str_has_prefix (uri, "network://"))
         {
             label = _("Searching network locations only");

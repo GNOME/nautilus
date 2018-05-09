@@ -2572,19 +2572,6 @@ create_grid_with_standard_properties (void)
 }
 
 static gboolean
-is_computer_directory (NautilusFile *file)
-{
-    char *file_uri;
-    gboolean result;
-
-    file_uri = nautilus_file_get_uri (file);
-    result = strcmp (file_uri, "computer:///") == 0;
-    g_free (file_uri);
-
-    return result;
-}
-
-static gboolean
 is_root_directory (NautilusFile *file)
 {
     GFile *location;
@@ -2639,7 +2626,6 @@ should_show_file_type (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
     {
@@ -2656,7 +2642,6 @@ should_show_location_info (NautilusPropertiesWindow *window)
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
             is_root_directory (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
     {
@@ -2709,7 +2694,6 @@ should_show_free_space (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             nautilus_file_is_in_recent (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
@@ -4790,8 +4774,7 @@ should_show_permissions (NautilusPropertiesWindow *window)
      */
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (file) ||
-            nautilus_file_is_in_recent (file) ||
-            is_computer_directory (file)))
+            nautilus_file_is_in_recent (file)))
     {
         return FALSE;
     }
@@ -4888,9 +4871,7 @@ is_a_special_file (NautilusFile *file)
 {
     gboolean is_special;
 
-    is_special = file == NULL ||
-                 nautilus_file_is_in_trash (file) ||
-                 is_computer_directory (file);
+    is_special = file == NULL || nautilus_file_is_in_trash (file) ||
 
     return is_special;
 }
