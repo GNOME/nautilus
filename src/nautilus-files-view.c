@@ -5011,7 +5011,7 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
     expanding_string = g_string_new ("");
     for (node = selection; node != NULL; node = node->next)
     {
-        uri = nautilus_file_get_target_uri (NAUTILUS_FILE (node->data));
+        uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
         if (uri == NULL)
         {
             continue;
