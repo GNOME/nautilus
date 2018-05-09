@@ -91,16 +91,13 @@ open_location_cb (NautilusPlacesView *view,
     {
         NautilusFile *file;
         GtkWidget *window;
-        char *path;
 
-        path = "other-locations:///";
         file = nautilus_file_get (location);
         window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
         nautilus_mime_activate_file (GTK_WINDOW (window),
                                      NAUTILUS_WINDOW_SLOT (slot),
                                      file,
-                                     path,
                                      flags);
         nautilus_file_unref (file);
     }
