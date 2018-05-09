@@ -1642,8 +1642,7 @@ nautilus_file_can_rename (NautilusFile *file)
         return FALSE;
     }
 
-    if ((is_desktop_file (file) && !can_rename_desktop_file (file)) ||
-        nautilus_file_is_home (file))
+    if (nautilus_file_is_home (file))
     {
         return FALSE;
     }
@@ -1876,17 +1875,6 @@ rename_get_info_callback (GObject      *source_object,
         g_free (new_uri);
         g_free (old_uri);
 
-        /* the rename could have affected the display name if e.g.
-         * we're in a vfolder where the name comes from a desktop file
-         * and a rename affects the contents of the desktop file.
-         */
-        if (op->file->details->got_custom_display_name)
-        {
-            nautilus_file_invalidate_attributes (op->file,
-                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-        }
-
         g_object_unref (new_info);
     }
     nautilus_file_operation_complete (op, NULL, error);
@@ -1948,19 +1936,15 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
                                gpointer                       callback_data)
 {
     GError *error;
-    gboolean is_renameable_desktop_file;
     gboolean success;
     gboolean name_changed;
     gchar *new_file_name;
     gchar *uri;
     gchar *old_name;
 
-    is_renameable_desktop_file =
-        is_desktop_file (file) && can_rename_desktop_file (file);
-
     /* Return an error for incoming names containing path separators.
      * But not for .desktop files as '/' are allowed for them */
-    if (strstr (new_name, "/") != NULL && !is_renameable_desktop_file)
+    if (strstr (new_name, "/") != NULL)
     {
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
                              _("Slashes are not allowed in filenames"));
@@ -1985,8 +1969,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
      * (1) rename returns an error if new & old are same.
      * (2) We don't want to send file-changed signal if nothing changed.
      */
-    if (!is_renameable_desktop_file &&
-        name_is (file, new_name))
+    if (name_is (file, new_name))
     {
         if (callback != NULL)
         {
@@ -2018,62 +2001,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
         return NULL;
     }
 
-    if (is_renameable_desktop_file)
-    {
-        /* Don't actually change the name if the new name is the same.
-         * This helps for the vfolder method where this can happen and
-         * we want to minimize actual changes
-         */
-        uri = nautilus_file_get_uri (file);
-        old_name = nautilus_link_local_get_text (uri);
-        if (old_name != NULL && strcmp (new_name, old_name) == 0)
-        {
-            success = TRUE;
-            name_changed = FALSE;
-        }
-        else
-        {
-            success = nautilus_link_local_set_text (uri, new_name);
-            name_changed = TRUE;
-        }
-        g_free (old_name);
-        g_free (uri);
-
-        if (!success)
-        {
-            error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
-                                 _("Probably the content of the file is an invalid desktop file format"));
-            if (callback != NULL)
-            {
-                (*callback)(file, NULL, error, callback_data);
-            }
-            g_error_free (error);
-            return NULL;
-        }
-        new_file_name = g_strdup_printf ("%s.desktop", new_name);
-        new_file_name = g_strdelimit (new_file_name, "/", '-');
-
-        if (name_is (file, new_file_name))
-        {
-            if (name_changed)
-            {
-                nautilus_file_invalidate_attributes (file,
-                                                     NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-            }
-
-            if (callback != NULL)
-            {
-                (*callback)(file, NULL, NULL, callback_data);
-            }
-            g_free (new_file_name);
-            return NULL;
-        }
-    }
-    else
-    {
-        new_file_name = g_strdup (new_name);
-    }
+    new_file_name = g_strdup (new_name);
 
     return new_file_name;
 }
@@ -2211,18 +2139,6 @@ batch_rename_get_info_callback (GObject      *source_object,
         nautilus_directory_moved (old_uri, new_uri);
         g_free (new_uri);
         g_free (old_uri);
-
-        /* the rename could have affected the display name if e.g.
-         * we're in a vfolder where the name comes from a desktop file
-         * and a rename affects the contents of the desktop file.
-         */
-        if (op->file->details->got_custom_display_name)
-        {
-            nautilus_file_invalidate_attributes (op->file,
-                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-        }
-
         g_object_unref (new_info);
     }
 
