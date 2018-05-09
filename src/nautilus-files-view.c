@@ -77,7 +77,6 @@
 #include "nautilus-new-folder-dialog-controller.h"
 #include "nautilus-compress-dialog-controller.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
 #include "nautilus-profile.h"

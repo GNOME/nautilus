@@ -50,7 +50,6 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-application-chooser.h"
 #include "nautilus-module.h"
@@ -4907,7 +4906,6 @@ is_a_special_file (NautilusFile *file)
     gboolean is_special;
 
     is_special = file == NULL ||
-                 nautilus_file_is_nautilus_link (file) ||
                  nautilus_file_is_in_trash (file) ||
                  is_computer_directory (file);
 
@@ -5515,39 +5513,25 @@ set_icon (const char               *icon_uri,
 
         for (l = properties_window->details->original_files; l != NULL; l = l->next)
         {
+            g_autoptr (GFile) file_location = NULL;
+            g_autoptr (GFile) icon_location = NULL;
+            g_autofree gchar *real_icon_uri = NULL;
+
             file = NAUTILUS_FILE (l->data);
-
             file_uri = nautilus_file_get_uri (file);
+            file_location = nautilus_file_get_location (file);
+            icon_location = g_file_new_for_uri (icon_uri);
 
-            if (nautilus_file_is_mime_type (file, "application/x-desktop"))
+            /* ’Tis a little bit of a misnomer. Actually a path. */
+            real_icon_uri = g_file_get_relative_path (icon_location,
+                                                      file_location);
+
+            if (real_icon_uri == NULL)
             {
-                if (nautilus_link_local_set_icon (file_uri, icon_path))
-                {
-                    nautilus_file_invalidate_attributes (file,
-                                                         NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                         NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-                }
+                real_icon_uri = g_strdup (icon_uri);
             }
-            else
-            {
-                g_autoptr (GFile) file_location = NULL;
-                g_autoptr (GFile) icon_location = NULL;
-                g_autofree gchar *real_icon_uri = NULL;
 
-                file_location = nautilus_file_get_location (file);
-                icon_location = g_file_new_for_uri (icon_uri);
-
-                /* ’Tis a little bit of a misnomer. Actually a path. */
-                real_icon_uri = g_file_get_relative_path (icon_location,
-                                                          file_location);
-
-                if (real_icon_uri == NULL)
-                {
-                    real_icon_uri = g_strdup (icon_uri);
-                }
-
-                nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
-            }
+            nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
 
             g_free (file_uri);
         }

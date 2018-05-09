@@ -36,7 +36,6 @@
 
 #include "nautilus-canvas-private.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-selection-canvas-item.h"
 #include <eel/eel-glib-extensions.h>
@@ -250,11 +249,8 @@ icon_get_data_binder (NautilusCanvasIcon *icon,
 
     uri = nautilus_canvas_container_get_icon_uri (container, icon);
     file = nautilus_file_get_by_uri (uri);
-    if (!nautilus_file_is_nautilus_link (file))
-    {
-        g_free (uri);
-        uri = nautilus_canvas_container_get_icon_activation_uri (container, icon);
-    }
+    g_free (uri);
+    uri = nautilus_canvas_container_get_icon_activation_uri (container, icon);
 
     if (uri == NULL)
     {

@@ -42,7 +42,6 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-canvas-container.h"
 #include "nautilus-canvas-dnd.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-clipboard.h"
 
@@ -1431,18 +1430,6 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
     gtk_widget_show (GTK_WIDGET (canvas_container));
 }
 
-/* Handles an URL received from Mozilla */
-static void
-canvas_view_handle_netscape_url (NautilusCanvasContainer *container,
-                                 const char              *encoded_url,
-                                 const char              *target_uri,
-                                 GdkDragAction            action,
-                                 NautilusCanvasView      *view)
-{
-    nautilus_files_view_handle_netscape_url_drop (NAUTILUS_FILES_VIEW (view),
-                                                  encoded_url, target_uri, action);
-}
-
 static void
 canvas_view_handle_uri_list (NautilusCanvasContainer *container,
                              const char              *item_uris,
@@ -1632,8 +1619,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
                               G_CALLBACK (text_attribute_names_changed_callback),
                               canvas_view);
 
-    g_signal_connect_object (canvas_container, "handle-netscape-url",
-                             G_CALLBACK (canvas_view_handle_netscape_url), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-uri-list",
                              G_CALLBACK (canvas_view_handle_uri_list), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-text",
