@@ -228,10 +228,6 @@ struct
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
 
-#define RESPONSE_RUN 1000
-#define RESPONSE_DISPLAY 1001
-#define RESPONSE_RUN_IN_TERMINAL 1002
-
 #define SILENT_WINDOW_OPEN_LIMIT 5
 #define SILENT_OPEN_LIMIT 5
 
