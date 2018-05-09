@@ -203,7 +203,6 @@ char *                  nautilus_file_get_volume_name                   (Nautilu
 char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
 char *                  nautilus_file_get_symbolic_link_target_uri      (NautilusFile                   *file);
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
-gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_regular_file                   (NautilusFile                   *file);

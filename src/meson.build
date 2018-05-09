@@ -200,8 +200,6 @@ libnautilus_sources = [
   'nautilus-keyfile-metadata.h',
   'nautilus-lib-self-check-functions.c',
   'nautilus-lib-self-check-functions.h',
-  'nautilus-link.c',
-  'nautilus-link.h',
   'nautilus-metadata.h',
   'nautilus-metadata.c',
   'nautilus-mime-application-chooser.c',

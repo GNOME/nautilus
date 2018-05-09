@@ -54,7 +54,6 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
