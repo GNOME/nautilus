@@ -28,10 +28,6 @@
 
 #include "nautilus-files-view.h"
 
-void nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
-                                                   const char        *encoded_url,
-                                                   const char        *target_uri,
-                                                   GdkDragAction      action);
 void nautilus_files_view_handle_uri_list_drop     (NautilusFilesView *view,
                                                    const char        *item_uris,
                                                    const char        *target_uri,
