@@ -29,7 +29,6 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-file.h"
-#include "nautilus-link.h"
 
 #include "nautilus-window.h"
 #include "nautilus-view.h"
