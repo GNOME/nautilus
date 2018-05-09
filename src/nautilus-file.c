@@ -4512,18 +4512,6 @@ nautilus_file_get_activation_location (NautilusFile *file)
     return nautilus_file_get_location (file);
 }
 
-char *
-nautilus_file_get_target_uri (NautilusFile *file)
-{
-    char *uri;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    uri = nautilus_file_get_uri (file);
-
-    return uri;
-}
-
 static gboolean
 is_uri_relative (const char *uri)
 {

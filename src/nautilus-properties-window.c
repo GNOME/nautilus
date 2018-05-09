@@ -285,7 +285,7 @@ get_target_file_for_original_file (NautilusFile *file)
     g_autoptr (GFile) location = NULL;
     g_autofree char *uri_to_display = NULL;
 
-    uri_to_display = nautilus_file_get_target_uri (file);
+    uri_to_display = nautilus_file_get_uri (file);
     location = g_file_new_for_uri (uri_to_display);
     target_file = nautilus_file_get (location);
 
