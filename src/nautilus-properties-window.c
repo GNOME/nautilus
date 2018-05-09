@@ -24,7 +24,6 @@
 #include "nautilus-properties-window.h"
 
 #include "nautilus-ui-utilities.h"
-#include "nautilus-desktop-item-properties.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-mime-actions.h"
 
@@ -3167,22 +3166,6 @@ create_basic_page (NautilusPropertiesWindow *window)
     if (GTK_IS_ENTRY (window->details->name_field))
     {
         gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
-    }
-
-    if (nautilus_desktop_item_properties_should_show (window->details->target_files))
-    {
-        GtkSizeGroup *label_size_group;
-        GtkWidget *box;
-
-        label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-        gtk_size_group_add_widget (label_size_group,
-                                   GTK_WIDGET (window->details->name_label));
-        box = nautilus_desktop_item_properties_make_box (label_size_group,
-                                                         window->details->target_files);
-
-        gtk_grid_attach_next_to (window->details->basic_grid, box,
-                                 GTK_WIDGET (window->details->name_label),
-                                 GTK_POS_BOTTOM, 2, 1);
     }
 
     if (should_show_file_type (window))
