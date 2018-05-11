@@ -114,6 +114,51 @@ search_thread_add_hits_idle (gpointer user_data)
     return FALSE;
 }
 
+static gboolean
+is_file_valid_recursive (NautilusSearchEngineRecent *self,
+                         GFile                      *file,
+                         GError                    **error)
+{
+    g_autofree gchar *path = NULL;
+    g_autoptr (GFileInfo) file_info = NULL;
+
+    file_info = g_file_query_info (file, FILE_ATTRIBS,
+                                   G_FILE_QUERY_INFO_NONE,
+                                   self->cancellable, error);
+    if (*error != NULL)
+    {
+        return FALSE;
+    }
+
+    if (!g_file_info_get_attribute_boolean (file_info,
+                                            G_FILE_ATTRIBUTE_ACCESS_CAN_READ))
+    {
+        return FALSE;
+    }
+
+    path = g_file_get_path (file);
+
+    if (!nautilus_query_get_show_hidden_files (self->query))
+    {
+        if (!g_file_info_get_is_hidden (file_info) &&
+            !g_file_info_get_is_backup (file_info))
+        {
+            g_autoptr (GFile) parent = g_file_get_parent (file);
+
+            if (parent)
+            {
+                return is_file_valid_recursive (self, parent, error);
+            }
+        }
+        else
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
 static gpointer
 recent_thread_func (gpointer user_data)
 {
@@ -152,42 +197,22 @@ recent_thread_func (gpointer user_data)
 
         if (gtk_recent_info_is_local (info))
         {
-            g_autofree gchar *path = NULL;
-            g_autoptr (GFileInfo) file_info = NULL;
             g_autoptr (GError) error = NULL;
 
-            file_info = g_file_query_info (file, FILE_ATTRIBS,
-                                           G_FILE_QUERY_INFO_NONE,
-                                           self->cancellable, &error);
-            if (error != NULL)
+            if (!is_file_valid_recursive (self, file, &error))
             {
                 if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
                 {
                     break;
                 }
 
-                if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                if (error != NULL &&
+                    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
                 {
                     g_debug("Impossible to read recent file info: %s",
                             error->message);
                 }
 
-                continue;
-            }
-
-            if (!g_file_info_get_attribute_boolean (file_info,
-                                                    G_FILE_ATTRIBUTE_ACCESS_CAN_READ))
-            {
-                continue;
-            }
-
-            path = g_file_get_path (file);
-
-            if (!nautilus_query_get_show_hidden_files (self->query) &&
-                (g_file_info_get_is_hidden (file_info) ||
-                 g_file_info_get_is_backup (file_info) ||
-                 g_strrstr (path, G_DIR_SEPARATOR_S ".") != NULL))
-            {
                 continue;
             }
         }
