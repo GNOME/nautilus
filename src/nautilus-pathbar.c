@@ -1584,8 +1584,6 @@ nautilus_path_bar_set_path (NautilusPathBar *self,
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
     g_return_if_fail (file_path != NULL);
 
-    /* Check whether the new path is already present in the pathbar as buttons.
-     * This could be a parent directory or a previous selected subdirectory. */
     nautilus_path_bar_update_path (self, file_path);
     button_data = g_list_nth_data (self->button_list, 0);
 
