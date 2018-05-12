@@ -60,7 +60,7 @@ typedef enum
 static guint path_bar_signals [LAST_SIGNAL] = { 0 };
 
 #define NAUTILUS_PATH_BAR_ICON_SIZE 16
-#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 250
+#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 195
 
 typedef struct
 {
@@ -382,6 +382,10 @@ set_label_size_request (ButtonData *button_data)
     height = MAX (nat_req.height, bold_req.height);
 
     gtk_widget_set_size_request (button_data->label, width, height);
+    if (width == NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH)
+    {
+      gtk_widget_set_tooltip_text(button_data->button, gtk_label_get_text(GTK_LABEL(button_data->label)));
+    }
 }
 
 /* Size requisition:
