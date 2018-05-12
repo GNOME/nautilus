@@ -702,40 +702,6 @@ nautilus_is_file_roller_installed (void)
     return installed > 0 ? TRUE : FALSE;
 }
 
-/* Returns TRUE if the file is in XDG_DATA_DIRS. This is used for
- *  deciding if a desktop file is "trusted" based on the path */
-gboolean
-nautilus_is_in_system_dir (GFile *file)
-{
-    const char * const *data_dirs;
-    char *path;
-    int i;
-    gboolean res;
-
-    if (!g_file_is_native (file))
-    {
-        return FALSE;
-    }
-
-    path = g_file_get_path (file);
-
-    res = FALSE;
-
-    data_dirs = g_get_system_data_dirs ();
-    for (i = 0; path != NULL && data_dirs[i] != NULL; i++)
-    {
-        if (g_str_has_prefix (path, data_dirs[i]))
-        {
-            res = TRUE;
-            break;
-        }
-    }
-
-    g_free (path);
-
-    return res;
-}
-
 GHashTable *
 nautilus_trashed_files_get_original_directories (GList  *files,
                                                  GList **unhandled_files)

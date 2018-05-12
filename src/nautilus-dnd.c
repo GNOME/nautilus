@@ -513,15 +513,6 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
         nautilus_file_unref (target_file);
         return;
     }
-    else if (dropped_file != NULL && nautilus_file_is_launcher (dropped_file))
-    {
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        nautilus_file_unref (target_file);
-        return;
-    }
     else if (target_file != NULL && nautilus_file_is_archive (target_file))
     {
         *action = GDK_ACTION_COPY;

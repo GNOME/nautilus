@@ -38,7 +38,6 @@ gboolean nautilus_is_root_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory                  (GFile *dir);
 gboolean nautilus_is_home_directory_file             (GFile *dir,
 						      const char *filename);
-gboolean nautilus_is_in_system_dir                   (GFile *location);
 gboolean nautilus_is_search_directory                (GFile *dir);
 gboolean nautilus_is_recent_directory                (GFile *dir);
 gboolean nautilus_is_starred_directory              (GFile *dir);

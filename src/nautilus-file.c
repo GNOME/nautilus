@@ -503,8 +503,6 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->thumbnail_path = NULL;
     file->details->thumbnailing_failed = FALSE;
 
-    file->details->is_launcher = FALSE;
-    file->details->is_trusted_link = FALSE;
     file->details->is_symlink = FALSE;
     file->details->is_hidden = FALSE;
     file->details->is_mountpoint = FALSE;
@@ -4466,18 +4464,6 @@ nautilus_file_monitor_remove (NautilusFile  *file,
     g_return_if_fail (client != NULL);
 
     NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->monitor_remove (file, client);
-}
-
-gboolean
-nautilus_file_is_launcher (NautilusFile *file)
-{
-    return file->details->is_launcher;
-}
-
-gboolean
-nautilus_file_is_trusted_link (NautilusFile *file)
-{
-    return file->details->is_trusted_link;
 }
 
 gboolean
@@ -9325,12 +9311,6 @@ nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
               nautilus_file_can_write (drop_target_item);
         nautilus_directory_unref (directory);
         return res;
-    }
-
-    /* Launchers are an acceptable drop target */
-    if (nautilus_file_is_launcher (drop_target_item))
-    {
-        return TRUE;
     }
 
     if (nautilus_is_file_roller_installed () &&
