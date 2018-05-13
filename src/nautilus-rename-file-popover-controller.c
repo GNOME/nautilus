@@ -103,8 +103,12 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
                                                        gchar                            **error_message)
 {
     NautilusRenameFilePopoverController *self;
+    NautilusDirectory *directory;
+    glong max_name_length;
 
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
+    directory = self->target_file->details->directory;
+    max_name_length = nautilus_directory_get_max_child_name_length (directory);
 
     if (strlen (name) == 0)
     {
@@ -142,6 +146,17 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
         else
         {
             *error_message = _("A file cannot be called “..”.");
+        }
+    }
+    else if (strlen (name) > max_name_length + 1)
+    {
+        if (self->target_is_folder)
+        {
+            *error_message = _("Folder name is too long.");
+        }
+        else
+        {
+            *error_message = _("File name is too long.");
         }
     }
 
