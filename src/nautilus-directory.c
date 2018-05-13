@@ -1355,7 +1355,6 @@ nautilus_directory_notify_files_changed (GList *files)
              * a changed signal.
              */
             file->details->file_info_is_up_to_date = FALSE;
-            file->details->link_info_is_up_to_date = FALSE;
             nautilus_file_invalidate_extension_info_internal (file);
 
             hash_table_list_prepend (changed_lists, directory, file);

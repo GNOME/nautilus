@@ -1386,9 +1386,7 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
 
     if (file != NULL)
     {
-        attributes =
-            NAUTILUS_FILE_ATTRIBUTE_INFO |
-            NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
+        attributes = NAUTILUS_FILE_ATTRIBUTE_INFO;
         nautilus_file_monitor_add (file, self, attributes);
 
         g_signal_connect_object (file, "changed",

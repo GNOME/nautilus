@@ -5027,8 +5027,7 @@ create_properties_window (StartupData *startup_data)
 
         attributes =
             NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
-            NAUTILUS_FILE_ATTRIBUTE_INFO |
-            NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
+            NAUTILUS_FILE_ATTRIBUTE_INFO;
 
         nautilus_file_monitor_add (file,
                                    &window->details->original_files,

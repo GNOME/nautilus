@@ -4564,19 +4564,6 @@ get_mount_icon (NautilusFile *file)
 }
 
 static GIcon *
-get_link_icon (NautilusFile *file)
-{
-    GIcon *icon = NULL;
-
-    if (file->details->got_link_info && file->details->custom_icon != NULL)
-    {
-        icon = g_object_ref (file->details->custom_icon);
-    }
-
-    return icon;
-}
-
-static GIcon *
 get_custom_icon (NautilusFile *file)
 {
     char *custom_icon_uri, *custom_icon_name;
@@ -4615,26 +4602,6 @@ get_custom_icon (NautilusFile *file)
     }
 
     return icon;
-}
-
-static GIcon *
-get_custom_or_link_icon (NautilusFile *file)
-{
-    GIcon *icon;
-
-    icon = get_custom_icon (file);
-    if (icon != NULL)
-    {
-        return icon;
-    }
-
-    icon = get_link_icon (file);
-    if (icon != NULL)
-    {
-        return icon;
-    }
-
-    return NULL;
 }
 
 static GIcon *
@@ -5017,7 +4984,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
         return NULL;
     }
 
-    icon = get_custom_or_link_icon (file);
+    icon = get_custom_icon (file);
     if (icon != NULL)
     {
         return icon;
@@ -5275,7 +5242,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         goto out;
     }
 
-    gicon = get_custom_or_link_icon (file);
+    gicon = get_custom_icon (file);
     if (gicon != NULL)
     {
         icon = nautilus_icon_info_lookup (gicon, size, scale);
@@ -8483,12 +8450,6 @@ invalidate_file_info (NautilusFile *file)
 }
 
 static void
-invalidate_link_info (NautilusFile *file)
-{
-    file->details->link_info_is_up_to_date = FALSE;
-}
-
-static void
 invalidate_thumbnail (NautilusFile *file)
 {
     file->details->thumbnail_is_up_to_date = FALSE;
@@ -8540,10 +8501,6 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
         invalidate_file_info (file);
-    }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO))
-    {
-        invalidate_link_info (file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO))
     {
@@ -8609,7 +8566,6 @@ NautilusFileAttributes
 nautilus_file_get_all_attributes (void)
 {
     return NAUTILUS_FILE_ATTRIBUTE_INFO |
-           NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
            NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES |

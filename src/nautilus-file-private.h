@@ -161,8 +161,6 @@ struct NautilusFileDetails
 
 	eel_boolean_bit mount_is_up_to_date           : 1;
 	
-	eel_boolean_bit got_link_info                 : 1;
-	eel_boolean_bit link_info_is_up_to_date       : 1;
 	eel_boolean_bit got_custom_display_name       : 1;
 	eel_boolean_bit got_custom_activation_uri     : 1;
 
