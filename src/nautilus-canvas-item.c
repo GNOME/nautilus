@@ -31,7 +31,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
-#include <eel/eel-accessibility.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
@@ -131,8 +130,7 @@ struct NautilusCanvasItemDetails
 
     GdkWindow *cursor_window;
 
-    /* Accessibility bits */
-    GailTextUtil *text_util;
+    GString *text;
 };
 
 /* Object argument IDs. */
@@ -155,12 +153,9 @@ typedef enum
     TOP_SIDE
 } RectangleSide;
 
-static void nautilus_canvas_item_text_interface_init (EelAccessibleTextIface *iface);
 static GType nautilus_canvas_item_accessible_factory_get_type (void);
 
-G_DEFINE_TYPE_WITH_CODE (NautilusCanvasItem, nautilus_canvas_item, EEL_TYPE_CANVAS_ITEM,
-                         G_IMPLEMENT_INTERFACE (EEL_TYPE_ACCESSIBLE_TEXT,
-                                                nautilus_canvas_item_text_interface_init));
+G_DEFINE_TYPE (NautilusCanvasItem, nautilus_canvas_item, EEL_TYPE_CANVAS_ITEM)
 
 /* private */
 static void     get_icon_rectangle (NautilusCanvasItem *item,
@@ -199,9 +194,10 @@ nautilus_canvas_item_finalize (GObject *object)
         g_object_unref (details->pixbuf);
     }
 
-    if (details->text_util != NULL)
+    if (details->text != NULL)
     {
-        g_object_unref (details->text_util);
+        g_string_free (details->text, TRUE);
+        details->text = NULL;
     }
 
     g_free (details->editable_text);
@@ -295,10 +291,10 @@ nautilus_canvas_item_set_property (GObject      *object,
             is_rename = details->editable_text != NULL;
             g_free (details->editable_text);
             details->editable_text = g_strdup (g_value_get_string (value));
-            if (details->text_util)
+            if (details->text)
             {
-                gail_text_util_text_setup (details->text_util,
-                                           details->editable_text);
+                details->text = g_string_assign (details->text, details->editable_text);
+
                 if (is_rename)
                     g_object_notify (G_OBJECT (accessible), "accessible-name");
             }
@@ -1901,18 +1897,6 @@ nautilus_canvas_item_class_init (NautilusCanvasItemClass *class)
     g_type_class_add_private (class, sizeof (NautilusCanvasItemDetails));
 }
 
-static GailTextUtil *
-nautilus_canvas_item_get_text (GObject *text)
-{
-    return NAUTILUS_CANVAS_ITEM (text)->details->text_util;
-}
-
-static void
-nautilus_canvas_item_text_interface_init (EelAccessibleTextIface *iface)
-{
-    iface->get_text = nautilus_canvas_item_get_text;
-}
-
 /* ============================= a11y interfaces =========================== */
 
 static const char *nautilus_canvas_item_accessible_action_names[] =
@@ -2549,15 +2533,53 @@ nautilus_canvas_item_accessible_get_character_extents (AtkText      *text,
     *height = PANGO_PIXELS (rect.height);
 }
 
+static char *
+nautilus_canvas_item_accessible_text_get_text (AtkText *text,
+                                               gint     start_pos,
+                                               gint     end_pos)
+{
+    GObject *object;
+    NautilusCanvasItem *item;
+
+    object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
+    item = NAUTILUS_CANVAS_ITEM (object);
+
+    return g_utf8_substring (item->details->text->str, start_pos, end_pos);
+}
+
+static gunichar
+nautilus_canvas_item_accessible_text_get_character_at_offset (AtkText *text,
+                                                              gint     offset)
+{
+    GObject *object;
+    NautilusCanvasItem *item;
+    gchar *pointer;
+
+    object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
+    item = NAUTILUS_CANVAS_ITEM (object);
+    pointer = g_utf8_offset_to_pointer (item->details->text->str, offset);
+
+    return g_utf8_get_char (pointer);
+}
+
+static gint
+nautilus_canvas_item_accessible_text_get_character_count (AtkText *text)
+{
+    GObject *object;
+    NautilusCanvasItem *item;
+
+    object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
+    item = NAUTILUS_CANVAS_ITEM (object);
+
+    return g_utf8_strlen (item->details->text->str, -1);
+}
+
 static void
 nautilus_canvas_item_accessible_text_interface_init (AtkTextIface *iface)
 {
-    iface->get_text = eel_accessibility_text_get_text;
-    iface->get_character_at_offset = eel_accessibility_text_get_character_at_offset;
-    iface->get_text_before_offset = eel_accessibility_text_get_text_before_offset;
-    iface->get_text_at_offset = eel_accessibility_text_get_text_at_offset;
-    iface->get_text_after_offset = eel_accessibility_text_get_text_after_offset;
-    iface->get_character_count = eel_accessibility_text_get_character_count;
+    iface->get_text = nautilus_canvas_item_accessible_text_get_text;
+    iface->get_character_at_offset = nautilus_canvas_item_accessible_text_get_character_at_offset;
+    iface->get_character_count = nautilus_canvas_item_accessible_text_get_character_count;
     iface->get_character_extents = nautilus_canvas_item_accessible_get_character_extents;
     iface->get_offset_at_point = nautilus_canvas_item_accessible_get_offset_at_point;
 }
@@ -2678,25 +2700,19 @@ nautilus_canvas_item_accessible_factory_create_accessible (GObject *for_object)
 {
     AtkObject *accessible;
     NautilusCanvasItem *item;
-    GString *item_text;
 
     item = NAUTILUS_CANVAS_ITEM (for_object);
     g_assert (item != NULL);
 
-    item_text = g_string_new (NULL);
+    item->details->text = g_string_new (NULL);
     if (item->details->editable_text)
     {
-        g_string_append (item_text, item->details->editable_text);
+        g_string_append (item->details->text, item->details->editable_text);
     }
     if (item->details->additional_text)
     {
-        g_string_append (item_text, item->details->additional_text);
+        g_string_append (item->details->text, item->details->additional_text);
     }
-
-    item->details->text_util = gail_text_util_new ();
-    gail_text_util_text_setup (item->details->text_util,
-                               item_text->str);
-    g_string_free (item_text, TRUE);
 
     accessible = g_object_new (nautilus_canvas_item_accessible_get_type (), NULL);
     atk_object_initialize (accessible, for_object);
