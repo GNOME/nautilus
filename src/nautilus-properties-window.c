@@ -2824,7 +2824,8 @@ paint_slice (GtkWidget   *widget,
     double angle2;
     gboolean full;
     double offset = G_PI / 2.0;
-    GdkRGBA stroke, fill;
+    GdkRGBA fill;
+    GdkRGBA stroke;
     GtkStateFlags state;
     GtkBorder border;
     GtkStyleContext *context;
@@ -2842,8 +2843,9 @@ paint_slice (GtkWidget   *widget,
 
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, style_class);
-    gtk_style_context_get_background_color (context, state, &fill);
-    gtk_style_context_get_border_color (context, state, &stroke);
+    gtk_style_context_get_color (context, state, &fill);
+    gtk_style_context_add_class (context, "border");
+    gtk_style_context_get_color (context, state, &stroke);
     gtk_style_context_restore (context);
 
     width = gtk_widget_get_allocated_width (widget);
