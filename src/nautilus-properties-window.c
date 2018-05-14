@@ -2788,12 +2788,13 @@ paint_slice (GtkWidget   *widget,
     double angle2;
     gboolean full;
     double offset = G_PI / 2.0;
-    GdkRGBA stroke, fill;
+    GdkRGBA fill;
     GtkStateFlags state;
     GtkBorder border;
     GtkStyleContext *context;
     double x, y, radius;
     gint width, height;
+    g_autoptr (GdkRGBA) stroke = NULL;
 
     if (percent_width < .01)
     {
@@ -2806,8 +2807,7 @@ paint_slice (GtkWidget   *widget,
 
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, style_class);
-    gtk_style_context_get_background_color (context, state, &fill);
-    gtk_style_context_get_border_color (context, state, &stroke);
+    gtk_style_context_get_color (context, state, &fill);
     gtk_style_context_restore (context);
 
     width = gtk_widget_get_allocated_width (widget);
@@ -2844,7 +2844,15 @@ paint_slice (GtkWidget   *widget,
     gdk_cairo_set_source_rgba (cr, &fill);
     cairo_fill_preserve (cr);
 
-    gdk_cairo_set_source_rgba (cr, &stroke);
+    stroke = gdk_rgba_copy (&fill);
+
+    /* A poor man’s shade() (no alpha). */
+    stroke->red = stroke->red * 0.7;
+    stroke->green = stroke->green * 0.7;
+    stroke->blue = stroke->blue * 0.7;
+
+    gdk_cairo_set_source_rgba (cr, stroke);
+
     cairo_stroke (cr);
 }
 
