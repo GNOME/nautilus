@@ -5369,26 +5369,19 @@ nautilus_file_get_where_string (NautilusFile *file)
 static char *
 nautilus_file_get_trash_original_file_parent_as_string (NautilusFile *file)
 {
-    NautilusFile *orig_file, *parent;
-    GFile *location;
+    NautilusFile *orig_file;
     char *filename;
 
-    if (file->details->trash_orig_path != NULL)
+    filename = NULL;
+    orig_file = nautilus_file_get_trash_original_file (file);
+    if (orig_file != NULL)
     {
-        orig_file = nautilus_file_get_trash_original_file (file);
-        parent = nautilus_file_get_parent (orig_file);
-        location = nautilus_file_get_location (parent);
+        filename = nautilus_file_get_parent_uri_for_display (orig_file);
 
-        filename = g_file_get_basename (location);
-
-        g_object_unref (location);
-        nautilus_file_unref (parent);
         nautilus_file_unref (orig_file);
-
-        return filename;
     }
 
-    return NULL;
+    return filename;
 }
 
 /**

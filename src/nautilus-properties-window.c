@@ -2649,6 +2649,22 @@ should_show_location_info (NautilusPropertiesWindow *window)
 }
 
 static gboolean
+should_show_trash_orig_path (NautilusPropertiesWindow *window)
+{
+    GList *l;
+
+    for (l = window->original_files; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)))
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
+static gboolean
 should_show_accessed_date (NautilusPropertiesWindow *window)
 {
     /* Accessed date for directory seems useless. If we some
@@ -2658,6 +2674,22 @@ should_show_accessed_date (NautilusPropertiesWindow *window)
     if (file_list_all_directories (window->target_files))
     {
         return FALSE;
+    }
+
+    return TRUE;
+}
+
+static gboolean
+should_show_trashed_on (NautilusPropertiesWindow *window)
+{
+    GList *l;
+
+    for (l = window->original_files; l != NULL; l = l->next)
+    {
+        if (!nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)))
+        {
+            return FALSE;
+        }
     }
 
     return TRUE;
@@ -3190,11 +3222,27 @@ create_basic_page (NautilusPropertiesWindow *window)
                                             location_show_original (window));
     }
 
+    if (should_show_trash_orig_path (window))
+    {
+        append_title_and_ellipsizing_value (window, grid, _("Original folder:"),
+                                            "trash_orig_path",
+                                            INCONSISTENT_STATE_STRING,
+                                            FALSE);
+    }
+
     if (should_show_volume_info (window))
     {
         append_title_and_ellipsizing_value (window, grid,
                                             _("Volume:"),
                                             "volume",
+                                            INCONSISTENT_STATE_STRING,
+                                            FALSE);
+    }
+
+    if (should_show_trashed_on (window))
+    {
+        append_title_and_ellipsizing_value (window, grid, _("Trashed on:"),
+                                            "trashed_on_full",
                                             INCONSISTENT_STATE_STRING,
                                             FALSE);
     }
