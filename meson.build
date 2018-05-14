@@ -69,7 +69,6 @@ libgd_dep = libgd.get_variable('libgd_dep')
 
 libm = cc.find_library('m')
 
-gail = dependency('gail-3.0')
 if get_option('extensions')
   gexiv = dependency('gexiv2', version: '>= 0.10.0')
 endif

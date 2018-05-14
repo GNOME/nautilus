@@ -37,7 +37,6 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include "gnome-desktop-thumbnail.h"
 
-#include <eel/eel-accessibility.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
@@ -3665,8 +3664,17 @@ add_execute_checkbox_with_label (NautilusPropertiesWindow *window,
     a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (check_button));
     if (a11y_enabled && label_for != NULL)
     {
-        eel_accessibility_set_up_label_widget_relation (GTK_WIDGET (label_for),
-                                                        check_button);
+        AtkObject *atk_widget;
+        AtkObject *atk_label;
+
+        atk_label = gtk_widget_get_accessible (GTK_WIDGET (label_for));
+        atk_widget = gtk_widget_get_accessible (check_button);
+
+        /* Create the label -> widget relation */
+        atk_object_add_relationship (atk_label, ATK_RELATION_LABEL_FOR, atk_widget);
+
+        /* Create the widget -> label relation */
+        atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
     }
 
     return check_button;
