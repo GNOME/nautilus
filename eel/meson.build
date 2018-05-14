@@ -1,6 +1,4 @@
 libeel_2_sources = [
-  'eel-accessibility.h',
-  'eel-accessibility.c',
   'eel-art-extensions.h',
   'eel-art-extensions.c',
   'eel-canvas.h',
@@ -27,7 +25,6 @@ libeel_2_sources = [
 
 libeel_2_deps = [
   config_h,
-  gail,
   glib,
   gtk,
   libm,
