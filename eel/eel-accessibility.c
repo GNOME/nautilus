@@ -41,35 +41,6 @@ eel_accessibility_set_up_label_widget_relation (GtkWidget *label,
     atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
 }
 
-static GQuark
-get_quark_gobject (void)
-{
-    static GQuark quark_accessible_gobject = 0;
-
-    if (!quark_accessible_gobject)
-    {
-        quark_accessible_gobject = g_quark_from_static_string
-                                       ("object-for-accessible");
-    }
-
-    return quark_accessible_gobject;
-}
-
-/**
- * eel_accessibility_get_gobject:
- * @object: an AtkObject
- *
- * gets the GObject associated with the AtkObject, for which
- * @object provides accessibility support.
- *
- * Return value: the accessible's associated GObject
- **/
-static gpointer
-eel_accessibility_get_gobject (AtkObject *object)
-{
-    return g_object_get_qdata (G_OBJECT (object), get_quark_gobject ());
-}
-
 static GailTextUtil *
 get_simple_text (gpointer object)
 {
@@ -82,7 +53,7 @@ get_simple_text (gpointer object)
     }
     else
     {
-        gobject = eel_accessibility_get_gobject (object);
+        gobject = atk_gobject_accessible_get_object (object);
     }
 
     if (!gobject)
