@@ -158,16 +158,28 @@
 .disk-space-display.unknown {
     background-color: @disk_space_unknown;
     border-color: shade(@disk_space_unknown, 0.7);
+    color: @disk_space_unknown;
+}
+.disk-space-display.unknown.border {
+    color: shade(@disk_space_unknown, 0.7);
 }
 
 .disk-space-display.used {
     background-color: @disk_space_used;
     border-color: shade(@disk_space_used, 0.7);
+    color: @disk_space_used;
+}
+.disk-space-display.used.border {
+    color: shade(@disk_space_used, 0.7);
 }
 
 .disk-space-display.free {
     background-color: @disk_space_free;
     border-color: shade(@disk_space_free, 0.7);
+    color: @disk_space_free;
+}
+.disk-space-display.free.border {
+    color: shade(@disk_space_free, 0.7);
 }
 
 /* View */
