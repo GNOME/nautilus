@@ -36,6 +36,7 @@ static gboolean initialized = FALSE;
 static GDebugKey keys[] =
 {
     { "Application", NAUTILUS_DEBUG_APPLICATION },
+    { "AsyncJobs", NAUTILUS_DEBUG_ASYNC_JOBS },
     { "Bookmarks", NAUTILUS_DEBUG_BOOKMARKS },
     { "DBus", NAUTILUS_DEBUG_DBUS },
     { "DirectoryView", NAUTILUS_DEBUG_DIRECTORY_VIEW },
@@ -51,6 +52,7 @@ static GDebugKey keys[] =
     { "Smclient", NAUTILUS_DEBUG_SMCLIENT },
     { "Window", NAUTILUS_DEBUG_WINDOW },
     { "Undo", NAUTILUS_DEBUG_UNDO },
+    { "Thumbnails", NAUTILUS_DEBUG_THUMBNAILS },
     { 0, }
 };
 

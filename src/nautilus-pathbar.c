@@ -50,7 +50,6 @@ typedef enum
     STARRED_BUTTON,
     RECENT_BUTTON,
     MOUNT_BUTTON,
-    STARRED_LOCATION_BUTTON
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -76,6 +75,7 @@ typedef struct
     GtkWidget *label;
     GtkWidget *bold_label;
     GtkWidget *separator;
+    GtkWidget *disclosure_arrow;
     GtkWidget *container;
 
     guint ignore_changes : 1;
@@ -102,11 +102,7 @@ typedef struct
     unsigned int drag_slider_timeout;
     gboolean drag_slider_timeout_for_up_button;
 
-    GActionGroup *action_group;
-
-    GMenu *context_menu;
-    NautilusFile *context_menu_file;
-    GdkEvent *context_menu_event;
+    GtkPopover *current_view_menu;
 } NautilusPathBarPrivate;
 
 
@@ -128,97 +124,6 @@ static void     nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                        gboolean    current_dir);
 static void     nautilus_path_bar_update_path (NautilusPathBar *self,
                                                GFile           *file_path);
-static void     unschedule_pop_up_context_menu (NautilusPathBar *self);
-static void     action_pathbar_open_item_new_window (GSimpleAction *action,
-                                                     GVariant      *state,
-                                                     gpointer       user_data);
-static void     action_pathbar_open_item_new_tab (GSimpleAction *action,
-                                                  GVariant      *state,
-                                                  gpointer       user_data);
-static void     action_pathbar_properties (GSimpleAction *action,
-                                           GVariant      *state,
-                                           gpointer       user_data);
-
-const GActionEntry path_bar_actions[] =
-{
-    { "open-item-new-tab", action_pathbar_open_item_new_tab },
-    { "open-item-new-window", action_pathbar_open_item_new_window },
-    { "properties", action_pathbar_properties}
-};
-
-
-static void
-action_pathbar_open_item_new_tab (GSimpleAction *action,
-                                  GVariant      *state,
-                                  gpointer       user_data)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GFile *location;
-
-    self = NAUTILUS_PATH_BAR (user_data);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    if (!priv->context_menu_file)
-    {
-        return;
-    }
-
-    location = nautilus_file_get_location (priv->context_menu_file);
-
-    if (location)
-    {
-        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_TAB);
-        g_object_unref (location);
-    }
-}
-
-static void
-action_pathbar_open_item_new_window (GSimpleAction *action,
-                                     GVariant      *state,
-                                     gpointer       user_data)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GFile *location;
-
-    self = NAUTILUS_PATH_BAR (user_data);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    if (!priv->context_menu_file)
-    {
-        return;
-    }
-
-    location = nautilus_file_get_location (priv->context_menu_file);
-
-    if (location)
-    {
-        g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_WINDOW);
-        g_object_unref (location);
-    }
-}
-
-static void
-action_pathbar_properties (GSimpleAction *action,
-                           GVariant      *state,
-                           gpointer       user_data)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GList *files;
-
-    self = NAUTILUS_PATH_BAR (user_data);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    g_assert (NAUTILUS_IS_FILE (priv->context_menu_file));
-
-    files = g_list_append (NULL, nautilus_file_ref (priv->context_menu_file));
-
-    nautilus_properties_window_present (files, GTK_WIDGET (self), NULL);
-
-    nautilus_file_list_free (files);
-}
 
 static GtkWidget *
 get_slider_button (NautilusPathBar *self,
@@ -325,19 +230,9 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     priv = nautilus_path_bar_get_instance_private (self);
 
-    /* Action group */
-    priv->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
-    g_action_map_add_action_entries (G_ACTION_MAP (priv->action_group),
-                                     path_bar_actions,
-                                     G_N_ELEMENTS (path_bar_actions),
-                                     self);
-    gtk_widget_insert_action_group (GTK_WIDGET (self),
-                                    "pathbar",
-                                    G_ACTION_GROUP (priv->action_group));
-
     /* Context menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    priv->context_menu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "pathbar-menu")));
+    priv->current_view_menu = g_object_ref (GTK_POPOVER (gtk_builder_get_object (builder, "menu_popover"))),
     g_object_unref (builder);
 
     gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
@@ -407,12 +302,6 @@ nautilus_path_bar_finalize (GObject *object)
 
     g_list_free (priv->button_list);
 
-    unschedule_pop_up_context_menu (NAUTILUS_PATH_BAR (object));
-    if (priv->context_menu_event)
-    {
-        gdk_event_free ((GdkEvent *) priv->context_menu_event);
-    }
-
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->finalize (object);
 }
 
@@ -459,7 +348,7 @@ get_dir_name (ButtonData *button_data)
             return _("Other Locations");
         }
 
-        case STARRED_LOCATION_BUTTON:
+        case STARRED_BUTTON:
         {
             return _("Starred");
         }
@@ -1620,109 +1509,16 @@ button_clicked_cb (GtkWidget *button,
     button_list = g_list_find (priv->button_list, button_data);
     g_assert (button_list != NULL);
 
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button), TRUE);
-
-    g_signal_emit (self, path_bar_signals [PATH_CLICKED], 0, button_data->path);
-}
-
-
-static void
-real_pop_up_pathbar_context_menu (NautilusPathBar *self)
-{
-    NautilusPathBarPrivate *priv;
-
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    nautilus_pop_up_context_menu_at_pointer (GTK_WIDGET (self),
-                                             priv->context_menu,
-                                             priv->context_menu_event);
-}
-
-static void
-pathbar_popup_file_attributes_ready (NautilusFile *file,
-                                     gpointer      data)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-
-    self = data;
-
-    g_assert (NAUTILUS_IS_PATH_BAR (self));
-
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    g_assert (file == priv->context_menu_file);
-
-    real_pop_up_pathbar_context_menu (self);
-}
-
-static void
-unschedule_pop_up_context_menu (NautilusPathBar *self)
-{
-    NautilusPathBarPrivate *priv;
-
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    if (priv->context_menu_file)
+    if (g_file_equal (button_data->path, priv->current_path))
     {
-        g_assert (NAUTILUS_IS_FILE (priv->context_menu_file));
-        nautilus_file_cancel_call_when_ready (priv->context_menu_file,
-                                              pathbar_popup_file_attributes_ready,
-                                              self);
-        g_clear_pointer (&priv->context_menu_file, nautilus_file_unref);
-    }
-}
-
-static void
-schedule_pop_up_context_menu (NautilusPathBar *self,
-                              GdkEventButton  *event,
-                              NautilusFile    *file)
-{
-    NautilusPathBarPrivate *priv;
-
-    g_assert (NAUTILUS_IS_FILE (file));
-
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    if (priv->context_menu_event != NULL)
-    {
-        gdk_event_free ((GdkEvent *) priv->context_menu_event);
-    }
-    priv->context_menu_event = gdk_event_copy ((GdkEvent *) event);
-
-    if (file == priv->context_menu_file)
-    {
-        if (nautilus_file_check_if_ready (file,
-                                          NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                          NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-                                          NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO))
-        {
-            real_pop_up_pathbar_context_menu (self);
-        }
+        gtk_popover_popup (priv->current_view_menu);
     }
     else
     {
-        unschedule_pop_up_context_menu (self);
-
-        priv->context_menu_file = nautilus_file_ref (file);
-        nautilus_file_call_when_ready (priv->context_menu_file,
-                                       NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                       NAUTILUS_FILE_ATTRIBUTE_MOUNT |
-                                       NAUTILUS_FILE_ATTRIBUTE_FILESYSTEM_INFO,
-                                       pathbar_popup_file_attributes_ready,
-                                       self);
+        g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0, button_data->path, 0);
     }
-}
 
-static void
-pop_up_pathbar_context_menu (NautilusPathBar *self,
-                             GdkEventButton  *event,
-                             NautilusFile    *file)
-{
-    if (file)
-    {
-        schedule_pop_up_context_menu (self, event, file);
-    }
+
 }
 
 static gboolean
@@ -1744,12 +1540,7 @@ button_event_cb (GtkWidget      *button,
     {
         g_object_set_data (G_OBJECT (button), "handle-button-release", GINT_TO_POINTER (TRUE));
 
-        if (event->button == GDK_BUTTON_SECONDARY)
-        {
-            pop_up_pathbar_context_menu (self, event, button_data->file);
-            return GDK_EVENT_STOP;
-        }
-        else if (event->button == GDK_BUTTON_MIDDLE && mask == 0)
+        if (event->button == GDK_BUTTON_MIDDLE && mask == 0)
         {
             g_signal_emit (self,
                            path_bar_signals[OPEN_LOCATION],
@@ -1830,6 +1621,11 @@ get_gicon (ButtonData *button_data)
         case RECENT_BUTTON:
         {
             return g_themed_icon_new ("document-open-recent-symbolic");
+        }
+
+        case OTHER_LOCATIONS_BUTTON:
+        {
+            return g_themed_icon_new ("list-add-symbolic");
         }
 
         default:
@@ -1928,11 +1724,7 @@ setup_button_type (ButtonData      *button_data,
 
     uri = g_file_get_uri (location);
 
-    if (g_strcmp0 (uri, "other-locations:///") == 0)
-    {
-        button_data->type = OTHER_LOCATIONS_BUTTON;
-    }
-    else if (nautilus_is_root_directory (location))
+    if (nautilus_is_root_directory (location))
     {
         button_data->type = ROOT_BUTTON;
     }
@@ -1959,9 +1751,10 @@ setup_button_type (ButtonData      *button_data,
 
         g_object_unref (mount);
     }
-    else if (nautilus_is_starred_directory (location))
+    else if (nautilus_is_other_locations_directory (location))
     {
-        button_data->type = STARRED_LOCATION_BUTTON;
+        button_data->type = OTHER_LOCATIONS_BUTTON;
+        button_data->is_root = TRUE;
     }
     else
     {
@@ -2108,7 +1901,9 @@ make_button_data (NautilusPathBar *self,
     GFile *path;
     GtkWidget *child;
     ButtonData *button_data;
+    NautilusPathBarPrivate *priv;
 
+    priv = nautilus_path_bar_get_instance_private (self);
     path = nautilus_file_get_location (file);
     child = NULL;
 
@@ -2128,19 +1923,36 @@ make_button_data (NautilusPathBar *self,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-        /* Fall through */
+        {
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
+            button_data->label = gtk_label_new (NULL);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+        }
+        break;
+
         case HOME_BUTTON:
-        /* Fall through */
         case MOUNT_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
+        case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
 
@@ -2150,12 +1962,23 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+                                                                          GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S), FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+
+            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
+    }
+
+    gtk_widget_set_no_show_all (button_data->disclosure_arrow, TRUE);
+    if (current_dir)
+    {
+        gtk_widget_show (button_data->disclosure_arrow);
+        gtk_popover_set_relative_to (priv->current_view_menu, button_data->button);
     }
 
     if (button_data->label != NULL)
@@ -2203,49 +2026,6 @@ make_button_data (NautilusPathBar *self,
     g_object_unref (path);
 
     return button_data;
-}
-
-static gboolean
-nautilus_path_bar_check_parent_path (NautilusPathBar  *self,
-                                     GFile            *location,
-                                     ButtonData      **current_button_data)
-{
-    GList *list;
-    NautilusPathBarPrivate *priv;
-    ButtonData *button_data, *current_data;
-    gboolean is_active;
-
-    priv = nautilus_path_bar_get_instance_private (self);
-    current_data = NULL;
-
-    for (list = priv->button_list; list; list = list->next)
-    {
-        button_data = list->data;
-        if (g_file_equal (location, button_data->path))
-        {
-            current_data = button_data;
-            is_active = TRUE;
-
-            if (!gtk_widget_get_child_visible (current_data->container))
-            {
-                priv->first_scrolled_button = list;
-                gtk_widget_queue_resize (GTK_WIDGET (self));
-            }
-        }
-        else
-        {
-            is_active = FALSE;
-        }
-
-        nautilus_path_bar_update_button_state (button_data, is_active);
-    }
-
-    if (current_button_data != NULL)
-    {
-        *current_button_data = current_data;
-    }
-
-    return (current_data != NULL);
 }
 
 static void
@@ -2321,11 +2101,8 @@ nautilus_path_bar_set_path (NautilusPathBar *self,
 
     /* Check whether the new path is already present in the pathbar as buttons.
      * This could be a parent directory or a previous selected subdirectory. */
-    if (!nautilus_path_bar_check_parent_path (self, file_path, &button_data))
-    {
-        nautilus_path_bar_update_path (self, file_path);
-        button_data = g_list_nth_data (priv->button_list, 0);
-    }
+    nautilus_path_bar_update_path (self, file_path);
+    button_data = g_list_nth_data (priv->button_list, 0);
 
     if (priv->current_path != NULL)
     {

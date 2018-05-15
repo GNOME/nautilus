@@ -31,7 +31,6 @@
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-lib-self-check-functions.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
 #include "nautilus-thumbnails.h"
@@ -504,8 +503,6 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->thumbnail_path = NULL;
     file->details->thumbnailing_failed = FALSE;
 
-    file->details->is_launcher = FALSE;
-    file->details->is_trusted_link = FALSE;
     file->details->is_symlink = FALSE;
     file->details->is_hidden = FALSE;
     file->details->is_mountpoint = FALSE;
@@ -1593,24 +1590,6 @@ nautilus_file_poll_for_media (NautilusFile *file)
     }
 }
 
-static gboolean
-is_desktop_file (NautilusFile *file)
-{
-    return nautilus_file_is_mime_type (file, "application/x-desktop");
-}
-
-static gboolean
-can_rename_desktop_file (NautilusFile *file)
-{
-    GFile *location;
-    gboolean res;
-
-    location = nautilus_file_get_location (file);
-    res = g_file_is_native (location);
-    g_object_unref (location);
-    return res;
-}
-
 /**
  * nautilus_file_can_rename:
  *
@@ -1642,8 +1621,7 @@ nautilus_file_can_rename (NautilusFile *file)
         return FALSE;
     }
 
-    if ((is_desktop_file (file) && !can_rename_desktop_file (file)) ||
-        nautilus_file_is_home (file))
+    if (nautilus_file_is_home (file))
     {
         return FALSE;
     }
@@ -1876,17 +1854,6 @@ rename_get_info_callback (GObject      *source_object,
         g_free (new_uri);
         g_free (old_uri);
 
-        /* the rename could have affected the display name if e.g.
-         * we're in a vfolder where the name comes from a desktop file
-         * and a rename affects the contents of the desktop file.
-         */
-        if (op->file->details->got_custom_display_name)
-        {
-            nautilus_file_invalidate_attributes (op->file,
-                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-        }
-
         g_object_unref (new_info);
     }
     nautilus_file_operation_complete (op, NULL, error);
@@ -1948,19 +1915,11 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
                                gpointer                       callback_data)
 {
     GError *error;
-    gboolean is_renameable_desktop_file;
-    gboolean success;
-    gboolean name_changed;
     gchar *new_file_name;
-    gchar *uri;
-    gchar *old_name;
-
-    is_renameable_desktop_file =
-        is_desktop_file (file) && can_rename_desktop_file (file);
 
     /* Return an error for incoming names containing path separators.
      * But not for .desktop files as '/' are allowed for them */
-    if (strstr (new_name, "/") != NULL && !is_renameable_desktop_file)
+    if (strstr (new_name, "/") != NULL)
     {
         error = g_error_new (G_IO_ERROR, G_IO_ERROR_INVALID_ARGUMENT,
                              _("Slashes are not allowed in filenames"));
@@ -1985,8 +1944,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
      * (1) rename returns an error if new & old are same.
      * (2) We don't want to send file-changed signal if nothing changed.
      */
-    if (!is_renameable_desktop_file &&
-        name_is (file, new_name))
+    if (name_is (file, new_name))
     {
         if (callback != NULL)
         {
@@ -2018,62 +1976,7 @@ nautilus_file_can_rename_file (NautilusFile                  *file,
         return NULL;
     }
 
-    if (is_renameable_desktop_file)
-    {
-        /* Don't actually change the name if the new name is the same.
-         * This helps for the vfolder method where this can happen and
-         * we want to minimize actual changes
-         */
-        uri = nautilus_file_get_uri (file);
-        old_name = nautilus_link_local_get_text (uri);
-        if (old_name != NULL && strcmp (new_name, old_name) == 0)
-        {
-            success = TRUE;
-            name_changed = FALSE;
-        }
-        else
-        {
-            success = nautilus_link_local_set_text (uri, new_name);
-            name_changed = TRUE;
-        }
-        g_free (old_name);
-        g_free (uri);
-
-        if (!success)
-        {
-            error = g_error_new (G_IO_ERROR, G_IO_ERROR_FAILED,
-                                 _("Probably the content of the file is an invalid desktop file format"));
-            if (callback != NULL)
-            {
-                (*callback)(file, NULL, error, callback_data);
-            }
-            g_error_free (error);
-            return NULL;
-        }
-        new_file_name = g_strdup_printf ("%s.desktop", new_name);
-        new_file_name = g_strdelimit (new_file_name, "/", '-');
-
-        if (name_is (file, new_file_name))
-        {
-            if (name_changed)
-            {
-                nautilus_file_invalidate_attributes (file,
-                                                     NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                     NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-            }
-
-            if (callback != NULL)
-            {
-                (*callback)(file, NULL, NULL, callback_data);
-            }
-            g_free (new_file_name);
-            return NULL;
-        }
-    }
-    else
-    {
-        new_file_name = g_strdup (new_name);
-    }
+    new_file_name = g_strdup (new_name);
 
     return new_file_name;
 }
@@ -2211,18 +2114,6 @@ batch_rename_get_info_callback (GObject      *source_object,
         nautilus_directory_moved (old_uri, new_uri);
         g_free (new_uri);
         g_free (old_uri);
-
-        /* the rename could have affected the display name if e.g.
-         * we're in a vfolder where the name comes from a desktop file
-         * and a rename affects the contents of the desktop file.
-         */
-        if (op->file->details->got_custom_display_name)
-        {
-            nautilus_file_invalidate_attributes (op->file,
-                                                 NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                 NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-        }
-
         g_object_unref (new_info);
     }
 
@@ -4576,18 +4467,6 @@ nautilus_file_monitor_remove (NautilusFile  *file,
 }
 
 gboolean
-nautilus_file_is_launcher (NautilusFile *file)
-{
-    return file->details->is_launcher;
-}
-
-gboolean
-nautilus_file_is_trusted_link (NautilusFile *file)
-{
-    return file->details->is_trusted_link;
-}
-
-gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)
 {
     return file->details->activation_uri != NULL;
@@ -4603,7 +4482,7 @@ nautilus_file_get_activation_uri (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return nautilus_file_info_get_uri (NAUTILUS_FILE_INFO (file));
+    return nautilus_file_info_get_activation_uri (NAUTILUS_FILE_INFO (file));
 }
 
 GFile *
@@ -4617,37 +4496,6 @@ nautilus_file_get_activation_location (NautilusFile *file)
     }
 
     return nautilus_file_get_location (file);
-}
-
-
-char *
-nautilus_file_get_target_uri (NautilusFile *file)
-{
-    char *uri, *target_uri;
-    GFile *location;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
-
-    uri = nautilus_file_get_uri (file);
-
-    /* Check for Nautilus link */
-    if (nautilus_file_is_nautilus_link (file))
-    {
-        location = nautilus_file_get_location (file);
-        /* FIXME bugzilla.gnome.org 43020: This does sync. I/O and works only locally. */
-        if (g_file_is_native (location))
-        {
-            target_uri = nautilus_link_local_get_link_uri (uri);
-            if (target_uri != NULL)
-            {
-                g_free (uri);
-                uri = target_uri;
-            }
-        }
-        g_object_unref (location);
-    }
-
-    return uri;
 }
 
 static gboolean
@@ -4716,19 +4564,6 @@ get_mount_icon (NautilusFile *file)
 }
 
 static GIcon *
-get_link_icon (NautilusFile *file)
-{
-    GIcon *icon = NULL;
-
-    if (file->details->got_link_info && file->details->custom_icon != NULL)
-    {
-        icon = g_object_ref (file->details->custom_icon);
-    }
-
-    return icon;
-}
-
-static GIcon *
 get_custom_icon (NautilusFile *file)
 {
     char *custom_icon_uri, *custom_icon_name;
@@ -4767,26 +4602,6 @@ get_custom_icon (NautilusFile *file)
     }
 
     return icon;
-}
-
-static GIcon *
-get_custom_or_link_icon (NautilusFile *file)
-{
-    GIcon *icon;
-
-    icon = get_custom_icon (file);
-    if (icon != NULL)
-    {
-        return icon;
-    }
-
-    icon = get_link_icon (file);
-    if (icon != NULL)
-    {
-        return icon;
-    }
-
-    return NULL;
 }
 
 static GIcon *
@@ -5169,7 +4984,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
         return NULL;
     }
 
-    icon = get_custom_or_link_icon (file);
+    icon = get_custom_icon (file);
     if (icon != NULL)
     {
         return icon;
@@ -5427,7 +5242,7 @@ nautilus_file_get_icon (NautilusFile          *file,
         goto out;
     }
 
-    gicon = get_custom_or_link_icon (file);
+    gicon = get_custom_icon (file);
     if (gicon != NULL)
     {
         icon = nautilus_icon_info_lookup (gicon, size, scale);
@@ -8087,27 +7902,6 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
 }
 
 /**
- * nautilus_file_is_nautilus_link
- *
- * Check if this file is a "nautilus link", meaning a historical
- * nautilus xml link file or a desktop file.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: True if the file is a nautilus link.
- *
- **/
-gboolean
-nautilus_file_is_nautilus_link (NautilusFile *file)
-{
-    if (file->details->mime_type == NULL)
-    {
-        return FALSE;
-    }
-    return g_content_type_equals (eel_ref_str_peek (file->details->mime_type),
-                                  "application/x-desktop");
-}
-
-/**
  * nautilus_file_is_regular_file
  *
  * Check if this file is a regular file.
@@ -8340,28 +8134,6 @@ nautilus_file_get_file_info_error (NautilusFile *file)
     }
 
     return file->details->get_info_error;
-}
-
-/**
- * nautilus_file_contains_text
- *
- * Check if this file contains text.
- * This is private and is used to decide whether or not to read the top left text.
- * @file: NautilusFile representing the file in question.
- *
- * Returns: TRUE if @file has a text MIME type.
- *
- **/
-gboolean
-nautilus_file_contains_text (NautilusFile *file)
-{
-    if (file == NULL)
-    {
-        return FALSE;
-    }
-
-    /* All text files inherit from text/plain */
-    return nautilus_file_is_mime_type (file, "text/plain");
 }
 
 /**
@@ -8678,12 +8450,6 @@ invalidate_file_info (NautilusFile *file)
 }
 
 static void
-invalidate_link_info (NautilusFile *file)
-{
-    file->details->link_info_is_up_to_date = FALSE;
-}
-
-static void
 invalidate_thumbnail (NautilusFile *file)
 {
     file->details->thumbnail_is_up_to_date = FALSE;
@@ -8735,10 +8501,6 @@ nautilus_file_invalidate_attributes_internal (NautilusFile           *file,
     if (REQUEST_WANTS_TYPE (request, REQUEST_FILE_INFO))
     {
         invalidate_file_info (file);
-    }
-    if (REQUEST_WANTS_TYPE (request, REQUEST_LINK_INFO))
-    {
-        invalidate_link_info (file);
     }
     if (REQUEST_WANTS_TYPE (request, REQUEST_EXTENSION_INFO))
     {
@@ -8804,7 +8566,6 @@ NautilusFileAttributes
 nautilus_file_get_all_attributes (void)
 {
     return NAUTILUS_FILE_ATTRIBUTE_INFO |
-           NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
            NAUTILUS_FILE_ATTRIBUTE_DEEP_COUNTS |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
            NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_MIME_TYPES |
@@ -9484,12 +9245,6 @@ nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
               nautilus_file_can_write (drop_target_item);
         nautilus_directory_unref (directory);
         return res;
-    }
-
-    /* Launchers are an acceptable drop target */
-    if (nautilus_file_is_launcher (drop_target_item))
-    {
-        return TRUE;
     }
 
     if (nautilus_is_file_roller_installed () &&

@@ -122,7 +122,7 @@ typedef void (*NautilusFileOperationCallback) (NautilusFile  *file,
 					       gpointer       callback_data);
 
 
-#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_LINK_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL)
+#define NAUTILUS_FILE_ATTRIBUTES_FOR_ICON (NAUTILUS_FILE_ATTRIBUTE_INFO | NAUTILUS_FILE_ATTRIBUTE_THUMBNAIL)
 
 typedef void NautilusFileListHandle;
 
@@ -171,7 +171,6 @@ void                    nautilus_file_invalidate_attributes             (Nautilu
 void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
-gboolean                nautilus_file_contains_text                     (NautilusFile                   *file);
 char *                  nautilus_file_get_display_name                  (NautilusFile                   *file);
 char *                  nautilus_file_get_edit_name                     (NautilusFile                   *file);
 char *                  nautilus_file_get_name                          (NautilusFile                   *file);
@@ -203,7 +202,6 @@ char *                  nautilus_file_get_volume_name                   (Nautilu
 char *                  nautilus_file_get_symbolic_link_target_path     (NautilusFile                   *file);
 char *                  nautilus_file_get_symbolic_link_target_uri      (NautilusFile                   *file);
 gboolean                nautilus_file_is_broken_symbolic_link           (NautilusFile                   *file);
-gboolean                nautilus_file_is_nautilus_link                  (NautilusFile                   *file);
 gboolean                nautilus_file_is_executable                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_directory                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_regular_file                   (NautilusFile                   *file);
@@ -455,14 +453,9 @@ GList                  *nautilus_file_list_filter_hidden                (GList  
 /* Get the URI that's used when activating the file.
  * Getting this can require reading the contents of the file.
  */
-gboolean                nautilus_file_is_launcher                       (NautilusFile                   *file);
-gboolean                nautilus_file_is_trusted_link                   (NautilusFile                   *file);
 gboolean                nautilus_file_has_activation_uri                (NautilusFile                   *file);
 char *                  nautilus_file_get_activation_uri                (NautilusFile                   *file);
 GFile *                 nautilus_file_get_activation_location           (NautilusFile                   *file);
-
-char *                  nautilus_file_get_target_uri                    (NautilusFile                   *file);
-
 GIcon *                 nautilus_file_get_gicon                         (NautilusFile                   *file,
 									 NautilusFileIconFlags           flags);
 NautilusIconInfo *      nautilus_file_get_icon                          (NautilusFile                   *file,

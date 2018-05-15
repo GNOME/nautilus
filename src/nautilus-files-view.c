@@ -77,7 +77,6 @@
 #include "nautilus-new-folder-dialog-controller.h"
 #include "nautilus-compress-dialog-controller.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-module.h"
 #include "nautilus-profile.h"
@@ -142,8 +141,9 @@ enum
     PROP_WINDOW_SLOT = 1,
     PROP_SUPPORTS_ZOOMING,
     PROP_ICON,
-    PROP_IS_SEARCH,
-    PROP_IS_LOADING,
+    PROP_SEARCHING,
+    PROP_LOADING,
+    PROP_SELECTION,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
     NUM_PROPERTIES
@@ -1197,7 +1197,6 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
     NautilusFilesViewPrivate *priv;
     GList *files_to_extract;
     GList *files_to_activate;
-    char *path;
 
     if (files == NULL)
     {
@@ -1229,15 +1228,12 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
         extract_files_to_chosen_location (view, files_to_extract);
     }
 
-    path = get_view_directory (view);
     nautilus_mime_activate_files (nautilus_files_view_get_containing_window (view),
                                   priv->slot,
                                   files_to_activate,
-                                  path,
                                   flags,
                                   confirm_multiple);
 
-    g_free (path);
     g_list_free (files_to_extract);
     g_list_free (files_to_activate);
 }
@@ -2976,53 +2972,43 @@ remove_directory_from_templates_directory_list (NautilusFilesView *view,
 }
 
 static void
-slot_active (NautilusWindowSlot *slot,
-             NautilusFilesView  *view)
+slot_active_changed (NautilusWindowSlot *slot,
+                     GParamSpec         *pspec,
+                     NautilusFilesView  *view)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->active == nautilus_window_slot_get_active (slot))
+    {
+        return;
+    }
+
+    priv->active = nautilus_window_slot_get_active (slot);
 
     if (priv->active)
     {
-        return;
+      /* Avoid updating the toolbar withouth making sure the toolbar
+       * zoom slider has the correct adjustment that changes when the
+       * view mode changes
+       */
+      nautilus_files_view_update_context_menus (view);
+      nautilus_files_view_update_toolbar_menus (view);
+
+      schedule_update_context_menus (view);
+
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      G_ACTION_GROUP (priv->view_action_group));
     }
-
-    priv->active = TRUE;
-
-    /* Avoid updating the toolbar withouth making sure the toolbar
-     * zoom slider has the correct adjustment that changes when the
-     * view mode changes
-     */
-    nautilus_files_view_update_context_menus (view);
-    nautilus_files_view_update_toolbar_menus (view);
-
-    schedule_update_context_menus (view);
-
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    G_ACTION_GROUP (priv->view_action_group));
-}
-
-static void
-slot_inactive (NautilusWindowSlot *slot,
-               NautilusFilesView  *view)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (!priv->active)
+    else
     {
-        return;
+      remove_update_context_menus_timeout_callback (view);
+      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                      "view",
+                                      NULL);
     }
-
-    priv->active = FALSE;
-
-    remove_update_context_menus_timeout_callback (view);
-    gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                    "view",
-                                    NULL);
 }
 
 static void
@@ -3591,7 +3577,7 @@ done_loading (NautilusFilesView *view,
 
     priv->loading = FALSE;
     g_signal_emit (view, signals[END_LOADING], 0, all_files_seen);
-    g_object_notify (G_OBJECT (view), "is-loading");
+    g_object_notify (G_OBJECT (view), "loading");
 
     if (!priv->in_destruction)
     {
@@ -4540,7 +4526,6 @@ nautilus_files_view_add_subdirectory (NautilusFilesView *view,
         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
         NAUTILUS_FILE_ATTRIBUTE_INFO |
-        NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
@@ -5025,7 +5010,7 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
     expanding_string = g_string_new ("");
     for (node = selection; node != NULL; node = node->next)
     {
-        uri = nautilus_file_get_target_uri (NAUTILUS_FILE (node->data));
+        uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
         if (uri == NULL)
         {
             continue;
@@ -6551,8 +6536,10 @@ file_mount_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to access “%s”"), name);
-        show_error_dialog (text, error->message,
-                           GTK_WINDOW (nautilus_files_view_get_window (view)));
+        show_dialog (text,
+                     error->message,
+                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_MESSAGE_ERROR);
         g_free (text);
         g_free (name);
     }
@@ -6579,8 +6566,10 @@ file_unmount_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to remove “%s”"), name);
-        show_error_dialog (text, error->message,
-                           GTK_WINDOW (nautilus_files_view_get_window (view)));
+        show_dialog (text,
+                     error->message,
+                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_MESSAGE_ERROR);
         g_free (text);
         g_free (name);
     }
@@ -6607,8 +6596,10 @@ file_eject_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to eject “%s”"), name);
-        show_error_dialog (text, error->message,
-                           GTK_WINDOW (nautilus_files_view_get_window (view)));
+        show_dialog (text,
+                     error->message,
+                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_MESSAGE_ERROR);
         g_free (text);
         g_free (name);
     }
@@ -6629,9 +6620,10 @@ file_stop_callback (NautilusFile *file,
          (error->code != G_IO_ERROR_CANCELLED &&
           error->code != G_IO_ERROR_FAILED_HANDLED)))
     {
-        show_error_dialog (_("Unable to stop drive"),
-                           error->message,
-                           GTK_WINDOW (nautilus_files_view_get_window (view)));
+        show_dialog (_("Unable to stop drive"),
+                     error->message,
+                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_MESSAGE_ERROR);
     }
 }
 
@@ -6742,8 +6734,10 @@ file_start_callback (NautilusFile *file,
         name = nautilus_file_get_display_name (file);
         /* Translators: %s is a file name formatted for display */
         text = g_strdup_printf (_("Unable to start “%s”"), name);
-        show_error_dialog (text, error->message,
-                           GTK_WINDOW (nautilus_files_view_get_window (view)));
+        show_dialog (text,
+                     error->message,
+                     GTK_WINDOW (nautilus_files_view_get_window (view)),
+                     GTK_MESSAGE_ERROR);
         g_free (text);
         g_free (name);
     }
@@ -7675,7 +7669,6 @@ update_selection_menu (NautilusFilesView *view)
     GList *l;
     gint selection_count;
     gboolean show_app;
-    gboolean show_run;
     gboolean show_extract;
     gboolean item_opens_in_view;
     gchar *item_label;
@@ -7716,7 +7709,7 @@ update_selection_menu (NautilusFilesView *view)
     g_free (item_label);
 
     /* Open With <App> menu item */
-    show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
+    show_extract = show_app = item_opens_in_view = selection_count != 0;
     for (l = selection; l != NULL; l = l->next)
     {
         NautilusFile *file;
@@ -7733,17 +7726,12 @@ update_selection_menu (NautilusFilesView *view)
             show_app = FALSE;
         }
 
-        if (!nautilus_mime_file_launches (file))
-        {
-            show_run = FALSE;
-        }
-
         if (!nautilus_file_opens_in_view (file))
         {
             item_opens_in_view = FALSE;
         }
 
-        if (!show_extract && !show_app && !show_run && !item_opens_in_view)
+        if (!show_extract && !show_app && !item_opens_in_view)
         {
             break;
         }
@@ -7771,10 +7759,6 @@ update_selection_menu (NautilusFilesView *view)
         }
         g_free (escaped_app);
         g_object_unref (app);
-    }
-    else if (show_run)
-    {
-        item_label = g_strdup (_("Run"));
     }
     else if (show_extract)
     {
@@ -8354,8 +8338,8 @@ load_directory (NautilusFilesView *view,
     priv->location = nautilus_directory_get_location (directory);
 
     g_object_notify (G_OBJECT (view), "location");
-    g_object_notify (G_OBJECT (view), "is-loading");
-    g_object_notify (G_OBJECT (view), "is-searching");
+    g_object_notify (G_OBJECT (view), "loading");
+    g_object_notify (G_OBJECT (view), "searching");
 
     /* FIXME bugzilla.gnome.org 45062: In theory, we also need to monitor metadata here (as
      * well as doing a call when ready), in case external forces
@@ -8440,7 +8424,6 @@ finish_loading (NautilusFilesView *view)
         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
         NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT |
         NAUTILUS_FILE_ATTRIBUTE_INFO |
-        NAUTILUS_FILE_ATTRIBUTE_LINK_INFO |
         NAUTILUS_FILE_ATTRIBUTE_MOUNT |
         NAUTILUS_FILE_ATTRIBUTE_EXTENSION_INFO;
 
@@ -8736,20 +8719,10 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
     NautilusFile *target_file;
 
     target_file = nautilus_file_get_existing_by_uri (target_uri);
-    /* special-case "command:" here instead of starting a move/copy */
-    if (target_file != NULL && nautilus_file_is_launcher (target_file))
-    {
-        nautilus_file_unref (target_file);
-        nautilus_launch_desktop_file (
-            gtk_widget_get_screen (GTK_WIDGET (view)),
-            target_uri, item_uris,
-            nautilus_files_view_get_containing_window (view));
-        return;
-    }
-    else if (copy_action == GDK_ACTION_COPY &&
-             nautilus_is_file_roller_installed () &&
-             target_file != NULL &&
-             nautilus_file_is_archive (target_file))
+    if (copy_action == GDK_ACTION_COPY &&
+        nautilus_is_file_roller_installed () &&
+        target_file != NULL &&
+        nautilus_file_is_archive (target_file))
     {
         char *command, *quoted_uri, *tmp;
         const GList *l;
@@ -8847,13 +8820,13 @@ nautilus_files_view_get_property (GObject    *object,
 
     switch (prop_id)
     {
-        case PROP_IS_LOADING:
+        case PROP_LOADING:
         {
             g_value_set_boolean (value, nautilus_view_is_loading (NAUTILUS_VIEW (view)));
         }
         break;
 
-        case PROP_IS_SEARCH:
+        case PROP_SEARCHING:
         {
             g_value_set_boolean (value, nautilus_view_is_searching (NAUTILUS_VIEW (view)));
         }
@@ -8862,6 +8835,12 @@ nautilus_files_view_get_property (GObject    *object,
         case PROP_LOCATION:
         {
             g_value_set_object (value, nautilus_view_get_location (NAUTILUS_VIEW (view)));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            g_value_set_pointer (value, nautilus_view_get_selection (NAUTILUS_VIEW (view)));
         }
         break;
 
@@ -8899,10 +8878,7 @@ nautilus_files_view_set_property (GObject      *object,
             priv->slot = slot;
 
             g_signal_connect_object (priv->slot,
-                                     "active", G_CALLBACK (slot_active),
-                                     directory_view, 0);
-            g_signal_connect_object (priv->slot,
-                                     "inactive", G_CALLBACK (slot_inactive),
+                                     "notify::active", G_CALLBACK (slot_active_changed),
                                      directory_view, 0);
         }
         break;
@@ -8922,6 +8898,12 @@ nautilus_files_view_set_property (GObject      *object,
         case PROP_SEARCH_QUERY:
         {
             nautilus_view_set_search_query (NAUTILUS_VIEW (directory_view), g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            nautilus_view_set_selection (NAUTILUS_VIEW (directory_view), g_value_get_pointer (value));
         }
         break;
 
@@ -9195,7 +9177,7 @@ set_search_query_internal (NautilusFilesView *files_view,
 
             load_directory (files_view, directory);
 
-            g_object_notify (G_OBJECT (files_view), "is-searching");
+            g_object_notify (G_OBJECT (files_view), "searching");
 
             nautilus_directory_unref (directory);
             g_free (uri);
@@ -9393,9 +9375,10 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                               G_PARAM_WRITABLE | G_PARAM_CONSTRUCT_ONLY |
                               G_PARAM_STATIC_STRINGS));
 
-    g_object_class_override_property (oclass, PROP_IS_LOADING, "is-loading");
-    g_object_class_override_property (oclass, PROP_IS_SEARCH, "is-searching");
+    g_object_class_override_property (oclass, PROP_LOADING, "loading");
+    g_object_class_override_property (oclass, PROP_SEARCHING, "searching");
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
+    g_object_class_override_property (oclass, PROP_SELECTION, "selection");
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
 }
 

@@ -49,18 +49,13 @@
 
 enum
 {
-    ACTIVE,
-    INACTIVE,
-    LAST_SIGNAL
-};
-
-enum
-{
     PROP_ACTIVE = 1,
     PROP_WINDOW,
     PROP_ICON,
     PROP_TOOLBAR_MENU_SECTIONS,
     PROP_LOADING,
+    PROP_SEARCHING,
+    PROP_SELECTION,
     PROP_LOCATION,
     NUM_PROPERTIES
 };
@@ -124,11 +119,16 @@ typedef struct
     GError *mount_error;
     gboolean tried_mount;
     gint view_mode_before_search;
+
+    /* View bindings */
+    GBinding *searching_binding;
+    GBinding *selection_binding;
+    gboolean searching;
+    GList *selection;
 } NautilusWindowSlotPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusWindowSlot, nautilus_window_slot, GTK_TYPE_BOX);
 
-static guint signals[LAST_SIGNAL] = { 0 };
 static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 static void nautilus_window_slot_force_reload (NautilusWindowSlot *self);
@@ -355,7 +355,6 @@ update_search_visible (NautilusWindowSlot *self)
         {
             nautilus_window_slot_set_search_visible (self, FALSE);
         }
-        g_object_unref (query);
     }
 
     if (priv->pending_search_text)
@@ -443,8 +442,6 @@ hide_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
     view = nautilus_window_slot_get_current_view (self);
 
-    gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (priv->query_editor), FALSE);
-
     if (priv->qe_changed_id > 0)
     {
         g_signal_handler_disconnect (priv->query_editor, priv->qe_changed_id);
@@ -526,7 +523,6 @@ show_query_editor (NautilusWindowSlot *self)
         }
     }
 
-    gtk_search_bar_set_search_mode (GTK_SEARCH_BAR (priv->query_editor), TRUE);
     gtk_widget_grab_focus (GTK_WIDGET (priv->query_editor));
 
     if (priv->qe_changed_id == 0)
@@ -639,8 +635,8 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     /* If the action is not enabled, don't try to handle search */
     if (g_action_get_enabled (action))
     {
-        retval = gtk_search_bar_handle_event (GTK_SEARCH_BAR (priv->query_editor),
-                                              (GdkEvent *) event);
+        retval = nautilus_query_editor_handle_event (priv->query_editor,
+                                                     (GdkEvent *) event);
     }
 
     if (retval)
@@ -649,41 +645,6 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
     }
 
     return retval;
-}
-
-static void
-real_active (NautilusWindowSlot *self)
-{
-    NautilusWindowSlotPrivate *priv;
-    NautilusWindow *window;
-    int page_num;
-
-    priv = nautilus_window_slot_get_instance_private (self);
-    window = priv->window;
-    page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
-                                      GTK_WIDGET (self));
-    g_assert (page_num >= 0);
-
-    gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
-
-    /* sync window to new slot */
-    nautilus_window_sync_allow_stop (window, self);
-    nautilus_window_sync_title (window, self);
-    nautilus_window_sync_location_widgets (window);
-    nautilus_window_slot_sync_actions (self);
-
-    gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", priv->slot_action_group);
-}
-
-static void
-real_inactive (NautilusWindowSlot *self)
-{
-    NautilusWindow *window;
-
-    window = nautilus_window_slot_get_window (self);
-    g_assert (self == nautilus_window_get_active_slot (window));
-
-    gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
 }
 
 static void
@@ -728,6 +689,29 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
 }
 
 static void
+nautilus_window_slot_set_searching (NautilusWindowSlot *self,
+                                    gboolean            searching)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->searching = searching;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SEARCHING]);
+}
+
+static void
+nautilus_window_slot_set_selection (NautilusWindowSlot *self,
+                                    GList              *selection)
+{
+    NautilusWindowSlotPrivate *priv;
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->selection = selection;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_SELECTION]);
+}
+
+static void
 nautilus_window_slot_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
@@ -752,6 +736,18 @@ nautilus_window_slot_set_property (GObject      *object,
         case PROP_LOCATION:
         {
             nautilus_window_slot_set_location (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_SEARCHING:
+        {
+            nautilus_window_slot_set_searching (self, g_value_get_boolean (value));
+        }
+        break;
+
+        case PROP_SELECTION:
+        {
+            nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
         }
         break;
 
@@ -820,6 +816,26 @@ nautilus_window_slot_get_property (GObject    *object,
     }
 }
 
+gboolean
+nautilus_window_slot_get_searching (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->searching;
+}
+
+GList*
+nautilus_window_slot_get_selection (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->selection;
+}
+
 static void
 nautilus_window_slot_constructed (GObject *object)
 {
@@ -843,8 +859,10 @@ nautilus_window_slot_constructed (GObject *object)
     gtk_widget_show (extras_vbox);
 
     priv->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
+    /* We want to keep alive the query editor betwen additions and removals on the
+     * UI, specifically when the toolbar adds or removes it */
+    g_object_ref_sink (priv->query_editor);
     gtk_widget_show (GTK_WIDGET (priv->query_editor));
-    nautilus_window_slot_add_extra_location_widget (self, GTK_WIDGET (priv->query_editor));
 
     g_object_bind_property (self, "location",
                             priv->query_editor, "location",
@@ -870,10 +888,12 @@ action_search_visible (GSimpleAction *action,
         if (g_variant_get_boolean (state))
         {
             show_query_editor (self);
+            nautilus_window_slot_set_searching (self, TRUE);
         }
         else
         {
             hide_query_editor (self);
+            nautilus_window_slot_set_searching (self, FALSE);
         }
     }
 
@@ -1366,9 +1386,7 @@ nautilus_window_slot_set_viewed_file (NautilusWindowSlot *self,
 
     if (file != NULL)
     {
-        attributes =
-            NAUTILUS_FILE_ATTRIBUTE_INFO |
-            NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
+        attributes = NAUTILUS_FILE_ATTRIBUTE_INFO;
         nautilus_file_monitor_add (file, self, attributes);
 
         g_signal_connect_object (file, "changed",
@@ -1526,7 +1544,7 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
         detail_message = g_strdup_printf (_("Unhandled error message: %s"), error->message);
     }
 
-    show_error_dialog (error_message, detail_message, GTK_WINDOW (window));
+    show_dialog (error_message, detail_message, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
 
 done:
     g_free (error_message);
@@ -2698,7 +2716,7 @@ nautilus_window_slot_connect_new_content_view (NautilusWindowSlot *self)
     if (priv->new_content_view)
     {
         g_signal_connect (priv->new_content_view,
-                          "notify::is-loading",
+                          "notify::loading",
                           G_CALLBACK (view_is_loading_changed_cb),
                           self);
     }
@@ -2738,6 +2756,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
 
     if (priv->content_view != NULL)
     {
+        g_binding_unbind (priv->searching_binding);
+        g_binding_unbind (priv->selection_binding);
         widget = GTK_WIDGET (priv->content_view);
         gtk_widget_destroy (widget);
         g_object_unref (priv->content_view);
@@ -2753,7 +2773,12 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         gtk_container_add (GTK_CONTAINER (self), widget);
         gtk_widget_set_vexpand (widget, TRUE);
         gtk_widget_show (widget);
-
+        priv->searching_binding = g_object_bind_property (priv->content_view, "searching",
+                                                          self, "searching",
+                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        priv->selection_binding = g_object_bind_property (priv->content_view, "selection",
+                                                          self, "selection",
+                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
     }
@@ -2831,6 +2856,12 @@ nautilus_window_slot_dispose (GObject *object)
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
 
+    if (priv->query_editor)
+    {
+        gtk_widget_destroy (GTK_WIDGET (priv->query_editor));
+        g_clear_object (&priv->query_editor);
+    }
+
     free_location_change (self);
 
     G_OBJECT_CLASS (nautilus_window_slot_parent_class)->dispose (object);
@@ -2881,8 +2912,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
     GObjectClass *oclass = G_OBJECT_CLASS (klass);
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
-    klass->active = real_active;
-    klass->inactive = real_inactive;
     klass->get_view_for_location = real_get_view_for_location;
     klass->handles_location = real_handles_location;
 
@@ -2894,36 +2923,32 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
 
     widget_class->grab_focus = nautilus_window_slot_grab_focus;
 
-    signals[ACTIVE] =
-        g_signal_new ("active",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusWindowSlotClass, active),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
-    signals[INACTIVE] =
-        g_signal_new ("inactive",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusWindowSlotClass, inactive),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
-
     properties[PROP_ACTIVE] =
         g_param_spec_boolean ("active",
                               "Whether the slot is active",
                               "Whether the slot is the active slot of the window",
                               FALSE,
                               G_PARAM_READWRITE);
+
     properties[PROP_LOADING] =
         g_param_spec_boolean ("loading",
                               "Whether the slot loading",
                               "Whether the slot is loading a new location",
                               FALSE,
                               G_PARAM_READABLE);
+
+    properties[PROP_SEARCHING] =
+        g_param_spec_boolean ("searching",
+                              "Whether the current view of the slot is searching",
+                              "Whether the current view of the slot is searching. Proxy property from the view",
+                              FALSE,
+                              G_PARAM_READWRITE);
+
+    properties[PROP_SELECTION] =
+        g_param_spec_pointer ("selection",
+                              "Selection of the current view of the slot",
+                              "The selection of the current view of the slot. Proxy property from the view",
+                              G_PARAM_READWRITE);
 
     properties[PROP_WINDOW] =
         g_param_spec_object ("window",
@@ -3267,6 +3292,7 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
                                  gboolean            active)
 {
     NautilusWindowSlotPrivate *priv;
+    NautilusWindow *window;
 
     g_return_if_fail (NAUTILUS_IS_WINDOW_SLOT (self));
 
@@ -3277,11 +3303,30 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
         if (active)
         {
-            g_signal_emit (self, signals[ACTIVE], 0);
+            int page_num;
+
+            priv = nautilus_window_slot_get_instance_private (self);
+            window = priv->window;
+            page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
+                                              GTK_WIDGET (self));
+            g_assert (page_num >= 0);
+
+            gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
+
+            /* sync window to new slot */
+            nautilus_window_sync_allow_stop (window, self);
+            nautilus_window_sync_title (window, self);
+            nautilus_window_sync_location_widgets (window);
+            nautilus_window_slot_sync_actions (self);
+
+            gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", priv->slot_action_group);
         }
         else
         {
-            g_signal_emit (self, signals[INACTIVE], 0);
+            window = nautilus_window_slot_get_window (self);
+            g_assert (self == nautilus_window_get_active_slot (window));
+
+            gtk_widget_insert_action_group (GTK_WIDGET (window), "slot", NULL);
         }
 
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ACTIVE]);
@@ -3312,4 +3357,16 @@ nautilus_window_slot_get_loading (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->loading;
+}
+
+NautilusQueryEditor *
+nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->query_editor;
 }

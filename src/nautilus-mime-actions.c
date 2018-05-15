@@ -52,10 +52,7 @@
 
 typedef enum
 {
-    ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE,
     ACTIVATION_ACTION_ASK,
-    ACTIVATION_ACTION_LAUNCH,
-    ACTIVATION_ACTION_LAUNCH_IN_TERMINAL,
     ACTIVATION_ACTION_OPEN_IN_VIEW,
     ACTIVATION_ACTION_OPEN_IN_APPLICATION,
     ACTIVATION_ACTION_EXTRACT,
@@ -83,7 +80,6 @@ typedef struct
     gboolean timed_wait_active;
     NautilusFileListHandle *files_handle;
     gboolean tried_mounting;
-    char *activation_directory;
     gboolean user_confirmation;
 } ActivateParameters;
 
@@ -227,10 +223,6 @@ struct
 
 /* Number of seconds until cancel dialog shows up */
 #define DELAY_UNTIL_CANCEL_MSECS 5000
-
-#define RESPONSE_RUN 1000
-#define RESPONSE_DISPLAY 1001
-#define RESPONSE_RUN_IN_TERMINAL 1002
 
 #define SILENT_WINDOW_OPEN_LIMIT 5
 #define SILENT_OPEN_LIMIT 5
@@ -380,8 +372,7 @@ nautilus_mime_actions_check_if_required_attributes_ready (NautilusFile *file)
 NautilusFileAttributes
 nautilus_mime_actions_get_required_file_attributes (void)
 {
-    return NAUTILUS_FILE_ATTRIBUTE_INFO |
-           NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
+    return NAUTILUS_FILE_ATTRIBUTE_INFO;
 }
 
 GAppInfo *
@@ -604,115 +595,6 @@ out:
 }
 
 static ActivationAction
-get_executable_text_file_action (GtkWindow    *parent_window,
-                                 NautilusFile *file)
-{
-    GtkDialog *dialog;
-    char *file_name;
-    char *prompt;
-    char *detail;
-    int preferences_value;
-    int response;
-
-    g_assert (nautilus_file_contains_text (file));
-
-    preferences_value = g_settings_get_enum (nautilus_preferences,
-                                             NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
-    switch (preferences_value)
-    {
-        case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
-        {
-            return ACTIVATION_ACTION_LAUNCH;
-        }
-
-        case NAUTILUS_EXECUTABLE_TEXT_DISPLAY:
-        {
-            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-        }
-
-        case NAUTILUS_EXECUTABLE_TEXT_ASK:
-        {
-        }
-        break;
-
-        default:
-            /* Complain non-fatally, since preference data can't be trusted */
-            g_warning ("Unknown value %d for NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION",
-                       preferences_value);
-    }
-
-
-    file_name = nautilus_file_get_display_name (file);
-    prompt = g_strdup_printf (_("Do you want to run “%s”, or display its contents?"),
-                              file_name);
-    detail = g_strdup_printf (_("“%s” is an executable text file."),
-                              file_name);
-    g_free (file_name);
-
-    dialog = eel_create_question_dialog (prompt,
-                                         detail,
-                                         _("Run in _Terminal"), RESPONSE_RUN_IN_TERMINAL,
-                                         _("_Display"), RESPONSE_DISPLAY,
-                                         parent_window);
-    gtk_dialog_add_button (dialog, _("_Cancel"), GTK_RESPONSE_CANCEL);
-    gtk_dialog_add_button (dialog, _("_Run"), RESPONSE_RUN);
-    gtk_dialog_set_default_response (dialog, GTK_RESPONSE_CANCEL);
-    gtk_widget_show (GTK_WIDGET (dialog));
-
-    g_free (prompt);
-    g_free (detail);
-
-    response = gtk_dialog_run (dialog);
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-
-    switch (response)
-    {
-        case RESPONSE_RUN:
-        {
-            return ACTIVATION_ACTION_LAUNCH;
-        }
-
-        case RESPONSE_RUN_IN_TERMINAL:
-        {
-            return ACTIVATION_ACTION_LAUNCH_IN_TERMINAL;
-        }
-
-        case RESPONSE_DISPLAY:
-        {
-            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-        }
-
-        default:
-            return ACTIVATION_ACTION_DO_NOTHING;
-    }
-}
-
-static ActivationAction
-get_default_executable_text_file_action (void)
-{
-    int preferences_value;
-
-    preferences_value = g_settings_get_enum (nautilus_preferences,
-                                             NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION);
-    switch (preferences_value)
-    {
-        case NAUTILUS_EXECUTABLE_TEXT_LAUNCH:
-        {
-            return ACTIVATION_ACTION_LAUNCH;
-        }
-
-        case NAUTILUS_EXECUTABLE_TEXT_DISPLAY:
-        {
-            return ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-        }
-
-        case NAUTILUS_EXECUTABLE_TEXT_ASK:
-        default:
-            return ACTIVATION_ACTION_ASK;
-    }
-}
-
-static ActivationAction
 get_activation_action (NautilusFile *file)
 {
     ActivationAction action;
@@ -732,46 +614,19 @@ get_activation_action (NautilusFile *file)
         return ACTIVATION_ACTION_EXTRACT;
     }
 
-    if (nautilus_file_is_nautilus_link (file))
-    {
-        return ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE;
-    }
-
     activation_uri = nautilus_file_get_activation_uri (file);
     if (activation_uri == NULL)
     {
         activation_uri = nautilus_file_get_uri (file);
     }
 
-    action = ACTIVATION_ACTION_DO_NOTHING;
-    if (nautilus_file_is_launchable (file))
+    if (nautilus_file_opens_in_view (file))
     {
-        char *executable_path;
-
-        action = ACTIVATION_ACTION_LAUNCH;
-
-        executable_path = g_filename_from_uri (activation_uri, NULL, NULL);
-        if (!executable_path)
-        {
-            action = ACTIVATION_ACTION_DO_NOTHING;
-        }
-        else if (nautilus_file_contains_text (file))
-        {
-            action = get_default_executable_text_file_action ();
-        }
-        g_free (executable_path);
+        action = ACTIVATION_ACTION_OPEN_IN_VIEW;
     }
-
-    if (action == ACTIVATION_ACTION_DO_NOTHING)
+    else
     {
-        if (nautilus_file_opens_in_view (file))
-        {
-            action = ACTIVATION_ACTION_OPEN_IN_VIEW;
-        }
-        else
-        {
-            action = ACTIVATION_ACTION_OPEN_IN_APPLICATION;
-        }
+        action = ACTIVATION_ACTION_OPEN_IN_APPLICATION;
     }
     g_free (activation_uri);
 
@@ -782,16 +637,6 @@ gboolean
 nautilus_mime_file_extracts (NautilusFile *file)
 {
     return get_activation_action (file) == ACTIVATION_ACTION_EXTRACT;
-}
-
-gboolean
-nautilus_mime_file_launches (NautilusFile *file)
-{
-    ActivationAction activation_action;
-
-    activation_action = get_activation_action (file);
-
-    return (activation_action == ACTIVATION_ACTION_LAUNCH);
 }
 
 gboolean
@@ -849,7 +694,6 @@ activation_parameters_free (ActivateParameters *parameters)
     nautilus_file_list_free (parameters->mountables);
     nautilus_file_list_free (parameters->start_mountables);
     nautilus_file_list_free (parameters->not_mounted);
-    g_free (parameters->activation_directory);
     g_free (parameters->timed_wait_prompt);
     g_assert (parameters->files_handle == NULL);
     g_free (parameters);
@@ -977,7 +821,6 @@ typedef struct
     NautilusFile *file;
     GList *files;
     NautilusWindowOpenFlags flags;
-    char *activation_directory;
     gboolean user_confirmation;
     char *uri;
     GDBusProxy *proxy;
@@ -1003,7 +846,6 @@ activate_parameters_install_free (ActivateParametersInstall *parameters_install)
 
     nautilus_file_unref (parameters_install->file);
     nautilus_file_list_free (parameters_install->files);
-    g_free (parameters_install->activation_directory);
     g_free (parameters_install->uri);
     g_free (parameters_install);
 }
@@ -1184,8 +1026,10 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
             message = g_strdup_printf ("%s\n%s",
                                        _("There was an internal error trying to search for applications:"),
                                        error->message);
-            show_error_dialog (_("Unable to search for application"), message,
-                               parameters_install->parent_window);
+            show_dialog (_("Unable to search for application"),
+                         message,
+                         parameters_install->parent_window,
+                         GTK_MESSAGE_ERROR);
             g_free (message);
         }
         else
@@ -1205,7 +1049,6 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
     nautilus_mime_activate_files (parameters_install->parent_window,
                                   parameters_install->slot,
                                   parameters_install->files,
-                                  parameters_install->activation_directory,
                                   parameters_install->flags,
                                   parameters_install->user_confirmation);
 
@@ -1354,7 +1197,6 @@ application_unhandled_uri (ActivateParameters *parameters,
         parameters_install->parent_window = parameters->parent_window;
         g_object_add_weak_pointer (G_OBJECT (parameters_install->parent_window), (gpointer *) &parameters_install->parent_window);
     }
-    parameters_install->activation_directory = g_strdup (parameters->activation_directory);
     parameters_install->file = file;
     parameters_install->files = get_file_list_for_launch_locations (parameters->locations);
     parameters_install->flags = parameters->flags;
@@ -1396,145 +1238,6 @@ application_unhandled_uri (ActivateParameters *parameters,
 out:
     /* show an unhelpful dialog */
     show_unhandled_type_error (parameters_install);
-}
-
-typedef struct
-{
-    GtkWindow *parent_window;
-    NautilusFile *file;
-} ActivateParametersDesktop;
-
-static void
-activate_parameters_desktop_free (ActivateParametersDesktop *parameters_desktop)
-{
-    if (parameters_desktop->parent_window)
-    {
-        g_object_remove_weak_pointer (G_OBJECT (parameters_desktop->parent_window), (gpointer *) &parameters_desktop->parent_window);
-    }
-    nautilus_file_unref (parameters_desktop->file);
-    g_free (parameters_desktop);
-}
-
-static void
-untrusted_launcher_response_callback (GtkDialog                 *dialog,
-                                      int                        response_id,
-                                      ActivateParametersDesktop *parameters)
-{
-    GdkScreen *screen;
-    char *uri;
-    GFile *file;
-
-    switch (response_id)
-    {
-        case GTK_RESPONSE_OK:
-        {
-            file = nautilus_file_get_location (parameters->file);
-
-            /* We need to do this in order to prevent malicious desktop files
-             * with the executable bit already set.
-             * See https://bugzilla.gnome.org/show_bug.cgi?id=777991
-             */
-            nautilus_file_set_metadata (parameters->file, NAUTILUS_METADATA_KEY_DESKTOP_FILE_TRUSTED,
-                                        NULL,
-                                        "yes");
-
-            nautilus_file_mark_desktop_file_executable (file,
-                                                        parameters->parent_window,
-                                                        TRUE,
-                                                        NULL, NULL);
-
-            /* Need to force a reload of the attributes so is_trusted is marked
-             * correctly. Not sure why the general monitor doesn't fire in this
-             * case when setting the metadata
-             */
-            nautilus_file_invalidate_all_attributes (parameters->file);
-
-            screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-            uri = nautilus_file_get_uri (parameters->file);
-            DEBUG ("Launching untrusted launcher %s", uri);
-            nautilus_launch_desktop_file (screen, uri, NULL,
-                                          parameters->parent_window);
-            g_free (uri);
-            g_object_unref (file);
-        }
-        break;
-
-        default:
-        {
-            /* Just destroy dialog */
-        }
-        break;
-    }
-
-    gtk_widget_destroy (GTK_WIDGET (dialog));
-    activate_parameters_desktop_free (parameters);
-}
-
-static void
-activate_desktop_file (ActivateParameters *parameters,
-                       NautilusFile       *file)
-{
-    ActivateParametersDesktop *parameters_desktop;
-    char *primary, *secondary, *display_name;
-    GtkWidget *dialog;
-    GdkScreen *screen;
-    char *uri;
-
-    screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-
-    if (!nautilus_file_is_trusted_link (file))
-    {
-        /* copy the parts of parameters we are interested in as the orignal will be freed */
-        parameters_desktop = g_new0 (ActivateParametersDesktop, 1);
-        if (parameters->parent_window)
-        {
-            parameters_desktop->parent_window = parameters->parent_window;
-            g_object_add_weak_pointer (G_OBJECT (parameters_desktop->parent_window), (gpointer *) &parameters_desktop->parent_window);
-        }
-        parameters_desktop->file = nautilus_file_ref (file);
-
-        primary = _("Untrusted application launcher");
-        display_name = nautilus_file_get_display_name (file);
-        secondary =
-            g_strdup_printf (_("The application launcher “%s” has not been marked as trusted. "
-                               "If you do not know the source of this file, launching it may be unsafe."
-                               ),
-                             display_name);
-
-        dialog = gtk_message_dialog_new (parameters->parent_window,
-                                         0,
-                                         GTK_MESSAGE_WARNING,
-                                         GTK_BUTTONS_NONE,
-                                         NULL);
-        g_object_set (dialog,
-                      "text", primary,
-                      "secondary-text", secondary,
-                      NULL);
-
-        gtk_dialog_add_button (GTK_DIALOG (dialog),
-                               _("_Cancel"), GTK_RESPONSE_CANCEL);
-
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_CANCEL);
-        if (nautilus_file_can_set_permissions (file))
-        {
-            gtk_dialog_add_button (GTK_DIALOG (dialog),
-                                   _("Trust and _Launch"), GTK_RESPONSE_OK);
-        }
-        g_signal_connect (dialog, "response",
-                          G_CALLBACK (untrusted_launcher_response_callback),
-                          parameters_desktop);
-        gtk_widget_show (dialog);
-
-        g_free (display_name);
-        g_free (secondary);
-        return;
-    }
-
-    uri = nautilus_file_get_uri (file);
-    DEBUG ("Launching trusted launcher %s", uri);
-    nautilus_launch_desktop_file (screen, uri, NULL,
-                                  parameters->parent_window);
-    g_free (uri);
 }
 
 static void
@@ -1600,19 +1303,12 @@ activate_files (ActivateParameters *parameters)
     NautilusWindowOpenFlags flags;
     int count;
     g_autofree char *old_working_dir = NULL;
-    GdkScreen *screen;
     gboolean closed_window;
-    g_autoptr (GQueue) launch_desktop_files = NULL;
-    g_autoptr (GQueue) launch_files = NULL;
-    g_autoptr (GQueue) launch_in_terminal_files = NULL;
     g_autoptr (GQueue) open_in_app_uris = NULL;
     g_autoptr (GQueue) open_in_view_files = NULL;
     GList *l;
     ActivationAction action;
 
-    launch_desktop_files = g_queue_new ();
-    launch_files = g_queue_new ();
-    launch_in_terminal_files = g_queue_new ();
     open_in_view_files = g_queue_new ();
     open_in_app_uris = g_queue_new ();
 
@@ -1629,36 +1325,8 @@ activate_files (ActivateParameters *parameters)
         }
 
         action = get_activation_action (file);
-        if (action == ACTIVATION_ACTION_ASK)
-        {
-            /* Special case for executable text files, since it might be
-             * dangerous & unexpected to launch these.
-             */
-            pause_activation_timed_cancel (parameters);
-            action = get_executable_text_file_action (parameters->parent_window, file);
-            unpause_activation_timed_cancel (parameters);
-        }
-
         switch (action)
         {
-            case ACTIVATION_ACTION_LAUNCH_DESKTOP_FILE:
-            {
-                g_queue_push_tail (launch_desktop_files, file);
-            }
-            break;
-
-            case ACTIVATION_ACTION_LAUNCH:
-            {
-                g_queue_push_tail (launch_files, file);
-            }
-            break;
-
-            case ACTIVATION_ACTION_LAUNCH_IN_TERMINAL:
-            {
-                g_queue_push_tail (launch_in_terminal_files, file);
-            }
-            break;
-
             case ACTIVATION_ACTION_OPEN_IN_VIEW:
             {
                 g_queue_push_tail (open_in_view_files, file);
@@ -1683,67 +1351,12 @@ activate_files (ActivateParameters *parameters)
             }
             break;
 
-            case ACTIVATION_ACTION_ASK:
+            default:
             {
                 g_assert_not_reached ();
             }
             break;
         }
-    }
-
-    for (l = g_queue_peek_head_link (launch_desktop_files); l != NULL; l = l->next)
-    {
-        file = NAUTILUS_FILE (l->data);
-
-        activate_desktop_file (parameters, file);
-    }
-
-    if (parameters->activation_directory &&
-        (!g_queue_is_empty (launch_files) ||
-         !g_queue_is_empty (launch_in_terminal_files)))
-    {
-        old_working_dir = g_get_current_dir ();
-        g_chdir (parameters->activation_directory);
-    }
-
-    screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
-    for (l = g_queue_peek_head_link (launch_files); l != NULL; l = l->next)
-    {
-        g_autofree char *uri = NULL;
-        g_autofree char *executable_path = NULL;
-        g_autofree char *quoted_path = NULL;
-
-        file = NAUTILUS_FILE (l->data);
-
-        uri = nautilus_file_get_activation_uri (file);
-        executable_path = g_filename_from_uri (uri, NULL, NULL);
-        quoted_path = g_shell_quote (executable_path);
-
-        DEBUG ("Launching file path %s", quoted_path);
-
-        nautilus_launch_application_from_command (screen, quoted_path, FALSE, NULL);
-    }
-
-    for (l = g_queue_peek_head_link (launch_in_terminal_files); l != NULL; l = l->next)
-    {
-        g_autofree char *uri = NULL;
-        g_autofree char *executable_path = NULL;
-        g_autofree char *quoted_path = NULL;
-
-        file = NAUTILUS_FILE (l->data);
-
-        uri = nautilus_file_get_activation_uri (file);
-        executable_path = g_filename_from_uri (uri, NULL, NULL);
-        quoted_path = g_shell_quote (executable_path);
-
-        DEBUG ("Launching in terminal file quoted path %s", quoted_path);
-
-        nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
-    }
-
-    if (old_working_dir != NULL)
-    {
-        g_chdir (old_working_dir);
     }
 
     count = g_queue_get_length (open_in_view_files);
@@ -1901,7 +1514,10 @@ activation_mount_not_mounted_callback (GObject      *source_object,
              error->code != G_IO_ERROR_FAILED_HANDLED &&
              error->code != G_IO_ERROR_ALREADY_MOUNTED))
         {
-            show_error_dialog (_("Unable to access location"), error->message, parameters->parent_window);
+            show_dialog (_("Unable to access location"),
+                         error->message,
+                         parameters->parent_window,
+                         GTK_MESSAGE_ERROR);
         }
 
         if (error->domain != G_IO_ERROR ||
@@ -1911,8 +1527,7 @@ activation_mount_not_mounted_callback (GObject      *source_object,
                                                  file);
             if (loc)
             {
-                parameters->locations =
-                    g_list_remove (parameters->locations, loc);
+                parameters->locations = g_list_remove (parameters->locations, loc);
                 launch_location_free (loc);
             }
         }
@@ -2196,8 +1811,10 @@ activation_mountable_mounted (NautilusFile *file,
              error->code != G_IO_ERROR_FAILED_HANDLED &&
              error->code != G_IO_ERROR_ALREADY_MOUNTED))
         {
-            show_error_dialog (_("Unable to access location"),
-                               error->message, parameters->parent_window);
+            show_dialog (_("Unable to access location"),
+                         error->message,
+                         parameters->parent_window,
+                         GTK_MESSAGE_ERROR);
         }
 
         if (error->code == G_IO_ERROR_CANCELLED)
@@ -2285,8 +1902,10 @@ activation_mountable_started (NautilusFile *file,
             (error->code != G_IO_ERROR_CANCELLED &&
              error->code != G_IO_ERROR_FAILED_HANDLED))
         {
-            show_error_dialog (_("Unable to start location"),
-                               error->message, NULL);
+            show_dialog (_("Unable to start location"),
+                         error->message,
+                         NULL,
+                         GTK_MESSAGE_ERROR);
         }
 
         if (error->code == G_IO_ERROR_CANCELLED)
@@ -2327,20 +1946,10 @@ activation_start_mountables (ActivateParameters *parameters)
     }
 }
 
-/**
- * nautilus_mime_activate_files:
- *
- * Activate a list of files. Each one might launch with an application or
- * with a component. This is normally called only by subclasses.
- * @view: FMDirectoryView in question.
- * @files: A GList of NautilusFiles to activate.
- *
- **/
 void
 nautilus_mime_activate_files (GtkWindow               *parent_window,
                               NautilusWindowSlot      *slot,
                               GList                   *files,
-                              const char              *launch_directory,
                               NautilusWindowOpenFlags  flags,
                               gboolean                 user_confirmation)
 {
@@ -2367,7 +1976,6 @@ nautilus_mime_activate_files (GtkWindow               *parent_window,
         g_object_add_weak_pointer (G_OBJECT (parameters->parent_window), (gpointer *) &parameters->parent_window);
     }
     parameters->cancellable = g_cancellable_new ();
-    parameters->activation_directory = g_strdup (launch_directory);
     parameters->locations = launch_locations_from_file_list (files);
     parameters->flags = flags;
     parameters->user_confirmation = user_confirmation;
@@ -2437,7 +2045,6 @@ void
 nautilus_mime_activate_file (GtkWindow               *parent_window,
                              NautilusWindowSlot      *slot,
                              NautilusFile            *file,
-                             const char              *launch_directory,
                              NautilusWindowOpenFlags  flags)
 {
     GList *files;
@@ -2445,7 +2052,7 @@ nautilus_mime_activate_file (GtkWindow               *parent_window,
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
     files = g_list_prepend (NULL, file);
-    nautilus_mime_activate_files (parent_window, slot, files, launch_directory, flags, FALSE);
+    nautilus_mime_activate_files (parent_window, slot, files, flags, FALSE);
     g_list_free (files);
 }
 

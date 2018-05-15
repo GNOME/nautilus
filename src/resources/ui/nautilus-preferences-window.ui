@@ -46,6 +46,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="vbox12"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -70,6 +73,14 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox12-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label6"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -92,6 +103,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="box1"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -116,6 +130,14 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="box1-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label7"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -138,6 +160,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="box2"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -162,6 +187,14 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="box2-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label19"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -184,6 +217,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="vbox27"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -199,6 +235,11 @@
                         <property name="wrap">True</property>
                         <property name="max_width_chars">65</property>
                         <property name="xalign">0</property>
+                        <accessibility>
+                          <relation type="description-for" target="captions_0_combobox"/>
+                          <relation type="description-for" target="captions_1_combobox"/>
+                          <relation type="description-for" target="captions_2_combobox"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -232,6 +273,10 @@
                               <object class="GtkComboBoxText" id="captions_0_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label8"/>
+                                  <relation type="described-by" target="label29"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -264,6 +309,10 @@
                               <object class="GtkComboBoxText" id="captions_2_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label11"/>
+                                  <relation type="described-by" target="label29"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -296,6 +345,10 @@
                               <object class="GtkComboBoxText" id="captions_1_combobox">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
+                                <accessibility>
+                                  <relation type="labelled-by" target="label9"/>
+                                  <relation type="described-by" target="label29"/>
+                                </accessibility>
                               </object>
                               <packing>
                                 <property name="expand">False</property>
@@ -318,6 +371,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_1_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -333,6 +389,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_2_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -348,6 +407,9 @@
                             <style>
                               <class name="dim-label"/>
                             </style>
+                            <accessibility>
+                              <relation type="label-for" target="captions_0_combobox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -361,6 +423,14 @@
                         <property name="position">3</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox27-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label28"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -405,6 +475,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="vbox6"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -448,6 +521,14 @@
                         <property name="position">3</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox6-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label10"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -470,6 +551,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="vbox14"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -494,94 +578,19 @@
                         <property name="position">1</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox14-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label13"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
                     <property name="fill">True</property>
                     <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox7">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label12">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Executable Text Files</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="scripts_view_radiobutton">
-                        <property name="label" translatable="yes">_Display them</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">scripts_execute_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="scripts_execute_radiobutton">
-                        <property name="label" translatable="yes">_Run them</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">scripts_view_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="scripts_confirm_radiobutton">
-                        <property name="label" translatable="yes">_Ask what to do</property>
-                        <property name="use_action_appearance">False</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="use_underline">True</property>
-                        <property name="xalign">0</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">scripts_execute_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
                   </packing>
                 </child>
                 <child>
@@ -599,6 +608,9 @@
                         <attributes>
                           <attribute name="weight" value="PANGO_WEIGHT_BOLD"/>
                         </attributes>
+                        <accessibility>
+                          <relation type="label-for" target="vbox8"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -640,6 +652,14 @@
                         <property name="position">2</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox8-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label14"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -691,6 +711,9 @@
                             <property name="wrap">True</property>
                             <property name="max_width_chars">65</property>
                             <property name="xalign">0</property>
+                            <accessibility>
+                              <relation type="label-for" target="list_columns_vbox"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="expand">False</property>
@@ -701,6 +724,14 @@
                         <child>
                           <placeholder/>
                         </child>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="list_columns_vbox-atkobject">
+                            <property name="AtkObject::accessible-role">38</property>
+                          </object>
+                        </child>
+                        <accessibility>
+                          <relation type="labelled-by" target="label33"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -767,6 +798,9 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Search in subfolders:</property>
                         <property name="xalign">0</property>
+                        <accessibility>
+                          <relation type="label-for" target="vbox3"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -825,6 +859,14 @@
                         <property name="position">4</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox3-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label4"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -860,6 +902,9 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Show thumbnails:</property>
                         <property name="xalign">0</property>
+                        <accessibility>
+                          <relation type="label-for" target="vbox11"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -960,6 +1005,14 @@
                         <property name="position">5</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox11-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label15"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -995,6 +1048,9 @@
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Count number of files in folders:</property>
                         <property name="xalign">0</property>
+                        <accessibility>
+                          <relation type="label-for" target="vbox13"/>
+                        </accessibility>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -1053,6 +1109,14 @@
                         <property name="position">4</property>
                       </packing>
                     </child>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox13-atkobject">
+                        <property name="AtkObject::accessible-role">38</property>
+                      </object>
+                    </child>
+                    <accessibility>
+                      <relation type="labelled-by" target="label16"/>
+                    </accessibility>
                   </object>
                   <packing>
                     <property name="expand">False</property>

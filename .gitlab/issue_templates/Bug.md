@@ -16,10 +16,11 @@ Reproducible in:
 
     If these steps failed, write in 'Other' the distribution you’re using and
     the version of the app.
--->
-* [ ] Flatpak unstable
-* [ ] Other: 
 
+    Write yes or no after the semicolon.
+-->
+- Flatpak unstable: (yes or no)
+- Other:
 
 # Current behavior
 <!-- Describe the current behavior. -->

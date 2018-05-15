@@ -1,80 +1,117 @@
 variables:
-  GIT_SUBMODULE_STRATEGY: normal
+    GIT_SUBMODULE_STRATEGY: normal
+    BUNDLE: "nautilus-dev.flatpak"
 
 stages:
-- test
-- cross_distro
+    - test
+    - cross_distro
+    - deploy
 
 .test_template: &distro_test
   script:
-    - meson _build .
-    - cd _build
-    - ninja test
+      - meson _build .
+      - cd _build
+      - ninja test
 
-flatpak:master:
-    image: registry.gitlab.com/alatiera/gnome-nightly-oci/gnome-master:latest
+flatpak:
+    image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
     stage: test
+    variables:
+        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
+        MESON_ARGS: "-Dprofile=development -Dtests=all"
+        FLATPAK_MODULE: "nautilus"
+        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        DBUS_ID: "org.gnome.NautilusDevel"
+
     script:
-    - flatpak-builder --stop-at=nautilus app build-aux/flatpak/org.gnome.Nautilus.json
-    # Make sure to keep this in sync with the Flatpak manifest, all arguments
-    # are passed except the config-args because we build it ourselves
-    - flatpak build app meson --prefix=/app --libdir=/app/lib -Dprofile=development -Dtests=all _build
-    - flatpak build app ninja -C _build install
-    - flatpak-builder --finish-only --repo=repo app build-aux/flatpak/org.gnome.Nautilus.json
-    # Make a Flatpak Nautilus bundle for people to test
-    - flatpak build-bundle repo nautilus-dev.flatpak --runtime-repo=https://sdk.gnome.org/gnome-nightly.flatpakrepo org.gnome.NautilusDevel
-    # Run automatic tests inside the Flatpak env
-    - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
+        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
+        # Make sure to keep this in sync with the Flatpak manifest, all arguments
+        # are passed except the config-args because we build it ourselves
+        - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
+        - flatpak build app ninja -C _build install
+        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
+        # Generate a Flatpak bundle
+        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+        # Run automatic tests inside the Flatpak env
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
-        - nautilus-dev.flatpak
-        - _build/meson-logs/meson-log.txt
-        - _build/meson-logs/testlog.txt
-        expire_in: 2 days
+            - ${BUNDLE}
+            - _build/meson-logs/meson-log.txt
+            - _build/meson-logs/testlog.txt
+        expire_in: 30 days
     cache:
         paths:
-        - .flatpak-builder/cache
+            - .flatpak-builder/cache
+
+review:
+    stage: deploy
+    dependencies:
+        - flatpak
+    script:
+        - echo "Generating flatpak deployment"
+    artifacts:
+        paths:
+            - ${BUNDLE}
+        expire_in: 30 days
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
+        on_stop: stop_review
+    except:
+        - master@GNOME/nautilus
+
+stop_review:
+    stage: deploy
+    script:
+        - echo "Stopping flatpak deployment"
+    when: manual
+    environment:
+        name: review/$CI_COMMIT_REF_NAME
+        action: stop
+    except:
+        - master@GNOME/nautilus
 
 fedora:rawhide:
     image: fedora:rawhide
     stage: cross_distro
     before_script:
-    - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
-    - dnf builddep -y nautilus
+        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
+        - dnf builddep -y nautilus
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags
 
 ubuntu:devel:
     image: ubuntu:devel
     stage: cross_distro
     before_script:
-    # Ubuntu requires running update to fetch metadata and find packges
-    - apt update
-    - apt install -y gcc meson gettext itstool git libgtk-3-dev
-                     libgnome-autoar-0-dev libgnome-desktop-3-dev
-                     gobject-introspection libxml2-dev
-                     libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
-                     libgail-3-dev libtracker-sparql-2.0-dev
-                     libgirepository1.0-dev
+        # Ubuntu requires running update to fetch metadata and find packges
+        - apt update
+        - apt install -y gcc meson gettext itstool git libgtk-3-dev
+                        libgnome-autoar-0-dev libgnome-desktop-3-dev
+                        gobject-introspection libxml2-dev
+                        libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
+                        libgail-3-dev libtracker-sparql-2.0-dev
+                        libgirepository1.0-dev
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags
 
 opensuse:tumbleweed:
     image: opensuse:tumbleweed
     stage: cross_distro
     before_script:
-    - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
-                        gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
-                        gobject-introspection-devel libxml2-devel tracker-devel
-                        desktop-file-utils libgexiv2-devel
+        - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
+                            gtk3-devel gnome-autoar-devel libgnome-desktop-3-devel
+                            gobject-introspection-devel libxml2-devel tracker-devel
+                            desktop-file-utils libgexiv2-devel
     <<: *distro_test
     only:
-    - schedules
-    - web
-    - tags
+        - schedules
+        - web
+        - tags

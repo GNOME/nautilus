@@ -25,7 +25,6 @@
 #include "nautilus-dnd.h"
 
 #include "nautilus-program-choosing.h"
-#include "nautilus-link.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
@@ -507,15 +506,6 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
     if (eel_uri_is_trash (target_uri_string))
     {
         /* Only move to Trash */
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        nautilus_file_unref (target_file);
-        return;
-    }
-    else if (dropped_file != NULL && nautilus_file_is_launcher (dropped_file))
-    {
         if (actions & GDK_ACTION_MOVE)
         {
             *action = GDK_ACTION_MOVE;

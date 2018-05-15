@@ -5,7 +5,7 @@
 }
 
 .nautilus-window.devel headerbar {
-    background: #cbd2d9 -gtk-icontheme("system-run-symbolic") 70% 0/64px 64px no-repeat, linear-gradient(to left, #a5b1bd 0%, #a5b1bd 8%, @theme_bg_color 25%);
+    background: linear-gradient(to left, #a5b1bd 0%, #a5b1bd 8%, @theme_bg_color 25%);
     box-shadow: inset 0 1px #f1f3f5;
     border-color: #909fae;
     color: rgba(46, 52, 54, 0.2);
@@ -45,6 +45,10 @@
   animation-iteration-count: 3;
 }
 
+.disclosure-button {
+  padding: 4px;
+}
+
 /* Path bar */
 
 .path-bar button { /* undecorate the buttons */
@@ -55,12 +59,12 @@
   border-radius: 0;
   text-shadow: none;
   -gtk-icon-shadow: none;
+  padding: 4px;
+  border-width: 0px;
+  margin: 0px;
 }
 
 .path-bar .slider-button { /* margins are for the round keynav indicator */
-  margin-top: 10px;
-  margin-bottom: 11px;
-  -gtk-outline-radius: 50px;
   opacity: 0.7;
 }
 
@@ -83,6 +87,11 @@
 .path-bar button:not(.slider-button):not(:backdrop):checked > *,
 .path-bar button.text-button:not(.slider-button):backdrop:checked > * {
   box-shadow: 0 3px @theme_selected_bg_color;
+}
+
+.pathbar-box {
+  border: 1px @borders solid;
+  border-radius: 2px;
 }
 
 /* Sidebar */

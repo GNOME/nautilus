@@ -1,48 +1,20 @@
-########## EVIL EVIL EVIL
-# See https://github.com/mesonbuild/meson/issues/1487
-# and https://github.com/mesonbuild/meson/pull/3223
-#
-# This is primarily for the “build profiles” feature,
-# to be able to have icons even if we change the application ID.
-#
-# https://gitlab.gnome.org/GNOME/nautilus/merge_requests/144
-##########
-
-cp = find_program('cp')
-mkdir = find_program('mkdir')
-
 foreach icon_size: ['16x16', '22x22', '24x24', '32x32', '48x48', '512x512']
-  icon_path = join_paths('icons', 'hicolor', icon_size, 'apps')
-  output_icon_path = join_paths(meson.build_root(), 'data', icon_path)
+  icondir = join_paths('icons', 'hicolor', icon_size, 'apps')
 
-  run_command(
-    mkdir, [
-      '-p', output_icon_path
-    ]
-  )
-  run_command(
-    cp,
-    join_paths(icon_path, 'org.gnome.Nautilus.png'),
-    join_paths(output_icon_path, '@0@.png'.format(application_id))
-  )
-
-  install_subdir(
-    join_paths(meson.build_root(), 'data', 'icons'),
-    install_dir: datadir
+  install_data(
+    join_paths(icondir, 'org.gnome.Nautilus.png'),
+    install_dir: join_paths(datadir, icondir),
+    rename: '@0@.png'.format(application_id)
   )
 endforeach
 
-configure_file(
-  command: [
-    'cp', '@INPUT@', '@OUTPUT@'
-  ],
-  input: files(
-    join_paths('icons', 'hicolor', 'symbolic', 'apps', 'org.gnome.Nautilus-symbolic.svg')
-  ),
-  install_dir: join_paths(datadir, 'icons', 'hicolor', 'symbolic', 'apps'),
-  output: '@0@-symbolic.svg'.format(application_id)
+icondir = join_paths('icons', 'hicolor', 'symbolic', 'apps')
+
+install_data(
+  join_paths(icondir, 'org.gnome.Nautilus-symbolic.svg'),
+  install_dir: join_paths(datadir, icondir),
+  rename: '@0@-symbolic.svg'.format(application_id)
 )
-##########
 
 po_dir = join_paths(meson.source_root(), 'po')
 

@@ -202,6 +202,7 @@ struct NautilusCanvasContainerDetails {
 
 	eel_boolean_bit in_layout_now : 1;
 	eel_boolean_bit is_loading : 1;
+	eel_boolean_bit is_populating_container : 1;
 	eel_boolean_bit needs_resort : 1;
 	eel_boolean_bit selection_needs_resort : 1;
 };

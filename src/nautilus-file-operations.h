@@ -137,11 +137,6 @@ void nautilus_file_operations_link      (GList                *files,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
-void nautilus_file_mark_desktop_file_executable (GFile           *file,
-                                                 GtkWindow        *parent_window,
-                                                 gboolean          interactive,
-                                                 NautilusOpCallback done_callback,
-                                                 gpointer          done_callback_data);
 void nautilus_file_operations_extract_files (GList                   *files,
                                              GFile                   *destination_directory,
                                              GtkWindow               *parent_window,

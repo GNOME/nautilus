@@ -24,7 +24,6 @@
 #include "nautilus-properties-window.h"
 
 #include "nautilus-ui-utilities.h"
-#include "nautilus-desktop-item-properties.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-mime-actions.h"
 
@@ -50,7 +49,6 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-application-chooser.h"
 #include "nautilus-module.h"
@@ -286,7 +284,7 @@ get_target_file_for_original_file (NautilusFile *file)
     g_autoptr (GFile) location = NULL;
     g_autofree char *uri_to_display = NULL;
 
-    uri_to_display = nautilus_file_get_target_uri (file);
+    uri_to_display = nautilus_file_get_uri (file);
     location = g_file_new_for_uri (uri_to_display);
     target_file = nautilus_file_get (location);
 
@@ -487,9 +485,10 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
 
     if (!exactly_one)
     {
-        show_error_dialog(_("You cannot assign more than one custom icon at a time!"),
-                          _("Please drop just one image to set a custom icon."),
-                          window);
+        show_dialog (_("You cannot assign more than one custom icon at a time!"),
+                     _("Please drop just one image to set a custom icon."),
+                     window,
+                     GTK_MESSAGE_ERROR);
     }
     else
     {
@@ -504,15 +503,17 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
             f = g_file_new_for_uri (uris[0]);
             if (!g_file_is_native (f))
             {
-                show_error_dialog(_("The file that you dropped is not local."),
-                                  _("You can only use local images as custom icons."),
-                                  window);
+                show_dialog (_("The file that you dropped is not local."),
+                             _("You can only use local images as custom icons."),
+                             window,
+                             GTK_MESSAGE_ERROR);
             }
             else
             {
-                show_error_dialog(_("The file that you dropped is not an image."),
-                                  _("You can only use local images as custom icons."),
-                                  window);
+                show_dialog (_("The file that you dropped is not an image."),
+                             _("You can only use local images as custom icons."),
+                             window,
+                             GTK_MESSAGE_ERROR);
             }
             g_object_unref (f);
         }
@@ -2571,19 +2572,6 @@ create_grid_with_standard_properties (void)
 }
 
 static gboolean
-is_computer_directory (NautilusFile *file)
-{
-    char *file_uri;
-    gboolean result;
-
-    file_uri = nautilus_file_get_uri (file);
-    result = strcmp (file_uri, "computer:///") == 0;
-    g_free (file_uri);
-
-    return result;
-}
-
-static gboolean
 is_root_directory (NautilusFile *file)
 {
     GFile *location;
@@ -2638,7 +2626,6 @@ should_show_file_type (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
     {
@@ -2655,7 +2642,6 @@ should_show_location_info (NautilusPropertiesWindow *window)
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
             is_root_directory (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
     {
@@ -2708,7 +2694,6 @@ should_show_free_space (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (get_target_file (window)) ||
-            is_computer_directory (get_target_file (window)) ||
             is_network_directory (get_target_file (window)) ||
             nautilus_file_is_in_recent (get_target_file (window)) ||
             is_burn_directory (get_target_file (window))))
@@ -3112,9 +3097,10 @@ open_in_disks (GtkButton                *button,
     if (error != NULL)
     {
         message = g_strdup_printf (_("Details: %s"), error->message);
-        show_error_dialog (_("There was an error launching the application."),
-                           message,
-                           GTK_WINDOW (self));
+        show_dialog (_("There was an error launching the application."),
+                     message,
+                     GTK_WINDOW (self),
+                     GTK_MESSAGE_ERROR);
     }
 }
 
@@ -3164,22 +3150,6 @@ create_basic_page (NautilusPropertiesWindow *window)
     if (GTK_IS_ENTRY (window->details->name_field))
     {
         gtk_widget_grab_focus (GTK_WIDGET (window->details->name_field));
-    }
-
-    if (nautilus_desktop_item_properties_should_show (window->details->target_files))
-    {
-        GtkSizeGroup *label_size_group;
-        GtkWidget *box;
-
-        label_size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
-        gtk_size_group_add_widget (label_size_group,
-                                   GTK_WIDGET (window->details->name_label));
-        box = nautilus_desktop_item_properties_make_box (label_size_group,
-                                                         window->details->target_files);
-
-        gtk_grid_attach_next_to (window->details->basic_grid, box,
-                                 GTK_WIDGET (window->details->name_label),
-                                 GTK_POS_BOTTOM, 2, 1);
     }
 
     if (should_show_file_type (window))
@@ -4804,8 +4774,7 @@ should_show_permissions (NautilusPropertiesWindow *window)
      */
     if (!is_multi_file_window (window)
         && (nautilus_file_is_in_trash (file) ||
-            nautilus_file_is_in_recent (file) ||
-            is_computer_directory (file)))
+            nautilus_file_is_in_recent (file)))
     {
         return FALSE;
     }
@@ -4902,10 +4871,7 @@ is_a_special_file (NautilusFile *file)
 {
     gboolean is_special;
 
-    is_special = file == NULL ||
-                 nautilus_file_is_nautilus_link (file) ||
-                 nautilus_file_is_in_trash (file) ||
-                 is_computer_directory (file);
+    is_special = file == NULL || nautilus_file_is_in_trash (file);
 
     return is_special;
 }
@@ -5061,8 +5027,7 @@ create_properties_window (StartupData *startup_data)
 
         attributes =
             NAUTILUS_FILE_ATTRIBUTES_FOR_ICON |
-            NAUTILUS_FILE_ATTRIBUTE_INFO |
-            NAUTILUS_FILE_ATTRIBUTE_LINK_INFO;
+            NAUTILUS_FILE_ATTRIBUTE_INFO;
 
         nautilus_file_monitor_add (file,
                                    &window->details->original_files,
@@ -5511,39 +5476,25 @@ set_icon (const char               *icon_uri,
 
         for (l = properties_window->details->original_files; l != NULL; l = l->next)
         {
+            g_autoptr (GFile) file_location = NULL;
+            g_autoptr (GFile) icon_location = NULL;
+            g_autofree gchar *real_icon_uri = NULL;
+
             file = NAUTILUS_FILE (l->data);
-
             file_uri = nautilus_file_get_uri (file);
+            file_location = nautilus_file_get_location (file);
+            icon_location = g_file_new_for_uri (icon_uri);
 
-            if (nautilus_file_is_mime_type (file, "application/x-desktop"))
+            /* ’Tis a little bit of a misnomer. Actually a path. */
+            real_icon_uri = g_file_get_relative_path (icon_location,
+                                                      file_location);
+
+            if (real_icon_uri == NULL)
             {
-                if (nautilus_link_local_set_icon (file_uri, icon_path))
-                {
-                    nautilus_file_invalidate_attributes (file,
-                                                         NAUTILUS_FILE_ATTRIBUTE_INFO |
-                                                         NAUTILUS_FILE_ATTRIBUTE_LINK_INFO);
-                }
+                real_icon_uri = g_strdup (icon_uri);
             }
-            else
-            {
-                g_autoptr (GFile) file_location = NULL;
-                g_autoptr (GFile) icon_location = NULL;
-                g_autofree gchar *real_icon_uri = NULL;
 
-                file_location = nautilus_file_get_location (file);
-                icon_location = g_file_new_for_uri (icon_uri);
-
-                /* ’Tis a little bit of a misnomer. Actually a path. */
-                real_icon_uri = g_file_get_relative_path (icon_location,
-                                                          file_location);
-
-                if (real_icon_uri == NULL)
-                {
-                    real_icon_uri = g_strdup (icon_uri);
-                }
-
-                nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
-            }
+            nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
 
             g_free (file_uri);
         }

@@ -48,8 +48,9 @@ enum
     PROP_0,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
-    PROP_IS_LOADING,
-    PROP_IS_SEARCHING,
+    PROP_LOADING,
+    PROP_SEARCHING,
+    PROP_SELECTION,
     LAST_PROP
 };
 
@@ -90,16 +91,13 @@ open_location_cb (NautilusPlacesView *view,
     {
         NautilusFile *file;
         GtkWidget *window;
-        char *path;
 
-        path = "other-locations:///";
         file = nautilus_file_get (location);
         window = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
         nautilus_mime_activate_file (GTK_WINDOW (window),
                                      NAUTILUS_WINDOW_SLOT (slot),
                                      file,
-                                     path,
                                      flags);
         nautilus_file_unref (file);
     }
@@ -108,7 +106,7 @@ open_location_cb (NautilusPlacesView *view,
 static void
 loading_cb (NautilusView *view)
 {
-    g_object_notify (G_OBJECT (view), "is-loading");
+    g_object_notify (G_OBJECT (view), "loading");
 }
 
 static void
@@ -345,8 +343,8 @@ nautilus_places_view_class_init (NautilusPlacesViewClass *klass)
     object_class->get_property = nautilus_places_view_get_property;
     object_class->set_property = nautilus_places_view_set_property;
 
-    g_object_class_override_property (object_class, PROP_IS_LOADING, "is-loading");
-    g_object_class_override_property (object_class, PROP_IS_SEARCHING, "is-searching");
+    g_object_class_override_property (object_class, PROP_LOADING, "loading");
+    g_object_class_override_property (object_class, PROP_SEARCHING, "searching");
     g_object_class_override_property (object_class, PROP_LOCATION, "location");
     g_object_class_override_property (object_class, PROP_SEARCH_QUERY, "search-query");
 }

@@ -3,18 +3,6 @@
   <template class="NautilusWindow" parent="GtkApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
-    <child type="titlebar">
-      <object class="NautilusToolbar" id="toolbar">
-        <!-- We override the title widget so the GtkHeaderBar stop managing the
-        title label automatically, since we use the NautilusPathBar. We need to set it
-        here rather than in the NautilusToolbar definition due to bug 744324 on
-        gtk+ . -->
-        <child type="title">
-          <object class="GtkLabel">
-          </object>
-        </child>
-      </object>
-    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>

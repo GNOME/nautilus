@@ -31,7 +31,6 @@
 #include "nautilus-dnd.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 
 #include <gtk/gtk.h>
 
@@ -457,7 +456,7 @@ get_drop_target_uri_for_path (NautilusTreeViewDragDest *dest,
                                          dest->details->drag_list);
     if (can)
     {
-        target = nautilus_file_get_target_uri (file);
+        target = nautilus_file_get_uri (file);
     }
     nautilus_file_unref (file);
 

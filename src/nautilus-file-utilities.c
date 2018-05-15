@@ -30,8 +30,8 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-starred-directory.h"
+#include "nautilus-ui-utilities.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-debug.h>
 #include <eel/eel-vfs-extensions.h>
@@ -702,40 +702,6 @@ nautilus_is_file_roller_installed (void)
     return installed > 0 ? TRUE : FALSE;
 }
 
-/* Returns TRUE if the file is in XDG_DATA_DIRS. This is used for
- *  deciding if a desktop file is "trusted" based on the path */
-gboolean
-nautilus_is_in_system_dir (GFile *file)
-{
-    const char * const *data_dirs;
-    char *path;
-    int i;
-    gboolean res;
-
-    if (!g_file_is_native (file))
-    {
-        return FALSE;
-    }
-
-    path = g_file_get_path (file);
-
-    res = FALSE;
-
-    data_dirs = g_get_system_data_dirs ();
-    for (i = 0; path != NULL && data_dirs[i] != NULL; i++)
-    {
-        if (g_str_has_prefix (path, data_dirs[i]))
-        {
-            res = TRUE;
-            break;
-        }
-    }
-
-    g_free (path);
-
-    return res;
-}
-
 GHashTable *
 nautilus_trashed_files_get_original_directories (GList  *files,
                                                  GList **unhandled_files)
@@ -926,9 +892,10 @@ nautilus_restore_files_from_trash (GList     *files,
         message = g_strdup_printf (_("Could not determine original location of “%s” "), file_name);
         g_free (file_name);
 
-        eel_show_warning_dialog (message,
-                                 _("The item cannot be restored from trash"),
-                                 parent_window);
+        show_dialog (message,
+                     _("The item cannot be restored from trash"),
+                     parent_window,
+                     GTK_MESSAGE_WARNING);
         g_free (message);
     }
 

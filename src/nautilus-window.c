@@ -1009,89 +1009,6 @@ open_location_cb (NautilusWindow     *window,
 }
 
 static void
-notify_unmount_done (GMountOperation *op,
-                     const gchar     *message)
-{
-    NautilusApplication *application;
-    gchar *notification_id;
-
-    application = nautilus_application_get_default ();
-    notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
-    nautilus_application_withdraw_notification (application, notification_id);
-
-    if (message != NULL)
-    {
-        GNotification *unplug;
-        GIcon *icon;
-        gchar **strings;
-
-        strings = g_strsplit (message, "\n", 0);
-        icon = g_themed_icon_new ("media-removable-symbolic");
-        unplug = g_notification_new (strings[0]);
-        g_notification_set_body (unplug, strings[1]);
-        g_notification_set_icon (unplug, icon);
-
-        nautilus_application_send_notification (application, notification_id, unplug);
-        g_object_unref (unplug);
-        g_object_unref (icon);
-        g_strfreev (strings);
-    }
-
-    g_free (notification_id);
-}
-
-static void
-notify_unmount_show (GMountOperation *op,
-                     const gchar     *message)
-{
-    NautilusApplication *application;
-    GNotification *unmount;
-    gchar *notification_id;
-    GIcon *icon;
-    gchar **strings;
-
-    application = nautilus_application_get_default ();
-    strings = g_strsplit (message, "\n", 0);
-    icon = g_themed_icon_new ("media-removable");
-
-    unmount = g_notification_new (strings[0]);
-    g_notification_set_body (unmount, strings[1]);
-    g_notification_set_icon (unmount, icon);
-    g_notification_set_priority (unmount, G_NOTIFICATION_PRIORITY_URGENT);
-
-    notification_id = g_strdup_printf ("nautilus-mount-operation-%p", op);
-    nautilus_application_send_notification (application, notification_id, unmount);
-    g_object_unref (unmount);
-    g_object_unref (icon);
-    g_strfreev (strings);
-    g_free (notification_id);
-}
-
-static void
-show_unmount_progress_cb (GMountOperation *op,
-                          const gchar     *message,
-                          gint64           time_left,
-                          gint64           bytes_left,
-                          gpointer         user_data)
-{
-    if (bytes_left == 0)
-    {
-        notify_unmount_done (op, message);
-    }
-    else
-    {
-        notify_unmount_show (op, message);
-    }
-}
-
-static void
-show_unmount_progress_aborted_cb (GMountOperation *op,
-                                  gpointer         user_data)
-{
-    notify_unmount_done (op, NULL);
-}
-
-static void
 places_sidebar_unmount_operation_cb (NautilusWindow  *window,
                                      GMountOperation *mount_operation)
 {
@@ -1110,7 +1027,7 @@ places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
-    show_error_dialog (primary, secondary, GTK_WINDOW (window));
+    show_dialog (primary, secondary, GTK_WINDOW (window), GTK_MESSAGE_ERROR);
 }
 
 static void
@@ -2164,6 +2081,8 @@ setup_toolbar (NautilusWindow *window)
                              G_CALLBACK (location_entry_location_changed_callback), window, 0);
     g_signal_connect_object (location_entry, "cancel",
                              G_CALLBACK (location_entry_cancel_callback), window, 0);
+
+    gtk_window_set_titlebar (GTK_WINDOW (window), priv->toolbar);
 }
 
 static void
@@ -2335,6 +2254,12 @@ nautilus_window_initialize_actions (NautilusWindow *window)
         "<ctrl>r",
         NULL
     };
+    const gchar *prompt_home_location_accels[] =
+    {
+        "asciitilde",
+        "dead_tilde",
+        NULL
+    };
 
     g_action_map_add_action_entries (G_ACTION_MAP (window),
                                      win_entries, G_N_ELEMENTS (win_entries),
@@ -2348,7 +2273,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.close-current-view", "<control>w");
 
     /* Special case reload, since users are used to use two shortcuts instead of one */
-    gtk_application_set_accels_for_action (GTK_APPLICATION (app), "win.reload", reload_accels);
+    nautilus_application_set_accelerators (app, "win.reload", reload_accels);
 
     nautilus_application_set_accelerator (app, "win.undo", "<control>z");
     nautilus_application_set_accelerator (app, "win.redo", "<shift><control>z");
@@ -2361,7 +2286,8 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerator (app, "win.prompt-root-location", "slash");
-    nautilus_application_set_accelerator (app, "win.prompt-home-location", "asciitilde");
+    /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
+    nautilus_application_set_accelerators (app, "win.prompt-home-location", prompt_home_location_accels);
     nautilus_application_set_accelerator (app, "win.view-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
@@ -2627,6 +2553,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     {
         /* inform slot & view */
         nautilus_window_slot_set_active (old_slot, FALSE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), NULL);
     }
 
     priv->active_slot = new_slot;
@@ -2634,10 +2561,10 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
     /* make new slot active, if it exists */
     if (new_slot)
     {
-        nautilus_toolbar_set_active_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
 
         /* inform slot & view */
         nautilus_window_slot_set_active (new_slot, TRUE);
+        nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (priv->toolbar), new_slot);
 
         on_location_changed (window);
     }
@@ -2883,6 +2810,8 @@ nautilus_window_init (NautilusWindow *window)
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (window)),
                                  "nautilus-window");
 
+    priv->toolbar = nautilus_toolbar_new ();
+
     window_group = gtk_window_group_new ();
     gtk_window_group_add_window (window_group, GTK_WINDOW (window));
     g_object_unref (window_group);
@@ -2930,7 +2859,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
-    gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, content_paned);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child_private (wclass, NautilusWindow, places_sidebar);

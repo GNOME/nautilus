@@ -25,27 +25,36 @@
 #include <gtk/gtk.h>
 
 
-void nautilus_gmenu_add_item_in_submodel 	   (GMenu             *menu,
-						    GMenuItem         *item,
-						    const gchar       *section_name,
-						    gboolean           prepend);
-void nautilus_gmenu_merge                          (GMenu             *original,
-						    GMenu             *gmenu_to_merge,
-						    const gchar       *submodel_name,
-						    gboolean           prepend);
-void nautilus_pop_up_context_menu_at_pointer       (GtkWidget         *parent,
-                                                    GMenu             *menu,
-                                                    const GdkEvent    *event);
+void        nautilus_gmenu_add_item_in_submodel     (GMenu             *menu,
+                                                     GMenuItem         *item,
+                                                     const gchar       *section_name,
+                                                     gboolean           prepend);
+void        nautilus_gmenu_merge                    (GMenu             *original,
+                                                     GMenu             *gmenu_to_merge,
+                                                     const gchar       *submodel_name,
+                                                     gboolean           prepend);
+void        nautilus_pop_up_context_menu_at_pointer (GtkWidget         *parent,
+                                                     GMenu             *menu,
+                                                     const GdkEvent    *event);
 
-void   nautilus_ui_frame_image                     (GdkPixbuf        **pixbuf);
-void   nautilus_ui_frame_video                     (GdkPixbuf        **pixbuf);
+void        nautilus_ui_frame_image                 (GdkPixbuf        **pixbuf);
+void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
 
-gboolean   nautilus_file_date_in_between           (guint64           file_unix_time,
-                                                    GDateTime         *initial_date,
-                                                    GDateTime         *end_date);
-gchar*     get_text_for_date_range                 (GPtrArray         *date_range,
-                                                    gboolean           prefix_with_since);
+gboolean    nautilus_file_date_in_between           (guint64            file_unix_time,
+                                                     GDateTime         *initial_date,
+                                                     GDateTime         *end_date);
+gchar     * get_text_for_date_range                 (GPtrArray         *date_range,
+                                                     gboolean           prefix_with_since);
 
-GtkDialog *    show_error_dialog                   (const gchar *primary_text,
-                                                    const gchar *secondary_text,
-                                                    GtkWindow   *parent);
+GtkDialog * show_dialog                             (const gchar       *primary_text,
+                                                     const gchar       *secondary_text,
+                                                     GtkWindow         *parent,
+                                                     GtkMessageType     type);
+
+void        show_unmount_progress_cb                (GMountOperation   *op,
+                                                     const gchar       *message,
+                                                     gint64             time_left,
+                                                     gint64             bytes_left,
+                                                     gpointer           user_data);
+void        show_unmount_progress_aborted_cb        (GMountOperation   *op,
+                                                     gpointer           user_data);

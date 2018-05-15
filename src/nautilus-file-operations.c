@@ -54,7 +54,6 @@
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-link.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
@@ -227,12 +226,6 @@ typedef struct
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
 #define COPY_FORCE _("Copy _Anyway")
-
-static void
-mark_desktop_file_executable (CommonJob    *common,
-                              GCancellable *cancellable,
-                              GFile        *file,
-                              gboolean      interactive);
 
 static gboolean
 is_all_button_text (const char *button_text)
@@ -2604,9 +2597,10 @@ unmount_mount_callback (GObject      *source_object,
                 primary = g_strdup_printf (_("Unable to unmount %s"),
                                            mount_name);
             }
-            show_error_dialog (primary,
-                               error->message,
-                               data->parent_window);
+            show_dialog (primary,
+                         error->message,
+                         data->parent_window,
+                         GTK_MESSAGE_ERROR);
             g_free (primary);
         }
     }
@@ -2637,6 +2631,12 @@ do_unmount (UnmountData *data)
     {
         mount_op = gtk_mount_operation_new (data->parent_window);
     }
+
+    g_signal_connect (mount_op, "show-unmount-progress",
+                      G_CALLBACK (show_unmount_progress_cb), NULL);
+    g_signal_connect (mount_op, "aborted",
+                      G_CALLBACK (show_unmount_progress_aborted_cb), NULL);
+
     if (data->eject)
     {
         g_mount_eject_with_operation (data->mount,
@@ -2929,9 +2929,10 @@ volume_mount_cb (GObject      *source_object,
             primary = g_strdup_printf (_("Unable to access “%s”"), name);
             g_free (name);
             success = FALSE;
-            show_error_dialog (primary,
-                               error->message,
-                               parent);
+            show_dialog (primary,
+                         error->message,
+                         parent,
+                         GTK_MESSAGE_ERROR);
             g_free (primary);
         }
         g_error_free (error);
@@ -7709,131 +7710,6 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
     task = g_task_new (NULL, NULL, empty_trash_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, empty_trash_thread_func);
-}
-
-static void
-mark_desktop_file_executable_task_done (GObject      *source_object,
-                                        GAsyncResult *res,
-                                        gpointer      user_data)
-{
-    MarkTrustedJob *job = user_data;
-
-    g_object_unref (job->file);
-
-    if (job->done_callback)
-    {
-        job->done_callback (!job_aborted ((CommonJob *) job),
-                            job->done_callback_data);
-    }
-
-    finalize_common ((CommonJob *) job);
-}
-
-#define TRUSTED_SHEBANG "#!/usr/bin/env xdg-open\n"
-
-static void
-mark_desktop_file_executable (CommonJob    *common,
-                              GCancellable *cancellable,
-                              GFile        *file,
-                              gboolean      interactive)
-{
-    GError *error;
-    guint32 current_perms;
-    guint32 new_perms;
-    int response;
-    g_autoptr (GFileInfo) info = NULL;
-
-retry:
-
-    error = NULL;
-    info = g_file_query_info (file,
-                              G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                              G_FILE_ATTRIBUTE_UNIX_MODE,
-                              G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                              common->cancellable,
-                              &error);
-
-    if (info != NULL && g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE))
-    {
-        current_perms = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
-        new_perms = current_perms | S_IXGRP | S_IXUSR | S_IXOTH;
-
-        if (current_perms != new_perms)
-        {
-            g_file_set_attribute_uint32 (file, G_FILE_ATTRIBUTE_UNIX_MODE,
-                                         new_perms, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                         common->cancellable, &error);
-        }
-    }
-
-    if (interactive && error != NULL)
-    {
-        response = run_error (common,
-                              g_strdup (_("Unable to mark launcher trusted (executable)")),
-                              error->message,
-                              NULL,
-                              FALSE,
-                              CANCEL, RETRY,
-                              NULL);
-    }
-    else
-    {
-        response = 0;
-    }
-
-    if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
-    {
-        abort_job (common);
-    }
-    else if (response == 1)
-    {
-        g_object_unref (info);
-        goto retry;
-    }
-    else
-    {
-        g_assert_not_reached ();
-    }
-}
-
-static void
-mark_desktop_file_executable_task_thread_func (GTask        *task,
-                                               gpointer      source_object,
-                                               gpointer      task_data,
-                                               GCancellable *cancellable)
-{
-    MarkTrustedJob *job = task_data;
-    CommonJob *common;
-
-    common = (CommonJob *) job;
-
-    nautilus_progress_info_start (job->common.progress);
-
-    mark_desktop_file_executable (common,
-                                  cancellable,
-                                  job->file,
-                                  job->interactive);
-}
-
-void
-nautilus_file_mark_desktop_file_executable (GFile              *file,
-                                            GtkWindow          *parent_window,
-                                            gboolean            interactive,
-                                            NautilusOpCallback  done_callback,
-                                            gpointer            done_callback_data)
-{
-    g_autoptr (GTask) task = NULL;
-    MarkTrustedJob *job;
-
-    job = op_job_new (MarkTrustedJob, parent_window);
-    job->file = g_object_ref (file);
-    job->interactive = interactive;
-    job->done_callback = done_callback;
-    job->done_callback_data = done_callback_data;
-
-    task = g_task_new (NULL, NULL, mark_desktop_file_executable_task_done, job);
-    g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, mark_desktop_file_executable_task_thread_func);
 }
 
 static void
