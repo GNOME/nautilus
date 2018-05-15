@@ -150,7 +150,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
             *error_message = _("A file cannot be called “..”.");
         }
     }
-    else if (name_length > max_name_length + 1 && name_length != -1)
+    else if (name_length > max_name_length + 1 && max_name_length != -1)
     {
         if (self->target_is_folder)
         {
