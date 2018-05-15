@@ -7,6 +7,9 @@ tests = [
   ]],
   ['test-file-utilities', [
     'test-file-utilities.c'
+  ]],
+  ['test-file-operations-dir-has-files', [
+    'test-file-operations-dir-has-files.c'
   ]]
 ]
 
