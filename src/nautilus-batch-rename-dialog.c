@@ -1688,9 +1688,64 @@ update_row_shadowing (GtkWidget *row,
 }
 
 static gboolean
-on_leave_event (GtkWidget      *widget,
-                GdkEventMotion *event,
-                gpointer        user_data)
+on_motion_notify (GtkWidget *widget,
+                  GdkEvent  *event,
+                  gpointer   user_data)
+{
+    NautilusBatchRenameDialog *dialog;
+    gdouble y;
+    GtkListBoxRow *row;
+
+    dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+
+    if (dialog->preselected_row1 && dialog->preselected_row2)
+    {
+        update_row_shadowing (dialog->preselected_row1, FALSE);
+        update_row_shadowing (dialog->preselected_row2, FALSE);
+    }
+
+    g_assert (gdk_event_get_coords (event, NULL, &y));
+
+    if (widget == dialog->result_listbox)
+    {
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->original_name_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row1 = GTK_WIDGET (row);
+
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->arrow_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row2 = GTK_WIDGET (row);
+    }
+
+    if (widget == dialog->arrow_listbox)
+    {
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->original_name_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row1 = GTK_WIDGET (row);
+
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->result_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row2 = GTK_WIDGET (row);
+    }
+
+    if (widget == dialog->original_name_listbox)
+    {
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->result_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row1 = GTK_WIDGET (row);
+
+        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->arrow_listbox), y);
+        update_row_shadowing (GTK_WIDGET (row), TRUE);
+        dialog->preselected_row2 = GTK_WIDGET (row);
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+on_leave_notify (GtkWidget *widget,
+                 GdkEvent  *event,
+                 gpointer   user_data)
 {
     NautilusBatchRenameDialog *dialog;
 
@@ -1702,59 +1757,29 @@ on_leave_event (GtkWidget      *widget,
     dialog->preselected_row1 = NULL;
     dialog->preselected_row2 = NULL;
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static gboolean
-on_motion (GtkWidget      *widget,
-           GdkEventMotion *event,
-           gpointer        user_data)
+on_event (GtkWidget *widget,
+          GdkEvent  *event,
+          gpointer   user_data)
 {
-    GtkListBoxRow *row;
-    NautilusBatchRenameDialog *dialog;
+    GdkEventType event_type;
 
-    dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
+    event_type = gdk_event_get_event_type (event);
 
-    if (dialog->preselected_row1 && dialog->preselected_row2)
+    if (event_type == GDK_MOTION_NOTIFY)
     {
-        update_row_shadowing (dialog->preselected_row1, FALSE);
-        update_row_shadowing (dialog->preselected_row2, FALSE);
+        return on_motion_notify (widget, event, user_data);
     }
 
-    if (widget == dialog->result_listbox)
+    if (event_type == GDK_LEAVE_NOTIFY)
     {
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->original_name_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row1 = GTK_WIDGET (row);
-
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->arrow_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row2 = GTK_WIDGET (row);
+        return on_leave_notify (widget, event, user_data);
     }
 
-    if (widget == dialog->arrow_listbox)
-    {
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->original_name_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row1 = GTK_WIDGET (row);
-
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->result_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row2 = GTK_WIDGET (row);
-    }
-
-    if (widget == dialog->original_name_listbox)
-    {
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->result_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row1 = GTK_WIDGET (row);
-
-        row = gtk_list_box_get_row_at_y (GTK_LIST_BOX (dialog->arrow_listbox), event->y);
-        update_row_shadowing (GTK_WIDGET (row), TRUE);
-        dialog->preselected_row2 = GTK_WIDGET (row);
-    }
-
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -2283,29 +2308,16 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     self->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
     g_signal_connect (self->original_name_listbox,
-                      "motion-notify-event",
-                      G_CALLBACK (on_motion),
+                      "event",
+                      G_CALLBACK (on_event),
                       self);
     g_signal_connect (self->result_listbox,
-                      "motion-notify-event",
-                      G_CALLBACK (on_motion),
+                      "event",
+                      G_CALLBACK (on_event),
                       self);
     g_signal_connect (self->arrow_listbox,
-                      "motion-notify-event",
-                      G_CALLBACK (on_motion),
-                      self);
-
-    g_signal_connect (self->original_name_listbox,
-                      "leave-notify-event",
-                      G_CALLBACK (on_leave_event),
-                      self);
-    g_signal_connect (self->result_listbox,
-                      "leave-notify-event",
-                      G_CALLBACK (on_leave_event),
-                      self);
-    g_signal_connect (self->arrow_listbox,
-                      "leave-notify-event",
-                      G_CALLBACK (on_leave_event),
+                      "event",
+                      G_CALLBACK (on_event),
                       self);
 
     self->metadata_cancellable = g_cancellable_new ();
