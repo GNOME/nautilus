@@ -60,7 +60,8 @@ typedef enum
 static guint path_bar_signals [LAST_SIGNAL] = { 0 };
 
 #define NAUTILUS_PATH_BAR_ICON_SIZE 16
-#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 195
+#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 250
+#define NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH 195
 
 typedef struct
 {
@@ -364,7 +365,7 @@ get_dir_name (ButtonData *button_data)
  * or not the contents are bold
  */
 static void
-set_label_size_request (ButtonData *button_data)
+set_label_size_request (ButtonData *button_data, gboolean should_shrink)
 {
     gint width, height;
     GtkRequisition nat_req, bold_req;
@@ -378,13 +379,20 @@ set_label_size_request (ButtonData *button_data)
     gtk_widget_get_preferred_size (button_data->bold_label, &bold_req, NULL);
 
     width = MAX (nat_req.width, bold_req.width);
-    width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
+    if (should_shrink)
+    {
+        width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH);
+    }
+    else
+    {
+        width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
+    }
     height = MAX (nat_req.height, bold_req.height);
 
     gtk_widget_set_size_request (button_data->label, width, height);
-    if (width == NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH)
+    if (width == NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH || width == NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH)
     {
-      gtk_widget_set_tooltip_text(button_data->button, gtk_label_get_text(GTK_LABEL(button_data->label)));
+        gtk_widget_set_tooltip_text(button_data->button, gtk_label_get_text(GTK_LABEL(button_data->label)));
     }
 }
 
@@ -417,7 +425,7 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
     for (list = priv->button_list; list; list = list->next)
     {
         button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
+        set_label_size_request (button_data, FALSE);
 
         gtk_widget_get_preferred_width (button_data->container, &child_min, &child_nat);
         gtk_widget_get_preferred_height (button_data->container, &child_height, NULL);
@@ -430,7 +438,7 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
             child_nat = MAX (child_min, child_height * 2);
         }
 
-        *minimum = MAX (*minimum, child_min);
+        *minimum = MAX (MIN (*minimum, NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH), child_min);
         *natural = *natural + child_nat;
     }
 
@@ -471,7 +479,7 @@ nautilus_path_bar_get_preferred_height (GtkWidget *widget,
     for (list = priv->button_list; list; list = list->next)
     {
         button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
+        set_label_size_request (button_data, FALSE);
 
         gtk_widget_get_preferred_height (button_data->container, &child_min, &child_nat);
 
@@ -686,8 +694,18 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
             child = BUTTON_DATA (first_button->next->data)->button;
             gtk_widget_get_preferred_size (child, &child_requisition, NULL);
 
-            if (width + child_requisition.width + slider_space > allocation->width)
+            if (width + child_requisition.width + slider_space > allocation->width
+            && width + NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH + slider_space < allocation->width)
             {
+                // If we are beginning to lack space, we shrink the button, but continue
+                set_label_size_request (BUTTON_DATA(first_button->data), TRUE);
+                width += MIN (NAUTILUS_PATH_BAR_BUTTON_SHRINKED_WIDTH, child_requisition.width);
+                first_button = first_button->next;
+            }
+            else if (width + child_requisition.width + slider_space > allocation->width)
+            {
+                // If we are totally lacking space, we shrink the rightest button too, and stop
+                set_label_size_request (BUTTON_DATA(first_button->data), TRUE);
                 reached_end = TRUE;
             }
             else
@@ -727,7 +745,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     {
         largest_width -= (down_slider_width + up_slider_width);
     }
-
     for (list = first_button; list; list = list->prev)
     {
         child = BUTTON_DATA (list->data)->container;
