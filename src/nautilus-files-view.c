@@ -8917,76 +8917,77 @@ nautilus_files_view_set_property (GObject      *object,
 
 /* handle Ctrl+Scroll, which will cause a zoom-in/out */
 static gboolean
-nautilus_files_view_scroll_event (GtkWidget      *widget,
-                                  GdkEventScroll *event)
+on_event (GtkWidget *widget,
+          GdkEvent  *event,
+          gpointer   user_data)
 {
     NautilusFilesView *directory_view;
     static gdouble total_delta_y = 0;
+    GdkModifierType state;
+    GdkScrollDirection direction;
     gdouble delta_x, delta_y;
 
     directory_view = NAUTILUS_FILES_VIEW (widget);
 
-    if (event->state & GDK_CONTROL_MASK)
+    if (gdk_event_get_event_type (event) != GDK_SCROLL)
     {
-        switch (event->direction)
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (!gdk_event_get_state (event, &state))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (!(state & GDK_CONTROL_MASK))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (gdk_event_get_scroll_direction (event, &direction))
+    {
+        if (direction == GDK_SCROLL_UP)
         {
-            case GDK_SCROLL_UP:
-            {
-                /* Zoom In */
-                nautilus_files_view_bump_zoom_level (directory_view, 1);
-                return TRUE;
-            }
-
-            case GDK_SCROLL_DOWN:
-            {
-                /* Zoom Out */
-                nautilus_files_view_bump_zoom_level (directory_view, -1);
-                return TRUE;
-            }
-
-            case GDK_SCROLL_SMOOTH:
-            {
-                gdk_event_get_scroll_deltas ((const GdkEvent *) event,
-                                             &delta_x, &delta_y);
-
-                /* try to emulate a normal scrolling event by summing deltas */
-                total_delta_y += delta_y;
-
-                if (total_delta_y >= 1)
-                {
-                    total_delta_y = 0;
-                    /* emulate scroll down */
-                    nautilus_files_view_bump_zoom_level (directory_view, -1);
-                    return TRUE;
-                }
-                else if (total_delta_y <= -1)
-                {
-                    total_delta_y = 0;
-                    /* emulate scroll up */
-                    nautilus_files_view_bump_zoom_level (directory_view, 1);
-                    return TRUE;
-                }
-                else
-                {
-                    /* eat event */
-                    return TRUE;
-                }
-            }
-
-            case GDK_SCROLL_LEFT:
-            case GDK_SCROLL_RIGHT:
-            {
-            }
-            break;
-
-            default:
-                g_assert_not_reached ();
+            /* Zoom In */
+            nautilus_files_view_bump_zoom_level (directory_view, 1);
+            return GDK_EVENT_STOP;
+        }
+        else if (direction == GDK_SCROLL_DOWN)
+        {
+            /* Zoom Out */
+            nautilus_files_view_bump_zoom_level (directory_view, -1);
+            return GDK_EVENT_STOP;
         }
     }
 
-    return FALSE;
-}
+    if (gdk_event_get_scroll_deltas (event, &delta_x, &delta_y))
+    {
+        /* try to emulate a normal scrolling event by summing deltas */
+        total_delta_y += delta_y;
 
+        if (total_delta_y >= 1)
+        {
+            total_delta_y = 0;
+            /* emulate scroll down */
+            nautilus_files_view_bump_zoom_level (directory_view, -1);
+            return GDK_EVENT_STOP;
+        }
+        else if (total_delta_y <= -1)
+        {
+            total_delta_y = 0;
+            /* emulate scroll up */
+            nautilus_files_view_bump_zoom_level (directory_view, 1);
+            return GDK_EVENT_STOP;
+        }
+        else
+        {
+            /* eat event */
+            return GDK_EVENT_STOP;
+        }
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
 
 static void
 action_reload_enabled_changed (GActionGroup      *action_group,
@@ -9272,7 +9273,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
     widget_class->destroy = nautilus_files_view_destroy;
     widget_class->key_press_event = nautilus_files_view_key_press_event;
-    widget_class->scroll_event = nautilus_files_view_scroll_event;
     widget_class->parent_set = nautilus_files_view_parent_set;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
@@ -9475,8 +9475,8 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_widget_show (priv->scrolled_window);
 
     g_signal_connect_swapped (priv->scrolled_window,
-                              "scroll-event",
-                              G_CALLBACK (nautilus_files_view_scroll_event),
+                              "event",
+                              G_CALLBACK (on_event),
                               view);
     g_signal_connect_swapped (priv->scrolled_window,
                               "popup-menu",
