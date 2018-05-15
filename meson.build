@@ -19,12 +19,6 @@ servicedir = join_paths(datadir, 'dbus-1', 'services')
 cc = meson.get_compiler('c')
 #
 
-add_global_arguments(
-  cc.get_supported_arguments([
-    '-Wno-deprecated-declarations',
-  ]),
-  language: 'c'
-)
 add_project_arguments(
   cc.get_supported_arguments([
     '-Wall',
