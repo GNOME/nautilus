@@ -97,7 +97,6 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
     {
         GtkWidget *tab;
         gint max_x, max_y;
-        gint x_root, y_root;
 
         tab = gtk_notebook_get_tab_label (nb, page);
         g_return_val_if_fail (tab != NULL, -1);
@@ -108,12 +107,10 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
             continue;
         }
 
-        gdk_window_get_origin (gtk_widget_get_window (tab),
-                               &x_root, &y_root);
         gtk_widget_get_allocation (tab, &allocation);
 
-        max_x = x_root + allocation.x + allocation.width;
-        max_y = y_root + allocation.y + allocation.height;
+        max_x = allocation.x + allocation.width;
+        max_y = allocation.y + allocation.height;
 
         if (abs_x <= max_x && abs_y <= max_y)
         {
@@ -125,56 +122,78 @@ find_tab_num_at_pos (NautilusNotebook *notebook,
     return AFTER_ALL_TABS;
 }
 
-static gboolean
-button_press_cb (NautilusNotebook *notebook,
-                 GdkEventButton   *event,
-                 gpointer          data)
+static void
+on_pressed (GtkGestureMultiPress *gesture,
+            gint                  n_press,
+            gdouble               x,
+            gdouble               y,
+            gpointer              user_data)
 {
+    guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
+    GtkWidget *widget;
+    NautilusNotebook *notebook;
     int tab_clicked;
+    GdkModifierType state;
 
-    tab_clicked = find_tab_num_at_pos (notebook, event->x_root, event->y_root);
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    notebook = NAUTILUS_NOTEBOOK (widget);
+    tab_clicked = find_tab_num_at_pos (notebook, x, y);
 
-    if (event->type == GDK_BUTTON_PRESS &&
-        event->button == GDK_BUTTON_SECONDARY &&
-        (event->state & gtk_accelerator_get_default_mod_mask ()) == 0)
+    gdk_event_get_state (event, &state);
+
+    if (n_press == 1 && button == GDK_BUTTON_SECONDARY &&
+        (state & gtk_accelerator_get_default_mod_mask ()) == 0)
     {
         if (tab_clicked == -1)
         {
             /* consume event, so that we don't pop up the context menu when
              * the mouse if not over a tab label
              */
-            return GDK_EVENT_STOP;
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+
+            return;
         }
 
         /* switch to the page the mouse is over, but don't consume the event */
         gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), tab_clicked);
     }
-    else if (event->type == GDK_BUTTON_PRESS &&
-             event->button == GDK_BUTTON_MIDDLE)
+    else if (n_press == 1 && button == GDK_BUTTON_MIDDLE)
     {
         GtkWidget *slot;
 
         if (tab_clicked == -1)
         {
-            return GDK_EVENT_PROPAGATE;
+            gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+
+            return;
         }
 
         slot = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), tab_clicked);
         g_signal_emit (notebook, signals[TAB_CLOSE_REQUEST], 0, slot);
     }
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
+    GtkGesture *gesture;
+
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
     gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
-    g_signal_connect (notebook, "button-press-event",
-                      (GCallback) button_press_cb, NULL);
+    gesture = gtk_gesture_multi_press_new (GTK_WIDGET (notebook));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
+
+    g_signal_connect (gesture, "pressed", G_CALLBACK (on_pressed), NULL);
 }
 
 gboolean
