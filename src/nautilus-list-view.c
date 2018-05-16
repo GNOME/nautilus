@@ -238,9 +238,13 @@ activate_selected_items_alternate (NautilusListView *view,
 }
 
 static gboolean
-button_event_modifies_selection (GdkEventButton *event)
+button_event_modifies_selection (GdkEvent *event)
 {
-    return (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
+    GdkModifierType state;
+
+    gdk_event_get_state (event, &state);
+
+    return (state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
 static int
@@ -252,64 +256,85 @@ get_click_policy (void)
 
 static void
 nautilus_list_view_did_not_drag (NautilusListView *view,
-                                 GdkEventButton   *event)
+                                 GdkEvent         *event)
 {
     GtkTreeView *tree_view;
     GtkTreeSelection *selection;
+    gdouble x;
+    gdouble y;
     GtkTreePath *path;
+    guint button;
+    GdkModifierType state;
 
     tree_view = view->details->tree_view;
     selection = gtk_tree_view_get_selection (tree_view);
 
-    if (gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
-                                       &path, NULL, NULL, NULL))
+    if (!gdk_event_get_coords (event, &x, &y))
     {
-        if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE)
-            && ((event->state & GDK_CONTROL_MASK) != 0 ||
-                (event->state & GDK_SHIFT_MASK) == 0)
-            && view->details->row_selected_on_button_down)
-        {
-            if (!button_event_modifies_selection (event))
-            {
-                gtk_tree_selection_unselect_all (selection);
-                gtk_tree_selection_select_path (selection, path);
-            }
-            else
-            {
-                gtk_tree_selection_unselect_path (selection, path);
-            }
-        }
-
-        if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
-            && !button_event_modifies_selection (event))
-        {
-            if (event->button == GDK_BUTTON_PRIMARY)
-            {
-                activate_selected_items (view);
-            }
-            else if (event->button == GDK_BUTTON_MIDDLE)
-            {
-                activate_selected_items_alternate (view, NULL, TRUE);
-            }
-        }
-        gtk_tree_path_free (path);
+        return;
     }
+
+    if (!gtk_tree_view_get_path_at_pos (tree_view, x, y, &path, NULL, NULL, NULL))
+    {
+        return;
+    }
+
+    if (!gdk_event_get_button (event, &button))
+    {
+        return;
+    }
+
+    gdk_event_get_state (event, &state);
+
+    if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE)
+        && ((state & GDK_CONTROL_MASK) != 0 ||
+            (state & GDK_SHIFT_MASK) == 0)
+        && view->details->row_selected_on_button_down)
+    {
+        if (!button_event_modifies_selection (event))
+        {
+            gtk_tree_selection_unselect_all (selection);
+            gtk_tree_selection_select_path (selection, path);
+        }
+        else
+        {
+            gtk_tree_selection_unselect_path (selection, path);
+        }
+    }
+
+    if ((get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
+        && !button_event_modifies_selection (event))
+    {
+        if (button == GDK_BUTTON_PRIMARY)
+        {
+            activate_selected_items (view);
+        }
+        else if (button == GDK_BUTTON_MIDDLE)
+        {
+            activate_selected_items_alternate (view, NULL, TRUE);
+        }
+    }
+    gtk_tree_path_free (path);
 }
 
 static gboolean
-motion_notify_callback (GtkWidget      *widget,
-                        GdkEventMotion *event,
-                        gpointer        callback_data)
+on_motion_notify (GtkWidget *widget,
+                  GdkEvent  *event,
+                  gpointer   callback_data)
 {
     NautilusListView *view;
-    gboolean handled = FALSE;
+    gdouble x;
+    gdouble y;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
 
-    if (event->window != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)))
+    /* Remove after switching to GTK+ 4. */
+    if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)))
     {
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
     }
+
+    g_assert (gdk_event_get_coords (event, &x, &y));
 
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
     {
@@ -317,7 +342,7 @@ motion_notify_callback (GtkWidget      *widget,
 
         old_hover_path = view->details->hover_path;
         gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       event->x, event->y,
+                                       x, y,
                                        &view->details->hover_path,
                                        NULL, NULL, NULL);
 
@@ -340,15 +365,14 @@ motion_notify_callback (GtkWidget      *widget,
     }
 
     nautilus_list_view_dnd_init (view);
-    handled = nautilus_list_view_dnd_drag_begin (view, event);
 
-    return handled;
+    return nautilus_list_view_dnd_drag_begin (view, event);
 }
 
 static gboolean
-leave_notify_callback (GtkWidget        *widget,
-                       GdkEventCrossing *event,
-                       gpointer          callback_data)
+on_leave_notify (GtkWidget *widget,
+                 GdkEvent  *event,
+                 gpointer   callback_data)
 {
     NautilusListView *view;
 
@@ -361,13 +385,13 @@ leave_notify_callback (GtkWidget        *widget,
         view->details->hover_path = NULL;
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static gboolean
-enter_notify_callback (GtkWidget        *widget,
-                       GdkEventCrossing *event,
-                       gpointer          callback_data)
+on_enter_notify (GtkWidget *widget,
+                 GdkEvent  *event,
+                 gpointer   callback_data)
 {
     NautilusListView *view;
 
@@ -375,13 +399,18 @@ enter_notify_callback (GtkWidget        *widget,
 
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
     {
+        gdouble x;
+        gdouble y;
+
         if (view->details->hover_path != NULL)
         {
             gtk_tree_path_free (view->details->hover_path);
         }
 
+        g_assert (gdk_event_get_coords (event, &x, &y));
+
         gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       event->x, event->y,
+                                       x, y,
                                        &view->details->hover_path,
                                        NULL, NULL, NULL);
 
@@ -391,7 +420,7 @@ enter_notify_callback (GtkWidget        *widget,
         }
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -495,16 +524,20 @@ on_star_cell_renderer_clicked (GtkTreePath      *path,
 }
 
 static gboolean
-button_press_callback (GtkWidget      *widget,
-                       GdkEventButton *event,
-                       gpointer        callback_data)
+on_pressed (GtkWidget *widget,
+            GdkEvent  *event,
+            gpointer   callback_data)
 {
     NautilusListView *view;
+    gdouble x;
+    gdouble y;
     GtkTreeView *tree_view;
     GtkTreePath *path;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
+    GdkEventType event_type;
     GtkWidgetClass *tree_view_class;
+    guint button;
     gint64 current_time;
     static gint64 last_click_time = 0;
     static int click_count = 0;
@@ -518,24 +551,34 @@ button_press_callback (GtkWidget      *widget,
     tree_view = GTK_TREE_VIEW (widget);
     tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
     selection = gtk_tree_view_get_selection (tree_view);
-    view->details->last_event_button_x = event->x;
-    view->details->last_event_button_y = event->y;
+    event_type = gdk_event_get_event_type (event);
 
-    /* Don't handle extra mouse buttons here */
-    if (event->button > 5)
+    if (!gdk_event_get_coords (event, &x, &y))
     {
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
     }
 
-    if (event->window != gtk_tree_view_get_bin_window (tree_view))
+    view->details->last_event_button_x = x;
+    view->details->last_event_button_y = y;
+
+    g_assert (gdk_event_get_button (event, &button));
+
+    /* Don't handle extra mouse buttons here */
+    if (button > 5)
     {
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    /* Remove after switching to GTK+ 4. */
+    if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (tree_view))
+    {
+        return GDK_EVENT_PROPAGATE;
     }
 
     nautilus_list_model_set_drag_view
         (NAUTILUS_LIST_MODEL (gtk_tree_view_get_model (tree_view)),
         tree_view,
-        event->x, event->y);
+        x, y);
 
     g_object_get (G_OBJECT (gtk_widget_get_settings (widget)),
                   "gtk-double-click-time", &double_click_time,
@@ -558,14 +601,14 @@ button_press_callback (GtkWidget      *widget,
     /* Ignore double click if we are in single click mode */
     if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2)
     {
-        return TRUE;
+        return GDK_EVENT_STOP;
     }
 
     view->details->ignore_button_release = FALSE;
-    is_simple_click = ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) && (event->type == GDK_BUTTON_PRESS));
+    is_simple_click = ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE) && (event_type == GDK_BUTTON_PRESS));
 
     /* No item at this position */
-    if (!gtk_tree_view_get_path_at_pos (tree_view, event->x, event->y,
+    if (!gtk_tree_view_get_path_at_pos (tree_view, x, y,
                                         &path, &column, NULL, NULL))
     {
         if (is_simple_click)
@@ -578,15 +621,15 @@ button_press_callback (GtkWidget      *widget,
         /* Deselect if people click outside any row. It's OK to
          *  let default code run; it won't reselect anything. */
         gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
-        tree_view_class->button_press_event (widget, event);
+        tree_view_class->button_press_event (widget, (GdkEventButton *) event);
 
-        if (event->button == GDK_BUTTON_SECONDARY)
+        if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                                (GdkEvent *) event);
+                                                                event);
         }
 
-        return TRUE;
+        return GDK_EVENT_STOP;
     }
 
     call_parent = TRUE;
@@ -607,11 +650,11 @@ button_press_callback (GtkWidget      *widget,
 
         if (gtk_widget_get_direction (widget) == GTK_TEXT_DIR_RTL)
         {
-            on_expander = event->x > (cell_area.x + cell_area.width);
+            on_expander = x > (cell_area.x + cell_area.width);
         }
         else
         {
-            on_expander = event->x < cell_area.x;
+            on_expander = x < cell_area.x;
         }
     }
 
@@ -626,8 +669,8 @@ button_press_callback (GtkWidget      *widget,
 
     on_star = (g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
                !gtk_tree_view_is_blank_at_pos (tree_view,
-                                               event->x,
-                                               event->y,
+                                               x,
+                                               y,
                                                NULL,
                                                NULL,
                                                NULL,
@@ -635,9 +678,9 @@ button_press_callback (GtkWidget      *widget,
 
     if (is_simple_click && click_count <= 0 && on_star)
     {
-            on_star_cell_renderer_clicked (path, view);
+        on_star_cell_renderer_clicked (path, view);
     }
-    else if (event->type == GDK_2BUTTON_PRESS && !on_star)
+    else if (event_type == GDK_2BUTTON_PRESS && !on_star)
     {
         /* Double clicking does not trigger a D&D action. */
         view->details->drag_button = 0;
@@ -647,7 +690,7 @@ button_press_callback (GtkWidget      *widget,
             view->details->double_click_path[1] &&
             gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0)
         {
-            if ((event->button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
+            if ((button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
             {
                 file = nautilus_list_model_file_for_path (view->details->model, path);
                 if (file != NULL)
@@ -658,11 +701,11 @@ button_press_callback (GtkWidget      *widget,
             }
             else
             {
-                if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_SECONDARY))
+                if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_SECONDARY))
                 {
                     activate_selected_items (view);
                 }
-                else if (event->button == GDK_BUTTON_MIDDLE)
+                else if (button == GDK_BUTTON_MIDDLE)
                 {
                     activate_selected_items_alternate (view, NULL, TRUE);
                 }
@@ -670,14 +713,18 @@ button_press_callback (GtkWidget      *widget,
         }
         else
         {
-            tree_view_class->button_press_event (widget, event);
+            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
         }
     }
     else
     {
+        GdkModifierType state;
         g_autoptr (GtkTreePath) cursor = NULL;
         GList *selected_rows = NULL;
-        if (event->button == GDK_BUTTON_SECONDARY)
+
+        gdk_event_get_state (event, &state);
+
+        if (button == GDK_BUTTON_SECONDARY)
         {
             if (path_selected)
             {
@@ -689,14 +736,14 @@ button_press_callback (GtkWidget      *widget,
                  */
                 call_parent = FALSE;
             }
-            else if ((event->state & GDK_CONTROL_MASK) != 0)
+            else if ((state & GDK_CONTROL_MASK) != 0)
             {
                 /* If CTRL is pressed, we don't allow the parent
                  * class to handle it, since GtkTreeView doesn't
                  * do it as intended currently.
                  */
                 call_parent = FALSE;
-                if ((event->state & GDK_SHIFT_MASK) != 0)
+                if ((state & GDK_SHIFT_MASK) != 0)
                 {
                     /* This is the CTRL+SHIFT selection mode which
                      * we handleourselves, as the parent class would
@@ -737,8 +784,8 @@ button_press_callback (GtkWidget      *widget,
             }
         }
 
-        if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_MIDDLE) &&
-            ((event->state & GDK_CONTROL_MASK) != 0 || (event->state & GDK_SHIFT_MASK) == 0))
+        if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE) &&
+            ((state & GDK_CONTROL_MASK) != 0 || (state & GDK_SHIFT_MASK) == 0))
         {
             view->details->row_selected_on_button_down = path_selected;
 
@@ -747,10 +794,10 @@ button_press_callback (GtkWidget      *widget,
                 call_parent = on_expander;
                 view->details->ignore_button_release = on_expander;
             }
-            else if ((event->state & GDK_CONTROL_MASK) != 0)
+            else if ((state & GDK_CONTROL_MASK) != 0)
             {
                 call_parent = FALSE;
-                if ((event->state & GDK_SHIFT_MASK) != 0)
+                if ((state & GDK_SHIFT_MASK) != 0)
                 {
                     gtk_tree_view_get_cursor (tree_view, &cursor, NULL);
                     if (cursor != NULL)
@@ -787,7 +834,7 @@ button_press_callback (GtkWidget      *widget,
         if (call_parent)
         {
             g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            tree_view_class->button_press_event (widget, event);
+            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
             g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
         }
         else if (path_selected)
@@ -798,15 +845,15 @@ button_press_callback (GtkWidget      *widget,
         if (is_simple_click && !on_expander)
         {
             view->details->drag_started = FALSE;
-            view->details->drag_button = event->button;
-            view->details->drag_x = event->x;
-            view->details->drag_y = event->y;
+            view->details->drag_button = button;
+            view->details->drag_x = x;
+            view->details->drag_y = y;
         }
 
-        if (event->button == GDK_BUTTON_SECONDARY)
+        if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
-                                                               (GdkEvent *) event);
+                                                               event);
         }
     }
 
@@ -814,19 +861,22 @@ button_press_callback (GtkWidget      *widget,
 
     /* We chained to the default handler in this method, so never
      * let the default handler run */
-    return TRUE;
+    return GDK_EVENT_STOP;
 }
 
 static gboolean
-button_release_callback (GtkWidget      *widget,
-                         GdkEventButton *event,
-                         gpointer        callback_data)
+on_released (GtkWidget *widget,
+             GdkEvent  *event,
+             gpointer   callback_data)
 {
     NautilusListView *view;
+    guint button;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
 
-    if (event->button == view->details->drag_button)
+    g_assert (gdk_event_get_button (event, &button));
+
+    if (button == view->details->drag_button)
     {
         view->details->drag_button = 0;
         if (!view->details->drag_started &&
@@ -835,7 +885,41 @@ button_release_callback (GtkWidget      *widget,
             nautilus_list_view_did_not_drag (view, event);
         }
     }
-    return FALSE;
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
+on_event (GtkWidget *widget,
+          GdkEvent  *event,
+          gpointer   user_data)
+{
+    GdkEventType event_type;
+
+    event_type = gdk_event_get_event_type (event);
+
+    if (event_type == GDK_BUTTON_PRESS)
+    {
+        return on_pressed (widget, event, user_data);
+    }
+    else if (event_type == GDK_BUTTON_RELEASE)
+    {
+        return on_released (widget, event, user_data);
+    }
+    else if (event_type == GDK_MOTION_NOTIFY)
+    {
+        return on_motion_notify (widget, event, user_data);
+    }
+    else if (event_type == GDK_ENTER_NOTIFY)
+    {
+        return on_enter_notify (widget, event, user_data);
+    }
+    else if (event_type == GDK_LEAVE_NOTIFY)
+    {
+        return on_leave_notify (widget, event, user_data);
+    }
+
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -1415,10 +1499,12 @@ column_header_menu_use_default (GtkMenuItem      *menu_item,
 }
 
 static gboolean
-column_header_clicked (GtkWidget        *column_button,
-                       GdkEventButton   *event,
-                       NautilusListView *list_view)
+on_column_header_event (GtkWidget *widget,
+                        GdkEvent  *event,
+                        gpointer   user_data)
 {
+    NautilusListView *list_view;
+    guint button;
     NautilusFile *file;
     char **visible_columns;
     char **column_order;
@@ -1429,9 +1515,18 @@ column_header_clicked (GtkWidget        *column_button,
     GtkWidget *menu;
     GtkWidget *menu_item;
 
-    if (event->button != GDK_BUTTON_SECONDARY)
+    list_view = NAUTILUS_LIST_VIEW (user_data);
+
+    if (gdk_event_get_event_type (event) != GDK_BUTTON_PRESS)
     {
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    g_assert (gdk_event_get_button (event, &button));
+
+    if (button != GDK_BUTTON_SECONDARY)
+    {
+        return GDK_EVENT_PROPAGATE;
     }
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
@@ -1512,14 +1607,14 @@ column_header_clicked (GtkWidget        *column_button,
                       list_view);
 
     gtk_widget_show_all (menu);
-    gtk_menu_popup_at_pointer (GTK_MENU (menu), (GdkEvent *) event);
+    gtk_menu_popup_at_pointer (GTK_MENU (menu), event);
 
     g_hash_table_destroy (visible_columns_hash);
     nautilus_column_list_free (all_columns);
     g_strfreev (column_order);
     g_strfreev (visible_columns);
 
-    return TRUE;
+    return GDK_EVENT_STOP;
 }
 
 static void
@@ -2036,16 +2131,8 @@ create_and_set_up_tree_view (NautilusListView *view)
                              "changed",
                              G_CALLBACK (list_selection_changed_callback), view, 0);
 
-    g_signal_connect_object (view->details->tree_view, "motion-notify-event",
-                             G_CALLBACK (motion_notify_callback), view, 0);
-    g_signal_connect_object (view->details->tree_view, "enter-notify-event",
-                             G_CALLBACK (enter_notify_callback), view, 0);
-    g_signal_connect_object (view->details->tree_view, "leave-notify-event",
-                             G_CALLBACK (leave_notify_callback), view, 0);
-    g_signal_connect_object (view->details->tree_view, "button-press-event",
-                             G_CALLBACK (button_press_callback), view, 0);
-    g_signal_connect_object (view->details->tree_view, "button-release-event",
-                             G_CALLBACK (button_release_callback), view, 0);
+    g_signal_connect_object (view->details->tree_view, "event",
+                             G_CALLBACK (on_event), view, 0);
     g_signal_connect_object (view->details->tree_view, "key-press-event",
                              G_CALLBACK (key_press_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "test-expand-row",
@@ -2126,8 +2213,8 @@ create_and_set_up_tree_view (NautilusListView *view)
                                  view->details->file_name_column);
 
             g_signal_connect (gtk_tree_view_column_get_button (view->details->file_name_column),
-                              "button-press-event",
-                              G_CALLBACK (column_header_clicked),
+                              "event",
+                              G_CALLBACK (on_column_header_event),
                               view);
 
             gtk_tree_view_set_search_column (view->details->tree_view, column_num);
@@ -2220,8 +2307,8 @@ create_and_set_up_tree_view (NautilusListView *view)
                                  column);
 
             g_signal_connect (gtk_tree_view_column_get_button (column),
-                              "button-press-event",
-                              G_CALLBACK (column_header_clicked),
+                              "event",
+                              G_CALLBACK (on_column_header_event),
                               view);
 
             gtk_tree_view_column_set_resizable (column, TRUE);

@@ -270,35 +270,41 @@ nautilus_list_view_dnd_init (NautilusListView *list_view)
 
 gboolean
 nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
-                                   GdkEventMotion   *event)
+                                   GdkEvent         *event)
 {
-    if (list_view->details->drag_button != 0)
+    gdouble x;
+    gdouble y;
+
+    if (list_view->details->drag_button == 0)
     {
-        if (!source_target_list)
-        {
-            source_target_list = nautilus_list_model_get_drag_target_list ();
-        }
-
-        if (gtk_drag_check_threshold (GTK_WIDGET (list_view->details->tree_view),
-                                      list_view->details->drag_x,
-                                      list_view->details->drag_y,
-                                      event->x,
-                                      event->y))
-        {
-            guint32 actions;
-
-            actions = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK;
-            list_view->details->drag_source_info->source_actions = actions;
-            gtk_drag_begin_with_coordinates (GTK_WIDGET (list_view->details->tree_view),
-                                             source_target_list,
-                                             actions,
-                                             list_view->details->drag_button,
-                                             (GdkEvent *) event,
-                                             -1,
-                                             -1);
-        }
-        return TRUE;
+        return GDK_EVENT_PROPAGATE;
     }
 
-    return FALSE;
+    if (!source_target_list)
+    {
+        source_target_list = nautilus_list_model_get_drag_target_list ();
+    }
+
+    g_assert (gdk_event_get_coords (event, &x, &y));
+
+    if (gtk_drag_check_threshold (GTK_WIDGET (list_view->details->tree_view),
+                                  list_view->details->drag_x,
+                                  list_view->details->drag_y,
+                                  x,
+                                  y))
+    {
+        guint32 actions;
+
+        actions = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK;
+        list_view->details->drag_source_info->source_actions = actions;
+        gtk_drag_begin_with_coordinates (GTK_WIDGET (list_view->details->tree_view),
+                                         source_target_list,
+                                         actions,
+                                         list_view->details->drag_button,
+                                         event,
+                                         -1,
+                                         -1);
+    }
+
+    return GDK_EVENT_STOP;
 }
