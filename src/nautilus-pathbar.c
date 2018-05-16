@@ -78,6 +78,10 @@ typedef struct
     GtkWidget *disclosure_arrow;
     GtkWidget *container;
 
+    NautilusPathBar *path_bar;
+
+    GtkGesture *multi_press_gesture;
+
     guint ignore_changes : 1;
     guint is_root : 1;
 } ButtonData;
@@ -1485,6 +1489,24 @@ nautilus_path_bar_check_icon_theme (NautilusPathBar *self)
     reload_icons (self);
 }
 
+static void
+button_data_free (ButtonData *button_data)
+{
+    g_object_unref (button_data->path);
+    g_free (button_data->dir_name);
+    if (button_data->file != NULL)
+    {
+        g_signal_handler_disconnect (button_data->file,
+                                     button_data->file_changed_signal_id);
+        nautilus_file_monitor_remove (button_data->file, button_data);
+        nautilus_file_unref (button_data->file);
+    }
+
+    g_clear_object (&button_data->multi_press_gesture);
+
+    g_free (button_data);
+}
+
 /* Public functions and their helpers */
 static void
 nautilus_path_bar_clear_buttons (NautilusPathBar *self)
@@ -1495,7 +1517,13 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 
     while (priv->button_list != NULL)
     {
-        gtk_container_remove (GTK_CONTAINER (self), BUTTON_DATA (priv->button_list->data)->container);
+        ButtonData *button_data;
+
+        button_data = BUTTON_DATA (priv->button_list->data);
+
+        gtk_container_remove (GTK_CONTAINER (self), button_data->container);
+
+        button_data_free (button_data);
     }
     priv->first_scrolled_button = NULL;
 }
@@ -1507,7 +1535,8 @@ button_clicked_cb (GtkWidget *button,
     ButtonData *button_data;
     NautilusPathBarPrivate *priv;
     NautilusPathBar *self;
-    GList *button_list;
+    GdkEvent *event;
+    GdkModifierType state;
 
     button_data = BUTTON_DATA (data);
     if (button_data->ignore_changes)
@@ -1515,77 +1544,66 @@ button_clicked_cb (GtkWidget *button,
         return;
     }
 
-    /* FIXME: This get_parent play is... whatever */
-    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (gtk_widget_get_parent (button)));
+    self = button_data->path_bar;
     priv = nautilus_path_bar_get_instance_private (self);
+    event = gtk_get_current_event ();
 
-    button_list = g_list_find (priv->button_list, button_data);
-    g_assert (button_list != NULL);
+    gdk_event_get_state (event, &state);
 
-    if (g_file_equal (button_data->path, priv->current_path))
+    if ((state & GDK_CONTROL_MASK) != 0)
     {
-        gtk_popover_popup (priv->current_view_menu);
+        g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
+                       button_data->path,
+                       GTK_PLACES_OPEN_NEW_WINDOW);
     }
     else
     {
-        g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0, button_data->path, 0);
+        if (g_file_equal (button_data->path, priv->current_path))
+        {
+            gtk_popover_popup (priv->current_view_menu);
+        }
+        else
+        {
+            g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
+                           button_data->path,
+                           0);
+        }
     }
-
-
 }
 
-static gboolean
-button_event_cb (GtkWidget      *button,
-                 GdkEventButton *event,
-                 gpointer        data)
+static void
+on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
+                                gint                  n_press,
+                                gdouble               x,
+                                gdouble               y,
+                                gpointer              user_data)
 {
-    GtkPlacesOpenFlags flags;
-    ButtonData *button_data;
-    NautilusPathBar *self;
-    int mask;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
+    GdkModifierType state;
 
-    button_data = BUTTON_DATA (data);
-    /* FIXME: This get_parent play is... whatever */
-    self = NAUTILUS_PATH_BAR (gtk_widget_get_parent (gtk_widget_get_parent (button)));
-    mask = event->state & gtk_accelerator_get_default_mod_mask ();
-
-    if (event->type == GDK_BUTTON_PRESS)
+    if (n_press != 1)
     {
-        g_object_set_data (G_OBJECT (button), "handle-button-release", GINT_TO_POINTER (TRUE));
-
-        if (event->button == GDK_BUTTON_MIDDLE && mask == 0)
-        {
-            g_signal_emit (self,
-                           path_bar_signals[OPEN_LOCATION],
-                           0,
-                           button_data->path,
-                           GTK_PLACES_OPEN_NEW_TAB);
-            return GDK_EVENT_STOP;
-        }
-    }
-    else if (event->type == GDK_BUTTON_RELEASE)
-    {
-        flags = 0;
-
-        if (!GPOINTER_TO_UINT (g_object_get_data (G_OBJECT (button), "handle-button-release")))
-        {
-            return GDK_EVENT_PROPAGATE;
-        }
-
-        if (event->button == GDK_BUTTON_PRIMARY && mask == GDK_CONTROL_MASK)
-        {
-            flags = GTK_PLACES_OPEN_NEW_WINDOW;
-        }
-
-        if (flags != 0)
-        {
-            g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0, button_data->path, flags);
-        }
-
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
-    return GDK_EVENT_PROPAGATE;
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+
+    gdk_event_get_state (event, &state);
+
+    state &= gtk_accelerator_get_default_mod_mask ();
+
+    if (state == 0)
+    {
+        ButtonData *button_data;
+
+        button_data = BUTTON_DATA (user_data);
+
+        g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
+                       button_data->path,
+                       GTK_PLACES_OPEN_NEW_TAB);
+    }
 }
 
 static GIcon *
@@ -1646,22 +1664,6 @@ get_gicon (ButtonData *button_data)
     }
 
     return NULL;
-}
-
-static void
-button_data_free (ButtonData *button_data)
-{
-    g_object_unref (button_data->path);
-    g_free (button_data->dir_name);
-    if (button_data->file != NULL)
-    {
-        g_signal_handler_disconnect (button_data->file,
-                                     button_data->file_changed_signal_id);
-        nautilus_file_monitor_remove (button_data->file, button_data);
-        nautilus_file_unref (button_data->file);
-    }
-
-    g_free (button_data);
 }
 
 static void
@@ -1879,8 +1881,13 @@ button_data_file_changed (NautilusFile *file,
             {
                 for (idx = 0; idx <= position; idx++)
                 {
-                    gtk_container_remove (GTK_CONTAINER (self),
-                                          BUTTON_DATA (priv->button_list->data)->container);
+                    ButtonData *data;
+
+                    data = BUTTON_DATA (priv->button_list->data);
+
+                    gtk_container_remove (GTK_CONTAINER (self), data->container);
+
+                    button_data_free (data);
                 }
             }
         }
@@ -2029,10 +2036,18 @@ make_button_data (NautilusPathBar *self,
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
+    button_data->path_bar = self;
+
     g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
-    g_signal_connect (button_data->button, "button-press-event", G_CALLBACK (button_event_cb), button_data);
-    g_signal_connect (button_data->button, "button-release-event", G_CALLBACK (button_event_cb), button_data);
-    g_object_weak_ref (G_OBJECT (button_data->button), (GWeakNotify) button_data_free, button_data);
+
+    /* A gesture is needed here, because GtkButton doesn’t react to middle-clicking.
+     */
+    button_data->multi_press_gesture = gtk_gesture_multi_press_new (button_data->button);
+
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), GDK_BUTTON_MIDDLE);
+
+    g_signal_connect (button_data->multi_press_gesture, "pressed",
+                      G_CALLBACK (on_multi_press_gesture_pressed), button_data);
 
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
 
