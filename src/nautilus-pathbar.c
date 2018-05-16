@@ -109,21 +109,21 @@ typedef struct
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusPathBar, nautilus_path_bar,
                             GTK_TYPE_CONTAINER);
 
-static void     nautilus_path_bar_scroll_up (NautilusPathBar *self);
-static void     nautilus_path_bar_scroll_down (NautilusPathBar *self);
-static void     nautilus_path_bar_stop_scrolling (NautilusPathBar *self);
-static gboolean nautilus_path_bar_slider_button_press (GtkWidget       *widget,
-                                                       GdkEventButton  *event,
-                                                       NautilusPathBar *self);
-static gboolean nautilus_path_bar_slider_button_release (GtkWidget       *widget,
-                                                         GdkEventButton  *event,
-                                                         NautilusPathBar *self);
-static void     nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
-static void     nautilus_path_bar_update_button_appearance (ButtonData *button_data);
-static void     nautilus_path_bar_update_button_state (ButtonData *button_data,
-                                                       gboolean    current_dir);
-static void     nautilus_path_bar_update_path (NautilusPathBar *self,
-                                               GFile           *file_path);
+static void nautilus_path_bar_scroll_up (NautilusPathBar *self);
+static void nautilus_path_bar_scroll_down (NautilusPathBar *self);
+static void nautilus_path_bar_stop_scrolling (NautilusPathBar *self);
+static void on_long_press_gesture_pressed (GtkGestureLongPress *gesture,
+                                           gdouble              x,
+                                           gdouble              y,
+                                           gpointer             user_data);
+static void on_long_press_gesture_cancelled (GtkGestureLongPress *gesture,
+                                             gpointer             user_data);
+static void nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
+static void nautilus_path_bar_update_button_appearance (ButtonData *button_data);
+static void nautilus_path_bar_update_button_state (ButtonData *button_data,
+                                                   gboolean    current_dir);
+static void nautilus_path_bar_update_path (NautilusPathBar *self,
+                                           GFile           *file_path);
 
 static GtkWidget *
 get_slider_button (NautilusPathBar *self,
@@ -227,6 +227,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
 {
     NautilusPathBarPrivate *priv;
     GtkBuilder *builder;
+    GtkGesture *gesture;
 
     priv = nautilus_path_bar_get_instance_private (self);
 
@@ -248,10 +249,19 @@ nautilus_path_bar_init (NautilusPathBar *self)
     g_signal_connect_swapped (priv->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), self);
     g_signal_connect_swapped (priv->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), self);
 
-    g_signal_connect (priv->up_slider_button, "button-press-event", G_CALLBACK (nautilus_path_bar_slider_button_press), self);
-    g_signal_connect (priv->up_slider_button, "button-release-event", G_CALLBACK (nautilus_path_bar_slider_button_release), self);
-    g_signal_connect (priv->down_slider_button, "button-press-event", G_CALLBACK (nautilus_path_bar_slider_button_press), self);
-    g_signal_connect (priv->down_slider_button, "button-release-event", G_CALLBACK (nautilus_path_bar_slider_button_release), self);
+    gesture = gtk_gesture_long_press_new (priv->up_slider_button);
+
+    g_signal_connect (gesture, "pressed",
+                      G_CALLBACK (on_long_press_gesture_pressed), self);
+    g_signal_connect (gesture, "cancelled",
+                      G_CALLBACK (on_long_press_gesture_cancelled), self);
+
+    gesture = gtk_gesture_long_press_new (priv->down_slider_button);
+
+    g_signal_connect (gesture, "pressed",
+                      G_CALLBACK (on_long_press_gesture_pressed), self);
+    g_signal_connect (gesture, "cancelled",
+                      G_CALLBACK (on_long_press_gesture_cancelled), self);
 
     gtk_drag_dest_set (GTK_WIDGET (priv->up_slider_button),
                        0, NULL, 0, 0);
@@ -1350,23 +1360,23 @@ nautilus_path_bar_stop_scrolling (NautilusPathBar *self)
     }
 }
 
-static gboolean
-nautilus_path_bar_slider_button_press (GtkWidget       *widget,
-                                       GdkEventButton  *event,
-                                       NautilusPathBar *self)
+static void
+on_long_press_gesture_pressed (GtkGestureLongPress *gesture,
+                               gdouble              x,
+                               gdouble              y,
+                               gpointer             user_data)
 {
+    NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
+    GtkWidget *widget;
 
+    self = NAUTILUS_PATH_BAR (user_data);
     priv = nautilus_path_bar_get_instance_private (self);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
 
     if (!gtk_widget_has_focus (widget))
     {
         gtk_widget_grab_focus (widget);
-    }
-
-    if (event->type != GDK_BUTTON_PRESS || event->button != GDK_BUTTON_PRIMARY)
-    {
-        return FALSE;
     }
 
     priv->ignore_click = FALSE;
@@ -1391,28 +1401,20 @@ nautilus_path_bar_slider_button_press (GtkWidget       *widget,
                            (GSourceFunc) nautilus_path_bar_scroll_timeout,
                            self);
     }
-
-    return FALSE;
 }
 
-static gboolean
-nautilus_path_bar_slider_button_release (GtkWidget       *widget,
-                                         GdkEventButton  *event,
-                                         NautilusPathBar *self)
+static void
+on_long_press_gesture_cancelled (GtkGestureLongPress *gesture,
+                                 gpointer             user_data)
 {
+    NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
 
+    self = NAUTILUS_PATH_BAR (user_data);
     priv = nautilus_path_bar_get_instance_private (self);
-
-    if (event->type != GDK_BUTTON_RELEASE)
-    {
-        return FALSE;
-    }
 
     priv->ignore_click = TRUE;
     nautilus_path_bar_stop_scrolling (self);
-
-    return FALSE;
 }
 
 
