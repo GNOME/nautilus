@@ -141,6 +141,8 @@ typedef struct
     GQueue *tab_data_queue;
 
     GtkPadController *pad_controller;
+
+    GtkGesture *notebook_multi_press_gesture;
 } NautilusWindowPrivate;
 
 enum
@@ -1954,7 +1956,7 @@ notebook_popup_menu_close_cb (GtkMenuItem *menuitem,
 
 static void
 notebook_popup_menu_show (NautilusWindow *window,
-                          GdkEventButton *event)
+                          const GdkEvent *event)
 {
     NautilusWindowPrivate *priv;
     GtkWidget *popup;
@@ -2007,8 +2009,7 @@ notebook_popup_menu_show (NautilusWindow *window,
 
     gtk_widget_show_all (popup);
 
-    gtk_menu_popup_at_pointer (GTK_MENU (popup),
-                               (GdkEvent *) event);
+    gtk_menu_popup_at_pointer (GTK_MENU (popup), event);
 }
 
 /* emitted when the user clicks the "close" button of tabs */
@@ -2020,20 +2021,22 @@ notebook_tab_close_requested (NautilusNotebook   *notebook,
     nautilus_window_slot_close (window, slot);
 }
 
-static gboolean
-notebook_button_press_cb (GtkWidget      *widget,
-                          GdkEventButton *event,
-                          gpointer        user_data)
+static void
+notebook_button_press_cb (GtkGestureMultiPress *gesture,
+                          gint                  n_press,
+                          gdouble               x,
+                          gdouble               y,
+                          gpointer              user_data)
 {
-    NautilusWindow *window = user_data;
+    NautilusWindow *window;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
 
-    if (GDK_BUTTON_PRESS == event->type && event->button == GDK_BUTTON_SECONDARY)
-    {
-        notebook_popup_menu_show (window, event);
-        return TRUE;
-    }
+    window = NAUTILUS_WINDOW (user_data);
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    return FALSE;
+    notebook_popup_menu_show (window, event);
 }
 
 static gboolean
@@ -2205,9 +2208,10 @@ setup_notebook (NautilusWindow *window)
     g_signal_connect (priv->notebook, "page-removed",
                       G_CALLBACK (notebook_page_removed_cb),
                       window);
-    g_signal_connect_after (priv->notebook, "button-press-event",
-                            G_CALLBACK (notebook_button_press_cb),
-                            window);
+
+    g_signal_connect (priv->notebook_multi_press_gesture, "pressed",
+                      G_CALLBACK (notebook_button_press_cb),
+                      window);
 }
 
 const GActionEntry win_entries[] =
@@ -2425,6 +2429,20 @@ nautilus_window_destroy (GtkWidget *object)
     }
 
     GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
+}
+
+static void
+nautilus_window_dispose (GObject *object)
+{
+    NautilusWindow *window;
+    NautilusWindowPrivate *priv;
+
+    window = NAUTILUS_WINDOW (object);
+    priv = nautilus_window_get_instance_private (window);
+
+    g_clear_object (&priv->notebook_multi_press_gesture);
+
+    G_OBJECT_CLASS (nautilus_window_parent_class)->dispose (object);
 }
 
 static void
@@ -2823,6 +2841,13 @@ nautilus_window_init (NautilusWindow *window)
                                                    NULL);
     gtk_pad_controller_set_action_entries (priv->pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
+
+    priv->notebook_multi_press_gesture = gtk_gesture_multi_press_new (priv->notebook);
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (priv->notebook_multi_press_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (priv->notebook_multi_press_gesture),
+                                   GDK_BUTTON_SECONDARY);
 }
 
 static void
@@ -2842,6 +2867,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     GObjectClass *oclass = G_OBJECT_CLASS (class);
     GtkWidgetClass *wclass = GTK_WIDGET_CLASS (class);
 
+    oclass->dispose = nautilus_window_dispose;
     oclass->finalize = nautilus_window_finalize;
     oclass->constructed = nautilus_window_constructed;
 
