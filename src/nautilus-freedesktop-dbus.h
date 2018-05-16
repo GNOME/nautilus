@@ -45,3 +45,5 @@ GType nautilus_freedesktop_dbus_get_type (void);
 NautilusFreedesktopDBus * nautilus_freedesktop_dbus_new (void);
 
 void nautilus_freedesktop_dbus_set_open_locations (NautilusFreedesktopDBus *fdb, const gchar **locations);
+
+void nautilus_freedesktop_dbus_set_open_windows_with_locations (NautilusFreedesktopDBus *fdb, GVariant *locations);

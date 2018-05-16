@@ -43,6 +43,7 @@ struct _NautilusFreedesktopDBus
     NautilusFreedesktopFileManager1 *skeleton;
 
     GStrv pending_open_locations;
+    GVariant *pending_open_windows_with_locations;
 
     gboolean name_lost;
 };
@@ -173,6 +174,13 @@ bus_acquired_cb (GDBusConnection *conn,
 
         nautilus_freedesktop_dbus_set_open_locations (fdb, (const gchar **) locations);
     }
+
+    if (G_UNLIKELY (fdb->pending_open_windows_with_locations != NULL))
+    {
+        g_autoptr (GVariant) locations = fdb->pending_open_windows_with_locations;
+
+        nautilus_freedesktop_dbus_set_open_windows_with_locations (fdb, locations);
+    }
 }
 
 static void
@@ -226,6 +234,11 @@ nautilus_freedesktop_dbus_finalize (GObject *object)
     fdb = NAUTILUS_FREEDESKTOP_DBUS (object);
 
     g_clear_pointer (&fdb->pending_open_locations, g_strfreev);
+    if (fdb->pending_open_windows_with_locations)
+    {
+        g_variant_unref (fdb->pending_open_windows_with_locations);
+        fdb->pending_open_windows_with_locations = NULL;
+    }
 }
 
 static void
@@ -250,6 +263,7 @@ nautilus_freedesktop_dbus_init (NautilusFreedesktopDBus *fdb)
                                     NULL);
     fdb->skeleton = NULL;
     fdb->pending_open_locations = NULL;
+    fdb->pending_open_windows_with_locations = NULL;
     fdb->name_lost = FALSE;
 }
 
@@ -273,6 +287,34 @@ nautilus_freedesktop_dbus_set_open_locations (NautilusFreedesktopDBus  *fdb,
     else
     {
         nautilus_freedesktop_file_manager1_set_open_locations (fdb->skeleton, locations);
+    }
+}
+
+void
+nautilus_freedesktop_dbus_set_open_windows_with_locations (NautilusFreedesktopDBus  *fdb,
+                                                           GVariant                 *locations)
+{
+    g_return_if_fail (NAUTILUS_IS_FREEDESKTOP_DBUS (fdb));
+
+    if (G_UNLIKELY (fdb->skeleton == NULL))
+    {
+        if (G_LIKELY (fdb->name_lost))
+        {
+            return;
+        }
+
+        if (fdb->pending_open_windows_with_locations)
+        {
+            g_variant_unref (fdb->pending_open_windows_with_locations);
+            fdb->pending_open_windows_with_locations = NULL;
+        }
+
+        fdb->pending_open_windows_with_locations = g_variant_ref_sink (locations);
+    }
+    else
+    {
+        nautilus_freedesktop_file_manager1_set_open_windows_with_locations (fdb->skeleton,
+                                                                            locations);
     }
 }
 

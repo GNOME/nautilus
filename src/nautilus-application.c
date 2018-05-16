@@ -1401,6 +1401,10 @@ update_dbus_opened_locations (NautilusApplication *self)
     NautilusWindow *window;
     GFile *location;
 
+    GVariantBuilder b;
+    GVariantBuilder wb;
+    const gchar *dbus_object_path = NULL;
+
     g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
     priv = nautilus_application_get_instance_private (self);
@@ -1412,9 +1416,19 @@ update_dbus_opened_locations (NautilusApplication *self)
         return;
     }
 
+    dbus_object_path = g_application_get_dbus_object_path (G_APPLICATION (self));
+
+    g_return_if_fail (dbus_object_path);
+
+    g_variant_builder_init (&b, G_VARIANT_TYPE ("a{sas}"));
+
     for (l = priv->windows; l != NULL; l = l->next)
     {
+        guint32 id;
+        gchar *path;
         window = l->data;
+
+        g_variant_builder_init (&wb, G_VARIANT_TYPE ("as"));
 
         for (sl = nautilus_window_get_slots (window); sl; sl = sl->next)
         {
@@ -1425,6 +1439,8 @@ update_dbus_opened_locations (NautilusApplication *self)
             {
                 gchar *uri = g_file_get_uri (location);
                 GList *found = g_list_find_custom (locations, uri, (GCompareFunc) g_strcmp0);
+
+                g_variant_builder_add (&wb, "s", uri);
 
                 if (!found)
                 {
@@ -1437,6 +1453,13 @@ update_dbus_opened_locations (NautilusApplication *self)
                 }
             }
         }
+
+        id = gtk_application_window_get_id (GTK_APPLICATION_WINDOW (window));
+        path = g_strdup_printf ("%s/window/%u", dbus_object_path, id);
+        g_variant_builder_add (&b, "{sas}", path, &wb);
+        g_free (path);
+
+        g_variant_builder_clear (&wb);
     }
 
     locations_array = g_new (gchar *, locations_size + 1);
@@ -1451,6 +1474,8 @@ update_dbus_opened_locations (NautilusApplication *self)
 
     nautilus_freedesktop_dbus_set_open_locations (priv->fdb_manager,
                                                   (const gchar **) locations_array);
+    nautilus_freedesktop_dbus_set_open_windows_with_locations (priv->fdb_manager,
+                                                               g_variant_builder_end (&b));
 
     g_free (locations_array);
     g_list_free_full (locations, g_free);
