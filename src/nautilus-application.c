@@ -1400,6 +1400,10 @@ update_dbus_opened_locations (NautilusApplication *self)
     gchar **locations_array;
     NautilusWindow *window;
     GFile *location;
+    const gchar *dbus_object_path = NULL;
+
+    g_autoptr (GVariant) windows_to_locations;
+    GVariantBuilder windows_to_locations_builder;
 
     g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
@@ -1412,9 +1416,21 @@ update_dbus_opened_locations (NautilusApplication *self)
         return;
     }
 
+    dbus_object_path = g_application_get_dbus_object_path (G_APPLICATION (self));
+
+    g_return_if_fail (dbus_object_path);
+
+    g_variant_builder_init (&windows_to_locations_builder, G_VARIANT_TYPE ("a{sas}"));
+
     for (l = priv->windows; l != NULL; l = l->next)
     {
+        guint32 id;
+        g_autofree gchar *path = NULL;
+        GVariantBuilder locations_in_window_builder;
+
         window = l->data;
+
+        g_variant_builder_init (&locations_in_window_builder, G_VARIANT_TYPE ("as"));
 
         for (sl = nautilus_window_get_slots (window); sl; sl = sl->next)
         {
@@ -1425,6 +1441,8 @@ update_dbus_opened_locations (NautilusApplication *self)
             {
                 gchar *uri = g_file_get_uri (location);
                 GList *found = g_list_find_custom (locations, uri, (GCompareFunc) g_strcmp0);
+
+                g_variant_builder_add (&locations_in_window_builder, "s", uri);
 
                 if (!found)
                 {
@@ -1437,6 +1455,11 @@ update_dbus_opened_locations (NautilusApplication *self)
                 }
             }
         }
+
+        id = gtk_application_window_get_id (GTK_APPLICATION_WINDOW (window));
+        path = g_strdup_printf ("%s/window/%u", dbus_object_path, id);
+        g_variant_builder_add (&windows_to_locations_builder, "{sas}", path, &locations_in_window_builder);
+        g_variant_builder_clear (&locations_in_window_builder);
     }
 
     locations_array = g_new (gchar *, locations_size + 1);
@@ -1451,6 +1474,10 @@ update_dbus_opened_locations (NautilusApplication *self)
 
     nautilus_freedesktop_dbus_set_open_locations (priv->fdb_manager,
                                                   (const gchar **) locations_array);
+
+    windows_to_locations = g_variant_ref_sink (g_variant_builder_end (&windows_to_locations_builder));
+    nautilus_freedesktop_dbus_set_open_windows_with_locations (priv->fdb_manager,
+                                                               windows_to_locations);
 
     g_free (locations_array);
     g_list_free_full (locations, g_free);
