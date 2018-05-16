@@ -31,5 +31,13 @@
       <arg type='s' name='StartupId' direction='in'/>
     </method>
     <property name="OpenLocations" type="as" access="read"/>
+    <!--
+      An extension to the official FileManager1 interface that allows Nautilus
+      to publish a mapping of windows to the locations in each window.
+      This can be used by shell extensions like dash-to-dock/ubuntu-dock to
+      associate special dock icons with windows where the icon's location is
+      open.
+      -->
+    <property name="OpenWindowsWithLocations" type="a{sas}" access="read"/>
   </interface>
 </node>
