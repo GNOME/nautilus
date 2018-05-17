@@ -92,9 +92,11 @@ struct _NautilusToolbar
 
     GtkWidget *forward_button;
     GtkGesture *forward_button_longpress_gesture;
+    GtkGesture *forward_button_multi_press_gesture;
 
     GtkWidget *back_button;
     GtkGesture *back_button_longpress_gesture;
+    GtkGesture *back_button_multi_press_gesture;
 
     GtkWidget *location_entry_close_button;
 
@@ -245,24 +247,24 @@ show_menu (NautilusToolbar *self,
                               event);
 }
 
-static gboolean
-navigation_button_press_cb (GtkButton *button,
-                            GdkEvent  *event,
-                            gpointer   user_data)
+static void
+navigation_button_press_cb (GtkGestureMultiPress *gesture,
+                            gint                  n_press,
+                            gdouble               x,
+                            gdouble               y,
+                            gpointer              user_data)
 {
-    NautilusToolbar *self = user_data;
-    GdkEventButton *button_event;
+    NautilusToolbar *self;
+    GtkWidget *widget;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
 
-    button_event = (GdkEventButton *) event;
+    self = NAUTILUS_TOOLBAR (user_data);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    if (button_event->button == GDK_BUTTON_SECONDARY)
-    {
-        /* right click */
-        show_menu (self, GTK_WIDGET (button), event);
-        return TRUE;
-    }
-
-    return FALSE;
+    show_menu (self, widget, event);
 }
 
 static void
@@ -928,10 +930,20 @@ nautilus_toolbar_init (NautilusToolbar *self)
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
     g_object_set_data (G_OBJECT (self->forward_button), "nav-direction",
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
-    g_signal_connect (self->back_button, "button-press-event",
+
+
+    self->back_button_multi_press_gesture = gtk_gesture_multi_press_new (self->back_button);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->back_button_multi_press_gesture),
+                                   GDK_BUTTON_SECONDARY);
+    g_signal_connect (self->back_button_multi_press_gesture, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
-    g_signal_connect (self->forward_button, "button-press-event",
+
+    self->forward_button_multi_press_gesture = gtk_gesture_multi_press_new (self->forward_button);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->forward_button_multi_press_gesture),
+                                   GDK_BUTTON_SECONDARY);
+    g_signal_connect (self->forward_button_multi_press_gesture, "pressed",
                       G_CALLBACK (navigation_button_press_cb), self);
+
     g_signal_connect (self->operations_popover, "show",
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
@@ -1098,6 +1110,19 @@ nautilus_toolbar_set_property (GObject      *object,
 }
 
 static void
+nautilus_toolbar_dispose (GObject *object)
+{
+    NautilusToolbar *self;
+
+    self = NAUTILUS_TOOLBAR (object);
+
+    g_clear_object (&self->forward_button_multi_press_gesture);
+    g_clear_object (&self->back_button_multi_press_gesture);
+
+    G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
+}
+
+static void
 nautilus_toolbar_finalize (GObject *obj)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (obj);
@@ -1141,6 +1166,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass = G_OBJECT_CLASS (klass);
     oclass->get_property = nautilus_toolbar_get_property;
     oclass->set_property = nautilus_toolbar_set_property;
+    oclass->dispose = nautilus_toolbar_dispose;
     oclass->finalize = nautilus_toolbar_finalize;
 
     properties[PROP_WINDOW] =
