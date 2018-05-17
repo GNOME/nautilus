@@ -222,6 +222,14 @@ nautilus_notebook_contains_slot (NautilusNotebook   *notebook,
     return found;
 }
 
+gboolean
+nautilus_notebook_content_area_hit (NautilusNotebook *notebook,
+                                    gint              x,
+                                    gint              y)
+{
+    return find_tab_num_at_pos (notebook, x, y) == -1;
+}
+
 void
 nautilus_notebook_sync_loading (NautilusNotebook   *notebook,
                                 NautilusWindowSlot *slot)
