@@ -2029,10 +2029,18 @@ notebook_button_press_cb (GtkGestureMultiPress *gesture,
                           gpointer              user_data)
 {
     NautilusWindow *window;
+    NautilusWindowPrivate *priv;
     GdkEventSequence *sequence;
     const GdkEvent *event;
 
     window = NAUTILUS_WINDOW (user_data);
+    priv = nautilus_window_get_instance_private (window);
+
+    if (nautilus_notebook_content_area_hit (NAUTILUS_TOOLBAR (priv->notebook), x, y))
+    {
+        return;
+    }
+
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
