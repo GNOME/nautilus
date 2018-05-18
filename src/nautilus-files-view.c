@@ -4029,6 +4029,56 @@ on_end_file_changes (NautilusFilesView *view)
     }
 }
 
+static int
+compare_pointers (gconstpointer pointer_1,
+                  gconstpointer pointer_2)
+{
+    if (pointer_1 < pointer_2)
+    {
+        return -1;
+    }
+    else if (pointer_1 > pointer_2)
+    {
+        return +1;
+    }
+
+    return 0;
+}
+
+static gboolean
+_g_lists_sort_and_check_for_intersection (GList **list_1,
+                                          GList **list_2)
+{
+    GList *node_1;
+    GList *node_2;
+    int compare_result;
+
+    *list_1 = g_list_sort (*list_1, compare_pointers);
+    *list_2 = g_list_sort (*list_2, compare_pointers);
+
+    node_1 = *list_1;
+    node_2 = *list_2;
+
+    while (node_1 != NULL && node_2 != NULL)
+    {
+        compare_result = compare_pointers (node_1->data, node_2->data);
+        if (compare_result == 0)
+        {
+            return TRUE;
+        }
+        if (compare_result <= 0)
+        {
+            node_1 = node_1->next;
+        }
+        if (compare_result >= 0)
+        {
+            node_2 = node_2->next;
+        }
+    }
+
+    return FALSE;
+}
+
 static void
 process_old_files (NautilusFilesView *view)
 {
@@ -4099,7 +4149,7 @@ process_old_files (NautilusFilesView *view)
             g_autolist (NautilusFile) selection = NULL;
             selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
             files = file_and_directory_list_to_files (files_changed);
-            send_selection_change = eel_g_lists_sort_and_check_for_intersection
+            send_selection_change = _g_lists_sort_and_check_for_intersection
                                         (&files, &selection);
             nautilus_file_list_free (files);
         }
