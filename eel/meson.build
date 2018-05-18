@@ -8,7 +8,6 @@ libeel_2_sources = [
   'eel-debug.h',
   'eel-debug.c',
   'eel-glib-extensions.h',
-  'eel-glib-extensions.c',
   'eel-graphic-effects.h',
   'eel-graphic-effects.c',
   'eel-gtk-extensions.h',
