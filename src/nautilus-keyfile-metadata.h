@@ -24,7 +24,7 @@
 
 #include <glib.h>
 
-#include "nautilus-file.h"
+#include "nautilus-types.h"
 
 void nautilus_keyfile_metadata_set_string (NautilusFile *file,
                                            const char *keyfile_filename,

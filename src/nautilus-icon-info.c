@@ -15,10 +15,9 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include <string.h>
 #include "nautilus-icon-info.h"
-#include <gtk/gtk.h>
-#include <gio/gio.h>
+
+#include "nautilus-enums.h"
 
 struct _NautilusIconInfo
 {

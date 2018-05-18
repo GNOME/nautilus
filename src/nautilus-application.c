@@ -24,47 +24,47 @@
  *
  */
 
-#include <config.h>
-
 #include "nautilus-application.h"
 
-#include "nautilus-dbus-manager.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-freedesktop-dbus.h"
-#include "nautilus-previewer.h"
-#include "nautilus-progress-persistence-handler.h"
-#include "nautilus-self-check-functions.h"
-#include "nautilus-shell-search-provider.h"
-#include "nautilus-window.h"
-#include "nautilus-window-slot.h"
-#include "nautilus-preferences-window.h"
-#include "nautilus-tag-manager.h"
-
-#include "nautilus-directory-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-module.h"
-#include "nautilus-profile.h"
-#include "nautilus-signaller.h"
-#include "nautilus-ui-utilities.h"
-
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-stock-dialogs.h>
+#include <fcntl.h>
+#include <gdk/gdkx.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+#include <gtk/gtk.h>
 #include <nautilus-extension.h>
+#include <sys/stat.h>
+#include <sys/types.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_APPLICATION
 #include "nautilus-debug.h"
 
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
-#include <glib/gstdio.h>
-#include <glib/gi18n.h>
-#include <gio/gio.h>
-#include <eel/eel-gtk-extensions.h>
-#include <eel/eel-stock-dialogs.h>
-#include <gdk/gdkx.h>
-#include <gtk/gtk.h>
+#include "nautilus-bookmark-list.h"
+#include "nautilus-dbus-manager.h"
+#include "nautilus-directory-private.h"
+#include "nautilus-file.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-freedesktop-dbus.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-module.h"
+#include "nautilus-preferences-window.h"
+#include "nautilus-previewer.h"
+#include "nautilus-profile.h"
+#include "nautilus-progress-persistence-handler.h"
+#include "nautilus-self-check-functions.h"
+#include "nautilus-shell-search-provider.h"
+#include "nautilus-signaller.h"
+#include "nautilus-tag-manager.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-view.h"
+#include "nautilus-window-slot.h"
+#include "nautilus-window.h"
 
 typedef struct
 {

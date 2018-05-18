@@ -165,7 +165,6 @@ libnautilus_sources = [
   'nautilus-directory.h',
   'nautilus-dnd.c',
   'nautilus-dnd.h',
-  'nautilus-file-attributes.h',
   'nautilus-file-changes-queue.c',
   'nautilus-file-changes-queue.h',
   'nautilus-file-conflict-dialog.c',
@@ -261,7 +260,9 @@ libnautilus_sources = [
   'nautilus-tag-manager.c',
   'nautilus-tag-manager.h',
   'nautilus-starred-directory.c',
-  'nautilus-starred-directory.h'
+  'nautilus-starred-directory.h',
+  'nautilus-enums.h',
+  'nautilus-types.h'
 ]
 
 nautilus_deps = [
@@ -281,6 +282,9 @@ nautilus_deps = [
 libnautilus = static_library(
   'nautilus',
   libnautilus_sources,
+  c_args: [
+    '-DNAUTILUS_COMPILATION'
+  ],
   dependencies: nautilus_deps,
   include_directories: nautilus_include_dirs
 )

@@ -23,7 +23,8 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include "nautilus-file-attributes.h"
+
+#include "nautilus-enums.h"
 
 /* NautilusDirectory is a class that manages the model for a directory,
    real or virtual, for Nautilus, mainly the file-manager component. The directory is
@@ -57,13 +58,14 @@
 typedef struct NautilusFile NautilusFile;
 #endif
 
-typedef struct NautilusDirectoryDetails NautilusDirectoryDetails;
+typedef struct _NautilusDirectory        NautilusDirectory;
+typedef struct  NautilusDirectoryDetails NautilusDirectoryDetails;
 
-typedef struct
+struct _NautilusDirectory
 {
 	GObject object;
 	NautilusDirectoryDetails *details;
-} NautilusDirectory;
+};
 
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,
 					   GList             *files,
