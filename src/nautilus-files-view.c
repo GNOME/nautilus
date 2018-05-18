@@ -64,6 +64,7 @@
 #include "nautilus-file-private.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
 #include "nautilus-floating-bar.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
@@ -1194,6 +1195,7 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
     NautilusFilesViewPrivate *priv;
     GList *files_to_extract;
     GList *files_to_activate;
+    char *path;
 
     if (files == NULL)
     {
@@ -1225,12 +1227,15 @@ nautilus_files_view_activate_files (NautilusFilesView       *view,
         extract_files_to_chosen_location (view, files_to_extract);
     }
 
+    path = get_view_directory (view);
     nautilus_mime_activate_files (nautilus_files_view_get_containing_window (view),
                                   priv->slot,
                                   files_to_activate,
+                                  path,
                                   flags,
                                   confirm_multiple);
 
+    g_free (path);
     g_list_free (files_to_extract);
     g_list_free (files_to_activate);
 }
@@ -7716,6 +7721,7 @@ update_selection_menu (NautilusFilesView *view)
     GList *l;
     gint selection_count;
     gboolean show_app;
+    gboolean show_run;
     gboolean show_extract;
     gboolean item_opens_in_view;
     gchar *item_label;
@@ -7756,7 +7762,7 @@ update_selection_menu (NautilusFilesView *view)
     g_free (item_label);
 
     /* Open With <App> menu item */
-    show_extract = show_app = item_opens_in_view = selection_count != 0;
+    show_extract = show_app = show_run = item_opens_in_view = selection_count != 0;
     for (l = selection; l != NULL; l = l->next)
     {
         NautilusFile *file;
@@ -7773,12 +7779,17 @@ update_selection_menu (NautilusFilesView *view)
             show_app = FALSE;
         }
 
+        if (!nautilus_mime_file_launches (file))
+        {
+            show_run = FALSE;
+        }
+
         if (!nautilus_file_opens_in_view (file))
         {
             item_opens_in_view = FALSE;
         }
 
-        if (!show_extract && !show_app && !item_opens_in_view)
+        if (!show_extract && !show_app && !show_run && !item_opens_in_view)
         {
             break;
         }
@@ -7806,6 +7817,10 @@ update_selection_menu (NautilusFilesView *view)
         }
         g_free (escaped_app);
         g_object_unref (app);
+    }
+    else if (show_run)
+    {
+        item_label = g_strdup (_("Run"));
     }
     else if (show_extract)
     {
@@ -8766,10 +8781,20 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
     NautilusFile *target_file;
 
     target_file = nautilus_file_get_existing_by_uri (target_uri);
-    if (copy_action == GDK_ACTION_COPY &&
-        nautilus_is_file_roller_installed () &&
-        target_file != NULL &&
-        nautilus_file_is_archive (target_file))
+    /* special-case "command:" here instead of starting a move/copy */
+    if (target_file != NULL && nautilus_file_is_launcher (target_file))
+    {
+        nautilus_file_unref (target_file);
+        nautilus_launch_desktop_file (
+            gtk_widget_get_screen (GTK_WIDGET (view)),
+            target_uri, item_uris,
+            nautilus_files_view_get_containing_window (view));
+        return;
+    }
+    else if (copy_action == GDK_ACTION_COPY &&
+             nautilus_is_file_roller_installed () &&
+             target_file != NULL &&
+             nautilus_file_is_archive (target_file))
     {
         char *command, *quoted_uri, *tmp;
         const GList *l;

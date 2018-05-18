@@ -4492,6 +4492,12 @@ nautilus_file_monitor_remove (NautilusFile  *file,
 }
 
 gboolean
+nautilus_file_is_launcher (NautilusFile *file)
+{
+    return file->details->is_launcher;
+}
+
+gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)
 {
     return file->details->activation_uri != NULL;
@@ -8162,6 +8168,28 @@ nautilus_file_get_file_info_error (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_contains_text
+ *
+ * Check if this file contains text.
+ * This is private and is used to decide whether or not to read the top left text.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file has a text MIME type.
+ *
+ **/
+gboolean
+nautilus_file_contains_text (NautilusFile *file)
+{
+    if (file == NULL)
+    {
+        return FALSE;
+    }
+
+    /* All text files inherit from text/plain */
+    return nautilus_file_is_mime_type (file, "text/plain");
+}
+
+/**
  * nautilus_file_is_executable
  *
  * Check if this file is executable at all.
@@ -9270,6 +9298,12 @@ nautilus_drag_can_accept_files (NautilusFile *drop_target_item)
               nautilus_file_can_write (drop_target_item);
         nautilus_directory_unref (directory);
         return res;
+    }
+
+    /* Launchers are an acceptable drop target */
+    if (nautilus_file_is_launcher (drop_target_item))
+    {
+        return TRUE;
     }
 
     if (nautilus_is_file_roller_installed () &&
