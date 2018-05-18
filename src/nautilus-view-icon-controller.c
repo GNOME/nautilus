@@ -16,11 +16,12 @@ struct _NautilusViewIconController
 
     NautilusViewIconUi *view_ui;
     NautilusViewModel *model;
-    GtkEventBox *event_box;
 
     GIcon *view_icon;
     GActionGroup *action_group;
     gint zoom_level;
+
+    GtkGesture *view_ui_multi_press_gesture;
 };
 
 G_DEFINE_TYPE (NautilusViewIconController, nautilus_view_icon_controller, NAUTILUS_TYPE_FILES_VIEW)
@@ -692,23 +693,29 @@ real_click_policy_changed (NautilusFilesView *files_view)
 {
 }
 
-static gboolean
-on_button_press_event (GtkWidget *widget,
-                       GdkEvent  *event,
-                       gpointer   user_data)
+static void
+on_button_press_event (GtkGestureMultiPress *gesture,
+                       gint                  n_press,
+                       gdouble               x,
+                       gdouble               y,
+                       gpointer              user_data)
 {
     NautilusViewIconController *self;
+    guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
     g_autolist (NautilusFile) selection = NULL;
     GtkWidget *child_at_pos;
-    GdkEventButton *event_button;
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
-    event_button = (GdkEventButton *) event;
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
     child_at_pos = GTK_WIDGET (gtk_flow_box_get_child_at_pos (GTK_FLOW_BOX (self->view_ui),
-                                                              event_button->x, event_button->y));
+                                                              x, y));
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
@@ -728,7 +735,7 @@ on_button_press_event (GtkWidget *widget,
 
         nautilus_view_set_selection (NAUTILUS_VIEW (self), selection);
 
-        if (event_button->button == GDK_BUTTON_SECONDARY)
+        if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (self),
                                                                event);
@@ -737,14 +744,12 @@ on_button_press_event (GtkWidget *widget,
     else
     {
         nautilus_view_set_selection (NAUTILUS_VIEW (self), NULL);
-        if (event_button->button == GDK_BUTTON_SECONDARY)
+        if (button == GDK_BUTTON_SECONDARY)
         {
             nautilus_files_view_pop_up_background_context_menu (NAUTILUS_FILES_VIEW (self),
                                                                 event);
         }
     }
-
-    return GDK_EVENT_STOP;
 }
 
 static void
@@ -956,20 +961,31 @@ constructed (GObject *object)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (object);
     GtkWidget *content_widget;
+    GtkAdjustment *hadjustment;
+    GtkAdjustment *vadjustment;
     GActionGroup *view_action_group;
     GtkGesture *longpress_gesture;
 
+    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
+    hadjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (content_widget));
+    vadjustment = gtk_scrolled_window_get_vadjustment (GTK_SCROLLED_WINDOW (content_widget));
+
     self->model = nautilus_view_model_new ();
     self->view_ui = nautilus_view_icon_ui_new (self);
+    gtk_flow_box_set_hadjustment (GTK_FLOW_BOX (self->view_ui), hadjustment);
+    gtk_flow_box_set_vadjustment (GTK_FLOW_BOX (self->view_ui), vadjustment);
     gtk_widget_show (GTK_WIDGET (self->view_ui));
     self->view_icon = g_themed_icon_new ("view-grid-symbolic");
 
-    self->event_box = GTK_EVENT_BOX (gtk_event_box_new ());
-    gtk_container_add (GTK_CONTAINER (self->event_box), GTK_WIDGET (self->view_ui));
-    g_signal_connect (GTK_WIDGET (self->event_box), "button-press-event",
-                      (GCallback) on_button_press_event, self);
+    self->view_ui_multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (self->view_ui));
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (self->view_ui_multi_press_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->view_ui_multi_press_gesture),
+                                   0);
+    g_signal_connect (self->view_ui_multi_press_gesture, "pressed",
+                      G_CALLBACK (on_button_press_event), self);
 
-    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->event_box));
+    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (self->view_ui));
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
                                                 GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
@@ -978,9 +994,7 @@ constructed (GObject *object)
                       (GCallback) on_longpress_gesture_pressed_callback,
                       self);
 
-
-    content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (self));
-    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->event_box));
+    gtk_container_add (GTK_CONTAINER (content_widget), GTK_WIDGET (self->view_ui));
 
     self->action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
