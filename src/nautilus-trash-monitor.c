@@ -31,8 +31,10 @@
 
 #define UPDATE_RATE_SECONDS 1
 
-struct NautilusTrashMonitorDetails
+struct _NautilusTrashMonitor
 {
+    GObject object;
+
     gboolean empty;
     GFileMonitor *file_monitor;
     gboolean pending;
@@ -57,15 +59,15 @@ nautilus_trash_monitor_finalize (GObject *object)
 
     trash_monitor = NAUTILUS_TRASH_MONITOR (object);
 
-    if (trash_monitor->details->timeout_id > 0)
+    if (trash_monitor->timeout_id > 0)
     {
-        g_source_remove (trash_monitor->details->timeout_id);
-        trash_monitor->details->timeout_id = 0;
+        g_source_remove (trash_monitor->timeout_id);
+        trash_monitor->timeout_id = 0;
     }
 
-    if (trash_monitor->details->file_monitor)
+    if (trash_monitor->file_monitor)
     {
-        g_object_unref (trash_monitor->details->file_monitor);
+        g_object_unref (trash_monitor->file_monitor);
     }
 
     G_OBJECT_CLASS (nautilus_trash_monitor_parent_class)->finalize (object);
@@ -84,30 +86,28 @@ nautilus_trash_monitor_class_init (NautilusTrashMonitorClass *klass)
                                        ("trash-state-changed",
                                        G_TYPE_FROM_CLASS (object_class),
                                        G_SIGNAL_RUN_LAST,
-                                       G_STRUCT_OFFSET (NautilusTrashMonitorClass, trash_state_changed),
+                                       0,
                                        NULL, NULL,
                                        g_cclosure_marshal_VOID__BOOLEAN,
                                        G_TYPE_NONE, 1,
                                        G_TYPE_BOOLEAN);
-
-    g_type_class_add_private (object_class, sizeof (NautilusTrashMonitorDetails));
 }
 
 static void
 update_empty_info (NautilusTrashMonitor *trash_monitor,
                    gboolean              is_empty)
 {
-    if (trash_monitor->details->empty == is_empty)
+    if (trash_monitor->empty == is_empty)
     {
         return;
     }
 
-    trash_monitor->details->empty = is_empty;
+    trash_monitor->empty = is_empty;
 
     /* trash got empty or full, notify everyone who cares */
     g_signal_emit (trash_monitor,
                    signals[TRASH_STATE_CHANGED], 0,
-                   trash_monitor->details->empty);
+                   trash_monitor->empty);
 }
 
 /* Use G_FILE_ATTRIBUTE_TRASH_ITEM_COUNT since we only want to know whether the
@@ -148,10 +148,10 @@ schedule_update_info_cb (gpointer data)
 {
     NautilusTrashMonitor *trash_monitor = data;
 
-    trash_monitor->details->timeout_id = 0;
-    if (trash_monitor->details->pending)
+    trash_monitor->timeout_id = 0;
+    if (trash_monitor->pending)
     {
-        trash_monitor->details->pending = FALSE;
+        trash_monitor->pending = FALSE;
         schedule_update_info (trash_monitor);
     }
 
@@ -166,9 +166,9 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
     /* Rate limit the updates to not flood the gvfsd-trash when too many changes
      * happended in a short time.
      */
-    if (trash_monitor->details->timeout_id > 0)
+    if (trash_monitor->timeout_id > 0)
     {
-        trash_monitor->details->pending = TRUE;
+        trash_monitor->pending = TRUE;
         return;
     }
 
@@ -179,7 +179,7 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
                              G_PRIORITY_DEFAULT, NULL,
                              trash_query_info_cb, g_object_ref (trash_monitor));
 
-    trash_monitor->details->timeout_id = g_timeout_add_seconds (UPDATE_RATE_SECONDS,
+    trash_monitor->timeout_id = g_timeout_add_seconds (UPDATE_RATE_SECONDS,
                                                                 schedule_update_info_cb,
                                                                 trash_monitor);
     g_object_unref (location);
@@ -204,19 +204,15 @@ nautilus_trash_monitor_init (NautilusTrashMonitor *trash_monitor)
 {
     GFile *location;
 
-    trash_monitor->details = G_TYPE_INSTANCE_GET_PRIVATE (trash_monitor,
-                                                          NAUTILUS_TYPE_TRASH_MONITOR,
-                                                          NautilusTrashMonitorDetails);
-
-    trash_monitor->details->empty = TRUE;
+    trash_monitor->empty = TRUE;
 
     location = g_file_new_for_uri ("trash:///");
 
-    trash_monitor->details->file_monitor = g_file_monitor_file (location, 0, NULL, NULL);
-    trash_monitor->details->pending = FALSE;
-    trash_monitor->details->timeout_id = 0;
+    trash_monitor->file_monitor = g_file_monitor_file (location, 0, NULL, NULL);
+    trash_monitor->pending = FALSE;
+    trash_monitor->timeout_id = 0;
 
-    g_signal_connect (trash_monitor->details->file_monitor, "changed",
+    g_signal_connect (trash_monitor->file_monitor, "changed",
                       (GCallback) file_changed, trash_monitor);
 
     g_object_unref (location);
@@ -251,5 +247,5 @@ nautilus_trash_monitor_is_empty (void)
     NautilusTrashMonitor *monitor;
 
     monitor = nautilus_trash_monitor_get ();
-    return monitor->details->empty;
+    return monitor->empty;
 }
