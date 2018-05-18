@@ -18,9 +18,18 @@
     ],
     "modules": [
         {
-            "name": "meson",
+            "name": "python3-meson",
             "buildsystem": "simple",
-            "build-commands": ["pip3 install meson --upgrade"]
+            "build-commands": [
+                "pip3 install --no-index --find-links=\"file://${PWD}\" --prefix=${FLATPAK_DEST} meson"
+            ],
+            "sources": [
+                {
+                    "type": "file",
+                    "url": "https://files.pythonhosted.org/packages/30/26/036340ecd1061d5c31f0eba4573b2ce63a28cd406c589d575322cb3279f5/meson-0.46.1.tar.gz",
+                    "sha256": "0c6f39bdc7153fd24cadf07e57a4b9527755d292641126db85c1473babd0bdc9"
+                }
+            ]
         },
         {
             "name": "exiv2",
