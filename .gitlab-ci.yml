@@ -18,7 +18,7 @@ flatpak:
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
-        MESON_ARGS: "-Dprofile=development -Dtests=headless"
+        MESON_ARGS: "-Dprofile=development -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
@@ -28,7 +28,7 @@ flatpak:
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
         # Make sure to keep this in sync with the Flatpak manifest, all arguments
         # are passed except the config-args because we build it ourselves
-        - flatpak build app meson --prefix=/app --tests=headless ${MESON_ARGS} _build
+        - flatpak build app meson --prefix=/app ${MESON_ARGS} _build
         - flatpak build app ninja -C _build install
         - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
         # Generate a Flatpak bundle
