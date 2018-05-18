@@ -1,10 +1,10 @@
-#include <gtk/gtk.h>
 #include <src/nautilus-directory.h>
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-search-directory.h>
 #include <src/nautilus-file.h>
 #include <unistd.h>
 
+static GMainLoop *main_loop;
 void *client1, *client2;
 
 static void
@@ -48,7 +48,7 @@ static void
 done_loading (NautilusDirectory *directory)
 {
     g_print ("done loading\n");
-    gtk_main_quit ();
+    g_main_loop_quit (main_loop);
 }
 
 int
@@ -62,7 +62,7 @@ main (int    argc,
     client1 = g_new0 (int, 1);
     client2 = g_new0 (int, 1);
 
-    gtk_init (&argc, &argv);
+    main_loop = g_main_loop_new (NULL, FALSE);
 
     nautilus_ensure_extension_points ();
 
@@ -93,6 +93,9 @@ main (int    argc,
                                          NULL, NULL);
 
 
-    gtk_main ();
+    g_main_loop_run (main_loop);
+
+    g_main_loop_unref (main_loop);
+
     return 0;
 }
