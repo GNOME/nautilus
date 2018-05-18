@@ -24,6 +24,7 @@ flatpak:
         DBUS_ID: "org.gnome.NautilusDevel"
 
     script:
+        - dnf install -y xorg-x11-server-Xvfb
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
         # Make sure to keep this in sync with the Flatpak manifest, all arguments
         # are passed except the config-args because we build it ourselves
@@ -34,6 +35,7 @@ flatpak:
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
         # Run automatic tests inside the Flatpak env
         - flatpak build app ninja -C _build test
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
             - ${BUNDLE}
