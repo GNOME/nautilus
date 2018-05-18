@@ -8,8 +8,6 @@
 #include <unistd.h>
 #include "eel/eel-string.h"
 
-#define ROOT_DIR "file:///tmp"
-
 /* Tests the function for a simple file */
 static void
 test_simple_file (void)
