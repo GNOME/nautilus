@@ -28,11 +28,3 @@
 
 /* A gboolean variant for bit fields. */
 typedef guint eel_boolean_bit;
-
-/* GList functions. */
-gboolean    eel_g_lists_sort_and_check_for_intersection (GList                **list_a,
-							 GList                **list_b);
-
-/* NULL terminated string arrays (strv). */
-gboolean    eel_g_strv_equal                            (char                 **a,
-							 char                 **b);
