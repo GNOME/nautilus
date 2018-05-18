@@ -8162,6 +8162,28 @@ nautilus_file_get_file_info_error (NautilusFile *file)
 }
 
 /**
+ * nautilus_file_contains_text
+ *
+ * Check if this file contains text.
+ * This is private and is used to decide whether or not to read the top left text.
+ * @file: NautilusFile representing the file in question.
+ *
+ * Returns: TRUE if @file has a text MIME type.
+ *
+ **/
+gboolean
+nautilus_file_contains_text (NautilusFile *file)
+{
+    if (file == NULL)
+    {
+        return FALSE;
+    }
+
+    /* All text files inherit from text/plain */
+    return nautilus_file_is_mime_type (file, "text/plain");
+}
+
+/**
  * nautilus_file_is_executable
  *
  * Check if this file is executable at all.
