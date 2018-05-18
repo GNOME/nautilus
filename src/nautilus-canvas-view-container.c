@@ -30,6 +30,13 @@
 #include "nautilus-file-attributes.h"
 #include "nautilus-thumbnails.h"
 
+struct _NautilusCanvasViewContainer
+{
+    NautilusCanvasContainer parent;
+
+    NautilusCanvasView *view;
+};
+
 G_DEFINE_TYPE (NautilusCanvasViewContainer, nautilus_canvas_view_container, NAUTILUS_TYPE_CANVAS_CONTAINER);
 
 static GQuark attribute_none_q;
