@@ -14,11 +14,11 @@ stages:
       - ninja test
 
 flatpak:
-    image: registry.gitlab.gnome.org/gnome/gnome-nightly-oci/nightly:master
+    image: registry.gitlab.com/alatiera/flatpak-docker-images/gnome:3.28
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
-        MESON_ARGS: "-Dprofile=development -Dtests=all"
+        MESON_ARGS: "-Dprofile=development -Dtests=headless"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
@@ -33,7 +33,7 @@ flatpak:
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
         # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
+        - flatpak build app ninja -C _build test
     artifacts:
         paths:
             - ${BUNDLE}
