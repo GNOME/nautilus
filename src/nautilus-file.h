@@ -171,6 +171,7 @@ void                    nautilus_file_invalidate_attributes             (Nautilu
 void                    nautilus_file_invalidate_all_attributes         (NautilusFile                   *file);
 
 /* Basic attributes for file objects. */
+gboolean                nautilus_file_contains_text                     (NautilusFile                   *file);
 char *                  nautilus_file_get_display_name                  (NautilusFile                   *file);
 char *                  nautilus_file_get_edit_name                     (NautilusFile                   *file);
 char *                  nautilus_file_get_name                          (NautilusFile                   *file);
