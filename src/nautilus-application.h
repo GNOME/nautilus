@@ -24,8 +24,7 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
-#include "nautilus-bookmark-list.h"
-#include "nautilus-window.h"
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
 #define NAUTILUS_TYPE_APPLICATION (nautilus_application_get_type())

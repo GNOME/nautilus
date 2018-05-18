@@ -19,55 +19,60 @@
  *  Author: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
 #include "nautilus-file.h"
 
-#include "nautilus-directory-notify.h"
-#include "nautilus-directory-private.h"
-#include "nautilus-signaller.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-metadata.h"
-#include "nautilus-module.h"
-#include "nautilus-thumbnails.h"
-#include "nautilus-ui-utilities.h"
-#include "nautilus-video-mime-types.h"
-#include "nautilus-vfs-file.h"
-#include "nautilus-file-undo-operations.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-tag-manager.h"
+#ifndef NAUTILUS_COMPILATION
+#define NAUTILUS_COMPILATION
+#endif
+#include <libnautilus-extension/nautilus-extension-private.h>
+
 #include <eel/eel-debug.h>
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
-#include <eel/eel-vfs-extensions.h>
 #include <eel/eel-string.h>
-#include <grp.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
+#include <eel/eel-vfs-extensions.h>
+#include <gdesktop-enums.h>
 #include <gio/gio.h>
 #include <glib.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
 #include <gnome-autoar/gnome-autoar.h>
-#include <gdesktop-enums.h>
+#include <grp.h>
+#include <gtk/gtk.h>
 #include <libxml/parser.h>
-#include <libnautilus-extension/nautilus-extension-private.h>
 #include <pwd.h>
 #include <stdlib.h>
+#include <sys/stat.h>
 #include <sys/time.h>
 #include <time.h>
 #include <unistd.h>
-#include <sys/stat.h>
+
+#define DEBUG_FLAG NAUTILUS_DEBUG_FILE
+#include "nautilus-debug.h"
+
+#include "nautilus-directory-notify.h"
+#include "nautilus-directory-private.h"
+#include "nautilus-enums.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-undo-operations.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-metadata.h"
+#include "nautilus-module.h"
+#include "nautilus-signaller.h"
+#include "nautilus-tag-manager.h"
+#include "nautilus-thumbnails.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-vfs-file.h"
+#include "nautilus-video-mime-types.h"
 
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
 #endif
-
-#define DEBUG_FLAG NAUTILUS_DEBUG_FILE
-#include "nautilus-debug.h"
 
 /* Time in seconds to cache getpwuid results */
 #define GETPWUID_CACHE_TIME (5 * 60)

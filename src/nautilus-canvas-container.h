@@ -24,7 +24,8 @@
 #pragma once
 
 #include <eel/eel-canvas.h>
-#include "nautilus-icon-info.h"
+
+#include "nautilus-types.h"
 
 #define NAUTILUS_TYPE_CANVAS_CONTAINER nautilus_canvas_container_get_type()
 #define NAUTILUS_CANVAS_CONTAINER(obj) \
@@ -55,12 +56,15 @@ typedef struct {
 
 #define	NAUTILUS_CANVAS_CONTAINER_TYPESELECT_FLUSH_DELAY 1000000
 
-typedef struct NautilusCanvasContainerDetails NautilusCanvasContainerDetails;
+typedef struct _NautilusCanvasContainer        NautilusCanvasContainer;
+typedef struct  NautilusCanvasContainerDetails NautilusCanvasContainerDetails;
 
-typedef struct {
+struct _NautilusCanvasContainer {
 	EelCanvas canvas;
 	NautilusCanvasContainerDetails *details;
-} NautilusCanvasContainer;
+};
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (NautilusCanvasContainer, g_object_unref)
 
 typedef struct {
 	EelCanvasClass parent_slot;

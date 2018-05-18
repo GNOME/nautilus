@@ -24,9 +24,10 @@
 #include "nautilus-window-slot.h"
 
 #include "nautilus-application.h"
-#include "nautilus-canvas-view.h"
-#include "nautilus-list-view.h"
+#include "nautilus-bookmark.h"
+#include "nautilus-bookmark-list.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-query-editor.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
 #include "nautilus-trash-bar.h"

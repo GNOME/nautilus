@@ -15,10 +15,11 @@
  * along with this program; if not, see <http://www.gnu.org/licenses/>.
  */
 
-#include "config.h"
 #include "nautilus-recent.h"
 
 #include <eel/eel-vfs-extensions.h>
+
+#include "nautilus-file.h"
 
 #define DEFAULT_APP_EXEC "gnome-open %u"
 

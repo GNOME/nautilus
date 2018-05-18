@@ -19,7 +19,8 @@
 #pragma once
 
 #include "nautilus-window-slot.h"
-#include "nautilus-window.h"
+
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
 

@@ -18,16 +18,17 @@
  *
  *  Author: Michael Meeks <michael@ximian.com>
  */
-#include <config.h>
 
 #include "nautilus-canvas-view-container.h"
 
-#include <string.h>
-#include <glib/gi18n.h>
-#include <gio/gio.h>
 #include <eel/eel-glib-extensions.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <string.h>
+
+#include "nautilus-canvas-view.h"
+#include "nautilus-enums.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-file-attributes.h"
 #include "nautilus-thumbnails.h"
 
 struct _NautilusCanvasViewContainer
