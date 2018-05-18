@@ -22,8 +22,6 @@
 
 #pragma once
 
-#include "nautilus-canvas-view.h"
-
 #include "nautilus-canvas-container.h"
 
 #define NAUTILUS_TYPE_CANVAS_VIEW_CONTAINER nautilus_canvas_view_container_get_type()

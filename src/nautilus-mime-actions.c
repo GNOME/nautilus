@@ -19,36 +19,31 @@
  *  Authors: Maciej Stachowiak <mjs@eazel.com>
  */
 
-#include <config.h>
-
 #include "nautilus-mime-actions.h"
 
-#include "nautilus-window-slot.h"
-#include "nautilus-application.h"
-
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#include <gdk/gdkx.h>
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
 #include <string.h>
-#include <gdk/gdkx.h>
-
-#include "nautilus-file-attributes.h"
-#include "nautilus-file.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-metadata.h"
-#include "nautilus-program-choosing.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-signaller.h"
-#include "nautilus-metadata.h"
-#include "nautilus-ui-utilities.h"
-
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_MIME
 #include "nautilus-debug.h"
+
+#include "nautilus-application.h"
+#include "nautilus-enums.h"
+#include "nautilus-file.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-metadata.h"
+#include "nautilus-program-choosing.h"
+#include "nautilus-signaller.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-window.h"
+#include "nautilus-window-slot.h"
 
 typedef enum
 {

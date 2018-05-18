@@ -24,10 +24,9 @@
 
 #include <gio/gio.h>
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
 
-#include "nautilus-file.h"
-
-#include "nautilus-window.h"
+#include "nautilus-types.h"
 
 NautilusFileAttributes nautilus_mime_actions_get_required_file_attributes (void);
 

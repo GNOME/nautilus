@@ -22,31 +22,31 @@
  *  Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
-#include <math.h>
 #include "nautilus-canvas-container.h"
 
-#include "nautilus-global-preferences.h"
-#include "nautilus-canvas-private.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-selection-canvas-item.h"
 #include <atk/atkaction.h>
 #include <eel/eel-accessibility.h>
-#include <eel/eel-vfs-extensions.h>
-#include <eel/eel-gtk-extensions.h>
 #include <eel/eel-art-extensions.h>
-
+#include <eel/eel-gtk-extensions.h>
+#include <eel/eel-vfs-extensions.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
 #include <gdk/gdkx.h>
 #include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include <X11/Xlib.h>
+#include <X11/Xatom.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_CONTAINER
 #include "nautilus-debug.h"
+
+#include "nautilus-canvas-private.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-selection-canvas-item.h"
 
 /* Interval for updating the rubberband selection, in milliseconds.  */
 #define RUBBERBAND_TIMEOUT_INTERVAL 10

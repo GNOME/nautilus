@@ -20,20 +20,21 @@
  *  Author: Anders Carlsson <andersca@imendio.com>
  */
 
-#include <config.h>
 #include "nautilus-search-directory-file.h"
+
+#include <eel/eel-glib-extensions.h>
+#include <glib/gi18n.h>
+#include <gtk/gtk.h>
+#include <string.h>
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
-#include "nautilus-file-attributes.h"
+#include "nautilus-enums.h"
 #include "nautilus-file-private.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-keyfile-metadata.h"
-#include <eel/eel-glib-extensions.h>
+#include "nautilus-query.h"
 #include "nautilus-search-directory.h"
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <string.h>
 
 struct NautilusSearchDirectoryFileDetails
 {

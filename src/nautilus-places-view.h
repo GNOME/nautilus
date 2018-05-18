@@ -18,10 +18,8 @@
 
 #pragma once
 
-#include <glib.h>
+#include <glib-object.h>
 #include <gtk/gtk.h>
-
-#include "nautilus-view.h"
 
 G_BEGIN_DECLS
 

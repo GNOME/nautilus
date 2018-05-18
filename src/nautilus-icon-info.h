@@ -8,40 +8,8 @@
 
 G_BEGIN_DECLS
 
-/* Names for Nautilus's different zoom levels, from tiniest items to largest items */
-typedef enum {
-	NAUTILUS_CANVAS_ZOOM_LEVEL_SMALL,
-	NAUTILUS_CANVAS_ZOOM_LEVEL_STANDARD,
-	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGE,
-	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGER,
-	NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST,
-} NautilusCanvasZoomLevel;
-
-typedef enum {
-	NAUTILUS_LIST_ZOOM_LEVEL_SMALL,
-	NAUTILUS_LIST_ZOOM_LEVEL_STANDARD,
-	NAUTILUS_LIST_ZOOM_LEVEL_LARGE,
-	NAUTILUS_LIST_ZOOM_LEVEL_LARGER,
-} NautilusListZoomLevel;
-
 #define NAUTILUS_LIST_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_LIST_ZOOM_LEVEL_LARGER + 1)
 #define NAUTILUS_CANVAS_ZOOM_LEVEL_N_ENTRIES (NAUTILUS_CANVAS_ZOOM_LEVEL_LARGEST + 1)
-
-/* Nominal icon sizes for each Nautilus zoom level.
- * This scheme assumes that icons are designed to
- * fit in a square space, though each image needn't
- * be square.
- */
-#define NAUTILUS_LIST_ICON_SIZE_SMALL		16
-#define NAUTILUS_LIST_ICON_SIZE_STANDARD	32
-#define NAUTILUS_LIST_ICON_SIZE_LARGE		48
-#define NAUTILUS_LIST_ICON_SIZE_LARGER		64
-
-#define NAUTILUS_CANVAS_ICON_SIZE_SMALL		48
-#define NAUTILUS_CANVAS_ICON_SIZE_STANDARD	64
-#define NAUTILUS_CANVAS_ICON_SIZE_LARGE		96
-#define NAUTILUS_CANVAS_ICON_SIZE_LARGER	128
-#define NAUTILUS_CANVAS_ICON_SIZE_LARGEST	256
 
 /* Maximum size of an icon that the icon factory will ever produce */
 #define NAUTILUS_ICON_MAXIMUM_SIZE     320

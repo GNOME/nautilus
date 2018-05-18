@@ -20,28 +20,26 @@
  *
  */
 
-#include <config.h>
-
 #include "nautilus-toolbar.h"
 
-#include "nautilus-location-entry.h"
-#include "nautilus-pathbar.h"
-#include "nautilus-window.h"
-#include "nautilus-progress-info-widget.h"
-#include "nautilus-application.h"
-
-#include "nautilus-global-preferences.h"
-#include "nautilus-ui-utilities.h"
-#include "nautilus-progress-info-manager.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-toolbar-menu-sections.h"
+#include <glib/gi18n.h>
+#include <math.h>
 
 #include "animation/ide-box-theatric.h"
 #include "animation/egg-animation.h"
 
-#include <glib/gi18n.h>
-#include <math.h>
+#include "nautilus-application.h"
+#include "nautilus-bookmark.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-location-entry.h"
+#include "nautilus-pathbar.h"
+#include "nautilus-progress-info-manager.h"
+#include "nautilus-progress-info-widget.h"
+#include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-window.h"
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
