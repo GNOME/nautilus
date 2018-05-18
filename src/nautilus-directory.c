@@ -19,26 +19,28 @@
  *  Author: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
 #include "nautilus-directory-private.h"
 
-#include "nautilus-directory-notify.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-search-directory.h"
-#include "nautilus-starred-directory.h"
-#include "nautilus-search-directory-file.h"
-#include "nautilus-vfs-file.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-lib-self-check-functions.h"
-#include "nautilus-metadata.h"
-#include "nautilus-profile.h"
-#include "nautilus-vfs-directory.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-string.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
+
+#include "nautilus-directory-notify.h"
+#include "nautilus-directory-private.h"
+#include "nautilus-enums.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-queue.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-lib-self-check-functions.h"
+#include "nautilus-metadata.h"
+#include "nautilus-profile.h"
+#include "nautilus-search-directory-file.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-starred-directory.h"
+#include "nautilus-vfs-directory.h"
+#include "nautilus-vfs-file.h"
 
 enum
 {
@@ -1958,7 +1960,6 @@ nautilus_directory_list_sort_by_uri (GList *list)
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 #include <eel/eel-debug.h>
-#include "nautilus-file-attributes.h"
 
 static int data_dummy;
 static gboolean got_files_flag;

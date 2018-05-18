@@ -25,6 +25,8 @@
 #include <gio/gio.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-types.h"
+
 typedef enum {
 	NAUTILUS_LOCATION_CHANGE_STANDARD,
 	NAUTILUS_LOCATION_CHANGE_BACK,
@@ -34,12 +36,6 @@ typedef enum {
 
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
 G_DECLARE_DERIVABLE_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, GtkBox)
-
-#include "nautilus-query-editor.h"
-#include "nautilus-files-view.h"
-#include "nautilus-view.h"
-#include "nautilus-window.h"
-#include "nautilus-toolbar-menu-sections.h"
 
 typedef struct
 {

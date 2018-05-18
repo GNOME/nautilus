@@ -25,7 +25,8 @@
 #pragma once
 
 #include "nautilus-files-view.h"
-#include "nautilus-canvas-container.h"
+
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
 

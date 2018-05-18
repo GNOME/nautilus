@@ -22,7 +22,8 @@
 #pragma once
 
 #include "nautilus-directory.h"
-#include "nautilus-query.h"
+
+#include "nautilus-types.h"
 
 #define NAUTILUS_SEARCH_DIRECTORY_PROVIDER_NAME "search-directory-provider"
 #define NAUTILUS_TYPE_SEARCH_DIRECTORY (nautilus_search_directory_get_type ())

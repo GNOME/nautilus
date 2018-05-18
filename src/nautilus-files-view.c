@@ -23,73 +23,70 @@
  *          David Emory Watson <dwatson@cs.ucr.edu>
  */
 
-#include <config.h>
-
 #include "nautilus-files-view.h"
-
-#include "nautilus-application.h"
-#include "nautilus-batch-rename-dialog.h"
-#include "nautilus-batch-rename-utilities.h"
-#include "nautilus-error-reporting.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-floating-bar.h"
-#include "nautilus-view-icon-controller.h"
-#include "nautilus-list-view.h"
-#include "nautilus-canvas-view.h"
-#include "nautilus-mime-actions.h"
-#include "nautilus-previewer.h"
-#include "nautilus-properties-window.h"
-#include "nautilus-window.h"
-#include "nautilus-toolbar.h"
-#include "nautilus-view.h"
-#include "nautilus-tag-manager.h"
-#include <gdk/gdkx.h>
-#include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
-#include <glib/gi18n.h>
-#include <glib/gstdio.h>
-#include <gio/gio.h>
-#include <gnome-autoar/gnome-autoar.h>
-#include <math.h>
-#include <string.h>
-#include <sys/types.h>
-#include <sys/stat.h>
-#include <fcntl.h>
 
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-
-#include <nautilus-extension.h>
-#include "nautilus-clipboard.h"
-#include "nautilus-search-directory.h"
-#include "nautilus-directory.h"
-#include "nautilus-dnd.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-changes-queue.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-name-widget-controller.h"
-#include "nautilus-rename-file-popover-controller.h"
-#include "nautilus-new-folder-dialog-controller.h"
-#include "nautilus-compress-dialog-controller.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
-#include "nautilus-module.h"
-#include "nautilus-profile.h"
-#include "nautilus-program-choosing.h"
-#include "nautilus-trash-monitor.h"
-#include "nautilus-ui-utilities.h"
-#include "nautilus-signaller.h"
-#include "nautilus-icon-names.h"
-
+#include <fcntl.h>
 #include <gdesktop-enums.h>
+#include <gdk/gdkkeysyms.h>
+#include <gdk/gdkx.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
+#include <glib/gstdio.h>
+#include <gtk/gtk.h>
+#include <gnome-autoar/gnome-autoar.h>
+#include <math.h>
+#include <nautilus-extension.h>
+#include <string.h>
+#include <sys/types.h>
+#include <sys/stat.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DIRECTORY_VIEW
 #include "nautilus-debug.h"
+
+#include "nautilus-application.h"
+#include "nautilus-batch-rename-dialog.h"
+#include "nautilus-batch-rename-utilities.h"
+#include "nautilus-canvas-view.h"
+#include "nautilus-clipboard.h"
+#include "nautilus-compress-dialog-controller.h"
+#include "nautilus-directory.h"
+#include "nautilus-dnd.h"
+#include "nautilus-enums.h"
+#include "nautilus-error-reporting.h"
+#include "nautilus-file-changes-queue.h"
+#include "nautilus-file-name-widget-controller.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-floating-bar.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
+#include "nautilus-icon-names.h"
+#include "nautilus-list-view.h"
+#include "nautilus-metadata.h"
+#include "nautilus-mime-actions.h"
+#include "nautilus-module.h"
+#include "nautilus-new-folder-dialog-controller.h"
+#include "nautilus-previewer.h"
+#include "nautilus-profile.h"
+#include "nautilus-program-choosing.h"
+#include "nautilus-properties-window.h"
+#include "nautilus-rename-file-popover-controller.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-signaller.h"
+#include "nautilus-tag-manager.h"
+#include "nautilus-toolbar.h"
+#include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-view.h"
+#include "nautilus-view-icon-controller.h"
+#include "nautilus-window.h"
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100

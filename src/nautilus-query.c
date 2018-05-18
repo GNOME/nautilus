@@ -19,17 +19,14 @@
  *
  */
 
-#include <config.h>
-#include <string.h>
+#include "nautilus-query.h"
 
 #include <eel/eel-glib-extensions.h>
 #include <glib/gi18n.h>
 
-#include "nautilus-global-preferences.h"
-
-#include "nautilus-file-utilities.h"
-#include "nautilus-query.h"
 #include "nautilus-enum-types.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
 
 #define RANK_SCALE_FACTOR 100
 #define MIN_RANK 10.0

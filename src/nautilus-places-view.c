@@ -18,10 +18,14 @@
 
 #include "nautilus-mime-actions.h"
 #include "nautilus-places-view.h"
-#include "nautilus-window-slot.h"
-#include "nautilus-application.h"
-#include "nautilus-toolbar-menu-sections.h"
+
 #include "gtk/nautilusgtkplacesviewprivate.h"
+
+#include "nautilus-application.h"
+#include "nautilus-file.h"
+#include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-view.h"
+#include "nautilus-window-slot.h"
 
 typedef struct
 {

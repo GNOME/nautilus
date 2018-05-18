@@ -19,25 +19,22 @@
  *  Author: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
+#include <libxml/parser.h>
+#include <stdio.h>
+#include <stdlib.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_ASYNC_JOBS
 
 #include "nautilus-debug.h"
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
-#include "nautilus-file-attributes.h"
+#include "nautilus-enums.h"
 #include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-signaller.h"
+#include "nautilus-file-queue.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-profile.h"
 #include "nautilus-metadata.h"
-#include <eel/eel-glib-extensions.h>
-#include <gtk/gtk.h>
-#include <libxml/parser.h>
-#include <stdio.h>
-#include <stdlib.h>
+#include "nautilus-profile.h"
+#include "nautilus-signaller.h"
 
 /* turn this on to check if async. job calls are balanced */
 #if 0

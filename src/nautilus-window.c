@@ -26,45 +26,43 @@
 
 #include "nautilus-window.h"
 
-#include <config.h>
-
-#include "nautilus-application.h"
-#include "nautilus-location-entry.h"
-#include "nautilus-mime-actions.h"
-#include "nautilus-notebook.h"
-#include "nautilus-pathbar.h"
-#include "nautilus-properties-window.h"
-#include "nautilus-toolbar.h"
-#include "nautilus-window-slot.h"
-#include "nautilus-list-view.h"
-#include "nautilus-other-locations-window-slot.h"
-
 #include <eel/eel-debug.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
-#include <gdk/gdkx.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
+#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
-#include "nautilus-dnd.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-file-attributes.h"
-#include "nautilus-file-operations.h"
-#include "nautilus-file-undo-manager.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
-#include "nautilus-profile.h"
-#include "nautilus-clipboard.h"
-#include "nautilus-signaller.h"
-#include "nautilus-trash-monitor.h"
-#include "nautilus-ui-utilities.h"
+#include <gtk/gtk.h>
+#include <math.h>
+#include <sys/time.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
-#include <math.h>
-#include <sys/time.h>
+#include "nautilus-application.h"
+#include "nautilus-bookmark-list.h"
+#include "nautilus-clipboard.h"
+#include "nautilus-dnd.h"
+#include "nautilus-enums.h"
+#include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-list-view.h"
+#include "nautilus-location-entry.h"
+#include "nautilus-metadata.h"
+#include "nautilus-mime-actions.h"
+#include "nautilus-notebook.h"
+#include "nautilus-other-locations-window-slot.h"
+#include "nautilus-pathbar.h"
+#include "nautilus-profile.h"
+#include "nautilus-properties-window.h"
+#include "nautilus-signaller.h"
+#include "nautilus-toolbar.h"
+#include "nautilus-trash-monitor.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-window-slot.h"
 
 /* Forward and back buttons on the mouse */
 static gboolean mouse_extra_buttons = TRUE;

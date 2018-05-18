@@ -22,41 +22,38 @@
  *           David Emory Watson <dwatson@cs.ucr.edu>
  */
 
-#include <config.h>
 #include "nautilus-list-view.h"
 #include "nautilus-list-view-private.h"
 
-#include "nautilus-list-model.h"
-#include "nautilus-error-reporting.h"
-#include "nautilus-files-view-dnd.h"
-#include "nautilus-toolbar.h"
-#include "nautilus-list-view-dnd.h"
-#include "nautilus-view.h"
-#include "nautilus-tag-manager.h"
-
-#include <string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
 #include <gdk/gdk.h>
 #include <gdk/gdkkeysyms.h>
-#include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include <glib-object.h>
+#include <gtk/gtk.h>
 #include <libgd/gd.h>
-#include "nautilus-column-chooser.h"
-#include "nautilus-column-utilities.h"
-#include "nautilus-dnd.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-ui-utilities.h"
-#include "nautilus-global-preferences.h"
-#include "nautilus-metadata.h"
-#include "nautilus-module.h"
-#include "nautilus-tree-view-drag-dest.h"
-#include "nautilus-clipboard.h"
+#include <string.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
 #include "nautilus-debug.h"
+
+#include "nautilus-clipboard.h"
+#include "nautilus-column-chooser.h"
+#include "nautilus-column-utilities.h"
+#include "nautilus-dnd.h"
+#include "nautilus-enums.h"
+#include "nautilus-error-reporting.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-files-view-dnd.h"
+#include "nautilus-global-preferences.h"
+#include "nautilus-list-model.h"
+#include "nautilus-list-view-dnd.h"
+#include "nautilus-metadata.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-tag-manager.h"
+#include "nautilus-toolbar.h"
+#include "nautilus-tree-view-drag-dest.h"
+#include "nautilus-ui-utilities.h"
+#include "nautilus-view.h"
 
 struct SelectionForeachData
 {
