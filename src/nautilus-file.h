@@ -23,8 +23,8 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
-#include "nautilus-file-attributes.h"
-#include "nautilus-icon-info.h"
+
+#include "nautilus-types.h"
 
 /* NautilusFile is an object used to represent a single element of a
  * NautilusDirectory. It's lightweight and relies on NautilusDirectory

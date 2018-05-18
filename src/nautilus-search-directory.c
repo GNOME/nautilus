@@ -17,23 +17,23 @@
  *  Author: Anders Carlsson <andersca@imendio.com>
  */
 
-#include <config.h>
 #include "nautilus-search-directory.h"
-#include "nautilus-search-directory-file.h"
-
-#include "nautilus-directory-private.h"
-#include "nautilus-file.h"
-#include "nautilus-file-private.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-search-provider.h"
-#include "nautilus-search-engine.h"
-#include "nautilus-search-engine-model.h"
 
 #include <eel/eel-glib-extensions.h>
-#include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <gtk/gtk.h>
 #include <string.h>
 #include <sys/time.h>
+
+#include "nautilus-directory-private.h"
+#include "nautilus-file-private.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-file.h"
+#include "nautilus-query.h"
+#include "nautilus-search-directory-file.h"
+#include "nautilus-search-engine-model.h"
+#include "nautilus-search-engine.h"
+#include "nautilus-search-provider.h"
 
 struct _NautilusSearchDirectory
 {

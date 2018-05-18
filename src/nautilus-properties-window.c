@@ -19,37 +19,32 @@
  *  Authors: Darin Adler <darin@bentspoon.com>
  */
 
-#include <config.h>
-
 #include "nautilus-properties-window.h"
 
-#include "nautilus-ui-utilities.h"
-#include "nautilus-error-reporting.h"
-#include "nautilus-mime-actions.h"
-
-#include <gtk/gtk.h>
-#include <gdk/gdkkeysyms.h>
-#include <glib/gi18n.h>
-#include <string.h>
-#include <sys/stat.h>
 #include <cairo.h>
-
-#define GNOME_DESKTOP_USE_UNSTABLE_API
-#include <libgnome-desktop/gnome-desktop-thumbnail.h>
-
 #include <eel/eel-accessibility.h>
-#include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-
+#include <gtk/gtk.h>
+#include <gdk/gdkkeysyms.h>
+#include <glib/gi18n.h>
 #include <nautilus-extension.h>
-#include "nautilus-file-attributes.h"
+#include <string.h>
+#include <sys/stat.h>
+
+#define GNOME_DESKTOP_USE_UNSTABLE_API
+#include <libgnome-desktop/gnome-desktop-thumbnail.h>
+
+#include "nautilus-enums.h"
+#include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-icon-info.h"
 #include "nautilus-metadata.h"
+#include "nautilus-mime-actions.h"
 #include "nautilus-mime-application-chooser.h"
 #include "nautilus-module.h"
 #include "nautilus-ui-utilities.h"

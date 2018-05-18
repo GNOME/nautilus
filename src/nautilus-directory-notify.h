@@ -21,8 +21,9 @@
 
 #pragma once
 
-#include <gdk/gdk.h>
-#include "nautilus-file.h"
+#include <gio/gio.h>
+
+#include "nautilus-types.h"
 
 typedef struct {
 	char *from_uri;

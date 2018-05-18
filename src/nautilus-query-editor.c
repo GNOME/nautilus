@@ -20,22 +20,22 @@
  *
  */
 
-#include <config.h>
 #include "nautilus-query-editor.h"
-#include "nautilus-search-popover.h"
-#include "nautilus-mime-actions.h"
 
-#include <string.h>
-#include <glib/gi18n.h>
-#include <gio/gio.h>
 #include <gdk/gdkkeysyms.h>
+#include <gio/gio.h>
+#include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <libgd/gd.h>
+#include <string.h>
 
-#include <eel/eel-glib-extensions.h>
+#include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
-#include "nautilus-ui-utilities.h"
 #include "nautilus-global-preferences.h"
+#include "nautilus-search-directory.h"
+#include "nautilus-search-popover.h"
+#include "nautilus-mime-actions.h"
+#include "nautilus-ui-utilities.h"
 
 typedef struct
 {

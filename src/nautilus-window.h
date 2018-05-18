@@ -27,19 +27,10 @@
 #pragma once
 
 #include <gtk/gtk.h>
-#include <eel/eel-glib-extensions.h>
-#include "nautilus-bookmark.h"
-#include "nautilus-search-directory.h"
+
+#include "nautilus-types.h"
 
 G_BEGIN_DECLS
-
-typedef enum {
-        NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND = 1 << 0,
-        NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW = 1 << 1,
-        NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB = 1 << 2,
-        NAUTILUS_WINDOW_OPEN_SLOT_APPEND = 1 << 3,
-        NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE = 1 << 4
-} NautilusWindowOpenFlags;
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type ())
 G_DECLARE_DERIVABLE_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, GtkApplicationWindow);
@@ -48,12 +39,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GFile *location,
                                                  GError *error,
                                                  gpointer user_data);
-
-#include "nautilus-files-view.h"
-#include "nautilus-window-slot.h"
-
-#define NAUTILUS_WINDOW_SIDEBAR_PLACES "places"
-#define NAUTILUS_WINDOW_SIDEBAR_TREE "tree"
 
 /* window geometry */
 /* Min values are very small, and a Nautilus window at this tiny size is *almost*
