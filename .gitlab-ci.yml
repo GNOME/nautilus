@@ -34,7 +34,6 @@ flatpak:
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
         # Run automatic tests inside the Flatpak env
-        - flatpak build app ninja -C _build test
         - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
     artifacts:
         paths:
