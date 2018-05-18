@@ -18,6 +18,11 @@
     ],
     "modules": [
         {
+            "name": "meson",
+            "buildsystem": "simple",
+            "build-commands": ["pip3 install meson"]
+        },
+        {
             "name": "exiv2",
             "sources": [
                 {
