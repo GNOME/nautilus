@@ -14,7 +14,7 @@ stages:
       - ninja test
 
 flatpak:
-    image: registry.gitlab.com/alatiera/flatpak-docker-images:3.28
+    image: registry.gitlab.com/alatiera/flatpak-docker-images/gnome:3.28
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.json"
