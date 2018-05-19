@@ -4864,16 +4864,6 @@ file_changed_callback (NautilusFile *file,
 }
 
 static gboolean
-is_a_special_file (NautilusFile *file)
-{
-    gboolean is_special;
-
-    is_special = file == NULL || nautilus_file_is_in_trash (file);
-
-    return is_special;
-}
-
-static gboolean
 should_show_open_with (NautilusPropertiesWindow *window)
 {
     NautilusFile *file;
@@ -4903,7 +4893,7 @@ should_show_open_with (NautilusPropertiesWindow *window)
         {
             file = NAUTILUS_FILE (l->data);
             app_info = nautilus_mime_get_default_application_for_file (file);
-            if (nautilus_file_is_directory (file) || !app_info || is_a_special_file (file))
+            if (nautilus_file_is_directory (file) || !app_info || file == NULL)
             {
                 return FALSE;
             }
@@ -4918,7 +4908,7 @@ should_show_open_with (NautilusPropertiesWindow *window)
         file = get_target_file (window);
 
         app_info = nautilus_mime_get_default_application_for_file (file);
-        if (nautilus_file_is_directory (file) || !app_info || is_a_special_file (file))
+        if (nautilus_file_is_directory (file) || !app_info || file == NULL)
         {
             return FALSE;
         }
