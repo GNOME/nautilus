@@ -2638,13 +2638,17 @@ should_show_file_type (NautilusPropertiesWindow *window)
 static gboolean
 should_show_location_info (NautilusPropertiesWindow *window)
 {
-    if (!is_multi_file_window (window)
-        && (nautilus_file_is_in_trash (get_target_file (window)) ||
-            is_root_directory (get_target_file (window)) ||
-            is_network_directory (get_target_file (window)) ||
-            is_burn_directory (get_target_file (window))))
+    GList *l;
+
+    for (l = window->original_files; l != NULL; l = l->next)
     {
-        return FALSE;
+        if (nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)) ||
+            is_root_directory (NAUTILUS_FILE (l->data)) ||
+            is_network_directory (NAUTILUS_FILE (l->data)) ||
+            is_burn_directory (NAUTILUS_FILE (l->data)))
+        {
+            return FALSE;
+        }
     }
 
     return TRUE;
