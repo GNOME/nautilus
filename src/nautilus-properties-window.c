@@ -4762,18 +4762,18 @@ append_extension_pages (NautilusPropertiesWindow *window)
 static gboolean
 should_show_permissions (NautilusPropertiesWindow *window)
 {
-    NautilusFile *file;
-
-    file = get_target_file (window);
+    GList *l;
 
     /* Don't show permissions for Trash and Computer since they're not
      * really file system objects.
      */
-    if (!is_multi_file_window (window)
-        && (nautilus_file_is_in_trash (file) ||
-            nautilus_file_is_in_recent (file)))
+    for (l = window->original_files; l != NULL; l = l->next)
     {
-        return FALSE;
+        if (nautilus_file_is_in_trash (NAUTILUS_FILE (l->data)) ||
+            nautilus_file_is_in_recent (NAUTILUS_FILE (l->data)))
+        {
+            return FALSE;
+        }
     }
 
     return TRUE;
