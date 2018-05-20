@@ -2120,7 +2120,7 @@ activation_mountable_started (NautilusFile *file,
         {
             show_dialog (_("Unable to start location"),
                          error->message,
-                         NULL,
+                         parameters->parent_window,
                          GTK_MESSAGE_ERROR);
         }
 
