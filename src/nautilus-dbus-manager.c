@@ -84,8 +84,8 @@ handle_copy_file (NautilusDBusFileOperations *object,
         source_name = source_display_name;
     }
 
-    nautilus_file_operations_copy_file (source_file, target_dir, source_name, target_name,
-                                        NULL, NULL, NULL);
+    nautilus_file_operations_copy_file_async (source_file, target_dir, source_name, target_name,
+                                              NULL, NULL, NULL);
 
     g_object_unref (source_file);
     g_object_unref (target_dir);
