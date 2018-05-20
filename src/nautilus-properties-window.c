@@ -3406,7 +3406,7 @@ permission_change_callback (NautilusFile *file,
     end_long_operation (window);
 
     /* Report the error if it's an error. */
-    nautilus_report_error_setting_permissions (file, error, NULL);
+    nautilus_report_error_setting_permissions (file, error, GTK_WINDOW (window));
 
     g_object_unref (window);
 }
