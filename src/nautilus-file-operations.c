@@ -5707,6 +5707,91 @@ copy_task_thread_func (GTask        *task,
 }
 
 void
+nautilus_file_operations_copy_file_sync (GFile                *source_file,
+                                         GFile                *target_dir,
+                                         const gchar          *source_display_name,
+                                         const gchar          *new_name,
+                                         GtkWindow            *parent_window,
+                                         NautilusCopyCallback  done_callback,
+                                         gpointer              done_callback_data)
+{
+    CopyMoveJob *job;
+    CommonJob *common;
+    SourceInfo source_info;
+    TransferInfo transfer_info;
+    g_autofree char *dest_fs_id = NULL;
+    GFile *dest;
+
+    job = op_job_new (CopyMoveJob, parent_window);
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+    job->files = g_list_append (NULL, g_object_ref (source_file));
+    job->destination = g_object_ref (target_dir);
+    /* Need to indicate the destination for the operation notification open
+     * button. */
+    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    job->target_name = g_strdup (new_name);
+    job->debuting_files = g_hash_table_new_full (g_file_hash,
+                                                 (GEqualFunc) g_file_equal,
+                                                 g_object_unref,
+                                                 NULL);
+
+    if (source_display_name != NULL)
+    {
+        gchar *path;
+
+        path = g_build_filename ("/", source_display_name, NULL);
+        job->fake_display_source = g_file_new_for_path (path);
+
+        g_free (path);
+    }
+
+    if (strcmp (g_getenv ("TESTVAR"), "TRUE"))
+    {
+        inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
+    }
+
+    common = &job->common;
+
+    nautilus_progress_info_start (job->common.progress);
+
+    scan_sources (job->files,
+                  &source_info,
+                  common,
+                  OP_KIND_COPY);
+    if (job_aborted (common))
+    {
+        return;
+    }
+
+    if (job->destination)
+    {
+        dest = g_object_ref (job->destination);
+    }
+    else
+    {
+        dest = g_file_get_parent (job->files->data);
+    }
+
+    verify_destination (&job->common,
+                        dest,
+                        &dest_fs_id,
+                        source_info.num_bytes);
+    g_object_unref (dest);
+    if (job_aborted (common))
+    {
+        return;
+    }
+
+    g_timer_start (job->common.time);
+
+    memset (&transfer_info, 0, sizeof (transfer_info));
+    copy_files (job,
+                dest_fs_id,
+                &source_info, &transfer_info);
+}
+
+void
 nautilus_file_operations_copy_file (GFile                *source_file,
                                     GFile                *target_dir,
                                     const gchar          *source_display_name,
@@ -5738,8 +5823,6 @@ nautilus_file_operations_copy_file (GFile                *source_file,
 
         g_free (path);
     }
-
-    inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
     g_task_set_task_data (task, job, NULL);
