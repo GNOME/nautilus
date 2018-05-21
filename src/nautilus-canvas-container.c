@@ -4156,24 +4156,12 @@ update_selected (NautilusCanvasContainer *container)
     }
 }
 
-static gboolean
-handle_focus_in_event (GtkWidget     *widget,
-                       GdkEventFocus *event,
-                       gpointer       user_data)
+static void
+handle_has_focus_changed (GObject    *object,
+                          GParamSpec *pspec,
+                          gpointer    user_data)
 {
-    update_selected (NAUTILUS_CANVAS_CONTAINER (widget));
-
-    return FALSE;
-}
-
-static gboolean
-handle_focus_out_event (GtkWidget     *widget,
-                        GdkEventFocus *event,
-                        gpointer       user_data)
-{
-    update_selected (NAUTILUS_CANVAS_CONTAINER (widget));
-
-    return FALSE;
+    update_selected (NAUTILUS_CANVAS_CONTAINER (object));
 }
 
 static void
@@ -4282,11 +4270,8 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
 
     container->details = details;
 
-    g_signal_connect (container, "focus-in-event",
-                      G_CALLBACK (handle_focus_in_event), NULL);
-    g_signal_connect (container, "focus-out-event",
-                      G_CALLBACK (handle_focus_out_event), NULL);
-
+    g_signal_connect (container, "notify::has-focus",
+                      G_CALLBACK (handle_has_focus_changed), NULL);
     g_signal_connect (container, "notify::scale-factor",
                       G_CALLBACK (handle_scale_factor_changed), NULL);
 
