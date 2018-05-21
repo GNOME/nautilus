@@ -894,6 +894,111 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
 }
 
 static gboolean
+key_press_callback (GtkWidget *widget,
+                    GdkEvent  *event,
+                    gpointer   callback_data)
+{
+    NautilusFilesView *view;
+    GtkTreeView *tree_view;
+    guint keyval;
+    GdkModifierType state;
+
+    view = NAUTILUS_FILES_VIEW (callback_data);
+    tree_view = GTK_TREE_VIEW (widget);
+
+    NAUTILUS_LIST_VIEW (view)->details->last_event_button_x = -1;
+    NAUTILUS_LIST_VIEW (view)->details->last_event_button_y = -1;
+
+    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+    if (gdk_event_get_state (event, &state))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    if (keyval == GDK_KEY_F10)
+    {
+        if ((state & GDK_CONTROL_MASK) != 0)
+        {
+            nautilus_files_view_pop_up_background_context_menu (view, NULL);
+
+            return GDK_EVENT_STOP;
+        }
+    }
+
+    if (keyval == GDK_KEY_Right)
+    {
+        g_autoptr (GtkTreePath) path = NULL;
+
+        gtk_tree_view_get_cursor (tree_view, &path, NULL);
+
+        if (path != NULL)
+        {
+            gtk_tree_view_expand_row (tree_view, path, FALSE);
+        }
+
+        return GDK_EVENT_STOP;
+    }
+
+    if (keyval == GDK_KEY_Left)
+    {
+        g_autoptr (GtkTreePath) path = NULL;
+
+        gtk_tree_view_get_cursor (tree_view, &path, NULL);
+
+        if (path != NULL && !gtk_tree_view_collapse_row (tree_view, path))
+        {
+            /* if the row is already collapsed or doesn't have any children,
+             * jump to the parent row instead.
+             */
+            if ((gtk_tree_path_get_depth (path) > 1) && gtk_tree_path_up (path))
+            {
+                gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+            }
+        }
+
+        return GDK_EVENT_STOP;
+    }
+
+    if (keyval == GDK_KEY_space)
+    {
+        if ((state & GDK_CONTROL_MASK) != 0)
+        {
+            return GDK_EVENT_PROPAGATE;
+        }
+
+        if (!gtk_widget_has_focus (GTK_WIDGET (NAUTILUS_LIST_VIEW (view)->details->tree_view)))
+        {
+            return GDK_EVENT_PROPAGATE;
+        }
+
+        if ((state & GDK_SHIFT_MASK) != 0)
+        {
+            activate_selected_items_alternate (NAUTILUS_LIST_VIEW (view), NULL, TRUE);
+        }
+        else
+        {
+            preview_selected_items (NAUTILUS_LIST_VIEW (view));
+        }
+
+        return GDK_EVENT_STOP;
+    }
+
+    if (keyval == GDK_KEY_v)
+    {
+        /* Eat Control + v to not enable type ahead */
+        if ((state & GDK_CONTROL_MASK) != 0)
+        {
+            return GDK_EVENT_STOP;
+        }
+    }
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static gboolean
 on_event (GtkWidget *widget,
           GdkEvent  *event,
           gpointer   user_data)
@@ -914,6 +1019,10 @@ on_event (GtkWidget *widget,
     else if (event_type == GDK_LEAVE_NOTIFY)
     {
         return on_leave_notify (widget, event, user_data);
+    }
+    else if (event_type == GDK_KEY_PRESS)
+    {
+        return key_press_callback (widget, event, user_data);
     }
 
     return GDK_EVENT_PROPAGATE;
@@ -1095,111 +1204,6 @@ subdirectory_unloaded_callback (NautilusListModel *model,
                                           G_CALLBACK (subdirectory_done_loading_callback),
                                           view);
     nautilus_files_view_remove_subdirectory (NAUTILUS_FILES_VIEW (view), directory);
-}
-
-static gboolean
-key_press_callback (GtkWidget   *widget,
-                    GdkEventKey *event,
-                    gpointer     callback_data)
-{
-    NautilusFilesView *view;
-    gboolean handled;
-    GtkTreeView *tree_view;
-    GtkTreePath *path;
-
-    tree_view = GTK_TREE_VIEW (widget);
-
-    view = NAUTILUS_FILES_VIEW (callback_data);
-    handled = FALSE;
-
-    NAUTILUS_LIST_VIEW (view)->details->last_event_button_x = -1;
-    NAUTILUS_LIST_VIEW (view)->details->last_event_button_y = -1;
-
-    switch (event->keyval)
-    {
-        case GDK_KEY_F10:
-        {
-            if (event->state & GDK_CONTROL_MASK)
-            {
-                nautilus_files_view_pop_up_background_context_menu (view, NULL);
-                handled = TRUE;
-            }
-        }
-        break;
-
-        case GDK_KEY_Right:
-        {
-            gtk_tree_view_get_cursor (tree_view, &path, NULL);
-            if (path)
-            {
-                gtk_tree_view_expand_row (tree_view, path, FALSE);
-                gtk_tree_path_free (path);
-            }
-            handled = TRUE;
-        }
-        break;
-
-        case GDK_KEY_Left:
-        {
-            gtk_tree_view_get_cursor (tree_view, &path, NULL);
-            if (path)
-            {
-                if (!gtk_tree_view_collapse_row (tree_view, path))
-                {
-                    /* if the row is already collapsed or doesn't have any children,
-                     * jump to the parent row instead.
-                     */
-                    if ((gtk_tree_path_get_depth (path) > 1) && gtk_tree_path_up (path))
-                    {
-                        gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
-                    }
-                }
-
-                gtk_tree_path_free (path);
-            }
-            handled = TRUE;
-        }
-        break;
-
-        case GDK_KEY_space:
-        {
-            if (event->state & GDK_CONTROL_MASK)
-            {
-                handled = FALSE;
-                break;
-            }
-            if (!gtk_widget_has_focus (GTK_WIDGET (NAUTILUS_LIST_VIEW (view)->details->tree_view)))
-            {
-                handled = FALSE;
-                break;
-            }
-            if ((event->state & GDK_SHIFT_MASK) != 0)
-            {
-                activate_selected_items_alternate (NAUTILUS_LIST_VIEW (view), NULL, TRUE);
-            }
-            else
-            {
-                preview_selected_items (NAUTILUS_LIST_VIEW (view));
-            }
-            handled = TRUE;
-        }
-        break;
-
-        case GDK_KEY_v:
-        {
-            /* Eat Control + v to not enable type ahead */
-            if ((event->state & GDK_CONTROL_MASK) != 0)
-            {
-                handled = TRUE;
-            }
-        }
-        break;
-
-        default:
-            handled = FALSE;
-    }
-
-    return handled;
 }
 
 static gboolean
@@ -2142,8 +2146,6 @@ create_and_set_up_tree_view (NautilusListView *view)
 
     g_signal_connect_object (view->details->tree_view, "event",
                              G_CALLBACK (on_event), view, 0);
-    g_signal_connect_object (view->details->tree_view, "key-press-event",
-                             G_CALLBACK (key_press_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "test-expand-row",
                              G_CALLBACK (test_expand_row_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "row-expanded",
