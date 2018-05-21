@@ -9522,7 +9522,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gtk_container_add (GTK_CONTAINER (view), priv->overlay);
     gtk_widget_show (priv->overlay);
 
-    /* NautilusFloatingBar listen to its parent's 'enter-notify-event' signal
+    /* NautilusFloatingBar listen to its parent's 'event' signal
      * and GtkOverlay doesn't have it enabled by default, so we have to add them
      * here.
      */
