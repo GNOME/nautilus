@@ -5043,8 +5043,6 @@ create_properties_window (StartupData *startup_data)
 
     window->target_files = nautilus_file_list_copy (startup_data->target_files);
 
-    gtk_window_set_wmclass (GTK_WINDOW (window), "file_properties", "Nautilus");
-
     if (startup_data->parent_widget)
     {
         gtk_window_set_screen (GTK_WINDOW (window),
