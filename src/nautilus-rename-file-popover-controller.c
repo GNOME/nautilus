@@ -233,22 +233,29 @@ name_entry_on_undo (GtkWidget                           *widget,
 }
 
 static gboolean
-name_entry_on_key_pressed (GtkWidget *widget,
-                           GdkEvent  *event,
-                           gpointer   user_data)
+name_entry_on_event (GtkWidget *widget,
+                     GdkEvent  *event,
+                     gpointer   user_data)
 {
-    GdkEventKey *key_event;
     NautilusRenameFilePopoverController *self;
+    guint keyval;
+    GdkModifierType state;
 
-    key_event = (GdkEventKey *) event;
+    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
 
-    if (key_event->keyval == GDK_KEY_F2)
+    g_return_val_if_fail (gdk_event_get_keyval (event, &keyval), GDK_EVENT_PROPAGATE);
+    gdk_event_get_state (event, &state);
+
+    if (keyval == GDK_KEY_F2)
     {
         return name_entry_on_f2_pressed (widget, self);
     }
-    else if (key_event->keyval == GDK_KEY_z &&
-             (key_event->state & GDK_CONTROL_MASK) != 0)
+    else if (keyval == GDK_KEY_z && (state & GDK_CONTROL_MASK) != 0)
     {
         return name_entry_on_undo (widget, self);
     }
@@ -361,8 +368,8 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                                       self);
 
     self->key_press_event_handler_id = g_signal_connect (self->name_entry,
-                                                         "key-press-event",
-                                                         G_CALLBACK (name_entry_on_key_pressed),
+                                                         "event",
+                                                         G_CALLBACK (name_entry_on_event),
                                                          self);
 
     gtk_label_set_text (GTK_LABEL (self->name_label),
