@@ -1786,23 +1786,6 @@ rubberband_timeout_callback (gpointer data)
 }
 
 static void
-get_rubber_color (NautilusCanvasContainer *container,
-                  GdkRGBA                 *bgcolor,
-                  GdkRGBA                 *bordercolor)
-{
-    GtkStyleContext *context;
-
-    context = gtk_widget_get_style_context (GTK_WIDGET (container));
-    gtk_style_context_save (context);
-    gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
-
-    gtk_style_context_get_background_color (context, GTK_STATE_FLAG_NORMAL, bgcolor);
-    gtk_style_context_get_border_color (context, GTK_STATE_FLAG_NORMAL, bordercolor);
-
-    gtk_style_context_restore (context);
-}
-
-static void
 stop_rubberbanding (NautilusCanvasContainer *container,
                     GdkEventButton          *event);
 
@@ -1813,7 +1796,6 @@ start_rubberbanding (NautilusCanvasContainer *container,
     AtkObject *accessible;
     NautilusCanvasContainerDetails *details;
     NautilusCanvasRubberbandInfo *band_info;
-    GdkRGBA bg_color, border_color;
     GList *p;
     NautilusCanvasIcon *icon;
 
@@ -1841,8 +1823,6 @@ start_rubberbanding (NautilusCanvasContainer *container,
         (EEL_CANVAS (container), event->x, event->y,
         &band_info->start_x, &band_info->start_y);
 
-    get_rubber_color (container, &bg_color, &border_color);
-
     band_info->selection_rectangle = eel_canvas_item_new
                                          (eel_canvas_root
                                              (EEL_CANVAS (container)),
@@ -1851,9 +1831,6 @@ start_rubberbanding (NautilusCanvasContainer *container,
                                          "y1", band_info->start_y,
                                          "x2", band_info->start_x,
                                          "y2", band_info->start_y,
-                                         "fill_color_rgba", &bg_color,
-                                         "outline_color_rgba", &border_color,
-                                         "width_pixels", 1,
                                          NULL);
 
     accessible = atk_gobject_accessible_for_object
@@ -1910,14 +1887,7 @@ stop_rubberbanding (NautilusCanvasContainer *container,
     /* Destroy this canvas item; the parent will unref it. */
     eel_canvas_item_ungrab (band_info->selection_rectangle);
     eel_canvas_item_lower_to_bottom (band_info->selection_rectangle);
-    if (enable_animation)
-    {
-        nautilus_selection_canvas_item_fade_out (NAUTILUS_SELECTION_CANVAS_ITEM (band_info->selection_rectangle), 150);
-    }
-    else
-    {
-        eel_canvas_item_destroy (band_info->selection_rectangle);
-    }
+    eel_canvas_item_destroy (band_info->selection_rectangle);
     band_info->selection_rectangle = NULL;
 
     /* if only one item has been selected, use it as range
