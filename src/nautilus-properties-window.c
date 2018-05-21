@@ -205,9 +205,9 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_destroy_handler);
 static void append_extension_pages (NautilusPropertiesWindow *window);
 
-static gboolean name_field_focus_out (GtkWidget     *name_field,
-                                      GdkEventFocus *event,
-                                      gpointer       user_data);
+static void name_field_focus_changed (GObject    *object,
+                                      GParamSpec *pspec,
+                                      gpointer    user_data);
 static void name_field_activate (GtkWidget *name_field,
                                  gpointer   user_data);
 static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
@@ -595,8 +595,8 @@ set_name_field (NautilusPropertiesWindow *window,
                                      GTK_POS_RIGHT, 1, 1);
             gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), window->name_field);
 
-            g_signal_connect_object (window->name_field, "focus-out-event",
-                                     G_CALLBACK (name_field_focus_out), window, 0);
+            g_signal_connect_object (window->name_field, "notify::has-focus",
+                                     G_CALLBACK (name_field_focus_changed), window, 0);
             g_signal_connect_object (window->name_field, "activate",
                                      G_CALLBACK (name_field_activate), window, 0);
         }
@@ -821,19 +821,21 @@ name_field_done_editing (GtkWidget                *name_field,
     g_free (new_name);
 }
 
-static gboolean
-name_field_focus_out (GtkWidget     *name_field,
-                      GdkEventFocus *event,
-                      gpointer       user_data)
+static void
+name_field_focus_changed (GObject    *object,
+                          GParamSpec *pspec,
+                          gpointer    user_data)
 {
+    GtkWidget *widget;
+
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (user_data));
 
-    if (gtk_widget_get_sensitive (name_field))
-    {
-        name_field_done_editing (name_field, NAUTILUS_PROPERTIES_WINDOW (user_data));
-    }
+    widget = GTK_WIDGET (object);
 
-    return FALSE;
+    if (!gtk_widget_has_focus (widget) && gtk_widget_get_sensitive (widget))
+    {
+        name_field_done_editing (widget, NAUTILUS_PROPERTIES_WINDOW (user_data));
+    }
 }
 
 static gboolean
