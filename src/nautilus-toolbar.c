@@ -860,35 +860,23 @@ on_location_entry_populate_popup (GtkEntry  *entry,
     return GDK_EVENT_PROPAGATE;
 }
 
-static gboolean
-on_location_entry_focus_out_event (GtkWidget *widget,
-                                   GdkEvent  *event,
-                                   gpointer   user_data)
+static void
+on_location_entry_focus_changed (GObject    *object,
+                                 GParamSpec *pspec,
+                                 gpointer    user_data)
 {
     NautilusToolbar *toolbar;
 
-    toolbar = user_data;
+    toolbar = NAUTILUS_TOOLBAR (user_data);
 
-    if (toolbar->location_entry_should_auto_hide)
+    if (gtk_widget_has_focus (GTK_WIDGET (object)))
+    {
+        toolbar->location_entry_should_auto_hide = TRUE;
+    }
+    else if (toolbar->location_entry_should_auto_hide)
     {
         nautilus_toolbar_set_show_location_entry (toolbar, FALSE);
     }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
-on_location_entry_focus_in_event (GtkWidget *widget,
-                                  GdkEvent  *event,
-                                  gpointer   user_data)
-{
-    NautilusToolbar *toolbar;
-
-    toolbar = user_data;
-
-    toolbar->location_entry_should_auto_hide = TRUE;
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -950,10 +938,8 @@ nautilus_toolbar_init (NautilusToolbar *self)
                               (GCallback) gtk_widget_grab_focus, self);
     g_signal_connect (self->location_entry, "populate-popup",
                       G_CALLBACK (on_location_entry_populate_popup), self);
-    g_signal_connect (self->location_entry, "focus-out-event",
-                      G_CALLBACK (on_location_entry_focus_out_event), self);
-    g_signal_connect (self->location_entry, "focus-in-event",
-                      G_CALLBACK (on_location_entry_focus_in_event), self);
+    g_signal_connect (self->location_entry, "notify::has-focus",
+                      G_CALLBACK (on_location_entry_focus_changed), self);
 
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
@@ -1007,56 +993,40 @@ on_window_slot_destroyed (gpointer  data,
     nautilus_toolbar_set_window_slot (self, NULL);
 }
 
-/* The working assumption being made here is, if the location entry is visible,
- * the user must have switched windows while having keyboard focus on the entry
- * (because otherwise it would be invisible),
- * so we focus the entry explicitly to reset the “should auto-hide” flag.
- */
-static gboolean
-on_window_focus_in_event (GtkWidget *widget,
-                          GdkEvent  *event,
-                          gpointer   user_data)
+static void
+on_window_focus_changed (GObject    *object,
+                         GParamSpec *pspec,
+                         gpointer    user_data)
 {
+    GtkWidget *widget;
     NautilusToolbar *toolbar;
 
-    toolbar = user_data;
+    widget = GTK_WIDGET (object);
+    toolbar = NAUTILUS_TOOLBAR (user_data);
 
     if (g_settings_get_boolean (nautilus_preferences,
                                 NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY))
     {
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
-    if (toolbar->show_location_entry)
+    /* The working assumption being made here is, if the location entry is visible,
+     * the user must have switched windows while having keyboard focus on the entry
+     * (because otherwise it would be invisible),
+     * so we focus the entry explicitly to reset the “should auto-hide” flag.
+     */
+    if (gtk_widget_has_focus (widget) && toolbar->show_location_entry)
     {
         gtk_widget_grab_focus (toolbar->location_entry);
     }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-/* The location entry in general is hidden when it loses focus,
- * but hiding it when switching windows could be undesirable, as the user
- * might want to copy a path from somewhere. This here prevents that from happening.
- */
-static gboolean
-on_window_focus_out_event (GtkWidget *widget,
-                           GdkEvent  *event,
-                           gpointer   user_data)
-{
-    NautilusToolbar *toolbar;
-
-    toolbar = user_data;
-
-    if (g_settings_get_boolean (nautilus_preferences,
-                                NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY))
+    /* The location entry in general is hidden when it loses focus,
+     * but hiding it when switching windows could be undesirable, as the user
+     * might want to copy a path from somewhere. This here prevents that from happening.
+     */
+    else
     {
-        return GDK_EVENT_PROPAGATE;
+        toolbar->location_entry_should_auto_hide = FALSE;
     }
-
-    toolbar->location_entry_should_auto_hide = FALSE;
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -1074,17 +1044,13 @@ nautilus_toolbar_set_property (GObject      *object,
             if (self->window != NULL)
             {
                 g_signal_handlers_disconnect_by_func (self->window,
-                                                      on_window_focus_in_event, self);
-                g_signal_handlers_disconnect_by_func (self->window,
-                                                      on_window_focus_out_event, self);
+                                                      on_window_focus_changed, self);
             }
             self->window = g_value_get_object (value);
             if (self->window != NULL)
             {
-                g_signal_connect (self->window, "focus-in-event",
-                                  G_CALLBACK (on_window_focus_in_event), self);
-                g_signal_connect (self->window, "focus-out-event",
-                                  G_CALLBACK (on_window_focus_out_event), self);
+                g_signal_connect (self->window, "notify::has-focus",
+                                  G_CALLBACK (on_window_focus_changed), self);
             }
         }
         break;
@@ -1146,9 +1112,7 @@ nautilus_toolbar_finalize (GObject *obj)
     g_clear_object (&self->progress_manager);
 
     g_signal_handlers_disconnect_by_func (self->window,
-                                          on_window_focus_in_event, self);
-    g_signal_handlers_disconnect_by_func (self->window,
-                                          on_window_focus_out_event, self);
+                                          on_window_focus_changed, self);
 
     g_clear_object (&self->back_button_longpress_gesture);
     g_clear_object (&self->forward_button_longpress_gesture);
