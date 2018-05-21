@@ -32,10 +32,6 @@ enum
     PROP_Y1,
     PROP_X2,
     PROP_Y2,
-    PROP_FILL_COLOR_RGBA,
-    PROP_OUTLINE_COLOR_RGBA,
-    PROP_OUTLINE_STIPPLING,
-    PROP_WIDTH_PIXELS,
     NUM_PROPERTIES
 };
 
@@ -54,31 +50,10 @@ struct _NautilusSelectionCanvasItemDetails
     int last_outline_update_width;
 
     double x1, y1, x2, y2;              /* Corners of item */
-    double width;                       /* Outline width */
-
-    GdkRGBA fill_color;
-    GdkRGBA outline_color;
-
-    gboolean outline_stippling;
-
-    /* Configuration flags */
-
-    unsigned int fill_set : 1;          /* Is fill color set? */
-    unsigned int outline_set : 1;       /* Is outline color set? */
-
-    double fade_out_fill_alpha;
-    double fade_out_outline_alpha;
-
-    gint64 fade_out_start_time;
-    gint64 fade_out_end_time;
-
-    guint fade_out_tick_id;
 };
 
 G_DEFINE_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item, EEL_TYPE_CANVAS_ITEM);
 
-#define DASH_ON 0.8
-#define DASH_OFF 1.7
 static void
 nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
                                      cairo_t        *cr,
@@ -88,6 +63,7 @@ nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
     double x1, y1, x2, y2;
     int cx1, cy1, cx2, cy2;
     double i2w_dx, i2w_dy;
+    GtkStyleContext *context;
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
@@ -109,56 +85,26 @@ nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
         return;
     }
 
+    context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
+
+    gtk_style_context_save (context);
+
+    gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
+
     cairo_save (cr);
 
-    if (self->priv->fill_set)
-    {
-        GdkRGBA actual_fill;
-
-        actual_fill = self->priv->fill_color;
-
-        if (self->priv->fade_out_tick_id != 0)
-        {
-            actual_fill.alpha = self->priv->fade_out_fill_alpha;
-        }
-
-        gdk_cairo_set_source_rgba (cr, &actual_fill);
-        cairo_rectangle (cr,
-                         cx1, cy1,
-                         cx2 - cx1 + 1,
-                         cy2 - cy1 + 1);
-        cairo_fill (cr);
-    }
-
-    if (self->priv->outline_set)
-    {
-        GdkRGBA actual_outline;
-
-        actual_outline = self->priv->outline_color;
-
-        if (self->priv->fade_out_tick_id != 0)
-        {
-            actual_outline.alpha = self->priv->fade_out_outline_alpha;
-        }
-
-        gdk_cairo_set_source_rgba (cr, &actual_outline);
-        cairo_set_line_width (cr, (int) self->priv->width);
-
-        if (self->priv->outline_stippling)
-        {
-            double dash[2] = { DASH_ON, DASH_OFF };
-
-            cairo_set_dash (cr, dash, G_N_ELEMENTS (dash), 0);
-        }
-
-        cairo_rectangle (cr,
-                         cx1 + 0.5, cy1 + 0.5,
-                         cx2 - cx1,
-                         cy2 - cy1);
-        cairo_stroke (cr);
-    }
+    gtk_render_background (context, cr,
+                           cx1, cy1,
+                           cx2 - cx1,
+                           cy2 - cy1);
+    gtk_render_frame (context, cr,
+                      cx1, cy1,
+                      cx2 - cx1,
+                      cy2 - cy1);
 
     cairo_restore (cr);
+
+    gtk_style_context_restore (context);
 }
 
 static double
@@ -173,7 +119,6 @@ nautilus_selection_canvas_item_point (EelCanvasItem  *item,
     double x1, y1, x2, y2;
     double hwidth;
     double dx, dy;
-    double tmp;
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
     *actual_item = item;
@@ -185,58 +130,18 @@ nautilus_selection_canvas_item_point (EelCanvasItem  *item,
     x2 = self->priv->x2;
     y2 = self->priv->y2;
 
-    if (self->priv->outline_set)
-    {
-        hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
+    hwidth = (1.0 / item->canvas->pixels_per_unit) / 2.0;
 
-        x1 -= hwidth;
-        y1 -= hwidth;
-        x2 += hwidth;
-        y2 += hwidth;
-    }
-    else
-    {
-        hwidth = 0.0;
-    }
+    x1 -= hwidth;
+    y1 -= hwidth;
+    x2 += hwidth;
+    y2 += hwidth;
 
     /* Is point inside rectangle (which can be hollow if it has no fill set)? */
 
     if ((x >= x1) && (y >= y1) && (x <= x2) && (y <= y2))
     {
-        if (self->priv->fill_set || !self->priv->outline_set)
-        {
-            return 0.0;
-        }
-
-        dx = x - x1;
-        tmp = x2 - x;
-        if (tmp < dx)
-        {
-            dx = tmp;
-        }
-
-        dy = y - y1;
-        tmp = y2 - y;
-        if (tmp < dy)
-        {
-            dy = tmp;
-        }
-
-        if (dy < dx)
-        {
-            dx = dy;
-        }
-
-        dx -= 2.0 * hwidth;
-
-        if (dx < 0.0)
-        {
-            return 0.0;
-        }
-        else
-        {
-            return dx;
-        }
+        return 0.0;
     }
 
     /* Point is outside rectangle */
@@ -275,15 +180,19 @@ request_redraw_borders (EelCanvas *canvas,
                         Rect      *update_rect,
                         int        width)
 {
+    /* Top */
     eel_canvas_request_redraw (canvas,
                                update_rect->x0, update_rect->y0,
                                update_rect->x1, update_rect->y0 + width);
+    /* Bottom */
     eel_canvas_request_redraw (canvas,
                                update_rect->x0, update_rect->y1 - width,
                                update_rect->x1, update_rect->y1);
+    /* Left */
     eel_canvas_request_redraw (canvas,
                                update_rect->x0, update_rect->y0,
                                update_rect->x0 + width, update_rect->y1);
+    /* Right */
     eel_canvas_request_redraw (canvas,
                                update_rect->x1 - width, update_rect->y0,
                                update_rect->x1, update_rect->y1);
@@ -404,6 +313,8 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     int repaint_rects_count, i;
     int width_pixels;
     int width_lt, width_rb;
+    GtkStyleContext *context;
+    GtkBorder border;
     Rect update_rect, repaint_rects[4];
 
     if (EEL_CANVAS_ITEM_CLASS (nautilus_selection_canvas_item_parent_class)->update)
@@ -434,38 +345,30 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
 
     priv->last_update_rect = update_rect;
 
-    if (priv->outline_set)
-    {
-        /* Outline and bounding box */
-        width_pixels = (int) priv->width;
-        width_lt = width_pixels / 2;
-        width_rb = (width_pixels + 1) / 2;
+    context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
 
-        cx1 -= width_lt;
-        cy1 -= width_lt;
-        cx2 += width_rb;
-        cy2 += width_rb;
+    gtk_style_context_save (context);
+    gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
+    gtk_style_context_get_border (context, GTK_STATE_FLAG_NORMAL, &border);
+    gtk_style_context_restore (context);
 
-        update_rect = make_rect (cx1, cy1, cx2, cy2);
-        request_redraw_borders (item->canvas, &update_rect,
-                                (width_lt + width_rb));
-        request_redraw_borders (item->canvas, &priv->last_outline_update_rect,
-                                priv->last_outline_update_width);
-        priv->last_outline_update_rect = update_rect;
-        priv->last_outline_update_width = width_lt + width_rb;
+    cx1 -= border.left;
+    cy1 -= border.top;
+    cx2 += border.right;
+    cy2 += border.bottom;
 
-        item->x1 = cx1;
-        item->y1 = cy1;
-        item->x2 = cx2 + 1;
-        item->y2 = cy2 + 1;
-    }
-    else
-    {
-        item->x1 = cx1;
-        item->y1 = cy1;
-        item->x2 = cx2 + 1;
-        item->y2 = cy2 + 1;
-    }
+    update_rect = make_rect (cx1, cy1, cx2, cy2);
+    request_redraw_borders (item->canvas, &update_rect,
+                            border.left + border.top + border.right + border.bottom);
+    request_redraw_borders (item->canvas, &priv->last_outline_update_rect,
+                            priv->last_outline_update_width);
+    priv->last_outline_update_rect = update_rect;
+    priv->last_outline_update_width = border.left + border.top + border.right + border.bottom;
+
+    item->x1 = cx1;
+    item->y1 = cy1;
+    item->x2 = cx2;
+    item->y2 = cy2;
 }
 
 static void
@@ -491,101 +394,21 @@ nautilus_selection_canvas_item_bounds (EelCanvasItem *item,
                                        double        *y2)
 {
     NautilusSelectionCanvasItem *self;
-    double hwidth;
+    GtkStyleContext *context;
+    GtkBorder border;
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
+    context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
 
-    hwidth = (self->priv->width / item->canvas->pixels_per_unit) / 2.0;
+    gtk_style_context_save (context);
+    gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
+    gtk_style_context_get_border (context, GTK_STATE_FLAG_NORMAL, &border);
+    gtk_style_context_restore (context);
 
-    *x1 = self->priv->x1 - hwidth;
-    *y1 = self->priv->y1 - hwidth;
-    *x2 = self->priv->x2 + hwidth;
-    *y2 = self->priv->y2 + hwidth;
-}
-
-static gboolean
-fade_and_request_redraw (GtkWidget     *canvas,
-                         GdkFrameClock *frame_clock,
-                         gpointer       user_data)
-{
-    NautilusSelectionCanvasItem *self = user_data;
-    gint64 frame_time;
-    gdouble percentage;
-
-    frame_time = gdk_frame_clock_get_frame_time (frame_clock);
-    if (frame_time >= self->priv->fade_out_end_time)
-    {
-        self->priv->fade_out_tick_id = 0;
-        eel_canvas_item_destroy (EEL_CANVAS_ITEM (self));
-
-        return G_SOURCE_REMOVE;
-    }
-
-    percentage = 1.0 - (gdouble) (frame_time - self->priv->fade_out_start_time) /
-                 (gdouble) (self->priv->fade_out_end_time - self->priv->fade_out_start_time);
-
-    self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha * percentage;
-    self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha * percentage;
-
-    eel_canvas_item_request_redraw (EEL_CANVAS_ITEM (self));
-
-    return G_SOURCE_CONTINUE;
-}
-
-void
-nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self,
-                                         guint                        transition_time)
-{
-    EelCanvasItem *item = EEL_CANVAS_ITEM (self);
-    GtkWidget *widget;
-    GdkFrameClock *clock;
-
-    self->priv->fade_out_fill_alpha = self->priv->fill_color.alpha;
-    self->priv->fade_out_outline_alpha = self->priv->outline_color.alpha;
-
-    widget = GTK_WIDGET (item->canvas);
-    clock = gtk_widget_get_frame_clock (widget);
-    self->priv->fade_out_start_time = gdk_frame_clock_get_frame_time (clock);
-    self->priv->fade_out_end_time = self->priv->fade_out_start_time + 1000 * transition_time;
-
-    self->priv->fade_out_tick_id =
-        gtk_widget_add_tick_callback (GTK_WIDGET (item->canvas), fade_and_request_redraw, self, NULL);
-}
-
-static void
-nautilus_selection_canvas_item_dispose (GObject *obj)
-{
-    NautilusSelectionCanvasItem *self = NAUTILUS_SELECTION_CANVAS_ITEM (obj);
-
-    if (self->priv->fade_out_tick_id != 0)
-    {
-        gtk_widget_remove_tick_callback (GTK_WIDGET (EEL_CANVAS_ITEM (self)->canvas), self->priv->fade_out_tick_id);
-        self->priv->fade_out_tick_id = 0;
-    }
-
-    G_OBJECT_CLASS (nautilus_selection_canvas_item_parent_class)->dispose (obj);
-}
-
-static void
-do_set_fill (NautilusSelectionCanvasItem *self,
-             gboolean                     fill_set)
-{
-    if (self->priv->fill_set != fill_set)
-    {
-        self->priv->fill_set = fill_set;
-        eel_canvas_item_request_update (EEL_CANVAS_ITEM (self));
-    }
-}
-
-static void
-do_set_outline (NautilusSelectionCanvasItem *self,
-                gboolean                     outline_set)
-{
-    if (self->priv->outline_set != outline_set)
-    {
-        self->priv->outline_set = outline_set;
-        eel_canvas_item_request_update (EEL_CANVAS_ITEM (self));
-    }
+    *x1 = self->priv->x1 - (border.left / item->canvas->pixels_per_unit) / 2.0;
+    *y1 = self->priv->y1 - (border.top / item->canvas->pixels_per_unit) / 2.0;
+    *x2 = self->priv->x2 + (border.right / item->canvas->pixels_per_unit) / 2.0;
+    *y2 = self->priv->y2 + (border.bottom / item->canvas->pixels_per_unit) / 2.0;
 }
 
 static void
@@ -629,56 +452,6 @@ nautilus_selection_canvas_item_set_property (GObject      *object,
         case PROP_Y2:
         {
             self->priv->y2 = g_value_get_double (value);
-
-            eel_canvas_item_request_update (item);
-        }
-        break;
-
-        case PROP_FILL_COLOR_RGBA:
-        {
-            GdkRGBA *color;
-
-            color = g_value_get_boxed (value);
-
-            do_set_fill (self, color != NULL);
-
-            if (color != NULL)
-            {
-                self->priv->fill_color = *color;
-            }
-
-            eel_canvas_item_request_redraw (item);
-            break;
-        }
-
-        case PROP_OUTLINE_COLOR_RGBA:
-        {
-            GdkRGBA *color;
-
-            color = g_value_get_boxed (value);
-
-            do_set_outline (self, color != NULL);
-
-            if (color != NULL)
-            {
-                self->priv->outline_color = *color;
-            }
-
-            eel_canvas_item_request_redraw (item);
-            break;
-        }
-
-        case PROP_OUTLINE_STIPPLING:
-        {
-            self->priv->outline_stippling = g_value_get_boolean (value);
-
-            eel_canvas_item_request_redraw (item);
-        }
-        break;
-
-        case PROP_WIDTH_PIXELS:
-        {
-            self->priv->width = g_value_get_uint (value);
 
             eel_canvas_item_request_update (item);
         }
@@ -728,30 +501,6 @@ nautilus_selection_canvas_item_get_property (GObject    *object,
         }
         break;
 
-        case PROP_FILL_COLOR_RGBA:
-        {
-            g_value_set_boxed (value, &self->priv->fill_color);
-        }
-        break;
-
-        case PROP_OUTLINE_COLOR_RGBA:
-        {
-            g_value_set_boxed (value, &self->priv->outline_color);
-        }
-        break;
-
-        case PROP_OUTLINE_STIPPLING:
-        {
-            g_value_set_boolean (value, self->priv->outline_stippling);
-        }
-        break;
-
-        case PROP_WIDTH_PIXELS:
-        {
-            g_value_set_uint (value, self->priv->width);
-        }
-        break;
-
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, param_id, pspec);
@@ -771,7 +520,6 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
 
     gobject_class->set_property = nautilus_selection_canvas_item_set_property;
     gobject_class->get_property = nautilus_selection_canvas_item_get_property;
-    gobject_class->dispose = nautilus_selection_canvas_item_dispose;
 
     item_class->draw = nautilus_selection_canvas_item_draw;
     item_class->point = nautilus_selection_canvas_item_point;
@@ -795,21 +543,6 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
         g_param_spec_double ("y2", NULL, NULL,
                              -G_MAXDOUBLE, G_MAXDOUBLE, 0,
                              G_PARAM_READWRITE);
-    properties[PROP_FILL_COLOR_RGBA] =
-        g_param_spec_boxed ("fill-color-rgba", NULL, NULL,
-                            GDK_TYPE_RGBA,
-                            G_PARAM_READWRITE);
-    properties[PROP_OUTLINE_COLOR_RGBA] =
-        g_param_spec_boxed ("outline-color-rgba", NULL, NULL,
-                            GDK_TYPE_RGBA,
-                            G_PARAM_READWRITE);
-    properties[PROP_OUTLINE_STIPPLING] =
-        g_param_spec_boolean ("outline-stippling", NULL, NULL,
-                              FALSE, G_PARAM_READWRITE);
-    properties[PROP_WIDTH_PIXELS] =
-        g_param_spec_uint ("width-pixels", NULL, NULL,
-                           0, G_MAXUINT, 0,
-                           G_PARAM_READWRITE);
 
     g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
     g_type_class_add_private (klass, sizeof (NautilusSelectionCanvasItemDetails));
