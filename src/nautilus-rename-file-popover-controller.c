@@ -112,7 +112,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
     name_length = strlen (name);
     max_name_length = nautilus_directory_get_max_child_name_length (directory);
 
-    if (strlen (name) == 0)
+    if (name_length == 0)
     {
         return FALSE;
     }
