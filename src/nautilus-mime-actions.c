@@ -1260,13 +1260,6 @@ application_unhandled_file_install (GtkDialog                 *dialog,
     }
 }
 
-static gboolean
-delete_cb (GtkDialog *dialog)
-{
-    gtk_dialog_response (dialog, GTK_RESPONSE_DELETE_EVENT);
-    return TRUE;
-}
-
 static void
 pk_proxy_appeared_cb (GObject      *source,
                       GAsyncResult *res,
@@ -1316,8 +1309,6 @@ pk_proxy_appeared_cb (GObject      *source,
     g_signal_connect (dialog, "response",
                       G_CALLBACK (application_unhandled_file_install),
                       parameters_install);
-    g_signal_connect (dialog, "delete-event",
-                      G_CALLBACK (delete_cb), NULL);
     gtk_widget_show_all (dialog);
     g_free (mime_type);
 }
