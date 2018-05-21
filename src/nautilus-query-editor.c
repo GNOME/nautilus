@@ -688,8 +688,6 @@ setup_widgets (NautilusQueryEditor *editor)
     gtk_menu_button_set_popover (GTK_MENU_BUTTON (priv->dropdown_button), priv->popover);
     gtk_container_add (GTK_CONTAINER (hbox), priv->dropdown_button);
 
-    g_signal_connect (priv->entry, "key-press-event",
-                      G_CALLBACK (entry_key_press_event_cb), editor);
     g_signal_connect (priv->entry, "activate",
                       G_CALLBACK (entry_activate_cb), editor);
     g_signal_connect (priv->entry, "search-changed",
