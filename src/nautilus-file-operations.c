@@ -5559,7 +5559,6 @@ copy_files (CopyMoveJob  *job,
     common = &job->common;
 
     report_copy_progress (job, source_info, transfer_info);
-
     /* Query the source dir, not the file because if it's a symlink we'll follow it */
     source_dir = g_file_get_parent ((GFile *) job->files->data);
     if (source_dir)
@@ -5721,6 +5720,10 @@ nautilus_file_operations_copy_file_sync (GFile                *source_file,
     TransferInfo transfer_info;
     g_autofree char *dest_fs_id = NULL;
     GFile *dest;
+
+    /* TODO: Fix the new_name behaviour when copying a directory containing
+     * at least one file. See test-file-operations-copy-file for reference.
+     */
 
     job = op_job_new (CopyMoveJob, parent_window);
     job->done_callback = done_callback;
