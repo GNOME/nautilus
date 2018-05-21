@@ -27,18 +27,7 @@
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 
-G_DECLARE_DERIVABLE_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkBox)
-
-struct _NautilusQueryEditorClass
-{
-    GtkBoxClass parent_class;
-
-    void (* changed)   (NautilusQueryEditor  *editor,
-                        NautilusQuery        *query,
-                        gboolean              reload);
-    void (* cancel)    (NautilusQueryEditor *editor);
-    void (* activated) (NautilusQueryEditor *editor);
-};
+G_DECLARE_FINAL_TYPE (NautilusQueryEditor, nautilus_query_editor, NAUTILUS, QUERY_EDITOR, GtkBox)
 
 GtkWidget     *nautilus_query_editor_new          (void);
 
