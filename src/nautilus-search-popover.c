@@ -793,7 +793,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                         g_cclosure_marshal_generic,
                                         G_TYPE_NONE,
                                         1,
-                                        G_TYPE_POINTER);
+                                        G_TYPE_PTR_ARRAY);
 
     signals[MIME_TYPE] = g_signal_new ("mime-type",
                                        NAUTILUS_TYPE_SEARCH_POPOVER,
@@ -805,7 +805,7 @@ nautilus_search_popover_class_init (NautilusSearchPopoverClass *klass)
                                        G_TYPE_NONE,
                                        2,
                                        G_TYPE_INT,
-                                       G_TYPE_POINTER);
+                                       G_TYPE_STRING);
 
     signals[TIME_TYPE] = g_signal_new ("time-type",
                                        NAUTILUS_TYPE_SEARCH_POPOVER,
