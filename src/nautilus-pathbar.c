@@ -138,8 +138,6 @@ get_slider_button (NautilusPathBar *self,
 {
     GtkWidget *button;
 
-    gtk_widget_push_composite_child ();
-
     button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button, FALSE);
     gtk_widget_add_events (button, GDK_SCROLL_MASK);
@@ -147,8 +145,6 @@ get_slider_button (NautilusPathBar *self,
                        gtk_image_new_from_icon_name (arrow_type, GTK_ICON_SIZE_MENU));
     gtk_container_add (GTK_CONTAINER (self), button);
     gtk_widget_show_all (button);
-
-    gtk_widget_pop_composite_child ();
 
     return button;
 }
@@ -2075,8 +2071,6 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
 
     file = nautilus_file_get (file_path);
 
-    gtk_widget_push_composite_child ();
-
     while (file != NULL)
     {
         NautilusFile *parent_file;
@@ -2111,8 +2105,6 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
         container = BUTTON_DATA (l->data)->container;
         gtk_container_add (GTK_CONTAINER (self), container);
     }
-
-    gtk_widget_pop_composite_child ();
 }
 
 void
