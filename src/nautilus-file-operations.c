@@ -2793,8 +2793,6 @@ prompt_empty_trash (GtkWindow *parent_window)
         gtk_window_set_screen (GTK_WINDOW (dialog), screen);
     }
     atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
-    gtk_window_set_wmclass (GTK_WINDOW (dialog), "empty_trash",
-                            "Nautilus");
 
     /* Make transient for the window group */
     gtk_widget_realize (dialog);
