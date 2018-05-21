@@ -3220,7 +3220,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_location_info (window))
     {
-        append_title_and_ellipsizing_value (window, grid, _("Parent Folder:"),
+        append_title_and_ellipsizing_value (window, grid, _("Parent folder:"),
                                             "where",
                                             INCONSISTENT_STATE_STRING,
                                             location_show_original (window));
