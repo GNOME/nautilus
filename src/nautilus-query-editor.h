@@ -23,7 +23,7 @@
 
 #include <gtk/gtk.h>
 
-#include "nautilus-query.h"
+#include "nautilus-types.h"
 
 #define NAUTILUS_TYPE_QUERY_EDITOR nautilus_query_editor_get_type()
 
