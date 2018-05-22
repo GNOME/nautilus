@@ -861,28 +861,39 @@ nautilus_path_bar_screen_changed (GtkWidget *widget,
     nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
 }
 
+/* GTK+ 4 TODO: Use an event controller for this. */
 static gboolean
-nautilus_path_bar_scroll (GtkWidget      *widget,
-                          GdkEventScroll *event)
+nautilus_path_bar_event (GtkWidget *widget,
+                         GdkEvent  *event)
 {
     NautilusPathBar *self;
+    GdkScrollDirection direction;
 
     self = NAUTILUS_PATH_BAR (widget);
 
-    switch (event->direction)
+    if (gdk_event_get_event_type (event) != GDK_SCROLL)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
+    if (G_UNLIKELY (!gdk_event_get_scroll_direction (event, &direction)))
+    {
+        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
+    }
+
+    switch (direction)
     {
         case GDK_SCROLL_RIGHT:
         case GDK_SCROLL_DOWN:
         {
             nautilus_path_bar_scroll_down (self);
-            return TRUE;
+            return GDK_EVENT_STOP;
         }
 
         case GDK_SCROLL_LEFT:
         case GDK_SCROLL_UP:
         {
             nautilus_path_bar_scroll_up (self);
-            return TRUE;
+            return GDK_EVENT_STOP;
         }
 
         case GDK_SCROLL_SMOOTH:
@@ -891,7 +902,7 @@ nautilus_path_bar_scroll (GtkWidget      *widget,
         break;
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -1180,7 +1191,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     widget_class->screen_changed = nautilus_path_bar_screen_changed;
     widget_class->grab_notify = nautilus_path_bar_grab_notify;
     widget_class->state_changed = nautilus_path_bar_state_changed;
-    widget_class->scroll_event = nautilus_path_bar_scroll;
+    widget_class->event = nautilus_path_bar_event;
 
     container_class->add = nautilus_path_bar_add;
     container_class->forall = nautilus_path_bar_forall;
