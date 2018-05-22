@@ -4772,55 +4772,41 @@ create_permissions_page (NautilusPropertiesWindow *window)
 static void
 append_extension_pages (NautilusPropertiesWindow *window)
 {
-    GList *providers;
+    GList *model_providers;
     GList *p;
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER);
+    model_providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER);
 
-    for (p = providers; p != NULL; p = p->next)
+    for (p = model_providers; p != NULL; p = p->next)
     {
-        NautilusPropertyPageProvider *provider;
-        GList *pages;
-        GList *l;
+        NautilusPropertyPageModelProvider *model_provider;
+        g_autoptr (NautilusPropertyPageModel) page;
+        GtkWidget *page_widget;
+        GtkWidget *label;
 
-        provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
+        model_provider = NAUTILUS_PROPERTY_PAGE_MODEL_PROVIDER (p->data);
 
-        pages = nautilus_property_page_provider_get_pages
-                    (provider, window->original_files);
+        page = nautilus_property_page_model_provider_get_model (model_provider,
+                                                                window->original_files);
 
-        for (l = pages; l != NULL; l = l->next)
-        {
-            NautilusPropertyPage *page;
-            GtkWidget *page_widget;
-            GtkWidget *label;
 
-            page = NAUTILUS_PROPERTY_PAGE (l->data);
+        page_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+        label = gtk_label_new (nautilus_property_page_model_get_title (page));
+        gtk_notebook_append_page (window->notebook,
+                                  page_widget, label);
+        gtk_container_child_set (GTK_CONTAINER (window->notebook),
+                                 page_widget,
+                                 "tab-expand", TRUE,
+                                 NULL);
 
-            g_object_get (G_OBJECT (page),
-                          "page", &page_widget, "label", &label,
-                          NULL);
+        g_object_set_data (G_OBJECT (page_widget),
+                           "is-extension-page",
+                           page);
 
-            gtk_notebook_append_page (window->notebook,
-                                      page_widget, label);
-            gtk_container_child_set (GTK_CONTAINER (window->notebook),
-                                     page_widget,
-                                     "tab-expand", TRUE,
-                                     NULL);
-
-            g_object_set_data (G_OBJECT (page_widget),
-                               "is-extension-page",
-                               page);
-
-            g_object_unref (page_widget);
-            g_object_unref (label);
-
-            g_object_unref (page);
-        }
-
-        g_list_free (pages);
+        g_object_unref (page);
     }
 
-    nautilus_module_extension_list_free (providers);
+    nautilus_module_extension_list_free (model_providers);
 }
 
 static gboolean

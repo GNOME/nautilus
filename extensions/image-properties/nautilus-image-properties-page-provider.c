@@ -21,11 +21,8 @@
  */
 
 #include "nautilus-image-properties-page-provider.h"
-
 #include "nautilus-image-properties-page.h"
-
 #include <glib/gi18n.h>
-
 #include <nautilus-extension.h>
 
 #define NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME "NautilusImagePropertiesPage::property_page"
@@ -35,13 +32,13 @@ struct _NautilusImagesPropertiesPageProvider
     GObject parent_instance;
 };
 
-static void property_page_provider_iface_init (NautilusPropertyPageProviderInterface *iface);
+static void property_page_provider_iface_init (NautilusPropertyPageModelProviderInterface *iface);
 
 G_DEFINE_DYNAMIC_TYPE_EXTENDED (NautilusImagesPropertiesPageProvider,
                                 nautilus_image_properties_page_provider,
                                 G_TYPE_OBJECT,
                                 0,
-                                G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER,
+                                G_IMPLEMENT_INTERFACE_DYNAMIC (NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER,
                                                                property_page_provider_iface_init))
 
 static gboolean
@@ -76,13 +73,13 @@ is_mime_type_supported (const char *mime_type)
 }
 
 static GList *
-get_pages (NautilusPropertyPageProvider *provider,
-           GList                        *files)
+get_model (NautilusPropertyPageModelProvider *provider,
+           GList                             *files)
 {
     NautilusFileInfo *file_info;
     g_autofree char *mime_type = NULL;
     NautilusImagesPropertiesPage *image_properties_page;
-    NautilusPropertyPage *property_page;
+    NautilusPropertyPageModel *property_page;
 
     if (files == NULL || files->next != NULL)
     {
@@ -96,9 +93,9 @@ get_pages (NautilusPropertyPageProvider *provider,
         return NULL;
     }
     image_properties_page = nautilus_image_properties_page_new ();
-    property_page = nautilus_property_page_new (NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME,
-                                                gtk_label_new (_("Image")),
-                                                GTK_WIDGET (image_properties_page));
+    property_page = nautilus_property_page_model_new (NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME,
+                                                      "Image",
+                                                      GTK_WIDGET (image_properties_page));
 
     nautilus_image_properties_page_load_from_file_info (image_properties_page, file_info);
 
