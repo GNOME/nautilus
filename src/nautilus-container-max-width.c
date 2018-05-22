@@ -57,6 +57,7 @@ nautilus_container_max_width_get_property (GObject    *object,
         {
             g_value_set_int (value, self->max_width);
         }
+        break;
 
         default:
         {
