@@ -33,7 +33,7 @@
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type ())
-G_DECLARE_DERIVABLE_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, GtkApplicationWindow);
+G_DECLARE_FINAL_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, GtkApplicationWindow);
 
 typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GFile *location,
@@ -50,22 +50,6 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_MIN_HEIGHT		200
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH		890
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
-
-
-struct _NautilusWindowClass
-{
-        GtkApplicationWindowClass parent_spot;
-
-	/* Function pointers for overriding, without corresponding signals */
-        void   (* sync_title) (NautilusWindow *window,
-			       NautilusWindowSlot *slot);
-        void   (* close) (NautilusWindow *window);
-        /* Use this in case your window has a special slot. Also is expected that
-         * the slot is initialized with nautilus_window_initialize_slot.
-         */
-        NautilusWindowSlot * (* create_slot) (NautilusWindow *window,
-                                              GFile          *location);
-};
 
 NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
 void             nautilus_window_close                (NautilusWindow    *window);
