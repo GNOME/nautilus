@@ -32,7 +32,6 @@
 #include <X11/Xlib.h>
 #include <X11/Xatom.h>
 #include <gdk/gdk.h>
-#include <gdk/gdkprivate.h>
 #include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
