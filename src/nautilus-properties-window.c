@@ -203,7 +203,8 @@ static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
                             gboolean     cancel_timed_wait,
                             gboolean     cancel_destroy_handler);
-static void append_extension_pages (NautilusPropertiesWindow *window);
+static void create_extension_pages_ui (NautilusPropertiesWindow *window);
+static void setup_extension_pages (NautilusPropertiesWindow *window);
 
 static void name_field_focus_changed (GObject    *object,
                                       GParamSpec *pspec,
@@ -913,24 +914,21 @@ update_properties_window_title (NautilusPropertiesWindow *window)
 }
 
 static void
-clear_extension_pages (NautilusPropertiesWindow *window)
+clear_extension_pages_ui (NautilusPropertiesWindow *window)
 {
     int i;
     int num_pages;
-    GtkWidget *page;
+    GtkWidget *page_widget;
 
-    num_pages = gtk_notebook_get_n_pages
-                    (GTK_NOTEBOOK (window->notebook));
+    num_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (window->notebook));
 
     for (i = 0; i < num_pages; i++)
     {
-        page = gtk_notebook_get_nth_page
-                   (GTK_NOTEBOOK (window->notebook), i);
+        page_widget = gtk_notebook_get_nth_page (GTK_NOTEBOOK (window->notebook), i);
 
-        if (g_object_get_data (G_OBJECT (page), "is-extension-page"))
+        if (g_object_get_data (G_OBJECT (page_widget), "is-extension-page"))
         {
-            gtk_notebook_remove_page
-                (GTK_NOTEBOOK (window->notebook), i);
+            gtk_notebook_remove_page (GTK_NOTEBOOK (window->notebook), i);
             num_pages--;
             i--;
         }
@@ -938,10 +936,66 @@ clear_extension_pages (NautilusPropertiesWindow *window)
 }
 
 static void
-refresh_extension_pages (NautilusPropertiesWindow *window)
+clear_extension_pages (NautilusPropertiesWindow *window)
+{
+    GList *model_providers;
+    GList *p;
+
+    model_providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER);
+
+    for (p = model_providers; p != NULL; p = p->next)
+    {
+        NautilusPropertyPageModelProvider *model_provider;
+        NautilusPropertyPageModel *page_model = NULL;
+
+        model_provider = NAUTILUS_PROPERTY_PAGE_MODEL_PROVIDER (p->data);
+
+        page_model = nautilus_property_page_model_provider_get_model (model_provider);
+        g_signal_handlers_disconnect_by_data (page_model, window);
+    }
+}
+
+static void
+recreate_extension_pages (NautilusPropertiesWindow *window)
 {
     clear_extension_pages (window);
-    append_extension_pages (window);
+    clear_extension_pages_ui (window);
+    setup_extension_pages (window);
+    create_extension_pages_ui (window);
+}
+
+static void
+refresh_extension_pages (NautilusPropertiesWindow *window)
+{
+    clear_extension_pages_ui (window);
+    create_extension_pages_ui (window);
+}
+
+static void
+setup_extension_pages (NautilusPropertiesWindow *window)
+{
+    GList *model_providers = NULL;
+    GList *p;
+
+    model_providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER);
+
+    for (p = model_providers; p != NULL; p = p->next)
+    {
+        NautilusPropertyPageModelProvider *model_provider;
+        NautilusPropertyPageModel *page;
+
+        model_provider = NAUTILUS_PROPERTY_PAGE_MODEL_PROVIDER (p->data);
+
+        page = nautilus_property_page_model_provider_get_model (model_provider);
+
+        g_signal_connect_swapped (page, "notify::sections",
+                                  G_CALLBACK (refresh_extension_pages), window);
+        g_signal_connect_swapped (page, "notify::items",
+                                  G_CALLBACK (refresh_extension_pages), window);
+
+        nautilus_property_page_model_provider_set_files (model_provider,
+                                                         window->original_files);
+    }
 }
 
 static void
@@ -1183,7 +1237,7 @@ properties_window_update (NautilusPropertiesWindow *window,
     {
         if (!mime_list_equal (window->mime_list, mime_list))
         {
-            refresh_extension_pages (window);
+            recreate_extension_pages (window);
         }
 
         g_list_free_full (window->mime_list, g_free);
@@ -4769,58 +4823,137 @@ create_permissions_page (NautilusPropertiesWindow *window)
     }
 }
 
-static void
-append_extension_pages (NautilusPropertiesWindow *window)
+static GtkWidget*
+create_extension_page_ui (NautilusPropertiesWindow          *window,
+                          NautilusPropertyPageModelProvider *model_provider)
 {
-    GList *providers;
-    GList *p;
+    NautilusPropertyPageModel *page;
+    GtkWidget *page_container;
+    GList *sections;
+    GList *items;
+    GList *section_iter;
 
-    providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER);
+    page = nautilus_property_page_model_provider_get_model (model_provider);
+    page_container = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_set_margin_bottom (page_container, 6);
+    gtk_widget_set_margin_top (page_container, 6);
+    gtk_widget_set_margin_end (page_container, 6);
+    gtk_widget_set_margin_start (page_container, 6);
 
-    for (p = providers; p != NULL; p = p->next)
+    sections = nautilus_property_page_model_get_sections (page);
+    items = nautilus_property_page_model_get_items (page);
+    for (section_iter = sections; section_iter != NULL; section_iter = section_iter->next)
     {
-        NautilusPropertyPageProvider *provider;
-        GList *pages;
-        GList *l;
+        NautilusPropertyPageModelSection *section;
+        int section_id;
+        char *section_title;
+        char *section_title_markup;
+        GList *item_iter = NULL;
+        GtkBox *section_container;
+        GtkGrid *items_container;
+        GtkLabel *section_title_label;
+        int grid_row;
 
-        provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
+        section = (NautilusPropertyPageModelSection *) section_iter->data;
+        section_id = section->id;
+        section_title = section->title;
 
-        pages = nautilus_property_page_provider_get_pages
-                    (provider, window->original_files);
+        section_container = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 6));
 
-        for (l = pages; l != NULL; l = l->next)
+        section_title_markup = g_markup_printf_escaped ("<b>%s</b>", section_title);
+        section_title_label = GTK_LABEL (gtk_label_new (NULL));
+        gtk_label_set_markup (section_title_label, section_title_markup);
+        gtk_label_set_xalign (section_title_label, 0);
+        gtk_container_add (GTK_CONTAINER (section_container),
+                           GTK_WIDGET (section_title_label));
+
+        items_container = GTK_GRID (gtk_grid_new ());
+        gtk_grid_set_column_spacing (items_container, 20);
+        gtk_container_add (GTK_CONTAINER (section_container),
+                           GTK_WIDGET (items_container));
+
+        gtk_container_add (GTK_CONTAINER (page_container),
+                           GTK_WIDGET (section_container));
+
+        grid_row = 0;
+        for (item_iter = items; item_iter != NULL; item_iter = item_iter->next)
         {
-            NautilusPropertyPage *page;
-            GtkWidget *page_widget;
-            GtkWidget *label;
+            NautilusPropertyPageModelItem *item;
+            int item_section_id;
+            char *field;
+            char *value;
+            char *markup;
+            g_autofree gchar *field_text = NULL;
+            GtkLabel *value_label;
+            GtkLabel *field_label;
 
-            page = NAUTILUS_PROPERTY_PAGE (l->data);
+            item = (NautilusPropertyPageModelItem *) item_iter->data;
+            item_section_id = item->section_id;
+            field = item->field;
+            value = item->value;
 
-            g_object_get (G_OBJECT (page),
-                          "page", &page_widget, "label", &label,
-                          NULL);
+            if (item_section_id != section_id)
+            {
+                continue;
+            }
 
-            gtk_notebook_append_page (window->notebook,
-                                      page_widget, label);
-            gtk_container_child_set (GTK_CONTAINER (window->notebook),
-                                     page_widget,
-                                     "tab-expand", TRUE,
-                                     NULL);
+            field_text = g_strconcat (field, ":", NULL);
+            field_label = GTK_LABEL (gtk_label_new (field_text));
+            gtk_label_set_xalign (field_label, 0);
+            markup = g_markup_printf_escaped ("<i>%s</i>", value);
+            value_label = GTK_LABEL (gtk_label_new (NULL));
+            gtk_label_set_markup (value_label, markup);
 
-            g_object_set_data (G_OBJECT (page_widget),
-                               "is-extension-page",
-                               page);
+            gtk_grid_attach (items_container, GTK_WIDGET (field_label),
+                             0, grid_row, 1, 1);
+            gtk_grid_attach (items_container, GTK_WIDGET (value_label),
+                             1, grid_row, 1, 1);
 
-            g_object_unref (page_widget);
-            g_object_unref (label);
-
-            g_object_unref (page);
+            grid_row++;
         }
-
-        g_list_free (pages);
     }
 
-    nautilus_module_extension_list_free (providers);
+    return page_container;
+}
+
+static void
+create_extension_pages_ui (NautilusPropertiesWindow *window)
+{
+    GList *model_providers = NULL;
+    GList *p;
+
+    model_providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER);
+
+    for (p = model_providers; p != NULL; p = p->next)
+    {
+        NautilusPropertyPageModelProvider *model_provider;
+        NautilusPropertyPageModel *page;
+        GtkWidget *page_container;
+        GtkWidget *title;
+
+        model_provider = NAUTILUS_PROPERTY_PAGE_MODEL_PROVIDER (p->data);
+
+        if (!nautilus_property_page_model_provider_supports_files (model_provider))
+        {
+            continue;
+        }
+
+        page = nautilus_property_page_model_provider_get_model (model_provider);
+        title = gtk_label_new (nautilus_property_page_model_get_title (page));
+        page_container = create_extension_page_ui (window, model_provider);
+        gtk_notebook_append_page (window->notebook, page_container, title);
+        gtk_widget_show_all (page_container);
+        gtk_container_child_set (GTK_CONTAINER (window->notebook),
+                                 page_container,
+                                 "tab-expand", TRUE,
+                                 NULL);
+
+        g_object_set_data (G_OBJECT (page_container),
+                           "is-extension-page",
+                           page);
+    }
+
+    nautilus_module_extension_list_free (model_providers);
 }
 
 static gboolean
@@ -5141,7 +5274,7 @@ create_properties_window (StartupData *startup_data)
     }
 
     /* append pages from available views */
-    append_extension_pages (window);
+    recreate_extension_pages (window);
 
     /* Update from initial state */
     properties_window_update (window, NULL);
@@ -5505,6 +5638,18 @@ real_finalize (GObject *object)
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
 
+static void
+real_dispose (GObject *object)
+{
+    NautilusPropertiesWindow *window;
+
+    window = NAUTILUS_PROPERTIES_WINDOW (object);
+
+    clear_extension_pages (window);
+
+    G_OBJECT_CLASS (nautilus_properties_window_parent_class)->dispose (object);
+}
+
 /* icon selection callback to set the image of the file object to the selected file */
 static void
 set_icon (const char               *icon_uri,
@@ -5736,6 +5881,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
     GtkBindingSet *binding_set;
 
     G_OBJECT_CLASS (class)->finalize = real_finalize;
+    G_OBJECT_CLASS (class)->dispose = real_dispose;
     GTK_WIDGET_CLASS (class)->destroy = real_destroy;
     GTK_DIALOG_CLASS (class)->response = real_response;
 

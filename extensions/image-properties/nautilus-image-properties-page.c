@@ -25,10 +25,11 @@
 #include <glib/gi18n.h>
 
 #define LOAD_BUFFER_SIZE 8192
+#define SECTION_ID 0
 
-struct _NautilusImagesPropertiesPage
+struct _NautilusImagePropertiesPageModel
 {
-    GtkGrid parent;
+    NautilusPropertyPageModel parent;
 
     GCancellable *cancellable;
     GtkWidget *grid;
@@ -41,30 +42,56 @@ struct _NautilusImagesPropertiesPage
 
     GExiv2Metadata *md;
     gboolean md_ready;
+
+    GList *sections;
+    GList *items;
 };
 
-G_DEFINE_TYPE (NautilusImagesPropertiesPage,
-               nautilus_image_properties_page,
-               GTK_TYPE_GRID);
+G_DEFINE_TYPE (NautilusImagePropertiesPageModel,
+               nautilus_image_properties_page_model,
+               NAUTILUS_TYPE_PROPERTY_PAGE_MODEL);
+
+
+static void
+free_section (gpointer data)
+{
+    NautilusPropertyPageModelSection *section = (NautilusPropertyPageModelSection *) data;
+
+    g_free(section->title);
+}
+
+static void
+free_item (gpointer data)
+{
+    NautilusPropertyPageModelItem *section = (NautilusPropertyPageModelItem *) data;
+
+    g_free(section->field);
+    g_free(section->value);
+}
 
 static void
 finalize (GObject *object)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *self;
 
-    page = NAUTILUS_IMAGE_PROPERTIES_PAGE (object);
+    self = NAUTILUS_IMAGE_PROPERTIES_PAGE_MODEL (object);
 
-    if (page->cancellable != NULL)
+    if (self->cancellable != NULL)
     {
-        g_cancellable_cancel (page->cancellable);
-        g_clear_object (&page->cancellable);
+        g_cancellable_cancel (self->cancellable);
+        g_clear_object (&self->cancellable);
     }
 
-    G_OBJECT_CLASS (nautilus_image_properties_page_parent_class)->finalize (object);
+    g_list_free_full (self->items, free_item);
+    g_list_free_full (self->sections, free_section);
+    self->items = NULL;
+    self->sections = NULL;
+
+    G_OBJECT_CLASS (nautilus_image_properties_page_model_parent_class)->finalize (object);
 }
 
 static void
-nautilus_image_properties_page_class_init (NautilusImagesPropertiesPageClass *klass)
+nautilus_image_properties_page_model_class_init (NautilusImagePropertiesPageModelClass *klass)
 {
     GObjectClass *object_class;
 
@@ -74,66 +101,35 @@ nautilus_image_properties_page_class_init (NautilusImagesPropertiesPageClass *kl
 }
 
 static void
-append_item (NautilusImagesPropertiesPage *page,
-             const char                   *name,
-             const char                   *value)
+append_item (NautilusImagePropertiesPageModel *self,
+             const char                       *name,
+             const char                       *value)
 {
-    GtkWidget *name_label;
-    PangoAttrList *attrs;
-
-    name_label = gtk_label_new (name);
-    attrs = pango_attr_list_new ();
-
-    pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
-    gtk_label_set_attributes (GTK_LABEL (name_label), attrs);
-    pango_attr_list_unref (attrs);
-    gtk_container_add (GTK_CONTAINER (page->grid), name_label);
-    gtk_widget_set_halign (name_label, GTK_ALIGN_START);
-    gtk_widget_show (name_label);
+    NautilusPropertyPageModelItem *item;
 
     if (value != NULL)
     {
-        GtkWidget *value_label;
-
-        value_label = gtk_label_new (value);
-
-        gtk_label_set_line_wrap (GTK_LABEL (value_label), TRUE);
-        gtk_grid_attach_next_to (GTK_GRID (page->grid), value_label,
-                                 name_label, GTK_POS_RIGHT,
-                                 1, 1);
-        gtk_widget_set_halign (value_label, GTK_ALIGN_START);
-        gtk_widget_set_hexpand (value_label, TRUE);
-        gtk_widget_show (value_label);
+        item = g_new (NautilusPropertyPageModelItem, 1);
+        item->section_id = SECTION_ID;
+        item->field = g_strdup (name);
+        item->value = g_strdup (value);
+        self->items = g_list_append (self->items, item);
     }
 }
 
 static void
-nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
+nautilus_image_properties_page_model_init (NautilusImagePropertiesPageModel *self)
 {
-    GtkWidget *scrolled_window;
+    NautilusPropertyPageModelSection *section;
 
-    scrolled_window = gtk_scrolled_window_new (NULL, NULL);
-
-    gtk_widget_set_vexpand (GTK_WIDGET (scrolled_window), TRUE);
-    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled_window),
-                                    GTK_POLICY_NEVER,
-                                    GTK_POLICY_AUTOMATIC);
-
-    gtk_container_add (GTK_CONTAINER (self), scrolled_window);
-
-    self->grid = gtk_grid_new ();
-
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (self->grid), GTK_ORIENTATION_VERTICAL);
-    gtk_grid_set_row_spacing (GTK_GRID (self->grid), 6);
-    gtk_grid_set_column_spacing (GTK_GRID (self->grid), 18);
-    append_item (self, _("Loading…"), NULL);
-    gtk_container_add (GTK_CONTAINER (scrolled_window), self->grid);
-
-    gtk_widget_show_all (GTK_WIDGET (self));
+    section = g_new (NautilusPropertyPageModelSection, 1);
+    section->id = SECTION_ID;
+    section->title = g_strdup (_("Basic information"));
+    self->sections = g_list_append (NULL, section);
 }
 
 static void
-append_basic_info (NautilusImagesPropertiesPage *page)
+append_basic_info (NautilusImagePropertiesPageModel *page)
 {
     GdkPixbufFormat *format;
     g_autofree char *name = NULL;
@@ -165,9 +161,9 @@ append_basic_info (NautilusImagesPropertiesPage *page)
 }
 
 static void
-append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
-                   const char                   **tag_names,
-                   const char                    *description)
+append_gexiv2_tag (NautilusImagePropertiesPageModel  *page,
+                   const char                       **tag_names,
+                   const char                        *description)
 {
     g_assert (tag_names != NULL);
 
@@ -195,7 +191,7 @@ append_gexiv2_tag (NautilusImagesPropertiesPage  *page,
 }
 
 static void
-append_gexiv2_info (NautilusImagesPropertiesPage *page)
+append_gexiv2_info (NautilusImagePropertiesPageModel *page)
 {
     double longitude;
     double latitude;
@@ -255,13 +251,8 @@ append_gexiv2_info (NautilusImagesPropertiesPage *page)
 }
 
 static void
-load_finished (NautilusImagesPropertiesPage *page)
+load_finished (NautilusImagePropertiesPageModel *page)
 {
-    GtkWidget *label;
-
-    label = gtk_grid_get_child_at (GTK_GRID (page->grid), 0, 0);
-    gtk_container_remove (GTK_CONTAINER (page->grid), label);
-
     if (page->loader != NULL)
     {
         gdk_pixbuf_loader_close (page->loader, NULL);
@@ -284,6 +275,11 @@ load_finished (NautilusImagesPropertiesPage *page)
     }
     page->md_ready = FALSE;
     g_clear_object (&page->md);
+
+    nautilus_property_page_model_set_sections (NAUTILUS_PROPERTY_PAGE_MODEL (page),
+                                               page->sections);
+    nautilus_property_page_model_set_items (NAUTILUS_PROPERTY_PAGE_MODEL (page),
+                                            page->items);
 }
 
 static void
@@ -291,7 +287,7 @@ file_close_callback (GObject      *object,
                      GAsyncResult *res,
                      gpointer      data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *page;
     GInputStream *stream;
 
     page = data;
@@ -307,7 +303,7 @@ file_read_callback (GObject      *object,
                     GAsyncResult *res,
                     gpointer      data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *page;
     GInputStream *stream;
     g_autoptr (GError) error = NULL;
     gssize count_read;
@@ -380,7 +376,7 @@ size_prepared_callback (GdkPixbufLoader *loader,
                         int              height,
                         gpointer         callback_data)
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *page;
 
     page = callback_data;
 
@@ -392,7 +388,7 @@ size_prepared_callback (GdkPixbufLoader *loader,
 
 typedef struct
 {
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *page;
     NautilusFileInfo *file_info;
 } FileOpenData;
 
@@ -402,7 +398,7 @@ file_open_callback (GObject      *object,
                     gpointer      user_data)
 {
     g_autofree FileOpenData *data = NULL;
-    NautilusImagesPropertiesPage *page;
+    NautilusImagePropertiesPageModel *page;
     GFile *file;
     g_autofree char *uri = NULL;
     g_autoptr (GError) error = NULL;
@@ -449,18 +445,25 @@ file_open_callback (GObject      *object,
 }
 
 void
-nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage *self,
-                                                    NautilusFileInfo             *file_info)
+nautilus_image_properties_page_load_from_file_info (NautilusImagePropertiesPageModel *self,
+                                                    NautilusFileInfo                  *file_info)
 {
     g_autofree char *uri = NULL;
     g_autoptr (GFile) file = NULL;
     g_autofree char *path = NULL;
     FileOpenData *data;
 
-    g_return_if_fail (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE (self));
+    g_return_if_fail (NAUTILUS_IS_IMAGE_PROPERTIES_PAGE_MODEL (self));
     g_return_if_fail (file_info != NULL);
 
     self->cancellable = g_cancellable_new ();
+
+    g_print ("### removing old info\n");
+    /* Remove old information, if any */
+    g_list_free_full (self->items, free_item);
+    self->items = NULL;
+    nautilus_property_page_model_set_items (NAUTILUS_PROPERTY_PAGE_MODEL (self),
+                                            NULL);
 
     uri = nautilus_file_info_get_uri (file_info);
     file = g_file_new_for_uri (uri);
@@ -503,13 +506,10 @@ nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage
                        data);
 }
 
-NautilusImagesPropertiesPage *
-nautilus_image_properties_page_new (void)
+NautilusImagePropertiesPageModel *
+nautilus_image_properties_page_model_new (void)
 {
-    return g_object_new (NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE,
-                         "margin-bottom", 6,
-                         "margin-end", 12,
-                         "margin-start", 12,
-                         "margin-top", 6,
+    return g_object_new (NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE_MODEL,
+                         "title", _("Image"),
                          NULL);
 }

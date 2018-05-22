@@ -22,7 +22,7 @@
 
 #define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE_PROVIDER (nautilus_image_properties_page_provider_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusImagesPropertiesPageProvider,
+G_DECLARE_FINAL_TYPE (NautilusImagePropertiesPageProvider,
                       nautilus_image_properties_page_provider,
                       NAUTILUS, IMAGE_PROPERTIES_PAGE_PROVIDER,
                       GObject)
