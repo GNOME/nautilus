@@ -10,7 +10,7 @@ datadir = get_option('datadir')
 desktopdir = join_paths(datadir, 'applications')
 includedir = get_option('includedir')
 libdir = get_option('libdir')
-extensiondir = join_paths(libdir, 'nautilus', 'extensions-3.0')
+extensiondir = join_paths(libdir, 'nautilus', 'extensions-4.0')
 prefix = get_option('prefix')
 servicedir = join_paths(datadir, 'dbus-1', 'services')
 #

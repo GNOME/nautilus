@@ -22,14 +22,14 @@
 
 #include <nautilus-extension.h>
 
-#define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE (nautilus_image_properties_page_get_type ())
+#define NAUTILUS_TYPE_IMAGE_PROPERTIES_PAGE_MODEL (nautilus_image_properties_page_model_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusImagesPropertiesPage,
-                      nautilus_image_properties_page,
-                      NAUTILUS, IMAGE_PROPERTIES_PAGE,
-                      GtkGrid)
+G_DECLARE_FINAL_TYPE (NautilusImagePropertiesPageModel,
+                      nautilus_image_properties_page_model,
+                      NAUTILUS, IMAGE_PROPERTIES_PAGE_MODEL,
+                      NautilusPropertyPageModel)
 
-void                          nautilus_image_properties_page_load_from_file_info (NautilusImagesPropertiesPage *page,
-                                                                                  NautilusFileInfo             *file_info);
+void                          nautilus_image_properties_page_model_load_from_file_info (NautilusImagePropertiesPageModel *page,
+                                                                                  NautilusFileInfo                  *file_info);
 
-NautilusImagesPropertiesPage *nautilus_image_properties_page_new                 (void);
+NautilusImagePropertiesPageModel *nautilus_image_properties_page_model_new                 (void);

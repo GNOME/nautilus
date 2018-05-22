@@ -1,4 +1,4 @@
-nautilus_extension_version = '1.5.0'
+nautilus_extension_version = '2.0.0'
 
 libnautilus_extension_deprecated_headers = [
   'nautilus-extension-types.h',
@@ -12,8 +12,8 @@ libnautilus_extension_headers = [
   'nautilus-info-provider.h',
   'nautilus-location-widget-provider.h',
   'nautilus-menu-provider.h',
-  'nautilus-property-page-provider.h',
-  'nautilus-property-page.h',
+  'nautilus-property-page-model-provider.h',
+  'nautilus-property-page-model.h',
   'nautilus-menu.h'
 ]
 
@@ -48,8 +48,8 @@ libnautilus_extension_sources = [
   'nautilus-location-widget-provider.c',
   'nautilus-menu-item.c',
   'nautilus-menu-provider.c',
-  'nautilus-property-page-provider.c',
-  'nautilus-property-page.c',
+  'nautilus-property-page-model-provider.c',
+  'nautilus-property-page-model.c',
   'nautilus-menu.c'
 ]
 
@@ -79,7 +79,7 @@ gnome.generate_gir(
     '-DNAUTILUS_COMPILATION'
   ],
   sources: libnautilus_extension_sources,
-  nsversion: '3.0',
+  nsversion: '4.0',
   namespace: 'Nautilus',
   includes: [
     'Gtk-3.0',
@@ -114,7 +114,7 @@ pkgconfig.generate(
   ],
   variables: [
     'exec_prefix=${prefix}',
-    'extensiondir=${libdir}/nautilus/extensions-3.0'
+    'extensiondir=${libdir}/nautilus/extensions-4.0'
   ],
   version: meson.project_version()
 )
