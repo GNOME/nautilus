@@ -2458,10 +2458,15 @@ nautilus_window_key_press_event (GtkWidget   *widget,
                                  GdkEventKey *event)
 {
     NautilusWindow *window;
+    guint keyval;
     GtkWidget *focus_widget;
-    int i;
 
     window = NAUTILUS_WINDOW (widget);
+
+    if (G_UNLIKELY (!gdk_event_get_keyval ((GdkEvent *) event, &keyval)))
+    {
+        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
+    }
 
     focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
     if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
@@ -2469,15 +2474,16 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         /* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
          * the event to it before activating accelerator bindings too.
          */
-        if (gtk_window_propagate_key_event (GTK_WINDOW (window), event))
+        if (gtk_window_propagate_key_event (GTK_WINDOW (window),
+                                            (GdkEventKey *) event))
         {
-            return TRUE;
+            return GDK_EVENT_STOP;
         }
     }
 
-    for (i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++)
+    for (int i = 0; i < G_N_ELEMENTS (extra_window_keybindings); i++)
     {
-        if (extra_window_keybindings[i].keyval == event->keyval)
+        if (extra_window_keybindings[i].keyval == keyval)
         {
             GAction *action;
 
@@ -2487,7 +2493,7 @@ nautilus_window_key_press_event (GtkWidget   *widget,
             if (g_action_get_enabled (action))
             {
                 g_action_activate (action, NULL);
-                return TRUE;
+                return GDK_EVENT_STOP;
             }
 
             break;
@@ -2496,15 +2502,15 @@ nautilus_window_key_press_event (GtkWidget   *widget,
 
     if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
     {
-        return TRUE;
+        return GDK_EVENT_STOP;
     }
 
-    if (nautilus_window_slot_handle_event (window->active_slot, event))
+    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
-        return TRUE;
+        return GDK_EVENT_STOP;
     }
 
-    return FALSE;
+    return GDK_EVENT_PROPAGATE;
 }
 
 void
