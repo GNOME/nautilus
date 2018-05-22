@@ -1,10 +1,10 @@
 shared_module (
   'nautilus-image-properties', [
     'nautilus-image-properties-module.c',
-    'nautilus-image-properties-page.c',
-    'nautilus-image-properties-page.h',
-    'nautilus-image-properties-page-provider.c',
-    'nautilus-image-properties-page-provider.h'
+    'nautilus-image-properties-page-model.c',
+    'nautilus-image-properties-page-model.h',
+    'nautilus-image-properties-page-model-provider.c',
+    'nautilus-image-properties-page-model-provider.h'
   ],
   dependencies: [
     gexiv,

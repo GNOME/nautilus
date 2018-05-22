@@ -26,8 +26,8 @@
 #include <libnautilus-extension/nautilus-location-widget-provider.h>
 #include <libnautilus-extension/nautilus-menu.h>
 #include <libnautilus-extension/nautilus-menu-provider.h>
-#include <libnautilus-extension/nautilus-property-page.h>
-#include <libnautilus-extension/nautilus-property-page-provider.h>
+#include <libnautilus-extension/nautilus-property-page-model.h>
+#include <libnautilus-extension/nautilus-property-page-model-provider.h>
 
 /**
  * SECTION:nautilus-extension
