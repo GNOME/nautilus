@@ -142,6 +142,7 @@ struct _NautilusWindow
 
     GtkPadController *pad_controller;
 
+    GtkGesture *multi_press_gesture;
     GtkGesture *notebook_multi_press_gesture;
 };
 
@@ -2576,34 +2577,29 @@ nautilus_window_delete_event (GtkWidget   *widget,
     return FALSE;
 }
 
-static gboolean
-nautilus_window_button_press_event (GtkWidget      *widget,
-                                    GdkEventButton *event)
+static void
+on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
+                                gint                  n_press,
+                                gdouble               x,
+                                gdouble               y,
+                                gpointer              user_data)
 {
+    GtkWidget *widget;
     NautilusWindow *window;
-    gboolean handled;
+    guint button;
 
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     window = NAUTILUS_WINDOW (widget);
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
-    if (mouse_extra_buttons && (event->button == mouse_back_button))
+    if (mouse_extra_buttons && (button == mouse_back_button))
     {
         nautilus_window_back_or_forward (window, TRUE, 0, 0);
-        handled = TRUE;
     }
-    else if (mouse_extra_buttons && (event->button == mouse_forward_button))
+    else if (mouse_extra_buttons && (button == mouse_forward_button))
     {
         nautilus_window_back_or_forward (window, FALSE, 0, 0);
-        handled = TRUE;
     }
-    else if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->button_press_event)
-    {
-        handled = GTK_WIDGET_CLASS (nautilus_window_parent_class)->button_press_event (widget, event);
-    }
-    else
-    {
-        handled = FALSE;
-    }
-    return handled;
 }
 
 static void
@@ -2678,6 +2674,15 @@ nautilus_window_init (NautilusWindow *window)
     gtk_pad_controller_set_action_entries (window->pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
 
+    window->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (window));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->multi_press_gesture),
+                                                GTK_PHASE_CAPTURE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (window->multi_press_gesture), 0);
+
+    g_signal_connect (window->multi_press_gesture, "pressed",
+                      G_CALLBACK (on_multi_press_gesture_pressed), NULL);
+
     window->notebook_multi_press_gesture = gtk_gesture_multi_press_new (window->notebook);
 
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (window->notebook_multi_press_gesture),
@@ -2701,7 +2706,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     wclass->realize = nautilus_window_realize;
     wclass->key_press_event = nautilus_window_key_press_event;
     wclass->window_state_event = nautilus_window_state_event;
-    wclass->button_press_event = nautilus_window_button_press_event;
     wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
 
