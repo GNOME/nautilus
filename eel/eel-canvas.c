@@ -60,7 +60,6 @@
 #include <math.h>
 #include <string.h>
 #include <stdio.h>
-#include <gdk/gdkprivate.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <cairo-gobject.h>
