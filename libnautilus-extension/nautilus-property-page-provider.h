@@ -55,7 +55,7 @@ typedef NautilusPropertyPageProviderInterface NautilusPropertyPageProviderIface;
  * NautilusPropertyPageProviderInterface:
  * @g_iface: The parent interface.
  * @get_pages: Returns a #GList of #NautilusPropertyPage.
- *   See nautilus_property_page_provider_get_pages() for details.
+ *   See nautilus_property_page_provider_get_items() for details.
  *
  * Interface for extensions to provide additional property pages.
  */
@@ -63,12 +63,12 @@ struct _NautilusPropertyPageProviderInterface
 {
     GTypeInterface g_iface;
 
-    GList *(*get_pages) (NautilusPropertyPageProvider *provider,
+    GList *(*get_items) (NautilusPropertyPageProvider *provider,
                          GList                        *files);
 };
 
 /* Interface Functions */
-GList *nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *provider,
+GList *nautilus_property_page_provider_get_items (NautilusPropertyPageProvider *provider,
                                                   GList                        *files);
 
 G_END_DECLS

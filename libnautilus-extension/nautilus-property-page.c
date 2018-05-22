@@ -22,7 +22,7 @@
  */
 
 #include <config.h>
-#include "nautilus-property-page.h"
+#include "nautilus-property-item.h"
 
 #include <glib/gi18n-lib.h>
 
@@ -31,11 +31,11 @@ enum
     PROP_0,
     PROP_NAME,
     PROP_LABEL,
-    PROP_PAGE,
+    PROP_MENU,
     LAST_PROP
 };
 
-struct _NautilusPropertyPage
+struct _NautilusPropertyItem
 {
     GObject parent_instance;
 

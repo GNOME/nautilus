@@ -42,7 +42,7 @@ nautilus_property_page_provider_default_init (NautilusPropertyPageProviderInterf
 }
 
 /**
- * nautilus_property_page_provider_get_pages:
+ * nautilus_property_page_provider_get_items:
  * @provider: a #NautilusPropertyPageProvider
  * @files: (element-type NautilusFileInfo): a #GList of #NautilusFileInfo
  *
@@ -52,10 +52,10 @@ nautilus_property_page_provider_default_init (NautilusPropertyPageProviderInterf
  * This function is called in the main thread before a property page
  * is shown, so it should return quickly.
  *
- * Returns: (element-type NautilusPropertyPage) (transfer full): A #GList of allocated #NautilusPropertyPage items.
+ * Returns: (element-type NautilusPropertyItem) (transfer full): A #GList of allocated #NautilusPropertyItem.
  */
 GList *
-nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *self,
+nautilus_property_page_provider_get_items (NautilusPropertyPageProvider *self,
                                            GList                        *files)
 {
     NautilusPropertyPageProviderInterface *iface;
@@ -66,5 +66,5 @@ nautilus_property_page_provider_get_pages (NautilusPropertyPageProvider *self,
 
     g_return_val_if_fail (iface->get_pages != NULL, NULL);
 
-    return iface->get_pages (self, files);
+    return iface->get_items (self, files);
 }
