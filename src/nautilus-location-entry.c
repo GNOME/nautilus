@@ -579,6 +579,30 @@ destroy (GtkWidget *object)
 }
 
 static void
+on_has_focus_changed (GObject    *object,
+                      GParamSpec *pspec,
+                      gpointer    user_data)
+{
+    NautilusLocationEntry *entry;
+    NautilusLocationEntryPrivate *priv;
+
+    if (!gtk_widget_has_focus (GTK_WIDGET (object)))
+    {
+        return;
+    }
+
+    entry = NAUTILUS_LOCATION_ENTRY (object);
+    priv = nautilus_location_entry_get_instance_private (entry);
+
+    if (priv->has_special_text)
+    {
+        priv->setting_special_text = TRUE;
+        gtk_entry_set_text (GTK_ENTRY (entry), "");
+        priv->setting_special_text = FALSE;
+    }
+}
+
+static void
 nautilus_location_entry_text_changed (NautilusLocationEntry *entry,
                                       GParamSpec            *pspec)
 {
@@ -623,25 +647,6 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
         default:
             g_assert_not_reached ();
     }
-}
-
-static gboolean
-nautilus_location_entry_focus_in (GtkWidget     *widget,
-                                  GdkEventFocus *event)
-{
-    NautilusLocationEntry *entry = NAUTILUS_LOCATION_ENTRY (widget);
-    NautilusLocationEntryPrivate *priv;
-
-    priv = nautilus_location_entry_get_instance_private (entry);
-
-    if (priv->has_special_text)
-    {
-        priv->setting_special_text = TRUE;
-        gtk_entry_set_text (GTK_ENTRY (entry), "");
-        priv->setting_special_text = FALSE;
-    }
-
-    return GTK_WIDGET_CLASS (nautilus_location_entry_parent_class)->focus_in_event (widget, event);
 }
 
 static gboolean
@@ -730,7 +735,6 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
     GtkBindingSet *binding_set;
 
     widget_class = GTK_WIDGET_CLASS (class);
-    widget_class->focus_in_event = nautilus_location_entry_focus_in;
     widget_class->destroy = destroy;
     widget_class->key_press_event = nautilus_location_entry_on_key_press;
 
@@ -844,6 +848,8 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
     g_signal_connect (entry, "event-after",
                       G_CALLBACK (editable_event_after_callback), entry);
+    g_signal_connect (entry, "notify::has-focus",
+                      G_CALLBACK (on_has_focus_changed), NULL);
 
     g_signal_connect (entry, "notify::text",
                       G_CALLBACK (nautilus_location_entry_text_changed), NULL);
