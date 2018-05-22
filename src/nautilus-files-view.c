@@ -9152,19 +9152,26 @@ nautilus_files_view_parent_set (GtkWidget *widget,
 }
 
 static gboolean
-nautilus_files_view_key_press_event (GtkWidget   *widget,
-                                     GdkEventKey *event)
+nautilus_files_view_event (GtkWidget *widget,
+                           GdkEvent  *event)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
-    gint i;
+    guint keyval;
+
+    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
 
     view = NAUTILUS_FILES_VIEW (widget);
     priv = nautilus_files_view_get_instance_private (view);
 
-    for (i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++)
+    g_return_val_if_fail (gdk_event_get_keyval (event, &keyval), GDK_EVENT_PROPAGATE);
+
+    for (gint i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++)
     {
-        if (extra_view_keybindings[i].keyval == event->keyval)
+        if (extra_view_keybindings[i].keyval == keyval)
         {
             GAction *action;
 
@@ -9334,7 +9341,7 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     oclass->set_property = nautilus_files_view_set_property;
 
     widget_class->destroy = nautilus_files_view_destroy;
-    widget_class->key_press_event = nautilus_files_view_key_press_event;
+    widget_class->event = nautilus_files_view_event;
     widget_class->parent_set = nautilus_files_view_parent_set;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
