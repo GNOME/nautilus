@@ -2551,22 +2551,17 @@ nautilus_window_get_slots (NautilusWindow *window)
     return window->slots;
 }
 
-static gboolean
-nautilus_window_state_event (GtkWidget           *widget,
-                             GdkEventWindowState *event)
+static void
+on_is_maximized_changed (GObject    *object,
+                         GParamSpec *pspec,
+                         gpointer    user_data)
 {
-    if (event->changed_mask & GDK_WINDOW_STATE_MAXIMIZED)
-    {
-        g_settings_set_boolean (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
-                                event->new_window_state & GDK_WINDOW_STATE_MAXIMIZED);
-    }
+    gboolean is_maximized;
 
-    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->window_state_event != NULL)
-    {
-        return GTK_WIDGET_CLASS (nautilus_window_parent_class)->window_state_event (widget, event);
-    }
+    is_maximized = gtk_window_is_maximized (GTK_WINDOW (object));
 
-    return FALSE;
+    g_settings_set_boolean (nautilus_window_state,
+                            NAUTILUS_WINDOW_STATE_MAXIMIZED, is_maximized);
 }
 
 static gboolean
@@ -2649,6 +2644,9 @@ nautilus_window_init (NautilusWindow *window)
     g_type_ensure (NAUTILUS_TYPE_NOTEBOOK);
     gtk_widget_init_template (GTK_WIDGET (window));
 
+    g_signal_connect (window, "notify::is-maximized",
+                      G_CALLBACK (on_is_maximized_changed), NULL);
+
     g_signal_connect_object (window->in_app_notification_undo_close_button, "clicked",
                              G_CALLBACK (on_in_app_notification_undo_close_button_clicked), window, 0);
     g_signal_connect_object (window->in_app_notification_undo_undo_button, "clicked",
@@ -2705,7 +2703,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
     wclass->key_press_event = nautilus_window_key_press_event;
-    wclass->window_state_event = nautilus_window_state_event;
     wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
 
