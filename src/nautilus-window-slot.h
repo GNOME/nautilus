@@ -92,7 +92,7 @@ const gchar *nautilus_window_slot_get_title                (NautilusWindowSlot *
 void         nautilus_window_slot_update_title		   (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_handle_event       	   (NautilusWindowSlot *slot,
-							    GdkEventKey        *event);
+							    GdkEvent           *event);
 
 void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 
