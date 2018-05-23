@@ -182,8 +182,6 @@ static void
 start_search (NautilusSearchDirectory *self)
 {
     NautilusSearchEngineModel *model_provider;
-    NautilusSearchEngineSimple *simple_provider;
-    gboolean recursive;
 
     if (!self->query)
     {
@@ -210,10 +208,6 @@ start_search (NautilusSearchDirectory *self)
 
     model_provider = nautilus_search_engine_get_model_provider (self->engine);
     nautilus_search_engine_model_set_model (model_provider, self->base_model);
-
-    simple_provider = nautilus_search_engine_get_simple_provider (self->engine);
-    recursive = nautilus_query_get_recursive (self->query);
-    g_object_set (simple_provider, "recursive", recursive, NULL);
 
     reset_file_list (self);
 
