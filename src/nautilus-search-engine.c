@@ -416,13 +416,3 @@ nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine)
 
     return priv->model;
 }
-
-NautilusSearchEngineSimple *
-nautilus_search_engine_get_simple_provider (NautilusSearchEngine *engine)
-{
-    NautilusSearchEnginePrivate *priv;
-
-    priv = nautilus_search_engine_get_instance_private (engine);
-
-    return priv->simple;
-}
