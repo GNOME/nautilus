@@ -1189,51 +1189,72 @@ static cairo_surface_t *
 real_map_surface (NautilusCanvasItem *canvas_item)
 {
     EelCanvas *canvas;
-    GdkPixbuf *temp_pixbuf, *old_pixbuf;
-    GtkStyleContext *style;
-    GdkRGBA color;
-    cairo_surface_t *surface;
+    g_autoptr (GdkPixbuf) temp_pixbuf = NULL;
+    gint scale_factor;
+    GdkWindow *window;
 
-    temp_pixbuf = canvas_item->details->pixbuf;
     canvas = EEL_CANVAS_ITEM (canvas_item)->canvas;
-
-    g_object_ref (temp_pixbuf);
+    temp_pixbuf = g_object_ref (canvas_item->details->pixbuf);
+    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (canvas));
+    window = gtk_widget_get_window (GTK_WIDGET (canvas));
 
     if (canvas_item->details->is_prelit ||
         canvas_item->details->is_highlighted_for_clipboard)
     {
-        old_pixbuf = temp_pixbuf;
+        g_autoptr (GdkPixbuf) old_pixbuf = NULL;
 
+        old_pixbuf = temp_pixbuf;
         temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
-        g_object_unref (old_pixbuf);
     }
 
     if (canvas_item->details->is_highlighted_for_selection
         || canvas_item->details->is_highlighted_for_drop)
     {
-        style = gtk_widget_get_style_context (GTK_WIDGET (canvas));
+        GtkWidget *widget;
+        GtkStyleContext *style;
+        gboolean has_focus;
+        GtkStateFlags state;
+        gint width;
+        gint height;
+        gboolean has_alpha;
+        cairo_format_t format;
+        cairo_surface_t *surface;
+        cairo_t *cr;
+        g_autoptr (GdkPixbuf) pixbuf = NULL;
+        g_autoptr (GdkPixbuf) old_pixbuf = NULL;
 
-        if (gtk_widget_has_focus (GTK_WIDGET (canvas)))
-        {
-            gtk_style_context_get_background_color (style, GTK_STATE_FLAG_SELECTED, &color);
-        }
-        else
-        {
-            gtk_style_context_get_background_color (style, GTK_STATE_FLAG_ACTIVE, &color);
-        }
+        widget = GTK_WIDGET (canvas);
+        style = gtk_widget_get_style_context (widget);
+        has_focus = gtk_widget_has_focus (widget);
+        state = has_focus? GTK_STATE_FLAG_SELECTED : GTK_STATE_FLAG_ACTIVE;
+        width = gdk_pixbuf_get_width (temp_pixbuf);
+        height = gdk_pixbuf_get_height (temp_pixbuf);
+        has_alpha = gdk_pixbuf_get_has_alpha (temp_pixbuf);
+        format = has_alpha? CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24;
+        surface = cairo_image_surface_create (format, width, height);
+        cr = cairo_create (surface);
 
+        gtk_style_context_save (style);
+        gtk_style_context_set_state (style, state);
+
+        gtk_render_background (style, cr,
+                               0, 0,
+                               width, height);
+
+        gtk_style_context_restore (style);
+
+        cairo_surface_flush (surface);
+
+        pixbuf = gdk_pixbuf_get_from_surface (surface, 0, 0, width, height);
         old_pixbuf = temp_pixbuf;
-        temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, &color);
 
-        g_object_unref (old_pixbuf);
+        temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, g_steal_pointer (&pixbuf));
+
+        cairo_destroy (cr);
+        cairo_surface_destroy (surface);
     }
 
-    surface = gdk_cairo_surface_create_from_pixbuf (temp_pixbuf,
-                                                    gtk_widget_get_scale_factor (GTK_WIDGET (canvas)),
-                                                    gtk_widget_get_window (GTK_WIDGET (canvas)));
-    g_object_unref (temp_pixbuf);
-
-    return surface;
+    return gdk_cairo_surface_create_from_pixbuf (temp_pixbuf, scale_factor, window);
 }
 
 static cairo_surface_t *
