@@ -105,11 +105,11 @@ eel_create_spotlight_pixbuf (GdkPixbuf *src)
     return dest;
 }
 
-/* this routine colorizes the passed-in pixbuf by multiplying each pixel with the passed in color */
+/* This routine colorizes %src by multiplying each pixel with colors in %dest. */
 
 GdkPixbuf *
 eel_create_colorized_pixbuf (GdkPixbuf *src,
-                             GdkRGBA   *color)
+                             GdkPixbuf *dest)
 {
     int i, j;
     int width, height, has_alpha, src_row_stride, dst_row_stride;
@@ -117,21 +117,21 @@ eel_create_colorized_pixbuf (GdkPixbuf *src,
     guchar *original_pixels;
     guchar *pixsrc;
     guchar *pixdest;
-    GdkPixbuf *dest;
-    gint red_value, green_value, blue_value;
 
     g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
+    g_return_val_if_fail (gdk_pixbuf_get_colorspace (dest) == GDK_COLORSPACE_RGB, NULL);
+
     g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
                            && gdk_pixbuf_get_n_channels (src) == 3)
                           || (gdk_pixbuf_get_has_alpha (src)
                               && gdk_pixbuf_get_n_channels (src) == 4), NULL);
+    g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (dest)
+                           && gdk_pixbuf_get_n_channels (dest) == 3)
+                          || (gdk_pixbuf_get_has_alpha (dest)
+                              && gdk_pixbuf_get_n_channels (dest) == 4), NULL);
+
     g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
-
-    red_value = (gint) floor (color->red * 255);
-    green_value = (gint) floor (color->green * 255);
-    blue_value = (gint) floor (color->blue * 255);
-
-    dest = create_new_pixbuf (src);
+    g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (dest) == 8, NULL);
 
     has_alpha = gdk_pixbuf_get_has_alpha (src);
     width = gdk_pixbuf_get_width (src);
@@ -147,9 +147,12 @@ eel_create_colorized_pixbuf (GdkPixbuf *src,
         pixsrc = original_pixels + i * src_row_stride;
         for (j = 0; j < width; j++)
         {
-            *pixdest++ = (*pixsrc++ *red_value) >> 8;
-            *pixdest++ = (*pixsrc++ *green_value) >> 8;
-            *pixdest++ = (*pixsrc++ *blue_value) >> 8;
+            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            pixdest++;
+            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            pixdest++;
+            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            pixdest++;
             if (has_alpha)
             {
                 *pixdest++ = *pixsrc++;
