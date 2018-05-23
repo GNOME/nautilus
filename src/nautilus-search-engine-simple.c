@@ -35,7 +35,7 @@
 
 enum
 {
-    PROP_RECURSIVE = 1,
+    PROP_0,
     PROP_RUNNING,
     NUM_PROPERTIES
 };
@@ -437,9 +437,9 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
-    g_object_ref (query);
     g_clear_object (&simple->query);
-    simple->query = query;
+    simple->query = g_object_ref (query);
+    simple->recursive = nautilus_query_get_recursive (query);
 }
 
 static gboolean
@@ -450,30 +450,6 @@ nautilus_search_engine_simple_is_running (NautilusSearchProvider *provider)
     simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
     return simple->active_search != NULL;
-}
-
-static void
-nautilus_search_engine_simple_set_property (GObject      *object,
-                                            guint         arg_id,
-                                            const GValue *value,
-                                            GParamSpec   *pspec)
-{
-    NautilusSearchEngineSimple *engine = NAUTILUS_SEARCH_ENGINE_SIMPLE (object);
-
-    switch (arg_id)
-    {
-        case PROP_RECURSIVE:
-        {
-            engine->recursive = g_value_get_boolean (value);
-        }
-        break;
-
-        default:
-        {
-            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, arg_id, pspec);
-        }
-        break;
-    }
 }
 
 static void
@@ -489,12 +465,6 @@ nautilus_search_engine_simple_get_property (GObject    *object,
         case PROP_RUNNING:
         {
             g_value_set_boolean (value, nautilus_search_engine_simple_is_running (NAUTILUS_SEARCH_PROVIDER (engine)));
-        }
-        break;
-
-        case PROP_RECURSIVE:
-        {
-            g_value_set_boolean (value, engine->recursive);
         }
         break;
     }
@@ -517,20 +487,6 @@ nautilus_search_engine_simple_class_init (NautilusSearchEngineSimpleClass *class
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
     gobject_class->get_property = nautilus_search_engine_simple_get_property;
-    gobject_class->set_property = nautilus_search_engine_simple_set_property;
-
-    /**
-     * NautilusSearchEngineSimple::recursive:
-     *
-     * Whether the search is recursive or not.
-     */
-    g_object_class_install_property (gobject_class,
-                                     PROP_RECURSIVE,
-                                     g_param_spec_boolean ("recursive",
-                                                           "recursive",
-                                                           "recursive",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE | G_PARAM_CONSTRUCT | G_PARAM_STATIC_STRINGS));
 
     /**
      * NautilusSearchEngine::running:
