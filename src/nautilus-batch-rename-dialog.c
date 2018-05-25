@@ -1704,7 +1704,10 @@ on_motion_notify (GtkWidget *widget,
         update_row_shadowing (dialog->preselected_row2, FALSE);
     }
 
-    g_return_val_if_fail (gdk_event_get_coords (event, NULL, &y), GDK_EVENT_PROPAGATE);
+    if (G_UNLIKELY (!gdk_event_get_coords (event, NULL, &y)))
+    {
+        return GDK_EVENT_PROPAGATE;
+    }
 
     if (widget == dialog->result_listbox)
     {
