@@ -285,7 +285,10 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
         source_target_list = nautilus_list_model_get_drag_target_list ();
     }
 
-    g_return_val_if_fail (gdk_event_get_coords (event, &x, &y), GDK_EVENT_PROPAGATE);
+    if (G_UNLIKELY (!gdk_event_get_coords (event, &x, &y)))
+    {
+        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
+    }
 
     if (gtk_drag_check_threshold (GTK_WIDGET (list_view->details->tree_view),
                                   list_view->details->drag_x,
