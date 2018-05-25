@@ -1,8 +1,9 @@
 /*
- *  nautilus-property-page.h - Property pages exported by 
+ *  nautilus-property-page.h - Property pages exported by
  *                             NautilusPropertyProvider objects.
  *
  *  Copyright (C) 2003 Novell, Inc.
+ *  Copyright (C) 2018 Red Hat, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -16,7 +17,7 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
@@ -33,20 +34,33 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_PROPERTY_PAGE (nautilus_property_page_get_type ())
+#define NAUTILUS_TYPE_PROPERTY_PAGE_MODEL (nautilus_property_page_model_get_type ())
 
-G_DECLARE_FINAL_TYPE (NautilusPropertyPage, nautilus_property_page,
-                      NAUTILUS, PROPERTY_PAGE,
+G_DECLARE_FINAL_TYPE (NautilusPropertyPageModel, nautilus_property_page_model,
+                      NAUTILUS, PROPERTY_PAGE_MODEL,
                       GObject)
 
-NautilusPropertyPage *nautilus_property_page_new (const char *name,
-                                                  GtkWidget  *label,
-                                                  GtkWidget  *page);
+typedef struct
+{
+    int id;
+    char* title;
+} NautilusPropertyPageModelSection;
 
-/* NautilusPropertyPage has the following properties:
- *   name (string)        - the identifier for the property page
- *   label (widget)       - the user-visible label of the property page
- *   page (widget)        - the property page to display
+typedef struct
+{
+    int section_id;
+    char* field;
+    char* value;
+} NautilusPropertyPageModelItem;
+
+NautilusPropertyPageModel *nautilus_property_page_model_new (const char *title,
+                                                        GList      *sections,
+                                                        GList      *items);
+
+/* NautilusPropertyPageModel has the following properties:
+ *   label (string)                                        - the user-visible label of the property page
+ *   sections (GList of NautilusPropertyPageModelSection)  - the sections
+ *   items (GList of NautilusPropertyPageModelItem)        - the items
  */
 
 G_END_DECLS

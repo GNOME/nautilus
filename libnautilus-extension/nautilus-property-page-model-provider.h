@@ -16,14 +16,14 @@
  *
  *  You should have received a copy of the GNU Library General Public
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
- * 
+ *
  *  Author:  Dave Camp <dave@ximian.com>
  *
  */
 
-/* This interface is implemented by Nautilus extensions that want to 
- * add property page to property dialogs.  Extensions are called when 
- * Nautilus needs property pages for a selection.  They are passed a 
+/* This interface is implemented by Nautilus extensions that want to
+ * add property page to property dialogs.  Extensions are called when
+ * Nautilus needs property pages for a selection.  They are passed a
  * list of NautilusFileInfo objects for which information should
  * be displayed  */
 
@@ -37,38 +37,35 @@
 /* These should be removed at some point. */
 #include "nautilus-extension-types.h"
 #include "nautilus-file-info.h"
-#include "nautilus-property-page.h"
+#include "nautilus-property-page-model.h"
 
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER (nautilus_property_page_provider_get_type ())
+#define NAUTILUS_TYPE_PROPERTY_PAGE_MODEL_PROVIDER (nautilus_property_page_model_provider_get_type ())
 
-G_DECLARE_INTERFACE (NautilusPropertyPageProvider, nautilus_property_page_provider,
-                     NAUTILUS, PROPERTY_PAGE_PROVIDER,
+G_DECLARE_INTERFACE (NautilusPropertyPageModelProvider, nautilus_property_page_model_provider,
+                     NAUTILUS, PROPERTY_PAGE_MODEL_PROVIDER,
                      GObject)
 
-/* For compatibility reasons, remove this once you start introducing breaking changes. */
-typedef NautilusPropertyPageProviderInterface NautilusPropertyPageProviderIface;
-
 /**
- * NautilusPropertyPageProviderInterface:
+ * NautilusPropertyPageModelProvider:
  * @g_iface: The parent interface.
- * @get_pages: Returns a #GList of #NautilusPropertyPage.
- *   See nautilus_property_page_provider_get_items() for details.
+ * @get_model: Returns #NautilusPropertyPageModel.
+ *   See nautilus_property_page_provider_get_model() for details.
  *
- * Interface for extensions to provide additional property pages.
+ * Interface for extensions to provide additional a property page.
  */
-struct _NautilusPropertyPageProviderInterface
+struct _NautilusPropertyPageModelProviderInterface
 {
     GTypeInterface g_iface;
 
-    GList *(*get_items) (NautilusPropertyPageProvider *provider,
-                         GList                        *files);
+    GList *(*get_model) (NautilusPropertyPageModelProvider *provider,
+                         GList                             *files);
 };
 
 /* Interface Functions */
-GList *nautilus_property_page_provider_get_items (NautilusPropertyPageProvider *provider,
-                                                  GList                        *files);
+GList *nautilus_property_page_model_provider_get_model (NautilusPropertyPageModelProvider *provider,
+                                                        GList                             *files);
 
 G_END_DECLS
