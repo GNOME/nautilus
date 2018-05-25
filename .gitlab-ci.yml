@@ -37,8 +37,7 @@ flatpak:
     artifacts:
         paths:
             - ${BUNDLE}
-            - _build/meson-logs/meson-log.txt
-            - _build/meson-logs/testlog.txt
+            - _build/meson-logs/
         expire_in: 30 days
     cache:
         paths:
