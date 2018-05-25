@@ -1,0 +1,53 @@
+app-id: org.gnome.NautilusDevel
+runtime: org.gnome.Platform
+runtime-version: master
+sdk: org.gnome.Sdk
+command: nautilus
+tags:
+  - devel
+  - nightly
+desktop-file-name-prefix: (Development)
+finish-args:
+  - --filesystem=host
+
+modules:
+  - name: exiv2
+    sources:
+      - type: archive
+        url: http://exiv2.org/builds/exiv2-0.26-trunk.tar.gz
+        sha256: c75e3c4a0811bf700d92c82319373b7a825a2331c12b8b37d41eb58e4f18eafb
+      - type: shell
+        commands:
+          - cp -f /usr/share/automake-1.15/config.sub ./config/
+          - cp -f /usr/share/automake-1.15/config.guess ./config/
+
+  - name: gexiv2
+    config-opts:
+      - --disable-introspection
+    sources:
+     - type: git
+       url: https://git.gnome.org/browse/gexiv2
+
+  - name: tracker
+    cleanup:
+      - /bin
+      - /etc
+      - /libexec
+    sources:
+      - type: git
+        url: https://git.gnome.org/browse/tracker
+
+  - name: gnome-autoar
+    sources:
+      - type: git
+        url: https://git.gnome.org/browse/gnome-autoar
+
+  - name: nautilus
+    buildsystem: meson
+    builddir: true
+    config-opts:
+      - --libdir=/app/lib
+      - -Dprofile=development
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/nautilus.git
