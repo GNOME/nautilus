@@ -125,7 +125,9 @@ static GParamSpec *properties[NUM_PROPERTIES] = { NULL, };
 
 G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, GTK_TYPE_HEADER_BAR);
 
-static void update_operations (NautilusToolbar *self);
+static void nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
+                                                   NautilusWindowSlot *slot);
+static void update_operations                     (NautilusToolbar    *self);
 
 static void
 toolbar_update_appearance (NautilusToolbar *self)
@@ -1013,9 +1015,16 @@ static void
 on_window_slot_destroyed (gpointer  data,
                           GObject  *where_the_object_was)
 {
-    NautilusToolbar *self = NAUTILUS_TOOLBAR (data);
+    NautilusToolbar *self;
 
-    nautilus_toolbar_set_window_slot (self, NULL);
+    self = NAUTILUS_TOOLBAR (data);
+
+    /* The window slot was finalized, and the binding has already been removed.
+     * Null it here, so that dispose() does not trip over itself when removing it.
+     */
+    self->icon_binding = NULL;
+
+    nautilus_toolbar_set_window_slot_real (self, NULL);
 }
 
 static void
@@ -1122,13 +1131,6 @@ nautilus_toolbar_finalize (GObject *obj)
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           toolbar_update_appearance, self);
 
-    if (self->window_slot != NULL)
-    {
-        g_signal_handlers_disconnect_by_data (self->window_slot, self);
-        g_object_weak_unref (G_OBJECT (self->window_slot),
-                             on_window_slot_destroyed, self);
-        self->window_slot = NULL;
-    }
     disconnect_progress_infos (self);
     unschedule_remove_finished_operations (self);
     unschedule_operations_start (self);
@@ -1343,74 +1345,84 @@ nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
     return TRUE;
 }
 
+/* Called from on_window_slot_destroyed(), since bindings and signal handlers
+ * are automatically removed once the slot goes away.
+ */
+static void
+nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
+                                       NautilusWindowSlot *slot)
+{
+    g_autoptr (GList) children = NULL;
+
+    self->window_slot = slot;
+
+    if (self->window_slot)
+    {
+        g_object_weak_ref (G_OBJECT (self->window_slot),
+                           on_window_slot_destroyed,
+                           self);
+
+        self->icon_binding = g_object_bind_property_full (self->window_slot, "icon",
+                                                          self->view_toggle_icon, "gicon",
+                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+                                                          (GBindingTransformFunc) nautilus_toolbar_view_toggle_icon_transform_to,
+                                                          NULL,
+                                                          self,
+                                                          NULL);
+
+        on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
+        g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
+                                  G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
+        g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
+                                  G_CALLBACK (slot_on_extensions_background_menu_changed), self);
+        g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
+                                  G_CALLBACK (slot_on_templates_menu_changed), self);
+        g_signal_connect_swapped (self->window_slot, "notify::searching",
+                                  G_CALLBACK (toolbar_update_appearance), self);
+
+    }
+
+    children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
+    if (children != NULL)
+    {
+        gtk_container_remove (GTK_CONTAINER (self->search_container),
+                              children->data);
+    }
+
+    if (self->window_slot != NULL)
+    {
+        gtk_container_add (GTK_CONTAINER (self->search_container),
+                           GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
+    }
+
+    toolbar_update_appearance (self);
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
+}
+
 void
 nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
                                   NautilusWindowSlot *window_slot)
 {
     g_return_if_fail (NAUTILUS_IS_TOOLBAR (self));
+    g_return_if_fail (window_slot == NULL || NAUTILUS_IS_WINDOW_SLOT (window_slot));
+
+    if (self->window_slot == window_slot)
+    {
+        return;
+    }
 
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
 
-    if (self->window_slot != window_slot)
+    disconnect_toolbar_menu_sections_change_handler (self);
+    if (self->window_slot != NULL)
     {
-        GList *children;
-
-        disconnect_toolbar_menu_sections_change_handler (self);
-        if (self->window_slot != NULL)
-        {
-            g_signal_handlers_disconnect_by_data (self->window_slot, self);
-            g_object_weak_unref (G_OBJECT (self->window_slot),
-                                 on_window_slot_destroyed, self);
-            self->window_slot = NULL;
-        }
-
-        self->window_slot = window_slot;
-
-        if (self->window_slot)
-        {
-            g_object_weak_ref (G_OBJECT (self->window_slot),
-                               on_window_slot_destroyed,
-                               self);
-
-            self->icon_binding = g_object_bind_property_full (self->window_slot, "icon",
-                                                              self->view_toggle_icon, "gicon",
-                                                              G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                              (GBindingTransformFunc) nautilus_toolbar_view_toggle_icon_transform_to,
-                                                              NULL,
-                                                              self,
-                                                              NULL);
-
-            on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
-            g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
-                                      G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
-            g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
-                                      G_CALLBACK (slot_on_extensions_background_menu_changed), self);
-            g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
-                                      G_CALLBACK (slot_on_templates_menu_changed), self);
-            g_signal_connect_swapped (window_slot, "notify::searching",
-                                      G_CALLBACK (toolbar_update_appearance), self);
-
-        }
-
-        children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
-        if (children != NULL)
-        {
-          gtk_container_remove (GTK_CONTAINER (self->search_container),
-                                children->data);
-        }
-
-        if (self->window_slot != NULL)
-        {
-            GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot));
-            GTK_CONTAINER (self->search_container);
-            gtk_container_add (GTK_CONTAINER (self->search_container),
-                               GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
-        }
-
-        toolbar_update_appearance (self);
-
-        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
+        g_signal_handlers_disconnect_by_data (self->window_slot, self);
+        g_object_weak_unref (G_OBJECT (self->window_slot),
+                             on_window_slot_destroyed, self);
     }
+
+    nautilus_toolbar_set_window_slot_real (self, window_slot);
 }
 
 gboolean
