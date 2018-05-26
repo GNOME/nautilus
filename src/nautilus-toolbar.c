@@ -1003,8 +1003,20 @@ on_window_slot_destroyed (gpointer  data,
                           GObject  *where_the_object_was)
 {
     NautilusToolbar *self = NAUTILUS_TOOLBAR (data);
+    GList *children;
 
-    nautilus_toolbar_set_window_slot (self, NULL);
+    self->window_slot = NULL;
+
+    children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
+    if (children != NULL)
+    {
+        gtk_container_remove (GTK_CONTAINER (self->search_container),
+                              children->data);
+    }
+
+    toolbar_update_appearance (self);
+
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_WINDOW_SLOT]);
 }
 
 /* The working assumption being made here is, if the location entry is visible,
@@ -1387,14 +1399,12 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
         children = gtk_container_get_children (GTK_CONTAINER (self->search_container));
         if (children != NULL)
         {
-          gtk_container_remove (GTK_CONTAINER (self->search_container),
-                                children->data);
+            gtk_container_remove (GTK_CONTAINER (self->search_container),
+                                  children->data);
         }
 
         if (self->window_slot != NULL)
         {
-            GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot));
-          GTK_CONTAINER (self->search_container);
             gtk_container_add (GTK_CONTAINER (self->search_container),
                                GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
         }
