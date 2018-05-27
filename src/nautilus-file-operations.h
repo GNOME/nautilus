@@ -123,11 +123,16 @@ void nautilus_file_operations_copy      (GList                *files,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
-void nautilus_file_operations_move      (GList                *files,
-					 GFile                *target_dir,
-					 GtkWindow            *parent_window,
-					 NautilusCopyCallback  done_callback,
-					 gpointer              done_callback_data);
+void nautilus_file_operations_move_async      (GList                *files,
+					        GFile                *target_dir,
+					        GtkWindow            *parent_window,
+					        NautilusCopyCallback  done_callback,
+					        gpointer              done_callback_data);
+void nautilus_file_operations_move_sync      (GList                *files,
+                                              GFile                *target_dir,
+                                              GtkWindow            *parent_window,
+                                              NautilusCopyCallback  done_callback,
+                                              gpointer              done_callback_data);
 void nautilus_file_operations_duplicate (GList                *files,
 					 GtkWindow            *parent_window,
 					 NautilusCopyCallback  done_callback,
