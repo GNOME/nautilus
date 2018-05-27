@@ -6316,6 +6316,115 @@ aborted:
 }
 
 void
+nautilus_file_operations_move_sync (GList                *files,
+                                    GFile                *target_dir,
+                                    GtkWindow            *parent_window,
+                                    NautilusCopyCallback  done_callback,
+                                    gpointer              done_callback_data)
+{
+    CopyMoveJob *job;
+    CommonJob *common;
+    GList *fallbacks;
+    SourceInfo source_info;
+    TransferInfo transfer_info;
+    g_autofree char *dest_fs_id = NULL;
+    g_autofree char *dest_fs_type = NULL;
+    GList *fallback_files;
+
+    job = op_job_new (CopyMoveJob, parent_window);
+    job->is_move = TRUE;
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+    job->destination = g_object_ref (target_dir);
+    /* Need to indicate the destination for the operation notification open
+     * button. */
+    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+    /*
+    inhibit_power_manager ((CommonJob *) job, _("Moving Files"));
+
+    if (!nautilus_file_undo_manager_is_operating ())
+    {
+        GFile *src_dir;
+
+        src_dir = g_file_get_parent (files->data);
+
+        if (g_file_has_uri_scheme (g_list_first (files)->data, "trash"))
+        {
+            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_RESTORE_FROM_TRASH,
+                                                                     g_list_length (files),
+                                                                     src_dir, target_dir);
+        }
+        else
+        {
+            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_MOVE,
+                                                                     g_list_length (files),
+                                                                     src_dir, target_dir);
+        }
+
+        g_object_unref (src_dir);
+    }
+    */
+
+    common = &job->common;
+
+    fallbacks = NULL;
+
+    nautilus_progress_info_start (job->common.progress);
+
+    verify_destination (&job->common,
+                        job->destination,
+                        &dest_fs_id,
+                        -1);
+    if (job_aborted (common))
+    {
+        goto aborted;
+    }
+
+    /* This moves all files that we can do without copy + delete */
+    move_files_prepare (job, dest_fs_id, &dest_fs_type, &fallbacks);
+    if (job_aborted (common))
+    {
+        goto aborted;
+    }
+
+    /* The rest we need to do deep copy + delete behind on,
+     *  so scan for size */
+
+    fallback_files = get_files_from_fallbacks (fallbacks);
+    scan_sources (fallback_files,
+                  &source_info,
+                  common,
+                  OP_KIND_MOVE);
+
+    g_list_free (fallback_files);
+
+    if (job_aborted (common))
+    {
+        goto aborted;
+    }
+
+    verify_destination (&job->common,
+                        job->destination,
+                        NULL,
+                        source_info.num_bytes);
+    if (job_aborted (common))
+    {
+        goto aborted;
+    }
+
+    memset (&transfer_info, 0, sizeof (transfer_info));
+    move_files (job,
+                fallbacks,
+                dest_fs_id, &dest_fs_type,
+                &source_info, &transfer_info);
+
+aborted:
+    g_list_free_full (fallbacks, g_free);
+}
+
+void
 nautilus_file_operations_move (GList                *files,
                                GFile                *target_dir,
                                GtkWindow            *parent_window,
