@@ -14,7 +14,8 @@
 # G_TEST_BUILDDIR and G_TEST_SRCDIR cannot be preset, since
 # the test sources are scattered.
 test_env = [
-  'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data'))
+  'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data')),
+  'TESTVAR=@0@'.format('TRUE')
 ]
 
 subdir('automated')
