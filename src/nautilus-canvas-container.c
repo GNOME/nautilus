@@ -4101,13 +4101,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->grab_notify = grab_notify_cb;
 
     gtk_widget_class_set_accessible_type (widget_class, nautilus_canvas_container_accessible_get_type ());
-
-    gtk_widget_class_install_style_property (widget_class,
-                                             g_param_spec_boolean ("activate_prelight_icon_label",
-                                                                   "Activate Prelight Icon Label",
-                                                                   "Whether icon labels should make use of its prelight color in prelight state",
-                                                                   FALSE,
-                                                                   G_PARAM_READABLE));
 }
 
 static void

@@ -980,7 +980,7 @@ draw_label_text (NautilusCanvasItem *item,
     GtkStyleContext *context;
     GtkStateFlags state, base_state;
     gboolean have_editable, have_additional;
-    gboolean needs_highlight, prelight_label;
+    gboolean needs_highlight;
     EelIRect text_rect;
     int x;
     int max_text_width;
@@ -1021,25 +1021,10 @@ draw_label_text (NautilusCanvasItem *item,
                     GTK_STATE_FLAG_PRELIGHT);
     state = base_state;
 
-    gtk_widget_style_get (GTK_WIDGET (container),
-                          "activate_prelight_icon_label", &prelight_label,
-                          NULL);
-
     /* if the canvas is highlighted, do some set-up */
     if (needs_highlight)
     {
         state |= GTK_STATE_FLAG_SELECTED;
-
-        frame_x = text_rect.x0;
-        frame_y = text_rect.y0;
-        frame_w = text_rect.x1 - text_rect.x0;
-        frame_h = text_rect.y1 - text_rect.y0;
-    }
-    else if (!needs_highlight && have_editable &&
-             details->text_width > 0 && details->text_height > 0 &&
-             prelight_label && item->details->is_prelit)
-    {
-        state |= GTK_STATE_FLAG_PRELIGHT;
 
         frame_x = text_rect.x0;
         frame_y = text_rect.y0;
@@ -1071,11 +1056,6 @@ draw_label_text (NautilusCanvasItem *item,
     if (have_editable)
     {
         state = base_state;
-
-        if (prelight_label && item->details->is_prelit)
-        {
-            state |= GTK_STATE_FLAG_PRELIGHT;
-        }
 
         if (needs_highlight)
         {
