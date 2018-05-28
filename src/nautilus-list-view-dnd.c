@@ -268,16 +268,15 @@ nautilus_list_view_dnd_init (NautilusListView *list_view)
                              G_CALLBACK (drag_data_get_callback), list_view, 0);
 }
 
-gboolean
+void
 nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
-                                   GdkEvent         *event)
+                                   gdouble           offset_x,
+                                   gdouble           offset_y,
+                                   const GdkEvent   *event)
 {
-    gdouble x;
-    gdouble y;
-
     if (list_view->details->drag_button == 0)
     {
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
     if (!source_target_list)
@@ -285,16 +284,11 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
         source_target_list = nautilus_list_model_get_drag_target_list ();
     }
 
-    if (G_UNLIKELY (!gdk_event_get_coords (event, &x, &y)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
     if (gtk_drag_check_threshold (GTK_WIDGET (list_view->details->tree_view),
                                   list_view->details->drag_x,
                                   list_view->details->drag_y,
-                                  x,
-                                  y))
+                                  list_view->details->drag_x + offset_x,
+                                  list_view->details->drag_y + offset_y))
     {
         guint32 actions;
 
@@ -304,10 +298,8 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                          source_target_list,
                                          actions,
                                          list_view->details->drag_button,
-                                         event,
+                                         (GdkEvent *) event,
                                          -1,
                                          -1);
     }
-
-    return GDK_EVENT_STOP;
 }
