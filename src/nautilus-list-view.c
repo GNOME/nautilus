@@ -533,7 +533,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     NautilusListView *view;
     GtkWidget *widget;
     GtkTreeView *tree_view;
-    GtkTreePath *path;
+    g_autoptr (GtkTreePath) path = NULL;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
     GtkWidgetClass *tree_view_class;
@@ -623,10 +623,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             view->details->double_click_path[0] = NULL;
         }
 
-        /* Deselect if people click outside any row. It's OK to
-         *  let default code run; it won't reselect anything. */
         gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
-        tree_view_class->button_press_event (widget, (GdkEventButton *) event);
 
         if (button == GDK_BUTTON_SECONDARY)
         {
@@ -718,7 +715,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         }
         else
         {
-            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
+            return;
         }
     }
     else
@@ -836,9 +833,20 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             }
         }
 
+        if (is_simple_click && on_expander)
+        {
+            /* Need to let the event propagate down, since propagating up
+             * by chaining up to button_press_event() doesn’t expand the
+             * expander.
+             */
+            return;
+        }
+
+        /* Needed to select an item before popping up a menu. */
         if (call_parent)
         {
             g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
+            /* GTK+ 4 TODO: replace with event(), at the very least. */
             tree_view_class->button_press_event (widget, (GdkEventButton *) event);
             g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
         }
@@ -862,7 +870,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         }
     }
 
-    gtk_tree_path_free (path);
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static void
