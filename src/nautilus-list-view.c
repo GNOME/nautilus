@@ -572,6 +572,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
+    view->details->last_event = gdk_event_copy (event);
+
     /* Remove after switching to GTK+ 4. */
     if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (tree_view))
     {
@@ -871,20 +873,20 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
                                            gpointer              callback_data)
 {
     NautilusListView *view;
+    g_autoptr (GdkEvent) event = NULL;
     guint button;
-    GdkEventSequence *sequence;
-    const GdkEvent *event;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    event = g_steal_pointer (&view->details->last_event);
 
+    if (!gdk_event_get_button (event, &button))
+    {
+        g_return_if_reached ();
+    }
     if (button != view->details->drag_button)
     {
         return;
     }
-
-    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
     view->details->drag_button = 0;
     if (!view->details->drag_started && !view->details->ignore_button_release)

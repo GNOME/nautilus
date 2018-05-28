@@ -74,5 +74,7 @@ struct NautilusListViewDetails {
   GCancellable *starred_cancellable;
 
   GtkGesture *tree_view_multi_press_gesture;
+
+  GdkEvent *last_event;
 };
 
