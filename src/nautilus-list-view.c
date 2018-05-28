@@ -872,23 +872,30 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
 {
     NautilusListView *view;
     guint button;
-    GdkEventSequence *sequence;
-    const GdkEvent *event;
 
     view = NAUTILUS_LIST_VIEW (callback_data);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-
     if (button != view->details->drag_button)
     {
         return;
     }
 
-    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-
     view->details->drag_button = 0;
     if (!view->details->drag_started && !view->details->ignore_button_release)
     {
+        GdkEventSequence *sequence;
+        const GdkEvent *event;
+
+        sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+        event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+        /* Typically will only happen with GTK+ versions, where ::released
+         * is emitted after ::cancel, but can’t hurt to guard against it anyway.
+         */
+        if (event == NULL)
+        {
+            return;
+        }
+
         nautilus_list_view_did_not_drag (view, event);
     }
 }
