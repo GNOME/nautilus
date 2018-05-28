@@ -1,6 +1,6 @@
 app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
-runtime-version: 3.28
+runtime-version: master
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
@@ -25,15 +25,6 @@ finish-args:
   - --env=DCONF_USER_CONFIG_DIR=.config/dconf
 
 modules:
-  - name: meson
-    buildsystem: simple
-    build-commands:
-      - python3 setup.py install --prefix=/app
-    sources:
-      - type: archive
-        url: https://github.com/mesonbuild/meson/archive/0.46.1.tar.gz
-        sha256: 2d917692d2cc194e12295f00469fbdf3c045e85d0295e5e59ced69115920ffa0
-
   - name: exiv2
     sources:
       - type: archive
@@ -51,7 +42,6 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/gexiv2.git
-        tag: gexiv2-0.10.8
 
   - name: tracker
     cleanup:
@@ -72,13 +62,11 @@ modules:
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/tracker.git
-        tag: 2.0.3
 
   - name: gnome-autoar
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
-        tag: 0.2.3
 
   - name: nautilus
     buildsystem: meson
