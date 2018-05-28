@@ -23,6 +23,7 @@ add_project_arguments(
   cc.get_supported_arguments([
     '-Wall',
     '-Wduplicated-branches',
+    '-Wduplicated-cond',
     '-Wlogical-op',
     '-Werror=declaration-after-statement',
     '-Werror=empty-body',
