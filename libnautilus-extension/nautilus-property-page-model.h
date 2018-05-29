@@ -54,8 +54,9 @@ typedef struct
 } NautilusPropertyPageModelItem;
 
 NautilusPropertyPageModel *nautilus_property_page_model_new (const char *title,
-                                                        GList      *sections,
-                                                        GList      *items);
+                                                             GList      *sections,
+                                                             GList      *items);
+char * nautilus_property_page_model_get_title (NautilusPropertyPageModel *self);
 
 /* NautilusPropertyPageModel has the following properties:
  *   label (string)                                        - the user-visible label of the property page

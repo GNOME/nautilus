@@ -3,6 +3,7 @@
  *                                      that provide property pages.
  *
  *  Copyright (C) 2003 Novell, Inc.
+ *  Copyright (C) 2018 Red Hat, Inc.
  *
  *  This library is free software; you can redistribute it and/or
  *  modify it under the terms of the GNU Library General Public
@@ -18,6 +19,7 @@
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  *  Author:  Dave Camp <dave@ximian.com>
+ *           Carlos Soriano <csoriano@redhat.com>
  *
  */
 
@@ -58,14 +60,14 @@ G_DECLARE_INTERFACE (NautilusPropertyPageModelProvider, nautilus_property_page_m
  */
 struct _NautilusPropertyPageModelProviderInterface
 {
-    GTypeInterface g_iface;
+    GTypeInterface parent;
 
-    GList *(*get_model) (NautilusPropertyPageModelProvider *provider,
-                         GList                             *files);
+    NautilusPropertyPageModel *(*get_model) (NautilusPropertyPageModelProvider *provider,
+                                             GList                             *files);
 };
 
 /* Interface Functions */
-GList *nautilus_property_page_model_provider_get_model (NautilusPropertyPageModelProvider *provider,
-                                                        GList                             *files);
+NautilusPropertyPageModel *nautilus_property_page_model_provider_get_model (NautilusPropertyPageModelProvider *provider,
+                                                                            GList                             *files);
 
 G_END_DECLS

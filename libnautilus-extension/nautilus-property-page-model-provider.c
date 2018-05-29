@@ -20,10 +20,13 @@
  *  License along with this library; if not, see <http://www.gnu.org/licenses/>.
  *
  *  Author:  Dave Camp <dave@ximian.com>
+ *           Carlos Soriano <csoriano@redhat.com>
  *
  */
+#include "config.h"
 
 #include "nautilus-property-page-model-provider.h"
+#include "nautilus-property-page-model.h"
 
 G_DEFINE_INTERFACE (NautilusPropertyPageModelProvider, nautilus_property_page_model_provider,
                     G_TYPE_OBJECT)
@@ -55,11 +58,11 @@ nautilus_property_page_model_provider_default_init (NautilusPropertyPageModelPro
  *
  * Returns: (element-type NautilusPropertyItem) (transfer full): A #GList of allocated #NautilusPropertyItem.
  */
-GList *
+NautilusPropertyPageModel *
 nautilus_property_page_model_provider_get_model (NautilusPropertyPageModelProvider *self,
                                                  GList                             *files)
 {
-    NautilusPropertyPageModelProvider *iface;
+    NautilusPropertyPageModelProviderInterface *iface;
 
     g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_MODEL_PROVIDER (self), NULL);
 

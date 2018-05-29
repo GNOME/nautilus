@@ -22,7 +22,7 @@
  */
 
 #include <config.h>
-#include "nautilus-property-page_model.h"
+#include "nautilus-property-page-model.h"
 
 #include <glib-object.h>
 
@@ -35,11 +35,13 @@ enum
     LAST_PROP
 };
 
-struct _NautilusPropertyPageModelModel
+struct _NautilusPropertyPageModel
 {
     GObject parent_instance;
 
     char *title;
+    GList *sections;
+    GList *items;
 };
 
 G_DEFINE_TYPE (NautilusPropertyPageModel, nautilus_property_page_model, G_TYPE_OBJECT)
@@ -85,6 +87,57 @@ nautilus_property_page_model_new (const char *title,
 
     return page;
 }
+
+char *
+nautilus_property_page_model_get_title (NautilusPropertyPageModel *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_PROPERTY_PAGE_MODEL (self), NULL);
+
+    return self->title;
+}
+
+static void
+free_section (gpointer data)
+{
+    NautilusPropertyPageModelSection *section = (NautilusPropertyPageModelSection *) data;
+
+    g_free(section->title);
+}
+
+static NautilusPropertyPageModelSection*
+copy_section (gconstpointer src,
+              gpointer      data)
+{
+    NautilusPropertyPageModelSection *section = (NautilusPropertyPageModelSection *) src;
+    NautilusPropertyPageModelSection *copy = g_new (NautilusPropertyPageModelSection, 1);
+
+    copy->title = g_strdup (section->title);
+
+    return copy;
+}
+
+static void
+free_item (gpointer data)
+{
+    NautilusPropertyPageModelItem *section = (NautilusPropertyPageModelItem *) data;
+
+    g_free(section->field);
+    g_free(section->value);
+}
+
+static NautilusPropertyPageModelItem*
+copy_item (gconstpointer src,
+           gpointer      data)
+{
+    NautilusPropertyPageModelItem *item = (NautilusPropertyPageModelItem *) src;
+    NautilusPropertyPageModelItem *copy = g_new (NautilusPropertyPageModelItem, 1);
+
+    copy->field = g_strdup (item->field);
+    copy->value = g_strdup (item->value);
+
+    return copy;
+}
+
 
 static void
 nautilus_property_page_model_get_property (GObject    *object,
@@ -151,7 +204,8 @@ nautilus_property_page_model_set_property (GObject      *object,
                 g_list_free_full (page->sections, free_section);
             }
 
-            page->label = g_list_copy_deep (g_value_get_pointer (value), copy_section, NULL);
+            page->sections = g_list_copy_deep (g_value_get_pointer (value),
+                                               (GCopyFunc) copy_section, NULL);
             g_object_notify (object, "sections");
         }
         break;
@@ -160,10 +214,11 @@ nautilus_property_page_model_set_property (GObject      *object,
         {
             if (page->items)
             {
-                g_list_free_full (page->sections, free_items);
+                g_list_free_full (page->sections, free_item);
             }
 
-            page->items = g_list_copy_deep (g_value_get_pointer (value), copy_items, NULL);
+            page->items = g_list_copy_deep (g_value_get_pointer (value),
+                                            (GCopyFunc) copy_item, NULL);
             g_object_notify (object, "items");
         }
         break;
@@ -195,7 +250,7 @@ nautilus_property_page_model_finalize (GObject *object)
     }
     if (page->items != NULL)
     {
-        g_list_free_full (page->items, free_items);
+        g_list_free_full (page->items, free_item);
         page->items = NULL;
     }
 
