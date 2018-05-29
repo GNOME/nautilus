@@ -4,7 +4,7 @@ variables:
 
 stages:
     - test
-    - cross_distro
+    - cross_environment
     - deploy
 
 .test_template: &distro_test
@@ -73,7 +73,7 @@ stop_review:
 
 fedora:rawhide:
     image: fedora:rawhide
-    stage: cross_distro
+    stage: cross_environment
     before_script:
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
         - dnf builddep -y nautilus
@@ -85,7 +85,7 @@ fedora:rawhide:
 
 ubuntu:devel:
     image: ubuntu:devel
-    stage: cross_distro
+    stage: cross_environment
     before_script:
         # Ubuntu requires running update to fetch metadata and find packges
         - apt update
@@ -103,7 +103,7 @@ ubuntu:devel:
 
 opensuse:tumbleweed:
     image: opensuse:tumbleweed
-    stage: cross_distro
+    stage: cross_environment
     before_script:
         - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
                             gtk3-devel gnome-autoar-devel
@@ -117,7 +117,7 @@ opensuse:tumbleweed:
 
 flatpak:master:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
-    stage: cross_distro
+    stage: cross_environment
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus-master.yml"
         MESON_ARGS: "-Dprofile=development -Dtests=all"
