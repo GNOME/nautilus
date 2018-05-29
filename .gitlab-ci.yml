@@ -75,7 +75,7 @@ fedora:rawhide:
     image: fedora:rawhide
     stage: cross_environment
     before_script:
-        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config
+        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp
         - dnf builddep -y nautilus
     <<: *distro_test
     only:
