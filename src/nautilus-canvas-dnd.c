@@ -133,7 +133,6 @@ create_selection_shadow (NautilusCanvasContainer *container,
     {
         NautilusDragSelectionItem *item;
         int x1, y1, x2, y2;
-        GdkRGBA black = { 0, 0, 0, 1 };
 
         item = p->data;
 
@@ -156,9 +155,6 @@ create_selection_shadow (NautilusCanvasContainer *container,
                 "y1", (double) y1,
                 "x2", (double) x2,
                 "y2", (double) y2,
-                "outline-color-rgba", &black,
-                "outline-stippling", TRUE,
-                "width_pixels", 1,
                 NULL);
         }
     }
