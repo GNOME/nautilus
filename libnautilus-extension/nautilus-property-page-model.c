@@ -278,16 +278,14 @@ nautilus_property_page_model_class_init (NautilusPropertyPageModelClass *class)
                                                           G_PARAM_CONSTRUCT_ONLY | G_PARAM_WRITABLE | G_PARAM_READABLE));
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_SECTIONS,
-                                     g_param_spec_object ("sections",
-                                                          "Sections",
-                                                          "Sections of the page",
-                                                          G_TYPE_POINTER,
-                                                          G_PARAM_READWRITE));
+                                     g_param_spec_pointer ("sections",
+                                                           "Sections",
+                                                           "Sections of the page",
+                                                           G_PARAM_READWRITE));
     g_object_class_install_property (G_OBJECT_CLASS (class),
                                      PROP_ITEMS,
-                                     g_param_spec_object ("items",
-                                                          "Items",
-                                                          "Items for the property page",
-                                                          G_TYPE_POINTER,
-                                                          G_PARAM_READWRITE));
+                                     g_param_spec_pointer ("items",
+                                                           "Items",
+                                                           "Items for the property page",
+                                                           G_PARAM_READWRITE));
 }

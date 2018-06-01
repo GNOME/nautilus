@@ -4791,7 +4791,9 @@ append_extension_pages (NautilusPropertiesWindow *window)
 
 
         page_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+        gtk_container_add (page_widget, gtk_label_new ("test"));
         label = gtk_label_new (nautilus_property_page_model_get_title (page));
+        gtk_widget_show_all (page_widget);
         gtk_notebook_append_page (window->notebook,
                                   page_widget, label);
         gtk_container_child_set (GTK_CONTAINER (window->notebook),
@@ -4802,8 +4804,6 @@ append_extension_pages (NautilusPropertiesWindow *window)
         g_object_set_data (G_OBJECT (page_widget),
                            "is-extension-page",
                            page);
-
-        g_object_unref (page);
     }
 
     nautilus_module_extension_list_free (model_providers);

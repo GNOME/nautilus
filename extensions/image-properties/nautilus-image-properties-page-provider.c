@@ -117,7 +117,7 @@ get_model (NautilusPropertyPageModelProvider *provider,
     items = g_list_append (items, item2);
 
     g_print ("HEEEREEEE\n");
-    property_page = nautilus_property_page_model_new (NAUTILUS_IMAGE_PROPERTIES_PAGE_NAME,
+    property_page = nautilus_property_page_model_new (_("Image"),
                                                       sections,
                                                       items);
 
