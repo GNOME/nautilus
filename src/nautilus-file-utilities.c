@@ -526,7 +526,7 @@ nautilus_is_other_locations_directory (GFile *dir)
 GMount *
 nautilus_get_mounted_mount_for_root (GFile *location)
 {
-    GVolumeMonitor *volume_monitor;
+    g_autoptr (GVolumeMonitor) volume_monitor = NULL;
     GList *mounts;
     GList *l;
     GMount *mount;
