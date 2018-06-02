@@ -566,6 +566,8 @@ nautilus_get_mounted_mount_for_root (GFile *location)
     g_clear_object (&default_location);
     g_list_free_full (mounts, g_object_unref);
 
+    g_object_unref(volume_monitor);
+
     return result;
 }
 
