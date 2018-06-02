@@ -3,6 +3,8 @@ option('profiling', type: 'boolean', value: false)
 option('extensions', type: 'boolean', value: true)
 option('packagekit', type: 'boolean', value: true)
 option('selinux', type: 'boolean', value: false)
+option('seccomp', type: 'boolean', value: true)
+option('bubblewrap', type: 'boolean', value: true)
 option('tests', type: 'combo', choices: ['none', 'headless', 'all'], value: 'headless')
 option(
   'profile',

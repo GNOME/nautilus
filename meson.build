@@ -74,7 +74,10 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
-seccomp = dependency('libseccomp')
+seccomp = []
+if get_option('seccomp')
+  seccomp = dependency('libseccomp')
+endif
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -123,8 +126,12 @@ conf.set_quoted('NAME_SUFFIX', name_suffix)
 # gnome-desktop macros for thumbnailer sandboxing.
 ####################################
 conf.set10('_GNU_SOURCE', true)    #    `man user_namespaces` /CLONE_NEWUSER
-conf.set10('ENABLE_SECCOMP', true) #
-conf.set10('HAVE_BWRAP', true)     #
+if get_option('seccomp')
+  conf.set10('ENABLE_SECCOMP', true)
+endif
+if get_option('bubblewrap')
+  conf.set10('HAVE_BWRAP', true)
+endif
 ####################################
 
 if get_option('packagekit')
