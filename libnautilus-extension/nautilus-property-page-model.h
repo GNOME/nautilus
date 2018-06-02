@@ -55,6 +55,8 @@ NautilusPropertyPageModel *nautilus_property_page_model_new (const char *title,
                                                              GList      *sections,
                                                              GList      *items);
 char * nautilus_property_page_model_get_title (NautilusPropertyPageModel *self);
+GList *nautilus_property_page_model_get_sections (NautilusPropertyPageModel *self);
+GList *nautilus_property_page_model_get_items (NautilusPropertyPageModel *self);
 
 /* NautilusPropertyPageModel has the following properties:
  *   label (string)                                        - the user-visible label of the property page

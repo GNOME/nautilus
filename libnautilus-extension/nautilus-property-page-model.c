@@ -112,6 +112,7 @@ copy_section (gconstpointer src,
     NautilusPropertyPageModelSection *copy = g_new (NautilusPropertyPageModelSection, 1);
 
     copy->title = g_strdup (section->title);
+    copy->id = section->id;
 
     return copy;
 }
@@ -134,6 +135,7 @@ copy_item (gconstpointer src,
 
     copy->field = g_strdup (item->field);
     copy->value = g_strdup (item->value);
+    copy->section_id = item->section_id;
 
     return copy;
 }
@@ -214,7 +216,7 @@ nautilus_property_page_model_set_property (GObject      *object,
         {
             if (page->items)
             {
-                g_list_free_full (page->sections, free_item);
+                g_list_free_full (page->items, free_item);
             }
 
             page->items = g_list_copy_deep (g_value_get_pointer (value),
@@ -288,4 +290,16 @@ nautilus_property_page_model_class_init (NautilusPropertyPageModelClass *class)
                                                            "Items",
                                                            "Items for the property page",
                                                            G_PARAM_READWRITE));
+}
+
+GList*
+nautilus_property_page_model_get_sections (NautilusPropertyPageModel *self)
+{
+    return self->sections;
+}
+
+GList*
+nautilus_property_page_model_get_items (NautilusPropertyPageModel *self)
+{
+    return self->items;
 }

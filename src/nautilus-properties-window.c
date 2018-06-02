@@ -4781,8 +4781,11 @@ append_extension_pages (NautilusPropertiesWindow *window)
     {
         NautilusPropertyPageModelProvider *model_provider;
         g_autoptr (NautilusPropertyPageModel) page;
-        GtkWidget *page_widget;
+        GtkWidget *page_container;
         GtkWidget *label;
+        GList *sections;
+        GList *items;
+        GList *section_iter;
 
         model_provider = NAUTILUS_PROPERTY_PAGE_MODEL_PROVIDER (p->data);
 
@@ -4790,18 +4793,106 @@ append_extension_pages (NautilusPropertiesWindow *window)
                                                                 window->original_files);
 
 
-        page_widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-        gtk_container_add (page_widget, gtk_label_new ("test"));
+        page_container = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+        gtk_widget_set_margin_bottom (page_container, 6);
+        gtk_widget_set_margin_top (page_container, 6);
+        gtk_widget_set_margin_end (page_container, 6);
+        gtk_widget_set_margin_start (page_container, 6);
+
         label = gtk_label_new (nautilus_property_page_model_get_title (page));
-        gtk_widget_show_all (page_widget);
+        sections = nautilus_property_page_model_get_sections (page);
+        items = nautilus_property_page_model_get_items (page);
+        for (section_iter = sections; section_iter != NULL; section_iter = section_iter->next)
+        {
+            NautilusPropertyPageModelSection *section;
+            int section_id;
+            char *section_title;
+            char *section_title_markup;
+            GList *item_iter;
+            GtkBox *section_container;
+            GtkGrid *items_container;
+            GtkLabel *section_title_label;
+            int grid_column;
+            int grid_row;
+
+            section = (NautilusPropertyPageModelSection *) section_iter->data;
+            section_id = section->id;
+            section_title = section->title;
+
+            section_container = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 6));
+
+            section_title_markup = g_markup_printf_escaped ("<b>%s</b>", section_title);
+            section_title_label = GTK_LABEL (gtk_label_new (NULL));
+            gtk_label_set_markup (section_title_label, section_title_markup);
+            gtk_label_set_xalign (section_title_label, 0);
+            gtk_container_add (GTK_CONTAINER (section_container),
+                               GTK_WIDGET (section_title_label));
+
+            items_container = GTK_GRID (gtk_grid_new ());
+            gtk_grid_set_column_spacing (items_container, 20);
+            gtk_container_add (GTK_CONTAINER (section_container),
+                               GTK_WIDGET (items_container));
+
+            gtk_container_add (GTK_CONTAINER (page_container),
+                               GTK_WIDGET (section_container));
+
+            grid_column = 0;
+            grid_row = 0;
+            for (item_iter = items; item_iter != NULL; item_iter = item_iter->next)
+            {
+                NautilusPropertyPageModelItem *item;
+                int item_section_id;
+                char *field;
+                char *value;
+                GtkBox *item_container;
+                char *markup;
+                g_autofree gchar *field_text = NULL;
+                GtkLabel *value_label;
+
+                item = (NautilusPropertyPageModelItem *) item_iter->data;
+                item_section_id = item->section_id;
+                field = item->field;
+                value = item->value;
+
+                if (item_section_id != section_id)
+                {
+                    continue;
+                }
+
+                field_text = g_strconcat (field, ":", NULL);
+                markup = g_markup_printf_escaped ("<i>%s</i>", value);
+                value_label = GTK_LABEL (gtk_label_new (NULL));
+                gtk_label_set_markup (value_label, markup);
+
+                item_container = GTK_BOX (gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6));
+                gtk_container_add (GTK_CONTAINER (item_container),
+                                   gtk_label_new (field_text));
+                gtk_container_add (GTK_CONTAINER (item_container),
+                                   GTK_WIDGET (value_label));
+
+                gtk_grid_attach (items_container, GTK_WIDGET (item_container),
+                                 grid_column, grid_row, 1, 1);
+
+                if (grid_column == 0)
+                {
+                    grid_column++;
+                }
+                else
+                {
+                    grid_column = 0;
+                    grid_row++;
+                }
+            }
+        }
+        gtk_widget_show_all (page_container);
         gtk_notebook_append_page (window->notebook,
-                                  page_widget, label);
+                                  page_container, label);
         gtk_container_child_set (GTK_CONTAINER (window->notebook),
-                                 page_widget,
+                                 page_container,
                                  "tab-expand", TRUE,
                                  NULL);
 
-        g_object_set_data (G_OBJECT (page_widget),
+        g_object_set_data (G_OBJECT (page_container),
                            "is-extension-page",
                            page);
     }
