@@ -42,6 +42,9 @@ add_project_arguments(
   language: 'c'
 )
 
+# Operating systems
+is_linux = host_machine.system() == 'linux'
+
 # Imports
 gnome = import('gnome')
 i18n = import('i18n')
@@ -74,7 +77,10 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
-seccomp = dependency('libseccomp')
+seccomp = []
+if is_linux
+  seccomp = dependency('libseccomp')
+endif
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -123,8 +129,10 @@ conf.set_quoted('NAME_SUFFIX', name_suffix)
 # gnome-desktop macros for thumbnailer sandboxing.
 ####################################
 conf.set10('_GNU_SOURCE', true)    #    `man user_namespaces` /CLONE_NEWUSER
-conf.set10('ENABLE_SECCOMP', true) #
-conf.set10('HAVE_BWRAP', true)     #
+if is_linux
+  conf.set10('ENABLE_SECCOMP', true)
+  conf.set10('HAVE_BWRAP', true)
+endif
 ####################################
 
 if get_option('packagekit')
