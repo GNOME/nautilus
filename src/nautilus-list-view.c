@@ -592,16 +592,9 @@ button_press_callback (GtkWidget      *widget,
                     nautilus_file_unref (file);
                 }
             }
-            else
+            else if ((event->button == GDK_BUTTON_PRIMARY || event->button == GDK_BUTTON_SECONDARY))
             {
-                if ((event->button == 1 || event->button == 3))
-                {
-                    activate_selected_items (view);
-                }
-                else if (event->button == 2)
-                {
-                    activate_selected_items_alternate (view, NULL, TRUE);
-                }
+                activate_selected_items (view);
             }
         }
         else
@@ -694,6 +687,19 @@ button_press_callback (GtkWidget      *widget,
         if (event->button == 3)
         {
             do_popup_menu (widget, view, event);
+        }
+
+        /* Don't open a new tab if we are in single click mode (this would open 2 tabs),
+         * or if CTRL or SHIFT is pressed.
+         */
+        if (event->button == GDK_BUTTON_MIDDLE &&
+            get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE &&
+            !button_event_modifies_selection (event))
+        {
+            gtk_tree_selection_unselect_all (selection);
+            gtk_tree_selection_select_path (selection, path);
+
+            activate_selected_items_alternate (view, NULL, TRUE);
         }
     }
 
