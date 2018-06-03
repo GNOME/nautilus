@@ -60,7 +60,8 @@ typedef enum
 static guint path_bar_signals [LAST_SIGNAL] = { 0 };
 
 #define NAUTILUS_PATH_BAR_ICON_SIZE 16
-#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 250
+#define NAUTILUS_PATH_BAR_BUTTON_MIN_WIDTH 250
+#define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 500
 
 typedef struct
 {
@@ -98,6 +99,8 @@ typedef struct
     guint slider_visible : 1;
     guint need_timer : 1;
     guint ignore_click : 1;
+
+    gboolean should_shrink;
 
     unsigned int drag_slider_timeout;
     gboolean drag_slider_timeout_for_up_button;
@@ -364,10 +367,14 @@ get_dir_name (ButtonData *button_data)
  * or not the contents are bold
  */
 static void
-set_label_size_request (ButtonData *button_data)
+set_label_size_request (NautilusPathBar *self,
+                        ButtonData *button_data)
 {
     gint width, height;
     GtkRequisition nat_req, bold_req;
+
+    NautilusPathBarPrivate *priv;
+    priv = nautilus_path_bar_get_instance_private (self);
 
     if (button_data->label == NULL)
     {
@@ -378,7 +385,8 @@ set_label_size_request (ButtonData *button_data)
     gtk_widget_get_preferred_size (button_data->bold_label, &bold_req, NULL);
 
     width = MAX (nat_req.width, bold_req.width);
-    width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
+    width = MIN (width,
+                 priv->should_shrink ? NAUTILUS_PATH_BAR_BUTTON_MIN_WIDTH : NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
     height = MAX (nat_req.height, bold_req.height);
 
     gtk_widget_set_size_request (button_data->label, width, height);
@@ -413,18 +421,11 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
     for (list = priv->button_list; list; list = list->next)
     {
         button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
+        set_label_size_request (self, button_data);
 
         gtk_widget_get_preferred_width (button_data->container, &child_min, &child_nat);
         gtk_widget_get_preferred_height (button_data->container, &child_height, NULL);
         height = MAX (height, child_height);
-
-        if (button_data->type == NORMAL_BUTTON)
-        {
-            /* Use 2*Height as button width because of ellipsized label.  */
-            child_min = MAX (child_min, child_height * 2);
-            child_nat = MAX (child_min, child_height * 2);
-        }
 
         *minimum = MAX (*minimum, child_min);
         *natural = *natural + child_nat;
@@ -467,7 +468,7 @@ nautilus_path_bar_get_preferred_height (GtkWidget *widget,
     for (list = priv->button_list; list; list = list->next)
     {
         button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
+        set_label_size_request (self, button_data);
 
         gtk_widget_get_preferred_height (button_data->container, &child_min, &child_nat);
 
@@ -565,6 +566,72 @@ _set_simple_bottom_clip (GtkWidget *widget,
     gtk_widget_set_clip (widget, &clip);
 }
 
+static guint
+_get_button_list_width (GList *button_list)
+{
+    guint width;
+    GtkRequisition child_requisition;
+    GList *list;
+    GtkWidget *child;
+
+    width = 0;
+
+    gtk_widget_get_preferred_size (BUTTON_DATA (button_list->data)->container,
+                                   &child_requisition, NULL);
+    width += child_requisition.width;
+
+    for (list = button_list->next; list; list = list->next)
+    {
+        child = BUTTON_DATA (list->data)->button;
+        gtk_widget_get_preferred_size (child, &child_requisition, NULL);
+        width += child_requisition.width;
+    }
+
+    return width;
+}
+
+static void
+button_list_size_allocate (NautilusPathBar *self,
+                           GtkAllocation *allocation)
+{
+    GList *list;
+    guint width;
+    NautilusPathBarPrivate *priv;
+    gint up_slider_width, down_slider_width;
+
+    priv = nautilus_path_bar_get_instance_private (self);
+
+    gtk_widget_get_preferred_width (priv->up_slider_button,
+                                    &up_slider_width,
+                                    NULL);
+    gtk_widget_get_preferred_width (priv->down_slider_button,
+                                    &down_slider_width,
+                                    NULL);
+
+    width = up_slider_width + down_slider_width;
+
+    priv->should_shrink = FALSE;
+    for (list = priv->button_list; list; list = list->next)
+    {
+        set_label_size_request (self, BUTTON_DATA (list->data));
+    }
+
+    width += _get_button_list_width (priv->button_list);
+
+    if (width > allocation->width)
+    {
+        priv->should_shrink = TRUE;
+        for (list = priv->button_list; list; list = list->next)
+        {
+            set_label_size_request (self, BUTTON_DATA (list->data));
+        }
+    }
+    else
+    {
+        priv->should_shrink = FALSE;
+    }
+}
+
 /* This is a tad complicated */
 static void
 nautilus_path_bar_size_allocate (GtkWidget     *widget,
@@ -615,18 +682,8 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
                                     NULL);
 
     /* First, we check to see if we need the scrollbars. */
-    width = 0;
-
-    gtk_widget_get_preferred_size (BUTTON_DATA (priv->button_list->data)->container,
-                                   &child_requisition, NULL);
-    width += child_requisition.width;
-
-    for (list = priv->button_list->next; list; list = list->next)
-    {
-        child = BUTTON_DATA (list->data)->button;
-        gtk_widget_get_preferred_size (child, &child_requisition, NULL);
-        width += child_requisition.width;
-    }
+    button_list_size_allocate (self, allocation);
+    width = _get_button_list_width (priv->button_list);
 
     if (width <= allocation->width && !need_sliders)
     {
@@ -1720,9 +1777,6 @@ setup_button_type (ButtonData      *button_data,
                    GFile           *location)
 {
     GMount *mount;
-    gchar *uri;
-
-    uri = g_file_get_uri (location);
 
     if (nautilus_is_root_directory (location))
     {
@@ -1760,8 +1814,6 @@ setup_button_type (ButtonData      *button_data,
     {
         button_data->type = NORMAL_BUTTON;
     }
-
-    g_free (uri);
 }
 
 static void
