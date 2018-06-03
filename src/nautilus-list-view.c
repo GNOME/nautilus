@@ -540,10 +540,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     gint bin_y;
     GdkEventSequence *sequence;
     const GdkEvent *event;
-    gint64 current_time;
-    static gint64 last_click_time = 0;
-    static int click_count = 0;
-    int double_click_time;
     gboolean call_parent, on_expander, show_expanders;
     gboolean is_simple_click, path_selected;
     NautilusFile *file;
@@ -581,26 +577,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         tree_view,
         bin_x, bin_y);
 
-    g_object_get (G_OBJECT (gtk_widget_get_settings (widget)),
-                  "gtk-double-click-time", &double_click_time,
-                  NULL);
-
-    /* Determine click count */
-    current_time = g_get_monotonic_time ();
-    if (current_time - last_click_time < double_click_time * 1000)
-    {
-        click_count++;
-    }
-    else
-    {
-        click_count = 0;
-    }
-
-    /* Stash time for next compare */
-    last_click_time = current_time;
-
     /* Ignore double click if we are in single click mode */
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE && click_count >= 2)
+    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE && n_press >= 2)
     {
         return;
     }
@@ -674,7 +652,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                                                NULL,
                                                NULL));
 
-    if (is_simple_click && click_count <= 0 && on_star)
+    if (is_simple_click && n_press <= 0 && on_star)
     {
         on_star_cell_renderer_clicked (path, view);
     }
