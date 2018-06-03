@@ -697,16 +697,9 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                     nautilus_file_unref (file);
                 }
             }
-            else
+            else if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_SECONDARY))
             {
-                if ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_SECONDARY))
-                {
-                    activate_selected_items (view);
-                }
-                else if (button == GDK_BUTTON_MIDDLE)
-                {
-                    activate_selected_items_alternate (view, NULL, TRUE);
-                }
+                activate_selected_items (view);
             }
         }
         else
@@ -863,6 +856,19 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         {
             nautilus_files_view_pop_up_selection_context_menu (NAUTILUS_FILES_VIEW (view),
                                                                event);
+        }
+
+        /* Don't open a new tab if we are in single click mode (this would open 2 tabs),
+         * or if CTRL or SHIFT is pressed.
+         */
+        if (button == GDK_BUTTON_MIDDLE &&
+            get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE &&
+            !button_event_modifies_selection (event))
+        {
+            gtk_tree_selection_unselect_all (selection);
+            gtk_tree_selection_select_path (selection, path);
+
+            activate_selected_items_alternate (view, NULL, TRUE);
         }
     }
 
