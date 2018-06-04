@@ -5,6 +5,8 @@ libeel_2_sources = [
   'eel-canvas.c',
   'eel-debug.h',
   'eel-debug.c',
+  'eel-event.c',
+  'eel-event.h',
   'eel-glib-extensions.h',
   'eel-graphic-effects.h',
   'eel-graphic-effects.c',

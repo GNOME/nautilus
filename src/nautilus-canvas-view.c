@@ -1068,36 +1068,35 @@ canvas_container_activate_previewer_callback (NautilusCanvasContainer *container
 static void
 canvas_container_activate_alternate_callback (NautilusCanvasContainer *container,
                                               GList                   *file_list,
+                                              EelEvent                *event,
                                               NautilusCanvasView      *canvas_view)
 {
-    GdkEvent *event;
-    GdkEventButton *button_event;
-    GdkEventKey *key_event;
-    gboolean open_in_tab, open_in_window;
+    GdkEventType event_type;
+    GdkModifierType state;
+    gboolean open_in_tab;
+    gboolean open_in_window;
     NautilusWindowOpenFlags flags;
 
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
     g_assert (container == get_canvas_container (canvas_view));
 
-    flags = 0;
-    event = gtk_get_current_event ();
+    event_type = eel_event_get_event_type (event);
+    state = eel_event_get_state (event);
     open_in_tab = FALSE;
     open_in_window = FALSE;
+    flags = 0;
 
-    if (event->type == GDK_BUTTON_PRESS ||
-        event->type == GDK_BUTTON_RELEASE ||
-        event->type == GDK_2BUTTON_PRESS ||
-        event->type == GDK_3BUTTON_PRESS)
+    if (event_type == GDK_BUTTON_PRESS ||
+        event_type == GDK_BUTTON_RELEASE ||
+        event_type == GDK_2BUTTON_PRESS ||
+        event_type == GDK_3BUTTON_PRESS)
     {
-        button_event = (GdkEventButton *) event;
-        open_in_window = ((button_event->state & GDK_SHIFT_MASK) != 0);
+        open_in_window = (state & GDK_SHIFT_MASK) != 0;
         open_in_tab = !open_in_window;
     }
-    else if (event->type == GDK_KEY_PRESS ||
-             event->type == GDK_KEY_RELEASE)
+    else if (event_type == GDK_KEY_PRESS || event_type == GDK_KEY_RELEASE)
     {
-        key_event = (GdkEventKey *) event;
-        open_in_tab = ((key_event->state & GDK_SHIFT_MASK) != 0);
+        open_in_tab = (state & GDK_SHIFT_MASK) != 0;
     }
 
     if (open_in_tab)
