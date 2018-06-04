@@ -124,7 +124,8 @@ static GType         nautilus_canvas_container_accessible_get_type (void);
 static void          preview_selected_items (NautilusCanvasContainer *container);
 static void          activate_selected_items (NautilusCanvasContainer *container);
 static void          activate_selected_items_alternate (NautilusCanvasContainer *container,
-                                                        NautilusCanvasIcon      *icon);
+                                                        NautilusCanvasIcon      *icon,
+                                                        EelEvent                *event);
 static NautilusCanvasIcon *get_first_selected_icon (NautilusCanvasContainer *container);
 static NautilusCanvasIcon *get_nth_selected_icon (NautilusCanvasContainer *container,
                                                   int                      index);
@@ -189,7 +190,6 @@ enum
     ACTIVATE_PREVIEWER,
     BAND_SELECT_STARTED,
     BAND_SELECT_ENDED,
-    BUTTON_PRESS,
     CAN_ACCEPT_ITEM,
     CONTEXT_CLICK_BACKGROUND,
     CONTEXT_CLICK_SELECTION,
@@ -1433,9 +1433,13 @@ redo_layout (NautilusCanvasContainer *container)
 /* Container-level icon handling functions.  */
 
 static gboolean
-button_event_modifies_selection (GdkEventButton *event)
+button_event_modifies_selection (EelEvent *event)
 {
-    return (event->state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
+    GdkModifierType state;
+
+    state = eel_event_get_state (event);
+
+    return (state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)) != 0;
 }
 
 /* invalidate the cached label sizes for all the icons */
@@ -1723,11 +1727,13 @@ rubberband_timeout_callback (gpointer data)
 
 static void
 stop_rubberbanding (NautilusCanvasContainer *container,
-                    GdkEventButton          *event);
+                    const GdkEvent          *event);
 
 static void
 start_rubberbanding (NautilusCanvasContainer *container,
-                     GdkEventButton          *event)
+                     gdouble                  x,
+                     gdouble                  y,
+                     const GdkEvent          *event)
 {
     AtkObject *accessible;
     NautilusCanvasContainerDetails *details;
@@ -1747,7 +1753,7 @@ start_rubberbanding (NautilusCanvasContainer *container,
     g_signal_emit (container,
                    signals[BAND_SELECT_STARTED], 0);
 
-    band_info->device = event->device;
+    band_info->device = gdk_event_get_device (event);
 
     for (p = details->icons; p != NULL; p = p->next)
     {
@@ -1755,9 +1761,12 @@ start_rubberbanding (NautilusCanvasContainer *container,
         icon->was_selected_before_rubberband = icon->is_selected;
     }
 
-    eel_canvas_window_to_world
-        (EEL_CANVAS (container), event->x, event->y,
-        &band_info->start_x, &band_info->start_y);
+    x += gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
+    y += gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
+
+    eel_canvas_window_to_world (EEL_CANVAS (container),
+                                x, y,
+                                &band_info->start_x, &band_info->start_y);
 
     band_info->selection_rectangle = eel_canvas_item_new
                                          (eel_canvas_root
@@ -1774,8 +1783,8 @@ start_rubberbanding (NautilusCanvasContainer *container,
     atk_object_set_name (accessible, "selection");
     atk_object_set_description (accessible, _("The selection rectangle"));
 
-    band_info->prev_x = event->x - gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
-    band_info->prev_y = event->y - gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
+    band_info->prev_x = x - gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
+    band_info->prev_y = y - gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
 
     band_info->active = TRUE;
 
@@ -1792,12 +1801,12 @@ start_rubberbanding (NautilusCanvasContainer *container,
                            | GDK_BUTTON_RELEASE_MASK
                            | GDK_SCROLL_MASK),
                           NULL,
-                          (GdkEvent *) event);
+                          event);
 }
 
 static void
 stop_rubberbanding (NautilusCanvasContainer *container,
-                    GdkEventButton          *event)
+                    const GdkEvent          *event)
 {
     NautilusCanvasRubberbandInfo *band_info;
     GList *icons;
@@ -1805,7 +1814,7 @@ stop_rubberbanding (NautilusCanvasContainer *container,
 
     band_info = &container->details->rubberband_info;
 
-    if (event != NULL && event->device != band_info->device)
+    if (event != NULL && gdk_event_get_device (event) != band_info->device)
     {
         return;
     }
@@ -2528,6 +2537,10 @@ keyboard_move_to (NautilusCanvasContainer *container,
                   NautilusCanvasIcon      *from,
                   GdkEventKey             *event)
 {
+    GdkModifierType state;
+
+    gdk_event_get_state ((GdkEvent *) event, &state);
+
     if (icon == NULL)
     {
         return;
@@ -2535,15 +2548,11 @@ keyboard_move_to (NautilusCanvasContainer *container,
 
     set_focus (container, icon, TRUE);
 
-    if (event != NULL &&
-        (event->state & GDK_CONTROL_MASK) != 0 &&
-        (event->state & GDK_SHIFT_MASK) == 0)
+    if ((state & GDK_CONTROL_MASK) != 0 && (state & GDK_SHIFT_MASK) == 0)
     {
         clear_keyboard_rubberband_start (container);
     }
-    else if (event != NULL &&
-             (event->state & GDK_CONTROL_MASK) != 0 &&
-             (event->state & GDK_SHIFT_MASK) != 0)
+    else if ((state & GDK_CONTROL_MASK) != 0 && (state & GDK_SHIFT_MASK) != 0)
     {
         /* Do rubberband selection */
         EelDRect rect;
@@ -2560,9 +2569,7 @@ keyboard_move_to (NautilusCanvasContainer *container,
             rubberband_select (container, &rect);
         }
     }
-    else if (event != NULL &&
-             (event->state & GDK_CONTROL_MASK) == 0 &&
-             (event->state & GDK_SHIFT_MASK) != 0)
+    else if ((state & GDK_CONTROL_MASK) == 0 && (state & GDK_SHIFT_MASK) != 0)
     {
         /* Select range */
         NautilusCanvasIcon *start_icon;
@@ -2761,8 +2768,11 @@ keyboard_arrow_key (NautilusCanvasContainer *container,
 static gboolean
 is_rectangle_selection_event (GdkEventKey *event)
 {
-    return (event->state & GDK_CONTROL_MASK) != 0 &&
-           (event->state & GDK_SHIFT_MASK) != 0;
+    GdkModifierType state;
+
+    gdk_event_get_state ((GdkEvent *) event, &state);
+
+    return (state & GDK_CONTROL_MASK) != 0 && (state & GDK_SHIFT_MASK) != 0;
 }
 
 static void
@@ -2871,19 +2881,20 @@ keyboard_up (NautilusCanvasContainer *container,
 
 static void
 keyboard_space (NautilusCanvasContainer *container,
-                GdkEventKey             *event)
+                GdkEventKey             *gdk_event)
 {
+    g_autoptr (EelEvent) event = NULL;
+    GdkModifierType state;
     NautilusCanvasIcon *icon;
 
-    if (!has_selection (container) &&
-        container->details->focus != NULL)
+    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
+    state = eel_event_get_state (event);
+
+    if (!has_selection (container) && container->details->focus != NULL)
     {
-        keyboard_move_to (container,
-                          container->details->focus,
-                          NULL, NULL);
+        keyboard_move_to (container, container->details->focus, NULL, NULL);
     }
-    else if ((event->state & GDK_CONTROL_MASK) != 0 &&
-             (event->state & GDK_SHIFT_MASK) == 0)
+    else if ((state & GDK_CONTROL_MASK) != 0 && (state & GDK_SHIFT_MASK) == 0)
     {
         /* Control-space toggles the selection state of the current icon. */
         if (container->details->focus != NULL)
@@ -2914,9 +2925,9 @@ keyboard_space (NautilusCanvasContainer *container,
             }
         }
     }
-    else if ((event->state & GDK_SHIFT_MASK) != 0)
+    else if ((state & GDK_SHIFT_MASK) != 0)
     {
-        activate_selected_items_alternate (container, NULL);
+        activate_selected_items_alternate (container, NULL, event);
     }
     else
     {
@@ -3211,29 +3222,43 @@ style_updated (GtkWidget *widget)
     }
 }
 
-static gboolean
-button_press_event (GtkWidget      *widget,
-                    GdkEventButton *event)
+static void
+on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
+                                gint                  n_press,
+                                gdouble               x,
+                                gdouble               y,
+                                gpointer              user_data)
 {
+    GtkWidget *widget;
     NautilusCanvasContainer *container;
+    GdkEventSequence *sequence;
+    const GdkEvent *gdk_event;
+    guint button;
+    EelEvent *event;
     gboolean selection_changed;
-    gboolean return_value;
     gboolean clicked_on_icon;
 
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     container = NAUTILUS_CANVAS_CONTAINER (widget);
-    container->details->button_down_time = event->time;
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    gdk_event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    event = eel_event_new_from_gdk_event (gdk_event);
+
+    container->details->button_down_time = gdk_event_get_time (gdk_event);
 
     /* Forget about the old keyboard selection now that we've started mousing. */
     clear_keyboard_rubberband_start (container);
 
-    if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS)
+    if (n_press >= 2)
     {
         /* We use our own double-click detection. */
-        return TRUE;
+        eel_canvas_handle_event (EEL_CANVAS (widget), event);
+        return;
     }
 
     /* Invoke the canvas event handler and see if an item picks up the event. */
-    clicked_on_icon = GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->button_press_event (widget, event);
+    clicked_on_icon = eel_canvas_handle_event (EEL_CANVAS (widget), event);
 
     if (!gtk_widget_has_focus (widget))
     {
@@ -3242,13 +3267,12 @@ button_press_event (GtkWidget      *widget,
 
     if (clicked_on_icon)
     {
-        return TRUE;
+        return;
     }
 
     clear_focus (container);
 
-    if (event->button == DRAG_BUTTON &&
-        event->type == GDK_BUTTON_PRESS)
+    if (button == DRAG_BUTTON)
     {
         /* Clear the last click icon for double click */
         container->details->double_click_icon[1] = container->details->double_click_icon[0];
@@ -3256,7 +3280,7 @@ button_press_event (GtkWidget      *widget,
     }
 
     /* Button 1 does rubber banding. */
-    if (event->button == RUBBERBAND_BUTTON)
+    if (button == RUBBERBAND_BUTTON)
     {
         if (!button_event_modifies_selection (event))
         {
@@ -3268,63 +3292,58 @@ button_press_event (GtkWidget      *widget,
             }
         }
 
-        start_rubberbanding (container, event);
-        return TRUE;
+        start_rubberbanding (container, x, y, gdk_event);
+        return;
     }
 
     /* Prevent multi-button weirdness such as bug 6181 */
     if (container->details->rubberband_info.active)
     {
-        return TRUE;
+        return;
     }
 
     /* Button 2 may be passed to the window manager. */
-    if (event->button == MIDDLE_BUTTON)
+    if (button == MIDDLE_BUTTON)
     {
         selection_changed = unselect_all (container);
         if (selection_changed)
         {
             g_signal_emit (container, signals[SELECTION_CHANGED], 0);
         }
-        g_signal_emit (widget, signals[MIDDLE_CLICK], 0, event);
-        return TRUE;
+        g_signal_emit (widget, signals[MIDDLE_CLICK], 0, gdk_event);
+        return;
     }
 
     /* Button 3 does a contextual menu. */
-    if (event->button == CONTEXTUAL_MENU_BUTTON)
+    if (button == CONTEXTUAL_MENU_BUTTON)
     {
         selection_changed = unselect_all (container);
         if (selection_changed)
         {
             g_signal_emit (container, signals[SELECTION_CHANGED], 0);
         }
-        g_signal_emit (widget, signals[CONTEXT_CLICK_BACKGROUND], 0, event);
-        return TRUE;
+        g_signal_emit (widget, signals[CONTEXT_CLICK_BACKGROUND], 0, gdk_event);
+        return;
     }
-
-    /* Otherwise, we emit a button_press message. */
-    g_signal_emit (widget,
-                   signals[BUTTON_PRESS], 0, event,
-                   &return_value);
-    return return_value;
 }
 
 static void
 nautilus_canvas_container_did_not_drag (NautilusCanvasContainer *container,
-                                        GdkEventButton          *event)
+                                        EelEvent                *event)
 {
     NautilusCanvasContainerDetails *details;
-    gboolean selection_changed;
+    GdkModifierType state;
+    guint button;
     static gint64 last_click_time = 0;
     static gint click_count = 0;
-    gint double_click_time;
-    gint64 current_time;
 
     details = container->details;
+    state = eel_event_get_state (event);
+    button = eel_event_get_button (event);
 
     if (details->icon_selected_on_button_down &&
-        ((event->state & GDK_CONTROL_MASK) != 0 ||
-         (event->state & GDK_SHIFT_MASK) == 0))
+        ((state & GDK_CONTROL_MASK) != 0 ||
+         (state & GDK_SHIFT_MASK) == 0))
     {
         if (button_event_modifies_selection (event))
         {
@@ -3335,22 +3354,26 @@ nautilus_canvas_container_did_not_drag (NautilusCanvasContainer *container,
         }
         else
         {
+            gboolean selection_changed;
+
             details->range_selection_base_icon = details->drag_icon;
             selection_changed = select_one_unselect_others
                                     (container, details->drag_icon);
 
             if (selection_changed)
             {
-                g_signal_emit (container,
-                               signals[SELECTION_CHANGED], 0);
+                g_signal_emit (container, signals[SELECTION_CHANGED], 0);
             }
         }
     }
 
     if (details->drag_icon != NULL &&
-        (details->single_click_mode ||
-         event->button == MIDDLE_BUTTON))
+        (details->single_click_mode || button == MIDDLE_BUTTON))
     {
+        gint double_click_time;
+        gint64 current_time;
+        guint32 event_time;
+
         /* Determine click count */
         g_object_get (G_OBJECT (gtk_widget_get_settings (GTK_WIDGET (container))),
                       "gtk-double-click-time", &double_click_time,
@@ -3372,9 +3395,10 @@ nautilus_canvas_container_did_not_drag (NautilusCanvasContainer *container,
          * the selection or pressing for a very long time, or double clicking.
          */
 
+        event_time = eel_event_get_time (event);
 
         if (click_count == 0 &&
-            event->time - details->button_down_time < MAX_CLICK_TIME &&
+            event_time - details->button_down_time < MAX_CLICK_TIME &&
             !button_event_modifies_selection (event))
         {
             /* It's a tricky UI issue whether this should activate
@@ -3385,9 +3409,9 @@ nautilus_canvas_container_did_not_drag (NautilusCanvasContainer *container,
              * NautilusList goes the other way because its "links" seem
              * much more link-like.
              */
-            if (event->button == MIDDLE_BUTTON)
+            if (button == MIDDLE_BUTTON)
             {
-                activate_selected_items_alternate (container, NULL);
+                activate_selected_items_alternate (container, NULL, event);
             }
             else
             {
@@ -3441,53 +3465,56 @@ clear_drag_state (NautilusCanvasContainer *container)
     container->details->drag_state = DRAG_STATE_INITIAL;
 }
 
-static gboolean
-button_release_event (GtkWidget      *widget,
-                      GdkEventButton *event)
+static void
+on_multi_press_gesture_released (GtkGestureMultiPress *gesture,
+                                 gint                  n_press,
+                                 gdouble               x,
+                                 gdouble               y,
+                                 gpointer              user_data)
 {
+    GtkWidget *widget;
     NautilusCanvasContainer *container;
     NautilusCanvasContainerDetails *details;
+    guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *gdk_event;
+    g_autoptr (EelEvent) event = NULL;
 
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     details = container->details;
+    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    gdk_event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    event = eel_event_new_from_gdk_event (gdk_event);
 
-    if (event->button == RUBBERBAND_BUTTON && details->rubberband_info.active)
+    if (button == RUBBERBAND_BUTTON && details->rubberband_info.active)
     {
-        stop_rubberbanding (container, event);
-        return TRUE;
+        stop_rubberbanding (container, gdk_event);
+        return;
     }
 
-    if (event->button == details->drag_button)
+    if (button == details->drag_button)
     {
         details->drag_button = 0;
 
-        switch (details->drag_state)
+        if (details->drag_state == DRAG_STATE_MOVE_OR_COPY)
         {
-            case DRAG_STATE_MOVE_OR_COPY:
+            if (!details->drag_started)
             {
-                if (!details->drag_started)
-                {
-                    nautilus_canvas_container_did_not_drag (container, event);
-                }
-                else
-                {
-                    nautilus_canvas_dnd_end_drag (container);
-                    DEBUG ("Ending drag from canvas container");
-                }
+                nautilus_canvas_container_did_not_drag (container, event);
             }
-            break;
-
-            default:
+            else
             {
+                nautilus_canvas_dnd_end_drag (container);
+                DEBUG ("Ending drag from canvas container");
             }
-            break;
         }
 
         clear_drag_state (container);
-        return TRUE;
     }
 
-    return GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->button_release_event (widget, event);
+    eel_canvas_handle_event (EEL_CANVAS (widget), event);
 }
 
 static int
@@ -3509,13 +3536,19 @@ motion_notify_event (GtkWidget      *widget,
         {
             case DRAG_STATE_MOVE_OR_COPY:
             {
+                gdouble x;
+                gdouble y;
+
                 if (details->drag_started)
                 {
                     break;
                 }
 
-                eel_canvas_window_to_world
-                    (EEL_CANVAS (container), event->x, event->y, &world_x, &world_y);
+                gdk_event_get_coords ((GdkEvent *) event, &x, &y);
+
+                eel_canvas_window_to_world (EEL_CANVAS (container),
+                                            x, y,
+                                            &world_x, &world_y);
 
                 if (gtk_drag_check_threshold (widget,
                                               details->drag_x,
@@ -3592,11 +3625,16 @@ key_press_event (GtkWidget   *widget,
 {
     NautilusCanvasContainer *container;
     gboolean handled;
+    guint keyval;
+    GdkModifierType state;
 
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     handled = FALSE;
 
-    switch (event->keyval)
+    gdk_event_get_keyval ((GdkEvent *) event, &keyval);
+    gdk_event_get_state ((GdkEvent *) event, &state);
+
+    switch (keyval)
     {
         case GDK_KEY_Home:
         case GDK_KEY_KP_Home:
@@ -3618,7 +3656,7 @@ key_press_event (GtkWidget   *widget,
         case GDK_KEY_KP_Left:
         {
             /* Don't eat Alt-Left, as that is used for history browsing */
-            if ((event->state & GDK_MOD1_MASK) == 0)
+            if ((state & GDK_MOD1_MASK) == 0)
             {
                 keyboard_left (container, event);
                 handled = TRUE;
@@ -3630,7 +3668,7 @@ key_press_event (GtkWidget   *widget,
         case GDK_KEY_KP_Up:
         {
             /* Don't eat Alt-Up, as that is used for alt-shift-Up */
-            if ((event->state & GDK_MOD1_MASK) == 0)
+            if ((state & GDK_MOD1_MASK) == 0)
             {
                 keyboard_up (container, event);
                 handled = TRUE;
@@ -3642,7 +3680,7 @@ key_press_event (GtkWidget   *widget,
         case GDK_KEY_KP_Right:
         {
             /* Don't eat Alt-Right, as that is used for history browsing */
-            if ((event->state & GDK_MOD1_MASK) == 0)
+            if ((state & GDK_MOD1_MASK) == 0)
             {
                 keyboard_right (container, event);
                 handled = TRUE;
@@ -3654,7 +3692,7 @@ key_press_event (GtkWidget   *widget,
         case GDK_KEY_KP_Down:
         {
             /* Don't eat Alt-Down, as that is used for Open */
-            if ((event->state & GDK_MOD1_MASK) == 0)
+            if ((state & GDK_MOD1_MASK) == 0)
             {
                 keyboard_down (container, event);
                 handled = TRUE;
@@ -3675,7 +3713,7 @@ key_press_event (GtkWidget   *widget,
              * background popup even if something is selected.
              * The other cases are handled by the "popup-menu" GtkWidget signal.
              */
-            if (event->state & GDK_CONTROL_MASK)
+            if (state & GDK_CONTROL_MASK)
             {
                 handled = handle_popups (container, (GdkEvent *) event,
                                          "context_click_background");
@@ -3686,7 +3724,7 @@ key_press_event (GtkWidget   *widget,
         case GDK_KEY_v:
         {
             /* Eat Control + v to not enable type ahead */
-            if ((event->state & GDK_CONTROL_MASK) != 0)
+            if ((state & GDK_CONTROL_MASK) != 0)
             {
                 handled = TRUE;
             }
@@ -3780,16 +3818,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         NULL, NULL,
                         g_cclosure_marshal_VOID__VOID,
                         G_TYPE_NONE, 0);
-    signals[BUTTON_PRESS]
-        = g_signal_new ("button-press",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         button_press),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_BOOLEAN, 1,
-                        GDK_TYPE_EVENT);
     signals[ACTIVATE]
         = g_signal_new ("activate",
                         G_TYPE_FROM_CLASS (class),
@@ -3807,9 +3835,10 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         G_STRUCT_OFFSET (NautilusCanvasContainerClass,
                                          activate_alternate),
                         NULL, NULL,
-                        g_cclosure_marshal_VOID__POINTER,
-                        G_TYPE_NONE, 1,
-                        G_TYPE_POINTER);
+                        g_cclosure_marshal_generic,
+                        G_TYPE_NONE, 2,
+                        G_TYPE_POINTER,
+                        EEL_TYPE_EVENT);
     signals[ACTIVATE_PREVIEWER]
         = g_signal_new ("activate-previewer",
                         G_TYPE_FROM_CLASS (class),
@@ -4029,8 +4058,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->get_preferred_height = get_prefered_height;
     widget_class->realize = realize;
     widget_class->unrealize = unrealize;
-    widget_class->button_press_event = button_press_event;
-    widget_class->button_release_event = button_release_event;
     widget_class->motion_notify_event = motion_notify_event;
     widget_class->key_press_event = key_press_event;
     widget_class->style_updated = style_updated;
@@ -4184,6 +4211,20 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
 
         setup_prefs = TRUE;
     }
+
+    details->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (container));
+
+#if 0
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (details->multi_press_gesture),
+                                                GTK_PHASE_CAPTURE);
+#endif
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (details->multi_press_gesture),
+                                   0);
+
+    g_signal_connect (details->multi_press_gesture, "pressed",
+                      G_CALLBACK (on_multi_press_gesture_pressed), NULL);
+    g_signal_connect (details->multi_press_gesture, "released",
+                      G_CALLBACK (on_multi_press_gesture_released), NULL);
 }
 
 typedef struct
@@ -4195,11 +4236,14 @@ typedef struct
 static gboolean
 handle_canvas_double_click (NautilusCanvasContainer *container,
                             NautilusCanvasIcon      *icon,
-                            GdkEventButton          *event)
+                            EelEvent                *event)
 {
     NautilusCanvasContainerDetails *details;
+    guint button;
 
-    if (event->button != DRAG_BUTTON)
+    button = eel_event_get_button (event);
+
+    if (button != DRAG_BUTTON)
     {
         return FALSE;
     }
@@ -4232,33 +4276,37 @@ handle_canvas_double_click (NautilusCanvasContainer *container,
 static gboolean
 handle_canvas_button_press (NautilusCanvasContainer *container,
                             NautilusCanvasIcon      *icon,
-                            GdkEventButton          *event)
+                            EelEvent                *event)
 {
     NautilusCanvasContainerDetails *details;
+    GdkEventType event_type;
+    guint button;
+    GdkModifierType state;
 
     details = container->details;
+    event_type = eel_event_get_event_type (event);
+    if (event_type == GDK_2BUTTON_PRESS || event_type == GDK_3BUTTON_PRESS)
+    {
+        return TRUE;
+    }
+    button = eel_event_get_button (event);
+    state = eel_event_get_state (event);
 
-    if (event->type == GDK_2BUTTON_PRESS || event->type == GDK_3BUTTON_PRESS)
+    if (button != DRAG_BUTTON
+        && button != CONTEXTUAL_MENU_BUTTON
+        && button != DRAG_MENU_BUTTON)
     {
         return TRUE;
     }
 
-    if (event->button != DRAG_BUTTON
-        && event->button != CONTEXTUAL_MENU_BUTTON
-        && event->button != DRAG_MENU_BUTTON)
-    {
-        return TRUE;
-    }
-
-    if ((event->button == DRAG_BUTTON) &&
-        event->type == GDK_BUTTON_PRESS)
+    if (button == DRAG_BUTTON && event_type == GDK_BUTTON_PRESS)
     {
         /* The next double click has to be on this icon */
         details->double_click_icon[1] = details->double_click_icon[0];
         details->double_click_icon[0] = icon;
 
         details->double_click_button[1] = details->double_click_button[0];
-        details->double_click_button[0] = event->button;
+        details->double_click_button[0] = button;
     }
 
     if (handle_canvas_double_click (container, icon, event))
@@ -4269,13 +4317,13 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
         return TRUE;
     }
 
-    if (event->button == DRAG_BUTTON
-        || event->button == DRAG_MENU_BUTTON)
+    if (button == DRAG_BUTTON || button == DRAG_MENU_BUTTON)
     {
-        details->drag_button = event->button;
+        details->drag_button = button;
         details->drag_icon = icon;
-        details->drag_x = event->x;
-        details->drag_y = event->y;
+
+        eel_event_get_coords (event, &details->drag_x, &details->drag_y);
+
         details->drag_state = DRAG_STATE_MOVE_OR_COPY;
         details->drag_started = FALSE;
     }
@@ -4285,8 +4333,8 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
      */
     details->icon_selected_on_button_down = icon->is_selected;
 
-    if ((event->button == DRAG_BUTTON || event->button == MIDDLE_BUTTON) &&
-        (event->state & GDK_SHIFT_MASK) != 0)
+    if ((button == DRAG_BUTTON || button == MIDDLE_BUTTON) &&
+        (state & GDK_SHIFT_MASK) != 0)
     {
         NautilusCanvasIcon *start_icon;
 
@@ -4299,7 +4347,7 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
             details->range_selection_base_icon = icon;
         }
         if (select_range (container, start_icon, icon,
-                          (event->state & GDK_CONTROL_MASK) == 0))
+                          (state & GDK_CONTROL_MASK) == 0))
         {
             g_signal_emit (container,
                            signals[SELECTION_CHANGED], 0);
@@ -4324,13 +4372,14 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
         }
     }
 
-    if (event->button == CONTEXTUAL_MENU_BUTTON)
+    if (button == CONTEXTUAL_MENU_BUTTON)
     {
         clear_drag_state (container);
 
         g_signal_emit (container,
                        signals[CONTEXT_CLICK_SELECTION], 0,
-                       event);
+                       /* Handlers expect a GdkEvent, not EelEvent. */
+                       gtk_get_current_event ());
     }
 
 
@@ -4339,65 +4388,55 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 
 static int
 item_event_callback (EelCanvasItem *item,
-                     GdkEvent      *event,
+                     EelEvent      *event,
                      gpointer       data)
 {
     NautilusCanvasContainer *container;
     NautilusCanvasIcon *icon;
-    GdkEventButton *event_button;
+    GdkEventType event_type;
 
     container = NAUTILUS_CANVAS_CONTAINER (data);
-
     icon = NAUTILUS_CANVAS_ITEM (item)->user_data;
+
     g_assert (icon != NULL);
 
-    event_button = &event->button;
-
-    switch (event->type)
+    event_type = eel_event_get_event_type (event);
+    if (event_type == GDK_MOTION_NOTIFY)
     {
-        case GDK_MOTION_NOTIFY:
-        {
-            return FALSE;
-        }
-
-        case GDK_BUTTON_PRESS:
-        {
-            container->details->double_clicked = FALSE;
-            if (handle_canvas_button_press (container, icon, event_button))
-            {
-                /* Stop the event from being passed along further. Returning
-                 * TRUE ain't enough.
-                 */
-                return TRUE;
-            }
-            return FALSE;
-        }
-
-        case GDK_BUTTON_RELEASE:
-        {
-            if (event_button->button == DRAG_BUTTON
-                && container->details->double_clicked)
-            {
-                if (!button_event_modifies_selection (event_button))
-                {
-                    activate_selected_items (container);
-                }
-                else if ((event_button->state & GDK_CONTROL_MASK) == 0 &&
-                         (event_button->state & GDK_SHIFT_MASK) != 0)
-                {
-                    activate_selected_items_alternate (container, icon);
-                }
-            }
-            /* fall through */
-        }
-
-        default:
-        {
-            container->details->double_clicked = FALSE;
-            return FALSE;
-        }
-        break;
+        return GDK_EVENT_PROPAGATE;
     }
+    if (event_type == GDK_BUTTON_PRESS)
+    {
+        container->details->double_clicked = FALSE;
+
+        return handle_canvas_button_press (container, icon, event);
+    }
+    if (event_type == GDK_BUTTON_RELEASE)
+    {
+        guint button;
+
+        button = eel_event_get_button (event);
+        if (button == DRAG_BUTTON && container->details->double_clicked)
+        {
+            GdkModifierType state;
+
+            state = eel_event_get_state (event);
+
+            if (!button_event_modifies_selection (event))
+            {
+                activate_selected_items (container);
+            }
+            else if ((state & GDK_CONTROL_MASK) == 0 &&
+                     (state & GDK_SHIFT_MASK) != 0)
+            {
+                activate_selected_items_alternate (container, icon, event);
+            }
+        }
+    }
+
+    container->details->double_clicked = FALSE;
+
+    return GDK_EVENT_PROPAGATE;
 }
 
 GtkWidget *
@@ -4752,9 +4791,10 @@ preview_selected_items (NautilusCanvasContainer *container)
 
 static void
 activate_selected_items_alternate (NautilusCanvasContainer *container,
-                                   NautilusCanvasIcon      *icon)
+                                   NautilusCanvasIcon      *icon,
+                                   EelEvent                *event)
 {
-    GList *selection;
+    g_autoptr (GList) selection = NULL;
 
     g_assert (NAUTILUS_IS_CANVAS_CONTAINER (container));
 
@@ -4766,13 +4806,14 @@ activate_selected_items_alternate (NautilusCanvasContainer *container,
     {
         selection = nautilus_canvas_container_get_selection (container);
     }
+
     if (selection != NULL)
     {
         g_signal_emit (container,
                        signals[ACTIVATE_ALTERNATE], 0,
-                       selection);
+                       selection,
+                       event);
     }
-    g_list_free (selection);
 }
 
 static NautilusIconInfo *
