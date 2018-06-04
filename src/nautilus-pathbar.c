@@ -1742,9 +1742,6 @@ setup_button_type (ButtonData      *button_data,
                    GFile           *location)
 {
     GMount *mount;
-    gchar *uri;
-
-    uri = g_file_get_uri (location);
 
     if (nautilus_is_root_directory (location))
     {
@@ -1782,8 +1779,6 @@ setup_button_type (ButtonData      *button_data,
     {
         button_data->type = NORMAL_BUTTON;
     }
-
-    g_free (uri);
 }
 
 static void
