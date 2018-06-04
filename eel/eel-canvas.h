@@ -39,6 +39,8 @@
 #include <gdk/gdk.h>
 #include <stdarg.h>
 
+#include "eel-event.h"
+
 G_BEGIN_DECLS
 
 
@@ -172,10 +174,7 @@ struct _EelCanvasItemClass {
 	/* Signal: an event ocurred for an item of this type.  The (x, y)
 	 * coordinates are in the canvas world coordinate system.
 	 */
-	gboolean (* event)                (EelCanvasItem *item, GdkEvent *event);
-
-	/* Reserved for future expansion */
-	gpointer spare_vmethods [4];
+	gboolean (* event) (EelCanvasItem  *item, EelEvent *event);
 };
 
 
@@ -342,7 +341,7 @@ struct _EelCanvas {
 	EelCanvasItem *focused_item;
 
 	/* Event on which selection of current item is based */
-	GdkEvent pick_event;
+	EelEvent *pick_event;
 
 	/* Scrolling region */
 	double scroll_x1, scroll_y1;
@@ -361,7 +360,7 @@ struct _EelCanvas {
 	int zoom_xofs, zoom_yofs;
 
 	/* Last known modifier state, for deferred repick when a button is down */
-	int state;
+	GdkModifierType state;
 
 	/* Event mask specified when grabbing an item */
 	guint grabbed_event_mask;
@@ -464,6 +463,9 @@ void eel_canvas_window_to_world (EelCanvas *canvas,
 /* This is the inverse of eel_canvas_window_to_world() */
 void eel_canvas_world_to_window (EelCanvas *canvas,
 				 double worldx, double worldy, double *winx, double *winy);
+
+gboolean eel_canvas_handle_event (EelCanvas *canvas,
+                                  EelEvent  *event);
 
 /* Accessible implementation */
 GType eel_canvas_accessible_get_type (void);
