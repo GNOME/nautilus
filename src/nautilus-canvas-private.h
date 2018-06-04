@@ -151,7 +151,8 @@ struct NautilusCanvasContainerDetails {
 	/* Drag state. Valid only if drag_button is non-zero. */
 	guint drag_button;
 	NautilusCanvasIcon *drag_icon;
-	int drag_x, drag_y;
+	gdouble drag_x;
+    gdouble drag_y;
 	DragState drag_state;
 	gboolean drag_started;
 
@@ -202,6 +203,8 @@ struct NautilusCanvasContainerDetails {
 	eel_boolean_bit is_populating_container : 1;
 	eel_boolean_bit needs_resort : 1;
 	eel_boolean_bit selection_needs_resort : 1;
+
+    GtkGesture *multi_press_gesture;
 };
 
 /* Private functions shared by mutiple files. */
