@@ -93,7 +93,7 @@ enum
 static void eel_canvas_item_class_init (EelCanvasItemClass *klass);
 static void eel_canvas_item_init (EelCanvasItem *item);
 static int  emit_event (EelCanvas *canvas,
-                        GdkEvent  *event);
+                        EelEvent  *event);
 
 static guint item_signals[ITEM_LAST_SIGNAL];
 
@@ -1069,36 +1069,11 @@ is_descendant (EelCanvasItem *item,
 static void
 eel_canvas_item_grab_focus (EelCanvasItem *item)
 {
-    EelCanvasItem *focused_item;
-    GdkEvent ev;
-
     g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
     g_return_if_fail (gtk_widget_get_can_focus (GTK_WIDGET (item->canvas)));
 
-    focused_item = item->canvas->focused_item;
-
-    if (focused_item)
-    {
-        ev.focus_change.type = GDK_FOCUS_CHANGE;
-        ev.focus_change.window = gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas));
-        ev.focus_change.send_event = FALSE;
-        ev.focus_change.in = FALSE;
-
-        emit_event (item->canvas, &ev);
-    }
-
     item->canvas->focused_item = item;
     gtk_widget_grab_focus (GTK_WIDGET (item->canvas));
-
-    if (focused_item)
-    {
-        ev.focus_change.type = GDK_FOCUS_CHANGE;
-        ev.focus_change.window = gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas));
-        ev.focus_change.send_event = FALSE;
-        ev.focus_change.in = TRUE;
-
-        emit_event (item->canvas, &ev);
-    }
 }
 
 
@@ -1916,8 +1891,6 @@ static void eel_canvas_realize (GtkWidget *widget);
 static void eel_canvas_unrealize (GtkWidget *widget);
 static void eel_canvas_size_allocate (GtkWidget     *widget,
                                       GtkAllocation *allocation);
-static gint eel_canvas_button (GtkWidget      *widget,
-                               GdkEventButton *event);
 static gint eel_canvas_motion (GtkWidget      *widget,
                                GdkEventMotion *event);
 static gint eel_canvas_draw (GtkWidget *widget,
@@ -1926,10 +1899,6 @@ static gint eel_canvas_key (GtkWidget   *widget,
                             GdkEventKey *event);
 static gint eel_canvas_crossing (GtkWidget        *widget,
                                  GdkEventCrossing *event);
-static gint eel_canvas_focus_in (GtkWidget     *widget,
-                                 GdkEventFocus *event);
-static gint eel_canvas_focus_out (GtkWidget     *widget,
-                                  GdkEventFocus *event);
 static void eel_canvas_request_update_real (EelCanvas *canvas);
 static GtkLayoutClass *canvas_parent_class;
 
@@ -2000,6 +1969,18 @@ eel_canvas_set_property (GObject      *object,
         }
         break;
     }
+}
+
+static void
+eel_canvas_dispose (GObject *object)
+{
+    EelCanvas *canvas;
+
+    canvas = EEL_CANVAS (object);
+
+    g_clear_object (&canvas->pick_event);
+
+    G_OBJECT_CLASS (canvas_parent_class)->dispose (object);
 }
 
 static void
@@ -2129,6 +2110,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
 
     gobject_class->set_property = eel_canvas_set_property;
     gobject_class->get_property = eel_canvas_get_property;
+    gobject_class->dispose = eel_canvas_dispose;
 
     widget_class->destroy = eel_canvas_destroy;
     widget_class->map = eel_canvas_map;
@@ -2136,16 +2118,12 @@ eel_canvas_class_init (EelCanvasClass *klass)
     widget_class->realize = eel_canvas_realize;
     widget_class->unrealize = eel_canvas_unrealize;
     widget_class->size_allocate = eel_canvas_size_allocate;
-    widget_class->button_press_event = eel_canvas_button;
-    widget_class->button_release_event = eel_canvas_button;
     widget_class->motion_notify_event = eel_canvas_motion;
     widget_class->draw = eel_canvas_draw;
     widget_class->key_press_event = eel_canvas_key;
     widget_class->key_release_event = eel_canvas_key;
     widget_class->enter_notify_event = eel_canvas_crossing;
     widget_class->leave_notify_event = eel_canvas_crossing;
-    widget_class->focus_in_event = eel_canvas_focus_in;
-    widget_class->focus_out_event = eel_canvas_focus_out;
 
     klass->request_update = eel_canvas_request_update_real;
 
@@ -2166,23 +2144,27 @@ panic_root_destroyed (GtkWidget *object,
 static void
 eel_canvas_init (EelCanvas *canvas)
 {
+    GtkWidget *widget;
     guint width, height;
-    gtk_widget_set_can_focus (GTK_WIDGET (canvas), TRUE);
 
-    gtk_widget_set_redraw_on_allocate (GTK_WIDGET (canvas), FALSE);
+    widget = GTK_WIDGET (canvas);
+
+    gtk_widget_set_can_focus (widget, TRUE);
+    gtk_widget_set_redraw_on_allocate (widget, FALSE);
 
     canvas->scroll_x1 = 0.0;
     canvas->scroll_y1 = 0.0;
-    gtk_layout_get_size (GTK_LAYOUT (canvas),
-                         &width, &height);
+
+    gtk_layout_get_size (GTK_LAYOUT (canvas), &width, &height);
+
     canvas->scroll_x2 = width;
     canvas->scroll_y2 = height;
 
     canvas->pixels_per_unit = 1.0;
 
-    canvas->pick_event.type = GDK_LEAVE_NOTIFY;
-    canvas->pick_event.crossing.x = 0;
-    canvas->pick_event.crossing.y = 0;
+    canvas->pick_event = eel_event_new ();
+
+    eel_event_set_event_type (canvas->pick_event, GDK_LEAVE_NOTIFY);
 
     gtk_scrollable_set_hadjustment (GTK_SCROLLABLE (canvas), NULL);
     gtk_scrollable_set_vadjustment (GTK_SCROLLABLE (canvas), NULL);
@@ -2366,8 +2348,7 @@ eel_canvas_realize (GtkWidget *widget)
                             | GDK_KEY_PRESS_MASK
                             | GDK_KEY_RELEASE_MASK
                             | GDK_ENTER_NOTIFY_MASK
-                            | GDK_LEAVE_NOTIFY_MASK
-                            | GDK_FOCUS_CHANGE_MASK));
+                            | GDK_LEAVE_NOTIFY_MASK));
 
     /* Create our own temporary pixmap gc and realize all the items */
 
@@ -2570,13 +2551,18 @@ eel_canvas_size_allocate (GtkWidget     *widget,
 
 static int
 emit_event (EelCanvas *canvas,
-            GdkEvent  *event)
+            EelEvent  *event)
 {
-    GdkEvent ev;
+    GdkEventType event_type;
+    g_autoptr (EelEvent) ev = NULL;
     gint finished;
     EelCanvasItem *item;
     EelCanvasItem *parent;
     guint mask;
+    gdouble world_x;
+    gdouble world_y;
+
+    event_type = eel_event_get_event_type (event);
 
     /* Could be an old pick event */
     if (!gtk_widget_get_realized (GTK_WIDGET (canvas)))
@@ -2594,7 +2580,7 @@ emit_event (EelCanvas *canvas,
 
     if (canvas->grabbed_item)
     {
-        switch (event->type)
+        switch (eel_event_get_event_type (event))
         {
             case GDK_ENTER_NOTIFY:
             {
@@ -2653,49 +2639,20 @@ emit_event (EelCanvas *canvas,
         }
     }
 
-    /* Convert to world coordinates -- we have two cases because of diferent
-     * offsets of the fields in the event structures.
-     */
+    ev = eel_event_copy (event);
 
-    ev = *event;
+    eel_event_get_coords (ev, &world_x, &world_y);
+    eel_canvas_window_to_world (canvas, world_x, world_y, &world_x, &world_y);
 
-    switch (ev.type)
-    {
-        case GDK_ENTER_NOTIFY:
-        case GDK_LEAVE_NOTIFY:
-        {
-            eel_canvas_window_to_world (canvas,
-                                        ev.crossing.x, ev.crossing.y,
-                                        &ev.crossing.x, &ev.crossing.y);
-        }
-        break;
-
-        case GDK_MOTION_NOTIFY:
-        case GDK_BUTTON_PRESS:
-        case GDK_2BUTTON_PRESS:
-        case GDK_3BUTTON_PRESS:
-        case GDK_BUTTON_RELEASE:
-        {
-            eel_canvas_window_to_world (canvas,
-                                        ev.motion.x, ev.motion.y,
-                                        &ev.motion.x, &ev.motion.y);
-        }
-        break;
-
-        default:
-        {
-        }
-        break;
-    }
+    eel_event_set_coords (ev, world_x, world_y);
 
     /* Choose where we send the event */
 
     item = canvas->current_item;
 
     if (canvas->focused_item
-        && ((event->type == GDK_KEY_PRESS) ||
-            (event->type == GDK_KEY_RELEASE) ||
-            (event->type == GDK_FOCUS_CHANGE)))
+        && ((event_type == GDK_KEY_PRESS) ||
+            (event_type == GDK_KEY_RELEASE)))
     {
         item = canvas->focused_item;
     }
@@ -2711,9 +2668,11 @@ emit_event (EelCanvas *canvas,
     {
         g_object_ref (item);
 
-        g_signal_emit (
-            G_OBJECT (item), item_signals[ITEM_EVENT], 0,
-            &ev, &finished);
+        g_signal_emit (item,
+                       item_signals[ITEM_EVENT],
+                       0,
+                       ev,
+                       &finished);
 
         parent = item->parent;
         g_object_unref (item);
@@ -2729,13 +2688,13 @@ emit_event (EelCanvas *canvas,
  */
 static int
 pick_current_item (EelCanvas *canvas,
-                   GdkEvent  *event)
+                   EelEvent  *event)
 {
+    GdkEventType event_type;
     int button_down;
-    double x, y;
-    int cx, cy;
     int retval;
 
+    event_type = eel_event_get_event_type (event);
     retval = FALSE;
 
     /* If a button is down, we'll perform enter and leave events on the
@@ -2757,39 +2716,23 @@ pick_current_item (EelCanvas *canvas,
      * re-pick the current item if the current one gets deleted.  Also,
      * synthesize an enter event.
      */
-    if (event != &canvas->pick_event)
+    if (event != canvas->pick_event)
     {
-        if ((event->type == GDK_MOTION_NOTIFY) || (event->type == GDK_BUTTON_RELEASE))
+        if (event_type == GDK_MOTION_NOTIFY || event_type == GDK_BUTTON_RELEASE)
         {
-            /* these fields have the same offsets in both types of events */
+            gdouble x;
+            gdouble y;
 
-            canvas->pick_event.crossing.type = GDK_ENTER_NOTIFY;
-            canvas->pick_event.crossing.window = event->motion.window;
-            canvas->pick_event.crossing.send_event = event->motion.send_event;
-            canvas->pick_event.crossing.subwindow = NULL;
-            canvas->pick_event.crossing.x = event->motion.x;
-            canvas->pick_event.crossing.y = event->motion.y;
-            canvas->pick_event.crossing.mode = GDK_CROSSING_NORMAL;
-            canvas->pick_event.crossing.detail = GDK_NOTIFY_NONLINEAR;
-            canvas->pick_event.crossing.focus = FALSE;
-            canvas->pick_event.crossing.state = event->motion.state;
+            eel_event_get_coords (event, &x, &y);
 
-            /* these fields don't have the same offsets in both types of events */
-
-            if (event->type == GDK_MOTION_NOTIFY)
-            {
-                canvas->pick_event.crossing.x_root = event->motion.x_root;
-                canvas->pick_event.crossing.y_root = event->motion.y_root;
-            }
-            else
-            {
-                canvas->pick_event.crossing.x_root = event->button.x_root;
-                canvas->pick_event.crossing.y_root = event->button.y_root;
-            }
+            eel_event_set_coords (canvas->pick_event, x, y);
+            eel_event_set_event_type (canvas->pick_event, GDK_ENTER_NOTIFY);
+            eel_event_set_state (canvas->pick_event, eel_event_get_state (event));
         }
         else
         {
-            canvas->pick_event = *event;
+            g_clear_object (&canvas->pick_event);
+            canvas->pick_event = g_object_ref (event);
         }
     }
 
@@ -2802,20 +2745,14 @@ pick_current_item (EelCanvas *canvas,
 
     /* LeaveNotify means that there is no current item, so we don't look for one */
 
-    if (canvas->pick_event.type != GDK_LEAVE_NOTIFY)
+    if (eel_event_get_event_type (canvas->pick_event) != GDK_LEAVE_NOTIFY)
     {
-        /* these fields don't have the same offsets in both types of events */
+        gdouble x;
+        gdouble y;
+        gint cx;
+        gint cy;
 
-        if (canvas->pick_event.type == GDK_ENTER_NOTIFY)
-        {
-            x = canvas->pick_event.crossing.x;
-            y = canvas->pick_event.crossing.y;
-        }
-        else
-        {
-            x = canvas->pick_event.motion.x;
-            y = canvas->pick_event.motion.y;
-        }
+        eel_event_get_coords (canvas->pick_event, &x, &y);
 
         /* canvas pixel coords */
 
@@ -2851,15 +2788,14 @@ pick_current_item (EelCanvas *canvas,
         && (canvas->current_item != NULL)
         && !canvas->left_grabbed_item)
     {
-        GdkEvent new_event;
+        g_autoptr (EelEvent) new_event = NULL;
 
-        new_event = canvas->pick_event;
-        new_event.type = GDK_LEAVE_NOTIFY;
+        new_event = eel_event_copy (canvas->pick_event);
 
-        new_event.crossing.detail = GDK_NOTIFY_ANCESTOR;
-        new_event.crossing.subwindow = NULL;
+        eel_event_set_event_type (new_event, GDK_LEAVE_NOTIFY);
+
         canvas->in_repick = TRUE;
-        retval = emit_event (canvas, &new_event);
+        retval = emit_event (canvas, new_event);
         canvas->in_repick = FALSE;
     }
 
@@ -2879,36 +2815,39 @@ pick_current_item (EelCanvas *canvas,
 
     if (canvas->current_item != NULL)
     {
-        GdkEvent new_event;
+        g_autoptr (EelEvent) new_event = NULL;
 
-        new_event = canvas->pick_event;
-        new_event.type = GDK_ENTER_NOTIFY;
-        new_event.crossing.detail = GDK_NOTIFY_ANCESTOR;
-        new_event.crossing.subwindow = NULL;
-        retval = emit_event (canvas, &new_event);
+        new_event = eel_event_copy (canvas->pick_event);
+
+        eel_event_set_event_type (new_event, GDK_ENTER_NOTIFY);
+
+        retval = emit_event (canvas, new_event);
     }
 
     return retval;
 }
 
-/* Button event handler for the canvas */
-static gint
-eel_canvas_button (GtkWidget      *widget,
-                   GdkEventButton *event)
+gboolean
+eel_canvas_handle_event (EelCanvas *canvas,
+                         EelEvent  *event)
 {
-    EelCanvas *canvas;
-    int mask;
-    int retval;
+    guint button;
+    GdkWindow *event_window;
+    GdkWindow *bin_window;
+    GdkEventType event_type;
+    gint mask;
+    gboolean handled = FALSE;
 
-    g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
+    g_return_val_if_fail (EEL_IS_CANVAS (canvas), FALSE);
     g_return_val_if_fail (event != NULL, FALSE);
 
-    retval = FALSE;
-
-    canvas = EEL_CANVAS (widget);
+    button = eel_event_get_button (event);
+    event_window = eel_event_get_window (event);
+    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
+    event_type = eel_event_get_event_type (event);
 
     /* Don't handle extra mouse button events */
-    if (event->button > 5)
+    if (button > 5)
     {
         return FALSE;
     }
@@ -2917,12 +2856,12 @@ eel_canvas_button (GtkWidget      *widget,
      * dispatch normally regardless of the event's window if an item has
      * has a pointer grab in effect
      */
-    if (!canvas->grabbed_item && event->window != gtk_layout_get_bin_window (GTK_LAYOUT (canvas)))
+    if (canvas->grabbed_item == NULL && event_window != bin_window)
     {
-        return retval;
+        return FALSE;
     }
 
-    switch (event->button)
+    switch (button)
     {
         case 1:
         {
@@ -2958,7 +2897,7 @@ eel_canvas_button (GtkWidget      *widget,
             mask = 0;
     }
 
-    switch (event->type)
+    switch (event_type)
     {
         case GDK_BUTTON_PRESS:
         case GDK_2BUTTON_PRESS:
@@ -2967,12 +2906,17 @@ eel_canvas_button (GtkWidget      *widget,
             /* Pick the current item as if the button were not pressed, and
              * then process the event.
              */
-            event->state ^= mask;
-            canvas->state = event->state;
-            pick_current_item (canvas, (GdkEvent *) event);
-            event->state ^= mask;
-            canvas->state = event->state;
-            retval = emit_event (canvas, (GdkEvent *) event);
+            canvas->state = eel_event_get_state (event);
+
+            canvas->state ^= mask;
+            eel_event_set_state (event, canvas->state);
+
+            pick_current_item (canvas, event);
+
+            canvas->state ^= mask;
+            eel_event_set_state (event, canvas->state);
+
+            handled = emit_event (canvas, event);
         }
         break;
 
@@ -2981,12 +2925,16 @@ eel_canvas_button (GtkWidget      *widget,
             /* Process the event as if the button were pressed, then repick
              * after the button has been released
              */
-            canvas->state = event->state;
-            retval = emit_event (canvas, (GdkEvent *) event);
-            event->state ^= mask;
-            canvas->state = event->state;
-            pick_current_item (canvas, (GdkEvent *) event);
-            event->state ^= mask;
+            canvas->state = eel_event_get_state (event);
+
+            handled = emit_event (canvas, event);
+
+            canvas->state ^= mask;
+            eel_event_set_state (event, canvas->state);
+
+            pick_current_item (canvas, event);
+
+            eel_event_set_state (event, canvas->state ^ mask);
         }
         break;
 
@@ -2994,54 +2942,65 @@ eel_canvas_button (GtkWidget      *widget,
             g_assert_not_reached ();
     }
 
-    return retval;
+    return handled;
 }
 
 /* Motion event handler for the canvas */
 static gint
 eel_canvas_motion (GtkWidget      *widget,
-                   GdkEventMotion *event)
+                   GdkEventMotion *gdk_event)
 {
     EelCanvas *canvas;
+    g_autoptr (EelEvent) event = NULL;
+    GdkWindow *event_window;
+    GdkWindow *bin_window;
 
     g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (event != NULL, FALSE);
+    g_return_val_if_fail (gdk_event != NULL, FALSE);
 
     canvas = EEL_CANVAS (widget);
+    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
+    event_window = eel_event_get_window (event);
+    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
 
-    if (event->window != gtk_layout_get_bin_window (GTK_LAYOUT (canvas)))
+    if (event_window != bin_window)
     {
         return FALSE;
     }
 
-    canvas->state = event->state;
-    pick_current_item (canvas, (GdkEvent *) event);
-    return emit_event (canvas, (GdkEvent *) event);
+    canvas->state = eel_event_get_state (event);
+
+    pick_current_item (canvas, event);
+
+    return emit_event (canvas, event);
 }
 
 /* Key event handler for the canvas */
 static gint
 eel_canvas_key (GtkWidget   *widget,
-                GdkEventKey *event)
+                GdkEventKey *gdk_event)
 {
     EelCanvas *canvas;
+    g_autoptr (EelEvent) event = NULL;
 
     g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (event != NULL, FALSE);
+    g_return_val_if_fail (gdk_event != NULL, FALSE);
 
     canvas = EEL_CANVAS (widget);
+    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
 
-    if (emit_event (canvas, (GdkEvent *) event))
+    if (emit_event (canvas, event))
     {
         return TRUE;
     }
-    if (event->type == GDK_KEY_RELEASE)
+
+    if (gdk_event_get_event_type ((GdkEvent *) gdk_event) == GDK_KEY_RELEASE)
     {
-        return GTK_WIDGET_CLASS (canvas_parent_class)->key_release_event (widget, event);
+        return GTK_WIDGET_CLASS (canvas_parent_class)->key_release_event (widget, gdk_event);
     }
     else
     {
-        return GTK_WIDGET_CLASS (canvas_parent_class)->key_press_event (widget, event);
+        return GTK_WIDGET_CLASS (canvas_parent_class)->key_press_event (widget, gdk_event);
     }
 }
 
@@ -3049,62 +3008,30 @@ eel_canvas_key (GtkWidget   *widget,
 /* Crossing event handler for the canvas */
 static gint
 eel_canvas_crossing (GtkWidget        *widget,
-                     GdkEventCrossing *event)
+                     GdkEventCrossing *gdk_event)
 {
     EelCanvas *canvas;
+    g_autoptr (EelEvent) event = NULL;
+    GdkWindow *event_window;
+    GdkWindow *bin_window;
 
     g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (event != NULL, FALSE);
+    g_return_val_if_fail (gdk_event != NULL, FALSE);
 
     canvas = EEL_CANVAS (widget);
+    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
+    event_window = eel_event_get_window (event);
+    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
 
-    if (event->window != gtk_layout_get_bin_window (GTK_LAYOUT (canvas)))
+    if (event_window != bin_window)
     {
         return FALSE;
     }
 
-    canvas->state = event->state;
-    return pick_current_item (canvas, (GdkEvent *) event);
+    canvas->state = eel_event_get_state (event);
+
+    return pick_current_item (canvas, event);
 }
-
-/* Focus in handler for the canvas */
-static gint
-eel_canvas_focus_in (GtkWidget     *widget,
-                     GdkEventFocus *event)
-{
-    EelCanvas *canvas;
-
-    canvas = EEL_CANVAS (widget);
-
-    if (canvas->focused_item)
-    {
-        return emit_event (canvas, (GdkEvent *) event);
-    }
-    else
-    {
-        return FALSE;
-    }
-}
-
-/* Focus out handler for the canvas */
-static gint
-eel_canvas_focus_out (GtkWidget     *widget,
-                      GdkEventFocus *event)
-{
-    EelCanvas *canvas;
-
-    canvas = EEL_CANVAS (widget);
-
-    if (canvas->focused_item)
-    {
-        return emit_event (canvas, (GdkEvent *) event);
-    }
-    else
-    {
-        return FALSE;
-    }
-}
-
 
 static cairo_region_t *
 eel_cairo_get_clip_region (cairo_t *cr)
@@ -3248,7 +3175,7 @@ update_again:
     while (canvas->need_repick)
     {
         canvas->need_repick = FALSE;
-        pick_current_item (canvas, &canvas->pick_event);
+        pick_current_item (canvas, canvas->pick_event);
     }
 
     /* it is possible that during picking we emitted an event in which
@@ -4129,7 +4056,7 @@ eel_canvas_item_class_init (EelCanvasItemClass *klass)
                       boolean_handled_accumulator, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_BOOLEAN, 1,
-                      GDK_TYPE_EVENT | G_SIGNAL_TYPE_STATIC_SCOPE);
+                      EEL_TYPE_EVENT);
 
     item_signals[ITEM_DESTROY] =
         g_signal_new ("destroy",
