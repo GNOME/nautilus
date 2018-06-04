@@ -1455,68 +1455,91 @@ get_label_layout (PangoLayout        **layout_cache,
 
 /* handle events */
 
-static int
-nautilus_canvas_item_event (EelCanvasItem *item,
-                            GdkEvent      *event)
+static gboolean
+nautilus_canvas_item_enter_notify_event (EelCanvasItem *item,
+                                         EelEvent      *event)
 {
     NautilusCanvasItem *canvas_item;
-    GdkCursor *cursor;
-    GdkWindow *cursor_window;
 
     canvas_item = NAUTILUS_CANVAS_ITEM (item);
-    cursor_window = ((GdkEventAny *) event)->window;
 
-    switch (event->type)
+    if (!canvas_item->details->is_prelit)
     {
-        case GDK_ENTER_NOTIFY:
+        canvas_item->details->is_prelit = TRUE;
+        nautilus_canvas_item_invalidate_label_size (canvas_item);
+        eel_canvas_item_request_update (item);
+        eel_canvas_item_send_behind (item,
+                                     NAUTILUS_CANVAS_CONTAINER (item->canvas)->details->rubberband_info.selection_rectangle);
+
+        /* show a hand cursor */
+        if (in_single_click_mode ())
         {
-            if (!canvas_item->details->is_prelit)
-            {
-                canvas_item->details->is_prelit = TRUE;
-                nautilus_canvas_item_invalidate_label_size (canvas_item);
-                eel_canvas_item_request_update (item);
-                eel_canvas_item_send_behind (item,
-                                             NAUTILUS_CANVAS_CONTAINER (item->canvas)->details->rubberband_info.selection_rectangle);
+            GdkDisplay *display;
+            g_autoptr (GdkCursor) cursor = NULL;
+            GdkWindow *window;
 
-                /* show a hand cursor */
-                if (in_single_click_mode ())
-                {
-                    cursor = gdk_cursor_new_for_display (gdk_display_get_default (),
-                                                         GDK_HAND2);
-                    gdk_window_set_cursor (cursor_window, cursor);
-                    g_object_unref (cursor);
+            display = gdk_display_get_default ();
+            cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
+            window = eel_event_get_window (event);
 
-                    canvas_item->details->cursor_window = g_object_ref (cursor_window);
-                }
-            }
-            return TRUE;
+            gdk_window_set_cursor (window, cursor);
+
+            canvas_item->details->cursor_window = g_object_ref (window);
         }
-
-        case GDK_LEAVE_NOTIFY:
-        {
-            if (canvas_item->details->is_prelit
-                || canvas_item->details->is_highlighted_for_drop)
-            {
-                /* When leaving, turn of the prelight state and the
-                 * higlighted for drop. The latter gets turned on
-                 * by the drag&drop motion callback.
-                 */
-                canvas_item->details->is_prelit = FALSE;
-                canvas_item->details->is_highlighted_for_drop = FALSE;
-                nautilus_canvas_item_invalidate_label_size (canvas_item);
-                eel_canvas_item_request_update (item);
-
-                /* show default cursor */
-                gdk_window_set_cursor (cursor_window, NULL);
-                g_clear_object (&canvas_item->details->cursor_window);
-            }
-            return TRUE;
-        }
-
-        default:
-            /* Don't eat up other events; canvas container might use them. */
-            return FALSE;
     }
+
+    return GDK_EVENT_STOP;
+}
+
+static gboolean
+nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
+                                         EelEvent      *event)
+{
+    NautilusCanvasItem *canvas_item;
+
+    canvas_item = NAUTILUS_CANVAS_ITEM (item);
+
+    if (canvas_item->details->is_prelit
+        || canvas_item->details->is_highlighted_for_drop)
+    {
+        GdkWindow *window;
+
+        window = eel_event_get_window (event);
+
+        /* When leaving, turn of the prelight state and the
+         * higlighted for drop. The latter gets turned on
+         * by the drag&drop motion callback.
+         */
+        canvas_item->details->is_prelit = FALSE;
+        canvas_item->details->is_highlighted_for_drop = FALSE;
+        nautilus_canvas_item_invalidate_label_size (canvas_item);
+        eel_canvas_item_request_update (item);
+
+        /* show default cursor */
+        gdk_window_set_cursor (window, NULL);
+        g_clear_object (&canvas_item->details->cursor_window);
+    }
+
+    return GDK_EVENT_STOP;
+}
+
+static gboolean
+nautilus_canvas_item_event (EelCanvasItem *item,
+                            EelEvent      *event)
+{
+    GdkEventType event_type;
+
+    event_type = eel_event_get_event_type (event);
+    if (event_type == GDK_ENTER_NOTIFY)
+    {
+        return nautilus_canvas_item_enter_notify_event (item, event);
+    }
+    if (event_type == GDK_LEAVE_NOTIFY)
+    {
+        return nautilus_canvas_item_leave_notify_event (item, event);
+    }
+
+    return GDK_EVENT_PROPAGATE;
 }
 
 static gboolean
