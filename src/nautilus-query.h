@@ -34,6 +34,12 @@ typedef enum {
         NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT,
 } NautilusQuerySearchContent;
 
+typedef enum {
+        NAUTILUS_QUERY_RECURSIVE_NEVER,
+        NAUTILUS_QUERY_RECURSIVE_ALWAYS,
+        NAUTILUS_QUERY_RECURSIVE_IF_INDEXED,
+} NautilusQueryRecursive;
+
 #define NAUTILUS_TYPE_QUERY		(nautilus_query_get_type ())
 
 G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
@@ -66,10 +72,9 @@ GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
 void           nautilus_query_set_date_range     (NautilusQuery *query,
                                                   GPtrArray     *date_range);
 
-gboolean       nautilus_query_get_recursive      (NautilusQuery *query);
-
-void           nautilus_query_set_recursive      (NautilusQuery *query,
-                                                  gboolean       recursive);
+NautilusQueryRecursive nautilus_query_get_recursive (NautilusQuery *query);
+void                   nautilus_query_set_recursive (NautilusQuery          *query,
+                                                     NautilusQueryRecursive  recursive);
 
 gboolean       nautilus_query_get_searching      (NautilusQuery *query);
 
