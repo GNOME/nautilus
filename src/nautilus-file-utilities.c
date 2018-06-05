@@ -1392,28 +1392,31 @@ nautilus_uri_to_native_uri (const gchar *uri)
     return NULL;
 }
 
-gboolean
-location_settings_search_is_recursive (GFile *location)
+NautilusQueryRecursive
+location_settings_search_get_recursive (GFile *location)
 {
-    NautilusFile *file;
-    gboolean recursive;
+    g_autoptr (NautilusFile) file = NULL;
 
-    g_return_val_if_fail (location != NULL, TRUE);
+    g_return_val_if_fail (location, NAUTILUS_QUERY_RECURSIVE_ALWAYS);
 
     file = nautilus_file_get (location);
 
     if (nautilus_file_is_remote (file))
     {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+        {
+            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+        }
     }
     else
     {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-                    g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
+            g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+        {
+            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+        }
     }
 
-    nautilus_file_unref (file);
-
-    return recursive;
+    return NAUTILUS_QUERY_RECURSIVE_NEVER;
 }
 
