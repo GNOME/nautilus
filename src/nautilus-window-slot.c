@@ -1157,11 +1157,11 @@ update_search_information (NautilusWindowSlot *self)
             label = _("Searching network locations only");
         }
         else if (nautilus_file_is_remote (file) &&
-                 !location_settings_search_is_recursive (priv->location))
+                 location_settings_search_get_recursive (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Remote location — only searching the current folder");
         }
-        else if (!location_settings_search_is_recursive (priv->location))
+        else if (location_settings_search_get_recursive (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Only searching the current folder");
         }
