@@ -41,11 +41,11 @@ struct _NautilusQuery
     GList *mime_types;
     gboolean show_hidden;
     GPtrArray *date_range;
+    NautilusQueryRecursive recursive;
     NautilusQuerySearchType search_type;
     NautilusQuerySearchContent search_content;
 
     gboolean searching;
-    gboolean recursive;
     char **prepared_words;
     GMutex prepared_words_mutex;
 };
@@ -115,7 +115,7 @@ nautilus_query_get_property (GObject    *object,
 
         case PROP_RECURSIVE:
         {
-            g_value_set_boolean (value, self->recursive);
+            g_value_set_enum (value, self->recursive);
         }
         break;
 
@@ -178,7 +178,7 @@ nautilus_query_set_property (GObject      *object,
 
         case PROP_RECURSIVE:
         {
-            nautilus_query_set_recursive (self, g_value_get_boolean (value));
+            nautilus_query_set_recursive (self, g_value_get_enum (value));
         }
         break;
 
@@ -269,11 +269,12 @@ nautilus_query_class_init (NautilusQueryClass *class)
      */
     g_object_class_install_property (gobject_class,
                                      PROP_RECURSIVE,
-                                     g_param_spec_boolean ("recursive",
-                                                           "Whether the query is being performed on subdirectories",
-                                                           "Whether the query is being performed on subdirectories or not",
-                                                           FALSE,
-                                                           G_PARAM_READWRITE));
+                                     g_param_spec_enum ("recursive",
+                                                        "Whether the query is being performed on subdirectories",
+                                                        "Whether the query is being performed on subdirectories or not",
+                                                        NAUTILUS_TYPE_QUERY_RECURSIVE,
+                                                        NAUTILUS_QUERY_RECURSIVE_ALWAYS,
+                                                        G_PARAM_READWRITE));
 
     /**
      * NautilusQuery::search-type:
@@ -633,21 +634,20 @@ nautilus_query_set_searching (NautilusQuery *query,
     }
 }
 
-gboolean
+NautilusQueryRecursive
 nautilus_query_get_recursive (NautilusQuery *query)
 {
-    g_return_val_if_fail (NAUTILUS_IS_QUERY (query), FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_QUERY (query),
+                          NAUTILUS_QUERY_RECURSIVE_ALWAYS);
 
     return query->recursive;
 }
 
 void
-nautilus_query_set_recursive (NautilusQuery *query,
-                              gboolean       recursive)
+nautilus_query_set_recursive (NautilusQuery          *query,
+                              NautilusQueryRecursive  recursive)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
-
-    recursive = !!recursive;
 
     if (query->recursive != recursive)
     {
