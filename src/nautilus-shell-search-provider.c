@@ -451,6 +451,7 @@ execute_search (NautilusShellSearchProvider  *self,
 
     query = nautilus_query_new ();
     nautilus_query_set_show_hidden_files (query, FALSE);
+    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_IF_INDEXED);
     nautilus_query_set_text (query, terms_joined);
     nautilus_query_set_location (query, home);
 
