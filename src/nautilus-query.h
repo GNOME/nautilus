@@ -34,6 +34,13 @@ typedef enum {
         NAUTILUS_QUERY_SEARCH_CONTENT_FULL_TEXT,
 } NautilusQuerySearchContent;
 
+typedef enum {
+        NAUTILUS_QUERY_DEEP_SEARCH_AUTO,
+        NAUTILUS_QUERY_DEEP_SEARCH_ALWAYS,
+        NAUTILUS_QUERY_DEEP_SEARCH_NEVER,
+        NAUTILUS_QUERY_DEEP_SEARCH_INDEXED,
+} NautilusQueryDeepSearch;
+
 #define NAUTILUS_TYPE_QUERY		(nautilus_query_get_type ())
 
 G_DECLARE_FINAL_TYPE (NautilusQuery, nautilus_query, NAUTILUS, QUERY, GObject)
@@ -61,6 +68,10 @@ void                       nautilus_query_set_search_content (NautilusQuery     
 NautilusQuerySearchType nautilus_query_get_search_type (NautilusQuery *query);
 void                    nautilus_query_set_search_type (NautilusQuery           *query,
                                                         NautilusQuerySearchType  type);
+
+NautilusQueryDeepSearch nautilus_query_get_deep_search (NautilusQuery *query);
+void                    nautilus_query_set_deep_search (NautilusQuery           *query,
+                                                        NautilusQueryDeepSearch  deep);
 
 GPtrArray*     nautilus_query_get_date_range     (NautilusQuery *query);
 void           nautilus_query_set_date_range     (NautilusQuery *query,
