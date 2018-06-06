@@ -52,7 +52,6 @@ typedef struct
 
     GHashTable *visited;
 
-    gboolean recursive;
     gint n_processed_files;
     GList *hits;
 
@@ -66,8 +65,6 @@ struct _NautilusSearchEngineSimple
     NautilusQuery *query;
 
     SearchThreadData *active_search;
-
-    gboolean recursive;
 };
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
@@ -210,6 +207,7 @@ visit_directory (GFile            *dir,
 {
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusQuerySearchType type;
+    NautilusQueryRecursive recursive_flag;
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
@@ -241,10 +239,12 @@ visit_directory (GFile            *dir,
     }
 
     type = nautilus_query_get_search_type (data->query);
+    recursive_flag = nautilus_query_get_recursive (data->query);
     date_range = nautilus_query_get_date_range (data->query);
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
+        gboolean recursive = FALSE;
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
@@ -321,7 +321,15 @@ visit_directory (GFile            *dir,
             send_batch (data);
         }
 
-        if (data->engine->recursive && g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+        if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
+            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
+        {
+            recursive = recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
+                        (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY &&
+                         g_file_is_native (child));
+        }
+
+        if (recursive)
         {
             id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             visited = FALSE;
@@ -440,7 +448,6 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
     g_clear_object (&simple->query);
 
     simple->query = g_object_ref (query);
-    simple->recursive = nautilus_query_get_recursive (query) == NAUTILUS_QUERY_RECURSIVE_ALWAYS;
 }
 
 static gboolean
