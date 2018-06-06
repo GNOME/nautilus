@@ -208,6 +208,8 @@ static void
 visit_directory (GFile            *dir,
                  SearchThreadData *data)
 {
+    g_autoptr (GPtrArray) date_range = NULL;
+    NautilusQuerySearchType type;
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
@@ -238,10 +240,11 @@ visit_directory (GFile            *dir,
         return;
     }
 
+    type = nautilus_query_get_search_type (data->query);
+    date_range = nautilus_query_get_date_range (data->query);
+
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
-        g_autoptr (GPtrArray) date_range = NULL;
-
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
@@ -276,15 +279,12 @@ visit_directory (GFile            *dir,
         mtime = g_file_info_get_attribute_uint64 (info, "time::modified");
         atime = g_file_info_get_attribute_uint64 (info, "time::access");
 
-        date_range = nautilus_query_get_date_range (data->query);
         if (found && date_range != NULL)
         {
-            NautilusQuerySearchType type;
             guint64 current_file_time;
 
             initial_date = g_ptr_array_index (date_range, 0);
             end_date = g_ptr_array_index (date_range, 1);
-            type = nautilus_query_get_search_type (data->query);
 
             if (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS)
             {
