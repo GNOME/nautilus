@@ -1401,20 +1401,16 @@ location_settings_search_get_recursive (GFile *location)
 
     file = nautilus_file_get (location);
 
-    if (nautilus_file_is_remote (file))
+    switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
     {
-        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-        {
+        case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-        }
-    }
-    else
-    {
-        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-            g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-        {
-            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-        }
+        case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
+          return nautilus_file_is_remote (file) ?
+                 NAUTILUS_QUERY_RECURSIVE_NEVER :
+                 NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
+        case NAUTILUS_SPEED_TRADEOFF_NEVER:
+            return NAUTILUS_QUERY_RECURSIVE_NEVER;
     }
 
     return NAUTILUS_QUERY_RECURSIVE_NEVER;
