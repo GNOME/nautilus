@@ -101,13 +101,15 @@ settings_search_get_recursive (NautilusQueryEditor *editor)
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
         }
     }
-    else
+
+    switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
     {
-        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-            g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-        {
+        case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
-        }
+        case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
+            return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
+        case NAUTILUS_SPEED_TRADEOFF_NEVER:
+            return NAUTILUS_QUERY_RECURSIVE_NEVER;
     }
 
     return NAUTILUS_QUERY_RECURSIVE_NEVER;
