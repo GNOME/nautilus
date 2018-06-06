@@ -473,6 +473,7 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
 
     tracker->query = g_object_ref (query);
     tracker->recursive = recursive == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
+                         recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY ||
                          recursive == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
 }
 
