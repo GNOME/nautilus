@@ -463,18 +463,21 @@ static void
 nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
                                           NautilusQuery          *query)
 {
+    g_autoptr (GFile) location = NULL;
     NautilusSearchEngineTracker *tracker;
     NautilusQueryRecursive recursive;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
     recursive = nautilus_query_get_recursive (query);
+    location = nautilus_query_get_location (query);
 
     g_clear_object (&tracker->query);
 
     tracker->query = g_object_ref (query);
     tracker->recursive = recursive == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
-                         recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY ||
-                         recursive == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY;
+                         recursive == NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY ||
+                         (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY &&
+                          g_file_is_native (location));
 }
 
 static gboolean
