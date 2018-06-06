@@ -22,7 +22,6 @@
 #include <config.h>
 #include "nautilus-search-engine-tracker.h"
 
-#include "nautilus-global-preferences.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
@@ -295,7 +294,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     GString *sparql;
     GList *mimetypes, *l;
     gint mime_count;
-    gboolean recursive;
     GPtrArray *date_range;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
@@ -316,10 +314,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_idle_add (search_finished_idle, provider);
         return;
     }
-
-    recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-                g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
-    tracker->recursive = recursive;
 
     tracker->fts_enabled = nautilus_query_get_search_content (tracker->query);
 
@@ -470,12 +464,23 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
                                           NautilusQuery          *query)
 {
     NautilusSearchEngineTracker *tracker;
+    NautilusQueryDeepSearch deep_search;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
     g_object_ref (query);
     g_clear_object (&tracker->query);
     tracker->query = query;
+    tracker->recursive = FALSE;
+
+    deep_search = nautilus_query_get_deep_search (query);
+
+    if ((deep_search == NAUTILUS_QUERY_DEEP_SEARCH_AUTO &&
+         nautilus_query_get_recursive (query)) ||
+        deep_search == NAUTILUS_QUERY_DEEP_SEARCH_INDEXED)
+    {
+        tracker->recursive = TRUE;
+    }
 }
 
 static gboolean
