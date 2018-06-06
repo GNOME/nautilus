@@ -1,0 +1,138 @@
+{
+    "app-id" : "org.gnome.Nautilus",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.26",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "nautilus",
+    "tags" : [
+        "devel",
+        "development",
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Development) ",
+    "finish-args" : [
+        "--share=ipc",
+        "--socket=x11",
+        "--socket=wayland",
+        "--talk-name=org.gnome.OnlineAccounts",
+        "--talk-name=org.freedesktop.Tracker1",
+        "--filesystem=home",
+        "--talk-name=org.gtk.vfs",
+        "--talk-name=org.gtk.vfs.*",
+        "--filesystem=xdg-run/dconf",
+        "--filesystem=~/.config/dconf:ro",
+        "--talk-name=ca.desrt.dconf",
+        "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+    ],
+    "build-options" : {
+        "cflags" : "-Wno-deprecated-declarations -Og",
+        "cxxflags" : "-Wno-deprecated-declarations -Og",
+        "env" : {
+        }
+    },
+    "cleanup" : [
+        "/include",
+        "/share/bash-completion"
+    ],
+    "modules" : [
+        {
+            "name" : "libexif",
+            "sources" : [
+                {
+                    "type" : "archive",
+                    "url" : "https://downloads.sourceforge.net/libexif/libexif-0.6.21.tar.bz2",
+                    "sha256" : "16cdaeb62eb3e6dfab2435f7d7bccd2f37438d21c5218ec4e58efa9157d4d41a"
+                },
+                {
+                    "type" : "shell",
+                    "commands" : [
+                        "cp -f /usr/share/gnu-config/config.sub .",
+                        "cp -f /usr/share/gnu-config/config.guess ."
+                    ]
+                }
+            ]
+        },
+        {
+            "name" : "exempi",
+            "config-opts" : [
+                "--disable-unittest"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://anongit.freedesktop.org/git/exempi.git",
+                    "tag" : "2.4.5"
+                }
+            ]
+        },
+        {
+            "name" : "tracker",
+            "cleanup" : [
+                "/bin",
+                "/etc",
+                "/libexec"
+            ],
+            "config-opts" : [
+                "--disable-miner-apps",
+                "--disable-static",
+                "--disable-tracker-extract",
+                "--disable-tracker-needle",
+                "--disable-tracker-preferences",
+                "--disable-artwork",
+                "--disable-tracker-writeback",
+                "--disable-miner-user-guides",
+                "--with-bash-completion-dir=no"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/tracker.git",
+                    "tag" : "2.0.3"
+                }
+            ]
+        },
+        {
+            "name" : "gnome-desktop",
+            "config-opts" : [
+                "--disable-debug-tools",
+                "--disable-udev"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/gnome-desktop.git",
+                    "tag" : "3.26.2"
+                }
+            ]
+        },
+        {
+            "name" : "gnome-autoar",
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/gnome-autoar.git",
+                    "tag" : "0.2.3"
+                }
+            ]
+        },
+        {
+            "buildsystem" : "meson",
+            "builddir" : true,
+            "name" : "nautilus",
+            "config-opts" : [
+                "-Denable-desktop=false",
+                "-Denable-selinux=false",
+                "-Denable-xmp=true",
+                "-Denable-exif=true",
+                "--libdir=/app/lib"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/nautilus.git",
+                    "branch" : "gnome-3-26"
+                }
+            ]
+        }
+    ]
+}
