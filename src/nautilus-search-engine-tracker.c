@@ -464,7 +464,7 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
                                           NautilusQuery          *query)
 {
     NautilusSearchEngineTracker *tracker;
-    NautilusQueryDeepSearch deep_search;
+    NautilusQueryRecursive recursive;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);
 
@@ -473,11 +473,9 @@ nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
     tracker->query = query;
     tracker->recursive = FALSE;
 
-    deep_search = nautilus_query_get_deep_search (query);
-
-    if ((deep_search == NAUTILUS_QUERY_DEEP_SEARCH_AUTO &&
-         nautilus_query_get_recursive (query)) ||
-        deep_search == NAUTILUS_QUERY_DEEP_SEARCH_INDEXED)
+    recursive = nautilus_query_get_recursive (query);
+    if (recursive == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
+        recursive == NAUTILUS_QUERY_RECURSIVE_IF_INDEXED)
     {
         tracker->recursive = TRUE;
     }

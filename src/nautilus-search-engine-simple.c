@@ -436,20 +436,15 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
                                          NautilusQuery          *query)
 {
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
-    NautilusQueryDeepSearch deep_search;
 
     g_clear_object (&simple->query);
 
     simple->query = g_object_ref (query);
-    deep_search = nautilus_query_get_deep_search (query);
+    simple->recursive = FALSE;
 
-    if (deep_search == NAUTILUS_QUERY_DEEP_SEARCH_AUTO)
+    if (nautilus_query_get_recursive (query) == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
     {
-        simple->recursive = nautilus_query_get_recursive (query);
-    }
-    else
-    {
-        simple->recursive = (deep_search == NAUTILUS_QUERY_DEEP_SEARCH_ALWAYS);
+        simple->recursive = TRUE;
     }
 }
 
