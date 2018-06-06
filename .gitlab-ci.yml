@@ -108,7 +108,7 @@ opensuse:tumbleweed:
         - zypper install -y gcc meson gettext-runtime gettext-tools itstool git
                             gtk3-devel gnome-autoar-devel
                             gobject-introspection-devel libxml2-devel tracker-devel
-                            desktop-file-utils libgexiv2-devel
+                            desktop-file-utils libgexiv2-devel gsettings-desktop-schemas
     <<: *distro_test
     only:
         - schedules
