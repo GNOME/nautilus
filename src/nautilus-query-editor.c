@@ -82,32 +82,35 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_BOX);
 
-static gboolean
-settings_search_is_recursive (NautilusQueryEditor *editor)
+static NautilusQueryRecursive
+settings_search_get_recursive (NautilusQueryEditor *editor)
 {
-    NautilusFile *file;
-    gboolean recursive;
+    g_autoptr (NautilusFile) file = NULL;
 
     if (editor->location == NULL)
     {
-        return TRUE;
+        return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
     }
 
     file = nautilus_file_get (editor->location);
 
     if (nautilus_file_is_remote (file))
     {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+        {
+            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+        }
     }
     else
     {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-                    g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+        if (g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
+            g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+        {
+            return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+        }
     }
 
-    nautilus_file_unref (file);
-
-    return recursive;
+    return NAUTILUS_QUERY_RECURSIVE_NEVER;
 }
 
 static void
@@ -136,12 +139,12 @@ update_information_label (NautilusQueryEditor *editor)
             fts_sensitive = FALSE;
         }
         else if (nautilus_file_is_remote (file) &&
-                 !settings_search_is_recursive (editor))
+                 settings_search_get_recursive (editor) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Remote location — only searching the current folder");
             fts_sensitive = FALSE;
         }
-        else if (!settings_search_is_recursive (editor))
+        else if (settings_search_get_recursive (editor) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Only searching the current folder");
         }
@@ -159,14 +162,14 @@ recursive_search_preferences_changed (GSettings           *settings,
                                       gchar               *key,
                                       NautilusQueryEditor *editor)
 {
-    gboolean recursive;
+    NautilusQueryRecursive recursive;
 
     if (!editor->location || !editor->query)
     {
         return;
     }
 
-    recursive = settings_search_is_recursive (editor);
+    recursive = settings_search_get_recursive (editor);
     if (recursive != nautilus_query_get_recursive (editor->query))
     {
         nautilus_query_set_recursive (editor->query, recursive);
@@ -363,7 +366,7 @@ create_query (NautilusQueryEditor *editor)
 {
     NautilusQuery *query;
     g_autoptr (NautilusFile) file = NULL;
-    gboolean recursive;
+    NautilusQueryRecursive recursive;
     gboolean fts_enabled;
 
     g_return_if_fail (editor->query == NULL);
@@ -380,7 +383,7 @@ create_query (NautilusQueryEditor *editor)
 
     nautilus_query_set_search_content (query, fts_enabled);
 
-    recursive = settings_search_is_recursive (editor);
+    recursive = settings_search_get_recursive (editor);
 
     nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (editor->entry)));
     nautilus_query_set_location (query, editor->location);
