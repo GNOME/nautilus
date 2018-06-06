@@ -438,8 +438,9 @@ nautilus_search_engine_simple_set_query (NautilusSearchProvider *provider,
     NautilusSearchEngineSimple *simple = NAUTILUS_SEARCH_ENGINE_SIMPLE (provider);
 
     g_clear_object (&simple->query);
+
     simple->query = g_object_ref (query);
-    simple->recursive = nautilus_query_get_recursive (query);
+    simple->recursive = nautilus_query_get_recursive (query) == NAUTILUS_QUERY_RECURSIVE_ALWAYS;
 }
 
 static gboolean
