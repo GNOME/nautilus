@@ -97,7 +97,7 @@ update_fts_sensitivity (NautilusQueryEditor *editor)
         fts_sensitive = !nautilus_file_is_other_locations (file) &&
                         !g_str_has_prefix (uri, "network://") &&
                         !(nautilus_file_is_remote (file) &&
-                          location_settings_search_get_recursive (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
+                          location_settings_search_get_recursive_for_location (editor->location) == NAUTILUS_QUERY_RECURSIVE_NEVER);
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
                                                    fts_sensitive);
     }
@@ -110,12 +110,12 @@ recursive_search_preferences_changed (GSettings           *settings,
 {
     NautilusQueryRecursive recursive;
 
-    if (!editor->location || !editor->query)
+    if (!editor->query)
     {
         return;
     }
 
-    recursive = location_settings_search_get_recursive (editor->location);
+    recursive = location_settings_search_get_recursive ();
     if (recursive != nautilus_query_get_recursive (editor->query))
     {
         nautilus_query_set_recursive (editor->query, recursive);
@@ -312,7 +312,6 @@ create_query (NautilusQueryEditor *editor)
 {
     NautilusQuery *query;
     g_autoptr (NautilusFile) file = NULL;
-    NautilusQueryRecursive recursive;
     gboolean fts_enabled;
 
     g_return_if_fail (editor->query == NULL);
@@ -329,11 +328,13 @@ create_query (NautilusQueryEditor *editor)
 
     nautilus_query_set_search_content (query, fts_enabled);
 
-    recursive = location_settings_search_get_recursive (editor->location);
-
     nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (editor->entry)));
     nautilus_query_set_location (query, editor->location);
-    nautilus_query_set_recursive (query, recursive);
+
+    /* We only set the query using the global setting for recursivity here,
+     * it's up to the search engine to check weather it can proceed with
+     * deep search in the current directory or not. */
+    nautilus_query_set_recursive (query, location_settings_search_get_recursive ());
 
     nautilus_query_editor_set_query (editor, query);
 }
