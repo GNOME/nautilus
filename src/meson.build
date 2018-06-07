@@ -227,6 +227,7 @@ libnautilus_sources = [
   'nautilus-search-provider.h',
   'nautilus-search-engine.c',
   'nautilus-search-engine.h',
+  'nautilus-search-engine-private.h',
   'nautilus-search-engine-model.c',
   'nautilus-search-engine-model.h',
   'nautilus-search-engine-simple.c',
