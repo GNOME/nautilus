@@ -194,7 +194,8 @@ struct NautilusFileDetails
 	eel_boolean_bit filesystem_readonly           : 1;
 	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */
 	eel_boolean_bit filesystem_info_is_up_to_date : 1;
-        eel_ref_str     filesystem_type;
+	eel_boolean_bit filesystem_remote             : 1;
+	eel_ref_str     filesystem_type;
 
 	time_t trash_time; /* 0 is unknown */
 	time_t recency; /* 0 is unknown */
