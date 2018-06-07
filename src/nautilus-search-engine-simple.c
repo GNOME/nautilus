@@ -20,9 +20,9 @@
  */
 
 #include <config.h>
-#include "nautilus-file.h"
 #include "nautilus-search-engine-simple.h"
 
+#include "nautilus-search-engine-private.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-ui-utilities.h"
@@ -209,7 +209,7 @@ visit_directory (GFile            *dir,
 {
     g_autoptr (GPtrArray) date_range = NULL;
     NautilusQuerySearchType type;
-    NautilusQueryRecursive recursive_flag;
+    NautilusQueryRecursive recursive;
     GFileEnumerator *enumerator;
     GFileInfo *info;
     GFile *child;
@@ -241,12 +241,11 @@ visit_directory (GFile            *dir,
     }
 
     type = nautilus_query_get_search_type (data->query);
-    recursive_flag = nautilus_query_get_recursive (data->query);
+    recursive = nautilus_query_get_recursive (data->query);
     date_range = nautilus_query_get_date_range (data->query);
 
     while ((info = g_file_enumerator_next_file (enumerator, data->cancellable, NULL)) != NULL)
     {
-        gboolean recursive = FALSE;
         display_name = g_file_info_get_display_name (info);
         if (display_name == NULL)
         {
@@ -323,21 +322,10 @@ visit_directory (GFile            *dir,
             send_batch (data);
         }
 
-        if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
-            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-        {
-            if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
-            {
-                recursive = TRUE;
-            }
-            else if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
-            {
-                g_autoptr (NautilusFile) file = nautilus_file_get (child);
-                recursive = !nautilus_file_is_remote (file);
-            }
-        }
-
-        if (recursive)
+        if (recursive != NAUTILUS_QUERY_RECURSIVE_NEVER &&
+            g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+            is_recursive_search (NAUTILUS_SEARCH_ENGINE_TYPE_NON_INDEXED,
+                                 recursive, child))
         {
             id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILE);
             visited = FALSE;
