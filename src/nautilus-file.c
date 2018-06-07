@@ -4689,6 +4689,29 @@ nautilus_file_get_filesystem_type (NautilusFile *file)
 }
 
 gboolean
+nautilus_file_get_filesystem_remote (NautilusFile *file)
+{
+    NautilusFile *parent;
+
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    if (nautilus_file_is_directory (file))
+    {
+        return file->details->filesystem_remote;
+    }
+    else
+    {
+        parent = nautilus_file_get_parent (file);
+        if (parent != NULL)
+        {
+            return parent->details->filesystem_remote;
+        }
+    }
+
+    return FALSE;
+}
+
+gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
     const char *mime_type;
@@ -8069,6 +8092,11 @@ nautilus_file_is_remote (NautilusFile *file)
     g_autofree char *filesystem_type = NULL;
 
     g_assert (NAUTILUS_IS_FILE (file));
+
+    if (nautilus_file_get_filesystem_remote (file))
+    {
+        return TRUE;
+    }
 
     filesystem_type = nautilus_file_get_filesystem_type (file);
 
