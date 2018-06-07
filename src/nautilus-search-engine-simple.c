@@ -20,6 +20,7 @@
  */
 
 #include <config.h>
+#include "nautilus-file.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
 #include "nautilus-search-engine-simple.h"
@@ -324,9 +325,15 @@ visit_directory (GFile            *dir,
         if (recursive_flag != NAUTILUS_QUERY_RECURSIVE_NEVER &&
             g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
         {
-            recursive = recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS ||
-                        (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY &&
-                         g_file_is_native (child));
+            if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_ALWAYS)
+            {
+                recursive = TRUE;
+            }
+            else if (recursive_flag == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+            {
+                g_autoptr (NautilusFile) file = nautilus_file_get (child);
+                recursive = !nautilus_file_is_remote (file);
+            }
         }
 
         if (recursive)
