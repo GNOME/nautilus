@@ -21,9 +21,10 @@
 
 #include <config.h>
 #include "nautilus-file.h"
+#include "nautilus-search-engine-simple.h"
+
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
-#include "nautilus-search-engine-simple.h"
 #include "nautilus-ui-utilities.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
