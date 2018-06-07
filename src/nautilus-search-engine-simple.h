@@ -19,6 +19,8 @@
  *
  */
 
+#include <glib-object.h>
+
 #pragma once
 
 G_BEGIN_DECLS
