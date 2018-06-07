@@ -1393,26 +1393,37 @@ nautilus_uri_to_native_uri (const gchar *uri)
 }
 
 NautilusQueryRecursive
-location_settings_search_get_recursive (GFile *location)
+location_settings_search_get_recursive (void)
 {
-    g_autoptr (NautilusFile) file = NULL;
-
-    g_return_val_if_fail (location, NAUTILUS_QUERY_RECURSIVE_ALWAYS);
-
-    file = nautilus_file_get (location);
-
     switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
     {
         case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
         case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
-          return nautilus_file_is_remote (file) ?
-                 NAUTILUS_QUERY_RECURSIVE_NEVER :
-                 NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
+            return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
         case NAUTILUS_SPEED_TRADEOFF_NEVER:
             return NAUTILUS_QUERY_RECURSIVE_NEVER;
     }
 
-    return NAUTILUS_QUERY_RECURSIVE_NEVER;
+    return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
 }
 
+NautilusQueryRecursive
+location_settings_search_get_recursive_for_location (GFile *location)
+{
+    NautilusQueryRecursive recursive = location_settings_search_get_recursive ();
+
+    g_return_val_if_fail (location, recursive);
+
+    if (recursive == NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY)
+    {
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+
+        if (nautilus_file_is_remote (file))
+        {
+            recursive = NAUTILUS_QUERY_RECURSIVE_NEVER;
+        }
+    }
+
+    return recursive;
+}
