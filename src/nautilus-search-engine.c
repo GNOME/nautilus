@@ -20,12 +20,13 @@
  */
 
 #include <config.h>
-
-#include <glib/gi18n.h>
-#include "nautilus-search-provider.h"
 #include "nautilus-search-engine.h"
-#include "nautilus-search-engine-simple.h"
+#include "nautilus-search-engine-private.h"
+
+#include "nautilus-file.h"
 #include "nautilus-search-engine-model.h"
+#include "nautilus-search-provider.h"
+#include <glib/gi18n.h>
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 #include "nautilus-search-engine-tracker.h"
@@ -415,4 +416,30 @@ nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine)
     priv = nautilus_search_engine_get_instance_private (engine);
 
     return priv->model;
+}
+
+gboolean
+is_recursive_search (NautilusSearchEngineType  engine_type,
+                     NautilusQueryRecursive    recursive,
+                     GFile                    *location)
+{
+    switch (recursive)
+    {
+        case NAUTILUS_QUERY_RECURSIVE_NEVER:
+            return FALSE;
+
+        case NAUTILUS_QUERY_RECURSIVE_ALWAYS:
+            return TRUE;
+
+        case NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY:
+            return engine_type == NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED;
+
+        case NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY:
+        {
+            g_autoptr (NautilusFile) file = nautilus_file_get (location);
+            return !nautilus_file_is_remote (file);
+        }
+    }
+
+    return TRUE;
 }
