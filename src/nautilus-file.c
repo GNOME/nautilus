@@ -40,6 +40,8 @@
 #include <grp.h>
 #include <gtk/gtk.h>
 #include <libxml/parser.h>
+#include <sys/types.h>
+#include <limits.h>
 #include <pwd.h>
 #include <stdlib.h>
 #include <sys/stat.h>
