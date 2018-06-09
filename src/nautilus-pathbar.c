@@ -110,6 +110,8 @@ typedef struct
 
     GtkGesture *up_slider_button_long_press_gesture;
     GtkGesture *down_slider_button_long_press_gesture;
+
+    GActionGroup *action_group;
 } NautilusPathBarPrivate;
 
 
@@ -131,6 +133,39 @@ static void nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                    gboolean    current_dir);
 static void nautilus_path_bar_update_path (NautilusPathBar *self,
                                            GFile           *file_path);
+static void
+action_pathbar_properties (GSimpleAction *action,
+                           GVariant      *state,
+                           gpointer       user_data);
+
+const GActionEntry pathbar_actions[] =
+{
+    { "pathbar-properties", action_pathbar_properties }
+};
+
+static void
+action_pathbar_properties (GSimpleAction *action,
+                           GVariant      *state,
+                           gpointer       user_data)
+{
+    NautilusPathBar *self;
+    NautilusPathBarPrivate *priv;
+    NautilusFile *file;
+    GList *files;
+
+    self = NAUTILUS_PATH_BAR (user_data);
+    priv = nautilus_path_bar_get_instance_private (self);
+
+    file = nautilus_file_get (priv->current_path);
+
+    g_assert (NAUTILUS_IS_FILE (file));
+
+    files = g_list_append (NULL, nautilus_file_ref (file));
+
+    nautilus_properties_window_present (files, GTK_WIDGET (self), NULL);
+
+    nautilus_file_list_free (files);
+}
 
 static GtkWidget *
 get_slider_button (NautilusPathBar *self,
@@ -232,6 +267,15 @@ nautilus_path_bar_init (NautilusPathBar *self)
     GtkBuilder *builder;
 
     priv = nautilus_path_bar_get_instance_private (self);
+
+    priv->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
+    g_action_map_add_action_entries (G_ACTION_MAP (priv->action_group),
+                                     pathbar_actions,
+                                     G_N_ELEMENTS (pathbar_actions),
+                                     self);
+    gtk_widget_insert_action_group (GTK_WIDGET (self),
+                                    "pathbar",
+                                    G_ACTION_GROUP (priv->action_group));
 
     /* Context menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
