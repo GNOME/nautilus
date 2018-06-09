@@ -1,4 +1,5 @@
 project('nautilus', 'c',
+  default_options: ['c_std=c11'],
   version: '3.28.0',
   meson_version: '>= 0.46.0',
   license: 'GPL3+'
