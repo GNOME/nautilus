@@ -40,6 +40,7 @@ add_project_arguments(
     '-Werror=undef',
     '-Werror=uninitialized',
   ]),
+  '-D_GNU_SOURCE',
   language: 'c'
 )
 
