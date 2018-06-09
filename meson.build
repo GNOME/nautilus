@@ -40,6 +40,7 @@ add_project_arguments(
     '-Werror=undef',
     '-Werror=uninitialized',
   ]),
+  '-D_GNU_SOURCE',
   language: 'c'
 )
 
@@ -129,7 +130,6 @@ conf.set_quoted('NAME_SUFFIX', name_suffix)
 #
 # gnome-desktop macros for thumbnailer sandboxing.
 ####################################
-conf.set10('_GNU_SOURCE', true)    #    `man user_namespaces` /CLONE_NEWUSER
 if is_linux
   conf.set10('ENABLE_SECCOMP', true)
   conf.set10('HAVE_BWRAP', true)
