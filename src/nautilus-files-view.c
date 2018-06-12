@@ -2445,6 +2445,30 @@ action_properties (GSimpleAction *action,
 }
 
 static void
+action_current_dir_properties (GSimpleAction *action,
+                               GVariant      *state,
+                               gpointer       user_data)
+{
+    NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GList *files;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+
+    if (priv->directory_as_file != NULL)
+    {
+        files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
+
+        nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
+
+        nautilus_file_list_free (files);
+    }
+}
+
+static void
 nautilus_files_view_set_show_hidden_files (NautilusFilesView *view,
                                            gboolean           show_hidden)
 {
@@ -6926,6 +6950,7 @@ const GActionEntry view_entries[] =
     { "extract-to", action_extract_to },
     { "compress", action_compress },
     { "properties", action_properties},
+    { "current-directory-properties", action_current_dir_properties},
     { "set-as-wallpaper", action_set_as_wallpaper },
     { "mount-volume", action_mount_volume },
     { "unmount-volume", action_unmount_volume },
