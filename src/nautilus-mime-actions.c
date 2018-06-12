@@ -1700,6 +1700,7 @@ activate_files (ActivateParameters *parameters)
         params = application_launch_parameters_new (parameters,
                                                     g_queue_copy (open_in_app_uris));
 
+        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
         nautilus_launch_default_for_uri_async (uri,
                                                parameters->parent_window,
                                                parameters->cancellable,
