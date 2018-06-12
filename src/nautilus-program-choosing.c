@@ -25,8 +25,8 @@
 
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
-#include "nautilus-recent.h"
 #include "nautilus-ui-utilities.h"
+#include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
 #include <gio/gio.h>
@@ -36,6 +36,55 @@
 #include <gdk/gdk.h>
 #include <gdk/gdkx.h>
 
+static void
+add_file_to_recent (NautilusFile *file,
+                    GAppInfo     *application)
+{
+    GtkRecentData recent_data;
+    char *uri;
+
+    uri = nautilus_file_get_activation_uri (file);
+    if (uri == NULL)
+    {
+        uri = nautilus_file_get_uri (file);
+    }
+
+    /* do not add trash:// etc */
+    if (eel_uri_is_trash (uri) ||
+        eel_uri_is_search (uri) ||
+        eel_uri_is_recent (uri))
+    {
+        g_free (uri);
+        return;
+    }
+
+    recent_data.display_name = NULL;
+    recent_data.description = NULL;
+
+    recent_data.mime_type = nautilus_file_get_mime_type (file);
+    recent_data.app_name = g_strdup (g_get_application_name ());
+
+    if (application != NULL)
+    {
+        recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
+    }
+    else
+    {
+        recent_data.app_exec = g_strdup ("gio open");
+    }
+
+    recent_data.groups = NULL;
+    recent_data.is_private = FALSE;
+
+    gtk_recent_manager_add_full (gtk_recent_manager_get_default (),
+                                 uri, &recent_data);
+
+    g_free (recent_data.mime_type);
+    g_free (recent_data.app_name);
+    g_free (recent_data.app_exec);
+
+    g_free (uri);
+}
 void
 nautilus_launch_application_for_mount (GAppInfo  *app_info,
                                        GMount    *mount,
@@ -186,7 +235,7 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
         for (l = uris; l != NULL; l = l->next)
         {
             file = nautilus_file_get_by_uri (l->data);
-            nautilus_recent_add_file (file, application);
+            add_file_to_recent (file, application);
             nautilus_file_unref (file);
         }
     }
