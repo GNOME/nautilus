@@ -63,15 +63,7 @@ add_file_to_recent (NautilusFile *file,
 
     recent_data.mime_type = nautilus_file_get_mime_type (file);
     recent_data.app_name = g_strdup (g_get_application_name ());
-
-    if (application != NULL)
-    {
-        recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
-    }
-    else
-    {
-        recent_data.app_exec = g_strdup ("gio open");
-    }
+    recent_data.app_exec = g_strdup (g_app_info_get_commandline (application));
 
     recent_data.groups = NULL;
     recent_data.is_private = FALSE;
