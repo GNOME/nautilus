@@ -5801,8 +5801,6 @@ action_open_scripts_folder (GSimpleAction *action,
 typedef struct _CopyCallbackData
 {
     NautilusFilesView *view;
-    GtkFileChooser *chooser;
-    GHashTable *locations;
     GList *selection;
     gboolean is_move;
 } CopyCallbackData;
@@ -5811,7 +5809,6 @@ static void
 copy_data_free (CopyCallbackData *data)
 {
     nautilus_file_list_free (data->selection);
-    g_hash_table_destroy (data->locations);
     g_free (data);
 }
 
@@ -5966,8 +5963,6 @@ copy_or_move_selection (NautilusFilesView *view,
     copy_data->view = view;
     copy_data->selection = selection;
     copy_data->is_move = is_move;
-    copy_data->chooser = GTK_FILE_CHOOSER (dialog);
-    copy_data->locations = g_hash_table_new_full (g_str_hash, g_str_equal, g_free, NULL);
 
     if (selection != NULL)
     {
