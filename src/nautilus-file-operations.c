@@ -5655,53 +5655,25 @@ copy_task_thread_func (GTask        *task,
 {
     CopyMoveJob *job;
     CommonJob *common;
-    SourceInfo source_info;
-    TransferInfo transfer_info;
-    g_autofree char *dest_fs_id = NULL;
-    GFile *dest;
+    GList *files;
+    GFile *target_dir;
+    GtkWindow *parent_window;
+    NautilusCopyCallback done_callback;
+    gpointer done_callback_data;
 
     job = task_data;
     common = &job->common;
+    done_callback = job->done_callback;
+    done_callback_data = job->done_callback_data;
+    files = g_list_copy_deep (job->files, (GCopyFunc) g_object_ref, NULL);
+    parent_window = common->parent_window;
+    target_dir = job->destination;
 
-    nautilus_progress_info_start (job->common.progress);
-
-    scan_sources (job->files,
-                  &source_info,
-                  common,
-                  OP_KIND_COPY);
-    if (job_aborted (common))
-    {
-        return;
-    }
-
-    if (job->destination)
-    {
-        dest = g_object_ref (job->destination);
-    }
-    else
-    {
-        /* Duplication, no dest,
-         * use source for free size, etc
-         */
-        dest = g_file_get_parent (job->files->data);
-    }
-
-    verify_destination (&job->common,
-                        dest,
-                        &dest_fs_id,
-                        source_info.num_bytes);
-    g_object_unref (dest);
-    if (job_aborted (common))
-    {
-        return;
-    }
-
-    g_timer_start (job->common.time);
-
-    memset (&transfer_info, 0, sizeof (transfer_info));
-    copy_files (job,
-                dest_fs_id,
-                &source_info, &transfer_info);
+    nautilus_file_operations_copy_sync (files,
+                                        target_dir,
+                                        parent_window,
+                                        done_callback,
+                                        done_callback_data);
 }
 
 void
@@ -5743,6 +5715,90 @@ nautilus_file_operations_copy_file (GFile                *source_file,
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, copy_task_thread_func);
     g_object_unref (task);
+}
+
+void
+nautilus_file_operations_copy_sync (GList *files,
+                                    GFile *target_dir,
+                                    GtkWindow *parent_window,
+                                    NautilusCopyCallback done_callback,
+                                    gpointer done_callback_data)
+{
+    CopyMoveJob *job;
+    CommonJob *common;
+    SourceInfo source_info;
+    TransferInfo transfer_info;
+    g_autofree char *dest_fs_id = NULL;
+    GFile *dest;
+
+    job = op_job_new (CopyMoveJob, parent_window);
+    common = &job->common;
+
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+    job->destination = g_object_ref (target_dir);
+    /* Need to indicate the destination for the operation notification open
+     * button. */
+    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+
+    if (g_strcmp0 (g_getenv ("TESTVAR"), "TRUE"))
+    {
+        inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
+    }
+
+    if (!nautilus_file_undo_manager_is_operating ())
+    {
+        GFile *src_dir;
+
+        src_dir = g_file_get_parent (files->data);
+        job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+                                                                 g_list_length (files),
+                                                                 src_dir, target_dir);
+
+        g_object_unref (src_dir);
+    }
+
+    nautilus_progress_info_start (job->common.progress);
+
+    scan_sources (job->files,
+                  &source_info,
+                  common,
+                  OP_KIND_COPY);
+    if (job_aborted (common))
+    {
+        return;
+    }
+
+    if (job->destination)
+    {
+        dest = g_object_ref (job->destination);
+    }
+    else
+    {
+        /* Duplication, no dest,
+         * use source for free size, etc
+         */
+        dest = g_file_get_parent (job->files->data);
+    }
+
+    verify_destination (&job->common,
+                        dest,
+                        &dest_fs_id,
+                        source_info.num_bytes);
+    g_object_unref (dest);
+    if (job_aborted (common))
+    {
+        return;
+    }
+
+    g_timer_start (job->common.time);
+
+    memset (&transfer_info, 0, sizeof (transfer_info));
+    copy_files (job,
+                dest_fs_id,
+                &source_info, &transfer_info);
 }
 
 void
