@@ -4942,22 +4942,21 @@ prepend_icon_name (const char  *name,
     g_themed_icon_prepend_name (icon, name);
 }
 
-static GIcon *
+static void
 apply_emblems_to_icon (NautilusFile          *file,
-                       GIcon                 *icon,
+                       GIcon                **icon,
                        NautilusFileIconFlags  flags)
 {
-    GIcon *emblemed_icon;
-    GList *emblems, *l;
+    GIcon *emblemed_icon = NULL;
+    g_autolist (GIcon) emblems = NULL;
 
-    emblemed_icon = NULL;
     emblems = nautilus_file_get_emblem_icons (file);
 
-    for (l = emblems; l != NULL; l = l->next)
+    for (GList *l = emblems; l != NULL; l = l->next)
     {
         g_autoptr (GEmblem) emblem = NULL;
 
-        if (g_icon_equal (l->data, icon))
+        if (g_icon_equal (l->data, *icon))
         {
             continue;
         }
@@ -4966,7 +4965,7 @@ apply_emblems_to_icon (NautilusFile          *file,
 
         if (emblemed_icon == NULL)
         {
-            emblemed_icon = g_emblemed_icon_new (icon, emblem);
+            emblemed_icon = g_emblemed_icon_new (*icon, emblem);
         }
         else
         {
@@ -4980,18 +4979,10 @@ apply_emblems_to_icon (NautilusFile          *file,
         }
     }
 
-    if (emblems != NULL)
-    {
-        g_list_free_full (emblems, g_object_unref);
-    }
-
     if (emblemed_icon != NULL)
     {
-        return emblemed_icon;
-    }
-    else
-    {
-        return g_object_ref (icon);
+        g_object_unref (*icon);
+        *icon = emblemed_icon;
     }
 }
 
@@ -5002,7 +4993,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
     const char * const *names;
     const char *name;
     GPtrArray *prepend_array;
-    GIcon *icon, *emblemed_icon;
+    GIcon *icon;
     int i;
     gboolean is_folder = FALSE, is_inode_directory = FALSE;
 
@@ -5097,9 +5088,7 @@ out:
 
     if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
     {
-        emblemed_icon = apply_emblems_to_icon (file, icon, flags);
-        g_object_unref (icon);
-        icon = emblemed_icon;
+        apply_emblems_to_icon (file, &icon, flags);
     }
 
     return icon;
@@ -5121,7 +5110,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     GdkPixbuf *pixbuf;
     int w, h, s;
     double thumb_scale;
-    GIcon *gicon, *emblemed_icon;
+    GIcon *gicon;
     NautilusIconInfo *icon;
 
     icon = NULL;
@@ -5219,19 +5208,18 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
 
     if (gicon != NULL)
     {
-        emblemed_icon = apply_emblems_to_icon (file, gicon, flags);
-        g_object_unref (gicon);
+        apply_emblems_to_icon (file, &gicon, flags);
 
-        if (g_icon_equal (emblemed_icon, G_ICON (pixbuf)))
+        if (g_icon_equal (gicon, G_ICON (pixbuf)))
         {
             icon = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
         }
         else
         {
-            icon = nautilus_icon_info_lookup (emblemed_icon, size, scale);
+            icon = nautilus_icon_info_lookup (gicon, size, scale);
         }
 
-        g_object_unref (emblemed_icon);
+        g_object_unref (gicon);
     }
 
     return icon;
@@ -5274,11 +5262,7 @@ nautilus_file_get_icon (NautilusFile          *file,
     {
         if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
         {
-            GIcon *emblemed_icon;
-
-            emblemed_icon = apply_emblems_to_icon (file, gicon, flags);
-            g_object_unref (gicon);
-            gicon = emblemed_icon;
+            apply_emblems_to_icon (file, &gicon, flags);
         }
 
         icon = nautilus_icon_info_lookup (gicon, size, scale);
