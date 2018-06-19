@@ -5272,6 +5272,15 @@ nautilus_file_get_icon (NautilusFile          *file,
     gicon = get_custom_icon (file);
     if (gicon != NULL)
     {
+        if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
+        {
+            GIcon *emblemed_icon;
+
+            emblemed_icon = apply_emblems_to_icon (file, gicon, flags);
+            g_object_unref (gicon);
+            gicon = emblemed_icon;
+        }
+
         icon = nautilus_icon_info_lookup (gicon, size, scale);
         g_object_unref (gicon);
 
