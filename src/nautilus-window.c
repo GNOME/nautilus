@@ -213,7 +213,7 @@ action_go_home (GSimpleAction *action,
     window = NAUTILUS_WINDOW (user_data);
     home = g_file_new_for_path (g_get_home_dir ());
 
-    nautilus_window_open_location_full (window, home, nautilus_event_get_window_open_flags (), NULL, NULL);
+    nautilus_window_open_location_full (window, home, 0, NULL, NULL);
 
     g_object_unref (home);
 }
@@ -261,7 +261,7 @@ action_up (GSimpleAction *action,
         {
             nautilus_window_open_location_full (NAUTILUS_WINDOW (user_data),
                                                 parent,
-                                                nautilus_event_get_window_open_flags (),
+                                                0,
                                                 NULL, NULL);
         }
 
@@ -274,8 +274,7 @@ action_back (GSimpleAction *action,
              GVariant      *state,
              gpointer       user_data)
 {
-    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data),
-                                     TRUE, 0, nautilus_event_get_window_open_flags ());
+    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data), TRUE, 0);
 }
 
 static void
@@ -283,8 +282,7 @@ action_forward (GSimpleAction *action,
                 GVariant      *state,
                 gpointer       user_data)
 {
-    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data),
-                                     FALSE, 0, nautilus_event_get_window_open_flags ());
+    nautilus_window_back_or_forward (NAUTILUS_WINDOW (user_data), FALSE, 0);
 }
 
 static void
@@ -2594,11 +2592,11 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
 
     if (mouse_extra_buttons && (button == mouse_back_button))
     {
-        nautilus_window_back_or_forward (window, TRUE, 0, 0);
+        nautilus_window_back_or_forward (window, TRUE, 0);
     }
     else if (mouse_extra_buttons && (button == mouse_forward_button))
     {
-        nautilus_window_back_or_forward (window, FALSE, 0, 0);
+        nautilus_window_back_or_forward (window, FALSE, 0);
     }
 }
 
@@ -2773,30 +2771,6 @@ nautilus_window_new (GdkScreen *screen)
                          "icon-name", APPLICATION_ID,
                          "screen", screen,
                          NULL);
-}
-
-NautilusWindowOpenFlags
-nautilus_event_get_window_open_flags (void)
-{
-    NautilusWindowOpenFlags flags = 0;
-    GdkEvent *event;
-
-    event = gtk_get_current_event ();
-
-    if (event == NULL)
-    {
-        return flags;
-    }
-
-    if ((event->type == GDK_BUTTON_PRESS || event->type == GDK_BUTTON_RELEASE) &&
-        (event->button.button == GDK_BUTTON_MIDDLE))
-    {
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-    }
-
-    gdk_event_free (event);
-
-    return flags;
 }
 
 void
