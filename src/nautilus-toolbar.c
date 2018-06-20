@@ -168,7 +168,7 @@ activate_back_or_forward_menu_item (GtkMenuItem    *menu_item,
 
     index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
 
-    nautilus_window_back_or_forward (window, back, index, nautilus_event_get_window_open_flags ());
+    nautilus_window_back_or_forward (window, back, index);
 }
 
 static void
