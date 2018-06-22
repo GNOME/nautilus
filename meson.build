@@ -85,17 +85,6 @@ pkgconfig = import('pkgconfig')
 ################
 glib_ver = '>= 2.55.1'
 
-libgd = subproject(
-  'libgd',
-  default_options: [
-    'static=true',
-    'with-gtk-hacks=true',
-    'with-main-view=true',
-    'with-tagged-entry=true'
-  ]
-)
-libgd_dep = libgd.get_variable('libgd_dep')
-
 libm = cc.find_library('m')
 
 if get_option('extensions')

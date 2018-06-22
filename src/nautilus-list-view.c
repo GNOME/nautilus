@@ -30,8 +30,9 @@
 #include <gdk/gdkkeysyms.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <libgd/gd.h>
 #include <string.h>
+
+#include "libgd/gd-styled-text-renderer.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_LIST_VIEW
 #include "nautilus-debug.h"
