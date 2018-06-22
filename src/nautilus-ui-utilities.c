@@ -28,7 +28,7 @@
 
 #include <gio/gio.h>
 #include <gtk/gtk.h>
-#include <libgd/gd.h>
+#include <math.h>
 #include <string.h>
 #include <glib/gi18n.h>
 
@@ -174,6 +174,107 @@ nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
 #define NAUTILUS_THUMBNAIL_FRAME_RIGHT 3
 #define NAUTILUS_THUMBNAIL_FRAME_BOTTOM 3
 
+static cairo_surface_t *
+embed_surface_in_frame (cairo_surface_t *source_image,
+                        const gchar     *frame_image_url,
+                        GtkBorder       *slice_width,
+                        GtkBorder       *border_width)
+{
+    cairo_surface_t *surface;
+    cairo_t *cr;
+    gint source_width;
+    gint source_height;
+    g_autofree gchar *css_str = NULL;
+    g_autoptr (GtkCssProvider) provider = NULL;
+    g_autoptr (GtkStyleContext) context = NULL;
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GtkWidgetPath) path = NULL;
+    gdouble scale_x;
+    gdouble scale_y;
+
+    cairo_surface_get_device_scale (source_image, &scale_x, &scale_y);
+
+    source_width = cairo_image_surface_get_width (source_image) / (gint) floor (scale_x);
+    source_height = cairo_image_surface_get_height (source_image) / (gint) floor (scale_y);
+
+    css_str = g_strdup_printf (".embedded-image { border-image: url(\"%s\") %d %d %d %d / %dpx %dpx %dpx %dpx }",
+                               frame_image_url,
+                               slice_width->top, slice_width->right, slice_width->bottom, slice_width->left,
+                               border_width->top, border_width->right, border_width->bottom, border_width->left);
+    provider = gtk_css_provider_new ();
+    gtk_css_provider_load_from_data (provider, css_str, -1, &error);
+
+    if (error != NULL)
+    {
+        g_warning ("Unable to create the thumbnail frame image: %s", error->message);
+
+        return g_object_ref (source_image);
+    }
+
+    surface = cairo_surface_create_similar (source_image,
+                                            CAIRO_CONTENT_COLOR_ALPHA,
+                                            source_width, source_height);
+    cr = cairo_create (surface);
+
+    context = gtk_style_context_new ();
+    path = gtk_widget_path_new ();
+    gtk_widget_path_append_type (path, GTK_TYPE_ICON_VIEW);
+
+    gtk_style_context_set_path (context, path);
+    gtk_style_context_add_provider (context,
+                                    GTK_STYLE_PROVIDER (provider),
+                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+
+    cairo_save (cr);
+    cairo_rectangle (cr,
+                     border_width->left,
+                     border_width->top,
+                     source_width - border_width->left - border_width->right,
+                     source_height - border_width->top - border_width->bottom);
+    cairo_clip (cr);
+    gtk_render_icon_surface (context, cr, source_image, 0, 0);
+    cairo_restore (cr);
+
+    gtk_style_context_save (context);
+    gtk_style_context_add_class (context, "embedded-image");
+
+    gtk_render_frame (context, cr, 0, 0, source_width, source_height);
+
+    gtk_style_context_restore (context);
+    cairo_destroy (cr);
+
+    return surface;
+}
+
+static GdkPixbuf *
+embed_image_in_frame (GdkPixbuf   *source_image,
+                      const gchar *frame_image_url,
+                      GtkBorder   *slice_width,
+                      GtkBorder   *border_width)
+{
+  cairo_surface_t *surface;
+  cairo_surface_t *embedded_surface;
+  GdkPixbuf *retval;
+
+  surface = gdk_cairo_surface_create_from_pixbuf (source_image, 0, NULL);
+
+  /* Force the device scale to 1.0, since pixbufs are always in unscaled
+   * dimensions.
+   */
+  cairo_surface_set_device_scale (surface, 1.0, 1.0);
+  embedded_surface = embed_surface_in_frame (surface, frame_image_url,
+                                             slice_width, border_width);
+  retval = gdk_pixbuf_get_from_surface (embedded_surface,
+                                        0, 0,
+                                        cairo_image_surface_get_width (embedded_surface),
+                                        cairo_image_surface_get_height (embedded_surface));
+
+  cairo_surface_destroy (embedded_surface);
+  cairo_surface_destroy (surface);
+
+  return retval;
+}
+
 void
 nautilus_ui_frame_image (GdkPixbuf **pixbuf)
 {
@@ -185,9 +286,9 @@ nautilus_ui_frame_image (GdkPixbuf **pixbuf)
     border.right = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
     border.bottom = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
 
-    pixbuf_with_frame = gd_embed_image_in_frame (*pixbuf,
-                                                 "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
-                                                 &border, &border);
+    pixbuf_with_frame = embed_image_in_frame (*pixbuf,
+                                              "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
+                                              &border, &border);
     g_object_unref (*pixbuf);
 
     *pixbuf = pixbuf_with_frame;
