@@ -26,9 +26,9 @@
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
-#include <libgd/gd.h>
 #include <string.h>
 
+#include "libgd/gd-tagged-entry.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
