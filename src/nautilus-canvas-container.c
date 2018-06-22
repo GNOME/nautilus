@@ -3856,9 +3856,9 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         G_STRUCT_OFFSET (NautilusCanvasContainerClass,
                                          context_click_selection),
                         NULL, NULL,
-                        g_cclosure_marshal_VOID__POINTER,
+                        g_cclosure_marshal_generic,
                         G_TYPE_NONE, 1,
-                        G_TYPE_POINTER);
+                        GDK_TYPE_EVENT);
     signals[CONTEXT_CLICK_BACKGROUND]
         = g_signal_new ("context-click-background",
                         G_TYPE_FROM_CLASS (class),
@@ -3866,9 +3866,9 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         G_STRUCT_OFFSET (NautilusCanvasContainerClass,
                                          context_click_background),
                         NULL, NULL,
-                        g_cclosure_marshal_VOID__POINTER,
+                        g_cclosure_marshal_generic,
                         G_TYPE_NONE, 1,
-                        G_TYPE_POINTER);
+                        GDK_TYPE_EVENT);
     signals[MIDDLE_CLICK]
         = g_signal_new ("middle-click",
                         G_TYPE_FROM_CLASS (class),
@@ -3878,7 +3878,7 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         NULL, NULL,
                         g_cclosure_marshal_VOID__POINTER,
                         G_TYPE_NONE, 1,
-                        G_TYPE_POINTER);
+                        GDK_TYPE_EVENT);
     signals[GET_ICON_URI]
         = g_signal_new ("get-icon-uri",
                         G_TYPE_FROM_CLASS (class),
