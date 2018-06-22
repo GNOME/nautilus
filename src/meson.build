@@ -61,6 +61,10 @@ libnautilus_sources = [
   'gtk/nautilusgtkplacesviewprivate.h',
   'gtk/nautilusgtkplacesviewrow.c',
   'gtk/nautilusgtkplacesviewrowprivate.h',
+  'libgd/gd-styled-text-renderer.c',
+  'libgd/gd-styled-text-renderer.h',
+  'libgd/gd-tagged-entry.c',
+  'libgd/gd-tagged-entry.h',
   'nautilus-application.c',
   'nautilus-application.h',
   'nautilus-bookmark-list.c',
@@ -268,7 +272,7 @@ libnautilus_sources = [
   'nautilus-enums.h',
   'nautilus-types.h',
   'nautilus-tracker-utilities.c',
-  'nautilus-tracker-utilities.h'
+  'nautilus-tracker-utilities.h',
 ]
 
 nautilus_deps = [
@@ -278,7 +282,6 @@ nautilus_deps = [
   gmodule,
   gnome_autoar,
   gsettings_desktop_schemas,
-  libgd_dep,
   nautilus_extension,
   seccomp,
   selinux,
