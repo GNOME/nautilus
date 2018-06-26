@@ -118,11 +118,17 @@ void nautilus_file_operations_mount_volume_full (GtkWindow                      
 						 NautilusMountCallback           mount_callback,
 						 GObject                        *mount_callback_data_object);
 
-void nautilus_file_operations_copy      (GList                *files,
-					 GFile                *target_dir,
-					 GtkWindow            *parent_window,
-					 NautilusCopyCallback  done_callback,
-					 gpointer              done_callback_data);
+void nautilus_file_operations_copy_async (GList                *files,
+                                          GFile                *target_dir,
+                                          GtkWindow            *parent_window,
+                                          NautilusCopyCallback  done_callback,
+                                          gpointer              done_callback_data);
+void nautilus_file_operations_copy_sync (GList                *files,
+                                         GFile                *target_dir,
+                                         GtkWindow            *parent_window,
+                                         NautilusCopyCallback  done_callback,
+                                         gpointer              done_callback_data);
+
 void nautilus_file_operations_move      (GList                *files,
 					 GFile                *target_dir,
 					 GtkWindow            *parent_window,
