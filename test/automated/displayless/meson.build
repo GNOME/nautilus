@@ -10,6 +10,9 @@ tests = [
   ]],
   ['test-file-operations-dir-has-files', [
     'test-file-operations-dir-has-files.c'
+  ]],
+  ['test-file-operations-copy-file', [
+    'test-file-operations-copy-file.c'
   ]]
 ]
 
