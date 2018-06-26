@@ -112,7 +112,7 @@ handle_copy_uris (NautilusDBusFileOperations  *object,
                                        g_file_new_for_uri (sources[idx]));
     }
 
-    nautilus_file_operations_copy (source_files, dest_dir, NULL, NULL, NULL);
+    nautilus_file_operations_copy_async (source_files, dest_dir, NULL, NULL, NULL);
 
     g_list_free_full (source_files, g_object_unref);
     g_object_unref (dest_dir);

@@ -255,6 +255,15 @@ static void empty_trash_task_done (GObject      *source_object,
 
 static char *query_fs_type (GFile        *file,
                             GCancellable *cancellable);
+static CopyMoveJob * copy_job_setup (GList *files,
+                                     GFile *target_dir,
+                                     GtkWindow *parent_window,
+                                     NautilusCopyCallback done_callback,
+                                     gpointer done_callback_data);
+static void nautilus_file_operations_copy (GTask        *task,
+                                           gpointer      source_object,
+                                           gpointer      task_data,
+                                           GCancellable *cancellable);
 
 /* keep in time with get_formatted_time ()
  *
@@ -5647,11 +5656,32 @@ copy_task_done (GObject      *source_object,
     nautilus_file_changes_consume_changes (TRUE);
 }
 
-static void
-copy_task_thread_func (GTask        *task,
-                       gpointer      source_object,
-                       gpointer      task_data,
-                       GCancellable *cancellable)
+static CopyMoveJob *
+copy_job_setup (GList *files,
+                GFile *target_dir,
+                GtkWindow *parent_window,
+                NautilusCopyCallback done_callback,
+                gpointer done_callback_data)
+{
+    CopyMoveJob *job;
+
+    job = op_job_new (CopyMoveJob, parent_window);
+    job->done_callback = done_callback;
+    job->done_callback_data = done_callback_data;
+    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+    job->destination = g_object_ref (target_dir);
+    /* Need to indicate the destination for the operation notification open
+     * button. */
+    nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+
+    return job;
+}
+
+static void nautilus_file_operations_copy (GTask        *task,
+                                           gpointer      source_object,
+                                           gpointer      task_data,
+                                           GCancellable *cancellable)
 {
     CopyMoveJob *job;
     CommonJob *common;
@@ -5662,6 +5692,23 @@ copy_task_thread_func (GTask        *task,
 
     job = task_data;
     common = &job->common;
+
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
+    {
+        inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
+    }
+
+    if (!nautilus_file_undo_manager_is_operating ())
+    {
+        GFile *src_dir;
+
+        src_dir = g_file_get_parent (job->files->data);
+        job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+                                                                 g_list_length (job->files),
+                                                                 src_dir, job->destination);
+
+        g_object_unref (src_dir);
+    }
 
     nautilus_progress_info_start (job->common.progress);
 
@@ -5712,6 +5759,7 @@ nautilus_file_operations_copy_file (GFile                *source_file,
                                     GtkWindow            *parent_window,
                                     NautilusCopyCallback  done_callback,
                                     gpointer              done_callback_data)
+<<<<<<< HEAD
 {
     GTask *task;
     CopyMoveJob *job;
@@ -5758,32 +5806,76 @@ nautilus_file_operations_copy (GList                *files,
     job = op_job_new (CopyMoveJob, parent_window);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
-    job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
+    job->files = g_list_append (NULL, g_object_ref (source_file));
     job->destination = g_object_ref (target_dir);
     /* Need to indicate the destination for the operation notification open
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, target_dir);
+    job->target_name = g_strdup (new_name);
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+
+    if (source_display_name != NULL)
+    {
+        gchar *path;
+
+        path = g_build_filename ("/", source_display_name, NULL);
+        job->fake_display_source = g_file_new_for_path (path);
+
+        g_free (path);
+    }
 
     inhibit_power_manager ((CommonJob *) job, _("Copying Files"));
 
-    if (!nautilus_file_undo_manager_is_operating ())
-    {
-        GFile *src_dir;
+    task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
+    g_task_set_task_data (task, job, NULL);
+    g_task_run_in_thread (task, nautilus_file_operations_copy);
+    g_object_unref (task);
+}
 
-        src_dir = g_file_get_parent (files->data);
-        job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
-                                                                 g_list_length (files),
-                                                                 src_dir, target_dir);
+void
+nautilus_file_operations_copy_sync (GList *files,
+                                    GFile *target_dir,
+                                    GtkWindow *parent_window,
+                                    NautilusCopyCallback done_callback,
+                                    gpointer done_callback_data)
+{
+    GTask *task;
+    CopyMoveJob *job;
 
-        g_object_unref (src_dir);
-    }
+    job = copy_job_setup (files,
+                           target_dir,
+                           parent_window,
+                           done_callback,
+                           done_callback_data);
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
     g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, copy_task_thread_func);
+    g_task_run_in_thread_sync (task, nautilus_file_operations_copy);
     g_object_unref (task);
 }
+
+void
+nautilus_file_operations_copy_async (GList                *files,
+                                     GFile                *target_dir,
+                                     GtkWindow            *parent_window,
+                                     NautilusCopyCallback  done_callback,
+                                     gpointer              done_callback_data)
+{
+    GTask *task;
+    CopyMoveJob *job;
+
+    job = copy_job_setup (files,
+                           target_dir,
+                           parent_window,
+                           done_callback,
+                           done_callback_data);
+
+    task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
+    g_task_set_task_data (task, job, NULL);
+    g_task_run_in_thread (task, nautilus_file_operations_copy);
+    g_object_unref (task);
+}
+
 
 static void
 report_preparing_move_progress (CopyMoveJob *move_job,
@@ -6727,7 +6819,7 @@ nautilus_file_operations_duplicate (GList                *files,
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
     g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, copy_task_thread_func);
+    g_task_run_in_thread (task, nautilus_file_operations_copy);
 }
 
 static void
@@ -7002,10 +7094,10 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
         }
         else
         {
-            nautilus_file_operations_copy (locations,
-                                           dest,
-                                           parent_window,
-                                           done_callback, done_callback_data);
+            nautilus_file_operations_copy_async (locations,
+                                                 dest,
+                                                 parent_window,
+                                                 done_callback, done_callback_data);
         }
         if (src_dir)
         {
