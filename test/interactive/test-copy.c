@@ -74,10 +74,10 @@ main (int   argc,
 
     manager = nautilus_progress_info_manager_dup_singleton ();
 
-    nautilus_file_operations_copy (sources,
-                                   dest,
-                                   GTK_WINDOW (window),
-                                   copy_done, NULL);
+    nautilus_file_operations_copy_async (sources,
+                                         dest,
+                                         GTK_WINDOW (window),
+                                         copy_done, NULL);
 
     infos = nautilus_progress_info_manager_get_all_infos (manager);
 
