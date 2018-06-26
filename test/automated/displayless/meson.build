@@ -17,6 +17,9 @@ tests = [
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
+  ['test-file-operations-copy-files', [
+    'test-file-operations-copy-files.c'
+  ]]
 ]
 
 foreach t: tests
