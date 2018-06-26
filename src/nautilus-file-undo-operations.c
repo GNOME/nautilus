@@ -561,11 +561,11 @@ static void
 ext_copy_redo_func (NautilusFileUndoInfoExt *self,
                     GtkWindow               *parent_window)
 {
-    nautilus_file_operations_copy (g_queue_peek_head_link (self->priv->sources),
-                                   self->priv->dest_dir,
-                                   parent_window,
-                                   file_undo_info_transfer_callback,
-                                   self);
+    nautilus_file_operations_copy_async (g_queue_peek_head_link (self->priv->sources),
+                                         self->priv->dest_dir,
+                                         parent_window,
+                                         file_undo_info_transfer_callback,
+                                         self);
 }
 
 static void
