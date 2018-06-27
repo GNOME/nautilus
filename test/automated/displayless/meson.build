@@ -16,6 +16,9 @@ tests = [
   ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
+  ]],
+  ['test-file-operations-trash-or-delete', [
+    'test-file-operations-trash-or-delete.c'
   ]]
 ]
 

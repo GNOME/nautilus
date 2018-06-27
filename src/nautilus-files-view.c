@@ -1526,7 +1526,7 @@ delete_selected_files (NautilusFilesView *view)
     }
     locations = g_list_reverse (locations);
 
-    nautilus_file_operations_delete (locations, nautilus_files_view_get_containing_window (view), NULL, NULL);
+    nautilus_file_operations_delete_async (locations, nautilus_files_view_get_containing_window (view), NULL, NULL);
 
     g_list_free_full (locations, g_object_unref);
     nautilus_file_list_free (selection);
@@ -4748,10 +4748,10 @@ trash_or_delete_files (GtkWindow         *parent_window,
 
     locations = g_list_reverse (locations);
 
-    nautilus_file_operations_trash_or_delete (locations,
-                                              parent_window,
-                                              (NautilusDeleteCallback) trash_or_delete_done_cb,
-                                              view);
+    nautilus_file_operations_trash_or_delete_async (locations,
+                                                    parent_window,
+                                                    (NautilusDeleteCallback) trash_or_delete_done_cb,
+                                                    view);
     g_list_free_full (locations, g_object_unref);
 }
 
