@@ -83,14 +83,23 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 						      NautilusCreateCallback   done_callback,
 						      gpointer                 data);
 
-void nautilus_file_operations_delete          (GList                  *files,
-					       GtkWindow              *parent_window,
-					       NautilusDeleteCallback  done_callback,
-					       gpointer                done_callback_data);
-void nautilus_file_operations_trash_or_delete (GList                  *files,
-					       GtkWindow              *parent_window,
-					       NautilusDeleteCallback  done_callback,
-					       gpointer                done_callback_data);
+void nautilus_file_operations_trash_or_delete_sync (GList                  *files,
+                                                    GtkWindow              *parent_window,
+                                                    NautilusDeleteCallback  done_callback,
+                                                    gpointer                done_callback_data);
+void nautilus_file_operations_delete_sync (GList                  *files,
+                                           GtkWindow              *parent_window,
+                                           NautilusDeleteCallback  done_callback,
+                                           gpointer                done_callback_data);
+void nautilus_file_operations_trash_or_delete_async (GList                  *files,
+                                                     GtkWindow              *parent_window,
+                                                     NautilusDeleteCallback  done_callback,
+                                                     gpointer                done_callback_data);
+void nautilus_file_operations_delete_async (GList                  *files,
+                                            GtkWindow              *parent_window,
+                                            NautilusDeleteCallback  done_callback,
+                                            gpointer                done_callback_data);
+
 
 void nautilus_file_set_permissions_recursive (const char                     *directory,
 					      guint32                         file_permissions,

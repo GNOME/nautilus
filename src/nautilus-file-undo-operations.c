@@ -613,10 +613,10 @@ static void
 ext_restore_undo_func (NautilusFileUndoInfoExt *self,
                        GtkWindow               *parent_window)
 {
-    nautilus_file_operations_trash_or_delete (g_queue_peek_head_link (self->priv->destinations),
-                                              parent_window,
-                                              file_undo_info_delete_callback,
-                                              self);
+    nautilus_file_operations_trash_or_delete_async (g_queue_peek_head_link (self->priv->destinations),
+                                                    parent_window,
+                                                    file_undo_info_delete_callback,
+                                                    self);
 }
 
 
@@ -640,8 +640,8 @@ ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt *self,
     files = g_list_copy (g_queue_peek_head_link (self->priv->destinations));
     files = g_list_reverse (files);     /* Deleting must be done in reverse */
 
-    nautilus_file_operations_delete (files, parent_window,
-                                     file_undo_info_delete_callback, self);
+    nautilus_file_operations_delete_async (files, parent_window,
+                                           file_undo_info_delete_callback, self);
 
     g_list_free (files);
 }
@@ -901,8 +901,8 @@ create_undo_func (NautilusFileUndoInfo *info,
     GList *files = NULL;
 
     files = g_list_append (files, g_object_ref (self->priv->target_file));
-    nautilus_file_operations_delete (files, parent_window,
-                                     file_undo_info_delete_callback, self);
+    nautilus_file_operations_delete_async (files, parent_window,
+                                           file_undo_info_delete_callback, self);
 
     g_list_free_full (files, g_object_unref);
 }
@@ -1633,8 +1633,8 @@ trash_redo_func (NautilusFileUndoInfo *info,
         GList *locations;
 
         locations = g_hash_table_get_keys (self->priv->trashed);
-        nautilus_file_operations_trash_or_delete (locations, parent_window,
-                                                  trash_redo_func_callback, self);
+        nautilus_file_operations_trash_or_delete_async (locations, parent_window,
+                                                        trash_redo_func_callback, self);
 
         g_list_free (locations);
     }
@@ -2356,8 +2356,8 @@ extract_undo_func (NautilusFileUndoInfo *info,
 {
     NautilusFileUndoInfoExtract *self = NAUTILUS_FILE_UNDO_INFO_EXTRACT (info);
 
-    nautilus_file_operations_delete (self->priv->outputs, parent_window,
-                                     file_undo_info_delete_callback, self);
+    nautilus_file_operations_delete_async (self->priv->outputs, parent_window,
+                                           file_undo_info_delete_callback, self);
 }
 
 static void
@@ -2519,8 +2519,8 @@ compress_undo_func (NautilusFileUndoInfo *info,
 
     files = g_list_prepend (files, self->priv->output);
 
-    nautilus_file_operations_delete (files, parent_window,
-                                     file_undo_info_delete_callback, self);
+    nautilus_file_operations_delete_async (files, parent_window,
+                                           file_undo_info_delete_callback, self);
 
     g_list_free (files);
 }

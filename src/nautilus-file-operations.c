@@ -1141,8 +1141,12 @@ should_skip_readdir_error (CommonJob *common,
 static gboolean
 can_delete_without_confirm (GFile *file)
 {
+    /* In the case of testing, we want to be able to delete
+     * without asking for confirmation from the user.
+     */
     if (g_file_has_uri_scheme (file, "burn") ||
-        g_file_has_uri_scheme (file, "recent"))
+        g_file_has_uri_scheme (file, "recent") ||
+        !g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
     {
         return TRUE;
     }
@@ -2398,10 +2402,10 @@ delete_task_done (GObject      *source_object,
 }
 
 static void
-delete_task_thread_func (GTask        *task,
-                         gpointer      source_object,
-                         gpointer      task_data,
-                         GCancellable *cancellable)
+trash_or_delete_internal (GTask        *task,
+                          gpointer      source_object,
+                          gpointer      task_data,
+                          GCancellable *cancellable)
 {
     DeleteJob *job = task_data;
     g_autoptr (GList) to_trash_files = NULL;
@@ -2486,18 +2490,16 @@ delete_task_thread_func (GTask        *task,
     }
 }
 
-static void
-trash_or_delete_internal (GList                  *files,
-                          GtkWindow              *parent_window,
-                          gboolean                try_trash,
-                          NautilusDeleteCallback  done_callback,
-                          gpointer                done_callback_data)
+static DeleteJob *
+setup_delete_job (GList                  *files,
+                  GtkWindow              *parent_window,
+                  gboolean                try_trash,
+                  NautilusDeleteCallback  done_callback,
+                  gpointer                done_callback_data)
 {
-    GTask *task;
     DeleteJob *job;
 
     /* TODO: special case desktop icon link files ... */
-
     job = op_job_new (DeleteJob, parent_window);
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
     job->try_trash = try_trash;
@@ -2505,13 +2507,16 @@ trash_or_delete_internal (GList                  *files,
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
 
-    if (try_trash)
+    if (g_strcmp0 (g_getenv ("RUNNING_TESTS"), "TRUE"))
     {
-        inhibit_power_manager ((CommonJob *) job, _("Trashing Files"));
-    }
-    else
-    {
-        inhibit_power_manager ((CommonJob *) job, _("Deleting Files"));
+        if (try_trash)
+        {
+            inhibit_power_manager ((CommonJob *) job, _("Trashing Files"));
+        }
+        else
+        {
+            inhibit_power_manager ((CommonJob *) job, _("Deleting Files"));
+        }
     }
 
     if (!nautilus_file_undo_manager_is_operating () && try_trash)
@@ -2519,32 +2524,95 @@ trash_or_delete_internal (GList                  *files,
         job->common.undo_info = nautilus_file_undo_info_trash_new (g_list_length (files));
     }
 
+    return job;
+}
+
+static void
+trash_or_delete_internal_sync (GList                  *files,
+                               GtkWindow              *parent_window,
+                               gboolean                try_trash,
+                               NautilusDeleteCallback  done_callback,
+                               gpointer                done_callback_data)
+{
+    GTask *task;
+    DeleteJob *job;
+
+    job = setup_delete_job (files,
+                            parent_window,
+                            try_trash,
+                            done_callback,
+                            done_callback_data);
+
     task = g_task_new (NULL, NULL, delete_task_done, job);
     g_task_set_task_data (task, job, NULL);
-    g_task_run_in_thread (task, delete_task_thread_func);
+    g_task_run_in_thread_sync (task, trash_or_delete_internal);
+    g_object_unref (task);
+}
+
+static void
+trash_or_delete_internal_async (GList                  *files,
+                                GtkWindow              *parent_window,
+                                gboolean                try_trash,
+                                NautilusDeleteCallback  done_callback,
+                                gpointer                done_callback_data)
+{
+    GTask *task;
+    DeleteJob *job;
+
+    job = setup_delete_job (files,
+                            parent_window,
+                            try_trash,
+                            done_callback,
+                            done_callback_data);
+
+    task = g_task_new (NULL, NULL, delete_task_done, job);
+    g_task_set_task_data (task, job, NULL);
+    g_task_run_in_thread (task, trash_or_delete_internal);
     g_object_unref (task);
 }
 
 void
-nautilus_file_operations_trash_or_delete (GList                  *files,
-                                          GtkWindow              *parent_window,
-                                          NautilusDeleteCallback  done_callback,
-                                          gpointer                done_callback_data)
+nautilus_file_operations_trash_or_delete_sync (GList                  *files,
+                                               GtkWindow              *parent_window,
+                                               NautilusDeleteCallback  done_callback,
+                                               gpointer                done_callback_data)
 {
-    trash_or_delete_internal (files, parent_window,
-                              TRUE,
-                              done_callback, done_callback_data);
+    trash_or_delete_internal_sync (files, parent_window,
+                                   TRUE,
+                                   done_callback, done_callback_data);
 }
 
 void
-nautilus_file_operations_delete (GList                  *files,
-                                 GtkWindow              *parent_window,
-                                 NautilusDeleteCallback  done_callback,
-                                 gpointer                done_callback_data)
+nautilus_file_operations_delete_sync (GList                  *files,
+                                      GtkWindow              *parent_window,
+                                      NautilusDeleteCallback  done_callback,
+                                      gpointer                done_callback_data)
 {
-    trash_or_delete_internal (files, parent_window,
-                              FALSE,
-                              done_callback, done_callback_data);
+    trash_or_delete_internal_sync (files, parent_window,
+                                   FALSE,
+                                   done_callback, done_callback_data);
+}
+
+void
+nautilus_file_operations_trash_or_delete_async (GList                  *files,
+                                                GtkWindow              *parent_window,
+                                                NautilusDeleteCallback  done_callback,
+                                                gpointer                done_callback_data)
+{
+    trash_or_delete_internal_async (files, parent_window,
+                                    TRUE,
+                                    done_callback, done_callback_data);
+}
+
+void
+nautilus_file_operations_delete_async (GList                  *files,
+                                       GtkWindow              *parent_window,
+                                       NautilusDeleteCallback  done_callback,
+                                       gpointer                done_callback_data)
+{
+    trash_or_delete_internal_async (files, parent_window,
+                                    FALSE,
+                                    done_callback, done_callback_data);
 }
 
 
@@ -7121,10 +7189,10 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
             cb_data->real_callback = done_callback;
             cb_data->real_data = done_callback_data;
 
-            nautilus_file_operations_trash_or_delete (locations,
-                                                      parent_window,
-                                                      (NautilusDeleteCallback) callback_for_move_to_trash,
-                                                      cb_data);
+            nautilus_file_operations_trash_or_delete_async (locations,
+                                                            parent_window,
+                                                            (NautilusDeleteCallback) callback_for_move_to_trash,
+                                                            cb_data);
         }
         else
         {
