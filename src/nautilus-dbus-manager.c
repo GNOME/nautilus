@@ -30,18 +30,11 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
 #include "nautilus-debug.h"
 
-#include <gio/gio.h>
-
 struct _NautilusDBusManager
 {
     GObject parent;
 
     NautilusDBusFileOperations *file_operations;
-};
-
-struct _NautilusDBusManagerClass
-{
-    GObjectClass parent_class;
 };
 
 G_DEFINE_TYPE (NautilusDBusManager, nautilus_dbus_manager, G_TYPE_OBJECT);
@@ -161,8 +154,7 @@ nautilus_dbus_manager_class_init (NautilusDBusManagerClass *klass)
 NautilusDBusManager *
 nautilus_dbus_manager_new (void)
 {
-    return g_object_new (nautilus_dbus_manager_get_type (),
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_DBUS_MANAGER, NULL);
 }
 
 gboolean
