@@ -25,10 +25,9 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
-typedef struct _NautilusDBusManager NautilusDBusManager;
-typedef struct _NautilusDBusManagerClass NautilusDBusManagerClass;
+#define NAUTILUS_TYPE_DBUS_MANAGER (nautilus_dbus_manager_get_type())
+G_DECLARE_FINAL_TYPE (NautilusDBusManager, nautilus_dbus_manager, NAUTILUS, DBUS_MANAGER, GObject)
 
-GType nautilus_dbus_manager_get_type (void);
 NautilusDBusManager * nautilus_dbus_manager_new (void);
 
 gboolean nautilus_dbus_manager_register   (NautilusDBusManager *self,
