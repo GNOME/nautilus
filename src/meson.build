@@ -64,8 +64,6 @@ libnautilus_sources = [
   'gtk/nautilusgtkplacesviewrowprivate.h',
   'libgd/gd-styled-text-renderer.c',
   'libgd/gd-styled-text-renderer.h',
-  'libgd/gd-tagged-entry.c',
-  'libgd/gd-tagged-entry.h',
   'nautilus-application.c',
   'nautilus-application.h',
   'nautilus-bookmark-list.c',
@@ -274,6 +272,10 @@ libnautilus_sources = [
   'nautilus-types.h',
   'nautilus-tracker-utilities.c',
   'nautilus-tracker-utilities.h',
+  'nautilus-tagged-entry.c',
+  'nautilus-tagged-entry.h',
+  'nautilus-tagged-entry-tag.c',
+  'nautilus-tagged-entry-tag.h',
 ]
 
 nautilus_deps = [
