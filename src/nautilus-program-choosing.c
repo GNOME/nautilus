@@ -506,14 +506,14 @@ typedef struct
     GtkWindow *window;
     GtkWindowHandleExported callback;
     gpointer user_data;
-} WaylandWindowHandleExportedData;
+} WaylandSurfaceHandleExportedData;
 
 static void
-wayland_window_handle_exported (GdkWindow  *window,
-                                const char *wayland_handle_str,
-                                gpointer    user_data)
+wayland_surface_handle_exported (GdkSurface  *surface,
+                                 const char  *wayland_handle_str,
+                                 gpointer     user_data)
 {
-    WaylandWindowHandleExportedData *data = user_data;
+    WaylandSurfaceHandleExportedData *data = user_data;
     char *handle_str;
 
     handle_str = g_strdup_printf ("wayland:%s", wayland_handle_str);
@@ -527,12 +527,19 @@ window_export_handle (GtkWindow               *window,
                       GtkWindowHandleExported  callback,
                       gpointer                 user_data)
 {
+    GtkWidget *widget;
+    GdkDisplay *display;
+    GdkSurface *surface;
+
+    widget = GTK_WIDGET (window);
+    display = gtk_widget_get_display (widget);
+    surface = gtk_widget_get_surface (widget);
+
 #ifdef GDK_WINDOWING_X11
-    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    if (GDK_IS_X11_DISPLAY (display))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
         char *handle_str;
-        guint32 xid = (guint32) gdk_x11_window_get_xid (gdk_window);
+        guint32 xid = (guint32) gdk_x11_surface_get_xid (surface);
 
         handle_str = g_strdup_printf ("x11:%x", xid);
         callback (window, handle_str, user_data);
@@ -541,20 +548,19 @@ window_export_handle (GtkWindow               *window,
     }
 #endif
 #ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    if (GDK_IS_WAYLAND_DISPLAY (display))
     {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        WaylandWindowHandleExportedData *data;
+        WaylandSurfaceHandleExportedData *data;
 
-        data = g_new0 (WaylandWindowHandleExportedData, 1);
+        data = g_new0 (WaylandSurfaceHandleExportedData, 1);
+
         data->window = window;
         data->callback = callback;
         data->user_data = user_data;
 
-        if (!gdk_wayland_window_export_handle (gdk_window,
-                                               wayland_window_handle_exported,
-                                               data,
-                                               g_free))
+        if (!gdk_wayland_surface_export_handle (surface,
+                                                wayland_surface_handle_exported,
+                                                data, g_free))
         {
             g_free (data);
             return FALSE;
@@ -575,11 +581,19 @@ static void
 gtk_window_unexport_handle (GtkWindow *window)
 {
 #ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+    GtkWidget *widget;
+    GdkDisplay *display;
 
-        gdk_wayland_window_unexport_handle (gdk_window);
+    widget = GTK_WIDGET (window);
+    display = gtk_widget_get_display (widget);
+
+    if (GDK_IS_WAYLAND_DISPLAY (display))
+    {
+        GdkSurface *surface;
+
+        surface = gtk_widget_get_surface (widget);
+
+        gdk_wayland_surface_unexport_handle (surface);
     }
 #endif
 }
