@@ -100,19 +100,18 @@ gtk_tree_view_vertical_autoscroll (GtkTreeView *tree_view)
     GdkDisplay *display;
     GdkSeat *seat;
     GdkDevice *pointer;
-    GdkWindow *window;
+    GdkSurface *surface;
     int y;
     int offset;
     float value;
 
-    window = gtk_tree_view_get_bin_window (tree_view);
+    surface = gtk_widget_get_surface (GTK_WIDGET (tree_view));
     vadjustment = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (tree_view));
 
     display = gtk_widget_get_display (GTK_WIDGET (tree_view));
     seat = gdk_display_get_default_seat (display);
     pointer = gdk_seat_get_pointer (seat);
-    gdk_window_get_device_position (window, pointer,
-                                    NULL, &y, NULL);
+    gdk_surface_get_device_position (surface, pointer, NULL, &y, NULL);
 
     y += gtk_adjustment_get_value (vadjustment);
 
@@ -598,7 +597,7 @@ drag_motion_callback (GtkWidget      *widget,
     GtkTreePath *path;
     GtkTreePath *drop_path, *old_drop_path;
     GtkTreeViewDropPosition pos;
-    GdkWindow *bin_window;
+    GdkSurface *surface;
     guint action;
     gboolean res = TRUE;
 
@@ -626,12 +625,12 @@ drag_motion_callback (GtkWidget      *widget,
     drop_path = get_drop_path (dest, path);
 
     action = 0;
-    bin_window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
-    if (bin_window != NULL)
+    surface = gtk_widget_get_surface (widget);
+    if (surface != NULL)
     {
-        int bin_x, bin_y;
-        gdk_window_get_position (bin_window, &bin_x, &bin_y);
-        if (bin_y <= y)
+        int surface_x, surface_y;
+        gdk_surface_get_position (surface, &surface_x, &surface_y);
+        if (surface_y <= y)
         {
             /* ignore drags on the header */
             action = get_drop_action (dest, context, drop_path);
