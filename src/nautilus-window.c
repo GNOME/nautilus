@@ -40,6 +40,8 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
+#include "gtk/nautilusgtkplacessidebarprivate.h"
+
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
