@@ -127,7 +127,7 @@ glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
-gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
+gtk = dependency('gtk+-4.0', version: '>= 3.94.0')
 if seccomp_required
   message('seccomp required on this platform, make sure bubblewrap is available at runtime as well.')
   seccomp = dependency('libseccomp')
