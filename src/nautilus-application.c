@@ -238,7 +238,7 @@ menu_provider_init_callback (void)
 
 NautilusWindow *
 nautilus_application_create_window (NautilusApplication *self,
-                                    GdkScreen           *screen)
+                                    GdkDisplay          *display)
 {
     NautilusWindow *window;
     gboolean maximized;
@@ -249,7 +249,7 @@ nautilus_application_create_window (NautilusApplication *self,
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
 
-    window = nautilus_window_new (screen);
+    window = nautilus_window_new (display);
 
     maximized = g_settings_get_boolean
                     (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED);
@@ -380,7 +380,7 @@ real_open_location_full (NautilusApplication     *self,
     GFile *old_location = NULL;
     char *old_uri, *new_uri;
     gboolean use_same;
-    GdkScreen *screen;
+    GdkDisplay *display;
 
     use_same = TRUE;
     /* FIXME: We are having problems on getting the current focused window with
@@ -452,11 +452,11 @@ real_open_location_full (NautilusApplication     *self,
     }
     else
     {
-        screen = active_window != NULL ?
-                 gtk_window_get_screen (GTK_WINDOW (active_window)) :
-                 gdk_screen_get_default ();
+        display = active_window != NULL ?
+                 gtk_widget_get_display (GTK_WIDGET (active_window)) :
+                 gdk_display_get_default ();
 
-        target_window = nautilus_application_create_window (self, screen);
+        target_window = nautilus_application_create_window (self, display);
         /* Whatever the caller says, the slot won't be the same */
         target_slot = NULL;
     }
@@ -493,7 +493,7 @@ open_window (NautilusApplication *self,
     NautilusWindow *window;
 
     nautilus_profile_start (NULL);
-    window = nautilus_application_create_window (self, gdk_screen_get_default ());
+    window = nautilus_application_create_window (self, gdk_display_get_default ());
 
     if (location != NULL)
     {
@@ -534,7 +534,7 @@ nautilus_application_open_location (NautilusApplication *self,
 
     if (!slot)
     {
-        window = nautilus_application_create_window (self, gdk_screen_get_default ());
+        window = nautilus_application_create_window (self, gdk_display_get_default ());
     }
     else
     {
@@ -1136,11 +1136,11 @@ theme_changed (GtkSettings *settings)
     static GtkCssProvider *provider = NULL;
     static GtkCssProvider *permanent_provider = NULL;
     gchar *theme;
-    GdkScreen *screen;
+    GdkDisplay *display;
     GFile *file;
 
     g_object_get (settings, "gtk-theme-name", &theme, NULL);
-    screen = gdk_screen_get_default ();
+    display = gdk_display_get_default ();
 
     /* CSS that themes can override */
     if (g_str_equal (theme, "Adwaita") || g_str_equal (theme, "Adwaita-dark"))
@@ -1149,18 +1149,18 @@ theme_changed (GtkSettings *settings)
         {
             provider = gtk_css_provider_new ();
             file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/Adwaita.css");
-            gtk_css_provider_load_from_file (provider, file, NULL);
+            gtk_css_provider_load_from_file (provider, file);
             g_object_unref (file);
         }
 
-        gtk_style_context_add_provider_for_screen (screen,
-                                                   GTK_STYLE_PROVIDER (provider),
-                                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
+        gtk_style_context_add_provider_for_display (display,
+                                                    GTK_STYLE_PROVIDER (provider),
+                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
     }
     else if (provider != NULL)
     {
-        gtk_style_context_remove_provider_for_screen (screen,
-                                                      GTK_STYLE_PROVIDER (provider));
+        gtk_style_context_remove_provider_for_display (display,
+                                                       GTK_STYLE_PROVIDER (provider));
         g_clear_object (&provider);
     }
 
@@ -1169,14 +1169,14 @@ theme_changed (GtkSettings *settings)
     {
         permanent_provider = gtk_css_provider_new ();
         file = g_file_new_for_uri ("resource:///org/gnome/nautilus/css/nautilus.css");
-        gtk_css_provider_load_from_file (permanent_provider, file, NULL);
+        gtk_css_provider_load_from_file (permanent_provider, file);
         /* The behavior of two style providers with the same priority is
          * undefined and gtk happens to prefer the provider that got added last.
          * Use a higher priority here to avoid this problem.
          */
-        gtk_style_context_add_provider_for_screen (screen,
-                                                   GTK_STYLE_PROVIDER (permanent_provider),
-                                                   GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
+        gtk_style_context_add_provider_for_display (display,
+                                                    GTK_STYLE_PROVIDER (permanent_provider),
+                                                    GTK_STYLE_PROVIDER_PRIORITY_APPLICATION + 1);
         g_object_unref (file);
     }
 
