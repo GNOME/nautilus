@@ -6,7 +6,7 @@ void
 test_init (int    *argc,
            char ***argv)
 {
-    gtk_init (argc, argv);
+    gtk_init ();
 
     eel_make_warnings_and_criticals_stop_in_debugger ();
 }
