@@ -663,7 +663,7 @@ static int
 do_perform_self_checks (void)
 {
 #ifndef NAUTILUS_OMIT_SELF_CHECK
-    gtk_init (NULL, NULL);
+    gtk_init ();
 
     nautilus_profile_start (NULL);
     /* Run the checks (each twice) for nautilus and libnautilus-private. */
