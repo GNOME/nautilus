@@ -912,11 +912,11 @@ eel_canvas_item_hide (EelCanvasItem *item)
  * Prepare the window for grabbing, i.e. show it.
  */
 static void
-seat_grab_prepare_window (GdkSeat   *seat,
-                          GdkWindow *window,
-                          gpointer   user_data)
+seat_grab_prepare_window (GdkSeat    *seat,
+                          GdkSurface *surface,
+                          gpointer    user_data)
 {
-    gdk_window_show (window);
+    gdk_surface_show (surface);
 }
 
 /**
@@ -963,7 +963,7 @@ eel_canvas_item_grab (EelCanvasItem  *item,
     seat = gdk_display_get_default_seat (display);
 
     retval = gdk_seat_grab (seat,
-                            gtk_layout_get_bin_window (GTK_LAYOUT (item->canvas)),
+                            gtk_widget_get_surface (GTK_WIDGET (item->canvas)),
                             GDK_SEAT_CAPABILITY_ALL_POINTING,
                             FALSE,
                             cursor,
@@ -1889,16 +1889,31 @@ static void eel_canvas_map (GtkWidget *widget);
 static void eel_canvas_unmap (GtkWidget *widget);
 static void eel_canvas_realize (GtkWidget *widget);
 static void eel_canvas_unrealize (GtkWidget *widget);
-static void eel_canvas_size_allocate (GtkWidget     *widget,
-                                      GtkAllocation *allocation);
-static gint eel_canvas_motion (GtkWidget      *widget,
-                               GdkEventMotion *event);
-static gint eel_canvas_draw (GtkWidget *widget,
-                             cairo_t   *cr);
-static gint eel_canvas_key (GtkWidget   *widget,
-                            GdkEventKey *event);
-static gint eel_canvas_crossing (GtkWidget        *widget,
-                                 GdkEventCrossing *event);
+static void eel_canvas_size_allocate (GtkWidget           *widget,
+                                      const GtkAllocation *allocation,
+                                      int                  baseline);
+static void on_canvas_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                                      gdouble                   x,
+                                                      gdouble                   y,
+                                                      gpointer                  user_data);
+static void eel_canvas_snapshot (GtkWidget   *widget,
+                                 GtkSnapshot *snapshot);
+static gboolean on_canvas_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                                            guint                  keyval,
+                                                            guint                  keycode,
+                                                            GdkModifierType        state,
+                                                            gpointer               user_data);
+static void on_canvas_event_controller_key_key_released (GtkEventControllerKey *controller,
+                                                         guint                  keyval,
+                                                         guint                  keycode,
+                                                         GdkModifierType        state,
+                                                         gpointer               user_data);
+static void on_canvas_event_controller_motion_enter (GtkEventControllerMotion *controller,
+                                                     gdouble                   x,
+                                                     gdouble                   y,
+                                                     gpointer                  user_data);
+static void on_canvas_event_controller_motion_leave (GtkEventControllerMotion *controller,
+                                                     gpointer                  user_data);
 static void eel_canvas_request_update_real (EelCanvas *canvas);
 static GtkLayoutClass *canvas_parent_class;
 
@@ -2118,12 +2133,7 @@ eel_canvas_class_init (EelCanvasClass *klass)
     widget_class->realize = eel_canvas_realize;
     widget_class->unrealize = eel_canvas_unrealize;
     widget_class->size_allocate = eel_canvas_size_allocate;
-    widget_class->motion_notify_event = eel_canvas_motion;
-    widget_class->draw = eel_canvas_draw;
-    widget_class->key_press_event = eel_canvas_key;
-    widget_class->key_release_event = eel_canvas_key;
-    widget_class->enter_notify_event = eel_canvas_crossing;
-    widget_class->leave_notify_event = eel_canvas_crossing;
+    widget_class->snapshot = eel_canvas_snapshot;
 
     klass->request_update = eel_canvas_request_update_real;
 
@@ -2146,11 +2156,11 @@ eel_canvas_init (EelCanvas *canvas)
 {
     GtkWidget *widget;
     guint width, height;
+    GtkEventController *controller;
 
     widget = GTK_WIDGET (canvas);
 
     gtk_widget_set_can_focus (widget, TRUE);
-    gtk_widget_set_redraw_on_allocate (widget, FALSE);
 
     canvas->scroll_x1 = 0.0;
     canvas->scroll_y1 = 0.0;
@@ -2181,6 +2191,35 @@ eel_canvas_init (EelCanvas *canvas)
 
     canvas->need_repick = TRUE;
     canvas->doing_update = FALSE;
+
+    controller = gtk_event_controller_motion_new ();
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "enter", G_CALLBACK (on_canvas_event_controller_motion_enter),
+                      NULL);
+    g_signal_connect (controller,
+                      "leave", G_CALLBACK (on_canvas_event_controller_motion_leave),
+                      NULL);
+    g_signal_connect (controller,
+                      "motion", G_CALLBACK (on_canvas_event_controller_motion_motion),
+                      NULL);
+
+    gtk_widget_add_controller (widget, controller);
+
+    controller = gtk_event_controller_key_new ();
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "key-pressed", G_CALLBACK (on_canvas_event_controller_key_key_pressed),
+                      NULL);
+    g_signal_connect (controller,
+                      "key-released", G_CALLBACK (on_canvas_event_controller_key_key_released),
+                      NULL);
+
+    gtk_widget_add_controller (widget, controller);
 }
 
 /* Convenience function to remove the idle handler of a canvas */
@@ -2338,17 +2377,6 @@ eel_canvas_realize (GtkWidget *widget)
     }
 
     canvas = EEL_CANVAS (widget);
-
-    gdk_window_set_events (gtk_layout_get_bin_window (GTK_LAYOUT (canvas)),
-                           (gdk_window_get_events (gtk_layout_get_bin_window (GTK_LAYOUT (canvas)))
-                            | GDK_EXPOSURE_MASK
-                            | GDK_BUTTON_PRESS_MASK
-                            | GDK_BUTTON_RELEASE_MASK
-                            | GDK_POINTER_MOTION_MASK
-                            | GDK_KEY_PRESS_MASK
-                            | GDK_KEY_RELEASE_MASK
-                            | GDK_ENTER_NOTIFY_MASK
-                            | GDK_LEAVE_NOTIFY_MASK));
 
     /* Create our own temporary pixmap gc and realize all the items */
 
@@ -2510,8 +2538,9 @@ scroll_to (EelCanvas *canvas,
 
 /* Size allocation handler for the canvas */
 static void
-eel_canvas_size_allocate (GtkWidget     *widget,
-                          GtkAllocation *allocation)
+eel_canvas_size_allocate (GtkWidget           *widget,
+                          const GtkAllocation *allocation,
+                          int                  baseline)
 {
     EelCanvas *canvas;
     GtkAdjustment *vadjustment, *hadjustment;
@@ -2521,7 +2550,7 @@ eel_canvas_size_allocate (GtkWidget     *widget,
 
     if (GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate)
     {
-        (*GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate)(widget, allocation);
+        GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate (widget, allocation, baseline);
     }
 
     canvas = EEL_CANVAS (widget);
@@ -2601,8 +2630,6 @@ emit_event (EelCanvas *canvas,
             break;
 
             case GDK_BUTTON_PRESS:
-            case GDK_2BUTTON_PRESS:
-            case GDK_3BUTTON_PRESS:
             {
                 mask = GDK_BUTTON_PRESS_MASK;
             }
@@ -2832,8 +2859,8 @@ eel_canvas_handle_event (EelCanvas *canvas,
                          EelEvent  *event)
 {
     guint button;
-    GdkWindow *event_window;
-    GdkWindow *bin_window;
+    GdkSurface *event_surface;
+    GdkSurface *surface;
     GdkEventType event_type;
     gint mask;
     gboolean handled = FALSE;
@@ -2842,8 +2869,8 @@ eel_canvas_handle_event (EelCanvas *canvas,
     g_return_val_if_fail (event != NULL, FALSE);
 
     button = eel_event_get_button (event);
-    event_window = eel_event_get_window (event);
-    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
+    event_surface = eel_event_get_surface (event);
+    surface = gtk_widget_get_surface (GTK_WIDGET (canvas));
     event_type = eel_event_get_event_type (event);
 
     /* Don't handle extra mouse button events */
@@ -2856,7 +2883,7 @@ eel_canvas_handle_event (EelCanvas *canvas,
      * dispatch normally regardless of the event's window if an item has
      * has a pointer grab in effect
      */
-    if (canvas->grabbed_item == NULL && event_window != bin_window)
+    if (canvas->grabbed_item == NULL && event_surface != surface)
     {
         return FALSE;
     }
@@ -2900,8 +2927,6 @@ eel_canvas_handle_event (EelCanvas *canvas,
     switch (event_type)
     {
         case GDK_BUTTON_PRESS:
-        case GDK_2BUTTON_PRESS:
-        case GDK_3BUTTON_PRESS:
         {
             /* Pick the current item as if the button were not pressed, and
              * then process the event.
@@ -2945,92 +2970,109 @@ eel_canvas_handle_event (EelCanvas *canvas,
     return handled;
 }
 
-/* Motion event handler for the canvas */
-static gint
-eel_canvas_motion (GtkWidget      *widget,
-                   GdkEventMotion *gdk_event)
+static void
+on_canvas_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                          gdouble                   x,
+                                          gdouble                   y,
+                                          gpointer                  user_data)
 {
+    g_autoptr (GdkEvent) gdk_event = NULL;
+    GtkWidget *widget;
     EelCanvas *canvas;
     g_autoptr (EelEvent) event = NULL;
-    GdkWindow *event_window;
-    GdkWindow *bin_window;
 
-    g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (gdk_event != NULL, FALSE);
+    gdk_event = gtk_get_current_event ();
 
+    g_return_if_fail (gdk_event != NULL);
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     canvas = EEL_CANVAS (widget);
-    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
-    event_window = eel_event_get_window (event);
-    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
+    event = eel_event_new_from_gdk_event (gdk_event);
 
-    if (event_window != bin_window)
-    {
-        return FALSE;
-    }
+    /* We want the coordinates to be canvas-relative. */
+    eel_event_set_coords (event, x, y);
 
     canvas->state = eel_event_get_state (event);
 
     pick_current_item (canvas, event);
 
+    emit_event (canvas, event);
+}
+
+static gboolean
+eel_canvas_key (GtkEventControllerKey *controller)
+{
+    g_autoptr (GdkEvent) gdk_event = NULL;
+    GtkWidget *widget;
+    EelCanvas *canvas;
+    g_autoptr (EelEvent) event = NULL;
+
+    gdk_event = gtk_get_current_event ();
+
+    g_return_val_if_fail (gdk_event != NULL, FALSE);
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    canvas = EEL_CANVAS (widget);
+    event = eel_event_new_from_gdk_event (gdk_event);
+
     return emit_event (canvas, event);
 }
 
-/* Key event handler for the canvas */
-static gint
-eel_canvas_key (GtkWidget   *widget,
-                GdkEventKey *gdk_event)
+static gboolean
+on_canvas_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                            guint                  keyval,
+                                            guint                  keycode,
+                                            GdkModifierType        state,
+                                            gpointer               user_data)
 {
-    EelCanvas *canvas;
-    g_autoptr (EelEvent) event = NULL;
-
-    g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (gdk_event != NULL, FALSE);
-
-    canvas = EEL_CANVAS (widget);
-    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
-
-    if (emit_event (canvas, event))
-    {
-        return TRUE;
-    }
-
-    if (gdk_event_get_event_type ((GdkEvent *) gdk_event) == GDK_KEY_RELEASE)
-    {
-        return GTK_WIDGET_CLASS (canvas_parent_class)->key_release_event (widget, gdk_event);
-    }
-    else
-    {
-        return GTK_WIDGET_CLASS (canvas_parent_class)->key_press_event (widget, gdk_event);
-    }
+    return eel_canvas_key (controller);
 }
 
-
-/* Crossing event handler for the canvas */
-static gint
-eel_canvas_crossing (GtkWidget        *widget,
-                     GdkEventCrossing *gdk_event)
+static void
+on_canvas_event_controller_key_key_released (GtkEventControllerKey *controller,
+                                             guint                  keyval,
+                                             guint                  keycode,
+                                             GdkModifierType        state,
+                                             gpointer               user_data)
 {
+    eel_canvas_key (controller);
+}
+
+static void
+eel_canvas_crossing (GtkEventControllerMotion *controller)
+{
+    g_autoptr (GdkEvent) gdk_event = NULL;
+    GtkWidget *widget;
     EelCanvas *canvas;
     g_autoptr (EelEvent) event = NULL;
-    GdkWindow *event_window;
-    GdkWindow *bin_window;
 
-    g_return_val_if_fail (EEL_IS_CANVAS (widget), FALSE);
-    g_return_val_if_fail (gdk_event != NULL, FALSE);
+    gdk_event = gtk_get_current_event ();
 
+    g_return_if_fail (gdk_event != NULL);
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     canvas = EEL_CANVAS (widget);
-    event = eel_event_new_from_gdk_event ((GdkEvent *) gdk_event);
-    event_window = eel_event_get_window (event);
-    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (canvas));
-
-    if (event_window != bin_window)
-    {
-        return FALSE;
-    }
+    event = eel_event_new_from_gdk_event (gdk_event);
 
     canvas->state = eel_event_get_state (event);
 
-    return pick_current_item (canvas, event);
+    pick_current_item (canvas, event);
+}
+
+static void
+on_canvas_event_controller_motion_enter (GtkEventControllerMotion *controller,
+                                         gdouble                   x,
+                                         gdouble                   y,
+                                         gpointer                  user_data)
+{
+    eel_canvas_crossing (controller);
+}
+
+static void
+on_canvas_event_controller_motion_leave (GtkEventControllerMotion *controller,
+                                         gpointer                  user_data)
+{
+    eel_canvas_crossing (controller);
 }
 
 static cairo_region_t *
@@ -3078,41 +3120,35 @@ eel_cairo_get_clip_region (cairo_t *cr)
     return region;
 }
 
-/* Expose handler for the canvas */
-static gboolean
-eel_canvas_draw (GtkWidget *widget,
-                 cairo_t   *cr)
+static void
+eel_canvas_snapshot (GtkWidget   *widget,
+                     GtkSnapshot *snapshot)
 {
-    EelCanvas *canvas = EEL_CANVAS (widget);
-    GdkWindow *bin_window;
+    EelCanvas *canvas;
+    graphene_rect_t bounds;
+    cairo_t *cr;
     cairo_region_t *region;
+
+    canvas = EEL_CANVAS (widget);
+    bounds = GRAPHENE_RECT_INIT (0, 0,
+                                 gtk_widget_get_width (widget),
+                                 gtk_widget_get_height (widget));
+    cr = gtk_snapshot_append_cairo (snapshot, &bounds);
 
     if (!gdk_cairo_get_clip_rectangle (cr, NULL))
     {
-        return FALSE;
-    }
-
-    bin_window = gtk_layout_get_bin_window (GTK_LAYOUT (widget));
-
-    if (!gtk_cairo_should_draw_window (cr, bin_window))
-    {
-        return FALSE;
+        return;
     }
 
     cairo_save (cr);
-
-    gtk_cairo_transform_to_window (cr, widget, bin_window);
 
     region = eel_cairo_get_clip_region (cr);
     if (region == NULL)
     {
         cairo_restore (cr);
-        return FALSE;
+        return;
     }
 
-#ifdef VERBOSE
-    g_print ("Draw\n");
-#endif
     /* If there are any outstanding items that need updating, do them now */
     if (canvas->idle_id)
     {
@@ -3121,12 +3157,12 @@ eel_canvas_draw (GtkWidget *widget,
     }
     if (canvas->need_update)
     {
-        g_return_val_if_fail (!canvas->doing_update, FALSE);
+        g_return_if_fail (!canvas->doing_update);
 
         canvas->doing_update = TRUE;
         eel_canvas_item_invoke_update (canvas->root, 0, 0, 0);
 
-        g_return_val_if_fail (canvas->doing_update, FALSE);
+        g_return_if_fail (canvas->doing_update);
 
         canvas->doing_update = FALSE;
 
@@ -3141,13 +3177,14 @@ eel_canvas_draw (GtkWidget *widget,
     cairo_restore (cr);
 
     /* Chain up to get exposes on child widgets */
-    if (GTK_WIDGET_CLASS (canvas_parent_class)->draw)
+    if (GTK_WIDGET_CLASS (canvas_parent_class)->snapshot)
     {
-        GTK_WIDGET_CLASS (canvas_parent_class)->draw (widget, cr);
+        GTK_WIDGET_CLASS (canvas_parent_class)->snapshot (widget, snapshot);
     }
 
     cairo_region_destroy (region);
-    return FALSE;
+
+    gtk_snapshot_pop (snapshot);
 }
 
 static void
@@ -3357,9 +3394,7 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas,
     double cx, cy;
     int x1, y1;
     int center_x, center_y;
-    GdkWindow *window;
-    GdkWindowAttr attributes;
-    gint attributes_mask;
+    GdkSurface *surface;
     GtkAllocation allocation;
     GtkAdjustment *vadjustment, *hadjustment;
 
@@ -3390,45 +3425,35 @@ eel_canvas_set_pixels_per_unit (EelCanvas *canvas,
         eel_canvas_request_update (canvas);
     }
 
-    /* Map a background None window over the bin_window to avoid
+    /* Map a background None window over the surface to avoid
      * scrolling the window scroll causing exposes.
      */
-    window = NULL;
+    surface = NULL;
     if (gtk_widget_get_mapped (widget))
     {
-        attributes.window_type = GDK_WINDOW_CHILD;
         gtk_widget_get_allocation (widget, &allocation);
-        attributes.x = allocation.x;
-        attributes.y = allocation.y;
-        attributes.width = allocation.width;
-        attributes.height = allocation.height;
-        attributes.wclass = GDK_INPUT_OUTPUT;
-        attributes.visual = gtk_widget_get_visual (widget);
-        attributes.event_mask = GDK_VISIBILITY_NOTIFY_MASK;
 
-        attributes_mask = GDK_WA_X | GDK_WA_Y | GDK_WA_VISUAL;
+        surface = gdk_surface_new_child (gtk_widget_get_parent_surface (widget),
+                                         &allocation);
+        gdk_surface_set_user_data (surface, widget);
 
-        window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                                 &attributes, attributes_mask);
-        gdk_window_set_user_data (window, widget);
-
-        gdk_window_show (window);
+        gdk_surface_show (surface);
     }
 
     scroll_to (canvas, x1, y1);
 
     /* If we created a an overlapping background None window, remove it how.
      *
-     * TODO: We would like to temporarily set the bin_window background to
-     * None to avoid clearing the bin_window to the background, but gdk doesn't
+     * TODO: We would like to temporarily set the surface background to
+     * None to avoid clearing the surface to the background, but gdk doesn't
      * expose enought to let us do this, so we get a flash-effect here. At least
      * it looks better than scroll + expose.
      */
-    if (window != NULL)
+    if (surface != NULL)
     {
-        gdk_window_hide (window);
-        gdk_window_set_user_data (window, NULL);
-        gdk_window_destroy (window);
+        gdk_surface_hide (surface);
+        gdk_surface_set_user_data (surface, NULL);
+        gdk_surface_destroy (surface);
     }
 
     canvas->need_repick = TRUE;
@@ -3514,8 +3539,7 @@ eel_canvas_request_redraw (EelCanvas *canvas,
     bbox.width = x2 - x1;
     bbox.height = y2 - y1;
 
-    gdk_window_invalidate_rect (gtk_layout_get_bin_window (GTK_LAYOUT (canvas)),
-                                &bbox, FALSE);
+    gdk_surface_invalidate_rect (gtk_widget_get_surface (GTK_WIDGET (canvas)), &bbox);
 }
 
 /**
@@ -3759,19 +3783,20 @@ eel_canvas_item_accessible_is_item_in_window (EelCanvasItem *item,
     gboolean retval;
 
     widget = GTK_WIDGET (item->canvas);
-    if (gtk_widget_get_window (widget))
+    if (gtk_widget_get_surface (widget))
     {
-        int window_width, window_height;
+        int surface_width;
+        int surface_height;
 
-        gdk_window_get_geometry (gtk_widget_get_window (widget), NULL, NULL,
-                                 &window_width, &window_height);
+        gdk_surface_get_geometry (gtk_widget_get_surface (widget), NULL, NULL,
+                                  &surface_width, &surface_height);
         /*
          * Check whether rectangles intersect
          */
         if (rect->x + rect->width < 0 ||
             rect->y + rect->height < 0 ||
-            rect->x > window_width ||
-            rect->y > window_height)
+            rect->x > surface_width ||
+            rect->y > surface_height)
         {
             retval = FALSE;
         }
@@ -3799,10 +3824,11 @@ eel_canvas_item_accessible_get_extents (AtkComponent *component,
     AtkGObjectAccessible *atk_gobj;
     GObject *obj;
     EelCanvasItem *item;
-    gint window_x, window_y;
+    gint surface_x;
+    gint surface_y;
     gint toplevel_x, toplevel_y;
     GdkRectangle rect;
-    GdkWindow *window;
+    GdkSurface *surface;
     GtkWidget *canvas;
 
     atk_gobj = ATK_GOBJECT_ACCESSIBLE (component);
@@ -3831,14 +3857,14 @@ eel_canvas_item_accessible_get_extents (AtkComponent *component,
     }
 
     canvas = GTK_WIDGET (item->canvas);
-    window = gtk_widget_get_parent_window (canvas);
-    gdk_window_get_origin (window, &window_x, &window_y);
-    *x = rect.x + window_x;
-    *y = rect.y + window_y;
+    surface = gtk_widget_get_parent_surface (canvas);
+    gdk_surface_get_origin (surface, &surface_x, &surface_y);
+    *x = rect.x + surface_x;
+    *y = rect.y + surface_y;
     if (coord_type == ATK_XY_WINDOW)
     {
-        window = gdk_window_get_toplevel (gtk_widget_get_window (canvas));
-        gdk_window_get_origin (window, &toplevel_x, &toplevel_y);
+        surface = gdk_surface_get_toplevel (gtk_widget_get_surface (canvas));
+        gdk_surface_get_origin (surface, &toplevel_x, &toplevel_y);
         *x -= toplevel_x;
         *y -= toplevel_y;
     }
