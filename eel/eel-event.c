@@ -24,7 +24,7 @@ struct _EelEvent
 
     GdkEventType type;
 
-    GdkWindow *window;
+    GdkSurface *surface;
 
     gdouble x;
     gdouble y;
@@ -42,7 +42,7 @@ static void
 eel_event_init (EelEvent *self)
 {
     self->type = GDK_NOTHING;
-    self->window = NULL;
+    self->surface = NULL;
     self->x = 0.0;
     self->y = 0.0;
     self->button = 0;
@@ -73,22 +73,22 @@ eel_event_set_event_type (EelEvent     *self,
     self->type = type;
 }
 
-GdkWindow *
-eel_event_get_window (EelEvent *self)
+GdkSurface *
+eel_event_get_surface (EelEvent *self)
 {
     g_return_val_if_fail (EEL_IS_EVENT (self), NULL);
 
-    return self->window;
+    return self->surface;
 }
 
 void
-eel_event_set_window (EelEvent  *self,
-                      GdkWindow *window)
+eel_event_set_surface (EelEvent   *self,
+                       GdkSurface *surface)
 {
     g_return_if_fail (EEL_IS_EVENT (self));
-    g_return_if_fail (GDK_IS_WINDOW (window));
+    g_return_if_fail (GDK_IS_SURFACE (surface));
 
-    self->window = window;
+    self->surface = surface;
 }
 
 void
@@ -162,7 +162,7 @@ eel_event_copy (EelEvent *self)
     event = eel_event_new ();
 
     event->type = self->type;
-    event->window = self->window;
+    event->surface = self->surface;
     event->x = self->x;
     event->y = self->y;
     event->button = self->button;
@@ -188,7 +188,7 @@ eel_event_new_from_gdk_event (const GdkEvent *gdk_event)
     event = eel_event_new ();
 
     event->type = gdk_event_get_event_type (gdk_event);
-    event->window = gdk_event_get_window (gdk_event);
+    event->surface = gdk_event_get_surface (gdk_event);
     event->time = gdk_event_get_time (gdk_event);
 
     gdk_event_get_coords (gdk_event, &event->x, &event->y);
