@@ -1627,9 +1627,9 @@ rubberband_timeout_callback (gpointer data)
         adj_changed = TRUE;
     }
 
-    gdk_window_get_device_position (gtk_widget_get_window (widget),
-                                    band_info->device,
-                                    &x, &y, NULL);
+    gdk_surface_get_device_position (gtk_widget_get_surface (widget),
+                                     band_info->device,
+                                     &x, &y, NULL);
 
     if (x < RUBBERBAND_SCROLL_THRESHOLD)
     {
