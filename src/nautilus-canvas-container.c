@@ -4202,10 +4202,8 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
 
     details->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (container));
 
-#if 0
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (details->multi_press_gesture),
                                                 GTK_PHASE_CAPTURE);
-#endif
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (details->multi_press_gesture),
                                    0);
 
