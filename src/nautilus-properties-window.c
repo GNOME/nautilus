@@ -5054,7 +5054,7 @@ create_properties_window (StartupData *startup_data)
 
     window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
                                                          "use-header-bar", TRUE,
-                                                         "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
+                                                         "type-hint", GDK_SURFACE_TYPE_HINT_DIALOG,
                                                          "modal", TRUE,
                                                          NULL));
 
