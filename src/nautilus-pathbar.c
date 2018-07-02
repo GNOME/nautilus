@@ -260,15 +260,14 @@ nautilus_path_bar_finalize (GObject *object)
 /* Removes the settings signal handler.  It's safe to call multiple times */
 static void
 remove_settings_signal (NautilusPathBar *self,
-                        GdkScreen       *screen)
+                        GdkDisplay      *display)
 {
     if (self->settings_signal_id != 0)
     {
         GtkSettings *settings;
 
-        settings = gtk_settings_get_for_screen (screen);
-        g_signal_handler_disconnect (settings,
-                                     self->settings_signal_id);
+        settings = gtk_settings_get_for_display (display);
+        g_signal_handler_disconnect (settings, self->settings_signal_id);
         self->settings_signal_id = 0;
     }
 }
@@ -280,7 +279,7 @@ nautilus_path_bar_dispose (GObject *object)
 
     self = NAUTILUS_PATH_BAR (object);
 
-    remove_settings_signal (self, gtk_widget_get_screen (GTK_WIDGET (object)));
+    remove_settings_signal (self, gtk_widget_get_display (GTK_WIDGET (object)));
 
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->dispose (object);
 }
@@ -637,17 +636,17 @@ nautilus_path_bar_style_updated (GtkWidget *widget)
 }
 
 static void
-nautilus_path_bar_screen_changed (GtkWidget *widget,
-                                  GdkScreen *previous_screen)
+nautilus_path_bar_display_changed (GtkWidget  *widget,
+                                   GdkDisplay *previous_display)
 {
-    if (GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->screen_changed)
+    if (GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->display_changed)
     {
-        GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->screen_changed (widget, previous_screen);
+        GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->display_changed (widget, previous_display);
     }
     /* We might nave a new settings, so we remove the old one */
-    if (previous_screen)
+    if (previous_display != NULL)
     {
-        remove_settings_signal (NAUTILUS_PATH_BAR (widget), previous_screen);
+        remove_settings_signal (NAUTILUS_PATH_BAR (widget), previous_display);
     }
     nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
 }
@@ -884,7 +883,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     widget_class->map = nautilus_path_bar_map;
     widget_class->size_allocate = nautilus_path_bar_size_allocate;
     widget_class->style_updated = nautilus_path_bar_style_updated;
-    widget_class->screen_changed = nautilus_path_bar_screen_changed;
+    widget_class->display_changed = nautilus_path_bar_display_changed;
 
     container_class->add = nautilus_path_bar_add;
     container_class->forall = nautilus_path_bar_forall;
@@ -1020,7 +1019,7 @@ nautilus_path_bar_check_icon_theme (NautilusPathBar *self)
         return;
     }
 
-    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (self)));
+    settings = gtk_settings_get_for_display (gtk_widget_get_display (GTK_WIDGET (self)));
     self->settings_signal_id = g_signal_connect (settings, "notify", G_CALLBACK (settings_notify_cb), self);
 
     reload_icons (self);
