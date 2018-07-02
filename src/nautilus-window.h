@@ -51,7 +51,7 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
 #define NAUTILUS_WINDOW_DEFAULT_WIDTH		890
 #define NAUTILUS_WINDOW_DEFAULT_HEIGHT		550
 
-NautilusWindow * nautilus_window_new                  (GdkScreen         *screen);
+NautilusWindow * nautilus_window_new                  (GdkDisplay        *display);
 void             nautilus_window_close                (NautilusWindow    *window);
 
 void nautilus_window_open_location_full               (NautilusWindow          *window,
