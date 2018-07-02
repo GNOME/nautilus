@@ -118,7 +118,7 @@ main (int    argc,
     NautilusFile *file;
     NautilusFileAttributes attributes;
 
-    gtk_init (&argc, &argv);
+    gtk_init ();
 
     if (argc < 3)
     {
