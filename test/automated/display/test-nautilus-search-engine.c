@@ -33,7 +33,7 @@ main (int   argc,
     NautilusQuery *query;
     GFile *location;
 
-    gtk_init (&argc, &argv);
+    gtk_init ();
 
     nautilus_ensure_extension_points ();
 
