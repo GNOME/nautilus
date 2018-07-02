@@ -789,7 +789,7 @@ nautilus_drag_drop_action_ask (GtkWidget     *widget,
      * allowed actions.
      */
     menu = gtk_menu_new ();
-    gtk_menu_set_screen (GTK_MENU (menu), gtk_widget_get_screen (widget));
+    gtk_menu_set_display (GTK_MENU (menu), gtk_widget_get_display (widget));
 
     append_drop_action_menu_item (menu, _("_Move Here"),
                                   GDK_ACTION_MOVE,
