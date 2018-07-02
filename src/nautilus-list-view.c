@@ -567,12 +567,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    /* Remove after switching to GTK+ 4. */
-    if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (tree_view))
-    {
-        return;
-    }
-
     nautilus_list_model_set_drag_view
         (NAUTILUS_LIST_MODEL (gtk_tree_view_get_model (tree_view)),
         tree_view,
@@ -3528,7 +3522,6 @@ nautilus_list_view_is_zoom_level_default (NautilusFilesView *view)
 static void
 nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
 {
-    GdkWindow *win;
     GdkDisplay *display;
     NautilusListView *view;
     GtkTreeIter iter;
