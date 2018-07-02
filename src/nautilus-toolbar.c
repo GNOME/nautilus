@@ -25,7 +25,6 @@
 #include <glib/gi18n.h>
 #include <math.h>
 
-#include "animation/ide-box-theatric.h"
 #include "animation/egg-animation.h"
 
 #include "nautilus-application.h"
