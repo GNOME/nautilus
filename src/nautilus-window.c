@@ -1226,11 +1226,13 @@ action_format (GSimpleAction *action,
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
     GAppInfo *app_info;
     gchar *cmdline, *device_identifier, *xid_string;
+    GdkSurface *surface;
     gint xid;
 
     device_identifier = g_volume_get_identifier (window->selected_volume,
                                                  G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    xid = (gint) gdk_x11_window_get_xid (gtk_widget_get_window (GTK_WIDGET (window)));
+    surface = gtk_widget_get_surface (GTK_WIDGET (window));
+    xid = (gint) gdk_x11_surface_get_xid (surface);
     xid_string = g_strdup_printf ("%d", xid);
 
     cmdline = g_strconcat ("gnome-disks ",
@@ -2355,33 +2357,32 @@ nautilus_window_finalize (GObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
+    GdkSurface *surface;
+    gint width;
+    gint height;
+    GVariant *initial_size;
     gboolean is_maximized;
 
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    if (gtk_widget_get_window (GTK_WIDGET (window)))
+    surface = gtk_widget_get_surface (GTK_WIDGET (window));
+    if (surface == NULL)
     {
-        gint width;
-        gint height;
-        GVariant *initial_size;
-
-        gtk_window_get_size (GTK_WINDOW (window), &width, &height);
-
-        initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
-        is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)))
-                       & GDK_WINDOW_STATE_MAXIMIZED;
-
-        if (!is_maximized)
-        {
-            g_settings_set_value (nautilus_window_state,
-                                  NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
-                                  initial_size);
-        }
-
-        g_settings_set_boolean
-            (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
-            is_maximized);
+        return;
     }
+
+    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
+    initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
+    is_maximized = gtk_window_is_maximized (GTK_WINDOW (window));
+    if (!is_maximized)
+    {
+        g_settings_set_value (nautilus_window_state,
+                              NAUTILUS_WINDOW_STATE_INITIAL_SIZE, initial_size);
+    }
+
+    g_settings_set_boolean (nautilus_window_state,
+                            NAUTILUS_WINDOW_STATE_MAXIMIZED, is_maximized);
 }
 
 void
