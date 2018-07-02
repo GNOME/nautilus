@@ -22,6 +22,7 @@
 #if !defined (__GTK_H_INSIDE__) && !defined (GTK_COMPILATION)
 #endif
 
+#include "nautilusgtkplacessidebarprivate.h"
 
 G_BEGIN_DECLS
 
@@ -44,7 +45,7 @@ struct _NautilusGtkPlacesViewClass
                                      GFile                  *location,
                                      GtkPlacesOpenFlags  open_flags);
 
-  void    (* show_error_message)     (GtkPlacesSidebar      *sidebar,
+  void    (* show_error_message)     (NautilusGtkPlacesSidebar      *sidebar,
                                       const gchar           *primary,
                                       const gchar           *secondary);
 

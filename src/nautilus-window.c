@@ -40,6 +40,8 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
+#include "gtk/nautilusgtkplacessidebarprivate.h"
+
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
@@ -435,8 +437,15 @@ action_toggle_state_view_button (GSimpleAction *action,
 static void
 on_location_changed (NautilusWindow *window)
 {
-    gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                     nautilus_window_slot_get_location (nautilus_window_get_active_slot (window)));
+    NautilusGtkPlacesSidebar *sidebar;
+    NautilusWindowSlot *slot;
+    GFile *location;
+
+    sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
+    slot = nautilus_window_get_active_slot (window);
+    location = nautilus_window_slot_get_location (slot);
+
+    nautilus_gtk_places_sidebar_set_location (sidebar, location);
 }
 
 static void
@@ -940,10 +949,10 @@ places_sidebar_unmount_operation_cb (NautilusWindow  *window,
 
 /* Callback used when the places sidebar needs us to present an error message */
 static void
-places_sidebar_show_error_message_cb (GtkPlacesSidebar *sidebar,
-                                      const char       *primary,
-                                      const char       *secondary,
-                                      gpointer          user_data)
+places_sidebar_show_error_message_cb (NautilusGtkPlacesSidebar *sidebar,
+                                      const char               *primary,
+                                      const char               *secondary,
+                                      gpointer                  user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
@@ -1004,31 +1013,35 @@ void
 nautilus_window_start_dnd (NautilusWindow *window,
                            GdkDragContext *context)
 {
+    NautilusGtkPlacesSidebar *sidebar;
+
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-    gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                 TRUE,
-                                                 context);
+    sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
+
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, TRUE, context);
 }
 
 void
 nautilus_window_end_dnd (NautilusWindow *window,
                          GdkDragContext *context)
 {
+    NautilusGtkPlacesSidebar *sidebar;
+
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
-    gtk_places_sidebar_set_drop_targets_visible (GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                                 FALSE,
-                                                 context);
+    sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
+
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, FALSE, context);
 }
 
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
-places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
-                                         GdkDragContext   *context,
-                                         GFile            *dest_file,
-                                         GList            *source_file_list,
-                                         gpointer          user_data)
+places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
+                                         GdkDragContext           *context,
+                                         GFile                    *dest_file,
+                                         GList                    *source_file_list,
+                                         gpointer                  user_data)
 {
     GList *items;
     char *uri;
@@ -1069,9 +1082,9 @@ out:
 
 /* Callback used when the places sidebar needs us to pop up a menu with possible drag actions */
 static GdkDragAction
-places_sidebar_drag_action_ask_cb (GtkPlacesSidebar *sidebar,
-                                   GdkDragAction     actions,
-                                   gpointer          user_data)
+places_sidebar_drag_action_ask_cb (NautilusGtkPlacesSidebar *sidebar,
+                                   GdkDragAction             actions,
+                                   gpointer                  user_data)
 {
     return nautilus_drag_drop_action_ask (GTK_WIDGET (sidebar), actions);
 }
@@ -1098,11 +1111,11 @@ build_uri_list_from_gfile_list (GList *file_list)
 
 /* Callback used when the places sidebar has URIs dropped into it.  We do a normal file operation for them. */
 static void
-places_sidebar_drag_perform_drop_cb (GtkPlacesSidebar *sidebar,
-                                     GFile            *dest_file,
-                                     GList            *source_file_list,
-                                     GdkDragAction     action,
-                                     gpointer          user_data)
+places_sidebar_drag_perform_drop_cb (NautilusGtkPlacesSidebar *sidebar,
+                                     GFile                    *dest_file,
+                                     GList                    *source_file_list,
+                                     GdkDragAction             action,
+                                     gpointer                  user_data)
 {
     char *dest_uri;
     GList *source_uri_list;
@@ -1246,11 +1259,11 @@ add_menu_separator (GtkWidget *menu)
 }
 
 static void
-places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
-                                  GtkWidget        *menu,
-                                  GFile            *selected_file,
-                                  GVolume          *selected_volume,
-                                  gpointer          user_data)
+places_sidebar_populate_popup_cb (NautilusGtkPlacesSidebar *sidebar,
+                                  GtkWidget                *menu,
+                                  GFile                    *selected_file,
+                                  GVolume                  *selected_volume,
+                                  gpointer                  user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
     GFile *trash;
@@ -1321,16 +1334,20 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
+    NautilusGtkPlacesSidebar *sidebar;
+
     setup_side_pane_width (window);
     g_signal_connect (window->sidebar,
                       "size-allocate",
                       G_CALLBACK (side_pane_size_allocate_callback),
                       window);
 
-    gtk_places_sidebar_set_open_flags (GTK_PLACES_SIDEBAR (window->places_sidebar),
-                                       (GTK_PLACES_OPEN_NORMAL
-                                        | GTK_PLACES_OPEN_NEW_TAB
-                                        | GTK_PLACES_OPEN_NEW_WINDOW));
+    sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
+
+    nautilus_gtk_places_sidebar_set_open_flags (sidebar,
+                                                (GTK_PLACES_OPEN_NORMAL
+                                                 | GTK_PLACES_OPEN_NEW_TAB
+                                                 | GTK_PLACES_OPEN_NEW_WINDOW));
 
     g_signal_connect_swapped (window->places_sidebar, "open-location",
                               G_CALLBACK (open_location_cb), window);
