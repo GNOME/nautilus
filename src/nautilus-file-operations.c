@@ -2838,12 +2838,12 @@ prompt_empty_trash (GtkWindow *parent_window)
 {
     gint result;
     GtkWidget *dialog;
-    GdkScreen *screen;
+    GdkDisplay *display;
 
-    screen = NULL;
+    display = NULL;
     if (parent_window != NULL)
     {
-        screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
+        display = gtk_widget_get_display (GTK_WIDGET (parent_window));
     }
 
     /* Do we need to be modal ? */
@@ -2863,19 +2863,14 @@ prompt_empty_trash (GtkWindow *parent_window)
     gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_ACCEPT);
     gtk_window_set_title (GTK_WINDOW (dialog), "");     /* as per HIG */
     gtk_window_set_skip_taskbar_hint (GTK_WINDOW (dialog), TRUE);
-    if (screen)
+    if (display != NULL)
     {
-        gtk_window_set_screen (GTK_WINDOW (dialog), screen);
+        gtk_window_set_display (GTK_WINDOW (dialog), display);
     }
     atk_object_set_role (gtk_widget_get_accessible (dialog), ATK_ROLE_ALERT);
 
     /* Make transient for the window group */
     gtk_widget_realize (dialog);
-    if (screen != NULL)
-    {
-        gdk_window_set_transient_for (gtk_widget_get_window (GTK_WIDGET (dialog)),
-                                      gdk_screen_get_root_window (screen));
-    }
 
     result = gtk_dialog_run (GTK_DIALOG (dialog));
     gtk_widget_destroy (dialog);

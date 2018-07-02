@@ -554,7 +554,7 @@ set_floating_bar_status (NautilusFilesView *view,
         priv->floating_bar_set_status_timeout_id = 0;
     }
 
-    settings = gtk_settings_get_for_screen (gtk_widget_get_screen (GTK_WIDGET (view)));
+    settings = gtk_settings_get_for_display (gtk_widget_get_display (GTK_WIDGET (view)));
     g_object_get (settings,
                   "gtk-double-click-time", &double_click_time,
                   NULL);
@@ -5215,7 +5215,7 @@ run_script (GSimpleAction *action,
 {
     NautilusFilesViewPrivate *priv;
     ScriptLaunchParameters *launch_parameters;
-    GdkScreen *screen;
+    GdkDisplay *display;
     g_autolist (NautilusFile) selection = NULL;
     char *file_uri;
     g_autofree char *local_file_path = NULL;
@@ -5241,12 +5241,12 @@ run_script (GSimpleAction *action,
     parameters = get_file_names_as_parameter_array (selection,
                                                     priv->model);
 
-    screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
+    display = gtk_widget_get_display (GTK_WIDGET (launch_parameters->directory_view));
 
     DEBUG ("run_script, script_path=“%s” (omitting script parameters)",
            local_file_path);
 
-    nautilus_launch_application_from_command_array (screen, quoted_path, FALSE,
+    nautilus_launch_application_from_command_array (display, quoted_path, FALSE,
                                                     (const char * const *) parameters);
     g_strfreev (parameters);
 
@@ -8750,7 +8750,7 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
     {
         char *command, *quoted_uri, *tmp;
         const GList *l;
-        GdkScreen *screen;
+        GdkDisplay *display;
 
         /* Handle dropping onto a file-roller archiver file, instead of starting a move/copy */
 
@@ -8771,13 +8771,13 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
             g_free (quoted_uri);
         }
 
-        screen = gtk_widget_get_screen (GTK_WIDGET (view));
-        if (screen == NULL)
+        display = gtk_widget_get_display (GTK_WIDGET (view));
+        if (display == NULL)
         {
-            screen = gdk_screen_get_default ();
+            display = gdk_display_get_default ();
         }
 
-        nautilus_launch_application_from_command (screen, command, FALSE, NULL);
+        nautilus_launch_application_from_command (display, command, FALSE, NULL);
         g_free (command);
 
         return;

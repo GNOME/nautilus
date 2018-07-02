@@ -1432,7 +1432,7 @@ activate_files (ActivateParameters *parameters)
     NautilusWindowOpenFlags flags;
     int count;
     g_autofree char *old_working_dir = NULL;
-    GdkScreen *screen;
+    GdkDisplay *display;
     g_autoptr (GQueue) launch_files = NULL;
     g_autoptr (GQueue) launch_in_terminal_files = NULL;
     g_autoptr (GQueue) open_in_app_uris = NULL;
@@ -1522,7 +1522,7 @@ activate_files (ActivateParameters *parameters)
         g_chdir (parameters->activation_directory);
     }
 
-    screen = gtk_widget_get_screen (GTK_WIDGET (parameters->parent_window));
+    display = gtk_widget_get_display (GTK_WIDGET (parameters->parent_window));
     for (l = g_queue_peek_head_link (launch_files); l != NULL; l = l->next)
     {
         g_autofree char *uri = NULL;
@@ -1537,7 +1537,7 @@ activate_files (ActivateParameters *parameters)
 
         DEBUG ("Launching file path %s", quoted_path);
 
-        nautilus_launch_application_from_command (screen, quoted_path, FALSE, NULL);
+        nautilus_launch_application_from_command (display, quoted_path, FALSE, NULL);
     }
 
     for (l = g_queue_peek_head_link (launch_in_terminal_files); l != NULL; l = l->next)
@@ -1554,7 +1554,7 @@ activate_files (ActivateParameters *parameters)
 
         DEBUG ("Launching in terminal file quoted path %s", quoted_path);
 
-        nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
+        nautilus_launch_application_from_command (display, quoted_path, TRUE, NULL);
     }
 
     if (old_working_dir != NULL)
