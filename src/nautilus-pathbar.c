@@ -243,7 +243,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                                                               G_MENU_MODEL (priv->current_view_menu)));
     g_object_unref (builder);
 
-    gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
+    gtk_widget_set_has_surface (GTK_WIDGET (self), FALSE);
     gtk_widget_set_redraw_on_allocate (GTK_WIDGET (self), FALSE);
 
     priv->up_slider_button = get_slider_button (self, "pan-start-symbolic");
