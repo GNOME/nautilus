@@ -1206,17 +1206,17 @@ static void
 search_for_application_mime_type (ActivateParametersInstall *parameters_install,
                                   const gchar               *mime_type)
 {
-    GdkWindow *window;
+    GdkSurface *surface;
     guint xid = 0;
     const char *mime_types[2];
 
     g_assert (parameters_install->proxy != NULL);
 
     /* get XID from parent window */
-    window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
-    if (window != NULL)
+    surface = gtk_widget_get_surface (GTK_WIDGET (parameters_install->parent_window));
+    if (surface != NULL)
     {
-        xid = GDK_WINDOW_XID (window);
+        xid = GDK_SURFACE_XID (surface);
     }
 
     mime_types[0] = mime_type;
