@@ -28,13 +28,14 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-#include "libgd/gd-tagged-entry.h"
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-search-directory.h"
 #include "nautilus-search-popover.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-tagged-entry.h"
+#include "nautilus-tagged-entry-tag.h"
 #include "nautilus-ui-utilities.h"
 
 struct _NautilusQueryEditor
@@ -46,8 +47,8 @@ struct _NautilusQueryEditor
     GtkWidget *label;
     GtkWidget *dropdown_button;
 
-    GdTaggedEntryTag *mime_types_tag;
-    GdTaggedEntryTag *date_range_tag;
+    NautilusTaggedEntryTag *mime_types_tag;
+    NautilusTaggedEntryTag *date_range_tag;
 
     gboolean change_frozen;
 
@@ -454,17 +455,17 @@ search_popover_date_range_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-    gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->entry),
-                                editor->date_range_tag);
+    nautilus_tagged_entry_remove_tag (NAUTILUS_TAGGED_ENTRY (editor->entry),
+                                      editor->date_range_tag);
     if (date_range)
     {
         g_autofree gchar *text_for_date_range = NULL;
 
         text_for_date_range = get_text_for_date_range (date_range, TRUE);
-        gd_tagged_entry_tag_set_label (editor->date_range_tag,
-                                       text_for_date_range);
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
-                                 GD_TAGGED_ENTRY_TAG (editor->date_range_tag));
+        nautilus_tagged_entry_tag_set_label (editor->date_range_tag,
+                                             text_for_date_range);
+        nautilus_tagged_entry_add_tag (NAUTILUS_TAGGED_ENTRY (editor->entry),
+                                       editor->date_range_tag);
     }
 
     nautilus_query_set_date_range (editor->query, date_range);
@@ -488,8 +489,8 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
         create_query (editor);
     }
 
-    gd_tagged_entry_remove_tag (GD_TAGGED_ENTRY (editor->entry),
-                                editor->mime_types_tag);
+    nautilus_tagged_entry_remove_tag (NAUTILUS_TAGGED_ENTRY (editor->entry),
+                                      editor->mime_types_tag);
     /* group 0 is anything */
     if (mimetype_group == 0)
     {
@@ -497,11 +498,14 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
     }
     else if (mimetype_group > 0)
     {
+        const gchar *label;
+
+        label = nautilus_mime_types_group_get_name (mimetype_group);
+
         mimetypes = nautilus_mime_types_group_get_mimetypes (mimetype_group);
-        gd_tagged_entry_tag_set_label (editor->mime_types_tag,
-                                       nautilus_mime_types_group_get_name (mimetype_group));
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
-                                 GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
+        nautilus_tagged_entry_tag_set_label (editor->mime_types_tag, label);
+        nautilus_tagged_entry_add_tag (NAUTILUS_TAGGED_ENTRY (editor->entry),
+                                       editor->mime_types_tag);
     }
     else
     {
@@ -509,9 +513,9 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
 
         mimetypes = g_list_append (NULL, (gpointer) mimetype);
         display_name = g_content_type_get_description (mimetype);
-        gd_tagged_entry_tag_set_label (editor->mime_types_tag, display_name);
-        gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
-                                 GD_TAGGED_ENTRY_TAG (editor->mime_types_tag));
+        nautilus_tagged_entry_tag_set_label (editor->mime_types_tag, display_name);
+        nautilus_tagged_entry_add_tag (NAUTILUS_TAGGED_ENTRY (editor->entry),
+                                       editor->mime_types_tag);
     }
     nautilus_query_set_mime_types (editor->query, mimetypes);
 
@@ -558,8 +562,14 @@ search_popover_fts_changed_cb (GObject    *popover,
 }
 
 static void
-entry_tag_clicked (NautilusQueryEditor *editor)
+entry_tag_clicked (NautilusTaggedEntry    *entry,
+                   NautilusTaggedEntryTag *tag,
+                   gpointer                user_data)
 {
+    NautilusQueryEditor *editor;
+
+    editor = user_data;
+
     gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->dropdown_button),
                                   TRUE);
 }
@@ -575,9 +585,14 @@ nautilus_query_editor_show_popover (NautilusQueryEditor *editor)
 }
 
 static void
-entry_tag_close_button_clicked (NautilusQueryEditor *editor,
-                                GdTaggedEntryTag    *tag)
+entry_tag_close_button_clicked (NautilusTaggedEntry    *entry,
+                                NautilusTaggedEntryTag *tag,
+                                gpointer                user_data)
 {
+    NautilusQueryEditor *editor;
+
+    editor = user_data;
+
     if (tag == editor->mime_types_tag)
     {
         nautilus_search_popover_reset_mime_types (NAUTILUS_SEARCH_POPOVER (editor->popover));
@@ -604,22 +619,22 @@ setup_widgets (NautilusQueryEditor *editor)
     gtk_container_add (GTK_CONTAINER (vbox), hbox);
 
     /* create the search entry */
-    editor->entry = GTK_WIDGET (gd_tagged_entry_new ());
+    editor->entry = nautilus_tagged_entry_new ();
     gtk_widget_set_hexpand (editor->entry, TRUE);
 
     gtk_container_add (GTK_CONTAINER (hbox), editor->entry);
 
-    editor->mime_types_tag = gd_tagged_entry_tag_new (NULL);
-    editor->date_range_tag = gd_tagged_entry_tag_new (NULL);
+    editor->mime_types_tag = NAUTILUS_TAGGED_ENTRY_TAG (nautilus_tagged_entry_tag_new (NULL));
+    editor->date_range_tag = NAUTILUS_TAGGED_ENTRY_TAG (nautilus_tagged_entry_tag_new (NULL));
 
-    g_signal_connect_swapped (editor->entry,
-                              "tag-clicked",
-                              G_CALLBACK (entry_tag_clicked),
-                              editor);
-    g_signal_connect_swapped (editor->entry,
-                              "tag-button-clicked",
-                              G_CALLBACK (entry_tag_close_button_clicked),
-                              editor);
+    g_signal_connect (editor->entry,
+                      "tag-clicked",
+                      G_CALLBACK (entry_tag_clicked),
+                      editor);
+    g_signal_connect (editor->entry,
+                      "tag-button-clicked",
+                      G_CALLBACK (entry_tag_close_button_clicked),
+                      editor);
 
     /* additional information label */
     editor->label = gtk_label_new (NULL);
