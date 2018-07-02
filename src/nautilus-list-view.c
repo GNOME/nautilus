@@ -3528,7 +3528,6 @@ nautilus_list_view_is_zoom_level_default (NautilusFilesView *view)
 static void
 nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
 {
-    GdkWindow *win;
     GdkDisplay *display;
     NautilusListView *view;
     GtkTreeIter iter;
