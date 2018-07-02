@@ -28,12 +28,12 @@ struct _GdStyledTextRendererPrivate {
 };
 
 static void
-gd_styled_text_renderer_render (GtkCellRenderer      *cell,
-                                cairo_t              *cr,
-                                GtkWidget            *widget,
-                                const GdkRectangle   *background_area,
-                                const GdkRectangle   *cell_area,
-                                GtkCellRendererState  flags)
+gd_styled_text_renderer_snapshot (GtkCellRenderer      *cell,
+                                  GtkSnapshot          *snapshot,
+                                  GtkWidget            *widget,
+                                  const GdkRectangle   *background_area,
+                                  const GdkRectangle   *cell_area,
+                                  GtkCellRendererState  flags)
 {
   GdStyledTextRenderer *self = GD_STYLED_TEXT_RENDERER (cell);
   GtkStyleContext *context;
@@ -49,8 +49,8 @@ gd_styled_text_renderer_render (GtkCellRenderer      *cell,
       gtk_style_context_add_class (context, style_class);
     }
 
-  GTK_CELL_RENDERER_CLASS (gd_styled_text_renderer_parent_class)->render 
-    (cell, cr, widget,
+  GTK_CELL_RENDERER_CLASS (gd_styled_text_renderer_parent_class)->snapshot
+    (cell, snapshot, widget,
      background_area, cell_area, flags);
 
   gtk_style_context_restore (context);
@@ -77,7 +77,7 @@ gd_styled_text_renderer_class_init (GdStyledTextRendererClass *klass)
   GObjectClass *oclass = G_OBJECT_CLASS (klass);
 
   oclass->finalize = gd_styled_text_renderer_finalize;
-  crclass->render = gd_styled_text_renderer_render;
+  crclass->snapshot = gd_styled_text_renderer_snapshot;
 
   g_type_class_add_private (klass, sizeof (GdStyledTextRendererPrivate));
 }
