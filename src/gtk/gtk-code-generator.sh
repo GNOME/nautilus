@@ -5,9 +5,9 @@
 # action.
 # Also remove/add the neccesary bits to make it work inside nautilus
 
-URL=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-22/gtk/
-URLUI=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-22/gtk/ui/
-SUFIX=?h=gtk-3-22
+URL=https://gitlab.gnome.org/GNOME/gtk/raw/master/gtk/
+URLUI=https://gitlab.gnome.org/GNOME/gtk/raw/master/gtk/ui/
+SUFFIX=
 
 # Since comments are not allowed inside the sed line, this is what it will do
 # by order:
@@ -44,12 +44,15 @@ update_file () {
         -e '/gtkbox.h/d' \
         -e '/#error/d' \
         -e 's/gtk\/libgtk/gnome\/nautilus\/gtk/g' \
+        -e '/^#include "gtk.*\.h"/d' \
+        -e 's/<gtk\/gtkplacessidebarprivate.h>/"nautilusgtkplacessidebarprivate.h"/' \
+        -e 's/GTK_PARAM/G_PARAM/g' \
         > "${_dest}"
 }
 
-update_file "${URL}/gtkplacesview.c${SUFIX}" "nautilusgtkplacesview.c"
-update_file "${URL}/gtkplacesviewprivate.h${SUFIX}" "nautilusgtkplacesviewprivate.h"
-update_file "${URLUI}/gtkplacesview.ui${SUFIX}" "nautilusgtkplacesview.ui"
+update_file "${URL}/gtkplacesview.c${SUFFIX}" "nautilusgtkplacesview.c"
+update_file "${URL}/gtkplacesviewprivate.h${SUFFIX}" "nautilusgtkplacesviewprivate.h"
+update_file "${URLUI}/gtkplacesview.ui${SUFFIX}" "nautilusgtkplacesview.ui"
 
 # Since comments are not allowed inside the sed line, this is what it will do
 # by order:
@@ -86,6 +89,14 @@ update_file () {
  > "${_dest}"
 }
 
-update_file "${URL}/gtkplacesviewrow.c${SUFIX}" "nautilusgtkplacesviewrow.c"
-update_file "${URL}/gtkplacesviewrowprivate.h${SUFIX}" "nautilusgtkplacesviewrowprivate.h"
-update_file "${URLUI}/gtkplacesviewrow.ui${SUFIX}" "nautilusgtkplacesviewrow.ui"
+update_file "${URL}/gtkplacesviewrow.c${SUFFIX}" "nautilusgtkplacesviewrow.c"
+update_file "${URL}/gtkplacesviewrowprivate.h${SUFFIX}" "nautilusgtkplacesviewrowprivate.h"
+update_file "${URLUI}/gtkplacesviewrow.ui${SUFFIX}" "nautilusgtkplacesviewrow.ui"
+
+update_file () {
+    _source="$1"
+    _dest="$2"
+
+    curl "${_source}" > "${_dest}"
+}
+update_file "${URL}/gtkplacessidebarprivate.h${SUFFIX}" "nautilusgtkplacessidebarprivate.h"
