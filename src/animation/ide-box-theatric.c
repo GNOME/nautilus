@@ -167,7 +167,7 @@ ide_box_theatric_notify (GObject    *object,
 
   if (self->target && self->toplevel)
     {
-      GdkWindow *window;
+      GdkSurface *surface;
       GdkRectangle area;
 
       get_toplevel_rect (IDE_BOX_THEATRIC (object), &area);
@@ -177,12 +177,12 @@ ide_box_theatric_notify (GObject    *object,
                area.x, area.y, area.width, area.height);
 #endif
 
-      window = gtk_widget_get_window (self->toplevel);
+      surface = gtk_widget_get_surface (self->toplevel);
 
-      if (window != NULL)
+      if (surface != NULL)
         {
-          gdk_window_invalidate_rect (window, &self->last_area, TRUE);
-          gdk_window_invalidate_rect (window, &area, TRUE);
+          gdk_surface_invalidate_rect (surface, &self->last_area);
+          gdk_surface_invalidate_rect (surface, &area);
         }
     }
 }
