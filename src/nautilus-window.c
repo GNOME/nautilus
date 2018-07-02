@@ -2764,11 +2764,11 @@ nautilus_window_class_init (NautilusWindowClass *class)
 }
 
 NautilusWindow *
-nautilus_window_new (GdkScreen *screen)
+nautilus_window_new (GdkDisplay *display)
 {
     return g_object_new (NAUTILUS_TYPE_WINDOW,
                          "icon-name", APPLICATION_ID,
-                         "screen", screen,
+                         "display", display,
                          NULL);
 }
 
