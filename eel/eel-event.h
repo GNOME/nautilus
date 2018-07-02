@@ -30,9 +30,9 @@ GdkEventType     eel_event_get_event_type     (EelEvent        *event);
 void             eel_event_set_event_type     (EelEvent        *event,
                                                GdkEventType     type);
 
-GdkWindow       *eel_event_get_window         (EelEvent        *event);
-void             eel_event_set_window         (EelEvent        *event,
-                                               GdkWindow       *window);
+GdkSurface      *eel_event_get_surface        (EelEvent        *event);
+void             eel_event_set_surface        (EelEvent        *event,
+                                               GdkSurface      *surface);
 
 void             eel_event_get_coords         (EelEvent        *event,
                                                gdouble         *x,
