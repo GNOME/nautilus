@@ -80,10 +80,10 @@ if get_option('introspection')
       '-DNAUTILUS_COMPILATION'
     ],
     sources: libnautilus_extension_sources,
-    nsversion: '3.0',
+    nsversion: '4.0',
     namespace: 'Nautilus',
     includes: [
-      'Gtk-3.0',
+      'Gtk-4.0',
       'Gio-2.0',
       'GLib-2.0'
     ],
@@ -112,7 +112,7 @@ pkgconfig.generate(
   requires: [
     'gio-2.0',
     'glib-2.0',
-    'gtk+-3.0'
+    'gtk+-4.0'
   ],
   variables: [
     'exec_prefix=${prefix}',
