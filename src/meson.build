@@ -8,6 +8,38 @@ resources = gnome.compile_resources(
   extra_args: '--manual-register'
 )
 
+gtk_sources = [
+  'gtk/nautilusgtkbookmarksmanager.c',
+  'gtk/nautilusgtkbookmarksmanager.h',
+  'gtk/nautilusgtkfilesystem.c',
+  'gtk/nautilusgtkfilesystem.h',
+  'gtk/nautilusgtkplacessidebar.c',
+  'gtk/nautilusgtkplacessidebarprivate.h',
+  'gtk/nautilusgtkplacesview.c',
+  'gtk/nautilusgtkplacesviewprivate.h',
+  'gtk/nautilusgtkplacesviewrow.c',
+  'gtk/nautilusgtkplacesviewrowprivate.h',
+  'gtk/nautilusgtksidebarrow.c',
+  'gtk/nautilusgtksidebarrowprivate.h',
+  'gtk/nautilusgtktrashmonitor.c',
+  'gtk/nautilusgtktrashmonitor.h',
+]
+
+libnautilusgtk = static_library(
+  'nautilusgtk',
+  gtk_sources,
+  c_args: [
+    '-Wno-format-nonliteral',
+  ],
+  dependencies: [
+    config_h,
+    gtk
+  ],
+  include_directories: [
+    nautilus_include_dirs,
+  ],
+)
+
 libnautilus_sources = [
   gnome.mkenums(
     'nautilus-enum-types',
@@ -58,10 +90,6 @@ libnautilus_sources = [
   'gnome-desktop/gnome-desktop-thumbnail.h',
   'gnome-desktop/gnome-desktop-thumbnail-script.c',
   'gnome-desktop/gnome-desktop-thumbnail-script.h',
-  'gtk/nautilusgtkplacesview.c',
-  'gtk/nautilusgtkplacesviewprivate.h',
-  'gtk/nautilusgtkplacesviewrow.c',
-  'gtk/nautilusgtkplacesviewrowprivate.h',
   'libgd/gd-styled-text-renderer.c',
   'libgd/gd-styled-text-renderer.h',
   'nautilus-application.c',
@@ -299,13 +327,14 @@ libnautilus = static_library(
   include_directories: nautilus_include_dirs
 )
 
-libnautilus_include_dirs = include_directories('.')
-
 libnautilus_dep = declare_dependency(
-  link_with: libnautilus,
+  link_with: [
+    libnautilus,
+    libnautilusgtk,
+  ],
   include_directories: [
     nautilus_include_dirs,
-    libnautilus_include_dirs
+    include_directories('.'),
   ],
   dependencies: nautilus_deps,
   # nautilus-main.c, which is part of the main Nautilus executable, uses
