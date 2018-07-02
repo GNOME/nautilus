@@ -1253,17 +1253,20 @@ nautilus_files_view_preview_files (NautilusFilesView *view,
 {
     gchar *uri;
     guint xid = 0;
-    GtkWidget *toplevel;
-    GdkWindow *window;
 
     uri = nautilus_file_get_uri (files->data);
-    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
 
 #ifdef GDK_WINDOWING_X11
-    window = gtk_widget_get_window (toplevel);
-    if (GDK_IS_X11_WINDOW (window))
     {
-        xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
+        GtkWidget *toplevel;
+        GdkSurface *surface;
+
+        toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
+        surface = gtk_widget_get_surface (toplevel);
+        if (GDK_IS_X11_SURFACE (surface))
+        {
+            xid = gdk_x11_surface_get_xid (surface);
+        }
     }
 #endif
 
@@ -8148,7 +8151,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
         g_return_if_fail (rectangle != NULL);
 
         gtk_menu_popup_at_rect (GTK_MENU (gtk_menu),
-                                gtk_widget_get_window (GTK_WIDGET (view)),
+                                gtk_widget_get_surface (GTK_WIDGET (view)),
                                 rectangle,
                                 GDK_GRAVITY_SOUTH_WEST,
                                 GDK_GRAVITY_NORTH_WEST,
