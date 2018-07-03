@@ -1012,7 +1012,7 @@ build_selection_list_from_gfile_list (GList *gfile_list)
 
 void
 nautilus_window_start_dnd (NautilusWindow *window,
-                           GdkDragContext *context)
+                           GdkDrag        *drag)
 {
     NautilusGtkPlacesSidebar *sidebar;
 
@@ -1020,12 +1020,12 @@ nautilus_window_start_dnd (NautilusWindow *window,
 
     sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
 
-    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, TRUE, context);
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, TRUE, drag);
 }
 
 void
 nautilus_window_end_dnd (NautilusWindow *window,
-                         GdkDragContext *context)
+                         GdkDrag        *drag)
 {
     NautilusGtkPlacesSidebar *sidebar;
 
@@ -1033,33 +1033,31 @@ nautilus_window_end_dnd (NautilusWindow *window,
 
     sidebar = NAUTILUS_GTK_PLACES_SIDEBAR (window->places_sidebar);
 
-    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, FALSE, context);
+    nautilus_gtk_places_sidebar_set_drop_targets_visible (sidebar, FALSE, drag);
 }
 
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
-                                         GdkDragContext           *context,
+                                         GdkDrag                  *drag,
                                          GFile                    *dest_file,
                                          GList                    *source_file_list,
                                          gpointer                  user_data)
 {
-    GList *items;
-    char *uri;
-    int action = 0;
+    GdkDragAction actions;
     NautilusDragInfo *info;
-    guint32 source_actions;
+    GList *items;
+    g_autofree char *uri = NULL;
 
-    info = nautilus_drag_get_source_data (context);
+    actions = 0;
+    info = nautilus_drag_get_source_data (drag);
     if (info != NULL)
     {
         items = info->selection_cache;
-        source_actions = info->source_actions;
     }
     else
     {
         items = build_selection_list_from_gfile_list (source_file_list);
-        source_actions = 0;
     }
     uri = g_file_get_uri (dest_file);
 
@@ -1068,7 +1066,7 @@ places_sidebar_drag_action_requested_cb (NautilusGtkPlacesSidebar *sidebar,
         goto out;
     }
 
-    nautilus_drag_default_drop_action_for_icons (context, uri, items, source_actions, &action);
+    actions = nautilus_get_drop_actions_for_icons (uri, items);
 
 out:
     if (info == NULL)
@@ -1076,9 +1074,7 @@ out:
         nautilus_drag_destroy_selection_list (items);
     }
 
-    g_free (uri);
-
-    return action;
+    return actions;
 }
 
 /* Callback used when the places sidebar needs us to pop up a menu with possible drag actions */
