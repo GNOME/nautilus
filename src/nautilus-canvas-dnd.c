@@ -325,10 +325,8 @@ each_icon_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
 /* Called when the data for drag&drop is needed */
 static void
 drag_data_get_callback (GtkWidget        *widget,
-                        GdkDragContext   *context,
+                        GdkDrag          *context,
                         GtkSelectionData *selection_data,
-                        guint             info,
-                        guint32           time,
                         gpointer          data)
 {
     NautilusDragInfo *drag_info;
@@ -579,9 +577,9 @@ nautilus_canvas_container_ensure_drag_data (NautilusCanvasContainer *container,
 }
 
 static void
-drag_end_callback (GtkWidget      *widget,
-                   GdkDragContext *context,
-                   gpointer        data)
+drag_end_callback (GtkWidget *widget,
+                   GdkDrag   *context,
+                   gpointer   data)
 {
     NautilusCanvasContainer *container;
     NautilusCanvasDndInfo *dnd_info;
@@ -1278,9 +1276,9 @@ drag_leave_callback (GtkWidget      *widget,
 }
 
 static void
-drag_begin_callback (GtkWidget      *widget,
-                     GdkDragContext *context,
-                     gpointer        data)
+drag_begin_callback (GtkWidget *widget,
+                     GdkDrag   *context,
+                     gpointer   data)
 {
     NautilusCanvasContainer *container;
     NautilusDragInfo *drag_info;

@@ -1021,7 +1021,7 @@ build_selection_list_from_gfile_list (GList *gfile_list)
 
 void
 nautilus_window_start_dnd (NautilusWindow *window,
-                           GdkDragContext *context)
+                           GdkDrag        *context)
 {
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1032,7 +1032,7 @@ nautilus_window_start_dnd (NautilusWindow *window,
 
 void
 nautilus_window_end_dnd (NautilusWindow *window,
-                         GdkDragContext *context)
+                         GdkDrag        *context)
 {
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 

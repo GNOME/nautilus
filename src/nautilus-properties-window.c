@@ -158,10 +158,10 @@ enum
     TARGET_GNOME_URI_LIST,
 };
 
-static const GtkTargetEntry target_table[] =
+static const char *mime_types[] =
 {
-    { "text/uri-list", 0, TARGET_URI_LIST },
-    { "x-special/gnome-icon-list", 0, TARGET_GNOME_URI_LIST },
+    "text/uri-list",
+    "x-special/gnome-icon-list"
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL      200 /* milliseconds */
@@ -534,13 +534,17 @@ create_image_widget (NautilusPropertiesWindow *window,
     button = NULL;
     if (is_customizable)
     {
+        g_autoptr (GdkContentFormats) targets = NULL;
+
+        targets = gdk_content_formats_new (mime_types, G_N_ELEMENTS (mime_types));
+
         button = gtk_button_new ();
         gtk_container_add (GTK_CONTAINER (button), image);
 
         /* prepare the image to receive dropped objects to assign custom images */
         gtk_drag_dest_set (GTK_WIDGET (image),
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
-                           target_table, G_N_ELEMENTS (target_table),
+                           targets,
                            GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
         g_signal_connect (image, "drag-data-received",
