@@ -31,4 +31,4 @@ void nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                         const GdkEvent   *event);
 NautilusDragInfo *
 nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
-                                             GdkDragContext   *context);
+                                             GdkDrag          *context);
