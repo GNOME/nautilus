@@ -53,18 +53,6 @@ enum
     NAUTILUS_DND_NTARGETS
 };
 
-static const GtkTargetEntry drag_types [] =
-{
-    { NAUTILUS_DND_URI_LIST_TYPE, 0, NAUTILUS_DND_URI_LIST },
-    { NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
-};
-
-static const GtkTargetEntry drop_types [] =
-{
-    { NAUTILUS_DND_URI_LIST_TYPE, 0, NAUTILUS_DND_URI_LIST },
-    { NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
-};
-
 typedef struct _NautilusLocationEntryPrivate
 {
     char *current_directory;
@@ -225,12 +213,8 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
 
 static void
 drag_data_received_callback (GtkWidget        *widget,
-                             GdkDragContext   *context,
-                             int               x,
-                             int               y,
+                             GdkDrop          *drop,
                              GtkSelectionData *data,
-                             guint             info,
-                             guint32           time,
                              gpointer          callback_data)
 {
     char **names;
@@ -250,7 +234,7 @@ drag_data_received_callback (GtkWidget        *widget,
     if (names == NULL || *names == NULL)
     {
         g_warning ("No D&D URI's");
-        gtk_drag_finish (context, FALSE, FALSE, time);
+        gdk_drop_finish (drop, 0);
         return;
     }
 
@@ -286,7 +270,7 @@ drag_data_received_callback (GtkWidget        *widget,
 
         if (!new_windows_for_extras)
         {
-            gtk_drag_finish (context, FALSE, FALSE, time);
+            gdk_drop_finish (drop, 0);
             return;
         }
     }
@@ -311,20 +295,18 @@ drag_data_received_callback (GtkWidget        *widget,
 
     g_strfreev (names);
 
-    gtk_drag_finish (context, TRUE, FALSE, time);
+    gdk_drop_finish (drop, gdk_drop_get_actions (drop));
 }
 
 static void
 drag_data_get_callback (GtkWidget        *widget,
-                        GdkDragContext   *context,
+                        GdkDrag          *context,
                         GtkSelectionData *selection_data,
-                        guint             info,
-                        guint32           time,
                         gpointer          callback_data)
 {
     NautilusLocationEntry *self;
-    GFile *location;
-    gchar *uri;
+    g_autoptr (GFile) location = NULL;
+    g_autofree char *uri = NULL;
 
     g_assert (selection_data != NULL);
     self = callback_data;
@@ -332,23 +314,16 @@ drag_data_get_callback (GtkWidget        *widget,
     location = nautilus_location_entry_get_location (self);
     uri = g_file_get_uri (location);
 
-    switch (info)
+    if (!gtk_selection_data_targets_include_text (selection_data) &&
+        !gtk_selection_data_targets_include_uri (selection_data))
     {
-        case NAUTILUS_DND_URI_LIST:
-        case NAUTILUS_DND_TEXT_PLAIN:
-        {
-            gtk_selection_data_set (selection_data,
-                                    gtk_selection_data_get_target (selection_data),
-                                    8, (guchar *) uri,
-                                    strlen (uri));
-        }
-        break;
-
-        default:
-            g_assert_not_reached ();
+        return;
     }
-    g_free (uri);
-    g_object_unref (location);
+
+    gtk_selection_data_set (selection_data,
+                            gtk_selection_data_get_target (selection_data),
+                            8, (guchar *) uri,
+                            strlen (uri));
 }
 
 /* routine that performs the tab expansion.  Extract the directory name and
@@ -850,7 +825,7 @@ static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
     NautilusLocationEntryPrivate *priv;
-    GtkTargetList *targetlist;
+    g_autoptr (GdkContentFormats) targets = NULL;
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
@@ -859,9 +834,10 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 
     gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, "folder-symbolic");
     gtk_entry_set_icon_activatable (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, FALSE);
-    targetlist = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
-    gtk_entry_set_icon_drag_source (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, targetlist, GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
-    gtk_target_list_unref (targetlist);
+    targets = gdk_content_formats_new (NULL, 0);
+    targets = gtk_content_formats_add_text_targets (targets);
+    targets = gtk_content_formats_add_uri_targets (targets);
+    gtk_entry_set_icon_drag_source (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, targets, GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
 
     nautilus_location_entry_set_secondary_action (entry,
                                                   NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
@@ -885,7 +861,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
     /* Drag dest. */
     gtk_drag_dest_set (GTK_WIDGET (entry),
                        GTK_DEST_DEFAULT_ALL,
-                       drop_types, G_N_ELEMENTS (drop_types),
+                       targets,
                        GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
     g_signal_connect (entry, "drag-data-received",
                       G_CALLBACK (drag_data_received_callback), NULL);
