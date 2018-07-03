@@ -21,17 +21,15 @@
 #include "nautilus-list-view-dnd.h"
 #include "nautilus-list-view-private.h"
 
-static GtkTargetList *source_target_list = NULL;
+static GdkContentFormats *source_targets;
 
 static void
 drag_info_data_free (NautilusListView *list_view);
 
 static void
 drag_data_get_callback (GtkWidget        *widget,
-                        GdkDragContext   *context,
+                        GdkDrag          *context,
                         GtkSelectionData *selection_data,
-                        guint             info,
-                        guint             time,
                         gpointer          user_data)
 {
     GtkTreeView *tree_view;
@@ -55,16 +53,16 @@ drag_data_get_callback (GtkWidget        *widget,
     }
 
     nautilus_drag_drag_data_get_from_cache (list_view->details->drag_source_info->selection_cache,
-                                            context, selection_data, info, time);
+                                            selection_data);
 }
 
-static cairo_surface_t *
-get_drag_surface (NautilusListView *view)
+static GdkTexture *
+get_drag_texture (NautilusListView *view)
 {
     GtkTreeModel *model;
     GtkTreePath *path;
     GtkTreeIter iter;
-    cairo_surface_t *ret;
+    GdkTexture *ret;
     GdkRectangle cell_area;
 
     ret = NULL;
@@ -164,19 +162,18 @@ each_item_get_data_binder (NautilusDragEachSelectedItemDataGet iteratee,
 
 static void
 drag_begin_callback (GtkWidget        *widget,
-                     GdkDragContext   *context,
+                     GdkDrag          *context,
                      NautilusListView *view)
 {
-    cairo_surface_t *surface;
+    g_autoptr (GdkTexture) texture = NULL;
     NautilusWindow *window;
     GList *dragged_files;
 
     window = nautilus_files_view_get_window (NAUTILUS_FILES_VIEW (view));
-    surface = get_drag_surface (view);
-    if (surface)
+    texture = get_drag_texture (view);
+    if (texture != NULL)
     {
-        gtk_drag_set_icon_surface (context, surface);
-        cairo_surface_destroy (surface);
+        gtk_drag_set_icon_paintable (context, GDK_PAINTABLE (texture), 0, 0);
     }
     else
     {
@@ -199,7 +196,7 @@ drag_begin_callback (GtkWidget        *widget,
 
 static void
 drag_end_callback (GtkWidget        *widget,
-                   GdkDragContext   *context,
+                   GdkDrag          *context,
                    NautilusListView *list_view)
 {
     NautilusWindow *window;
@@ -226,8 +223,7 @@ drag_info_data_free (NautilusListView *list_view)
 }
 
 NautilusDragInfo *
-nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
-                                             GdkDragContext   *context)
+nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view)
 {
     GtkTreeView *tree_view;
     GtkTreeModel *model;
@@ -279,9 +275,9 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
         return;
     }
 
-    if (!source_target_list)
+    if (source_targets == NULL)
     {
-        source_target_list = nautilus_list_model_get_drag_target_list ();
+        source_targets = nautilus_list_model_get_drag_targets ();
     }
 
     if (gtk_drag_check_threshold (GTK_WIDGET (list_view->details->tree_view),
@@ -290,16 +286,16 @@ nautilus_list_view_dnd_drag_begin (NautilusListView *list_view,
                                   list_view->details->drag_x + offset_x,
                                   list_view->details->drag_y + offset_y))
     {
-        guint32 actions;
+        GdkDragAction actions;
 
-        actions = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK;
+        actions = GDK_ACTION_ALL | GDK_ACTION_ASK;
+
         list_view->details->drag_source_info->source_actions = actions;
-        gtk_drag_begin_with_coordinates (GTK_WIDGET (list_view->details->tree_view),
-                                         source_target_list,
-                                         actions,
-                                         list_view->details->drag_button,
-                                         (GdkEvent *) event,
-                                         -1,
-                                         -1);
+        gtk_drag_begin (GTK_WIDGET (list_view->details->tree_view),
+                                    NULL,
+                                    source_targets,
+                                    actions,
+                                    list_view->details->drag_x,
+                                    list_view->details->drag_y);
     }
 }
