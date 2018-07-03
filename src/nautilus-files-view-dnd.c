@@ -234,53 +234,6 @@ nautilus_files_view_handle_text_drop (NautilusFilesView *view,
 }
 
 void
-nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
-                                     const char        *raw_data,
-                                     int                length,
-                                     const char        *target_uri,
-                                     const char        *direct_save_uri,
-                                     GdkDragAction      action)
-{
-    char *container_uri, *filename;
-    GFile *direct_save_full;
-
-    if (raw_data == NULL)
-    {
-        return;
-    }
-
-    g_return_if_fail (action == GDK_ACTION_COPY);
-
-    container_uri = NULL;
-    if (target_uri == NULL)
-    {
-        container_uri = nautilus_files_view_get_backing_uri (view);
-        g_assert (container_uri != NULL);
-    }
-
-    filename = NULL;
-    if (direct_save_uri != NULL)
-    {
-        direct_save_full = g_file_new_for_uri (direct_save_uri);
-        filename = g_file_get_basename (direct_save_full);
-    }
-    if (filename == NULL)
-    {
-        /* Translator: This is the filename used for when you dnd raw
-         * data to a directory, if the source didn't supply a name.
-         */
-        filename = g_strdup (_("dropped data"));
-    }
-
-    nautilus_files_view_new_file_with_initial_contents (
-        view, target_uri != NULL ? target_uri : container_uri,
-        filename, raw_data, length);
-
-    g_free (container_uri);
-    g_free (filename);
-}
-
-void
 nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                               const GList       *source_uri_list,
                                               const char        *target_uri,
