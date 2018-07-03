@@ -170,12 +170,11 @@ slider_timeout (gpointer user_data)
 }
 
 static void
-nautilus_path_bar_slider_drag_motion (GtkWidget      *widget,
-                                      GdkDragContext *context,
-                                      int             x,
-                                      int             y,
-                                      unsigned int    time,
-                                      gpointer        user_data)
+nautilus_path_bar_slider_drag_motion (GtkWidget *widget,
+                                      GdkDrop   *drop,
+                                      int        x,
+                                      int        y,
+                                      gpointer   user_data)
 {
     NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
@@ -201,10 +200,9 @@ nautilus_path_bar_slider_drag_motion (GtkWidget      *widget,
 }
 
 static void
-nautilus_path_bar_slider_drag_leave (GtkWidget      *widget,
-                                     GdkDragContext *context,
-                                     unsigned int    time,
-                                     gpointer        user_data)
+nautilus_path_bar_slider_drag_leave (GtkWidget *widget,
+                                     GdkDrop   *drop,
+                                     gpointer   user_data)
 {
     NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
@@ -265,7 +263,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
                       G_CALLBACK (on_long_press_gesture_cancelled), self);
 
     gtk_drag_dest_set (GTK_WIDGET (priv->up_slider_button),
-                       0, NULL, 0, 0);
+                       0, NULL, 0);
     gtk_drag_dest_set_track_motion (GTK_WIDGET (priv->up_slider_button), TRUE);
     g_signal_connect (priv->up_slider_button,
                       "drag-motion",
@@ -277,7 +275,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
                       self);
 
     gtk_drag_dest_set (GTK_WIDGET (priv->down_slider_button),
-                       0, NULL, 0, 0);
+                       0, NULL, 0);
     gtk_drag_dest_set_track_motion (GTK_WIDGET (priv->down_slider_button), TRUE);
     g_signal_connect (priv->down_slider_button,
                       "drag-motion",

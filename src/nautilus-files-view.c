@@ -2589,7 +2589,7 @@ handle_clipboard_data (NautilusFilesView *view,
 
         uri = nautilus_file_get_uri (l->data);
 
-        item_uris = g_list_prepend (uri);
+        item_uris = g_list_prepend (item_uris, uri);
     }
 
     item_uris = g_list_reverse (item_uris);
@@ -2606,7 +2606,7 @@ handle_clipboard_data (NautilusFilesView *view,
 }
 
 static void
-action_paste_files (GSimpleAction *action,
+action_paste_files (GSimpleAction *simple,
                     GVariant      *state,
                     gpointer       user_data)
 {
@@ -6032,15 +6032,17 @@ action_move_to (GSimpleAction *action,
 }
 
 static void
-action_paste_files_into (GSimpleAction *action,
+action_paste_files_into (GSimpleAction *simple,
                          GVariant      *state,
                          gpointer       user_data)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
+    gboolean cut;
     GList *files;
     g_autolist (NautilusFile) selection = NULL;
     g_autofree char *uri = NULL;
+    GdkDragAction action;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
@@ -6050,7 +6052,7 @@ action_paste_files_into (GSimpleAction *action,
     {
         return;
     }
-    files = nautilus_clipboard_get_files (GTK_WIDGET (view), NULL);
+    files = nautilus_clipboard_get_files (GTK_WIDGET (view), &cut);
     if (files == NULL)
     {
         return;
@@ -6060,9 +6062,10 @@ action_paste_files_into (GSimpleAction *action,
     {
         return;
     }
-    uri = nautilus_files_view_get_activation_uri (selection->data);
+    uri = nautilus_file_get_activation_uri (selection->data);
+    action = cut? GDK_ACTION_MOVE : GDK_ACTION_COPY;
 
-    paste_clipboard_data (view, files, uri);
+    handle_clipboard_data (view, files, uri, action);
 }
 
 static void
@@ -7117,8 +7120,7 @@ static void
 update_actions_state_from_clipboard (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    NautilusFilesView *view;
-    GFiles *files;
+    GList *files;
     gboolean cut;
     gboolean can_link_from_copied_files;
     gboolean settings_show_create_link;
@@ -7127,7 +7129,6 @@ update_actions_state_from_clipboard (NautilusFilesView *view)
     gboolean selection_contains_starred;
     GAction *action;
 
-    view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
     if (priv->slot == NULL || !priv->active)
     {
@@ -7210,7 +7211,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
-    GdkContentFormats *formats;
 
     priv = nautilus_files_view_get_instance_private (view);
 
