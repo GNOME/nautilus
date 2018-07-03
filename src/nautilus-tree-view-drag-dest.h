@@ -60,12 +60,6 @@ struct _NautilusTreeViewDragDestClass {
 				 GdkDragAction action,
 				 int x,
 				 int y);
-	void (* handle_netscape_url) (NautilusTreeViewDragDest *dest,
-				 const char *url,
-				 const char *target_uri,
-				 GdkDragAction action,
-				 int x,
-				 int y);
 	void (* handle_uri_list) (NautilusTreeViewDragDest *dest,
 				  const char *uri_list,
 				  const char *target_uri,
@@ -75,14 +69,6 @@ struct _NautilusTreeViewDragDestClass {
 	void (* handle_text)    (NautilusTreeViewDragDest *dest,
 				  const char *text,
 				  const char *target_uri,
-				  GdkDragAction action,
-				  int x,
-				  int y);
-	void (* handle_raw)    (NautilusTreeViewDragDest *dest,
-				  char *raw_data,
-				  int length,
-				  const char *target_uri,
-				  const char *direct_save_uri,
 				  GdkDragAction action,
 				  int x,
 				  int y);
