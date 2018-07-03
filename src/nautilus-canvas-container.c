@@ -204,10 +204,8 @@ enum
     ICON_STRETCH_STARTED,
     ICON_STRETCH_ENDED,
     MOVE_COPY_ITEMS,
-    HANDLE_NETSCAPE_URL,
     HANDLE_URI_LIST,
     HANDLE_TEXT,
-    HANDLE_RAW,
     HANDLE_HOVER,
     SELECTION_CHANGED,
     ICON_ADDED,
@@ -3443,7 +3441,6 @@ static void
 clear_drag_state (NautilusCanvasContainer *container)
 {
     container->details->drag_icon = NULL;
-    container->details->drag_state = DRAG_STATE_INITIAL;
 }
 
 static void
@@ -3479,17 +3476,14 @@ on_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     {
         details->drag_button = 0;
 
-        if (details->drag_state == DRAG_STATE_MOVE_OR_COPY)
+        if (!details->drag_started)
         {
-            if (!details->drag_started)
-            {
-                nautilus_canvas_container_did_not_drag (container, event);
-            }
-            else
-            {
-                nautilus_canvas_dnd_end_drag (container);
-                DEBUG ("Ending drag from canvas container");
-            }
+            nautilus_canvas_container_did_not_drag (container, event);
+        }
+        else
+        {
+            nautilus_canvas_dnd_end_drag (container);
+            DEBUG ("Ending drag from canvas container");
         }
 
         clear_drag_state (container);
@@ -3507,18 +3501,12 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     GtkWidget *widget;
     NautilusCanvasContainer *container;
     NautilusCanvasContainerDetails *details;
-    GdkDragAction actions;
 
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     details = container->details;
 
     if (details->drag_button == 0)
-    {
-        return;
-    }
-
-    if (details->drag_state != DRAG_STATE_MOVE_OR_COPY)
     {
         return;
     }
@@ -3536,11 +3524,9 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
     }
 
     details->drag_started = TRUE;
-    details->drag_state = DRAG_STATE_MOVE_OR_COPY;
 
-    actions = GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK;
-
-    nautilus_canvas_dnd_begin_drag (container, actions, details->drag_x, details->drag_y);
+    nautilus_canvas_dnd_begin_drag (container, GDK_ACTION_ALL | GDK_ACTION_ASK,
+                                    details->drag_x, details->drag_y);
 
     DEBUG ("Beginning drag from canvas container");
 }
@@ -3870,18 +3856,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         G_TYPE_POINTER,
                         G_TYPE_POINTER,
                         GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_NETSCAPE_URL]
-        = g_signal_new ("handle-netscape-url",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         handle_netscape_url),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_NONE, 3,
-                        G_TYPE_STRING,
-                        G_TYPE_STRING,
-                        GDK_TYPE_DRAG_ACTION);
     signals[HANDLE_URI_LIST]
         = g_signal_new ("handle-uri-list",
                         G_TYPE_FROM_CLASS (class),
@@ -3903,20 +3877,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         NULL, NULL,
                         g_cclosure_marshal_generic,
                         G_TYPE_NONE, 3,
-                        G_TYPE_STRING,
-                        G_TYPE_STRING,
-                        GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_RAW]
-        = g_signal_new ("handle-raw",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         handle_raw),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_NONE, 5,
-                        G_TYPE_POINTER,
-                        G_TYPE_INT,
                         G_TYPE_STRING,
                         G_TYPE_STRING,
                         GDK_TYPE_DRAG_ACTION);
@@ -4285,7 +4245,6 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 
         eel_event_get_coords (event, &details->drag_x, &details->drag_y);
 
-        details->drag_state = DRAG_STATE_MOVE_OR_COPY;
         details->drag_started = FALSE;
     }
 
