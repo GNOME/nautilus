@@ -1406,19 +1406,6 @@ canvas_view_handle_text (NautilusCanvasContainer *container,
 }
 
 static void
-canvas_view_handle_raw (NautilusCanvasContainer *container,
-                        const char              *raw_data,
-                        int                      length,
-                        const char              *target_uri,
-                        const char              *direct_save_uri,
-                        GdkDragAction            action,
-                        NautilusCanvasView      *view)
-{
-    nautilus_files_view_handle_raw_drop (NAUTILUS_FILES_VIEW (view),
-                                         raw_data, length, target_uri, direct_save_uri, action);
-}
-
-static void
 canvas_view_handle_hover (NautilusCanvasContainer *container,
                           const char              *target_uri,
                           NautilusCanvasView      *view)
@@ -1575,8 +1562,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
                              G_CALLBACK (canvas_view_handle_uri_list), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-text",
                              G_CALLBACK (canvas_view_handle_text), canvas_view, 0);
-    g_signal_connect_object (canvas_container, "handle-raw",
-                             G_CALLBACK (canvas_view_handle_raw), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-hover",
                              G_CALLBACK (canvas_view_handle_hover), canvas_view, 0);
 

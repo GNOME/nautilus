@@ -54,6 +54,7 @@
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-private.h"
@@ -9334,39 +9335,30 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 gboolean
-nautilus_drag_can_accept_info (NautilusFile              *drop_target_item,
-                               NautilusIconDndTargetType  drag_type,
-                               const GList               *items)
+nautilus_drag_can_accept_data (NautilusFile     *drop_target_item,
+                               GtkSelectionData *data,
+                               const GList      *items)
 {
-    switch (drag_type)
+    if (gtk_selection_data_targets_include_text (data) ||
+        gtk_selection_data_targets_include_uri (data))
     {
-        case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
+        return nautilus_drag_can_accept_files (drop_target_item);
+    }
+    else
+    {
+        GdkAtom target;
+
+        target = gtk_selection_data_get_target (data);
+
+        if (target == g_intern_static_string (NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE))
         {
             return nautilus_drag_can_accept_items (drop_target_item, items);
         }
-
-        case NAUTILUS_ICON_DND_URI_LIST:
-        case NAUTILUS_ICON_DND_NETSCAPE_URL:
-        case NAUTILUS_ICON_DND_TEXT:
-        {
-            return nautilus_drag_can_accept_files (drop_target_item);
-        }
-
-        case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-        case NAUTILUS_ICON_DND_RAW:
-        {
-            return nautilus_drag_can_accept_files (drop_target_item);             /* Check if we can accept files at this location */
-        }
-
-        case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-        {
-            return FALSE;
-        }
-
-        default:
-            g_assert_not_reached ();
-            return FALSE;
     }
+
+    g_assert_not_reached ();
+
+    return FALSE;
 }
 
 static gboolean

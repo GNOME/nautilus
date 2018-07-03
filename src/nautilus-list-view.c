@@ -1375,20 +1375,6 @@ list_view_handle_text (NautilusTreeViewDragDest *dest,
 }
 
 static void
-list_view_handle_raw (NautilusTreeViewDragDest *dest,
-                      const char               *raw_data,
-                      int                       length,
-                      const char               *target_uri,
-                      const char               *direct_save_uri,
-                      GdkDragAction             action,
-                      NautilusListView         *view)
-{
-    nautilus_files_view_handle_raw_drop (NAUTILUS_FILES_VIEW (view),
-                                         raw_data, length, target_uri, direct_save_uri,
-                                         action);
-}
-
-static void
 list_view_handle_hover (NautilusTreeViewDragDest *dest,
                         const char               *target_uri,
                         NautilusListView         *view)
@@ -2142,8 +2128,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                              G_CALLBACK (list_view_handle_uri_list), view, 0);
     g_signal_connect_object (view->details->drag_dest, "handle-text",
                              G_CALLBACK (list_view_handle_text), view, 0);
-    g_signal_connect_object (view->details->drag_dest, "handle-raw",
-                             G_CALLBACK (list_view_handle_raw), view, 0);
     g_signal_connect_object (view->details->drag_dest, "handle-hover",
                              G_CALLBACK (list_view_handle_hover), view, 0);
 
