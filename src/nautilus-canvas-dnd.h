@@ -39,6 +39,9 @@ typedef struct {
 	/* Shadow for the icons being dragged.  */
 	EelCanvasItem *shadow;
 	guint hover_id;
+
+        int drop_x;
+        int drop_y;
 } NautilusCanvasDndInfo;
 
 
@@ -46,11 +49,8 @@ void   nautilus_canvas_dnd_init                  (NautilusCanvasContainer *conta
 void   nautilus_canvas_dnd_fini                  (NautilusCanvasContainer *container);
 void   nautilus_canvas_dnd_begin_drag            (NautilusCanvasContainer *container,
 						  GdkDragAction          actions,
-						  gint                   button,
-						  GdkEventMotion        *event,
 						  int                    start_x,
 						  int                    start_y);
 void   nautilus_canvas_dnd_end_drag              (NautilusCanvasContainer *container);
 
-NautilusDragInfo* nautilus_canvas_dnd_get_drag_source_data (NautilusCanvasContainer *container,
-                                                            GdkDragContext          *context);
+NautilusDragInfo* nautilus_canvas_dnd_get_drag_source_data (NautilusCanvasContainer *container);
