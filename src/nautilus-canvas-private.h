@@ -152,7 +152,6 @@ struct NautilusCanvasContainerDetails {
 	NautilusCanvasIcon *drag_icon;
 	gdouble drag_x;
     gdouble drag_y;
-	DragState drag_state;
 	gboolean drag_started;
 
 	gboolean icon_selected_on_button_down;
