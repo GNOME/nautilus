@@ -105,10 +105,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusListModel, nautilus_list_model, G_TYPE_OBJECT,
                                                 nautilus_list_model_sortable_init)
                          G_ADD_PRIVATE (NautilusListModel));
 
-static const GtkTargetEntry drag_types [] =
+static const char *drag_types[] =
 {
-    { NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
-    { NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
+    NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE,
 };
 
 static void
@@ -341,11 +340,10 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
     FileEntry *file_entry;
     NautilusFile *file;
     char *str;
-    GdkPixbuf *icon, *rendered_icon;
+    GdkTexture *texture;
     int icon_size, icon_scale;
     NautilusListZoomLevel zoom_level;
     NautilusFileIconFlags flags;
-    cairo_surface_t *surface;
 
     model = NAUTILUS_LIST_MODEL (tree_model);
     priv = nautilus_list_model_get_instance_private (model);
@@ -379,7 +377,7 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
         case NAUTILUS_LIST_MODEL_LARGE_ICON_COLUMN:
         case NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN:
         {
-            g_value_init (value, CAIRO_GOBJECT_TYPE_SURFACE);
+            g_value_init (value, GDK_TYPE_TEXTURE);
 
             if (file != NULL)
             {
@@ -413,12 +411,15 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                     }
                 }
 
-                icon = nautilus_file_get_icon_pixbuf (file, icon_size, TRUE, icon_scale, flags);
+                texture = nautilus_file_get_icon_texture (file, icon_size, TRUE, icon_scale, flags);
 
                 if (priv->highlight_files != NULL &&
                     g_list_find_custom (priv->highlight_files,
                                         file, (GCompareFunc) nautilus_file_compare_location))
                 {
+#if 0
+                    GdkPixbuf *rendered_icon;
+
                     rendered_icon = eel_create_spotlight_pixbuf (icon);
 
                     if (rendered_icon != NULL)
@@ -426,11 +427,10 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                         g_object_unref (icon);
                         icon = rendered_icon;
                     }
+#endif
                 }
 
-                surface = gdk_cairo_surface_create_from_pixbuf (icon, icon_scale, NULL);
-                g_value_take_boxed (value, surface);
-                g_object_unref (icon);
+                g_value_take_object (value, texture);
             }
         }
         break;
@@ -1614,15 +1614,16 @@ nautilus_list_model_get_drag_view (NautilusListModel *model,
     return priv->drag_view;
 }
 
-GtkTargetList *
-nautilus_list_model_get_drag_target_list ()
+GdkContentFormats *
+nautilus_list_model_get_drag_targets (void)
 {
-    GtkTargetList *target_list;
+    GdkContentFormats *targets;
 
-    target_list = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
-    gtk_target_list_add_text_targets (target_list, NAUTILUS_ICON_DND_TEXT);
+    targets = gdk_content_formats_new (drag_types, G_N_ELEMENTS (drag_types));
+    targets = gtk_content_formats_add_text_targets (targets);
+    targets = gtk_content_formats_add_uri_targets (targets);
 
-    return target_list;
+    return targets;
 }
 
 int

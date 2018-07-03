@@ -2623,7 +2623,7 @@ handle_clipboard_data (NautilusFilesView *view,
 
         uri = g_file_get_uri (l->data);
 
-        item_uris = g_list_prepend (uri);
+        item_uris = g_list_prepend (item_uris, uri);
     }
 
     item_uris = g_list_reverse (item_uris);
@@ -6119,7 +6119,7 @@ action_move_to (GSimpleAction *action,
 }
 
 static void
-action_paste_files_into (GSimpleAction *action,
+action_paste_files_into (GSimpleAction *simple,
                          GVariant      *state,
                          gpointer       user_data)
 {
@@ -7205,7 +7205,6 @@ update_actions_state_from_clipboard (NautilusFilesView *view)
     gboolean selection_contains_starred;
     GAction *action;
 
-    view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
     if (priv->slot == NULL || !priv->active)
     {
@@ -7293,7 +7292,6 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
-    GdkContentFormats *formats;
 
     priv = nautilus_files_view_get_instance_private (view);
 

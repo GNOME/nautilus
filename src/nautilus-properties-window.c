@@ -36,6 +36,7 @@
 #define GNOME_DESKTOP_USE_UNSTABLE_API
 #include "gnome-desktop/gnome-desktop-thumbnail.h"
 
+#include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
 #include "nautilus-file-operations.h"
@@ -159,12 +160,6 @@ enum
 {
     TARGET_URI_LIST,
     TARGET_GNOME_URI_LIST,
-};
-
-static const GtkTargetEntry target_table[] =
-{
-    { "text/uri-list", 0, TARGET_URI_LIST },
-    { "x-special/gnome-icon-list", 0, TARGET_GNOME_URI_LIST },
 };
 
 #define DIRECTORY_CONTENTS_UPDATE_INTERVAL      200 /* milliseconds */
@@ -462,12 +457,9 @@ reset_icon (NautilusPropertiesWindow *properties_window)
 
 static void
 nautilus_properties_window_drag_data_received (GtkWidget        *widget,
-                                               GdkDragContext   *context,
-                                               int               x,
-                                               int               y,
+                                               GdkDrop          *drop,
                                                GtkSelectionData *selection_data,
-                                               guint             info,
-                                               guint             time)
+                                               gpointer          user_data)
 {
     char **uris;
     gboolean exactly_one;
@@ -535,13 +527,22 @@ create_image_widget (NautilusPropertiesWindow *window,
     button = NULL;
     if (is_customizable)
     {
+        static const char *mime_types[] =
+        {
+            NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE,
+        };
+        g_autoptr (GdkContentFormats) targets = NULL;
+
+        targets = gdk_content_formats_new (mime_types, G_N_ELEMENTS (mime_types));
+        targets = gtk_content_formats_add_uri_targets (targets);
+
         button = gtk_button_new ();
         gtk_container_add (GTK_CONTAINER (button), image);
 
         /* prepare the image to receive dropped objects to assign custom images */
         gtk_drag_dest_set (GTK_WIDGET (image),
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
-                           target_table, G_N_ELEMENTS (target_table),
+                           targets,
                            GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
         g_signal_connect (image, "drag-data-received",
