@@ -91,17 +91,6 @@ typedef enum {
 	NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM = (1<<7)
 } NautilusFileIconFlags;	
 
-/* Standard Drag & Drop types. */
-typedef enum {
-	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
-	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_NETSCAPE_URL,
-	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
-	NAUTILUS_ICON_DND_RAW,
-	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
-} NautilusIconDndTargetType;
-
 /* Item of the drag selection list */
 typedef struct {
 	NautilusFile *file;
@@ -476,6 +465,11 @@ GdkPixbuf *             nautilus_file_get_icon_pixbuf                   (Nautilu
 									 gboolean                        force_size,
 									 int                             scale,
 									 NautilusFileIconFlags           flags);
+GdkTexture             *nautilus_file_get_icon_texture                  (NautilusFile                   *file,
+                                                                         int                             size,
+                                                                         gboolean                        force_size,
+                                                                         int                             scale,
+                                                                         NautilusFileIconFlags           flags);
 
 /* Whether the file should open inside a view */
 gboolean                nautilus_file_opens_in_view                     (NautilusFile                   *file);
@@ -509,8 +503,8 @@ gboolean                nautilus_drag_can_accept_item                   (Nautilu
 gboolean                nautilus_drag_can_accept_items                  (NautilusFile                   *drop_target_item,
                                                                          const GList                    *items);
 
-gboolean                nautilus_drag_can_accept_info                   (NautilusFile                   *drop_target_item,
-                                                                         NautilusIconDndTargetType       drag_type,
+gboolean                nautilus_drag_can_accept_data                   (NautilusFile                   *drop_target_item,
+                                                                         GdkDrop                        *drop,
                                                                          const GList                    *items);
 
 /* Debugging */
