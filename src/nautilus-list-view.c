@@ -1356,11 +1356,11 @@ static void
 list_view_handle_uri_list (NautilusTreeViewDragDest *dest,
                            const char               *item_uris,
                            const char               *target_uri,
-                           GdkDragAction             action,
+                           GdkDragAction             actions,
                            NautilusListView         *view)
 {
     nautilus_files_view_handle_uri_list_drop (NAUTILUS_FILES_VIEW (view),
-                                              item_uris, target_uri, action);
+                                              item_uris, target_uri, actions);
 }
 
 static void
@@ -1372,20 +1372,6 @@ list_view_handle_text (NautilusTreeViewDragDest *dest,
 {
     nautilus_files_view_handle_text_drop (NAUTILUS_FILES_VIEW (view),
                                           text, target_uri, action);
-}
-
-static void
-list_view_handle_raw (NautilusTreeViewDragDest *dest,
-                      const char               *raw_data,
-                      int                       length,
-                      const char               *target_uri,
-                      const char               *direct_save_uri,
-                      GdkDragAction             action,
-                      NautilusListView         *view)
-{
-    nautilus_files_view_handle_raw_drop (NAUTILUS_FILES_VIEW (view),
-                                         raw_data, length, target_uri, direct_save_uri,
-                                         action);
 }
 
 static void
@@ -2142,8 +2128,6 @@ create_and_set_up_tree_view (NautilusListView *view)
                              G_CALLBACK (list_view_handle_uri_list), view, 0);
     g_signal_connect_object (view->details->drag_dest, "handle-text",
                              G_CALLBACK (list_view_handle_text), view, 0);
-    g_signal_connect_object (view->details->drag_dest, "handle-raw",
-                             G_CALLBACK (list_view_handle_raw), view, 0);
     g_signal_connect_object (view->details->drag_dest, "handle-hover",
                              G_CALLBACK (list_view_handle_hover), view, 0);
 

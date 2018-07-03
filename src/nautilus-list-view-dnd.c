@@ -227,7 +227,7 @@ drag_info_data_free (NautilusListView *list_view)
 
 NautilusDragInfo *
 nautilus_list_view_dnd_get_drag_source_data (NautilusListView *list_view,
-                                             GdkDragContext   *context)
+                                             GdkDrag          *context)
 {
     GtkTreeView *tree_view;
     GtkTreeModel *model;

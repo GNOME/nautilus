@@ -87,11 +87,7 @@ typedef enum {
 typedef enum {
 	NAUTILUS_ICON_DND_GNOME_ICON_LIST,
 	NAUTILUS_ICON_DND_URI_LIST,
-	NAUTILUS_ICON_DND_NETSCAPE_URL,
 	NAUTILUS_ICON_DND_TEXT,
-	NAUTILUS_ICON_DND_XDNDDIRECTSAVE,
-	NAUTILUS_ICON_DND_RAW,
-	NAUTILUS_ICON_DND_ROOTWINDOW_DROP
 } NautilusIconDndTargetType;
 
 /* Item of the drag selection list */
@@ -501,8 +497,8 @@ gboolean                nautilus_drag_can_accept_item                   (Nautilu
 gboolean                nautilus_drag_can_accept_items                  (NautilusFile                   *drop_target_item,
                                                                          const GList                    *items);
 
-gboolean                nautilus_drag_can_accept_info                   (NautilusFile                   *drop_target_item,
-                                                                         NautilusIconDndTargetType       drag_type,
+gboolean                nautilus_drag_can_accept_data                   (NautilusFile                   *drop_target_item,
+                                                                         GtkSelectionData               *data,
                                                                          const GList                    *items);
 
 /* Debugging */
