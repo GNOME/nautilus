@@ -93,12 +93,6 @@ typedef struct {
 						   GdkDragAction action,
 						   int x,
 						   int y);
-	void	     (* handle_netscape_url)	  (NautilusCanvasContainer *container,
-						   const char *url,
-						   const char *target_uri,
-						   GdkDragAction action,
-						   int x,
-						   int y);
 	void	     (* handle_uri_list)    	  (NautilusCanvasContainer *container,
 						   const char *uri_list,
 						   const char *target_uri,
