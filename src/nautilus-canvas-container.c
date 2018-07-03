@@ -204,10 +204,8 @@ enum
     ICON_STRETCH_STARTED,
     ICON_STRETCH_ENDED,
     MOVE_COPY_ITEMS,
-    HANDLE_NETSCAPE_URL,
     HANDLE_URI_LIST,
     HANDLE_TEXT,
-    HANDLE_RAW,
     HANDLE_HOVER,
     SELECTION_CHANGED,
     ICON_ADDED,
@@ -3885,18 +3883,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         G_TYPE_POINTER,
                         G_TYPE_POINTER,
                         GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_NETSCAPE_URL]
-        = g_signal_new ("handle-netscape-url",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         handle_netscape_url),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_NONE, 3,
-                        G_TYPE_STRING,
-                        G_TYPE_STRING,
-                        GDK_TYPE_DRAG_ACTION);
     signals[HANDLE_URI_LIST]
         = g_signal_new ("handle-uri-list",
                         G_TYPE_FROM_CLASS (class),
@@ -3918,20 +3904,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         NULL, NULL,
                         g_cclosure_marshal_generic,
                         G_TYPE_NONE, 3,
-                        G_TYPE_STRING,
-                        G_TYPE_STRING,
-                        GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_RAW]
-        = g_signal_new ("handle-raw",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         handle_raw),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_NONE, 5,
-                        G_TYPE_POINTER,
-                        G_TYPE_INT,
                         G_TYPE_STRING,
                         G_TYPE_STRING,
                         GDK_TYPE_DRAG_ACTION);

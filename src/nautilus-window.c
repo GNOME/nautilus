@@ -1013,7 +1013,7 @@ build_selection_list_from_gfile_list (GList *gfile_list)
 
 void
 nautilus_window_start_dnd (NautilusWindow *window,
-                           GdkDragContext *context)
+                           GdkDrag        *context)
 {
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1024,7 +1024,7 @@ nautilus_window_start_dnd (NautilusWindow *window,
 
 void
 nautilus_window_end_dnd (NautilusWindow *window,
-                         GdkDragContext *context)
+                         GdkDrag        *context)
 {
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
@@ -1036,18 +1036,20 @@ nautilus_window_end_dnd (NautilusWindow *window,
 /* Callback used when the places sidebar needs to know the drag action to suggest */
 static GdkDragAction
 places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
-                                         GdkDragContext   *context,
+                                         GdkDrop          *drop,
                                          GFile            *dest_file,
                                          GList            *source_file_list,
                                          gpointer          user_data)
 {
+    GdkDrag *drag;
+    NautilusDragInfo *info;
     GList *items;
     char *uri;
-    int action = 0;
-    NautilusDragInfo *info;
+    GdkDragAction action;
     guint32 source_actions;
 
-    info = nautilus_drag_get_source_data (context);
+    drag = gdk_drop_get_drag (drop);
+    info = nautilus_drag_get_source_data (drag);
     if (info != NULL)
     {
         items = info->selection_cache;
@@ -1065,7 +1067,7 @@ places_sidebar_drag_action_requested_cb (GtkPlacesSidebar *sidebar,
         goto out;
     }
 
-    nautilus_drag_default_drop_action_for_icons (context, uri, items, source_actions, &action);
+    action = nautilus_get_drop_actions_for_icons (drop, uri, items, source_actions);
 
 out:
     if (info == NULL)
