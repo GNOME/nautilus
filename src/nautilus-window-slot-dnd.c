@@ -154,7 +154,6 @@ slot_proxy_drag_motion (GtkWidget      *widget,
                         GdkDragContext *context,
                         int             x,
                         int             y,
-                        unsigned int    time,
                         gpointer        user_data)
 {
     NautilusDragSlotProxyInfo *drag_info;
@@ -165,13 +164,11 @@ slot_proxy_drag_motion (GtkWidget      *widget,
     char *target_uri;
     GFile *location;
     gboolean valid_text_drag;
-    gboolean valid_xds_drag;
 
     drag_info = user_data;
 
     action = 0;
     valid_text_drag = FALSE;
-    valid_xds_drag = FALSE;
 
     if (gtk_drag_get_source_widget (context) == widget)
     {
@@ -251,17 +248,12 @@ slot_proxy_drag_motion (GtkWidget      *widget,
         {
             valid_text_drag = TRUE;
         }
-        else if (drag_info->info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE ||
-                 drag_info->info == NAUTILUS_ICON_DND_RAW)
-        {
-            valid_xds_drag = TRUE;
-        }
     }
 
     g_free (target_uri);
 
 out:
-    if (action != 0 || valid_text_drag || valid_xds_drag)
+    if (action != 0 || valid_text_drag)
     {
         gtk_drag_highlight (widget);
         slot_proxy_check_switch_location_timer (drag_info, widget);
@@ -306,9 +298,7 @@ drag_info_clear (NautilusDragSlotProxyInfo *drag_info)
     {
         g_list_free (drag_info->data.uri_list);
     }
-    else if (drag_info->info == NAUTILUS_ICON_DND_TEXT ||
-             drag_info->info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE ||
-             drag_info->info == NAUTILUS_ICON_DND_RAW)
+    else if (drag_info->info == NAUTILUS_ICON_DND_TEXT)
     {
         if (drag_info->data.selection_data != NULL)
         {
@@ -490,9 +480,7 @@ slot_proxy_drag_data_received (GtkWidget        *widget,
 
         drag_info->have_valid_data = drag_info->data.uri_list != NULL;
     }
-    else if (info == NAUTILUS_ICON_DND_TEXT ||
-             info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE ||
-             info == NAUTILUS_ICON_DND_RAW)
+    else if (info == NAUTILUS_ICON_DND_TEXT)
     {
         drag_info->data.selection_data = gtk_selection_data_copy (data);
         drag_info->have_valid_data = drag_info->data.selection_data != NULL;
@@ -514,8 +502,6 @@ nautilus_drag_slot_proxy_init (GtkWidget          *widget,
     const GtkTargetEntry targets[] =
     {
         { NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
-        { NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE }, /* XDS Protocol Type */
-        { NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW }
     };
     GtkTargetList *target_list;
 
