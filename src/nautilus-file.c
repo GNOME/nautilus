@@ -54,6 +54,7 @@
 
 #include "nautilus-directory-notify.h"
 #include "nautilus-directory-private.h"
+#include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-private.h"
@@ -5342,6 +5343,20 @@ nautilus_file_get_icon_pixbuf (NautilusFile          *file,
     return pixbuf;
 }
 
+GdkTexture *
+nautilus_file_get_icon_texture (NautilusFile          *file,
+                                int                    size,
+                                gboolean               force_size,
+                                int                    scale,
+                                NautilusFileIconFlags  flags)
+{
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
+
+    pixbuf = nautilus_file_get_icon_pixbuf (file, size, force_size, scale, flags);
+
+    return gdk_texture_new_for_pixbuf (pixbuf);
+}
+
 gboolean
 nautilus_file_get_date (NautilusFile     *file,
                         NautilusDateType  date_type,
@@ -9340,39 +9355,33 @@ nautilus_drag_can_accept_items (NautilusFile *drop_target_item,
 }
 
 gboolean
-nautilus_drag_can_accept_info (NautilusFile              *drop_target_item,
-                               NautilusIconDndTargetType  drag_type,
-                               const GList               *items)
+nautilus_drag_can_accept_data (NautilusFile *drop_target_item,
+                               GdkDrop      *drop,
+                               const GList  *items)
 {
-    switch (drag_type)
-    {
-        case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-        {
-            return nautilus_drag_can_accept_items (drop_target_item, items);
-        }
+    GdkContentFormats *formats;
 
-        case NAUTILUS_ICON_DND_URI_LIST:
-        case NAUTILUS_ICON_DND_NETSCAPE_URL:
-        case NAUTILUS_ICON_DND_TEXT:
+    formats = gdk_drop_get_formats (drop);
+
+    if (gdk_content_formats_contain_mime_type (formats, NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE))
+    {
+        return nautilus_drag_can_accept_items (drop_target_item, items);
+    }
+    else
+    {
+        GdkContentFormats *text_formats;
+
+        text_formats = gdk_content_formats_new (NULL, 0);
+        text_formats = gtk_content_formats_add_text_targets (text_formats);
+        text_formats = gtk_content_formats_add_uri_targets (text_formats);
+
+        if (gdk_content_formats_match (formats, text_formats))
         {
             return nautilus_drag_can_accept_files (drop_target_item);
         }
-
-        case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-        case NAUTILUS_ICON_DND_RAW:
-        {
-            return nautilus_drag_can_accept_files (drop_target_item);             /* Check if we can accept files at this location */
-        }
-
-        case NAUTILUS_ICON_DND_ROOTWINDOW_DROP:
-        {
-            return FALSE;
-        }
-
-        default:
-            g_assert_not_reached ();
-            return FALSE;
     }
+
+    g_return_val_if_reached (FALSE);
 }
 
 static gboolean

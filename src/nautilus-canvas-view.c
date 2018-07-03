@@ -1370,11 +1370,11 @@ static void
 canvas_view_handle_uri_list (NautilusCanvasContainer *container,
                              const char              *item_uris,
                              const char              *target_uri,
-                             GdkDragAction            action,
+                             GdkDragAction            actions,
                              NautilusCanvasView      *view)
 {
     nautilus_files_view_handle_uri_list_drop (NAUTILUS_FILES_VIEW (view),
-                                              item_uris, target_uri, action);
+                                              item_uris, target_uri, actions);
 }
 
 /* Handles an URL received from Mozilla */
@@ -1398,19 +1398,6 @@ canvas_view_handle_text (NautilusCanvasContainer *container,
 {
     nautilus_files_view_handle_text_drop (NAUTILUS_FILES_VIEW (view),
                                           text, target_uri, action);
-}
-
-static void
-canvas_view_handle_raw (NautilusCanvasContainer *container,
-                        const char              *raw_data,
-                        int                      length,
-                        const char              *target_uri,
-                        const char              *direct_save_uri,
-                        GdkDragAction            action,
-                        NautilusCanvasView      *view)
-{
-    nautilus_files_view_handle_raw_drop (NAUTILUS_FILES_VIEW (view),
-                                         raw_data, length, target_uri, direct_save_uri, action);
 }
 
 static void
@@ -1573,8 +1560,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
                              G_CALLBACK (canvas_view_handle_netscape_url), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-text",
                              G_CALLBACK (canvas_view_handle_text), canvas_view, 0);
-    g_signal_connect_object (canvas_container, "handle-raw",
-                             G_CALLBACK (canvas_view_handle_raw), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-hover",
                              G_CALLBACK (canvas_view_handle_hover), canvas_view, 0);
 
