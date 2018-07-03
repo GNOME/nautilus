@@ -33,7 +33,7 @@
 #include <glib/gi18n.h>
 #include "nautilus-file-utilities.h"
 #include "nautilus-canvas-dnd.h"
-#include <src/nautilus-list-view-dnd.h>
+#include "nautilus-list-view-dnd.h"
 #include <stdio.h>
 #include <string.h>
 
@@ -57,28 +57,10 @@
 #define MAX_AUTOSCROLL_DELTA 50
 
 void
-nautilus_drag_init (NautilusDragInfo     *drag_info,
-                    const GtkTargetEntry *drag_types,
-                    int                   drag_type_count,
-                    gboolean              add_text_targets)
-{
-    drag_info->target_list = gtk_target_list_new (drag_types,
-                                                  drag_type_count);
-
-    if (add_text_targets)
-    {
-        gtk_target_list_add_text_targets (drag_info->target_list,
-                                          NAUTILUS_ICON_DND_TEXT);
-    }
-
-    drag_info->drop_occurred = FALSE;
-    drag_info->need_to_destroy = FALSE;
-}
-
-void
 nautilus_drag_finalize (NautilusDragInfo *drag_info)
 {
-    gtk_target_list_unref (drag_info->target_list);
+    g_clear_pointer (&drag_info->formats, gdk_content_formats_unref);
+
     nautilus_drag_destroy_selection_list (drag_info->selection_list);
     nautilus_drag_destroy_selection_list (drag_info->selection_cache);
 
@@ -163,8 +145,34 @@ nautilus_drag_file_list_from_selection_list (const GList *selection_list)
     return g_list_reverse (file_list);
 }
 
+gboolean
+nautilus_content_formats_include_text (GdkContentFormats *formats)
+{
+    g_autoptr (GdkContentFormats) text_formats = NULL;
+
+    g_return_val_if_fail (formats != NULL, FALSE);
+
+    text_formats = gdk_content_formats_new (NULL, 0);
+    text_formats = gtk_content_formats_add_text_targets (text_formats);
+
+    return gdk_content_formats_match (formats, text_formats);
+}
+
+gboolean
+nautilus_content_formats_include_uri (GdkContentFormats *formats)
+{
+    g_autoptr (GdkContentFormats) uri_formats = NULL;
+
+    g_return_val_if_fail (formats != NULL, FALSE);
+
+    uri_formats = gdk_content_formats_new (NULL, 0);
+    uri_formats = gtk_content_formats_add_uri_targets (uri_formats);
+
+    return gdk_content_formats_match (formats, uri_formats);
+}
+
 GList *
-nautilus_drag_uri_list_from_array (const char **uris)
+nautilus_drag_uri_list_from_array (GStrv uris)
 {
     GList *uri_list;
     int i;
@@ -331,25 +339,6 @@ nautilus_drag_items_local (const char  *target_uri_string,
                                               ((NautilusDragSelectionItem *) selection_list->data)->uri);
 }
 
-GdkDragAction
-nautilus_drag_default_drop_action_for_netscape_url (GdkDragContext *context)
-{
-    /* Mozilla defaults to copy, but unless thats the
-     *  only allowed thing (enforced by ctrl) we want to LINK */
-    if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_COPY &&
-        gdk_drag_context_get_actions (context) != GDK_ACTION_COPY)
-    {
-        return GDK_ACTION_LINK;
-    }
-    else if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_MOVE)
-    {
-        /* Don't support move */
-        return GDK_ACTION_COPY;
-    }
-
-    return gdk_drag_context_get_suggested_action (context);
-}
-
 static gboolean
 check_same_fs (NautilusFile *file1,
                NautilusFile *file2)
@@ -396,7 +385,7 @@ source_is_deletable (GFile *file)
 }
 
 NautilusDragInfo *
-nautilus_drag_get_source_data (GdkDragContext *context)
+nautilus_drag_get_source_data (GdkDrag *context)
 {
     GtkWidget *source_widget;
     NautilusDragInfo *source_data;
@@ -409,8 +398,7 @@ nautilus_drag_get_source_data (GdkDragContext *context)
 
     if (NAUTILUS_IS_CANVAS_CONTAINER (source_widget))
     {
-        source_data = nautilus_canvas_dnd_get_drag_source_data (NAUTILUS_CANVAS_CONTAINER (source_widget),
-                                                                context);
+        source_data = nautilus_canvas_dnd_get_drag_source_data (NAUTILUS_CANVAS_CONTAINER (source_widget));
     }
     else if (GTK_IS_TREE_VIEW (source_widget))
     {
@@ -423,8 +411,7 @@ nautilus_drag_get_source_data (GdkDragContext *context)
         view = nautilus_window_slot_get_current_view (active_slot);
         if (NAUTILUS_IS_LIST_VIEW (view))
         {
-            source_data = nautilus_list_view_dnd_get_drag_source_data (NAUTILUS_LIST_VIEW (view),
-                                                                       context);
+            source_data = nautilus_list_view_dnd_get_drag_source_data (NAUTILUS_LIST_VIEW (view));
         }
         else
         {
@@ -442,92 +429,48 @@ nautilus_drag_get_source_data (GdkDragContext *context)
     return source_data;
 }
 
-void
-nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
-                                             const char     *target_uri_string,
-                                             const GList    *items,
-                                             guint32         source_actions,
-                                             int            *action)
+GdkDragAction
+nautilus_get_drop_actions_for_icons (const char  *target_uri,
+                                     const GList *items)
 {
     gboolean same_fs;
     gboolean target_is_source_parent;
     gboolean source_deletable;
     const char *dropped_uri;
-    GFile *target, *dropped, *dropped_directory;
-    GdkDragAction actions;
-    NautilusFile *dropped_file, *target_file;
+    g_autoptr (GFile) target = NULL;
+    g_autoptr (GFile) dropped = NULL;
+    g_autoptr (GFile) dropped_directory = NULL;
+    NautilusFile *dropped_file;
+    g_autoptr (NautilusFile) target_file = NULL;
 
-    if (target_uri_string == NULL)
+    if (items == NULL)
     {
-        *action = 0;
-        return;
-    }
-
-    /* this is needed because of how dnd works. The actions at the time drag-begin
-     * is done are not set, because they are first set on drag-motion. However,
-     * for our use case, which is validation with the sidebar for dnd feedback
-     * when the dnd doesn't have as a destination the sidebar itself, we need
-     * a way to know the actions at drag-begin time. Either canvas view or
-     * list view know them when starting the drag, but asking for them here
-     * would be breaking the current model too much. So instead we rely on the
-     * caller, which will ask if appropiate to those objects about the actions
-     * available, instead of relying solely on the context here. */
-    if (source_actions)
-    {
-        actions = source_actions & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
-    }
-    else
-    {
-        actions = gdk_drag_context_get_actions (context) & (GDK_ACTION_MOVE | GDK_ACTION_COPY);
-    }
-    if (actions == 0)
-    {
-        /* We can't use copy or move, just go with the suggested action. */
-        *action = gdk_drag_context_get_suggested_action (context);
-        return;
-    }
-
-    if (gdk_drag_context_get_suggested_action (context) == GDK_ACTION_ASK)
-    {
-        /* Don't override ask */
-        *action = gdk_drag_context_get_suggested_action (context);
-        return;
+        return 0;
     }
 
     dropped_uri = ((NautilusDragSelectionItem *) items->data)->uri;
     dropped_file = ((NautilusDragSelectionItem *) items->data)->file;
-    target_file = nautilus_file_get_by_uri (target_uri_string);
+    target_file = nautilus_file_get_by_uri (target_uri);
 
     /*
      * Check for trash URI.  We do a find_directory for any Trash directory.
      * Passing 0 permissions as gnome-vfs would override the permissions
      * passed with 700 while creating .Trash directory
      */
-    if (eel_uri_is_trash (target_uri_string))
+    if (eel_uri_is_trash (target_uri))
     {
-        /* Only move to Trash */
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        nautilus_file_unref (target_file);
-        return;
+        return GDK_ACTION_MOVE;
     }
     else if (target_file != NULL && nautilus_file_is_archive (target_file))
     {
-        *action = GDK_ACTION_COPY;
-
-        nautilus_file_unref (target_file);
-        return;
+        return GDK_ACTION_COPY;
     }
     else
     {
-        target = g_file_new_for_uri (target_uri_string);
+        target = g_file_new_for_uri (target_uri);
     }
 
     same_fs = check_same_fs (target_file, dropped_file);
-
-    nautilus_file_unref (target_file);
 
     /* Compare the first dropped uri with the target uri for same fs match. */
     dropped = g_file_new_for_uri (dropped_uri);
@@ -540,51 +483,33 @@ nautilus_drag_default_drop_action_for_icons (GdkDragContext *context,
          *  as this is then just a move of a mountpoint to another
          *  position in the dir */
         target_is_source_parent = g_file_equal (dropped_directory, target);
-        g_object_unref (dropped_directory);
     }
     source_deletable = source_is_deletable (dropped);
 
-    if ((same_fs && source_deletable) || target_is_source_parent ||
-        g_file_has_uri_scheme (dropped, "trash"))
+    if ((same_fs && source_deletable) || target_is_source_parent || eel_uri_is_trash (dropped_uri))
     {
-        if (actions & GDK_ACTION_MOVE)
-        {
-            *action = GDK_ACTION_MOVE;
-        }
-        else
-        {
-            *action = gdk_drag_context_get_suggested_action (context);
-        }
+        return GDK_ACTION_ALL | GDK_ACTION_ASK;
     }
     else
     {
-        if (actions & GDK_ACTION_COPY)
-        {
-            *action = GDK_ACTION_COPY;
-        }
-        else
-        {
-            *action = gdk_drag_context_get_suggested_action (context);
-        }
+        return GDK_ACTION_COPY | GDK_ACTION_LINK | GDK_ACTION_ASK;
     }
-
-    g_object_unref (target);
-    g_object_unref (dropped);
 }
 
 GdkDragAction
-nautilus_drag_default_drop_action_for_uri_list (GdkDragContext *context,
-                                                const char     *target_uri_string)
+nautilus_get_drop_actions_for_uri (const char *target_uri_string)
 {
-    if (eel_uri_is_trash (target_uri_string) && (gdk_drag_context_get_actions (context) & GDK_ACTION_MOVE))
+    GdkDragAction actions;
+
+    actions = GDK_ACTION_ALL;
+
+    if (!eel_uri_is_trash (target_uri_string))
     {
-        /* Only move to Trash */
-        return GDK_ACTION_MOVE;
+        /* Only allow moving to trash */
+        actions &= ~GDK_ACTION_MOVE;
     }
-    else
-    {
-        return gdk_drag_context_get_suggested_action (context);
-    }
+
+    return actions;
 }
 
 /* Encode a "x-special/gnome-icon-list" selection.
@@ -666,11 +591,9 @@ nautilus_drag_create_selection_cache (gpointer                             conta
  * Returns FALSE if it doesn't handle drag data */
 gboolean
 nautilus_drag_drag_data_get_from_cache (GList            *cache,
-                                        GdkDragContext   *context,
-                                        GtkSelectionData *selection_data,
-                                        guint             info,
-                                        guint32           time)
+                                        GtkSelectionData *selection_data)
 {
+    GdkAtom target;
     GList *l;
     GString *result;
     NautilusDragEachSelectedItemDataGet func;
@@ -680,23 +603,20 @@ nautilus_drag_drag_data_get_from_cache (GList            *cache,
         return FALSE;
     }
 
-    switch (info)
+    target = gtk_selection_data_get_target (selection_data);
+
+    if (target == g_intern_static_string (NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE))
     {
-        case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
-        {
-            func = add_one_gnome_icon;
-        }
-        break;
-
-        case NAUTILUS_ICON_DND_URI_LIST:
-        case NAUTILUS_ICON_DND_TEXT:
-        {
-            func = add_one_uri;
-        }
-        break;
-
-        default:
-            return FALSE;
+        func = add_one_gnome_icon;
+    }
+    else if (gtk_selection_data_targets_include_uri (selection_data) ||
+             gtk_selection_data_targets_include_text (selection_data))
+    {
+        func = add_one_uri;
+    }
+    else
+    {
+        return FALSE;
     }
 
     result = g_string_new (NULL);
@@ -708,7 +628,7 @@ nautilus_drag_drag_data_get_from_cache (GList            *cache,
     }
 
     gtk_selection_data_set (selection_data,
-                            gtk_selection_data_get_target (selection_data),
+                            target,
                             8, (guchar *) result->str, result->len);
     g_string_free (result, TRUE);
 
