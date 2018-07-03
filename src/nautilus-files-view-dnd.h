@@ -36,12 +36,6 @@ void nautilus_files_view_handle_text_drop         (NautilusFilesView *view,
                                                    const char        *text,
                                                    const char        *target_uri,
                                                    GdkDragAction      action);
-void nautilus_files_view_handle_raw_drop          (NautilusFilesView *view,
-                                                   const char        *raw_data,
-                                                   int                length,
-                                                   const char        *target_uri,
-                                                   const char        *direct_save_uri,
-                                                   GdkDragAction      action);
 void nautilus_files_view_handle_hover             (NautilusFilesView *view,
                                                    const char        *target_uri);
 
