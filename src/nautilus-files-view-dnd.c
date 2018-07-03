@@ -115,7 +115,7 @@ void
 nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
                                           const char        *item_uris,
                                           const char        *target_uri,
-                                          GdkDragAction      action)
+                                          GdkDragAction      actions)
 {
     gchar **uri_list;
     GList *real_uri_list = NULL;
@@ -135,12 +135,10 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
         g_assert (container_uri != NULL);
     }
 
-    if (action == GDK_ACTION_ASK)
+    if (actions == GDK_ACTION_ASK || !gdk_drag_action_is_unique (actions))
     {
-        action = nautilus_drag_drop_action_ask
-                     (GTK_WIDGET (view),
-                     GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
-        if (action == 0)
+        actions = nautilus_drag_drop_action_ask (GTK_WIDGET (view), GDK_ACTION_ALL);
+        if (actions == 0)
         {
             g_free (container_uri);
             return;
@@ -149,10 +147,9 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
 
     /* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
      * and we don't support combinations either. */
-    if ((action != GDK_ACTION_DEFAULT) &&
-        (action != GDK_ACTION_COPY) &&
-        (action != GDK_ACTION_MOVE) &&
-        (action != GDK_ACTION_LINK))
+    if (actions != GDK_ACTION_COPY &&
+        actions != GDK_ACTION_MOVE &&
+        actions != GDK_ACTION_LINK)
     {
         show_dialog (_("Drag and drop is not supported."),
                      _("An invalid drag type was used."),
@@ -182,7 +179,7 @@ nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
 
     nautilus_files_view_move_copy_items (view, real_uri_list,
                                          real_target_uri,
-                                         action);
+                                         actions);
 
     g_list_free_full (real_uri_list, g_free);
 
@@ -302,53 +299,6 @@ nautilus_files_view_handle_text_drop (NautilusFilesView *view,
 }
 
 void
-nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
-                                     const char        *raw_data,
-                                     int                length,
-                                     const char        *target_uri,
-                                     const char        *direct_save_uri,
-                                     GdkDragAction      action)
-{
-    char *container_uri, *filename;
-    GFile *direct_save_full;
-
-    if (raw_data == NULL)
-    {
-        return;
-    }
-
-    g_return_if_fail (action == GDK_ACTION_COPY);
-
-    container_uri = NULL;
-    if (target_uri == NULL)
-    {
-        container_uri = nautilus_files_view_get_backing_uri (view);
-        g_assert (container_uri != NULL);
-    }
-
-    filename = NULL;
-    if (direct_save_uri != NULL)
-    {
-        direct_save_full = g_file_new_for_uri (direct_save_uri);
-        filename = g_file_get_basename (direct_save_full);
-    }
-    if (filename == NULL)
-    {
-        /* Translator: This is the filename used for when you dnd raw
-         * data to a directory, if the source didn't supply a name.
-         */
-        filename = g_strdup (_("dropped data"));
-    }
-
-    nautilus_files_view_new_file_with_initial_contents (
-        view, target_uri != NULL ? target_uri : container_uri,
-        filename, raw_data, length);
-
-    g_free (container_uri);
-    g_free (filename);
-}
-
-void
 nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
                                               GList             *source_uri_list,
                                               const char        *target_uri,
@@ -363,11 +313,9 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
         g_assert (container_uri != NULL);
     }
 
-    if (action == GDK_ACTION_ASK)
+    if (!gdk_drag_action_is_unique (action))
     {
-        action = nautilus_drag_drop_action_ask
-                     (GTK_WIDGET (view),
-                     GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK);
+        action = nautilus_drag_drop_action_ask (GTK_WIDGET (view), GDK_ACTION_ALL);
         if (action == 0)
         {
             return;
