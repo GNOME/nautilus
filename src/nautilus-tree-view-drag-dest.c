@@ -59,7 +59,6 @@ struct _NautilusTreeViewDragDestDetails
     guint scroll_id;
     guint expand_id;
 
-    char *direct_save_uri;
     char *target_uri;
 };
 
@@ -68,10 +67,8 @@ enum
     GET_ROOT_URI,
     GET_FILE_FOR_PATH,
     MOVE_COPY_ITEMS,
-    HANDLE_NETSCAPE_URL,
     HANDLE_URI_LIST,
     HANDLE_TEXT,
-    HANDLE_RAW,
     HANDLE_HOVER,
     LAST_SIGNAL
 };
@@ -84,11 +81,7 @@ G_DEFINE_TYPE (NautilusTreeViewDragDest, nautilus_tree_view_drag_dest,
 static const GtkTargetEntry drag_types [] =
 {
     { NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE, 0, NAUTILUS_ICON_DND_GNOME_ICON_LIST },
-    /* prefer "_NETSCAPE_URL" over "text/uri-list" to satisfy web browsers. */
-    { NAUTILUS_ICON_DND_NETSCAPE_URL_TYPE, 0, NAUTILUS_ICON_DND_NETSCAPE_URL },
     { NAUTILUS_ICON_DND_URI_LIST_TYPE, 0, NAUTILUS_ICON_DND_URI_LIST },
-    { NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, 0, NAUTILUS_ICON_DND_XDNDDIRECTSAVE },     /* XDS Protocol Type */
-    { NAUTILUS_ICON_DND_RAW_TYPE, 0, NAUTILUS_ICON_DND_RAW }
 };
 
 
@@ -319,9 +312,6 @@ free_drag_data (NautilusTreeViewDragDest *dest)
         nautilus_drag_destroy_selection_list (dest->details->drag_list);
         dest->details->drag_list = NULL;
     }
-
-    g_free (dest->details->direct_save_uri);
-    dest->details->direct_save_uri = NULL;
 
     g_free (dest->details->target_uri);
     dest->details->target_uri = NULL;
@@ -560,12 +550,6 @@ get_drop_action (NautilusTreeViewDragDest *dest,
         }
         break;
 
-        case NAUTILUS_ICON_DND_NETSCAPE_URL:
-        {
-            action = nautilus_drag_default_drop_action_for_netscape_url (context);
-        }
-        break;
-
         case NAUTILUS_ICON_DND_URI_LIST:
         {
             action = gdk_drag_context_get_suggested_action (context);
@@ -573,8 +557,6 @@ get_drop_action (NautilusTreeViewDragDest *dest,
         break;
 
         case NAUTILUS_ICON_DND_TEXT:
-        case NAUTILUS_ICON_DND_RAW:
-        case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
         {
             action = GDK_ACTION_COPY;
         }
@@ -587,12 +569,11 @@ get_drop_action (NautilusTreeViewDragDest *dest,
 }
 
 static gboolean
-drag_motion_callback (GtkWidget      *widget,
-                      GdkDragContext *context,
-                      int             x,
-                      int             y,
-                      guint32         time,
-                      gpointer        data)
+drag_motion_callback (GtkWidget *widget,
+                      GdkDrop   *drop,
+                      int        x,
+                      int        y,
+                      gpointer   data)
 {
     NautilusTreeViewDragDest *dest;
     GtkTreePath *path;
@@ -682,10 +663,9 @@ drag_motion_callback (GtkWidget      *widget,
 }
 
 static void
-drag_leave_callback (GtkWidget      *widget,
-                     GdkDragContext *context,
-                     guint32         time,
-                     gpointer        data)
+drag_leave_callback (GtkWidget *widget,
+                     GdkDrop   *drop,
+                     gpointer   data)
 {
     NautilusTreeViewDragDest *dest;
 
@@ -859,108 +839,10 @@ receive_dropped_text (NautilusTreeViewDragDest *dest,
     g_free (drop_target);
 }
 
-static void
-receive_dropped_raw (NautilusTreeViewDragDest *dest,
-                     const char               *raw_data,
-                     int                       length,
-                     GdkDragContext           *context,
-                     int                       x,
-                     int                       y)
-{
-    char *drop_target;
-
-    if (!dest->details->drag_data)
-    {
-        return;
-    }
-
-    drop_target = get_drop_target_uri_at_pos (dest, x, y);
-    g_assert (drop_target != NULL);
-
-    g_signal_emit (dest, signals[HANDLE_RAW], 0,
-                   raw_data, length, drop_target,
-                   dest->details->direct_save_uri,
-                   gdk_drag_context_get_selected_action (context));
-
-    g_free (drop_target);
-}
-
-static void
-receive_dropped_netscape_url (NautilusTreeViewDragDest *dest,
-                              GdkDragContext           *context,
-                              int                       x,
-                              int                       y)
-{
-    char *drop_target;
-
-    if (!dest->details->drag_data)
-    {
-        return;
-    }
-
-    drop_target = get_drop_target_uri_at_pos (dest, x, y);
-    g_assert (drop_target != NULL);
-
-    g_signal_emit (dest, signals[HANDLE_NETSCAPE_URL], 0,
-                   (char *) gtk_selection_data_get_data (dest->details->drag_data),
-                   drop_target,
-                   gdk_drag_context_get_selected_action (context),
-                   x, y);
-
-    g_free (drop_target);
-}
-
-static gboolean
-receive_xds (NautilusTreeViewDragDest *dest,
-             GtkWidget                *widget,
-             guint32                   time,
-             GdkDragContext           *context,
-             int                       x,
-             int                       y)
-{
-    GFile *location;
-    const guchar *selection_data;
-    gint selection_format;
-    gint selection_length;
-
-    selection_data = gtk_selection_data_get_data (dest->details->drag_data);
-    selection_format = gtk_selection_data_get_format (dest->details->drag_data);
-    selection_length = gtk_selection_data_get_length (dest->details->drag_data);
-
-    if (selection_format == 8
-        && selection_length == 1
-        && selection_data[0] == 'F')
-    {
-        gtk_drag_get_data (widget, context,
-                           gdk_atom_intern (NAUTILUS_ICON_DND_RAW_TYPE,
-                                            FALSE),
-                           time);
-        return FALSE;
-    }
-    else if (selection_format == 8
-             && selection_length == 1
-             && selection_data[0] == 'S')
-    {
-        g_assert (dest->details->direct_save_uri != NULL);
-        location = g_file_new_for_uri (dest->details->direct_save_uri);
-
-        nautilus_file_changes_queue_file_added (location);
-        nautilus_file_changes_consume_changes (TRUE);
-
-        g_object_unref (location);
-    }
-    return TRUE;
-}
-
-
 static gboolean
 drag_data_received_callback (GtkWidget        *widget,
-                             GdkDragContext   *context,
-                             int               x,
-                             int               y,
+                             GdkDrop          *drop,
                              GtkSelectionData *selection_data,
-                             guint             info,
-                             guint32           time,
                              gpointer          data)
 {
     NautilusTreeViewDragDest *dest;
@@ -996,13 +878,6 @@ drag_data_received_callback (GtkWidget        *widget,
             }
             break;
 
-            case NAUTILUS_ICON_DND_NETSCAPE_URL:
-            {
-                receive_dropped_netscape_url (dest, context, x, y);
-                success = TRUE;
-            }
-            break;
-
             case NAUTILUS_ICON_DND_URI_LIST:
             {
                 receive_dropped_uri_list (dest, context, x, y);
@@ -1013,22 +888,6 @@ drag_data_received_callback (GtkWidget        *widget,
             case NAUTILUS_ICON_DND_TEXT:
             {
                 receive_dropped_text (dest, context, x, y);
-                success = TRUE;
-            }
-            break;
-
-            case NAUTILUS_ICON_DND_RAW:
-            {
-                length = gtk_selection_data_get_length (selection_data);
-                tmp = (const gchar *) gtk_selection_data_get_data (selection_data);
-                receive_dropped_raw (dest, tmp, length, context, x, y);
-                success = TRUE;
-            }
-            break;
-
-            case NAUTILUS_ICON_DND_XDNDDIRECTSAVE:
-            {
-                finished = receive_xds (dest, widget, time, context, x, y);
                 success = TRUE;
             }
             break;
@@ -1080,65 +939,13 @@ get_direct_save_filename (GdkDragContext *context)
 }
 
 static gboolean
-set_direct_save_uri (NautilusTreeViewDragDest *dest,
-                     GdkDragContext           *context,
-                     int                       x,
-                     int                       y)
-{
-    GFile *base, *child;
-    char *drop_uri;
-    char *filename, *uri;
-
-    g_assert (dest->details->direct_save_uri == NULL);
-
-    uri = NULL;
-
-    drop_uri = get_drop_target_uri_at_pos (dest, x, y);
-    if (drop_uri != NULL)
-    {
-        filename = get_direct_save_filename (context);
-        if (filename != NULL)
-        {
-            /* Resolve relative path */
-            base = g_file_new_for_uri (drop_uri);
-            child = g_file_get_child (base, filename);
-            uri = g_file_get_uri (child);
-
-            g_object_unref (base);
-            g_object_unref (child);
-
-            /* Change the property */
-            gdk_property_change (gdk_drag_context_get_source_window (context),
-                                 gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE),
-                                 gdk_atom_intern ("text/plain", FALSE), 8,
-                                 GDK_PROP_MODE_REPLACE, (const guchar *) uri,
-                                 strlen (uri));
-
-            dest->details->direct_save_uri = uri;
-        }
-        else
-        {
-            DEBUG ("Invalid filename provided by XDS drag site");
-        }
-    }
-    else
-    {
-        DEBUG ("Could not retrieve XDS drop destination");
-    }
-
-    return uri != NULL;
-}
-
-static gboolean
-drag_drop_callback (GtkWidget      *widget,
-                    GdkDragContext *context,
-                    int             x,
-                    int             y,
-                    guint32         time,
-                    gpointer        data)
+drag_drop_callback (GtkWidget *widget,
+                    GdkDrop   *drop,
+                    int        x,
+                    int        y,
+                    gpointer   data)
 {
     NautilusTreeViewDragDest *dest;
-    guint info;
     GdkAtom target;
 
     dest = NAUTILUS_TREE_VIEW_DRAG_DEST (data);
@@ -1149,20 +956,6 @@ drag_drop_callback (GtkWidget      *widget,
     if (target == GDK_NONE)
     {
         return FALSE;
-    }
-
-    info = dest->details->drag_type;
-
-    if (info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE)
-    {
-        /* We need to set this or get_drop_path will fail, and it
-         *  was unset by drag_leave_callback */
-        dest->details->have_drag_data = TRUE;
-        if (!set_direct_save_uri (dest, context, x, y))
-        {
-            return FALSE;
-        }
-        dest->details->have_drag_data = FALSE;
     }
 
     dest->details->drop_occurred = TRUE;
@@ -1268,18 +1061,6 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
                       G_TYPE_POINTER,
                       G_TYPE_STRING,
                       GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_NETSCAPE_URL] =
-        g_signal_new ("handle-netscape-url",
-                      G_TYPE_FROM_CLASS (class),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass,
-                                       handle_netscape_url),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 3,
-                      G_TYPE_STRING,
-                      G_TYPE_STRING,
-                      GDK_TYPE_DRAG_ACTION);
     signals[HANDLE_URI_LIST] =
         g_signal_new ("handle-uri-list",
                       G_TYPE_FROM_CLASS (class),
@@ -1301,20 +1082,6 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 3,
-                      G_TYPE_STRING,
-                      G_TYPE_STRING,
-                      GDK_TYPE_DRAG_ACTION);
-    signals[HANDLE_RAW] =
-        g_signal_new ("handle-raw",
-                      G_TYPE_FROM_CLASS (class),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusTreeViewDragDestClass,
-                                       handle_raw),
-                      NULL, NULL,
-                      g_cclosure_marshal_generic,
-                      G_TYPE_NONE, 5,
-                      G_TYPE_POINTER,
-                      G_TYPE_INT,
                       G_TYPE_STRING,
                       G_TYPE_STRING,
                       GDK_TYPE_DRAG_ACTION);
