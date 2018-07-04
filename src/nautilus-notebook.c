@@ -56,23 +56,9 @@ static guint signals[LAST_SIGNAL];
 struct _NautilusNotebook
 {
     GtkNotebook parent_instance;
-
-    GtkGesture *multi_press_gesture;
 };
 
 G_DEFINE_TYPE (NautilusNotebook, nautilus_notebook, GTK_TYPE_NOTEBOOK);
-
-static void
-nautilus_notebook_dispose (GObject *object)
-{
-    NautilusNotebook *notebook;
-
-    notebook = NAUTILUS_NOTEBOOK (object);
-
-    g_clear_object (&notebook->multi_press_gesture);
-
-    G_OBJECT_CLASS (nautilus_notebook_parent_class)->dispose (object);
-}
 
 static void
 nautilus_notebook_class_init (NautilusNotebookClass *klass)
@@ -80,8 +66,6 @@ nautilus_notebook_class_init (NautilusNotebookClass *klass)
     GObjectClass *object_class = G_OBJECT_CLASS (klass);
     GtkContainerClass *container_class = GTK_CONTAINER_CLASS (klass);
     GtkNotebookClass *notebook_class = GTK_NOTEBOOK_CLASS (klass);
-
-    object_class->dispose = nautilus_notebook_dispose;
 
     container_class->remove = nautilus_notebook_remove;
 
@@ -190,17 +174,21 @@ button_press_cb (GtkGestureMultiPress *gesture,
 static void
 nautilus_notebook_init (NautilusNotebook *notebook)
 {
+    GtkGesture *gesture;
+
     gtk_notebook_set_scrollable (GTK_NOTEBOOK (notebook), TRUE);
     gtk_notebook_set_show_border (GTK_NOTEBOOK (notebook), FALSE);
     gtk_notebook_set_show_tabs (GTK_NOTEBOOK (notebook), FALSE);
 
-    notebook->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (notebook));
+    gesture = gtk_gesture_multi_press_new ();
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (notebook->multi_press_gesture),
+    gtk_widget_add_controller (GTK_WIDGET (notebook), GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (notebook->multi_press_gesture), 0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
-    g_signal_connect (notebook->multi_press_gesture, "pressed", G_CALLBACK (button_press_cb), NULL);
+    g_signal_connect (gesture, "pressed", G_CALLBACK (button_press_cb), NULL);
 }
 
 gboolean
