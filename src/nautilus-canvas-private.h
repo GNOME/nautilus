@@ -203,8 +203,6 @@ struct NautilusCanvasContainerDetails {
 	eel_boolean_bit is_populating_container : 1;
 	eel_boolean_bit needs_resort : 1;
 	eel_boolean_bit selection_needs_resort : 1;
-
-    GtkGesture *multi_press_gesture;
 };
 
 /* Private functions shared by mutiple files. */
