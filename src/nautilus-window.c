@@ -44,7 +44,6 @@
 
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
-#include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-file-operations.h"
