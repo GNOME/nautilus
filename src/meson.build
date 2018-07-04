@@ -123,6 +123,8 @@ libnautilus_sources = [
   'nautilus-compress-dialog-controller.h',
   'nautilus-container-max-width.c',
   'nautilus-container-max-width.h',
+  'nautilus-content-provider.c',
+  'nautilus-content-provider.h',
   'nautilus-dbus-manager.c',
   'nautilus-dbus-manager.h',
   'nautilus-debug.c',
