@@ -46,6 +46,6 @@ void nautilus_files_view_handle_hover             (NautilusFilesView *view,
                                                    const char        *target_uri);
 
 void nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
-                                                   const GList       *uris,
+                                                   GList             *uris,
                                                    const char        *target_location,
                                                    GdkDragAction      action);
