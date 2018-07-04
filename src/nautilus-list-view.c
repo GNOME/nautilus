@@ -40,6 +40,7 @@
 #include "nautilus-clipboard.h"
 #include "nautilus-column-chooser.h"
 #include "nautilus-column-utilities.h"
+#include "nautilus-content-provider.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
 #include "nautilus-error-reporting.h"
@@ -87,9 +88,6 @@ static char **get_visible_columns (NautilusListView *list_view);
 static char **get_default_visible_columns (NautilusListView *list_view);
 static char **get_column_order (NautilusListView *list_view);
 static char **get_default_column_order (NautilusListView *list_view);
-static void on_clipboard_owner_changed (GtkClipboard *clipboard,
-                                        GdkEvent     *event,
-                                        gpointer      user_data);
 
 
 G_DEFINE_TYPE (NautilusListView, nautilus_list_view, NAUTILUS_TYPE_FILES_VIEW);
@@ -1339,19 +1337,17 @@ list_view_handle_hover (NautilusTreeViewDragDest *dest,
 
 static void
 move_copy_items_callback (NautilusTreeViewDragDest *dest,
-                          const GList              *item_uris,
+                          GList                    *item_uris,
                           const char               *target_uri,
                           guint                     action,
                           gpointer                  user_data)
 {
-    NautilusFilesView *view = user_data;
+    NautilusFilesView *view;
 
-    nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
-                                                item_uris);
-    nautilus_files_view_move_copy_items (view,
-                                         item_uris,
-                                         target_uri,
-                                         action);
+    view = user_data;
+
+    nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view), item_uris);
+    nautilus_files_view_move_copy_items (view, item_uris, target_uri, actions);
 }
 
 static void
@@ -3588,7 +3584,6 @@ static void
 nautilus_list_view_dispose (GObject *object)
 {
     NautilusListView *list_view;
-    GtkClipboard *clipboard;
 
     list_view = NAUTILUS_LIST_VIEW (object);
 
@@ -3604,8 +3599,6 @@ nautilus_list_view_dispose (GObject *object)
         list_view->details->drag_dest = NULL;
     }
 
-    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-    g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, list_view);
     g_signal_handlers_disconnect_by_func (nautilus_preferences,
                                           default_sort_order_changed_callback,
                                           list_view);
@@ -3748,54 +3741,33 @@ list_view_scroll_to_file (NautilusFilesView *view,
 }
 
 static void
-on_clipboard_contents_received (GtkClipboard *clipboard,
-                                const gchar  *selection_data,
-                                gpointer      user_data)
+update_clipboard_status (NautilusListView *view)
 {
-    NautilusListView *view = NAUTILUS_LIST_VIEW (user_data);
+    GtkWidget *widget;
+    GdkClipboard *clipboard;
+    GdkContentProvider *provider;
 
-    if (!view->details->model)
+    if (view->details->model == NULL)
     {
         /* We've been destroyed since call */
-        g_object_unref (view);
         return;
     }
 
-    if (nautilus_clipboard_is_cut_from_selection_data (selection_data))
+    widget = GTK_WIDGET (view);
+    clipboard = gtk_widget_get_clipboard (widget);
+    provider = gdk_clipboard_get_content (clipboard);
+    if (NAUTILUS_IS_CUT_CONTENT_PROVIDER (provider))
     {
-        GList *uris;
         GList *files;
 
-        uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data);
-        files = nautilus_file_list_from_uri_list (uris);
-        nautilus_list_model_set_highlight_for_files (view->details->model, files);
+        files = nautilus_content_provider_get_files (NAUTILUS_CONTENT_PROVIDER (provider));
 
-        nautilus_file_list_free (files);
-        g_list_free_full (uris, g_free);
+        nautilus_list_model_set_highlight_for_files (view->details->model, files);
     }
     else
     {
         nautilus_list_model_set_highlight_for_files (view->details->model, NULL);
     }
-
-    g_object_unref (view);
-}
-
-static void
-update_clipboard_status (NautilusListView *view)
-{
-    g_object_ref (view);     /* Need to keep the object alive until we get the reply */
-    gtk_clipboard_request_text (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                on_clipboard_contents_received,
-                                view);
-}
-
-static void
-on_clipboard_owner_changed (GtkClipboard *clipboard,
-                            GdkEvent     *event,
-                            gpointer      user_data)
-{
-    update_clipboard_status (NAUTILUS_LIST_VIEW (user_data));
 }
 
 static void
@@ -3961,10 +3933,21 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
 }
 
 static void
+on_clipboard_changed (GdkClipboard *clipboard,
+                      gpointer      user_data)
+{
+    update_clipboard_status (user_data);
+}
+
+static void
 nautilus_list_view_init (NautilusListView *list_view)
 {
+    GtkWidget *widget;
+    GdkClipboard *clipboard;
     GActionGroup *view_action_group;
-    GtkClipboard *clipboard;
+
+    widget = GTK_WIDGET (list_view);
+    clipboard = gtk_widget_get_clipboard (widget);
 
     list_view->details = g_new0 (NautilusListViewDetails, 1);
 
@@ -3993,10 +3976,9 @@ nautilus_list_view_init (NautilusListView *list_view)
                               G_CALLBACK (default_column_order_changed_callback),
                               list_view);
 
-    /* React to clipboard changes */
-    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-    g_signal_connect (clipboard, "owner-change",
-                      G_CALLBACK (on_clipboard_owner_changed), list_view);
+    g_signal_connect_object (clipboard, "changed",
+                             G_CALLBACK (on_clipboard_changed), self,
+                             0);
 
     nautilus_list_view_click_policy_changed (NAUTILUS_FILES_VIEW (list_view));
 
