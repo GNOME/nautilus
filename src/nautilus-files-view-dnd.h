@@ -50,6 +50,6 @@ void nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
                                                    GdkDragAction      action);
 
 void nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
-                                                   const GList       *uris,
+                                                   GList             *uris,
                                                    const char        *target_location,
                                                    GdkDragAction      action);
