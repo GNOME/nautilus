@@ -80,8 +80,6 @@ typedef struct
 
     NautilusPathBar *path_bar;
 
-    GtkGesture *multi_press_gesture;
-
     guint ignore_changes : 1;
     guint is_root : 1;
 } ButtonData;
@@ -110,9 +108,6 @@ typedef struct
     GMenu *current_view_menu;
     GMenu *extensions_background_menu;
     GMenu *templates_menu;
-
-    GtkGesture *up_slider_button_long_press_gesture;
-    GtkGesture *down_slider_button_long_press_gesture;
 } NautilusPathBarPrivate;
 
 
@@ -233,6 +228,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
 {
     NautilusPathBarPrivate *priv;
     GtkBuilder *builder;
+    GtkGesture *gesture;
 
     priv = nautilus_path_bar_get_instance_private (self);
 
@@ -256,18 +252,22 @@ nautilus_path_bar_init (NautilusPathBar *self)
     g_signal_connect_swapped (priv->up_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_up), self);
     g_signal_connect_swapped (priv->down_slider_button, "clicked", G_CALLBACK (nautilus_path_bar_scroll_down), self);
 
-    priv->up_slider_button_long_press_gesture = gtk_gesture_long_press_new (priv->up_slider_button);
+    gesture = gtk_gesture_long_press_new ();
 
-    g_signal_connect (priv->up_slider_button_long_press_gesture, "pressed",
+    gtk_widget_add_controller (priv->up_slider_button, GTK_EVENT_CONTROLLER (gesture));
+
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_long_press_gesture_pressed), self);
-    g_signal_connect (priv->up_slider_button_long_press_gesture, "cancelled",
+    g_signal_connect (gesture, "cancelled",
                       G_CALLBACK (on_long_press_gesture_cancelled), self);
 
-    priv->down_slider_button_long_press_gesture = gtk_gesture_long_press_new (priv->down_slider_button);
+    gesture = gtk_gesture_long_press_new ();
 
-    g_signal_connect (priv->down_slider_button_long_press_gesture, "pressed",
+    gtk_widget_add_controller (priv->down_slider_button, GTK_EVENT_CONTROLLER (gesture));
+
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_long_press_gesture_pressed), self);
-    g_signal_connect (priv->down_slider_button_long_press_gesture, "cancelled",
+    g_signal_connect (gesture, "cancelled",
                       G_CALLBACK (on_long_press_gesture_cancelled), self);
 
     gtk_drag_dest_set (GTK_WIDGET (priv->up_slider_button),
@@ -347,15 +347,10 @@ static void
 nautilus_path_bar_dispose (GObject *object)
 {
     NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
 
     self = NAUTILUS_PATH_BAR (object);
-    priv = nautilus_path_bar_get_instance_private (self);
 
-    remove_settings_signal (self, gtk_widget_get_screen (GTK_WIDGET (object)));
-
-    g_clear_object (&priv->up_slider_button_long_press_gesture);
-    g_clear_object (&priv->down_slider_button_long_press_gesture);
+    remove_settings_signal (self, gtk_widget_get_display (GTK_WIDGET (object)));
 
     G_OBJECT_CLASS (nautilus_path_bar_parent_class)->dispose (object);
 }
@@ -1590,8 +1585,6 @@ button_data_free (ButtonData *button_data)
         nautilus_file_unref (button_data->file);
     }
 
-    g_clear_object (&button_data->multi_press_gesture);
-
     g_free (button_data);
 }
 
@@ -2010,6 +2003,7 @@ make_button_data (NautilusPathBar *self,
     GtkWidget *child;
     ButtonData *button_data;
     NautilusPathBarPrivate *priv;
+    GtkGesture *gesture;
 
     priv = nautilus_path_bar_get_instance_private (self);
     path = nautilus_file_get_location (file);
@@ -2130,11 +2124,13 @@ make_button_data (NautilusPathBar *self,
 
     /* A gesture is needed here, because GtkButton doesn’t react to middle-clicking.
      */
-    button_data->multi_press_gesture = gtk_gesture_multi_press_new (button_data->button);
+    gesture = gtk_gesture_multi_press_new ();
 
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), GDK_BUTTON_MIDDLE);
+    gtk_widget_add_controller (button_data->button, GTK_EVENT_CONTROLLER (gesture));
 
-    g_signal_connect (button_data->multi_press_gesture, "pressed",
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), GDK_BUTTON_MIDDLE);
+
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), button_data);
 
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
