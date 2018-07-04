@@ -79,8 +79,6 @@ typedef struct
 
     NautilusPathBar *path_bar;
 
-    GtkGesture *multi_press_gesture;
-
     guint ignore_changes : 1;
     guint is_root : 1;
 } ButtonData;
@@ -1028,8 +1026,6 @@ button_data_free (ButtonData *button_data)
         nautilus_file_unref (button_data->file);
     }
 
-    g_clear_object (&button_data->multi_press_gesture);
-
     g_free (button_data);
 }
 
@@ -1562,6 +1558,7 @@ make_button_data (NautilusPathBar *self,
     GFile *path;
     GtkWidget *child;
     ButtonData *button_data;
+    GtkGesture *gesture;
 
     path = nautilus_file_get_location (file);
     child = NULL;
@@ -1687,11 +1684,13 @@ make_button_data (NautilusPathBar *self,
     /* A gesture is needed here, because GtkButton doesn’t react to middle- or
      * secondary-clicking.
      */
-    button_data->multi_press_gesture = gtk_gesture_multi_press_new (button_data->button);
+    gesture = gtk_gesture_multi_press_new ();
 
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), 0);
+    gtk_widget_add_controller (button_data->button, GTK_EVENT_CONTROLLER (gesture));
 
-    g_signal_connect (button_data->multi_press_gesture, "pressed",
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
+
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), button_data);
 
     nautilus_drag_slot_proxy_init (button_data->button, button_data->file, NULL);
