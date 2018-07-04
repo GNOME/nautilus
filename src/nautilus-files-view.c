@@ -286,9 +286,6 @@ static void     trash_or_delete_files (GtkWindow         *parent_window,
                                        NautilusFilesView *view);
 static void     load_directory (NautilusFilesView *view,
                                 NautilusDirectory *directory);
-static void on_clipboard_owner_changed (GtkClipboard *clipboard,
-                                        GdkEvent     *event,
-                                        gpointer      user_data);
 static void     open_one_in_new_window (gpointer data,
                                         gpointer callback_data);
 static void     schedule_update_context_menus (NautilusFilesView *view);
@@ -2573,70 +2570,37 @@ action_open_item_new_window (GSimpleAction *action,
 
 static void
 handle_clipboard_data (NautilusFilesView *view,
-                       GtkSelectionData  *selection_data,
+                       GList             *files,
                        char              *destination_uri,
                        GdkDragAction      action)
 {
-    GList *item_uris;
+    GList *item_uris = NULL;
 
-    item_uris = nautilus_clipboard_get_uri_list_from_selection_data (selection_data);
-
-    if (item_uris != NULL && destination_uri != NULL)
+    if (files == NULL || destination_uri == NULL)
     {
-        nautilus_files_view_move_copy_items (view, item_uris, destination_uri,
-                                             action);
-
-        /* If items are cut then remove from clipboard */
-        if (action == GDK_ACTION_MOVE)
-        {
-            gtk_clipboard_clear (nautilus_clipboard_get (GTK_WIDGET (view)));
-        }
-
-        g_list_free_full (item_uris, g_free);
-    }
-}
-
-static void
-paste_clipboard_data (NautilusFilesView *view,
-                      GtkSelectionData  *selection_data,
-                      char              *destination_uri)
-{
-    GdkDragAction action;
-
-    if (nautilus_clipboard_is_cut_from_selection_data (selection_data))
-    {
-        action = GDK_ACTION_MOVE;
-    }
-    else
-    {
-        action = GDK_ACTION_COPY;
+        return;
     }
 
-    handle_clipboard_data (view, selection_data, destination_uri, action);
-}
-
-static void
-paste_clipboard_received_callback (GtkClipboard     *clipboard,
-                                   GtkSelectionData *selection_data,
-                                   gpointer          data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    char *view_uri;
-
-    view = NAUTILUS_FILES_VIEW (data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    view_uri = nautilus_files_view_get_backing_uri (view);
-
-    if (priv->slot != NULL)
+    for (GList *l = files; l != NULL; l = l->next)
     {
-        paste_clipboard_data (view, selection_data, view_uri);
+        char *uri;
+
+        uri = nautilus_file_get_uri (l->data);
+
+        item_uris = g_list_prepend (uri);
     }
 
-    g_free (view_uri);
+    item_uris = g_list_reverse (item_uris);
 
-    g_object_unref (view);
+    nautilus_files_view_move_copy_items (view, item_uris, destination_uri, action);
+
+    /* If items are cut then remove from clipboard */
+    if (action == GDK_ACTION_MOVE)
+    {
+        nautilus_clipboard_clear (GTK_WIDGET (view));
+    }
+
+    g_list_free_full (item_uris, g_free);
 }
 
 static void
@@ -2645,40 +2609,29 @@ action_paste_files (GSimpleAction *action,
                     gpointer       user_data)
 {
     NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GList *files;
+    gboolean cut;
+    g_autofree char *uri;
+    GdkDragAction action;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     view = NAUTILUS_FILES_VIEW (user_data);
-
-    g_object_ref (view);
-    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                    nautilus_clipboard_get_atom (),
-                                    paste_clipboard_received_callback,
-                                    view);
-}
-
-static void
-create_links_clipboard_received_callback (GtkClipboard     *clipboard,
-                                          GtkSelectionData *selection_data,
-                                          gpointer          data)
-{
-    NautilusFilesView *view;
-    NautilusFilesViewPrivate *priv;
-    char *view_uri;
-
-    view = NAUTILUS_FILES_VIEW (data);
     priv = nautilus_files_view_get_instance_private (view);
-
-    view_uri = nautilus_files_view_get_backing_uri (view);
-
-    if (priv->slot != NULL)
+    if (priv->slot == NULL)
     {
-        handle_clipboard_data (view, selection_data, view_uri, GDK_ACTION_LINK);
+        return;
     }
+    files = nautilus_clipboard_get_files (GTK_WIDGET (view), &cut);
+    if (files == NULL)
+    {
+        return;
+    }
+    uri = nautilus_files_view_get_backing_uri (view);
+    action = cut? GDK_ACTION_MOVE : GDK_ACTION_COPY;
 
-    g_free (view_uri);
-
-    g_object_unref (view);
+    handle_clipboard_data (view, files, uri, action);
 }
 
 static void
@@ -2687,16 +2640,26 @@ action_create_links (GSimpleAction *action,
                      gpointer       user_data)
 {
     NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GList *files;
+    g_autofree char *uri = NULL;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    if (priv->slot == NULL)
+    {
+        return;
+    }
+    files = nautilus_clipboard_get_files (GTK_WIDGET (view), NULL);
+    if (files == NULL)
+    {
+        return;
+    }
+    uri = nautilus_files_view_get_backing_uri (view);
 
-    g_object_ref (view);
-    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                    nautilus_clipboard_get_atom (),
-                                    create_links_clipboard_received_callback,
-                                    view);
+    handle_clipboard_data (view, files, uri, GDK_ACTION_LINK);
 }
 
 static void
@@ -3094,7 +3057,6 @@ nautilus_files_view_destroy (GtkWidget *object)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
-    GtkClipboard *clipboard;
     GList *node, *next;
 
     view = NAUTILUS_FILES_VIEW (object);
@@ -3174,9 +3136,6 @@ nautilus_files_view_destroy (GtkWidget *object)
                                           schedule_update_context_menus, view);
     g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
                                           nautilus_files_view_trash_state_changed_callback, view);
-
-    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-    g_signal_handlers_disconnect_by_func (clipboard, on_clipboard_owner_changed, view);
 
     nautilus_file_unref (priv->directory_as_file);
     priv->directory_as_file = NULL;
@@ -5991,14 +5950,12 @@ action_copy (GSimpleAction *action,
              gpointer       user_data)
 {
     NautilusFilesView *view;
-    GtkClipboard *clipboard;
     GList *selection;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
-    clipboard = nautilus_clipboard_get (GTK_WIDGET (view));
-    nautilus_clipboard_prepare_for_files (clipboard, selection, FALSE);
+    nautilus_clipboard_prepare_for_files (GTK_WIDGET (view), selection, FALSE);
 
     nautilus_file_list_free (selection);
 }
@@ -6010,13 +5967,11 @@ action_cut (GSimpleAction *action,
 {
     NautilusFilesView *view;
     GList *selection;
-    GtkClipboard *clipboard;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
     selection = nautilus_files_view_get_selection_for_file_transfer (view);
-    clipboard = nautilus_clipboard_get (GTK_WIDGET (view));
-    nautilus_clipboard_prepare_for_files (clipboard, selection, TRUE);
+    nautilus_clipboard_prepare_for_files (GTK_WIDGET (view), selection, TRUE);
 
     nautilus_file_list_free (selection);
 }
@@ -6074,75 +6029,38 @@ action_move_to (GSimpleAction *action,
     copy_or_move_selection (view, TRUE);
 }
 
-typedef struct
-{
-    NautilusFilesView *view;
-    NautilusFile *target;
-} PasteIntoData;
-
-static void
-paste_into_clipboard_received_callback (GtkClipboard     *clipboard,
-                                        GtkSelectionData *selection_data,
-                                        gpointer          callback_data)
-{
-    NautilusFilesViewPrivate *priv;
-    PasteIntoData *data;
-    NautilusFilesView *view;
-    char *directory_uri;
-
-    data = (PasteIntoData *) callback_data;
-
-    view = NAUTILUS_FILES_VIEW (data->view);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->slot != NULL)
-    {
-        directory_uri = nautilus_file_get_activation_uri (data->target);
-
-        paste_clipboard_data (view, selection_data, directory_uri);
-
-        g_free (directory_uri);
-    }
-
-    g_object_unref (view);
-    nautilus_file_unref (data->target);
-    g_free (data);
-}
-
-static void
-paste_into (NautilusFilesView *view,
-            NautilusFile      *target)
-{
-    PasteIntoData *data;
-
-    g_assert (NAUTILUS_IS_FILES_VIEW (view));
-    g_assert (NAUTILUS_IS_FILE (target));
-
-    data = g_new (PasteIntoData, 1);
-
-    data->view = g_object_ref (view);
-    data->target = nautilus_file_ref (target);
-
-    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                    nautilus_clipboard_get_atom (),
-                                    paste_into_clipboard_received_callback,
-                                    data);
-}
-
 static void
 action_paste_files_into (GSimpleAction *action,
                          GVariant      *state,
                          gpointer       user_data)
 {
     NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
+    GList *files;
     g_autolist (NautilusFile) selection = NULL;
+    g_autofree char *uri;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     view = NAUTILUS_FILES_VIEW (user_data);
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    if (selection != NULL)
+    priv = nautilus_files_view_get_instance_private (view);
+    if (priv->slot == NULL)
     {
-        paste_into (view, NAUTILUS_FILE (selection->data));
+        return;
     }
+    files = nautilus_clipboard_get_files (GTK_WIDGET (view), NULL);
+    if (files == NULL)
+    {
+        return;
+    }
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    if (selection == NULL)
+    {
+        return;
+    }
+    uri = nautilus_files_view_get_activation_uri (selection->data);
+
+    paste_clipboard_data (view, files, uri);
 }
 
 static void
@@ -7000,106 +6918,6 @@ can_paste_into_file (NautilusFile *file)
 }
 
 static void
-on_clipboard_contents_received (GtkClipboard     *clipboard,
-                                GtkSelectionData *selection_data,
-                                gpointer          user_data)
-{
-    NautilusFilesViewPrivate *priv;
-    NautilusFilesView *view;
-    gboolean can_link_from_copied_files;
-    gboolean settings_show_create_link;
-    gboolean is_read_only;
-    gboolean selection_contains_recent;
-    gboolean selection_contains_starred;
-    GAction *action;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-
-    if (priv->slot == NULL ||
-        !priv->active)
-    {
-        /* We've been destroyed or became inactive since call */
-        g_object_unref (view);
-        return;
-    }
-
-    settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
-                                                        NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
-    is_read_only = nautilus_files_view_is_read_only (view);
-    selection_contains_recent = showing_recent_directory (view);
-    selection_contains_starred = showing_starred_directory (view);
-    can_link_from_copied_files = !nautilus_clipboard_is_cut_from_selection_data (selection_data) &&
-                                 !selection_contains_recent && !selection_contains_starred &&
-                                 !is_read_only && gtk_selection_data_get_length (selection_data) > 0;
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
-                                         "create-link");
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 can_link_from_copied_files &&
-                                 settings_show_create_link);
-
-    g_object_unref (view);
-}
-
-static void
-on_clipboard_targets_received (GtkClipboard *clipboard,
-                               GdkAtom      *targets,
-                               int           n_targets,
-                               gpointer      user_data)
-{
-    NautilusFilesViewPrivate *priv;
-    NautilusFilesView *view;
-    gboolean is_data_copied;
-    int i;
-    GAction *action;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-    priv = nautilus_files_view_get_instance_private (view);
-    is_data_copied = FALSE;
-
-    if (priv->slot == NULL ||
-        !priv->active)
-    {
-        /* We've been destroyed or became inactive since call */
-        g_object_unref (view);
-        return;
-    }
-
-    if (targets)
-    {
-        for (i = 0; i < n_targets; i++)
-        {
-            if (targets[i] == nautilus_clipboard_get_atom ())
-            {
-                is_data_copied = TRUE;
-            }
-        }
-    }
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
-                                         "paste");
-    /* Take into account if the action was previously disabled for other reasons,
-     * like the directory not being writabble */
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 is_data_copied && g_action_get_enabled (action));
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
-                                         "paste-into");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 is_data_copied && g_action_get_enabled (action));
-
-    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
-                                         "create-link");
-
-    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 is_data_copied && g_action_get_enabled (action));
-
-    g_object_unref (view);
-}
-
-static void
 file_should_show_foreach (NautilusFile        *file,
                           gboolean            *show_mount,
                           gboolean            *show_unmount,
@@ -7196,17 +7014,6 @@ can_restore_from_trash (GList *files)
         g_hash_table_destroy (original_dirs_hash);
     }
     return can_restore;
-}
-
-static void
-on_clipboard_owner_changed (GtkClipboard *clipboard,
-                            GdkEvent     *event,
-                            gpointer      user_data)
-{
-    NautilusFilesView *self = NAUTILUS_FILES_VIEW (user_data);
-
-    /* Update paste menu item */
-    nautilus_files_view_update_context_menus (self);
 }
 
 static gboolean
@@ -7307,6 +7114,62 @@ nautilus_files_view_get_action_group (NautilusFilesView *view)
 }
 
 static void
+update_actions_state_from_clipboard (NautilusFilesView *view)
+{
+    NautilusFilesViewPrivate *priv;
+    NautilusFilesView *view;
+    GFiles *files;
+    gboolean cut;
+    gboolean can_link_from_copied_files;
+    gboolean settings_show_create_link;
+    gboolean is_read_only;
+    gboolean selection_contains_recent;
+    gboolean selection_contains_starred;
+    GAction *action;
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+    priv = nautilus_files_view_get_instance_private (view);
+    if (priv->slot == NULL || !priv->active)
+    {
+        /* We've been destroyed or became inactive since call */
+        return;
+    }
+    files = nautilus_clipboard_get_files (GTK_WIDGET (view), &cut);
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "paste");
+    /* Take into account if the action was previously disabled for other reasons,
+     * like the directory not being writabble */
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 files != NULL && g_action_get_enabled (action));
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "paste-into");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 files != NULL && g_action_get_enabled (action));
+
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->view_action_group),
+                                         "create-link");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 files != NULL && g_action_get_enabled (action));
+
+    settings_show_create_link = g_settings_get_boolean (nautilus_preferences,
+                                                        NAUTILUS_PREFERENCES_SHOW_CREATE_LINK);
+    is_read_only = nautilus_files_view_is_read_only (view);
+    selection_contains_recent = showing_recent_directory (view);
+    selection_contains_starred = showing_starred_directory (view);
+    can_link_from_copied_files = !cut &&
+                                 !selection_contains_recent && !selection_contains_starred &&
+                                 !is_read_only && files != NULL;
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
+                                 can_link_from_copied_files &&
+                                 settings_show_create_link);
+}
+
+static void
 real_update_actions_state (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -7347,6 +7210,7 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
+    GdkContentFormats *formats;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -7640,18 +7504,7 @@ real_update_actions_state (NautilusFilesView *view)
                                  !selection_contains_starred &&
                                  priv->templates_present);
 
-    /* Actions that are related to the clipboard need request, request the data
-     * and update them once we have the data */
-    g_object_ref (view);     /* Need to keep the object alive until we get the reply */
-    gtk_clipboard_request_targets (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                   on_clipboard_targets_received,
-                                   view);
-
-    g_object_ref (view);     /* Need to keep the object alive until we get the reply */
-    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                    nautilus_clipboard_get_atom (),
-                                    on_clipboard_contents_received,
-                                    view);
+    update_actions_state_from_clipboard (view);
 
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "select-all");
@@ -8801,7 +8654,7 @@ void
 nautilus_files_view_move_copy_items (NautilusFilesView *view,
                                      const GList       *item_uris,
                                      const char        *target_uri,
-                                     int                copy_action)
+                                     GdkDragAction      copy_action)
 {
     NautilusFile *target_file;
 
@@ -9488,7 +9341,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     NautilusDirectory *scripts_directory;
     NautilusDirectory *templates_directory;
     gchar *templates_uri;
-    GtkClipboard *clipboard;
     GApplication *app;
     const gchar *open_accels[] =
     {
@@ -9665,11 +9517,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     g_signal_connect_object (nautilus_trash_monitor_get (), "trash-state-changed",
                              G_CALLBACK (nautilus_files_view_trash_state_changed_callback), view, 0);
-
-    /* React to clipboard changes */
-    clipboard = gtk_clipboard_get (GDK_SELECTION_CLIPBOARD);
-    g_signal_connect (clipboard, "owner-change",
-                      G_CALLBACK (on_clipboard_owner_changed), view);
 
     /* Register to menu provider extension signal managing menu updates */
     g_signal_connect_object (nautilus_signaller_get_current (), "popup-menu-changed",
