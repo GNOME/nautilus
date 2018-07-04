@@ -2113,7 +2113,7 @@ create_and_set_up_tree_view (NautilusListView *view)
     GList *l;
     gchar **default_column_order, **default_visible_columns;
     GtkWidget *content_widget;
-    GtkGesture *longpress_gesture;
+    GtkGesture *gesture;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (view));
     view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -2151,26 +2151,32 @@ create_and_set_up_tree_view (NautilusListView *view)
                              "changed",
                              G_CALLBACK (list_selection_changed_callback), view, 0);
 
-    view->details->tree_view_drag_gesture = gtk_gesture_drag_new (GTK_WIDGET (view->details->tree_view));
+    gesture = gtk_gesture_drag_new ();
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (view->details->tree_view_drag_gesture),
+    gtk_widget_add_controller (GTK_WIDGET (view->details->tree_view),
+                               GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (view->details->tree_view_drag_gesture), 0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
-    g_signal_connect (view->details->tree_view_drag_gesture, "drag-begin",
+    g_signal_connect (gesture, "drag-begin",
                       G_CALLBACK (on_tree_view_drag_gesture_drag_begin), view);
-    g_signal_connect (view->details->tree_view_drag_gesture, "drag-update",
+    g_signal_connect (gesture, "drag-update",
                       G_CALLBACK (on_tree_view_drag_gesture_drag_update), view);
 
-    view->details->tree_view_multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (view->details->tree_view));
+    gesture = gtk_gesture_multi_press_new ();
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (view->details->tree_view_multi_press_gesture),
+    gtk_widget_add_controller (GTK_WIDGET (view->details->tree_view),
+                               GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (view->details->tree_view_multi_press_gesture), 0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
-    g_signal_connect (view->details->tree_view_multi_press_gesture, "pressed",
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_tree_view_multi_press_gesture_pressed), view);
-    g_signal_connect (view->details->tree_view_multi_press_gesture, "released",
+    g_signal_connect (gesture, "released",
                       G_CALLBACK (on_tree_view_multi_press_gesture_released), view);
 
     g_signal_connect_object (view->details->tree_view, "event",
@@ -2199,14 +2205,18 @@ create_and_set_up_tree_view (NautilusListView *view)
     g_signal_connect_object (view->details->model, "get-icon-scale",
                              G_CALLBACK (get_icon_scale_callback), view, 0);
 
-    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (content_widget));
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
+    gesture = gtk_gesture_long_press_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (content_widget),
+                               GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
+    gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (gesture),
                                        TRUE);
-    g_signal_connect (longpress_gesture,
+    g_signal_connect (gesture,
                       "pressed",
-                      (GCallback) on_longpress_gesture_pressed_event,
+                      G_CALLBACK (on_longpress_gesture_pressed_event),
                       view);
 
     gtk_tree_selection_set_mode (gtk_tree_view_get_selection (view->details->tree_view), GTK_SELECTION_MULTIPLE);
@@ -3653,9 +3663,6 @@ nautilus_list_view_dispose (GObject *object)
     g_signal_handlers_disconnect_by_func (nautilus_list_view_preferences,
                                           default_column_order_changed_callback,
                                           list_view);
-
-    g_clear_object (&list_view->details->tree_view_drag_gesture);
-    g_clear_object (&list_view->details->tree_view_multi_press_gesture);
 
     G_OBJECT_CLASS (nautilus_list_view_parent_class)->dispose (object);
 }
