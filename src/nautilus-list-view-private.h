@@ -64,8 +64,6 @@ struct NautilusListViewDetails {
 
   char *original_name;
 
-  gulong clipboard_handler_id;
-
   GQuark last_sort_attr;
 
   GRegex *regex;
