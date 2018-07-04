@@ -97,12 +97,8 @@ struct _NautilusToolbar
     GtkWidget *operations_icon;
 
     GtkWidget *forward_button;
-    GtkGesture *forward_button_longpress_gesture;
-    GtkGesture *forward_button_multi_press_gesture;
 
     GtkWidget *back_button;
-    GtkGesture *back_button_longpress_gesture;
-    GtkGesture *back_button_multi_press_gesture;
 
     GtkWidget *location_entry_close_button;
 
@@ -888,6 +884,7 @@ nautilus_toolbar_constructed (GObject *object)
 {
     GtkBuilder *builder;
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
+    GtkGesture *gesture;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-switcher.ui");
     self->toolbar_switcher = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar_switcher"));
@@ -925,13 +922,13 @@ nautilus_toolbar_constructed (GObject *object)
 
     update_operations (self);
 
-    self->back_button_longpress_gesture = gtk_gesture_long_press_new (self->back_button);
-    g_signal_connect (self->back_button_longpress_gesture, "pressed",
-                      G_CALLBACK (back_button_longpress_cb), self);
+    gesture = gtk_gesture_long_press_new ();
+    gtk_widget_add_controller (self->back_button, GTK_EVENT_CONTROLLER (gesture));
+    g_signal_connect (gesture, "pressed", G_CALLBACK (back_button_longpress_cb), self);
 
-    self->forward_button_longpress_gesture = gtk_gesture_long_press_new (self->forward_button);
-    g_signal_connect (self->forward_button_longpress_gesture, "pressed",
-                      G_CALLBACK (forward_button_longpress_cb), self);
+    gesture = gtk_gesture_long_press_new ();
+    gtk_widget_add_controller (self->forward_button, GTK_EVENT_CONTROLLER (gesture));
+    g_signal_connect (gesture, "pressed", G_CALLBACK (forward_button_longpress_cb), self);
 
     g_object_set_data (G_OBJECT (self->back_button), "nav-direction",
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_BACK));
@@ -939,17 +936,15 @@ nautilus_toolbar_constructed (GObject *object)
                        GUINT_TO_POINTER (NAUTILUS_NAVIGATION_DIRECTION_FORWARD));
 
 
-    self->back_button_multi_press_gesture = gtk_gesture_multi_press_new (self->back_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->back_button_multi_press_gesture),
-                                   GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->back_button_multi_press_gesture, "pressed",
-                      G_CALLBACK (navigation_button_press_cb), self);
+    gesture = gtk_gesture_multi_press_new ();
+    gtk_widget_add_controller (self->back_button, GTK_EVENT_CONTROLLER (gesture));
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), GDK_BUTTON_SECONDARY);
+    g_signal_connect (gesture, "pressed", G_CALLBACK (navigation_button_press_cb), self);
 
-    self->forward_button_multi_press_gesture = gtk_gesture_multi_press_new (self->forward_button);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (self->forward_button_multi_press_gesture),
-                                   GDK_BUTTON_SECONDARY);
-    g_signal_connect (self->forward_button_multi_press_gesture, "pressed",
-                      G_CALLBACK (navigation_button_press_cb), self);
+    gesture = gtk_gesture_multi_press_new ();
+    gtk_widget_add_controller (self->forward_button, GTK_EVENT_CONTROLLER (gesture));
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), GDK_BUTTON_SECONDARY);
+    g_signal_connect (gesture, "pressed", G_CALLBACK (navigation_button_press_cb), self);
 
     g_signal_connect (self->operations_popover, "show",
                       (GCallback) gtk_widget_grab_focus, NULL);
@@ -1114,8 +1109,6 @@ nautilus_toolbar_dispose (GObject *object)
 
     self = NAUTILUS_TOOLBAR (object);
 
-    g_clear_object (&self->forward_button_multi_press_gesture);
-    g_clear_object (&self->back_button_multi_press_gesture);
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
@@ -1146,9 +1139,6 @@ nautilus_toolbar_finalize (GObject *obj)
 
     g_signal_handlers_disconnect_by_func (self->window,
                                           on_window_focus_changed, self);
-
-    g_clear_object (&self->back_button_longpress_gesture);
-    g_clear_object (&self->forward_button_longpress_gesture);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }
