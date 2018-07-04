@@ -37,7 +37,6 @@
 #include <glib/gi18n.h>
 #include <gio/gio.h>
 #include "nautilus-file-utilities.h"
-#include "nautilus-clipboard.h"
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
