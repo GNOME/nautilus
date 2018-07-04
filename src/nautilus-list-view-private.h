@@ -72,8 +72,5 @@ struct NautilusListViewDetails {
 
   NautilusTagManager *tag_manager;
   GCancellable *starred_cancellable;
-
-  GtkGesture *tree_view_drag_gesture;
-  GtkGesture *tree_view_multi_press_gesture;
 };
 
