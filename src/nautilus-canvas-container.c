@@ -4212,18 +4212,19 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
         setup_prefs = TRUE;
     }
 
-    details->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (container));
+    gesture = gtk_gesture_multi_press_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (container), GTK_EVENT_CONTROLLER (gesture));
 
 #if 0
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (details->multi_press_gesture),
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
 #endif
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (details->multi_press_gesture),
-                                   0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
-    g_signal_connect (details->multi_press_gesture, "pressed",
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), NULL);
-    g_signal_connect (details->multi_press_gesture, "released",
+    g_signal_connect (gesture, "released",
                       G_CALLBACK (on_multi_press_gesture_released), NULL);
 }
 
