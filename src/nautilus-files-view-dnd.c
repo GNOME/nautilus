@@ -282,7 +282,7 @@ nautilus_files_view_handle_raw_drop (NautilusFilesView *view,
 
 void
 nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
-                                              const GList       *source_uri_list,
+                                              GList             *source_uri_list,
                                               const char        *target_uri,
                                               GdkDragAction      action)
 {
@@ -306,8 +306,7 @@ nautilus_files_view_drop_proxy_received_uris (NautilusFilesView *view,
         }
     }
 
-    nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view),
-                                                source_uri_list);
+    nautilus_clipboard_clear_if_colliding_uris (GTK_WIDGET (view), source_uri_list);
 
     nautilus_files_view_move_copy_items (view, source_uri_list,
                                          target_uri != NULL ? target_uri : container_uri,
