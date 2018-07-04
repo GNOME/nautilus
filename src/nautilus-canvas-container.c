@@ -4174,9 +4174,11 @@ text_ellipsis_limit_changed_callback (gpointer callback_data)
 static void
 nautilus_canvas_container_init (NautilusCanvasContainer *container)
 {
+    GtkWidget *widget;
     NautilusCanvasContainerDetails *details;
     static gboolean setup_prefs = FALSE;
 
+    widget = GTK_WIDGET (container);
     details = g_new0 (NautilusCanvasContainerDetails, 1);
 
     details->icon_set = g_hash_table_new (g_direct_hash, g_direct_equal);
@@ -4200,16 +4202,17 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
         setup_prefs = TRUE;
     }
 
-    details->multi_press_gesture = gtk_gesture_multi_press_new (GTK_WIDGET (container));
+    gesture = gtk_gesture_multi_press_new ();
 
-    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (details->multi_press_gesture),
+    gtk_widget_add_controller (widget, GTK_EVENT_CONTROLLER (gesture));
+
+    gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (details->multi_press_gesture),
-                                   0);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
-    g_signal_connect (details->multi_press_gesture, "pressed",
+    g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), NULL);
-    g_signal_connect (details->multi_press_gesture, "released",
+    g_signal_connect (gesture, "released",
                       G_CALLBACK (on_multi_press_gesture_released), NULL);
 }
 

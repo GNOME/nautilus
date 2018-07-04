@@ -1346,7 +1346,9 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
     g_object_add_weak_pointer (G_OBJECT (canvas_container),
                                (gpointer *) &canvas_view->canvas_container);
 
-    longpress_gesture = gtk_gesture_long_press_new (GTK_WIDGET (content_widget));
+    longpress_gesture = gtk_gesture_long_press_new ();
+    gtk_widget_add_controller (GTK_WIDGET (content_widget),
+                               GTK_EVENT_CONTROLLER (longpress_gesture));
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (longpress_gesture),
                                                 GTK_PHASE_CAPTURE);
     gtk_gesture_single_set_touch_only (GTK_GESTURE_SINGLE (longpress_gesture),
