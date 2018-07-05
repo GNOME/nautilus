@@ -309,10 +309,11 @@ add_tree_view (NautilusColumnChooser *chooser)
     gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (scrolled),
                                     GTK_POLICY_AUTOMATIC,
                                     GTK_POLICY_AUTOMATIC);
+    gtk_widget_set_vexpand (scrolled, TRUE);
     gtk_widget_show (GTK_WIDGET (scrolled));
 
     gtk_container_add (GTK_CONTAINER (scrolled), view);
-    gtk_box_pack_start (GTK_BOX (chooser->main_box), scrolled, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (chooser->main_box), scrolled);
 }
 
 static void
@@ -396,8 +397,7 @@ add_buttons (NautilusColumnChooser *chooser)
 
     style_context = gtk_widget_get_style_context (GTK_WIDGET (inline_toolbar));
     gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_INLINE_TOOLBAR);
-    gtk_box_pack_start (GTK_BOX (chooser->main_box), inline_toolbar,
-                        FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (chooser->main_box), inline_toolbar);
 
     box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
     tool_item = gtk_tool_item_new ();
