@@ -536,9 +536,7 @@ update_operations (NautilusToolbar *self)
         g_signal_connect_swapped (l->data, "progress-changed",
                                   G_CALLBACK (on_progress_info_progress_changed), self);
         progress = nautilus_progress_info_widget_new (l->data);
-        gtk_box_pack_start (GTK_BOX (self->operations_container),
-                            progress,
-                            FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (self->operations_container), progress);
     }
 
     g_list_free (progress_infos);
@@ -1332,14 +1330,12 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
 
     if (new_sections->zoom_section != NULL)
     {
-        gtk_box_pack_start (GTK_BOX (self->view_menu_zoom_section),
-                            new_sections->zoom_section, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (self->view_menu_zoom_section), new_sections->zoom_section);
     }
 
     if (new_sections->extended_section != NULL)
     {
-        gtk_box_pack_start (GTK_BOX (self->view_menu_extended_section),
-                            new_sections->extended_section, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (self->view_menu_extended_section), new_sections->extended_section);
     }
 
     gtk_widget_set_sensitive (self->view_button, new_sections->extended_section != NULL ||
