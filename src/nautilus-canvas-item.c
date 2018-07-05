@@ -128,8 +128,6 @@ struct NautilusCanvasItemDetails
     EelIRect bounds_cache_for_layout;
     EelIRect bounds_cache_for_entire_item;
 
-    GdkWindow *cursor_window;
-
     GString *text;
 };
 
@@ -175,24 +173,31 @@ nautilus_canvas_item_init (NautilusCanvasItem *canvas_item)
 }
 
 static void
+nautilus_canvas_item_dispose (GObject *object)
+{
+    EelCanvasItem *item;
+    NautilusCanvasItemDetails *details;
+
+    item = EEL_CANVAS_ITEM (object);
+    details = NAUTILUS_CANVAS_ITEM (object)->details;
+
+    gtk_widget_set_cursor (GTK_WIDGET (item->canvas), NULL);
+
+    g_clear_object (&details->pixbuf);
+    g_clear_object (&details->editable_text_layout);
+    g_clear_object (&details->additional_text_layout);
+
+    g_clear_pointer (&details->rendered_surface, cairo_surface_destroy);
+
+    G_OBJECT_CLASS (nautilus_canvas_item_parent_class)->dispose (object);
+}
+
+static void
 nautilus_canvas_item_finalize (GObject *object)
 {
     NautilusCanvasItemDetails *details;
 
-    g_assert (NAUTILUS_IS_CANVAS_ITEM (object));
-
     details = NAUTILUS_CANVAS_ITEM (object)->details;
-
-    if (details->cursor_window != NULL)
-    {
-        gdk_window_set_cursor (details->cursor_window, NULL);
-        g_object_unref (details->cursor_window);
-    }
-
-    if (details->pixbuf != NULL)
-    {
-        g_object_unref (details->pixbuf);
-    }
 
     if (details->text != NULL)
     {
@@ -200,23 +205,8 @@ nautilus_canvas_item_finalize (GObject *object)
         details->text = NULL;
     }
 
-    g_free (details->editable_text);
-    g_free (details->additional_text);
-
-    if (details->rendered_surface != NULL)
-    {
-        cairo_surface_destroy (details->rendered_surface);
-    }
-
-    if (details->editable_text_layout != NULL)
-    {
-        g_object_unref (details->editable_text_layout);
-    }
-
-    if (details->additional_text_layout != NULL)
-    {
-        g_object_unref (details->additional_text_layout);
-    }
+    g_clear_pointer (&details->editable_text, g_free);
+    g_clear_pointer (&details->additional_text, g_free);
 
     G_OBJECT_CLASS (nautilus_canvas_item_parent_class)->finalize (object);
 }
@@ -1474,17 +1464,7 @@ nautilus_canvas_item_enter_notify_event (EelCanvasItem *item,
         /* show a hand cursor */
         if (in_single_click_mode ())
         {
-            GdkDisplay *display;
-            g_autoptr (GdkCursor) cursor = NULL;
-            GdkWindow *window;
-
-            display = gdk_display_get_default ();
-            cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
-            window = eel_event_get_window (event);
-
-            gdk_window_set_cursor (window, cursor);
-
-            canvas_item->details->cursor_window = g_object_ref (window);
+            gtk_widget_set_cursor_from_name (GTK_WIDGET (item->canvas), "pointer");
         }
     }
 
@@ -1502,10 +1482,6 @@ nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
     if (canvas_item->details->is_prelit
         || canvas_item->details->is_highlighted_for_drop)
     {
-        GdkWindow *window;
-
-        window = eel_event_get_window (event);
-
         /* When leaving, turn of the prelight state and the
          * higlighted for drop. The latter gets turned on
          * by the drag&drop motion callback.
@@ -1516,8 +1492,7 @@ nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
         eel_canvas_item_request_update (item);
 
         /* show default cursor */
-        gdk_window_set_cursor (window, NULL);
-        g_clear_object (&canvas_item->details->cursor_window);
+        gtk_widget_set_cursor (GTK_WIDGET (item->canvas), NULL);
     }
 
     return GDK_EVENT_STOP;
@@ -1854,6 +1829,7 @@ nautilus_canvas_item_class_init (NautilusCanvasItemClass *class)
     object_class = G_OBJECT_CLASS (class);
     item_class = EEL_CANVAS_ITEM_CLASS (class);
 
+    object_class->dispose = nautilus_canvas_item_dispose;
     object_class->finalize = nautilus_canvas_item_finalize;
     object_class->set_property = nautilus_canvas_item_set_property;
     object_class->get_property = nautilus_canvas_item_get_property;

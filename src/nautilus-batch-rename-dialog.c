@@ -481,7 +481,7 @@ begin_batch_rename (NautilusBatchRenameDialog *dialog,
     /* do the actual rename here */
     nautilus_file_batch_rename (dialog->selection, new_names, NULL, NULL);
 
-    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog->window)), NULL);
+    gtk_widget_set_cursor (GTK_WIDGET (dialog->window), NULL);
 }
 
 static void
@@ -658,9 +658,6 @@ create_arrow_row_for_label (NautilusBatchRenameDialog *dialog,
 static void
 prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 {
-    GdkCursor *cursor;
-    GdkDisplay *display;
-
     /* wait for checking conflicts to finish, to be sure that
      * the rename can actually take place */
     if (dialog->checking_conflicts)
@@ -674,17 +671,8 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    display = gtk_widget_get_display (GTK_WIDGET (dialog->window));
-    cursor = gdk_cursor_new_from_name (display, "progress");
-    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog->window)),
-                           cursor);
-    g_object_unref (cursor);
-
-    display = gtk_widget_get_display (GTK_WIDGET (dialog));
-    cursor = gdk_cursor_new_from_name (display, "progress");
-    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (dialog)),
-                           cursor);
-    g_object_unref (cursor);
+    gtk_widget_set_cursor_from_name (GTK_WIDGET (dialog->window), "progress");
+    gtk_widget_set_cursor_from_name (GTK_WIDGET (dialog), "progress");
 
     gtk_widget_hide (GTK_WIDGET (dialog));
     begin_batch_rename (dialog, dialog->new_names);
@@ -2217,7 +2205,7 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     fill_display_listbox (dialog);
 
-    gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
+    gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
 
     g_string_free (dialog_title, TRUE);
 
