@@ -412,89 +412,89 @@ set_label_size_request (ButtonData *button_data)
  * available space.
  */
 static void
-nautilus_path_bar_get_preferred_width (GtkWidget *widget,
-                                       gint      *minimum,
-                                       gint      *natural)
+nautilus_path_bar_measure (GtkWidget      *widget,
+                           GtkOrientation  orientation,
+                           int             for_size,
+                           int            *minimum,
+                           int            *natural,
+                           int            *minimum_baseline,
+                           int            *natural_baseline)
 {
-    ButtonData *button_data;
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GList *list;
-    gint child_height;
-    gint height;
-    gint child_min, child_nat;
-    gint up_slider_width;
-    gint down_slider_width;
+    NautilusPathBar *self = NULL;
+    NautilusPathBarPrivate *priv = NULL;
+    ButtonData *button_data = NULL;
+    GtkRequisition child_minimum = { 0 };
+    GtkRequisition child_natural = { 0 };
+    int minimum_size = 0;
+    int natural_size = 0;
 
     self = NAUTILUS_PATH_BAR (widget);
     priv = nautilus_path_bar_get_instance_private (self);
 
-    *minimum = *natural = 0;
-    height = 0;
-
-    for (list = priv->button_list; list; list = list->next)
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
     {
-        button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
+        GtkRequisition down_button_minimum;
+        GtkRequisition up_button_minimum;
 
-        gtk_widget_get_preferred_width (button_data->container, &child_min, &child_nat);
-        gtk_widget_get_preferred_height (button_data->container, &child_height, NULL);
-        height = MAX (height, child_height);
-
-        if (button_data->type == NORMAL_BUTTON)
+        for (GList *list = priv->button_list; list != NULL; list = list->next)
         {
-            /* Use 2*Height as button width because of ellipsized label.  */
-            child_min = MAX (child_min, child_height * 2);
-            child_nat = MAX (child_min, child_height * 2);
+            button_data = BUTTON_DATA (list->data);
+
+            set_label_size_request (button_data);
+
+            gtk_widget_get_preferred_size (button_data->container,
+                                           &child_minimum, &child_natural);
+
+            if (button_data->type == NORMAL_BUTTON)
+            {
+                /* Use 2*Height as button width because of ellipsized label.  */
+                child_minimum.width = MAX (child_minimum.width, child_minimum.height * 2);
+                child_natural.width = MAX (child_minimum.width, child_minimum.height * 2);
+            }
+
+            minimum_size = MAX (minimum_size, child_minimum.width);
+            natural_size += child_natural.width;
         }
 
-        *minimum = MAX (*minimum, child_min);
-        *natural = *natural + child_nat;
+        /* Add space for slider, if we have more than one path */
+        /* Theoretically, the slider could be bigger than the other button.  But we're
+         * not going to worry about that now.
+         */
+        gtk_widget_get_preferred_size (priv->down_slider_button,
+                                       &down_button_minimum,
+                                       NULL);
+        gtk_widget_get_preferred_size (priv->up_slider_button,
+                                       &up_button_minimum,
+                                       NULL);
+
+        if (priv->button_list)
+        {
+            minimum_size += down_button_minimum.width + up_button_minimum.width;
+            natural_size += down_button_minimum.width + up_button_minimum.width;
+        }
+    }
+    else
+    {
+        for (GList *list = priv->button_list; list != NULL; list = list->next)
+        {
+            button_data = BUTTON_DATA (list->data);
+            set_label_size_request (button_data);
+
+            gtk_widget_get_preferred_size (button_data->container,
+                                           &child_minimum, &child_natural);
+
+            minimum_size = MAX (minimum_size, child_minimum.height);
+            natural_size = MAX (natural_size, child_natural.height);
+        }
     }
 
-    /* Add space for slider, if we have more than one path */
-    /* Theoretically, the slider could be bigger than the other button.  But we're
-     * not going to worry about that now.
-     */
-    gtk_widget_get_preferred_width (priv->down_slider_button,
-                                    &down_slider_width,
-                                    NULL);
-    gtk_widget_get_preferred_width (priv->up_slider_button,
-                                    &up_slider_width,
-                                    NULL);
-
-    if (priv->button_list)
+    if (minimum != NULL)
     {
-        *minimum += (down_slider_width + up_slider_width);
-        *natural += (down_slider_width + up_slider_width);
+        *minimum = minimum_size;
     }
-}
-
-static void
-nautilus_path_bar_get_preferred_height (GtkWidget *widget,
-                                        gint      *minimum,
-                                        gint      *natural)
-{
-    ButtonData *button_data;
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GList *list;
-    gint child_min, child_nat;
-
-    self = NAUTILUS_PATH_BAR (widget);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    *minimum = *natural = 0;
-
-    for (list = priv->button_list; list; list = list->next)
+    if (natural != NULL)
     {
-        button_data = BUTTON_DATA (list->data);
-        set_label_size_request (button_data);
-
-        gtk_widget_get_preferred_height (button_data->container, &child_min, &child_nat);
-
-        *minimum = MAX (*minimum, child_min);
-        *natural = MAX (*natural, child_nat);
+        *natural = natural_size;
     }
 }
 
@@ -1181,8 +1181,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     gobject_class->finalize = nautilus_path_bar_finalize;
     gobject_class->dispose = nautilus_path_bar_dispose;
 
-    widget_class->get_preferred_height = nautilus_path_bar_get_preferred_height;
-    widget_class->get_preferred_width = nautilus_path_bar_get_preferred_width;
+    widget_class->measure = nautilus_path_bar_measure;
     widget_class->realize = nautilus_path_bar_realize;
     widget_class->unrealize = nautilus_path_bar_unrealize;
     widget_class->unmap = nautilus_path_bar_unmap;
