@@ -13,8 +13,7 @@ int        test_quit                            (int                          ex
 void       test_delete_event                    (GtkWidget                   *widget,
 						 GdkEvent                    *event,
 						 gpointer                     callback_data);
-GtkWidget *test_window_new                      (const char                  *title,
-						 guint                        border_width);
+GtkWidget *test_window_new                      (const char                  *title);
 void       test_gtk_widget_set_background_image (GtkWidget                   *widget,
 						 const char                  *image_name);
 void       test_gtk_widget_set_background_color (GtkWidget                   *widget,
