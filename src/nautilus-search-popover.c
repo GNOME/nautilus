@@ -400,7 +400,6 @@ create_row_for_label (const gchar *text,
                           NULL);
 
     gtk_container_add (GTK_CONTAINER (row), label);
-    gtk_widget_show_all (row);
 
     return row;
 }
