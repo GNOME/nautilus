@@ -437,8 +437,6 @@ add_buttons (NautilusColumnChooser *chooser)
                       "clicked", G_CALLBACK (use_default_clicked_callback),
                       chooser);
     gtk_container_add (GTK_CONTAINER (box), chooser->use_default_button);
-
-    gtk_widget_show_all (inline_toolbar);
 }
 
 static void

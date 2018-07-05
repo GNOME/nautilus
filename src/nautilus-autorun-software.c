@@ -223,8 +223,6 @@ present_autorun_for_software_dialog (GMount *mount)
                            _("_Run"),
                            GTK_RESPONSE_OK);
 
-    gtk_widget_show_all (dialog);
-
     if (gtk_dialog_run (GTK_DIALOG (dialog)) == GTK_RESPONSE_OK)
     {
         gtk_widget_destroy (dialog);
