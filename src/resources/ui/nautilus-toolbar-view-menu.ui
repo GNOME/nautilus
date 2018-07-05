@@ -15,6 +15,7 @@
         </style>
         <child>
           <object class="GtkButton" id="zoom-out">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="action-name">view.zoom-out</property>
             <property name="tooltip-text" translatable="yes">Zoom out</property>
@@ -27,13 +28,12 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-default">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="action_name">view.zoom-standard</property>
             <property name="tooltip-text" translatable="yes">Reset zoom</property>
@@ -45,13 +45,12 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-in">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="action_name">view.zoom-in</property>
             <property name="tooltip-text" translatable="yes">Zoom in</property>
@@ -64,8 +63,6 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
