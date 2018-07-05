@@ -2511,7 +2511,6 @@ create_page_with_box (GtkNotebook    *notebook,
     g_assert (title != NULL);
 
     box = gtk_box_new (orientation, 0);
-    gtk_widget_show (box);
     g_object_set (box, "margin", 12, NULL);
     if (orientation == GTK_ORIENTATION_HORIZONTAL)
     {
