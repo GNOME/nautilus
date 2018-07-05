@@ -2515,7 +2515,7 @@ create_page_with_box (GtkNotebook    *notebook,
 
     box = gtk_box_new (orientation, 0);
     gtk_widget_show (box);
-    gtk_container_set_border_width (GTK_CONTAINER (box), 12);
+    g_object_set (box, "margin", 12, NULL);
     if (orientation == GTK_ORIENTATION_HORIZONTAL)
     {
         gtk_box_set_spacing (GTK_BOX (box), 12);
@@ -2562,7 +2562,8 @@ create_grid_with_standard_properties (void)
     GtkWidget *grid;
 
     grid = gtk_grid_new ();
-    gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
+
+    g_object_set (grid, "margin", 6, NULL);
     gtk_grid_set_row_spacing (GTK_GRID (grid), ROW_PAD);
     gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
     gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
@@ -2949,7 +2950,7 @@ create_pie_widget (NautilusPropertiesWindow *window)
 
     grid = GTK_GRID (gtk_grid_new ());
     gtk_widget_set_hexpand (GTK_WIDGET (grid), FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
+    g_object_set (grid, "margin", 5, NULL);
     gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
     gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
 
