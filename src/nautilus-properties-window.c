@@ -404,7 +404,11 @@ update_properties_window_icon (NautilusPropertiesWindow *window)
     }
     else
     {
-        gtk_window_set_icon (GTK_WINDOW (window), pixbuf);
+        g_autoptr (GdkTexture) texture = NULL;
+
+        texture = gdk_texture_new_for_pixbuf (pixbuf);
+
+        gtk_window_set_icon (GTK_WINDOW (window), texture);
     }
 
     gtk_image_set_from_pixbuf (GTK_IMAGE (window->icon_image), pixbuf);
