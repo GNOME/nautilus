@@ -1,11 +1,9 @@
 #include "nautilus-container-max-width.h"
 
-#define DEFAULT_MAX_SIZE 120
-
 struct _NautilusContainerMaxWidth
 {
     GtkBin parent_instance;
-    guint max_width;
+    int max_width;
 
     gboolean width_maximized;
     guint change_width_maximized_idle_id;
@@ -23,13 +21,14 @@ enum
 
 void
 nautilus_container_max_width_set_max_width (NautilusContainerMaxWidth *self,
-                                            guint                      max_width)
+                                            int                        max_width)
 {
-    self->max_width = max_width;
-    gtk_widget_queue_allocate (GTK_WIDGET (self));
+    g_return_if_fail (NAUTILUS_IS_CONTAINER_MAX_WIDTH (self));
+
+    g_object_set (self, "max-width", max_width, NULL);
 }
 
-guint
+int
 nautilus_container_max_width_get_max_width (NautilusContainerMaxWidth *self)
 {
     return self->max_width;
@@ -102,7 +101,8 @@ nautilus_container_max_width_set_property (GObject      *object,
     {
         case PROP_MAX_WIDTH:
         {
-            nautilus_container_max_width_set_max_width (self, g_value_get_int (value));
+            self->max_width = g_value_get_int (value);
+            gtk_widget_queue_allocate (GTK_WIDGET (self));
         }
         break;
 
@@ -115,85 +115,81 @@ nautilus_container_max_width_set_property (GObject      *object,
 }
 
 static void
-get_preferred_width (GtkWidget *widget,
-                     gint      *minimum_size,
-                     gint      *natural_size)
+measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum,
+         int            *natural,
+         int            *minimum_baseline,
+         int            *natural_baseline)
 {
-    GtkWidget *child;
     NautilusContainerMaxWidth *self;
-    GtkStyleContext *style_context;
+    GtkWidget *child;
+    int child_minimum;
+    int child_natural;
+    int child_minimum_width;
+    int child_natural_width;
     GtkBorder padding;
 
     self = NAUTILUS_CONTAINER_MAX_WIDTH (widget);
-    child = gtk_bin_get_child (GTK_BIN (self));
+    child = gtk_bin_get_child (GTK_BIN (widget));
+    child_minimum = 0;
+    child_natural = 0;
 
-    *natural_size = 0;
-    *minimum_size = 0;
-    gtk_widget_get_preferred_width (child, minimum_size, natural_size);
-
-    if (self->max_width != -1 && *minimum_size > self->max_width)
+    if (child == NULL || !gtk_widget_is_visible (child))
     {
-        g_critical ("NautilusContainerMaxWidth's child requested %d while set maximum width is %d",
-                    *minimum_size, self->max_width);
+        goto finish;
     }
-    *natural_size = self->max_width == -1 ? *natural_size :
-                    MAX (*minimum_size, MIN (self->max_width, *natural_size));
 
-    style_context = gtk_widget_get_style_context (widget);
-    gtk_style_context_get_padding (style_context, &padding);
-    *minimum_size += padding.left + padding.right;
-    *natural_size += padding.left + padding.right;
-}
+    gtk_widget_measure (child, GTK_ORIENTATION_HORIZONTAL, -1,
+                        &child_minimum_width, &child_natural_width,
+                        NULL, NULL);
 
-static void
-get_preferred_height (GtkWidget *widget,
-                      gint      *minimum_size,
-                      gint      *natural_size)
-{
-    GtkWidget *child;
-    NautilusContainerMaxWidth *self;
-    gint minimum_width = 0;
-    gint natural_width = 0;
-    GtkStyleContext *style_context;
-    GtkBorder padding;
+    gtk_style_context_get_padding (gtk_widget_get_style_context (widget), &padding);
 
-    self = NAUTILUS_CONTAINER_MAX_WIDTH (widget);
-    child = gtk_bin_get_child (GTK_BIN (self));
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        if (self->max_width != -1)
+        {
+            if (child_minimum_width > self->max_width)
+            {
+                g_critical ("%s: child measures %d in width, while the maximum is %d",
+                            g_type_name (NAUTILUS_TYPE_CONTAINER_MAX_WIDTH),
+                            child_minimum_width, self->max_width);
+            }
 
-    get_preferred_width (widget, &minimum_width, &natural_width);
-    natural_width = self->max_width == -1 ? natural_width : MIN (self->max_width, natural_width);
+            child_minimum = child_minimum_width;
+            child_natural = MAX (child_minimum,
+                                 MIN (self->max_width, child_natural_width));
+        }
 
-    gtk_widget_get_preferred_height_for_width (child, natural_width, minimum_size, natural_size);
+        child_minimum += padding.left + padding.right;
+        child_natural += padding.left + padding.right;
+    }
+    else
+    {
+        if (self->max_width != -1)
+        {
+            child_natural_width = MIN (self->max_width, child_natural_width);
+        }
 
-    style_context = gtk_widget_get_style_context (widget);
-    gtk_style_context_get_padding (style_context, &padding);
-    *minimum_size += padding.top + padding.bottom;
-    *natural_size += padding.top + padding.bottom;
-}
+        gtk_widget_measure (child, GTK_ORIENTATION_VERTICAL, child_natural_width,
+                            &child_minimum, &child_natural,
+                            NULL, NULL);
 
-static void
-get_preferred_height_for_width (GtkWidget *widget,
-                                gint       width,
-                                gint      *minimum_size,
-                                gint      *natural_size)
-{
-    get_preferred_height (widget, minimum_size, natural_size);
-}
+        child_minimum += padding.top + padding.bottom;
+        child_natural += padding.top + padding.bottom;
+    }
 
-static void
-size_allocate (GtkWidget     *widget,
-               GtkAllocation *allocation)
-{
-    GTK_WIDGET_CLASS (nautilus_container_max_width_parent_class)->size_allocate (widget, allocation);
-}
-
-static void
-get_preferred_width_for_height (GtkWidget *widget,
-                                gint       height,
-                                gint      *minimum_size,
-                                gint      *natural_size)
-{
-    get_preferred_width (widget, minimum_size, natural_size);
+finish:
+    if (minimum != NULL)
+    {
+        *minimum = child_minimum;
+    }
+    if (natural != NULL)
+    {
+        *natural = child_natural;
+    }
 }
 
 static gboolean
@@ -267,18 +263,14 @@ nautilus_container_max_width_class_init (NautilusContainerMaxWidthClass *klass)
     object_class->set_property = nautilus_container_max_width_set_property;
     object_class->constructed = constructed;
 
-    widget_class->get_preferred_width = get_preferred_width;
-    widget_class->get_preferred_width_for_height = get_preferred_width_for_height;
-    widget_class->get_preferred_height = get_preferred_height;
-    widget_class->get_preferred_height_for_width = get_preferred_height_for_width;
-    widget_class->size_allocate = size_allocate;
+    widget_class->measure = measure;
 
     g_object_class_install_property (object_class,
                                      PROP_MAX_WIDTH,
                                      g_param_spec_int ("max-width",
                                                        "Max width",
                                                        "The max width of the container",
-                                                       G_MININT,
+                                                       -1,
                                                        G_MAXINT,
                                                        0,
                                                        G_PARAM_READWRITE));
