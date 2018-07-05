@@ -1674,11 +1674,11 @@ update_row_shadowing (GtkWidget *row,
 
     if (shown)
     {
-        flags |= GTK_STATE_PRELIGHT;
+        flags |= GTK_STATE_FLAG_PRELIGHT;
     }
     else
     {
-        flags &= ~GTK_STATE_PRELIGHT;
+        flags &= ~GTK_STATE_FLAG_PRELIGHT;
     }
 
     gtk_style_context_set_state (context, flags);
