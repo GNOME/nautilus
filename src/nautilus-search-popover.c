@@ -590,9 +590,9 @@ show_other_types_dialog (NautilusSearchPopover *popover)
                                     GTK_POLICY_AUTOMATIC,
                                     GTK_POLICY_AUTOMATIC);
 
+    gtk_widget_set_vexpand (scrolled, TRUE);
     gtk_widget_show (scrolled);
-    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 0);
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), scrolled, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), scrolled);
 
     treeview = gtk_tree_view_new ();
     gtk_tree_view_set_model (GTK_TREE_VIEW (treeview), GTK_TREE_MODEL (store));
