@@ -347,7 +347,7 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
 
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
-    gtk_style_context_get_border (context, GTK_STATE_FLAG_NORMAL, &border);
+    gtk_style_context_get_border (context, &border);
     gtk_style_context_restore (context);
 
     cx1 -= border.left;
@@ -400,7 +400,7 @@ nautilus_selection_canvas_item_bounds (EelCanvasItem *item,
 
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
-    gtk_style_context_get_border (context, GTK_STATE_FLAG_NORMAL, &border);
+    gtk_style_context_get_border (context, &border);
     gtk_style_context_restore (context);
 
     *x1 = self->priv->x1 - (border.left / item->canvas->pixels_per_unit) / 2.0;
