@@ -68,7 +68,7 @@ main (int   argc,
 
     dest = g_file_new_for_commandline_arg (argv[i]);
 
-    window = test_window_new ("copy test", 5);
+    window = test_window_new ("copy test");
 
     gtk_widget_show (window);
 

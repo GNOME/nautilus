@@ -592,7 +592,6 @@ show_other_types_dialog (NautilusSearchPopover *popover)
 
     gtk_widget_set_vexpand (scrolled, TRUE);
     gtk_widget_show (scrolled);
-    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 0);
     gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), scrolled, FALSE, TRUE, 0);
 
     treeview = gtk_tree_view_new ();
