@@ -1600,7 +1600,6 @@ on_column_header_event (GtkWidget *widget,
                       G_CALLBACK (column_header_menu_use_default),
                       list_view);
 
-    gtk_widget_show_all (menu);
     gtk_menu_popup_at_pointer (GTK_MENU (menu), event);
 
     g_hash_table_destroy (visible_columns_hash);
