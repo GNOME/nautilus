@@ -256,7 +256,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     dialog_area = gtk_dialog_get_content_area (dialog);
     gtk_box_pack_start (GTK_BOX (dialog_area), hbox);
-    gtk_container_set_border_width (GTK_CONTAINER (hbox), 6);
+    g_object_set (hbox, "margin", 6, NULL);
 
     /* Setup the dialog image */
     widget = gtk_image_new_from_icon_name ("dialog-warning",
@@ -344,7 +344,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     gtk_widget_grab_focus (fcd->replace_button);
 
     /* Setup HIG properties */
-    gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+    g_object_set (dialog, "margin", 5, NULL);
     gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (dialog)), 14);
     gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
