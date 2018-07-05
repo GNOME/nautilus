@@ -643,7 +643,7 @@ setup_widgets (NautilusQueryEditor *editor)
 
     /* additional information label */
     editor->label = gtk_label_new (NULL);
-    gtk_widget_set_no_show_all (editor->label, TRUE);
+    gtk_widget_hide (editor->label);
     gtk_style_context_add_class (gtk_widget_get_style_context (editor->label), "dim-label");
 
     gtk_container_add (GTK_CONTAINER (vbox), editor->label);
@@ -679,9 +679,6 @@ setup_widgets (NautilusQueryEditor *editor)
                       G_CALLBACK (search_popover_time_type_changed_cb), editor);
     g_signal_connect (editor->popover, "notify::fts-enabled",
                       G_CALLBACK (search_popover_fts_changed_cb), editor);
-
-    /* show everything */
-    gtk_widget_show_all (vbox);
 }
 
 static void
