@@ -595,7 +595,6 @@ create_original_name_row_for_label (NautilusBatchRenameDialog *dialog,
     dialog->listbox_labels_old = g_list_prepend (dialog->listbox_labels_old, label_old);
 
     gtk_container_add (GTK_CONTAINER (row), label_old);
-    gtk_widget_show_all (row);
 
     return row;
 }
@@ -621,7 +620,6 @@ create_result_row_for_label (NautilusBatchRenameDialog *dialog,
     dialog->listbox_labels_new = g_list_prepend (dialog->listbox_labels_new, label_new);
 
     gtk_container_add (GTK_CONTAINER (row), label_new);
-    gtk_widget_show_all (row);
 
     return row;
 }
@@ -653,7 +651,6 @@ create_arrow_row_for_label (NautilusBatchRenameDialog *dialog,
     dialog->listbox_icons = g_list_prepend (dialog->listbox_icons, icon);
 
     gtk_container_add (GTK_CONTAINER (row), icon);
-    gtk_widget_show_all (row);
 
     return row;
 }
