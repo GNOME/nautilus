@@ -1599,11 +1599,11 @@ make_button_data (NautilusPathBar *self,
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
 
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->image);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
 
@@ -1618,11 +1618,11 @@ make_button_data (NautilusPathBar *self,
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
 
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->image);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
 
@@ -1635,11 +1635,11 @@ make_button_data (NautilusPathBar *self,
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S), FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S));
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
 
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (child), button_data->label);
+            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
     }
@@ -1659,7 +1659,7 @@ make_button_data (NautilusPathBar *self,
         button_data->bold_label = gtk_label_new (NULL);
         gtk_widget_set_no_show_all (button_data->bold_label, TRUE);
         gtk_label_set_single_line_mode (GTK_LABEL (button_data->bold_label), TRUE);
-        gtk_box_pack_start (GTK_BOX (child), button_data->bold_label, FALSE, FALSE, 0);
+        gtk_box_pack_start (GTK_BOX (child), button_data->bold_label);
     }
 
     if (button_data->path == NULL)
