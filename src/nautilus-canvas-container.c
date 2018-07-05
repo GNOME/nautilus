@@ -3089,61 +3089,49 @@ get_request_mode (GtkWidget *widget)
     return GTK_SIZE_REQUEST_CONSTANT_SIZE;
 }
 
-/* We need to implement these since the GtkScrolledWindow uses them
+/* We need to implement this since the GtkScrolledWindow uses it
  *  to guess whether to show scrollbars or not, and if we don't report
  *  anything it'll tend to get it wrong causing double calls
  *  to size_allocate (at different sizes) during its size allocation. */
 static void
-get_prefered_width (GtkWidget *widget,
-                    gint      *minimum_size,
-                    gint      *natural_size)
+measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum,
+         int            *natural,
+         int            *minimum_baseline,
+         int            *natural_baseline)
 {
+    EelCanvas *canvas;
     EelCanvasGroup *root;
-    double x1, x2;
-    int cx1, cx2;
-    int width;
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+    int size;
 
-    root = eel_canvas_root (EEL_CANVAS (widget));
-    eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (root),
-                                &x1, NULL, &x2, NULL);
-    eel_canvas_w2c (EEL_CANVAS (widget), x1, 0, &cx1, NULL);
-    eel_canvas_w2c (EEL_CANVAS (widget), x2, 0, &cx2, NULL);
+    canvas = EEL_CANVAS (widget);
+    root = eel_canvas_root (canvas);
 
-    width = cx2 - cx1;
-    if (natural_size)
+    eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (root), &x1, &y1, &x2, &y2);
+
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
     {
-        *natural_size = width;
+        size = x2 - x1;
     }
-    if (minimum_size)
+    else
     {
-        *minimum_size = width;
+        size = y2 - y1;
     }
-}
 
-static void
-get_prefered_height (GtkWidget *widget,
-                     gint      *minimum_size,
-                     gint      *natural_size)
-{
-    EelCanvasGroup *root;
-    double y1, y2;
-    int cy1, cy2;
-    int height;
-
-    root = eel_canvas_root (EEL_CANVAS (widget));
-    eel_canvas_item_get_bounds (EEL_CANVAS_ITEM (root),
-                                NULL, &y1, NULL, &y2);
-    eel_canvas_w2c (EEL_CANVAS (widget), 0, y1, NULL, &cy1);
-    eel_canvas_w2c (EEL_CANVAS (widget), 0, y2, NULL, &cy2);
-
-    height = cy2 - cy1;
-    if (natural_size)
+    if (minimum != NULL)
     {
-        *natural_size = height;
+        *minimum = size;
     }
-    if (minimum_size)
+
+    if (natural != NULL)
     {
-        *minimum_size = height;
+        *natural = size;
     }
 }
 
@@ -4042,8 +4030,7 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->destroy = destroy;
     widget_class->size_allocate = size_allocate;
     widget_class->get_request_mode = get_request_mode;
-    widget_class->get_preferred_width = get_prefered_width;
-    widget_class->get_preferred_height = get_prefered_height;
+    widget_class->measure = measure;
     widget_class->realize = realize;
     widget_class->unrealize = unrealize;
     widget_class->motion_notify_event = motion_notify_event;
