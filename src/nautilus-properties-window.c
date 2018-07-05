@@ -3379,13 +3379,7 @@ start_long_operation (NautilusPropertiesWindow *window)
     if (window->long_operation_underway == 0)
     {
         /* start long operation */
-        GdkDisplay *display;
-        GdkCursor *cursor;
-
-        display = gtk_widget_get_display (GTK_WIDGET (window));
-        cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
-        g_object_unref (cursor);
+        gtk_widget_set_cursor_from_name (GTK_WIDGET (window), "progress");
     }
     window->long_operation_underway++;
 }
@@ -3393,11 +3387,10 @@ start_long_operation (NautilusPropertiesWindow *window)
 static void
 end_long_operation (NautilusPropertiesWindow *window)
 {
-    if (gtk_widget_get_window (GTK_WIDGET (window)) != NULL &&
-        window->long_operation_underway == 1)
+    if (window->long_operation_underway == 1)
     {
         /* finished !! */
-        gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), NULL);
+        gtk_widget_set_cursor (GTK_WIDGET (window), NULL);
     }
     window->long_operation_underway--;
 }
