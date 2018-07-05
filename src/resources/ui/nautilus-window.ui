@@ -18,6 +18,7 @@
                 <property name="spacing">6</property>
                 <child>
                   <object class="GtkPlacesSidebar" id="places_sidebar">
+                    <property name="vexpand">True</property>
                     <property name="visible">True</property>
                     <property name="populate-all">True</property>
                     <property name="show-other-locations">True</property>
@@ -27,8 +28,6 @@
                   </object>
                   <packing>
                     <property name="pack_type">start</property>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
                   </packing>
                 </child>
               </object>
