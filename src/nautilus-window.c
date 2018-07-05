@@ -1873,8 +1873,6 @@ notebook_popup_menu_show (NautilusWindow *window,
     gtk_menu_shell_append (GTK_MENU_SHELL (popup),
                            item);
 
-    gtk_widget_show_all (popup);
-
     gtk_menu_popup_at_pointer (GTK_MENU (popup), event);
 }
 
