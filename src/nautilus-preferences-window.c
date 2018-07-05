@@ -350,10 +350,11 @@ nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
 
     set_columns_from_settings (NAUTILUS_COLUMN_CHOOSER (chooser));
 
+    gtk_widget_set_vexpand (chooser, TRUE);
     gtk_widget_show (chooser);
     box = GTK_WIDGET (gtk_builder_get_object (builder, "list_columns_vbox"));
 
-    gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (box), chooser);
 }
 
 static gboolean
