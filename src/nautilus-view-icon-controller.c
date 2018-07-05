@@ -1001,8 +1001,6 @@ constructed (GObject *object)
                                      G_N_ELEMENTS (view_icon_actions),
                                      self);
 
-    gtk_widget_show_all (GTK_WIDGET (self));
-
     view_action_group = nautilus_files_view_get_action_group (NAUTILUS_FILES_VIEW (self));
     g_action_map_add_action_entries (G_ACTION_MAP (view_action_group),
                                      view_icon_actions,
