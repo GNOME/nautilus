@@ -62,7 +62,7 @@ create_icon (NautilusViewIconItemUi *self)
         gtk_style_context_add_class (style_context, "icon-background");
     }
 
-    gtk_box_pack_start (fixed_height_box, GTK_WIDGET (icon), FALSE, FALSE, 0);
+    gtk_box_pack_start (fixed_height_box, GTK_WIDGET (icon));
 
     return GTK_WIDGET (fixed_height_box);
 }
@@ -83,7 +83,7 @@ update_icon (NautilusViewIconItemUi *self)
     }
     self->icon = create_icon (self);
     gtk_widget_show_all (GTK_WIDGET (self->icon));
-    gtk_box_pack_start (box, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
+    gtk_box_pack_start (box, GTK_WIDGET (self->icon));
 }
 
 static void
@@ -145,9 +145,10 @@ constructed (GObject *object)
     gtk_widget_set_valign (GTK_WIDGET (item_selection_background), GTK_ALIGN_START);
     self->item_container = nautilus_container_max_width_new ();
     self->icon = create_icon (self);
-    gtk_box_pack_start (container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
+    gtk_box_pack_start (container, GTK_WIDGET (self->icon));
 
     label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
+    gtk_widget_set_vexpand (GTK_WIDGET (label), TRUE);
     gtk_widget_show (GTK_WIDGET (label));
     gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_line_wrap (label, TRUE);
@@ -155,7 +156,7 @@ constructed (GObject *object)
     gtk_label_set_lines (label, 3);
     gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
     gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
-    gtk_box_pack_end (container, GTK_WIDGET (label), TRUE, TRUE, 0);
+    gtk_box_pack_end (container, GTK_WIDGET (label));
 
     style_context = gtk_widget_get_style_context (GTK_WIDGET (item_selection_background));
     gtk_style_context_add_class (style_context, "icon-item-background");
