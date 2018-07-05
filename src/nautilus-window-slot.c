@@ -694,8 +694,7 @@ nautilus_window_slot_add_extra_location_widget (NautilusWindowSlot *self,
     NautilusWindowSlotPrivate *priv;
 
     priv = nautilus_window_slot_get_instance_private (self);
-    gtk_box_pack_start (GTK_BOX (priv->extra_location_widgets),
-                        widget, FALSE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (priv->extra_location_widgets), widget);
     gtk_widget_show (priv->extra_location_widgets);
 }
 
@@ -866,7 +865,7 @@ nautilus_window_slot_constructed (GObject *object)
     style_context = gtk_widget_get_style_context (extras_vbox);
     gtk_style_context_add_class (style_context, "searchbar-container");
     priv->extra_location_widgets = extras_vbox;
-    gtk_box_pack_start (GTK_BOX (self), extras_vbox, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (self), extras_vbox);
     gtk_widget_show (extras_vbox);
 
     priv->query_editor = NAUTILUS_QUERY_EDITOR (nautilus_query_editor_new ());
