@@ -1566,9 +1566,9 @@ make_button_data (NautilusPathBar *self,
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->image);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow);
         }
         break;
 
@@ -1583,8 +1583,8 @@ make_button_data (NautilusPathBar *self,
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow);
         }
         break;
     }
