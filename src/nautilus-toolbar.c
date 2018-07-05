@@ -987,7 +987,6 @@ nautilus_toolbar_constructed (GObject *object)
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
 
-    gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
 }
 

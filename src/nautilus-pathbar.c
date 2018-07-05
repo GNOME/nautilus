@@ -134,7 +134,6 @@ const GActionEntry path_bar_actions[] =
     { "properties", action_pathbar_properties}
 };
 
-
 static void
 action_pathbar_open_item_new_tab (GSimpleAction *action,
                                   GVariant      *state,
@@ -1586,10 +1585,9 @@ make_button_data (NautilusPathBar *self,
         break;
     }
 
-    gtk_widget_set_no_show_all (button_data->disclosure_arrow, TRUE);
+    gtk_widget_set_visible (button_data->disclosure_arrow, current_dir);
     if (current_dir)
     {
-        gtk_widget_show (button_data->disclosure_arrow);
         gtk_popover_set_relative_to (self->current_view_menu_popover, button_data->button);
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                      "image-button");
@@ -1619,8 +1617,6 @@ make_button_data (NautilusPathBar *self,
                               G_CALLBACK (button_data_file_changed),
                               button_data);
     }
-
-    gtk_widget_show_all (button_data->button);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 

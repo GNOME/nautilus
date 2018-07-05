@@ -3113,7 +3113,6 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
     if (window->volume_capacity > 0)
     {
         piewidget = create_pie_widget (window);
-        gtk_widget_show_all (piewidget);
     }
 
     return piewidget;
@@ -3309,7 +3308,6 @@ create_basic_page (NautilusPropertiesWindow *window)
                                           button,
                                           "width", 3,
                                           NULL);
-       gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
 
@@ -4697,7 +4695,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_grid_attach (grid, combo, 2, 3, 1, 1);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), window);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void

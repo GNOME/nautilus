@@ -1744,13 +1744,12 @@ select_pattern (NautilusFilesView *view)
                              GTK_POS_BOTTOM, 1, 1);
 
     gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-    gtk_widget_show_all (grid);
     gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), grid);
     g_object_set_data (G_OBJECT (dialog), "entry", entry);
     g_signal_connect (dialog, "response",
                       G_CALLBACK (pattern_select_response_cb),
                       view);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
@@ -5983,7 +5982,7 @@ copy_or_move_selection (NautilusFilesView *view,
                       G_CALLBACK (on_destination_dialog_response),
                       copy_data);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
@@ -6427,7 +6426,7 @@ extract_files_to_chosen_location (NautilusFilesView *view,
                       G_CALLBACK (on_extract_destination_dialog_response),
                       data);
 
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
