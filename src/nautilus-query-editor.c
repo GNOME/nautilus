@@ -628,9 +628,6 @@ setup_widgets (NautilusQueryEditor *editor)
                       G_CALLBACK (search_popover_time_type_changed_cb), editor);
     g_signal_connect (editor->popover, "notify::fts-enabled",
                       G_CALLBACK (search_popover_fts_changed_cb), editor);
-
-    /* show everything */
-    gtk_widget_show_all (vbox);
 }
 
 static void
