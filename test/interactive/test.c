@@ -31,8 +31,7 @@ test_delete_event (GtkWidget *widget,
 }
 
 GtkWidget *
-test_window_new (const char *title,
-                 guint       border_width)
+test_window_new (const char *title)
 {
     GtkWidget *window;
 
@@ -45,8 +44,6 @@ test_window_new (const char *title,
 
     g_signal_connect (window, "delete_event",
                       G_CALLBACK (test_delete_event), NULL);
-
-    gtk_container_set_border_width (GTK_CONTAINER (window), border_width);
 
     return window;
 }
