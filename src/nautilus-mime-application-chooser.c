@@ -304,7 +304,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
     GtkWidget *box, *button;
     GAppInfo *info;
 
-    gtk_container_set_border_width (GTK_CONTAINER (chooser), 8);
+    g_object_set (chooser, "margin", 8, NULL);
     gtk_box_set_spacing (GTK_BOX (chooser), 0);
     gtk_box_set_homogeneous (GTK_BOX (chooser), FALSE);
 
