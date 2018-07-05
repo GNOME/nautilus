@@ -311,8 +311,6 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     g_signal_connect (widget, "clicked",
                       G_CALLBACK (reset_button_clicked_cb), dialog);
 
-    gtk_widget_show_all (vbox2);
-
     /* Setup the checkbox to apply the action to all files */
     widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files and folders"));
 
@@ -342,8 +340,6 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
     gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (dialog)), 14);
     gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
-
-    gtk_widget_show_all (dialog_area);
 }
 
 static void
