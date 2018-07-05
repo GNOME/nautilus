@@ -82,7 +82,6 @@ update_icon (NautilusViewIconItemUi *self)
         gtk_container_remove (GTK_CONTAINER (box), GTK_WIDGET (self->icon));
     }
     self->icon = create_icon (self);
-    gtk_widget_show_all (GTK_WIDGET (self->icon));
     gtk_box_pack_start (box, GTK_WIDGET (self->icon));
 }
 
@@ -173,7 +172,6 @@ constructed (GObject *object)
                        GTK_WIDGET (self->item_container));
     gtk_container_add (GTK_CONTAINER (self),
                        GTK_WIDGET (item_selection_background));
-    gtk_widget_show_all (GTK_WIDGET (self));
 
     g_signal_connect (self->model, "notify::icon-size",
                       (GCallback) on_view_item_size_changed, self);

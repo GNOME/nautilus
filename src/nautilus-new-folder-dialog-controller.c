@@ -146,7 +146,7 @@ nautilus_new_folder_dialog_controller_new (GtkWindow         *parent_window,
     gtk_label_set_text (GTK_LABEL (name_label), _("Folder name"));
     gtk_window_set_title (GTK_WINDOW (new_folder_dialog), _("New Folder"));
 
-    gtk_widget_show_all (new_folder_dialog);
+    gtk_widget_show (new_folder_dialog);
 
     return self;
 }
