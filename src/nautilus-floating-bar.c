@@ -397,7 +397,7 @@ nautilus_floating_bar_constructed (GObject *obj)
     box = GTK_WIDGET (obj);
 
     w = gtk_spinner_new ();
-    gtk_box_pack_start (GTK_BOX (box), w, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), w);
     gtk_widget_set_visible (w, self->show_spinner);
     gtk_spinner_start (GTK_SPINNER (w));
     self->spinner = w;
@@ -406,7 +406,8 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_widget_set_margin_start (w, 8);
 
     labels_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_box_pack_start (GTK_BOX (box), labels_box, TRUE, TRUE, 0);
+    gtk_widget_set_hexpand (labels_box, TRUE);
+    gtk_box_pack_start (GTK_BOX (box), labels_box);
     g_object_set (labels_box,
                   "margin-top", 2,
                   "margin-bottom", 2,
@@ -566,7 +567,7 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
     gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
-    gtk_box_pack_end (GTK_BOX (self), button, FALSE, FALSE, 0);
+    gtk_box_pack_end (GTK_BOX (self), button);
     gtk_widget_show (button);
 
     g_object_set_data (G_OBJECT (button), "action-id",
