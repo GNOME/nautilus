@@ -327,8 +327,6 @@ eel_canvas_item_dispose (GObject *object)
         {
             group_remove (EEL_CANVAS_GROUP (item->parent), item);
         }
-
-        item->canvas = NULL;
     }
 
     g_object_set_data (object, "in-destruction", GINT_TO_POINTER (1));
