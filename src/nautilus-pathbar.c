@@ -144,7 +144,6 @@ get_slider_button (NautilusPathBar *self,
     gtk_container_add (GTK_CONTAINER (button),
                        gtk_image_new_from_icon_name (arrow_type, GTK_ICON_SIZE_MENU));
     gtk_container_add (GTK_CONTAINER (self), button);
-    gtk_widget_show_all (button);
 
     return button;
 }
@@ -807,7 +806,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         gtk_widget_size_allocate (priv->up_slider_button, &child_allocation);
 
         gtk_widget_set_child_visible (priv->up_slider_button, TRUE);
-        gtk_widget_show_all (priv->up_slider_button);
 
         if (direction == GTK_TEXT_DIR_LTR)
         {
@@ -826,7 +824,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         gtk_widget_size_allocate (priv->down_slider_button, &child_allocation);
 
         gtk_widget_set_child_visible (priv->down_slider_button, TRUE);
-        gtk_widget_show_all (priv->down_slider_button);
         nautilus_path_bar_update_slider_buttons (self);
     }
     else
@@ -2039,7 +2036,6 @@ make_button_data (NautilusPathBar *self,
     }
 
     gtk_container_add (GTK_CONTAINER (button_data->button), child);
-    gtk_widget_show_all (button_data->container);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
