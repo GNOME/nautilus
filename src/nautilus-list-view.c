@@ -72,8 +72,6 @@ struct SelectionForeachData
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2
 
-static GdkCursor *hand_cursor = NULL;
-
 static GList *nautilus_list_view_get_selection (NautilusFilesView *view);
 static GList *nautilus_list_view_get_selection_for_file_transfer (NautilusFilesView *view);
 static void   nautilus_list_view_set_zoom_level (NautilusListView     *view,
@@ -351,11 +349,11 @@ on_motion_notify (GtkWidget *widget,
         {
             if (view->details->hover_path != NULL)
             {
-                gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
+                gtk_widget_set_cursor_from_name (widget, "pointer");
             }
             else
             {
-                gdk_window_set_cursor (gtk_widget_get_window (widget), NULL);
+                gtk_widget_set_cursor (widget, NULL);
             }
         }
 
@@ -415,7 +413,7 @@ on_enter_notify (GtkWidget *widget,
 
         if (view->details->hover_path != NULL)
         {
-            gdk_window_set_cursor (gtk_widget_get_window (widget), hand_cursor);
+            gtk_widget_set_cursor_from_name (widget, "pointer");
         }
     }
 
@@ -3559,22 +3557,12 @@ nautilus_list_view_click_policy_changed (NautilusFilesView *directory_view)
         tree = view->details->tree_view;
         if (gtk_widget_get_realized (GTK_WIDGET (tree)))
         {
-            win = gtk_widget_get_window (GTK_WIDGET (tree));
-            gdk_window_set_cursor (win, NULL);
+            gtk_widget_set_cursor (GTK_WIDGET (tree), NULL);
 
             if (display != NULL)
             {
                 gdk_display_flush (display);
             }
-        }
-
-        g_clear_object (&hand_cursor);
-    }
-    else if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
-    {
-        if (hand_cursor == NULL)
-        {
-            hand_cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
         }
     }
 }
