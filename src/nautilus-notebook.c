@@ -345,11 +345,11 @@ build_tab_label (NautilusNotebook   *notebook,
 
     /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
-    gtk_box_pack_start (GTK_BOX (box), spinner, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), spinner);
 
     /* Dummy icon to allocate space for spinner */
     icon = gtk_image_new ();
-    gtk_box_pack_start (GTK_BOX (box), icon, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), icon);
     /* don't show the icon */
 
     /* Tab title */
@@ -377,7 +377,7 @@ build_tab_label (NautilusNotebook   *notebook,
     gtk_container_add (GTK_CONTAINER (close_button), image);
     gtk_widget_show (image);
 
-    gtk_box_pack_end (GTK_BOX (box), close_button, FALSE, FALSE, 0);
+    gtk_box_pack_end (GTK_BOX (box), close_button);
     gtk_widget_show (close_button);
 
     g_object_set_data (G_OBJECT (box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
