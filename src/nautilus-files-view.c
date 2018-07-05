@@ -1746,7 +1746,7 @@ select_pattern (NautilusFilesView *view)
                                           NULL);
     gtk_dialog_set_default_response (GTK_DIALOG (dialog),
                                      GTK_RESPONSE_OK);
-    gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
+    g_object_set (dialog, "margin", 5, NULL);
     gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
 
     label = gtk_label_new_with_mnemonic (_("_Pattern:"));
@@ -1767,7 +1767,7 @@ select_pattern (NautilusFilesView *view)
     grid = gtk_grid_new ();
     g_object_set (grid,
                   "orientation", GTK_ORIENTATION_VERTICAL,
-                  "border-width", 6,
+                  "margin", 6,
                   "row-spacing", 6,
                   "column-spacing", 12,
                   NULL);
