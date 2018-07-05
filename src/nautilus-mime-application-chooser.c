@@ -314,8 +314,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
     gtk_label_set_line_wrap_mode (GTK_LABEL (chooser->label),
                                   PANGO_WRAP_WORD_CHAR);
     gtk_label_set_max_width_chars (GTK_LABEL (chooser->label), 60);
-    gtk_box_pack_start (GTK_BOX (chooser), chooser->label,
-                        FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (chooser), chooser->label);
 
     gtk_widget_show (chooser->label);
 
@@ -326,14 +325,16 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                                               TRUE);
     gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (chooser->open_with_widget),
                                            TRUE);
-    gtk_box_pack_start (GTK_BOX (chooser), chooser->open_with_widget,
-                        TRUE, TRUE, 6);
+    gtk_box_pack_start (GTK_BOX (chooser), chooser->open_with_widget);
+    g_object_set (chooser->open_with_widget, "margin", 6, NULL);
+    gtk_widget_set_vexpand (chooser->open_with_widget, TRUE);
     gtk_widget_show (chooser->open_with_widget);
 
     box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
     gtk_box_set_spacing (GTK_BOX (box), 6);
     gtk_button_box_set_layout (GTK_BUTTON_BOX (box), GTK_BUTTONBOX_END);
-    gtk_box_pack_start (GTK_BOX (chooser), box, FALSE, FALSE, 6);
+    gtk_box_pack_start (GTK_BOX (chooser), box);
+    g_object_set (box, "margin", 6, NULL);
     gtk_widget_show (box);
 
     button = gtk_button_new_with_label (_("Reset"));
@@ -341,7 +342,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                       G_CALLBACK (reset_clicked_cb),
                       chooser);
     gtk_widget_show (button);
-    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), button);
     gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (box), button, TRUE);
 
     button = gtk_button_new_with_mnemonic (_("_Add"));
@@ -349,7 +350,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                       G_CALLBACK (add_clicked_cb),
                       chooser);
     gtk_widget_show (button);
-    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), button);
     chooser->add_button = button;
 
     button = gtk_button_new_with_label (_("Set as default"));
@@ -357,7 +358,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                       G_CALLBACK (set_as_default_clicked_cb),
                       chooser);
     gtk_widget_show (button);
-    gtk_box_pack_start (GTK_BOX (box), button, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (box), button);
 
     chooser->set_as_default_button = button;
 
