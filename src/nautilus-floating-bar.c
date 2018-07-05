@@ -296,92 +296,56 @@ nautilus_floating_bar_parent_set (GtkWidget *widget,
 }
 
 static void
-get_padding_and_border (GtkWidget *widget,
-                        GtkBorder *border)
+measure (GtkWidget      *widget,
+         GtkOrientation  orientation,
+         int             for_size,
+         int            *minimum,
+         int            *natural,
+         int            *minimum_baseline,
+         int            *natural_baseline)
 {
     GtkStyleContext *context;
-    GtkBorder tmp;
+    GtkBorder border;
+    GtkBorder padding;
+    GtkWidgetClass *widget_class;
 
     context = gtk_widget_get_style_context (widget);
+    widget_class = GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class);
 
-    gtk_style_context_get_padding (context, border);
-    gtk_style_context_get_border (context, &tmp);
-    border->top += tmp.top;
-    border->right += tmp.right;
-    border->bottom += tmp.bottom;
-    border->left += tmp.left;
-}
+    gtk_style_context_get_border (context, &border);
+    gtk_style_context_get_padding (context, &padding);
 
-static void
-nautilus_floating_bar_get_preferred_width (GtkWidget *widget,
-                                           gint      *minimum_size,
-                                           gint      *natural_size)
-{
-    GtkBorder border;
+    widget_class->measure (widget, orientation, for_size,
+                           minimum, natural,
+                           minimum_baseline, natural_baseline);
 
-    get_padding_and_border (widget, &border);
+    if (orientation == GTK_ORIENTATION_HORIZONTAL)
+    {
+        border.bottom = 0;
+        border.top = 0;
 
-    GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->get_preferred_width (widget,
-                                                                                minimum_size,
-                                                                                natural_size);
+        padding.bottom = 0;
+        padding.top = 0;
+    }
+    else
+    {
+        border.left = 0;
+        border.right = 0;
 
-    *minimum_size += border.left + border.right;
-    *natural_size += border.left + border.right;
-}
+        padding.left = 0;
+        padding.right = 0;
+    }
 
-static void
-nautilus_floating_bar_get_preferred_width_for_height (GtkWidget *widget,
-                                                      gint       height,
-                                                      gint      *minimum_size,
-                                                      gint      *natural_size)
-{
-    GtkBorder border;
-
-    get_padding_and_border (widget, &border);
-
-    GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->get_preferred_width_for_height (widget,
-                                                                                           height,
-                                                                                           minimum_size,
-                                                                                           natural_size);
-
-    *minimum_size += border.left + border.right;
-    *natural_size += border.left + border.right;
-}
-
-static void
-nautilus_floating_bar_get_preferred_height (GtkWidget *widget,
-                                            gint      *minimum_size,
-                                            gint      *natural_size)
-{
-    GtkBorder border;
-
-    get_padding_and_border (widget, &border);
-
-    GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->get_preferred_height (widget,
-                                                                                 minimum_size,
-                                                                                 natural_size);
-
-    *minimum_size += border.top + border.bottom;
-    *natural_size += border.top + border.bottom;
-}
-
-static void
-nautilus_floating_bar_get_preferred_height_for_width (GtkWidget *widget,
-                                                      gint       width,
-                                                      gint      *minimum_size,
-                                                      gint      *natural_size)
-{
-    GtkBorder border;
-
-    get_padding_and_border (widget, &border);
-
-    GTK_WIDGET_CLASS (nautilus_floating_bar_parent_class)->get_preferred_height_for_width (widget,
-                                                                                           width,
-                                                                                           minimum_size,
-                                                                                           natural_size);
-
-    *minimum_size += border.top + border.bottom;
-    *natural_size += border.top + border.bottom;
+    if (minimum != NULL)
+    {
+        *minimum += border.bottom + border.left + border.right + border.top;
+        *minimum += padding.bottom + padding.left + padding.right + padding.top;
+    }
+    if (natural != NULL)
+    {
+        *natural += border.bottom + border.left + border.right + border.top;
+        *natural += padding.bottom + padding.left + padding.right + padding.top;
+    }
 }
 
 static void
@@ -448,10 +412,7 @@ nautilus_floating_bar_class_init (NautilusFloatingBarClass *klass)
     oclass->get_property = nautilus_floating_bar_get_property;
     oclass->finalize = nautilus_floating_bar_finalize;
 
-    wclass->get_preferred_width = nautilus_floating_bar_get_preferred_width;
-    wclass->get_preferred_width_for_height = nautilus_floating_bar_get_preferred_width_for_height;
-    wclass->get_preferred_height = nautilus_floating_bar_get_preferred_height;
-    wclass->get_preferred_height_for_width = nautilus_floating_bar_get_preferred_height_for_width;
+    wclass->measure = measure;
     wclass->parent_set = nautilus_floating_bar_parent_set;
 
     properties[PROP_PRIMARY_LABEL] =
