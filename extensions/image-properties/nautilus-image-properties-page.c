@@ -128,8 +128,6 @@ nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
     gtk_grid_set_column_spacing (GTK_GRID (self->grid), 18);
     append_item (self, _("Loading…"), NULL);
     gtk_container_add (GTK_CONTAINER (scrolled_window), self->grid);
-
-    gtk_widget_show_all (GTK_WIDGET (self));
 }
 
 static void
