@@ -851,9 +851,11 @@ save_sidebar_width_cb (gpointer user_data)
 
 /* side pane helpers */
 static void
-side_pane_size_allocate_callback (GtkWidget     *widget,
-                                  GtkAllocation *allocation,
-                                  gpointer       user_data)
+side_pane_size_allocate_callback (GtkWidget *widget,
+                                  int        width,
+                                  int        height,
+                                  int        baseline,
+                                  gpointer   user_data)
 {
     NautilusWindow *window = user_data;
 
@@ -864,10 +866,9 @@ side_pane_size_allocate_callback (GtkWidget     *widget,
         window->sidebar_width_handler_id = 0;
     }
 
-    if (allocation->width != window->side_pane_width &&
-        allocation->width > 1)
+    if (width != window->side_pane_width && width > 1)
     {
-        window->side_pane_width = allocation->width;
+        window->side_pane_width = width;
 
         window->sidebar_width_handler_id =
             g_idle_add (save_sidebar_width_cb, window);

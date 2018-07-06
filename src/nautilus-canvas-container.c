@@ -3026,12 +3026,15 @@ clear_size_allocation_count (gpointer data)
 }
 
 static void
-size_allocate (GtkWidget     *widget,
-               GtkAllocation *allocation)
+size_allocate (GtkWidget *widget,
+               int        width,
+               int        height,
+               int        baseline)
 {
     NautilusCanvasContainer *container;
     gboolean need_layout_redone;
     GtkAllocation wid_allocation;
+    GtkWidgetClass *widget_class;
 
     container = NAUTILUS_CANVAS_CONTAINER (widget);
 
@@ -3072,7 +3075,9 @@ size_allocate (GtkWidget     *widget,
         need_layout_redone = FALSE;
     }
 
-    GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->size_allocate (widget, allocation);
+    widget_class = GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class);
+
+    widget_class->size_allocate (widget, width, height, baseline);
 
     container->details->has_been_allocated = TRUE;
 
