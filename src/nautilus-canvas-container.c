@@ -4283,10 +4283,6 @@ handle_canvas_button_press (NautilusCanvasContainer *container,
 
     details = container->details;
     event_type = eel_event_get_event_type (event);
-    if (event_type == GDK_2BUTTON_PRESS || event_type == GDK_3BUTTON_PRESS)
-    {
-        return TRUE;
-    }
     button = eel_event_get_button (event);
     state = eel_event_get_state (event);
 
