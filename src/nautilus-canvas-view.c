@@ -1068,11 +1068,10 @@ canvas_container_activate_previewer_callback (NautilusCanvasContainer *container
 static void
 canvas_container_activate_alternate_callback (NautilusCanvasContainer *container,
                                               GList                   *file_list,
-                                              EelEvent                *event,
+                                              GdkEventType             event_type,
+                                              GdkModifierType          state,
                                               NautilusCanvasView      *canvas_view)
 {
-    GdkEventType event_type;
-    GdkModifierType state;
     gboolean open_in_tab;
     gboolean open_in_window;
     NautilusWindowOpenFlags flags;
@@ -1080,14 +1079,11 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
     g_assert (NAUTILUS_IS_CANVAS_VIEW (canvas_view));
     g_assert (container == get_canvas_container (canvas_view));
 
-    event_type = eel_event_get_event_type (event);
-    state = eel_event_get_state (event);
     open_in_tab = FALSE;
     open_in_window = FALSE;
     flags = 0;
 
-    if (event_type == GDK_BUTTON_PRESS ||
-        event_type == GDK_BUTTON_RELEASE)
+    if (event_type == GDK_BUTTON_PRESS || event_type == GDK_BUTTON_RELEASE)
     {
         open_in_window = (state & GDK_SHIFT_MASK) != 0;
         open_in_tab = !open_in_window;
