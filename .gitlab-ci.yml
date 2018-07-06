@@ -14,10 +14,10 @@ stages:
       - ninja test
 
 flatpak:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.28
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     stage: test
     variables:
-        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
+        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus-master.yml"
         MESON_ARGS: "-Dprofile=development -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
