@@ -3499,78 +3499,51 @@ on_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     eel_canvas_handle_event (EEL_CANVAS (widget), event);
 }
 
-static int
-motion_notify_event (GtkWidget      *widget,
-                     GdkEventMotion *event)
+static void
+on_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                   double                    x,
+                                   double                    y,
+                                   gpointer                  user_data)
 {
+    GtkWidget *widget;
     NautilusCanvasContainer *container;
     NautilusCanvasContainerDetails *details;
-    double world_x, world_y;
-    int canvas_x, canvas_y;
     GdkDragAction actions;
 
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     details = container->details;
 
-    if (details->drag_button != 0)
+    if (details->drag_button == 0)
     {
-        switch (details->drag_state)
-        {
-            case DRAG_STATE_MOVE_OR_COPY:
-            {
-                gdouble x;
-                gdouble y;
-
-                if (details->drag_started)
-                {
-                    break;
-                }
-
-                gdk_event_get_coords ((GdkEvent *) event, &x, &y);
-
-                eel_canvas_window_to_world (EEL_CANVAS (container),
-                                            x, y,
-                                            &world_x, &world_y);
-
-                if (gtk_drag_check_threshold (widget,
-                                              details->drag_x,
-                                              details->drag_y,
-                                              world_x,
-                                              world_y))
-                {
-                    details->drag_started = TRUE;
-                    details->drag_state = DRAG_STATE_MOVE_OR_COPY;
-
-                    eel_canvas_w2c (EEL_CANVAS (container),
-                                    details->drag_x,
-                                    details->drag_y,
-                                    &canvas_x,
-                                    &canvas_y);
-
-                    actions = GDK_ACTION_COPY
-                              | GDK_ACTION_MOVE
-                              | GDK_ACTION_LINK
-                              | GDK_ACTION_ASK;
-
-                    nautilus_canvas_dnd_begin_drag (container,
-                                                    actions,
-                                                    details->drag_button,
-                                                    event,
-                                                    canvas_x,
-                                                    canvas_y);
-                    DEBUG ("Beginning drag from canvas container");
-                }
-            }
-            break;
-
-            default:
-            {
-            }
-            break;
-        }
+        return;
     }
 
-    return GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->motion_notify_event (widget, event);
+    if (details->drag_state != DRAG_STATE_MOVE_OR_COPY)
+    {
+        return;
+    }
+
+    if (details->drag_started)
+    {
+        return;
+    }
+
+    if (!gtk_drag_check_threshold (widget,
+                                   details->drag_x, details->drag_y,
+                                   x, y))
+    {
+        return;
+    }
+
+    details->drag_started = TRUE;
+    details->drag_state = DRAG_STATE_MOVE_OR_COPY;
+
+    actions = GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK | GDK_ACTION_ASK;
+
+    nautilus_canvas_dnd_begin_drag (container, actions, details->drag_x, details->drag_y);
+
+    DEBUG ("Beginning drag from canvas container");
 }
 
 static void
@@ -4034,7 +4007,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->measure = measure;
     widget_class->realize = realize;
     widget_class->unrealize = unrealize;
-    widget_class->motion_notify_event = motion_notify_event;
     widget_class->style_updated = style_updated;
     widget_class->grab_notify = grab_notify_cb;
 
@@ -4164,6 +4136,7 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
     GtkWidget *widget;
     NautilusCanvasContainerDetails *details;
     static gboolean setup_prefs = FALSE;
+    GtkGesture *gesture;
     GtkEventController *controller;
 
     widget = GTK_WIDGET (container);
@@ -4202,6 +4175,15 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
                       G_CALLBACK (on_multi_press_gesture_pressed), NULL);
     g_signal_connect (gesture, "released",
                       G_CALLBACK (on_multi_press_gesture_released), NULL);
+
+    controller = gtk_event_controller_motion_new ();
+
+    gtk_widget_add_controller (widget, controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller, "motion",
+                      G_CALLBACK (on_event_controller_motion_motion), NULL);
 
     controller = gtk_event_controller_key_new ();
 
