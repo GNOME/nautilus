@@ -73,6 +73,53 @@ modules:
       - type: git
         url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
 
+  - name: wayland
+    sources:
+      - type: git
+        url: https://github.com/wayland-project/wayland.git
+        tag: 1.15.0
+    config-opts:
+      - "--disable-documentation"
+    buildsystem: autotools
+    builddir: true
+    cleanup:
+      - "/bin"
+      - "/include"
+      - "/lib/pkgconfig"
+      - "/share/aclocal"
+      - "*.la"
+
+  - name: graphene
+    sources:
+      - type: git
+        url: https://github.com/ebassi/graphene.git
+        tag: 1.8.2
+    config-opts:
+      - "--libdir=lib"
+      - "-Dtests=false"
+      - "-Dbenchmarks=false"
+    buildsystem: meson
+    builddir: true
+    cleanup:
+      - "/include"
+      - "/lib/pkgconfig"
+
+  - name: gtk+
+    sources:
+      - type: git
+        url: https://gitlab.gnome.org/GNOME/gtk.git
+    config-opts:
+      - "--libdir=lib"
+      - "-Ddemos=false"
+      - "-Dbuild-examples=false"
+      - "-Dbuild-tests=false"
+    buildsystem: meson
+    builddir: true
+    cleanup:
+      - "/bin"
+      - "/include"
+      - "/lib/pkgconfig"
+
   - name: nautilus
     buildsystem: meson
     builddir: true
@@ -82,4 +129,4 @@ modules:
         - -Dprofile=Master
     sources:
       - type: git
-        path: https://gitlab.gnome.org/GNOME/nautilus.git
+        url: https://gitlab.gnome.org/GNOME/nautilus.git
