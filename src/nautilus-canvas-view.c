@@ -1087,9 +1087,7 @@ canvas_container_activate_alternate_callback (NautilusCanvasContainer *container
     flags = 0;
 
     if (event_type == GDK_BUTTON_PRESS ||
-        event_type == GDK_BUTTON_RELEASE ||
-        event_type == GDK_2BUTTON_PRESS ||
-        event_type == GDK_3BUTTON_PRESS)
+        event_type == GDK_BUTTON_RELEASE)
     {
         open_in_window = (state & GDK_SHIFT_MASK) != 0;
         open_in_tab = !open_in_window;
