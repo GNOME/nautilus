@@ -1887,9 +1887,10 @@ static void eel_canvas_map (GtkWidget *widget);
 static void eel_canvas_unmap (GtkWidget *widget);
 static void eel_canvas_realize (GtkWidget *widget);
 static void eel_canvas_unrealize (GtkWidget *widget);
-static void eel_canvas_size_allocate (GtkWidget           *widget,
-                                      const GtkAllocation *allocation,
-                                      int                  baseline);
+static void eel_canvas_size_allocate (GtkWidget *widget,
+                                      int        width,
+                                      int        height,
+                                      int        baseline);
 static void on_canvas_event_controller_motion_motion (GtkEventControllerMotion *controller,
                                                       gdouble                   x,
                                                       gdouble                   y,
@@ -2536,33 +2537,28 @@ scroll_to (EelCanvas *canvas,
 
 /* Size allocation handler for the canvas */
 static void
-eel_canvas_size_allocate (GtkWidget           *widget,
-                          const GtkAllocation *allocation,
-                          int                  baseline)
+eel_canvas_size_allocate (GtkWidget *widget,
+                          int        width,
+                          int        height,
+                          int        baseline)
 {
     EelCanvas *canvas;
     GtkAdjustment *vadjustment, *hadjustment;
 
     g_return_if_fail (EEL_IS_CANVAS (widget));
-    g_return_if_fail (allocation != NULL);
-
-    if (GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate)
-    {
-        GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate (widget, allocation, baseline);
-    }
 
     canvas = EEL_CANVAS (widget);
-
-    /* Recenter the view, if appropriate */
-
     hadjustment = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (canvas));
     vadjustment = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (canvas));
 
-    gtk_adjustment_set_page_size (hadjustment, allocation->width);
-    gtk_adjustment_set_page_increment (hadjustment, allocation->width / 2);
+    GTK_WIDGET_CLASS (canvas_parent_class)->size_allocate (widget, width, height, baseline);
 
-    gtk_adjustment_set_page_size (vadjustment, allocation->height);
-    gtk_adjustment_set_page_increment (vadjustment, allocation->height / 2);
+    /* Recenter the view, if appropriate */
+    gtk_adjustment_set_page_size (hadjustment, width);
+    gtk_adjustment_set_page_increment (hadjustment, width / 2);
+
+    gtk_adjustment_set_page_size (vadjustment, height);
+    gtk_adjustment_set_page_increment (vadjustment, height / 2);
 
     scroll_to (canvas,
                gtk_adjustment_get_value (hadjustment),
