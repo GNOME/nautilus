@@ -594,8 +594,8 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
     GtkTextDirection direction;
-    gint up_slider_width;
-    gint down_slider_width;
+    GtkRequisition up_button_minimum;
+    GtkRequisition down_button_minimum;
     GtkAllocation child_allocation;
     GList *list, *first_button;
     gint width;
@@ -627,12 +627,12 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         return;
     }
     direction = gtk_widget_get_direction (widget);
-    gtk_widget_get_preferred_width (priv->up_slider_button,
-                                    &up_slider_width,
-                                    NULL);
-    gtk_widget_get_preferred_width (priv->down_slider_button,
-                                    &down_slider_width,
-                                    NULL);
+    gtk_widget_get_preferred_size (priv->up_slider_button,
+                                   &up_button_minimum,
+                                   NULL);
+    gtk_widget_get_preferred_size (priv->down_slider_button,
+                                   &down_button_minimum,
+                                   NULL);
 
     /* First, we check to see if we need the scrollbars. */
     width = 0;
@@ -657,7 +657,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         gboolean reached_end;
         gint slider_space;
         reached_end = FALSE;
-        slider_space = down_slider_width + up_slider_width;
+        slider_space = down_button_minimum.width + up_button_minimum.width;
 
         if (priv->first_scrolled_button)
         {
@@ -723,8 +723,8 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         child_allocation.x = allocation->x + allocation->width;
         if (need_sliders)
         {
-            child_allocation.x -= up_slider_width;
-            up_slider_offset = allocation->width - up_slider_width;
+            child_allocation.x -= up_button_minimum.width;
+            up_slider_offset = allocation->width - up_button_minimum.width;
         }
     }
     else
@@ -733,7 +733,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         if (need_sliders)
         {
             up_slider_offset = 0;
-            child_allocation.x += up_slider_width;
+            child_allocation.x += up_button_minimum.width;
         }
     }
 
@@ -741,7 +741,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     largest_width = allocation->width;
     if (need_sliders)
     {
-        largest_width -= (down_slider_width + up_slider_width);
+        largest_width -= (down_button_minimum.width + up_button_minimum.width);
     }
 
     for (list = first_button; list; list = list->prev)
@@ -757,7 +757,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         /* Check to see if we've don't have any more space to allocate buttons */
         if (need_sliders && direction == GTK_TEXT_DIR_RTL)
         {
-            if (child_allocation.x - down_slider_width < allocation->x)
+            if (child_allocation.x - down_button_minimum.width < allocation->x)
             {
                 break;
             }
@@ -766,7 +766,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         {
             if (need_sliders && direction == GTK_TEXT_DIR_LTR)
             {
-                if (child_allocation.x + child_allocation.width + down_slider_width > allocation->x + allocation->width)
+                if (child_allocation.x + child_allocation.width + down_button_minimum.width > allocation->x + allocation->width)
                 {
                     break;
                 }
@@ -778,7 +778,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
         if (direction == GTK_TEXT_DIR_RTL)
         {
-            down_slider_offset = child_allocation.x - allocation->x - down_slider_width;
+            down_slider_offset = child_allocation.x - allocation->x - down_button_minimum.width;
         }
         else
         {
@@ -801,7 +801,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
     if (need_sliders)
     {
-        child_allocation.width = up_slider_width;
+        child_allocation.width = up_button_minimum.width;
         child_allocation.x = up_slider_offset + allocation->x;
         gtk_widget_size_allocate (priv->up_slider_button, &child_allocation);
 
@@ -809,7 +809,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
         if (direction == GTK_TEXT_DIR_LTR)
         {
-            down_slider_offset += up_slider_width;
+            down_slider_offset += up_button_minimum.width;
         }
     }
     else
@@ -819,7 +819,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
     if (need_sliders)
     {
-        child_allocation.width = down_slider_width;
+        child_allocation.width = down_button_minimum.width;
         child_allocation.x = down_slider_offset + allocation->x;
         gtk_widget_size_allocate (priv->down_slider_button, &child_allocation);
 
