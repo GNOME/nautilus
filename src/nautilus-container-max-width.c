@@ -206,14 +206,16 @@ change_width_maximized_idle_callback (gpointer userdata)
 }
 
 static void
-on_size_allocate (GtkWidget    *widget,
-                  GdkRectangle *allocation,
-                  gpointer      userdata)
+on_size_allocate (GtkWidget *widget,
+                  int        width,
+                  int        height,
+                  int        baseline,
+                  gpointer   userdata)
 {
     NautilusContainerMaxWidth *self = NAUTILUS_CONTAINER_MAX_WIDTH (widget);
     gboolean is_width_maximized;
 
-    is_width_maximized = self->max_width == -1 ? FALSE : allocation->width >= self->max_width;
+    is_width_maximized = self->max_width == -1 ? FALSE : width >= self->max_width;
 
     if (self->width_maximized != is_width_maximized)
     {
