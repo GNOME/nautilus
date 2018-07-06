@@ -511,7 +511,7 @@ static void
 update_rows_height (NautilusBatchRenameDialog *dialog)
 {
     GList *l;
-    gint current_row_natural_height;
+    GtkRequisition current_row_natural_size;
     gint maximum_height;
 
     maximum_height = -1;
@@ -519,37 +519,37 @@ update_rows_height (NautilusBatchRenameDialog *dialog)
     /* check if maximum height has changed */
     for (l = dialog->listbox_labels_new; l != NULL; l = l->next)
     {
-        gtk_widget_get_preferred_height (GTK_WIDGET (l->data),
-                                         NULL,
-                                         &current_row_natural_height);
+        gtk_widget_get_preferred_size (GTK_WIDGET (l->data),
+                                       NULL,
+                                       &current_row_natural_size);
 
-        if (current_row_natural_height > maximum_height)
+        if (current_row_natural_size.height > maximum_height)
         {
-            maximum_height = current_row_natural_height;
+            maximum_height = current_row_natural_size.height;
         }
     }
 
     for (l = dialog->listbox_labels_old; l != NULL; l = l->next)
     {
-        gtk_widget_get_preferred_height (GTK_WIDGET (l->data),
-                                         NULL,
-                                         &current_row_natural_height);
+        gtk_widget_get_preferred_size (GTK_WIDGET (l->data),
+                                       NULL,
+                                       &current_row_natural_size);
 
-        if (current_row_natural_height > maximum_height)
+        if (current_row_natural_size.height > maximum_height)
         {
-            maximum_height = current_row_natural_height;
+            maximum_height = current_row_natural_size.height;
         }
     }
 
     for (l = dialog->listbox_icons; l != NULL; l = l->next)
     {
-        gtk_widget_get_preferred_height (GTK_WIDGET (l->data),
-                                         NULL,
-                                         &current_row_natural_height);
+        gtk_widget_get_preferred_size (GTK_WIDGET (l->data),
+                                       NULL,
+                                       &current_row_natural_size);
 
-        if (current_row_natural_height > maximum_height)
+        if (current_row_natural_size.height > maximum_height)
         {
-            maximum_height = current_row_natural_height;
+            maximum_height = current_row_natural_size.height;
         }
     }
 
