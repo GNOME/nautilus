@@ -581,8 +581,9 @@ _set_simple_bottom_clip (GtkWidget *widget,
 
 /* This is a tad complicated */
 static void
-nautilus_path_bar_size_allocate (GtkWidget     *widget,
-                                 GtkAllocation *allocation)
+nautilus_path_bar_size_allocate (GtkWidget           *widget,
+                                 const GtkAllocation *allocation,
+                                 int                  baseline)
 {
     GtkWidget *child;
     NautilusPathBar *self;
@@ -768,7 +769,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         }
 
         gtk_widget_set_child_visible (child, TRUE);
-        gtk_widget_size_allocate (child, &child_allocation);
+        gtk_widget_size_allocate (child, &child_allocation, -1);
 
         if (direction == GTK_TEXT_DIR_RTL)
         {
@@ -797,7 +798,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     {
         child_allocation.width = up_button_minimum.width;
         child_allocation.x = up_slider_offset + allocation->x;
-        gtk_widget_size_allocate (priv->up_slider_button, &child_allocation);
+        gtk_widget_size_allocate (priv->up_slider_button, &child_allocation, -1);
 
         gtk_widget_set_child_visible (priv->up_slider_button, TRUE);
 
@@ -815,7 +816,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     {
         child_allocation.width = down_button_minimum.width;
         child_allocation.x = down_slider_offset + allocation->x;
-        gtk_widget_size_allocate (priv->down_slider_button, &child_allocation);
+        gtk_widget_size_allocate (priv->down_slider_button, &child_allocation, -1);
 
         gtk_widget_set_child_visible (priv->down_slider_button, TRUE);
         nautilus_path_bar_update_slider_buttons (self);
