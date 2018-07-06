@@ -506,7 +506,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         return;
     }
     direction = gtk_widget_get_direction (widget);
-
     width = 0;
 
     gtk_widget_get_preferred_size (BUTTON_DATA (self->button_list->data)->container,
@@ -591,6 +590,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
     /* Determine the largest possible allocation size */
     largest_width = allocation->width;
+
     for (list = first_button; list; list = list->prev)
     {
         child = BUTTON_DATA (list->data)->container;
@@ -601,7 +601,6 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
         {
             child_allocation.x -= child_allocation.width;
         }
-        /* Check to see if we've don't have any more space to allocate buttons */
 
         gtk_widget_set_child_visible (child, TRUE);
         gtk_widget_size_allocate (child, &child_allocation);
