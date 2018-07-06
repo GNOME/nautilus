@@ -43,26 +43,16 @@ typedef enum {
 } GnomeDesktopThumbnailSize;
 
 #define GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY		(gnome_desktop_thumbnail_factory_get_type ())
-#define GNOME_DESKTOP_THUMBNAIL_FACTORY(obj)	(G_TYPE_CHECK_INSTANCE_CAST ((obj), GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY, GnomeDesktopThumbnailFactory))
-#define GNOME_DESKTOP_THUMBNAIL_FACTORY_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY, GnomeDesktopThumbnailFactoryClass))
-#define GNOME_DESKTOP_IS_THUMBNAIL_FACTORY(obj)		(G_TYPE_INSTANCE_CHECK_TYPE ((obj), GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY))
-#define GNOME_DESKTOP_IS_THUMBNAIL_FACTORY_CLASS(klass)	(G_TYPE_CLASS_CHECK_CLASS_TYPE ((klass), GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY))
 
-typedef struct _GnomeDesktopThumbnailFactory        GnomeDesktopThumbnailFactory;
-typedef struct _GnomeDesktopThumbnailFactoryClass   GnomeDesktopThumbnailFactoryClass;
-typedef struct _GnomeDesktopThumbnailFactoryPrivate GnomeDesktopThumbnailFactoryPrivate;
-
-struct _GnomeDesktopThumbnailFactory {
-	GObject parent;
-
-	GnomeDesktopThumbnailFactoryPrivate *priv;
-};
+G_DECLARE_DERIVABLE_TYPE (GnomeDesktopThumbnailFactory,
+                          gnome_desktop_thumbnail_factory,
+                          GNOME_DESKTOP,
+                          THUMBNAIL_FACTORY,
+                          GObject)
 
 struct _GnomeDesktopThumbnailFactoryClass {
 	GObjectClass parent;
 };
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(GnomeDesktopThumbnailFactory, g_object_unref)
 
 GType                  gnome_desktop_thumbnail_factory_get_type (void);
 GnomeDesktopThumbnailFactory *gnome_desktop_thumbnail_factory_new      (GnomeDesktopThumbnailSize     size);

@@ -141,7 +141,7 @@ thumbnailers_directory_changed (GFileMonitor                 *monitor,
                                 GFileMonitorEvent             event_type,
                                 GnomeDesktopThumbnailFactory *factory);
 
-struct _GnomeDesktopThumbnailFactoryPrivate {
+typedef struct {
   GnomeDesktopThumbnailSize size;
 
   GMutex lock;
@@ -154,17 +154,16 @@ struct _GnomeDesktopThumbnailFactoryPrivate {
   gboolean loaded : 1;
   gboolean disabled : 1;
   gchar **disabled_types;
-};
+} GnomeDesktopThumbnailFactoryPrivate;
 
 static const char *appname = "gnome-thumbnail-factory";
 
-G_DEFINE_TYPE (GnomeDesktopThumbnailFactory,
-	       gnome_desktop_thumbnail_factory,
-	       G_TYPE_OBJECT)
-#define parent_class gnome_desktop_thumbnail_factory_parent_class
+G_DEFINE_TYPE_WITH_PRIVATE (GnomeDesktopThumbnailFactory,
+                            gnome_desktop_thumbnail_factory,
+                            G_TYPE_OBJECT)
 
-#define GNOME_DESKTOP_THUMBNAIL_FACTORY_GET_PRIVATE(object) \
-  (G_TYPE_INSTANCE_GET_PRIVATE ((object), GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY, GnomeDesktopThumbnailFactoryPrivate))
+#define parent_class gnome_desktop_thumbnail_factory_parent_class
+#define get_instance_private(ptr) gnome_desktop_thumbnail_factory_get_instance_private(ptr)
 
 #define THUMBNAILER_ENTRY_GROUP "Thumbnailer Entry"
 #define THUMBNAILER_EXTENSION   ".thumbnailer"
@@ -310,8 +309,10 @@ static void
 gnome_desktop_thumbnail_factory_register_mime_types (GnomeDesktopThumbnailFactory *factory,
                                                      Thumbnailer                  *thumb)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   gint i;
+
+  priv = get_instance_private (factory);
 
   for (i = 0; thumb->mime_types[i]; i++)
     {
@@ -326,7 +327,7 @@ static void
 gnome_desktop_thumbnail_factory_add_thumbnailer (GnomeDesktopThumbnailFactory *factory,
                                                  Thumbnailer                  *thumb)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv = get_instance_private (factory);
 
   gnome_desktop_thumbnail_factory_register_mime_types (factory, thumb);
   priv->thumbnailers = g_list_prepend (priv->thumbnailers, thumb);
@@ -336,8 +337,10 @@ static gboolean
 gnome_desktop_thumbnail_factory_is_disabled (GnomeDesktopThumbnailFactory *factory,
                                              const gchar                  *mime_type)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   guint i;
+
+  priv = get_instance_private (factory);
 
   if (priv->disabled)
     return TRUE;
@@ -366,10 +369,12 @@ static void
 update_or_create_thumbnailer (GnomeDesktopThumbnailFactory *factory,
                               const gchar                  *path)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   GList *l;
   Thumbnailer *thumb;
   gboolean found = FALSE;
+
+  priv = get_instance_private (factory);
 
   g_mutex_lock (&priv->lock);
 
@@ -406,9 +411,11 @@ static void
 remove_thumbnailer (GnomeDesktopThumbnailFactory *factory,
                     const gchar                  *path)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   GList *l;
   Thumbnailer *thumb;
+
+  priv = get_instance_private (factory);
 
   g_mutex_lock (&priv->lock);
 
@@ -436,9 +443,11 @@ remove_thumbnailers_for_dir (GnomeDesktopThumbnailFactory *factory,
                              const gchar                  *thumbnailer_dir,
                              GFileMonitor                 *monitor)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   GList *l;
   Thumbnailer *thumb;
+
+  priv = get_instance_private (factory);
 
   g_mutex_lock (&priv->lock);
 
@@ -470,11 +479,13 @@ static void
 gnome_desktop_thumbnail_factory_load_thumbnailers_for_dir (GnomeDesktopThumbnailFactory *factory,
                                                            const gchar                  *path)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   GDir *dir;
   GFile *dir_file;
   GFileMonitor *monitor;
   const gchar *dirent;
+
+  priv = get_instance_private (factory);
 
   dir = g_dir_open (path, 0, NULL);
   if (!dir)
@@ -565,9 +576,11 @@ thumbnailers_directory_changed (GFileMonitor                 *monitor,
 static void
 gnome_desktop_thumbnail_factory_load_thumbnailers (GnomeDesktopThumbnailFactory *factory)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   const gchar * const *dirs;
   guint i;
+
+  priv = get_instance_private (factory);
 
   if (priv->loaded)
     return;
@@ -586,7 +599,7 @@ external_thumbnailers_disabled_all_changed_cb (GSettings                    *set
                                                const gchar                  *key,
                                                GnomeDesktopThumbnailFactory *factory)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv = get_instance_private (factory);
 
   g_mutex_lock (&priv->lock);
 
@@ -610,7 +623,7 @@ external_thumbnailers_disabled_changed_cb (GSettings                    *setting
                                            const gchar                  *key,
                                            GnomeDesktopThumbnailFactory *factory)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv = get_instance_private (factory);
 
   g_mutex_lock (&priv->lock);
 
@@ -626,11 +639,7 @@ external_thumbnailers_disabled_changed_cb (GSettings                    *setting
 static void
 gnome_desktop_thumbnail_factory_init (GnomeDesktopThumbnailFactory *factory)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv;
-
-  factory->priv = GNOME_DESKTOP_THUMBNAIL_FACTORY_GET_PRIVATE (factory);
-
-  priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv = get_instance_private (factory);
 
   priv->size = GNOME_DESKTOP_THUMBNAIL_SIZE_NORMAL;
 
@@ -663,8 +672,7 @@ gnome_desktop_thumbnail_factory_finalize (GObject *object)
   GnomeDesktopThumbnailFactoryPrivate *priv;
 
   factory = GNOME_DESKTOP_THUMBNAIL_FACTORY (object);
-
-  priv = factory->priv;
+  priv = get_instance_private (factory);
 
   if (priv->thumbnailers)
     {
@@ -707,8 +715,6 @@ gnome_desktop_thumbnail_factory_class_init (GnomeDesktopThumbnailFactoryClass *c
   gobject_class = G_OBJECT_CLASS (class);
 
   gobject_class->finalize = gnome_desktop_thumbnail_factory_finalize;
-
-  g_type_class_add_private (class, sizeof (GnomeDesktopThumbnailFactoryPrivate));
 }
 
 /**
@@ -727,10 +733,12 @@ GnomeDesktopThumbnailFactory *
 gnome_desktop_thumbnail_factory_new (GnomeDesktopThumbnailSize size)
 {
   GnomeDesktopThumbnailFactory *factory;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
 
   factory = g_object_new (GNOME_DESKTOP_TYPE_THUMBNAIL_FACTORY, NULL);
 
-  factory->priv->size = size;
+  priv = get_instance_private (factory);
+  priv->size = size;
 
   return factory;
 }
@@ -846,7 +854,7 @@ gnome_desktop_thumbnail_factory_lookup (GnomeDesktopThumbnailFactory *factory,
 					const char            *uri,
 					time_t                 mtime)
 {
-  GnomeDesktopThumbnailFactoryPrivate *priv = factory->priv;
+  GnomeDesktopThumbnailFactoryPrivate *priv = get_instance_private (factory);
 
   g_return_val_if_fail (uri != NULL, NULL);
 
@@ -875,10 +883,13 @@ gnome_desktop_thumbnail_factory_has_valid_failed_thumbnail (GnomeDesktopThumbnai
 							    time_t                 mtime)
 {
   char *path;
+  GnomeDesktopThumbnailFactoryPrivate *priv;
 
   g_return_val_if_fail (uri != NULL, FALSE);
 
-  path = lookup_failed_thumbnail_path (uri, mtime, factory->priv->size);
+  priv = get_instance_private (factory);
+
+  path = lookup_failed_thumbnail_path (uri, mtime, priv->size);
   if (path == NULL)
     return FALSE;
 
@@ -909,7 +920,10 @@ gnome_desktop_thumbnail_factory_can_thumbnail (GnomeDesktopThumbnailFactory *fac
 					       const char            *mime_type,
 					       time_t                 mtime)
 {
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   gboolean have_script = FALSE;
+
+  priv = get_instance_private (factory);
 
   /* Don't thumbnail thumbnails */
   if (uri &&
@@ -920,15 +934,15 @@ gnome_desktop_thumbnail_factory_can_thumbnail (GnomeDesktopThumbnailFactory *fac
   if (!mime_type)
     return FALSE;
 
-  g_mutex_lock (&factory->priv->lock);
+  g_mutex_lock (&priv->lock);
   if (!gnome_desktop_thumbnail_factory_is_disabled (factory, mime_type))
     {
       Thumbnailer *thumb;
 
-      thumb = g_hash_table_lookup (factory->priv->mime_types_map, mime_type);
+      thumb = g_hash_table_lookup (priv->mime_types_map, mime_type);
       have_script = (thumb != NULL);
     }
-  g_mutex_unlock (&factory->priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   if (have_script)
     {
@@ -1040,6 +1054,7 @@ gnome_desktop_thumbnail_factory_generate_thumbnail (GnomeDesktopThumbnailFactory
 						    const char            *uri,
 						    const char            *mime_type)
 {
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   GdkPixbuf *pixbuf;
   char *script;
   int size;
@@ -1047,10 +1062,12 @@ gnome_desktop_thumbnail_factory_generate_thumbnail (GnomeDesktopThumbnailFactory
   g_return_val_if_fail (uri != NULL, NULL);
   g_return_val_if_fail (mime_type != NULL, NULL);
 
+  priv = get_instance_private (factory);
+
   /* Doesn't access any volatile fields in factory, so it's threadsafe */
 
   size = 128;
-  if (factory->priv->size == GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE)
+  if (priv->size == GNOME_DESKTOP_THUMBNAIL_SIZE_LARGE)
     size = 256;
 
   pixbuf = get_preview_thumbnail (uri, size);
@@ -1058,16 +1075,16 @@ gnome_desktop_thumbnail_factory_generate_thumbnail (GnomeDesktopThumbnailFactory
     return pixbuf;
 
   script = NULL;
-  g_mutex_lock (&factory->priv->lock);
+  g_mutex_lock (&priv->lock);
   if (!gnome_desktop_thumbnail_factory_is_disabled (factory, mime_type))
     {
       Thumbnailer *thumb;
 
-      thumb = g_hash_table_lookup (factory->priv->mime_types_map, mime_type);
+      thumb = g_hash_table_lookup (priv->mime_types_map, mime_type);
       if (thumb)
         script = g_strdup (thumb->command);
     }
-  g_mutex_unlock (&factory->priv->lock);
+  g_mutex_unlock (&priv->lock);
 
   if (script)
     {
@@ -1204,9 +1221,12 @@ gnome_desktop_thumbnail_factory_save_thumbnail (GnomeDesktopThumbnailFactory *fa
 						const char            *uri,
 						time_t                 original_mtime)
 {
+  GnomeDesktopThumbnailFactoryPrivate *priv;
   char *path;
 
-  path = thumbnail_path (uri, factory->priv->size);
+  priv = get_instance_private (factory);
+
+  path = thumbnail_path (uri, priv->size);
   if (!save_thumbnail (thumbnail, path, uri, original_mtime))
     {
       thumbnail = make_failed_thumbnail ();
