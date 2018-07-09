@@ -153,7 +153,7 @@ struct _EelCanvasItemClass {
 	 * coordinates of the drawable, a temporary pixmap, where things get
 	 * drawn.  (width, height) are the dimensions of the drawable.
 	 */
-	void (* draw) (EelCanvasItem *item, cairo_t *cr, cairo_region_t *region);
+	void (* snapshot) (EelCanvasItem *item, GtkSnapshot *snapshot);
 
 	/* Calculate the distance from an item to the specified point.  It also
          * returns a canvas item which is the item itself in the case of the
