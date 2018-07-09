@@ -63,9 +63,9 @@ typedef enum {
 GType       nautilus_canvas_item_get_type                 (void);
 
 /* attributes */
-void        nautilus_canvas_item_set_image                (NautilusCanvasItem       *item,
-							   GdkPixbuf                *image);
-cairo_surface_t* nautilus_canvas_item_get_drag_surface    (NautilusCanvasItem       *item);
+void        nautilus_canvas_item_set_texture              (NautilusCanvasItem       *item,
+							   GdkTexture               *texture);
+GdkPaintable *nautilus_canvas_item_get_drag_paintable     (NautilusCanvasItem       *item);
 void        nautilus_canvas_item_set_emblems              (NautilusCanvasItem       *item,
 							   GList                    *emblem_pixbufs);
 
