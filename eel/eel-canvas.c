@@ -1217,9 +1217,8 @@ static void   eel_canvas_group_update (EelCanvasItem *item,
 static void   eel_canvas_group_unrealize (EelCanvasItem *item);
 static void   eel_canvas_group_map (EelCanvasItem *item);
 static void   eel_canvas_group_unmap (EelCanvasItem *item);
-static void   eel_canvas_group_draw (EelCanvasItem  *item,
-                                     cairo_t        *cr,
-                                     cairo_region_t *region);
+static void   eel_canvas_group_snapshot (EelCanvasItem *item,
+                                         GtkSnapshot   *snapshot);
 static double eel_canvas_group_point (EelCanvasItem  *item,
                                       double          x,
                                       double          y,
@@ -1311,7 +1310,7 @@ eel_canvas_group_class_init (EelCanvasGroupClass *klass)
     item_class->unrealize = eel_canvas_group_unrealize;
     item_class->map = eel_canvas_group_map;
     item_class->unmap = eel_canvas_group_unmap;
-    item_class->draw = eel_canvas_group_draw;
+    item_class->snapshot = eel_canvas_group_snapshot;
     item_class->point = eel_canvas_group_point;
     item_class->translate = eel_canvas_group_translate;
     item_class->bounds = eel_canvas_group_bounds;
@@ -1581,36 +1580,49 @@ eel_canvas_group_unmap (EelCanvasItem *item)
     (*group_parent_class->unmap)(item);
 }
 
-/* Draw handler for canvas groups */
 static void
-eel_canvas_group_draw (EelCanvasItem  *item,
-                       cairo_t        *cr,
-                       cairo_region_t *region)
+eel_canvas_group_snapshot (EelCanvasItem *item,
+                           GtkSnapshot   *snapshot)
 {
     EelCanvasGroup *group;
-    GList *list;
-    EelCanvasItem *child = NULL;
+    GtkWidget *widget;
+    GtkScrollable *scrollable;
+    GtkAdjustment *hadjustment;
+    GtkAdjustment *vadjustment;
+    GdkRectangle clip_region;
 
     group = EEL_CANVAS_GROUP (item);
+    widget = GTK_WIDGET (item->canvas);
+    scrollable = GTK_SCROLLABLE (widget);
+    hadjustment = gtk_scrollable_get_hadjustment (scrollable);
+    vadjustment = gtk_scrollable_get_vadjustment (scrollable);
 
-    for (list = group->item_list; list; list = list->next)
+    clip_region.x = gtk_adjustment_get_value (hadjustment);
+    clip_region.y = gtk_adjustment_get_value (vadjustment);
+    clip_region.width = gtk_widget_get_width (widget) + clip_region.x;
+    clip_region.height = gtk_widget_get_height (widget) + clip_region.y;
+
+    for (GList *list = group->item_list; list != NULL; list = list->next)
     {
+        EelCanvasItem *child;
+        GdkRectangle bounds;
+
         child = list->data;
 
-        if ((child->flags & EEL_CANVAS_ITEM_MAPPED) &&
-            (EEL_CANVAS_ITEM_GET_CLASS (child)->draw))
+        bounds.x = MIN (child->x1, child->x2);
+        bounds.y = MIN (child->y1, child->y2);
+        bounds.width = ABS (child->x2 - child->x1);
+        bounds.height = ABS (child->y2 - child->y1);
+
+        if (!gdk_rectangle_intersect (&clip_region, &bounds, NULL))
         {
-            GdkRectangle child_rect;
+            continue;
+        }
 
-            child_rect.x = child->x1;
-            child_rect.y = child->y1;
-            child_rect.width = child->x2 - child->x1 + 1;
-            child_rect.height = child->y2 - child->y1 + 1;
-
-            if (cairo_region_contains_rectangle (region, &child_rect) != CAIRO_REGION_OVERLAP_OUT)
-            {
-                EEL_CANVAS_ITEM_GET_CLASS (child)->draw (child, cr, region);
-            }
+        if ((child->flags & EEL_CANVAS_ITEM_MAPPED) &&
+            (EEL_CANVAS_ITEM_GET_CLASS (child)->snapshot))
+        {
+            EEL_CANVAS_ITEM_GET_CLASS (child)->snapshot (child, snapshot);
         }
     }
 }
@@ -3073,79 +3085,28 @@ on_canvas_event_controller_motion_leave (GtkEventControllerMotion *controller,
     eel_canvas_crossing (controller);
 }
 
-static cairo_region_t *
-eel_cairo_get_clip_region (cairo_t *cr)
-{
-    cairo_rectangle_list_t *list;
-    cairo_region_t *region;
-    int i;
-
-    list = cairo_copy_clip_rectangle_list (cr);
-    if (list->status == CAIRO_STATUS_CLIP_NOT_REPRESENTABLE)
-    {
-        cairo_rectangle_int_t clip_rect;
-
-        cairo_rectangle_list_destroy (list);
-
-        if (!gdk_cairo_get_clip_rectangle (cr, &clip_rect))
-        {
-            return NULL;
-        }
-        return cairo_region_create_rectangle (&clip_rect);
-    }
-
-
-    region = cairo_region_create ();
-    for (i = list->num_rectangles - 1; i >= 0; --i)
-    {
-        cairo_rectangle_t *rect = &list->rectangles[i];
-        cairo_rectangle_int_t clip_rect;
-
-        clip_rect.x = floor (rect->x);
-        clip_rect.y = floor (rect->y);
-        clip_rect.width = ceil (rect->x + rect->width) - clip_rect.x;
-        clip_rect.height = ceil (rect->y + rect->height) - clip_rect.y;
-
-        if (cairo_region_union_rectangle (region, &clip_rect) != CAIRO_STATUS_SUCCESS)
-        {
-            cairo_region_destroy (region);
-            region = NULL;
-            break;
-        }
-    }
-
-    cairo_rectangle_list_destroy (list);
-    return region;
-}
-
 static void
 eel_canvas_snapshot (GtkWidget   *widget,
                      GtkSnapshot *snapshot)
 {
     EelCanvas *canvas;
-    graphene_rect_t bounds;
-    cairo_t *cr;
-    cairo_region_t *region;
+    GtkScrollable *scrollable;
+    GtkAdjustment *hadjustment;
+    GtkAdjustment *vadjustment;
 
     canvas = EEL_CANVAS (widget);
-    bounds = GRAPHENE_RECT_INIT (0, 0,
-                                 gtk_widget_get_width (widget),
-                                 gtk_widget_get_height (widget));
-    cr = gtk_snapshot_append_cairo (snapshot, &bounds);
+    scrollable = GTK_SCROLLABLE (widget);
+    hadjustment = gtk_scrollable_get_hadjustment (scrollable);
+    vadjustment = gtk_scrollable_get_vadjustment (scrollable);
 
-    if (!gdk_cairo_get_clip_rectangle (cr, NULL))
-    {
-        return;
-    }
+    gtk_snapshot_push_clip (snapshot,
+                            &GRAPHENE_RECT_INIT (0, 0,
+                                                 gtk_widget_get_width (widget),
+                                                 gtk_widget_get_height (widget)));
 
-    cairo_save (cr);
-
-    region = eel_cairo_get_clip_region (cr);
-    if (region == NULL)
-    {
-        cairo_restore (cr);
-        return;
-    }
+    gtk_snapshot_offset (snapshot,
+                         -gtk_adjustment_get_value (hadjustment),
+                         -gtk_adjustment_get_value (vadjustment));
 
     /* If there are any outstanding items that need updating, do them now */
     if (canvas->idle_id)
@@ -3169,18 +3130,14 @@ eel_canvas_snapshot (GtkWidget   *widget,
 
     if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
     {
-        EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->draw (canvas->root, cr, region);
+        EEL_CANVAS_ITEM_GET_CLASS (canvas->root)->snapshot (canvas->root, snapshot);
     }
-
-    cairo_restore (cr);
 
     /* Chain up to get exposes on child widgets */
     if (GTK_WIDGET_CLASS (canvas_parent_class)->snapshot)
     {
         GTK_WIDGET_CLASS (canvas_parent_class)->snapshot (widget, snapshot);
     }
-
-    cairo_region_destroy (region);
 
     gtk_snapshot_pop (snapshot);
 }
@@ -3522,22 +3479,14 @@ eel_canvas_request_redraw (EelCanvas *canvas,
                            int        x2,
                            int        y2)
 {
-    GdkRectangle bbox;
-
     g_return_if_fail (EEL_IS_CANVAS (canvas));
 
-    if (!gtk_widget_is_drawable (GTK_WIDGET (canvas))
-        || (x1 >= x2) || (y1 >= y2))
+    if (!gtk_widget_is_drawable (GTK_WIDGET (canvas)))
     {
         return;
     }
 
-    bbox.x = x1;
-    bbox.y = y1;
-    bbox.width = x2 - x1;
-    bbox.height = y2 - y1;
-
-    gdk_surface_invalidate_rect (gtk_widget_get_surface (GTK_WIDGET (canvas)), &bbox);
+    gtk_widget_queue_draw (GTK_WIDGET (canvas));
 }
 
 /**
