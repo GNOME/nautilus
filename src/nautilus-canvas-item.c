@@ -31,7 +31,6 @@
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-graphic-effects.h>
 #include <eel/eel-string.h>
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gtk/gtk.h>
 #include <gdk/gdk.h>
 #include <glib/gi18n.h>
@@ -76,8 +75,7 @@ struct NautilusCanvasItemDetails
 {
     /* The image, text, font. */
     double x, y;
-    GdkPixbuf *pixbuf;
-    cairo_surface_t *rendered_surface;
+    GdkTexture *texture;
     char *editable_text;                /* Text that can be modified by a renaming function */
     char *additional_text;              /* Text that cannot be modifed, such as file size, etc. */
 
@@ -106,12 +104,6 @@ struct NautilusCanvasItemDetails
     guint is_highlighted_for_clipboard : 1;
     guint is_prelit : 1;
 
-    guint rendered_is_highlighted_for_selection : 1;
-    guint rendered_is_highlighted_for_drop : 1;
-    guint rendered_is_highlighted_for_clipboard : 1;
-    guint rendered_is_prelit : 1;
-    guint rendered_is_focused : 1;
-
     guint bounds_cached : 1;
 
     guint is_visible : 1;
@@ -128,7 +120,7 @@ struct NautilusCanvasItemDetails
     EelIRect bounds_cache_for_layout;
     EelIRect bounds_cache_for_entire_item;
 
-    GdkWindow *cursor_window;
+    GdkSurface *cursor_surface;
 
     GString *text;
 };
@@ -183,16 +175,13 @@ nautilus_canvas_item_finalize (GObject *object)
 
     details = NAUTILUS_CANVAS_ITEM (object)->details;
 
-    if (details->cursor_window != NULL)
+    if (details->cursor_surface != NULL)
     {
-        gdk_window_set_cursor (details->cursor_window, NULL);
-        g_object_unref (details->cursor_window);
+        gdk_surface_set_cursor (details->cursor_surface, NULL);
+        g_object_unref (details->cursor_surface);
     }
 
-    if (details->pixbuf != NULL)
-    {
-        g_object_unref (details->pixbuf);
-    }
+    g_clear_object (&details->texture);
 
     if (details->text != NULL)
     {
@@ -202,11 +191,6 @@ nautilus_canvas_item_finalize (GObject *object)
 
     g_free (details->editable_text);
     g_free (details->additional_text);
-
-    if (details->rendered_surface != NULL)
-    {
-        cairo_surface_destroy (details->rendered_surface);
-    }
 
     if (details->editable_text_layout != NULL)
     {
@@ -219,21 +203,6 @@ nautilus_canvas_item_finalize (GObject *object)
     }
 
     G_OBJECT_CLASS (nautilus_canvas_item_parent_class)->finalize (object);
-}
-
-/* Currently we require pixbufs in this format (for hit testing).
- * Perhaps gdk-pixbuf will be changed so it can do the hit testing
- * and we won't have this requirement any more.
- */
-static gboolean
-pixbuf_is_acceptable (GdkPixbuf *pixbuf)
-{
-    return gdk_pixbuf_get_colorspace (pixbuf) == GDK_COLORSPACE_RGB
-           && ((!gdk_pixbuf_get_has_alpha (pixbuf)
-                && gdk_pixbuf_get_n_channels (pixbuf) == 3)
-               || (gdk_pixbuf_get_has_alpha (pixbuf)
-                   && gdk_pixbuf_get_n_channels (pixbuf) == 4))
-           && gdk_pixbuf_get_bits_per_sample (pixbuf) == 8;
 }
 
 static void
@@ -442,60 +411,58 @@ nautilus_canvas_item_get_property (GObject    *object,
 
 static void
 get_scaled_icon_size (NautilusCanvasItem *item,
-                      gint               *width,
-                      gint               *height)
+                      gint               *out_width,
+                      gint               *out_height)
 {
     EelCanvas *canvas;
-    GdkPixbuf *pixbuf = NULL;
-    gint scale;
+    int scale;
+    GdkTexture *texture;
+    int width = 0;
+    int height = 0;
 
-    if (item != NULL)
+    if (item == NULL)
     {
-        canvas = EEL_CANVAS_ITEM (item)->canvas;
-        scale = gtk_widget_get_scale_factor (GTK_WIDGET (canvas));
-        pixbuf = item->details->pixbuf;
+        goto finish;
     }
 
-    if (width)
+    canvas = EEL_CANVAS_ITEM (item)->canvas;
+    scale = gtk_widget_get_scale_factor (GTK_WIDGET (canvas));
+    texture = item->details->texture;
+
+    if (texture != NULL)
     {
-        *width = (pixbuf == NULL) ? 0 : (gdk_pixbuf_get_width (pixbuf) / scale);
+        width = gdk_texture_get_width (texture) / scale;
+        height = gdk_texture_get_height (texture) / scale;
     }
-    if (height)
+
+finish:
+    if (out_width != NULL)
     {
-        *height = (pixbuf == NULL) ? 0 : (gdk_pixbuf_get_height (pixbuf) / scale);
+        *out_width = width;
+    }
+    if (out_height != NULL)
+    {
+        *out_height = height;
     }
 }
 
 void
-nautilus_canvas_item_set_image (NautilusCanvasItem *item,
-                                GdkPixbuf          *image)
+nautilus_canvas_item_set_texture (NautilusCanvasItem *item,
+                                  GdkTexture         *texture)
 {
     NautilusCanvasItemDetails *details;
 
     g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (item));
-    g_return_if_fail (image == NULL || pixbuf_is_acceptable (image));
 
     details = item->details;
-    if (details->pixbuf == image)
+    if (details->texture == texture)
     {
         return;
     }
 
-    if (image != NULL)
-    {
-        g_object_ref (image);
-    }
-    if (details->pixbuf != NULL)
-    {
-        g_object_unref (details->pixbuf);
-    }
-    if (details->rendered_surface != NULL)
-    {
-        cairo_surface_destroy (details->rendered_surface);
-        details->rendered_surface = NULL;
-    }
+    g_clear_object (&details->texture);
 
-    details->pixbuf = image;
+    details->texture = texture;
 
     nautilus_canvas_item_invalidate_bounds_cache (item);
     eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
@@ -969,9 +936,9 @@ measure_label_text (NautilusCanvasItem *item)
 }
 
 static void
-draw_label_text (NautilusCanvasItem *item,
-                 cairo_t            *cr,
-                 EelIRect            icon_rect)
+snapshot_label (NautilusCanvasItem *item,
+                GtkSnapshot        *snapshot,
+                EelIRect            icon_rect)
 {
     NautilusCanvasItemDetails *details;
     NautilusCanvasContainer *container;
@@ -1041,12 +1008,12 @@ draw_label_text (NautilusCanvasItem *item,
         gtk_style_context_save (context);
         gtk_style_context_set_state (context, state);
 
-        gtk_render_frame (context, cr,
-                          frame_x, frame_y,
-                          frame_w, frame_h);
-        gtk_render_background (context, cr,
-                               frame_x, frame_y,
-                               frame_w, frame_h);
+        gtk_snapshot_render_frame (snapshot, context,
+                                   frame_x, frame_y,
+                                   frame_w, frame_h);
+        gtk_snapshot_render_background (snapshot, context,
+                                        frame_x, frame_y,
+                                        frame_w, frame_h);
 
         gtk_style_context_restore (context);
     }
@@ -1068,9 +1035,9 @@ draw_label_text (NautilusCanvasItem *item,
         gtk_style_context_save (context);
         gtk_style_context_set_state (context, state);
 
-        gtk_render_layout (context, cr,
-                           x, text_rect.y0 + TEXT_BACK_PADDING_Y,
-                           editable_layout);
+        gtk_snapshot_render_layout (snapshot, context,
+                                    x, text_rect.y0 + TEXT_BACK_PADDING_Y,
+                                    editable_layout);
 
         gtk_style_context_restore (context);
     }
@@ -1091,9 +1058,9 @@ draw_label_text (NautilusCanvasItem *item,
         gtk_style_context_set_state (context, state);
         gtk_style_context_add_class (context, "dim-label");
 
-        gtk_render_layout (context, cr,
-                           x, text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y,
-                           additional_layout);
+        gtk_snapshot_render_layout (snapshot, context,
+                                    x, text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y,
+                                    additional_layout);
 
         gtk_style_context_restore (context);
     }
@@ -1108,12 +1075,11 @@ draw_label_text (NautilusCanvasItem *item,
         gtk_style_context_save (context);
         gtk_style_context_set_state (context, state);
 
-        gtk_render_focus (context,
-                          cr,
-                          text_rect.x0,
-                          text_rect.y0,
-                          text_rect.x1 - text_rect.x0,
-                          text_rect.y1 - text_rect.y0);
+        gtk_snapshot_render_focus (snapshot, context,
+                                   text_rect.x0,
+                                   text_rect.y0,
+                                   text_rect.x1 - text_rect.x0,
+                                   text_rect.y1 - text_rect.y0);
 
         gtk_style_context_restore (context);
     }
@@ -1164,119 +1130,93 @@ nautilus_canvas_item_invalidate_label (NautilusCanvasItem *item)
     }
 }
 
-/* shared code to highlight or dim the passed-in pixbuf */
-static cairo_surface_t *
-real_map_surface (NautilusCanvasItem *canvas_item)
+static void
+snapshot_icon (NautilusCanvasItem *canvas_item,
+               GtkSnapshot        *snapshot)
 {
-    EelCanvas *canvas;
-    g_autoptr (GdkPixbuf) temp_pixbuf = NULL;
-    gint scale_factor;
-    GdkWindow *window;
+    int width;
+    int height;
+    EelIRect icon_rect;
+    graphene_rect_t bounds;
+    EelCanvasItem *item;
+    GtkWidget *widget;
+    GtkStyleContext *context;
+    cairo_t *cr;
+    cairo_surface_t *surface;
 
-    canvas = EEL_CANVAS_ITEM (canvas_item)->canvas;
-    temp_pixbuf = g_object_ref (canvas_item->details->pixbuf);
-    scale_factor = gtk_widget_get_scale_factor (GTK_WIDGET (canvas));
-    window = gtk_widget_get_window (GTK_WIDGET (canvas));
+    get_scaled_icon_size (canvas_item, &width, &height);
 
-    if (canvas_item->details->is_prelit ||
-        canvas_item->details->is_highlighted_for_clipboard)
-    {
-        g_autoptr (GdkPixbuf) old_pixbuf = NULL;
+    icon_rect = canvas_item->details->icon_rect;
+    bounds = GRAPHENE_RECT_INIT (icon_rect.x0, icon_rect.y0, width, height);
+    item = EEL_CANVAS_ITEM (canvas_item);
+    widget = GTK_WIDGET (item->canvas);
+    context = gtk_widget_get_style_context (widget);
+    cr = gtk_snapshot_append_cairo (snapshot, &bounds);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
 
-        old_pixbuf = temp_pixbuf;
-        temp_pixbuf = eel_create_spotlight_pixbuf (temp_pixbuf);
-    }
+    gdk_texture_download (canvas_item->details->texture,
+                          cairo_image_surface_get_data (surface),
+                          cairo_image_surface_get_stride (surface));
+
+    cairo_surface_mark_dirty (surface);
+
+    cairo_translate (cr, bounds.origin.x, bounds.origin.y);
+    cairo_scale (cr,
+                 width / gdk_texture_get_width (canvas_item->details->texture),
+                 height / gdk_texture_get_height (canvas_item->details->texture));
+    cairo_set_source_surface (cr, surface, 0, 0);
+    cairo_paint (cr);
 
     if (canvas_item->details->is_highlighted_for_selection
         || canvas_item->details->is_highlighted_for_drop)
     {
-        GtkWidget *widget;
-        GtkStyleContext *style;
-        gboolean has_focus;
-        GtkStateFlags state;
-        gint width;
-        gint height;
-        gboolean has_alpha;
-        cairo_format_t format;
-        cairo_surface_t *surface;
-        cairo_t *cr;
-        g_autoptr (GdkPixbuf) pixbuf = NULL;
-        g_autoptr (GdkPixbuf) old_pixbuf = NULL;
+        cairo_set_operator (cr, CAIRO_OPERATOR_MULTIPLY);
 
-        widget = GTK_WIDGET (canvas);
-        style = gtk_widget_get_style_context (widget);
-        has_focus = gtk_widget_has_focus (widget);
-        state = has_focus? GTK_STATE_FLAG_SELECTED : GTK_STATE_FLAG_ACTIVE;
-        width = gdk_pixbuf_get_width (temp_pixbuf);
-        height = gdk_pixbuf_get_height (temp_pixbuf);
-        has_alpha = gdk_pixbuf_get_has_alpha (temp_pixbuf);
-        format = has_alpha? CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24;
-        surface = cairo_image_surface_create (format, width, height);
-        cr = cairo_create (surface);
+        cairo_push_group (cr);
 
-        gtk_style_context_save (style);
-        gtk_style_context_set_state (style, state);
+        gtk_style_context_save (context);
+        gtk_style_context_set_state (context, GTK_STATE_FLAG_SELECTED);
+        gtk_render_background (context, cr, 0, 0, width, height);
+        gtk_style_context_restore (context);
 
-        gtk_render_background (style, cr,
-                               0, 0,
-                               width, height);
+        cairo_pop_group_to_source (cr);
 
-        gtk_style_context_restore (style);
-
-        cairo_surface_flush (surface);
-
-        pixbuf = gdk_pixbuf_get_from_surface (surface, 0, 0, width, height);
-        old_pixbuf = temp_pixbuf;
-
-        temp_pixbuf = eel_create_colorized_pixbuf (temp_pixbuf, g_steal_pointer (&pixbuf));
-
-        cairo_destroy (cr);
-        cairo_surface_destroy (surface);
+        cairo_mask_surface (cr, surface, 0, 0);
     }
 
-    return gdk_cairo_surface_create_from_pixbuf (temp_pixbuf, scale_factor, window);
-}
-
-static cairo_surface_t *
-map_surface (NautilusCanvasItem *canvas_item)
-{
-    if (!(canvas_item->details->rendered_surface != NULL
-          && canvas_item->details->rendered_is_prelit == canvas_item->details->is_prelit
-          && canvas_item->details->rendered_is_highlighted_for_selection == canvas_item->details->is_highlighted_for_selection
-          && canvas_item->details->rendered_is_highlighted_for_drop == canvas_item->details->is_highlighted_for_drop
-          && canvas_item->details->rendered_is_highlighted_for_clipboard == canvas_item->details->is_highlighted_for_clipboard
-          && (canvas_item->details->is_highlighted_for_selection && canvas_item->details->rendered_is_focused == gtk_widget_has_focus (GTK_WIDGET (EEL_CANVAS_ITEM (canvas_item)->canvas)))))
+    if (canvas_item->details->is_prelit ||
+        canvas_item->details->is_highlighted_for_clipboard)
     {
-        if (canvas_item->details->rendered_surface != NULL)
-        {
-            cairo_surface_destroy (canvas_item->details->rendered_surface);
-        }
-        canvas_item->details->rendered_surface = real_map_surface (canvas_item);
-        canvas_item->details->rendered_is_prelit = canvas_item->details->is_prelit;
-        canvas_item->details->rendered_is_highlighted_for_selection = canvas_item->details->is_highlighted_for_selection;
-        canvas_item->details->rendered_is_highlighted_for_drop = canvas_item->details->is_highlighted_for_drop;
-        canvas_item->details->rendered_is_highlighted_for_clipboard = canvas_item->details->is_highlighted_for_clipboard;
-        canvas_item->details->rendered_is_focused = gtk_widget_has_focus (GTK_WIDGET (EEL_CANVAS_ITEM (canvas_item)->canvas));
+        cairo_set_operator (cr, CAIRO_OPERATOR_ADD);
+
+        cairo_push_group (cr);
+
+        /* This is *close enough* to the original look.
+         * The magic alpha value was selected after visual comparison.
+         */
+        cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.18);
+        cairo_paint (cr);
+
+        cairo_pop_group_to_source (cr);
+
+        cairo_mask_surface (cr, surface, 0, 0);
     }
 
-    cairo_surface_reference (canvas_item->details->rendered_surface);
-
-    return canvas_item->details->rendered_surface;
+    cairo_destroy (cr);
+    cairo_surface_destroy (surface);
 }
 
-cairo_surface_t *
-nautilus_canvas_item_get_drag_surface (NautilusCanvasItem *item)
+GdkPaintable *
+nautilus_canvas_item_get_drag_paintable (NautilusCanvasItem *item)
 {
-    cairo_surface_t *surface;
+    GtkSnapshot *snapshot;
     EelCanvas *canvas;
     int width, height;
     int pix_width, pix_height;
     int item_offset_x, item_offset_y;
     EelIRect icon_rect;
     double item_x, item_y;
-    cairo_t *cr;
     GtkStyleContext *context;
-    cairo_surface_t *drag_surface;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), NULL);
 
@@ -1301,15 +1241,14 @@ nautilus_canvas_item_get_drag_surface (NautilusCanvasItem *item)
     width = EEL_CANVAS_ITEM (item)->x2 - EEL_CANVAS_ITEM (item)->x1;
     height = EEL_CANVAS_ITEM (item)->y2 - EEL_CANVAS_ITEM (item)->y1;
 
-    surface = gdk_window_create_similar_surface (gtk_widget_get_window (GTK_WIDGET (canvas)),
-                                                 CAIRO_CONTENT_COLOR_ALPHA,
-                                                 width, height);
-    cr = cairo_create (surface);
+    snapshot = gtk_snapshot_new ();
 
-    drag_surface = map_surface (item);
-    gtk_render_icon_surface (context, cr, drag_surface,
-                             item_offset_x, item_offset_y);
-    cairo_surface_destroy (drag_surface);
+    gtk_snapshot_push_clip (snapshot, &GRAPHENE_RECT_INIT (0, 0, width, height));
+    gtk_snapshot_offset (snapshot, item_offset_x, item_offset_y);
+
+    snapshot_icon (item, snapshot);
+
+    gtk_snapshot_pop (snapshot);
 
     get_scaled_icon_size (item, &pix_width, &pix_height);
 
@@ -1318,33 +1257,27 @@ nautilus_canvas_item_get_drag_surface (NautilusCanvasItem *item)
     icon_rect.x1 = item_offset_x + pix_width;
     icon_rect.y1 = item_offset_y + pix_height;
 
-    draw_label_text (item, cr, icon_rect);
-    cairo_destroy (cr);
+    snapshot_label (item, snapshot, icon_rect);
 
     gtk_style_context_restore (context);
 
-    return surface;
+    return gtk_snapshot_free_to_paintable (snapshot, NULL);
 }
 
-/* Draw the canvas item for non-anti-aliased mode. */
 static void
-nautilus_canvas_item_draw (EelCanvasItem  *item,
-                           cairo_t        *cr,
-                           cairo_region_t *region)
+nautilus_canvas_item_snapshot (EelCanvasItem *item,
+                               GtkSnapshot   *snapshot)
 {
     NautilusCanvasContainer *container;
     NautilusCanvasItem *canvas_item;
     NautilusCanvasItemDetails *details;
-    EelIRect icon_rect;
-    cairo_surface_t *temp_surface;
     GtkStyleContext *context;
 
     container = NAUTILUS_CANVAS_CONTAINER (item->canvas);
     canvas_item = NAUTILUS_CANVAS_ITEM (item);
     details = canvas_item->details;
 
-    /* Draw the pixbuf. */
-    if (details->pixbuf == NULL)
+    if (details->texture == NULL)
     {
         return;
     }
@@ -1353,16 +1286,8 @@ nautilus_canvas_item_draw (EelCanvasItem  *item,
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, "nautilus-canvas-item");
 
-    icon_rect = canvas_item->details->icon_rect;
-    temp_surface = map_surface (canvas_item);
-
-    gtk_render_icon_surface (context, cr,
-                             temp_surface,
-                             icon_rect.x0, icon_rect.y0);
-    cairo_surface_destroy (temp_surface);
-
-    /* Draw the label text. */
-    draw_label_text (canvas_item, cr, icon_rect);
+    snapshot_icon (canvas_item, snapshot);
+    snapshot_label (canvas_item, snapshot, canvas_item->details->icon_rect);
 
     gtk_style_context_restore (context);
 }
@@ -1474,17 +1399,15 @@ nautilus_canvas_item_enter_notify_event (EelCanvasItem *item,
         /* show a hand cursor */
         if (in_single_click_mode ())
         {
-            GdkDisplay *display;
             g_autoptr (GdkCursor) cursor = NULL;
-            GdkWindow *window;
+            GdkSurface *surface;
 
-            display = gdk_display_get_default ();
-            cursor = gdk_cursor_new_for_display (display, GDK_HAND2);
-            window = eel_event_get_window (event);
+            cursor = gdk_cursor_new_from_name ("pointer", NULL);
+            surface = eel_event_get_surface (event);
 
-            gdk_window_set_cursor (window, cursor);
+            gdk_surface_set_cursor (surface, cursor);
 
-            canvas_item->details->cursor_window = g_object_ref (window);
+            canvas_item->details->cursor_surface = g_object_ref (surface);
         }
     }
 
@@ -1502,9 +1425,9 @@ nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
     if (canvas_item->details->is_prelit
         || canvas_item->details->is_highlighted_for_drop)
     {
-        GdkWindow *window;
+        GdkSurface *surface;
 
-        window = eel_event_get_window (event);
+        surface = eel_event_get_surface (event);
 
         /* When leaving, turn of the prelight state and the
          * higlighted for drop. The latter gets turned on
@@ -1516,8 +1439,8 @@ nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
         eel_canvas_item_request_update (item);
 
         /* show default cursor */
-        gdk_window_set_cursor (window, NULL);
-        g_clear_object (&canvas_item->details->cursor_window);
+        gdk_surface_set_cursor (surface, NULL);
+        g_clear_object (&canvas_item->details->cursor_surface);
     }
 
     return GDK_EVENT_STOP;
@@ -1908,7 +1831,7 @@ nautilus_canvas_item_class_init (NautilusCanvasItemClass *class)
                               FALSE, G_PARAM_READWRITE));
 
     item_class->update = nautilus_canvas_item_update;
-    item_class->draw = nautilus_canvas_item_draw;
+    item_class->snapshot = nautilus_canvas_item_snapshot;
     item_class->point = nautilus_canvas_item_point;
     item_class->translate = nautilus_canvas_item_translate;
     item_class->bounds = nautilus_canvas_item_bounds;
@@ -2366,7 +2289,7 @@ nautilus_canvas_item_accessible_get_offset_at_point (AtkText      *text,
 
     item = NAUTILUS_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
-    if (item->details->pixbuf)
+    if (item->details->texture != NULL)
     {
         get_scaled_icon_size (item, NULL, &height);
         y -= height;
@@ -2491,7 +2414,7 @@ nautilus_canvas_item_accessible_get_character_extents (AtkText      *text,
     atk_component_get_extents (ATK_COMPONENT (text), &pos_x, &pos_y, NULL, NULL, coords);
     item = NAUTILUS_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
-    if (item->details->pixbuf)
+    if (item->details->texture != NULL)
     {
         get_scaled_icon_size (item, NULL, &pix_height);
         pos_y += pix_height;
