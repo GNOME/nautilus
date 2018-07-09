@@ -26,7 +26,3 @@
 
 /* return a lightened pixbuf for pre-lighting */
 GdkPixbuf *eel_create_spotlight_pixbuf (GdkPixbuf *source_pixbuf);
-
-/* return a pixbuf colorized with the color specified by the parameters */
-GdkPixbuf* eel_create_colorized_pixbuf (GdkPixbuf *source_pixbuf,
-                                        GdkPixbuf *dest);
