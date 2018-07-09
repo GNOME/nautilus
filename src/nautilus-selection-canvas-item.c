@@ -55,9 +55,8 @@ struct _NautilusSelectionCanvasItemDetails
 G_DEFINE_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item, EEL_TYPE_CANVAS_ITEM);
 
 static void
-nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
-                                     cairo_t        *cr,
-                                     cairo_region_t *region)
+nautilus_selection_canvas_item_snapshot (EelCanvasItem *item,
+                                         GtkSnapshot   *snapshot)
 {
     NautilusSelectionCanvasItem *self;
     double x1, y1, x2, y2;
@@ -91,18 +90,8 @@ nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
 
     gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
 
-    cairo_save (cr);
-
-    gtk_render_background (context, cr,
-                           cx1, cy1,
-                           cx2 - cx1,
-                           cy2 - cy1);
-    gtk_render_frame (context, cr,
-                      cx1, cy1,
-                      cx2 - cx1,
-                      cy2 - cy1);
-
-    cairo_restore (cr);
+    gtk_snapshot_render_background (snapshot, context, cx1, cy1, cx2 - cx1, cy2 - cy1);
+    gtk_snapshot_render_frame (snapshot, context, cx1, cy1, cx2 - cx1, cy2 - cy1);
 
     gtk_style_context_restore (context);
 }
@@ -519,7 +508,7 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
     gobject_class->set_property = nautilus_selection_canvas_item_set_property;
     gobject_class->get_property = nautilus_selection_canvas_item_get_property;
 
-    item_class->draw = nautilus_selection_canvas_item_draw;
+    item_class->snapshot = nautilus_selection_canvas_item_snapshot;
     item_class->point = nautilus_selection_canvas_item_point;
     item_class->update = nautilus_selection_canvas_item_update;
     item_class->bounds = nautilus_selection_canvas_item_bounds;
