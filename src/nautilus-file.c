@@ -5170,6 +5170,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                                                  NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
                 if (!use_experimental_views)
                 {
+#if 0
                     if (nautilus_is_video_file (file))
                     {
                         nautilus_ui_frame_video (&pixbuf);
@@ -5178,6 +5179,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                     {
                         nautilus_ui_frame_image (&pixbuf);
                     }
+#endif
                 }
             }
 
