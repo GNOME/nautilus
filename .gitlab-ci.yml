@@ -94,7 +94,7 @@ ubuntu:devel:
                          gobject-introspection libxml2-dev
                          libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
                          libtracker-sparql-2.0-dev
-                         libgirepository1.0-dev
+                         libgirepository1.0-dev gsettings-desktop-schemas-dev
     <<: *distro_test
     only:
         - schedules
