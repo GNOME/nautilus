@@ -4922,7 +4922,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
                          "highlighted_for_drop", icon == details->drop_target,
                          NULL);
 
-    nautilus_canvas_item_set_image (icon->item, pixbuf);
+    nautilus_canvas_item_set_texture (icon->item, gdk_texture_new_for_pixbuf (pixbuf));
 
     /* Let the pixbufs go. */
     g_object_unref (pixbuf);
