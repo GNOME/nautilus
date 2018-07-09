@@ -1954,9 +1954,7 @@ nautilus_canvas_item_accessible_idle_do_action (gpointer data)
     NautilusCanvasItemAccessibleActionContext *ctx;
     NautilusCanvasIcon *icon;
     NautilusCanvasContainer *container;
-    GList *selection;
     GList file_list;
-    GdkEventButton button_event = { 0 };
     gint action_number;
 
     container = NAUTILUS_CANVAS_CONTAINER (data);
@@ -1982,16 +1980,19 @@ nautilus_canvas_item_accessible_idle_do_action (gpointer data)
 
             case ACTION_MENU:
             {
+                g_autoptr (GList) selection = NULL;
+                g_autoptr (GdkEvent) event = NULL;
+
                 selection = nautilus_canvas_container_get_selection (container);
                 if (selection == NULL ||
                     g_list_length (selection) != 1 ||
                     selection->data != icon->data)
                 {
-                    g_list_free (selection);
                     return FALSE;
                 }
-                g_list_free (selection);
-                g_signal_emit_by_name (container, "context-click-selection", &button_event);
+                event = gdk_event_new (GDK_NOTHING);
+
+                g_signal_emit_by_name (container, "context-click-selection", event);
             }
             break;
 
