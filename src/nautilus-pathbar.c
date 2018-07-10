@@ -1353,7 +1353,7 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
     icon = get_gicon (button_data);
     if (icon != NULL)
     {
-        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon, GTK_ICON_SIZE_MENU);
+        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon);
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                      "image-button");
         gtk_widget_show (GTK_WIDGET (button_data->image));
@@ -1605,8 +1605,7 @@ make_button_data (NautilusPathBar *self,
         {
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->label = gtk_label_new (NULL);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
 
@@ -1624,8 +1623,7 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
 
@@ -1641,8 +1639,7 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), gtk_label_new (G_DIR_SEPARATOR_S));
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button);
