@@ -157,6 +157,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         GAppInfo *app;
         gboolean has_app;
         guint i;
+        GtkWidget *box;
 
         default_app = g_ptr_array_index (apps, n);
         has_app = FALSE;
@@ -187,13 +188,17 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         }
 
         name = g_app_info_get_name (default_app);
-        button = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
-                                          name,
-                                          n);
+        button = gtk_info_bar_add_button (GTK_INFO_BAR (bar), name, n);
+        box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
 
-        gtk_button_set_image (GTK_BUTTON (button), image);
-        gtk_button_set_always_show_image (GTK_BUTTON (button), TRUE);
-        gtk_button_set_label (GTK_BUTTON (button), name);
+        if (image != NULL)
+        {
+            gtk_box_pack_start (GTK_BOX (box), image, FALSE, FALSE, 0);
+        }
+        gtk_box_pack_start (GTK_BOX (box), gtk_label_new (name), FALSE, FALSE, 0);
+
+        gtk_container_add (GTK_CONTAINER (button), box);
+
         gtk_widget_show (button);
     }
 

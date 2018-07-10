@@ -32,7 +32,7 @@ struct _NautilusProgressInfoWidgetPrivate
     GtkWidget *details;     /* GtkLabel */
     GtkWidget *progress_bar;
     GtkWidget *button;
-    GtkWidget *done_image;
+    GtkWidget *image;
 };
 
 enum
@@ -49,7 +49,9 @@ G_DEFINE_TYPE_WITH_PRIVATE (NautilusProgressInfoWidget, nautilus_progress_info_w
 static void
 info_finished (NautilusProgressInfoWidget *self)
 {
-    gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
+    gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image),
+                                  "object-select-symbolic",
+                                  GTK_ICON_SIZE_BUTTON);
     gtk_widget_set_sensitive (self->priv->button, FALSE);
 }
 
@@ -125,7 +127,9 @@ nautilus_progress_info_widget_constructed (GObject *obj)
 
     if (nautilus_progress_info_get_is_finished (self->priv->info))
     {
-        gtk_button_set_image (GTK_BUTTON (self->priv->button), self->priv->done_image);
+        gtk_image_set_from_icon_name (GTK_IMAGE (self->priv->image),
+                                      "object-select-symbolic",
+                                      GTK_ICON_SIZE_BUTTON);
     }
 
     gtk_widget_set_sensitive (self->priv->button,
@@ -213,7 +217,7 @@ nautilus_progress_info_widget_class_init (NautilusProgressInfoWidgetClass *klass
     gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, details);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, progress_bar);
     gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, button);
-    gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, done_image);
+    gtk_widget_class_bind_template_child_private (widget_class, NautilusProgressInfoWidget, image);
 }
 
 GtkWidget *
