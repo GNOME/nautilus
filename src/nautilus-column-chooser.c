@@ -404,16 +404,14 @@ add_buttons (NautilusColumnChooser *chooser)
     gtk_container_add (GTK_CONTAINER (tool_item), box);
     gtk_container_add (GTK_CONTAINER (inline_toolbar), GTK_WIDGET (tool_item));
 
-    chooser->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic",
-                                                             GTK_ICON_SIZE_SMALL_TOOLBAR);
+    chooser->move_up_button = gtk_button_new_from_icon_name ("go-up-symbolic");
     g_signal_connect (chooser->move_up_button,
                       "clicked", G_CALLBACK (move_up_clicked_callback),
                       chooser);
     gtk_widget_set_sensitive (chooser->move_up_button, FALSE);
     gtk_container_add (GTK_CONTAINER (box), chooser->move_up_button);
 
-    chooser->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic",
-                                                               GTK_ICON_SIZE_SMALL_TOOLBAR);
+    chooser->move_down_button = gtk_button_new_from_icon_name ("go-down-symbolic");
     g_signal_connect (chooser->move_down_button,
                       "clicked", G_CALLBACK (move_down_clicked_callback),
                       chooser);
