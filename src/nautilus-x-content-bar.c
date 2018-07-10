@@ -179,7 +179,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         icon = g_app_info_get_icon (default_app);
         if (icon != NULL)
         {
-            image = gtk_image_new_from_gicon (icon, GTK_ICON_SIZE_BUTTON);
+            image = gtk_image_new_from_gicon (icon);
         }
         else
         {
