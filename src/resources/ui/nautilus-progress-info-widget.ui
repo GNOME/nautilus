@@ -40,12 +40,16 @@
         <property name="receives_default">True</property>
         <property name="margin_start">20</property>
         <property name="valign">center</property>
-        <property name="image">cancel_image</property>
         <property name="can_focus">True</property>
         <property name="receives_default">True</property>
         <style>
           <class name="nautilus-circular-button"/>
         </style>
+        <child>
+          <object class="GtkImage" id="image">
+            <property name="icon-name">window-close-symbolic</property>
+          </object>
+        </child>
       </object>
       <packing>
         <property name="height">3</property>
@@ -72,12 +76,4 @@
       </packing>
     </child>
   </template>
-  <object class="GtkImage" id="cancel_image">
-    <property name="visible">True</property>
-    <property name="icon_name">window-close-symbolic</property>
-  </object>
-  <object class="GtkImage" id="done_image">
-    <property name="visible">True</property>
-    <property name="icon_name">object-select-symbolic</property>
-  </object>
 </interface>
