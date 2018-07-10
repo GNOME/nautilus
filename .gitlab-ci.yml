@@ -89,12 +89,14 @@ ubuntu:devel:
     before_script:
         # Ubuntu requires running update to fetch metadata and find packges
         - apt update
+        - apt-get 
         - apt install -y gcc meson gettext itstool git libgtk-3-dev
                          libgnome-autoar-0-dev
                          gobject-introspection libxml2-dev
                          libtracker-control-2.0-dev desktop-file-utils libgexiv2-dev
                          libtracker-sparql-2.0-dev
                          libgirepository1.0-dev gsettings-desktop-schemas-dev
+                         libseccomp-dev
     <<: *distro_test
     only:
         - schedules
@@ -109,6 +111,7 @@ opensuse:tumbleweed:
                             gtk3-devel gnome-autoar-devel
                             gobject-introspection-devel libxml2-devel tracker-devel
                             desktop-file-utils libgexiv2-devel gsettings-desktop-schemas-devel
+                            libseccomp-devel
     <<: *distro_test
     only:
         - schedules
