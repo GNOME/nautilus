@@ -521,7 +521,7 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
     GtkWidget *button;
     GtkStyleContext *context;
 
-    button = gtk_button_new_from_icon_name (icon_name, GTK_ICON_SIZE_MENU);
+    button = gtk_button_new_from_icon_name (icon_name);
     context = gtk_widget_get_style_context (button);
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
