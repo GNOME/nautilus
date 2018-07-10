@@ -611,15 +611,3 @@ nautilus_icon_info_get_used_name (NautilusIconInfo *icon)
 {
     return icon->icon_name;
 }
-
-gint
-nautilus_get_icon_size_for_stock_size (GtkIconSize size)
-{
-    gint w, h;
-
-    if (gtk_icon_size_lookup (size, &w, &h))
-    {
-        return MAX (w, h);
-    }
-    return NAUTILUS_CANVAS_ICON_SIZE_SMALL;
-}
