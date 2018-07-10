@@ -9093,25 +9093,21 @@ action_stop_enabled_changed (GActionGroup      *action_group,
 }
 
 static void
-nautilus_files_view_parent_set (GtkWidget *widget,
-                                GtkWidget *old_parent)
+on_parent_changed (GObject    *object,
+                   GParamSpec *pspec,
+                   gpointer    user_data)
 {
+    GtkWidget *widget;
     NautilusWindow *window;
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     GtkWidget *parent;
 
-    view = NAUTILUS_FILES_VIEW (widget);
+    widget = GTK_WIDGET (object);
+    view = NAUTILUS_FILES_VIEW (object);
     priv = nautilus_files_view_get_instance_private (view);
-
     parent = gtk_widget_get_parent (widget);
     window = nautilus_files_view_get_window (view);
-    g_assert (parent == NULL || old_parent == NULL);
-
-    if (GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->parent_set != NULL)
-    {
-        GTK_WIDGET_CLASS (nautilus_files_view_parent_class)->parent_set (widget, old_parent);
-    }
 
     if (priv->stop_signal_handler > 0)
     {
@@ -9127,8 +9123,6 @@ nautilus_files_view_parent_set (GtkWidget *widget,
 
     if (parent != NULL)
     {
-        g_assert (old_parent == NULL);
-
         if (priv->slot == nautilus_window_get_active_slot (window))
         {
             priv->active = TRUE;
@@ -9364,7 +9358,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
 
     widget_class->destroy = nautilus_files_view_destroy;
     widget_class->event = nautilus_files_view_event;
-    widget_class->parent_set = nautilus_files_view_parent_set;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
 
@@ -9543,6 +9536,10 @@ nautilus_files_view_init (NautilusFilesView *view)
                       "end-file-changes",
                       G_CALLBACK (on_end_file_changes),
                       view);
+    g_signal_connect (view,
+                      "notify::parent",
+                      G_CALLBACK (on_parent_changed),
+                      NULL);
 
     g_object_unref (builder);
 
