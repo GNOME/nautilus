@@ -172,7 +172,6 @@ static void
 present_autorun_for_software_dialog (GMount *mount)
 {
     GIcon *icon;
-    int icon_size;
     g_autoptr (NautilusIconInfo) icon_info = NULL;
     g_autoptr (GdkPixbuf) pixbuf = NULL;
     g_autofree char *mount_name = NULL;
@@ -203,10 +202,9 @@ present_autorun_for_software_dialog (GMount *mount)
 
 
     icon = g_mount_get_icon (mount);
-    icon_size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_DIALOG);
-    icon_info = nautilus_icon_info_lookup (icon, icon_size,
+    icon_info = nautilus_icon_info_lookup (icon, 48,
                                            gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
-    pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, icon_size);
+    pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, 48);
 
     gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
 
