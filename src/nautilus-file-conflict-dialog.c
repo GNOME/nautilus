@@ -259,8 +259,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     g_object_set (hbox, "margin", 6, NULL);
 
     /* Setup the dialog image */
-    widget = gtk_image_new_from_icon_name ("dialog-warning",
-                                           GTK_ICON_SIZE_DIALOG);
+    widget = gtk_image_new_from_icon_name ("dialog-warning");
     gtk_box_pack_start (GTK_BOX (hbox), widget);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
