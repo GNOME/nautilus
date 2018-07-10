@@ -939,8 +939,7 @@ nautilus_toolbar_constructed (GObject *object)
     self->location_entry = nautilus_location_entry_new ();
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry);
-    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic",
-                                                                       GTK_ICON_SIZE_BUTTON);
+    self->location_entry_close_button = gtk_button_new_from_icon_name ("window-close-symbolic");
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
                        self->location_entry_close_button);
     g_signal_connect (self->location_entry_close_button, "clicked",
