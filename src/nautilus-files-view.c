@@ -4833,13 +4833,12 @@ get_menu_icon_for_file (NautilusFile *file,
 {
     NautilusIconInfo *info;
     GdkPixbuf *pixbuf;
-    int size, scale;
+    int scale;
 
-    size = nautilus_get_icon_size_for_stock_size (GTK_ICON_SIZE_MENU);
     scale = gtk_widget_get_scale_factor (widget);
 
-    info = nautilus_file_get_icon (file, size, scale, 0);
-    pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, size);
+    info = nautilus_file_get_icon (file, 16, scale, 0);
+    pixbuf = nautilus_icon_info_get_pixbuf_nodefault_at_size (info, 16);
     g_object_unref (info);
 
     return pixbuf;
