@@ -1298,7 +1298,7 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     icon = get_gicon (button_data);
     if (icon != NULL)
     {
-        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon, GTK_ICON_SIZE_MENU);
+        gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon);
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                      "image-button");
         gtk_widget_show (GTK_WIDGET (button_data->image));
@@ -1555,8 +1555,7 @@ make_button_data (NautilusPathBar *self,
         case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
@@ -1572,8 +1571,7 @@ make_button_data (NautilusPathBar *self,
         default:
         {
             button_data->label = gtk_label_new (NULL);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
