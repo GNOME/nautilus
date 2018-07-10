@@ -307,9 +307,8 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     gtk_entry_set_activates_default (GTK_ENTRY (widget), TRUE);
 
     widget = gtk_button_new_with_label (_("Reset"));
-    gtk_button_set_image (GTK_BUTTON (widget),
-                          gtk_image_new_from_icon_name ("edit-undo",
-                                                        GTK_ICON_SIZE_MENU));
+    gtk_container_add (GTK_CONTAINER (widget),
+                       gtk_image_new_from_icon_name ("edit-undo"));
     gtk_widget_set_margin_end (widget, 6);
     gtk_widget_set_margin_start (widget, 6);
     gtk_box_pack_start (GTK_BOX (hbox), widget);
