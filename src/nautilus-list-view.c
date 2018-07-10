@@ -310,108 +310,96 @@ nautilus_list_view_did_not_drag (NautilusListView *view,
     gtk_tree_path_free (path);
 }
 
-static gboolean
-on_motion_notify (GtkWidget *widget,
-                  GdkEvent  *event,
-                  gpointer   callback_data)
+static void
+on_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                   double                    x,
+                                   double                    y,
+                                   gpointer                  user_data)
 {
     NautilusListView *view;
-    gdouble x;
-    gdouble y;
+    GtkWidget *widget;
+    GtkTreePath *old_hover_path;
 
-    view = NAUTILUS_LIST_VIEW (callback_data);
-
-    /* Remove after switching to GTK+ 4. */
-    if (gdk_event_get_window (event) != gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget)))
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
     {
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
-    g_assert (gdk_event_get_coords (event, &x, &y));
+    view = user_data;
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    old_hover_path = view->details->hover_path;
 
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
+    gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+                                   x, y,
+                                   &view->details->hover_path,
+                                   NULL, NULL, NULL);
+
+    if ((old_hover_path != NULL) != (view->details->hover_path != NULL))
     {
-        GtkTreePath *old_hover_path;
-
-        old_hover_path = view->details->hover_path;
-        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       x, y,
-                                       &view->details->hover_path,
-                                       NULL, NULL, NULL);
-
-        if ((old_hover_path != NULL) != (view->details->hover_path != NULL))
-        {
-            if (view->details->hover_path != NULL)
-            {
-                gtk_widget_set_cursor_from_name (widget, "pointer");
-            }
-            else
-            {
-                gtk_widget_set_cursor (widget, NULL);
-            }
-        }
-
-        if (old_hover_path != NULL)
-        {
-            gtk_tree_path_free (old_hover_path);
-        }
-    }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
-on_leave_notify (GtkWidget *widget,
-                 GdkEvent  *event,
-                 gpointer   callback_data)
-{
-    NautilusListView *view;
-
-    view = NAUTILUS_LIST_VIEW (callback_data);
-
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE &&
-        view->details->hover_path != NULL)
-    {
-        gtk_tree_path_free (view->details->hover_path);
-        view->details->hover_path = NULL;
-    }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
-on_enter_notify (GtkWidget *widget,
-                 GdkEvent  *event,
-                 gpointer   callback_data)
-{
-    NautilusListView *view;
-
-    view = NAUTILUS_LIST_VIEW (callback_data);
-
-    if (get_click_policy () == NAUTILUS_CLICK_POLICY_SINGLE)
-    {
-        gdouble x;
-        gdouble y;
-
-        if (view->details->hover_path != NULL)
-        {
-            gtk_tree_path_free (view->details->hover_path);
-        }
-
-        g_assert (gdk_event_get_coords (event, &x, &y));
-
-        gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
-                                       x, y,
-                                       &view->details->hover_path,
-                                       NULL, NULL, NULL);
-
         if (view->details->hover_path != NULL)
         {
             gtk_widget_set_cursor_from_name (widget, "pointer");
         }
+        else
+        {
+            gtk_widget_set_cursor (widget, NULL);
+        }
     }
 
-    return GDK_EVENT_PROPAGATE;
+    if (old_hover_path != NULL)
+    {
+        gtk_tree_path_free (old_hover_path);
+    }
+}
+
+static void
+on_event_controller_motion_leave (GtkEventControllerMotion *controller,
+                                  gpointer                  user_data)
+{
+    NautilusListView *view;
+
+    view = user_data;
+
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE ||
+        view->details->hover_path == NULL)
+    {
+        return;
+    }
+
+    gtk_tree_path_free (view->details->hover_path);
+    view->details->hover_path = NULL;
+}
+
+static void
+on_event_controller_motion_enter (GtkEventControllerMotion *controller,
+                                  double                    x,
+                                  double                    y,
+                                  gpointer                  user_data)
+{
+    NautilusListView *view;
+    GtkWidget *widget;
+
+    if (get_click_policy () != NAUTILUS_CLICK_POLICY_SINGLE)
+    {
+        return;
+    }
+
+    view = user_data;
+    if (view->details->hover_path != NULL)
+    {
+        gtk_tree_path_free (view->details->hover_path);
+    }
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+
+    gtk_tree_view_get_path_at_pos (GTK_TREE_VIEW (widget),
+                                   x, y,
+                                   &view->details->hover_path,
+                                   NULL, NULL, NULL);
+
+    if (view->details->hover_path != NULL)
+    {
+        gtk_widget_set_cursor_from_name (widget, "pointer");
+    }
 }
 
 static void
@@ -879,26 +867,22 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
 }
 
 static gboolean
-key_press_callback (GtkWidget *widget,
-                    GdkEvent  *event,
-                    gpointer   callback_data)
+on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                     unsigned int           keyval,
+                                     unsigned int           keycode,
+                                     GdkModifierType        state,
+                                     gpointer               user_data)
 {
+    GtkWidget *widget;
     NautilusFilesView *view;
     GtkTreeView *tree_view;
-    guint keyval;
-    GdkModifierType state;
 
-    view = NAUTILUS_FILES_VIEW (callback_data);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    view = NAUTILUS_FILES_VIEW (user_data);
     tree_view = GTK_TREE_VIEW (widget);
 
     NAUTILUS_LIST_VIEW (view)->details->last_event_button_x = -1;
     NAUTILUS_LIST_VIEW (view)->details->last_event_button_y = -1;
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    gdk_event_get_state (event, &state);
 
     if (keyval == GDK_KEY_F10)
     {
@@ -906,7 +890,7 @@ key_press_callback (GtkWidget *widget,
         {
             nautilus_files_view_pop_up_background_context_menu (view, NULL);
 
-            return GDK_EVENT_STOP;
+            return TRUE;
         }
     }
 
@@ -921,7 +905,7 @@ key_press_callback (GtkWidget *widget,
             gtk_tree_view_expand_row (tree_view, path, FALSE);
         }
 
-        return GDK_EVENT_STOP;
+        return TRUE;
     }
 
     if (keyval == GDK_KEY_Left)
@@ -941,19 +925,19 @@ key_press_callback (GtkWidget *widget,
             }
         }
 
-        return GDK_EVENT_STOP;
+        return TRUE;
     }
 
     if (keyval == GDK_KEY_space)
     {
         if ((state & GDK_CONTROL_MASK) != 0)
         {
-            return GDK_EVENT_PROPAGATE;
+            return FALSE;
         }
 
         if (!gtk_widget_has_focus (GTK_WIDGET (NAUTILUS_LIST_VIEW (view)->details->tree_view)))
         {
-            return GDK_EVENT_PROPAGATE;
+            return FALSE;
         }
 
         if ((state & GDK_SHIFT_MASK) != 0)
@@ -965,7 +949,7 @@ key_press_callback (GtkWidget *widget,
             preview_selected_items (NAUTILUS_LIST_VIEW (view));
         }
 
-        return GDK_EVENT_STOP;
+        return TRUE;
     }
 
     if (keyval == GDK_KEY_v)
@@ -973,41 +957,11 @@ key_press_callback (GtkWidget *widget,
         /* Eat Control + v to not enable type ahead */
         if ((state & GDK_CONTROL_MASK) != 0)
         {
-            return GDK_EVENT_STOP;
+            return TRUE;
         }
     }
 
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
-on_event (GtkWidget *widget,
-          GdkEvent  *event,
-          gpointer   user_data)
-{
-    GdkEventType event_type;
-
-    event_type = gdk_event_get_event_type (event);
-
-    /* TODO: Replace motion events with motion controllers. */
-    if (event_type == GDK_MOTION_NOTIFY)
-    {
-        return on_motion_notify (widget, event, user_data);
-    }
-    else if (event_type == GDK_ENTER_NOTIFY)
-    {
-        return on_enter_notify (widget, event, user_data);
-    }
-    else if (event_type == GDK_LEAVE_NOTIFY)
-    {
-        return on_leave_notify (widget, event, user_data);
-    }
-    else if (event_type == GDK_KEY_PRESS)
-    {
-        return key_press_callback (widget, event, user_data);
-    }
-
-    return GDK_EVENT_PROPAGATE;
+    return FALSE;
 }
 
 static void
@@ -2102,6 +2056,7 @@ create_and_set_up_tree_view (NautilusListView *view)
     gchar **default_column_order, **default_visible_columns;
     GtkWidget *content_widget;
     GtkGesture *gesture;
+    GtkEventController *controller;
 
     content_widget = nautilus_files_view_get_content_widget (NAUTILUS_FILES_VIEW (view));
     view->details->tree_view = GTK_TREE_VIEW (gtk_tree_view_new ());
@@ -2167,8 +2122,28 @@ create_and_set_up_tree_view (NautilusListView *view)
     g_signal_connect (gesture, "released",
                       G_CALLBACK (on_tree_view_multi_press_gesture_released), view);
 
-    g_signal_connect_object (view->details->tree_view, "event",
-                             G_CALLBACK (on_event), view, 0);
+    controller = gtk_event_controller_motion_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (view->details->tree_view), controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller, "enter",
+                      G_CALLBACK (on_event_controller_motion_enter), view);
+    g_signal_connect (controller, "leave",
+                      G_CALLBACK (on_event_controller_motion_leave), view);
+    g_signal_connect (controller, "motion",
+                      G_CALLBACK (on_event_controller_motion_motion), view);
+
+    controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (view->details->tree_view), controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (on_event_controller_key_key_pressed), view);
+
     g_signal_connect_object (view->details->tree_view, "test-expand-row",
                              G_CALLBACK (test_expand_row_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "row-expanded",
