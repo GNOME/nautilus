@@ -9564,9 +9564,6 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     priv->pending_reveal = g_hash_table_new (NULL, NULL);
 
-    gtk_style_context_set_junction_sides (gtk_widget_get_style_context (GTK_WIDGET (view)),
-                                          GTK_JUNCTION_TOP | GTK_JUNCTION_LEFT);
-
     if (set_up_scripts_directory_global ())
     {
         scripts_directory = nautilus_directory_get_by_uri (scripts_directory_uri);
