@@ -39,6 +39,4 @@ const char *          nautilus_icon_info_get_used_name                (NautilusI
 
 void                  nautilus_icon_info_clear_caches                 (void);
 
-gint  nautilus_get_icon_size_for_stock_size          (GtkIconSize        size);
-
 G_END_DECLS
