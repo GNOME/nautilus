@@ -9017,78 +9017,37 @@ nautilus_files_view_set_property (GObject      *object,
     }
 }
 
-/* handle Ctrl+Scroll, which will cause a zoom-in/out */
-static gboolean
-on_event (GtkWidget *widget,
-          GdkEvent  *event,
-          gpointer   user_data)
+static void
+on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
+                                   double                    dx,
+                                   double                    dy,
+                                   gpointer                  user_data)
 {
     NautilusFilesView *directory_view;
-    static gdouble total_delta_y = 0;
     GdkModifierType state;
-    GdkScrollDirection direction;
-    gdouble delta_x, delta_y;
 
-    directory_view = NAUTILUS_FILES_VIEW (widget);
+    directory_view = user_data;
 
-    if (gdk_event_get_event_type (event) != GDK_SCROLL)
+    if (!gtk_get_current_event_state (&state))
     {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    if (!gdk_event_get_state (event, &state))
-    {
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
     if (!(state & GDK_CONTROL_MASK))
     {
-        return GDK_EVENT_PROPAGATE;
+        return;
     }
 
-    if (gdk_event_get_scroll_direction (event, &direction))
+    if (dy < 0)
     {
-        if (direction == GDK_SCROLL_UP)
-        {
-            /* Zoom In */
-            nautilus_files_view_bump_zoom_level (directory_view, 1);
-            return GDK_EVENT_STOP;
-        }
-        else if (direction == GDK_SCROLL_DOWN)
-        {
-            /* Zoom Out */
-            nautilus_files_view_bump_zoom_level (directory_view, -1);
-            return GDK_EVENT_STOP;
-        }
+        /* Zoom In */
+        nautilus_files_view_bump_zoom_level (directory_view, 1);
     }
-
-    if (gdk_event_get_scroll_deltas (event, &delta_x, &delta_y))
+    else if (dy > 0)
     {
-        /* try to emulate a normal scrolling event by summing deltas */
-        total_delta_y += delta_y;
-
-        if (total_delta_y >= 1)
-        {
-            total_delta_y = 0;
-            /* emulate scroll down */
-            nautilus_files_view_bump_zoom_level (directory_view, -1);
-            return GDK_EVENT_STOP;
-        }
-        else if (total_delta_y <= -1)
-        {
-            total_delta_y = 0;
-            /* emulate scroll up */
-            nautilus_files_view_bump_zoom_level (directory_view, 1);
-            return GDK_EVENT_STOP;
-        }
-        else
-        {
-            /* eat event */
-            return GDK_EVENT_STOP;
-        }
+        /* Zoom Out */
+        nautilus_files_view_bump_zoom_level (directory_view, -1);
     }
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -9511,6 +9470,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     gchar *templates_uri;
     GtkClipboard *clipboard;
     GApplication *app;
+    GtkEventController *controller;
     const gchar *open_accels[] =
     {
         "Return",
@@ -9585,10 +9545,18 @@ nautilus_files_view_init (NautilusFilesView *view)
                                     GTK_POLICY_AUTOMATIC);
     gtk_widget_show (priv->scrolled_window);
 
-    g_signal_connect_swapped (priv->scrolled_window,
-                              "event",
-                              G_CALLBACK (on_event),
-                              view);
+    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_VERTICAL |
+                                                  GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+
+    gtk_widget_add_controller (priv->scrolled_window, controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "scroll",
+                      G_CALLBACK (on_event_controller_scroll_scroll),
+                      view);
+
     g_signal_connect_swapped (priv->scrolled_window,
                               "popup-menu",
                               G_CALLBACK (popup_menu_callback),
