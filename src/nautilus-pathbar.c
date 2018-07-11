@@ -218,7 +218,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
     g_object_unref (builder);
 
     gtk_widget_set_has_surface (GTK_WIDGET (self), FALSE);
-    gtk_widget_set_redraw_on_allocate (GTK_WIDGET (self), FALSE);
 
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  GTK_STYLE_CLASS_LINKED);
