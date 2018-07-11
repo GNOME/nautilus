@@ -707,7 +707,6 @@ nautilus_path_bar_remove (GtkContainer *container,
 
 static void
 nautilus_path_bar_forall (GtkContainer *container,
-                          gboolean      include_internals,
                           GtkCallback   callback,
                           gpointer      callback_data)
 {
