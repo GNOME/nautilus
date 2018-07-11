@@ -320,32 +320,35 @@ static GtkWidget *
 build_tab_label (NautilusNotebook   *notebook,
                  NautilusWindowSlot *slot)
 {
-    GtkWidget *box;
+    GtkWidget *center_box;
+    GtkWidget *grid;
     GtkWidget *label;
     GtkWidget *close_button;
     GtkWidget *image;
     GtkWidget *spinner;
     GtkWidget *icon;
 
-    /* When porting to Gtk+4, use GtkCenterBox instead */
-    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 4);
-    gtk_widget_show (box);
+    center_box = gtk_center_box_new ();
+
+    grid = gtk_grid_new ();
+    gtk_center_box_set_start_widget (GTK_CENTER_BOX (center_box), grid);
 
     /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
-    gtk_box_pack_start (GTK_BOX (box), spinner);
+    gtk_container_add (GTK_CONTAINER (grid), spinner);
 
     /* Dummy icon to allocate space for spinner */
     icon = gtk_image_new ();
-    gtk_box_pack_start (GTK_BOX (box), icon);
+    gtk_container_add (GTK_CONTAINER (grid), icon);
     /* don't show the icon */
+    gtk_widget_hide (icon);
 
     /* Tab title */
     label = gtk_label_new (NULL);
     gtk_label_set_ellipsize (GTK_LABEL (label), PANGO_ELLIPSIZE_END);
     gtk_label_set_single_line_mode (GTK_LABEL (label), TRUE);
     gtk_label_set_width_chars (GTK_LABEL (label), 6);
-    gtk_box_set_center_widget (GTK_BOX (box), label);
+    gtk_center_box_set_center_widget (GTK_CENTER_BOX (center_box), label);
     gtk_widget_show (label);
 
     /* Tab close button */
@@ -357,7 +360,7 @@ build_tab_label (NautilusNotebook   *notebook,
 
     gtk_widget_set_name (close_button, "nautilus-tab-close-button");
 
-    image = gtk_image_new_from_icon_name ("window-close-symbolic", GTK_ICON_SIZE_MENU);
+    image = gtk_image_new_from_icon_name ("window-close-symbolic");
     gtk_widget_set_tooltip_text (close_button, _("Close tab"));
     g_signal_connect_object (close_button, "clicked",
                              G_CALLBACK (close_button_clicked_cb), slot, 0);
@@ -365,18 +368,18 @@ build_tab_label (NautilusNotebook   *notebook,
     gtk_container_add (GTK_CONTAINER (close_button), image);
     gtk_widget_show (image);
 
-    gtk_box_pack_end (GTK_BOX (box), close_button);
+    gtk_center_box_set_end_widget (GTK_CENTER_BOX (center_box), close_button);
     gtk_widget_show (close_button);
 
-    g_object_set_data (G_OBJECT (box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
-    nautilus_drag_slot_proxy_init (box, NULL, slot);
+    g_object_set_data (G_OBJECT (center_box), "nautilus-notebook-tab", GINT_TO_POINTER (1));
+    nautilus_drag_slot_proxy_init (center_box, NULL, slot);
 
-    g_object_set_data (G_OBJECT (box), "label", label);
-    g_object_set_data (G_OBJECT (box), "spinner", spinner);
-    g_object_set_data (G_OBJECT (box), "icon", icon);
-    g_object_set_data (G_OBJECT (box), "close-button", close_button);
+    g_object_set_data (G_OBJECT (center_box), "label", label);
+    g_object_set_data (G_OBJECT (center_box), "spinner", spinner);
+    g_object_set_data (G_OBJECT (center_box), "icon", icon);
+    g_object_set_data (G_OBJECT (center_box), "close-button", close_button);
 
-    return box;
+    return center_box;
 }
 
 static int
