@@ -1516,10 +1516,7 @@ check_hover_timer (NautilusCanvasContainer *container,
     if (uri != NULL)
     {
         dnd_info->target_uri = g_strdup (uri);
-        dnd_info->hover_id =
-            gdk_threads_add_timeout (timeout,
-                                     hover_timer,
-                                     container);
+        dnd_info->hover_id = g_timeout_add (timeout, hover_timer, container);
     }
 }
 
