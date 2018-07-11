@@ -86,8 +86,6 @@ typedef struct
 
 typedef struct
 {
-    GdkWindow *event_window;
-
     GFile *current_path;
     gpointer current_button_data;
 
@@ -135,7 +133,6 @@ get_slider_button (NautilusPathBar *self,
 
     button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button, FALSE);
-    gtk_widget_add_events (button, GDK_SCROLL_MASK);
     gtk_container_add (GTK_CONTAINER (button), gtk_image_new_from_icon_name (arrow_type));
     gtk_container_add (GTK_CONTAINER (self), button);
 
@@ -217,11 +214,34 @@ nautilus_path_bar_slider_drag_leave (GtkWidget *widget,
 }
 
 static void
+on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
+                                   double                    dx,
+                                   double                    dy,
+                                   gpointer                  user_data)
+{
+    GtkWidget *widget;
+    NautilusPathBar *self;
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
+    self = NAUTILUS_PATH_BAR (widget);
+
+    if (dx < 0 || dy < 0)
+    {
+        nautilus_path_bar_scroll_down (self);
+    }
+    else if (dx > 0 || dy > 0)
+    {
+        nautilus_path_bar_scroll_up (self);
+    }
+}
+
+static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
     NautilusPathBarPrivate *priv;
     GtkBuilder *builder;
     GtkGesture *gesture;
+    GtkEventController *controller;
 
     priv = nautilus_path_bar_get_instance_private (self);
 
@@ -289,6 +309,17 @@ nautilus_path_bar_init (NautilusPathBar *self)
                                  GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "path-bar");
+
+    controller = gtk_event_controller_scroll_new (GTK_EVENT_CONTROLLER_SCROLL_BOTH_AXES |
+                                                  GTK_EVENT_CONTROLLER_SCROLL_DISCRETE);
+
+    gtk_widget_add_controller (GTK_WIDGET (self), controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "scroll", G_CALLBACK (on_event_controller_scroll_scroll),
+                      NULL);
 }
 
 static void
@@ -522,27 +553,9 @@ nautilus_path_bar_update_slider_buttons (NautilusPathBar *self)
 static void
 nautilus_path_bar_unmap (GtkWidget *widget)
 {
-    NautilusPathBarPrivate *priv;
-
-    priv = nautilus_path_bar_get_instance_private (NAUTILUS_PATH_BAR (widget));
-
     nautilus_path_bar_stop_scrolling (NAUTILUS_PATH_BAR (widget));
 
-    gdk_window_hide (priv->event_window);
-
     GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->unmap (widget);
-}
-
-static void
-nautilus_path_bar_map (GtkWidget *widget)
-{
-    NautilusPathBarPrivate *priv;
-
-    priv = nautilus_path_bar_get_instance_private (NAUTILUS_PATH_BAR (widget));
-
-    gdk_window_show (priv->event_window);
-
-    GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->map (widget);
 }
 
 #define BUTTON_BOTTOM_SHADOW 1
@@ -604,13 +617,6 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
     priv = nautilus_path_bar_get_instance_private (NAUTILUS_PATH_BAR (widget));
 
     gtk_widget_set_allocation (widget, allocation);
-
-    if (gtk_widget_get_realized (widget))
-    {
-        gdk_window_move_resize (priv->event_window,
-                                allocation->x, allocation->y,
-                                allocation->width, allocation->height);
-    }
 
     /* No path is set so we don't have to allocate anything. */
     if (priv->button_list == NULL)
@@ -850,106 +856,6 @@ nautilus_path_bar_display_changed (GtkWidget  *widget,
     nautilus_path_bar_check_icon_theme (NAUTILUS_PATH_BAR (widget));
 }
 
-/* GTK+ 4 TODO: Use an event controller for this. */
-static gboolean
-nautilus_path_bar_event (GtkWidget *widget,
-                         GdkEvent  *event)
-{
-    NautilusPathBar *self;
-    GdkScrollDirection direction;
-
-    self = NAUTILUS_PATH_BAR (widget);
-
-    if (gdk_event_get_event_type (event) != GDK_SCROLL)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-    if (G_UNLIKELY (!gdk_event_get_scroll_direction (event, &direction)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    switch (direction)
-    {
-        case GDK_SCROLL_RIGHT:
-        case GDK_SCROLL_DOWN:
-        {
-            nautilus_path_bar_scroll_down (self);
-            return GDK_EVENT_STOP;
-        }
-
-        case GDK_SCROLL_LEFT:
-        case GDK_SCROLL_UP:
-        {
-            nautilus_path_bar_scroll_up (self);
-            return GDK_EVENT_STOP;
-        }
-
-        case GDK_SCROLL_SMOOTH:
-        {
-        }
-        break;
-    }
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static void
-nautilus_path_bar_realize (GtkWidget *widget)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-    GtkAllocation allocation;
-    GdkWindow *window;
-    GdkWindowAttr attributes;
-    gint attributes_mask;
-
-    gtk_widget_set_realized (widget, TRUE);
-
-    self = NAUTILUS_PATH_BAR (widget);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    window = gtk_widget_get_parent_window (widget);
-    gtk_widget_set_window (widget, window);
-    g_object_ref (window);
-
-    gtk_widget_get_allocation (widget, &allocation);
-
-    attributes.window_type = GDK_WINDOW_CHILD;
-    attributes.x = allocation.x;
-    attributes.y = allocation.y;
-    attributes.width = allocation.width;
-    attributes.height = allocation.height;
-    attributes.wclass = GDK_INPUT_ONLY;
-    attributes.event_mask = gtk_widget_get_events (widget);
-    attributes.event_mask |=
-        GDK_SCROLL_MASK |
-        GDK_BUTTON_PRESS_MASK |
-        GDK_BUTTON_RELEASE_MASK |
-        GDK_POINTER_MOTION_MASK;
-    attributes_mask = GDK_WA_X | GDK_WA_Y;
-
-    priv->event_window = gdk_window_new (gtk_widget_get_parent_window (widget),
-                                         &attributes, attributes_mask);
-    gdk_window_set_user_data (priv->event_window, widget);
-}
-
-static void
-nautilus_path_bar_unrealize (GtkWidget *widget)
-{
-    NautilusPathBar *self;
-    NautilusPathBarPrivate *priv;
-
-    self = NAUTILUS_PATH_BAR (widget);
-    priv = nautilus_path_bar_get_instance_private (self);
-
-    gdk_window_set_user_data (priv->event_window, NULL);
-    gdk_window_destroy (priv->event_window);
-    priv->event_window = NULL;
-
-    GTK_WIDGET_CLASS (nautilus_path_bar_parent_class)->unrealize (widget);
-}
-
 static void
 nautilus_path_bar_add (GtkContainer *container,
                        GtkWidget    *widget)
@@ -1170,16 +1076,12 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     gobject_class->dispose = nautilus_path_bar_dispose;
 
     widget_class->measure = nautilus_path_bar_measure;
-    widget_class->realize = nautilus_path_bar_realize;
-    widget_class->unrealize = nautilus_path_bar_unrealize;
     widget_class->unmap = nautilus_path_bar_unmap;
-    widget_class->map = nautilus_path_bar_map;
     widget_class->size_allocate = nautilus_path_bar_size_allocate;
     widget_class->style_updated = nautilus_path_bar_style_updated;
     widget_class->display_changed = nautilus_path_bar_display_changed;
     widget_class->grab_notify = nautilus_path_bar_grab_notify;
     widget_class->state_changed = nautilus_path_bar_state_changed;
-    widget_class->event = nautilus_path_bar_event;
 
     container_class->add = nautilus_path_bar_add;
     container_class->forall = nautilus_path_bar_forall;
@@ -1929,7 +1831,6 @@ make_button_data (NautilusPathBar *self,
     gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                  "text-button");
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
-    gtk_widget_add_events (button_data->button, GDK_SCROLL_MASK);
     /* TODO update button type when xdg directories change */
 
     button_data->image = gtk_image_new ();
