@@ -480,15 +480,6 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
 
     priv = nautilus_path_bar_get_instance_private (NAUTILUS_PATH_BAR (widget));
 
-    gtk_widget_set_allocation (widget, allocation);
-
-    if (gtk_widget_get_realized (widget))
-    {
-        gdk_window_move_resize (priv->event_window,
-                                allocation->x, allocation->y,
-                                allocation->width, allocation->height);
-    }
-
     /* No path is set so we don't have to allocate anything. */
     if (priv->button_list == NULL)
     {
