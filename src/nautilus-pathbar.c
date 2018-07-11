@@ -444,35 +444,6 @@ nautilus_path_bar_map (GtkWidget *widget)
 
 #define BUTTON_BOTTOM_SHADOW 1
 
-static void
-union_with_clip (GtkWidget *widget,
-                 gpointer   clip)
-{
-    GtkAllocation widget_clip;
-
-    if (!gtk_widget_is_drawable (widget))
-    {
-        return;
-    }
-
-    gtk_widget_get_clip (widget, &widget_clip);
-
-    gdk_rectangle_union (&widget_clip, clip, clip);
-}
-
-static void
-_set_simple_bottom_clip (GtkWidget *widget,
-                         gint       pixels)
-{
-    GtkAllocation clip;
-
-    gtk_widget_get_allocation (widget, &clip);
-    clip.height += pixels;
-
-    gtk_container_forall (GTK_CONTAINER (widget), union_with_clip, &clip);
-    gtk_widget_set_clip (widget, &clip);
-}
-
 /* This is a tad complicated */
 static void
 nautilus_path_bar_size_allocate (GtkWidget           *widget,
@@ -502,7 +473,6 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
     /* No path is set so we don't have to allocate anything. */
     if (self->button_list == NULL)
     {
-        _set_simple_bottom_clip (widget, BUTTON_BOTTOM_SHADOW);
         return;
     }
     direction = gtk_widget_get_direction (widget);
@@ -622,8 +592,6 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
         child = BUTTON_DATA (list->data)->container;
         gtk_widget_set_child_visible (child, FALSE);
     }
-
-    _set_simple_bottom_clip (widget, BUTTON_BOTTOM_SHADOW);
 }
 
 static void
