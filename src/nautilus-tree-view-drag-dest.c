@@ -176,73 +176,18 @@ remove_expand_timer (NautilusTreeViewDragDest *dest)
     }
 }
 
-static gboolean
-highlight_draw (GtkWidget *widget,
-                cairo_t   *cr,
-                gpointer   data)
-{
-    GdkWindow *bin_window;
-    int width;
-    int height;
-    GtkStyleContext *style;
-
-    /* FIXMEchpe: is bin window right here??? */
-    bin_window = gtk_tree_view_get_bin_window (GTK_TREE_VIEW (widget));
-
-    width = gdk_window_get_width (bin_window);
-    height = gdk_window_get_height (bin_window);
-
-    style = gtk_widget_get_style_context (widget);
-
-    gtk_style_context_save (style);
-    gtk_style_context_add_class (style, "treeview-drop-indicator");
-
-    gtk_render_focus (style,
-                      cr,
-                      0, 0, width, height);
-
-    gtk_style_context_restore (style);
-
-    return FALSE;
-}
-
-static void
-set_widget_highlight (NautilusTreeViewDragDest *dest,
-                      gboolean                  highlight)
-{
-    if (!highlight && dest->details->highlight_id)
-    {
-        g_signal_handler_disconnect (dest->details->tree_view,
-                                     dest->details->highlight_id);
-        dest->details->highlight_id = 0;
-        gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
-    }
-
-    if (highlight && !dest->details->highlight_id)
-    {
-        dest->details->highlight_id =
-            g_signal_connect_object (dest->details->tree_view,
-                                     "draw",
-                                     G_CALLBACK (highlight_draw),
-                                     dest, 0);
-        gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
-    }
-}
-
 static void
 set_drag_dest_row (NautilusTreeViewDragDest *dest,
                    GtkTreePath              *path)
 {
     if (path)
     {
-        set_widget_highlight (dest, FALSE);
         gtk_tree_view_set_drag_dest_row (dest->details->tree_view,
                                          path,
                                          GTK_TREE_VIEW_DROP_INTO_OR_BEFORE);
     }
     else
     {
-        set_widget_highlight (dest, TRUE);
         gtk_tree_view_set_drag_dest_row (dest->details->tree_view, NULL, 0);
     }
 }
