@@ -379,63 +379,6 @@ try_to_expand_path (gpointer callback_data)
     return FALSE;
 }
 
-/* Until we have a more elegant solution, this is how we figure out if
- * the GtkEntry inserted characters, assuming that the return value is
- * TRUE indicating that the GtkEntry consumed the key event for some
- * reason. This is a clone of code from GtkEntry.
- */
-static gboolean
-entry_would_have_inserted_characters (const GdkEvent *event)
-{
-    guint keyval;
-    GdkModifierType state;
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    switch (keyval)
-    {
-        case GDK_KEY_BackSpace:
-        case GDK_KEY_Clear:
-        case GDK_KEY_Insert:
-        case GDK_KEY_Delete:
-        case GDK_KEY_Home:
-        case GDK_KEY_End:
-        case GDK_KEY_KP_Home:
-        case GDK_KEY_KP_End:
-        case GDK_KEY_Left:
-        case GDK_KEY_Right:
-        case GDK_KEY_KP_Left:
-        case GDK_KEY_KP_Right:
-        case GDK_KEY_Return:
-        {
-            return FALSE;
-        }
-
-        default:
-            if (keyval >= 0x20 && keyval <= 0xFF)
-            {
-                if ((state & GDK_CONTROL_MASK) != 0)
-                {
-                    return FALSE;
-                }
-                if ((state & GDK_MOD1_MASK) != 0)
-                {
-                    return FALSE;
-                }
-            }
-    }
-
-    /* GTK+ 4 TODO: gdk_event_get_string () and check if length > 0. */
-    return ((const GdkEventKey *) event)->length;
-}
-
 static gboolean
 position_and_selection_are_at_end (GtkEditable *editable)
 {
@@ -580,40 +523,23 @@ nautilus_location_entry_icon_release (GtkEntry             *gentry,
 }
 
 static gboolean
-nautilus_location_entry_on_event (GtkWidget *widget,
-                                  GdkEvent  *event)
+on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                     unsigned int           keyval,
+                                     unsigned int           keycode,
+                                     GdkModifierType        state,
+                                     gpointer               user_data)
 {
-    NautilusLocationEntry *entry;
-    NautilusLocationEntryPrivate *priv;
+    GtkWidget *widget;
     GtkEditable *editable;
     gboolean selected;
-    guint keyval;
-    GdkModifierType state;
-    GtkWidgetClass *parent_widget_class;
-    gboolean handled;
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    entry = NAUTILUS_LOCATION_ENTRY (widget);
-    priv = nautilus_location_entry_get_instance_private (entry);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     editable = GTK_EDITABLE (widget);
     selected = gtk_editable_get_selection_bounds (editable, NULL, NULL);
 
     if (!gtk_editable_get_editable (editable))
     {
         return FALSE;
-    }
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
 
     /* The location bar entry wants TAB to work kind of
@@ -629,7 +555,7 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
         gtk_editable_select_region (editable, position, position);
 
-        return GDK_EVENT_STOP;
+        return TRUE;
     }
 
     if ((keyval == GDK_KEY_Right || keyval == GDK_KEY_End) &&
@@ -638,43 +564,7 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         set_position_and_selection_to_end (editable);
     }
 
-    parent_widget_class = GTK_WIDGET_CLASS (nautilus_location_entry_parent_class);
-    /* GTK+ 4 TODO: Calling the event vfunc is not enough, we need the entry
-     *              to handle the key press and insert the text first.
-     *
-     * Chaining up here is required either way, since the code below
-     * used to be in the handler for ::event-after, which is no longer a thing.
-     */
-    handled = parent_widget_class->key_press_event (widget, (GdkEventKey *) event);
-
-    /* Only do expanding when we are typing at the end of the
-     * text. Do the expand at idle time to avoid slowing down
-     * typing when the directory is large. Only trigger the expand
-     * when we type a key that would have inserted characters.
-     */
-    if (position_and_selection_are_at_end (editable))
-    {
-        if (entry_would_have_inserted_characters (event))
-        {
-            if (priv->idle_id == 0)
-            {
-                priv->idle_id = g_idle_add (try_to_expand_path, widget);
-            }
-        }
-    }
-    else
-    {
-        /* FIXME: Also might be good to do this when you click
-         * to change the position or selection.
-         */
-        if (priv->idle_id != 0)
-        {
-            g_source_remove (priv->idle_id);
-            priv->idle_id = 0;
-        }
-    }
-
-    return handled;
+    return FALSE;
 }
 
 static void
@@ -727,7 +617,6 @@ nautilus_location_entry_class_init (NautilusLocationEntryClass *class)
 
     widget_class = GTK_WIDGET_CLASS (class);
     widget_class->destroy = destroy;
-    widget_class->event = nautilus_location_entry_on_event;
 
     gobject_class = G_OBJECT_CLASS (class);
     gobject_class->finalize = finalize;
@@ -811,10 +700,40 @@ editable_activate_callback (GtkEntry *entry,
 }
 
 static void
-editable_changed_callback (GtkEntry *entry,
-                           gpointer  user_data)
+editable_changed_callback (GtkEditable *editable,
+                           gpointer     user_data)
 {
-    nautilus_location_entry_update_action (NAUTILUS_LOCATION_ENTRY (entry));
+    NautilusLocationEntry *entry;
+    NautilusLocationEntryPrivate *priv;
+
+    entry = NAUTILUS_LOCATION_ENTRY (editable);
+    priv = nautilus_location_entry_get_instance_private (entry);
+
+    nautilus_location_entry_update_action (NAUTILUS_LOCATION_ENTRY (editable));
+
+    /* Only do expanding when we are typing at the end of the
+     * text. Do the expand at idle time to avoid slowing down
+     * typing when the directory is large. Only trigger the expand
+     * when we type a key that would have inserted characters.
+     */
+    if (position_and_selection_are_at_end (editable))
+    {
+        if (priv->idle_id == 0)
+        {
+            priv->idle_id = g_idle_add (try_to_expand_path, entry);
+        }
+    }
+    else
+    {
+        /* FIXME: Also might be good to do this when you click
+         * to change the position or selection.
+         */
+        if (priv->idle_id != 0)
+        {
+            g_source_remove (priv->idle_id);
+            priv->idle_id = 0;
+        }
+    }
 }
 
 static void
@@ -822,6 +741,7 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
     NautilusLocationEntryPrivate *priv;
     g_autoptr (GdkContentFormats) targets = NULL;
+    GtkEventController *controller;
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
@@ -866,6 +786,16 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
                              G_CALLBACK (editable_activate_callback), entry, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
+
+    controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (entry), controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "key-pressed", G_CALLBACK (on_event_controller_key_key_pressed),
+                      NULL);
 }
 
 GtkWidget *
