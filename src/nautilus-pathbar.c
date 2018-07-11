@@ -923,8 +923,8 @@ nautilus_path_bar_grab_notify (GtkWidget *widget,
 }
 
 static void
-nautilus_path_bar_state_changed (GtkWidget    *widget,
-                                 GtkStateType  previous_state)
+nautilus_path_bar_state_flags_changed (GtkWidget     *widget,
+                                       GtkStateFlags  flags)
 {
     if (!gtk_widget_get_sensitive (widget))
     {
@@ -1045,7 +1045,7 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     widget_class->style_updated = nautilus_path_bar_style_updated;
     widget_class->display_changed = nautilus_path_bar_display_changed;
     widget_class->grab_notify = nautilus_path_bar_grab_notify;
-    widget_class->state_changed = nautilus_path_bar_state_changed;
+    widget_class->state_flags_changed = nautilus_path_bar_state_flags_changed;
 
     container_class->add = nautilus_path_bar_add;
     container_class->forall = nautilus_path_bar_forall;
