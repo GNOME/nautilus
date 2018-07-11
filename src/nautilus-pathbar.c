@@ -227,7 +227,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
     g_object_unref (builder);
 
     gtk_widget_set_has_surface (GTK_WIDGET (self), FALSE);
-    gtk_widget_set_redraw_on_allocate (GTK_WIDGET (self), FALSE);
     /* Ideally this would be in CSS, but not worth it adding CSS support to
      * the container's logic...
      */
