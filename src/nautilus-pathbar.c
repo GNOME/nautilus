@@ -877,8 +877,6 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
                       g_cclosure_marshal_VOID__OBJECT,
                       G_TYPE_NONE, 1,
                       G_TYPE_FILE);
-
-    gtk_container_class_handle_border_width (container_class);
 }
 
 static void
