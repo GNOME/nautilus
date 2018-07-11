@@ -592,8 +592,6 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
     self = NAUTILUS_PATH_BAR (widget);
     priv = nautilus_path_bar_get_instance_private (NAUTILUS_PATH_BAR (widget));
 
-    gtk_widget_set_allocation (widget, allocation);
-
     /* No path is set so we don't have to allocate anything. */
     if (priv->button_list == NULL)
     {
