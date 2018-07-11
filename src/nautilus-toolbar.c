@@ -978,10 +978,11 @@ nautilus_toolbar_constructed (GObject *object)
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
                               (GCallback) gtk_widget_grab_focus, self);
-    g_signal_connect (self->location_entry, "populate-popup",
-                      G_CALLBACK (on_location_entry_populate_popup), self);
+
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
+    g_signal_connect (self->location_entry, "populate-popup",
+                      G_CALLBACK (on_location_entry_populate_popup), self);
 
     toolbar_update_appearance (self);
 }
