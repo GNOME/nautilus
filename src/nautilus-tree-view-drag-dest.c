@@ -286,10 +286,7 @@ check_hover_timer (NautilusTreeViewDragDest *dest,
     if (uri != NULL)
     {
         dest->details->target_uri = g_strdup (uri);
-        dest->details->hover_id =
-            gdk_threads_add_timeout (timeout,
-                                     hover_timer,
-                                     dest);
+        dest->details->hover_id = g_timeout_add (timeout, hover_timer, dest);
     }
 }
 
