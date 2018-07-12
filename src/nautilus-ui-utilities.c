@@ -198,179 +198,173 @@ nautilus_pop_up_context_menu_at_pointer (GtkWidget      *parent,
 #define NAUTILUS_THUMBNAIL_FRAME_RIGHT 3
 #define NAUTILUS_THUMBNAIL_FRAME_BOTTOM 3
 
-static cairo_surface_t *
-embed_surface_in_frame (cairo_surface_t *source_image,
-                        const gchar     *frame_image_url,
-                        GtkBorder       *slice_width,
-                        GtkBorder       *border_width)
+static GdkPaintable *
+embed_paintable_in_frame (GdkPaintable *paintable,
+                          const char   *frame_image_url,
+                          GtkBorder    *slice_width,
+                          GtkBorder    *border_width)
 {
-    cairo_surface_t *surface;
-    cairo_t *cr;
-    gint source_width;
-    gint source_height;
-    g_autofree gchar *css_str = NULL;
+    g_autoptr (GtkSnapshot) snapshot = NULL;
+    int width;
+    int height;
+    g_autofree char *css_str = NULL;
     g_autoptr (GtkCssProvider) provider = NULL;
     g_autoptr (GtkStyleContext) context = NULL;
-    g_autoptr (GError) error = NULL;
     g_autoptr (GtkWidgetPath) path = NULL;
-    gdouble scale_x;
-    gdouble scale_y;
+    graphene_rect_t bounds;
 
-    cairo_surface_get_device_scale (source_image, &scale_x, &scale_y);
-
-    source_width = cairo_image_surface_get_width (source_image) / (gint) floor (scale_x);
-    source_height = cairo_image_surface_get_height (source_image) / (gint) floor (scale_y);
-
-    css_str = g_strdup_printf (".embedded-image { border-image: url(\"%s\") %d %d %d %d / %dpx %dpx %dpx %dpx }",
+    snapshot = gtk_snapshot_new ();
+    width = gdk_paintable_get_intrinsic_width (paintable);
+    height = gdk_paintable_get_intrinsic_height (paintable);
+    css_str = g_strdup_printf (".embedded-image {"
+                               "    border-image-source: url(\"%s\");"
+                               "    border-image-slice: %d %d %d %d;"
+                               "    border-image-width: %dpx %dpx %dpx %dpx;"
+                               "}",
                                frame_image_url,
                                slice_width->top, slice_width->right, slice_width->bottom, slice_width->left,
                                border_width->top, border_width->right, border_width->bottom, border_width->left);
     provider = gtk_css_provider_new ();
-    gtk_css_provider_load_from_data (provider, css_str, -1, &error);
-
-    if (error != NULL)
-    {
-        g_warning ("Unable to create the thumbnail frame image: %s", error->message);
-
-        return g_object_ref (source_image);
-    }
-
-    surface = cairo_surface_create_similar (source_image,
-                                            CAIRO_CONTENT_COLOR_ALPHA,
-                                            source_width, source_height);
-    cr = cairo_create (surface);
-
     context = gtk_style_context_new ();
     path = gtk_widget_path_new ();
-    gtk_widget_path_append_type (path, GTK_TYPE_ICON_VIEW);
+    bounds = GRAPHENE_RECT_INIT (border_width->left, border_width->top,
+                                 width - border_width->left - border_width->right,
+                                 height - border_width->top - border_width->bottom);
+
+    gtk_css_provider_load_from_data (provider, css_str, -1);
 
     gtk_style_context_set_path (context, path);
     gtk_style_context_add_provider (context,
                                     GTK_STYLE_PROVIDER (provider),
                                     GTK_STYLE_PROVIDER_PRIORITY_APPLICATION);
 
-    cairo_save (cr);
-    cairo_rectangle (cr,
-                     border_width->left,
-                     border_width->top,
-                     source_width - border_width->left - border_width->right,
-                     source_height - border_width->top - border_width->bottom);
-    cairo_clip (cr);
-    gtk_render_icon_surface (context, cr, source_image, 0, 0);
-    cairo_restore (cr);
+    gtk_widget_path_append_type (path, GTK_TYPE_ICON_VIEW);
 
-    gtk_style_context_save (context);
+    gtk_snapshot_push_clip (snapshot, &bounds);
+
+    gdk_paintable_snapshot (paintable, GDK_SNAPSHOT (snapshot), width, height);
+
     gtk_style_context_add_class (context, "embedded-image");
 
-    gtk_render_frame (context, cr, 0, 0, source_width, source_height);
+    gtk_snapshot_render_frame (snapshot, context, 0, 0, width, height);
 
-    gtk_style_context_restore (context);
-    cairo_destroy (cr);
+    gtk_snapshot_pop (snapshot);
 
-    return surface;
-}
-
-static GdkPixbuf *
-embed_image_in_frame (GdkPixbuf   *source_image,
-                      const gchar *frame_image_url,
-                      GtkBorder   *slice_width,
-                      GtkBorder   *border_width)
-{
-  cairo_surface_t *surface;
-  cairo_surface_t *embedded_surface;
-  GdkPixbuf *retval;
-
-  surface = gdk_cairo_surface_create_from_pixbuf (source_image, 0, NULL);
-
-  /* Force the device scale to 1.0, since pixbufs are always in unscaled
-   * dimensions.
-   */
-  cairo_surface_set_device_scale (surface, 1.0, 1.0);
-  embedded_surface = embed_surface_in_frame (surface, frame_image_url,
-                                             slice_width, border_width);
-  retval = gdk_pixbuf_get_from_surface (embedded_surface,
-                                        0, 0,
-                                        cairo_image_surface_get_width (embedded_surface),
-                                        cairo_image_surface_get_height (embedded_surface));
-
-  cairo_surface_destroy (embedded_surface);
-  cairo_surface_destroy (surface);
-
-  return retval;
+    return gtk_snapshot_free_to_paintable (snapshot, NULL);
 }
 
 void
-nautilus_ui_frame_image (GdkPixbuf **pixbuf)
+nautilus_ui_frame_image (GdkPaintable **paintable)
 {
+    g_autoptr (GdkPaintable) framed_paintable = NULL;
     GtkBorder border;
-    GdkPixbuf *pixbuf_with_frame;
+
+    g_return_if_fail (paintable != NULL);
 
     border.left = NAUTILUS_THUMBNAIL_FRAME_LEFT;
     border.top = NAUTILUS_THUMBNAIL_FRAME_TOP;
     border.right = NAUTILUS_THUMBNAIL_FRAME_RIGHT;
     border.bottom = NAUTILUS_THUMBNAIL_FRAME_BOTTOM;
 
-    pixbuf_with_frame = embed_image_in_frame (*pixbuf,
-                                              "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
-                                              &border, &border);
-    g_object_unref (*pixbuf);
+    framed_paintable = embed_paintable_in_frame (*paintable,
+                                                 "resource:///org/gnome/nautilus/icons/thumbnail_frame.png",
+                                                 &border, &border);
 
-    *pixbuf = pixbuf_with_frame;
+    g_set_object (paintable, framed_paintable);
 }
 
-static GdkPixbuf *filmholes_left = NULL;
-static GdkPixbuf *filmholes_right = NULL;
+static GdkTexture *filmholes_left = NULL;
+static GdkPaintable *filmholes_right = NULL;
 
 static gboolean
 ensure_filmholes (void)
 {
     if (filmholes_left == NULL)
     {
-        filmholes_left = gdk_pixbuf_new_from_resource ("/org/gnome/nautilus/icons/filmholes.png", NULL);
+        filmholes_left = gdk_texture_new_from_resource ("/org/gnome/nautilus/icons/filmholes.png");
     }
     if (filmholes_right == NULL &&
         filmholes_left != NULL)
     {
-        filmholes_right = gdk_pixbuf_flip (filmholes_left, TRUE);
+        GtkSnapshot *snapshot;
+        int width;
+        int height;
+        graphene_rect_t bounds;
+        graphene_vec3_t axis;
+        graphene_matrix_t matrix;
+
+        snapshot = gtk_snapshot_new ();
+        width = gdk_texture_get_width (filmholes_left);
+        height = gdk_texture_get_height (filmholes_left);
+        bounds = GRAPHENE_RECT_INIT (0, 0, width, height);
+
+        graphene_vec3_init (&axis, 0, 1, 0);
+        graphene_matrix_init_rotate (&matrix, 180, &axis);
+
+        gtk_snapshot_push_transform (snapshot, &matrix);
+
+        gtk_snapshot_append_texture (snapshot, filmholes_left, &bounds);
+
+        gtk_snapshot_pop (snapshot);
+
+        filmholes_right = gtk_snapshot_free_to_paintable (snapshot, NULL);
     }
 
     return (filmholes_left && filmholes_right);
 }
 
 void
-nautilus_ui_frame_video (GdkPixbuf **pixbuf)
+nautilus_ui_frame_video (GdkPaintable **paintable)
 {
-    int width, height;
-    int holes_width, holes_height;
+    GtkSnapshot *snapshot;
+    int width;
+    int height;
+    int holes_width;
+    int holes_height;
     int i;
+    g_autoptr (GdkPaintable) framed_paintable = NULL;
 
     if (!ensure_filmholes ())
     {
         return;
     }
 
-    width = gdk_pixbuf_get_width (*pixbuf);
-    height = gdk_pixbuf_get_height (*pixbuf);
-    holes_width = gdk_pixbuf_get_width (filmholes_left);
-    holes_height = gdk_pixbuf_get_height (filmholes_left);
+    g_return_if_fail (paintable != NULL);
+    g_return_if_fail (*paintable != NULL);
+
+    snapshot = gtk_snapshot_new ();
+    width = gdk_paintable_get_intrinsic_width (*paintable);
+    height = gdk_paintable_get_intrinsic_height (*paintable);
+    holes_width = gdk_texture_get_width (filmholes_left);
+    holes_height = gdk_texture_get_height (filmholes_left);
+
+    gtk_snapshot_push_clip (snapshot, &GRAPHENE_RECT_INIT (0, 0, width, height));
 
     for (i = 0; i < height; i += holes_height)
     {
-        gdk_pixbuf_composite (filmholes_left, *pixbuf, 0, i,
-                              MIN (width, holes_width),
-                              MIN (height - i, holes_height),
-                              0, i, 1, 1, GDK_INTERP_NEAREST, 255);
+        gtk_snapshot_offset (snapshot, 0, holes_height);
+
+        gdk_paintable_snapshot (GDK_PAINTABLE (filmholes_left),
+                                GDK_SNAPSHOT (snapshot),
+                                holes_width, holes_height);
     }
+
+    gtk_snapshot_offset (snapshot, width - holes_width, 0);
 
     for (i = 0; i < height; i += holes_height)
     {
-        gdk_pixbuf_composite (filmholes_right, *pixbuf,
-                              width - holes_width, i,
-                              MIN (width, holes_width),
-                              MIN (height - i, holes_height),
-                              width - holes_width, i,
-                              1, 1, GDK_INTERP_NEAREST, 255);
+        gtk_snapshot_offset (snapshot, 0, -holes_height);
+
+        gdk_paintable_snapshot (filmholes_right,
+                                GDK_SNAPSHOT (snapshot),
+                                holes_width, holes_height);
     }
+
+    gtk_snapshot_pop (snapshot);
+
+    framed_paintable = gtk_snapshot_free_to_paintable (snapshot, NULL);
+
+    g_set_object (paintable, framed_paintable);
 }
 
 gboolean
