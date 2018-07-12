@@ -37,9 +37,6 @@ void        nautilus_pop_up_context_menu_at_pointer (GtkWidget         *parent,
                                                      GMenu             *menu,
                                                      const GdkEvent    *event);
 
-void        nautilus_ui_frame_image                 (GdkPixbuf        **pixbuf);
-void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
-
 gboolean    nautilus_file_date_in_between           (guint64            file_unix_time,
                                                      GDateTime         *initial_date,
                                                      GDateTime         *end_date);
