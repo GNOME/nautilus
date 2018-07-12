@@ -71,7 +71,6 @@
 #include "nautilus-thumbnails.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-vfs-file.h"
-#include "nautilus-video-mime-types.h"
 
 #ifdef HAVE_SELINUX
 #include <selinux/selinux.h>
@@ -4768,29 +4767,6 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
     return FALSE;
 }
 
-static gboolean
-nautilus_is_video_file (NautilusFile *file)
-{
-    const char *mime_type;
-    guint i;
-
-    mime_type = file->details->mime_type;
-    if (mime_type == NULL)
-    {
-        return FALSE;
-    }
-
-    for (i = 0; video_mime_types[i] != NULL; i++)
-    {
-        if (g_content_type_equals (video_mime_types[i], mime_type))
-        {
-            return TRUE;
-        }
-    }
-
-    return FALSE;
-}
-
 static GList *
 sort_keyword_list_and_remove_duplicates (GList *keywords)
 {
@@ -5178,28 +5154,6 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                                               MAX (w * thumb_scale, 1),
                                               MAX (h * thumb_scale, 1),
                                               GDK_INTERP_BILINEAR);
-
-            /* We don't want frames around small icons */
-            if (!gdk_pixbuf_get_has_alpha (file->details->thumbnail) || s >= 128 * scale)
-            {
-                gboolean use_experimental_views;
-
-                use_experimental_views = g_settings_get_boolean (nautilus_preferences,
-                                                                 NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
-                if (!use_experimental_views)
-                {
-#if 0
-                    if (nautilus_is_video_file (file))
-                    {
-                        nautilus_ui_frame_video (&pixbuf);
-                    }
-                    else
-                    {
-                        nautilus_ui_frame_image (&pixbuf);
-                    }
-#endif
-                }
-            }
 
             g_clear_object (&file->details->scaled_thumbnail);
             file->details->scaled_thumbnail = pixbuf;
