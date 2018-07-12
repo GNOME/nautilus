@@ -285,7 +285,6 @@ libnautilus_sources = [
   'nautilus-vfs-directory.h',
   'nautilus-vfs-file.c',
   'nautilus-vfs-file.h',
-  'nautilus-video-mime-types.h',
   'nautilus-view-icon-controller.c',
   'nautilus-view-icon-controller.h',
   'nautilus-view-icon-item-ui.c',
