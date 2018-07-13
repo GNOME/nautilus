@@ -100,6 +100,9 @@ typedef struct
     gulong qe_cancel_id;
     gulong qe_activated_id;
 
+    GtkLabel *search_info_label;
+    GtkRevealer *search_info_label_revealer;
+
     /* Load state */
     GCancellable *find_mount_cancellable;
     /* It could be either the view is loading the files or the search didn't
@@ -155,6 +158,7 @@ static void nautilus_window_slot_set_location (NautilusWindowSlot *self,
 static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
                                     gboolean              is_empty,
                                     gpointer              user_data);
+static void update_search_information (NautilusWindowSlot *self);
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
@@ -873,6 +877,20 @@ nautilus_window_slot_constructed (GObject *object)
     g_object_ref_sink (priv->query_editor);
     gtk_widget_show (GTK_WIDGET (priv->query_editor));
 
+    priv->search_info_label = GTK_LABEL (gtk_label_new (NULL));
+    priv->search_info_label_revealer = GTK_REVEALER (gtk_revealer_new ());
+
+    gtk_container_add (GTK_CONTAINER (priv->search_info_label_revealer),
+                       GTK_WIDGET (priv->search_info_label));
+    gtk_container_add (GTK_CONTAINER (self),
+                       GTK_WIDGET (priv->search_info_label_revealer));
+
+    gtk_widget_show (GTK_WIDGET (priv->search_info_label));
+    gtk_widget_show (GTK_WIDGET (priv->search_info_label_revealer));
+
+    style_context = gtk_widget_get_style_context (GTK_WIDGET (priv->search_info_label));
+    gtk_style_context_add_class (style_context, "search-information");
+
     g_object_bind_property (self, "location",
                             priv->query_editor, "location",
                             G_BINDING_DEFAULT);
@@ -912,6 +930,8 @@ action_search_visible (GSimpleAction *action,
             hide_query_editor (self);
             nautilus_window_slot_set_searching (self, FALSE);
         }
+
+        update_search_information (self);
     }
 
     g_variant_unref (current_state);
@@ -1009,6 +1029,67 @@ const GActionEntry slot_entries[] =
 };
 
 static void
+update_search_information (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    if (!nautilus_window_slot_get_searching (self))
+    {
+        gtk_revealer_set_reveal_child (priv->search_info_label_revealer, FALSE);
+
+        return;
+    }
+
+    if (priv->location)
+    {
+        g_autoptr (NautilusFile) file = NULL;
+        gchar *label;
+        g_autofree gchar *uri = NULL;
+
+        file = nautilus_file_get (priv->location);
+        label = NULL;
+        uri = g_file_get_uri (priv->location);
+
+        if (nautilus_file_is_other_locations (file))
+        {
+            label = _("Searching locations only");
+        }
+        else if (g_str_has_prefix (uri, "network://"))
+        {
+            label = _("Searching network locations only");
+        }
+        else if (nautilus_file_is_remote (file) &&
+                 !location_settings_search_is_recursive (priv->location))
+        {
+            label = _("Remote location — only searching the current folder");
+        }
+        else if (!location_settings_search_is_recursive (priv->location))
+        {
+            label = _("Only searching the current folder");
+        }
+
+        gtk_label_set_label (priv->search_info_label, label);
+        gtk_revealer_set_reveal_child (priv->search_info_label_revealer,
+                                       label != NULL);
+    }
+
+}
+
+static void
+recursive_search_preferences_changed (GSettings *settings,
+                                      gchar     *key,
+                                      gpointer   callback_data)
+{
+    NautilusWindowSlot *self;
+
+    self = callback_data;
+
+    update_search_information (self);
+}
+
+static void
 use_experimental_views_changed_callback (GSettings *settings,
                                          gchar     *key,
                                          gpointer   callback_data)
@@ -1041,6 +1122,11 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     g_signal_connect_object (nautilus_preferences,
                              "changed::" NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS,
                              G_CALLBACK (use_experimental_views_changed_callback), self, 0);
+
+    g_signal_connect_object (nautilus_preferences,
+                             "changed::recursive-search",
+                             G_CALLBACK (recursive_search_preferences_changed),
+                             self, 0);
 
     priv->slot_action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (priv->slot_action_group),

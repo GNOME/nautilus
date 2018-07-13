@@ -1391,3 +1391,29 @@ nautilus_uri_to_native_uri (const gchar *uri)
 
     return NULL;
 }
+
+gboolean
+location_settings_search_is_recursive (GFile *location)
+{
+    NautilusFile *file;
+    gboolean recursive;
+
+    g_return_val_if_fail (location != NULL, TRUE);
+
+    file = nautilus_file_get (location);
+
+    if (nautilus_file_is_remote (file))
+    {
+        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+    }
+    else
+    {
+        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
+                    g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
+    }
+
+    nautilus_file_unref (file);
+
+    return recursive;
+}
+
