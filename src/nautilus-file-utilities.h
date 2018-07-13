@@ -121,3 +121,5 @@ gboolean nautilus_file_can_rename_files (GList *files);
 GList * nautilus_file_list_from_uri_list (GList *uris);
 
 gchar * nautilus_uri_to_native_uri (const gchar *uri);
+
+gboolean location_settings_search_is_recursive (GFile *location);

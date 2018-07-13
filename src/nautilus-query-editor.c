@@ -43,7 +43,6 @@ struct _NautilusQueryEditor
 
     GtkWidget *entry;
     GtkWidget *popover;
-    GtkWidget *label;
     GtkWidget *dropdown_button;
 
     GdTaggedEntryTag *mime_types_tag;
@@ -82,75 +81,25 @@ static void nautilus_query_editor_changed (NautilusQueryEditor *editor);
 
 G_DEFINE_TYPE (NautilusQueryEditor, nautilus_query_editor, GTK_TYPE_BOX);
 
-static gboolean
-settings_search_is_recursive (NautilusQueryEditor *editor)
-{
-    NautilusFile *file;
-    gboolean recursive;
-
-    if (editor->location == NULL)
-    {
-        return TRUE;
-    }
-
-    file = nautilus_file_get (editor->location);
-
-    if (nautilus_file_is_remote (file))
-    {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
-    }
-    else
-    {
-        recursive = g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY ||
-                    g_settings_get_enum (nautilus_preferences, "recursive-search") == NAUTILUS_SPEED_TRADEOFF_ALWAYS;
-    }
-
-    nautilus_file_unref (file);
-
-    return recursive;
-}
-
 static void
-update_information_label (NautilusQueryEditor *editor)
+update_fts_sensitivity (NautilusQueryEditor *editor)
 {
     gboolean fts_sensitive = TRUE;
 
     if (editor->location)
     {
         g_autoptr (NautilusFile) file = NULL;
-        gchar *label;
         g_autofree gchar *uri = NULL;
 
         file = nautilus_file_get (editor->location);
-        label = NULL;
         uri = g_file_get_uri (editor->location);
 
-        if (nautilus_file_is_other_locations (file))
-        {
-            label = _("Searching locations only");
-            fts_sensitive = FALSE;
-        }
-        else if (g_str_has_prefix (uri, "network://"))
-        {
-            label = _("Searching network locations only");
-            fts_sensitive = FALSE;
-        }
-        else if (nautilus_file_is_remote (file) &&
-                 !settings_search_is_recursive (editor))
-        {
-            label = _("Remote location — only searching the current folder");
-            fts_sensitive = FALSE;
-        }
-        else if (!settings_search_is_recursive (editor))
-        {
-            label = _("Only searching the current folder");
-        }
-
+        fts_sensitive = !nautilus_file_is_other_locations (file) &&
+                        !g_str_has_prefix (uri, "network://") &&
+                        !(nautilus_file_is_remote (file) &&
+                          !location_settings_search_is_recursive (editor->location));
         nautilus_search_popover_set_fts_sensitive (NAUTILUS_SEARCH_POPOVER (editor->popover),
                                                    fts_sensitive);
-
-        gtk_widget_set_visible (editor->label, label != NULL);
-        gtk_label_set_label (GTK_LABEL (editor->label), label);
     }
 }
 
@@ -166,14 +115,14 @@ recursive_search_preferences_changed (GSettings           *settings,
         return;
     }
 
-    recursive = settings_search_is_recursive (editor);
+    recursive = location_settings_search_is_recursive (editor->location);
     if (recursive != nautilus_query_get_recursive (editor->query))
     {
         nautilus_query_set_recursive (editor->query, recursive);
         nautilus_query_editor_changed (editor);
     }
 
-    update_information_label (editor);
+    update_fts_sensitivity (editor);
 }
 
 
@@ -380,7 +329,7 @@ create_query (NautilusQueryEditor *editor)
 
     nautilus_query_set_search_content (query, fts_enabled);
 
-    recursive = settings_search_is_recursive (editor);
+    recursive = location_settings_search_is_recursive (editor->location);
 
     nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (editor->entry)));
     nautilus_query_set_location (query, editor->location);
@@ -621,13 +570,6 @@ setup_widgets (NautilusQueryEditor *editor)
                               G_CALLBACK (entry_tag_close_button_clicked),
                               editor);
 
-    /* additional information label */
-    editor->label = gtk_label_new (NULL);
-    gtk_widget_set_no_show_all (editor->label, TRUE);
-    gtk_style_context_add_class (gtk_widget_get_style_context (editor->label), "dim-label");
-
-    gtk_container_add (GTK_CONTAINER (vbox), editor->label);
-
     /* setup the search popover */
     editor->popover = nautilus_search_popover_new ();
 
@@ -735,7 +677,7 @@ nautilus_query_editor_set_location (NautilusQueryEditor *editor,
     }
     nautilus_query_set_location (editor->query, editor->location);
 
-    update_information_label (editor);
+    update_fts_sensitivity (editor);
 
     if (should_notify)
     {
