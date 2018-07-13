@@ -23,9 +23,8 @@ test_quit (int exit_code)
 }
 
 void
-test_delete_event (GtkWidget *widget,
-                   GdkEvent  *event,
-                   gpointer   callback_data)
+test_close_request (GtkWindow *window,
+                    gpointer   callback_data)
 {
     test_quit (0);
 }
@@ -42,8 +41,8 @@ test_window_new (const char *title)
         gtk_window_set_title (GTK_WINDOW (window), title);
     }
 
-    g_signal_connect (window, "delete_event",
-                      G_CALLBACK (test_delete_event), NULL);
+    g_signal_connect (window, "close-request",
+                      G_CALLBACK (test_close_request), NULL);
 
     return window;
 }
