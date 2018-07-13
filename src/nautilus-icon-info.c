@@ -502,6 +502,18 @@ nautilus_icon_info_lookup_from_path (const char *path,
     return info;
 }
 
+GdkTexture *
+nautilus_icon_info_get_texture (NautilusIconInfo *self)
+{
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
+
+    g_return_val_if_fail (NAUTILUS_IS_ICON_INFO (self), NULL);
+
+    pixbuf = nautilus_icon_info_get_pixbuf (self);
+
+    return gdk_texture_new_for_pixbuf (pixbuf);
+}
+
 GdkPixbuf *
 nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo *icon)
 {
