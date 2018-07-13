@@ -29,6 +29,7 @@ NautilusIconInfo *    nautilus_icon_info_lookup_from_path             (const cha
 								       int                size,
 								       int                scale);
 gboolean              nautilus_icon_info_is_fallback                  (NautilusIconInfo  *icon);
+GdkTexture           *nautilus_icon_info_get_texture                  (NautilusIconInfo  *icon);
 GdkPixbuf *           nautilus_icon_info_get_pixbuf                   (NautilusIconInfo  *icon);
 GdkPixbuf *           nautilus_icon_info_get_pixbuf_nodefault         (NautilusIconInfo  *icon);
 GdkPixbuf *           nautilus_icon_info_get_pixbuf_nodefault_at_size (NautilusIconInfo  *icon,
