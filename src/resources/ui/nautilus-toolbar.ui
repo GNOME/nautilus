@@ -8,10 +8,7 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">10</property>
-        <property name="margin_right">10</property>
-        <property name="margin_top">10</property>
-        <property name="margin_bottom">10</property>
+        <property name="margin">10</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkModelButton">
@@ -193,10 +190,7 @@
               <object class="GtkBox" id="operations_container">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
-                <property name="margin_left">12</property>
-                <property name="margin_right">12</property>
-                <property name="margin_top">12</property>
-                <property name="margin_bottom">12</property>
+                <property name="margin">12</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">10</property>
                 <child>
@@ -273,8 +267,8 @@
       <object class="GtkBox" id="header_toolbar">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="margin_left">24</property>
-        <property name="margin_right">24</property>
+        <property name="margin-start">24</property>
+        <property name="margin-end">24</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkStack" id="toolbar_switcher">
