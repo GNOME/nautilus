@@ -69,11 +69,7 @@ new_bookmark_from_uri (const char *uri, const char *label)
     if (uri)
     {
         location = g_file_new_for_uri (uri);
-
-        if (location)
-        {
-            new_bookmark = nautilus_bookmark_new (location, label);
-        }
+        new_bookmark = nautilus_bookmark_new (location, label);
     }
 
     return new_bookmark;
