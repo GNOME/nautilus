@@ -184,7 +184,7 @@ progress_info_finished_cb (NautilusProgressInfo               *info,
     }
     else
     {
-        if ((last_active_window == NULL) || !gtk_window_has_toplevel_focus (last_active_window))
+        if ((last_active_window == NULL) || !gtk_window_is_active (last_active_window))
         {
             progress_persistence_handler_hide_notification (self);
             progress_persistence_handler_show_complete_notification (self);
