@@ -355,12 +355,6 @@ nautilus_canvas_view_add_files (NautilusFilesView *view,
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
     canvas_container = get_canvas_container (canvas_view);
 
-    /* Reset scroll region for the first canvas added when loading a directory. */
-    if (nautilus_files_view_get_loading (view) && nautilus_canvas_container_is_empty (canvas_container))
-    {
-        nautilus_canvas_container_reset_scroll_region (canvas_container);
-    }
-
     for (l = files; l != NULL; l = l->next)
     {
         if (nautilus_canvas_container_add (canvas_container,

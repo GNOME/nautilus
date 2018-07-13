@@ -968,45 +968,6 @@ get_all_icon_bounds (NautilusCanvasContainer       *container,
                                        x1, y1, x2, y2, usage);
 }
 
-/* Don't preserve visible white space the next time the scroll region
- * is recomputed when the container is not empty. */
-void
-nautilus_canvas_container_reset_scroll_region (NautilusCanvasContainer *container)
-{
-    container->details->reset_scroll_region_trigger = TRUE;
-}
-
-/* Set a new scroll region without eliminating any of the currently-visible area. */
-static void
-canvas_set_scroll_region_include_visible_area (EelCanvas *canvas,
-                                               double     x1,
-                                               double     y1,
-                                               double     x2,
-                                               double     y2)
-{
-    double old_x1, old_y1, old_x2, old_y2;
-    double old_scroll_x, old_scroll_y;
-    double height, width;
-    GtkAllocation allocation;
-
-    eel_canvas_get_scroll_region (canvas, &old_x1, &old_y1, &old_x2, &old_y2);
-    gtk_widget_get_allocation (GTK_WIDGET (canvas), &allocation);
-
-    width = (allocation.width) / canvas->pixels_per_unit;
-    height = (allocation.height) / canvas->pixels_per_unit;
-
-    old_scroll_x = gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (canvas)));
-    old_scroll_y = gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (canvas)));
-
-    x1 = MIN (x1, old_x1 + old_scroll_x);
-    y1 = MIN (y1, old_y1 + old_scroll_y);
-    x2 = MAX (x2, old_x1 + old_scroll_x + width);
-    y2 = MAX (y2, old_y1 + old_scroll_y + height);
-
-    eel_canvas_set_scroll_region
-        (canvas, x1, y1, x2, y2);
-}
-
 void
 nautilus_canvas_container_update_scroll_region (NautilusCanvasContainer *container)
 {
@@ -1014,23 +975,9 @@ nautilus_canvas_container_update_scroll_region (NautilusCanvasContainer *contain
     double pixels_per_unit;
     GtkAdjustment *hadj, *vadj;
     float step_increment;
-    gboolean reset_scroll_region;
     GtkAllocation allocation;
 
     pixels_per_unit = EEL_CANVAS (container)->pixels_per_unit;
-
-    reset_scroll_region = container->details->reset_scroll_region_trigger
-                          || nautilus_canvas_container_is_empty (container);
-
-    /* The trigger is only cleared when container is non-empty, so
-     * callers can reliably reset the scroll region when an item
-     * is added even if extraneous relayouts are called when the
-     * window is still empty.
-     */
-    if (!nautilus_canvas_container_is_empty (container))
-    {
-        container->details->reset_scroll_region_trigger = FALSE;
-    }
 
     get_all_icon_bounds (container, &x1, &y1, &x2, &y2, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 
@@ -1053,18 +1000,7 @@ nautilus_canvas_container_update_scroll_region (NautilusCanvasContainer *contain
     y2 -= 1;
     y2 = MAX (y1, y2);
 
-    if (reset_scroll_region)
-    {
-        eel_canvas_set_scroll_region
-            (EEL_CANVAS (container),
-            x1, y1, x2, y2);
-    }
-    else
-    {
-        canvas_set_scroll_region_include_visible_area
-            (EEL_CANVAS (container),
-            x1, y1, x2, y2);
-    }
+    eel_canvas_set_scroll_region (EEL_CANVAS (container), x1, y1, x2, y2);
 
     hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container));
     vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container));
@@ -5722,23 +5658,10 @@ nautilus_canvas_container_get_icon_drop_target_uri (NautilusCanvasContainer *con
     return uri;
 }
 
-/* Call to reset the scroll region only if the container is not empty,
- * to avoid having the flag linger until the next file is added.
- */
-static void
-reset_scroll_region_if_not_empty (NautilusCanvasContainer *container)
-{
-    if (!nautilus_canvas_container_is_empty (container))
-    {
-        nautilus_canvas_container_reset_scroll_region (container);
-    }
-}
-
 /* Re-sort, switching to automatic layout if it was in manual layout. */
 void
 nautilus_canvas_container_sort (NautilusCanvasContainer *container)
 {
-    reset_scroll_region_if_not_empty (container);
     container->details->needs_resort = TRUE;
     redo_layout (container);
 }
