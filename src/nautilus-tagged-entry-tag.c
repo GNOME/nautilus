@@ -157,10 +157,9 @@ nautilus_tagged_entry_tag_init (NautilusTaggedEntryTag *self)
     gtk_widget_set_has_surface (GTK_WIDGET (self), false);
 
     gtk_widget_hide (self->label);
-    gtk_widget_set_parent (self->label, GTK_WIDGET (self));
+    gtk_widget_insert_after (self->label, GTK_WIDGET (self), NULL);
 
-    gtk_widget_hide (self->image);
-    gtk_widget_set_parent (self->image, GTK_WIDGET (self));
+    gtk_widget_insert_after (self->image, GTK_WIDGET (self), self->label);
 
     gesture = gtk_gesture_multi_press_new ();
     gtk_widget_add_controller (GTK_WIDGET (self), GTK_EVENT_CONTROLLER (gesture));
@@ -451,7 +450,7 @@ nautilus_tagged_entry_tag_class_init (NautilusTaggedEntryTagClass *klass)
                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
     properties[PROP_SHOW_CLOSE_BUTTON] =
         g_param_spec_boolean ("show-close-button", "Show Close Button", "Toggles close button visibility",
-                              false,
+                              true,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     g_object_class_install_properties (object_class, N_PROPERTIES, properties);

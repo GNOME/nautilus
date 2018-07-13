@@ -278,11 +278,16 @@ void
 nautilus_tagged_entry_remove_tag (NautilusTaggedEntry    *self,
                                   NautilusTaggedEntryTag *tag)
 {
+    GtkWidget *parent;
     gpointer data;
     unsigned long handler_id;
 
     g_return_if_fail (NAUTILUS_IS_TAGGED_ENTRY (self));
     g_return_if_fail (NAUTILUS_IS_TAGGED_ENTRY_TAG (tag));
+
+    parent = gtk_widget_get_parent (GTK_WIDGET (tag));
+
+    g_return_if_fail (parent != GTK_WIDGET (self));
 
     data = g_object_get_data (G_OBJECT (tag), "clicked-handler-id");
     handler_id = GPOINTER_TO_UINT (data);
