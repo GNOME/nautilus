@@ -147,10 +147,6 @@ entry.search > * {
   padding: 0px;
 }
 
-.search-bar {
-    box-shadow: none;
-}
-
 @define-color disk_space_unknown #888a85;
 @define-color disk_space_used #729fcf;
 @define-color disk_space_free #eeeeec;
@@ -196,11 +192,6 @@ entry.search > * {
 .nautilus-list-view .view.dnd {
     border-style: none;
 }
-
-/* Workaround for the double border of the searchbar since we use a revealer which
- * always allocates at least 1 pixel */
-searchbar { border-top: 1px solid @borders; }
-.searchbar-container { margin-top: -1px; }
 
 @define-color conflict_bg #fef6b6;
 
