@@ -172,6 +172,9 @@ static const struct
     { GDK_KEY_Stop, "stop" },
     { GDK_KEY_Back, "back" },
     { GDK_KEY_Forward, "forward" },
+    { GDK_KEY_asciitilde, "prompt-home-location" },
+    { GDK_KEY_dead_tilde, "prompt-home-location" },
+    { GDK_KEY_slash, "prompt-root-location" },
 };
 
 static const GtkPadActionEntry pad_actions[] =
@@ -2131,12 +2134,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
         "<ctrl>r",
         NULL
     };
-    const gchar *prompt_home_location_accels[] =
-    {
-        "asciitilde",
-        "dead_tilde",
-        NULL
-    };
 
     g_action_map_add_action_entries (G_ACTION_MAP (window),
                                      win_entries, G_N_ELEMENTS (win_entries),
@@ -2162,9 +2159,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
-    nautilus_application_set_accelerator (app, "win.prompt-root-location", "slash");
-    /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
-    nautilus_application_set_accelerators (app, "win.prompt-home-location", prompt_home_location_accels);
     nautilus_application_set_accelerator (app, "win.view-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
@@ -2443,28 +2437,27 @@ nautilus_window_realize (GtkWidget *widget)
 }
 
 static gboolean
-nautilus_window_key_press_event (GtkWidget   *widget,
-                                 GdkEventKey *event)
+nautilus_window_key_pressed (GtkEventControllerKey *controller,
+                             unsigned int           keyval,
+                             unsigned int           keycode,
+                             GdkModifierType        state,
+                             gpointer               user_data)
 {
+    g_autoptr (GdkEvent) event = NULL;
+    GtkWidget *widget;
     NautilusWindow *window;
-    guint keyval;
     GtkWidget *focus_widget;
 
+    event = gtk_get_current_event ();
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     window = NAUTILUS_WINDOW (widget);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval ((GdkEvent *) event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
     focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
-    if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
+    if (GTK_IS_EDITABLE (focus_widget))
     {
         /* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
          * the event to it before activating accelerator bindings too.
          */
-        if (gtk_window_propagate_key_event (GTK_WINDOW (window),
-                                            (GdkEventKey *) event))
+        if (gtk_event_controller_key_forward (controller, focus_widget))
         {
             return GDK_EVENT_STOP;
         }
@@ -2478,7 +2471,8 @@ nautilus_window_key_press_event (GtkWidget   *widget,
 
             action = g_action_map_lookup_action (G_ACTION_MAP (window), extra_window_keybindings[i].action);
 
-            g_assert (action != NULL);
+            g_warn_if_fail (action != NULL);
+
             if (g_action_get_enabled (action))
             {
                 g_action_activate (action, NULL);
@@ -2489,10 +2483,12 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         }
     }
 
+#if 0
     if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
     {
         return GDK_EVENT_STOP;
     }
+#endif
 
     if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
@@ -2636,6 +2632,7 @@ nautilus_window_init (NautilusWindow *window)
     GtkWindowGroup *window_group;
     GtkPadController *pad_controller;
     GtkGesture *gesture;
+    GtkEventController *controller;
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_NOTEBOOK);
@@ -2678,6 +2675,16 @@ nautilus_window_init (NautilusWindow *window)
 
     g_signal_connect (gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), NULL);
+
+    controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (window), controller);
+
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+
+    g_signal_connect (controller,
+                      "key-pressed", G_CALLBACK (nautilus_window_key_pressed),
+                      NULL);
 }
 
 static void
@@ -2692,7 +2699,6 @@ nautilus_window_class_init (NautilusWindowClass *class)
     wclass->destroy = nautilus_window_destroy;
     wclass->show = nautilus_window_show;
     wclass->realize = nautilus_window_realize;
-    wclass->key_press_event = nautilus_window_key_press_event;
     wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
 
