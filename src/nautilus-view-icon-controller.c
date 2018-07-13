@@ -754,7 +754,6 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
     NautilusViewIconController *self;
     g_autoptr (GList) selection = NULL;
     GtkFlowBoxChild *child_at_pos;
-    GdkEventButton *event_button;
     GdkEventSequence *event_sequence;
     GdkEvent *event;
 
@@ -762,12 +761,10 @@ on_longpress_gesture_pressed_callback (GtkGestureLongPress *gesture,
     event = (GdkEvent *) gtk_gesture_get_last_event (GTK_GESTURE (gesture), event_sequence);
 
     self = NAUTILUS_VIEW_ICON_CONTROLLER (user_data);
-    event_button = (GdkEventButton *) event;
 
     /* Need to update the selection so the popup has the right actions enabled */
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (self));
-    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui,
-                                                  event_button->x, event_button->y);
+    child_at_pos = gtk_flow_box_get_child_at_pos (self->view_ui, x, y);
     if (child_at_pos != NULL)
     {
         NautilusFile *selected_file;
