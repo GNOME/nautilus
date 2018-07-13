@@ -204,7 +204,7 @@ present_autorun_for_software_dialog (GMount *mount)
 {
     GIcon *icon;
     NautilusIconInfo *icon_info;
-    GdkPixbuf *pixbuf;
+    g_autoptr (GdkTexture) texture = NULL;
     char *mount_name;
     GtkWidget *dialog;
     AutorunSoftwareDialogData *data;
@@ -235,9 +235,9 @@ present_autorun_for_software_dialog (GMount *mount)
     icon = g_mount_get_icon (mount);
     icon_info = nautilus_icon_info_lookup (icon, 48,
                                            gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
-    pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon_info, 48);
+    texture = nautilus_icon_info_get_texture (icon_info);
 
-    gtk_window_set_icon (GTK_WINDOW (dialog), pixbuf);
+    gtk_window_set_icon (GTK_WINDOW (dialog), texture);
 
     data = g_new0 (AutorunSoftwareDialogData, 1);
     data->dialog = dialog;
@@ -259,7 +259,6 @@ present_autorun_for_software_dialog (GMount *mount)
     }
 
     g_object_unref (icon_info);
-    g_object_unref (pixbuf);
     g_free (mount_name);
 }
 
