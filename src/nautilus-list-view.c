@@ -519,7 +519,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     g_autoptr (GtkTreePath) path = NULL;
     GtkTreeViewColumn *column;
     GtkTreeSelection *selection;
-    GtkWidgetClass *tree_view_class;
     guint button;
     gint bin_x;
     gint bin_y;
@@ -533,7 +532,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     view = NAUTILUS_LIST_VIEW (callback_data);
     widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
     tree_view = GTK_TREE_VIEW (widget);
-    tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
     selection = gtk_tree_view_get_selection (tree_view);
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
 
@@ -791,10 +789,15 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         /* Needed to select an item before popping up a menu. */
         if (call_parent)
         {
+#if 0
+            GtkWidgetClass *tree_view_class;
+
+            tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
+
             g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            /* GTK+ 4 TODO: replace with event(), at the very least. */
             tree_view_class->button_press_event (widget, (GdkEventButton *) event);
             g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
+#endif
         }
         else if (path_selected)
         {
