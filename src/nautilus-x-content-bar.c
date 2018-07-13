@@ -89,7 +89,6 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
 {
     char *message = NULL;
     guint num_types;
-    guint n;
     GPtrArray *types;
     GPtrArray *apps;
     GAppInfo *default_app;
@@ -105,7 +104,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
     types = g_ptr_array_new ();
     apps = g_ptr_array_new ();
     g_ptr_array_set_free_func (apps, g_object_unref);
-    for (n = 0; x_content_types[n] != NULL; n++)
+    for (int n = 0; x_content_types[n] != NULL; n++)
     {
         if (!should_handle_content_type (x_content_types[n]))
         {
@@ -148,7 +147,7 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
 
     gtk_widget_show (bar->label);
 
-    for (n = 0; bar->x_content_types[n] != NULL; n++)
+    for (int n = 0; bar->x_content_types[n] != NULL; n++)
     {
         const char *name;
         GIcon *icon;
@@ -156,13 +155,12 @@ nautilus_x_content_bar_set_x_content_types (NautilusXContentBar *bar,
         GtkWidget *button;
         GAppInfo *app;
         gboolean has_app;
-        guint i;
         GtkWidget *box;
 
         default_app = g_ptr_array_index (apps, n);
         has_app = FALSE;
 
-        for (i = 0; i < n; i++)
+        for (int i = 0; i < n; i++)
         {
             app = g_ptr_array_index (apps, i);
             if (g_app_info_equal (app, default_app))
