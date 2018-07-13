@@ -660,23 +660,27 @@ on_new_progress_info (NautilusProgressInfoManager *manager,
 }
 
 static void
-on_operations_icon_draw (GtkWidget       *widget,
-                         cairo_t         *cr,
-                         NautilusToolbar *self)
+operations_icon_draw (GtkDrawingArea *drawing_area,
+                      cairo_t        *cr,
+                      int             width,
+                      int             height,
+                      gpointer        user_data)
 {
+    NautilusToolbar *self;
+    GtkWidget *widget;
     gfloat elapsed_progress = 0;
     gint remaining_progress = 0;
     gint total_progress;
     gdouble ratio;
     GList *progress_infos;
     GList *l;
-    guint width;
-    guint height;
     gboolean all_cancelled;
     GdkRGBA background;
     GdkRGBA foreground;
     GtkStyleContext *style_context;
 
+    self = user_data;
+    widget = GTK_WIDGET (drawing_area);
     style_context = gtk_widget_get_style_context (widget);
     gtk_style_context_get_color (style_context, &foreground);
     background = foreground;
@@ -713,10 +717,6 @@ on_operations_icon_draw (GtkWidget       *widget,
             ratio = 0.05;
         }
     }
-
-
-    width = gtk_widget_get_allocated_width (widget);
-    height = gtk_widget_get_allocated_height (widget);
 
     gdk_cairo_set_source_rgba (cr, &background);
     cairo_arc (cr,
@@ -988,6 +988,9 @@ nautilus_toolbar_constructed (GObject *object)
                       G_CALLBACK (on_location_entry_populate_popup), self);
 
     toolbar_update_appearance (self);
+
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (self->operations_icon),
+                                    operations_icon_draw, self, NULL);
 }
 
 static void
@@ -1257,7 +1260,6 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
-    gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_button_toggled);
 }
 
