@@ -271,7 +271,6 @@ void              nautilus_canvas_container_set_single_click_mode         (Nauti
 									   gboolean                single_click_mode);
 void              nautilus_canvas_container_enable_linger_selection       (NautilusCanvasContainer  *view,
 									   gboolean                enable);
-void              nautilus_canvas_container_reset_scroll_region           (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_set_font                      (NautilusCanvasContainer  *container,
 									   const char             *font); 
 void              nautilus_canvas_container_set_margins                   (NautilusCanvasContainer  *container,

@@ -192,9 +192,6 @@ struct NautilusCanvasContainerDetails {
 
 	int size_allocation_count;
 	guint size_allocation_count_id;
-	
-	/* Ignore the visible area the next time the scroll region is recomputed */
-	gboolean reset_scroll_region_trigger;
 
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;
