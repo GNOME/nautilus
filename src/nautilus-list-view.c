@@ -857,14 +857,6 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
 
         sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
         event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
-        /* Typically will only happen with GTK+ <= 3.22.30 and <= 3.93.0,
-         * where ::released is emitted after ::cancel, but can’t hurt to guard
-         * against it anyway.
-         */
-        if (event == NULL)
-        {
-            return;
-        }
 
         nautilus_list_view_did_not_drag (view, event);
     }
