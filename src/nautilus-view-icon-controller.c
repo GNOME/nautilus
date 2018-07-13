@@ -665,21 +665,15 @@ real_reveal_for_selection_context_menu (NautilusFilesView *files_view)
 {
     g_autolist (NautilusFile) selection = NULL;
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    g_autoptr (GList) list = NULL;
     GtkWidget *item_ui;
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (files_view));
     g_return_val_if_fail (selection != NULL, NULL);
 
-    /* Get the focused item_ui, if selected.
-     * Otherwise, get the selected item_ui which is sorted the lowest.*/
-    item_ui = gtk_container_get_focus_child (GTK_CONTAINER (self->view_ui));
-    if (item_ui == NULL || !gtk_flow_box_child_is_selected (GTK_FLOW_BOX_CHILD (item_ui)))
-    {
-        g_autoptr (GList) list = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
-
-        list = g_list_last (list);
-        item_ui = GTK_WIDGET (list->data);
-    }
+    list = gtk_flow_box_get_selected_children (GTK_FLOW_BOX (self->view_ui));
+    list = g_list_reverse (list);
+    item_ui = GTK_WIDGET (list->data);
 
     reveal_item_ui (self, item_ui);
 
