@@ -10,8 +10,7 @@
 void       test_init                            (int                         *argc,
 						 char                      ***argv);
 int        test_quit                            (int                          exit_code);
-void       test_delete_event                    (GtkWidget                   *widget,
-						 GdkEvent                    *event,
+void       test_close_request                   (GtkWindow                   *window,
 						 gpointer                     callback_data);
 GtkWidget *test_window_new                      (const char                  *title);
 void       test_gtk_widget_set_background_image (GtkWidget                   *widget,
