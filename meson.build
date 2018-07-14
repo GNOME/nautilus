@@ -129,9 +129,9 @@ else
   name_suffix = ''
 endif
 
-application_id = 'org.gnome.Nautilus'
+application_id = 'org.gnome.Nautilus' + profile
 
-conf.set_quoted('APPLICATION_ID', application_id + profile)
+conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('INSTALL_PREFIX', prefix)
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
