@@ -5,20 +5,34 @@ project('nautilus', 'c',
   license: 'GPL3+'
 )
 
-# Directory variables
+###############
+# Directories #
+###############
+
+prefix = get_option('prefix')
+
 bindir = get_option('bindir')
 datadir = get_option('datadir')
 desktopdir = join_paths(datadir, 'applications')
 includedir = get_option('includedir')
 libdir = get_option('libdir')
+localedir = get_option('localedir')
 extensiondir = join_paths(libdir, 'nautilus', 'extensions-3.0')
-prefix = get_option('prefix')
 servicedir = join_paths(datadir, 'dbus-1', 'services')
-#
 
-# Compiler variables
+###################
+# End directories #
+###################
+
+#############
+# Compilers #
+#############
+
 cc = meson.get_compiler('c')
-#
+
+#################
+# End compilers #
+#################
 
 add_project_arguments(
   cc.get_supported_arguments([
@@ -44,16 +58,31 @@ add_project_arguments(
   language: 'c'
 )
 
-# Operating systems
+#####################
+# Operating systems #
+#####################
+
 is_linux = host_machine.system() == 'linux'
 
-# Imports
+#########################
+# End operating systems #
+#########################
+
+##################
+# Module imports #
+##################
+
 gnome = import('gnome')
 i18n = import('i18n')
 pkgconfig = import('pkgconfig')
-#
 
-# Dependencies
+######################
+# End module imports #
+######################
+
+################
+# Dependencies #
+################
 glib_ver = '>= 2.55.1'
 
 libgd = subproject(
@@ -90,9 +119,14 @@ endif
 tracker_sparql = dependency('tracker-sparql-2.0')
 x11 = dependency('x11')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
-#
 
-# Configuration
+####################
+# End dependencies #
+####################
+
+#################
+# Configuration #
+#################
 conf = configuration_data()
 
 if get_option('profile') == 'development'
@@ -106,34 +140,26 @@ else
   name_suffix = ''
 endif
 
-application_id = 'org.gnome.Nautilus@0@'.format(profile)
+application_id = 'org.gnome.Nautilus'
 
-conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
-conf.set_quoted('PACKAGE_VERSION', meson.project_version())
+conf.set_quoted('APPLICATION_ID', application_id + profile)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
-conf.set_quoted('LOCALEDIR', join_paths(prefix, get_option('localedir')))
+conf.set_quoted('INSTALL_PREFIX', prefix)
+conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
+conf.set_quoted('NAME_SUFFIX', name_suffix)
 conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
-conf.set_quoted('APPLICATION_ID', application_id)
-conf.set_quoted('INSTALL_PREFIX', prefix)
+conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
-conf.set_quoted('NAME_SUFFIX', name_suffix)
+conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 
-
-#                                            _           _    _
-#  __ _ _ __   ___  _ __ ___   ___        __| | ___  ___| | _| |_ ___  _ __
-# / _` | '_ \ / _ \| '_ ` _ \ / _ \_____ / _` |/ _ \/ __| |/ / __/ _ \| '_ \
-#| (_| | | | | (_) | | | | | |  __/_____| (_| |  __/\__ \   <| || (_) | |_) |
-# \__, |_| |_|\___/|_| |_| |_|\___|      \__,_|\___||___/_|\_\\__\___/| .__/
-# |___/                                                               |_|
-#
-# gnome-desktop macros for thumbnailer sandboxing.
-####################################
+###################################################
+# gnome-desktop macros for thumbnailer sandboxing #
+###################################################
 if is_linux
   conf.set10('ENABLE_SECCOMP', true)
   conf.set10('HAVE_BWRAP', true)
 endif
-####################################
 
 if get_option('packagekit')
   conf.set10('ENABLE_PACKAGEKIT', true)
@@ -145,10 +171,14 @@ if get_option('selinux')
   conf.set10('HAVE_SELINUX', true)
 endif
 
+#############################################################
+# config.h dependency, add to target dependencies if needed #
+#############################################################
+
 config_h = declare_dependency(
   sources: vcs_tag(
     command: ['git', 'rev-parse', '--short', 'HEAD'],
-    fallback: get_option('profile') != 'default'? 'devel' : 'stable',
+    fallback: get_option('profile') != ''? 'devel' : 'stable',
     input: configure_file(
       output: 'config.h.in',
       configuration: conf
@@ -156,28 +186,51 @@ config_h = declare_dependency(
     output: 'config.h'
   )
 )
-#
+
+#####################
+# End configuration #
+#####################
 
 nautilus_include_dirs = include_directories(
   '.',
   'libnautilus-extension'
 )
 
-subdir('eel')
-subdir('libnautilus-extension')
+#########
+# Build #
+#########
 
-subdir('src')
-if get_option('tests') != 'none'
-  subdir('test')
-endif
-subdir('data')
-subdir('po')
+subdirs = [
+  'data',
+  'eel',
+  'libnautilus-extension',
+  'po',
+  'src',
+]
+
+########################
+# Conditional building #
+########################
+
 if get_option('docs')
-  subdir('docs')
+  subdirs += 'docs'
+endif
+if get_option('tests') != 'none'
+  subdirs += 'test'
 endif
 if get_option('extensions')
-  subdir('extensions')
+  subdirs += 'extensions'
 endif
 
-# Compile GSettings schemas when installing from source.
+foreach dir : subdirs
+  subdir(dir)
+endforeach
+
+#############
+# End build #
+#############
+
+#########################################################
+# Compile GSettings schemas when installing from source #
+#########################################################
 meson.add_install_script('build-aux/meson/postinstall.py')
