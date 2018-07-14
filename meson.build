@@ -98,10 +98,9 @@ conf = configuration_data()
 if get_option('profile') == 'development'
   profile = 'Devel'
   name_suffix = ' (Development Snapshot)'
-elif get_option('profile') == 'stable-flatpak'
-  profile = 'StableFlatpak'
-  version_array = meson.project_version().split('.')
-  name_suffix = ' (@0@.@1@ Flatpak)'.format(version_array[0], version_array[1])
+elif get_option('profile') != ''
+  profile = get_option('profile')
+  name_suffix = get_option('profile')
 else
   profile = ''
   name_suffix = ''

@@ -272,7 +272,7 @@ nautilus_application_create_window (NautilusApplication *self,
                                  MAX (NAUTILUS_WINDOW_MIN_HEIGHT, default_height));
 
     application_id = g_application_get_application_id (G_APPLICATION (self));
-    if (g_strcmp0 (application_id, "org.gnome.NautilusDevel") == 0)
+    if (g_strcmp0 (application_id, "Nautilus") != 0)
     {
         GtkStyleContext *style_context;
 
