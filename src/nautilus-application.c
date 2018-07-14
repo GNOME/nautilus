@@ -245,7 +245,6 @@ nautilus_application_create_window (NautilusApplication *self,
     g_autoptr (GVariant) default_size = NULL;
     gint default_width = 0;
     gint default_height = 0;
-    const gchar *application_id;
 
     g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
     nautilus_profile_start (NULL);
@@ -271,8 +270,7 @@ nautilus_application_create_window (NautilusApplication *self,
                                  MAX (NAUTILUS_WINDOW_MIN_WIDTH, default_width),
                                  MAX (NAUTILUS_WINDOW_MIN_HEIGHT, default_height));
 
-    application_id = g_application_get_application_id (G_APPLICATION (self));
-    if (g_strcmp0 (application_id, "Nautilus") != 0)
+    if (g_strcmp0 (PROFILE, "") != 0)
     {
         GtkStyleContext *style_context;
 
