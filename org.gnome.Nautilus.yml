@@ -1,4 +1,4 @@
-app-id: org.gnome.NautilusMaster
+app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
 runtime-version: master
 sdk: org.gnome.Sdk
@@ -7,7 +7,7 @@ tags:
   - devel
   - nightly
   - master
-desktop-file-name-prefix: (Development Master)
+desktop-file-name-prefix: (Development Snapshot)
 finish-args:
   - --filesystem=host
   - --share=ipc
@@ -83,12 +83,6 @@ modules:
       - "--disable-documentation"
     buildsystem: autotools
     builddir: true
-    cleanup:
-      - "/bin"
-      - "/include"
-      - "/lib/pkgconfig"
-      - "/share/aclocal"
-      - "*.la"
 
   - name: graphene
     sources:
@@ -101,9 +95,6 @@ modules:
       - "-Dbenchmarks=false"
     buildsystem: meson
     builddir: true
-    cleanup:
-      - "/include"
-      - "/lib/pkgconfig"
 
   - name: gtk+
     sources:
@@ -116,18 +107,13 @@ modules:
       - "-Dbuild-tests=false"
     buildsystem: meson
     builddir: true
-    cleanup:
-      - "/bin"
-      - "/include"
-      - "/lib/pkgconfig"
 
   - name: nautilus
+    sources:
+      - type: dir
+        path: .
+    config-opts:
+      - "--libdir=lib"
+      - "-Dprofile=Devel"
     buildsystem: meson
     builddir: true
-    build-options:
-      config-opts:
-        - --libdir=/app/lib
-        - -Dprofile=Master
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/nautilus.git
