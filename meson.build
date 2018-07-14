@@ -40,6 +40,7 @@ add_project_arguments(
     '-Wduplicated-branches',
     '-Wduplicated-cond',
     '-Wlogical-op',
+    '-Wno-deprecated-declarations',
     '-Werror=declaration-after-statement',
     '-Werror=empty-body',
     '-Werror=format=2',
