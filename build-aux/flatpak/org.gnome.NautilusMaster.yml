@@ -1,4 +1,4 @@
-app-id: org.gnome.NautilusDevel
+app-id: org.gnome.NautilusMaster
 runtime: org.gnome.Platform
 runtime-version: master
 sdk: org.gnome.Sdk
@@ -6,7 +6,8 @@ command: nautilus
 tags:
   - devel
   - nightly
-desktop-file-name-prefix: (Development)
+  - master
+desktop-file-name-prefix: (Development Master)
 finish-args:
   - --filesystem=host
   - --share=ipc
@@ -79,7 +80,7 @@ modules:
     build-options:
       config-opts:
         - --libdir=/app/lib
-        - -Dprofile=development
+        - -Dprofile=Master
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/nautilus.git
