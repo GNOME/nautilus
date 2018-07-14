@@ -14,28 +14,22 @@ stages:
       - ninja test
 
 flatpak:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.28
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     stage: test
     variables:
-        MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
-        MESON_ARGS: "-Dprofile=development -Dtests=all"
-        FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
-        DBUS_ID: "org.gnome.NautilusDevel"
+        MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusGtk4.yml"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
+        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        APP_ID: "org.gnome.NautilusGtk4"
 
     before_script:
         - tar -xzf cache.tar.gz .flatpak-builder/cache/ || true
     script:
-        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-        # Make sure to keep this in sync with the Flatpak manifest, all arguments
-        # are passed except the config-args because we build it ourselves
-        - flatpak build app meson --prefix=/app --libdir=lib ${MESON_ARGS} _build
-        - flatpak build app ninja -C _build install
-        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-        # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
-        # Generate a Flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+        - flatpak-builder --keep-build-dirs --repo=repo app ${MANIFEST_PATH}
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak-builder --run app ${MANIFEST_PATH} meson test -C /run/build/nautilus/_flatpak_build
+        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${APP_ID}
+    after_script:
+        - tar -czf cache.tar.gz .flatpak-builder/cache/
     artifacts:
         paths:
             - ${BUNDLE}
@@ -135,74 +129,6 @@ opensuse:tumbleweed:
                             desktop-file-utils libgexiv2-devel gsettings-desktop-schemas-devel
                             libseccomp-devel
     <<: *distro_test
-    only:
-        - schedules
-        - web
-        - tags
-
-flatpak:master:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
-    stage: cross_environment
-    variables:
-        MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Master -Dtests=all"
-        FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
-        DBUS_ID: "org.gnome.NautilusMaster"
-
-    script:
-        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-        # Make sure to keep this in sync with the Flatpak manifest, all arguments
-        # are passed except the config-args because we build it ourselves
-        - flatpak build app meson --prefix=/app --libdir=lib ${MESON_ARGS} _build
-        - flatpak build app ninja -C _build install
-        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-        # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
-        # Generate a Flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-    artifacts:
-        paths:
-            - ${BUNDLE}
-            - _build/meson-logs/
-        expire_in: 30 days
-    cache:
-        paths:
-            - .flatpak-builder/cache
-    only:
-        - schedules
-        - web
-        - tags
-
-flatpak:gtk4:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
-    stage: cross_environment
-    variables:
-        MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusGtk4.yml"
-        MESON_ARGS: "-Dprofile=Gtk4 -Dtests=all"
-        FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
-        DBUS_ID: "org.gnome.NautilusGtk4"
-
-    script:
-        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-        # Make sure to keep this in sync with the Flatpak manifest, all arguments
-        # are passed except the config-args because we build it ourselves
-        - flatpak build app meson --prefix=/app --libdir=lib ${MESON_ARGS} _build
-        - flatpak build app ninja -C _build install
-        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-        # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
-        # Generate a Flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-    artifacts:
-        paths:
-            - ${BUNDLE}
-            - _build/meson-logs/
-        expire_in: 30 days
-    cache:
-        paths:
-            - .flatpak-builder/cache
     only:
         - schedules
         - web
