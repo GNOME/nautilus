@@ -464,8 +464,6 @@ eel_canvas_item_invoke_point (EelCanvasItem  *item,
                               int             cy,
                               EelCanvasItem **actual_item)
 {
-    /* Calculate x & y in item local coordinates */
-
     if (EEL_CANVAS_ITEM_GET_CLASS (item)->point)
     {
         return EEL_CANVAS_ITEM_GET_CLASS (item)->point (item, x, y, cx, cy, actual_item);
@@ -1007,37 +1005,6 @@ eel_canvas_item_ungrab (EelCanvasItem *item)
 
     item->canvas->grabbed_item = NULL;
     gdk_seat_ungrab (seat);
-}
-
-/**
- * eel_canvas_item_i2w:
- * @item: A canvas item.
- * @x: X coordinate to convert (input/output value).
- * @y: Y coordinate to convert (input/output value).
- *
- * Converts a coordinate pair from item-relative coordinates to world
- * coordinates.
- **/
-void
-eel_canvas_item_i2w (EelCanvasItem *item,
-                     double        *x,
-                     double        *y)
-{
-    g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
-    g_return_if_fail (x != NULL);
-    g_return_if_fail (y != NULL);
-
-    item = item->parent;
-    while (item)
-    {
-        if (EEL_IS_CANVAS_GROUP (item))
-        {
-            *x += EEL_CANVAS_GROUP (item)->xpos;
-            *y += EEL_CANVAS_GROUP (item)->ypos;
-        }
-
-        item = item->parent;
-    }
 }
 
 /* Returns whether the item is an inferior of or is equal to the parent. */
@@ -2594,8 +2561,8 @@ emit_event (EelCanvas *canvas,
     EelCanvasItem *item;
     EelCanvasItem *parent;
     guint mask;
-    gdouble world_x;
-    gdouble world_y;
+    double x;
+    double y;
 
     event_type = eel_event_get_event_type (event);
 
@@ -2674,10 +2641,9 @@ emit_event (EelCanvas *canvas,
 
     ev = eel_event_copy (event);
 
-    eel_event_get_coords (ev, &world_x, &world_y);
-    eel_canvas_window_to_world (canvas, world_x, world_y, &world_x, &world_y);
-
-    eel_event_set_coords (ev, world_x, world_y);
+    eel_event_get_coords (ev, &x, &y);
+    eel_canvas_adjust_coordinates (canvas, &x, &y);
+    eel_event_set_coords (ev, x, y);
 
     /* Choose where we send the event */
 
@@ -2782,23 +2748,17 @@ pick_current_item (EelCanvas *canvas,
     {
         gdouble x;
         gdouble y;
-        gint cx;
-        gint cy;
 
         eel_event_get_coords (canvas->pick_event, &x, &y);
 
-        /* canvas pixel coords */
-
-        cx = (int) (x + 0.5);
-        cy = (int) (y + 0.5);
-
-        /* world coords */
-        eel_canvas_c2w (canvas, cx, cy, &x, &y);
+        eel_canvas_adjust_coordinates (canvas, &x, &y);
 
         /* find the closest item */
         if (canvas->root->flags & EEL_CANVAS_ITEM_MAPPED)
         {
-            eel_canvas_item_invoke_point (canvas->root, x, y, cx, cy,
+            eel_canvas_item_invoke_point (canvas->root,
+                                          x, y,
+                                          (int) x + 0.5, (int) y + 0.5,
                                           &canvas->new_current_item);
         }
         else
@@ -3611,6 +3571,34 @@ eel_canvas_c2w (EelCanvas *canvas,
     }
 }
 
+void
+eel_canvas_adjust_coordinates (EelCanvas *canvas,
+                               double    *x,
+                               double    *y)
+{
+    GtkScrollable *scrollable;
+    GtkAdjustment *adjustment;
+    double value;
+
+    g_return_if_fail (EEL_IS_CANVAS (canvas));
+
+    scrollable = GTK_SCROLLABLE (canvas);
+    adjustment = gtk_scrollable_get_hadjustment (scrollable);
+    value = gtk_adjustment_get_value (adjustment);
+
+    if (x != NULL)
+    {
+        *x += value;
+    }
+
+    adjustment = gtk_scrollable_get_vadjustment (scrollable);
+    value = gtk_adjustment_get_value (adjustment);
+
+    if (y != NULL)
+    {
+        *y += value;
+    }
+}
 
 /**
  * eel_canvas_window_to_world:
