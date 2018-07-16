@@ -547,12 +547,6 @@ item_get_canvas_bounds (EelCanvasItem *item,
                                 &world_rect.y0,
                                 &world_rect.x1,
                                 &world_rect.y1);
-    eel_canvas_item_i2w (item->parent,
-                         &world_rect.x0,
-                         &world_rect.y0);
-    eel_canvas_item_i2w (item->parent,
-                         &world_rect.x1,
-                         &world_rect.y1);
 
     world_rect.x0 -= ICON_PAD_LEFT + ICON_PAD_RIGHT;
     world_rect.x1 += ICON_PAD_LEFT + ICON_PAD_RIGHT;
@@ -1545,7 +1539,6 @@ rubberband_select (NautilusCanvasContainer *container,
     gboolean selection_changed, is_in, canvas_rect_calculated;
     NautilusCanvasIcon *icon;
     EelIRect canvas_rect;
-    EelCanvas *canvas;
 
     selection_changed = FALSE;
     canvas_rect_calculated = FALSE;
@@ -1559,17 +1552,11 @@ rubberband_select (NautilusCanvasContainer *container,
             /* Only do this calculation once, since all the canvas items
              * we are interating are in the same coordinate space
              */
-            canvas = EEL_CANVAS_ITEM (icon->item)->canvas;
-            eel_canvas_w2c (canvas,
-                            current_rect->x0,
-                            current_rect->y0,
-                            &canvas_rect.x0,
-                            &canvas_rect.y0);
-            eel_canvas_w2c (canvas,
-                            current_rect->x1,
-                            current_rect->y1,
-                            &canvas_rect.x1,
-                            &canvas_rect.y1);
+            canvas_rect.x0 = current_rect->x0;
+            canvas_rect.y0 = current_rect->y0;
+            canvas_rect.x1 = current_rect->x1;
+            canvas_rect.y1 = current_rect->y1;
+
             canvas_rect_calculated = TRUE;
         }
 
@@ -1587,222 +1574,6 @@ rubberband_select (NautilusCanvasContainer *container,
     }
 }
 
-static int
-rubberband_timeout_callback (gpointer data)
-{
-    NautilusCanvasContainer *container;
-    GtkWidget *widget;
-    NautilusCanvasRubberbandInfo *band_info;
-    int x, y;
-    double x1, y1, x2, y2;
-    double world_x, world_y;
-    int x_scroll, y_scroll;
-    int adj_x, adj_y;
-    gboolean adj_changed;
-    GtkAllocation allocation;
-
-    EelDRect selection_rect;
-
-    widget = GTK_WIDGET (data);
-    container = NAUTILUS_CANVAS_CONTAINER (data);
-    band_info = &container->details->rubberband_info;
-
-    g_assert (band_info->timer_id != 0);
-
-    adj_changed = FALSE;
-    gtk_widget_get_allocation (widget, &allocation);
-
-    adj_x = gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
-    if (adj_x != band_info->last_adj_x)
-    {
-        band_info->last_adj_x = adj_x;
-        adj_changed = TRUE;
-    }
-
-    adj_y = gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
-    if (adj_y != band_info->last_adj_y)
-    {
-        band_info->last_adj_y = adj_y;
-        adj_changed = TRUE;
-    }
-
-    gdk_surface_get_device_position (gtk_widget_get_surface (widget),
-                                     band_info->device,
-                                     &x, &y, NULL);
-
-    if (x < RUBBERBAND_SCROLL_THRESHOLD)
-    {
-        x_scroll = x - RUBBERBAND_SCROLL_THRESHOLD;
-        x = 0;
-    }
-    else if (x >= allocation.width - RUBBERBAND_SCROLL_THRESHOLD)
-    {
-        x_scroll = x - allocation.width + RUBBERBAND_SCROLL_THRESHOLD + 1;
-        x = allocation.width - 1;
-    }
-    else
-    {
-        x_scroll = 0;
-    }
-
-    if (y < RUBBERBAND_SCROLL_THRESHOLD)
-    {
-        y_scroll = y - RUBBERBAND_SCROLL_THRESHOLD;
-        y = 0;
-    }
-    else if (y >= allocation.height - RUBBERBAND_SCROLL_THRESHOLD)
-    {
-        y_scroll = y - allocation.height + RUBBERBAND_SCROLL_THRESHOLD + 1;
-        y = allocation.height - 1;
-    }
-    else
-    {
-        y_scroll = 0;
-    }
-
-    if (y_scroll == 0 && x_scroll == 0
-        && (int) band_info->prev_x == x && (int) band_info->prev_y == y && !adj_changed)
-    {
-        return TRUE;
-    }
-
-    nautilus_canvas_container_scroll (container, x_scroll, y_scroll);
-
-    /* Remember to convert from widget to scrolled window coords */
-    eel_canvas_window_to_world (EEL_CANVAS (container),
-                                x + gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container))),
-                                y + gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container))),
-                                &world_x, &world_y);
-
-    if (world_x < band_info->start_x)
-    {
-        x1 = world_x;
-        x2 = band_info->start_x;
-    }
-    else
-    {
-        x1 = band_info->start_x;
-        x2 = world_x;
-    }
-
-    if (world_y < band_info->start_y)
-    {
-        y1 = world_y;
-        y2 = band_info->start_y;
-    }
-    else
-    {
-        y1 = band_info->start_y;
-        y2 = world_y;
-    }
-
-    /* Don't let the area of the selection rectangle be empty.
-     * Aside from the fact that it would be funny when the rectangle disappears,
-     * this also works around a crash in libart that happens sometimes when a
-     * zero height rectangle is passed.
-     */
-    x2 = MAX (x1 + 1, x2);
-    y2 = MAX (y1 + 1, y2);
-
-    eel_canvas_item_set
-        (band_info->selection_rectangle,
-        "x1", x1, "y1", y1,
-        "x2", x2, "y2", y2,
-        NULL);
-
-    selection_rect.x0 = x1;
-    selection_rect.y0 = y1;
-    selection_rect.x1 = x2;
-    selection_rect.y1 = y2;
-
-    rubberband_select (container,
-                       &selection_rect);
-
-    band_info->prev_x = x;
-    band_info->prev_y = y;
-
-    return TRUE;
-}
-
-static void
-stop_rubberbanding (NautilusCanvasContainer *container,
-                    const GdkEvent          *event);
-
-static void
-start_rubberbanding (NautilusCanvasContainer *container,
-                     gdouble                  x,
-                     gdouble                  y,
-                     const GdkEvent          *event)
-{
-    AtkObject *accessible;
-    NautilusCanvasContainerDetails *details;
-    NautilusCanvasRubberbandInfo *band_info;
-    GList *p;
-    NautilusCanvasIcon *icon;
-
-    details = container->details;
-    band_info = &details->rubberband_info;
-
-    if (band_info->active)
-    {
-        g_debug ("Canceling active rubberband by device %s", gdk_device_get_name (band_info->device));
-        stop_rubberbanding (container, NULL);
-    }
-
-    g_signal_emit (container,
-                   signals[BAND_SELECT_STARTED], 0);
-
-    band_info->device = gdk_event_get_device (event);
-
-    for (p = details->icons; p != NULL; p = p->next)
-    {
-        icon = p->data;
-        icon->was_selected_before_rubberband = icon->is_selected;
-    }
-
-    x += gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
-    y += gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
-
-    eel_canvas_window_to_world (EEL_CANVAS (container),
-                                x, y,
-                                &band_info->start_x, &band_info->start_y);
-
-    band_info->selection_rectangle = eel_canvas_item_new
-                                         (eel_canvas_root
-                                             (EEL_CANVAS (container)),
-                                         NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
-                                         "x1", band_info->start_x,
-                                         "y1", band_info->start_y,
-                                         "x2", band_info->start_x,
-                                         "y2", band_info->start_y,
-                                         NULL);
-
-    accessible = atk_gobject_accessible_for_object
-                     (G_OBJECT (band_info->selection_rectangle));
-    atk_object_set_name (accessible, "selection");
-    atk_object_set_description (accessible, _("The selection rectangle"));
-
-    band_info->prev_x = x - gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
-    band_info->prev_y = y - gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
-
-    band_info->active = TRUE;
-
-    if (band_info->timer_id == 0)
-    {
-        band_info->timer_id = g_timeout_add
-                                  (RUBBERBAND_TIMEOUT_INTERVAL,
-                                  rubberband_timeout_callback,
-                                  container);
-    }
-
-    eel_canvas_item_grab (band_info->selection_rectangle,
-                          (GDK_POINTER_MOTION_MASK
-                           | GDK_BUTTON_RELEASE_MASK
-                           | GDK_SCROLL_MASK),
-                          NULL,
-                          event);
-}
-
 static void
 stop_rubberbanding (NautilusCanvasContainer *container,
                     const GdkEvent          *event)
@@ -1813,18 +1584,7 @@ stop_rubberbanding (NautilusCanvasContainer *container,
 
     band_info = &container->details->rubberband_info;
 
-    if (event != NULL && gdk_event_get_device (event) != band_info->device)
-    {
-        return;
-    }
-
-    g_assert (band_info->timer_id != 0);
-    g_source_remove (band_info->timer_id);
-    band_info->timer_id = 0;
-
     band_info->active = FALSE;
-
-    band_info->device = NULL;
 
     g_object_get (gtk_settings_get_default (), "gtk-enable-animations", &enable_animation, NULL);
 
@@ -3223,6 +2983,8 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
     event = eel_event_new_from_gdk_event (gdk_event);
 
+    eel_event_set_coords (event, x, y);
+
     container->details->button_down_time = gdk_event_get_time (gdk_event);
 
     /* Forget about the old keyboard selection now that we've started mousing. */
@@ -3232,6 +2994,9 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     {
         /* We use our own double-click detection. */
         eel_canvas_handle_event (EEL_CANVAS (widget), event);
+
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+
         return;
     }
 
@@ -3245,6 +3010,8 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
 
     if (clicked_on_icon)
     {
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
+
         return;
     }
 
@@ -3255,23 +3022,6 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         /* Clear the last click icon for double click */
         container->details->double_click_icon[1] = container->details->double_click_icon[0];
         container->details->double_click_icon[0] = NULL;
-    }
-
-    /* Button 1 does rubber banding. */
-    if (button == RUBBERBAND_BUTTON)
-    {
-        if (!button_event_modifies_selection (event))
-        {
-            selection_changed = unselect_all (container);
-            if (selection_changed)
-            {
-                g_signal_emit (container,
-                               signals[SELECTION_CHANGED], 0);
-            }
-        }
-
-        start_rubberbanding (container, x, y, gdk_event);
-        return;
     }
 
     /* Prevent multi-button weirdness such as bug 6181 */
@@ -3466,9 +3216,10 @@ on_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     gdk_event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
     event = eel_event_new_from_gdk_event (gdk_event);
 
+    eel_event_set_coords (event, x, y);
+
     if (button == RUBBERBAND_BUTTON && details->rubberband_info.active)
     {
-        stop_rubberbanding (container, gdk_event);
         return;
     }
 
@@ -4089,12 +3840,279 @@ text_ellipsis_limit_changed_callback (gpointer callback_data)
     g_strfreev (pref);
 }
 
+static gboolean
+rubberband_timeout_callback (gpointer data)
+{
+    NautilusCanvasContainer *container;
+    NautilusCanvasRubberbandInfo *band_info;
+    GtkScrollable *scrollable;
+    GtkAdjustment *hadjustment;
+    GtkAdjustment *vadjustment;
+    int x_scroll;
+    int y_scroll;
+    int adj_x;
+    int adj_y;
+    gboolean adjustment_changed;
+    GtkAllocation allocation;
+
+    container = data;
+    band_info = &container->details->rubberband_info;
+    scrollable = GTK_SCROLLABLE (container);
+    hadjustment = gtk_scrollable_get_hadjustment (scrollable);
+    vadjustment = gtk_scrollable_get_vadjustment (scrollable);
+    adjustment_changed = FALSE;
+    gtk_widget_get_allocation (GTK_WIDGET (container), &allocation);
+
+    adj_x = gtk_adjustment_get_value (hadjustment);
+    if (adj_x != band_info->last_adj_x)
+    {
+        band_info->last_adj_x = adj_x;
+        adjustment_changed = TRUE;
+    }
+
+    adj_y = gtk_adjustment_get_value (vadjustment);
+    if (adj_y != band_info->last_adj_y)
+    {
+        band_info->last_adj_y = adj_y;
+        adjustment_changed = TRUE;
+    }
+
+    if (band_info->x < RUBBERBAND_SCROLL_THRESHOLD)
+    {
+        x_scroll = band_info->x - RUBBERBAND_SCROLL_THRESHOLD;
+    }
+    else if (band_info->x >= allocation.width - RUBBERBAND_SCROLL_THRESHOLD)
+    {
+        x_scroll = band_info->x - allocation.width + RUBBERBAND_SCROLL_THRESHOLD + 1;
+    }
+    else
+    {
+        x_scroll = 0;
+    }
+
+    if (band_info->y < RUBBERBAND_SCROLL_THRESHOLD)
+    {
+        y_scroll = band_info->y - RUBBERBAND_SCROLL_THRESHOLD;
+    }
+    else if (band_info->y >= allocation.height - RUBBERBAND_SCROLL_THRESHOLD)
+    {
+        y_scroll = band_info->y - allocation.height + RUBBERBAND_SCROLL_THRESHOLD + 1;
+    }
+    else
+    {
+        y_scroll = 0;
+    }
+
+    if (y_scroll == 0 && x_scroll == 0 &&
+        (int) band_info->prev_x == (int) band_info->x &&
+        (int) band_info->prev_y == (int) band_info->y &&
+        !adjustment_changed)
+    {
+        return G_SOURCE_CONTINUE;
+    }
+
+    nautilus_canvas_container_scroll (container, x_scroll, y_scroll);
+
+    return G_SOURCE_CONTINUE;
+}
+
+static void
+on_gesture_drag_drag_begin (GtkGestureDrag *gesture,
+                            double          start_x,
+                            double          start_y,
+                            gpointer        user_data)
+{
+    GdkEventSequence *sequence;
+    GtkEventSequenceState state;
+    const GdkEvent *gdk_event;
+    g_autoptr (EelEvent) event = NULL;
+    GtkWidget *widget;
+    EelCanvas *canvas;
+    NautilusCanvasContainer *container;
+    AtkObject *accessible;
+    NautilusCanvasRubberbandInfo *band_info;
+    GtkScrollable *scrollable;
+    GtkAdjustment *hadjustment;
+    GtkAdjustment *vadjustment;
+
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    state = gtk_gesture_get_sequence_state (GTK_GESTURE (gesture), sequence);
+    gdk_event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+    event = eel_event_new_from_gdk_event (gdk_event);
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    canvas = EEL_CANVAS (widget);
+    container = NAUTILUS_CANVAS_CONTAINER (widget);
+    band_info = &container->details->rubberband_info;
+    scrollable = GTK_SCROLLABLE (widget);
+    hadjustment = gtk_scrollable_get_hadjustment (scrollable);
+    vadjustment = gtk_scrollable_get_vadjustment (scrollable);
+
+    if (state != GTK_EVENT_SEQUENCE_NONE)
+    {
+        return;
+    }
+
+    if (!button_event_modifies_selection (event))
+    {
+        if (unselect_all (container))
+        {
+            g_signal_emit (container, signals[SELECTION_CHANGED], 0);
+        }
+    }
+
+    if (band_info->active)
+    {
+        stop_rubberbanding (container, NULL);
+    }
+
+    eel_canvas_adjust_coordinates (canvas, &start_x, &start_y);
+
+    g_signal_emit (container, signals[BAND_SELECT_STARTED], 0);
+
+    for (GList *p = container->details->icons; p != NULL; p = p->next)
+    {
+        NautilusCanvasIcon *icon;
+
+        icon = p->data;
+
+        icon->was_selected_before_rubberband = icon->is_selected;
+    }
+
+    band_info->start_x = start_x;
+    band_info->start_y = start_y;
+
+    band_info->selection_rectangle = eel_canvas_item_new (eel_canvas_root (canvas),
+                                                          NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
+                                                          "x1", band_info->start_x,
+                                                          "y1", band_info->start_y,
+                                                          "x2", band_info->start_x,
+                                                          "y2", band_info->start_y,
+                                                          NULL);
+
+    accessible = atk_gobject_accessible_for_object (G_OBJECT (band_info->selection_rectangle));
+    atk_object_set_name (accessible, "selection");
+    atk_object_set_description (accessible, _("The selection rectangle"));
+
+    band_info->prev_x = start_x - gtk_adjustment_get_value (hadjustment);
+    band_info->prev_y = start_y - gtk_adjustment_get_value (vadjustment);
+
+    band_info->x = start_x;
+    band_info->y = start_y;
+
+    band_info->active = TRUE;
+
+    band_info->timer_id = g_timeout_add (RUBBERBAND_TIMEOUT_INTERVAL,
+                                         rubberband_timeout_callback,
+                                         container);
+
+    eel_canvas_item_grab (band_info->selection_rectangle,
+                          (GDK_POINTER_MOTION_MASK
+                           | GDK_BUTTON_RELEASE_MASK
+                           | GDK_SCROLL_MASK),
+                          NULL,
+                          gdk_event);
+}
+
+static void
+on_gesture_drag_drag_end (GtkGestureDrag *gesture,
+                          double          offset_x,
+                          double          offset_y,
+                          gpointer        user_data)
+{
+    GtkWidget *widget;
+    NautilusCanvasContainer *container;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    container = NAUTILUS_CANVAS_CONTAINER (widget);
+    sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+
+    if (gtk_gesture_get_sequence_state (GTK_GESTURE (gesture), sequence) != GTK_EVENT_SEQUENCE_NONE)
+    {
+        return;
+    }
+
+    if (container->details->rubberband_info.timer_id != 0)
+    {
+        g_source_remove (container->details->rubberband_info.timer_id);
+        container->details->rubberband_info.timer_id = 0;
+    }
+
+    stop_rubberbanding (container, event);
+}
+
+static void
+on_gesture_drag_drag_update (GtkGestureDrag *gesture,
+                             double          offset_x,
+                             double          offset_y,
+                             gpointer        user_data)
+{
+    GtkWidget *widget;
+    NautilusCanvasContainer *container;
+    NautilusCanvasRubberbandInfo *band_info;
+    double start_x;
+    double start_y;
+    double x;
+    double y;
+    double x1;
+    double y1;
+    double x2;
+    double y2;
+    EelDRect selection_rect;
+
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (gesture));
+    container = NAUTILUS_CANVAS_CONTAINER (widget);
+    band_info = &container->details->rubberband_info;
+
+    gtk_gesture_drag_get_start_point (gesture, &start_x, &start_y);
+
+    x = start_x + offset_x;
+    y = start_y + offset_y;
+
+    band_info->x = x;
+    band_info->y = y;
+
+    eel_canvas_adjust_coordinates (EEL_CANVAS (container), &x, &y);
+
+    x1 = MIN (x, band_info->start_x);
+    x2 = MAX (x, band_info->start_x);
+
+    y1 = MIN (y, band_info->start_y);
+    y2 = MAX (y, band_info->start_y);
+
+    /* Don't let the area of the selection rectangle be empty.
+     * Aside from the fact that it would be funny when the rectangle disappears,
+     * this also works around a crash in libart that happens sometimes when a
+     * zero height rectangle is passed.
+     */
+    x2 = MAX (x1 + 1, x2);
+    y2 = MAX (y1 + 1, y2);
+
+    eel_canvas_item_set (band_info->selection_rectangle,
+                         "x1", x1, "y1", y1,
+                         "x2", x2, "y2", y2,
+                         NULL);
+
+    selection_rect.x0 = x1;
+    selection_rect.y0 = y1;
+    selection_rect.x1 = x2;
+    selection_rect.y1 = y2;
+
+    rubberband_select (container, &selection_rect);
+
+    band_info->prev_x = x;
+    band_info->prev_y = y;
+}
+
 static void
 nautilus_canvas_container_init (NautilusCanvasContainer *container)
 {
     GtkWidget *widget;
     NautilusCanvasContainerDetails *details;
     static gboolean setup_prefs = FALSE;
+    GtkGesture *group_gesture;
     GtkGesture *gesture;
     GtkEventController *controller;
 
@@ -4122,12 +4140,29 @@ nautilus_canvas_container_init (NautilusCanvasContainer *container)
         setup_prefs = TRUE;
     }
 
+    /* The order in which the controllers are added matters, in particular,
+     * we want the multi-press gesture to run before the drag gesture,
+     * because hit detection runs there.
+     */
+    gesture = gtk_gesture_drag_new ();
+    group_gesture = gesture;
+
+    gtk_widget_add_controller (widget, GTK_EVENT_CONTROLLER (gesture));
+
+    g_signal_connect (gesture, "drag-begin",
+                      G_CALLBACK (on_gesture_drag_drag_begin), NULL);
+    g_signal_connect (gesture, "drag-end",
+                      G_CALLBACK (on_gesture_drag_drag_end), NULL);
+    g_signal_connect (gesture, "drag-update",
+                      G_CALLBACK (on_gesture_drag_drag_update), NULL);
+
     gesture = gtk_gesture_multi_press_new ();
 
     gtk_widget_add_controller (widget, GTK_EVENT_CONTROLLER (gesture));
 
     gtk_event_controller_set_propagation_phase (GTK_EVENT_CONTROLLER (gesture),
                                                 GTK_PHASE_CAPTURE);
+    gtk_gesture_group (group_gesture, gesture);
     gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture), 0);
 
     g_signal_connect (gesture, "pressed",
@@ -4805,12 +4840,6 @@ nautilus_canvas_container_update_visible_icons (NautilusCanvasContainer *contain
                                         &y0,
                                         &x1,
                                         &y1);
-            eel_canvas_item_i2w (EEL_CANVAS_ITEM (icon->item)->parent,
-                                 &x0,
-                                 &y0);
-            eel_canvas_item_i2w (EEL_CANVAS_ITEM (icon->item)->parent,
-                                 &x1,
-                                 &y1);
 
             visible = y1 >= min_y && y0 <= max_y;
 
