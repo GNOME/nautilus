@@ -243,11 +243,6 @@ GdkGrabStatus eel_canvas_item_grab (EelCanvasItem *item,
  */
 void eel_canvas_item_ungrab (EelCanvasItem *item);
 
-/* These functions convert from a coordinate system to another.  "w" is world
- * coordinates and "i" is item coordinates.
- */
-void eel_canvas_item_i2w (EelCanvasItem *item, double *x, double *y);
-
 /* Fetch the bounding box of the item.  The bounding box may not be exactly
  * tight, but the canvas items will do the best they can.  The returned bounding
  * box is in the coordinate system of the item's parent.
@@ -451,6 +446,10 @@ void eel_canvas_w2c_rect_d (EelCanvas *canvas,
 void eel_canvas_w2c (EelCanvas *canvas, double wx, double wy, int *cx, int *cy);
 void eel_canvas_w2c_d (EelCanvas *canvas, double wx, double wy, double *cx, double *cy);
 void eel_canvas_c2w (EelCanvas *canvas, int cx, int cy, double *wx, double *wy);
+
+void eel_canvas_adjust_coordinates (EelCanvas *canvas,
+                                    double    *x,
+                                    double    *y);
 
 /* This function takes in coordinates relative to the GTK_LAYOUT
  * (canvas)->bin_window and converts them to world coordinates.
