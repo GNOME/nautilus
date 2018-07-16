@@ -66,14 +66,19 @@ typedef struct {
 typedef struct {
 	gboolean active;
 
-	double start_x, start_y;
+	double start_x;
+    double start_y;
+
+    double prev_x;
+    double prev_y;
+
+    double x;
+    double y;
 
 	EelCanvasItem *selection_rectangle;
-	GdkDevice *device;
 
 	guint timer_id;
 
-	guint prev_x, prev_y;
 	int last_adj_x;
 	int last_adj_y;
 } NautilusCanvasRubberbandInfo;
