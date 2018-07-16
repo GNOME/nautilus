@@ -59,27 +59,20 @@ nautilus_selection_canvas_item_snapshot (EelCanvasItem *item,
                                          GtkSnapshot   *snapshot)
 {
     NautilusSelectionCanvasItem *self;
-    double x1, y1, x2, y2;
-    int cx1, cy1, cx2, cy2;
-    double i2w_dx, i2w_dy;
+    int x1;
+    int y1;
+    int x2;
+    int y2;
     GtkStyleContext *context;
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
-    /* Get canvas pixel coordinates */
-    i2w_dx = 0.0;
-    i2w_dy = 0.0;
-    eel_canvas_item_i2w (item, &i2w_dx, &i2w_dy);
+    x1 = self->priv->x1;
+    y1 = self->priv->y1;
+    x2 = self->priv->x2;
+    y2 = self->priv->y2;
 
-    x1 = self->priv->x1 + i2w_dx;
-    y1 = self->priv->y1 + i2w_dy;
-    x2 = self->priv->x2 + i2w_dx;
-    y2 = self->priv->y2 + i2w_dy;
-
-    eel_canvas_w2c (item->canvas, x1, y1, &cx1, &cy1);
-    eel_canvas_w2c (item->canvas, x2, y2, &cx2, &cy2);
-
-    if (cx2 <= cx1 || cy2 <= cy1)
+    if (x2 <= x1 || y2 <= y1)
     {
         return;
     }
@@ -90,8 +83,8 @@ nautilus_selection_canvas_item_snapshot (EelCanvasItem *item,
 
     gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
 
-    gtk_snapshot_render_background (snapshot, context, cx1, cy1, cx2 - cx1, cy2 - cy1);
-    gtk_snapshot_render_frame (snapshot, context, cx1, cy1, cx2 - cx1, cy2 - cy1);
+    gtk_snapshot_render_background (snapshot, context, x1, y1, x2 - x1, y2 - y1);
+    gtk_snapshot_render_frame (snapshot, context, x1, y1, x2 - x1, y2 - y1);
 
     gtk_style_context_restore (context);
 }
@@ -298,7 +291,6 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     NautilusSelectionCanvasItem *self;
     NautilusSelectionCanvasItemDetails *priv;
     double x1, y1, x2, y2;
-    int cx1, cy1, cx2, cy2;
     int repaint_rects_count, i;
     GtkStyleContext *context;
     GtkBorder border;
@@ -312,15 +304,12 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
     priv = self->priv;
 
-    x1 = priv->x1 + i2w_dx;
-    y1 = priv->y1 + i2w_dy;
-    x2 = priv->x2 + i2w_dx;
-    y2 = priv->y2 + i2w_dy;
+    x1 = priv->x1;
+    y1 = priv->y1;
+    x2 = priv->x2;
+    y2 = priv->y2;
 
-    eel_canvas_w2c (item->canvas, x1, y1, &cx1, &cy1);
-    eel_canvas_w2c (item->canvas, x2, y2, &cx2, &cy2);
-
-    update_rect = make_rect (cx1, cy1, cx2 + 1, cy2 + 1);
+    update_rect = make_rect (x1, y1, x2 + 1, y2 + 1);
     diff_rects (update_rect, priv->last_update_rect,
                 &repaint_rects_count, repaint_rects);
     for (i = 0; i < repaint_rects_count; i++)
@@ -339,12 +328,12 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     gtk_style_context_get_border (context, &border);
     gtk_style_context_restore (context);
 
-    cx1 -= border.left;
-    cy1 -= border.top;
-    cx2 += border.right;
-    cy2 += border.bottom;
+    x1 -= border.left;
+    y1 -= border.top;
+    x2 += border.right;
+    y2 += border.bottom;
 
-    update_rect = make_rect (cx1, cy1, cx2, cy2);
+    update_rect = make_rect (x1, y1, x2, y2);
     request_redraw_borders (item->canvas, &update_rect,
                             border.left + border.top + border.right + border.bottom);
     request_redraw_borders (item->canvas, &priv->last_outline_update_rect,
@@ -352,10 +341,10 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     priv->last_outline_update_rect = update_rect;
     priv->last_outline_update_width = border.left + border.top + border.right + border.bottom;
 
-    item->x1 = cx1;
-    item->y1 = cy1;
-    item->x2 = cx2;
-    item->y2 = cy2;
+    item->x1 = x1;
+    item->y1 = y1;
+    item->x2 = x2;
+    item->y2 = y2;
 }
 
 static void
