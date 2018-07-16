@@ -1682,13 +1682,6 @@ nautilus_canvas_item_get_icon_rectangle (const NautilusCanvasItem *item)
     rectangle.x1 = rectangle.x0 + width / pixels_per_unit;
     rectangle.y1 = rectangle.y0 + height / pixels_per_unit;
 
-    eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
-                         &rectangle.x0,
-                         &rectangle.y0);
-    eel_canvas_item_i2w (EEL_CANVAS_ITEM (item),
-                         &rectangle.x1,
-                         &rectangle.y1);
-
     return rectangle;
 }
 
