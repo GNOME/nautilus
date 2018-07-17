@@ -2884,14 +2884,14 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
 
 void
 nautilus_window_search (NautilusWindow *window,
-                        const gchar    *text)
+                        NautilusQuery  *query)
 {
     NautilusWindowSlot *active_slot;
 
     active_slot = nautilus_window_get_active_slot (window);
     if (active_slot)
     {
-        nautilus_window_slot_search (active_slot, text);
+        nautilus_window_slot_search (active_slot, query);
     }
     else
     {

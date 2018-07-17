@@ -1611,15 +1611,12 @@ nautilus_application_new (void)
 
 void
 nautilus_application_search (NautilusApplication *self,
-                             const gchar         *uri,
-                             const gchar         *text)
+                             NautilusQuery       *query)
 {
+    g_autoptr (GFile) location = NULL;
     NautilusWindow *window;
-    GFile *location;
 
-    location = g_file_new_for_uri (uri);
+    location = nautilus_query_get_location (query);
     window = open_window (self, location);
-    nautilus_window_search (window, text);
-
-    g_object_unref (location);
+    nautilus_window_search (window, query);
 }
