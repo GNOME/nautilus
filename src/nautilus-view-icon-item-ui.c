@@ -47,8 +47,6 @@ create_icon (NautilusViewIconItemUi *self)
     icon = GTK_IMAGE (gtk_image_new_from_pixbuf (icon_pixbuf));
     gtk_widget_set_hexpand (GTK_WIDGET (icon), TRUE);
     gtk_widget_set_vexpand (GTK_WIDGET (icon), TRUE);
-    gtk_widget_set_valign (GTK_WIDGET (icon), GTK_ALIGN_CENTER);
-    gtk_widget_set_halign (GTK_WIDGET (icon), GTK_ALIGN_CENTER);
 
     fixed_height_box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
     gtk_widget_set_valign (GTK_WIDGET (fixed_height_box), GTK_ALIGN_CENTER);
