@@ -426,15 +426,31 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
     g_object_unref (volume_monitor);
 }
 
+static NautilusQuery*
+shell_query_new (gchar **terms)
+{
+    NautilusQuery *query;
+    g_autoptr (GFile) home = NULL;
+    g_autofree gchar *terms_joined = NULL;
+
+    terms_joined = g_strjoinv (" ", terms);
+    home = g_file_new_for_path (g_get_home_dir ());
+
+    query = nautilus_query_new ();
+    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
+    nautilus_query_set_text (query, terms_joined);
+    nautilus_query_set_location (query, home);
+
+    return query;
+}
+
 static void
 execute_search (NautilusShellSearchProvider  *self,
                 GDBusMethodInvocation        *invocation,
                 gchar                       **terms)
 {
-    gchar *terms_joined;
     NautilusQuery *query;
     PendingSearch *pending_search;
-    GFile *home;
 
     cancel_current_search (self);
 
@@ -446,14 +462,8 @@ execute_search (NautilusShellSearchProvider  *self,
         return;
     }
 
-    terms_joined = g_strjoinv (" ", terms);
-    home = g_file_new_for_path (g_get_home_dir ());
-
-    query = nautilus_query_new ();
-    nautilus_query_set_show_hidden_files (query, FALSE);
-    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
-    nautilus_query_set_text (query, terms_joined);
-    nautilus_query_set_location (query, home);
+    query = shell_query_new (terms);
+    nautilus_query_set_show_hidden_files(query, FALSE);
 
     pending_search = g_slice_new0 (PendingSearch);
     pending_search->invocation = g_object_ref (invocation);
@@ -480,9 +490,6 @@ execute_search (NautilusShellSearchProvider  *self,
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (pending_search->engine),
                                         query);
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (pending_search->engine));
-
-    g_clear_object (&home);
-    g_free (terms_joined);
 }
 
 static gboolean
@@ -714,13 +721,9 @@ handle_launch_search (NautilusShellSearchProvider2  *skeleton,
                       gpointer                       user_data)
 {
     GApplication *app = g_application_get_default ();
-    gchar *string = g_strjoinv (" ", terms);
-    gchar *uri = nautilus_get_home_directory_uri ();
+    g_autoptr (NautilusQuery) query = shell_query_new (terms);
 
-    nautilus_application_search (NAUTILUS_APPLICATION (app), uri, string);
-
-    g_free (string);
-    g_free (uri);
+    nautilus_application_search (NAUTILUS_APPLICATION (app), query);
 
     nautilus_shell_search_provider2_complete_launch_search (skeleton, invocation);
     return TRUE;
