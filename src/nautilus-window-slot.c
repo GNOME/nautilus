@@ -98,6 +98,7 @@ typedef struct
 
     /* Query editor */
     NautilusQueryEditor *query_editor;
+    NautilusQuery *pending_search_query;
     gulong qe_changed_id;
     gulong qe_cancel_id;
     gulong qe_activated_id;
@@ -111,7 +112,6 @@ typedef struct
      * finish. Used for showing a spinner to provide feedback to the user. */
     gboolean allow_stop;
     gboolean needs_reload;
-    gchar *pending_search_text;
 
     /* New location. */
     GFile *pending_location;
@@ -376,9 +376,9 @@ update_search_visible (NautilusWindowSlot *self)
         }
     }
 
-    if (priv->pending_search_text)
+    if (priv->pending_search_query)
     {
-        nautilus_window_slot_search (self, g_strdup (priv->pending_search_text));
+        nautilus_window_slot_search (self, g_object_ref (priv->pending_search_query));
     }
 }
 
@@ -599,17 +599,13 @@ nautilus_window_slot_get_search_visible (NautilusWindowSlot *self)
 
 void
 nautilus_window_slot_search (NautilusWindowSlot *self,
-                             const gchar        *text)
+                             NautilusQuery      *query)
 {
     NautilusWindowSlotPrivate *priv;
     NautilusView *view;
 
     priv = nautilus_window_slot_get_instance_private (self);
-    if (priv->pending_search_text)
-    {
-        g_free (priv->pending_search_text);
-        priv->pending_search_text = NULL;
-    }
+    g_clear_object (&priv->pending_search_query);
 
     view = nautilus_window_slot_get_current_view (self);
     /* We could call this when the location is still being checked in the
@@ -618,11 +614,11 @@ nautilus_window_slot_search (NautilusWindowSlot *self,
     if (view)
     {
         nautilus_window_slot_set_search_visible (self, TRUE);
-        nautilus_query_editor_set_text (priv->query_editor, text);
+        nautilus_query_editor_set_query (priv->query_editor, query);
     }
     else
     {
-        priv->pending_search_text = g_strdup (text);
+        priv->pending_search_query = g_object_ref (query);
     }
 }
 
@@ -3087,6 +3083,7 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_object (&priv->current_location_bookmark);
     g_clear_object (&priv->last_location_bookmark);
     g_clear_object (&priv->slot_action_group);
+    g_clear_object (&priv->pending_search_query);
 
     g_clear_pointer (&priv->find_mount_cancellable, g_cancellable_cancel);
 
