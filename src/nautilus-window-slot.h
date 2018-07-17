@@ -111,7 +111,7 @@ gboolean nautilus_window_slot_get_searching                (NautilusWindowSlot *
 GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *slot);
 
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,
-                                                            const gchar        *text);
+                                                            NautilusQuery      *query);
 
 gboolean nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                                 GFile              *location);
