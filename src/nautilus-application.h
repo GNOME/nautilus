@@ -84,7 +84,6 @@ GtkWidget * nautilus_application_connect_server (NautilusApplication *applicatio
 						 NautilusWindow      *window);
 
 void nautilus_application_search (NautilusApplication *application,
-                                  const gchar         *uri,
-                                  const gchar         *text);
+                                  NautilusQuery       *query);
 void nautilus_application_startup_common (NautilusApplication *application);
 G_END_DECLS
