@@ -103,7 +103,7 @@ void nautilus_window_end_dnd (NautilusWindow *window,
                               GdkDragContext *context);
 
 void nautilus_window_search (NautilusWindow *window,
-                             const gchar    *text);
+                             NautilusQuery  *query);
 
 void nautilus_window_initialize_slot (NautilusWindow          *window,
                                       NautilusWindowSlot      *slot,
