@@ -106,7 +106,8 @@ typedef struct
     unsigned int drag_slider_timeout;
     gboolean drag_slider_timeout_for_up_button;
 
-    GtkPopover *current_view_menu;
+    GtkPopover *current_view_menu_popover;
+    GMenu *current_view_menu;
 
     GtkGesture *up_slider_button_long_press_gesture;
     GtkGesture *down_slider_button_long_press_gesture;
@@ -235,7 +236,9 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     /* Context menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    priv->current_view_menu = g_object_ref (GTK_POPOVER (gtk_builder_get_object (builder, "menu_popover"))),
+    priv->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
+    priv->current_view_menu_popover = GTK_POPOVER (gtk_popover_new_from_model (NULL,
+                                                                              G_MENU_MODEL (priv->current_view_menu)));
     g_object_unref (builder);
 
     gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
@@ -1567,7 +1570,7 @@ button_clicked_cb (GtkWidget *button,
     {
         if (g_file_equal (button_data->path, priv->current_path))
         {
-            gtk_popover_popup (priv->current_view_menu);
+            gtk_popover_popup (priv->current_view_menu_popover);
         }
         else
         {
@@ -2005,7 +2008,7 @@ make_button_data (NautilusPathBar *self,
     if (current_dir)
     {
         gtk_widget_show (button_data->disclosure_arrow);
-        gtk_popover_set_relative_to (priv->current_view_menu, button_data->button);
+        gtk_popover_set_relative_to (priv->current_view_menu_popover, button_data->button);
     }
 
     if (button_data->label != NULL)
