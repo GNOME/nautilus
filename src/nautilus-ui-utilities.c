@@ -120,6 +120,7 @@ nautilus_gmenu_merge (GMenu       *original,
 
     n_items = g_menu_model_get_n_items (G_MENU_MODEL (gmenu_to_merge));
 
+    g_print ("n_items %d\n", n_items);
     for (i = 0; i < n_items; i++)
     {
         if (prepend)

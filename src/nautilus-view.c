@@ -83,6 +83,27 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                                               "The search query being performed on the view",
                                                               NAUTILUS_TYPE_QUERY,
                                                               G_PARAM_READWRITE));
+
+    /**
+     * NautilusView::toolbar-menu-sections:
+     *
+     * Menu sections for the toolbar
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_pointer ("toolbar-menu-sections",
+                                                               "Menu sections for the toolbar",
+                                                               "Menu sections for the toolbar",
+                                                               G_PARAM_READWRITE));
+    /**
+     * NautilusView::path-bar-menu-sections:
+     *
+     * Menu sections for the path bar
+     */
+    g_object_interface_install_property (iface,
+                                         g_param_spec_pointer ("path-bar-menu-sections",
+                                                               "Menu sections for the path bar",
+                                                               "Menu sections for the path bar",
+                                                               G_PARAM_READWRITE));
 }
 
 /**
@@ -146,6 +167,44 @@ nautilus_view_get_toolbar_menu_sections (NautilusView *view)
     g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections, NULL);
 
     return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
+}
+
+void
+nautilus_view_set_toolbar_menu_sections (NautilusView                *view,
+                                         NautilusToolbarMenuSections *toolbar_menu_sections)
+{
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_toolbar_menu_sections);
+
+    NAUTILUS_VIEW_GET_IFACE (view)->set_toolbar_menu_sections (view,
+                                                               toolbar_menu_sections);
+}
+
+/**
+ * nautilus_view_get_path_bar_menu_sections:
+ * @view: a #NautilusView
+ *
+ * Retrieves the menu sections to show in the main path bar menu when this view
+ * is active
+ *
+ * Returns: (transfer none): a #NautilusPathBarMenuSections with the sections to
+ * be displayed
+ */
+NautilusPathBarMenuSections *
+nautilus_view_get_path_bar_menu_sections (NautilusView *view)
+{
+    g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_path_bar_menu_sections, NULL);
+
+    return NAUTILUS_VIEW_GET_IFACE (view)->get_path_bar_menu_sections (view);
+}
+
+void
+nautilus_view_set_path_bar_menu_sections (NautilusView                *view,
+                                          NautilusPathBarMenuSections *path_bar_menu_sections)
+{
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_path_bar_menu_sections);
+
+    NAUTILUS_VIEW_GET_IFACE (view)->set_path_bar_menu_sections (view,
+                                                                path_bar_menu_sections);
 }
 
 /**

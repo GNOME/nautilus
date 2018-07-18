@@ -1147,13 +1147,13 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-        properties [PROP_WINDOW_SLOT] =
-          g_param_spec_object ("window-slot",
-                               "Whether to show the location entry",
-                               "Whether to show the location entry instead of the pathbar",
-                               NAUTILUS_TYPE_WINDOW_SLOT,
-                               (G_PARAM_READWRITE |
-                                G_PARAM_STATIC_STRINGS));
+    properties [PROP_WINDOW_SLOT] =
+      g_param_spec_object ("window-slot",
+                           "Window slot currently active",
+                           "Window slot currently acive",
+                           NAUTILUS_TYPE_WINDOW_SLOT,
+                           (G_PARAM_READWRITE |
+                            G_PARAM_STATIC_STRINGS));
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
@@ -1229,6 +1229,15 @@ container_remove_all_children (GtkContainer *container)
         gtk_container_remove (container, GTK_WIDGET (child->data));
     }
     g_list_free (children);
+}
+
+static void
+on_slot_path_bar_menu_sections_changed (NautilusToolbar    *self,
+                                        GParamSpec         *param,
+                                        NautilusWindowSlot *slot)
+{
+    nautilus_path_bar_set_menu_sections (NAUTILUS_PATH_BAR (self->path_bar),
+                                         nautilus_window_slot_get_path_bar_menu_sections (slot));
 }
 
 static void
@@ -1342,7 +1351,8 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
             on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
             g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
                                       G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
-
+            g_signal_connect_swapped (self->window_slot, "notify::path-bar-menu-sections",
+                                      G_CALLBACK (on_slot_path_bar_menu_sections_changed), self);
             g_signal_connect_swapped (window_slot, "notify::searching",
                                       G_CALLBACK (toolbar_update_appearance), self);
 
@@ -1358,7 +1368,7 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
         if (self->window_slot != NULL)
         {
             GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot));
-          GTK_CONTAINER (self->search_container);
+            GTK_CONTAINER (self->search_container);
             gtk_container_add (GTK_CONTAINER (self->search_container),
                                GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
         }

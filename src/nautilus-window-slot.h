@@ -99,6 +99,7 @@ void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *slot);
 
 NautilusToolbarMenuSections * nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *slot);
+NautilusPathBarMenuSections * nautilus_window_slot_get_path_bar_menu_sections (NautilusWindowSlot *slot);
 
 gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *slot);
 

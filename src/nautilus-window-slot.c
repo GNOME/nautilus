@@ -54,6 +54,7 @@ enum
     PROP_WINDOW,
     PROP_ICON,
     PROP_TOOLBAR_MENU_SECTIONS,
+    PROP_PATH_BAR_MENU_SECTIONS,
     PROP_LOADING,
     PROP_SEARCHING,
     PROP_SELECTION,
@@ -124,9 +125,13 @@ typedef struct
     gboolean tried_mount;
     gint view_mode_before_search;
 
+    /* Menus */
+    NautilusPathBarMenuSections *path_bar_menu_sections;
+
     /* View bindings */
     GBinding *searching_binding;
     GBinding *selection_binding;
+    GBinding *path_bar_menu_sections_binding;
     gboolean searching;
     GList *selection;
 } NautilusWindowSlotPrivate;
@@ -727,6 +732,18 @@ nautilus_window_slot_set_selection (NautilusWindowSlot *self,
 }
 
 static void
+nautilus_window_slot_set_path_bar_menus (NautilusWindowSlot          *self,
+                                         NautilusPathBarMenuSections *path_bar_menu_sections)
+{
+    NautilusWindowSlotPrivate *priv;
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    /* Owned by the view */
+    priv->path_bar_menu_sections = path_bar_menu_sections;
+    g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PATH_BAR_MENU_SECTIONS]);
+}
+
+static void
 nautilus_window_slot_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
@@ -757,6 +774,12 @@ nautilus_window_slot_set_property (GObject      *object,
         case PROP_SEARCHING:
         {
             nautilus_window_slot_set_searching (self, g_value_get_boolean (value));
+        }
+        break;
+
+        case PROP_PATH_BAR_MENU_SECTIONS:
+        {
+            nautilus_window_slot_set_path_bar_menus (self, g_value_get_pointer (value));
         }
         break;
 
@@ -808,6 +831,12 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_TOOLBAR_MENU_SECTIONS:
         {
             g_value_set_pointer (value, nautilus_window_slot_get_toolbar_menu_sections (self));
+        }
+        break;
+
+        case PROP_PATH_BAR_MENU_SECTIONS:
+        {
+            g_value_set_pointer (value, nautilus_window_slot_get_path_bar_menu_sections (self));
         }
         break;
 
@@ -2879,6 +2908,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
     {
         g_binding_unbind (priv->searching_binding);
         g_binding_unbind (priv->selection_binding);
+        g_binding_unbind (priv->path_bar_menu_sections_binding);
         widget = GTK_WIDGET (priv->content_view);
         gtk_widget_destroy (widget);
         g_object_unref (priv->content_view);
@@ -2900,8 +2930,12 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         priv->selection_binding = g_object_bind_property (priv->content_view, "selection",
                                                           self, "selection",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        priv->path_bar_menu_sections_binding = g_object_bind_property (priv->content_view, "path-bar-menu-sections",
+                                                                       self, "path-bar-menu-sections",
+                                                                       G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_PATH_BAR_MENU_SECTIONS]);
     }
 
 done:
@@ -3092,6 +3126,12 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               "Menu sections for the toolbar menu",
                               "The menu sections to add to the toolbar menu for this slot",
                               G_PARAM_READABLE);
+
+    properties[PROP_PATH_BAR_MENU_SECTIONS] =
+        g_param_spec_pointer ("path-bar-menu-sections",
+                              "Menu sections for the path bar menu",
+                              "The menu sections to add to the path bar menu for this slot",
+                              G_PARAM_READWRITE);
 
     properties[PROP_LOCATION] =
         g_param_spec_object ("location",
@@ -3396,6 +3436,18 @@ nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *self)
     view = nautilus_window_slot_get_current_view (self);
 
     return view ? nautilus_view_get_toolbar_menu_sections (view) : NULL;
+}
+
+NautilusPathBarMenuSections *
+nautilus_window_slot_get_path_bar_menu_sections (NautilusWindowSlot *self)
+{
+    NautilusView *view;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    view = nautilus_window_slot_get_current_view (self);
+
+    return view ? nautilus_view_get_path_bar_menu_sections (view) : NULL;
 }
 
 gboolean

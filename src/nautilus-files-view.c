@@ -88,6 +88,8 @@
 #include "nautilus-view.h"
 #include "nautilus-view-icon-controller.h"
 #include "nautilus-window.h"
+#include "nautilus-path-bar-menu-sections.h"
+#include "nautilus-toolbar-menu-sections.h"
 
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
@@ -144,6 +146,8 @@ enum
     PROP_SELECTION,
     PROP_LOCATION,
     PROP_SEARCH_QUERY,
+    PROP_TOOLBAR_MENU_SECTIONS,
+    PROP_PATH_BAR_MENU_SECTIONS,
     NUM_PROPERTIES
 };
 
@@ -261,6 +265,9 @@ typedef struct
     GtkWidget *reload;
     GtkWidget *zoom_controls_box;
     GtkWidget *zoom_level_label;
+
+    /* Path bar menu */
+    NautilusPathBarMenuSections *path_bar_menu_sections;
 
     gulong stop_signal_handler;
     gulong reload_signal_handler;
@@ -687,6 +694,95 @@ nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
 
     return priv->toolbar_menu_sections;
+}
+
+static void
+nautilus_files_view_set_toolbar_menu_sections (NautilusView                *view,
+                                               NautilusToolbarMenuSections *toolbar_menu_sections)
+{
+    NautilusFilesViewPrivate *priv;
+
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    priv->toolbar_menu_sections = toolbar_menu_sections;
+}
+
+/**
+ * nautilus_files_view_get_path_bar_menu_sections:
+ * @view: a #NautilusFilesView
+ *
+ * Retrieves the menu sections that should be added to the path bar menu when
+ * this view is active
+ *
+ * Returns: (transfer none): a #NautilusPathBarMenuSections with the details of
+ * which menu sections should be added to the menu
+ */
+static NautilusPathBarMenuSections *
+nautilus_files_view_get_path_bar_menu_sections (NautilusView *view)
+{
+    NautilusFilesViewPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    return priv->path_bar_menu_sections;
+}
+
+static void
+free_path_bar_menu_sections (NautilusPathBarMenuSections *path_bar_menu_sections)
+{
+    g_clear_object (&path_bar_menu_sections->templates_menu);
+    g_clear_object (&path_bar_menu_sections->extensions_selection_menu);
+    g_clear_object (&path_bar_menu_sections->extensions_background_menu);
+
+    g_free (path_bar_menu_sections);
+}
+
+static void
+nautilus_files_view_set_path_bar_menu_sections (NautilusView                *view,
+                                                NautilusPathBarMenuSections *path_bar_menu_sections)
+{
+    NautilusFilesViewPrivate *priv;
+
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
+
+    if (priv->path_bar_menu_sections != NULL)
+    {
+        free_path_bar_menu_sections (priv->path_bar_menu_sections);
+    }
+    priv->path_bar_menu_sections = path_bar_menu_sections;
+
+    priv->templates_present = FALSE;
+    if (priv->path_bar_menu_sections->templates_menu != NULL)
+    {
+        nautilus_gmenu_merge (priv->background_menu,
+                              path_bar_menu_sections->templates_menu,
+                              "templates-submenu",
+                              FALSE);
+
+        priv->templates_present = TRUE;
+    }
+
+    if (priv->path_bar_menu_sections->extensions_selection_menu != NULL)
+    {
+        nautilus_gmenu_merge (priv->selection_menu,
+                              priv->path_bar_menu_sections->extensions_selection_menu,
+                              "extensions",
+                              FALSE);
+    }
+
+    if (priv->path_bar_menu_sections->extensions_background_menu != NULL)
+    {
+        nautilus_gmenu_merge (priv->background_menu,
+                              priv->path_bar_menu_sections->extensions_background_menu,
+                              "extensions",
+                              FALSE);
+    }
 }
 
 static gboolean
@@ -3204,10 +3300,14 @@ nautilus_files_view_finalize (GObject *object)
     g_clear_object (&priv->selection_menu);
     g_clear_object (&priv->toolbar_menu_sections->zoom_section);
     g_clear_object (&priv->toolbar_menu_sections->extended_section);
+    g_clear_object (&priv->path_bar_menu_sections->extensions_background_menu);
+    g_clear_object (&priv->path_bar_menu_sections->extensions_selection_menu);
+    g_clear_object (&priv->path_bar_menu_sections->templates_menu);
     g_clear_object (&priv->rename_file_controller);
     g_clear_object (&priv->new_folder_controller);
     g_clear_object (&priv->compress_controller);
     g_free (priv->toolbar_menu_sections);
+    g_free (priv->path_bar_menu_sections);
 
     g_hash_table_destroy (priv->non_ready_files);
     g_hash_table_destroy (priv->pending_reveal);
@@ -4961,46 +5061,51 @@ build_menu_for_extension_menu_items (NautilusFilesView *view,
 }
 
 static void
-add_extension_menu_items (NautilusFilesView *view,
-                          const gchar       *extension_prefix,
-                          GList             *menu_items,
-                          GMenu             *insertion_menu)
-{
-    GMenu *menu;
-
-    menu = build_menu_for_extension_menu_items (view, extension_prefix, menu_items);
-    nautilus_gmenu_merge (insertion_menu,
-                          menu,
-                          "extensions",
-                          FALSE);
-
-    g_object_unref (menu);
-}
-
-static void
 update_extensions_menus (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     GList *selection_items, *background_items;
+    NautilusPathBarMenuSections *new_menu_sections;
+    g_autoptr (GMenu) selection_menu = NULL;
+    g_autoptr (GMenu) background_menu = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
     selection_items = get_extension_selection_menu_items (view);
-    if (selection_items != NULL)
+    background_items = get_extension_background_menu_items (view);
+    new_menu_sections = g_new0 (NautilusPathBarMenuSections, 1);
+    new_menu_sections->templates_menu = g_object_ref (priv->path_bar_menu_sections->templates_menu);
+    selection_menu = build_menu_for_extension_menu_items (view, "selection",
+                                                          selection_items);
+    if (selection_menu != NULL)
     {
-        add_extension_menu_items (view,
-                                  "selection",
-                                  selection_items,
-                                  priv->selection_menu);
-        nautilus_menu_item_list_free (selection_items);
+        new_menu_sections->extensions_selection_menu = g_object_ref (selection_menu);
+    }
+    
+    background_menu = build_menu_for_extension_menu_items (view, "background",
+                                                           background_items);
+    
+    if (background_items != NULL)
+        {
+            g_print ("extension nitems before!!! %d\n", g_menu_model_get_n_items (G_MENU_MODEL (background_menu)));
+        }
+    else
+{  
+    g_print ("extensions background items empty \n");
+}
+
+    if (background_menu != NULL)
+    {
+        new_menu_sections->extensions_background_menu = g_object_ref (background_menu);
     }
 
-    background_items = get_extension_background_menu_items (view);
+    nautilus_files_view_set_path_bar_menu_sections (NAUTILUS_VIEW (view),
+                                                    new_menu_sections);
+    if (selection_items != NULL)
+    {
+        nautilus_menu_item_list_free (selection_items);
+    }
     if (background_items != NULL)
     {
-        add_extension_menu_items (view,
-                                  "background",
-                                  background_items,
-                                  priv->background_menu);
         nautilus_menu_item_list_free (background_items);
     }
 }
@@ -5707,9 +5812,10 @@ update_templates_menu (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     GList *sorted_copy, *node;
     NautilusDirectory *directory;
-    GMenu *submenu;
+    g_autoptr (GMenu) submenu = NULL;
     char *uri;
     char *templates_directory_uri;
+    NautilusPathBarMenuSections *new_menu_sections;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -5742,19 +5848,33 @@ update_templates_menu (NautilusFilesView *view)
 
     directory = nautilus_directory_get_by_uri (templates_directory_uri);
     submenu = update_directory_in_templates_menu (view, directory);
+
+    new_menu_sections = g_new0 (NautilusPathBarMenuSections, 1);
+    if (priv->path_bar_menu_sections->extensions_background_menu != NULL)
+    {
+        new_menu_sections->extensions_background_menu = g_object_ref (priv->path_bar_menu_sections->extensions_background_menu);
+    }
+    if (priv->path_bar_menu_sections->extensions_selection_menu != NULL)
+    {
+        new_menu_sections->extensions_selection_menu = g_object_ref (priv->path_bar_menu_sections->extensions_selection_menu);
+    }
+    if (submenu != NULL)
+        {
+            g_print ("items before!!! %d\n", g_menu_model_get_n_items (G_MENU_MODEL (submenu)));
+        }
+    else
+{  
+    g_print ("background items empty \n");
+}
     if (submenu != NULL)
     {
-        nautilus_gmenu_merge (priv->background_menu,
-                              submenu,
-                              "templates-submenu",
-                              FALSE);
-        g_object_unref (submenu);
+        new_menu_sections->templates_menu = g_object_ref (submenu);
     }
 
+    nautilus_view_set_path_bar_menu_sections (NAUTILUS_VIEW (view),
+                                              new_menu_sections);
+
     nautilus_directory_unref (directory);
-
-    priv->templates_present = submenu != NULL;
-
     g_free (templates_directory_uri);
 }
 
@@ -8937,8 +9057,25 @@ nautilus_files_view_get_property (GObject    *object,
         }
         break;
 
+        case PROP_TOOLBAR_MENU_SECTIONS:
+        {
+            g_value_set_pointer (value,
+                                 nautilus_view_get_toolbar_menu_sections (NAUTILUS_VIEW (view)));
+        }
+        break;
+
+        case PROP_PATH_BAR_MENU_SECTIONS:
+        {
+            g_value_set_pointer (value,
+                                 nautilus_view_get_path_bar_menu_sections (NAUTILUS_VIEW (view)));
+        }
+        break;
+
         default:
+        {
             g_assert_not_reached ();
+        }
+        break;
     }
 }
 
@@ -8991,6 +9128,20 @@ nautilus_files_view_set_property (GObject      *object,
         case PROP_SELECTION:
         {
             nautilus_view_set_selection (NAUTILUS_VIEW (directory_view), g_value_get_pointer (value));
+        }
+        break;
+
+        case PROP_PATH_BAR_MENU_SECTIONS:
+        {
+            nautilus_view_set_path_bar_menu_sections (NAUTILUS_VIEW (directory_view),
+                                                      g_value_get_pointer (value));
+        }
+        break;
+
+        case PROP_TOOLBAR_MENU_SECTIONS:
+        {
+            nautilus_view_set_toolbar_menu_sections (NAUTILUS_VIEW (directory_view),
+                                                     g_value_get_pointer (value));
         }
         break;
 
@@ -9350,6 +9501,9 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->get_search_query = nautilus_files_view_get_search_query;
     iface->set_search_query = nautilus_files_view_set_search_query;
     iface->get_toolbar_menu_sections = nautilus_files_view_get_toolbar_menu_sections;
+    iface->set_toolbar_menu_sections = nautilus_files_view_set_toolbar_menu_sections;
+    iface->get_path_bar_menu_sections = nautilus_files_view_get_path_bar_menu_sections;
+    iface->set_path_bar_menu_sections = nautilus_files_view_set_path_bar_menu_sections;
     iface->is_searching = nautilus_files_view_is_searching;
     iface->is_loading = nautilus_files_view_is_loading;
     iface->get_view_id = nautilus_files_view_get_view_id;
@@ -9477,6 +9631,8 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     g_object_class_override_property (oclass, PROP_LOCATION, "location");
     g_object_class_override_property (oclass, PROP_SELECTION, "selection");
     g_object_class_override_property (oclass, PROP_SEARCH_QUERY, "search-query");
+    g_object_class_override_property (oclass, PROP_TOOLBAR_MENU_SECTIONS, "toolbar-menu-sections");
+    g_object_class_override_property (oclass, PROP_PATH_BAR_MENU_SECTIONS, "path-bar-menu-sections");
 }
 
 static void
@@ -9548,6 +9704,9 @@ nautilus_files_view_init (NautilusFilesView *view)
                       view);
 
     g_object_unref (builder);
+
+    /* Path bar menu */
+    priv->path_bar_menu_sections = g_new0 (NautilusPathBarMenuSections, 1);
 
     /* Main widgets */
     gtk_orientable_set_orientation (GTK_ORIENTABLE (view), GTK_ORIENTATION_VERTICAL);

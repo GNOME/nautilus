@@ -7,6 +7,12 @@
         <attribute name="label" translatable="yes">New _Folder…</attribute>
         <attribute name="action">view.new-folder</attribute>
       </item>
+      <submenu>
+        <attribute name="id">templates-submenu</attribute>
+        <attribute name="label" translatable="yes">New _Document</attribute>
+        <attribute name="action">view.new-document</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </submenu>
       <item>
         <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
         <attribute name="action">view.bookmark</attribute>
@@ -36,6 +42,9 @@
         <attribute name="action">view.current-directory-properties</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
+    </section>
+    <section>
+      <attribute name="id">extensions</attribute>
     </section>
   </menu>
 </interface>

@@ -20,6 +20,7 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include "nautilus-path-bar-menu-sections.h"
 
 #define NAUTILUS_TYPE_PATH_BAR (nautilus_path_bar_get_type ())
 G_DECLARE_DERIVABLE_TYPE (NautilusPathBar, nautilus_path_bar, NAUTILUS, PATH_BAR, GtkContainer)
@@ -35,3 +36,5 @@ struct _NautilusPathBarClass
                                      GtkPlacesOpenFlags flags);
 };
 void     nautilus_path_bar_set_path    (NautilusPathBar *self, GFile *file);
+void     nautilus_path_bar_set_menu_sections (NautilusPathBar    *self,
+                                              NautilusPathBarMenuSections *menu_sections);

@@ -22,7 +22,7 @@
 #include <gtk/gtk.h>
 
 #include "nautilus-query.h"
-#include "nautilus-toolbar-menu-sections.h"
+#include "nautilus-types.h"
 
 enum
 {
@@ -49,7 +49,17 @@ struct _NautilusViewInterface
          * when this view is active. Implementations must not return %NULL
          */
         NautilusToolbarMenuSections *   (*get_toolbar_menu_sections) (NautilusView         *view);
+        void     (*set_toolbar_menu_sections) (NautilusView                *view,
+                                               NautilusToolbarMenuSections *toolbar_menu_sections);
 
+        /*
+         * Returns the menu sections that should be shown in the path bar menu
+         * when this view is active.
+         */
+        NautilusPathBarMenuSections *   (*get_path_bar_menu_sections) (NautilusView         *view);
+
+        void     (*set_path_bar_menu_sections) (NautilusView                *view,
+                                                NautilusPathBarMenuSections *path_bar_menu_sections);
         /* Current location of the view */
         GFile*                          (*get_location)              (NautilusView         *view);
         void                            (*set_location)              (NautilusView         *view,
@@ -77,6 +87,14 @@ GIcon *                        nautilus_view_get_icon                  (guint   
 guint                          nautilus_view_get_view_id               (NautilusView         *view);
 
 NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
+
+void                           nautilus_view_set_toolbar_menu_sections (NautilusView                *view,
+                                                                        NautilusToolbarMenuSections *toolbar_menu_sections);
+
+NautilusPathBarMenuSections *  nautilus_view_get_path_bar_menu_sections (NautilusView         *view);
+
+void                           nautilus_view_set_path_bar_menu_sections (NautilusView                *view,
+                                                                         NautilusPathBarMenuSections *path_bar_menu_sections);
 
 GFile *                        nautilus_view_get_location              (NautilusView         *view);
 
