@@ -1236,6 +1236,7 @@ on_slot_path_bar_menu_sections_changed (NautilusToolbar    *self,
                                         GParamSpec         *param,
                                         NautilusWindowSlot *slot)
 {
+  g_print ("TOOLBAR: on slot path bar menu sections changed\n");
     nautilus_path_bar_set_menu_sections (NAUTILUS_PATH_BAR (self->path_bar),
                                          nautilus_window_slot_get_path_bar_menu_sections (slot));
 }

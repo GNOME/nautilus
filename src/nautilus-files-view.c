@@ -3535,7 +3535,7 @@ nautilus_files_view_send_selection_change (NautilusFilesView *view)
 }
 
 static void
-nautilus_files_view_set_location (NautilusView *view,
+real_view_set_location (NautilusView *view,
                                   GFile        *location)
 {
     NautilusDirectory *directory;
@@ -5090,7 +5090,7 @@ update_extensions_menus (NautilusFilesView *view)
         }
     else
 {  
-    g_print ("extensions background items empty \n");
+    //g_print ("FILES VIEW: extensions background items empty \n");
 }
 
     if (background_menu != NULL)
@@ -5860,11 +5860,11 @@ update_templates_menu (NautilusFilesView *view)
     }
     if (submenu != NULL)
         {
-            g_print ("items before!!! %d\n", g_menu_model_get_n_items (G_MENU_MODEL (submenu)));
+            g_print ("FILES_VIEW: update templates menu %d\n", g_menu_model_get_n_items (G_MENU_MODEL (submenu)));
         }
     else
 {  
-    g_print ("background items empty \n");
+    g_print ("FILES VIEW: update templates menu NULL \n");
 }
     if (submenu != NULL)
     {
@@ -9495,7 +9495,7 @@ static void
 nautilus_files_view_iface_init (NautilusViewInterface *iface)
 {
     iface->get_location = nautilus_files_view_get_location;
-    iface->set_location = nautilus_files_view_set_location;
+    iface->set_location = real_set_location;
     iface->get_selection = nautilus_files_view_get_selection;
     iface->set_selection = nautilus_files_view_set_selection;
     iface->get_search_query = nautilus_files_view_get_search_query;

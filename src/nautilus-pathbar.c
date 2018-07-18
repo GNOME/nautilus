@@ -1241,12 +1241,15 @@ nautilus_path_bar_set_menu_sections (NautilusPathBar             *self,
 
     if (menu_sections->templates_menu != NULL)
     {
-            g_print ("in path bar nitems before!!! %d\n", g_menu_model_get_n_items (G_MENU_MODEL (menu_sections->templates_menu)));
+            g_print ("templates in path bar nitems before!!! %d\n", g_menu_model_get_n_items (G_MENU_MODEL (menu_sections->templates_menu)));
         nautilus_gmenu_merge (priv->current_view_menu,
                               menu_sections->templates_menu,
                               "templates-submenu",
                               TRUE);
     }
+  else {
+    g_print ("path bar templates item NULL\n");
+  }
 
     if (menu_sections->extensions_background_menu != NULL)
     {
