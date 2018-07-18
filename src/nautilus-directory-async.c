@@ -3481,16 +3481,9 @@ thumbnail_done (NautilusDirectory *directory,
     time_t thumb_mtime = 0;
 
     file->details->thumbnail_is_up_to_date = TRUE;
-    if (file->details->thumbnail)
-    {
-        g_object_unref (file->details->thumbnail);
-        file->details->thumbnail = NULL;
-    }
-    if (file->details->scaled_thumbnail)
-    {
-        g_object_unref (file->details->scaled_thumbnail);
-        file->details->scaled_thumbnail = NULL;
-    }
+
+    g_clear_object (&file->details->thumbnail);
+    g_clear_object (&file->details->scaled_thumbnail);
 
     if (pixbuf)
     {
