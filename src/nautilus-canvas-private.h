@@ -194,9 +194,6 @@ struct NautilusCanvasContainerDetails {
         /* Set to TRUE after first allocation has been done */
 	gboolean has_been_allocated;
 
-	int size_allocation_count;
-	guint size_allocation_count_id;
-
 	/* a11y items used by canvas items */
 	guint a11y_item_action_idle_handler;
 	GQueue* a11y_item_action_queue;
