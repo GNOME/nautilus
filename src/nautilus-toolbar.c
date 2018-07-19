@@ -1234,6 +1234,24 @@ container_remove_all_children (GtkContainer *container)
 }
 
 static void
+slot_on_extensions_background_menu_changed (NautilusToolbar    *self,
+                                            GParamSpec         *param,
+                                            NautilusWindowSlot *slot)
+{
+    nautilus_path_bar_set_extensions_background_menu (NAUTILUS_PATH_BAR (self->path_bar),
+                                                      nautilus_window_slot_get_extensions_background_menu (slot));
+}
+
+static void
+slot_on_templates_menu_changed (NautilusToolbar    *self,
+                                GParamSpec         *param,
+                                NautilusWindowSlot *slot)
+{
+    nautilus_path_bar_set_templates_menu (NAUTILUS_PATH_BAR (self->path_bar),
+                                          nautilus_window_slot_get_templates_menu (slot));
+}
+
+static void
 on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
                                        GParamSpec         *param,
                                        NautilusWindowSlot *slot)
@@ -1344,7 +1362,10 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
             on_slot_toolbar_menu_sections_changed (self, NULL, self->window_slot);
             g_signal_connect_swapped (self->window_slot, "notify::toolbar-menu-sections",
                                       G_CALLBACK (on_slot_toolbar_menu_sections_changed), self);
-
+            g_signal_connect_swapped (self->window_slot, "notify::extensions-background-menu",
+                                      G_CALLBACK (slot_on_extensions_background_menu_changed), self);
+            g_signal_connect_swapped (self->window_slot, "notify::templates-menu",
+                                      G_CALLBACK (slot_on_templates_menu_changed), self);
             g_signal_connect_swapped (window_slot, "notify::searching",
                                       G_CALLBACK (toolbar_update_appearance), self);
 
