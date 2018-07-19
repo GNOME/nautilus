@@ -17,7 +17,6 @@ tests = [
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
->>>>>>> tests: Use GMainLoop in search engine test
 ]
 
 foreach t: tests
