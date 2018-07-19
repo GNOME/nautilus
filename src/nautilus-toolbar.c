@@ -1084,6 +1084,8 @@ nautilus_toolbar_dispose (GObject *object)
 
     g_clear_object (&self->forward_button_multi_press_gesture);
     g_clear_object (&self->back_button_multi_press_gesture);
+    g_clear_pointer (&self->icon_binding, g_binding_unbind);
+    g_clear_pointer (&self->view_widget_binding, g_binding_unbind);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
