@@ -8582,7 +8582,7 @@ nautilus_file_emit_changed (NautilusFile *file)
     for (p = link_files; p != NULL; p = p->next)
     {
         /* Looking for directly recursive links. */
-        g_autolist (NautilusFile) link_targets = NULL;
+        GList *link_targets = NULL;
         NautilusDirectory *directory;
 
         if (p->data == file)
@@ -8600,10 +8600,12 @@ nautilus_file_emit_changed (NautilusFile *file)
             directory == nautilus_file_get_directory (file))
         {
             g_signal_emit (p->data, signals[CHANGED], 0, p->data);
+            nautilus_file_list_free (link_targets);
             continue;
         }
 
         nautilus_file_changed (NAUTILUS_FILE (p->data));
+        nautilus_file_list_free (link_targets);
     }
     nautilus_file_list_free (link_files);
 }
