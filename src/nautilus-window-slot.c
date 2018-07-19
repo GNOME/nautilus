@@ -54,6 +54,8 @@ enum
     PROP_WINDOW,
     PROP_ICON,
     PROP_TOOLBAR_MENU_SECTIONS,
+    PROP_EXTENSIONS_BACKGROUND_MENU,
+    PROP_TEMPLATES_MENU,
     PROP_LOADING,
     PROP_SEARCHING,
     PROP_SELECTION,
@@ -124,9 +126,15 @@ typedef struct
     gboolean tried_mount;
     gint view_mode_before_search;
 
+    /* Menus */
+    GMenu *extensions_background_menu;
+    GMenu *templates_menu;
+
     /* View bindings */
     GBinding *searching_binding;
     GBinding *selection_binding;
+    GBinding *extensions_background_menu_binding;
+    GBinding *templates_menu_binding;
     gboolean searching;
     GList *selection;
 } NautilusWindowSlotPrivate;
@@ -159,6 +167,12 @@ static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
                                     gboolean              is_empty,
                                     gpointer              user_data);
 static void update_search_information (NautilusWindowSlot *self);
+static void real_set_extensions_background_menu (NautilusWindowSlot *self,
+                                                 GMenu              *menu);
+static GMenu* real_get_extensions_background_menu (NautilusWindowSlot *self);
+static void real_set_templates_menu (NautilusWindowSlot *self,
+                                     GMenu              *menu);
+static GMenu* real_get_templates_menu (NautilusWindowSlot *self);
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
@@ -727,6 +741,26 @@ nautilus_window_slot_set_selection (NautilusWindowSlot *self,
 }
 
 static void
+real_set_extensions_background_menu (NautilusWindowSlot *self,
+                                     GMenu              *menu)
+{
+    NautilusWindowSlotPrivate *priv;
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->extensions_background_menu = menu != NULL ? g_object_ref (menu) : NULL;
+}
+
+static void
+real_set_templates_menu (NautilusWindowSlot *self,
+                         GMenu              *menu)
+{
+    NautilusWindowSlotPrivate *priv;
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    priv->templates_menu = menu != NULL ? g_object_ref (menu) : NULL;
+}
+
+static void
 nautilus_window_slot_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
@@ -760,6 +794,18 @@ nautilus_window_slot_set_property (GObject      *object,
         }
         break;
 
+        case PROP_EXTENSIONS_BACKGROUND_MENU:
+        {
+            real_set_extensions_background_menu (self, g_value_get_object (value));
+        }
+        break;
+
+        case PROP_TEMPLATES_MENU:
+        {
+            real_set_templates_menu (self, g_value_get_object (value));
+        }
+        break;
+
         case PROP_SELECTION:
         {
             nautilus_window_slot_set_selection (self, g_value_get_pointer (value));
@@ -772,6 +818,44 @@ nautilus_window_slot_set_property (GObject      *object,
         }
         break;
     }
+}
+
+static GMenu*
+real_get_extensions_background_menu (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    return priv->extensions_background_menu;
+}
+
+GMenu*
+nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self)
+{
+    GMenu *menu = NULL;
+
+    g_object_get (self, "extensions-background-menu", &menu, NULL);
+
+    return menu;
+}
+
+static GMenu*
+real_get_templates_menu (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    return priv->templates_menu;
+}
+
+GMenu*
+nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self)
+{
+    GMenu *menu = NULL;
+
+    g_object_get (self, "templates-menu", &menu, NULL);
+
+    return menu;
 }
 
 static void
@@ -807,7 +891,19 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_TOOLBAR_MENU_SECTIONS:
         {
-            g_value_set_pointer (value, nautilus_window_slot_get_toolbar_menu_sections (self));
+            g_value_set_object (value, nautilus_window_slot_get_toolbar_menu_sections (self));
+        }
+        break;
+
+        case PROP_EXTENSIONS_BACKGROUND_MENU:
+        {
+            g_value_set_object (value, real_get_extensions_background_menu (self));
+        }
+        break;
+
+        case PROP_TEMPLATES_MENU:
+        {
+            g_value_set_object (value, real_get_templates_menu (self));
         }
         break;
 
@@ -2879,6 +2975,8 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
     {
         g_binding_unbind (priv->searching_binding);
         g_binding_unbind (priv->selection_binding);
+        g_binding_unbind (priv->extensions_background_menu_binding);
+        g_binding_unbind (priv->templates_menu_binding);
         widget = GTK_WIDGET (priv->content_view);
         gtk_widget_destroy (widget);
         g_object_unref (priv->content_view);
@@ -2900,8 +2998,16 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         priv->selection_binding = g_object_bind_property (priv->content_view, "selection",
                                                           self, "selection",
                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        priv->extensions_background_menu_binding = g_object_bind_property (priv->content_view, "extensions-background-menu",
+                                                                           self, "extensions-background-menu",
+                                                                           G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
+        priv->templates_menu_binding = g_object_bind_property (priv->content_view, "templates-menu",
+                                                               self, "templates-menu",
+                                                               G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_ICON]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
     }
 
 done:
@@ -2957,6 +3063,9 @@ nautilus_window_slot_dispose (GObject *object)
 
     g_clear_pointer (&priv->searching_binding, g_binding_unbind);
     g_clear_pointer (&priv->selection_binding, g_binding_unbind);
+    g_clear_pointer (&priv->extensions_background_menu_binding, g_binding_unbind);
+    g_clear_pointer (&priv->templates_menu_binding, g_binding_unbind);
+
     if (priv->content_view)
     {
         gtk_widget_destroy (GTK_WIDGET (priv->content_view));
@@ -3094,6 +3203,20 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                               "Menu sections for the toolbar menu",
                               "The menu sections to add to the toolbar menu for this slot",
                               G_PARAM_READABLE);
+
+    properties[PROP_EXTENSIONS_BACKGROUND_MENU] =
+        g_param_spec_object ("extensions-background-menu",
+                             "Background menu of extensions",
+                             "Proxy property from the view for the background menu for extensions",
+                             G_TYPE_MENU,
+                             G_PARAM_READWRITE);
+
+    properties[PROP_TEMPLATES_MENU] =
+        g_param_spec_object ("templates-menu",
+                             "Templates menu",
+                             "Proxy property from the view for the templates menu",
+                             G_TYPE_MENU,
+                             G_PARAM_READWRITE);
 
     properties[PROP_LOCATION] =
         g_param_spec_object ("location",
