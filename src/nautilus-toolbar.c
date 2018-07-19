@@ -1147,13 +1147,13 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
-        properties [PROP_WINDOW_SLOT] =
-          g_param_spec_object ("window-slot",
-                               "Whether to show the location entry",
-                               "Whether to show the location entry instead of the pathbar",
-                               NAUTILUS_TYPE_WINDOW_SLOT,
-                               (G_PARAM_READWRITE |
-                                G_PARAM_STATIC_STRINGS));
+    properties [PROP_WINDOW_SLOT] =
+      g_param_spec_object ("window-slot",
+                           "Window slot currently active",
+                           "Window slot currently acive",
+                           NAUTILUS_TYPE_WINDOW_SLOT,
+                           (G_PARAM_READWRITE |
+                            G_PARAM_STATIC_STRINGS));
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
