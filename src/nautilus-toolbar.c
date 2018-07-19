@@ -1358,7 +1358,7 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
         if (self->window_slot != NULL)
         {
             GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot));
-          GTK_CONTAINER (self->search_container);
+            GTK_CONTAINER (self->search_container);
             gtk_container_add (GTK_CONTAINER (self->search_container),
                                GTK_WIDGET (nautilus_window_slot_get_query_editor (self->window_slot)));
         }
