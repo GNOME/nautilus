@@ -35,3 +35,7 @@ struct _NautilusPathBarClass
                                      GtkPlacesOpenFlags flags);
 };
 void     nautilus_path_bar_set_path    (NautilusPathBar *self, GFile *file);
+void     nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
+                                                           GMenu           *menu);
+void     nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
+                                               GMenu           *menu);
