@@ -2955,6 +2955,8 @@ nautilus_window_slot_dispose (GObject *object)
 
     nautilus_window_slot_remove_extra_location_widgets (self);
 
+    g_clear_pointer (&priv->searching_binding, g_binding_unbind);
+    g_clear_pointer (&priv->selection_binding, g_binding_unbind);
     if (priv->content_view)
     {
         gtk_widget_destroy (GTK_WIDGET (priv->content_view));
