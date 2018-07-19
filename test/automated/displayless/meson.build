@@ -13,7 +13,11 @@ tests = [
   ]],
   ['test-file-operations-move-files', [
     'test-file-operations-move-files.c'
-  ]]
+  ]],
+  ['test-nautilus-search-engine', [
+    'test-nautilus-search-engine.c'
+  ]],
+>>>>>>> tests: Use GMainLoop in search engine test
 ]
 
 foreach t: tests

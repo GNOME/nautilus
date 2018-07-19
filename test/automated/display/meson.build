@@ -4,12 +4,9 @@ test_env += [
 ]
 
 tests = [
-  ['test-nautilus-search-engine', [
-    'test-nautilus-search-engine.c'
-  ]],
   ['test-nautilus-directory-async', [
     'test-nautilus-directory-async.c'
-  ]]
+  ]],
 ]
 
 foreach t: tests
