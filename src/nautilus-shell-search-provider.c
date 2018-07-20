@@ -437,7 +437,6 @@ shell_query_new (gchar **terms)
     home = g_file_new_for_path (g_get_home_dir ());
 
     query = nautilus_query_new ();
-    nautilus_query_set_show_hidden_files (query, FALSE);
     nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
     nautilus_query_set_text (query, terms_joined);
     nautilus_query_set_location (query, home);
@@ -464,6 +463,7 @@ execute_search (NautilusShellSearchProvider  *self,
     }
 
     query = shell_query_new (terms);
+    nautilus_query_set_show_hidden_files (query, FALSE);
 
     pending_search = g_slice_new0 (PendingSearch);
     pending_search->invocation = g_object_ref (invocation);
