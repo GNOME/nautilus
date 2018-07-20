@@ -19,6 +19,7 @@ test_simple_file (void)
     file = g_file_get_child (root, "simple_file");
     g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_assert_false (dir_has_files (file));
+    g_assert_true (g_file_delete (file, NULL, NULL));
 }
 
 /* Tests the function for an empty directory */
@@ -36,6 +37,7 @@ test_empty_directory (void)
     g_file_make_directory (child, NULL, NULL);
 
     g_assert_false (dir_has_files (child));
+    g_assert_true (g_file_delete (child, NULL, NULL));
 }
 
 /* Tests the function for a directory containing one directory */
@@ -56,6 +58,8 @@ test_directory_one_file (void)
     g_file_make_directory (child_file, NULL, NULL);
 
     g_assert_true (dir_has_files (parent_dir));
+    g_assert_true (g_file_delete (child_file, NULL, NULL));
+    g_assert_true (g_file_delete (parent_dir, NULL, NULL));
 }
 
 static void
