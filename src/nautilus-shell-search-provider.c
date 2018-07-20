@@ -437,7 +437,6 @@ shell_query_new (gchar **terms)
     home = g_file_new_for_path (g_get_home_dir ());
 
     query = nautilus_query_new ();
-    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
     nautilus_query_set_text (query, terms_joined);
     nautilus_query_set_location (query, home);
 
@@ -463,6 +462,7 @@ execute_search (NautilusShellSearchProvider  *self,
     }
 
     query = shell_query_new (terms);
+    nautilus_query_set_recursive (query, NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
     nautilus_query_set_show_hidden_files (query, FALSE);
 
     pending_search = g_slice_new0 (PendingSearch);
@@ -722,6 +722,20 @@ handle_launch_search (NautilusShellSearchProvider2  *skeleton,
 {
     GApplication *app = g_application_get_default ();
     g_autoptr (NautilusQuery) query = shell_query_new (terms);
+
+    if (location_settings_search_get_recursive () == NAUTILUS_QUERY_RECURSIVE_NEVER)
+    {
+        /*
+         * If no recursive search is enabled, we still want to be able to
+         * show the same results we presented in the overview when nautilus
+         * is explicitly launched to access to more results, and thus we perform
+         * a query showing results coming from index-based search engines.
+         * Otherwise we just respect the user settings.
+         * See: https://gitlab.gnome.org/GNOME/nautilus/merge_requests/249
+         */
+        nautilus_query_set_recursive (query,
+                                      NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
+    }
 
     nautilus_application_search (NAUTILUS_APPLICATION (app), query);
 
