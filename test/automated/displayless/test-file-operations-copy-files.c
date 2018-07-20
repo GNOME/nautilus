@@ -20,11 +20,11 @@ test_copy_one_file (void)
     g_autoptr (GError) error = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (file != NULL);
     out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
     if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
@@ -33,7 +33,7 @@ test_copy_one_file (void)
     }
     files = g_list_prepend (files, g_object_ref (file));
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -43,7 +43,7 @@ test_copy_one_file (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir_child");
+    result_file = g_file_get_child (second_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
@@ -64,16 +64,16 @@ test_copy_one_empty_directory (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
     files = g_list_prepend (files, g_object_ref (file));
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -83,7 +83,7 @@ test_copy_one_empty_directory (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir_child");
+    result_file = g_file_get_child (second_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
@@ -106,14 +106,14 @@ test_copy_directories_small (void)
 
     for (int i = 0; i < 10; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         g_file_make_directory (file, NULL, NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -125,7 +125,7 @@ test_copy_directories_small (void)
 
     for (int i = 0; i < 10; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -151,14 +151,14 @@ test_copy_directories_medium (void)
 
     for (int i = 0; i < 1000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         g_file_make_directory (file, NULL, NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -170,7 +170,7 @@ test_copy_directories_medium (void)
 
     for (int i = 0; i < 1000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -197,14 +197,14 @@ test_copy_directories_large (void)
 
     for (int i = 0; i < 10000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         g_file_make_directory (file, NULL, NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -216,7 +216,7 @@ test_copy_directories_large (void)
 
     for (int i = 0; i < 10000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -246,7 +246,7 @@ test_copy_files_small (void)
     {
         g_autoptr (GError) error = NULL;
 
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
@@ -257,7 +257,7 @@ test_copy_files_small (void)
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -269,7 +269,7 @@ test_copy_files_small (void)
 
     for (int i = 0; i < 10; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -298,7 +298,7 @@ test_copy_files_medium (void)
     {
         g_autoptr (GError) error = NULL;
 
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
@@ -309,7 +309,7 @@ test_copy_files_medium (void)
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -321,7 +321,7 @@ test_copy_files_medium (void)
 
     for (int i = 0; i < 1000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -350,7 +350,7 @@ test_copy_files_large (void)
     {
         g_autoptr (GError) error = NULL;
 
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
         out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
@@ -361,7 +361,7 @@ test_copy_files_large (void)
         files = g_list_prepend (files, g_object_ref (file));
     }
 
-    dir = g_file_get_child (root, "dir");
+    dir = g_file_get_child (root, "copy_dir");
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
 
@@ -373,7 +373,7 @@ test_copy_files_large (void)
 
     for (int i = 0; i < 10000; i++)
     {
-        file_name = g_strdup_printf ("file_%i", i);
+        file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         g_assert_true (g_file_delete (file, NULL, NULL));
@@ -402,16 +402,16 @@ test_copy_first_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -421,16 +421,16 @@ test_copy_first_hierarchy (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir");
+    result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "first_dir_child");
+    file = g_file_get_child (result_file, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
 
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_delete (result_file, NULL, NULL));
     g_assert_true (g_file_delete (second_dir, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_query_exists (first_dir, NULL));
@@ -453,19 +453,19 @@ test_copy_second_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_child");
+    file = g_file_get_child (first_dir, "copy_first_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
-    file = g_file_get_child (first_dir, "second_child");
+    file = g_file_get_child (first_dir, "copy_second_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -475,23 +475,23 @@ test_copy_second_hierarchy (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir");
+    result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "first_child");
+    file = g_file_get_child (result_file, "copy_first_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
 
-    file = g_file_get_child (result_file, "second_child");
+    file = g_file_get_child (result_file, "copy_second_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
 
     g_assert_true (g_file_delete (result_file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_child");
+    file = g_file_get_child (first_dir, "copy_first_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_file_delete (file, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "second_child");
+    file = g_file_get_child (first_dir, "copy_second_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_file_delete (file, NULL, NULL);    
 
@@ -516,19 +516,19 @@ test_copy_third_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_child");
+    file = g_file_get_child (first_dir, "copy_first_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
-    file = g_file_get_child (file, "second_child");
+    file = g_file_get_child (file, "copy_second_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -538,26 +538,26 @@ test_copy_third_hierarchy (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir");
+    result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "first_child");
+    file = g_file_get_child (result_file, "copy_first_child");
     g_assert_true (g_file_query_exists (file, NULL));
 
-    file = g_file_get_child (file, "second_child");
+    file = g_file_get_child (file, "copy_second_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
 
-    file = g_file_get_child (result_file, "first_child");
+    file = g_file_get_child (result_file, "copy_first_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
 
     g_assert_true (g_file_delete (result_file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_child");
-    file = g_file_get_child (file, "second_child");
+    file = g_file_get_child (first_dir, "copy_first_child");
+    file = g_file_get_child (file, "copy_second_child");
     g_assert_true (g_file_delete (file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_child");
+    file = g_file_get_child (first_dir, "copy_first_child");
     g_assert_true (g_file_delete (file, NULL, NULL));
 
     g_assert_true (g_file_delete (first_dir, NULL, NULL));
@@ -582,28 +582,28 @@ test_copy_fourth_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_dir1");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir1");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    file = g_file_get_child (file, "dir1_child");
+    file = g_file_get_child (file, "copy_dir1_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_dir2");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir2");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    file = g_file_get_child (file, "dir2_child");
+    file = g_file_get_child (file, "copy_dir2_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
@@ -613,41 +613,41 @@ test_copy_fourth_hierarchy (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (second_dir, "first_dir");
+    result_file = g_file_get_child (second_dir, "copy_first_dir");
 
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "first_dir_dir1");
+    file = g_file_get_child (result_file, "copy_first_dir_dir1");
     g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "dir1_child");
+    file = g_file_get_child (file, "copy_dir1_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
-    file = g_file_get_child (result_file, "first_dir_dir1");
+    file = g_file_get_child (result_file, "copy_first_dir_dir1");
     g_assert_true (g_file_delete (file, NULL, NULL));
 
-    file = g_file_get_child (result_file, "first_dir_dir2");
+    file = g_file_get_child (result_file, "copy_first_dir_dir2");
     g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "dir2_child");
+    file = g_file_get_child (file, "copy_dir2_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
-    file = g_file_get_child (result_file, "first_dir_dir2");
+    file = g_file_get_child (result_file, "copy_first_dir_dir2");
     g_assert_true (g_file_delete (file, NULL, NULL));
 
     g_assert_true (g_file_delete (result_file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_dir_dir1");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir1");
     g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "dir1_child");
+    file = g_file_get_child (file, "copy_dir1_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
-    file = g_file_get_child (first_dir, "first_dir_dir1");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir1");
     g_assert_true (g_file_delete (file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_dir_dir2");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir2");
     g_assert_true (g_file_query_exists (file, NULL));
-    file = g_file_get_child (file, "dir2_child");
+    file = g_file_get_child (file, "copy_dir2_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true  (g_file_delete (file, NULL, NULL));
-    file = g_file_get_child (first_dir, "first_dir_dir2");
+    file = g_file_get_child (first_dir, "copy_first_dir_dir2");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
 
@@ -675,25 +675,25 @@ test_copy_fifth_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
-    first_dir = g_file_get_child (root, "first_dir");
+    first_dir = g_file_get_child (root, "copy_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    second_dir = g_file_get_child (root, "second_dir");
+    second_dir = g_file_get_child (root, "copy_second_dir");
     files = g_list_prepend (files, g_object_ref (second_dir));
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
-    file = g_file_get_child (second_dir, "second_dir_child");
+    file = g_file_get_child (second_dir, "copy_second_dir_child");
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
-    third_dir = g_file_get_child (root, "third_dir");
+    third_dir = g_file_get_child (root, "copy_third_dir");
     g_assert_true (third_dir != NULL);
     g_file_make_directory (third_dir, NULL, NULL);
 
@@ -703,27 +703,27 @@ test_copy_fifth_hierarchy (void)
                                         NULL,
                                         NULL);
 
-    result_file = g_file_get_child (third_dir, "first_dir");
+    result_file = g_file_get_child (third_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "first_dir_child");
+    file = g_file_get_child (result_file, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_delete (result_file, NULL, NULL));
 
-    result_file = g_file_get_child (third_dir, "second_dir");
+    result_file = g_file_get_child (third_dir, "copy_second_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
-    file = g_file_get_child (result_file, "second_dir_child");
+    file = g_file_get_child (result_file, "copy_second_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_delete (result_file, NULL, NULL));
 
-    file = g_file_get_child (first_dir, "first_dir_child");
+    file = g_file_get_child (first_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_query_exists (first_dir, NULL));
     g_assert_true (g_file_delete (first_dir, NULL, NULL));
 
-    file = g_file_get_child (second_dir, "second_dir_child");
+    file = g_file_get_child (second_dir, "copy_second_dir_child");
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_delete (file, NULL, NULL));
     g_assert_true (g_file_query_exists (second_dir, NULL));
