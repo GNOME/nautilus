@@ -51,17 +51,14 @@ get_canvas_view (NautilusCanvasContainer *container)
 
 static NautilusIconInfo *
 nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *container,
-                                                NautilusCanvasIconData  *data,
+                                                NautilusFile            *file,
                                                 int                      size,
                                                 gboolean                 for_drag_accept)
 {
     NautilusCanvasView *canvas_view;
-    NautilusFile *file;
     NautilusFileIconFlags flags;
     NautilusIconInfo *icon_info;
     gint scale;
-
-    file = (NautilusFile *) data;
 
     g_assert (NAUTILUS_IS_FILE (file));
     canvas_view = get_canvas_view (container);
@@ -83,13 +80,11 @@ nautilus_canvas_view_container_get_icon_images (NautilusCanvasContainer *contain
 
 static char *
 nautilus_canvas_view_container_get_icon_description (NautilusCanvasContainer *container,
-                                                     NautilusCanvasIconData  *data)
+                                                     NautilusFile            *file)
 {
-    NautilusFile *file;
     char *mime_type;
     const char *description;
 
-    file = NAUTILUS_FILE (data);
     g_assert (NAUTILUS_IS_FILE (file));
 
     mime_type = nautilus_file_get_mime_type (file);
@@ -100,12 +95,9 @@ nautilus_canvas_view_container_get_icon_description (NautilusCanvasContainer *co
 
 static void
 nautilus_canvas_view_container_prioritize_thumbnailing (NautilusCanvasContainer *container,
-                                                        NautilusCanvasIconData  *data)
+                                                        NautilusFile            *file)
 {
-    NautilusFile *file;
     char *uri;
-
-    file = (NautilusFile *) data;
 
     g_assert (NAUTILUS_IS_FILE (file));
 
@@ -226,7 +218,7 @@ nautilus_canvas_view_container_get_icon_text_attribute_names (NautilusCanvasCont
  */
 static void
 nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer  *container,
-                                              NautilusCanvasIconData   *data,
+                                              NautilusFile             *file,
                                               char                    **editable_text,
                                               char                    **additional_text,
                                               gboolean                  include_invisible)
@@ -235,10 +227,7 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer  *containe
     char *text_array[4];
     int i, j, num_attributes;
     NautilusCanvasView *canvas_view;
-    NautilusFile *file;
     gboolean use_additional;
-
-    file = NAUTILUS_FILE (data);
 
     g_assert (NAUTILUS_IS_FILE (file));
     g_assert (editable_text != NULL);
@@ -302,8 +291,8 @@ nautilus_canvas_view_container_get_icon_text (NautilusCanvasContainer  *containe
 
 static int
 nautilus_canvas_view_container_compare_icons (NautilusCanvasContainer *container,
-                                              NautilusCanvasIconData  *icon_a,
-                                              NautilusCanvasIconData  *icon_b)
+                                              NautilusFile            *icon_a,
+                                              NautilusFile            *icon_b)
 {
     NautilusCanvasView *canvas_view;
 
@@ -311,21 +300,17 @@ nautilus_canvas_view_container_compare_icons (NautilusCanvasContainer *container
     g_return_val_if_fail (canvas_view != NULL, 0);
 
     /* Type unsafe comparisons for performance */
-    return nautilus_canvas_view_compare_files (canvas_view,
-                                               (NautilusFile *) icon_a,
-                                               (NautilusFile *) icon_b);
+    return nautilus_canvas_view_compare_files (canvas_view, icon_a, icon_b);
 }
 
 static int
 nautilus_canvas_view_container_compare_icons_by_name (NautilusCanvasContainer *container,
-                                                      NautilusCanvasIconData  *icon_a,
-                                                      NautilusCanvasIconData  *icon_b)
+                                                      NautilusFile            *icon_a,
+                                                      NautilusFile            *icon_b)
 {
-    return nautilus_file_compare_for_sort
-               (NAUTILUS_FILE (icon_a),
-               NAUTILUS_FILE (icon_b),
-               NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-               FALSE, FALSE);
+    return nautilus_file_compare_for_sort (icon_a, icon_b,
+                                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
+                                           FALSE, FALSE);
 }
 
 static void

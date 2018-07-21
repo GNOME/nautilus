@@ -30,8 +30,7 @@
 /* An Icon. */
 
 typedef struct {
-	/* Object represented by this icon. */
-	NautilusCanvasIconData *data;
+	NautilusFile *file;
 
 	/* Canvas item for the icon. */
 	NautilusCanvasItem *item;
