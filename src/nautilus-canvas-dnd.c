@@ -1162,8 +1162,6 @@ check_hover_timer (NautilusCanvasContainer *container,
                    const char              *uri)
 {
     NautilusCanvasDndInfo *dnd_info;
-    GtkSettings *settings;
-    guint timeout;
 
     dnd_info = container->details->dnd_info;
 
@@ -1174,16 +1172,12 @@ check_hover_timer (NautilusCanvasContainer *container,
 
     remove_hover_timer (dnd_info);
 
-    settings = gtk_widget_get_settings (GTK_WIDGET (container));
-    g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
-
-    g_free (dnd_info->target_uri);
-    dnd_info->target_uri = NULL;
+    g_clear_pointer (&dnd_info->target_uri, g_free);
 
     if (uri != NULL)
     {
         dnd_info->target_uri = g_strdup (uri);
-        dnd_info->hover_id = g_timeout_add (timeout, hover_timer, container);
+        dnd_info->hover_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, container);
     }
 }
 
