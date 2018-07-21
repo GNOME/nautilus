@@ -177,24 +177,17 @@ nautilus_path_bar_slider_drag_motion (GtkWidget *widget,
 {
     NautilusPathBar *self;
     NautilusPathBarPrivate *priv;
-    GtkSettings *settings;
-    unsigned int timeout;
 
     self = NAUTILUS_PATH_BAR (user_data);
     priv = nautilus_path_bar_get_instance_private (self);
 
     if (priv->drag_slider_timeout == 0)
     {
-        settings = gtk_widget_get_settings (widget);
+        priv->drag_slider_timeout = g_timeout_add (HOVER_TIMEOUT,
+                                                   slider_timeout,
+                                                   self);
 
-        g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
-        priv->drag_slider_timeout =
-            g_timeout_add (timeout,
-                           slider_timeout,
-                           self);
-
-        priv->drag_slider_timeout_for_up_button =
-            widget == priv->up_slider_button;
+        priv->drag_slider_timeout_for_up_button = (widget == priv->up_slider_button);
     }
 }
 
