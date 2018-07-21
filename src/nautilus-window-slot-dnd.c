@@ -122,19 +122,12 @@ static void
 slot_proxy_check_switch_location_timer (NautilusDragSlotProxyInfo *drag_info,
                                         GtkWidget                 *widget)
 {
-    GtkSettings *settings;
-    guint timeout;
-
     if (drag_info->switch_location_timer)
     {
         return;
     }
 
-    settings = gtk_widget_get_settings (widget);
-    g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
-
-
-    drag_info->switch_location_timer = g_timeout_add (timeout,
+    drag_info->switch_location_timer = g_timeout_add (HOVER_TIMEOUT,
                                                       slot_proxy_switch_location_timer,
                                                       drag_info);
 }

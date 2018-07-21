@@ -290,25 +290,18 @@ static void
 check_hover_timer (NautilusTreeViewDragDest *dest,
                    const char               *uri)
 {
-    GtkSettings *settings;
-    guint timeout;
-
     if (g_strcmp0 (uri, dest->details->target_uri) == 0)
     {
         return;
     }
     remove_hover_timer (dest);
 
-    settings = gtk_widget_get_settings (GTK_WIDGET (dest->details->tree_view));
-    g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
-
-    g_free (dest->details->target_uri);
-    dest->details->target_uri = NULL;
+    g_clear_pointer (&dest->details->target_uri, g_free);
 
     if (uri != NULL)
     {
         dest->details->target_uri = g_strdup (uri);
-        dest->details->hover_id = g_timeout_add (timeout, hover_timer, dest);
+        dest->details->hover_id = g_timeout_add (HOVER_TIMEOUT, hover_timer, dest);
     }
 }
 
