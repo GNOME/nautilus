@@ -40,12 +40,7 @@
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_CANVAS_CONTAINER, NautilusCanvasContainerClass))
 
 
-#define NAUTILUS_CANVAS_ICON_DATA(pointer) \
-	((NautilusCanvasIconData *) (pointer))
-
-typedef struct NautilusCanvasIconData NautilusCanvasIconData;
-
-typedef void (* NautilusCanvasCallback) (NautilusCanvasIconData *icon_data,
+typedef void (* NautilusCanvasCallback) (NautilusFile *file,
 					 gpointer callback_data);
 
 typedef struct {
@@ -79,9 +74,9 @@ typedef struct {
 
 	/* Operations on icons. */
 	void         (* activate)	  	  (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *data);
+						   NautilusFile            *file);
 	void         (* activate_alternate)       (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *data);
+						   NautilusFile            *file);
 	void         (* activate_previewer)       (NautilusCanvasContainer *container,
 						   GList *files,
 						   GArray *locations);
@@ -126,41 +121,41 @@ typedef struct {
 	 * good enough, these are _not_ signals.
 	 */
 	NautilusIconInfo *(* get_icon_images)     (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data,
+						     NautilusFile           *file,
 						     int canvas_size,
 						     gboolean for_drag_accept);
 	void         (* get_icon_text)            (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data,
+						     NautilusFile           *file,
 						     char **editable_text,
 						     char **additional_text,
 						     gboolean include_invisible);
 	char *       (* get_icon_description)     (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile           *file);
 	int          (* compare_icons)            (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *canvas_a,
-						     NautilusCanvasIconData *canvas_b);
+						     NautilusFile           *canvas_a,
+						     NautilusFile           *canvas_b);
 	int          (* compare_icons_by_name)    (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *canvas_a,
-						     NautilusCanvasIconData *canvas_b);
+						     NautilusFile           *canvas_a,
+						     NautilusFile           *canvas_b);
 	void         (* prioritize_thumbnailing)  (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *data);
+						   NautilusFile           *file);
 
 	/* Queries on icons for subclass/client.
 	 * These must be implemented => These are signals !
 	 * The default "do nothing" is not good enough.
 	 */
 	gboolean     (* can_accept_item)	  (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *target, 
+						   NautilusFile            *file,
 						   const char *item_uri);
 	gboolean     (* get_stored_icon_position) (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data,
+						     NautilusFile          *icon,
 						     NautilusCanvasPosition *position);
 	char *       (* get_icon_uri)             (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile          *icon);
 	char *       (* get_icon_activation_uri)  (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile          *file);
 	char *       (* get_icon_drop_target_uri) (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile          *icon);
 
 	/* If canvas data is NULL, the layout timestamp of the container should be retrieved.
 	 * That is the time when the container displayed a fully loaded directory with
@@ -171,13 +166,13 @@ typedef struct {
 	 * fully loaded directory with all canvas positions assigned.
 	 */
 	gboolean     (* get_stored_layout_timestamp) (NautilusCanvasContainer *container,
-						      NautilusCanvasIconData *data,
+						      NautilusFile           *file,
 						      time_t *time);
 	/* If canvas data is NULL, the layout timestamp of the container should be stored.
 	 * If canvas data is not NULL, the position timestamp of the container should be stored.
 	 */
 	gboolean     (* store_layout_timestamp) (NautilusCanvasContainer *container,
-						 NautilusCanvasIconData *data,
+						 NautilusFile           *file,
 						 const time_t *time);
 
 	/* Notifications for the whole container. */
@@ -188,15 +183,15 @@ typedef struct {
 
 	/* Notifications for icons. */
 	void         (* icon_position_changed)    (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data,
+						     NautilusFile           *file,
 						     const NautilusCanvasPosition *position);
 	int	     (* preview)		  (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *data,
+						   NautilusFile            *file,
 						   gboolean start_flag);
         void         (* icon_added)               (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile          *file);
         void         (* icon_removed)             (NautilusCanvasContainer *container,
-						     NautilusCanvasIconData *data);
+						     NautilusFile          *file);
         void         (* cleared)                  (NautilusCanvasContainer *container);
 	gboolean     (* start_interactive_search) (NautilusCanvasContainer *container);
 } NautilusCanvasContainerClass;
@@ -209,25 +204,25 @@ GtkWidget *       nautilus_canvas_container_new                           (void)
 /* adding, removing, and managing icons */
 void              nautilus_canvas_container_clear                         (NautilusCanvasContainer  *view);
 gboolean          nautilus_canvas_container_add                           (NautilusCanvasContainer  *view,
-									   NautilusCanvasIconData       *data);
+									   NautilusFile             *file);
 void              nautilus_canvas_container_layout_now                    (NautilusCanvasContainer *container);
 gboolean          nautilus_canvas_container_remove                        (NautilusCanvasContainer  *view,
-									   NautilusCanvasIconData       *data);
+									   NautilusFile             *file);
 void              nautilus_canvas_container_for_each                      (NautilusCanvasContainer  *view,
 									   NautilusCanvasCallback    callback,
 									   gpointer                callback_data);
 void              nautilus_canvas_container_request_update                (NautilusCanvasContainer  *view,
-									   NautilusCanvasIconData       *data);
+									   NautilusFile             *file);
 void              nautilus_canvas_container_request_update_all            (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_reveal                        (NautilusCanvasContainer  *container,
-									   NautilusCanvasIconData       *data);
+									   NautilusFile             *file);
 gboolean          nautilus_canvas_container_is_empty                      (NautilusCanvasContainer  *container);
-NautilusCanvasIconData *nautilus_canvas_container_get_first_visible_icon        (NautilusCanvasContainer  *container);
-NautilusCanvasIconData *nautilus_canvas_container_get_focused_icon              (NautilusCanvasContainer  *container);
+NautilusFile     *nautilus_canvas_container_get_first_visible_icon        (NautilusCanvasContainer  *container);
+NautilusFile     *nautilus_canvas_container_get_focused_icon              (NautilusCanvasContainer  *container);
 GdkRectangle      *nautilus_canvas_container_get_icon_bounding_box          (NautilusCanvasContainer  *container,
-									     NautilusCanvasIconData       *data);
+									     NautilusFile             *file);
 void              nautilus_canvas_container_scroll_to_canvas                (NautilusCanvasContainer  *container,
-									     NautilusCanvasIconData       *data);
+									     NautilusFile             *datfile);
 
 void              nautilus_canvas_container_begin_loading                 (NautilusCanvasContainer  *container);
 void              nautilus_canvas_container_end_loading                   (NautilusCanvasContainer  *container,
@@ -273,7 +268,7 @@ void              nautilus_canvas_container_set_margins                   (Nauti
 									   int                     top_margin,
 									   int                     bottom_margin);
 char*             nautilus_canvas_container_get_icon_description          (NautilusCanvasContainer  *container,
-									     NautilusCanvasIconData       *data);
+									     NautilusFile           *file);
 
 gboolean	  nautilus_canvas_container_is_layout_rtl			(NautilusCanvasContainer  *container);
 
