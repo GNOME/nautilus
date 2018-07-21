@@ -27,6 +27,8 @@
 #include <gtk/gtk.h>
 #include "nautilus-file.h"
 
+#define HOVER_TIMEOUT 500
+
 /* Drag & Drop target names. */
 #define NAUTILUS_ICON_DND_GNOME_ICON_LIST_TYPE "x-special/gnome-icon-list"
 
