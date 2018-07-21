@@ -374,12 +374,12 @@ icon_toggle_selected (NautilusCanvasContainer *container,
     icon->is_selected = !icon->is_selected;
     if (icon->is_selected)
     {
-        container->details->selection = g_list_prepend (container->details->selection, icon->data);
+        container->details->selection = g_list_prepend (container->details->selection, icon->file);
         container->details->selection_needs_resort = TRUE;
     }
     else
     {
-        container->details->selection = g_list_remove (container->details->selection, icon->data);
+        container->details->selection = g_list_remove (container->details->selection, icon->file);
     }
 
     eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
@@ -1031,13 +1031,14 @@ compare_icons_data (gconstpointer a,
                     gpointer      canvas_container)
 {
     NautilusCanvasContainerClass *klass;
-    NautilusCanvasIconData *data_a, *data_b;
+    NautilusFile *file_a;
+    NautilusFile *file_b;
 
-    data_a = (NautilusCanvasIconData *) a;
-    data_b = (NautilusCanvasIconData *) b;
+    file_a = NAUTILUS_FILE (a);
+    file_b = NAUTILUS_FILE (b);
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (canvas_container);
 
-    return klass->compare_icons (canvas_container, data_a, data_b);
+    return klass->compare_icons (canvas_container, file_a, file_b);
 }
 
 static int
@@ -1052,7 +1053,7 @@ compare_icons (gconstpointer a,
     icon_b = b;
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (canvas_container);
 
-    return klass->compare_icons (canvas_container, icon_a->data, icon_b->data);
+    return klass->compare_icons (canvas_container, icon_a->file, icon_b->file);
 }
 
 static void
@@ -3222,7 +3223,7 @@ on_event_controller_motion_motion (GtkEventControllerMotion *controller,
 
 static void
 nautilus_canvas_container_get_icon_text (NautilusCanvasContainer  *container,
-                                         NautilusCanvasIconData   *data,
+                                         NautilusFile             *file,
                                          char                    **editable_text,
                                          char                    **additional_text,
                                          gboolean                  include_invisible)
@@ -3232,7 +3233,7 @@ nautilus_canvas_container_get_icon_text (NautilusCanvasContainer  *container,
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
     g_assert (klass->get_icon_text != NULL);
 
-    klass->get_icon_text (container, data, editable_text, additional_text, include_invisible);
+    klass->get_icon_text (container, file, editable_text, additional_text, include_invisible);
 }
 
 static gboolean
@@ -4390,7 +4391,7 @@ nautilus_canvas_container_is_empty (NautilusCanvasContainer *container)
     return container->details->icons == NULL;
 }
 
-NautilusCanvasIconData *
+NautilusFile *
 nautilus_canvas_container_get_first_visible_icon (NautilusCanvasContainer *container)
 {
     GList *l;
@@ -4462,10 +4463,10 @@ nautilus_canvas_container_get_first_visible_icon (NautilusCanvasContainer *conta
         l = l->next;
     }
 
-    return best_icon ? best_icon->data : NULL;
+    return best_icon ? best_icon->file : NULL;
 }
 
-NautilusCanvasIconData *
+NautilusFile *
 nautilus_canvas_container_get_focused_icon (NautilusCanvasContainer *container)
 {
     NautilusCanvasIcon *icon;
@@ -4474,7 +4475,7 @@ nautilus_canvas_container_get_focused_icon (NautilusCanvasContainer *container)
 
     if (icon != NULL)
     {
-        return icon->data;
+        return icon->file;
     }
 
     return NULL;
@@ -4483,7 +4484,7 @@ nautilus_canvas_container_get_focused_icon (NautilusCanvasContainer *container)
 /* puts the icon at the top of the screen */
 void
 nautilus_canvas_container_scroll_to_canvas (NautilusCanvasContainer *container,
-                                            NautilusCanvasIconData  *data)
+                                            NautilusFile            *file)
 {
     GList *l;
     NautilusCanvasIcon *icon;
@@ -4503,8 +4504,7 @@ nautilus_canvas_container_scroll_to_canvas (NautilusCanvasContainer *container,
     {
         icon = l->data;
 
-        if (icon->data == data &&
-            icon_is_positioned (icon))
+        if (icon->file == file && icon_is_positioned (icon))
         {
             /* ensure that we reveal the entire row/column */
             icon_get_row_and_column_bounds (container, icon, &bounds);
@@ -4532,7 +4532,7 @@ call_canvas_callback (gpointer data,
 
     icon = data;
     callback_and_data = callback_data;
-    (*callback_and_data->callback)(icon->data, callback_and_data->callback_data);
+    (*callback_and_data->callback)(icon->file, callback_and_data->callback_data);
 }
 
 void
@@ -4584,8 +4584,8 @@ icon_destroy (NautilusCanvasContainer *container,
 
     details->icons = g_list_remove (details->icons, icon);
     details->new_icons = g_list_remove (details->new_icons, icon);
-    details->selection = g_list_remove (details->selection, icon->data);
-    g_hash_table_remove (details->icon_set, icon->data);
+    details->selection = g_list_remove (details->selection, icon->file);
+    g_hash_table_remove (details->icon_set, icon->file);
 
     was_selected = icon->is_selected;
 
@@ -4701,7 +4701,7 @@ activate_selected_items_alternate (NautilusCanvasContainer *container,
 
     if (icon != NULL)
     {
-        selection = g_list_prepend (NULL, icon->data);
+        selection = g_list_prepend (NULL, icon->file);
     }
     else
     {
@@ -4720,7 +4720,7 @@ activate_selected_items_alternate (NautilusCanvasContainer *container,
 
 static NautilusIconInfo *
 nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
-                                           NautilusCanvasIconData  *data,
+                                           NautilusFile            *file,
                                            int                      size,
                                            gboolean                 for_drag_accept)
 {
@@ -4729,7 +4729,7 @@ nautilus_canvas_container_get_icon_images (NautilusCanvasContainer *container,
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
     g_assert (klass->get_icon_images != NULL);
 
-    return klass->get_icon_images (container, data, size, for_drag_accept);
+    return klass->get_icon_images (container, file, size, for_drag_accept);
 }
 
 static void
@@ -4741,7 +4741,7 @@ nautilus_canvas_container_prioritize_thumbnailing (NautilusCanvasContainer *cont
     klass = NAUTILUS_CANVAS_CONTAINER_GET_CLASS (container);
     g_assert (klass->prioritize_thumbnailing != NULL);
 
-    klass->prioritize_thumbnailing (container, icon->data);
+    klass->prioritize_thumbnailing (container, icon->file);
 }
 
 static void
@@ -4848,14 +4848,14 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
     DEBUG ("Icon size, getting for size %d", icon_size);
 
     /* Get the icons. */
-    icon_info = nautilus_canvas_container_get_icon_images (container, icon->data, icon_size,
+    icon_info = nautilus_canvas_container_get_icon_images (container, icon->file, icon_size,
                                                            icon == details->drop_target);
 
     pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
     g_object_unref (icon_info);
 
     nautilus_canvas_container_get_icon_text (container,
-                                             icon->data,
+                                             icon->file,
                                              &editable_text,
                                              &additional_text,
                                              FALSE);
@@ -4885,7 +4885,7 @@ finish_adding_icon (NautilusCanvasContainer *container,
     g_signal_connect_object (icon->item, "event",
                              G_CALLBACK (item_event_callback), container, 0);
 
-    g_signal_emit (container, signals[ICON_ADDED], 0, icon->data);
+    g_signal_emit (container, signals[ICON_ADDED], 0, icon->file);
 }
 
 static gboolean
@@ -4919,25 +4919,25 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
  **/
 gboolean
 nautilus_canvas_container_add (NautilusCanvasContainer *container,
-                               NautilusCanvasIconData  *data)
+                               NautilusFile            *file)
 {
     NautilusCanvasContainerDetails *details;
     NautilusCanvasIcon *icon;
     EelCanvasItem *band, *item;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), FALSE);
-    g_return_val_if_fail (data != NULL, FALSE);
+    g_return_val_if_fail (file != NULL, FALSE);
 
     details = container->details;
 
-    if (g_hash_table_lookup (details->icon_set, data) != NULL)
+    if (g_hash_table_lookup (details->icon_set, file) != NULL)
     {
         return FALSE;
     }
 
     /* Create the new icon, including the canvas item. */
     icon = g_new0 (NautilusCanvasIcon, 1);
-    icon->data = data;
+    icon->file = file;
     icon->x = ICON_UNPOSITIONED_VALUE;
     icon->y = ICON_UNPOSITIONED_VALUE;
 
@@ -4964,7 +4964,7 @@ nautilus_canvas_container_add (NautilusCanvasContainer *container,
     details->icons = g_list_prepend (details->icons, icon);
     details->new_icons = g_list_prepend (details->new_icons, icon);
 
-    g_hash_table_insert (details->icon_set, data, icon);
+    g_hash_table_insert (details->icon_set, file, icon);
 
     details->needs_resort = TRUE;
 
@@ -4994,20 +4994,20 @@ nautilus_canvas_container_layout_now (NautilusCanvasContainer *container)
 /**
  * nautilus_canvas_container_remove:
  * @container: A NautilusCanvasContainer.
- * @data: Icon data.
+ * @data: Icon file.
  *
- * Remove the icon with this data.
+ * Remove the icon with this file.
  **/
 gboolean
 nautilus_canvas_container_remove (NautilusCanvasContainer *container,
-                                  NautilusCanvasIconData  *data)
+                                  NautilusFile            *file)
 {
     NautilusCanvasIcon *icon;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), FALSE);
-    g_return_val_if_fail (data != NULL, FALSE);
+    g_return_val_if_fail (file != NULL, FALSE);
 
-    icon = g_hash_table_lookup (container->details->icon_set, data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
 
     if (icon == NULL)
     {
@@ -5025,20 +5025,20 @@ nautilus_canvas_container_remove (NautilusCanvasContainer *container,
 /**
  * nautilus_canvas_container_request_update:
  * @container: A NautilusCanvasContainer.
- * @data: Icon data.
+ * @data: Icon file.
  *
- * Update the icon with this data.
+ * Update the icon with this file.
  **/
 void
 nautilus_canvas_container_request_update (NautilusCanvasContainer *container,
-                                          NautilusCanvasIconData  *data)
+                                          NautilusFile            *file)
 {
     NautilusCanvasIcon *icon;
 
     g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
-    g_return_if_fail (data != NULL);
+    g_return_if_fail (file != NULL);
 
-    icon = g_hash_table_lookup (container->details->icon_set, data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
 
     if (icon != NULL)
     {
@@ -5109,14 +5109,14 @@ nautilus_canvas_container_request_update_all (NautilusCanvasContainer *container
  */
 void
 nautilus_canvas_container_reveal (NautilusCanvasContainer *container,
-                                  NautilusCanvasIconData  *data)
+                                  NautilusFile            *file)
 {
     NautilusCanvasIcon *icon;
 
     g_return_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container));
-    g_return_if_fail (data != NULL);
+    g_return_if_fail (file != NULL);
 
-    icon = g_hash_table_lookup (container->details->icon_set, data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
 
     if (icon != NULL)
     {
@@ -5222,16 +5222,16 @@ nautilus_canvas_container_get_icon_locations (NautilusCanvasContainer *container
  * pixels_per_unit already, so they are the final positions on the canvas */
 GdkRectangle *
 nautilus_canvas_container_get_icon_bounding_box (NautilusCanvasContainer *container,
-                                                 NautilusCanvasIconData  *data)
+                                                 NautilusFile            *file)
 {
     NautilusCanvasIcon *icon;
     int x1, x2, y1, y2;
     GdkRectangle *bounding_box;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_CONTAINER (container), NULL);
-    g_return_val_if_fail (data != NULL, NULL);
+    g_return_val_if_fail (file != NULL, NULL);
 
-    icon = g_hash_table_lookup (container->details->icon_set, data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
     icon_get_bounding_box (icon,
                            &x1, &y1, &x2, &y2,
                            BOUNDS_USAGE_FOR_DISPLAY);
@@ -5334,7 +5334,7 @@ nautilus_canvas_container_select_first (NautilusCanvasContainer *container)
 /**
  * nautilus_canvas_container_set_selection:
  * @container: An canvas container widget.
- * @selection: A list of NautilusCanvasIconData *.
+ * @selection: A list of NautilusFile *.
  *
  * Set the selection to exactly the icons in @container which have
  * programmer data matching one of the items in @selection.
@@ -5365,7 +5365,7 @@ nautilus_canvas_container_set_selection (NautilusCanvasContainer *container,
 
         res = icon_set_selected
                   (container, icon,
-                  g_hash_table_lookup (hash, icon->data) != NULL);
+                  g_hash_table_lookup (hash, icon->file) != NULL);
         selection_changed |= res;
 
         if (res)
@@ -5562,7 +5562,7 @@ nautilus_canvas_container_get_icon_uri (NautilusCanvasContainer *container,
     uri = NULL;
     g_signal_emit (container,
                    signals[GET_ICON_URI], 0,
-                   icon->data,
+                   icon->file,
                    &uri);
     return uri;
 }
@@ -5576,7 +5576,7 @@ nautilus_canvas_container_get_icon_activation_uri (NautilusCanvasContainer *cont
     uri = NULL;
     g_signal_emit (container,
                    signals[GET_ICON_ACTIVATION_URI], 0,
-                   icon->data,
+                   icon->file,
                    &uri);
     return uri;
 }
@@ -5590,7 +5590,7 @@ nautilus_canvas_container_get_icon_drop_target_uri (NautilusCanvasContainer *con
     uri = NULL;
     g_signal_emit (container,
                    signals[GET_ICON_DROP_TARGET_URI], 0,
-                   icon->data,
+                   icon->file,
                    &uri);
     return uri;
 }
@@ -5641,7 +5641,7 @@ nautilus_canvas_container_set_font (NautilusCanvasContainer *container,
  **/
 char *
 nautilus_canvas_container_get_icon_description (NautilusCanvasContainer *container,
-                                                NautilusCanvasIconData  *data)
+                                                NautilusFile            *file)
 {
     NautilusCanvasContainerClass *klass;
 
@@ -5649,7 +5649,7 @@ nautilus_canvas_container_get_icon_description (NautilusCanvasContainer *contain
 
     if (klass->get_icon_description)
     {
-        return klass->get_icon_description (container, data);
+        return klass->get_icon_description (container, file);
     }
     else
     {
@@ -5676,7 +5676,7 @@ nautilus_canvas_container_set_highlighted_for_clipboard (NautilusCanvasContainer
     for (l = container->details->icons; l != NULL; l = l->next)
     {
         icon = l->data;
-        highlighted_for_clipboard = (g_list_find (clipboard_canvas_data, icon->data) != NULL);
+        highlighted_for_clipboard = (g_list_find (clipboard_canvas_data, icon->file) != NULL);
 
         eel_canvas_item_set (EEL_CANVAS_ITEM (icon->item),
                              "highlighted-for-clipboard", highlighted_for_clipboard,
@@ -5847,7 +5847,7 @@ nautilus_canvas_container_accessible_selection_changed_cb (NautilusCanvasContain
 
 static void
 nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *container,
-                                                    NautilusCanvasIconData  *icon_data,
+                                                    NautilusFile            *file,
                                                     gpointer                 data)
 {
     NautilusCanvasIcon *icon;
@@ -5858,12 +5858,11 @@ nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *con
     if (!container->details->in_layout_now || container->details->is_populating_container)
         return;
 
-    icon = g_hash_table_lookup (container->details->icon_set, icon_data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
     if (icon)
     {
         atk_parent = ATK_OBJECT (data);
-        atk_child = atk_gobject_accessible_for_object
-                        (G_OBJECT (icon->item));
+        atk_child = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
 
         g_signal_emit_by_name (atk_parent, "children-changed::add",
                                icon->position, atk_child, NULL);
@@ -5872,19 +5871,18 @@ nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *con
 
 static void
 nautilus_canvas_container_accessible_icon_removed_cb (NautilusCanvasContainer *container,
-                                                      NautilusCanvasIconData  *icon_data,
+                                                      NautilusFile            *file,
                                                       gpointer                 data)
 {
     NautilusCanvasIcon *icon;
     AtkObject *atk_parent;
     AtkObject *atk_child;
 
-    icon = g_hash_table_lookup (container->details->icon_set, icon_data);
+    icon = g_hash_table_lookup (container->details->icon_set, file);
     if (icon)
     {
-        atk_parent = ATK_OBJECT (data);
-        atk_child = atk_gobject_accessible_for_object
-                        (G_OBJECT (icon->item));
+        atk_parent = ATK_OBJECT (file);
+        atk_child = atk_gobject_accessible_for_object (G_OBJECT (icon->item));
 
         g_signal_emit_by_name (atk_parent, "children-changed::remove",
                                icon->position, atk_child, NULL);
@@ -5923,7 +5921,7 @@ nautilus_canvas_container_accessible_add_selection (AtkSelection *accessible,
 
         selection = nautilus_canvas_container_get_selection (container);
         selection = g_list_prepend (selection,
-                                    icon->data);
+                                    icon->file);
         nautilus_canvas_container_set_selection (container, selection);
 
         g_list_free (selection);
@@ -6049,7 +6047,7 @@ nautilus_canvas_container_accessible_remove_selection (AtkSelection *accessible,
         icon = l->data;
 
         selection = nautilus_canvas_container_get_selection (container);
-        selection = g_list_remove (selection, icon->data);
+        selection = g_list_remove (selection, icon->file);
         nautilus_canvas_container_set_selection (container, selection);
 
         g_list_free (selection);
