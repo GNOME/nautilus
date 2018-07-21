@@ -164,7 +164,7 @@ action_pathbar_open_item_new_window (GSimpleAction *action,
                                      gpointer       user_data)
 {
     NautilusPathBar *self;
-    GFile *location;
+    g_autoptr (GFile) location = NULL;
 
     self = NAUTILUS_PATH_BAR (user_data);
 
@@ -174,11 +174,9 @@ action_pathbar_open_item_new_window (GSimpleAction *action,
     }
 
     location = nautilus_file_get_location (self->context_menu_file);
-
-    if (location)
+    if (location != NULL)
     {
         g_signal_emit (user_data, path_bar_signals[OPEN_LOCATION], 0, location, GTK_PLACES_OPEN_NEW_WINDOW);
-        g_object_unref (location);
     }
 }
 
