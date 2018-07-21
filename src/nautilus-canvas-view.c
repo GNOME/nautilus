@@ -259,21 +259,21 @@ update_sort_criterion (NautilusCanvasView  *canvas_view,
 }
 
 static void
-list_covers (NautilusCanvasIconData *data,
-             gpointer                callback_data)
+list_covers (NautilusFile *file,
+             gpointer      callback_data)
 {
     GSList **file_list;
 
     file_list = callback_data;
 
-    *file_list = g_slist_prepend (*file_list, data);
+    *file_list = g_slist_prepend (*file_list, file);
 }
 
 static void
-unref_cover (NautilusCanvasIconData *data,
-             gpointer                callback_data)
+unref_cover (NautilusFile *file,
+             gpointer      callback_data)
 {
-    nautilus_file_unref (NAUTILUS_FILE (data));
+    nautilus_file_unref (file);
 }
 
 static void
@@ -329,8 +329,7 @@ nautilus_canvas_view_remove_file (NautilusFilesView *view,
 
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
 
-    if (nautilus_canvas_container_remove (get_canvas_container (canvas_view),
-                                          NAUTILUS_CANVAS_ICON_DATA (file)))
+    if (nautilus_canvas_container_remove (get_canvas_container (canvas_view), file))
     {
         nautilus_file_unref (file);
     }
@@ -349,10 +348,9 @@ nautilus_canvas_view_add_files (NautilusFilesView *view,
 
     for (l = files; l != NULL; l = l->next)
     {
-        if (nautilus_canvas_container_add (canvas_container,
-                                           NAUTILUS_CANVAS_ICON_DATA (l->data)))
+        if (nautilus_canvas_container_add (canvas_container, l->data))
         {
-            nautilus_file_ref (NAUTILUS_FILE (l->data));
+            nautilus_file_ref (l->data);
         }
     }
 }
@@ -369,9 +367,7 @@ nautilus_canvas_view_file_changed (NautilusFilesView *view,
     g_return_if_fail (view != NULL);
     canvas_view = NAUTILUS_CANVAS_VIEW (view);
 
-    nautilus_canvas_container_request_update
-        (get_canvas_container (canvas_view),
-        NAUTILUS_CANVAS_ICON_DATA (file));
+    nautilus_canvas_container_request_update (get_canvas_container (canvas_view), file);
 }
 
 static const SortCriterion *
@@ -900,14 +896,14 @@ nautilus_canvas_view_reveal_selection (NautilusFilesView *view)
 }
 
 static GdkRectangle *
-get_rectangle_for_data (NautilusFilesView      *view,
-                        NautilusCanvasIconData *data)
+get_rectangle_for_file (NautilusFilesView *view,
+                        NautilusFile      *file)
 {
     NautilusCanvasContainer *container;
     GdkRectangle *rectangle;
 
     container = get_canvas_container (NAUTILUS_CANVAS_VIEW (view));
-    rectangle = nautilus_canvas_container_get_icon_bounding_box (container, data);
+    rectangle = nautilus_canvas_container_get_icon_bounding_box (container, file);
     if (rectangle != NULL)
     {
         GtkWidget *context_widget;
@@ -928,7 +924,6 @@ static GdkRectangle *
 nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view)
 {
     g_autolist (NautilusFile) selection = NULL;
-    NautilusCanvasIconData *data;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
 
@@ -936,9 +931,7 @@ nautilus_canvas_view_compute_rename_popover_pointing_to (NautilusFilesView *view
     g_return_val_if_fail (selection != NULL, NULL);
 
     /* We only allow renaming one item at once */
-    data = NAUTILUS_CANVAS_ICON_DATA (selection->data);
-
-    return get_rectangle_for_data (view, data);
+    return get_rectangle_for_file (view, selection->data);
 }
 
 static GdkRectangle *
@@ -946,7 +939,7 @@ nautilus_canvas_view_reveal_for_selection_context_menu (NautilusFilesView *view)
 {
     g_autolist (NautilusFile) selection = NULL;
     NautilusCanvasContainer *container;
-    NautilusCanvasIconData *data;
+    NautilusFile *file;
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_VIEW (view), NULL);
 
@@ -960,16 +953,16 @@ nautilus_canvas_view_reveal_for_selection_context_menu (NautilusFilesView *view)
 
     /* Get the data of the focused item, if selected. Otherwise, get the
      * data of the last selected item.*/
-    data = nautilus_canvas_container_get_focused_icon (container);
-    if (data == NULL || g_list_find (selection, NAUTILUS_FILE (data)) == NULL)
+    file = nautilus_canvas_container_get_focused_icon (container);
+    if (file == NULL || g_list_find (selection, file) == NULL)
     {
         selection = g_list_last (selection);
-        data = NAUTILUS_CANVAS_ICON_DATA (selection->data);
+        file = selection->data;
     }
 
-    nautilus_canvas_container_reveal (container, data);
+    nautilus_canvas_container_reveal (container, file);
 
-    return get_rectangle_for_data (view, data);
+    return get_rectangle_for_file (view, file);
 }
 
 static void
@@ -1455,8 +1448,7 @@ canvas_view_scroll_to_file (NautilusFilesView *view,
         file = nautilus_file_get_existing_by_uri (uri);
         if (file != NULL)
         {
-            nautilus_canvas_container_scroll_to_canvas (get_canvas_container (canvas_view),
-                                                        NAUTILUS_CANVAS_ICON_DATA (file));
+            nautilus_canvas_container_scroll_to_canvas (get_canvas_container (canvas_view), file);
             nautilus_file_unref (file);
         }
     }
