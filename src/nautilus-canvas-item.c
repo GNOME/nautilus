@@ -1887,7 +1887,7 @@ nautilus_canvas_item_accessible_idle_do_action (gpointer data)
         {
             case ACTION_OPEN:
             {
-                file_list.data = icon->data;
+                file_list.data = icon->file;
                 file_list.next = NULL;
                 file_list.prev = NULL;
                 g_signal_emit_by_name (container, "activate", &file_list);
@@ -1902,7 +1902,7 @@ nautilus_canvas_item_accessible_idle_do_action (gpointer data)
                 selection = nautilus_canvas_container_get_selection (container);
                 if (selection == NULL ||
                     g_list_length (selection) != 1 ||
-                    selection->data != icon->data)
+                    selection->data != icon->file)
                 {
                     return FALSE;
                 }
@@ -2147,7 +2147,7 @@ nautilus_canvas_item_accessible_get_image_description (AtkImage *image)
         }
         icon = item->user_data;
         container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
-        description = nautilus_canvas_container_get_icon_description (container, icon->data);
+        description = nautilus_canvas_container_get_icon_description (container, icon->file);
         g_free (priv->description);
         priv->description = description;
         return priv->description;
