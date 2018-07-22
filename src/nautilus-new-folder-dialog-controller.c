@@ -59,6 +59,10 @@ nautilus_new_folder_dialog_controller_name_is_valid (NautilusFileNameWidgetContr
     {
         *error_message = _("A folder cannot be called “..”.");
     }
+    else if (strncmp (name, ".",1) == 0)
+    {
+        *error_message = _("Folder names starting with “.” are hidden.");
+    }
 
     return *error_message == NULL;
 }
