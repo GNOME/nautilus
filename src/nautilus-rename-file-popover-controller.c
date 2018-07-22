@@ -161,6 +161,18 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
             *error_message = _("File name is too long.");
         }
     }
+    else if (g_str_has_prefix (name, "."))
+    {
+        if (self->target_is_folder)
+        {
+            *error_message = _("Folders with “.” at the beginning of their name are hidden.");
+        }
+        else
+        {
+            *error_message = _("Files with “.” at the beginning of their name are hidden.");
+        }
+      return TRUE;
+    }
 
     return *error_message == NULL;
 }
