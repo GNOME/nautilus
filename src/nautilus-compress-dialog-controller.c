@@ -66,7 +66,11 @@ nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetControl
     {
         *error_message = _("An archive cannot be called “..”.");
     }
-
+    else if (g_str_has_prefix (name, "."))
+    {
+        *error_message = _("Archives with names starting with “.” are hidden.");
+        return TRUE;
+    }
     return *error_message == NULL;
 }
 
