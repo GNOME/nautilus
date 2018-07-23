@@ -417,17 +417,11 @@ nautilus_list_model_get_value (GtkTreeModel *tree_model,
                     g_list_find_custom (priv->highlight_files,
                                         file, (GCompareFunc) nautilus_file_compare_location))
                 {
-#if 0
-                    GdkPixbuf *rendered_icon;
+                    g_autoptr (GdkTexture) prelit_texture = NULL;
 
-                    rendered_icon = eel_create_spotlight_pixbuf (icon);
+                    prelit_texture = eel_create_spotlight_texture (texture);
 
-                    if (rendered_icon != NULL)
-                    {
-                        g_object_unref (icon);
-                        icon = rendered_icon;
-                    }
-#endif
+                    g_set_object (&texture, prelit_texture);
                 }
 
                 g_value_take_object (value, texture);
