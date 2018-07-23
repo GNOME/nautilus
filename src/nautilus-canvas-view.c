@@ -1242,15 +1242,6 @@ nautilus_canvas_view_sort_directories_first_changed (NautilusFilesView *director
     nautilus_canvas_container_sort (get_canvas_container (canvas_view));
 }
 
-static gboolean
-canvas_view_can_accept_item (NautilusCanvasContainer *container,
-                             NautilusFile            *target_item,
-                             const char              *item_uri,
-                             NautilusFilesView       *view)
-{
-    return nautilus_drag_can_accept_item (target_item, item_uri);
-}
-
 static char *
 canvas_view_get_container_uri (NautilusCanvasContainer *container,
                                NautilusFilesView       *view)
@@ -1361,8 +1352,6 @@ initialize_canvas_container (NautilusCanvasView      *canvas_view,
                              G_CALLBACK (canvas_view_move_copy_items), canvas_view, 0);
     g_signal_connect_object (canvas_container, "get-container-uri",
                              G_CALLBACK (canvas_view_get_container_uri), canvas_view, 0);
-    g_signal_connect_object (canvas_container, "can-accept-item",
-                             G_CALLBACK (canvas_view_can_accept_item), canvas_view, 0);
 
     gtk_container_add (GTK_CONTAINER (content_widget),
                        GTK_WIDGET (canvas_container));
