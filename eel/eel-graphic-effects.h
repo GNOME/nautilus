@@ -21,8 +21,6 @@
 
 #pragma once
 
-#include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdk.h>
 
-/* return a lightened pixbuf for pre-lighting */
-GdkPixbuf *eel_create_spotlight_pixbuf (GdkPixbuf *source_pixbuf);
+GdkTexture *eel_create_spotlight_texture (GdkTexture *texture);
