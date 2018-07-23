@@ -73,22 +73,24 @@ libnautilus_extension = shared_library(
   install: true
 )
 
-gnome.generate_gir(
-  libnautilus_extension,
-  extra_args: [
-    '-DNAUTILUS_COMPILATION'
-  ],
-  sources: libnautilus_extension_sources,
-  nsversion: '3.0',
-  namespace: 'Nautilus',
-  includes: [
-    'Gtk-3.0',
-    'Gio-2.0',
-    'GLib-2.0'
-  ],
-  header: 'nautilus-extension.h',
-  install: true
-)
+if get_option('introspection')
+  gnome.generate_gir(
+    libnautilus_extension,
+    extra_args: [
+      '-DNAUTILUS_COMPILATION'
+    ],
+    sources: libnautilus_extension_sources,
+    nsversion: '3.0',
+    namespace: 'Nautilus',
+    includes: [
+      'Gtk-3.0',
+      'Gio-2.0',
+      'GLib-2.0'
+    ],
+    header: 'nautilus-extension.h',
+    install: true
+  )
+endif
 
 nautilus_extension = declare_dependency(
   sources: libnautilus_extension_enums[1],
