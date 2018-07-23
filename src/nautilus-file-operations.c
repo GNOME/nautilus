@@ -6405,6 +6405,21 @@ nautilus_file_operations_move_sync (GList                *files,
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_move);
     g_object_unref (task);
+
+    if (job->done_callback)
+    {
+        job->done_callback (job->debuting_files,
+                            !job_aborted ((CommonJob *) job),
+                            job->done_callback_data);
+    }
+
+    g_list_free_full (job->files, g_object_unref);
+    g_object_unref (job->destination);
+    g_hash_table_unref (job->debuting_files);
+
+    finalize_common ((CommonJob *) job);
+
+    nautilus_file_changes_consume_changes (TRUE);
 }
 
 void

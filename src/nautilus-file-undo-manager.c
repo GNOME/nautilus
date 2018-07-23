@@ -30,6 +30,7 @@
 #include "nautilus-trash-monitor.h"
 
 #include <glib/gi18n.h>
+#include <glib/gprintf.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_UNDO
 #include "nautilus-debug.h"
@@ -213,6 +214,34 @@ nautilus_file_undo_manager_redo (GtkWindow *parent_window)
     }
 
     do_undo_redo (undo_singleton, parent_window);
+}
+
+void
+nautilus_file_undo_manager_undo_sync (GtkWindow *parent_window,
+                                      GMainLoop *loop)
+{
+    if (undo_singleton->state != NAUTILUS_FILE_UNDO_MANAGER_STATE_UNDO)
+    {
+        g_warning ("Called undo, but state is %s!", undo_singleton->state == 0 ?
+                   "none" : "redo");
+        return;
+    }
+
+    do_undo_redo (undo_singleton, parent_window);
+
+    g_assert_true (FALSE);
+
+    G_BREAKPOINT ();
+
+    g_printf ("Is running before quit: %i, should be: %i\n", g_main_loop_is_running (loop), TRUE);
+
+    G_BREAKPOINT ();
+
+    g_main_loop_quit (loop);
+
+    g_printf ("Is running after quit: %i, should be: %i\n", g_main_loop_is_running (loop), FALSE);
+
+    G_BREAKPOINT ();
 }
 
 void
