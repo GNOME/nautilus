@@ -122,6 +122,11 @@ real_name_is_valid (NautilusFileNameWidgetController  *self,
     {
         *error_message = _("A file cannot be called “..”.");
     }
+    else if (g_str_has_prefix (name, "."))
+    {
+        *error_message = _("File names starting with “.” are hidden.");
+        return TRUE;
+    }
 
     return *error_message == NULL;
 }
