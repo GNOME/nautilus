@@ -18,89 +18,57 @@
  * License along with this library; if not, see <http://www.gnu.org/licenses/>.
  */
 
-/* This file contains pixbuf manipulation routines used for graphical effects like pre-lighting
- *  and selection hilighting */
-
-#include <config.h>
-
 #include "eel-graphic-effects.h"
-#include "eel-glib-extensions.h"
 
-#include <math.h>
-#include <string.h>
-
-/* shared utility to create a new pixbuf from the passed-in one */
-
-static GdkPixbuf *
-create_new_pixbuf (GdkPixbuf *src)
+GdkTexture *
+eel_create_spotlight_texture (GdkTexture *texture)
 {
-    g_assert (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB);
-    g_assert ((!gdk_pixbuf_get_has_alpha (src)
-               && gdk_pixbuf_get_n_channels (src) == 3)
-              || (gdk_pixbuf_get_has_alpha (src)
-                  && gdk_pixbuf_get_n_channels (src) == 4));
+    int width;
+    int height;
+    cairo_surface_t *surface;
+    cairo_t *cr;
+    unsigned char *data;
+    int stride;
+    g_autoptr (GBytes) bytes = NULL;
+    GdkTexture *prelit_texture;
 
-    return gdk_pixbuf_new (gdk_pixbuf_get_colorspace (src),
-                           gdk_pixbuf_get_has_alpha (src),
-                           gdk_pixbuf_get_bits_per_sample (src),
-                           gdk_pixbuf_get_width (src),
-                           gdk_pixbuf_get_height (src));
-}
+    g_return_val_if_fail (GDK_IS_TEXTURE (texture), NULL);
 
-/* utility routine to bump the level of a color component with pinning */
+    width = gdk_texture_get_width (texture);
+    height = gdk_texture_get_height (texture);
+    surface = cairo_image_surface_create (CAIRO_FORMAT_ARGB32, width, height);
+    cr = cairo_create (surface);
+    data = cairo_image_surface_get_data (surface);
+    stride = cairo_image_surface_get_stride (surface);
 
-static guchar
-lighten_component (guchar cur_value)
-{
-    int new_value = cur_value;
-    new_value += 24 + (new_value >> 3);
-    if (new_value > 255)
-    {
-        new_value = 255;
-    }
-    return (guchar) new_value;
-}
+    gdk_texture_download (texture, data, stride);
 
-GdkPixbuf *
-eel_create_spotlight_pixbuf (GdkPixbuf *src)
-{
-    GdkPixbuf *dest;
-    int i, j;
-    int width, height, has_alpha, src_row_stride, dst_row_stride;
-    guchar *target_pixels, *original_pixels;
-    guchar *pixsrc, *pixdest;
+    cairo_surface_mark_dirty (surface);
 
-    g_return_val_if_fail (gdk_pixbuf_get_colorspace (src) == GDK_COLORSPACE_RGB, NULL);
-    g_return_val_if_fail ((!gdk_pixbuf_get_has_alpha (src)
-                           && gdk_pixbuf_get_n_channels (src) == 3)
-                          || (gdk_pixbuf_get_has_alpha (src)
-                              && gdk_pixbuf_get_n_channels (src) == 4), NULL);
-    g_return_val_if_fail (gdk_pixbuf_get_bits_per_sample (src) == 8, NULL);
+    cairo_set_source_surface (cr, surface, 0, 0);
+    cairo_paint (cr);
 
-    dest = create_new_pixbuf (src);
+    cairo_set_operator (cr, CAIRO_OPERATOR_ADD);
 
-    has_alpha = gdk_pixbuf_get_has_alpha (src);
-    width = gdk_pixbuf_get_width (src);
-    height = gdk_pixbuf_get_height (src);
-    dst_row_stride = gdk_pixbuf_get_rowstride (dest);
-    src_row_stride = gdk_pixbuf_get_rowstride (src);
-    target_pixels = gdk_pixbuf_get_pixels (dest);
-    original_pixels = gdk_pixbuf_get_pixels (src);
+    cairo_push_group (cr);
 
-    for (i = 0; i < height; i++)
-    {
-        pixdest = target_pixels + i * dst_row_stride;
-        pixsrc = original_pixels + i * src_row_stride;
-        for (j = 0; j < width; j++)
-        {
-            *pixdest++ = lighten_component (*pixsrc++);
-            *pixdest++ = lighten_component (*pixsrc++);
-            *pixdest++ = lighten_component (*pixsrc++);
-            if (has_alpha)
-            {
-                *pixdest++ = *pixsrc++;
-            }
-        }
-    }
-    return dest;
+    /* This is *close enough* to the original look.
+     * The magic alpha value was selected after visual comparison.
+     */
+    cairo_set_source_rgba (cr, 1.0, 1.0, 1.0, 0.18);
+    cairo_paint (cr);
+
+    cairo_pop_group_to_source (cr);
+
+    cairo_mask_surface (cr, surface, 0.0, 0.0);
+
+    cairo_surface_flush (surface);
+
+    bytes = g_bytes_new (data, height * stride);
+    prelit_texture = gdk_memory_texture_new (width, height, GDK_MEMORY_B8G8R8A8_PREMULTIPLIED, bytes, stride);
+
+    cairo_destroy (cr);
+    cairo_surface_destroy (surface);
+
+    return prelit_texture;
 }
