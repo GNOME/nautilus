@@ -271,8 +271,6 @@ gboolean	  nautilus_canvas_container_is_layout_rtl			(NautilusCanvasContainer  *
 
 gboolean          nautilus_canvas_container_get_store_layout_timestamps   (NautilusCanvasContainer  *container);
 
-void              nautilus_canvas_container_widget_to_file_operation_position (NautilusCanvasContainer *container,
-									       GdkPoint              *position);
 guint             nautilus_canvas_container_get_icon_size_for_zoom_level (NautilusCanvasZoomLevel zoom_level);
 
 #define CANVAS_WIDTH(container,allocation) (allocation.width		\

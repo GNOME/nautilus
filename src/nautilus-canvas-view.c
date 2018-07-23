@@ -971,16 +971,6 @@ nautilus_canvas_view_invert_selection (NautilusFilesView *view)
 }
 
 static void
-nautilus_canvas_view_widget_to_file_operation_position (NautilusFilesView *view,
-                                                        GdkPoint          *position)
-{
-    g_assert (NAUTILUS_IS_CANVAS_VIEW (view));
-
-    nautilus_canvas_container_widget_to_file_operation_position
-        (get_canvas_container (NAUTILUS_CANVAS_VIEW (view)), position);
-}
-
-static void
 canvas_container_activate_callback (NautilusCanvasContainer *container,
                                     GList                   *file_list,
                                     NautilusCanvasView      *canvas_view)
@@ -1508,7 +1498,6 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->click_policy_changed = nautilus_canvas_view_click_policy_changed;
     nautilus_files_view_class->update_actions_state = nautilus_canvas_view_update_actions_state;
     nautilus_files_view_class->sort_directories_first_changed = nautilus_canvas_view_sort_directories_first_changed;
-    nautilus_files_view_class->widget_to_file_operation_position = nautilus_canvas_view_widget_to_file_operation_position;
     nautilus_files_view_class->get_view_id = nautilus_canvas_view_get_id;
     nautilus_files_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = canvas_view_scroll_to_file;
