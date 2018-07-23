@@ -191,7 +191,6 @@ enum
     ACTIVATE_PREVIEWER,
     BAND_SELECT_STARTED,
     BAND_SELECT_ENDED,
-    CAN_ACCEPT_ITEM,
     CONTEXT_CLICK_BACKGROUND,
     CONTEXT_CLICK_SELECTION,
     MIDDLE_CLICK,
@@ -3589,17 +3588,6 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
                         NULL, NULL,
                         g_cclosure_marshal_generic,
                         G_TYPE_STRING, 0);
-    signals[CAN_ACCEPT_ITEM]
-        = g_signal_new ("can-accept-item",
-                        G_TYPE_FROM_CLASS (class),
-                        G_SIGNAL_RUN_LAST,
-                        G_STRUCT_OFFSET (NautilusCanvasContainerClass,
-                                         can_accept_item),
-                        NULL, NULL,
-                        g_cclosure_marshal_generic,
-                        G_TYPE_INT, 2,
-                        G_TYPE_POINTER,
-                        G_TYPE_STRING);
     signals[BAND_SELECT_STARTED]
         = g_signal_new ("band-select-started",
                         G_TYPE_FROM_CLASS (class),
