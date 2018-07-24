@@ -5778,9 +5778,22 @@ nautilus_file_operations_copy (GTask        *task,
         GFile *src_dir;
 
         src_dir = g_file_get_parent (job->files->data);
-        job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
-                                                                 g_list_length (job->files),
-                                                                 src_dir, job->destination);
+        /* In the case of duplicating a file in the same directory, there is no destination.
+         * For the usual copy operation, we use the same destination directory for the undoing.
+         * In the case of duplication, we set it as the source directory of the file(s).
+         */
+        if (job->destination)
+        {
+            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+                                                                     g_list_length (job->files),
+                                                                     src_dir, job->destination);
+        }
+        else
+        {
+            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+                                                                     g_list_length (job->files),
+                                                                     src_dir, src_dir);
+        }
 
         g_object_unref (src_dir);
     }
@@ -6879,18 +6892,6 @@ nautilus_file_operations_duplicate (GList                *files,
      * button. */
     nautilus_progress_info_set_destination (((CommonJob *) job)->progress, parent);
     job->debuting_files = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
-
-    if (!nautilus_file_undo_manager_is_operating ())
-    {
-        GFile *src_dir;
-
-        src_dir = g_file_get_parent (files->data);
-        job->common.undo_info =
-            nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_DUPLICATE,
-                                             g_list_length (files),
-                                             src_dir, src_dir);
-        g_object_unref (src_dir);
-    }
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
     g_task_set_task_data (task, job, NULL);
