@@ -5775,14 +5775,18 @@ nautilus_file_operations_copy (GTask        *task,
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
-        GFile *src_dir;
+        g_autoptr (GFile) src_dir = NULL;
 
         src_dir = g_file_get_parent (job->files->data);
-        job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
-                                                                 g_list_length (job->files),
-                                                                 src_dir, job->destination);
-
-        g_object_unref (src_dir);
+        /* In the case of duplicate, the undo_info is already set, so we don't want to
+         * overwrite it wrongfully.
+         */
+        if (!job->common.undo_info)
+        {
+            job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
+                                                                     g_list_length (job->files),
+                                                                     src_dir, job->destination);
+        }
     }
 
     nautilus_progress_info_start (job->common.progress);
