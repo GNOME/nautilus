@@ -28,8 +28,8 @@ static GtkWidget *
 create_icon (NautilusViewIconItemUi *self)
 {
     NautilusFileIconFlags flags;
-    g_autoptr (GdkPixbuf) icon_pixbuf;
-    GtkImage *icon;
+    g_autoptr (GdkTexture) texture;
+    GtkWidget *icon;
     GtkBox *fixed_height_box;
     GtkStyleContext *style_context;
     NautilusFile *file;
@@ -42,11 +42,10 @@ create_icon (NautilusViewIconItemUi *self)
             NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS |
             NAUTILUS_FILE_ICON_FLAGS_USE_ONE_EMBLEM;
 
-    icon_pixbuf = nautilus_file_get_icon_pixbuf (file, icon_size,
-                                                 TRUE, 1, flags);
-    icon = GTK_IMAGE (gtk_image_new_from_pixbuf (icon_pixbuf));
-    gtk_widget_set_hexpand (GTK_WIDGET (icon), TRUE);
-    gtk_widget_set_vexpand (GTK_WIDGET (icon), TRUE);
+    texture = nautilus_file_get_icon_texture (file, icon_size, TRUE, 1, flags);
+    icon = gtk_image_new_from_paintable (GDK_PAINTABLE (texture));
+    gtk_widget_set_hexpand (icon, TRUE);
+    gtk_widget_set_vexpand (icon, TRUE);
 
     fixed_height_box = GTK_BOX (gtk_box_new (GTK_ORIENTATION_VERTICAL, 0));
     gtk_widget_set_valign (GTK_WIDGET (fixed_height_box), GTK_ALIGN_CENTER);
@@ -60,7 +59,7 @@ create_icon (NautilusViewIconItemUi *self)
         gtk_style_context_add_class (style_context, "icon-background");
     }
 
-    gtk_box_pack_start (fixed_height_box, GTK_WIDGET (icon));
+    gtk_box_pack_start (fixed_height_box, icon);
 
     return GTK_WIDGET (fixed_height_box);
 }
