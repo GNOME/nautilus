@@ -3421,6 +3421,36 @@ nautilus_canvas_container_constructor (GType                  type,
     return object;
 }
 
+static void
+nautilus_canvas_container_snapshot (GtkWidget   *widget,
+                                    GtkSnapshot *snapshot)
+{
+    NautilusCanvasContainer *container;
+
+    container = NAUTILUS_CANVAS_CONTAINER (widget);
+
+    GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class)->snapshot (widget, snapshot);
+
+    if (container->details->dnd_info->highlighted)
+    {
+        GtkStyleContext *context;
+        int width;
+        int height;
+
+        context = gtk_widget_get_style_context (widget);
+        width = gtk_widget_get_width (widget);
+        height = gtk_widget_get_height (widget);
+
+        gtk_style_context_save (context);
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_DND);
+        gtk_style_context_set_state (context, GTK_STATE_FLAG_FOCUSED);
+
+        gtk_snapshot_render_frame (snapshot, context, 0, 0, width, height);
+
+        gtk_style_context_restore (context);
+    }
+}
+
 /* Initialization.  */
 
 static void
@@ -3647,6 +3677,7 @@ nautilus_canvas_container_class_init (NautilusCanvasContainerClass *class)
     widget_class->unrealize = unrealize;
     widget_class->style_updated = style_updated;
     widget_class->grab_notify = grab_notify_cb;
+    widget_class->snapshot = nautilus_canvas_container_snapshot;
 
     gtk_widget_class_set_accessible_type (widget_class, nautilus_canvas_container_accessible_get_type ());
 }
