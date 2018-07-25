@@ -40,6 +40,7 @@
 #include "nautilus-toolbar-menu-sections.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-window.h"
+#include "nautilus-container-max-width.h"
 
 #define OPERATION_MINIMUM_TIME 2 /*s */
 #define NEEDS_ATTENTION_ANIMATION_TIMEOUT 2000 /*ms */
@@ -47,6 +48,9 @@
 
 #define ANIMATION_X_GROW 30
 #define ANIMATION_Y_GROW 30
+
+/* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
+#define SWITCHER_MAX_WIDTH 840
 
 typedef enum
 {
@@ -65,6 +69,8 @@ struct _NautilusToolbar
     GtkWidget *location_entry_container;
     GtkWidget *search_container;
     GtkWidget *toolbar_switcher;
+    GtkWidget *toolbar_switcher_container;
+    NautilusContainerMaxWidth *toolbar_switcher_container_max_width;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
 
@@ -99,7 +105,6 @@ struct _NautilusToolbar
     GtkGesture *back_button_multi_press_gesture;
 
     GtkWidget *location_entry_close_button;
-
 
     NautilusProgressInfoManager *progress_manager;
 
@@ -880,9 +885,24 @@ on_location_entry_focus_changed (GObject    *object,
 }
 
 static void
-nautilus_toolbar_init (NautilusToolbar *self)
+nautilus_toolbar_constructed (GObject *object)
 {
-    gtk_widget_init_template (GTK_WIDGET (self));
+    GtkBuilder *builder;
+    NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
+
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-switcher.ui");
+    self->toolbar_switcher = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar_switcher"));
+    self->search_container = GTK_WIDGET (gtk_builder_get_object (builder, "search_container"));
+    self->path_bar_container = GTK_WIDGET (gtk_builder_get_object (builder, "path_bar_container"));
+    self->location_entry_container = GTK_WIDGET (gtk_builder_get_object (builder, "location_entry_container"));
+
+    self->toolbar_switcher_container_max_width = nautilus_container_max_width_new ();
+    nautilus_container_max_width_set_max_width (self->toolbar_switcher_container_max_width,
+                                                SWITCHER_MAX_WIDTH);
+    gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container_max_width),
+                       self->toolbar_switcher);
+    gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container),
+                       GTK_WIDGET (self->toolbar_switcher_container_max_width));
 
     self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
     gtk_container_add (GTK_CONTAINER (self->path_bar_container),
@@ -943,6 +963,12 @@ nautilus_toolbar_init (NautilusToolbar *self)
 
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
+}
+
+static void
+nautilus_toolbar_init (NautilusToolbar *self)
+{
+    gtk_widget_init_template (GTK_WIDGET (self));
 }
 
 void
@@ -1134,6 +1160,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     oclass->set_property = nautilus_toolbar_set_property;
     oclass->dispose = nautilus_toolbar_dispose;
     oclass->finalize = nautilus_toolbar_finalize;
+    oclass->constructed = nautilus_toolbar_constructed;
 
     properties[PROP_WINDOW] =
         g_param_spec_object ("window",
@@ -1167,15 +1194,12 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_container);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_toggle_icon);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, path_bar_container);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, location_entry_container);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, back_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, forward_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher_container);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_zoom_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_undo_redo_section);
