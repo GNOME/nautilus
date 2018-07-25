@@ -108,6 +108,11 @@ get_preferred_width (GtkWidget *widget,
     *minimum_size = 0;
     gtk_widget_get_preferred_width (child, minimum_size, natural_size);
 
+    if (self->max_width != -1 && *minimum_size > self->max_width)
+    {
+        g_critical ("Max width container child requested %d while set maximum width is %d",
+                    *minimum_size, self->max_width);
+    }
     *natural_size = self->max_width == -1 ? *natural_size :
                     MAX (*minimum_size, MIN (self->max_width, *natural_size));
 
