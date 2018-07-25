@@ -209,7 +209,7 @@ nautilus_path_bar_slider_drag_leave (GtkWidget *widget,
     }
 }
 
-static void
+static gboolean
 on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
                                    double                    dx,
                                    double                    dy,
@@ -229,6 +229,8 @@ on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
     {
         nautilus_path_bar_scroll_up (self);
     }
+
+    return TRUE;
 }
 
 static void
