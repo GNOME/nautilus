@@ -135,6 +135,9 @@ create_selection_shadow (NautilusCanvasContainer *container,
         x2 = x1 + item->icon_width;
         y2 = y1 + item->icon_height;
 
+        eel_canvas_w2c (canvas, x1, y1, &x1, &y1);
+        eel_canvas_w2c (canvas, x2, y2, &x2, &y2);
+
         if (x2 >= min_x && x1 <= max_x && y2 >= min_y && y1 <= max_y)
         {
             eel_canvas_item_new
@@ -151,20 +154,6 @@ create_selection_shadow (NautilusCanvasContainer *container,
     return EEL_CANVAS_ITEM (group);
 }
 
-/* Set the affine instead of the x and y position.
- * Simple, and setting x and y was broken at one point.
- */
-static void
-set_shadow_position (EelCanvasItem *shadow,
-                     double         x,
-                     double         y)
-{
-    eel_canvas_item_set (shadow,
-                         "x", x, "y", y,
-                         NULL);
-}
-
-
 /* Source-side handling of the drag. */
 
 /* iteration glue struct */
@@ -174,29 +163,6 @@ typedef struct
     NautilusDragEachSelectedItemDataGet iteratee;
     gpointer iteratee_data;
 } CanvasGetDataBinderContext;
-
-static void
-canvas_rect_world_to_widget (EelCanvas *canvas,
-                             EelDRect  *world_rect,
-                             EelIRect  *widget_rect)
-{
-    EelDRect window_rect;
-    GtkAdjustment *hadj, *vadj;
-
-    hadj = gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (canvas));
-    vadj = gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (canvas));
-
-    eel_canvas_world_to_window (canvas,
-                                world_rect->x0, world_rect->y0,
-                                &window_rect.x0, &window_rect.y0);
-    eel_canvas_world_to_window (canvas,
-                                world_rect->x1, world_rect->y1,
-                                &window_rect.x1, &window_rect.y1);
-    widget_rect->x0 = (int) window_rect.x0 - gtk_adjustment_get_value (hadj);
-    widget_rect->y0 = (int) window_rect.y0 - gtk_adjustment_get_value (vadj);
-    widget_rect->x1 = (int) window_rect.x1 - gtk_adjustment_get_value (hadj);
-    widget_rect->y1 = (int) window_rect.y1 - gtk_adjustment_get_value (vadj);
-}
 
 static void
 canvas_widget_to_world (EelCanvas *canvas,
@@ -217,10 +183,9 @@ icon_get_data_binder (NautilusCanvasIcon *icon,
 {
     CanvasGetDataBinderContext *context;
     EelDRect world_rect;
-    EelIRect widget_rect;
-    char *uri;
+    g_autofree char *uri = NULL;
     NautilusCanvasContainer *container;
-    NautilusFile *file;
+    g_autoptr (NautilusFile) file = NULL;
 
     context = (CanvasGetDataBinderContext *) data;
 
@@ -230,8 +195,6 @@ icon_get_data_binder (NautilusCanvasIcon *icon,
 
     world_rect = nautilus_canvas_item_get_icon_rectangle (icon->item);
 
-    canvas_rect_world_to_widget (EEL_CANVAS (container), &world_rect, &widget_rect);
-
     uri = nautilus_canvas_container_get_icon_uri (container, icon);
     file = nautilus_file_get_by_uri (uri);
     g_free (uri);
@@ -240,27 +203,16 @@ icon_get_data_binder (NautilusCanvasIcon *icon,
     if (uri == NULL)
     {
         g_warning ("no URI for one of the iterated icons");
-        nautilus_file_unref (file);
         return TRUE;
     }
 
-    widget_rect = eel_irect_offset_by (widget_rect,
-                                       -container->details->dnd_info->drag_info.start_x,
-                                       -container->details->dnd_info->drag_info.start_y);
-
-    widget_rect = eel_irect_scale_by (widget_rect,
-                                      1 / EEL_CANVAS (container)->pixels_per_unit);
-
     /* pass the uri, mouse-relative x/y and icon width/height */
     context->iteratee (uri,
-                       (int) widget_rect.x0,
-                       (int) widget_rect.y0,
-                       widget_rect.x1 - widget_rect.x0,
-                       widget_rect.y1 - widget_rect.y0,
+                       world_rect.x0,
+                       world_rect.y0,
+                       world_rect.x1 - world_rect.x0,
+                       world_rect.y1 - world_rect.y0,
                        context->iteratee_data);
-
-    g_free (uri);
-    nautilus_file_unref (file);
 
     return TRUE;
 }
@@ -341,7 +293,6 @@ nautilus_canvas_container_position_shadow (NautilusCanvasContainer *container,
                                            int                      y)
 {
     EelCanvasItem *shadow;
-    double world_x, world_y;
 
     shadow = container->details->dnd_info->shadow;
     if (shadow == NULL)
@@ -349,10 +300,14 @@ nautilus_canvas_container_position_shadow (NautilusCanvasContainer *container,
         return;
     }
 
-    canvas_widget_to_world (EEL_CANVAS (container), x, y,
-                            &world_x, &world_y);
+    x -= container->details->dnd_info->drag_info.start_x;
+    y -= container->details->dnd_info->drag_info.start_y;
 
-    set_shadow_position (shadow, world_x, world_y);
+    /* This is used as an offset when drawing the selection item.
+     * Offsetting by the position of the cursor would be a bit too much,
+     * so we only take the delta from the start position.
+     */
+    eel_canvas_item_set (shadow, "x", (double) x, "y", (double) y, NULL);
     eel_canvas_item_show (shadow);
 }
 
@@ -453,6 +408,30 @@ nautilus_canvas_container_ensure_drag_data (NautilusCanvasContainer *container,
 }
 
 static void
+remove_hover_timer (NautilusCanvasDndInfo *dnd_info)
+{
+    if (dnd_info->hover_id != 0)
+    {
+        g_source_remove (dnd_info->hover_id);
+        dnd_info->hover_id = 0;
+    }
+}
+
+static void
+nautilus_canvas_container_free_drag_data (NautilusCanvasContainer *container)
+{
+    NautilusCanvasDndInfo *dnd_info;
+
+    dnd_info = container->details->dnd_info;
+
+    g_clear_pointer (&dnd_info->shadow, eel_canvas_item_destroy);
+    g_clear_pointer (&dnd_info->drag_info.selection_data, gtk_selection_data_free);
+    g_clear_pointer (&dnd_info->target_uri, g_free);
+
+    remove_hover_timer (dnd_info);
+}
+
+static void
 drag_end_callback (GtkWidget *widget,
                    GdkDrag   *context,
                    gpointer   data)
@@ -472,6 +451,8 @@ drag_end_callback (GtkWidget *widget,
     container->details->dnd_source_info->selection_cache = NULL;
 
     nautilus_window_end_dnd (window, context);
+
+    nautilus_canvas_container_free_drag_data (container);
 }
 
 static NautilusCanvasIcon *
@@ -950,30 +931,6 @@ nautilus_canvas_dnd_update_drop_target (NautilusCanvasContainer *container,
 }
 
 static void
-remove_hover_timer (NautilusCanvasDndInfo *dnd_info)
-{
-    if (dnd_info->hover_id != 0)
-    {
-        g_source_remove (dnd_info->hover_id);
-        dnd_info->hover_id = 0;
-    }
-}
-
-static void
-nautilus_canvas_container_free_drag_data (NautilusCanvasContainer *container)
-{
-    NautilusCanvasDndInfo *dnd_info;
-
-    dnd_info = container->details->dnd_info;
-
-    g_clear_pointer (&dnd_info->shadow, eel_canvas_item_destroy);
-    g_clear_pointer (&dnd_info->drag_info.selection_data, gtk_selection_data_free);
-    g_clear_pointer (&dnd_info->target_uri, g_free);
-
-    remove_hover_timer (dnd_info);
-}
-
-static void
 drag_leave_callback (GtkWidget *widget,
                      GdkDrop   *drop,
                      gpointer   data)
@@ -1013,6 +970,9 @@ drag_begin_callback (GtkWidget *widget,
               gtk_adjustment_get_value (gtk_scrollable_get_hadjustment (GTK_SCROLLABLE (container)));
     start_y = container->details->dnd_info->drag_info.start_y +
               gtk_adjustment_get_value (gtk_scrollable_get_vadjustment (GTK_SCROLLABLE (container)));
+
+    container->details->dnd_info->x = start_x;
+    container->details->dnd_info->y = start_y;
 
     paintable = nautilus_canvas_item_get_drag_paintable (container->details->drag_icon->item);
 
@@ -1160,6 +1120,9 @@ drag_motion_callback (GtkWidget *widget,
 
     container = NAUTILUS_CANVAS_CONTAINER (widget);
 
+    container->details->dnd_info->x = x;
+    container->details->dnd_info->y = y;
+
     nautilus_canvas_container_ensure_drag_data (container, drop);
     nautilus_canvas_container_position_shadow (container, x, y);
     nautilus_canvas_dnd_update_drop_target (container, drop, x, y);
@@ -1204,8 +1167,8 @@ drag_drop_callback (GtkWidget *widget,
      *  make sure it is going to be called at least once.
      */
     dnd_info->drag_info.drop_occurred = TRUE;
-    dnd_info->drop_x = x;
-    dnd_info->drop_y = y;
+    dnd_info->x = x;
+    dnd_info->y = y;
 
     get_data_on_first_target_we_support (widget, drop, x, y);
 
@@ -1259,8 +1222,8 @@ drag_data_received_callback (GtkWidget        *widget,
     {
         nautilus_canvas_container_dropped_canvas_feedback (widget,
                                                            data,
-                                                           dnd_info->drop_x,
-                                                           dnd_info->drop_y);
+                                                           dnd_info->x,
+                                                           dnd_info->y);
     }
 
     /* this is the second use case of this callback.
@@ -1283,8 +1246,8 @@ drag_data_received_callback (GtkWidget        *widget,
             receive_dropped_text (container,
                                   (char *) text,
                                   drop,
-                                  dnd_info->drop_x,
-                                  dnd_info->drop_y);
+                                  dnd_info->x,
+                                  dnd_info->y);
             success = TRUE;
         }
         else if (gtk_selection_data_targets_include_uri (data))
@@ -1292,8 +1255,8 @@ drag_data_received_callback (GtkWidget        *widget,
             receive_dropped_uri_list (container,
                                       (char *) gtk_selection_data_get_data (data),
                                       drop,
-                                      dnd_info->drop_x,
-                                      dnd_info->drop_y);
+                                      dnd_info->x,
+                                      dnd_info->y);
             success = TRUE;
         }
         else if (gdk_content_formats_contain_mime_type (formats,
@@ -1301,8 +1264,8 @@ drag_data_received_callback (GtkWidget        *widget,
         {
             nautilus_canvas_container_receive_dropped_icons (container,
                                                              drop,
-                                                             dnd_info->drop_x,
-                                                             dnd_info->drop_y);
+                                                             dnd_info->x,
+                                                             dnd_info->y);
         }
 
         if (success)
