@@ -5023,7 +5023,6 @@ nautilus_file_get_gicon (NautilusFile          *file,
         icon = NULL;
 
         if (((flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT) ||
-             (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)) &&
             G_IS_THEMED_ICON (file->details->icon))
@@ -5052,10 +5051,6 @@ nautilus_file_get_gicon (NautilusFile          *file,
             if (is_inode_directory)
             {
                 g_ptr_array_add (prepend_array, "folder");
-            }
-            if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER))
-            {
-                g_ptr_array_add (prepend_array, "folder-open");
             }
             if (is_folder &&
                 (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT))
