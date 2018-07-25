@@ -126,8 +126,9 @@ modules:
     builddir: true
     build-options:
       config-opts:
-        - --libdir=/app/lib
-        - -Dprofile=Gtk4
+        - "--libdir=/app/lib"
+        - "-Dprofile=Gtk4"
+        - "-Dintrospection=false"
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/nautilus.git
