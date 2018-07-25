@@ -64,27 +64,41 @@ nautilus_selection_canvas_item_snapshot (EelCanvasItem *item,
     int x2;
     int y2;
     GtkStyleContext *context;
+    int x_offset;
+    int y_offset;
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
-    x1 = self->priv->x1;
-    y1 = self->priv->y1;
-    x2 = self->priv->x2;
-    y2 = self->priv->y2;
-
-    if (x2 <= x1 || y2 <= y1)
-    {
-        return;
-    }
-
+    x1 = MIN (self->priv->x1, self->priv->x2);
+    y1 = MIN (self->priv->y1, self->priv->y2);
+    x2 = MAX (self->priv->x1, self->priv->x2);
+    y2 = MAX (self->priv->y1, self->priv->y2);
     context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
+    if (EEL_IS_CANVAS_GROUP (item->parent))
+    {
+        EelCanvasGroup *group;
+
+        group = EEL_CANVAS_GROUP (item->parent);
+
+        x_offset = group->xpos;
+        y_offset = group->ypos;
+    }
+    else
+    {
+        x_offset = 0;
+        y_offset = 0;
+    }
 
     gtk_style_context_save (context);
 
     gtk_style_context_add_class (context, GTK_STYLE_CLASS_RUBBERBAND);
 
+    gtk_snapshot_offset (snapshot, x_offset, y_offset);
+
     gtk_snapshot_render_background (snapshot, context, x1, y1, x2 - x1, y2 - y1);
     gtk_snapshot_render_frame (snapshot, context, x1, y1, x2 - x1, y2 - y1);
+
+    gtk_snapshot_offset (snapshot, -x_offset, -y_offset);
 
     gtk_style_context_restore (context);
 }

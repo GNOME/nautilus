@@ -40,8 +40,8 @@ typedef struct {
 	EelCanvasItem *shadow;
 	guint hover_id;
 
-        int drop_x;
-        int drop_y;
+        int x;
+        int y;
 } NautilusCanvasDndInfo;
 
 
