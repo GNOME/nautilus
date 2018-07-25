@@ -86,29 +86,35 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
 
 void
 nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
-                                          GdkPixbuf                  *destination_pixbuf,
-                                          GdkPixbuf                  *source_pixbuf)
+                                          GdkTexture                 *destination_texture,
+                                          GdkTexture                 *source_texture)
 {
     if (fcd->dest_image == NULL)
     {
-        fcd->dest_image = gtk_image_new_from_pixbuf (destination_pixbuf);
+        fcd->dest_image = gtk_image_new_from_paintable (GDK_PAINTABLE (destination_texture));
         gtk_box_pack_start (GTK_BOX (fcd->first_hbox), fcd->dest_image);
+        gtk_image_set_pixel_size (GTK_IMAGE (fcd->dest_image),
+                                  NAUTILUS_CANVAS_ICON_SIZE_SMALL);
         gtk_widget_show (fcd->dest_image);
     }
     else
     {
-        gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->dest_image), destination_pixbuf);
+        gtk_image_set_from_paintable (GTK_IMAGE (fcd->dest_image),
+                                      GDK_PAINTABLE (destination_texture));
     }
 
     if (fcd->src_image == NULL)
     {
-        fcd->src_image = gtk_image_new_from_pixbuf (source_pixbuf);
+        fcd->src_image = gtk_image_new_from_paintable (GDK_PAINTABLE (source_texture));
+        gtk_image_set_pixel_size (GTK_IMAGE (fcd->src_image),
+                                  NAUTILUS_CANVAS_ICON_SIZE_SMALL);
         gtk_box_pack_start (GTK_BOX (fcd->second_hbox), fcd->src_image);
         gtk_widget_show (fcd->src_image);
     }
     else
     {
-        gtk_image_set_from_pixbuf (GTK_IMAGE (fcd->src_image), source_pixbuf);
+        gtk_image_set_from_paintable (GTK_IMAGE (fcd->src_image),
+                                      GDK_PAINTABLE (source_texture));
     }
 }
 
