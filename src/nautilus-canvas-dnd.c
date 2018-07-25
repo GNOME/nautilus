@@ -1084,32 +1084,6 @@ nautilus_canvas_dnd_begin_drag (NautilusCanvasContainer *container,
                     dnd_info->drag_info.start_y);
 }
 
-static gboolean
-drag_highlight_draw (GtkWidget *widget,
-                     cairo_t   *cr,
-                     gpointer   user_data)
-{
-    gint width, height;
-    GdkSurface *surface;
-    GtkStyleContext *style;
-
-    surface = gtk_widget_get_surface (widget);
-    width = gdk_surface_get_width (surface);
-    height = gdk_surface_get_height (surface);
-
-    style = gtk_widget_get_style_context (widget);
-
-    gtk_style_context_save (style);
-    gtk_style_context_add_class (style, GTK_STYLE_CLASS_DND);
-    gtk_style_context_set_state (style, GTK_STATE_FLAG_FOCUSED);
-
-    gtk_render_frame (style, cr, 0, 0, width, height);
-
-    gtk_style_context_restore (style);
-
-    return FALSE;
-}
-
 static void
 start_dnd_highlight (GtkWidget *widget)
 {
@@ -1120,9 +1094,6 @@ start_dnd_highlight (GtkWidget *widget)
     if (!dnd_info->highlighted)
     {
         dnd_info->highlighted = TRUE;
-        g_signal_connect_after (widget, "draw",
-                                G_CALLBACK (drag_highlight_draw),
-                                NULL);
         gtk_widget_queue_draw (widget);
     }
 }
@@ -1136,11 +1107,8 @@ stop_dnd_highlight (GtkWidget *widget)
 
     if (dnd_info->highlighted)
     {
-        g_signal_handlers_disconnect_by_func (widget,
-                                              drag_highlight_draw,
-                                              NULL);
-        gtk_widget_queue_draw (widget);
         dnd_info->highlighted = FALSE;
+        gtk_widget_queue_draw (widget);
     }
 }
 
