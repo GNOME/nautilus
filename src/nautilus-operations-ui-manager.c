@@ -212,27 +212,24 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
 static void
 set_images (FileConflictDialogData *data)
 {
-    GdkPixbuf *source_pixbuf;
-    GdkPixbuf *destination_pixbuf;
+    g_autoptr (GdkTexture) source_texture = NULL;
+    g_autoptr (GdkTexture) destination_texture = NULL;
 
-    destination_pixbuf = nautilus_file_get_icon_pixbuf (data->destination,
-                                                        NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-                                                        TRUE,
-                                                        1,
-                                                        NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    destination_texture = nautilus_file_get_icon_texture (data->destination,
+                                                          NAUTILUS_CANVAS_ICON_SIZE_SMALL,
+                                                          TRUE,
+                                                          1,
+                                                          NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
-    source_pixbuf = nautilus_file_get_icon_pixbuf (data->source,
-                                                   NAUTILUS_CANVAS_ICON_SIZE_SMALL,
-                                                   TRUE,
-                                                   1,
-                                                   NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
+    source_texture = nautilus_file_get_icon_texture (data->source,
+                                                     NAUTILUS_CANVAS_ICON_SIZE_SMALL,
+                                                     TRUE,
+                                                     1,
+                                                     NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS);
 
     nautilus_file_conflict_dialog_set_images (data->dialog,
-                                              destination_pixbuf,
-                                              source_pixbuf);
-
-    g_object_unref (destination_pixbuf);
-    g_object_unref (source_pixbuf);
+                                              destination_texture,
+                                              source_texture);
 }
 
 static void
