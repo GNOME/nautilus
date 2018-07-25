@@ -368,7 +368,6 @@
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="spacing">6</property>
         <child>
           <object class="GtkRevealer" id="operations_revealer">
             <property name="visible">True</property>
@@ -379,6 +378,7 @@
                 <property name="can_focus">True</property>
                 <property name="receives_default">False</property>
                 <property name="tooltip_text" translatable="yes">Show operations</property>
+                <property name="margin_right">6</property>
                 <property name="popover">operations_popover</property>
                 <signal name="toggled" handler="on_operations_button_toggled" object="NautilusToolbar" swapped="yes"/>
                 <child>
@@ -408,6 +408,7 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="margin_right">6</property>
             <child>
               <object class="GtkButton" id="view_toggle_button">
                 <property name="visible">True</property>
