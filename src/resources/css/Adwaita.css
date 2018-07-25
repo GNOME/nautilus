@@ -195,11 +195,26 @@ entry.search > * {
 }
 
 /* Icon view */
-flowboxchild:selected{background-color:transparent;}
+flowboxchild:selected {
+  background-color:transparent;
+}
 
-flowboxchild > widget > box > .icon-background {background-color:black; border-color:#4a90d9; border-style:solid; border-width:0px;}
-flowboxchild:selected > widget > box > .icon-background {background-color:black; border-color:#4a90d9; border-style:solid; border-width:0px;}
+.icon-background {
+  background-color:black;
+  border-color:#4a90d9;
+  border-style:solid;
+  border-width:0px;
+}
 
-flowboxchild > widget > .icon-item-background {padding:4px;}
-flowboxchild:selected > widget > .icon-item-background {padding:4px; background-color:#4a90d9; border-color:#4a90d9; border-style:solid; border-width:0px; border-radius:4px 4px 4px 4px;}
+flowboxchild > .icon-item-background {
+  padding:4px;
+}
+flowboxchild:selected > .icon-item-background {
+  padding:4px;
+  background-color:#4a90d9;
+  border-color:#4a90d9;
+  border-style:solid;
+  border-width:0px;
+  border-radius:4px 4px 4px 4px;
+}
 
