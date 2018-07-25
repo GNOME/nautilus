@@ -8978,7 +8978,7 @@ nautilus_files_view_set_property (GObject      *object,
     }
 }
 
-static void
+static gboolean
 on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
                                    double                    dx,
                                    double                    dy,
@@ -8991,12 +8991,12 @@ on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
 
     if (!gtk_get_current_event_state (&state))
     {
-        return;
+        return FALSE;
     }
 
     if (!(state & GDK_CONTROL_MASK))
     {
-        return;
+        return FALSE;
     }
 
     if (dy < 0)
@@ -9009,6 +9009,8 @@ on_event_controller_scroll_scroll (GtkEventControllerScroll *controller,
         /* Zoom Out */
         nautilus_files_view_bump_zoom_level (directory_view, -1);
     }
+
+    return TRUE;
 }
 
 static void
