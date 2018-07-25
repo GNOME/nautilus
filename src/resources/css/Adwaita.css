@@ -66,16 +66,7 @@
 
 .path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
 
-.path-bar button:not(:checked) { /* Undecorate unchecked highlight */
-    box-shadow:none;
-}
-
-.path-bar button:not(.slider-button):not(:backdrop):hover > * { box-shadow: 0 3px @borders; }
-
-.path-bar button:not(.slider-button):not(:backdrop):checked > *,
-.path-bar button.text-button:not(.slider-button):backdrop:checked > * {
-  box-shadow: 0 3px @theme_selected_bg_color;
-}
+.path-bar button:not(:backdrop):hover > * { box-shadow: 0 3px @borders; }
 
 .path-bar-box {
   border: 1px @borders solid;
