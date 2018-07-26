@@ -308,6 +308,11 @@ get_dir_name (ButtonData *button_data)
 {
     switch (button_data->type)
     {
+        case ROOT_BUTTON:
+        {
+            return _("Computer");
+        }
+
         case HOME_BUTTON:
         {
             return _("Home");
@@ -1593,20 +1598,6 @@ make_button_data (NautilusPathBar *self,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
-        {
-            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->label = gtk_label_new (NULL);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
-                                                                          GTK_ICON_SIZE_MENU);
-            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
-
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
-        }
-        break;
-
         case HOME_BUTTON:
         case MOUNT_BUTTON:
         case RECENT_BUTTON:
