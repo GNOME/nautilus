@@ -2543,10 +2543,14 @@ trash_or_delete_internal_sync (GList                  *files,
                             done_callback,
                             done_callback_data);
 
-    task = g_task_new (NULL, NULL, delete_task_done, job);
+    task = g_task_new (NULL, NULL, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, trash_or_delete_internal);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * delete_task_done) we need to set up the undo information ourselves.
+     */
+    delete_task_done (NULL, NULL, job);
 }
 
 static void
@@ -5796,10 +5800,14 @@ nautilus_file_operations_copy_sync (GList *files,
                            done_callback,
                            done_callback_data);
 
-    task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
+    task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_copy);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * copy_task_done) we need to set up the undo information ourselves.
+     */
+    copy_task_done (NULL, NULL, job);
 }
 
 void
@@ -6314,10 +6322,14 @@ nautilus_file_operations_move_sync (GList                *files,
     CopyMoveJob *job;
 
     job = move_job_setup (files, target_dir, parent_window, done_callback, done_callback_data);
-    task = g_task_new (NULL, job->common.cancellable, move_task_done, job);
+    task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_move);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * move_task_done) we need to set up the undo information ourselves.
+     */
+    move_task_done (NULL, NULL, job);
 }
 
 void
