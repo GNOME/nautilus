@@ -311,10 +311,15 @@ get_dir_name (ButtonData *button_data)
     {
         case ROOT_BUTTON:
         {
+            /* Translators: This is the label used in the pathbar when seeing
+             * the root directory (also known as /) */
             return _("Computer");
         }
+
         case ADMIN_ROOT_BUTTON:
         {
+            /* Translators: This is the filesystem root directory (also known
+             * as /) when seen as administrator */
             return _("Administrator Root");
         }
 
