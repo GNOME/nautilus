@@ -4843,8 +4843,8 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
     NautilusCanvasContainerDetails *details;
     guint icon_size;
     guint min_image_size, max_image_size;
-    NautilusIconInfo *icon_info;
-    GdkPixbuf *pixbuf;
+    g_autoptr (NautilusIconInfo) icon_info = NULL;
+    GdkTexture *texture;
     char *editable_text, *additional_text;
 
     if (icon == NULL)
@@ -4869,9 +4869,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
     /* Get the icons. */
     icon_info = nautilus_canvas_container_get_icon_images (container, icon->file, icon_size,
                                                            icon == details->drop_target);
-
-    pixbuf = nautilus_icon_info_get_pixbuf (icon_info);
-    g_object_unref (icon_info);
+    texture = nautilus_icon_info_get_texture (icon_info, TRUE, -1);
 
     nautilus_canvas_container_get_icon_text (container,
                                              icon->file,
@@ -4885,10 +4883,7 @@ nautilus_canvas_container_update_icon (NautilusCanvasContainer *container,
                          "highlighted_for_drop", icon == details->drop_target,
                          NULL);
 
-    nautilus_canvas_item_set_texture (icon->item, gdk_texture_new_for_pixbuf (pixbuf));
-
-    /* Let the pixbufs go. */
-    g_object_unref (pixbuf);
+    nautilus_canvas_item_set_texture (icon->item, texture);
 
     g_free (editable_text);
     g_free (additional_text);
