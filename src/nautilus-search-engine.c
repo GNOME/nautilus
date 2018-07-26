@@ -30,6 +30,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 #include "nautilus-search-engine-recent.h"
+#include "nautilus-search-engine-simple.h"
 #include "nautilus-search-engine-tracker.h"
 
 typedef struct
