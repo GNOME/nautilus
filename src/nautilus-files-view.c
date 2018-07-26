@@ -3556,7 +3556,6 @@ done_loading (NautilusFilesView *view,
               gboolean           all_files_seen)
 {
     NautilusFilesViewPrivate *priv;
-    GList *pending_selection;
     GList *selection;
     gboolean do_reveal = FALSE;
 
@@ -3577,21 +3576,23 @@ done_loading (NautilusFilesView *view,
         nautilus_files_view_update_toolbar_menus (view);
         reset_update_interval (view);
 
-        pending_selection = priv->pending_selection;
         selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
 
         if (nautilus_view_is_searching (NAUTILUS_VIEW (view)) &&
-            all_files_seen && !selection && !pending_selection)
+            all_files_seen && selection == NULL && priv->pending_selection == NULL)
         {
             nautilus_files_view_select_first (view);
             do_reveal = TRUE;
         }
-        else if (pending_selection != NULL && all_files_seen)
+        else if (priv->pending_selection != NULL && all_files_seen)
         {
-            priv->pending_selection = NULL;
+            GList *pending_selection;
+            pending_selection = g_steal_pointer (&priv->pending_selection);
 
             nautilus_files_view_call_set_selection (view, pending_selection);
             do_reveal = TRUE;
+
+            nautilus_file_list_free (pending_selection);
         }
 
         if (selection)
@@ -3599,10 +3600,7 @@ done_loading (NautilusFilesView *view,
             g_list_free_full (selection, g_object_unref);
         }
 
-        if (pending_selection)
-        {
-            g_list_free_full (pending_selection, g_object_unref);
-        }
+        g_clear_pointer (&priv->pending_selection, nautilus_file_list_free);
 
         if (do_reveal)
         {
