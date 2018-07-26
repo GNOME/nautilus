@@ -1398,11 +1398,22 @@ location_settings_search_get_recursive (void)
     switch (g_settings_get_enum (nautilus_preferences, "recursive-search"))
     {
         case NAUTILUS_SPEED_TRADEOFF_ALWAYS:
+        {
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
+        }
+        break;
+        
         case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
+        {
             return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
+        }
+        break;
+        
         case NAUTILUS_SPEED_TRADEOFF_NEVER:
-            return NAUTILUS_QUERY_RECURSIVE_NEVER;
+        {
+             return NAUTILUS_QUERY_RECURSIVE_NEVER;
+        }
+        break;
     }
 
     return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
