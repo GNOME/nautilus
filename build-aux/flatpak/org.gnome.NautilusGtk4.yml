@@ -1,135 +1,135 @@
-app-id: org.gnome.NautilusGtk4
-runtime: org.gnome.Platform
-runtime-version: master
-sdk: org.gnome.Sdk
-command: nautilus
+app-id: "org.gnome.NautilusGtk4"
+runtime: "org.gnome.Platform"
+runtime-version: "master"
+sdk: "org.gnome.Sdk"
+command: "nautilus"
 tags:
-  - devel
-  - nightly
-  - gtk4
-desktop-file-name-prefix: (Development Gtk4)
+  - "devel"
+  - "nightly"
+  - "gtk4"
+desktop-file-name-prefix: "(Development Gtk4) "
 finish-args:
-  - --filesystem=host
-  - --share=ipc
-  - --socket=x11
-  - --socket=wayland
-  - --talk-name=org.gnome.OnlineAccounts
-  - --talk-name=org.freedesktop.Tracker1
-  - --filesystem=host
-  - --talk-name=org.gtk.vfs
-  - --talk-name=org.gtk.vfs.*
-  - --filesystem=xdg-run/dconf
-  - --filesystem=~/.config/dconf:ro
+  - "--filesystem=host"
+  - "--share=ipc"
+  - "--socket=x11"
+  - "--socket=wayland"
+  - "--talk-name=org.gnome.OnlineAccounts"
+  - "--talk-name=org.freedesktop.Tracker1"
+  - "--filesystem=host"
+  - "--talk-name=org.gtk.vfs"
+  - "--talk-name=org.gtk.vfs.*"
+  - "--filesystem=xdg-run/dconf"
+  - "--filesystem=~/.config/dconf:ro"
   # Remove to something better for dconf when ready.
   # See https://github.com/flatpak/flatpak/issues/78
-  - --talk-name=ca.desrt.dconf
-  - --env=DCONF_USER_CONFIG_DIR=.config/dconf
+  - "--talk-name=ca.desrt.dconf"
+  - "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
 
 modules:
-  - name: exiv2
-    buildsystem: cmake
-    build-options:
-      config-opts:
-        - -DCMAKE_INSTALL_PREFIX=/app
-        - -DCMAKE_INSTALL_LIBDIR=/app/lib
+  - name: "exiv2"
+    buildsystem: "cmake"
+    config-opts:
+      - "-DCMAKE_INSTALL_PREFIX=/app"
+      - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
     sources:
-      - type: archive
-        url: https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz
-        sha256: 51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01
-      - type: shell
+      - type: "archive"
+        url: "https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz"
+        sha256: "51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01"
+      - type: "shell"
         commands:
-          - cp -f /usr/share/automake-1.15/config.sub ./config/
-          - cp -f /usr/share/automake-1.15/config.guess ./config/
+          - "cp -f /usr/share/automake-1.15/config.sub ./config/"
+          - "cp -f /usr/share/automake-1.15/config.guess ./config/"
 
-  - name: gexiv2
-    build-options:
-      config-opts:
-        - --disable-introspection
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gexiv2.git
-
-  - name: tracker
-    cleanup:
-      - /bin
-      - /etc
-      - /libexec
-    build-options:
-      config-opts:
-        - --disable-miner-apps
-        - --disable-static
-        - --disable-tracker-extract
-        - --disable-tracker-needle
-        - --disable-tracker-preferences
-        - --disable-artwork
-        - --disable-tracker-writeback
-        - --disable-miner-user-guides
-        - --with-bash-completion-dir=no
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/tracker.git
-
-  - name: gnome-autoar
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
-
-  - name: wayland
-    sources:
-        - type: git
-          url: https://github.com/wayland-project/wayland.git
+  - name: "gexiv2"
     config-opts:
-        - "--disable-documentation"
-    buildsystem: autotools
-    builddir: true
-    cleanup:
-        - "/bin"
-        - "/include"
-        - "/lib/pkgconfig"
-        - "/share/aclocal"
-        - "*.la"
-
-  - name: graphene
+      - "--disable-introspection"
     sources:
-        - type: git
-          url: https://github.com/ebassi/graphene.git
+      - type: "git"
+        url: "https://gitlab.gnome.org/GNOME/gexiv2.git"
+        tag: "gexiv2-0.10.8"
+
+  - name: "tracker"
+    cleanup:
+      - "/bin"
+      - "/etc"
+      - "/libexec"
     config-opts:
-        - "--libdir=lib"
-        - "-Dintrospection=false"
-        - "-Dtests=false"
-        - "-Dbenchmarks=false"
-    buildsystem: meson
-    builddir: true
-    cleanup:
-        - "/include"
-        - "/lib/pkgconfig"
-
-  - name: gtk+
+      - "--disable-miner-apps"
+      - "--disable-static"
+      - "--disable-tracker-extract"
+      - "--disable-tracker-needle"
+      - "--disable-tracker-preferences"
+      - "--disable-artwork"
+      - "--disable-tracker-writeback"
+      - "--disable-miner-user-guides"
+      - "--with-bash-completion-dir=no"
     sources:
-        - type: git
-          url: https://gitlab.gnome.org/GNOME/gtk.git
+      - type: "git"
+        url: "https://gitlab.gnome.org/GNOME/tracker.git"
+        tag: "2.1.0"
+
+  - name: "gnome-autoar"
+    sources:
+      - type: "git"
+        url: "https://gitlab.gnome.org/GNOME/gnome-autoar.git"
+        tag: "0.2.3"
+
+  - name: "wayland"
+    sources:
+      - type: "git"
+        url: "https://github.com/wayland-project/wayland.git"
+        tag: "1.15.91"
     config-opts:
-        - "--libdir=lib"
-        - "-Dintrospection=false"
-        - "-Ddemos=false"
-        - "-Dbuild-examples=false"
-        - "-Dbuild-tests=false"
-    buildsystem: meson
+      - "--disable-documentation"
+    buildsystem: "autotools"
     builddir: true
     cleanup:
-        - "/bin"
-        - "/include"
-        - "/lib/pkgconfig"
+      - "/bin"
+      - "/include"
+      - "/lib/pkgconfig"
+      - "/share/aclocal"
+      - "*.la"
 
-  - name: nautilus
-    buildsystem: meson
-    builddir: true
-    build-options:
-      config-opts:
-        - "--libdir=/app/lib"
-        - "-Dprofile=Gtk4"
-        - "-Dintrospection=false"
+  - name: "graphene"
     sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/nautilus.git
-        branch: wip/ernestask/gtk4-continued
+      - type: "git"
+        url: "https://github.com/ebassi/graphene.git"
+        tag: "1.8.2"
+    config-opts:
+      - "--libdir=lib"
+      - "-Dintrospection=false"
+      - "-Dtests=false"
+      - "-Dbenchmarks=false"
+    buildsystem: "meson"
+    builddir: true
+    cleanup:
+      - "/include"
+      - "/lib/pkgconfig"
+
+  - name: "gtk+"
+    sources:
+      - type: "git"
+        url: "https://gitlab.gnome.org/GNOME/gtk.git"
+    config-opts:
+      - "--libdir=lib"
+      - "-Dintrospection=false"
+      - "-Ddemos=false"
+      - "-Dbuild-examples=false"
+      - "-Dbuild-tests=false"
+    buildsystem: "meson"
+    builddir: true
+    cleanup:
+      - "/bin"
+      - "/lib/pkgconfig"
+
+  - name: "nautilus"
+    buildsystem: "meson"
+    builddir: true
+    config-opts:
+      - "--libdir=/app/lib"
+      - "-Dprofile=Gtk4"
+      - "-Dintrospection=false"
+    sources:
+      - type: "git"
+        url: "https://gitlab.gnome.org/GNOME/nautilus.git"
+        branch: "wip/ernestask/gtk4-continued"
