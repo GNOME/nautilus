@@ -477,9 +477,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     bind_builder_bool (builder, nautilus_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                        NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
-    bind_builder_bool (builder, nautilus_preferences,
-                       NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET,
-                       NAUTILUS_PREFERENCES_USE_EXPERIMENTAL_VIEWS);
 
     bind_builder_radio (
         builder, nautilus_preferences, (const char **) click_behavior_components,
