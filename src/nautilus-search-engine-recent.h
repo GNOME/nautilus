@@ -18,8 +18,7 @@
  * Author: Marco Trevisan <marco.trevisan@canonical.com>
  */
 
-#ifndef __NAUTILUS_SEARCH_ENGINE_RECENT_H__
-#define __NAUTILUS_SEARCH_ENGINE_RECENT_H__
+#pragma once
 
 #include <glib-object.h>
 
@@ -32,5 +31,3 @@ G_DECLARE_FINAL_TYPE (NautilusSearchEngineRecent, nautilus_search_engine_recent,
 NautilusSearchEngineRecent *nautilus_search_engine_recent_new (void);
 
 G_END_DECLS
-
-#endif /* __NAUTILUS_SEARCH_ENGINE_RECENT_H__ */
