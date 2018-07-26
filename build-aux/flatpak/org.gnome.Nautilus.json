@@ -63,8 +63,11 @@
         },
         {
             "name" : "gexiv2",
+            "buildsystem" : "meson",
+            "builddir" : true,
             "config-opts" : [
-                "--disable-introspection"
+                "--libdir=/app/lib",
+                "-Ddisable-introspection=True"
             ],
             "sources" : [
                 {
