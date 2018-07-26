@@ -46,6 +46,7 @@ typedef enum
     NORMAL_BUTTON,
     OTHER_LOCATIONS_BUTTON,
     ROOT_BUTTON,
+    ADMIN_ROOT_BUTTON,
     HOME_BUTTON,
     STARRED_BUTTON,
     RECENT_BUTTON,
@@ -311,6 +312,10 @@ get_dir_name (ButtonData *button_data)
         case ROOT_BUTTON:
         {
             return _("Computer");
+        }
+        case ADMIN_ROOT_BUTTON:
+        {
+            return _("Administrator Root");
         }
 
         case HOME_BUTTON:
@@ -1286,6 +1291,7 @@ get_gicon (ButtonData *button_data)
     switch (button_data->type)
     {
         case ROOT_BUTTON:
+        case ADMIN_ROOT_BUTTON:
         {
             return g_themed_icon_new (NAUTILUS_ICON_FILESYSTEM);
         }
@@ -1390,14 +1396,15 @@ setup_button_type (ButtonData      *button_data,
                    NautilusPathBar *self,
                    GFile           *location)
 {
-    GMount *mount;
-    gchar *uri;
-
-    uri = g_file_get_uri (location);
+    g_autoptr (GMount) mount = NULL;
 
     if (nautilus_is_root_directory (location))
     {
         button_data->type = ROOT_BUTTON;
+    }
+    else if (nautilus_is_home_directory (location))
+    {
+        button_data->type = ADMIN_ROOT_BUTTON;
     }
     else if (nautilus_is_home_directory (location))
     {
@@ -1419,8 +1426,6 @@ setup_button_type (ButtonData      *button_data,
         button_data->dir_name = g_mount_get_name (mount);
         button_data->type = MOUNT_BUTTON;
         button_data->is_root = TRUE;
-
-        g_object_unref (mount);
     }
     else if (nautilus_is_other_locations_directory (location))
     {
@@ -1431,8 +1436,6 @@ setup_button_type (ButtonData      *button_data,
     {
         button_data->type = NORMAL_BUTTON;
     }
-
-    g_free (uri);
 }
 
 static void
@@ -1598,6 +1601,7 @@ make_button_data (NautilusPathBar *self,
     switch (button_data->type)
     {
         case ROOT_BUTTON:
+        case ADMIN_ROOT_BUTTON:
         case HOME_BUTTON:
         case MOUNT_BUTTON:
         case RECENT_BUTTON:

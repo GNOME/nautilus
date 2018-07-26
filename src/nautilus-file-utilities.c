@@ -472,6 +472,19 @@ nautilus_is_root_directory (GFile *dir)
 }
 
 gboolean
+nautilus_is_admin_root_directory (GFile *dir)
+{
+    static GFile *admin_root_dir = NULL;
+
+    if (admin_root_dir == NULL)
+    {
+        admin_root_dir = g_file_new_for_path ("admin:///");
+    }
+
+    return g_file_equal (dir, admin_root_dir);
+}
+
+gboolean
 nautilus_is_search_directory (GFile *dir)
 {
     g_autofree gchar *uri = NULL;
