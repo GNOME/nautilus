@@ -25,7 +25,6 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-search-engine-model.h"
-#include "nautilus-search-engine-simple.h"
 
 G_BEGIN_DECLS
 
