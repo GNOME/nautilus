@@ -111,7 +111,6 @@ struct _NautilusToolbar
     /* active slot & bindings */
     NautilusWindowSlot *window_slot;
     GBinding *icon_binding;
-    GBinding *view_widget_binding;
 };
 
 enum
@@ -1111,7 +1110,6 @@ nautilus_toolbar_dispose (GObject *object)
     g_clear_object (&self->forward_button_multi_press_gesture);
     g_clear_object (&self->back_button_multi_press_gesture);
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
-    g_clear_pointer (&self->view_widget_binding, g_binding_unbind);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->dispose (object);
 }
@@ -1352,7 +1350,6 @@ nautilus_toolbar_set_window_slot (NautilusToolbar    *self,
     g_return_if_fail (NAUTILUS_IS_TOOLBAR (self));
 
     g_clear_pointer (&self->icon_binding, g_binding_unbind);
-    g_clear_pointer (&self->view_widget_binding, g_binding_unbind);
 
     if (self->window_slot != window_slot)
     {
