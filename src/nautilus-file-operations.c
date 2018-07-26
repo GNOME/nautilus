@@ -2536,6 +2536,7 @@ trash_or_delete_internal_sync (GList                  *files,
 {
     GTask *task;
     DeleteJob *job;
+    GHashTable *debuting_uris;
 
     job = setup_delete_job (files,
                             parent_window,
@@ -2543,10 +2544,25 @@ trash_or_delete_internal_sync (GList                  *files,
                             done_callback,
                             done_callback_data);
 
-    task = g_task_new (NULL, NULL, delete_task_done, job);
+    task = g_task_new (NULL, NULL, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, trash_or_delete_internal);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * delete_task_done) we need to set up the undo information ourselves.
+     */
+    g_list_free_full (job->files, g_object_unref);
+
+    if (job->done_callback)
+    {
+        debuting_uris = g_hash_table_new_full (g_file_hash, (GEqualFunc) g_file_equal, g_object_unref, NULL);
+        job->done_callback (debuting_uris, job->user_cancel, job->done_callback_data);
+        g_hash_table_unref (debuting_uris);
+    }
+
+    finalize_common ((CommonJob *) job);
+
+    nautilus_file_changes_consume_changes (TRUE);
 }
 
 static void
@@ -5883,10 +5899,33 @@ nautilus_file_operations_copy_sync (GList *files,
                            done_callback,
                            done_callback_data);
 
-    task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
+    task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_copy);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * copy_task_done) we need to set up the undo information ourselves.
+     */
+    if (job->done_callback)
+    {
+        job->done_callback (job->debuting_files,
+                            !job_aborted ((CommonJob *) job),
+                            job->done_callback_data);
+    }
+
+    g_list_free_full (job->files, g_object_unref);
+    if (job->destination)
+    {
+        g_object_unref (job->destination);
+    }
+    g_hash_table_unref (job->debuting_files);
+    g_free (job->target_name);
+
+    g_clear_object (&job->fake_display_source);
+
+    finalize_common ((CommonJob *) job);
+
+    nautilus_file_changes_consume_changes (TRUE);
 }
 
 void
@@ -6401,10 +6440,27 @@ nautilus_file_operations_move_sync (GList                *files,
     CopyMoveJob *job;
 
     job = move_job_setup (files, target_dir, parent_window, done_callback, done_callback_data);
-    task = g_task_new (NULL, job->common.cancellable, move_task_done, job);
+    task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_move);
     g_object_unref (task);
+    /* Since g_task_run_in_thread_sync doesn't work with callbacks (in this case not reaching
+     * move_task_done) we need to set up the undo information ourselves.
+     */
+    if (job->done_callback)
+    {
+        job->done_callback (job->debuting_files,
+                            !job_aborted ((CommonJob *) job),
+                            job->done_callback_data);
+    }
+
+    g_list_free_full (job->files, g_object_unref);
+    g_object_unref (job->destination);
+    g_hash_table_unref (job->debuting_files);
+
+    finalize_common ((CommonJob *) job);
+
+    nautilus_file_changes_consume_changes (TRUE);
 }
 
 void
