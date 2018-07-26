@@ -512,6 +512,9 @@ create_image_widget (NautilusPropertiesWindow *window,
     window->icon_image = image;
 
     update_properties_window_icon (window);
+
+    gtk_image_set_pixel_size (GTK_IMAGE (window->icon_image),
+                              NAUTILUS_CANVAS_ICON_SIZE_SMALL);
     gtk_widget_show (image);
 
     button = NULL;
