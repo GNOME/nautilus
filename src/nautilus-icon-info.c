@@ -23,20 +23,19 @@ struct _NautilusIconInfo
 {
     GObject parent;
 
+    GdkPixbuf *pixbuf;
+
     gboolean sole_owner;
     gint64 last_use_time;
-    GdkPixbuf *pixbuf;
 
     char *icon_name;
 
-    gint orig_scale;
+    int scale_factor;
 };
 
 static void schedule_reap_cache (void);
 
-G_DEFINE_TYPE (NautilusIconInfo,
-               nautilus_icon_info,
-               G_TYPE_OBJECT);
+G_DEFINE_TYPE (NautilusIconInfo, nautilus_icon_info, G_TYPE_OBJECT);
 
 static void
 nautilus_icon_info_init (NautilusIconInfo *icon)
@@ -52,42 +51,42 @@ nautilus_icon_info_is_fallback (NautilusIconInfo *icon)
 }
 
 static void
-pixbuf_toggle_notify (gpointer  info,
-                      GObject  *object,
-                      gboolean  is_last_ref)
+pixbuf_toggle_notify (gpointer  data,
+                       GObject  *object,
+                       gboolean  is_last_ref)
 {
-    NautilusIconInfo *icon = info;
+    NautilusIconInfo *self;
 
-    if (is_last_ref)
+    self = data;
+
+    if (!is_last_ref)
     {
-        icon->sole_owner = TRUE;
-        g_object_remove_toggle_ref (object,
-                                    pixbuf_toggle_notify,
-                                    info);
-        icon->last_use_time = g_get_monotonic_time ();
-        schedule_reap_cache ();
+        return;
     }
+
+    self->sole_owner = TRUE;
+
+    g_object_remove_toggle_ref (object, pixbuf_toggle_notify, self);
+
+    self->last_use_time = g_get_monotonic_time ();
+
+    schedule_reap_cache ();
 }
 
 static void
 nautilus_icon_info_finalize (GObject *object)
 {
-    NautilusIconInfo *icon;
+    NautilusIconInfo *self;
 
-    icon = NAUTILUS_ICON_INFO (object);
+    self = NAUTILUS_ICON_INFO (object);
 
-    if (!icon->sole_owner && icon->pixbuf)
+    if (!self->sole_owner && self->pixbuf != NULL)
     {
-        g_object_remove_toggle_ref (G_OBJECT (icon->pixbuf),
-                                    pixbuf_toggle_notify,
-                                    icon);
+        g_object_remove_toggle_ref (G_OBJECT (self->pixbuf), pixbuf_toggle_notify, self);
     }
 
-    if (icon->pixbuf)
-    {
-        g_object_unref (icon->pixbuf);
-    }
-    g_free (icon->icon_name);
+    g_clear_object (&self->pixbuf);
+    g_clear_pointer (&self->icon_name, g_free);
 
     G_OBJECT_CLASS (nautilus_icon_info_parent_class)->finalize (object);
 }
@@ -104,55 +103,56 @@ nautilus_icon_info_class_init (NautilusIconInfoClass *icon_info_class)
 
 NautilusIconInfo *
 nautilus_icon_info_new_for_pixbuf (GdkPixbuf *pixbuf,
-                                   gint       scale)
+                                   int        scale_factor)
 {
-    NautilusIconInfo *icon;
+    NautilusIconInfo *info;
 
-    icon = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
+    g_return_val_if_fail (pixbuf == NULL || GDK_IS_PIXBUF (pixbuf), NULL);
 
-    if (pixbuf)
-    {
-        icon->pixbuf = g_object_ref (pixbuf);
-    }
+    info = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
 
-    icon->orig_scale = scale;
+    g_set_object (&info->pixbuf, pixbuf);
 
-    return icon;
+    info->scale_factor = scale_factor;
+
+    return info;
 }
 
 static NautilusIconInfo *
 nautilus_icon_info_new_for_icon_info (GtkIconInfo *icon_info,
-                                      gint         scale)
+                                      int          scale_factor)
 {
-    NautilusIconInfo *icon;
+    NautilusIconInfo *info;
+    GdkPixbuf *pixbuf;
     const char *filename;
-    char *basename, *p;
 
-    icon = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
-
-    icon->pixbuf = gtk_icon_info_load_icon (icon_info, NULL);
-
+    info = g_object_new (NAUTILUS_TYPE_ICON_INFO, NULL);
+    pixbuf = gtk_icon_info_load_icon (icon_info, NULL);
     filename = gtk_icon_info_get_filename (icon_info);
     if (filename != NULL)
     {
+        char *basename;
+        char *extension;
+
         basename = g_path_get_basename (filename);
-        p = strrchr (basename, '.');
-        if (p)
+        extension = strrchr (basename, '.');
+        if (extension != NULL)
         {
-            *p = 0;
+            *extension = '\0';
         }
-        icon->icon_name = basename;
+
+        info->icon_name = basename;
     }
 
-    icon->orig_scale = scale;
+    info->pixbuf = pixbuf;
+    info->scale_factor = scale_factor;
 
-    return icon;
+    return info;
 }
-
 
 typedef struct
 {
-    GIcon *icon;
+    GLoadableIcon *icon;
     int scale;
     int size;
 } LoadableIconKey;
@@ -168,8 +168,6 @@ static GHashTable *loadable_icon_cache = NULL;
 static GHashTable *themed_icon_cache = NULL;
 static guint reap_cache_timeout = 0;
 
-#define MICROSEC_PER_SEC ((guint64) 1000000L)
-
 static guint time_now;
 
 static gboolean
@@ -182,7 +180,7 @@ reap_old_icon (gpointer key,
 
     if (icon->sole_owner)
     {
-        if (time_now - icon->last_use_time > 30 * MICROSEC_PER_SEC)
+        if (time_now - icon->last_use_time > 30 * G_TIME_SPAN_SECOND)
         {
             /* This went unused 30 secs ago. reap */
             return TRUE;
@@ -256,25 +254,37 @@ nautilus_icon_info_clear_caches (void)
     }
 }
 
-static guint
-loadable_icon_key_hash (LoadableIconKey *key)
+static unsigned int
+loadable_icon_key_hash (gconstpointer key)
 {
-    return g_icon_hash (key->icon) ^ key->scale ^ key->size;
+    const LoadableIconKey *loadable_icon_key;
+    unsigned int hash;
+
+    loadable_icon_key = key;
+    hash = g_icon_hash (loadable_icon_key->icon);
+
+    return hash ^ loadable_icon_key->scale ^ loadable_icon_key->size;
 }
 
 static gboolean
-loadable_icon_key_equal (const LoadableIconKey *a,
-                         const LoadableIconKey *b)
+loadable_icon_key_equal (gconstpointer a,
+                         gconstpointer b)
 {
-    return a->size == b->size &&
-           a->scale == b->scale &&
-           g_icon_equal (a->icon, b->icon);
+    const LoadableIconKey *lhs;
+    const LoadableIconKey *rhs;
+
+    lhs = a;
+    rhs = b;
+
+    return lhs->size == rhs->size &&
+           lhs->scale == rhs->scale &&
+           g_icon_equal (G_ICON (lhs->icon), G_ICON (rhs->icon));
 }
 
 static LoadableIconKey *
-loadable_icon_key_new (GIcon *icon,
-                       int    scale,
-                       int    size)
+loadable_icon_key_new (GLoadableIcon *icon,
+                       int            scale,
+                       int            size)
 {
     LoadableIconKey *key;
 
@@ -287,25 +297,39 @@ loadable_icon_key_new (GIcon *icon,
 }
 
 static void
-loadable_icon_key_free (LoadableIconKey *key)
+loadable_icon_key_free (gpointer data)
 {
+    LoadableIconKey *key;
+
+    key = data;
+
     g_object_unref (key->icon);
     g_slice_free (LoadableIconKey, key);
 }
 
-static guint
-themed_icon_key_hash (ThemedIconKey *key)
+static unsigned int
+themed_icon_key_hash (gconstpointer key)
 {
-    return g_str_hash (key->filename) ^ key->size;
+    const ThemedIconKey *themed_icon_key;
+
+    themed_icon_key = key;
+
+    return g_str_hash (themed_icon_key->filename) ^ themed_icon_key->size;
 }
 
 static gboolean
-themed_icon_key_equal (const ThemedIconKey *a,
-                       const ThemedIconKey *b)
+themed_icon_key_equal (gconstpointer a,
+                       gconstpointer b)
 {
-    return a->size == b->size &&
-           a->scale == b->scale &&
-           g_str_equal (a->filename, b->filename);
+    const ThemedIconKey *lhs;
+    const ThemedIconKey *rhs;
+
+    lhs = a;
+    rhs = b;
+
+    return lhs->size == rhs->size &&
+           lhs->scale == rhs->scale &&
+           g_str_equal (lhs->filename, rhs->filename);
 }
 
 static ThemedIconKey *
@@ -324,10 +348,115 @@ themed_icon_key_new (const char *filename,
 }
 
 static void
-themed_icon_key_free (ThemedIconKey *key)
+themed_icon_key_free (gpointer data)
 {
+    ThemedIconKey *key;
+
+    key = data;
+
     g_free (key->filename);
     g_slice_free (ThemedIconKey, key);
+}
+
+static NautilusIconInfo *
+nautilus_icon_info_look_up_loadable_icon (GLoadableIcon *icon,
+                                          int            size,
+                                          int            scale)
+{
+    LoadableIconKey lookup_key;
+    g_autoptr (GInputStream) stream = NULL;
+    GdkPixbuf *pixbuf;
+    LoadableIconKey *key;
+    NautilusIconInfo *info;
+
+    if (loadable_icon_cache == NULL)
+    {
+        loadable_icon_cache = g_hash_table_new_full (loadable_icon_key_hash,
+                                                     loadable_icon_key_equal,
+                                                     loadable_icon_key_free,
+                                                     g_object_unref);
+    }
+
+    lookup_key.icon = icon;
+    lookup_key.scale = scale;
+    lookup_key.size = size * scale;
+
+    info = g_hash_table_lookup (loadable_icon_cache, &lookup_key);
+    if (info != NULL)
+    {
+        return g_object_ref (info);
+    }
+    stream = g_loadable_icon_load (icon, size * scale, NULL, NULL, NULL);
+    if (stream != NULL)
+    {
+        pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
+                                                      size * scale, size * scale,
+                                                      TRUE,
+                                                      NULL, NULL);
+    }
+    else
+    {
+        pixbuf = NULL;
+    }
+    key = loadable_icon_key_new (icon, scale, size);
+    info = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
+
+    g_hash_table_insert (loadable_icon_cache, key, info);
+
+    return g_object_ref (info);
+}
+
+static NautilusIconInfo *
+nautilus_icon_info_look_up_themed_icon (GThemedIcon *icon,
+                                        int          size,
+                                        int          scale)
+{
+    GtkIconTheme *icon_theme;
+    const char * const *names;
+    g_autoptr (GtkIconInfo) gtkicon_info = NULL;
+    const char *filename;
+    ThemedIconKey lookup_key;
+    ThemedIconKey *key;
+    NautilusIconInfo *info;
+
+    if (themed_icon_cache == NULL)
+    {
+        themed_icon_cache = g_hash_table_new_full (themed_icon_key_hash,
+                                                   themed_icon_key_equal,
+                                                   themed_icon_key_free,
+                                                   g_object_unref);
+    }
+
+    icon_theme = gtk_icon_theme_get_default ();
+    names = g_themed_icon_get_names (icon);
+    gtkicon_info = gtk_icon_theme_choose_icon_for_scale (icon_theme, (const char **) names,
+                                                         size, scale,
+                                                         GTK_ICON_LOOKUP_FORCE_SIZE);
+    if (gtkicon_info == NULL)
+    {
+        return nautilus_icon_info_new_for_pixbuf (NULL, scale);
+    }
+    filename = gtk_icon_info_get_filename (gtkicon_info);
+    if (filename == NULL)
+    {
+        return nautilus_icon_info_new_for_pixbuf (NULL, scale);
+    }
+
+    lookup_key.filename = (char *) filename;
+    lookup_key.scale = scale;
+    lookup_key.size = size;
+
+    info = g_hash_table_lookup (themed_icon_cache, &lookup_key);
+    if (info != NULL)
+    {
+        return g_object_ref (info);
+    }
+    key = themed_icon_key_new (filename, scale, size);
+    info = nautilus_icon_info_new_for_icon_info (gtkicon_info, scale);
+
+    g_hash_table_insert (themed_icon_cache, key, info);
+
+    return g_object_ref (info);
 }
 
 NautilusIconInfo *
@@ -335,115 +464,18 @@ nautilus_icon_info_lookup (GIcon *icon,
                            int    size,
                            int    scale)
 {
-    NautilusIconInfo *icon_info;
-
     if (G_IS_LOADABLE_ICON (icon))
     {
-        GdkPixbuf *pixbuf;
-        LoadableIconKey lookup_key;
-        LoadableIconKey *key;
-        GInputStream *stream;
-
-        if (loadable_icon_cache == NULL)
-        {
-            loadable_icon_cache =
-                g_hash_table_new_full ((GHashFunc) loadable_icon_key_hash,
-                                       (GEqualFunc) loadable_icon_key_equal,
-                                       (GDestroyNotify) loadable_icon_key_free,
-                                       (GDestroyNotify) g_object_unref);
-        }
-
-        lookup_key.icon = icon;
-        lookup_key.scale = scale;
-        lookup_key.size = size * scale;
-
-        icon_info = g_hash_table_lookup (loadable_icon_cache, &lookup_key);
-        if (icon_info)
-        {
-            return g_object_ref (icon_info);
-        }
-
-        pixbuf = NULL;
-        stream = g_loadable_icon_load (G_LOADABLE_ICON (icon),
-                                       size * scale,
-                                       NULL, NULL, NULL);
-        if (stream)
-        {
-            pixbuf = gdk_pixbuf_new_from_stream_at_scale (stream,
-                                                          size * scale, size * scale,
-                                                          TRUE,
-                                                          NULL, NULL);
-            g_input_stream_close (stream, NULL, NULL);
-            g_object_unref (stream);
-        }
-
-        icon_info = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
-
-        key = loadable_icon_key_new (icon, scale, size);
-        g_hash_table_insert (loadable_icon_cache, key, icon_info);
-
-        return g_object_ref (icon_info);
+        return nautilus_icon_info_look_up_loadable_icon (G_LOADABLE_ICON (icon), size, scale);
     }
     else if (G_IS_THEMED_ICON (icon))
     {
-        const char * const *names;
-        ThemedIconKey lookup_key;
-        ThemedIconKey *key;
-        GtkIconTheme *icon_theme;
-        GtkIconInfo *gtkicon_info;
-        const char *filename;
-
-        if (themed_icon_cache == NULL)
-        {
-            themed_icon_cache =
-                g_hash_table_new_full ((GHashFunc) themed_icon_key_hash,
-                                       (GEqualFunc) themed_icon_key_equal,
-                                       (GDestroyNotify) themed_icon_key_free,
-                                       (GDestroyNotify) g_object_unref);
-        }
-
-        names = g_themed_icon_get_names (G_THEMED_ICON (icon));
-
-        icon_theme = gtk_icon_theme_get_default ();
-        gtkicon_info = gtk_icon_theme_choose_icon_for_scale (icon_theme, (const char **) names,
-                                                             size, scale, GTK_ICON_LOOKUP_FORCE_SIZE);
-
-        if (gtkicon_info == NULL)
-        {
-            return nautilus_icon_info_new_for_pixbuf (NULL, scale);
-        }
-
-        filename = gtk_icon_info_get_filename (gtkicon_info);
-        if (filename == NULL)
-        {
-            g_object_unref (gtkicon_info);
-            return nautilus_icon_info_new_for_pixbuf (NULL, scale);
-        }
-
-        lookup_key.filename = (char *) filename;
-        lookup_key.scale = scale;
-        lookup_key.size = size;
-
-        icon_info = g_hash_table_lookup (themed_icon_cache, &lookup_key);
-        if (icon_info)
-        {
-            g_object_unref (gtkicon_info);
-            return g_object_ref (icon_info);
-        }
-
-        icon_info = nautilus_icon_info_new_for_icon_info (gtkicon_info, scale);
-
-        key = themed_icon_key_new (filename, scale, size);
-        g_hash_table_insert (themed_icon_cache, key, icon_info);
-
-        g_object_unref (gtkicon_info);
-
-        return g_object_ref (icon_info);
+        return nautilus_icon_info_look_up_themed_icon (G_THEMED_ICON (icon), size, scale);
     }
     else
     {
-        GdkPixbuf *pixbuf;
-        GtkIconInfo *gtk_icon_info;
+        g_autoptr (GtkIconInfo) gtk_icon_info = NULL;
+        g_autoptr (GdkPixbuf) pixbuf = NULL;
 
         gtk_icon_info = gtk_icon_theme_lookup_by_gicon_for_scale (gtk_icon_theme_get_default (),
                                                                   icon,
@@ -453,21 +485,9 @@ nautilus_icon_info_lookup (GIcon *icon,
         if (gtk_icon_info != NULL)
         {
             pixbuf = gtk_icon_info_load_icon (gtk_icon_info, NULL);
-            g_object_unref (gtk_icon_info);
-        }
-        else
-        {
-            pixbuf = NULL;
         }
 
-        icon_info = nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
-
-        if (pixbuf != NULL)
-        {
-            g_object_unref (pixbuf);
-        }
-
-        return icon_info;
+        return nautilus_icon_info_new_for_pixbuf (pixbuf, scale);
     }
 }
 
@@ -476,150 +496,101 @@ nautilus_icon_info_lookup_from_name (const char *name,
                                      int         size,
                                      int         scale)
 {
-    GIcon *icon;
-    NautilusIconInfo *info;
+    g_autoptr (GIcon) icon = NULL;
 
     icon = g_themed_icon_new (name);
-    info = nautilus_icon_info_lookup (icon, size, scale);
-    g_object_unref (icon);
-    return info;
+
+    return nautilus_icon_info_lookup (icon, size, scale);
 }
 
-NautilusIconInfo *
-nautilus_icon_info_lookup_from_path (const char *path,
-                                     int         size,
-                                     int         scale)
+static GdkPixbuf *
+nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo *self)
 {
-    GFile *icon_file;
-    GIcon *icon;
-    NautilusIconInfo *info;
+    GdkPixbuf *pixbuf;
 
-    icon_file = g_file_new_for_path (path);
-    icon = g_file_icon_new (icon_file);
-    info = nautilus_icon_info_lookup (icon, size, scale);
-    g_object_unref (icon);
-    g_object_unref (icon_file);
-    return info;
-}
-
-GdkTexture *
-nautilus_icon_info_get_texture (NautilusIconInfo *self)
-{
-    g_autoptr (GdkPixbuf) pixbuf = NULL;
-
-    g_return_val_if_fail (NAUTILUS_IS_ICON_INFO (self), NULL);
-
-    pixbuf = nautilus_icon_info_get_pixbuf (self);
-
-    return gdk_texture_new_for_pixbuf (pixbuf);
-}
-
-GdkPixbuf *
-nautilus_icon_info_get_pixbuf_nodefault (NautilusIconInfo *icon)
-{
-    GdkPixbuf *res;
-
-    if (icon->pixbuf == NULL)
-    {
-        res = NULL;
-    }
-    else
-    {
-        res = g_object_ref (icon->pixbuf);
-
-        if (icon->sole_owner)
-        {
-            icon->sole_owner = FALSE;
-            g_object_add_toggle_ref (G_OBJECT (res),
-                                     pixbuf_toggle_notify,
-                                     icon);
-        }
-    }
-
-    return res;
-}
-
-
-GdkPixbuf *
-nautilus_icon_info_get_pixbuf (NautilusIconInfo *icon)
-{
-    GdkPixbuf *res;
-
-    res = nautilus_icon_info_get_pixbuf_nodefault (icon);
-    if (res == NULL)
-    {
-        res = gdk_pixbuf_new_from_resource ("/org/gnome/nautilus/text-x-preview.png",
-                                            NULL);
-    }
-
-    return res;
-}
-
-GdkPixbuf *
-nautilus_icon_info_get_pixbuf_nodefault_at_size (NautilusIconInfo *icon,
-                                                 gsize             forced_size)
-{
-    GdkPixbuf *pixbuf, *scaled_pixbuf;
-    int w, h, s;
-    double scale;
-
-    pixbuf = nautilus_icon_info_get_pixbuf_nodefault (icon);
-
-    if (pixbuf == NULL)
+    if (self->pixbuf == NULL)
     {
         return NULL;
     }
 
-    w = gdk_pixbuf_get_width (pixbuf) / icon->orig_scale;
-    h = gdk_pixbuf_get_height (pixbuf) / icon->orig_scale;
-    s = MAX (w, h);
-    if (s == forced_size)
+    pixbuf = g_object_ref (self->pixbuf);
+
+    if (self->sole_owner)
     {
-        return pixbuf;
+        self->sole_owner = FALSE;
+
+        g_object_add_toggle_ref (G_OBJECT (pixbuf), pixbuf_toggle_notify, self);
     }
 
-    scale = (double) forced_size / s;
-    scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-                                             w * scale, h * scale,
-                                             GDK_INTERP_BILINEAR);
-    g_object_unref (pixbuf);
-    return scaled_pixbuf;
+    return pixbuf;
 }
 
-
 GdkPixbuf *
-nautilus_icon_info_get_pixbuf_at_size (NautilusIconInfo *icon,
-                                       gsize             forced_size)
+nautilus_icon_info_get_pixbuf (NautilusIconInfo *self,
+                               gboolean          fallback,
+                               int               size)
 {
-    GdkPixbuf *pixbuf, *scaled_pixbuf;
-    int w, h, s;
-    double scale;
+    GdkPixbuf *pixbuf;
 
-    pixbuf = nautilus_icon_info_get_pixbuf (icon);
-
-    w = gdk_pixbuf_get_width (pixbuf) / icon->orig_scale;
-    h = gdk_pixbuf_get_height (pixbuf) / icon->orig_scale;
-    s = MAX (w, h);
-    if (s == forced_size)
+    pixbuf = nautilus_icon_info_get_pixbuf_nodefault (self);
+    if (pixbuf == NULL)
     {
-        return pixbuf;
+        if (!fallback)
+        {
+            return pixbuf;
+        }
+
+        pixbuf = gdk_pixbuf_new_from_resource ("/org/gnome/nautilus/text-x-preview.png",
+                                               NULL);
     }
 
-    scale = (double) forced_size / s;
+    g_return_val_if_fail (GDK_IS_PIXBUF (pixbuf), NULL);
 
-    /* Neither of these can be 0. */
-    w = MAX (w * scale, 1);
-    h = MAX (h * scale, 1);
+    if (size != -1)
+    {
+        int width;
+        int height;
+        int max;
+        double scale_factor;
 
-    scaled_pixbuf = gdk_pixbuf_scale_simple (pixbuf,
-                                             w, h,
-                                             GDK_INTERP_BILINEAR);
-    g_object_unref (pixbuf);
-    return scaled_pixbuf;
+        width = gdk_pixbuf_get_width (pixbuf) / self->scale_factor;
+        height = gdk_pixbuf_get_height (pixbuf) / self->scale_factor;
+        max = MAX (width, height);
+        if (max == size)
+        {
+            return pixbuf;
+        }
+        scale_factor = (double) size / (double) max;
+
+        g_object_unref (pixbuf);
+
+        width = MAX (width * scale_factor, 1);
+        height = MAX (height * scale_factor, 1);
+
+        pixbuf = gdk_pixbuf_scale_simple (pixbuf,
+                                          width, height,
+                                          GDK_INTERP_BILINEAR);
+    }
+
+    return pixbuf;
+}
+
+GdkTexture *
+nautilus_icon_info_get_texture (NautilusIconInfo *self,
+                                gboolean          fallback,
+                                int               size)
+{
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
+
+    pixbuf = nautilus_icon_info_get_pixbuf (self, fallback, size);
+
+    return gdk_texture_new_for_pixbuf (pixbuf);
 }
 
 const char *
-nautilus_icon_info_get_used_name (NautilusIconInfo *icon)
+nautilus_icon_info_get_used_name (NautilusIconInfo *self)
 {
-    return icon->icon_name;
+    g_return_val_if_fail (NAUTILUS_IS_ICON_INFO (self), NULL);
+
+    return self->icon_name;
 }
