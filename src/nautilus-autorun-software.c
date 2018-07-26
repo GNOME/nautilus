@@ -204,7 +204,7 @@ present_autorun_for_software_dialog (GMount *mount)
     icon = g_mount_get_icon (mount);
     icon_info = nautilus_icon_info_lookup (icon, 48,
                                            gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
-    texture = nautilus_icon_info_get_texture (icon_info);
+    texture = nautilus_icon_info_get_texture (icon_info, TRUE, -1);
 
     gtk_window_set_icon (GTK_WINDOW (dialog), texture);
 
