@@ -324,9 +324,10 @@ add_prompt_and_separator (GtkWidget  *vbox,
 static void
 get_image_for_properties_window (NautilusPropertiesWindow  *window,
                                  char                     **icon_name,
-                                 GdkPixbuf                **icon_pixbuf)
+                                 GdkTexture               **texture)
 {
-    NautilusIconInfo *icon, *new_icon;
+    g_autoptr (NautilusIconInfo) icon = NULL;
+    NautilusIconInfo *new_icon;
     GList *l;
     gint icon_scale;
 
@@ -373,22 +374,20 @@ get_image_for_properties_window (NautilusPropertiesWindow  *window,
         *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
     }
 
-    if (icon_pixbuf != NULL)
+    if (texture != NULL)
     {
-        *icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
+        *texture = nautilus_icon_info_get_texture (icon, TRUE, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
     }
-
-    g_object_unref (icon);
 }
 
 
 static void
 update_properties_window_icon (NautilusPropertiesWindow *window)
 {
-    GdkPixbuf *pixbuf;
-    char *name;
+    g_autofree char *name = NULL;
+    g_autoptr (GdkTexture) texture = NULL;
 
-    get_image_for_properties_window (window, &name, &pixbuf);
+    get_image_for_properties_window (window, &name, &texture);
 
     if (name != NULL)
     {
@@ -396,17 +395,11 @@ update_properties_window_icon (NautilusPropertiesWindow *window)
     }
     else
     {
-        g_autoptr (GdkTexture) texture = NULL;
-
-        texture = gdk_texture_new_for_pixbuf (pixbuf);
-
         gtk_window_set_icon (GTK_WINDOW (window), texture);
     }
 
-    gtk_image_set_from_pixbuf (GTK_IMAGE (window->icon_image), pixbuf);
-
-    g_free (name);
-    g_object_unref (pixbuf);
+    gtk_image_set_from_paintable (GTK_IMAGE (window->icon_image),
+                                  GDK_PAINTABLE (texture));
 }
 
 /* utility to test if a uri refers to a local image */
