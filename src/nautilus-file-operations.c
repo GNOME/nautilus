@@ -5775,7 +5775,7 @@ nautilus_file_operations_copy (GTask        *task,
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
-        GFile *src_dir;
+        g_auoptr (GFile) src_dir = NULL;
 
         src_dir = g_file_get_parent (job->files->data);
         /* In the case of duplicate, the undo_info is already set, so we don't want to
@@ -5787,8 +5787,6 @@ nautilus_file_operations_copy (GTask        *task,
                                                                      g_list_length (job->files),
                                                                      src_dir, job->destination);
         }
-
-        g_object_unref (src_dir);
     }
 
     nautilus_progress_info_start (job->common.progress);
@@ -6460,7 +6458,7 @@ nautilus_file_operations_move (GTask        *task,
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
-        GFile *src_dir;
+        g_auoptr (GFile) src_dir = NULL;
 
         src_dir = g_file_get_parent ((job->files)->data);
 
@@ -6476,8 +6474,6 @@ nautilus_file_operations_move (GTask        *task,
                                                                      g_list_length (job->files),
                                                                      src_dir, job->destination);
         }
-
-        g_object_unref (src_dir);
     }
 
     common = &job->common;
@@ -6848,13 +6844,12 @@ nautilus_file_operations_link (GList                *files,
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
-        GFile *src_dir;
+        g_auoptr (GFile) src_dir = NULL;
 
         src_dir = g_file_get_parent (files->data);
         job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_CREATE_LINK,
                                                                  g_list_length (files),
                                                                  src_dir, target_dir);
-        g_object_unref (src_dir);
     }
 
     task = g_task_new (NULL, job->common.cancellable, link_task_done, job);
@@ -6888,14 +6883,13 @@ nautilus_file_operations_duplicate (GList                *files,
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
-        GFile *src_dir;
+        g_autoptr (GFile) src_dir = NULL;
 
         src_dir = g_file_get_parent (files->data);
         job->common.undo_info =
             nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_DUPLICATE,
                                              g_list_length (files),
                                              src_dir, src_dir);
-        g_object_unref (src_dir);
     }
 
     task = g_task_new (NULL, job->common.cancellable, copy_task_done, job);
