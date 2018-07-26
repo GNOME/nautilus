@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
 <interface>
+  <requires lib="gtk+" version="3.20"/>
   <object class="GtkGrid" id="folder_is_empty">
-    <property name="visible">False</property>
-    <property name="row_spacing">12</property>
-    <property name="hexpand">True</property>
-    <property name="vexpand">True</property>
+    <property name="can_focus">False</property>
     <property name="halign">center</property>
     <property name="valign">center</property>
-    <style>
-      <class name="dim-label"/>
-    </style>
+    <property name="hexpand">True</property>
+    <property name="vexpand">True</property>
+    <property name="row_spacing">12</property>
     <child>
       <object class="GtkImage">
         <property name="visible">True</property>
-        <property name="icon-name">folder-symbolic</property>
-        <property name="pixel-size">80</property>
+        <property name="can_focus">False</property>
+        <property name="pixel_size">80</property>
+        <property name="icon_name">folder-symbolic</property>
         <style>
           <class name="dim-label"/>
         </style>
@@ -27,10 +27,11 @@
     <child>
       <object class="GtkLabel">
         <property name="visible">True</property>
+        <property name="can_focus">False</property>
         <property name="label" translatable="yes">Folder is Empty</property>
         <attributes>
           <attribute name="weight" value="bold"/>
-          <attribute name="scale" value="1.44"/>
+          <attribute name="scale" value="1.4399999999999999"/>
         </attributes>
       </object>
       <packing>
@@ -38,5 +39,8 @@
         <property name="top_attach">1</property>
       </packing>
     </child>
+    <style>
+      <class name="dim-label"/>
+    </style>
   </object>
 </interface>
