@@ -49,6 +49,7 @@
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
+#include "nautilus-files-window-slot.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-list-view.h"
 #include "nautilus-location-entry.h"
@@ -513,7 +514,7 @@ nautilus_window_create_slot (NautilusWindow *window,
     }
     else
     {
-        slot = nautilus_window_slot_new (window);
+        slot = nautilus_files_window_slot_new_for_window (window);
     }
 
     nautilus_file_unref (file);

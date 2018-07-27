@@ -21,17 +21,9 @@
 #include <glib.h>
 #include <gtk/gtk.h>
 
+#include "nautilus-enums.h"
 #include "nautilus-query.h"
 #include "nautilus-toolbar-menu-sections.h"
-
-enum
-{
-    NAUTILUS_VIEW_GRID_ID,
-    NAUTILUS_VIEW_LIST_ID,
-    NAUTILUS_VIEW_EMPTY_ID,
-    NAUTILUS_VIEW_OTHER_LOCATIONS_ID,
-    NAUTILUS_VIEW_INVALID_ID,
-};
 
 G_BEGIN_DECLS
 
