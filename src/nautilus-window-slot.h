@@ -48,10 +48,6 @@ typedef struct
 struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
 
-	/* wrapped NautilusWindowInfo signals, for overloading */
-	void (* active)   (NautilusWindowSlot *slot);
-	void (* inactive) (NautilusWindowSlot *slot);
-
         /* Use this in case the subclassed slot has some special views differents
          * that the ones supported here. You can return your nautilus view
          * subclass in this function.
