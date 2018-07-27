@@ -2450,12 +2450,7 @@ action_new_folder (GSimpleAction *action,
                    GVariant      *state,
                    gpointer       user_data)
 {
-    NautilusWindow *window;
-
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
-
-    window = nautilus_files_view_get_window (NAUTILUS_FILES_VIEW (user_data));
-    nautilus_window_hide_view_menu (window);
 
     nautilus_files_view_new_folder (NAUTILUS_FILES_VIEW (user_data), FALSE);
 }
