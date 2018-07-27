@@ -50,25 +50,17 @@ modules:
         url: "https://gitlab.gnome.org/GNOME/gexiv2.git"
 
   - name: "tracker"
-    cleanup:
-      - "/bin"
-      - "/etc"
-      - "/libexec"
     build-options:
       config-opts:
-        - "--disable-miner-apps"
-        - "--disable-static"
-        - "--disable-tracker-extract"
-        - "--disable-tracker-needle"
-        - "--disable-tracker-preferences"
-        - "--disable-artwork"
-        - "--disable-tracker-writeback"
-        - "--disable-miner-user-guides"
-        - "--with-bash-completion-dir=no"
+        - "-Ddocs=false"
+        - "-Dfunctional_tests=false"
+        - "-Dbash_completion=no"
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/tracker.git"
         tag: "2.1.0"
+    buildsystem: "meson"
+    builddir: true
 
   - name: "gnome-autoar"
     sources:
@@ -86,12 +78,6 @@ modules:
         - "--disable-documentation"
     buildsystem: "autotools"
     builddir: true
-    cleanup:
-      - "/bin"
-      - "/include"
-      - "/lib/pkgconfig"
-      - "/share/aclocal"
-      - "*.la"
 
   - name: "graphene"
     sources:
@@ -106,8 +92,6 @@ modules:
         - "-Dbenchmarks=false"
     buildsystem: "meson"
     builddir: true
-    cleanup:
-      - "/lib/pkgconfig"
 
   - name: "gtk+"
     sources:
@@ -122,9 +106,6 @@ modules:
         - "-Dbuild-tests=false"
     buildsystem: "meson"
     builddir: true
-    cleanup:
-      - "/bin"
-      - "/lib/pkgconfig"
 
   - name: "nautilus"
     buildsystem: "meson"
@@ -134,6 +115,7 @@ modules:
         - "--libdir=lib"
         - "-Dprofile=Gtk4"
         - "-Dintrospection=false"
+        - "-Dtests=all"
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/nautilus.git"
