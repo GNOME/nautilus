@@ -34,6 +34,7 @@
 #include "nautilus-trash-monitor.h"
 #include "nautilus-view.h"
 #include "nautilus-window.h"
+#include "nautilus-window-slot-private.h"
 #include "nautilus-x-content-bar.h"
 
 #include <glib/gi18n.h>
@@ -153,8 +154,6 @@ static gboolean nautilus_window_slot_content_view_matches (NautilusWindowSlot *s
                                                            guint               id);
 static NautilusView *nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
                                                                  GFile              *location);
-static void nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
-                                                   guint               id);
 static void nautilus_window_slot_set_loading (NautilusWindowSlot *self,
                                               gboolean            loading);
 char *nautilus_window_slot_get_location_uri (NautilusWindowSlot *self);
@@ -387,9 +386,6 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
 
-    GAction *action;
-    GVariant *variant;
-
     priv = nautilus_window_slot_get_instance_private (self);
     if (!nautilus_window_slot_get_active (self))
     {
@@ -405,14 +401,6 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
      * Needs to be done after the change has been done, if not, a loop happens,
      * because setting the search enabled or not actually opens a location */
     update_search_visible (self);
-
-    /* Files view mode */
-    action = g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group), "files-view-mode");
-    if (g_action_get_enabled (action))
-    {
-        variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (nautilus_window_slot_get_current_view (self)));
-        g_action_change_state (action, variant);
-    }
 }
 
 static void
@@ -1053,7 +1041,7 @@ change_files_view_mode (NautilusWindowSlot *self,
 
     if (!nautilus_window_slot_content_view_matches (self, view_id))
     {
-        nautilus_window_slot_set_content_view (self, view_id);
+        nautilus_window_slot_set_mode (self, view_id);
     }
     preferences_key = nautilus_view_is_searching (nautilus_window_slot_get_current_view (self)) ?
                       NAUTILUS_PREFERENCES_SEARCH_VIEW :
@@ -1089,31 +1077,8 @@ action_files_view_mode_toggle (GSimpleAction *action,
     }
 }
 
-static void
-action_files_view_mode (GSimpleAction *action,
-                        GVariant      *value,
-                        gpointer       user_data)
-{
-    NautilusWindowSlot *self;
-    guint view_id;
-
-    view_id = g_variant_get_uint32 (value);
-    self = NAUTILUS_WINDOW_SLOT (user_data);
-
-    if (!NAUTILUS_IS_FILES_VIEW (nautilus_window_slot_get_current_view (self)))
-    {
-        return;
-    }
-
-    change_files_view_mode (self, view_id);
-
-    g_simple_action_set_state (action, value);
-}
-
 const GActionEntry slot_entries[] =
 {
-    /* 4 is NAUTILUS_VIEW_INVALID_ID */
-    { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
     { "files-view-mode-toggle", action_files_view_mode_toggle },
     { "search-visible", NULL, NULL, "false", search_visible_without_popover },
     { "search-visible-popover", NULL, NULL, "false", search_visible_with_popover },
@@ -1194,7 +1159,7 @@ use_experimental_views_changed_callback (GSettings *settings,
         /* Note that although this call does not change the view id,
          * it changes the canvas view between new and old.
          */
-        nautilus_window_slot_set_content_view (self, NAUTILUS_VIEW_GRID_ID);
+        nautilus_window_slot_set_mode (self, NAUTILUS_VIEW_GRID_ID);
     }
 }
 
@@ -1227,8 +1192,6 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     gtk_widget_insert_action_group (GTK_WIDGET (self),
                                     "slot",
                                     G_ACTION_GROUP (priv->slot_action_group));
-    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
-    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
     nautilus_application_set_accelerator (app, "slot.search-visible-popover", "<control>f");
 
     priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
@@ -2219,9 +2182,9 @@ free_location_change (NautilusWindowSlot *self)
  * Note that the current view will be thrown away, even if it has the same id.
  * Callers may first check if !nautilus_window_slot_content_view_matches().
  */
-static void
-nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
-                                       guint               id)
+void
+nautilus_window_slot_set_mode (NautilusWindowSlot *self,
+                               unsigned int        mode)
 {
     NautilusFilesView *view;
     g_autolist (NautilusFile) selection = NULL;
@@ -2232,11 +2195,11 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 
     priv = nautilus_window_slot_get_instance_private (self);
     uri = nautilus_window_slot_get_location_uri (self);
-    DEBUG ("Change view of window %s to %d", uri, id);
+    DEBUG ("Change view of window %s to %d", uri, mode);
     g_free (uri);
 
     selection = nautilus_view_get_selection (priv->content_view);
-    view = nautilus_files_view_new (id, self);
+    view = nautilus_files_view_new (mode, self);
 
     nautilus_window_slot_stop_loading (self);
 
