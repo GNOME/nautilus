@@ -2466,23 +2466,35 @@ action_new_folder_with_selection (GSimpleAction *action,
 }
 
 static void
-action_selection_properties (GSimpleAction *action,
-                             GVariant      *state,
-                             gpointer       user_data)
+action_properties (GSimpleAction *action,
+                   GVariant      *state,
+                   gpointer       user_data)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
+    GList *files;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     view = NAUTILUS_FILES_VIEW (user_data);
     priv = nautilus_files_view_get_instance_private (view);
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+    if (g_list_length (selection) == 0)
+    {
+        if (priv->directory_as_file != NULL)
+        {
+            files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
 
-    g_return_if_fail (selection != NULL);
+            nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
 
-    nautilus_properties_window_present (selection, GTK_WIDGET (view), NULL);
+            nautilus_file_list_free (files);
+        }
+    }
+    else
+    {
+        nautilus_properties_window_present (selection, GTK_WIDGET (view), NULL);
+    }
 }
 
 static void
@@ -6982,7 +6994,7 @@ const GActionEntry view_entries[] =
     { "extract-here", action_extract_here },
     { "extract-to", action_extract_to },
     { "compress", action_compress },
-    { "selection-properties", action_selection_properties},
+    { "properties", action_properties},
     { "current-directory-properties", action_current_dir_properties},
     { "set-as-wallpaper", action_set_as_wallpaper },
     { "mount-volume", action_mount_volume },
