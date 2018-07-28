@@ -559,7 +559,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
     }
 }
 
-static void
+void
 nautilus_path_bar_show_current_location_menu (NautilusPathBar *self)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
