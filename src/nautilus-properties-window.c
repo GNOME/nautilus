@@ -2804,18 +2804,25 @@ should_show_volume_usage (NautilusPropertiesWindow *window)
 }
 
 static void
-paint_legend (GtkWidget *widget,
-              cairo_t   *cr,
-              gpointer   data)
+paint_legend (GtkDrawingArea *drawing_area,
+              cairo_t        *cr,
+              int             width,
+              int             height,
+              gpointer        data)
 {
+    GtkWidget *widget;
     GtkStyleContext *context;
-    GtkAllocation allocation;
 
-    gtk_widget_get_allocation (widget, &allocation);
+    widget = GTK_WIDGET (drawing_area);
     context = gtk_widget_get_style_context (widget);
 
-    gtk_render_background (context, cr, 0, 0, allocation.width, allocation.height);
-    gtk_render_frame (context, cr, 0, 0, allocation.width, allocation.height);
+    gtk_style_context_save (context);
+    gtk_style_context_add_class (context, "disk-space-display");
+
+    gtk_render_background (context, cr, 0, 0, width, height);
+    gtk_render_frame (context, cr, 0, 0, width, height);
+
+    gtk_style_context_restore (context);
 }
 
 static void
@@ -2842,9 +2849,10 @@ paint_slice (GtkWidget   *widget,
     }
 
     context = gtk_widget_get_style_context (widget);
-    gtk_style_context_get_border (context, &border);
 
     gtk_style_context_save (context);
+    gtk_style_context_add_class (context, "disk-space-display");
+    gtk_style_context_get_border (context, &border);
     gtk_style_context_add_class (context, style_class);
     gtk_style_context_get_color (context, &fill);
     gtk_style_context_add_class (context, "border");
@@ -2890,26 +2898,26 @@ paint_slice (GtkWidget   *widget,
 }
 
 static void
-paint_pie_chart (GtkWidget *widget,
-                 cairo_t   *cr,
-                 gpointer   data)
+paint_pie_chart (GtkDrawingArea *drawing_area,
+                 cairo_t        *cr,
+                 int             width,
+                 int             height,
+                 gpointer        data)
 {
     NautilusPropertiesWindow *window;
+    GtkWidget *widget;
     double free, used, reserved;
 
     window = NAUTILUS_PROPERTIES_WINDOW (data);
-
+    widget = GTK_WIDGET (drawing_area);
     free = (double) window->volume_free / (double) window->volume_capacity;
     used = (double) window->volume_used / (double) window->volume_capacity;
     reserved = 1.0 - (used + free);
 
-    paint_slice (widget, cr,
-                 0, free, "free");
-    paint_slice (widget, cr,
-                 free + used, reserved, "unknown");
+    paint_slice (widget, cr, 0, free, "free");
+    paint_slice (widget, cr, free + used, reserved, "unknown");
     /* paint the used last so its slice strokes are on top */
-    paint_slice (widget, cr,
-                 free, used, "used");
+    paint_slice (widget, cr, free, used, "used");
 }
 
 static GtkWidget *
@@ -2955,12 +2963,10 @@ create_pie_widget (NautilusPropertiesWindow *window)
     pie_canvas = gtk_drawing_area_new ();
     gtk_widget_set_size_request (pie_canvas, 200, 200);
     style = gtk_widget_get_style_context (pie_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
 
     used_canvas = gtk_drawing_area_new ();
     gtk_widget_set_size_request (used_canvas, 20, 20);
     style = gtk_widget_get_style_context (used_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
     gtk_style_context_add_class (style, "used");
 
     used_label = gtk_label_new (used);
@@ -2970,7 +2976,6 @@ create_pie_widget (NautilusPropertiesWindow *window)
     free_canvas = gtk_drawing_area_new ();
     gtk_widget_set_size_request (free_canvas, 20, 20);
     style = gtk_widget_get_style_context (free_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
     gtk_style_context_add_class (style, "free");
 
     free_label = gtk_label_new (free);
@@ -3057,12 +3062,12 @@ create_pie_widget (NautilusPropertiesWindow *window)
     gtk_grid_attach_next_to (grid, fstype_value_label, fstype_label,
                              GTK_POS_RIGHT, 1, 1);
 
-    g_signal_connect (pie_canvas, "draw",
-                      G_CALLBACK (paint_pie_chart), window);
-    g_signal_connect (used_canvas, "draw",
-                      G_CALLBACK (paint_legend), window);
-    g_signal_connect (free_canvas, "draw",
-                      G_CALLBACK (paint_legend), window);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (pie_canvas),
+                                    paint_pie_chart, window, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (used_canvas),
+                                    paint_legend, NULL, NULL);
+    gtk_drawing_area_set_draw_func (GTK_DRAWING_AREA (free_canvas),
+                                    paint_legend, NULL, NULL);
 
     return GTK_WIDGET (grid);
 }
