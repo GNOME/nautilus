@@ -8176,7 +8176,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu));
+    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu)));
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
     if (event != NULL)
     {
@@ -8197,7 +8197,6 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
                                 GDK_GRAVITY_NORTH_WEST,
                                 NULL);
     }
-    g_object_ref_sink (gtk_menu);
 }
 
 /**
@@ -8223,7 +8222,7 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu));
+    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu)));
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
     if (event != NULL)
     {
@@ -8239,7 +8238,6 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                   GDK_GRAVITY_CENTER,
                                   NULL);
     }
-    g_object_ref_sink (gtk_menu);
 }
 
 static gboolean
