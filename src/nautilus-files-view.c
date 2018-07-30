@@ -120,7 +120,6 @@
 enum
 {
     ADD_FILES,
-    BEGIN_FILE_CHANGES,
     BEGIN_LOADING,
     CLEAR,
     END_FILE_CHANGES,
@@ -4201,8 +4200,6 @@ process_old_files (NautilusFilesView *view)
     if (files_added != NULL || files_changed != NULL)
     {
         gboolean send_selection_change = FALSE;
-
-        g_signal_emit (view, signals[BEGIN_FILE_CHANGES], 0);
 
         for (node = files_added; node != NULL; node = node->next)
         {
@@ -9313,14 +9310,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
                       NULL, NULL,
                       g_cclosure_marshal_generic,
                       G_TYPE_NONE, 1, G_TYPE_POINTER);
-    signals[BEGIN_FILE_CHANGES] =
-        g_signal_new ("begin-file-changes",
-                      G_TYPE_FROM_CLASS (klass),
-                      G_SIGNAL_RUN_LAST,
-                      G_STRUCT_OFFSET (NautilusFilesViewClass, begin_file_changes),
-                      NULL, NULL,
-                      g_cclosure_marshal_VOID__VOID,
-                      G_TYPE_NONE, 0);
     signals[BEGIN_LOADING] =
         g_signal_new ("begin-loading",
                       G_TYPE_FROM_CLASS (klass),
