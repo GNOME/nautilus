@@ -43,8 +43,10 @@ typedef struct
     int x0, y0, x1, y1;
 }  Rect;
 
-struct _NautilusSelectionCanvasItemDetails
+struct _NautilusSelectionCanvasItem
 {
+    EelCanvasItem parent_instance;
+
     Rect last_update_rect;
     Rect last_outline_update_rect;
     int last_outline_update_width;
@@ -69,10 +71,10 @@ nautilus_selection_canvas_item_snapshot (EelCanvasItem *item,
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
-    x1 = MIN (self->priv->x1, self->priv->x2);
-    y1 = MIN (self->priv->y1, self->priv->y2);
-    x2 = MAX (self->priv->x1, self->priv->x2);
-    y2 = MAX (self->priv->y1, self->priv->y2);
+    x1 = MIN (self->x1, self->x2);
+    y1 = MIN (self->y1, self->y2);
+    x2 = MAX (self->x1, self->x2);
+    y2 = MAX (self->y1, self->y2);
     context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
     if (EEL_IS_CANVAS_GROUP (item->parent))
     {
@@ -121,10 +123,10 @@ nautilus_selection_canvas_item_point (EelCanvasItem  *item,
 
     /* Find the bounds for the rectangle plus its outline width */
 
-    x1 = self->priv->x1;
-    y1 = self->priv->y1;
-    x2 = self->priv->x2;
-    y2 = self->priv->y2;
+    x1 = self->x1;
+    y1 = self->y1;
+    x2 = self->x2;
+    y2 = self->y2;
 
     hwidth = (1.0 / item->canvas->pixels_per_unit) / 2.0;
 
@@ -303,7 +305,6 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
                                        gint           flags)
 {
     NautilusSelectionCanvasItem *self;
-    NautilusSelectionCanvasItemDetails *priv;
     double x1, y1, x2, y2;
     int repaint_rects_count, i;
     GtkStyleContext *context;
@@ -316,15 +317,14 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     }
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
-    priv = self->priv;
 
-    x1 = priv->x1;
-    y1 = priv->y1;
-    x2 = priv->x2;
-    y2 = priv->y2;
+    x1 = self->x1;
+    y1 = self->y1;
+    x2 = self->x2;
+    y2 = self->y2;
 
     update_rect = make_rect (x1, y1, x2 + 1, y2 + 1);
-    diff_rects (update_rect, priv->last_update_rect,
+    diff_rects (update_rect, self->last_update_rect,
                 &repaint_rects_count, repaint_rects);
     for (i = 0; i < repaint_rects_count; i++)
     {
@@ -333,7 +333,7 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
                                    repaint_rects[i].x1, repaint_rects[i].y1);
     }
 
-    priv->last_update_rect = update_rect;
+    self->last_update_rect = update_rect;
 
     context = gtk_widget_get_style_context (GTK_WIDGET (item->canvas));
 
@@ -350,10 +350,10 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
     update_rect = make_rect (x1, y1, x2, y2);
     request_redraw_borders (item->canvas, &update_rect,
                             border.left + border.top + border.right + border.bottom);
-    request_redraw_borders (item->canvas, &priv->last_outline_update_rect,
-                            priv->last_outline_update_width);
-    priv->last_outline_update_rect = update_rect;
-    priv->last_outline_update_width = border.left + border.top + border.right + border.bottom;
+    request_redraw_borders (item->canvas, &self->last_outline_update_rect,
+                            self->last_outline_update_width);
+    self->last_outline_update_rect = update_rect;
+    self->last_outline_update_width = border.left + border.top + border.right + border.bottom;
 
     item->x1 = x1;
     item->y1 = y1;
@@ -370,10 +370,10 @@ nautilus_selection_canvas_item_translate (EelCanvasItem *item,
 
     self = NAUTILUS_SELECTION_CANVAS_ITEM (item);
 
-    self->priv->x1 += dx;
-    self->priv->y1 += dy;
-    self->priv->x2 += dx;
-    self->priv->y2 += dy;
+    self->x1 += dx;
+    self->y1 += dy;
+    self->x2 += dx;
+    self->y2 += dy;
 }
 
 static void
@@ -395,10 +395,10 @@ nautilus_selection_canvas_item_bounds (EelCanvasItem *item,
     gtk_style_context_get_border (context, &border);
     gtk_style_context_restore (context);
 
-    *x1 = self->priv->x1 - (border.left / item->canvas->pixels_per_unit) / 2.0;
-    *y1 = self->priv->y1 - (border.top / item->canvas->pixels_per_unit) / 2.0;
-    *x2 = self->priv->x2 + (border.right / item->canvas->pixels_per_unit) / 2.0;
-    *y2 = self->priv->y2 + (border.bottom / item->canvas->pixels_per_unit) / 2.0;
+    *x1 = self->x1 - (border.left / item->canvas->pixels_per_unit) / 2.0;
+    *y1 = self->y1 - (border.top / item->canvas->pixels_per_unit) / 2.0;
+    *x2 = self->x2 + (border.right / item->canvas->pixels_per_unit) / 2.0;
+    *y2 = self->y2 + (border.bottom / item->canvas->pixels_per_unit) / 2.0;
 }
 
 static void
@@ -417,7 +417,7 @@ nautilus_selection_canvas_item_set_property (GObject      *object,
     {
         case PROP_X1:
         {
-            self->priv->x1 = g_value_get_double (value);
+            self->x1 = g_value_get_double (value);
 
             eel_canvas_item_request_update (item);
         }
@@ -425,7 +425,7 @@ nautilus_selection_canvas_item_set_property (GObject      *object,
 
         case PROP_Y1:
         {
-            self->priv->y1 = g_value_get_double (value);
+            self->y1 = g_value_get_double (value);
 
             eel_canvas_item_request_update (item);
         }
@@ -433,7 +433,7 @@ nautilus_selection_canvas_item_set_property (GObject      *object,
 
         case PROP_X2:
         {
-            self->priv->x2 = g_value_get_double (value);
+            self->x2 = g_value_get_double (value);
 
             eel_canvas_item_request_update (item);
         }
@@ -441,7 +441,7 @@ nautilus_selection_canvas_item_set_property (GObject      *object,
 
         case PROP_Y2:
         {
-            self->priv->y2 = g_value_get_double (value);
+            self->y2 = g_value_get_double (value);
 
             eel_canvas_item_request_update (item);
         }
@@ -469,25 +469,25 @@ nautilus_selection_canvas_item_get_property (GObject    *object,
     {
         case PROP_X1:
         {
-            g_value_set_double (value, self->priv->x1);
+            g_value_set_double (value, self->x1);
         }
         break;
 
         case PROP_Y1:
         {
-            g_value_set_double (value, self->priv->y1);
+            g_value_set_double (value, self->y1);
         }
         break;
 
         case PROP_X2:
         {
-            g_value_set_double (value, self->priv->x2);
+            g_value_set_double (value, self->x2);
         }
         break;
 
         case PROP_Y2:
         {
-            g_value_set_double (value, self->priv->y2);
+            g_value_set_double (value, self->y2);
         }
         break;
 
@@ -535,12 +535,9 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
                              G_PARAM_READWRITE);
 
     g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
-    g_type_class_add_private (klass, sizeof (NautilusSelectionCanvasItemDetails));
 }
 
 static void
 nautilus_selection_canvas_item_init (NautilusSelectionCanvasItem *self)
 {
-    self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
-                                              NautilusSelectionCanvasItemDetails);
 }
