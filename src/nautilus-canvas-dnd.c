@@ -34,6 +34,8 @@
 
 #include "nautilus-canvas-dnd.h"
 
+#include "nautilus-canvas-container.h"
+#include "nautilus-canvas-item.h"
 #include "nautilus-canvas-private.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-metadata.h"
