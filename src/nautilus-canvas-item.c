@@ -24,6 +24,7 @@
 
 #include <glib/gi18n.h>
 
+#include "nautilus-canvas-container.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-canvas-private.h"
@@ -70,9 +71,10 @@
  *    if it wasn't ellipsized.
  */
 
-/* Private part of the NautilusCanvasItem structure. */
-struct NautilusCanvasItemDetails
+struct _NautilusCanvasItem
 {
+    EelCanvasItem parent_instance;
+
     /* The image, text, font. */
     double x, y;
     GdkTexture *texture;
@@ -121,6 +123,8 @@ struct NautilusCanvasItemDetails
     EelIRect bounds_cache_for_entire_item;
 
     GString *text;
+
+    NautilusCanvasIcon *icon;
 };
 
 /* Object argument IDs. */
@@ -160,24 +164,23 @@ static void       nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasI
 static void
 nautilus_canvas_item_init (NautilusCanvasItem *canvas_item)
 {
-    canvas_item->details = G_TYPE_INSTANCE_GET_PRIVATE ((canvas_item), NAUTILUS_TYPE_CANVAS_ITEM, NautilusCanvasItemDetails);
     nautilus_canvas_item_invalidate_label_size (canvas_item);
 }
 
 static void
 nautilus_canvas_item_dispose (GObject *object)
 {
+    NautilusCanvasItem *self;
     EelCanvasItem *item;
-    NautilusCanvasItemDetails *details;
 
+    self = NAUTILUS_CANVAS_ITEM (object);
     item = EEL_CANVAS_ITEM (object);
-    details = NAUTILUS_CANVAS_ITEM (object)->details;
 
     gtk_widget_set_cursor (GTK_WIDGET (item->canvas), NULL);
 
-    g_clear_object (&details->texture);
-    g_clear_object (&details->editable_text_layout);
-    g_clear_object (&details->additional_text_layout);
+    g_clear_object (&self->texture);
+    g_clear_object (&self->editable_text_layout);
+    g_clear_object (&self->additional_text_layout);
 
     G_OBJECT_CLASS (nautilus_canvas_item_parent_class)->dispose (object);
 }
@@ -185,18 +188,18 @@ nautilus_canvas_item_dispose (GObject *object)
 static void
 nautilus_canvas_item_finalize (GObject *object)
 {
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
 
-    details = NAUTILUS_CANVAS_ITEM (object)->details;
+    self = NAUTILUS_CANVAS_ITEM (object);
 
-    if (details->text != NULL)
+    if (self->text != NULL)
     {
-        g_string_free (details->text, TRUE);
-        details->text = NULL;
+        g_string_free (self->text, TRUE);
+        self->text = NULL;
     }
 
-    g_clear_pointer (&details->editable_text, g_free);
-    g_clear_pointer (&details->additional_text, g_free);
+    g_clear_pointer (&self->editable_text, g_free);
+    g_clear_pointer (&self->additional_text, g_free);
 
     G_OBJECT_CLASS (nautilus_canvas_item_parent_class)->finalize (object);
 }
@@ -204,139 +207,135 @@ nautilus_canvas_item_finalize (GObject *object)
 static void
 nautilus_canvas_item_invalidate_bounds_cache (NautilusCanvasItem *item)
 {
-    item->details->bounds_cached = FALSE;
+    item->bounds_cached = FALSE;
 }
 
-/* invalidate the text width and height cached in the item details. */
 void
 nautilus_canvas_item_invalidate_label_size (NautilusCanvasItem *item)
 {
-    if (item->details->editable_text_layout != NULL)
+    if (item->editable_text_layout != NULL)
     {
-        pango_layout_context_changed (item->details->editable_text_layout);
+        pango_layout_context_changed (item->editable_text_layout);
     }
-    if (item->details->additional_text_layout != NULL)
+    if (item->additional_text_layout != NULL)
     {
-        pango_layout_context_changed (item->details->additional_text_layout);
+        pango_layout_context_changed (item->additional_text_layout);
     }
     nautilus_canvas_item_invalidate_bounds_cache (item);
-    item->details->text_width = -1;
-    item->details->text_height = -1;
-    item->details->text_height_for_layout = -1;
-    item->details->text_height_for_entire_text = -1;
-    item->details->editable_text_height = -1;
+    item->text_width = -1;
+    item->text_height = -1;
+    item->text_height_for_layout = -1;
+    item->text_height_for_entire_text = -1;
+    item->editable_text_height = -1;
 }
 
-/* Set property handler for the canvas item. */
 static void
 nautilus_canvas_item_set_property (GObject      *object,
                                    guint         property_id,
                                    const GValue *value,
                                    GParamSpec   *pspec)
 {
-    NautilusCanvasItem *item;
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
     AtkObject *accessible;
     gboolean is_rename;
 
-    item = NAUTILUS_CANVAS_ITEM (object);
-    accessible = atk_gobject_accessible_for_object (G_OBJECT (item));
-    details = item->details;
+    self = NAUTILUS_CANVAS_ITEM (object);
+    accessible = atk_gobject_accessible_for_object (object);
 
     switch (property_id)
     {
         case PROP_EDITABLE_TEXT:
         {
-            if (g_strcmp0 (details->editable_text,
+            if (g_strcmp0 (self->editable_text,
                            g_value_get_string (value)) == 0)
             {
                 return;
             }
 
-            is_rename = details->editable_text != NULL;
-            g_free (details->editable_text);
-            details->editable_text = g_strdup (g_value_get_string (value));
-            if (details->text)
+            is_rename = self->editable_text != NULL;
+            g_free (self->editable_text);
+            self->editable_text = g_strdup (g_value_get_string (value));
+            if (self->text)
             {
-                details->text = g_string_assign (details->text, details->editable_text);
+                self->text = g_string_assign (self->text, self->editable_text);
 
                 if (is_rename)
                     g_object_notify (G_OBJECT (accessible), "accessible-name");
             }
 
-            nautilus_canvas_item_invalidate_label_size (item);
-            if (details->editable_text_layout)
+            nautilus_canvas_item_invalidate_label_size (self);
+            if (self->editable_text_layout)
             {
-                g_object_unref (details->editable_text_layout);
-                details->editable_text_layout = NULL;
+                g_object_unref (self->editable_text_layout);
+                self->editable_text_layout = NULL;
             }
         }
         break;
 
         case PROP_ADDITIONAL_TEXT:
         {
-            if (g_strcmp0 (details->additional_text,
+            if (g_strcmp0 (self->additional_text,
                            g_value_get_string (value)) == 0)
             {
                 return;
             }
 
-            g_free (details->additional_text);
-            details->additional_text = g_strdup (g_value_get_string (value));
+            g_free (self->additional_text);
+            self->additional_text = g_strdup (g_value_get_string (value));
 
-            nautilus_canvas_item_invalidate_label_size (item);
-            if (details->additional_text_layout)
+            nautilus_canvas_item_invalidate_label_size (self);
+            if (self->additional_text_layout)
             {
-                g_object_unref (details->additional_text_layout);
-                details->additional_text_layout = NULL;
+                g_object_unref (self->additional_text_layout);
+                self->additional_text_layout = NULL;
             }
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_SELECTION:
         {
-            if (!details->is_highlighted_for_selection == !g_value_get_boolean (value))
+            if (!self->is_highlighted_for_selection == !g_value_get_boolean (value))
             {
                 return;
             }
-            details->is_highlighted_for_selection = g_value_get_boolean (value);
-            nautilus_canvas_item_invalidate_label_size (item);
+            self->is_highlighted_for_selection = g_value_get_boolean (value);
+            nautilus_canvas_item_invalidate_label_size (self);
 
             atk_object_notify_state_change (accessible, ATK_STATE_SELECTED,
-                                            details->is_highlighted_for_selection);
+                                            self->is_highlighted_for_selection);
         }
         break;
 
         case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
         {
-            if (!details->is_highlighted_as_keyboard_focus == !g_value_get_boolean (value))
+            if (!self->is_highlighted_as_keyboard_focus == !g_value_get_boolean (value))
             {
                 return;
             }
-            details->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
+            self->is_highlighted_as_keyboard_focus = g_value_get_boolean (value);
 
             atk_object_notify_state_change (accessible, ATK_STATE_FOCUSED,
-                                            details->is_highlighted_as_keyboard_focus);
+                                            self->is_highlighted_as_keyboard_focus);
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_DROP:
         {
-            if (!details->is_highlighted_for_drop == !g_value_get_boolean (value))
+            if (!self->is_highlighted_for_drop == !g_value_get_boolean (value))
             {
                 return;
             }
-            details->is_highlighted_for_drop = g_value_get_boolean (value);
+            self->is_highlighted_for_drop = g_value_get_boolean (value);
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_CLIPBOARD:
         {
-            if (!details->is_highlighted_for_clipboard == !g_value_get_boolean (value))
+            if (!self->is_highlighted_for_clipboard == !g_value_get_boolean (value))
             {
                 return;
             }
-            details->is_highlighted_for_clipboard = g_value_get_boolean (value);
+            self->is_highlighted_for_clipboard = g_value_get_boolean (value);
         }
         break;
 
@@ -355,45 +354,45 @@ nautilus_canvas_item_get_property (GObject    *object,
                                    GValue     *value,
                                    GParamSpec *pspec)
 {
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
 
-    details = NAUTILUS_CANVAS_ITEM (object)->details;
+    self = NAUTILUS_CANVAS_ITEM (object);
 
     switch (property_id)
     {
         case PROP_EDITABLE_TEXT:
         {
-            g_value_set_string (value, details->editable_text);
+            g_value_set_string (value, self->editable_text);
         }
         break;
 
         case PROP_ADDITIONAL_TEXT:
         {
-            g_value_set_string (value, details->additional_text);
+            g_value_set_string (value, self->additional_text);
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_SELECTION:
         {
-            g_value_set_boolean (value, details->is_highlighted_for_selection);
+            g_value_set_boolean (value, self->is_highlighted_for_selection);
         }
         break;
 
         case PROP_HIGHLIGHTED_AS_KEYBOARD_FOCUS:
         {
-            g_value_set_boolean (value, details->is_highlighted_as_keyboard_focus);
+            g_value_set_boolean (value, self->is_highlighted_as_keyboard_focus);
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_DROP:
         {
-            g_value_set_boolean (value, details->is_highlighted_for_drop);
+            g_value_set_boolean (value, self->is_highlighted_for_drop);
         }
         break;
 
         case PROP_HIGHLIGHTED_FOR_CLIPBOARD:
         {
-            g_value_set_boolean (value, details->is_highlighted_for_clipboard);
+            g_value_set_boolean (value, self->is_highlighted_for_clipboard);
         }
         break;
 
@@ -423,7 +422,7 @@ get_scaled_icon_size (NautilusCanvasItem *item,
 
     canvas = EEL_CANVAS_ITEM (item)->canvas;
     scale = gtk_widget_get_scale_factor (GTK_WIDGET (canvas));
-    texture = item->details->texture;
+    texture = item->texture;
 
     if (texture != NULL)
     {
@@ -443,25 +442,21 @@ finish:
 }
 
 void
-nautilus_canvas_item_set_texture (NautilusCanvasItem *item,
+nautilus_canvas_item_set_texture (NautilusCanvasItem *self,
                                   GdkTexture         *texture)
 {
-    NautilusCanvasItemDetails *details;
+    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (self));
 
-    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (item));
-
-    details = item->details;
-    if (details->texture == texture)
+    if (self->texture == texture)
     {
         return;
     }
 
-    g_clear_object (&details->texture);
+    g_clear_object (&self->texture);
+    self->texture = texture;
 
-    details->texture = texture;
-
-    nautilus_canvas_item_invalidate_bounds_cache (item);
-    eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
+    nautilus_canvas_item_invalidate_bounds_cache (self);
+    eel_canvas_item_request_update (EEL_CANVAS_ITEM (self));
 }
 
 /* Recomputes the bounding box of a canvas item.
@@ -512,17 +507,17 @@ compute_text_rectangle (const NautilusCanvasItem      *item,
     pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
     if (canvas_coords)
     {
-        text_width = item->details->text_width;
-        text_height = item->details->text_height;
-        text_height_for_layout = item->details->text_height_for_layout;
-        text_height_for_entire_text = item->details->text_height_for_entire_text;
+        text_width = item->text_width;
+        text_height = item->text_height;
+        text_height_for_layout = item->text_height_for_layout;
+        text_height_for_entire_text = item->text_height_for_entire_text;
     }
     else
     {
-        text_width = item->details->text_width / pixels_per_unit;
-        text_height = item->details->text_height / pixels_per_unit;
-        text_height_for_layout = item->details->text_height_for_layout / pixels_per_unit;
-        text_height_for_entire_text = item->details->text_height_for_entire_text / pixels_per_unit;
+        text_width = item->text_width / pixels_per_unit;
+        text_height = item->text_height / pixels_per_unit;
+        text_height_for_layout = item->text_height_for_layout / pixels_per_unit;
+        text_height_for_entire_text = item->text_height_for_entire_text / pixels_per_unit;
     }
 
     text_rectangle.x0 = (icon_rectangle.x0 + icon_rectangle.x1) / 2 - (int) text_width / 2;
@@ -588,8 +583,8 @@ nautilus_canvas_item_update_bounds (NautilusCanvasItem *item,
     }
 
     /* Update canvas and text rect cache */
-    get_icon_rectangle (item, &item->details->icon_rect);
-    item->details->text_rect = compute_text_rectangle (item, item->details->icon_rect,
+    get_icon_rectangle (item, &item->icon_rect);
+    item->text_rect = compute_text_rectangle (item, item->icon_rect,
                                                        TRUE, BOUNDS_USAGE_FOR_DISPLAY);
 
     /* queue a redraw. */
@@ -764,20 +759,18 @@ static void
 prepare_pango_layout_for_draw (NautilusCanvasItem *item,
                                PangoLayout        *layout)
 {
-    NautilusCanvasItemDetails *details;
     NautilusCanvasContainer *container;
     gboolean needs_highlight;
 
     prepare_pango_layout_width (item, layout);
 
     container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
-    details = item->details;
 
-    needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
+    needs_highlight = item->is_highlighted_for_selection || item->is_highlighted_for_drop;
 
     if (needs_highlight ||
-        details->is_highlighted_as_keyboard_focus ||
-        details->entire_text)
+        item->is_highlighted_as_keyboard_focus ||
+        item->entire_text)
     {
         /* VOODOO-TODO, cf. compute_text_rectangle() */
         pango_layout_set_height (layout, G_MININT);
@@ -796,7 +789,6 @@ prepare_pango_layout_for_draw (NautilusCanvasItem *item,
 static void
 measure_label_text (NautilusCanvasItem *item)
 {
-    NautilusCanvasItemDetails *details;
     NautilusCanvasContainer *container;
     gint editable_height, editable_height_for_layout, editable_height_for_entire_text, editable_width, editable_dx;
     gint additional_height, additional_width, additional_dx;
@@ -808,32 +800,30 @@ measure_label_text (NautilusCanvasItem *item)
      * no work necessary
      */
 
-    if (item->details->text_width >= 0 && item->details->text_height >= 0)
+    if (item->text_width >= 0 && item->text_height >= 0)
     {
         return;
     }
 
-    details = item->details;
-
-    have_editable = details->editable_text != NULL && details->editable_text[0] != '\0';
-    have_additional = details->additional_text != NULL && details->additional_text[0] != '\0';
+    have_editable = item->editable_text != NULL && item->editable_text[0] != '\0';
+    have_additional = item->additional_text != NULL && item->additional_text[0] != '\0';
 
     /* No font or no text, then do no work. */
     if (!have_editable && !have_additional)
     {
-        details->text_height = 0;
-        details->text_height_for_layout = 0;
-        details->text_height_for_entire_text = 0;
-        details->text_width = 0;
+        item->text_height = 0;
+        item->text_height_for_layout = 0;
+        item->text_height_for_entire_text = 0;
+        item->text_width = 0;
         return;
     }
 
 #ifdef PERFORMANCE_TEST_MEASURE_DISABLE
     /* fake out the width */
-    details->text_width = 80;
-    details->text_height = 20;
-    details->text_height_for_layout = 20;
-    details->text_height_for_entire_text = 20;
+    item->text_width = 80;
+    item->text_height = 20;
+    item->text_height_for_layout = 20;
+    item->text_height_for_entire_text = 20;
     return;
 #endif
 
@@ -856,7 +846,7 @@ measure_label_text (NautilusCanvasItem *item)
          * then, measure text height applicable for layout: editable_height_for_layout
          * next, measure actually displayed height: editable_height
          */
-        editable_layout = get_label_layout (&details->editable_text_layout, item, details->editable_text);
+        editable_layout = get_label_layout (&item->editable_text_layout, item, item->editable_text);
 
         prepare_pango_layout_for_measure_entire_text (item, editable_layout);
         layout_get_full_size (editable_layout,
@@ -877,48 +867,48 @@ measure_label_text (NautilusCanvasItem *item)
 
     if (have_additional)
     {
-        additional_layout = get_label_layout (&details->additional_text_layout, item, details->additional_text);
+        additional_layout = get_label_layout (&item->additional_text_layout, item, item->additional_text);
         prepare_pango_layout_for_draw (item, additional_layout);
         layout_get_full_size (additional_layout,
                               &additional_width, &additional_height, &additional_dx);
     }
 
-    details->editable_text_height = editable_height;
+    item->editable_text_height = editable_height;
 
     if (editable_width > additional_width)
     {
-        details->text_width = editable_width;
-        details->text_dx = editable_dx;
+        item->text_width = editable_width;
+        item->text_dx = editable_dx;
     }
     else
     {
-        details->text_width = additional_width;
-        details->text_dx = additional_dx;
+        item->text_width = additional_width;
+        item->text_dx = additional_dx;
     }
 
     if (have_additional)
     {
-        details->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
-        details->text_height_for_layout = editable_height_for_layout + LABEL_LINE_SPACING + additional_height;
-        details->text_height_for_entire_text = editable_height_for_entire_text + LABEL_LINE_SPACING + additional_height;
+        item->text_height = editable_height + LABEL_LINE_SPACING + additional_height;
+        item->text_height_for_layout = editable_height_for_layout + LABEL_LINE_SPACING + additional_height;
+        item->text_height_for_entire_text = editable_height_for_entire_text + LABEL_LINE_SPACING + additional_height;
     }
     else
     {
-        details->text_height = editable_height;
-        details->text_height_for_layout = editable_height_for_layout;
-        details->text_height_for_entire_text = editable_height_for_entire_text;
+        item->text_height = editable_height;
+        item->text_height_for_layout = editable_height_for_layout;
+        item->text_height_for_entire_text = editable_height_for_entire_text;
     }
 
     /* add some extra space for highlighting even when we don't highlight so things won't move */
 
     /* extra slop for nicer highlighting */
-    details->text_height += TEXT_BACK_PADDING_Y * 2;
-    details->text_height_for_layout += TEXT_BACK_PADDING_Y * 2;
-    details->text_height_for_entire_text += TEXT_BACK_PADDING_Y * 2;
-    details->editable_text_height += TEXT_BACK_PADDING_Y * 2;
+    item->text_height += TEXT_BACK_PADDING_Y * 2;
+    item->text_height_for_layout += TEXT_BACK_PADDING_Y * 2;
+    item->text_height_for_entire_text += TEXT_BACK_PADDING_Y * 2;
+    item->editable_text_height += TEXT_BACK_PADDING_Y * 2;
 
     /* extra to make it look nicer */
-    details->text_width += TEXT_BACK_PADDING_X * 2;
+    item->text_width += TEXT_BACK_PADDING_X * 2;
 
     if (editable_layout)
     {
@@ -936,7 +926,6 @@ snapshot_label (NautilusCanvasItem *item,
                 GtkSnapshot        *snapshot,
                 EelIRect            icon_rect)
 {
-    NautilusCanvasItemDetails *details;
     NautilusCanvasContainer *container;
     PangoLayout *editable_layout;
     PangoLayout *additional_layout;
@@ -954,11 +943,9 @@ snapshot_label (NautilusCanvasItem *item,
     return;
 #endif
 
-    details = item->details;
-
     measure_label_text (item);
-    if (details->text_height == 0 ||
-        details->text_width == 0)
+    if (item->text_height == 0 ||
+        item->text_width == 0)
     {
         return;
     }
@@ -968,13 +955,13 @@ snapshot_label (NautilusCanvasItem *item,
 
     text_rect = compute_text_rectangle (item, icon_rect, TRUE, BOUNDS_USAGE_FOR_DISPLAY);
 
-    needs_highlight = details->is_highlighted_for_selection || details->is_highlighted_for_drop;
+    needs_highlight = item->is_highlighted_for_selection || item->is_highlighted_for_drop;
 
     editable_layout = NULL;
     additional_layout = NULL;
 
-    have_editable = details->editable_text != NULL && details->editable_text[0] != '\0';
-    have_additional = details->additional_text != NULL && details->additional_text[0] != '\0';
+    have_editable = item->editable_text != NULL && item->editable_text[0] != '\0';
+    have_additional = item->additional_text != NULL && item->additional_text[0] != '\0';
     g_assert (have_editable || have_additional);
 
     max_text_width = floor (nautilus_canvas_item_get_max_text_width (item));
@@ -1025,7 +1012,7 @@ snapshot_label (NautilusCanvasItem *item,
             state |= GTK_STATE_FLAG_SELECTED;
         }
 
-        editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+        editable_layout = get_label_layout (&item->editable_text_layout, item, item->editable_text);
         prepare_pango_layout_for_draw (item, editable_layout);
 
         gtk_style_context_save (context);
@@ -1047,7 +1034,7 @@ snapshot_label (NautilusCanvasItem *item,
             state |= GTK_STATE_FLAG_SELECTED;
         }
 
-        additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+        additional_layout = get_label_layout (&item->additional_text_layout, item, item->additional_text);
         prepare_pango_layout_for_draw (item, additional_layout);
 
         gtk_style_context_save (context);
@@ -1055,13 +1042,13 @@ snapshot_label (NautilusCanvasItem *item,
         gtk_style_context_add_class (context, "dim-label");
 
         gtk_snapshot_render_layout (snapshot, context,
-                                    x, text_rect.y0 + details->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y,
+                                    x, text_rect.y0 + item->editable_text_height + LABEL_LINE_SPACING + TEXT_BACK_PADDING_Y,
                                     additional_layout);
 
         gtk_style_context_restore (context);
     }
 
-    if (item->details->is_highlighted_as_keyboard_focus)
+    if (item->is_highlighted_as_keyboard_focus)
     {
         if (needs_highlight)
         {
@@ -1095,12 +1082,12 @@ void
 nautilus_canvas_item_set_is_visible (NautilusCanvasItem *item,
                                      gboolean            visible)
 {
-    if (item->details->is_visible == visible)
+    if (item->is_visible == visible)
     {
         return;
     }
 
-    item->details->is_visible = visible;
+    item->is_visible = visible;
 
     if (!visible)
     {
@@ -1113,21 +1100,21 @@ nautilus_canvas_item_invalidate_label (NautilusCanvasItem *item)
 {
     nautilus_canvas_item_invalidate_label_size (item);
 
-    if (item->details->editable_text_layout)
+    if (item->editable_text_layout)
     {
-        g_object_unref (item->details->editable_text_layout);
-        item->details->editable_text_layout = NULL;
+        g_object_unref (item->editable_text_layout);
+        item->editable_text_layout = NULL;
     }
 
-    if (item->details->additional_text_layout)
+    if (item->additional_text_layout)
     {
-        g_object_unref (item->details->additional_text_layout);
-        item->details->additional_text_layout = NULL;
+        g_object_unref (item->additional_text_layout);
+        item->additional_text_layout = NULL;
     }
 }
 
 static void
-snapshot_icon (NautilusCanvasItem *canvas_item,
+snapshot_icon (NautilusCanvasItem *self,
                GtkSnapshot        *snapshot,
                EelIRect            icon_rect)
 {
@@ -1142,10 +1129,10 @@ snapshot_icon (NautilusCanvasItem *canvas_item,
     unsigned char *data;
     int stride;
 
-    get_scaled_icon_size (canvas_item, &width, &height);
+    get_scaled_icon_size (self, &width, &height);
 
     bounds = GRAPHENE_RECT_INIT (icon_rect.x0, icon_rect.y0, width, height);
-    item = EEL_CANVAS_ITEM (canvas_item);
+    item = EEL_CANVAS_ITEM (self);
     widget = GTK_WIDGET (item->canvas);
     context = gtk_widget_get_style_context (widget);
     cr = gtk_snapshot_append_cairo (snapshot, &bounds);
@@ -1153,19 +1140,18 @@ snapshot_icon (NautilusCanvasItem *canvas_item,
     data = cairo_image_surface_get_data (surface);
     stride = cairo_image_surface_get_stride (surface);
 
-    gdk_texture_download (canvas_item->details->texture, data, stride);
+    gdk_texture_download (self->texture, data, stride);
 
     cairo_surface_mark_dirty (surface);
 
     cairo_translate (cr, bounds.origin.x, bounds.origin.y);
     cairo_scale (cr,
-                 width / gdk_texture_get_width (canvas_item->details->texture),
-                 height / gdk_texture_get_height (canvas_item->details->texture));
+                 width / gdk_texture_get_width (self->texture),
+                 height / gdk_texture_get_height (self->texture));
     cairo_set_source_surface (cr, surface, 0, 0);
     cairo_paint (cr);
 
-    if (canvas_item->details->is_highlighted_for_selection
-        || canvas_item->details->is_highlighted_for_drop)
+    if (self->is_highlighted_for_selection || self->is_highlighted_for_drop)
     {
         cairo_set_operator (cr, CAIRO_OPERATOR_MULTIPLY);
 
@@ -1181,8 +1167,7 @@ snapshot_icon (NautilusCanvasItem *canvas_item,
         cairo_mask_surface (cr, surface, 0, 0);
     }
 
-    if (canvas_item->details->is_prelit ||
-        canvas_item->details->is_highlighted_for_clipboard)
+    if (self->is_prelit || self->is_highlighted_for_clipboard)
     {
         cairo_set_operator (cr, CAIRO_OPERATOR_ADD);
 
@@ -1227,7 +1212,7 @@ nautilus_canvas_item_get_drag_paintable (NautilusCanvasItem *item)
     /* Calculate the offset from the top-left corner of the
      *  new image to the item position (where the pixmap is placed) */
     eel_canvas_world_to_window (canvas,
-                                item->details->x, item->details->y,
+                                item->x, item->y,
                                 &item_x, &item_y);
 
     item_offset_x = item_x - EEL_CANVAS_ITEM (item)->x1;
@@ -1257,15 +1242,13 @@ nautilus_canvas_item_snapshot (EelCanvasItem *item,
                                GtkSnapshot   *snapshot)
 {
     NautilusCanvasContainer *container;
-    NautilusCanvasItem *canvas_item;
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
     GtkStyleContext *context;
 
     container = NAUTILUS_CANVAS_CONTAINER (item->canvas);
-    canvas_item = NAUTILUS_CANVAS_ITEM (item);
-    details = canvas_item->details;
+    self = NAUTILUS_CANVAS_ITEM (item);
 
-    if (details->texture == NULL)
+    if (self->texture == NULL)
     {
         return;
     }
@@ -1274,8 +1257,8 @@ nautilus_canvas_item_snapshot (EelCanvasItem *item,
     gtk_style_context_save (context);
     gtk_style_context_add_class (context, "nautilus-canvas-item");
 
-    snapshot_icon (canvas_item, snapshot, canvas_item->details->icon_rect);
-    snapshot_label (canvas_item, snapshot, canvas_item->details->icon_rect);
+    snapshot_icon (self, snapshot, self->icon_rect);
+    snapshot_label (self, snapshot, self->icon_rect);
 
     gtk_style_context_restore (context);
 }
@@ -1283,7 +1266,7 @@ nautilus_canvas_item_snapshot (EelCanvasItem *item,
 #define ZERO_WIDTH_SPACE "\xE2\x80\x8B"
 
 static PangoLayout *
-create_label_layout (NautilusCanvasItem *item,
+create_label_layout (NautilusCanvasItem *self,
                      const char         *text)
 {
     PangoLayout *layout;
@@ -1295,7 +1278,7 @@ create_label_layout (NautilusCanvasItem *item,
     char *zeroified_text;
     const char *p;
 
-    canvas_item = EEL_CANVAS_ITEM (item);
+    canvas_item = EEL_CANVAS_ITEM (self);
 
     container = NAUTILUS_CANVAS_CONTAINER (canvas_item->canvas);
     context = gtk_widget_get_pango_context (GTK_WIDGET (canvas_item->canvas));
@@ -1358,7 +1341,7 @@ get_label_layout (PangoLayout        **layout_cache,
 
     layout = create_label_layout (item, text);
 
-    if (item->details->is_visible)
+    if (item->is_visible)
     {
         *layout_cache = g_object_ref (layout);
     }
@@ -1376,9 +1359,9 @@ nautilus_canvas_item_enter_notify_event (EelCanvasItem *item,
 
     canvas_item = NAUTILUS_CANVAS_ITEM (item);
 
-    if (!canvas_item->details->is_prelit)
+    if (!canvas_item->is_prelit)
     {
-        canvas_item->details->is_prelit = TRUE;
+        canvas_item->is_prelit = TRUE;
         nautilus_canvas_item_invalidate_label_size (canvas_item);
         eel_canvas_item_request_update (item);
         eel_canvas_item_send_behind (item,
@@ -1402,15 +1385,15 @@ nautilus_canvas_item_leave_notify_event (EelCanvasItem *item,
 
     canvas_item = NAUTILUS_CANVAS_ITEM (item);
 
-    if (canvas_item->details->is_prelit
-        || canvas_item->details->is_highlighted_for_drop)
+    if (canvas_item->is_prelit
+        || canvas_item->is_highlighted_for_drop)
     {
         /* When leaving, turn of the prelight state and the
          * higlighted for drop. The latter gets turned on
          * by the drag&drop motion callback.
          */
-        canvas_item->details->is_prelit = FALSE;
-        canvas_item->details->is_highlighted_for_drop = FALSE;
+        canvas_item->is_prelit = FALSE;
+        canvas_item->is_highlighted_for_drop = FALSE;
         nautilus_canvas_item_invalidate_label_size (canvas_item);
         eel_canvas_item_request_update (item);
 
@@ -1444,25 +1427,21 @@ static gboolean
 hit_test (NautilusCanvasItem *canvas_item,
           EelIRect            icon_rect)
 {
-    NautilusCanvasItemDetails *details;
-
-    details = canvas_item->details;
-
     /* Quick check to see if the rect hits the canvas or text at all. */
-    if (!eel_irect_hits_irect (canvas_item->details->icon_rect, icon_rect)
-        && (!eel_irect_hits_irect (details->text_rect, icon_rect)))
+    if (!eel_irect_hits_irect (canvas_item->icon_rect, icon_rect)
+        && (!eel_irect_hits_irect (canvas_item->text_rect, icon_rect)))
     {
         return FALSE;
     }
 
     /* Check for hit in the canvas. */
-    if (eel_irect_hits_irect (canvas_item->details->icon_rect, icon_rect))
+    if (eel_irect_hits_irect (canvas_item->icon_rect, icon_rect))
     {
         return TRUE;
     }
 
     /* Check for hit in the text. */
-    if (eel_irect_hits_irect (details->text_rect, icon_rect))
+    if (eel_irect_hits_irect (canvas_item->text_rect, icon_rect))
     {
         return TRUE;
     }
@@ -1504,85 +1483,81 @@ nautilus_canvas_item_translate (EelCanvasItem *item,
                                 double         dx,
                                 double         dy)
 {
-    NautilusCanvasItem *canvas_item;
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
 
-    canvas_item = NAUTILUS_CANVAS_ITEM (item);
-    details = canvas_item->details;
+    self = NAUTILUS_CANVAS_ITEM (item);
 
-    details->x += dx;
-    details->y += dy;
+    self->x += dx;
+    self->y += dy;
 }
 
 void
-nautilus_canvas_item_get_bounds_for_layout (NautilusCanvasItem *canvas_item,
+nautilus_canvas_item_get_bounds_for_layout (NautilusCanvasItem *self,
                                             double             *x1,
                                             double             *y1,
                                             double             *x2,
                                             double             *y2)
 {
-    NautilusCanvasItemDetails *details;
     EelIRect *total_rect;
 
-    details = canvas_item->details;
+    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (self));
 
-    nautilus_canvas_item_ensure_bounds_up_to_date (canvas_item);
-    g_assert (details->bounds_cached);
+    nautilus_canvas_item_ensure_bounds_up_to_date (self);
+    g_assert (self->bounds_cached);
 
-    total_rect = &details->bounds_cache_for_layout;
+    total_rect = &self->bounds_cache_for_layout;
 
     /* Return the result. */
     if (x1 != NULL)
     {
-        *x1 = (int) details->x + total_rect->x0;
+        *x1 = (int) self->x + total_rect->x0;
     }
     if (y1 != NULL)
     {
-        *y1 = (int) details->y + total_rect->y0;
+        *y1 = (int) self->y + total_rect->y0;
     }
     if (x2 != NULL)
     {
-        *x2 = (int) details->x + total_rect->x1 + 1;
+        *x2 = (int) self->x + total_rect->x1 + 1;
     }
     if (y2 != NULL)
     {
-        *y2 = (int) details->y + total_rect->y1 + 1;
+        *y2 = (int) self->y + total_rect->y1 + 1;
     }
 }
 
 void
-nautilus_canvas_item_get_bounds_for_entire_item (NautilusCanvasItem *canvas_item,
+nautilus_canvas_item_get_bounds_for_entire_item (NautilusCanvasItem *self,
                                                  double             *x1,
                                                  double             *y1,
                                                  double             *x2,
                                                  double             *y2)
 {
-    NautilusCanvasItemDetails *details;
     EelIRect *total_rect;
 
-    details = canvas_item->details;
+    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (self));
 
-    nautilus_canvas_item_ensure_bounds_up_to_date (canvas_item);
-    g_assert (details->bounds_cached);
+    nautilus_canvas_item_ensure_bounds_up_to_date (self);
+    g_assert (self->bounds_cached);
 
-    total_rect = &details->bounds_cache_for_entire_item;
+    total_rect = &self->bounds_cache_for_entire_item;
 
     /* Return the result. */
     if (x1 != NULL)
     {
-        *x1 = (int) details->x + total_rect->x0;
+        *x1 = (int) self->x + total_rect->x0;
     }
     if (y1 != NULL)
     {
-        *y1 = (int) details->y + total_rect->y0;
+        *y1 = (int) self->y + total_rect->y0;
     }
     if (x2 != NULL)
     {
-        *x2 = (int) details->x + total_rect->x1 + 1;
+        *x2 = (int) self->x + total_rect->x1 + 1;
     }
     if (y2 != NULL)
     {
-        *y2 = (int) details->y + total_rect->y1 + 1;
+        *y2 = (int) self->y + total_rect->y1 + 1;
     }
 }
 
@@ -1594,34 +1569,31 @@ nautilus_canvas_item_bounds (EelCanvasItem *item,
                              double        *x2,
                              double        *y2)
 {
-    NautilusCanvasItem *canvas_item;
-    NautilusCanvasItemDetails *details;
+    NautilusCanvasItem *self;
     EelIRect *total_rect;
 
-    canvas_item = NAUTILUS_CANVAS_ITEM (item);
-    details = canvas_item->details;
+    self = NAUTILUS_CANVAS_ITEM (item);
 
     g_assert (x1 != NULL);
     g_assert (y1 != NULL);
     g_assert (x2 != NULL);
     g_assert (y2 != NULL);
 
-    nautilus_canvas_item_ensure_bounds_up_to_date (canvas_item);
-    g_assert (details->bounds_cached);
+    nautilus_canvas_item_ensure_bounds_up_to_date (self);
+    g_assert (self->bounds_cached);
 
-    total_rect = &details->bounds_cache;
+    total_rect = &self->bounds_cache;
 
     /* Return the result. */
-    *x1 = (int) details->x + total_rect->x0;
-    *y1 = (int) details->y + total_rect->y0;
-    *x2 = (int) details->x + total_rect->x1 + 1;
-    *y2 = (int) details->y + total_rect->y1 + 1;
+    *x1 = (int) self->x + total_rect->x0;
+    *y1 = (int) self->y + total_rect->y0;
+    *x2 = (int) self->x + total_rect->x1 + 1;
+    *y2 = (int) self->y + total_rect->y1 + 1;
 }
 
 static void
-nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item)
+nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *self)
 {
-    NautilusCanvasItemDetails *details;
     EelIRect icon_rect;
     EelIRect text_rect, text_rect_for_layout, text_rect_for_entire_text;
     EelIRect total_rect, total_rect_for_layout, total_rect_for_entire_text;
@@ -1629,12 +1601,11 @@ nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item)
     double pixels_per_unit;
     gint width, height;
 
-    details = canvas_item->details;
-    item = EEL_CANVAS_ITEM (canvas_item);
+    item = EEL_CANVAS_ITEM (self);
 
-    if (!details->bounds_cached)
+    if (!self->bounds_cached)
     {
-        measure_label_text (canvas_item);
+        measure_label_text (self);
 
         pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
 
@@ -1642,31 +1613,31 @@ nautilus_canvas_item_ensure_bounds_up_to_date (NautilusCanvasItem *canvas_item)
         icon_rect.x0 = 0;
         icon_rect.y0 = 0;
 
-        get_scaled_icon_size (canvas_item, &width, &height);
+        get_scaled_icon_size (self, &width, &height);
 
         icon_rect.x1 = width / pixels_per_unit;
         icon_rect.y1 = height / pixels_per_unit;
 
         /* Compute text rectangle. */
-        text_rect = compute_text_rectangle (canvas_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_DISPLAY);
-        text_rect_for_layout = compute_text_rectangle (canvas_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_LAYOUT);
-        text_rect_for_entire_text = compute_text_rectangle (canvas_item, icon_rect, FALSE, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
+        text_rect = compute_text_rectangle (self, icon_rect, FALSE, BOUNDS_USAGE_FOR_DISPLAY);
+        text_rect_for_layout = compute_text_rectangle (self, icon_rect, FALSE, BOUNDS_USAGE_FOR_LAYOUT);
+        text_rect_for_entire_text = compute_text_rectangle (self, icon_rect, FALSE, BOUNDS_USAGE_FOR_ENTIRE_ITEM);
 
         /* Compute total rectangle */
         eel_irect_union (&total_rect, &icon_rect, &text_rect);
         eel_irect_union (&total_rect_for_layout, &icon_rect, &text_rect_for_layout);
         eel_irect_union (&total_rect_for_entire_text, &icon_rect, &text_rect_for_entire_text);
 
-        details->bounds_cache = total_rect;
-        details->bounds_cache_for_layout = total_rect_for_layout;
-        details->bounds_cache_for_entire_item = total_rect_for_entire_text;
-        details->bounds_cached = TRUE;
+        self->bounds_cache = total_rect;
+        self->bounds_cache_for_layout = total_rect_for_layout;
+        self->bounds_cache_for_entire_item = total_rect_for_entire_text;
+        self->bounds_cached = TRUE;
     }
 }
 
 /* Get the rectangle of the canvas only, in world coordinates. */
 EelDRect
-nautilus_canvas_item_get_icon_rectangle (const NautilusCanvasItem *item)
+nautilus_canvas_item_get_icon_rectangle (NautilusCanvasItem *item)
 {
     EelDRect rectangle;
     double pixels_per_unit;
@@ -1674,8 +1645,8 @@ nautilus_canvas_item_get_icon_rectangle (const NautilusCanvasItem *item)
 
     g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (item), eel_drect_empty);
 
-    rectangle.x0 = item->details->x;
-    rectangle.y0 = item->details->y;
+    rectangle.x0 = item->x;
+    rectangle.y0 = item->y;
 
     pixels_per_unit = EEL_CANVAS_ITEM (item)->canvas->pixels_per_unit;
     get_scaled_icon_size (NAUTILUS_CANVAS_ITEM (item), &width, &height);
@@ -1697,8 +1668,8 @@ get_icon_rectangle (NautilusCanvasItem *item,
 
 
     eel_canvas_w2c (EEL_CANVAS_ITEM (item)->canvas,
-                    item->details->x,
-                    item->details->y,
+                    item->x,
+                    item->y,
                     &rect->x0,
                     &rect->y0);
 
@@ -1726,13 +1697,30 @@ void
 nautilus_canvas_item_set_entire_text (NautilusCanvasItem *item,
                                       gboolean            entire_text)
 {
-    if (item->details->entire_text != entire_text)
+    if (item->entire_text != entire_text)
     {
-        item->details->entire_text = entire_text;
+        item->entire_text = entire_text;
 
         nautilus_canvas_item_invalidate_label_size (item);
         eel_canvas_item_request_update (EEL_CANVAS_ITEM (item));
     }
+}
+
+NautilusCanvasIcon *
+nautilus_canvas_item_get_icon (NautilusCanvasItem *self)
+{
+    g_return_val_if_fail (NAUTILUS_IS_CANVAS_ITEM (self), NULL);
+
+    return self->icon;
+}
+
+void
+nautilus_canvas_item_set_icon (NautilusCanvasItem *self,
+                               NautilusCanvasIcon *icon)
+{
+    g_return_if_fail (NAUTILUS_IS_CANVAS_ITEM (self));
+
+    self->icon = icon;
 }
 
 /* Class initialization function for the canvas canvas item. */
@@ -1809,8 +1797,6 @@ nautilus_canvas_item_class_init (NautilusCanvasItemClass *class)
     atk_registry_set_factory_type (atk_get_default_registry (),
                                    NAUTILUS_TYPE_CANVAS_ITEM,
                                    nautilus_canvas_item_accessible_factory_get_type ());
-
-    g_type_class_add_private (class, sizeof (NautilusCanvasItemDetails));
 }
 
 /* ============================= a11y interfaces =========================== */
@@ -1881,7 +1867,7 @@ nautilus_canvas_item_accessible_idle_do_action (gpointer data)
         action_number = ctx->action_number;
         item = ctx->item;
         g_free (ctx);
-        icon = item->user_data;
+        icon = item->icon;
 
         switch (action_number)
         {
@@ -2057,7 +2043,7 @@ nautilus_canvas_item_accessible_get_name (AtkObject *accessible)
     {
         return NULL;
     }
-    return item->details->editable_text;
+    return item->editable_text;
 }
 
 static const gchar *
@@ -2071,7 +2057,7 @@ nautilus_canvas_item_accessible_get_description (AtkObject *accessible)
         return NULL;
     }
 
-    return item->details->additional_text;
+    return item->additional_text;
 }
 
 static AtkObject *
@@ -2145,7 +2131,7 @@ nautilus_canvas_item_accessible_get_image_description (AtkImage *image)
         {
             return NULL;
         }
-        icon = item->user_data;
+        icon = item->icon;
         container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
         description = nautilus_canvas_container_get_icon_description (container, icon->file);
         g_free (priv->description);
@@ -2179,7 +2165,7 @@ nautilus_canvas_item_accessible_get_image_position (AtkImage     *image,
     {
         return;
     }
-    if (!item->details->icon_rect.x0 && !item->details->icon_rect.x1)
+    if (!item->icon_rect.x0 && !item->icon_rect.x1)
     {
         return;
     }
@@ -2187,16 +2173,16 @@ nautilus_canvas_item_accessible_get_image_position (AtkImage     *image,
     {
         x_offset = 0;
         y_offset = 0;
-        if (item->details->text_width)
+        if (item->text_width)
         {
-            itmp = item->details->icon_rect.x0 -
-                   item->details->text_rect.x0;
+            itmp = item->icon_rect.x0 -
+                   item->text_rect.x0;
             if (itmp > x_offset)
             {
                 x_offset = itmp;
             }
-            itmp = item->details->icon_rect.y0 -
-                   item->details->text_rect.y0;
+            itmp = item->icon_rect.y0 -
+                   item->text_rect.y0;
             if (itmp > y_offset)
             {
                 y_offset = itmp;
@@ -2258,43 +2244,43 @@ nautilus_canvas_item_accessible_get_offset_at_point (AtkText      *text,
 
     item = NAUTILUS_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
-    if (item->details->texture != NULL)
+    if (item->texture != NULL)
     {
         get_scaled_icon_size (item, NULL, &height);
         y -= height;
     }
-    have_editable = item->details->editable_text != NULL &&
-                    item->details->editable_text[0] != '\0';
-    have_additional = item->details->additional_text != NULL && item->details->additional_text[0] != '\0';
+    have_editable = item->editable_text != NULL &&
+                    item->editable_text[0] != '\0';
+    have_additional = item->additional_text != NULL && item->additional_text[0] != '\0';
 
     editable_layout = NULL;
     additional_layout = NULL;
     if (have_editable)
     {
-        editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
+        editable_layout = get_label_layout (&item->editable_text_layout, item, item->editable_text);
         prepare_pango_layout_for_draw (item, editable_layout);
         pango_layout_get_pixel_size (editable_layout, NULL, &editable_height);
         if (y >= editable_height &&
             have_additional)
         {
             prepare_pango_layout_for_draw (item, editable_layout);
-            additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+            additional_layout = get_label_layout (&item->additional_text_layout, item, item->additional_text);
             layout = additional_layout;
-            canvas_text = item->details->additional_text;
+            canvas_text = item->additional_text;
             y -= editable_height + LABEL_LINE_SPACING;
         }
         else
         {
             layout = editable_layout;
-            canvas_text = item->details->editable_text;
+            canvas_text = item->editable_text;
         }
     }
     else if (have_additional)
     {
-        additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+        additional_layout = get_label_layout (&item->additional_text_layout, item, item->additional_text);
         prepare_pango_layout_for_draw (item, additional_layout);
         layout = additional_layout;
-        canvas_text = item->details->additional_text;
+        canvas_text = item->additional_text;
     }
     else
     {
@@ -2344,7 +2330,7 @@ nautilus_canvas_item_accessible_get_offset_at_point (AtkText      *text,
     }
     if (layout == additional_layout)
     {
-        offset += g_utf8_strlen (item->details->editable_text, -1);
+        offset += g_utf8_strlen (item->editable_text, -1);
     }
 
     if (editable_layout != NULL)
@@ -2383,35 +2369,35 @@ nautilus_canvas_item_accessible_get_character_extents (AtkText      *text,
     atk_component_get_extents (ATK_COMPONENT (text), &pos_x, &pos_y, NULL, NULL, coords);
     item = NAUTILUS_CANVAS_ITEM (atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text)));
 
-    if (item->details->texture != NULL)
+    if (item->texture != NULL)
     {
         get_scaled_icon_size (item, NULL, &pix_height);
         pos_y += pix_height;
     }
 
-    have_editable = item->details->editable_text != NULL &&
-                    item->details->editable_text[0] != '\0';
+    have_editable = item->editable_text != NULL &&
+                    item->editable_text[0] != '\0';
     if (have_editable)
     {
-        len = g_utf8_strlen (item->details->editable_text, -1);
+        len = g_utf8_strlen (item->editable_text, -1);
     }
     else
     {
         len = 0;
     }
 
-    editable_layout = get_label_layout (&item->details->editable_text_layout, item, item->details->editable_text);
-    additional_layout = get_label_layout (&item->details->additional_text_layout, item, item->details->additional_text);
+    editable_layout = get_label_layout (&item->editable_text_layout, item, item->editable_text);
+    additional_layout = get_label_layout (&item->additional_text_layout, item, item->additional_text);
 
     if (offset < len)
     {
-        canvas_text = item->details->editable_text;
+        canvas_text = item->editable_text;
         layout = editable_layout;
     }
     else
     {
         offset -= len;
-        canvas_text = item->details->additional_text;
+        canvas_text = item->additional_text;
         layout = additional_layout;
         pos_y += LABEL_LINE_SPACING;
         if (have_editable)
@@ -2428,8 +2414,8 @@ nautilus_canvas_item_accessible_get_character_extents (AtkText      *text,
         pango_layout_index_to_pos (editable_layout, 0, &rect0);
         text_offset = PANGO_PIXELS (rect0.x);
     }
-    if (item->details->additional_text != NULL &&
-        item->details->additional_text[0] != '\0')
+    if (item->additional_text != NULL &&
+        item->additional_text[0] != '\0')
     {
         gint itmp;
 
@@ -2461,7 +2447,7 @@ nautilus_canvas_item_accessible_text_get_text (AtkText *text,
     object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
     item = NAUTILUS_CANVAS_ITEM (object);
 
-    return g_utf8_substring (item->details->text->str, start_pos, end_pos);
+    return g_utf8_substring (item->text->str, start_pos, end_pos);
 }
 
 static gunichar
@@ -2474,7 +2460,7 @@ nautilus_canvas_item_accessible_text_get_character_at_offset (AtkText *text,
 
     object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
     item = NAUTILUS_CANVAS_ITEM (object);
-    pointer = g_utf8_offset_to_pointer (item->details->text->str, offset);
+    pointer = g_utf8_offset_to_pointer (item->text->str, offset);
 
     return g_utf8_get_char (pointer);
 }
@@ -2488,7 +2474,7 @@ nautilus_canvas_item_accessible_text_get_character_count (AtkText *text)
     object = atk_gobject_accessible_get_object (ATK_GOBJECT_ACCESSIBLE (text));
     item = NAUTILUS_CANVAS_ITEM (object);
 
-    return g_utf8_strlen (item->details->text->str, -1);
+    return g_utf8_strlen (item->text->str, -1);
 }
 
 static void
@@ -2531,7 +2517,7 @@ nautilus_canvas_item_accessible_ref_state_set (AtkObject *accessible)
         return state_set;
     }
     container = NAUTILUS_CANVAS_CONTAINER (EEL_CANVAS_ITEM (item)->canvas);
-    if (item->details->is_highlighted_as_keyboard_focus)
+    if (item->is_highlighted_as_keyboard_focus)
     {
         atk_state_set_add_state (state_set, ATK_STATE_FOCUSED);
     }
@@ -2539,7 +2525,7 @@ nautilus_canvas_item_accessible_ref_state_set (AtkObject *accessible)
     {
         selection = nautilus_canvas_container_get_selection (container);
         one_item_selected = (g_list_length (selection) == 1) &&
-                            item->details->is_highlighted_for_selection;
+                            item->is_highlighted_for_selection;
 
         if (one_item_selected)
         {
@@ -2621,14 +2607,14 @@ nautilus_canvas_item_accessible_factory_create_accessible (GObject *for_object)
     item = NAUTILUS_CANVAS_ITEM (for_object);
     g_assert (item != NULL);
 
-    item->details->text = g_string_new (NULL);
-    if (item->details->editable_text)
+    item->text = g_string_new (NULL);
+    if (item->editable_text)
     {
-        g_string_append (item->details->text, item->details->editable_text);
+        g_string_append (item->text, item->editable_text);
     }
-    if (item->details->additional_text)
+    if (item->additional_text)
     {
-        g_string_append (item->details->text, item->details->additional_text);
+        g_string_append (item->text, item->additional_text);
     }
 
     accessible = g_object_new (nautilus_canvas_item_accessible_get_type (), NULL);
