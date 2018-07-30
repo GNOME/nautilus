@@ -41,6 +41,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_CONTAINER
 #include "nautilus-debug.h"
 
+#include "nautilus-canvas-item.h"
 #include "nautilus-canvas-private.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
@@ -4316,7 +4317,7 @@ item_event_callback (EelCanvasItem *item,
     GdkEventType event_type;
 
     container = NAUTILUS_CANVAS_CONTAINER (data);
-    icon = NAUTILUS_CANVAS_ITEM (item)->user_data;
+    icon = nautilus_canvas_item_get_icon (NAUTILUS_CANVAS_ITEM (item));
 
     g_assert (icon != NULL);
 
@@ -4961,10 +4962,11 @@ nautilus_canvas_container_add (NautilusCanvasContainer *container,
      */
     icon->item = NAUTILUS_CANVAS_ITEM
                      (eel_canvas_item_new (EEL_CANVAS_GROUP (EEL_CANVAS (container)->root),
-                                           nautilus_canvas_item_get_type (),
+                                           NAUTILUS_TYPE_CANVAS_ITEM,
                                            "visible", FALSE,
                                            NULL));
-    icon->item->user_data = icon;
+
+    nautilus_canvas_item_set_icon (icon->item, icon);
 
     /* Make sure the icon is under the selection_rectangle */
     item = EEL_CANVAS_ITEM (icon->item);
