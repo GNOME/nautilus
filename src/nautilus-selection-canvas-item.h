@@ -27,36 +27,9 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_SELECTION_CANVAS_ITEM nautilus_selection_canvas_item_get_type()
-#define NAUTILUS_SELECTION_CANVAS_ITEM(obj) \
-  (G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_SELECTION_CANVAS_ITEM, NautilusSelectionCanvasItem))
-#define NAUTILUS_SELECTION_CANVAS_ITEM_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_SELECTION_CANVAS_ITEM, NautilusSelectionCanvasItemClass))
-#define NAUTILUS_IS_SELECTION_CANVAS_ITEM(obj) \
-  (G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_SELECTION_CANVAS_ITEM))
-#define NAUTILUS_IS_SELECTION_CANVAS_ITEM_CLASS(klass) \
-  (G_TYPE_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_SELECTION_CANVAS_ITEM))
-#define NAUTILUS_SELECTION_CANVAS_ITEM_GET_CLASS(obj) \
-  (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_SELECTION_CANVAS_ITEM, NautilusSelectionCanvasItemClass))
-
-typedef struct _NautilusSelectionCanvasItem NautilusSelectionCanvasItem;
-typedef struct _NautilusSelectionCanvasItemClass NautilusSelectionCanvasItemClass;
-typedef struct _NautilusSelectionCanvasItemDetails NautilusSelectionCanvasItemDetails;
-
-struct _NautilusSelectionCanvasItem {
-	EelCanvasItem item;
-	NautilusSelectionCanvasItemDetails *priv;
-	gpointer user_data;
-};
-
-struct _NautilusSelectionCanvasItemClass {
-	EelCanvasItemClass parent_class;
-};
-
-/* GObject */
-GType       nautilus_selection_canvas_item_get_type                 (void);
-
-void nautilus_selection_canvas_item_fade_out (NautilusSelectionCanvasItem *self,
-					      guint transition_time);
+#define NAUTILUS_TYPE_SELECTION_CANVAS_ITEM nautilus_selection_canvas_item_get_type ()
+G_DECLARE_FINAL_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item,
+                      NAUTILUS, SELECTION_CANVAS_ITEM,
+                      EelCanvasItem)
 
 G_END_DECLS
