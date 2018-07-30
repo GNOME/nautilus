@@ -23,9 +23,8 @@
 #pragma once
 
 #include <eel/eel-glib-extensions.h>
-#include "nautilus-canvas-item.h"
-#include "nautilus-canvas-container.h"
-#include "nautilus-canvas-dnd.h"
+
+#include "nautilus-types.h"
 
 /* An Icon. */
 
