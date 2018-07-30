@@ -5781,7 +5781,7 @@ nautilus_file_operations_copy (GTask        *task,
         /* In the case of duplicate, the undo_info is already set, so we don't want to
          * overwrite it wrongfully.
          */
-        if (job->common.undo_info != NULL)
+        if (job->common.undo_info == NULL)
         {
             job->common.undo_info = nautilus_file_undo_info_ext_new (NAUTILUS_FILE_UNDO_OP_COPY,
                                                                      g_list_length (job->files),
