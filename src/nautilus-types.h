@@ -32,6 +32,8 @@
 
 /* Keep sorted alphabetically. */
 
+typedef struct _EelCanvas                     EelCanvas;
+typedef struct _EelCanvasItem                 EelCanvasItem;
 typedef struct _NautilusBookmark              NautilusBookmark;
 typedef struct _NautilusBookmarkList          NautilusBookmarkList;
 typedef struct _NautilusCanvasContainer       NautilusCanvasContainer;
