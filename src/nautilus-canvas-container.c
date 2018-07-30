@@ -41,6 +41,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_CONTAINER
 #include "nautilus-debug.h"
 
+#include "nautilus-canvas-dnd.h"
 #include "nautilus-canvas-item.h"
 #include "nautilus-canvas-private.h"
 #include "nautilus-global-preferences.h"
