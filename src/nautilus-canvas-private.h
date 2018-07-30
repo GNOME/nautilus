@@ -24,7 +24,7 @@
 
 #include <eel/eel-glib-extensions.h>
 
-#include "nautilus-types.h"
+#include "nautilus-canvas-dnd.h"
 
 /* An Icon. */
 

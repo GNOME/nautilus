@@ -31,6 +31,7 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
+#include "nautilus-canvas-container.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-canvas-dnd.h"
 #include "nautilus-list-view-dnd.h"
