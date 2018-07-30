@@ -66,8 +66,10 @@
 #include "nautilus-window-slot.h"
 #include "nautilus-window.h"
 
-typedef struct
+struct _NautilusApplication
 {
+    GtkApplication parent_instance;
+
     NautilusProgressPersistenceHandler *progress_handler;
     NautilusDBusManager *dbus_manager;
     NautilusFreedesktopDBus *fdb_manager;
@@ -86,7 +88,7 @@ typedef struct
     GCancellable *tag_manager_cancellable;
 } NautilusApplicationPrivate;
 
-G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
+G_DEFINE_TYPE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
 
 void
 nautilus_application_set_accelerator (GApplication *app,
@@ -113,26 +115,22 @@ nautilus_application_set_accelerators (GApplication  *app,
 GList *
 nautilus_application_get_windows (NautilusApplication *self)
 {
-    NautilusApplicationPrivate *priv;
+    g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
 
-    priv = nautilus_application_get_instance_private (self);
-
-    return priv->windows;
+    return self->windows;
 }
 
 NautilusBookmarkList *
 nautilus_application_get_bookmarks (NautilusApplication *self)
 {
-    NautilusApplicationPrivate *priv;
+    g_return_val_if_fail (NAUTILUS_IS_APPLICATION (self), NULL);
 
-    priv = nautilus_application_get_instance_private (self);
-
-    if (!priv->bookmark_list)
+    if (self->bookmark_list == NULL)
     {
-        priv->bookmark_list = nautilus_bookmark_list_new ();
+        self->bookmark_list = nautilus_bookmark_list_new ();
     }
 
-    return priv->bookmark_list;
+    return self->bookmark_list;
 }
 
 static gboolean
@@ -289,13 +287,11 @@ static NautilusWindowSlot *
 get_window_slot_for_location (NautilusApplication *self,
                               GFile               *location)
 {
-    NautilusApplicationPrivate *priv;
     NautilusWindowSlot *slot;
     NautilusWindow *window;
     NautilusFile *file;
     GList *l, *sl;
 
-    priv = nautilus_application_get_instance_private (self);
     slot = NULL;
     file = nautilus_file_get (location);
 
@@ -309,7 +305,7 @@ get_window_slot_for_location (NautilusApplication *self,
         g_object_ref (location);
     }
 
-    for (l = priv->windows; l != NULL; l = l->next)
+    for (l = self->windows; l != NULL; l = l->next)
     {
         window = l->data;
 
@@ -345,28 +341,14 @@ nautilus_application_open_location_full (NautilusApplication     *self,
                                          NautilusWindow          *target_window,
                                          NautilusWindowSlot      *target_slot)
 {
-    NAUTILUS_APPLICATION_CLASS (G_OBJECT_GET_CLASS (self))->open_location_full (self,
-                                                                                location,
-                                                                                flags,
-                                                                                selection,
-                                                                                target_window,
-                                                                                target_slot);
-}
-
-static void
-real_open_location_full (NautilusApplication     *self,
-                         GFile                   *location,
-                         NautilusWindowOpenFlags  flags,
-                         GList                   *selection,
-                         NautilusWindow          *target_window,
-                         NautilusWindowSlot      *target_slot)
-{
     NautilusWindowSlot *active_slot = NULL;
     NautilusWindow *active_window;
     GFile *old_location = NULL;
     char *old_uri, *new_uri;
     gboolean use_same;
     GdkDisplay *display;
+
+    g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
     use_same = TRUE;
     /* FIXME: We are having problems on getting the current focused window with
@@ -566,26 +548,22 @@ static void
 nautilus_application_finalize (GObject *object)
 {
     NautilusApplication *self;
-    NautilusApplicationPrivate *priv;
 
     self = NAUTILUS_APPLICATION (object);
-    priv = nautilus_application_get_instance_private (self);
 
-    g_clear_object (&priv->progress_handler);
-    g_clear_object (&priv->bookmark_list);
+    g_clear_object (&self->progress_handler);
+    g_clear_object (&self->bookmark_list);
+    g_clear_object (&self->fdb_manager);
 
-    g_clear_object (&priv->fdb_manager);
+    g_list_free (self->windows);
 
-    g_list_free (priv->windows);
+    g_hash_table_destroy (self->notifications);
 
-    g_hash_table_destroy (priv->notifications);
+    g_clear_object (&self->undo_manager);
+    g_clear_object (&self->tag_manager);
 
-    g_clear_object (&priv->undo_manager);
-
-    g_clear_object (&priv->tag_manager);
-
-    g_cancellable_cancel (priv->tag_manager_cancellable);
-    g_clear_object (&priv->tag_manager_cancellable);
+    g_cancellable_cancel (self->tag_manager_cancellable);
+    g_clear_object (&self->tag_manager_cancellable);
 
     G_OBJECT_CLASS (nautilus_application_parent_class)->finalize (object);
 }
@@ -1085,21 +1063,18 @@ nautilus_application_init (NautilusApplication *self)
 
         { NULL }
     };
-    NautilusApplicationPrivate *priv;
 
-    priv = nautilus_application_get_instance_private (self);
-
-    priv->notifications = g_hash_table_new_full (g_str_hash,
+    self->notifications = g_hash_table_new_full (g_str_hash,
                                                  g_str_equal,
                                                  g_free,
                                                  NULL);
 
-    priv->undo_manager = nautilus_file_undo_manager_new ();
+    self->undo_manager = nautilus_file_undo_manager_new ();
 
-    priv->tag_manager_cancellable = g_cancellable_new ();
-    priv->tag_manager = nautilus_tag_manager_get ();
-    nautilus_tag_manager_set_cancellable (priv->tag_manager,
-                                          priv->tag_manager_cancellable);
+    self->tag_manager_cancellable = g_cancellable_new ();
+    self->tag_manager = nautilus_tag_manager_get ();
+    nautilus_tag_manager_set_cancellable (self->tag_manager,
+                                          self->tag_manager_cancellable);
 
     g_application_add_main_option_entries (G_APPLICATION (self), options);
 
@@ -1189,11 +1164,9 @@ nautilus_application_send_notification (NautilusApplication *self,
                                         const gchar         *notification_id,
                                         GNotification       *notification)
 {
-    NautilusApplicationPrivate *priv;
+    g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
-    priv = nautilus_application_get_instance_private (self);
-
-    g_hash_table_add (priv->notifications, g_strdup (notification_id));
+    g_hash_table_add (self->notifications, g_strdup (notification_id));
     g_application_send_notification (G_APPLICATION (self), notification_id, notification);
 }
 
@@ -1201,15 +1174,14 @@ void
 nautilus_application_withdraw_notification (NautilusApplication *self,
                                             const gchar         *notification_id)
 {
-    NautilusApplicationPrivate *priv;
+    g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
-    priv = nautilus_application_get_instance_private (self);
-    if (!g_hash_table_contains (priv->notifications, notification_id))
+    if (!g_hash_table_contains (self->notifications, notification_id))
     {
         return;
     }
 
-    g_hash_table_remove (priv->notifications, notification_id);
+    g_hash_table_remove (self->notifications, notification_id);
     g_application_withdraw_notification (G_APPLICATION (self), notification_id);
 }
 
@@ -1217,14 +1189,13 @@ static void
 on_application_shutdown (GApplication *application,
                          gpointer      user_data)
 {
-    NautilusApplication *self = NAUTILUS_APPLICATION (application);
-    NautilusApplicationPrivate *priv;
+    NautilusApplication *self;
     GList *notification_ids;
     GList *l;
     gchar *notification_id;
 
-    priv = nautilus_application_get_instance_private (self);
-    notification_ids = g_hash_table_get_keys (priv->notifications);
+    self = NAUTILUS_APPLICATION (application);
+    notification_ids = g_hash_table_get_keys (self->notifications);
     for (l = notification_ids; l != NULL; l = l->next)
     {
         notification_id = l->data;
@@ -1251,13 +1222,10 @@ icon_theme_changed_callback (GtkIconTheme *icon_theme,
     emit_change_signals_for_all_files_in_all_directories ();
 }
 
-void
+static void
 nautilus_application_startup_common (NautilusApplication *self)
 {
-    NautilusApplicationPrivate *priv;
-
     nautilus_profile_start (NULL);
-    priv = nautilus_application_get_instance_private (self);
 
     g_application_set_resource_base_path (G_APPLICATION (self), "/org/gnome/nautilus");
 
@@ -1282,7 +1250,7 @@ nautilus_application_startup_common (NautilusApplication *self)
     menu_provider_init_callback ();
 
     /* Initialize the UI handler singleton for file operations */
-    priv->progress_handler = nautilus_progress_persistence_handler_new (G_OBJECT (self));
+    self->progress_handler = nautilus_progress_persistence_handler_new (G_OBJECT (self));
 
     /* Check the user's .nautilus directories and post warnings
      * if there are problems.
@@ -1304,14 +1272,14 @@ nautilus_application_startup_common (NautilusApplication *self)
 static void
 nautilus_application_startup (GApplication *app)
 {
-    NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
+    NautilusApplication *self;
 
     nautilus_profile_start (NULL);
-    priv = nautilus_application_get_instance_private (self);
+
+    self = NAUTILUS_APPLICATION (app);
 
     /* create DBus manager */
-    priv->fdb_manager = nautilus_freedesktop_dbus_new ();
+    self->fdb_manager = nautilus_freedesktop_dbus_new ();
     nautilus_application_startup_common (self);
 
     nautilus_profile_end (NULL);
@@ -1323,18 +1291,18 @@ nautilus_application_dbus_register (GApplication     *app,
                                     const gchar      *object_path,
                                     GError          **error)
 {
-    NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
+    NautilusApplication *self;
 
-    priv = nautilus_application_get_instance_private (self);
-    priv->dbus_manager = nautilus_dbus_manager_new ();
-    if (!nautilus_dbus_manager_register (priv->dbus_manager, connection, error))
+    self = NAUTILUS_APPLICATION (app);
+
+    self->dbus_manager = nautilus_dbus_manager_new ();
+    if (!nautilus_dbus_manager_register (self->dbus_manager, connection, error))
     {
         return FALSE;
     }
 
-    priv->search_provider = nautilus_shell_search_provider_new ();
-    if (!nautilus_shell_search_provider_register (priv->search_provider, connection, error))
+    self->search_provider = nautilus_shell_search_provider_new ();
+    if (!nautilus_shell_search_provider_register (self->search_provider, connection, error))
     {
         return FALSE;
     }
@@ -1347,27 +1315,26 @@ nautilus_application_dbus_unregister (GApplication    *app,
                                       GDBusConnection *connection,
                                       const gchar     *object_path)
 {
-    NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
+    NautilusApplication *self;
 
-    priv = nautilus_application_get_instance_private (self);
-    if (priv->dbus_manager)
+    self = NAUTILUS_APPLICATION (app);
+
+    if (self->dbus_manager != NULL)
     {
-        nautilus_dbus_manager_unregister (priv->dbus_manager);
-        g_clear_object (&priv->dbus_manager);
+        nautilus_dbus_manager_unregister (self->dbus_manager);
+        g_clear_object (&self->dbus_manager);
     }
 
-    if (priv->search_provider)
+    if (self->search_provider != NULL)
     {
-        nautilus_shell_search_provider_unregister (priv->search_provider);
-        g_clear_object (&priv->search_provider);
+        nautilus_shell_search_provider_unregister (self->search_provider);
+        g_clear_object (&self->search_provider);
     }
 }
 
 static void
 update_dbus_opened_locations (NautilusApplication *self)
 {
-    NautilusApplicationPrivate *priv;
     gint i;
     GList *l, *sl;
     GList *locations = NULL;
@@ -1382,11 +1349,9 @@ update_dbus_opened_locations (NautilusApplication *self)
 
     g_return_if_fail (NAUTILUS_IS_APPLICATION (self));
 
-    priv = nautilus_application_get_instance_private (self);
-
     /* Children of nautilus application could not handle the dbus, so don't
      * do anything in that case */
-    if (!priv->fdb_manager)
+    if (self->fdb_manager == NULL)
     {
         return;
     }
@@ -1397,7 +1362,7 @@ update_dbus_opened_locations (NautilusApplication *self)
 
     g_variant_builder_init (&windows_to_locations_builder, G_VARIANT_TYPE ("a{sas}"));
 
-    for (l = priv->windows; l != NULL; l = l->next)
+    for (l = self->windows; l != NULL; l = l->next)
     {
         guint32 id;
         g_autofree gchar *path = NULL;
@@ -1447,11 +1412,11 @@ update_dbus_opened_locations (NautilusApplication *self)
 
     locations_array[locations_size] = NULL;
 
-    nautilus_freedesktop_dbus_set_open_locations (priv->fdb_manager,
+    nautilus_freedesktop_dbus_set_open_locations (self->fdb_manager,
                                                   (const gchar **) locations_array);
 
     windows_to_locations = g_variant_ref_sink (g_variant_builder_end (&windows_to_locations_builder));
-    nautilus_freedesktop_dbus_set_open_windows_with_locations (priv->fdb_manager,
+    nautilus_freedesktop_dbus_set_open_windows_with_locations (self->fdb_manager,
                                                                windows_to_locations);
 
     g_free (locations_array);
@@ -1493,15 +1458,15 @@ static void
 nautilus_application_window_added (GtkApplication *app,
                                    GtkWindow      *window)
 {
-    NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
+    NautilusApplication *self;
 
-    priv = nautilus_application_get_instance_private (self);
+    self = NAUTILUS_APPLICATION (app);
+
     GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_added (app, window);
 
     if (NAUTILUS_IS_WINDOW (window))
     {
-        priv->windows = g_list_prepend (priv->windows, window);
+        self->windows = g_list_prepend (self->windows, window);
         g_signal_connect (window, "slot-added", G_CALLBACK (on_slot_added), app);
         g_signal_connect (window, "slot-removed", G_CALLBACK (on_slot_removed), app);
     }
@@ -1512,24 +1477,21 @@ nautilus_application_window_removed (GtkApplication *app,
                                      GtkWindow      *window)
 {
     NautilusApplication *self = NAUTILUS_APPLICATION (app);
-    NautilusApplicationPrivate *priv;
-
-    priv = nautilus_application_get_instance_private (self);
 
     GTK_APPLICATION_CLASS (nautilus_application_parent_class)->window_removed (app, window);
 
     if (NAUTILUS_IS_WINDOW (window))
     {
-        priv->windows = g_list_remove_all (priv->windows, window);
+        self->windows = g_list_remove_all (self->windows, window);
         g_signal_handlers_disconnect_by_func (window, on_slot_added, app);
         g_signal_handlers_disconnect_by_func (window, on_slot_removed, app);
     }
 
     /* if this was the last window, close the previewer */
-    if (g_list_length (priv->windows) == 0)
+    if (self->windows == NULL)
     {
         nautilus_previewer_call_close ();
-        nautilus_progress_persistence_handler_make_persistent (priv->progress_handler);
+        nautilus_progress_persistence_handler_make_persistent (self->progress_handler);
     }
 }
 
@@ -1568,8 +1530,6 @@ nautilus_application_class_init (NautilusApplicationClass *class)
     application_class->open = nautilus_application_open;
     application_class->command_line = nautilus_application_command_line;
     application_class->handle_local_options = nautilus_application_handle_local_options;
-
-    class->open_location_full = real_open_location_full;
 
     gtkapp_class = GTK_APPLICATION_CLASS (class);
     gtkapp_class->window_added = nautilus_application_window_added;
