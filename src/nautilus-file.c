@@ -5052,8 +5052,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
             {
                 g_ptr_array_add (prepend_array, "folder");
             }
-            if (is_folder &&
-                (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT))
+            if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_DRAG_ACCEPT))
             {
                 g_ptr_array_add (prepend_array, "folder-drag-accept");
             }
