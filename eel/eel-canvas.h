@@ -125,6 +125,8 @@ struct _EelCanvasItem {
 	guint flags;
 };
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (EelCanvasItem, g_object_unref)
+
 struct _EelCanvasItemClass {
 	GInitiallyUnownedClass parent_class;
 
