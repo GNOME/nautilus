@@ -25,8 +25,8 @@
 
 #pragma once
 
-#include "nautilus-canvas-container.h"
 #include "nautilus-dnd.h"
+#include "nautilus-types.h"
 
 /* DnD-related information. */
 typedef struct {
