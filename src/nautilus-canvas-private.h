@@ -82,37 +82,6 @@ typedef struct {
 	int last_adj_y;
 } NautilusCanvasRubberbandInfo;
 
-typedef enum {
-	DRAG_STATE_INITIAL,
-	DRAG_STATE_MOVE_OR_COPY,
-} DragState;
-
-typedef struct {
-	/* Pointer position in canvas coordinates. */
-	int pointer_x, pointer_y;
-
-	/* Icon top, left, and size in canvas coordinates. */
-	int icon_x, icon_y;
-	guint icon_size;
-} StretchState;
-
-typedef enum {
-	AXIS_NONE,
-	AXIS_HORIZONTAL,
-	AXIS_VERTICAL
-} Axis;
-
-enum {
-	LABEL_COLOR,
-	LABEL_COLOR_HIGHLIGHT,
-	LABEL_COLOR_ACTIVE,
-	LABEL_COLOR_PRELIGHT,
-	LABEL_INFO_COLOR,
-	LABEL_INFO_COLOR_HIGHLIGHT,
-	LABEL_INFO_COLOR_ACTIVE,
-	LAST_LABEL_COLOR
-};
-
 struct NautilusCanvasContainerDetails {
 	/* List of icons. */
 	GList *icons;
