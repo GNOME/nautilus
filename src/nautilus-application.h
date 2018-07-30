@@ -28,18 +28,7 @@
 
 G_BEGIN_DECLS
 #define NAUTILUS_TYPE_APPLICATION (nautilus_application_get_type())
-G_DECLARE_DERIVABLE_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, GtkApplication)
-
-struct _NautilusApplicationClass {
-	GtkApplicationClass parent_class;
-
-        void  (*open_location_full) (NautilusApplication     *application,
-                                     GFile                   *location,
-                                     NautilusWindowOpenFlags  flags,
-                                     GList                   *selection,
-                                     NautilusWindow          *target_window,
-                                     NautilusWindowSlot      *target_slot);
-};
+G_DECLARE_FINAL_TYPE (NautilusApplication, nautilus_application, NAUTILUS, APPLICATION, GtkApplication)
 
 NautilusApplication * nautilus_application_new (void);
 
@@ -85,5 +74,4 @@ GtkWidget * nautilus_application_connect_server (NautilusApplication *applicatio
 
 void nautilus_application_search (NautilusApplication *application,
                                   NautilusQuery       *query);
-void nautilus_application_startup_common (NautilusApplication *application);
 G_END_DECLS
