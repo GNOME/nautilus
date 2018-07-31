@@ -105,30 +105,36 @@ real_name_is_valid (NautilusFileNameWidgetController  *self,
                     gchar                             *name,
                     gchar                            **error_message)
 {
+    gboolean is_valid;
+
+    is_valid = TRUE;
     if (strlen (name) == 0)
     {
-        return FALSE;
+        is_valid = FALSE;
     }
-
-    if (strstr (name, "/") != NULL)
+    else if (strstr (name, "/") != NULL)
     {
+        is_valid = FALSE;
         *error_message = _("File names cannot contain “/”.");
     }
     else if (strcmp (name, ".") == 0)
     {
+        is_valid = FALSE;
         *error_message = _("A file cannot be called “.”.");
     }
     else if (strcmp (name, "..") == 0)
     {
+        is_valid = FALSE;
         *error_message = _("A file cannot be called “..”.");
     }
-    else if (g_str_has_prefix (name, "."))
+
+    if (is_valid && g_str_has_prefix (name, "."))
     {
+        /* We must warn about the side effect */
         *error_message = _("Files with “.” at the beginning of their name are hidden.");
-        return TRUE;
     }
 
-    return *error_message == NULL;
+    return is_valid;
 }
 
 static gboolean

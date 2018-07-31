@@ -106,19 +106,21 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
     NautilusDirectory *directory;
     glong max_name_length;
     size_t name_length;
+    gboolean is_valid;
 
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
     directory = nautilus_file_get_directory (self->target_file);
     name_length = strlen (name);
     max_name_length = nautilus_directory_get_max_child_name_length (directory);
 
+    is_valid = TRUE;
     if (name_length == 0)
     {
-        return FALSE;
+        is_valid = FALSE;
     }
-
-    if (strstr (name, "/") != NULL)
+    else if (strstr (name, "/") != NULL)
     {
+        is_valid = FALSE;
         if (self->target_is_folder)
         {
             *error_message = _("Folder names cannot contain “/”.");
@@ -130,6 +132,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
     }
     else if (strcmp (name, ".") == 0)
     {
+        is_valid = FALSE;
         if (self->target_is_folder)
         {
             *error_message = _("A folder cannot be called “.”.");
@@ -141,6 +144,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
     }
     else if (strcmp (name, "..") == 0)
     {
+        is_valid = FALSE;
         if (self->target_is_folder)
         {
             *error_message = _("A folder cannot be called “..”.");
@@ -152,6 +156,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
     }
     else if (name_length > max_name_length + 1 && max_name_length != -1)
     {
+        is_valid = FALSE;
         if (self->target_is_folder)
         {
             *error_message = _("Folder name is too long.");
@@ -161,8 +166,10 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
             *error_message = _("File name is too long.");
         }
     }
-    else if (g_str_has_prefix (name, "."))
+
+    if (is_valid && g_str_has_prefix (name, "."))
     {
+        /* We must warn about the side effect */
         if (self->target_is_folder)
         {
             *error_message = _("Folders with “.” at the beginning of their name are hidden.");
@@ -171,10 +178,9 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
         {
             *error_message = _("Files with “.” at the beginning of their name are hidden.");
         }
-      return TRUE;
     }
 
-    return *error_message == NULL;
+    return is_valid;
 }
 
 static gboolean
