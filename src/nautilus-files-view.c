@@ -763,10 +763,7 @@ real_set_extensions_background_menu (NautilusView *view,
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
 
-    if (priv->extensions_background_menu != NULL)
-    {
-        g_clear_object (&priv->extensions_background_menu);
-    }
+    g_clear_object (&priv->extensions_background_menu);
     priv->extensions_background_menu = menu;
 }
 
@@ -780,10 +777,7 @@ real_set_templates_menu (NautilusView *view,
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
 
-    if (priv->templates_menu != NULL)
-    {
-        g_clear_object (&priv->extensions_background_menu);
-    }
+    g_clear_object (&priv->templates_menu);
     priv->templates_menu = menu;
 }
 
