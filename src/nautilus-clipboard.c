@@ -33,8 +33,6 @@
 #include <gtk/gtk.h>
 #include <string.h>
 
-static GdkAtom copied_files_atom;
-
 typedef struct
 {
     gboolean cut;
@@ -42,21 +40,25 @@ typedef struct
 } ClipboardInfo;
 
 static GList *
-convert_lines_to_str_list (char **lines)
+convert_selection_data_to_str_list (const gchar *data)
 {
     int i;
     GList *result;
+    size_t number_of_lines;
+    gchar **lines;
 
-    if (lines[0] == NULL)
-    {
-        return NULL;
-    }
-
+    lines = g_strsplit (data, "\n", 0);
     result = NULL;
-    for (i = 0; lines[i] != NULL; i++)
+    number_of_lines = g_strv_length (lines);
+    /* Also, this skips the last line, since it would be an
+     * empty string from the split */
+    for (i = 0; i < number_of_lines - 1; i++)
     {
         result = g_list_prepend (result, g_strdup (lines[i]));
     }
+
+    g_strfreev (lines);
+
     return g_list_reverse (result);
 }
 
@@ -77,7 +79,8 @@ convert_file_list_to_string (ClipboardInfo *info,
     }
     else
     {
-        uris = g_string_new (info->cut ? "cut" : "copy");
+        uris = g_string_new ("x-special/nautilus-clipboard\n");
+        g_string_append (uris, info->cut ? "cut\n" : "copy\n");
     }
 
     for (i = 0, l = info->files; l != NULL; l = l->next, i++)
@@ -100,16 +103,12 @@ convert_file_list_to_string (ClipboardInfo *info,
                 g_string_append (uris, uri);
             }
 
-            /* skip newline for last element */
-            if (i + 1 < g_list_length (info->files))
-            {
-                g_string_append_c (uris, '\n');
-            }
+            g_string_append_c (uris, '\n');
         }
         else
         {
-            g_string_append_c (uris, '\n');
             g_string_append (uris, uri);
+            g_string_append_c (uris, '\n');
         }
 
         g_free (uri);
@@ -120,43 +119,60 @@ convert_file_list_to_string (ClipboardInfo *info,
 }
 
 static GList *
-get_item_list_from_selection_data (GtkSelectionData *selection_data)
+get_item_list_from_selection_data (const gchar *selection_data)
 {
-    GList *items;
-    char **lines;
+    GList *items = NULL;
 
-    if (gtk_selection_data_get_data_type (selection_data) != copied_files_atom
-        || gtk_selection_data_get_length (selection_data) <= 0)
+    if (selection_data != NULL)
     {
-        items = NULL;
-    }
-    else
-    {
-        gchar *data;
+        gboolean valid_data = TRUE;
         /* Not sure why it's legal to assume there's an extra byte
          * past the end of the selection data that it's safe to write
          * to. But gtk_editable_selection_received does this, so I
          * think it is OK.
          */
-        data = (gchar *) gtk_selection_data_get_data (selection_data);
-        data[gtk_selection_data_get_length (selection_data)] = '\0';
-        lines = g_strsplit (data, "\n", 0);
-        items = convert_lines_to_str_list (lines);
-        g_strfreev (lines);
+        items = convert_selection_data_to_str_list (selection_data);
+        if (items == NULL || g_strcmp0 (items->data, "x-special/nautilus-clipboard") != 0)
+        {
+            valid_data = FALSE;
+        }
+        else if (items->next == NULL)
+        {
+            valid_data = FALSE;
+        }
+        else if (g_strcmp0 (items->next->data, "cut") != 0 &&
+                 g_strcmp0 (items->next->data, "copy") != 0)
+        {
+            valid_data = FALSE;
+        }
+
+        if (!valid_data)
+        {
+            g_list_free_full (items, g_free);
+            items = NULL;
+        }
     }
 
     return items;
 }
 
+gboolean
+nautilus_clipboard_is_data_valid_from_selection_data (const gchar *selection_data)
+{
+    return nautilus_clipboard_get_uri_list_from_selection_data (selection_data) != NULL;
+}
+
 GList *
-nautilus_clipboard_get_uri_list_from_selection_data (GtkSelectionData *selection_data)
+nautilus_clipboard_get_uri_list_from_selection_data (const gchar *selection_data)
 {
     GList *items;
 
     items = get_item_list_from_selection_data (selection_data);
     if (items)
     {
-        /* Line 0 is "cut" or "copy", so uris start at line 1. */
+        /* Line 0 is x-special/nautilus-clipboard. */
+        items = g_list_remove (items, items->data);
+        /* Line 1 is "cut" or "copy", so uris start at line 2. */
         items = g_list_remove (items, items->data);
     }
 
@@ -174,13 +190,12 @@ void
 nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
                                             const GList *item_uris)
 {
-    GtkSelectionData *data;
+    g_autofree gchar *data = NULL;
     GList *clipboard_item_uris, *l;
     gboolean collision;
 
     collision = FALSE;
-    data = gtk_clipboard_wait_for_contents (nautilus_clipboard_get (widget),
-                                            copied_files_atom);
+    data = gtk_clipboard_wait_for_text (nautilus_clipboard_get (widget));
     if (data == NULL)
     {
         return;
@@ -210,14 +225,14 @@ nautilus_clipboard_clear_if_colliding_uris (GtkWidget   *widget,
 }
 
 gboolean
-nautilus_clipboard_is_cut_from_selection_data (GtkSelectionData *selection_data)
+nautilus_clipboard_is_cut_from_selection_data (const gchar *selection_data)
 {
     GList *items;
     gboolean is_cut_from_selection_data;
 
     items = get_item_list_from_selection_data (selection_data);
     is_cut_from_selection_data = items != NULL &&
-                                 g_strcmp0 ((gchar *) items->data, "cut") == 0;
+                                 g_strcmp0 ((gchar *) items->next->data, "cut") == 0;
 
     g_list_free_full (items, g_free);
 
@@ -262,17 +277,8 @@ on_get_clipboard (GtkClipboard     *clipboard,
         char *str;
         gsize len;
 
-        str = convert_file_list_to_string (clipboard_info, TRUE, &len);
-        gtk_selection_data_set_text (selection_data, str, len);
-        g_free (str);
-    }
-    else if (target == copied_files_atom)
-    {
-        char *str;
-        gsize len;
-
         str = convert_file_list_to_string (clipboard_info, FALSE, &len);
-        gtk_selection_data_set (selection_data, copied_files_atom, 8, (guchar *) str, len);
+        gtk_selection_data_set_text (selection_data, str, len);
         g_free (str);
     }
 }
@@ -303,7 +309,6 @@ nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
     clipboard_info->files = nautilus_file_list_copy (files);
 
     target_list = gtk_target_list_new (NULL, 0);
-    gtk_target_list_add (target_list, copied_files_atom, 0, 0);
     gtk_target_list_add_uri_targets (target_list, 0);
     gtk_target_list_add_text_targets (target_list, 0);
 
@@ -317,13 +322,3 @@ nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
     gtk_target_table_free (targets, n_targets);
 }
 
-GdkAtom
-nautilus_clipboard_get_atom (void)
-{
-    if (!copied_files_atom)
-    {
-        copied_files_atom = gdk_atom_intern_static_string ("x-special/gnome-copied-files");
-    }
-
-    return copied_files_atom;
-}
