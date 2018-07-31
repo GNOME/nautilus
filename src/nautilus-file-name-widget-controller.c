@@ -72,6 +72,29 @@ nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameW
     g_object_set (self, "containing-directory", directory, NULL);
 }
 
+gboolean
+nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController  *self,
+                                                       gchar                             *name)
+{
+    NautilusFileNameWidgetControllerPrivate *priv;
+    size_t name_length;
+    glong max_name_length;
+
+    priv = nautilus_file_name_widget_controller_get_instance_private (self);
+    name_length = strlen (name);
+    max_name_length = nautilus_directory_get_max_child_name_length (priv->containing_directory);
+
+    if (max_name_length == -1)
+    {
+        /* We don't know, so let's give it a chance */
+        return FALSE;
+    }
+    else
+    {
+        return name_length > max_name_length + 1;
+    }
+}
+
 static gboolean
 nautilus_file_name_widget_controller_name_is_valid (NautilusFileNameWidgetController  *self,
                                                     gchar                             *name,
@@ -126,6 +149,11 @@ real_name_is_valid (NautilusFileNameWidgetController  *self,
     {
         is_valid = FALSE;
         *error_message = _("A file cannot be called “..”.");
+    }
+    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
+    {
+        is_valid = FALSE;
+        *error_message = _("File name is too long.");
     }
 
     if (is_valid && g_str_has_prefix (name, "."))

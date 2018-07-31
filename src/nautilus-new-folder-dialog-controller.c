@@ -64,6 +64,11 @@ nautilus_new_folder_dialog_controller_name_is_valid (NautilusFileNameWidgetContr
         is_valid = FALSE;
         *error_message = _("A folder cannot be called “..”.");
     }
+    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
+    {
+        is_valid = FALSE;
+        *error_message = _("Folder name is too long.");
+    }
 
     if (is_valid && g_str_has_prefix (name, "."))
     {

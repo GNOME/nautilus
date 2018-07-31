@@ -103,18 +103,12 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
                                                        gchar                            **error_message)
 {
     NautilusRenameFilePopoverController *self;
-    NautilusDirectory *directory;
-    glong max_name_length;
-    size_t name_length;
     gboolean is_valid;
 
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (controller);
-    directory = nautilus_file_get_directory (self->target_file);
-    name_length = strlen (name);
-    max_name_length = nautilus_directory_get_max_child_name_length (directory);
 
     is_valid = TRUE;
-    if (name_length == 0)
+    if (strlen (name) == 0)
     {
         is_valid = FALSE;
     }
@@ -154,7 +148,7 @@ nautilus_rename_file_popover_controller_name_is_valid (NautilusFileNameWidgetCon
             *error_message = _("A file cannot be called “..”.");
         }
     }
-    else if (name_length > max_name_length + 1 && max_name_length != -1)
+    else if (nautilus_file_name_widget_controller_is_name_too_long (controller, name))
     {
         is_valid = FALSE;
         if (self->target_is_folder)

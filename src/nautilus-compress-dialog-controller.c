@@ -71,6 +71,11 @@ nautilus_compress_dialog_controller_name_is_valid (NautilusFileNameWidgetControl
         is_valid = FALSE;
         *error_message = _("An archive cannot be called “..”.");
     }
+    else if (nautilus_file_name_widget_controller_is_name_too_long (self, name))
+    {
+        is_valid = FALSE;
+        *error_message = _("Archive name is too long.");
+    }
 
     if (is_valid && g_str_has_prefix (name, "."))
     {
