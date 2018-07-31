@@ -33,3 +33,4 @@ void nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
                                            GList        *files,
                                            gboolean      cut);
 GdkAtom nautilus_clipboard_get_atom (void);
+gboolean nautilus_clipboard_is_data_valid_from_selection_data (GtkSelectionData *selection_data);
