@@ -909,6 +909,7 @@ open_location_cb (NautilusWindow     *window,
                   GtkPlacesOpenFlags  open_flags)
 {
     NautilusWindowOpenFlags flags;
+    NautilusApplication *application;
 
     switch (open_flags)
     {
@@ -933,11 +934,12 @@ open_location_cb (NautilusWindow     *window,
         break;
     }
 
+    application = NAUTILUS_APPLICATION (g_application_get_default ());
     /* FIXME: We shouldn't need to provide the window, but seems gtk_application_get_active_window
      * is not working properly in GtkApplication, so we cannot rely on that...
      */
-    nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
-                                             location, flags, NULL, window, NULL);
+    nautilus_application_open_location_full (application, location, flags,
+                                             NULL, window, NULL);
 }
 
 static void
