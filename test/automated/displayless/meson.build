@@ -20,6 +20,9 @@ tests = [
   ['test-nautilus-search-engine-simple', [
     'test-nautilus-search-engine-simple.c'
   ]],
+  ['test-nautilus-search-engine-model', [
+    'test-nautilus-search-engine-model.c'
+  ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
   ]],
