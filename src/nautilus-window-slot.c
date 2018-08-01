@@ -1991,7 +1991,14 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
              * in a new tab) so close it and return */
             if (slot_location == NULL)
             {
-                nautilus_window_slot_close (window, self);
+                if (error == NULL)
+                {
+                    nautilus_window_slot_close (window, self);
+                }
+                else
+                {
+                    nautilus_window_slot_go_home (self, 0);
+                }
             }
             else
             {
