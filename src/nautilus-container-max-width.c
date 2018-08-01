@@ -6,6 +6,10 @@ struct _NautilusContainerMaxWidth
 {
     GtkBin parent_instance;
     guint max_width;
+
+    gboolean width_maximized;
+    gboolean last_signaled_width_maximized;
+    guint width_maximized_changed_idle_id;
 };
 
 G_DEFINE_TYPE (NautilusContainerMaxWidth, nautilus_container_max_width, GTK_TYPE_BIN)
@@ -16,6 +20,14 @@ enum
     PROP_MAX_WIDTH,
     N_PROPS
 };
+
+enum
+{
+    WIDTH_MAXIMIZED_CHANGED,
+    LAST_SIGNAL
+};
+
+static guint signals[LAST_SIGNAL];
 
 void
 nautilus_container_max_width_set_max_width (NautilusContainerMaxWidth *self,
@@ -40,6 +52,13 @@ nautilus_container_max_width_new (void)
 static void
 nautilus_container_max_width_finalize (GObject *object)
 {
+    NautilusContainerMaxWidth *self = NAUTILUS_CONTAINER_MAX_WIDTH (object);
+
+    if (self->width_maximized_changed_idle_id != 0)
+    {
+        g_source_remove (self->width_maximized_changed_idle_id);
+    }
+
     G_OBJECT_CLASS (nautilus_container_max_width_parent_class)->finalize (object);
 }
 
@@ -177,6 +196,46 @@ get_preferred_width_for_height (GtkWidget *widget,
     get_preferred_width (widget, minimum_size, natural_size);
 }
 
+static gboolean
+width_maximized_changed_idle_callback (gpointer userdata)
+{
+    NautilusContainerMaxWidth *self = userdata;
+
+    self->width_maximized_changed_idle_id = 0;
+
+    if (self->width_maximized != self->last_signaled_width_maximized)
+    {
+        g_signal_emit_by_name (self,
+                               "width-maximized-changed",
+                               self->width_maximized);
+        self->last_signaled_width_maximized = self->width_maximized;
+    }
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+on_size_allocate (GtkWidget    *widget,
+                  GdkRectangle *allocation,
+                  gpointer      userdata)
+{
+    NautilusContainerMaxWidth *self = NAUTILUS_CONTAINER_MAX_WIDTH (widget);
+    gboolean is_width_maximized;
+
+    is_width_maximized = self->max_width == -1 ? FALSE : allocation->width >= self->max_width;
+
+    if (self->width_maximized != is_width_maximized)
+    {
+        self->width_maximized = is_width_maximized;
+
+        /* We need to emit the "width-maximized-changed" signal when idle */
+        if (self->width_maximized_changed_idle_id == 0)
+        {
+            self->width_maximized_changed_idle_id = g_idle_add (width_maximized_changed_idle_callback, self);
+        }
+    }
+}
+
 static void
 constructed (GObject *obj)
 {
@@ -187,6 +246,14 @@ constructed (GObject *obj)
     /* We want our parent to gives our preferred width */
     gtk_widget_set_halign (GTK_WIDGET (self), GTK_ALIGN_CENTER);
     self->max_width = -1;
+
+    /* We may want to change the child theming when at max width */
+    self->width_maximized = FALSE;
+    self->last_signaled_width_maximized = FALSE;
+    g_signal_connect (GTK_WIDGET (self),
+                      "size-allocate",
+                      G_CALLBACK (on_size_allocate),
+                      NULL);
 }
 
 static void
@@ -215,6 +282,17 @@ nautilus_container_max_width_class_init (NautilusContainerMaxWidthClass *klass)
                                                        G_MAXINT,
                                                        0,
                                                        G_PARAM_READWRITE));
+
+    signals[WIDTH_MAXIMIZED_CHANGED] = g_signal_new ("width-maximized-changed",
+                                                     NAUTILUS_TYPE_CONTAINER_MAX_WIDTH,
+                                                     G_SIGNAL_RUN_LAST,
+                                                     0,
+                                                     NULL,
+                                                     NULL,
+                                                     g_cclosure_marshal_VOID__BOOLEAN,
+                                                     G_TYPE_NONE,
+                                                     1,
+                                                     G_TYPE_BOOLEAN);
 }
 
 static void
