@@ -6,6 +6,9 @@ struct _NautilusContainerMaxWidth
 {
     GtkBin parent_instance;
     guint max_width;
+
+    gboolean width_maximized;
+    guint change_width_maximized_idle_id;
 };
 
 G_DEFINE_TYPE (NautilusContainerMaxWidth, nautilus_container_max_width, GTK_TYPE_BIN)
@@ -14,6 +17,7 @@ enum
 {
     PROP_0,
     PROP_MAX_WIDTH,
+    PROP_WIDTH_MAXIMIZED,
     N_PROPS
 };
 
@@ -31,6 +35,12 @@ nautilus_container_max_width_get_max_width (NautilusContainerMaxWidth *self)
     return self->max_width;
 }
 
+gboolean
+nautilus_container_max_width_get_width_maximized (NautilusContainerMaxWidth *self)
+{
+    return self->width_maximized;
+}
+
 NautilusContainerMaxWidth *
 nautilus_container_max_width_new (void)
 {
@@ -40,6 +50,13 @@ nautilus_container_max_width_new (void)
 static void
 nautilus_container_max_width_finalize (GObject *object)
 {
+    NautilusContainerMaxWidth *self = NAUTILUS_CONTAINER_MAX_WIDTH (object);
+
+    if (self->change_width_maximized_idle_id != 0)
+    {
+        g_source_remove (self->change_width_maximized_idle_id);
+    }
+
     G_OBJECT_CLASS (nautilus_container_max_width_parent_class)->finalize (object);
 }
 
@@ -56,6 +73,12 @@ nautilus_container_max_width_get_property (GObject    *object,
         case PROP_MAX_WIDTH:
         {
             g_value_set_int (value, self->max_width);
+        }
+        break;
+
+        case PROP_WIDTH_MAXIMIZED:
+        {
+            g_value_set_boolean (value, self->width_maximized);
         }
         break;
 
@@ -177,6 +200,47 @@ get_preferred_width_for_height (GtkWidget *widget,
     get_preferred_width (widget, minimum_size, natural_size);
 }
 
+static gboolean
+change_width_maximized_idle_callback (gpointer userdata)
+{
+    NautilusContainerMaxWidth *self = userdata;
+
+    self->change_width_maximized_idle_id = 0;
+
+    self->width_maximized = !self->width_maximized;
+    g_object_notify (G_OBJECT (self), "width-maximized");
+
+    return G_SOURCE_REMOVE;
+}
+
+static void
+on_size_allocate (GtkWidget    *widget,
+                  GdkRectangle *allocation,
+                  gpointer      userdata)
+{
+    NautilusContainerMaxWidth *self = NAUTILUS_CONTAINER_MAX_WIDTH (widget);
+    gboolean is_width_maximized;
+
+    is_width_maximized = self->max_width == -1 ? FALSE : allocation->width >= self->max_width;
+
+    if (self->width_maximized != is_width_maximized)
+    {
+        /* The handlers of the "notify::width-maximized" signal may trigger
+         * a reallocation, which shouldn't happen at this point because we are
+         * still in size_allocate phase. So, change the property on idle*/
+        if (self->change_width_maximized_idle_id == 0)
+        {
+            self->change_width_maximized_idle_id = g_idle_add (change_width_maximized_idle_callback, self);
+        }
+    }
+    else if (self->change_width_maximized_idle_id != 0)
+    {
+        /* This was going to change self->width_maximized, let's cancel it. */
+        g_source_remove (self->change_width_maximized_idle_id);
+        self->change_width_maximized_idle_id = 0;
+    }
+}
+
 static void
 constructed (GObject *obj)
 {
@@ -187,6 +251,13 @@ constructed (GObject *obj)
     /* We want our parent to gives our preferred width */
     gtk_widget_set_halign (GTK_WIDGET (self), GTK_ALIGN_CENTER);
     self->max_width = -1;
+
+    /* We want to know when the container has grown to its max width */
+    self->width_maximized = FALSE;
+    g_signal_connect (GTK_WIDGET (self),
+                      "size-allocate",
+                      G_CALLBACK (on_size_allocate),
+                      NULL);
 }
 
 static void
@@ -215,8 +286,15 @@ nautilus_container_max_width_class_init (NautilusContainerMaxWidthClass *klass)
                                                        G_MAXINT,
                                                        0,
                                                        G_PARAM_READWRITE));
-}
 
+    g_object_class_install_property (object_class,
+                                     PROP_WIDTH_MAXIMIZED,
+                                     g_param_spec_boolean ("width-maximized",
+                                                           "Width maximized",
+                                                           "Whether the container is at the max width",
+                                                           FALSE,
+                                                           G_PARAM_READABLE));
+}
 static void
 nautilus_container_max_width_init (NautilusContainerMaxWidth *self)
 {
