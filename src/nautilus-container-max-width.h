@@ -14,5 +14,6 @@ NautilusContainerMaxWidth *nautilus_container_max_width_new (void);
 void nautilus_container_max_width_set_max_width (NautilusContainerMaxWidth *self,
                                                  guint                      max_width);
 guint nautilus_container_max_width_get_max_width (NautilusContainerMaxWidth *self);
+gboolean nautilus_container_max_width_get_width_maximized (NautilusContainerMaxWidth *self);
 
 G_END_DECLS
