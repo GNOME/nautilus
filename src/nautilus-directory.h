@@ -252,16 +252,3 @@ void               nautilus_directory_dump                     (NautilusDirector
 NautilusFile *     nautilus_directory_new_file_from_filename   (NautilusDirectory *directory,
                                                                 const char        *filename,
                                                                 gboolean           self_owned);
-
-/**
- * nautilus_directory_get_max_child_name_length:
- * @directory: a #NautilusDirectory
- *
- * Gets the maximum file name length for files inside @directory.
- *
- * This call does blocking I/O.
- *
- * Returns: The maximum file name length in bytes, -1 if the maximum length
- *          could not be determined or 0 if @directory path is too long.
- */
-glong nautilus_directory_get_max_child_name_length (NautilusDirectory *directory);

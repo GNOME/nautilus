@@ -115,6 +115,21 @@ char * nautilus_get_common_filename_prefix (GList *file_list,
 char * nautilus_get_common_filename_prefix_from_filenames (GList *filename_list,
                                                            int    min_required_len);
 
+/**
+ * nautilus_get_max_child_name_for_location:
+ * @location: a #GFile representing a directory
+ *
+ * Gets the maximum file name length for files inside @location.
+ *
+ * This call does blocking I/O.
+ *
+ * Returns: The maximum file name length in bytes (not including the
+ *          terminating null of a filename string), -1 if the maximum length
+ *          could not be determined or 0 if @location path is too long.
+ */
+
+glong nautilus_get_max_child_name_length_for_location (GFile *location);
+
 void nautilus_ensure_extension_points (void);
 void nautilus_ensure_extension_builtins (void);
 
