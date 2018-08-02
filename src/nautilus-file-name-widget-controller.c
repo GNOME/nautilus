@@ -20,7 +20,7 @@
 #include <glib/gi18n.h>
 
 #include "nautilus-file-name-widget-controller.h"
-
+#include "nautilus-file-utilities.h"
 
 #define FILE_NAME_DUPLICATED_LABEL_TIMEOUT 500
 
@@ -78,11 +78,13 @@ nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetCon
 {
     NautilusFileNameWidgetControllerPrivate *priv;
     size_t name_length;
+    g_autoptr (GFile) location = NULL;
     glong max_name_length;
 
     priv = nautilus_file_name_widget_controller_get_instance_private (self);
     name_length = strlen (name);
-    max_name_length = nautilus_directory_get_max_child_name_length (priv->containing_directory);
+    location = nautilus_directory_get_location (priv->containing_directory);
+    max_name_length = nautilus_get_max_child_name_length_for_location (location);
 
     if (max_name_length == -1)
     {

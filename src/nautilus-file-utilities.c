@@ -1317,6 +1317,57 @@ nautilus_get_common_filename_prefix_from_filenames (GList *filenames,
     return truncated;
 }
 
+glong
+nautilus_get_max_child_name_length_for_location (GFile *location)
+{
+    g_autofree gchar *path = NULL;
+    glong name_max;
+    glong path_max;
+    glong max_child_name_length;
+
+    g_return_val_if_fail (G_IS_FILE (location), -1);
+
+    if (!g_file_has_uri_scheme (location, "file"))
+    {
+        /* FIXME: Can we query length limits for non-"file://" locations? */
+        return -1;
+    }
+
+    path = g_file_get_path (location);
+
+    g_return_val_if_fail (path != NULL, -1);
+
+    name_max = pathconf (path, _PC_NAME_MAX);
+    path_max = pathconf (path, _PC_PATH_MAX);
+    max_child_name_length = -1;
+
+    if (name_max == -1)
+    {
+        if (path_max != -1)
+        {
+            /* We don't know the name max, but we know the name can't make the
+             * path longer than this.
+             * Subtracting 1 because PATH_MAX includes the terminating null
+             * character, as per limits.h(0P). */
+            max_child_name_length = MAX ((path_max - 1) - strlen (path), 0);
+        }
+    }
+    else
+    {
+        /* No need to subtract 1, because NAME_MAX excludes the terminating null
+         * character, as per limits.h(0P) */
+        max_child_name_length = name_max;
+        if (path_max != -1)
+        {
+            max_child_name_length = CLAMP ((path_max - 1) - strlen (path),
+                                           0,
+                                           max_child_name_length);
+        }
+    }
+
+    return max_child_name_length;
+}
+
 #if !defined (NAUTILUS_OMIT_SELF_CHECK)
 
 void
