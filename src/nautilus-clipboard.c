@@ -42,22 +42,28 @@ typedef struct
 static GList *
 convert_selection_data_to_str_list (const gchar *data)
 {
-    int i;
+    g_auto (GStrv) lines;
+    guint number_of_lines;
     GList *result;
-    size_t number_of_lines;
-    gchar **lines;
 
     lines = g_strsplit (data, "\n", 0);
-    result = NULL;
     number_of_lines = g_strv_length (lines);
+    if (number_of_lines == 0)
+    {
+        /* An empty string will result in g_strsplit() returning an empty
+         * array, so, naturally, 0 - 1 = UINT32_MAX and we read all sorts
+         * of invalid memory.
+         */
+        return NULL;
+    }
+    result = NULL;
+
     /* Also, this skips the last line, since it would be an
      * empty string from the split */
-    for (i = 0; i < number_of_lines - 1; i++)
+    for (guint i = 0; i < number_of_lines - 1; i++)
     {
         result = g_list_prepend (result, g_strdup (lines[i]));
     }
-
-    g_strfreev (lines);
 
     return g_list_reverse (result);
 }
