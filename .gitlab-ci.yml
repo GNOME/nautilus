@@ -63,6 +63,7 @@ review:
         on_stop: stop_review
     except:
         - master@GNOME/nautilus
+        - tags
 
 stop_review:
     stage: deploy
@@ -74,6 +75,7 @@ stop_review:
         action: stop
     except:
         - master@GNOME/nautilus
+        - tags
 
 fedora:rawhide:
     image: fedora:rawhide
