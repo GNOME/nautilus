@@ -30,8 +30,8 @@ modules:
     buildsystem: "cmake"
     build-options:
       config-opts:
-        - -"DCMAKE_INSTALL_PREFIX=/app"
-        - -"DCMAKE_INSTALL_LIBDIR=/app/lib"
+        - "-DCMAKE_INSTALL_PREFIX=/app"
+        - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
     sources:
       - type: "git"
         url: "https://github.com/Exiv2/exiv2.git"
