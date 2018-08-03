@@ -27,17 +27,6 @@
 
 G_DEFINE_INTERFACE (NautilusInfoProvider, nautilus_info_provider, G_TYPE_OBJECT)
 
-/**
- * SECTION:nautilus-info-provider
- * @title: NautilusInfoProvider
- * @short_description: Interface to provide additional information about files
- *
- * #NautilusInfoProvider allows extension to provide additional information about
- * files. When nautilus_info_provider_update_file_info() is called by the application,
- * extensions will know that it's time to add extra information to the provided
- * #NautilusFileInfo.
- */
-
 static void
 nautilus_info_provider_default_init (NautilusInfoProviderInterface *klass)
 {

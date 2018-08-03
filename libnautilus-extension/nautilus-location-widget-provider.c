@@ -26,28 +26,11 @@
 G_DEFINE_INTERFACE (NautilusLocationWidgetProvider, nautilus_location_widget_provider,
                     G_TYPE_OBJECT)
 
-/**
- * SECTION:nautilus-location-widget-provider
- * @title: NautilusLocationWidgetProvider
- * @short_description: Interface to provide additional location widgets
- *
- * #NautilusLocationWidgetProvider allows extension to provide additional location
- * widgets in the file manager views.
- */
-
 static void
 nautilus_location_widget_provider_default_init (NautilusLocationWidgetProviderInterface *klass)
 {
 }
 
-/**
- * nautilus_location_widget_provider_get_widget:
- * @provider: a #NautilusLocationWidgetProvider
- * @uri: the URI of the location
- * @window: parent #GtkWindow
- *
- * Returns: (transfer none): the location widget for @provider at @uri
- */
 GtkWidget *
 nautilus_location_widget_provider_get_widget (NautilusLocationWidgetProvider *self,
                                               const char                     *uri,

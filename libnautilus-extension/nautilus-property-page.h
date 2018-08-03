@@ -40,6 +40,26 @@ G_DECLARE_FINAL_TYPE (NautilusPropertyPage, nautilus_property_page,
                       NAUTILUS, PROPERTY_PAGE,
                       GObject)
 
+/**
+ * SECTION:nautilus-property-page
+ * @title: NautilusPropertyPage
+ * @short_description: Property page descriptor object
+ *
+ * #NautilusPropertyPage is an object that describes a page in the file
+ * properties dialog. Extensions can provide #NautilusPropertyPage objects
+ * by registering a #NautilusPropertyPageProvider and returning them from
+ * nautilus_property_page_provider_get_pages(), which will be called by the
+ * main application when creating file properties dialogs.
+ */
+
+/**
+ * nautilus_property_page_new:
+ * @name: the identifier for the property page
+ * @label: the user-visible label of the property page
+ * @page: the property page to display
+ *
+ * Returns: (transfer full): a new #NautilusPropertyPage
+ */
 NautilusPropertyPage *nautilus_property_page_new (const char *name,
                                                   GtkWidget  *label,
                                                   GtkWidget  *page);

@@ -26,16 +26,6 @@
 #include <glib.h>
 #include <glib/gi18n-lib.h>
 
-/**
- * SECTION:nautilus-menu
- * @title: NautilusMenu
- * @short_description: Menu descriptor object
- *
- * #NautilusMenu is an object that describes a submenu in a file manager
- * menu. Extensions can provide #NautilusMenu objects by attaching them to
- * #NautilusMenuItem objects, using nautilus_menu_item_set_submenu().
- */
-
 struct _NautilusMenu
 {
     GObject parent_instance;
@@ -55,12 +45,6 @@ nautilus_menu_append_item (NautilusMenu     *self,
     self->item_list = g_list_append (self->item_list, g_object_ref (menu_item));
 }
 
-/**
- * nautilus_menu_get_items:
- * @menu: a #NautilusMenu
- *
- * Returns: (element-type NautilusMenuItem) (transfer full): the provided #NautilusMenuItem list
- */
 GList *
 nautilus_menu_get_items (NautilusMenu *self)
 {
@@ -74,11 +58,6 @@ nautilus_menu_get_items (NautilusMenu *self)
     return item_list;
 }
 
-/**
- * nautilus_menu_item_list_free:
- * @item_list: (element-type NautilusMenuItem): a list of #NautilusMenuItem
- *
- */
 void
 nautilus_menu_item_list_free (GList *item_list)
 {
@@ -87,8 +66,6 @@ nautilus_menu_item_list_free (GList *item_list)
     g_list_foreach (item_list, (GFunc) g_object_unref, NULL);
     g_list_free (item_list);
 }
-
-/* Type initialization */
 
 static void
 nautilus_menu_finalize (GObject *object)
@@ -113,8 +90,6 @@ nautilus_menu_class_init (NautilusMenuClass *klass)
 
     object_class->finalize = nautilus_menu_finalize;
 }
-
-/* public constructors */
 
 NautilusMenu *
 nautilus_menu_new (void)

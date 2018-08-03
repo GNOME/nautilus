@@ -35,15 +35,6 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-/**
- * SECTION:nautilus-menu-provider
- * @title: NautilusMenuProvider
- * @short_description: Interface to provide additional menu items
- *
- * #NautilusMenuProvider allows extension to provide additional menu items
- * in the file manager menus.
- */
-
 static void
 nautilus_menu_provider_default_init (NautilusMenuProviderInterface *klass)
 {
@@ -57,14 +48,6 @@ nautilus_menu_provider_default_init (NautilusMenuProviderInterface *klass)
                                            G_TYPE_NONE, 0);
 }
 
-/**
- * nautilus_menu_provider_get_file_items:
- * @provider: a #NautilusMenuProvider
- * @window: the parent #GtkWidget window
- * @files: (element-type NautilusFileInfo): a list of #NautilusFileInfo
- *
- * Returns: (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem
- */
 GList *
 nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
                                        GtkWidget            *window,
@@ -85,14 +68,6 @@ nautilus_menu_provider_get_file_items (NautilusMenuProvider *provider,
     return NULL;
 }
 
-/**
- * nautilus_menu_provider_get_background_items:
- * @provider: a #NautilusMenuProvider
- * @window: the parent #GtkWidget window
- * @current_folder: the folder for which background items are requested
- *
- * Returns: (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem
- */
 GList *
 nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
                                              GtkWidget            *window,
@@ -114,7 +89,6 @@ nautilus_menu_provider_get_background_items (NautilusMenuProvider *provider,
     return NULL;
 }
 
-/* This function emit a signal to inform nautilus that its item list has changed */
 void
 nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider)
 {

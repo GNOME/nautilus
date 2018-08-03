@@ -59,30 +59,6 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
-/**
- * SECTION:nautilus-menu-item
- * @title: NautilusMenuItem
- * @short_description: Menu item descriptor object
- *
- * #NautilusMenuItem is an object that describes an item in a file manager
- * menu. Extensions can provide #NautilusMenuItem objects by registering a
- * #NautilusMenuProvider and returning them from
- * nautilus_menu_provider_get_file_items(), or
- * nautilus_menu_provider_get_background_items(), which will be called by the
- * main application when creating menus.
- */
-
-/**
- * nautilus_menu_item_new:
- * @name: the identifier for the menu item
- * @label: the user-visible label of the menu item
- * @tip: the tooltip of the menu item
- * @icon: the name of the icon to display in the menu item
- *
- * Creates a new menu item that can be added to the toolbar or to a contextual menu.
- *
- * Returns: a newly create #NautilusMenuItem
- */
 NautilusMenuItem *
 nautilus_menu_item_new (const char *name,
                         const char *label,
@@ -105,12 +81,6 @@ nautilus_menu_item_new (const char *name,
     return item;
 }
 
-/**
- * nautilus_menu_item_activate:
- * @item: pointer to a #NautilusMenuItem
- *
- * emits the activate signal.
- */
 void
 nautilus_menu_item_activate (NautilusMenuItem *self)
 {
@@ -119,13 +89,6 @@ nautilus_menu_item_activate (NautilusMenuItem *self)
     g_signal_emit (self, signals[ACTIVATE], 0);
 }
 
-/**
- * nautilus_menu_item_set_submenu:
- * @item: pointer to a #NautilusMenuItem
- * @menu: pointer to a #NautilusMenu to attach to the button
- *
- * Attachs a menu to the given #NautilusMenuItem.
- */
 void
 nautilus_menu_item_set_submenu (NautilusMenuItem *self,
                                 NautilusMenu     *menu)
@@ -317,6 +280,12 @@ nautilus_menu_item_class_init (NautilusMenuItemClass *class)
     G_OBJECT_CLASS (class)->get_property = nautilus_menu_item_get_property;
     G_OBJECT_CLASS (class)->set_property = nautilus_menu_item_set_property;
 
+    /**
+     * NautilusMenuItem::activate:
+     * @item: the object which received the signal
+     *
+     * Signals that the user has activated this menu item.
+     */
     signals[ACTIVATE] =
         g_signal_new ("activate",
                       G_TYPE_FROM_CLASS (class),

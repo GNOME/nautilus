@@ -49,6 +49,17 @@ G_DECLARE_INTERFACE (NautilusInfoProvider, nautilus_info_provider,
 typedef NautilusInfoProviderInterface NautilusInfoProviderIface;
 
 /**
+ * SECTION:nautilus-info-provider
+ * @title: NautilusInfoProvider
+ * @short_description: Interface to provide additional information about files
+ *
+ * #NautilusInfoProvider allows extension to provide additional information about
+ * files. When nautilus_info_provider_update_file_info() is called by the application,
+ * extensions will know that it's time to add extra information to the provided
+ * #NautilusFileInfo.
+ */
+
+/**
  * NautilusOperationHandle:
  *
  * Handle for asynchronous interfaces. These are opaque handles that must
@@ -89,9 +100,9 @@ typedef enum
  * NautilusInfoProviderInterface:
  * @g_iface: The parent interface.
  * @update_file_info: Returns a #NautilusOperationResult.
- *   See nautilus_info_provider_update_file_info() for details.
+ *                    See nautilus_info_provider_update_file_info() for details.
  * @cancel_update: Cancels a previous call to nautilus_info_provider_update_file_info().
- *   See nautilus_info_provider_cancel_update() for details.
+ *                 See nautilus_info_provider_cancel_update() for details.
  *
  * Interface for extensions to provide additional information about files.
  */

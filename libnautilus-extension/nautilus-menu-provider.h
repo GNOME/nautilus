@@ -51,12 +51,21 @@ G_DECLARE_INTERFACE (NautilusMenuProvider, nautilus_menu_provider,
 typedef NautilusMenuProviderInterface NautilusMenuProviderIface;
 
 /**
+ * SECTION:nautilus-menu-provider
+ * @title: NautilusMenuProvider
+ * @short_description: Interface to provide additional menu items
+ *
+ * #NautilusMenuProvider allows extension to provide additional menu items
+ * in the file manager menus.
+ */
+
+/**
  * NautilusMenuProviderInterface:
  * @g_iface: The parent interface.
  * @get_file_items: Returns a #GList of #NautilusMenuItem.
- *   See nautilus_menu_provider_get_file_items() for details.
+ *                  See nautilus_menu_provider_get_file_items() for details.
  * @get_background_items: Returns a #GList of #NautilusMenuItem.
- *   See nautilus_menu_provider_get_background_items() for details.
+ *                        See nautilus_menu_provider_get_background_items() for details.
  *
  * Interface for extensions to provide additional menu items.
  */
@@ -72,15 +81,35 @@ struct _NautilusMenuProviderInterface
                                     NautilusFileInfo     *current_folder);
 };
 
-/* Interface Functions */
+/**
+ * nautilus_menu_provider_get_file_items:
+ * @provider: a #NautilusMenuProvider
+ * @window: the parent #GtkWidget window
+ * @files: (element-type NautilusFileInfo): a list of #NautilusFileInfo
+ *
+ * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
+ */
 GList  *nautilus_menu_provider_get_file_items           (NautilusMenuProvider *provider,
                                                          GtkWidget            *window,
                                                          GList                *files);
+/**
+ * nautilus_menu_provider_get_background_items:
+ * @provider: a #NautilusMenuProvider
+ * @window: the parent #GtkWidget window
+ * @current_folder: the folder for which background items are requested
+ *
+ * Returns: (nullable) (element-type NautilusMenuItem) (transfer full): the provided list of #NautilusMenuItem.
+ */
 GList *nautilus_menu_provider_get_background_items      (NautilusMenuProvider *provider,
                                                          GtkWidget            *window,
                                                          NautilusFileInfo     *current_folder);
 
-/* This function emit a signal to inform nautilus that its item list has changed. */
+/**
+ * nautilus_menu_provider_emit_items_updated_signal:
+ * @provider: a #NautilusMenuProvider
+ *
+ * Emits #NautilusMenuProvider::items-updated.
+ */
 void   nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider);
 
 G_END_DECLS

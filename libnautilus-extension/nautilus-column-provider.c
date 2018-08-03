@@ -25,26 +25,11 @@
 
 G_DEFINE_INTERFACE (NautilusColumnProvider, nautilus_column_provider, G_TYPE_OBJECT)
 
-/**
- * SECTION:nautilus-column-provider
- * @title: NautilusColumnProvider
- * @short_description: Interface to provide additional list view columns
- *
- * #NautilusColumnProvider allows extension to provide additional columns
- * in the file manager list view.
- */
-
 static void
 nautilus_column_provider_default_init (NautilusColumnProviderInterface *klass)
 {
 }
 
-/**
- * nautilus_column_provider_get_columns:
- * @provider: a #NautilusColumnProvider
- *
- * Returns: (element-type NautilusColumn) (transfer full): the provided #NautilusColumn objects
- */
 GList *
 nautilus_column_provider_get_columns (NautilusColumnProvider *self)
 {
