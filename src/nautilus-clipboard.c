@@ -51,7 +51,7 @@ convert_selection_data_to_str_list (const gchar *data)
     if (number_of_lines == 0)
     {
         /* An empty string will result in g_strsplit() returning an empty
-         * array, so, naturally, 0 - 1 = UINT32_MAX and we read all sorts
+         * array, so, naturally, 0 - 1 = UINT_MAX and we read all sorts
          * of invalid memory.
          */
         return NULL;
