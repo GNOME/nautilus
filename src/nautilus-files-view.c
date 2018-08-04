@@ -195,11 +195,10 @@ typedef struct
     guint done_loading_handler_id;
     guint file_changed_handler_id;
 
+    /* Containers with FileAndDirectory* elements */
     GList *new_added_files;
     GList *new_changed_files;
-
     GHashTable *non_ready_files;
-
     GList *old_added_files;
     GList *old_changed_files;
 
@@ -278,6 +277,16 @@ typedef struct
     gint cancelled_handler_id;
 } NautilusFilesViewPrivate;
 
+/**
+ * FileAndDirectory:
+ * @file: A #NautilusFile
+ * @directory: A #NautilusDirectory where @file is present.
+ *
+ * The #FileAndDirectory struct is used to relate files to the directories they
+ * are displayed in. This is necessary because the same file can appear multiple
+ * times in the same view, by expanding folders as a tree in a list of search
+ * results. (Adapted from commit 671e4bdaa4d07b039015bedfcb5d42026e5d099e)
+ */
 typedef struct
 {
     NautilusFile *file;
@@ -1024,60 +1033,35 @@ typedef struct
     NautilusFilesView *directory_view;
 } CreateTemplateParameters;
 
-static GList *
-file_and_directory_list_to_files (GList *fad_list)
+static FileAndDirectory *
+file_and_directory_new (NautilusFile      *file,
+                        NautilusDirectory *directory)
 {
-    GList *res, *l;
     FileAndDirectory *fad;
 
-    res = NULL;
-    for (l = fad_list; l != NULL; l = l->next)
-    {
-        fad = l->data;
-        res = g_list_prepend (res, nautilus_file_ref (fad->file));
-    }
-    return g_list_reverse (res);
+    fad = g_new0 (FileAndDirectory, 1);
+    fad->directory = nautilus_directory_ref (directory);
+    fad->file = nautilus_file_ref (file);
+
+    return fad;
 }
 
-
-static GList *
-file_and_directory_list_from_files (NautilusDirectory *directory,
-                                    GList             *files)
+static NautilusFile *
+file_and_directory_get_file (FileAndDirectory *fad)
 {
-    GList *res, *l;
-    FileAndDirectory *fad;
+    g_return_val_if_fail (fad != NULL, NULL);
 
-    res = NULL;
-    for (l = files; l != NULL; l = l->next)
-    {
-        fad = g_new0 (FileAndDirectory, 1);
-        fad->directory = nautilus_directory_ref (directory);
-        fad->file = nautilus_file_ref (l->data);
-        res = g_list_prepend (res, fad);
-    }
-    return g_list_reverse (res);
+    return nautilus_file_ref (fad->file);
 }
 
 static void
-file_and_directory_free (FileAndDirectory *fad)
+file_and_directory_free (gpointer data)
 {
+    FileAndDirectory *fad = data;
+
     nautilus_directory_unref (fad->directory);
     nautilus_file_unref (fad->file);
     g_free (fad);
-}
-
-
-static void
-file_and_directory_list_free (GList *list)
-{
-    GList *l;
-
-    for (l = list; l != NULL; l = l->next)
-    {
-        file_and_directory_free (l->data);
-    }
-
-    g_list_free (list);
 }
 
 static gboolean
@@ -3998,7 +3982,7 @@ process_new_files (NautilusFilesView *view)
             }
         }
     }
-    file_and_directory_list_free (new_added_files);
+    g_list_free_full (new_added_files, file_and_directory_free);
 
     /* Newly changed files go into the old_added_files list if they're ready
      * and were seen non-ready in the past, into the old_changed_files list
@@ -4027,7 +4011,7 @@ process_new_files (NautilusFilesView *view)
             }
         }
     }
-    file_and_directory_list_free (new_changed_files);
+    g_list_free_full (new_changed_files, file_and_directory_free);
 
     /* If any files were added to old_added_files, then resort it. */
     if (old_added_files != priv->old_added_files)
@@ -4204,16 +4188,16 @@ process_old_files (NautilusFilesView *view)
         {
             g_autolist (NautilusFile) selection = NULL;
             selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-            files = file_and_directory_list_to_files (files_changed);
+            files = g_list_copy_deep (files_changed, (GCopyFunc) file_and_directory_get_file, NULL);
             send_selection_change = _g_lists_sort_and_check_for_intersection
                                         (&files, &selection);
             nautilus_file_list_free (files);
         }
 
-        file_and_directory_list_free (priv->old_added_files);
+        g_list_free_full (priv->old_added_files, file_and_directory_free);
         priv->old_added_files = NULL;
 
-        file_and_directory_list_free (priv->old_changed_files);
+        g_list_free_full (priv->old_changed_files, file_and_directory_free);
         priv->old_changed_files = NULL;
 
         if (send_selection_change)
@@ -4394,6 +4378,7 @@ queue_pending_files (NautilusFilesView  *view,
                      GList             **pending_list)
 {
     NautilusFilesViewPrivate *priv;
+    GList *fad_list;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -4402,8 +4387,8 @@ queue_pending_files (NautilusFilesView  *view,
         return;
     }
 
-    *pending_list = g_list_concat (file_and_directory_list_from_files (directory, files),
-                                   *pending_list);
+    fad_list = g_list_copy_deep (files, (GCopyFunc) file_and_directory_new, directory);
+    *pending_list = g_list_concat (fad_list, *pending_list);
     /* Generally we don't want to show the files while the directory is loading
      * the files themselves, so we avoid jumping and oddities. However, for
      * search it can be a long wait, and we actually want to show files as
@@ -8654,18 +8639,18 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
     reset_update_interval (view);
 
     /* Free extra undisplayed files */
-    file_and_directory_list_free (priv->new_added_files);
+    g_list_free_full (priv->new_added_files, file_and_directory_free);
     priv->new_added_files = NULL;
 
-    file_and_directory_list_free (priv->new_changed_files);
+    g_list_free_full (priv->new_changed_files, file_and_directory_free);
     priv->new_changed_files = NULL;
 
     g_hash_table_foreach_remove (priv->non_ready_files, remove_all, NULL);
 
-    file_and_directory_list_free (priv->old_added_files);
+    g_list_free_full (priv->old_added_files, file_and_directory_free);
     priv->old_added_files = NULL;
 
-    file_and_directory_list_free (priv->old_changed_files);
+    g_list_free_full (priv->old_changed_files, file_and_directory_free);
     priv->old_changed_files = NULL;
 
     g_list_free_full (priv->pending_selection, g_object_unref);
@@ -9630,7 +9615,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     priv->non_ready_files =
         g_hash_table_new_full (file_and_directory_hash,
                                file_and_directory_equal,
-                               (GDestroyNotify) file_and_directory_free,
+                               file_and_directory_free,
                                NULL);
 
     priv->pending_reveal = g_hash_table_new (NULL, NULL);
