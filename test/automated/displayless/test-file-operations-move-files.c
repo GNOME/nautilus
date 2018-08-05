@@ -46,34 +46,7 @@ test_move_operation_undo (void)
                                  handler_id);
 }
 
-/* This undoes and redoes the last move operation blocking the current main thread. */
-static void
-test_move_operation_undo_redo (void)
-{
-    g_autoptr (GMainLoop) loop = NULL;
-    g_autoptr (GMainContext) context = NULL;
-    gulong handler_id;    
 
-    test_move_operation_undo ();
-
-    context = g_main_context_new ();
-    g_main_context_push_thread_default (context);
-    loop = g_main_loop_new (context, FALSE);
-
-    handler_id = g_signal_connect (nautilus_file_undo_manager_get (),
-                                   "undo-changed",
-                                   G_CALLBACK (quit_loop_callback),
-                                   loop);
-
-    nautilus_file_undo_manager_redo (NULL);
-
-    g_main_loop_run (loop);
-    
-    g_main_context_pop_thread_default (context);
-
-    g_signal_handler_disconnect (nautilus_file_undo_manager_get (),
-                                 handler_id);
-}
 
 static void
 test_move_one_file (void)
@@ -84,8 +57,6 @@ test_move_one_file (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) result_file = NULL;
     g_autolist (GFile) files = NULL;
-    GFileOutputStream *out = NULL;
-    g_autoptr (GError) error = NULL;
 
     root = g_file_new_for_path (g_get_tmp_dir ());
     first_dir = g_file_get_child (root, "first_dir");
@@ -94,11 +65,7 @@ test_move_one_file (void)
 
     file = g_file_get_child (first_dir, "first_dir_child");
     g_assert_true (file != NULL);
-    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, &error);
-    if (!g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
-    {
-        g_object_unref (out);
-    }
+    out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     files = g_list_prepend (files, g_object_ref (file));
 
     second_dir = g_file_get_child (root, "second_dir");
