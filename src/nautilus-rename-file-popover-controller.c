@@ -44,6 +44,8 @@ struct _NautilusRenameFilePopoverController
     gulong closed_handler_id;
     gulong file_changed_handler_id;
     gulong key_press_event_handler_id;
+
+    GtkEventController *key_controller;
 };
 
 G_DEFINE_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
@@ -231,29 +233,17 @@ name_entry_on_undo (GtkWidget                           *widget,
 }
 
 static gboolean
-name_entry_on_event (GtkWidget *widget,
-                     GdkEvent  *event,
-                     gpointer   user_data)
+on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                     guint                  keyval,
+                                     guint                  keycode,
+                                     GdkModifierType        state,
+                                     gpointer               user_data)
 {
+    GtkWidget *widget;
     NautilusRenameFilePopoverController *self;
-    guint keyval;
-    GdkModifierType state;
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
 
     if (keyval == GDK_KEY_F2)
     {
@@ -371,10 +361,11 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                                       G_CALLBACK (target_file_on_changed),
                                                       self);
 
-    self->key_press_event_handler_id = g_signal_connect (self->name_entry,
-                                                         "event",
-                                                         G_CALLBACK (name_entry_on_event),
-                                                         self);
+    self->key_controller = gtk_event_controller_key_new (self->name_entry);
+    g_signal_connect (self->key_controller,
+                      "key-pressed",
+                      G_CALLBACK (on_event_controller_key_key_pressed),
+                      self);
 
     gtk_label_set_text (GTK_LABEL (self->title_label),
                         self->target_is_folder ? _("Rename Folder") :
@@ -434,6 +425,8 @@ nautilus_rename_file_popover_controller_finalize (GObject *object)
 
     gtk_widget_destroy (self->rename_file_popover);
     g_clear_object (&self->rename_file_popover);
+
+    g_clear_object (&self->key_controller);
 
     G_OBJECT_CLASS (nautilus_rename_file_popover_controller_parent_class)->finalize (object);
 }
