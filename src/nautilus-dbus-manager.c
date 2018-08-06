@@ -88,6 +88,28 @@ handle_copy_file (NautilusDBusFileOperations *object,
 }
 
 static gboolean
+handle_create_folder (NautilusDBusFileOperations *object,
+                      GDBusMethodInvocation      *invocation,
+                      const gchar                *uri)
+{
+    g_autoptr (GFile) file = NULL;
+    g_autoptr (GFile) parent_file = NULL;
+    g_autofree gchar *basename = NULL;
+    g_autofree gchar *parent_file_uri = NULL;
+
+    file = g_file_new_for_uri (uri);
+    basename = g_file_get_basename (file);
+    parent_file = g_file_get_parent (file);
+    parent_file_uri = g_file_get_uri (parent_file);
+
+    nautilus_file_operations_new_folder (NULL, parent_file_uri, basename,
+                                         NULL, NULL);
+
+    nautilus_dbus_file_operations_complete_create_folder (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static gboolean
 handle_copy_uris (NautilusDBusFileOperations  *object,
                   GDBusMethodInvocation       *invocation,
                   const gchar                **sources,
@@ -164,6 +186,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-trash-files",
                       G_CALLBACK (handle_trash_files),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-create-folder",
+                      G_CALLBACK (handle_create_folder),
                       self);
 }
 
