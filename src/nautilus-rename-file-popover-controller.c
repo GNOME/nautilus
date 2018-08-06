@@ -245,29 +245,17 @@ name_entry_on_undo (GtkWidget                           *widget,
 }
 
 static gboolean
-name_entry_on_event (GtkWidget *widget,
-                     GdkEvent  *event,
-                     gpointer   user_data)
+on_event_controller_key_key_pressed (GtkEventControllerKey *controller,
+                                     guint                  keyval,
+                                     guint                  keycode,
+                                     GdkModifierType        state,
+                                     gpointer               user_data)
 {
+    GtkWidget *widget;
     NautilusRenameFilePopoverController *self;
-    guint keyval;
-    GdkModifierType state;
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     self = NAUTILUS_RENAME_FILE_POPOVER_CONTROLLER (user_data);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-    if (G_UNLIKELY (!gdk_event_get_state (event, &state)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
 
     if (keyval == GDK_KEY_F2)
     {
@@ -350,6 +338,7 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
     g_autoptr (NautilusDirectory) containing_directory = NULL;
     g_autofree gchar *display_name = NULL;
     gint n_chars;
+    GtkEventController *controller;
 
     g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
     g_assert (NAUTILUS_IS_FILE (target_file));
@@ -385,10 +374,12 @@ nautilus_rename_file_popover_controller_show_for_file   (NautilusRenameFilePopov
                                                       G_CALLBACK (target_file_on_changed),
                                                       self);
 
-    self->key_press_event_handler_id = g_signal_connect (self->name_entry,
-                                                         "event",
-                                                         G_CALLBACK (name_entry_on_event),
-                                                         self);
+    controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (self->name_entry, controller);
+
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (on_event_controller_key_key_pressed), self);
 
     gtk_label_set_text (GTK_LABEL (self->name_label),
                         self->target_is_folder ? _("Folder name") :
