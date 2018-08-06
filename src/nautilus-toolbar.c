@@ -874,7 +874,7 @@ on_location_entry_close (GtkWidget       *close_button,
     nautilus_toolbar_set_show_location_entry (self, FALSE);
 }
 
-static gboolean
+static void
 on_location_entry_populate_popup (GtkEntry  *entry,
                                   GtkWidget *widget,
                                   gpointer   user_data)
@@ -884,8 +884,6 @@ on_location_entry_populate_popup (GtkEntry  *entry,
     toolbar = user_data;
 
     toolbar->location_entry_should_auto_hide = FALSE;
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
