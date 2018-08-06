@@ -867,6 +867,11 @@ on_location_entry_focus_changed (GObject    *object,
 
     toolbar = NAUTILUS_TOOLBAR (user_data);
 
+    if (!gtk_window_is_active (GTK_WINDOW (toolbar->window)))
+    {
+        return;
+    }
+
     if (gtk_widget_has_focus (GTK_WIDGET (object)))
     {
         toolbar->location_entry_should_auto_hide = TRUE;
@@ -1020,14 +1025,14 @@ on_window_slot_destroyed (gpointer  data,
 }
 
 static void
-on_window_focus_changed (GObject    *object,
-                         GParamSpec *pspec,
-                         gpointer    user_data)
+on_window_is_active_changed (GObject    *object,
+                             GParamSpec *pspec,
+                             gpointer    user_data)
 {
-    GtkWidget *widget;
+    GtkWindow *window;
     NautilusToolbar *toolbar;
 
-    widget = GTK_WIDGET (object);
+    window = GTK_WINDOW (object);
     toolbar = NAUTILUS_TOOLBAR (user_data);
 
     if (g_settings_get_boolean (nautilus_preferences,
@@ -1041,7 +1046,7 @@ on_window_focus_changed (GObject    *object,
      * (because otherwise it would be invisible),
      * so we focus the entry explicitly to reset the “should auto-hide” flag.
      */
-    if (gtk_widget_has_focus (widget) && toolbar->show_location_entry)
+    if (gtk_window_is_active (window) && toolbar->show_location_entry)
     {
         gtk_widget_grab_focus (toolbar->location_entry);
     }
@@ -1070,13 +1075,13 @@ nautilus_toolbar_set_property (GObject      *object,
             if (self->window != NULL)
             {
                 g_signal_handlers_disconnect_by_func (self->window,
-                                                      on_window_focus_changed, self);
+                                                      on_window_is_active_changed, self);
             }
             self->window = g_value_get_object (value);
             if (self->window != NULL)
             {
-                g_signal_connect (self->window, "notify::has-focus",
-                                  G_CALLBACK (on_window_focus_changed), self);
+                g_signal_connect (self->window, "notify::is-active",
+                                  G_CALLBACK (on_window_is_active_changed), self);
             }
         }
         break;
@@ -1137,7 +1142,7 @@ nautilus_toolbar_finalize (GObject *obj)
     g_clear_object (&self->progress_manager);
 
     g_signal_handlers_disconnect_by_func (self->window,
-                                          on_window_focus_changed, self);
+                                          on_window_is_active_changed, self);
 
     G_OBJECT_CLASS (nautilus_toolbar_parent_class)->finalize (obj);
 }
