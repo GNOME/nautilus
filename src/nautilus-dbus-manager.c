@@ -124,6 +124,28 @@ handle_empty_trash (NautilusDBusFileOperations *object,
     return TRUE; /* invocation was handled */
 }
 
+static gboolean
+handle_trash_files (NautilusDBusFileOperations  *object,
+                    GDBusMethodInvocation       *invocation,
+                    const gchar                **sources)
+{
+    GList *source_files = NULL;
+    gint idx;
+
+    for (idx = 0; sources[idx] != NULL; idx++)
+    {
+        source_files = g_list_prepend (source_files,
+                                       g_file_new_for_uri (sources[idx]));
+    }
+
+    nautilus_file_operations_trash_or_delete_async (source_files, NULL, NULL, NULL);
+
+    g_list_free_full (source_files, g_object_unref);
+
+    nautilus_dbus_file_operations_complete_trash_files (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
 static void
 nautilus_dbus_manager_init (NautilusDBusManager *self)
 {
@@ -140,6 +162,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-empty-trash",
                       G_CALLBACK (handle_empty_trash),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-trash-files",
+                      G_CALLBACK (handle_trash_files),
                       self);
 }
 
