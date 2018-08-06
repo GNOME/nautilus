@@ -888,6 +888,7 @@ nautilus_toolbar_constructed (GObject *object)
     GtkBuilder *builder;
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
     GtkGesture *gesture;
+    GtkWidget *entry;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-switcher.ui");
     self->toolbar_switcher = GTK_WIDGET (gtk_builder_get_object (builder, "toolbar_switcher"));
@@ -952,10 +953,13 @@ nautilus_toolbar_constructed (GObject *object)
                       (GCallback) gtk_widget_grab_focus, NULL);
     g_signal_connect_swapped (self->operations_popover, "closed",
                               (GCallback) gtk_widget_grab_focus, self);
-    g_signal_connect (self->location_entry, "populate-popup",
-                      G_CALLBACK (on_location_entry_populate_popup), self);
-    g_signal_connect (self->location_entry, "notify::has-focus",
+
+    entry = nautilus_location_entry_get_entry (NAUTILUS_LOCATION_ENTRY (self->location_entry));
+
+    g_signal_connect (entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
+    g_signal_connect (entry, "populate-popup",
+                      G_CALLBACK (on_location_entry_populate_popup), self);
 
     toolbar_update_appearance (self);
 

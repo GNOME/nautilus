@@ -27,25 +27,14 @@
 #include <gtk/gtk.h>
 
 #define NAUTILUS_TYPE_LOCATION_ENTRY nautilus_location_entry_get_type()
-G_DECLARE_DERIVABLE_TYPE (NautilusLocationEntry, nautilus_location_entry,
-                          NAUTILUS, LOCATION_ENTRY,
-                          GtkEntry)
+G_DECLARE_FINAL_TYPE (NautilusLocationEntry, nautilus_location_entry,
+                      NAUTILUS, LOCATION_ENTRY,
+                      GtkWidget)
 
-typedef struct _NautilusLocationEntryClass {
-	GtkEntryClass parent_class;
-	/* for GtkBindingSet */
-	void         (* cancel)           (NautilusLocationEntry *entry);
-} NautilusLocationEntryClass;
+GtkWidget *nautilus_location_entry_get_entry        (NautilusLocationEntry *entry);
 
-typedef enum {
-	NAUTILUS_LOCATION_ENTRY_ACTION_GOTO,
-	NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR
-} NautilusLocationEntryAction;
-
-GtkWidget* nautilus_location_entry_new          	(void);
-void       nautilus_location_entry_set_special_text     (NautilusLocationEntry *entry,
-							 const char            *special_text);
-void       nautilus_location_entry_set_secondary_action (NautilusLocationEntry *entry,
-							 NautilusLocationEntryAction secondary_action);
-void       nautilus_location_entry_set_location         (NautilusLocationEntry *entry,
-							 GFile                 *location);
+GtkWidget *nautilus_location_entry_new              (void);
+void       nautilus_location_entry_set_special_text (NautilusLocationEntry *entry,
+                                                     const char            *special_text);
+void       nautilus_location_entry_set_location     (NautilusLocationEntry *entry,
+                                                     GFile                 *location);
