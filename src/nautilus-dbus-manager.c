@@ -26,6 +26,7 @@
 #include "nautilus-generated.h"
 
 #include "nautilus-file-operations.h"
+#include "nautilus-file-undo-manager.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
 #include "nautilus-debug.h"
@@ -84,6 +85,32 @@ handle_copy_file (NautilusDBusFileOperations *object,
     g_object_unref (target_dir);
 
     nautilus_dbus_file_operations_complete_copy_file (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static gboolean
+handle_redo (NautilusDBusFileOperations *object,
+             GDBusMethodInvocation      *invocation)
+{
+    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+
+    undo_manager = nautilus_file_undo_manager_new ();
+    nautilus_file_undo_manager_redo (NULL);
+
+    nautilus_dbus_file_operations_complete_redo (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static gboolean
+handle_undo (NautilusDBusFileOperations *object,
+             GDBusMethodInvocation      *invocation)
+{
+    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+
+    undo_manager = nautilus_file_undo_manager_new ();
+    nautilus_file_undo_manager_undo (NULL);
+
+    nautilus_dbus_file_operations_complete_undo (object, invocation);
     return TRUE; /* invocation was handled */
 }
 
@@ -192,6 +219,14 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-create-folder",
                       G_CALLBACK (handle_create_folder),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-undo",
+                      G_CALLBACK (handle_undo),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-redo",
+                      G_CALLBACK (handle_redo),
                       self);
 }
 
