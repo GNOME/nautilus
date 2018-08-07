@@ -7440,19 +7440,17 @@ retry:
             {
                 g_autofree char *filename2 = NULL;
                 g_autofree char *suffix = NULL;
-                NautilusFile *file;
 
-                file = nautilus_file_get (job->src);
-                if (nautilus_file_is_directory (file))
+                filename_base = filename;
+                if (job->src != NULL)
                 {
-                    filename_base = filename;
+                    g_autoptr (NautilusFile) file = NULL;
+                    file = nautilus_file_get (job->src);
+                    if (!nautilus_file_is_directory (file))
+                    {
+                        filename_base = eel_filename_strip_extension (filename);
+                    }
                 }
-                else
-                {
-                    filename_base = eel_filename_strip_extension (filename);
-                }
-
-                nautilus_file_unref (file);
 
                 offset = strlen (filename_base);
                 suffix = g_strdup (filename + offset);
@@ -7493,21 +7491,21 @@ retry:
         {
             g_autofree char *suffix = NULL;
             g_autofree gchar *filename2 = NULL;
-            NautilusFile *file;
 
             g_clear_object (&dest);
 
-            file = nautilus_file_get (job->src);
-            if (nautilus_file_is_directory (file))
+            filename_base = filename;
+            if (job->src != NULL)
             {
-                filename_base = filename;
-            }
-            else
-            {
-                filename_base = eel_filename_strip_extension (filename);
+                g_autoptr (NautilusFile) file = NULL;
+
+                file = nautilus_file_get (job->src);
+                if (!nautilus_file_is_directory (file))
+                {
+                    filename_base = eel_filename_strip_extension (filename);
+                }
             }
 
-            nautilus_file_unref (file);
 
             offset = strlen (filename_base);
             suffix = g_strdup (filename + offset);
