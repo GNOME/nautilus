@@ -26,10 +26,7 @@ test_move_one_file (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir_child");
 
@@ -65,10 +62,7 @@ test_move_one_file_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -106,10 +100,7 @@ test_move_one_file_undo_redo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -147,10 +138,7 @@ test_move_one_empty_directory (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -185,10 +173,7 @@ test_move_one_empty_directory_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -225,10 +210,7 @@ test_move_one_empty_directory_undo_redo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -265,10 +247,7 @@ test_move_files_small (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10; i++)
     {
@@ -308,10 +287,7 @@ test_move_files_small_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -355,10 +331,7 @@ test_move_files_small_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo_redo ();
 
@@ -400,10 +373,7 @@ test_move_files_medium (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 50; i++)
     {
@@ -442,10 +412,7 @@ test_move_files_medium_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -489,10 +456,7 @@ test_move_files_medium_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo_redo ();
 
@@ -535,10 +499,7 @@ test_move_files_large (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -582,11 +543,7 @@ test_move_files_large_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
-
+                                        dir);
     test_operation_undo_redo ();
 
     for (int i = 0; i < 500; i++)
@@ -627,10 +584,7 @@ test_move_files_large_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo_redo ();
 
@@ -672,10 +626,7 @@ test_move_directories_small (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10; i++)
     {
@@ -714,10 +665,7 @@ test_move_directories_small_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -761,10 +709,7 @@ test_move_directories_small_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo_redo ();
 
@@ -806,10 +751,7 @@ test_move_directories_medium (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 50; i++)
     {
@@ -848,10 +790,7 @@ test_move_directories_medium_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -895,10 +834,7 @@ test_move_directories_medium_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo_redo ();
 
@@ -941,10 +877,7 @@ test_move_directories_large (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 500; i++)
     {
@@ -983,10 +916,7 @@ test_move_directories_large_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -1030,10 +960,7 @@ test_move_directories_large_undo_redo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 500; i++)
     {
@@ -1047,11 +974,11 @@ test_move_directories_large_undo_redo (void)
     empty_directory (root, "move");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_dir_child
-//  * /tmp/second_dir
-//  * We're moving first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_dir_child
+ * /tmp/second_dir
+ * We're moving first_dir to second_dir.
+ */
 static void
 test_move_full_directory (void)
 {
@@ -1078,10 +1005,7 @@ test_move_full_directory (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -1121,10 +1045,7 @@ test_move_full_directory_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1165,10 +1086,7 @@ test_move_full_directory_undo_redo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -1184,12 +1102,12 @@ test_move_full_directory_undo_redo (void)
     empty_directory (root, "move");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_child
-//  * /tmp/first_dir/second_child
-//  * /tmp/second_dir
-//  * We're moving first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_child
+ * /tmp/first_dir/second_child
+ * /tmp/second_dir
+ * We're moving first_dir to second_dir.
+ */
 static void
 test_move_first_hierarchy (void)
 {
@@ -1218,10 +1136,7 @@ test_move_first_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -1270,10 +1185,7 @@ test_move_first_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1324,10 +1236,7 @@ test_move_first_hierarchy_undo_redo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -1350,11 +1259,11 @@ test_move_first_hierarchy_undo_redo (void)
     empty_directory (root, "move");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_child/second_child
-//  * /tmp/second_dir
-//  * We're moving first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_child/second_child
+ * /tmp/second_dir
+ * We're moving first_dir to second_dir.
+ */
 static void
 test_move_second_hierarchy (void)
 {
@@ -1383,10 +1292,7 @@ test_move_second_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -1437,10 +1343,7 @@ test_move_second_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1496,10 +1399,7 @@ test_move_second_hierarchy_undo_redo (void)
     g_file_make_directory (second_dir, NULL, NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -1524,12 +1424,12 @@ test_move_second_hierarchy_undo_redo (void)
     empty_directory (root, "move");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_dir_dir1/dir1_child
-//  * /tmp/first_dir/first_dir_dir2/dir2_child
-//  * /tmp/second_dir
-//  * We're moving first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_dir_dir1/dir1_child
+ * /tmp/first_dir/first_dir_dir2/dir2_child
+ * /tmp/second_dir
+ * We're moving first_dir to second_dir.
+ */
 static void
 test_move_third_hierarchy (void)
 {
@@ -1563,10 +1463,7 @@ test_move_third_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "move_first_dir");
 
@@ -1635,10 +1532,7 @@ test_move_third_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1707,10 +1601,7 @@ test_move_third_hierarchy_undo_redo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo_redo ();
 
@@ -1746,12 +1637,12 @@ test_move_third_hierarchy_undo_redo (void)
     empty_directory (root, "move");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_dir_child
-//  * /tmp/second_dir/second_dir_child
-//  * /tmp/third_dir
-//  * We're moving first_dir and second_dir to third_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_dir_child
+ * /tmp/second_dir/second_dir_child
+ * /tmp/third_dir
+ * We're moving first_dir and second_dir to third_dir.
+ */
 static void
 test_move_fourth_hierarchy (void)
 {
@@ -1784,10 +1675,7 @@ test_move_fourth_hierarchy (void)
     g_assert_true (third_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        third_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        third_dir);
 
     result_file = g_file_get_child (third_dir, "move_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -1842,10 +1730,7 @@ test_move_fourth_hierarchy_undo (void)
     g_assert_true (third_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        third_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        third_dir);
 
     test_operation_undo ();
 
@@ -1902,10 +1787,7 @@ test_move_fourth_hierarchy_undo_redo (void)
     g_assert_true (third_dir != NULL);
 
     nautilus_file_operations_move_sync (files,
-                                        third_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        third_dir);
 
     test_operation_undo_redo ();
 

@@ -26,10 +26,7 @@ test_copy_one_file (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -64,10 +61,7 @@ test_copy_one_file_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -103,10 +97,7 @@ test_copy_one_empty_directory (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir_child");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -140,10 +131,7 @@ test_copy_one_empty_directory_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -181,10 +169,7 @@ test_copy_files_small (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10; i++)
     {
@@ -226,10 +211,7 @@ test_copy_files_small_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -273,10 +255,7 @@ test_copy_files_medium (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 1000; i++)
     {
@@ -318,11 +297,7 @@ test_copy_files_medium_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
-
+                                        dir);
     test_operation_undo ();
 
     for (int i = 0; i < 1000; i++)
@@ -365,10 +340,7 @@ test_copy_files_large (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10000; i++)
     {
@@ -410,10 +382,7 @@ test_copy_files_large_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -457,10 +426,7 @@ test_copy_directories_small (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10; i++)
     {
@@ -502,10 +468,7 @@ test_copy_directories_small_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -549,10 +512,7 @@ test_copy_directories_medium (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 1000; i++)
     {
@@ -594,10 +554,7 @@ test_copy_directories_medium_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -641,10 +598,7 @@ test_copy_directories_large (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     for (int i = 0; i < 10000; i++)
     {
@@ -686,10 +640,7 @@ test_copy_directories_large_undo (void)
     g_assert_true (dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        dir);
 
     test_operation_undo ();
 
@@ -736,10 +687,7 @@ test_copy_full_directory (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -779,10 +727,7 @@ test_copy_full_directory_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -798,12 +743,12 @@ test_copy_full_directory_undo (void)
     empty_directory (root, "copy");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_child
-//  * /tmp/first_dir/second_child
-//  * /tmp/second_dir
-//  * We're copying first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_child
+ * /tmp/first_dir/second_child
+ * /tmp/second_dir
+ * We're copying first_dir to second_dir.
+ */
 static void
 test_copy_first_hierarchy (void)
 {
@@ -832,10 +777,7 @@ test_copy_first_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -884,10 +826,7 @@ test_copy_first_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -910,11 +849,11 @@ test_copy_first_hierarchy_undo (void)
     empty_directory (root, "copy");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_child/second_child
-//  * /tmp/second_dir
-//  * We're copying first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_child/second_child
+ * /tmp/second_dir
+ * We're copying first_dir to second_dir.
+ */
 static void
 test_copy_second_hierarchy (void)
 {
@@ -941,10 +880,7 @@ test_copy_second_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -993,10 +929,7 @@ test_copy_second_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1019,12 +952,12 @@ test_copy_second_hierarchy_undo (void)
     empty_directory (root, "copy");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_dir_dir1/dir1_child
-//  * /tmp/first_dir/first_dir_dir2/dir2_child
-//  * /tmp/second_dir
-//  * We're copying first_dir to second_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_dir_dir1/dir1_child
+ * /tmp/first_dir/first_dir_dir2/dir2_child
+ * /tmp/second_dir
+ * We're copying first_dir to second_dir.
+ */
 static void
 test_copy_third_hierarchy (void)
 {
@@ -1060,10 +993,7 @@ test_copy_third_hierarchy (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     result_file = g_file_get_child (second_dir, "copy_first_dir");
 
@@ -1133,10 +1063,7 @@ test_copy_third_hierarchy_undo (void)
     g_assert_true (second_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        second_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        second_dir);
 
     test_operation_undo ();
 
@@ -1171,12 +1098,12 @@ test_copy_third_hierarchy_undo (void)
     empty_directory (root, "copy");
 }
 
-// /* The hierarchy looks like this:
-//  * /tmp/first_dir/first_dir_child
-//  * /tmp/second_dir/second_dir_child
-//  * /tmp/third_dir
-//  * We're copying first_dir and second_dir to third_dir.
-//  */
+/* The hierarchy looks like this:
+ * /tmp/first_dir/first_dir_child
+ * /tmp/second_dir/second_dir_child
+ * /tmp/third_dir
+ * We're copying first_dir and second_dir to third_dir.
+ */
 static void
 test_copy_fourth_hierarchy (void)
 {
@@ -1211,10 +1138,7 @@ test_copy_fourth_hierarchy (void)
     g_assert_true (third_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        third_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        third_dir);
 
     result_file = g_file_get_child (third_dir, "copy_first_dir");
     g_assert_true (g_file_query_exists (result_file, NULL));
@@ -1271,10 +1195,7 @@ test_copy_fourth_hierarchy_undo (void)
     g_assert_true (third_dir != NULL);
 
     nautilus_file_operations_copy_sync (files,
-                                        third_dir,
-                                        NULL,
-                                        NULL,
-                                        NULL);
+                                        third_dir);
 
     test_operation_undo ();
 
