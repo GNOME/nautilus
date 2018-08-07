@@ -1154,7 +1154,8 @@ action_properties (GSimpleAction *action,
     file = nautilus_file_get (window->selected_file);
 
     list = g_list_append (NULL, file);
-    nautilus_properties_window_present (list, GTK_WIDGET (window), NULL);
+    nautilus_properties_window_present (list, GTK_WIDGET (window), NULL, NULL,
+                                        NULL);
     nautilus_file_list_free (list);
 
     g_clear_object (&window->selected_file);

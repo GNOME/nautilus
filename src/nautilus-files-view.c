@@ -2486,14 +2486,16 @@ action_properties (GSimpleAction *action,
         {
             files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
 
-            nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
+            nautilus_properties_window_present (files, GTK_WIDGET (view), NULL,
+                                                NULL, NULL);
 
             nautilus_file_list_free (files);
         }
     }
     else
     {
-        nautilus_properties_window_present (selection, GTK_WIDGET (view), NULL);
+        nautilus_properties_window_present (selection, GTK_WIDGET (view), NULL,
+                                            NULL, NULL);
     }
 }
 
@@ -2515,7 +2517,8 @@ action_current_dir_properties (GSimpleAction *action,
     {
         files = g_list_append (NULL, nautilus_file_ref (priv->directory_as_file));
 
-        nautilus_properties_window_present (files, GTK_WIDGET (view), NULL);
+        nautilus_properties_window_present (files, GTK_WIDGET (view), NULL,
+                                            NULL, NULL);
 
         nautilus_file_list_free (files);
     }
