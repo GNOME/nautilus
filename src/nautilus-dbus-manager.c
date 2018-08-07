@@ -88,13 +88,29 @@ handle_copy_file (NautilusDBusFileOperations *object,
     return TRUE; /* invocation was handled */
 }
 
+static void
+undo_redo_on_finished (gpointer user_data)
+{
+    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    int *handler_id = (int *) user_data;
+
+    undo_manager = nautilus_file_undo_manager_get ();
+    g_signal_handler_disconnect (undo_manager, *handler_id);
+    g_application_release (g_application_get_default ());
+    g_free (handler_id);
+}
+
 static gboolean
 handle_redo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    gint *handler_id = g_new0(int, 1);
 
     undo_manager = nautilus_file_undo_manager_get ();
+    *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
+                                            G_CALLBACK (undo_redo_on_finished),
+                                            handler_id);
     nautilus_file_undo_manager_redo (NULL);
 
     nautilus_dbus_file_operations_complete_redo (object, invocation);
@@ -106,12 +122,24 @@ handle_undo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    gint *handler_id = g_new0(int, 1);
 
     undo_manager = nautilus_file_undo_manager_get ();
+    *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
+                                            G_CALLBACK (undo_redo_on_finished),
+                                            handler_id);
     nautilus_file_undo_manager_undo (NULL);
 
     nautilus_dbus_file_operations_complete_undo (object, invocation);
     return TRUE; /* invocation was handled */
+}
+
+static void
+create_folder_on_finished (GFile    *new_file,
+                           gboolean  success,
+                           gpointer  callback_data)
+{
+    g_application_release (g_application_get_default ());
 }
 
 static gboolean
@@ -129,11 +157,20 @@ handle_create_folder (NautilusDBusFileOperations *object,
     parent_file = g_file_get_parent (file);
     parent_file_uri = g_file_get_uri (parent_file);
 
+    g_application_hold (g_application_get_default ());
     nautilus_file_operations_new_folder (NULL, parent_file_uri, basename,
-                                         NULL, NULL);
+                                         create_folder_on_finished, NULL);
 
     nautilus_dbus_file_operations_complete_create_folder (object, invocation);
     return TRUE; /* invocation was handled */
+}
+
+static void
+copy_on_finished (GHashTable *debutting_uris,
+                  gboolean    success,
+                  gpointer    callback_data)
+{
+    g_application_release (g_application_get_default ());
 }
 
 static gboolean
@@ -150,14 +187,16 @@ handle_copy_uris (NautilusDBusFileOperations  *object,
         source_files = g_list_prepend (source_files, g_strdup (sources[idx]));
     }
 
+    g_application_hold (g_application_get_default ());
     nautilus_file_operations_copy_move (source_files, destination,
-                                        GDK_ACTION_COPY, NULL, NULL, NULL);
+                                        GDK_ACTION_COPY, NULL, copy_on_finished, NULL);
 
     g_list_free_full (source_files, g_free);
     nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
     return TRUE; /* invocation was handled */
 }
 
+/* FIXME: Needs a callback for maintaining alive the application */
 static gboolean
 handle_empty_trash (NautilusDBusFileOperations *object,
                     GDBusMethodInvocation      *invocation)
@@ -166,6 +205,14 @@ handle_empty_trash (NautilusDBusFileOperations *object,
 
     nautilus_dbus_file_operations_complete_empty_trash (object, invocation);
     return TRUE; /* invocation was handled */
+}
+
+static void
+trash_on_finished (GHashTable *debutting_uris,
+                   gboolean    user_cancel,
+                   gpointer    callback_data)
+{
+    g_application_release (g_application_get_default ());
 }
 
 static gboolean
@@ -182,7 +229,9 @@ handle_trash_files (NautilusDBusFileOperations  *object,
                                        g_file_new_for_uri (sources[idx]));
     }
 
-    nautilus_file_operations_trash_or_delete_async (source_files, NULL, NULL, NULL);
+    g_application_hold (g_application_get_default ());
+    nautilus_file_operations_trash_or_delete_async (source_files, NULL,
+                                                    trash_on_finished, NULL);
 
     nautilus_dbus_file_operations_complete_trash_files (object, invocation);
     return TRUE; /* invocation was handled */
