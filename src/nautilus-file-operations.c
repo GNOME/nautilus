@@ -2530,9 +2530,7 @@ setup_delete_job (GList                  *files,
 static void
 trash_or_delete_internal_sync (GList                  *files,
                                GtkWindow              *parent_window,
-                               gboolean                try_trash,
-                               NautilusDeleteCallback  done_callback,
-                               gpointer                done_callback_data)
+                               gboolean                try_trash)
 {
     GTask *task;
     DeleteJob *job;
@@ -2540,8 +2538,8 @@ trash_or_delete_internal_sync (GList                  *files,
     job = setup_delete_job (files,
                             parent_window,
                             try_trash,
-                            done_callback,
-                            done_callback_data);
+                            NULL,
+                            NULL);
 
     task = g_task_new (NULL, NULL, NULL, job);
     g_task_set_task_data (task, job, NULL);
@@ -2576,25 +2574,15 @@ trash_or_delete_internal_async (GList                  *files,
 }
 
 void
-nautilus_file_operations_trash_or_delete_sync (GList                  *files,
-                                               GtkWindow              *parent_window,
-                                               NautilusDeleteCallback  done_callback,
-                                               gpointer                done_callback_data)
+nautilus_file_operations_trash_or_delete_sync (GList                  *files)
 {
-    trash_or_delete_internal_sync (files, parent_window,
-                                   TRUE,
-                                   done_callback, done_callback_data);
+    trash_or_delete_internal_sync (files, NULL, TRUE);
 }
 
 void
-nautilus_file_operations_delete_sync (GList                  *files,
-                                      GtkWindow              *parent_window,
-                                      NautilusDeleteCallback  done_callback,
-                                      gpointer                done_callback_data)
+nautilus_file_operations_delete_sync (GList                  *files)
 {
-    trash_or_delete_internal_sync (files, parent_window,
-                                   FALSE,
-                                   done_callback, done_callback_data);
+    trash_or_delete_internal_sync (files, NULL, FALSE);
 }
 
 void
@@ -5786,19 +5774,16 @@ nautilus_file_operations_copy (GTask        *task,
 
 void
 nautilus_file_operations_copy_sync (GList *files,
-                                    GFile *target_dir,
-                                    GtkWindow *parent_window,
-                                    NautilusCopyCallback done_callback,
-                                    gpointer done_callback_data)
+                                    GFile *target_dir)
 {
     GTask *task;
     CopyMoveJob *job;
 
     job = copy_job_setup (files,
                            target_dir,
-                           parent_window,
-                           done_callback,
-                           done_callback_data);
+                           NULL,
+                           NULL,
+                           NULL);
 
     task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
@@ -6319,15 +6304,12 @@ move_job_setup (GList                *files,
 
 void
 nautilus_file_operations_move_sync (GList                *files,
-                                    GFile                *target_dir,
-                                    GtkWindow            *parent_window,
-                                    NautilusCopyCallback  done_callback,
-                                    gpointer              done_callback_data)
+                                    GFile                *target_dir)
 {
     GTask *task;
     CopyMoveJob *job;
 
-    job = move_job_setup (files, target_dir, parent_window, done_callback, done_callback_data);
+    job = move_job_setup (files, target_dir, NULL, NULL, NULL);
     task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_move);
