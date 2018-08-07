@@ -31,6 +31,10 @@ G_DECLARE_FINAL_TYPE (NautilusPropertiesWindow, nautilus_properties_window,
                       NAUTILUS, PROPERTIES_WINDOW,
                       GtkDialog)
 
-void nautilus_properties_window_present (GList       *files,
-                                         GtkWidget   *parent_widget,
-                                         const gchar *startup_id);
+typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
+
+void nautilus_properties_window_present (GList                            *files,
+                                         GtkWidget                        *parent_widget,
+                                         const gchar                      *startup_id,
+                                         NautilusPropertiesWindowCallback  callback,
+                                         gpointer                          callback_data);
