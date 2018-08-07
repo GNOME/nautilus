@@ -148,6 +148,9 @@ typedef struct
     char *startup_id;
     char *pending_key;
     GHashTable *pending_files;
+    NautilusPropertiesWindowCallback callback;
+    gpointer callback_data;
+    NautilusPropertiesWindow *window;
 } StartupData;
 
 /* drag and drop definitions */
@@ -193,8 +196,6 @@ static void is_directory_ready_callback (NautilusFile *file,
                                          gpointer      data);
 static void cancel_group_change_callback (GroupChange *change);
 static void cancel_owner_change_callback (OwnerChange *change);
-static void parent_widget_destroyed_callback (GtkWidget *widget,
-                                              gpointer   callback_data);
 static void select_image_button_callback (GtkWidget                *widget,
                                           NautilusPropertiesWindow *properties_window);
 static void set_icon (const char               *icon_path,
@@ -4874,12 +4875,15 @@ get_pending_key (GList *file_list)
 }
 
 static StartupData *
-startup_data_new (GList      *original_files,
-                  GList      *target_files,
-                  const char *pending_key,
-                  GtkWidget  *parent_widget,
-                  GtkWindow  *parent_window,
-                  const char *startup_id)
+startup_data_new (GList                            *original_files,
+                  GList                            *target_files,
+                  const char                       *pending_key,
+                  GtkWidget                        *parent_widget,
+                  GtkWindow                        *parent_window,
+                  const char                       *startup_id,
+                  NautilusPropertiesWindowCallback  callback,
+                  gpointer                          callback_data,
+                  NautilusPropertiesWindow         *window)
 {
     StartupData *data;
     GList *l;
@@ -4893,6 +4897,9 @@ startup_data_new (GList      *original_files,
     data->pending_key = g_strdup (pending_key);
     data->pending_files = g_hash_table_new (g_direct_hash,
                                             g_direct_equal);
+    data->callback = callback;
+    data->callback_data = callback_data;
+    data->window = window;
 
     for (l = data->target_files; l != NULL; l = l->next)
     {
@@ -5196,7 +5203,7 @@ remove_window (NautilusPropertiesWindow *window)
     }
 }
 
-static GtkWindow *
+static NautilusPropertiesWindow *
 get_existing_window (GList *file_list)
 {
     if (!file_list->next)
@@ -5208,9 +5215,27 @@ get_existing_window (GList *file_list)
 }
 
 static void
+properties_window_finish (StartupData *data)
+{
+    if (data->parent_widget != NULL)
+    {
+        g_signal_handlers_disconnect_by_data (data->parent_widget,
+                                              data);
+    }
+    if (data->window != NULL)
+    {
+        g_signal_handlers_disconnect_by_data (data->window,
+                                              data);
+    }
+
+    remove_pending (data, TRUE, TRUE, FALSE);
+    startup_data_free (data);
+}
+
+static void
 cancel_create_properties_window_callback (gpointer callback_data)
 {
-    remove_pending ((StartupData *) callback_data, TRUE, FALSE, TRUE);
+    properties_window_finish ((StartupData *) callback_data);
 }
 
 static void
@@ -5219,7 +5244,7 @@ parent_widget_destroyed_callback (GtkWidget *widget,
 {
     g_assert (widget == ((StartupData *) callback_data)->parent_widget);
 
-    remove_pending ((StartupData *) callback_data, TRUE, TRUE, FALSE);
+    properties_window_finish ((StartupData *) callback_data);
 }
 
 static void
@@ -5250,16 +5275,24 @@ remove_pending (StartupData *startup_data,
         eel_timed_wait_stop
             (cancel_create_properties_window_callback, startup_data);
     }
-    if (cancel_destroy_handler && startup_data->parent_widget)
+    g_hash_table_remove (pending_lists, startup_data->pending_key);
+}
+
+static gboolean
+widget_on_destroy (GtkWidget *widget,
+                   gpointer   user_data)
+{
+    StartupData *data = (StartupData *) user_data;
+
+
+    if (data->callback != NULL)
     {
-        g_signal_handlers_disconnect_by_func (startup_data->parent_widget,
-                                              G_CALLBACK (parent_widget_destroyed_callback),
-                                              startup_data);
+        data->callback (data->callback_data);
     }
 
-    g_hash_table_remove (pending_lists, startup_data->pending_key);
+    properties_window_finish (data);
 
-    startup_data_free (startup_data);
+    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -5279,28 +5312,33 @@ is_directory_ready_callback (NautilusFile *file,
         new_window = create_properties_window (startup_data);
 
         add_window (new_window);
+        startup_data->window = new_window;
 
         remove_pending (startup_data, FALSE, TRUE, TRUE);
 
         gtk_window_present (GTK_WINDOW (new_window));
+        g_signal_connect(GTK_WIDGET (new_window), "destroy",
+                         G_CALLBACK (widget_on_destroy), startup_data);
     }
 }
 
-
 void
-nautilus_properties_window_present (GList       *original_files,
-                                    GtkWidget   *parent_widget,
-                                    const gchar *startup_id)
+nautilus_properties_window_present (GList                            *original_files,
+                                    GtkWidget                        *parent_widget,
+                                    const gchar                      *startup_id,
+                                    NautilusPropertiesWindowCallback  callback,
+                                    gpointer                          callback_data)
 {
     GList *l, *next;
-    GtkWidget *parent_window;
+    GtkWindow *parent_window;
     StartupData *startup_data;
     GList *target_files;
-    GtkWindow *existing_window;
+    NautilusPropertiesWindow *existing_window;
     char *pending_key;
 
     g_return_if_fail (original_files != NULL);
     g_return_if_fail (parent_widget == NULL || GTK_IS_WIDGET (parent_widget));
+
 
     /* Create the hash tables first time through. */
     if (windows == NULL)
@@ -5319,15 +5357,19 @@ nautilus_properties_window_present (GList       *original_files,
     {
         if (parent_widget)
         {
-            gtk_window_set_screen (existing_window,
+            gtk_window_set_screen (GTK_WINDOW (existing_window),
                                    gtk_widget_get_screen (parent_widget));
         }
         else if (startup_id)
         {
-            gtk_window_set_startup_id (existing_window, startup_id);
+            gtk_window_set_startup_id (GTK_WINDOW (existing_window), startup_id);
         }
 
-        gtk_window_present (existing_window);
+        gtk_window_present (GTK_WINDOW (existing_window));
+        startup_data = startup_data_new (NULL, NULL, NULL, NULL, NULL, NULL,
+                                         callback, callback_data, existing_window);
+        g_signal_connect(GTK_WIDGET (existing_window), "destroy",
+                         G_CALLBACK (widget_on_destroy), startup_data);
         return;
     }
 
@@ -5337,6 +5379,9 @@ nautilus_properties_window_present (GList       *original_files,
     /* Look to see if we're already waiting for a window for this file. */
     if (g_hash_table_lookup (pending_lists, pending_key) != NULL)
     {
+        /* FIXME: No callback is done if this happen. In practice, it's a quite
+         * corner case
+         */
         return;
     }
 
@@ -5344,7 +5389,7 @@ nautilus_properties_window_present (GList       *original_files,
 
     if (parent_widget)
     {
-        parent_window = gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW);
+        parent_window = GTK_WINDOW (gtk_widget_get_ancestor (parent_widget, GTK_TYPE_WINDOW));
     }
     else
     {
@@ -5355,8 +5400,11 @@ nautilus_properties_window_present (GList       *original_files,
                                      target_files,
                                      pending_key,
                                      parent_widget,
-                                     GTK_WINDOW (parent_window),
-                                     startup_id);
+                                     parent_window,
+                                     startup_id,
+                                     callback,
+                                     callback_data,
+                                     NULL);
 
     nautilus_file_list_free (target_files);
     g_free (pending_key);
