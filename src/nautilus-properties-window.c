@@ -5032,10 +5032,25 @@ create_properties_window (StartupData *startup_data)
 {
     NautilusPropertiesWindow *window;
     GList *l;
+    gint hint;
+
+    /* If activated through DBus there could be no other Nautilus window open,
+     * making it just a dialog would fire the timeout of GApplication and close
+     * the window after a few seconds
+     */
+    if (startup_data->parent_window)
+    {
+       hint = GDK_WINDOW_TYPE_HINT_DIALOG;
+    }
+    else
+    {
+        g_print ("SETTING TYPE HINT\n");
+       hint = GDK_WINDOW_TYPE_HINT_NORMAL;
+    }
 
     window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
                                                          "use-header-bar", TRUE,
-                                                         "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
+                                                         "type-hint", hint,
                                                          "modal", TRUE,
                                                          NULL));
 
