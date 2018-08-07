@@ -143,21 +143,15 @@ handle_copy_uris (NautilusDBusFileOperations  *object,
                   const gchar                 *destination)
 {
     GList *source_files = NULL;
-    GFile *dest_dir;
     gint idx;
-
-    dest_dir = g_file_new_for_uri (destination);
 
     for (idx = 0; sources[idx] != NULL; idx++)
     {
-        source_files = g_list_prepend (source_files,
-                                       g_file_new_for_uri (sources[idx]));
+        source_files = g_list_prepend (source_files, sources[idx]);
     }
 
-    nautilus_file_operations_copy_async (source_files, dest_dir, NULL, NULL, NULL);
-
-    g_list_free_full (source_files, g_object_unref);
-    g_object_unref (dest_dir);
+    nautilus_file_operations_copy_move (source_files, destination,
+                                        GDK_ACTION_COPY, NULL, NULL, NULL);
 
     nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
     return TRUE; /* invocation was handled */
