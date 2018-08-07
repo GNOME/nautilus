@@ -54,40 +54,6 @@ nautilus_dbus_manager_dispose (GObject *object)
     G_OBJECT_CLASS (nautilus_dbus_manager_parent_class)->dispose (object);
 }
 
-static gboolean
-handle_copy_file (NautilusDBusFileOperations *object,
-                  GDBusMethodInvocation      *invocation,
-                  const gchar                *source_uri,
-                  const gchar                *source_display_name,
-                  const gchar                *dest_dir_uri,
-                  const gchar                *dest_name)
-{
-    GFile *source_file, *target_dir;
-    const gchar *target_name = NULL, *source_name = NULL;
-
-    source_file = g_file_new_for_uri (source_uri);
-    target_dir = g_file_new_for_uri (dest_dir_uri);
-
-    if (dest_name != NULL && dest_name[0] != '\0')
-    {
-        target_name = dest_name;
-    }
-
-    if (source_display_name != NULL && source_display_name[0] != '\0')
-    {
-        source_name = source_display_name;
-    }
-
-    nautilus_file_operations_copy_file (source_file, target_dir, source_name, target_name,
-                                        NULL, NULL, NULL);
-
-    g_object_unref (source_file);
-    g_object_unref (target_dir);
-
-    nautilus_dbus_file_operations_complete_copy_file (object, invocation);
-    return TRUE; /* invocation was handled */
-}
-
 static void
 undo_redo_on_finished (gpointer user_data)
 {
@@ -245,10 +211,6 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-copy-uris",
                       G_CALLBACK (handle_copy_uris),
-                      self);
-    g_signal_connect (self->file_operations,
-                      "handle-copy-file",
-                      G_CALLBACK (handle_copy_file),
                       self);
     g_signal_connect (self->file_operations,
                       "handle-empty-trash",
