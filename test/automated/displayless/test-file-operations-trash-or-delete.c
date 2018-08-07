@@ -20,10 +20,7 @@ test_trash_one_file (void)
     g_assert_true (file != NULL);
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -52,10 +49,7 @@ test_trash_more_files_func (gint files_to_trash)
         files = g_list_prepend (files, g_object_ref (file));
     }
  
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
  
     for (int i = 0; i < files_to_trash; i++)
     {
@@ -95,10 +89,7 @@ test_delete_one_file (void)
     g_assert_true (file != NULL);
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -127,10 +118,7 @@ test_delete_more_files_func (gint files_to_delete)
         files = g_list_prepend (files, g_object_ref (file));
     }
  
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
  
     for (int i = 0; i < files_to_delete; i++)
     {
@@ -171,10 +159,7 @@ test_trash_one_empty_directory (void)
 
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -204,10 +189,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
         files = g_list_prepend (files, g_object_ref (file));
     }
  
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     for (int i = 0; i < directories_to_trash; i++)
     {
@@ -248,10 +230,7 @@ test_delete_one_empty_directory (void)
 
     files = g_list_prepend (files, g_object_ref (file));
 
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
     g_assert_false (g_file_query_exists (file, NULL));
 
@@ -281,10 +260,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
         files = g_list_prepend (files, g_object_ref (file));
     }
  
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
 
     for (int i = 0; i < directories_to_delete; i++)
@@ -331,10 +307,7 @@ test_trash_full_directory (void)
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
@@ -369,10 +342,7 @@ test_trash_first_hierarchy (void)
     file = g_file_get_child (first_dir, "trash_or_delete_second_child");
     g_assert_true (file != NULL);
 
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
@@ -411,10 +381,7 @@ test_trash_third_hierarchy (void)
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
-    nautilus_file_operations_trash_or_delete_sync (files,
-                                                   NULL,
-                                                   NULL,
-                                                   NULL);
+    nautilus_file_operations_trash_or_delete_sync (files);
 
     for (int i = 0; i < 50; i++)
     {
@@ -458,10 +425,7 @@ test_delete_full_directory (void)
 
     files = g_list_prepend (files, g_object_ref (first_dir));
 
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
@@ -496,10 +460,7 @@ test_delete_first_hierarchy (void)
     file = g_file_get_child (first_dir, "trash_or_delete_second_child");
     g_assert_true (file != NULL);
 
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
     file = g_file_get_child (first_dir, "trash_or_delete_first_dir_child");
     g_assert_false (g_file_query_exists (file, NULL));
@@ -538,10 +499,7 @@ test_delete_third_hierarchy (void)
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
-    nautilus_file_operations_delete_sync (files,
-                                          NULL,
-                                          NULL,
-                                          NULL);
+    nautilus_file_operations_delete_sync (files);
 
     for (int i = 0; i < 50; i++)
     {
