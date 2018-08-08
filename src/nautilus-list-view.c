@@ -834,15 +834,13 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         /* Needed to select an item before popping up a menu. */
         if (call_parent)
         {
-#if 0
-            GtkWidgetClass *tree_view_class;
+            g_autoptr (GdkEvent) _event = NULL;
 
-            tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
+            _event = gtk_get_current_event ();
 
-            g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
-            g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
-#endif
+            g_signal_handlers_block_by_func (tree_view, row_activated_callback, self);
+            gtk_widget_event (GTK_WIDGET (self->tree_view), _event);
+            g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, self);
         }
         else if (path_selected)
         {
