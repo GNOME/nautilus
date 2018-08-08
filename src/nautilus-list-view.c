@@ -831,8 +831,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             activate_selected_items_alternate (view, NULL, TRUE);
         }
     }
-
-    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static void
