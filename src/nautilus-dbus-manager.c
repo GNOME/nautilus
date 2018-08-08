@@ -57,7 +57,7 @@ nautilus_dbus_manager_dispose (GObject *object)
 static void
 undo_redo_on_finished (gpointer user_data)
 {
-    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    NautilusFileUndoManager *undo_manager = NULL;
     int *handler_id = (int *) user_data;
 
     undo_manager = nautilus_file_undo_manager_get ();
@@ -70,7 +70,7 @@ static gboolean
 handle_redo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
-    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    NautilusFileUndoManager *undo_manager = NULL;
     gint *handler_id = g_new0(int, 1);
 
     undo_manager = nautilus_file_undo_manager_get ();
@@ -87,7 +87,7 @@ static gboolean
 handle_undo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
-    g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    NautilusFileUndoManager *undo_manager = NULL;
     gint *handler_id = g_new0(int, 1);
 
     undo_manager = nautilus_file_undo_manager_get ();
