@@ -73,6 +73,8 @@ handle_redo (NautilusDBusFileOperations *object,
     NautilusFileUndoManager *undo_manager = NULL;
     gint *handler_id = g_new0(int, 1);
 
+    g_application_hold (g_application_get_default ());
+
     undo_manager = nautilus_file_undo_manager_get ();
     *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
                                             G_CALLBACK (undo_redo_on_finished),
@@ -89,6 +91,8 @@ handle_undo (NautilusDBusFileOperations *object,
 {
     NautilusFileUndoManager *undo_manager = NULL;
     gint *handler_id = g_new0(int, 1);
+
+    g_application_hold (g_application_get_default ());
 
     undo_manager = nautilus_file_undo_manager_get ();
     *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
