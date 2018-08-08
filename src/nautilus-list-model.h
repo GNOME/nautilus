@@ -28,8 +28,8 @@
 #include "nautilus-directory.h"
 #include <nautilus-extension.h>
 
-#define NAUTILUS_TYPE_LIST_MODEL nautilus_list_model_get_type()
-G_DECLARE_DERIVABLE_TYPE (NautilusListModel, nautilus_list_model, NAUTILUS, LIST_MODEL, GObject);
+#define NAUTILUS_TYPE_LIST_MODEL nautilus_list_model_get_type ()
+G_DECLARE_FINAL_TYPE (NautilusListModel, nautilus_list_model, NAUTILUS, LIST_MODEL, GObject);
 
 enum {
 	NAUTILUS_LIST_MODEL_FILE_COLUMN,
@@ -40,14 +40,6 @@ enum {
 	NAUTILUS_LIST_MODEL_LARGER_ICON_COLUMN,
 	NAUTILUS_LIST_MODEL_FILE_NAME_IS_EDITABLE_COLUMN,
 	NAUTILUS_LIST_MODEL_NUM_COLUMNS
-};
-
-struct _NautilusListModelClass
-{
-	GObjectClass parent_class;
-
-	void (* subdirectory_unloaded)(NautilusListModel *model,
-				       NautilusDirectory *subdirectory);
 };
 
 gboolean nautilus_list_model_add_file                          (NautilusListModel          *model,
