@@ -132,9 +132,9 @@ handle_create_folder (NautilusDBusFileOperations *object,
 }
 
 static void
-copy_on_finished (GHashTable *debutting_uris,
-                  gboolean    success,
-                  gpointer    callback_data)
+copy_move_on_finished (GHashTable *debutting_uris,
+                       gboolean    success,
+                       gpointer    callback_data)
 {
     g_application_release (g_application_get_default ());
 }
@@ -155,7 +155,30 @@ handle_copy_uris (NautilusDBusFileOperations  *object,
 
     g_application_hold (g_application_get_default ());
     nautilus_file_operations_copy_move (source_files, destination,
-                                        GDK_ACTION_COPY, NULL, copy_on_finished, NULL);
+                                        GDK_ACTION_COPY, NULL, copy_move_on_finished, NULL);
+
+    g_list_free_full (source_files, g_free);
+    nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static gboolean
+handle_move_uris (NautilusDBusFileOperations  *object,
+                  GDBusMethodInvocation       *invocation,
+                  const gchar                **sources,
+                  const gchar                 *destination)
+{
+    GList *source_files = NULL;
+    gint idx;
+
+    for (idx = 0; sources[idx] != NULL; idx++)
+    {
+        source_files = g_list_prepend (source_files, g_strdup (sources[idx]));
+    }
+
+    g_application_hold (g_application_get_default ());
+    nautilus_file_operations_copy_move (source_files, destination,
+                                        GDK_ACTION_MOVE, NULL, copy_move_on_finished, NULL);
 
     g_list_free_full (source_files, g_free);
     nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
@@ -211,6 +234,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-copy-uris",
                       G_CALLBACK (handle_copy_uris),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-move-uris",
+                      G_CALLBACK (handle_move_uris),
                       self);
     g_signal_connect (self->file_operations,
                       "handle-empty-trash",
