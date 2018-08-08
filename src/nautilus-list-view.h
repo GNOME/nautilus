@@ -26,15 +26,12 @@
 
 #include "nautilus-files-view.h"
 
+#include "nautilus-dnd.h"
+#include "nautilus-types.h"
+
 #define NAUTILUS_TYPE_LIST_VIEW (nautilus_list_view_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusListView, nautilus_list_view, NAUTILUS, LIST_VIEW, NautilusFilesView)
 
-typedef struct NautilusListViewDetails NautilusListViewDetails;
+NautilusDragInfo  *nautilus_list_view_dnd_get_drag_source_data (NautilusListView   *view);
 
-struct _NautilusListView
-{
-	NautilusFilesView parent_instance;
-	NautilusListViewDetails *details;
-};
-
-NautilusFilesView * nautilus_list_view_new (NautilusWindowSlot *slot);
+NautilusFilesView *nautilus_list_view_new                      (NautilusWindowSlot *slot);
