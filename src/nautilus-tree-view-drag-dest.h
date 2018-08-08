@@ -32,51 +32,11 @@
 
 G_BEGIN_DECLS
 
-#define NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST	(nautilus_tree_view_drag_dest_get_type ())
-#define NAUTILUS_TREE_VIEW_DRAG_DEST(obj)		(G_TYPE_CHECK_INSTANCE_CAST ((obj), NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST, NautilusTreeViewDragDest))
-#define NAUTILUS_TREE_VIEW_DRAG_DEST_CLASS(klass)	(G_TYPE_CHECK_CLASS_CAST ((klass), NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST, NautilusTreeViewDragDestClass))
-#define NAUTILUS_IS_TREE_VIEW_DRAG_DEST(obj)		(G_TYPE_CHECK_INSTANCE_TYPE ((obj), NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST))
-#define NAUTILUS_IS_TREE_VIEW_DRAG_DEST_CLASS(klass)	(G_TYPE_CLASS_CHECK_CLASS_TYPE ((klass), NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST))
+#define NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST nautilus_tree_view_drag_dest_get_type ()
+G_DECLARE_FINAL_TYPE (NautilusTreeViewDragDest, nautilus_tree_view_drag_dest,
+                      NAUTILUS, TREE_VIEW_DRAG_DEST,
+                      GObject)
 
-typedef struct _NautilusTreeViewDragDest        NautilusTreeViewDragDest;
-typedef struct _NautilusTreeViewDragDestClass   NautilusTreeViewDragDestClass;
-typedef struct _NautilusTreeViewDragDestDetails NautilusTreeViewDragDestDetails;
-
-struct _NautilusTreeViewDragDest {
-	GObject parent;
-	
-	NautilusTreeViewDragDestDetails *details;
-};
-
-struct _NautilusTreeViewDragDestClass {
-	GObjectClass parent;
-	
-	char *(*get_root_uri) (NautilusTreeViewDragDest *dest);
-	NautilusFile *(*get_file_for_path) (NautilusTreeViewDragDest *dest,
-					    GtkTreePath *path);
-	void (*move_copy_items) (NautilusTreeViewDragDest *dest,
-				 const GList *item_uris,
-				 const char *target_uri,
-				 GdkDragAction action,
-				 int x,
-				 int y);
-	void (* handle_uri_list) (NautilusTreeViewDragDest *dest,
-				  const char *uri_list,
-				  const char *target_uri,
-				  GdkDragAction action,
-				  int x,
-				  int y);
-	void (* handle_text)    (NautilusTreeViewDragDest *dest,
-				  const char *text,
-				  const char *target_uri,
-				  GdkDragAction action,
-				  int x,
-				  int y);
-	void (* handle_hover)   (NautilusTreeViewDragDest *dest,
-				 const char *target_uri);
-};
-
-GType                     nautilus_tree_view_drag_dest_get_type (void);
-NautilusTreeViewDragDest *nautilus_tree_view_drag_dest_new      (GtkTreeView *tree_view);
+NautilusTreeViewDragDest *nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view);
 
 G_END_DECLS
