@@ -21,22 +21,22 @@
  *           Ettore Perazzoli <ettore@gnu.org>
  */
 
-#include <config.h>
 #include "nautilus-dnd.h"
 
-#include "nautilus-program-choosing.h"
 #include <eel/eel-glib-extensions.h>
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-string.h>
 #include <eel/eel-vfs-extensions.h>
-#include <gtk/gtk.h>
 #include <glib/gi18n.h>
-#include "nautilus-canvas-container.h"
-#include "nautilus-file-utilities.h"
-#include "nautilus-canvas-dnd.h"
-#include "nautilus-list-view-dnd.h"
+#include <gtk/gtk.h>
 #include <stdio.h>
 #include <string.h>
+
+#include "nautilus-canvas-container.h"
+#include "nautilus-canvas-dnd.h"
+#include "nautilus-file-utilities.h"
+#include "nautilus-list-view.h"
+#include "nautilus-program-choosing.h"
 
 /* a set of defines stolen from the eel-icon-dnd.c file.
  * These are in microseconds.
