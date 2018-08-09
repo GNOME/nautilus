@@ -23,6 +23,9 @@ tests = [
   ['test-nautilus-search-engine-model', [
     'test-nautilus-search-engine-model.c'
   ]],
+  ['test-nautilus-search-engine-tracker', [
+    'test-nautilus-search-engine-tracker.c'
+  ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
   ]],
