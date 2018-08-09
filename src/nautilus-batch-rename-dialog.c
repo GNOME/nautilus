@@ -67,6 +67,8 @@ struct _NautilusBatchRenameDialog
     GList *listbox_icons;
     GtkSizeGroup *size_group;
 
+    GList *motion_controllers;
+
     GList *selection;
     GList *new_names;
     NautilusBatchRenameDialogMode mode;
@@ -1543,26 +1545,23 @@ update_row_shadowing (GtkWidget *row,
     gtk_style_context_set_state (context, flags);
 }
 
-static gboolean
-on_motion_notify (GtkWidget *widget,
-                  GdkEvent  *event,
-                  gpointer   user_data)
+static void
+on_event_controller_motion_motion (GtkEventControllerMotion *controller,
+                                   double                    x,
+                                   double                    y,
+                                   gpointer                  user_data)
 {
+    GtkWidget *widget;
     NautilusBatchRenameDialog *dialog;
-    gdouble y;
     GtkListBoxRow *row;
 
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     dialog = NAUTILUS_BATCH_RENAME_DIALOG (user_data);
 
     if (dialog->preselected_row1 && dialog->preselected_row2)
     {
         update_row_shadowing (dialog->preselected_row1, FALSE);
         update_row_shadowing (dialog->preselected_row2, FALSE);
-    }
-
-    if (G_UNLIKELY (!gdk_event_get_coords (event, NULL, &y)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
 
     if (widget == dialog->result_listbox)
@@ -1597,14 +1596,11 @@ on_motion_notify (GtkWidget *widget,
         update_row_shadowing (GTK_WIDGET (row), TRUE);
         dialog->preselected_row2 = GTK_WIDGET (row);
     }
-
-    return GDK_EVENT_PROPAGATE;
 }
 
-static gboolean
-on_leave_notify (GtkWidget *widget,
-                 GdkEvent  *event,
-                 gpointer   user_data)
+static void
+on_event_controller_motion_leave (GtkEventControllerMotion *controller,
+                                  gpointer                  user_data)
 {
     NautilusBatchRenameDialog *dialog;
 
@@ -1615,30 +1611,6 @@ on_leave_notify (GtkWidget *widget,
 
     dialog->preselected_row1 = NULL;
     dialog->preselected_row2 = NULL;
-
-    return GDK_EVENT_PROPAGATE;
-}
-
-static gboolean
-on_event (GtkWidget *widget,
-          GdkEvent  *event,
-          gpointer   user_data)
-{
-    GdkEventType event_type;
-
-    event_type = gdk_event_get_event_type (event);
-
-    if (event_type == GDK_MOTION_NOTIFY)
-    {
-        return on_motion_notify (widget, event, user_data);
-    }
-
-    if (event_type == GDK_LEAVE_NOTIFY)
-    {
-        return on_leave_notify (widget, event, user_data);
-    }
-
-    return GDK_EVENT_PROPAGATE;
 }
 
 static void
@@ -1934,6 +1906,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
     nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_object_unref (dialog->size_group);
+    g_clear_list (&dialog->motion_controllers, g_object_unref);
 
     g_hash_table_destroy (dialog->tag_info_table);
 
@@ -2083,6 +2056,23 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 }
 
 static void
+connect_to_pointer_motion_events (NautilusBatchRenameDialog *self,
+                                  GtkWidget                 *listbox)
+{
+    GtkEventController *controller;
+
+    controller = gtk_event_controller_motion_new (listbox);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
+    g_signal_connect (controller, "leave",
+                      G_CALLBACK (on_event_controller_motion_leave), self);
+    g_signal_connect (controller, "motion",
+                      G_CALLBACK (on_event_controller_motion_motion), self);
+
+    self->motion_controllers = g_list_prepend (self->motion_controllers,
+                                               controller);
+}
+
+static void
 nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
@@ -2168,18 +2158,9 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
     self->size_group = gtk_size_group_new (GTK_SIZE_GROUP_HORIZONTAL);
 
-    g_signal_connect (self->original_name_listbox,
-                      "event",
-                      G_CALLBACK (on_event),
-                      self);
-    g_signal_connect (self->result_listbox,
-                      "event",
-                      G_CALLBACK (on_event),
-                      self);
-    g_signal_connect (self->arrow_listbox,
-                      "event",
-                      G_CALLBACK (on_event),
-                      self);
+    connect_to_pointer_motion_events (self, self->original_name_listbox);
+    connect_to_pointer_motion_events (self, self->result_listbox);
+    connect_to_pointer_motion_events (self, self->arrow_listbox);
 
     self->metadata_cancellable = g_cancellable_new ();
 }
