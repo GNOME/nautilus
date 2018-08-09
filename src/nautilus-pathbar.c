@@ -229,8 +229,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
     gtk_widget_set_margin_end (GTK_WIDGET (self), 6);
 
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
-                                 GTK_STYLE_CLASS_LINKED);
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "path-bar");
 
     /* Action group */
@@ -1561,6 +1559,7 @@ make_button_data (NautilusPathBar *self,
     GFile *path;
     GtkWidget *child;
     ButtonData *button_data;
+    GtkStyleContext *style_context;
 
     path = nautilus_file_get_location (file);
     child = NULL;
@@ -1570,9 +1569,11 @@ make_button_data (NautilusPathBar *self,
 
     setup_button_type (button_data, self, path);
     button_data->button = gtk_toggle_button_new ();
-    gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
-                                 "text-button");
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
+
+    style_context = gtk_widget_get_style_context (button_data->button);
+    gtk_style_context_add_class (style_context, "text-button");
+    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_FLAT);
     /* TODO update button type when xdg directories change */
 
     button_data->image = gtk_image_new ();
