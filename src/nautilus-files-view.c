@@ -9047,27 +9047,21 @@ on_parent_changed (GObject    *object,
 }
 
 static gboolean
-nautilus_files_view_event (GtkWidget *widget,
-                           GdkEvent  *event)
+nautilus_files_view_key_pressed (GtkEventControllerKey *controller,
+                                 unsigned int           keyval,
+                                 unsigned int           keycode,
+                                 GdkModifierType        state,
+                                 gpointer               user_data)
 {
+    GtkWidget *widget;
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
-    guint keyval;
 
-    if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
+    widget = gtk_event_controller_get_widget (GTK_EVENT_CONTROLLER (controller));
     view = NAUTILUS_FILES_VIEW (widget);
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    for (gint i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++)
+    for (size_t i = 0; i < G_N_ELEMENTS (extra_view_keybindings); i++)
     {
         if (extra_view_keybindings[i].keyval == keyval)
         {
@@ -9243,7 +9237,6 @@ nautilus_files_view_class_init (NautilusFilesViewClass *klass)
     oclass->set_property = nautilus_files_view_set_property;
 
     widget_class->destroy = nautilus_files_view_destroy;
-    widget_class->event = nautilus_files_view_event;
     widget_class->grab_focus = nautilus_files_view_grab_focus;
 
 
@@ -9446,6 +9439,14 @@ nautilus_files_view_init (NautilusFilesView *view)
                       "scroll",
                       G_CALLBACK (on_event_controller_scroll_scroll),
                       view);
+
+    controller = gtk_event_controller_key_new ();
+
+    gtk_widget_add_controller (GTK_WIDGET (view), controller);
+
+    g_signal_connect (controller, "key-pressed",
+                      G_CALLBACK (nautilus_files_view_key_pressed), NULL);
+    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
 
     g_signal_connect_swapped (priv->scrolled_window,
                               "popup-menu",
