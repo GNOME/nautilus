@@ -64,6 +64,7 @@ main (int   argc,
 
     location = g_file_new_for_path (g_get_tmp_dir ());
     directory = nautilus_directory_get (location);
+    nautilus_query_set_location (query, location);
 
     model = nautilus_search_engine_get_model_provider (engine);
     nautilus_search_engine_model_set_model (model, directory);
