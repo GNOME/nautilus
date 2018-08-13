@@ -243,3 +243,20 @@ nautilus_trash_monitor_is_empty (void)
     monitor = nautilus_trash_monitor_get ();
     return monitor->empty;
 }
+
+GIcon *
+nautilus_trash_monitor_get_icon (void)
+{
+    gboolean empty;
+
+    empty = nautilus_trash_monitor_is_empty ();
+
+    if (empty)
+    {
+        return g_themed_icon_new ("user-trash-symbolic");
+    }
+    else
+    {
+        return g_themed_icon_new ("user-trash-full-symbolic");
+    }
+}
