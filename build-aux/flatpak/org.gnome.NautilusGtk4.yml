@@ -23,6 +23,7 @@ finish-args:
   # See https://github.com/flatpak/flatpak/issues/78
   - "--talk-name=ca.desrt.dconf"
   - "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+  - "--device=dri"
 
 modules:
   - name: "exiv2"
