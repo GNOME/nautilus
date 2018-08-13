@@ -840,15 +840,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         /* Needed to select an item before popping up a menu. */
         if (call_parent)
         {
-#if 0
-            GtkWidgetClass *tree_view_class;
-
-            tree_view_class = GTK_WIDGET_GET_CLASS (tree_view);
-
-            g_signal_handlers_block_by_func (tree_view, row_activated_callback, view);
-            tree_view_class->button_press_event (widget, (GdkEventButton *) event);
-            g_signal_handlers_unblock_by_func (tree_view, row_activated_callback, view);
-#endif
+            gtk_tree_selection_unselect_all (selection);
+            gtk_tree_selection_select_path (selection, path);
         }
         else if (path_selected)
         {
