@@ -51,6 +51,7 @@ typedef enum
     STARRED_BUTTON,
     RECENT_BUTTON,
     MOUNT_BUTTON,
+    TRASH_BUTTON,
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -1327,6 +1328,11 @@ get_gicon (ButtonData *button_data)
             return g_themed_icon_new ("list-add-symbolic");
         }
 
+        case TRASH_BUTTON:
+        {
+            return nautilus_trash_monitor_get_icon ();
+        }
+
         default:
             return NULL;
     }
@@ -1433,6 +1439,11 @@ setup_button_type (ButtonData      *button_data,
     else if (nautilus_is_other_locations_directory (location))
     {
         button_data->type = OTHER_LOCATIONS_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (nautilus_is_trash_directory (location))
+    {
+        button_data->type = TRASH_BUTTON;
         button_data->is_root = TRUE;
     }
     else if (strcmp ((uri = g_file_get_uri (location)), "admin:///") == 0)
@@ -1615,6 +1626,7 @@ make_button_data (NautilusPathBar *self,
         case RECENT_BUTTON:
         case STARRED_BUTTON:
         case OTHER_LOCATIONS_BUTTON:
+        case TRASH_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
