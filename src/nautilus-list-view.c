@@ -583,6 +583,13 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         return;
     }
 
+    if (bin_x < 0 || bin_y < 0)
+    {
+        gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_DENIED);
+
+        return;
+    }
+
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
     event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
@@ -1458,13 +1465,16 @@ column_header_menu_use_default (GtkMenuItem *menu_item,
     g_strfreev (default_order);
 }
 
-static gboolean
-on_column_header_event (GtkWidget *widget,
-                        GdkEvent  *event,
-                        gpointer   user_data)
+static void
+nautilus_list_view_column_header_pressed (GtkGestureMultiPress *gesture,
+                                          int                   n_press,
+                                          double                x,
+                                          double                y,
+                                          gpointer              user_data)
 {
     NautilusListView *self;
-    guint button;
+    GdkEventSequence *sequence;
+    const GdkEvent *event;
     NautilusFile *file;
     char **visible_columns;
     char **column_order;
@@ -1476,27 +1486,13 @@ on_column_header_event (GtkWidget *widget,
     GtkWidget *menu_item;
 
     self = NAUTILUS_LIST_VIEW (user_data);
-
-    if (gdk_event_get_event_type (event) != GDK_BUTTON_PRESS)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
-    g_assert (gdk_event_get_button (event, &button));
-
-    if (button != GDK_BUTTON_SECONDARY)
-    {
-        return GDK_EVENT_PROPAGATE;
-    }
-
+    sequence = gtk_gesture_get_last_updated_sequence (GTK_GESTURE (gesture));
+    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (self));
-
     visible_columns = get_visible_columns (self);
     column_order = get_column_order (self);
-
     all_columns = nautilus_get_columns_for_file (file);
     all_columns = nautilus_sort_columns (all_columns, column_order);
-
     /* hash table to lookup if a given column should be visible */
     visible_columns_hash = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
@@ -1573,7 +1569,7 @@ on_column_header_event (GtkWidget *widget,
     g_strfreev (column_order);
     g_strfreev (visible_columns);
 
-    return GDK_EVENT_STOP;
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static void
@@ -2477,10 +2473,17 @@ create_and_set_up_tree_view (NautilusListView *self)
                                  g_strdup ("name"),
                                  self->file_name_column);
 
-            g_signal_connect (gtk_tree_view_column_get_button (self->file_name_column),
-                              "event",
-                              G_CALLBACK (on_column_header_event),
+            gesture = gtk_gesture_multi_press_new ();
+
+            gtk_widget_add_controller (gtk_tree_view_column_get_button (self->file_name_column),
+                                       GTK_EVENT_CONTROLLER (gesture));
+
+            g_signal_connect (gesture,
+                              "pressed",
+                              G_CALLBACK (nautilus_list_view_column_header_pressed),
                               self);
+            gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture),
+                                           GDK_BUTTON_SECONDARY);
 
             gtk_tree_view_set_search_column (self->tree_view, column_num);
 
@@ -2570,10 +2573,17 @@ create_and_set_up_tree_view (NautilusListView *self)
                                  g_strdup (name),
                                  column);
 
-            g_signal_connect (gtk_tree_view_column_get_button (column),
-                              "event",
-                              G_CALLBACK (on_column_header_event),
+            gesture = gtk_gesture_multi_press_new ();
+
+            gtk_widget_add_controller (gtk_tree_view_column_get_button (column),
+                                       GTK_EVENT_CONTROLLER (gesture));
+
+            g_signal_connect (gesture,
+                              "pressed",
+                              G_CALLBACK (nautilus_list_view_column_header_pressed),
                               self);
+            gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (gesture),
+                                           GDK_BUTTON_SECONDARY);
 
             gtk_tree_view_column_set_resizable (column, TRUE);
             gtk_tree_view_column_set_sort_order (column, sort_order);
