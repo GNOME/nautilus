@@ -335,6 +335,7 @@ build_tab_label (NautilusNotebook   *notebook,
 
     /* Spinner to be shown as load feedback */
     spinner = gtk_spinner_new ();
+    g_object_set (spinner, "expand", TRUE, NULL);
     gtk_container_add (GTK_CONTAINER (grid), spinner);
 
     /* Dummy icon to allocate space for spinner */
