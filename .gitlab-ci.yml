@@ -83,24 +83,24 @@ fedora:rawhide:
     before_script:
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr
         - dnf builddep -y nautilus
-  script:
-      - meson _build . -Db_coverage=true
-      - cd _build
-      - ninja test
-      - gcovr --root=.
-        --exclude=src/
-        --exclude=../data/
-        --exclude=../eel/check-program.c
-        --exclude=../eel/eel-debug.c
-        --exclude=../eel/eel-lib-self-check-functions.c
-        --exclude=../eel/eel-self-checks.c
-        --exclude=../src/animation/
-        --exclude=../src/gtk/
-        --exclude=../src/nautilus-lib-self-check-functions.c
-        --exclude=../src/nautilus-self-check-functions.c
-        --exclude=../subprojects/libgd/
-        --exclude=../test/
-  coverage: '/^TOTAL.*\s+(\d+\%)$/'
+    script:
+        - meson _build . -Db_coverage=true
+        - cd _build
+        - ninja test
+        - gcovr --root=.
+            --exclude=src/
+            --exclude=../data/
+            --exclude=../eel/check-program.c
+            --exclude=../eel/eel-debug.c
+            --exclude=../eel/eel-lib-self-check-functions.c
+            --exclude=../eel/eel-self-checks.c
+            --exclude=../src/animation/
+            --exclude=../src/gtk/
+            --exclude=../src/nautilus-lib-self-check-functions.c
+            --exclude=../src/nautilus-self-check-functions.c
+            --exclude=../subprojects/libgd/
+            --exclude=../test/
+    coverage: '/^TOTAL.*\s+(\d+\%)$/'
 
     only:
         - schedules
