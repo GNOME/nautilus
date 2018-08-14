@@ -81,7 +81,7 @@ fedora:rawhide:
     image: fedora:rawhide
     stage: cross_environment
     before_script:
-        - dnf update
+        - dnf update -y
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr
         - dnf builddep -y nautilus
     script:
