@@ -2897,6 +2897,7 @@ eel_canvas_handle_event (EelCanvas *canvas,
     switch (event_type)
     {
         case GDK_BUTTON_PRESS:
+        case GDK_TOUCH_BEGIN:
         {
             /* Pick the current item as if the button were not pressed, and
              * then process the event.
@@ -2916,6 +2917,7 @@ eel_canvas_handle_event (EelCanvas *canvas,
         break;
 
         case GDK_BUTTON_RELEASE:
+        case GDK_TOUCH_END:
         {
             /* Process the event as if the button were pressed, then repick
              * after the button has been released
