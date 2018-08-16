@@ -1,6 +1,10 @@
 #include "src/nautilus-file-undo-manager.h"
 #include "src/nautilus-file-operations.h"
-#include "src/nautilus-file-utilities.h"
+#include <src/nautilus-file-utilities.h>
+#include <src/nautilus-global-preferences.h>
+#include <src/nautilus-search-provider.h>
+#include <src/nautilus-search-engine.h>
+#include <tracker-sparql.h>
 #include <gio/gio.h>
 
 #pragma once
