@@ -146,7 +146,7 @@ test_move_directories_medium (void)
 
     root = g_file_new_for_path (g_get_tmp_dir ());
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 50; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (root, file_name);
@@ -165,7 +165,7 @@ test_move_directories_medium (void)
                                         NULL,
                                         NULL);
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 50; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (dir, file_name);
@@ -177,9 +177,7 @@ test_move_directories_medium (void)
     g_assert_true (g_file_delete (dir, NULL, NULL));
 }
 
-/* Test not included as it would timeout on the CI. */
-
-/*static void
+static void
 test_move_directories_large (void)
 {
     g_autoptr (GFile) root = NULL;
@@ -190,7 +188,7 @@ test_move_directories_large (void)
 
     root = g_file_new_for_path (g_get_tmp_dir ());
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 500; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (root, file_name);
@@ -209,7 +207,7 @@ test_move_directories_large (void)
                                         NULL,
                                         NULL);
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 500; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (dir, file_name);
@@ -219,8 +217,7 @@ test_move_directories_large (void)
 
     g_assert_true (g_file_query_exists (dir, NULL));
     g_assert_true (g_file_delete (dir, NULL, NULL));
-}*/
-
+}
 
 static void
 test_move_files_small (void)
@@ -283,7 +280,7 @@ test_move_files_medium (void)
 
     root = g_file_new_for_path (g_get_tmp_dir ());
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 50; i++)
     {
         g_autoptr (GError) error = NULL;
 
@@ -308,7 +305,7 @@ test_move_files_medium (void)
                                         NULL,
                                         NULL);
 
-    for (int i = 0; i < 1000; i++)
+    for (int i = 0; i < 50; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (dir, file_name);
@@ -320,10 +317,7 @@ test_move_files_medium (void)
     g_assert_true (g_file_delete (dir, NULL, NULL));
 }
 
-
-/* Test not included as it would timeout on the CI. */
-
-/*static void
+static void
 test_move_files_large (void)
 {
     g_autoptr (GFile) root = NULL;
@@ -335,7 +329,7 @@ test_move_files_large (void)
 
     root = g_file_new_for_path (g_get_tmp_dir ());
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 500; i++)
     {
         g_autoptr (GError) error = NULL;
 
@@ -360,7 +354,7 @@ test_move_files_large (void)
                                         NULL,
                                         NULL);
 
-    for (int i = 0; i < 10000; i++)
+    for (int i = 0; i < 500; i++)
     {
         file_name = g_strdup_printf ("file_%i", i);
         file = g_file_get_child (dir, file_name);
@@ -370,7 +364,7 @@ test_move_files_large (void)
 
     g_assert_true (g_file_query_exists (dir, NULL));
     g_assert_true (g_file_delete (dir, NULL, NULL));
-}*/
+}
 
 /* The hierarchy looks like this:
  * /tmp/first_dir/first_dir_child
@@ -714,14 +708,14 @@ setup_test_suite (void)
                      test_move_files_small);
     g_test_add_func ("/test-move-files/1.1",
                      test_move_files_medium);
-    // g_test_add_func ("/test-move-files/1.2",
-    //                  test_move_files_large);
+    g_test_add_func ("/test-move-files/1.2",
+                     test_move_files_large);
     g_test_add_func ("/test-move-directories/1.0",
                      test_move_directories_small);
     g_test_add_func ("/test-move-directories/1.1",
                      test_move_directories_medium);
-    // g_test_add_func ("/test-move-directories/1.2",
-    //                  test_move_directories_large);
+    g_test_add_func ("/test-move-directories/1.2",
+                     test_move_directories_large);
     g_test_add_func ("/test-move-hierarchy/1.0",
                      test_move_first_hierarchy);
     g_test_add_func ("/test-move-hierarchy/1.1",
