@@ -2,7 +2,9 @@
 #include <src/nautilus-file-utilities.h>
 #include <src/nautilus-global-preferences.h>
 #include <src/nautilus-search-engine.h>
+#include <tracker-sparql.h>
 #include <gtk/gtk.h>
+
 #include <locale.h>
 
 #pragma once
