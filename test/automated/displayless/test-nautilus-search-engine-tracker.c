@@ -1,12 +1,4 @@
-#include <src/nautilus-file-utilities.h>
-#include <src/nautilus-global-preferences.h>
-#include <src/nautilus-search-provider.h>
-#include <src/nautilus-search-engine.c>
-#include <gtk/gtk.h>
-#include <locale.h>
 #include "test-utilities.h"
-#include <tracker-sparql.h>
-#include <glib/gprintf.h>
 
 static void
 hits_added_cb (NautilusSearchEngine *engine,

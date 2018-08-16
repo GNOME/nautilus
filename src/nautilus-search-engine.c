@@ -83,7 +83,7 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->simple), query);
 }
 
-static void
+void
 search_engine_start_real_setup (NautilusSearchEngine *engine)
 {
     NautilusSearchEnginePrivate *priv;
@@ -126,7 +126,7 @@ search_engine_start_real (NautilusSearchEngine *engine)
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 }
 
-static void
+void
 nautilus_search_engine_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *engine;
