@@ -10,8 +10,8 @@
 
 #pragma once
 
-void empty_directory (GFile *parent,
-                      gchar *prefix);
+void empty_directory_by_prefix (GFile *parent,
+                                gchar *prefix);
 
 void create_search_file_hierarchy (gchar *search_engine);
 void delete_search_file_hierarchy (gchar *search_engine);

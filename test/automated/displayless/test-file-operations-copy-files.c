@@ -32,7 +32,7 @@ test_copy_one_file (void)
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -69,7 +69,7 @@ test_copy_one_file_undo (void)
     g_assert_false (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -103,7 +103,7 @@ test_copy_one_empty_directory (void)
     g_assert_true (g_file_query_exists (result_file, NULL));
     g_assert_true (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -140,7 +140,7 @@ test_copy_one_empty_directory_undo (void)
 
     g_assert_true (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -150,7 +150,7 @@ test_copy_files_small (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 10);
 
@@ -161,6 +161,7 @@ test_copy_files_small (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -177,12 +178,13 @@ test_copy_files_small (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -192,7 +194,7 @@ test_copy_files_small_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 10);
 
@@ -203,6 +205,7 @@ test_copy_files_small_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -221,12 +224,13 @@ test_copy_files_small_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -236,7 +240,7 @@ test_copy_files_medium (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 1000);
 
@@ -247,6 +251,7 @@ test_copy_files_medium (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -263,12 +268,13 @@ test_copy_files_medium (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -278,7 +284,7 @@ test_copy_files_medium_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 1000);
 
@@ -289,6 +295,7 @@ test_copy_files_medium_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -306,12 +313,13 @@ test_copy_files_medium_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -321,7 +329,7 @@ test_copy_files_large (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 10000);
 
@@ -353,7 +361,7 @@ test_copy_files_large (void)
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -363,7 +371,7 @@ test_copy_files_large_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_files ("copy", 10000);
 
@@ -374,6 +382,7 @@ test_copy_files_large_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -392,12 +401,13 @@ test_copy_files_large_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -407,7 +417,7 @@ test_copy_directories_small (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 10);
 
@@ -418,6 +428,7 @@ test_copy_directories_small (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -434,12 +445,13 @@ test_copy_directories_small (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -449,7 +461,7 @@ test_copy_directories_small_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 10);
 
@@ -460,6 +472,7 @@ test_copy_directories_small_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -478,12 +491,13 @@ test_copy_directories_small_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -493,7 +507,7 @@ test_copy_directories_medium (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 1000);
 
@@ -504,6 +518,7 @@ test_copy_directories_medium (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -520,12 +535,13 @@ test_copy_directories_medium (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -535,7 +551,7 @@ test_copy_directories_medium_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 1000);
 
@@ -546,6 +562,7 @@ test_copy_directories_medium_undo (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -564,12 +581,13 @@ test_copy_directories_medium_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -579,7 +597,7 @@ test_copy_directories_large (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 10000);
 
@@ -590,6 +608,7 @@ test_copy_directories_large (void)
     {
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -606,12 +625,13 @@ test_copy_directories_large (void)
         file = g_file_get_child (dir, file_name);
         g_assert_true (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
     g_assert_true (g_file_query_exists (dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -621,7 +641,7 @@ test_copy_directories_large_undo (void)
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) dir = NULL;
     g_autolist (GFile) files = NULL;
-    g_autofree gchar *file_name = NULL;
+    gchar *file_name;
 
     create_multiple_directories ("copy", 10000);
 
@@ -633,6 +653,7 @@ test_copy_directories_large_undo (void)
         file_name = g_strdup_printf ("copy_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_assert_true (file != NULL);
+
         files = g_list_prepend (files, g_object_ref (file));
     }
 
@@ -650,6 +671,7 @@ test_copy_directories_large_undo (void)
         file = g_file_get_child (dir, file_name);
         g_assert_false (g_file_query_exists (file, NULL));
         file = g_file_get_child (root, file_name);
+
         g_assert_true (g_file_query_exists (file, NULL));
     }
 
@@ -698,7 +720,7 @@ test_copy_full_directory (void)
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -740,7 +762,7 @@ test_copy_full_directory_undo (void)
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 /* The hierarchy looks like this:
@@ -795,7 +817,7 @@ test_copy_first_hierarchy (void)
 
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -846,7 +868,7 @@ test_copy_first_hierarchy_undo (void)
 
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 /* The hierarchy looks like this:
@@ -898,7 +920,7 @@ test_copy_second_hierarchy (void)
 
     file = g_file_get_child (first_dir, "copy_first_child");
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -949,7 +971,7 @@ test_copy_second_hierarchy_undo (void)
 
     file = g_file_get_child (first_dir, "copy_first_child");
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 /* The hierarchy looks like this:
@@ -1025,7 +1047,7 @@ test_copy_third_hierarchy (void)
 
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -1095,7 +1117,7 @@ test_copy_third_hierarchy_undo (void)
 
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 /* The hierarchy looks like this:
@@ -1158,7 +1180,7 @@ test_copy_fourth_hierarchy (void)
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_query_exists (second_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
@@ -1217,7 +1239,7 @@ test_copy_fourth_hierarchy_undo (void)
     g_assert_true (g_file_query_exists (file, NULL));
     g_assert_true (g_file_query_exists (second_dir, NULL));
 
-    empty_directory (root, "copy");
+    empty_directory_by_prefix (root, "copy");
 }
 
 static void
