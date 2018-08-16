@@ -45,7 +45,7 @@ test_trash_more_files_func (gint files_to_trash)
  
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -58,7 +58,7 @@ test_trash_more_files_func (gint files_to_trash)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
@@ -116,7 +116,7 @@ test_delete_more_files_func (gint files_to_delete)
  
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -129,7 +129,7 @@ test_delete_more_files_func (gint files_to_delete)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
@@ -189,7 +189,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -202,7 +202,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         g_assert_false (g_file_query_exists (file, NULL));
     }
@@ -262,7 +262,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -276,7 +276,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_true (file != NULL);
         g_assert_false (g_file_query_exists (file, NULL));
     }
@@ -386,7 +386,7 @@ test_trash_third_hierarchy (void)
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
@@ -399,12 +399,12 @@ test_trash_third_hierarchy (void)
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (directory, NULL));
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (directory, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
@@ -507,7 +507,7 @@ test_delete_third_hierarchy (void)
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
@@ -520,12 +520,12 @@ test_delete_third_hierarchy (void)
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (directory, NULL));
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (directory, file_name);
-
+        g_free (file_name);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 

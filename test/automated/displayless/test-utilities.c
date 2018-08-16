@@ -45,33 +45,40 @@ create_search_file_hierarchy (gchar *search_engine)
 
     file_name = g_strdup_printf ("engine_%s", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_object_unref (out);
 
     file_name = g_strdup_printf ("engine_%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_object_unref (out);
 
     file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("engine_%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_object_unref (out);
 
     file_name = g_strdup_printf ("%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("engine_%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_object_unref (out);
 }
@@ -87,33 +94,43 @@ delete_search_file_hierarchy (gchar *search_engine)
 
     file_name = g_strdup_printf ("engine_%s", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
 
     file_name = g_strdup_printf ("engine_%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     file_name = g_strdup_printf ("%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
     file_name = g_strdup_printf ("engine_%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
 
     file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     file_name = g_strdup_printf ("engine_%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
     file_name = g_strdup_printf ("engine_%s_second_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     file_name = g_strdup_printf ("engine_%s_child", search_engine);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
     file_name = g_strdup_printf ("%s_directory", search_engine);
     file = g_file_get_child (location, file_name);
+    g_free (file_name);
     g_file_delete (file, NULL, NULL);
 }
 
@@ -239,18 +256,21 @@ create_one_empty_directory (gchar *prefix)
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
     first_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_dir_child", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir", prefix);
     second_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
@@ -273,6 +293,7 @@ create_multiple_files (gchar *prefix, gint number_of_files)
 
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (root, file_name);
+        g_free (file_name);
 
         g_assert_true (file != NULL);
         out = g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
@@ -281,6 +302,7 @@ create_multiple_files (gchar *prefix, gint number_of_files)
 
     file_name = g_strdup_printf ("%s_dir", prefix);
     dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
@@ -301,6 +323,7 @@ create_multiple_directories (gchar *prefix, gint number_of_directories)
     {
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (root, file_name);
+        g_free (file_name);
 
         g_assert_true (file != NULL);
         g_file_make_directory (file, NULL, NULL);
@@ -308,6 +331,7 @@ create_multiple_directories (gchar *prefix, gint number_of_directories)
 
     file_name = g_strdup_printf ("%s_dir", prefix);
     dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (dir != NULL);
     g_file_make_directory (dir, NULL, NULL);
@@ -328,23 +352,27 @@ create_first_hierarchy (gchar *prefix)
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
     first_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_child", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
     file_name = g_strdup_printf ("%s_second_child", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir", prefix);
     second_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
@@ -365,23 +393,27 @@ create_second_hierarchy (gchar *prefix)
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
     first_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_child", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
     file_name = g_strdup_printf ("%s_second_child", prefix);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir", prefix);
     second_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
@@ -402,36 +434,42 @@ create_third_hierarchy (gchar *prefix)
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
     first_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_dir_dir1", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_dir1_child", prefix);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_dir_dir2", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_dir2_child", prefix);
     file = g_file_get_child (file, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir", prefix);
     second_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
@@ -453,30 +491,35 @@ create_fourth_hierarchy (gchar *prefix)
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
     first_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (first_dir != NULL);
     g_file_make_directory (first_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_first_dir_child", prefix);
     file = g_file_get_child (first_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir", prefix);
     second_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (second_dir != NULL);
     g_file_make_directory (second_dir, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_second_dir_child", prefix);
     file = g_file_get_child (second_dir, file_name);
+    g_free (file_name);
 
     g_assert_true (file != NULL);
     g_file_make_directory (file, NULL, NULL);
 
     file_name = g_strdup_printf ("%s_third_dir", prefix);
     third_dir = g_file_get_child (root, file_name);
+    g_free (file_name);
 
     g_assert_true (third_dir != NULL);
     g_file_make_directory (third_dir, NULL, NULL);
@@ -499,11 +542,13 @@ create_multiple_full_directories (gchar *prefix, gint number_of_directories)
         file_name = g_strdup_printf ("%s_directory_%i", prefix, i);
 
         directory = g_file_get_child (root, file_name);
+        g_free (file_name);
 
         g_file_make_directory (directory, NULL, NULL);
 
         file_name = g_strdup_printf ("%s_file_%i", prefix, i);
         file = g_file_get_child (directory, file_name);
+        g_free (file_name);
 
         g_file_make_directory (file, NULL, NULL);
     }
