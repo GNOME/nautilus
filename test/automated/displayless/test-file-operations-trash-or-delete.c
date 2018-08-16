@@ -24,7 +24,7 @@ test_trash_one_file (void)
 
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -41,10 +41,11 @@ test_trash_more_files_func (gint files_to_trash)
  
     for (int i = 0; i < files_to_trash; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
  
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -53,14 +54,15 @@ test_trash_more_files_func (gint files_to_trash)
  
     for (int i = 0; i < files_to_trash; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -93,7 +95,7 @@ test_delete_one_file (void)
 
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -110,10 +112,11 @@ test_delete_more_files_func (gint files_to_delete)
  
     for (int i = 0; i < files_to_delete; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
  
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -122,14 +125,15 @@ test_delete_more_files_func (gint files_to_delete)
  
     for (int i = 0; i < files_to_delete; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -163,7 +167,7 @@ test_trash_one_empty_directory (void)
 
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -181,10 +185,11 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
  
     for (int i = 0; i < directories_to_trash; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -193,15 +198,16 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
 
     for (int i = 0; i < directories_to_trash; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -234,7 +240,7 @@ test_delete_one_empty_directory (void)
 
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -252,10 +258,11 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
  
     for (int i = 0; i < directories_to_delete; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
@@ -265,15 +272,16 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
 
     for (int i = 0; i < directories_to_delete; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
+
         g_assert_true (file != NULL);
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
@@ -312,7 +320,7 @@ test_trash_full_directory (void)
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
  
 /* The hierarchy looks like this:
@@ -352,7 +360,7 @@ test_trash_first_hierarchy (void)
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
  }
 
 /* We're creating 50 directories each containing one file
@@ -373,11 +381,12 @@ test_trash_third_hierarchy (void)
 
     for (int i = 0; i < 50; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
+
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
@@ -385,19 +394,21 @@ test_trash_third_hierarchy (void)
 
     for (int i = 0; i < 50; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
+
         g_assert_false (g_file_query_exists (directory, NULL));
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (directory, file_name);
+
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 /* The hierarchy looks like this:
@@ -430,7 +441,7 @@ test_delete_full_directory (void)
     g_assert_false (g_file_query_exists (first_dir, NULL));
     g_assert_false (g_file_query_exists (file, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
  
 /* The hierarchy looks like this:
@@ -470,7 +481,7 @@ test_delete_first_hierarchy (void)
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
  }
 
 /* We're creating 50 directories each containing one file
@@ -491,11 +502,12 @@ test_delete_third_hierarchy (void)
 
     for (int i = 0; i < 50; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
+
         files = g_list_prepend (files, g_object_ref (directory));
     }
  
@@ -503,19 +515,21 @@ test_delete_third_hierarchy (void)
 
     for (int i = 0; i < 50; i++)
     {
-        g_autofree gchar *file_name = NULL;
+        gchar *file_name;
 
         file_name = g_strdup_printf ("trash_or_delete_directory_%i", i);
 
         directory = g_file_get_child (root, file_name);
+
         g_assert_false (g_file_query_exists (directory, NULL));
 
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (directory, file_name);
+
         g_assert_false (g_file_query_exists (file, NULL));
     }
 
-    empty_directory (root, "trash_or_delete");
+    empty_directory_by_prefix (root, "trash_or_delete");
 }
 
 static void
