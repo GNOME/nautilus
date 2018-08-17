@@ -1,12 +1,4 @@
-#include <src/nautilus-file-utilities.h>
-#include <src/nautilus-global-preferences.h>
-#include <src/nautilus-search-provider.h>
-#include <src/nautilus-search-engine.c>
-#include <gtk/gtk.h>
-#include <locale.h>
 #include "test-utilities.h"
-#include <tracker-sparql.h>
-#include <glib/gprintf.h>
 
 static void
 hits_added_cb (NautilusSearchEngine *engine,
@@ -48,7 +40,6 @@ main (int   argc,
 {
     g_autoptr (GMainLoop) loop = NULL;
     NautilusSearchEngine *engine;
-    NautilusSearchEnginePrivate *priv;
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
@@ -67,7 +58,6 @@ main (int   argc,
     nautilus_global_preferences_init ();
 
     engine = nautilus_search_engine_new ();
-    priv = nautilus_search_engine_get_instance_private (engine);
     g_signal_connect (engine, "hits-added",
                       G_CALLBACK (hits_added_cb), NULL);
     g_signal_connect (engine, "finished",
@@ -102,22 +92,15 @@ main (int   argc,
     sparql_query = g_strconcat (sparql_query, "\ntracker:available true", NULL);
     sparql_query = g_strconcat (sparql_query, ".\n}\n", NULL);
 
-    g_printf ("%s", sparql_query);
-
     tracker_sparql_connection_update (connection,
                                       sparql_query,
                                       0,
                                       NULL,
                                       NULL);
 
-    priv->providers_running = 0;
-    priv->providers_finished = 0;
-    priv->providers_error = 0;
+    search_engine_start_real_setup (engine);
 
-    priv->restart = FALSE;
-    priv->running++;
-
-    nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
+    nautilus_search_engine_start (NAUTILUS_SEARCH_PROVIDER (engine));
 
     g_main_loop_run (loop);
     return 0;
