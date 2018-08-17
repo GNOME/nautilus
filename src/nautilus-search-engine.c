@@ -83,8 +83,8 @@ nautilus_search_engine_set_query (NautilusSearchProvider *provider,
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (priv->simple), query);
 }
 
-static void
-search_engine_start_real (NautilusSearchEngine *engine)
+void
+search_engine_start_real_setup (NautilusSearchEngine *engine)
 {
     NautilusSearchEnginePrivate *priv;
 
@@ -96,9 +96,19 @@ search_engine_start_real (NautilusSearchEngine *engine)
 
     priv->restart = FALSE;
 
-    DEBUG ("Search engine start real");
+    DEBUG ("Search engine start real setup");
 
     g_object_ref (engine);
+}
+
+static void
+search_engine_start_real (NautilusSearchEngine *engine)
+{
+    NautilusSearchEnginePrivate *priv;
+
+    priv = nautilus_search_engine_get_instance_private (engine);
+
+    search_engine_start_real_setup (engine);
 
     priv->providers_running++;
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
@@ -116,7 +126,7 @@ search_engine_start_real (NautilusSearchEngine *engine)
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->simple));
 }
 
-static void
+void
 nautilus_search_engine_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngine *engine;
