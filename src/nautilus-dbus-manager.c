@@ -230,6 +230,17 @@ handle_trash_files (NautilusDBusFileOperations  *object,
     return TRUE; /* invocation was handled */
 }
 
+
+static void
+undo_manager_changed (NautilusDBusManager *self)
+{
+    NautilusFileUndoManagerState undo_state;
+
+    undo_state = nautilus_file_undo_manager_get_state ();
+    nautilus_dbus_file_operations_set_undo_status (self->file_operations,
+                                                   undo_state);
+}
+
 static void
 nautilus_dbus_manager_init (NautilusDBusManager *self)
 {
@@ -284,12 +295,28 @@ nautilus_dbus_manager_register (NautilusDBusManager  *self,
                                 GDBusConnection      *connection,
                                 GError              **error)
 {
-    return g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations),
-                                             connection, "/org/gnome/Nautilus" PROFILE, error);
+    gboolean succes;
+
+    succes = g_dbus_interface_skeleton_export (G_DBUS_INTERFACE_SKELETON (self->file_operations),
+                                               connection, "/org/gnome/Nautilus" PROFILE, error);
+    if (succes)
+    {
+        g_signal_connect_object (nautilus_file_undo_manager_get (),
+                                 "undo-changed",
+                                 G_CALLBACK (undo_manager_changed),
+                                 self,
+                                 G_CONNECT_SWAPPED);
+
+        undo_manager_changed (self);
+    }
+
+    return succes;
 }
 
 void
 nautilus_dbus_manager_unregister (NautilusDBusManager *self)
 {
     g_dbus_interface_skeleton_unexport (G_DBUS_INTERFACE_SKELETON (self->file_operations));
+
+    g_signal_handlers_disconnect_by_data (nautilus_file_undo_manager_get (), self);
 }
