@@ -1011,7 +1011,7 @@ get_application_no_mime_type_handler_message (NautilusFile *file,
      * white space then the text-wrapping code is too stupid to wrap it.
      */
     uri_for_display = eel_str_middle_truncate (name, MAX_URI_IN_DIALOG_LENGTH);
-    error_message = g_strdup_printf (_("Could not display “%s”."), uri_for_display);
+    error_message = g_strdup_printf (_("Could Not Display “%s”"), uri_for_display);
     g_free (uri_for_display);
     g_free (name);
 
