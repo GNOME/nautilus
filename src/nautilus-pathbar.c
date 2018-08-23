@@ -51,6 +51,7 @@ typedef enum
     STARRED_BUTTON,
     RECENT_BUTTON,
     MOUNT_BUTTON,
+    TRASH_BUTTON,
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -128,6 +129,9 @@ static void     action_pathbar_properties (GSimpleAction *action,
                                            gpointer       user_data);
 static void     pop_up_pathbar_context_menu (NautilusPathBar *self,
                                              NautilusFile    *file);
+static void     trash_state_changed_cb (NautilusTrashMonitor *monitor,
+                                        gboolean              empty,
+                                        ButtonData           *button_data);
 
 const GActionEntry path_bar_actions[] =
 {
@@ -1074,6 +1078,13 @@ button_data_free (ButtonData *button_data)
         nautilus_file_unref (button_data->file);
     }
 
+    if (button_data->type == TRASH_BUTTON)
+    {
+        g_signal_handlers_disconnect_by_func (nautilus_trash_monitor_get (),
+                                              trash_state_changed_cb,
+                                              button_data);
+    }
+
     g_clear_object (&button_data->multi_press_gesture);
 
     g_free (button_data);
@@ -1327,6 +1338,11 @@ get_gicon (ButtonData *button_data)
             return g_themed_icon_new ("list-add-symbolic");
         }
 
+        case TRASH_BUTTON:
+        {
+            return nautilus_trash_monitor_get_symbolic_icon ();
+        }
+
         default:
             return NULL;
     }
@@ -1398,6 +1414,17 @@ nautilus_path_bar_update_button_state (ButtonData *button_data,
 }
 
 static void
+trash_state_changed_cb (NautilusTrashMonitor *monitor,
+                        gboolean empty,
+                        ButtonData *button_data)
+{
+    g_return_if_fail (button_data != NULL);
+    g_return_if_fail (button_data->type != TRASH_BUTTON);
+
+    nautilus_path_bar_update_button_appearance (button_data);
+}
+
+static void
 setup_button_type (ButtonData      *button_data,
                    NautilusPathBar *self,
                    GFile           *location)
@@ -1438,6 +1465,11 @@ setup_button_type (ButtonData      *button_data,
     else if (strcmp ((uri = g_file_get_uri (location)), "admin:///") == 0)
     {
         button_data->type = ADMIN_ROOT_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (strcmp (uri, "trash:///") == 0)
+    {
+        button_data->type = TRASH_BUTTON;
         button_data->is_root = TRUE;
     }
     else
@@ -1608,6 +1640,14 @@ make_button_data (NautilusPathBar *self,
 
     switch (button_data->type)
     {
+        case TRASH_BUTTON:
+        {
+            g_signal_connect (nautilus_trash_monitor_get (),
+                              "trash-state-changed",
+                              G_CALLBACK (trash_state_changed_cb),
+                              button_data);
+        }
+        /* Fall through */
         case ROOT_BUTTON:
         case ADMIN_ROOT_BUTTON:
         case HOME_BUTTON:
