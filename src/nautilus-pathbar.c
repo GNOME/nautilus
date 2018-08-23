@@ -1099,24 +1099,25 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
     }
 }
 
-static gboolean
+static void
 button_clicked_cb (GtkWidget *button,
-                   GdkEvent *event,
                    gpointer   data)
 {
     ButtonData *button_data;
     NautilusPathBarPrivate *priv;
     NautilusPathBar *self;
+    const GdkEvent *event;
     GdkModifierType state;
 
     button_data = BUTTON_DATA (data);
     if (button_data->ignore_changes)
     {
-        return GDK_EVENT_STOP;
+        return;
     }
 
     self = button_data->path_bar;
     priv = nautilus_path_bar_get_instance_private (self);
+    event = gtk_get_current_event ();
 
     gdk_event_get_state (event, &state);
 
@@ -1132,11 +1133,6 @@ button_clicked_cb (GtkWidget *button,
         {
             gtk_popover_popup (priv->current_view_menu_popover);
         }
-        else if (((GdkEventButton *) event)->button == GDK_BUTTON_SECONDARY)
-        {
-            gtk_popover_set_relative_to (priv->button_menu_popover, button);
-            pop_up_pathbar_context_menu (self, button_data->file);
-        }
         else
         {
             g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
@@ -1145,7 +1141,7 @@ button_clicked_cb (GtkWidget *button,
         }
     }
 
-    return GDK_EVENT_STOP;
+    return;
 }
 
 static void
@@ -1245,31 +1241,69 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                                 gdouble               y,
                                 gpointer              user_data)
 {
+    ButtonData *button_data;
+    NautilusPathBar *self;
     GdkEventSequence *sequence;
-    const GdkEvent *event;
-    GdkModifierType state;
 
     if (n_press != 1)
     {
         return;
     }
 
+    button_data = BUTTON_DATA (user_data);
+    self = button_data->path_bar;
+
     sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-    event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
 
-    gdk_event_get_state (event, &state);
-
-    state &= gtk_accelerator_get_default_mod_mask ();
-
-    if (state == 0)
+    switch (gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture)))
     {
-        ButtonData *button_data;
+        case GDK_BUTTON_MIDDLE:
+        {
+            const GdkEvent *event;
+            GdkModifierType state;
 
-        button_data = BUTTON_DATA (user_data);
+            event = gtk_gesture_get_last_event (GTK_GESTURE (gesture), sequence);
+            gdk_event_get_state (event, &state);
+            state &= gtk_accelerator_get_default_mod_mask ();
+            if(state == 0)
+            {
+                g_signal_emit (self, path_bar_signals[OPEN_LOCATION], 0,
+                               button_data->path,
+                               GTK_PLACES_OPEN_NEW_TAB);
+            }
+        }
+        break;
 
-        g_signal_emit (button_data->path_bar, path_bar_signals[OPEN_LOCATION], 0,
-                       button_data->path,
-                       GTK_PLACES_OPEN_NEW_TAB);
+        case GDK_BUTTON_SECONDARY:
+        {
+            NautilusPathBarPrivate *priv;
+
+            /* Claim the event to prevent GtkWindow from popping up the window
+             * manager menu, since we are in the titlebar. */
+            gtk_gesture_set_sequence_state (GTK_GESTURE (gesture),
+                                            sequence,
+                                            GTK_EVENT_SEQUENCE_CLAIMED);
+
+            priv = nautilus_path_bar_get_instance_private (self);
+            if (g_file_equal (button_data->path, priv->current_path))
+            {
+                gtk_popover_popup (priv->current_view_menu_popover);
+            }
+            else
+            {
+                gtk_popover_set_relative_to (priv->button_menu_popover,
+                                             button_data->button);
+                pop_up_pathbar_context_menu (self, button_data->file);
+            }
+        }
+        break;
+
+        default:
+        {
+            /* Ignore other buttons in this gesture. GtkButton will claim the
+             * primary button presses and emit the "clicked" signal. */
+        }
+        break;
     }
 }
 
@@ -1695,13 +1729,14 @@ make_button_data (NautilusPathBar *self,
 
     button_data->path_bar = self;
 
-    g_signal_connect (button_data->button, "button-press-event", G_CALLBACK (button_clicked_cb), button_data);
+    g_signal_connect (button_data->button, "clicked", G_CALLBACK (button_clicked_cb), button_data);
 
-    /* A gesture is needed here, because GtkButton doesn’t react to middle-clicking.
+    /* A gesture is needed here, because GtkButton doesn’t react to middle- or
+     * secondary-clicking.
      */
     button_data->multi_press_gesture = gtk_gesture_multi_press_new (button_data->button);
 
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), GDK_BUTTON_MIDDLE);
+    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (button_data->multi_press_gesture), 0);
 
     g_signal_connect (button_data->multi_press_gesture, "pressed",
                       G_CALLBACK (on_multi_press_gesture_pressed), button_data);
