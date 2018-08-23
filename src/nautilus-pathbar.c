@@ -51,6 +51,7 @@ typedef enum
     STARRED_BUTTON,
     RECENT_BUTTON,
     MOUNT_BUTTON,
+    TRASH_BUTTON,
 } ButtonType;
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
@@ -1327,6 +1328,11 @@ get_gicon (ButtonData *button_data)
             return g_themed_icon_new ("list-add-symbolic");
         }
 
+        case TRASH_BUTTON:
+        {
+            return nautilus_trash_monitor_get_symbolic_icon ();
+        }
+
         default:
             return NULL;
     }
@@ -1438,6 +1444,11 @@ setup_button_type (ButtonData      *button_data,
     else if (strcmp ((uri = g_file_get_uri (location)), "admin:///") == 0)
     {
         button_data->type = ADMIN_ROOT_BUTTON;
+        button_data->is_root = TRUE;
+    }
+    else if (strcmp (uri, "trash:///") == 0)
+    {
+        button_data->type = TRASH_BUTTON;
         button_data->is_root = TRUE;
     }
     else
@@ -1612,6 +1623,7 @@ make_button_data (NautilusPathBar *self,
         case ADMIN_ROOT_BUTTON:
         case HOME_BUTTON:
         case MOUNT_BUTTON:
+        case TRASH_BUTTON:
         case RECENT_BUTTON:
         case STARRED_BUTTON:
         case OTHER_LOCATIONS_BUTTON:
