@@ -25,6 +25,7 @@
 
 #include "nautilus-directory.h"
 #include "nautilus-search-engine-model.h"
+#include "nautilus-search-provider.h"
 
 G_BEGIN_DECLS
 
@@ -42,3 +43,6 @@ NautilusSearchEngineModel *
                       nautilus_search_engine_get_model_provider (NautilusSearchEngine *engine);
 
 G_END_DECLS
+
+void nautilus_search_engine_start_by_target (NautilusSearchProvider     *provider,
+                                             NautilusSearchEngineTarget  taregt_engine);
