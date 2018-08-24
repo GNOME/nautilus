@@ -31,7 +31,6 @@ main (int   argc,
 {
     g_autoptr (GMainLoop) loop = NULL;
     NautilusSearchEngine *engine;
-    NautilusSearchEngineModel *model;
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
@@ -58,9 +57,7 @@ main (int   argc,
 
     location = g_file_new_for_path (g_get_tmp_dir ());
     directory = nautilus_directory_get (location);
-
-    model = nautilus_search_engine_get_model_provider (engine);
-    nautilus_search_engine_model_set_model (model, directory);
+    nautilus_query_set_location (query, location);
 
     create_search_file_hierarchy ("all_engines");
 
