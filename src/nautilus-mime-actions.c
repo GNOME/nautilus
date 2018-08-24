@@ -1303,8 +1303,8 @@ pk_proxy_appeared_cb (GObject      *source,
                                               g_content_type_get_description (mime_type));
     gtk_window_set_resizable (GTK_WINDOW (dialog), FALSE);
 
-    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Search in Software"), GTK_RESPONSE_YES);
     gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Cancel"), GTK_RESPONSE_CANCEL);
+    gtk_dialog_add_button (GTK_DIALOG (dialog), _("_Search in Software"), GTK_RESPONSE_YES);
 
     gtk_dialog_set_default_response (GTK_DIALOG (dialog), GTK_RESPONSE_YES);
 
