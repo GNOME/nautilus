@@ -36,8 +36,6 @@ flatpak:
         - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-    after_script:
-        - tar -czf cache.tar.gz .flatpak-builder/cache/
     artifacts:
         paths:
             - ${BUNDLE}
