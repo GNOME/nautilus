@@ -1295,7 +1295,7 @@ pk_proxy_appeared_cb (GObject      *source,
     /* use a custom dialog to prompt the user to install new software */
     dialog = gtk_message_dialog_new (parameters_install->parent_window, 0,
                                      GTK_MESSAGE_ERROR,
-                                     0,
+                                     GTK_BUTTONS_NONE,
                                      "%s", error_message);
     gtk_message_dialog_format_secondary_text (GTK_MESSAGE_DIALOG (dialog),
                                               _("There is no application installed for “%s” files. "
