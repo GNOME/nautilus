@@ -199,7 +199,7 @@ char             *nautilus_file_info_get_uri_scheme       (NautilusFileInfo *fil
 NautilusFileInfo *nautilus_file_info_get_parent_info      (NautilusFileInfo *file_info);
 
 /**
- * nautilus_file_info_get_parent_info:
+ * nautilus_file_info_get_mime_type:
  * @file_info: a #NautilusFileInfo
  *
  * Returns: (transfer full): the MIME type of @file_info
