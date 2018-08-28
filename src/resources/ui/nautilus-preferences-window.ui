@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.0 -->
 <interface>
-  <requires lib="gtk+" version="3.20"/>
+  <requires lib="gtk+" version="3.22"/>
   <object class="GtkAdjustment" id="adjustment1">
     <property name="lower">1</property>
     <property name="upper">4096</property>
@@ -48,7 +48,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel">
+                      <object class="GtkLabel" id="label17">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">General</property>
@@ -57,7 +57,7 @@
                           <attribute name="weight" value="bold"/>
                         </attributes>
                         <accessibility>
-                          <relation type="label-for" target="vbox12"/>
+                          <relation type="label-for" target="vbox2"/>
                         </accessibility>
                       </object>
                       <packing>
@@ -83,7 +83,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label6"/>
+                      <relation type="labelled-by" target="label17"/>
                     </accessibility>
                   </object>
                   <packing>
@@ -136,6 +136,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label6"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox12-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -188,6 +193,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label7"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="box1-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -419,6 +429,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label28"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox27-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -510,6 +525,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label10"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox6-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -561,6 +581,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label13"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox14-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -647,6 +672,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label12"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox7-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -714,6 +744,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label14"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox8-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -781,6 +816,11 @@
                         <accessibility>
                           <relation type="labelled-by" target="label33"/>
                         </accessibility>
+                        <child internal-child="accessible">
+                          <object class="AtkObject" id="list_columns_vbox-atkobject">
+                            <property name="AtkObject::accessible-role">panel</property>
+                          </object>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">True</property>
@@ -911,6 +951,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label4"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox3-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
@@ -1052,6 +1097,11 @@
                     <accessibility>
                       <relation type="labelled-by" target="label15"/>
                     </accessibility>
+                    <child internal-child="accessible">
+                      <object class="AtkObject" id="vbox11-atkobject">
+                        <property name="AtkObject::accessible-role">panel</property>
+                      </object>
+                    </child>
                   </object>
                   <packing>
                     <property name="expand">False</property>
