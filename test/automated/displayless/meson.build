@@ -17,6 +17,15 @@ tests = [
   ['test-nautilus-search-engine', [
     'test-nautilus-search-engine.c'
   ]],
+  ['test-nautilus-search-engine-simple', [
+    'test-nautilus-search-engine-simple.c'
+  ]],
+  ['test-nautilus-search-engine-model', [
+    'test-nautilus-search-engine-model.c'
+  ]],
+  ['test-nautilus-search-engine-tracker', [
+    'test-nautilus-search-engine-tracker.c'
+  ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
   ]],
@@ -28,7 +37,7 @@ tests = [
 foreach t: tests
   test(
     t[0],
-    executable(t[0], t[1], dependencies: libnautilus_dep),
+    executable(t[0], t[1], files('test-utilities.c'), dependencies: libnautilus_dep),
     env: [
       test_env,
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),

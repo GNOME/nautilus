@@ -819,9 +819,7 @@ ensure_dirs_task_ready_cb (GObject      *_source,
 
         nautilus_file_operations_move_sync
             (locations,
-            original_dir_location,
-            data->parent_window,
-            NULL, NULL);
+            original_dir_location);
 
         g_list_free_full (locations, g_object_unref);
         g_object_unref (original_dir_location);
