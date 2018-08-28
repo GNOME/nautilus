@@ -207,37 +207,32 @@
                     </child>
                     <child>
                       <object class="GtkGrid" id="grid1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">10</property>
-                        <property name="column_spacing">15</property>
+                        <property name="row_spacing">6</property>
+                        <property name="column_spacing">12</property>
                         <child>
-                          <object class="GtkBox" id="hbox29">
+                          <object class="GtkLabel" id="label8">
+                            <property name="halign">end</property>
+                            <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
+                            <accessibility>
+                              <relation type="label-for" target="captions_0_combobox"/>
+                            </accessibility>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="captions_0_combobox">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_1">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="use_underline">True</property>
-                              </object>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_0_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label8"/>
-                                  <relation type="described-by" target="label29"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
+                            <accessibility>
+                              <relation type="labelled-by" target="label8"/>
+                              <relation type="described-by" target="label29"/>
+                            </accessibility>
                           </object>
                           <packing>
                             <property name="left_attach">1</property>
@@ -245,75 +240,9 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkBox" id="hbox28">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_0">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_2_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label11"/>
-                                  <relation type="described-by" target="label29"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="hbox30">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_2">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_1_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label9"/>
-                                  <relation type="described-by" target="label29"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
                           <object class="GtkLabel" id="label9">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
                             <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Second</property>
-                            <property name="xalign">1</property>
                             <accessibility>
                               <relation type="label-for" target="captions_1_combobox"/>
                             </accessibility>
@@ -322,16 +251,26 @@
                             </style>
                           </object>
                           <packing>
-                            <property name="left_attach">0</property>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">1</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkComboBoxText" id="captions_1_combobox">
+                            <accessibility>
+                              <relation type="labelled-by" target="label9"/>
+                              <relation type="described-by" target="label29"/>
+                            </accessibility>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
                             <property name="top_attach">1</property>
                           </packing>
                         </child>
                         <child>
                           <object class="GtkLabel" id="label11">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="halign">end</property>
                             <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Third</property>
-                            <property name="xalign">1</property>
                             <accessibility>
                               <relation type="label-for" target="captions_2_combobox"/>
                             </accessibility>
@@ -345,21 +284,15 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="label8">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
-                            <property name="xalign">1</property>
+                          <object class="GtkComboBoxText" id="captions_2_combobox">
                             <accessibility>
-                              <relation type="label-for" target="captions_0_combobox"/>
+                              <relation type="labelled-by" target="label11"/>
+                              <relation type="described-by" target="label29"/>
                             </accessibility>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
                           </object>
                           <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">2</property>
                           </packing>
                         </child>
                       </object>
