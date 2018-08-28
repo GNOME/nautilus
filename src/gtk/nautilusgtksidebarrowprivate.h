@@ -53,6 +53,8 @@ void           nautilus_gtk_sidebar_row_set_start_icon   (NautilusGtkSidebarRow 
                                                  GIcon         *icon);
 void           nautilus_gtk_sidebar_row_set_end_icon     (NautilusGtkSidebarRow *self,
                                                  GIcon         *icon);
+void           nautilus_gtk_sidebar_row_set_busy         (NautilusGtkSidebarRow *row,
+                                                 gboolean       is_busy);
 
 G_END_DECLS
 
