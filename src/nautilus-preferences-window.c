@@ -516,6 +516,12 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
 
     gtk_window_set_transient_for (GTK_WINDOW (preferences_window), parent_window);
 
+    /* This statement is necessary because GtkDialog defaults to 2px. Will not
+     * be necessary in GTK+4.
+     */
+    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (preferences_window))),
+                                    0);
+
     gtk_widget_show (preferences_window);
 }
 
