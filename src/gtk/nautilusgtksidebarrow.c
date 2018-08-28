@@ -51,6 +51,7 @@ struct _NautilusGtkSidebarRow
   gboolean placeholder;
   NautilusGtkPlacesSidebar *sidebar;
   GtkWidget *revealer;
+  GtkWidget *busy_spinner;
 };
 
 G_DEFINE_TYPE (NautilusGtkSidebarRow, nautilus_gtk_sidebar_row, GTK_TYPE_LIST_BOX_ROW)
@@ -608,6 +609,7 @@ nautilus_gtk_sidebar_row_class_init (NautilusGtkSidebarRowClass *klass)
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, label_widget);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, eject_button);
   gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, revealer);
+  gtk_widget_class_bind_template_child (widget_class, NautilusGtkSidebarRow, busy_spinner);
 
   gtk_widget_class_bind_template_callback (widget_class, on_child_revealed);
   gtk_widget_class_set_css_name (widget_class, "row");
@@ -638,4 +640,13 @@ GtkWidget*
 nautilus_gtk_sidebar_row_get_eject_button (NautilusGtkSidebarRow *self)
 {
   return self->eject_button;
+}
+
+void
+nautilus_gtk_sidebar_row_set_busy (NautilusGtkSidebarRow *row,
+                          gboolean       is_busy)
+{
+  g_return_if_fail (NAUTILUS_GTK_IS_SIDEBAR_ROW (row));
+
+  gtk_widget_set_visible (row->busy_spinner, is_busy);
 }
