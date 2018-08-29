@@ -75,6 +75,3 @@ void           nautilus_query_editor_set_text     (NautilusQueryEditor *editor,
 gboolean
 nautilus_query_editor_handle_event (NautilusQueryEditor *self,
                                     GdkEvent            *event);
-
-void
-nautilus_query_editor_show_popover (NautilusQueryEditor *editor);

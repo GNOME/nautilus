@@ -993,17 +993,13 @@ nautilus_window_slot_constructed (GObject *object)
 static void
 action_search_visible (GSimpleAction *action,
                        GVariant      *state,
-                       gpointer       user_data,
-                       gboolean       show_popover)
+                       gpointer       user_data)
 {
     NautilusWindowSlot *self;
     GVariant *current_state;
-    NautilusWindowSlotPrivate *priv;
 
     self = NAUTILUS_WINDOW_SLOT (user_data);
-    priv = nautilus_window_slot_get_instance_private (self);
     current_state = g_action_get_state (G_ACTION (action));
-
     if (g_variant_get_boolean (current_state) != g_variant_get_boolean (state))
     {
         g_simple_action_set_state (action, state);
@@ -1012,10 +1008,6 @@ action_search_visible (GSimpleAction *action,
         {
             show_query_editor (self);
             nautilus_window_slot_set_searching (self, TRUE);
-            if(show_popover == TRUE)
-            {
-                nautilus_query_editor_show_popover (priv->query_editor);
-            }
         }
         else
         {
@@ -1028,23 +1020,6 @@ action_search_visible (GSimpleAction *action,
 
     g_variant_unref (current_state);
 }
-
-static void
-search_visible_with_popover (GSimpleAction *action,
-                             GVariant      *state,
-                             gpointer       user_data)
-{
-    action_search_visible (action, state, user_data, TRUE);
-}
-
-static void
-search_visible_without_popover (GSimpleAction *action,
-                                GVariant      *state,
-                                gpointer       user_data)
-{
-    action_search_visible (action, state, user_data, FALSE);
-}
-
 
 static void
 change_files_view_mode (NautilusWindowSlot *self,
@@ -1116,8 +1091,7 @@ const GActionEntry slot_entries[] =
     /* 4 is NAUTILUS_VIEW_INVALID_ID */
     { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
     { "files-view-mode-toggle", action_files_view_mode_toggle },
-    { "search-visible", NULL, NULL, "false", search_visible_without_popover },
-    { "search-visible-popover", NULL, NULL, "false", search_visible_with_popover },
+    { "search-visible", NULL, NULL, "false", action_search_visible },
 };
 
 static void
@@ -1230,7 +1204,7 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
                                     G_ACTION_GROUP (priv->slot_action_group));
     nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
     nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
-    nautilus_application_set_accelerator (app, "slot.search-visible-popover", "<control>f");
+    nautilus_application_set_accelerator (app, "slot.search-visible", "<control>f");
 
     priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
 }

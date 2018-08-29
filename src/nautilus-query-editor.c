@@ -514,16 +514,6 @@ entry_tag_clicked (NautilusQueryEditor *editor)
                                   TRUE);
 }
 
-void
-nautilus_query_editor_show_popover (NautilusQueryEditor *editor)
-{
-    g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (editor));
-
-    gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (editor->dropdown_button),
-                                  TRUE);
-    gtk_widget_grab_focus (GTK_WIDGET (editor->popover));
-}
-
 static void
 entry_tag_close_button_clicked (NautilusQueryEditor *editor,
                                 GdTaggedEntryTag    *tag)
