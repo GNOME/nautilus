@@ -92,7 +92,7 @@ nautilus_progress_info_finalize (GObject *object)
 
     g_free (info->status);
     g_free (info->details);
-    g_clear_pointer (&info->progress_timer, (GDestroyNotify) g_timer_destroy);
+    g_clear_pointer (&info->progress_timer, g_timer_destroy);
     g_cancellable_disconnect (info->cancellable, info->cancellable_id);
     g_object_unref (info->cancellable);
     g_cancellable_cancel (info->details_in_thread_cancellable);
