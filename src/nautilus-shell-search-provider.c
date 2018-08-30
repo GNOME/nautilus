@@ -147,7 +147,21 @@ cancel_current_search (NautilusShellSearchProvider *self)
 {
     if (self->current_search != NULL)
     {
+        g_debug ("*** Cancel current search");
         nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->current_search->engine));
+    }
+}
+
+static void
+cancel_current_search_ignoring_partial_results (NautilusShellSearchProvider *self)
+{
+    if (self->current_search != NULL)
+    {
+        cancel_current_search (self);
+        g_signal_handlers_disconnect_by_data (G_OBJECT (self->current_search->engine),
+                                              self->current_search);
+        pending_search_finish (self->current_search, self->current_search->invocation,
+                               g_variant_new ("(as)", NULL));
     }
 }
 
@@ -750,7 +764,7 @@ search_provider_dispose (GObject *obj)
 
     g_clear_object (&self->skeleton);
     g_hash_table_destroy (self->metas_cache);
-    cancel_current_search (self);
+    cancel_current_search_ignoring_partial_results (self);
 
     G_OBJECT_CLASS (nautilus_shell_search_provider_parent_class)->dispose (obj);
 }
