@@ -30,9 +30,9 @@ modules:
     build-commands:
       - python3 setup.py install --prefix=/app
     sources:
-      - type: archive
-        url: https://github.com/mesonbuild/meson/archive/0.46.1.tar.gz
-        sha256: 2d917692d2cc194e12295f00469fbdf3c045e85d0295e5e59ced69115920ffa0
+      - type: git
+        url: https://github.com/mesonbuild/meson.git
+        tag: 0.47.2
 
   - name: exiv2
     buildsystem: cmake
