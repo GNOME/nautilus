@@ -24,6 +24,8 @@ finish-args:
   # See https://github.com/flatpak/flatpak/issues/78
   - --talk-name=ca.desrt.dconf
   - --env=DCONF_USER_CONFIG_DIR=.config/dconf
+  # It's a fallback path for tracker, Flatpak seems needs it.
+  - --env=TRACKER_SPARQL_BACKEND=bus
 
 modules:
   - name: "exiv2"
