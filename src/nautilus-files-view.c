@@ -7344,7 +7344,8 @@ real_update_actions_state (NautilusFilesView *view)
     gboolean settings_show_delete_permanently;
     gboolean settings_show_create_link;
     GDriveStartStopType start_stop_type;
-    GFile *current_location;
+    g_autoptr (GFile) current_location = NULL;
+    g_autofree gchar *current_uri = NULL;
     gboolean current_directory_in_xdg_folders;
     gboolean show_star;
     gboolean show_unstar;
@@ -7680,7 +7681,8 @@ real_update_actions_state (NautilusFilesView *view)
      * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
      */
     current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
-    current_directory_in_xdg_folders = eel_uri_is_in_xdg_dirs (g_file_get_uri (current_location));
+    current_uri = g_file_get_uri (current_location);
+    current_directory_in_xdg_folders = eel_uri_is_in_xdg_dirs (current_uri);
 
     show_star = (selection != NULL) &&
                 (current_directory_in_xdg_folders || selection_contains_starred);

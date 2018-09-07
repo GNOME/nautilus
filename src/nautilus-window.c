@@ -2351,6 +2351,8 @@ nautilus_window_finalize (GObject *object)
     /* nautilus_window_close() should have run */
     g_assert (window->slots == NULL);
 
+    g_clear_object (&window->toolbar);
+
     G_OBJECT_CLASS (nautilus_window_parent_class)->finalize (object);
 }
 
