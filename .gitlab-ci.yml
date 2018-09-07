@@ -79,9 +79,9 @@ fedora:rawhide:
     image: fedora:rawhide
     stage: cross_environment
     before_script:
-        - dnf update -y
-        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr
-        - dnf builddep -y nautilus
+        - dnf update -y --nogpgcheck
+        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
+        - dnf builddep -y nautilus --nogpgcheck
     script:
         - meson _build . -Db_coverage=true
         - cd _build
