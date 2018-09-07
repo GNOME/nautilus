@@ -1250,8 +1250,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
 GtkWidget *
 nautilus_toolbar_new ()
 {
-    return g_object_new (NAUTILUS_TYPE_TOOLBAR,
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_TOOLBAR, NULL);
 }
 
 GtkWidget *
