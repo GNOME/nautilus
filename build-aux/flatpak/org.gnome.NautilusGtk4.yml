@@ -58,15 +58,11 @@ modules:
     builddir: true
     build-options:
       config-opts:
-        - -Ddisable-miner-apps
-        - -Ddisable-static
-        - -Ddisable-tracker-extract
-        - -Ddisable-tracker-needle
-        - -Ddisable-tracker-preferences
-        - -Ddisable-artwork
-        - -Ddisable-tracker-writeback
-        - -Ddisable-miner-user-guides
-        - -Dwith-bash-completion-dir=no
+        - -Ddocs=false
+        - -Dbash_completion=no
+        - -Ddbus_services=no
+        - --prefix=/app
+        - --libdir=/app/lib
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/tracker.git"
