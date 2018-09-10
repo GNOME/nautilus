@@ -50,17 +50,22 @@ modules:
         url: "https://gitlab.gnome.org/GNOME/gexiv2.git"
 
   - name: "tracker"
+    cleanup:
+    - /bin
+    - /etc
+    - /libexec
+    buildsystem: meson
+    builddir: true
     build-options:
       config-opts:
-        - "-Ddocs=false"
-        - "-Dfunctional_tests=false"
-        - "-Dbash_completion=no"
-        - "-Ddbus_services=no"
+        - -Ddocs=false
+        - -Dbash_completion=no
+        - -Ddbus_services=no
+        - --prefix=/app
+        - --libdir=/app/lib
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/tracker.git"
-    buildsystem: "meson"
-    builddir: true
 
   - name: "gnome-autoar"
     sources:
