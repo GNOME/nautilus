@@ -83,9 +83,8 @@ dir_changed (GFileMonitor      *monitor,
              GFileMonitorEvent  event_type,
              gpointer           user_data)
 {
-    char *uri, *to_uri;
+    char *to_uri;
 
-    uri = g_file_get_uri (child);
     to_uri = NULL;
     if (other_file)
     {
@@ -122,7 +121,6 @@ dir_changed (GFileMonitor      *monitor,
         break;
     }
 
-    g_free (uri);
     g_free (to_uri);
 
     schedule_call_consume_changes ();
