@@ -45,36 +45,6 @@ flatpak:
         paths:
             - cache.tar.gz
 
-review:
-    stage: deploy
-    dependencies:
-        - flatpak
-    script:
-        - echo "Generating flatpak deployment"
-    artifacts:
-        paths:
-            - ${BUNDLE}
-        expire_in: 30 days
-    environment:
-        name: review/$CI_COMMIT_REF_NAME
-        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
-        on_stop: stop_review
-    except:
-        - master@GNOME/nautilus
-        - tags
-
-stop_review:
-    stage: deploy
-    script:
-        - echo "Stopping flatpak deployment"
-    when: manual
-    environment:
-        name: review/$CI_COMMIT_REF_NAME
-        action: stop
-    except:
-        - master@GNOME/nautilus
-        - tags
-
 flatpak:master:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     stage: test
