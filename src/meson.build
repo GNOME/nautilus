@@ -311,6 +311,9 @@ if get_option('display-tests')
     args: [
       '--check',
       '--g-fatal-warnings'
+    ],
+    env: [
+      'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data'))
     ]
   )
 endif
