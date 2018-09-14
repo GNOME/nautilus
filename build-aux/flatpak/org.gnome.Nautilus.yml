@@ -8,7 +8,6 @@ tags:
   - nightly
 desktop-file-name-prefix: "(Development) "
 finish-args:
-  - --filesystem=host
   - --share=ipc
   - --socket=x11
   - --socket=wayland
@@ -23,6 +22,7 @@ finish-args:
   # See https://github.com/flatpak/flatpak/issues/78
   - --talk-name=ca.desrt.dconf
   - --env=DCONF_USER_CONFIG_DIR=.config/dconf
+  - --env=TRACKER_SPARQL_BACKEND=bus
 
 modules:
   - name: meson
