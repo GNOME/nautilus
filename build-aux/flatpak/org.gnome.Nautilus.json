@@ -88,11 +88,16 @@
             "buildsystem": "meson",
             "builddir": "true",
             "config-opts" : [
+                "--libdir=lib",
                 "-Ddocs=false",
+                "-Dfts=false",
+                "-Dfunctional_tests=false",
+                "-Djournal=false",
+                "-Dnetwork_manager=no",
+                "-Dstemmer=no",
                 "-Dbash_completion=no",
-                "-Ddbus_services=no",
-                "--prefix=/app",
-                "--libdir=/app/lib"
+                "-Ddbus_services=/app/share/dbus-1/services",
+                "-Dsystemd_user_services=no"
             ],
             "sources" : [
                 {
