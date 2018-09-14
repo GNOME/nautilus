@@ -1,10 +1,10 @@
-foreach icon_size: ['scalable']
+foreach icon_size: ['16x16', '22x22', '24x24', '32x32', '48x48', '512x512']
   icondir = join_paths('icons', 'hicolor', icon_size, 'apps')
 
   install_data(
-    join_paths(icondir, 'org.gnome.Nautilus.svg'),
+    join_paths(icondir, 'org.gnome.Nautilus.png'),
     install_dir: join_paths(datadir, icondir),
-    rename: '@0@.svg'.format(application_id)
+    rename: '@0@.png'.format(application_id)
   )
 endforeach
 
