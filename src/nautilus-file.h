@@ -214,6 +214,7 @@ gboolean                nautilus_file_is_in_trash                       (Nautilu
 gboolean                nautilus_file_is_in_recent                      (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_starred                     (NautilusFile                   *file);
 gboolean                nautilus_file_is_in_admin                       (NautilusFile                   *file);
+gboolean                nautilus_file_system_is_remote                  (const char                     *file_system);
 gboolean                nautilus_file_is_remote                         (NautilusFile                   *file);
 gboolean                nautilus_file_is_other_locations                (NautilusFile                   *file);
 gboolean                nautilus_file_is_starred_location              (NautilusFile                   *file);
