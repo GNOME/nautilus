@@ -8065,18 +8065,6 @@ nautilus_file_is_in_starred (NautilusFile *file)
     return nautilus_directory_is_in_starred (file->details->directory);
 }
 
-static const gchar * const remote_types[] =
-{
-    "afp",
-    "google-drive",
-    "sftp",
-    "webdav",
-    "ftp",
-    "nfs",
-    "cifs",
-    NULL
-};
-
 /**
  * nautilus_file_is_remote
  *
@@ -8100,7 +8088,7 @@ nautilus_file_is_remote (NautilusFile *file)
 
     filesystem_type = nautilus_file_get_filesystem_type (file);
 
-    return filesystem_type != NULL && g_strv_contains (remote_types, filesystem_type);
+    return nautilus_file_system_is_remote (filesystem_type);
 }
 
 /**

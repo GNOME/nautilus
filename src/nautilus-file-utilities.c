@@ -1489,3 +1489,21 @@ location_settings_search_get_recursive_for_location (GFile *location)
 
     return recursive;
 }
+
+gboolean
+nautilus_file_system_is_remote (const char *file_system)
+{
+    static const gchar * const remote_types[] =
+    {
+        "afp",
+        "google-drive",
+        "sftp",
+        "webdav",
+        "ftp",
+        "nfs",
+        "cifs",
+        NULL
+    };
+
+    return file_system != NULL && g_strv_contains (remote_types, file_system);
+}
