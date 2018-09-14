@@ -1,9 +1,12 @@
-icondir = join_paths('icons', 'hicolor', 'scalable', 'apps')
-install_data(
-  join_paths(icondir, 'org.gnome.Nautilus.svg'),
-  install_dir: join_paths(datadir, icondir),
-  rename: '@0@.svg'.format(application_id)
-)
+foreach icon_size: ['scalable']
+  icondir = join_paths('icons', 'hicolor', icon_size, 'apps')
+
+  install_data(
+    join_paths(icondir, 'org.gnome.Nautilus.svg'),
+    install_dir: join_paths(datadir, icondir),
+    rename: '@0@.svg'.format(application_id)
+  )
+endforeach
 
 icondir = join_paths('icons', 'hicolor', 'symbolic', 'apps')
 
