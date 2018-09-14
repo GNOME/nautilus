@@ -563,8 +563,20 @@ is_recursive_search (NautilusSearchEngineType  engine_type,
 
         case NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY:
         {
-            g_autoptr (NautilusFile) file = nautilus_file_get (location);
-            return !nautilus_file_is_remote (file);
+            g_autoptr (GFileInfo) file_system_info = NULL;
+
+            file_system_info = g_file_query_filesystem_info (location,
+                                                             G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
+                                                             NULL, NULL);
+            if (file_system_info != NULL)
+            {
+                const char *file_system;
+
+                file_system = g_file_info_get_attribute_string (file_system_info,
+                                                                G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
+
+                return !nautilus_file_system_is_remote (file_system);
+            }
         }
     }
 
