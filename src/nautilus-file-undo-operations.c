@@ -674,7 +674,7 @@ ext_copy_duplicate_undo_func (NautilusFileUndoInfoExt *self,
     files = g_list_copy (g_queue_peek_head_link (self->destinations));
     files = g_list_reverse (files);     /* Deleting must be done in reverse */
 
-    nautilus_file_operations_delete_async (files, parent_window,
+    nautilus_file_operations_trash_or_delete_async (files, parent_window,
                                            file_undo_info_delete_callback, self);
 
     g_list_free (files);
