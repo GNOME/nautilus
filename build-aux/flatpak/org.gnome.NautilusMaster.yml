@@ -59,11 +59,14 @@ modules:
     builddir: true
     build-options:
       config-opts:
+        - --libdir=lib
         - -Ddocs=false
+        - -Dfunctional_tests=false
+        - -Djournal=false
+        - -Dnetwork_manager=no
+        - -Dstemmer=no
         - -Dbash_completion=no
-        - -Ddbus_services=no
-        - --prefix=/app
-        - --libdir=/app/lib
+        - -Dsystemd_user_services=no
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/tracker.git
