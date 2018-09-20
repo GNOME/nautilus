@@ -41,10 +41,8 @@ modules:
 
   - name: gexiv2
     buildsystem: meson
-    builddir: true
     build-options:
       config-opts:
-        - --libdir=/app/lib
         - -Ddisable-introspection=True
     sources:
       - type: git
@@ -56,10 +54,8 @@ modules:
       - /etc
       - /libexec
     buildsystem: meson
-    builddir: true
     build-options:
       config-opts:
-        - --libdir=lib
         - -Ddocs=false
         - -Dfunctional_tests=false
         - -Djournal=false
@@ -78,10 +74,8 @@ modules:
 
   - name: nautilus
     buildsystem: meson
-    builddir: true
     build-options:
       config-opts:
-        - --libdir=/app/lib
         - -Dprofile=Master
     sources:
       - type: git

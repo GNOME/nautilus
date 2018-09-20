@@ -41,10 +41,8 @@ modules:
 
   - name: "gexiv2"
     buildsystem: "meson"
-    builddir: true
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Ddisable-introspection=true"
         - "-Ddisable-vala=true"
     sources:
@@ -94,12 +92,10 @@ modules:
         tag: "1.8.2"
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dintrospection=false"
         - "-Dtests=false"
         - "-Dbenchmarks=false"
     buildsystem: "meson"
-    builddir: true
 
   - name: "gtk+"
     sources:
@@ -107,20 +103,16 @@ modules:
         url: "https://gitlab.gnome.org/GNOME/gtk.git"
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dintrospection=false"
         - "-Ddemos=true"
         - "-Dbuild-examples=false"
         - "-Dbuild-tests=false"
     buildsystem: "meson"
-    builddir: true
 
   - name: "nautilus"
     buildsystem: "meson"
-    builddir: true
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dprofile=Gtk4"
         - "-Dintrospection=false"
     sources:

@@ -65,9 +65,7 @@
         {
             "name" : "gexiv2",
             "buildsystem" : "meson",
-            "builddir" : true,
             "config-opts" : [
-                "--libdir=/app/lib",
                 "-Ddisable-introspection=True"
             ],
             "sources" : [
@@ -86,9 +84,7 @@
                 "/libexec"
             ],
             "buildsystem": "meson",
-            "builddir": "true",
             "config-opts" : [
-                "--libdir=lib",
                 "-Ddocs=false",
                 "-Dfunctional_tests=false",
                 "-Djournal=false",
@@ -116,10 +112,8 @@
         },
         {
             "buildsystem" : "meson",
-            "builddir" : true,
             "name" : "nautilus",
             "config-opts" : [
-                "--libdir=/app/lib",
                 "-Dprofile=development"
             ],
             "sources" : [
