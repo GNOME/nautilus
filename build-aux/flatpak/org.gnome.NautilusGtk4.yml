@@ -53,18 +53,19 @@ modules:
 
   - name: "tracker"
     cleanup:
-    - /bin
-    - /etc
-    - /libexec
-    buildsystem: meson
-    builddir: true
+      - "/bin"
+      - "/etc"
+      - "/libexec"
+    buildsystem: "meson"
     build-options:
       config-opts:
-        - -Ddocs=false
-        - -Dbash_completion=no
-        - -Ddbus_services=no
-        - --prefix=/app
-        - --libdir=/app/lib
+        - "-Dbash_completion=no"
+        - "-Ddocs=false"
+        - "-Dfunctional_tests=false"
+        - "-Djournal=false"
+        - "-Dnetwork_manager=no"
+        - "-Dstemmer=no"
+        - "-Dsystemd_user_services=no"
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/tracker.git"
@@ -113,33 +114,6 @@ modules:
         - "-Dbuild-tests=false"
     buildsystem: "meson"
     builddir: true
-
-  - name: tracker
-    cleanup:
-      - /bin
-      - /etc
-      - /libexec
-    buildsystem: meson
-    builddir: true
-    build-options:
-      config-opts:
-        - --libdir=lib
-        - -Ddocs=false
-        - -Dfunctional_tests=false
-        - -Djournal=false
-        - -Dnetwork_manager=no
-        - -Dstemmer=no
-        - -Dbash_completion=no
-        - -Dsystemd_user_services=no
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/tracker.git
-
-  - name: gnome-autoar
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
-        tag: 0.2.3
 
   - name: "nautilus"
     buildsystem: "meson"
