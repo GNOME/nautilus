@@ -911,7 +911,7 @@ key_press_callback (GtkWidget *widget,
     {
         g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
-    if (gdk_event_get_state (event, &state))
+    if (!gdk_event_get_state (event, &state))
     {
         return GDK_EVENT_PROPAGATE;
     }
