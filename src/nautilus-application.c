@@ -884,7 +884,7 @@ variant_set_mapping (const GValue       *value,
     return g_value_get_variant (value);
 }
 
-static GActionEntry app_entries[] =
+const static GActionEntry app_entries[] =
 {
     { "new-window", action_new_window, NULL, NULL, NULL },
     { "clone-window", action_clone_window, NULL, NULL, NULL },
