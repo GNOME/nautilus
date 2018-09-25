@@ -812,12 +812,16 @@ nautilus_file_get_internal (GFile    *location,
 NautilusFile *
 nautilus_file_get (GFile *location)
 {
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
+
     return NAUTILUS_FILE (nautilus_file_get_internal (location, TRUE));
 }
 
 NautilusFile *
 nautilus_file_get_existing (GFile *location)
 {
+    g_return_val_if_fail (G_IS_FILE (location), NULL);
+
     return NAUTILUS_FILE (nautilus_file_get_internal (location, FALSE));
 }
 
@@ -8079,7 +8083,7 @@ nautilus_file_is_remote (NautilusFile *file)
 {
     g_autofree char *filesystem_type = NULL;
 
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     if (nautilus_file_get_filesystem_remote (file))
     {
@@ -8106,7 +8110,7 @@ nautilus_file_is_other_locations (NautilusFile *file)
     gboolean is_other_locations;
     gchar *uri;
 
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     uri = nautilus_file_get_uri (file);
     is_other_locations = g_strcmp0 (uri, "other-locations:///") == 0;
@@ -8130,7 +8134,7 @@ nautilus_file_is_starred_location (NautilusFile *file)
 {
     g_autofree gchar *uri = NULL;
 
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     uri = nautilus_file_get_uri (file);
 
@@ -8149,7 +8153,7 @@ nautilus_file_is_starred_location (NautilusFile *file)
 gboolean
 nautilus_file_is_in_admin (NautilusFile *file)
 {
-    g_assert (NAUTILUS_IS_FILE (file));
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
     return nautilus_directory_is_in_admin (file->details->directory);
 }
