@@ -744,7 +744,19 @@ action_clone_window (GSimpleAction *action,
     }
     else
     {
+        /* If the user happens to fall asleep while holding ctrl-n, or very
+         * unfortunately opens a new window at a remote location, the current
+         * location will be null, leading to criticals and/or failed assertions.
+         *
+         * Another sad thing is that checking if the view/slot is loading will
+         * not work, as the loading process only really begins after the attributes
+         * for the file have been fetched.
+         */
         location = nautilus_window_slot_get_location (active_slot);
+        if (location == NULL)
+        {
+            location = nautilus_window_slot_get_pending_location (active_slot);
+        }
     }
 
     nautilus_application_open_location_full (NAUTILUS_APPLICATION (application), location,
