@@ -77,6 +77,7 @@ void nautilus_window_slot_open_location_full              (NautilusWindowSlot   
                                                            GList                   *new_selection);
 
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
+GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
 
 NautilusBookmark *nautilus_window_slot_get_bookmark        (NautilusWindowSlot *slot);
 
