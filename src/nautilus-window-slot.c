@@ -1884,7 +1884,6 @@ got_file_info_for_view_selection_callback (NautilusFile *file,
     NautilusFile *viewed_file;
     NautilusView *view;
     GFile *location;
-
     NautilusApplication *app;
 
     self = callback_data;
@@ -3255,6 +3254,18 @@ nautilus_window_slot_get_location (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->location;
+}
+
+GFile *
+nautilus_window_slot_get_pending_location (NautilusWindowSlot *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    return priv->pending_location;
 }
 
 const gchar *
