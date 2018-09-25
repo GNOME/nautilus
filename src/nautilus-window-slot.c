@@ -3229,6 +3229,11 @@ nautilus_window_slot_get_location (NautilusWindowSlot *self)
 
     priv = nautilus_window_slot_get_instance_private (self);
 
+    if (priv->location == NULL)
+    {
+        return priv->pending_location;
+    }
+
     return priv->location;
 }
 
