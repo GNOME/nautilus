@@ -1946,7 +1946,7 @@ activate_activation_uris_ready_callback (GList    *files_ignore,
 }
 
 static void
-activation_get_activation_uris (ActivateParameters *parameters)
+activate_regular_files (ActivateParameters *parameters)
 {
     GList *l, *files;
     NautilusFile *file;
@@ -2074,7 +2074,7 @@ activation_mount_mountables (ActivateParameters *parameters)
 
     if (parameters->mountables == NULL && parameters->start_mountables == NULL)
     {
-        activation_get_activation_uris (parameters);
+        activate_regular_files (parameters);
     }
 }
 
@@ -2163,7 +2163,7 @@ activation_start_mountables (ActivateParameters *parameters)
 
     if (parameters->mountables == NULL && parameters->start_mountables == NULL)
     {
-        activation_get_activation_uris (parameters);
+        activate_regular_files (parameters);
     }
 }
 
@@ -2258,7 +2258,7 @@ nautilus_mime_activate_files (GtkWindow               *parent_window,
     }
     if (parameters->mountables == NULL && parameters->start_mountables == NULL)
     {
-        activation_get_activation_uris (parameters);
+        activate_regular_files (parameters);
     }
 }
 
