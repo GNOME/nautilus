@@ -102,6 +102,8 @@ typedef struct
     gulong qe_changed_id;
     gulong qe_cancel_id;
     gulong qe_activated_id;
+    gulong qe_select_next_id;
+    gulong qe_select_previous_id;
 
     GtkLabel *search_info_label;
     GtkRevealer *search_info_label_revealer;
@@ -439,6 +441,32 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
 }
 
 static void
+query_editor_select_next_callback (NautilusQueryEditor *editor,
+                                   NautilusWindowSlot  *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view != NULL)
+    {
+        nautilus_view_select_next (NAUTILUS_VIEW (priv->content_view));
+    }
+}
+
+static void
+query_editor_select_previous_callback (NautilusQueryEditor *editor,
+                                       NautilusWindowSlot  *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view != NULL)
+    {
+        nautilus_view_previous_next (NAUTILUS_VIEW (priv->content_view));
+    }
+}
+
+static void
 query_editor_changed_callback (NautilusQueryEditor *editor,
                                NautilusQuery       *query,
                                gboolean             reload,
@@ -475,6 +503,16 @@ hide_query_editor (NautilusWindowSlot *self)
     {
         g_signal_handler_disconnect (priv->query_editor, priv->qe_activated_id);
         priv->qe_activated_id = 0;
+    }
+    if (priv->qe_select_next_id > 0)
+    {
+        g_signal_handler_disconnect (priv->query_editor, priv->qe_select_next_id);
+        priv->qe_select_next_id = 0;
+    }
+    if (priv->qe_select_previous_id > 0)
+    {
+        g_signal_handler_disconnect (priv->query_editor, priv->qe_select_previous_id);
+        priv->qe_select_previous_id = 0;
     }
 
     nautilus_query_editor_set_query (priv->query_editor, NULL);
@@ -562,6 +600,18 @@ show_query_editor (NautilusWindowSlot *self)
             g_signal_connect (priv->query_editor, "activated",
                               G_CALLBACK (query_editor_activated_callback), self);
     }
+    if (priv->qe_select_next_id == 0)
+    {
+        priv->qe_select_next_id =
+            g_signal_connect (priv->query_editor, "select-next",
+                              G_CALLBACK (query_editor_select_next_callback), self);
+    }
+    if (priv->qe_select_previous_id == 0)
+    {
+        priv->qe_select_previous_id =
+            g_signal_connect (priv->query_editor, "select-previous",
+                              G_CALLBACK (query_editor_select_previous_callback), self);
+    }
 }
 
 static void
@@ -646,6 +696,7 @@ nautilus_window_slot_handle_event (NautilusWindowSlot *self,
         g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
 
+    g_print("###handle event slot inside\n");
     if (keyval == GDK_KEY_Escape)
     {
         g_autoptr (GVariant) state = NULL;

@@ -58,6 +58,8 @@ struct _NautilusQueryEditor
 enum
 {
     ACTIVATED,
+    SELECT_NEXT_PRESSED,
+    SELECT_PREVIOUS_PRESSED,
     CHANGED,
     CANCEL,
     LAST_SIGNAL
@@ -264,6 +266,24 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 
     signals[ACTIVATED] =
         g_signal_new ("activated",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
+
+    signals[SELECT_NEXT_PRESSED] =
+        g_signal_new ("select-next-pressed",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
+
+    signals[SELECT_PREVIOUS_PRESSED] =
+        g_signal_new ("select-previous-pressed",
                       G_TYPE_FROM_CLASS (class),
                       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
                       0,
@@ -727,8 +747,29 @@ gboolean
 nautilus_query_editor_handle_event (NautilusQueryEditor *self,
                                     GdkEvent            *event)
 {
+    guint keyval;
+    GdkModifierType state;
+
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
     g_return_val_if_fail (event != NULL, GDK_EVENT_PROPAGATE);
+
+    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
+    {
+        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
+    }
+    gdk_event_get_state (event, &state);
+
+    if (keyval == GDK_KEY_Down)
+    {
+        g_signal_emit (self, signals[SELECT_NEXT_PRESSED], 0);
+        return GDK_EVENT_STOP;
+    }
+
+    if (keyval == GDK_KEY_Up)
+    {
+        g_signal_emit (self, signals[SELECT_PREVIOUS_PRESSED], 0);
+        return GDK_EVENT_STOP;
+    }
 
     return gtk_search_entry_handle_event (GTK_SEARCH_ENTRY (self->entry), event);
 }

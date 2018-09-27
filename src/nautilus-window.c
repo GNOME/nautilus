@@ -37,6 +37,8 @@
 #include <math.h>
 #include <sys/time.h>
 
+#include <libgd/gd.h>
+
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
@@ -2462,16 +2464,25 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         g_return_val_if_reached (GDK_EVENT_PROPAGATE);
     }
 
+    g_print ("window key press event\n");
+
     focus_widget = gtk_window_get_focus (GTK_WINDOW (window));
     if (focus_widget != NULL && GTK_IS_EDITABLE (focus_widget))
     {
         /* if we have input focus on a GtkEditable (e.g. a GtkEntry), forward
          * the event to it before activating accelerator bindings too.
          */
+    g_print ("is editable\n");
         if (gtk_window_propagate_key_event (GTK_WINDOW (window),
                                             (GdkEventKey *) event))
         {
+    g_print ("is propagated window key event\n");
             return GDK_EVENT_STOP;
+        }
+
+        if (GD_IS_TAGGED_ENTRY (focus_widget))
+        {
+            g_print("is tagged entry\n");
         }
     }
 
@@ -2494,13 +2505,16 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         }
     }
 
-    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
+    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
+        g_print("handling it in the slot\n");
         return GDK_EVENT_STOP;
     }
 
-    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
+
+    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
     {
+        g_print ("handling key event in key_press_event class\n");
         return GDK_EVENT_STOP;
     }
 
