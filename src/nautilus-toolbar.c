@@ -858,15 +858,17 @@ on_notify_width_maximized (NautilusContainerMaxWidth *container,
     context = gtk_widget_get_style_context (self->path_bar_container);
     width_maximized = nautilus_container_max_width_get_width_maximized (container);
 
-    g_return_if_fail (gtk_style_context_has_class (context, "width-maximized") != width_maximized);
+    g_return_if_fail (gtk_style_context_has_class (context, GTK_STYLE_CLASS_FRAME) != width_maximized);
 
     if (width_maximized)
     {
-        gtk_style_context_add_class (context, "width-maximized");
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_FRAME);
+        gtk_style_context_add_class (context, GTK_STYLE_CLASS_BACKGROUND);
     }
     else
     {
-        gtk_style_context_remove_class (context, "width-maximized");
+        gtk_style_context_remove_class (context, GTK_STYLE_CLASS_FRAME);
+        gtk_style_context_remove_class (context, GTK_STYLE_CLASS_BACKGROUND);
     }
 }
 
