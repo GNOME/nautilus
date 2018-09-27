@@ -2498,6 +2498,7 @@ update_info_internal (NautilusFile *file,
 
     if (!file->details->got_custom_activation_uri &&
         (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
+         file_type == G_FILE_TYPE_SHORTCUT ||
          nautilus_file_is_in_recent (file)))
     {
         activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
