@@ -341,3 +341,19 @@ nautilus_view_is_searching (NautilusView *view)
 
     return NAUTILUS_VIEW_GET_IFACE (view)->is_searching (view);
 }
+
+void
+nautilus_view_select_next (NautilusView *view)
+{
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->select_next);
+
+    NAUTILUS_VIEW_GET_IFACE (view)->select_next (view);
+}
+
+void
+nautilus_view_select_previous (NautilusView *view)
+{
+    g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->select_previous);
+
+    NAUTILUS_VIEW_GET_IFACE (view)->select_previous (view);
+}

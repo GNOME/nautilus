@@ -142,6 +142,9 @@ struct _NautilusFilesViewClass {
         void     (* set_selection)           (NautilusFilesView *view,
                                               GList             *selection);
 
+        void           (* select_next)          (NautilusFilesView *view);
+        void           (* select_previous)          (NautilusFilesView *view);
+
         /* invert_selection is a function pointer that subclasses must
          * override to invert selection. */
 

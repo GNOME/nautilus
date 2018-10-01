@@ -58,6 +58,8 @@ struct _NautilusQueryEditor
 enum
 {
     ACTIVATED,
+    SELECT_NEXT,
+    SELECT_PREVIOUS,
     CHANGED,
     CANCEL,
     LAST_SIGNAL
@@ -264,6 +266,24 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
 
     signals[ACTIVATED] =
         g_signal_new ("activated",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
+
+    signals[SELECT_NEXT] =
+        g_signal_new ("select-next",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      0,
+                      NULL, NULL,
+                      g_cclosure_marshal_VOID__VOID,
+                      G_TYPE_NONE, 0);
+
+    signals[SELECT_PREVIOUS] =
+        g_signal_new ("select-previous",
                       G_TYPE_FROM_CLASS (class),
                       G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
                       0,
@@ -727,8 +747,36 @@ gboolean
 nautilus_query_editor_handle_event (NautilusQueryEditor *self,
                                     GdkEvent            *event)
 {
+    guint keyval;
+    GdkModifierType state;
+
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
     g_return_val_if_fail (event != NULL, GDK_EVENT_PROPAGATE);
+
+    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
+    {
+        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
+    }
+
+    gdk_event_get_state (event, &state);
+
+    /* In the case of key up/down we want to move the focus to the view, since
+     * the user is probably trying to navigate the files
+     */
+    if (gtk_widget_has_focus (GTK_WIDGET (self->entry)))
+    {
+        if (keyval == GDK_KEY_Down)
+        {
+            g_signal_emit (self, signals[SELECT_NEXT], 0);
+            return GDK_EVENT_STOP;
+        }
+
+        if (keyval == GDK_KEY_Up)
+        {
+            g_signal_emit (self, signals[SELECT_PREVIOUS], 0);
+            return GDK_EVENT_STOP;
+        }
+    }
 
     return gtk_search_entry_handle_event (GTK_SEARCH_ENTRY (self->entry), event);
 }

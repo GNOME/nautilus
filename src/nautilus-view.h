@@ -84,6 +84,9 @@ struct _NautilusViewInterface
 
         /* Whether the current view is searching or not */
         gboolean                        (*is_searching)              (NautilusView         *view);
+
+        void                            (*select_next)               (NautilusView         *view);
+        void                            (*select_previous)           (NautilusView         *view);
 };
 
 GIcon *                        nautilus_view_get_icon                  (guint                 view_id);
@@ -117,5 +120,8 @@ GMenu*                         nautilus_view_get_templates_menu        (Nautilus
 void                           nautilus_view_set_extensions_background_menu (NautilusView *view,
                                                                              GMenu        *menu);
 GMenu*                         nautilus_view_get_extensions_background_menu (NautilusView *view);
+
+void                           nautilus_view_select_next               (NautilusView        *view);
+void                           nautilus_view_select_previous           (NautilusView        *view);
 
 G_END_DECLS

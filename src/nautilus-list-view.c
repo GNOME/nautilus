@@ -2974,6 +2974,18 @@ nautilus_list_view_get_selection_for_file_transfer (NautilusFilesView *view)
     return g_list_reverse (selection_data.list);
 }
 
+static void
+nautilus_list_view_select_next (NautilusFilesView *view)
+{
+    gtk_widget_grab_focus (GTK_WIDGET (view));
+}
+
+static void
+nautilus_list_view_select_previous (NautilusFilesView *view)
+{
+    gtk_widget_grab_focus (GTK_WIDGET (view));
+}
+
 static gboolean
 nautilus_list_view_is_empty (NautilusFilesView *view)
 {
@@ -3985,6 +3997,8 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->get_backing_uri = nautilus_list_view_get_backing_uri;
     nautilus_files_view_class->get_selection = nautilus_list_view_get_selection;
     nautilus_files_view_class->get_selection_for_file_transfer = nautilus_list_view_get_selection_for_file_transfer;
+    nautilus_files_view_class->select_next = nautilus_list_view_select_next;
+    nautilus_files_view_class->select_previous = nautilus_list_view_select_previous;
     nautilus_files_view_class->is_empty = nautilus_list_view_is_empty;
     nautilus_files_view_class->remove_file = nautilus_list_view_remove_file;
     nautilus_files_view_class->restore_standard_zoom_level = nautilus_list_view_restore_standard_zoom_level;

@@ -2494,12 +2494,13 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         }
     }
 
-    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
+    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
         return GDK_EVENT_STOP;
     }
 
-    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
+
+    if (GTK_WIDGET_CLASS (nautilus_window_parent_class)->key_press_event (widget, event))
     {
         return GDK_EVENT_STOP;
     }

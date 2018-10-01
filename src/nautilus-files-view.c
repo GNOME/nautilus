@@ -1012,6 +1012,22 @@ nautilus_files_view_get_selection (NautilusView *view)
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->get_selection (NAUTILUS_FILES_VIEW (view));
 }
 
+static void
+nautilus_files_view_select_next (NautilusView *view)
+{
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->select_next (NAUTILUS_FILES_VIEW (view));
+}
+
+static void
+nautilus_files_view_select_previous (NautilusView *view)
+{
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
+
+    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->select_previous (NAUTILUS_FILES_VIEW (view));
+}
+
 typedef struct
 {
     NautilusFile *file;
@@ -9375,6 +9391,8 @@ nautilus_files_view_iface_init (NautilusViewInterface *iface)
     iface->set_templates_menu = nautilus_files_view_set_templates_menu;
     iface->get_extensions_background_menu = nautilus_files_view_get_extensions_background_menu;
     iface->set_extensions_background_menu = nautilus_files_view_set_extensions_background_menu;
+    iface->select_next = nautilus_files_view_select_next;
+    iface->select_previous = nautilus_files_view_select_previous;
 }
 
 static void
