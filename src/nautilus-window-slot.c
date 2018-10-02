@@ -102,6 +102,7 @@ typedef struct
     gulong qe_changed_id;
     gulong qe_cancel_id;
     gulong qe_activated_id;
+    gulong qe_focus_view_id;
 
     GtkLabel *search_info_label;
     GtkRevealer *search_info_label_revealer;
@@ -439,6 +440,19 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
 }
 
 static void
+query_editor_focus_view_callback (NautilusQueryEditor *editor,
+                                   NautilusWindowSlot  *self)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view != NULL)
+    {
+        gtk_widget_grab_focus (priv->content_view);
+    }
+}
+
+static void
 query_editor_changed_callback (NautilusQueryEditor *editor,
                                NautilusQuery       *query,
                                gboolean             reload,
@@ -475,6 +489,11 @@ hide_query_editor (NautilusWindowSlot *self)
     {
         g_signal_handler_disconnect (priv->query_editor, priv->qe_activated_id);
         priv->qe_activated_id = 0;
+    }
+    if (priv->qe_focus_view_id > 0)
+    {
+        g_signal_handler_disconnect (priv->query_editor, priv->qe_focus_view_id);
+        priv->qe_focus_view_id = 0;
     }
 
     nautilus_query_editor_set_query (priv->query_editor, NULL);
@@ -561,6 +580,12 @@ show_query_editor (NautilusWindowSlot *self)
         priv->qe_activated_id =
             g_signal_connect (priv->query_editor, "activated",
                               G_CALLBACK (query_editor_activated_callback), self);
+    }
+    if (priv->qe_focus_view_id == 0)
+    {
+        priv->qe_focus_view_id =
+            g_signal_connect (priv->query_editor, "focus-view",
+                              G_CALLBACK (query_editor_focus_view_callback), self);
     }
 }
 
