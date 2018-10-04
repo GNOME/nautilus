@@ -1227,9 +1227,12 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             /* Ignore other buttons in this gesture. GtkButton will claim the
              * primary button presses and emit the "clicked" signal.
              */
+            return;
         }
         break;
     }
+
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static GIcon *
