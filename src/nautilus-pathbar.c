@@ -1199,16 +1199,6 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
 
         case GDK_BUTTON_SECONDARY:
         {
-            GdkEventSequence *sequence;
-
-            /* Claim the event to prevent GtkWindow from popping up the window
-             * manager menu, since we are in the titlebar.
-             */
-            sequence = gtk_gesture_single_get_current_sequence (GTK_GESTURE_SINGLE (gesture));
-            gtk_gesture_set_sequence_state (GTK_GESTURE (gesture),
-                                            sequence,
-                                            GTK_EVENT_SEQUENCE_CLAIMED);
-
             if (g_file_equal (button_data->path, self->current_path))
             {
                 gtk_popover_popup (self->current_view_menu_popover);
@@ -1227,9 +1217,16 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             /* Ignore other buttons in this gesture. GtkButton will claim the
              * primary button presses and emit the "clicked" signal.
              */
+            return;
         }
         break;
     }
+
+    /* Both middle- and secondary-clicking the title bar can have interesting
+     * effects (minimizing the window, popping up a window manager menu, etc.),
+     * and this avoids all that.
+     */
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static GIcon *
