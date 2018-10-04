@@ -42,6 +42,7 @@ struct _NautilusSearchEngineRecent
     NautilusQuery *query;
     GCancellable *cancellable;
     GtkRecentManager *recent_manager;
+    guint add_hits_idle_id;
 };
 
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
@@ -71,10 +72,12 @@ nautilus_search_engine_recent_finalize (GObject *object)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (object);
 
-    if (self->cancellable)
+    if (self->add_hits_idle_id != 0)
     {
-        g_cancellable_cancel (self->cancellable);
+        g_source_remove (self->add_hits_idle_id);
     }
+
+    g_cancellable_cancel (self->cancellable);
 
     g_clear_object (&self->query);
     g_clear_object (&self->cancellable);
@@ -96,6 +99,8 @@ search_thread_add_hits_idle (gpointer user_data)
     NautilusSearchEngineRecent *self = search_hits->recent;
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
+    self->add_hits_idle_id = 0;
+
     if (!g_cancellable_is_cancelled (self->cancellable))
     {
         nautilus_search_provider_hits_added (provider, search_hits->hits);
@@ -113,6 +118,24 @@ search_thread_add_hits_idle (gpointer user_data)
     g_object_unref (self);
 
     return FALSE;
+}
+
+static void
+search_add_hits_idle (NautilusSearchEngineRecent *self,
+                      GList                      *hits)
+{
+    SearchHitsData *search_hits;
+
+    if (self->add_hits_idle_id != 0)
+    {
+        return;
+    }
+
+    search_hits = g_new0 (SearchHitsData, 1);
+    search_hits->recent = self;
+    search_hits->hits = hits;
+
+    self->add_hits_idle_id = g_idle_add (search_thread_add_hits_idle, search_hits);
 }
 
 static gboolean
@@ -296,11 +319,7 @@ recent_thread_func (gpointer user_data)
         }
     }
 
-    search_hits = g_new0 (SearchHitsData, 1);
-    search_hits->recent = self;
-    search_hits->hits = hits;
-
-    g_idle_add (search_thread_add_hits_idle, search_hits);
+    search_add_hits_idle (self, hits);
 
     g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
     g_list_free_full (mime_types, g_free);
@@ -324,11 +343,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
                               nautilus_query_get_recursive (self->query),
                               location))
     {
-        SearchHitsData *search_hits;
-        search_hits = g_new0 (SearchHitsData, 1);
-        search_hits->recent = g_object_ref (self);
-
-        g_idle_add (search_thread_add_hits_idle, search_hits);
+        search_add_hits_idle (self, NULL);
         return;
     }
 
