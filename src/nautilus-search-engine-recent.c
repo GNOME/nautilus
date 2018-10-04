@@ -103,14 +103,14 @@ search_thread_add_hits_idle (gpointer user_data)
     }
 
     g_list_free_full (search_hits->hits, g_object_unref);
-    g_object_unref (self->query);
     g_clear_object (&self->cancellable);
-    g_object_unref (self);
     g_free (search_hits);
 
     nautilus_search_provider_finished (provider,
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     g_object_notify (G_OBJECT (provider), "running");
+
+    g_object_unref (self);
 
     return FALSE;
 }
@@ -318,9 +318,6 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
     g_return_if_fail (self->query);
     g_return_if_fail (self->cancellable == NULL);
 
-    g_object_ref (self);
-    g_object_ref (self->query);
-
     location = nautilus_query_get_location (self->query);
 
     if (!is_recursive_search (NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED,
@@ -329,12 +326,13 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
     {
         SearchHitsData *search_hits;
         search_hits = g_new0 (SearchHitsData, 1);
-        search_hits->recent = self;
+        search_hits->recent = g_object_ref (self);
 
         g_idle_add (search_thread_add_hits_idle, search_hits);
         return;
     }
 
+    g_object_ref (self);
     self->cancellable = g_cancellable_new ();
 
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func, self);
