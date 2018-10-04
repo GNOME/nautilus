@@ -228,8 +228,8 @@ recent_thread_func (gpointer user_data)
 
         if (rank <= 0)
         {
-            name = gtk_recent_info_get_short_name (info);
-            rank = nautilus_query_matches_string (self->query, name);
+            g_autofree char *short_name = gtk_recent_info_get_short_name (info);
+            rank = nautilus_query_matches_string (self->query, short_name);
         }
 
         if (rank > 0)
