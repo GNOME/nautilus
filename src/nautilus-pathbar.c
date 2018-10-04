@@ -1230,6 +1230,8 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         }
         break;
     }
+
+    gtk_gesture_set_state (GTK_GESTURE (gesture), GTK_EVENT_SEQUENCE_CLAIMED);
 }
 
 static GIcon *
