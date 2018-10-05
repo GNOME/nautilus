@@ -326,6 +326,7 @@ nautilus_compute_title_for_location (GFile *location)
         {
             title = g_strdup (_("Starred"));
         }
+        else
         {
             title = nautilus_file_get_description (file);
 
