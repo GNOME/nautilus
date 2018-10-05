@@ -380,8 +380,7 @@ collect_all_directories (gpointer key,
 static void
 filtering_changed_callback (gpointer callback_data)
 {
-    GList *dirs, *l;
-    NautilusDirectory *directory;
+    g_autolist (NautilusDirectory) dirs = NULL;
 
     g_assert (callback_data == NULL);
 
@@ -391,13 +390,14 @@ filtering_changed_callback (gpointer callback_data)
     /* Preference about which items to show has changed, so we
      * can't trust any of our precomputed directory counts.
      */
-    for (l = dirs; l != NULL; l = l->next)
+    for (GList *l = dirs; l != NULL; l = l->next)
     {
+        NautilusDirectory *directory;
+
         directory = NAUTILUS_DIRECTORY (l->data);
+
         nautilus_directory_invalidate_count_and_mime_list (directory);
     }
-
-    nautilus_directory_list_unref (dirs);
 }
 
 void
