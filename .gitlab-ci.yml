@@ -40,6 +40,10 @@ flatpak:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+        # The Flatpak bundle is always generated at the end, meaning that there
+        # won’t be one in case of failure, but the logs will be available for
+        # our expert investigators to dissect.
+        when: always
         expire_in: 30 days
     cache:
         paths:
@@ -165,6 +169,10 @@ flatpak:master:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+        # The Flatpak bundle is always generated at the end, meaning that there
+        # won’t be one in case of failure, but the logs will be available for
+        # our expert investigators to dissect.
+        when: always
         expire_in: 30 days
     cache:
         paths:
