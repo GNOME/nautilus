@@ -33,7 +33,7 @@ flatpak:
         - flatpak build app ninja -C _build install
         - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
         # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app meson test -C _build
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
     artifacts:
