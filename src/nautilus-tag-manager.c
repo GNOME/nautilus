@@ -818,9 +818,13 @@ nautilus_tag_manager_finalize (GObject *object)
 
     self = NAUTILUS_TAG_MANAGER (object);
 
-    g_signal_handlers_disconnect_by_func (self->notifier,
-                                          G_CALLBACK (on_tracker_notifier_events),
-                                          self);
+    if (self->notifier != NULL)
+    {
+        g_signal_handlers_disconnect_by_func (self->notifier,
+                                              G_CALLBACK (on_tracker_notifier_events),
+                                              self);
+    }
+
     g_clear_object (&self->notifier);
 
     g_hash_table_destroy (self->starred_files);
@@ -875,11 +879,13 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
                                            TRACKER_NOTIFIER_FLAG_QUERY_LOCATION,
                                            cancellable,
                                            &self->notifier_error);
-
-    g_signal_connect (self->notifier,
-                      "events",
-                      G_CALLBACK (on_tracker_notifier_events),
-                      self);
+    if (self->notifier != NULL)
+    {
+        g_signal_connect (self->notifier,
+                          "events",
+                          G_CALLBACK (on_tracker_notifier_events),
+                          self);
+    }
 }
 
 static void
