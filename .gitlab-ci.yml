@@ -18,7 +18,7 @@ flatpak:
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
-        MESON_ARGS: "-Dprofile=development -Dtests=all"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
