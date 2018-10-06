@@ -44,6 +44,7 @@ add_project_arguments(
     '-Werror=empty-body',
     '-Werror=format=2',
     '-Werror=implicit-function-declaration',
+    '-Werror=incompatible-pointer-types',
     '-Werror=init-self',
     '-Werror=missing-include-dirs',
     '-Werror=missing-prototypes',
