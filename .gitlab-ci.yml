@@ -14,7 +14,7 @@ stages:
       - ninja test
 
 flatpak:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.28
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.30
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
@@ -33,13 +33,14 @@ flatpak:
         - flatpak build app ninja -C _build install
         - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
         # Run automatic tests inside the Flatpak env
-        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app ninja -C _build test
+        - xvfb-run -a -s "-screen 0 1024x768x24" flatpak build app dbus-launch meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
     artifacts:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+        when: always
         expire_in: 30 days
     cache:
         paths:
