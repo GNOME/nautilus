@@ -773,7 +773,6 @@ static void
 update_cursor (NautilusWindow *window)
 {
     NautilusWindowSlot *slot;
-    GdkCursor *cursor;
 
     slot = nautilus_window_get_active_slot (window);
 
@@ -781,11 +780,11 @@ update_cursor (NautilusWindow *window)
         nautilus_window_slot_get_allow_stop (slot))
     {
         GdkDisplay *display;
+        g_autoptr (GdkCursor) cursor = NULL;
 
         display = gtk_widget_get_display (GTK_WIDGET (window));
         cursor = gdk_cursor_new_from_name (display, "progress");
         gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (window)), cursor);
-        g_object_unref (cursor);
     }
     else
     {
