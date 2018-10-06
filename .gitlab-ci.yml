@@ -40,6 +40,7 @@ flatpak:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+        when: always
         expire_in: 30 days
     cache:
         paths:
@@ -165,6 +166,7 @@ flatpak:master:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+        when: always
         expire_in: 30 days
     cache:
         paths:
