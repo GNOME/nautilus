@@ -448,7 +448,7 @@ query_editor_focus_view_callback (NautilusQueryEditor *editor,
     priv = nautilus_window_slot_get_instance_private (self);
     if (priv->content_view != NULL)
     {
-        gtk_widget_grab_focus (priv->content_view);
+        gtk_widget_grab_focus (GTK_WIDGET (priv->content_view));
     }
 }
 
