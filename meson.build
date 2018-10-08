@@ -177,15 +177,9 @@ conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 conf.set('ENABLE_SECCOMP', seccomp.found())
 conf.set('HAVE_BWRAP', seccomp.found())
 
-if get_option('packagekit')
-  conf.set10('ENABLE_PACKAGEKIT', true)
-endif
-if get_option('profiling')
-  conf.set10('ENABLE_PROFILING', true)
-endif
-if get_option('selinux')
-  conf.set10('HAVE_SELINUX', true)
-endif
+conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
+conf.set('ENABLE_PROFILING', get_option('profiling'))
+conf.set('HAVE_SELINUX', get_option('selinux'))
 
 #############################################################
 # config.h dependency, add to target dependencies if needed #
