@@ -12,7 +12,7 @@ Reproducible in:
     For that, follow these steps:
     1. Make sure Flatpak is installed or install it following these steps https://flatpak.org/setup
     2. Install the unstable version of the app following this link 
-    https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/NautilusDevel.flatpakref and save
+    https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/NautilusMaster.flatpakref and save
     it as a ".flatpakref" file
 
     If these steps failed, write in 'Other' the distribution you’re using and
