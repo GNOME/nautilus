@@ -59,15 +59,28 @@ add_project_arguments(
   language: 'c'
 )
 
-#####################
-# Operating systems #
-#####################
+######################
+# Host system checks #
+######################
 
-is_linux = host_machine.system() == 'linux'
+host_system = host_machine.system()
+host_cpu = host_machine.cpu()
+unsupported_cpus = [
+  'alpha',
+  'ia64',
+  'm68k',
+  'parisc',
+  'parisc64',
+  'sh4',
+  'sparc64',
+]
+system_supports_seccomp = host_system == 'linux'
+cpu_supports_seccomp = not unsupported_cpus.contains(host_cpu)
+seccomp_required = system_supports_seccomp and cpu_supports_seccomp
 
-#########################
-# End operating systems #
-#########################
+##########################
+# End host system checks #
+##########################
 
 ##################
 # Module imports #
@@ -109,9 +122,12 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
-seccomp = []
-if is_linux
+if seccomp_required
+  warning('libseccomp required on this platform, make sure bubblewrap is available at runtime as well.')
   seccomp = dependency('libseccomp')
+else
+  warning('The host does not support libseccomp, thumbnailer sandboxing will be disabled.')
+  seccomp = dependency('', required: false)
 endif
 selinux = []
 if get_option('selinux')
@@ -157,10 +173,9 @@ conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 ###################################################
 # gnome-desktop macros for thumbnailer sandboxing #
 ###################################################
-if is_linux
-  conf.set10('ENABLE_SECCOMP', true)
-  conf.set10('HAVE_BWRAP', true)
-endif
+
+conf.set('ENABLE_SECCOMP', seccomp.found())
+conf.set('HAVE_BWRAP', seccomp.found())
 
 if get_option('packagekit')
   conf.set10('ENABLE_PACKAGEKIT', true)
