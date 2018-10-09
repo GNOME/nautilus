@@ -51,7 +51,6 @@ stages:
             --exclude=../subprojects/libgd/
             --exclude=../test/
             > coverage.html
-        - mv coverage.html 
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
     artifacts:
         paths:
