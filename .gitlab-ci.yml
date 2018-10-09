@@ -25,12 +25,13 @@ stages:
         # Setting LANG to avoid Tracker complaining and falling back to the same value,
         # and setting NO_AT_BRIDGE, so that atk-bridge isn’t initialized, preventing
         # annoying warnings that don’t affect the kinds of tests that we run.
-        - xvfb-run -a -s "-screen 0 1024x768x24" \
-            flatpak build \
-              --env=LANG=C.UTF-8 \
-              --env=NO_AT_BRIDGE=1 \
-              app \
-              dbus-run-session meson test -C _build
+        - |
+          xvfb-run -a -s "-screen 0 1024x768x24" \
+              flatpak build \
+                  --env=LANG=C.UTF-8 \
+                  --env=NO_AT_BRIDGE=1 \
+                  app \
+                  dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
     artifacts:
