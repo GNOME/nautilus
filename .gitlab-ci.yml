@@ -212,9 +212,7 @@ pages:
   stage: deploy
   script:
     - mkdir public
-    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/coverage/index.html
+    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/index.html
   artifacts:
     paths:
       - public
-  only:
-    - master
