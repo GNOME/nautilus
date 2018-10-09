@@ -34,6 +34,8 @@ stages:
                   dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+        # Generate coverage report
+        - cd _build
         - flatpak build app gcovr
             --root=.
             --exclude=src/
@@ -48,6 +50,8 @@ stages:
             --exclude=../src/nautilus-self-check-functions.c
             --exclude=../subprojects/libgd/
             --exclude=../test/
+            > coverage.html
+        - mv coverage.html 
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
     artifacts:
         paths:
