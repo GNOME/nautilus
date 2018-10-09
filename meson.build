@@ -123,7 +123,7 @@ gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
 if seccomp_required
-  warning('seccomp required on this platform, make sure bubblewrap is available at runtime as well.')
+  message('seccomp required on this platform, make sure bubblewrap is available at runtime as well.')
   seccomp = dependency('libseccomp')
 else
   warning('The host does not support seccomp, thumbnailer sandboxing will be disabled. Such setups are not recommended, use at your own risk!')
