@@ -51,6 +51,10 @@ stages:
             --exclude=../subprojects/libgd/
             --exclude=../test/
             > coverage.html
+        # Gitlab coverage badge parses the job log and searches for a string,
+        # so display the output that was generated so GitLab can use it for
+        # the badge.
+        - cat coverage.html
     coverage: '/^TOTAL.*\s+(\d+\%)$/'
     artifacts:
         paths:
