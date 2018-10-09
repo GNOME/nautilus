@@ -61,6 +61,7 @@ stages:
         paths:
             - ${BUNDLE}
             - _build/meson-logs/
+            - _build/coverage.html
         # The Flatpak bundle is always generated at the end, meaning that there
         # won’t be one in case of failure, but the logs will be available for
         # our expert investigators to dissect.
