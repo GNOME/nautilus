@@ -34,6 +34,20 @@ stages:
                   dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
+        - gcovr --root=.
+            --exclude=src/
+            --exclude=../data/
+            --exclude=../eel/check-program.c
+            --exclude=../eel/eel-debug.c
+            --exclude=../eel/eel-lib-self-check-functions.c
+            --exclude=../eel/eel-self-checks.c
+            --exclude=../src/animation/
+            --exclude=../src/gtk/
+            --exclude=../src/nautilus-lib-self-check-functions.c
+            --exclude=../src/nautilus-self-check-functions.c
+            --exclude=../subprojects/libgd/
+            --exclude=../test/
+    coverage: '/^TOTAL.*\s+(\d+\%)$/'
     artifacts:
         paths:
             - ${BUNDLE}
@@ -49,7 +63,7 @@ flatpak devel:
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
@@ -92,25 +106,7 @@ fedora rawhide:
         - dnf update -y --nogpgcheck
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
         - dnf builddep -y nautilus --nogpgcheck
-    script:
-        - meson _build . -Db_coverage=true
-        - cd _build
-        - ninja test
-        - gcovr --root=.
-            --exclude=src/
-            --exclude=../data/
-            --exclude=../eel/check-program.c
-            --exclude=../eel/eel-debug.c
-            --exclude=../eel/eel-lib-self-check-functions.c
-            --exclude=../eel/eel-self-checks.c
-            --exclude=../src/animation/
-            --exclude=../src/gtk/
-            --exclude=../src/nautilus-lib-self-check-functions.c
-            --exclude=../src/nautilus-self-check-functions.c
-            --exclude=../subprojects/libgd/
-            --exclude=../test/
-    coverage: '/^TOTAL.*\s+(\d+\%)$/'
-
+<<: *distro_test
     only:
         - schedules
         - web
@@ -180,7 +176,7 @@ flatpak master:
     stage: cross_environment
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Master -Dtests=all"
+        MESON_ARGS: "-Dprofile=Master -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusMaster"
@@ -195,7 +191,7 @@ flatpak gtk4:
     stage: cross_environment
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusGtk4.yml"
-        MESON_ARGS: "-Dprofile=Gtk4 -Dtests=all"
+        MESON_ARGS: "-Dprofile=Gtk4 -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusGtk4"
