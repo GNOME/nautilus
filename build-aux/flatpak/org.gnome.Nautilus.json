@@ -1,7 +1,7 @@
 {
     "app-id" : "org.gnome.NautilusDevel",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "3.28",
+    "runtime-version" : "3.30",
     "sdk" : "org.gnome.Sdk",
     "command" : "nautilus",
     "tags" : [
@@ -27,20 +27,6 @@
     ],
     "modules" : [
         {
-            "name" : "meson",
-            "buildsystem" : "simple",
-            "build-commands" : [
-                "python3 setup.py install --prefix=/app"
-            ],
-            "sources" : [
-                {
-                    "type" : "git",
-                    "url" : "https://github.com/mesonbuild/meson.git",
-                    "tag" : "0.47.2"
-                }
-            ]
-        },
-        {
             "name" : "exiv2",
             "config-opts" : [
                 "-DCMAKE_INSTALL_PREFIX=/app",
@@ -52,13 +38,6 @@
                     "type" : "archive",
                     "url" : "https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz",
                     "sha256" : "51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01"
-                },
-                {
-                    "type" : "shell",
-                    "commands" : [
-                        "cp -f /usr/share/automake-1.15/config.sub ./config/",
-                        "cp -f /usr/share/automake-1.15/config.guess ./config/"
-                    ]
                 }
             ]
         },
