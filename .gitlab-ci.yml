@@ -213,7 +213,7 @@ pages:
   script:
     - mkdir public
     - cd nautilus
-    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/coverage
+    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/coverage/index.html
   artifacts:
     paths:
       - public
