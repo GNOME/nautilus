@@ -34,7 +34,8 @@ stages:
                   dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-        - gcovr --root=.
+        - flatpak build app gcovr
+            --root=.
             --exclude=src/
             --exclude=../data/
             --exclude=../eel/check-program.c
