@@ -36,7 +36,7 @@ stages:
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
         # Generate coverage report
         - cd _build
-        - flatpak build app gcovr
+        - flatpak build ../app gcovr
             --root=.
             --exclude=src/
             --exclude=../data/
