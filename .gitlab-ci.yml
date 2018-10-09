@@ -53,10 +53,6 @@ stages:
             --exclude=../src/nautilus-self-check-functions.c
             --exclude=../subprojects/libgd/
             --exclude=../test/
-        # Gitlab coverage badge parses the job log and searches for a string,
-        # so display the output that was generated so GitLab can use it for
-        # the badge.
-        - cat coverage.html
     coverage: '/^branches:.*\s+(\S+\%).*$/'
     artifacts:
         paths:
@@ -211,3 +207,15 @@ flatpak gtk4:
         - schedules
         - web
         - tags
+
+pages:
+  stage: deploy
+  script:
+    - mkdir public
+    - cd nautilus
+    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/coverage
+  artifacts:
+    paths:
+      - public
+  only:
+    - master
