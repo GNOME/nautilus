@@ -107,7 +107,7 @@ fedora rawhide:
         - dnf update -y --nogpgcheck
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
         - dnf builddep -y nautilus --nogpgcheck
-<<: *distro_test
+    <<: *distro_test
     only:
         - schedules
         - web
