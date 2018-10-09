@@ -1,6 +1,6 @@
 app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
-runtime-version: 3.28
+runtime-version: 3.30
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
@@ -25,15 +25,6 @@ finish-args:
   - --env=TRACKER_SPARQL_BACKEND=bus
 
 modules:
-  - name: meson
-    buildsystem: simple
-    build-commands:
-      - python3 setup.py install --prefix=/app
-    sources:
-      - type: git
-        url: https://github.com/mesonbuild/meson.git
-        tag: 0.47.2
-
   - name: exiv2
     buildsystem: cmake
     build-options:
