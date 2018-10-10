@@ -11,8 +11,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.1.90\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2018-09-14 06:46+0000\n"
-"PO-Revision-Date: 2018-10-09 17:36+0800\n"
+"POT-Creation-Date: 2018-10-09 09:38+0000\n"
+"PO-Revision-Date: 2018-10-10 11:59+0800\n"
 "Last-Translator: Cheng-Chia Tseng <pswo10680@gmail.com>\n"
 "Language-Team: Chinese(Taiwan) <zh-l10n@lists.linux.org.tw>\n"
 "Language: zh_TW\n"
@@ -66,7 +66,7 @@ msgstr ""
 #. * in development builds.
 #.
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4639 src/nautilus-window.c:2859
+#: src/nautilus-properties-window.c:4639 src/nautilus-window.c:2860
 msgid "Files"
 msgstr "檔案"
 
@@ -533,7 +533,7 @@ msgstr "您可以按下取消來停止這次操作。"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:129
 #: src/nautilus-files-view.c:385 src/nautilus-list-model.c:471
-#: src/nautilus-window-slot.c:990
+#: src/nautilus-window-slot.c:1015
 msgid "Loading…"
 msgstr "載入中…"
 
@@ -659,7 +659,7 @@ msgid "Send files by mail…"
 msgstr "以電子郵件傳送檔案…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1654
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1679
 msgid "Oops! Something went wrong."
 msgstr "糟糕！有些地方出問題了。"
 
@@ -902,12 +902,12 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:111 src/nautilus-file.c:4427
-#: src/nautilus-file-utilities.c:323 src/nautilus-pathbar.c:320
+#: src/nautilus-file-utilities.c:323 src/nautilus-pathbar.c:317
 msgid "Other Locations"
 msgstr "其他的位置"
 
 #: src/nautilus-bookmark.c:115 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1949 src/nautilus-pathbar.c:315
+#: src/nautilus-list-view.c:1946 src/nautilus-pathbar.c:312
 #: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:184
 msgid "Home"
 msgstr "家目錄"
@@ -929,7 +929,7 @@ msgstr "重設為預設值(_F)"
 msgid "Replace the current List Columns settings with the default settings"
 msgstr "使用預設設定值取代目前的清單欄設定值"
 
-#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2268
+#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2265
 #: src/resources/ui/nautilus-rename-file-popover.ui:23
 msgid "Name"
 msgstr "名稱"
@@ -1235,7 +1235,7 @@ msgid "File not found"
 msgstr "找不到檔案"
 
 #: src/nautilus-file.c:4431 src/nautilus-file-utilities.c:327
-#: src/nautilus-pathbar.c:325
+#: src/nautilus-pathbar.c:322
 msgid "Starred"
 msgstr "星標"
 
@@ -2547,75 +2547,75 @@ msgstr "無法停止裝置"
 msgid "Unable to start “%s”"
 msgstr "無法啟動「%s」"
 
-#: src/nautilus-files-view.c:7770
+#: src/nautilus-files-view.c:7772
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "以選取範圍新增資料夾 (%'d 個項目)"
 
-#: src/nautilus-files-view.c:7830
+#: src/nautilus-files-view.c:7832
 #, c-format
 msgid "Open With %s"
 msgstr "以 %s 開啟"
 
-#: src/nautilus-files-view.c:7842
+#: src/nautilus-files-view.c:7844
 msgid "Run"
 msgstr "執行"
 
-#: src/nautilus-files-view.c:7847
+#: src/nautilus-files-view.c:7849
 msgid "Extract Here"
 msgstr "在此處解開"
 
-#: src/nautilus-files-view.c:7848
+#: src/nautilus-files-view.c:7850
 msgid "Extract to…"
 msgstr "解開到…"
 
-#: src/nautilus-files-view.c:7852
+#: src/nautilus-files-view.c:7854
 msgid "Open"
 msgstr "開啟"
 
-#: src/nautilus-files-view.c:7910
+#: src/nautilus-files-view.c:7912
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "開啟(_S)"
 
-#: src/nautilus-files-view.c:7916 src/gtk/nautilusgtkplacesview.c:1687
+#: src/nautilus-files-view.c:7918 src/gtk/nautilusgtkplacesview.c:1687
 msgid "_Connect"
 msgstr "連接(_C)"
 
-#: src/nautilus-files-view.c:7922
+#: src/nautilus-files-view.c:7924
 msgid "_Start Multi-disk Drive"
 msgstr "開啟多磁碟裝置(_S)"
 
-#: src/nautilus-files-view.c:7928
+#: src/nautilus-files-view.c:7930
 msgid "U_nlock Drive"
 msgstr "解鎖裝置(_N)"
 
-#: src/nautilus-files-view.c:7948
+#: src/nautilus-files-view.c:7950
 msgid "Stop Drive"
 msgstr "停止裝置"
 
-#: src/nautilus-files-view.c:7954
+#: src/nautilus-files-view.c:7956
 msgid "_Safely Remove Drive"
 msgstr "安全的移除裝置(_S)"
 
-#: src/nautilus-files-view.c:7960 src/gtk/nautilusgtkplacesview.c:1677
+#: src/nautilus-files-view.c:7962 src/gtk/nautilusgtkplacesview.c:1677
 msgid "_Disconnect"
 msgstr "中斷(_D)"
 
-#: src/nautilus-files-view.c:7966
+#: src/nautilus-files-view.c:7968
 msgid "_Stop Multi-disk Drive"
 msgstr "關閉多磁碟裝置(_S)"
 
-#: src/nautilus-files-view.c:7972
+#: src/nautilus-files-view.c:7974
 msgid "_Lock Drive"
 msgstr "鎖定裝置(_L)"
 
-#: src/nautilus-files-view.c:9720
+#: src/nautilus-files-view.c:9722
 msgid "Content View"
 msgstr "內容顯示模式"
 
-#: src/nautilus-files-view.c:9721
+#: src/nautilus-files-view.c:9723
 msgid "View of the current folder"
 msgstr "顯示目前的資料夾"
 
@@ -2871,15 +2871,15 @@ msgstr "取消復原建立資料夾(_R)"
 #: src/nautilus-file-undo-operations.c:821
 #, c-format
 msgid "Create new file “%s” from template "
-msgstr "從範本建立新檔案「%s」"
+msgstr "從模本建立新檔案「%s」"
 
 #: src/nautilus-file-undo-operations.c:823
 msgid "_Undo Create from Template"
-msgstr "復原範本建立(_U)"
+msgstr "復原從模本建立(_U)"
 
 #: src/nautilus-file-undo-operations.c:824
 msgid "_Redo Create from Template"
-msgstr "取消復原範本建立(_R)"
+msgstr "取消復原從模本建立(_R)"
 
 #: src/nautilus-file-undo-operations.c:1016
 #: src/nautilus-file-undo-operations.c:1017
@@ -3143,22 +3143,22 @@ msgstr "包含相片與音樂"
 msgid "(Empty)"
 msgstr "(空白)"
 
-#: src/nautilus-list-view.c:1600
+#: src/nautilus-list-view.c:1597
 msgid "Use Default"
 msgstr "使用預設值"
 
-#: src/nautilus-list-view.c:2402
+#: src/nautilus-list-view.c:2399
 #: src/resources/ui/nautilus-preferences-window.ui:161
 #: src/resources/ui/nautilus-preferences-window.ui:1285
 msgid "List View"
 msgstr "清單檢視"
 
-#: src/nautilus-list-view.c:3356
+#: src/nautilus-list-view.c:3353
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s 可視欄位"
 
-#: src/nautilus-list-view.c:3376
+#: src/nautilus-list-view.c:3373
 msgid "Choose the order of information to appear in this folder:"
 msgstr "請選擇這個資料夾顯示資訊的次序："
 
@@ -3561,13 +3561,13 @@ msgstr "尚未支援受密碼保護的封存檔。這份清單列出了可以開
 
 #. Translators: This is the label used in the pathbar when seeing
 #. * the root directory (also known as /)
-#: src/nautilus-pathbar.c:303 src/gtk/nautilusgtkplacesview.c:1120
+#: src/nautilus-pathbar.c:300 src/gtk/nautilusgtkplacesview.c:1120
 msgid "Computer"
 msgstr "電腦"
 
 #. Translators: This is the filesystem root directory (also known
 #. * as /) when seen as administrator
-#: src/nautilus-pathbar.c:310
+#: src/nautilus-pathbar.c:307
 msgid "Administrator Root"
 msgstr "管理員 Root"
 
@@ -3992,7 +3992,7 @@ msgstr "垃圾桶"
 
 #: src/nautilus-special-location-bar.c:56
 msgid "Put files in this folder to use them as templates for new documents."
-msgstr "所有此資料夾的檔案都會在「新增文件」選單中做為範本出現。"
+msgstr "所有此資料夾的檔案都會在「新增文件」選單中做為模本出現。"
 
 #: src/nautilus-special-location-bar.c:57
 msgid ""
@@ -4157,7 +4157,7 @@ msgstr "將分頁右移(_R)"
 msgid "_Close Tab"
 msgstr "關閉分頁(_C)"
 
-#: src/nautilus-window.c:2864
+#: src/nautilus-window.c:2865
 msgid "Access and organize your files"
 msgstr "存取並整理您的檔案"
 
@@ -4165,7 +4165,7 @@ msgstr "存取並整理您的檔案"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2874
+#: src/nautilus-window.c:2875
 msgid "translator-credits"
 msgstr ""
 "如對翻譯有任何意見，請送一封電子郵件給\n"
@@ -4176,49 +4176,49 @@ msgstr ""
 "Abel Cheung <abel@oaka.org>, 2001-2004\n"
 "Gong Yi LIAO <granziliao@sinamail.com>, 2000"
 
-#: src/nautilus-window-slot.c:1123
+#: src/nautilus-window-slot.c:1148
 msgid "Searching locations only"
 msgstr "僅搜尋位置"
 
-#: src/nautilus-window-slot.c:1127
+#: src/nautilus-window-slot.c:1152
 msgid "Searching network locations only"
 msgstr "僅搜尋網路位置"
 
-#: src/nautilus-window-slot.c:1132
+#: src/nautilus-window-slot.c:1157
 msgid "Remote location — only searching the current folder"
 msgstr "遠端位置 — 僅搜尋目前的資料夾"
 
-#: src/nautilus-window-slot.c:1136
+#: src/nautilus-window-slot.c:1161
 msgid "Only searching the current folder"
 msgstr "僅搜尋目前的資料夾"
 
-#: src/nautilus-window-slot.c:1660
+#: src/nautilus-window-slot.c:1685
 msgid "Unable to display the contents of this folder."
 msgstr "無法顯示這個資料夾的內容。"
 
-#: src/nautilus-window-slot.c:1664
+#: src/nautilus-window-slot.c:1689
 msgid "This location doesn’t appear to be a folder."
 msgstr "這個位置似乎不是資料夾。"
 
-#: src/nautilus-window-slot.c:1673
+#: src/nautilus-window-slot.c:1698
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr "找不到要求的檔案。請檢查拼字是否正確並再試一次。"
 
-#: src/nautilus-window-slot.c:1682
+#: src/nautilus-window-slot.c:1707
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "「%s」位置是不支援的。"
 
-#: src/nautilus-window-slot.c:1687
+#: src/nautilus-window-slot.c:1712
 msgid "Unable to handle this kind of location."
 msgstr "無法處理此類型的位置。"
 
-#: src/nautilus-window-slot.c:1695
+#: src/nautilus-window-slot.c:1720
 msgid "Unable to access the requested location."
 msgstr "無法存取要求的位置。"
 
-#: src/nautilus-window-slot.c:1701
+#: src/nautilus-window-slot.c:1726
 msgid "Don’t have permission to access the requested location."
 msgstr "您沒有存取所在位置的許可。"
 
@@ -4227,18 +4227,18 @@ msgstr "您沒有存取所在位置的許可。"
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1712
+#: src/nautilus-window-slot.c:1737
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
 msgstr "無法尋找要求的位置。請檢查拼字或網路設定值。"
 
-#: src/nautilus-window-slot.c:1731
+#: src/nautilus-window-slot.c:1756
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "未處理的錯誤訊息：%s"
 
-#: src/nautilus-window-slot.c:1907
+#: src/nautilus-window-slot.c:1932
 #, c-format
 msgid "Unable to load location"
 msgstr "無法載入位置"
