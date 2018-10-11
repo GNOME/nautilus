@@ -281,6 +281,12 @@ nautilus_query_editor_class_init (NautilusQueryEditorClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
+    gtk_binding_entry_add_signal (gtk_binding_set_by_class (class),
+                                  GDK_KEY_Down,
+                                  0,
+                                  "focus-view",
+                                  0);
+
     /**
      * NautilusQueryEditor::location:
      *
@@ -737,30 +743,8 @@ gboolean
 nautilus_query_editor_handle_event (NautilusQueryEditor *self,
                                     GdkEvent            *event)
 {
-    guint keyval;
-    GdkModifierType state;
-
     g_return_val_if_fail (NAUTILUS_IS_QUERY_EDITOR (self), GDK_EVENT_PROPAGATE);
     g_return_val_if_fail (event != NULL, GDK_EVENT_PROPAGATE);
-
-    if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
-    {
-        g_return_val_if_reached (GDK_EVENT_PROPAGATE);
-    }
-
-    gdk_event_get_state (event, &state);
-
-    /* In the case of key up/down we want to move the focus to the view, since
-     * the user is probably trying to navigate the files
-     */
-    if (gtk_widget_has_focus (GTK_WIDGET (self->entry)))
-    {
-        if (keyval == GDK_KEY_Down || keyval == GDK_KEY_Up)
-        {
-            g_signal_emit (self, signals[FOCUS_VIEW], 0);
-            return GDK_EVENT_STOP;
-        }
-    }
 
     return gtk_search_entry_handle_event (GTK_SEARCH_ENTRY (self->entry), event);
 }
