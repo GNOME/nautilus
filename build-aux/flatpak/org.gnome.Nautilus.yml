@@ -5,10 +5,8 @@ runtime-version: '3.30'
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
-- devel
-- development
-- nightly
-desktop-file-name-prefix: "(Development) "
+- stable
+desktop-file-name-prefix: "(Flatpak) "
 finish-args:
 - "--share=ipc"
 - "--socket=x11"
@@ -73,6 +71,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker.git
+    tag: 2.1.5
 - name: gnome-autoar
   sources:
   - type: git
@@ -87,3 +86,4 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/nautilus.git
+    branch: gnome-3-30

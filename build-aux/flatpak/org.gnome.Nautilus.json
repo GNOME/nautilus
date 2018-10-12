@@ -5,11 +5,9 @@
     "sdk" : "org.gnome.Sdk",
     "command" : "nautilus",
     "tags" : [
-        "devel",
-        "development",
-        "nightly"
+        "stable"
     ],
-    "desktop-file-name-prefix" : "(Development) ",
+    "desktop-file-name-prefix" : "(Flatpak) ",
     "finish-args" : [
         "--share=ipc",
         "--socket=x11",
@@ -98,7 +96,8 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/tracker.git"
+                    "url" : "https://gitlab.gnome.org/GNOME/tracker.git",
+                    "tag" : "2.1.5"
                 }
             ]
         },
@@ -123,7 +122,8 @@
             "sources" : [
                 {
                     "type" : "git",
-                    "url" : "https://gitlab.gnome.org/GNOME/nautilus.git"
+                    "url" : "https://gitlab.gnome.org/GNOME/nautilus.git",
+                    "branch" : "gnome-3-30"
                 }
             ]
         }
