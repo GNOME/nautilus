@@ -339,7 +339,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
                               nautilus_query_get_recursive (self->query),
                               location))
     {
-        search_add_hits_idle (self, NULL);
+        search_add_hits_idle (g_object_ref (self), NULL);
         return;
     }
 
