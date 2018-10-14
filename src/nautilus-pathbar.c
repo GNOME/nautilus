@@ -725,6 +725,24 @@ nautilus_path_bar_remove_1 (GtkContainer *container,
 }
 
 static void
+button_data_free (ButtonData *button_data)
+{
+    g_object_unref (button_data->path);
+    g_free (button_data->dir_name);
+    if (button_data->file != NULL)
+    {
+        g_signal_handler_disconnect (button_data->file,
+                                     button_data->file_changed_signal_id);
+        nautilus_file_monitor_remove (button_data->file, button_data);
+        nautilus_file_unref (button_data->file);
+    }
+
+    g_clear_object (&button_data->multi_press_gesture);
+
+    g_free (button_data);
+}
+
+static void
 nautilus_path_bar_remove (GtkContainer *container,
                           GtkWidget    *widget)
 {
@@ -740,6 +758,7 @@ nautilus_path_bar_remove (GtkContainer *container,
         {
             nautilus_path_bar_remove_1 (container, widget);
             self->button_list = g_list_remove_link (self->button_list, children);
+            button_data_free (children->data);
             g_list_free_1 (children);
             return;
         }
@@ -1012,24 +1031,6 @@ nautilus_path_bar_check_icon_theme (NautilusPathBar *self)
     reload_icons (self);
 }
 
-static void
-button_data_free (ButtonData *button_data)
-{
-    g_object_unref (button_data->path);
-    g_free (button_data->dir_name);
-    if (button_data->file != NULL)
-    {
-        g_signal_handler_disconnect (button_data->file,
-                                     button_data->file_changed_signal_id);
-        nautilus_file_monitor_remove (button_data->file, button_data);
-        nautilus_file_unref (button_data->file);
-    }
-
-    g_clear_object (&button_data->multi_press_gesture);
-
-    g_free (button_data);
-}
-
 /* Public functions and their helpers */
 static void
 nautilus_path_bar_clear_buttons (NautilusPathBar *self)
@@ -1041,8 +1042,6 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
         button_data = BUTTON_DATA (self->button_list->data);
 
         gtk_container_remove (GTK_CONTAINER (self), button_data->container);
-
-        button_data_free (button_data);
     }
 }
 
@@ -1521,8 +1520,6 @@ button_data_file_changed (NautilusFile *file,
                     data = BUTTON_DATA (self->button_list->data);
 
                     gtk_container_remove (GTK_CONTAINER (self), data->container);
-
-                    button_data_free (data);
                 }
             }
         }
