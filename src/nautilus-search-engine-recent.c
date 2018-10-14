@@ -185,7 +185,6 @@ recent_thread_func (gpointer user_data)
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
-    SearchHitsData *search_hits;
     GList *recent_items;
     GList *mime_types;
     GList *hits;
