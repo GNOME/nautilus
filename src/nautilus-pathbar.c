@@ -109,6 +109,8 @@ struct _NautilusPathBar
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_CONTAINER);
 
+static void button_data_free (ButtonData *button_data);
+
 static void nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
 static void nautilus_path_bar_update_button_appearance (ButtonData *button_data);
 static void nautilus_path_bar_update_button_state (ButtonData *button_data,
@@ -740,7 +742,9 @@ nautilus_path_bar_remove (GtkContainer *container,
         {
             nautilus_path_bar_remove_1 (container, widget);
             self->button_list = g_list_remove_link (self->button_list, children);
+            button_data_free (BUTTON_DATA (children->data));
             g_list_free_1 (children);
+
             return;
         }
         children = children->next;
@@ -1039,10 +1043,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
         ButtonData *button_data;
 
         button_data = BUTTON_DATA (self->button_list->data);
-
         gtk_container_remove (GTK_CONTAINER (self), button_data->container);
-
-        button_data_free (button_data);
     }
 }
 
@@ -1519,10 +1520,7 @@ button_data_file_changed (NautilusFile *file,
                     ButtonData *data;
 
                     data = BUTTON_DATA (self->button_list->data);
-
                     gtk_container_remove (GTK_CONTAINER (self), data->container);
-
-                    button_data_free (data);
                 }
             }
         }
