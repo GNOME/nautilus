@@ -124,11 +124,12 @@ search_add_hits_idle (NautilusSearchEngineRecent *self,
 
     if (self->add_hits_idle_id != 0)
     {
+        g_list_free_full (hits, g_object_unref);
         return;
     }
 
     search_hits = g_new0 (SearchHitsData, 1);
-    search_hits->recent = self;
+    search_hits->recent = g_object_ref (self);
     search_hits->hits = hits;
 
     self->add_hits_idle_id = g_idle_add (search_thread_add_hits_idle, search_hits);
@@ -182,7 +183,7 @@ is_file_valid_recursive (NautilusSearchEngineRecent *self,
 static gpointer
 recent_thread_func (gpointer user_data)
 {
-    NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
+    g_autoptr (NautilusSearchEngineRecent) self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
     GList *recent_items;
@@ -338,7 +339,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
                               nautilus_query_get_recursive (self->query),
                               location))
     {
-        search_add_hits_idle (g_object_ref (self), NULL);
+        search_add_hits_idle (self, NULL);
         return;
     }
 
