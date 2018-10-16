@@ -5253,7 +5253,7 @@ run_script (GSimpleAction *action,
     GdkScreen *screen;
     g_autolist (NautilusFile) selection = NULL;
     char *file_uri;
-    char *local_file_path;
+    g_autofree char *local_file_path = NULL;
     char *quoted_path;
     char *old_working_dir;
     char **parameters;
@@ -5267,7 +5267,6 @@ run_script (GSimpleAction *action,
     g_free (file_uri);
 
     quoted_path = g_shell_quote (local_file_path);
-    g_free (local_file_path);
 
     old_working_dir = change_to_view_directory (launch_parameters->directory_view);
 
