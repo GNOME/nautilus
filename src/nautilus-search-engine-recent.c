@@ -328,7 +328,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
     g_autoptr (GFile) location = NULL;
-    GThread *thread;
+    g_autoptr (GThread) thread = NULL;
 
     g_return_if_fail (self->query);
     g_return_if_fail (self->cancellable == NULL);
@@ -348,8 +348,6 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
                            g_object_ref (self));
 
     g_object_notify (G_OBJECT (provider), "running");
-
-    g_thread_unref (thread);
 }
 
 static void
