@@ -33,6 +33,15 @@
 #include "eel-lib-self-check-functions.h"
 #endif
 
+/**
+ * eel_str_double_underscores:
+ * @string: input string
+ *
+ * Returns: a newly allocated copy of @string,
+ * with a doubled number of underscores.
+ * If @string doesn't contain underscores, returns a copy of it.
+ * If @string is %NULL, returns %NULL.
+ */
 char *
 eel_str_double_underscores (const char *string)
 {
@@ -72,6 +81,14 @@ eel_str_double_underscores (const char *string)
     return escaped;
 }
 
+/**
+ * eel_str_capitalize:
+ * @string: input string
+ *
+ * Returns: a newly allocated copy of @string,
+ * with the first letter capitalized.
+ * If @string is %NULL, returns %NULL.
+ */
 char *
 eel_str_capitalize (const char *string)
 {
