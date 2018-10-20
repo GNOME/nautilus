@@ -72,6 +72,14 @@ eel_str_double_underscores (const char *string)
     return escaped;
 }
 
+/**
+ * eel_str_capitalize:
+ * @string: input string
+ *
+ * Returns: a newly allocated string, identical with the input
+ * string, with the first letter capitalized.
+ * If the input string is NULL, returns NULL.
+ */
 char *
 eel_str_capitalize (const char *string)
 {
