@@ -1064,6 +1064,8 @@ file_and_directory_free (gpointer data)
     g_free (fad);
 }
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (FileAndDirectory, file_and_directory_free)
+
 static gboolean
 file_and_directory_equal (gconstpointer v1,
                           gconstpointer v2)
@@ -3935,7 +3937,10 @@ static void
 process_new_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    GList *new_added_files, *new_changed_files, *old_added_files, *old_changed_files;
+    g_autolist (FileAndDirectory) new_added_files = NULL;
+    g_autolist (FileAndDirectory) new_changed_files = NULL;
+    GList *old_added_files;
+    GList *old_changed_files;
     GHashTable *non_ready_files;
     GList *node, *next;
     FileAndDirectory *pending;
@@ -3943,10 +3948,8 @@ process_new_files (NautilusFilesView *view)
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    new_added_files = priv->new_added_files;
-    priv->new_added_files = NULL;
-    new_changed_files = priv->new_changed_files;
-    priv->new_changed_files = NULL;
+    new_added_files = g_steal_pointer (&priv->new_added_files);
+    new_changed_files = g_steal_pointer (&priv->new_changed_files);
 
     non_ready_files = priv->non_ready_files;
 
@@ -3982,7 +3985,6 @@ process_new_files (NautilusFilesView *view)
             }
         }
     }
-    g_list_free_full (new_added_files, file_and_directory_free);
 
     /* Newly changed files go into the old_added_files list if they're ready
      * and were seen non-ready in the past, into the old_changed_files list
@@ -4011,7 +4013,6 @@ process_new_files (NautilusFilesView *view)
             }
         }
     }
-    g_list_free_full (new_changed_files, file_and_directory_free);
 
     /* If any files were added to old_added_files, then resort it. */
     if (old_added_files != priv->old_added_files)
@@ -4123,14 +4124,15 @@ static void
 process_old_files (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    GList *files_added, *files_changed, *node;
+    g_autolist (FileAndDirectory) files_added = NULL;
+    g_autolist (FileAndDirectory) files_changed = NULL;
     FileAndDirectory *pending;
     GList *files;
     g_autoptr (GList) pending_additions = NULL;
 
     priv = nautilus_files_view_get_instance_private (view);
-    files_added = priv->old_added_files;
-    files_changed = priv->old_changed_files;
+    files_added = g_steal_pointer (&priv->old_added_files);
+    files_changed = g_steal_pointer (&priv->old_changed_files);
 
 
     if (files_added != NULL || files_changed != NULL)
@@ -4139,7 +4141,7 @@ process_old_files (NautilusFilesView *view)
 
         g_signal_emit (view, signals[BEGIN_FILE_CHANGES], 0);
 
-        for (node = files_added; node != NULL; node = node->next)
+        for (GList *node = files_added; node != NULL; node = node->next)
         {
             pending = node->data;
             pending_additions = g_list_prepend (pending_additions, pending->file);
@@ -4158,7 +4160,7 @@ process_old_files (NautilusFilesView *view)
                            signals[ADD_FILES], 0, pending_additions);
         }
 
-        for (node = files_changed; node != NULL; node = node->next)
+        for (GList *node = files_changed; node != NULL; node = node->next)
         {
             gboolean should_show_file;
             pending = node->data;
@@ -4193,12 +4195,6 @@ process_old_files (NautilusFilesView *view)
                                         (&files, &selection);
             nautilus_file_list_free (files);
         }
-
-        g_list_free_full (priv->old_added_files, file_and_directory_free);
-        priv->old_added_files = NULL;
-
-        g_list_free_full (priv->old_changed_files, file_and_directory_free);
-        priv->old_changed_files = NULL;
 
         if (send_selection_change)
         {
