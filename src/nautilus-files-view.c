@@ -3864,29 +3864,27 @@ copy_move_done_callback (GHashTable *debuting_files,
 
 static gboolean
 view_file_still_belongs (NautilusFilesView *view,
-                         NautilusFile      *file,
-                         NautilusDirectory *directory)
+                         FileAndDirectory  *fad)
 {
     NautilusFilesViewPrivate *priv;
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    if (priv->model != directory &&
-        g_list_find (priv->subdirectory_list, directory) == NULL)
+    if (priv->model != fad->directory &&
+        g_list_find (priv->subdirectory_list, fad->directory) == NULL)
     {
         return FALSE;
     }
 
-    return nautilus_directory_contains_file (directory, file);
+    return nautilus_directory_contains_file (fad->directory, fad->file);
 }
 
 static gboolean
 still_should_show_file (NautilusFilesView *view,
-                        NautilusFile      *file,
-                        NautilusDirectory *directory)
+                        FileAndDirectory  *fad)
 {
-    return nautilus_files_view_should_show_file (view, file) &&
-           view_file_still_belongs (view, file, directory);
+    return nautilus_files_view_should_show_file (view, fad->file) &&
+           view_file_still_belongs (view, fad);
 }
 
 static gboolean
@@ -3995,12 +3993,12 @@ process_new_files (NautilusFilesView *view)
     {
         next = node->next;
         pending = (FileAndDirectory *) node->data;
-        if (!still_should_show_file (view, pending->file, pending->directory) || ready_to_load (pending->file))
+        if (!still_should_show_file (view, pending) || ready_to_load (pending->file))
         {
             if (g_hash_table_lookup (non_ready_files, pending) != NULL)
             {
                 g_hash_table_remove (non_ready_files, pending);
-                if (still_should_show_file (view, pending->file, pending->directory))
+                if (still_should_show_file (view, pending))
                 {
                     new_changed_files = g_list_delete_link (new_changed_files, node);
                     old_added_files = g_list_prepend (old_added_files, pending);
@@ -4164,7 +4162,7 @@ process_old_files (NautilusFilesView *view)
         {
             gboolean should_show_file;
             pending = node->data;
-            should_show_file = still_should_show_file (view, pending->file, pending->directory);
+            should_show_file = still_should_show_file (view, pending);
             g_signal_emit (view,
                            signals[should_show_file ? FILE_CHANGED : REMOVE_FILE], 0,
                            pending->file, pending->directory);
