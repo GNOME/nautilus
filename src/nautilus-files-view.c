@@ -3961,7 +3961,7 @@ process_new_files (NautilusFilesView *view)
     {
         next = node->next;
         pending = (FileAndDirectory *) node->data;
-        in_non_ready = g_hash_table_lookup (non_ready_files, pending) != NULL;
+        in_non_ready = g_hash_table_contains (non_ready_files, pending);
         if (nautilus_files_view_should_show_file (view, pending->file))
         {
             if (ready_to_load (pending->file))
@@ -3978,7 +3978,7 @@ process_new_files (NautilusFilesView *view)
                 if (!in_non_ready)
                 {
                     new_added_files = g_list_delete_link (new_added_files, node);
-                    g_hash_table_insert (non_ready_files, pending, pending);
+                    g_hash_table_add (non_ready_files, pending);
                 }
             }
         }
@@ -3995,7 +3995,7 @@ process_new_files (NautilusFilesView *view)
         pending = (FileAndDirectory *) node->data;
         if (!still_should_show_file (view, pending) || ready_to_load (pending->file))
         {
-            if (g_hash_table_lookup (non_ready_files, pending) != NULL)
+            if (g_hash_table_contains (non_ready_files, pending))
             {
                 g_hash_table_remove (non_ready_files, pending);
                 if (still_should_show_file (view, pending))
@@ -8605,14 +8605,6 @@ nautilus_files_view_select_file (NautilusFilesView *view,
     nautilus_files_view_call_set_selection (view, &file_list);
 }
 
-static gboolean
-remove_all (gpointer key,
-            gpointer value,
-            gpointer callback_data)
-{
-    return TRUE;
-}
-
 /**
  * nautilus_files_view_stop_loading:
  *
@@ -8639,7 +8631,7 @@ nautilus_files_view_stop_loading (NautilusFilesView *view)
     g_list_free_full (priv->new_changed_files, file_and_directory_free);
     priv->new_changed_files = NULL;
 
-    g_hash_table_foreach_remove (priv->non_ready_files, remove_all, NULL);
+    g_hash_table_remove_all (priv->non_ready_files);
 
     g_list_free_full (priv->old_added_files, file_and_directory_free);
     priv->old_added_files = NULL;
