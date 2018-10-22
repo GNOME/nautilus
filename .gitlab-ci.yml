@@ -35,7 +35,24 @@ stages:
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
 
-.gcovr_script_template: &gcovr_script
+.flatpak_artifacts_template: &flatpak_artifacts
+    artifacts:
+        paths:
+            - ${BUNDLE}
+            - _build/meson-logs/
+        # The Flatpak bundle is always generated at the end, meaning that there
+        # won’t be one in case of failure, but the logs will be available for
+        # our expert investigators to dissect.
+        when: always
+        expire_in: 2 days
+
+.flatpak_template: &flatpak
+    <<: *flatpak_script
+    <<: *flatpak_artifacts
+
+.flatpak_gcovr_template: &flatpak_gcovr
+    extends: .flatpak_template
+    after_script:
         # Generate coverage report
         - cd _build
         - flatpak build ../app gcovr
@@ -55,39 +72,10 @@ stages:
             --exclude=../src/nautilus-self-check-functions.c
             --exclude=../subprojects/libgd/
             --exclude=../test/
-
-.flatpak_artifacts_template: &flatpak_artifacts
-    artifacts:
-        paths:
-            - ${BUNDLE}
-            - _build/meson-logs/
-        # The Flatpak bundle is always generated at the end, meaning that there
-        # won’t be one in case of failure, but the logs will be available for
-        # our expert investigators to dissect.
-        when: always
-        expire_in: 2 days
-
-.flatpak_gcovr_artifacts_template: &flatpak_gcovr_artifacts
-    artifacts:
-        paths:
-            - ${BUNDLE}
-            - _build/meson-logs/
-            - _build/coverage.html
-        # The Flatpak bundle is always generated at the end, meaning that there
-        # won’t be one in case of failure, but the logs will be available for
-        # our expert investigators to dissect.
-        when: always
-        expire_in: 2 days
-
-.flatpak_template: &flatpak
-    <<: *flatpak_script
-    <<: *flatpak_artifacts
-
-.flatpak_gcovr_template: &flatpak_gcovr
-    <<: *flatpak_script
-    <<: *gcovr_script
     coverage: '/^branches:.*\s+(\S+\%).*$/'
-    <<: *flatpak_gcovr_artifacts
+    artifacts:
+        paths:
+            - _build/coverage.html
 
 flatpak devel:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.30
