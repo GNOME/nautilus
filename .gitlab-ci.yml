@@ -13,7 +13,7 @@ stages:
       - cd _build
       - ninja test
 
-.flatpak_script_template: &flatpak_script
+.flatpak_template: &flatpak
     script:
         - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
         # Make sure to keep this in sync with the Flatpak manifest, all arguments
@@ -34,8 +34,6 @@ stages:
                   dbus-run-session meson test -C _build
         # Generate a Flatpak bundle
         - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-
-.flatpak_artifacts_template: &flatpak_artifacts
     artifacts:
         paths:
             - ${BUNDLE}
@@ -45,10 +43,6 @@ stages:
         # our expert investigators to dissect.
         when: always
         expire_in: 2 days
-
-.flatpak_template: &flatpak
-    <<: *flatpak_script
-    <<: *flatpak_artifacts
 
 .flatpak_gcovr_template: &flatpak_gcovr
     extends: .flatpak_template
