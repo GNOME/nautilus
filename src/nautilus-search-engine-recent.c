@@ -53,6 +53,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineRecent,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_SEARCH_PROVIDER,
                                                 nautilus_search_provider_init))
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(char, g_free)
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(GtkRecentInfo, gtk_recent_info_unref)
+
 enum
 {
   PROP_0,
@@ -184,8 +187,8 @@ recent_thread_func (gpointer user_data)
     g_autoptr (NautilusSearchEngineRecent) self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
-    GList *recent_items;
-    GList *mime_types;
+    g_autolist (GtkRecentInfo) recent_items = NULL;
+    g_autolist (char) mime_types = NULL;
     GList *hits;
     GList *l;
 
@@ -314,9 +317,6 @@ recent_thread_func (gpointer user_data)
     }
 
     search_add_hits_idle (self, hits);
-
-    g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
-    g_list_free_full (mime_types, g_free);
 
     return NULL;
 }
