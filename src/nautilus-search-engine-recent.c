@@ -216,28 +216,6 @@ recent_thread_func (gpointer user_data)
             continue;
         }
 
-        if (gtk_recent_info_is_local (info))
-        {
-            g_autoptr (GError) error = NULL;
-
-            if (!is_file_valid_recursive (self, file, &error))
-            {
-                if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
-                {
-                    break;
-                }
-
-                if (error != NULL &&
-                    !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
-                {
-                    g_debug("Impossible to read recent file info: %s",
-                            error->message);
-                }
-
-                continue;
-            }
-        }
-
         if (g_cancellable_is_cancelled (self->cancellable))
         {
             break;
@@ -258,6 +236,28 @@ recent_thread_func (gpointer user_data)
             time_t modified, visited;
             g_autoptr (GDateTime) gmodified = NULL;
             g_autoptr (GDateTime) gvisited = NULL;
+
+            if (gtk_recent_info_is_local (info))
+            {
+                g_autoptr (GError) error = NULL;
+
+                if (!is_file_valid_recursive (self, file, &error))
+                {
+                    if (g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+                    {
+                        break;
+                    }
+
+                    if (error != NULL &&
+                        !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+                    {
+                        g_debug("Impossible to read recent file info: %s",
+                                error->message);
+                    }
+
+                    continue;
+                }
+            }
 
             if (mime_types)
             {
