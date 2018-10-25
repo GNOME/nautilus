@@ -92,7 +92,7 @@ static gboolean
 search_thread_add_hits_idle (gpointer user_data)
 {
     SearchHitsData *search_hits = user_data;
-    NautilusSearchEngineRecent *self = search_hits->recent;
+    g_autoptr (NautilusSearchEngineRecent) self = search_hits->recent;
     NautilusSearchProvider *provider = NAUTILUS_SEARCH_PROVIDER (self);
 
     self->add_hits_idle_id = 0;
@@ -110,8 +110,6 @@ search_thread_add_hits_idle (gpointer user_data)
     nautilus_search_provider_finished (provider,
                                        NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL);
     g_object_notify (G_OBJECT (provider), "running");
-
-    g_object_unref (self);
 
     return FALSE;
 }
