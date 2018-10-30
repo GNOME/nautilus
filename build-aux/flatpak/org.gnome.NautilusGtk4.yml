@@ -76,45 +76,6 @@ modules:
         url: "https://gitlab.gnome.org/GNOME/gnome-autoar.git"
         tag: "0.2.3"
 
-  - name: "wayland"
-    sources:
-      - type: "git"
-        url: "https://github.com/wayland-project/wayland.git"
-        tag: "1.15.91"
-    build-options:
-      config-opts:
-        - "--disable-documentation"
-    buildsystem: "autotools"
-    builddir: true
-
-  - name: "graphene"
-    sources:
-      - type: "git"
-        url: "https://github.com/ebassi/graphene.git"
-        tag: "1.8.2"
-    build-options:
-      config-opts:
-        - "--libdir=lib"
-        - "-Dintrospection=false"
-        - "-Dtests=false"
-        - "-Dbenchmarks=false"
-    buildsystem: "meson"
-    builddir: true
-
-  - name: "gtk+"
-    sources:
-      - type: "git"
-        url: "https://gitlab.gnome.org/GNOME/gtk.git"
-    build-options:
-      config-opts:
-        - "--libdir=lib"
-        - "-Dintrospection=false"
-        - "-Ddemos=true"
-        - "-Dbuild-examples=false"
-        - "-Dbuild-tests=false"
-    buildsystem: "meson"
-    builddir: true
-
   - name: "nautilus"
     buildsystem: "meson"
     builddir: true
