@@ -1,0 +1,145 @@
+resource_rules:
+  issues:
+    rules:
+      - name: Mark stale issues with no milestone or planning labels for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 18
+          milestone:
+            - No Milestone
+          forbidden_labels:
+            - 2. Deliverable
+            - 2. Stretch
+            - 1. Epic
+            # Features are handled in a different rule
+            - 1. Feature
+          state: opened
+        actions:
+          labels:
+            - 2. Auto Updated
+            - 2. Needs Information
+          comment: |
+            Hi,
+
+            Thank you for raising an issue to help improve Nautilus. We're sorry this particular issue has gone unnoticed for quite some time. To establish order in issue tracker we try to ensure that every issue is correctly labelled and triaged to get the proper attention.
+
+            This issue will be closed, as it meets the following criteria:
+            * No activity in the past 18 months (3 releases).
+            * Unscheduled. Not associated with a milestone or with ~"2. Deliverable" or ~"2. Stretch" project planning labels.
+
+            We'd like to ask you to help us out and determine whether this issue should be reopened.
+
+            If this issue is reporting a bug, please can you attempt to reproduce on the [nightly Flatpak Nautilus](https://wiki.gnome.org/Apps/Nightly), to help us understand whether the bug still needs our attention.
+
+            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
+
+            Thanks for your help
+
+            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
+
+      - name: Mark stale unlabelled issues for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 1
+          labels:
+            - No Label
+          state: opened
+        actions:
+          labels:
+            - 2. Auto Updated
+            - 2. Needs Information
+          comment: |
+            Hi,
+
+            Thank you for raising an issue to help improve Nautilus. We're sorry this particular issue has gone unnoticed for quite some time. To establish order in issue tracker we try to ensure that every issue is correctly labelled and triaged to get the proper attention.
+
+            This issue will be closed, as it meets the following criteria:
+            * No activity in the past 1 month
+            * Unlabelled
+
+            We'd like to ask you to help us out and determine whether this issue should be reopened.
+
+            If this issue is reporting a bug, please can you attempt to reproduce on the [nightly Flatpak Nautilus](https://wiki.gnome.org/Apps/Nightly), to help us understand whether the bug still needs our attention.
+
+            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
+
+            Thanks for your help
+
+            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
+
+      - name: Mark old feature proposals for closure
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: months
+            interval: 12
+          labels:
+            - 1. Feature
+          forbidden_labels:
+            - 2. Deliverable
+            - 2. Stretch
+            - 1. Epic
+          milestone:
+            - No Milestone
+          state: opened
+          upvotes:
+            attribute: upvotes
+            condition: less_than
+            threshold: 10
+        actions:
+          labels:
+            - 2. Auto Updated
+            - 2. Needs Information
+          comment: |
+            Hi,
+
+            First of all, thank you for raising an issue to help improve Nautilus. This issue was labelled as a ~"1. Feature" in the past. In order to maintain order in the issue tracker we are closing old feature proposals.
+
+            This issue will be closed as it meets the following criteria:
+            * No activity in the past 12 months
+            * Labeled as ~"1. Feature"
+            * Unscheduled. Not associated with a milestone or with ~"2. Deliverable" or ~"2. Stretch" project planning labels.
+
+            Thanks for your help and please raise any new feature proposals as a new issue.
+
+            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
+
+    - name: Close issues that need information and weren't updated 
+        conditions:
+          date:
+            attribute: updated_at
+            condition: older_than
+            interval_type: weeks
+            interval: 4
+          state: opened
+          labels:
+            - 2. Needs Information 
+        actions:
+          status: close
+          labels:
+            - 2. Auto Updated
+          comment: |
+            Closing this issue as no further information or feedback has been provided.
+
+            Please feel free to reopen this issue if you can provide the information or feedback.
+
+            Thanks!
+
+            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
+          summarize:
+              title: Closed issues that needed information and weren't updated
+              item: |
+                - [{{title}}]({{web_url}}) {{labels}}
+              summary: |
+                The following issues were closed automatically for awaiting feedback and having 4 weeks of inactivity:
+
+                {{items}}
+
+                /cc @Teams/BugSquad

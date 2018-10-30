@@ -6,6 +6,7 @@ stages:
     - test
     - cross_environment
     - deploy
+    - triage
 
 .test_template: &distro_test
   script:
@@ -225,3 +226,11 @@ pages:
 
   only:
     - master
+
+triage:
+  stage: triage
+  script:
+    - gem install gitlab-triage
+    - gitlab-triage --token $API_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome/org
+  only:
+    - schedules
