@@ -912,22 +912,11 @@ const static GActionEntry app_entries[] =
 static void
 nautilus_init_application_actions (NautilusApplication *app)
 {
-    const gchar *debug_no_app_menu;
     GAction *sidebar_action;
 
     g_action_map_add_action_entries (G_ACTION_MAP (app),
                                      app_entries, G_N_ELEMENTS (app_entries),
                                      app);
-
-    debug_no_app_menu = g_getenv ("NAUTILUS_DEBUG_NO_APP_MENU");
-    if (debug_no_app_menu)
-    {
-        DEBUG ("Disabling app menu GtkSetting as requested...");
-        g_object_set (gtk_settings_get_default (),
-                      "gtk-shell-shows-app-menu", FALSE,
-                      NULL);
-    }
-
 
 
     sidebar_action = g_action_map_lookup_action (G_ACTION_MAP (app),
