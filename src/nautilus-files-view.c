@@ -1353,22 +1353,6 @@ action_open_with_default_application (GSimpleAction *action,
     view = NAUTILUS_FILES_VIEW (user_data);
     nautilus_files_view_activate_selection (view);
 }
-static void
-action_open_file_and_close_window (GSimpleAction *action,
-                                   GVariant      *state,
-                                   gpointer       user_data)
-{
-    g_autolist (NautilusFile) selection = NULL;
-    NautilusFilesView *view;
-
-    view = NAUTILUS_FILES_VIEW (user_data);
-
-    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
-    nautilus_files_view_activate_files (view,
-                                        selection,
-                                        NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND,
-                                        TRUE);
-}
 
 static void
 action_open_item_location (GSimpleAction *action,
@@ -6999,7 +6983,6 @@ const GActionEntry view_entries[] =
     /* Only accesible by shorcuts */
     { "select-pattern", action_select_pattern },
     { "invert-selection", action_invert_selection },
-    { "open-file-and-close-window", action_open_file_and_close_window },
 };
 
 static gboolean
@@ -9762,7 +9745,6 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
     nautilus_application_set_accelerator (app, "view.zoom-standard", "<control>0");
     nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
-    nautilus_application_set_accelerator (app, "view.open-file-and-close-window", "<control><shift>Down");
 
     priv->starred_cancellable = g_cancellable_new ();
     priv->tag_manager = nautilus_tag_manager_get ();

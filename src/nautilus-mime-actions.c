@@ -1416,23 +1416,9 @@ on_launch_default_for_uri (GObject      *source_object,
     }
     else
     {
-        gboolean should_close;
-        NautilusWindow *window;
-
-        should_close = activation_params->flags &
-                       NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND;
-        window = nautilus_window_slot_get_window (activation_params->slot);
-
-        if (should_close && window != NULL)
+        while ((uri = g_queue_pop_head (params->unhandled_uris)) != NULL)
         {
-            nautilus_window_close (window);
-        }
-        else
-        {
-            while ((uri = g_queue_pop_head (params->unhandled_uris)) != NULL)
-            {
-                application_unhandled_uri (activation_params, uri);
-            }
+            application_unhandled_uri (activation_params, uri);
         }
 
         application_launch_parameters_free (params);
@@ -1443,12 +1429,10 @@ static void
 activate_files (ActivateParameters *parameters)
 {
     NautilusFile *file;
-    NautilusWindow *window;
     NautilusWindowOpenFlags flags;
     int count;
     g_autofree char *old_working_dir = NULL;
     GdkScreen *screen;
-    gboolean closed_window;
     g_autoptr (GQueue) launch_files = NULL;
     g_autoptr (GQueue) launch_in_terminal_files = NULL;
     g_autoptr (GQueue) open_in_app_uris = NULL;
@@ -1585,28 +1569,9 @@ activate_files (ActivateParameters *parameters)
     {
         if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0)
         {
-            /* if CLOSE_BEHIND is set and we have a directory to be activated, we
-             * will first have to open a new window and after that we can open the
-             * rest of files in tabs */
-            if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
-            {
-                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-            }
-            else
-            {
-                flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-            }
+            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
         }
         else
-        {
-            flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
-        }
-    }
-    else
-    {
-        /* if we want to close the window and activate a single directory, then we will need
-         * the NEW_WINDOW flag set */
-        if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
         {
             flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW;
         }
@@ -1628,8 +1593,6 @@ activate_files (ActivateParameters *parameters)
              */
             g_queue_reverse (open_in_view_files);
         }
-
-        closed_window = FALSE;
 
         for (l = g_queue_peek_head_link (open_in_view_files); l != NULL; l = l->next)
         {
@@ -1661,39 +1624,11 @@ activate_files (ActivateParameters *parameters)
              * to make splicit the window we want to use for activating the files */
             nautilus_application_open_location_full (NAUTILUS_APPLICATION (g_application_get_default ()),
                                                      location_with_permissions, flags, NULL, NULL, parameters->slot);
-
-            /* close only the window from which the action was launched and then open
-             * tabs/windows (depending on parameters->flags) */
-            if (!closed_window && (flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
-            {
-                flags &= (~NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND);
-
-                /* if NEW_WINDOW is set, we want all files in new windows, not in tabs */
-                if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW) == 0)
-                {
-                    flags &= (~NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW);
-                    flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-                }
-
-                closed_window = TRUE;
-            }
         }
     }
 
     if (g_queue_is_empty (open_in_app_uris))
     {
-        window = NULL;
-        if (parameters->slot != NULL)
-        {
-            window = nautilus_window_slot_get_window (parameters->slot);
-        }
-
-        if ((parameters->flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0 &&
-            window != NULL)
-        {
-            nautilus_window_close (window);
-        }
-
         activation_parameters_free (parameters);
     }
     else

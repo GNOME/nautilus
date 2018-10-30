@@ -337,20 +337,6 @@ get_window_slot_for_location (NautilusApplication *self,
     return slot;
 }
 
-static void
-new_window_show_callback (GtkWidget *widget,
-                          gpointer   user_data)
-{
-    NautilusWindow *window;
-
-    window = NAUTILUS_WINDOW (user_data);
-    nautilus_window_close (window);
-
-    g_signal_handlers_disconnect_by_func (widget,
-                                          G_CALLBACK (new_window_show_callback),
-                                          user_data);
-}
-
 void
 nautilus_application_open_location_full (NautilusApplication     *self,
                                          GFile                   *location,
@@ -462,23 +448,6 @@ real_open_location_full (NautilusApplication     *self,
     }
 
     g_assert (target_window != NULL);
-
-    /* close the current window if the flags say so */
-    if ((flags & NAUTILUS_WINDOW_OPEN_FLAG_CLOSE_BEHIND) != 0)
-    {
-        if (gtk_widget_get_visible (GTK_WIDGET (target_window)))
-        {
-            nautilus_window_close (active_window);
-        }
-        else
-        {
-            g_signal_connect_object (target_window,
-                                     "show",
-                                     G_CALLBACK (new_window_show_callback),
-                                     active_window,
-                                     G_CONNECT_AFTER);
-        }
-    }
 
     /* Application is the one that manages windows, so this flag shouldn't use
      * it anymore by any client */
