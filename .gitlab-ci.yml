@@ -6,6 +6,7 @@ stages:
     - test
     - cross_environment
     - deploy
+    - triage
 
 .test_template: &distro_test
   script:
@@ -225,3 +226,20 @@ pages:
 
   only:
     - master
+
+triage:
+  stage: triage
+  script:
+    - gem install gitlab-triage
+    - gitlab-triage --token $nautilus_bot_token --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome/org
+  only:
+    - schedules
+
+triage:dry-run:
+  stage: triage
+  script:
+    - gem install gitlab-triage
+    - gitlab-triage --dry-run --token $nautilus_bot_token --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome/org
+  only:
+    - schedules
+  when: manual
