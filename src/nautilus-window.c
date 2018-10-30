@@ -2796,76 +2796,24 @@ nautilus_event_get_window_open_flags (void)
 void
 nautilus_window_show_about_dialog (NautilusWindow *window)
 {
-    const gchar *artists[] =
-    {
-        "The GNOME Project",
-        NULL
-    };
-    const gchar *authors[] =
-    {
-        "Alexander Larsson",
-        "Ali Abdin",
-        "Anders Carlsson",
-        "Andrew Walton",
-        "Andy Hertzfeld",
-        "Arlo Rose",
-        "Christian Neumair",
-        "Cosimo Cecchi",
-        "Darin Adler",
-        "David Camp",
-        "Eli Goldberg",
-        "Elliot Lee",
-        "Eskil Heyn Olsen",
-        "Ettore Perazzoli",
-        "Gene Z. Ragan",
-        "George Lebl",
-        "Ian McKellar",
-        "J Shane Culpepper",
-        "James Willcox",
-        "Jan Arne Petersen",
-        "John Harper",
-        "John Sullivan",
-        "Josh Barrow",
-        "Maciej Stachowiak",
-        "Mark McLoughlin",
-        "Mathieu Lacage",
-        "Mike Engber",
-        "Mike Fleming",
-        "Pavel Cisler",
-        "Ramiro Estrugo",
-        "Raph Levien",
-        "Rebecca Schulman",
-        "Robey Pointer",
-        "Robin * Slomkowski",
-        "Seth Nickell",
-        "Susan Kare",
-        "Tomas Bzatek",
-        "William Jon McCann",
-        NULL
-    };
-    const gchar *documenters[] =
-    {
-        "GNOME Documentation Team",
-        "Sun Microsystems",
-        NULL
-    };
     g_autofree gchar *program_name = NULL;
+    const gchar *authors[] = { "The Nautilus contributors", NULL };
 
     /* “Files” is the generic application name and the suffix is
      * an arbitrary and deliberately unlocalized string only shown
      * in development builds.
      */
-    program_name = g_strconcat (_("Files"), NAME_SUFFIX, NULL);
+    program_name = g_strconcat (_("Files (Nautilus)"), NAME_SUFFIX, NULL);
 
     gtk_show_about_dialog (window ? GTK_WINDOW (window) : NULL,
                            "program-name", program_name,
                            "version", VERSION,
                            "comments", _("Access and organize your files"),
-                           "copyright", "© 1999–2018 The Files Authors",
+                           "copyright", "© 2018 The Nautilus contributors",
                            "license-type", GTK_LICENSE_GPL_3_0,
-                           "artists", artists,
+                           "website", "https://gitlab.gnome.org/GNOME/nautilus",
+                           "website-label", "Nautilus Website",
                            "authors", authors,
-                           "documenters", documenters,
                            /* Translators should localize the following string
                             * which will be displayed at the bottom of the about
                             * box to give credit to the translator(s).
