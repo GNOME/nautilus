@@ -186,8 +186,8 @@ nautilus_view_model_get_items_from_files (NautilusViewModel *self,
         while ((item_model = g_list_model_get_item (G_LIST_MODEL (self->internal_model), i)))
         {
             NautilusFile *file2;
-            g_autofree gchar *file1_uri;
-            g_autofree gchar *file2_uri;
+            g_autofree gchar *file1_uri = NULL;
+            g_autofree gchar *file2_uri = NULL;
 
             file2 = nautilus_view_item_model_get_file (item_model);
             file1_uri = nautilus_file_get_uri (file1);

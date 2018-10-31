@@ -894,8 +894,8 @@ real_add_files (NautilusFilesView *files_view,
                 GList             *files)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
-    g_autoptr (GQueue) files_queue;
-    g_autoptr (GQueue) item_models;
+    g_autoptr (GQueue) files_queue = NULL;
+    g_autoptr (GQueue) item_models = NULL;
 
     files_queue = convert_glist_to_queue (files);
     item_models = convert_files_to_item_models (self, files_queue);

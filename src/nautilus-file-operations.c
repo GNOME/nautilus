@@ -8000,7 +8000,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
     guint64 total_size;
     ExtractJob *extract_job;
     GFile *source_file;
-    g_autofree gchar *basename;
+    g_autofree gchar *basename = NULL;
     GFileInfo *fsinfo;
     guint64 free_size;
 
