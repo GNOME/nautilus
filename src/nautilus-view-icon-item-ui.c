@@ -28,7 +28,7 @@ static GtkWidget *
 create_icon (NautilusViewIconItemUi *self)
 {
     NautilusFileIconFlags flags;
-    g_autoptr (GdkPixbuf) icon_pixbuf;
+    g_autoptr (GdkPixbuf) icon_pixbuf = NULL;
     GtkImage *icon;
     GtkBox *fixed_height_box;
     GtkStyleContext *style_context;
