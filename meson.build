@@ -54,6 +54,13 @@ add_project_arguments(
     '-Werror=strict-prototypes',
     '-Werror=undef',
     '-Werror=uninitialized',
+    # Context: https://gitlab.com/freedesktop-sdk/freedesktop-sdk/commit/ce54a2527555e51e4ebf4cce9cbb6259cafa89a4
+    # -O2 and -fexceptions unmask some cases of -Wmaybe-uninitialized, which
+    # become errors for some reason (I’m guessing because of the
+    # -Werror=uninitialized above, but no idea why that implies this).
+    # This being an error is nice and all, but not when its appearance is
+    # dependent on optimization level and other flags.
+    '-Wno-error=maybe-uninitialized',
   ]),
   '-D_GNU_SOURCE',
   language: 'c'
