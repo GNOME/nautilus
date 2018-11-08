@@ -357,9 +357,6 @@ nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
     {
         DEBUG ("Recent engine stop");
         g_cancellable_cancel (self->cancellable);
-        g_clear_object (&self->cancellable);
-
-        g_object_notify (G_OBJECT (provider), "running");
     }
 }
 
@@ -378,8 +375,7 @@ nautilus_search_engine_recent_is_running (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
 
-    return self->cancellable != NULL &&
-           !g_cancellable_is_cancelled (self->cancellable);
+    return self->cancellable != NULL;
 }
 
 static void
