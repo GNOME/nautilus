@@ -1887,8 +1887,11 @@ rename_get_info_callback (GObject      *source_object,
         new_display_name = nautilus_file_get_display_name (op->file);
 
         nautilus_directory_moved (old_uri, new_uri);
-        nautilus_file_moved_update_recent (old_uri, new_uri,
-                                           old_display_name, new_display_name);
+        nautilus_file_moved_update_recent_async (old_uri, new_uri,
+                                                 old_display_name,
+                                                 new_display_name,
+                                                 op);
+        return;
     }
     nautilus_file_operation_complete (op, NULL, error);
 }
