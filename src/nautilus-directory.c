@@ -1669,7 +1669,7 @@ nautilus_directory_notify_files_moved (GList *file_pairs)
             unref_list = g_list_prepend (unref_list, file);
         }
 
-        nautilus_file_moved_update_recent (from_uri, to_uri, NULL, NULL);
+        nautilus_file_moved_update_recent_async (from_uri, to_uri, NULL, NULL, NULL);
     }
 
     /* Now send out the changed and added signals for existing file objects. */
