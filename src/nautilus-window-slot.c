@@ -174,6 +174,7 @@ static GMenu* real_get_extensions_background_menu (NautilusWindowSlot *self);
 static void real_set_templates_menu (NautilusWindowSlot *self,
                                      GMenu              *menu);
 static GMenu* real_get_templates_menu (NautilusWindowSlot *self);
+static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
@@ -2699,10 +2700,16 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
 
     directory = nautilus_directory_get (location);
 
-    if (nautilus_directory_is_in_trash (directory) &&
-        nautilus_trash_monitor_is_empty ())
+    if (nautilus_directory_is_in_trash (directory))
     {
-        nautilus_window_slot_remove_extra_location_widgets (user_data);
+        if (nautilus_trash_monitor_is_empty ())
+        {
+            nautilus_window_slot_remove_extra_location_widgets (user_data);
+        }
+        else
+        {
+            nautilus_window_slot_setup_extra_location_widgets (user_data);
+        }
     }
 }
 
