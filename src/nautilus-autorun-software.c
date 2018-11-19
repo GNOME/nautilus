@@ -66,11 +66,8 @@ _check_file (GFile      *mount_root,
              const char *file_path,
              gboolean    must_be_executable)
 {
-    GFile *file;
-    GFileInfo *file_info;
-    gboolean ret;
-
-    ret = FALSE;
+    g_autoptr (GFile) file = NULL;
+    g_autoptr (GFileInfo) file_info = NULL;
 
     file = g_file_get_child (mount_root, file_path);
     file_info = g_file_query_info (file,
@@ -78,36 +75,31 @@ _check_file (GFile      *mount_root,
                                    G_FILE_QUERY_INFO_NONE,
                                    NULL,
                                    NULL);
-    if (file_info != NULL)
-    {
-        if (must_be_executable)
-        {
-            if (g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE))
-            {
-                ret = TRUE;
-            }
-        }
-        else
-        {
-            ret = TRUE;
-        }
-        g_object_unref (file_info);
-    }
-    g_object_unref (file);
 
-    return ret;
+    if (file_info == NULL)
+    {
+        return FALSE;
+    }
+
+    if (must_be_executable &&
+        !g_file_info_get_attribute_boolean (file_info, G_FILE_ATTRIBUTE_ACCESS_CAN_EXECUTE))
+    {
+        return FALSE;
+    }
+
+    return TRUE;
 }
 
 static void
 autorun (GMount *mount)
 {
-    char *error_string;
-    GFile *root;
-    GFile *program_to_spawn;
-    GFile *program_parameter_file;
-    char *path_to_spawn;
-    char *cwd_for_program;
-    char *program_parameter;
+    g_autoptr (GFile) root = NULL;
+    g_autoptr (GFile) program_to_spawn = NULL;
+    g_autoptr (GFile) program_parameter_file = NULL;
+    g_autofree char *error_string = NULL;
+    g_autofree char *path_to_spawn = NULL;
+    g_autofree char *cwd_for_program = NULL;
+    g_autofree char *program_parameter = NULL;
 
     root = g_mount_get_root (mount);
 
@@ -117,11 +109,6 @@ autorun (GMount *mount)
      *
      * the ordering does matter.
      */
-
-    program_to_spawn = NULL;
-    path_to_spawn = NULL;
-    program_parameter_file = NULL;
-    program_parameter = NULL;
 
     if (_check_file (root, ".autorun", TRUE))
     {
@@ -148,7 +135,6 @@ autorun (GMount *mount)
 
     cwd_for_program = g_file_get_path (root);
 
-    error_string = NULL;
     if (path_to_spawn != NULL && cwd_for_program != NULL)
     {
         if (chdir (cwd_for_program) == 0)
@@ -163,22 +149,6 @@ autorun (GMount *mount)
     error_string = g_strdup_printf (_("Unable to locate the program"));
 
 out:
-    if (program_to_spawn != NULL)
-    {
-        g_object_unref (program_to_spawn);
-    }
-    if (program_parameter_file != NULL)
-    {
-        g_object_unref (program_parameter_file);
-    }
-    if (root != NULL)
-    {
-        g_object_unref (root);
-    }
-    g_free (path_to_spawn);
-    g_free (cwd_for_program);
-    g_free (program_parameter);
-
     if (error_string != NULL)
     {
         GtkWidget *dialog;
@@ -195,7 +165,6 @@ out:
 
         gtk_dialog_run (GTK_DIALOG (dialog));
         gtk_widget_destroy (dialog);
-        g_free (error_string);
     }
 }
 
@@ -204,9 +173,9 @@ present_autorun_for_software_dialog (GMount *mount)
 {
     GIcon *icon;
     int icon_size;
-    NautilusIconInfo *icon_info;
-    GdkPixbuf *pixbuf;
-    char *mount_name;
+    g_autoptr (NautilusIconInfo) icon_info = NULL;
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
+    g_autofree char *mount_name = NULL;
     GtkWidget *dialog;
     AutorunSoftwareDialogData *data;
 
@@ -261,20 +230,16 @@ present_autorun_for_software_dialog (GMount *mount)
         gtk_widget_destroy (dialog);
         autorun (mount);
     }
-
-    g_object_unref (icon_info);
-    g_object_unref (pixbuf);
-    g_free (mount_name);
 }
 
 int
 main (int   argc,
       char *argv[])
 {
-    GVolumeMonitor *monitor;
-    GFile *file;
-    GMount *mount;
-    GError *error;
+    g_autoptr (GVolumeMonitor) monitor = NULL;
+    g_autoptr (GFile) file = NULL;
+    g_autoptr (GMount) mount = NULL;
+    g_autoptr (GError) error = NULL;
 
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
@@ -299,26 +264,18 @@ main (int   argc,
     file = g_file_new_for_commandline_arg (argv[1]);
     if (file == NULL)
     {
-        g_object_unref (monitor);
         g_warning ("Unable to parse mount URI");
         goto out;
     }
 
-    error = NULL;
     mount = g_file_find_enclosing_mount (file, NULL, &error);
     if (mount == NULL)
     {
         g_warning ("Unable to find device for URI: %s", error->message);
-        g_clear_error (&error);
-        g_object_unref (file);
-        g_object_unref (monitor);
         goto out;
     }
 
     present_autorun_for_software_dialog (mount);
-    g_object_unref (file);
-    g_object_unref (monitor);
-    g_object_unref (mount);
 
 out:
     return 0;
