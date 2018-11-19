@@ -27,6 +27,7 @@
 
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
+#include "nautilus-file.h"
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
 #include "nautilus-debug.h"
@@ -227,6 +228,34 @@ handle_trash_files (NautilusDBusFileOperations  *object,
                                                     trash_on_finished, NULL);
 
     nautilus_dbus_file_operations_complete_trash_files (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static void
+rename_file_on_finished (NautilusFile *file,
+                         GFile        *result_location,
+                         GError       *error,
+                         gpointer      callback_data)
+{
+    g_application_release (g_application_get_default ());
+}
+
+static gboolean
+handle_rename_file (NautilusDBusFileOperations *object,
+                    GDBusMethodInvocation      *invocation,
+                    const gchar                *uri,
+                    const gchar                *new_name)
+{
+    NautilusFile *file = NULL;
+
+    file = nautilus_file_get_by_uri (uri);
+
+    g_application_hold (g_application_get_default ());
+    nautilus_file_rename (file, new_name,
+                          rename_file_on_finished, NULL);
+
+    nautilus_dbus_file_operations_complete_rename_file (object, invocation);
+
     return TRUE; /* invocation was handled */
 }
 
