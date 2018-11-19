@@ -296,6 +296,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
                       G_CALLBACK (handle_create_folder),
                       self);
     g_signal_connect (self->file_operations,
+                      "handle-rename-file",
+                      G_CALLBACK (handle_rename_file),
+                      self);
+    g_signal_connect (self->file_operations,
                       "handle-undo",
                       G_CALLBACK (handle_undo),
                       self);
