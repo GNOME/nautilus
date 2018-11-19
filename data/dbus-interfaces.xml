@@ -39,6 +39,10 @@
     <method name='CreateFolder'>
       <arg type='s' name='URI' direction='in'/>
     </method>
+    <method name='RenameFile'>
+      <arg type='s' name='URI' direction='in'/>
+      <arg type='s' name='NewName' direction='in'/>
+    </method>
     <method name='Undo'>
     </method>
     <method name='Redo'>
