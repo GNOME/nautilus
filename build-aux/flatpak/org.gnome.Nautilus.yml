@@ -27,14 +27,7 @@ build-options:
   build-args:
   - "--share=network"
 modules:
-- name: gcovr
-  buildsystem: simple
-  build-commands:
-  - "/usr/bin/pip3 --disable-pip-version-check install --prefix=/app --verbose ."
-  sources:
-  - type: git
-    url: https://github.com/gcovr/gcovr
-    tag: '4.1'
+- gcovr.json
 - name: exiv2
   config-opts:
   - "-DCMAKE_INSTALL_PREFIX=/app"
