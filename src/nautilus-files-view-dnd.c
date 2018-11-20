@@ -44,6 +44,74 @@
     GTK_WINDOW (gtk_widget_get_ancestor (GTK_WIDGET (obj), GTK_TYPE_WINDOW))
 
 void
+nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
+                                              const char        *encoded_url,
+                                              const char        *target_uri,
+                                              GdkDragAction      action)
+{
+    char *url;
+    char **bits;
+    GList *uri_list = NULL;
+    GFile *f;
+
+    f = g_file_new_for_uri (target_uri);
+
+    if (!g_file_is_native (f))
+    {
+        show_dialog (_("Drag and drop is not supported."),
+                     _("Drag and drop is only supported on local file systems."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
+        g_object_unref (f);
+        return;
+    }
+
+    g_object_unref (f);
+
+    /* _NETSCAPE_URL_ works like this: $URL\n$TITLE */
+    bits = g_strsplit (encoded_url, "\n", 0);
+    switch (g_strv_length (bits))
+    {
+        case 0:
+        {
+            g_strfreev (bits);
+            return;
+        }
+
+        default:
+        {
+            url = bits[0];
+        }
+    }
+
+    f = g_file_new_for_uri (url);
+
+    /* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
+     * and we don't support combinations either. */
+    if ((action != GDK_ACTION_DEFAULT) &&
+        (action != GDK_ACTION_COPY) &&
+        (action != GDK_ACTION_MOVE))
+    {
+        show_dialog (_("Drag and drop is not supported."),
+                     _("An invalid drag type was used."),
+                     GET_ANCESTOR (view),
+                     GTK_MESSAGE_WARNING);
+        return;
+    }
+
+    uri_list = g_list_append (uri_list, url);
+
+    nautilus_files_view_move_copy_items (view, uri_list,
+                                         target_uri,
+                                         action);
+
+    g_list_free (uri_list);
+
+    g_object_unref (f);
+    g_strfreev (bits);
+}
+
+void
 nautilus_files_view_handle_uri_list_drop (NautilusFilesView *view,
                                           const char        *item_uris,
                                           const char        *target_uri,
