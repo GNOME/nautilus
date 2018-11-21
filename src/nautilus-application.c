@@ -945,14 +945,7 @@ nautilus_init_application_actions (NautilusApplication *app)
                                   variant_set_mapping,
                                   NULL, NULL);
 
-    nautilus_application_set_accelerator (G_APPLICATION (app),
-                                          "app.clone-window", "<Primary>n");
-    nautilus_application_set_accelerator (G_APPLICATION (app),
-                                          "app.help", "F1");
-    nautilus_application_set_accelerator (G_APPLICATION (app),
-                                          "app.quit", "<Primary>q");
-    nautilus_application_set_accelerator (G_APPLICATION (app),
-                                          "app.show-hide-sidebar", "F9");
+    nautilus_application_set_accelerator (G_APPLICATION (app), "app.show-hide-sidebar", "F9");
 }
 
 static void
