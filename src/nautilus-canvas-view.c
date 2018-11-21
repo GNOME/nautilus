@@ -1434,18 +1434,6 @@ canvas_view_handle_uri_list (NautilusCanvasContainer *container,
                                               item_uris, target_uri, action);
 }
 
-/* Handles an URL received from Mozilla */
-static void
-canvas_view_handle_netscape_url (NautilusCanvasContainer *container,
-                                 const char              *encoded_url,
-                                 const char              *target_uri,
-                                 GdkDragAction            action,
-                                 NautilusCanvasView      *view)
-{
-    nautilus_files_view_handle_netscape_url_drop (NAUTILUS_FILES_VIEW (view),
-                                                  encoded_url, target_uri, action);
-}
-
 static void
 canvas_view_handle_text (NautilusCanvasContainer *container,
                          const char              *text,
@@ -1626,8 +1614,6 @@ nautilus_canvas_view_init (NautilusCanvasView *canvas_view)
 
     g_signal_connect_object (canvas_container, "handle-uri-list",
                              G_CALLBACK (canvas_view_handle_uri_list), canvas_view, 0);
-    g_signal_connect_object (canvas_container, "handle-netscape-url",
-                             G_CALLBACK (canvas_view_handle_netscape_url), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-text",
                              G_CALLBACK (canvas_view_handle_text), canvas_view, 0);
     g_signal_connect_object (canvas_container, "handle-raw",
