@@ -47,11 +47,6 @@ struct _NautilusFreedesktopDBus
     gboolean name_lost;
 };
 
-struct _NautilusFreedesktopDBusClass
-{
-    GObjectClass parent_class;
-};
-
 G_DEFINE_TYPE (NautilusFreedesktopDBus, nautilus_freedesktop_dbus, G_TYPE_OBJECT);
 
 static gboolean
@@ -333,6 +328,5 @@ nautilus_freedesktop_dbus_set_open_windows_with_locations (NautilusFreedesktopDB
 NautilusFreedesktopDBus *
 nautilus_freedesktop_dbus_new (void)
 {
-    return g_object_new (nautilus_freedesktop_dbus_get_type (),
-                         NULL);
+    return g_object_new (NAUTILUS_TYPE_FREEDESKTOP_DBUS, NULL);
 }
