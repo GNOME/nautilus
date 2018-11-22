@@ -652,7 +652,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                                                NULL,
                                                NULL));
 
-    if (is_simple_click && n_press <= 0 && on_star)
+    if (is_simple_click && on_star)
     {
         on_star_cell_renderer_clicked (path, view);
     }
