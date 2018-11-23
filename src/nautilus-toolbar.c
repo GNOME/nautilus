@@ -84,12 +84,17 @@ struct _NautilusToolbar
     GtkWidget *operations_button;
     GtkWidget *view_button;
     GtkWidget *view_menu_zoom_section;
-    GtkWidget *view_menu_undo_redo_section;
     GtkWidget *view_menu_extended_section;
-    GtkWidget *undo_button;
-    GtkWidget *redo_button;
     GtkWidget *view_toggle_button;
     GtkWidget *view_toggle_icon;
+
+    GtkWidget *menu_undo_redo_section;
+    GtkWidget *undo_button;
+    GtkWidget *redo_button;
+
+    // TODO
+    GtkWidget *menu_star_button;
+    GtkWidget *menu_unstar_button;
 
     GtkWidget *operations_popover;
     GtkWidget *operations_container;
@@ -1238,13 +1243,21 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, toolbar_switcher_container);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_zoom_section);
-    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_extended_section);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, menu_star_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, menu_unstar_button);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, menu_undo_redo_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, redo_button);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_button_toggled);
+
+    // TODO
+    //g_object_bind_property (action, "star", menu_star_button, "visible", 0);
+    //g_object_bind_property (action, "unstar", menu_unstar_button, "visible", 0);
 }
 
 GtkWidget *
@@ -1327,7 +1340,7 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
         return;
     }
 
-    gtk_widget_set_visible (self->view_menu_undo_redo_section,
+    gtk_widget_set_visible (self->menu_undo_redo_section,
                             new_sections->supports_undo_redo);
 
     if (new_sections->zoom_section != NULL)
