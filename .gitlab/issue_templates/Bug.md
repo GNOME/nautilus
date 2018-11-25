@@ -1,3 +1,19 @@
+<!--
+    Please test if the issue has already been fixed in the Nightly version.
+
+    You can install the Nightly version in parallel with the regular version with these instructions:
+
+    1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
+    2. Copy and run the following command in a Terminal:
+
+    flatpak install --from https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/NautilusDevel.flatpakref
+
+-->
+
+# Affected version
+- Nightly flatpak: Yes / No / Can't test it because <!-- Delete the unwanted anwsers -->
+- Other: <!-- Write the distribution you’re using and the version of the app. -->
+
 # Steps to reproduce
 <!--
     Explain in detail the steps on how the issue can be reproduced.
@@ -5,21 +21,6 @@
 1.
 2.
 3.
-
-Reproducible in:
-<!--
-    Please test if the issue was already fixed in the unstable version of the app.
-    For that, follow these steps:
-    1. Make sure Flatpak is installed or install it following these steps https://flatpak.org/setup
-    2. Install the unstable version of the app following this link 
-    https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/NautilusMaster.flatpakref and save
-    it as a ".flatpakref" file
-
-    If these steps failed, write in 'Other' the distribution you’re using and
-    the version of the app.
--->
-- Flatpak unstable: (yes or no) <!-- Write "yes" or "no" after the semicolon. -->
-- Other:
 
 # Current behavior
 <!-- Describe the current behavior. -->
