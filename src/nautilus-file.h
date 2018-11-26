@@ -50,13 +50,21 @@ typedef struct NautilusFile NautilusFile;
   (G_TYPE_INSTANCE_GET_CLASS ((obj), NAUTILUS_TYPE_FILE, NautilusFileClass))
 
 typedef enum {
-	NAUTILUS_FILE_SORT_NONE,
-	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-	NAUTILUS_FILE_SORT_BY_SIZE,
-	NAUTILUS_FILE_SORT_BY_TYPE,
-	NAUTILUS_FILE_SORT_BY_STARRED,
-	NAUTILUS_FILE_SORT_BY_MTIME,
-        NAUTILUS_FILE_SORT_BY_ATIME,
+	/* These may be set as default-sort-order. When touching this, make sure to
+	 * keep the values in sync with the "org.gnome.nautilus.SortOrder" enum in the
+	 * `data/org.gnome.nautilus.gschema.xml` schemas file.
+	 */
+	NAUTILUS_FILE_SORT_NONE = 0, /* Formerly used for "manual" sorting. */
+	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 1,
+	NAUTILUS_FILE_SORT_BY_SIZE = 2,
+	NAUTILUS_FILE_SORT_BY_TYPE = 3,
+	NAUTILUS_FILE_SORT_BY_MTIME = 4,
+	NAUTILUS_FILE_SORT_BY_ATIME = 5,
+	NAUTILUS_FILE_SORT_BY_STARRED = 6,
+
+	/* The following are specific to special locations and as such are not to be
+	 * included in the default-sort-order preference.
+	 */
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
 	NAUTILUS_FILE_SORT_BY_RECENCY

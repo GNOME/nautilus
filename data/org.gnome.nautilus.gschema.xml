@@ -23,13 +23,17 @@
   </enum>
 
   <enum id="org.gnome.nautilus.SortOrder">
-    <value value="0" nick="manually"/>
+    <!--
+      When touching this, make sure to keep the values in sync with the
+      #NautilusFileSortType enum in the `src/nautilus-file.h` code header file.
+    -->
+    <value value="0" nick="none"/>
     <value value="1" nick="name"/>
     <value value="2" nick="size"/>
     <value value="3" nick="type"/>
     <value value="4" nick="mtime"/>
     <value value="5" nick="atime"/>
-    <value value="6" nick="trash-time"/>
+    <value value="6" nick="starred"/>
   </enum>
 
   <enum id="org.gnome.nautilus.CanvasZoomLevel">
