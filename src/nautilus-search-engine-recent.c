@@ -40,6 +40,7 @@ struct _NautilusSearchEngineRecent
     GObject parent_instance;
 
     NautilusQuery *query;
+    gboolean running;
     GCancellable *cancellable;
     GtkRecentManager *recent_manager;
     guint add_hits_idle_id;
@@ -103,6 +104,7 @@ search_thread_add_hits_idle (gpointer user_data)
         DEBUG ("Recent engine add hits");
     }
 
+    self->running = FALSE;
     g_list_free_full (search_hits->hits, g_object_unref);
     g_clear_object (&self->cancellable);
     g_free (search_hits);
@@ -341,6 +343,7 @@ nautilus_search_engine_recent_start (NautilusSearchProvider *provider)
         return;
     }
 
+    self->running = TRUE;
     self->cancellable = g_cancellable_new ();
     thread = g_thread_new ("nautilus-search-recent", recent_thread_func,
                            g_object_ref (self));
@@ -358,6 +361,8 @@ nautilus_search_engine_recent_stop (NautilusSearchProvider *provider)
         DEBUG ("Recent engine stop");
         g_cancellable_cancel (self->cancellable);
     }
+
+    self->running = FALSE;
 }
 
 static void
@@ -375,7 +380,7 @@ nautilus_search_engine_recent_is_running (NautilusSearchProvider *provider)
 {
     NautilusSearchEngineRecent *self = NAUTILUS_SEARCH_ENGINE_RECENT (provider);
 
-    return self->cancellable != NULL;
+    return self->running;
 }
 
 static void
