@@ -208,7 +208,7 @@ nautilus_bookmark_list_init (NautilusBookmarkList *bookmarks)
     nautilus_bookmark_list_load_file (bookmarks);
 
     file = nautilus_bookmark_list_get_file ();
-    bookmarks->monitor = g_file_monitor_file (file, 0, NULL, NULL);
+    bookmarks->monitor = g_file_monitor_file (file, G_FILE_MONITOR_NONE, NULL, NULL);
     g_file_monitor_set_rate_limit (bookmarks->monitor, 1000);
 
     g_signal_connect (bookmarks->monitor, "changed",
