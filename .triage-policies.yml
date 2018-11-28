@@ -1,7 +1,7 @@
 resource_rules:
   issues:
     rules:
-      - name: Mark stale issues with no milestone or planning labels for closure
+      - name: Close stale issues with no milestone or planning labels
         conditions:
           date:
             attribute: updated_at
@@ -18,65 +18,59 @@ resource_rules:
             - 1. Feature
           state: opened
         actions:
+          status: close
           labels:
             - 2. Auto Updated
-            - 2. Needs Information
           comment: |
             Hi,
 
-            Thank you for raising an issue to help improve Nautilus. We're sorry this particular issue has gone unnoticed for quite some time. To establish order in issue tracker we try to ensure that every issue is correctly labelled and triaged to get the proper attention.
+            Thank you for raising an issue to help improve Nautilus. We're sorry this particular issue has gone unnoticed for quite some time.
 
             This issue will be closed, as it meets the following criteria:
             * No activity in the past 18 months (3 releases).
             * Unscheduled. Not associated with a milestone or with ~"2. Deliverable" or ~"2. Stretch" project planning labels.
 
-            We'd like to ask you to help us out and determine whether this issue should be reopened.
+            We'd like to ask you to help us keep our issue tracker organized  by determining whether this issue should be reopened.
 
-            If this issue is reporting a bug, please can you attempt to reproduce on the [nightly Flatpak Nautilus](https://wiki.gnome.org/Apps/Nightly), to help us understand whether the bug still needs our attention.
+            If this issue is reporting a bug, let us know if this issue is still present in a newer version and if you can reproduce it in the [nightly version](https://wiki.gnome.org/Apps/Nightly).
 
-            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
+            Thanks for your help!
 
-            Thanks for your help
+            This was an automatic message. If you have suggestions to improve this automatic action feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
 
-            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
-
-      - name: Mark stale unlabelled issues for closure
+      - name: Mark stale unlabelled issues for triage
         conditions:
           date:
             attribute: updated_at
             condition: older_than
             interval_type: months
             interval: 1
-          labels:
-            - No Label
+          # We want to handle those that doesn't have these labels, including those with other labels.
+          forbidden_labels:
+            - 1. Bug
+            - 1. Crash
+            - 1. Epic
+            - 1. Feature
           state: opened
         actions:
           labels:
             - 2. Auto Updated
-            - 2. Needs Information
-          comment: |
-            Hi,
+            - 2. Needs Triage
+        summarize:
+          title: Issues that need triaging
+          item: |
+            - [{{title}}]({{web_url}}) {{labels}}
+          summary: |
+            The following issues had no activity in the past month and they are unlabeled:
 
-            Thank you for raising an issue to help improve Nautilus. We're sorry this particular issue has gone unnoticed for quite some time. To establish order in issue tracker we try to ensure that every issue is correctly labelled and triaged to get the proper attention.
+            {{items}}
 
-            This issue will be closed, as it meets the following criteria:
-            * No activity in the past 1 month
-            * Unlabelled
+            /cc @Teams/BugSquad
 
-            We'd like to ask you to help us out and determine whether this issue should be reopened.
-
-            If this issue is reporting a bug, please can you attempt to reproduce on the [nightly Flatpak Nautilus](https://wiki.gnome.org/Apps/Nightly), to help us understand whether the bug still needs our attention.
-
-            If this issue is proposing a new feature, please can you verify whether the feature proposal is still relevant.
-
-            Thanks for your help
-
-            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
-
-      - name: Mark old feature proposals for closure
+      - name: Close old feature proposals withouth planning labels or milestones
         conditions:
           date:
-            attribute: updated_at
+            attribute: created_at
             condition: older_than
             interval_type: months
             interval: 12
@@ -96,20 +90,20 @@ resource_rules:
         actions:
           labels:
             - 2. Auto Updated
-            - 2. Needs Information
+          status: close
           comment: |
             Hi,
 
             First of all, thank you for raising an issue to help improve Nautilus. This issue was labelled as a ~"1. Feature" in the past. In order to maintain order in the issue tracker we are closing old feature proposals.
 
             This issue will be closed as it meets the following criteria:
-            * No activity in the past 12 months
+            * Created more than 12 months ago
             * Labeled as ~"1. Feature"
             * Unscheduled. Not associated with a milestone or with ~"2. Deliverable" or ~"2. Stretch" project planning labels.
 
-            Thanks for your help and please raise any new feature proposals as a new issue.
+            Thanks for your help!
 
-            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
+            This was an automatic message. If you have suggestions to improve this automatic action feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
 
     - name: Close issues that need information and weren't updated 
         conditions:
@@ -130,16 +124,6 @@ resource_rules:
 
             Please feel free to reopen this issue if you can provide the information or feedback.
 
-            Thanks!
+            Thanks for your help!
 
-            This action was done automatically. If you have suggestions to improve these automatic actions feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
-          summarize:
-              title: Closed issues that needed information and weren't updated
-              item: |
-                - [{{title}}]({{web_url}}) {{labels}}
-              summary: |
-                The following issues were closed automatically for awaiting feedback and having 4 weeks of inactivity:
-
-                {{items}}
-
-                /cc @Teams/BugSquad
+            This was an automatic message. If you have suggestions to improve this automatic action feel free to add a comment on https://gitlab.gnome.org/GNOME/nautilus/issues/715
