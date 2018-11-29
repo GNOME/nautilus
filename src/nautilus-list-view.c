@@ -136,7 +136,6 @@ get_default_sort_order (NautilusFile *file,
      */
     const char *attributes[] =
     {
-        "name",         /* is really "manually" which doesn't apply to lists */
         "name",
         "size",
         "type",

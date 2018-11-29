@@ -160,13 +160,6 @@ get_default_sort_order (NautilusFile *file)
 
     sort_type = nautilus_file_get_default_sort_type (file, &reversed);
 
-    if (sort_type == NAUTILUS_FILE_SORT_NONE)
-    {
-        sort_type = CLAMP (sort_type,
-                           NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
-                           NAUTILUS_FILE_SORT_BY_ATIME);
-    }
-
     return get_sorts_constants_from_sort_type (sort_type, reversed);
 }
 

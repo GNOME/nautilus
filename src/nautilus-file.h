@@ -55,13 +55,12 @@ typedef enum {
 	 * `data/org.gnome.nautilus.gschema.xml` schemas file, and the attributes[]
 	 * array in `src/nautilus-list-view.c`.
 	 */
-	NAUTILUS_FILE_SORT_NONE = 0, /* Formerly used for "manual" sorting. */
-	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 1,
-	NAUTILUS_FILE_SORT_BY_SIZE = 2,
-	NAUTILUS_FILE_SORT_BY_TYPE = 3,
-	NAUTILUS_FILE_SORT_BY_MTIME = 4,
-	NAUTILUS_FILE_SORT_BY_ATIME = 5,
-	NAUTILUS_FILE_SORT_BY_STARRED = 6,
+	NAUTILUS_FILE_SORT_BY_DISPLAY_NAME = 0,
+	NAUTILUS_FILE_SORT_BY_SIZE = 1,
+	NAUTILUS_FILE_SORT_BY_TYPE = 2,
+	NAUTILUS_FILE_SORT_BY_MTIME = 3,
+	NAUTILUS_FILE_SORT_BY_ATIME = 4,
+	NAUTILUS_FILE_SORT_BY_STARRED = 5,
 
 	/* The following are specific to special locations and as such are not to be
 	 * included in the "org.gnome.nautilus.SortOrder" enum.
