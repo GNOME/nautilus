@@ -129,9 +129,11 @@ static const gchar *
 get_default_sort_order (NautilusFile *file,
                         gboolean     *reversed)
 {
-    NautilusFileSortType default_sort_order;
-    gboolean default_sort_reversed;
-    const gchar *retval;
+    NautilusFileSortType sort_type;
+
+    /* This array makes the #NautilusFileSortType values correspond to the
+     * respective column attribute.
+     */
     const char *attributes[] =
     {
         "name",         /* is really "manually" which doesn't apply to lists */
@@ -140,24 +142,16 @@ get_default_sort_order (NautilusFile *file,
         "type",
         "date_modified",
         "date_accessed",
+        "starred",
         "trashed_on",
+        "search_relevance",
+        "recency",
         NULL
     };
 
-    retval = nautilus_file_get_default_sort_attribute (file, reversed);
+    sort_type = nautilus_file_get_default_sort_type (file, reversed);
 
-    if (retval == NULL)
-    {
-        default_sort_order = g_settings_get_enum (nautilus_preferences,
-                                                  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-        default_sort_reversed = g_settings_get_boolean (nautilus_preferences,
-                                                        NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
-
-        retval = attributes[default_sort_order];
-        *reversed = default_sort_reversed;
-    }
-
-    return retval;
+    return attributes[sort_type];
 }
 
 static void
