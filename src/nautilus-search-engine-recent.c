@@ -186,8 +186,8 @@ recent_thread_func (gpointer user_data)
     g_autoptr (NautilusSearchEngineRecent) self = NAUTILUS_SEARCH_ENGINE_RECENT (user_data);
     g_autoptr (GPtrArray) date_range = NULL;
     g_autoptr (GFile) query_location = NULL;
+    g_autoptr (GPtrArray) mime_types = NULL;
     GList *recent_items;
-    GList *mime_types;
     GList *hits;
     GList *l;
 
@@ -258,16 +258,14 @@ recent_thread_func (gpointer user_data)
                 }
             }
 
-            if (mime_types)
+            if (mime_types->len > 0)
             {
-                GList *ml;
                 const gchar *mime_type = gtk_recent_info_get_mime_type (info);
                 gboolean found = FALSE;
 
-                for (ml = mime_types; mime_type != NULL && ml != NULL;
-                     ml = ml->next)
+                for (int i = 0; mime_type != NULL && i < mime_types->len; i++)
                 {
-                    if (g_content_type_is_a (mime_type, ml->data))
+                    if (g_content_type_is_a (mime_type, g_ptr_array_index (mime_types, i)))
                     {
                         found = TRUE;
                         break;
@@ -318,7 +316,6 @@ recent_thread_func (gpointer user_data)
     search_add_hits_idle (self, hits);
 
     g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
-    g_list_free_full (mime_types, g_free);
 
     return NULL;
 }

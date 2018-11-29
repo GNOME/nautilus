@@ -38,7 +38,7 @@ struct _NautilusQuery
 
     char *text;
     GFile *location;
-    GList *mime_types;
+    GPtrArray *mime_types;
     gboolean show_hidden;
     GPtrArray *date_range;
     NautilusQueryRecursive recursive;
@@ -249,7 +249,7 @@ nautilus_query_class_init (NautilusQueryClass *class)
                                                           G_PARAM_READWRITE));
 
     /**
-     * NautilusQuery::mimetypes:
+     * NautilusQuery::mimetypes: (type GPtrArray(char*))
      *
      * MIME types the query holds.
      *
@@ -337,8 +337,9 @@ nautilus_query_class_init (NautilusQueryClass *class)
 static void
 nautilus_query_init (NautilusQuery *query)
 {
-    query->show_hidden = TRUE;
+    query->mime_types = g_ptr_array_new ();
     query->location = g_file_new_for_path (g_get_home_dir ());
+    query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
     g_mutex_init (&query->prepared_words_mutex);
@@ -464,22 +465,41 @@ nautilus_query_set_location (NautilusQuery *query,
     }
 }
 
-GList *
+/**
+ * nautilus_query_get_mime_type:
+ * @query: A #NautilusQuery
+ *
+ * Retrieves the current MIME Types filter from @query. Its content should not
+ * be modified by callers. It may be shared between multiple threads. The index
+ * of elements is stable, but the length may increase.
+ *
+ * Returns: A reference to a #GPtrArray of MIME type strings.
+ */
+GPtrArray *
 nautilus_query_get_mime_types (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-    return g_list_copy_deep (query->mime_types, (GCopyFunc) g_strdup, NULL);
+    return g_ptr_array_ref (query->mime_types);
 }
 
+/**
+ * nautilus_query_set_mime_type:
+ * @query: A #NautilusQuery
+ * @mime_types: A #GPtrArray of MIME type strings
+ *
+ * Set a new MIME types filter for @query. This will not affect references to
+ * the previous MIME types filter.
+ */
 void
 nautilus_query_set_mime_types (NautilusQuery *query,
-                               GList         *mime_types)
+                               GPtrArray     *mime_types)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (mime_types != NULL);
 
-    g_list_free_full (query->mime_types, g_free);
-    query->mime_types = g_list_copy_deep (mime_types, (GCopyFunc) g_strdup, NULL);
+    g_clear_pointer (&query->mime_types, g_ptr_array_unref);
+    query->mime_types = g_ptr_array_ref (mime_types);
 
     g_object_notify (G_OBJECT (query), "mimetypes");
 }
@@ -490,7 +510,7 @@ nautilus_query_add_mime_type (NautilusQuery *query,
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
 
-    query->mime_types = g_list_append (query->mime_types, g_strdup (mime_type));
+    g_ptr_array_add (query->mime_types, (gpointer) mime_type);
 
     g_object_notify (G_OBJECT (query), "mimetypes");
 }
@@ -667,7 +687,7 @@ nautilus_query_is_empty (NautilusQuery *query)
 
     if (!query->date_range &&
         (!query->text || (query->text && query->text[0] == '\0')) &&
-        !query->mime_types)
+        query->mime_types->len == 0)
     {
         return TRUE;
     }

@@ -445,7 +445,7 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
                                      gpointer               user_data)
 {
     NautilusQueryEditor *editor;
-    g_autoptr (GList) mimetypes = NULL;
+    g_autoptr (GPtrArray) mimetypes = NULL;
 
     editor = NAUTILUS_QUERY_EDITOR (user_data);
 
@@ -473,7 +473,8 @@ search_popover_mime_type_changed_cb (NautilusSearchPopover *popover,
     {
         g_autofree gchar *display_name = NULL;
 
-        mimetypes = g_list_append (NULL, (gpointer) mimetype);
+        mimetypes = g_ptr_array_new_full (1, g_free);
+        g_ptr_array_add (mimetypes, (gpointer) mimetype);
         display_name = g_content_type_get_description (mimetype);
         gd_tagged_entry_tag_set_label (editor->mime_types_tag, display_name);
         gd_tagged_entry_add_tag (GD_TAGGED_ENTRY (editor->entry),
