@@ -8813,7 +8813,19 @@ get_attributes_for_default_sort_type (NautilusFile *file,
 
     return retval;
 }
-
+/**
+ * nautilus_file_get_default_sort_type:
+ * @file: A #NautilusFile representing a location
+ * @reversed: (out): Location to store whether the order is reversed by default.
+ *
+ * Gets which sort order applies by default for the provided locations.
+ *
+ * If @file is a location with special needs (e.g. Trash or Recent), the return
+ * value and @reversed flag are dictated by design. Otherwise, they stem from
+ * the "default-sort-order" and "default-sort-in-reverse-order" preference keys.
+ *
+ * Returns: The default #NautilusFileSortType for this @file.
+ */
 NautilusFileSortType
 nautilus_file_get_default_sort_type (NautilusFile *file,
                                      gboolean     *reversed)
@@ -8821,7 +8833,6 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     NautilusFileSortType retval;
     gboolean is_recent, is_download, is_trash, is_search, res;
 
-    retval = NAUTILUS_FILE_SORT_NONE;
     is_recent = is_download = is_trash = is_search = FALSE;
     res = get_attributes_for_default_sort_type (file, &is_recent, &is_download, &is_trash, &is_search);
 
@@ -8849,43 +8860,14 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
             *reversed = res;
         }
     }
-
-    return retval;
-}
-
-const gchar *
-nautilus_file_get_default_sort_attribute (NautilusFile *file,
-                                          gboolean     *reversed)
-{
-    const gchar *retval;
-    gboolean is_recent, is_download, is_trash, is_search, res;
-
-    retval = NULL;
-    is_download = is_trash = is_search = FALSE;
-    res = get_attributes_for_default_sort_type (file, &is_recent, &is_download, &is_trash, &is_search);
-
-    if (res)
+    else
     {
-        if (is_recent)
-        {
-            retval = g_quark_to_string (attribute_recency_q);
-        }
-        else if (is_download)
-        {
-            retval = g_quark_to_string (attribute_date_modified_q);
-        }
-        else if (is_trash)
-        {
-            retval = g_quark_to_string (attribute_trashed_on_q);
-        }
-        else if (is_search)
-        {
-            retval = g_quark_to_string (attribute_search_relevance_q);
-        }
-
+        retval = g_settings_get_enum (nautilus_preferences,
+                                      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
         if (reversed != NULL)
         {
-            *reversed = res;
+            *reversed = g_settings_get_boolean (nautilus_preferences,
+                                                NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
         }
     }
 

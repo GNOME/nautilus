@@ -156,21 +156,13 @@ static const SortConstants *
 get_default_sort_order (NautilusFile *file)
 {
     NautilusFileSortType sort_type;
-    NautilusFileSortType default_sort_order;
     gboolean reversed;
 
-    default_sort_order = g_settings_get_enum (nautilus_preferences,
-                                              NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
-    reversed = g_settings_get_boolean (nautilus_preferences,
-                                       NAUTILUS_PREFERENCES_DEFAULT_SORT_IN_REVERSE_ORDER);
-
-    /* If this is a special folder (e.g. search or recent), override the sort
-     * order and reversed flag with values appropriate for the folder */
     sort_type = nautilus_file_get_default_sort_type (file, &reversed);
 
     if (sort_type == NAUTILUS_FILE_SORT_NONE)
     {
-        sort_type = CLAMP (default_sort_order,
+        sort_type = CLAMP (sort_type,
                            NAUTILUS_FILE_SORT_BY_DISPLAY_NAME,
                            NAUTILUS_FILE_SORT_BY_ATIME);
     }
