@@ -47,7 +47,7 @@ typedef struct
     NautilusSearchEngineSimple *engine;
     GCancellable *cancellable;
 
-    GList *mime_types;
+    GPtrArray *mime_types;
     GList *found_list;
 
     GQueue *directories;     /* GFiles */
@@ -119,7 +119,7 @@ search_thread_data_free (SearchThreadData *data)
     g_hash_table_destroy (data->visited);
     g_object_unref (data->cancellable);
     g_object_unref (data->query);
-    g_list_free_full (data->mime_types, g_free);
+    g_ptr_array_unref (data->mime_types);
     g_list_free_full (data->hits, g_object_unref);
     g_object_unref (data->engine);
 
@@ -216,7 +216,6 @@ visit_directory (GFile            *dir,
     const char *mime_type, *display_name;
     gdouble match;
     gboolean is_hidden, found;
-    GList *l;
     const char *id;
     gboolean visited;
     guint64 atime;
@@ -226,7 +225,7 @@ visit_directory (GFile            *dir,
     gchar *uri;
 
     enumerator = g_file_enumerate_children (dir,
-                                            data->mime_types != NULL ?
+                                            data->mime_types->len > 0 ?
                                             STD_ATTRIBUTES ","
                                             G_FILE_ATTRIBUTE_STANDARD_CONTENT_TYPE
                                             :
@@ -262,14 +261,14 @@ visit_directory (GFile            *dir,
         match = nautilus_query_matches_string (data->query, display_name);
         found = (match > -1);
 
-        if (found && data->mime_types)
+        if (found && data->mime_types->len > 0)
         {
             mime_type = g_file_info_get_content_type (info);
             found = FALSE;
 
-            for (l = data->mime_types; mime_type != NULL && l != NULL; l = l->next)
+            for (gint i = 0; i < data->mime_types->len; i++)
             {
-                if (g_content_type_is_a (mime_type, l->data))
+                if (g_content_type_is_a (mime_type, g_ptr_array_index (data->mime_types, i)))
                 {
                     found = TRUE;
                     break;

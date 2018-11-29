@@ -2238,20 +2238,21 @@ nautilus_mime_types_group_get_name (gint group_index)
     return gettext (mimetype_groups[group_index].name);
 }
 
-GList *
+GPtrArray *
 nautilus_mime_types_group_get_mimetypes (gint group_index)
 {
-    GList *mimetypes;
-    gint i;
+    GStrv group;
+    GPtrArray *mimetypes;
 
     g_return_val_if_fail (group_index < G_N_ELEMENTS (mimetype_groups), NULL);
 
-    mimetypes = NULL;
+    group = mimetype_groups[group_index].mimetypes;
+    mimetypes = g_ptr_array_new_full (g_strv_length (group), g_free);
 
     /* Setup the new mimetypes set */
-    for (i = 0; mimetype_groups[group_index].mimetypes[i]; i++)
+    for (gint i = 0; group[i] != NULL; i++)
     {
-        mimetypes = g_list_append (mimetypes, mimetype_groups[group_index].mimetypes[i]);
+        g_ptr_array_add (mimetypes, group[i]);
     }
 
     return mimetypes;
