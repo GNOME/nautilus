@@ -57,8 +57,8 @@ GFile*         nautilus_query_get_location       (NautilusQuery *query);
 void           nautilus_query_set_location       (NautilusQuery *query,
                                                   GFile         *location);
 
-GList *        nautilus_query_get_mime_types     (NautilusQuery *query);
-void           nautilus_query_set_mime_types     (NautilusQuery *query, GList *mime_types);
+GPtrArray *    nautilus_query_get_mime_types     (NautilusQuery *query);
+void           nautilus_query_set_mime_types     (NautilusQuery *query, GPtrArray *mime_types);
 
 NautilusQuerySearchContent nautilus_query_get_search_content (NautilusQuery *query);
 void                       nautilus_query_set_search_content (NautilusQuery              *query,

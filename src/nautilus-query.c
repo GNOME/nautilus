@@ -38,7 +38,7 @@ struct _NautilusQuery
 
     char *text;
     GFile *location;
-    GList *mime_types;
+    GPtrArray *mime_types;
     gboolean show_hidden;
     GPtrArray *date_range;
     NautilusQueryRecursive recursive;
@@ -249,9 +249,9 @@ nautilus_query_class_init (NautilusQueryClass *class)
                                                           G_PARAM_READWRITE));
 
     /**
-     * NautilusQuery::mimetypes:
+     * NautilusQuery::mimetypes: (type GPtrArray) (element-type gchar*)
      *
-     * MIME types the query holds.
+     * MIME types the query holds. An empty array means "Any type".
      *
      */
     g_object_class_install_property (gobject_class,
@@ -337,8 +337,9 @@ nautilus_query_class_init (NautilusQueryClass *class)
 static void
 nautilus_query_init (NautilusQuery *query)
 {
-    query->show_hidden = TRUE;
     query->location = g_file_new_for_path (g_get_home_dir ());
+    query->mime_types = g_ptr_array_new ();
+    query->show_hidden = TRUE;
     query->search_type = g_settings_get_enum (nautilus_preferences, "search-filter-time-type");
     query->search_content = NAUTILUS_QUERY_SEARCH_CONTENT_SIMPLE;
     g_mutex_init (&query->prepared_words_mutex);
@@ -464,22 +465,44 @@ nautilus_query_set_location (NautilusQuery *query,
     }
 }
 
-GList *
+/**
+ * nautilus_query_get_mime_type:
+ * @query: A #NautilusQuery
+ *
+ * Retrieves the current MIME Types filter from @query. Its content must not be
+ * modified. It can be read by multiple threads.
+ *
+ * Returns: (transfer container) A #GPtrArray reference with MIME type name strings.
+ */
+GPtrArray *
 nautilus_query_get_mime_types (NautilusQuery *query)
 {
     g_return_val_if_fail (NAUTILUS_IS_QUERY (query), NULL);
 
-    return g_list_copy_deep (query->mime_types, (GCopyFunc) g_strdup, NULL);
+    return g_ptr_array_ref (query->mime_types);
 }
 
+/**
+ * nautilus_query_set_mime_types:
+ * @query: A #NautilusQuery
+ * @mime_types: (transfer none): A #GPtrArray of MIME type strings
+ *
+ * Set a new MIME types filter for @query. Once set, the filter must not be
+ * modified, and it can only be replaced by setting another filter.
+ *
+ * Search engines that are already running for a previous filter will ignore the
+ * new filter. So, the caller must ensure that the search will be reloaded
+ * afterwards.
+ */
 void
 nautilus_query_set_mime_types (NautilusQuery *query,
-                               GList         *mime_types)
+                               GPtrArray     *mime_types)
 {
     g_return_if_fail (NAUTILUS_IS_QUERY (query));
+    g_return_if_fail (mime_types != NULL);
 
-    g_list_free_full (query->mime_types, g_free);
-    query->mime_types = g_list_copy_deep (mime_types, (GCopyFunc) g_strdup, NULL);
+    g_clear_pointer (&query->mime_types, g_ptr_array_unref);
+    query->mime_types = g_ptr_array_ref (mime_types);
 
     g_object_notify (G_OBJECT (query), "mimetypes");
 }
@@ -656,7 +679,7 @@ nautilus_query_is_empty (NautilusQuery *query)
 
     if (!query->date_range &&
         (!query->text || (query->text && query->text[0] == '\0')) &&
-        !query->mime_types)
+        query->mime_types->len == 0)
     {
         return TRUE;
     }
