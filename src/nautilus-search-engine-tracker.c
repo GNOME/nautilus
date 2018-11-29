@@ -293,7 +293,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     gchar *query_text, *search_text, *location_uri, *downcase;
     GFile *location;
     GString *sparql;
-    GList *mimetypes, *l;
+    g_autoptr (GPtrArray) mimetypes = NULL;
     gint mime_count;
     GPtrArray *date_range;
 
@@ -327,7 +327,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     location = nautilus_query_get_location (tracker->query);
     location_uri = location ? g_file_get_uri (location) : NULL;
     mimetypes = nautilus_query_get_mime_types (tracker->query);
-    mime_count = g_list_length (mimetypes);
+    mime_count = mimetypes->len;
 
     sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)");
 
@@ -413,15 +413,15 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     {
         g_string_append (sparql, " && (");
 
-        for (l = mimetypes; l != NULL; l = l->next)
+        for (gint i = 0; i < mime_count; i++)
         {
-            if (l != mimetypes)
+            if (i != 0)
             {
                 g_string_append (sparql, " || ");
             }
 
             g_string_append_printf (sparql, "fn:contains(?mime, '%s')",
-                                    (gchar *) l->data);
+                                    (gchar *) g_ptr_array_index (mimetypes, i));
         }
         g_string_append (sparql, ")\n");
     }
@@ -438,7 +438,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 
     g_free (search_text);
     g_free (location_uri);
-    g_list_free_full (mimetypes, g_free);
     g_object_unref (location);
 }
 
