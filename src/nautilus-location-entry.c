@@ -440,6 +440,9 @@ entry_would_have_inserted_characters (const GdkEvent *event)
         case GDK_KEY_KP_Left:
         case GDK_KEY_KP_Right:
         case GDK_KEY_Return:
+        /* For when the entry is set to be always visible.
+         */
+        case GDK_KEY_Escape:
         {
             return FALSE;
         }
