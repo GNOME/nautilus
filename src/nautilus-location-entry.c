@@ -635,7 +635,7 @@ nautilus_location_entry_on_event (GtkWidget *widget,
 
     if (!gtk_editable_get_editable (editable))
     {
-        return FALSE;
+        return GDK_EVENT_PROPAGATE;
     }
 
     if (G_UNLIKELY (!gdk_event_get_keyval (event, &keyval)))
