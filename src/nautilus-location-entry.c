@@ -609,18 +609,20 @@ static gboolean
 nautilus_location_entry_on_event (GtkWidget *widget,
                                   GdkEvent  *event)
 {
+    GtkWidgetClass *parent_widget_class;
     NautilusLocationEntry *entry;
     NautilusLocationEntryPrivate *priv;
     GtkEditable *editable;
     gboolean selected;
     guint keyval;
     GdkModifierType state;
-    GtkWidgetClass *parent_widget_class;
     gboolean handled;
+
+    parent_widget_class = GTK_WIDGET_CLASS (nautilus_location_entry_parent_class);
 
     if (gdk_event_get_event_type (event) != GDK_KEY_PRESS)
     {
-        return GDK_EVENT_PROPAGATE;
+        return parent_widget_class->event (widget, event);
     }
 
     entry = NAUTILUS_LOCATION_ENTRY (widget);
@@ -664,7 +666,6 @@ nautilus_location_entry_on_event (GtkWidget *widget,
         set_position_and_selection_to_end (editable);
     }
 
-    parent_widget_class = GTK_WIDGET_CLASS (nautilus_location_entry_parent_class);
     /* GTK+ 4 TODO: Calling the event vfunc is not enough, we need the entry
      *              to handle the key press and insert the text first.
      *
