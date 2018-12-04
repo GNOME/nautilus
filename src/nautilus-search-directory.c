@@ -60,6 +60,10 @@ struct _NautilusSearchDirectory
      * scheduled timeouts. */
     gboolean search_ready_and_valid;
 
+    guint hits_queue_process_idle_id;
+    gboolean hits_queue_emit_done;
+    GList *hits_queue;
+
     GList *files;
     GHashTable *files_hash;
 
@@ -126,6 +130,18 @@ static void search_callback_file_ready_callback (NautilusFile *file,
                                                  gpointer      data);
 static void file_changed (NautilusFile            *file,
                           NautilusSearchDirectory *self);
+
+static void
+reset_hits_queue (NautilusSearchDirectory *self)
+{
+    if (self->hits_queue != NULL)
+    {
+        g_list_free_full (self->hits_queue, g_object_unref);
+        self->hits_queue = NULL;
+    }
+
+    self->hits_queue_emit_done = FALSE;
+}
 
 static void
 reset_file_list (NautilusSearchDirectory *self)
@@ -209,6 +225,7 @@ start_search (NautilusSearchDirectory *self)
     model_provider = nautilus_search_engine_get_model_provider (self->engine);
     nautilus_search_engine_model_set_model (model_provider, self->base_model);
 
+    reset_hits_queue (self);
     reset_file_list (self);
 
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (self->engine));
@@ -225,6 +242,7 @@ stop_search (NautilusSearchDirectory *self)
     self->search_running = FALSE;
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (self->engine));
 
+    reset_hits_queue (self);
     reset_file_list (self);
 }
 
@@ -601,45 +619,53 @@ on_search_directory_search_ready_and_valid (NautilusSearchDirectory *self)
     self->search_ready_and_valid = TRUE;
 }
 
-static void
-search_engine_hits_added (NautilusSearchEngine    *engine,
-                          GList                   *hits,
-                          NautilusSearchDirectory *self)
+static gboolean
+hits_queue_process_idle (gpointer user_data)
 {
-    GList *hit_list;
-    GList *file_list;
+    NautilusSearchDirectory *self = user_data;
+    GList *file_list = NULL;
     NautilusFile *file;
     SearchMonitor *monitor;
     GList *monitor_list;
 
-    file_list = NULL;
+    NautilusSearchHit *hit;
+    const char *uri;
 
-    for (hit_list = hits; hit_list != NULL; hit_list = hit_list->next)
+    if (self->hits_queue == NULL)
     {
-        NautilusSearchHit *hit = hit_list->data;
-        const char *uri;
-
-        uri = nautilus_search_hit_get_uri (hit);
-
-        nautilus_search_hit_compute_scores (hit, self->query);
-
-        file = nautilus_file_get_by_uri (uri);
-        nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
-        nautilus_file_set_search_fts_snippet (file, nautilus_search_hit_get_fts_snippet (hit));
-
-        for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
+        if (self->hits_queue_emit_done)
         {
-            monitor = monitor_list->data;
-
-            /* Add monitors */
-            nautilus_file_monitor_add (file, monitor, monitor->monitor_attributes);
+            on_search_directory_search_ready_and_valid (self);
+            nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
+            self->hits_queue_emit_done = FALSE;
         }
-
-        g_signal_connect (file, "changed", G_CALLBACK (file_changed), self),
-
-        file_list = g_list_prepend (file_list, file);
-        g_hash_table_add (self->files_hash, file);
+        self->hits_queue_process_idle_id = 0;
+        return FALSE;
     }
+
+    hit = self->hits_queue->data;
+    self->hits_queue = g_list_delete_link (self->hits_queue, self->hits_queue);
+
+    uri = nautilus_search_hit_get_uri (hit);
+
+    nautilus_search_hit_compute_scores (hit, self->query);
+
+    file = nautilus_file_get_by_uri (uri);
+    nautilus_file_set_search_relevance (file, nautilus_search_hit_get_relevance (hit));
+    nautilus_file_set_search_fts_snippet (file, nautilus_search_hit_get_fts_snippet (hit));
+
+    for (monitor_list = self->monitor_list; monitor_list; monitor_list = monitor_list->next)
+    {
+        monitor = monitor_list->data;
+
+        /* Add monitors */
+        nautilus_file_monitor_add (file, monitor, monitor->monitor_attributes);
+    }
+
+    g_signal_connect (file, "changed", G_CALLBACK (file_changed), self),
+
+    file_list = g_list_prepend (file_list, file);
+    g_hash_table_add (self->files_hash, file);
 
     self->files = g_list_concat (self->files, file_list);
 
@@ -650,6 +676,28 @@ search_engine_hits_added (NautilusSearchEngine    *engine,
     nautilus_file_unref (file);
 
     search_directory_add_pending_files_callbacks (self);
+
+    g_object_unref (hit);
+
+    return TRUE;
+}
+
+static void
+search_engine_hits_added (NautilusSearchEngine    *engine,
+                          GList                   *hits,
+                          NautilusSearchDirectory *self)
+{
+    if (hits != NULL)
+    {
+        /* Delegate potentially large hits to an idle processor */
+        self->hits_queue = g_list_concat (
+            self->hits_queue,
+            g_list_copy_deep (hits, (GCopyFunc) g_object_ref, NULL));
+        if (self->hits_queue_process_idle_id == 0)
+        {
+            self->hits_queue_process_idle_id = g_idle_add (hits_queue_process_idle, self);
+        }
+    }
 }
 
 static void
@@ -659,6 +707,7 @@ search_engine_error (NautilusSearchEngine    *engine,
 {
     GError *error;
 
+    reset_hits_queue (self);
     error = g_error_new_literal (G_IO_ERROR, G_IO_ERROR_FAILED,
                                  error_message);
     nautilus_directory_emit_load_error (NAUTILUS_DIRECTORY (self),
@@ -681,13 +730,21 @@ search_engine_finished (NautilusSearchEngine         *engine,
      * happening. */
     if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_NORMAL)
     {
-        on_search_directory_search_ready_and_valid (self);
-        nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
+        if (self->hits_queue_process_idle_id == 0)
+        {
+            on_search_directory_search_ready_and_valid (self);
+            nautilus_directory_emit_done_loading (NAUTILUS_DIRECTORY (self));
+        }
+        else
+        {
+            self->hits_queue_emit_done = TRUE;
+        }
     }
     else if (status == NAUTILUS_SEARCH_PROVIDER_STATUS_RESTARTING)
     {
         /* Remove file monitors of the files from an old search that just
          * actually finished */
+        reset_hits_queue (self);
         reset_file_list (self);
     }
 }
@@ -708,6 +765,7 @@ search_force_reload (NautilusDirectory *directory)
     self->search_ready_and_valid = FALSE;
 
     /* Remove file monitors */
+    reset_hits_queue (self);
     reset_file_list (self);
     stop_search (self);
 
@@ -885,6 +943,14 @@ search_dispose (GObject *object)
         self->monitor_list = NULL;
     }
 
+    if (self->hits_queue_process_idle_id > 0)
+    {
+        g_source_remove(self->hits_queue_process_idle_id);
+        self->hits_queue_process_idle_id = 0;
+    }
+    self->hits_queue_emit_done = FALSE;
+    reset_hits_queue (self);
+
     reset_file_list (self);
 
     if (self->callback_list)
@@ -929,6 +995,8 @@ static void
 nautilus_search_directory_init (NautilusSearchDirectory *self)
 {
     self->query = NULL;
+    self->hits_queue_process_idle_id = 0;
+    self->hits_queue = NULL;
     self->files_hash = g_hash_table_new (g_direct_hash, g_direct_equal);
 
     self->engine = nautilus_search_engine_new ();
