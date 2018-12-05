@@ -79,7 +79,7 @@ struct NautilusDirectoryDetails
 	 */
 	GList *call_when_ready_list;
 	RequestCounter call_when_ready_counters;
-	GList *monitor_list;
+	GHashTable *monitor_table;
 	RequestCounter monitor_counters;
 	guint call_ready_idle_id;
 
