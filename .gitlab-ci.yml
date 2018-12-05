@@ -1,3 +1,5 @@
+include: 'https://gitlab.gnome.org/GNOME/citemplates/raw/master/flatpak/flatpak_ci_initiative.yml'
+
 variables:
     GIT_SUBMODULE_STRATEGY: normal
     BUNDLE: "nautilus-dev.flatpak"
@@ -13,39 +15,8 @@ stages:
       - cd _build
       - ninja test
 
-.flatpak_template: &flatpak
-    script:
-        - flatpak-builder --stop-at=${FLATPAK_MODULE} app ${MANIFEST_PATH}
-        # Make sure to keep this in sync with the Flatpak manifest, all arguments
-        # are passed except the config-args because we build it ourselves
-        - flatpak build app meson --prefix=/app --libdir=lib ${MESON_ARGS} _build
-        - flatpak build app ninja -C _build install
-        - flatpak-builder --finish-only --repo=repo app ${MANIFEST_PATH}
-        # Run automatic tests inside the Flatpak env
-        # Setting LANG to avoid Tracker complaining and falling back to the same value,
-        # and setting NO_AT_BRIDGE, so that atk-bridge isn’t initialized, preventing
-        # annoying warnings that don’t affect the kinds of tests that we run.
-        - |
-          xvfb-run -a -s "-screen 0 1024x768x24" \
-              flatpak build \
-                  --env=LANG=C.UTF-8 \
-                  --env=NO_AT_BRIDGE=1 \
-                  app \
-                  dbus-run-session meson test -C _build
-        # Generate a Flatpak bundle
-        - flatpak build-bundle repo ${BUNDLE} --runtime-repo=${RUNTIME_REPO} ${DBUS_ID}
-    artifacts:
-        paths:
-            - ${BUNDLE}
-            - _build/meson-logs/
-        # The Flatpak bundle is always generated at the end, meaning that there
-        # won’t be one in case of failure, but the logs will be available for
-        # our expert investigators to dissect.
-        when: always
-        expire_in: 2 days
-
-.flatpak_gcovr_template: &flatpak_gcovr
-    extends: .flatpak_template
+.flatpak_gcovr:
+    extends: .flatpak
     after_script:
         # Generate coverage report
         - cd _build
@@ -80,37 +51,17 @@ flatpak devel:
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusDevel"
-    <<: *flatpak_gcovr
+    extends: '.flatpak_gcovr'
 
 review:
     stage: deploy
     dependencies:
-        - "flatpak devel"
-    script:
-        - echo "Generating flatpak deployment"
-    artifacts:
-        paths:
-            - ${BUNDLE}
-        expire_in: 30 days
-    environment:
-        name: review/$CI_COMMIT_REF_NAME
-        url: https://gitlab.gnome.org/$CI_PROJECT_PATH/-/jobs/$CI_JOB_ID/artifacts/raw/${BUNDLE}
-        on_stop: stop_review
-    except:
-        - master@GNOME/nautilus
-        - tags
+        - 'flatpak devel'
+    extends: '.review'
 
 stop_review:
     stage: deploy
-    script:
-        - echo "Stopping flatpak deployment"
-    when: manual
-    environment:
-        name: review/$CI_COMMIT_REF_NAME
-        action: stop
-    except:
-        - master@GNOME/nautilus
-        - tags
+    extends: '.stop_review'
 
 fedora rawhide:
     image: fedora:rawhide
@@ -193,7 +144,7 @@ flatpak master:
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusMaster"
-    <<: *flatpak
+    extends: .flatpak
     only:
         - schedules
         - web
@@ -208,7 +159,7 @@ flatpak gtk4:
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
         DBUS_ID: "org.gnome.NautilusGtk4"
-    <<: *flatpak
+    extends: .flatpak
     only:
         - schedules
         - web
