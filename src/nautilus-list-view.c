@@ -2700,12 +2700,27 @@ static void
 nautilus_list_view_clear (NautilusFilesView *view)
 {
     NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *tree_selection;
+    GtkSelectionMode mode;
 
     list_view = NAUTILUS_LIST_VIEW (view);
 
     if (list_view->details->model != NULL)
     {
+        tree_view = list_view->details->tree_view;
+        tree_selection = gtk_tree_view_get_selection (tree_view);
+
+        gtk_tree_selection_unselect_all (tree_selection);
+
+        /* Set mode to none because selection still happens in
+         * nautilus_list_model_clear() */
+        mode = gtk_tree_selection_get_mode (tree_selection);
+        gtk_tree_selection_set_mode (tree_selection, GTK_SELECTION_NONE);
+
         nautilus_list_model_clear (list_view->details->model);
+
+        gtk_tree_selection_set_mode (tree_selection, mode);
     }
 }
 
