@@ -287,16 +287,22 @@ nautilus_directory_verify_request_counts (NautilusDirectory *directory)
     RequestCounter counters;
     int i;
     gboolean fail;
+    GHashTableIter monitor_iter;
+    gpointer value;
 
     fail = FALSE;
     for (i = 0; i < REQUEST_TYPE_LAST; i++)
     {
         counters[i] = 0;
     }
-    for (l = directory->details->monitor_list; l != NULL; l = l->next)
+    g_hash_table_iter_init (&monitor_iter, directory->details->monitor_table);
+    while (g_hash_table_iter_next (&monitor_iter, NULL, &value))
     {
-        Monitor *monitor = l->data;
-        request_counter_add_request (counters, monitor->request);
+        for (l = value; l; l = l->next)
+        {
+            Monitor *monitor = l->data;
+            request_counter_add_request (counters, monitor->request);
+        }
     }
     for (i = 0; i < REQUEST_TYPE_LAST; i++)
     {
@@ -574,68 +580,82 @@ new_files_cancel (NautilusDirectory *directory)
     }
 }
 
-static int
-monitor_key_compare (gconstpointer a,
-                     gconstpointer data)
-{
-    const Monitor *monitor;
-    const Monitor *compare_monitor;
-
-    monitor = a;
-    compare_monitor = data;
-
-    if (monitor->client < compare_monitor->client)
-    {
-        return -1;
-    }
-    if (monitor->client > compare_monitor->client)
-    {
-        return +1;
-    }
-
-    if (monitor->file < compare_monitor->file)
-    {
-        return -1;
-    }
-    if (monitor->file > compare_monitor->file)
-    {
-        return +1;
-    }
-
-    return 0;
-}
-
-static GList *
+static Monitor *
 find_monitor (NautilusDirectory *directory,
               NautilusFile      *file,
               gconstpointer      client)
 {
-    Monitor monitor;
+    GList *l;
 
-    monitor.client = client;
-    monitor.file = file;
+    l = g_hash_table_lookup (directory->details->monitor_table, file);
+    for (; l; l = l->next)
+    {
+        Monitor *monitor = l->data;
+        if (monitor->client == client)
+        {
+            return monitor;
+        }
+    }
 
-    return g_list_find_custom (directory->details->monitor_list,
-                               &monitor,
-                               monitor_key_compare);
+    return NULL;
 }
 
 static void
-remove_monitor_link (NautilusDirectory *directory,
-                     GList             *link)
+insert_new_monitor_to_table (NautilusDirectory *directory,
+                             Monitor           *monitor)
 {
-    Monitor *monitor;
+    GList *list;
 
-    if (link != NULL)
+    if (find_monitor (directory, monitor->file, monitor->client) != NULL)
+        return;
+
+    list = g_hash_table_lookup (directory->details->monitor_table, monitor->file);
+    if (list == NULL)
     {
-        monitor = link->data;
-        request_counter_remove_request (directory->details->monitor_counters,
-                                        monitor->request);
-        directory->details->monitor_list =
-            g_list_remove_link (directory->details->monitor_list, link);
-        g_free (monitor);
-        g_list_free_1 (link);
+        list = g_list_append (list, monitor);
+        g_hash_table_insert (directory->details->monitor_table,
+                             monitor->file,
+                             list);
     }
+    else
+    {
+        list = g_list_append (list, monitor);
+    }
+}
+
+static Monitor *
+remove_monitor_from_table (NautilusDirectory *directory,
+                           NautilusFile      *file,
+                           gconstpointer      client)
+{
+    GList *list, *l, *new_list;
+    Monitor *monitor = NULL;
+
+    list = l = g_hash_table_lookup (directory->details->monitor_table, file);
+    for (; l; l = l->next)
+    {
+        Monitor *data = l->data;
+        if (data->client == client)
+        {
+            monitor = data;
+            break;
+        }
+    }
+
+    if (monitor != NULL)
+    {
+        new_list = g_list_delete_link (list, l);
+        if (new_list == NULL)
+        {
+            g_hash_table_remove (directory->details->monitor_table, file);
+        }
+        else if (new_list != list)
+        {
+            g_hash_table_replace (directory->details->monitor_table, file, new_list);
+        }
+    }
+
+    return monitor;
 }
 
 static void
@@ -643,7 +663,16 @@ remove_monitor (NautilusDirectory *directory,
                 NautilusFile      *file,
                 gconstpointer      client)
 {
-    remove_monitor_link (directory, find_monitor (directory, file, client));
+    Monitor *monitor;
+
+    monitor = remove_monitor_from_table (directory, file, client);
+
+    if (monitor != NULL)
+    {
+        request_counter_remove_request (directory->details->monitor_counters,
+                                        monitor->request);
+        g_free (monitor);
+    }
 }
 
 Request
@@ -754,8 +783,8 @@ nautilus_directory_monitor_add_internal (NautilusDirectory         *directory,
     {
         REQUEST_SET_TYPE (monitor->request, REQUEST_FILE_LIST);
     }
-    directory->details->monitor_list =
-        g_list_prepend (directory->details->monitor_list, monitor);
+
+    insert_new_monitor_to_table (directory, monitor);
     request_counter_add_request (directory->details->monitor_counters,
                                  monitor->request);
 
@@ -1162,7 +1191,7 @@ nautilus_directory_monitor_remove_internal (NautilusDirectory *directory,
     remove_monitor (directory, file, client);
 
     if (directory->details->monitor != NULL
-        && directory->details->monitor_list == NULL)
+        && g_hash_table_size (directory->details->monitor_table) == 0)
     {
         nautilus_monitor_cancel (directory->details->monitor);
         directory->details->monitor = NULL;
@@ -1177,28 +1206,26 @@ FileMonitors *
 nautilus_directory_remove_file_monitors (NautilusDirectory *directory,
                                          NautilusFile      *file)
 {
-    GList *result, **list, *node, *next;
+    GList *result, *node;
     Monitor *monitor;
 
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
     g_assert (NAUTILUS_IS_FILE (file));
     g_assert (file->details->directory == directory);
 
-    result = NULL;
+    result = g_hash_table_lookup (directory->details->monitor_table, file);
 
-    list = &directory->details->monitor_list;
-    for (node = directory->details->monitor_list; node != NULL; node = next)
+    if (result != NULL)
     {
-        next = node->next;
-        monitor = node->data;
+        g_hash_table_remove (directory->details->monitor_table, file);
 
-        if (monitor->file == file)
+        for (node = result; node; node = node->next)
         {
-            *list = g_list_remove_link (*list, node);
-            result = g_list_concat (node, result);
+            monitor = node->data;
             request_counter_remove_request (directory->details->monitor_counters,
                                             monitor->request);
         }
+        result = g_list_reverse (result);
     }
 
     /* XXX - do we need to remove anything from the work queue? */
@@ -1213,7 +1240,6 @@ nautilus_directory_add_file_monitors (NautilusDirectory *directory,
                                       NautilusFile      *file,
                                       FileMonitors      *monitors)
 {
-    GList **list;
     GList *l;
     Monitor *monitor;
 
@@ -1229,12 +1255,14 @@ nautilus_directory_add_file_monitors (NautilusDirectory *directory,
     for (l = (GList *) monitors; l != NULL; l = l->next)
     {
         monitor = l->data;
+
+        remove_monitor (directory, monitor->file, monitor->client);
         request_counter_add_request (directory->details->monitor_counters,
                                      monitor->request);
+        insert_new_monitor_to_table (directory, monitor);
     }
 
-    list = &directory->details->monitor_list;
-    *list = g_list_concat (*list, (GList *) monitors);
+    g_list_free ((GList *) monitors);
 
     nautilus_directory_add_file_to_work_queue (directory, file);
 
@@ -1631,18 +1659,19 @@ nautilus_async_destroying_file (NautilusFile *file)
     }
 
     /* Check for monitors. */
-    for (node = directory->details->monitor_list; node != NULL; node = next)
+    node = g_hash_table_lookup (directory->details->monitor_table, file);
+    if (node != NULL)
     {
-        next = node->next;
-        monitor = node->data;
-
-        if (monitor->file == file)
+        /* Client should have removed monitor earlier. */
+        g_warning ("destroyed file still being monitored");
+        for (; node; node = next)
         {
-            /* Client should have removed monitor earlier. */
-            g_warning ("destroyed file still being monitored");
-            remove_monitor_link (directory, node);
-            changed = TRUE;
+            next = node->next;
+            monitor = node->data;
+
+            remove_monitor (directory, monitor->file, monitor->client);
         }
+        changed = TRUE;
     }
 
     /* Check if it's a file that's currently being worked on.
@@ -1974,7 +2003,6 @@ nautilus_directory_has_active_request_for_file (NautilusDirectory *directory,
 {
     GList *node;
     ReadyCallback *callback;
-    Monitor *monitor;
 
     for (node = directory->details->call_when_ready_list;
          node != NULL; node = node->next)
@@ -1987,15 +2015,13 @@ nautilus_directory_has_active_request_for_file (NautilusDirectory *directory,
         }
     }
 
-    for (node = directory->details->monitor_list;
-         node != NULL; node = node->next)
+    if (g_hash_table_lookup (directory->details->monitor_table, file) != NULL)
     {
-        monitor = node->data;
-        if (monitor->file == file ||
-            monitor->file == NULL)
-        {
-            return TRUE;
-        }
+        return TRUE;
+    }
+    if (g_hash_table_lookup (directory->details->monitor_table, NULL) != NULL)
+    {
+        return TRUE;
     }
 
     return FALSE;
@@ -2347,7 +2373,7 @@ is_needy (NautilusFile *file,
     NautilusDirectory *directory;
     GList *node;
     ReadyCallback *callback;
-    Monitor *monitor;
+    int i;
 
     if (!(*check_missing)(file))
     {
@@ -2379,15 +2405,21 @@ is_needy (NautilusFile *file,
 
     if (directory->details->monitor_counters[request_type_wanted] > 0)
     {
-        for (node = directory->details->monitor_list;
-             node != NULL; node = node->next)
+        for (i = 0; i < 2; i++)
         {
-            monitor = node->data;
-            if (REQUEST_WANTS_TYPE (monitor->request, request_type_wanted))
+            node = (i == 0 ?
+                g_hash_table_lookup (directory->details->monitor_table, file) :
+                g_hash_table_lookup (directory->details->monitor_table, NULL));
+
+            for (; node; node = node->next)
             {
-                if (monitor_includes_file (monitor, file))
+                Monitor *monitor = node->data;
+                if (REQUEST_WANTS_TYPE (monitor->request, request_type_wanted))
                 {
-                    return TRUE;
+                    if (monitor_includes_file (monitor, file))
+                    {
+                        return TRUE;
+                    }
                 }
             }
         }
