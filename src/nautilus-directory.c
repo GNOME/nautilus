@@ -174,11 +174,22 @@ nautilus_directory_finalize (GObject *object)
     nautilus_directory_cancel (directory);
     g_assert (directory->details->count_in_progress == NULL);
 
-    if (directory->details->monitor_list != NULL)
+    if (g_hash_table_size (directory->details->monitor_table) != 0)
     {
+        GHashTableIter iter;
+        gpointer value;
+
         g_warning ("destroying a NautilusDirectory while it's being monitored");
-        g_list_free_full (directory->details->monitor_list, g_free);
+
+        g_hash_table_iter_init (&iter, directory->details->monitor_table);
+        while (g_hash_table_iter_next (&iter, NULL, &value))
+        {
+            GList *list = value;
+            g_list_free_full (list, g_free);
+        }
+        g_hash_table_remove_all (directory->details->monitor_table);
     }
+    g_hash_table_destroy (directory->details->monitor_table);
 
     if (directory->details->monitor != NULL)
     {
@@ -334,6 +345,7 @@ nautilus_directory_init (NautilusDirectory *directory)
     directory->details->high_priority_queue = nautilus_file_queue_new ();
     directory->details->low_priority_queue = nautilus_file_queue_new ();
     directory->details->extension_queue = nautilus_file_queue_new ();
+    directory->details->monitor_table = g_hash_table_new (NULL, NULL);
 }
 
 NautilusDirectory *
