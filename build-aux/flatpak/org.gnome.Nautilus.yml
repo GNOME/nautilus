@@ -50,7 +50,7 @@ modules:
   - "/etc"
   - "/libexec"
   buildsystem: meson
-  builddir: 'true'
+  builddir: true
   config-opts:
   - "--libdir=lib"
   - "-Ddocs=false"
@@ -73,7 +73,7 @@ modules:
   name: nautilus
   config-opts:
   - "--libdir=/app/lib"
-  - "-Dprofile=development"
+  - "-Dprofile=Devel"
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/nautilus.git
