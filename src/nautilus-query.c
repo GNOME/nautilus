@@ -484,17 +484,6 @@ nautilus_query_set_mime_types (NautilusQuery *query,
     g_object_notify (G_OBJECT (query), "mimetypes");
 }
 
-void
-nautilus_query_add_mime_type (NautilusQuery *query,
-                              const char    *mime_type)
-{
-    g_return_if_fail (NAUTILUS_IS_QUERY (query));
-
-    query->mime_types = g_list_append (query->mime_types, g_strdup (mime_type));
-
-    g_object_notify (G_OBJECT (query), "mimetypes");
-}
-
 gboolean
 nautilus_query_get_show_hidden_files (NautilusQuery *query)
 {
