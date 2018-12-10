@@ -4010,10 +4010,10 @@ got_filesystem_info (FilesystemInfoState *state,
             g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_READONLY);
         filesystem_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
         file->details->filesystem_remote = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_FILESYSTEM_REMOTE);
-        if (g_strcmp0 (eel_ref_str_peek (file->details->filesystem_type), filesystem_type) != 0)
+        if (g_strcmp0 (file->details->filesystem_type, filesystem_type) != 0)
         {
-            eel_ref_str_unref (file->details->filesystem_type);
-            file->details->filesystem_type = eel_ref_str_get_unique (filesystem_type);
+            g_clear_pointer (&file->details->filesystem_type, g_ref_string_release);
+            file->details->filesystem_type = g_ref_string_new_intern (filesystem_type);
         }
     }
 
