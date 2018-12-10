@@ -153,8 +153,7 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 #################
 conf = configuration_data()
 
-if get_option('profile') == 'development'
-  profile = 'Devel'
+if get_option('profile') == 'Devel'
   name_suffix = ' (Development Snapshot)'
 elif get_option('profile') != ''
   profile = get_option('profile')
