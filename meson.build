@@ -153,14 +153,11 @@ xml = dependency('libxml-2.0', version: '>= 2.7.8')
 #################
 conf = configuration_data()
 
+profile = get_option('profile')
+name_suffix = ''
+
 if get_option('profile') == 'Devel'
   name_suffix = ' (Development Snapshot)'
-elif get_option('profile') != ''
-  profile = get_option('profile')
-  name_suffix = get_option('profile')
-else
-  profile = ''
-  name_suffix = ''
 endif
 
 application_id = 'org.gnome.Nautilus' + profile
@@ -194,7 +191,7 @@ conf.set('HAVE_SELINUX', get_option('selinux'))
 config_h = declare_dependency(
   sources: vcs_tag(
     command: ['git', 'rev-parse', '--short', 'HEAD'],
-    fallback: get_option('profile') != ''? 'devel' : 'stable',
+    fallback: profile != ''? 'devel' : 'stable',
     input: configure_file(
       output: 'config.h.in',
       configuration: conf
