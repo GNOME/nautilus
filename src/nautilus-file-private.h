@@ -26,7 +26,6 @@
 #include "nautilus-monitor.h"
 #include "nautilus-file-undo-operations.h"
 #include <eel/eel-glib-extensions.h>
-#include <eel/eel-string.h>
 
 #define NAUTILUS_FILE_DEFAULT_ATTRIBUTES				\
 	"standard::*,access::*,mountable::*,time::*,unix::*,owner::*,selinux::*,thumbnail::*,id::filesystem,trash::orig-path,trash::deletion-date,metadata::*,recent::*"
@@ -44,15 +43,15 @@ struct NautilusFileDetails
 {
 	NautilusDirectory *directory;
 	
-	eel_ref_str name;
+	GRefString *name;
 
 	/* File info: */
 	GFileType type;
 
-	eel_ref_str display_name;
+	GRefString *display_name;
 	char *display_name_collation_key;
 	char *directory_name_collation_key;
-	eel_ref_str edit_name;
+	GRefString *edit_name;
 
 	goffset size; /* -1 is unknown */
 	
@@ -62,16 +61,16 @@ struct NautilusFileDetails
 	int uid; /* -1 is none */
 	int gid; /* -1 is none */
 
-	eel_ref_str owner;
-	eel_ref_str owner_real;
-	eel_ref_str group;
+	GRefString *owner;
+	GRefString *owner_real;
+	GRefString *group;
 	
 	time_t atime; /* 0 is unknown */
 	time_t mtime; /* 0 is unknown */
 	
 	char *symlink_name;
 	
-	eel_ref_str mime_type;
+	GRefString *mime_type;
 	
 	char *selinux_context;
 	char *description;
@@ -103,7 +102,7 @@ struct NautilusFileDetails
 	/* used during DND, for checking whether source and destination are on
 	 * the same file system.
 	 */
-	eel_ref_str filesystem_id;
+	GRefString *filesystem_id;
 
 	char *trash_orig_path;
 
@@ -195,7 +194,7 @@ struct NautilusFileDetails
 	eel_boolean_bit filesystem_use_preview        : 2; /* GFilesystemPreviewType */
 	eel_boolean_bit filesystem_info_is_up_to_date : 1;
 	eel_boolean_bit filesystem_remote             : 1;
-	eel_ref_str     filesystem_type;
+	GRefString     *filesystem_type;
 
 	time_t trash_time; /* 0 is unknown */
 	time_t recency; /* 0 is unknown */
