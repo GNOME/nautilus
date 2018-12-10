@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<component type="desktop">
-  <id>@appid@.desktop</id>
+<component type="desktop-application">
+  <id>@appid@</id>
   <metadata_license>CC0-1.0</metadata_license>
-  <project_license>GPL-2.0+</project_license>
   <name>Nautilus</name>
   <summary>Access and organize files</summary>
   <description>
@@ -18,13 +17,25 @@
       Its functions can be extended with plugins and scripts.
     </p>
   </description>
-  <kudos>
-    <kudo>AppMenu</kudo>
-    <kudo>HiDpiIcon</kudo>
-    <kudo>ModernToolkit</kudo>
-    <kudo>Notifications</kudo>
-    <kudo>SearchProvider</kudo>
-  </kudos>
+  <categories>
+    <category>System</category>
+  </categories>
+  <url type="bugtracker">https://gitlab.gnome.org/GNOME/nautilus/issues</url>
+  <url type="donation">https://www.gnome.org/support-gnome/</url>
+  <url type="help">https://wiki.gnome.org/action/show/Apps/Nautilus</url>
+  <url type="homepage">https://wiki.gnome.org/action/show/Apps/Nautilus</url>
+  <url type="translate">https://wiki.gnome.org/TranslationProject</url>
+  <launchable type="desktop-id">@appid@.desktop</launchable>
+  <releases>
+    <release version="3.32.1" date="2019-05-05"/>
+    <release version="3.32.0" date="2019-03-13"/>
+    <release version="3.30.5" date="2018-12-12"/>
+    <release version="3.30.4" date="2018-11-21"/>
+    <release version="3.30.3" date="2018-10-31"/>
+  </releases>
+  <project_group>GNOME</project_group>
+  <project_license>GPL-2.0+</project_license>
+  <developer_name>The GNOME Project</developer_name>
   <screenshots>
     <screenshot type="default">
       <image>https://static.gnome.org/appdata/nautilus/nautilus-201901141.png</image>
@@ -43,14 +54,13 @@
       <caption>Other locations</caption>
     </screenshot>
   </screenshots>
-  <categories>
-    <category>System</category>
-  </categories>
-  <project_group>GNOME</project_group>
-  <update_contact>cosimoc_at_gnome.org</update_contact>
-  <url type="homepage">https://wiki.gnome.org/Apps/Nautilus/</url>
-  <url type="bugtracker">https://gitlab.gnome.org/GNOME/nautilus/issues</url>
-  <url type="help">https://wiki.gnome.org/action/show/Apps/Nautilus</url>
+  <update_contact>ernestask_AT_gnome.org</update_contact>
   <translation type="gettext">nautilus</translation>
+  <kudos>
+    <kudo>HiDpiIcon</kudo>
+    <kudo>ModernToolkit</kudo>
+    <kudo>Notifications</kudo>
+    <kudo>SearchProvider</kudo>
+  </kudos>
 </component>
 
