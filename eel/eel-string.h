@@ -77,12 +77,3 @@ char *   eel_str_replace_substring         (const char    *str,
  * common prefix of length min_required_len
  */
 char *   eel_str_get_common_prefix         (GList *strs, int min_required_len);
-
-typedef char * eel_ref_str;
-
-eel_ref_str eel_ref_str_new        (const char  *string);
-eel_ref_str eel_ref_str_get_unique (const char  *string);
-eel_ref_str eel_ref_str_ref        (eel_ref_str  str);
-void        eel_ref_str_unref      (eel_ref_str  str);
-
-#define eel_ref_str_peek(__str) ((const char *)(__str))
