@@ -27,6 +27,7 @@ add_global_arguments(
 )
 add_project_arguments(
   cc.get_supported_arguments([
+    '-D_XOPEN_SOURCE=500',
     '-Wall',
     '-Wduplicated-branches',
     '-Wlogical-op',
