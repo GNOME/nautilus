@@ -17,7 +17,7 @@ finished_cb (NautilusSearchEngine         *engine,
              gpointer                      user_data)
 {
     TrackerSparqlConnection *connection;
-    g_autofree gchar *sparql_query;
+    g_autofree gchar *sparql_query = NULL;
 
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (engine));
 
@@ -44,7 +44,7 @@ main (int   argc,
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
     TrackerSparqlConnection *connection;
-    g_autofree gchar *sparql_query;
+    g_autofree gchar *sparql_query = NULL;
 
     connection = tracker_sparql_connection_get (NULL, NULL);
 

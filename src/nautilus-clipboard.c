@@ -42,7 +42,7 @@ typedef struct
 static GList *
 convert_selection_data_to_str_list (const gchar *data)
 {
-    g_auto (GStrv) lines;
+    g_auto (GStrv) lines = NULL;
     guint number_of_lines;
     GList *result;
 
