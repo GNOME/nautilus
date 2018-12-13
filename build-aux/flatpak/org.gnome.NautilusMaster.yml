@@ -30,10 +30,6 @@ finish-args:
 modules:
   - name: "exiv2"
     buildsystem: "cmake"
-    build-options:
-      config-opts:
-        - "-DCMAKE_INSTALL_PREFIX=/app"
-        - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
     sources:
       - type: "git"
         url: "https://github.com/Exiv2/exiv2.git"
@@ -41,13 +37,11 @@ modules:
 
   - name: gexiv2
     buildsystem: meson
-    builddir: true
     cleanup:
       - '/lib/girepository-1.0'
       - '/share/gir-1.0'
     build-options:
       config-opts:
-        - --libdir=/app/lib
         - '-Ddisable-introspection=True'
         - '-Ddisable-vala=true'
         - '-Dpython2-girdir=no'
@@ -62,10 +56,8 @@ modules:
       - /etc
       - /libexec
     buildsystem: meson
-    builddir: true
     build-options:
       config-opts:
-        - --libdir=lib
         - -Ddocs=false
         - -Dfunctional_tests=false
         - -Djournal=false
@@ -84,10 +76,8 @@ modules:
 
   - name: nautilus
     buildsystem: meson
-    builddir: true
     build-options:
       config-opts:
-        - --libdir=/app/lib
         - -Dprofile=Master
     sources:
       - type: git

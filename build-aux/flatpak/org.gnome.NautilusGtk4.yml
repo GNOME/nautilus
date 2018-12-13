@@ -30,10 +30,6 @@ finish-args:
 modules:
   - name: "exiv2"
     buildsystem: "cmake"
-    build-options:
-      config-opts:
-        - "-DCMAKE_INSTALL_PREFIX=/app"
-        - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
     sources:
       - type: "archive"
         url: "https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz"
@@ -41,13 +37,11 @@ modules:
 
   - name: "gexiv2"
     buildsystem: "meson"
-    builddir: true
     cleanup:
       - '/lib/girepository-1.0'
       - '/share/gir-1.0'
     build-options:
       config-opts:
-        - --libdir=/app/lib
         - '-Ddisable-introspection=True'
         - '-Ddisable-vala=true'
         - '-Dpython2-girdir=no'
@@ -90,7 +84,6 @@ modules:
       config-opts:
         - "--disable-documentation"
     buildsystem: "autotools"
-    builddir: true
 
   - name: "graphene"
     sources:
@@ -99,12 +92,10 @@ modules:
         tag: "1.8.2"
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dintrospection=false"
         - "-Dtests=false"
         - "-Dbenchmarks=false"
     buildsystem: "meson"
-    builddir: true
 
   - name: "gtk+"
     sources:
@@ -112,20 +103,16 @@ modules:
         url: "https://gitlab.gnome.org/GNOME/gtk.git"
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dintrospection=false"
         - "-Ddemos=true"
         - "-Dbuild-examples=false"
         - "-Dbuild-tests=false"
     buildsystem: "meson"
-    builddir: true
 
   - name: "nautilus"
     buildsystem: "meson"
-    builddir: true
     build-options:
       config-opts:
-        - "--libdir=lib"
         - "-Dprofile=Gtk4"
         - "-Dintrospection=false"
     sources:
