@@ -42,11 +42,16 @@ modules:
   - name: "gexiv2"
     buildsystem: "meson"
     builddir: true
+    cleanup:
+      - '/lib/girepository-1.0'
+      - '/share/gir-1.0'
     build-options:
       config-opts:
-        - "--libdir=lib"
-        - "-Ddisable-introspection=true"
-        - "-Ddisable-vala=true"
+        - --libdir=/app/lib
+        - '-Ddisable-introspection=True'
+        - '-Ddisable-vala=true'
+        - '-Dpython2-girdir=no'
+        - '-Dpython3-girdir=no'
     sources:
       - type: "git"
         url: "https://gitlab.gnome.org/GNOME/gexiv2.git"
