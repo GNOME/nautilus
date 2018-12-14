@@ -57,16 +57,16 @@ resource_rules:
         actions:
           labels:
             - 15. Untriaged
-        summarize:
-          title: Issues that need triaging
-          item: |
-            - [{{title}}]({{web_url}}) {{labels}}
-          summary: |
-            The following issues had no activity in the past month and they are unlabeled:
+          summarize:
+            title: Issues that need triaging
+            item: |
+              - [{{title}}]({{web_url}}) {{labels}}
+            summary: |
+              The following issues were created two months ago and they are unlabeled:
 
-            {{items}}
+              {{items}}
 
-            /cc @Teams/BugSquad
+              /cc @Teams/BugSquad
 
       - name: Close old feature proposals without planning labels or milestones
         conditions:
