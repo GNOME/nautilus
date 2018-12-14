@@ -66,7 +66,7 @@ main (int   argc,
     bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
     textdomain (GETTEXT_PACKAGE);
 
-    g_set_prgname ("nautilus");
+    g_set_prgname (APPLICATION_ID);
 
     nautilus_register_resource ();
     /* Run the nautilus application. */
