@@ -189,7 +189,7 @@ triage:
   stage: triage
   script:
     - gem install gitlab-triage
-    - gitlab-triage --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome/org
+    - gitlab-triage --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
   only:
     - schedules
 
@@ -198,7 +198,7 @@ triage:dry-run:
   stage: triage
   script:
     - gem install gitlab-triage
-    - gitlab-triage --dry-run --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome/org
+    - gitlab-triage --dry-run --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
   only:
     - schedules
   when: manual
