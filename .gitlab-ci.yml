@@ -185,6 +185,7 @@ pages:
     - master
 
 triage:
+  image: ruby:2.4
   stage: triage
   script:
     - gem install gitlab-triage
@@ -193,6 +194,7 @@ triage:
     - schedules
 
 triage:dry-run:
+  image: ruby:2.4
   stage: triage
   script:
     - gem install gitlab-triage
