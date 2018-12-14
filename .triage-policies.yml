@@ -43,10 +43,10 @@ resource_rules:
       - name: Mark stale unlabelled issues for triage
         conditions:
           date:
-            attribute: updated_at
+            attribute: created_at
             condition: older_than
             interval_type: months
-            interval: 1
+            interval: 2
           # We want to handle those that doesn't have these labels, including those with other labels.
           forbidden_labels:
             - 1. Bug
