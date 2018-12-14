@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Generated with glade 3.22.1 -->
+<!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
   <object class="GtkPopoverMenu" id="app_menu">
@@ -276,77 +276,17 @@
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="show_close_button">True</property>
-    <child>
-      <object class="GtkBox" id="navigation_box">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <child>
-          <object class="GtkButton" id="back_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Go back</property>
-            <property name="action_name">win.back</property>
-            <child>
-              <object class="GtkImage" id="back_icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">go-previous-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">0</property>
-          </packing>
-        </child>
-        <child>
-          <object class="GtkButton" id="forward_button">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="receives_default">False</property>
-            <property name="tooltip_text" translatable="yes">Go forward</property>
-            <property name="action_name">win.forward</property>
-            <child>
-              <object class="GtkImage" id="forward_icon">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="icon_name">go-next-symbolic</property>
-                <property name="icon_size">1</property>
-              </object>
-            </child>
-            <style>
-              <class name="image-button"/>
-            </style>
-          </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
-        </child>
-        <style>
-          <class name="linked"/>
-          <class name="raised"/>
-        </style>
-      </object>
-    </child>
     <child type="title">
       <object class="GtkBox" id="header_toolbar">
         <property name="width_request">270</property>
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="halign">center</property>
         <property name="spacing">6</property>
         <child>
           <object class="GtkBox" id="toolbar_switcher_container">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="valign">center</property>
             <child>
               <placeholder/>
             </child>
@@ -363,6 +303,8 @@
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
             <property name="tooltip_text" translatable="yes">Search</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="action_name">slot.search-visible</property>
             <child>
               <object class="GtkImage" id="search_icon">
@@ -388,6 +330,70 @@
       </packing>
     </child>
     <child>
+      <object class="GtkBox" id="navigation_box">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <child>
+          <object class="GtkButton" id="back_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Go back</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.back</property>
+            <child>
+              <object class="GtkImage" id="back_icon">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">go-previous-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkButton" id="forward_button">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Go forward</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
+            <property name="action_name">win.forward</property>
+            <child>
+              <object class="GtkImage" id="forward_icon">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">go-next-symbolic</property>
+                <property name="icon_size">1</property>
+              </object>
+            </child>
+            <style>
+              <class name="image-button"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <style>
+          <class name="linked"/>
+          <class name="raised"/>
+        </style>
+      </object>
+    </child>
+    <child>
       <object class="GtkBox">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
@@ -395,6 +401,8 @@
           <object class="GtkRevealer" id="operations_revealer">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="transition_type">slide-right</property>
             <child>
               <object class="GtkMenuButton" id="operations_button">
@@ -431,6 +439,8 @@
           <object class="GtkBox">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="margin_end">6</property>
             <child>
               <object class="GtkButton" id="view_toggle_button">
@@ -496,6 +506,8 @@
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="receives_default">False</property>
+            <property name="halign">center</property>
+            <property name="valign">center</property>
             <property name="popover">app_menu</property>
             <child>
               <object class="GtkImage">
