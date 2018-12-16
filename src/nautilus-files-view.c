@@ -8061,6 +8061,17 @@ nautilus_files_view_reveal_for_selection_context_menu (NautilusFilesView *view)
     return NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->reveal_for_selection_context_menu (view);
 }
 
+static void
+nautilus_files_view_on_menu_deactivate (GtkMenuShell *menu_shell,
+                                        gpointer      user_data)
+{
+    GtkWidget *widget;
+
+    widget = GTK_WIDGET (menu_shell);
+
+    gtk_widget_destroy (widget);
+}
+
 /**
  * nautilus_files_view_pop_up_selection_context_menu
  *
@@ -8074,7 +8085,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
                                                     const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
-    g_autoptr (GtkWidget) gtk_menu = NULL;
+    GtkWidget *gtk_menu;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -8085,7 +8096,11 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu)));
+    gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu));
+
+    g_signal_connect (gtk_menu, "deactivate",
+                      G_CALLBACK (nautilus_files_view_on_menu_deactivate), NULL);
+
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
     if (event != NULL)
     {
@@ -8120,7 +8135,7 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                     const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
-    g_autoptr (GtkWidget) gtk_menu = NULL;
+    GtkWidget *gtk_menu;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -8131,7 +8146,11 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu)));
+    gtk_menu = gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu));
+
+    g_signal_connect (gtk_menu, "deactivate",
+                      G_CALLBACK (nautilus_files_view_on_menu_deactivate), NULL);
+
     gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
     if (event != NULL)
     {
