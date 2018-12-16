@@ -235,8 +235,11 @@ typedef struct
 
     GList *subdirectory_list;
 
-    GMenu *selection_menu;
-    GMenu *background_menu;
+    GMenu *selection_menu_model;
+    GMenu *background_menu_model;
+
+    GtkWidget *selection_menu;
+    GtkWidget *background_menu;
 
     GActionGroup *view_action_group;
 
@@ -3219,8 +3222,8 @@ nautilus_files_view_finalize (GObject *object)
     priv = nautilus_files_view_get_instance_private (view);
 
     g_clear_object (&priv->view_action_group);
-    g_clear_object (&priv->background_menu);
-    g_clear_object (&priv->selection_menu);
+    g_clear_object (&priv->background_menu_model);
+    g_clear_object (&priv->selection_menu_model);
     g_clear_object (&priv->toolbar_menu_sections->zoom_section);
     g_clear_object (&priv->toolbar_menu_sections->extended_section);
     g_clear_object (&priv->extensions_background_menu);
@@ -4985,7 +4988,7 @@ update_extensions_menus (NautilusFilesView *view)
         selection_menu = build_menu_for_extension_menu_items (view, "extensions",
                                                               selection_items);
 
-        nautilus_gmenu_merge (priv->selection_menu,
+        nautilus_gmenu_merge (priv->selection_menu_model,
                               selection_menu,
                               "extensions",
                               FALSE);
@@ -4998,7 +5001,7 @@ update_extensions_menus (NautilusFilesView *view)
         background_menu = build_menu_for_extension_menu_items (view, "extensions",
                                                                background_items);
 
-        nautilus_gmenu_merge (priv->background_menu,
+        nautilus_gmenu_merge (priv->background_menu_model,
                               background_menu,
                               "extensions",
                               FALSE);
@@ -5493,7 +5496,7 @@ update_scripts_menu (NautilusFilesView *view)
     submenu = update_directory_in_scripts_menu (view, directory);
     if (submenu != NULL)
     {
-        nautilus_gmenu_merge (priv->selection_menu,
+        nautilus_gmenu_merge (priv->selection_menu_model,
                               submenu,
                               "scripts-submenu",
                               TRUE);
@@ -5754,7 +5757,7 @@ update_templates_menu (NautilusFilesView *view)
     submenu = update_directory_in_templates_menu (view, directory);
     if (submenu != NULL)
     {
-        nautilus_gmenu_merge (priv->background_menu,
+        nautilus_gmenu_merge (priv->background_menu_model,
                               submenu,
                               "templates-submenu",
                               FALSE);
@@ -7740,7 +7743,7 @@ update_selection_menu (NautilusFilesView *view)
                                   selection_count);
     menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
     g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
-    nautilus_gmenu_add_item_in_submodel (priv->selection_menu,
+    nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
                                          menu_item,
                                          "new-folder-with-selection-section",
                                          FALSE);
@@ -7825,7 +7828,7 @@ update_selection_menu (NautilusFilesView *view)
         g_menu_item_set_icon (menu_item, app_icon);
     }
 
-    nautilus_gmenu_add_item_in_submodel (priv->selection_menu,
+    nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
                                          menu_item,
                                          "open-with-default-application-section",
                                          FALSE);
@@ -7898,7 +7901,7 @@ update_selection_menu (NautilusFilesView *view)
         }
 
         menu_item = g_menu_item_new (item_label, "view.start-volume");
-        nautilus_gmenu_add_item_in_submodel (priv->selection_menu,
+        nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
                                              menu_item,
                                              "drive-section",
                                              FALSE);
@@ -7942,7 +7945,7 @@ update_selection_menu (NautilusFilesView *view)
         }
 
         menu_item = g_menu_item_new (item_label, "view.stop-volume");
-        nautilus_gmenu_add_item_in_submodel (priv->selection_menu,
+        nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
                                              menu_item,
                                              "drive-section",
                                              FALSE);
@@ -7973,14 +7976,14 @@ real_update_context_menus (NautilusFilesView *view)
     priv = nautilus_files_view_get_instance_private (view);
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
 
-    g_clear_object (&priv->background_menu);
-    g_clear_object (&priv->selection_menu);
+    g_clear_object (&priv->background_menu_model);
+    g_clear_object (&priv->selection_menu_model);
 
     object = gtk_builder_get_object (builder, "background-menu");
-    priv->background_menu = g_object_ref (G_MENU (object));
+    priv->background_menu_model = g_object_ref (G_MENU (object));
 
     object = gtk_builder_get_object (builder, "selection-menu");
-    priv->selection_menu = g_object_ref (G_MENU (object));
+    priv->selection_menu_model = g_object_ref (G_MENU (object));
 
     update_selection_menu (view);
     update_background_menu (view);
@@ -8086,7 +8089,6 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
                                                     const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
-    g_autoptr (GtkWidget) gtk_menu = NULL;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -8097,11 +8099,23 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->selection_menu)));
-    gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
+    if (NULL == priv->selection_menu)
+    {
+        priv->selection_menu = gtk_menu_new ();
+
+        gtk_menu_attach_to_widget (GTK_MENU (priv->selection_menu),
+                                   GTK_WIDGET (view),
+                                   NULL);
+    }
+
+    gtk_menu_shell_bind_model (GTK_MENU_SHELL (priv->selection_menu),
+                               G_MENU_MODEL (priv->selection_menu_model),
+                               NULL,
+                               TRUE);
+
     if (event != NULL)
     {
-        gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu), event);
+        gtk_menu_popup_at_pointer (GTK_MENU (priv->selection_menu), event);
     }
     else
     {
@@ -8111,7 +8125,7 @@ nautilus_files_view_pop_up_selection_context_menu  (NautilusFilesView *view,
         rectangle = nautilus_files_view_reveal_for_selection_context_menu (view);
         g_return_if_fail (rectangle != NULL);
 
-        gtk_menu_popup_at_rect (GTK_MENU (gtk_menu),
+        gtk_menu_popup_at_rect (GTK_MENU (priv->selection_menu),
                                 gtk_widget_get_window (GTK_WIDGET (view)),
                                 rectangle,
                                 GDK_GRAVITY_SOUTH_WEST,
@@ -8132,7 +8146,6 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
                                                     const GdkEvent    *event)
 {
     NautilusFilesViewPrivate *priv;
-    g_autoptr (GtkWidget) gtk_menu = NULL;
 
     g_assert (NAUTILUS_IS_FILES_VIEW (view));
 
@@ -8143,17 +8156,27 @@ nautilus_files_view_pop_up_background_context_menu (NautilusFilesView *view,
      */
     update_context_menus_if_pending (view);
 
-    gtk_menu = g_object_ref_sink (gtk_menu_new_from_model (G_MENU_MODEL (priv->background_menu)));
-    gtk_menu_attach_to_widget (GTK_MENU (gtk_menu), GTK_WIDGET (view), NULL);
+    if (NULL == priv->background_menu)
+    {
+        priv->background_menu = gtk_menu_new ();
+
+        gtk_menu_attach_to_widget (GTK_MENU (priv->background_menu),
+                                   GTK_WIDGET (view),
+                                   NULL);
+    }
+    gtk_menu_shell_bind_model (GTK_MENU_SHELL (priv->background_menu),
+                               G_MENU_MODEL (priv->background_menu_model),
+                               NULL,
+                               TRUE);
     if (event != NULL)
     {
-        gtk_menu_popup_at_pointer (GTK_MENU (gtk_menu), event);
+        gtk_menu_popup_at_pointer (GTK_MENU (priv->background_menu), event);
     }
     else
     {
         /* It was triggered from the keyboard, so pop up from the center of view.
          */
-        gtk_menu_popup_at_widget (GTK_MENU (gtk_menu),
+        gtk_menu_popup_at_widget (GTK_MENU (priv->background_menu),
                                   GTK_WIDGET (view),
                                   GDK_GRAVITY_CENTER,
                                   GDK_GRAVITY_CENTER,
