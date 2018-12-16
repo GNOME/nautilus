@@ -8002,7 +8002,7 @@ static void
 real_update_context_menus (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
-    GtkBuilder *builder;
+    g_autoptr (GtkBuilder) builder = NULL;
     GObject *object;
 
     priv = nautilus_files_view_get_instance_private (view);
@@ -8016,8 +8016,6 @@ real_update_context_menus (NautilusFilesView *view)
 
     object = gtk_builder_get_object (builder, "selection-menu");
     priv->selection_menu = g_object_ref (G_MENU (object));
-
-    g_object_unref (builder);
 
     update_selection_menu (view);
     update_background_menu (view);
