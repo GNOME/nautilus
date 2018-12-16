@@ -8831,9 +8831,18 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
                                      gboolean     *reversed)
 {
     NautilusFileSortType retval;
-    gboolean is_recent, is_download, is_trash, is_search, res;
+    gboolean is_recent;
+    gboolean is_download;
+    gboolean is_trash;
+    gboolean is_search;
+    gboolean res;
 
-    is_recent = is_download = is_trash = is_search = FALSE;
+    retval = g_settings_get_enum (nautilus_preferences,
+                                  NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
+    is_recent = FALSE;
+    is_download = FALSE;
+    is_trash = FALSE;
+    is_search = FALSE;
     res = get_attributes_for_default_sort_type (file, &is_recent, &is_download, &is_trash, &is_search);
 
     if (res)
@@ -8854,6 +8863,10 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
         {
             retval = NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE;
         }
+        else
+        {
+            g_assert_not_reached ();
+        }
 
         if (reversed != NULL)
         {
@@ -8862,8 +8875,6 @@ nautilus_file_get_default_sort_type (NautilusFile *file,
     }
     else
     {
-        retval = g_settings_get_enum (nautilus_preferences,
-                                      NAUTILUS_PREFERENCES_DEFAULT_SORT_ORDER);
         if (reversed != NULL)
         {
             *reversed = g_settings_get_boolean (nautilus_preferences,
