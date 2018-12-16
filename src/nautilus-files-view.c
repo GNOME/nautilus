@@ -7968,6 +7968,7 @@ real_update_context_menus (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
     GtkBuilder *builder;
+    GObject *object;
 
     priv = nautilus_files_view_get_instance_private (view);
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
@@ -7975,8 +7976,12 @@ real_update_context_menus (NautilusFilesView *view)
     g_clear_object (&priv->background_menu);
     g_clear_object (&priv->selection_menu);
 
-    priv->background_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
-    priv->selection_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "selection-menu")));
+    object = gtk_builder_get_object (builder, "background-menu");
+    priv->background_menu = g_object_ref (G_MENU (object));
+
+    object = gtk_builder_get_object (builder, "selection-menu");
+    priv->selection_menu = g_object_ref (G_MENU (object));
+
     g_object_unref (builder);
 
     update_selection_menu (view);
