@@ -418,41 +418,43 @@ nautilus_path_bar_measure (GtkWidget      *widget,
 
 /* This is a tad complicated */
 static void
-nautilus_path_bar_size_allocate (GtkWidget           *widget,
-                                 const GtkAllocation *allocation,
-                                 int                  baseline)
+nautilus_path_bar_size_allocate (GtkWidget *widget,
+                                 int        width,
+                                 int        height,
+                                 int        baseline)
 {
     NautilusPathBar *self;
-    GtkWidget *child;
+    GtkRequisition preferred_size;
+    int total_width;
     GtkTextDirection direction;
     GtkAllocation child_allocation;
     GList *list, *first_button;
-    gint width;
-    gint largest_width;
-    GtkRequisition child_requisition;
 
     self = NAUTILUS_PATH_BAR (widget);
-
     /* No path is set so we don't have to allocate anything. */
     if (self->button_list == NULL)
     {
         return;
     }
-    direction = gtk_widget_get_direction (widget);
-    width = 0;
 
     gtk_widget_get_preferred_size (BUTTON_DATA (self->button_list->data)->container,
-                                   &child_requisition, NULL);
-    width += child_requisition.width;
+                                   &preferred_size, NULL);
+
+    total_width = preferred_size.width;
+    direction = gtk_widget_get_direction (widget);
 
     for (list = self->button_list->next; list; list = list->next)
     {
+        GtkWidget *child;
+
         child = BUTTON_DATA (list->data)->button;
-        gtk_widget_get_preferred_size (child, &child_requisition, NULL);
-        width += child_requisition.width;
+
+        gtk_widget_get_preferred_size (child, &preferred_size, NULL);
+
+        total_width += preferred_size.width;
     }
 
-    if (width <= allocation->width)
+    if (total_width <= width)
     {
         first_button = g_list_last (self->button_list);
     }
@@ -469,67 +471,68 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
          */
         /* Count down the path chain towards the end. */
         gtk_widget_get_preferred_size (BUTTON_DATA (first_button->data)->container,
-                                       &child_requisition, NULL);
-        width = child_requisition.width;
-        list = first_button->prev;
-        while (list && !reached_end)
-        {
-            child = BUTTON_DATA (list->data)->container;
-            gtk_widget_get_preferred_size (child, &child_requisition, NULL);
+                                       &preferred_size, NULL);
 
-            if (width + child_requisition.width > allocation->width)
+        total_width = preferred_size.width;
+
+        for (list = first_button->prev; !reached_end && list != NULL; list = list->prev)
+        {
+            GtkWidget *child;
+
+            child = BUTTON_DATA (list->data)->container;
+
+            gtk_widget_get_preferred_size (child, &preferred_size, NULL);
+
+            if (total_width + preferred_size.width > width)
             {
                 reached_end = TRUE;
             }
             else
             {
-                width += child_requisition.width;
+                total_width += preferred_size.width;
             }
-
-            list = list->prev;
         }
 
         /* Finally, we walk up, seeing how many of the previous buttons we can add*/
-
-        while (first_button->next && !reached_end)
+        for (; !reached_end && first_button->next != NULL; first_button = first_button->next)
         {
-            child = BUTTON_DATA (first_button->next->data)->button;
-            gtk_widget_get_preferred_size (child, &child_requisition, NULL);
+            GtkWidget *child;
 
-            if (width + child_requisition.width > allocation->width)
+            child = BUTTON_DATA (first_button->next->data)->button;
+
+            gtk_widget_get_preferred_size (child, &preferred_size, NULL);
+
+            if (total_width + preferred_size.width > width)
             {
                 reached_end = TRUE;
             }
             else
             {
-                width += child_requisition.width;
-                first_button = first_button->next;
+                total_width += preferred_size.width;
             }
         }
     }
 
     /* Now, we allocate space to the buttons */
-    child_allocation.y = allocation->y;
-    child_allocation.height = allocation->height;
+    child_allocation.x = 0;
+    child_allocation.y = 0;
+    child_allocation.width = 0;
+    child_allocation.height = height;
 
     if (direction == GTK_TEXT_DIR_RTL)
     {
-        child_allocation.x = allocation->x + allocation->width;
+        child_allocation.x = width;
     }
-    else
-    {
-        child_allocation.x = allocation->x;
-    }
-
-    /* Determine the largest possible allocation size */
-    largest_width = allocation->width;
 
     for (list = first_button; list; list = list->prev)
     {
-        child = BUTTON_DATA (list->data)->container;
-        gtk_widget_get_preferred_size (child, &child_requisition, NULL);
+        GtkWidget *child;
 
-        child_allocation.width = MIN (child_requisition.width, largest_width);
+        child = BUTTON_DATA (list->data)->container;
+
+        gtk_widget_get_preferred_size (child, &preferred_size, NULL);
+
+        child_allocation.width = MIN (preferred_size.width, width);
         if (direction == GTK_TEXT_DIR_RTL)
         {
             child_allocation.x -= child_allocation.width;
@@ -543,16 +546,22 @@ nautilus_path_bar_size_allocate (GtkWidget           *widget,
             child_allocation.x += child_allocation.width;
         }
     }
+
     /* Now we go hide all the widgets that don't fit */
-    while (list)
+    for (; list != NULL; list = list->prev)
     {
+        GtkWidget *child;
+
         child = BUTTON_DATA (list->data)->container;
+
         gtk_widget_set_child_visible (child, FALSE);
-        list = list->prev;
     }
-    for (list = first_button->next; list; list = list->next)
+    for (list = first_button->next; list != NULL; list = list->next)
     {
+        GtkWidget *child;
+
         child = BUTTON_DATA (list->data)->container;
+
         gtk_widget_set_child_visible (child, FALSE);
     }
 }
