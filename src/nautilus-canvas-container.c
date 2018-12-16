@@ -2756,9 +2756,10 @@ finalize (GObject *object)
 /* GtkWidget methods.  */
 
 static void
-size_allocate (GtkWidget           *widget,
-               const GtkAllocation *allocation,
-               int                  baseline)
+size_allocate (GtkWidget *widget,
+               int        width,
+               int        height,
+               int        baseline)
 {
     NautilusCanvasContainer *container;
     GtkWidgetClass *widget_class;
@@ -2766,7 +2767,7 @@ size_allocate (GtkWidget           *widget,
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     widget_class = GTK_WIDGET_CLASS (nautilus_canvas_container_parent_class);
 
-    widget_class->size_allocate (widget, allocation, baseline);
+    widget_class->size_allocate (widget, width, height, baseline);
 
     container->details->has_been_allocated = TRUE;
 
