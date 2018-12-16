@@ -86,11 +86,7 @@ nautilus_files_view_handle_netscape_url_drop (NautilusFilesView *view,
 
     f = g_file_new_for_uri (url);
 
-    /* We don't support GDK_ACTION_ASK or GDK_ACTION_PRIVATE
-     * and we don't support combinations either. */
-    if ((action != GDK_ACTION_DEFAULT) &&
-        (action != GDK_ACTION_COPY) &&
-        (action != GDK_ACTION_MOVE))
+    if ((action != GDK_ACTION_COPY) && (action != GDK_ACTION_MOVE))
     {
         show_dialog (_("Drag and drop is not supported."),
                      _("An invalid drag type was used."),
