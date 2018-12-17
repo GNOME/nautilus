@@ -7,6 +7,9 @@
 This is [Nautilus](https://wiki.gnome.org/Apps/Nautilus), the file manager for
 GNOME.
 
+## Supported version
+Only latest Nautilus version 3.30 as provided upstream is supported. Try out the [Flatpak nightly](https://wiki.gnome.org/Apps/Nightly) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannnot reproduce in the nightly installation, don't hesitate to file an issue in your distribution.
+
 ## Hacking on Nautilus
 
 To build the development version of Nautilus and hack on the code
