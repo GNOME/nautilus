@@ -51,16 +51,16 @@
 
 /* Path bar */
 
-.path-bar button { /* undecorate the buttons */
+.nautilus-path-bar button { /* undecorate the buttons */
   background-image: none;
   border-radius: 0;
   border-width: 0px;
   margin: 0px;
 }
 
-.path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
+.nautilus-path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
 
-.path-bar button:not(:backdrop):hover { box-shadow: inset 0 -3px @borders; }
+.nautilus-path-bar button:not(:backdrop):hover { box-shadow: inset 0 -3px @borders; }
 
 .path-bar-box {
   transition: border 200ms;
