@@ -228,9 +228,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
     gtk_widget_set_margin_start (GTK_WIDGET (self), 6);
     gtk_widget_set_margin_end (GTK_WIDGET (self), 6);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
-                                 "path-bar");
-
     /* Action group */
     self->action_group = G_ACTION_GROUP (g_simple_action_group_new ());
     g_action_map_add_action_entries (G_ACTION_MAP (self->action_group),
