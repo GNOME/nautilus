@@ -2321,7 +2321,7 @@ create_and_set_up_tree_view (NautilusListView *view)
                                                                    NULL);
             }
 
-
+            gtk_tree_view_column_set_alignment (column, xalign);
             g_object_set (cell,
                           "xalign", xalign,
                           "xpad", 5,
