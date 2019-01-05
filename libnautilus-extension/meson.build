@@ -76,6 +76,9 @@ libnautilus_extension = shared_library(
 if get_option('introspection')
   gnome.generate_gir(
     libnautilus_extension,
+    export_packages: [
+      'libnautilus-extension'
+    ],
     extra_args: [
       '-DNAUTILUS_COMPILATION'
     ],
