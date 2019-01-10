@@ -29,7 +29,7 @@ modules:
   config-opts:
   - "-DCMAKE_INSTALL_PREFIX=/app"
   - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
-  buildsystem: cmake
+  buildsystem: cmake-ninja
   sources:
   - type: archive
     url: https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz
