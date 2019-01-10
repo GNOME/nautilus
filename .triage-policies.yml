@@ -60,7 +60,7 @@ resource_rules:
           summarize:
             title: Issues that need triaging
             item: |
-              - [{{title}}]({{web_url}}) {{labels}}
+              - {{web_url}} - {{title}} - {{labels}}
             summary: |
               The following issues were created two months ago and they are unlabeled:
 
