@@ -42,10 +42,10 @@ modules:
       - '/share/gir-1.0'
     build-options:
       config-opts:
-        - '-Ddisable-introspection=True'
-        - '-Ddisable-vala=true'
-        - '-Dpython2-girdir=no'
-        - '-Dpython3-girdir=no'
+        - '-Dintrospection=false'
+        - '-Dvapi=false'
+        - '-Dpython2_girdir=no'
+        - '-Dpython3_girdir=no'
     sources:
       - type: git
         url: https://gitlab.gnome.org/GNOME/gexiv2.git
