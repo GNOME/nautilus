@@ -2660,20 +2660,46 @@ paste_clipboard_text_received_callback (GtkClipboard     *clipboard,
 }
 
 static void
+paste_files(NautilusFilesView *view)
+{
+    g_object_ref (view);
+    gtk_clipboard_request_text (nautilus_clipboard_get (GTK_WIDGET (view)),
+                                paste_clipboard_text_received_callback,
+                                view);
+}
+
+static void
 action_paste_files (GSimpleAction *action,
                     GVariant      *state,
                     gpointer       user_data)
 {
     NautilusFilesView *view;
 
-    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+    view = NAUTILUS_FILES_VIEW (user_data);
+
+    paste_files(view);
+}
+
+static void
+action_paste_files_accel (GSimpleAction *action,
+                          GVariant      *state,
+                          gpointer       user_data)
+{
+    NautilusFilesView *view;
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
-    g_object_ref (view);
-    gtk_clipboard_request_text (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                paste_clipboard_text_received_callback,
-                                view);
+    if (!nautilus_files_view_is_read_only (view))
+    {
+        paste_files(view);
+    }
+    else
+    {
+        show_dialog (_("Couldn't paste files"),
+                     _("Permissions do not allow pasting files in this directory"),
+                     nautilus_files_view_get_containing_window (view),
+                     GTK_MESSAGE_ERROR);
+    }
 }
 
 static void
@@ -6906,6 +6932,7 @@ const GActionEntry view_entries[] =
     { "new-folder", action_new_folder },
     { "select-all", action_select_all },
     { "paste", action_paste_files },
+    { "paste_accel", action_paste_files_accel },
     { "create-link", action_create_links },
     { "new-document" },
     /* Selection menu */
@@ -9686,7 +9713,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.show-hidden-files", "<control>h");
     /* Background menu */
     nautilus_application_set_accelerator (app, "view.select-all", "<control>a");
-    nautilus_application_set_accelerator (app, "view.paste", "<control>v");
+    nautilus_application_set_accelerator (app, "view.paste_accel", "<control>v");
     nautilus_application_set_accelerator (app, "view.create-link", "<control>m");
     /* Selection menu */
     nautilus_application_set_accelerators (app, "view.open-with-default-application", open_accels);
