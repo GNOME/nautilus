@@ -110,7 +110,8 @@ struct _NautilusPathBar
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_CONTAINER);
 
 static void nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
-static void nautilus_path_bar_update_button_appearance (ButtonData *button_data);
+static void nautilus_path_bar_update_button_appearance (ButtonData *button_data,
+                                                        gboolean    current_dir);
 static void nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                    gboolean    current_dir);
 static void nautilus_path_bar_update_path (NautilusPathBar *self,
@@ -994,7 +995,8 @@ reload_icons (NautilusPathBar *self)
         button_data = BUTTON_DATA (list->data);
         if (button_data->type != NORMAL_BUTTON || button_data->is_root)
         {
-            nautilus_path_bar_update_button_appearance (button_data);
+            nautilus_path_bar_update_button_appearance (button_data,
+                                                        list->next == NULL);
         }
     }
 }
@@ -1295,7 +1297,8 @@ get_gicon (ButtonData *button_data)
 }
 
 static void
-nautilus_path_bar_update_button_appearance (ButtonData *button_data)
+nautilus_path_bar_update_button_appearance (ButtonData *button_data,
+                                            gboolean    current_dir)
 {
     const gchar *dir_name = get_dir_name (button_data);
     GIcon *icon;
@@ -1331,8 +1334,11 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
     else
     {
         gtk_widget_hide (GTK_WIDGET (button_data->image));
-        gtk_style_context_remove_class (gtk_widget_get_style_context (button_data->button),
-                                        "image-button");
+        if (!current_dir)
+        {
+            gtk_style_context_remove_class (gtk_widget_get_style_context (button_data->button),
+                                            "image-button");
+        }
     }
 }
 
@@ -1347,14 +1353,7 @@ nautilus_path_bar_update_button_state (ButtonData *button_data,
         gtk_label_set_use_markup (GTK_LABEL (button_data->label), current_dir);
     }
 
-    nautilus_path_bar_update_button_appearance (button_data);
-
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_data->button)) != current_dir)
-    {
-        button_data->ignore_changes = TRUE;
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_data->button), current_dir);
-        button_data->ignore_changes = FALSE;
-    }
+    nautilus_path_bar_update_button_appearance (button_data, current_dir);
 }
 
 static void
@@ -1425,6 +1424,7 @@ button_data_file_changed (NautilusFile *file,
     NautilusPathBar *self;
     gboolean renamed;
     gboolean child;
+    gboolean current_dir;
 
     ancestor = gtk_widget_get_ancestor (button_data->button, NAUTILUS_TYPE_PATH_BAR);
     if (ancestor == NULL)
@@ -1542,7 +1542,8 @@ button_data_file_changed (NautilusFile *file,
 
         g_free (display_name);
     }
-    nautilus_path_bar_update_button_appearance (button_data);
+    current_dir = g_file_equal (self->current_path, button_data->path);
+    nautilus_path_bar_update_button_appearance (button_data, current_dir);
 }
 
 static ButtonData *
@@ -1562,12 +1563,11 @@ make_button_data (NautilusPathBar *self,
     button_data = g_new0 (ButtonData, 1);
 
     setup_button_type (button_data, self, path);
-    button_data->button = gtk_toggle_button_new ();
+    button_data->button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
 
     style_context = gtk_widget_get_style_context (button_data->button);
     gtk_style_context_add_class (style_context, "text-button");
-    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_FLAT);
     /* TODO update button type when xdg directories change */
 
     button_data->image = gtk_image_new ();
@@ -1585,8 +1585,9 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("view-more-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
+            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
 
@@ -1600,16 +1601,12 @@ make_button_data (NautilusPathBar *self,
         /* Fall through */
         default:
         {
-            GtkWidget *separator_label;
-
-            separator_label = gtk_label_new (G_DIR_SEPARATOR_S);
-            gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("view-more-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
-            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), separator_label, FALSE, FALSE, 0);
+            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
 
             gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
@@ -1623,6 +1620,8 @@ make_button_data (NautilusPathBar *self,
     {
         gtk_widget_show (button_data->disclosure_arrow);
         gtk_popover_set_relative_to (self->current_view_menu_popover, button_data->button);
+        gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
+                                     "image-button");
     }
 
     if (button_data->label != NULL)
