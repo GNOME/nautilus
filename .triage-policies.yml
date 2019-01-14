@@ -16,6 +16,7 @@ resource_rules:
             - 1. Epic
             # Features are handled in a different rule
             - 1. Feature
+            - Bot Exception
           state: opened
         actions:
           status: close
@@ -53,6 +54,7 @@ resource_rules:
             - 1. Crash
             - 1. Epic
             - 1. Feature
+            - Bot Exception
           state: opened
         actions:
           labels:
@@ -81,6 +83,7 @@ resource_rules:
             - 2. Deliverable
             - 2. Stretch
             - 1. Epic
+            - Bot Exception
           milestone:
             - No Milestone
           state: opened
@@ -119,7 +122,9 @@ resource_rules:
             interval: 4
           state: opened
           labels:
-            - 2. Needs Information 
+            - 2. Needs Information
+          forbidden_labels:
+            - Bot Exception
         actions:
           status: close
           labels:
