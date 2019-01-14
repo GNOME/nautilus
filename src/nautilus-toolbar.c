@@ -104,6 +104,8 @@ struct _NautilusToolbar
     GtkGesture *back_button_longpress_gesture;
     GtkGesture *back_button_multi_press_gesture;
 
+    GtkWidget *search_button;
+
     GtkWidget *location_entry_close_button;
 
     NautilusProgressInfoManager *progress_manager;
@@ -138,7 +140,6 @@ toolbar_update_appearance (NautilusToolbar *self)
                           g_settings_get_boolean (nautilus_preferences,
                                                   NAUTILUS_PREFERENCES_ALWAYS_USE_LOCATION_ENTRY);
 
-
     if (self->window_slot != NULL &&
         nautilus_window_slot_get_searching (self->window_slot))
     {
@@ -151,6 +152,12 @@ toolbar_update_appearance (NautilusToolbar *self)
     else
     {
         gtk_stack_set_visible_child_name (GTK_STACK (self->toolbar_switcher), "pathbar");
+    }
+
+    if (self->window_slot != NULL)
+    {
+        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (self->search_button),
+                                      nautilus_window_slot_get_searching (self->window_slot));
     }
 }
 
@@ -1242,6 +1249,8 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, view_menu_extended_section);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, undo_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, redo_button);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, search_button);
 
     gtk_widget_class_bind_template_callback (widget_class, on_operations_icon_draw);
     gtk_widget_class_bind_template_callback (widget_class, on_operations_button_toggled);
