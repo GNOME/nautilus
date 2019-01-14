@@ -1585,7 +1585,7 @@ make_button_data (NautilusPathBar *self,
         {
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("view-more-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
@@ -1606,7 +1606,7 @@ make_button_data (NautilusPathBar *self,
             gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
-            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
+            button_data->disclosure_arrow = gtk_image_new_from_icon_name ("view-more-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), separator_label, FALSE, FALSE, 0);
