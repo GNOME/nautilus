@@ -941,6 +941,12 @@ nautilus_window_slot_get_property (GObject    *object,
         }
         break;
 
+        case PROP_SEARCHING:
+        {
+            g_value_set_boolean (value, nautilus_window_slot_get_searching (self));
+        }
+        break;
+
         default:
         {
             G_OBJECT_WARN_INVALID_PROPERTY_ID (object, property_id, pspec);
