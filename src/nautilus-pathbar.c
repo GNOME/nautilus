@@ -71,7 +71,6 @@ typedef struct
 
     GtkWidget *image;
     GtkWidget *label;
-    GtkWidget *bold_label;
     GtkWidget *separator;
     GtkWidget *disclosure_arrow;
     GtkWidget *container;
@@ -110,7 +109,8 @@ struct _NautilusPathBar
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_CONTAINER);
 
 static void nautilus_path_bar_check_icon_theme (NautilusPathBar *self);
-static void nautilus_path_bar_update_button_appearance (ButtonData *button_data);
+static void nautilus_path_bar_update_button_appearance (ButtonData *button_data,
+                                                        gboolean    current_dir);
 static void nautilus_path_bar_update_button_state (ButtonData *button_data,
                                                    gboolean    current_dir);
 static void nautilus_path_bar_update_path (NautilusPathBar *self,
@@ -222,12 +222,9 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
     gtk_widget_set_redraw_on_allocate (GTK_WIDGET (self), FALSE);
-    /* Ideally this would be in CSS, but not worth it adding CSS support to
-     * the container's logic...
-     */
-    gtk_widget_set_margin_start (GTK_WIDGET (self), 6);
-    gtk_widget_set_margin_end (GTK_WIDGET (self), 6);
 
+    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
+                                 GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "nautilus-path-bar");
 
@@ -335,8 +332,8 @@ get_dir_name (ButtonData *button_data)
 static void
 set_label_size_request (ButtonData *button_data)
 {
-    gint width, height;
-    GtkRequisition nat_req, bold_req;
+    gint width;
+    GtkRequisition nat_req;
 
     if (button_data->label == NULL)
     {
@@ -344,13 +341,10 @@ set_label_size_request (ButtonData *button_data)
     }
 
     gtk_widget_get_preferred_size (button_data->label, NULL, &nat_req);
-    gtk_widget_get_preferred_size (button_data->bold_label, &bold_req, NULL);
 
-    width = MAX (nat_req.width, bold_req.width);
-    width = MIN (width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
-    height = MAX (nat_req.height, bold_req.height);
+    width = MIN (nat_req.width, NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH);
 
-    gtk_widget_set_size_request (button_data->label, width, height);
+    gtk_widget_set_size_request (button_data->label, width, nat_req.height);
 }
 
 /* Size requisition:
@@ -380,8 +374,8 @@ nautilus_path_bar_get_preferred_width (GtkWidget *widget,
         button_data = BUTTON_DATA (list->data);
         set_label_size_request (button_data);
 
-        gtk_widget_get_preferred_width (button_data->container, &child_min, &child_nat);
-        gtk_widget_get_preferred_height (button_data->container, &child_height, NULL);
+        gtk_widget_get_preferred_width (button_data->button, &child_min, &child_nat);
+        gtk_widget_get_preferred_height (button_data->button, &child_height, NULL);
         height = MAX (height, child_height);
 
         if (button_data->type == NORMAL_BUTTON)
@@ -415,7 +409,7 @@ nautilus_path_bar_get_preferred_height (GtkWidget *widget,
         button_data = BUTTON_DATA (list->data);
         set_label_size_request (button_data);
 
-        gtk_widget_get_preferred_height (button_data->container, &child_min, &child_nat);
+        gtk_widget_get_preferred_height (button_data->button, &child_min, &child_nat);
 
         *minimum = MAX (*minimum, child_min);
         *natural = MAX (*natural, child_nat);
@@ -512,7 +506,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
 
     width = 0;
 
-    gtk_widget_get_preferred_size (BUTTON_DATA (self->button_list->data)->container,
+    gtk_widget_get_preferred_size (BUTTON_DATA (self->button_list->data)->button,
                                    &child_requisition, NULL);
     width += child_requisition.width;
 
@@ -539,13 +533,13 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
          * button, then count backwards.
          */
         /* Count down the path chain towards the end. */
-        gtk_widget_get_preferred_size (BUTTON_DATA (first_button->data)->container,
+        gtk_widget_get_preferred_size (BUTTON_DATA (first_button->data)->button,
                                        &child_requisition, NULL);
         width = child_requisition.width;
         list = first_button->prev;
         while (list && !reached_end)
         {
-            child = BUTTON_DATA (list->data)->container;
+            child = BUTTON_DATA (list->data)->button;
             gtk_widget_get_preferred_size (child, &child_requisition, NULL);
 
             if (width + child_requisition.width > allocation->width)
@@ -596,7 +590,7 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     largest_width = allocation->width;
     for (list = first_button; list; list = list->prev)
     {
-        child = BUTTON_DATA (list->data)->container;
+        child = BUTTON_DATA (list->data)->button;
         gtk_widget_get_preferred_size (child, &child_requisition, NULL);
 
         child_allocation.width = MIN (child_requisition.width, largest_width);
@@ -617,13 +611,13 @@ nautilus_path_bar_size_allocate (GtkWidget     *widget,
     /* Now we go hide all the widgets that don't fit */
     while (list)
     {
-        child = BUTTON_DATA (list->data)->container;
+        child = BUTTON_DATA (list->data)->button;
         gtk_widget_set_child_visible (child, FALSE);
         list = list->prev;
     }
     for (list = first_button->next; list; list = list->next)
     {
-        child = BUTTON_DATA (list->data)->container;
+        child = BUTTON_DATA (list->data)->button;
         gtk_widget_set_child_visible (child, FALSE);
     }
 
@@ -754,7 +748,7 @@ nautilus_path_bar_remove (GtkContainer *container,
     children = self->button_list;
     while (children != NULL)
     {
-        if (widget == BUTTON_DATA (children->data)->container)
+        if (widget == BUTTON_DATA (children->data)->button)
         {
             nautilus_path_bar_remove_1 (container, widget);
             self->button_list = g_list_remove_link (self->button_list, children);
@@ -782,7 +776,7 @@ nautilus_path_bar_forall (GtkContainer *container,
     while (children != NULL)
     {
         GtkWidget *child;
-        child = BUTTON_DATA (children->data)->container;
+        child = BUTTON_DATA (children->data)->button;
         children = children->next;
         (*callback)(child, callback_data);
     }
@@ -817,10 +811,10 @@ nautilus_path_bar_get_path_for_child (GtkContainer *container,
         {
             ButtonData *data = l->data;
 
-            if (gtk_widget_get_visible (data->container) &&
-                gtk_widget_get_child_visible (data->container))
+            if (gtk_widget_get_visible (data->button) &&
+                gtk_widget_get_child_visible (data->button))
             {
-                visible_children = g_list_prepend (visible_children, data->container);
+                visible_children = g_list_prepend (visible_children, data->button);
             }
         }
 
@@ -994,7 +988,8 @@ reload_icons (NautilusPathBar *self)
         button_data = BUTTON_DATA (list->data);
         if (button_data->type != NORMAL_BUTTON || button_data->is_root)
         {
-            nautilus_path_bar_update_button_appearance (button_data);
+            nautilus_path_bar_update_button_appearance (button_data,
+                                                        list->next == NULL);
         }
     }
 }
@@ -1041,7 +1036,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 
         button_data = BUTTON_DATA (self->button_list->data);
 
-        gtk_container_remove (GTK_CONTAINER (self), button_data->container);
+        gtk_container_remove (GTK_CONTAINER (self), button_data->button);
     }
 }
 
@@ -1295,28 +1290,15 @@ get_gicon (ButtonData *button_data)
 }
 
 static void
-nautilus_path_bar_update_button_appearance (ButtonData *button_data)
+nautilus_path_bar_update_button_appearance (ButtonData *button_data,
+                                            gboolean    current_dir)
 {
     const gchar *dir_name = get_dir_name (button_data);
     GIcon *icon;
 
     if (button_data->label != NULL)
     {
-        char *markup;
-
-        markup = g_markup_printf_escaped ("<b>%s</b>", dir_name);
-
-        if (gtk_label_get_use_markup (GTK_LABEL (button_data->label)))
-        {
-            gtk_label_set_markup (GTK_LABEL (button_data->label), markup);
-        }
-        else
-        {
-            gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
-        }
-
-        gtk_label_set_markup (GTK_LABEL (button_data->bold_label), markup);
-        g_free (markup);
+        gtk_label_set_text (GTK_LABEL (button_data->label), dir_name);
     }
 
     icon = get_gicon (button_data);
@@ -1331,8 +1313,11 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data)
     else
     {
         gtk_widget_hide (GTK_WIDGET (button_data->image));
-        gtk_style_context_remove_class (gtk_widget_get_style_context (button_data->button),
-                                        "image-button");
+        if (!current_dir)
+        {
+            gtk_style_context_remove_class (gtk_widget_get_style_context (button_data->button),
+                                            "image-button");
+        }
     }
 }
 
@@ -1343,18 +1328,10 @@ nautilus_path_bar_update_button_state (ButtonData *button_data,
     if (button_data->label != NULL)
     {
         gtk_label_set_label (GTK_LABEL (button_data->label), NULL);
-        gtk_label_set_label (GTK_LABEL (button_data->bold_label), NULL);
         gtk_label_set_use_markup (GTK_LABEL (button_data->label), current_dir);
     }
 
-    nautilus_path_bar_update_button_appearance (button_data);
-
-    if (gtk_toggle_button_get_active (GTK_TOGGLE_BUTTON (button_data->button)) != current_dir)
-    {
-        button_data->ignore_changes = TRUE;
-        gtk_toggle_button_set_active (GTK_TOGGLE_BUTTON (button_data->button), current_dir);
-        button_data->ignore_changes = FALSE;
-    }
+    nautilus_path_bar_update_button_appearance (button_data, current_dir);
 }
 
 static void
@@ -1425,6 +1402,7 @@ button_data_file_changed (NautilusFile *file,
     NautilusPathBar *self;
     gboolean renamed;
     gboolean child;
+    gboolean current_dir;
 
     ancestor = gtk_widget_get_ancestor (button_data->button, NAUTILUS_TYPE_PATH_BAR);
     if (ancestor == NULL)
@@ -1519,7 +1497,7 @@ button_data_file_changed (NautilusFile *file,
 
                     data = BUTTON_DATA (self->button_list->data);
 
-                    gtk_container_remove (GTK_CONTAINER (self), data->container);
+                    gtk_container_remove (GTK_CONTAINER (self), data->button);
                 }
             }
         }
@@ -1542,7 +1520,8 @@ button_data_file_changed (NautilusFile *file,
 
         g_free (display_name);
     }
-    nautilus_path_bar_update_button_appearance (button_data);
+    current_dir = g_file_equal (self->current_path, button_data->path);
+    nautilus_path_bar_update_button_appearance (button_data, current_dir);
 }
 
 static ButtonData *
@@ -1551,23 +1530,20 @@ make_button_data (NautilusPathBar *self,
                   gboolean         current_dir)
 {
     GFile *path;
-    GtkWidget *child;
     ButtonData *button_data;
     GtkStyleContext *style_context;
 
     path = nautilus_file_get_location (file);
-    child = NULL;
 
     /* Is it a special button? */
     button_data = g_new0 (ButtonData, 1);
 
     setup_button_type (button_data, self, path);
-    button_data->button = gtk_toggle_button_new ();
+    button_data->button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
 
     style_context = gtk_widget_get_style_context (button_data->button);
     gtk_style_context_add_class (style_context, "text-button");
-    gtk_style_context_add_class (style_context, GTK_STYLE_CLASS_FLAT);
     /* TODO update button type when xdg directories change */
 
     button_data->image = gtk_image_new ();
@@ -1584,15 +1560,15 @@ make_button_data (NautilusPathBar *self,
         case OTHER_LOCATIONS_BUTTON:
         {
             button_data->label = gtk_label_new (NULL);
-            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
+            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->image, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
 
@@ -1600,20 +1576,15 @@ make_button_data (NautilusPathBar *self,
         /* Fall through */
         default:
         {
-            GtkWidget *separator_label;
-
-            separator_label = gtk_label_new (G_DIR_SEPARATOR_S);
-            gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
             button_data->label = gtk_label_new (NULL);
-            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
-            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), separator_label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
+            gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (child), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
         }
         break;
     }
@@ -1623,17 +1594,14 @@ make_button_data (NautilusPathBar *self,
     {
         gtk_widget_show (button_data->disclosure_arrow);
         gtk_popover_set_relative_to (self->current_view_menu_popover, button_data->button);
+        gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
+                                     "image-button");
     }
 
     if (button_data->label != NULL)
     {
         gtk_label_set_ellipsize (GTK_LABEL (button_data->label), PANGO_ELLIPSIZE_MIDDLE);
         gtk_label_set_single_line_mode (GTK_LABEL (button_data->label), TRUE);
-
-        button_data->bold_label = gtk_label_new (NULL);
-        gtk_widget_set_no_show_all (button_data->bold_label, TRUE);
-        gtk_label_set_single_line_mode (GTK_LABEL (button_data->bold_label), TRUE);
-        gtk_box_pack_start (GTK_BOX (child), button_data->bold_label, FALSE, FALSE, 0);
     }
 
     if (button_data->path == NULL)
@@ -1655,8 +1623,7 @@ make_button_data (NautilusPathBar *self,
                               button_data);
     }
 
-    gtk_container_add (GTK_CONTAINER (button_data->button), child);
-    gtk_widget_show_all (button_data->container);
+    gtk_widget_show_all (button_data->button);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
@@ -1728,9 +1695,9 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
 
     for (l = self->button_list; l; l = l->next)
     {
-        GtkWidget *container;
-        container = BUTTON_DATA (l->data)->container;
-        gtk_container_add (GTK_CONTAINER (self), container);
+        GtkWidget *button;
+        button = BUTTON_DATA (l->data)->button;
+        gtk_container_add (GTK_CONTAINER (self), button);
     }
 }
 

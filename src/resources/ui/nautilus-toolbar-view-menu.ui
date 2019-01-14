@@ -1,28 +1,235 @@
 <?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.0 -->
 <interface>
-  <object class="GtkBox" id="zoom_section">
+  <requires lib="gtk+" version="3.16"/>
+  <object class="GtkBox" id="extended_section">
+    <property name="width_request">160</property>
     <property name="visible">True</property>
     <property name="can_focus">False</property>
     <property name="orientation">vertical</property>
+    <child>
+      <object class="GtkBox" id="sort_menu">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="GtkSeparator">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="margin_top">6</property>
+            <property name="margin_bottom">6</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkLabel">
+            <property name="visible">True</property>
+            <property name="sensitive">False</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</property>
+            <property name="xalign">0</property>
+            <style>
+              <class name="nautilus-menu-sort-heading"/>
+            </style>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_name">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'name'</property>
+            <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_A-Z</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">2</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_name_desc">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'name-desc'</property>
+            <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name, in descending order in the toolbar view menu">_Z-A</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">3</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_modification_date_desc">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'modification-date-desc'</property>
+            <property name="text" translatable="yes">Last _Modified</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">4</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_modification_date">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'modification-date'</property>
+            <property name="text" translatable="yes">_First Modified</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">5</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_size">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'size'</property>
+            <property name="text" translatable="yes">_Size</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">6</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_type">
+            <property name="visible">True</property>
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'type'</property>
+            <property name="text" translatable="yes">_Type</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">7</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkModelButton" id="sort_trash_time">
+            <property name="can_focus">True</property>
+            <property name="receives_default">False</property>
+            <property name="action_name">view.sort</property>
+            <property name="action_target">'trash-time'</property>
+            <property name="text" translatable="yes">Last _Trashed</property>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">8</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkSeparator">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="margin_top">6</property>
+        <property name="margin_bottom">6</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton" id="visible_columns">
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="action_name">view.visible-columns</property>
+        <property name="text" translatable="yes">_Visible Columns…</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton" id="reload">
+        <property name="visible">True</property>
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="action_name">win.reload</property>
+        <property name="text" translatable="yes">R_eload</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">4</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkModelButton" id="stop">
+        <property name="can_focus">True</property>
+        <property name="receives_default">False</property>
+        <property name="action_name">win.stop</property>
+        <property name="text" translatable="yes">St_op</property>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">5</property>
+      </packing>
+    </child>
+  </object>
+  <object class="GtkBox" id="zoom_section">
     <property name="width_request">160</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="orientation">vertical</property>
     <child>
       <object class="GtkBox" id="zoom_controls_box">
         <property name="visible">True</property>
-        <property name="orientation">horizontal</property>
+        <property name="can_focus">False</property>
         <property name="homogeneous">True</property>
-        <style>
-          <class name="linked"/>
-        </style>
         <child>
           <object class="GtkButton" id="zoom-out">
             <property name="visible">True</property>
-            <property name="action-name">view.zoom-out</property>
-            <property name="tooltip-text" translatable="yes">Zoom out</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Zoom out</property>
+            <property name="action_name">view.zoom-out</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="icon-name">zoom-out-symbolic</property>
-                <property name="icon-size">1</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">zoom-out-symbolic</property>
+                <property name="icon_size">1</property>
               </object>
             </child>
           </object>
@@ -35,12 +242,15 @@
         <child>
           <object class="GtkButton" id="zoom-default">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Reset zoom</property>
             <property name="action_name">view.zoom-standard</property>
-            <property name="tooltip-text" translatable="yes">Reset zoom</property>
             <child>
               <object class="GtkLabel" id="zoom_level_label">
                 <property name="visible">True</property>
-                <property name="width-chars">5</property>
+                <property name="can_focus">False</property>
+                <property name="width_chars">5</property>
               </object>
             </child>
           </object>
@@ -53,13 +263,16 @@
         <child>
           <object class="GtkButton" id="zoom-in">
             <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="receives_default">False</property>
+            <property name="tooltip_text" translatable="yes">Zoom in</property>
             <property name="action_name">view.zoom-in</property>
-            <property name="tooltip-text" translatable="yes">Zoom in</property>
             <child>
               <object class="GtkImage">
                 <property name="visible">True</property>
-                <property name="icon-name">zoom-in-symbolic</property>
-                <property name="icon-size">1</property>
+                <property name="can_focus">False</property>
+                <property name="icon_name">zoom-in-symbolic</property>
+                <property name="icon_size">1</property>
               </object>
             </child>
           </object>
@@ -69,142 +282,15 @@
             <property name="position">2</property>
           </packing>
         </child>
+        <style>
+          <class name="linked"/>
+        </style>
       </object>
-    </child>
-  </object>
-  <object class="GtkBox" id="extended_section">
-    <property name="visible">True</property>
-    <property name="can_focus">False</property>
-    <property name="orientation">vertical</property>
-    <property name="width_request">160</property>
-    <child>
-      <object class="GtkBox" id="sort_menu">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <object class="GtkSeparator">
-            <property name="visible">True</property>
-            <property name="orientation">horizontal</property>
-            <property name="margin-top">6</property>
-            <property name="margin-bottom">6</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkLabel">
-            <property name="visible">True</property>
-            <property name="sensitive">False</property>
-            <property name="label" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;." translatable="yes">Sort</property>
-            <property name="xalign">0</property>
-            <style>
-              <class name="nautilus-menu-sort-heading" />
-            </style>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_name">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_A-Z</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'name'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_name_desc">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name, in descending order in the toolbar view menu">_Z-A</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'name-desc'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_modification_date_desc">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">Last _Modified</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'modification-date-desc'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_modification_date">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_First Modified</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'modification-date'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_size">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Size</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'size'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_type">
-            <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">_Type</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'type'</property>
-          </object>
-        </child>
-        <child>
-          <object class="GtkModelButton" id="sort_trash_time">
-            <property name="visible">False</property>
-            <property name="can_focus">True</property>
-            <property name="text" translatable="yes">Last _Trashed</property>
-            <property name="action-name">view.sort</property>
-            <property name="action-target">'trash-time'</property>
-          </object>
-        </child>
-      </object>
-    </child>
-    <child>
-      <object class="GtkSeparator">
-        <property name="visible">True</property>
-        <property name="orientation">horizontal</property>
-        <property name="margin-top">6</property>
-        <property name="margin-bottom">6</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkModelButton" id="visible_columns">
-        <property name="visible">False</property>
-        <property name="can_focus">True</property>
-        <property name="text" translatable="yes">_Visible Columns…</property>
-        <property name="action-name">view.visible-columns</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkModelButton" id="show_hidden_files">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="text" translatable="yes">Show _Hidden Files</property>
-        <property name="action-name">view.show-hidden-files</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkModelButton" id="reload">
-        <property name="visible">True</property>
-        <property name="can_focus">True</property>
-        <property name="text" translatable="yes">R_eload</property>
-        <property name="action-name">win.reload</property>
-      </object>
-    </child>
-    <child>
-      <object class="GtkModelButton" id="stop">
-        <property name="visible">False</property>
-        <property name="can_focus">True</property>
-        <property name="text" translatable="yes">St_op</property>
-        <property name="action-name">win.stop</property>
-      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
     </child>
   </object>
 </interface>
