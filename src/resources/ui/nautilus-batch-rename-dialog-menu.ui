@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.22.1 -->
+<interface>
+    <menu id="add_tag_menu">
+    <section>
+      <attribute name="label" translatable="yes">Automatic Numbers</attribute>
+      <item>
+        <attribute name="label" translatable="yes">1, 2, 3, 4</attribute>
+        <attribute name="action">dialog.add-numbering-no-zero-pad-tag</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">01, 02, 03, 04</attribute>
+        <attribute name="action">dialog.add-numbering-one-zero-pad-tag</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">001, 002, 003, 004</attribute>
+        <attribute name="action">dialog.add-numbering-two-zero-pad-tag</attribute>
+      </item>
+    </section>
+    <section>
+        <attribute name="label" translatable="yes">Metadata</attribute>
+      <item>
+        <attribute name="label" translatable="yes">Creation Date</attribute>
+        <attribute name="action">dialog.add-creation-date-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Camera Model</attribute>
+        <attribute name="action">dialog.add-equipment-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Season Number</attribute>
+        <attribute name="action">dialog.add-season-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Episode Number</attribute>
+        <attribute name="action">dialog.add-episode-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Track Number</attribute>
+        <attribute name="action">dialog.add-track-number-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Artist Name</attribute>
+        <attribute name="action">dialog.add-artist-name-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Title</attribute>
+        <attribute name="action">dialog.add-title-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Album Name</attribute>
+        <attribute name="action">dialog.add-album-name-tag</attribute>
+        <attribute name="hidden-when">action-disabled</attribute>
+      </item>
+    </section>
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Original File Name</attribute>
+        <attribute name="action">dialog.add-original-file-name-tag</attribute>
+      </item>
+    </section>
+  </menu>
+  <menu id="numbering_order_menu">
+    <section>
+      <item>
+        <attribute name="label" translatable="yes">Original Name (Ascending)</attribute>
+        <attribute name="action">dialog.numbering-order-changed</attribute>
+        <attribute name="target">name-ascending</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Original Name (Descending)</attribute>
+        <attribute name="action">dialog.numbering-order-changed</attribute>
+        <attribute name="target">name-descending</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">First Modified</attribute>
+        <attribute name="action">dialog.numbering-order-changed</attribute>
+        <attribute name="target">first-modified</attribute>
+      </item>
+      <item>
+        <attribute name="label" translatable="yes">Last Modified</attribute>
+        <attribute name="action">dialog.numbering-order-changed</attribute>
+        <attribute name="target">last-modified</attribute>
+      </item>
+    </section>
+  </menu>
+</interface>
+
