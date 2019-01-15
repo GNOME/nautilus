@@ -2093,6 +2093,7 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 {
     GtkWidgetClass *widget_class;
     GObjectClass *oclass;
+    GtkBuilder *builder;
 
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
@@ -2100,6 +2101,13 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     oclass->finalize = nautilus_batch_rename_dialog_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
+
+    /* Menu Part*/
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
+    g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
+    g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
+    g_object_unref (builder);
+
 
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, grid);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, cancel_button);
