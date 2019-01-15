@@ -132,7 +132,7 @@ if appstream_util.found()
   test(
     'validate-appdata', appstream_util,
     args: [
-      'validate-relax', appdata.full_path()
+      'validate-relax', '--nonet', appdata.full_path()
     ]
   )
 endif
