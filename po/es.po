@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2018-12-12 15:52+0000\n"
-"PO-Revision-Date: 2019-01-08 16:00+0100\n"
+"POT-Creation-Date: 2019-01-15 10:32+0000\n"
+"PO-Revision-Date: 2019-01-15 15:14+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -83,6 +83,35 @@ msgstr ""
 "ejecutar scripts y lanzar aplicaciones. Tiene tres vistas: rejilla de "
 "iconos, lista de iconos y árbol. Se puede ampliar su funcionalidad con "
 "scripts y complementos."
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:31
+#| msgid "Toggle view"
+msgid "Tile view"
+msgstr "Vista de mosaico"
+
+# src/file-manager/fm-directory-view.c:2403
+# src/file-manager/fm-directory-view.c:2646
+#: data/org.gnome.Nautilus.appdata.xml.in.in:35
+#| msgctxt "shortcut window"
+#| msgid "List view"
+msgid "List view"
+msgstr "Vista de lista"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:39 src/nautilus-query.c:536
+#: src/nautilus-search-directory-file.c:175
+#: src/nautilus-search-directory-file.c:232
+#: src/nautilus-search-directory-file.c:272
+#: src/resources/ui/nautilus-preferences-window.ui:872
+#: src/resources/ui/nautilus-search-popover.ui:341
+#: src/resources/ui/nautilus-toolbar.ui:365
+msgid "Search"
+msgstr "Buscar"
+
+# src/nautilus-location-bar.c:401
+#: data/org.gnome.Nautilus.appdata.xml.in.in:43
+#| msgid "Other Locations"
+msgid "Other locations"
+msgstr "Otras ubicaciones"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:198
@@ -352,9 +381,6 @@ msgid "Default sort order"
 msgstr "Orden de colocación predeterminado"
 
 #: data/org.gnome.nautilus.gschema.xml:170
-#| msgid ""
-#| "The default sort-order for items in the icon view. Possible values are "
-#| "“name”, “size”, “type” and “mtime”."
 msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
@@ -4563,15 +4589,6 @@ msgstr "_Revertir"
 #: src/nautilus-properties-window.c:5714 src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Open"
 msgstr "_Abrir"
-
-#: src/nautilus-query.c:536 src/nautilus-search-directory-file.c:175
-#: src/nautilus-search-directory-file.c:232
-#: src/nautilus-search-directory-file.c:272
-#: src/resources/ui/nautilus-preferences-window.ui:872
-#: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:365
-msgid "Search"
-msgstr "Buscar"
 
 # libnautilus-private/nautilus-global-preferences.c:727
 #: src/nautilus-query.c:539
