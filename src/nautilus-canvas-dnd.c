@@ -593,8 +593,10 @@ drag_end_callback (GtkWidget      *widget,
 
     stop_cache_selection_list (&dnd_info->drag_info);
     nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_list);
+    nautilus_drag_destroy_selection_list (dnd_info->drag_info.selection_cache);
     nautilus_drag_destroy_selection_list (container->details->dnd_source_info->selection_cache);
     dnd_info->drag_info.selection_list = NULL;
+    dnd_info->drag_info.selection_cache = NULL;
     container->details->dnd_source_info->selection_cache = NULL;
 
     nautilus_window_end_dnd (window, context);
