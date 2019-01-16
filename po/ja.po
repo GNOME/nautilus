@@ -7,11 +7,11 @@
 # James Hashida <khashida@redhat.com>, 2002.
 # KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>, 2003.
 # Takeshi AIHANA <takeshi.aihana@gmail.com>, 2003-2009.
-# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2012.
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2009.
+# Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2012.
 # Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2011-2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018.
-# Hajime Taira <htaira@redhat.com>, 2015,2019.
+# Hajime Taira <htaira@redhat.com>, 2015, 2019.
 #
 # * Merged eel since v2.25.2.
 # Copyright (C) 2000-2005,2007,2008 Free Software Foundation, Inc.
@@ -21,9 +21,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-01-08 15:05+0000\n"
-"PO-Revision-Date: 2019-01-16 12:55+0900\n"
-"Last-Translator: Jiro Matsuzawa <jmatsuzawa@gnome.org>\n"
+"POT-Creation-Date: 2019-01-15 14:18+0000\n"
+"PO-Revision-Date: 2019-01-17 00:30+0900\n"
+"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -75,6 +75,35 @@ msgstr ""
 "す: アイコングリッド、アイコンリスト、そしてツリーリストです。プラグインとス"
 "クリプトを利用して機能拡張ができます。"
 
+#: data/org.gnome.Nautilus.appdata.xml.in.in:31
+#, fuzzy
+#| msgid "Toggle view"
+msgid "Tile view"
+msgstr "表示の切り替え"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:35
+#, fuzzy
+#| msgctxt "shortcut window"
+#| msgid "List view"
+msgid "List view"
+msgstr "一覧表示に切り替える"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:39 src/nautilus-query.c:536
+#: src/nautilus-search-directory-file.c:175
+#: src/nautilus-search-directory-file.c:232
+#: src/nautilus-search-directory-file.c:272
+#: src/resources/ui/nautilus-preferences-window.ui:872
+#: src/resources/ui/nautilus-search-popover.ui:341
+#: src/resources/ui/nautilus-toolbar.ui:365
+msgid "Search"
+msgstr "検索"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:43
+#, fuzzy
+#| msgid "Other Locations"
+msgid "Other locations"
+msgstr "他の場所"
+
 #. “Files” is the generic application name and the suffix is
 #. * an arbitrary and deliberately unlocalized string only shown
 #. * in development builds.
@@ -122,7 +151,7 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"true に設定すると、Nautilusブラウザーウィンドウはパスバーの代わりにテキスト入"
+"true に設定すると、Nautilus ブラウザーウィンドウはパスバーの代わりにテキスト入"
 "力が可能なロケーションバーを常に使用します。"
 
 #: data/org.gnome.nautilus.gschema.xml:93
@@ -135,6 +164,7 @@ msgid ""
 "are “local-only”, “always”, “never”."
 msgstr ""
 "どの場所でサブフォルダー内の検索を行うかの設定です。指定可能な値: “local-"
+"only”, “always”, “never”"
 
 #: data/org.gnome.nautilus.gschema.xml:98
 msgid "Filter the search dates using either last used or last modified"
@@ -327,7 +357,7 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
 msgstr ""
-"アイコン表示でアイテムを並び替えるデフォルトの順番です。利用可能な値: "
+"アイコン表示でアイテムを並べるデフォルトの順番です。利用可能な値: "
 "“name”, “size”, “type”, “mtime”, “atime”, “starred”"
 
 #: data/org.gnome.nautilus.gschema.xml:174
@@ -404,13 +434,13 @@ msgid ""
 "help giving feedback and shaping their future."
 msgstr ""
 "最新の GTK+ ウィジェットを使用して新しい実験的表示形式を使用し、開発者に"
-"フィードバックを与えたり、将来のかたちを作るための支援をするかどうか"
+"フィードバックを与えたり、将来を形作るための支援をするかどうか。"
 
 #: data/org.gnome.nautilus.gschema.xml:210
 msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
-msgstr "新しいウィンドウ/タブを開くときに全文検索をデフォルトで有効にする"
+msgstr "新しいウィンドウ/タブを開くときに全文検索をデフォルトで有効にするかどうか"
 
 #: data/org.gnome.nautilus.gschema.xml:211
 msgid ""
@@ -418,7 +448,7 @@ msgid ""
 "name. This toggles the default active state, which can still be overridden "
 "in the search popover"
 msgstr ""
-"true に設定した場合、ファイル名の他にファイル内容で一致したものも検索結果とし"
+"true に設定すると、Nautilus はファイル名の他にファイルの内容で一致したものも検索結果とし"
 "て表示します。この項目は既定の検索方法を指定するものですが、検索バーのポップ"
 "オーバーでおこなった設定により値が上書きされます。"
 
@@ -471,16 +501,16 @@ msgstr ""
 "ズームレベルに応じ、ファイル名の一部を省略記号 (...) で置き換えるべき長さを指"
 "定したリストです (すなわち、n 行に収まらないファイル名を省略文字で置き換えて"
 "表示するか、それともそのまま複数行にまたがって表示するかを、ズームレベル毎に"
-"指定します)。リストの各要素は “ズームレベル:整数値” という形式にしてくださ"
+"指定します)。リストの各要素は“ズームレベル:整数値”という形式にしてくださ"
 "い。それぞれ指定したズームレベルに対して整数値が 0 より大きい場合、ファイル名"
 "は指定した行数を超えて表示されることはありません。整数値が 0 以下の場合、その"
-"ズームレベルでは無制限で表示されることになります。ズームレベルを指定せずに "
-"“整数値” の形式で指定することも可能です。この場合、既に指定しているズーム以外"
+"ズームレベルでは無制限で表示されることになります。ズームレベルを指定せずに"
+"“整数値”の形式で指定することも可能です。この場合、既に指定しているズーム以外"
 "のレベルに対してその整数値が表示する際の最大行数になります。例: “0” (常にすべ"
 "てのファイル名を表示する)、“3” (3 行を超えて表示されるファイル名を 3 行に収め"
-"るように省略記号で置き換える)、“smallest:5,smaller:4,0” というリスト (ズーム"
-"レベルが “smallest” の場合には 5 行を超えて表示されるファイル名を 5 行に収め"
-"るように省略記号で置き換え、ズームレベルが “smaller” の場合には 4 行を超えて"
+"るように省略記号で置き換える)、“smallest:5,smaller:4,0”というリスト (ズーム"
+"レベルが“smallest”の場合には 5 行を超えて表示されるファイル名を 5 行に収め"
+"るように省略記号で置き換え、ズームレベルが“smaller”の場合には 4 行を超えて"
 "表示されるファイル名を 4 行に収めるように省略記号で置き換え、それ以外のズーム"
 "レベルではすべてのファイル名を表示する); ズームレベルで指定可能な値: small, "
 "standard, large"
@@ -676,7 +706,7 @@ msgstr "評価"
 #: extensions/image-properties/nautilus-image-properties-page.c:251
 #, c-format
 msgid "%f N / %f W (%.0f m)"
-msgstr "%f N / %f W (%.0f m)"
+msgstr ""
 
 #: extensions/image-properties/nautilus-image-properties-page.c:253
 msgid "Coordinates"
@@ -1122,7 +1152,7 @@ msgstr "アーカイブ名が長すぎます。"
 #. We must warn about the side effect
 #: src/nautilus-compress-dialog-controller.c:83
 msgid "Archives with “.” at the beginning of their name are hidden."
-msgstr "“.” から始まるアーカイブは、隠しファイルになります。"
+msgstr "名前が“.”で始まるアーカイブは、隠しファイルになります。"
 
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: src/nautilus-directory.c:661
@@ -1588,7 +1618,7 @@ msgstr ""
 #: src/nautilus-file-name-widget-controller.c:164
 #: src/nautilus-rename-file-popover-controller.c:173
 msgid "Files with “.” at the beginning of their name are hidden."
-msgstr "“.” から始まるファイルは、隠しファイルになります。"
+msgstr "名前が“.”で始まるファイルは、隠しファイルになります。"
 
 #: src/nautilus-file-name-widget-controller.c:186
 msgid "A folder with that name already exists."
@@ -2990,7 +3020,7 @@ msgstr "やり直す: 名前の一括変更(_R)"
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
-msgstr[0] "%'d 個のファイルに星を外します"
+msgstr[0] "%'d 個のファイルの星を外します"
 
 #: src/nautilus-file-undo-operations.c:1361
 #: src/nautilus-file-undo-operations.c:1370
@@ -3370,7 +3400,7 @@ msgstr ""
 
 #: src/nautilus-mime-actions.c:1307
 msgid "_Search in Software"
-msgstr "ソフトウェアから検索する(_S)"
+msgstr "ソフトウェアで検索(_S)"
 
 #. if it wasn't cancelled show a dialog
 #: src/nautilus-mime-actions.c:1672 src/nautilus-mime-actions.c:1970
@@ -3469,7 +3499,7 @@ msgstr "フォルダー名が長すぎます。"
 #: src/nautilus-new-folder-dialog-controller.c:76
 #: src/nautilus-rename-file-popover-controller.c:169
 msgid "Folders with “.” at the beginning of their name are hidden."
-msgstr "“.” から始まるフォルダーは、隠しフォルダーになります。"
+msgstr "名前が“.”で始まるフォルダーは、隠しフォルダーになります。"
 
 #: src/nautilus-new-folder-dialog-controller.c:145
 #: src/resources/ui/nautilus-compress-dialog.ui:173
@@ -3642,7 +3672,7 @@ msgid ""
 "Password-protected archives are not yet supported. This list contains "
 "applications that can open the archive."
 msgstr ""
-"パスワード保護されたアーカイブは現在サポートされていません。 このリストには、"
+"パスワードで保護されたアーカイブは現在サポートしていません。このリストには、"
 "アーカイブを開くことができるアプリケーションが含まれています。"
 
 #. Translators: This is the label used in the pathbar when seeing
@@ -3858,7 +3888,7 @@ msgstr "ボリューム:"
 
 #: src/nautilus-properties-window.c:3252
 msgid "Trashed on:"
-msgstr ""
+msgstr "移動日時:"
 
 #: src/nautilus-properties-window.c:3262
 msgid "Accessed:"
@@ -3874,9 +3904,8 @@ msgstr "空き容量:"
 
 #. Translators: Here Disks mean the name of application GNOME Disks.
 #: src/nautilus-properties-window.c:3295
-#, fuzzy
 msgid "Open in Disks"
-msgstr "%sで開く"
+msgstr "ディスクで開く"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
@@ -4020,15 +4049,6 @@ msgstr "元に戻す(_R)"
 #: src/nautilus-properties-window.c:5714 src/gtk/nautilusgtkplacesview.c:1632
 msgid "_Open"
 msgstr "開く(_O)"
-
-#: src/nautilus-query.c:536 src/nautilus-search-directory-file.c:175
-#: src/nautilus-search-directory-file.c:232
-#: src/nautilus-search-directory-file.c:272
-#: src/resources/ui/nautilus-preferences-window.ui:872
-#: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:365
-msgid "Search"
-msgstr "検索"
 
 #: src/nautilus-query.c:539
 #, c-format
@@ -4221,7 +4241,7 @@ msgstr[0] "%d 個のファイルを削除"
 #: src/nautilus-window.c:1623
 #, c-format
 msgid "“%s” unstarred"
-msgstr "“%s” の星を外しました"
+msgstr "“%s”の星を外しました"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4253,9 +4273,8 @@ msgid "_Close Tab"
 msgstr "タブを閉じる(_C)"
 
 #: src/nautilus-window.c:2869
-#, fuzzy
 msgid "Access and organize your files"
-msgstr "あなたのファイルにアクセス＆整理する"
+msgstr "ファイルにアクセスしたり整理したりします"
 
 #. Translators should localize the following string
 #. * which will be displayed at the bottom of the about
@@ -4878,7 +4897,7 @@ msgstr "タグ"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:225
 msgctxt "menu item"
 msgid "Star"
-msgstr "星"
+msgstr "星をつける"
 
 #. Unmarks a file as starred (starred)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:230
@@ -4927,7 +4946,7 @@ msgstr "全般"
 
 #: src/resources/ui/nautilus-preferences-window.ui:71
 msgid "_Show sidebar"
-msgstr "サイドバーの表示(_S)"
+msgstr "サイドバーを表示する(_S)"
 
 #. Translators: a title in the preferences dialog with an option to sort folder before files "Sort folders before files".
 #: src/resources/ui/nautilus-preferences-window.ui:105
