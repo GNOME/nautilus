@@ -12,6 +12,7 @@
 # Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2011-2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018.
 # Hajime Taira <htaira@redhat.com>, 2015, 2019.
+# sicklylife <translation@sicklylife.jp>, 2019.
 #
 # * Merged eel since v2.25.2.
 # Copyright (C) 2000-2005,2007,2008 Free Software Foundation, Inc.
@@ -21,9 +22,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-01-15 14:18+0000\n"
-"PO-Revision-Date: 2019-01-17 00:30+0900\n"
-"Last-Translator: Hajime Taira <htaira@redhat.com>\n"
+"POT-Creation-Date: 2019-01-16 15:50+0000\n"
+"PO-Revision-Date: 2019-01-17 01:10+0900\n"
+"Last-Translator: <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
 "MIME-Version: 1.0\n"
@@ -76,17 +77,12 @@ msgstr ""
 "クリプトを利用して機能拡張ができます。"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:31
-#, fuzzy
-#| msgid "Toggle view"
 msgid "Tile view"
-msgstr "表示の切り替え"
+msgstr "タイル表示"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:35
-#, fuzzy
-#| msgctxt "shortcut window"
-#| msgid "List view"
 msgid "List view"
-msgstr "一覧表示に切り替える"
+msgstr "一覧表示"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:39 src/nautilus-query.c:536
 #: src/nautilus-search-directory-file.c:175
@@ -99,8 +95,6 @@ msgid "Search"
 msgstr "検索"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:43
-#, fuzzy
-#| msgid "Other Locations"
 msgid "Other locations"
 msgstr "他の場所"
 
@@ -151,8 +145,8 @@ msgid ""
 "If set to true, then Nautilus browser windows will always use a textual "
 "input entry for the location toolbar, instead of the pathbar."
 msgstr ""
-"true に設定すると、Nautilus ブラウザーウィンドウはパスバーの代わりにテキスト入"
-"力が可能なロケーションバーを常に使用します。"
+"true に設定すると、Nautilus ブラウザーウィンドウはパスバーの代わりにテキスト"
+"入力が可能なロケーションバーを常に使用します。"
 
 #: data/org.gnome.nautilus.gschema.xml:93
 msgid "Where to perform recursive search"
@@ -357,8 +351,8 @@ msgid ""
 "The default sort-order for items in the icon view. Possible values are "
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
 msgstr ""
-"アイコン表示でアイテムを並べるデフォルトの順番です。利用可能な値: "
-"“name”, “size”, “type”, “mtime”, “atime”, “starred”"
+"アイコン表示でアイテムを並べるデフォルトの順番です。利用可能な値: “name”, "
+"“size”, “type”, “mtime”, “atime”, “starred”"
 
 #: data/org.gnome.nautilus.gschema.xml:174
 msgid "Reverse sort order in new windows"
@@ -440,7 +434,8 @@ msgstr ""
 msgid ""
 "Whether to have full text search enabled by default when opening a new "
 "window/tab"
-msgstr "新しいウィンドウ/タブを開くときに全文検索をデフォルトで有効にするかどうか"
+msgstr ""
+"新しいウィンドウ/タブを開くときに全文検索をデフォルトで有効にするかどうか"
 
 #: data/org.gnome.nautilus.gschema.xml:211
 msgid ""
@@ -448,9 +443,9 @@ msgid ""
 "name. This toggles the default active state, which can still be overridden "
 "in the search popover"
 msgstr ""
-"true に設定すると、Nautilus はファイル名の他にファイルの内容で一致したものも検索結果とし"
-"て表示します。この項目は既定の検索方法を指定するものですが、検索バーのポップ"
-"オーバーでおこなった設定により値が上書きされます。"
+"true に設定すると、Nautilus はファイル名の他にファイルの内容で一致したものも"
+"検索結果として表示します。この項目は既定の検索方法を指定するものですが、検索"
+"バーのポップオーバーでおこなった設定により値が上書きされます。"
 
 #: data/org.gnome.nautilus.gschema.xml:218
 msgid "Default format for compressing files"
@@ -501,19 +496,19 @@ msgstr ""
 "ズームレベルに応じ、ファイル名の一部を省略記号 (...) で置き換えるべき長さを指"
 "定したリストです (すなわち、n 行に収まらないファイル名を省略文字で置き換えて"
 "表示するか、それともそのまま複数行にまたがって表示するかを、ズームレベル毎に"
-"指定します)。リストの各要素は“ズームレベル:整数値”という形式にしてくださ"
-"い。それぞれ指定したズームレベルに対して整数値が 0 より大きい場合、ファイル名"
-"は指定した行数を超えて表示されることはありません。整数値が 0 以下の場合、その"
-"ズームレベルでは無制限で表示されることになります。ズームレベルを指定せずに"
-"“整数値”の形式で指定することも可能です。この場合、既に指定しているズーム以外"
-"のレベルに対してその整数値が表示する際の最大行数になります。例: “0” (常にすべ"
-"てのファイル名を表示する)、“3” (3 行を超えて表示されるファイル名を 3 行に収め"
-"るように省略記号で置き換える)、“smallest:5,smaller:4,0”というリスト (ズーム"
-"レベルが“smallest”の場合には 5 行を超えて表示されるファイル名を 5 行に収め"
-"るように省略記号で置き換え、ズームレベルが“smaller”の場合には 4 行を超えて"
-"表示されるファイル名を 4 行に収めるように省略記号で置き換え、それ以外のズーム"
-"レベルではすべてのファイル名を表示する); ズームレベルで指定可能な値: small, "
-"standard, large"
+"指定します)。リストの各要素は“ズームレベル:整数値”という形式にしてください。"
+"それぞれ指定したズームレベルに対して整数値が 0 より大きい場合、ファイル名は指"
+"定した行数を超えて表示されることはありません。整数値が 0 以下の場合、そのズー"
+"ムレベルでは無制限で表示されることになります。ズームレベルを指定せずに“整数"
+"値”の形式で指定することも可能です。この場合、既に指定しているズーム以外のレベ"
+"ルに対してその整数値が表示する際の最大行数になります。例: “0” (常にすべての"
+"ファイル名を表示する)、“3” (3 行を超えて表示されるファイル名を 3 行に収めるよ"
+"うに省略記号で置き換える)、“smallest:5,smaller:4,0”というリスト (ズームレベル"
+"が“smallest”の場合には 5 行を超えて表示されるファイル名を 5 行に収めるように"
+"省略記号で置き換え、ズームレベルが“smaller”の場合には 4 行を超えて表示される"
+"ファイル名を 4 行に収めるように省略記号で置き換え、それ以外のズームレベルでは"
+"すべてのファイル名を表示する); ズームレベルで指定可能な値: small, standard, "
+"large"
 
 #: data/org.gnome.nautilus.gschema.xml:243
 msgid "Default list view zoom level"
@@ -786,7 +781,7 @@ msgstr ""
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
 "supported."
-msgstr ""
+msgstr "“%s”は内部プロトコルです。この場所を直接開くことはサポートしていません。"
 
 #: src/nautilus-application.c:1066
 msgid "Perform a quick set of self-check tests."
@@ -1612,7 +1607,7 @@ msgstr "“..”という名前をファイルに付けられません。"
 #: src/nautilus-file-name-widget-controller.c:158
 #: src/nautilus-rename-file-popover-controller.c:160
 msgid "File name is too long."
-msgstr ""
+msgstr "ファイル名が長すぎます。"
 
 #. We must warn about the side effect
 #: src/nautilus-file-name-widget-controller.c:164
