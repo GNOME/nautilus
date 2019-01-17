@@ -2234,7 +2234,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
     guint i;
-    g_autoptr (GtkBuilder) builder;
+    g_autoptr (GtkBuilder) builder = NULL;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -2257,6 +2257,10 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
     self->numbering_order_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
     self->add_tag_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
+    self->numbering_order_popover = gtk_popover_new_from_model (NULL,
+                                                                G_MENU_MODEL (self->numbering_order_menu));
+    self->add_popover = gtk_popover_new_from_model (NULL,
+                                                    G_MENU_MODEL (self->add_tag_menu));
 
     gtk_popover_bind_model (GTK_POPOVER (self->numbering_order_popover),
                             G_MENU_MODEL (self->numbering_order_menu),
