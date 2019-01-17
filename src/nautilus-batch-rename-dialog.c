@@ -2234,7 +2234,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
     guint i;
-    g_autoptr (GtkBuilder) builder = NULL;
+    g_autoptr (GtkBuilder) builder;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -2268,7 +2268,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     gtk_popover_bind_model (GTK_POPOVER (self->add_popover),
                             G_MENU_MODEL (self->add_tag_menu),
                             NULL);
-    
+
     gtk_label_set_ellipsize (GTK_LABEL (self->conflict_label), PANGO_ELLIPSIZE_END);
     gtk_label_set_max_width_chars (GTK_LABEL (self->conflict_label), 1);
 
