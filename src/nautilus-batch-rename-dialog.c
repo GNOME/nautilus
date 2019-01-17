@@ -2093,7 +2093,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
 {
     GtkWidgetClass *widget_class;
     GObjectClass *oclass;
-    GtkBuilder *builder;
 
     widget_class = GTK_WIDGET_CLASS (klass);
     oclass = G_OBJECT_CLASS (klass);
@@ -2101,12 +2100,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     oclass->finalize = nautilus_batch_rename_dialog_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
-
-    /* Menu Part*/
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
-    g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
-    g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
-    g_object_unref (builder);
 
 
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, grid);
@@ -2128,12 +2121,10 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_down);
-    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, add_tag_menu);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_label);
 
     gtk_widget_class_bind_template_callback (widget_class, file_names_widget_on_activate);
@@ -2222,6 +2213,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
+
+
     nautilus_batch_rename_dialog_initialize_actions (dialog);
 
     update_display_text (dialog);
@@ -2240,6 +2233,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
     guint i;
+    GtkBuilder *builder;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -2258,6 +2252,15 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
 
     self->mode = NAUTILUS_BATCH_RENAME_DIALOG_FORMAT;
+
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
+    self->numbering_order_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
+    self->add_tag_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
+    self->numbering_order_popover = GTK_WIDGET(g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
+                                                                                                  G_MENU_MODEL (self->numbering_order_menu)))));
+    self->add_popover = GTK_WIDGET(g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
+                                                                                            G_MENU_MODEL (self->add_tag_menu)))));
+    g_object_unref (builder);
 
     gtk_popover_bind_model (GTK_POPOVER (self->numbering_order_popover),
                             G_MENU_MODEL (self->numbering_order_menu),
