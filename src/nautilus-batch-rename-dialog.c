@@ -2043,6 +2043,10 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
         g_clear_object (&dialog->conflict_cancellable);
     }
 
+    g_clear_object (&dialog->numbering_order_menu);
+    g_clear_object (&dialog->add_tag_menu);
+    g_clear_object (&dialog->numbering_order_popover);
+    g_clear_object (&dialog->add_popover);
     g_list_free (dialog->original_name_listbox_rows);
     g_list_free (dialog->arrow_listbox_rows);
     g_list_free (dialog->result_listbox_rows);
@@ -2100,7 +2104,6 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     oclass->finalize = nautilus_batch_rename_dialog_finalize;
 
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-batch-rename-dialog.ui");
-
 
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, grid);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, cancel_button);
@@ -2213,8 +2216,6 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
-
-
     nautilus_batch_rename_dialog_initialize_actions (dialog);
 
     update_display_text (dialog);
@@ -2233,7 +2234,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 {
     TagData *tag_data;
     guint i;
-    GtkBuilder *builder;
+    g_autoptr (GtkBuilder) builder;
 
     gtk_widget_init_template (GTK_WIDGET (self));
 
@@ -2256,11 +2257,10 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-batch-rename-dialog-menu.ui");
     self->numbering_order_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "numbering_order_menu")));
     self->add_tag_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "add_tag_menu")));
-    self->numbering_order_popover = GTK_WIDGET(g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
-                                                                                                  G_MENU_MODEL (self->numbering_order_menu)))));
-    self->add_popover = GTK_WIDGET(g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (GTK_WIDGET (self),
-                                                                                            G_MENU_MODEL (self->add_tag_menu)))));
-    g_object_unref (builder);
+    self->numbering_order_popover = gtk_popover_new_from_model (NULL,
+                                                                G_MENU_MODEL (self->numbering_order_menu));
+    self->add_popover = gtk_popover_new_from_model (NULL,
+                                                    G_MENU_MODEL (self->add_tag_menu));
 
     gtk_popover_bind_model (GTK_POPOVER (self->numbering_order_popover),
                             G_MENU_MODEL (self->numbering_order_menu),
@@ -2268,7 +2268,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     gtk_popover_bind_model (GTK_POPOVER (self->add_popover),
                             G_MENU_MODEL (self->add_tag_menu),
                             NULL);
-
+    
     gtk_label_set_ellipsize (GTK_LABEL (self->conflict_label), PANGO_ELLIPSIZE_END);
     gtk_label_set_max_width_chars (GTK_LABEL (self->conflict_label), 1);
 
