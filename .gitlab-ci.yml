@@ -50,7 +50,7 @@ stages:
         expire_in: 2 days
 
 flatpak devel:
-    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.30
+    image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
