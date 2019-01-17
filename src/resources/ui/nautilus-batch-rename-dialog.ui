@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
   <template class="NautilusBatchRenameDialog" parent="GtkDialog">
-    <property name="resizable">False</property>
+    <property name="resizable">True</property>
     <property name="modal">True</property>
     <property name="height-request">563</property>
     <property name="window_position">center-on-parent</property>
@@ -47,6 +47,7 @@
                 <property name="orientation">horizontal</property>
                 <property name="spacing">15</property>
                 <property name="visible">True</property>
+                <property name="hexpand">True</property>
                 <property name="halign">center</property>
                 <property name="margin">20</property>
                 <child>
@@ -73,11 +74,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="left-attach">3</property>
-                <property name="top-attach">0</property>
-                <property name="width">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkStack" id="mode_stack">
@@ -222,6 +218,7 @@
                     <property name="margin-bottom">10</property>
                     <property name="row-spacing">15</property>
                     <property name="column-spacing">6</property>
+                    <property name="halign">center</property>
                     <child>
                       <object class="GtkLabel" id="existing_text_label">
                         <property name="visible">True</property>
