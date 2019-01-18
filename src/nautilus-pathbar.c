@@ -136,6 +136,21 @@ const GActionEntry path_bar_actions[] =
     { "properties", action_pathbar_properties}
 };
 
+static NautilusPathBar * pathbar_singleton = NULL;
+
+NautilusPathBar *
+nautilus_path_bar_get_instance (void)
+{
+    if (pathbar_singleton != NULL)
+    {
+        return g_object_ref (pathbar_singleton);
+    }
+
+    pathbar_singleton = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
+    g_object_add_weak_pointer (G_OBJECT (pathbar_singleton), (gpointer) &pathbar_singleton);
+
+    return pathbar_singleton;
+}
 
 static void
 action_pathbar_open_item_new_tab (GSimpleAction *action,

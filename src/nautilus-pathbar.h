@@ -24,6 +24,7 @@
 #define NAUTILUS_TYPE_PATH_BAR (nautilus_path_bar_get_type ())
 G_DECLARE_FINAL_TYPE (NautilusPathBar, nautilus_path_bar, NAUTILUS, PATH_BAR, GtkContainer)
 
+NautilusPathBar *nautilus_path_bar_get_instance           (void);
 void     nautilus_path_bar_set_path                       (NautilusPathBar *path_bar,
                                                            GFile           *file);
 

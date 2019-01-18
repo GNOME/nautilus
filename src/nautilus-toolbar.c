@@ -930,7 +930,7 @@ nautilus_toolbar_constructed (GObject *object)
     gtk_container_add (GTK_CONTAINER (self->toolbar_switcher_container),
                        GTK_WIDGET (self->toolbar_switcher_container_max_width));
 
-    self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
+    self->path_bar = GTK_WIDGET (nautilus_path_bar_get_instance ());
     gtk_container_add (GTK_CONTAINER (self->path_bar_container),
                        self->path_bar);
     g_signal_connect (self->toolbar_switcher_container_max_width,
