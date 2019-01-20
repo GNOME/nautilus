@@ -68,8 +68,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2018-12-07 18:21+0000\n"
-"PO-Revision-Date: 2018-12-24 13:40+0200\n"
+"POT-Creation-Date: 2019-01-15 10:32+0000\n"
+"PO-Revision-Date: 2019-01-20 23:16+0200\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -77,7 +77,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.0.7\n"
+"X-Generator: Poedit 1.5.7\n"
 "X-Project-Style: gnome\n"
 
 #
@@ -124,6 +124,33 @@ msgstr ""
 "εκκινήσει εφαρμογές. Έχει τρεις προβολές: Πλέγμα εικονιδίων, Λίστα "
 "εικονιδίων και Δενδρική λίστα. Οι λειτουργίες του μπορούν να επεκταθούν με "
 "πρόσθετα και δέσμες ενεργειών."
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:31
+#| msgid "Toggle view"
+msgid "Tile view"
+msgstr "Προβολή σε πλακίδια"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:35
+#| msgctxt "shortcut window"
+#| msgid "List view"
+msgid "List view"
+msgstr "Προβολή λίστας"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:39 src/nautilus-query.c:536
+#: src/nautilus-search-directory-file.c:175
+#: src/nautilus-search-directory-file.c:232
+#: src/nautilus-search-directory-file.c:272
+#: src/resources/ui/nautilus-preferences-window.ui:872
+#: src/resources/ui/nautilus-search-popover.ui:341
+#: src/resources/ui/nautilus-toolbar.ui:365
+msgid "Search"
+msgstr "Αναζήτηση"
+
+#
+#: data/org.gnome.Nautilus.appdata.xml.in.in:43
+#| msgid "Other Locations"
+msgid "Other locations"
+msgstr "Άλλες τοποθεσίες"
 
 #
 #. “Files” is the generic application name and the suffix is
@@ -4276,16 +4303,7 @@ msgstr "_Επαναφορά"
 msgid "_Open"
 msgstr "Άν_οιγμα"
 
-#: src/nautilus-query.c:524 src/nautilus-search-directory-file.c:175
-#: src/nautilus-search-directory-file.c:232
-#: src/nautilus-search-directory-file.c:272
-#: src/resources/ui/nautilus-preferences-window.ui:872
-#: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:365
-msgid "Search"
-msgstr "Αναζήτηση"
-
-#: src/nautilus-query.c:527
+#: src/nautilus-query.c:539
 #, c-format
 msgid "Search for “%s”"
 msgstr "Αναζήτηση για «%s»"
@@ -5761,445 +5779,3 @@ msgstr "Σύνδεση σε _διακομιστή"
 #: src/gtk/nautilusgtkplacesview.ui:472
 msgid "Enter server address…"
 msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
-
-#
-#~ msgid "Prefere_nces"
-#~ msgstr "Προ_τιμήσεις"
-
-#~ msgid "_Quit"
-#~ msgstr "Έ_ξοδος"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the Trash"
-#~ msgstr ""
-#~ "Εμφάνιση ενός διαλόγου προειδοποίησης για την αλλαγή της συντόμευσης για "
-#~ "μετακίνηση στα απορρίμματα"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the "
-#~ "Trash from Control + Delete to just Delete."
-#~ msgstr ""
-#~ "Εμφάνιση ενός διαλόγου προειδοποίησης για την αλλαγή της συντόμευσης για "
-#~ "μετακίνηση στα απορρίμματα από control + delete σε delete."
-
-#~ msgid "Delete Shortcuts Have Changed"
-#~ msgstr "Διαγραφή συντομεύσεων όπου έχουν αλλαχθεί"
-
-#~ msgid ""
-#~ "With the latest version of Files, you no longer need to hold Ctrl to "
-#~ "delete — the Delete key will work when pressed on its own."
-#~ msgstr ""
-#~ "Με την τελευταία έκδοση του «Αρχεία», δεν χρειάζεται πια να κρατάτε "
-#~ "πατημένο το Ctrl για να διαγράψετε κάτι - το πλήκτρο Delete θα δουλέψει "
-#~ "όταν το πατήσετε από μόνο του."
-
-#~ msgid "Got it"
-#~ msgstr "Το κατάλαβα"
-
-#~ msgid "Paste"
-#~ msgstr "Επικόλληση"
-
-#~ msgid "Select All"
-#~ msgstr "Επιλογή όλων"
-
-#~ msgid "Experimental"
-#~ msgstr "Πειραματικός"
-
-#~ msgid "Use the new _views"
-#~ msgstr "Χρήση της νέας _προβολής"
-
-#~ msgid "New Tab"
-#~ msgstr "Νέα καρτέλα"
-
-#~ msgid "Help"
-#~ msgstr "Βοήθεια"
-
-#~ msgid "About"
-#~ msgstr "Περί"
-
-#~ msgid "Open menu"
-#~ msgstr "Άνοιγμα μενού"
-
-#~ msgid "org.gnome.Nautilus"
-#~ msgstr "org.gnome.Nautilus"
-
-#~ msgid "MIME Type"
-#~ msgstr "Τύπος MIME"
-
-#~ msgid "The MIME type of the file."
-#~ msgstr "Ο τύπος MIME του αρχείου."
-
-#~ msgid "Comment"
-#~ msgstr "Σχόλιο"
-
-#~ msgid "URL"
-#~ msgstr "Διεύθυνση"
-
-#~ msgid "Command"
-#~ msgstr "Εντολή"
-
-#~ msgid "Probably the content of the file is an invalid desktop file format"
-#~ msgstr ""
-#~ "Πιθανόν το περιεχόμενο του αρχείου είναι μια μη έγκυρη μορφή αρχείου "
-#~ "επιφάνειας εργασίας"
-
-#~ msgid "approximately %'d hour"
-#~ msgid_plural "approximately %'d hours"
-#~ msgstr[0] "περίπου %'d ώρα"
-#~ msgstr[1] "περίπου %'d ώρες"
-
-#~ msgid "Unable to mark launcher trusted (executable)"
-#~ msgstr "Αδυναμία σημείωσης ως έμπιστου του εκκινητή (εκτελέσιμος)"
-
-#~ msgid "Untrusted application launcher"
-#~ msgstr "Αναξιόπιστος εκκινητής εφαρμογής"
-
-#~ msgid ""
-#~ "The application launcher “%s” has not been marked as trusted. If you do "
-#~ "not know the source of this file, launching it may be unsafe."
-#~ msgstr ""
-#~ "Ο εκκινητής εφαρμογής «%s» δεν έχει σημειωθεί ως έμπιστος. Αν δε "
-#~ "γνωρίζετε την πηγή του αρχείου αυτού, η εκκίνησή του ενδέχεται να είναι "
-#~ "επισφαλής."
-
-#~ msgid "Trust and _Launch"
-#~ msgstr "Έμπιστο και ε_κκίνηση"
-
-# # NOTE: Translation of "Create" as "New" to
-# #       keep msg length relatively short...
-#~ msgid "Parent Folder:"
-#~ msgstr "Γονικός φάκελος:"
-
-#~ msgid "Searching devices only"
-#~ msgstr "Αναζήτηση μόνο σε συσκευές"
-
-#~ msgid "New folder"
-#~ msgstr "Νέος φάκελος"
-
-#~ msgid "Bookmark this location"
-#~ msgstr "Προσθήκη σελιδοδείκτη σε αυτή την τοποθεσία"
-
-#~ msgid "Action menu"
-#~ msgstr "Μενού ενεργειών"
-
-#~ msgid "Open action menu"
-#~ msgstr "Άνοιγμα μενού ενεργειών"
-
-#~ msgid "View mode toggle"
-#~ msgstr "Προβολή λειτουργίας εναλλαγής"
-
-#~ msgid "Toggle between grid and list view"
-#~ msgstr "Εναλλαγή μεταξύ πλέγματος και λίστας"
-
-#~ msgid "Search files"
-#~ msgstr "Αναζήτηση αρχείων"
-
-#~ msgid "Operations in progress"
-#~ msgstr "Λειτουργίες σε εξέλιξη"
-
-#~ msgid "Show operations in progress"
-#~ msgstr "Εμφάνιση λειτουργειών σε εξέλιξη"
-
-#~ msgid "Bulk rename utility"
-#~ msgstr "Εργαλείο μαζικής μετονομασίας"
-
-#~ msgid ""
-#~ "If set, Nautilus will append URIs of selected files and treat the result "
-#~ "as a command line for bulk renaming. Bulk rename applications can "
-#~ "register themselves in this key by setting the key to a space-separated "
-#~ "string of their executable name and any command line options. If the "
-#~ "executable name is not set to a full path, it will be searched for in the "
-#~ "search path."
-#~ msgstr ""
-#~ "Αν οριστεί, ο Ναυτίλος θα προσθέτει το URI των επιλεγμένων αρχείων και θα "
-#~ "συμπεριφέρεται στο αποτέλεσμα σαν μια γραμμή εντολής για μαζική "
-#~ "μετονομασία. Οι εφαρμογές μαζικής μετονομασίας μπορούν να εγγράφονται σε "
-#~ "αυτό το κλειδί ορίζοντας το κλειδί σε μια συμβολοσειρά διαχωρισμένη με "
-#~ "διαστήματα, με το όνομά τους και οποιεσδήποτε επιλογές γραμμής εντολών. "
-#~ "Αν το εκτελέσιμο όνομα δεν έχει οριστεί σε πλήρη διαδρομή, τότε θα "
-#~ "αναζητηθεί μέσα στη διαδρομή αναζήτησης."
-
-#~ msgid "Default zoom level used by the icon view."
-#~ msgstr "Προεπιλεγμένο επίπεδο εστίασης για την προβολή εικονιδίων."
-
-#~ msgid "Default Thumbnail Icon Size"
-#~ msgstr "Προεπιλεγμένο μέγεθος μικρογραφιών"
-
-#~ msgid ""
-#~ "The default size of an icon for a thumbnail in the icon view when using "
-#~ "NAUTILUS_ICON_SIZE_STANDARD size."
-#~ msgstr ""
-#~ "Το προεπιλεγμένο μέγεθος των εικονιδίων των μικρογραφιών στην προβολή "
-#~ "εικονιδίων όταν χρησιμοποιείται το μέγεθος NAUTILUS_ICON_SIZE_STANDARD"
-
-#~ msgid "Default zoom level used by the list view."
-#~ msgstr "Προεπιλεγμένο επίπεδο εστίασης για την προβολή λίστας."
-
-#~ msgid "Default list of columns visible in the list view."
-#~ msgstr "Προεπιλεγμένη λίστα ορατών στηλών για την προβολή λίστας."
-
-#~ msgid "Default column order in the list view."
-#~ msgstr "Προεπιλεγμένη ταξινόμηση στηλών στην προβολή λίστας."
-
-#~ msgctxt "desktop-font"
-#~ msgid "''"
-#~ msgstr "''"
-
-#~ msgid "Desktop font"
-#~ msgstr "Γραμματοσειρά επιφάνειας εργασίας"
-
-#~ msgid "The font description used for the icons on the desktop."
-#~ msgstr ""
-#~ "Η χρησιμοποιούμενη περιγραφή γραμματοσειράς για τα εικονίδια στην "
-#~ "επιφάνεια εργασίας."
-
-#~ msgid "Home icon visible on desktop"
-#~ msgstr "Ορατό εικονίδιο προσωπικού φακέλου στην επιφάνεια εργασίας"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the home folder will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, ένα εικονίδιο που συνδέεται με τον προσωπικό φάκελο "
-#~ "θα τοποθετηθεί στην επιφάνεια εργασίας."
-
-#~ msgid "Trash icon visible on desktop"
-#~ msgstr "Ορατό εικονίδιο απορριμμάτων στην επιφάνεια εργασίας"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Trash will be put on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, θα τοποθετηθεί στην επιφάνεια εργασίας εικονίδιο-"
-#~ "σύνδεσμος προς τα απορρίμματα."
-
-#~ msgid "Show mounted volumes on the desktop"
-#~ msgstr "Εμφάνιση προσαρτημένων τόμων στην επιφάνεια εργασίας"
-
-#~ msgid ""
-#~ "If this is set to true, icons linking to mounted volumes will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, θα τοποθετούνται στην επιφάνεια εργασίας εικονίδια-"
-#~ "σύνδεσμοι προς τους προσαρτημένους τόμους."
-
-#~ msgid "Network Servers icon visible on the desktop"
-#~ msgstr "Εικονίδιο διακομιστών δικτύου ορατό στην επιφάνεια εργασίας"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Network Servers view will "
-#~ "be put on the desktop."
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, θα τοποθετηθεί στην επιφάνεια εργασίας εικονίδιο-"
-#~ "σύνδεσμος προς την προβολή των διακομιστών δικτύου."
-
-#~ msgctxt "home-icon-name"
-#~ msgid "'Home'"
-#~ msgstr "'Προσωπικός φάκελος'"
-
-#~ msgid "Desktop home icon name"
-#~ msgstr "Όνομα εικονιδίου προσωπικού φακέλου"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the home icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ορίστε αυτό το όνομα αν θέλετε προσαρμοσμένο όνομα για το εικονίδιο του "
-#~ "προσωπικού φακέλου στην επιφάνεια εργασίας."
-
-#
-#~ msgctxt "trash-icon-name"
-#~ msgid "'Trash'"
-#~ msgstr "'Απορρίμματα'"
-
-#~ msgid "Desktop Trash icon name"
-#~ msgstr "Όνομα εικονιδίου απορριμμάτων"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the Trash icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Ορίστε αυτό το όνομα αν θέλετε προσαρμοσμένο όνομα για το εικονίδιο των "
-#~ "απορριμάτων στην επιφάνεια εργασίας."
-
-#
-#~ msgctxt "network-icon-name"
-#~ msgid "'Network Servers'"
-#~ msgstr "'Διακομιστές δικτύου'"
-
-#
-#~ msgid "Network servers icon name"
-#~ msgstr "Όνομα εικονιδίου διακομιστών δικτύου"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the network servers "
-#~ "icon on the desktop."
-#~ msgstr ""
-#~ "Ορίστε αυτό το όνομα αν θέλετε προσαρμοσμένο όνομα για το εικονίδιο των "
-#~ "διακομιστών δικτύου στην επιφάνεια εργασίας."
-
-#~ msgid ""
-#~ "An integer specifying how parts of overlong file names should be replaced "
-#~ "by ellipses on the desktop. If the number is larger than 0, the file name "
-#~ "will not exceed the given number of lines. If the number is 0 or smaller, "
-#~ "no limit is imposed on the number of displayed lines."
-#~ msgstr ""
-#~ "Ένα ακέραιος που καθορίζει τον τρόπο αντικατάστασης από αποσιωπητικά "
-#~ "μέρους των μεγάλων ονομάτων αρχείων στην επιφάνεια εργασίας. Αν ο αριθμός "
-#~ "είναι μεγαλύτερος του 0, το όνομα αρχείου δε θα υπερβαίνει τον αριθμό "
-#~ "γραμμών που δόθηκε. Αν ο αριθμός είναι ίσος ή μικρότερος του 0, δε θα "
-#~ "υπάρχει περιορισμός στον αριθμό των γραμμών που θα εμφανίζονται."
-
-#~ msgid "Fade the background on change"
-#~ msgstr "Ξεθώριασμα του φόντου στην αλλαγή"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will use a fade effect to change the "
-#~ "desktop background."
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, ο Ναυτίλος θα χρησιμοποιεί ένα εφέ ξεθωριάσματος "
-#~ "κατά την αλλαγή το φόντου της επιφάνειας εργασίας."
-
-#
-#~ msgid "The geometry string for a navigation window"
-#~ msgstr "Η συμβολοσειρά γεωμετρίας για ένα παράθυρο περιήγησης"
-
-#~ msgid "Show more _details"
-#~ msgstr "Εμφάνιση περισσότερων _λεπτομερειών"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (άκυρο Unicode)"
-
-#~ msgid "Always manage the desktop (ignore the GSettings preference)."
-#~ msgstr ""
-#~ "Να γίνεται πάντα διαχείριση της επιφάνειας εργασίας (αγνοεί τις "
-#~ "προτιμήσεις του GSettings)."
-
-#~ msgid "on the desktop"
-#~ msgstr "στην επιφάνεια εργασίας"
-
-#~ msgid "Unable to rename desktop icon"
-#~ msgstr "Αδυναμία μετονομασίας του εικονιδίου επιφάνειας εργασίας"
-
-#~ msgid "Desktop"
-#~ msgstr "Επιφάνεια εργασίας"
-
-#~ msgid "Author"
-#~ msgstr "Συντάκτης"
-
-#~ msgid "Created By"
-#~ msgstr "Δημιουργήθηκε από"
-
-#~ msgid "Disclaimer"
-#~ msgstr "Αποποίηση ευθύνης"
-
-#~ msgid "Warning"
-#~ msgstr "Προειδοποίηση"
-
-#~ msgid "Source"
-#~ msgstr "Πηγή"
-
-#~ msgid "Date Taken"
-#~ msgstr "Ημερομηνία λήψης"
-
-#~ msgid "Date Digitized"
-#~ msgstr "Ημερομηνία ψηφιοποίησης"
-
-#~ msgid "Date Modified"
-#~ msgstr "Ημερομηνία τροποποίησης"
-
-#~ msgid "_Keep aligned"
-#~ msgstr "_Διατήρηση ευθυγράμμισης"
-
-#~ msgid "Organize _Desktop by Name"
-#~ msgstr "Οργάνωση ε_πιφάνειας εργασίας κατά όνομα"
-
-#~ msgid "Change _Background"
-#~ msgstr "Αλλαγή _φόντου"
-
-#~ msgid "Empty Trash"
-#~ msgstr "Άδειασμα απορριμμάτων"
-
-#~ msgid "Resize Icon…"
-#~ msgstr "Αυξομείωση εικονιδίου…"
-
-#~ msgid "Restore Icon’s Original Size"
-#~ msgstr "Επαναφορά αρχικών διαστάσεων εικονιδίου"
-
-#~| msgid "Full Text"
-#~ msgid "Full Text Search:"
-#~ msgstr "Πλήρες αναζήτηση κειμένου:"
-
-#~| msgid "Set as default"
-#~ msgid "Set as _default"
-#~ msgstr "Ορισμός ως _προεπιλογή"
-
-#~ msgid "Open operations in progress"
-#~ msgstr "Άνοιγμα λειτουργιών σε εξέλιξη"
-
-#~ msgid ""
-#~ "Whether to extract compressed files instead of opening them in another "
-#~ "application"
-#~ msgstr ""
-#~ "Αν θα γίνεται εξαγωγή των συμπιεσμένων αρχείων αντί για άνοιγμα τους με "
-#~ "άλλη εφαρμογή"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically extract compressed files "
-#~ "instead of opening them in another application"
-#~ msgstr ""
-#~ "Αν οριστεί σε αληθές, Ο Ναυτίλος θα εξαγάγει αυτόματα τα συμπιεσμένα "
-#~ "αρχεία αντί να τα ανοίγει με άλλη εφαρμογή"
-
-#~ msgid "Could not remove the already existing folder %s."
-#~ msgstr "Αδύνατη η διαγραφή του ήδη υπάρχοντος φακέλου %s."
-
-#~ msgid "Could not remove the already existing file %s."
-#~ msgstr "Αδύνατη η διαγραφή του ήδη υπάρχοντος αρχείου %s."
-
-#~ msgid "This will open %d separate application."
-#~ msgid_plural "This will open %d separate applications."
-#~ msgstr[0] "Θα ανοίξει %d ξεχωριστή εφαρμογή."
-#~ msgstr[1] "Θα ανοίξουν %d ξεχωριστές εφαρμογές."
-
-#~ msgid "Items:"
-#~ msgstr "Αντικείμενα:"
-
-#~ msgid "100 KB"
-#~ msgstr "100 KB"
-
-#~ msgid "500 KB"
-#~ msgstr "500 KB"
-
-#~ msgid "1 MB"
-#~ msgstr "1 MB"
-
-#~ msgid "3 MB"
-#~ msgstr "3 MB"
-
-#~ msgid "5 MB"
-#~ msgstr "5 MB"
-
-#~ msgid "10 MB"
-#~ msgstr "10 MB"
-
-#~ msgid "100 MB"
-#~ msgstr "100 MB"
-
-#~ msgid "1 GB"
-#~ msgstr "1 GB"
-
-#~ msgid "2 GB"
-#~ msgstr "2 GB"
-
-#~ msgid "4 GB"
-#~ msgstr "4 GB"
-
-#~ msgid "Compressed Files"
-#~ msgstr "Συμπιεσμένα αρχεία"
-
-#~ msgid "E_xtract the files on open"
-#~ msgstr "Απο_συμπίεση των αρχείων κατά το άνοιγμα"
-
-#~ msgid "smb://foo.example.com, ssh://192.168.0.1"
-#~ msgstr "smb://foo.example.com, ssh://192.168.0.1"
