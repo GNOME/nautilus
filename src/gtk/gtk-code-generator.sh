@@ -5,9 +5,9 @@
 # action.
 # Also remove/add the neccesary bits to make it work inside nautilus
 
-URL=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-22/gtk/
-URLUI=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-22/gtk/ui/
-SUFIX=?h=gtk-3-22
+URL=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-24/gtk/
+URLUI=https://gitlab.gnome.org/GNOME/gtk/raw/gtk-3-24/gtk/ui/
+SUFIX=?h=gtk-3-24
 
 # Since comments are not allowed inside the sed line, this is what it will do
 # by order:
