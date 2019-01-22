@@ -22,6 +22,7 @@
 #if !defined (__GTK_H_INSIDE__) && !defined (GTK_COMPILATION)
 #endif
 
+
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_GTK_PLACES_VIEW        (nautilus_gtk_places_view_get_type ())
@@ -79,4 +80,4 @@ GtkWidget *        nautilus_gtk_places_view_new                           (void)
 
 G_END_DECLS
 
-#endif
+#endif /* NAUTILUS_GTK_PLACES_VIEW_H */

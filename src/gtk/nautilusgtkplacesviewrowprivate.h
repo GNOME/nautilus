@@ -16,7 +16,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#pragma once
+#ifndef NAUTILUS_GTK_PLACES_VIEW_ROW_H
+#define NAUTILUS_GTK_PLACES_VIEW_ROW_H
+
+#if !defined (__GTK_H_INSIDE__) && !defined (GTK_COMPILATION)
+#endif
+
 
 G_BEGIN_DECLS
 
@@ -52,3 +57,5 @@ void               nautilus_gtk_places_view_row_set_space_size_group      (Nauti
                                                                   GtkSizeGroup       *group);
 
 G_END_DECLS
+
+#endif /* NAUTILUS_GTK_PLACES_VIEW_ROW_H */
