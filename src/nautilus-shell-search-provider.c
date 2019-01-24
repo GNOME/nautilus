@@ -722,19 +722,23 @@ handle_launch_search (NautilusShellSearchProvider2  *skeleton,
 {
     GApplication *app = g_application_get_default ();
     g_autoptr (NautilusQuery) query = shell_query_new (terms);
+    NautilusQueryRecursive recursive = location_settings_search_get_recursive ();
 
-    if (location_settings_search_get_recursive () == NAUTILUS_QUERY_RECURSIVE_NEVER)
+    /*
+     * If no recursive search is enabled, we still want to be able to
+     * show the same results we presented in the overview when nautilus
+     * is explicitly launched to access to more results, and thus we perform
+     * a query showing results coming from index-based search engines.
+     * Otherwise we respect the global setting for recursivity.
+     */
+    if (recursive == NAUTILUS_QUERY_RECURSIVE_NEVER)
     {
-        /*
-         * If no recursive search is enabled, we still want to be able to
-         * show the same results we presented in the overview when nautilus
-         * is explicitly launched to access to more results, and thus we perform
-         * a query showing results coming from index-based search engines.
-         * Otherwise we just respect the user settings.
-         * See: https://gitlab.gnome.org/GNOME/nautilus/merge_requests/249
-         */
         nautilus_query_set_recursive (query,
                                       NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
+    }
+    else
+    {
+        nautilus_query_set_recursive (query, recursive);
     }
 
     nautilus_application_search (NAUTILUS_APPLICATION (app), query);
