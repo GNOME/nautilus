@@ -736,6 +736,12 @@ handle_launch_search (NautilusShellSearchProvider2  *skeleton,
         nautilus_query_set_recursive (query,
                                       NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY);
     }
+    else
+    {
+        nautilus_query_set_recursive (query,
+                                      location_settings_search_get_recursive());
+    }
+
 
     nautilus_application_search (NAUTILUS_APPLICATION (app), query);
 
