@@ -2699,7 +2699,7 @@ action_paste_files_accel (GSimpleAction *action,
     }
     else
     {
-        show_dialog ("Error",
+        show_dialog (_("Couldn't paste files"),
                      "Permission denied",
                      nautilus_files_view_get_containing_window (view),
                      GTK_MESSAGE_ERROR);
