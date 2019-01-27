@@ -1191,14 +1191,6 @@ search_for_application_dbus_call_notify_cb (GDBusProxy   *proxy,
 
     g_variant_unref (variant);
 
-    /* activate the file again */
-    nautilus_mime_activate_files (parameters_install->parent_window,
-                                  parameters_install->slot,
-                                  parameters_install->files,
-                                  parameters_install->activation_directory,
-                                  parameters_install->flags,
-                                  parameters_install->user_confirmation);
-
     activate_parameters_install_free (parameters_install);
 }
 
