@@ -5071,6 +5071,10 @@ nautilus_file_get_gicon (NautilusFile          *file,
             {
                 g_ptr_array_add (prepend_array, "folder");
             }
+            if (nautilus_file_is_broken_symbolic_link (file))
+            {
+                g_ptr_array_add (prepend_array, "text-x-generic");
+            }
             if (is_folder && (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER))
             {
                 g_ptr_array_add (prepend_array, "folder-open");
