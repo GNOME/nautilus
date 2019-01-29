@@ -54,6 +54,7 @@
 #include "nautilus-tree-view-drag-dest.h"
 #include "nautilus-ui-utilities.h"
 #include "nautilus-view.h"
+#include "nautilus-tracker-utilities.h"
 
 struct SelectionForeachData
 {
@@ -2465,20 +2466,18 @@ get_visible_columns (NautilusListView *list_view)
 {
     NautilusFile *file;
     g_autoptr (GList) visible_columns = NULL;
+    g_autoptr (GFile) location = NULL;
     GPtrArray *res;
     GList *l;
     g_autofree gchar *uri = NULL;
-    gboolean in_xdg_dirs;
+    gboolean in_tracked_dir;
     gboolean is_starred;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
     uri = nautilus_file_get_uri (file);
 
-    /* FIXME: We are assuming tracker indexes XDG folders and ignore the search
-     * setting. This should be fixed in a better way for Nautilus 3.30.
-     * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
-     */
-    in_xdg_dirs = eel_uri_is_in_xdg_dirs (uri);
+    location = g_file_new_for_uri (uri);
+    in_tracked_dir = nautilus_tracker_directory_is_tracked (location);
     is_starred = eel_uri_is_starred (uri);
 
     visible_columns = nautilus_file_get_metadata_list (file,
@@ -2492,7 +2491,7 @@ get_visible_columns (NautilusListView *list_view)
     for (l = visible_columns; l != NULL; l = l->next)
     {
         if (g_strcmp0 (l->data, "starred") != 0 ||
-            (g_strcmp0 (l->data, "starred") == 0 && (in_xdg_dirs || is_starred)))
+            (g_strcmp0 (l->data, "starred") == 0 && (in_tracked_dir || is_starred)))
         {
             g_ptr_array_add (res, l->data);
         }

@@ -267,7 +267,9 @@ libnautilus_sources = [
   'nautilus-starred-directory.c',
   'nautilus-starred-directory.h',
   'nautilus-enums.h',
-  'nautilus-types.h'
+  'nautilus-types.h',
+  'nautilus-tracker-utilities.c',
+  'nautilus-tracker-utilities.h'
 ]
 
 nautilus_deps = [
