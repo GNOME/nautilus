@@ -1,82 +1,106 @@
-app-id: org.gnome.NautilusMaster
+---
+app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
 runtime-version: master
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
-  - devel
-  - nightly
-  - master
-desktop-file-name-prefix: "(Development Master) "
+- devel
+- development
+- nightly
+desktop-file-name-prefix: "(Development) "
 finish-args:
-  - --filesystem=host
-  - --share=ipc
-  - --socket=x11
-  - --socket=wayland
-  - --talk-name=org.gnome.OnlineAccounts
-  - --talk-name=org.freedesktop.Tracker1
-  - --filesystem=host
-  - --talk-name=org.gtk.vfs
-  - --talk-name=org.gtk.vfs.*
-  - --filesystem=xdg-run/dconf
-  - --filesystem=~/.config/dconf:ro
-  # Remove to something better for dconf when ready.
-  # See https://github.com/flatpak/flatpak/issues/78
-  - --talk-name=ca.desrt.dconf
-  - --env=DCONF_USER_CONFIG_DIR=.config/dconf
-  # It's a fallback path for tracker, Flatpak seems needs it.
-  - --env=TRACKER_SPARQL_BACKEND=bus
-
+- "--share=ipc"
+- "--socket=x11"
+- "--socket=wayland"
+- "--talk-name=org.gnome.OnlineAccounts"
+- "--talk-name=org.freedesktop.Tracker1"
+- "--talk-name=org.freedesktop.Tracker1.Miner.Extract"
+- "--filesystem=host"
+- "--talk-name=org.gtk.vfs"
+- "--talk-name=org.gtk.vfs.*"
+- "--filesystem=xdg-run/dconf"
+- "--filesystem=~/.config/dconf:ro"
+- "--talk-name=ca.desrt.dconf"
+- "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
+- "--env=TRACKER_SPARQL_BACKEND=bus"
 modules:
-  - name: "exiv2"
-    buildsystem: "cmake-ninja"
-    sources:
-      - type: "git"
-        url: "https://github.com/Exiv2/exiv2.git"
-        tag: "v0.26"
+- gcovr.json
+- name: exiv2
+  config-opts:
+  - "-DCMAKE_INSTALL_PREFIX=/app"
+  - "-DCMAKE_INSTALL_LIBDIR=/app/lib"
+  buildsystem: cmake-ninja
+  sources:
+  - type: archive
+    url: https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz
+    sha256: 51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01
+- name: gexiv2
+  buildsystem: meson
+  builddir: true
+  config-opts:
+  - "--libdir=/app/lib"
+  - "-Ddisable-introspection=True"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/gexiv2.git
+    tag: gexiv2-0.10.8
+- name: tracker
+  cleanup:
+  - "/bin"
+  - "/etc"
+  - "/libexec"
+  buildsystem: meson
+  builddir: true
+  config-opts:
+  - "--libdir=lib"
+  - "-Ddocs=false"
+  - "-Dfunctional_tests=false"
+  - "-Djournal=false"
+  - "-Dnetwork_manager=no"
+  - "-Dstemmer=no"
+  - "-Dbash_completion=no"
+  - "-Dsystemd_user_services=no"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/tracker.git
+- name: tracker-miners
+  buildsystem: meson
+  cleanup:
+  - "/etc"
+  - "/lib"
+  - "/libexec"
+  - "/share/dbus-1/services/org.freedesktop.Tracker1.Miner.Extract.service"
+  - "/share/dbus-1/services/org.freedesktop.Tracker1.Writeback.service"
+  - "/share/tracker/miners/org.freedesktop.Tracker1.Miner.Applications.service"
+  - "/share/tracker/miners/org.freedesktop.Tracker1.Miner.Extract.service"
+  - "/share/tracker/miners/org.freedesktop.Tracker1.Miner.RSS.service"
+  - "/share/tracker-miners"
+  - "/share/glib-2.0/schemas/org.freedesktop.Tracker.Extract.gschema.xml"
+  - "/share/glib-2.0/schemas/org.freedesktop.Tracker.Writeback.gschema.xml"
+  config-opts:
+  - "-Dextract=false"
+  - "-Dgeneric_media_extractor=none"
+  - "-Dminer_apps=false"
+  - "-Dminer_fs=true"
+  - "-Dminer_rss=false"
+  - "-Dsystemd_user_services=no"
+  - "-Dwriteback=false"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+- name: gnome-autoar
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
+    tag: 0.2.3
+- buildsystem: meson
+  builddir: true
+  name: nautilus
+  config-opts:
+  - "--libdir=/app/lib"
+  - "-Dprofile=Devel"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/nautilus.git
 
-  - name: gexiv2
-    buildsystem: meson
-    cleanup:
-      - '/lib/girepository-1.0'
-      - '/share/gir-1.0'
-    build-options:
-      config-opts:
-        - '-Dpython2_girdir=no'
-        - '-Dpython3_girdir=no'
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gexiv2.git
-
-  - name: tracker
-    cleanup:
-      - /bin
-      - /etc
-      - /libexec
-    buildsystem: meson
-    build-options:
-      config-opts:
-        - -Ddocs=false
-        - -Dfunctional_tests=false
-        - -Djournal=false
-        - -Dnetwork_manager=no
-        - -Dstemmer=no
-        - -Dbash_completion=no
-        - -Dsystemd_user_services=no
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/tracker.git
-
-  - name: gnome-autoar
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
-
-  - name: nautilus
-    buildsystem: meson
-    build-options:
-      config-opts:
-        - -Dprofile=Master
-    sources:
-      - type: git
-        url: https://gitlab.gnome.org/GNOME/nautilus.git
