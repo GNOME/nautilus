@@ -1306,7 +1306,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
         /* Advance to the baseline. */
         y += ICON_PAD_TOP + max_height_above;
 
-        lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, TRUE);
+        lay_down_one_line (container, line_start, NULL, y, max_height_above, positions, FALSE);
     }
 
     g_array_free (positions, TRUE);
