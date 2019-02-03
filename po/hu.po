@@ -17,8 +17,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-01-23 16:43+0000\n"
-"PO-Revision-Date: 2019-01-27 15:15+0100\n"
+"POT-Creation-Date: 2019-01-27 14:17+0000\n"
+"PO-Revision-Date: 2019-02-03 08:20+0100\n"
 "Last-Translator: Balázs Úr <urbalazs@gmail.com>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
@@ -85,7 +85,7 @@ msgstr "Listanézet"
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-preferences-window.ui:872
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:365
+#: src/resources/ui/nautilus-toolbar.ui:305
 msgid "Search"
 msgstr "Keresés"
 
@@ -347,8 +347,9 @@ msgid ""
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
 msgstr ""
 "Az ikonnézetben megjelenő elemek alapértelmezett rendezési sorrendje. "
-"Lehetséges értékek: „name” (név), „size” (méret), „type” (típus), „mtime” "
-"(módosítás ideje), „atime” (hozzáférés ideje) és „starred” (csillagozott)."
+"Lehetséges értékek: „name” (név), „size” (méret), „type” (típus), "
+"„mtime” (módosítás ideje), „atime” (hozzáférés ideje) és "
+"„starred” (csillagozott)."
 
 #: data/org.gnome.nautilus.gschema.xml:174
 msgid "Reverse sort order in new windows"
@@ -910,7 +911,7 @@ msgstr[1] "%d fájl és mappa átnevezése"
 
 #: src/nautilus-batch-rename-dialog.h:87
 #: src/resources/ui/nautilus-batch-rename-dialog-menu.ui:73
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:186
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:187
 msgid "Original Name (Ascending)"
 msgstr "Eredeti név (növekvő)"
 
@@ -1325,12 +1326,12 @@ msgstr "Csillagozott"
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5466
 msgid "%H:%M"
-msgstr "%k.%M"
+msgstr "%H:%M"
 
 #. Translators: Time in 12h format
 #: src/nautilus-file.c:5471
 msgid "%l:%M %p"
-msgstr "%p %l.%M"
+msgstr "%H:%M"
 
 #: src/nautilus-file.c:5480
 #, no-c-format
@@ -1342,40 +1343,40 @@ msgstr "Tegnap"
 #: src/nautilus-file.c:5489
 #, no-c-format
 msgid "Yesterday %H:%M"
-msgstr "Tegnap %k.%M"
+msgstr "Tegnap %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
 #: src/nautilus-file.c:5496
 #, no-c-format
 msgid "Yesterday %l:%M %p"
-msgstr "Tegnap %p %l.%M"
+msgstr "Tegnap %H:%M"
 
 #: src/nautilus-file.c:5506
 #, no-c-format
 msgid "%a"
-msgstr "%a"
+msgstr "%a."
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
 #: src/nautilus-file.c:5515
 #, no-c-format
 msgid "%a %H:%M"
-msgstr "%a %k.%M"
+msgstr "%a. %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
 #: src/nautilus-file.c:5522
 #, no-c-format
 msgid "%a %l:%M %p"
-msgstr "%a, %p %l.%M"
+msgstr "%a. %H:%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
 #: src/nautilus-file.c:5533
 #, no-c-format
 msgid "%-e %b"
-msgstr "%b %-e."
+msgstr "%b. %-e."
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
@@ -1383,7 +1384,7 @@ msgstr "%b %-e."
 #: src/nautilus-file.c:5543
 #, no-c-format
 msgid "%-e %b %H:%M"
-msgstr "%b %-e. %k.%M"
+msgstr "%b. %-e. %H:%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
@@ -1391,7 +1392,7 @@ msgstr "%b %-e. %k.%M"
 #: src/nautilus-file.c:5551
 #, no-c-format
 msgid "%-e %b %l:%M %p"
-msgstr "%b %-e. %p %l.%M"
+msgstr "%b. %-e. %H:%M"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
@@ -1406,7 +1407,7 @@ msgstr "%Y. %b. %-e."
 #: src/nautilus-file.c:5572
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
-msgstr "%Y. %b. %-e., %k.%M"
+msgstr "%Y. %b. %-e. %H:%M"
 
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
@@ -1414,7 +1415,7 @@ msgstr "%Y. %b. %-e., %k.%M"
 #: src/nautilus-file.c:5580
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
-msgstr "%Y. %b. %-e., %p %l.%M"
+msgstr "%Y. %b. %-e. %H:%M"
 
 #: src/nautilus-file.c:5592
 #, no-c-format
@@ -4761,36 +4762,36 @@ msgstr "Eredeti fájlnév"
 msgid "_Rename"
 msgstr "Á_tnevezés"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:54
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:55
 msgid "Rename _using a template"
 msgstr "Átne_vezés sablon használatával"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:65
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:66
 msgid "Find and replace _text"
 msgstr "Szöveg _keresése és cseréje"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:138
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:139
 msgid "Add"
 msgstr "Hozzáadás"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:168
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:169
 msgid "Automatic Numbering Order"
 msgstr "Automatikus számozás sorrendje"
 
 #. Translators: This is a noun, not a verb
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:213
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:214
 msgid "Format"
 msgstr "Formátum"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:228
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:231
 msgid "Existing Text"
 msgstr "Meglévő szöveg"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:257
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:260
 msgid "Replace With"
 msgstr "Csere erre"
 
-#: src/resources/ui/nautilus-batch-rename-dialog.ui:284
+#: src/resources/ui/nautilus-batch-rename-dialog.ui:287
 msgctxt "title"
 msgid "Replace"
 msgstr "Csere"
@@ -5309,19 +5310,19 @@ msgstr "_Súgó"
 msgid "_About Files"
 msgstr "A Fájlok _névjegye"
 
-#: src/resources/ui/nautilus-toolbar.ui:288
+#: src/resources/ui/nautilus-toolbar.ui:341
 msgid "Go back"
 msgstr "Ugrás vissza"
 
-#: src/resources/ui/nautilus-toolbar.ui:313
+#: src/resources/ui/nautilus-toolbar.ui:368
 msgid "Go forward"
 msgstr "Ugrás előre"
 
-#: src/resources/ui/nautilus-toolbar.ui:403
+#: src/resources/ui/nautilus-toolbar.ui:411
 msgid "Show operations"
 msgstr "Műveletek megjelenítése"
 
-#: src/resources/ui/nautilus-toolbar.ui:440
+#: src/resources/ui/nautilus-toolbar.ui:450
 msgid "Toggle view"
 msgstr "Nézet átváltása"
 
