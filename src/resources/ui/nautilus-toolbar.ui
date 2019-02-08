@@ -31,9 +31,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -50,9 +47,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -69,23 +63,14 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox">
@@ -103,9 +88,6 @@
                 <property name="hexpand">True</property>
                 <property name="label" translatable="yes">Edit</property>
               </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -124,9 +106,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -144,9 +123,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
             </child>
             <child>
               <object class="GtkButton">
@@ -164,23 +140,14 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="position">3</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -192,18 +159,12 @@
             <property name="action_name">view.select-all</property>
             <property name="text" translatable="yes">Select All</property>
           </object>
-          <packing>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="show_hidden_files">
@@ -215,18 +176,12 @@
             <property name="action_name">view.show-hidden-files</property>
             <property name="text" translatable="yes">Show Hidden Files</property>
           </object>
-          <packing>
-            <property name="position">6</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="position">7</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -238,18 +193,12 @@
             <property name="action_name">app.show-hide-sidebar</property>
             <property name="text" translatable="yes">_Sidebar</property>
           </object>
-          <packing>
-            <property name="position">8</property>
-          </packing>
         </child>
         <child>
           <object class="GtkSeparator">
             <property name="visible">True</property>
             <property name="can_focus">False</property>
           </object>
-          <packing>
-            <property name="position">9</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -260,9 +209,6 @@
             <property name="action_name">app.preferences</property>
             <property name="text" translatable="yes">_Preferences</property>
           </object>
-          <packing>
-            <property name="position">10</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -272,9 +218,6 @@
             <property name="action_name">app.show-help-overlay</property>
             <property name="text" translatable="yes">_Keyboard Shortcuts</property>
           </object>
-          <packing>
-            <property name="position">11</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -284,9 +227,6 @@
             <property name="action_name">app.help</property>
             <property name="text" translatable="yes">_Help</property>
           </object>
-          <packing>
-            <property name="position">12</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton">
@@ -296,14 +236,10 @@
             <property name="action_name">app.about</property>
             <property name="text" translatable="yes">_About Files</property>
           </object>
-          <packing>
-            <property name="position">13</property>
-          </packing>
         </child>
       </object>
       <packing>
         <property name="submenu">main</property>
-        <property name="position">1</property>
       </packing>
     </child>
   </object>
@@ -324,9 +260,6 @@
               <placeholder/>
             </child>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="view_menu_undo_redo_section">
@@ -340,9 +273,6 @@
                 <property name="margin_top">6</property>
                 <property name="margin_bottom">6</property>
               </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkModelButton" id="undo_button">
@@ -352,9 +282,6 @@
                 <property name="action_name">win.undo</property>
                 <property name="text" translatable="yes">_Undo</property>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkModelButton" id="redo_button">
@@ -364,14 +291,8 @@
                 <property name="action_name">win.redo</property>
                 <property name="text" translatable="yes">_Redo</property>
               </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="view_menu_extended_section">
@@ -382,14 +303,10 @@
               <placeholder/>
             </child>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
       </object>
       <packing>
         <property name="submenu">main</property>
-        <property name="position">1</property>
       </packing>
     </child>
   </object>
@@ -442,9 +359,6 @@
               <placeholder/>
             </child>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkToggleButton" id="search_button">
@@ -467,9 +381,6 @@
               <class name="image-button"/>
             </style>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
       </object>
     </child>
@@ -498,9 +409,6 @@
               <class name="image-button"/>
             </style>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="forward_button">
@@ -523,9 +431,6 @@
               <class name="image-button"/>
             </style>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <style>
           <class name="linked"/>
@@ -573,9 +478,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox">
@@ -602,9 +504,6 @@
                   <class name="image-button"/>
                 </style>
               </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkMenuButton" id="view_button">
@@ -625,17 +524,11 @@
                   <class name="disclosure-button"/>
                 </style>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <style>
               <class name="linked"/>
             </style>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkMenuButton" id="app_button">
@@ -657,14 +550,8 @@
               <class name="image-button"/>
             </style>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="position">3</property>
-      </packing>
     </child>
   </template>
 </interface>

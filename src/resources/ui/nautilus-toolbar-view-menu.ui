@@ -19,9 +19,6 @@
             <property name="margin_top">6</property>
             <property name="margin_bottom">6</property>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkLabel">
@@ -34,9 +31,6 @@
               <class name="nautilus-menu-sort-heading"/>
             </style>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_name">
@@ -47,9 +41,6 @@
             <property name="action_target">'name'</property>
             <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_A-Z</property>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_name_desc">
@@ -60,9 +51,6 @@
             <property name="action_target">'name-desc'</property>
             <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name, in descending order in the toolbar view menu">_Z-A</property>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_modification_date_desc">
@@ -73,9 +61,6 @@
             <property name="action_target">'modification-date-desc'</property>
             <property name="text" translatable="yes">Last _Modified</property>
           </object>
-          <packing>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_modification_date">
@@ -86,9 +71,6 @@
             <property name="action_target">'modification-date'</property>
             <property name="text" translatable="yes">_First Modified</property>
           </object>
-          <packing>
-            <property name="position">5</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_size">
@@ -99,9 +81,6 @@
             <property name="action_target">'size'</property>
             <property name="text" translatable="yes">_Size</property>
           </object>
-          <packing>
-            <property name="position">6</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_type">
@@ -112,9 +91,6 @@
             <property name="action_target">'type'</property>
             <property name="text" translatable="yes">_Type</property>
           </object>
-          <packing>
-            <property name="position">7</property>
-          </packing>
         </child>
         <child>
           <object class="GtkModelButton" id="sort_trash_time">
@@ -124,14 +100,8 @@
             <property name="action_target">'trash-time'</property>
             <property name="text" translatable="yes">Last _Trashed</property>
           </object>
-          <packing>
-            <property name="position">8</property>
-          </packing>
         </child>
       </object>
-      <packing>
-        <property name="position">0</property>
-      </packing>
     </child>
     <child>
       <object class="GtkSeparator">
@@ -140,9 +110,6 @@
         <property name="margin_top">6</property>
         <property name="margin_bottom">6</property>
       </object>
-      <packing>
-        <property name="position">1</property>
-      </packing>
     </child>
     <child>
       <object class="GtkModelButton" id="visible_columns">
@@ -151,9 +118,6 @@
         <property name="action_name">view.visible-columns</property>
         <property name="text" translatable="yes">_Visible Columns…</property>
       </object>
-      <packing>
-        <property name="position">2</property>
-      </packing>
     </child>
     <child>
       <object class="GtkModelButton" id="reload">
@@ -163,9 +127,6 @@
         <property name="action_name">win.reload</property>
         <property name="text" translatable="yes">R_eload</property>
       </object>
-      <packing>
-        <property name="position">4</property>
-      </packing>
     </child>
     <child>
       <object class="GtkModelButton" id="stop">
@@ -174,9 +135,6 @@
         <property name="action_name">win.stop</property>
         <property name="text" translatable="yes">St_op</property>
       </object>
-      <packing>
-        <property name="position">5</property>
-      </packing>
     </child>
   </object>
   <object class="GtkBox" id="zoom_section">
@@ -205,9 +163,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-default">
@@ -224,9 +179,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-in">
@@ -244,17 +196,11 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <style>
           <class name="linked"/>
         </style>
       </object>
-      <packing>
-        <property name="position">0</property>
-      </packing>
     </child>
   </object>
 </interface>
