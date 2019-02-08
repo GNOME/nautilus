@@ -2674,12 +2674,19 @@ should_show_accessed_date (NautilusPropertiesWindow *window)
      * day decide that it is useful, we should separately
      * consider whether it's useful for "trash:".
      */
-    if (file_list_all_directories (window->target_files))
+    if (file_list_all_directories (window->target_files)
+       || is_multi_file_window (window))
     {
         return FALSE;
     }
 
     return TRUE;
+}
+
+static gboolean
+should_show_modified_date (NautilusPropertiesWindow *window)
+{
+    return !is_multi_file_window (window);
 }
 
 static gboolean
@@ -3252,14 +3259,22 @@ create_basic_page (NautilusPropertiesWindow *window)
                                             FALSE);
     }
 
-    if (should_show_accessed_date (window))
+    if (should_show_accessed_date (window)
+       || should_show_modified_date (window))
     {
         append_blank_row (grid);
+    }
 
+    if (should_show_accessed_date (window))
+    {
         append_title_value_pair (window, grid, _("Accessed:"),
                                  "date_accessed_full",
                                  INCONSISTENT_STATE_STRING,
                                  FALSE);
+    }
+
+    if (should_show_modified_date (window))
+    {
         append_title_value_pair (window, grid, _("Modified:"),
                                  "date_modified_full",
                                  INCONSISTENT_STATE_STRING,
