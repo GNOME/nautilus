@@ -526,7 +526,7 @@ nautilus_floating_bar_add_action (NautilusFloatingBar *self,
     gtk_style_context_add_class (context, "circular");
     gtk_style_context_add_class (context, "flat");
     gtk_widget_set_valign (button, GTK_ALIGN_CENTER);
-    gtk_box_pack_end (GTK_BOX (self), button);
+    gtk_container_add (GTK_CONTAINER (self), button);
     gtk_widget_show (button);
 
     g_object_set_data (G_OBJECT (button), "action-id",
