@@ -330,9 +330,7 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
     gtk_widget_set_vexpand (chooser->open_with_widget, TRUE);
     gtk_widget_show (chooser->open_with_widget);
 
-    box = gtk_button_box_new (GTK_ORIENTATION_HORIZONTAL);
-    gtk_box_set_spacing (GTK_BOX (box), 6);
-    gtk_button_box_set_layout (GTK_BUTTON_BOX (box), GTK_BUTTONBOX_END);
+    box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_container_add (GTK_CONTAINER (chooser), box);
     g_object_set (box, "margin", 6, NULL);
     gtk_widget_show (box);
@@ -343,7 +341,6 @@ nautilus_mime_application_chooser_build_ui (NautilusMimeApplicationChooser *choo
                       chooser);
     gtk_widget_show (button);
     gtk_container_add (GTK_CONTAINER (box), button);
-    gtk_button_box_set_child_secondary (GTK_BUTTON_BOX (box), button, TRUE);
 
     button = gtk_button_new_with_mnemonic (_("_Add"));
     g_signal_connect (button, "clicked",
