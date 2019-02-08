@@ -81,43 +81,49 @@
             <property name="can_focus">False</property>
             <property name="homogeneous">True</property>
             <child>
-              <object class="GtkLabel" id="zip_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Compatible with all operating systems.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">zip-description-label</property>
-              </packing>
+                <property name="child">
+                  <object class="GtkLabel" id="zip_description_label">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Compatible with all operating systems.</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </property>
+              </object>
             </child>
             <child>
-              <object class="GtkLabel" id="tar_xz_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Smaller archives but Linux and Mac only.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">tar-xz-description-label</property>
-              </packing>
+                <property name="child">
+                  <object class="GtkLabel" id="tar_xz_description_label">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Smaller archives but Linux and Mac only.</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </property>
+              </object>
             </child>
             <child>
-              <object class="GtkLabel" id="seven_zip_description_label">
-                <property name="visible">True</property>
-                <property name="label" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
-                <property name="xalign">0</property>
-                <style>
-                  <class name="dim-label"/>
-                </style>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">seven-zip-description-label</property>
-              </packing>
+                <property name="child">
+                  <object class="GtkLabel" id="seven_zip_description_label">
+                    <property name="visible">True</property>
+                    <property name="label" translatable="yes">Smaller archives but must be installed on Windows and Mac.</property>
+                    <property name="xalign">0</property>
+                    <style>
+                      <class name="dim-label"/>
+                    </style>
+                  </object>
+                </property>
+              </object>
             </child>
           </object>
         </child>

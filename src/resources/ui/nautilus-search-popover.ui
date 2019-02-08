@@ -34,63 +34,66 @@
             <property name="transition_type">crossfade</property>
             <property name="transition_duration">250</property>
             <child>
-              <object class="GtkBox">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <child>
-                  <object class="GtkButton" id="select_date_button">
-                    <property name="visible">True</property>
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Select a date</property>
-                    <property name="hexpand">True</property>
-                    <child>
-                      <object class="GtkLabel" id="select_date_button_label">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Select Dates…</property>
-                        <property name="xalign">0</property>
-                      </object>
-                    </child>
-                    <signal name="clicked" handler="select_date_button_clicked" object="NautilusSearchPopover" swapped="no" />
-                  </object>
-                </child>
-                <child>
-                  <object class="GtkButton" id="clear_date_button">
-                    <property name="can_focus">True</property>
-                    <property name="receives_default">True</property>
-                    <property name="tooltip_text" translatable="yes">Clear the currently selected date</property>
-                    <signal name="clicked" handler="clear_date_button_clicked" object="NautilusSearchPopover" swapped="no" />
-                    <child>
-                      <object class="GtkImage" id="clear_date_button_image">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">edit-clear-symbolic</property>
-                      </object>
-                    </child>
-                  </object>
-                </child>
-                <style>
-                  <class name="linked"/>
-                </style>
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">date-button</property>
-              </packing>
+                <property name="child">
+                  <object class="GtkBox">
+                    <property name="visible">True</property>
+                    <property name="can_focus">False</property>
+                    <child>
+                      <object class="GtkButton" id="select_date_button">
+                        <property name="visible">True</property>
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Select a date</property>
+                        <property name="hexpand">True</property>
+                        <child>
+                          <object class="GtkLabel" id="select_date_button_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">Select Dates…</property>
+                            <property name="xalign">0</property>
+                          </object>
+                        </child>
+                        <signal name="clicked" handler="select_date_button_clicked" object="NautilusSearchPopover" swapped="no" />
+                      </object>
+                    </child>
+                    <child>
+                      <object class="GtkButton" id="clear_date_button">
+                        <property name="can_focus">True</property>
+                        <property name="receives_default">True</property>
+                        <property name="tooltip_text" translatable="yes">Clear the currently selected date</property>
+                        <signal name="clicked" handler="clear_date_button_clicked" object="NautilusSearchPopover" swapped="no" />
+                        <child>
+                          <object class="GtkImage" id="clear_date_button_image">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">edit-clear-symbolic</property>
+                          </object>
+                        </child>
+                      </object>
+                    </child>
+                    <style>
+                      <class name="linked"/>
+                    </style>
+                  </object>
+                </property>
+              </object>
             </child>
             <child>
-              <object class="GtkEntry" id="date_entry">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="secondary_icon_name">x-office-calendar-symbolic</property>
-                <property name="secondary_icon_tooltip_text" translatable="yes">Show a calendar to select the date</property>
-                <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="no" />
-                <signal name="activate" handler="date_entry_activate" object="NautilusSearchPopover" swapped="no" />
-              </object>
-              <packing>
+              <object class="GtkStackPage">
                 <property name="name">date-entry</property>
-                <property name="position">1</property>
-              </packing>
+                <property name="child">
+                  <object class="GtkEntry" id="date_entry">
+                    <property name="visible">True</property>
+                    <property name="can_focus">True</property>
+                    <property name="secondary_icon_name">x-office-calendar-symbolic</property>
+                    <property name="secondary_icon_tooltip_text" translatable="yes">Show a calendar to select the date</property>
+                    <signal name="icon-release" handler="toggle_calendar_icon_clicked" object="NautilusSearchPopover" swapped="no" />
+                    <signal name="activate" handler="date_entry_activate" object="NautilusSearchPopover" swapped="no" />
+                  </object>
+                </property>
+              </object>
             </child>
           </object>
           <packing>
@@ -134,43 +137,46 @@
                     <property name="transition_type">crossfade</property>
                     <property name="transition_duration">250</property>
                     <child>
-                      <object class="GtkScrolledWindow">
-                        <property name="height_request">200</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="hexpand">True</property>
-                        <property name="shadow_type">in</property>
-                        <child>
-                          <object class="GtkViewport">
+                      <object class="GtkStackPage">
+                        <property name="name">date-list</property>
+                        <property name="child">
+                          <object class="GtkScrolledWindow">
+                            <property name="height_request">200</property>
                             <property name="visible">True</property>
-                            <property name="can_focus">False</property>
+                            <property name="can_focus">True</property>
+                            <property name="hexpand">True</property>
+                            <property name="shadow_type">in</property>
                             <child>
-                              <object class="GtkListBox" id="dates_listbox">
+                              <object class="GtkViewport">
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
-                                <property name="selection_mode">none</property>
-                                <signal name="row-activated" handler="dates_listbox_row_activated" object="NautilusSearchPopover" swapped="no" />
+                                <child>
+                                  <object class="GtkListBox" id="dates_listbox">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">False</property>
+                                    <property name="selection_mode">none</property>
+                                    <signal name="row-activated" handler="dates_listbox_row_activated" object="NautilusSearchPopover" swapped="no" />
+                                  </object>
+                                </child>
                               </object>
                             </child>
                           </object>
-                        </child>
+                        </property>
                       </object>
-                      <packing>
-                        <property name="name">date-list</property>
-                      </packing>
                     </child>
                     <child>
-                      <object class="GtkCalendar" id="calendar">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="valign">start</property>
-                        <property name="show_week_numbers">True</property>
-                        <signal name="day_selected" handler="calendar_day_selected" object="NautilusSearchPopover" swapped="no" />
-                      </object>
-                      <packing>
+                      <object class="GtkStackPage">
                         <property name="name">date-calendar</property>
-                        <property name="position">1</property>
-                      </packing>
+                        <property name="child">
+                          <object class="GtkCalendar" id="calendar">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="valign">start</property>
+                            <property name="show_week_numbers">True</property>
+                            <signal name="day_selected" handler="calendar_day_selected" object="NautilusSearchPopover" swapped="no" />
+                          </object>
+                        </property>
+                      </object>
                     </child>
                   </object>
                   <packing>
@@ -245,65 +251,68 @@
             <property name="transition_type">crossfade</property>
             <property name="transition_duration">250</property>
             <child>
-              <object class="GtkButton" id="select_type_button">
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="receives_default">True</property>
-                <property name="tooltip_text" translatable="yes">Which file types will be searched</property>
-                <signal name="clicked" handler="select_type_button_clicked" object="NautilusSearchPopover" swapped="no" />
-                <child>
-                  <object class="GtkBox">
+              <object class="GtkStackPage">
+                <property name="name">type-button</property>
+                <property name="child">
+                  <object class="GtkButton" id="select_type_button">
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="receives_default">True</property>
+                    <property name="tooltip_text" translatable="yes">Which file types will be searched</property>
+                    <signal name="clicked" handler="select_type_button_clicked" object="NautilusSearchPopover" swapped="no" />
                     <child>
-                      <object class="GtkLabel" id="type_label">
+                      <object class="GtkBox">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="hexpand">True</property>
-                        <property name="label" translatable="yes">Anything</property>
-                        <property name="width_chars">30</property>
-                        <property name="xalign">0</property>
-                      </object>
-                    </child>
-                    <child>
-                      <object class="GtkImage">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="icon_name">pan-down-symbolic</property>
+                        <child>
+                          <object class="GtkLabel" id="type_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="hexpand">True</property>
+                            <property name="label" translatable="yes">Anything</property>
+                            <property name="width_chars">30</property>
+                            <property name="xalign">0</property>
+                          </object>
+                        </child>
+                        <child>
+                          <object class="GtkImage">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="icon_name">pan-down-symbolic</property>
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
-                </child>
+                </property>
               </object>
-              <packing>
-                <property name="name">type-button</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkScrolledWindow">
-                <property name="height_request">250</property>
-                <property name="visible">True</property>
-                <property name="can_focus">True</property>
-                <property name="shadow_type">in</property>
-                <child>
-                  <object class="GtkViewport">
+              <object class="GtkStackPage">
+                <property name="name">type-list</property>
+                <property name="child">
+                  <object class="GtkScrolledWindow">
+                    <property name="height_request">250</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
+                    <property name="can_focus">True</property>
+                    <property name="shadow_type">in</property>
                     <child>
-                      <object class="GtkListBox" id="type_listbox">
+                      <object class="GtkViewport">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
-                        <property name="selection_mode">single</property>
-                        <signal name="row-activated" handler="types_listbox_row_activated" object="NautilusSearchPopover" swapped="no" />
+                        <child>
+                          <object class="GtkListBox" id="type_listbox">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="selection_mode">single</property>
+                            <signal name="row-activated" handler="types_listbox_row_activated" object="NautilusSearchPopover" swapped="no" />
+                          </object>
+                        </child>
                       </object>
                     </child>
                   </object>
-                </child>
+                </property>
               </object>
-              <packing>
-                <property name="name">type-list</property>
-                <property name="position">1</property>
-              </packing>
             </child>
           </object>
           <packing>
