@@ -152,7 +152,7 @@ constructed (GObject *object)
     gtk_label_set_lines (label, 3);
     gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
     gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
-    gtk_box_pack_end (container, GTK_WIDGET (label));
+    gtk_container_add (GTK_CONTAINER (container), GTK_WIDGET (label));
 
     style_context = gtk_widget_get_style_context (GTK_WIDGET (item_selection_background));
     gtk_style_context_add_class (style_context, "icon-item-background");
