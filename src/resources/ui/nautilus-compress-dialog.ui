@@ -23,18 +23,12 @@
             <property name="visible">True</property>
             <property name="xalign">0</property>
           </object>
-          <packing>
-            <property name="position">1</property>
-          </packing>
         </child>
         <child>
           <object class="GtkEntry" id="name_entry">
             <property name="visible">True</property>
             <property name="can_focus">True</property>
           </object>
-          <packing>
-            <property name="position">2</property>
-          </packing>
         </child>
         <child>
           <object class="GtkRevealer" id="error_revealer">
@@ -47,9 +41,6 @@
               </object>
             </child>
           </object>
-          <packing>
-            <property name="position">3</property>
-          </packing>
         </child>
         <child>
           <object class="GtkBox" id="hbox">
@@ -63,9 +54,6 @@
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="zip_radio_button_on_toggled"/>
               </object>
-              <packing>
-                <property name="position">0</property>
-              </packing>
             </child>
             <child>
               <object class="GtkRadioButton" id="tar_xz_radio_button">
@@ -75,9 +63,6 @@
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="tar_xz_radio_button_on_toggled"/>
               </object>
-              <packing>
-                <property name="position">1</property>
-              </packing>
             </child>
             <child>
               <object class="GtkRadioButton" id="seven_zip_radio_button">
@@ -87,14 +72,8 @@
                 <property name="draw_indicator">True</property>
                 <signal name="toggled" handler="seven_zip_radio_button_on_toggled"/>
               </object>
-              <packing>
-                <property name="position">2</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">4</property>
-          </packing>
         </child>
         <child>
           <object class="GtkStack" id="description_stack">
@@ -141,9 +120,6 @@
               </packing>
             </child>
           </object>
-          <packing>
-            <property name="position">5</property>
-          </packing>
         </child>
       </object>
     </child>
