@@ -88,110 +88,116 @@
                 <property name="transition_type">crossfade</property>
                 <property name="transition_duration">100</property>
                 <child>
-                  <object class="GtkGrid" id="format_stack_child">
-                    <property name="visible">True</property>
-                    <property name="margin-start">40</property>
-                    <property name="margin-end">40</property>
-                    <property name="margin-top">0</property>
-                    <property name="margin-bottom">10</property>
-                    <property name="row-spacing">15</property>
-                    <property name="column-spacing">6</property>
-                    <child>
-                      <object class="GtkBox">
-                        <property name="orientation">horizontal</property>
-                        <property name="spacing">0</property>
+                  <object class="GtkStackPage">
+                    <property name="name">format</property>
+                    <property name="title" translatable="yes" comments="Translators: This is a noun, not a verb">Format</property>
+                    <property name="child">
+                      <object class="GtkGrid" id="format_stack_child">
                         <property name="visible">True</property>
-                        <property name="halign">center</property>
+                        <property name="margin-start">40</property>
+                        <property name="margin-end">40</property>
+                        <property name="margin-top">0</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="row-spacing">15</property>
+                        <property name="column-spacing">6</property>
                         <child>
-                          <object class="GtkEntry" id="name_entry">
-                            <property name="visible">True</property>
-                            <property name="can_focus">True</property>
-                            <property name="has_focus">True</property>
-                            <property name="width_request">400</property>
-                            <property name="hexpand">True</property>
-                            <property name="activates-default">True</property>
-                            <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
-                            <signal name="insert-text" handler="on_insert_text" swapped="no" />
-                            <signal name="delete-text" handler="on_delete_text" swapped="no" />
-                          </object>
-                        </child>
-                        <child>
-                          <object class="GtkToggleButton" id="add_button">
-                            <property name="visible">True</property>
-                            <signal name="toggled" handler="add_button_clicked" swapped="yes" />
-                            <child>
-                              <object class="GtkBox">
-                                <property name="visible">True</property>
-                                <property name="orientation">horizontal</property>
-                                <property name="spacing">0</property>
-                                <child>
-                                  <object class="GtkImage">
-                                    <property name="visible">True</property>
-                                    <property name="icon-name">list-add-symbolic</property>
-                                    <property name="icon-size">1</property>
-                                  </object>
-                                </child>
-                                <child>
-                                  <object class="GtkLabel">
-                                    <property name="visible">True</property>
-                                    <property name="xalign">0</property>
-                                    <property name="label" translatable="yes">Add</property>
-                                    <property name="can_focus">False</property>
-                                  </object>
-                                </child>
-                              </object>
-                            </child>
-                          </object>
-                        </child>
-                            <style>
-                              <class name="linked"/>
-                            </style>
-                      </object>
-                      <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">0</property>
-                        <property name="width">5</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRevealer" id="numbering_revealer">
-                        <property name="visible">True</property>
-                        <property name="halign">center</property>
-                        <child>
-                          <object class="GtkBox" id="numbering_box">
-                            <property name="visible">True</property>
+                          <object class="GtkBox">
                             <property name="orientation">horizontal</property>
-                            <property name="spacing">10</property>
+                            <property name="spacing">0</property>
+                            <property name="visible">True</property>
+                            <property name="halign">center</property>
                             <child>
-                              <object class="GtkLabel" id="numbering_label">
+                              <object class="GtkEntry" id="name_entry">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Automatic Numbering Order</property>
-                                <property name="can_focus">False</property>
+                                <property name="can_focus">True</property>
+                                <property name="has_focus">True</property>
+                                <property name="width_request">400</property>
+                                <property name="hexpand">True</property>
+                                <property name="activates-default">True</property>
+                                <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
+                                <signal name="insert-text" handler="on_insert_text" swapped="no" />
+                                <signal name="delete-text" handler="on_delete_text" swapped="no" />
                               </object>
                             </child>
                             <child>
-                              <object class="GtkToggleButton" id="numbering_order_button">
+                              <object class="GtkToggleButton" id="add_button">
                                 <property name="visible">True</property>
-                                <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
+                                <signal name="toggled" handler="add_button_clicked" swapped="yes" />
                                 <child>
                                   <object class="GtkBox">
                                     <property name="visible">True</property>
                                     <property name="orientation">horizontal</property>
-                                    <property name="spacing">15</property>
+                                    <property name="spacing">0</property>
                                     <child>
-                                      <object class="GtkLabel" id="numbering_order_label">
+                                      <object class="GtkImage">
                                         <property name="visible">True</property>
-                                        <property name="width-request">180</property>
-                                        <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Original Name (Ascending)</property>
-                                        <property name="can_focus">False</property>
+                                        <property name="icon-name">list-add-symbolic</property>
+                                        <property name="icon-size">1</property>
                                       </object>
                                     </child>
                                     <child>
-                                      <object class="GtkImage" id="action_icon">
+                                      <object class="GtkLabel">
                                         <property name="visible">True</property>
-                                        <property name="icon-name">pan-down-symbolic</property>
-                                        <property name="icon-size">1</property>
+                                        <property name="xalign">0</property>
+                                        <property name="label" translatable="yes">Add</property>
+                                        <property name="can_focus">False</property>
+                                      </object>
+                                    </child>
+                                  </object>
+                                </child>
+                              </object>
+                            </child>
+                                <style>
+                                  <class name="linked"/>
+                                </style>
+                          </object>
+                          <packing>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">0</property>
+                            <property name="width">5</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkRevealer" id="numbering_revealer">
+                            <property name="visible">True</property>
+                            <property name="halign">center</property>
+                            <child>
+                              <object class="GtkBox" id="numbering_box">
+                                <property name="visible">True</property>
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel" id="numbering_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Automatic Numbering Order</property>
+                                    <property name="can_focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkToggleButton" id="numbering_order_button">
+                                    <property name="visible">True</property>
+                                    <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
+                                    <child>
+                                      <object class="GtkBox">
+                                        <property name="visible">True</property>
+                                        <property name="orientation">horizontal</property>
+                                        <property name="spacing">15</property>
+                                        <child>
+                                          <object class="GtkLabel" id="numbering_order_label">
+                                            <property name="visible">True</property>
+                                            <property name="width-request">180</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Original Name (Ascending)</property>
+                                            <property name="can_focus">False</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkImage" id="action_icon">
+                                            <property name="visible">True</property>
+                                            <property name="icon-name">pan-down-symbolic</property>
+                                            <property name="icon-size">1</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
@@ -199,92 +205,90 @@
                               </object>
                             </child>
                           </object>
+                          <packing>
+                            <property name="left-attach">0</property>
+                            <property name="top-attach">1</property>
+                            <property name="width">5</property>
+                          </packing>
                         </child>
                       </object>
-                      <packing>
-                        <property name="left-attach">0</property>
-                        <property name="top-attach">1</property>
-                        <property name="width">5</property>
-                      </packing>
-                    </child>
+                    </property>
                   </object>
-                  <packing>
-                    <property name="name">format</property>
-                    <property name="title" translatable="yes" comments="Translators: This is a noun, not a verb">Format</property>
-                  </packing>
                 </child>
                 <child>
-                  <object class="GtkGrid" id="replace_stack_child">
-                    <property name="visible">True</property>
-                    <property name="margin-start">40</property>
-                    <property name="margin-end">40</property>
-                    <property name="margin-top">0</property>
-                    <property name="margin-bottom">10</property>
-                    <property name="hexpand">True</property>
-                    <property name="halign">center</property>
-                    <property name="row-spacing">15</property>
-                    <property name="column-spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="existing_text_label">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Existing Text</property>
-                        <property name="can_focus">False</property>
-                        <property name="sensitive">False</property>
-                      </object>
-                        <packing>
-                          <property name="left-attach">0</property>
-                          <property name="top-attach">0</property>
-                          <property name="width">1</property>
-                        </packing>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="find_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="width_request">375</property>
-                        <property name="hexpand">False</property>
-                        <property name="activates-default">True</property>
-                        <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
-                        <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
-                      </object>
-                        <packing>
-                          <property name="left-attach">1</property>
-                          <property name="top-attach">0</property>
-                          <property name="width">3</property>
-                        </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="replace_label">
-                        <property name="visible">True</property>
-                        <property name="label" translatable="yes">Replace With</property>
-                        <property name="can_focus">False</property>
-                        <property name="sensitive">False</property>
-                      </object>
-                        <packing>
-                          <property name="left-attach">0</property>
-                          <property name="top-attach">1</property>
-                          <property name="width">1</property>
-                        </packing>
-                    </child>
-                    <child>
-                      <object class="GtkEntry" id="replace_entry">
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="width_request">375</property>
-                        <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
-                        <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
-                      </object>
-                        <packing>
-                          <property name="left-attach">1</property>
-                          <property name="top-attach">1</property>
-                          <property name="width">3</property>
-                        </packing>
-                    </child>
-                  </object>
-                  <packing>
+                  <object class+"GtkStackPage">
                     <property name="name">replace</property>
                     <property name="title" translatable="yes" context="title">Replace</property>
-                  </packing>
+                    <property name="child">
+                      <object class="GtkGrid" id="replace_stack_child">
+                        <property name="visible">True</property>
+                        <property name="margin-start">40</property>
+                        <property name="margin-end">40</property>
+                        <property name="margin-top">0</property>
+                        <property name="margin-bottom">10</property>
+                        <property name="hexpand">True</property>
+                        <property name="halign">center</property>
+                        <property name="row-spacing">15</property>
+                        <property name="column-spacing">6</property>
+                        <child>
+                          <object class="GtkLabel" id="existing_text_label">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Existing Text</property>
+                            <property name="can_focus">False</property>
+                            <property name="sensitive">False</property>
+                          </object>
+                            <packing>
+                              <property name="left-attach">0</property>
+                              <property name="top-attach">0</property>
+                              <property name="width">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="find_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="width_request">375</property>
+                            <property name="hexpand">False</property>
+                            <property name="activates-default">True</property>
+                            <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
+                            <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
+                          </object>
+                            <packing>
+                              <property name="left-attach">1</property>
+                              <property name="top-attach">0</property>
+                              <property name="width">3</property>
+                            </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="replace_label">
+                            <property name="visible">True</property>
+                            <property name="label" translatable="yes">Replace With</property>
+                            <property name="can_focus">False</property>
+                            <property name="sensitive">False</property>
+                          </object>
+                            <packing>
+                              <property name="left-attach">0</property>
+                              <property name="top-attach">1</property>
+                              <property name="width">1</property>
+                            </packing>
+                        </child>
+                        <child>
+                          <object class="GtkEntry" id="replace_entry">
+                            <property name="visible">True</property>
+                            <property name="can_focus">True</property>
+                            <property name="width_request">375</property>
+                            <signal name="changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
+                            <signal name="activate" handler="file_names_widget_on_activate" swapped="yes" />
+                          </object>
+                            <packing>
+                              <property name="left-attach">1</property>
+                              <property name="top-attach">1</property>
+                              <property name="width">3</property>
+                            </packing>
+                        </child>
+                      </object>
+                    </property>
+                  </object>
                 </child>
               </object>
               <packing>

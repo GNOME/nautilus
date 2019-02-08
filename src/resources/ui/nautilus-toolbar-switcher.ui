@@ -8,66 +8,70 @@
     <property name="hexpand">False</property>
     <property name="transition_type">crossfade</property>
     <child>
-      <object class="GtkBox" id="path_bar_container">
-        <property name="can_focus">False</property>
-        <property name="valign">center</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <style>
-          <class name="path-bar-box"/>
-        </style>
-      </object>
-      <packing>
+      <object class="GtkStackPage">
         <property name="name">pathbar</property>
-      </packing>
+        <property name="child">
+          <object class="GtkBox" id="path_bar_container">
+            <property name="can_focus">False</property>
+            <property name="valign">center</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <style>
+              <class name="path-bar-box"/>
+            </style>
+          </object>
+        </property>
+      </object>
     </child>
     <child>
-      <object class="GtkBox" id="location_entry_container">
-        <property name="can_focus">False</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <style>
-          <class name="linked"/>
-        </style>
-      </object>
-      <packing>
+      <object class="GtkStackPage">
         <property name="name">location</property>
-        <property name="position">1</property>
-      </packing>
+        <property name="child">
+          <object class="GtkBox" id="location_entry_container">
+            <property name="can_focus">False</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <style>
+              <class name="linked"/>
+            </style>
+          </object>
+        </property>
+      </object>
     </child>
     <child>
-      <object class="GtkBox" id="search_container">
-        <property name="visible">True</property>
-        <property name="can_focus">False</property>
-        <property name="orientation">vertical</property>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-        <child>
-          <placeholder/>
-        </child>
-      </object>
-      <packing>
+      <object class="GtkStackPage">
         <property name="name">search</property>
-        <property name="position">2</property>
-      </packing>
+        <property name="child">
+          <object class="GtkBox" id="search_container">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="orientation">vertical</property>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+            <child>
+              <placeholder/>
+            </child>
+          </object>
+        </property>
+      </object>
     </child>
   </object>
 </interface>
