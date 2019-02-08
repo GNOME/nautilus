@@ -3634,7 +3634,7 @@ create_column_editor (NautilusListView *view)
     gtk_widget_set_hexpand (box, TRUE);
     gtk_widget_set_vexpand (box, TRUE);
     gtk_widget_show (box);
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))), box);
+    gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), box);
 
     label_text = _("Choose the order of information to appear in this folder:");
     str = g_strconcat ("<b>", label_text, "</b>", NULL);
@@ -3644,14 +3644,14 @@ create_column_editor (NautilusListView *view)
     gtk_label_set_xalign (GTK_LABEL (label), 0);
     gtk_label_set_yalign (GTK_LABEL (label), 0);
     gtk_widget_show (label);
-    gtk_box_pack_start (GTK_BOX (box), label);
+    gtk_container_add (GTK_CONTAINER (box), label);
 
     g_free (str);
 
     column_chooser = nautilus_column_chooser_new (file);
     gtk_widget_set_vexpand (column_chooser, TRUE);
     gtk_widget_show (column_chooser);
-    gtk_box_pack_start (GTK_BOX (box), column_chooser);
+    gtk_container_add (GTK_CONTAINER (box), column_chooser);
 
     g_signal_connect (column_chooser, "changed",
                       G_CALLBACK (column_chooser_changed_callback),
