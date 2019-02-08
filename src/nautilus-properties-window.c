@@ -302,7 +302,7 @@ add_prompt (GtkWidget  *vbox,
     gtk_widget_show (prompt);
     if (pack_at_start)
     {
-        gtk_box_pack_start (GTK_BOX (vbox), prompt);
+        gtk_container_add (GTK_CONTAINER (vbox), prompt);
     }
     else
     {
@@ -3162,7 +3162,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
     gtk_widget_show (icon_pixmap_widget);
 
-    gtk_box_pack_start (GTK_BOX (hbox), icon_pixmap_widget);
+    gtk_container_add (GTK_CONTAINER (hbox), icon_pixmap_widget);
 
     window->icon_chooser = NULL;
 
@@ -3173,7 +3173,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid));
+    gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (grid));
     window->basic_grid = grid;
 
     /* Name label.  The text will be determined in update_name_field */
@@ -4627,8 +4627,8 @@ on_change_permissions_clicked (GtkWidget                *button,
 
     gtk_widget_set_vexpand (GTK_WIDGET (grid), TRUE);
 
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
-                        GTK_WIDGET (grid));
+    gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
+                       GTK_WIDGET (grid));
 
     label = gtk_label_new (_("Files"));
     gtk_grid_attach (grid, label, 1, 0, 1, 1);
@@ -4714,7 +4714,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
 
         gtk_widget_set_vexpand (GTK_WIDGET (page_grid), TRUE);
         gtk_widget_show (GTK_WIDGET (page_grid));
-        gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (page_grid));
+        gtk_container_add (GTK_CONTAINER (vbox), GTK_WIDGET (page_grid));
 
         create_simple_permissions (window, page_grid);
 
@@ -4739,7 +4739,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
 
             button = gtk_button_new_with_mnemonic (_("Change Permissions for Enclosed Files…"));
             gtk_widget_show (button);
-            gtk_box_pack_start (GTK_BOX (hbox), button);
+            gtk_container_add (GTK_CONTAINER (hbox), button);
             g_signal_connect (button, "clicked",
                               G_CALLBACK (on_change_permissions_clicked),
                               window);
@@ -5123,8 +5123,8 @@ create_properties_window (StartupData *startup_data)
     gtk_notebook_set_show_border (window->notebook, FALSE);
     gtk_widget_set_vexpand (GTK_WIDGET (window->notebook), TRUE);
     gtk_widget_show (GTK_WIDGET (window->notebook));
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))),
-                        GTK_WIDGET (window->notebook));
+    gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))),
+                       GTK_WIDGET (window->notebook));
 
     /* Create the pages. */
     create_basic_page (window);

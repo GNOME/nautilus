@@ -67,7 +67,7 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-    gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label);
+    gtk_container_add (GTK_CONTAINER (fcd->titles_vbox), label);
     gtk_widget_show (label);
 
     attr_list = pango_attr_list_new ();
@@ -80,7 +80,7 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
     label = gtk_label_new (secondary_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
-    gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label);
+    gtk_container_add (GTK_CONTAINER (fcd->titles_vbox), label);
     gtk_widget_show (label);
 }
 
@@ -92,7 +92,7 @@ nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
     if (fcd->dest_image == NULL)
     {
         fcd->dest_image = gtk_image_new_from_paintable (GDK_PAINTABLE (destination_texture));
-        gtk_box_pack_start (GTK_BOX (fcd->first_hbox), fcd->dest_image);
+        gtk_container_add (GTK_CONTAINER (fcd->first_hbox), fcd->dest_image);
         gtk_image_set_pixel_size (GTK_IMAGE (fcd->dest_image),
                                   NAUTILUS_CANVAS_ICON_SIZE_SMALL);
         gtk_widget_show (fcd->dest_image);
@@ -108,7 +108,7 @@ nautilus_file_conflict_dialog_set_images (NautilusFileConflictDialog *fcd,
         fcd->src_image = gtk_image_new_from_paintable (GDK_PAINTABLE (source_texture));
         gtk_image_set_pixel_size (GTK_IMAGE (fcd->src_image),
                                   NAUTILUS_CANVAS_ICON_SIZE_SMALL);
-        gtk_box_pack_start (GTK_BOX (fcd->second_hbox), fcd->src_image);
+        gtk_container_add (GTK_CONTAINER (fcd->second_hbox), fcd->src_image);
         gtk_widget_show (fcd->src_image);
     }
     else
@@ -127,12 +127,12 @@ nautilus_file_conflict_dialog_set_file_labels (NautilusFileConflictDialog *fcd,
 
     label = gtk_label_new (NULL);
     gtk_label_set_markup (GTK_LABEL (label), destination_label);
-    gtk_box_pack_start (GTK_BOX (fcd->first_hbox), label);
+    gtk_container_add (GTK_CONTAINER (fcd->first_hbox), label);
     gtk_widget_show (label);
 
     label = gtk_label_new (NULL);
     gtk_label_set_markup (GTK_LABEL (label), source_label);
-    gtk_box_pack_start (GTK_BOX (fcd->second_hbox), label);
+    gtk_container_add (GTK_CONTAINER (fcd->second_hbox), label);
     gtk_widget_show (label);
 }
 
@@ -261,41 +261,41 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     /* Setup the main hbox */
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
     dialog_area = gtk_dialog_get_content_area (dialog);
-    gtk_box_pack_start (GTK_BOX (dialog_area), hbox);
+    gtk_container_add (GTK_CONTAINER (dialog_area), hbox);
     g_object_set (hbox, "margin", 6, NULL);
 
     /* Setup the dialog image */
     widget = gtk_image_new_from_icon_name ("dialog-warning");
-    gtk_box_pack_start (GTK_BOX (hbox), widget);
+    gtk_container_add (GTK_CONTAINER (hbox), widget);
     gtk_image_set_pixel_size (GTK_IMAGE (widget), 48);
     gtk_widget_set_valign (widget, GTK_ALIGN_START);
 
     /* Setup the vbox containing the dialog body */
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
-    gtk_box_pack_start (GTK_BOX (hbox), vbox);
+    gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
     /* Setup the vbox for the dialog labels */
     widget = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
-    gtk_box_pack_start (GTK_BOX (vbox), widget);
+    gtk_container_add (GTK_CONTAINER (vbox), widget);
     fcd->titles_vbox = widget;
 
     /* Setup the hboxes to pack file infos into */
     vbox2 = gtk_box_new (GTK_ORIENTATION_VERTICAL, 12);
     gtk_widget_set_halign (vbox2, GTK_ALIGN_START);
     gtk_widget_set_margin_start (vbox2, 12);
-    gtk_box_pack_start (GTK_BOX (vbox), vbox2);
+    gtk_container_add (GTK_CONTAINER (vbox), vbox2);
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    gtk_box_pack_start (GTK_BOX (vbox2), hbox);
+    gtk_container_add (GTK_CONTAINER (vbox2), hbox);
     fcd->first_hbox = hbox;
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 12);
-    gtk_box_pack_start (GTK_BOX (vbox2), hbox);
+    gtk_container_add (GTK_CONTAINER (vbox2), hbox);
     fcd->second_hbox = hbox;
 
     /* Setup the expander for the rename action */
     fcd->expander = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
-    gtk_box_pack_start (GTK_BOX (vbox2), fcd->expander);
+    gtk_container_add (GTK_CONTAINER (vbox2), fcd->expander);
     g_signal_connect (fcd->expander, "activate",
                       G_CALLBACK (expander_activated_cb), dialog);
 
@@ -306,7 +306,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     gtk_widget_set_margin_end (widget, 6);
     gtk_widget_set_margin_start (widget, 6);
     gtk_widget_set_hexpand (widget, TRUE);
-    gtk_box_pack_start (GTK_BOX (hbox), widget);
+    gtk_container_add (GTK_CONTAINER (hbox), widget);
     fcd->entry = widget;
     g_signal_connect (widget, "changed",
                       G_CALLBACK (entry_text_changed_cb), dialog);
@@ -317,14 +317,14 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
                        gtk_image_new_from_icon_name ("edit-undo"));
     gtk_widget_set_margin_end (widget, 6);
     gtk_widget_set_margin_start (widget, 6);
-    gtk_box_pack_start (GTK_BOX (hbox), widget);
+    gtk_container_add (GTK_CONTAINER (hbox), widget);
     g_signal_connect (widget, "clicked",
                       G_CALLBACK (reset_button_clicked_cb), dialog);
 
     /* Setup the checkbox to apply the action to all files */
     widget = gtk_check_button_new_with_mnemonic (_("Apply this action to all files and folders"));
 
-    gtk_box_pack_start (GTK_BOX (vbox), widget);
+    gtk_container_add (GTK_CONTAINER (vbox), widget);
     fcd->checkbox = widget;
     g_signal_connect (widget, "toggled",
                       G_CALLBACK (checkbox_toggled_cb), dialog);

@@ -1439,11 +1439,15 @@ make_button_data (NautilusPathBar *self,
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
+            gtk_container_add (GTK_CONTAINER (button_data->button),
+                               button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->image);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow);
+            gtk_container_add (GTK_CONTAINER (button_data->container),
+                               button_data->image);
+            gtk_container_add (GTK_CONTAINER (button_data->container),
+                               button_data->label);
+            gtk_container_add (GTK_CONTAINER (button_data->container),
+                               button_data->disclosure_arrow);
         }
         break;
 
@@ -1455,10 +1459,13 @@ make_button_data (NautilusPathBar *self,
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic");
             gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_container_add (GTK_CONTAINER (button_data->button), button_data->container);
+            gtk_container_add (GTK_CONTAINER (button_data->button),
+                               button_data->container);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow);
+            gtk_container_add (GTK_CONTAINER (button_data->container),
+                               button_data->label);
+            gtk_container_add (GTK_CONTAINER (button_data->container),
+                               button_data->disclosure_arrow);
         }
         break;
     }

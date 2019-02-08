@@ -59,7 +59,7 @@ create_icon (NautilusViewIconItemUi *self)
         gtk_style_context_add_class (style_context, "icon-background");
     }
 
-    gtk_box_pack_start (fixed_height_box, icon);
+    gtk_container_add (GTK_CONTAINER (fixed_height_box), icon);
 
     return GTK_WIDGET (fixed_height_box);
 }
@@ -79,7 +79,7 @@ update_icon (NautilusViewIconItemUi *self)
         gtk_container_remove (GTK_CONTAINER (box), GTK_WIDGET (self->icon));
     }
     self->icon = create_icon (self);
-    gtk_box_pack_start (box, GTK_WIDGET (self->icon));
+    gtk_container_add (GTK_CONTAINER (box), GTK_WIDGET (self->icon));
 }
 
 static void
@@ -141,7 +141,7 @@ constructed (GObject *object)
     gtk_widget_set_valign (GTK_WIDGET (item_selection_background), GTK_ALIGN_START);
     self->item_container = nautilus_container_max_width_new ();
     self->icon = create_icon (self);
-    gtk_box_pack_start (container, GTK_WIDGET (self->icon));
+    gtk_container_add (GTK_CONTAINER (container), GTK_WIDGET (self->icon));
 
     label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
     gtk_widget_set_vexpand (GTK_WIDGET (label), TRUE);
