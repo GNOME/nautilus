@@ -325,11 +325,9 @@ static GdkTexture *
 get_texture_for_selection (NautilusPropertiesWindow  *window)
 {
     g_autoptr (NautilusIconInfo) icon = NULL;
-    NautilusIconInfo *new_icon;
     GList *l;
     gint icon_scale;
 
-    icon = NULL;
     icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (window->notebook));
 
     for (l = window->original_files; l != NULL; l = l->next)
@@ -338,7 +336,7 @@ get_texture_for_selection (NautilusPropertiesWindow  *window)
 
         file = NAUTILUS_FILE (l->data);
 
-        if (!icon)
+        if (icon == NULL)
         {
             icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
@@ -346,21 +344,20 @@ get_texture_for_selection (NautilusPropertiesWindow  *window)
         }
         else
         {
+            g_autoptr (NautilusIconInfo) new_icon = NULL;
+
             new_icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
                                                NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                                NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
-            if (!new_icon || new_icon != icon)
+            if (new_icon == NULL || new_icon != icon)
             {
-                g_object_unref (icon);
-                g_object_unref (new_icon);
-                icon = NULL;
+                g_clear_object (&icon);
                 break;
             }
-            g_object_unref (new_icon);
         }
     }
 
-    if (!icon)
+    if (icon == NULL)
     {
         icon = nautilus_icon_info_lookup_from_name ("text-x-generic",
                                                     NAUTILUS_CANVAS_ICON_SIZE_STANDARD,
