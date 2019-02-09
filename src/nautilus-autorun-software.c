@@ -171,9 +171,6 @@ out:
 static void
 present_autorun_for_software_dialog (GMount *mount)
 {
-    GIcon *icon;
-    g_autoptr (NautilusIconInfo) icon_info = NULL;
-    g_autoptr (GdkTexture) texture = NULL;
     g_autofree char *mount_name = NULL;
     GtkWidget *dialog;
     AutorunSoftwareDialogData *data;
@@ -200,13 +197,6 @@ present_autorun_for_software_dialog (GMount *mount)
      * etc.)
      */
 
-
-    icon = g_mount_get_icon (mount);
-    icon_info = nautilus_icon_info_lookup (icon, 48,
-                                           gtk_widget_get_scale_factor (GTK_WIDGET (dialog)));
-    texture = nautilus_icon_info_get_texture (icon_info, TRUE, -1);
-
-    gtk_window_set_icon (GTK_WINDOW (dialog), texture);
 
     data = g_new0 (AutorunSoftwareDialogData, 1);
     data->dialog = dialog;
