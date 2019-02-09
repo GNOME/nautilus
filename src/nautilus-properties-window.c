@@ -324,87 +324,6 @@ add_prompt_and_separator (GtkWidget  *vbox,
     gtk_container_add (GTK_CONTAINER (vbox), separator_line);
 }
 
-static void
-get_image_for_properties_window (NautilusPropertiesWindow  *window,
-                                 char                     **icon_name,
-                                 GdkTexture               **texture)
-{
-    g_autoptr (NautilusIconInfo) icon = NULL;
-    NautilusIconInfo *new_icon;
-    GList *l;
-    gint icon_scale;
-
-    icon = NULL;
-    icon_scale = gtk_widget_get_scale_factor (GTK_WIDGET (window->notebook));
-
-    for (l = window->original_files; l != NULL; l = l->next)
-    {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-
-        if (!icon)
-        {
-            icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
-                                           NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                           NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
-        }
-        else
-        {
-            new_icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
-                                               NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
-                                               NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
-            if (!new_icon || new_icon != icon)
-            {
-                g_object_unref (icon);
-                g_object_unref (new_icon);
-                icon = NULL;
-                break;
-            }
-            g_object_unref (new_icon);
-        }
-    }
-
-    if (!icon)
-    {
-        icon = nautilus_icon_info_lookup_from_name ("text-x-generic",
-                                                    NAUTILUS_CANVAS_ICON_SIZE_STANDARD,
-                                                    icon_scale);
-    }
-
-    if (icon_name != NULL)
-    {
-        *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
-    }
-
-    if (texture != NULL)
-    {
-        *texture = nautilus_icon_info_get_texture (icon, TRUE, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
-    }
-}
-
-
-static void
-update_properties_window_icon (NautilusPropertiesWindow *window)
-{
-    g_autofree char *name = NULL;
-    g_autoptr (GdkTexture) texture = NULL;
-
-    get_image_for_properties_window (window, &name, &texture);
-
-    if (name != NULL)
-    {
-        gtk_window_set_icon_name (GTK_WINDOW (window), name);
-    }
-    else
-    {
-        gtk_window_set_icon (GTK_WINDOW (window), texture);
-    }
-
-    gtk_image_set_from_paintable (GTK_IMAGE (window->icon_image),
-                                  GDK_PAINTABLE (texture));
-}
-
 /* utility to test if a uri refers to a local image */
 static gboolean
 uri_is_local_image (const char *uri)
@@ -513,8 +432,6 @@ create_image_widget (NautilusPropertiesWindow *window,
 
     image = gtk_image_new ();
     window->icon_image = image;
-
-    update_properties_window_icon (window);
 
     gtk_image_set_pixel_size (GTK_IMAGE (window->icon_image),
                               NAUTILUS_CANVAS_ICON_SIZE_SMALL);
@@ -1147,7 +1064,6 @@ properties_window_update (NautilusPropertiesWindow *window,
     if (dirty_original)
     {
         update_properties_window_title (window);
-        update_properties_window_icon (window);
         update_name_field (window);
 
         /* If any of the value fields start to depend on the original
