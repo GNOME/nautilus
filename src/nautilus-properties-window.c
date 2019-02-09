@@ -324,10 +324,8 @@ add_prompt_and_separator (GtkWidget  *vbox,
     gtk_container_add (GTK_CONTAINER (vbox), separator_line);
 }
 
-static void
-get_image_for_properties_window (NautilusPropertiesWindow  *window,
-                                 char                     **icon_name,
-                                 GdkTexture               **texture)
+static GdkTexture *
+get_texture_for_selection (NautilusPropertiesWindow  *window)
 {
     g_autoptr (NautilusIconInfo) icon = NULL;
     NautilusIconInfo *new_icon;
@@ -372,34 +370,16 @@ get_image_for_properties_window (NautilusPropertiesWindow  *window,
                                                     icon_scale);
     }
 
-    if (icon_name != NULL)
-    {
-        *icon_name = g_strdup (nautilus_icon_info_get_used_name (icon));
-    }
-
-    if (texture != NULL)
-    {
-        *texture = nautilus_icon_info_get_texture (icon, TRUE, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
-    }
+    return nautilus_icon_info_get_texture (icon, TRUE, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
 }
 
 
 static void
-update_properties_window_icon (NautilusPropertiesWindow *window)
+update_icon_image (NautilusPropertiesWindow *window)
 {
-    g_autofree char *name = NULL;
     g_autoptr (GdkTexture) texture = NULL;
 
-    get_image_for_properties_window (window, &name, &texture);
-
-    if (name != NULL)
-    {
-        gtk_window_set_icon_name (GTK_WINDOW (window), name);
-    }
-    else
-    {
-        gtk_window_set_icon (GTK_WINDOW (window), texture);
-    }
+    texture = get_texture_for_selection (window);
 
     gtk_image_set_from_paintable (GTK_IMAGE (window->icon_image),
                                   GDK_PAINTABLE (texture));
@@ -514,7 +494,7 @@ create_image_widget (NautilusPropertiesWindow *window,
     image = gtk_image_new ();
     window->icon_image = image;
 
-    update_properties_window_icon (window);
+    update_icon_image (window);
 
     gtk_image_set_pixel_size (GTK_IMAGE (window->icon_image),
                               NAUTILUS_CANVAS_ICON_SIZE_SMALL);
@@ -1147,7 +1127,7 @@ properties_window_update (NautilusPropertiesWindow *window,
     if (dirty_original)
     {
         update_properties_window_title (window);
-        update_properties_window_icon (window);
+        update_icon_image (window);
         update_name_field (window);
 
         /* If any of the value fields start to depend on the original
