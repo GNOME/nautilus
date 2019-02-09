@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-05 12:30+0000\n"
-"PO-Revision-Date: 2019-02-05 17:45+0300\n"
+"POT-Creation-Date: 2019-02-06 15:15+0000\n"
+"PO-Revision-Date: 2019-02-06 20:20+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Türkçe <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -30,7 +30,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Gtranslator 3.30.1\n"
+"X-Generator: Poedit 2.2.1\n"
 "X-POOTLE-MTIME: 1433334275.000000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
@@ -91,7 +91,7 @@ msgstr "Liste görünümü"
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-preferences-window.ui:872
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:463
+#: src/resources/ui/nautilus-toolbar.ui:517
 msgid "Search"
 msgstr "Arama"
 
@@ -4115,11 +4115,11 @@ msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr ""
 "Bu klasördeki çalıştırılabilir dosyalar Betikler menüsünde gösterilecektir."
 
-#: src/nautilus-toolbar.c:836 src/resources/ui/nautilus-toolbar.ui:349
+#: src/nautilus-toolbar.c:836 src/resources/ui/nautilus-toolbar.ui:403
 msgid "_Undo"
 msgstr "_Geri al"
 
-#: src/nautilus-toolbar.c:843 src/resources/ui/nautilus-toolbar.ui:363
+#: src/nautilus-toolbar.c:843 src/resources/ui/nautilus-toolbar.ui:417
 msgid "_Redo"
 msgstr "_Yinele"
 
@@ -5204,112 +5204,114 @@ msgid "Starred files will appear here"
 msgstr "Yıldızlı dosyalar burada gözükecek"
 
 #: src/resources/ui/nautilus-toolbar.ui:117
-#| msgctxt "shortcut window"
-#| msgid "Editing"
 msgid "Edit"
 msgstr "Düzenle"
 
 #: src/resources/ui/nautilus-toolbar.ui:218
+msgid "Select All"
+msgstr "Tümünü Seç"
+
+#: src/resources/ui/nautilus-toolbar.ui:245
+msgid "Show Hidden Files"
+msgstr "Gizli Dosyaları Göster"
+
+#: src/resources/ui/nautilus-toolbar.ui:272
 msgid "_Sidebar"
 msgstr "_Kenar Çubuğu"
 
-#: src/resources/ui/nautilus-toolbar.ui:244
+#: src/resources/ui/nautilus-toolbar.ui:298
 msgid "_Preferences"
 msgstr "_Tercihler"
 
-#: src/resources/ui/nautilus-toolbar.ui:258
+#: src/resources/ui/nautilus-toolbar.ui:312
 msgid "_Keyboard Shortcuts"
 msgstr "_Klavye Kısayolları"
 
-#: src/resources/ui/nautilus-toolbar.ui:272
+#: src/resources/ui/nautilus-toolbar.ui:326
 msgid "_Help"
 msgstr "_Yardım"
 
-#: src/resources/ui/nautilus-toolbar.ui:286
+#: src/resources/ui/nautilus-toolbar.ui:340
 msgid "_About Files"
 msgstr "Dosyalar _Hakkında"
 
-#: src/resources/ui/nautilus-toolbar.ui:499
+#: src/resources/ui/nautilus-toolbar.ui:553
 msgid "Go back"
 msgstr "Geri git"
 
-#: src/resources/ui/nautilus-toolbar.ui:526
+#: src/resources/ui/nautilus-toolbar.ui:580
 msgid "Go forward"
 msgstr "İleri git"
 
-#: src/resources/ui/nautilus-toolbar.ui:569
+#: src/resources/ui/nautilus-toolbar.ui:623
 msgid "Show operations"
 msgstr "İşlemleri göster"
 
-#: src/resources/ui/nautilus-toolbar.ui:608
+#: src/resources/ui/nautilus-toolbar.ui:662
 msgid "Toggle view"
 msgstr "Görünüm değiştir"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:20
-msgid "Zoom out"
-msgstr "Uzaklaştır"
-
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:39
-msgid "Reset zoom"
-msgstr "Yakınlaştırmayı sıfırla"
-
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:57
-msgid "Zoom in"
-msgstr "Yakınlaştır"
-
 #. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:97
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:33
 msgctxt "menu item"
 msgid "Sort"
 msgstr "Sırala"
 
 #. This is used to sort by name in the toolbar view menu
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:108
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:52
 msgctxt "Sort Criterion"
 msgid "_A-Z"
 msgstr "_A-Z"
 
 #. This is used to sort by name, in descending order in the toolbar view menu
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:117
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:67
 msgctxt "Sort Criterion"
 msgid "_Z-A"
 msgstr "_Z-A"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:126
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:82
 msgid "Last _Modified"
 msgstr "Son _Değiştirme"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:135
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:97
 msgid "_First Modified"
 msgstr "_İlk Değiştirme"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:144
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:112
 msgid "_Size"
 msgstr "_Boyut"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:153
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:127
 msgid "_Type"
 msgstr "_Tür"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:162
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:141
 msgid "Last _Trashed"
 msgstr "Son _Çöpe Atılan"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:181
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:174
 msgid "_Visible Columns…"
 msgstr "_Görünür Sütunlar…"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:189
-msgid "Show _Hidden Files"
-msgstr "Gizli Dosyaları _Göster"
-
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:197
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:188
 msgid "R_eload"
 msgstr "Y_eniden Yükle"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:205
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:201
 msgid "St_op"
 msgstr "_Dur"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:225
+msgid "Zoom out"
+msgstr "Uzaklaştır"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:247
+msgid "Reset zoom"
+msgstr "Yakınlaştırmayı sıfırla"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:268
+msgid "Zoom in"
+msgstr "Yakınlaştır"
 
 #: src/resources/ui/nautilus-trash-is-empty.ui:31
 msgid "Trash is Empty"
@@ -5497,10 +5499,6 @@ msgstr "Sunucu adresini gir…"
 #~| msgid "Paste"
 #~ msgid "Paste"
 #~ msgstr "Yapıştır"
-
-#~| msgid "Select _All"
-#~ msgid "Select All"
-#~ msgstr "Tümünü Seç"
 
 #~ msgid "Experimental"
 #~ msgstr "Deneysel"
