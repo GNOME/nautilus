@@ -118,9 +118,6 @@ struct _NautilusPropertiesWindow
     GList *deep_count_files;
     guint deep_count_spinner_timeout_id;
 
-    guint total_count;
-    goffset total_size;
-
     guint long_operation_underway;
 
     GList *changed_files;
@@ -2251,8 +2248,8 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (window));
 
-    total_count = window->total_count;
-    total_size = window->total_size;
+    total_count = 0;
+    total_size = 0;
     unreadable_directory_count = FALSE;
 
     for (l = window->target_files; l; l = l->next)
