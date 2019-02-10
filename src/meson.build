@@ -324,9 +324,9 @@ if get_option('tests') == 'all'
     'nautilus', nautilus,
     args: [
       '--check',
-      '--g-fatal-warnings'
     ],
     env: [
+      'G_DEBUG=fatal-warnings',
       'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data'))
     ]
   )
