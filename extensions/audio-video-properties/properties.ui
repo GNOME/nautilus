@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Generated with glade 3.20.0 -->
+<interface>
+  <requires lib="gtk+" version="3.11"/>
+  <object class="GtkBox" id="vbox1">
+    <property name="width_request">375</property>
+    <property name="visible">True</property>
+    <property name="can_focus">False</property>
+    <property name="margin_bottom">12</property>
+    <property name="border_width">6</property>
+    <property name="orientation">vertical</property>
+    <property name="spacing">18</property>
+    <child>
+      <object class="GtkBox" id="general_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="bvwp_general_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">General</property>
+            <property name="use_markup">True</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="general">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="row_spacing">6</property>
+            <property name="column_spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="title_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Title:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="title"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="artist_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Artist:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="artist"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="duration_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Duration:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="duration"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="year_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Year:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="year"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="album_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Album:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="album"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="title">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">Unknown</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="title_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="artist">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">Unknown</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="artist_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="album">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">Unknown</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="album_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="year">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">Unknown</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="year_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="duration">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 seconds</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="duration_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">4</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="comment_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Comment:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="comment"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="comment">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">Unknown</property>
+                <property name="wrap">True</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="comment_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">5</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="container_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Container:</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="container">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="label">Unknown</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">6</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">0</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="video_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="bvwp_video_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Video</property>
+            <property name="use_markup">True</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="video">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="row_spacing">6</property>
+            <property name="column_spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="dimensions_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Dimensions:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="dimensions"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="vcodec_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Codec:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="vcodec"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="framerate_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Framerate:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="framerate"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="vbitrate_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Bitrate:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="video_bitrate"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="dimensions">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 x 0</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="dimensions_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="vcodec">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">N/A</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="vcodec_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="framerate">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 frames per second</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="framerate_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="video_bitrate">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 kbps</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="vbitrate_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">1</property>
+      </packing>
+    </child>
+    <child>
+      <object class="GtkBox" id="audio_vbox">
+        <property name="visible">True</property>
+        <property name="can_focus">False</property>
+        <property name="orientation">vertical</property>
+        <property name="spacing">6</property>
+        <child>
+          <object class="GtkLabel" id="bvwp_audio_label">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="label" translatable="yes">Audio</property>
+            <property name="use_markup">True</property>
+            <property name="xalign">0</property>
+            <attributes>
+              <attribute name="weight" value="bold"/>
+            </attributes>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">0</property>
+          </packing>
+        </child>
+        <child>
+          <object class="GtkGrid" id="audio">
+            <property name="visible">True</property>
+            <property name="can_focus">False</property>
+            <property name="row_spacing">6</property>
+            <property name="column_spacing">12</property>
+            <child>
+              <object class="GtkLabel" id="samplerate_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Sample rate:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="samplerate"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="samplerate">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 Hz</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="samplerate_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">2</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="abitrate_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Bitrate:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="audio_bitrate"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="audio_bitrate">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 kbps</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="abitrate_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">3</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="acodec_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Codec:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="acodec"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="acodec">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">N/A</property>
+                <property name="selectable">True</property>
+                <property name="ellipsize">end</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="acodec_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">0</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="channels_label">
+                <property name="visible">True</property>
+                <property name="can_focus">False</property>
+                <property name="margin_start">12</property>
+                <property name="label" translatable="yes">Channels:</property>
+                <property name="use_markup">True</property>
+                <property name="xalign">0</property>
+                <attributes>
+                  <attribute name="style" value="italic"/>
+                </attributes>
+                <accessibility>
+                  <relation type="label-for" target="channels"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">0</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="channels">
+                <property name="visible">True</property>
+                <property name="can_focus">True</property>
+                <property name="label">0 Channels</property>
+                <property name="selectable">True</property>
+                <property name="xalign">0</property>
+                <accessibility>
+                  <relation type="labelled-by" target="channels_label"/>
+                </accessibility>
+              </object>
+              <packing>
+                <property name="left_attach">1</property>
+                <property name="top_attach">1</property>
+              </packing>
+            </child>
+          </object>
+          <packing>
+            <property name="expand">False</property>
+            <property name="fill">True</property>
+            <property name="position">1</property>
+          </packing>
+        </child>
+      </object>
+      <packing>
+        <property name="expand">False</property>
+        <property name="fill">True</property>
+        <property name="position">2</property>
+      </packing>
+    </child>
+  </object>
+</interface>
