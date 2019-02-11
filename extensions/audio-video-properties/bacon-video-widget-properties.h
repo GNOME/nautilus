@@ -57,6 +57,6 @@ void bacon_video_widget_properties_set_has_type		(BaconVideoWidgetProperties *pr
 							 gboolean                    has_video,
 							 gboolean                    has_audio);
 void bacon_video_widget_properties_set_framerate	(BaconVideoWidgetProperties *props,
-							 int                         framerate);
+							 float                       framerate);
 
 #endif /* BACON_VIDEO_WIDGET_PROPERTIES_H */
