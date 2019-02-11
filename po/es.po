@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-05 12:30+0000\n"
-"PO-Revision-Date: 2019-02-06 11:33+0100\n"
+"POT-Creation-Date: 2019-02-06 15:15+0000\n"
+"PO-Revision-Date: 2019-02-11 10:06+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -100,7 +100,7 @@ msgstr "Vista de lista"
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-preferences-window.ui:872
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:463
+#: src/resources/ui/nautilus-toolbar.ui:517
 msgid "Search"
 msgstr "Buscar"
 
@@ -4663,12 +4663,12 @@ msgstr ""
 "«Scripts»."
 
 # src/nautilus-first-time-druid.c:290
-#: src/nautilus-toolbar.c:836 src/resources/ui/nautilus-toolbar.ui:349
+#: src/nautilus-toolbar.c:836 src/resources/ui/nautilus-toolbar.ui:403
 msgid "_Undo"
 msgstr "_Deshacer"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-toolbar.c:843 src/resources/ui/nautilus-toolbar.ui:363
+#: src/nautilus-toolbar.c:843 src/resources/ui/nautilus-toolbar.ui:417
 msgid "_Redo"
 msgstr "_Rehacer"
 
@@ -5921,91 +5921,87 @@ msgstr "Los archivos destacados aparecerán aquí"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-undo-signal-handlers.c:174
 #: src/resources/ui/nautilus-toolbar.ui:117
-#| msgid "_Edit"
 msgid "Edit"
 msgstr "Editar"
 
+# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
+# src/file-manager/fm-directory-view.c:2157 src/nautilus-window-menus.c:1153
 #: src/resources/ui/nautilus-toolbar.ui:218
+msgid "Select All"
+msgstr "Seleccionar todo"
+
+#: src/resources/ui/nautilus-toolbar.ui:245
+#| msgid "Show _Hidden Files"
+msgid "Show Hidden Files"
+msgstr "Mostrar archivos ocultos"
+
+#: src/resources/ui/nautilus-toolbar.ui:272
 msgid "_Sidebar"
 msgstr "_Barra lateral"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-first-time-druid.c:272
-#: src/resources/ui/nautilus-toolbar.ui:244
+#: src/resources/ui/nautilus-toolbar.ui:298
 msgid "_Preferences"
 msgstr "Prefere_ncias"
 
-#: src/resources/ui/nautilus-toolbar.ui:258
+#: src/resources/ui/nautilus-toolbar.ui:312
 msgid "_Keyboard Shortcuts"
 msgstr "_Atajos del teclado"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/nautilus-window-menus.c:1325
-#: src/resources/ui/nautilus-toolbar.ui:272
+#: src/resources/ui/nautilus-toolbar.ui:326
 msgid "_Help"
 msgstr "Ay_uda"
 
-#: src/resources/ui/nautilus-toolbar.ui:286
+#: src/resources/ui/nautilus-toolbar.ui:340
 msgid "_About Files"
 msgstr "Acerca _de Archivos"
 
-#: src/resources/ui/nautilus-toolbar.ui:499
+#: src/resources/ui/nautilus-toolbar.ui:553
 msgid "Go back"
 msgstr "Atrás"
 
-#: src/resources/ui/nautilus-toolbar.ui:526
+#: src/resources/ui/nautilus-toolbar.ui:580
 msgid "Go forward"
 msgstr "Adelante"
 
-#: src/resources/ui/nautilus-toolbar.ui:569
+#: src/resources/ui/nautilus-toolbar.ui:623
 msgid "Show operations"
 msgstr "Mostrar operaciones"
 
-#: src/resources/ui/nautilus-toolbar.ui:608
+#: src/resources/ui/nautilus-toolbar.ui:662
 msgid "Toggle view"
 msgstr "Conmutar vista"
 
-# src/file-manager/fm-directory-view.c:2270
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:20
-msgid "Zoom out"
-msgstr "Reducir"
-
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:39
-msgid "Reset zoom"
-msgstr "Restablecer nivel de ampliación"
-
-# src/file-manager/fm-directory-view.c:2268
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:57
-msgid "Zoom in"
-msgstr "Ampliar"
-
 #. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:97
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:33
 msgctxt "menu item"
 msgid "Sort"
 msgstr "Ordenación"
 
 #. This is used to sort by name in the toolbar view menu
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:108
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:52
 msgctxt "Sort Criterion"
 msgid "_A-Z"
 msgstr "_A-Z"
 
 #. This is used to sort by name, in descending order in the toolbar view menu
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:117
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:67
 msgctxt "Sort Criterion"
 msgid "_Z-A"
 msgstr "_Z-A"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:126
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:82
 msgid "Last _Modified"
 msgstr "Última _modificación"
 
 # src/file-manager/fm-list-view.c:1599
 # src/file-manager/fm-search-list-view.c:158
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:135
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:97
 msgid "_First Modified"
 msgstr "_Primera modificación"
 
@@ -6013,37 +6009,47 @@ msgstr "_Primera modificación"
 # libnautilus-private/nautilus-search-bar-criterion.c:46
 # src/file-manager/fm-list-view.c:1587
 # src/file-manager/fm-search-list-view.c:146
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:144
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:112
 msgid "_Size"
 msgstr "Ta_maño"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1094
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:153
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:127
 msgid "_Type"
 msgstr "_Tipo"
 
 # src/file-manager/fm-directory-view.c:2154
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:162
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:141
 msgid "Last _Trashed"
 msgstr "Último _eliminado"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:181
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:174
 msgid "_Visible Columns…"
 msgstr "_Columnas visibles…"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:189
-msgid "Show _Hidden Files"
-msgstr "Mostrar los archivos _ocultos"
-
 # src/file-manager/fm-properties-window.c:1573
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:197
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:188
 msgid "R_eload"
 msgstr "R_ecargar"
 
-#: src/resources/ui/nautilus-toolbar-view-menu.ui:205
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:201
 msgid "St_op"
 msgstr "Dete_ner"
+
+# src/file-manager/fm-directory-view.c:2270
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:225
+msgid "Zoom out"
+msgstr "Reducir"
+
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:247
+msgid "Reset zoom"
+msgstr "Restablecer nivel de ampliación"
+
+# src/file-manager/fm-directory-view.c:2268
+#: src/resources/ui/nautilus-toolbar-view-menu.ui:268
+msgid "Zoom in"
+msgstr "Ampliar"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
@@ -6271,11 +6277,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "Paste"
 #~ msgstr "Pegar"
-
-# #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
-# src/file-manager/fm-directory-view.c:2157 src/nautilus-window-menus.c:1153
-#~ msgid "Select All"
-#~ msgstr "Seleccionar todo"
 
 # components/music/nautilus-music-view.c:198
 #~ msgid "Comment"
