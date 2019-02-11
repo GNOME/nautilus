@@ -26,8 +26,6 @@
 #include <glib/gi18n-lib.h>
 #include <string.h>
 
-#include "totem-interface.h"
-
 #include "bacon-video-widget-properties.h"
 
 static void bacon_video_widget_properties_dispose (GObject *object);
@@ -258,7 +256,7 @@ bacon_video_widget_properties_new (void)
 
 	xml = gtk_builder_new ();
 	gtk_builder_set_translation_domain (xml, GETTEXT_PACKAGE);
-	if (gtk_builder_add_from_file (xml, DATADIR"/properties.ui", NULL) == 0) {
+	if (gtk_builder_add_from_resource (xml, "/org/gnome/nautilus/audio-video-properties/ui/properties.ui", NULL) == 0) {
 		g_object_unref (xml);
 		return NULL;
 	}

@@ -30,10 +30,8 @@
 #define GST_USE_UNSTABLE_API 1
 #include <gst/gst.h>
 
-#include "gst/totem-gst-helpers.h"
 #include "totem-properties-view.h"
-#include <libnautilus-extension/nautilus-extension-types.h>
-#include <libnautilus-extension/nautilus-property-page-provider.h>
+#include <nautilus-extension.h>
 
 #define WANT_MIME_TYPES 1
 #include "totem-mime-types.h"
@@ -83,7 +81,6 @@ static gpointer
 init_backend (gpointer data)
 {
 	gst_init (NULL, NULL);
-	totem_gst_disable_display_decoders ();
 	return NULL;
 }
 
@@ -135,7 +132,7 @@ void
 nautilus_module_initialize (GTypeModule *module)
 {
 	/* set up translation catalog */
-	bindtextdomain (GETTEXT_PACKAGE, GNOMELOCALEDIR);
+	bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 
 	totem_properties_plugin_register_type (module);

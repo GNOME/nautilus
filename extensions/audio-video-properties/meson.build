@@ -1,42 +1,48 @@
-libtotem_properties_page_sources = files(
-  'totem-properties-main.c',
-  'totem-properties-view.c'
+resources = gnome.compile_resources(
+  'nautilus-audio-video-properties-resources',
+  join_paths(
+    'resources', 'nautilus-audio-video-properties.gresource.xml'
+  ),
+  source_dir: 'resources',
+  c_name: 'nautilus_audio_video_properties',
 )
 
-libtotem_properties_page_deps = missing_plugins_deps + [
-  gtk_dep,
-  dependency('gthread-2.0'),
-  libnautilus_ext_dep,
+libtotem_properties_page_sources = files(
+  'totem-properties-main.c',
+  'totem-properties-view.c',
+  'bacon-video-widget-properties.c',
+) + resources
+
+libtotem_properties_page_deps = [
   gst_tag_dep,
-  libbacon_video_widget_properties_dep
+  gst_pbutils_dep,
 ]
 
 libtotem_properties_page = shared_module(
   'totem-properties-page',
-  sources: libtotem_properties_page_sources + gen_sources,
-  include_directories: top_inc,
-  dependencies: libtotem_properties_page_deps,
-  c_args: totem_common_cflags + [
+  sources: libtotem_properties_page_sources,
+  dependencies: libtotem_properties_page_deps + [
+    nautilus_extension
+  ],
+  c_args: [
     '-DG_LOG_DOMAIN="TotemPropertiesPage"'
   ],
   install: true,
-  install_dir: nautilusdir
+  install_dir: extensiondir
 )
 
 test_properties_page_sources = files(
   'totem-properties-main.c',
   'totem-properties-view.c',
+  'bacon-video-widget-properties.c',
   'test-properties-page.c'
-)
+) + resources
 
 executable(
   'test-properties-page',
-  test_properties_page_sources + gen_sources,
-  include_directories: top_inc,
+  test_properties_page_sources,
   dependencies: libtotem_properties_page_deps + [
-    libtotem_player_dep,
-    libbacon_video_widget_dep
+    nautilus_extension
   ],
-  c_args: totem_common_cflags
 )
 
