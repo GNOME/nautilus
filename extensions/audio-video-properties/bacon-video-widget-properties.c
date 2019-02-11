@@ -222,17 +222,15 @@ bacon_video_widget_properties_set_has_type (BaconVideoWidgetProperties *props,
 
 void
 bacon_video_widget_properties_set_framerate (BaconVideoWidgetProperties *props,
-					     int                         framerate)
+					     float                       framerate)
 {
 	gchar *temp;
 
 	g_return_if_fail (props != NULL);
 	g_return_if_fail (BACON_IS_VIDEO_WIDGET_PROPERTIES (props));
 
-	/* The FPS has to be done differently because it's a plural string */
-	if (framerate != 0) {
-		temp = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%d frame per second", "%d frames per second", framerate),
-					framerate);
+	if (framerate > 1.0) {
+		temp = g_strdup_printf ("%0.2f frames per second", framerate);
 	} else {
 		temp = g_strdup (C_("Frame rate", "N/A"));
 	}
