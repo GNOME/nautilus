@@ -121,6 +121,8 @@ libm = cc.find_library('m')
 
 if get_option('extensions')
   gexiv = dependency('gexiv2', version: '>= 0.10.0')
+  gst_tag_dep = dependency('gstreamer-tag-1.0')
+  gst_pbutils_dep = dependency('gstreamer-pbutils-1.0')
 endif
 gio = dependency('gio-2.0', version: glib_ver)
 gio_unix = dependency('gio-unix-2.0', version: glib_ver)
