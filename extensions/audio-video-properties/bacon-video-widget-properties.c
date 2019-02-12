@@ -101,19 +101,19 @@ bacon_video_widget_properties_reset (BaconVideoWidgetProperties *props)
 	gtk_widget_set_sensitive (item, FALSE);
 
 	/* Title */
-	bacon_video_widget_properties_set_label (props, "title", _("Unknown"));
+	bacon_video_widget_properties_set_label (props, "title", C_("Title", "Unknown"));
 	/* Artist */
-	bacon_video_widget_properties_set_label (props, "artist", _("Unknown"));
+	bacon_video_widget_properties_set_label (props, "artist", C_("Artist", "Unknown"));
 	/* Album */
-	bacon_video_widget_properties_set_label (props, "album", _("Unknown"));
+	bacon_video_widget_properties_set_label (props, "album", C_("Album", "Unknown"));
 	/* Year */
-	bacon_video_widget_properties_set_label (props, "year", _("Unknown"));
+	bacon_video_widget_properties_set_label (props, "year", C_("Year", "Unknown"));
 	/* Duration */
 	bacon_video_widget_properties_set_duration (props, 0);
 	/* Comment */
 	bacon_video_widget_properties_set_label (props, "comment", "");
 	/* Container */
-	bacon_video_widget_properties_set_label (props, "container", _("Unknown"));
+	bacon_video_widget_properties_set_label (props, "container", C_("Media container", "Unknown"));
 
 	/* Dimensions */
 	bacon_video_widget_properties_set_label (props, "dimensions", C_("Dimensions", "N/A"));
