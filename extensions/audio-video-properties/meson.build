@@ -11,6 +11,7 @@ libtotem_properties_page_sources = files(
   'totem-properties-main.c',
   'totem-properties-view.c',
   'bacon-video-widget-properties.c',
+  'totem-gst-helpers.c',
 ) + resources
 
 libtotem_properties_page_deps = [
@@ -35,6 +36,7 @@ test_properties_page_sources = files(
   'totem-properties-main.c',
   'totem-properties-view.c',
   'bacon-video-widget-properties.c',
+  'totem-gst-helpers.c',
   'test-properties-page.c'
 ) + resources
 
