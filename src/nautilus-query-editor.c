@@ -586,6 +586,8 @@ setup_widgets (NautilusQueryEditor *editor)
     g_signal_connect_swapped (editor->popover, "closed",
                               G_CALLBACK (gtk_widget_grab_focus), editor);
 
+    gtk_popover_set_modal (GTK_POPOVER (editor->popover), TRUE);
+
     g_object_bind_property (editor, "query",
                             editor->popover, "query",
                             G_BINDING_DEFAULT);
