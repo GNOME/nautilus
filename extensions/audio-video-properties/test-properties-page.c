@@ -22,6 +22,7 @@
 #define GST_USE_UNSTABLE_API 1
 #include <gst/gst.h>
 #include <glib/gi18n-lib.h>
+#include "totem-gst-helpers.h"
 #include "totem-properties-view.h"
 
 static GtkWidget *window, *props, *label;
@@ -55,6 +56,7 @@ int main (int argc, char **argv)
 	bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
 	textdomain (GETTEXT_PACKAGE);
 
+	totem_gst_disable_display_decoders ();
 	gst_init (&argc, &argv);
 	gtk_init (&argc, &argv);
 
