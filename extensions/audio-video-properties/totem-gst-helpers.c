@@ -23,46 +23,7 @@
  */
 
 #include "totem-gst-helpers.h"
-
-#include <gst/tag/tag.h>
-#include <gst/video/video-format.h>
-
-void
-totem_gst_message_print (GstMessage *msg,
-			 GstElement *play,
-			 const char *filename)
-{
-  GError *err = NULL;
-  char *dbg = NULL;
-
-  g_return_if_fail (GST_MESSAGE_TYPE (msg) == GST_MESSAGE_ERROR);
-
-  if (play != NULL) {
-    g_return_if_fail (filename != NULL);
-
-    GST_DEBUG_BIN_TO_DOT_FILE (GST_BIN_CAST (play),
-			       GST_DEBUG_GRAPH_SHOW_ALL ^ GST_DEBUG_GRAPH_SHOW_NON_DEFAULT_PARAMS,
-			       filename);
-  }
-
-  gst_message_parse_error (msg, &err, &dbg);
-  if (err) {
-    char *uri;
-
-    g_object_get (play, "uri", &uri, NULL);
-    GST_ERROR ("message = %s", GST_STR_NULL (err->message));
-    GST_ERROR ("domain  = %d (%s)", err->domain,
-        GST_STR_NULL (g_quark_to_string (err->domain)));
-    GST_ERROR ("code    = %d", err->code);
-    GST_ERROR ("debug   = %s", GST_STR_NULL (dbg));
-    GST_ERROR ("source  = %" GST_PTR_FORMAT, msg->src);
-    GST_ERROR ("uri     = %s", GST_STR_NULL (uri));
-    g_free (uri);
-
-    g_error_free (err);
-  }
-  g_free (dbg);
-}
+#include <gst/gstprotection.h>
 
 /* Disable decoders that require a display environment to work,
  * and that might cause crashes */
