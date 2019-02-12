@@ -26,6 +26,7 @@
 #include <gst/gst.h>
 
 #include "totem-properties-view.h"
+#include "totem-gst-helpers.h"
 #include <nautilus-extension.h>
 
 #define WANT_MIME_TYPES 1
@@ -76,6 +77,7 @@ static gpointer
 init_backend (gpointer data)
 {
 	gst_init (NULL, NULL);
+	totem_gst_disable_display_decoders ();
 	return NULL;
 }
 
