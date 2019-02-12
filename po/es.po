@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-06 15:15+0000\n"
-"PO-Revision-Date: 2019-02-11 10:06+0100\n"
+"POT-Creation-Date: 2019-02-11 15:14+0000\n"
+"PO-Revision-Date: 2019-02-12 11:05+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -116,7 +116,7 @@ msgstr "Otras ubicaciones"
 #. * in development builds.
 #.
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4639 src/nautilus-window.c:2864
+#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2864
 msgid "Files"
 msgstr "Archivos"
 
@@ -644,8 +644,8 @@ msgstr "Y"
 #: src/nautilus-files-view.c:6389 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:951
-#: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4630
-#: src/nautilus-properties-window.c:5713 src/nautilus-search-popover.c:583
+#: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4642
+#: src/nautilus-properties-window.c:5725 src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 msgid "_Cancel"
 msgstr "Cancelar"
@@ -654,9 +654,261 @@ msgstr "Cancelar"
 msgid "You can stop this operation by clicking cancel."
 msgstr "Puede parar esta operación pulsando cancelar."
 
+# libnautilus-private/nautilus-file.c:2936
+#. Title
+#. Artist
+#. Album
+#. Year
+#. Container
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:104
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:106
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:108
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:110
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:116
+#: src/nautilus-file.c:7374
+msgid "Unknown"
+msgstr "Desconocido"
+
+#. Dimensions
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:119
+msgctxt "Dimensions"
+msgid "N/A"
+msgstr "N/D"
+
+#. Video Codec
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:121
+msgctxt "Video codec"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:124
+msgctxt "Video bit rate"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:127
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:237
+msgctxt "Frame rate"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:131
+msgctxt "Audio bit rate"
+msgid "N/A"
+msgstr "N/D"
+
+#. Audio Codec
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:133
+msgctxt "Audio codec"
+msgid "N/A"
+msgstr "N/D"
+
+#. Sample rate
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:135
+msgid "0 Hz"
+msgstr "0 Hz"
+
+#. Channels
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:137
+#| msgid "Change"
+msgid "0 Channels"
+msgstr "0 canales"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:153
+#, c-format
+#| msgid "%'d hour"
+#| msgid_plural "%'d hours"
+msgid "%d hour"
+msgid_plural "%d hours"
+msgstr[0] "%d hora"
+msgstr[1] "%d horas"
+
+# libnautilus-private/nautilus-file.c:2594
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:155
+#, c-format
+#| msgid "%'d minute"
+#| msgid_plural "%'d minutes"
+msgid "%d minute"
+msgid_plural "%d minutes"
+msgstr[0] "%d minuto"
+msgstr[1] "%d minutos"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:158
+#, c-format
+#| msgid "%'d second"
+#| msgid_plural "%'d seconds"
+msgid "%d second"
+msgid_plural "%d seconds"
+msgstr[0] "%d segundo"
+msgstr[1] "%d segundos"
+
+# src/file-manager/fm-directory-view.c:1073
+#. 5 hours 2 minutes 12 seconds
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:164
+#, c-format
+#| msgid "%s %s, %s %s"
+msgctxt "time"
+msgid "%s %s %s"
+msgstr "%s %s %s"
+
+#. 2 minutes 12 seconds
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:167
+#, c-format
+msgctxt "time"
+msgid "%s %s"
+msgstr "%s %s"
+
+#. 0 seconds
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:173
+#| msgid "%'d second"
+#| msgid_plural "%'d seconds"
+msgid "0 seconds"
+msgstr "0 segundos"
+
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:234
+#, c-format
+#| msgid "%'d second"
+#| msgid_plural "%'d seconds"
+msgid "%d frame per second"
+msgid_plural "%d frames per second"
+msgstr[0] "%d marco por segundo"
+msgstr[1] "%d marcos por segundo"
+
+#: extensions/audio-video-properties/totem-properties-main.c:114
+#: extensions/audio-video-properties/totem-properties-view.c:273
+#| msgid "Audio"
+msgid "Audio/Video"
+msgstr "Sonido / Vídeo"
+
+#: extensions/audio-video-properties/totem-properties-view.c:133
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/totem-properties-view.c:162
+msgctxt "Stream bit rate"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/totem-properties-view.c:165
+#, c-format
+msgid "%d kbps"
+msgstr "%d kbps"
+
+#: extensions/audio-video-properties/totem-properties-view.c:182
+#, c-format
+msgid "%d × %d"
+msgstr "%d × %d"
+
+#: extensions/audio-video-properties/totem-properties-view.c:214
+#, c-format
+msgid "%d Hz"
+msgstr "%d Hz"
+
+#: extensions/audio-video-properties/totem-properties-view.c:222
+msgctxt "Sample rate"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/totem-properties-view.c:230
+msgid "Surround"
+msgstr "Envolvente"
+
+#: extensions/audio-video-properties/totem-properties-view.c:232
+msgid "Mono"
+msgstr "Mono"
+
+#: extensions/audio-video-properties/totem-properties-view.c:234
+msgid "Stereo"
+msgstr "Estéreo"
+
+#: extensions/audio-video-properties/totem-properties-view.c:243
+msgctxt "Number of audio channels"
+msgid "N/A"
+msgstr "N/D"
+
+#: extensions/audio-video-properties/totem-properties-view.c:275
+#: extensions/audio-video-properties/resources/ui/properties.ui:512
+#: src/nautilus-file.c:7437
+msgid "Audio"
+msgstr "Sonido"
+
+#: extensions/audio-video-properties/totem-properties-view.c:277
+#: extensions/audio-video-properties/resources/ui/properties.ui:321
+#: src/nautilus-file.c:7445 src/nautilus-mime-actions.c:206
+msgid "Video"
+msgstr "Vídeo"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:23
+#: src/resources/ui/nautilus-preferences-window.ui:54
+msgid "General"
+msgstr "General"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:47
+#| msgid "Title"
+msgid "Title:"
+msgstr "Título:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:67
+#| msgid "Artist name"
+msgid "Artist:"
+msgstr "Artista:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:87
+#| msgid "Illustration"
+msgid "Duration:"
+msgstr "Duración:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:107
+msgid "Year:"
+msgstr "Año:"
+
+# src/file-manager/fm-icon-view.c:109
+#: extensions/audio-video-properties/resources/ui/properties.ui:127
+#| msgid "Album name"
+msgid "Album:"
+msgstr "Álbum:"
+
+# components/music/nautilus-music-view.c:198
+#: extensions/audio-video-properties/resources/ui/properties.ui:235
+#| msgid "Comment"
+msgid "Comment:"
+msgstr "Comentario:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:273
+#| msgid "Continue"
+msgid "Container:"
+msgstr "Contenedor:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:345
+msgid "Dimensions:"
+msgstr "Dimensiones:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:365
+#: extensions/audio-video-properties/resources/ui/properties.ui:609
+msgid "Codec:"
+msgstr "Codificador:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:385
+msgid "Framerate:"
+msgstr "Tasa de fotogramas:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:405
+#: extensions/audio-video-properties/resources/ui/properties.ui:572
+msgid "Bitrate:"
+msgstr "Tasa de bits:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:536
+msgid "Sample rate:"
+msgstr "Frec. de muestreo:"
+
+#: extensions/audio-video-properties/resources/ui/properties.ui:646
+#| msgid "Change"
+msgid "Channels:"
+msgstr "Canales:"
+
 #: extensions/image-properties/nautilus-image-properties-page.c:129
 #: src/nautilus-files-view.c:395 src/nautilus-list-model.c:471
-#: src/nautilus-window-slot.c:1016
+#: src/nautilus-window-slot.c:1022
 msgid "Loading…"
 msgstr "Cargando…"
 
@@ -802,7 +1054,7 @@ msgid "Send files by mail…"
 msgstr "Enviar archivos por correo-e…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1680
+#: src/nautilus-application.c:179 src/nautilus-window-slot.c:1686
 msgid "Oops! Something went wrong."
 msgstr "Algo salió mal."
 
@@ -1200,7 +1452,7 @@ msgid "The group of the file."
 msgstr "El grupo del archivo."
 
 # src/file-manager/fm-properties-window.c:1493
-#: src/nautilus-column-utilities.c:121 src/nautilus-properties-window.c:4700
+#: src/nautilus-column-utilities.c:121 src/nautilus-properties-window.c:4712
 msgid "Permissions"
 msgstr "Permisos"
 
@@ -1655,15 +1907,10 @@ msgid "? items"
 msgstr "? elementos"
 
 # libnautilus-private/nautilus-file.c:2936
-#: src/nautilus-file.c:7374
-msgid "Unknown"
-msgstr "Desconocido"
-
-# libnautilus-private/nautilus-file.c:2936
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7400 src/nautilus-properties-window.c:1299
+#: src/nautilus-file.c:7400 src/nautilus-properties-window.c:1296
 msgid "unknown"
 msgstr "desconocido"
 
@@ -1671,10 +1918,6 @@ msgstr "desconocido"
 #: src/nautilus-file.c:7436 src/nautilus-file.c:7444 src/nautilus-file.c:7503
 msgid "Program"
 msgstr "Programa"
-
-#: src/nautilus-file.c:7437
-msgid "Audio"
-msgstr "Sonido"
 
 #: src/nautilus-file.c:7438
 msgid "Font"
@@ -1691,10 +1934,6 @@ msgstr "Marcado"
 #: src/nautilus-file.c:7442 src/nautilus-file.c:7443
 msgid "Text"
 msgstr "Texto"
-
-#: src/nautilus-file.c:7445 src/nautilus-mime-actions.c:206
-msgid "Video"
-msgstr "Vídeo"
 
 # src/file-manager/fm-properties-window.c:878
 #: src/nautilus-file.c:7446
@@ -3724,7 +3963,7 @@ msgstr "Cualquier cosa"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-mime-actions.c:109 src/nautilus-properties-window.c:4641
+#: src/nautilus-mime-actions.c:109 src/nautilus-properties-window.c:4653
 msgid "Folders"
 msgstr "Carpetas"
 
@@ -4081,7 +4320,7 @@ msgstr "Carpeta original"
 #.
 #: src/nautilus-operations-ui-manager.c:276
 #: src/nautilus-operations-ui-manager.c:308
-#: src/nautilus-properties-window.c:2358
+#: src/nautilus-properties-window.c:2355
 msgid "Contents:"
 msgstr "Contenido:"
 
@@ -4093,7 +4332,7 @@ msgstr "Archivo original"
 # src/file-manager/fm-properties-window.c:1100
 #: src/nautilus-operations-ui-manager.c:281
 #: src/nautilus-operations-ui-manager.c:313
-#: src/nautilus-properties-window.c:3217
+#: src/nautilus-properties-window.c:3221
 msgid "Size:"
 msgstr "Tamaño:"
 
@@ -4101,7 +4340,7 @@ msgstr "Tamaño:"
 # src/file-manager/fm-properties-window.c:1094
 #: src/nautilus-operations-ui-manager.c:286
 #: src/nautilus-operations-ui-manager.c:318
-#: src/nautilus-properties-window.c:3195
+#: src/nautilus-properties-window.c:3199
 msgid "Type:"
 msgstr "Tipo:"
 
@@ -4169,8 +4408,8 @@ msgstr "/"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:153 src/nautilus-properties-window.c:4136
-#: src/nautilus-properties-window.c:4166
+#: src/nautilus-preferences-window.c:153 src/nautilus-properties-window.c:4148
+#: src/nautilus-properties-window.c:4178
 msgid "None"
 msgstr "Ninguno"
 
@@ -4188,7 +4427,7 @@ msgid "This is disabled due to security considerations."
 msgstr "Esto está desactivado debido a consideraciones de seguridad."
 
 #: src/nautilus-program-choosing.c:392 src/nautilus-program-choosing.c:469
-#: src/nautilus-properties-window.c:3137
+#: src/nautilus-properties-window.c:3141
 msgid "There was an error launching the application."
 msgstr "Se ha producido un error al lanzar la aplicación."
 
@@ -4250,23 +4489,23 @@ msgstr[1] "%'d operaciones sobre archivos activas"
 msgid "All file operations have been successfully completed"
 msgstr "Todas las operaciones sobre los archivos se han completado con éxito"
 
-#: src/nautilus-properties-window.c:485
+#: src/nautilus-properties-window.c:482
 msgid "You cannot assign more than one custom icon at a time!"
 msgstr "No puede asignar más de un icono personalizado a la vez."
 
-#: src/nautilus-properties-window.c:486
+#: src/nautilus-properties-window.c:483
 msgid "Please drop just one image to set a custom icon."
 msgstr "Arrastre sólo una imagen para establecerla como icono personalizado."
 
-#: src/nautilus-properties-window.c:503
+#: src/nautilus-properties-window.c:500
 msgid "The file that you dropped is not local."
 msgstr "El archivo que ha soltado no es local."
 
-#: src/nautilus-properties-window.c:504 src/nautilus-properties-window.c:511
+#: src/nautilus-properties-window.c:501 src/nautilus-properties-window.c:508
 msgid "You can only use local images as custom icons."
 msgstr "Solamente puede usar imágenes locales como iconos personalizados."
 
-#: src/nautilus-properties-window.c:510
+#: src/nautilus-properties-window.c:507
 msgid "The file that you dropped is not an image."
 msgstr "El archivo que ha soltado no es una imagen."
 
@@ -4275,21 +4514,21 @@ msgstr "El archivo que ha soltado no es una imagen."
 # src/file-manager/fm-list-view.c:1581
 # src/file-manager/fm-search-list-view.c:140
 # src/nautilus-bookmarks-window.c:172
-#: src/nautilus-properties-window.c:636
+#: src/nautilus-properties-window.c:633
 msgid "_Name:"
 msgid_plural "_Names:"
 msgstr[0] "_Nombre:"
 msgstr[1] "_Nombres:"
 
 # src/file-manager/fm-directory-view.c:2151
-#: src/nautilus-properties-window.c:886
+#: src/nautilus-properties-window.c:883
 #, c-format
 msgid "Properties"
 msgstr "Propiedades"
 
 # src/file-manager/fm-directory-view.c:2151
 #. To translators: %s is the name of the folder.
-#: src/nautilus-properties-window.c:899
+#: src/nautilus-properties-window.c:896
 #, c-format
 msgctxt "folder"
 msgid "%s Properties"
@@ -4297,40 +4536,40 @@ msgstr "Propiedades de %s"
 
 # src/file-manager/fm-directory-view.c:2151
 #. To translators: %s is the name of the file.
-#: src/nautilus-properties-window.c:904
+#: src/nautilus-properties-window.c:901
 #, c-format
 msgctxt "file"
 msgid "%s Properties"
 msgstr "Propiedades de %s"
 
-#: src/nautilus-properties-window.c:1346
+#: src/nautilus-properties-window.c:1343
 #, c-format
 msgctxt "MIME type description (MIME type)"
 msgid "%s (%s)"
 msgstr "%s (%s)"
 
 # src/file-manager/fm-properties-window.c:542
-#: src/nautilus-properties-window.c:1564
+#: src/nautilus-properties-window.c:1561
 msgid "Cancel Group Change?"
 msgstr "¿Cancelar el cambio de grupo?"
 
 # src/file-manager/fm-properties-window.c:687
-#: src/nautilus-properties-window.c:1985
+#: src/nautilus-properties-window.c:1982
 msgid "Cancel Owner Change?"
 msgstr "¿Cancelar el cambio de propietario?"
 
 # src/file-manager/fm-properties-window.c:844
-#: src/nautilus-properties-window.c:2315
+#: src/nautilus-properties-window.c:2312
 msgid "nothing"
 msgstr "nada"
 
 # src/file-manager/fm-properties-window.c:846
-#: src/nautilus-properties-window.c:2319
+#: src/nautilus-properties-window.c:2316
 msgid "unreadable"
 msgstr "ilegible"
 
 # src/file-manager/fm-properties-window.c:856
-#: src/nautilus-properties-window.c:2331
+#: src/nautilus-properties-window.c:2328
 #, c-format
 msgid "%'d item, with size %s"
 msgid_plural "%'d items, totalling %s"
@@ -4338,85 +4577,85 @@ msgstr[0] "%'d elemento, con un tamaño de %s"
 msgstr[1] "%'d elementos, %s en total"
 
 # src/file-manager/fm-properties-window.c:864
-#: src/nautilus-properties-window.c:2341
+#: src/nautilus-properties-window.c:2338
 msgid "(some contents unreadable)"
 msgstr "(algunos contenidos son ilegibles)"
 
 #. Translators: "used" refers to the capacity of the filesystem
-#: src/nautilus-properties-window.c:2968
+#: src/nautilus-properties-window.c:2972
 msgid "used"
 msgstr "usado"
 
 #. Translators: "free" refers to the capacity of the filesystem
-#: src/nautilus-properties-window.c:2978
+#: src/nautilus-properties-window.c:2982
 msgid "free"
 msgstr "libre"
 
-#: src/nautilus-properties-window.c:2980
+#: src/nautilus-properties-window.c:2984
 msgid "Total capacity:"
 msgstr "Capacidad total:"
 
-#: src/nautilus-properties-window.c:2983
+#: src/nautilus-properties-window.c:2987
 msgid "Filesystem type:"
 msgstr "Tipo del sistema de archivos:"
 
-#: src/nautilus-properties-window.c:3136
+#: src/nautilus-properties-window.c:3140
 #, c-format
 msgid "Details: %s"
 msgstr "Detalles: %s"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1031
-#: src/nautilus-properties-window.c:3155
+#: src/nautilus-properties-window.c:3159
 msgid "Basic"
 msgstr "Básico"
 
 # src/nautilus-link-set-window.c:185
-#: src/nautilus-properties-window.c:3204
+#: src/nautilus-properties-window.c:3208
 msgid "Link target:"
 msgstr "Destino del enlace:"
 
-#: src/nautilus-properties-window.c:3227
+#: src/nautilus-properties-window.c:3231
 msgid "Parent folder:"
 msgstr "Carpeta padre:"
 
-#: src/nautilus-properties-window.c:3235
+#: src/nautilus-properties-window.c:3239
 msgid "Original folder:"
 msgstr "Carpeta original:"
 
-#: src/nautilus-properties-window.c:3244
+#: src/nautilus-properties-window.c:3248
 msgid "Volume:"
 msgstr "Volumen:"
 
-#: src/nautilus-properties-window.c:3252
+#: src/nautilus-properties-window.c:3256
 msgid "Trashed on:"
 msgstr "Movido a la papelera en:"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties-window.c:3262
+#: src/nautilus-properties-window.c:3270
 msgid "Accessed:"
 msgstr "Accedido:"
 
 # src/file-manager/fm-properties-window.c:1103
-#: src/nautilus-properties-window.c:3266
+#: src/nautilus-properties-window.c:3278
 msgid "Modified:"
 msgstr "Modificado:"
 
-#: src/nautilus-properties-window.c:3277
+#: src/nautilus-properties-window.c:3289
 msgid "Free space:"
 msgstr "Espacio libre:"
 
 # src/nautilus-sidebar.c:1145
 #. Translators: Here Disks mean the name of application GNOME Disks.
-#: src/nautilus-properties-window.c:3295
+#: src/nautilus-properties-window.c:3307
 msgid "Open in Disks"
 msgstr "Abrir en Discos"
 
 #. translators: this gets concatenated to "no read",
 #. * "no access", etc. (see following strings)
 #.
-#: src/nautilus-properties-window.c:4038 src/nautilus-properties-window.c:4053
-#: src/nautilus-properties-window.c:4070
+#: src/nautilus-properties-window.c:4050 src/nautilus-properties-window.c:4065
+#: src/nautilus-properties-window.c:4082
 msgid "no "
 msgstr "no "
 
@@ -4424,165 +4663,165 @@ msgstr "no "
 # libnautilus-private/nautilus-search-bar-criterion.c:71
 # libnautilus-private/nautilus-search-bar-criterion.c:86
 # libnautilus-private/nautilus-search-bar-criterion.c:141
-#: src/nautilus-properties-window.c:4042
+#: src/nautilus-properties-window.c:4054
 msgid "list"
 msgstr "lista"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-properties-window.c:4046
+#: src/nautilus-properties-window.c:4058
 msgid "read"
 msgstr "lectura"
 
-#: src/nautilus-properties-window.c:4057
+#: src/nautilus-properties-window.c:4069
 msgid "create/delete"
 msgstr "creación/eliminación"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1577
-#: src/nautilus-properties-window.c:4061
+#: src/nautilus-properties-window.c:4073
 msgid "write"
 msgstr "escritura"
 
-#: src/nautilus-properties-window.c:4072
+#: src/nautilus-properties-window.c:4084
 msgid "access"
 msgstr "acceso"
 
-#: src/nautilus-properties-window.c:4143
+#: src/nautilus-properties-window.c:4155
 msgid "List files only"
 msgstr "Sólo listar archivos"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties-window.c:4149
+#: src/nautilus-properties-window.c:4161
 msgid "Access files"
 msgstr "Acceder a archivos"
 
 # src/file-manager/dfos-xfer.c:713
-#: src/nautilus-properties-window.c:4155
+#: src/nautilus-properties-window.c:4167
 msgid "Create and delete files"
 msgstr "Crear y eliminar archivos"
 
-#: src/nautilus-properties-window.c:4173
+#: src/nautilus-properties-window.c:4185
 msgid "Read-only"
 msgstr "Sólo lectura"
 
 # libnautilus-private/nautilus-undo-signal-handlers.c:177
-#: src/nautilus-properties-window.c:4179
+#: src/nautilus-properties-window.c:4191
 msgid "Read and write"
 msgstr "Lectura y escritura"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties-window.c:4207
+#: src/nautilus-properties-window.c:4219
 msgid "Access:"
 msgstr "Acceso:"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
-#: src/nautilus-properties-window.c:4211
+#: src/nautilus-properties-window.c:4223
 msgid "Folder access:"
 msgstr "Acceso a carpeta:"
 
 # src/file-manager/fm-properties-window.c:1105
-#: src/nautilus-properties-window.c:4215
+#: src/nautilus-properties-window.c:4227
 msgid "File access:"
 msgstr "Acceso a archivo:"
 
 # src/file-manager/fm-properties-window.c:1554
-#: src/nautilus-properties-window.c:4311
+#: src/nautilus-properties-window.c:4323
 msgid "_Owner:"
 msgstr "_Propietario:"
 
 # src/file-manager/fm-properties-window.c:1554
-#: src/nautilus-properties-window.c:4321 src/nautilus-properties-window.c:4644
+#: src/nautilus-properties-window.c:4333 src/nautilus-properties-window.c:4656
 msgid "Owner:"
 msgstr "Propietario:"
 
 # src/file-manager/fm-properties-window.c:1557
-#: src/nautilus-properties-window.c:4347
+#: src/nautilus-properties-window.c:4359
 msgid "_Group:"
 msgstr "_Grupo:"
 
 # src/file-manager/fm-properties-window.c:1557
-#: src/nautilus-properties-window.c:4357 src/nautilus-properties-window.c:4658
+#: src/nautilus-properties-window.c:4369 src/nautilus-properties-window.c:4670
 msgid "Group:"
 msgstr "Grupo:"
 
 # src/file-manager/fm-properties-window.c:1560
-#: src/nautilus-properties-window.c:4381
+#: src/nautilus-properties-window.c:4393
 msgid "Others"
 msgstr "Otros"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-properties-window.c:1581
-#: src/nautilus-properties-window.c:4400
+#: src/nautilus-properties-window.c:4412
 msgid "Execute:"
 msgstr "Ejecución:"
 
-#: src/nautilus-properties-window.c:4403
+#: src/nautilus-properties-window.c:4415
 msgid "Allow _executing file as program"
 msgstr "Permitir _ejecutar el archivo como un programa"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-properties-window.c:4627
+#: src/nautilus-properties-window.c:4639
 msgid "Change Permissions for Enclosed Files"
 msgstr "Cambiar permisos a los archivos contenidos"
 
-#: src/nautilus-properties-window.c:4631
+#: src/nautilus-properties-window.c:4643
 msgid "Change"
 msgstr "Cambiar"
 
 # src/file-manager/fm-properties-window.c:1560
-#: src/nautilus-properties-window.c:4672
+#: src/nautilus-properties-window.c:4684
 msgid "Others:"
 msgstr "Otros:"
 
 # src/file-manager/fm-properties-window.c:1499
-#: src/nautilus-properties-window.c:4716
+#: src/nautilus-properties-window.c:4728
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Usted no es el propietario, por eso no puede cambiar estos permisos."
 
-#: src/nautilus-properties-window.c:4731
+#: src/nautilus-properties-window.c:4743
 msgid "Security context:"
 msgstr "Contexto de seguridad:"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-properties-window.c:4747
+#: src/nautilus-properties-window.c:4759
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Cambiar permisos a los archivos contenidos…"
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-properties-window.c:4760
+#: src/nautilus-properties-window.c:4772
 #, c-format
 msgid "The permissions of “%s” could not be determined."
 msgstr "Los permisos de «%s» no se han podido determinar."
 
 # src/file-manager/fm-properties-window.c:1641
-#: src/nautilus-properties-window.c:4765
+#: src/nautilus-properties-window.c:4777
 msgid "The permissions of the selected file could not be determined."
 msgstr "Los permisos del archivo seleccionado no se han podido determinar."
 
 # src/file-manager/fm-directory-view.c:2117
-#: src/nautilus-properties-window.c:5029
+#: src/nautilus-properties-window.c:5041
 msgid "Open With"
 msgstr "Abrir con"
 
 # libnautilus-private/nautilus-global-preferences.c:750
-#: src/nautilus-properties-window.c:5426
+#: src/nautilus-properties-window.c:5438
 msgid "Creating Properties window."
 msgstr "Creando ventana de propiedades."
 
-#: src/nautilus-properties-window.c:5710
+#: src/nautilus-properties-window.c:5722
 msgid "Select Custom Icon"
 msgstr "Seleccione el icono personalizado"
 
 # libnautilus-private/nautilus-global-preferences.c:592
-#: src/nautilus-properties-window.c:5712
+#: src/nautilus-properties-window.c:5724
 msgid "_Revert"
 msgstr "_Revertir"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # src/file-manager/fm-directory-view.c:2114
 #. Open item is always present
-#: src/nautilus-properties-window.c:5714 src/gtk/nautilusgtkplacesview.c:1681
+#: src/nautilus-properties-window.c:5726 src/gtk/nautilusgtkplacesview.c:1681
 msgid "_Open"
 msgstr "_Abrir"
 
@@ -4663,12 +4902,12 @@ msgstr ""
 "«Scripts»."
 
 # src/nautilus-first-time-druid.c:290
-#: src/nautilus-toolbar.c:836 src/resources/ui/nautilus-toolbar.ui:403
+#: src/nautilus-toolbar.c:839 src/resources/ui/nautilus-toolbar.ui:403
 msgid "_Undo"
 msgstr "_Deshacer"
 
 # src/file-manager/fm-properties-window.c:1573
-#: src/nautilus-toolbar.c:843 src/resources/ui/nautilus-toolbar.ui:417
+#: src/nautilus-toolbar.c:846 src/resources/ui/nautilus-toolbar.ui:417
 msgid "_Redo"
 msgstr "_Rehacer"
 
@@ -4861,54 +5100,54 @@ msgstr ""
 "Ismael Olea <ismael@olea.org>, 2001\n"
 "Jorge Carrasquilla Soares <jorge@conectiva.com.br>, 2000"
 
-#: src/nautilus-window-slot.c:1149
+#: src/nautilus-window-slot.c:1155
 msgid "Searching locations only"
 msgstr "Buscando sólo ubicaciones"
 
-#: src/nautilus-window-slot.c:1153
+#: src/nautilus-window-slot.c:1159
 msgid "Searching network locations only"
 msgstr "Buscando sólo ubicaciones de red"
 
-#: src/nautilus-window-slot.c:1158
+#: src/nautilus-window-slot.c:1164
 msgid "Remote location — only searching the current folder"
 msgstr "Ubicación remota: buscando solo en la carpeta actual"
 
-#: src/nautilus-window-slot.c:1162
+#: src/nautilus-window-slot.c:1168
 msgid "Only searching the current folder"
 msgstr "Buscando solo en la carpeta actual"
 
-#: src/nautilus-window-slot.c:1686
+#: src/nautilus-window-slot.c:1692
 msgid "Unable to display the contents of this folder."
 msgstr "No se pudo mostrar el contenido de esta carpeta."
 
 # src/nautilus-window-menus.c:602
-#: src/nautilus-window-slot.c:1690
+#: src/nautilus-window-slot.c:1696
 msgid "This location doesn’t appear to be a folder."
 msgstr "Este lugar no es una carpeta."
 
 # src/nautilus-window-manage-views.c:1241
-#: src/nautilus-window-slot.c:1699
+#: src/nautilus-window-slot.c:1705
 msgid ""
 "Unable to find the requested file. Please check the spelling and try again."
 msgstr ""
 "No se pudo encontrar el archivo solicitado. Compruebe que lo ha escrito bien "
 "e inténtelo de nuevo."
 
-#: src/nautilus-window-slot.c:1708
+#: src/nautilus-window-slot.c:1714
 #, c-format
 msgid "“%s” locations are not supported."
 msgstr "«%s» lugares no soportados."
 
 # src/nautilus-window-manage-views.c:1281
-#: src/nautilus-window-slot.c:1713
+#: src/nautilus-window-slot.c:1719
 msgid "Unable to handle this kind of location."
 msgstr "No se puede manejar este tipo de lugar."
 
-#: src/nautilus-window-slot.c:1721
+#: src/nautilus-window-slot.c:1727
 msgid "Unable to access the requested location."
 msgstr "No se pudo acceder al lugar solicitado."
 
-#: src/nautilus-window-slot.c:1727
+#: src/nautilus-window-slot.c:1733
 msgid "Don’t have permission to access the requested location."
 msgstr "No tiene permiso para acceder a la ubicación solicitada."
 
@@ -4917,7 +5156,7 @@ msgstr "No tiene permiso para acceder a la ubicación solicitada."
 #. * But this case is also hit for legitimate web addresses when
 #. * the proxy is set up wrong.
 #.
-#: src/nautilus-window-slot.c:1738
+#: src/nautilus-window-slot.c:1744
 msgid ""
 "Unable to find the requested location. Please check the spelling or the "
 "network settings."
@@ -4925,12 +5164,12 @@ msgstr ""
 "No se pudo encontrar el lugar solicitado. Compruebe que lo ha escrito bien o "
 "la configuración de la red."
 
-#: src/nautilus-window-slot.c:1757
+#: src/nautilus-window-slot.c:1763
 #, c-format
 msgid "Unhandled error message: %s"
 msgstr "Mensaje de error no manejado: %s"
 
-#: src/nautilus-window-slot.c:1932
+#: src/nautilus-window-slot.c:1938
 #, c-format
 msgid "Unable to load location"
 msgstr "No se pudo cargar el lugar"
@@ -5595,10 +5834,6 @@ msgstr "Abrir en una pe_staña nueva"
 msgid "Preferences"
 msgstr "Preferencias"
 
-#: src/resources/ui/nautilus-preferences-window.ui:54
-msgid "General"
-msgstr "General"
-
 #: src/resources/ui/nautilus-preferences-window.ui:71
 msgid "_Show sidebar"
 msgstr "_Mostrar barra lateral"
@@ -5931,7 +6166,6 @@ msgid "Select All"
 msgstr "Seleccionar todo"
 
 #: src/resources/ui/nautilus-toolbar.ui:245
-#| msgid "Show _Hidden Files"
 msgid "Show Hidden Files"
 msgstr "Mostrar archivos ocultos"
 
@@ -6277,10 +6511,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "Paste"
 #~ msgstr "Pegar"
-
-# components/music/nautilus-music-view.c:198
-#~ msgid "Comment"
-#~ msgstr "Comentario"
 
 #~ msgid "URL"
 #~ msgstr "URL"
@@ -8272,9 +8502,6 @@ msgstr "Introduzca la dirección del servidor…"
 
 #~ msgid "Please verify your user details."
 #~ msgstr "Verificar sus detalles de usuario."
-
-#~ msgid "Continue"
-#~ msgstr "Continuar"
 
 # libnautilus-private/nautilus-global-preferences.c:592
 #~ msgid "_Server:"
