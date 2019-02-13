@@ -1727,13 +1727,11 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
                 detail_message = g_strdup (_("Unable to access the requested location."));
             }
             break;
-
             case G_IO_ERROR_PERMISSION_DENIED:
             {
                 detail_message = g_strdup (_("Don’t have permission to access the requested location."));
             }
             break;
-
             case G_IO_ERROR_HOST_NOT_FOUND:
             {
                 /* This case can be hit for user-typed strings like "foo" due to
@@ -1744,7 +1742,14 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
                 detail_message = g_strdup (_("Unable to find the requested location. Please check the spelling or the network settings."));
             }
             break;
-
+            case G_IO_ERROR_CONNECTION_REFUSED:
+            {
+                /* This case can be hit when server application is not installed or is inactive in the
+                 * system user is trying to connect to.
+                 */
+                detail_message = g_strdup (_("Connection refused by server. Please check if the server application is installed and is active."));
+            }
+            break;
             case G_IO_ERROR_CANCELLED:
             case G_IO_ERROR_FAILED_HANDLED:
             {
