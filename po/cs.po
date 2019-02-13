@@ -21,8 +21,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-11 15:14+0000\n"
-"PO-Revision-Date: 2019-02-12 12:52+0100\n"
+"POT-Creation-Date: 2019-02-13 11:47+0000\n"
+"PO-Revision-Date: 2019-02-13 12:59+0100\n"
 "Last-Translator: Marek Černocký <marek@manet.cz>\n"
 "Language-Team: čeština <gnome-cs-list@gnome.org>\n"
 "Language: cs\n"
@@ -615,18 +615,34 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Tuto operaci můžete zastavit kliknutím na Zrušit."
 
 #. Title
-#. Artist
-#. Album
-#. Year
-#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:104
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:106
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:108
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:110
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:116
-#: src/nautilus-file.c:7374
+msgctxt "Title"
 msgid "Unknown"
-msgstr "Neznámý"
+msgstr "neznámý"
+
+#. Artist
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:106
+msgctxt "Artist"
+msgid "Unknown"
+msgstr "neznámý"
+
+#. Album
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:108
+msgctxt "Album"
+msgid "Unknown"
+msgstr "neznámé"
+
+#. Year
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:110
+msgctxt "Year"
+msgid "Unknown"
+msgstr "neznámý"
+
+#. Container
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:116
+msgctxt "Media container"
+msgid "Unknown"
+msgstr "neznámý"
 
 #. Dimensions
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:119
@@ -646,7 +662,7 @@ msgid "N/A"
 msgstr "–"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:127
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:237
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:235
 msgctxt "Frame rate"
 msgid "N/A"
 msgstr "–"
@@ -715,15 +731,7 @@ msgstr "%s %s"
 msgid "0 seconds"
 msgstr "0 sekund"
 
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:234
-#, c-format
-msgid "%d frame per second"
-msgid_plural "%d frames per second"
-msgstr[0] "%d snímek za sekundu"
-msgstr[1] "%d snímky za sekundu"
-msgstr[2] "%d snímků za sekundu"
-
-#: extensions/audio-video-properties/totem-properties-main.c:114
+#: extensions/audio-video-properties/totem-properties-main.c:116
 #: extensions/audio-video-properties/totem-properties-view.c:273
 msgid "Audio/Video"
 msgstr "Zvuk/video"
@@ -1729,6 +1737,10 @@ msgstr "? bajtů"
 #: src/nautilus-file.c:7366
 msgid "? items"
 msgstr "? položek"
+
+#: src/nautilus-file.c:7374
+msgid "Unknown"
+msgstr "Neznámý"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
@@ -5850,3 +5862,9 @@ msgstr "Připojit se k _serveru"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "zadejte adresu serveru…"
+
+#~ msgid "%d frame per second"
+#~ msgid_plural "%d frames per second"
+#~ msgstr[0] "%d snímek za sekundu"
+#~ msgstr[1] "%d snímky za sekundu"
+#~ msgstr[2] "%d snímků za sekundu"
