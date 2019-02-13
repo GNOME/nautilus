@@ -15,8 +15,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-11 15:14+0000\n"
-"PO-Revision-Date: 2019-02-11 20:48+0100\n"
+"POT-Creation-Date: 2019-02-13 11:47+0000\n"
+"PO-Revision-Date: 2019-02-13 13:38+0100\n"
 "Last-Translator: Piotr Drąg <piotrdrag@gmail.com>\n"
 "Language-Team: Polish <community-poland@mozilla.org>\n"
 "Language: pl\n"
@@ -615,16 +615,32 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Można zatrzymać to działanie klikając przycisk „Anuluj”."
 
 #. Title
-#. Artist
-#. Album
-#. Year
-#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:104
+msgctxt "Title"
+msgid "Unknown"
+msgstr "Nieznany"
+
+#. Artist
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:106
+msgctxt "Artist"
+msgid "Unknown"
+msgstr "Nieznany"
+
+#. Album
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:108
+msgctxt "Album"
+msgid "Unknown"
+msgstr "Nieznany"
+
+#. Year
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:110
+msgctxt "Year"
+msgid "Unknown"
+msgstr "Nieznany"
+
+#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:116
-#: src/nautilus-file.c:7374
+msgctxt "Media container"
 msgid "Unknown"
 msgstr "Nieznany"
 
@@ -646,7 +662,7 @@ msgid "N/A"
 msgstr "Brak danych"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:127
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:237
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:235
 msgctxt "Frame rate"
 msgid "N/A"
 msgstr "Brak danych"
@@ -715,15 +731,7 @@ msgstr "%s %s"
 msgid "0 seconds"
 msgstr "0 sekund"
 
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:234
-#, c-format
-msgid "%d frame per second"
-msgid_plural "%d frames per second"
-msgstr[0] "%d klatka na sekundę"
-msgstr[1] "%d klatki na sekundę"
-msgstr[2] "%d klatek na sekundę"
-
-#: extensions/audio-video-properties/totem-properties-main.c:114
+#: extensions/audio-video-properties/totem-properties-main.c:116
 #: extensions/audio-video-properties/totem-properties-view.c:273
 msgid "Audio/Video"
 msgstr "Dźwięk/obraz"
@@ -1733,6 +1741,10 @@ msgstr "? bajtów"
 #: src/nautilus-file.c:7366
 msgid "? items"
 msgstr "? elementów"
+
+#: src/nautilus-file.c:7374
+msgid "Unknown"
+msgstr "Nieznany"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
