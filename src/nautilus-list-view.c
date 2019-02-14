@@ -2692,11 +2692,25 @@ static void
 nautilus_list_view_clear (NautilusFilesView *view)
 {
     NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *tree_selection;
+    GtkTreePath *path;
 
     list_view = NAUTILUS_LIST_VIEW (view);
 
     if (list_view->details->model != NULL)
     {
+        tree_view = list_view->details->tree_view;
+
+        /* Clear the current selection */
+        tree_selection = gtk_tree_view_get_selection (tree_view);
+        gtk_tree_selection_unselect_all (tree_selection);
+
+        /* Clear the current cursor */
+        path = gtk_tree_path_new ();
+        gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+        gtk_tree_path_free (path);
+
         nautilus_list_model_clear (list_view->details->model);
     }
 }
