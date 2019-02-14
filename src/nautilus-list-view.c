@@ -2692,11 +2692,42 @@ static void
 nautilus_list_view_clear (NautilusFilesView *view)
 {
     NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *tree_selection;
+    GtkTreePath *path;
 
     list_view = NAUTILUS_LIST_VIEW (view);
 
     if (list_view->details->model != NULL)
     {
+        tree_view = list_view->details->tree_view;
+
+        /* When the current cursor's row gets deleted, GTK will move the cursor to
+         * the next row, and when setting the cursor it also selects the new
+         * cursor's row, thereby triggering selection signals. The new cursor will
+         * soon be deleted again and the loop repeats.
+         *
+         * Since clear() removes all entries, those selections are useless but they
+         * take up most of the time in clear(). For example, when a search returns
+         * a large list, exiting from the search view would make nautilus hang.
+         *
+         * At the time the code is written simply removing the cursor solves the
+         * problem, but to be future-proof in case GTK does anything fancy with
+         * the current selection, we also remove the selection.
+         *
+         * Because GTK internally seeking the cursor takes time, only blocking the
+         * selection signal like everywhere else will not remove that overhead.
+         */
+
+        /* Clear the current selection */
+        tree_selection = gtk_tree_view_get_selection (tree_view);
+        gtk_tree_selection_unselect_all (tree_selection);
+
+        /* Clear the current cursor */
+        path = gtk_tree_path_new ();
+        gtk_tree_view_set_cursor (tree_view, path, NULL, FALSE);
+        gtk_tree_path_free (path);
+
         nautilus_list_model_clear (list_view->details->model);
     }
 }
