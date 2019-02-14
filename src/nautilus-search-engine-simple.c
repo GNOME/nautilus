@@ -58,6 +58,9 @@ typedef struct
     GList *hits;
 
     NautilusQuery *query;
+
+    GMutex idle_mutex;
+    GQueue *idle_queue;
 } SearchThreadData;
 
 
@@ -107,6 +110,9 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 
     data->cancellable = g_cancellable_new ();
 
+    g_mutex_init (&data->idle_mutex);
+    data->idle_queue = g_queue_new ();
+
     return data;
 }
 
@@ -122,14 +128,15 @@ search_thread_data_free (SearchThreadData *data)
     g_clear_pointer (&data->mime_types, g_ptr_array_unref);
     g_list_free_full (data->hits, g_object_unref);
     g_object_unref (data->engine);
+    g_mutex_clear (&data->idle_mutex);
+    g_queue_free (data->idle_queue);
 
     g_free (data);
 }
 
-static gboolean
-search_thread_done_idle (gpointer user_data)
+static void
+search_thread_done_idle (SearchThreadData *data)
 {
-    SearchThreadData *data = user_data;
     NautilusSearchEngineSimple *engine = data->engine;
 
     if (g_cancellable_is_cancelled (data->cancellable))
@@ -147,48 +154,83 @@ search_thread_done_idle (gpointer user_data)
     g_object_notify (G_OBJECT (engine), "running");
 
     search_thread_data_free (data);
-
-    return FALSE;
 }
 
-typedef struct
-{
-    GList *hits;
-    SearchThreadData *thread_data;
-} SearchHitsData;
-
-
 static gboolean
-search_thread_add_hits_idle (gpointer user_data)
+search_thread_idle (gpointer user_data)
 {
-    SearchHitsData *data = user_data;
+    SearchThreadData *data;
+    GList *hits;
+    gboolean is_last;
 
-    if (!g_cancellable_is_cancelled (data->thread_data->cancellable))
+    data = user_data;
+
+    g_mutex_lock (&data->idle_mutex);
+    if (!g_queue_is_empty (data->idle_queue))
     {
-        DEBUG ("Simple engine add hits");
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->thread_data->engine),
-                                             data->hits);
+        hits = g_queue_pop_head (data->idle_queue);
+        is_last = g_queue_is_empty (data->idle_queue);
+        g_mutex_unlock (&data->idle_mutex);
+
+        if (hits)
+        {
+            if (!g_cancellable_is_cancelled (data->cancellable))
+            {
+                DEBUG ("Simple engine add hits");
+                nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
+                                                     hits);
+            }
+            g_list_free_full (hits, g_object_unref);
+
+            return is_last ? G_SOURCE_REMOVE : G_SOURCE_CONTINUE;
+        }
+        else
+        {
+            /* We're done, clean up */
+            search_thread_done_idle (data);
+        }
+    }
+    else
+    {
+        g_mutex_unlock (&data->idle_mutex);
     }
 
-    g_list_free_full (data->hits, g_object_unref);
-    g_free (data);
+    return G_SOURCE_REMOVE;
+}
 
-    return FALSE;
+static void
+start_idle (SearchThreadData *thread_data,
+            GList            *hits,
+            gboolean          finish)
+{
+    gboolean idle_stopped;
+
+    g_mutex_lock (&thread_data->idle_mutex);
+    idle_stopped = g_queue_is_empty (thread_data->idle_queue);
+    if (hits)
+    {
+        g_queue_push_tail (thread_data->idle_queue, hits);
+    }
+    if (finish)
+    {
+        g_queue_push_tail (thread_data->idle_queue, NULL);
+    }
+    g_mutex_unlock (&thread_data->idle_mutex);
+
+    if (idle_stopped)
+    {
+        g_idle_add (search_thread_idle, thread_data);
+    }
 }
 
 static void
 send_batch (SearchThreadData *thread_data)
 {
-    SearchHitsData *data;
-
     thread_data->n_processed_files = 0;
 
     if (thread_data->hits)
     {
-        data = g_new (SearchHitsData, 1);
-        data->hits = thread_data->hits;
-        data->thread_data = thread_data;
-        g_idle_add (search_thread_add_hits_idle, data);
+        start_idle (thread_data, thread_data->hits, FALSE);
     }
     thread_data->hits = NULL;
 }
@@ -391,7 +433,7 @@ search_thread_func (gpointer user_data)
         send_batch (data);
     }
 
-    g_idle_add (search_thread_done_idle, data);
+    start_idle (data, NULL, TRUE);
 
     return NULL;
 }
