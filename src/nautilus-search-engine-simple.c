@@ -58,6 +58,9 @@ typedef struct
     GList *hits;
 
     NautilusQuery *query;
+
+    GMutex idle_mutex;
+    GQueue *idle_queue;
 } SearchThreadData;
 
 
@@ -107,6 +110,9 @@ search_thread_data_new (NautilusSearchEngineSimple *engine,
 
     data->cancellable = g_cancellable_new ();
 
+    g_mutex_init (&data->idle_mutex);
+    data->idle_queue = g_queue_new ();
+
     return data;
 }
 
@@ -122,14 +128,15 @@ search_thread_data_free (SearchThreadData *data)
     g_clear_pointer (&data->mime_types, g_ptr_array_unref);
     g_list_free_full (data->hits, g_object_unref);
     g_object_unref (data->engine);
+    g_mutex_clear (&data->idle_mutex);
+    g_queue_free (data->idle_queue);
 
     g_free (data);
 }
 
-static gboolean
-search_thread_done_idle (gpointer user_data)
+static void
+search_thread_done_idle (SearchThreadData *data)
 {
-    SearchThreadData *data = user_data;
     NautilusSearchEngineSimple *engine = data->engine;
 
     if (g_cancellable_is_cancelled (data->cancellable))
@@ -147,48 +154,121 @@ search_thread_done_idle (gpointer user_data)
     g_object_notify (G_OBJECT (engine), "running");
 
     search_thread_data_free (data);
+}
 
-    return FALSE;
+static void
+search_thread_process_hits_idle (SearchThreadData *data, GList *hits)
+{
+    if (!g_cancellable_is_cancelled (data->cancellable))
+    {
+        DEBUG ("Simple engine add hits");
+        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->engine),
+                                             hits);
+    }
 }
 
 typedef struct
 {
-    GList *hits;
-    SearchThreadData *thread_data;
-} SearchHitsData;
-
+    gboolean clean_up;  /* Whether we are done and should clean up */
+    GList *hits;        /* Must be a valid list when clean_up is not set,
+                         * otherwise unused */
+} IdleQueueData;
 
 static gboolean
-search_thread_add_hits_idle (gpointer user_data)
+search_thread_idle (gpointer user_data)
 {
-    SearchHitsData *data = user_data;
+    SearchThreadData *thread_data;
+    IdleQueueData *queue_data;
+    gboolean is_last;
 
-    if (!g_cancellable_is_cancelled (data->thread_data->cancellable))
+    thread_data = user_data;
+
+    g_mutex_lock (&thread_data->idle_mutex);
+    queue_data = g_queue_pop_head (thread_data->idle_queue);
+    if (queue_data)
     {
-        DEBUG ("Simple engine add hits");
-        nautilus_search_provider_hits_added (NAUTILUS_SEARCH_PROVIDER (data->thread_data->engine),
-                                             data->hits);
+        is_last = g_queue_is_empty (thread_data->idle_queue);
+        g_mutex_unlock (&thread_data->idle_mutex);
+
+        if (!queue_data->clean_up)
+        {
+            search_thread_process_hits_idle (thread_data, queue_data->hits);
+            g_list_free_full (queue_data->hits, g_object_unref);
+            g_free (queue_data);
+
+            return is_last ? G_SOURCE_REMOVE : G_SOURCE_CONTINUE;
+        }
+        else
+        {
+            search_thread_done_idle (thread_data);
+            g_free (queue_data);
+        }
+    }
+    else
+    {
+        g_mutex_unlock (&thread_data->idle_mutex);
     }
 
-    g_list_free_full (data->hits, g_object_unref);
-    g_free (data);
+    return G_SOURCE_REMOVE;
+}
 
-    return FALSE;
+/* Do not directly call this function.
+ * Use start_idle_processing or start_idle_cleanup instead. */
+static void
+start_idle_processing_or_cleanup (SearchThreadData *thread_data,
+                                  GList            *hits,
+                                  gboolean          clean_up)
+{
+    gboolean idle_stopped;
+    IdleQueueData *queue_data;
+
+    g_assert (hits || clean_up);
+
+    g_mutex_lock (&thread_data->idle_mutex);
+    idle_stopped = g_queue_is_empty (thread_data->idle_queue);
+    if (hits)
+    {
+        queue_data = g_new (IdleQueueData, 1);
+        queue_data->clean_up = FALSE;
+        queue_data->hits = hits;
+        g_queue_push_tail (thread_data->idle_queue, queue_data);
+    }
+    if (clean_up)
+    {
+        queue_data = g_new (IdleQueueData, 1);
+        queue_data->clean_up = TRUE;
+        queue_data->hits = NULL;
+        g_queue_push_tail (thread_data->idle_queue, queue_data);
+    }
+    g_mutex_unlock (&thread_data->idle_mutex);
+
+    if (idle_stopped)
+    {
+        g_idle_add (search_thread_idle, thread_data);
+    }
+}
+
+static void
+start_idle_processing (SearchThreadData *thread_data,
+                       GList            *hits)
+{
+    start_idle_processing_or_cleanup (thread_data, hits, FALSE);
+}
+
+static void
+start_idle_cleanup (SearchThreadData *thread_data)
+{
+    start_idle_processing_or_cleanup (thread_data, NULL, TRUE);
 }
 
 static void
 send_batch (SearchThreadData *thread_data)
 {
-    SearchHitsData *data;
-
     thread_data->n_processed_files = 0;
 
     if (thread_data->hits)
     {
-        data = g_new (SearchHitsData, 1);
-        data->hits = thread_data->hits;
-        data->thread_data = thread_data;
-        g_idle_add (search_thread_add_hits_idle, data);
+        start_idle_processing (thread_data, thread_data->hits);
     }
     thread_data->hits = NULL;
 }
@@ -391,7 +471,7 @@ search_thread_func (gpointer user_data)
         send_batch (data);
     }
 
-    g_idle_add (search_thread_done_idle, data);
+    start_idle_cleanup (data);
 
     return NULL;
 }
