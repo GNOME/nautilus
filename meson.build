@@ -79,6 +79,7 @@ unsupported_cpus = [
   'parisc',
   'parisc64',
   'sh4',
+  'sparc',
   'sparc64',
 ]
 system_supports_seccomp = host_system == 'linux'
