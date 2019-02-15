@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-11 15:14+0000\n"
-"PO-Revision-Date: 2019-02-12 11:05+0100\n"
+"POT-Creation-Date: 2019-02-13 11:47+0000\n"
+"PO-Revision-Date: 2019-02-15 13:24+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: es <gnome-es-list@gnome.org>\n"
 "Language: es\n"
@@ -656,16 +656,41 @@ msgstr "Puede parar esta operación pulsando cancelar."
 
 # libnautilus-private/nautilus-file.c:2936
 #. Title
-#. Artist
-#. Album
-#. Year
-#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:104
+#| msgid "Unknown"
+msgctxt "Title"
+msgid "Unknown"
+msgstr "Desconocido"
+
+# libnautilus-private/nautilus-file.c:2936
+#. Artist
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:106
+#| msgid "Unknown"
+msgctxt "Artist"
+msgid "Unknown"
+msgstr "Desconocido"
+
+# libnautilus-private/nautilus-file.c:2936
+#. Album
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:108
+#| msgid "Unknown"
+msgctxt "Album"
+msgid "Unknown"
+msgstr "Desconocido"
+
+# libnautilus-private/nautilus-file.c:2936
+#. Year
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:110
+#| msgid "Unknown"
+msgctxt "Year"
+msgid "Unknown"
+msgstr "Desconocido"
+
+# libnautilus-private/nautilus-file.c:2936
+#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:116
-#: src/nautilus-file.c:7374
+#| msgid "Unknown"
+msgctxt "Media container"
 msgid "Unknown"
 msgstr "Desconocido"
 
@@ -687,7 +712,7 @@ msgid "N/A"
 msgstr "N/D"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:127
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:237
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:235
 msgctxt "Frame rate"
 msgid "N/A"
 msgstr "N/D"
@@ -710,14 +735,11 @@ msgstr "0 Hz"
 
 #. Channels
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:137
-#| msgid "Change"
 msgid "0 Channels"
 msgstr "0 canales"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:153
 #, c-format
-#| msgid "%'d hour"
-#| msgid_plural "%'d hours"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d hora"
@@ -726,8 +748,6 @@ msgstr[1] "%d horas"
 # libnautilus-private/nautilus-file.c:2594
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:155
 #, c-format
-#| msgid "%'d minute"
-#| msgid_plural "%'d minutes"
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d minuto"
@@ -735,8 +755,6 @@ msgstr[1] "%d minutos"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:158
 #, c-format
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d segundo"
@@ -746,7 +764,6 @@ msgstr[1] "%d segundos"
 #. 5 hours 2 minutes 12 seconds
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:164
 #, c-format
-#| msgid "%s %s, %s %s"
 msgctxt "time"
 msgid "%s %s %s"
 msgstr "%s %s %s"
@@ -760,23 +777,11 @@ msgstr "%s %s"
 
 #. 0 seconds
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:173
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
 msgid "0 seconds"
 msgstr "0 segundos"
 
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:234
-#, c-format
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
-msgid "%d frame per second"
-msgid_plural "%d frames per second"
-msgstr[0] "%d marco por segundo"
-msgstr[1] "%d marcos por segundo"
-
-#: extensions/audio-video-properties/totem-properties-main.c:114
+#: extensions/audio-video-properties/totem-properties-main.c:116
 #: extensions/audio-video-properties/totem-properties-view.c:273
-#| msgid "Audio"
 msgid "Audio/Video"
 msgstr "Sonido / Vídeo"
 
@@ -844,17 +849,14 @@ msgid "General"
 msgstr "General"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:47
-#| msgid "Title"
 msgid "Title:"
 msgstr "Título:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:67
-#| msgid "Artist name"
 msgid "Artist:"
 msgstr "Artista:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:87
-#| msgid "Illustration"
 msgid "Duration:"
 msgstr "Duración:"
 
@@ -864,18 +866,15 @@ msgstr "Año:"
 
 # src/file-manager/fm-icon-view.c:109
 #: extensions/audio-video-properties/resources/ui/properties.ui:127
-#| msgid "Album name"
 msgid "Album:"
 msgstr "Álbum:"
 
 # components/music/nautilus-music-view.c:198
 #: extensions/audio-video-properties/resources/ui/properties.ui:235
-#| msgid "Comment"
 msgid "Comment:"
 msgstr "Comentario:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:273
-#| msgid "Continue"
 msgid "Container:"
 msgstr "Contenedor:"
 
@@ -902,7 +901,6 @@ msgid "Sample rate:"
 msgstr "Frec. de muestreo:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:646
-#| msgid "Change"
 msgid "Channels:"
 msgstr "Canales:"
 
@@ -1905,6 +1903,11 @@ msgstr "? bytes "
 #: src/nautilus-file.c:7366
 msgid "? items"
 msgstr "? elementos"
+
+# libnautilus-private/nautilus-file.c:2936
+#: src/nautilus-file.c:7374
+msgid "Unknown"
+msgstr "Desconocido"
 
 # libnautilus-private/nautilus-file.c:2936
 #. Fallback, use for both unknown attributes and attributes
@@ -6439,6 +6442,13 @@ msgstr "Conectar al _servidor"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Introduzca la dirección del servidor…"
+
+#~| msgid "%'d second"
+#~| msgid_plural "%'d seconds"
+#~ msgid "%d frame per second"
+#~ msgid_plural "%d frames per second"
+#~ msgstr[0] "%d marco por segundo"
+#~ msgstr[1] "%d marcos por segundo"
 
 # src/file-manager/fm-directory-view.c:2126
 #~ msgid "New _Window"
