@@ -11,7 +11,6 @@
       <object class="GtkBox" id="sort_menu">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="tooltip_text" translatable="yes">View options</property>
         <property name="orientation">vertical</property>
         <child>
           <object class="GtkSeparator">
@@ -31,6 +30,7 @@
             <property name="visible">True</property>
             <property name="sensitive">False</property>
             <property name="can_focus">False</property>
+            <property name="tooltip_text" translatable="yes">View options</property>
             <property name="label" translatable="yes" context="menu item" comments="Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as &quot;A-Z&quot; or &quot;Last Modified&quot;.">Sort</property>
             <property name="xalign">0</property>
             <style>
