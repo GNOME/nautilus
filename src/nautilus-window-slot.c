@@ -1071,7 +1071,7 @@ change_files_view_mode (NautilusWindowSlot *self,
 }
 
 static void
-action_files_view_mode_toggle (GSimpleAction *action,
+action_files_view_mode_toggle ( GSimpleAction *action,
                                GVariant      *value,
                                gpointer       user_data)
 {
