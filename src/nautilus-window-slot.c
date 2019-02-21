@@ -35,7 +35,7 @@
 #include "nautilus-view.h"
 #include "nautilus-window.h"
 #include "nautilus-x-content-bar.h"
-
+#include <gtk/gtk.h>
 #include <glib/gi18n.h>
 
 #include "nautilus-file.h"
@@ -1070,8 +1070,10 @@ change_files_view_mode (NautilusWindowSlot *self,
     g_settings_set_enum (nautilus_preferences, preferences_key, view_id);
 }
 
-static void
-action_files_view_mode_toggle (GSimpleAction *action,
+static gboolean
+action_files_view_mode_toggle (gboolean       keyboard_mode,
+                                GtkTooltip    *tooltip,
+                                GSimpleAction *action,
                                GVariant      *value,
                                gpointer       user_data)
 {
@@ -1089,10 +1091,12 @@ action_files_view_mode_toggle (GSimpleAction *action,
     current_view_id = nautilus_files_view_get_view_id (priv->content_view);
     if (current_view_id == NAUTILUS_VIEW_LIST_ID)
     {
+        gtk_tooltip_set_text (tooltip, "Grid View");
         change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
     }
     else
     {
+        gtk_tooltip_set_text (tooltip, "List view");
         change_files_view_mode (self, NAUTILUS_VIEW_LIST_ID);
     }
 }
