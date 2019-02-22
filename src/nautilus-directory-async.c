@@ -2037,7 +2037,7 @@ lookup_monitors (GHashTable   *monitor_table,
                  NautilusFile *file)
 {
     /* To find monitors monitoring all files, use lookup_all_files_monitors. */
-    g_assert (file);
+    g_return_val_if_fail (file, NULL);
 
     return g_hash_table_lookup (monitor_table, file);
 }
