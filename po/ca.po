@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-11 15:14+0000\n"
+"POT-Creation-Date: 2019-02-21 10:36+0000\n"
 "PO-Revision-Date: 2019-02-12 20:49+0100\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -635,16 +635,32 @@ msgid "You can stop this operation by clicking cancel."
 msgstr "Podeu aturar aquesta operació fent clic a «Cancel·la»."
 
 #. Title
-#. Artist
-#. Album
-#. Year
-#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:104
+msgctxt "Title"
+msgid "Unknown"
+msgstr "Desconegut"
+
+#. Artist
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:106
+msgctxt "Artist"
+msgid "Unknown"
+msgstr "Desconegut"
+
+#. Album
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:108
+msgctxt "Album"
+msgid "Unknown"
+msgstr "Desconegut"
+
+#. Year
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:110
+msgctxt "Year"
+msgid "Unknown"
+msgstr "Desconegut"
+
+#. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:116
-#: src/nautilus-file.c:7374
+msgctxt "Media container"
 msgid "Unknown"
 msgstr "Desconegut"
 
@@ -666,7 +682,7 @@ msgid "N/A"
 msgstr "N/D"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:127
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:237
+#: extensions/audio-video-properties/bacon-video-widget-properties.c:235
 msgctxt "Frame rate"
 msgid "N/A"
 msgstr "N/D"
@@ -732,14 +748,7 @@ msgstr "%s %s"
 msgid "0 seconds"
 msgstr "0 segons"
 
-#: extensions/audio-video-properties/bacon-video-widget-properties.c:234
-#, c-format
-msgid "%d frame per second"
-msgid_plural "%d frames per second"
-msgstr[0] "%d fotograma per segon"
-msgstr[1] "%d fotogrames per segon"
-
-#: extensions/audio-video-properties/totem-properties-main.c:114
+#: extensions/audio-video-properties/totem-properties-main.c:116
 #: extensions/audio-video-properties/totem-properties-view.c:273
 msgid "Audio/Video"
 msgstr "Àudio/Vídeo"
@@ -1742,6 +1751,10 @@ msgstr "? bytes"
 #: src/nautilus-file.c:7366
 msgid "? items"
 msgstr "? elements"
+
+#: src/nautilus-file.c:7374
+msgid "Unknown"
+msgstr "Desconegut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
@@ -3577,12 +3590,12 @@ msgstr "Utilitza el valor per defecte"
 msgid "List View"
 msgstr "Vista de llista"
 
-#: src/nautilus-list-view.c:3345
+#: src/nautilus-list-view.c:3376
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s columnes visibles"
 
-#: src/nautilus-list-view.c:3365
+#: src/nautilus-list-view.c:3396
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Trieu l'ordre en què ha d'aparèixer la informació d'aquesta carpeta:"
 
@@ -5809,6 +5822,11 @@ msgstr "_Connecta al servidor"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Introduïu l'adreça del servidor..."
+
+#~ msgid "%d frame per second"
+#~ msgid_plural "%d frames per second"
+#~ msgstr[0] "%d fotograma per segon"
+#~ msgstr[1] "%d fotogrames per segon"
 
 #~ msgid "New _Window"
 #~ msgstr "_Finestra nova"
