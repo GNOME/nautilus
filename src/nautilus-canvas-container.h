@@ -155,9 +155,6 @@ typedef struct {
 	 * These must be implemented => These are signals !
 	 * The default "do nothing" is not good enough.
 	 */
-	gboolean     (* can_accept_item)	  (NautilusCanvasContainer *container,
-						   NautilusCanvasIconData *target, 
-						   const char *item_uri);
 	gboolean     (* get_stored_icon_position) (NautilusCanvasContainer *container,
 						     NautilusCanvasIconData *data,
 						     NautilusCanvasPosition *position);
