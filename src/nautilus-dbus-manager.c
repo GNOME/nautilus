@@ -105,11 +105,61 @@ handle_undo (NautilusDBusFileOperations *object,
     return TRUE; /* invocation was handled */
 }
 
+typedef struct
+{
+    NautilusDBusFileOperations *object;
+    GDBusMethodInvocation *invocation;
+} CreateFolderData;
+
+static void
+create_folder_data_free (CreateFolderData *data)
+{
+    g_clear_object (&data->object);
+    g_clear_object (&data->invocation);
+    g_slice_free (CreateFolderData, data);
+}
+
+static CreateFolderData *
+create_folder_data_new (NautilusDBusFileOperations *object,
+                        GDBusMethodInvocation      *invocation)
+{
+    CreateFolderData *data;
+
+    data = g_slice_new0 (CreateFolderData);
+    data->object = g_object_ref (object);
+    data->invocation = g_object_ref (invocation);
+
+    return data;
+}
+
+
 static void
 create_folder_on_finished (GFile    *new_file,
                            gboolean  success,
                            gpointer  callback_data)
 {
+    CreateFolderData *data;
+
+    data = callback_data;
+
+    if (success && new_file != NULL)
+    {
+        g_autofree gchar *uri = NULL;
+
+        uri = g_file_get_uri (new_file);
+        nautilus_dbus_file_operations_complete_create_folder (data->object,
+                                                              data->invocation,
+                                                              uri);
+    }
+    else
+    {
+        g_dbus_method_invocation_return_error_literal (data->invocation,
+                                                       G_DBUS_ERROR,
+                                                       G_DBUS_ERROR_FAILED,
+                                                       "Failed to create a new folder.");
+    }
+
+    create_folder_data_free (data);
     g_application_release (g_application_get_default ());
 }
 
@@ -122,6 +172,7 @@ handle_create_folder (NautilusDBusFileOperations *object,
     g_autoptr (GFile) parent_file = NULL;
     g_autofree gchar *basename = NULL;
     g_autofree gchar *parent_file_uri = NULL;
+    CreateFolderData *create_folder_data;
 
     file = g_file_new_for_uri (uri);
     basename = g_file_get_basename (file);
@@ -129,10 +180,10 @@ handle_create_folder (NautilusDBusFileOperations *object,
     parent_file_uri = g_file_get_uri (parent_file);
 
     g_application_hold (g_application_get_default ());
-    nautilus_file_operations_new_folder (NULL, parent_file_uri, basename,
-                                         create_folder_on_finished, NULL);
 
-    nautilus_dbus_file_operations_complete_create_folder (object, invocation);
+    create_folder_data = create_folder_data_new (object, invocation);
+    nautilus_file_operations_new_folder (NULL, parent_file_uri, basename,
+                                         create_folder_on_finished, create_folder_data);
     return TRUE; /* invocation was handled */
 }
 
