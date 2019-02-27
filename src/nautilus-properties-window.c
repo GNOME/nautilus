@@ -5162,6 +5162,9 @@ create_properties_window (StartupData *startup_data)
     /* append pages from available views */
     append_extension_pages (window);
 
+    /* don't show tabs if there isn't more than one visible page (e.g., a folder in trash) */
+    gtk_notebook_set_show_tabs (window->notebook, (gtk_notebook_get_n_pages (window->notebook) > 1));
+
     /* Update from initial state */
     properties_window_update (window, NULL);
 
