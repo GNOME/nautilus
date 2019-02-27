@@ -18,7 +18,7 @@ for building GNOME apps with Flatpak and GNOME Builder.
 
 # Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
-- [Tracker](https://gitlab.gnome.org/GNOME/tracker) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
+- [Tracker (including tracker-miners)](https://gitlab.gnome.org/GNOME/tracker) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
 
 ## Mailing List
 
