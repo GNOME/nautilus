@@ -68,8 +68,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-02-13 11:47+0000\n"
-"PO-Revision-Date: 2019-02-17 19:14+0200\n"
+"POT-Creation-Date: 2019-02-21 10:36+0000\n"
+"PO-Revision-Date: 2019-03-09 19:32+0200\n"
 "Last-Translator: Efstathios Iosifidis <iosifidis@opensuse.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -688,7 +688,6 @@ msgstr "Μπορείτε να διακόψετε αυτή τη λειτουργ�
 #
 #. Title
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:104
-#| msgid "Unknown"
 msgctxt "Title"
 msgid "Unknown"
 msgstr "Άγνωστος"
@@ -696,7 +695,6 @@ msgstr "Άγνωστος"
 #
 #. Artist
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:106
-#| msgid "Unknown"
 msgctxt "Artist"
 msgid "Unknown"
 msgstr "Άγνωστος"
@@ -704,7 +702,6 @@ msgstr "Άγνωστος"
 #
 #. Album
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:108
-#| msgid "Unknown"
 msgctxt "Album"
 msgid "Unknown"
 msgstr "Άγνωστο"
@@ -712,7 +709,6 @@ msgstr "Άγνωστο"
 #
 #. Year
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:110
-#| msgid "Unknown"
 msgctxt "Year"
 msgid "Unknown"
 msgstr "Άγνωστο"
@@ -720,7 +716,6 @@ msgstr "Άγνωστο"
 #
 #. Container
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:116
-#| msgid "Unknown"
 msgctxt "Media container"
 msgid "Unknown"
 msgstr "Άγνωστο"
@@ -766,14 +761,11 @@ msgstr "0 Hz"
 
 #. Channels
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:137
-#| msgid "Change"
 msgid "0 Channels"
 msgstr "0 κανάλια"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:153
 #, c-format
-#| msgid "%'d hour"
-#| msgid_plural "%'d hours"
 msgid "%d hour"
 msgid_plural "%d hours"
 msgstr[0] "%d ώρα"
@@ -781,8 +773,6 @@ msgstr[1] "%d ώρες"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:155
 #, c-format
-#| msgid "%'d minute"
-#| msgid_plural "%'d minutes"
 msgid "%d minute"
 msgid_plural "%d minutes"
 msgstr[0] "%d λεπτό"
@@ -790,8 +780,6 @@ msgstr[1] "%d λεπτά"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:158
 #, c-format
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
 msgid "%d second"
 msgid_plural "%d seconds"
 msgstr[0] "%d δευτερόλεπτο"
@@ -800,7 +788,6 @@ msgstr[1] "%d δευτερόλεπτα"
 #. 5 hours 2 minutes 12 seconds
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:164
 #, c-format
-#| msgid "%s %s, %s %s"
 msgctxt "time"
 msgid "%s %s %s"
 msgstr "%s %s %s"
@@ -814,14 +801,11 @@ msgstr "%s %s"
 
 #. 0 seconds
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:173
-#| msgid "%'d second"
-#| msgid_plural "%'d seconds"
 msgid "0 seconds"
 msgstr "0 δευτερόλεπτα"
 
 #: extensions/audio-video-properties/totem-properties-main.c:116
 #: extensions/audio-video-properties/totem-properties-view.c:273
-#| msgid "Audio"
 msgid "Audio/Video"
 msgstr "Ήχος/Βίντεο"
 
@@ -889,17 +873,14 @@ msgid "General"
 msgstr "Γενικά"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:47
-#| msgid "Title"
 msgid "Title:"
 msgstr "Τίτλος:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:67
-#| msgid "Artist name"
 msgid "Artist:"
 msgstr "Καλλιτέχνης:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:87
-#| msgid "Illustration"
 msgid "Duration:"
 msgstr "Διάρκεια:"
 
@@ -908,17 +889,14 @@ msgid "Year:"
 msgstr "Έτος:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:127
-#| msgid "Album name"
 msgid "Album:"
 msgstr "Άλμπουμ:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:235
-#| msgid "Document"
 msgid "Comment:"
 msgstr "Σχόλιο:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:273
-#, fuzzy
 #| msgid "Contents:"
 msgid "Container:"
 msgstr "Περιέκτης:"
@@ -946,7 +924,6 @@ msgid "Sample rate:"
 msgstr "Ρυθμός δειγματοληψίας:"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:646
-#| msgid "Change"
 msgid "Channels:"
 msgstr "Κανάλια:"
 
@@ -3734,12 +3711,12 @@ msgstr "Χρήση προεπιλογής"
 msgid "List View"
 msgstr "Προβολή λίστας"
 
-#: src/nautilus-list-view.c:3345
+#: src/nautilus-list-view.c:3376
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s ορατές στήλες"
 
-#: src/nautilus-list-view.c:3365
+#: src/nautilus-list-view.c:3396
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Επιλέξτε τον τρόπο ταξινόμησης των πληροφοριών στο φάκελο:"
 
@@ -5773,18 +5750,14 @@ msgid "Starred files will appear here"
 msgstr "Τα αρχεία που επισημάνθηκαν θα εμφανιστούν εδώ"
 
 #: src/resources/ui/nautilus-toolbar.ui:117
-#| msgctxt "shortcut window"
-#| msgid "Editing"
 msgid "Edit"
 msgstr "Επεξεργασία"
 
 #: src/resources/ui/nautilus-toolbar.ui:218
-#| msgid "Select _All"
 msgid "Select All"
 msgstr "Επιλογή όλων"
 
 #: src/resources/ui/nautilus-toolbar.ui:245
-#| msgid "Show _Hidden Files"
 msgid "Show Hidden Files"
 msgstr "Εμφάνιση κρυφών αρχείων"
 
