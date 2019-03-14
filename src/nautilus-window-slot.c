@@ -2696,10 +2696,15 @@ trash_state_changed_cb (NautilusTrashMonitor *monitor,
 {
     GFile *location;
     NautilusDirectory *directory;
+    NautilusView *view;
 
     location = nautilus_window_slot_get_current_location (user_data);
+    view = nautilus_window_slot_get_current_view (user_data);
 
-    if (location == NULL)
+    /* The signal 'trash-state-changed' could be emitted by NautilusTrashMonitor
+     * while a NautilusWindowSlot is still initializing the content view.
+     */
+    if (location == NULL || view == NULL)
     {
         return;
     }
