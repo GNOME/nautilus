@@ -2726,10 +2726,13 @@ nautilus_window_slot_show_trash_bar (NautilusWindowSlot *self)
     NautilusView *view;
 
     view = nautilus_window_slot_get_current_view (self);
-    bar = nautilus_trash_bar_new (NAUTILUS_FILES_VIEW (view));
-    gtk_widget_show (bar);
+    if (view != NULL)
+    {
+        bar = nautilus_trash_bar_new (NAUTILUS_FILES_VIEW (view));
+        gtk_widget_show (bar);
 
-    nautilus_window_slot_add_extra_location_widget (self, bar);
+        nautilus_window_slot_add_extra_location_widget (self, bar);
+    }
 }
 
 static void
