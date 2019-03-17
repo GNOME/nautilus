@@ -162,15 +162,17 @@ clear (NautilusBookmarkList *bookmarks)
 static void
 do_finalize (GObject *object)
 {
-    if (NAUTILUS_BOOKMARK_LIST (object)->monitor != NULL)
+    NautilusBookmarkList *self = NAUTILUS_BOOKMARK_LIST (object);
+
+    if (self->monitor != NULL)
     {
-        g_file_monitor_cancel (NAUTILUS_BOOKMARK_LIST (object)->monitor);
-        NAUTILUS_BOOKMARK_LIST (object)->monitor = NULL;
+        g_file_monitor_cancel (self->monitor);
+        self->monitor = NULL;
     }
 
-    g_queue_free (NAUTILUS_BOOKMARK_LIST (object)->pending_ops);
+    g_queue_free (self->pending_ops);
 
-    clear (NAUTILUS_BOOKMARK_LIST (object));
+    clear (self);
 
     G_OBJECT_CLASS (nautilus_bookmark_list_parent_class)->finalize (object);
 }
