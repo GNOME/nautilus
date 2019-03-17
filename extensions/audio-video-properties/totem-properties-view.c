@@ -232,6 +232,8 @@ update_audio (TotemPropertiesView    *props,
 			string = g_strdup (_("Mono"));
 		} else if (channels == 2) {
 			string = g_strdup (_("Stereo"));
+		} else {
+			string = g_strdup (""); //Should not happen
 		}
 		bacon_video_widget_properties_set_label (props->priv->props,
 							 "channels",
