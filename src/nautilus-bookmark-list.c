@@ -167,7 +167,7 @@ do_finalize (GObject *object)
     if (self->monitor != NULL)
     {
         g_file_monitor_cancel (self->monitor);
-        self->monitor = NULL;
+        g_clear_object (&self->monitor);
     }
 
     g_queue_free (self->pending_ops);
@@ -510,7 +510,7 @@ save_file_async (NautilusBookmarkList *self)
     if (self->monitor != NULL)
     {
         g_file_monitor_cancel (self->monitor);
-        self->monitor = NULL;
+        g_clear_object (&self->monitor);
     }
 
     for (l = self->list; l; l = l->next)
