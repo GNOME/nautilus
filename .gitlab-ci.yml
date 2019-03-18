@@ -104,6 +104,7 @@ ubuntu devel:
             libtracker-sparql-2.0-dev
             libtracker-control-2.0-dev
             gsettings-desktop-schemas-dev
+            gstreamer-tag
     before_script:
         # Ubuntu requires running update to fetch metadata and find packges
         - apt-get update
@@ -134,6 +135,7 @@ opensuse tumbleweed:
             gobject-introspection-devel
             gsettings-desktop-schemas-devel
             libseccomp-devel
+            gstreamer-tag
     before_script:
         - zypper install -y $DEPENDENCIES
     <<: *distro_test
