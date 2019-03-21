@@ -1,7 +1,7 @@
 ---
 app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
-runtime-version: master
+runtime-version: "3.32"
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
@@ -65,6 +65,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker.git
+    tag: 2.2.1
 - name: tracker-miners
   buildsystem: meson
   cleanup:
@@ -90,11 +91,12 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+    tag: 2.2.1
 - name: gnome-autoar
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/gnome-autoar.git
-    tag: 0.2.3
+    tag: 0.2.4
 - buildsystem: meson
   builddir: true
   name: nautilus
