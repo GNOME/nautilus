@@ -87,10 +87,10 @@ flatpak master:
     stage: cross_environment
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Master -Dtests=all -Db_coverage=true"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
-        APP_ID: "org.gnome.NautilusMaster"
+        APP_ID: "org.gnome.NautilusDevel"
     extends: .flatpak
     only:
         - schedules
@@ -101,10 +101,10 @@ flatpak gtk4:
     stage: cross_environment
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusGtk4.yml"
-        MESON_ARGS: "-Dprofile=Gtk4 -Dtests=all -Db_coverage=true"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
-        APP_ID: "org.gnome.NautilusGtk4"
+        APP_ID: "org.gnome.NautilusDevel"
     extends: .flatpak
     only:
         - schedules
