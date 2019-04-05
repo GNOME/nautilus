@@ -3012,8 +3012,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         g_binding_unbind (priv->templates_menu_binding);
         widget = GTK_WIDGET (priv->content_view);
         gtk_widget_destroy (widget);
-        g_object_unref (priv->content_view);
-        priv->content_view = NULL;
+        g_clear_object (&priv->content_view);
     }
 
     if (priv->new_content_view != NULL)
