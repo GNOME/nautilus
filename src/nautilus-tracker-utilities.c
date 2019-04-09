@@ -22,6 +22,7 @@
 #include "nautilus-global-preferences.h"
 
 #define TRACKER_KEY_RECURSIVE_DIRECTORIES "index-recursive-directories"
+#define TRACKER_KEY_SINGLE_DIRECTORIES "index-single-directories"
 
 static const gchar *
 path_from_tracker_dir (const gchar *value)
@@ -73,7 +74,7 @@ path_from_tracker_dir (const gchar *value)
 }
 
 static GList *
-get_tracker_locations (void)
+get_tracker_locations (const gchar *key)
 {
     g_auto (GStrv) locations = NULL;
     GList *list = NULL;
@@ -81,7 +82,7 @@ get_tracker_locations (void)
     GFile *location;
     const gchar *path;
 
-    locations = g_settings_get_strv (tracker_preferences, TRACKER_KEY_RECURSIVE_DIRECTORIES);
+    locations = g_settings_get_strv (tracker_preferences, key);
 
     for (idx = 0; locations[idx] != NULL; idx++)
     {
@@ -96,14 +97,24 @@ get_tracker_locations (void)
 gboolean
 nautilus_tracker_directory_is_tracked (GFile *directory)
 {
-    g_autolist (GFile) locations = NULL;
+    g_autolist (GFile) recursive_locations = NULL;
+    g_autolist (GFile) single_locations = NULL;
     GList *l;
 
-    locations = get_tracker_locations ();
-    for (l = locations; l != NULL; l = l->next)
+    recursive_locations = get_tracker_locations (TRACKER_KEY_RECURSIVE_DIRECTORIES);
+    for (l = recursive_locations; l != NULL; l = l->next)
     {
         if (g_file_equal (directory, G_FILE (l->data)) ||
             g_file_has_prefix (directory, G_FILE (l->data)))
+        {
+            return TRUE;
+        }
+    }
+
+    single_locations = get_tracker_locations (TRACKER_KEY_SINGLE_DIRECTORIES);
+    for (l = single_locations; l != NULL; l = l->next)
+    {
+        if (g_file_equal (directory, G_FILE (l->data)))
         {
             return TRUE;
         }
