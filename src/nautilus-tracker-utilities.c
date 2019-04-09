@@ -24,53 +24,70 @@
 #define TRACKER_KEY_RECURSIVE_DIRECTORIES "index-recursive-directories"
 #define TRACKER_KEY_SINGLE_DIRECTORIES "index-single-directories"
 
-static const gchar *
-path_from_tracker_dir (const gchar *value)
+static GFile *
+location_from_tracker_dir (const gchar *value)
 {
-    const gchar *path;
+    const gchar *special_dir;
+    g_autoptr (GFile) home = NULL;
+    GFile *location;
 
+    home = g_file_new_for_path (g_get_home_dir ());
+
+    if (g_strcmp0 (value, "$HOME") == 0)
+    {
+        return g_steal_pointer (&home);
+    }
+
+    special_dir = NULL;
     if (g_strcmp0 (value, "&DESKTOP") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_DESKTOP);
     }
     else if (g_strcmp0 (value, "&DOCUMENTS") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_DOCUMENTS);
     }
     else if (g_strcmp0 (value, "&DOWNLOAD") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_DOWNLOAD);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_DOWNLOAD);
     }
     else if (g_strcmp0 (value, "&MUSIC") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_MUSIC);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_MUSIC);
     }
     else if (g_strcmp0 (value, "&PICTURES") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_PICTURES);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_PICTURES);
     }
     else if (g_strcmp0 (value, "&PUBLIC_SHARE") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_PUBLIC_SHARE);
     }
     else if (g_strcmp0 (value, "&TEMPLATES") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_TEMPLATES);
     }
     else if (g_strcmp0 (value, "&VIDEOS") == 0)
     {
-        path = g_get_user_special_dir (G_USER_DIRECTORY_VIDEOS);
+        special_dir = g_get_user_special_dir (G_USER_DIRECTORY_VIDEOS);
     }
-    else if (g_strcmp0 (value, "$HOME") == 0)
+
+    if (special_dir != NULL)
     {
-        path = g_get_home_dir ();
+        location = g_file_new_for_commandline_arg (special_dir);
+
+        /* Ignore XDG directories set to $HOME, like the miner does */
+        if (g_file_equal (location, home))
+        {
+            g_clear_object (&location);
+        }
     }
     else
     {
-        path = value;
+        location = g_file_new_for_commandline_arg (value);
     }
 
-    return path;
+    return location;
 }
 
 static GList *
@@ -80,20 +97,37 @@ get_tracker_locations (const gchar *key)
     GList *list = NULL;
     gint idx;
     GFile *location;
-    const gchar *path;
 
     locations = g_settings_get_strv (tracker_preferences, key);
 
     for (idx = 0; locations[idx] != NULL; idx++)
     {
-        path = path_from_tracker_dir (locations[idx]);
-        location = g_file_new_for_commandline_arg (path);
-        list = g_list_prepend (list, location);
+        location = location_from_tracker_dir (locations[idx]);
+        if (location != NULL)
+        {
+            list = g_list_prepend (list, location);
+        }
     }
 
     return list;
 }
 
+/**
+ * nautilus_tracker_directory_is_tracked:
+ * @directory: a #GFile representing a directory
+ *
+ * This function reads the "index-recursive-directories" and
+ * "index-single-directories" keys from the org.freedesktop.tracker.miner.files
+ * schema, and assumes the listed directories (and their descendants for the
+ * former key) are tracked.
+ *
+ * Exception: XDG user dirs set to $HOME are ignored.
+ *
+ * FIXME: Tracker's files miner's logic is actually a lot more complex,
+ * including configurable ignore patterns, but we are overlooking that.
+ *
+ * Returns: $TRUE if the @directory is, in principle, tracked. $FALSE otherwise.
+ */
 gboolean
 nautilus_tracker_directory_is_tracked (GFile *directory)
 {
