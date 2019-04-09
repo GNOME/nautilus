@@ -102,7 +102,8 @@ nautilus_tracker_directory_is_tracked (GFile *directory)
     locations = get_tracker_locations ();
     for (l = locations; l != NULL; l = l->next)
     {
-        if (g_file_equal (directory, G_FILE (l->data)))
+        if (g_file_equal (directory, G_FILE (l->data)) ||
+            g_file_has_prefix (directory, G_FILE (l->data)))
         {
             return TRUE;
         }
