@@ -2268,7 +2268,7 @@ monitor_includes_file (const Monitor *monitor,
     {
         return FALSE;
     }
-    if (file == file->details->directory->details->as_file)
+    if (nautilus_file_is_self_owned (file))
     {
         return FALSE;
     }
@@ -2326,8 +2326,8 @@ is_needy (NautilusFile *file,
                 {
                     return TRUE;
                 }
-                if (callback->file == NULL
-                    && file != directory->details->as_file)
+                if (callback->file == NULL &&
+                    !nautilus_file_is_self_owned (file))
                 {
                     return TRUE;
                 }
