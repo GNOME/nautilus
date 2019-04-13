@@ -285,6 +285,16 @@ get_common_prefix_length (char *str_a,
     return matching_chars;
 }
 
+/**
+ * eel_str_get_common_prefix:
+ * @strs: a list of strings
+ * @min_required_len: the minimum number of characters required in prefix
+ *
+ * Returns: the common prefix of the list of strings.
+ * If there's no prefix, or the common prefix is smaller than
+ * min_required_len, this will return NULL.
+ * The result should be freed with g_free.
+*/
 char *
 eel_str_get_common_prefix (GList *strs,
                            int    min_required_len)
