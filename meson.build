@@ -147,6 +147,8 @@ tracker_sparql = dependency('tracker-sparql-2.0')
 x11 = dependency('x11')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
 
+fontconfig = dependency('fontconfig', required: false)
+
 ####################
 # End dependencies #
 ####################
@@ -165,6 +167,12 @@ endif
 
 application_id = 'org.gnome.Nautilus' + profile
 
+if fontconfig_dep.found()
+  fontconfig_cache_path = fontconfig.get_pkgconfig_variable('cachedir')
+else
+  fontconfig_cache_path = join_paths(libdir, 'fontconfig/cache')
+endif
+
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('INSTALL_PREFIX', prefix)
@@ -175,6 +183,7 @@ conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
 conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
+conf.set_quoted('FONTCONFIG_CACHE_PATH', fontconfig_cache_path)
 
 ###################################################
 # gnome-desktop macros for thumbnailer sandboxing #
