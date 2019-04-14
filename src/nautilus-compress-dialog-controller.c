@@ -298,6 +298,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       "seven_zip_radio_button_on_toggled",
                                       G_CALLBACK (seven_zip_radio_button_on_toggled),
                                       NULL);
+
     gtk_builder_connect_signals (builder, self);
 
     format = g_settings_get_enum (nautilus_compression_preferences,
