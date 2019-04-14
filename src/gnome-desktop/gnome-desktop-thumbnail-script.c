@@ -343,7 +343,7 @@ setup_seccomp (GPtrArray  *argv_array,
     {SCMP_SYS (clone), &SCMP_A0 (SCMP_CMP_MASKED_EQ, CLONE_NEWUSER, CLONE_NEWUSER)},
 
     /* Don't allow faking input to the controlling tty (CVE-2017-5226) */
-    {SCMP_SYS (ioctl), &SCMP_A1(SCMP_CMP_EQ, (int)TIOCSTI)},
+    {SCMP_SYS (ioctl), &SCMP_A1(SCMP_CMP_MASKED_EQ, 0xFFFFFFFFu, (int)TIOCSTI)},
   };
 
   struct
@@ -564,6 +564,10 @@ add_bwrap (GPtrArray   *array,
                     NULL);
         }
     }
+
+  /* fontconfig cache if necessary */
+  if (!g_str_has_prefix (FONTCONFIG_CACHE_PATH, "/usr/"))
+    add_args (array, "--ro-bind-try", FONTCONFIG_CACHE_PATH, FONTCONFIG_CACHE_PATH, NULL);
 
   add_args (array,
 	    "--proc", "/proc",
