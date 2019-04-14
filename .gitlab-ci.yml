@@ -54,11 +54,11 @@ flatpak devel:
     stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
-    extends: '.flatpak_gcovr'
+    extends: '.flatpak'
 
 review:
     stage: deploy
