@@ -969,6 +969,8 @@ get_preview_thumbnail (const char *uri,
 
     object = g_file_info_get_attribute_object (file_info,
                                                G_FILE_ATTRIBUTE_PREVIEW_ICON);
+    if (object)
+        g_object_ref (object);
     g_object_unref (file_info);
 
     if (!object)
