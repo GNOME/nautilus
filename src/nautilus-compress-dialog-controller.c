@@ -26,6 +26,8 @@
 
 #include "nautilus-global-preferences.h"
 
+#include "nautilus-file.h"
+
 struct _NautilusCompressDialogController
 {
     NautilusFileNameWidgetController parent_instance;
@@ -257,6 +259,12 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *seven_zip_radio_button;
     NautilusCompressionFormat format;
 
+    NautilusFile *existing_file;
+    g_autofree gchar *existing_file_name = NULL;
+    g_autofree gchar *suggested_name = NULL;
+    int version;
+    g_autofree gchar *version_suffix = NULL;
+
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
     compress_dialog = GTK_WIDGET (gtk_builder_get_object (builder, "compress_dialog"));
     error_revealer = GTK_WIDGET (gtk_builder_get_object (builder, "error_revealer"));
@@ -306,9 +314,31 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
 
     update_selected_format (self, format);
 
-    if (initial_name != NULL)
-    {
-        gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
+    if (initial_name != NULL) {
+        suggested_name = g_strdup(initial_name);
+
+        for (version = 2; version < 10; version = version + 1) {
+            existing_file_name = g_strconcat (suggested_name, self->extension, NULL);
+            existing_file = nautilus_directory_get_file_by_name (destination_directory,
+                                                                 existing_file_name);
+
+            if (existing_file != NULL)
+            {
+                g_free(existing_file_name);
+                nautilus_file_unref (existing_file);
+
+                g_free(version_suffix);
+                g_free(suggested_name);
+                version_suffix = g_strdup_printf("(%d)", version);
+                suggested_name = g_strconcat (initial_name, " ", version_suffix, NULL);
+            }
+            else
+            {
+                break;
+            }
+        }
+
+        gtk_entry_set_text (GTK_ENTRY (name_entry), suggested_name);
     }
 
     gtk_widget_show_all (compress_dialog);
