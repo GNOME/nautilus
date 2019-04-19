@@ -109,6 +109,18 @@ eel_str_capitalize (const char *string)
     return capitalized;
 }
 
+/**
+* eel_str_middle_truncate:
+* @string: input string
+* truncate_length: length of the truncated string
+*
+* Returns: a newly-allocated copy of @string, with its middle truncated
+* and replaced with ellipsis, to fit into @truncate_length. The returned
+* string should be freed with g_free() when no longer needed.
+* If @string is %NULL, returns %NULL.
+* If @truncate_length is less than 0, returns %NULL.
+* If length of @string is already small enough, returns a copy of @string.
+*/
 gchar *
 eel_str_middle_truncate (const gchar *string,
                          guint        truncate_length)
@@ -151,6 +163,18 @@ eel_str_middle_truncate (const gchar *string,
     return g_strconcat (left_substring, ellipsis, right_substring, NULL);
 }
 
+/**
+* eel_str>strip_substring_and_after:
+* @string: input string
+* @substring: string to be stripped
+*
+* Returns: a newly-allocated string with all characters of @substring
+* and the following ones stripped from the original @string.
+* If @string doesn't contain any occurence of @substring, returns a
+* copy of it.
+* If @string is %NULL, returns %NULL.
+* If @substring is %NULL or begins with '\0', returns a copy of @string.
+*/
 char *
 eel_str_strip_substring_and_after (const char *string,
                                    const char *substring)
@@ -175,6 +199,19 @@ eel_str_strip_substring_and_after (const char *string,
                       substring_position - string);
 }
 
+/**
+* eel_str_replace_substring:
+* @string: input string
+* @substring: string to be replaced
+* @replacement: string used as replacement
+* 
+* Returns: a newly-allocated string with each occurence of @substring
+* replaced with the @replacement string.
+* If @string doesn't contain any occurence of @substring, returns a
+* copy of it.
+* If @string is %NULL, returns %NULL.
+* If @substring is %NULL or begins with '\0', returns a copy of @string.
+*/
 char *
 eel_str_replace_substring (const char *string,
                            const char *substring,
