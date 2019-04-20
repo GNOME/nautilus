@@ -151,6 +151,19 @@ eel_str_middle_truncate (const gchar *string,
     return g_strconcat (left_substring, ellipsis, right_substring, NULL);
 }
 
+/**
+ * eel_str_strip_substring_and_after:
+ * @string: input string
+ * @substring: input substring
+ *
+ * Returns: a copy of first nr_chars of @string,
+ * where nr_chars represents the length of @substring.
+ * 
+ * If @string is %NULL, returns %NULL.
+ * If @substring doesn't occur in @string, a copy
+ * of @string is returned.
+ * Result should be freed using g_free.
+ */
 char *
 eel_str_strip_substring_and_after (const char *string,
                                    const char *substring)
@@ -175,6 +188,18 @@ eel_str_strip_substring_and_after (const char *string,
                       substring_position - string);
 }
 
+/**
+ * eel_str_replace_substring:
+ * @string: input string
+ * @substring: input substring to be replaced
+ * @replacement: input substring to replace
+ *
+ * Returns: a newly allocated copy of @string,
+ * with @substring replaced by @replacement.
+ * 
+ * If @string is %NULL, returns %NULL.
+ * Result should be freed using g_free.
+ */
 char *
 eel_str_replace_substring (const char *string,
                            const char *substring,
