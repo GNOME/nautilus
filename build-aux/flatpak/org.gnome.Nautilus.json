@@ -18,23 +18,22 @@
         "--talk-name=ca.desrt.dconf", "--env=DCONF_USER_CONFIG_DIR=.config/dconf"
     ],
     "modules": [
+    {
+      "name": "exiv2",
+      "config-opts": [
+        "-DCMAKE_INSTALL_PREFIX=/app",
+        "-DCMAKE_INSTALL_LIBDIR=/app/lib"
+      ],
+      "buildsystem": "cmake-ninja",
+      "sources": [
         {
-            "name": "exiv2",
-            "sources": [
-                {
-                    "type": "archive",
-                    "url": "http://exiv2.org/builds/exiv2-0.26-trunk.tar.gz",
-                    "sha256": "c75e3c4a0811bf700d92c82319373b7a825a2331c12b8b37d41eb58e4f18eafb"
-                },
-                {
-                    "type": "shell",
-                    "commands": [
-                        "cp -f /usr/share/gnu-config/config.sub ./config/",
-                        "cp -f /usr/share/gnu-config/config.guess ./config/"
-                    ]
-                }
-            ]
-        },
+          "type": "archive",
+          "url": "https://github.com/Exiv2/exiv2/archive/v0.26.tar.gz",
+          "sha256": "51cffa8d19d67e1da6c1d0f570a75b8f6c814113367318c2c0407691888c5f01"
+        }
+      ]
+    },
+
         {
             "name": "gexiv2",
             "config-opts": [ "--disable-introspection" ],
