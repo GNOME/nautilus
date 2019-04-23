@@ -5549,7 +5549,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
     g_action_map_add_action (G_ACTION_MAP (priv->view_action_group), action);
 
     detailed_action_name = g_strconcat ("view.", action_name, NULL);
-    menu_item = g_menu_item_new (name, detailed_action_name);
+    menu_item = g_menu_item_new (eel_str_double_underscores(name), detailed_action_name);
 
     mimetype_icon = get_menu_icon_for_file (file, GTK_WIDGET (view));
     if (mimetype_icon != NULL)
@@ -5670,7 +5670,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
 
                 if (children_menu != NULL)
                 {
-                    menu_item = g_menu_item_new_submenu (nautilus_file_get_display_name (file),
+                    menu_item = g_menu_item_new_submenu (eel_str_double_underscores(nautilus_file_get_display_name (file)),
                                                          G_MENU_MODEL (children_menu));
                     g_menu_append_item (menu, menu_item);
                     any_templates = TRUE;
