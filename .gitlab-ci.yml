@@ -103,7 +103,7 @@ pages:
     - 'flatpak devel'
   script:
     - mkdir public
-    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/index.html
+   #- mv _build/coverage.html ${CI_PROJECT_DIR}/public/index.html
   artifacts:
     paths:
       - public
