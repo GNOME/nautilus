@@ -551,6 +551,12 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     view->details->last_event_button_x = bin_x;
     view->details->last_event_button_y = bin_y;
 
+    if (gtk_tree_view_is_blank_at_pos (tree_view, bin_x, bin_y, NULL, NULL, NULL, NULL))
+    {
+        nautilus_view_set_selection (NAUTILUS_VIEW (view), NULL);
+        return;
+    }
+
     /* Don't handle extra mouse buttons here */
     if (button > 5)
     {
@@ -2118,6 +2124,7 @@ create_and_set_up_tree_view (NautilusListView *view)
                                                     (GDestroyNotify) g_free,
                                                     NULL);
     gtk_tree_view_set_enable_search (view->details->tree_view, FALSE);
+    gtk_tree_view_set_rubber_banding (view->details->tree_view, TRUE);
 
     view->details->drag_dest =
         nautilus_tree_view_drag_dest_new (view->details->tree_view);
