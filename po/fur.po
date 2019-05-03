@@ -7,8 +7,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: Nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-04-25 08:07+0000\n"
-"PO-Revision-Date: 2019-04-26 16:24+0200\n"
+"POT-Creation-Date: 2019-05-03 11:29+0000\n"
+"PO-Revision-Date: 2019-05-03 19:37+0200\n"
 "Last-Translator: Fabio Tomat <f.t.public@gmail.com>\n"
 "Language-Team: Friulian <f.t.public@gmail.com>\n"
 "Language: fur\n"
@@ -584,8 +584,8 @@ msgstr "Y"
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
 #: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1202
-#: src/nautilus-files-view.c:1704 src/nautilus-files-view.c:5931
-#: src/nautilus-files-view.c:6389 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1704 src/nautilus-files-view.c:5965
+#: src/nautilus-files-view.c:6423 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:951
 #: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4642
@@ -2235,7 +2235,7 @@ msgid "Do _not Empty Trash"
 msgstr "_No sta disvuedâ la scovacere"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6611
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6645
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "No si pues entrâ in “%s”"
@@ -2787,8 +2787,8 @@ msgstr "_OK"
 msgid "Select Items Matching"
 msgstr "Selezione i elements compagns"
 
-#: src/nautilus-files-view.c:1706 src/nautilus-files-view.c:5932
-#: src/nautilus-files-view.c:6390
+#: src/nautilus-files-view.c:1706 src/nautilus-files-view.c:5966
+#: src/nautilus-files-view.c:6424
 msgid "_Select"
 msgstr "_Selezione"
 
@@ -2800,7 +2800,15 @@ msgstr "_Model:"
 msgid "Examples: "
 msgstr "Esemplis: "
 
-#: src/nautilus-files-view.c:2826
+#: src/nautilus-files-view.c:2703
+msgid "Could not paste files"
+msgstr "Impussibil tacâ i file"
+
+#: src/nautilus-files-view.c:2704
+msgid "Permissions do not allow pasting files in this directory"
+msgstr "I permès no lassin tacâ i file in cheste cartele"
+
+#: src/nautilus-files-view.c:2860
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2808,19 +2816,19 @@ msgstr ""
 "Cheste cartele e je sorpassade in Nautilus 3.6 e la configurazion e varès di "
 "jessi stade puartade in ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3323 src/nautilus-files-view.c:3370
+#: src/nautilus-files-view.c:3357 src/nautilus-files-view.c:3404
 #, c-format
 msgid "“%s” selected"
 msgstr "Selezionât “%s”"
 
-#: src/nautilus-files-view.c:3327
+#: src/nautilus-files-view.c:3361
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d cartele selezionade"
 msgstr[1] "%'d cartelis selezionadis"
 
-#: src/nautilus-files-view.c:3341
+#: src/nautilus-files-view.c:3375
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2828,14 +2836,14 @@ msgstr[0] "(cun dentri %'d element)"
 msgstr[1] "(cun dentri %'d elements)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3356
+#: src/nautilus-files-view.c:3390
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(cun dentri un totâl di %'d element)"
 msgstr[1] "(cun dentri un totâl di %'d elements)"
 
-#: src/nautilus-files-view.c:3375
+#: src/nautilus-files-view.c:3409
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2843,7 +2851,7 @@ msgstr[0] "%'d element selezionât"
 msgstr[1] "%'d elements selezionâts"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3384
+#: src/nautilus-files-view.c:3418
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2854,7 +2862,7 @@ msgstr[1] "%'d altris elements selezionâts"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3399
+#: src/nautilus-files-view.c:3433
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2866,119 +2874,119 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3432
+#: src/nautilus-files-view.c:3466
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:5919
+#: src/nautilus-files-view.c:5953
 msgid "Select Move Destination"
 msgstr "Sielç destinazion spostament"
 
-#: src/nautilus-files-view.c:5923
+#: src/nautilus-files-view.c:5957
 msgid "Select Copy Destination"
 msgstr "Sielç destinazion copie"
 
-#: src/nautilus-files-view.c:6386
+#: src/nautilus-files-view.c:6420
 msgid "Select Extract Destination"
 msgstr "Sielç destinazion di estrazion"
 
-#: src/nautilus-files-view.c:6574
+#: src/nautilus-files-view.c:6608
 msgid "Wallpapers"
 msgstr "Fondâi"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6641
+#: src/nautilus-files-view.c:6675
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Impussibil gjavâ “%s”"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6671
+#: src/nautilus-files-view.c:6705
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "No si pues parâ fûr “%s”"
 
-#: src/nautilus-files-view.c:6696
+#: src/nautilus-files-view.c:6730
 msgid "Unable to stop drive"
 msgstr "No si pues fermâ il dispositîf"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6809
+#: src/nautilus-files-view.c:6843
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Impussibil fâ partî “%s”"
 
-#: src/nautilus-files-view.c:7729
+#: src/nautilus-files-view.c:7764
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Gnove cartele cun selezion (%'d element)"
 msgstr[1] "Gnove cartele cun selezion (%'d elements)"
 
-#: src/nautilus-files-view.c:7789
+#: src/nautilus-files-view.c:7824
 #, c-format
 msgid "Open With %s"
 msgstr "Vierç cun %s"
 
-#: src/nautilus-files-view.c:7801
+#: src/nautilus-files-view.c:7836
 msgid "Run"
 msgstr "Eseguìs"
 
-#: src/nautilus-files-view.c:7806
+#: src/nautilus-files-view.c:7841
 msgid "Extract Here"
 msgstr "Tire fûr ca"
 
-#: src/nautilus-files-view.c:7807
+#: src/nautilus-files-view.c:7842
 msgid "Extract to…"
 msgstr "Tire fûr su…"
 
-#: src/nautilus-files-view.c:7811
+#: src/nautilus-files-view.c:7846
 msgid "Open"
 msgstr "Vierç"
 
-#: src/nautilus-files-view.c:7869
+#: src/nautilus-files-view.c:7904
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "_Fâs partî"
 
-#: src/nautilus-files-view.c:7875 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:7910 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "_Conetiti"
 
-#: src/nautilus-files-view.c:7881
+#: src/nautilus-files-view.c:7916
 msgid "_Start Multi-disk Drive"
 msgstr "_Fâs partî il Dispositîf Multi-disc"
 
-#: src/nautilus-files-view.c:7887
+#: src/nautilus-files-view.c:7922
 msgid "U_nlock Drive"
 msgstr "S_bloche Dispositîf"
 
-#: src/nautilus-files-view.c:7907
+#: src/nautilus-files-view.c:7942
 msgid "Stop Drive"
 msgstr "Ferme Dispositîf"
 
-#: src/nautilus-files-view.c:7913
+#: src/nautilus-files-view.c:7948
 msgid "_Safely Remove Drive"
 msgstr "_Gjave dispositîf in sigurece"
 
-#: src/nautilus-files-view.c:7919 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:7954 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "_Disconet"
 
-#: src/nautilus-files-view.c:7925
+#: src/nautilus-files-view.c:7960
 msgid "_Stop Multi-disk Drive"
 msgstr "_Ferme Dispositîf Multi-disc"
 
-#: src/nautilus-files-view.c:7931
+#: src/nautilus-files-view.c:7966
 msgid "_Lock Drive"
 msgstr "_Bloche Dispositîf"
 
-#: src/nautilus-files-view.c:9671
+#: src/nautilus-files-view.c:9706
 msgid "Content View"
 msgstr "Viodude Contignût"
 
-#: src/nautilus-files-view.c:9672
+#: src/nautilus-files-view.c:9707
 msgid "View of the current folder"
 msgstr "Viôt la cartele atuâl"
 
@@ -5552,6 +5560,11 @@ msgstr "Mostre operazions"
 msgid "Toggle view"
 msgstr "Comute viodude"
 
+#. “View” is a noun
+#: src/resources/ui/nautilus-toolbar.ui:688
+msgid "View options"
+msgstr "Mostre opzions"
+
 #. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:33
 msgctxt "menu item"
@@ -6613,9 +6626,6 @@ msgstr "Scrîf direzion servidôr…"
 
 #~ msgid "Location options"
 #~ msgstr "Opzions posizion"
-
-#~ msgid "View options"
-#~ msgstr "Mostre opzions"
 
 #~ msgid "Save Search as"
 #~ msgstr "Salve ricercje cul non"
