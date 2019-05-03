@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-04-15 07:00+0000\n"
-"PO-Revision-Date: 2019-04-25 15:06+0700\n"
+"POT-Creation-Date: 2019-04-30 11:26+0000\n"
+"PO-Revision-Date: 2019-05-03 17:50+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -44,8 +44,8 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Nautilus, yang juga dikenal sebagai Berkas, adalah manajer berkas baku dari "
-"desktop GNOME. Ini menyediakan cara terintegrasi dan sederhana untuk "
+"Nautilus, yang juga dikenal sebagai Berkas, adalah manajer berkas bawaan "
+"dari destop GNOME. Ini menyediakan cara terintegrasi dan sederhana untuk "
 "pengelolaan berkas-berkas Anda dan meramban sistem berkas Anda."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:13
@@ -101,8 +101,7 @@ msgstr "Berkas"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
 msgid "folder;manager;explore;disk;filesystem;"
-msgstr ""
-"folder;manager;explore;disk;filesystem;pengelola;peramban;sistem;berkas;"
+msgstr "folder;pengelola;pe;disk;filesystem;pengelola;peramban;sistem;berkas;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
 msgid "New Window"
@@ -337,7 +336,7 @@ msgstr ""
 
 #: data/org.gnome.nautilus.gschema.xml:169
 msgid "Default sort order"
-msgstr "Urutan baku"
+msgstr "Urutan bawaan"
 
 #: data/org.gnome.nautilus.gschema.xml:170
 msgid ""
@@ -498,15 +497,15 @@ msgstr ""
 "\". Untuk setiap tingkat perbesaran, bila bilangan bulat yang diberikan "
 "lebih dari 0, nama berkas tidak akan melampaui cacah baris yang dinyatakan. "
 "Bila bilangan bulat adalah 0 atau kurang, tidak ada batas yang dipaksakan "
-"pada tingkat perbesaran yang dinyatakan. Entri baku dengan bentuk \"Bilangan "
-"Bulat\" tanpa menyatakan tingkat perbesaran juga diperbolehkan. Itu "
-"mendefinisikan cacah baris maksimum bagi semua tingkat perbesaran lainnya. "
-"Contoh: 0 — selalu tampilkan nama berkas panjang; 3 — pendekkan nama berkas "
-"apabila melebihi 3 baris; smallest:5,smaller:4,0 — pendekkan nama berkas "
-"apabila melebihi lima baris pada tingkat perbesaran \"smallest\". Pendekkan "
-"nama berkas apabila melebihi empat baris pada tingkat perbesaran \"smaller"
-"\". Jangan menyingkat nama berkas pada tingkat perbesaran lain. Tingkat "
-"perbesaran yang tersedia: small, standard, large."
+"pada tingkat perbesaran yang dinyatakan. Entri bawaan dengan bentuk "
+"\"Bilangan Bulat\" tanpa menyatakan tingkat perbesaran juga diperbolehkan. "
+"Itu mendefinisikan cacah baris maksimum bagi semua tingkat perbesaran "
+"lainnya. Contoh: 0 — selalu tampilkan nama berkas panjang; 3 — pendekkan "
+"nama berkas apabila melebihi 3 baris; smallest:5,smaller:4,0 — pendekkan "
+"nama berkas apabila melebihi lima baris pada tingkat perbesaran \"smallest"
+"\". Pendekkan nama berkas apabila melebihi empat baris pada tingkat "
+"perbesaran \"smaller\". Jangan menyingkat nama berkas pada tingkat "
+"perbesaran lain. Tingkat perbesaran yang tersedia: small, standard, large."
 
 #: data/org.gnome.nautilus.gschema.xml:243
 msgid "Default list view zoom level"
@@ -547,7 +546,8 @@ msgstr "Apakah jendela navigasi mesti dimaksimalkan"
 
 #: data/org.gnome.nautilus.gschema.xml:269
 msgid "Whether the navigation window should be maximized by default."
-msgstr "Apakah jendela navigasi ditampilkan dalam ukuran maksimal secara baku."
+msgstr ""
+"Apakah jendela navigasi ditampilkan dalam ukuran maksimal secara bawaan."
 
 #: data/org.gnome.nautilus.gschema.xml:273
 msgid "Width of the side pane"
@@ -590,8 +590,8 @@ msgstr "Y"
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
 #: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1202
-#: src/nautilus-files-view.c:1704 src/nautilus-files-view.c:5931
-#: src/nautilus-files-view.c:6389 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1704 src/nautilus-files-view.c:5965
+#: src/nautilus-files-view.c:6423 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:951
 #: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4642
@@ -1238,7 +1238,7 @@ msgstr "Kembali ke _Baku"
 
 #: src/nautilus-column-chooser.c:435
 msgid "Replace the current List Columns settings with the default settings"
-msgstr "Gantikan pengaturan Kolom Daftar saat ini dengan pengaturan baku"
+msgstr "Gantikan pengaturan Kolom Daftar saat ini dengan pengaturan bawaan"
 
 #: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2259
 #: src/resources/ui/nautilus-rename-file-popover.ui:23
@@ -2235,7 +2235,7 @@ msgid "Do _not Empty Trash"
 msgstr "Janga_n Kosongkan Tempat Sampah"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6611
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6645
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "Tak bisa mengakses \"%s\""
@@ -2789,8 +2789,8 @@ msgstr "_OK"
 msgid "Select Items Matching"
 msgstr "Memilih Objek yang Cocok"
 
-#: src/nautilus-files-view.c:1706 src/nautilus-files-view.c:5932
-#: src/nautilus-files-view.c:6390
+#: src/nautilus-files-view.c:1706 src/nautilus-files-view.c:5966
+#: src/nautilus-files-view.c:6424
 msgid "_Select"
 msgstr "_Pilih"
 
@@ -2802,7 +2802,15 @@ msgstr "_Pola:"
 msgid "Examples: "
 msgstr "Contoh: "
 
-#: src/nautilus-files-view.c:2826
+#: src/nautilus-files-view.c:2703
+msgid "Could not paste files"
+msgstr "Tak dapat menempel berkas"
+
+#: src/nautilus-files-view.c:2704
+msgid "Permissions do not allow pasting files in this directory"
+msgstr "Izin tidak boleh menempelkan berkas pada direktori ini"
+
+#: src/nautilus-files-view.c:2860
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2810,19 +2818,19 @@ msgstr ""
 "Nautilus 3.6 tidak menggunakan direktori ini lagi dan coba memindahkan "
 "konfigurasinya menuju ~/.local/share/nautilus"
 
-#: src/nautilus-files-view.c:3323 src/nautilus-files-view.c:3370
+#: src/nautilus-files-view.c:3357 src/nautilus-files-view.c:3404
 #, c-format
 msgid "“%s” selected"
 msgstr "\"%s\" dipilih"
 
-#: src/nautilus-files-view.c:3327
+#: src/nautilus-files-view.c:3361
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d folder dipilih"
 msgstr[1] "%'d folder dipilih"
 
-#: src/nautilus-files-view.c:3341
+#: src/nautilus-files-view.c:3375
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2830,14 +2838,14 @@ msgstr[0] "(memuat %'d item)"
 msgstr[1] "(memuat %'d item)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3356
+#: src/nautilus-files-view.c:3390
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(memuat total %'d item)"
 msgstr[1] "(memuat total %'d item)"
 
-#: src/nautilus-files-view.c:3375
+#: src/nautilus-files-view.c:3409
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2845,7 +2853,7 @@ msgstr[0] "%'d objek dipilih"
 msgstr[1] "%'d objek dipilih"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3384
+#: src/nautilus-files-view.c:3418
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2856,7 +2864,7 @@ msgstr[1] "%'d objek lain dipilih"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3399
+#: src/nautilus-files-view.c:3433
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2868,119 +2876,119 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3432
+#: src/nautilus-files-view.c:3466
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:5919
+#: src/nautilus-files-view.c:5953
 msgid "Select Move Destination"
 msgstr "Pilih Tujuan Pindah"
 
-#: src/nautilus-files-view.c:5923
+#: src/nautilus-files-view.c:5957
 msgid "Select Copy Destination"
 msgstr "Pilih Tujuan Salin"
 
-#: src/nautilus-files-view.c:6386
+#: src/nautilus-files-view.c:6420
 msgid "Select Extract Destination"
 msgstr "Pilih Tujuan Ekstrak"
 
-#: src/nautilus-files-view.c:6574
+#: src/nautilus-files-view.c:6608
 msgid "Wallpapers"
 msgstr "Gambar Latar"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6641
+#: src/nautilus-files-view.c:6675
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "Tak dapat menghapus \"%s\""
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6671
+#: src/nautilus-files-view.c:6705
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "Tak dapat mengeluarkan \"%s\""
 
-#: src/nautilus-files-view.c:6696
+#: src/nautilus-files-view.c:6730
 msgid "Unable to stop drive"
 msgstr "Tak dapat menghentikan kandar"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6809
+#: src/nautilus-files-view.c:6843
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "Tak dapat menjalankan \"%s\""
 
-#: src/nautilus-files-view.c:7729
+#: src/nautilus-files-view.c:7764
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Folder Baru dengan Seleksi (%'d Item)"
 msgstr[1] "Folder Baru dengan Seleksi (%'d Item)"
 
-#: src/nautilus-files-view.c:7789
+#: src/nautilus-files-view.c:7824
 #, c-format
 msgid "Open With %s"
 msgstr "Buka Dengan %s"
 
-#: src/nautilus-files-view.c:7801
+#: src/nautilus-files-view.c:7836
 msgid "Run"
 msgstr "Jalankan"
 
-#: src/nautilus-files-view.c:7806
+#: src/nautilus-files-view.c:7841
 msgid "Extract Here"
 msgstr "Ekstrak Di Sini"
 
-#: src/nautilus-files-view.c:7807
+#: src/nautilus-files-view.c:7842
 msgid "Extract to…"
 msgstr "Ekstrak ke…"
 
-#: src/nautilus-files-view.c:7811
+#: src/nautilus-files-view.c:7846
 msgid "Open"
 msgstr "Buka"
 
-#: src/nautilus-files-view.c:7869
+#: src/nautilus-files-view.c:7904
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "_Mulai"
 
-#: src/nautilus-files-view.c:7875 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:7910 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "_Sambung"
 
-#: src/nautilus-files-view.c:7881
+#: src/nautilus-files-view.c:7916
 msgid "_Start Multi-disk Drive"
 msgstr "Jalankan Kandar Multi_diska"
 
-#: src/nautilus-files-view.c:7887
+#: src/nautilus-files-view.c:7922
 msgid "U_nlock Drive"
 msgstr "Buka Ku_nci Kandar"
 
-#: src/nautilus-files-view.c:7907
+#: src/nautilus-files-view.c:7942
 msgid "Stop Drive"
 msgstr "Hentikan Kandar"
 
-#: src/nautilus-files-view.c:7913
+#: src/nautilus-files-view.c:7948
 msgid "_Safely Remove Drive"
 msgstr "Lepa_s Media dengan Aman"
 
-#: src/nautilus-files-view.c:7919 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:7954 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "_Putus"
 
-#: src/nautilus-files-view.c:7925
+#: src/nautilus-files-view.c:7960
 msgid "_Stop Multi-disk Drive"
 msgstr "Hentikan Kandar Multidi_ska"
 
-#: src/nautilus-files-view.c:7931
+#: src/nautilus-files-view.c:7966
 msgid "_Lock Drive"
 msgstr "_Kunci Kandar"
 
-#: src/nautilus-files-view.c:9671
+#: src/nautilus-files-view.c:9706
 msgid "Content View"
 msgstr "Tampilan Isi"
 
-#: src/nautilus-files-view.c:9672
+#: src/nautilus-files-view.c:9707
 msgid "View of the current folder"
 msgstr "Membuka folder saat ini"
 
@@ -4740,7 +4748,7 @@ msgstr "Buka berkas dan tutup jendela"
 #: src/resources/gtk/help-overlay.ui:100
 msgctxt "shortcut window"
 msgid "Open with default application"
-msgstr "Buka dengan aplikasi baku"
+msgstr "Buka dengan aplikasi bawaan"
 
 #: src/resources/gtk/help-overlay.ui:109
 msgctxt "shortcut window"
@@ -5568,6 +5576,10 @@ msgstr "Tampilkan operasi"
 #: src/resources/ui/nautilus-toolbar.ui:662
 msgid "Toggle view"
 msgstr "Jungkitkan tilikan"
+
+#: src/resources/ui/nautilus-toolbar.ui:688
+msgid "View options"
+msgstr "Opsi Tilikan"
 
 #. Translators: a menu item in a group of sorting options in a toolbar menu, with criterions such as "A-Z" or "Last Modified".
 #: src/resources/ui/nautilus-toolbar-view-menu.ui:33
