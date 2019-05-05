@@ -5522,7 +5522,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
                                  GMenu             *menu)
 {
     NautilusFilesViewPrivate *priv;
-    char *tmp, *uri, *name;
+    char *tmp, *uri, *name, *label;
     g_autofree gchar *escaped_uri = NULL;
     GdkPixbuf *mimetype_icon;
     char *action_name, *detailed_action_name;
@@ -5549,7 +5549,8 @@ add_template_to_templates_menus (NautilusFilesView *view,
     g_action_map_add_action (G_ACTION_MAP (priv->view_action_group), action);
 
     detailed_action_name = g_strconcat ("view.", action_name, NULL);
-    menu_item = g_menu_item_new (name, detailed_action_name);
+    label = eel_str_double_underscores (name);
+    menu_item = g_menu_item_new (label, detailed_action_name);
 
     mimetype_icon = get_menu_icon_for_file (file, GTK_WIDGET (view));
     if (mimetype_icon != NULL)
@@ -5560,6 +5561,7 @@ add_template_to_templates_menus (NautilusFilesView *view,
 
     g_menu_append_item (menu, menu_item);
 
+    g_free (label);
     g_free (name);
     g_free (uri);
     g_free (action_name);
@@ -5638,7 +5640,7 @@ update_directory_in_templates_menu (NautilusFilesView *view,
     gboolean any_templates;
     NautilusFile *file;
     NautilusDirectory *dir;
-    char *uri;
+    char *uri, *tmp, *label;
     char *templates_directory_uri;
     int num;
 
@@ -5670,8 +5672,12 @@ update_directory_in_templates_menu (NautilusFilesView *view,
 
                 if (children_menu != NULL)
                 {
-                    menu_item = g_menu_item_new_submenu (nautilus_file_get_display_name (file),
+                    tmp = nautilus_file_get_display_name (file);
+                    label = eel_str_double_underscores (tmp);
+                    menu_item = g_menu_item_new_submenu (label,
                                                          G_MENU_MODEL (children_menu));
+                    g_free (tmp);
+                    g_free (label);
                     g_menu_append_item (menu, menu_item);
                     any_templates = TRUE;
                     g_object_unref (menu_item);
