@@ -2288,6 +2288,8 @@ nautilus_window_destroy (GtkWidget *object)
         window->bookmarks_id = 0;
     }
 
+    g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
+
     GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
 }
 
