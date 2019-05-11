@@ -339,6 +339,39 @@ eel_str_get_common_prefix (GList *strs,
     return common_part;
 }
 
+char *
+eel_str_remove_leading_space (const char *str)
+{
+    guint str_length, num_spaces, result_length;
+    gboolean remove_spaces;
+    char* result;
+
+    if (!str) return NULL;
+
+    remove_spaces = TRUE;
+    num_spaces = 0;
+
+    for (str_length = 0; str[str_length] != '\0'; str_length++)
+    {
+        if (remove_spaces)
+        {
+            if (str[str_length] == ' ' || str[str_length] == '\t')
+            {
+                num_spaces++;
+            } else {
+              remove_spaces = FALSE;
+            }
+        }
+    }
+
+    result_length = str_length - num_spaces;
+    result = g_malloc (result_length + 1);
+    memcpy (result, str + num_spaces, result_length);
+    result[result_length] = '\0';
+
+    return result;
+}
+
 /**************** Custom printf ***********/
 
 typedef struct
