@@ -362,17 +362,20 @@ try_to_expand_path (gpointer callback_data)
     NautilusLocationEntry *entry;
     NautilusLocationEntryPrivate *priv;
     GtkEditable *editable;
-    char *suffix, *user_location, *absolute_location, *uri_scheme;
-    int user_location_length, pos;
+    char *suffix, *entry_text, *user_location, *absolute_location, *uri_scheme;
+    int entry_text_length, pos;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);
     editable = GTK_EDITABLE (entry);
-    user_location = gtk_editable_get_chars (editable, 0, -1);
-    user_location_length = g_utf8_strlen (user_location, -1);
+    entry_text = gtk_editable_get_chars (editable, 0, -1);
+    entry_text_length = g_utf8_strlen (entry_text, -1);
+    user_location = eel_str_remove_space_padding (entry_text);
     priv->idle_id = 0;
 
     uri_scheme = g_uri_parse_scheme (user_location);
+
+    g_free(entry_text);
 
     if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
     {
@@ -393,10 +396,10 @@ try_to_expand_path (gpointer callback_data)
     /* if we've got something, add it to the entry */
     if (suffix != NULL)
     {
-        pos = user_location_length;
+        pos = entry_text_length;
         gtk_editable_insert_text (editable,
                                   suffix, -1, &pos);
-        pos = user_location_length;
+        pos = entry_text_length;
         gtk_editable_select_region (editable, pos, -1);
 
         g_free (suffix);
@@ -713,25 +716,27 @@ nautilus_location_entry_activate (GtkEntry *entry)
     NautilusLocationEntry *loc_entry;
     NautilusLocationEntryPrivate *priv;
     const gchar *entry_text;
-    gchar *full_path, *uri_scheme = NULL;
+    gchar *full_path, *path, *uri_scheme = NULL;
 
     loc_entry = NAUTILUS_LOCATION_ENTRY (entry);
     priv = nautilus_location_entry_get_instance_private (loc_entry);
     entry_text = gtk_entry_get_text (entry);
+    path = eel_str_remove_space_padding (entry_text);
 
-    if (entry_text != NULL && *entry_text != '\0')
+    if (path != NULL && *path != '\0')
     {
-        uri_scheme = g_uri_parse_scheme (entry_text);
+        uri_scheme = g_uri_parse_scheme (path);
 
-        if (!g_path_is_absolute (entry_text) && uri_scheme == NULL && entry_text[0] != '~')
+        if (!g_path_is_absolute (path) && uri_scheme == NULL && path[0] != '~')
         {
             /* Fix non absolute paths */
-            full_path = g_build_filename (priv->current_directory, entry_text, NULL);
+            full_path = g_build_filename (priv->current_directory, path, NULL);
             gtk_entry_set_text (entry, full_path);
             g_free (full_path);
         }
 
         g_free (uri_scheme);
+        g_free (path);
     }
 
     GTK_ENTRY_CLASS (nautilus_location_entry_parent_class)->activate (entry);
@@ -832,12 +837,18 @@ editable_activate_callback (GtkEntry *entry,
 {
     NautilusLocationEntry *self = user_data;
     const char *entry_text;
+    gchar *path;
 
     entry_text = gtk_entry_get_text (entry);
-    if (entry_text != NULL && *entry_text != '\0')
+    path = eel_str_remove_space_padding (entry_text);
+
+    if (path != NULL && *path != '\0')
     {
+        gtk_entry_set_text (entry, path);
         emit_location_changed (self);
     }
+
+    g_free (path);
 }
 
 static void

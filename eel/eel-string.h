@@ -77,3 +77,6 @@ char *   eel_str_replace_substring         (const char    *str,
  * common prefix of length min_required_len
  */
 char *   eel_str_get_common_prefix         (GList *strs, int min_required_len);
+
+/* Remove leading spaces */
+char *   eel_str_remove_space_padding      (const char *str);
