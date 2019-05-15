@@ -5185,7 +5185,8 @@ get_strings_for_environment_variables (NautilusFilesView  *view,
      */
     directory_uri = nautilus_directory_get_uri (priv->model);
     if (g_str_has_prefix (directory_uri, "file:") ||
-        eel_uri_is_trash (directory_uri))
+        eel_uri_is_trash (directory_uri) ||
+        eel_uri_is_search (directory_uri))
     {
         *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
     }
