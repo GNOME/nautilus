@@ -40,12 +40,12 @@ G_BEGIN_DECLS
 
 typedef struct _NautilusTreeViewDragDest        NautilusTreeViewDragDest;
 typedef struct _NautilusTreeViewDragDestClass   NautilusTreeViewDragDestClass;
-typedef struct _NautilusTreeViewDragDestDetails NautilusTreeViewDragDestDetails;
+typedef struct _NautilusTreeViewDragDestPrivate NautilusTreeViewDragDestPrivate;
 
 struct _NautilusTreeViewDragDest {
 	GObject parent;
 	
-	NautilusTreeViewDragDestDetails *details;
+	NautilusTreeViewDragDestPrivate *priv;
 };
 
 struct _NautilusTreeViewDragDestClass {

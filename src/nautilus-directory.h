@@ -59,12 +59,12 @@ typedef struct NautilusFile NautilusFile;
 #endif
 
 typedef struct _NautilusDirectory        NautilusDirectory;
-typedef struct  NautilusDirectoryDetails NautilusDirectoryDetails;
+typedef struct  NautilusDirectoryPrivate NautilusDirectoryPrivate;
 
 struct _NautilusDirectory
 {
 	GObject object;
-	NautilusDirectoryDetails *details;
+	NautilusDirectoryPrivate *priv;
 };
 
 typedef void (*NautilusDirectoryCallback) (NautilusDirectory *directory,

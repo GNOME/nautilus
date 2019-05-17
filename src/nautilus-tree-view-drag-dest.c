@@ -43,7 +43,7 @@
 #define AUTO_SCROLL_MARGIN 20
 #define HOVER_EXPAND_TIMEOUT 1
 
-struct _NautilusTreeViewDragDestDetails
+struct _NautilusTreeViewDragDestPrivate
 {
     GtkTreeView *tree_view;
 
@@ -146,10 +146,10 @@ scroll_timeout (gpointer data)
 static void
 remove_scroll_timeout (NautilusTreeViewDragDest *dest)
 {
-    if (dest->details->scroll_id)
+    if (dest->priv->scroll_id)
     {
-        g_source_remove (dest->details->scroll_id);
-        dest->details->scroll_id = 0;
+        g_source_remove (dest->priv->scroll_id);
+        dest->priv->scroll_id = 0;
     }
 }
 
@@ -175,10 +175,10 @@ expand_timeout (gpointer data)
 static void
 remove_expand_timer (NautilusTreeViewDragDest *dest)
 {
-    if (dest->details->expand_id)
+    if (dest->priv->expand_id)
     {
-        g_source_remove (dest->details->expand_id);
-        dest->details->expand_id = 0;
+        g_source_remove (dest->priv->expand_id);
+        dest->priv->expand_id = 0;
     }
 }
 
@@ -216,22 +216,22 @@ static void
 set_widget_highlight (NautilusTreeViewDragDest *dest,
                       gboolean                  highlight)
 {
-    if (!highlight && dest->details->highlight_id)
+    if (!highlight && dest->priv->highlight_id)
     {
-        g_signal_handler_disconnect (dest->details->tree_view,
-                                     dest->details->highlight_id);
-        dest->details->highlight_id = 0;
-        gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
+        g_signal_handler_disconnect (dest->priv->tree_view,
+                                     dest->priv->highlight_id);
+        dest->priv->highlight_id = 0;
+        gtk_widget_queue_draw (GTK_WIDGET (dest->priv->tree_view));
     }
 
-    if (highlight && !dest->details->highlight_id)
+    if (highlight && !dest->priv->highlight_id)
     {
-        dest->details->highlight_id =
-            g_signal_connect_object (dest->details->tree_view,
+        dest->priv->highlight_id =
+            g_signal_connect_object (dest->priv->tree_view,
                                      "draw",
                                      G_CALLBACK (highlight_draw),
                                      dest, 0);
-        gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
+        gtk_widget_queue_draw (GTK_WIDGET (dest->priv->tree_view));
     }
 }
 
@@ -243,14 +243,14 @@ set_drag_dest_row (NautilusTreeViewDragDest *dest,
     {
         set_widget_highlight (dest, FALSE);
         gtk_tree_view_set_drag_dest_row
-            (dest->details->tree_view,
+            (dest->priv->tree_view,
             path,
             GTK_TREE_VIEW_DROP_INTO_OR_BEFORE);
     }
     else
     {
         set_widget_highlight (dest, TRUE);
-        gtk_tree_view_set_drag_dest_row (dest->details->tree_view,
+        gtk_tree_view_set_drag_dest_row (dest->priv->tree_view,
                                          NULL,
                                          0);
     }
@@ -259,7 +259,7 @@ set_drag_dest_row (NautilusTreeViewDragDest *dest,
 static void
 clear_drag_dest_row (NautilusTreeViewDragDest *dest)
 {
-    gtk_tree_view_set_drag_dest_row (dest->details->tree_view, NULL, 0);
+    gtk_tree_view_set_drag_dest_row (dest->priv->tree_view, NULL, 0);
     set_widget_highlight (dest, FALSE);
 }
 
@@ -270,7 +270,7 @@ get_drag_data (NautilusTreeViewDragDest *dest,
 {
     GdkAtom target;
 
-    target = gtk_drag_dest_find_target (GTK_WIDGET (dest->details->tree_view),
+    target = gtk_drag_dest_find_target (GTK_WIDGET (dest->priv->tree_view),
                                         context,
                                         NULL);
 
@@ -280,14 +280,14 @@ get_drag_data (NautilusTreeViewDragDest *dest,
     }
 
     if (target == gdk_atom_intern (NAUTILUS_ICON_DND_XDNDDIRECTSAVE_TYPE, FALSE) &&
-        !dest->details->drop_occurred)
+        !dest->priv->drop_occurred)
     {
-        dest->details->drag_type = NAUTILUS_ICON_DND_XDNDDIRECTSAVE;
-        dest->details->have_drag_data = TRUE;
+        dest->priv->drag_type = NAUTILUS_ICON_DND_XDNDDIRECTSAVE;
+        dest->priv->have_drag_data = TRUE;
         return TRUE;
     }
 
-    gtk_drag_get_data (GTK_WIDGET (dest->details->tree_view),
+    gtk_drag_get_data (GTK_WIDGET (dest->priv->tree_view),
                        context, target, time);
 
     return TRUE;
@@ -296,35 +296,35 @@ get_drag_data (NautilusTreeViewDragDest *dest,
 static void
 remove_hover_timer (NautilusTreeViewDragDest *dest)
 {
-    if (dest->details->hover_id != 0)
+    if (dest->priv->hover_id != 0)
     {
-        g_source_remove (dest->details->hover_id);
-        dest->details->hover_id = 0;
+        g_source_remove (dest->priv->hover_id);
+        dest->priv->hover_id = 0;
     }
 }
 
 static void
 free_drag_data (NautilusTreeViewDragDest *dest)
 {
-    dest->details->have_drag_data = FALSE;
+    dest->priv->have_drag_data = FALSE;
 
-    if (dest->details->drag_data)
+    if (dest->priv->drag_data)
     {
-        gtk_selection_data_free (dest->details->drag_data);
-        dest->details->drag_data = NULL;
+        gtk_selection_data_free (dest->priv->drag_data);
+        dest->priv->drag_data = NULL;
     }
 
-    if (dest->details->drag_list)
+    if (dest->priv->drag_list)
     {
-        nautilus_drag_destroy_selection_list (dest->details->drag_list);
-        dest->details->drag_list = NULL;
+        nautilus_drag_destroy_selection_list (dest->priv->drag_list);
+        dest->priv->drag_list = NULL;
     }
 
-    g_free (dest->details->direct_save_uri);
-    dest->details->direct_save_uri = NULL;
+    g_free (dest->priv->direct_save_uri);
+    dest->priv->direct_save_uri = NULL;
 
-    g_free (dest->details->target_uri);
-    dest->details->target_uri = NULL;
+    g_free (dest->priv->target_uri);
+    dest->priv->target_uri = NULL;
 
     remove_hover_timer (dest);
     remove_expand_timer (dest);
@@ -335,9 +335,9 @@ hover_timer (gpointer user_data)
 {
     NautilusTreeViewDragDest *dest = user_data;
 
-    dest->details->hover_id = 0;
+    dest->priv->hover_id = 0;
 
-    g_signal_emit (dest, signals[HANDLE_HOVER], 0, dest->details->target_uri);
+    g_signal_emit (dest, signals[HANDLE_HOVER], 0, dest->priv->target_uri);
 
     return FALSE;
 }
@@ -349,22 +349,22 @@ check_hover_timer (NautilusTreeViewDragDest *dest,
     GtkSettings *settings;
     guint timeout;
 
-    if (g_strcmp0 (uri, dest->details->target_uri) == 0)
+    if (g_strcmp0 (uri, dest->priv->target_uri) == 0)
     {
         return;
     }
     remove_hover_timer (dest);
 
-    settings = gtk_widget_get_settings (GTK_WIDGET (dest->details->tree_view));
+    settings = gtk_widget_get_settings (GTK_WIDGET (dest->priv->tree_view));
     g_object_get (settings, "gtk-timeout-expand", &timeout, NULL);
 
-    g_free (dest->details->target_uri);
-    dest->details->target_uri = NULL;
+    g_free (dest->priv->target_uri);
+    dest->priv->target_uri = NULL;
 
     if (uri != NULL)
     {
-        dest->details->target_uri = g_strdup (uri);
-        dest->details->hover_id =
+        dest->priv->target_uri = g_strdup (uri);
+        dest->priv->hover_id =
             gdk_threads_add_timeout (timeout,
                                      hover_timer,
                                      dest);
@@ -379,7 +379,7 @@ check_expand_timer (NautilusTreeViewDragDest *dest,
     GtkTreeModel *model;
     GtkTreeIter drop_iter;
 
-    model = gtk_tree_view_get_model (dest->details->tree_view);
+    model = gtk_tree_view_get_model (dest->priv->tree_view);
 
     if (drop_path == NULL ||
         (old_drop_path != NULL && gtk_tree_path_compare (old_drop_path, drop_path) != 0))
@@ -387,16 +387,16 @@ check_expand_timer (NautilusTreeViewDragDest *dest,
         remove_expand_timer (dest);
     }
 
-    if (dest->details->expand_id == 0 &&
+    if (dest->priv->expand_id == 0 &&
         drop_path != NULL)
     {
         gtk_tree_model_get_iter (model, &drop_iter, drop_path);
         if (gtk_tree_model_iter_has_child (model, &drop_iter))
         {
-            dest->details->expand_id =
+            dest->priv->expand_id =
                 g_timeout_add_seconds (HOVER_EXPAND_TIMEOUT,
                                        expand_timeout,
-                                       dest->details->tree_view);
+                                       dest->priv->tree_view);
         }
     }
 }
@@ -452,8 +452,8 @@ get_drop_target_uri_for_path (NautilusTreeViewDragDest *dest,
         return NULL;
     }
     can = nautilus_drag_can_accept_info (file,
-                                         dest->details->drag_type,
-                                         dest->details->drag_list);
+                                         dest->priv->drag_type,
+                                         dest->priv->drag_list);
     if (can)
     {
         target = nautilus_file_get_uri (file);
@@ -492,7 +492,7 @@ get_drop_path (NautilusTreeViewDragDest *dest,
     NautilusFile *file;
     GtkTreePath *ret;
 
-    if (!path || !dest->details->have_drag_data)
+    if (!path || !dest->priv->have_drag_data)
     {
         return NULL;
     }
@@ -503,8 +503,8 @@ get_drop_path (NautilusTreeViewDragDest *dest,
     /* Go up the tree until we find a file that can accept a drop */
     while (file == NULL /* dummy row */ ||
            !nautilus_drag_can_accept_info (file,
-                                           dest->details->drag_type,
-                                           dest->details->drag_list))
+                                           dest->priv->drag_type,
+                                           dest->priv->drag_list))
     {
         if (gtk_tree_path_get_depth (ret) == 1)
         {
@@ -533,9 +533,9 @@ get_drop_action (NautilusTreeViewDragDest *dest,
     char *drop_target;
     int action;
 
-    if (!dest->details->have_drag_data ||
-        (dest->details->drag_type == NAUTILUS_ICON_DND_GNOME_ICON_LIST &&
-         dest->details->drag_list == NULL))
+    if (!dest->priv->have_drag_data ||
+        (dest->priv->drag_type == NAUTILUS_ICON_DND_GNOME_ICON_LIST &&
+         dest->priv->drag_list == NULL))
     {
         return 0;
     }
@@ -547,14 +547,14 @@ get_drop_action (NautilusTreeViewDragDest *dest,
     }
 
     action = 0;
-    switch (dest->details->drag_type)
+    switch (dest->priv->drag_type)
     {
         case NAUTILUS_ICON_DND_GNOME_ICON_LIST:
         {
             nautilus_drag_default_drop_action_for_icons
                 (context,
                 drop_target,
-                dest->details->drag_list,
+                dest->priv->drag_list,
                 0,
                 &action);
         }
@@ -613,7 +613,7 @@ drag_motion_callback (GtkWidget      *widget,
         path = NULL;
     }
 
-    if (!dest->details->have_drag_data)
+    if (!dest->priv->have_drag_data)
     {
         res = get_drag_data (dest, context, time);
     }
@@ -668,12 +668,12 @@ drag_motion_callback (GtkWidget      *widget,
         gtk_tree_path_free (old_drop_path);
     }
 
-    if (dest->details->scroll_id == 0)
+    if (dest->priv->scroll_id == 0)
     {
-        dest->details->scroll_id =
+        dest->priv->scroll_id =
             g_timeout_add (150,
                            scroll_timeout,
-                           dest->details->tree_view);
+                           dest->priv->tree_view);
     }
 
     gdk_drag_status (context, action, time);
@@ -708,7 +708,7 @@ get_drop_target_uri_at_pos (NautilusTreeViewDragDest *dest,
     GtkTreePath *drop_path;
     GtkTreeViewDropPosition pos;
 
-    gtk_tree_view_get_dest_row_at_pos (dest->details->tree_view, x, y,
+    gtk_tree_view_get_dest_row_at_pos (dest->priv->tree_view, x, y,
                                        &path, &pos);
     if (pos == GTK_TREE_VIEW_DROP_BEFORE ||
         pos == GTK_TREE_VIEW_DROP_AFTER)
@@ -752,11 +752,11 @@ receive_uris (NautilusTreeViewDragDest *dest,
     if (real_action == GDK_ACTION_ASK)
     {
         action = GDK_ACTION_MOVE | GDK_ACTION_COPY | GDK_ACTION_LINK;
-        real_action = nautilus_drag_drop_action_ask (GTK_WIDGET (dest->details->tree_view), action);
+        real_action = nautilus_drag_drop_action_ask (GTK_WIDGET (dest->priv->tree_view), action);
     }
 
     /* We only want to copy external uris */
-    if (dest->details->drag_type == NAUTILUS_ICON_DND_URI_LIST)
+    if (dest->priv->drag_type == NAUTILUS_ICON_DND_URI_LIST)
     {
         real_action = GDK_ACTION_COPY;
     }
@@ -788,13 +788,13 @@ receive_dropped_icons (NautilusTreeViewDragDest *dest,
 
     /* FIXME: ignore local only moves */
 
-    if (!dest->details->drag_list)
+    if (!dest->priv->drag_list)
     {
         return;
     }
 
     source_uris = NULL;
-    for (l = dest->details->drag_list; l != NULL; l = l->next)
+    for (l = dest->priv->drag_list; l != NULL; l = l->next)
     {
         source_uris = g_list_prepend (source_uris,
                                       ((NautilusDragSelectionItem *) l->data)->uri);
@@ -815,7 +815,7 @@ receive_dropped_uri_list (NautilusTreeViewDragDest *dest,
 {
     char *drop_target;
 
-    if (!dest->details->drag_data)
+    if (!dest->priv->drag_data)
     {
         return;
     }
@@ -824,7 +824,7 @@ receive_dropped_uri_list (NautilusTreeViewDragDest *dest,
     g_assert (drop_target != NULL);
 
     g_signal_emit (dest, signals[HANDLE_URI_LIST], 0,
-                   (char *) gtk_selection_data_get_data (dest->details->drag_data),
+                   (char *) gtk_selection_data_get_data (dest->priv->drag_data),
                    drop_target,
                    gdk_drag_context_get_selected_action (context),
                    x, y);
@@ -841,7 +841,7 @@ receive_dropped_text (NautilusTreeViewDragDest *dest,
     char *drop_target;
     guchar *text;
 
-    if (!dest->details->drag_data)
+    if (!dest->priv->drag_data)
     {
         return;
     }
@@ -849,7 +849,7 @@ receive_dropped_text (NautilusTreeViewDragDest *dest,
     drop_target = get_drop_target_uri_at_pos (dest, x, y);
     g_assert (drop_target != NULL);
 
-    text = gtk_selection_data_get_text (dest->details->drag_data);
+    text = gtk_selection_data_get_text (dest->priv->drag_data);
     g_signal_emit (dest, signals[HANDLE_TEXT], 0,
                    (char *) text, drop_target,
                    gdk_drag_context_get_selected_action (context),
@@ -869,7 +869,7 @@ receive_dropped_raw (NautilusTreeViewDragDest *dest,
 {
     char *drop_target;
 
-    if (!dest->details->drag_data)
+    if (!dest->priv->drag_data)
     {
         return;
     }
@@ -879,7 +879,7 @@ receive_dropped_raw (NautilusTreeViewDragDest *dest,
 
     g_signal_emit (dest, signals[HANDLE_RAW], 0,
                    raw_data, length, drop_target,
-                   dest->details->direct_save_uri,
+                   dest->priv->direct_save_uri,
                    gdk_drag_context_get_selected_action (context));
 
     g_free (drop_target);
@@ -893,7 +893,7 @@ receive_dropped_netscape_url (NautilusTreeViewDragDest *dest,
 {
     char *drop_target;
 
-    if (!dest->details->drag_data)
+    if (!dest->priv->drag_data)
     {
         return;
     }
@@ -902,7 +902,7 @@ receive_dropped_netscape_url (NautilusTreeViewDragDest *dest,
     g_assert (drop_target != NULL);
 
     g_signal_emit (dest, signals[HANDLE_NETSCAPE_URL], 0,
-                   (char *) gtk_selection_data_get_data (dest->details->drag_data),
+                   (char *) gtk_selection_data_get_data (dest->priv->drag_data),
                    drop_target,
                    gdk_drag_context_get_selected_action (context),
                    x, y);
@@ -923,9 +923,9 @@ receive_xds (NautilusTreeViewDragDest *dest,
     gint selection_format;
     gint selection_length;
 
-    selection_data = gtk_selection_data_get_data (dest->details->drag_data);
-    selection_format = gtk_selection_data_get_format (dest->details->drag_data);
-    selection_length = gtk_selection_data_get_length (dest->details->drag_data);
+    selection_data = gtk_selection_data_get_data (dest->priv->drag_data);
+    selection_format = gtk_selection_data_get_format (dest->priv->drag_data);
+    selection_length = gtk_selection_data_get_length (dest->priv->drag_data);
 
     if (selection_format == 8
         && selection_length == 1
@@ -941,8 +941,8 @@ receive_xds (NautilusTreeViewDragDest *dest,
              && selection_length == 1
              && selection_data[0] == 'S')
     {
-        g_assert (dest->details->direct_save_uri != NULL);
-        location = g_file_new_for_uri (dest->details->direct_save_uri);
+        g_assert (dest->priv->direct_save_uri != NULL);
+        location = g_file_new_for_uri (dest->priv->direct_save_uri);
 
         nautilus_file_changes_queue_file_added (location);
         nautilus_file_changes_consume_changes (TRUE);
@@ -970,20 +970,20 @@ drag_data_received_callback (GtkWidget        *widget,
 
     dest = NAUTILUS_TREE_VIEW_DRAG_DEST (data);
 
-    if (!dest->details->have_drag_data)
+    if (!dest->priv->have_drag_data)
     {
-        dest->details->have_drag_data = TRUE;
-        dest->details->drag_type = info;
-        dest->details->drag_data =
+        dest->priv->have_drag_data = TRUE;
+        dest->priv->drag_type = info;
+        dest->priv->drag_data =
             gtk_selection_data_copy (selection_data);
         if (info == NAUTILUS_ICON_DND_GNOME_ICON_LIST)
         {
-            dest->details->drag_list =
+            dest->priv->drag_list =
                 nautilus_drag_build_selection_list (selection_data);
         }
     }
 
-    if (dest->details->drop_occurred)
+    if (dest->priv->drop_occurred)
     {
         success = FALSE;
         finished = TRUE;
@@ -1036,7 +1036,7 @@ drag_data_received_callback (GtkWidget        *widget,
 
         if (finished)
         {
-            dest->details->drop_occurred = FALSE;
+            dest->priv->drop_occurred = FALSE;
             free_drag_data (dest);
             gtk_drag_finish (context, success, FALSE, time);
         }
@@ -1044,7 +1044,7 @@ drag_data_received_callback (GtkWidget        *widget,
 
     /* appease GtkTreeView by preventing its drag_data_receive
      * from being called */
-    g_signal_stop_emission_by_name (dest->details->tree_view,
+    g_signal_stop_emission_by_name (dest->priv->tree_view,
                                     "drag-data-received");
 
     return TRUE;
@@ -1089,7 +1089,7 @@ set_direct_save_uri (NautilusTreeViewDragDest *dest,
     char *drop_uri;
     char *filename, *uri;
 
-    g_assert (dest->details->direct_save_uri == NULL);
+    g_assert (dest->priv->direct_save_uri == NULL);
 
     uri = NULL;
 
@@ -1114,7 +1114,7 @@ set_direct_save_uri (NautilusTreeViewDragDest *dest,
                                  GDK_PROP_MODE_REPLACE, (const guchar *) uri,
                                  strlen (uri));
 
-            dest->details->direct_save_uri = uri;
+            dest->priv->direct_save_uri = uri;
         }
         else
         {
@@ -1143,7 +1143,7 @@ drag_drop_callback (GtkWidget      *widget,
 
     dest = NAUTILUS_TREE_VIEW_DRAG_DEST (data);
 
-    target = gtk_drag_dest_find_target (GTK_WIDGET (dest->details->tree_view),
+    target = gtk_drag_dest_find_target (GTK_WIDGET (dest->priv->tree_view),
                                         context,
                                         NULL);
     if (target == GDK_NONE)
@@ -1151,21 +1151,21 @@ drag_drop_callback (GtkWidget      *widget,
         return FALSE;
     }
 
-    info = dest->details->drag_type;
+    info = dest->priv->drag_type;
 
     if (info == NAUTILUS_ICON_DND_XDNDDIRECTSAVE)
     {
         /* We need to set this or get_drop_path will fail, and it
          *  was unset by drag_leave_callback */
-        dest->details->have_drag_data = TRUE;
+        dest->priv->have_drag_data = TRUE;
         if (!set_direct_save_uri (dest, context, x, y))
         {
             return FALSE;
         }
-        dest->details->have_drag_data = FALSE;
+        dest->priv->have_drag_data = FALSE;
     }
 
-    dest->details->drop_occurred = TRUE;
+    dest->priv->drop_occurred = TRUE;
 
     get_drag_data (dest, context, time);
     remove_scroll_timeout (dest);
@@ -1184,7 +1184,7 @@ tree_view_weak_notify (gpointer  user_data,
 
     remove_scroll_timeout (dest);
 
-    dest->details->tree_view = NULL;
+    dest->priv->tree_view = NULL;
 }
 
 static void
@@ -1194,9 +1194,9 @@ nautilus_tree_view_drag_dest_dispose (GObject *object)
 
     dest = NAUTILUS_TREE_VIEW_DRAG_DEST (object);
 
-    if (dest->details->tree_view)
+    if (dest->priv->tree_view)
     {
-        g_object_weak_unref (G_OBJECT (dest->details->tree_view),
+        g_object_weak_unref (G_OBJECT (dest->priv->tree_view),
                              tree_view_weak_notify,
                              dest);
     }
@@ -1220,8 +1220,8 @@ nautilus_tree_view_drag_dest_finalize (GObject *object)
 static void
 nautilus_tree_view_drag_dest_init (NautilusTreeViewDragDest *dest)
 {
-    dest->details = G_TYPE_INSTANCE_GET_PRIVATE (dest, NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST,
-                                                 NautilusTreeViewDragDestDetails);
+    dest->priv = G_TYPE_INSTANCE_GET_PRIVATE (dest, NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST,
+                                                 NautilusTreeViewDragDestPrivate);
 }
 
 static void
@@ -1233,8 +1233,6 @@ nautilus_tree_view_drag_dest_class_init (NautilusTreeViewDragDestClass *class)
 
     gobject_class->dispose = nautilus_tree_view_drag_dest_dispose;
     gobject_class->finalize = nautilus_tree_view_drag_dest_finalize;
-
-    g_type_class_add_private (class, sizeof (NautilusTreeViewDragDestDetails));
 
     signals[GET_ROOT_URI] =
         g_signal_new ("get-root-uri",
@@ -1340,8 +1338,8 @@ nautilus_tree_view_drag_dest_new (GtkTreeView *tree_view)
 
     dest = g_object_new (NAUTILUS_TYPE_TREE_VIEW_DRAG_DEST, NULL);
 
-    dest->details->tree_view = tree_view;
-    g_object_weak_ref (G_OBJECT (dest->details->tree_view),
+    dest->priv->tree_view = tree_view;
+    g_object_weak_ref (G_OBJECT (dest->priv->tree_view),
                        tree_view_weak_notify, dest);
 
     gtk_drag_dest_set (GTK_WIDGET (tree_view),

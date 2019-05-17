@@ -255,19 +255,19 @@ nautilus_search_directory_file_init (NautilusSearchDirectoryFile *search_file)
                                                        NULL);
     g_free (xdg_dir);
 
-    file->details->got_file_info = TRUE;
-    file->details->mime_type = g_ref_string_new_intern ("x-directory/normal");
-    file->details->type = G_FILE_TYPE_DIRECTORY;
-    file->details->size = 0;
+    file->priv->got_file_info = TRUE;
+    file->priv->mime_type = g_ref_string_new_intern ("x-directory/normal");
+    file->priv->type = G_FILE_TYPE_DIRECTORY;
+    file->priv->size = 0;
 
-    file->details->file_info_is_up_to_date = TRUE;
+    file->priv->file_info_is_up_to_date = TRUE;
 
-    file->details->custom_icon = NULL;
-    file->details->activation_uri = NULL;
+    file->priv->custom_icon = NULL;
+    file->priv->activation_uri = NULL;
 
-    file->details->directory_count = 0;
-    file->details->got_directory_count = TRUE;
-    file->details->directory_count_is_up_to_date = TRUE;
+    file->priv->directory_count = 0;
+    file->priv->got_directory_count = TRUE;
+    file->priv->directory_count_is_up_to_date = TRUE;
 
     nautilus_file_set_display_name (file, _("Search"), NULL, TRUE);
 }

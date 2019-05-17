@@ -39,7 +39,7 @@ typedef enum {
 	UNKNOWN
 } Knowledge;
 
-struct NautilusFileDetails
+struct NautilusFilePrivate
 {
 	NautilusDirectory *directory;
 	

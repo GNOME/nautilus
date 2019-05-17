@@ -516,11 +516,11 @@ gboolean                nautilus_drag_can_accept_info                   (Nautilu
 /* Debugging */
 void                    nautilus_file_dump                              (NautilusFile                   *file);
 
-typedef struct NautilusFileDetails NautilusFileDetails;
+typedef struct NautilusFilePrivate NautilusFilePrivate;
 
 struct NautilusFile {
 	GObject parent_slot;
-	NautilusFileDetails *details;
+	NautilusFilePrivate *priv;
 };
 
 /* This is actually a "protected" type, but it must be here so we can

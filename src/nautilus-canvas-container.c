@@ -6217,6 +6217,7 @@ nautilus_canvas_container_accessible_ref_child (AtkObject *accessible,
 
 G_DEFINE_TYPE_WITH_CODE (NautilusCanvasContainerAccessible, nautilus_canvas_container_accessible,
                          eel_canvas_accessible_get_type (),
+                         G_ADD_PRIVATE (NautilusCanvasContainerAccessible)
                          G_IMPLEMENT_INTERFACE (ATK_TYPE_ACTION, nautilus_canvas_container_accessible_action_interface_init)
                          G_IMPLEMENT_INTERFACE (ATK_TYPE_SELECTION, nautilus_canvas_container_accessible_selection_interface_init))
 
@@ -6294,8 +6295,6 @@ nautilus_canvas_container_accessible_class_init (NautilusCanvasContainerAccessib
     atk_class->get_n_children = nautilus_canvas_container_accessible_get_n_children;
     atk_class->ref_child = nautilus_canvas_container_accessible_ref_child;
     atk_class->initialize = nautilus_canvas_container_accessible_initialize;
-
-    g_type_class_add_private (klass, sizeof (NautilusCanvasContainerAccessiblePrivate));
 }
 
 gboolean

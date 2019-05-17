@@ -66,7 +66,9 @@ static NautilusDirectory *nautilus_directory_new (GFile *location);
 static void               set_directory_location (NautilusDirectory *directory,
                                                   GFile             *location);
 
-G_DEFINE_TYPE (NautilusDirectory, nautilus_directory, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusDirectory,
+                            nautilus_directory,
+                            G_TYPE_OBJECT);
 
 static gboolean
 real_contains_file (NautilusDirectory *self,
@@ -82,13 +84,13 @@ real_contains_file (NautilusDirectory *self,
 static gboolean
 real_are_all_files_seen (NautilusDirectory *directory)
 {
-    return directory->details->directory_loaded;
+    return directory->priv->directory_loaded;
 }
 
 static gboolean
 real_is_not_empty (NautilusDirectory *directory)
 {
-    return directory->details->file_list != NULL;
+    return directory->priv->file_list != NULL;
 }
 
 static gboolean
@@ -101,7 +103,7 @@ is_tentative (NautilusFile *file,
      * will later be sent with the files_added signal, and a
      * user doing get_file_list + files_added monitoring will
      * then see the file twice */
-    return !file->details->got_file_info || !file->details->is_added;
+    return !file->priv->got_file_info || !file->priv->is_added;
 }
 
 static GList *
@@ -109,7 +111,7 @@ real_get_file_list (NautilusDirectory *directory)
 {
     GList *tentative_files, *non_tentative_files;
 
-    tentative_files = nautilus_file_list_filter (directory->details->file_list,
+    tentative_files = nautilus_file_list_filter (directory->priv->file_list,
                                                  &non_tentative_files, is_tentative, NULL);
     nautilus_file_list_free (tentative_files);
 
@@ -169,58 +171,58 @@ nautilus_directory_finalize (GObject *object)
 
     directory = NAUTILUS_DIRECTORY (object);
 
-    g_hash_table_remove (directories, directory->details->location);
+    g_hash_table_remove (directories, directory->priv->location);
 
     nautilus_directory_cancel (directory);
-    g_assert (directory->details->count_in_progress == NULL);
+    g_assert (directory->priv->count_in_progress == NULL);
 
-    if (g_hash_table_size (directory->details->monitor_table) != 0)
+    if (g_hash_table_size (directory->priv->monitor_table) != 0)
     {
         GHashTableIter iter;
         gpointer value;
 
         g_warning ("destroying a NautilusDirectory while it's being monitored");
 
-        g_hash_table_iter_init (&iter, directory->details->monitor_table);
+        g_hash_table_iter_init (&iter, directory->priv->monitor_table);
         while (g_hash_table_iter_next (&iter, NULL, &value))
         {
             GList *list = value;
             g_list_free_full (list, g_free);
         }
-        g_hash_table_remove_all (directory->details->monitor_table);
+        g_hash_table_remove_all (directory->priv->monitor_table);
     }
-    g_hash_table_destroy (directory->details->monitor_table);
+    g_hash_table_destroy (directory->priv->monitor_table);
 
-    if (directory->details->monitor != NULL)
+    if (directory->priv->monitor != NULL)
     {
-        nautilus_monitor_cancel (directory->details->monitor);
+        nautilus_monitor_cancel (directory->priv->monitor);
     }
 
-    if (directory->details->dequeue_pending_idle_id != 0)
+    if (directory->priv->dequeue_pending_idle_id != 0)
     {
-        g_source_remove (directory->details->dequeue_pending_idle_id);
+        g_source_remove (directory->priv->dequeue_pending_idle_id);
     }
 
-    if (directory->details->call_ready_idle_id != 0)
+    if (directory->priv->call_ready_idle_id != 0)
     {
-        g_source_remove (directory->details->call_ready_idle_id);
+        g_source_remove (directory->priv->call_ready_idle_id);
     }
 
-    if (directory->details->location)
+    if (directory->priv->location)
     {
-        g_object_unref (directory->details->location);
+        g_object_unref (directory->priv->location);
     }
 
-    g_assert (directory->details->file_list == NULL);
-    g_hash_table_destroy (directory->details->file_hash);
+    g_assert (directory->priv->file_list == NULL);
+    g_hash_table_destroy (directory->priv->file_hash);
 
-    nautilus_file_queue_destroy (directory->details->high_priority_queue);
-    nautilus_file_queue_destroy (directory->details->low_priority_queue);
-    nautilus_file_queue_destroy (directory->details->extension_queue);
-    g_assert (directory->details->directory_load_in_progress == NULL);
-    g_assert (directory->details->count_in_progress == NULL);
-    g_assert (directory->details->dequeue_pending_idle_id == 0);
-    g_list_free_full (directory->details->pending_file_info, g_object_unref);
+    nautilus_file_queue_destroy (directory->priv->high_priority_queue);
+    nautilus_file_queue_destroy (directory->priv->low_priority_queue);
+    nautilus_file_queue_destroy (directory->priv->extension_queue);
+    g_assert (directory->priv->directory_load_in_progress == NULL);
+    g_assert (directory->priv->count_in_progress == NULL);
+    g_assert (directory->priv->dequeue_pending_idle_id == 0);
+    g_list_free_full (directory->priv->pending_file_info, g_object_unref);
 
     G_OBJECT_CLASS (nautilus_directory_parent_class)->finalize (object);
 }
@@ -261,7 +263,7 @@ nautilus_directory_get_property (GObject    *object,
     {
         case PROP_LOCATION:
         {
-            g_value_set_object (value, directory->details->location);
+            g_value_set_object (value, directory->priv->location);
         }
         break;
 
@@ -332,20 +334,19 @@ nautilus_directory_class_init (NautilusDirectoryClass *klass)
                              G_TYPE_FILE,
                              G_PARAM_CONSTRUCT_ONLY | G_PARAM_READWRITE);
 
-    g_type_class_add_private (klass, sizeof (NautilusDirectoryDetails));
     g_object_class_install_properties (object_class, NUM_PROPERTIES, properties);
 }
 
 static void
 nautilus_directory_init (NautilusDirectory *directory)
 {
-    directory->details = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryDetails);
-    directory->details->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
+    directory->priv = G_TYPE_INSTANCE_GET_PRIVATE ((directory), NAUTILUS_TYPE_DIRECTORY, NautilusDirectoryPrivate);
+    directory->priv->file_hash = g_hash_table_new_full (g_str_hash, g_str_equal,
                                                            g_free, NULL);
-    directory->details->high_priority_queue = nautilus_file_queue_new ();
-    directory->details->low_priority_queue = nautilus_file_queue_new ();
-    directory->details->extension_queue = nautilus_file_queue_new ();
-    directory->details->monitor_table = g_hash_table_new (NULL, NULL);
+    directory->priv->high_priority_queue = nautilus_file_queue_new ();
+    directory->priv->low_priority_queue = nautilus_file_queue_new ();
+    directory->priv->extension_queue = nautilus_file_queue_new ();
+    directory->priv->monitor_table = g_hash_table_new (NULL, NULL);
 }
 
 NautilusDirectory *
@@ -417,10 +418,10 @@ emit_change_signals_for_all_files (NautilusDirectory *directory)
 {
     GList *files;
 
-    files = g_list_copy (directory->details->file_list);
-    if (directory->details->as_file != NULL)
+    files = g_list_copy (directory->priv->file_list);
+    if (directory->priv->as_file != NULL)
     {
-        files = g_list_prepend (files, directory->details->as_file);
+        files = g_list_prepend (files, directory->priv->as_file);
     }
 
     nautilus_file_list_ref (files);
@@ -535,7 +536,7 @@ nautilus_directory_get_internal (GFile    *location,
 
         /* Put it in the hash table. */
         g_hash_table_insert (directories,
-                             directory->details->location,
+                             directory->priv->location,
                              directory);
     }
 
@@ -625,7 +626,7 @@ nautilus_directory_get_existing_corresponding_file (NautilusDirectory *directory
     NautilusFile *file;
     char *uri;
 
-    file = directory->details->as_file;
+    file = directory->priv->as_file;
     if (file != NULL)
     {
         nautilus_file_ref (file);
@@ -685,7 +686,7 @@ nautilus_directory_get_uri (NautilusDirectory *directory)
 {
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-    return g_file_get_uri (directory->details->location);
+    return g_file_get_uri (directory->priv->location);
 }
 
 GFile *
@@ -693,7 +694,7 @@ nautilus_directory_get_location (NautilusDirectory *directory)
 {
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
-    return g_object_ref (directory->details->location);
+    return g_object_ref (directory->priv->location);
 }
 
 NautilusFile *
@@ -766,14 +767,14 @@ nautilus_directory_is_local (NautilusDirectory *directory)
 {
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return TRUE;
     }
 
     return nautilus_directory_is_in_trash (directory) ||
            nautilus_directory_is_in_recent (directory) ||
-           g_file_is_native (directory->details->location);
+           g_file_is_native (directory->priv->location);
 }
 
 gboolean
@@ -783,7 +784,7 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
 
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return TRUE;
     }
@@ -791,11 +792,11 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
     /* If the glib reports a path, then it can use FUSE to convert the uri
      * to a local path
      */
-    path = g_file_get_path (directory->details->location);
+    path = g_file_get_path (directory->priv->location);
 
     return nautilus_directory_is_in_trash (directory) ||
            nautilus_directory_is_in_recent (directory) ||
-           g_file_is_native (directory->details->location) ||
+           g_file_is_native (directory->priv->location) ||
            path != NULL;
 }
 
@@ -804,12 +805,12 @@ nautilus_directory_is_in_trash (NautilusDirectory *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "trash");
+    return g_file_has_uri_scheme (directory->priv->location, "trash");
 }
 
 gboolean
@@ -817,12 +818,12 @@ nautilus_directory_is_in_recent (NautilusDirectory *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "recent");
+    return g_file_has_uri_scheme (directory->priv->location, "recent");
 }
 
 gboolean
@@ -830,12 +831,12 @@ nautilus_directory_is_in_starred (NautilusDirectory *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "starred");
+    return g_file_has_uri_scheme (directory->priv->location, "starred");
 }
 
 gboolean
@@ -843,12 +844,12 @@ nautilus_directory_is_in_admin (NautilusDirectory *directory)
 {
     g_assert (NAUTILUS_IS_DIRECTORY (directory));
 
-    if (directory->details->location == NULL)
+    if (directory->priv->location == NULL)
     {
         return FALSE;
     }
 
-    return g_file_has_uri_scheme (directory->details->location, "admin");
+    return g_file_has_uri_scheme (directory->priv->location, "admin");
 }
 
 gboolean
@@ -870,9 +871,9 @@ add_to_hash_table (NautilusDirectory *directory,
 
     g_assert (name != NULL);
     g_assert (node != NULL);
-    g_assert (g_hash_table_lookup (directory->details->file_hash,
+    g_assert (g_hash_table_lookup (directory->priv->file_hash,
                                    name) == NULL);
-    g_hash_table_insert (directory->details->file_hash, name, node);
+    g_hash_table_insert (directory->priv->file_hash, name, node);
 }
 
 static GList *
@@ -889,8 +890,8 @@ extract_from_hash_table (NautilusDirectory *directory,
     }
 
     /* Find the list node in the hash table. */
-    node = g_hash_table_lookup (directory->details->file_hash, name);
-    g_hash_table_remove (directory->details->file_hash, name);
+    node = g_hash_table_lookup (directory->priv->file_hash, name);
+    g_hash_table_remove (directory->priv->file_hash, name);
 
     return node;
 }
@@ -906,13 +907,13 @@ nautilus_directory_add_file (NautilusDirectory *directory,
     g_assert (NAUTILUS_IS_FILE (file));
 
     /* Add to list. */
-    node = g_list_prepend (directory->details->file_list, file);
-    directory->details->file_list = node;
+    node = g_list_prepend (directory->priv->file_list, file);
+    directory->priv->file_list = node;
 
     /* Add to hash table. */
     add_to_hash_table (directory, file, node);
 
-    directory->details->confirmed_file_count++;
+    directory->priv->confirmed_file_count++;
 
     add_to_work_queue = FALSE;
     if (nautilus_directory_is_file_list_monitored (directory))
@@ -950,15 +951,15 @@ nautilus_directory_remove_file (NautilusDirectory *directory,
     g_assert (node->data == file);
 
     /* Remove the item from the list. */
-    directory->details->file_list = g_list_remove_link
-                                        (directory->details->file_list, node);
+    directory->priv->file_list = g_list_remove_link
+                                        (directory->priv->file_list, node);
     g_list_free_1 (node);
 
     nautilus_directory_remove_file_from_work_queue (directory, file);
 
-    if (!file->details->unconfirmed)
+    if (!file->priv->unconfirmed)
     {
-        directory->details->confirmed_file_count--;
+        directory->priv->confirmed_file_count--;
     }
 
     /* Unref if we are monitoring. */
@@ -997,7 +998,7 @@ nautilus_directory_find_file_by_name (NautilusDirectory *directory,
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
     g_return_val_if_fail (name != NULL, NULL);
 
-    node = g_hash_table_lookup (directory->details->file_hash,
+    node = g_hash_table_lookup (directory->priv->file_hash,
                                 name);
     return node == NULL ? NULL : NAUTILUS_FILE (node->data);
 }
@@ -1281,7 +1282,7 @@ nautilus_directory_notify_files_added (GList *files)
          * to the directory by a nautilus_file_get() but not gotten
          * files_added emitted
          */
-        if (file && file->details->is_added)
+        if (file && file->priv->is_added)
         {
             /* A file already exists, it was probably renamed.
              * If it was renamed this could be ignored, but
@@ -1338,7 +1339,7 @@ nautilus_directory_notify_files_changed (GList *files)
             /* Tell it to re-get info now, and later emit
              * a changed signal.
              */
-            file->details->file_info_is_up_to_date = FALSE;
+            file->priv->file_info_is_up_to_date = FALSE;
             nautilus_file_invalidate_extension_info_internal (file);
 
             hash_table_list_prepend (changed_lists, directory, file);
@@ -1407,11 +1408,11 @@ static void
 set_directory_location (NautilusDirectory *directory,
                         GFile             *location)
 {
-    if (directory->details->location)
+    if (directory->priv->location)
     {
-        g_object_unref (directory->details->location);
+        g_object_unref (directory->priv->location);
     }
-    directory->details->location = g_object_ref (location);
+    directory->priv->location = g_object_ref (location);
 
     g_object_notify_by_pspec (G_OBJECT (directory), properties[PROP_LOCATION]);
 }
@@ -1424,15 +1425,15 @@ change_directory_location (NautilusDirectory *directory,
      * to be moved. But if that did somehow happen, this function
      * wouldn't do enough to handle it.
      */
-    g_assert (directory->details->as_file == NULL);
+    g_assert (directory->priv->as_file == NULL);
 
     g_hash_table_remove (directories,
-                         directory->details->location);
+                         directory->priv->location);
 
     set_directory_location (directory, new_location);
 
     g_hash_table_insert (directories,
-                         directory->details->location,
+                         directory->priv->location,
                          directory);
 }
 
@@ -1489,14 +1490,14 @@ nautilus_directory_moved_internal (GFile *old_location,
         directory = NAUTILUS_DIRECTORY (node->data);
         new_directory_location = NULL;
 
-        if (g_file_equal (directory->details->location, old_location))
+        if (g_file_equal (directory->priv->location, old_location))
         {
             new_directory_location = g_object_ref (new_location);
         }
         else
         {
             relative_path = g_file_get_relative_path (old_location,
-                                                      directory->details->location);
+                                                      directory->priv->location);
             if (relative_path != NULL)
             {
                 new_directory_location = g_file_resolve_relative_path (new_location, relative_path);
@@ -1510,15 +1511,15 @@ nautilus_directory_moved_internal (GFile *old_location,
             g_object_unref (new_directory_location);
 
             /* Collect affected files. */
-            if (directory->details->as_file != NULL)
+            if (directory->priv->as_file != NULL)
             {
                 affected_files = g_list_prepend
                                      (affected_files,
-                                     nautilus_file_ref (directory->details->as_file));
+                                     nautilus_file_ref (directory->priv->as_file));
             }
             affected_files = g_list_concat
                                  (affected_files,
-                                 nautilus_file_list_copy (directory->details->file_list));
+                                 nautilus_file_list_copy (directory->priv->file_list));
         }
 
         nautilus_directory_unref (directory);
@@ -1909,8 +1910,8 @@ compare_by_uri (NautilusDirectory *a,
     char *uri_a, *uri_b;
     int res;
 
-    uri_a = g_file_get_uri (a->details->location);
-    uri_b = g_file_get_uri (b->details->location);
+    uri_a = g_file_get_uri (a->priv->location);
+    uri_b = g_file_get_uri (b->priv->location);
 
     res = strcmp (uri_a, uri_b);
 
@@ -1970,7 +1971,7 @@ nautilus_directory_dump (NautilusDirectory *directory)
 {
     g_autofree gchar *uri = NULL;
 
-    uri = g_file_get_uri (directory->details->location);
+    uri = g_file_get_uri (directory->priv->location);
     g_print ("uri: %s\n", uri);
     g_print ("ref count: %d\n", G_OBJECT (directory)->ref_count);
 }
@@ -2048,7 +2049,7 @@ nautilus_self_check_directory (void)
         gtk_main_iteration ();
     }
 
-    EEL_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
+    EEL_CHECK_BOOLEAN_RESULT (directory->priv->file_list == NULL, TRUE);
 
     EEL_CHECK_INTEGER_RESULT (g_hash_table_size (directories), 1);
 

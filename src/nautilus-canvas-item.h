@@ -40,11 +40,11 @@ G_BEGIN_DECLS
 
 typedef struct NautilusCanvasItem NautilusCanvasItem;
 typedef struct NautilusCanvasItemClass NautilusCanvasItemClass;
-typedef struct NautilusCanvasItemDetails NautilusCanvasItemDetails;
+typedef struct NautilusCanvasItemPrivate NautilusCanvasItemPrivate;
 
 struct NautilusCanvasItem {
 	EelCanvasItem item;
-	NautilusCanvasItemDetails *details;
+	NautilusCanvasItemPrivate *priv;
 	gpointer user_data;
 };
 

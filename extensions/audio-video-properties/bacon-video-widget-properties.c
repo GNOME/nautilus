@@ -37,14 +37,14 @@ struct BaconVideoWidgetPropertiesPrivate {
 
 #define BACON_VIDEO_WIDGET_PROPERTIES_GET_PRIVATE(obj) (G_TYPE_INSTANCE_GET_PRIVATE ((obj), BACON_TYPE_VIDEO_WIDGET_PROPERTIES, BaconVideoWidgetPropertiesPrivate))
 
-G_DEFINE_TYPE (BaconVideoWidgetProperties, bacon_video_widget_properties, GTK_TYPE_BOX)
+G_DEFINE_TYPE_WITH_PRIVATE (BaconVideoWidgetProperties,
+                            bacon_video_widget_properties,
+                            GTK_TYPE_BOX)
 
 static void
 bacon_video_widget_properties_class_init (BaconVideoWidgetPropertiesClass *klass)
 {
 	GObjectClass *object_class = G_OBJECT_CLASS (klass);
-
-	g_type_class_add_private (klass, sizeof (BaconVideoWidgetPropertiesPrivate));
 
 	object_class->dispose = bacon_video_widget_properties_dispose;
 }

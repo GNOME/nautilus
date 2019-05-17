@@ -43,7 +43,7 @@ typedef struct
     int x0, y0, x1, y1;
 }  Rect;
 
-struct _NautilusSelectionCanvasItemDetails
+struct _NautilusSelectionCanvasItemPrivate
 {
     Rect last_update_rect;
     Rect last_outline_update_rect;
@@ -52,7 +52,9 @@ struct _NautilusSelectionCanvasItemDetails
     double x1, y1, x2, y2;              /* Corners of item */
 };
 
-G_DEFINE_TYPE (NautilusSelectionCanvasItem, nautilus_selection_canvas_item, EEL_TYPE_CANVAS_ITEM);
+G_DEFINE_TYPE_WITH_PRIVATE (NautilusSelectionCanvasItem,
+                            nautilus_selection_canvas_item,
+                            EEL_TYPE_CANVAS_ITEM);
 
 static void
 nautilus_selection_canvas_item_draw (EelCanvasItem  *item,
@@ -307,7 +309,7 @@ nautilus_selection_canvas_item_update (EelCanvasItem *item,
                                        gint           flags)
 {
     NautilusSelectionCanvasItem *self;
-    NautilusSelectionCanvasItemDetails *priv;
+    NautilusSelectionCanvasItemPrivate *priv;
     double x1, y1, x2, y2;
     int cx1, cy1, cx2, cy2;
     int repaint_rects_count, i;
@@ -543,12 +545,11 @@ nautilus_selection_canvas_item_class_init (NautilusSelectionCanvasItemClass *kla
                              G_PARAM_READWRITE);
 
     g_object_class_install_properties (gobject_class, NUM_PROPERTIES, properties);
-    g_type_class_add_private (klass, sizeof (NautilusSelectionCanvasItemDetails));
 }
 
 static void
 nautilus_selection_canvas_item_init (NautilusSelectionCanvasItem *self)
 {
     self->priv = G_TYPE_INSTANCE_GET_PRIVATE (self, NAUTILUS_TYPE_SELECTION_CANVAS_ITEM,
-                                              NautilusSelectionCanvasItemDetails);
+                                              NautilusSelectionCanvasItemPrivate);
 }

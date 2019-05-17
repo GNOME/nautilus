@@ -188,12 +188,12 @@ G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
 static void
 nautilus_file_init (NautilusFile *file)
 {
-    file->details = G_TYPE_INSTANCE_GET_PRIVATE ((file), NAUTILUS_TYPE_FILE, NautilusFileDetails);
+    file->priv = G_TYPE_INSTANCE_GET_PRIVATE ((file), NAUTILUS_TYPE_FILE, NautilusFilePrivate);
 
     nautilus_file_clear_info (file);
     nautilus_file_invalidate_extension_info_internal (file);
 
-    file->details->free_space = -1;
+    file->priv->free_space = -1;
 }
 
 static GObject *
@@ -213,7 +213,7 @@ nautilus_file_constructor (GType                  type,
     /* Set to default type after full construction */
     if (NAUTILUS_FILE_GET_CLASS (file)->default_file_type != G_FILE_TYPE_UNKNOWN)
     {
-        file->details->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
+        file->priv->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
     }
 
     return object;
@@ -231,9 +231,9 @@ nautilus_file_set_display_name (NautilusFile *file,
     {
         /* We're re-setting a custom display name, invalidate it if
          *  we already set it so that the old one is re-read */
-        if (file->details->got_custom_display_name)
+        if (file->priv->got_custom_display_name)
         {
-            file->details->got_custom_display_name = FALSE;
+            file->priv->got_custom_display_name = FALSE;
             nautilus_file_invalidate_attributes (file,
                                                  NAUTILUS_FILE_ATTRIBUTE_INFO);
         }
@@ -245,7 +245,7 @@ nautilus_file_set_display_name (NautilusFile *file,
         return FALSE;
     }
 
-    if (!custom && file->details->got_custom_display_name)
+    if (!custom && file->priv->got_custom_display_name)
     {
         return FALSE;
     }
@@ -257,51 +257,51 @@ nautilus_file_set_display_name (NautilusFile *file,
 
     changed = FALSE;
 
-    if (g_strcmp0 (file->details->display_name, display_name) != 0)
+    if (g_strcmp0 (file->priv->display_name, display_name) != 0)
     {
         changed = TRUE;
 
-        g_clear_pointer (&file->details->display_name, g_ref_string_release);
+        g_clear_pointer (&file->priv->display_name, g_ref_string_release);
 
-        if (g_strcmp0 (file->details->name, display_name) == 0)
+        if (g_strcmp0 (file->priv->name, display_name) == 0)
         {
-            file->details->display_name = g_ref_string_acquire (file->details->name);
+            file->priv->display_name = g_ref_string_acquire (file->priv->name);
         }
         else
         {
-            file->details->display_name = g_ref_string_new (display_name);
+            file->priv->display_name = g_ref_string_new (display_name);
         }
 
-        g_free (file->details->display_name_collation_key);
-        file->details->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
+        g_free (file->priv->display_name_collation_key);
+        file->priv->display_name_collation_key = g_utf8_collate_key_for_filename (display_name, -1);
     }
 
-    if (g_strcmp0 (file->details->edit_name, edit_name) != 0)
+    if (g_strcmp0 (file->priv->edit_name, edit_name) != 0)
     {
         changed = TRUE;
 
-        g_clear_pointer (&file->details->edit_name, g_ref_string_release);
-        if (g_strcmp0 (file->details->display_name, edit_name) == 0)
+        g_clear_pointer (&file->priv->edit_name, g_ref_string_release);
+        if (g_strcmp0 (file->priv->display_name, edit_name) == 0)
         {
-            file->details->edit_name = g_ref_string_acquire (file->details->display_name);
+            file->priv->edit_name = g_ref_string_acquire (file->priv->display_name);
         }
         else
         {
-            file->details->edit_name = g_ref_string_new (edit_name);
+            file->priv->edit_name = g_ref_string_new (edit_name);
         }
     }
 
-    file->details->got_custom_display_name = custom;
+    file->priv->got_custom_display_name = custom;
     return changed;
 }
 
 static void
 nautilus_file_clear_display_name (NautilusFile *file)
 {
-    g_clear_pointer (&file->details->display_name, g_ref_string_release);
-    g_free (file->details->display_name_collation_key);
-    file->details->display_name_collation_key = NULL;
-    g_clear_pointer (&file->details->edit_name, g_ref_string_release);
+    g_clear_pointer (&file->priv->display_name, g_ref_string_release);
+    g_free (file->priv->display_name_collation_key);
+    file->priv->display_name_collation_key = NULL;
+    g_clear_pointer (&file->priv->edit_name, g_ref_string_release);
 }
 
 static gboolean
@@ -409,10 +409,10 @@ metadata_hash_equal (GHashTable *hash1,
 static void
 clear_metadata (NautilusFile *file)
 {
-    if (file->details->metadata)
+    if (file->priv->metadata)
     {
-        metadata_hash_free (file->details->metadata);
-        file->details->metadata = NULL;
+        metadata_hash_free (file->priv->metadata);
+        file->priv->metadata = NULL;
     }
 }
 
@@ -474,18 +474,18 @@ nautilus_file_update_metadata_from_info (NautilusFile *file,
 
         metadata = get_metadata_from_info (info);
         if (!metadata_hash_equal (metadata,
-                                  file->details->metadata))
+                                  file->priv->metadata))
         {
             changed = TRUE;
             clear_metadata (file);
-            file->details->metadata = metadata;
+            file->priv->metadata = metadata;
         }
         else
         {
             metadata_hash_free (metadata);
         }
     }
-    else if (file->details->metadata)
+    else if (file->priv->metadata)
     {
         changed = TRUE;
         clear_metadata (file);
@@ -496,78 +496,78 @@ nautilus_file_update_metadata_from_info (NautilusFile *file,
 void
 nautilus_file_clear_info (NautilusFile *file)
 {
-    file->details->got_file_info = FALSE;
-    if (file->details->get_info_error)
+    file->priv->got_file_info = FALSE;
+    if (file->priv->get_info_error)
     {
-        g_error_free (file->details->get_info_error);
-        file->details->get_info_error = NULL;
+        g_error_free (file->priv->get_info_error);
+        file->priv->get_info_error = NULL;
     }
     /* Reset to default type, which might be other than unknown for
      *  special kinds of files like the desktop or a search directory */
-    file->details->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
+    file->priv->type = NAUTILUS_FILE_GET_CLASS (file)->default_file_type;
 
-    if (!file->details->got_custom_display_name)
+    if (!file->priv->got_custom_display_name)
     {
         nautilus_file_clear_display_name (file);
     }
 
-    if (!file->details->got_custom_activation_uri &&
-        file->details->activation_uri != NULL)
+    if (!file->priv->got_custom_activation_uri &&
+        file->priv->activation_uri != NULL)
     {
-        g_free (file->details->activation_uri);
-        file->details->activation_uri = NULL;
+        g_free (file->priv->activation_uri);
+        file->priv->activation_uri = NULL;
     }
 
-    if (file->details->icon != NULL)
+    if (file->priv->icon != NULL)
     {
-        g_object_unref (file->details->icon);
-        file->details->icon = NULL;
+        g_object_unref (file->priv->icon);
+        file->priv->icon = NULL;
     }
 
-    g_free (file->details->thumbnail_path);
-    file->details->thumbnail_path = NULL;
-    file->details->thumbnailing_failed = FALSE;
+    g_free (file->priv->thumbnail_path);
+    file->priv->thumbnail_path = NULL;
+    file->priv->thumbnailing_failed = FALSE;
 
-    file->details->is_symlink = FALSE;
-    file->details->is_hidden = FALSE;
-    file->details->is_mountpoint = FALSE;
-    file->details->uid = -1;
-    file->details->gid = -1;
-    file->details->can_read = TRUE;
-    file->details->can_write = TRUE;
-    file->details->can_execute = TRUE;
-    file->details->can_delete = TRUE;
-    file->details->can_trash = TRUE;
-    file->details->can_rename = TRUE;
-    file->details->can_mount = FALSE;
-    file->details->can_unmount = FALSE;
-    file->details->can_eject = FALSE;
-    file->details->can_start = FALSE;
-    file->details->can_start_degraded = FALSE;
-    file->details->can_stop = FALSE;
-    file->details->start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
-    file->details->can_poll_for_media = FALSE;
-    file->details->is_media_check_automatic = FALSE;
-    file->details->has_permissions = FALSE;
-    file->details->permissions = 0;
-    file->details->size = -1;
-    file->details->sort_order = 0;
-    file->details->mtime = 0;
-    file->details->atime = 0;
-    file->details->trash_time = 0;
-    file->details->recency = 0;
-    g_free (file->details->symlink_name);
-    file->details->symlink_name = NULL;
-    g_clear_pointer (&file->details->mime_type, g_ref_string_release);
-    g_free (file->details->selinux_context);
-    file->details->selinux_context = NULL;
-    g_free (file->details->description);
-    file->details->description = NULL;
-    g_clear_pointer (&file->details->owner, g_ref_string_release);
-    g_clear_pointer (&file->details->owner_real, g_ref_string_release);
-    g_clear_pointer (&file->details->group, g_ref_string_release);
+    file->priv->is_symlink = FALSE;
+    file->priv->is_hidden = FALSE;
+    file->priv->is_mountpoint = FALSE;
+    file->priv->uid = -1;
+    file->priv->gid = -1;
+    file->priv->can_read = TRUE;
+    file->priv->can_write = TRUE;
+    file->priv->can_execute = TRUE;
+    file->priv->can_delete = TRUE;
+    file->priv->can_trash = TRUE;
+    file->priv->can_rename = TRUE;
+    file->priv->can_mount = FALSE;
+    file->priv->can_unmount = FALSE;
+    file->priv->can_eject = FALSE;
+    file->priv->can_start = FALSE;
+    file->priv->can_start_degraded = FALSE;
+    file->priv->can_stop = FALSE;
+    file->priv->start_stop_type = G_DRIVE_START_STOP_TYPE_UNKNOWN;
+    file->priv->can_poll_for_media = FALSE;
+    file->priv->is_media_check_automatic = FALSE;
+    file->priv->has_permissions = FALSE;
+    file->priv->permissions = 0;
+    file->priv->size = -1;
+    file->priv->sort_order = 0;
+    file->priv->mtime = 0;
+    file->priv->atime = 0;
+    file->priv->trash_time = 0;
+    file->priv->recency = 0;
+    g_free (file->priv->symlink_name);
+    file->priv->symlink_name = NULL;
+    g_clear_pointer (&file->priv->mime_type, g_ref_string_release);
+    g_free (file->priv->selinux_context);
+    file->priv->selinux_context = NULL;
+    g_free (file->priv->description);
+    file->priv->description = NULL;
+    g_clear_pointer (&file->priv->owner, g_ref_string_release);
+    g_clear_pointer (&file->priv->owner_real, g_ref_string_release);
+    g_clear_pointer (&file->priv->group, g_ref_string_release);
 
-    g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
+    g_clear_pointer (&file->priv->filesystem_id, g_ref_string_release);
 
     clear_metadata (file);
 }
@@ -577,7 +577,7 @@ nautilus_file_get_directory (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    return file->details->directory;
+    return file->priv->directory;
 }
 
 void
@@ -586,13 +586,13 @@ nautilus_file_set_directory (NautilusFile      *file,
 {
     char *parent_uri;
 
-    g_clear_object (&file->details->directory);
-    g_free (file->details->directory_name_collation_key);
+    g_clear_object (&file->priv->directory);
+    g_free (file->priv->directory_name_collation_key);
 
-    file->details->directory = nautilus_directory_ref (directory);
+    file->priv->directory = nautilus_directory_ref (directory);
 
     parent_uri = nautilus_file_get_parent_uri (file);
-    file->details->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
+    file->priv->directory_name_collation_key = g_utf8_collate_key_for_filename (parent_uri, -1);
     g_free (parent_uri);
 }
 
@@ -608,7 +608,7 @@ nautilus_file_new_from_filename (NautilusDirectory *directory,
     g_assert (filename[0] != '\0');
 
     file = nautilus_directory_new_file_from_filename (directory, filename, self_owned);
-    file->details->name = g_ref_string_new (filename);
+    file->priv->name = g_ref_string_new (filename);
 
 #ifdef NAUTILUS_FILE_DEBUG_REF
     DEBUG_REF_PRINTF ("%10p ref'd", file);
@@ -627,7 +627,7 @@ modify_link_hash_table (NautilusFile       *file,
     GList **list_ptr;
 
     /* Check if there is a symlink name. If none, we are OK. */
-    if (file->details->symlink_name == NULL || !nautilus_file_is_symbolic_link (file))
+    if (file->priv->symlink_name == NULL || !nautilus_file_is_symbolic_link (file))
     {
         return;
     }
@@ -770,7 +770,7 @@ nautilus_file_get_internal (GFile    *location,
     }
     else if (self_owned)
     {
-        file = directory->details->as_file;
+        file = directory->priv->as_file;
     }
     else
     {
@@ -787,8 +787,8 @@ nautilus_file_get_internal (GFile    *location,
         file = nautilus_file_new_from_filename (directory, basename, self_owned);
         if (self_owned)
         {
-            g_assert (directory->details->as_file == NULL);
-            directory->details->as_file = file;
+            g_assert (directory->priv->as_file == NULL);
+            directory->priv->as_file = file;
         }
         else
         {
@@ -841,7 +841,7 @@ nautilus_file_get_by_uri (const char *uri)
 gboolean
 nautilus_file_is_self_owned (NautilusFile *file)
 {
-    return file->details->directory->details->as_file == file;
+    return file->priv->directory->priv->as_file == file;
 }
 
 static void
@@ -853,9 +853,9 @@ finalize (GObject *object)
 
     file = NAUTILUS_FILE (object);
 
-    g_assert (file->details->operations_in_progress == NULL);
+    g_assert (file->priv->operations_in_progress == NULL);
 
-    if (file->details->is_thumbnailing)
+    if (file->priv->is_thumbnailing)
     {
         uri = nautilus_file_get_uri (file);
         nautilus_thumbnail_remove_from_queue (uri);
@@ -866,86 +866,86 @@ finalize (GObject *object)
 
     remove_from_link_hash_table (file);
 
-    directory = file->details->directory;
+    directory = file->priv->directory;
 
     if (nautilus_file_is_self_owned (file))
     {
-        directory->details->as_file = NULL;
+        directory->priv->as_file = NULL;
     }
     else
     {
-        if (!file->details->is_gone)
+        if (!file->priv->is_gone)
         {
             nautilus_directory_remove_file (directory, file);
         }
     }
 
-    if (file->details->get_info_error)
+    if (file->priv->get_info_error)
     {
-        g_error_free (file->details->get_info_error);
+        g_error_free (file->priv->get_info_error);
     }
 
     nautilus_directory_unref (directory);
-    g_clear_pointer (&file->details->name, g_ref_string_release);
-    g_clear_pointer (&file->details->display_name, g_ref_string_release);
-    g_free (file->details->display_name_collation_key);
-    g_free (file->details->directory_name_collation_key);
-    g_clear_pointer (&file->details->edit_name, g_ref_string_release);
-    if (file->details->icon)
+    g_clear_pointer (&file->priv->name, g_ref_string_release);
+    g_clear_pointer (&file->priv->display_name, g_ref_string_release);
+    g_free (file->priv->display_name_collation_key);
+    g_free (file->priv->directory_name_collation_key);
+    g_clear_pointer (&file->priv->edit_name, g_ref_string_release);
+    if (file->priv->icon)
     {
-        g_object_unref (file->details->icon);
+        g_object_unref (file->priv->icon);
     }
-    g_free (file->details->thumbnail_path);
-    g_free (file->details->symlink_name);
-    g_clear_pointer (&file->details->mime_type, g_ref_string_release);
-    g_clear_pointer (&file->details->owner, g_ref_string_release);
-    g_clear_pointer (&file->details->owner_real, g_ref_string_release);
-    g_clear_pointer (&file->details->group, g_ref_string_release);
-    g_free (file->details->selinux_context);
-    g_free (file->details->description);
-    g_free (file->details->activation_uri);
-    g_clear_object (&file->details->custom_icon);
+    g_free (file->priv->thumbnail_path);
+    g_free (file->priv->symlink_name);
+    g_clear_pointer (&file->priv->mime_type, g_ref_string_release);
+    g_clear_pointer (&file->priv->owner, g_ref_string_release);
+    g_clear_pointer (&file->priv->owner_real, g_ref_string_release);
+    g_clear_pointer (&file->priv->group, g_ref_string_release);
+    g_free (file->priv->selinux_context);
+    g_free (file->priv->description);
+    g_free (file->priv->activation_uri);
+    g_clear_object (&file->priv->custom_icon);
 
-    if (file->details->thumbnail)
+    if (file->priv->thumbnail)
     {
-        g_object_unref (file->details->thumbnail);
+        g_object_unref (file->priv->thumbnail);
     }
-    if (file->details->scaled_thumbnail)
+    if (file->priv->scaled_thumbnail)
     {
-        g_object_unref (file->details->scaled_thumbnail);
-    }
-
-    if (file->details->mount)
-    {
-        g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
-        g_object_unref (file->details->mount);
+        g_object_unref (file->priv->scaled_thumbnail);
     }
 
-    g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
-    g_clear_pointer (&file->details->filesystem_type, g_ref_string_release);
-    g_free (file->details->trash_orig_path);
-
-    g_list_free_full (file->details->mime_list, g_free);
-    g_list_free_full (file->details->pending_extension_emblems, g_free);
-    g_list_free_full (file->details->extension_emblems, g_free);
-    g_list_free_full (file->details->pending_info_providers, g_object_unref);
-
-    if (file->details->pending_extension_attributes)
+    if (file->priv->mount)
     {
-        g_hash_table_destroy (file->details->pending_extension_attributes);
+        g_signal_handlers_disconnect_by_func (file->priv->mount, file_mount_unmounted, file);
+        g_object_unref (file->priv->mount);
     }
 
-    if (file->details->extension_attributes)
+    g_clear_pointer (&file->priv->filesystem_id, g_ref_string_release);
+    g_clear_pointer (&file->priv->filesystem_type, g_ref_string_release);
+    g_free (file->priv->trash_orig_path);
+
+    g_list_free_full (file->priv->mime_list, g_free);
+    g_list_free_full (file->priv->pending_extension_emblems, g_free);
+    g_list_free_full (file->priv->extension_emblems, g_free);
+    g_list_free_full (file->priv->pending_info_providers, g_object_unref);
+
+    if (file->priv->pending_extension_attributes)
     {
-        g_hash_table_destroy (file->details->extension_attributes);
+        g_hash_table_destroy (file->priv->pending_extension_attributes);
     }
 
-    if (file->details->metadata)
+    if (file->priv->extension_attributes)
     {
-        metadata_hash_free (file->details->metadata);
+        g_hash_table_destroy (file->priv->extension_attributes);
     }
 
-    g_free (file->details->fts_snippet);
+    if (file->priv->metadata)
+    {
+        metadata_hash_free (file->priv->metadata);
+    }
+
+    g_free (file->priv->fts_snippet);
 
     G_OBJECT_CLASS (nautilus_file_parent_class)->finalize (object);
 }
@@ -1073,7 +1073,7 @@ nautilus_file_can_read (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_read;
+    return file->priv->can_read;
 }
 
 /**
@@ -1113,7 +1113,7 @@ nautilus_file_can_execute (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_execute;
+    return file->priv->can_execute;
 }
 
 gboolean
@@ -1121,7 +1121,7 @@ nautilus_file_can_mount (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_mount;
+    return file->priv->can_mount;
 }
 
 gboolean
@@ -1129,9 +1129,9 @@ nautilus_file_can_unmount (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_unmount ||
-           (file->details->mount != NULL &&
-            g_mount_can_unmount (file->details->mount));
+    return file->priv->can_unmount ||
+           (file->priv->mount != NULL &&
+            g_mount_can_unmount (file->priv->mount));
 }
 
 gboolean
@@ -1139,9 +1139,9 @@ nautilus_file_can_eject (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->can_eject ||
-           (file->details->mount != NULL &&
-            g_mount_can_eject (file->details->mount));
+    return file->priv->can_eject ||
+           (file->priv->mount != NULL &&
+            g_mount_can_eject (file->priv->mount));
 }
 
 gboolean
@@ -1154,15 +1154,15 @@ nautilus_file_can_start (NautilusFile *file)
 
     ret = FALSE;
 
-    if (file->details->can_start)
+    if (file->priv->can_start)
     {
         ret = TRUE;
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_can_start (drive);
@@ -1184,15 +1184,15 @@ nautilus_file_can_start_degraded (NautilusFile *file)
 
     ret = FALSE;
 
-    if (file->details->can_start_degraded)
+    if (file->priv->can_start_degraded)
     {
         ret = TRUE;
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_can_start_degraded (drive);
@@ -1214,15 +1214,15 @@ nautilus_file_can_poll_for_media (NautilusFile *file)
 
     ret = FALSE;
 
-    if (file->details->can_poll_for_media)
+    if (file->priv->can_poll_for_media)
     {
         ret = TRUE;
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_can_poll_for_media (drive);
@@ -1244,15 +1244,15 @@ nautilus_file_is_media_check_automatic (NautilusFile *file)
 
     ret = FALSE;
 
-    if (file->details->is_media_check_automatic)
+    if (file->priv->is_media_check_automatic)
     {
         ret = TRUE;
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_is_media_check_automatic (drive);
@@ -1275,15 +1275,15 @@ nautilus_file_can_stop (NautilusFile *file)
 
     ret = FALSE;
 
-    if (file->details->can_stop)
+    if (file->priv->can_stop)
     {
         ret = TRUE;
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_can_stop (drive);
@@ -1303,15 +1303,15 @@ nautilus_file_get_start_stop_type (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    ret = file->details->start_stop_type;
+    ret = file->priv->start_stop_type;
     if (ret != G_DRIVE_START_STOP_TYPE_UNKNOWN)
     {
         goto out;
     }
 
-    if (file->details->mount != NULL)
+    if (file->priv->mount != NULL)
     {
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             ret = g_drive_get_start_stop_type (drive);
@@ -1380,7 +1380,7 @@ nautilus_file_unmount (NautilusFile                  *file,
     GError *error;
     UnmountData *data;
 
-    if (file->details->can_unmount)
+    if (file->priv->can_unmount)
     {
         if (NAUTILUS_FILE_GET_CLASS (file)->unmount != NULL)
         {
@@ -1398,14 +1398,14 @@ nautilus_file_unmount (NautilusFile                  *file,
             }
         }
     }
-    else if (file->details->mount != NULL &&
-             g_mount_can_unmount (file->details->mount))
+    else if (file->priv->mount != NULL &&
+             g_mount_can_unmount (file->priv->mount))
     {
         data = g_new0 (UnmountData, 1);
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, NULL, FALSE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (NULL, file->priv->mount, NULL, FALSE, TRUE, unmount_done, data);
     }
     else if (callback)
     {
@@ -1423,7 +1423,7 @@ nautilus_file_eject (NautilusFile                  *file,
     GError *error;
     UnmountData *data;
 
-    if (file->details->can_eject)
+    if (file->priv->can_eject)
     {
         if (NAUTILUS_FILE_GET_CLASS (file)->eject != NULL)
         {
@@ -1441,14 +1441,14 @@ nautilus_file_eject (NautilusFile                  *file,
             }
         }
     }
-    else if (file->details->mount != NULL &&
-             g_mount_can_eject (file->details->mount))
+    else if (file->priv->mount != NULL &&
+             g_mount_can_eject (file->priv->mount))
     {
         data = g_new0 (UnmountData, 1);
         data->file = nautilus_file_ref (file);
         data->callback = callback;
         data->callback_data = callback_data;
-        nautilus_file_operations_unmount_mount_full (NULL, file->details->mount, NULL, TRUE, TRUE, unmount_done, data);
+        nautilus_file_operations_unmount_mount_full (NULL, file->priv->mount, NULL, TRUE, TRUE, unmount_done, data);
     }
     else if (callback)
     {
@@ -1465,7 +1465,7 @@ nautilus_file_start (NautilusFile                  *file,
 {
     GError *error;
 
-    if ((file->details->can_start || file->details->can_start_degraded) &&
+    if ((file->priv->can_start || file->priv->can_start_degraded) &&
         NAUTILUS_FILE_GET_CLASS (file)->start != NULL)
     {
         NAUTILUS_FILE_GET_CLASS (file)->start (file, start_op, cancellable, callback, callback_data);
@@ -1525,7 +1525,7 @@ nautilus_file_stop (NautilusFile                  *file,
 
     if (NAUTILUS_FILE_GET_CLASS (file)->stop != NULL)
     {
-        if (file->details->can_stop)
+        if (file->priv->can_stop)
         {
             NAUTILUS_FILE_GET_CLASS (file)->stop (file, mount_op, cancellable, callback, callback_data);
         }
@@ -1546,9 +1546,9 @@ nautilus_file_stop (NautilusFile                  *file,
         GDrive *drive;
 
         drive = NULL;
-        if (file->details->mount != NULL)
+        if (file->priv->mount != NULL)
         {
-            drive = g_mount_get_drive (file->details->mount);
+            drive = g_mount_get_drive (file->priv->mount);
         }
 
         if (drive != NULL && g_drive_can_stop (drive))
@@ -1591,17 +1591,17 @@ nautilus_file_stop (NautilusFile                  *file,
 void
 nautilus_file_poll_for_media (NautilusFile *file)
 {
-    if (file->details->can_poll_for_media)
+    if (file->priv->can_poll_for_media)
     {
         if (NAUTILUS_FILE_GET_CLASS (file)->stop != NULL)
         {
             NAUTILUS_FILE_GET_CLASS (file)->poll_for_media (file);
         }
     }
-    else if (file->details->mount != NULL)
+    else if (file->priv->mount != NULL)
     {
         GDrive *drive;
-        drive = g_mount_get_drive (file->details->mount);
+        drive = g_mount_get_drive (file->priv->mount);
         if (drive != NULL)
         {
             g_drive_poll_for_media (drive,
@@ -1656,7 +1656,7 @@ nautilus_file_can_rename (NautilusFile *file)
         return FALSE;
     }
 
-    return file->details->can_rename;
+    return file->priv->can_rename;
 }
 
 gboolean
@@ -1676,7 +1676,7 @@ nautilus_file_can_delete (NautilusFile *file)
         return FALSE;
     }
 
-    return file->details->can_delete;
+    return file->priv->can_delete;
 }
 
 gboolean
@@ -1696,7 +1696,7 @@ nautilus_file_can_trash (NautilusFile *file)
         return FALSE;
     }
 
-    return file->details->can_trash;
+    return file->priv->can_trash;
 }
 
 GFile *
@@ -1744,8 +1744,8 @@ nautilus_file_operation_new (NautilusFile                  *file,
     op->callback_data = callback_data;
     op->cancellable = g_cancellable_new ();
 
-    op->file->details->operations_in_progress = g_list_prepend
-                                                    (op->file->details->operations_in_progress, op);
+    op->file->priv->operations_in_progress = g_list_prepend
+                                                    (op->file->priv->operations_in_progress, op);
 
     return op;
 }
@@ -1756,15 +1756,15 @@ nautilus_file_operation_remove (NautilusFileOperation *op)
     GList *l;
     NautilusFile *file;
 
-    op->file->details->operations_in_progress = g_list_remove
-                                                    (op->file->details->operations_in_progress, op);
+    op->file->priv->operations_in_progress = g_list_remove
+                                                    (op->file->priv->operations_in_progress, op);
 
 
     for (l = op->files; l != NULL; l = l->next)
     {
         file = NAUTILUS_FILE (l->data);
-        file->details->operations_in_progress = g_list_remove
-                                                    (file->details->operations_in_progress, op);
+        file->priv->operations_in_progress = g_list_remove
+                                                    (file->priv->operations_in_progress, op);
     }
 }
 
@@ -1853,7 +1853,7 @@ rename_get_info_callback (GObject      *source_object,
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
-        directory = op->file->details->directory;
+        directory = op->file->priv->directory;
 
         new_name = g_file_info_get_name (new_info);
 
@@ -1927,7 +1927,7 @@ name_is (NautilusFile *file,
          const char   *new_name)
 {
     const char *old_name;
-    old_name = file->details->name;
+    old_name = file->priv->name;
     return strcmp (new_name, old_name) == 0;
 }
 
@@ -2118,7 +2118,7 @@ batch_rename_get_info_callback (GObject      *source_object,
 
         new_name = g_file_info_get_name (new_info);
 
-        directory = op->file->details->directory;
+        directory = op->file->priv->directory;
 
         /* If there was another file by the same name in this
          * directory and it is not the same file that we are
@@ -2185,7 +2185,7 @@ real_batch_rename (GList                         *files,
     {
         file = NAUTILUS_FILE (l1->data);
 
-        file->details->operations_in_progress = g_list_prepend (file->details->operations_in_progress,
+        file->priv->operations_in_progress = g_list_prepend (file->priv->operations_in_progress,
                                                                 op);
     }
 
@@ -2283,7 +2283,7 @@ nautilus_file_rename_in_progress (NautilusFile *file)
     GList *node;
     NautilusFileOperation *op;
 
-    for (node = file->details->operations_in_progress; node != NULL; node = node->next)
+    for (node = file->priv->operations_in_progress; node != NULL; node = node->next)
     {
         op = node->data;
         if (op->is_rename)
@@ -2302,7 +2302,7 @@ nautilus_file_cancel (NautilusFile                  *file,
     GList *node, *next;
     NautilusFileOperation *op;
 
-    for (node = file->details->operations_in_progress; node != NULL; node = next)
+    for (node = file->priv->operations_in_progress; node != NULL; node = next)
     {
         next = node->next;
         op = node->data;
@@ -2357,7 +2357,7 @@ nautilus_file_is_local (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_directory_is_local (file->details->directory);
+    return nautilus_directory_is_local (file->priv->directory);
 }
 
 gboolean
@@ -2365,7 +2365,7 @@ nautilus_file_is_local_or_fuse (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_directory_is_local_or_fuse (file->details->directory);
+    return nautilus_directory_is_local_or_fuse (file->priv->directory);
 }
 
 static void
@@ -2449,7 +2449,7 @@ update_info_internal (NautilusFile *file,
     const char *group, *owner, *owner_real;
     gboolean free_owner, free_group;
 
-    if (file->details->is_gone)
+    if (file->priv->is_gone)
     {
         return FALSE;
     }
@@ -2460,7 +2460,7 @@ update_info_internal (NautilusFile *file,
         return TRUE;
     }
 
-    file->details->file_info_is_up_to_date = TRUE;
+    file->priv->file_info_is_up_to_date = TRUE;
 
     /* FIXME bugzilla.gnome.org 42044: Need to let links that
      * point to the old name know that the file has been renamed.
@@ -2470,11 +2470,11 @@ update_info_internal (NautilusFile *file,
 
     changed = FALSE;
 
-    if (!file->details->got_file_info)
+    if (!file->priv->got_file_info)
     {
         changed = TRUE;
     }
-    file->details->got_file_info = TRUE;
+    file->priv->got_file_info = TRUE;
 
     changed |= nautilus_file_set_display_name (file,
                                                g_file_info_get_display_name (info),
@@ -2482,13 +2482,13 @@ update_info_internal (NautilusFile *file,
                                                FALSE);
 
     file_type = g_file_info_get_file_type (info);
-    if (file->details->type != file_type)
+    if (file->priv->type != file_type)
     {
         changed = TRUE;
     }
-    file->details->type = file_type;
+    file->priv->type = file_type;
 
-    if (!file->details->got_custom_activation_uri &&
+    if (!file->priv->got_custom_activation_uri &&
         (g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_STANDARD_IS_VIRTUAL) ||
          file_type == G_FILE_TYPE_SHORTCUT ||
          nautilus_file_is_in_recent (file)))
@@ -2496,22 +2496,22 @@ update_info_internal (NautilusFile *file,
         activation_uri = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_TARGET_URI);
         if (activation_uri == NULL)
         {
-            if (file->details->activation_uri)
+            if (file->priv->activation_uri)
             {
-                g_free (file->details->activation_uri);
-                file->details->activation_uri = NULL;
+                g_free (file->priv->activation_uri);
+                file->priv->activation_uri = NULL;
                 changed = TRUE;
             }
         }
         else
         {
-            old_activation_uri = file->details->activation_uri;
-            file->details->activation_uri = g_strdup (activation_uri);
+            old_activation_uri = file->priv->activation_uri;
+            file->priv->activation_uri = g_strdup (activation_uri);
 
             if (old_activation_uri)
             {
                 if (strcmp (old_activation_uri,
-                            file->details->activation_uri) != 0)
+                            file->priv->activation_uri) != 0)
                 {
                     changed = TRUE;
                 }
@@ -2525,36 +2525,36 @@ update_info_internal (NautilusFile *file,
     }
 
     is_symlink = g_file_info_get_is_symlink (info);
-    if (file->details->is_symlink != is_symlink)
+    if (file->priv->is_symlink != is_symlink)
     {
         changed = TRUE;
     }
-    file->details->is_symlink = is_symlink;
+    file->priv->is_symlink = is_symlink;
 
     is_hidden = g_file_info_get_is_hidden (info) || g_file_info_get_is_backup (info);
-    if (file->details->is_hidden != is_hidden)
+    if (file->priv->is_hidden != is_hidden)
     {
         changed = TRUE;
     }
-    file->details->is_hidden = is_hidden;
+    file->priv->is_hidden = is_hidden;
 
     is_mountpoint = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_UNIX_IS_MOUNTPOINT);
-    if (file->details->is_mountpoint != is_mountpoint)
+    if (file->priv->is_mountpoint != is_mountpoint)
     {
         changed = TRUE;
     }
-    file->details->is_mountpoint = is_mountpoint;
+    file->priv->is_mountpoint = is_mountpoint;
 
     has_permissions = g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE);
     permissions = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
     ;
-    if (file->details->has_permissions != has_permissions ||
-        file->details->permissions != permissions)
+    if (file->priv->has_permissions != has_permissions ||
+        file->priv->permissions != permissions)
     {
         changed = TRUE;
     }
-    file->details->has_permissions = has_permissions;
-    file->details->permissions = permissions;
+    file->priv->has_permissions = has_permissions;
+    file->priv->permissions = permissions;
 
     /* We default to TRUE for this if we can't know */
     can_read = TRUE;
@@ -2647,40 +2647,40 @@ update_info_internal (NautilusFile *file,
         is_media_check_automatic = g_file_info_get_attribute_boolean (info,
                                                                       G_FILE_ATTRIBUTE_MOUNTABLE_IS_MEDIA_CHECK_AUTOMATIC);
     }
-    if (file->details->can_read != can_read ||
-        file->details->can_write != can_write ||
-        file->details->can_execute != can_execute ||
-        file->details->can_delete != can_delete ||
-        file->details->can_trash != can_trash ||
-        file->details->can_rename != can_rename ||
-        file->details->can_mount != can_mount ||
-        file->details->can_unmount != can_unmount ||
-        file->details->can_eject != can_eject ||
-        file->details->can_start != can_start ||
-        file->details->can_start_degraded != can_start_degraded ||
-        file->details->can_stop != can_stop ||
-        file->details->start_stop_type != start_stop_type ||
-        file->details->can_poll_for_media != can_poll_for_media ||
-        file->details->is_media_check_automatic != is_media_check_automatic)
+    if (file->priv->can_read != can_read ||
+        file->priv->can_write != can_write ||
+        file->priv->can_execute != can_execute ||
+        file->priv->can_delete != can_delete ||
+        file->priv->can_trash != can_trash ||
+        file->priv->can_rename != can_rename ||
+        file->priv->can_mount != can_mount ||
+        file->priv->can_unmount != can_unmount ||
+        file->priv->can_eject != can_eject ||
+        file->priv->can_start != can_start ||
+        file->priv->can_start_degraded != can_start_degraded ||
+        file->priv->can_stop != can_stop ||
+        file->priv->start_stop_type != start_stop_type ||
+        file->priv->can_poll_for_media != can_poll_for_media ||
+        file->priv->is_media_check_automatic != is_media_check_automatic)
     {
         changed = TRUE;
     }
 
-    file->details->can_read = can_read;
-    file->details->can_write = can_write;
-    file->details->can_execute = can_execute;
-    file->details->can_delete = can_delete;
-    file->details->can_trash = can_trash;
-    file->details->can_rename = can_rename;
-    file->details->can_mount = can_mount;
-    file->details->can_unmount = can_unmount;
-    file->details->can_eject = can_eject;
-    file->details->can_start = can_start;
-    file->details->can_start_degraded = can_start_degraded;
-    file->details->can_stop = can_stop;
-    file->details->start_stop_type = start_stop_type;
-    file->details->can_poll_for_media = can_poll_for_media;
-    file->details->is_media_check_automatic = is_media_check_automatic;
+    file->priv->can_read = can_read;
+    file->priv->can_write = can_write;
+    file->priv->can_execute = can_execute;
+    file->priv->can_delete = can_delete;
+    file->priv->can_trash = can_trash;
+    file->priv->can_rename = can_rename;
+    file->priv->can_mount = can_mount;
+    file->priv->can_unmount = can_unmount;
+    file->priv->can_eject = can_eject;
+    file->priv->can_start = can_start;
+    file->priv->can_start_degraded = can_start_degraded;
+    file->priv->can_stop = can_stop;
+    file->priv->start_stop_type = start_stop_type;
+    file->priv->can_poll_for_media = can_poll_for_media;
+    file->priv->is_media_check_automatic = is_media_check_automatic;
 
     free_owner = FALSE;
     owner = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_OWNER_USER);
@@ -2708,33 +2708,33 @@ update_info_internal (NautilusFile *file,
             group = g_strdup_printf ("%d", gid);
         }
     }
-    if (file->details->uid != uid ||
-        file->details->gid != gid)
+    if (file->priv->uid != uid ||
+        file->priv->gid != gid)
     {
         changed = TRUE;
     }
-    file->details->uid = uid;
-    file->details->gid = gid;
+    file->priv->uid = uid;
+    file->priv->gid = gid;
 
-    if (g_strcmp0 (file->details->owner, owner) != 0)
+    if (g_strcmp0 (file->priv->owner, owner) != 0)
     {
         changed = TRUE;
-        g_clear_pointer (&file->details->owner, g_ref_string_release);
-        file->details->owner = g_ref_string_new_intern (owner);
+        g_clear_pointer (&file->priv->owner, g_ref_string_release);
+        file->priv->owner = g_ref_string_new_intern (owner);
     }
 
-    if (g_strcmp0 (file->details->owner_real, owner_real) != 0)
+    if (g_strcmp0 (file->priv->owner_real, owner_real) != 0)
     {
         changed = TRUE;
-        g_clear_pointer (&file->details->owner_real, g_ref_string_release);
-        file->details->owner_real = g_ref_string_new_intern (owner_real);
+        g_clear_pointer (&file->priv->owner_real, g_ref_string_release);
+        file->priv->owner_real = g_ref_string_new_intern (owner_real);
     }
 
-    if (g_strcmp0 (file->details->group, group) != 0)
+    if (g_strcmp0 (file->priv->group, group) != 0)
     {
         changed = TRUE;
-        g_clear_pointer (&file->details->group, g_ref_string_release);
-        file->details->group = g_ref_string_new_intern (group);
+        g_clear_pointer (&file->priv->group, g_ref_string_release);
+        file->priv->group = g_ref_string_new_intern (group);
     }
 
     if (free_owner)
@@ -2751,107 +2751,107 @@ update_info_internal (NautilusFile *file,
     {
         size = g_file_info_get_size (info);
     }
-    if (file->details->size != size)
+    if (file->priv->size != size)
     {
         changed = TRUE;
     }
-    file->details->size = size;
+    file->priv->size = size;
 
     sort_order = g_file_info_get_sort_order (info);
-    if (file->details->sort_order != sort_order)
+    if (file->priv->sort_order != sort_order)
     {
         changed = TRUE;
     }
-    file->details->sort_order = sort_order;
+    file->priv->sort_order = sort_order;
 
     atime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_ACCESS);
     mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
-    if (file->details->atime != atime ||
-        file->details->mtime != mtime)
+    if (file->priv->atime != atime ||
+        file->priv->mtime != mtime)
     {
-        if (file->details->thumbnail == NULL)
+        if (file->priv->thumbnail == NULL)
         {
-            file->details->thumbnail_is_up_to_date = FALSE;
+            file->priv->thumbnail_is_up_to_date = FALSE;
         }
 
         changed = TRUE;
     }
-    file->details->atime = atime;
-    file->details->mtime = mtime;
+    file->priv->atime = atime;
+    file->priv->mtime = mtime;
 
-    if (file->details->thumbnail != NULL &&
-        file->details->thumbnail_mtime != 0 &&
-        file->details->thumbnail_mtime != mtime)
+    if (file->priv->thumbnail != NULL &&
+        file->priv->thumbnail_mtime != 0 &&
+        file->priv->thumbnail_mtime != mtime)
     {
-        file->details->thumbnail_is_up_to_date = FALSE;
+        file->priv->thumbnail_is_up_to_date = FALSE;
         changed = TRUE;
     }
 
     icon = g_file_info_get_icon (info);
-    if (!g_icon_equal (icon, file->details->icon))
+    if (!g_icon_equal (icon, file->priv->icon))
     {
         changed = TRUE;
 
-        if (file->details->icon)
+        if (file->priv->icon)
         {
-            g_object_unref (file->details->icon);
+            g_object_unref (file->priv->icon);
         }
-        file->details->icon = g_object_ref (icon);
+        file->priv->icon = g_object_ref (icon);
     }
 
     thumbnail_path = g_file_info_get_attribute_byte_string (info, G_FILE_ATTRIBUTE_THUMBNAIL_PATH);
-    if (g_strcmp0 (file->details->thumbnail_path, thumbnail_path) != 0)
+    if (g_strcmp0 (file->priv->thumbnail_path, thumbnail_path) != 0)
     {
         changed = TRUE;
-        g_free (file->details->thumbnail_path);
-        file->details->thumbnail_path = g_strdup (thumbnail_path);
+        g_free (file->priv->thumbnail_path);
+        file->priv->thumbnail_path = g_strdup (thumbnail_path);
     }
 
     thumbnailing_failed = g_file_info_get_attribute_boolean (info, G_FILE_ATTRIBUTE_THUMBNAILING_FAILED);
-    if (file->details->thumbnailing_failed != thumbnailing_failed)
+    if (file->priv->thumbnailing_failed != thumbnailing_failed)
     {
         changed = TRUE;
-        file->details->thumbnailing_failed = thumbnailing_failed;
+        file->priv->thumbnailing_failed = thumbnailing_failed;
     }
 
     symlink_name = g_file_info_get_symlink_target (info);
-    if (g_strcmp0 (file->details->symlink_name, symlink_name) != 0)
+    if (g_strcmp0 (file->priv->symlink_name, symlink_name) != 0)
     {
         changed = TRUE;
-        g_free (file->details->symlink_name);
-        file->details->symlink_name = g_strdup (symlink_name);
+        g_free (file->priv->symlink_name);
+        file->priv->symlink_name = g_strdup (symlink_name);
     }
 
     mime_type = g_file_info_get_content_type (info);
-    if (g_strcmp0 (file->details->mime_type, mime_type) != 0)
+    if (g_strcmp0 (file->priv->mime_type, mime_type) != 0)
     {
         changed = TRUE;
-        g_clear_pointer (&file->details->mime_type, g_ref_string_release);
-        file->details->mime_type = g_ref_string_new_intern (mime_type);
+        g_clear_pointer (&file->priv->mime_type, g_ref_string_release);
+        file->priv->mime_type = g_ref_string_new_intern (mime_type);
     }
 
     selinux_context = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_SELINUX_CONTEXT);
-    if (g_strcmp0 (file->details->selinux_context, selinux_context) != 0)
+    if (g_strcmp0 (file->priv->selinux_context, selinux_context) != 0)
     {
         changed = TRUE;
-        g_free (file->details->selinux_context);
-        file->details->selinux_context = g_strdup (selinux_context);
+        g_free (file->priv->selinux_context);
+        file->priv->selinux_context = g_strdup (selinux_context);
     }
 
     description = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_DESCRIPTION);
-    if (g_strcmp0 (file->details->description, description) != 0)
+    if (g_strcmp0 (file->priv->description, description) != 0)
     {
         changed = TRUE;
-        g_free (file->details->description);
-        file->details->description = g_strdup (description);
+        g_free (file->priv->description);
+        file->priv->description = g_strdup (description);
     }
 
     filesystem_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
-    if (g_strcmp0 (file->details->filesystem_id, filesystem_id) != 0)
+    if (g_strcmp0 (file->priv->filesystem_id, filesystem_id) != 0)
     {
         changed = TRUE;
-        g_clear_pointer (&file->details->filesystem_id, g_ref_string_release);
-        file->details->filesystem_id = g_ref_string_new_intern (filesystem_id);
+        g_clear_pointer (&file->priv->filesystem_id, g_ref_string_release);
+        file->priv->filesystem_id = g_ref_string_new_intern (filesystem_id);
     }
 
     trash_time = 0;
@@ -2861,25 +2861,25 @@ update_info_internal (NautilusFile *file,
         g_time_val_from_iso8601 (time_string, &g_trash_time);
         trash_time = g_trash_time.tv_sec;
     }
-    if (file->details->trash_time != trash_time)
+    if (file->priv->trash_time != trash_time)
     {
         changed = TRUE;
-        file->details->trash_time = trash_time;
+        file->priv->trash_time = trash_time;
     }
 
     recency = g_file_info_get_attribute_int64 (info, G_FILE_ATTRIBUTE_RECENT_MODIFIED);
-    if (file->details->recency != recency)
+    if (file->priv->recency != recency)
     {
         changed = TRUE;
-        file->details->recency = recency;
+        file->priv->recency = recency;
     }
 
     trash_orig_path = g_file_info_get_attribute_byte_string (info, "trash::orig-path");
-    if (g_strcmp0 (file->details->trash_orig_path, trash_orig_path) != 0)
+    if (g_strcmp0 (file->priv->trash_orig_path, trash_orig_path) != 0)
     {
         changed = TRUE;
-        g_free (file->details->trash_orig_path);
-        file->details->trash_orig_path = g_strdup (trash_orig_path);
+        g_free (file->priv->trash_orig_path);
+        file->priv->trash_orig_path = g_strdup (trash_orig_path);
     }
 
     changed |=
@@ -2888,25 +2888,25 @@ update_info_internal (NautilusFile *file,
     if (update_name)
     {
         name = g_file_info_get_name (info);
-        if (file->details->name == NULL ||
-            strcmp (file->details->name, name) != 0)
+        if (file->priv->name == NULL ||
+            strcmp (file->priv->name, name) != 0)
         {
             changed = TRUE;
 
             node = nautilus_directory_begin_file_name_change
-                       (file->details->directory, file);
+                       (file->priv->directory, file);
 
-            g_clear_pointer (&file->details->name, g_ref_string_release);
-            if (g_strcmp0 (file->details->display_name, name) == 0)
+            g_clear_pointer (&file->priv->name, g_ref_string_release);
+            if (g_strcmp0 (file->priv->display_name, name) == 0)
             {
-                file->details->name = g_ref_string_acquire (file->details->display_name);
+                file->priv->name = g_ref_string_acquire (file->priv->display_name);
             }
             else
             {
-                file->details->name = g_ref_string_new (name);
+                file->priv->name = g_ref_string_new (name);
             }
 
-            if (!file->details->got_custom_display_name &&
+            if (!file->priv->got_custom_display_name &&
                 g_file_info_get_display_name (info) == NULL)
             {
                 /* If the file info's display name is NULL,
@@ -2917,7 +2917,7 @@ update_info_internal (NautilusFile *file,
             }
 
             nautilus_directory_end_file_name_change
-                (file->details->directory, file, node);
+                (file->priv->directory, file, node);
         }
     }
 
@@ -2954,7 +2954,7 @@ update_name_internal (NautilusFile *file,
 
     g_assert (name != NULL);
 
-    if (file->details->is_gone)
+    if (file->priv->is_gone)
     {
         return FALSE;
     }
@@ -2968,13 +2968,13 @@ update_name_internal (NautilusFile *file,
     if (in_directory)
     {
         node = nautilus_directory_begin_file_name_change
-                   (file->details->directory, file);
+                   (file->priv->directory, file);
     }
 
-    g_clear_pointer (&file->details->name, g_ref_string_release);
-    file->details->name = g_ref_string_new (name);
+    g_clear_pointer (&file->priv->name, g_ref_string_release);
+    file->priv->name = g_ref_string_new (name);
 
-    if (!file->details->got_custom_display_name)
+    if (!file->priv->got_custom_display_name)
     {
         nautilus_file_clear_display_name (file);
     }
@@ -2982,7 +2982,7 @@ update_name_internal (NautilusFile *file,
     if (in_directory)
     {
         nautilus_directory_end_file_name_change
-            (file->details->directory, file, node);
+            (file->priv->directory, file, node);
     }
 
     return TRUE;
@@ -3013,12 +3013,12 @@ nautilus_file_update_name_and_directory (NautilusFile      *file,
     FileMonitors *monitors;
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (file->details->directory), FALSE);
-    g_return_val_if_fail (!file->details->is_gone, FALSE);
+    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (file->priv->directory), FALSE);
+    g_return_val_if_fail (!file->priv->is_gone, FALSE);
     g_return_val_if_fail (!nautilus_file_is_self_owned (file), FALSE);
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (new_directory), FALSE);
 
-    old_directory = file->details->directory;
+    old_directory = file->priv->directory;
     if (old_directory == new_directory)
     {
         if (name)
@@ -3087,7 +3087,7 @@ get_size (NautilusFile *file,
     /* If we tried and failed, then treat it like there is no size
      * to know.
      */
-    if (file->details->get_info_failed)
+    if (file->priv->get_info_failed)
     {
         return UNKNOWABLE;
     }
@@ -3095,7 +3095,7 @@ get_size (NautilusFile *file,
     /* If the info is NULL that means we haven't even tried yet,
      * so it's just unknown, not unknowable.
      */
-    if (!file->details->got_file_info)
+    if (!file->priv->got_file_info)
     {
         return UNKNOWN;
     }
@@ -3104,13 +3104,13 @@ get_size (NautilusFile *file,
      * such thing as a size as far as gnome-vfs is concerned,
      * so "unknowable".
      */
-    if (file->details->size == -1)
+    if (file->priv->size == -1)
     {
         return UNKNOWABLE;
     }
 
     /* We have a size! */
-    *size = file->details->size;
+    *size = file->priv->size;
     return KNOWN;
 }
 
@@ -3124,7 +3124,7 @@ get_time (NautilusFile     *file,
     /* If we tried and failed, then treat it like there is no size
      * to know.
      */
-    if (file->details->get_info_failed)
+    if (file->priv->get_info_failed)
     {
         return UNKNOWABLE;
     }
@@ -3132,7 +3132,7 @@ get_time (NautilusFile     *file,
     /* If the info is NULL that means we haven't even tried yet,
      * so it's just unknown, not unknowable.
      */
-    if (!file->details->got_file_info)
+    if (!file->priv->got_file_info)
     {
         return UNKNOWN;
     }
@@ -3141,25 +3141,25 @@ get_time (NautilusFile     *file,
     {
         case NAUTILUS_DATE_TYPE_MODIFIED:
         {
-            time = file->details->mtime;
+            time = file->priv->mtime;
         }
         break;
 
         case NAUTILUS_DATE_TYPE_ACCESSED:
         {
-            time = file->details->atime;
+            time = file->priv->atime;
         }
         break;
 
         case NAUTILUS_DATE_TYPE_TRASHED:
         {
-            time = file->details->trash_time;
+            time = file->priv->trash_time;
         }
         break;
 
         case NAUTILUS_DATE_TYPE_RECENCY:
         {
-            time = file->details->recency;
+            time = file->priv->recency;
         }
         break;
 
@@ -3351,8 +3351,8 @@ static int
 compare_by_directory_name (NautilusFile *file_1,
                            NautilusFile *file_2)
 {
-    return strcmp (file_1->details->directory_name_collation_key,
-                   file_2->details->directory_name_collation_key);
+    return strcmp (file_1->priv->directory_name_collation_key,
+                   file_2->priv->directory_name_collation_key);
 }
 
 static GList *
@@ -3426,10 +3426,10 @@ compare_by_type (NautilusFile *file_1,
         return +1;
     }
 
-    if (file_1->details->mime_type != NULL &&
-        file_2->details->mime_type != NULL &&
-        strcmp (file_1->details->mime_type,
-                file_2->details->mime_type) == 0)
+    if (file_1->priv->mime_type != NULL &&
+        file_2->priv->mime_type != NULL &&
+        strcmp (file_1->priv->mime_type,
+                file_2->priv->mime_type) == 0)
     {
         return 0;
     }
@@ -3500,7 +3500,7 @@ get_search_relevance (NautilusFile *file,
     /* we're only called in search directories, and in that
      * case, the relevance is always known (or zero).
      */
-    *relevance_out = file->details->search_relevance;
+    *relevance_out = file->priv->search_relevance;
     return KNOWN;
 }
 
@@ -3613,11 +3613,11 @@ nautilus_file_compare_for_sort_internal (NautilusFile *file_1,
         }
     }
 
-    if (file_1->details->sort_order < file_2->details->sort_order)
+    if (file_1->priv->sort_order < file_2->priv->sort_order)
     {
         return reversed ? 1 : -1;
     }
-    else if (file_1->details->sort_order > file_2->details->sort_order)
+    else if (file_1->priv->sort_order > file_2->priv->sort_order)
     {
         return reversed ? -1 : 1;
     }
@@ -3923,7 +3923,7 @@ nautilus_file_compare_display_name (NautilusFile *file,
 gboolean
 nautilus_file_is_hidden_file (NautilusFile *file)
 {
-    return file->details->is_hidden;
+    return file->priv->is_hidden;
 }
 
 /**
@@ -3961,13 +3961,13 @@ nautilus_file_is_home (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    location = nautilus_directory_get_location (file->details->directory);
+    location = nautilus_directory_get_location (file->priv->directory);
     if (location == NULL)
     {
         return FALSE;
     }
 
-    return nautilus_is_home_directory_file (location, file->details->name);
+    return nautilus_is_home_directory_file (location, file->priv->name);
 }
 
 gboolean
@@ -4077,7 +4077,7 @@ nautilus_file_get_metadata (NautilusFile *file,
     g_return_val_if_fail (key[0] != '\0', g_strdup (default_metadata));
 
     if (file == NULL ||
-        file->details->metadata == NULL)
+        file->priv->metadata == NULL)
     {
         return g_strdup (default_metadata);
     }
@@ -4085,7 +4085,7 @@ nautilus_file_get_metadata (NautilusFile *file,
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), g_strdup (default_metadata));
 
     id = nautilus_metadata_get_id (key);
-    value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
+    value = g_hash_table_lookup (file->priv->metadata, GUINT_TO_POINTER (id));
 
     if (value)
     {
@@ -4107,7 +4107,7 @@ nautilus_file_get_metadata_list (NautilusFile *file,
     g_return_val_if_fail (key[0] != '\0', NULL);
 
     if (file == NULL ||
-        file->details->metadata == NULL)
+        file->priv->metadata == NULL)
     {
         return NULL;
     }
@@ -4117,7 +4117,7 @@ nautilus_file_get_metadata_list (NautilusFile *file,
     id = nautilus_metadata_get_id (key);
     id |= METADATA_ID_IS_LIST_MASK;
 
-    value = g_hash_table_lookup (file->details->metadata, GUINT_TO_POINTER (id));
+    value = g_hash_table_lookup (file->priv->metadata, GUINT_TO_POINTER (id));
 
     if (value)
     {
@@ -4363,7 +4363,7 @@ nautilus_file_peek_display_name_collation_key (NautilusFile *file)
 {
     const char *res;
 
-    res = file->details->display_name_collation_key;
+    res = file->priv->display_name_collation_key;
     if (res == NULL)
     {
         res = "";
@@ -4389,9 +4389,9 @@ nautilus_file_peek_display_name (NautilusFile *file)
 
     /* Default to display name based on filename if its not set yet */
 
-    if (file->details->display_name == NULL)
+    if (file->priv->display_name == NULL)
     {
-        name = file->details->name;
+        name = file->priv->name;
         if (g_utf8_validate (name, -1, NULL))
         {
             nautilus_file_set_display_name (file,
@@ -4410,8 +4410,8 @@ nautilus_file_peek_display_name (NautilusFile *file)
         }
     }
 
-    return file->details->display_name ?
-           file->details->display_name : "";
+    return file->priv->display_name ?
+           file->priv->display_name : "";
 }
 
 char *
@@ -4434,7 +4434,7 @@ nautilus_file_get_edit_name (NautilusFile *file)
 {
     const char *res;
 
-    res = file->details->edit_name;
+    res = file->priv->edit_name;
     if (res == NULL)
     {
         res = "";
@@ -4464,7 +4464,7 @@ nautilus_file_get_name (NautilusFile *file)
 char *
 nautilus_file_get_description (NautilusFile *file)
 {
-    return g_strdup (file->details->description);
+    return g_strdup (file->priv->description);
 }
 
 void
@@ -4491,7 +4491,7 @@ nautilus_file_monitor_remove (NautilusFile  *file,
 gboolean
 nautilus_file_has_activation_uri (NautilusFile *file)
 {
-    return file->details->activation_uri != NULL;
+    return file->priv->activation_uri != NULL;
 }
 
 
@@ -4512,9 +4512,9 @@ nautilus_file_get_activation_location (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    if (file->details->activation_uri != NULL)
+    if (file->priv->activation_uri != NULL)
     {
-        return g_file_new_for_uri (file->details->activation_uri);
+        return g_file_new_for_uri (file->priv->activation_uri);
     }
 
     return nautilus_file_get_location (file);
@@ -4647,7 +4647,7 @@ nautilus_file_get_filesystem_use_preview (NautilusFile *file)
     parent = nautilus_file_get_parent (file);
     if (parent != NULL)
     {
-        use_preview = parent->details->filesystem_use_preview;
+        use_preview = parent->priv->filesystem_use_preview;
         g_object_unref (parent);
     }
     else
@@ -4668,14 +4668,14 @@ nautilus_file_get_filesystem_type (NautilusFile *file)
 
     if (nautilus_file_is_directory (file))
     {
-        filesystem_type = g_strdup (file->details->filesystem_type);
+        filesystem_type = g_strdup (file->priv->filesystem_type);
     }
     else
     {
         parent = nautilus_file_get_parent (file);
         if (parent != NULL)
         {
-            filesystem_type = g_strdup (parent->details->filesystem_type);
+            filesystem_type = g_strdup (parent->priv->filesystem_type);
             nautilus_file_unref (parent);
         }
     }
@@ -4692,14 +4692,14 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
 
     if (nautilus_file_is_directory (file))
     {
-        return file->details->filesystem_remote;
+        return file->priv->filesystem_remote;
     }
     else
     {
         parent = nautilus_file_get_parent (file);
         if (parent != NULL)
         {
-            return parent->details->filesystem_remote;
+            return parent->priv->filesystem_remote;
         }
     }
 
@@ -4714,7 +4714,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
 
     use_preview = nautilus_file_get_filesystem_use_preview (file);
 
-    mime_type = file->details->mime_type;
+    mime_type = file->priv->mime_type;
     if (mime_type == NULL)
     {
         mime_type = "application/octet-stream";
@@ -4724,7 +4724,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
      * of the original file.
      */
     if (nautilus_thumbnail_is_mimetype_limited_by_size (mime_type) &&
-        file->details->thumbnail_path == NULL &&
+        file->priv->thumbnail_path == NULL &&
         nautilus_file_get_size (file) > cached_thumbnail_limit)
     {
         return FALSE;
@@ -4773,7 +4773,7 @@ nautilus_is_video_file (NautilusFile *file)
     const char *mime_type;
     guint i;
 
-    mime_type = file->details->mime_type;
+    mime_type = file->priv->mime_type;
     if (mime_type == NULL)
     {
         return FALSE;
@@ -4890,8 +4890,8 @@ nautilus_file_get_keywords (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), NULL);
 
-    keywords = g_list_copy_deep (file->details->extension_emblems, (GCopyFunc) g_strdup, NULL);
-    keywords = g_list_concat (keywords, g_list_copy_deep (file->details->pending_extension_emblems, (GCopyFunc) g_strdup, NULL));
+    keywords = g_list_copy_deep (file->priv->extension_emblems, (GCopyFunc) g_strdup, NULL);
+    keywords = g_list_concat (keywords, g_list_copy_deep (file->priv->pending_extension_emblems, (GCopyFunc) g_strdup, NULL));
 
     metadata_keywords = nautilus_file_get_metadata_list (file, NAUTILUS_METADATA_KEY_EMBLEMS);
     clean_up_metadata_keywords (file, &metadata_keywords);
@@ -5036,7 +5036,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
         }
     }
 
-    if (file->details->icon)
+    if (file->priv->icon)
     {
         icon = NULL;
 
@@ -5044,9 +5044,9 @@ nautilus_file_get_gicon (NautilusFile          *file,
              (flags & NAUTILUS_FILE_ICON_FLAGS_FOR_OPEN_FOLDER) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_USE_MOUNT_ICON) ||
              (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)) &&
-            G_IS_THEMED_ICON (file->details->icon))
+            G_IS_THEMED_ICON (file->priv->icon))
         {
-            names = g_themed_icon_get_names (G_THEMED_ICON (file->details->icon));
+            names = g_themed_icon_get_names (G_THEMED_ICON (file->priv->icon));
             prepend_array = g_ptr_array_new ();
 
             for (i = 0; names[i] != NULL; i++)
@@ -5094,7 +5094,7 @@ nautilus_file_get_gicon (NautilusFile          *file,
 
         if (icon == NULL)
         {
-            icon = g_object_ref (file->details->icon);
+            icon = g_object_ref (file->priv->icon);
         }
     }
 
@@ -5115,7 +5115,7 @@ out:
 char *
 nautilus_file_get_thumbnail_path (NautilusFile *file)
 {
-    return g_strdup (file->details->thumbnail_path);
+    return g_strdup (file->priv->thumbnail_path);
 }
 
 static NautilusIconInfo *
@@ -5144,10 +5144,10 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
         modified_size = size * scale * NAUTILUS_CANVAS_ICON_SIZE_STANDARD / NAUTILUS_CANVAS_ICON_SIZE_SMALL;
     }
 
-    if (file->details->thumbnail)
+    if (file->priv->thumbnail)
     {
-        w = gdk_pixbuf_get_width (file->details->thumbnail);
-        h = gdk_pixbuf_get_height (file->details->thumbnail);
+        w = gdk_pixbuf_get_width (file->priv->thumbnail);
+        h = gdk_pixbuf_get_height (file->priv->thumbnail);
 
         s = MAX (w, h);
         /* Don't scale up small thumbnails in the standard view */
@@ -5166,20 +5166,20 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
             thumb_scale = (double) NAUTILUS_LIST_ICON_SIZE_SMALL / s;
         }
 
-        if (file->details->thumbnail_scale == thumb_scale &&
-            file->details->scaled_thumbnail != NULL)
+        if (file->priv->thumbnail_scale == thumb_scale &&
+            file->priv->scaled_thumbnail != NULL)
         {
-            pixbuf = file->details->scaled_thumbnail;
+            pixbuf = file->priv->scaled_thumbnail;
         }
         else
         {
-            pixbuf = gdk_pixbuf_scale_simple (file->details->thumbnail,
+            pixbuf = gdk_pixbuf_scale_simple (file->priv->thumbnail,
                                               MAX (w * thumb_scale, 1),
                                               MAX (h * thumb_scale, 1),
                                               GDK_INTERP_BILINEAR);
 
             /* We don't want frames around small icons */
-            if (!gdk_pixbuf_get_has_alpha (file->details->thumbnail) || s >= 128 * scale)
+            if (!gdk_pixbuf_get_has_alpha (file->priv->thumbnail) || s >= 128 * scale)
             {
                 gboolean use_experimental_views;
 
@@ -5198,18 +5198,18 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                 }
             }
 
-            g_clear_object (&file->details->scaled_thumbnail);
-            file->details->scaled_thumbnail = pixbuf;
-            file->details->thumbnail_scale = thumb_scale;
+            g_clear_object (&file->priv->scaled_thumbnail);
+            file->priv->scaled_thumbnail = pixbuf;
+            file->priv->thumbnail_scale = thumb_scale;
         }
 
         DEBUG ("Returning thumbnailed image, at size %d %d",
                (int) (w * thumb_scale), (int) (h * thumb_scale));
     }
-    else if (file->details->thumbnail_path == NULL &&
-             file->details->can_read &&
-             !file->details->is_thumbnailing &&
-             !file->details->thumbnailing_failed &&
+    else if (file->priv->thumbnail_path == NULL &&
+             file->priv->can_read &&
+             !file->priv->is_thumbnailing &&
+             !file->priv->thumbnailing_failed &&
              nautilus_can_thumbnail (file))
     {
         nautilus_create_thumbnail (file);
@@ -5219,7 +5219,7 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
     {
         gicon = G_ICON (g_object_ref (pixbuf));
     }
-    else if (file->details->is_thumbnailing)
+    else if (file->priv->is_thumbnailing)
     {
         gicon = g_themed_icon_new (ICON_NAME_THUMBNAIL_LOADING);
     }
@@ -5652,8 +5652,8 @@ nautilus_file_should_show_directory_item_count (NautilusFile *file)
 
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    if (file->details->mime_type &&
-        strcmp (file->details->mime_type, "x-directory/smb-share") == 0)
+    if (file->priv->mime_type &&
+        strcmp (file->priv->mime_type, "x-directory/smb-share") == 0)
     {
         return FALSE;
     }
@@ -5765,8 +5765,8 @@ nautilus_file_get_deep_counts (NautilusFile *file,
         /* Set field so an existing value isn't treated as up-to-date
          * when preference changes later.
          */
-        file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-        return file->details->deep_counts_status;
+        file->priv->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+        return file->priv->deep_counts_status;
     }
 
     return NAUTILUS_FILE_CLASS (G_OBJECT_GET_CLASS (file))->get_deep_counts
@@ -5777,13 +5777,13 @@ nautilus_file_get_deep_counts (NautilusFile *file,
 void
 nautilus_file_recompute_deep_counts (NautilusFile *file)
 {
-    if (file->details->deep_counts_status != NAUTILUS_REQUEST_IN_PROGRESS)
+    if (file->priv->deep_counts_status != NAUTILUS_REQUEST_IN_PROGRESS)
     {
-        file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
-        if (file->details->directory != NULL)
+        file->priv->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+        if (file->priv->directory != NULL)
         {
-            nautilus_directory_add_file_to_work_queue (file->details->directory, file);
-            nautilus_directory_async_state_changed (file->details->directory);
+            nautilus_directory_add_file_to_work_queue (file->priv->directory, file);
+            nautilus_directory_async_state_changed (file->priv->directory);
         }
     }
 }
@@ -5791,7 +5791,7 @@ nautilus_file_recompute_deep_counts (NautilusFile *file)
 gboolean
 nautilus_file_can_get_size (NautilusFile *file)
 {
-    return file->details->size == -1;
+    return file->priv->size == -1;
 }
 
 
@@ -5808,23 +5808,23 @@ goffset
 nautilus_file_get_size (NautilusFile *file)
 {
     /* Before we have info on the file, we don't know the size. */
-    if (file->details->size == -1)
+    if (file->priv->size == -1)
     {
         return 0;
     }
-    return file->details->size;
+    return file->priv->size;
 }
 
 time_t
 nautilus_file_get_mtime (NautilusFile *file)
 {
-    return file->details->mtime;
+    return file->priv->mtime;
 }
 
 time_t
 nautilus_file_get_atime (NautilusFile *file)
 {
-    return file->details->atime;
+    return file->priv->atime;
 }
 
 time_t
@@ -5832,7 +5832,7 @@ nautilus_file_get_recency (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
 
-    return file->details->recency;
+    return file->priv->recency;
 }
 
 time_t
@@ -5840,7 +5840,7 @@ nautilus_file_get_trash_time (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), 0);
 
-    return file->details->trash_time;
+    return file->priv->trash_time;
 }
 
 static void
@@ -5931,20 +5931,20 @@ void
 nautilus_file_set_search_relevance (NautilusFile *file,
                                     gdouble       relevance)
 {
-    file->details->search_relevance = relevance;
+    file->priv->search_relevance = relevance;
 }
 
 void
 nautilus_file_set_search_fts_snippet (NautilusFile *file,
                                       const gchar  *fts_snippet)
 {
-    file->details->fts_snippet = g_strdup (fts_snippet);
+    file->priv->fts_snippet = g_strdup (fts_snippet);
 }
 
 const gchar *
 nautilus_file_get_search_fts_snippet (NautilusFile *file)
 {
-    return file->details->fts_snippet;
+    return file->priv->fts_snippet;
 }
 
 /**
@@ -5960,7 +5960,7 @@ nautilus_file_get_search_fts_snippet (NautilusFile *file)
 gboolean
 nautilus_file_can_get_permissions (NautilusFile *file)
 {
-    return file->details->has_permissions;
+    return file->priv->has_permissions;
 }
 
 /**
@@ -5980,14 +5980,14 @@ nautilus_file_can_set_permissions (NautilusFile *file)
 {
     uid_t user_id;
 
-    if (file->details->uid != -1 &&
+    if (file->priv->uid != -1 &&
         nautilus_file_is_local (file))
     {
         /* Check the user. */
         user_id = geteuid ();
 
         /* Owner is allowed to set permissions. */
-        if (user_id == (uid_t) file->details->uid)
+        if (user_id == (uid_t) file->priv->uid)
         {
             return TRUE;
         }
@@ -6012,7 +6012,7 @@ nautilus_file_get_permissions (NautilusFile *file)
 {
     g_return_val_if_fail (nautilus_file_can_get_permissions (file), 0);
 
-    return file->details->permissions;
+    return file->priv->permissions;
 }
 
 /**
@@ -6052,7 +6052,7 @@ nautilus_file_set_permissions (NautilusFile                  *file,
      * because we don't want to send the file-changed signal if
      * nothing changed.
      */
-    if (new_permissions == file->details->permissions)
+    if (new_permissions == file->priv->permissions)
     {
         (*callback)(file, NULL, NULL, callback_data);
         return;
@@ -6063,7 +6063,7 @@ nautilus_file_set_permissions (NautilusFile                  *file,
         NautilusFileUndoInfo *undo_info;
 
         undo_info = nautilus_file_undo_info_permissions_new (nautilus_file_get_location (file),
-                                                             file->details->permissions,
+                                                             file->priv->permissions,
                                                              new_permissions);
         nautilus_file_undo_manager_set_action (undo_info);
     }
@@ -6089,7 +6089,7 @@ nautilus_file_set_permissions (NautilusFile                  *file,
 gboolean
 nautilus_file_can_get_selinux_context (NautilusFile *file)
 {
-    return file->details->selinux_context != NULL;
+    return file->priv->selinux_context != NULL;
 }
 
 
@@ -6116,7 +6116,7 @@ nautilus_file_get_selinux_context (NautilusFile *file)
         return NULL;
     }
 
-    raw = file->details->selinux_context;
+    raw = file->priv->selinux_context;
 
 #ifdef HAVE_SELINUX
     if (selinux_raw_to_trans_context (raw, &translated) == 0)
@@ -6284,7 +6284,7 @@ gboolean
 nautilus_file_can_get_owner (NautilusFile *file)
 {
     /* Before we have info on a file, the owner is unknown. */
-    return file->details->uid != -1;
+    return file->priv->uid != -1;
 }
 
 /**
@@ -6394,7 +6394,7 @@ nautilus_file_set_owner (NautilusFile                  *file,
      * don't want to send the file-changed signal if nothing
      * changed.
      */
-    if (new_id == (uid_t) file->details->uid)
+    if (new_id == (uid_t) file->priv->uid)
     {
         (*callback)(file, NULL, NULL, callback_data);
         return;
@@ -6475,7 +6475,7 @@ gboolean
 nautilus_file_can_get_group (NautilusFile *file)
 {
     /* Before we have info on a file, the group is unknown. */
-    return file->details->gid != -1;
+    return file->priv->gid != -1;
 }
 
 /**
@@ -6492,7 +6492,7 @@ nautilus_file_can_get_group (NautilusFile *file)
 char *
 nautilus_file_get_group_name (NautilusFile *file)
 {
-    return g_strdup (file->details->group);
+    return g_strdup (file->priv->group);
 }
 
 /**
@@ -6525,7 +6525,7 @@ nautilus_file_can_set_group (NautilusFile *file)
     user_id = geteuid ();
 
     /* Owner is allowed to set group (with restrictions). */
-    if (user_id == (uid_t) file->details->uid)
+    if (user_id == (uid_t) file->priv->uid)
     {
         return TRUE;
     }
@@ -6622,7 +6622,7 @@ nautilus_file_get_settable_group_names (NautilusFile *file)
         /* Root is allowed to set group to anything. */
         result = nautilus_get_all_group_names ();
     }
-    else if (user_id == (uid_t) file->details->uid)
+    else if (user_id == (uid_t) file->priv->uid)
     {
         /* Owner is allowed to set group to any that owner is member of. */
         result = nautilus_get_group_names_for_user ();
@@ -6694,7 +6694,7 @@ nautilus_file_set_group (NautilusFile                  *file,
         return;
     }
 
-    if (new_id == (gid_t) file->details->gid)
+    if (new_id == (gid_t) file->priv->gid)
     {
         (*callback)(file, NULL, NULL, callback_data);
         return;
@@ -6744,7 +6744,7 @@ nautilus_file_get_octal_permissions_as_string (NautilusFile *file)
         return NULL;
     }
 
-    permissions = file->details->permissions;
+    permissions = file->priv->permissions;
     return g_strdup_printf ("%03o", permissions);
 }
 
@@ -6773,7 +6773,7 @@ nautilus_file_get_permissions_as_string (NautilusFile *file)
 
     g_assert (NAUTILUS_IS_FILE (file));
 
-    permissions = file->details->permissions;
+    permissions = file->priv->permissions;
     is_directory = nautilus_file_is_directory (file);
     is_link = nautilus_file_is_symbolic_link (file);
 
@@ -6820,34 +6820,34 @@ nautilus_file_get_owner_as_string (NautilusFile *file,
     char *user_name;
 
     /* Before we have info on a file, the owner is unknown. */
-    if (file->details->owner == NULL &&
-        file->details->owner_real == NULL)
+    if (file->priv->owner == NULL &&
+        file->priv->owner_real == NULL)
     {
         return NULL;
     }
 
     if (include_real_name &&
-        file->details->uid == getuid ())
+        file->priv->uid == getuid ())
     {
         /* Translators: "Me" is used to indicate the file is owned by me (the current user) */
         user_name = g_strdup (_("Me"));
     }
-    else if (file->details->owner_real == NULL)
+    else if (file->priv->owner_real == NULL)
     {
-        user_name = g_strdup (file->details->owner);
+        user_name = g_strdup (file->priv->owner);
     }
-    else if (file->details->owner == NULL)
+    else if (file->priv->owner == NULL)
     {
-        user_name = g_strdup (file->details->owner_real);
+        user_name = g_strdup (file->priv->owner_real);
     }
     else if (include_real_name &&
-             strcmp (file->details->owner, file->details->owner_real) != 0)
+             strcmp (file->priv->owner, file->priv->owner_real) != 0)
     {
-        user_name = g_strdup (file->details->owner_real);
+        user_name = g_strdup (file->priv->owner_real);
     }
     else
     {
-        user_name = g_strdup (file->details->owner);
+        user_name = g_strdup (file->priv->owner);
     }
 
     return user_name;
@@ -6900,11 +6900,11 @@ nautilus_file_get_size_as_string (NautilusFile *file)
         return format_item_count_for_display (item_count, TRUE, TRUE);
     }
 
-    if (file->details->size == -1)
+    if (file->priv->size == -1)
     {
         return NULL;
     }
-    return g_format_size (file->details->size);
+    return g_format_size (file->priv->size);
 }
 
 /**
@@ -6941,12 +6941,12 @@ nautilus_file_get_size_as_string_with_real_size (NautilusFile *file)
         return format_item_count_for_display (item_count, TRUE, TRUE);
     }
 
-    if (file->details->size == -1)
+    if (file->priv->size == -1)
     {
         return NULL;
     }
 
-    return g_format_size_full (file->details->size, G_FORMAT_SIZE_LONG_FORMAT);
+    return g_format_size_full (file->priv->size, G_FORMAT_SIZE_LONG_FORMAT);
 }
 
 
@@ -7261,15 +7261,15 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
 
     extension_attribute = NULL;
 
-    if (file->details->pending_extension_attributes)
+    if (file->priv->pending_extension_attributes)
     {
-        extension_attribute = g_hash_table_lookup (file->details->pending_extension_attributes,
+        extension_attribute = g_hash_table_lookup (file->priv->pending_extension_attributes,
                                                    GINT_TO_POINTER (attribute_q));
     }
 
-    if (extension_attribute == NULL && file->details->extension_attributes)
+    if (extension_attribute == NULL && file->priv->extension_attributes)
     {
-        extension_attribute = g_hash_table_lookup (file->details->extension_attributes,
+        extension_attribute = g_hash_table_lookup (file->priv->extension_attributes,
                                                    GINT_TO_POINTER (attribute_q));
     }
 
@@ -7480,7 +7480,7 @@ get_description (NautilusFile *file,
 
     g_assert (NAUTILUS_IS_FILE (file));
 
-    mime_type = file->details->mime_type;
+    mime_type = file->priv->mime_type;
     if (mime_type == NULL)
     {
         return NULL;
@@ -7677,10 +7677,10 @@ nautilus_file_is_launchable (NautilusFile *file)
     gboolean type_can_be_executable;
 
     type_can_be_executable = FALSE;
-    if (file->details->mime_type != NULL)
+    if (file->priv->mime_type != NULL)
     {
         type_can_be_executable =
-            g_content_type_can_be_executable (file->details->mime_type);
+            g_content_type_can_be_executable (file->priv->mime_type);
     }
 
     return type_can_be_executable &&
@@ -7702,7 +7702,7 @@ nautilus_file_is_launchable (NautilusFile *file)
 gboolean
 nautilus_file_is_symbolic_link (NautilusFile *file)
 {
-    return file->details->is_symlink;
+    return file->priv->is_symlink;
 }
 
 GMount *
@@ -7728,16 +7728,16 @@ void
 nautilus_file_set_mount (NautilusFile *file,
                          GMount       *mount)
 {
-    if (file->details->mount)
+    if (file->priv->mount)
     {
-        g_signal_handlers_disconnect_by_func (file->details->mount, file_mount_unmounted, file);
-        g_object_unref (file->details->mount);
-        file->details->mount = NULL;
+        g_signal_handlers_disconnect_by_func (file->priv->mount, file_mount_unmounted, file);
+        g_object_unref (file->priv->mount);
+        file->priv->mount = NULL;
     }
 
     if (mount)
     {
-        file->details->mount = g_object_ref (mount);
+        file->priv->mount = g_object_ref (mount);
         g_signal_connect (mount, "unmounted",
                           G_CALLBACK (file_mount_unmounted), file);
     }
@@ -7789,9 +7789,9 @@ get_fs_free_cb (GObject      *source_object,
         g_object_unref (info);
     }
 
-    if (file->details->free_space != free_space)
+    if (file->priv->free_space != free_space)
     {
-        file->details->free_space = free_space;
+        file->priv->free_space = free_space;
         nautilus_file_emit_changed (file);
     }
 
@@ -7814,10 +7814,10 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
 
     now = time (NULL);
     /* Update first time and then every 2 seconds */
-    if (file->details->free_space_read == 0 ||
-        (now - file->details->free_space_read) > 2)
+    if (file->priv->free_space_read == 0 ||
+        (now - file->priv->free_space_read) > 2)
     {
-        file->details->free_space_read = now;
+        file->priv->free_space_read = now;
         location = nautilus_file_get_location (file);
         g_file_query_filesystem_info_async (location,
                                             G_FILE_ATTRIBUTE_FILESYSTEM_FREE,
@@ -7828,9 +7828,9 @@ nautilus_file_get_volume_free_space (NautilusFile *file)
     }
 
     res = NULL;
-    if (file->details->free_space != (guint64) - 1)
+    if (file->priv->free_space != (guint64) - 1)
     {
-        res = g_format_size (file->details->free_space);
+        res = g_format_size (file->priv->free_space);
     }
 
     return res;
@@ -7882,7 +7882,7 @@ nautilus_file_get_symbolic_link_target_path (NautilusFile *file)
         g_warning ("File has symlink target, but  is not marked as symlink");
     }
 
-    return g_strdup (file->details->symlink_name);
+    return g_strdup (file->priv->symlink_name);
 }
 
 /**
@@ -7905,7 +7905,7 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
         g_warning ("File has symlink target, but  is not marked as symlink");
     }
 
-    if (file->details->symlink_name == NULL)
+    if (file->priv->symlink_name == NULL)
     {
         return NULL;
     }
@@ -7918,7 +7918,7 @@ nautilus_file_get_symbolic_link_target_uri (NautilusFile *file)
         g_object_unref (location);
         if (parent)
         {
-            target = g_file_resolve_relative_path (parent, file->details->symlink_name);
+            target = g_file_resolve_relative_path (parent, file->priv->symlink_name);
             g_object_unref (parent);
         }
 
@@ -8023,7 +8023,7 @@ nautilus_file_is_in_trash (NautilusFile *file)
 {
     g_assert (NAUTILUS_IS_FILE (file));
 
-    return nautilus_directory_is_in_trash (file->details->directory);
+    return nautilus_directory_is_in_trash (file->priv->directory);
 }
 
 /**
@@ -8040,7 +8040,7 @@ nautilus_file_is_in_recent (NautilusFile *file)
 {
     g_assert (NAUTILUS_IS_FILE (file));
 
-    return nautilus_directory_is_in_recent (file->details->directory);
+    return nautilus_directory_is_in_recent (file->priv->directory);
 }
 
 /**
@@ -8057,7 +8057,7 @@ nautilus_file_is_in_starred (NautilusFile *file)
 {
     g_assert (NAUTILUS_IS_FILE (file));
 
-    return nautilus_directory_is_in_starred (file->details->directory);
+    return nautilus_directory_is_in_starred (file->priv->directory);
 }
 
 /**
@@ -8146,18 +8146,18 @@ nautilus_file_is_in_admin (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return nautilus_directory_is_in_admin (file->details->directory);
+    return nautilus_directory_is_in_admin (file->priv->directory);
 }
 
 GError *
 nautilus_file_get_file_info_error (NautilusFile *file)
 {
-    if (!file->details->get_info_failed)
+    if (!file->priv->get_info_failed)
     {
         return NULL;
     }
 
-    return file->details->get_info_error;
+    return file->priv->get_info_error;
 }
 
 /**
@@ -8195,7 +8195,7 @@ nautilus_file_contains_text (NautilusFile *file)
 gboolean
 nautilus_file_is_executable (NautilusFile *file)
 {
-    if (!file->details->has_permissions)
+    if (!file->priv->has_permissions)
     {
         /* File's permissions field is not valid.
          * Can't access specific permissions, so return FALSE.
@@ -8203,13 +8203,13 @@ nautilus_file_is_executable (NautilusFile *file)
         return FALSE;
     }
 
-    return file->details->can_execute;
+    return file->priv->can_execute;
 }
 
 char *
 nautilus_file_get_filesystem_id (NautilusFile *file)
 {
-    return g_strdup (file->details->filesystem_id);
+    return g_strdup (file->priv->filesystem_id);
 }
 
 NautilusFile *
@@ -8220,9 +8220,9 @@ nautilus_file_get_trash_original_file (NautilusFile *file)
 
     original_file = NULL;
 
-    if (file->details->trash_orig_path != NULL)
+    if (file->priv->trash_orig_path != NULL)
     {
-        location = g_file_new_for_path (file->details->trash_orig_path);
+        location = g_file_new_for_path (file->priv->trash_orig_path);
         original_file = nautilus_file_get (location);
         g_object_unref (location);
     }
@@ -8235,12 +8235,12 @@ nautilus_file_mark_gone (NautilusFile *file)
 {
     NautilusDirectory *directory;
 
-    if (file->details->is_gone)
+    if (file->priv->is_gone)
     {
         return;
     }
 
-    file->details->is_gone = TRUE;
+    file->priv->is_gone = TRUE;
 
     update_links_if_target (file);
 
@@ -8253,7 +8253,7 @@ nautilus_file_mark_gone (NautilusFile *file)
     nautilus_file_clear_info (file);
 
     /* Let the directory know it's gone. */
-    directory = file->details->directory;
+    directory = file->priv->directory;
     if (!nautilus_file_is_self_owned (file))
     {
         nautilus_directory_remove_file (directory, file);
@@ -8290,7 +8290,7 @@ nautilus_file_changed (NautilusFile *file)
         fake_list.next = NULL;
         fake_list.prev = NULL;
         nautilus_directory_emit_change_signals
-            (file->details->directory, &fake_list);
+            (file->priv->directory, &fake_list);
     }
 }
 
@@ -8401,7 +8401,7 @@ nautilus_file_is_not_yet_confirmed (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return !file->details->got_file_info;
+    return !file->priv->got_file_info;
 }
 
 /**
@@ -8474,48 +8474,48 @@ nautilus_file_cancel_call_when_ready (NautilusFile         *file,
 static void
 invalidate_directory_count (NautilusFile *file)
 {
-    file->details->directory_count_is_up_to_date = FALSE;
+    file->priv->directory_count_is_up_to_date = FALSE;
 }
 
 static void
 invalidate_deep_counts (NautilusFile *file)
 {
-    file->details->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
+    file->priv->deep_counts_status = NAUTILUS_REQUEST_NOT_STARTED;
 }
 
 static void
 invalidate_mime_list (NautilusFile *file)
 {
-    file->details->mime_list_is_up_to_date = FALSE;
+    file->priv->mime_list_is_up_to_date = FALSE;
 }
 
 static void
 invalidate_file_info (NautilusFile *file)
 {
-    file->details->file_info_is_up_to_date = FALSE;
+    file->priv->file_info_is_up_to_date = FALSE;
 }
 
 static void
 invalidate_thumbnail (NautilusFile *file)
 {
-    file->details->thumbnail_is_up_to_date = FALSE;
+    file->priv->thumbnail_is_up_to_date = FALSE;
 }
 
 static void
 invalidate_mount (NautilusFile *file)
 {
-    file->details->mount_is_up_to_date = FALSE;
+    file->priv->mount_is_up_to_date = FALSE;
 }
 
 void
 nautilus_file_invalidate_extension_info_internal (NautilusFile *file)
 {
-    if (file->details->pending_info_providers)
+    if (file->priv->pending_info_providers)
     {
-        g_list_free_full (file->details->pending_info_providers, g_object_unref);
+        g_list_free_full (file->priv->pending_info_providers, g_object_unref);
     }
 
-    file->details->pending_info_providers =
+    file->priv->pending_info_providers =
         nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_INFO_PROVIDER);
 }
 
@@ -8569,7 +8569,7 @@ nautilus_file_is_thumbnailing (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    return file->details->is_thumbnailing;
+    return file->priv->is_thumbnailing;
 }
 
 void
@@ -8578,7 +8578,7 @@ nautilus_file_set_is_thumbnailing (NautilusFile *file,
 {
     g_return_if_fail (NAUTILUS_IS_FILE (file));
 
-    file->details->is_thumbnailing = is_thumbnailing;
+    file->priv->is_thumbnailing = is_thumbnailing;
 }
 
 
@@ -8595,17 +8595,17 @@ nautilus_file_invalidate_attributes (NautilusFile           *file,
                                      NautilusFileAttributes  file_attributes)
 {
     /* Cancel possible in-progress loads of any of these attributes */
-    nautilus_directory_cancel_loading_file_attributes (file->details->directory,
+    nautilus_directory_cancel_loading_file_attributes (file->priv->directory,
                                                        file,
                                                        file_attributes);
 
     /* Actually invalidate the values */
     nautilus_file_invalidate_attributes_internal (file, file_attributes);
 
-    nautilus_directory_add_file_to_work_queue (file->details->directory, file);
+    nautilus_directory_add_file_to_work_queue (file->priv->directory, file);
 
     /* Kick off I/O if necessary */
-    nautilus_directory_async_state_changed (file->details->directory);
+    nautilus_directory_async_state_changed (file->priv->directory);
 }
 
 NautilusFileAttributes
@@ -8641,24 +8641,24 @@ nautilus_file_invalidate_all_attributes (NautilusFile *file)
 void
 nautilus_file_dump (NautilusFile *file)
 {
-    long size = file->details->deep_size;
+    long size = file->priv->deep_size;
     char *uri;
     const char *file_kind;
 
     uri = nautilus_file_get_uri (file);
     g_print ("uri: %s \n", uri);
-    if (!file->details->got_file_info)
+    if (!file->priv->got_file_info)
     {
         g_print ("no file info \n");
     }
-    else if (file->details->get_info_failed)
+    else if (file->priv->get_info_failed)
     {
         g_print ("failed to get file info \n");
     }
     else
     {
         g_print ("size: %ld \n", size);
-        switch (file->details->type)
+        switch (file->priv->type)
         {
             case G_FILE_TYPE_REGULAR:
             {
@@ -8692,9 +8692,9 @@ nautilus_file_dump (NautilusFile *file)
             break;
         }
         g_print ("kind: %s \n", file_kind);
-        if (file->details->type == G_FILE_TYPE_SYMBOLIC_LINK)
+        if (file->priv->type == G_FILE_TYPE_SYMBOLIC_LINK)
         {
-            g_print ("link to %s \n", file->details->symlink_name);
+            g_print ("link to %s \n", file->priv->symlink_name);
             /* FIXME bugzilla.gnome.org 42430: add following of symlinks here */
         }
         /* FIXME bugzilla.gnome.org 42431: add permissions and other useful stuff here */
@@ -9066,10 +9066,10 @@ real_get_item_count (NautilusFile *file,
 {
     if (count_unreadable != NULL)
     {
-        *count_unreadable = file->details->directory_count_failed;
+        *count_unreadable = file->priv->directory_count_failed;
     }
 
-    if (!file->details->got_directory_count)
+    if (!file->priv->got_directory_count)
     {
         if (count != NULL)
         {
@@ -9080,7 +9080,7 @@ real_get_item_count (NautilusFile *file,
 
     if (count != NULL)
     {
-        *count = file->details->directory_count;
+        *count = file->priv->directory_count;
     }
 
     return TRUE;
@@ -9119,25 +9119,25 @@ real_get_deep_counts (NautilusFile *file,
         return NAUTILUS_REQUEST_DONE;
     }
 
-    if (file->details->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED)
+    if (file->priv->deep_counts_status != NAUTILUS_REQUEST_NOT_STARTED)
     {
         if (directory_count != NULL)
         {
-            *directory_count = file->details->deep_directory_count;
+            *directory_count = file->priv->deep_directory_count;
         }
         if (file_count != NULL)
         {
-            *file_count = file->details->deep_file_count;
+            *file_count = file->priv->deep_file_count;
         }
         if (unreadable_directory_count != NULL)
         {
-            *unreadable_directory_count = file->details->deep_unreadable_count;
+            *unreadable_directory_count = file->priv->deep_unreadable_count;
         }
         if (total_size != NULL)
         {
-            *total_size = file->details->deep_size;
+            *total_size = file->priv->deep_size;
         }
-        return file->details->deep_counts_status;
+        return file->priv->deep_counts_status;
     }
 
     /* For directories, or before we know the type, we haven't started. */
@@ -9231,8 +9231,6 @@ nautilus_file_class_init (NautilusFileClass *class)
                       g_cclosure_marshal_VOID__VOID,
                       G_TYPE_NONE, 0);
 
-    g_type_class_add_private (class, sizeof (NautilusFileDetails));
-
     thumbnail_limit_changed_callback (NULL);
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT,
@@ -9253,17 +9251,17 @@ nautilus_file_class_init (NautilusFileClass *class)
 void
 nautilus_file_info_providers_done (NautilusFile *file)
 {
-    g_list_free_full (file->details->extension_emblems, g_free);
-    file->details->extension_emblems = file->details->pending_extension_emblems;
-    file->details->pending_extension_emblems = NULL;
+    g_list_free_full (file->priv->extension_emblems, g_free);
+    file->priv->extension_emblems = file->priv->pending_extension_emblems;
+    file->priv->pending_extension_emblems = NULL;
 
-    if (file->details->extension_attributes)
+    if (file->priv->extension_attributes)
     {
-        g_hash_table_destroy (file->details->extension_attributes);
+        g_hash_table_destroy (file->priv->extension_attributes);
     }
 
-    file->details->extension_attributes = file->details->pending_extension_attributes;
-    file->details->pending_extension_attributes = NULL;
+    file->priv->extension_attributes = file->priv->pending_extension_attributes;
+    file->priv->pending_extension_attributes = NULL;
 
     nautilus_file_changed (file);
 }
@@ -9380,7 +9378,7 @@ is_gone (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    return file->details->is_gone;
+    return file->priv->is_gone;
 }
 
 static char *
@@ -9390,7 +9388,7 @@ get_name (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    return g_strdup (file->details->name);
+    return g_strdup (file->priv->name);
 }
 
 static char *
@@ -9418,7 +9416,7 @@ get_parent_uri (NautilusFileInfo *file_info)
         return g_strdup ("");
     }
 
-    return nautilus_directory_get_uri (file->details->directory);
+    return nautilus_directory_get_uri (file->priv->directory);
 }
 
 static char *
@@ -9429,12 +9427,12 @@ get_uri_scheme (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->directory == NULL)
+    if (file->priv->directory == NULL)
     {
         return NULL;
     }
 
-    location = nautilus_directory_get_location (file->details->directory);
+    location = nautilus_directory_get_location (file->priv->directory);
     if (location == NULL)
     {
         return NULL;
@@ -9450,9 +9448,9 @@ get_mime_type (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->mime_type != NULL)
+    if (file->priv->mime_type != NULL)
     {
-        return g_strdup (file->details->mime_type);
+        return g_strdup (file->priv->mime_type);
     }
 
     return g_strdup ("application/octet-stream");
@@ -9466,12 +9464,12 @@ is_mime_type (NautilusFileInfo *file_info,
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->mime_type == NULL)
+    if (file->priv->mime_type == NULL)
     {
         return FALSE;
     }
 
-    return g_content_type_is_a (file->details->mime_type, mime_type);
+    return g_content_type_is_a (file->priv->mime_type, mime_type);
 }
 
 static gboolean
@@ -9492,14 +9490,14 @@ add_emblem (NautilusFileInfo *file_info,
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->pending_info_providers)
+    if (file->priv->pending_info_providers)
     {
-        file->details->pending_extension_emblems = g_list_prepend (file->details->pending_extension_emblems,
+        file->priv->pending_extension_emblems = g_list_prepend (file->priv->pending_extension_emblems,
                                                                    g_strdup (emblem_name));
     }
     else
     {
-        file->details->extension_emblems = g_list_prepend (file->details->extension_emblems,
+        file->priv->extension_emblems = g_list_prepend (file->priv->extension_emblems,
                                                            g_strdup (emblem_name));
     }
 
@@ -9526,30 +9524,30 @@ add_string_attribute (NautilusFileInfo *file_info,
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->pending_info_providers != NULL)
+    if (file->priv->pending_info_providers != NULL)
     {
         /* Lazily create hashtable */
-        if (file->details->pending_extension_attributes == NULL)
+        if (file->priv->pending_extension_attributes == NULL)
         {
-            file->details->pending_extension_attributes =
+            file->priv->pending_extension_attributes =
                 g_hash_table_new_full (g_direct_hash, g_direct_equal,
                                        NULL,
                                        (GDestroyNotify) g_free);
         }
-        g_hash_table_insert (file->details->pending_extension_attributes,
+        g_hash_table_insert (file->priv->pending_extension_attributes,
                              GINT_TO_POINTER (g_quark_from_string (attribute_name)),
                              g_strdup (value));
     }
     else
     {
-        if (file->details->extension_attributes == NULL)
+        if (file->priv->extension_attributes == NULL)
         {
-            file->details->extension_attributes =
+            file->priv->extension_attributes =
                 g_hash_table_new_full (g_direct_hash, g_direct_equal,
                                        NULL,
                                        (GDestroyNotify) g_free);
         }
-        g_hash_table_insert (file->details->extension_attributes,
+        g_hash_table_insert (file->priv->extension_attributes,
                              GINT_TO_POINTER (g_quark_from_string (attribute_name)),
                              g_strdup (value));
     }
@@ -9574,9 +9572,9 @@ get_activation_uri (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->activation_uri != NULL)
+    if (file->priv->activation_uri != NULL)
     {
-        return g_strdup (file->details->activation_uri);
+        return g_strdup (file->priv->activation_uri);
     }
 
     return nautilus_file_get_uri (file);
@@ -9589,7 +9587,7 @@ get_file_type (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    return file->details->type;
+    return file->priv->type;
 }
 
 static GFile *
@@ -9599,14 +9597,14 @@ get_location (NautilusFileInfo *file_info)
     g_autoptr (GFile) location = NULL;
 
     file = NAUTILUS_FILE (file_info);
-    location = nautilus_directory_get_location (file->details->directory);
+    location = nautilus_directory_get_location (file->priv->directory);
 
     if (nautilus_file_is_self_owned (file))
     {
         return g_object_ref (location);
     }
 
-    return g_file_get_child (location, file->details->name);
+    return g_file_get_child (location, file->priv->name);
 }
 
 static GFile *
@@ -9621,7 +9619,7 @@ get_parent_location (NautilusFileInfo *file_info)
         return NULL;
     }
 
-    return nautilus_directory_get_location (file->details->directory);
+    return nautilus_directory_get_location (file->priv->directory);
 }
 
 static NautilusFileInfo *
@@ -9637,7 +9635,7 @@ get_parent_info (NautilusFileInfo *file_info)
         return NULL;
     }
 
-    parent_file = nautilus_directory_get_corresponding_file (file->details->directory);
+    parent_file = nautilus_directory_get_corresponding_file (file->priv->directory);
 
     return NAUTILUS_FILE_INFO (parent_file);
 }
@@ -9649,9 +9647,9 @@ get_mount (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    if (file->details->mount)
+    if (file->priv->mount)
     {
-        return g_object_ref (file->details->mount);
+        return g_object_ref (file->priv->mount);
     }
 
     return NULL;
@@ -9664,7 +9662,7 @@ can_write (NautilusFileInfo *file_info)
 
     file = NAUTILUS_FILE (file_info);
 
-    return file->details->can_write;
+    return file->priv->can_write;
 }
 
 static void
@@ -9712,7 +9710,7 @@ nautilus_self_check_file (void)
     file_1 = nautilus_file_get_by_uri ("file:///home/");
 
     EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1)->ref_count, 1);
-    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1->details->directory)->ref_count, 1);
+    EEL_CHECK_INTEGER_RESULT (G_OBJECT (file_1->priv->directory)->ref_count, 1);
     EEL_CHECK_INTEGER_RESULT (nautilus_directory_number_outstanding (), 1);
 
     nautilus_file_unref (file_1);
