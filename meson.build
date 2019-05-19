@@ -173,6 +173,12 @@ else
   fontconfig_cache_path = join_paths(libdir, 'fontconfig/cache')
 endif
 
+if profile == ''
+  version_string = meson.project_version()
+else
+  version_string = '@0@-@VCS_TAG@'.format(meson.project_version())
+endif
+
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('INSTALL_PREFIX', prefix)
@@ -182,7 +188,7 @@ conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
-conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
+conf.set_quoted('VERSION', version_string)
 conf.set_quoted('FONTCONFIG_CACHE_PATH', fontconfig_cache_path)
 
 ###################################################
