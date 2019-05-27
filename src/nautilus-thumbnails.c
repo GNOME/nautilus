@@ -40,7 +40,7 @@
 #include <sys/wait.h>
 #include <unistd.h>
 #include <signal.h>
-#include "gnome-desktop/gnome-desktop-thumbnail.h"
+#include <libgnome-desktop/gnome-desktop-thumbnail.h>
 #define DEBUG_FLAG NAUTILUS_DEBUG_THUMBNAILS
 #include "nautilus-debug.h"
 

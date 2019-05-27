@@ -66,30 +66,6 @@ add_project_arguments(
   language: 'c'
 )
 
-######################
-# Host system checks #
-######################
-
-host_system = host_machine.system()
-host_cpu = host_machine.cpu()
-unsupported_cpus = [
-  'alpha',
-  'ia64',
-  'm68k',
-  'parisc',
-  'parisc64',
-  'sh4',
-  'sparc',
-  'sparc64',
-]
-system_supports_seccomp = host_system == 'linux'
-cpu_supports_seccomp = not unsupported_cpus.contains(host_cpu)
-seccomp_required = system_supports_seccomp and cpu_supports_seccomp
-
-##########################
-# End host system checks #
-##########################
-
 ##################
 # Module imports #
 ##################
@@ -130,15 +106,7 @@ gio_unix = dependency('gio-unix-2.0', version: glib_ver)
 glib = dependency('glib-2.0', version: glib_ver)
 gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
-gsettings_desktop_schemas = dependency('gsettings-desktop-schemas')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
-if seccomp_required
-  message('seccomp required on this platform, make sure bubblewrap is available at runtime as well.')
-  seccomp = dependency('libseccomp')
-else
-  warning('The host does not support seccomp, thumbnailer sandboxing will be disabled. Such setups are not recommended, use at your own risk!')
-  seccomp = dependency('', required: false)
-endif
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -146,8 +114,6 @@ endif
 tracker_sparql = dependency('tracker-sparql-2.0')
 x11 = dependency('x11')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
-
-fontconfig = dependency('fontconfig', required: false)
 
 ####################
 # End dependencies #
@@ -167,15 +133,8 @@ endif
 
 application_id = 'org.gnome.Nautilus' + profile
 
-if fontconfig.found()
-  fontconfig_cache_path = fontconfig.get_pkgconfig_variable('cachedir')
-else
-  fontconfig_cache_path = join_paths(libdir, 'fontconfig/cache')
-endif
-
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
-conf.set_quoted('INSTALL_PREFIX', prefix)
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
 conf.set_quoted('NAME_SUFFIX', name_suffix)
 conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
@@ -183,14 +142,6 @@ conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
 conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
-conf.set_quoted('FONTCONFIG_CACHE_PATH', fontconfig_cache_path)
-
-###################################################
-# gnome-desktop macros for thumbnailer sandboxing #
-###################################################
-
-conf.set('ENABLE_SECCOMP', seccomp.found())
-conf.set('HAVE_BWRAP', seccomp.found())
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
