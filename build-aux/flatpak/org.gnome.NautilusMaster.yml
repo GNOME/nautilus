@@ -89,6 +89,16 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+- name: gnome-desktop
+  buildsystem: meson
+  build-options:
+    config-opts:
+    - "-Ddebug_tools=false"
+    - "-Ddesktop_docs=false"
+    - "-Dudev=disabled"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/gnome-desktop.git
 - name: gnome-autoar
   sources:
   - type: git
