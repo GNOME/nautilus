@@ -92,6 +92,15 @@ modules:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker-miners.git
     tag: 2.2.1
+- name: gnome-desktop
+  build-options:
+    config-opts:
+    - "-Ddebug_tools=false"
+    - "-Ddesktop_docs=false"
+    - "-Dudev=false"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/gnome-desktop.git
 - name: gnome-autoar
   sources:
   - type: git
