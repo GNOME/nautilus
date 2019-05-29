@@ -364,19 +364,23 @@ try_to_expand_path (gpointer callback_data)
     GtkEditable *editable;
     char *suffix, *user_location, *absolute_location, *uri_scheme;
     int user_location_length, pos;
+    g_autofree gchar *path = NULL;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);
     editable = GTK_EDITABLE (entry);
     user_location = gtk_editable_get_chars (editable, 0, -1);
     user_location_length = g_utf8_strlen (user_location, -1);
+    path = g_strdup (user_location);
+    g_strchug (path);
+    g_strchomp (path);
     priv->idle_id = 0;
 
-    uri_scheme = g_uri_parse_scheme (user_location);
+    uri_scheme = g_uri_parse_scheme (path);
 
-    if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
+    if (!g_path_is_absolute (path) && uri_scheme == NULL && path[0] != '~')
     {
-        absolute_location = g_build_filename (priv->current_directory, user_location, NULL);
+        absolute_location = g_build_filename (priv->current_directory, path, NULL);
         suffix = g_filename_completer_get_completion_suffix (priv->completer,
                                                              absolute_location);
         g_free (absolute_location);
@@ -384,7 +388,7 @@ try_to_expand_path (gpointer callback_data)
     else
     {
         suffix = g_filename_completer_get_completion_suffix (priv->completer,
-                                                             user_location);
+                                                             path);
     }
 
     g_free (user_location);
@@ -714,19 +718,23 @@ nautilus_location_entry_activate (GtkEntry *entry)
     NautilusLocationEntryPrivate *priv;
     const gchar *entry_text;
     gchar *full_path, *uri_scheme = NULL;
+    g_autofree gchar *path = NULL;
 
     loc_entry = NAUTILUS_LOCATION_ENTRY (entry);
     priv = nautilus_location_entry_get_instance_private (loc_entry);
     entry_text = gtk_entry_get_text (entry);
+    path = g_strdup (entry_text);
+    g_strchug (path);
+    g_strchomp (path);
 
-    if (entry_text != NULL && *entry_text != '\0')
+    if (path != NULL && *path != '\0')
     {
-        uri_scheme = g_uri_parse_scheme (entry_text);
+        uri_scheme = g_uri_parse_scheme (path);
 
-        if (!g_path_is_absolute (entry_text) && uri_scheme == NULL && entry_text[0] != '~')
+        if (!g_path_is_absolute (path) && uri_scheme == NULL && path[0] != '~')
         {
             /* Fix non absolute paths */
-            full_path = g_build_filename (priv->current_directory, entry_text, NULL);
+            full_path = g_build_filename (priv->current_directory, path, NULL);
             gtk_entry_set_text (entry, full_path);
             g_free (full_path);
         }
@@ -832,10 +840,16 @@ editable_activate_callback (GtkEntry *entry,
 {
     NautilusLocationEntry *self = user_data;
     const char *entry_text;
+    g_autofree gchar *path = NULL;
 
     entry_text = gtk_entry_get_text (entry);
-    if (entry_text != NULL && *entry_text != '\0')
+    path = g_strdup (entry_text);
+    g_strchug (path);
+    g_strchomp (path);
+
+    if (path != NULL && *path != '\0')
     {
+        gtk_entry_set_text (entry, path);
         emit_location_changed (self);
     }
 }
