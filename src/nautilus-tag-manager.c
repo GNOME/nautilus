@@ -109,7 +109,7 @@ add_selection_filter (GList   *selection,
     NautilusFile *file;
     GList *l;
 
-    g_string_append (query, " FILTER(?url IN (");
+    g_string_append (query, " FILTER(ENCODE_FOR_URI(?url) IN (");
 
     for (l = selection; l != NULL; l = l->next)
     {
@@ -119,7 +119,7 @@ add_selection_filter (GList   *selection,
         file = l->data;
 
         uri = nautilus_file_get_uri (file);
-        escaped_uri = tracker_sparql_escape_string (uri);
+        escaped_uri = g_uri_escape_string (uri, NULL, TRUE);
         g_string_append_printf (query, "'%s'", escaped_uri);
 
         if (l->next != NULL)
