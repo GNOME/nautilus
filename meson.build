@@ -34,6 +34,13 @@ cc = meson.get_compiler('c')
 # End compilers #
 #################
 
+add_global_arguments(
+  cc.get_supported_arguments([
+    '-DGLIB_DISABLE_DEPRECATION_WARNINGS',
+  ]),
+  language: 'c',
+)
+
 add_project_arguments(
   cc.get_supported_arguments([
     '-Wall',
