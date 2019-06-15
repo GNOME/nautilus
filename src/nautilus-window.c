@@ -742,7 +742,6 @@ void
 nautilus_window_new_tab (NautilusWindow *window)
 {
     NautilusWindowSlot *current_slot;
-    NautilusWindowOpenFlags flags;
     GFile *location;
     g_autofree gchar *uri = NULL;
 
@@ -751,8 +750,6 @@ nautilus_window_new_tab (NautilusWindow *window)
 
     if (location != NULL)
     {
-        flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
-
         uri = g_file_get_uri (location);
         if (eel_uri_is_search (uri))
         {
@@ -763,8 +760,9 @@ nautilus_window_new_tab (NautilusWindow *window)
             g_object_ref (location);
         }
 
-        flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-        nautilus_window_open_location_full (window, location, flags, NULL, NULL);
+        nautilus_window_open_location_full (window, location,
+                                            NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB,
+                                            NULL, NULL);
         g_object_unref (location);
     }
 }
@@ -1202,10 +1200,7 @@ action_restore_tab (GSimpleAction *action,
         return;
     }
 
-    flags = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_NEW_TAB_POSITION);
-
-    flags |= NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB;
-    flags |= NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
+    flags = NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB | NAUTILUS_WINDOW_OPEN_FLAG_DONT_MAKE_ACTIVE;
 
     data = g_queue_pop_head (window->tab_data_queue);
 
