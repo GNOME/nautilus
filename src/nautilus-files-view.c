@@ -5064,24 +5064,24 @@ build_menu_for_extension_menu_items (NautilusFilesView *view,
 }
 
 static void
-update_extensions_menus (NautilusFilesView *view)
+update_extensions_menus (NautilusFilesView *view,
+                         GtkBuilder        *builder)
 {
-    NautilusFilesViewPrivate *priv;
     GList *selection_items, *background_items;
+    GObject *object;
     g_autoptr (GMenu) background_menu = NULL;
     g_autoptr (GMenu) selection_menu = NULL;
 
-    priv = nautilus_files_view_get_instance_private (view);
     selection_items = get_extension_selection_menu_items (view);
     if (selection_items != NULL)
     {
         selection_menu = build_menu_for_extension_menu_items (view, "extensions",
                                                               selection_items);
 
-        nautilus_gmenu_merge (priv->selection_menu_model,
-                              selection_menu,
-                              "extensions",
-                              FALSE);
+        object = gtk_builder_get_object (builder, "selection-extensions-section");
+        nautilus_gmenu_set_from_model (G_MENU (object),
+                                       G_MENU_MODEL (selection_menu));
+
         nautilus_menu_item_list_free (selection_items);
     }
 
@@ -5091,10 +5091,10 @@ update_extensions_menus (NautilusFilesView *view)
         background_menu = build_menu_for_extension_menu_items (view, "extensions",
                                                                background_items);
 
-        nautilus_gmenu_merge (priv->background_menu_model,
-                              background_menu,
-                              "extensions",
-                              FALSE);
+        object = gtk_builder_get_object (builder, "background-extensions-section");
+        nautilus_gmenu_set_from_model (G_MENU (object),
+                                       G_MENU_MODEL (background_menu));
+
         nautilus_menu_item_list_free (background_items);
     }
 
@@ -5556,7 +5556,8 @@ update_directory_in_scripts_menu (NautilusFilesView *view,
 
 
 static void
-update_scripts_menu (NautilusFilesView *view)
+update_scripts_menu (NautilusFilesView *view,
+                     GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv;
     GList *sorted_copy, *node;
@@ -5586,10 +5587,12 @@ update_scripts_menu (NautilusFilesView *view)
     submenu = update_directory_in_scripts_menu (view, directory);
     if (submenu != NULL)
     {
-        nautilus_gmenu_merge (priv->selection_menu_model,
-                              submenu,
-                              "scripts-submenu",
-                              TRUE);
+        GObject *object;
+
+        object = gtk_builder_get_object (builder, "scripts-submenu");
+        nautilus_gmenu_set_from_model (G_MENU (object),
+                                       G_MENU_MODEL (submenu));
+
         g_object_unref (submenu);
     }
 
@@ -5808,7 +5811,8 @@ update_directory_in_templates_menu (NautilusFilesView *view,
 
 
 static void
-update_templates_menu (NautilusFilesView *view)
+update_templates_menu (NautilusFilesView *view,
+                       GtkBuilder        *builder)
 {
     NautilusFilesViewPrivate *priv;
     GList *sorted_copy, *node;
@@ -5850,10 +5854,10 @@ update_templates_menu (NautilusFilesView *view)
     submenu = update_directory_in_templates_menu (view, directory);
     if (submenu != NULL)
     {
-        nautilus_gmenu_merge (priv->background_menu_model,
-                              submenu,
-                              "templates-submenu",
-                              FALSE);
+        GObject *object;
+        object = gtk_builder_get_object (builder, "templates-submenu");
+        nautilus_gmenu_set_from_model (G_MENU (object),
+                                       G_MENU_MODEL (submenu));
     }
 
     nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), submenu);
@@ -7797,9 +7801,9 @@ nautilus_files_view_update_actions_state (NautilusFilesView *view)
 }
 
 static void
-update_selection_menu (NautilusFilesView *view)
+update_selection_menu (NautilusFilesView *view,
+                       GtkBuilder        *builder)
 {
-    NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     GList *l;
     gint selection_count;
@@ -7811,6 +7815,7 @@ update_selection_menu (NautilusFilesView *view)
     GAppInfo *app;
     GIcon *app_icon;
     GMenuItem *menu_item;
+    GObject *object;
     gboolean show_mount;
     gboolean show_unmount;
     gboolean show_eject;
@@ -7818,8 +7823,6 @@ update_selection_menu (NautilusFilesView *view)
     gboolean show_stop;
     gboolean show_detect_media;
     GDriveStartStopType start_stop_type;
-
-    priv = nautilus_files_view_get_instance_private (view);
 
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
     selection_count = g_list_length (selection);
@@ -7837,10 +7840,8 @@ update_selection_menu (NautilusFilesView *view)
                                   selection_count);
     menu_item = g_menu_item_new (item_label, "view.new-folder-with-selection");
     g_menu_item_set_attribute (menu_item, "hidden-when", "s", "action-disabled");
-    nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
-                                         menu_item,
-                                         "new-folder-with-selection-section",
-                                         FALSE);
+    object = gtk_builder_get_object (builder, "new-folder-with-selection-section");
+    g_menu_append_item (G_MENU (object), menu_item);
     g_object_unref (menu_item);
     g_free (item_label);
 
@@ -7922,10 +7923,8 @@ update_selection_menu (NautilusFilesView *view)
         g_menu_item_set_icon (menu_item, app_icon);
     }
 
-    nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
-                                         menu_item,
-                                         "open-with-default-application-section",
-                                         FALSE);
+    object = gtk_builder_get_object (builder, "open-with-default-application-section");
+    g_menu_append_item (G_MENU (object), menu_item);
 
     g_free (item_label);
     g_object_unref (menu_item);
@@ -7995,10 +7994,8 @@ update_selection_menu (NautilusFilesView *view)
         }
 
         menu_item = g_menu_item_new (item_label, "view.start-volume");
-        nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
-                                             menu_item,
-                                             "drive-section",
-                                             FALSE);
+        object = gtk_builder_get_object (builder, "drive-section");
+        g_menu_append_item (G_MENU (object), menu_item);
         g_object_unref (menu_item);
     }
 
@@ -8039,24 +8036,23 @@ update_selection_menu (NautilusFilesView *view)
         }
 
         menu_item = g_menu_item_new (item_label, "view.stop-volume");
-        nautilus_gmenu_add_item_in_submodel (priv->selection_menu_model,
-                                             menu_item,
-                                             "drive-section",
-                                             FALSE);
+        object = gtk_builder_get_object (builder, "drive-section");
+        g_menu_append_item (G_MENU (object), menu_item);
         g_object_unref (menu_item);
     }
 
-    update_scripts_menu (view);
+    update_scripts_menu (view, builder);
 }
 
 static void
-update_background_menu (NautilusFilesView *view)
+update_background_menu (NautilusFilesView *view,
+                        GtkBuilder        *builder)
 {
     if (nautilus_files_view_supports_creating_files (view) &&
         !showing_recent_directory (view) &&
         !showing_starred_directory (view))
     {
-        update_templates_menu (view);
+        update_templates_menu (view, builder);
     }
 }
 
@@ -8079,9 +8075,9 @@ real_update_context_menus (NautilusFilesView *view)
     object = gtk_builder_get_object (builder, "selection-menu");
     priv->selection_menu_model = g_object_ref (G_MENU (object));
 
-    update_selection_menu (view);
-    update_background_menu (view);
-    update_extensions_menus (view);
+    update_selection_menu (view, builder);
+    update_background_menu (view, builder);
+    update_extensions_menus (view, builder);
 
     nautilus_files_view_update_actions_state (view);
 }
