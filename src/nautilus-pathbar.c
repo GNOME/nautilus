@@ -918,49 +918,20 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     gtk_container_class_handle_border_width (container_class);
 }
 
-static void
-update_current_view_menu (NautilusPathBar *self)
-{
-    if (self->extensions_background_menu != NULL)
-    {
-        nautilus_gmenu_set_from_model (self->extensions_section,
-                                       G_MENU_MODEL (self->extensions_background_menu));
-    }
-
-    if (self->templates_menu != NULL)
-    {
-        nautilus_gmenu_set_from_model (self->templates_submenu,
-                                       G_MENU_MODEL (self->templates_menu));
-    }
-}
-
-static void
-reset_current_view_menu (NautilusPathBar *self)
-{
-    g_autoptr (GtkBuilder) builder = NULL;
-
-    g_clear_object (&self->current_view_menu);
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder,
-                                                                                 "current-view-menu")));
-    gtk_popover_bind_model (self->current_view_menu_popover,
-                            G_MENU_MODEL (self->current_view_menu), NULL);
-}
-
 void
 nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
                                                   GMenu           *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    reset_current_view_menu (self);
     g_clear_object (&self->extensions_background_menu);
     if (menu != NULL)
     {
         self->extensions_background_menu = g_object_ref (menu);
     }
 
-    update_current_view_menu (self);
+    nautilus_gmenu_set_from_model (self->extensions_section,
+                                   G_MENU_MODEL (menu));
 }
 
 void
@@ -969,14 +940,14 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    reset_current_view_menu (self);
     g_clear_object (&self->templates_menu);
     if (menu != NULL)
     {
         self->templates_menu = g_object_ref (menu);
     }
 
-    update_current_view_menu (self);
+    nautilus_gmenu_set_from_model (self->templates_submenu,
+                                   G_MENU_MODEL (menu));
 }
 
 /* Changes the icons wherever it is needed */
