@@ -32,141 +32,40 @@
 #include <string.h>
 #include <glib/gi18n.h>
 
-static GMenuModel *
-find_gmenu_model (GMenuModel  *model,
-                  const gchar *model_id)
-{
-    gint i, n_items;
-    GMenuModel *insertion_model = NULL;
-
-    n_items = g_menu_model_get_n_items (model);
-
-    for (i = 0; i < n_items && !insertion_model; i++)
-    {
-        gchar *id = NULL;
-        if (g_menu_model_get_item_attribute (model, i, "id", "s", &id) &&
-            g_strcmp0 (id, model_id) == 0)
-        {
-            insertion_model = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
-            if (!insertion_model)
-            {
-                insertion_model = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU);
-            }
-        }
-        else
-        {
-            GMenuModel *submodel;
-            GMenuModel *submenu;
-            gint j, j_items;
-
-            submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SECTION);
-
-            if (!submodel)
-            {
-                submodel = g_menu_model_get_item_link (model, i, G_MENU_LINK_SUBMENU);
-            }
-
-            if (!submodel)
-            {
-                continue;
-            }
-
-            j_items = g_menu_model_get_n_items (submodel);
-            for (j = 0; j < j_items; j++)
-            {
-                submenu = g_menu_model_get_item_link (submodel, j, G_MENU_LINK_SUBMENU);
-                if (submenu)
-                {
-                    insertion_model = find_gmenu_model (submenu, model_id);
-                    g_object_unref (submenu);
-                }
-
-                if (insertion_model)
-                {
-                    break;
-                }
-            }
-
-            g_object_unref (submodel);
-        }
-
-        g_free (id);
-    }
-
-    return insertion_model;
-}
-
-/*
- * The original GMenu is modified adding to the section @submodel_name
- * the items in @gmenu_to_merge.
- * @gmenu_to_merge should be a list of menu items.
+/**
+ * nautilus_gmenu_set_from_model:
+ * @target_menu: the #GMenu to be filled
+ * @source_model: (nullable): a #GMenuModel to copy items from
+ *
+ * This will replace the content of @target_menu with a copy of all items from
+ * @source_model.
+ *
+ * If the @source_model is empty (i.e., its item count is 0), or if it is %NULL,
+ * then the @target_menu is left empty.
  */
 void
-nautilus_gmenu_merge (GMenu       *original,
-                      GMenu       *gmenu_to_merge,
-                      const gchar *submodel_name,
-                      gboolean     prepend)
+nautilus_gmenu_set_from_model (GMenu      *target_menu,
+                               GMenuModel *source_model)
 {
-    gint i, n_items;
-    GMenuModel *submodel;
-    GMenuItem *item;
+    g_return_if_fail (G_IS_MENU (target_menu));
+    g_return_if_fail (source_model == NULL || G_IS_MENU_MODEL (source_model));
 
-    g_return_if_fail (G_IS_MENU (original));
-    g_return_if_fail (G_IS_MENU (gmenu_to_merge));
+    /* First, empty the menu... */
+    g_menu_remove_all (target_menu);
 
-    submodel = find_gmenu_model (G_MENU_MODEL (original), submodel_name);
-
-    g_return_if_fail (submodel != NULL);
-
-    n_items = g_menu_model_get_n_items (G_MENU_MODEL (gmenu_to_merge));
-
-    for (i = 0; i < n_items; i++)
+    /* ...then, repopulate it (maybe). */
+    if (source_model != NULL)
     {
-        if (prepend)
+        gint n_items;
+
+        n_items = g_menu_model_get_n_items (source_model);
+        for (gint i = 0; i < n_items; i++)
         {
-            item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge),
-                                               n_items - i - 1);
-            g_menu_prepend_item (G_MENU (submodel), item);
+            g_autoptr (GMenuItem) item = NULL;
+            item = g_menu_item_new_from_model (source_model, i);
+            g_menu_append_item (target_menu, item);
         }
-        else
-        {
-            item = g_menu_item_new_from_model (G_MENU_MODEL (gmenu_to_merge), i);
-            g_menu_append_item (G_MENU (submodel), item);
-        }
-        g_object_unref (item);
     }
-
-    g_object_unref (submodel);
-}
-
-/*
- * The GMenu @menu is modified adding to the section @submodel_name
- * the item @item.
- */
-void
-nautilus_gmenu_add_item_in_submodel (GMenu       *menu,
-                                     GMenuItem   *item,
-                                     const gchar *submodel_name,
-                                     gboolean     prepend)
-{
-    GMenuModel *submodel;
-
-    g_return_if_fail (G_IS_MENU (menu));
-    g_return_if_fail (G_IS_MENU_ITEM (item));
-
-    submodel = find_gmenu_model (G_MENU_MODEL (menu), submodel_name);
-
-    g_return_if_fail (submodel != NULL);
-    if (prepend)
-    {
-        g_menu_prepend_item (G_MENU (submodel), item);
-    }
-    else
-    {
-        g_menu_append_item (G_MENU (submodel), item);
-    }
-
-    g_object_unref (submodel);
 }
 
 #define NAUTILUS_THUMBNAIL_FRAME_LEFT 3

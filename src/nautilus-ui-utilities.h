@@ -25,14 +25,8 @@
 #include <gtk/gtk.h>
 
 
-void        nautilus_gmenu_add_item_in_submodel     (GMenu             *menu,
-                                                     GMenuItem         *item,
-                                                     const gchar       *section_name,
-                                                     gboolean           prepend);
-void        nautilus_gmenu_merge                    (GMenu             *original,
-                                                     GMenu             *gmenu_to_merge,
-                                                     const gchar       *submodel_name,
-                                                     gboolean           prepend);
+void        nautilus_gmenu_set_from_model           (GMenu             *target_menu,
+                                                     GMenuModel        *source_model);
 
 void        nautilus_ui_frame_image                 (GdkPixbuf        **pixbuf);
 void        nautilus_ui_frame_video                 (GdkPixbuf        **pixbuf);
