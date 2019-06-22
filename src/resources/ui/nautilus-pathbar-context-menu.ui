@@ -6,8 +6,7 @@
       <attribute name="label" translatable="yes">New _Folder…</attribute>
       <attribute name="action">view.new-folder</attribute>
     </item>
-    <submenu>
-      <attribute name="id">templates-submenu</attribute>
+    <submenu id="templates-submenu">
       <attribute name="label" translatable="yes">New _Document</attribute>
       <attribute name="action">view.new-document</attribute>
       <attribute name="hidden-when">action-disabled</attribute>
@@ -31,8 +30,7 @@
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
     </section>
-    <section>
-      <attribute name="id">extensions</attribute>
+    <section id="extensions-section">
     </section>
   </menu>
   <menu id="button-menu">
