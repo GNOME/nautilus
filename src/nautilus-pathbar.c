@@ -104,8 +104,6 @@ struct _NautilusPathBar
     GMenu *extensions_section;
     GMenu *templates_submenu;
     GMenu *button_menu;
-    GMenu *extensions_background_menu;
-    GMenu *templates_menu;
 };
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_CONTAINER);
@@ -924,12 +922,6 @@ nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    g_clear_object (&self->extensions_background_menu);
-    if (menu != NULL)
-    {
-        self->extensions_background_menu = g_object_ref (menu);
-    }
-
     nautilus_gmenu_set_from_model (self->extensions_section,
                                    G_MENU_MODEL (menu));
 }
@@ -939,12 +931,6 @@ nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
                                       GMenu           *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
-
-    g_clear_object (&self->templates_menu);
-    if (menu != NULL)
-    {
-        self->templates_menu = g_object_ref (menu);
-    }
 
     nautilus_gmenu_set_from_model (self->templates_submenu,
                                    G_MENU_MODEL (menu));
