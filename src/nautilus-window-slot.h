@@ -101,9 +101,9 @@ GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *
 
 NautilusToolbarMenuSections * nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *slot);
 
-GMenu* nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self);
+GMenuModel* nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self);
 
-GMenu* nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self);
+GMenuModel* nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self);
 
 gboolean nautilus_window_slot_get_active                   (NautilusWindowSlot *slot);
 
