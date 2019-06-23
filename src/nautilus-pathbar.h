@@ -28,6 +28,6 @@ void     nautilus_path_bar_set_path                       (NautilusPathBar *path
                                                            GFile           *file);
 
 void     nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *path_bar,
-                                                           GMenu           *menu);
+                                                           GMenuModel      *menu);
 void     nautilus_path_bar_set_templates_menu             (NautilusPathBar *path_bar,
-                                                           GMenu           *menu);
+                                                           GMenuModel      *menu);
