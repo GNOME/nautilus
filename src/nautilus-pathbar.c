@@ -918,22 +918,20 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
 
 void
 nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
-                                                  GMenu           *menu)
+                                                  GMenuModel      *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    nautilus_gmenu_set_from_model (self->extensions_section,
-                                   G_MENU_MODEL (menu));
+    nautilus_gmenu_set_from_model (self->extensions_section, menu);
 }
 
 void
 nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
-                                      GMenu           *menu)
+                                      GMenuModel      *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    nautilus_gmenu_set_from_model (self->templates_submenu,
-                                   G_MENU_MODEL (menu));
+    nautilus_gmenu_set_from_model (self->templates_submenu, menu);
 }
 
 /* Changes the icons wherever it is needed */

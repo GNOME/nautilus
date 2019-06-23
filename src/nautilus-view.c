@@ -93,7 +93,7 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                          g_param_spec_object ("extensions-background-menu",
                                                               "Menu for the background click of extensions",
                                                               "Menu for the background click of extensions",
-                                                              G_TYPE_MENU,
+                                                              G_TYPE_MENU_MODEL,
                                                               G_PARAM_READWRITE));
     /**
      * NautilusView::templates-menu:
@@ -104,7 +104,7 @@ nautilus_view_default_init (NautilusViewInterface *iface)
                                          g_param_spec_object ("templates-menu",
                                                               "Menu of templates",
                                                               "Menu of templates",
-                                                              G_TYPE_MENU,
+                                                              G_TYPE_MENU_MODEL,
                                                               G_PARAM_READWRITE));
 }
 
@@ -171,7 +171,7 @@ nautilus_view_get_toolbar_menu_sections (NautilusView *view)
     return NAUTILUS_VIEW_GET_IFACE (view)->get_toolbar_menu_sections (view);
 }
 
-GMenu *
+GMenuModel *
 nautilus_view_get_extensions_background_menu (NautilusView *view)
 {
     g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_extensions_background_menu, NULL);
@@ -182,14 +182,14 @@ nautilus_view_get_extensions_background_menu (NautilusView *view)
 /* Protected */
 void
 nautilus_view_set_extensions_background_menu (NautilusView *view,
-                                              GMenu        *menu)
+                                              GMenuModel   *menu)
 {
     g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_extensions_background_menu);
 
     NAUTILUS_VIEW_GET_IFACE (view)->set_extensions_background_menu (view, menu);
 }
 
-GMenu *
+GMenuModel *
 nautilus_view_get_templates_menu (NautilusView *view)
 {
     g_return_val_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->get_templates_menu, NULL);
@@ -200,7 +200,7 @@ nautilus_view_get_templates_menu (NautilusView *view)
 /* Protected */
 void
 nautilus_view_set_templates_menu (NautilusView *view,
-                                  GMenu        *menu)
+                                  GMenuModel   *menu)
 {
     g_return_if_fail (NAUTILUS_VIEW_GET_IFACE (view)->set_templates_menu);
 
