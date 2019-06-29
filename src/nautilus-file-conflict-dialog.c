@@ -174,11 +174,15 @@ static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
+    const char *text;
+
+    text = gtk_editable_get_text (entry);
+
     /* The rename button is visible only if there's text
      * in the entry.
      */
-    if  (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
+    if  (g_strcmp0 (text, "") != 0 &&
+         g_strcmp0 (text, dialog->conflict_name) != 0)
     {
         gtk_widget_hide (dialog->replace_button);
         gtk_widget_show (dialog->rename_button);
@@ -206,7 +210,13 @@ expander_activated_cb (GtkExpander                *w,
 
     if (!gtk_expander_get_expanded (w))
     {
-        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) == 0)
+        GtkEditable *editable;
+        const char *text;
+
+        editable = GTK_EDITABLE (dialog->entry);
+        text = gtk_editable_get_text (editable);
+
+        if (g_strcmp0 (text, dialog->conflict_name) == 0)
         {
             gtk_widget_grab_focus (dialog->entry);
 
@@ -220,12 +230,18 @@ static void
 checkbox_toggled_cb (GtkToggleButton            *t,
                      NautilusFileConflictDialog *dialog)
 {
+    GtkEditable *editable;
+    const char *text;
+
+    editable = GTK_EDITABLE (dialog->entry);
+    text = gtk_editable_get_text (editable);
+
     gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
     gtk_widget_set_sensitive (dialog->rename_button, !gtk_toggle_button_get_active (t));
 
     if  (!gtk_toggle_button_get_active (t) &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) != 0)
+         g_strcmp0 (text, "") != 0 &&
+         g_strcmp0 (text, dialog->conflict_name) != 0)
     {
         gtk_widget_hide (dialog->replace_button);
         gtk_widget_show (dialog->rename_button);
@@ -371,7 +387,15 @@ nautilus_file_conflict_dialog_class_init (NautilusFileConflictDialogClass *klass
 char *
 nautilus_file_conflict_dialog_get_new_name (NautilusFileConflictDialog *dialog)
 {
-    return g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->entry)));
+    GtkEditable *editable;
+    const char *text;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE_CONFLICT_DIALOG (dialog), NULL);
+
+    editable = GTK_EDITABLE (dialog->entry);
+    text = gtk_editable_get_text (editable)
+
+    return g_strdup (text);
 }
 
 gboolean

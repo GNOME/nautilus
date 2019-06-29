@@ -313,6 +313,8 @@ nautilus_query_editor_get_location (NautilusQueryEditor *editor)
 static void
 create_query (NautilusQueryEditor *editor)
 {
+    GtkEditable *editable;
+    const char *text;
     NautilusQuery *query;
     gboolean fts_enabled;
 
@@ -325,11 +327,13 @@ create_query (NautilusQueryEditor *editor)
         return;
     }
 
+    editable = GTK_EDITABLE (editor->entry);
+    text = gtk_editable_get_text (editable);
     query = nautilus_query_new ();
 
     nautilus_query_set_search_content (query, fts_enabled);
 
-    nautilus_query_set_text (query, gtk_entry_get_text (GTK_ENTRY (editor->entry)));
+    nautilus_query_set_text (query, text);
     nautilus_query_set_location (query, editor->location);
 
     /* We only set the query using the global setting for recursivity here,
@@ -362,9 +366,12 @@ entry_changed_cb (GtkWidget           *entry,
     }
     else
     {
+        GtkEditable *editable;
         g_autofree gchar *text = NULL;
 
-        text = g_strdup (gtk_entry_get_text (GTK_ENTRY (editor->entry)));
+        editable = GTK_EDITABLE (entry);
+        text = gtk_editable_get_text (editable);
+        text = g_strdup (text);
         text = g_strstrip (text);
 
         nautilus_query_set_text (editor->query, text);
@@ -713,6 +720,7 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
                                  NautilusQuery       *query)
 {
     g_autofree char *text = NULL;
+    GtkEditable *editable;
     g_autofree char *current_text = NULL;
 
     g_return_if_fail (NAUTILUS_IS_QUERY_EDITOR (self));
@@ -729,7 +737,9 @@ nautilus_query_editor_set_query (NautilusQueryEditor *self,
 
     self->change_frozen = TRUE;
 
-    current_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (self->entry)));
+    editable = GTK_EDITABLE (self->entry);
+    current_text = gtk_editable_get_text (editable);
+    current_text = g_strdup (current_text);
     current_text = g_strstrip (current_text);
     if (!g_str_equal (current_text, text))
     {

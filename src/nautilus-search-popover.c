@@ -156,14 +156,21 @@ static void
 date_entry_activate (GtkEntry              *entry,
                      NautilusSearchPopover *popover)
 {
-    if (gtk_entry_get_text_length (entry) > 0)
+    guint16 text_length;
+
+    text_length = gtk_entry_get_text_length (entry);
+    if (text_length > 0)
     {
+        GtkEditable *editable;
+        const char *text;
+        GDate *date;
         GDateTime *now;
         GDateTime *date_time;
-        GDate *date;
 
+        editable = GTK_EDITABLE (entry);
+        text = gtk_editable_get_text (editable);
         date = g_date_new ();
-        g_date_set_parse (date, gtk_entry_get_text (entry));
+        g_date_set_parse (date, text);
 
         /* Invalid date silently does nothing */
         if (!g_date_valid (date))

@@ -119,10 +119,15 @@ static gchar *
 real_get_new_name (NautilusFileNameWidgetController *self)
 {
     NautilusFileNameWidgetControllerPrivate *priv;
+    GtkEditable *editable;
+    const char *text;
 
     priv = nautilus_file_name_widget_controller_get_instance_private (self);
+    editable = GTK_EDITABLE (priv->name_entry);
+    text = gtk_editable_get_text (editable);
+    text = g_strdup (text);
 
-    return g_strstrip (g_strdup (gtk_entry_get_text (GTK_ENTRY (priv->name_entry))));
+    return g_strstrip (text);
 }
 
 static gboolean

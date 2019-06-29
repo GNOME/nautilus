@@ -216,12 +216,15 @@ name_entry_on_f2_pressed (GtkWidget                           *widget,
     }
     else
     {
+        GtkEditable *editable;
+        const char *text;
         gint start_offset;
         gint end_offset;
 
+        editable = GTK_EDITABLE (widget);
+        text = gtk_editable_get_text (editable);
         /* Select the name part without the file extension */
-        eel_filename_get_rename_region (gtk_entry_get_text (GTK_ENTRY (widget)),
-                                        &start_offset, &end_offset);
+        eel_filename_get_rename_region (text, &start_offset, &end_offset);
         gtk_editable_select_region (GTK_EDITABLE (widget),
                                     start_offset, end_offset);
     }

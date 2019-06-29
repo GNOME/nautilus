@@ -425,6 +425,8 @@ split_entry_text (NautilusBatchRenameDialog *self,
 static GList *
 batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
 {
+    GtkEditable *editable;
+    const char *text;
     GList *result = NULL;
     GList *selection;
     GList *text_chunks;
@@ -436,14 +438,20 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
-        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
+        editable = GTK_EDITABLE (dialog->find_entry);
+        text = gtk_editable_get_text (editable);
+        entry_text = g_strdup (text);
     }
     else
     {
-        entry_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->name_entry)));
+        editable = GTK_EDITABLE (dialog->name_entry);
+        text = gtk_editable_get_text (editable);
+        entry_text = g_strdup (text);
     }
 
-    replace_text = g_strdup (gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry)));
+    editable = GTK_EDITABLE (dialog->replace_entry);
+    text = gtk_editable_get_text (editable);
+    replace_text = g_strdup (text);
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
@@ -956,8 +964,12 @@ update_listbox (NautilusBatchRenameDialog *dialog)
         }
         else
         {
-            new_name = batch_rename_replace_label_text (old_name,
-                                                        gtk_entry_get_text (GTK_ENTRY (dialog->find_entry)));
+            GtkEditable *editable;
+            const char *text;
+
+            editable = GTK_EDITABLE (dialog->find_entry);
+            text = gtk_editable_get_text (editable);
+            new_name = batch_rename_replace_label_text (old_name, text);
             gtk_label_set_markup (GTK_LABEL (label), new_name->str);
 
             g_string_free (new_name, TRUE);
@@ -1353,11 +1365,17 @@ have_unallowed_character (NautilusBatchRenameDialog *dialog)
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_FORMAT)
     {
-        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->name_entry));
+        GtkEditable *editable;
+
+        editable = GTK_EDITABLE (dialog->name_entry);
+        entry_text = gtk_editable_get_text (editable);
     }
     else
     {
-        entry_text = gtk_entry_get_text (GTK_ENTRY (dialog->replace_entry));
+        GtkEditable *editable;
+
+        editable = GTK_EDITABLE (dialog->replace_entry);
+        entry_text = gtk_editable_get_text (editable);
     }
 
     if (strstr (entry_text, "/") != NULL)

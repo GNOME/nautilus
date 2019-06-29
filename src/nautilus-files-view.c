@@ -1662,10 +1662,14 @@ pattern_select_response_cb (GtkWidget *dialog,
     {
         case GTK_RESPONSE_OK:
         {
+            GtkEditable *editable;
+            const char *text;
+
             entry = g_object_get_data (G_OBJECT (dialog), "entry");
+            editable = GTK_EDITABLE (entry);
+            text = gtk_editable_get_text (editable);
             directory = nautilus_files_view_get_model (view);
-            selection = nautilus_directory_match_pattern (directory,
-                                                          gtk_entry_get_text (GTK_ENTRY (entry)));
+            selection = nautilus_directory_match_pattern (directory, text);
 
             if (selection)
             {

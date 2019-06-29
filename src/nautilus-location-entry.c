@@ -133,6 +133,7 @@ nautilus_location_entry_set_secondary_action (NautilusLocationEntry       *self,
 static void
 nautilus_location_entry_update_action (NautilusLocationEntry *self)
 {
+    GtkEditable *editable;
     const char *current_text;
     g_autoptr (GFile) location = NULL;
 
@@ -143,7 +144,8 @@ nautilus_location_entry_update_action (NautilusLocationEntry *self)
         return;
     }
 
-    current_text = gtk_entry_get_text (GTK_ENTRY (self));
+    editable = GTK_EDITABLE (self);
+    current_text = gtk_editable_get_text (editable);
     location = g_file_parse_name (current_text);
 
     if (g_file_equal (self->last_location, location))
@@ -566,11 +568,13 @@ static void
 on_entry_activate (GtkEntry *entry,
                    gpointer  user_data)
 {
+    GtkEditable *editable;
     g_autofree char *text = NULL;
     g_autofree char *uri_scheme = NULL;
     NautilusLocationEntry *self;
 
-    text = gtk_entry_get_text (entry);
+    editable = GTK_EDITABLE (entry);
+    text = gtk_editable_get_text (editable);
     text = g_strdup (text);
     text = g_strchug (text);
     text = g_strchomp (text);
