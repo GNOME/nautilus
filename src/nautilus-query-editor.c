@@ -314,7 +314,6 @@ static void
 create_query (NautilusQueryEditor *editor)
 {
     NautilusQuery *query;
-    g_autoptr (NautilusFile) file = NULL;
     gboolean fts_enabled;
 
     g_return_if_fail (editor->query == NULL);
@@ -326,7 +325,6 @@ create_query (NautilusQueryEditor *editor)
         return;
     }
 
-    file = nautilus_file_get (editor->location);
     query = nautilus_query_new ();
 
     nautilus_query_set_search_content (query, fts_enabled);
