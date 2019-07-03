@@ -31,11 +31,18 @@
 #include <eel/eel-vfs-extensions.h>
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <sys/time.h>
+
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
+
+#ifdef GDK_WINDOWING_X11
+#include <gdk/gdkx.h>
+#endif
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
@@ -134,6 +141,9 @@ struct _NautilusWindow
 
     /* focus widget before the location bar has been shown temporarily */
     GtkWidget *last_focus_widget;
+
+    /* Handle when exported */
+    gchar *export_handle;
 
     guint sidebar_width_handler_id;
     guint bookmarks_id;
@@ -1214,6 +1224,19 @@ action_restore_tab (GSimpleAction *action,
     free_restore_tab_data (data, NULL);
 }
 
+static guint
+get_window_xid (NautilusWindow *window)
+{
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+        return (guint) gdk_x11_window_get_xid (gdk_window);
+    }
+#endif
+    return 0;
+}
+
 static void
 action_format (GSimpleAction *action,
                GVariant      *variant,
@@ -1222,12 +1245,10 @@ action_format (GSimpleAction *action,
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
     GAppInfo *app_info;
     gchar *cmdline, *device_identifier, *xid_string;
-    gint xid;
 
     device_identifier = g_volume_get_identifier (window->selected_volume,
                                                  G_VOLUME_IDENTIFIER_KIND_UNIX_DEVICE);
-    xid = (gint) gdk_x11_window_get_xid (gtk_widget_get_window (GTK_WIDGET (window)));
-    xid_string = g_strdup_printf ("%d", xid);
+    xid_string = g_strdup_printf ("%x", get_window_xid (window));
 
     cmdline = g_strconcat ("gnome-disks ",
                            "--block-device ", device_identifier, " ",
@@ -2285,6 +2306,8 @@ nautilus_window_destroy (GtkWidget *object)
 
     g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
 
+    nautilus_window_unexport_handle (window);
+
     GTK_WIDGET_CLASS (nautilus_window_parent_class)->destroy (object);
 }
 
@@ -2522,6 +2545,101 @@ nautilus_window_sync_title (NautilusWindow     *window,
     }
 
     nautilus_notebook_sync_tab_label (NAUTILUS_NOTEBOOK (window->notebook), slot);
+}
+
+#ifdef GDK_WINDOWING_WAYLAND
+typedef struct
+{
+    NautilusWindow *window;
+    NautilusWindowHandleExported callback;
+    gpointer user_data;
+} WaylandWindowHandleExportedData;
+
+static void
+wayland_window_handle_exported (GdkWindow  *window,
+                                const char *wayland_handle_str,
+                                gpointer    user_data)
+{
+    WaylandWindowHandleExportedData *data = user_data;
+
+    data->window->export_handle = g_strdup_printf ("wayland:%s", wayland_handle_str);
+    data->callback (data->window, data->window->export_handle, 0, data->user_data);
+}
+#endif
+
+gboolean
+nautilus_window_export_handle (NautilusWindow          *window,
+                               NautilusWindowHandleExported callback,
+                               gpointer                 user_data)
+{
+    guint xid = get_window_xid (window);
+
+    if (window->export_handle != NULL)
+    {
+        callback (window, window->export_handle, xid, user_data);
+        return TRUE;
+    }
+
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        window->export_handle = g_strdup_printf ("x11:%x", xid);
+        callback (window, window->export_handle, xid, user_data);
+
+        return TRUE;
+    }
+#endif
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+        WaylandWindowHandleExportedData *data;
+
+        data = g_new0 (WaylandWindowHandleExportedData, 1);
+        data->window = window;
+        data->callback = callback;
+        data->user_data = user_data;
+
+        if (!gdk_wayland_window_export_handle (gdk_window,
+                                               wayland_window_handle_exported,
+                                               data,
+                                               g_free))
+        {
+            g_free (data);
+            return FALSE;
+        }
+        else
+        {
+            return TRUE;
+        }
+    }
+#endif
+
+    g_warning ("Couldn't export handle, unsupported windowing system");
+
+    return FALSE;
+}
+
+void
+nautilus_window_unexport_handle (NautilusWindow *window)
+{
+    if (window->export_handle == NULL)
+    {
+        return;
+    }
+
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
+    {
+        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+        if (gdk_window != NULL)
+        {
+            gdk_wayland_window_unexport_handle (gdk_window);
+        }
+    }
+#endif
+
+    g_clear_pointer (&window->export_handle, g_free);
 }
 
 /**
