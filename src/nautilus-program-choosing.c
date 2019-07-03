@@ -26,6 +26,7 @@
 #include "nautilus-global-preferences.h"
 #include "nautilus-icon-info.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-window.h"
 #include <eel/eel-vfs-extensions.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n.h>
@@ -34,7 +35,6 @@
 #include <stdlib.h>
 
 #include <gdk/gdk.h>
-#include <gdk/gdkx.h>
 
 static void
 add_file_to_recent (NautilusFile *file,
@@ -492,105 +492,13 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
  * nor returns a useful value.
  */
 
-#ifdef GDK_WINDOWING_WAYLAND
-#include <gdk/gdkwayland.h>
-#endif
-
-typedef void (*GtkWindowHandleExported) (GtkWindow  *window,
-                                         const char *handle,
-                                         gpointer    user_data);
-
-#ifdef GDK_WINDOWING_WAYLAND
-typedef struct
-{
-    GtkWindow *window;
-    GtkWindowHandleExported callback;
-    gpointer user_data;
-} WaylandWindowHandleExportedData;
-
-static void
-wayland_window_handle_exported (GdkWindow  *window,
-                                const char *wayland_handle_str,
-                                gpointer    user_data)
-{
-    WaylandWindowHandleExportedData *data = user_data;
-    char *handle_str;
-
-    handle_str = g_strdup_printf ("wayland:%s", wayland_handle_str);
-    data->callback (data->window, handle_str, data->user_data);
-    g_free (handle_str);
-}
-#endif
-
-static gboolean
-window_export_handle (GtkWindow               *window,
-                      GtkWindowHandleExported  callback,
-                      gpointer                 user_data)
-{
-#ifdef GDK_WINDOWING_X11
-    if (GDK_IS_X11_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        char *handle_str;
-        guint32 xid = (guint32) gdk_x11_window_get_xid (gdk_window);
-
-        handle_str = g_strdup_printf ("x11:%x", xid);
-        callback (window, handle_str, user_data);
-
-        return TRUE;
-    }
-#endif
-#ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-        WaylandWindowHandleExportedData *data;
-
-        data = g_new0 (WaylandWindowHandleExportedData, 1);
-        data->window = window;
-        data->callback = callback;
-        data->user_data = user_data;
-
-        if (!gdk_wayland_window_export_handle (gdk_window,
-                                               wayland_window_handle_exported,
-                                               data,
-                                               g_free))
-        {
-            g_free (data);
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-#endif
-
-    g_warning ("Couldn't export handle, unsupported windowing system");
-
-    return FALSE;
-}
-
-static void
-gtk_window_unexport_handle (GtkWindow *window)
-{
-#ifdef GDK_WINDOWING_WAYLAND
-    if (GDK_IS_WAYLAND_DISPLAY (gtk_widget_get_display (GTK_WIDGET (window))))
-    {
-        GdkWindow *gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
-
-        gdk_wayland_window_unexport_handle (gdk_window);
-    }
-#endif
-}
-
 static void
 on_launch_default_for_uri (GObject      *source,
                            GAsyncResult *result,
                            gpointer      data)
 {
     GTask *task;
-    GtkWindow *window;
+    NautilusWindow *window;
     gboolean success;
     GError *error = NULL;
 
@@ -601,7 +509,7 @@ on_launch_default_for_uri (GObject      *source,
 
     if (window)
     {
-        gtk_window_unexport_handle (window);
+        nautilus_window_unexport_handle (window);
     }
 
     if (success)
@@ -613,13 +521,14 @@ on_launch_default_for_uri (GObject      *source,
         g_task_return_error (task, error);
     }
 
-    /* Reffed in the call to window_export_handle */
+    /* Reffed in the call to nautilus_window_export_handle */
     g_object_unref (task);
 }
 
 static void
-on_window_handle_export (GtkWindow  *window,
+on_window_handle_export (NautilusWindow  *window,
                          const char *handle_str,
+                         guint       xid,
                          gpointer    user_data)
 {
     GTask *task = user_data;
@@ -688,9 +597,9 @@ nautilus_launch_default_for_uri_async  (const char         *uri,
     {
         gboolean handle_exported;
 
-        handle_exported = window_export_handle (parent_window,
-                                                on_window_handle_export,
-                                                g_object_ref (task));
+        handle_exported = nautilus_window_export_handle (NAUTILUS_WINDOW (parent_window),
+                                                         on_window_handle_export,
+                                                         g_object_ref (task));
 
         if (handle_exported)
         {
