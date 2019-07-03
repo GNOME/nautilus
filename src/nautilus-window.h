@@ -40,6 +40,11 @@ typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GError *error,
                                                  gpointer user_data);
 
+typedef void (* NautilusWindowHandleExported) (NautilusWindow *window,
+                                               const char *handle,
+                                               guint xid,
+                                               gpointer user_data);
+
 /* window geometry */
 /* Min values are very small, and a Nautilus window at this tiny size is *almost*
  * completely unusable. However, if all the extra bits (sidebar, location bar, etc)
@@ -107,5 +112,10 @@ void nautilus_window_search (NautilusWindow *window,
 void nautilus_window_initialize_slot (NautilusWindow          *window,
                                       NautilusWindowSlot      *slot,
                                       NautilusWindowOpenFlags  flags);
+
+gboolean nautilus_window_export_handle (NautilusWindow *window,
+                                        NautilusWindowHandleExported callback,
+                                        gpointer user_data);
+void nautilus_window_unexport_handle (NautilusWindow *window);
 
 G_END_DECLS
