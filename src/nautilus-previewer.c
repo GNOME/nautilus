@@ -30,67 +30,48 @@
 #include <gio/gio.h>
 
 #define PREVIEWER_DBUS_NAME "org.gnome.NautilusPreviewer"
-#define PREVIEWER_DBUS_IFACE "org.gnome.NautilusPreviewer"
+#define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
 static void
-previewer_show_file_ready_cb (GObject      *source,
-                              GAsyncResult *res,
-                              gpointer      user_data)
+previewer2_method_ready_cb (GObject      *source,
+                            GAsyncResult *res,
+                            gpointer      user_data)
 {
-    GError *error = NULL;
+    GDBusConnection *connection = G_DBUS_CONNECTION (source);
+    g_autoptr(GError) error = NULL;
 
-    g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
-                                   res, &error);
+    g_dbus_connection_call_finish (connection, res, &error);
 
     if (error != NULL)
     {
-        DEBUG ("Unable to call ShowFile on NautilusPreviewer: %s",
-               error->message);
-        g_error_free (error);
-    }
-}
-
-static void
-previewer_close_ready_cb (GObject      *source,
-                          GAsyncResult *res,
-                          gpointer      user_data)
-{
-    GError *error = NULL;
-
-    g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
-                                   res, &error);
-
-    if (error != NULL)
-    {
-        DEBUG ("Unable to call Close on NautilusPreviewer: %s",
-               error->message);
-        g_error_free (error);
+        DEBUG ("Unable to call method on NautilusPreviewer: %s", error->message);
     }
 }
 
 void
 nautilus_previewer_call_show_file (const gchar *uri,
+                                   const gchar *window_handle,
                                    guint        xid,
                                    gboolean     close_if_already_visible)
 {
     GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
     GVariant *variant;
 
-    variant = g_variant_new ("(sib)",
-                             uri, xid, close_if_already_visible);
+    variant = g_variant_new ("(ssb)",
+                             uri, window_handle, close_if_already_visible);
 
     g_dbus_connection_call (connection,
                             PREVIEWER_DBUS_NAME,
                             PREVIEWER_DBUS_PATH,
-                            PREVIEWER_DBUS_IFACE,
+                            PREVIEWER2_DBUS_IFACE,
                             "ShowFile",
                             variant,
                             NULL,
                             G_DBUS_CALL_FLAGS_NONE,
                             -1,
                             NULL,
-                            previewer_show_file_ready_cb,
+                            previewer2_method_ready_cb,
                             NULL);
 }
 
@@ -103,13 +84,13 @@ nautilus_previewer_call_close (void)
     g_dbus_connection_call (connection,
                             PREVIEWER_DBUS_NAME,
                             PREVIEWER_DBUS_PATH,
-                            PREVIEWER_DBUS_IFACE,
+                            PREVIEWER2_DBUS_IFACE,
                             "Close",
                             NULL,
                             NULL,
                             G_DBUS_CALL_FLAGS_NO_AUTO_START,
                             -1,
                             NULL,
-                            previewer_close_ready_cb,
+                            previewer2_method_ready_cb,
                             NULL);
 }
