@@ -2864,6 +2864,7 @@ nautilus_window_show_about_dialog (NautilusWindow *window)
                            "program-name", program_name,
                            "version", VERSION,
                            "comments", _("Access and organize your files"),
+                           "website", "https://wiki.gnome.org/action/show/Apps/Files",
                            "copyright", "© 1999–2018 The Files Authors",
                            "license-type", GTK_LICENSE_GPL_3_0,
                            "artists", artists,
