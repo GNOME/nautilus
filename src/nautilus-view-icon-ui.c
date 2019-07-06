@@ -153,12 +153,33 @@ on_child_activated (GtkFlowBox      *flow_box,
     NautilusViewItemModel *item_model;
     NautilusFile *file;
     g_autoptr (GList) list = NULL;
+    GdkEvent *event;
+    guint keyval;
+    gboolean is_preview = FALSE;
 
     item_model = nautilus_view_icon_item_ui_get_model (NAUTILUS_VIEW_ICON_ITEM_UI (child));
     file = nautilus_view_item_model_get_file (item_model);
     list = g_list_append (list, file);
 
-    nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (self->controller), list, 0, TRUE);
+    event = gtk_get_current_event ();
+    if (event && gdk_event_get_keyval (event, &keyval))
+    {
+        if (keyval == GDK_KEY_space)
+        {
+            is_preview = TRUE;
+        }
+    }
+
+    if (is_preview)
+    {
+        nautilus_files_view_preview_files (NAUTILUS_FILES_VIEW (self->controller), list, NULL);
+    }
+    else
+    {
+        nautilus_files_view_activate_files (NAUTILUS_FILES_VIEW (self->controller), list, 0, TRUE);
+    }
+
+    g_clear_pointer (&event, gdk_event_free);
 }
 
 static void
