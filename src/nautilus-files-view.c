@@ -3498,6 +3498,7 @@ static void
 nautilus_files_view_send_selection_change (NautilusFilesView *view)
 {
     g_signal_emit (view, signals[SELECTION_CHANGED], 0);
+    g_object_notify (G_OBJECT (view), "selection");
 }
 
 static void
