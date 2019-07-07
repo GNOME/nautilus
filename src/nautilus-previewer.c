@@ -38,6 +38,43 @@
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
+static GDBusProxy *previewer_v1_proxy = NULL;
+static GDBusProxy *previewer_v2_proxy = NULL;
+
+static void
+ensure_previewer_v1_proxy (void)
+{
+    if (previewer_v1_proxy == NULL)
+    {
+        GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+        previewer_v1_proxy = g_dbus_proxy_new_sync (connection,
+                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                                                    NULL,
+                                                    PREVIEWER_DBUS_NAME,
+                                                    PREVIEWER_DBUS_PATH,
+                                                    PREVIEWER_DBUS_IFACE,
+                                                    NULL,
+                                                    NULL);
+    }
+}
+
+static void
+ensure_previewer_v2_proxy (void)
+{
+    if (previewer_v2_proxy == NULL)
+    {
+        GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+        previewer_v2_proxy = g_dbus_proxy_new_sync (connection,
+                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                                                    NULL,
+                                                    PREVIEWER_DBUS_NAME,
+                                                    PREVIEWER_DBUS_PATH,
+                                                    PREVIEWER2_DBUS_IFACE,
+                                                    NULL,
+                                                    NULL);
+    }
+}
+
 typedef struct {
     GDBusCallFlags flags;
     gchar *method_name;
@@ -63,8 +100,7 @@ previewer_method_ready_cb (GObject      *source,
     MethodCallData *data = user_data;
     GError *error = NULL;
 
-    g_dbus_connection_call_finish (G_DBUS_CONNECTION (source),
-                                   res, &error);
+    g_dbus_proxy_call_finish (G_DBUS_PROXY (source), res, &error);
 
     if (error != NULL)
     {
@@ -82,10 +118,9 @@ previewer2_method_ready_cb (GObject      *source,
                             gpointer      user_data)
 {
     MethodCallData *data = user_data;
-    GDBusConnection *connection = G_DBUS_CONNECTION (source);
     GError *error = NULL;
 
-    g_dbus_connection_call_finish (connection, res, &error);
+    g_dbus_proxy_call_finish (G_DBUS_PROXY (source), res, &error);
 
     if (error == NULL)
     {
@@ -97,18 +132,15 @@ previewer2_method_ready_cb (GObject      *source,
            data->method_name, error->message);
     g_clear_error (&error);
 
-    g_dbus_connection_call (connection,
-                            PREVIEWER_DBUS_NAME,
-                            PREVIEWER_DBUS_PATH,
-                            PREVIEWER_DBUS_IFACE,
-                            data->method_name,
-                            data->v1_variant,
-                            NULL,
-                            data->flags,
-                            -1,
-                            NULL,
-                            previewer_method_ready_cb,
-                            data);
+    ensure_previewer_v1_proxy ();
+    g_dbus_proxy_call (previewer_v1_proxy,
+                       data->method_name,
+                       data->v1_variant,
+                       data->flags,
+                       -1,
+                       NULL,
+                       previewer_method_ready_cb,
+                       data);
 }
 
 static void
@@ -117,7 +149,6 @@ call_method_on_interfaces (const gchar *method_name,
                            GVariant *v1_variant,
                            GDBusCallFlags flags)
 {
-    GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
     MethodCallData *data = g_new0 (MethodCallData, 1);
 
     data->flags = flags;
@@ -128,18 +159,15 @@ call_method_on_interfaces (const gchar *method_name,
     }
 
     /* Try the v2 interface first */
-    g_dbus_connection_call (connection,
-                            PREVIEWER_DBUS_NAME,
-                            PREVIEWER_DBUS_PATH,
-                            PREVIEWER2_DBUS_IFACE,
-                            method_name,
-                            v2_variant,
-                            NULL,
-                            flags,
-                            -1,
-                            NULL,
-                            previewer2_method_ready_cb,
-                            data);
+    ensure_previewer_v2_proxy ();
+    g_dbus_proxy_call (previewer_v2_proxy,
+                       method_name,
+                       v2_variant,
+                       flags,
+                       -1,
+                       NULL,
+                       previewer2_method_ready_cb,
+                       data);
 }
 
 void
