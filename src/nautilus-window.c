@@ -160,6 +160,7 @@ enum
 {
     SLOT_ADDED,
     SLOT_REMOVED,
+    ACTIVE_SELECTION_CHANGED,
     LAST_SIGNAL
 };
 
@@ -467,6 +468,18 @@ on_slot_location_changed (NautilusWindowSlot *slot,
     }
 }
 
+
+static void
+on_slot_selection_changed (NautilusWindowSlot *slot,
+                           GParamSpec         *pspec,
+                           NautilusWindow     *window)
+{
+    if (nautilus_window_get_active_slot (window) == slot)
+    {
+        g_signal_emit (window, signals[ACTIVE_SELECTION_CHANGED], 0);
+    }
+}
+
 static void
 notebook_switch_page_cb (GtkNotebook    *notebook,
                          GtkWidget      *page,
@@ -493,6 +506,8 @@ connect_slot (NautilusWindow     *window,
 {
     g_signal_connect (slot, "notify::location",
                       G_CALLBACK (on_slot_location_changed), window);
+    g_signal_connect (slot, "notify::selection",
+                      G_CALLBACK (on_slot_selection_changed), window);
 }
 
 static void
@@ -2462,6 +2477,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (window->toolbar), new_slot);
 
         on_location_changed (window);
+        g_signal_emit (window, signals[ACTIVE_SELECTION_CHANGED], 0);
     }
 }
 
@@ -2861,6 +2877,13 @@ nautilus_window_class_init (NautilusWindowClass *class)
                       NULL, NULL,
                       g_cclosure_marshal_VOID__OBJECT,
                       G_TYPE_NONE, 1, NAUTILUS_TYPE_WINDOW_SLOT);
+    signals[ACTIVE_SELECTION_CHANGED] =
+        g_signal_new ("active-selection-changed",
+                      G_TYPE_FROM_CLASS (class),
+                      G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                      0,
+                      NULL, NULL, NULL,
+                      G_TYPE_NONE, 0);
 
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_MOUSE_BACK_BUTTON,
