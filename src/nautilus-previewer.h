@@ -22,6 +22,7 @@
 
 #pragma once
 
+#include <gio/gio.h>
 #include <glib.h>
 
 G_BEGIN_DECLS
@@ -31,5 +32,9 @@ void nautilus_previewer_call_show_file (const gchar *uri,
                                         guint        xid,
 					gboolean     close_if_already_visible);
 void nautilus_previewer_call_close     (void);
+
+guint nautilus_previewer_connect_selection_event (GDBusConnection *connection);
+void  nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
+                                                     guint            event_id);
 
 G_END_DECLS
