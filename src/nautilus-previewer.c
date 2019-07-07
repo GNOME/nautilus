@@ -37,15 +37,34 @@
 #define PREVIEWER2_DBUS_IFACE "org.gnome.NautilusPreviewer2"
 #define PREVIEWER_DBUS_PATH "/org/gnome/NautilusPreviewer"
 
+static GDBusProxy *previewer_v2_proxy = NULL;
+
+static void
+ensure_previewer_v2_proxy (void)
+{
+    if (previewer_v2_proxy == NULL)
+    {
+        GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+        previewer_v2_proxy = g_dbus_proxy_new_sync (connection,
+                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                                                    NULL,
+                                                    PREVIEWER_DBUS_NAME,
+                                                    PREVIEWER_DBUS_PATH,
+                                                    PREVIEWER2_DBUS_IFACE,
+                                                    NULL,
+                                                    NULL);
+    }
+}
+
 static void
 previewer2_method_ready_cb (GObject      *source,
                             GAsyncResult *res,
                             gpointer      user_data)
 {
-    GDBusConnection *connection = G_DBUS_CONNECTION (source);
+    GDBusProxy *proxy = G_DBUS_PROXY (source);
     g_autoptr(GError) error = NULL;
 
-    g_dbus_connection_call_finish (connection, res, &error);
+    g_dbus_proxy_call_finish (proxy, res, &error);
 
     if (error != NULL)
     {
@@ -59,44 +78,36 @@ nautilus_previewer_call_show_file (const gchar *uri,
                                    guint        xid,
                                    gboolean     close_if_already_visible)
 {
-    GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
     GVariant *variant;
 
     variant = g_variant_new ("(ssb)",
                              uri, window_handle, close_if_already_visible);
 
-    g_dbus_connection_call (connection,
-                            PREVIEWER_DBUS_NAME,
-                            PREVIEWER_DBUS_PATH,
-                            PREVIEWER2_DBUS_IFACE,
-                            "ShowFile",
-                            variant,
-                            NULL,
-                            G_DBUS_CALL_FLAGS_NONE,
-                            -1,
-                            NULL,
-                            previewer2_method_ready_cb,
-                            NULL);
+    ensure_previewer_v2_proxy ();
+    g_dbus_proxy_call (previewer_v2_proxy,
+                       "ShowFile",
+                       variant,
+                       G_DBUS_CALL_FLAGS_NONE,
+                       -1,
+                       NULL,
+                       previewer2_method_ready_cb,
+                       NULL);
 }
 
 void
 nautilus_previewer_call_close (void)
 {
-    GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
+    ensure_previewer_v2_proxy ();
 
     /* don't autostart the previewer if it's not running */
-    g_dbus_connection_call (connection,
-                            PREVIEWER_DBUS_NAME,
-                            PREVIEWER_DBUS_PATH,
-                            PREVIEWER2_DBUS_IFACE,
-                            "Close",
-                            NULL,
-                            NULL,
-                            G_DBUS_CALL_FLAGS_NO_AUTO_START,
-                            -1,
-                            NULL,
-                            previewer2_method_ready_cb,
-                            NULL);
+    g_dbus_proxy_call (previewer_v2_proxy,
+                       "Close",
+                       NULL,
+                       G_DBUS_CALL_FLAGS_NO_AUTO_START,
+                       -1,
+                       NULL,
+                       previewer2_method_ready_cb,
+                       NULL);
 }
 
 static void
