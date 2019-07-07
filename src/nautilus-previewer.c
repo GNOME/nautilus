@@ -186,3 +186,22 @@ nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
 {
     g_dbus_connection_signal_unsubscribe (connection, event_id);
 }
+
+gboolean
+nautilus_previewer_is_visible (void)
+{
+    g_autoptr(GVariant) variant = NULL;
+
+    if (!ensure_previewer_v2_proxy ())
+    {
+        return FALSE;
+    }
+
+    variant = g_dbus_proxy_get_cached_property (previewer_v2_proxy, "Visible");
+    if (variant)
+    {
+        return g_variant_get_boolean (variant);
+    }
+
+    return FALSE;
+}
