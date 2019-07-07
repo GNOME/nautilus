@@ -84,6 +84,8 @@ typedef struct
 
     NautilusTagManager *tag_manager;
     GCancellable *tag_manager_cancellable;
+
+    guint previewer_selection_id;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -570,6 +572,12 @@ nautilus_application_finalize (GObject *object)
 
     self = NAUTILUS_APPLICATION (object);
     priv = nautilus_application_get_instance_private (self);
+
+    if (priv->previewer_selection_id != 0)
+    {
+        nautilus_previewer_disconnect_selection_event (priv->previewer_selection_id);
+        priv->previewer_selection_id = 0;
+    }
 
     g_clear_object (&priv->progress_handler);
     g_clear_object (&priv->bookmark_list);
@@ -1283,6 +1291,7 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     /* Initialize the UI handler singleton for file operations */
     priv->progress_handler = nautilus_progress_persistence_handler_new (G_OBJECT (self));
+    priv->previewer_selection_id = nautilus_previewer_connect_selection_event ();
 
     /* Check the user's .nautilus directories and post warnings
      * if there are problems.
