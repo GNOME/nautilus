@@ -3985,6 +3985,65 @@ nautilus_list_view_reveal_for_selection_context_menu (NautilusFilesView *view)
 }
 
 static void
+nautilus_list_view_preview_selection_event (NautilusFilesView *view,
+                                            GtkDirectionType   direction)
+{
+    NautilusListView *list_view;
+    GtkTreeView *tree_view;
+    GtkTreeSelection *selection;
+    GList *list;
+    GtkTreeIter iter;
+    GtkTreePath *path;
+    GtkTreeModel *tree_model;
+    gboolean moved;
+
+    /* We only support up and down movements for the list view */
+    if (direction != GTK_DIR_UP && direction != GTK_DIR_DOWN)
+    {
+        return;
+    }
+
+    list_view = NAUTILUS_LIST_VIEW (view);
+    tree_view = list_view->details->tree_view;
+    selection = gtk_tree_view_get_selection (tree_view);
+    list = gtk_tree_selection_get_selected_rows (selection, &tree_model);
+
+    if (list == NULL)
+    {
+        return;
+    }
+
+    /* Advance the first selected item, since that's what we use for
+     * the previewer */
+    path = list->data;
+    moved = FALSE;
+    if (gtk_tree_model_get_iter (tree_model, &iter, path))
+    {
+        if (direction == GTK_DIR_UP)
+        {
+            moved = gtk_tree_model_iter_previous (tree_model, &iter);
+        }
+        else
+        {
+            moved = gtk_tree_model_iter_next (tree_model, &iter);
+        }
+    }
+
+    if (moved)
+    {
+        g_signal_handlers_block_by_func (selection, list_selection_changed_callback, view);
+
+        gtk_tree_selection_unselect_all (selection);
+        gtk_tree_selection_select_iter (selection, &iter);
+
+        g_signal_handlers_unblock_by_func (selection, list_selection_changed_callback, view);
+        nautilus_files_view_notify_selection_changed (view);
+    }
+
+    g_list_free_full (list, (GDestroyNotify) gtk_tree_path_free);
+}
+
+static void
 nautilus_list_view_class_init (NautilusListViewClass *class)
 {
     NautilusFilesViewClass *nautilus_files_view_class;
@@ -4024,6 +4083,7 @@ nautilus_list_view_class_init (NautilusListViewClass *class)
     nautilus_files_view_class->scroll_to_file = list_view_scroll_to_file;
     nautilus_files_view_class->compute_rename_popover_pointing_to = nautilus_list_view_compute_rename_popover_pointing_to;
     nautilus_files_view_class->reveal_for_selection_context_menu = nautilus_list_view_reveal_for_selection_context_menu;
+    nautilus_files_view_class->preview_selection_event = nautilus_list_view_preview_selection_event;
 }
 
 static void

@@ -24,6 +24,10 @@
 
 #include "nautilus-previewer.h"
 
+#include "nautilus-files-view.h"
+#include "nautilus-window.h"
+#include "nautilus-window-slot.h"
+
 #define DEBUG_FLAG NAUTILUS_DEBUG_PREVIEWER
 #include "nautilus-debug.h"
 
@@ -93,4 +97,68 @@ nautilus_previewer_call_close (void)
                             NULL,
                             previewer2_method_ready_cb,
                             NULL);
+}
+
+static void
+previewer_selection_event (GDBusConnection *connection,
+                           const gchar *sender_name,
+                           const gchar *object_path,
+                           const gchar *interface_name,
+                           const gchar *signal_name,
+                           GVariant *parameters,
+                           gpointer user_data)
+{
+    GApplication *application = g_application_get_default ();
+    GList *l, *windows = gtk_application_get_windows (GTK_APPLICATION (application));
+    NautilusWindow *window = NULL;
+    NautilusWindowSlot *slot;
+    NautilusView *view;
+    GtkDirectionType direction;
+
+    for (l = windows; l != NULL; l = l->next)
+    {
+        if (NAUTILUS_IS_WINDOW (l->data))
+        {
+            window = l->data;
+            break;
+        }
+    }
+
+    if (window == NULL)
+    {
+        return;
+    }
+
+    slot = nautilus_window_get_active_slot (window);
+    view = nautilus_window_slot_get_current_view (slot);
+
+    if (!NAUTILUS_IS_FILES_VIEW (view))
+    {
+        return;
+    }
+
+    g_variant_get (parameters, "(u)", &direction);
+    nautilus_files_view_preview_selection_event (NAUTILUS_FILES_VIEW (view), direction);
+}
+
+guint
+nautilus_previewer_connect_selection_event (GDBusConnection *connection)
+{
+    return g_dbus_connection_signal_subscribe (connection,
+                                               PREVIEWER_DBUS_NAME,
+                                               PREVIEWER2_DBUS_IFACE,
+                                               "SelectionEvent",
+                                               PREVIEWER_DBUS_PATH,
+                                               NULL,
+                                               G_DBUS_SIGNAL_FLAGS_NONE,
+                                               previewer_selection_event,
+                                               NULL,
+                                               NULL);
+}
+
+void
+nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
+                                               guint            event_id)
+{
+    g_dbus_connection_signal_unsubscribe (connection, event_id);
 }
