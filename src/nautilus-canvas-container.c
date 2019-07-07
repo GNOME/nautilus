@@ -2869,6 +2869,28 @@ keyboard_up (NautilusCanvasContainer *container,
                         closest_in_90_degrees);
 }
 
+void
+nautilus_canvas_container_preview_selection_event (NautilusCanvasContainer *container,
+                                                   GtkDirectionType         direction)
+{
+    if (direction == GTK_DIR_UP)
+    {
+        keyboard_up (container, NULL);
+    }
+    else if (direction == GTK_DIR_DOWN)
+    {
+        keyboard_down (container, NULL);
+    }
+    else if (direction == GTK_DIR_LEFT)
+    {
+        keyboard_left (container, NULL);
+    }
+    else if (direction == GTK_DIR_RIGHT)
+    {
+        keyboard_right (container, NULL);
+    }
+}
+
 static void
 keyboard_space (NautilusCanvasContainer *container,
                 GdkEventKey             *event)
