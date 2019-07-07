@@ -84,6 +84,8 @@ typedef struct
 
     NautilusTagManager *tag_manager;
     GCancellable *tag_manager_cancellable;
+
+    guint previewer_selection_id;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -1339,6 +1341,8 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
+    priv->previewer_selection_id = nautilus_previewer_connect_selection_event (connection);
+
     return TRUE;
 }
 
@@ -1361,6 +1365,13 @@ nautilus_application_dbus_unregister (GApplication    *app,
     {
         nautilus_shell_search_provider_unregister (priv->search_provider);
         g_clear_object (&priv->search_provider);
+    }
+
+    if (priv->previewer_selection_id != 0)
+    {
+        nautilus_previewer_disconnect_selection_event (connection,
+                                                       priv->previewer_selection_id);
+        priv->previewer_selection_id = 0;
     }
 }
 

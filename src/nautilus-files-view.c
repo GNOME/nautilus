@@ -1258,6 +1258,13 @@ nautilus_files_view_preview_files (NautilusFilesView *view,
 }
 
 void
+nautilus_files_view_preview_selection_event (NautilusFilesView *view,
+                                             GtkDirectionType   direction)
+{
+    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->preview_selection_event (view, direction);
+}
+
+void
 nautilus_files_view_activate_selection (NautilusFilesView *view)
 {
     g_autolist (NautilusFile) selection = NULL;
