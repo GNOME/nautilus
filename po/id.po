@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-06-15 20:26+0000\n"
-"PO-Revision-Date: 2019-06-21 16:09+0700\n"
+"POT-Creation-Date: 2019-07-05 09:29+0000\n"
+"PO-Revision-Date: 2019-07-08 15:43+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -29,9 +29,15 @@ msgstr ""
 msgid "Run Software"
 msgstr "Jalankan Perangkat Lunak"
 
+#. “Files” is the generic application name and the suffix is
+#. * an arbitrary and deliberately unlocalized string only shown
+#. * in development builds.
+#.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
-msgid "Nautilus"
-msgstr "Nautilus"
+#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
+#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
+msgid "Files"
+msgstr "Berkas"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:6
 #: data/org.gnome.Nautilus.desktop.in.in:4
@@ -40,11 +46,11 @@ msgstr "Mengakses dan mengelola berkas"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:8
 msgid ""
-"Nautilus, also known as Files, is the default file manager of the GNOME "
+"Files, also known as Nautilus, is the default file manager of the GNOME "
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Nautilus, yang juga dikenal sebagai Berkas, adalah manajer berkas bawaan "
+"Berkas, yang juga dikenal sebagai Nautilus, adalah manajer berkas bawaan "
 "dari destop GNOME. Ini menyediakan cara terintegrasi dan sederhana untuk "
 "pengelolaan berkas-berkas Anda dan meramban sistem berkas Anda."
 
@@ -92,15 +98,6 @@ msgstr "Cari"
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "Lokasi Lain"
-
-#. “Files” is the generic application name and the suffix is
-#. * an arbitrary and deliberately unlocalized string only shown
-#. * in development builds.
-#.
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
-msgid "Files"
-msgstr "Berkas"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -4591,7 +4588,7 @@ msgstr "Mengakses dan mengelola berkas Anda"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2876
+#: src/nautilus-window.c:2877
 msgid "translator-credits"
 msgstr ""
 "Yohanes Nugroho <yohanes@opensource.or.id>, 2003.\n"
@@ -5788,6 +5785,9 @@ msgstr "Menyambung ke _Peladen"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Masukkan alamat peladen…"
+
+#~ msgid "Nautilus"
+#~ msgstr "Nautilus"
 
 #~ msgid "_Sidebar"
 #~ msgstr "Bilah _sisi"
