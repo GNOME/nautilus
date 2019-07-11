@@ -1084,6 +1084,8 @@ nautilus_application_init (NautilusApplication *self)
           NULL, NULL },
         { "no-default-window", 'n', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
           NULL, NULL },
+        { "no-desktop", '\0', G_OPTION_FLAG_HIDDEN, G_OPTION_ARG_NONE, NULL,
+          NULL, NULL },
 
         { NULL }
     };
