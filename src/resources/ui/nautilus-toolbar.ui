@@ -24,6 +24,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">New Window</property>
                 <property name="hexpand">True</property>
                 <property name="action_name">app.new-window</property>
                 <child>
@@ -45,6 +46,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">New Tab</property>
                 <property name="hexpand">True</property>
                 <property name="action_name">win.new-tab</property>
                 <child>
@@ -66,6 +68,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">New Folder</property>
                 <property name="hexpand">True</property>
                 <property name="action_name">view.new-folder</property>
                 <child>
@@ -127,6 +130,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Cut</property>
                 <property name="halign">center</property>
                 <property name="valign">center</property>
                 <property name="hexpand">True</property>
@@ -150,6 +154,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes" comments="Translators: This is a verb">Copy</property>
                 <property name="halign">center</property>
                 <property name="hexpand">True</property>
                 <property name="action_name">view.copy</property>
@@ -172,6 +177,7 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes">Paste</property>
                 <property name="halign">center</property>
                 <property name="hexpand">True</property>
                 <property name="action_name">view.paste</property>
@@ -670,9 +676,9 @@
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
                 <property name="receives_default">True</property>
+                <property name="tooltip_text" translatable="yes" comments="“View” is a noun">View options</property>
                 <property name="halign">start</property>
                 <property name="action_name">win.view-menu</property>
-                <property name="tooltip_text" translatable="yes" comments="“View” is a noun">View options</property>
                 <property name="popover">menu_popover</property>
                 <child>
                   <object class="GtkImage">
