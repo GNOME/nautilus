@@ -1246,6 +1246,7 @@ do_run_simple_dialog (gpointer _data)
             {
             }
             break;
+
             case BUTTON_STYLE_DESTRUCTIVE:
             {
                 gtk_style_context_add_class (gtk_widget_get_style_context (button),
