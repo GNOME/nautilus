@@ -7,9 +7,9 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-06-15 20:26+0000\n"
-"PO-Revision-Date: 2019-06-21 01:16+0200\n"
-"Last-Translator: gogo <trebelnik2@gmail.com>\n"
+"POT-Creation-Date: 2019-07-05 09:29+0000\n"
+"PO-Revision-Date: 2019-07-19 23:04+0200\n"
+"Last-Translator: gogo <linux.hr@protonmail.com>\n"
 "Language-Team: Croatian <hr@li.hr>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
@@ -24,9 +24,15 @@ msgstr ""
 msgid "Run Software"
 msgstr "Pokreni softver"
 
+#. “Files” is the generic application name and the suffix is
+#. * an arbitrary and deliberately unlocalized string only shown
+#. * in development builds.
+#.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
-msgid "Nautilus"
-msgstr "Nautilus"
+#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
+#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
+msgid "Files"
+msgstr "Datoteke"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:6
 #: data/org.gnome.Nautilus.desktop.in.in:4
@@ -35,11 +41,11 @@ msgstr "Pristupite i organizirajte datoteke"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:8
 msgid ""
-"Nautilus, also known as Files, is the default file manager of the GNOME "
+"Files, also known as Nautilus, is the default file manager of the GNOME "
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"Nautilus, isto tako poznat i kao Datoteke, je uobičajeni upravitelj datoteka "
+"Datoteke, isto tako poznat i kao Nautilus, je uobičajeni upravitelj datoteka "
 "za GNOME radno okruženje. Pruža jednostavan i integriran način upravljanja s "
 "vašim datotekama i pregledavanje vašeg datotečnog sustava."
 
@@ -86,15 +92,6 @@ msgstr "Pretraga"
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "Ostale lokacije"
-
-#. “Files” is the generic application name and the suffix is
-#. * an arbitrary and deliberately unlocalized string only shown
-#. * in development builds.
-#.
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
-msgid "Files"
-msgstr "Datoteke"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -4653,7 +4650,7 @@ msgstr "Pristupite svojim datotekama i organizirajte ih"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2876
+#: src/nautilus-window.c:2877
 msgid "translator-credits"
 msgstr ""
 "lokalizacija@linux.hr\n"
@@ -5853,6 +5850,9 @@ msgstr "Povezivanje s _poslužiteljem"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Upiši adresu poslužitelja…"
+
+#~ msgid "Nautilus"
+#~ msgstr "Nautilus"
 
 #~ msgid "List view"
 #~ msgstr "Zbijeni prikaz"
