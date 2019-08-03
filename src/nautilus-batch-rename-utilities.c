@@ -93,30 +93,40 @@ batch_rename_get_tag_text_representation (TagConstants tag_constants)
 
 static GString *
 batch_rename_replace (gchar *string,
-                      gchar *substring,
+                      gchar *pattern,
                       gchar *replacement)
 {
     GString *new_string;
     gchar **splitted_string;
     gint i, n_splits;
+    GRegex *regex;
 
     new_string = g_string_new ("");
 
-    if (substring == NULL || replacement == NULL)
+    if (pattern == NULL || replacement == NULL)
     {
         g_string_append (new_string, string);
 
         return new_string;
     }
 
-    if (g_utf8_strlen (substring, -1) == 0)
+    if (g_utf8_strlen (pattern, -1) == 0)
     {
         g_string_append (new_string, string);
 
         return new_string;
     }
 
-    splitted_string = g_strsplit (string, substring, -1);
+    regex = g_regex_new (pattern, 0, 0, NULL);
+
+    if (regex == NULL)
+    {
+        g_string_append (new_string, string);
+
+        return new_string;
+    }
+
+    splitted_string = g_regex_split (regex, string, 0);
     if (splitted_string == NULL)
     {
         g_string_append (new_string, string);
@@ -137,6 +147,7 @@ batch_rename_replace (gchar *string,
     }
 
     g_strfreev (splitted_string);
+    g_regex_unref (regex);
 
     return new_string;
 }
@@ -258,16 +269,21 @@ batch_rename_sort_lists_for_rename (GList    **selection,
 /* This function changes the background color of the replaced part of the name */
 GString *
 batch_rename_replace_label_text (gchar       *label,
-                                 const gchar *substring)
+                                 const gchar *pattern)
 {
     GString *new_label;
     gchar **splitted_string;
     gchar *token;
     gint i, n_splits;
 
+    GRegex *regex;
+    GMatchInfo* match_info;
+    GList *matched_patterns = NULL;
+    GList *matched_pattern_iter;
+
     new_label = g_string_new ("");
 
-    if (substring == NULL || g_strcmp0 (substring, "") == 0)
+    if (pattern == NULL || g_strcmp0 (pattern, "") == 0)
     {
         token = g_markup_escape_text (label, -1);
         new_label = g_string_append (new_label, token);
@@ -276,7 +292,19 @@ batch_rename_replace_label_text (gchar       *label,
         return new_label;
     }
 
-    splitted_string = g_strsplit (label, substring, -1);
+    regex = g_regex_new (pattern, 0, 0, NULL);
+
+    if (regex == NULL)
+    {
+        token = g_markup_escape_text (label, -1);
+        new_label = g_string_append (new_label, token);
+        g_free (token);
+
+        return new_label;
+    }
+
+    splitted_string = g_regex_split (regex, label, 0);
+
     if (splitted_string == NULL)
     {
         token = g_markup_escape_text (label, -1);
@@ -286,7 +314,25 @@ batch_rename_replace_label_text (gchar       *label,
         return new_label;
     }
 
+    if (g_regex_match (regex, label, 0, &match_info) == FALSE)
+    {
+        token = g_markup_escape_text (label, -1);
+        new_label = g_string_append (new_label, token);
+        g_free (token);
+
+        return new_label;
+    }
+
+    while (g_match_info_matches (match_info))
+    {
+        gchar *result = g_match_info_fetch (match_info, 0);
+        matched_patterns = g_list_append (matched_patterns, result);
+
+        g_match_info_next (match_info, NULL);
+    }
+
     n_splits = g_strv_length (splitted_string);
+    matched_pattern_iter = matched_patterns;
 
     for (i = 0; i < n_splits; i++)
     {
@@ -297,16 +343,23 @@ batch_rename_replace_label_text (gchar       *label,
 
         if (i != n_splits - 1)
         {
-            token = g_markup_escape_text (substring, -1);
+            token = g_markup_escape_text (matched_pattern_iter->data, -1);
             g_string_append_printf (new_label,
                                     "<span background=\'#f57900\' color='white'>%s</span>",
                                     token);
 
             g_free (token);
+            matched_pattern_iter = matched_pattern_iter->next;
         }
     }
 
     g_strfreev (splitted_string);
+    g_match_info_free (match_info);
+    g_regex_unref (regex);
+    if (matched_patterns != NULL)
+    {
+        g_list_free_full (matched_patterns, g_free);
+    }
 
     return new_label;
 }
