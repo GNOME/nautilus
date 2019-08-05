@@ -849,31 +849,6 @@ undo_manager_changed (NautilusToolbar *self)
 }
 
 static void
-on_notify_width_maximized (NautilusContainerMaxWidth *container,
-                           GParamSpec                *pspec,
-                           gpointer                   user_data)
-{
-    NautilusToolbar *self;
-    GtkStyleContext *context;
-    gboolean width_maximized;
-
-    self = NAUTILUS_TOOLBAR (user_data);
-    context = gtk_widget_get_style_context (self->path_bar_container);
-    width_maximized = nautilus_container_max_width_get_width_maximized (container);
-
-    g_return_if_fail (gtk_style_context_has_class (context, "width-maximized") != width_maximized);
-
-    if (width_maximized)
-    {
-        gtk_style_context_add_class (context, "width-maximized");
-    }
-    else
-    {
-        gtk_style_context_remove_class (context, "width-maximized");
-    }
-}
-
-static void
 on_location_entry_close (GtkWidget       *close_button,
                          NautilusToolbar *self)
 {
@@ -936,10 +911,6 @@ nautilus_toolbar_constructed (GObject *object)
     self->path_bar = g_object_new (NAUTILUS_TYPE_PATH_BAR, NULL);
     gtk_container_add (GTK_CONTAINER (self->path_bar_container),
                        self->path_bar);
-    g_signal_connect (self->toolbar_switcher_container_max_width,
-                      "notify::width-maximized",
-                      G_CALLBACK (on_notify_width_maximized),
-                      self);
 
     self->location_entry = nautilus_location_entry_new ();
     gtk_container_add (GTK_CONTAINER (self->location_entry_container),
