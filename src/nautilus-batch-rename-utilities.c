@@ -130,6 +130,7 @@ batch_rename_replace (gchar *string,
     if (splitted_string == NULL)
     {
         g_string_append (new_string, string);
+        g_regex_unref (regex);
 
         return new_string;
     }
@@ -310,6 +311,7 @@ batch_rename_replace_label_text (gchar       *label,
         token = g_markup_escape_text (label, -1);
         new_label = g_string_append (new_label, token);
         g_free (token);
+        g_regex_unref (regex);
 
         return new_label;
     }
@@ -319,6 +321,9 @@ batch_rename_replace_label_text (gchar       *label,
         token = g_markup_escape_text (label, -1);
         new_label = g_string_append (new_label, token);
         g_free (token);
+        g_strfreev (splitted_string);
+        g_match_info_free (match_info);
+        g_regex_unref (regex);
 
         return new_label;
     }
