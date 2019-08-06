@@ -1,3 +1,19 @@
+Major changes in 3.32.2:
+* Add padding to thumbnails in canvas view (Chris Billington)
+* Use “Files” instead of “Nautilus” in appdata
+* Add website link to about dialog (Ondrej Holy)
+* Fix starring being allowed in XDG user directories, set to $HOME
+* Fix starring in single indexed directories
+* Fix starring in subdirectories of indexed directories (António Fernandes)
+* Add missing menu mnemonics (Tomasz Gąsior)
+* Remove extraneous menu separators (Tomasz Gąsior)
+* Fix styling being incorrectly applied to GtkFileChooser instances (Tomasz Gąsior)
+* Fix crashes when new tab position is set to “end” (Ernestas Kulik)
+* Allow whitespace at the beginning and end of path in location entry (Daniels Pauls)
+* Fix leaky context menus (Ernestas Kulik)
+* Fix NAUTILUS_SCRIPT_SELECTED_FILE_PATHS not being set for scripts
+* Fix critical warnings when window is closed while a notification is displayed (Ernestas Kulik)
+
 Major changes in 3.32.1:
 * Fix Clang builds (Albert Vaca Cintora)
 * Fix crash when opening trash:/// from command line (Andrea Azzarone)
