@@ -4627,12 +4627,18 @@ get_custom_icon (NautilusFile *file)
 }
 
 static GIcon *
+get_new_default_file_icon (void)
+{
+    return g_themed_icon_new ("text-x-generic");
+}
+
+static GIcon *
 get_default_file_icon (void)
 {
     static GIcon *fallback_icon = NULL;
     if (fallback_icon == NULL)
     {
-        fallback_icon = g_themed_icon_new ("text-x-generic");
+        fallback_icon = get_new_default_file_icon ();
     }
 
     return fallback_icon;
@@ -5330,7 +5336,20 @@ nautilus_file_get_icon (NautilusFile          *file,
         if (nautilus_icon_info_is_fallback (icon))
         {
             g_object_unref (icon);
-            icon = nautilus_icon_info_lookup (get_default_file_icon (), size, scale);
+
+            if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
+            {
+                gicon = get_new_default_file_icon ();
+                apply_emblems_to_icon (file, &gicon, flags);
+
+                icon = nautilus_icon_info_lookup (gicon, size, scale);
+
+                g_object_unref (gicon);
+            }
+            else
+            {
+                icon = nautilus_icon_info_lookup (get_default_file_icon (), size, scale);
+            }
         }
     }
 
