@@ -1285,7 +1285,8 @@ pk_proxy_appeared_cb (GObject      *source,
     error_message = get_application_no_mime_type_handler_message (parameters_install->file,
                                                                   parameters_install->uri);
     /* use a custom dialog to prompt the user to install new software */
-    dialog = gtk_message_dialog_new (parameters_install->parent_window, 0,
+    dialog = gtk_message_dialog_new (parameters_install->parent_window,
+                                     GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_MODAL,
                                      GTK_MESSAGE_ERROR,
                                      GTK_BUTTONS_NONE,
                                      "%s", error_message);
