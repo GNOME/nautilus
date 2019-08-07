@@ -5327,10 +5327,31 @@ nautilus_file_get_icon (NautilusFile          *file,
         icon = nautilus_icon_info_lookup (gicon, size, scale);
         g_object_unref (gicon);
 
+        /* Files for which the MIME type cannot be determined will result in
+         * the icon being detected as a fallback. This is because the default
+         * theme does not have icons for the names corresponding to these file
+         * types. */
         if (nautilus_icon_info_is_fallback (icon))
         {
             g_object_unref (icon);
-            icon = nautilus_icon_info_lookup (get_default_file_icon (), size, scale);
+
+            gicon = get_default_file_icon ();
+
+            /* Increase ref count on gicon, even though it is statically
+             * allocated. This is needed because apply_emblems_to_icon
+             * decreases the ref count on the original icon it is given. */
+            g_object_ref (gicon);
+
+            if (flags & NAUTILUS_FILE_ICON_FLAGS_USE_EMBLEMS)
+            {
+                apply_emblems_to_icon (file, &gicon, flags);
+            }
+
+            icon = nautilus_icon_info_lookup (gicon, size, scale);
+
+            /* Decrease ref count on either the static default icon, or on the
+             * newly-created emblemed icon. */
+            g_object_unref (gicon);
         }
     }
 
