@@ -260,6 +260,11 @@ nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
     return NAUTILUS_WINDOW_SLOT_CLASS (G_OBJECT_GET_CLASS (self))->get_view_for_location (self, location);
 }
 
+/* Forward declarations for remembering views. See at the end of this file */
+guint reuse_view_id(/*const*/ GFile * location);
+void  store_view_id(/*const*/ NautilusWindowSlot * self, guint view_id);
+void  activate_view_id(gboolean onoff);
+
 static NautilusView *
 real_get_view_for_location (NautilusWindowSlot *self,
                             GFile              *location)
@@ -286,19 +291,25 @@ real_get_view_for_location (NautilusWindowSlot *self,
         }
         view_id = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SEARCH_VIEW);
     }
-    else if (priv->content_view != NULL)
+    else
     {
-        /* If there is already a view, just use the view mode that it's currently using, or
-         * if we were on search before, use what we were using before entering
-         * search mode */
-        if (priv->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID)
+        /* Attempt to retrieve the mode chosen by the user for that specific
+         * directory, or reuse the previous view */
+        view_id = reuse_view_id(location);
+        if (view_id == NAUTILUS_VIEW_INVALID_ID && priv->content_view != NULL)
         {
-            view_id = priv->view_mode_before_search;
-            priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
-        }
-        else
-        {
-            view_id = nautilus_files_view_get_view_id (priv->content_view);
+            /* If there is already a view, just use the view mode that it's currently using, or
+             * if we were on search before, use what we were using before entering
+             * search mode */
+            if (priv->view_mode_before_search != NAUTILUS_VIEW_INVALID_ID)
+            {
+                view_id = priv->view_mode_before_search;
+                priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
+            }
+            else
+            {
+                view_id = nautilus_files_view_get_view_id (priv->content_view);
+            }
         }
     }
 
@@ -1078,6 +1089,7 @@ action_files_view_mode_toggle (GSimpleAction *action,
     NautilusWindowSlot *self;
     NautilusWindowSlotPrivate *priv;
     guint current_view_id;
+    guint view_id;
 
     self = NAUTILUS_WINDOW_SLOT (user_data);
     priv = nautilus_window_slot_get_instance_private (self);
@@ -1089,12 +1101,14 @@ action_files_view_mode_toggle (GSimpleAction *action,
     current_view_id = nautilus_files_view_get_view_id (priv->content_view);
     if (current_view_id == NAUTILUS_VIEW_LIST_ID)
     {
-        change_files_view_mode (self, NAUTILUS_VIEW_GRID_ID);
+        view_id = NAUTILUS_VIEW_GRID_ID;
     }
     else
     {
-        change_files_view_mode (self, NAUTILUS_VIEW_LIST_ID);
+        view_id = NAUTILUS_VIEW_LIST_ID;
     }
+    change_files_view_mode (self, view_id);
+    store_view_id(self, view_id);
 }
 
 static void
@@ -3663,3 +3677,228 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
 
     return priv->query_editor;
 }
+
+
+/* Modifications by Willi-Francois Poulet to remember the view for each
+ * directory.
+ * See real_get_view_for_location() and action_files_view_mode_toggle() above */
+
+/* Part 0: general utilities */
+
+static gboolean g_string_ends_with(const GString * s, char c)
+{
+    int  i;
+
+    // Preconditions
+    g_assert_nonnull(s);
+    g_assert(c != '\0');
+    // Body
+    i = s->len;
+    if (i > 0) {
+        i--;
+    }
+    return s->str[i] == c;
+}
+
+/* Part 1: some FreeDesktop stuff */
+
+static const gchar *   keyfile_groupname = "Nautilus";
+static const gchar *   keyfile_keyview   = "ViewMode";
+
+static gboolean append_path_dot_directory(/*IO*/ GString * fullpath, /*const*/ GFile * location)
+{
+    const char *  p;
+
+    // Preconditions
+    g_assert_nonnull(fullpath);
+    g_assert_nonnull(location);
+    g_assert(g_file_is_native(location));
+    // Body
+    p = g_file_peek_path(location);
+    if (p != NULL) {
+        g_string_append(fullpath, p);
+        if (! g_string_ends_with(fullpath, '/')) { // Not at the root
+            g_string_append(fullpath, "/");
+        }
+        g_string_append(fullpath, ".directory"); // See FreeDesktop specification
+    }
+    return p != NULL;
+}
+
+/* Part 2: implementation of core operations */
+
+static const gboolean  trace_view        = FALSE;
+static const guint     default_id        = NAUTILUS_VIEW_INVALID_ID;
+
+typedef enum { // Compatible with values returned by g_key_file_get_integer()
+  BY_DEFAULT = 0,
+  BY_ICON,
+  BY_LIST,
+  TOTAL_VIEWMODES
+} view_mode;
+
+static guint key_to_id(view_mode value)
+{
+  guint  result;
+
+  switch (value) {
+    case BY_ICON: result = NAUTILUS_VIEW_GRID_ID; break;
+    case BY_LIST: result = NAUTILUS_VIEW_LIST_ID; break;
+    default:      result = NAUTILUS_VIEW_INVALID_ID; break;
+  }
+  return result;
+}
+
+static view_mode id_to_key(guint id)
+{
+  view_mode  result;
+
+  switch (id) {
+    case NAUTILUS_VIEW_GRID_ID: result = BY_ICON; break;
+    case NAUTILUS_VIEW_LIST_ID: result = BY_LIST; break;
+    default:                    result = BY_DEFAULT; break;
+  }
+  return result;
+}
+
+static const char * id_name(guint id)
+{
+  const char *  result;
+
+  switch (id) {
+    case NAUTILUS_VIEW_GRID_ID: result = "grid"; break;
+    case NAUTILUS_VIEW_LIST_ID: result = "list"; break;
+    default:                    result = "default"; break;
+  }
+  return result;
+}
+
+static guint load_view_id(/*const*/ GFile * location)
+{
+    GError *    error;
+    GString *   fullpath = NULL;
+    GKeyFile *  keyfile = NULL;
+    gboolean    loaded;
+    view_mode   value;
+    guint       view_id = default_id; // result
+
+    // Preconditions
+    g_assert_nonnull(location);
+    // Constructors
+    fullpath = g_string_new(NULL);
+    g_assert_nonnull(fullpath);
+    keyfile = g_key_file_new();
+    g_assert_nonnull(keyfile);
+    // Body
+    if (fullpath != NULL && keyfile != NULL) {
+        // Load
+        (void) append_path_dot_directory(fullpath, location);
+        if (fullpath->len != 0) {
+            error = NULL;
+            loaded = g_key_file_load_from_file(keyfile, fullpath->str, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, & error);
+            //g_assert_no_error(error); // ignored
+            // Get value
+            if (loaded) {
+                error = NULL;
+                value = g_key_file_get_integer(keyfile, keyfile_groupname, keyfile_keyview, & error);
+                (void) error; // ignored
+                if (value >= TOTAL_VIEWMODES) { // Ensure value read is valid
+                    value = BY_DEFAULT;
+                }
+                view_id = key_to_id(value);
+                if (trace_view) printf("%s load_view_id( %s ) -> %s\n", keyfile_groupname, g_file_get_path(location), id_name(view_id));
+            }
+        }
+    }
+    // Destructors
+    if (fullpath != NULL) g_string_free(fullpath, TRUE);
+    if (keyfile != NULL)  g_key_file_free(keyfile);
+    // Result
+    return view_id;
+}
+
+static gboolean save_view_id(/*const*/ GFile * location, guint view_id)
+{
+    GError *    error;
+    GString *   fullpath = NULL;
+    GKeyFile *  keyfile = NULL;
+    gboolean    loaded;
+    gboolean    success = FALSE; // result
+    view_mode   value;
+
+    // Preconditions
+    g_assert_nonnull(location);
+    // Constructors
+    fullpath = g_string_new(NULL);
+    g_assert_nonnull(fullpath);
+    keyfile = g_key_file_new();
+    g_assert_nonnull(keyfile);
+    // Body
+    if (fullpath != NULL && keyfile != NULL) {
+        // Load
+        (void) append_path_dot_directory(fullpath, location);
+        if (fullpath->len != 0) {
+            error = NULL;
+            loaded = g_key_file_load_from_file(keyfile, fullpath->str, G_KEY_FILE_KEEP_COMMENTS | G_KEY_FILE_KEEP_TRANSLATIONS, & error);
+            //g_assert_no_error(error); // ignored
+            (void) loaded; // ignored
+            // Change file
+            value = id_to_key(view_id);
+            g_key_file_set_integer(keyfile, keyfile_groupname, keyfile_keyview, value);
+            error = NULL;
+            success = g_key_file_save_to_file(keyfile, fullpath->str, & error);
+            //g_assert_no_error(error); // ignored
+            if (success) {
+                if (trace_view) printf("%s save_view_id( %s , %s )\n", keyfile_groupname, g_file_get_path(location), id_name(view_id));
+            }
+        }
+    }
+    // Destructors
+    if (fullpath != NULL) g_string_free(fullpath, TRUE);
+    if (keyfile != NULL)  g_key_file_free(keyfile);
+    // Result
+    return success;
+}
+
+/* Part 3: public API */
+
+static gboolean        enable_tweak      = TRUE;
+
+/*public*/ guint reuse_view_id(/*const*/ GFile * location)
+{
+    guint  view_id; // result
+
+    if (enable_tweak) {
+        if (location != NULL && g_file_is_native(location)) {
+            view_id = load_view_id(location);
+        } else { // Recent, Starred, Trash, Etc
+            view_id = default_id;
+        }
+    } else {
+        view_id = default_id;
+    }
+    return view_id;
+}
+
+/*public*/ void store_view_id(/*const*/ NautilusWindowSlot * self, guint view_id)
+{
+    GFile *   location;
+    gboolean  success;
+
+    g_assert_nonnull(self);
+    if (enable_tweak) {
+        location = nautilus_window_slot_get_location(self);
+        if (location != NULL && g_file_is_native(location)) {
+            success = save_view_id(location, view_id);
+            (void) success; // ignored
+        } else { // Recent, Starred, Trash, Etc
+            ;
+        }
+    }
+}
+
+/*public*/ void activate_view_id(gboolean onoff)
+{
+    enable_tweak = onoff;
+}
+
