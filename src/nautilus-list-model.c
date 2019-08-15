@@ -789,7 +789,7 @@ nautilus_list_model_file_entry_compare_func (gconstpointer a,
         result = nautilus_file_compare_for_sort_by_attribute_q (file_entry1->file, file_entry2->file,
                                                                 priv->sort_attribute,
                                                                 priv->sort_directories_first,
-                                                                (priv->order == GTK_SORT_DESCENDING));
+                                                                (priv->order == GTK_SORT_ASCENDING));
     }
     else if (file_entry1->file == NULL)
     {
