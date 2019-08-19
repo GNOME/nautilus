@@ -23,7 +23,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-07-05 09:29+0000\n"
+"POT-Creation-Date: 2019-08-12 08:13+0000\n"
 "PO-Revision-Date: 2019-07-23 15:28+0200\n"
 "Last-Translator: Jordi Mas <jmas@softcatala.org>\n"
 "Language-Team: Catalan <tradgnome@softcatala.org>\n"
@@ -73,7 +73,7 @@ msgid ""
 msgstr ""
 "El Nautilus permet realitzar totes les funcions bàsiques d'un gestor de "
 "fitxers i molt més. Pot cercar i gestionar els vostres fitxers i carpetes, "
-"tant locals com a la xarxa; llegir i escriure dades des de i cap a un medi "
+"tan locals com a la xarxa; llegir i escriure dades des de i cap a un medi "
 "extraïble; executar scripts i iniciar aplicacions. Té tres visualitzacions: "
 "graella d'icones, llista d'icones i llista d'arbre. Es poden ampliar les "
 "seves funcions mitjançant connectors i scripts."
@@ -98,7 +98,7 @@ msgstr "Vista de llista"
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-preferences-window.ui:872
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:504
+#: src/resources/ui/nautilus-toolbar.ui:510
 msgid "Search"
 msgstr "Cerca"
 
@@ -114,6 +114,7 @@ msgid "folder;manager;explore;disk;filesystem;"
 msgstr "carpeta;gestor;explora;disc;sistema de fitxers;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
+#: src/resources/ui/nautilus-toolbar.ui:27
 msgid "New Window"
 msgstr "Finestra nova"
 
@@ -619,7 +620,7 @@ msgstr "Y"
 #: src/nautilus-files-view.c:6434 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:951
-#: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4642
+#: src/nautilus-mime-actions.c:1299 src/nautilus-properties-window.c:4642
 #: src/nautilus-properties-window.c:5725 src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 msgid "_Cancel"
@@ -796,13 +797,13 @@ msgstr "N/D"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
-#: src/nautilus-file.c:7427
+#: src/nautilus-file.c:7449
 msgid "Audio"
 msgstr "Àudio"
 
 #: extensions/audio-video-properties/totem-properties-view.c:279
 #: extensions/audio-video-properties/resources/ui/properties.ui:321
-#: src/nautilus-file.c:7435 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:7457 src/nautilus-mime-actions.c:206
 msgid "Video"
 msgstr "Vídeo"
 
@@ -977,7 +978,7 @@ msgid "Failed to load image information"
 msgstr "No s'ha pogut carregar la informació de la imatge"
 
 #: extensions/image-properties/nautilus-image-properties-page-provider.c:100
-#: src/nautilus-file.c:7429
+#: src/nautilus-file.c:7451
 msgid "Image"
 msgstr "Imatge"
 
@@ -1583,56 +1584,56 @@ msgid "Starred"
 msgstr "Destacat"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5456
+#: src/nautilus-file.c:5478
 msgid "%H:%M"
 msgstr "%-H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5461
+#: src/nautilus-file.c:5483
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5470
+#: src/nautilus-file.c:5492
 #, no-c-format
 msgid "Yesterday"
 msgstr "Ahir"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5479
+#: src/nautilus-file.c:5501
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Ahir a les %-H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5486
+#: src/nautilus-file.c:5508
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Ahir a les %l:%M %p"
 
-#: src/nautilus-file.c:5496
+#: src/nautilus-file.c:5518
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5505
+#: src/nautilus-file.c:5527
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a a les %-H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5512
+#: src/nautilus-file.c:5534
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a a les %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5523
+#: src/nautilus-file.c:5545
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1640,7 +1641,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5533
+#: src/nautilus-file.c:5555
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b a les %-H:%M"
@@ -1648,14 +1649,14 @@ msgstr "%-e %b a les %-H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5541
+#: src/nautilus-file.c:5563
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b a les %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5552
+#: src/nautilus-file.c:5574
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b de %Y"
@@ -1663,7 +1664,7 @@ msgstr "%-e %b de %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5562
+#: src/nautilus-file.c:5584
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b de %Y a les %-H:%M"
@@ -1671,61 +1672,61 @@ msgstr "%-e %b de %Y a les %-H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5570
+#: src/nautilus-file.c:5592
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b de %Y a les %l:%M %p"
 
-#: src/nautilus-file.c:5582
+#: src/nautilus-file.c:5604
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6045
+#: src/nautilus-file.c:6067
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "No podeu establir els permisos"
 
-#: src/nautilus-file.c:6368
+#: src/nautilus-file.c:6390
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "No podeu establir el propietari"
 
-#: src/nautilus-file.c:6387
+#: src/nautilus-file.c:6409
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "No existeix el propietari especificat «%s»"
 
-#: src/nautilus-file.c:6672
+#: src/nautilus-file.c:6694
 #, c-format
 msgid "Not allowed to set group"
 msgstr "No podeu establir el grup"
 
-#: src/nautilus-file.c:6691
+#: src/nautilus-file.c:6713
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "No existeix el grup especificat «%s»"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6833
+#: src/nautilus-file.c:6855
 msgid "Me"
 msgstr "Jo"
 
-#: src/nautilus-file.c:6865
+#: src/nautilus-file.c:6887
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u element"
 msgstr[1] "%'u elements"
 
-#: src/nautilus-file.c:6866
+#: src/nautilus-file.c:6888
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u carpeta"
 msgstr[1] "%'u carpetes"
 
-#: src/nautilus-file.c:6867
+#: src/nautilus-file.c:6889
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1733,80 +1734,80 @@ msgstr[0] "%'u fitxer"
 msgstr[1] "%'u fitxers"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7344
+#: src/nautilus-file.c:7366
 msgid "? bytes"
 msgstr "? bytes"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7356
+#: src/nautilus-file.c:7378
 msgid "? items"
 msgstr "? elements"
 
-#: src/nautilus-file.c:7364
+#: src/nautilus-file.c:7386
 msgid "Unknown"
 msgstr "Desconegut"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7390 src/nautilus-properties-window.c:1296
+#: src/nautilus-file.c:7412 src/nautilus-properties-window.c:1296
 msgid "unknown"
 msgstr "desconegut"
 
-#: src/nautilus-file.c:7426 src/nautilus-file.c:7434 src/nautilus-file.c:7493
+#: src/nautilus-file.c:7448 src/nautilus-file.c:7456 src/nautilus-file.c:7515
 msgid "Program"
 msgstr "Programa"
 
-#: src/nautilus-file.c:7428
+#: src/nautilus-file.c:7450
 msgid "Font"
 msgstr "Tipus de lletra"
 
-#: src/nautilus-file.c:7430
+#: src/nautilus-file.c:7452
 msgid "Archive"
 msgstr "Arxiu"
 
-#: src/nautilus-file.c:7431
+#: src/nautilus-file.c:7453
 msgid "Markup"
 msgstr "Marcatge"
 
-#: src/nautilus-file.c:7432 src/nautilus-file.c:7433
+#: src/nautilus-file.c:7454 src/nautilus-file.c:7455
 msgid "Text"
 msgstr "Text"
 
-#: src/nautilus-file.c:7436
+#: src/nautilus-file.c:7458
 msgid "Contacts"
 msgstr "Contactes"
 
-#: src/nautilus-file.c:7437
+#: src/nautilus-file.c:7459
 msgid "Calendar"
 msgstr "Calendari"
 
-#: src/nautilus-file.c:7438
+#: src/nautilus-file.c:7460
 msgid "Document"
 msgstr "Document"
 
-#: src/nautilus-file.c:7439 src/nautilus-mime-actions.c:180
+#: src/nautilus-file.c:7461 src/nautilus-mime-actions.c:180
 msgid "Presentation"
 msgstr "Presentació"
 
-#: src/nautilus-file.c:7440 src/nautilus-mime-actions.c:188
+#: src/nautilus-file.c:7462 src/nautilus-mime-actions.c:188
 msgid "Spreadsheet"
 msgstr "Full de càlcul"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7467
+#: src/nautilus-file.c:7489
 msgid "Other"
 msgstr "Altres"
 
-#: src/nautilus-file.c:7495
+#: src/nautilus-file.c:7517
 msgid "Binary"
 msgstr "Binari"
 
-#: src/nautilus-file.c:7500
+#: src/nautilus-file.c:7522
 msgid "Folder"
 msgstr "Carpeta"
 
-#: src/nautilus-file.c:7539
+#: src/nautilus-file.c:7561
 msgid "Link"
 msgstr "Enllaç"
 
@@ -1815,12 +1816,12 @@ msgstr "Enllaç"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7545 src/nautilus-file-operations.c:454
+#: src/nautilus-file.c:7567 src/nautilus-file-operations.c:454
 #, c-format
 msgid "Link to %s"
 msgstr "Enllaç a %s"
 
-#: src/nautilus-file.c:7563 src/nautilus-file.c:7579 src/nautilus-file.c:7595
+#: src/nautilus-file.c:7585 src/nautilus-file.c:7601 src/nautilus-file.c:7617
 msgid "Link (broken)"
 msgstr "Enllaç (trencat)"
 
@@ -3714,7 +3715,7 @@ msgstr "S'ha produït un error intern en intentar cercar les aplicacions:"
 msgid "Unable to search for application"
 msgstr "No s'ha pogut cercar l'aplicació"
 
-#: src/nautilus-mime-actions.c:1293
+#: src/nautilus-mime-actions.c:1294
 #, c-format
 msgid ""
 "There is no application installed for “%s” files. Do you want to search for "
@@ -3723,26 +3724,26 @@ msgstr ""
 "No hi ha cap aplicació instal·lada per als fitxers «%s». Voleu cercar una "
 "aplicació per obrir aquest fitxer?"
 
-#: src/nautilus-mime-actions.c:1299
+#: src/nautilus-mime-actions.c:1300
 msgid "_Search in Software"
 msgstr "_Cerca al Programari"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1664 src/nautilus-mime-actions.c:1962
+#: src/nautilus-mime-actions.c:1665 src/nautilus-mime-actions.c:1963
 #: src/gtk/nautilusgtkplacesview.c:1231 src/gtk/nautilusgtkplacesview.c:1306
 msgid "Unable to access location"
 msgstr "No s'ha pogut accedir a la ubicació"
 
-#: src/nautilus-mime-actions.c:2053
+#: src/nautilus-mime-actions.c:2054
 msgid "Unable to start location"
 msgstr "No s'ha pogut iniciar la ubicació"
 
-#: src/nautilus-mime-actions.c:2146
+#: src/nautilus-mime-actions.c:2147
 #, c-format
 msgid "Opening “%s”."
 msgstr "S'està obrint «%s»."
 
-#: src/nautilus-mime-actions.c:2151
+#: src/nautilus-mime-actions.c:2152
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3791,7 +3792,8 @@ msgstr "Obre tots els fitxers del tipus «%s» amb"
 #: src/nautilus-mime-application-chooser.c:288
 #, c-format
 msgid "Select an application to open “%s” and other files of type “%s”"
-msgstr "Seleccioneu una aplicació per obrir «%s» i altres fitxers del tipus «%s»"
+msgstr ""
+"Seleccioneu una aplicació per obrir «%s» i altres fitxers del tipus «%s»"
 
 #: src/nautilus-mime-application-chooser.c:347
 msgid "_Add"
@@ -3839,6 +3841,7 @@ msgid "Folder name"
 msgstr "Nom de la carpeta"
 
 #: src/nautilus-new-folder-dialog-controller.c:147
+#: src/resources/ui/nautilus-toolbar.ui:71
 msgid "New Folder"
 msgstr "Carpeta nova"
 
@@ -4449,13 +4452,13 @@ msgstr ""
 #: src/nautilus-special-location-bar.c:63
 msgid "Executable files in this folder will appear in the Scripts menu."
 msgstr ""
-"Els fitxers executables d'aquesta carpeta apareixeran al menú d'scripts."
+"Els fitxers executables d'aquesta carpeta apareixeran al menú de scripts."
 
-#: src/nautilus-toolbar.c:839 src/resources/ui/nautilus-toolbar.ui:390
+#: src/nautilus-toolbar.c:839 src/resources/ui/nautilus-toolbar.ui:396
 msgid "_Undo"
 msgstr "_Desfés"
 
-#: src/nautilus-toolbar.c:846 src/resources/ui/nautilus-toolbar.ui:404
+#: src/nautilus-toolbar.c:846 src/resources/ui/nautilus-toolbar.ui:410
 msgid "_Redo"
 msgstr "_Refés"
 
@@ -5563,56 +5566,73 @@ msgstr "Cerca sols al nom del fitxer"
 msgid "Starred files will appear here"
 msgstr "Els fitxers destacats apareixeran aquí"
 
-#: src/resources/ui/nautilus-toolbar.ui:117
+#: src/resources/ui/nautilus-toolbar.ui:49
+msgid "New Tab"
+msgstr "Pestanya nova"
+
+#: src/resources/ui/nautilus-toolbar.ui:120
 msgid "Edit"
 msgstr "Edita"
 
-#: src/resources/ui/nautilus-toolbar.ui:218
+#: src/resources/ui/nautilus-toolbar.ui:133
+msgid "Cut"
+msgstr "Retalla"
+
+#. Translators: This is a verb
+#: src/resources/ui/nautilus-toolbar.ui:157
+msgid "Copy"
+msgstr "Copia"
+
+#: src/resources/ui/nautilus-toolbar.ui:180
+msgid "Paste"
+msgstr "Enganxa"
+
+#: src/resources/ui/nautilus-toolbar.ui:224
 msgid "Select All"
 msgstr "Selecciona-ho tot"
 
-#: src/resources/ui/nautilus-toolbar.ui:244
+#: src/resources/ui/nautilus-toolbar.ui:250
 msgid "Show _Hidden Files"
 msgstr "_Mostra els fitxers ocults"
 
-#: src/resources/ui/nautilus-toolbar.ui:259
+#: src/resources/ui/nautilus-toolbar.ui:265
 msgid "Show _Sidebar"
 msgstr "_Mostra la barra lateral"
 
-#: src/resources/ui/nautilus-toolbar.ui:285
+#: src/resources/ui/nautilus-toolbar.ui:291
 msgid "_Preferences"
 msgstr "_Preferències"
 
-#: src/resources/ui/nautilus-toolbar.ui:299
+#: src/resources/ui/nautilus-toolbar.ui:305
 msgid "_Keyboard Shortcuts"
 msgstr "Dreceres de _teclat"
 
-#: src/resources/ui/nautilus-toolbar.ui:313
+#: src/resources/ui/nautilus-toolbar.ui:319
 msgid "_Help"
 msgstr "A_juda"
 
-#: src/resources/ui/nautilus-toolbar.ui:327
+#: src/resources/ui/nautilus-toolbar.ui:333
 msgid "_About Files"
 msgstr "_Quant al Fitxers"
 
-#: src/resources/ui/nautilus-toolbar.ui:540
+#: src/resources/ui/nautilus-toolbar.ui:546
 msgid "Go back"
 msgstr "Vés enrere"
 
-#: src/resources/ui/nautilus-toolbar.ui:567
+#: src/resources/ui/nautilus-toolbar.ui:573
 msgid "Go forward"
 msgstr "Vés endavant"
 
-#: src/resources/ui/nautilus-toolbar.ui:610
+#: src/resources/ui/nautilus-toolbar.ui:616
 msgid "Show operations"
 msgstr "Mostra les operacions"
 
-#: src/resources/ui/nautilus-toolbar.ui:649
+#: src/resources/ui/nautilus-toolbar.ui:655
 msgid "Toggle view"
 msgstr "Commuta la vista"
 
 #. “View” is a noun
-#: src/resources/ui/nautilus-toolbar.ui:675
+#: src/resources/ui/nautilus-toolbar.ui:679
 msgid "View options"
 msgstr "Opcions de visualització"
 
@@ -5820,1582 +5840,3 @@ msgstr "_Connecta al servidor"
 msgid "Enter server address…"
 msgstr "Introduïu l'adreça del servidor..."
 
-#~ msgid "application-x-executable"
-#~ msgstr "application-x-executable"
-
-#~ msgid "Nautilus"
-#~ msgstr "Nautilus"
-
-#~ msgid "List view"
-#~ msgstr "Vista de llista"
-
-#~ msgid "Other locations"
-#~ msgstr "Altres ubicacions"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
-
-#~ msgid "_Sidebar"
-#~ msgstr "_Barra lateral"
-
-#~ msgid "%d frame per second"
-#~ msgid_plural "%d frames per second"
-#~ msgstr[0] "%d fotograma per segon"
-#~ msgstr[1] "%d fotogrames per segon"
-
-#~ msgid "New _Window"
-#~ msgstr "_Finestra nova"
-
-#~ msgid "smb://"
-#~ msgstr "smb://"
-
-#~ msgid "Prefere_nces"
-#~ msgstr "Preferè_ncies"
-
-#~ msgid "_About"
-#~ msgstr "_Quant a"
-
-#~ msgid "_Quit"
-#~ msgstr "_Surt"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the Trash"
-#~ msgstr ""
-#~ "Mostra un diàleg d'advertiment quan es canviï la drecera per moure a la "
-#~ "paperera"
-
-#~ msgid ""
-#~ "Show a warning dialog for the change of the shortcut for move to the "
-#~ "Trash from Control + Delete to just Delete."
-#~ msgstr ""
-#~ "Mostra un diàleg d'advertiment quan es canviï la drecera per moure a la "
-#~ "paperera de control + suprimir a només suprimir."
-
-#~ msgid "Delete Shortcuts Have Changed"
-#~ msgstr "Han canviat les dreceres per suprimir"
-
-#~ msgid ""
-#~ "With the latest version of Files, you no longer need to hold Ctrl to "
-#~ "delete — the Delete key will work when pressed on its own."
-#~ msgstr ""
-#~ "Amb l'última versió del Fitxers ja no us cal prémer Control per suprimir. "
-#~ "— La tecla Suprimir sola ja fa la funció."
-
-#~ msgid "Got it"
-#~ msgstr "Ja ho tinc!"
-
-#~ msgid "Paste"
-#~ msgstr "Enganxa"
-
-#~ msgid "Experimental"
-#~ msgstr "Experimental"
-
-#~ msgid "Use the new _views"
-#~ msgstr "Utilitza les _noves vistes"
-
-#~ msgid "New Tab"
-#~ msgstr "Pestanya nova"
-
-#~ msgid "Help"
-#~ msgstr "Ajuda"
-
-#~ msgid "About"
-#~ msgstr "Quant a"
-
-#~ msgid "Open menu"
-#~ msgstr "Obre el menú"
-
-#~ msgid "org.gnome.Nautilus"
-#~ msgstr "org.gnome.Nautilus"
-
-#~ msgid "MIME Type"
-#~ msgstr "Tipus MIME"
-
-#~ msgid "The MIME type of the file."
-#~ msgstr "El tipus MIME del fitxer."
-
-#~ msgid "URL"
-#~ msgstr "URL"
-
-#~ msgid "Command"
-#~ msgstr "Ordre"
-
-#~ msgid "Probably the content of the file is an invalid desktop file format"
-#~ msgstr ""
-#~ "Probablement el contingut del fitxer és un format no vàlid de fitxer "
-#~ "d'escriptori"
-
-#~ msgid "approximately %'d hour"
-#~ msgid_plural "approximately %'d hours"
-#~ msgstr[0] "aproximadament %'d hora"
-#~ msgstr[1] "aproximadament %'d hores"
-
-#~ msgid "Unable to mark launcher trusted (executable)"
-#~ msgstr "No s'ha pogut marcar la llançadora com de confiança (executable)"
-
-#~ msgid "Untrusted application launcher"
-#~ msgstr "Llançadora d'aplicacions en la qual no es confia"
-
-#~ msgid ""
-#~ "The application launcher “%s” has not been marked as trusted. If you do "
-#~ "not know the source of this file, launching it may be unsafe."
-#~ msgstr ""
-#~ "La llançadora d'aplicacions «%s» no s'ha marcat com de confiança. Si no "
-#~ "coneixeu l'origen d'aquest fitxer, pot ser que no sigui segur executar-lo."
-
-#~ msgid "Trust and _Launch"
-#~ msgstr "Confia i _executa"
-
-#~ msgid "Parent Folder:"
-#~ msgstr "Carpeta pare:"
-
-#~ msgid "Searching devices only"
-#~ msgstr "Sols s'estan cercant els dispositius"
-
-#~ msgid "New folder"
-#~ msgstr "Carpeta nova"
-
-#~ msgid "Bookmark this location"
-#~ msgstr "Afegeix aquesta ubicació a les adreces d'interès"
-
-#~ msgid "Action menu"
-#~ msgstr "Menú «acció»"
-
-#~ msgid "Open action menu"
-#~ msgstr "Obre el menú «acció»"
-
-#~ msgid "View mode toggle"
-#~ msgstr "Visualitza el mode de commutació"
-
-#~ msgid "Toggle between grid and list view"
-#~ msgstr "Commuta entre el mode graella i el de llista"
-
-#~ msgid "Search files"
-#~ msgstr "Cerca fitxers"
-
-#~ msgid "Operations in progress"
-#~ msgstr "Operacions en curs"
-
-#~ msgid "Show operations in progress"
-#~ msgstr "Mostra les operacions en curs"
-
-#~ msgid "Bulk rename utility"
-#~ msgstr "Eina de canvi de nom en gran quantitat"
-
-#~ msgid ""
-#~ "If set, Nautilus will append URIs of selected files and treat the result "
-#~ "as a command line for bulk renaming. Bulk rename applications can "
-#~ "register themselves in this key by setting the key to a space-separated "
-#~ "string of their executable name and any command line options. If the "
-#~ "executable name is not set to a full path, it will be searched for in the "
-#~ "search path."
-#~ msgstr ""
-#~ "Si està activat el Nautilus adjuntarà els URI dels fitxers seleccionats i "
-#~ "tractarà el resultat com una línia d'ordres per canviar el nom a "
-#~ "l'engròs. Les aplicacions de canvi de nom a l'engròs poden registrar-se "
-#~ "elles mateixes en aquesta clau establint-la a una cadena separada per "
-#~ "espais amb el seu nom executable i les opcions de la línia d'ordres. Si "
-#~ "el nom de l'executable no s'estableix com a camí complet, se cercarà en "
-#~ "el camí de cerca."
-
-#~ msgid "Default zoom level used by the icon view."
-#~ msgstr "Nivell d'ampliació per defecte utilitzat en la vista d'icones."
-
-#~ msgid "Default Thumbnail Icon Size"
-#~ msgstr "Mida per defecte de les icones de les miniatures"
-
-#~ msgid ""
-#~ "The default size of an icon for a thumbnail in the icon view when using "
-#~ "NAUTILUS_ICON_SIZE_STANDARD size."
-#~ msgstr ""
-#~ "La mida per defecte de les icones de les miniatures en la vista d'icones "
-#~ "quan s'utilitza la mida «NAUTILUS_ICON_SIZE_SMALL»."
-
-#~ msgid "Default zoom level used by the list view."
-#~ msgstr "Nivell d'ampliació per defecte utilitzat en la vista de llista."
-
-#~ msgid "Default list of columns visible in the list view."
-#~ msgstr "Llista per defecte de les columnes visibles a la vista de llista."
-
-#~ msgid "Default column order in the list view."
-#~ msgstr "Ordre per defecte de les columnes a la vista de llista."
-
-#~ msgctxt "desktop-font"
-#~ msgid "''"
-#~ msgstr "''"
-
-#~ msgid "Desktop font"
-#~ msgstr "Tipus de lletra de l'escriptori"
-
-#~ msgid "The font description used for the icons on the desktop."
-#~ msgstr ""
-#~ "La descripció del tipus de lletra utilitzada per a les icones de "
-#~ "l'escriptori."
-
-#~ msgid "Home icon visible on desktop"
-#~ msgstr "La icona de carpeta de l'usuari és visible a l'escriptori"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the home folder will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), s'afegirà una icona a l'escriptori amb un "
-#~ "enllaç a la carpeta de l'usuari."
-
-#~ msgid "Trash icon visible on desktop"
-#~ msgstr "La icona de la paperera és visible a l'escriptori"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Trash will be put on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Si això s'estableix a true (cert), s'afegirà a l'escriptori una icona amb "
-#~ "un enllaç a la paperera."
-
-#~ msgid "Show mounted volumes on the desktop"
-#~ msgstr "Mostra els volums muntats a l'escriptori"
-
-#~ msgid ""
-#~ "If this is set to true, icons linking to mounted volumes will be put on "
-#~ "the desktop."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), s'afegiran a l'escriptori icones amb "
-#~ "enllaços als volums muntats."
-
-#~ msgid "Network Servers icon visible on the desktop"
-#~ msgstr "La icona de servidors de xarxa és visible a l'escriptori"
-
-#~ msgid ""
-#~ "If this is set to true, an icon linking to the Network Servers view will "
-#~ "be put on the desktop."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), s'afegirà a l'escriptori una icona amb un "
-#~ "enllaç a la vista de servidors de xarxa."
-
-#~ msgctxt "home-icon-name"
-#~ msgid "'Home'"
-#~ msgstr "'Carpeta de l'usuari'"
-
-#~ msgid "Desktop home icon name"
-#~ msgstr "Nom de la icona de la carpeta de l'usuari de l'escriptori"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the home icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Aquest nom es pot definir si voleu un nom personalitzat per a la icona de "
-#~ "la carpeta de l'usuari."
-
-#~ msgctxt "trash-icon-name"
-#~ msgid "'Trash'"
-#~ msgstr "'Paperera'"
-
-#~ msgid "Desktop Trash icon name"
-#~ msgstr "Nom de la icona de la paperera de l'escriptori"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the Trash icon on the "
-#~ "desktop."
-#~ msgstr ""
-#~ "Aquest nom es pot establir si voleu un nom personalitzat per a la icona "
-#~ "de la paperera a l'escriptori."
-
-#~ msgctxt "network-icon-name"
-#~ msgid "'Network Servers'"
-#~ msgstr "'Servidors de xarxa'"
-
-#~ msgid "Network servers icon name"
-#~ msgstr "Nom de la icona dels servidors de xarxa"
-
-#~ msgid ""
-#~ "This name can be set if you want a custom name for the network servers "
-#~ "icon on the desktop."
-#~ msgstr ""
-#~ "Es pot definir aquest nom si en voleu un de personalitzat per a la icona "
-#~ "dels servidors de xarxa a l'escriptori."
-
-#~ msgid ""
-#~ "An integer specifying how parts of overlong file names should be replaced "
-#~ "by ellipses on the desktop. If the number is larger than 0, the file name "
-#~ "will not exceed the given number of lines. If the number is 0 or smaller, "
-#~ "no limit is imposed on the number of displayed lines."
-#~ msgstr ""
-#~ "Un enter que especifica com s'haurien de reemplaçar per punts suspensius "
-#~ "les parts dels noms de fitxer excessivament llargs a l'escriptori. Si el "
-#~ "número és superior a 0, el nom del fitxer no superarà el nombre de línies "
-#~ "donat. Si el número és 0 o inferior, no s'imposarà cap límit en el nombre "
-#~ "de línies mostrades."
-
-#~ msgid "Fade the background on change"
-#~ msgstr "Esvaeix el fons en canviar-lo"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will use a fade effect to change the "
-#~ "desktop background."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), el Nautilus utilitzarà un efecte "
-#~ "d'esvaïment per canviar el fons de l'escriptori."
-
-#
-#~ msgid "The geometry string for a navigation window"
-#~ msgstr ""
-#~ "La cadena de caràcters de geometria per a una finestra de navegació."
-
-#~ msgid "Show more _details"
-#~ msgstr "Mostra més _detalls"
-
-#~ msgid " (invalid Unicode)"
-#~ msgstr " (caràcter no vàlid)"
-
-#~ msgid "Always manage the desktop (ignore the GSettings preference)."
-#~ msgstr "Gestiona sempre l'escriptori (ignora la preferència del GSettings)."
-
-#~ msgid "on the desktop"
-#~ msgstr "a l'escriptori"
-
-#~ msgid "Unable to rename desktop icon"
-#~ msgstr "No s'ha pogut canviar el nom de la icona de l'escriptori"
-
-#~ msgid "Desktop"
-#~ msgstr "Escriptori"
-
-#~ msgid "Author"
-#~ msgstr "Autor"
-
-#~ msgid "Created By"
-#~ msgstr "Creat per"
-
-#~ msgid "Disclaimer"
-#~ msgstr "Avís legal"
-
-#~ msgid "Warning"
-#~ msgstr "Avís"
-
-#~ msgid "Source"
-#~ msgstr "Font"
-
-#~ msgid "Date Taken"
-#~ msgstr "Data de la captura"
-
-#~ msgid "Date Digitized"
-#~ msgstr "Data de digitalització"
-
-#~ msgid "Date Modified"
-#~ msgstr "Data de modificació"
-
-#~ msgid "_Keep aligned"
-#~ msgstr "_Mantén alineat"
-
-#~ msgid "Organize _Desktop by Name"
-#~ msgstr "_Organitza l'escriptori pel nom"
-
-#~ msgid "Change _Background"
-#~ msgstr "Canvia el _fons de l'escriptori"
-
-#~ msgid "Empty Trash"
-#~ msgstr "Buida la paperera"
-
-#~ msgid "Resize Icon…"
-#~ msgstr "Canvia la mida de la icona…"
-
-#~ msgid "Restore Icon’s Original Size"
-#~ msgstr "Recupera la mida original de la icona"
-
-#~ msgid "Full Text Search:"
-#~ msgstr "Cerca de text complet:"
-
-#
-#~ msgid "Set as _default"
-#~ msgstr "_Estableix per defecte"
-
-#~ msgid "Open operations in progress"
-#~ msgstr "Operacions obertes en curs"
-
-#~ msgid "Could not remove the already existing folder %s."
-#~ msgstr "No s'ha pogut suprimir la carpeta ja existent %s."
-
-#~ msgid "Could not remove the already existing file %s."
-#~ msgstr "No s'ha pogut suprimir el fitxer ja existent %s."
-
-#~ msgid "Items:"
-#~ msgstr "Elements:"
-
-#~ msgid "A file must have a name."
-#~ msgstr "Un fitxer ha de tenir un nom."
-
-#~ msgid "100 KB"
-#~ msgstr "100 KB"
-
-#~ msgid "500 KB"
-#~ msgstr "500 KB"
-
-#~ msgid "1 MB"
-#~ msgstr "1 MB"
-
-#~ msgid "3 MB"
-#~ msgstr "3 MB"
-
-#~ msgid "5 MB"
-#~ msgstr "5 MB"
-
-#~ msgid "10 MB"
-#~ msgstr "10 MB"
-
-#~ msgid "100 MB"
-#~ msgstr "100 MB"
-
-#~ msgid "1 GB"
-#~ msgstr "1 GB"
-
-#~ msgid "2 GB"
-#~ msgstr "2 GB"
-
-#~ msgid "4 GB"
-#~ msgstr "4 GB"
-
-#~ msgid ""
-#~ "Whether to extract compressed files instead of opening them in another "
-#~ "application"
-#~ msgstr ""
-#~ "Si cal extreure els fitxers comprimits en comptes d'obrir-los en una "
-#~ "altra aplicació"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will automatically extract compressed files "
-#~ "instead of opening them in another application"
-#~ msgstr ""
-#~ "Si s'estableix a cert, llavors el Nautilus extraurà automàticament "
-#~ "fitxers comprimits en comptes d'obrir-los en una altra aplicació"
-
-#~ msgid "Compressed Files"
-#~ msgstr "Fitxers comprimits"
-
-#~ msgid "E_xtract the files on open"
-#~ msgstr "_Extreu els fitxers en obrir-los"
-
-#~ msgid "This will open %d separate application."
-#~ msgid_plural "This will open %d separate applications."
-#~ msgstr[0] "Això obrirà %d aplicació separada."
-#~ msgstr[1] "Això obrirà %d aplicacions separades."
-
-#~ msgid "smb://foo.example.com, ssh://192.168.0.1"
-#~ msgstr "smb://foo.exemple.com, ssh://192.168.0.1"
-
-#~ msgid "Deleted “%B”"
-#~ msgstr "Suprimit «%B»"
-
-#~ msgid "Moved “%B” to “%B”"
-#~ msgstr "Mogut «%B» a «%B»"
-
-#~ msgid "Copying “%B” to “%B”"
-#~ msgstr "S'està copiant «%B» a «%B»"
-
-#~ msgid "_Launch Anyway"
-#~ msgstr "_Executa de totes maneres"
-
-#~ msgid "Mark as _Trusted"
-#~ msgstr "Marca com de _confiança"
-
-#~ msgid "Show folders first in windows"
-#~ msgstr "Mostra abans les carpetes a les finestres"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus shows folders prior to showing files in the "
-#~ "icon and list views."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), el Nautilus mostrarà les carpetes abans "
-#~ "que els fitxers a les vistes d'icona i de llista."
-
-#~ msgid "Move %d item to '%s'"
-#~ msgid_plural "Move %d items to '%s'"
-#~ msgstr[0] "Mou %d element a «%s»"
-#~ msgstr[1] "Mou %d elements a «%s»"
-
-#~ msgid "Move '%s' back to '%s'"
-#~ msgstr "Retorna «%s» a «%s»"
-
-#~ msgid "Move '%s' to '%s'"
-#~ msgstr "Mou «%s» a «%s»"
-
-#~ msgid "Delete '%s'"
-#~ msgstr "Suprimeix «%s»"
-
-#~ msgid "Copy '%s' to '%s'"
-#~ msgstr "Copia «%s» a «%s»"
-
-#~ msgid "Duplicate %d item in '%s'"
-#~ msgid_plural "Duplicate %d items in '%s'"
-#~ msgstr[0] "Duplica %d element a «%s»"
-#~ msgstr[1] "Duplica %d elements a «%s»"
-
-#~ msgid "Duplicate '%s' in '%s'"
-#~ msgstr "Duplica «%s» a «%s»"
-
-#~ msgid "Rename '%s' as '%s'"
-#~ msgstr "Canvia el nom de «%s» a «%s»"
-
-#~ msgid "Restore '%s' to '%s'"
-#~ msgstr "Restaura «%s» a «%s»"
-
-#~ msgid "Set group of '%s' to '%s'"
-#~ msgstr "Estableix el grup de «%s» a «%s»"
-
-#~ msgid "Set owner of '%s' to '%s'"
-#~ msgstr "Estableix el propietari de «%s» a «%s»"
-
-#~ msgid "Extract '%s'"
-#~ msgstr "Extreu «%s»"
-
-#~ msgid ""
-#~ "Files in the folder “%B” cannot be deleted because you do not have "
-#~ "permissions to see them."
-#~ msgstr ""
-#~ "No es poden suprimir els fitxers de la carpeta «%B» perquè no teniu "
-#~ "permís per veure'ls."
-
-#~ msgid ""
-#~ "The folder “%B” cannot be deleted because you do not have permissions to "
-#~ "read it."
-#~ msgstr ""
-#~ "No s'ha pogut suprimir la carpeta «%B» perquè no teniu permís per llegir-"
-#~ "la."
-
-#~ msgid "Could not remove the folder %B."
-#~ msgstr "No s'ha pogut suprimir la carpeta %B."
-
-#~ msgid "Could not remove files from the already existing folder %F."
-#~ msgstr "No s'han pogut suprimir els fitxers de la carpeta %F."
-
-#~ msgid "--no-desktop and --force-desktop cannot be used together."
-#~ msgstr ""
-#~ "«--no-desktop» i «--force-desktop» no es poden utilitzar a la vegada."
-
-#~ msgid "Never manage the desktop (ignore the GSettings preference)."
-#~ msgstr "Mai gestionis l'escriptori (ignora la preferència del GSettings)."
-
-#~ msgid "New _Tab"
-#~ msgstr "_Pestanya nova"
-
-#~ msgid "Enter _Location"
-#~ msgstr "Introdueix la _ubicació"
-
-#~ msgid "View menu"
-#~ msgstr "Mostra el menú"
-
-#
-#~ msgctxt "Sort Criterion"
-#~ msgid "_Name"
-#~ msgstr "_Nom"
-
-#~ msgid "Search _Relevance"
-#~ msgstr "_Rellevància de la cerca"
-
-#~ msgid "Re_verse Order"
-#~ msgstr "Ordre in_vers"
-
-#~ msgid "%'d / %'d — %T left (%d files/sec)"
-#~ msgid_plural "%'d / %'d — %T left (%d files/sec)"
-#~ msgstr[0] "%'d / %'d — %T queda (%d fitxers/seg)"
-#~ msgstr[1] "%'d / %'d — %T queden (%d fitxers/seg)"
-
-#~ msgid "Untitled %s"
-#~ msgstr "%s sense nom"
-
-#~ msgid "Enables or disables recursive search in Nautilus."
-#~ msgstr "Habilita o deshabilita la cerca recursiva al Nautilus."
-
-#~ msgid "Whether to switch to the list view on search"
-#~ msgstr "Si cal commutar a la vista de llista a la cerca"
-
-#~ msgid ""
-#~ "If this is set to true, view mode will be switched to the list view while "
-#~ "searching. However, if the user changes the mode manually, this will be "
-#~ "disabled."
-#~ msgstr ""
-#~ "Si això és cert, el mode de visualització es commutarà a vista de llista "
-#~ "mentre s'està cercant. De tota manera, si l'usuari canvia el mode "
-#~ "manualment, aquest s'inhabilitarà."
-
-#~ msgid "Email…"
-#~ msgstr "Correu electrònic…"
-
-#~ msgid ""
-#~ "Nautilus 3.0 deprecated this directory and tried migrating this "
-#~ "configuration to ~/.config/nautilus"
-#~ msgstr ""
-#~ "El Nautilus 3.0 ha deixat aquest directori en desús i ha intentat migrar "
-#~ "aquesta configuració al directori ~/.config/nautilus"
-
-#~ msgid "No bookmarks defined"
-#~ msgstr "No hi ha cap adreça d'interès definida"
-
-#~ msgid "Remove"
-#~ msgstr "Suprimeix"
-
-#~ msgid "Move Up"
-#~ msgstr "Mou cap amunt"
-
-#
-#~ msgid "Move Down"
-#~ msgstr "Mou cap avall"
-
-#~ msgid "Files Preferences"
-#~ msgstr "Preferències del Fitxers"
-
-#~ msgid "Default View"
-#~ msgstr "Vista per defecte"
-
-#~ msgid "_Arrange items:"
-#~ msgstr "Org_anitza els elements:"
-
-#~ msgid "_Run executable text files when they are opened"
-#~ msgstr "E_xecuta els fitxers de text executables quan s'obrin"
-
-#~ msgid "_View executable text files when they are opened"
-#~ msgstr "_Mostra els fitxers de text executables quan s'obrin"
-
-#~ msgid "_Ask each time"
-#~ msgstr "Pregunt_a-ho cada vegada"
-
-#~ msgid "Navigate folders in a tree"
-#~ msgstr "Navega per les carpetes en un arbre"
-
-#~ msgid "Display"
-#~ msgstr "Mostra"
-
-#~ msgid "Any"
-#~ msgstr "Qualsevol"
-
-#
-#~ msgid "Remove this criterion from the search"
-#~ msgstr "Suprimeix aquest criteri de la cerca"
-
-#~ msgid "Current"
-#~ msgstr "Actual"
-
-#~ msgid "Add a new criterion to this search"
-#~ msgstr "Afegeix un criteri a la cerca"
-
-#~ msgid "open-location"
-#~ msgstr "obre-ubicació"
-
-#~ msgid "show-error-message"
-#~ msgstr "mostra-missatge-d'error"
-
-#~ msgid "Local Only"
-#~ msgstr "Només locals"
-
-#~ msgid "Whether the sidebar only includes local files"
-#~ msgstr "Si s'han de mostrar només fitxers locals a la barra lateral"
-
-#~ msgid "Loading"
-#~ msgstr "S'està carregant"
-
-#~ msgid "Whether the view is loading locations"
-#~ msgstr "Si la vista està carregant ubicacions"
-
-#~ msgid "Open Flags"
-#~ msgstr "Obre indicadors"
-
-#~ msgid ""
-#~ "Modes in which the calling application can open locations selected in the "
-#~ "sidebar"
-#~ msgstr ""
-#~ "Els modes en els quals l'aplicació que fa la crida pot obrir ubicacions "
-#~ "seleccionades a la barra lateral"
-
-#~ msgid "Icon of the row"
-#~ msgstr "La icona de la fila"
-
-#~ msgid "The icon representing the volume"
-#~ msgstr "La icona que representa el volum"
-
-#~ msgid "Name of the volume"
-#~ msgstr "Nom del volum"
-
-#~ msgid "The name of the volume"
-#~ msgstr "El nom del volum"
-
-#~ msgid "Path of the volume"
-#~ msgstr "Camí del volum"
-
-#~ msgid "The path of the volume"
-#~ msgstr "El camí del volum"
-
-#~ msgid "Volume represented by the row"
-#~ msgstr "Volum representat per la fila"
-
-#~ msgid "The volume represented by the row"
-#~ msgstr "El volum representat per la fila"
-
-#~ msgid "Mount represented by the row"
-#~ msgstr "Punt de muntatge representat per la fila"
-
-#~ msgid "The mount point represented by the row, if any"
-#~ msgstr "El punt de muntatge representat per la fila, si n'hi ha"
-
-#~ msgid "File represented by the row"
-#~ msgstr "Fitxer representat per la fila"
-
-#~ msgid "The file represented by the row, if any"
-#~ msgstr "El fitxer representat per la fila, si n'hi ha"
-
-#~ msgid "Whether the row represents a network location"
-#~ msgstr "Si la fila representa una ubicació de xarxa"
-
-#~ msgid "Connect to _Server…"
-#~ msgstr "Connecta't al _servidor…"
-
-#~ msgid "Unable to display location"
-#~ msgstr "No s'ha pogut mostrar la ubicació"
-
-#~ msgid "Print but do not open the URI"
-#~ msgstr "Imprimeix l'URI sense obrir-lo"
-
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Add connect to server mount"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Afegeix connecta al muntatge del servidor"
-
-#~ msgid "This file server type is not recognized."
-#~ msgstr "No es reconeix aquest tipus de servidor de fitxers."
-
-#~ msgid "This doesn't look like an address."
-#~ msgstr "No sembla una adreça."
-
-#~ msgid "For example, %s"
-#~ msgstr "Per exemple, %s"
-
-#~ msgid "_Remove"
-#~ msgstr "_Suprimeix"
-
-#~ msgid "_Clear All"
-#~ msgstr "_Neteja-ho tot"
-
-#~ msgid "Rename “%s”"
-#~ msgstr "Canvia el nom a «%s»"
-
-#~ msgid "The text of the label."
-#~ msgstr "El text de l'etiqueta."
-
-#~ msgid "Justification"
-#~ msgstr "Justificació"
-
-#~ msgid ""
-#~ "The alignment of the lines in the text of the label relative to each "
-#~ "other. This does NOT affect the alignment of the label within its "
-#~ "allocation. See GtkMisc::xalign for that."
-#~ msgstr ""
-#~ "L'alineació relativa entre les línies en el text de l'etiqueta. Aquest "
-#~ "paràmetre no afecta l'alineació de l'etiqueta dins de la seva ubicació. "
-#~ "Vegeu GtkMisc::xalign per modificar-la."
-
-#~ msgid "Line wrap"
-#~ msgstr "Ajustament de línies"
-
-#~ msgid "If set, wrap lines if the text becomes too wide."
-#~ msgstr ""
-#~ "Si s'estableix, s'ajustaran les línies si el text es fa massa ample."
-
-#~ msgid "Cursor Position"
-#~ msgstr "Posició del cursor"
-
-#~ msgid "The current position of the insertion cursor in chars."
-#~ msgstr "La posició actual del cursor d'inserció en caràcters."
-
-#~ msgid "Selection Bound"
-#~ msgstr "Marges de la selecció"
-
-#~ msgid ""
-#~ "The position of the opposite end of the selection from the cursor in "
-#~ "chars."
-#~ msgstr ""
-#~ "La posició de l'extrem oposat de la selecció del cursor en caràcters."
-
-#~ msgid "You cannot move the volume “%s” to the trash."
-#~ msgstr "No podeu moure el volum «%s» a la paperera."
-
-#
-#~ msgid ""
-#~ "If you want to eject the volume, please use Eject in the popup menu of "
-#~ "the volume."
-#~ msgstr ""
-#~ "Si voleu expulsar el volum, utilitzeu «Expulsa» en el menú emergent del "
-#~ "volum."
-
-#
-#~ msgid ""
-#~ "If you want to unmount the volume, please use Unmount Volume in the popup "
-#~ "menu of the volume."
-#~ msgstr ""
-#~ "Si voleu desmuntar el volum, utilitzeu «Desmunta el volum» en el menú "
-#~ "emergent del volum."
-
-#~ msgid "%'d file left to delete"
-#~ msgid_plural "%'d files left to delete"
-#~ msgstr[0] "queda %'d fitxer per suprimir"
-#~ msgstr[1] "queden %'d fitxers per suprimir"
-
-#~ msgid "%T left"
-#~ msgid_plural "%T left"
-#~ msgstr[0] "queda %T"
-#~ msgstr[1] "queden %T"
-
-#~ msgid "Moving files to trash"
-#~ msgstr "S'estan movent els fitxers a la paperera"
-
-#~ msgid "%'d file left to trash"
-#~ msgid_plural "%'d files left to trash"
-#~ msgstr[0] "Queda %'d fitxer per moure a la paperera"
-#~ msgstr[1] "Queden %'d fitxers per moure a la paperera"
-
-#~ msgid "Moving file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "S'està movent el fitxer %'d de %'d (des de «%B») a «%B»"
-
-#~ msgid "Copying file %'d of %'d (in “%B”) to “%B”"
-#~ msgstr "S'està copiant el fitxer %'d de %'d (des de «%B») a «%B»"
-
-#~ msgid "Duplicating file %'d of %'d"
-#~ msgstr "S'està duplicant el fitxer %'d de %'d"
-
-#~ msgid "%S of %S"
-#~ msgstr "%S de %S"
-
-#~ msgid "Could not register the application"
-#~ msgstr "No s'ha pogut registrar l'aplicació"
-
-#~ msgid "View _new folders using:"
-#~ msgstr "Visualitza les _noves carpetes amb:"
-
-#~ msgid "Show hidden and _backup files"
-#~ msgstr "Mostra els fitxers ocults i de _còpia de seguretat"
-
-#~ msgid "Icon View Defaults"
-#~ msgstr "Valors per defecte de la vista d'icones"
-
-#~ msgid "Default _zoom level:"
-#~ msgstr "Nivell d'a_mpliació per defecte:"
-
-#~ msgid "List View Defaults"
-#~ msgstr "Valors per defecte de la vista de llista"
-
-#~ msgid "D_efault zoom level:"
-#~ msgstr "Nivell d'a_mpliació per defecte:"
-
-#~ msgid "Saved search"
-#~ msgstr "Cerca desada"
-
-#~ msgid "Cut the selected text to the clipboard"
-#~ msgstr "Retalla el text seleccionat al porta-retalls"
-
-#~ msgid "Copy the selected text to the clipboard"
-#~ msgstr "Copia el text seleccionat al porta-retalls"
-
-#~ msgid "Paste the text stored on the clipboard"
-#~ msgstr "Enganxa el text emmagatzemat al porta-retalls"
-
-#~ msgid "Select all the text in a text field"
-#~ msgstr "Selecciona tot el text dins d'un camp de text"
-
-#~ msgid "Move _Up"
-#~ msgstr "Mou cap am_unt"
-
-#
-#~ msgid "Move Dow_n"
-#~ msgstr "Mou cap a_vall"
-
-#
-#~ msgid "Use De_fault"
-#~ msgstr "_Utilitza el valor per defecte"
-
-#~ msgid "%R"
-#~ msgstr "%R"
-
-#~ msgid "%b %-e"
-#~ msgstr "%b %-e"
-
-#~ msgid "%a, %b %e %Y %T"
-#~ msgstr "%a, %e %b %Y %T"
-
-#~ msgid ""
-#~ "If set to true, then Nautilus will have a feature allowing you to delete "
-#~ "a file immediately and in-place, instead of moving it to the trash. This "
-#~ "feature can be dangerous, so use caution."
-#~ msgstr ""
-#~ "Si s'estableix a «True» (cert), el Nautilus us permetrà suprimir un "
-#~ "fitxer immediatament, sense moure'l a la paperera. Això pot ser perillós, "
-#~ "així que aneu amb compte."
-
-#~ msgid "--geometry cannot be used with more than one URI."
-#~ msgstr "«--geometry» no es pot utilitzar amb més d'un URI."
-
-#
-#~ msgid ""
-#~ "\n"
-#~ "\n"
-#~ "Browse the file system with the file manager"
-#~ msgstr ""
-#~ "\n"
-#~ "\n"
-#~ "Navega pel sistema de fitxers amb el gestor de fitxers"
-
-#~ msgid "_Bookmarks"
-#~ msgstr "_Adreces d'interès"
-
-#~ msgid "Display icons in the opposite order"
-#~ msgstr "Mostra les icones en l'ordre invers"
-
-#~ msgid "Keep icons lined up on a grid"
-#~ msgstr "Mantén les icones alineades a una graella"
-
-#~ msgid "_Manually"
-#~ msgstr "_Manualment"
-
-#~ msgid "Leave icons wherever they are dropped"
-#~ msgstr "Deixa les icones allà on s'hagin deixat anar"
-
-#~ msgid "By _Name"
-#~ msgstr "Per _nom"
-
-#~ msgid "Keep icons sorted by name in rows"
-#~ msgstr "Conserva les icones ordenades pel nom en files"
-
-#~ msgid "By _Size"
-#~ msgstr "Per _mida"
-
-#~ msgid "Keep icons sorted by size in rows"
-#~ msgstr "Conserva les icones ordenades per la mida en files"
-
-#~ msgid "By _Type"
-#~ msgstr "Per _tipus"
-
-#~ msgid "Keep icons sorted by type in rows"
-#~ msgstr "Conserva les icones ordenades pel tipus en files"
-
-#~ msgid "By Modification _Date"
-#~ msgstr "Per _data de modificació"
-
-#~ msgid "Keep icons sorted by modification date in rows"
-#~ msgstr "Conserva les icones ordenades per la data de modificació en files"
-
-#~ msgid "By _Access Date"
-#~ msgstr "Per data d'_accés"
-
-#~ msgid "Keep icons sorted by access date in rows"
-#~ msgstr "Ordena les icones en files segons la data d'accés"
-
-#~ msgid "By T_rash Time"
-#~ msgstr "Per temps a la _paperera"
-
-#~ msgid "Keep icons sorted by trash time in rows"
-#~ msgstr "Conserva les icones ordenades pel temps a la paperera en files"
-
-#~ msgid "Keep icons sorted by search relevance in rows"
-#~ msgstr "Conserva les icones ordenades per rellevància de cerca en files"
-
-#~ msgid "E_mpty Trash"
-#~ msgstr "_Buida la paperera"
-
-#~ msgid "Restore Icons' Original Si_zes"
-#~ msgstr "Retorna les icones a la seva _mida original"
-
-#~ msgid ""
-#~ "Show a window that lets you set your desktop background's pattern or color"
-#~ msgstr ""
-#~ "Mostra una finestra que us permet definir el patró o color de fons de "
-#~ "l'escriptori"
-
-#~ msgid "Reposition icons to better fit in the window and avoid overlapping"
-#~ msgstr ""
-#~ "Torna a posicionar les icones per ajustar-les a la finestra evitant la "
-#~ "superposició"
-
-#~ msgid "Make the selected icons resizable"
-#~ msgstr "Fes que es pugui canviar la mida de les icones seleccionades"
-
-#~ msgid "Restore each selected icon to its original size"
-#~ msgstr "Retorna totes les icones seleccionades a la seva mida original"
-
-#~ msgid "I_nclude a Delete command that bypasses Trash"
-#~ msgstr "I_nclou una ordre Suprimeix que no tingui en compte la paperera"
-
-#~ msgid "33%"
-#~ msgstr "33%"
-
-#~ msgid "50%"
-#~ msgstr "50%"
-
-#~ msgid "66%"
-#~ msgstr "66%"
-
-#~ msgid "100%"
-#~ msgstr "100%"
-
-#~ msgid "150%"
-#~ msgstr "150%"
-
-#~ msgid "200%"
-#~ msgstr "200%"
-
-#~ msgid "400%"
-#~ msgstr "400%"
-
-#~ msgid "Select the columns visible in this folder"
-#~ msgstr "Selecciona les columnes visibles d'aquesta carpeta"
-
-#~ msgid "Location:"
-#~ msgstr "Ubicació:"
-
-#~ msgid "Location options"
-#~ msgstr "Opcions d'ubicació"
-
-#~ msgid "Save Search as"
-#~ msgstr "Anomena i desa la cerca"
-
-#~ msgid "_Save"
-#~ msgstr "De_sa"
-
-#~ msgid "Search _name:"
-#~ msgstr "_Nom de la cerca:"
-
-#~ msgid "_Folder:"
-#~ msgstr "_Carpeta:"
-
-#~ msgid "Select Folder to Save Search In"
-#~ msgstr "Seleccioneu la carpeta on desar la cerca"
-
-#~ msgid "Use “%s” to open the selected item"
-#~ msgid_plural "Use “%s” to open the selected items"
-#~ msgstr[0] "Utilitza «%s» per obrir l'element seleccionat"
-#~ msgstr[1] "Utilitza «%s» per obrir els elements seleccionats"
-
-#~ msgid "Run “%s” on any selected items"
-#~ msgstr "Executa «%s» a tots els elements seleccionats"
-
-#~ msgid "Create a new document from template “%s”"
-#~ msgstr "Crea un document nou a partir de la plantilla «%s»"
-
-#~ msgid "Open Wit_h"
-#~ msgstr "Obre am_b"
-
-#~ msgid "Choose a program with which to open the selected item"
-#~ msgstr "Trieu un programa amb el qual s'obrirà l'element seleccionat"
-
-#~ msgid "View or modify the properties of each selected item"
-#~ msgstr "Visualitza o modifica les propietats de cada element seleccionat"
-
-#~ msgid "Create a new empty folder inside this folder"
-#~ msgstr "Crea una carpeta buida nova dins d'aquesta carpeta"
-
-#~ msgid "New Folder with Selection"
-#~ msgstr "Carpeta nova amb la selecció"
-
-#~ msgid "Create a new folder containing the selected items"
-#~ msgstr "Crea una carpeta nova que contingui els elements seleccionats"
-
-#~ msgid "Open the selected item in this window"
-#~ msgstr "Obre l'element seleccionat en aquesta finestra"
-
-#~ msgid "Open the selected item's location in this window"
-#~ msgstr "Obre la ubicació de l'element seleccionat en aquesta finestra"
-
-#~ msgid "Open in Navigation Window"
-#~ msgstr "Obre en una finestra de navegació"
-
-#~ msgid "Open each selected item in a navigation window"
-#~ msgstr "Obre cada element seleccionat en una finestra de navegació"
-
-#~ msgid "Open each selected item in a new tab"
-#~ msgstr "Obre cada element seleccionat en una pestanya nova"
-
-#~ msgid "Other _Application…"
-#~ msgstr "Una altra _aplicació…"
-
-#~ msgid "Choose another application with which to open the selected item"
-#~ msgstr "Trieu una altra aplicació amb què obrir l'element seleccionat"
-
-#~ msgid "Show the folder containing the scripts that appear in this menu"
-#~ msgstr ""
-#~ "Mostra la carpeta que conté els scripts que apareixen en aquest menú"
-
-#
-#~ msgid "Prepare the selected files to be moved with a Paste command"
-#~ msgstr "Prepara els fitxers seleccionats per moure'ls amb una ordre Enganxa"
-
-#
-#~ msgid "Prepare the selected files to be copied with a Paste command"
-#~ msgstr ""
-#~ "Prepara els fitxers seleccionats per copiar-los amb una ordre Enganxa"
-
-#
-#~ msgid "Move or copy files previously selected by a Cut or Copy command"
-#~ msgstr ""
-#~ "Mou o copia els fitxers prèviament seleccionats mitjançant l'ordre de "
-#~ "Retalla o Copia"
-
-#
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into the "
-#~ "selected folder"
-#~ msgstr ""
-#~ "Mou o copia a la carpeta seleccionada els fitxers prèviament seleccionats "
-#~ "mitjançant l'ordre Retalla o Copia"
-
-#~ msgid "Copy selected files to another location"
-#~ msgstr "Copia els fitxers seleccionats a una altra ubicació"
-
-#~ msgid "Move selected files to another location"
-#~ msgstr "Mou els fitxers seleccionats a una altra ubicació"
-
-#~ msgid "Select all items in this window"
-#~ msgstr "Selecciona tots els elements d'aquesta finestra"
-
-#~ msgid "Select I_tems Matching…"
-#~ msgstr "Selecciona els _elements que coincideixin…"
-
-#~ msgid "Select items in this window matching a given pattern"
-#~ msgstr ""
-#~ "Seleccioneu els elements d'aquesta finestra que coincideixin amb un patró"
-
-#~ msgid "Select all and only the items that are not currently selected"
-#~ msgstr "Selecciona els elements que no estan seleccionats actualment"
-
-#
-#~ msgid "Ma_ke Link"
-#~ msgid_plural "Ma_ke Links"
-#~ msgstr[0] "Crea un _enllaç"
-#~ msgstr[1] "Crea uns _enllaços"
-
-#~ msgid "Create a symbolic link for each selected item"
-#~ msgstr "Crea un enllaç simbòlic per a cada element seleccionat"
-
-#~ msgid "Make item the wallpaper"
-#~ msgstr "Estableix l'element com a fons d'escriptori"
-
-#~ msgid "Move each selected item to the Trash"
-#~ msgstr "Mou tots els elements seleccionats a la paperera"
-
-#~ msgid "Delete each selected item, without moving to the Trash"
-#~ msgstr ""
-#~ "Suprimeix tots els elements seleccionats sense moure'ls a la paperera"
-
-#~ msgid "Undo the last action"
-#~ msgstr "Desfés l'última acció"
-
-#~ msgid "Redo the last undone action"
-#~ msgstr "Refés l'últim canvi desfet"
-
-#~ msgid ""
-#~ "Reset sorting order and zoom level to match preferences for this view"
-#~ msgstr ""
-#~ "Restableix l'ordenació i el nivell d'ampliació per fer-los coincidir amb "
-#~ "les preferències d'aquesta vista"
-
-#~ msgid "Mount the selected volume"
-#~ msgstr "Munta el volum seleccionat"
-
-#~ msgid "Unmount the selected volume"
-#~ msgstr "Desmunta el volum seleccionat"
-
-#~ msgid "Eject the selected volume"
-#~ msgstr "Expulsa el volum seleccionat"
-
-#~ msgid "Start the selected volume"
-#~ msgstr "Inicia el volum seleccionat"
-
-#~ msgid "Detect media in the selected drive"
-#~ msgstr "Detecta els suports de la unitat seleccionada"
-
-#~ msgid "Mount the volume associated with the open folder"
-#~ msgstr "Munta el volum associat a la carpeta oberta"
-
-#~ msgid "Unmount the volume associated with the open folder"
-#~ msgstr "Desmunta el volum associat a la carpeta oberta"
-
-#~ msgid "Eject the volume associated with the open folder"
-#~ msgstr "Expulsa el volum associat a la carpeta oberta"
-
-#~ msgid "Start the volume associated with the open folder"
-#~ msgstr "Inicia el volum associat a la carpeta oberta"
-
-#~ msgid "Stop the volume associated with the open folder"
-#~ msgstr "Atura el volum associat a la carpeta oberta"
-
-#~ msgid "Sa_ve Search"
-#~ msgstr "_Desa la cerca"
-
-#~ msgid "Save the edited search"
-#~ msgstr "Desa la cerca editada"
-
-#~ msgid "Sa_ve Search As…"
-#~ msgstr "Anomena i _desa la cerca…"
-
-#~ msgid "Save the current search as a file"
-#~ msgstr "Desa la cerca actual com a un fitxer"
-
-#
-#~ msgid "Open this folder in a navigation window"
-#~ msgstr "Obre aquesta carpeta en una finestra de navegació"
-
-#
-#~ msgid "Open this folder in a new tab"
-#~ msgstr "Obre aquesta carpeta en una pestanya nova"
-
-#
-#~ msgid "Prepare this folder to be moved with a Paste command"
-#~ msgstr "Prepara aquesta carpeta per moure-la amb una ordre Enganxa"
-
-#
-#~ msgid "Prepare this folder to be copied with a Paste command"
-#~ msgstr "Prepara aquesta carpeta per copiar-la amb una ordre Enganxa"
-
-#
-#~ msgid ""
-#~ "Move or copy files previously selected by a Cut or Copy command into this "
-#~ "folder"
-#~ msgstr ""
-#~ "Mou o copia a aquesta carpeta els fitxers prèviament seleccionats "
-#~ "mitjançant l'ordre Retalla o Copia"
-
-#
-#~ msgid "Move this folder to the Trash"
-#~ msgstr "Mou aquesta carpeta a la paperera"
-
-#
-#~ msgid "Delete this folder, without moving to the Trash"
-#~ msgstr "Suprimeix aquesta carpeta, sense moure-la a la paperera"
-
-#~ msgid "Mount the volume associated with this folder"
-#~ msgstr "Munta el volum associat a aquesta carpeta"
-
-#~ msgid "Unmount the volume associated with this folder"
-#~ msgstr "Desmunta el volum associat a aquesta carpeta"
-
-#~ msgid "Eject the volume associated with this folder"
-#~ msgstr "Expulsa el volum associat a aquesta carpeta"
-
-#~ msgid "Start the volume associated with this folder"
-#~ msgstr "Inicia el volum associat a aquesta carpeta"
-
-#~ msgid "Stop the volume associated with this folder"
-#~ msgstr "Atura el volum associat a aquesta carpeta"
-
-#
-#~ msgid "View or modify the properties of this folder"
-#~ msgstr "Visualitza o modifica les propietats d'aquesta carpeta"
-
-#
-#~ msgid "Toggle the display of hidden files in the current window"
-#~ msgstr "Commuta la visualització de fitxers ocults en la finestra actual"
-
-#~ msgid "Run or manage scripts"
-#~ msgstr "Executa o gestiona els scripts"
-
-#
-#~ msgid "Move the open folder out of the trash to “%s”"
-#~ msgstr "Mou la carpeta oberta fora de la paperera a «%s»"
-
-#
-#~ msgid "Move the selected folder out of the trash to “%s”"
-#~ msgstr "Mou la carpeta seleccionada fora de la paperera a «%s»"
-
-#
-#~ msgid "Move the selected folders out of the trash to “%s”"
-#~ msgstr "Mou les carpetes seleccionades fora de la paperera a «%s»"
-
-#
-#~ msgid "Move the selected folder out of the trash"
-#~ msgstr "Mou la carpeta seleccionada fora de la paperera"
-
-#
-#~ msgid "Move the selected folders out of the trash"
-#~ msgstr "Mou les carpetes seleccionades fora de la paperera"
-
-#~ msgid "Move the selected file out of the trash to “%s”"
-#~ msgstr "Mou el fitxer seleccionat fora de la paperera a «%s»"
-
-#~ msgid "Move the selected files out of the trash to “%s”"
-#~ msgstr "Mou els fitxers seleccionats fora de la paperera a «%s»"
-
-#~ msgid "Move the selected file out of the trash"
-#~ msgstr "Mou el fitxer seleccionat fora de la paperera"
-
-#~ msgid "Move the selected files out of the trash"
-#~ msgstr "Mou els fitxers seleccionats fora de la paperera"
-
-#~ msgid "Move the selected item out of the trash to “%s”"
-#~ msgstr "Mou l'element seleccionat fora de la paperera a «%s»"
-
-#~ msgid "Move the selected items out of the trash to “%s”"
-#~ msgstr "Mou els elements seleccionats fora de la paperera a «%s»"
-
-#~ msgid "Move the selected item out of the trash"
-#~ msgstr "Mou l'element seleccionat fora de la paperera"
-
-#~ msgid "Move the selected items out of the trash"
-#~ msgstr "Mou els elements seleccionats fora de la paperera"
-
-#~ msgid "Start the selected drive"
-#~ msgstr "Inicia la unitat seleccionada"
-
-#~ msgid "Connect to the selected drive"
-#~ msgstr "Connecta a la unitat seleccionada"
-
-#~ msgid "Start the selected multi-disk drive"
-#~ msgstr "Inicia la unitat multi disc seleccionada"
-
-#~ msgid "Unlock the selected drive"
-#~ msgstr "Desbloca la unitat seleccionada"
-
-#~ msgid "Stop the selected drive"
-#~ msgstr "Atura la unitat seleccionada"
-
-#~ msgid "Safely remove the selected drive"
-#~ msgstr "Treu la unitat seleccionada de forma segura"
-
-#~ msgid "Disconnect the selected drive"
-#~ msgstr "Desconnecta la unitat seleccionada"
-
-#~ msgid "Stop the selected multi-disk drive"
-#~ msgstr "Atura la unitat multi disc seleccionada"
-
-#~ msgid "Lock the selected drive"
-#~ msgstr "Bloca la unitat seleccionada"
-
-#~ msgid "Start the drive associated with the open folder"
-#~ msgstr "Inicia la unitat associada a la carpeta oberta"
-
-#~ msgid "Connect to the drive associated with the open folder"
-#~ msgstr "Connecta a la unitat associada a la carpeta oberta"
-
-#~ msgid "Start the multi-disk drive associated with the open folder"
-#~ msgstr "Inicia la unitat multi disc associada a la carpeta oberta"
-
-#~ msgid "_Unlock Drive"
-#~ msgstr "_Desbloca la unitat"
-
-#~ msgid "Unlock the drive associated with the open folder"
-#~ msgstr "Desbloca la unitat associada a la carpeta oberta"
-
-#~ msgid "_Stop the drive associated with the open folder"
-#~ msgstr "_Atura la unitat associada a la carpeta oberta"
-
-#~ msgid "Safely remove the drive associated with the open folder"
-#~ msgstr "Treu la unitat associada a la carpeta oberta de forma segura"
-
-#~ msgid "Disconnect the drive associated with the open folder"
-#~ msgstr "Desconnecta la unitat associada a la carpeta oberta"
-
-#~ msgid "Stop the multi-disk drive associated with the open folder"
-#~ msgstr "Atura la unitat multi disc associada a la carpeta oberta"
-
-#~ msgid "Lock the drive associated with the open folder"
-#~ msgstr "Bloca la unitat associada a la carpeta oberta"
-
-#
-#~ msgid "Delete the open folder permanently"
-#~ msgstr "Suprimeix definitivament la carpeta oberta"
-
-#
-#~ msgid "Move the open folder to the Trash"
-#~ msgstr "Mou la carpeta oberta a la paperera"
-
-#~ msgid "_Open With %s"
-#~ msgstr "_Obre amb %s"
-
-#~ msgid "Open in %'d New _Window"
-#~ msgid_plural "Open in %'d New _Windows"
-#~ msgstr[0] "Obre en %'d _finestra nova"
-#~ msgstr[1] "Obre en %'d _finestres noves"
-
-#~ msgid "Open in %'d New _Tab"
-#~ msgid_plural "Open in %'d New _Tabs"
-#~ msgstr[0] "Obre en %'d _pestanya nova"
-#~ msgstr[1] "Obre en %'d _pestanyes noves"
-
-#~ msgid "Delete all selected items permanently"
-#~ msgstr "Suprimeix definitivament tots els elements seleccionats"
-
-#~ msgid "Remove each selected item from the recently used list"
-#~ msgstr ""
-#~ "Suprimeix els elements seleccionats de la llista d'elements utilitzats "
-#~ "recentment"
-
-#
-#~ msgid "View or modify the properties of the open folder"
-#~ msgstr "Visualitza o modifica les propietats de la carpeta oberta"
-
-#
-#~ msgid "Copyright © %Id–%Id The Files authors"
-#~ msgstr "Copyright © %Id–%Id Els autors del Fitxers"
-
-#~ msgid "_Close"
-#~ msgstr "Tan_ca"
-
-#~ msgid "Edit Nautilus preferences"
-#~ msgstr "Edita les preferències del Nautilus"
-
-#~ msgid "Open _Parent"
-#~ msgstr "Obre el _pare"
-
-#~ msgid "Stop loading the current location"
-#~ msgstr "Atura la càrrega de la ubicació actual"
-
-#~ msgid "_All Topics"
-#~ msgstr "_Tots els temes"
-
-#~ msgid "Display Nautilus help"
-#~ msgstr "Mostra l'ajuda del Nautilus"
-
-#~ msgid ""
-#~ "Locate files based on file name and type. Save your searches for later "
-#~ "use."
-#~ msgstr ""
-#~ "Localitzeu els fitxers en funció del nom i el tipus. Deseu les cerques "
-#~ "per utilitzar-les més tard."
-
-#~ msgid "Sort files and folders"
-#~ msgstr "Ordena els fitxers i les carpetes"
-
-#~ msgid "Arrange files by name, size, type, or when they were changed."
-#~ msgstr "Organitzeu els fitxers per nom, mida, tipus o quan s'han modificat."
-
-#~ msgid "Find a lost file"
-#~ msgstr "Troba un fitxer perdut"
-
-#~ msgid ""
-#~ "Follow these tips if you can't find a file you created or downloaded."
-#~ msgstr ""
-#~ "Seguiu aquests consells si no podeu trobar un fitxer que heu creat o "
-#~ "baixat."
-
-#~ msgid "Share and transfer files"
-#~ msgstr "Compartició i transferència de fitxers"
-
-#~ msgid ""
-#~ "Easily transfer files to your contacts and devices from the file manager."
-#~ msgstr ""
-#~ "Transferiu fàcilment fitxers als vostres contactes i dispositius amb el "
-#~ "gestor de fitxers."
-
-#~ msgid "Display credits for the creators of Nautilus"
-#~ msgstr "Mostra els crèdits dels creadors del Nautilus"
-
-#~ msgid "Increase the view size"
-#~ msgstr "Augmenta la mida de la vista"
-
-#~ msgid "Decrease the view size"
-#~ msgstr "Redueix la mida de la vista"
-
-#~ msgid "Normal Si_ze"
-#~ msgstr "_Mida normal"
-
-#~ msgid "Use the normal view size"
-#~ msgstr "Utilitza la mida normal de la vista"
-
-#~ msgid "Connect to a remote computer or shared disk"
-#~ msgstr "Connecta a un ordinador remot o un disc compartit"
-
-#~ msgid "_Home"
-#~ msgstr "_Personal"
-
-#~ msgid "Open your personal folder"
-#~ msgstr "Obriu la vostra carpeta personal"
-
-#~ msgid "Open another Nautilus window for the displayed location"
-#~ msgstr "Obre una altra finestra del Nautilus per a la ubicació mostrada"
-
-#~ msgid "Close _All Windows"
-#~ msgstr "Ta_nca totes les finestres"
-
-#~ msgid "Close all Navigation windows"
-#~ msgstr "Tanca totes les finestres de navegació"
-
-#~ msgid "Go to the previous visited location"
-#~ msgstr "Vés a la ubicació visitada anterior"
-
-#~ msgid "Go to the next visited location"
-#~ msgstr "Vés a la ubicació visitada següent"
-
-#~ msgid "Specify a location to open"
-#~ msgstr "Indiqueu una ubicació a obrir"
-
-#~ msgid "_Bookmarks…"
-#~ msgstr "_Adreces d'interès…"
-
-#~ msgid "Display and edit bookmarks"
-#~ msgstr "Mostra i edita les adreces d'interès"
-
-#~ msgid "_Previous Tab"
-#~ msgstr "Pestanya _anterior"
-
-#~ msgid "_Next Tab"
-#~ msgstr "Pestanya _següent"
-
-#~ msgid "Move current tab to left"
-#~ msgstr "Mou la pestanya actual a l'esquerra"
-
-#~ msgid "Move current tab to right"
-#~ msgstr "Mou la pestanya actual a la dreta"
-
-#~ msgid "Change the visibility of this window's side pane"
-#~ msgstr "Canvia la visibilitat de la subfinestra lateral d'aquesta finestra"
-
-#~ msgid "_Search for Files…"
-#~ msgstr "_Cerca fitxers…"
-
-#~ msgid "List"
-#~ msgstr "Llista"
-
-#~ msgid "View items as a list"
-#~ msgstr "Visualitza els elements com una llista"
-
-#~ msgid "View items as a grid of icons"
-#~ msgstr "Visualitza els elements com una graella d'icones"
-
-#~ msgid "_Up"
-#~ msgstr "_Amunt"
-
-#~ msgid "Set as _Background"
-#~ msgstr "Estableix com a _fons"
-
-#~ msgid "There was an error displaying help."
-#~ msgstr "S'ha produït un error en mostrar l'ajuda."
-
-#~ msgid "_Browse"
-#~ msgstr "_Navega"
-
-#~ msgid ""
-#~ "Files is free software; you can redistribute it and/or modify it under "
-#~ "the terms of the GNU General Public License as published by the Free "
-#~ "Software Foundation; either version 2 of the License, or (at your option) "
-#~ "any later version."
-#~ msgstr ""
-#~ "El Fitxers és programari lliure; podeu redistribuir-lo i/o modificar-lo "
-#~ "sota els termes de la Llicència Pública General de GNU tal com ha estat "
-#~ "publicada per la Free Software Foundation, ja sigui la versió 2 de la "
-#~ "Llicència o bé (si ho preferiu) qualsevol versió posterior."
-
-#~ msgid ""
-#~ "Files is distributed in the hope that it will be useful, but WITHOUT ANY "
-#~ "WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS "
-#~ "FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more "
-#~ "details."
-#~ msgstr ""
-#~ "El Fitxers es distribueix amb l'esperança que sigui útil, però SENSE CAP "
-#~ "GARANTIA; ni tan sols la garantia implícita de COMERCIALITZACIÓ o "
-#~ "ADEQUACIÓ PER A CAP FINALITAT DETERMINADA. Consulteu la Llicència Pública "
-#~ "General de GNU per a més informació."
-
-#~ msgid ""
-#~ "You should have received a copy of the GNU General Public License along "
-#~ "with Nautilus; if not, write to the Free Software Foundation, Inc., 51 "
-#~ "Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
-#~ msgstr ""
-#~ "Amb el Nautilus heu d'haver rebut una còpia de la Llicència Pública "
-#~ "General de GNU; si no és així, escriviu a la Free Software Foundation, "
-#~ "Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA"
