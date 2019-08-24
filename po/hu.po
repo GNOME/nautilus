@@ -12,46 +12,56 @@
 # Andras Timar <timar at gnome dot hu>, 2002, 2004.
 # Lukács Bence <lukacs.bence1 at gmail dot com>, 2012.
 # Balázs Úr <ur.balazs at fsf dot hu>, 2013, 2015, 2016, 2017, 2018, 2019.
-# Meskó Balázs <meskobalazs at gmail dot com>, 2016.
+# Balázs Meskó <mesko.balazs at fsf dot hu>, 2016.
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-05-03 11:29+0000\n"
-"PO-Revision-Date: 2019-05-24 21:27+0200\n"
-"Last-Translator: Meskó Balázs <mesko.balazs@fsf.hu>\n"
+"POT-Creation-Date: 2019-08-12 08:13+0000\n"
+"PO-Revision-Date: 2019-08-24 22:58+0200\n"
+"Last-Translator: Balázs Úr <ur.balazs at fsf dot hu>\n"
 "Language-Team: Hungarian <gnome-hu-list at gnome dot org>\n"
 "Language: hu\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.2.1\n"
+"X-Generator: Lokalize 18.12.3\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
 msgid "Run Software"
 msgstr "Szoftver futtatása"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:6
-msgid "Nautilus"
-msgstr "Nautilus"
+#. “Files” is the generic application name and the suffix is
+#. * an arbitrary and deliberately unlocalized string only shown
+#. * in development builds.
+#.
+#: data/org.gnome.Nautilus.appdata.xml.in.in:5
+#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
+#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
+msgid "Files"
+msgstr "Fájlok"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:7
+#: data/org.gnome.Nautilus.appdata.xml.in.in:6
 #: data/org.gnome.Nautilus.desktop.in.in:4
 msgid "Access and organize files"
 msgstr "Fájlok elérése és rendszerezése"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:9
+#: data/org.gnome.Nautilus.appdata.xml.in.in:8
+#| msgid ""
+#| "Nautilus, also known as Files, is the default file manager of the GNOME "
+#| "desktop. It provides a simple and integrated way of managing your files "
+#| "and browsing your file system."
 msgid ""
-"Nautilus, also known as Files, is the default file manager of the GNOME "
+"Files, also known as Nautilus, is the default file manager of the GNOME "
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"A Nautilus, más néven Fájlok a GNOME asztali környezet alapértelmezett "
+"A Fájlok, más néven Nautilus a GNOME asztali környezet alapértelmezett "
 "fájlkezelője. Egyszerű és integrált lehetőségeket nyújt a fájlok kezeléséhez "
 "és fájlrendszere tallózásához."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:13
+#: data/org.gnome.Nautilus.appdata.xml.in.in:12
 msgid ""
 "Nautilus supports all the basic functions of a file manager and more. It can "
 "search and manage your files and folders, both locally and on a network, "
@@ -66,40 +76,35 @@ msgstr ""
 "ikonrács, ikonlista és falista. Funkcionalitása bővítményekkel és "
 "parancsfájlokkal bővíthető."
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:31
+#: data/org.gnome.Nautilus.appdata.xml.in.in:38
+msgid "The GNOME Project"
+msgstr "A GNOME projekt"
+
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42
 msgid "Tile View"
 msgstr "Csempenézet"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:35 src/nautilus-list-view.c:2393
+#: data/org.gnome.Nautilus.appdata.xml.in.in:46 src/nautilus-list-view.c:2393
 #: src/resources/ui/nautilus-preferences-window.ui:161
 #: src/resources/ui/nautilus-preferences-window.ui:1285
 msgid "List View"
 msgstr "Listanézet"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:39 src/nautilus-query.c:536
+#: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-query.c:536
 #: src/nautilus-search-directory-file.c:175
 #: src/nautilus-search-directory-file.c:232
 #: src/nautilus-search-directory-file.c:272
 #: src/resources/ui/nautilus-preferences-window.ui:872
 #: src/resources/ui/nautilus-search-popover.ui:341
-#: src/resources/ui/nautilus-toolbar.ui:517
+#: src/resources/ui/nautilus-toolbar.ui:510
 msgid "Search"
 msgstr "Keresés"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:43 src/nautilus-bookmark.c:111
+#: data/org.gnome.Nautilus.appdata.xml.in.in:54 src/nautilus-bookmark.c:111
 #: src/nautilus-file.c:4422 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "Egyéb helyek"
-
-#. “Files” is the generic application name and the suffix is
-#. * an arbitrary and deliberately unlocalized string only shown
-#. * in development builds.
-#.
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2864
-msgid "Files"
-msgstr "Fájlok"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -107,6 +112,7 @@ msgid "folder;manager;explore;disk;filesystem;"
 msgstr "mappa;könyvtár;kezelés;kezelő;intéző;lemez;fájlrendszer;commander;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
+#: src/resources/ui/nautilus-toolbar.ui:27
 msgid "New Window"
 msgstr "Új ablak"
 
@@ -582,12 +588,12 @@ msgstr "Y"
 #. Put up the timed wait window.
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
-#: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1202
-#: src/nautilus-files-view.c:1704 src/nautilus-files-view.c:5965
-#: src/nautilus-files-view.c:6423 src/nautilus-location-entry.c:282
+#: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1205
+#: src/nautilus-files-view.c:1707 src/nautilus-files-view.c:5976
+#: src/nautilus-files-view.c:6434 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:564 src/nautilus-mime-actions.c:568
 #: src/nautilus-mime-actions.c:650 src/nautilus-mime-actions.c:951
-#: src/nautilus-mime-actions.c:1298 src/nautilus-properties-window.c:4642
+#: src/nautilus-mime-actions.c:1299 src/nautilus-properties-window.c:4642
 #: src/nautilus-properties-window.c:5725 src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
 msgid "_Cancel"
@@ -764,13 +770,13 @@ msgstr "–"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
-#: src/nautilus-file.c:7427
+#: src/nautilus-file.c:7449
 msgid "Audio"
 msgstr "Hang"
 
 #: extensions/audio-video-properties/totem-properties-view.c:279
 #: extensions/audio-video-properties/resources/ui/properties.ui:321
-#: src/nautilus-file.c:7435 src/nautilus-mime-actions.c:206
+#: src/nautilus-file.c:7457 src/nautilus-mime-actions.c:206
 msgid "Video"
 msgstr "Videó"
 
@@ -834,7 +840,7 @@ msgid "Channels:"
 msgstr "Csatornák:"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:129
-#: src/nautilus-files-view.c:395 src/nautilus-list-model.c:471
+#: src/nautilus-files-view.c:398 src/nautilus-list-model.c:471
 #: src/nautilus-window-slot.c:1022
 msgid "Loading…"
 msgstr "Betöltés…"
@@ -945,7 +951,7 @@ msgid "Failed to load image information"
 msgstr "Nem sikerült betölteni a képinformációkat"
 
 #: extensions/image-properties/nautilus-image-properties-page-provider.c:100
-#: src/nautilus-file.c:7429
+#: src/nautilus-file.c:7451
 msgid "Image"
 msgstr "Kép"
 
@@ -1549,56 +1555,56 @@ msgid "Starred"
 msgstr "Csillagozott"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5456
+#: src/nautilus-file.c:5478
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5461
+#: src/nautilus-file.c:5483
 msgid "%l:%M %p"
 msgstr "%H:%M"
 
-#: src/nautilus-file.c:5470
+#: src/nautilus-file.c:5492
 #, no-c-format
 msgid "Yesterday"
 msgstr "Tegnap"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5479
+#: src/nautilus-file.c:5501
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Tegnap %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5486
+#: src/nautilus-file.c:5508
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Tegnap %H:%M"
 
-#: src/nautilus-file.c:5496
+#: src/nautilus-file.c:5518
 #, no-c-format
 msgid "%a"
 msgstr "%a."
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5505
+#: src/nautilus-file.c:5527
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a. %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5512
+#: src/nautilus-file.c:5534
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a. %H:%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5523
+#: src/nautilus-file.c:5545
 #, no-c-format
 msgid "%-e %b"
 msgstr "%b. %-e."
@@ -1606,7 +1612,7 @@ msgstr "%b. %-e."
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5533
+#: src/nautilus-file.c:5555
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%b. %-e. %H:%M"
@@ -1614,14 +1620,14 @@ msgstr "%b. %-e. %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5541
+#: src/nautilus-file.c:5563
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%b. %-e. %H:%M"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5552
+#: src/nautilus-file.c:5574
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%Y. %b. %-e."
@@ -1629,7 +1635,7 @@ msgstr "%Y. %b. %-e."
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5562
+#: src/nautilus-file.c:5584
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%Y. %b. %-e. %H:%M"
@@ -1637,61 +1643,61 @@ msgstr "%Y. %b. %-e. %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5570
+#: src/nautilus-file.c:5592
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%Y. %b. %-e. %H:%M"
 
-#: src/nautilus-file.c:5582
+#: src/nautilus-file.c:5604
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6045
+#: src/nautilus-file.c:6067
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "A jogosultságok beállítása nem engedélyezett"
 
-#: src/nautilus-file.c:6368
+#: src/nautilus-file.c:6390
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "A tulajdonos beállítása nem engedélyezett"
 
-#: src/nautilus-file.c:6387
+#: src/nautilus-file.c:6409
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "A megadott tulajdonos („%s”) nem létezik"
 
-#: src/nautilus-file.c:6672
+#: src/nautilus-file.c:6694
 #, c-format
 msgid "Not allowed to set group"
 msgstr "A csoport beállítása nem engedélyezett"
 
-#: src/nautilus-file.c:6691
+#: src/nautilus-file.c:6713
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "A megadott csoport („%s”) nem létezik"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6833
+#: src/nautilus-file.c:6855
 msgid "Me"
 msgstr "Én"
 
-#: src/nautilus-file.c:6865
+#: src/nautilus-file.c:6887
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u elem"
 msgstr[1] "%'u elem"
 
-#: src/nautilus-file.c:6866
+#: src/nautilus-file.c:6888
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u mappa"
 msgstr[1] "%'u mappa"
 
-#: src/nautilus-file.c:6867
+#: src/nautilus-file.c:6889
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1699,80 +1705,80 @@ msgstr[0] "%'u fájl"
 msgstr[1] "%'u fájl"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7344
+#: src/nautilus-file.c:7366
 msgid "? bytes"
 msgstr "? bájt"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7356
+#: src/nautilus-file.c:7378
 msgid "? items"
 msgstr "? elem"
 
-#: src/nautilus-file.c:7364
+#: src/nautilus-file.c:7386
 msgid "Unknown"
 msgstr "Ismeretlen"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7390 src/nautilus-properties-window.c:1296
+#: src/nautilus-file.c:7412 src/nautilus-properties-window.c:1296
 msgid "unknown"
 msgstr "ismeretlen"
 
-#: src/nautilus-file.c:7426 src/nautilus-file.c:7434 src/nautilus-file.c:7493
+#: src/nautilus-file.c:7448 src/nautilus-file.c:7456 src/nautilus-file.c:7515
 msgid "Program"
 msgstr "Program"
 
-#: src/nautilus-file.c:7428
+#: src/nautilus-file.c:7450
 msgid "Font"
 msgstr "Betűkészlet"
 
-#: src/nautilus-file.c:7430
+#: src/nautilus-file.c:7452
 msgid "Archive"
 msgstr "Archívum"
 
-#: src/nautilus-file.c:7431
+#: src/nautilus-file.c:7453
 msgid "Markup"
 msgstr "Jelölőkód"
 
-#: src/nautilus-file.c:7432 src/nautilus-file.c:7433
+#: src/nautilus-file.c:7454 src/nautilus-file.c:7455
 msgid "Text"
 msgstr "Szöveg"
 
-#: src/nautilus-file.c:7436
+#: src/nautilus-file.c:7458
 msgid "Contacts"
 msgstr "Névjegyek"
 
-#: src/nautilus-file.c:7437
+#: src/nautilus-file.c:7459
 msgid "Calendar"
 msgstr "Naptár"
 
-#: src/nautilus-file.c:7438
+#: src/nautilus-file.c:7460
 msgid "Document"
 msgstr "Dokumentum"
 
-#: src/nautilus-file.c:7439 src/nautilus-mime-actions.c:180
+#: src/nautilus-file.c:7461 src/nautilus-mime-actions.c:180
 msgid "Presentation"
 msgstr "Bemutató"
 
-#: src/nautilus-file.c:7440 src/nautilus-mime-actions.c:188
+#: src/nautilus-file.c:7462 src/nautilus-mime-actions.c:188
 msgid "Spreadsheet"
 msgstr "Táblázat"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7467
+#: src/nautilus-file.c:7489
 msgid "Other"
 msgstr "Egyéb"
 
-#: src/nautilus-file.c:7495
+#: src/nautilus-file.c:7517
 msgid "Binary"
 msgstr "Bináris"
 
-#: src/nautilus-file.c:7500
+#: src/nautilus-file.c:7522
 msgid "Folder"
 msgstr "Mappa"
 
-#: src/nautilus-file.c:7539
+#: src/nautilus-file.c:7561
 msgid "Link"
 msgstr "Link"
 
@@ -1781,12 +1787,12 @@ msgstr "Link"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7545 src/nautilus-file-operations.c:454
+#: src/nautilus-file.c:7567 src/nautilus-file-operations.c:454
 #, c-format
 msgid "Link to %s"
 msgstr "Link erre: %s"
 
-#: src/nautilus-file.c:7563 src/nautilus-file.c:7579 src/nautilus-file.c:7595
+#: src/nautilus-file.c:7585 src/nautilus-file.c:7601 src/nautilus-file.c:7617
 msgid "Link (broken)"
 msgstr "Link (törött)"
 
@@ -2063,7 +2069,7 @@ msgid "All items in the Trash will be permanently deleted."
 msgstr "A Kuka összes eleme véglegesen törölve lesz."
 
 #: src/nautilus-file-operations.c:1588 src/nautilus-file-operations.c:2863
-#: src/nautilus-window.c:1287
+#: src/nautilus-window.c:1282
 msgid "Empty _Trash"
 msgstr "_Kuka ürítése"
 
@@ -2228,7 +2234,7 @@ msgid "Do _not Empty Trash"
 msgstr "_Ne ürítse a Kukát"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6645
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6656
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "„%s” nem érhető el"
@@ -2743,60 +2749,60 @@ msgstr[1] "%'d fájl tömörítve ide: „%s”"
 msgid "Compressing Files"
 msgstr "Fájlok tömörítése"
 
-#: src/nautilus-files-view.c:395
+#: src/nautilus-files-view.c:398
 msgid "Searching…"
 msgstr "Keresés…"
 
-#: src/nautilus-files-view.c:1190 src/nautilus-mime-actions.c:939
+#: src/nautilus-files-view.c:1193 src/nautilus-mime-actions.c:939
 msgid "Are you sure you want to open all files?"
 msgstr "Biztosan meg akarja nyitni az összes fájlt?"
 
-#: src/nautilus-files-view.c:1193
+#: src/nautilus-files-view.c:1196
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "Ez %'d új lapot fog megnyitni."
 msgstr[1] "Ez %'d új lapot fog megnyitni."
 
-#: src/nautilus-files-view.c:1198
+#: src/nautilus-files-view.c:1201
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "Ez %'d új ablakot fog megnyitni."
 msgstr[1] "Ez %'d új ablakot fog megnyitni."
 
-#: src/nautilus-files-view.c:1202 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1205 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:951 src/nautilus-mime-actions.c:1137
 msgid "_OK"
 msgstr "_OK"
 
-#: src/nautilus-files-view.c:1701
+#: src/nautilus-files-view.c:1704
 msgid "Select Items Matching"
 msgstr "Találatok kijelölése"
 
-#: src/nautilus-files-view.c:1706 src/nautilus-files-view.c:5966
-#: src/nautilus-files-view.c:6424
+#: src/nautilus-files-view.c:1709 src/nautilus-files-view.c:5977
+#: src/nautilus-files-view.c:6435
 msgid "_Select"
 msgstr "_Kijelölés"
 
-#: src/nautilus-files-view.c:1714
+#: src/nautilus-files-view.c:1717
 msgid "_Pattern:"
 msgstr "_Minta:"
 
-#: src/nautilus-files-view.c:1720
+#: src/nautilus-files-view.c:1723
 msgid "Examples: "
 msgstr "Példák: "
 
-#: src/nautilus-files-view.c:2703
+#: src/nautilus-files-view.c:2706
 msgid "Could not paste files"
 msgstr "Nem illeszthetőek be a fájlok"
 
-#: src/nautilus-files-view.c:2704
+#: src/nautilus-files-view.c:2707
 msgid "Permissions do not allow pasting files in this directory"
 msgstr ""
 "A jogosultságok nem engedélyezik a fájlok ebbe a könyvtárba illesztését"
 
-#: src/nautilus-files-view.c:2860
+#: src/nautilus-files-view.c:2863
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2804,19 +2810,19 @@ msgstr ""
 "A Nautilus 3.6-ban elavulttá vált a könyvtár, és a beállítások át lettek "
 "költöztetve a ~/.local/share/nautilus alá"
 
-#: src/nautilus-files-view.c:3357 src/nautilus-files-view.c:3404
+#: src/nautilus-files-view.c:3360 src/nautilus-files-view.c:3407
 #, c-format
 msgid "“%s” selected"
 msgstr "„%s” kijelölve"
 
-#: src/nautilus-files-view.c:3361
+#: src/nautilus-files-view.c:3364
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d mappa kijelölve"
 msgstr[1] "%'d mappa kijelölve"
 
-#: src/nautilus-files-view.c:3375
+#: src/nautilus-files-view.c:3378
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
@@ -2824,14 +2830,14 @@ msgstr[0] "(%'d elemet tartalmaz)"
 msgstr[1] "(%'d elemet tartalmaz)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3390
+#: src/nautilus-files-view.c:3393
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(összesen %'d elemet tartalmaznak)"
 msgstr[1] "(összesen %'d elemet tartalmaznak)"
 
-#: src/nautilus-files-view.c:3409
+#: src/nautilus-files-view.c:3412
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
@@ -2839,7 +2845,7 @@ msgstr[0] "%'d elem kijelölve"
 msgstr[1] "%'d elem kijelölve"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3418
+#: src/nautilus-files-view.c:3421
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2850,7 +2856,7 @@ msgstr[1] "még %'d elem kijelölve"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3433
+#: src/nautilus-files-view.c:3436
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2862,119 +2868,119 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3466
+#: src/nautilus-files-view.c:3469
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:5953
+#: src/nautilus-files-view.c:5964
 msgid "Select Move Destination"
 msgstr "Válassza ki az áthelyezés célját"
 
-#: src/nautilus-files-view.c:5957
+#: src/nautilus-files-view.c:5968
 msgid "Select Copy Destination"
 msgstr "Válassza ki a másolás célját"
 
-#: src/nautilus-files-view.c:6420
+#: src/nautilus-files-view.c:6431
 msgid "Select Extract Destination"
 msgstr "Válassza ki a kibontás célját"
 
-#: src/nautilus-files-view.c:6608
+#: src/nautilus-files-view.c:6619
 msgid "Wallpapers"
 msgstr "Háttérképek"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6675
+#: src/nautilus-files-view.c:6686
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "„%s” nem távolítható el"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6705
+#: src/nautilus-files-view.c:6716
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "„%s” nem adható ki"
 
-#: src/nautilus-files-view.c:6730
+#: src/nautilus-files-view.c:6741
 msgid "Unable to stop drive"
 msgstr "A meghajtó nem állítható le"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6843
+#: src/nautilus-files-view.c:6854
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "A(z) „%s” nem indítható"
 
-#: src/nautilus-files-view.c:7764
+#: src/nautilus-files-view.c:7775
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "Új mappa a kijelöltekkel (%'d elem)"
 msgstr[1] "Új mappa a kijelöltekkel (%'d elem)"
 
-#: src/nautilus-files-view.c:7824
+#: src/nautilus-files-view.c:7835
 #, c-format
 msgid "Open With %s"
 msgstr "Megnyitás ezzel: %s"
 
-#: src/nautilus-files-view.c:7836
+#: src/nautilus-files-view.c:7847
 msgid "Run"
 msgstr "Futtatás"
 
-#: src/nautilus-files-view.c:7841
+#: src/nautilus-files-view.c:7852
 msgid "Extract Here"
 msgstr "Kibontás ide"
 
-#: src/nautilus-files-view.c:7842
+#: src/nautilus-files-view.c:7853
 msgid "Extract to…"
 msgstr "Kibontás…"
 
-#: src/nautilus-files-view.c:7846
+#: src/nautilus-files-view.c:7857
 msgid "Open"
 msgstr "Megnyitás"
 
-#: src/nautilus-files-view.c:7904
+#: src/nautilus-files-view.c:7915
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "In_dítás"
 
-#: src/nautilus-files-view.c:7910 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:7921 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "Kapcs_olódás"
 
-#: src/nautilus-files-view.c:7916
+#: src/nautilus-files-view.c:7927
 msgid "_Start Multi-disk Drive"
 msgstr "Többleme_zes meghajtó indítása"
 
-#: src/nautilus-files-view.c:7922
+#: src/nautilus-files-view.c:7933
 msgid "U_nlock Drive"
 msgstr "Meghajtó felol_dása"
 
-#: src/nautilus-files-view.c:7942
+#: src/nautilus-files-view.c:7953
 msgid "Stop Drive"
 msgstr "Meghajtó leállítása"
 
-#: src/nautilus-files-view.c:7948
+#: src/nautilus-files-view.c:7959
 msgid "_Safely Remove Drive"
 msgstr "Meghajtó _biztonságos eltávolítása"
 
-#: src/nautilus-files-view.c:7954 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:7965 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "_Bontás"
 
-#: src/nautilus-files-view.c:7960
+#: src/nautilus-files-view.c:7971
 msgid "_Stop Multi-disk Drive"
 msgstr "_Többlemezes meghajtó leállítása"
 
-#: src/nautilus-files-view.c:7966
+#: src/nautilus-files-view.c:7977
 msgid "_Lock Drive"
 msgstr "Meghajtó _zárolása"
 
-#: src/nautilus-files-view.c:9706
+#: src/nautilus-files-view.c:9740
 msgid "Content View"
 msgstr "Tartalomnézet"
 
-#: src/nautilus-files-view.c:9707
+#: src/nautilus-files-view.c:9741
 msgid "View of the current folder"
 msgstr "A jelenlegi mappa nézete"
 
@@ -3665,7 +3671,7 @@ msgstr "Belső hiba történt az alkalmazások keresésekor:"
 msgid "Unable to search for application"
 msgstr "Az alkalmazás nem kereshető"
 
-#: src/nautilus-mime-actions.c:1293
+#: src/nautilus-mime-actions.c:1294
 #, c-format
 msgid ""
 "There is no application installed for “%s” files. Do you want to search for "
@@ -3674,26 +3680,26 @@ msgstr ""
 "Nincs alkalmazás telepítve a(z) „%s” fájlokhoz. Szeretne keresni egy "
 "alkalmazást a fájl megnyitásához?"
 
-#: src/nautilus-mime-actions.c:1299
+#: src/nautilus-mime-actions.c:1300
 msgid "_Search in Software"
 msgstr "_Keresés a Szoftverekben"
 
 #. if it wasn't cancelled show a dialog
-#: src/nautilus-mime-actions.c:1664 src/nautilus-mime-actions.c:1962
+#: src/nautilus-mime-actions.c:1665 src/nautilus-mime-actions.c:1963
 #: src/gtk/nautilusgtkplacesview.c:1231 src/gtk/nautilusgtkplacesview.c:1306
 msgid "Unable to access location"
 msgstr "A hely nem érhető el"
 
-#: src/nautilus-mime-actions.c:2053
+#: src/nautilus-mime-actions.c:2054
 msgid "Unable to start location"
 msgstr "A hely nem indítható"
 
-#: src/nautilus-mime-actions.c:2146
+#: src/nautilus-mime-actions.c:2147
 #, c-format
 msgid "Opening “%s”."
 msgstr "„%s” megnyitása."
 
-#: src/nautilus-mime-actions.c:2151
+#: src/nautilus-mime-actions.c:2152
 #, c-format
 msgid "Opening %d item."
 msgid_plural "Opening %d items."
@@ -3789,6 +3795,7 @@ msgid "Folder name"
 msgstr "Mappanév"
 
 #: src/nautilus-new-folder-dialog-controller.c:147
+#: src/resources/ui/nautilus-toolbar.ui:71
 msgid "New Folder"
 msgstr "Új mappa"
 
@@ -4397,11 +4404,11 @@ msgstr ""
 "A mappában található végrehajtható fájlok megjelennek a Parancsfájlok "
 "menüben."
 
-#: src/nautilus-toolbar.c:839 src/resources/ui/nautilus-toolbar.ui:403
+#: src/nautilus-toolbar.c:839 src/resources/ui/nautilus-toolbar.ui:396
 msgid "_Undo"
 msgstr "_Visszavonás"
 
-#: src/nautilus-toolbar.c:846 src/resources/ui/nautilus-toolbar.ui:417
+#: src/nautilus-toolbar.c:846 src/resources/ui/nautilus-toolbar.ui:410
 msgid "_Redo"
 msgstr "Mé_gis"
 
@@ -4498,24 +4505,24 @@ msgstr "Vissza"
 msgid "Forward"
 msgstr "Előre"
 
-#: src/nautilus-window.c:1306
+#: src/nautilus-window.c:1301
 #: src/resources/ui/nautilus-pathbar-context-menu.ui:48
 msgid "_Properties"
 msgstr "T_ulajdonságok"
 
-#: src/nautilus-window.c:1318
+#: src/nautilus-window.c:1313
 msgid "_Format…"
 msgstr "_Formázás…"
 
 #. Translators: only one item has been deleted and %s is its name.
-#: src/nautilus-window.c:1595
+#: src/nautilus-window.c:1590
 #, c-format
 msgid "“%s” deleted"
 msgstr "„%s” törölve"
 
 #. Translators: one or more items might have been deleted, and %d
 #. * is the count.
-#: src/nautilus-window.c:1602
+#: src/nautilus-window.c:1597
 #, c-format
 msgid "%d file deleted"
 msgid_plural "%d files deleted"
@@ -4523,42 +4530,42 @@ msgstr[0] "%d fájl törölve"
 msgstr[1] "%d fájl törölve"
 
 #. Translators: one item has been unstarred and %s is its name.
-#: src/nautilus-window.c:1623
+#: src/nautilus-window.c:1618
 #, c-format
 msgid "“%s” unstarred"
 msgstr "„%s” csillagozása megszüntetve"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
-#: src/nautilus-window.c:1629
+#: src/nautilus-window.c:1624
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
 msgstr[0] "%d fájl csillagozása megszüntetve"
 msgstr[1] "%d fájl csillagozása megszüntetve"
 
-#: src/nautilus-window.c:1767
+#: src/nautilus-window.c:1762
 #, c-format
 msgid "Open %s"
 msgstr "%s megnyitása"
 
-#: src/nautilus-window.c:1845
+#: src/nautilus-window.c:1840
 msgid "_New Tab"
 msgstr "Új _lap"
 
-#: src/nautilus-window.c:1855
+#: src/nautilus-window.c:1850
 msgid "Move Tab _Left"
 msgstr "Lap mozgatása b_alra"
 
-#: src/nautilus-window.c:1863
+#: src/nautilus-window.c:1858
 msgid "Move Tab _Right"
 msgstr "Lap mozgatása j_obbra"
 
-#: src/nautilus-window.c:1874
+#: src/nautilus-window.c:1869
 msgid "_Close Tab"
 msgstr "Lap _bezárása"
 
-#: src/nautilus-window.c:2869
+#: src/nautilus-window.c:2866
 msgid "Access and organize your files"
 msgstr "Fájlok elérése és rendszerezése"
 
@@ -4566,7 +4573,7 @@ msgstr "Fájlok elérése és rendszerezése"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2879
+#: src/nautilus-window.c:2877
 msgid "translator-credits"
 msgstr ""
 "Bán Szabolcs <shooby at gnome dot hu>\n"
@@ -5502,56 +5509,82 @@ msgstr "Keresés csak a fájl nevében"
 msgid "Starred files will appear here"
 msgstr "A csillagozott fájlok itt fognak megjelenni"
 
-#: src/resources/ui/nautilus-toolbar.ui:117
+#: src/resources/ui/nautilus-toolbar.ui:49
+#| msgid "_New Tab"
+msgid "New Tab"
+msgstr "Új lap"
+
+#: src/resources/ui/nautilus-toolbar.ui:120
 msgid "Edit"
 msgstr "Szerkesztés"
 
-#: src/resources/ui/nautilus-toolbar.ui:218
+#: src/resources/ui/nautilus-toolbar.ui:133
+#| msgctxt "shortcut window"
+#| msgid "Cut"
+msgid "Cut"
+msgstr "Kivágás"
+
+#. Translators: This is a verb
+#: src/resources/ui/nautilus-toolbar.ui:157
+#| msgctxt "shortcut window"
+#| msgid "Copy"
+msgid "Copy"
+msgstr "Másolás"
+
+#: src/resources/ui/nautilus-toolbar.ui:180
+#| msgctxt "shortcut window"
+#| msgid "Paste"
+msgid "Paste"
+msgstr "Beillesztés"
+
+#: src/resources/ui/nautilus-toolbar.ui:224
 msgid "Select All"
 msgstr "Összes kijelölése"
 
-#: src/resources/ui/nautilus-toolbar.ui:245
-msgid "Show Hidden Files"
-msgstr "Rejtett fájlok megjelenítése"
+#: src/resources/ui/nautilus-toolbar.ui:250
+#| msgid "Show Hidden Files"
+msgid "Show _Hidden Files"
+msgstr "_Rejtett fájlok megjelenítése"
 
-#: src/resources/ui/nautilus-toolbar.ui:272
-msgid "_Sidebar"
-msgstr "_Oldalsáv"
+#: src/resources/ui/nautilus-toolbar.ui:265
+#| msgid "_Show sidebar"
+msgid "Show _Sidebar"
+msgstr "_Oldalsáv megjelenítése"
 
-#: src/resources/ui/nautilus-toolbar.ui:298
+#: src/resources/ui/nautilus-toolbar.ui:291
 msgid "_Preferences"
 msgstr "_Beállítások"
 
-#: src/resources/ui/nautilus-toolbar.ui:312
+#: src/resources/ui/nautilus-toolbar.ui:305
 msgid "_Keyboard Shortcuts"
 msgstr "_Gyorsbillentyűk"
 
-#: src/resources/ui/nautilus-toolbar.ui:326
+#: src/resources/ui/nautilus-toolbar.ui:319
 msgid "_Help"
 msgstr "_Súgó"
 
-#: src/resources/ui/nautilus-toolbar.ui:340
+#: src/resources/ui/nautilus-toolbar.ui:333
 msgid "_About Files"
 msgstr "A Fájlok _névjegye"
 
-#: src/resources/ui/nautilus-toolbar.ui:553
+#: src/resources/ui/nautilus-toolbar.ui:546
 msgid "Go back"
 msgstr "Ugrás vissza"
 
-#: src/resources/ui/nautilus-toolbar.ui:580
+#: src/resources/ui/nautilus-toolbar.ui:573
 msgid "Go forward"
 msgstr "Ugrás előre"
 
-#: src/resources/ui/nautilus-toolbar.ui:623
+#: src/resources/ui/nautilus-toolbar.ui:616
 msgid "Show operations"
 msgstr "Műveletek megjelenítése"
 
-#: src/resources/ui/nautilus-toolbar.ui:662
+#: src/resources/ui/nautilus-toolbar.ui:655
 msgid "Toggle view"
 msgstr "Nézet átváltása"
 
 #. “View” is a noun
-#: src/resources/ui/nautilus-toolbar.ui:688
+#: src/resources/ui/nautilus-toolbar.ui:679
 msgid "View options"
 msgstr "Nézetbeállítások"
 
@@ -5757,15 +5790,3 @@ msgstr "Kapcsolódás _kiszolgálóhoz"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Adja meg a kiszolgáló címét…"
-
-#~ msgid "application-x-executable"
-#~ msgstr "application-x-executable"
-
-#~ msgid "List view"
-#~ msgstr "Listanézet"
-
-#~ msgid "Other locations"
-#~ msgstr "Egyéb helyek"
-
-#~ msgid "@icon@"
-#~ msgstr "@icon@"
