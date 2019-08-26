@@ -6824,16 +6824,54 @@ set_permissions_task_done (GObject      *source_object,
 static void
 set_permissions_file (SetPermissionsJob *job,
                       GFile             *file,
+                      GFileInfo         *info);
+
+static void
+set_permissions_contained_files (SetPermissionsJob *job,
+                                 GFile             *file)
+{
+    CommonJob *common;
+    GFileEnumerator *enumerator;
+
+    common = (CommonJob *) job;
+
+    enumerator = g_file_enumerate_children (file,
+                                            G_FILE_ATTRIBUTE_STANDARD_NAME ","
+                                            G_FILE_ATTRIBUTE_STANDARD_TYPE ","
+                                            G_FILE_ATTRIBUTE_UNIX_MODE,
+                                            G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                            common->cancellable,
+                                            NULL);
+    if (enumerator)
+    {
+        GFileInfo *child_info;
+
+        while (!job_aborted (common) &&
+               (child_info = g_file_enumerator_next_file (enumerator, common->cancellable, NULL)) != NULL)
+        {
+            GFile *child;
+
+            child = g_file_get_child (file,
+                                      g_file_info_get_name (child_info));
+            set_permissions_file (job, child, child_info);
+            g_object_unref (child);
+            g_object_unref (child_info);
+        }
+        g_file_enumerator_close (enumerator, common->cancellable, NULL);
+        g_object_unref (enumerator);
+    }
+}
+
+static void
+set_permissions_file (SetPermissionsJob *job,
+                      GFile             *file,
                       GFileInfo         *info)
 {
     CommonJob *common;
-    GFileInfo *child_info;
     gboolean free_info;
     guint32 current;
     guint32 value;
     guint32 mask;
-    GFileEnumerator *enumerator;
-    GFile *child;
 
     common = (CommonJob *) job;
 
@@ -6889,34 +6927,13 @@ set_permissions_file (SetPermissionsJob *job,
     if (!job_aborted (common) &&
         g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
     {
-        enumerator = g_file_enumerate_children (file,
-                                                G_FILE_ATTRIBUTE_STANDARD_NAME ","
-                                                G_FILE_ATTRIBUTE_STANDARD_TYPE ","
-                                                G_FILE_ATTRIBUTE_UNIX_MODE,
-                                                G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
-                                                common->cancellable,
-                                                NULL);
-        if (enumerator)
-        {
-            while (!job_aborted (common) &&
-                   (child_info = g_file_enumerator_next_file (enumerator, common->cancellable, NULL)) != NULL)
-            {
-                child = g_file_get_child (file,
-                                          g_file_info_get_name (child_info));
-                set_permissions_file (job, child, child_info);
-                g_object_unref (child);
-                g_object_unref (child_info);
-            }
-            g_file_enumerator_close (enumerator, common->cancellable, NULL);
-            g_object_unref (enumerator);
-        }
+        set_permissions_contained_files (job, file);
     }
     if (free_info)
     {
         g_object_unref (info);
     }
 }
-
 
 static void
 set_permissions_thread_func (GTask        *task,
@@ -6933,11 +6950,8 @@ set_permissions_thread_func (GTask        *task,
                                        _("Setting permissions"));
 
     nautilus_progress_info_start (job->common.progress);
-
-    set_permissions_file (job, job->file, NULL);
+    set_permissions_contained_files (job, job->file);
 }
-
-
 
 void
 nautilus_file_set_permissions_recursive (const char         *directory,
