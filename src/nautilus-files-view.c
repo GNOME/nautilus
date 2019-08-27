@@ -1230,30 +1230,31 @@ get_view_directory (NautilusFilesView *view)
     return path;
 }
 
+static void
+on_window_handle_export (NautilusWindow *window,
+                         const char     *handle,
+                         guint           xid,
+                         gpointer        user_data)
+{
+    g_autofree gchar *uri = user_data;
+    nautilus_previewer_call_show_file (uri, handle, xid, TRUE);
+}
+
 void
 nautilus_files_view_preview_files (NautilusFilesView *view,
                                    GList             *files,
                                    GArray            *locations)
 {
-    gchar *uri;
-    guint xid = 0;
-    GtkWidget *toplevel;
-    GdkWindow *window;
+    g_autofree gchar *uri = NULL;
 
     uri = nautilus_file_get_uri (files->data);
-    toplevel = gtk_widget_get_toplevel (GTK_WIDGET (view));
-
-#ifdef GDK_WINDOWING_X11
-    window = gtk_widget_get_window (toplevel);
-    if (GDK_IS_X11_WINDOW (window))
+    if (!nautilus_window_export_handle (nautilus_files_view_get_window (view),
+                                        on_window_handle_export,
+                                        g_strdup (uri)))
     {
-        xid = gdk_x11_window_get_xid (gtk_widget_get_window (toplevel));
+        /* Let's use a fallback, so at least a preview will be displayed */
+        nautilus_previewer_call_show_file (uri, "x11:0", 0, TRUE);
     }
-#endif
-
-    nautilus_previewer_call_show_file (uri, xid, TRUE);
-
-    g_free (uri);
 }
 
 void
