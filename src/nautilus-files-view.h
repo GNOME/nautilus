@@ -236,6 +236,9 @@ struct _NautilusFilesViewClass {
         /* Use this to show an optional visual feedback when the directory is empty.
          * By default it shows a widget overlay on top of the view */
         void           (* check_empty_states)          (NautilusFilesView *view);
+
+        void           (* preview_selection_event)     (NautilusFilesView *view,
+                                                        GtkDirectionType   direction);
 };
 
 NautilusFilesView *      nautilus_files_view_new                         (guint               id,
@@ -266,6 +269,8 @@ void                nautilus_files_view_activate_file                    (Nautil
 void                nautilus_files_view_preview_files                    (NautilusFilesView *view,
                                                                           GList             *files,
                                                                           GArray            *locations);
+void                nautilus_files_view_preview_update                   (NautilusFilesView *view,
+                                                                          GList             *files);
 void                nautilus_files_view_start_batching_selection_changes (NautilusFilesView *view);
 void                nautilus_files_view_stop_batching_selection_changes  (NautilusFilesView *view);
 void                nautilus_files_view_notify_selection_changed         (NautilusFilesView *view);
@@ -304,6 +309,8 @@ void              nautilus_files_view_new_file_with_initial_contents (NautilusFi
 
 /* selection handling */
 void              nautilus_files_view_activate_selection         (NautilusFilesView      *view);
+void              nautilus_files_view_preview_selection_event    (NautilusFilesView      *view,
+                                                                  GtkDirectionType        direction);
 void              nautilus_files_view_stop_loading               (NautilusFilesView      *view);
 
 char *            nautilus_files_view_get_first_visible_file     (NautilusFilesView      *view);

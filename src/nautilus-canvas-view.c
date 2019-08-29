@@ -1277,6 +1277,18 @@ nautilus_canvas_view_sort_directories_first_changed (NautilusFilesView *director
     nautilus_canvas_container_sort (get_canvas_container (canvas_view));
 }
 
+static void
+nautilus_canvas_view_preview_selection_event (NautilusFilesView *directory_view,
+                                              GtkDirectionType   direction)
+{
+    NautilusCanvasView *canvas_view;
+
+    canvas_view = NAUTILUS_CANVAS_VIEW (directory_view);
+
+    nautilus_canvas_container_preview_selection_event (get_canvas_container (canvas_view),
+                                                       direction);
+}
+
 static char *
 canvas_view_get_container_uri (NautilusCanvasContainer *container,
                                NautilusFilesView       *view)
@@ -1566,6 +1578,7 @@ nautilus_canvas_view_class_init (NautilusCanvasViewClass *klass)
     nautilus_files_view_class->get_first_visible_file = canvas_view_get_first_visible_file;
     nautilus_files_view_class->scroll_to_file = canvas_view_scroll_to_file;
     nautilus_files_view_class->reveal_for_selection_context_menu = nautilus_canvas_view_reveal_for_selection_context_menu;
+    nautilus_files_view_class->preview_selection_event = nautilus_canvas_view_preview_selection_event;
 }
 
 static void

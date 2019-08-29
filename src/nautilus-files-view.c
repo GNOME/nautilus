@@ -1230,14 +1230,42 @@ get_view_directory (NautilusFilesView *view)
     return path;
 }
 
+typedef struct {
+    gchar *uri;
+    gboolean is_update;
+} PreviewExportData;
+
+static void
+preview_export_data_free (gpointer _data)
+{
+    PreviewExportData *data = _data;
+    g_free (data->uri);
+    g_free (data);
+}
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC (PreviewExportData, preview_export_data_free)
+
 static void
 on_window_handle_export (NautilusWindow *window,
                          const char     *handle,
                          guint           xid,
                          gpointer        user_data)
 {
-    g_autofree gchar *uri = user_data;
-    nautilus_previewer_call_show_file (uri, handle, xid, TRUE);
+    g_autoptr(PreviewExportData) data = user_data;
+    nautilus_previewer_call_show_file (data->uri, handle, xid, !data->is_update);
+}
+
+static void
+nautilus_files_view_preview (NautilusFilesView *view,
+                             PreviewExportData *data)
+{
+    if (!nautilus_window_export_handle (nautilus_files_view_get_window (view),
+                                        on_window_handle_export,
+                                        data))
+    {
+        /* Let's use a fallback, so at least a preview will be displayed */
+        nautilus_previewer_call_show_file (data->uri, "x11:0", 0, !data->is_update);
+    }
 }
 
 void
@@ -1245,16 +1273,37 @@ nautilus_files_view_preview_files (NautilusFilesView *view,
                                    GList             *files,
                                    GArray            *locations)
 {
-    g_autofree gchar *uri = NULL;
+    PreviewExportData *data = g_new0 (PreviewExportData, 1);
 
-    uri = nautilus_file_get_uri (files->data);
-    if (!nautilus_window_export_handle (nautilus_files_view_get_window (view),
-                                        on_window_handle_export,
-                                        g_strdup (uri)))
+    data->uri = nautilus_file_get_uri (files->data);
+    data->is_update = FALSE;
+
+    nautilus_files_view_preview (view, data);
+}
+
+void
+nautilus_files_view_preview_update (NautilusFilesView *view,
+                                    GList             *files)
+{
+    PreviewExportData *data;
+
+    if (!nautilus_previewer_is_visible ())
     {
-        /* Let's use a fallback, so at least a preview will be displayed */
-        nautilus_previewer_call_show_file (uri, "x11:0", 0, TRUE);
+        return;
     }
+
+    data = g_new0 (PreviewExportData, 1);
+    data->uri = nautilus_file_get_uri (files->data);
+    data->is_update = TRUE;
+
+    nautilus_files_view_preview (view, data);
+}
+
+void
+nautilus_files_view_preview_selection_event (NautilusFilesView *view,
+                                             GtkDirectionType   direction)
+{
+    NAUTILUS_FILES_VIEW_CLASS (G_OBJECT_GET_CLASS (view))->preview_selection_event (view, direction);
 }
 
 void
@@ -3491,6 +3540,7 @@ static void
 nautilus_files_view_send_selection_change (NautilusFilesView *view)
 {
     g_signal_emit (view, signals[SELECTION_CHANGED], 0);
+    g_object_notify (G_OBJECT (view), "selection");
 }
 
 static void

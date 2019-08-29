@@ -2760,7 +2760,8 @@ keyboard_arrow_key (NautilusCanvasContainer *container,
 static gboolean
 is_rectangle_selection_event (GdkEventKey *event)
 {
-    return (event->state & GDK_CONTROL_MASK) != 0 &&
+    return event != NULL &&
+           (event->state & GDK_CONTROL_MASK) != 0 &&
            (event->state & GDK_SHIFT_MASK) != 0;
 }
 
@@ -2866,6 +2867,28 @@ keyboard_up (NautilusCanvasContainer *container,
                         NULL,
                         NULL,
                         closest_in_90_degrees);
+}
+
+void
+nautilus_canvas_container_preview_selection_event (NautilusCanvasContainer *container,
+                                                   GtkDirectionType         direction)
+{
+    if (direction == GTK_DIR_UP)
+    {
+        keyboard_up (container, NULL);
+    }
+    else if (direction == GTK_DIR_DOWN)
+    {
+        keyboard_down (container, NULL);
+    }
+    else if (direction == GTK_DIR_LEFT)
+    {
+        keyboard_left (container, NULL);
+    }
+    else if (direction == GTK_DIR_RIGHT)
+    {
+        keyboard_right (container, NULL);
+    }
 }
 
 static void

@@ -45,6 +45,7 @@
 #include "nautilus-dbus-manager.h"
 #include "nautilus-directory-private.h"
 #include "nautilus-file.h"
+#include "nautilus-files-view.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-file-utilities.h"
@@ -84,6 +85,8 @@ typedef struct
 
     NautilusTagManager *tag_manager;
     GCancellable *tag_manager_cancellable;
+
+    guint previewer_selection_id;
 } NautilusApplicationPrivate;
 
 G_DEFINE_TYPE_WITH_PRIVATE (NautilusApplication, nautilus_application, GTK_TYPE_APPLICATION);
@@ -1218,6 +1221,59 @@ nautilus_application_withdraw_notification (NautilusApplication *self,
 }
 
 static void
+update_previewer_selection (NautilusApplication *self,
+                            NautilusWindow      *window)
+{
+    GtkWindow *gtk_window;
+    NautilusWindowSlot *slot;
+    NautilusView *view;
+    GList *selection;
+
+    gtk_window = gtk_application_get_active_window (GTK_APPLICATION (self));
+    if (!NAUTILUS_IS_WINDOW (gtk_window))
+    {
+        return;
+    }
+
+    if (NAUTILUS_WINDOW (gtk_window) != window)
+    {
+        return;
+    }
+
+    slot = nautilus_window_get_active_slot (window);
+    if (slot == NULL)
+    {
+        return;
+    }
+
+    view = nautilus_window_slot_get_current_view (slot);
+    if (!NAUTILUS_IS_FILES_VIEW (view))
+    {
+        return;
+    }
+
+    selection = nautilus_window_slot_get_selection (slot);
+    if (selection != NULL)
+    {
+        nautilus_files_view_preview_update (NAUTILUS_FILES_VIEW (view), selection);
+    }
+}
+
+static void
+on_application_active_window_changed (NautilusApplication *self,
+                                      GParamSpec          *pspec,
+                                      gpointer             user_data)
+{
+    GtkWindow *window;
+
+    window = gtk_application_get_active_window (GTK_APPLICATION (self));
+    if (NAUTILUS_IS_WINDOW (window))
+    {
+        update_previewer_selection (self, NAUTILUS_WINDOW (window));
+    }
+}
+
+static void
 on_application_shutdown (GApplication *application,
                          gpointer      user_data)
 {
@@ -1297,6 +1353,7 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     nautilus_profile_end (NULL);
 
+    g_signal_connect (self, "notify::active-window", G_CALLBACK (on_application_active_window_changed), NULL);
     g_signal_connect (self, "shutdown", G_CALLBACK (on_application_shutdown), NULL);
 
     g_signal_connect_object (gtk_icon_theme_get_default (),
@@ -1343,6 +1400,8 @@ nautilus_application_dbus_register (GApplication     *app,
         return FALSE;
     }
 
+    priv->previewer_selection_id = nautilus_previewer_connect_selection_event (connection);
+
     return TRUE;
 }
 
@@ -1365,6 +1424,13 @@ nautilus_application_dbus_unregister (GApplication    *app,
     {
         nautilus_shell_search_provider_unregister (priv->search_provider);
         g_clear_object (&priv->search_provider);
+    }
+
+    if (priv->previewer_selection_id != 0)
+    {
+        nautilus_previewer_disconnect_selection_event (connection,
+                                                       priv->previewer_selection_id);
+        priv->previewer_selection_id = 0;
     }
 }
 
@@ -1494,6 +1560,13 @@ on_slot_removed (NautilusWindow      *window,
 }
 
 static void
+on_active_selection_changed (NautilusWindow      *window,
+                             NautilusApplication *self)
+{
+    update_previewer_selection (self, window);
+}
+
+static void
 nautilus_application_window_added (GtkApplication *app,
                                    GtkWindow      *window)
 {
@@ -1508,6 +1581,7 @@ nautilus_application_window_added (GtkApplication *app,
         priv->windows = g_list_prepend (priv->windows, window);
         g_signal_connect (window, "slot-added", G_CALLBACK (on_slot_added), app);
         g_signal_connect (window, "slot-removed", G_CALLBACK (on_slot_removed), app);
+        g_signal_connect (window, "active-selection-changed", G_CALLBACK (on_active_selection_changed), app);
     }
 }
 
@@ -1527,6 +1601,7 @@ nautilus_application_window_removed (GtkApplication *app,
         priv->windows = g_list_remove_all (priv->windows, window);
         g_signal_handlers_disconnect_by_func (window, on_slot_added, app);
         g_signal_handlers_disconnect_by_func (window, on_slot_removed, app);
+        g_signal_handlers_disconnect_by_func (window, on_active_selection_changed, app);
     }
 
     /* if this was the last window, close the previewer */

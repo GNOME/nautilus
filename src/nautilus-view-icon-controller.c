@@ -908,6 +908,23 @@ real_select_first (NautilusFilesView *files_view)
 }
 
 static void
+real_preview_selection_event (NautilusFilesView *files_view,
+                              GtkDirectionType direction)
+{
+    NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
+    GtkMovementStep step;
+    gint count;
+    gboolean handled;
+
+    step = (direction == GTK_DIR_UP || direction == GTK_DIR_DOWN) ?
+        GTK_MOVEMENT_DISPLAY_LINES : GTK_MOVEMENT_VISUAL_POSITIONS;
+    count = (direction == GTK_DIR_RIGHT || direction == GTK_DIR_DOWN) ?
+        1 : -1;
+
+    g_signal_emit_by_name (self->view_ui, "move-cursor", step, count, &handled);
+}
+
+static void
 action_zoom_to_level (GSimpleAction *action,
                       GVariant      *state,
                       gpointer       user_data)
@@ -1056,6 +1073,7 @@ nautilus_view_icon_controller_class_init (NautilusViewIconControllerClass *klass
     files_view_class->is_zoom_level_default = real_is_zoom_level_default;
     files_view_class->compute_rename_popover_pointing_to = real_compute_rename_popover_pointing_to;
     files_view_class->reveal_for_selection_context_menu = real_reveal_for_selection_context_menu;
+    files_view_class->preview_selection_event = real_preview_selection_event;
 }
 
 static void
