@@ -68,7 +68,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-06-15 20:26+0000\n"
+"POT-Creation-Date: 2019-07-05 09:29+0000\n"
 "PO-Revision-Date: 2019-06-16 18:14+0300\n"
 "Last-Translator: Efstathios Iosifidis <eiosifidis@gnome.org>\n"
 "Language-Team: Ελληνικά <>\n"
@@ -85,9 +85,16 @@ msgstr ""
 msgid "Run Software"
 msgstr "Εκτέλεση λογισμικού"
 
+#
+#. “Files” is the generic application name and the suffix is
+#. * an arbitrary and deliberately unlocalized string only shown
+#. * in development builds.
+#.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
-msgid "Nautilus"
-msgstr "Ναυτίλος"
+#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
+#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
+msgid "Files"
+msgstr "Αρχεία"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:6
 #: data/org.gnome.Nautilus.desktop.in.in:4
@@ -95,8 +102,13 @@ msgid "Access and organize files"
 msgstr "Προσπελάστε και οργανώστε αρχεία"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:8
+#, fuzzy
+#| msgid ""
+#| "Nautilus, also known as Files, is the default file manager of the GNOME "
+#| "desktop. It provides a simple and integrated way of managing your files "
+#| "and browsing your file system."
 msgid ""
-"Nautilus, also known as Files, is the default file manager of the GNOME "
+"Files, also known as Nautilus, is the default file manager of the GNOME "
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
@@ -150,16 +162,6 @@ msgstr "Αναζήτηση"
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "Άλλες τοποθεσίες"
-
-#
-#. “Files” is the generic application name and the suffix is
-#. * an arbitrary and deliberately unlocalized string only shown
-#. * in development builds.
-#.
-#: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:103
-#: src/nautilus-properties-window.c:4651 src/nautilus-window.c:2861
-msgid "Files"
-msgstr "Αρχεία"
 
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
@@ -4776,7 +4778,7 @@ msgstr "Πρόσβαση και οργάνωση των αρχείων σας"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2876
+#: src/nautilus-window.c:2877
 msgid "translator-credits"
 msgstr ""
 "Ελληνική μεταφραστική ομάδα GNOME\n"
@@ -6005,6 +6007,9 @@ msgstr "Σύνδεση σε _διακομιστή"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
+
+#~ msgid "Nautilus"
+#~ msgstr "Ναυτίλος"
 
 #~ msgid "_Sidebar"
 #~ msgstr "_Πλευρική στήλη"
