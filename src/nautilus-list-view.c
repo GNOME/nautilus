@@ -2100,6 +2100,17 @@ on_tree_view_drag_gesture_drag_update (GtkGestureDrag *gesture,
 }
 
 static void
+list_view_use_tree_changed_callback (gpointer callback_data)
+{
+    GtkTreeView *tree_view;
+
+    tree_view = GTK_TREE_VIEW (callback_data);
+
+    gtk_tree_view_collapse_all (tree_view);
+}
+
+
+static void
 create_and_set_up_tree_view (NautilusListView *view)
 {
     GtkCellRenderer *cell;
@@ -2179,6 +2190,12 @@ create_and_set_up_tree_view (NautilusListView *view)
                              G_CALLBACK (row_collapsed_callback), view, 0);
     g_signal_connect_object (view->details->tree_view, "row-activated",
                              G_CALLBACK (row_activated_callback), view, 0);
+
+    g_signal_connect_object (nautilus_list_view_preferences,
+                             "changed::" NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE,
+                             G_CALLBACK (list_view_use_tree_changed_callback),
+                             view->details->tree_view,
+                             G_CONNECT_SWAPPED);
 
     view->details->model = g_object_new (NAUTILUS_TYPE_LIST_MODEL, NULL);
     gtk_tree_view_set_model (view->details->tree_view, GTK_TREE_MODEL (view->details->model));
