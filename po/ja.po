@@ -22,7 +22,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-08-11 17:11+0000\n"
+"POT-Creation-Date: 2019-08-27 09:55+0000\n"
 "PO-Revision-Date: 2019-08-21 23:00+0900\n"
 "Last-Translator: <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -58,9 +58,9 @@ msgid ""
 "desktop. It provides a simple and integrated way of managing your files and "
 "browsing your file system."
 msgstr ""
-"ファイル (Nautilus という名称でも知られています) は、GNOME デスクトップで"
-"使用されているデフォルトのファイルマネージャーです。ファイルの管理やファイル"
-"システムの閲覧をシンプルかつ統合的に行うことができます。"
+"ファイル (Nautilus という名称でも知られています) は、GNOME デスクトップで使用"
+"されているデフォルトのファイルマネージャーです。ファイルの管理やファイルシス"
+"テムの閲覧をシンプルかつ統合的に行うことができます。"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:12
 msgid ""
@@ -1017,35 +1017,23 @@ msgstr ""
 msgid "Perform a quick set of self-check tests."
 msgstr "簡易自己診断テストセットを実行する"
 
-#: src/nautilus-application.c:1073
-msgid "Create the initial window with the given geometry."
-msgstr "指定した大きさでウィンドウを起動する"
-
-#: src/nautilus-application.c:1073
-msgid "GEOMETRY"
-msgstr "GEOMETRY"
-
-#: src/nautilus-application.c:1075
+#: src/nautilus-application.c:1069
 msgid "Show the version of the program."
 msgstr "バージョンを表示する"
 
-#: src/nautilus-application.c:1077
+#: src/nautilus-application.c:1071
 msgid "Always open a new window for browsing specified URIs"
 msgstr "指定した URI を常に新しいウィンドウで開く"
 
-#: src/nautilus-application.c:1079
-msgid "Only create windows for explicitly specified URIs."
-msgstr "明示的に指定した URI のウィンドウだけを起動する"
-
-#: src/nautilus-application.c:1081
+#: src/nautilus-application.c:1073
 msgid "Quit Nautilus."
 msgstr "Nautilus を強制終了する"
 
-#: src/nautilus-application.c:1083
+#: src/nautilus-application.c:1075
 msgid "Select specified URI in parent folder."
 msgstr "指定した URI の親フォルダーを選択する"
 
-#: src/nautilus-application.c:1084
+#: src/nautilus-application.c:1076
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -2093,8 +2081,8 @@ msgstr[0] "%'d 個のファイルを削除しています"
 #: src/nautilus-file-operations.c:1783 src/nautilus-file-operations.c:2125
 #: src/nautilus-file-operations.c:2133 src/nautilus-file-operations.c:2173
 #: src/nautilus-file-operations.c:3974 src/nautilus-file-operations.c:3982
-#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8336
-#: src/nautilus-file-operations.c:8404
+#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8350
+#: src/nautilus-file-operations.c:8418
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2413,8 +2401,8 @@ msgstr[0] "%'d 個のファイルを“%s”で複製しました"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3964 src/nautilus-file-operations.c:4024
-#: src/nautilus-file-operations.c:7903 src/nautilus-file-operations.c:8077
-#: src/nautilus-file-operations.c:8331 src/nautilus-file-operations.c:8374
+#: src/nautilus-file-operations.c:7917 src/nautilus-file-operations.c:8091
+#: src/nautilus-file-operations.c:8345 src/nautilus-file-operations.c:8388
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2437,8 +2425,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:7921
-#: src/nautilus-file-operations.c:8363
+#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:7935
+#: src/nautilus-file-operations.c:8377
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2449,7 +2437,7 @@ msgstr[0] "%s / %s — 残り %s (%s/秒)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8393
+#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8407
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2595,120 +2583,120 @@ msgstr "リンクの作成先はシンボリックリンクをサポートして
 msgid "There was an error creating the symlink in %s."
 msgstr "%s でシンボリックリンクを作成する際にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:6933
+#: src/nautilus-file-operations.c:6950
 msgid "Setting permissions"
 msgstr "アクセス権の設定中"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7209
+#: src/nautilus-file-operations.c:7223
 msgid "Untitled Folder"
 msgstr "無題のフォルダー"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7224
+#: src/nautilus-file-operations.c:7238
 msgid "Untitled Document"
 msgstr "無題のドキュメント"
 
-#: src/nautilus-file-operations.c:7506
+#: src/nautilus-file-operations.c:7520
 #, c-format
 msgid "Error while creating directory %s."
 msgstr "%s というフォルダーの作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7511
+#: src/nautilus-file-operations.c:7525
 #, c-format
 msgid "Error while creating file %s."
 msgstr "%s というファイルの作成中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7515
+#: src/nautilus-file-operations.c:7529
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "%s にフォルダーを作成する際にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:7775
+#: src/nautilus-file-operations.c:7789
 msgid "Emptying Trash"
 msgstr "ゴミ箱を空にしている"
 
-#: src/nautilus-file-operations.c:7817
+#: src/nautilus-file-operations.c:7831
 msgid "Verifying destination"
 msgstr "宛先を検証中"
 
-#: src/nautilus-file-operations.c:7861
+#: src/nautilus-file-operations.c:7875
 #, c-format
 msgid "Extracting “%s”"
 msgstr "“%s”を展開中"
 
-#: src/nautilus-file-operations.c:7965 src/nautilus-file-operations.c:8027
+#: src/nautilus-file-operations.c:7979 src/nautilus-file-operations.c:8041
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "“%s”の展開中にエラー"
 
-#: src/nautilus-file-operations.c:7969
+#: src/nautilus-file-operations.c:7983
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "“%s”の展開中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:8030
+#: src/nautilus-file-operations.c:8044
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "%s を展開するための空き領域が足りません"
 
-#: src/nautilus-file-operations.c:8060
+#: src/nautilus-file-operations.c:8074
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "“%s”から“%s”へ展開しました"
 
-#: src/nautilus-file-operations.c:8066
+#: src/nautilus-file-operations.c:8080
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "%'d 個のファイルを“%s”へ展開しました"
 
-#: src/nautilus-file-operations.c:8100
+#: src/nautilus-file-operations.c:8114
 msgid "Preparing to extract"
 msgstr "展開の準備中"
 
-#: src/nautilus-file-operations.c:8228
+#: src/nautilus-file-operations.c:8242
 msgid "Extracting Files"
 msgstr "ファイルを展開中"
 
-#: src/nautilus-file-operations.c:8287
+#: src/nautilus-file-operations.c:8301
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "“%s” を “%s”へ圧縮中"
 
-#: src/nautilus-file-operations.c:8293
+#: src/nautilus-file-operations.c:8307
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "%'d 個のファイルを“%s”へ圧縮中"
 
-#: src/nautilus-file-operations.c:8441
+#: src/nautilus-file-operations.c:8455
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "“%s” を “%s”へ圧縮中にエラー"
 
-#: src/nautilus-file-operations.c:8447
+#: src/nautilus-file-operations.c:8461
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "%'d 個のファイルを“%s”へ圧縮中にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:8457
+#: src/nautilus-file-operations.c:8471
 msgid "There was an error while compressing files."
 msgstr "ファイルを %F へ圧縮する際にエラーが発生しました。"
 
-#: src/nautilus-file-operations.c:8482
+#: src/nautilus-file-operations.c:8496
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "“%s”から“%s”へ圧縮しました"
 
-#: src/nautilus-file-operations.c:8488
+#: src/nautilus-file-operations.c:8502
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "%'d 個のファイルを“%s”へ展開しました"
 
-#: src/nautilus-file-operations.c:8579
+#: src/nautilus-file-operations.c:8593
 msgid "Compressing Files"
 msgstr "ファイルを圧縮中"
 
@@ -5713,6 +5701,15 @@ msgstr "サーバーへ接続(_S)"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "サーバーのアドレスを入力…"
+
+#~ msgid "Create the initial window with the given geometry."
+#~ msgstr "指定した大きさでウィンドウを起動する"
+
+#~ msgid "GEOMETRY"
+#~ msgstr "GEOMETRY"
+
+#~ msgid "Only create windows for explicitly specified URIs."
+#~ msgstr "明示的に指定した URI のウィンドウだけを起動する"
 
 #~ msgid "application-x-executable"
 #~ msgstr "application-x-executable"
