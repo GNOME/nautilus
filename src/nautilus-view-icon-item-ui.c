@@ -128,6 +128,7 @@ constructed (GObject *object)
     GtkBox *container;
     GtkBox *item_selection_background;
     GtkLabel *label;
+    PangoAttrList *attr_list;
     GtkStyleContext *style_context;
     NautilusFile *file;
     guint icon_size;
@@ -149,6 +150,9 @@ constructed (GObject *object)
 
     label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
     gtk_widget_show (GTK_WIDGET (label));
+    attr_list = pango_attr_list_new ();
+    pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
+    gtk_label_set_attributes (label, attr_list);
     gtk_label_set_ellipsize (label, PANGO_ELLIPSIZE_MIDDLE);
     gtk_label_set_line_wrap (label, TRUE);
     gtk_label_set_line_wrap_mode (label, PANGO_WRAP_WORD_CHAR);
@@ -178,6 +182,8 @@ constructed (GObject *object)
                       (GCallback) on_view_item_size_changed, self);
     g_signal_connect (self->model, "notify::file",
                       (GCallback) on_view_item_file_changed, self);
+
+    pango_attr_list_unref (attr_list);
 }
 
 static void
