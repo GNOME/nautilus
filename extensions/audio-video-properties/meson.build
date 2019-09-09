@@ -7,6 +7,8 @@ resources = gnome.compile_resources(
   c_name: 'nautilus_audio_video_properties',
 )
 
+libm = cc.find_library('m')
+
 libtotem_properties_page_sources = files(
   'totem-properties-main.c',
   'totem-properties-view.c',
@@ -15,6 +17,7 @@ libtotem_properties_page_sources = files(
 ) + resources
 
 libtotem_properties_page_deps = [
+  libm,
   gst_tag_dep,
   gst_pbutils_dep,
 ]

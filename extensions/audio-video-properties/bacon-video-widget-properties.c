@@ -25,6 +25,7 @@
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <string.h>
+#include <math.h>
 
 #include "bacon-video-widget-properties.h"
 
@@ -230,7 +231,7 @@ bacon_video_widget_properties_set_framerate (BaconVideoWidgetProperties *props,
 	g_return_if_fail (BACON_IS_VIDEO_WIDGET_PROPERTIES (props));
 
 	if (framerate > 1.0) {
-		temp = g_strdup_printf ("%0.2f frames per second", framerate);
+		temp = g_strdup_printf (g_dngettext (GETTEXT_PACKAGE, "%0.2f frame per second", "%0.2f frames per second", (int) (ceilf (framerate))), framerate);
 	} else {
 		temp = g_strdup (C_("Frame rate", "N/A"));
 	}
