@@ -1,7 +1,7 @@
 ---
 app-id: org.gnome.NautilusDevel
 runtime: org.gnome.Platform
-runtime-version: "3.32"
+runtime-version: "3.34"
 sdk: org.gnome.Sdk
 command: nautilus
 tags:
@@ -65,7 +65,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker.git
-    tag: 2.2.1
+    tag: 2.3.0
 - name: tracker-miners
   buildsystem: meson
   cleanup:
@@ -91,7 +91,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker-miners.git
-    tag: 2.2.1
+    tag: 2.3.0
 - name: gnome-desktop
   buildsystem: meson
   config-opts:
