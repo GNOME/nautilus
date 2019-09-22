@@ -1292,6 +1292,7 @@ drag_begin_callback (GtkWidget      *widget,
     int x_offset, y_offset;
     int start_x, start_y;
     GList *dragged_files;
+    double sx, sy;
 
     container = NAUTILUS_CANVAS_CONTAINER (widget);
     window = NAUTILUS_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (container)));
@@ -1312,7 +1313,10 @@ drag_begin_callback (GtkWidget      *widget,
     x_offset = start_x - winx;
     y_offset = start_y - winy;
 
-    cairo_surface_set_device_offset (surface, -x_offset, -y_offset);
+    cairo_surface_get_device_scale (surface, &sx, &sy);
+    cairo_surface_set_device_offset (surface,
+                                     -x_offset * sx,
+                                     -y_offset * sy);
     gtk_drag_set_icon_surface (context, surface);
     cairo_surface_destroy (surface);
 
