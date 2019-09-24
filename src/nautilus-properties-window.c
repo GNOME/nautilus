@@ -199,8 +199,7 @@ static void set_icon (const char               *icon_path,
                       NautilusPropertiesWindow *properties_window);
 static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
-                            gboolean     cancel_timed_wait,
-                            gboolean     cancel_destroy_handler);
+                            gboolean     cancel_timed_wait);
 static void append_extension_pages (NautilusPropertiesWindow *window);
 
 static void name_field_focus_changed (GObject    *object,
@@ -5240,7 +5239,7 @@ properties_window_finish (StartupData *data)
                                               data);
     }
 
-    remove_pending (data, TRUE, (data->window == NULL), FALSE);
+    remove_pending (data, TRUE, (data->window == NULL));
     startup_data_free (data);
 }
 
@@ -5273,8 +5272,7 @@ cancel_call_when_ready_callback (gpointer key,
 static void
 remove_pending (StartupData *startup_data,
                 gboolean     cancel_call_when_ready,
-                gboolean     cancel_timed_wait,
-                gboolean     cancel_destroy_handler)
+                gboolean     cancel_timed_wait)
 {
     if (cancel_call_when_ready)
     {
@@ -5326,7 +5324,7 @@ is_directory_ready_callback (NautilusFile *file,
         add_window (new_window);
         startup_data->window = new_window;
 
-        remove_pending (startup_data, FALSE, TRUE, TRUE);
+        remove_pending (startup_data, FALSE, TRUE);
 
         gtk_window_present (GTK_WINDOW (new_window));
         g_signal_connect(GTK_WIDGET (new_window), "destroy",
