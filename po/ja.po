@@ -1,5 +1,5 @@
 # nautilus ja.po.
-# Copyright (C) 2000-2012 Free Software Foundation, Inc.
+# Copyright (C) 2000-2019 Free Software Foundation, Inc.
 # Akira TAGOH <tagoh@gnome.gr.jp>, 2000-2002.
 # Takuo Kitame <kitame@debian.org>, 2001.
 # Yukihiro Nakai <nakai@gnome.gr.jp>, 2001.
@@ -10,6 +10,7 @@
 # Hideki Yamane (Debian-JP) <henrich@debian.or.jp>, 2009.
 # Takayuki KUSANO <AE5T-KSN@asahi-net.or.jp>, 2009-2012.
 # Jiro Matsuzawa <jmatsuzawa@gnome.org>, 2011-2017.
+# Shushi Kurose <md81bird@hitaki.net>, 2011, 2013, 2016-2017.
 # Hajime Taira <htaira@redhat.com>, 2015, 2019.
 # Akira Tanaka <root.167d36d4acb91@gmail.com>, 2017.
 # sujiniku <sujinikusityuu@gmail.com>, 2018.
@@ -23,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2019-09-19 06:31+0000\n"
-"PO-Revision-Date: 2019-09-04 20:00+0900\n"
+"POT-Creation-Date: 2019-09-10 12:58+0000\n"
+"PO-Revision-Date: 2019-09-16 22:00+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -935,7 +936,7 @@ msgstr ""
 
 #: extensions/image-properties/nautilus-image-properties-page.c:253
 msgid "Coordinates"
-msgstr ""
+msgstr "位置情報"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:277
 msgid "Failed to load image information"
@@ -1062,8 +1063,7 @@ msgid ""
 "“%s” contains software intended to be automatically started. Would you like "
 "to run it?"
 msgstr ""
-"“%s”には自動的に起動することを意図したソフトウェアが含まれています。実行して"
-"みますか?"
+"“%s”には自動的に起動するソフトウェアが含まれています。実行しますか?"
 
 #: src/nautilus-autorun-software.c:192
 msgid "If you don’t trust this location or aren’t sure, press Cancel."
@@ -1078,12 +1078,12 @@ msgstr "実行する(_R)"
 #: src/nautilus-batch-rename-dialog.c:827
 #, c-format
 msgid "“%s” would not be a unique new name."
-msgstr "“%s” は競合しないファイル名になりません。"
+msgstr "“%s”は競合しないファイル名になりません。"
 
 #: src/nautilus-batch-rename-dialog.c:833
 #, c-format
 msgid "“%s” would conflict with an existing file."
-msgstr "“%s” は既存ファイルと競合します。"
+msgstr "“%s”は既存ファイルと競合します。"
 
 #: src/nautilus-batch-rename-dialog.c:1428
 msgid "Name cannot be empty."
@@ -1641,7 +1641,7 @@ msgstr "所有者は指定できません"
 #: src/nautilus-file.c:6430
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
-msgstr "指定した “%s” という所有者は存在しません"
+msgstr "指定した“%s”という所有者は存在しません"
 
 #: src/nautilus-file.c:6715
 #, c-format
@@ -1651,7 +1651,7 @@ msgstr "グループは指定できません"
 #: src/nautilus-file.c:6734
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
-msgstr "指定した “%s” というグループは存在しません"
+msgstr "指定した“%s”というグループは存在しません"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
 #: src/nautilus-file.c:6876
@@ -2117,7 +2117,7 @@ msgstr "“%s”というフォルダーを削除する際にエラーが発生�
 #: src/nautilus-file-operations.c:1939
 #, c-format
 msgid "You do not have sufficient permissions to delete the folder “%s”."
-msgstr "“%s” というフォルダーを削除するために必要な権限がありません。"
+msgstr "“%s”というフォルダーを削除するために必要な権限がありません。"
 
 #: src/nautilus-file-operations.c:1946
 #, c-format
@@ -2127,7 +2127,7 @@ msgstr "“%s”というファイルを削除する際にエラーが発生し�
 #: src/nautilus-file-operations.c:1949
 #, c-format
 msgid "You do not have sufficient permissions to delete the file “%s”."
-msgstr "“%s” というファイルを削除するために必要な権限がありません。"
+msgstr "“%s”というファイルを削除するために必要な権限がありません。"
 
 #: src/nautilus-file-operations.c:2076
 #, c-format
@@ -2615,7 +2615,7 @@ msgstr "%s にフォルダーを作成する際にエラーが発生しました
 
 #: src/nautilus-file-operations.c:7789
 msgid "Emptying Trash"
-msgstr "ゴミ箱を空にしている"
+msgstr "ゴミ箱を空にしています"
 
 #: src/nautilus-file-operations.c:7831
 msgid "Verifying destination"
@@ -2663,7 +2663,7 @@ msgstr "ファイルを展開中"
 #: src/nautilus-file-operations.c:8301
 #, c-format
 msgid "Compressing “%s” into “%s”"
-msgstr "“%s” を “%s”へ圧縮中"
+msgstr "“%s”を“%s”へ圧縮中"
 
 #: src/nautilus-file-operations.c:8307
 #, c-format
@@ -2674,7 +2674,7 @@ msgstr[0] "%'d 個のファイルを“%s”へ圧縮中"
 #: src/nautilus-file-operations.c:8455
 #, c-format
 msgid "Error compressing “%s” into “%s”"
-msgstr "“%s” を “%s”へ圧縮中にエラー"
+msgstr "“%s”を“%s”へ圧縮中にエラー"
 
 #: src/nautilus-file-operations.c:8461
 #, c-format
@@ -2748,7 +2748,6 @@ msgid "Could not paste files"
 msgstr "ファイルを貼り付けできませんでした"
 
 #: src/nautilus-files-view.c:2757
-#, fuzzy
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "このディレクトリにファイルを貼り付ける権限がありません"
 
@@ -3373,7 +3372,7 @@ msgstr[0] "%d 個のファイルを展開します"
 #: src/nautilus-file-undo-operations.c:2494
 #, c-format
 msgid "Compress “%s”"
-msgstr "“%s” を圧縮します"
+msgstr "“%s”を圧縮します"
 
 #: src/nautilus-file-undo-operations.c:2498
 #, c-format
@@ -3759,17 +3758,17 @@ msgstr ""
 #: src/nautilus-operations-ui-manager.c:158
 #, c-format
 msgid "An older folder with the same name already exists in “%s”."
-msgstr "同じ名前の古いフォルダーが既に“%s”にあります。"
+msgstr "同じ名前の古いフォルダーがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:163
 #, c-format
 msgid "A newer folder with the same name already exists in “%s”."
-msgstr "同じ名前の新しいフォルダーが既に“%s”にあります。"
+msgstr "同じ名前の新しいフォルダーがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:168
 #, c-format
 msgid "Another folder with the same name already exists in “%s”."
-msgstr "同じ名前の他のフォルダーが“%s”にあります。"
+msgstr "同じ名前の他のフォルダーがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:174
 #, c-format
@@ -3783,7 +3782,7 @@ msgstr "置き換えるとフォルダー中のすべてのファイルが削除
 #: src/nautilus-operations-ui-manager.c:177
 #, c-format
 msgid "A folder with the same name already exists in “%s”."
-msgstr "同じ名前のフォルダーが既に“%s”にあります。"
+msgstr "同じ名前のフォルダーがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:183
 #, c-format
@@ -3797,17 +3796,17 @@ msgstr "置き換えると内容が上書きされます。"
 #: src/nautilus-operations-ui-manager.c:190
 #, c-format
 msgid "An older file with the same name already exists in “%s”."
-msgstr "同じ名前の古いファイルが既に“%s”にあります。"
+msgstr "同じ名前の古いファイルがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:195
 #, c-format
 msgid "A newer file with the same name already exists in “%s”."
-msgstr "同じ名前の新しいファイルが既に“%s”にあります。"
+msgstr "同じ名前の新しいファイルがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:200
 #, c-format
 msgid "Another file with the same name already exists in “%s”."
-msgstr "同じ名前の他のファイルが既に“%s”にあります。"
+msgstr "同じ名前の他のファイルがすでに“%s”にあります。"
 
 #: src/nautilus-operations-ui-manager.c:275
 msgid "Original folder"
@@ -3974,11 +3973,11 @@ msgstr "すべてのファイル操作が正常に完了しました"
 
 #: src/nautilus-properties-window.c:482
 msgid "You cannot assign more than one custom icon at a time!"
-msgstr "独自アイコンは同時に二つ以上割り当てられません。"
+msgstr "カスタムアイコンは同時に二つ以上割り当てられません。"
 
 #: src/nautilus-properties-window.c:483
 msgid "Please drop just one image to set a custom icon."
-msgstr "独自アイコンを使用するには画像を一つだけドロップしてください。"
+msgstr "カスタムアイコンを使用するには画像を一つだけドロップしてください。"
 
 #: src/nautilus-properties-window.c:500
 msgid "The file that you dropped is not local."
@@ -3986,7 +3985,7 @@ msgstr "ドロップしたファイルはローカルのものではありませ
 
 #: src/nautilus-properties-window.c:501 src/nautilus-properties-window.c:508
 msgid "You can only use local images as custom icons."
-msgstr "カスタマイズするアイコンに指定できるのはローカルの画像だけです。"
+msgstr "カスタムアイコンに指定できるのはローカルの画像だけです。"
 
 #: src/nautilus-properties-window.c:507
 msgid "The file that you dropped is not an image."
@@ -4198,7 +4197,7 @@ msgstr "実行:"
 
 #: src/nautilus-properties-window.c:4415
 msgid "Allow _executing file as program"
-msgstr "プログラムとして実行できる(_E)"
+msgstr "プログラムとして実行可能(_E)"
 
 #: src/nautilus-properties-window.c:4639
 msgid "Change Permissions for Enclosed Files"
@@ -4244,7 +4243,7 @@ msgstr "プロパティウィンドウを作成しています"
 
 #: src/nautilus-properties-window.c:5722
 msgid "Select Custom Icon"
-msgstr "アイコンの選択"
+msgstr "カスタムアイコンの選択"
 
 #: src/nautilus-properties-window.c:5724
 msgid "_Revert"
@@ -4501,6 +4500,7 @@ msgstr ""
 "KAMAGASAKO Masatoshi <emerald@gnome.gr.jp>\n"
 "Kiyotaka Nishibori <ml.nishibori.kiyotaka@gmail.com>\n"
 "Satoru Sato <ss@gnome.gr.jp>\n"
+"Shushi Kurose <md81bird@hitaki.net>\n"
 "sicklylife <translation@sicklylife.jp>\n"
 "sujiniku <sujinikusityuu@gmail.com>\n"
 "Takuo Kitame <kitame@debian.org>\n"
@@ -5063,7 +5063,7 @@ msgstr "指定先にコピー…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:160
 msgid "_Delete from Trash"
-msgstr "ゴミ箱から削除する(_D)"
+msgstr "ゴミ箱を空にする(_D)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:165
 #: src/resources/ui/nautilus-files-view-context-menus.ui:170
