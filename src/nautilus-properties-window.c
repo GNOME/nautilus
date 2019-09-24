@@ -5240,7 +5240,7 @@ properties_window_finish (StartupData *data)
                                               data);
     }
 
-    remove_pending (data, TRUE, TRUE, FALSE);
+    remove_pending (data, TRUE, FALSE, TRUE);
     startup_data_free (data);
 }
 
