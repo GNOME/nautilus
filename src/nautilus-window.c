@@ -2239,8 +2239,9 @@ nautilus_window_constructed (GObject *self)
     nautilus_window_set_up_sidebar (window);
 
 
-    g_signal_connect_after (nautilus_file_undo_manager_get (), "undo-changed",
-                            G_CALLBACK (nautilus_window_on_undo_changed), self);
+    g_signal_connect_object (nautilus_file_undo_manager_get (), "undo-changed",
+                             G_CALLBACK (nautilus_window_on_undo_changed), self,
+                             G_CONNECT_AFTER);
 
     /* Is required that the UI is constructed before initializating the actions, since
      * some actions trigger UI widgets to show/hide. */
