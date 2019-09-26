@@ -148,6 +148,7 @@ typedef struct
     NautilusPropertiesWindowCallback callback;
     gpointer callback_data;
     NautilusPropertiesWindow *window;
+    gboolean cancelled;
 } StartupData;
 
 /* drag and drop definitions */
@@ -5240,14 +5241,17 @@ properties_window_finish (StartupData *data)
                                               data);
     }
 
-    remove_pending (data, TRUE, (data->window == NULL), FALSE);
+    remove_pending (data, TRUE, (data->window == NULL && !data->cancelled), FALSE);
     startup_data_free (data);
 }
 
 static void
 cancel_create_properties_window_callback (gpointer callback_data)
 {
-    properties_window_finish ((StartupData *) callback_data);
+    StartupData *data = (StartupData *) callback_data;
+
+    data->cancelled = TRUE;
+    properties_window_finish (data);
 }
 
 static void
