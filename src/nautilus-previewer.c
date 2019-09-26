@@ -48,7 +48,7 @@ ensure_previewer_v2_proxy (void)
         GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
 
         previewer_v2_proxy = g_dbus_proxy_new_sync (connection,
-                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START,
+                                                    G_DBUS_PROXY_FLAGS_DO_NOT_AUTO_START_AT_CONSTRUCTION,
                                                     NULL,
                                                     PREVIEWER_DBUS_NAME,
                                                     PREVIEWER_DBUS_PATH,
