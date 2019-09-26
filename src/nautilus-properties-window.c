@@ -148,6 +148,7 @@ typedef struct
     NautilusPropertiesWindowCallback callback;
     gpointer callback_data;
     NautilusPropertiesWindow *window;
+    gboolean cancelled;
 } StartupData;
 
 /* drag and drop definitions */
@@ -5229,6 +5230,8 @@ get_existing_window (GList *file_list)
 static void
 properties_window_finish (StartupData *data)
 {
+    gboolean cancel_timed_wait;
+
     if (data->parent_widget != NULL)
     {
         g_signal_handlers_disconnect_by_data (data->parent_widget,
@@ -5240,14 +5243,21 @@ properties_window_finish (StartupData *data)
                                               data);
     }
 
-    remove_pending (data, TRUE, (data->window == NULL), FALSE);
+    cancel_timed_wait = (data->window == NULL && !data->cancelled);
+    remove_pending (data, TRUE, cancel_timed_wait, FALSE);
+
     startup_data_free (data);
 }
 
 static void
 cancel_create_properties_window_callback (gpointer callback_data)
 {
-    properties_window_finish ((StartupData *) callback_data);
+    StartupData *data;
+
+    data = callback_data;
+    data->cancelled = TRUE;
+
+    properties_window_finish (data);
 }
 
 static void
