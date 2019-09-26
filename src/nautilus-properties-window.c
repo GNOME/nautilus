@@ -5291,7 +5291,10 @@ remove_pending (StartupData *startup_data,
         eel_timed_wait_stop
             (cancel_create_properties_window_callback, startup_data);
     }
-    g_hash_table_remove (pending_lists, startup_data->pending_key);
+    if (startup_data->pending_key != NULL)
+    {
+        g_hash_table_remove (pending_lists, startup_data->pending_key);
+    }
 }
 
 static gboolean
