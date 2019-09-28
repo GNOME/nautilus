@@ -67,6 +67,9 @@ review:
 stop_review:
     extends: '.stop_review'
 
+nightly:
+    extends: '.nightly'
+
 fedora rawhide:
     image: fedora:rawhide
     stage: cross_environment
@@ -111,7 +114,6 @@ flatpak master:
     variables:
       # Don't run for translation commits
       - $CI_COMMIT_TITLE =~ /^Update.*translation$/
-
 
 triage:
   image: ruby:2.4
