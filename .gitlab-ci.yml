@@ -67,6 +67,11 @@ review:
 stop_review:
     extends: '.stop_review'
 
+nightly:
+    extends: '.publish_nightly'
+    dependencies:
+        - 'flatpak devel'
+
 fedora rawhide:
     image: fedora:rawhide
     stage: cross_environment
