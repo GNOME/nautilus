@@ -56,7 +56,7 @@ flatpak devel:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
+        RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
 
 review:
@@ -86,7 +86,7 @@ flatpak master:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
     extends: .flatpak
     only:
