@@ -50,25 +50,27 @@ stages:
         expire_in: 2 days
 
 flatpak devel:
+    extends: '.flatpak'
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.34
-    stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome.flatpakrepo"
+        RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
-    extends: '.flatpak'
 
 review:
-    stage: deploy
     dependencies:
         - 'flatpak devel'
     extends: '.review'
 
 stop_review:
-    stage: deploy
     extends: '.stop_review'
+
+nightly:
+    extends: '.publish_nightly'
+    dependencies:
+        - 'flatpak devel'
 
 fedora rawhide:
     image: fedora:rawhide
@@ -89,7 +91,7 @@ flatpak master:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
         FLATPAK_MODULE: "nautilus"
-        RUNTIME_REPO: "https://sdk.gnome.org/gnome-nightly.flatpakrepo"
+        RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
     extends: .flatpak
     only:
