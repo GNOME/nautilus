@@ -6,7 +6,7 @@
     1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
     2. Copy and run the following command in a Terminal:
 
-    flatpak install --from https://gitlab.gnome.org/GNOME/gnome-apps-nightly/raw/master/NautilusDevel.flatpakref
+    flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.NautilusDevel.flatpakref
 
 -->
 
