@@ -148,6 +148,7 @@ typedef struct
     NautilusPropertiesWindowCallback callback;
     gpointer callback_data;
     NautilusPropertiesWindow *window;
+    gboolean cancelled;
 } StartupData;
 
 /* drag and drop definitions */
@@ -199,8 +200,7 @@ static void set_icon (const char               *icon_path,
                       NautilusPropertiesWindow *properties_window);
 static void remove_pending (StartupData *data,
                             gboolean     cancel_call_when_ready,
-                            gboolean     cancel_timed_wait,
-                            gboolean     cancel_destroy_handler);
+                            gboolean     cancel_timed_wait);
 static void append_extension_pages (NautilusPropertiesWindow *window);
 
 static void name_field_focus_changed (GObject    *object,
@@ -5229,6 +5229,8 @@ get_existing_window (GList *file_list)
 static void
 properties_window_finish (StartupData *data)
 {
+    gboolean cancel_timed_wait;
+
     if (data->parent_widget != NULL)
     {
         g_signal_handlers_disconnect_by_data (data->parent_widget,
@@ -5240,14 +5242,21 @@ properties_window_finish (StartupData *data)
                                               data);
     }
 
-    remove_pending (data, TRUE, TRUE, FALSE);
+    cancel_timed_wait = (data->window == NULL && !data->cancelled);
+    remove_pending (data, TRUE, cancel_timed_wait);
+
     startup_data_free (data);
 }
 
 static void
 cancel_create_properties_window_callback (gpointer callback_data)
 {
-    properties_window_finish ((StartupData *) callback_data);
+    StartupData *data;
+
+    data = callback_data;
+    data->cancelled = TRUE;
+
+    properties_window_finish (data);
 }
 
 static void
@@ -5273,8 +5282,7 @@ cancel_call_when_ready_callback (gpointer key,
 static void
 remove_pending (StartupData *startup_data,
                 gboolean     cancel_call_when_ready,
-                gboolean     cancel_timed_wait,
-                gboolean     cancel_destroy_handler)
+                gboolean     cancel_timed_wait)
 {
     if (cancel_call_when_ready)
     {
@@ -5287,7 +5295,10 @@ remove_pending (StartupData *startup_data,
         eel_timed_wait_stop
             (cancel_create_properties_window_callback, startup_data);
     }
-    g_hash_table_remove (pending_lists, startup_data->pending_key);
+    if (startup_data->pending_key != NULL)
+    {
+        g_hash_table_remove (pending_lists, startup_data->pending_key);
+    }
 }
 
 static gboolean
@@ -5326,7 +5337,7 @@ is_directory_ready_callback (NautilusFile *file,
         add_window (new_window);
         startup_data->window = new_window;
 
-        remove_pending (startup_data, FALSE, TRUE, TRUE);
+        remove_pending (startup_data, FALSE, TRUE);
 
         gtk_window_present (GTK_WINDOW (new_window));
         g_signal_connect(GTK_WIDGET (new_window), "destroy",
