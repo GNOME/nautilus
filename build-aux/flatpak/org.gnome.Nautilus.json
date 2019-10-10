@@ -50,7 +50,9 @@
       "builddir": true,
       "config-opts": [
         "--libdir=/app/lib",
-        "-Ddisable-introspection=True"
+        "-Ddisable-introspection=True",
+        "-Dpython2-girdir=no",
+        "-Dpython3-girdir=no"
       ],
       "sources": [
         {
