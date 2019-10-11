@@ -1041,7 +1041,8 @@ get_message_for_content_type (const char *content_type)
     {
         message = g_strdup (_("Contains music"));
     }
-    else if (strcmp (content_type, "x-content/unix-software") == 0)
+    else if (strcmp (content_type, "x-content/unix-software") == 0 ||
+             strcmp (content_type, "x-content/ostree-repository") == 0)
     {
         message = g_strdup (_("Contains software"));
     }
