@@ -1043,7 +1043,11 @@ get_message_for_content_type (const char *content_type)
     }
     else if (strcmp (content_type, "x-content/unix-software") == 0)
     {
-        message = g_strdup (_("Contains software"));
+        message = g_strdup (_("Contains software to run"));
+    }
+    else if (strcmp (content_type, "x-content/ostree-repository") == 0)
+    {
+        message = g_strdup (_("Contains software to install"));
     }
     else
     {
