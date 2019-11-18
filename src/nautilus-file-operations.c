@@ -227,6 +227,7 @@ typedef struct
 #define MERGE _("_Merge")
 #define MERGE_ALL _("Merge _All")
 #define COPY_FORCE _("Copy _Anyway")
+#define EMPTY_TRASH _("Empty _Trash")
 
 static gboolean
 is_all_button_text (const char *button_text)
@@ -1229,7 +1230,8 @@ do_run_simple_dialog (gpointer _data)
         button = gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
 
-        if (g_strcmp0 (button_title, DELETE) == 0)
+        if (g_strcmp0 (button_title, DELETE) == 0
+            || g_strcmp0 (button_title, EMPTY_TRASH) == 0)
         {
             gtk_style_context_add_class (gtk_widget_get_style_context (button),
                                          "destructive-action");
@@ -1585,7 +1587,7 @@ confirm_empty_trash (CommonJob *job)
                             g_strdup (_("All items in the Trash will be permanently deleted.")),
                             NULL,
                             FALSE,
-                            CANCEL, _("Empty _Trash"),
+                            CANCEL, EMPTY_TRASH,
                             NULL);
 
     return (response == 1);
