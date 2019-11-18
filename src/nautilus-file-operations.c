@@ -7289,7 +7289,7 @@ retry:
         {
             res = g_file_copy (job->src,
                                dest,
-                               G_FILE_COPY_NONE,
+                               G_FILE_COPY_TARGET_DEFAULT_PERMS,
                                common->cancellable,
                                NULL, NULL,
                                &error);
