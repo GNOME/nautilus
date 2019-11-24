@@ -23,7 +23,9 @@
 
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -1204,12 +1206,17 @@ search_for_application_mime_type (ActivateParametersInstall *parameters_install,
 
     g_assert (parameters_install->proxy != NULL);
 
-    /* get XID from parent window */
-    window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
-    if (window != NULL)
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
     {
-        xid = GDK_WINDOW_XID (window);
+        /* get XID from parent window */
+        window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
+        if (window != NULL)
+        {
+            xid = GDK_WINDOW_XID (window);
+        }
     }
+#endif
 
     mime_types[0] = mime_type;
     mime_types[1] = NULL;
