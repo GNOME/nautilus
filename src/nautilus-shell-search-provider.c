@@ -26,7 +26,7 @@
 #include <gio/gio.h>
 #include <string.h>
 #include <glib/gi18n.h>
-#include <gdk/gdkx.h>
+#include <gdk/gdk.h>
 
 #include "nautilus-file.h"
 #include "nautilus-file-utilities.h"

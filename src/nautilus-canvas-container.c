@@ -29,14 +29,12 @@
 #include <eel/eel-gtk-extensions.h>
 #include <eel/eel-vfs-extensions.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
+#include <gdk/gdk.h>
 #include <glib/gi18n.h>
 #include <gtk/gtk.h>
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
 
 #define DEBUG_FLAG NAUTILUS_DEBUG_CANVAS_CONTAINER
 #include "nautilus-debug.h"

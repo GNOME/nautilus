@@ -29,10 +29,7 @@
 #include "eel-glib-extensions.h"
 #include "eel-string.h"
 
-#include <X11/Xlib.h>
-#include <X11/Xatom.h>
 #include <gdk/gdk.h>
-#include <gdk/gdkx.h>
 #include <gtk/gtk.h>
 #include <glib/gi18n-lib.h>
 #include <math.h>

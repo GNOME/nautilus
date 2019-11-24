@@ -23,7 +23,9 @@
 
 #include <eel/eel-stock-dialogs.h>
 #include <eel/eel-string.h>
+#ifdef GDK_WINDOWING_X11
 #include <gdk/gdkx.h>
+#endif
 #include <glib.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
@@ -1198,34 +1200,38 @@ static void
 search_for_application_mime_type (ActivateParametersInstall *parameters_install,
                                   const gchar               *mime_type)
 {
+#ifdef GDK_WINDOWING_X11
     GdkWindow *window;
     guint xid = 0;
     const char *mime_types[2];
 
-    g_assert (parameters_install->proxy != NULL);
-
-    /* get XID from parent window */
-    window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
-    if (window != NULL)
+    if (GDK_IS_X11_DISPLAY (gdk_display_get_default ()))
     {
-        xid = GDK_WINDOW_XID (window);
+        g_assert (parameters_install->proxy != NULL);
+
+        /* get XID from parent window */
+        window = gtk_widget_get_window (GTK_WIDGET (parameters_install->parent_window));
+        if (window != NULL)
+        {
+            xid = GDK_WINDOW_XID (window);
+        }
+
+        mime_types[0] = mime_type;
+        mime_types[1] = NULL;
+
+        g_dbus_proxy_call (parameters_install->proxy,
+                           "InstallMimeTypes",
+                           g_variant_new ("(u^ass)",
+                                          xid,
+                                          mime_types,
+                                          "hide-confirm-search"),
+                           G_DBUS_CALL_FLAGS_NONE,
+                           G_MAXINT /* no timeout */,
+                           NULL /* cancellable */,
+                           (GAsyncReadyCallback) search_for_application_dbus_call_notify_cb,
+                           parameters_install);
     }
-
-    mime_types[0] = mime_type;
-    mime_types[1] = NULL;
-
-    g_dbus_proxy_call (parameters_install->proxy,
-                       "InstallMimeTypes",
-                       g_variant_new ("(u^ass)",
-                                      xid,
-                                      mime_types,
-                                      "hide-confirm-search"),
-                       G_DBUS_CALL_FLAGS_NONE,
-                       G_MAXINT /* no timeout */,
-                       NULL /* cancellable */,
-                       (GAsyncReadyCallback) search_for_application_dbus_call_notify_cb,
-                       parameters_install);
-
+#endif
     DEBUG ("InstallMimeType method invoked for %s", mime_type);
 }
 
