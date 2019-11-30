@@ -33,7 +33,7 @@
 #include <fcntl.h>
 #include <gdesktop-enums.h>
 #include <gdk/gdkkeysyms.h>
-#include <gdk/gdkx.h>
+#include <gdk/gdk.h>
 #include <gio/gio.h>
 #include <glib/gi18n.h>
 #include <glib/gstdio.h>
