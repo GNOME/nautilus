@@ -286,6 +286,12 @@ search_finished_idle (gpointer user_data)
     return FALSE;
 }
 
+/* This is used to compensate rank if fts:rank is not set (resp. fts:match is
+ * not used). The value was determined experimentally. I am conviced that
+ * fts:rank is currently always set to 5.0 in case of filename match.
+ */
+#define FILENAME_RANK 5.0
+
 static void
 nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 {
@@ -327,7 +333,11 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     location_uri = location ? g_file_get_uri (location) : NULL;
     mimetypes = nautilus_query_get_mime_types (tracker->query);
 
-    sparql = g_string_new ("SELECT DISTINCT nie:url(?urn) fts:rank(?urn) nfo:fileLastModified(?urn) nfo:fileLastAccessed(?urn)");
+    sparql = g_string_new ("SELECT DISTINCT"
+                           " nie:url(?urn)"
+                           " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
+                           " nfo:fileLastModified(?urn)"
+                           " nfo:fileLastAccessed(?urn)");
 
     if (tracker->fts_enabled)
     {
@@ -342,15 +352,30 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                      "  tracker:available true;"
                      "  nie:url ?url");
 
-    if (*search_text)
-    {
-        g_string_append_printf (sparql, "; fts:match '\"%s\"*'", search_text);
-    }
-
     if (mimetypes->len > 0)
     {
         g_string_append (sparql, "; nie:mimeType ?mime");
     }
+
+    if (tracker->fts_enabled)
+    {
+        /* Use fts:match only for content search to not lose some filename results due to stop words. */
+        g_string_append_printf (sparql,
+                                " {"
+                                " ?urn fts:match '\"nie:plainTextContent\" : \"%s\"*' ."
+                                " BIND(fts:rank(?urn) AS ?rank1) ."
+                                " } UNION",
+                                search_text);
+    }
+
+    g_string_append_printf (sparql,
+                            " {"
+                            " ?urn nfo:fileName ?filename ."
+                            " FILTER(fn:contains(fn:lower-case(?filename), '%s')) ."
+                            " BIND(%f AS ?rank2) ."
+                            " }",
+                            search_text,
+                            FILENAME_RANK);
 
     g_string_append_printf (sparql, " . FILTER( ");
 
@@ -361,11 +386,6 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     else
     {
         g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url)", location_uri);
-    }
-
-    if (!tracker->fts_enabled)
-    {
-        g_string_append_printf (sparql, " && fn:contains(fn:lower-case(nfo:fileName(?urn)), '%s')", search_text);
     }
 
     date_range = nautilus_query_get_date_range (tracker->query);
@@ -424,7 +444,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
         g_string_append (sparql, ")\n");
     }
 
-    g_string_append (sparql, ")} ORDER BY DESC (fts:rank(?urn))");
+    g_string_append (sparql, ")} ORDER BY DESC (?rank)");
 
     tracker->cancellable = g_cancellable_new ();
     tracker_sparql_connection_query_async (tracker->connection,
