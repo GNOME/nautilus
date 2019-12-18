@@ -266,11 +266,6 @@ static void empty_trash_task_done (GObject      *source_object,
 
 static char *query_fs_type (GFile        *file,
                             GCancellable *cancellable);
-static CopyMoveJob *copy_job_setup (GList *files,
-                                    GFile *target_dir,
-                                    GtkWindow *parent_window,
-                                    NautilusCopyCallback done_callback,
-                                    gpointer done_callback_data);
 
 static void nautilus_file_operations_copy (GTask        *task,
                                            gpointer      source_object,
@@ -2576,6 +2571,8 @@ trash_or_delete_internal (GTask        *task,
 static DeleteJob *
 setup_delete_job (GList                  *files,
                   GtkWindow              *parent_window,
+                  const char             *parent_handle,
+                  guint32                 timestamp,
                   gboolean                try_trash,
                   NautilusDeleteCallback  done_callback,
                   gpointer                done_callback_data)
@@ -2583,7 +2580,7 @@ setup_delete_job (GList                  *files,
     DeleteJob *job;
 
     /* TODO: special case desktop icon link files ... */
-    job = op_job_new (DeleteJob, parent_window, NULL, 0);
+    job = op_job_new (DeleteJob, parent_window, parent_handle, timestamp);
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
     job->try_trash = try_trash;
     job->user_cancel = FALSE;
@@ -2613,6 +2610,8 @@ setup_delete_job (GList                  *files,
 static void
 trash_or_delete_internal_sync (GList                  *files,
                                GtkWindow              *parent_window,
+                               const char             *parent_handle,
+                               guint32                 timestamp,
                                gboolean                try_trash)
 {
     GTask *task;
@@ -2620,6 +2619,8 @@ trash_or_delete_internal_sync (GList                  *files,
 
     job = setup_delete_job (files,
                             parent_window,
+                            parent_handle,
+                            timestamp,
                             try_trash,
                             NULL,
                             NULL);
@@ -2637,6 +2638,8 @@ trash_or_delete_internal_sync (GList                  *files,
 static void
 trash_or_delete_internal_async (GList                  *files,
                                 GtkWindow              *parent_window,
+                                const char             *parent_handle,
+                                guint32                 timestamp,
                                 gboolean                try_trash,
                                 NautilusDeleteCallback  done_callback,
                                 gpointer                done_callback_data)
@@ -2646,6 +2649,8 @@ trash_or_delete_internal_async (GList                  *files,
 
     job = setup_delete_job (files,
                             parent_window,
+                            parent_handle,
+                            timestamp,
                             try_trash,
                             done_callback,
                             done_callback_data);
@@ -2659,22 +2664,26 @@ trash_or_delete_internal_async (GList                  *files,
 void
 nautilus_file_operations_trash_or_delete_sync (GList                  *files)
 {
-    trash_or_delete_internal_sync (files, NULL, TRUE);
+    trash_or_delete_internal_sync (files, NULL, NULL, 0, TRUE);
 }
 
 void
 nautilus_file_operations_delete_sync (GList                  *files)
 {
-    trash_or_delete_internal_sync (files, NULL, FALSE);
+    trash_or_delete_internal_sync (files, NULL, NULL, 0, FALSE);
 }
 
 void
 nautilus_file_operations_trash_or_delete_async (GList                  *files,
                                                 GtkWindow              *parent_window,
+                                                const char             *parent_handle,
+                                                guint32                 timestamp,
                                                 NautilusDeleteCallback  done_callback,
                                                 gpointer                done_callback_data)
 {
     trash_or_delete_internal_async (files, parent_window,
+                                    parent_handle,
+                                    timestamp,
                                     TRUE,
                                     done_callback, done_callback_data);
 }
@@ -2682,10 +2691,14 @@ nautilus_file_operations_trash_or_delete_async (GList                  *files,
 void
 nautilus_file_operations_delete_async (GList                  *files,
                                        GtkWindow              *parent_window,
+                                       const char             *parent_handle,
+                                       guint32                 timestamp,
                                        NautilusDeleteCallback  done_callback,
                                        gpointer                done_callback_data)
 {
     trash_or_delete_internal_async (files, parent_window,
+                                    parent_handle,
+                                    timestamp,
                                     FALSE,
                                     done_callback, done_callback_data);
 }
@@ -5759,12 +5772,14 @@ static CopyMoveJob *
 copy_job_setup (GList *files,
                 GFile *target_dir,
                 GtkWindow *parent_window,
+                const char *parent_handle,
+                guint32 timestamp,
                 NautilusCopyCallback done_callback,
                 gpointer done_callback_data)
 {
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
+    job = op_job_new (CopyMoveJob, parent_window, parent_handle, timestamp);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -5866,6 +5881,8 @@ nautilus_file_operations_copy_sync (GList *files,
                            target_dir,
                            NULL,
                            NULL,
+                           0,
+                           NULL,
                            NULL);
 
     task = g_task_new (NULL, job->common.cancellable, NULL, job);
@@ -5882,6 +5899,8 @@ void
 nautilus_file_operations_copy_async (GList                *files,
                                      GFile                *target_dir,
                                      GtkWindow            *parent_window,
+                                     const char           *parent_handle,
+                                     guint32               timestamp,
                                      NautilusCopyCallback  done_callback,
                                      gpointer              done_callback_data)
 {
@@ -5891,6 +5910,8 @@ nautilus_file_operations_copy_async (GList                *files,
     job = copy_job_setup (files,
                            target_dir,
                            parent_window,
+                           parent_handle,
+                           timestamp,
                            done_callback,
                            done_callback_data);
 
@@ -6359,12 +6380,14 @@ static CopyMoveJob *
 move_job_setup (GList                *files,
                 GFile                *target_dir,
                 GtkWindow            *parent_window,
+                const char           *parent_handle,
+                guint32               timestamp,
                 NautilusCopyCallback  done_callback,
                 gpointer              done_callback_data)
 {
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
+    job = op_job_new (CopyMoveJob, parent_window, parent_handle, timestamp);
     job->is_move = TRUE;
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
@@ -6386,7 +6409,7 @@ nautilus_file_operations_move_sync (GList                *files,
     GTask *task;
     CopyMoveJob *job;
 
-    job = move_job_setup (files, target_dir, NULL, NULL, NULL);
+    job = move_job_setup (files, target_dir, NULL, NULL, 0, NULL, NULL);
     task = g_task_new (NULL, job->common.cancellable, NULL, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread_sync (task, nautilus_file_operations_move);
@@ -6401,13 +6424,22 @@ void
 nautilus_file_operations_move_async (GList                *files,
                                      GFile                *target_dir,
                                      GtkWindow            *parent_window,
+                                     const char           *parent_handle,
+                                     guint32               timestamp,
                                      NautilusCopyCallback  done_callback,
                                      gpointer              done_callback_data)
 {
     GTask *task;
     CopyMoveJob *job;
 
-    job = move_job_setup (files, target_dir, parent_window, done_callback, done_callback_data);
+    job = move_job_setup (files,
+                          target_dir,
+                          parent_window,
+                          parent_handle,
+                          timestamp,
+                          done_callback,
+                          done_callback_data);
+
     task = g_task_new (NULL, job->common.cancellable, move_task_done, job);
     g_task_set_task_data (task, job, NULL);
     g_task_run_in_thread (task, nautilus_file_operations_move);
@@ -6812,13 +6844,15 @@ void
 nautilus_file_operations_link (GList                *files,
                                GFile                *target_dir,
                                GtkWindow            *parent_window,
+                               const char           *parent_handle,
+                               guint32               timestamp,
                                NautilusCopyCallback  done_callback,
                                gpointer              done_callback_data)
 {
     g_autoptr (GTask) task = NULL;
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
+    job = op_job_new (CopyMoveJob, parent_window, parent_handle, timestamp);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -6847,6 +6881,8 @@ nautilus_file_operations_link (GList                *files,
 void
 nautilus_file_operations_duplicate (GList                *files,
                                     GtkWindow            *parent_window,
+                                    const char           *parent_handle,
+                                    guint32               timestamp,
                                     NautilusCopyCallback  done_callback,
                                     gpointer              done_callback_data)
 {
@@ -6854,7 +6890,7 @@ nautilus_file_operations_duplicate (GList                *files,
     CopyMoveJob *job;
     g_autoptr (GFile) parent = NULL;
 
-    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
+    job = op_job_new (CopyMoveJob, parent_window, parent_handle, timestamp);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -7109,6 +7145,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
                                     const char           *target_dir,
                                     GdkDragAction         copy_action,
                                     GtkWidget            *parent_view,
+                                    const char           *parent_handle,
+                                    guint32               timestamp,
                                     NautilusCopyCallback  done_callback,
                                     gpointer              done_callback_data)
 {
@@ -7165,6 +7203,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
         {
             nautilus_file_operations_duplicate (locations,
                                                 parent_window,
+                                                parent_handle,
+                                                timestamp,
                                                 done_callback, done_callback_data);
         }
         else
@@ -7172,6 +7212,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
             nautilus_file_operations_copy_async (locations,
                                                  dest,
                                                  parent_window,
+                                                 parent_handle,
+                                                 timestamp,
                                                  done_callback, done_callback_data);
         }
         if (src_dir)
@@ -7191,6 +7233,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
 
             nautilus_file_operations_trash_or_delete_async (locations,
                                                             parent_window,
+                                                            parent_handle,
+                                                            timestamp,
                                                             (NautilusDeleteCallback) callback_for_move_to_trash,
                                                             cb_data);
         }
@@ -7199,6 +7243,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
             nautilus_file_operations_move_async (locations,
                                                  dest,
                                                  parent_window,
+                                                 parent_handle,
+                                                 timestamp,
                                                  done_callback, done_callback_data);
         }
     }
@@ -7207,6 +7253,8 @@ nautilus_file_operations_copy_move (const GList          *item_uris,
         nautilus_file_operations_link (locations,
                                        dest,
                                        parent_window,
+                                       parent_handle,
+                                       timestamp,
                                        done_callback, done_callback_data);
     }
 
@@ -7640,6 +7688,8 @@ retry:
 
 void
 nautilus_file_operations_new_folder (GtkWidget              *parent_view,
+                                     const char             *parent_handle,
+                                     guint32                 timestamp,
                                      const char             *parent_dir,
                                      const char             *folder_name,
                                      NautilusCreateCallback  done_callback,
@@ -7655,7 +7705,7 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (CreateJob, parent_window, NULL, 0);
+    job = op_job_new (CreateJob, parent_window, parent_handle, timestamp);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -7851,7 +7901,9 @@ empty_trash_thread_func (GTask        *task,
 }
 
 void
-nautilus_file_operations_empty_trash (GtkWidget *parent_view)
+nautilus_file_operations_empty_trash (GtkWidget  *parent_view,
+                                      const char *parent_handle,
+                                      guint32     timestamp)
 {
     g_autoptr (GTask) task = NULL;
     EmptyTrashJob *job;
@@ -7863,7 +7915,7 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (EmptyTrashJob, parent_window, NULL, 0);
+    job = op_job_new (EmptyTrashJob, parent_window, parent_handle, timestamp);
     job->trash_dirs = g_list_prepend (job->trash_dirs,
                                       g_file_new_for_uri ("trash:"));
     job->should_confirm = TRUE;
@@ -8307,13 +8359,15 @@ void
 nautilus_file_operations_extract_files (GList                   *files,
                                         GFile                   *destination_directory,
                                         GtkWindow               *parent_window,
+                                        const char              *parent_handle,
+                                        guint32                  timestamp,
                                         NautilusExtractCallback  done_callback,
                                         gpointer                 done_callback_data)
 {
     ExtractJob *extract_job;
     g_autoptr (GTask) task = NULL;
 
-    extract_job = op_job_new (ExtractJob, parent_window, NULL, 0);
+    extract_job = op_job_new (ExtractJob, parent_window, parent_handle, timestamp);
     extract_job->source_files = g_list_copy_deep (files,
                                                   (GCopyFunc) g_object_ref,
                                                   NULL);
@@ -8656,13 +8710,15 @@ nautilus_file_operations_compress (GList                  *files,
                                    AutoarFormat            format,
                                    AutoarFilter            filter,
                                    GtkWindow              *parent_window,
+                                   const char             *parent_handle,
+                                   guint32                 timestamp,
                                    NautilusCreateCallback  done_callback,
                                    gpointer                done_callback_data)
 {
     g_autoptr (GTask) task = NULL;
     CompressJob *compress_job;
 
-    compress_job = op_job_new (CompressJob, parent_window, NULL, 0);
+    compress_job = op_job_new (CompressJob, parent_window, parent_handle, timestamp);
     compress_job->source_files = g_list_copy_deep (files,
                                                    (GCopyFunc) g_object_ref,
                                                    NULL);

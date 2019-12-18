@@ -47,7 +47,11 @@ NautilusFileUndoInfo *nautilus_file_undo_manager_get_action (void);
 
 NautilusFileUndoManagerState nautilus_file_undo_manager_get_state (void);
 
-void nautilus_file_undo_manager_undo (GtkWindow *parent_window);
-void nautilus_file_undo_manager_redo (GtkWindow *parent_window);
+void nautilus_file_undo_manager_undo (GtkWindow  *parent_window,
+                                      const char *parent_handle,
+                                      guint32     timestamp);
+void nautilus_file_undo_manager_redo (GtkWindow  *parent_window,
+                                      const char *parent_handle,
+                                      guint32     timestamp);
 
 gboolean nautilus_file_undo_manager_is_operating (void);

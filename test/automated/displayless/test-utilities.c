@@ -162,7 +162,7 @@ test_operation_undo (void)
                                    G_CALLBACK (quit_loop_callback),
                                    loop);
 
-    nautilus_file_undo_manager_undo (NULL);
+    nautilus_file_undo_manager_undo (NULL, NULL, 0);
 
     g_main_loop_run (loop);
     
@@ -191,7 +191,7 @@ test_operation_undo_redo (void)
                                    G_CALLBACK (quit_loop_callback),
                                    loop);
 
-    nautilus_file_undo_manager_redo (NULL);
+    nautilus_file_undo_manager_redo (NULL, NULL, 0);
 
     g_main_loop_run (loop);
     

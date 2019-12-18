@@ -54,10 +54,16 @@ void nautilus_file_operations_copy_move   (const GList               *item_uris,
 					   const char                *target_dir_uri,
 					   GdkDragAction              copy_action,
 					   GtkWidget                 *parent_view,
+					   const char                *parent_handle,
+					   guint32                    timestamp,
 					   NautilusCopyCallback       done_callback,
 					   gpointer                   done_callback_data);
-void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
+void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view,
+					   const char                *parent_handle,
+					   guint32                    timestamp);
 void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
+					   const char                *parent_handle,
+					   guint32                    timestamp,
 					   const char                *parent_dir_uri,
 					   const char                *folder_name,
 					   NautilusCreateCallback     done_callback,
@@ -80,10 +86,14 @@ void nautilus_file_operations_trash_or_delete_sync (GList                  *file
 void nautilus_file_operations_delete_sync (GList                  *files);
 void nautilus_file_operations_trash_or_delete_async (GList                  *files,
                                                      GtkWindow              *parent_window,
+                                                     const char             *parent_handle,
+                                                     guint32                 timestamp,
                                                      NautilusDeleteCallback  done_callback,
                                                      gpointer                done_callback_data);
 void nautilus_file_operations_delete_async (GList                  *files,
                                             GtkWindow              *parent_window,
+                                            const char             *parent_handle,
+                                            guint32                 timestamp,
                                             NautilusDeleteCallback  done_callback,
                                             gpointer                done_callback_data);
 
@@ -117,6 +127,8 @@ void nautilus_file_operations_mount_volume_full (GtkWindow                      
 void nautilus_file_operations_copy_async (GList                *files,
                                           GFile                *target_dir,
                                           GtkWindow            *parent_window,
+                                          const char           *parent_handle,
+                                          guint32               timestamp,
                                           NautilusCopyCallback  done_callback,
                                           gpointer              done_callback_data);
 void nautilus_file_operations_copy_sync (GList                *files,
@@ -125,6 +137,8 @@ void nautilus_file_operations_copy_sync (GList                *files,
 void nautilus_file_operations_move_async (GList                *files,
                                           GFile                *target_dir,
                                           GtkWindow            *parent_window,
+                                          const char           *parent_handle,
+                                          guint32               timestamp,
                                           NautilusCopyCallback  done_callback,
                                           gpointer              done_callback_data);
 void nautilus_file_operations_move_sync (GList                *files,
@@ -132,16 +146,22 @@ void nautilus_file_operations_move_sync (GList                *files,
 
 void nautilus_file_operations_duplicate (GList                *files,
 					 GtkWindow            *parent_window,
+					 const char           *parent_handle,
+					 guint32               timestamp,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
 void nautilus_file_operations_link      (GList                *files,
 					 GFile                *target_dir,
 					 GtkWindow            *parent_window,
+					 const char           *parent_handle,
+					 guint32               timestamp,
 					 NautilusCopyCallback  done_callback,
 					 gpointer              done_callback_data);
 void nautilus_file_operations_extract_files (GList                   *files,
                                              GFile                   *destination_directory,
                                              GtkWindow               *parent_window,
+                                             const char              *parent_handle,
+                                             guint32                  timestamp,
                                              NautilusExtractCallback  done_callback,
                                              gpointer                 done_callback_data);
 void nautilus_file_operations_compress (GList                  *files,
@@ -149,5 +169,7 @@ void nautilus_file_operations_compress (GList                  *files,
                                         AutoarFormat            format,
                                         AutoarFilter            filter,
                                         GtkWindow              *parent_window,
+                                        const char             *parent_handle,
+                                        guint32                 timestamp,
                                         NautilusCreateCallback  done_callback,
                                         gpointer                done_callback_data);

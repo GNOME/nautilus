@@ -80,7 +80,7 @@ handle_redo (NautilusDBusFileOperations *object,
     *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
                                             G_CALLBACK (undo_redo_on_finished),
                                             handler_id);
-    nautilus_file_undo_manager_redo (NULL);
+    nautilus_file_undo_manager_redo (NULL, NULL, 0);
 
     nautilus_dbus_file_operations_complete_redo (object, invocation);
     return TRUE; /* invocation was handled */
@@ -99,7 +99,7 @@ handle_undo (NautilusDBusFileOperations *object,
     *handler_id = g_signal_connect_swapped (undo_manager, "undo-changed",
                                             G_CALLBACK (undo_redo_on_finished),
                                             handler_id);
-    nautilus_file_undo_manager_undo (NULL);
+    nautilus_file_undo_manager_undo (NULL, NULL, 0);
 
     nautilus_dbus_file_operations_complete_undo (object, invocation);
     return TRUE; /* invocation was handled */
@@ -129,7 +129,8 @@ handle_create_folder (NautilusDBusFileOperations *object,
     parent_file_uri = g_file_get_uri (parent_file);
 
     g_application_hold (g_application_get_default ());
-    nautilus_file_operations_new_folder (NULL, parent_file_uri, basename,
+    nautilus_file_operations_new_folder (NULL, NULL, 0,
+                                         parent_file_uri, basename,
                                          create_folder_on_finished, NULL);
 
     nautilus_dbus_file_operations_complete_create_folder (object, invocation);
@@ -160,7 +161,8 @@ handle_copy_uris (NautilusDBusFileOperations  *object,
 
     g_application_hold (g_application_get_default ());
     nautilus_file_operations_copy_move (source_files, destination,
-                                        GDK_ACTION_COPY, NULL, copy_move_on_finished, NULL);
+                                        GDK_ACTION_COPY, NULL, NULL, 0,
+                                        copy_move_on_finished, NULL);
 
     g_list_free_full (source_files, g_free);
     nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
@@ -183,7 +185,8 @@ handle_move_uris (NautilusDBusFileOperations  *object,
 
     g_application_hold (g_application_get_default ());
     nautilus_file_operations_copy_move (source_files, destination,
-                                        GDK_ACTION_MOVE, NULL, copy_move_on_finished, NULL);
+                                        GDK_ACTION_MOVE, NULL, NULL, 0,
+                                        copy_move_on_finished, NULL);
 
     g_list_free_full (source_files, g_free);
     nautilus_dbus_file_operations_complete_copy_uris (object, invocation);
@@ -195,7 +198,7 @@ static gboolean
 handle_empty_trash (NautilusDBusFileOperations *object,
                     GDBusMethodInvocation      *invocation)
 {
-    nautilus_file_operations_empty_trash (NULL);
+    nautilus_file_operations_empty_trash (NULL, NULL, 0);
 
     nautilus_dbus_file_operations_complete_empty_trash (object, invocation);
     return TRUE; /* invocation was handled */
@@ -224,7 +227,7 @@ handle_trash_files (NautilusDBusFileOperations  *object,
     }
 
     g_application_hold (g_application_get_default ());
-    nautilus_file_operations_trash_or_delete_async (source_files, NULL,
+    nautilus_file_operations_trash_or_delete_async (source_files, NULL, NULL, 0,
                                                     trash_on_finished, NULL);
 
     nautilus_dbus_file_operations_complete_trash_files (object, invocation);

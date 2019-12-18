@@ -424,7 +424,7 @@ action_redo (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_file_undo_manager_redo (GTK_WINDOW (window));
+    nautilus_file_undo_manager_redo (GTK_WINDOW (window), NULL, 0);
 }
 
 static void
@@ -434,7 +434,7 @@ action_undo (GSimpleAction *action,
 {
     NautilusWindow *window = user_data;
 
-    nautilus_file_undo_manager_undo (GTK_WINDOW (window));
+    nautilus_file_undo_manager_undo (GTK_WINDOW (window), NULL, 0);
 }
 
 static void
@@ -1146,7 +1146,7 @@ places_sidebar_drag_perform_drop_cb (GtkPlacesSidebar *sidebar,
     dest_uri = g_file_get_uri (dest_file);
     source_uri_list = build_uri_list_from_gfile_list (source_file_list);
 
-    nautilus_file_operations_copy_move (source_uri_list, dest_uri, action, GTK_WIDGET (sidebar), NULL, NULL);
+    nautilus_file_operations_copy_move (source_uri_list, dest_uri, action, GTK_WIDGET (sidebar), NULL, 0, NULL, NULL);
 
     g_free (dest_uri);
     g_list_free_full (source_uri_list, g_free);
@@ -1160,7 +1160,7 @@ action_empty_trash (GSimpleAction *action,
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
-    nautilus_file_operations_empty_trash (GTK_WIDGET (window));
+    nautilus_file_operations_empty_trash (GTK_WIDGET (window), NULL, 0);
 }
 
 /* Callback used for the "properties" menu item from the places sidebar */
@@ -1591,7 +1591,7 @@ on_in_app_notification_undo_undo_button_clicked (GtkWidget      *notification,
 {
     hide_in_app_notification_undo (window);
 
-    nautilus_file_undo_manager_undo (GTK_WINDOW (window));
+    nautilus_file_undo_manager_undo (GTK_WINDOW (window), NULL, 0);
 }
 
 static void

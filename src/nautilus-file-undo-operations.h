@@ -62,9 +62,13 @@ struct _NautilusFileUndoInfoClass
     GObjectClass parent_class;
 
     void (* undo_func) (NautilusFileUndoInfo *self,
-                        GtkWindow            *parent_window);
+                        GtkWindow            *parent_window,
+                        const char           *parent_handle,
+                        guint32               timestamp);
     void (* redo_func) (NautilusFileUndoInfo *self,
-                        GtkWindow            *parent_window);
+                        GtkWindow            *parent_window,
+                        const char           *parent_handle,
+                        guint32               timestamp);
 
     void (* strings_func) (NautilusFileUndoInfo *self,
                            gchar **undo_label,
@@ -76,6 +80,8 @@ struct _NautilusFileUndoInfoClass
 void nautilus_file_undo_info_apply_async (NautilusFileUndoInfo *self,
                                           gboolean undo,
                                           GtkWindow *parent_window,
+                                          const char *parent_handle,
+                                          guint32 timestamp,
                                           GAsyncReadyCallback callback,
                                           gpointer user_data);
 gboolean nautilus_file_undo_info_apply_finish (NautilusFileUndoInfo *self,
