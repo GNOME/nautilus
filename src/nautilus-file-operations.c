@@ -61,12 +61,22 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-ui-utilities.h"
 
+#ifdef GDK_WINDOWING_X11
+#include <gdk/gdkx.h>
+#endif
+
+#ifdef GDK_WINDOWING_WAYLAND
+#include <gdk/gdkwayland.h>
+#endif
+
 /* TODO: TESTING!!! */
 
 typedef struct
 {
     GTimer *time;
     GtkWindow *parent_window;
+    char *parent_handle;
+    guint32 timestamp;
     guint inhibit_cookie;
     NautilusProgressInfo *progress;
     GCancellable *cancellable;
@@ -1027,11 +1037,13 @@ get_truncated_parse_name (GFile *file)
     return eel_str_middle_truncate (parse_name, MAXIMUM_DISPLAYED_FILE_NAME_LENGTH);
 }
 
-#define op_job_new(__type, parent_window) ((__type *) (init_common (sizeof (__type), parent_window)))
+#define op_job_new(__type, parent_window, parent_handle, timestamp) ((__type *) (init_common (sizeof (__type), parent_window, parent_handle, timestamp)))
 
 static gpointer
-init_common (gsize      job_size,
-             GtkWindow *parent_window)
+init_common (gsize       job_size,
+             GtkWindow  *parent_window,
+             const char *parent_handle,
+             guint32     timestamp)
 {
     CommonJob *common;
 
@@ -1043,6 +1055,13 @@ init_common (gsize      job_size,
         g_object_add_weak_pointer (G_OBJECT (common->parent_window),
                                    (gpointer *) &common->parent_window);
     }
+
+    if (parent_handle && *parent_handle != '\0')
+    {
+        common->parent_handle = g_strdup (parent_handle);
+    }
+
+    common->timestamp = timestamp;
     common->progress = nautilus_progress_info_new ();
     common->cancellable = nautilus_progress_info_get_cancellable (common->progress);
     common->time = g_timer_new ();
@@ -1069,6 +1088,11 @@ finalize_common (CommonJob *common)
     {
         g_object_remove_weak_pointer (G_OBJECT (common->parent_window),
                                       (gpointer *) &common->parent_window);
+    }
+
+    if (common->parent_handle)
+    {
+        g_free (common->parent_handle);
     }
 
     if (common->skip_files)
@@ -1176,6 +1200,8 @@ can_delete_files_without_confirm (GList *files)
 typedef struct
 {
     GtkWindow **parent_window;
+    const char *parent_handle;
+    guint32 timestamp;
     gboolean ignore_close_box;
     GtkMessageType message_type;
     const char *primary_text;
@@ -1191,6 +1217,50 @@ typedef struct
     GMutex mutex;
     GCond cond;
 } RunSimpleDialogData;
+
+static void
+set_transient_for (GdkWindow  *child_window,
+                   const char *parent_handle)
+{
+    GdkDisplay *display;
+    const char *prefix;
+
+    display = gdk_window_get_display (child_window);
+
+#ifdef GDK_WINDOWING_X11
+    if (GDK_IS_X11_DISPLAY (display))
+    {
+        prefix = "x11:";
+
+        if (g_str_has_prefix (parent_handle, prefix))
+        {
+            const char *handle;
+
+            handle = parent_handle + strlen (prefix);
+
+            XSetTransientForHint (gdk_x11_display_get_xdisplay (display),
+                                  gdk_x11_window_get_xid (child_window),
+                                  strtol (handle, NULL, 16));
+        }
+    }
+#endif
+
+#ifdef GDK_WINDOWING_WAYLAND
+    if (GDK_IS_WAYLAND_DISPLAY (display))
+    {
+        prefix = "wayland:";
+
+        if (g_str_has_prefix (parent_handle, prefix))
+        {
+            const char *handle;
+
+            handle = parent_handle + strlen (prefix);
+
+            gdk_wayland_window_set_transient_for_exported (child_window, (char *) handle);
+        }
+    }
+#endif
+}
 
 static gboolean
 do_run_simple_dialog (gpointer _data)
@@ -1259,6 +1329,16 @@ do_run_simple_dialog (gpointer _data)
         gtk_widget_show (label);
     }
 
+    if (data->timestamp != 0)
+    {
+        gtk_window_present_with_time (GTK_WINDOW (dialog), data->timestamp);
+    }
+
+    if (*data->parent_window == NULL && data->parent_handle != NULL)
+    {
+        set_transient_for (gtk_widget_get_window (dialog), data->parent_handle);
+    }
+
     /* Run it. */
     result = gtk_dialog_run (GTK_DIALOG (dialog));
 
@@ -1300,6 +1380,8 @@ run_simple_dialog_va (CommonJob      *job,
 
     data = g_new0 (RunSimpleDialogData, 1);
     data->parent_window = &job->parent_window;
+    data->parent_handle = job->parent_handle;
+    data->timestamp = job->timestamp;
     data->ignore_close_box = ignore_close_box;
     data->message_type = message_type;
     data->primary_text = primary_text;
@@ -2501,7 +2583,7 @@ setup_delete_job (GList                  *files,
     DeleteJob *job;
 
     /* TODO: special case desktop icon link files ... */
-    job = op_job_new (DeleteJob, parent_window);
+    job = op_job_new (DeleteJob, parent_window, NULL, 0);
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
     job->try_trash = try_trash;
     job->user_cancel = FALSE;
@@ -2928,7 +3010,7 @@ nautilus_file_operations_unmount_mount_full (GtkWindow               *parent_win
             GTask *task;
             EmptyTrashJob *job;
 
-            job = op_job_new (EmptyTrashJob, parent_window);
+            job = op_job_new (EmptyTrashJob, parent_window, NULL, 0);
             job->should_confirm = FALSE;
             job->trash_dirs = get_trash_dirs_for_mount (mount);
             job->done_callback = empty_trash_for_unmount_done;
@@ -5682,7 +5764,7 @@ copy_job_setup (GList *files,
 {
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window);
+    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -6282,7 +6364,7 @@ move_job_setup (GList                *files,
 {
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window);
+    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
     job->is_move = TRUE;
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
@@ -6736,7 +6818,7 @@ nautilus_file_operations_link (GList                *files,
     g_autoptr (GTask) task = NULL;
     CopyMoveJob *job;
 
-    job = op_job_new (CopyMoveJob, parent_window);
+    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -6772,7 +6854,7 @@ nautilus_file_operations_duplicate (GList                *files,
     CopyMoveJob *job;
     g_autoptr (GFile) parent = NULL;
 
-    job = op_job_new (CopyMoveJob, parent_window);
+    job = op_job_new (CopyMoveJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->files = g_list_copy_deep (files, (GCopyFunc) g_object_ref, NULL);
@@ -6965,7 +7047,7 @@ nautilus_file_set_permissions_recursive (const char         *directory,
     g_autoptr (GTask) task = NULL;
     SetPermissionsJob *job;
 
-    job = op_job_new (SetPermissionsJob, NULL);
+    job = op_job_new (SetPermissionsJob, NULL, NULL, 0);
     job->file = g_file_new_for_uri (directory);
     job->file_permissions = file_permissions;
     job->file_mask = file_mask;
@@ -7573,7 +7655,7 @@ nautilus_file_operations_new_folder (GtkWidget              *parent_view,
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (CreateJob, parent_window);
+    job = op_job_new (CreateJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -7608,7 +7690,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (CreateJob, parent_window);
+    job = op_job_new (CreateJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -7648,7 +7730,7 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (CreateJob, parent_window);
+    job = op_job_new (CreateJob, parent_window, NULL, 0);
     job->done_callback = done_callback;
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
@@ -7781,7 +7863,7 @@ nautilus_file_operations_empty_trash (GtkWidget *parent_view)
         parent_window = (GtkWindow *) gtk_widget_get_ancestor (parent_view, GTK_TYPE_WINDOW);
     }
 
-    job = op_job_new (EmptyTrashJob, parent_window);
+    job = op_job_new (EmptyTrashJob, parent_window, NULL, 0);
     job->trash_dirs = g_list_prepend (job->trash_dirs,
                                       g_file_new_for_uri ("trash:"));
     job->should_confirm = TRUE;
@@ -8231,7 +8313,7 @@ nautilus_file_operations_extract_files (GList                   *files,
     ExtractJob *extract_job;
     g_autoptr (GTask) task = NULL;
 
-    extract_job = op_job_new (ExtractJob, parent_window);
+    extract_job = op_job_new (ExtractJob, parent_window, NULL, 0);
     extract_job->source_files = g_list_copy_deep (files,
                                                   (GCopyFunc) g_object_ref,
                                                   NULL);
@@ -8580,7 +8662,7 @@ nautilus_file_operations_compress (GList                  *files,
     g_autoptr (GTask) task = NULL;
     CompressJob *compress_job;
 
-    compress_job = op_job_new (CompressJob, parent_window);
+    compress_job = op_job_new (CompressJob, parent_window, NULL, 0);
     compress_job->source_files = g_list_copy_deep (files,
                                                    (GCopyFunc) g_object_ref,
                                                    NULL);
