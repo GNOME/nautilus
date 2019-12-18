@@ -36,6 +36,10 @@
     <method name='TrashFiles'>
       <arg type='as' name='URIs' direction='in'/>
     </method>
+    <method name='DeleteFiles'>
+      <arg type='as' name='URIs' direction='in'/>
+      <arg type='u' name='Timestamp' direction='in'/>
+    </method>
     <method name='CreateFolder'>
       <arg type='s' name='URI' direction='in'/>
     </method>

@@ -232,6 +232,38 @@ handle_trash_files (NautilusDBusFileOperations  *object,
 }
 
 static void
+delete_on_finished (GHashTable *debutting_uris,
+                    gboolean    user_cancel,
+                    gpointer    callback_data)
+{
+    g_application_release (g_application_get_default ());
+}
+
+static gboolean
+handle_delete_files (NautilusDBusFileOperations  *object,
+                     GDBusMethodInvocation       *invocation,
+                     const gchar                **sources,
+                     guint32                      timestamp,
+                     NautilusDBusManager         *self)
+{
+    g_autolist (GFile) source_files = NULL;
+    gint idx;
+
+    for (idx = 0; sources[idx] != NULL; idx++)
+    {
+        source_files = g_list_prepend (source_files,
+                                       g_file_new_for_uri (sources[idx]));
+    }
+
+    g_application_hold (g_application_get_default ());
+    nautilus_file_operations_delete_async (source_files, NULL,
+                                           delete_on_finished, NULL);
+
+    nautilus_dbus_file_operations_complete_delete_files (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static void
 rename_file_on_finished (NautilusFile *file,
                          GFile        *result_location,
                          GError       *error,
@@ -290,6 +322,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations,
                       "handle-trash-files",
                       G_CALLBACK (handle_trash_files),
+                      self);
+    g_signal_connect (self->file_operations,
+                      "handle-delete-files",
+                      G_CALLBACK (handle_delete_files),
                       self);
     g_signal_connect (self->file_operations,
                       "handle-create-folder",
