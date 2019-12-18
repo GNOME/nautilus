@@ -38,6 +38,14 @@ libnautilus_sources = [
     namespace: 'NautilusDBus'
   ),
   gnome.gdbus_codegen(
+    'nautilus-generated2',
+    join_paths(
+      meson.source_root(), 'data', 'dbus-interfaces2.xml'
+    ),
+    interface_prefix: 'org.gnome.Nautilus',
+    namespace: 'NautilusDBus'
+  ),
+  gnome.gdbus_codegen(
     'nautilus-shell-search-provider-generated',
     join_paths(
       meson.source_root(), 'data', 'shell-search-provider-dbus-interfaces.xml'
