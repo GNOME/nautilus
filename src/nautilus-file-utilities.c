@@ -553,14 +553,6 @@ nautilus_get_mounted_mount_for_root (GFile *location)
             result = g_object_ref (mount);
             break;
         }
-
-        default_location = g_mount_get_default_location (mount);
-        if (!g_file_equal (default_location, root) &&
-            g_file_equal (location, default_location))
-        {
-            result = g_object_ref (mount);
-            break;
-        }
     }
 
     g_clear_object (&root);
