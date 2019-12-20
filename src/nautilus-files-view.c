@@ -2851,14 +2851,21 @@ static void
 show_hidden_files_changed_callback (gpointer callback_data)
 {
     NautilusFilesView *view;
+    NautilusFilesViewPrivate *priv;
     gboolean preference_value;
 
     view = NAUTILUS_FILES_VIEW (callback_data);
+    priv = nautilus_files_view_get_instance_private (view);
 
     preference_value =
         g_settings_get_boolean (gtk_filechooser_preferences, NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES);
 
     nautilus_files_view_set_show_hidden_files (view, preference_value);
+
+    if (priv->active)
+    {
+        schedule_update_context_menus (view);
+    }
 }
 
 static gboolean
@@ -5723,6 +5730,7 @@ static GMenu *
 update_directory_in_templates_menu (NautilusFilesView *view,
                                     NautilusDirectory *directory)
 {
+    NautilusFilesViewPrivate *priv;
     GList *file_list, *filtered, *node;
     GMenu *menu, *children_menu;
     GMenuItem *menu_item;
@@ -5736,8 +5744,10 @@ update_directory_in_templates_menu (NautilusFilesView *view,
     g_return_val_if_fail (NAUTILUS_IS_FILES_VIEW (view), NULL);
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), NULL);
 
+    priv = nautilus_files_view_get_instance_private (view);
+
     file_list = nautilus_directory_get_file_list (directory);
-    filtered = nautilus_file_list_filter_hidden (file_list, FALSE);
+    filtered = nautilus_file_list_filter_hidden (file_list, priv->show_hidden_files);
     nautilus_file_list_free (file_list);
     templates_directory_uri = nautilus_get_templates_directory_uri ();
     menu = g_menu_new ();
