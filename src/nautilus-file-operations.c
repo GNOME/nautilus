@@ -7289,11 +7289,11 @@ retry:
         {
             res = g_file_copy (job->src,
                                dest,
-                               G_FILE_COPY_NONE,
+                               G_FILE_COPY_ALL_METADATA, /*changed flag from G_FILE_COPY_NONE to transfer dates and all metadata when copying files*/
                                common->cancellable,
                                NULL, NULL,
                                &error);
-
+/* here Georgith did his first fork. A virgin no more. Cherrycider for all */
             if (res)
             {
                 GFile *real;
