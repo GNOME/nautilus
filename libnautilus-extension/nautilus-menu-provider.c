@@ -94,5 +94,5 @@ nautilus_menu_provider_emit_items_updated_signal (NautilusMenuProvider *provider
 {
     g_return_if_fail (NAUTILUS_IS_MENU_PROVIDER (provider));
 
-    g_signal_emit (provider, ITEMS_UPDATED, 0);
+    g_signal_emit (provider, signals[ITEMS_UPDATED], 0);
 }
