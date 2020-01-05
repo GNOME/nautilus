@@ -3151,33 +3151,35 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *hbox, *vbox, *image_box;
     GtkWidget *button;
+    GtkBuilder *basic_page_builder;
 
-    hbox = create_page_with_box (window->notebook,
-                                 GTK_ORIENTATION_HORIZONTAL,
-                                 _("Basic"),
-                                 "help:gnome-help/nautilus-file-properties-basic");
+    g_assert (GTK_IS_NOTEBOOK (window->notebook));
+    basic_page_builder = gtk_builder_new_from_resource("/org/gnome/nautilus/ui/nautilus-file-properties-basic-page.ui");
+    hbox = GTK_WIDGET(gtk_builder_get_object(basic_page_builder,"hbox"));
+    gtk_notebook_append_page (window->notebook, hbox, gtk_label_new ("Basic"));
+    gtk_container_child_set (GTK_CONTAINER (window->notebook),
+                             hbox,
+                             "tab-expand", TRUE,
+                             NULL);
+    g_object_set_data_full (G_OBJECT (hbox), "help-uri", g_strdup ("help:gnome-help/nautilus-file-properties-basic"), g_free);
 
     /* Icon pixmap */
-
+    image_box = GTK_WIDGET(gtk_builder_get_object(basic_page_builder,"image_box"));
     icon_pixmap_widget = create_image_widget (
         window, should_show_custom_icon_buttons (window));
     gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
     gtk_widget_show (icon_pixmap_widget);
-
-    gtk_box_pack_start (GTK_BOX (hbox), icon_pixmap_widget, FALSE, FALSE, 0);
-
+    gtk_container_add (GTK_CONTAINER (image_box), icon_pixmap_widget);
     window->icon_chooser = NULL;
 
     /* Grid */
 
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_show (vbox);
+    vbox = GTK_WIDGET(gtk_builder_get_object(basic_page_builder,"basic_vbox"));
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
+    grid = GTK_GRID(gtk_builder_get_object(basic_page_builder,"basic_grid"));
     window->basic_grid = grid;
 
     /* Name label.  The text will be determined in update_name_field */
