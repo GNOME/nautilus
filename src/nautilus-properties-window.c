@@ -214,6 +214,13 @@ static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
 
 static GtkWidget *create_pie_widget (NautilusPropertiesWindow *window);
 
+static void
+nautilus_properties_window_present_old_logic (GList                            *original_files,
+                                              GtkWidget                        *parent_widget,
+                                              const gchar                      *startup_id,
+                                              NautilusPropertiesWindowCallback  callback,
+                                              gpointer                          callback_data);
+
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_DIALOG);
 
 static gboolean
@@ -5345,12 +5352,12 @@ is_directory_ready_callback (NautilusFile *file,
     }
 }
 
-void
-nautilus_properties_window_present (GList                            *original_files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
+static void
+nautilus_properties_window_present_old_logic (GList                            *original_files,
+                                              GtkWidget                        *parent_widget,
+                                              const gchar                      *startup_id,
+                                              NautilusPropertiesWindowCallback  callback,
+                                              gpointer                          callback_data)
 {
     GList *l, *next;
     GtkWindow *parent_window;
@@ -5458,6 +5465,16 @@ nautilus_properties_window_present (GList                            *original_f
             is_directory_ready_callback,
             startup_data);
     }
+}
+void
+nautilus_properties_window_present (GList                            *original_files,
+                                    GtkWidget                        *parent_widget,
+                                    const gchar                      *startup_id,
+                                    NautilusPropertiesWindowCallback  callback,
+                                    gpointer                          callback_data)
+{
+  //nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
+
 }
 
 static void
