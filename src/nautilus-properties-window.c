@@ -5474,8 +5474,22 @@ nautilus_properties_window_present (GList                            *original_f
                                     gpointer                          callback_data)
 {
   //nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
+  GtkWidget *dialog;
+  GtkBuilder *builder;
+  GError *error = NULL;
 
-}
+  builder = gtk_builder_new();
+  if (gtk_builder_add_from_file (builder, "/org/gnome/nautilus/ui/nautilus-properties-window.ui", &error) == 0)
+      {
+        g_printerr ("Error loading file: %s\n", error->message);
+        g_clear_error (&error);
+        return ;
+      }
+
+      dialog = GTK_WIDGET ( gtk_builder_get_object (builder,"dialog") );
+      gtk_widget_show_all (dialog);
+      gtk_main();
+  }
 
 static void
 real_response (GtkDialog *dialog,
