@@ -3153,6 +3153,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
     GtkWidget *button;
+    GtkBuilder *basic_page_builder;
 
     hbox = create_page_with_box (window->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3170,14 +3171,13 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     window->icon_chooser = NULL;
 
+    basic_page_builder = gtk_builder_new_from_resource("/org/gnome/nautilus/ui/nautilus-file-properties-basic-page.ui");
     /* Grid */
 
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_show (vbox);
+    vbox = GTK_WIDGET(gtk_builder_get_object(basic_page_builder,"basic_vbox"));
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
+    grid = GTK_GRID(gtk_builder_get_object(basic_page_builder,"basic_grid"));
     window->basic_grid = grid;
 
     /* Name label.  The text will be determined in update_name_field */
@@ -5347,10 +5347,10 @@ is_directory_ready_callback (NautilusFile *file,
 
 void
 nautilus_properties_window_present (GList                            *original_files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
+                                   GtkWidget                        *parent_widget,
+                                   const gchar                      *startup_id,
+                                   NautilusPropertiesWindowCallback  callback,
+                                   gpointer                          callback_data)
 {
     GList *l, *next;
     GtkWindow *parent_window;
