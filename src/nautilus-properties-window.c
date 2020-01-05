@@ -214,6 +214,13 @@ static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
 
 static GtkWidget *create_pie_widget (NautilusPropertiesWindow *window);
 
+static void
+nautilus_properties_window_present_old_logic (GList                            *original_files,
+                                              GtkWidget                        *parent_widget,
+                                              const gchar                      *startup_id,
+                                              NautilusPropertiesWindowCallback  callback,
+                                              gpointer                          callback_data);
+
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_DIALOG);
 
 static gboolean
@@ -2552,6 +2559,7 @@ append_blank_slim_row (GtkGrid *grid)
     gtk_container_add (GTK_CONTAINER (grid), w);
 }
 
+//checkpoint2--
 static GtkWidget *
 create_grid_with_standard_properties (void)
 {
@@ -3145,6 +3153,7 @@ open_in_disks (GtkButton                *button,
     }
 }
 
+//***-> checkpoint 1
 static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
@@ -3153,7 +3162,8 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
     GtkWidget *button;
-
+    GtkBuilder *basicPageBuilder;
+    //apoorv work here
     hbox = create_page_with_box (window->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
                                  _("Basic"),
@@ -3170,13 +3180,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     window->icon_chooser = NULL;
 
+
+    basicPageBuilder = gtk_builder_new_from_resource("/org/gnome/nautilus/ui/nautilus-file-properties-basic-page.ui");
     /* Grid */
 
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_show (vbox);
+    vbox = GTK_WIDGET(gtk_builder_get_object(basicPageBuilder,"basicVBox"));
+    //vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_show_all (vbox);
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
+    grid = GTK_GRID(gtk_builder_get_object(basicPageBuilder,"basicGrid"));
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
     window->basic_grid = grid;
 
@@ -4699,6 +4712,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_widget_show_all (dialog);
 }
 
+//checkpoint2-->**
 static void
 create_permissions_page (NautilusPropertiesWindow *window)
 {
@@ -4706,6 +4720,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
     GtkGrid *page_grid;
     char *file_name, *prompt_text;
     GList *file_list;
+
 
     vbox = create_page_with_box (window->notebook,
                                  GTK_ORIENTATION_VERTICAL,
@@ -4728,7 +4743,8 @@ create_permissions_page (NautilusPropertiesWindow *window)
                 _("You are not the owner, so you cannot change these permissions."));
         }
 
-        page_grid = GTK_GRID (create_grid_with_standard_properties ());
+
+        page_grid = GTK_GRID(create_grid_with_standard_properties());
 
         gtk_widget_show (GTK_WIDGET (page_grid));
         gtk_box_pack_start (GTK_BOX (vbox),
@@ -5136,7 +5152,7 @@ create_properties_window (StartupData *startup_data)
                                  G_OBJECT (window),
                                  0);
     }
-
+    //work here apoorv
     /* Create the notebook tabs. */
     window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
     gtk_notebook_set_show_border (window->notebook, FALSE);
@@ -5147,11 +5163,11 @@ create_properties_window (StartupData *startup_data)
                         TRUE, TRUE, 0);
 
     /* Create the pages. */
-    create_basic_page (window);
+    create_basic_page (window);                     // checkpoint 1
 
     if (should_show_permissions (window))
     {
-        create_permissions_page (window);
+        create_permissions_page (window);           // checkpoint 2
     }
 
     if (should_show_open_with (window))
@@ -5345,12 +5361,12 @@ is_directory_ready_callback (NautilusFile *file,
     }
 }
 
-void
-nautilus_properties_window_present (GList                            *original_files,
-                                    GtkWidget                        *parent_widget,
-                                    const gchar                      *startup_id,
-                                    NautilusPropertiesWindowCallback  callback,
-                                    gpointer                          callback_data)
+static void
+nautilus_properties_window_present_old_logic (GList                            *original_files,
+                                              GtkWidget                        *parent_widget,
+                                              const gchar                      *startup_id,
+                                              NautilusPropertiesWindowCallback  callback,
+                                              gpointer                          callback_data)
 {
     GList *l, *next;
     GtkWindow *parent_window;
@@ -5458,6 +5474,34 @@ nautilus_properties_window_present (GList                            *original_f
             is_directory_ready_callback,
             startup_data);
     }
+
+}
+void
+nautilus_properties_window_present (GList                            *original_files,
+                                    GtkWidget                        *parent_widget,
+                                    const gchar                      *startup_id,
+                                    NautilusPropertiesWindowCallback  callback,
+                                    gpointer                          callback_data)
+{
+  nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
+/*
+  GtkWidget *dialog;
+  GtkBuilder *builder;
+  GError *error = NULL;
+
+  builder = gtk_builder_new();
+  if (gtk_builder_add_from_file (builder, "/org/gnome/nautilus/nautilus-properties-window.ui", &error) == 0)
+      {
+        g_printerr ("Error loading file: %s\n", error->message);
+        g_clear_error (&error);
+        return ;
+      }
+
+      dialog = GTK_WIDGET ( gtk_builder_get_object (builder,"dialog") );
+      gtk_widget_show_all (dialog);
+      gtk_main();
+
+*/
 }
 
 static void
