@@ -1745,6 +1745,15 @@ nautilus_window_slot_display_view_selection_failure (NautilusWindow *window,
             }
             break;
 
+            case G_IO_ERROR_CONNECTION_REFUSED:
+            {
+                /* This case can be hit when server application is not installed or is inactive in the
+                 * system user is trying to connect to.
+                 */
+                detail_message = g_strdup (_("Connection refused by server. Please check if the server application is installed and is active."));
+            }
+            break;
+
             case G_IO_ERROR_CANCELLED:
             case G_IO_ERROR_FAILED_HANDLED:
             {
