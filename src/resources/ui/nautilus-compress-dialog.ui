@@ -158,6 +158,28 @@
             <property name="position">5</property>
           </packing>
         </child>
+        <child>
+          <object class="GtkBox" id="target_directory_box">
+            <property name="orientation">vertical</property>
+            <property name="homogeneous">True</property>
+            <property name="spacing">0</property>
+            <child>
+              <object class="GtkLabel" id="target_directory_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Create in Folder</property>
+                <property name="xalign">0</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkFileChooserButton" id="target_directory_button">
+                <property name="visible">True</property>
+                <property name="action">select-folder</property>
+                <property name="title" translatable="yes">Create in Folder</property>
+                <signal name="file-set" handler="target_directory_button_on_set"/>
+              </object>
+            </child>
+          </object>
+        </child>
       </object>
     </child>
     <child type="action">

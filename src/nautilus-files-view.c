@@ -2227,7 +2227,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     GList *l;
     CompressData *data;
     g_autoptr (GFile) output = NULL;
-    g_autoptr (GFile) parent = NULL;
+    g_autoptr (NautilusDirectory) parent = NULL;
     NautilusCompressionFormat compression_format;
     NautilusFilesViewPrivate *priv;
     AutoarFormat format;
@@ -2246,12 +2246,9 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
     source_files = g_list_reverse (source_files);
 
     name = nautilus_file_name_widget_controller_get_new_name (controller);
-    /* Get a parent from a random file. We assume all files has a common parent.
-     * But don't assume the parent is the view location, since that's not the
-     * case in list view when expand-folder setting is set
-     */
-    parent = g_file_get_parent (G_FILE (g_list_first (source_files)->data));
-    output = g_file_get_child (parent, name);
+    parent = nautilus_file_name_widget_controller_get_target_directory (controller);
+    output = g_file_get_child (nautilus_directory_get_location(parent),
+                               name);
 
     data = g_new (CompressData, 1);
     data->view = view;
@@ -2330,6 +2327,8 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
     NautilusFilesViewPrivate *priv;
     g_autolist (NautilusFile) selection = NULL;
     g_autofree char *common_prefix = NULL;
+    GList *source_files = NULL;
+    GList *l;
 
     priv = nautilus_files_view_get_instance_private (view);
 
@@ -2338,9 +2337,21 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
         return;
     }
 
-    containing_directory = nautilus_directory_get_by_uri (nautilus_files_view_get_backing_uri (view));
-
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    for (l = selection; l != NULL; l = l->next)
+    {
+        source_files = g_list_prepend (source_files,
+                                       nautilus_file_get_location (l->data));
+    }
+    source_files = g_list_reverse (source_files);
+    /* Get 'containing_directory' from a random file.
+     * We can't assume the parent is always at the view location,
+     * since that's not the case in 'list view' when the
+     * 'expand-folder' setting is set.
+     */
+    containing_directory = nautilus_directory_get (g_file_get_parent (
+                                                   G_FILE (g_list_first (source_files)->data)));
 
     if (g_list_length (selection) == 1)
     {
@@ -2375,6 +2386,8 @@ nautilus_files_view_compress_dialog_new (NautilusFilesView *view)
                       "cancelled",
                       (GCallback) compress_dialog_controller_on_cancelled,
                       view);
+
+    g_list_free_full (source_files, g_object_unref);
 }
 
 static void

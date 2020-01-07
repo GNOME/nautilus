@@ -34,6 +34,8 @@ struct _NautilusFileNameWidgetControllerClass
 
         gchar *  (*get_new_name)         (NautilusFileNameWidgetController *controller);
 
+        NautilusDirectory *  (*get_target_directory) (NautilusFileNameWidgetController *controller);
+
         gboolean (*name_is_valid)        (NautilusFileNameWidgetController  *controller,
                                           gchar                             *name,
                                           gchar                            **error_message);
@@ -45,6 +47,8 @@ struct _NautilusFileNameWidgetControllerClass
 };
 
 gchar * nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetController *controller);
+
+NautilusDirectory * nautilus_file_name_widget_controller_get_target_directory (NautilusFileNameWidgetController *controller);
 
 void    nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *controller,
                                                                        NautilusDirectory                *directory);
