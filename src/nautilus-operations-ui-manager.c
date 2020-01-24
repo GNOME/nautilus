@@ -486,6 +486,7 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
                                     GFile     *destination_directory_name)
 {
     FileConflictDialogData *data;
+    FileConflictResponse *response;
 
     data = g_slice_new0 (FileConflictDialogData);
     data->parent = parent_window;
@@ -502,9 +503,10 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
                               run_file_conflict_dialog,
                               data);
 
+    response = g_steal_pointer (&data->response);
     g_slice_free (FileConflictDialogData, data);
 
-    return data->response;
+    return response;
 }
 
 typedef struct
