@@ -7,7 +7,8 @@
     2. Copy and run the following command in a Terminal:
 
     flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.NautilusDevel.flatpakref
-
+    3. Launch the Nautilus Nightly Flatpak
+    flatpak run org.gnome.NautilusDevel
 -->
 
 # Affected version
