@@ -168,38 +168,32 @@ static void
 entry_text_changed_cb (GtkEditable                *entry,
                        NautilusFileConflictDialog *dialog)
 {
-    /* The rename button is visible only if there's text
-     * in the entry.
-     */
     if  (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), "") != 0 &&
          g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (entry)), dialog->conflict_name) != 0)
     {
-        gtk_widget_hide (dialog->replace_button);
-        gtk_widget_show (dialog->rename_button);
-
-        gtk_widget_set_sensitive (dialog->checkbox, FALSE);
-
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_RENAME);
+        gtk_widget_set_sensitive (dialog->rename_button, TRUE);
     }
     else
     {
-        gtk_widget_hide (dialog->rename_button);
-        gtk_widget_show (dialog->replace_button);
-
-        gtk_widget_set_sensitive (dialog->checkbox, TRUE);
-
-        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_REPLACE);
+        gtk_widget_set_sensitive (dialog->rename_button, FALSE);
     }
 }
 
 static void
-expander_activated_cb (GtkExpander                *w,
-                       NautilusFileConflictDialog *dialog)
+on_expanded_notify (GtkExpander                *w,
+                    GParamSpec                 *pspec,
+                    NautilusFileConflictDialog *dialog)
 {
     int start_pos, end_pos;
 
-    if (!gtk_expander_get_expanded (w))
+    if (gtk_expander_get_expanded (w))
     {
+        gtk_widget_hide (dialog->replace_button);
+        gtk_widget_show (dialog->rename_button);
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_RENAME);
+
+        gtk_widget_set_sensitive (dialog->checkbox, FALSE);
+
         if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) == 0)
         {
             gtk_widget_grab_focus (dialog->entry);
@@ -208,6 +202,14 @@ expander_activated_cb (GtkExpander                *w,
             gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
         }
     }
+    else
+    {
+        gtk_widget_hide (dialog->rename_button);
+        gtk_widget_show (dialog->replace_button);
+        gtk_dialog_set_default_response (GTK_DIALOG (dialog), CONFLICT_RESPONSE_REPLACE);
+
+        gtk_widget_set_sensitive (dialog->checkbox, TRUE);
+    }
 }
 
 static void
@@ -215,11 +217,8 @@ checkbox_toggled_cb (GtkToggleButton            *t,
                      NautilusFileConflictDialog *dialog)
 {
     gtk_widget_set_sensitive (dialog->expander, !gtk_toggle_button_get_active (t));
-    gtk_widget_set_sensitive (dialog->rename_button, !gtk_toggle_button_get_active (t));
 
-    if  (!gtk_toggle_button_get_active (t) &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), "") != 0 &&
-         g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) != 0)
+    if  (!gtk_toggle_button_get_active (t))
     {
         gtk_widget_hide (dialog->replace_button);
         gtk_widget_show (dialog->rename_button);
@@ -290,8 +289,8 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
     /* Setup the expander for the rename action */
     fcd->expander = gtk_expander_new_with_mnemonic (_("_Select a new name for the destination"));
     gtk_box_pack_start (GTK_BOX (vbox2), fcd->expander, FALSE, FALSE, 0);
-    g_signal_connect (fcd->expander, "activate",
-                      G_CALLBACK (expander_activated_cb), dialog);
+    g_signal_connect (fcd->expander, "notify::expanded",
+                      G_CALLBACK (on_expanded_notify), dialog);
 
     hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
     gtk_container_add (GTK_CONTAINER (fcd->expander), hbox);
@@ -332,6 +331,7 @@ nautilus_file_conflict_dialog_init (NautilusFileConflictDialog *fcd)
                                                 _("Re_name"),
                                                 CONFLICT_RESPONSE_RENAME);
     gtk_widget_hide (fcd->rename_button);
+    gtk_widget_set_no_show_all (fcd->rename_button, TRUE);
 
     fcd->replace_button = gtk_dialog_add_button (dialog,
                                                  _("Re_place"),
