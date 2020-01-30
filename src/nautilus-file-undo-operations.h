@@ -28,6 +28,8 @@
 #include <gtk/gtk.h>
 #include <gnome-autoar/gnome-autoar.h>
 
+#include "nautilus-file-operations-dbus-data.h"
+
 typedef enum
 {
     NAUTILUS_FILE_UNDO_OP_INVALID,
@@ -61,10 +63,12 @@ struct _NautilusFileUndoInfoClass
 {
     GObjectClass parent_class;
 
-    void (* undo_func) (NautilusFileUndoInfo *self,
-                        GtkWindow            *parent_window);
-    void (* redo_func) (NautilusFileUndoInfo *self,
-                        GtkWindow            *parent_window);
+    void (* undo_func) (NautilusFileUndoInfo           *self,
+                        GtkWindow                      *parent_window,
+                        NautilusFileOperationsDBusData *dbus_data);
+    void (* redo_func) (NautilusFileUndoInfo           *self,
+                        GtkWindow                      *parent_window,
+                        NautilusFileOperationsDBusData *dbus_data);
 
     void (* strings_func) (NautilusFileUndoInfo *self,
                            gchar **undo_label,
@@ -73,11 +77,12 @@ struct _NautilusFileUndoInfoClass
                            gchar **redo_description);
 };
 
-void nautilus_file_undo_info_apply_async (NautilusFileUndoInfo *self,
-                                          gboolean undo,
-                                          GtkWindow *parent_window,
-                                          GAsyncReadyCallback callback,
-                                          gpointer user_data);
+void nautilus_file_undo_info_apply_async (NautilusFileUndoInfo           *self,
+                                          gboolean                        undo,
+                                          GtkWindow                      *parent_window,
+                                          NautilusFileOperationsDBusData *dbus_data,
+                                          GAsyncReadyCallback             callback,
+                                          gpointer                        user_data);
 gboolean nautilus_file_undo_info_apply_finish (NautilusFileUndoInfo *self,
                                                GAsyncResult *res,
                                                gboolean *user_cancel,
