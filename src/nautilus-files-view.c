@@ -1602,7 +1602,7 @@ delete_selected_files (NautilusFilesView *view)
     }
     locations = g_list_reverse (locations);
 
-    nautilus_file_operations_delete_async (locations, nautilus_files_view_get_containing_window (view), NULL, NULL);
+    nautilus_file_operations_delete_async (locations, nautilus_files_view_get_containing_window (view), NULL, NULL, NULL);
 
     g_list_free_full (locations, g_object_unref);
     nautilus_file_list_free (selection);
@@ -2084,6 +2084,7 @@ new_folder_dialog_controller_on_name_accepted (NautilusFileNameWidgetController 
     parent_uri = nautilus_files_view_get_backing_uri (view);
     parent = nautilus_file_get_by_uri (parent_uri);
     nautilus_file_operations_new_folder (GTK_WIDGET (view),
+                                         NULL,
                                          parent_uri, name,
                                          new_folder_done, data);
 
@@ -2301,6 +2302,7 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
                                        format,
                                        filter,
                                        nautilus_files_view_get_containing_window (view),
+                                       NULL,
                                        compress_done,
                                        data);
 
@@ -4848,6 +4850,7 @@ trash_or_delete_files (GtkWindow         *parent_window,
 
     nautilus_file_operations_trash_or_delete_async (locations,
                                                     parent_window,
+                                                    NULL,
                                                     (NautilusDeleteCallback) trash_or_delete_done_cb,
                                                     view);
     g_list_free_full (locations, g_object_unref);
@@ -6417,6 +6420,7 @@ extract_files (NautilusFilesView *view,
         nautilus_file_operations_extract_files (locations,
                                                 destination_directory,
                                                 nautilus_files_view_get_containing_window (view),
+                                                NULL,
                                                 extract_done,
                                                 data);
     }
@@ -6425,6 +6429,7 @@ extract_files (NautilusFilesView *view,
         nautilus_file_operations_extract_files (locations,
                                                 destination_directory,
                                                 nautilus_files_view_get_containing_window (view),
+                                                NULL,
                                                 NULL,
                                                 NULL);
     }
@@ -6677,6 +6682,7 @@ action_set_as_wallpaper (GSimpleAction *action,
                                             target_uri,
                                             GDK_ACTION_COPY,
                                             GTK_WIDGET (user_data),
+                                            NULL,
                                             wallpaper_copy_done_callback,
                                             NULL);
         g_free (target_uri);
@@ -8906,6 +8912,7 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
     nautilus_file_operations_copy_move
         (item_uris,
         target_uri, copy_action, GTK_WIDGET (view),
+        NULL,
         copy_move_done_callback, pre_copy_move (view));
 }
 
