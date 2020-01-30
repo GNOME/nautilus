@@ -27,6 +27,7 @@
 #include <gio/gio.h>
 #include <gnome-autoar/gnome-autoar.h>
 
+#include "nautilus-file-operations-dbus-data.h"
 
 #define SECONDS_NEEDED_FOR_APROXIMATE_TRANSFER_RATE 1
 
@@ -50,18 +51,21 @@ typedef void (* NautilusExtractCallback)   (GList    *outputs,
 
 /* FIXME: int copy_action should be an enum */
 
-void nautilus_file_operations_copy_move   (const GList               *item_uris,
-					   const char                *target_dir_uri,
-					   GdkDragAction              copy_action,
-					   GtkWidget                 *parent_view,
-					   NautilusCopyCallback       done_callback,
-					   gpointer                   done_callback_data);
-void nautilus_file_operations_empty_trash (GtkWidget                 *parent_view);
-void nautilus_file_operations_new_folder  (GtkWidget                 *parent_view,
-					   const char                *parent_dir_uri,
-					   const char                *folder_name,
-					   NautilusCreateCallback     done_callback,
-					   gpointer                   done_callback_data);
+void nautilus_file_operations_copy_move   (const GList                    *item_uris,
+                                           const char                     *target_dir_uri,
+                                           GdkDragAction                   copy_action,
+                                           GtkWidget                      *parent_view,
+                                           NautilusFileOperationsDBusData *dbus_data,
+                                           NautilusCopyCallback            done_callback,
+                                           gpointer                        done_callback_data);
+void nautilus_file_operations_empty_trash (GtkWidget                      *parent_view,
+                                           NautilusFileOperationsDBusData *dbus_data);
+void nautilus_file_operations_new_folder  (GtkWidget                      *parent_view,
+                                           NautilusFileOperationsDBusData *dbus_data,
+                                           const char                     *parent_dir_uri,
+                                           const char                     *folder_name,
+                                           NautilusCreateCallback          done_callback,
+                                           gpointer                        done_callback_data);
 void nautilus_file_operations_new_file    (GtkWidget                 *parent_view,
 					   const char                *parent_dir,
 					   const char                *target_filename,
@@ -78,15 +82,16 @@ void nautilus_file_operations_new_file_from_template (GtkWidget               *p
 
 void nautilus_file_operations_trash_or_delete_sync (GList                  *files);
 void nautilus_file_operations_delete_sync (GList                  *files);
-void nautilus_file_operations_trash_or_delete_async (GList                  *files,
-                                                     GtkWindow              *parent_window,
-                                                     NautilusDeleteCallback  done_callback,
-                                                     gpointer                done_callback_data);
-void nautilus_file_operations_delete_async (GList                  *files,
-                                            GtkWindow              *parent_window,
-                                            NautilusDeleteCallback  done_callback,
-                                            gpointer                done_callback_data);
-
+void nautilus_file_operations_trash_or_delete_async (GList                          *files,
+                                                     GtkWindow                      *parent_window,
+                                                     NautilusFileOperationsDBusData *dbus_data,
+                                                     NautilusDeleteCallback          done_callback,
+                                                     gpointer                        done_callback_data);
+void nautilus_file_operations_delete_async (GList                          *files,
+                                            GtkWindow                      *parent_window,
+                                            NautilusFileOperationsDBusData *dbus_data,
+                                            NautilusDeleteCallback          done_callback,
+                                            gpointer                        done_callback_data);
 
 void nautilus_file_set_permissions_recursive (const char                     *directory,
 					      guint32                         file_permissions,
@@ -114,40 +119,46 @@ void nautilus_file_operations_mount_volume_full (GtkWindow                      
 						 NautilusMountCallback           mount_callback,
 						 GObject                        *mount_callback_data_object);
 
-void nautilus_file_operations_copy_async (GList                *files,
-                                          GFile                *target_dir,
-                                          GtkWindow            *parent_window,
-                                          NautilusCopyCallback  done_callback,
-                                          gpointer              done_callback_data);
+void nautilus_file_operations_copy_async (GList                          *files,
+                                          GFile                          *target_dir,
+                                          GtkWindow                      *parent_window,
+                                          NautilusFileOperationsDBusData *dbus_data,
+                                          NautilusCopyCallback            done_callback,
+                                          gpointer                        done_callback_data);
 void nautilus_file_operations_copy_sync (GList                *files,
                                          GFile                *target_dir);
 
-void nautilus_file_operations_move_async (GList                *files,
-                                          GFile                *target_dir,
-                                          GtkWindow            *parent_window,
-                                          NautilusCopyCallback  done_callback,
-                                          gpointer              done_callback_data);
+void nautilus_file_operations_move_async (GList                          *files,
+                                          GFile                          *target_dir,
+                                          GtkWindow                      *parent_window,
+                                          NautilusFileOperationsDBusData *dbus_data,
+                                          NautilusCopyCallback            done_callback,
+                                          gpointer                        done_callback_data);
 void nautilus_file_operations_move_sync (GList                *files,
                                          GFile                *target_dir);
 
-void nautilus_file_operations_duplicate (GList                *files,
-					 GtkWindow            *parent_window,
-					 NautilusCopyCallback  done_callback,
-					 gpointer              done_callback_data);
-void nautilus_file_operations_link      (GList                *files,
-					 GFile                *target_dir,
-					 GtkWindow            *parent_window,
-					 NautilusCopyCallback  done_callback,
-					 gpointer              done_callback_data);
-void nautilus_file_operations_extract_files (GList                   *files,
-                                             GFile                   *destination_directory,
-                                             GtkWindow               *parent_window,
-                                             NautilusExtractCallback  done_callback,
-                                             gpointer                 done_callback_data);
-void nautilus_file_operations_compress (GList                  *files,
-                                        GFile                  *output,
-                                        AutoarFormat            format,
-                                        AutoarFilter            filter,
-                                        GtkWindow              *parent_window,
-                                        NautilusCreateCallback  done_callback,
-                                        gpointer                done_callback_data);
+void nautilus_file_operations_duplicate (GList                          *files,
+                                         GtkWindow                      *parent_window,
+                                         NautilusFileOperationsDBusData *dbus_data,
+                                         NautilusCopyCallback            done_callback,
+                                         gpointer                        done_callback_data);
+void nautilus_file_operations_link      (GList                          *files,
+                                         GFile                          *target_dir,
+                                         GtkWindow                      *parent_window,
+                                         NautilusFileOperationsDBusData *dbus_data,
+                                         NautilusCopyCallback            done_callback,
+                                         gpointer                        done_callback_data);
+void nautilus_file_operations_extract_files (GList                          *files,
+                                             GFile                          *destination_directory,
+                                             GtkWindow                      *parent_window,
+                                             NautilusFileOperationsDBusData *dbus_data,
+                                             NautilusExtractCallback         done_callback,
+                                             gpointer                        done_callback_data);
+void nautilus_file_operations_compress (GList                          *files,
+                                        GFile                          *output,
+                                        AutoarFormat                    format,
+                                        AutoarFilter                    filter,
+                                        GtkWindow                      *parent_window,
+                                        NautilusFileOperationsDBusData *dbus_data,
+                                        NautilusCreateCallback          done_callback,
+                                        gpointer                        done_callback_data);
