@@ -405,6 +405,49 @@ handle_trash_uris (NautilusDBusFileOperations2  *object,
 }
 
 static void
+delete_on_finished (GHashTable *debutting_uris,
+                    gboolean    user_cancel,
+                    gpointer    callback_data)
+{
+    g_application_release (g_application_get_default ());
+}
+
+static void
+handle_delete_uris_internal (const char                     **uris,
+                             NautilusFileOperationsDBusData  *dbus_data)
+{
+    g_autolist (GFile) source_files = NULL;
+    gint idx;
+
+    for (idx = 0; uris[idx] != NULL; idx++)
+    {
+        source_files = g_list_prepend (source_files,
+                                       g_file_new_for_uri (uris[idx]));
+    }
+
+    g_application_hold (g_application_get_default ());
+    nautilus_file_operations_delete_async (source_files, NULL,
+                                           dbus_data,
+                                           delete_on_finished, NULL);
+}
+
+static gboolean
+handle_delete_uris (NautilusDBusFileOperations2  *object,
+                    GDBusMethodInvocation        *invocation,
+                    const gchar                 **uris,
+                    GVariant                     *platform_data)
+{
+    g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
+
+    dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
+
+    handle_delete_uris_internal (uris, dbus_data);
+
+    nautilus_dbus_file_operations2_complete_delete_uris (object, invocation);
+    return TRUE; /* invocation was handled */
+}
+
+static void
 rename_file_on_finished (NautilusFile *file,
                          GFile        *result_location,
                          GError       *error,
@@ -507,6 +550,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations2,
                       "handle-trash-uris",
                       G_CALLBACK (handle_trash_uris),
+                      self);
+    g_signal_connect (self->file_operations2,
+                      "handle-delete-uris",
+                      G_CALLBACK (handle_delete_uris),
                       self);
     g_signal_connect (self->file_operations,
                       "handle-create-folder",
