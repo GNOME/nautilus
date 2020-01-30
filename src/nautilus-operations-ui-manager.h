@@ -14,7 +14,8 @@ void file_conflict_response_free (FileConflictResponse *data);
 FileConflictResponse * copy_move_conflict_ask_user_action (GtkWindow *parent_window,
                                                            GFile     *src,
                                                            GFile     *dest,
-                                                           GFile     *dest_dir);
+                                                           GFile     *dest_dir,
+                                                           gchar     *suggestion);
 
 enum
 {

@@ -38,6 +38,7 @@ struct _NautilusFileConflictDialog
     GtkDialog parent_instance;
 
     gchar *conflict_name;
+    gchar *suggested_name;
 
     /* UI objects */
     GtkWidget *titles_vbox;
@@ -140,8 +141,14 @@ nautilus_file_conflict_dialog_set_conflict_name (NautilusFileConflictDialog *fcd
                                                  gchar                      *conflict_name)
 {
     fcd->conflict_name = g_strdup (conflict_name);
+}
 
-    gtk_entry_set_text (GTK_ENTRY (fcd->entry), fcd->conflict_name);
+void
+nautilus_file_conflict_dialog_set_suggested_name (NautilusFileConflictDialog *fcd,
+                                                  gchar                      *suggested_name)
+{
+    fcd->suggested_name = g_strdup (suggested_name);
+    gtk_entry_set_text (GTK_ENTRY (fcd->entry), suggested_name);
 }
 
 void
@@ -357,6 +364,7 @@ do_finalize (GObject *self)
     NautilusFileConflictDialog *dialog = NAUTILUS_FILE_CONFLICT_DIALOG (self);
 
     g_free (dialog->conflict_name);
+    g_free (dialog->suggested_name);
 
     G_OBJECT_CLASS (nautilus_file_conflict_dialog_parent_class)->finalize (self);
 }

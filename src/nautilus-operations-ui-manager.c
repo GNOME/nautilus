@@ -88,6 +88,8 @@ typedef struct
     GFile *destination_name;
     GFile *destination_directory_name;
 
+    gchar *suggestion;
+
     GtkWindow *parent;
 
     FileConflictResponse *response;
@@ -328,14 +330,17 @@ set_file_labels (FileConflictDialogData *data)
 }
 
 static void
-set_conflict_name (FileConflictDialogData *data)
+set_conflict_and_suggested_names (FileConflictDialogData *data)
 {
-    g_autofree gchar *edit_name = NULL;
+    g_autofree gchar *conflict_name = NULL;
 
-    edit_name = nautilus_file_get_edit_name (data->destination);
+    conflict_name = nautilus_file_get_edit_name (data->destination);
 
     nautilus_file_conflict_dialog_set_conflict_name (data->dialog,
-                                                     edit_name);
+                                                     conflict_name);
+
+    nautilus_file_conflict_dialog_set_suggested_name (data->dialog,
+                                                      data->suggestion);
 }
 
 static void
@@ -399,7 +404,7 @@ copy_move_conflict_on_file_list_ready (GList    *files,
 
     set_file_labels (data);
 
-    set_conflict_name (data);
+    set_conflict_and_suggested_names (data);
 
     set_replace_button_label (data);
 
@@ -482,7 +487,8 @@ FileConflictResponse *
 copy_move_conflict_ask_user_action (GtkWindow *parent_window,
                                     GFile     *source_name,
                                     GFile     *destination_name,
-                                    GFile     *destination_directory_name)
+                                    GFile     *destination_directory_name,
+                                    gchar     *suggestion)
 {
     FileConflictDialogData *data;
     FileConflictResponse *response;
@@ -492,6 +498,7 @@ copy_move_conflict_ask_user_action (GtkWindow *parent_window,
     data->source_name = source_name;
     data->destination_name = destination_name;
     data->destination_directory_name = destination_directory_name;
+    data->suggestion = suggestion;
 
     data->response = g_slice_new0 (FileConflictResponse);
     data->response->new_name = NULL;
