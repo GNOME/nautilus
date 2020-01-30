@@ -1,0 +1,78 @@
+<!DOCTYPE node PUBLIC
+"-//freedesktop//DTD D-BUS Object Introspection 1.0//EN"
+"http://www.freedesktop.org/standards/dbus/1.0/introspect.dtd">
+
+<!--
+ Copyright (C) 2011 Red Hat, Inc.
+
+ This library is free software; you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public
+ License as published by the Free Software Foundation; either
+ version 2 of the License, or (at your option) any later version.
+
+ This library is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General
+ Public License along with this library; if not, see <http://www.gnu.org/licenses/>.
+
+ Author: Alexander Larsson <alexl@redhat.com>
+-->
+
+<!--
+  org.gnome.Nautilus.FileOperations2:
+  @short_description: Nautilus File Operations D-Bus interface
+
+  This API is meant to be consumed by desktop components, and optimized
+  for their needs. This API is considered private and must not be used
+  by applications.
+
+  All methods takes platform_data argument that can be used to pass
+  extra data. Currently supported arguments are:
+  - parent-handle (s): the parent window identifier, used to set parent
+                       window for dialogs; must be in x11:XID or
+                       wayland:HANDLE form
+  - timestamp (u): the timestamp of the user interaction
+-->
+<node xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
+  <interface name='org.gnome.Nautilus.FileOperations2'>
+
+    <method name='CopyURIs'>
+      <arg type='as' name='sources' direction='in'/>
+      <arg type='s' name='destination' direction='in'/>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='MoveURIs'>
+      <arg type='as' name='sources' direction='in'/>
+      <arg type='s' name='destination' direction='in'/>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='EmptyTrash'>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='TrashURIs'>
+      <arg type='as' name='uris' direction='in'/>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='CreateFolder'>
+      <arg type='s' name='uri' direction='in'/>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='RenameURI'>
+      <arg type='s' name='uri' direction='in'/>
+      <arg type='s' name='new_name' direction='in'/>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='Undo'>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+    <method name='Redo'>
+      <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+
+    <property name="UndoStatus" type="i" access="read"/>
+
+  </interface>
+</node>
