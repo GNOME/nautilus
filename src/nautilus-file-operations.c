@@ -5049,6 +5049,37 @@ get_target_file_for_display_name (GFile       *dir,
     return dest;
 }
 
+static GFile *
+get_target_file_from_source_display_name (CopyMoveJob *job,
+                                          GFile *src,
+                                          GFile *dir)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = NULL;
+    GFile *dest = NULL;
+
+    info = g_file_query_info (src, G_FILE_ATTRIBUTE_STANDARD_DISPLAY_NAME, 0, NULL, &error);
+    if (info == NULL)
+    {
+        run_error (job,
+                   _("There was an error getting information about the source."),
+                   error->message,
+                   NULL,
+                   FALSE,
+                   CANCEL,
+                   NULL);
+
+        abort_job (job);
+    }
+    else
+    {
+        dest = get_target_file_for_display_name (dir, g_file_info_get_display_name (info));
+    }
+
+    return dest;
+}
+
+
 /* Debuting files is non-NULL only for toplevel items */
 static void
 copy_move_file (CopyMoveJob   *copy_job,
@@ -5101,6 +5132,13 @@ copy_move_file (CopyMoveJob   *copy_job,
     {
         dest = get_target_file_with_custom_name (src, dest_dir, *dest_fs_type, same_fs,
                                                  copy_job->target_name);
+    }
+    else if (g_file_has_uri_scheme (src, "google-drive") &&
+             g_file_has_uri_scheme (dest_dir, "google-drive"))
+    {
+        dest = get_target_file_from_source_display_name (job, src, dest_dir);
+        if (dest == NULL)
+            return;
     }
     else
     {
@@ -5901,7 +5939,17 @@ move_file_prepare (CopyMoveJob  *move_job,
 
     job = (CommonJob *) move_job;
 
-    dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+    if (g_file_has_uri_scheme (src, "google-drive") &&
+        g_file_has_uri_scheme (dest_dir, "google-drive"))
+    {
+        dest = get_target_file_from_source_display_name (job, src, dest_dir);
+        if (dest == NULL)
+            return;
+    }
+    else
+    {
+        dest = get_target_file (src, dest_dir, *dest_fs_type, same_fs);
+    }
 
 
     /* Don't allow recursive move/copy into itself.
