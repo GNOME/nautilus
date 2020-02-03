@@ -191,9 +191,9 @@ idle_callback (gpointer data)
     gboolean cancelled_at_idle;
     GSource *source;
 
-    source = g_main_current_source ();
-
     G_LOCK (progress_info);
+
+    source = g_main_current_source ();
 
     /* Protect agains races where the source has
      *  been destroyed on another thread while it
@@ -309,8 +309,8 @@ set_details_in_thread (GTask                *task,
 {
     if (!g_cancellable_is_cancelled (cancellable))
     {
-        set_details (info, _("Canceled"));
         G_LOCK (progress_info);
+        set_details (info, _("Canceled"));
         info->cancel_at_idle = TRUE;
         g_timer_stop (info->progress_timer);
         queue_idle (info, TRUE);
