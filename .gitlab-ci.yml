@@ -14,6 +14,7 @@ flatpak devel:
     extends: '.flatpak'
     stage: test
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
+    stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all"
@@ -76,3 +77,11 @@ triage:dry-run:
     only:
         - schedules
     when: manual
+
+style check:
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: test
+    script:
+        - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
+        - LANG=C.utf8 data/run-uncrustify.sh
+        - git diff --exit-code
