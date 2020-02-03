@@ -1381,14 +1381,12 @@ create_label_layout (NautilusCanvasItem *item,
     GString *str;
     char *zeroified_text;
     const char *p;
-    PangoAttrList *attr_list;
 
     canvas_item = EEL_CANVAS_ITEM (item);
 
     container = NAUTILUS_CANVAS_CONTAINER (canvas_item->canvas);
     context = gtk_widget_get_pango_context (GTK_WIDGET (canvas_item->canvas));
     layout = pango_layout_new (context);
-    attr_list = pango_attr_list_new ();
 
     zeroified_text = NULL;
 
@@ -1417,8 +1415,15 @@ create_label_layout (NautilusCanvasItem *item,
     pango_layout_set_spacing (layout, LABEL_LINE_SPACING);
     pango_layout_set_wrap (layout, PANGO_WRAP_WORD_CHAR);
 
-    pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
-    pango_layout_set_attributes (layout, attr_list);
+#if PANGO_VERSION_CHECK (1, 44, 4)
+    {
+        PangoAttrList *attr_list = pango_attr_list_new ();
+
+        pango_attr_list_insert (attr_list, pango_attr_insert_hyphens_new (FALSE));
+        pango_layout_set_attributes (layout, attr_list);
+        pango_attr_list_unref (attr_list);
+    }
+#endif
 
     /* Create a font description */
     if (container->details->font)
@@ -1432,7 +1437,6 @@ create_label_layout (NautilusCanvasItem *item,
     pango_layout_set_font_description (layout, desc);
     pango_font_description_free (desc);
     g_free (zeroified_text);
-    pango_attr_list_unref (attr_list);
 
     return layout;
 }
