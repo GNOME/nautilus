@@ -52,6 +52,7 @@ stages:
 flatpak devel:
     extends: '.flatpak'
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.34
+    stage: test
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all"
@@ -136,3 +137,14 @@ triage:dry-run:
   only:
     - schedules
   when: manual
+
+style-check:
+  image: fedora:rawhide
+  stage: test
+  script:
+    - dnf install -y uncrustify glib2-devel gcc
+    - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
+    - data/run-uncrustify.sh
+    - git diff --exit-code
+  only:
+    - merge_requests
