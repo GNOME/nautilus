@@ -136,3 +136,13 @@ triage:dry-run:
   only:
     - schedules
   when: manual
+
+style-check:
+  image: fedora:rawhide
+  script:
+    - dnf install -y uncrustify glib2-devel
+    - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
+    - data/run-uncrustify.sh
+    - git diff --exit-code
+  only:
+    - merge_requests
