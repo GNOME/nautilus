@@ -24,7 +24,8 @@
 
 G_DEFINE_INTERFACE (NautilusFileInfo, nautilus_file_info, G_TYPE_OBJECT)
 
-NautilusFileInfo * (*nautilus_file_info_getter)(GFile * location, gboolean create);
+NautilusFileInfo * (*nautilus_file_info_getter)(GFile   *location,
+                                                gboolean create);
 
 GList *
 nautilus_file_info_list_copy (GList *files)

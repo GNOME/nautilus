@@ -2547,7 +2547,6 @@ update_info_internal (NautilusFile *file,
 
     has_permissions = g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_UNIX_MODE);
     permissions = g_file_info_get_attribute_uint32 (info, G_FILE_ATTRIBUTE_UNIX_MODE);
-    ;
     if (file->details->has_permissions != has_permissions ||
         file->details->permissions != permissions)
     {
@@ -4961,9 +4960,9 @@ prepend_icon_name (const char  *name,
 }
 
 static void
-apply_emblems_to_icon (NautilusFile          *file,
-                       GIcon                **icon,
-                       NautilusFileIconFlags  flags)
+apply_emblems_to_icon (NautilusFile           *file,
+                       GIcon                 **icon,
+                       NautilusFileIconFlags   flags)
 {
     GIcon *emblemed_icon = NULL;
     g_autolist (GIcon) emblems = NULL;
@@ -7052,7 +7051,7 @@ nautilus_file_get_deep_count_as_string_internal (NautilusFile *file,
 
             default:
             {}
-             break;
+            break;
         }
     }
 
@@ -7656,7 +7655,6 @@ nautilus_file_get_file_type (NautilusFile *file)
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), G_FILE_TYPE_UNKNOWN);
 
     return nautilus_file_info_get_file_type (NAUTILUS_FILE_INFO (file));
-    ;
 }
 
 /**
@@ -9070,7 +9068,6 @@ thumbnail_limit_changed_callback (gpointer user_data)
 
     /*Converts the obtained limit in MB to bytes */
     cached_thumbnail_limit *= MEGA_TO_BASE_RATE;
-    ;
 
     /* Tell the world that icons might have changed. We could invent a narrower-scope
      * signal to mean only "thumbnails might have changed" if this ends up being slow

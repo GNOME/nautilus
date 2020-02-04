@@ -73,8 +73,8 @@ nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameW
 }
 
 gboolean
-nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController  *self,
-                                                       gchar                             *name)
+nautilus_file_name_widget_controller_is_name_too_long (NautilusFileNameWidgetController *self,
+                                                       gchar                            *name)
 {
     NautilusFileNameWidgetControllerPrivate *priv;
     size_t name_length;

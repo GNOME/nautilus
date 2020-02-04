@@ -32,8 +32,8 @@
 #include <gio/gio.h>
 
 #define FILE_ATTRIBS G_FILE_ATTRIBUTE_STANDARD_IS_HIDDEN "," \
-                     G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP "," \
-                     G_FILE_ATTRIBUTE_ACCESS_CAN_READ ","
+    G_FILE_ATTRIBUTE_STANDARD_IS_BACKUP "," \
+    G_FILE_ATTRIBUTE_ACCESS_CAN_READ ","
 
 struct _NautilusSearchEngineRecent
 {
@@ -56,9 +56,9 @@ G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineRecent,
 
 enum
 {
-  PROP_0,
-  PROP_RUNNING,
-  LAST_PROP
+    PROP_0,
+    PROP_RUNNING,
+    LAST_PROP
 };
 
 
@@ -136,9 +136,9 @@ search_add_hits_idle (NautilusSearchEngineRecent *self,
 }
 
 static gboolean
-is_file_valid_recursive (NautilusSearchEngineRecent *self,
-                         GFile                      *file,
-                         GError                    **error)
+is_file_valid_recursive (NautilusSearchEngineRecent  *self,
+                         GFile                       *file,
+                         GError                     **error)
 {
     g_autofree gchar *path = NULL;
     g_autoptr (GFileInfo) file_info = NULL;
@@ -295,7 +295,7 @@ recent_thread_func (gpointer user_data)
                 end_date = g_ptr_array_index (date_range, 1);
                 type = nautilus_query_get_search_type (self->query);
                 target_time = (type == NAUTILUS_QUERY_SEARCH_TYPE_LAST_ACCESS) ?
-                               visited : modified;
+                              visited : modified;
 
                 if (!nautilus_file_date_in_between (target_time,
                                                     initial_date, end_date))

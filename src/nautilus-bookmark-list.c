@@ -55,7 +55,7 @@ enum
 static guint signals[LAST_SIGNAL];
 
 /* forward declarations */
-#define NAUTILUS_BOOKMARK_LIST_ERROR (nautilus_bookmark_list_error_quark())
+#define NAUTILUS_BOOKMARK_LIST_ERROR (nautilus_bookmark_list_error_quark ())
 static GQuark      nautilus_bookmark_list_error_quark (void);
 
 static void        nautilus_bookmark_list_load_file (NautilusBookmarkList *bookmarks);
@@ -70,7 +70,8 @@ nautilus_bookmark_list_error_quark (void)
 }
 
 static NautilusBookmark *
-new_bookmark_from_uri (const char *uri, const char *label)
+new_bookmark_from_uri (const char *uri,
+                       const char *label)
 {
     NautilusBookmark *new_bookmark = NULL;
     g_autoptr (GFile) location = NULL;
@@ -469,7 +470,8 @@ save_io_thread (GTask        *task,
     parent = g_file_get_parent (file);
     path = g_file_get_path (parent);
 
-    if (g_mkdir_with_parents (path, 0700) == -1) {
+    if (g_mkdir_with_parents (path, 0700) == -1)
+    {
         int saved_errno = errno;
 
         g_set_error (&error, NAUTILUS_BOOKMARK_LIST_ERROR, 0,

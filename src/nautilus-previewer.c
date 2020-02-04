@@ -44,7 +44,7 @@ ensure_previewer_v2_proxy (void)
 {
     if (previewer_v2_proxy == NULL)
     {
-        g_autoptr(GError) error = NULL;
+        g_autoptr (GError) error = NULL;
         GDBusConnection *connection = g_application_get_dbus_connection (g_application_get_default ());
 
         previewer_v2_proxy = g_dbus_proxy_new_sync (connection,
@@ -72,7 +72,7 @@ previewer2_method_ready_cb (GObject      *source,
                             gpointer      user_data)
 {
     GDBusProxy *proxy = G_DBUS_PROXY (source);
-    g_autoptr(GError) error = NULL;
+    g_autoptr (GError) error = NULL;
 
     g_dbus_proxy_call_finish (proxy, res, &error);
 
@@ -190,7 +190,7 @@ nautilus_previewer_disconnect_selection_event (GDBusConnection *connection,
 gboolean
 nautilus_previewer_is_visible (void)
 {
-    g_autoptr(GVariant) variant = NULL;
+    g_autoptr (GVariant) variant = NULL;
 
     if (!ensure_previewer_v2_proxy ())
     {

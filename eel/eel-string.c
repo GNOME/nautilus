@@ -110,14 +110,14 @@ eel_str_capitalize (const char *string)
 }
 
 /**
-* eel_str_middle_truncate:
-* @string: (not nullable): input string
-* truncate_length: length of the truncated string
-*
-* Returns: (transfer full): a newly-allocated copy of @string with its middle
-* truncated and replaced with ellipsis to fit into @truncate_length characters.
-* If length of @string is already small enough, returns a copy of @string.
-*/
+ * eel_str_middle_truncate:
+ * @string: (not nullable): input string
+ * truncate_length: length of the truncated string
+ *
+ * Returns: (transfer full): a newly-allocated copy of @string with its middle
+ * truncated and replaced with ellipsis to fit into @truncate_length characters.
+ * If length of @string is already small enough, returns a copy of @string.
+ */
 gchar *
 eel_str_middle_truncate (const gchar *string,
                          guint        truncate_length)
@@ -161,14 +161,14 @@ eel_str_middle_truncate (const gchar *string,
 }
 
 /**
-* eel_str_strip_substring_and_after:
-* @string: input string
-* @substring: (not nullable): substring to use in search
-*
-* Returns: (transfer full): a copy of @string with the first occurence of
-* @substring removed, along with any trailing characters.
-* If @string is %NULL, returns %NULL.
-*/
+ * eel_str_strip_substring_and_after:
+ * @string: input string
+ * @substring: (not nullable): substring to use in search
+ *
+ * Returns: (transfer full): a copy of @string with the first occurence of
+ * @substring removed, along with any trailing characters.
+ * If @string is %NULL, returns %NULL.
+ */
 char *
 eel_str_strip_substring_and_after (const char *string,
                                    const char *substring)
@@ -194,14 +194,14 @@ eel_str_strip_substring_and_after (const char *string,
 }
 
 /**
-* eel_str_replace_substring:
-* @string: input string
-* @substring: (not nullable): string to be replaced
-* @replacement: string used as replacement
-* 
-* Returns: (transfer full): a copy of @string with all occurences of @substring
-* replaced with @replacement.
-*/
+ * eel_str_replace_substring:
+ * @string: input string
+ * @substring: (not nullable): string to be replaced
+ * @replacement: string used as replacement
+ *
+ * Returns: (transfer full): a copy of @string with all occurences of @substring
+ * replaced with @replacement.
+ */
 char *
 eel_str_replace_substring (const char *string,
                            const char *substring,
@@ -320,7 +320,7 @@ get_common_prefix_length (char *str_a,
  * Returns: (transfer full): the common prefix for strings in @strs.
  * If no such prefix exists or if the common prefix is smaller than
  * @min_required_len, %NULL is returned.
-*/
+ */
 char *
 eel_str_get_common_prefix (GList *strs,
                            int    min_required_len)
