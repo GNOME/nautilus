@@ -9601,6 +9601,13 @@ nautilus_files_view_init (NautilusFilesView *view)
     {
         "<control>equal",
         "<control>plus",
+        "<control>KP_Add",
+        NULL
+    };
+    const gchar *zoom_out_accels[] =
+    {
+        "<control>minus",
+        "<control>KP_Subtract",
         NULL
     };
     const gchar *move_to_trash_accels[] =
@@ -9803,7 +9810,7 @@ nautilus_files_view_init (NautilusFilesView *view)
 
     /* Toolbar menu */
     nautilus_application_set_accelerators (app, "view.zoom-in", zoom_in_accels);
-    nautilus_application_set_accelerator (app, "view.zoom-out", "<control>minus");
+    nautilus_application_set_accelerators (app, "view.zoom-out", zoom_out_accels);
     nautilus_application_set_accelerator (app, "view.show-hidden-files", "<control>h");
     /* Background menu */
     nautilus_application_set_accelerator (app, "view.select-all", "<control>a");
