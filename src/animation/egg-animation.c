@@ -28,53 +28,55 @@
 
 #define FALLBACK_FRAME_RATE 60
 
-typedef gdouble (*AlphaFunc) (gdouble       offset);
-typedef void    (*TweenFunc) (const GValue *begin,
-                              const GValue *end,
-                              GValue       *value,
-                              gdouble       offset);
+typedef gdouble (*AlphaFunc) (gdouble offset);
+typedef void (*TweenFunc) (const GValue *begin,
+                           const GValue *end,
+                           GValue       *value,
+                           gdouble       offset);
 
 typedef struct
 {
-  gboolean    is_child;  /* Does GParamSpec belong to parent widget */
-  GParamSpec *pspec;     /* GParamSpec of target property */
-  GValue      begin;     /* Begin value in animation */
-  GValue      end;       /* End value in animation */
+    gboolean is_child;   /* Does GParamSpec belong to parent widget */
+    GParamSpec *pspec;   /* GParamSpec of target property */
+    GValue begin;        /* Begin value in animation */
+    GValue end;          /* End value in animation */
 } Tween;
 
 
 struct _EggAnimation
 {
-  GInitiallyUnowned  parent_instance;
+    GInitiallyUnowned parent_instance;
 
-  gpointer           target;              /* Target object to animate */
-  guint64            begin_msec;          /* Time in which animation started */
-  guint              duration_msec;       /* Duration of animation */
-  guint              mode;                /* Tween mode */
-  gulong             tween_handler;       /* GSource or signal handler */
-  gulong             after_paint_handler; /* signal handler */
-  gdouble            last_offset;         /* Track our last offset */
-  GArray            *tweens;              /* Array of tweens to perform */
-  GdkFrameClock     *frame_clock;         /* An optional frame-clock for sync. */
-  GDestroyNotify     notify;              /* Notify callback */
-  gpointer           notify_data;         /* Data for notify */
+    gpointer target;                      /* Target object to animate */
+    guint64 begin_msec;                   /* Time in which animation started */
+    guint duration_msec;                  /* Duration of animation */
+    guint mode;                           /* Tween mode */
+    gulong tween_handler;                 /* GSource or signal handler */
+    gulong after_paint_handler;           /* signal handler */
+    gdouble last_offset;                  /* Track our last offset */
+    GArray *tweens;                       /* Array of tweens to perform */
+    GdkFrameClock *frame_clock;           /* An optional frame-clock for sync. */
+    GDestroyNotify notify;                /* Notify callback */
+    gpointer notify_data;                 /* Data for notify */
 };
 
 G_DEFINE_TYPE (EggAnimation, egg_animation, G_TYPE_INITIALLY_UNOWNED)
 
-enum {
-  PROP_0,
-  PROP_DURATION,
-  PROP_FRAME_CLOCK,
-  PROP_MODE,
-  PROP_TARGET,
-  LAST_PROP
+enum
+{
+    PROP_0,
+    PROP_DURATION,
+    PROP_FRAME_CLOCK,
+    PROP_MODE,
+    PROP_TARGET,
+    LAST_PROP
 };
 
 
-enum {
-  TICK,
-  LAST_SIGNAL
+enum
+{
+    TICK,
+    LAST_SIGNAL
 };
 
 
@@ -83,27 +85,27 @@ enum {
  */
 #define LAST_FUNDAMENTAL 64
 #define TWEEN(type)                                       \
-  static void                                             \
-  tween_ ## type (const GValue * begin,                   \
-                  const GValue * end,                     \
-                  GValue * value,                         \
-                  gdouble offset)                         \
-  {                                                       \
-    g ## type x = g_value_get_ ## type (begin);           \
-    g ## type y = g_value_get_ ## type (end);             \
-    g_value_set_ ## type (value, x + ((y - x) * offset)); \
-  }
+    static void                                             \
+    tween_ ## type (const GValue * begin,                   \
+                    const GValue * end,                     \
+                    GValue * value,                         \
+                    gdouble offset)                         \
+    {                                                       \
+        g ## type x = g_value_get_ ## type (begin);           \
+        g ## type y = g_value_get_ ## type (end);             \
+        g_value_set_ ## type (value, x + ((y - x) * offset)); \
+    }
 
 
 /*
  * Globals.
  */
-static AlphaFunc   alpha_funcs[EGG_ANIMATION_LAST];
-static gboolean    debug;
+static AlphaFunc alpha_funcs[EGG_ANIMATION_LAST];
+static gboolean debug;
 static GParamSpec *properties[LAST_PROP];
-static guint       signals[LAST_SIGNAL];
-static TweenFunc   tween_funcs[LAST_FUNDAMENTAL];
-static guint       slow_down_factor = 1;
+static guint signals[LAST_SIGNAL];
+static TweenFunc tween_funcs[LAST_FUNDAMENTAL];
+static guint slow_down_factor = 1;
 
 
 /*
@@ -128,25 +130,29 @@ TWEEN (double);
 static gdouble
 egg_animation_alpha_ease_in_cubic (gdouble offset)
 {
-  return offset * offset * offset;
+    return offset * offset * offset;
 }
 
 
 static gdouble
 egg_animation_alpha_ease_out_cubic (gdouble offset)
 {
-  gdouble p = offset - 1.0;
+    gdouble p = offset - 1.0;
 
-  return p * p * p + 1.0;
+    return p * p * p + 1.0;
 }
 
 static gdouble
 egg_animation_alpha_ease_in_out_cubic (gdouble offset)
 {
-  if (offset < .5)
-    return egg_animation_alpha_ease_in_cubic (offset * 2.0) / 2.0;
-  else
-    return .5 + egg_animation_alpha_ease_out_cubic ((offset - .5) * 2.0) / 2.0;
+    if (offset < .5)
+    {
+        return egg_animation_alpha_ease_in_cubic (offset * 2.0) / 2.0;
+    }
+    else
+    {
+        return .5 + egg_animation_alpha_ease_out_cubic ((offset - .5) * 2.0) / 2.0;
+    }
 }
 
 
@@ -163,7 +169,7 @@ egg_animation_alpha_ease_in_out_cubic (gdouble offset)
 static gdouble
 egg_animation_alpha_linear (gdouble offset)
 {
-  return offset;
+    return offset;
 }
 
 
@@ -181,7 +187,7 @@ egg_animation_alpha_linear (gdouble offset)
 static gdouble
 egg_animation_alpha_ease_in_quad (gdouble offset)
 {
-  return offset * offset;
+    return offset * offset;
 }
 
 
@@ -199,7 +205,7 @@ egg_animation_alpha_ease_in_quad (gdouble offset)
 static gdouble
 egg_animation_alpha_ease_out_quad (gdouble offset)
 {
-  return -1.0 * offset * (offset - 2.0);
+    return -1.0 * offset * (offset - 2.0);
 }
 
 
@@ -218,11 +224,13 @@ egg_animation_alpha_ease_out_quad (gdouble offset)
 static gdouble
 egg_animation_alpha_ease_in_out_quad (gdouble offset)
 {
-  offset *= 2.0;
-  if (offset < 1.0)
-    return 0.5 * offset * offset;
-  offset -= 1.0;
-  return -0.5 * (offset * (offset - 2.0) - 1.0);
+    offset *= 2.0;
+    if (offset < 1.0)
+    {
+        return 0.5 * offset * offset;
+    }
+    offset -= 1.0;
+    return -0.5 * (offset * (offset - 2.0) - 1.0);
 }
 
 
@@ -238,29 +246,29 @@ egg_animation_alpha_ease_in_out_quad (gdouble offset)
 static void
 egg_animation_load_begin_values (EggAnimation *animation)
 {
-  GtkContainer *container;
-  Tween *tween;
-  guint i;
+    GtkContainer *container;
+    Tween *tween;
+    guint i;
 
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
 
-  for (i = 0; i < animation->tweens->len; i++)
+    for (i = 0; i < animation->tweens->len; i++)
     {
-      tween = &g_array_index (animation->tweens, Tween, i);
-      g_value_reset (&tween->begin);
-      if (tween->is_child)
+        tween = &g_array_index (animation->tweens, Tween, i);
+        g_value_reset (&tween->begin);
+        if (tween->is_child)
         {
-          container = GTK_CONTAINER (gtk_widget_get_parent (animation->target));
-          gtk_container_child_get_property (container,
-                                            animation->target,
-                                            tween->pspec->name,
-                                            &tween->begin);
+            container = GTK_CONTAINER (gtk_widget_get_parent (animation->target));
+            gtk_container_child_get_property (container,
+                                              animation->target,
+                                              tween->pspec->name,
+                                              &tween->begin);
         }
-      else
+        else
         {
-          g_object_get_property (animation->target,
-                                 tween->pspec->name,
-                                 &tween->begin);
+            g_object_get_property (animation->target,
+                                   tween->pspec->name,
+                                   &tween->begin);
         }
     }
 }
@@ -278,15 +286,15 @@ egg_animation_load_begin_values (EggAnimation *animation)
 static void
 egg_animation_unload_begin_values (EggAnimation *animation)
 {
-  Tween *tween;
-  guint i;
+    Tween *tween;
+    guint i;
 
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
 
-  for (i = 0; i < animation->tweens->len; i++)
+    for (i = 0; i < animation->tweens->len; i++)
     {
-      tween = &g_array_index (animation->tweens, Tween, i);
-      g_value_reset (&tween->begin);
+        tween = &g_array_index (animation->tweens, Tween, i);
+        g_value_reset (&tween->begin);
     }
 }
 
@@ -306,25 +314,29 @@ static gdouble
 egg_animation_get_offset (EggAnimation *animation,
                           gint64        frame_time)
 {
-  gdouble offset;
-  gint64 frame_msec;
+    gdouble offset;
+    gint64 frame_msec;
 
-  g_return_val_if_fail (EGG_IS_ANIMATION (animation), 0.0);
+    g_return_val_if_fail (EGG_IS_ANIMATION (animation), 0.0);
 
-  if (frame_time == 0)
+    if (frame_time == 0)
     {
-      if (animation->frame_clock != NULL)
-        frame_time = gdk_frame_clock_get_frame_time (animation->frame_clock);
-      else
-        frame_time = g_get_monotonic_time ();
+        if (animation->frame_clock != NULL)
+        {
+            frame_time = gdk_frame_clock_get_frame_time (animation->frame_clock);
+        }
+        else
+        {
+            frame_time = g_get_monotonic_time ();
+        }
     }
 
-  frame_msec = frame_time / 1000L;
+    frame_msec = frame_time / 1000L;
 
-  offset = (gdouble) (frame_msec - animation->begin_msec) /
-           (gdouble) MAX (animation->duration_msec, 1);
+    offset = (gdouble) (frame_msec - animation->begin_msec) /
+             (gdouble) MAX (animation->duration_msec, 1);
 
-  return CLAMP (offset, 0.0, 1.0);
+    return CLAMP (offset, 0.0, 1.0);
 }
 
 
@@ -340,17 +352,17 @@ egg_animation_get_offset (EggAnimation *animation,
  * Side effects: The property of @target is updated.
  */
 static void
-egg_animation_update_property (EggAnimation  *animation,
-                              gpointer      target,
-                              Tween        *tween,
-                              const GValue *value)
+egg_animation_update_property (EggAnimation *animation,
+                               gpointer      target,
+                               Tween        *tween,
+                               const GValue *value)
 {
-  g_assert (EGG_IS_ANIMATION (animation));
-  g_assert (G_IS_OBJECT (target));
-  g_assert (tween);
-  g_assert (value);
+    g_assert (EGG_IS_ANIMATION (animation));
+    g_assert (G_IS_OBJECT (target));
+    g_assert (tween);
+    g_assert (value);
 
-  g_object_set_property (target, tween->pspec->name, value);
+    g_object_set_property (target, tween->pspec->name, value);
 }
 
 
@@ -371,18 +383,18 @@ egg_animation_update_child_property (EggAnimation *animation,
                                      Tween        *tween,
                                      const GValue *value)
 {
-  GtkWidget *parent;
+    GtkWidget *parent;
 
-  g_assert (EGG_IS_ANIMATION (animation));
-  g_assert (G_IS_OBJECT (target));
-  g_assert (tween);
-  g_assert (value);
+    g_assert (EGG_IS_ANIMATION (animation));
+    g_assert (G_IS_OBJECT (target));
+    g_assert (tween);
+    g_assert (value);
 
-  parent = gtk_widget_get_parent (GTK_WIDGET (target));
-  gtk_container_child_set_property (GTK_CONTAINER (parent),
-                                    target,
-                                    tween->pspec->name,
-                                    value);
+    parent = gtk_widget_get_parent (GTK_WIDGET (target));
+    gtk_container_child_set_property (GTK_CONTAINER (parent),
+                                      target,
+                                      tween->pspec->name,
+                                      value);
 }
 
 
@@ -403,27 +415,29 @@ egg_animation_get_value_at_offset (EggAnimation *animation,
                                    Tween        *tween,
                                    GValue       *value)
 {
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
-  g_return_if_fail (tween != NULL);
-  g_return_if_fail (value != NULL);
-  g_return_if_fail (value->g_type == tween->pspec->value_type);
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (tween != NULL);
+    g_return_if_fail (value != NULL);
+    g_return_if_fail (value->g_type == tween->pspec->value_type);
 
-  if (value->g_type < LAST_FUNDAMENTAL)
+    if (value->g_type < LAST_FUNDAMENTAL)
     {
-      /*
-       * If you hit the following assertion, you need to add a function
-       * to create the new value at the given offset.
-       */
-      g_assert (tween_funcs[value->g_type]);
-      tween_funcs[value->g_type](&tween->begin, &tween->end, value, offset);
+        /*
+         * If you hit the following assertion, you need to add a function
+         * to create the new value at the given offset.
+         */
+        g_assert (tween_funcs[value->g_type]);
+        tween_funcs[value->g_type](&tween->begin, &tween->end, value, offset);
     }
-  else
+    else
     {
-      /*
-       * TODO: Support complex transitions.
-       */
-      if (offset >= 1.0)
-        g_value_copy (&tween->end, value);
+        /*
+         * TODO: Support complex transitions.
+         */
+        if (offset >= 1.0)
+        {
+            g_value_copy (&tween->end, value);
+        }
     }
 }
 
@@ -431,10 +445,10 @@ static void
 egg_animation_set_frame_clock (EggAnimation  *animation,
                                GdkFrameClock *frame_clock)
 {
-  if (animation->frame_clock != frame_clock)
+    if (animation->frame_clock != frame_clock)
     {
-      g_clear_object (&animation->frame_clock);
-      animation->frame_clock = frame_clock ? g_object_ref (frame_clock) : NULL;
+        g_clear_object (&animation->frame_clock);
+        animation->frame_clock = frame_clock ? g_object_ref (frame_clock) : NULL;
     }
 }
 
@@ -442,13 +456,15 @@ static void
 egg_animation_set_target (EggAnimation *animation,
                           gpointer      target)
 {
-  g_assert (!animation->target);
+    g_assert (!animation->target);
 
-  animation->target = g_object_ref (target);
+    animation->target = g_object_ref (target);
 
-  if (GTK_IS_WIDGET (animation->target))
-    egg_animation_set_frame_clock (animation,
-                                  gtk_widget_get_frame_clock (animation->target));
+    if (GTK_IS_WIDGET (animation->target))
+    {
+        egg_animation_set_frame_clock (animation,
+                                       gtk_widget_get_frame_clock (animation->target));
+    }
 }
 
 
@@ -465,64 +481,68 @@ static gboolean
 egg_animation_tick (EggAnimation *animation,
                     gdouble       offset)
 {
-  gdouble alpha;
-  GValue value = { 0 };
-  Tween *tween;
-  guint i;
+    gdouble alpha;
+    GValue value = { 0 };
+    Tween *tween;
+    guint i;
 
-  g_return_val_if_fail (EGG_IS_ANIMATION (animation), FALSE);
+    g_return_val_if_fail (EGG_IS_ANIMATION (animation), FALSE);
 
-  if (offset == animation->last_offset)
-    return offset < 1.0;
-
-  alpha = alpha_funcs[animation->mode](offset);
-
-  /*
-   * Update property values.
-   */
-  for (i = 0; i < animation->tweens->len; i++)
+    if (offset == animation->last_offset)
     {
-      tween = &g_array_index (animation->tweens, Tween, i);
-      g_value_init (&value, tween->pspec->value_type);
-      egg_animation_get_value_at_offset (animation, alpha, tween, &value);
-      if (!tween->is_child)
-        {
-          egg_animation_update_property (animation,
-                                        animation->target,
-                                        tween,
-                                        &value);
-        }
-      else
-        {
-          egg_animation_update_child_property (animation,
-                                              animation->target,
-                                              tween,
-                                              &value);
-        }
-      g_value_unset (&value);
+        return offset < 1.0;
     }
 
-  /*
-   * Notify anyone interested in the tick signal.
-   */
-  g_signal_emit (animation, signals[TICK], 0);
+    alpha = alpha_funcs[animation->mode](offset);
 
-  /*
-   * Flush any outstanding events to the graphics server (in the case of X).
-   */
-#if !GTK_CHECK_VERSION (3, 13, 0)
-  if (GTK_IS_WIDGET (animation->target))
+    /*
+     * Update property values.
+     */
+    for (i = 0; i < animation->tweens->len; i++)
     {
-      GdkWindow *window;
+        tween = &g_array_index (animation->tweens, Tween, i);
+        g_value_init (&value, tween->pspec->value_type);
+        egg_animation_get_value_at_offset (animation, alpha, tween, &value);
+        if (!tween->is_child)
+        {
+            egg_animation_update_property (animation,
+                                           animation->target,
+                                           tween,
+                                           &value);
+        }
+        else
+        {
+            egg_animation_update_child_property (animation,
+                                                 animation->target,
+                                                 tween,
+                                                 &value);
+        }
+        g_value_unset (&value);
+    }
 
-      if ((window = gtk_widget_get_window (GTK_WIDGET (animation->target))))
-        gdk_window_flush (window);
+    /*
+     * Notify anyone interested in the tick signal.
+     */
+    g_signal_emit (animation, signals[TICK], 0);
+
+    /*
+     * Flush any outstanding events to the graphics server (in the case of X).
+     */
+#if !GTK_CHECK_VERSION (3, 13, 0)
+    if (GTK_IS_WIDGET (animation->target))
+    {
+        GdkWindow *window;
+
+        if ((window = gtk_widget_get_window (GTK_WIDGET (animation->target))))
+        {
+            gdk_window_flush (window);
+        }
     }
 #endif
 
-  animation->last_offset = offset;
+    animation->last_offset = offset;
 
-  return offset < 1.0;
+    return offset < 1.0;
 }
 
 
@@ -538,16 +558,18 @@ egg_animation_tick (EggAnimation *animation,
 static gboolean
 egg_animation_timeout_cb (gpointer user_data)
 {
-  EggAnimation *animation = user_data;
-  gboolean ret;
-  gdouble offset;
+    EggAnimation *animation = user_data;
+    gboolean ret;
+    gdouble offset;
 
-  offset = egg_animation_get_offset (animation, 0);
+    offset = egg_animation_get_offset (animation, 0);
 
-  if (!(ret = egg_animation_tick (animation, offset)))
-    egg_animation_stop (animation);
+    if (!(ret = egg_animation_tick (animation, offset)))
+    {
+        egg_animation_stop (animation);
+    }
 
-  return ret;
+    return ret;
 }
 
 
@@ -555,22 +577,24 @@ static gboolean
 egg_animation_widget_tick_cb (GdkFrameClock *frame_clock,
                               EggAnimation  *animation)
 {
-  gboolean ret = G_SOURCE_REMOVE;
+    gboolean ret = G_SOURCE_REMOVE;
 
-  g_assert (GDK_IS_FRAME_CLOCK (frame_clock));
-  g_assert (EGG_IS_ANIMATION (animation));
+    g_assert (GDK_IS_FRAME_CLOCK (frame_clock));
+    g_assert (EGG_IS_ANIMATION (animation));
 
-  if (animation->tween_handler)
+    if (animation->tween_handler)
     {
-      gdouble offset;
+        gdouble offset;
 
-      offset = egg_animation_get_offset (animation, 0);
+        offset = egg_animation_get_offset (animation, 0);
 
-      if (!(ret = egg_animation_tick (animation, offset)))
-        egg_animation_stop (animation);
+        if (!(ret = egg_animation_tick (animation, offset)))
+        {
+            egg_animation_stop (animation);
+        }
     }
 
-  return ret;
+    return ret;
 }
 
 
@@ -578,20 +602,20 @@ static void
 egg_animation_widget_after_paint_cb (GdkFrameClock *frame_clock,
                                      EggAnimation  *animation)
 {
-  gint64 base_time;
-  gint64 interval;
-  gint64 next_frame_time;
-  gdouble offset;
+    gint64 base_time;
+    gint64 interval;
+    gint64 next_frame_time;
+    gdouble offset;
 
-  g_assert (GDK_IS_FRAME_CLOCK (frame_clock));
-  g_assert (EGG_IS_ANIMATION (animation));
+    g_assert (GDK_IS_FRAME_CLOCK (frame_clock));
+    g_assert (EGG_IS_ANIMATION (animation));
 
-  base_time = gdk_frame_clock_get_frame_time (frame_clock);
-  gdk_frame_clock_get_refresh_info (frame_clock, base_time, &interval, &next_frame_time);
+    base_time = gdk_frame_clock_get_frame_time (frame_clock);
+    gdk_frame_clock_get_refresh_info (frame_clock, base_time, &interval, &next_frame_time);
 
-  offset = egg_animation_get_offset (animation, next_frame_time);
+    offset = egg_animation_get_offset (animation, next_frame_time);
 
-  egg_animation_tick (animation, offset);
+    egg_animation_tick (animation, offset);
 }
 
 
@@ -607,33 +631,33 @@ egg_animation_widget_after_paint_cb (GdkFrameClock *frame_clock,
 void
 egg_animation_start (EggAnimation *animation)
 {
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
-  g_return_if_fail (!animation->tween_handler);
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (!animation->tween_handler);
 
-  g_object_ref_sink (animation);
-  egg_animation_load_begin_values (animation);
+    g_object_ref_sink (animation);
+    egg_animation_load_begin_values (animation);
 
-  if (animation->frame_clock)
+    if (animation->frame_clock)
     {
-      animation->begin_msec = gdk_frame_clock_get_frame_time (animation->frame_clock) / 1000UL;
-      animation->tween_handler =
-        g_signal_connect (animation->frame_clock,
-                          "update",
-                          G_CALLBACK (egg_animation_widget_tick_cb),
-                          animation);
-      animation->after_paint_handler =
-        g_signal_connect (animation->frame_clock,
-                          "after-paint",
-                          G_CALLBACK (egg_animation_widget_after_paint_cb),
-                          animation);
-      gdk_frame_clock_begin_updating (animation->frame_clock);
+        animation->begin_msec = gdk_frame_clock_get_frame_time (animation->frame_clock) / 1000UL;
+        animation->tween_handler =
+            g_signal_connect (animation->frame_clock,
+                              "update",
+                              G_CALLBACK (egg_animation_widget_tick_cb),
+                              animation);
+        animation->after_paint_handler =
+            g_signal_connect (animation->frame_clock,
+                              "after-paint",
+                              G_CALLBACK (egg_animation_widget_after_paint_cb),
+                              animation);
+        gdk_frame_clock_begin_updating (animation->frame_clock);
     }
-  else
+    else
     {
-      animation->begin_msec = g_get_monotonic_time () / 1000UL;
-      animation->tween_handler = egg_frame_source_add (FALLBACK_FRAME_RATE,
-                                                       egg_animation_timeout_cb,
-                                                       animation);
+        animation->begin_msec = g_get_monotonic_time () / 1000UL;
+        animation->tween_handler = egg_frame_source_add (FALLBACK_FRAME_RATE,
+                                                         egg_animation_timeout_cb,
+                                                         animation);
     }
 }
 
@@ -641,17 +665,17 @@ egg_animation_start (EggAnimation *animation)
 static void
 egg_animation_notify (EggAnimation *self)
 {
-  g_assert (EGG_IS_ANIMATION (self));
+    g_assert (EGG_IS_ANIMATION (self));
 
-  if (self->notify != NULL)
+    if (self->notify != NULL)
     {
-      GDestroyNotify notify = self->notify;
-      gpointer data = self->notify_data;
+        GDestroyNotify notify = self->notify;
+        gpointer data = self->notify_data;
 
-      self->notify = NULL;
-      self->notify_data = NULL;
+        self->notify = NULL;
+        self->notify_data = NULL;
 
-      notify (data);
+        notify (data);
     }
 }
 
@@ -668,25 +692,25 @@ egg_animation_notify (EggAnimation *self)
 void
 egg_animation_stop (EggAnimation *animation)
 {
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
 
-  if (animation->tween_handler)
+    if (animation->tween_handler)
     {
-      if (animation->frame_clock)
+        if (animation->frame_clock)
         {
-          gdk_frame_clock_end_updating (animation->frame_clock);
-          g_signal_handler_disconnect (animation->frame_clock, animation->tween_handler);
-          g_signal_handler_disconnect (animation->frame_clock, animation->after_paint_handler);
-          animation->tween_handler = 0;
+            gdk_frame_clock_end_updating (animation->frame_clock);
+            g_signal_handler_disconnect (animation->frame_clock, animation->tween_handler);
+            g_signal_handler_disconnect (animation->frame_clock, animation->after_paint_handler);
+            animation->tween_handler = 0;
         }
-      else
+        else
         {
-          g_source_remove (animation->tween_handler);
-          animation->tween_handler = 0;
+            g_source_remove (animation->tween_handler);
+            animation->tween_handler = 0;
         }
-      egg_animation_unload_begin_values (animation);
-      egg_animation_notify (animation);
-      g_object_unref (animation);
+        egg_animation_unload_begin_values (animation);
+        egg_animation_notify (animation);
+        g_object_unref (animation);
     }
 }
 
@@ -707,33 +731,33 @@ egg_animation_add_property (EggAnimation *animation,
                             GParamSpec   *pspec,
                             const GValue *value)
 {
-  Tween tween = { 0 };
-  GType type;
+    Tween tween = { 0 };
+    GType type;
 
-  g_return_if_fail (EGG_IS_ANIMATION (animation));
-  g_return_if_fail (pspec != NULL);
-  g_return_if_fail (value != NULL);
-  g_return_if_fail (value->g_type);
-  g_return_if_fail (animation->target);
-  g_return_if_fail (!animation->tween_handler);
+    g_return_if_fail (EGG_IS_ANIMATION (animation));
+    g_return_if_fail (pspec != NULL);
+    g_return_if_fail (value != NULL);
+    g_return_if_fail (value->g_type);
+    g_return_if_fail (animation->target);
+    g_return_if_fail (!animation->tween_handler);
 
-  type = G_TYPE_FROM_INSTANCE (animation->target);
-  tween.is_child = !g_type_is_a (type, pspec->owner_type);
-  if (tween.is_child)
+    type = G_TYPE_FROM_INSTANCE (animation->target);
+    tween.is_child = !g_type_is_a (type, pspec->owner_type);
+    if (tween.is_child)
     {
-      if (!GTK_IS_WIDGET (animation->target))
+        if (!GTK_IS_WIDGET (animation->target))
         {
-          g_critical (_("Cannot locate property %s in class %s"),
-                      pspec->name, g_type_name (type));
-          return;
+            g_critical (_("Cannot locate property %s in class %s"),
+                        pspec->name, g_type_name (type));
+            return;
         }
     }
 
-  tween.pspec = g_param_spec_ref (pspec);
-  g_value_init (&tween.begin, pspec->value_type);
-  g_value_init (&tween.end, pspec->value_type);
-  g_value_copy (value, &tween.end);
-  g_array_append_val (animation->tweens, tween);
+    tween.pspec = g_param_spec_ref (pspec);
+    g_value_init (&tween.begin, pspec->value_type);
+    g_value_init (&tween.end, pspec->value_type);
+    g_value_copy (value, &tween.end);
+    g_array_append_val (animation->tweens, tween);
 }
 
 
@@ -748,12 +772,12 @@ egg_animation_add_property (EggAnimation *animation,
 static void
 egg_animation_dispose (GObject *object)
 {
-  EggAnimation *self = EGG_ANIMATION (object);
+    EggAnimation *self = EGG_ANIMATION (object);
 
-  g_clear_object (&self->target);
-  g_clear_object (&self->frame_clock);
+    g_clear_object (&self->target);
+    g_clear_object (&self->frame_clock);
 
-  G_OBJECT_CLASS (egg_animation_parent_class)->dispose (object);
+    G_OBJECT_CLASS (egg_animation_parent_class)->dispose (object);
 }
 
 
@@ -768,21 +792,21 @@ egg_animation_dispose (GObject *object)
 static void
 egg_animation_finalize (GObject *object)
 {
-  EggAnimation *self = EGG_ANIMATION (object);
-  Tween *tween;
-  guint i;
+    EggAnimation *self = EGG_ANIMATION (object);
+    Tween *tween;
+    guint i;
 
-  for (i = 0; i < self->tweens->len; i++)
+    for (i = 0; i < self->tweens->len; i++)
     {
-      tween = &g_array_index (self->tweens, Tween, i);
-      g_value_unset (&tween->begin);
-      g_value_unset (&tween->end);
-      g_param_spec_unref (tween->pspec);
+        tween = &g_array_index (self->tweens, Tween, i);
+        g_value_unset (&tween->begin);
+        g_value_unset (&tween->end);
+        g_param_spec_unref (tween->pspec);
     }
 
-  g_array_unref (self->tweens);
+    g_array_unref (self->tweens);
 
-  G_OBJECT_CLASS (egg_animation_parent_class)->finalize (object);
+    G_OBJECT_CLASS (egg_animation_parent_class)->finalize (object);
 }
 
 
@@ -801,28 +825,36 @@ egg_animation_set_property (GObject      *object,
                             const GValue *value,
                             GParamSpec   *pspec)
 {
-  EggAnimation *animation = EGG_ANIMATION (object);
+    EggAnimation *animation = EGG_ANIMATION (object);
 
-  switch (prop_id)
+    switch (prop_id)
     {
-    case PROP_DURATION:
-      animation->duration_msec = g_value_get_uint (value) * slow_down_factor;
-      break;
+        case PROP_DURATION:
+        {
+            animation->duration_msec = g_value_get_uint (value) * slow_down_factor;
+        }
+        break;
 
-    case PROP_FRAME_CLOCK:
-      egg_animation_set_frame_clock (animation, g_value_get_object (value));
-      break;
+        case PROP_FRAME_CLOCK:
+        {
+            egg_animation_set_frame_clock (animation, g_value_get_object (value));
+        }
+        break;
 
-    case PROP_MODE:
-      animation->mode = g_value_get_enum (value);
-      break;
+        case PROP_MODE:
+        {
+            animation->mode = g_value_get_enum (value);
+        }
+        break;
 
-    case PROP_TARGET:
-      egg_animation_set_target (animation, g_value_get_object (value));
-      break;
+        case PROP_TARGET:
+        {
+            egg_animation_set_target (animation, g_value_get_object (value));
+        }
+        break;
 
-    default:
-      G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
+        default:
+            G_OBJECT_WARN_INVALID_PROPERTY_ID (object, prop_id, pspec);
     }
 }
 
@@ -838,116 +870,118 @@ egg_animation_set_property (GObject      *object,
 static void
 egg_animation_class_init (EggAnimationClass *klass)
 {
-  GObjectClass *object_class;
-  const gchar *slow_down_factor_env;
+    GObjectClass *object_class;
+    const gchar *slow_down_factor_env;
 
-  debug = !!g_getenv ("EGG_ANIMATION_DEBUG");
-  slow_down_factor_env = g_getenv ("EGG_ANIMATION_SLOW_DOWN_FACTOR");
+    debug = !!g_getenv ("EGG_ANIMATION_DEBUG");
+    slow_down_factor_env = g_getenv ("EGG_ANIMATION_SLOW_DOWN_FACTOR");
 
-  if (slow_down_factor_env)
-    slow_down_factor = MAX (1, atoi (slow_down_factor_env));
+    if (slow_down_factor_env)
+    {
+        slow_down_factor = MAX (1, atoi (slow_down_factor_env));
+    }
 
-  object_class = G_OBJECT_CLASS (klass);
-  object_class->dispose = egg_animation_dispose;
-  object_class->finalize = egg_animation_finalize;
-  object_class->set_property = egg_animation_set_property;
+    object_class = G_OBJECT_CLASS (klass);
+    object_class->dispose = egg_animation_dispose;
+    object_class->finalize = egg_animation_finalize;
+    object_class->set_property = egg_animation_set_property;
 
-  /**
-   * EggAnimation:duration:
-   *
-   * The "duration" property is the total number of milliseconds that the
-   * animation should run before being completed.
-   */
-  properties[PROP_DURATION] =
-    g_param_spec_uint ("duration",
-                       "Duration",
-                       "The duration of the animation",
-                       0,
-                       G_MAXUINT,
-                       250,
-                       (G_PARAM_WRITABLE |
-                        G_PARAM_CONSTRUCT_ONLY |
-                        G_PARAM_STATIC_STRINGS));
+    /**
+     * EggAnimation:duration:
+     *
+     * The "duration" property is the total number of milliseconds that the
+     * animation should run before being completed.
+     */
+    properties[PROP_DURATION] =
+        g_param_spec_uint ("duration",
+                           "Duration",
+                           "The duration of the animation",
+                           0,
+                           G_MAXUINT,
+                           250,
+                           (G_PARAM_WRITABLE |
+                            G_PARAM_CONSTRUCT_ONLY |
+                            G_PARAM_STATIC_STRINGS));
 
-  properties[PROP_FRAME_CLOCK] =
-    g_param_spec_object ("frame-clock",
-                         "Frame Clock",
-                         "An optional frame-clock to synchronize with.",
-                         GDK_TYPE_FRAME_CLOCK,
-                         (G_PARAM_WRITABLE |
-                          G_PARAM_CONSTRUCT_ONLY |
-                          G_PARAM_STATIC_STRINGS));
+    properties[PROP_FRAME_CLOCK] =
+        g_param_spec_object ("frame-clock",
+                             "Frame Clock",
+                             "An optional frame-clock to synchronize with.",
+                             GDK_TYPE_FRAME_CLOCK,
+                             (G_PARAM_WRITABLE |
+                              G_PARAM_CONSTRUCT_ONLY |
+                              G_PARAM_STATIC_STRINGS));
 
-  /**
-   * EggAnimation:mode:
-   *
-   * The "mode" property is the Alpha function that should be used to
-   * determine the offset within the animation based on the current
-   * offset in the animations duration.
-   */
-  properties[PROP_MODE] =
-    g_param_spec_enum ("mode",
-                       "Mode",
-                       "The animation mode",
-                       EGG_TYPE_ANIMATION_MODE,
-                       EGG_ANIMATION_LINEAR,
-                       (G_PARAM_WRITABLE |
-                        G_PARAM_CONSTRUCT_ONLY |
-                        G_PARAM_STATIC_STRINGS));
+    /**
+     * EggAnimation:mode:
+     *
+     * The "mode" property is the Alpha function that should be used to
+     * determine the offset within the animation based on the current
+     * offset in the animations duration.
+     */
+    properties[PROP_MODE] =
+        g_param_spec_enum ("mode",
+                           "Mode",
+                           "The animation mode",
+                           EGG_TYPE_ANIMATION_MODE,
+                           EGG_ANIMATION_LINEAR,
+                           (G_PARAM_WRITABLE |
+                            G_PARAM_CONSTRUCT_ONLY |
+                            G_PARAM_STATIC_STRINGS));
 
-  /**
-   * EggAnimation:target:
-   *
-   * The "target" property is the #GObject that should have its properties
-   * animated.
-   */
-  properties[PROP_TARGET] =
-    g_param_spec_object ("target",
-                         "Target",
-                         "The target of the animation",
-                         G_TYPE_OBJECT,
-                         (G_PARAM_WRITABLE |
-                          G_PARAM_CONSTRUCT_ONLY |
-                          G_PARAM_STATIC_STRINGS));
+    /**
+     * EggAnimation:target:
+     *
+     * The "target" property is the #GObject that should have its properties
+     * animated.
+     */
+    properties[PROP_TARGET] =
+        g_param_spec_object ("target",
+                             "Target",
+                             "The target of the animation",
+                             G_TYPE_OBJECT,
+                             (G_PARAM_WRITABLE |
+                              G_PARAM_CONSTRUCT_ONLY |
+                              G_PARAM_STATIC_STRINGS));
 
-  g_object_class_install_properties (object_class, LAST_PROP, properties);
+    g_object_class_install_properties (object_class, LAST_PROP, properties);
 
-  /**
-   * EggAnimation::tick:
-   *
-   * The "tick" signal is emitted on each frame in the animation.
-   */
-  signals[TICK] = g_signal_new ("tick",
-                                 EGG_TYPE_ANIMATION,
-                                 G_SIGNAL_RUN_FIRST,
-                                 0,
-                                 NULL, NULL, NULL,
-                                 G_TYPE_NONE,
-                                 0);
+    /**
+     * EggAnimation::tick:
+     *
+     * The "tick" signal is emitted on each frame in the animation.
+     */
+    signals[TICK] = g_signal_new ("tick",
+                                  EGG_TYPE_ANIMATION,
+                                  G_SIGNAL_RUN_FIRST,
+                                  0,
+                                  NULL, NULL, NULL,
+                                  G_TYPE_NONE,
+                                  0);
 
 #define SET_ALPHA(_T, _t) \
-  alpha_funcs[EGG_ANIMATION_ ## _T] = egg_animation_alpha_ ## _t
+    alpha_funcs[EGG_ANIMATION_ ## _T] = egg_animation_alpha_ ## _t
 
-  SET_ALPHA (LINEAR, linear);
-  SET_ALPHA (EASE_IN_QUAD, ease_in_quad);
-  SET_ALPHA (EASE_OUT_QUAD, ease_out_quad);
-  SET_ALPHA (EASE_IN_OUT_QUAD, ease_in_out_quad);
-  SET_ALPHA (EASE_IN_CUBIC, ease_in_cubic);
-  SET_ALPHA (EASE_OUT_CUBIC, ease_out_cubic);
-  SET_ALPHA (EASE_IN_OUT_CUBIC, ease_in_out_cubic);
+    SET_ALPHA (LINEAR, linear);
+    SET_ALPHA (EASE_IN_QUAD, ease_in_quad);
+    SET_ALPHA (EASE_OUT_QUAD, ease_out_quad);
+    SET_ALPHA (EASE_IN_OUT_QUAD, ease_in_out_quad);
+    SET_ALPHA (EASE_IN_CUBIC, ease_in_cubic);
+    SET_ALPHA (EASE_OUT_CUBIC, ease_out_cubic);
+    SET_ALPHA (EASE_IN_OUT_CUBIC, ease_in_out_cubic);
 
 #define SET_TWEEN(_T, _t) \
-  G_STMT_START { \
-    guint idx = G_TYPE_ ## _T; \
-    tween_funcs[idx] = tween_ ## _t; \
-  } G_STMT_END
+    G_STMT_START { \
+        guint idx = G_TYPE_ ## _T; \
+        tween_funcs[idx] = tween_ ## _t; \
+    } G_STMT_END
 
-  SET_TWEEN (INT, int);
-  SET_TWEEN (UINT, uint);
-  SET_TWEEN (LONG, long);
-  SET_TWEEN (ULONG, ulong);
-  SET_TWEEN (FLOAT, float);
-  SET_TWEEN (DOUBLE, double);
+    SET_TWEEN (INT, int);
+    SET_TWEEN (UINT, uint);
+    SET_TWEEN (LONG, long);
+    SET_TWEEN (ULONG, ulong);
+    SET_TWEEN (FLOAT, float);
+    SET_TWEEN (DOUBLE, double);
 }
 
 
@@ -962,10 +996,10 @@ egg_animation_class_init (EggAnimationClass *klass)
 static void
 egg_animation_init (EggAnimation *animation)
 {
-  animation->duration_msec = 250;
-  animation->mode = EGG_ANIMATION_EASE_IN_OUT_QUAD;
-  animation->tweens = g_array_new (FALSE, FALSE, sizeof (Tween));
-  animation->last_offset = -G_MINDOUBLE;
+    animation->duration_msec = 250;
+    animation->mode = EGG_ANIMATION_EASE_IN_OUT_QUAD;
+    animation->tweens = g_array_new (FALSE, FALSE, sizeof (Tween));
+    animation->last_offset = -G_MINDOUBLE;
 }
 
 
@@ -980,21 +1014,24 @@ egg_animation_init (EggAnimation *animation)
 GType
 egg_animation_mode_get_type (void)
 {
-  static GType type_id = 0;
-  static const GEnumValue values[] = {
-    { EGG_ANIMATION_LINEAR, "EGG_ANIMATION_LINEAR", "linear" },
-    { EGG_ANIMATION_EASE_IN_QUAD, "EGG_ANIMATION_EASE_IN_QUAD", "ease-in-quad" },
-    { EGG_ANIMATION_EASE_IN_OUT_QUAD, "EGG_ANIMATION_EASE_IN_OUT_QUAD", "ease-in-out-quad" },
-    { EGG_ANIMATION_EASE_OUT_QUAD, "EGG_ANIMATION_EASE_OUT_QUAD", "ease-out-quad" },
-    { EGG_ANIMATION_EASE_IN_CUBIC, "EGG_ANIMATION_EASE_IN_CUBIC", "ease-in-cubic" },
-    { EGG_ANIMATION_EASE_OUT_CUBIC, "EGG_ANIMATION_EASE_OUT_CUBIC", "ease-out-cubic" },
-    { EGG_ANIMATION_EASE_IN_OUT_CUBIC, "EGG_ANIMATION_EASE_IN_OUT_CUBIC", "ease-in-out-cubic" },
-    { 0 }
-  };
+    static GType type_id = 0;
+    static const GEnumValue values[] =
+    {
+        { EGG_ANIMATION_LINEAR, "EGG_ANIMATION_LINEAR", "linear" },
+        { EGG_ANIMATION_EASE_IN_QUAD, "EGG_ANIMATION_EASE_IN_QUAD", "ease-in-quad" },
+        { EGG_ANIMATION_EASE_IN_OUT_QUAD, "EGG_ANIMATION_EASE_IN_OUT_QUAD", "ease-in-out-quad" },
+        { EGG_ANIMATION_EASE_OUT_QUAD, "EGG_ANIMATION_EASE_OUT_QUAD", "ease-out-quad" },
+        { EGG_ANIMATION_EASE_IN_CUBIC, "EGG_ANIMATION_EASE_IN_CUBIC", "ease-in-cubic" },
+        { EGG_ANIMATION_EASE_OUT_CUBIC, "EGG_ANIMATION_EASE_OUT_CUBIC", "ease-out-cubic" },
+        { EGG_ANIMATION_EASE_IN_OUT_CUBIC, "EGG_ANIMATION_EASE_IN_OUT_CUBIC", "ease-in-out-cubic" },
+        { 0 }
+    };
 
-  if (G_UNLIKELY (!type_id))
-    type_id = g_enum_register_static ("EggAnimationMode", values);
-  return type_id;
+    if (G_UNLIKELY (!type_id))
+    {
+        type_id = g_enum_register_static ("EggAnimationMode", values);
+    }
+    return type_id;
 }
 
 /**
@@ -1016,102 +1053,106 @@ egg_object_animatev (gpointer          object,
                      const gchar      *first_property,
                      va_list           args)
 {
-  EggAnimation *animation;
-  GObjectClass *klass;
-  GObjectClass *pklass;
-  const gchar *name;
-  GParamSpec *pspec;
-  GtkWidget *parent;
-  GValue value = { 0 };
-  gchar *error = NULL;
-  GType type;
-  GType ptype;
-  gboolean enable_animations;
+    EggAnimation *animation;
+    GObjectClass *klass;
+    GObjectClass *pklass;
+    const gchar *name;
+    GParamSpec *pspec;
+    GtkWidget *parent;
+    GValue value = { 0 };
+    gchar *error = NULL;
+    GType type;
+    GType ptype;
+    gboolean enable_animations;
 
-  g_return_val_if_fail (first_property != NULL, NULL);
-  g_return_val_if_fail (mode < EGG_ANIMATION_LAST, NULL);
+    g_return_val_if_fail (first_property != NULL, NULL);
+    g_return_val_if_fail (mode < EGG_ANIMATION_LAST, NULL);
 
-  if ((frame_clock == NULL) && GTK_IS_WIDGET (object))
-    frame_clock = gtk_widget_get_frame_clock (GTK_WIDGET (object));
-
-  /*
-   * If we have a frame clock, then we must be in the gtk thread and we
-   * should check GtkSettings for disabled animations. If we are disabled,
-   * we will just make the timeout immediate.
-   */
-  if (frame_clock != NULL)
+    if ((frame_clock == NULL) && GTK_IS_WIDGET (object))
     {
-      g_object_get (gtk_settings_get_default (),
-                    "gtk-enable-animations", &enable_animations,
-                    NULL);
-
-      if (enable_animations == FALSE)
-        duration_msec = 0;
+        frame_clock = gtk_widget_get_frame_clock (GTK_WIDGET (object));
     }
 
-  name = first_property;
-  type = G_TYPE_FROM_INSTANCE (object);
-  klass = G_OBJECT_GET_CLASS (object);
-  animation = g_object_new (EGG_TYPE_ANIMATION,
-                            "duration", duration_msec,
-                            "frame-clock", frame_clock,
-                            "mode", mode,
-                            "target", object,
-                            NULL);
-
-  do
+    /*
+     * If we have a frame clock, then we must be in the gtk thread and we
+     * should check GtkSettings for disabled animations. If we are disabled,
+     * we will just make the timeout immediate.
+     */
+    if (frame_clock != NULL)
     {
-      /*
-       * First check for the property on the object. If that does not exist
-       * then check if the object has a parent and look at its child
-       * properties (if it's a GtkWidget).
-       */
-      if (!(pspec = g_object_class_find_property (klass, name)))
+        g_object_get (gtk_settings_get_default (),
+                      "gtk-enable-animations", &enable_animations,
+                      NULL);
+
+        if (enable_animations == FALSE)
         {
-          if (!g_type_is_a (type, GTK_TYPE_WIDGET))
+            duration_msec = 0;
+        }
+    }
+
+    name = first_property;
+    type = G_TYPE_FROM_INSTANCE (object);
+    klass = G_OBJECT_GET_CLASS (object);
+    animation = g_object_new (EGG_TYPE_ANIMATION,
+                              "duration", duration_msec,
+                              "frame-clock", frame_clock,
+                              "mode", mode,
+                              "target", object,
+                              NULL);
+
+    do
+    {
+        /*
+         * First check for the property on the object. If that does not exist
+         * then check if the object has a parent and look at its child
+         * properties (if it's a GtkWidget).
+         */
+        if (!(pspec = g_object_class_find_property (klass, name)))
+        {
+            if (!g_type_is_a (type, GTK_TYPE_WIDGET))
             {
-              g_critical (_("Failed to find property %s in %s"),
-                          name, g_type_name (type));
-              goto failure;
+                g_critical (_("Failed to find property %s in %s"),
+                            name, g_type_name (type));
+                goto failure;
             }
-          if (!(parent = gtk_widget_get_parent (object)))
+            if (!(parent = gtk_widget_get_parent (object)))
             {
-              g_critical (_("Failed to find property %s in %s"),
-                          name, g_type_name (type));
-              goto failure;
+                g_critical (_("Failed to find property %s in %s"),
+                            name, g_type_name (type));
+                goto failure;
             }
-          pklass = G_OBJECT_GET_CLASS (parent);
-          ptype = G_TYPE_FROM_INSTANCE (parent);
-          if (!(pspec = gtk_container_class_find_child_property (pklass, name)))
+            pklass = G_OBJECT_GET_CLASS (parent);
+            ptype = G_TYPE_FROM_INSTANCE (parent);
+            if (!(pspec = gtk_container_class_find_child_property (pklass, name)))
             {
-              g_critical (_("Failed to find property %s in %s or parent %s"),
-                          name, g_type_name (type), g_type_name (ptype));
-              goto failure;
+                g_critical (_("Failed to find property %s in %s or parent %s"),
+                            name, g_type_name (type), g_type_name (ptype));
+                goto failure;
             }
         }
 
-      g_value_init (&value, pspec->value_type);
-      G_VALUE_COLLECT (&value, args, 0, &error);
-      if (error != NULL)
+        g_value_init (&value, pspec->value_type);
+        G_VALUE_COLLECT (&value, args, 0, &error);
+        if (error != NULL)
         {
-          g_critical (_("Failed to retrieve va_list value: %s"), error);
-          g_free (error);
-          goto failure;
+            g_critical (_("Failed to retrieve va_list value: %s"), error);
+            g_free (error);
+            goto failure;
         }
 
-      egg_animation_add_property (animation, pspec, &value);
-      g_value_unset (&value);
+        egg_animation_add_property (animation, pspec, &value);
+        g_value_unset (&value);
     }
-  while ((name = va_arg (args, const gchar *)));
+    while ((name = va_arg (args, const gchar *)));
 
-  egg_animation_start (animation);
+    egg_animation_start (animation);
 
-  return animation;
+    return animation;
 
 failure:
-  g_object_ref_sink (animation);
-  g_object_unref (animation);
-  return NULL;
+    g_object_ref_sink (animation);
+    g_object_unref (animation);
+    return NULL;
 }
 
 /**
@@ -1127,27 +1168,27 @@ failure:
  * Return value: (transfer none): A #EggAnimation.
  * Side effects: None.
  */
-EggAnimation*
-egg_object_animate (gpointer        object,
+EggAnimation *
+egg_object_animate (gpointer         object,
                     EggAnimationMode mode,
-                    guint           duration_msec,
-                    GdkFrameClock  *frame_clock,
-                    const gchar    *first_property,
+                    guint            duration_msec,
+                    GdkFrameClock   *frame_clock,
+                    const gchar     *first_property,
                     ...)
 {
-  EggAnimation *animation;
-  va_list args;
+    EggAnimation *animation;
+    va_list args;
 
-  va_start (args, first_property);
-  animation = egg_object_animatev (object,
-                                   mode,
-                                   duration_msec,
-                                   frame_clock,
-                                   first_property,
-                                   args);
-  va_end (args);
+    va_start (args, first_property);
+    animation = egg_object_animatev (object,
+                                     mode,
+                                     duration_msec,
+                                     frame_clock,
+                                     first_property,
+                                     args);
+    va_end (args);
 
-  return animation;
+    return animation;
 }
 
 /**
@@ -1155,30 +1196,30 @@ egg_object_animate (gpointer        object,
  *
  * Return value: (transfer none): A #EggAnimation.
  */
-EggAnimation*
-egg_object_animate_full (gpointer        object,
+EggAnimation *
+egg_object_animate_full (gpointer         object,
                          EggAnimationMode mode,
-                         guint           duration_msec,
-                         GdkFrameClock  *frame_clock,
-                         GDestroyNotify  notify,
-                         gpointer        notify_data,
-                         const gchar    *first_property,
+                         guint            duration_msec,
+                         GdkFrameClock   *frame_clock,
+                         GDestroyNotify   notify,
+                         gpointer         notify_data,
+                         const gchar     *first_property,
                          ...)
 {
-  EggAnimation *animation;
-  va_list args;
+    EggAnimation *animation;
+    va_list args;
 
-  va_start (args, first_property);
-  animation = egg_object_animatev (object,
-                                   mode,
-                                   duration_msec,
-                                   frame_clock,
-                                   first_property,
-                                   args);
-  va_end (args);
+    va_start (args, first_property);
+    animation = egg_object_animatev (object,
+                                     mode,
+                                     duration_msec,
+                                     frame_clock,
+                                     first_property,
+                                     args);
+    va_end (args);
 
-  animation->notify = notify;
-  animation->notify_data = notify_data;
+    animation->notify = notify;
+    animation->notify_data = notify_data;
 
-  return animation;
+    return animation;
 }

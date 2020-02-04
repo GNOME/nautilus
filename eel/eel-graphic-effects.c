@@ -149,11 +149,11 @@ eel_create_colorized_pixbuf (GdkPixbuf *src,
         pixsrc = original_pixels + i * src_row_stride;
         for (j = 0; j < width; j++)
         {
-            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            *pixdest = (*pixsrc++ **pixdest) >> 8;
             pixdest++;
-            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            *pixdest = (*pixsrc++ **pixdest) >> 8;
             pixdest++;
-            *pixdest = (*pixsrc++ * *pixdest) >> 8;
+            *pixdest = (*pixsrc++ **pixdest) >> 8;
             pixdest++;
             if (has_alpha)
             {

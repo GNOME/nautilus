@@ -66,7 +66,7 @@ is_mime_type_supported (const char *mime_type)
             continue;
         }
 
-        if (g_strv_contains ((const char *const *) mime_types, mime_type))
+        if (g_strv_contains ((const char * const *) mime_types, mime_type))
         {
             return TRUE;
         }

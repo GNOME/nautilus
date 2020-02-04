@@ -708,7 +708,7 @@ nautilus_files_view_get_toolbar_menu_sections (NautilusView *view)
     return priv->toolbar_menu_sections;
 }
 
-static GMenu*
+static GMenu *
 nautilus_files_view_get_templates_menu (NautilusView *self)
 {
     GMenu *menu;
@@ -718,7 +718,7 @@ nautilus_files_view_get_templates_menu (NautilusView *self)
     return menu;
 }
 
-static GMenu*
+static GMenu *
 nautilus_files_view_get_extensions_background_menu (NautilusView *self)
 {
     GMenu *menu;
@@ -728,7 +728,7 @@ nautilus_files_view_get_extensions_background_menu (NautilusView *self)
     return menu;
 }
 
-static GMenu*
+static GMenu *
 real_get_extensions_background_menu (NautilusView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -740,7 +740,7 @@ real_get_extensions_background_menu (NautilusView *view)
     return priv->extensions_background_menu;
 }
 
-static GMenu*
+static GMenu *
 real_get_templates_menu (NautilusView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -1230,7 +1230,8 @@ get_view_directory (NautilusFilesView *view)
     return path;
 }
 
-typedef struct {
+typedef struct
+{
     gchar *uri;
     gboolean is_update;
 } PreviewExportData;
@@ -1251,7 +1252,7 @@ on_window_handle_export (NautilusWindow *window,
                          guint           xid,
                          gpointer        user_data)
 {
-    g_autoptr(PreviewExportData) data = user_data;
+    g_autoptr (PreviewExportData) data = user_data;
     nautilus_previewer_call_show_file (data->uri, handle, xid, !data->is_update);
 }
 
@@ -2690,9 +2691,9 @@ paste_clipboard_data (NautilusFilesView *view,
 }
 
 static void
-paste_clipboard_text_received_callback (GtkClipboard     *clipboard,
-                                        const gchar      *selection_data,
-                                        gpointer          data)
+paste_clipboard_text_received_callback (GtkClipboard *clipboard,
+                                        const gchar  *selection_data,
+                                        gpointer      data)
 {
     NautilusFilesView *view;
     NautilusFilesViewPrivate *priv;
@@ -3121,25 +3122,25 @@ slot_active_changed (NautilusWindowSlot *slot,
 
     if (priv->active)
     {
-      /* Avoid updating the toolbar withouth making sure the toolbar
-       * zoom slider has the correct adjustment that changes when the
-       * view mode changes
-       */
-      nautilus_files_view_update_context_menus (view);
-      nautilus_files_view_update_toolbar_menus (view);
+        /* Avoid updating the toolbar withouth making sure the toolbar
+         * zoom slider has the correct adjustment that changes when the
+         * view mode changes
+         */
+        nautilus_files_view_update_context_menus (view);
+        nautilus_files_view_update_toolbar_menus (view);
 
-      schedule_update_context_menus (view);
+        schedule_update_context_menus (view);
 
-      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                      "view",
-                                      G_ACTION_GROUP (priv->view_action_group));
+        gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                        "view",
+                                        G_ACTION_GROUP (priv->view_action_group));
     }
     else
     {
-      remove_update_context_menus_timeout_callback (view);
-      gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
-                                      "view",
-                                      NULL);
+        remove_update_context_menus_timeout_callback (view);
+        gtk_widget_insert_action_group (GTK_WIDGET (nautilus_files_view_get_window (view)),
+                                        "view",
+                                        NULL);
     }
 }
 
@@ -8562,9 +8563,9 @@ finish_loading (NautilusFilesView *view)
 
     /* Connect handlers to learn about loading progress. */
     priv->done_loading_handler_id = g_signal_connect (priv->model, "done-loading",
-                                        G_CALLBACK (done_loading_callback), view);
+                                                      G_CALLBACK (done_loading_callback), view);
     priv->load_error_handler_id = g_signal_connect (priv->model, "load-error",
-                                      G_CALLBACK (load_error_callback), view);
+                                                    G_CALLBACK (load_error_callback), view);
 
     /* Monitor the things needed to get the right icon. Also
      * monitor a directory's item count because the "size"
@@ -8863,9 +8864,9 @@ nautilus_files_view_move_copy_items (NautilusFilesView *view,
 
     target_file = nautilus_file_get_existing_by_uri (target_uri);
     if (copy_action == GDK_ACTION_COPY &&
-             nautilus_is_file_roller_installed () &&
-             target_file != NULL &&
-             nautilus_file_is_archive (target_file))
+        nautilus_is_file_roller_installed () &&
+        target_file != NULL &&
+        nautilus_file_is_archive (target_file))
     {
         char *command, *quoted_uri, *tmp;
         const GList *l;

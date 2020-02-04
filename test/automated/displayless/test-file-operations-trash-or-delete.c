@@ -35,23 +35,23 @@ test_trash_more_files_func (gint files_to_trash)
     g_autolist (GFile) files = NULL;
 
     create_multiple_files ("trash_or_delete", files_to_trash);
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
- 
+
     for (int i = 0; i < files_to_trash; i++)
     {
         gchar *file_name;
- 
+
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
- 
+
     nautilus_file_operations_trash_or_delete_sync (files);
- 
+
     for (int i = 0; i < files_to_trash; i++)
     {
         gchar *file_name;
@@ -106,23 +106,23 @@ test_delete_more_files_func (gint files_to_delete)
     g_autolist (GFile) files = NULL;
 
     create_multiple_files ("trash_or_delete", files_to_delete);
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
- 
+
     for (int i = 0; i < files_to_delete; i++)
     {
         gchar *file_name;
- 
+
         file_name = g_strdup_printf ("trash_or_delete_file_%i", i);
         file = g_file_get_child (root, file_name);
         g_free (file_name);
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
- 
+
     nautilus_file_operations_delete_sync (files);
- 
+
     for (int i = 0; i < files_to_delete; i++)
     {
         gchar *file_name;
@@ -179,10 +179,10 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
     g_autolist (GFile) files = NULL;
 
     create_multiple_directories ("trash_or_delete", directories_to_trash);
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
- 
+
     for (int i = 0; i < directories_to_trash; i++)
     {
         gchar *file_name;
@@ -193,7 +193,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
- 
+
     nautilus_file_operations_trash_or_delete_sync (files);
 
     for (int i = 0; i < directories_to_trash; i++)
@@ -252,10 +252,10 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
     g_autolist (GFile) files = NULL;
 
     create_multiple_directories ("trash_or_delete", directories_to_delete);
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
- 
+
     for (int i = 0; i < directories_to_delete; i++)
     {
         gchar *file_name;
@@ -266,7 +266,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
         g_assert_true (file != NULL);
         files = g_list_prepend (files, g_object_ref (file));
     }
- 
+
     nautilus_file_operations_delete_sync (files);
 
 
@@ -322,7 +322,7 @@ test_trash_full_directory (void)
 
     empty_directory_by_prefix (root, "trash_or_delete");
 }
- 
+
 /* The hierarchy looks like this:
  * /tmp/first_dir/first_child
  * /tmp/first_dir/second_child
@@ -337,14 +337,14 @@ test_trash_first_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     create_first_hierarchy ("trash_or_delete");
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
- 
+
     file = g_file_get_child (first_dir, "trash_or_delete_first_child");
     g_assert_true (file != NULL);
     file = g_file_get_child (first_dir, "trash_or_delete_second_child");
@@ -361,7 +361,7 @@ test_trash_first_hierarchy (void)
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
     empty_directory_by_prefix (root, "trash_or_delete");
- }
+}
 
 /* We're creating 50 directories each containing one file
  * and trashing all of the directories.
@@ -389,7 +389,7 @@ test_trash_third_hierarchy (void)
         g_free (file_name);
         files = g_list_prepend (files, g_object_ref (directory));
     }
- 
+
     nautilus_file_operations_trash_or_delete_sync (files);
 
     for (int i = 0; i < 50; i++)
@@ -443,7 +443,7 @@ test_delete_full_directory (void)
 
     empty_directory_by_prefix (root, "trash_or_delete");
 }
- 
+
 /* The hierarchy looks like this:
  * /tmp/first_dir/first_child
  * /tmp/first_dir/second_child
@@ -458,14 +458,14 @@ test_delete_first_hierarchy (void)
     g_autolist (GFile) files = NULL;
 
     create_first_hierarchy ("trash_or_delete");
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
- 
+
     file = g_file_get_child (first_dir, "trash_or_delete_first_child");
     g_assert_true (file != NULL);
     file = g_file_get_child (first_dir, "trash_or_delete_second_child");
@@ -482,7 +482,7 @@ test_delete_first_hierarchy (void)
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
     empty_directory_by_prefix (root, "trash_or_delete");
- }
+}
 
 /* We're creating 50 directories each containing one file
  * and deleting all of the directories.
@@ -510,7 +510,7 @@ test_delete_third_hierarchy (void)
         g_free (file_name);
         files = g_list_prepend (files, g_object_ref (directory));
     }
- 
+
     nautilus_file_operations_delete_sync (files);
 
     for (int i = 0; i < 50; i++)
@@ -563,17 +563,17 @@ setup_test_suite (void)
                      test_delete_first_hierarchy);
     g_test_add_func ("/test-delete-more-full-directories/1.6",
                      test_delete_third_hierarchy);
-
 }
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points();
+    nautilus_ensure_extension_points ();
     undo_manager = nautilus_file_undo_manager_new ();
 
     setup_test_suite ();

@@ -64,7 +64,6 @@ nautilus_debug_set_flags_from_env (void)
 
     for (nkeys = 0; keys[nkeys].value; nkeys++)
     {
-        ;
     }
 
     flags_string = g_getenv ("NAUTILUS_DEBUG");

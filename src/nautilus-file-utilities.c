@@ -1452,16 +1452,16 @@ location_settings_search_get_recursive (void)
             return NAUTILUS_QUERY_RECURSIVE_ALWAYS;
         }
         break;
-        
+
         case NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY:
         {
             return NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY;
         }
         break;
-        
+
         case NAUTILUS_SPEED_TRADEOFF_NEVER:
         {
-             return NAUTILUS_QUERY_RECURSIVE_NEVER;
+            return NAUTILUS_QUERY_RECURSIVE_NEVER;
         }
         break;
     }
