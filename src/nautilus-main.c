@@ -50,16 +50,14 @@
 #include <unistd.h>
 
 int
-main (int   argc,
+main (int argc,
       char *argv[])
 {
     gint retval;
     NautilusApplication *application;
 
     if (g_getenv ("NAUTILUS_DEBUG") != NULL)
-    {
         eel_make_warnings_and_criticals_stop_in_debugger ();
-    }
 
     /* Initialize gettext support */
     bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
@@ -75,7 +73,7 @@ main (int   argc,
     /* hold indefinitely if we're asked to persist */
     if (g_getenv ("NAUTILUS_PERSIST") != NULL)
     {
-        g_application_hold (G_APPLICATION (application));
+        g_application_hold(G_APPLICATION(application));
     }
 
     retval = g_application_run (G_APPLICATION (application),
@@ -83,7 +81,7 @@ main (int   argc,
 
     g_object_unref (application);
 
-    eel_debug_shut_down ();
+   eel_debug_shut_down ();
 
     return retval;
 }
