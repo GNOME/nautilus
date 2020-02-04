@@ -20,7 +20,7 @@ do
     for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*")
     do
         # Aligning prototypes is not working yet, so avoid headers
-        "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --no-backup "$FILE"
+        "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --replace --no-backup "$FILE"
         "$DATA/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE"
    done
 done
