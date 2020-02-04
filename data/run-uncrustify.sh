@@ -20,7 +20,9 @@ do
     for FILE in $(find "$DIR" -name "*.c" -not -path "*/gtk/*" -not -path "*/animation/*" -not -path "*/audio-video-properties/*")
     do
         # Aligning prototypes is not working yet, so avoid headers
-        "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --no-backup "$FILE"
+        "$UNCRUSTIFY" -c "$DATA/uncrustify.cfg" --replace "$FILE"
         "$DATA/lineup-parameters" "$FILE" > "$FILE.temp" && mv "$FILE.temp" "$FILE"
+        rm "$FILE.unc-backup.md5~"
+        rm "$FILE.unc-backup~"
    done
 done
