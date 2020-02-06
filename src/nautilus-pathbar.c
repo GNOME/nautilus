@@ -208,17 +208,20 @@ action_pathbar_properties (GSimpleAction *action,
 static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
-    GtkBuilder *builder;
+    GtkBuilder *builder_current_view_menu;
+    GtkBuilder *builder_button_menu;
 
     /* Context menu */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
-    self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
+    builder_current_view_menu = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
+    builder_button_menu = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
+    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder_current_view_menu, "background-menu")));
+    self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder_button_menu, "button-menu")));
     self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
                                                                                                   G_MENU_MODEL (self->current_view_menu))));
     self->button_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
                                                                                             G_MENU_MODEL (self->button_menu))));
-    g_object_unref (builder);
+    g_object_unref (builder_current_view_menu);
+    g_object_unref (builder_button_menu);
 
     gtk_widget_set_has_window (GTK_WIDGET (self), FALSE);
     gtk_widget_set_redraw_on_allocate (GTK_WIDGET (self), FALSE);
@@ -936,9 +939,9 @@ reset_current_view_menu (NautilusPathBar *self)
     g_autoptr (GtkBuilder) builder = NULL;
 
     g_clear_object (&self->current_view_menu);
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui");
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder,
-                                                                                 "current-view-menu")));
+                                                                                 "background-menu")));
     gtk_popover_bind_model (self->current_view_menu_popover,
                             G_MENU_MODEL (self->current_view_menu), NULL);
 }

@@ -1,40 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!-- Generated with glade 3.22.1 -->
 <interface>
-  <menu id="current-view-menu">
-    <item>
-      <attribute name="label" translatable="yes">New _Folder…</attribute>
-      <attribute name="action">view.new-folder</attribute>
-    </item>
-    <submenu>
-      <attribute name="id">templates-submenu</attribute>
-      <attribute name="label" translatable="yes">New _Document</attribute>
-      <attribute name="action">view.new-document</attribute>
-      <attribute name="hidden-when">action-disabled</attribute>
-    </submenu>
-    <item>
-      <attribute name="label" translatable="yes">Add to _Bookmarks</attribute>
-      <attribute name="action">win.bookmark-current-location</attribute>
-    </item>
-    <section>
-      <item>
-        <attribute name="label" translatable="yes">_Paste</attribute>
-        <attribute name="action">view.paste</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">Select _All</attribute>
-        <attribute name="action">view.select-all</attribute>
-      </item>
-      <item>
-        <attribute name="label" translatable="yes">P_roperties</attribute>
-        <attribute name="action">view.current-directory-properties</attribute>
-        <attribute name="hidden-when">action-disabled</attribute>
-      </item>
-    </section>
-    <section>
-      <attribute name="id">extensions</attribute>
-    </section>
-  </menu>
   <menu id="button-menu">
     <item>
       <attribute name="label" translatable="yes">Open in New _Window</attribute>
