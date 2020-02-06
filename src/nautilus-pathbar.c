@@ -209,11 +209,20 @@ static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
     GtkBuilder *builder;
+    guint builder_res;
 
     /* Context menu */
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
-    self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "extensions-section")));
+    builder = gtk_builder_new();
+    builder_res = gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui", NULL);
+
+    g_assert(builder_res != 0);
+
+    builder_res = gtk_builder_add_from_resource (builder, "/org/gnome/nautilus/ui/nautilus-files-view-context-menus.ui", NULL);
+
+    g_assert(builder_res != 0);
+
+    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "background-menu")));
+    self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "background-extensions-section")));
     self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
     self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
