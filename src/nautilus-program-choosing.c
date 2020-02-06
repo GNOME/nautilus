@@ -126,32 +126,6 @@ nautilus_launch_application (GAppInfo  *application,
     g_list_free_full (uris, g_free);
 }
 
-static GdkAppLaunchContext *
-get_launch_context (GtkWindow *parent_window)
-{
-    GdkDisplay *display;
-    GdkAppLaunchContext *launch_context;
-
-    if (parent_window != NULL)
-    {
-        display = gtk_widget_get_display (GTK_WIDGET (parent_window));
-    }
-    else
-    {
-        display = gdk_display_get_default ();
-    }
-
-    launch_context = gdk_display_get_app_launch_context (display);
-
-    if (parent_window != NULL)
-    {
-        gdk_app_launch_context_set_screen (launch_context,
-                                           gtk_window_get_screen (parent_window));
-    }
-
-    return launch_context;
-}
-
 void
 nautilus_launch_application_by_uri (GAppInfo  *application,
                                     GList     *uris,
@@ -163,7 +137,8 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     NautilusFile *file;
     gboolean result;
     GError *error;
-    g_autoptr (GdkAppLaunchContext) launch_context = NULL;
+    GdkDisplay *display;
+    GdkAppLaunchContext *launch_context;
     NautilusIconInfo *icon;
     int count, total;
 
@@ -186,7 +161,22 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
     }
     locations = g_list_reverse (locations);
 
-    launch_context = get_launch_context (parent_window);
+    if (parent_window != NULL)
+    {
+        display = gtk_widget_get_display (GTK_WIDGET (parent_window));
+    }
+    else
+    {
+        display = gdk_display_get_default ();
+    }
+
+    launch_context = gdk_display_get_app_launch_context (display);
+
+    if (parent_window != NULL)
+    {
+        gdk_app_launch_context_set_screen (launch_context,
+                                           gtk_window_get_screen (parent_window));
+    }
 
     file = nautilus_file_get_by_uri (uris->data);
     icon = nautilus_file_get_icon (file,
@@ -221,6 +211,8 @@ nautilus_launch_application_by_uri (GAppInfo  *application,
                                          G_APP_LAUNCH_CONTEXT (launch_context),
                                          &error);
     }
+
+    g_object_unref (launch_context);
 
     if (result)
     {
@@ -479,145 +471,3 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
     g_object_unref (context);
     g_object_unref (app_info);
 }
-
-/* HAX
- *
- * TODO: remove everything below once it’s doable from GTK+.
- *
- * Context: https://bugzilla.gnome.org/show_bug.cgi?id=781132 and
- *          https://bugzilla.gnome.org/show_bug.cgi?id=779312
- *
- * In a sandboxed environment, this is needed to able to get the actual
- * result of the operation, since gtk_show_uri_on_window () neither blocks
- * nor returns a useful value.
- */
-
-static void
-on_launch_default_for_uri (GObject      *source,
-                           GAsyncResult *result,
-                           gpointer      data)
-{
-    GTask *task;
-    NautilusWindow *window;
-    gboolean success;
-    GError *error = NULL;
-
-    task = data;
-    window = g_task_get_source_object (task);
-
-    success = g_app_info_launch_default_for_uri_finish (result, &error);
-
-    if (window)
-    {
-        nautilus_window_unexport_handle (window);
-    }
-
-    if (success)
-    {
-        g_task_return_boolean (task, success);
-    }
-    else
-    {
-        g_task_return_error (task, error);
-    }
-
-    /* Reffed in the call to nautilus_window_export_handle */
-    g_object_unref (task);
-}
-
-static void
-on_window_handle_export (NautilusWindow  *window,
-                         const char *handle_str,
-                         guint       xid,
-                         gpointer    user_data)
-{
-    GTask *task = user_data;
-    GAppLaunchContext *context = g_task_get_task_data (task);
-    const char *uri;
-
-    uri = g_object_get_data (G_OBJECT (context), "uri");
-
-    g_app_launch_context_setenv (context, "PARENT_WINDOW_ID", handle_str);
-
-    g_app_info_launch_default_for_uri_async (uri,
-                                             context,
-                                             g_task_get_cancellable (task),
-                                             on_launch_default_for_uri,
-                                             task);
-}
-
-static void
-launch_default_for_uri_thread_func (GTask        *task,
-                                    gpointer      source_object,
-                                    gpointer      task_data,
-                                    GCancellable *cancellable)
-{
-    GAppLaunchContext *launch_context;
-    const char *uri;
-    gboolean success;
-    GError *error = NULL;
-
-    launch_context = task_data;
-    uri = g_object_get_data (G_OBJECT (launch_context), "uri");
-    success = g_app_info_launch_default_for_uri (uri, launch_context, &error);
-
-    if (success)
-    {
-        g_task_return_boolean (task, success);
-    }
-    else
-    {
-        g_task_return_error (task, error);
-    }
-}
-
-void
-nautilus_launch_default_for_uri_async  (const char         *uri,
-                                        GtkWindow          *parent_window,
-                                        GCancellable       *cancellable,
-                                        GAsyncReadyCallback callback,
-                                        gpointer            callback_data)
-{
-    g_autoptr (GdkAppLaunchContext) launch_context = NULL;
-    g_autoptr (GTask) task = NULL;
-
-    g_return_if_fail (uri != NULL);
-
-    launch_context = get_launch_context (parent_window);
-    task = g_task_new (parent_window, cancellable, callback, callback_data);
-
-    gdk_app_launch_context_set_timestamp (launch_context, GDK_CURRENT_TIME);
-
-    g_object_set_data_full (G_OBJECT (launch_context),
-                            "uri", g_strdup (uri), g_free);
-    g_task_set_task_data (task,
-                          g_object_ref (launch_context), g_object_unref);
-
-    if (parent_window != NULL)
-    {
-        gboolean handle_exported;
-
-        handle_exported = nautilus_window_export_handle (NAUTILUS_WINDOW (parent_window),
-                                                         on_window_handle_export,
-                                                         g_object_ref (task));
-
-        if (handle_exported)
-        {
-            /* Launching will now be handled from the callback */
-            return;
-        }
-    }
-
-    g_task_run_in_thread (task, launch_default_for_uri_thread_func);
-}
-
-gboolean
-nautilus_launch_default_for_uri_finish (GAsyncResult  *result,
-                                        GError       **error)
-{
-    g_return_val_if_fail (G_IS_ASYNC_RESULT (result), FALSE);
-
-    return g_task_propagate_boolean (G_TASK (result), error);
-}
-
-/* END OF HAX */
