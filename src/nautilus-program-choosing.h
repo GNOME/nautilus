@@ -51,10 +51,3 @@ void nautilus_launch_desktop_file                   (GdkScreen                  
                                                      const char                        *desktop_file_uri,
                                                      const GList                       *parameter_uris,
                                                      GtkWindow                         *parent_window);
-void nautilus_launch_default_for_uri_async          (const char                        *uri,
-                                                     GtkWindow                         *parent_window,
-                                                     GCancellable                      *cancellable,
-                                                     GAsyncReadyCallback                callback,
-                                                     gpointer                           callback_data);
-gboolean nautilus_launch_default_for_uri_finish     (GAsyncResult                      *result,
-                                                     GError                           **error);
