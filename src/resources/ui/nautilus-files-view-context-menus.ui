@@ -17,12 +17,6 @@
     </item>
     <section>
       <item>
-        <attribute name="label" translatable="yes">_Paste</attribute>
-        <attribute name="action">view.paste</attribute>
-      </item>
-    </section>
-    <section>
-      <item>
         <attribute name="label" translatable="yes">Create _Link</attribute>
         <attribute name="action">view.create-link</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
@@ -30,9 +24,16 @@
     </section>
     <section>
       <item>
+        <attribute name="label" translatable="yes">_Paste</attribute>
+        <attribute name="action">view.paste</attribute>
+      </item>
+      <item>
         <attribute name="label" translatable="yes">Select _All</attribute>
         <attribute name="action">view.select-all</attribute>
       </item>
+    </section>
+    <section>
+      <attribute name="id">extensions</attribute>
     </section>
     <section>
       <item>
@@ -40,9 +41,6 @@
         <attribute name="action">view.current-directory-properties</attribute>
         <attribute name="hidden-when">action-disabled</attribute>
       </item>
-    </section>
-    <section>
-      <attribute name="id">extensions</attribute>
     </section>
   </menu>
   <menu id="selection-menu">
