@@ -196,8 +196,6 @@ on_expanded_notify (GtkExpander                *w,
                     GParamSpec                 *pspec,
                     NautilusFileConflictDialog *dialog)
 {
-    int start_pos, end_pos;
-
     if (gtk_expander_get_expanded (w))
     {
         gtk_widget_hide (dialog->replace_button);
@@ -206,11 +204,24 @@ on_expanded_notify (GtkExpander                *w,
 
         gtk_widget_set_sensitive (dialog->checkbox, FALSE);
 
-        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->conflict_name) == 0)
+        gtk_widget_grab_focus (dialog->entry);
+        if (g_strcmp0 (gtk_entry_get_text (GTK_ENTRY (dialog->entry)), dialog->suggested_name) == 0)
         {
-            gtk_widget_grab_focus (dialog->entry);
+            /* The suggested name is in the form "original (1).txt", if the
+             * the conflicting name was "original.txt". The user may want to
+             * replace the "(1)" bits with with something more meaningful, so
+             * select this region for convenience. */
 
-            eel_filename_get_rename_region (dialog->conflict_name, &start_pos, &end_pos);
+            const gchar *offset;
+            int start_pos;
+            int end_pos;
+
+            offset = eel_filename_get_extension_offset (dialog->conflict_name);
+            start_pos = g_utf8_pointer_to_offset (dialog->conflict_name, offset);
+
+            offset = eel_filename_get_extension_offset (dialog->suggested_name);
+            end_pos = g_utf8_pointer_to_offset (dialog->suggested_name, offset);
+
             gtk_editable_select_region (GTK_EDITABLE (dialog->entry), start_pos, end_pos);
         }
     }
