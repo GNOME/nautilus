@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus gnome-2-32\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-01-11 19:56+0000\n"
-"PO-Revision-Date: 2020-02-02 19:37+0200\n"
+"POT-Creation-Date: 2020-02-04 12:04+0000\n"
+"PO-Revision-Date: 2020-02-08 14:18+0200\n"
 "Last-Translator: Aurimas Černius <aurisc4@gmail.com>\n"
 "Language-Team: Lietuvių <gnome-lt@lists.akl.lt>\n"
 "Language: lt\n"
@@ -2139,8 +2139,8 @@ msgstr[2] "Trinama %'d failų"
 #: src/nautilus-file-operations.c:1783 src/nautilus-file-operations.c:2125
 #: src/nautilus-file-operations.c:2133 src/nautilus-file-operations.c:2173
 #: src/nautilus-file-operations.c:3974 src/nautilus-file-operations.c:3982
-#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8350
-#: src/nautilus-file-operations.c:8418
+#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8422
+#: src/nautilus-file-operations.c:8490
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2309,11 +2309,12 @@ msgstr[2] "Ruošiamasi suspausti %'d failų"
 
 #: src/nautilus-file-operations.c:3165 src/nautilus-file-operations.c:4571
 #: src/nautilus-file-operations.c:4742 src/nautilus-file-operations.c:4808
+#: src/nautilus-file-operations.c:5080
 msgid "Error while copying."
 msgstr "Klaida kopijuojant."
 
 #: src/nautilus-file-operations.c:3170 src/nautilus-file-operations.c:4738
-#: src/nautilus-file-operations.c:4804
+#: src/nautilus-file-operations.c:4804 src/nautilus-file-operations.c:5076
 msgid "Error while moving."
 msgstr "Klaida perkeliant."
 
@@ -2486,8 +2487,8 @@ msgstr[2] "Sukurtos %'d failų kopijos „%s“ viduje"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3964 src/nautilus-file-operations.c:4024
-#: src/nautilus-file-operations.c:7917 src/nautilus-file-operations.c:8091
-#: src/nautilus-file-operations.c:8345 src/nautilus-file-operations.c:8388
+#: src/nautilus-file-operations.c:7989 src/nautilus-file-operations.c:8163
+#: src/nautilus-file-operations.c:8417 src/nautilus-file-operations.c:8460
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2510,8 +2511,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:7935
-#: src/nautilus-file-operations.c:8377
+#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:8007
+#: src/nautilus-file-operations.c:8449
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2524,7 +2525,7 @@ msgstr[2] "%s / %s — liko %s (%s/sek)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8407
+#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8479
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2566,8 +2567,8 @@ msgid ""
 "it."
 msgstr "Aplanko „%s“ negalima nukopijuoti, kadangi neturite teisų jį skaityti."
 
-#: src/nautilus-file-operations.c:4878 src/nautilus-file-operations.c:5433
-#: src/nautilus-file-operations.c:6118
+#: src/nautilus-file-operations.c:4878 src/nautilus-file-operations.c:5493
+#: src/nautilus-file-operations.c:6190
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Klaida perkeliant „%s“."
@@ -2576,57 +2577,62 @@ msgstr "Klaida perkeliant „%s“."
 msgid "Could not remove the source folder."
 msgstr "Nepavyko pašalinti šaltinio aplanko."
 
+#: src/nautilus-file-operations.c:5082
+#| msgid "There was an error getting information about the destination."
+msgid "There was an error getting information about the source."
+msgstr "Klaida gaunant informaciją apie šaltinį."
+
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5123 src/nautilus-file-operations.c:5920
+#: src/nautilus-file-operations.c:5183 src/nautilus-file-operations.c:5992
 msgid "You cannot move a folder into itself."
 msgstr "Negalima perkelti aplanko į jį patį."
 
-#: src/nautilus-file-operations.c:5124 src/nautilus-file-operations.c:5921
+#: src/nautilus-file-operations.c:5184 src/nautilus-file-operations.c:5993
 msgid "You cannot copy a folder into itself."
 msgstr "Negalima nukopijuoti aplanko į jį patį."
 
-#: src/nautilus-file-operations.c:5125 src/nautilus-file-operations.c:5922
+#: src/nautilus-file-operations.c:5185 src/nautilus-file-operations.c:5994
 msgid "The destination folder is inside the source folder."
 msgstr "Šis paskirties aplankas yra šaltinio aplanke."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5165
+#: src/nautilus-file-operations.c:5225
 msgid "You cannot move a file over itself."
 msgstr "Negalima perkelti failo ant jo paties."
 
-#: src/nautilus-file-operations.c:5166
+#: src/nautilus-file-operations.c:5226
 msgid "You cannot copy a file over itself."
 msgstr "Negalima nukopijuoti failo ant jo paties patį."
 
-#: src/nautilus-file-operations.c:5167
+#: src/nautilus-file-operations.c:5227
 msgid "The source file would be overwritten by the destination."
 msgstr "Šaltinio failas bus perrašytas paskirties failu."
 
-#: src/nautilus-file-operations.c:5437 src/nautilus-file-operations.c:5525
+#: src/nautilus-file-operations.c:5497 src/nautilus-file-operations.c:5585
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Klaida kopijuojant „%s“."
 
-#: src/nautilus-file-operations.c:5440
+#: src/nautilus-file-operations.c:5500
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr "Nepavyko pašalinti to paties pavadinimo failo, esančio aplanke %s."
 
-#: src/nautilus-file-operations.c:5527
+#: src/nautilus-file-operations.c:5587
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Klaida kopijuojant failą į %s."
 
-#: src/nautilus-file-operations.c:5716
+#: src/nautilus-file-operations.c:5776
 msgid "Copying Files"
 msgstr "Kopijuojami failai"
 
-#: src/nautilus-file-operations.c:5833
+#: src/nautilus-file-operations.c:5893
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Ruošiamasi perkelti į „%s“"
 
-#: src/nautilus-file-operations.c:5837
+#: src/nautilus-file-operations.c:5897
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
@@ -2634,21 +2640,21 @@ msgstr[0] "Ruošiamasi perkelti %'d failą"
 msgstr[1] "Ruošiamasi perkelti %'d failus"
 msgstr[2] "Ruošiamasi perkelti %'d failų"
 
-#: src/nautilus-file-operations.c:6120
+#: src/nautilus-file-operations.c:6192
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Klaida perkeliant failą į %s."
 
-#: src/nautilus-file-operations.c:6360
+#: src/nautilus-file-operations.c:6432
 msgid "Moving Files"
 msgstr "Perkeliami failai"
 
-#: src/nautilus-file-operations.c:6451
+#: src/nautilus-file-operations.c:6523
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Kuriamos nuorodos aplanke „%s“"
 
-#: src/nautilus-file-operations.c:6455
+#: src/nautilus-file-operations.c:6527
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
@@ -2656,87 +2662,87 @@ msgstr[0] "Kuriama nuoroda į %'d failą"
 msgstr[1] "Kuriamos nuorodos į %'d failus"
 msgstr[2] "Kuriamos nuorodos į %'d failų"
 
-#: src/nautilus-file-operations.c:6605
+#: src/nautilus-file-operations.c:6677
 #, c-format
 msgid "Error while creating link to %s."
 msgstr "Klaida kuriant nuorodą į %s."
 
-#: src/nautilus-file-operations.c:6609
+#: src/nautilus-file-operations.c:6681
 msgid "Symbolic links only supported for local files"
 msgstr "Simbolinės nuorodos palaikomos tik vietiniams failams"
 
-#: src/nautilus-file-operations.c:6614
+#: src/nautilus-file-operations.c:6686
 msgid "The target doesn’t support symbolic links."
 msgstr "Paskirties vietą nepalaiko simbolinių nuorodų."
 
-#: src/nautilus-file-operations.c:6622
+#: src/nautilus-file-operations.c:6694
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Klaida kuriant simbolinę nuorodą į %s."
 
-#: src/nautilus-file-operations.c:6950
+#: src/nautilus-file-operations.c:7022
 msgid "Setting permissions"
 msgstr "Nustatomi leidimai"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7223
+#: src/nautilus-file-operations.c:7295
 msgid "Untitled Folder"
 msgstr "Bevardis aplankas"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7238
+#: src/nautilus-file-operations.c:7310
 msgid "Untitled Document"
 msgstr "Bevardis dokumentas"
 
-#: src/nautilus-file-operations.c:7520
+#: src/nautilus-file-operations.c:7592
 #, c-format
 msgid "Error while creating directory %s."
 msgstr "Klaida kuriant aplanką %s."
 
-#: src/nautilus-file-operations.c:7525
+#: src/nautilus-file-operations.c:7597
 #, c-format
 msgid "Error while creating file %s."
 msgstr "Klaida kuriant failą %s."
 
-#: src/nautilus-file-operations.c:7529
+#: src/nautilus-file-operations.c:7601
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Klaida kuriant aplanką vietoje %s."
 
-#: src/nautilus-file-operations.c:7789
+#: src/nautilus-file-operations.c:7861
 msgid "Emptying Trash"
 msgstr "Išvaloma šiukšlinė"
 
-#: src/nautilus-file-operations.c:7831
+#: src/nautilus-file-operations.c:7903
 msgid "Verifying destination"
 msgstr "Tikrinama paskirtis"
 
-#: src/nautilus-file-operations.c:7875
+#: src/nautilus-file-operations.c:7947
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Išskleidžiamas „%s“"
 
-#: src/nautilus-file-operations.c:7979 src/nautilus-file-operations.c:8041
+#: src/nautilus-file-operations.c:8051 src/nautilus-file-operations.c:8113
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Klaida išskleidžiant „%s“"
 
-#: src/nautilus-file-operations.c:7983
+#: src/nautilus-file-operations.c:8055
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Klaida išskleidžiant „%s“."
 
-#: src/nautilus-file-operations.c:8044
+#: src/nautilus-file-operations.c:8116
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "Nepakanka laisvos vietos %s išskleisti"
 
-#: src/nautilus-file-operations.c:8074
+#: src/nautilus-file-operations.c:8146
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "„%s“ išskleistas į „%s“"
 
-#: src/nautilus-file-operations.c:8080
+#: src/nautilus-file-operations.c:8152
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2744,21 +2750,21 @@ msgstr[0] "Išskleistas %'d failas į „%s“"
 msgstr[1] "Išskleisti %'d failai į „%s“"
 msgstr[2] "Išskleista %'d failų į „%s“"
 
-#: src/nautilus-file-operations.c:8114
+#: src/nautilus-file-operations.c:8186
 msgid "Preparing to extract"
 msgstr "Ruošiamasi išskleisti"
 
-#: src/nautilus-file-operations.c:8242
+#: src/nautilus-file-operations.c:8314
 msgid "Extracting Files"
 msgstr "Išskleidžiami"
 
-#: src/nautilus-file-operations.c:8301
+#: src/nautilus-file-operations.c:8373
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Suspaudžiamas „%s“ į „%s“"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:8307
+#: src/nautilus-file-operations.c:8379
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2766,13 +2772,13 @@ msgstr[0] "Suspaudžiamas %'d failas į „%s“"
 msgstr[1] "Suspaudžiami %'d failai į „%s“"
 msgstr[2] "Suspaudžiama %'d failų į „%s“"
 
-#: src/nautilus-file-operations.c:8455
+#: src/nautilus-file-operations.c:8527
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Klaida suspaudžiant „%s“ į „%s“"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:8461
+#: src/nautilus-file-operations.c:8533
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2780,17 +2786,17 @@ msgstr[0] "Klaida suspaudžiant %'d failą į „%s“"
 msgstr[1] "Klaida suspaudžiant %'d failus į „%s“"
 msgstr[2] "Klaida suspaudžiant %'d failų į „%s“"
 
-#: src/nautilus-file-operations.c:8471
+#: src/nautilus-file-operations.c:8543
 msgid "There was an error while compressing files."
 msgstr "Kilo klaida suspaudžiant failus."
 
-#: src/nautilus-file-operations.c:8496
+#: src/nautilus-file-operations.c:8568
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "„%s“ suspaustas į „%s“"
 
 #  localizers: progress dialog title
-#: src/nautilus-file-operations.c:8502
+#: src/nautilus-file-operations.c:8574
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2798,7 +2804,7 @@ msgstr[0] "Suspaustas %'d failas į „%s“"
 msgstr[1] "Suspausti %'d failai į „%s“"
 msgstr[2] "Suspausta %'d failų į „%s“"
 
-#: src/nautilus-file-operations.c:8593
+#: src/nautilus-file-operations.c:8665
 msgid "Compressing Files"
 msgstr "Suspaudžiami failai"
 
@@ -3045,11 +3051,11 @@ msgstr "_Sustabdyti daugiadiskį kaupiklį"
 msgid "_Lock Drive"
 msgstr "_Užrakinti kaupiklį"
 
-#: src/nautilus-files-view.c:9791
+#: src/nautilus-files-view.c:9798
 msgid "Content View"
 msgstr "Turinio vaizdas"
 
-#: src/nautilus-files-view.c:9792
+#: src/nautilus-files-view.c:9799
 msgid "View of the current folder"
 msgstr "Šio aplanko vaizdas"
 
@@ -4049,7 +4055,7 @@ msgstr "Failų ir aplankų konfliktas"
 msgid "File conflict"
 msgstr "Failų konfliktas"
 
-#: src/nautilus-operations-ui-manager.c:532
+#: src/nautilus-operations-ui-manager.c:534
 msgid ""
 "Password-protected archives are not yet supported. This list contains "
 "applications that can open the archive."
