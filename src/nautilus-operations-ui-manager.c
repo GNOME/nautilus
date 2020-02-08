@@ -95,7 +95,7 @@ typedef struct
 
     NautilusFile *source;
     NautilusFile *destination;
-    NautilusFile *destination_directory;
+    NautilusFile *destination_directory_file;
 
     NautilusFileConflictDialog *dialog;
 
@@ -130,7 +130,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
     destination_mtime = nautilus_file_get_mtime (data->destination);
 
     destination_name = nautilus_file_get_display_name (data->destination);
-    destination_directory_name = nautilus_file_get_display_name (data->destination_directory);
+    destination_directory_name = nautilus_file_get_display_name (data->destination_directory_file);
 
     source_is_directory = nautilus_file_is_directory (data->source);
     destination_is_directory = nautilus_file_is_directory (data->destination);
@@ -422,13 +422,13 @@ run_file_conflict_dialog (gpointer user_data)
 
     data->source = nautilus_file_get (data->source_name);
     data->destination = nautilus_file_get (data->destination_name);
-    data->destination_directory = nautilus_file_get (data->destination_directory_name);
+    data->destination_directory_file = nautilus_file_get (data->destination_directory_name);
 
     data->dialog = nautilus_file_conflict_dialog_new (data->parent);
 
     files = g_list_prepend (files, data->source);
     files = g_list_prepend (files, data->destination);
-    files = g_list_prepend (files, data->destination_directory);
+    files = g_list_prepend (files, data->destination_directory_file);
 
     nautilus_file_list_call_when_ready (files,
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
@@ -473,7 +473,7 @@ run_file_conflict_dialog (gpointer user_data)
 
     nautilus_file_unref (data->source);
     nautilus_file_unref (data->destination);
-    nautilus_file_unref (data->destination_directory);
+    nautilus_file_unref (data->destination_directory_file);
     g_list_free (files);
 
     return G_SOURCE_REMOVE;
