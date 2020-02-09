@@ -35,6 +35,7 @@ G_BEGIN_DECLS
 
 gboolean           eel_uri_is_starred                  (const char           *uri);
 gboolean           eel_uri_is_trash                      (const char           *uri);
+gboolean           eel_uri_is_trash_root                 (const char           *uri);
 gboolean           eel_uri_is_search                     (const char           *uri);
 gboolean           eel_uri_is_other_locations            (const char           *uri);
 gboolean           eel_uri_is_recent                     (const char           *uri);
