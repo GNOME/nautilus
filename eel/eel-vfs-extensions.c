@@ -49,6 +49,11 @@ eel_uri_is_trash (const char *uri)
     return g_str_has_prefix (uri, "trash:");
 }
 
+eel_uri_is_trash_root (const char *uri)
+{
+    return g_strcmp0 (uri, "trash:///") == 0;
+}
+
 gboolean
 eel_uri_is_recent (const char *uri)
 {
