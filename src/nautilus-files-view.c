@@ -3628,7 +3628,7 @@ real_check_empty_states (NautilusFilesView *view)
         {
             gtk_widget_show (priv->no_search_results_widget);
         }
-        else if (eel_uri_is_trash (uri))
+        else if (eel_uri_is_trash_root (uri))
         {
             gtk_widget_show (priv->trash_is_empty_widget);
         }
