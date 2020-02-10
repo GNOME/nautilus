@@ -13,8 +13,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-01-11 19:56+0000\n"
-"PO-Revision-Date: 2020-01-12 22:17+0700\n"
+"POT-Creation-Date: 2020-02-04 12:04+0000\n"
+"PO-Revision-Date: 2020-02-07 13:24+0700\n"
 "Last-Translator: Kukuh Syafaat <kukuhsyafaat@gnome.org>\n"
 "Language-Team: Indonesian\n"
 "Language: id\n"
@@ -22,7 +22,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural= n!=1;\n"
-"X-Generator: Poedit 2.2.4\n"
+"X-Generator: Poedit 2.3\n"
 "X-Project-Style: gnome\n"
 
 #: data/nautilus-autorun-software.desktop.in:3
@@ -2113,8 +2113,8 @@ msgstr[1] "Menghapus %'d berkas"
 #: src/nautilus-file-operations.c:1783 src/nautilus-file-operations.c:2125
 #: src/nautilus-file-operations.c:2133 src/nautilus-file-operations.c:2173
 #: src/nautilus-file-operations.c:3974 src/nautilus-file-operations.c:3982
-#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8350
-#: src/nautilus-file-operations.c:8418
+#: src/nautilus-file-operations.c:4053 src/nautilus-file-operations.c:8422
+#: src/nautilus-file-operations.c:8490
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2274,11 +2274,12 @@ msgstr[1] "Bersiap mengompres %'d berkas"
 
 #: src/nautilus-file-operations.c:3165 src/nautilus-file-operations.c:4571
 #: src/nautilus-file-operations.c:4742 src/nautilus-file-operations.c:4808
+#: src/nautilus-file-operations.c:5080
 msgid "Error while copying."
 msgstr "Galat sewaktu menyalin."
 
 #: src/nautilus-file-operations.c:3170 src/nautilus-file-operations.c:4738
-#: src/nautilus-file-operations.c:4804
+#: src/nautilus-file-operations.c:4804 src/nautilus-file-operations.c:5076
 msgid "Error while moving."
 msgstr "Galat ketika memindahkan."
 
@@ -2448,8 +2449,8 @@ msgstr[1] "Digandakan %'d berkas di “%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:3964 src/nautilus-file-operations.c:4024
-#: src/nautilus-file-operations.c:7917 src/nautilus-file-operations.c:8091
-#: src/nautilus-file-operations.c:8345 src/nautilus-file-operations.c:8388
+#: src/nautilus-file-operations.c:7989 src/nautilus-file-operations.c:8163
+#: src/nautilus-file-operations.c:8417 src/nautilus-file-operations.c:8460
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2472,8 +2473,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:7935
-#: src/nautilus-file-operations.c:8377
+#: src/nautilus-file-operations.c:4008 src/nautilus-file-operations.c:8007
+#: src/nautilus-file-operations.c:8449
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2485,7 +2486,7 @@ msgstr[1] "%s / %s — tersisa %s (%s/det)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8407
+#: src/nautilus-file-operations.c:4042 src/nautilus-file-operations.c:8479
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2527,8 +2528,8 @@ msgid ""
 msgstr ""
 "Folder \"%s\" tidak dapat disalin, karena Anda tidak berhak untuk membacanya."
 
-#: src/nautilus-file-operations.c:4878 src/nautilus-file-operations.c:5433
-#: src/nautilus-file-operations.c:6118
+#: src/nautilus-file-operations.c:4878 src/nautilus-file-operations.c:5493
+#: src/nautilus-file-operations.c:6190
 #, c-format
 msgid "Error while moving “%s”."
 msgstr "Galat sewaktu memindahkan “%s”."
@@ -2537,221 +2538,225 @@ msgstr "Galat sewaktu memindahkan “%s”."
 msgid "Could not remove the source folder."
 msgstr "Folder sumber tidak dapat dihapus."
 
+#: src/nautilus-file-operations.c:5082
+msgid "There was an error getting information about the source."
+msgstr "Galat sewaktu mengambil informasi sumber."
+
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5123 src/nautilus-file-operations.c:5920
+#: src/nautilus-file-operations.c:5183 src/nautilus-file-operations.c:5992
 msgid "You cannot move a folder into itself."
 msgstr "Anda tidak dapat memindahkan folder ke dalam folder itu sendiri."
 
-#: src/nautilus-file-operations.c:5124 src/nautilus-file-operations.c:5921
+#: src/nautilus-file-operations.c:5184 src/nautilus-file-operations.c:5993
 msgid "You cannot copy a folder into itself."
 msgstr "Anda tidak dapat menyalin folder ke dalam folder itu sendiri."
 
-#: src/nautilus-file-operations.c:5125 src/nautilus-file-operations.c:5922
+#: src/nautilus-file-operations.c:5185 src/nautilus-file-operations.c:5994
 msgid "The destination folder is inside the source folder."
 msgstr "Folder tujuan berada di dalam folder asal."
 
 #. the run_warning() frees all strings passed in automatically
-#: src/nautilus-file-operations.c:5165
+#: src/nautilus-file-operations.c:5225
 msgid "You cannot move a file over itself."
 msgstr "Anda tidak dapat memindahkan berkas pada berkas itu sendiri."
 
-#: src/nautilus-file-operations.c:5166
+#: src/nautilus-file-operations.c:5226
 msgid "You cannot copy a file over itself."
 msgstr "Anda tidak dapat menyalin berkas pada berkas itu sendiri."
 
-#: src/nautilus-file-operations.c:5167
+#: src/nautilus-file-operations.c:5227
 msgid "The source file would be overwritten by the destination."
 msgstr "Berkas sumber akan ditimpa."
 
-#: src/nautilus-file-operations.c:5437 src/nautilus-file-operations.c:5525
+#: src/nautilus-file-operations.c:5497 src/nautilus-file-operations.c:5585
 #, c-format
 msgid "Error while copying “%s”."
 msgstr "Galat sewaktu menyalin “%s”."
 
-#: src/nautilus-file-operations.c:5440
+#: src/nautilus-file-operations.c:5500
 #, c-format
 msgid "Could not remove the already existing file with the same name in %s."
 msgstr ""
 "Tak dapat menghapus berkas yang sudah ada dengan nama yang sama dalam %s."
 
-#: src/nautilus-file-operations.c:5527
+#: src/nautilus-file-operations.c:5587
 #, c-format
 msgid "There was an error copying the file into %s."
 msgstr "Galat sewaktu menyalin berkas ke %s."
 
-#: src/nautilus-file-operations.c:5716
+#: src/nautilus-file-operations.c:5776
 msgid "Copying Files"
 msgstr "Menyalin Berkas"
 
-#: src/nautilus-file-operations.c:5833
+#: src/nautilus-file-operations.c:5893
 #, c-format
 msgid "Preparing to move to “%s”"
 msgstr "Bersiap memindahkan ke \"%s\""
 
-#: src/nautilus-file-operations.c:5837
+#: src/nautilus-file-operations.c:5897
 #, c-format
 msgid "Preparing to move %'d file"
 msgid_plural "Preparing to move %'d files"
 msgstr[0] "Bersiap memindahkan %'d berkas"
 msgstr[1] "Bersiap memindahkan %'d berkas"
 
-#: src/nautilus-file-operations.c:6120
+#: src/nautilus-file-operations.c:6192
 #, c-format
 msgid "There was an error moving the file into %s."
 msgstr "Galat sewaktu memindahkan berkas ke %s."
 
-#: src/nautilus-file-operations.c:6360
+#: src/nautilus-file-operations.c:6432
 msgid "Moving Files"
 msgstr "Memindahkan Berkas"
 
-#: src/nautilus-file-operations.c:6451
+#: src/nautilus-file-operations.c:6523
 #, c-format
 msgid "Creating links in “%s”"
 msgstr "Membuat taut di \"%s."
 
-#: src/nautilus-file-operations.c:6455
+#: src/nautilus-file-operations.c:6527
 #, c-format
 msgid "Making link to %'d file"
 msgid_plural "Making links to %'d files"
 msgstr[0] "Membuat taut menuju %'d berkas"
 msgstr[1] "Membuat taut menuju %'d berkas"
 
-#: src/nautilus-file-operations.c:6605
+#: src/nautilus-file-operations.c:6677
 #, c-format
 msgid "Error while creating link to %s."
 msgstr "Galat sewaktu membuat taut menuju %s."
 
-#: src/nautilus-file-operations.c:6609
+#: src/nautilus-file-operations.c:6681
 msgid "Symbolic links only supported for local files"
 msgstr "Taut simbolik hanya didukung untuk berkas lokal"
 
-#: src/nautilus-file-operations.c:6614
+#: src/nautilus-file-operations.c:6686
 msgid "The target doesn’t support symbolic links."
 msgstr "Target tidak mendukung taut simbolik."
 
-#: src/nautilus-file-operations.c:6622
+#: src/nautilus-file-operations.c:6694
 #, c-format
 msgid "There was an error creating the symlink in %s."
 msgstr "Galat sewaktu membuat taut simbolik pada %s."
 
-#: src/nautilus-file-operations.c:6950
+#: src/nautilus-file-operations.c:7022
 msgid "Setting permissions"
 msgstr "Menyetel hak akses"
 
 #. localizers: the initial name of a new folder
-#: src/nautilus-file-operations.c:7223
+#: src/nautilus-file-operations.c:7295
 msgid "Untitled Folder"
 msgstr "Folder Tanpa Judul"
 
 #. localizers: the initial name of a new empty document
-#: src/nautilus-file-operations.c:7238
+#: src/nautilus-file-operations.c:7310
 msgid "Untitled Document"
 msgstr "Dokumen Tanpa Judul"
 
-#: src/nautilus-file-operations.c:7520
+#: src/nautilus-file-operations.c:7592
 #, c-format
 msgid "Error while creating directory %s."
 msgstr "Galat sewaktu membuat direktori %s."
 
-#: src/nautilus-file-operations.c:7525
+#: src/nautilus-file-operations.c:7597
 #, c-format
 msgid "Error while creating file %s."
 msgstr "Galat sewaktu membuat berkas %s."
 
-#: src/nautilus-file-operations.c:7529
+#: src/nautilus-file-operations.c:7601
 #, c-format
 msgid "There was an error creating the directory in %s."
 msgstr "Galat sewaktu membuat direktori di %s."
 
-#: src/nautilus-file-operations.c:7789
+#: src/nautilus-file-operations.c:7861
 msgid "Emptying Trash"
 msgstr "Mengosongkan Tempat Sampah"
 
-#: src/nautilus-file-operations.c:7831
+#: src/nautilus-file-operations.c:7903
 msgid "Verifying destination"
 msgstr "Memverifikasi tujuan"
 
-#: src/nautilus-file-operations.c:7875
+#: src/nautilus-file-operations.c:7947
 #, c-format
 msgid "Extracting “%s”"
 msgstr "Mengekstrak “%s”"
 
-#: src/nautilus-file-operations.c:7979 src/nautilus-file-operations.c:8041
+#: src/nautilus-file-operations.c:8051 src/nautilus-file-operations.c:8113
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Galat mengekstrak “%s”"
 
-#: src/nautilus-file-operations.c:7983
+#: src/nautilus-file-operations.c:8055
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Galat sewaktu mengekstrak “%s”."
 
-#: src/nautilus-file-operations.c:8044
+#: src/nautilus-file-operations.c:8116
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "Tidak cukup ruang kosong untuk mengekstrak %s"
 
-#: src/nautilus-file-operations.c:8074
+#: src/nautilus-file-operations.c:8146
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Ekstrak “%s” ke “%s”"
 
-#: src/nautilus-file-operations.c:8080
+#: src/nautilus-file-operations.c:8152
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "Ekstrak %'d berkas ke “%s”"
 msgstr[1] "Ekstrak %'d berkas ke “%s”"
 
-#: src/nautilus-file-operations.c:8114
+#: src/nautilus-file-operations.c:8186
 msgid "Preparing to extract"
 msgstr "Bersiap untuk mengekstrak"
 
-#: src/nautilus-file-operations.c:8242
+#: src/nautilus-file-operations.c:8314
 msgid "Extracting Files"
 msgstr "Mengekstrak Berkas"
 
-#: src/nautilus-file-operations.c:8301
+#: src/nautilus-file-operations.c:8373
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Mengompres “%s” ke dalam “%s”"
 
-#: src/nautilus-file-operations.c:8307
+#: src/nautilus-file-operations.c:8379
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "Mengompres %'d berkas ke dalam “%s”"
 msgstr[1] "Mengompres %'d berkas ke dalam “%s”"
 
-#: src/nautilus-file-operations.c:8455
+#: src/nautilus-file-operations.c:8527
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Galat mengompres “%s” ke dalam “%s”"
 
-#: src/nautilus-file-operations.c:8461
+#: src/nautilus-file-operations.c:8533
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "Galat mengompres %'d berkas ke dalam  “%s”"
 msgstr[1] "Galat mengompres %'d berkas ke dalam  “%s”"
 
-#: src/nautilus-file-operations.c:8471
+#: src/nautilus-file-operations.c:8543
 msgid "There was an error while compressing files."
 msgstr "Galat sewaktu mengompres berkas."
 
-#: src/nautilus-file-operations.c:8496
+#: src/nautilus-file-operations.c:8568
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Kompres “%s” ke dalam “%s”"
 
-#: src/nautilus-file-operations.c:8502
+#: src/nautilus-file-operations.c:8574
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Kompres %'d berkas ke dalam “%s” dikompres"
 msgstr[1] "Kompres %'d berkas ke dalam “%s” dikompres"
 
-#: src/nautilus-file-operations.c:8593
+#: src/nautilus-file-operations.c:8665
 msgid "Compressing Files"
 msgstr "Mengompres Berkas"
 
@@ -2981,11 +2986,11 @@ msgstr "Hentikan Kandar Multidi_ska"
 msgid "_Lock Drive"
 msgstr "_Kunci Kandar"
 
-#: src/nautilus-files-view.c:9791
+#: src/nautilus-files-view.c:9798
 msgid "Content View"
 msgstr "Tampilan Isi"
 
-#: src/nautilus-files-view.c:9792
+#: src/nautilus-files-view.c:9799
 msgid "View of the current folder"
 msgstr "Membuka folder saat ini"
 
@@ -3958,7 +3963,7 @@ msgstr "Konflik Berkas dan Folder"
 msgid "File conflict"
 msgstr "Konflik pada berkas"
 
-#: src/nautilus-operations-ui-manager.c:532
+#: src/nautilus-operations-ui-manager.c:534
 msgid ""
 "Password-protected archives are not yet supported. This list contains "
 "applications that can open the archive."
