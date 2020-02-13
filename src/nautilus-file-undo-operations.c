@@ -755,9 +755,9 @@ nautilus_file_undo_info_ext_new (NautilusFileUndoOp  op_type,
     NautilusFileUndoInfoExt *self;
 
     self = g_object_new (NAUTILUS_TYPE_FILE_UNDO_INFO_EXT,
-                           "op-type", op_type,
-                           "item-count", item_count,
-                           NULL);
+                         "op-type", op_type,
+                         "item-count", item_count,
+                         NULL);
 
     self->src_dir = g_object_ref (src_dir);
     self->dest_dir = g_object_ref (target_dir);
@@ -2432,8 +2432,8 @@ nautilus_file_undo_info_extract_new (GList *sources,
                          NULL);
 
     self->sources = g_list_copy_deep (sources,
-                                            (GCopyFunc) g_object_ref,
-                                            NULL);
+                                      (GCopyFunc) g_object_ref,
+                                      NULL);
     self->destination_directory = g_object_ref (destination_directory);
 
     return NAUTILUS_FILE_UNDO_INFO (self);
