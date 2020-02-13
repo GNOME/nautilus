@@ -39,7 +39,7 @@ main (int   argc,
     loop = g_main_loop_new (NULL, FALSE);
 
     nautilus_ensure_extension_points ();
-    /* Needed for nautilus-query.c. 
+    /* Needed for nautilus-query.c.
      * FIXME: tests are not installed, so the system does not
      * have the gschema. Installed tests is a long term GNOME goal.
      */

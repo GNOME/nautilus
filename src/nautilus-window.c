@@ -1721,8 +1721,8 @@ nautilus_window_on_undo_changed (NautilusFileUndoManager *manager,
             gtk_revealer_set_reveal_child (GTK_REVEALER (window->in_app_notification_undo),
                                            TRUE);
             window->in_app_notification_undo_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
-                                                                               (GSourceFunc) on_in_app_notification_undo_timeout,
-                                                                               window);
+                                                                                 (GSourceFunc) on_in_app_notification_undo_timeout,
+                                                                                 window);
         }
     }
     else
@@ -1805,8 +1805,8 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
 
         gtk_revealer_set_reveal_child (GTK_REVEALER (window->notification_operation), TRUE);
         window->notification_operation_timeout_id = g_timeout_add_seconds (NOTIFICATION_TIMEOUT,
-                                                                         (GSourceFunc) on_notification_operation_timeout,
-                                                                         window);
+                                                                           (GSourceFunc) on_notification_operation_timeout,
+                                                                           window);
     }
 }
 
@@ -2585,9 +2585,9 @@ wayland_window_handle_exported (GdkWindow  *window,
 #endif
 
 gboolean
-nautilus_window_export_handle (NautilusWindow          *window,
-                               NautilusWindowHandleExported callback,
-                               gpointer                 user_data)
+nautilus_window_export_handle (NautilusWindow               *window,
+                               NautilusWindowHandleExported  callback,
+                               gpointer                      user_data)
 {
     guint xid = get_window_xid (window);
 
@@ -2804,8 +2804,8 @@ nautilus_window_init (NautilusWindow *window)
     window->tab_data_queue = g_queue_new ();
 
     window->pad_controller = gtk_pad_controller_new (GTK_WINDOW (window),
-                                                   G_ACTION_GROUP (window),
-                                                   NULL);
+                                                     G_ACTION_GROUP (window),
+                                                     NULL);
     gtk_pad_controller_set_action_entries (window->pad_controller,
                                            pad_actions, G_N_ELEMENTS (pad_actions));
 

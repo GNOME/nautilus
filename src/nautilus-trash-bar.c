@@ -160,7 +160,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
 {
     NautilusTrashBar *bar;
     GtkWidget *window;
-    
+
     bar = NAUTILUS_TRASH_BAR (infobar);
     window = gtk_widget_get_toplevel (GTK_WIDGET (bar));
 
