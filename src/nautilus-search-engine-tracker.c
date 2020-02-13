@@ -481,7 +481,7 @@ static void
 nautilus_search_engine_tracker_set_query (NautilusSearchProvider *provider,
                                           NautilusQuery          *query)
 {
-    g_autoptr(GFile) location = NULL;
+    g_autoptr (GFile) location = NULL;
     NautilusSearchEngineTracker *tracker;
 
     tracker = NAUTILUS_SEARCH_ENGINE_TRACKER (provider);

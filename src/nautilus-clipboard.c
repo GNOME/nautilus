@@ -327,4 +327,3 @@ nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
                                  clipboard_info);
     gtk_target_table_free (targets, n_targets);
 }
-

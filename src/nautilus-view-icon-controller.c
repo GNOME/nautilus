@@ -220,8 +220,9 @@ real_begin_loading (NautilusFilesView *files_view)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
 
-    /* TODO: This calls sort once, and update_context_menus calls update_actions which calls */
-    /* the action again */
+    /* TODO: This calls sort once, and update_context_menus calls update_actions which calls
+     * the action again
+     */
     update_sort_order_from_metadata_and_preferences (self);
 
     /*TODO move this to the files view class begin_loading and hook up? */
@@ -909,7 +910,7 @@ real_select_first (NautilusFilesView *files_view)
 
 static void
 real_preview_selection_event (NautilusFilesView *files_view,
-                              GtkDirectionType direction)
+                              GtkDirectionType   direction)
 {
     NautilusViewIconController *self = NAUTILUS_VIEW_ICON_CONTROLLER (files_view);
     GtkMovementStep step;
@@ -917,9 +918,9 @@ real_preview_selection_event (NautilusFilesView *files_view,
     gboolean handled;
 
     step = (direction == GTK_DIR_UP || direction == GTK_DIR_DOWN) ?
-        GTK_MOVEMENT_DISPLAY_LINES : GTK_MOVEMENT_VISUAL_POSITIONS;
+           GTK_MOVEMENT_DISPLAY_LINES : GTK_MOVEMENT_VISUAL_POSITIONS;
     count = (direction == GTK_DIR_RIGHT || direction == GTK_DIR_DOWN) ?
-        1 : -1;
+            1 : -1;
 
     g_signal_emit_by_name (self->view_ui, "move-cursor", step, count, &handled);
 }
