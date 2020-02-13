@@ -578,9 +578,9 @@ set_name_field (NautilusPropertiesWindow *window,
         if (use_label)
         {
             window->name_field = GTK_WIDGET
-                                              (attach_ellipsizing_value_label (window->basic_grid,
-                                                                               GTK_WIDGET (window->name_label),
-                                                                               name));
+                                     (attach_ellipsizing_value_label (window->basic_grid,
+                                                                      GTK_WIDGET (window->name_label),
+                                                                      name));
         }
         else
         {
@@ -868,7 +868,7 @@ name_field_activate (GtkWidget *name_field,
     if (window->select_idle_id == 0)
     {
         window->select_idle_id = g_idle_add (select_all_at_idle,
-                                                      window);
+                                             window);
     }
 }
 
@@ -1462,7 +1462,7 @@ attach_value_field_internal (NautilusPropertiesWindow *window,
     g_object_set_data (G_OBJECT (value_field), "show_original", GINT_TO_POINTER (show_original));
 
     window->value_fields = g_list_prepend (window->value_fields,
-                                                    value_field);
+                                           value_field);
     return GTK_WIDGET (value_field);
 }
 
@@ -2675,7 +2675,7 @@ should_show_accessed_date (NautilusPropertiesWindow *window)
      * consider whether it's useful for "trash:".
      */
     if (file_list_all_directories (window->target_files)
-       || is_multi_file_window (window))
+        || is_multi_file_window (window))
     {
         return FALSE;
     }
@@ -3129,9 +3129,9 @@ open_in_disks (GtkButton                *button,
     g_autoptr (GAppInfo) app_info = NULL;
 
     app_info = g_app_info_create_from_commandline ("gnome-disks",
-                                                    NULL,
-                                                    G_APP_INFO_CREATE_NONE,
-                                                    NULL);
+                                                   NULL,
+                                                   G_APP_INFO_CREATE_NONE,
+                                                   NULL);
 
     g_app_info_launch (app_info, NULL, NULL, &error);
 
@@ -3260,7 +3260,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     }
 
     if (should_show_accessed_date (window)
-       || should_show_modified_date (window))
+        || should_show_modified_date (window))
     {
         append_blank_row (grid);
     }
@@ -3303,14 +3303,14 @@ create_basic_page (NautilusPropertiesWindow *window)
                                                NULL);
         }
 
-       /*Translators: Here Disks mean the name of application GNOME Disks.*/
-       button = gtk_button_new_with_label (_("Open in Disks"));
-       g_signal_connect (button, "clicked", G_CALLBACK (open_in_disks), NULL);
-       gtk_container_add_with_properties (GTK_CONTAINER (grid),
-                                          button,
-                                          "width", 3,
-                                          NULL);
-       gtk_widget_show_all (GTK_WIDGET (grid));
+        /*Translators: Here Disks mean the name of application GNOME Disks.*/
+        button = gtk_button_new_with_label (_("Open in Disks"));
+        g_signal_connect (button, "clicked", G_CALLBACK (open_in_disks), NULL);
+        gtk_container_add_with_properties (GTK_CONTAINER (grid),
+                                           button,
+                                           "width", 3,
+                                           NULL);
+        gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
 
@@ -4230,7 +4230,7 @@ add_permissions_combo_box (NautilusPropertiesWindow *window,
     combo = create_permissions_combo_box (type, is_folder);
 
     window->permission_combos = g_list_prepend (window->permission_combos,
-                                                         combo);
+                                                combo);
 
     g_signal_connect (combo, "changed", G_CALLBACK (permission_combo_changed), window);
 
@@ -4658,12 +4658,12 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_grid_attach (grid, label, 0, 1, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_USER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_USER, FALSE);
     gtk_grid_attach (grid, combo, 1, 1, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_USER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_USER, TRUE);
     gtk_grid_attach (grid, combo, 2, 1, 1, 1);
 
@@ -4672,12 +4672,12 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_grid_attach (grid, label, 0, 2, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_GROUP, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_GROUP, FALSE);
     gtk_grid_attach (grid, combo, 1, 2, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_GROUP, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_GROUP, TRUE);
     gtk_grid_attach (grid, combo, 2, 2, 1, 1);
 
@@ -4686,12 +4686,12 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_grid_attach (grid, label, 0, 3, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_OTHER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_OTHER, FALSE);
     gtk_grid_attach (grid, combo, 1, 3, 1, 1);
     combo = create_permissions_combo_box (PERMISSION_OTHER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
-                                                                combo);
+                                                       combo);
     set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
     gtk_grid_attach (grid, combo, 2, 3, 1, 1);
 
@@ -5340,8 +5340,8 @@ is_directory_ready_callback (NautilusFile *file,
         remove_pending (startup_data, FALSE, TRUE);
 
         gtk_window_present (GTK_WINDOW (new_window));
-        g_signal_connect(GTK_WIDGET (new_window), "destroy",
-                         G_CALLBACK (widget_on_destroy), startup_data);
+        g_signal_connect (GTK_WIDGET (new_window), "destroy",
+                          G_CALLBACK (widget_on_destroy), startup_data);
     }
 }
 
@@ -5391,8 +5391,8 @@ nautilus_properties_window_present (GList                            *original_f
         gtk_window_present (GTK_WINDOW (existing_window));
         startup_data = startup_data_new (NULL, NULL, NULL, NULL, NULL, NULL,
                                          callback, callback_data, existing_window);
-        g_signal_connect(GTK_WIDGET (existing_window), "destroy",
-                         G_CALLBACK (widget_on_destroy), startup_data);
+        g_signal_connect (GTK_WIDGET (existing_window), "destroy",
+                          G_CALLBACK (widget_on_destroy), startup_data);
         return;
     }
 

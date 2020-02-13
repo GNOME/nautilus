@@ -56,7 +56,7 @@ typedef enum
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
 
-static guint path_bar_signals [LAST_SIGNAL] = { 0 };
+static guint path_bar_signals[LAST_SIGNAL] = { 0 };
 
 #define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 175
 

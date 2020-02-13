@@ -398,7 +398,7 @@ nautilus_create_thumbnail (NautilusFile *file)
     {
         /* Add the thumbnail to the list. */
         DEBUG ("(Main Thread) Adding thumbnail: %s\n",
-                 info->image_uri);
+               info->image_uri);
         g_queue_push_tail ((GQueue *) &thumbnails_to_make, info);
         node = g_queue_peek_tail_link ((GQueue *) &thumbnails_to_make);
         g_hash_table_insert (thumbnails_to_make_hash,
@@ -417,7 +417,7 @@ nautilus_create_thumbnail (NautilusFile *file)
     else
     {
         DEBUG ("(Main Thread) Updating non-current mtime: %s\n",
-                 info->image_uri);
+               info->image_uri);
 
         /* The file in the queue might need a new original mtime */
         existing_info = existing->data;
@@ -452,7 +452,7 @@ thumbnail_thread_func (GTask        *task,
 
     /* We loop until there are no more thumbails to make, at which point
      *  we exit the thread. */
-    for (;; )
+    for (;;)
     {
         DEBUG ("(Thumbnail Thread) Locking mutex\n");
 
@@ -515,7 +515,7 @@ thumbnail_thread_func (GTask        *task,
             current_time >= current_orig_mtime)
         {
             DEBUG ("(Thumbnail Thread) Skipping: %s\n",
-                     info->image_uri);
+                   info->image_uri);
 
             /* Reschedule thumbnailing via a change notification */
             g_timeout_add_seconds (1, thumbnail_thread_notify_file_changed,
@@ -525,7 +525,7 @@ thumbnail_thread_func (GTask        *task,
 
         /* Create the thumbnail. */
         DEBUG ("(Thumbnail Thread) Creating thumbnail: %s\n",
-                 info->image_uri);
+               info->image_uri);
 
         pixbuf = gnome_desktop_thumbnail_factory_generate_thumbnail (thumbnail_factory,
                                                                      info->image_uri,
@@ -534,7 +534,7 @@ thumbnail_thread_func (GTask        *task,
         if (pixbuf)
         {
             DEBUG ("(Thumbnail Thread) Saving thumbnail: %s\n",
-                     info->image_uri);
+                   info->image_uri);
 
             gnome_desktop_thumbnail_factory_save_thumbnail (thumbnail_factory,
                                                             pixbuf,
@@ -545,7 +545,7 @@ thumbnail_thread_func (GTask        *task,
         else
         {
             DEBUG ("(Thumbnail Thread) Thumbnail failed: %s\n",
-                     info->image_uri);
+                   info->image_uri);
 
             gnome_desktop_thumbnail_factory_create_failed_thumbnail (thumbnail_factory,
                                                                      info->image_uri,
