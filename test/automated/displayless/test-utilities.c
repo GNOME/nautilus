@@ -90,7 +90,7 @@ delete_search_file_hierarchy (gchar *search_engine)
     g_autoptr (GFile) file = NULL;
     gchar *file_name;
 
-    location = g_file_new_for_path (g_get_tmp_dir ()); 
+    location = g_file_new_for_path (g_get_tmp_dir ());
 
     file_name = g_strdup_printf ("engine_%s", search_engine);
     file = g_file_get_child (location, file_name);
@@ -165,7 +165,7 @@ test_operation_undo (void)
     nautilus_file_undo_manager_undo (NULL);
 
     g_main_loop_run (loop);
-    
+
     g_main_context_pop_thread_default (context);
 
     g_signal_handler_disconnect (nautilus_file_undo_manager_get (),
@@ -178,7 +178,7 @@ test_operation_undo_redo (void)
 {
     g_autoptr (GMainLoop) loop = NULL;
     g_autoptr (GMainContext) context = NULL;
-    gulong handler_id;    
+    gulong handler_id;
 
     test_operation_undo ();
 
@@ -194,7 +194,7 @@ test_operation_undo_redo (void)
     nautilus_file_undo_manager_redo (NULL);
 
     g_main_loop_run (loop);
-    
+
     g_main_context_pop_thread_default (context);
 
     g_signal_handler_disconnect (nautilus_file_undo_manager_get (),
@@ -277,7 +277,8 @@ create_one_empty_directory (gchar *prefix)
 }
 
 void
-create_multiple_files (gchar *prefix, gint number_of_files)
+create_multiple_files (gchar *prefix,
+                       gint   number_of_files)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
@@ -309,7 +310,8 @@ create_multiple_files (gchar *prefix, gint number_of_files)
 }
 
 void
-create_multiple_directories (gchar *prefix, gint number_of_directories)
+create_multiple_directories (gchar *prefix,
+                             gint   number_of_directories)
 {
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
@@ -526,7 +528,8 @@ create_fourth_hierarchy (gchar *prefix)
 }
 
 void
-create_multiple_full_directories (gchar *prefix, gint number_of_directories)
+create_multiple_full_directories (gchar *prefix,
+                                  gint   number_of_directories)
 {
     g_autoptr (GFile) root = NULL;
 

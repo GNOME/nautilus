@@ -61,8 +61,8 @@ typedef struct
 
     gint processing_id;
     GMutex idle_mutex;
-    // The following data can be accessed from different threads
-    // and needs to lock the mutex
+    /* The following data can be accessed from different threads */
+    /* and needs to lock the mutex */
     GQueue *idle_queue;
     gboolean finished;
 } SearchThreadData;
@@ -170,7 +170,8 @@ search_thread_done (SearchThreadData *data)
 }
 
 static void
-search_thread_process_hits_idle (SearchThreadData *data, GList *hits)
+search_thread_process_hits_idle (SearchThreadData *data,
+                                 GList            *hits)
 {
     if (!g_cancellable_is_cancelled (data->cancellable))
     {
@@ -190,26 +191,25 @@ search_thread_process_idle (gpointer user_data)
 
     g_mutex_lock (&thread_data->idle_mutex);
     hits = g_queue_pop_head (thread_data->idle_queue);
-    // Even if the cancellable is cancelled, we need to make sure the search
-    // thread has aknowledge it, and therefore not using the thread data after
-    // freeing it. The search thread will mark as finished whenever the search
-    // is finished or cancelled.
-    // Nonetheless, we should stop yielding results if the search was cancelled
+    /* Even if the cancellable is cancelled, we need to make sure the search */
+    /* thread has aknowledge it, and therefore not using the thread data after */
+    /* freeing it. The search thread will mark as finished whenever the search */
+    /* is finished or cancelled. */
+    /* Nonetheless, we should stop yielding results if the search was cancelled */
     if (thread_data->finished)
     {
         if (hits == NULL || g_cancellable_is_cancelled (thread_data->cancellable))
         {
-          g_mutex_unlock (&thread_data->idle_mutex);
+            g_mutex_unlock (&thread_data->idle_mutex);
 
-          if (hits)
-          {
-              g_list_free_full (hits, g_object_unref);
-          }
-          search_thread_done (thread_data);
+            if (hits)
+            {
+                g_list_free_full (hits, g_object_unref);
+            }
+            search_thread_done (thread_data);
 
-          return G_SOURCE_REMOVE;
+            return G_SOURCE_REMOVE;
         }
-
     }
 
     g_mutex_unlock (&thread_data->idle_mutex);
@@ -230,8 +230,8 @@ finish_search_thread (SearchThreadData *thread_data)
     thread_data->finished = TRUE;
     g_mutex_unlock (&thread_data->idle_mutex);
 
-    // If no results were processed, direclty finish the search, in the main
-    // thread.
+    /* If no results were processed, direclty finish the search, in the main */
+    /* thread. */
     if (thread_data->processing_id == 0)
     {
         g_idle_add (G_SOURCE_FUNC (search_thread_done), thread_data);

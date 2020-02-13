@@ -2421,7 +2421,8 @@ monitor_includes_file (const Monitor *monitor,
 static gboolean
 is_wanted_by_monitor (NautilusFile *file,
                       GList        *monitors,
-                      RequestType   request_type_wanted) {
+                      RequestType   request_type_wanted)
+{
     GList *node;
 
     for (node = monitors; node; node = node->next)

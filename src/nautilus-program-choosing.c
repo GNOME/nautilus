@@ -432,7 +432,7 @@ nautilus_launch_desktop_file (GdkScreen   *screen,
             /* some files are non-local */
             show_dialog (_("This drop target only supports local files."),
                          _("To open non-local files copy them to a local folder and then"
-                         " drop them again. The local files you dropped have already been opened."),
+                           " drop them again. The local files you dropped have already been opened."),
                          parent_window,
                          GTK_MESSAGE_WARNING);
         }
@@ -526,10 +526,10 @@ on_launch_default_for_uri (GObject      *source,
 }
 
 static void
-on_window_handle_export (NautilusWindow  *window,
-                         const char *handle_str,
-                         guint       xid,
-                         gpointer    user_data)
+on_window_handle_export (NautilusWindow *window,
+                         const char     *handle_str,
+                         guint           xid,
+                         gpointer        user_data)
 {
     GTask *task = user_data;
     GAppLaunchContext *context = g_task_get_task_data (task);

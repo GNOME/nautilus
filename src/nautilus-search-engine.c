@@ -106,7 +106,7 @@ search_engine_start_real_tracker (NautilusSearchEngine *engine)
     NautilusSearchEnginePrivate *priv;
 
     priv = nautilus_search_engine_get_instance_private (engine);
-    
+
     priv->providers_running++;
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->tracker));
 }
@@ -117,7 +117,7 @@ search_engine_start_real_recent (NautilusSearchEngine *engine)
     NautilusSearchEnginePrivate *priv;
 
     priv = nautilus_search_engine_get_instance_private (engine);
-    
+
     priv->providers_running++;
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (priv->recent));
 }
@@ -553,13 +553,19 @@ is_recursive_search (NautilusSearchEngineType  engine_type,
     switch (recursive)
     {
         case NAUTILUS_QUERY_RECURSIVE_NEVER:
+        {
             return FALSE;
+        }
 
         case NAUTILUS_QUERY_RECURSIVE_ALWAYS:
+        {
             return TRUE;
+        }
 
         case NAUTILUS_QUERY_RECURSIVE_INDEXED_ONLY:
+        {
             return engine_type == NAUTILUS_SEARCH_ENGINE_TYPE_INDEXED;
+        }
 
         case NAUTILUS_QUERY_RECURSIVE_LOCAL_ONLY:
         {

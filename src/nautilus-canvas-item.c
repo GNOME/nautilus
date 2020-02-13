@@ -296,7 +296,9 @@ nautilus_canvas_item_set_property (GObject      *object,
                 details->text = g_string_assign (details->text, details->editable_text);
 
                 if (is_rename)
+                {
                     g_object_notify (G_OBJECT (accessible), "accessible-name");
+                }
             }
 
             nautilus_canvas_item_invalidate_label_size (item);
@@ -1206,11 +1208,11 @@ real_map_surface (NautilusCanvasItem *canvas_item)
         widget = GTK_WIDGET (canvas);
         style = gtk_widget_get_style_context (widget);
         has_focus = gtk_widget_has_focus (widget);
-        state = has_focus? GTK_STATE_FLAG_SELECTED : GTK_STATE_FLAG_ACTIVE;
+        state = has_focus ? GTK_STATE_FLAG_SELECTED : GTK_STATE_FLAG_ACTIVE;
         width = gdk_pixbuf_get_width (temp_pixbuf);
         height = gdk_pixbuf_get_height (temp_pixbuf);
         has_alpha = gdk_pixbuf_get_has_alpha (temp_pixbuf);
-        format = has_alpha? CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24;
+        format = has_alpha ? CAIRO_FORMAT_ARGB32 : CAIRO_FORMAT_RGB24;
         surface = cairo_image_surface_create (format, width, height);
         cr = cairo_create (surface);
 

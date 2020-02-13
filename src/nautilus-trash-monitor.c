@@ -174,8 +174,8 @@ schedule_update_info (NautilusTrashMonitor *trash_monitor)
                              trash_query_info_cb, g_object_ref (trash_monitor));
 
     trash_monitor->timeout_id = g_timeout_add_seconds (UPDATE_RATE_SECONDS,
-                                                                schedule_update_info_cb,
-                                                                trash_monitor);
+                                                       schedule_update_info_cb,
+                                                       trash_monitor);
     g_object_unref (location);
 }
 
