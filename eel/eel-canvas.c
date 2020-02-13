@@ -2484,9 +2484,10 @@ scroll_to (EelCanvas *canvas,
 
     if ((canvas->zoom_xofs != old_zoom_xofs) || (canvas->zoom_yofs != old_zoom_yofs))
     {
-        /* This can only occur, if either canvas size or widget size changes */
-        /* So I think we can request full redraw here */
-        /* More stuff - we have to mark root as needing fresh affine (Lauris) */
+        /* This can only occur, if either canvas size or widget size changes
+         * So I think we can request full redraw here
+         * More stuff - we have to mark root as needing fresh affine (Lauris)
+         */
         if (!(canvas->root->flags & EEL_CANVAS_ITEM_NEED_DEEP_UPDATE))
         {
             canvas->root->flags |= EEL_CANVAS_ITEM_NEED_DEEP_UPDATE;

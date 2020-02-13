@@ -1731,8 +1731,9 @@ activation_mount_not_mounted (ActivateParameters *parameters)
         return;
     }
 
-    /*  once the mount is finished, refresh all attributes        */
-    /*  - fixes new windows not appearing after successful mount  */
+    /*  once the mount is finished, refresh all attributes
+     *  - fixes new windows not appearing after successful mount
+     */
     for (l = parameters->locations; l != NULL; l = next)
     {
         loc = l->data;

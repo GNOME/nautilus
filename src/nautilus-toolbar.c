@@ -132,7 +132,7 @@ G_DEFINE_TYPE (NautilusToolbar, nautilus_toolbar, GTK_TYPE_HEADER_BAR);
 
 static void nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                    NautilusWindowSlot *slot);
-static void update_operations                     (NautilusToolbar    *self);
+static void update_operations (NautilusToolbar *self);
 
 static void
 toolbar_update_appearance (NautilusToolbar *self)
@@ -196,7 +196,7 @@ fill_menu (NautilusToolbar *self,
     GList *list;
 
     list = back ? nautilus_window_slot_get_back_history (self->window_slot) :
-                  nautilus_window_slot_get_forward_history (self->window_slot);
+           nautilus_window_slot_get_forward_history (self->window_slot);
 
     index = 0;
     while (list != NULL)
@@ -1203,19 +1203,19 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     properties [PROP_WINDOW_SLOT] =
-      g_param_spec_object ("window-slot",
-                           "Window slot currently active",
-                           "Window slot currently acive",
-                           NAUTILUS_TYPE_WINDOW_SLOT,
-                           (G_PARAM_READWRITE |
-                            G_PARAM_STATIC_STRINGS));
+        g_param_spec_object ("window-slot",
+                             "Window slot currently active",
+                             "Window slot currently acive",
+                             NAUTILUS_TYPE_WINDOW_SLOT,
+                             (G_PARAM_READWRITE |
+                              G_PARAM_STATIC_STRINGS));
 
     properties [PROP_SEARCHING] =
-      g_param_spec_boolean ("searching",
-                            "Current view is searching",
-                            "Whether the current view is searching or not",
-                            FALSE,
-                            G_PARAM_READWRITE);
+        g_param_spec_boolean ("searching",
+                              "Current view is searching",
+                              "Whether the current view is searching or not",
+                              FALSE,
+                              G_PARAM_READWRITE);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
 
@@ -1446,7 +1446,6 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                   G_CALLBACK (slot_on_templates_menu_changed), self);
         g_signal_connect_swapped (self->window_slot, "notify::searching",
                                   G_CALLBACK (toolbar_update_appearance), self);
-
     }
 
     children = gtk_container_get_children (GTK_CONTAINER (self->search_container));

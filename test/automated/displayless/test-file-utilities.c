@@ -227,11 +227,12 @@ setup_test_suite (void)
 }
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points();
+    nautilus_ensure_extension_points ();
 
     setup_test_suite ();
 

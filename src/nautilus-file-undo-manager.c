@@ -56,7 +56,7 @@ struct _NautilusFileUndoManager
 
 G_DEFINE_TYPE (NautilusFileUndoManager, nautilus_file_undo_manager, G_TYPE_OBJECT)
 
-static NautilusFileUndoManager * undo_singleton = NULL;
+static NautilusFileUndoManager *undo_singleton = NULL;
 
 NautilusFileUndoManager *
 nautilus_file_undo_manager_new (void)

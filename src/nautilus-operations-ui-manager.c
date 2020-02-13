@@ -28,7 +28,6 @@ invoke_main_context_source_func_wrapper (gpointer user_data)
 
     while (data->source_func (data->user_data))
     {
-        ;
     }
 
     data->completed = TRUE;

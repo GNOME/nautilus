@@ -1220,7 +1220,7 @@ lay_down_icons_horizontal (NautilusCanvasContainer *container,
         double unused_width = available_width - used_width;
 
         double max_extra_fraction = (unused_width / num_icons) / min_grid_width;
-        double extra_fraction = pow(max_extra_fraction + 1.0, 1.0 / 4.0) - 1.0;
+        double extra_fraction = pow (max_extra_fraction + 1.0, 1.0 / 4.0) - 1.0;
 
         grid_width = min_grid_width * (1 + extra_fraction);
     }
@@ -4968,7 +4968,7 @@ finish_adding_new_icons (NautilusCanvasContainer *container)
     new_icons = container->details->new_icons;
     container->details->new_icons = NULL;
     container->details->is_populating_container = g_list_length (new_icons) ==
-        g_hash_table_size (container->details->icon_set);
+                                                  g_hash_table_size (container->details->icon_set);
 
     /* Position most icons (not unpositioned manual-layout icons). */
     new_icons = g_list_reverse (new_icons);
@@ -5928,7 +5928,9 @@ nautilus_canvas_container_accessible_icon_added_cb (NautilusCanvasContainer *con
 
     /* We don't want to emit children_changed signals during any type of load. */
     if (!container->details->in_layout_now || container->details->is_populating_container)
+    {
         return;
+    }
 
     icon = g_hash_table_lookup (container->details->icon_set, icon_data);
     if (icon)
