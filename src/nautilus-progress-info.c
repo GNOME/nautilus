@@ -48,7 +48,6 @@ struct _NautilusProgressInfo
 
     GCancellable *cancellable;
     guint cancellable_id;
-    GCancellable *details_in_thread_cancellable;
 
     GTimer *progress_timer;
 
@@ -95,8 +94,6 @@ nautilus_progress_info_finalize (GObject *object)
     g_clear_pointer (&info->progress_timer, g_timer_destroy);
     g_cancellable_disconnect (info->cancellable, info->cancellable_id);
     g_object_unref (info->cancellable);
-    g_cancellable_cancel (info->details_in_thread_cancellable);
-    g_clear_object (&info->details_in_thread_cancellable);
     g_clear_object (&info->destination);
 
     if (G_OBJECT_CLASS (nautilus_progress_info_parent_class)->finalize)
@@ -302,37 +299,15 @@ queue_idle (NautilusProgressInfo *info,
 }
 
 static void
-set_details_in_thread (GTask                *task,
-                       NautilusProgressInfo *info,
-                       gpointer              user_data,
-                       GCancellable         *cancellable)
-{
-    if (!g_cancellable_is_cancelled (cancellable))
-    {
-        G_LOCK (progress_info);
-        set_details (info, _("Canceled"));
-        info->cancel_at_idle = TRUE;
-        g_timer_stop (info->progress_timer);
-        queue_idle (info, TRUE);
-        G_UNLOCK (progress_info);
-    }
-}
-
-static void
 on_canceled (GCancellable         *cancellable,
              NautilusProgressInfo *info)
 {
-    GTask *task;
-
-    /* We can't do any lock operaton here, since this is probably the main
-     * thread, so modify the details in another thread. Also it can happens
-     * that we were finalizing the object, so create a new cancellable here
-     * so it can be cancelled in finalize */
-    info->details_in_thread_cancellable = g_cancellable_new ();
-    task = g_task_new (info, info->details_in_thread_cancellable, NULL, NULL);
-    g_task_run_in_thread (task, (GTaskThreadFunc) set_details_in_thread);
-
-    g_object_unref (task);
+    G_LOCK (progress_info);
+    set_details (info, _("Canceled"));
+    info->cancel_at_idle = TRUE;
+    g_timer_stop (info->progress_timer);
+    queue_idle (info, TRUE);
+    G_UNLOCK (progress_info);
 }
 
 static void
@@ -428,12 +403,11 @@ nautilus_progress_info_get_progress (NautilusProgressInfo *info)
 void
 nautilus_progress_info_cancel (NautilusProgressInfo *info)
 {
-    G_LOCK (progress_info);
+    GCancellable *cancellable;
 
-    g_cancellable_cancel (info->cancellable);
-    g_timer_stop (info->progress_timer);
-
-    G_UNLOCK (progress_info);
+    cancellable = nautilus_progress_info_get_cancellable (info);
+    g_cancellable_cancel (cancellable);
+    g_object_unref (cancellable);
 }
 
 GCancellable *
