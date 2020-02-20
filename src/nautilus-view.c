@@ -138,6 +138,35 @@ nautilus_view_get_icon (guint view_id)
 }
 
 /**
+ * nautilus_view_get_tooltip:
+ * @view: a #NautilusView
+ *
+ * Retrieves the #gchar that represents @view.
+ *
+ * Returns: (transfer full): a #gchar
+ */
+gchar *
+nautilus_view_get_tooltip (guint view_id)
+{
+    if (view_id == NAUTILUS_VIEW_GRID_ID)
+    {
+        return "Show Grid";
+    }
+    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    {
+        return "Show List";
+    }
+    else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
+    {
+        return "Show List";
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+/**
  * nautilus_view_get_view_id:
  * @view: a #NautilusView
  *

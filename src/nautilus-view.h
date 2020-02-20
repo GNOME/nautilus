@@ -88,6 +88,8 @@ struct _NautilusViewInterface
 
 GIcon *                        nautilus_view_get_icon                  (guint                 view_id);
 
+gchar *                        nautilus_view_get_tooltip               (guint                 view_id);
+
 guint                          nautilus_view_get_view_id               (NautilusView         *view);
 
 NautilusToolbarMenuSections *  nautilus_view_get_toolbar_menu_sections (NautilusView         *view);
