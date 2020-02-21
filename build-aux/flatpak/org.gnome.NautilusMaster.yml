@@ -94,8 +94,9 @@ modules:
   - "-Dsystemd_user_services=no"
   - "-Dwriteback=false"
   sources:
-  - type: git
-    url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+  - type: archive
+    url: https://download.gnome.org/sources/tracker-miners/2.3/tracker-miners-2.3.2.tar.xz
+    sha256: 069e23c2a2de58bfc84d9d798bd091ce78419903fb4dcf099fb2ad97f8563fce
 - name: gnome-desktop
   buildsystem: meson
   config-opts:
