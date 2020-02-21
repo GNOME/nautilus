@@ -60,8 +60,9 @@ modules:
   - "-Dbash_completion=no"
   - "-Dsystemd_user_services=no"
   sources:
-  - type: git
-    url: https://gitlab.gnome.org/GNOME/tracker.git
+  - type: archive
+    url: https://download.gnome.org/sources/tracker/2.3/tracker-2.3.2.tar.xz
+    sha256: a4782b8ec7e4ee50f8f53865b24c5489823337fa94f785a7d9d34ccdf9b6ebdb
 # Bundle intltool until tracker-miners drops that dependency https://gitlab.gnome.org/GNOME/tracker-miners/merge_requests/29
 - name: intltool
   cleanup:
