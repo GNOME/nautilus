@@ -58,6 +58,7 @@ flatpak devel:
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
+    tags: [flatpak]
 
 review:
     dependencies:
@@ -98,6 +99,7 @@ flatpak master:
         - schedules
         - web
         - tags
+    tags: [flatpak]
 
 .pages:
   stage: deploy
