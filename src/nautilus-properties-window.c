@@ -3160,7 +3160,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
     GtkWidget *button;
-
+    //apoorv work here
     hbox = create_page_with_box (window->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
                                  _("Basic"),
@@ -5143,7 +5143,7 @@ create_properties_window (StartupData *startup_data)
                                  G_OBJECT (window),
                                  0);
     }
-
+    //work here apoorv
     /* Create the notebook tabs. */
     window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
     gtk_notebook_set_show_border (window->notebook, FALSE);
@@ -5465,6 +5465,7 @@ nautilus_properties_window_present_old_logic (GList                            *
             is_directory_ready_callback,
             startup_data);
     }
+
 }
 void
 nautilus_properties_window_present (GList                            *original_files,
@@ -5474,12 +5475,13 @@ nautilus_properties_window_present (GList                            *original_f
                                     gpointer                          callback_data)
 {
   //nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
+
   GtkWidget *dialog;
   GtkBuilder *builder;
   GError *error = NULL;
 
   builder = gtk_builder_new();
-  if (gtk_builder_add_from_file (builder, "/org/gnome/nautilus/ui/nautilus-properties-window.ui", &error) == 0)
+  if (gtk_builder_add_from_file (builder, "/org/gnome/nautilus/nautilus-properties-window.ui", &error) == 0)
       {
         g_printerr ("Error loading file: %s\n", error->message);
         g_clear_error (&error);
@@ -5489,6 +5491,7 @@ nautilus_properties_window_present (GList                            *original_f
       dialog = GTK_WIDGET ( gtk_builder_get_object (builder,"dialog") );
       gtk_widget_show_all (dialog);
       gtk_main();
+
   }
 
 static void
