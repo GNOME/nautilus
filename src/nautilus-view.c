@@ -150,15 +150,15 @@ nautilus_view_get_tooltip (guint view_id)
 {
     if (view_id == NAUTILUS_VIEW_GRID_ID)
     {
-        return "Show Grid";
+        return _("Show Grid");
     }
     else if (view_id == NAUTILUS_VIEW_LIST_ID)
     {
-        return "Show List";
+        return _("Show List");
     }
     else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
     {
-        return "Show List";
+        return _("Show List");
     }
     else
     {

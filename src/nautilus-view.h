@@ -20,6 +20,7 @@
 
 #include <glib.h>
 #include <gtk/gtk.h>
+#include <glib/gi18n.h>
 
 #include "nautilus-query.h"
 #include "nautilus-toolbar-menu-sections.h"
