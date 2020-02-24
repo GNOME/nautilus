@@ -1455,12 +1455,12 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                           NULL);
 
         self->tooltip_binding = g_object_bind_property_full (self->window_slot, "tooltip",
-                                                          self->view_toggle_button, "tooltip-text",
-                                                          G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
-                                                          (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
-                                                          NULL,
-                                                          self,
-                                                          NULL);
+                                                             self->view_toggle_button, "tooltip-text",
+                                                             G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+                                                             (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
+                                                             NULL,
+                                                             self,
+                                                             NULL);
 
         self->search_binding = g_object_bind_property (self->window_slot, "searching",
                                                        self, "searching",
