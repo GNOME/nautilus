@@ -1718,12 +1718,12 @@ pattern_select_response_cb (GtkWidget *dialog,
             selection = nautilus_directory_match_pattern (directory,
                                                           gtk_entry_get_text (GTK_ENTRY (entry)));
 
+            nautilus_files_view_call_set_selection (view, selection);
+            nautilus_files_view_reveal_selection (view);
+
             if (selection)
             {
-                nautilus_files_view_call_set_selection (view, selection);
                 nautilus_file_list_free (selection);
-
-                nautilus_files_view_reveal_selection (view);
             }
             /* fall through */
         }
