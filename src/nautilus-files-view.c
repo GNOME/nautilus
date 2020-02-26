@@ -776,8 +776,7 @@ real_set_extensions_background_menu (NautilusView *view,
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
 
-    g_clear_object (&priv->extensions_background_menu);
-    priv->extensions_background_menu = menu;
+    g_set_object (&priv->extensions_background_menu, menu);
 }
 
 static void
@@ -790,8 +789,7 @@ real_set_templates_menu (NautilusView *view,
 
     priv = nautilus_files_view_get_instance_private (NAUTILUS_FILES_VIEW (view));
 
-    g_clear_object (&priv->templates_menu);
-    priv->templates_menu = menu;
+    g_set_object (&priv->templates_menu, menu);
 }
 
 static gboolean
