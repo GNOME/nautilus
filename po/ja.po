@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-02-04 12:04+0000\n"
-"PO-Revision-Date: 2020-02-23 14:00+0900\n"
+"POT-Creation-Date: 2020-02-23 07:43+0000\n"
+"PO-Revision-Date: 2020-02-27 21:00+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
 "Language: ja\n"
@@ -248,9 +248,9 @@ msgid ""
 "“ask” to ask what to do via a dialog, and “display” to display them as text "
 "files."
 msgstr ""
-"(シングル/ダブルクリックで) 実行型式のテキストファイルをクリックしたときにどの"
-"ように扱うかです。利用可能な値: “launch”にするとプログラムとして起動、“ask”に"
-"するとダイアログ表示、“display”にするとテキストファイルとして表示"
+"(シングル/ダブルクリックで) 実行型式のテキストファイルをクリックしたときにど"
+"のように扱うかです。利用可能な値: “launch”にするとプログラムとして起"
+"動、“ask”にするとダイアログ表示、“display”にするとテキストファイルとして表示"
 
 #: data/org.gnome.nautilus.gschema.xml:134
 msgid "Show the package installer for unknown MIME types"
@@ -275,8 +275,8 @@ msgid ""
 "determine if any action is taken inside of Nautilus when either is pressed."
 msgstr ""
 "「進む」「戻る」ボタンのあるマウスを使う場合、Nautilus 中においてそれらのボタ"
-"ンを押したときに何らかのアクションを実行するかどうか、このキーによって決定しま"
-"す"
+"ンを押したときに何らかのアクションを実行するかどうか、このキーによって決定し"
+"ます"
 
 #: data/org.gnome.nautilus.gschema.xml:144
 msgid "Mouse button to activate the “Forward” command in browser window"
@@ -288,9 +288,9 @@ msgid ""
 "will set which button activates the “Forward” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"「進む」「戻る」ボタンのあるボタンを使用する場合、ブラウザーウィンドウで「進む"
-"」コマンドをどのボタンで実行するかを、このキーで設定します。可能な値は 6 と 14"
-" の間です。"
+"「進む」「戻る」ボタンのあるボタンを使用する場合、ブラウザーウィンドウで「進"
+"む」コマンドをどのボタンで実行するかを、このキーで設定します。可能な値は 6 "
+"と 14 の間です。"
 
 #: data/org.gnome.nautilus.gschema.xml:149
 msgid "Mouse button to activate the “Back” command in browser window"
@@ -302,9 +302,9 @@ msgid ""
 "will set which button activates the “Back” command in a browser window. "
 "Possible values range between 6 and 14."
 msgstr ""
-"「進む」「戻る」ボタンのあるボタンを使用する場合、ブラウザーウィンドウで「戻る"
-"」コマンドをどのボタンで実行するかを、このキーで設定します。可能な値は 6 と 14"
-" の間です。"
+"「進む」「戻る」ボタンのあるボタンを使用する場合、ブラウザーウィンドウで「戻"
+"る」コマンドをどのボタンで実行するかを、このキーで設定します。可能な値は 6 "
+"と 14 の間です。"
 
 #: data/org.gnome.nautilus.gschema.xml:155
 msgid "When to show thumbnails of files"
@@ -584,8 +584,8 @@ msgstr "Y"
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
 #: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1205
-#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6027
-#: src/nautilus-files-view.c:6485 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6037
+#: src/nautilus-files-view.c:6495 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:566 src/nautilus-mime-actions.c:570
 #: src/nautilus-mime-actions.c:652 src/nautilus-mime-actions.c:953
 #: src/nautilus-mime-actions.c:1306 src/nautilus-properties-window.c:4642
@@ -1793,7 +1793,7 @@ msgstr "スキップ(_S)"
 
 #: src/nautilus-file-conflict-dialog.c:332
 msgid "Re_name"
-msgstr "名前の変更(_N)"
+msgstr "名前を変更(_N)"
 
 #: src/nautilus-file-conflict-dialog.c:337
 msgid "Re_place"
@@ -2026,8 +2026,7 @@ msgid ""
 msgid_plural ""
 "Are you sure you want to permanently delete the %'d selected items from the "
 "trash?"
-msgstr[0] ""
-"本当に選択した %'d 個のアイテムをゴミ箱から完全に削除しますか?"
+msgstr[0] "本当に選択した %'d 個のアイテムをゴミ箱から完全に削除しますか?"
 
 #: src/nautilus-file-operations.c:1560 src/nautilus-file-operations.c:1635
 msgid "If you delete an item, it will be permanently lost."
@@ -2200,7 +2199,7 @@ msgid "Do _not Empty Trash"
 msgstr "ゴミ箱を空にしない(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6707
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6717
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s”にアクセスできません"
@@ -2267,8 +2266,7 @@ msgstr ""
 #, c-format
 msgid ""
 "There was an error getting information about the files in the folder “%s”."
-msgstr ""
-"フォルダー“%s”の中にあるファイルの情報の取得中にエラーが発生しました。"
+msgstr "フォルダー“%s”の中にあるファイルの情報の取得中にエラーが発生しました。"
 
 #: src/nautilus-file-operations.c:3317
 #, c-format
@@ -2288,8 +2286,7 @@ msgstr "フォルダー“%s”の読み取り中にエラーが発生しまし�
 msgid ""
 "The file “%s” cannot be handled because you do not have permissions to read "
 "it."
-msgstr ""
-"ファイル“%s”を参照する権限がないため、そのファイルを操作できません。"
+msgstr "ファイル“%s”を参照する権限がないため、そのファイルを操作できません。"
 
 #: src/nautilus-file-operations.c:3433
 #, c-format
@@ -2453,8 +2450,8 @@ msgid ""
 "The folder “%s” cannot be copied because you do not have permissions to "
 "create it in the destination."
 msgstr ""
-"フォルダー“%s”をコピー先に作成する権限がないため、そのフォルダーをコピーで"
-"きません。"
+"フォルダー“%s”をコピー先に作成する権限がないため、そのフォルダーをコピーでき"
+"ません。"
 
 #: src/nautilus-file-operations.c:4583
 #, c-format
@@ -2736,8 +2733,8 @@ msgstr "OK(_O)"
 msgid "Select Items Matching"
 msgstr "パターンを指定してアイテムを選択"
 
-#: src/nautilus-files-view.c:1759 src/nautilus-files-view.c:6028
-#: src/nautilus-files-view.c:6486
+#: src/nautilus-files-view.c:1759 src/nautilus-files-view.c:6038
+#: src/nautilus-files-view.c:6496
 msgid "_Select"
 msgstr "選択(_S)"
 
@@ -2757,46 +2754,46 @@ msgstr "ファイルを貼り付けできませんでした"
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "このディレクトリにファイルを貼り付ける権限がありません"
 
-#: src/nautilus-files-view.c:2913
+#: src/nautilus-files-view.c:2920
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
 msgstr ""
-"Nautilus 3.6 でこのディレクトリの使用は非推奨となったため ~/.local/"
-"share/nautilus への設定内容の移行を試みました"
+"Nautilus 3.6 でこのディレクトリの使用は非推奨となったため ~/.local/share/"
+"nautilus への設定内容の移行を試みました"
 
-#: src/nautilus-files-view.c:3410 src/nautilus-files-view.c:3457
+#: src/nautilus-files-view.c:3417 src/nautilus-files-view.c:3464
 #, c-format
 msgid "“%s” selected"
 msgstr "“%s”を選択しました"
 
-#: src/nautilus-files-view.c:3414
+#: src/nautilus-files-view.c:3421
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d 個のフォルダーを選択しました"
 
-#: src/nautilus-files-view.c:3428
+#: src/nautilus-files-view.c:3435
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(%'d 個のアイテムを含む)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3443
+#: src/nautilus-files-view.c:3450
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(合計で %'d 個のアイテムを含む)"
 
-#: src/nautilus-files-view.c:3462
+#: src/nautilus-files-view.c:3469
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%'d 個のアイテムを選択しました"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3471
+#: src/nautilus-files-view.c:3478
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2806,7 +2803,7 @@ msgstr[0] "他に %'d 個のアイテムを選択しました"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3486
+#: src/nautilus-files-view.c:3493
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2818,118 +2815,118 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3519
+#: src/nautilus-files-view.c:3526
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:6015
+#: src/nautilus-files-view.c:6025
 msgid "Select Move Destination"
 msgstr "移動する宛先を選択"
 
-#: src/nautilus-files-view.c:6019
+#: src/nautilus-files-view.c:6029
 msgid "Select Copy Destination"
 msgstr "コピーする宛先を選択"
 
-#: src/nautilus-files-view.c:6482
+#: src/nautilus-files-view.c:6492
 msgid "Select Extract Destination"
 msgstr "展開する宛先を選択"
 
-#: src/nautilus-files-view.c:6670
+#: src/nautilus-files-view.c:6680
 msgid "Wallpapers"
 msgstr "壁紙"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6737
+#: src/nautilus-files-view.c:6747
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "%s を取り外せません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6767
+#: src/nautilus-files-view.c:6777
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s”を取り出せません"
 
-#: src/nautilus-files-view.c:6792
+#: src/nautilus-files-view.c:6802
 msgid "Unable to stop drive"
 msgstr "ドライブを停止できません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6905
+#: src/nautilus-files-view.c:6915
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s”を起動できません"
 
-#: src/nautilus-files-view.c:7826
+#: src/nautilus-files-view.c:7836
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "選択アイテムを含む新しいフォルダーを作成 (%'d 個)"
 
-#: src/nautilus-files-view.c:7886
+#: src/nautilus-files-view.c:7896
 #, c-format
 msgid "Open With %s"
 msgstr "%sで開く"
 
-#: src/nautilus-files-view.c:7898
+#: src/nautilus-files-view.c:7908
 msgid "Run"
 msgstr "実行"
 
-#: src/nautilus-files-view.c:7903
+#: src/nautilus-files-view.c:7913
 msgid "Extract Here"
 msgstr "ここで展開"
 
-#: src/nautilus-files-view.c:7904
+#: src/nautilus-files-view.c:7914
 msgid "Extract to…"
 msgstr "展開先…"
 
-#: src/nautilus-files-view.c:7908
+#: src/nautilus-files-view.c:7918
 msgid "Open"
 msgstr "開く"
 
-#: src/nautilus-files-view.c:7966
+#: src/nautilus-files-view.c:7976
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "開始(_S)"
 
-#: src/nautilus-files-view.c:7972 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:7982 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "接続(_C)"
 
-#: src/nautilus-files-view.c:7978
+#: src/nautilus-files-view.c:7988
 msgid "_Start Multi-disk Drive"
 msgstr "マルチディスクドライブを起動(_S)"
 
-#: src/nautilus-files-view.c:7984
+#: src/nautilus-files-view.c:7994
 msgid "U_nlock Drive"
 msgstr "ドライブをロック解除(_N)"
 
-#: src/nautilus-files-view.c:8004
+#: src/nautilus-files-view.c:8014
 msgid "Stop Drive"
 msgstr "ドライブを停止"
 
-#: src/nautilus-files-view.c:8010
+#: src/nautilus-files-view.c:8020
 msgid "_Safely Remove Drive"
 msgstr "ドライブを安全に取り出す(_S)"
 
-#: src/nautilus-files-view.c:8016 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:8026 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "切断(_D)"
 
-#: src/nautilus-files-view.c:8022
+#: src/nautilus-files-view.c:8032
 msgid "_Stop Multi-disk Drive"
 msgstr "マルチディスクドライブを停止(_S)"
 
-#: src/nautilus-files-view.c:8028
+#: src/nautilus-files-view.c:8038
 msgid "_Lock Drive"
 msgstr "ドライブをロック(_L)"
 
-#: src/nautilus-files-view.c:9798
+#: src/nautilus-files-view.c:9808
 msgid "Content View"
 msgstr "内容表示"
 
-#: src/nautilus-files-view.c:9799
+#: src/nautilus-files-view.c:9809
 msgid "View of the current folder"
 msgstr "このフォルダーを表示します"
 
@@ -3209,11 +3206,11 @@ msgstr "“%s”から“%s”に名前を変更します"
 
 #: src/nautilus-file-undo-operations.c:1019
 msgid "_Undo Rename"
-msgstr "元に戻す: 名前の変更(_U)"
+msgstr "元に戻す: 名前を変更(_U)"
 
 #: src/nautilus-file-undo-operations.c:1020
 msgid "_Redo Rename"
-msgstr "やり直す: 名前の変更(_R)"
+msgstr "やり直す: 名前を変更(_R)"
 
 #: src/nautilus-file-undo-operations.c:1133
 #: src/nautilus-file-undo-operations.c:1137
@@ -3591,8 +3588,7 @@ msgstr "アプリケーションを選択(_S)"
 
 #: src/nautilus-mime-actions.c:1175
 msgid "There was an internal error trying to search for applications:"
-msgstr ""
-"アプリケーションの検索中に Nautilus の内部エラーが発生しました:"
+msgstr "アプリケーションの検索中に Nautilus の内部エラーが発生しました:"
 
 #: src/nautilus-mime-actions.c:1177
 msgid "Unable to search for application"
@@ -3741,8 +3737,8 @@ msgid ""
 "This is not allowed in order to avoid the deletion of the destination "
 "folder’s contents."
 msgstr ""
-"宛先フォルダーの内容を破壊することを避けるために、この操作は許可されていま"
-"せん。"
+"宛先フォルダーの内容を破壊することを避けるために、この操作は許可されていませ"
+"ん。"
 
 #: src/nautilus-operations-ui-manager.c:146
 msgid "Please rename the symbolic link or press the skip button."
@@ -3950,7 +3946,7 @@ msgstr ""
 msgid "Details: "
 msgstr "詳細: "
 
-#: src/nautilus-progress-info.c:312
+#: src/nautilus-progress-info.c:313
 msgid "Canceled"
 msgstr "キャンセルしました"
 
@@ -4581,8 +4577,8 @@ msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
 msgstr ""
-"サーバーが接続を拒否しました。これは通常、ファイアウォールがアクセスをブ"
-"ロックしている、またはリモートサーバーが実行中ではないことを意味します。"
+"サーバーが接続を拒否しました。これは通常、ファイアウォールがアクセスをブロッ"
+"クしている、またはリモートサーバーが実行中ではないことを意味します。"
 
 #: src/nautilus-window-slot.c:1772
 #, c-format
@@ -5093,7 +5089,7 @@ msgstr "ゴミ箱から元に戻す(_R)"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:182
 msgid "Rena_me…"
-msgstr "名前の変更(_M)…"
+msgstr "名前を変更(_M)…"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:188
 msgid "Set As Wallpaper"
@@ -5671,7 +5667,7 @@ msgstr "このコンピューター"
 #, c-format
 msgid "%s / %s available"
 msgid_plural "%s / %s available"
-msgstr[0] "%s / %s の空き容量"
+msgstr[0] "%s / %s の空き領域"
 
 #: src/gtk/nautilusgtkplacesviewrow.c:483
 msgid "Disconnect"
