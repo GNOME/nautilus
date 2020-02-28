@@ -769,7 +769,7 @@ real_set_extensions_background_menu (NautilusWindowSlot *self,
     NautilusWindowSlotPrivate *priv;
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->extensions_background_menu = menu != NULL ? g_object_ref (menu) : NULL;
+    g_set_object (&priv->extensions_background_menu, menu);
 }
 
 static void
@@ -779,7 +779,7 @@ real_set_templates_menu (NautilusWindowSlot *self,
     NautilusWindowSlotPrivate *priv;
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->templates_menu = menu != NULL ? g_object_ref (menu) : NULL;
+    g_set_object (&priv->templates_menu, menu);
 }
 
 static void
