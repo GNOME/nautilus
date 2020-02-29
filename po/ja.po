@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-02-23 07:43+0000\n"
+"POT-Creation-Date: 2020-02-28 13:17+0000\n"
 "PO-Revision-Date: 2020-02-27 21:00+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -583,9 +583,9 @@ msgstr "Y"
 #. Put up the timed wait window.
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
-#: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1205
-#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6037
-#: src/nautilus-files-view.c:6495 src/nautilus-location-entry.c:282
+#: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1203
+#: src/nautilus-files-view.c:1755 src/nautilus-files-view.c:6035
+#: src/nautilus-files-view.c:6493 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:566 src/nautilus-mime-actions.c:570
 #: src/nautilus-mime-actions.c:652 src/nautilus-mime-actions.c:953
 #: src/nautilus-mime-actions.c:1306 src/nautilus-properties-window.c:4642
@@ -2199,7 +2199,7 @@ msgid "Do _not Empty Trash"
 msgstr "ゴミ箱を空にしない(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6717
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6715
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s”にアクセスできません"
@@ -2708,53 +2708,53 @@ msgstr "ファイルを圧縮中"
 msgid "Searching…"
 msgstr "検索中…"
 
-#: src/nautilus-files-view.c:1193 src/nautilus-mime-actions.c:941
+#: src/nautilus-files-view.c:1191 src/nautilus-mime-actions.c:941
 msgid "Are you sure you want to open all files?"
 msgstr "本当にすべてのファイルを開きますか?"
 
-#: src/nautilus-files-view.c:1196
+#: src/nautilus-files-view.c:1194
 #, c-format
 msgid "This will open %'d separate tab."
 msgid_plural "This will open %'d separate tabs."
 msgstr[0] "%'d 個のタブを別々に開きます。"
 
-#: src/nautilus-files-view.c:1201
+#: src/nautilus-files-view.c:1199
 #, c-format
 msgid "This will open %'d separate window."
 msgid_plural "This will open %'d separate windows."
 msgstr[0] "%'d 個のウィンドウを別々に開きます。"
 
-#: src/nautilus-files-view.c:1205 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1203 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:953 src/nautilus-mime-actions.c:1139
 msgid "_OK"
 msgstr "OK(_O)"
 
-#: src/nautilus-files-view.c:1754
+#: src/nautilus-files-view.c:1752
 msgid "Select Items Matching"
 msgstr "パターンを指定してアイテムを選択"
 
-#: src/nautilus-files-view.c:1759 src/nautilus-files-view.c:6038
-#: src/nautilus-files-view.c:6496
+#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6036
+#: src/nautilus-files-view.c:6494
 msgid "_Select"
 msgstr "選択(_S)"
 
-#: src/nautilus-files-view.c:1767
+#: src/nautilus-files-view.c:1765
 msgid "_Pattern:"
 msgstr "パターン(_P):"
 
-#: src/nautilus-files-view.c:1773
+#: src/nautilus-files-view.c:1771
 msgid "Examples: "
 msgstr "例: "
 
-#: src/nautilus-files-view.c:2756
+#: src/nautilus-files-view.c:2754
 msgid "Could not paste files"
 msgstr "ファイルを貼り付けできませんでした"
 
-#: src/nautilus-files-view.c:2757
+#: src/nautilus-files-view.c:2755
 msgid "Permissions do not allow pasting files in this directory"
 msgstr "このディレクトリにファイルを貼り付ける権限がありません"
 
-#: src/nautilus-files-view.c:2920
+#: src/nautilus-files-view.c:2918
 msgid ""
 "Nautilus 3.6 deprecated this directory and tried migrating this "
 "configuration to ~/.local/share/nautilus"
@@ -2762,38 +2762,38 @@ msgstr ""
 "Nautilus 3.6 でこのディレクトリの使用は非推奨となったため ~/.local/share/"
 "nautilus への設定内容の移行を試みました"
 
-#: src/nautilus-files-view.c:3417 src/nautilus-files-view.c:3464
+#: src/nautilus-files-view.c:3415 src/nautilus-files-view.c:3462
 #, c-format
 msgid "“%s” selected"
 msgstr "“%s”を選択しました"
 
-#: src/nautilus-files-view.c:3421
+#: src/nautilus-files-view.c:3419
 #, c-format
 msgid "%'d folder selected"
 msgid_plural "%'d folders selected"
 msgstr[0] "%'d 個のフォルダーを選択しました"
 
-#: src/nautilus-files-view.c:3435
+#: src/nautilus-files-view.c:3433
 #, c-format
 msgid "(containing %'d item)"
 msgid_plural "(containing %'d items)"
 msgstr[0] "(%'d 個のアイテムを含む)"
 
 #. translators: this is preceded with a string of form 'N folders' (N more than 1)
-#: src/nautilus-files-view.c:3450
+#: src/nautilus-files-view.c:3448
 #, c-format
 msgid "(containing a total of %'d item)"
 msgid_plural "(containing a total of %'d items)"
 msgstr[0] "(合計で %'d 個のアイテムを含む)"
 
-#: src/nautilus-files-view.c:3469
+#: src/nautilus-files-view.c:3467
 #, c-format
 msgid "%'d item selected"
 msgid_plural "%'d items selected"
 msgstr[0] "%'d 個のアイテムを選択しました"
 
 #. Folders selected also, use "other" terminology
-#: src/nautilus-files-view.c:3478
+#: src/nautilus-files-view.c:3476
 #, c-format
 msgid "%'d other item selected"
 msgid_plural "%'d other items selected"
@@ -2803,7 +2803,7 @@ msgstr[0] "他に %'d 個のアイテムを選択しました"
 #. * needs to use something other than parentheses. The
 #. * the message in parentheses is the size of the selected items.
 #.
-#: src/nautilus-files-view.c:3493
+#: src/nautilus-files-view.c:3491
 #, c-format
 msgid "(%s)"
 msgstr "(%s)"
@@ -2815,118 +2815,118 @@ msgstr "(%s)"
 #. * message about the number of other items and the
 #. * total size of those items.
 #.
-#: src/nautilus-files-view.c:3526
+#: src/nautilus-files-view.c:3524
 #, c-format
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:6025
+#: src/nautilus-files-view.c:6023
 msgid "Select Move Destination"
 msgstr "移動する宛先を選択"
 
-#: src/nautilus-files-view.c:6029
+#: src/nautilus-files-view.c:6027
 msgid "Select Copy Destination"
 msgstr "コピーする宛先を選択"
 
-#: src/nautilus-files-view.c:6492
+#: src/nautilus-files-view.c:6490
 msgid "Select Extract Destination"
 msgstr "展開する宛先を選択"
 
-#: src/nautilus-files-view.c:6680
+#: src/nautilus-files-view.c:6678
 msgid "Wallpapers"
 msgstr "壁紙"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6747
+#: src/nautilus-files-view.c:6745
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "%s を取り外せません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6777
+#: src/nautilus-files-view.c:6775
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s”を取り出せません"
 
-#: src/nautilus-files-view.c:6802
+#: src/nautilus-files-view.c:6800
 msgid "Unable to stop drive"
 msgstr "ドライブを停止できません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6915
+#: src/nautilus-files-view.c:6913
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s”を起動できません"
 
-#: src/nautilus-files-view.c:7836
+#: src/nautilus-files-view.c:7834
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "選択アイテムを含む新しいフォルダーを作成 (%'d 個)"
 
-#: src/nautilus-files-view.c:7896
+#: src/nautilus-files-view.c:7894
 #, c-format
 msgid "Open With %s"
 msgstr "%sで開く"
 
-#: src/nautilus-files-view.c:7908
+#: src/nautilus-files-view.c:7906
 msgid "Run"
 msgstr "実行"
 
-#: src/nautilus-files-view.c:7913
+#: src/nautilus-files-view.c:7911
 msgid "Extract Here"
 msgstr "ここで展開"
 
-#: src/nautilus-files-view.c:7914
+#: src/nautilus-files-view.c:7912
 msgid "Extract to…"
 msgstr "展開先…"
 
-#: src/nautilus-files-view.c:7918
+#: src/nautilus-files-view.c:7916
 msgid "Open"
 msgstr "開く"
 
-#: src/nautilus-files-view.c:7976
+#: src/nautilus-files-view.c:7974
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "開始(_S)"
 
-#: src/nautilus-files-view.c:7982 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:7980 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "接続(_C)"
 
-#: src/nautilus-files-view.c:7988
+#: src/nautilus-files-view.c:7986
 msgid "_Start Multi-disk Drive"
 msgstr "マルチディスクドライブを起動(_S)"
 
-#: src/nautilus-files-view.c:7994
+#: src/nautilus-files-view.c:7992
 msgid "U_nlock Drive"
 msgstr "ドライブをロック解除(_N)"
 
-#: src/nautilus-files-view.c:8014
+#: src/nautilus-files-view.c:8012
 msgid "Stop Drive"
 msgstr "ドライブを停止"
 
-#: src/nautilus-files-view.c:8020
+#: src/nautilus-files-view.c:8018
 msgid "_Safely Remove Drive"
 msgstr "ドライブを安全に取り出す(_S)"
 
-#: src/nautilus-files-view.c:8026 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:8024 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "切断(_D)"
 
-#: src/nautilus-files-view.c:8032
+#: src/nautilus-files-view.c:8030
 msgid "_Stop Multi-disk Drive"
 msgstr "マルチディスクドライブを停止(_S)"
 
-#: src/nautilus-files-view.c:8038
+#: src/nautilus-files-view.c:8036
 msgid "_Lock Drive"
 msgstr "ドライブをロック(_L)"
 
-#: src/nautilus-files-view.c:9808
+#: src/nautilus-files-view.c:9806
 msgid "Content View"
 msgstr "内容表示"
 
-#: src/nautilus-files-view.c:9809
+#: src/nautilus-files-view.c:9807
 msgid "View of the current folder"
 msgstr "このフォルダーを表示します"
 
