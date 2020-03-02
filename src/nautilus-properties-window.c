@@ -5154,11 +5154,11 @@ create_properties_window (StartupData *startup_data)
                         TRUE, TRUE, 0);
 
     /* Create the pages. */
-    create_basic_page (window);
+    create_basic_page (window);                     // checkpoint 1
 
     if (should_show_permissions (window))
     {
-        create_permissions_page (window);
+        create_permissions_page (window);           // checkpoint 2
     }
 
     if (should_show_open_with (window))
@@ -5474,8 +5474,8 @@ nautilus_properties_window_present (GList                            *original_f
                                     NautilusPropertiesWindowCallback  callback,
                                     gpointer                          callback_data)
 {
-  //nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
-
+  nautilus_properties_window_present_old_logic(original_files, parent_widget, startup_id, callback, callback_data);
+/*
   GtkWidget *dialog;
   GtkBuilder *builder;
   GError *error = NULL;
@@ -5492,7 +5492,8 @@ nautilus_properties_window_present (GList                            *original_f
       gtk_widget_show_all (dialog);
       gtk_main();
 
-  }
+*/
+}
 
 static void
 real_response (GtkDialog *dialog,
