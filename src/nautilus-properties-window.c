@@ -3152,6 +3152,7 @@ open_in_disks (GtkButton                *button,
     }
 }
 
+//***-> checkpoint 1
 static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
