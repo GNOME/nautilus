@@ -1137,10 +1137,6 @@ properties_window_update (NautilusPropertiesWindow *window,
         {
             dirty_target = TRUE;
         }
-        if (changed_file != NULL)
-        {
-            start_deep_count_for_file (window, changed_file);
-        }
     }
 
     if (dirty_original)
