@@ -3161,6 +3161,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkWidget *volume_usage;
     GtkWidget *hbox, *vbox;
     GtkWidget *button;
+    GtkBuilder *basicPageBuilder;
     //apoorv work here
     hbox = create_page_with_box (window->notebook,
                                  GTK_ORIENTATION_HORIZONTAL,
@@ -3178,12 +3179,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     window->icon_chooser = NULL;
 
+
+    basicPageBuilder = gtk_builder_new_from_resource("/org/gnome/nautilus/ui/basicPage.ui");
     /* Grid */
 
-    vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
-    gtk_widget_show (vbox);
+    vbox = GTK_WIDGET(gtk_builder_get_object(basicPageBuilder,"basicVBox"));
+    //vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
+    gtk_widget_show_all (vbox);
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
+    grid = GTK_GRID(gtk_builder_get_object(basicPageBuilder,"basicGrid"));
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
     window->basic_grid = grid;
