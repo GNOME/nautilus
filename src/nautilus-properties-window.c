@@ -4712,6 +4712,7 @@ on_change_permissions_clicked (GtkWidget                *button,
     gtk_widget_show_all (dialog);
 }
 
+//checkpoint2-->**
 static void
 create_permissions_page (NautilusPropertiesWindow *window)
 {
