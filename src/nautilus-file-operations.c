@@ -1173,6 +1173,13 @@ can_delete_files_without_confirm (GList *files)
     return TRUE;
 }
 
+typedef enum
+{
+    BUTTON_STYLE_NORMAL = 1,
+    BUTTON_STYLE_DESTRUCTIVE,
+    BUTTON_STYLE_MAX
+} ButtonStyle;
+
 typedef struct
 {
     GtkWindow **parent_window;
@@ -1182,6 +1189,7 @@ typedef struct
     const char *secondary_text;
     const char *details_text;
     const char **button_titles;
+    ButtonStyle *button_styles;
     gboolean show_all;
     int result;
     /* Dialogs are ran from operation threads, which need to be blocked until
@@ -1196,6 +1204,7 @@ static gboolean
 do_run_simple_dialog (gpointer _data)
 {
     RunSimpleDialogData *data = _data;
+    ButtonStyle button_style;
     const char *button_title;
     GtkWidget *dialog;
     GtkWidget *button;
@@ -1221,6 +1230,7 @@ do_run_simple_dialog (gpointer _data)
          response_id++)
     {
         button_title = data->button_titles[response_id];
+        button_style = data->button_styles[response_id];
         if (!data->show_all && is_all_button_text (button_title))
         {
             continue;
@@ -1229,10 +1239,20 @@ do_run_simple_dialog (gpointer _data)
         button = gtk_dialog_add_button (GTK_DIALOG (dialog), button_title, response_id);
         gtk_dialog_set_default_response (GTK_DIALOG (dialog), response_id);
 
-        if (g_strcmp0 (button_title, DELETE) == 0)
+        switch (button_style)
         {
-            gtk_style_context_add_class (gtk_widget_get_style_context (button),
-                                         "destructive-action");
+            default:
+            case BUTTON_STYLE_NORMAL:
+            {
+            }
+            break;
+
+            case BUTTON_STYLE_DESTRUCTIVE:
+            {
+                gtk_style_context_add_class (gtk_widget_get_style_context (button),
+                                             "destructive-action");
+            }
+            break;
         }
     }
 
@@ -1294,7 +1314,9 @@ run_simple_dialog_va (CommonJob      *job,
     RunSimpleDialogData *data;
     int res;
     const char *button_title;
+    ButtonStyle button_style;
     GPtrArray *ptr_array;
+    GArray *styles_array;
 
     g_timer_stop (job->time);
 
@@ -1311,12 +1333,18 @@ run_simple_dialog_va (CommonJob      *job,
     g_cond_init (&data->cond);
 
     ptr_array = g_ptr_array_new ();
+    styles_array = g_array_new (FALSE, FALSE, sizeof (ButtonStyle));
     while ((button_title = va_arg (varargs, const char *)) != NULL)
     {
         g_ptr_array_add (ptr_array, (char *) button_title);
+        button_style = va_arg (varargs, ButtonStyle);
+        g_assert (button_style > 0);
+        g_assert (button_style < BUTTON_STYLE_MAX);
+        g_array_append_val (styles_array, button_style);
     }
     g_ptr_array_add (ptr_array, NULL);
     data->button_titles = (const char **) g_ptr_array_free (ptr_array, FALSE);
+    data->button_styles = (ButtonStyle *) g_array_free (styles_array, FALSE);
 
     nautilus_progress_info_pause (job->progress);
 
@@ -1339,6 +1367,7 @@ run_simple_dialog_va (CommonJob      *job,
     g_cond_clear (&data->cond);
 
     g_free (data->button_titles);
+    g_free (data->button_styles);
     g_free (data);
 
     g_timer_continue (job->time);
@@ -1464,7 +1493,7 @@ run_cancel_or_skip_warning (CommonJob  *job,
                                 secondary_text,
                                 details_text,
                                 FALSE,
-                                CANCEL,
+                                CANCEL, BUTTON_STYLE_NORMAL,
                                 NULL);
     }
     else
@@ -1474,7 +1503,9 @@ run_cancel_or_skip_warning (CommonJob  *job,
                                 secondary_text,
                                 details_text,
                                 operations_remaining > 1,
-                                CANCEL, SKIP_ALL, SKIP,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
                                 NULL);
     }
 
@@ -1560,7 +1591,8 @@ confirm_delete_from_trash (CommonJob *job,
                             g_strdup (_("If you delete an item, it will be permanently lost.")),
                             NULL,
                             FALSE,
-                            CANCEL, DELETE,
+                            CANCEL, BUTTON_STYLE_NORMAL,
+                            DELETE, BUTTON_STYLE_DESTRUCTIVE,
                             NULL);
 
     return (response == 1);
@@ -1585,7 +1617,8 @@ confirm_empty_trash (CommonJob *job)
                             g_strdup (_("All items in the Trash will be permanently deleted.")),
                             NULL,
                             FALSE,
-                            CANCEL, _("Empty _Trash"),
+                            CANCEL, BUTTON_STYLE_NORMAL,
+                            _("Empty _Trash"), BUTTON_STYLE_DESTRUCTIVE,
                             NULL);
 
     return (response == 1);
@@ -1635,7 +1668,8 @@ confirm_delete_directly (CommonJob *job,
                             g_strdup (_("If you delete an item, it will be permanently lost.")),
                             NULL,
                             FALSE,
-                            CANCEL, DELETE,
+                            CANCEL, BUTTON_STYLE_NORMAL,
+                            DELETE, BUTTON_STYLE_DESTRUCTIVE,
                             NULL);
 
     return response == 1;
@@ -2262,7 +2296,11 @@ trash_file (CommonJob     *job,
                              secondary,
                              details,
                              (source_info->num_files - transfer_info->num_files) > 1,
-                             CANCEL, SKIP_ALL, SKIP, DELETE_ALL, DELETE,
+                             CANCEL, BUTTON_STYLE_NORMAL,
+                             SKIP_ALL, BUTTON_STYLE_NORMAL,
+                             SKIP, BUTTON_STYLE_NORMAL,
+                             DELETE_ALL, BUTTON_STYLE_DESTRUCTIVE,
+                             DELETE, BUTTON_STYLE_DESTRUCTIVE,
                              NULL);
 
     if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
@@ -3272,7 +3310,9 @@ retry:
                                     secondary,
                                     details,
                                     FALSE,
-                                    CANCEL, RETRY, SKIP,
+                                    CANCEL, BUTTON_STYLE_NORMAL,
+                                    RETRY, BUTTON_STYLE_NORMAL,
+                                    SKIP, BUTTON_STYLE_NORMAL,
                                     NULL);
 
             g_error_free (error);
@@ -3332,7 +3372,10 @@ retry:
                                 secondary,
                                 details,
                                 TRUE,
-                                CANCEL, SKIP_ALL, SKIP, RETRY,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
+                                RETRY, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         g_error_free (error);
@@ -3442,7 +3485,10 @@ retry:
                                 secondary,
                                 details,
                                 TRUE,
-                                CANCEL, SKIP_ALL, SKIP, RETRY,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
+                                RETRY, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         g_error_free (error);
@@ -3574,7 +3620,8 @@ retry:
                               secondary,
                               details,
                               FALSE,
-                              CANCEL, RETRY,
+                              CANCEL, BUTTON_STYLE_NORMAL,
+                              RETRY, BUTTON_STYLE_NORMAL,
                               NULL);
 
         g_error_free (error);
@@ -3626,7 +3673,7 @@ retry:
                    secondary,
                    NULL,
                    FALSE,
-                   CANCEL,
+                   CANCEL, BUTTON_STYLE_NORMAL,
                    NULL);
 
         abort_job (job);
@@ -3678,9 +3725,9 @@ retry:
                                     secondary,
                                     details,
                                     FALSE,
-                                    CANCEL,
-                                    COPY_FORCE,
-                                    RETRY,
+                                    CANCEL, BUTTON_STYLE_NORMAL,
+                                    COPY_FORCE, BUTTON_STYLE_NORMAL,
+                                    RETRY, BUTTON_STYLE_NORMAL,
                                     NULL);
 
             if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
@@ -3717,7 +3764,7 @@ retry:
                    secondary,
                    NULL,
                    FALSE,
-                   CANCEL,
+                   CANCEL, BUTTON_STYLE_NORMAL,
                    NULL);
 
         g_error_free (error);
@@ -4590,7 +4637,9 @@ retry:
                                 secondary,
                                 details,
                                 FALSE,
-                                CANCEL, SKIP, RETRY,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
+                                RETRY, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         g_error_free (error);
@@ -4762,7 +4811,8 @@ retry:
                                     secondary,
                                     details,
                                     FALSE,
-                                    CANCEL, _("_Skip files"),
+                                    CANCEL, BUTTON_STYLE_NORMAL,
+                                    _("_Skip files"), BUTTON_STYLE_NORMAL,
                                     NULL);
 
             g_error_free (error);
@@ -4828,7 +4878,9 @@ retry:
                                 secondary,
                                 details,
                                 FALSE,
-                                CANCEL, SKIP, RETRY,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
+                                RETRY, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         g_error_free (error);
@@ -5510,7 +5562,9 @@ retry:
                                         secondary,
                                         details,
                                         TRUE,
-                                        CANCEL, SKIP_ALL, SKIP,
+                                        CANCEL, BUTTON_STYLE_NORMAL,
+                                        SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                        SKIP, BUTTON_STYLE_NORMAL,
                                         NULL);
 
                 g_error_free (error);
@@ -5998,7 +6052,9 @@ move_file_prepare (CopyMoveJob  *move_job,
                                 secondary,
                                 NULL,
                                 files_left > 1,
-                                CANCEL, SKIP_ALL, SKIP,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
@@ -6199,7 +6255,9 @@ retry:
                                 secondary,
                                 details,
                                 files_left > 1,
-                                CANCEL, SKIP_ALL, SKIP,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         g_error_free (error);
@@ -6701,7 +6759,9 @@ retry:
                                 secondary,
                                 details,
                                 files_left > 1,
-                                CANCEL, SKIP_ALL, SKIP,
+                                CANCEL, BUTTON_STYLE_NORMAL,
+                                SKIP_ALL, BUTTON_STYLE_NORMAL,
+                                SKIP, BUTTON_STYLE_NORMAL,
                                 NULL);
 
         if (error)
@@ -7608,7 +7668,8 @@ retry:
                                     secondary,
                                     details,
                                     FALSE,
-                                    CANCEL, SKIP,
+                                    CANCEL, BUTTON_STYLE_NORMAL,
+                                    SKIP, BUTTON_STYLE_NORMAL,
                                     NULL);
 
             g_error_free (error);
@@ -8057,8 +8118,8 @@ extract_job_on_error (AutoarExtractor *extractor,
                                g_strdup (error->message),
                                NULL,
                                FALSE,
-                               CANCEL,
-                               SKIP,
+                               CANCEL, BUTTON_STYLE_NORMAL,
+                               SKIP, BUTTON_STYLE_NORMAL,
                                NULL);
 
     if (response_id == 0 || response_id == GTK_RESPONSE_DELETE_EVENT)
@@ -8117,7 +8178,7 @@ extract_job_on_scanned (AutoarExtractor *extractor,
                    NULL,
                    NULL,
                    FALSE,
-                   CANCEL,
+                   CANCEL, BUTTON_STYLE_NORMAL,
                    NULL);
 
         abort_job ((CommonJob *) extract_job);
@@ -8544,7 +8605,7 @@ compress_job_on_error (AutoarCompressor *compressor,
                g_strdup (error->message),
                NULL,
                FALSE,
-               CANCEL,
+               CANCEL, BUTTON_STYLE_NORMAL,
                NULL);
 
     abort_job ((CommonJob *) compress_job);
