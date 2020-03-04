@@ -2559,6 +2559,7 @@ append_blank_slim_row (GtkGrid *grid)
     gtk_container_add (GTK_CONTAINER (grid), w);
 }
 
+//checkpoint2--
 static GtkWidget *
 create_grid_with_standard_properties (void)
 {
@@ -3189,7 +3190,6 @@ create_basic_page (NautilusPropertiesWindow *window)
     gtk_container_add (GTK_CONTAINER (hbox), vbox);
 
     grid = GTK_GRID(gtk_builder_get_object(basicPageBuilder,"basicGrid"));
-    grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
     window->basic_grid = grid;
 
