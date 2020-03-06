@@ -16,39 +16,6 @@ stages:
       - cd _build
       - ninja test
 
-.flatpak_gcovr:
-    extends: .flatpak
-    after_script:
-        # Generate coverage report
-        - cd _build
-        - flatpak build ../app gcovr
-            --html-details
-            -o coverage.html
-            --print-summary
-            --root=.
-            --exclude=src/
-            --exclude=../data/
-            --exclude=../eel/check-program.c
-            --exclude=../eel/eel-debug.c
-            --exclude=../eel/eel-lib-self-check-functions.c
-            --exclude=../eel/eel-self-checks.c
-            --exclude=../src/animation/
-            --exclude=../src/gtk/
-            --exclude=../src/nautilus-lib-self-check-functions.c
-            --exclude=../src/nautilus-self-check-functions.c
-            --exclude=../subprojects/libgd/
-            --exclude=../test/
-    coverage: '/^branches:.*\s+(\S+\%).*$/'
-    artifacts:
-        when: 'always'
-        # overwrite the path array of the '.flatpak' job
-        paths:
-            - "${BUNDLE}"
-            - '_build/meson-logs/meson-log.txt'
-            - '_build/meson-logs/testlog.txt'
-           #- '_build/coverage.html'
-        expire_in: 2 days
-
 flatpak devel:
     extends: '.flatpak'
     stage: test
@@ -83,7 +50,7 @@ flatpak master:
     dependencies: []
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
@@ -92,25 +59,6 @@ flatpak master:
         - schedules
         - web
         - tags
-
-.pages:
-  stage: deploy
-  dependencies:
-    - 'flatpak devel'
-  script:
-    - mkdir public
-    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/index.html
-  artifacts:
-    paths:
-      - public
-
-  only:
-    - master
-  except:
-    variables:
-      # Don't run for translation commits
-      - $CI_COMMIT_TITLE =~ /^Update.*translation$/
-
 
 triage:
   image: ruby:2.4
