@@ -45,6 +45,7 @@ fedora rawhide:
 
 flatpak master:
     stage: cross_environment
+    dependencies: []
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
         MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
