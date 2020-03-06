@@ -7,7 +7,7 @@ variables:
 stages:
     - triage
     - test
-    - cross_environment
+    - cross environment
     - deploy
 
 flatpak devel:
@@ -28,7 +28,7 @@ nightly:
 
 fedora rawhide:
     image: fedora:rawhide
-    stage: cross_environment
+    stage: cross environment
     before_script:
         - dnf update -y --nogpgcheck
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
@@ -43,7 +43,7 @@ fedora rawhide:
         - tags
 
 flatpak master:
-    stage: cross_environment
+    stage: cross environment
     dependencies: []
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
