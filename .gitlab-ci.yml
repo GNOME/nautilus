@@ -22,6 +22,7 @@ flatpak devel:
 
 nightly:
     extends: '.publish_nightly'
+    stage: deploy
     dependencies:
         - 'flatpak devel'
 
