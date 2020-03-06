@@ -10,12 +10,6 @@ stages:
     - cross_environment
     - deploy
 
-.test_template: &distro_test
-  script:
-      - meson _build .
-      - cd _build
-      - ninja test
-
 flatpak devel:
     extends: '.flatpak'
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
@@ -46,7 +40,10 @@ fedora rawhide:
         - dnf update -y --nogpgcheck
         - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
         - dnf builddep -y nautilus --nogpgcheck
-    <<: *distro_test
+    script:
+        - meson _build .
+        - cd _build
+        - ninja test
     only:
         - schedules
         - web
