@@ -60,14 +60,6 @@ flatpak devel:
         RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
 
-review:
-    dependencies:
-        - 'flatpak devel'
-    extends: '.review'
-
-stop_review:
-    extends: '.stop_review'
-
 nightly:
     extends: '.publish_nightly'
     dependencies:
