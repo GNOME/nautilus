@@ -60,6 +60,7 @@ enum
     PROP_SEARCHING,
     PROP_SELECTION,
     PROP_LOCATION,
+    PROP_TOOLTIP,
     NUM_PROPERTIES
 };
 
@@ -944,6 +945,12 @@ nautilus_window_slot_get_property (GObject    *object,
         case PROP_SEARCHING:
         {
             g_value_set_boolean (value, nautilus_window_slot_get_searching (self));
+        }
+        break;
+
+        case PROP_TOOLTIP:
+        {
+            g_value_set_static_string (value, nautilus_window_slot_get_tooltip (self));
         }
         break;
 
@@ -3049,6 +3056,7 @@ nautilus_window_slot_switch_new_content_view (NautilusWindowSlot *self)
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLBAR_MENU_SECTIONS]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_EXTENSIONS_BACKGROUND_MENU]);
         g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TEMPLATES_MENU]);
+        g_object_notify_by_pspec (G_OBJECT (self), properties[PROP_TOOLTIP]);
     }
 
 done:
@@ -3265,6 +3273,13 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
                              "Current location visible on the slot",
                              "Either the location that is used currently, or the pending location. Clients will see the same value they set, and therefore it will be cosistent from clients point of view.",
                              G_TYPE_FILE,
+                             G_PARAM_READWRITE);
+
+    properties[PROP_TOOLTIP] =
+        g_param_spec_string ("tooltip",
+                             "Tooltip that represents the slot",
+                             "The tooltip that represents the slot",
+                             NULL,
                              G_PARAM_READWRITE);
 
     g_object_class_install_properties (oclass, NUM_PROPERTIES, properties);
@@ -3555,6 +3570,48 @@ nautilus_window_slot_get_icon (NautilusWindowSlot *self)
         case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
         {
             return nautilus_view_get_icon (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
+        }
+        break;
+
+        default:
+        {
+            return NULL;
+        }
+    }
+}
+
+const gchar *
+nautilus_window_slot_get_tooltip (NautilusWindowSlot *self)
+{
+    guint current_view_id;
+    NautilusWindowSlotPrivate *priv;
+
+    g_return_val_if_fail (NAUTILUS_IS_WINDOW_SLOT (self), NULL);
+
+    priv = nautilus_window_slot_get_instance_private (self);
+    if (priv->content_view == NULL)
+    {
+        return NULL;
+    }
+
+    current_view_id = nautilus_view_get_view_id (NAUTILUS_VIEW (priv->content_view));
+    switch (current_view_id)
+    {
+        case NAUTILUS_VIEW_LIST_ID:
+        {
+            return nautilus_view_get_tooltip (NAUTILUS_VIEW_GRID_ID);
+        }
+        break;
+
+        case NAUTILUS_VIEW_GRID_ID:
+        {
+            return nautilus_view_get_tooltip (NAUTILUS_VIEW_LIST_ID);
+        }
+        break;
+
+        case NAUTILUS_VIEW_OTHER_LOCATIONS_ID:
+        {
+            return nautilus_view_get_tooltip (NAUTILUS_VIEW_OTHER_LOCATIONS_ID);
         }
         break;
 

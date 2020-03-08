@@ -114,6 +114,7 @@ struct _NautilusToolbar
     NautilusWindowSlot *window_slot;
     GBinding *icon_binding;
     GBinding *search_binding;
+    GBinding *tooltip_binding;
 };
 
 enum
@@ -1408,6 +1409,26 @@ nautilus_toolbar_view_toggle_icon_transform_to (GBinding     *binding,
     return TRUE;
 }
 
+static gboolean
+nautilus_toolbar_view_toggle_tooltip_transform_to (GBinding     *binding,
+                                                   const GValue *from_value,
+                                                   GValue       *to_value,
+                                                   gpointer      user_data)
+{
+    const gchar *tooltip;
+
+    tooltip = g_value_get_string (from_value);
+
+    /* As per design decision, we let the previous used tooltip if no
+     * view menu is available */
+    if (tooltip)
+    {
+        g_value_set_string (to_value, tooltip);
+    }
+
+    return TRUE;
+}
+
 /* Called from on_window_slot_destroyed(), since bindings and signal handlers
  * are automatically removed once the slot goes away.
  */
@@ -1432,6 +1453,14 @@ nautilus_toolbar_set_window_slot_real (NautilusToolbar    *self,
                                                           NULL,
                                                           self,
                                                           NULL);
+
+        self->tooltip_binding = g_object_bind_property_full (self->window_slot, "tooltip",
+                                                             self->view_toggle_button, "tooltip-text",
+                                                             G_BINDING_DEFAULT | G_BINDING_SYNC_CREATE,
+                                                             (GBindingTransformFunc) nautilus_toolbar_view_toggle_tooltip_transform_to,
+                                                             NULL,
+                                                             self,
+                                                             NULL);
 
         self->search_binding = g_object_bind_property (self->window_slot, "searching",
                                                        self, "searching",
