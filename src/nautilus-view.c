@@ -19,6 +19,7 @@
 #include "config.h"
 
 #include "nautilus-view.h"
+#include <glib/gi18n.h>
 
 G_DEFINE_INTERFACE (NautilusView, nautilus_view, GTK_TYPE_WIDGET)
 
@@ -130,6 +131,35 @@ nautilus_view_get_icon (guint view_id)
     else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
     {
         return g_themed_icon_new_with_default_fallbacks ("view-list-symbolic");
+    }
+    else
+    {
+        return NULL;
+    }
+}
+
+/**
+ * nautilus_view_get_tooltip:
+ * @view: a #NautilusView
+ *
+ * Retrieves the static string that represents @view.
+ *
+ * Returns: (transfer none): a static string
+ */
+const gchar *
+nautilus_view_get_tooltip (guint view_id)
+{
+    if (view_id == NAUTILUS_VIEW_GRID_ID)
+    {
+        return _("Show grid");
+    }
+    else if (view_id == NAUTILUS_VIEW_LIST_ID)
+    {
+        return _("Show list");
+    }
+    else if (view_id == NAUTILUS_VIEW_OTHER_LOCATIONS_ID)
+    {
+        return _("Show List");
     }
     else
     {
