@@ -61,7 +61,7 @@ modules:
   - "-Dsystemd_user_services=no"
   sources:
   - type: git
-    url: ttps://gitlab.gnome.org/GNOME/tracker.git
+    url: https://gitlab.gnome.org/GNOME/tracker.git
     branch: tracker-2.3
 # Bundle intltool until tracker-miners drops that dependency https://gitlab.gnome.org/GNOME/tracker-miners/merge_requests/29
 - name: intltool
@@ -95,7 +95,7 @@ modules:
   - "-Dwriteback=false"
   sources:
   - type: git
-    url: ttps://gitlab.gnome.org/GNOME/tracker-miners.git
+    url: https://gitlab.gnome.org/GNOME/tracker-miners.git
     branch: tracker-miners-2.3
 - name: gnome-desktop
   buildsystem: meson
