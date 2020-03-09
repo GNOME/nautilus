@@ -61,9 +61,9 @@ modules:
   - "-Dbash_completion=no"
   - "-Dsystemd_user_services=no"
   sources:
-  - type: archive
-    url: https://download.gnome.org/sources/tracker/2.3/tracker-2.3.2.tar.xz
-    sha256: a4782b8ec7e4ee50f8f53865b24c5489823337fa94f785a7d9d34ccdf9b6ebdb
+  - type: git
+    url: ttps://gitlab.gnome.org/GNOME/tracker.git
+    branch: tracker-2.3
 # Bundle intltool until tracker-miners drops that dependency https://gitlab.gnome.org/GNOME/tracker-miners/merge_requests/29
 - name: intltool
   cleanup:
@@ -95,9 +95,9 @@ modules:
   - "-Dsystemd_user_services=no"
   - "-Dwriteback=false"
   sources:
-  - type: archive
-    url: https://download.gnome.org/sources/tracker-miners/2.3/tracker-miners-2.3.2.tar.xz
-    sha256: 069e23c2a2de58bfc84d9d798bd091ce78419903fb4dcf099fb2ad97f8563fce
+  - type: git
+    url: ttps://gitlab.gnome.org/GNOME/tracker-miners.git
+    branch: tracker-miners-2.3
 - name: gnome-desktop
   buildsystem: meson
   config-opts:
