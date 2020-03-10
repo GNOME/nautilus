@@ -128,8 +128,8 @@ typedef struct
     gint view_mode_before_search;
 
     /* Menus */
-    GMenu *extensions_background_menu;
-    GMenu *templates_menu;
+    GMenuModel *extensions_background_menu;
+    GMenuModel *templates_menu;
 
     /* View bindings */
     GBinding *searching_binding;
@@ -169,11 +169,11 @@ static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
                                     gpointer              user_data);
 static void update_search_information (NautilusWindowSlot *self);
 static void real_set_extensions_background_menu (NautilusWindowSlot *self,
-                                                 GMenu              *menu);
-static GMenu* real_get_extensions_background_menu (NautilusWindowSlot *self);
+                                                 GMenuModel         *menu);
+static GMenuModel* real_get_extensions_background_menu (NautilusWindowSlot *self);
 static void real_set_templates_menu (NautilusWindowSlot *self,
-                                     GMenu              *menu);
-static GMenu* real_get_templates_menu (NautilusWindowSlot *self);
+                                     GMenuModel         *menu);
+static GMenuModel* real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
@@ -764,22 +764,22 @@ nautilus_window_slot_set_selection (NautilusWindowSlot *self,
 
 static void
 real_set_extensions_background_menu (NautilusWindowSlot *self,
-                                     GMenu              *menu)
+                                     GMenuModel         *menu)
 {
     NautilusWindowSlotPrivate *priv;
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->extensions_background_menu = menu != NULL ? g_object_ref (menu) : NULL;
+    g_set_object (&priv->extensions_background_menu, menu);
 }
 
 static void
 real_set_templates_menu (NautilusWindowSlot *self,
-                         GMenu              *menu)
+                         GMenuModel         *menu)
 {
     NautilusWindowSlotPrivate *priv;
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->templates_menu = menu != NULL ? g_object_ref (menu) : NULL;
+    g_set_object (&priv->templates_menu, menu);
 }
 
 static void
@@ -842,7 +842,7 @@ nautilus_window_slot_set_property (GObject      *object,
     }
 }
 
-static GMenu*
+static GMenuModel*
 real_get_extensions_background_menu (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -851,17 +851,17 @@ real_get_extensions_background_menu (NautilusWindowSlot *self)
     return priv->extensions_background_menu;
 }
 
-GMenu*
+GMenuModel*
 nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self)
 {
-    GMenu *menu = NULL;
+    GMenuModel *menu = NULL;
 
     g_object_get (self, "extensions-background-menu", &menu, NULL);
 
     return menu;
 }
 
-static GMenu*
+static GMenuModel*
 real_get_templates_menu (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -870,10 +870,10 @@ real_get_templates_menu (NautilusWindowSlot *self)
     return priv->templates_menu;
 }
 
-GMenu*
+GMenuModel*
 nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self)
 {
-    GMenu *menu = NULL;
+    GMenuModel *menu = NULL;
 
     g_object_get (self, "templates-menu", &menu, NULL);
 
@@ -3250,14 +3250,14 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
         g_param_spec_object ("extensions-background-menu",
                              "Background menu of extensions",
                              "Proxy property from the view for the background menu for extensions",
-                             G_TYPE_MENU,
+                             G_TYPE_MENU_MODEL,
                              G_PARAM_READWRITE);
 
     properties[PROP_TEMPLATES_MENU] =
         g_param_spec_object ("templates-menu",
                              "Templates menu",
                              "Proxy property from the view for the templates menu",
-                             G_TYPE_MENU,
+                             G_TYPE_MENU_MODEL,
                              G_PARAM_READWRITE);
 
     properties[PROP_LOCATION] =

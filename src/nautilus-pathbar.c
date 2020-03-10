@@ -101,9 +101,9 @@ struct _NautilusPathBar
     GtkPopover *current_view_menu_popover;
     GtkPopover *button_menu_popover;
     GMenu *current_view_menu;
+    GMenu *extensions_section;
+    GMenu *templates_submenu;
     GMenu *button_menu;
-    GMenu *extensions_background_menu;
-    GMenu *templates_menu;
 };
 
 G_DEFINE_TYPE (NautilusPathBar, nautilus_path_bar, GTK_TYPE_CONTAINER);
@@ -213,6 +213,8 @@ nautilus_path_bar_init (NautilusPathBar *self)
     /* Context menu */
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
     self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "current-view-menu")));
+    self->extensions_section = g_object_ref (G_MENU (gtk_builder_get_object (builder, "extensions-section")));
+    self->templates_submenu = g_object_ref (G_MENU (gtk_builder_get_object (builder, "templates-submenu")));
     self->button_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder, "button-menu")));
     self->current_view_menu_popover = g_object_ref_sink (GTK_POPOVER (gtk_popover_new_from_model (NULL,
                                                                                                   G_MENU_MODEL (self->current_view_menu))));
@@ -248,6 +250,8 @@ nautilus_path_bar_finalize (GObject *object)
 
     g_list_free (self->button_list);
     g_clear_object (&self->current_view_menu);
+    g_clear_object (&self->extensions_section);
+    g_clear_object (&self->templates_submenu);
     g_clear_object (&self->button_menu);
     g_clear_object (&self->button_menu_popover);
     g_clear_object (&self->current_view_menu_popover);
@@ -912,67 +916,22 @@ nautilus_path_bar_class_init (NautilusPathBarClass *path_bar_class)
     gtk_container_class_handle_border_width (container_class);
 }
 
-static void
-update_current_view_menu (NautilusPathBar *self)
-{
-    if (self->extensions_background_menu != NULL)
-    {
-        nautilus_gmenu_merge (self->current_view_menu,
-                              self->extensions_background_menu,
-                              "extensions",
-                              TRUE);
-    }
-
-    if (self->templates_menu != NULL)
-    {
-        nautilus_gmenu_merge (self->current_view_menu, self->templates_menu,
-                              "templates-submenu", TRUE);
-    }
-}
-
-static void
-reset_current_view_menu (NautilusPathBar *self)
-{
-    g_autoptr (GtkBuilder) builder = NULL;
-
-    g_clear_object (&self->current_view_menu);
-    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-pathbar-context-menu.ui");
-    self->current_view_menu = g_object_ref_sink (G_MENU (gtk_builder_get_object (builder,
-                                                                                 "current-view-menu")));
-    gtk_popover_bind_model (self->current_view_menu_popover,
-                            G_MENU_MODEL (self->current_view_menu), NULL);
-}
-
 void
 nautilus_path_bar_set_extensions_background_menu (NautilusPathBar *self,
-                                                  GMenu           *menu)
+                                                  GMenuModel      *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    reset_current_view_menu (self);
-    g_clear_object (&self->extensions_background_menu);
-    if (menu != NULL)
-    {
-        self->extensions_background_menu = g_object_ref (menu);
-    }
-
-    update_current_view_menu (self);
+    nautilus_gmenu_set_from_model (self->extensions_section, menu);
 }
 
 void
 nautilus_path_bar_set_templates_menu (NautilusPathBar *self,
-                                      GMenu           *menu)
+                                      GMenuModel      *menu)
 {
     g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
 
-    reset_current_view_menu (self);
-    g_clear_object (&self->templates_menu);
-    if (menu != NULL)
-    {
-        self->templates_menu = g_object_ref (menu);
-    }
-
-    update_current_view_menu (self);
+    nautilus_gmenu_set_from_model (self->templates_submenu, menu);
 }
 
 /* Changes the icons wherever it is needed */

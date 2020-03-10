@@ -28,6 +28,13 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Quit</property>
+                <property name="accelerator">&lt;Primary&gt;Q</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Search</property>
                 <property name="accelerator">&lt;Primary&gt;F</property>
               </object>
@@ -50,7 +57,7 @@
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Shortcuts</property>
-                <property name="accelerator">&lt;Primary&gt;question &lt;Primary&gt;F1</property>
+                <property name="accelerator">&lt;Primary&gt;question</property>
               </object>
             </child>
           </object>

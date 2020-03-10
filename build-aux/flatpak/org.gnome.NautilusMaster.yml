@@ -52,7 +52,6 @@ modules:
   buildsystem: meson
   builddir: true
   config-opts:
-  - "--libdir=lib"
   - "-Ddocs=false"
   - "-Dfunctional_tests=false"
   - "-Djournal=false"
@@ -63,6 +62,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker.git
+    branch: tracker-2.3
 # Bundle intltool until tracker-miners drops that dependency https://gitlab.gnome.org/GNOME/tracker-miners/merge_requests/29
 - name: intltool
   cleanup:
@@ -96,6 +96,7 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+    branch: tracker-miners-2.3
 - name: gnome-desktop
   buildsystem: meson
   config-opts:
