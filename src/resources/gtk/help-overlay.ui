@@ -60,6 +60,20 @@
                 <property name="accelerator">&lt;Primary&gt;question</property>
               </object>
             </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Undo</property>
+                <property name="accelerator">&lt;Primary&gt;z</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Redo</property>
+                <property name="accelerator">&lt;shift&gt;&lt;Primary&gt;z</property>
+              </object>
+            </child>
           </object>
         </child>
         <child>
@@ -331,6 +345,20 @@
             <child>
               <object class="GtkShortcutsShortcut">
                 <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Create link to copied item</property>
+                <property name="accelerator">&lt;Primary&gt;M</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
+                <property name="title" translatable="yes" context="shortcut window">Create link to selected item</property>
+                <property name="accelerator">&lt;Primary&gt;&lt;shift&gt;M</property>
+              </object>
+            </child>
+            <child>
+              <object class="GtkShortcutsShortcut">
+                <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Cut</property>
                 <property name="accelerator">&lt;Primary&gt;X</property>
               </object>
@@ -368,20 +396,6 @@
                 <property name="visible">True</property>
                 <property name="title" translatable="yes" context="shortcut window">Select items matching</property>
                 <property name="accelerator">&lt;Primary&gt;S</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Undo</property>
-                <property name="accelerator">&lt;Primary&gt;z</property>
-              </object>
-            </child>
-            <child>
-              <object class="GtkShortcutsShortcut">
-                <property name="visible">True</property>
-                <property name="title" translatable="yes" context="shortcut window">Redo</property>
-                <property name="accelerator">&lt;shift&gt;&lt;Primary&gt;z</property>
               </object>
             </child>
             <child>
