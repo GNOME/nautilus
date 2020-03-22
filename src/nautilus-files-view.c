@@ -9647,12 +9647,14 @@ nautilus_files_view_init (NautilusFilesView *view)
         "<control>equal",
         "<control>plus",
         "<control>KP_Add",
+        "ZoomIn",
         NULL
     };
     const gchar *zoom_out_accels[] =
     {
         "<control>minus",
         "<control>KP_Subtract",
+        "ZoomOut",
         NULL
     };
     const gchar *move_to_trash_accels[] =
