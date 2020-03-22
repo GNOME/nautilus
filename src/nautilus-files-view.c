@@ -9657,6 +9657,12 @@ nautilus_files_view_init (NautilusFilesView *view)
         "ZoomOut",
         NULL
     };
+    const gchar *zoom_standard_accels[] =
+    {
+        "<control>0",
+        "<control>KP_0",
+        NULL
+    };
     const gchar *move_to_trash_accels[] =
     {
         "Delete",
@@ -9884,7 +9890,7 @@ nautilus_files_view_init (NautilusFilesView *view)
     nautilus_application_set_accelerator (app, "view.new-folder", "<control><shift>n");
     /* Only accesible by shorcuts */
     nautilus_application_set_accelerator (app, "view.select-pattern", "<control>s");
-    nautilus_application_set_accelerator (app, "view.zoom-standard", "<control>0");
+    nautilus_application_set_accelerators (app, "view.zoom-standard", zoom_standard_accels);
     nautilus_application_set_accelerator (app, "view.invert-selection", "<shift><control>i");
 
     priv->starred_cancellable = g_cancellable_new ();
