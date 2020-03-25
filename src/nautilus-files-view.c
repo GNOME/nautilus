@@ -5724,6 +5724,44 @@ directory_belongs_in_templates_menu (const char *templates_directory_uri,
     return TRUE;
 }
 
+static gboolean
+filter_templates_callback (NautilusFile *file,
+                           gpointer      callback_data)
+{
+    gboolean show_hidden = GPOINTER_TO_INT (callback_data);
+
+    if (nautilus_file_is_hidden_file (file))
+    {
+        if (!show_hidden)
+        {
+            return FALSE;
+        }
+
+        if (nautilus_file_is_directory (file))
+        {
+            return FALSE;
+        }
+    }
+
+    return TRUE;
+}
+
+static GList *
+filter_templates (GList    *files,
+                  gboolean  show_hidden)
+{
+    GList *filtered_files;
+    GList *removed_files;
+
+    filtered_files = nautilus_file_list_filter (files,
+                                                &removed_files,
+                                                filter_templates_callback,
+                                                GINT_TO_POINTER (show_hidden));
+    nautilus_file_list_free (removed_files);
+
+    return filtered_files;
+}
+
 static GMenu *
 update_directory_in_templates_menu (NautilusFilesView *view,
                                     NautilusDirectory *directory)
@@ -5745,7 +5783,14 @@ update_directory_in_templates_menu (NautilusFilesView *view,
     priv = nautilus_files_view_get_instance_private (view);
 
     file_list = nautilus_directory_get_file_list (directory);
-    filtered = nautilus_file_list_filter_hidden (file_list, priv->show_hidden_files);
+
+    /*
+     * The nautilus_file_list_filter_hidden() function isn't used here, because
+     * we want to show hidden files, but not directories. This is a compromise
+     * to allow creating hidden files but to prevent content from .git directory
+     * for example. See https://gitlab.gnome.org/GNOME/nautilus/issues/1413.
+     */
+    filtered = filter_templates (file_list, priv->show_hidden_files);
     nautilus_file_list_free (file_list);
     templates_directory_uri = nautilus_get_templates_directory_uri ();
     menu = g_menu_new ();
