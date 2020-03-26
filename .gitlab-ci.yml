@@ -79,7 +79,14 @@ triage:dry-run:
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: test
+    artifacts:
+        name: 'Style check artifacts'
+        expose_as: 'Get style check diff here'
+        when: on_failure
+        paths:
+            - 'uncrustify.diff'
+        expire_in: 14 days
     script:
         - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
         - LANG=C.utf8 data/run-uncrustify.sh
-        - git diff --exit-code
+        - git diff --exit-code | tee uncrustify.diff
