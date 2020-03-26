@@ -7,14 +7,15 @@
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2004, 2005, 2006, 2009, 2008, 2010, 2011.
 # Iñaki Larrañaga Murgoitio <dooteo@zundan.com>, 2012, 2013, 2014, 2015, 2016, 2017.
 # Asier Sarasua Garmendia <asier.sarasua@gmail.com>, 2019, 2020.
+# Ibai Oihanguren Sala <ibai@oihanguren.com>, 2020.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-03-09 07:42+0000\n"
-"PO-Revision-Date: 2020-02-16 10:00+0100\n"
-"Last-Translator: Asier Sarasua Garmendia <asier.sarasua@gmail.com>\n"
+"POT-Creation-Date: 2020-03-21 18:51+0000\n"
+"PO-Revision-Date: 2020-03-25 23:46+0100\n"
+"Last-Translator: Ibai Oihanguren Sala <ibai@oihanguren.com>\n"
 "Language-Team: Basque <librezale@librezale.eus>\n"
 "Language: eu\n"
 "MIME-Version: 1.0\n"
@@ -343,7 +344,7 @@ msgid ""
 msgstr ""
 "Ikonoen ikuspegiko elementuen ordenatze lehenetsia. Aukerako balioak: \"name"
 "\" (izena), \"size\" (tamaina), \"type\" (mota), \"mtime\" (ordua), \"atime"
-"\" (ordua) eta \"starred\" (izartxoduna)."
+"\" (ordua) eta \"starred\" (izarduna)."
 
 #: data/org.gnome.nautilus.gschema.xml:174
 msgid "Reverse sort order in new windows"
@@ -1324,7 +1325,7 @@ msgstr "Erabiltzaileak fitxategia atzitu zueneko data."
 
 #: src/nautilus-column-utilities.c:156
 msgid "Star"
-msgstr "Eman izartxoa"
+msgstr "Eman izarra"
 
 #: src/nautilus-column-utilities.c:157
 msgid "Shows if file is starred."
@@ -3304,32 +3305,32 @@ msgstr "_Berregin multzoka izena aldatzea"
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
-msgstr[0] "Kendu izartxoa fitxategi %di"
-msgstr[1] "Kendu izartxoa %d fitxategiri"
+msgstr[0] "Kendu izarra fitxategi %di"
+msgstr[1] "Kendu izarra %d fitxategiri"
 
 #: src/nautilus-file-undo-operations.c:1361
 #: src/nautilus-file-undo-operations.c:1370
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
-msgstr[0] "Eman izartxoa fitxategi %di"
-msgstr[1] "Eman izartxoa %d fitxategiri"
+msgstr[0] "Eman izarra fitxategi %di"
+msgstr[1] "Eman izarra %d fitxategiri"
 
 #: src/nautilus-file-undo-operations.c:1365
 msgid "_Undo Starring"
-msgstr "_Desegin izartxoa ematea"
+msgstr "_Desegin izarra ematea"
 
 #: src/nautilus-file-undo-operations.c:1366
 msgid "_Redo Starring"
-msgstr "_Berregin izartxoa ematea"
+msgstr "_Berregin izarra ematea"
 
 #: src/nautilus-file-undo-operations.c:1378
 msgid "_Undo Unstarring"
-msgstr "_Desegin izartxoa kentzea"
+msgstr "_Desegin izarra kentzea"
 
 #: src/nautilus-file-undo-operations.c:1379
 msgid "_Redo Unstarring"
-msgstr "_Berregin izartxoa kentzea"
+msgstr "_Berregin izarra kentzea"
 
 #: src/nautilus-file-undo-operations.c:1580
 #, c-format
@@ -3536,7 +3537,7 @@ msgstr "Argazkiak eta musika ditu"
 
 #: src/nautilus-list-model.c:467
 msgid "(Empty)"
-msgstr "(Hutsa)"
+msgstr "(Hutsik)"
 
 #: src/nautilus-list-view.c:1591
 msgid "Use Default"
@@ -4420,16 +4421,16 @@ msgstr "_Berregin"
 
 #: src/nautilus-trash-bar.c:213
 msgid "_Restore"
-msgstr "_Berrezarri"
+msgstr "_Leheneratu"
 
 #: src/nautilus-trash-bar.c:216
 msgid "Restore selected items to their original position"
-msgstr "Hautatutako elementuak jatorrizko kokalekura berrezar ditu"
+msgstr "Leheneratu hautatutako elementuak jatorrizko kokalekura"
 
 #. Translators: "Empty" is an action (for the trash) , not a state
 #: src/nautilus-trash-bar.c:220
 msgid "_Empty"
-msgstr "_Hutsa"
+msgstr "_Hustu"
 
 #: src/nautilus-trash-bar.c:223
 msgid "Delete all items in the Trash"
@@ -4518,7 +4519,7 @@ msgstr "_Propietateak"
 
 #: src/nautilus-window.c:1349
 msgid "_Format…"
-msgstr "_Formatua…"
+msgstr "_Formateatu…"
 
 #. Translators: only one item has been deleted and %s is its name.
 #: src/nautilus-window.c:1626
@@ -4539,7 +4540,7 @@ msgstr[1] "%d fitxategi ezabatu dira"
 #: src/nautilus-window.c:1654
 #, c-format
 msgid "“%s” unstarred"
-msgstr "\"%s” izartxoa kendu zaio"
+msgstr "\"%s” izarra kendu zaio"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4547,8 +4548,8 @@ msgstr "\"%s” izartxoa kendu zaio"
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
-msgstr[0] "fitxategia %di izartzoa kendu zaio"
-msgstr[1] "%d fitxategiri izartxoa kendu zaie"
+msgstr[0] "Fitxategi %di izarra kendu zaio"
+msgstr[1] "%d fitxategiri izarra kendu zaie"
 
 #: src/nautilus-window.c:1798
 #, c-format
@@ -5016,7 +5017,7 @@ msgstr "Zenbaketa automatikoaren ordena"
 #. Translators: This is a noun, not a verb
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:214
 msgid "Format"
-msgstr "Formatua"
+msgstr "Formateatu"
 
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:231
 msgid "Existing Text"
@@ -5192,13 +5193,13 @@ msgstr "Etiketak"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:225
 msgctxt "menu item"
 msgid "Star"
-msgstr "Eman izartxoa"
+msgstr "Eman izarra"
 
 #. Unmarks a file as starred (starred)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:230
 msgctxt "menu item"
 msgid "Unstar"
-msgstr "Kendu izartxoa"
+msgstr "Kendu izarra"
 
 #: src/resources/ui/nautilus-folder-is-empty.ui:31
 msgid "Folder is Empty"
@@ -5514,7 +5515,7 @@ msgstr "Bilatu fitxategi-izenetan soilik"
 
 #: src/resources/ui/nautilus-starred-is-empty.ui:31
 msgid "Starred files will appear here"
-msgstr "Izartxodun fitxategiak hemen agertuko dira"
+msgstr "Izardun fitxategiak hemen agertuko dira"
 
 #: src/resources/ui/nautilus-toolbar.ui:49
 msgid "New Tab"
