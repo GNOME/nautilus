@@ -6,6 +6,7 @@ variables:
 
 stages:
     - triage
+    - image
     - test
     - cross environment
     - deploy
@@ -29,12 +30,8 @@ nightly:
         - 'flatpak devel'
 
 fedora rawhide:
-    image: fedora:rawhide
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: cross environment
-    before_script:
-        - dnf update -y --nogpgcheck
-        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
-        - dnf builddep -y nautilus --nogpgcheck
     script:
         - meson _build .
         - cd _build
@@ -92,3 +89,22 @@ style check:
         - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
         - LANG=C.utf8 data/run-uncrustify.sh
         - git diff --exit-code | tee uncrustify.diff
+
+update image:
+    variables:
+         DOCKER_TLS_CERTDIR: ""
+    image: docker:latest
+    stage: image
+    tags:
+        - privileged
+    services:
+        - docker:dind
+    script:
+        - docker build --tag $CI_REGISTRY_IMAGE .gitlab/
+        - docker tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
+        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+        - docker push $CI_REGISTRY_IMAGE
+    when: manual
+    only:
+        variables:
+            - $CI_PROJECT_NAMESPACE == "GNOME"
