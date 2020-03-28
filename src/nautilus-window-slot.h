@@ -99,6 +99,8 @@ void    nautilus_window_slot_queue_reload		   (NautilusWindowSlot *slot);
 
 GIcon*   nautilus_window_slot_get_icon                     (NautilusWindowSlot *slot);
 
+const gchar*   nautilus_window_slot_get_tooltip                  (NautilusWindowSlot *slot);
+
 NautilusToolbarMenuSections * nautilus_window_slot_get_toolbar_menu_sections (NautilusWindowSlot *slot);
 
 GMenuModel* nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self);
