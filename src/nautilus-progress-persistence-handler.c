@@ -174,11 +174,11 @@ progress_info_finished_cb (NautilusProgressInfo               *info,
 
     self->active_infos--;
 
-    windows = nautilus_application_get_windows(self->app);
+    windows = gtk_window_list_toplevels ();
 
     for (l = windows; l != NULL; l = l->next)
     {
-        if(gtk_window_has_toplevel_focus (l->data))
+        if(gtk_widget_get_visible (GTK_WIDGET(l->data)) && gtk_window_has_toplevel_focus (l->data))
         {
             is_any_window_active = TRUE;
             break;
@@ -197,6 +197,8 @@ progress_info_finished_cb (NautilusProgressInfo               *info,
             progress_persistence_handler_show_complete_notification (self);
         }
     }
+
+    g_list_free (windows);
 }
 
 static void
