@@ -169,22 +169,33 @@ static void
 progress_info_finished_cb (NautilusProgressInfo               *info,
                            NautilusProgressPersistenceHandler *self)
 {
-    GList *windows;
+    GList *windows, *l;
+    gboolean is_any_window_active = FALSE;
 
     self->active_infos--;
 
-    windows = nautilus_application_get_windows (self->app);
-    if (self->active_infos > 0)
+    windows = nautilus_application_get_windows(self->app);
+
+    for (l = windows; l != NULL; l = l->next)
     {
-        if (windows == NULL)
+        if(gtk_window_has_toplevel_focus (l->data))
+        {
+            is_any_window_active = TRUE;
+            break;
+        }
+    }
+
+    if(!is_any_window_active)
+    {
+        if (self->active_infos > 0)
         {
             progress_persistence_handler_update_notification (self);
         }
-    }
-    else if (windows == NULL)
-    {
-        progress_persistence_handler_hide_notification (self);
-        progress_persistence_handler_show_complete_notification (self);
+        else
+        {
+            progress_persistence_handler_hide_notification (self);
+            progress_persistence_handler_show_complete_notification (self);
+        }
     }
 }
 
