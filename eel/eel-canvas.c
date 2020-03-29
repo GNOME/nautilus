@@ -698,7 +698,7 @@ eel_canvas_item_lower (EelCanvasItem *item,
     g_return_if_fail (EEL_IS_CANVAS_ITEM (item));
     g_return_if_fail (positions >= 1);
 
-    if (!item->parent || positions == 0)
+    if (!item->parent)
     {
         return;
     }
