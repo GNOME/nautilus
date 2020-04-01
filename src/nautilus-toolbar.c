@@ -1341,9 +1341,9 @@ on_slot_toolbar_menu_sections_changed (NautilusToolbar    *self,
                             new_sections->extended_section, FALSE, FALSE, 0);
     }
 
-    gtk_widget_set_sensitive (self->view_button, new_sections->extended_section != NULL ||
-                                                 new_sections->zoom_section != NULL ||
-                                                 new_sections->supports_undo_redo);
+    gtk_widget_set_sensitive (self->view_button, (new_sections->extended_section != NULL ||
+                                                  new_sections->zoom_section != NULL ||
+                                                  new_sections->supports_undo_redo));
 }
 
 
