@@ -6,52 +6,13 @@ variables:
 
 stages:
     - triage
+    - image
     - test
-    - cross_environment
+    - cross environment
     - deploy
-
-.test_template: &distro_test
-  script:
-      - meson _build .
-      - cd _build
-      - ninja test
-
-.flatpak_gcovr:
-    extends: .flatpak
-    after_script:
-        # Generate coverage report
-        - cd _build
-        - flatpak build ../app gcovr
-            --html-details
-            -o coverage.html
-            --print-summary
-            --root=.
-            --exclude=src/
-            --exclude=../data/
-            --exclude=../eel/check-program.c
-            --exclude=../eel/eel-debug.c
-            --exclude=../eel/eel-lib-self-check-functions.c
-            --exclude=../eel/eel-self-checks.c
-            --exclude=../src/animation/
-            --exclude=../src/gtk/
-            --exclude=../src/nautilus-lib-self-check-functions.c
-            --exclude=../src/nautilus-self-check-functions.c
-            --exclude=../subprojects/libgd/
-            --exclude=../test/
-    coverage: '/^branches:.*\s+(\S+\%).*$/'
-    artifacts:
-        when: 'always'
-        # overwrite the path array of the '.flatpak' job
-        paths:
-            - "${BUNDLE}"
-            - '_build/meson-logs/meson-log.txt'
-            - '_build/meson-logs/testlog.txt'
-           #- '_build/coverage.html'
-        expire_in: 2 days
 
 flatpak devel:
     extends: '.flatpak'
-    stage: test
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
@@ -60,38 +21,29 @@ flatpak devel:
         RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
 
-review:
-    dependencies:
-        - 'flatpak devel'
-    extends: '.review'
-
-stop_review:
-    extends: '.stop_review'
-
 nightly:
     extends: '.publish_nightly'
     dependencies:
         - 'flatpak devel'
 
 fedora rawhide:
-    image: fedora:rawhide
-    stage: cross_environment
-    before_script:
-        - dnf update -y --nogpgcheck
-        - dnf install -y 'dnf-command(builddep)' redhat-rpm-config libseccomp-devel gcovr --nogpgcheck
-        - dnf builddep -y nautilus --nogpgcheck
-    <<: *distro_test
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: cross environment
+    script:
+        - meson _build .
+        - cd _build
+        - ninja test
     only:
         - schedules
         - web
         - tags
 
 flatpak master:
-    stage: cross_environment
+    stage: cross environment
     dependencies: []
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all -Db_coverage=true"
+        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
@@ -101,40 +53,55 @@ flatpak master:
         - web
         - tags
 
-.pages:
-  stage: deploy
-  dependencies:
-    - 'flatpak devel'
-  script:
-    - mkdir public
-    - mv _build/coverage.html ${CI_PROJECT_DIR}/public/index.html
-  artifacts:
-    paths:
-      - public
-
-  only:
-    - master
-  except:
-    variables:
-      # Don't run for translation commits
-      - $CI_COMMIT_TITLE =~ /^Update.*translation$/
-
-
 triage:
-  image: ruby:2.4
-  stage: triage
-  script:
-    - gem install gitlab-triage
-    - gitlab-triage --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
-  only:
-    - schedules
+    image: ruby:2.4
+    stage: triage
+    script:
+        - gem install gitlab-triage
+        - gitlab-triage --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
+    only:
+        - schedules
 
 triage:dry-run:
-  image: ruby:2.4
-  stage: triage
-  script:
-    - gem install gitlab-triage
-    - gitlab-triage --dry-run --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
-  only:
-    - schedules
-  when: manual
+    image: ruby:2.4
+    stage: triage
+    script:
+        - gem install gitlab-triage
+        - gitlab-triage --dry-run --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
+    only:
+        - schedules
+    when: manual
+
+style check:
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    stage: test
+    artifacts:
+        name: 'Style check artifacts'
+        expose_as: 'Get style check diff here'
+        when: on_failure
+        paths:
+            - 'uncrustify.diff'
+        expire_in: 14 days
+    script:
+        - gcc data/lineup-parameters.c `pkg-config --cflags --libs gio-2.0 gio-unix-2.0` -o data/lineup-parameters
+        - LANG=C.utf8 data/run-uncrustify.sh
+        - git diff --exit-code | tee uncrustify.diff
+
+update image:
+    variables:
+         DOCKER_TLS_CERTDIR: ""
+    image: docker:latest
+    stage: image
+    tags:
+        - privileged
+    services:
+        - docker:dind
+    script:
+        - docker build --tag $CI_REGISTRY_IMAGE .gitlab/
+        - docker tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
+        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
+        - docker push $CI_REGISTRY_IMAGE
+    when: manual
+    only:
+        variables:
+            - $CI_PROJECT_NAMESPACE == "GNOME"

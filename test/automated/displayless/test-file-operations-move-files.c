@@ -158,7 +158,7 @@ test_move_one_empty_directory_undo (void)
     g_autolist (GFile) files = NULL;
 
     create_one_empty_directory ("move");
- 
+
     root = g_file_new_for_path (g_get_tmp_dir ());
     g_assert_true (root != NULL);
 
@@ -1185,7 +1185,7 @@ test_move_first_hierarchy (void)
     g_assert_false (g_file_query_exists (file, NULL));
 
     file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));    
+    g_assert_false (g_file_query_exists (file, NULL));
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
@@ -1236,7 +1236,7 @@ test_move_first_hierarchy_undo (void)
     g_assert_true (g_file_query_exists (file, NULL));
 
     file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_true (g_file_query_exists (file, NULL));    
+    g_assert_true (g_file_query_exists (file, NULL));
 
     g_assert_true (g_file_query_exists (first_dir, NULL));
 
@@ -1287,7 +1287,7 @@ test_move_first_hierarchy_undo_redo (void)
     g_assert_false (g_file_query_exists (file, NULL));
 
     file = g_file_get_child (first_dir, "move_second_child");
-    g_assert_false (g_file_query_exists (file, NULL));    
+    g_assert_false (g_file_query_exists (file, NULL));
 
     g_assert_false (g_file_query_exists (first_dir, NULL));
 
@@ -1931,14 +1931,15 @@ setup_test_suite (void)
 }
 
 int
-main (int argc, char *argv[])
+main (int   argc,
+      char *argv[])
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
 
     undo_manager = nautilus_file_undo_manager_new ();
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
-    nautilus_ensure_extension_points();
+    nautilus_ensure_extension_points ();
 
     setup_test_suite ();
 

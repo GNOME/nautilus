@@ -72,7 +72,7 @@ handle_redo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
     NautilusFileUndoManager *undo_manager = NULL;
-    gint *handler_id = g_new0(int, 1);
+    gint *handler_id = g_new0 (int, 1);
 
     g_application_hold (g_application_get_default ());
 
@@ -91,7 +91,7 @@ handle_undo (NautilusDBusFileOperations *object,
              GDBusMethodInvocation      *invocation)
 {
     NautilusFileUndoManager *undo_manager = NULL;
-    gint *handler_id = g_new0(int, 1);
+    gint *handler_id = g_new0 (int, 1);
 
     g_application_hold (g_application_get_default ());
 

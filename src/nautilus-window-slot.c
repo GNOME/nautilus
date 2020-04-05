@@ -171,10 +171,10 @@ static void trash_state_changed_cb (NautilusTrashMonitor *monitor,
 static void update_search_information (NautilusWindowSlot *self);
 static void real_set_extensions_background_menu (NautilusWindowSlot *self,
                                                  GMenuModel         *menu);
-static GMenuModel* real_get_extensions_background_menu (NautilusWindowSlot *self);
+static GMenuModel *real_get_extensions_background_menu (NautilusWindowSlot *self);
 static void real_set_templates_menu (NautilusWindowSlot *self,
                                      GMenuModel         *menu);
-static GMenuModel* real_get_templates_menu (NautilusWindowSlot *self);
+static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
@@ -443,7 +443,7 @@ query_editor_activated_callback (NautilusQueryEditor *editor,
 
 static void
 query_editor_focus_view_callback (NautilusQueryEditor *editor,
-                                   NautilusWindowSlot  *self)
+                                  NautilusWindowSlot  *self)
 {
     NautilusWindowSlotPrivate *priv;
 
@@ -843,7 +843,7 @@ nautilus_window_slot_set_property (GObject      *object,
     }
 }
 
-static GMenuModel*
+static GMenuModel *
 real_get_extensions_background_menu (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -852,7 +852,7 @@ real_get_extensions_background_menu (NautilusWindowSlot *self)
     return priv->extensions_background_menu;
 }
 
-GMenuModel*
+GMenuModel *
 nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self)
 {
     GMenuModel *menu = NULL;
@@ -862,7 +862,7 @@ nautilus_window_slot_get_extensions_background_menu (NautilusWindowSlot *self)
     return menu;
 }
 
-static GMenuModel*
+static GMenuModel *
 real_get_templates_menu (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -871,7 +871,7 @@ real_get_templates_menu (NautilusWindowSlot *self)
     return priv->templates_menu;
 }
 
-GMenuModel*
+GMenuModel *
 nautilus_window_slot_get_templates_menu (NautilusWindowSlot *self)
 {
     GMenuModel *menu = NULL;
@@ -972,7 +972,7 @@ nautilus_window_slot_get_searching (NautilusWindowSlot *self)
     return priv->searching;
 }
 
-GList*
+GList *
 nautilus_window_slot_get_selection (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
@@ -1179,7 +1179,6 @@ update_search_information (NautilusWindowSlot *self)
         gtk_revealer_set_reveal_child (priv->search_info_label_revealer,
                                        label != NULL);
     }
-
 }
 
 static void

@@ -426,7 +426,7 @@ search_add_volumes_and_bookmarks (PendingSearch *search)
     g_object_unref (volume_monitor);
 }
 
-static NautilusQuery*
+static NautilusQuery *
 shell_query_new (gchar **terms)
 {
     NautilusQuery *query;

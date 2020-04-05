@@ -56,7 +56,7 @@ typedef enum
 
 #define BUTTON_DATA(x) ((ButtonData *) (x))
 
-static guint path_bar_signals [LAST_SIGNAL] = { 0 };
+static guint path_bar_signals[LAST_SIGNAL] = { 0 };
 
 #define NAUTILUS_PATH_BAR_BUTTON_MAX_WIDTH 175
 
@@ -211,7 +211,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
 
-    builder = gtk_builder_new();
+    builder = gtk_builder_new ();
 
     /* Add context menu for pathbar buttons */
     gtk_builder_add_from_resource (builder,
