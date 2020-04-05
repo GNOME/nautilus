@@ -1682,6 +1682,9 @@ action_select_all (GSimpleAction *action,
 
     view = NAUTILUS_FILES_VIEW (user_data);
 
+    if (nautilus_files_view_get_loading (view))
+      return;
+
     nautilus_files_view_select_all (view);
 }
 
