@@ -2823,6 +2823,10 @@ update_info_internal (NautilusFile *file,
     }
 
     mime_type = g_file_info_get_content_type (info);
+    if (mime_type == NULL)
+    {
+        mime_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_STANDARD_FAST_CONTENT_TYPE);
+    }
     if (g_strcmp0 (file->details->mime_type, mime_type) != 0)
     {
         changed = TRUE;
