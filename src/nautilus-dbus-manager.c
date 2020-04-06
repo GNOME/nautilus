@@ -516,7 +516,10 @@ undo_manager_changed (NautilusDBusManager *self)
 static void
 nautilus_dbus_manager_init (NautilusDBusManager *self)
 {
+    G_GNUC_BEGIN_IGNORE_DEPRECATIONS
     self->file_operations = nautilus_dbus_file_operations_skeleton_new ();
+    G_GNUC_END_IGNORE_DEPRECATIONS
+
     self->file_operations2 = nautilus_dbus_file_operations2_skeleton_new ();
 
     g_signal_connect (self->file_operations,
