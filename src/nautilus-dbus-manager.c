@@ -320,16 +320,17 @@ handle_move_uris2 (NautilusDBusFileOperations2  *object,
 
 /* FIXME: Needs a callback for maintaining alive the application */
 static void
-handle_empty_trash_internal (NautilusFileOperationsDBusData *dbus_data)
+handle_empty_trash_internal (gboolean                        ask_confirmation,
+                             NautilusFileOperationsDBusData *dbus_data)
 {
-    nautilus_file_operations_empty_trash (NULL, dbus_data);
+    nautilus_file_operations_empty_trash (NULL, ask_confirmation, dbus_data);
 }
 
 static gboolean
 handle_empty_trash (NautilusDBusFileOperations *object,
                     GDBusMethodInvocation      *invocation)
 {
-    handle_empty_trash_internal (NULL);
+    handle_empty_trash_internal (TRUE, NULL);
 
     nautilus_dbus_file_operations_complete_empty_trash (object, invocation);
     return TRUE; /* invocation was handled */
@@ -338,13 +339,14 @@ handle_empty_trash (NautilusDBusFileOperations *object,
 static gboolean
 handle_empty_trash2 (NautilusDBusFileOperations2 *object,
                      GDBusMethodInvocation       *invocation,
+                     gboolean                     ask_confirmation,
                      GVariant                    *platform_data)
 {
     g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
 
     dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
 
-    handle_empty_trash_internal (dbus_data);
+    handle_empty_trash_internal (ask_confirmation, dbus_data);
 
     nautilus_dbus_file_operations2_complete_empty_trash (object, invocation);
     return TRUE; /* invocation was handled */

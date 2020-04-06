@@ -59,6 +59,7 @@ void nautilus_file_operations_copy_move   (const GList                    *item_
                                            NautilusCopyCallback            done_callback,
                                            gpointer                        done_callback_data);
 void nautilus_file_operations_empty_trash (GtkWidget                      *parent_view,
+                                           gboolean                        ask_confirmation,
                                            NautilusFileOperationsDBusData *dbus_data);
 void nautilus_file_operations_new_folder  (GtkWidget                      *parent_view,
                                            NautilusFileOperationsDBusData *dbus_data,
