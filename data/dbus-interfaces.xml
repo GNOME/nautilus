@@ -23,6 +23,13 @@
 
 <node name="/" xmlns:doc="http://www.freedesktop.org/dbus/1.0/doc.dtd">
   <interface name='org.gnome.Nautilus.FileOperations'>
+
+    <!--
+      This interface has been deprecated. Please switch to
+      org.gnome.Nautilus.FileOperations2 interace.
+    -->
+    <annotation name="org.freedesktop.DBus.Deprecated" value="true"/>
+
     <method name='CopyURIs'>
       <arg type='as' name='SourceFilesURIList' direction='in'/>
       <arg type='s' name='DestinationDirectoryURI' direction='in'/>
