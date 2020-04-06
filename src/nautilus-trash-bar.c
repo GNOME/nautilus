@@ -168,7 +168,7 @@ trash_bar_response_cb (GtkInfoBar *infobar,
     {
         case TRASH_BAR_RESPONSE_EMPTY:
         {
-            nautilus_file_operations_empty_trash (window);
+            nautilus_file_operations_empty_trash (window, TRUE, NULL);
         }
         break;
 

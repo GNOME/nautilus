@@ -77,6 +77,7 @@ main (int   argc,
     nautilus_file_operations_copy_async (sources,
                                          dest,
                                          GTK_WINDOW (window),
+                                         NULL,
                                          copy_done, NULL);
 
     infos = nautilus_progress_info_manager_get_all_infos (manager);
