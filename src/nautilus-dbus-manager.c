@@ -164,8 +164,20 @@ create_folder_on_finished (GFile    *new_file,
 }
 
 static void
-handle_create_folder_internal (const char                     *uri,
+handle_create_folder_internal (const gchar                    *parent_uri,
+                               const gchar                    *new_folder_name,
                                NautilusFileOperationsDBusData *dbus_data)
+{
+    g_application_hold (g_application_get_default ());
+    nautilus_file_operations_new_folder (NULL, dbus_data,
+                                         parent_uri, new_folder_name,
+                                         create_folder_on_finished, NULL);
+}
+
+static gboolean
+handle_create_folder (NautilusDBusFileOperations *object,
+                      GDBusMethodInvocation      *invocation,
+                      const gchar                *uri)
 {
     g_autoptr (GFile) file = NULL;
     g_autoptr (GFile) parent_file = NULL;
@@ -177,18 +189,7 @@ handle_create_folder_internal (const char                     *uri,
     parent_file = g_file_get_parent (file);
     parent_file_uri = g_file_get_uri (parent_file);
 
-    g_application_hold (g_application_get_default ());
-    nautilus_file_operations_new_folder (NULL, dbus_data,
-                                         parent_file_uri, basename,
-                                         create_folder_on_finished, NULL);
-}
-
-static gboolean
-handle_create_folder (NautilusDBusFileOperations *object,
-                      GDBusMethodInvocation      *invocation,
-                      const gchar                *uri)
-{
-    handle_create_folder_internal (uri, NULL);
+    handle_create_folder_internal (parent_file_uri, basename, NULL);
 
     nautilus_dbus_file_operations_complete_create_folder (object, invocation);
     return TRUE; /* invocation was handled */
@@ -197,14 +198,15 @@ handle_create_folder (NautilusDBusFileOperations *object,
 static gboolean
 handle_create_folder2 (NautilusDBusFileOperations2 *object,
                        GDBusMethodInvocation       *invocation,
-                       const gchar                 *uri,
+                       const gchar                 *parent_uri,
+                       const gchar                 *new_folder_name,
                        GVariant                    *platform_data)
 {
     g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
 
     dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
 
-    handle_create_folder_internal (uri, dbus_data);
+    handle_create_folder_internal (parent_uri, new_folder_name, dbus_data);
 
     nautilus_dbus_file_operations2_complete_create_folder (object, invocation);
     return TRUE; /* invocation was handled */
