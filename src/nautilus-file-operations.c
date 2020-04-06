@@ -7976,6 +7976,7 @@ empty_trash_thread_func (GTask        *task,
 
 void
 nautilus_file_operations_empty_trash (GtkWidget                      *parent_view,
+                                      gboolean                        ask_confirmation,
                                       NautilusFileOperationsDBusData *dbus_data)
 {
     g_autoptr (GTask) task = NULL;
@@ -7991,7 +7992,7 @@ nautilus_file_operations_empty_trash (GtkWidget                      *parent_vie
     job = op_job_new (EmptyTrashJob, parent_window, dbus_data);
     job->trash_dirs = g_list_prepend (job->trash_dirs,
                                       g_file_new_for_uri ("trash:"));
-    job->should_confirm = TRUE;
+    job->should_confirm = ask_confirmation;
 
     inhibit_power_manager ((CommonJob *) job, _("Emptying Trash"));
 

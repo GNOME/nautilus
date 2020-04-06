@@ -1160,7 +1160,7 @@ action_empty_trash (GSimpleAction *action,
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
 
-    nautilus_file_operations_empty_trash (GTK_WIDGET (window), NULL);
+    nautilus_file_operations_empty_trash (GTK_WIDGET (window), TRUE, NULL);
 }
 
 /* Callback used for the "properties" menu item from the places sidebar */
