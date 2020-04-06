@@ -31,4 +31,9 @@ const char                     *nautilus_file_operations_dbus_data_get_parent_ha
 
 guint32                         nautilus_file_operations_dbus_data_get_timestamp     (NautilusFileOperationsDBusData *self);
 
+void                            nautilus_file_operations_dbus_data_set_ask_confirmation (NautilusFileOperationsDBusData *self,
+                                                                                         gboolean                        ask_confirmation);
+
+gboolean                        nautilus_file_operations_dbus_data_get_ask_confirmation (NautilusFileOperationsDBusData *self);
+
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(NautilusFileOperationsDBusData, nautilus_file_operations_dbus_data_unref)

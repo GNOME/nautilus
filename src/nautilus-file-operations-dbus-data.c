@@ -25,6 +25,8 @@ struct _NautilusFileOperationsDBusData
     char *parent_handle;
 
     guint32 timestamp;
+
+    gboolean ask_confirmation;
 };
 
 NautilusFileOperationsDBusData *
@@ -72,4 +74,17 @@ guint32
 nautilus_file_operations_dbus_data_get_timestamp (NautilusFileOperationsDBusData *self)
 {
     return self->timestamp;
+}
+
+void
+nautilus_file_operations_dbus_data_set_ask_confirmation (NautilusFileOperationsDBusData *self,
+                                                         gboolean                        ask_confirmation)
+{
+    self->ask_confirmation = ask_confirmation;
+}
+
+gboolean
+nautilus_file_operations_dbus_data_get_ask_confirmation (NautilusFileOperationsDBusData *self)
+{
+    return self->ask_confirmation;
 }

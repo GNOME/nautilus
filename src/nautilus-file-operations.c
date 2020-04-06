@@ -7991,7 +7991,15 @@ nautilus_file_operations_empty_trash (GtkWidget                      *parent_vie
     job = op_job_new (EmptyTrashJob, parent_window, dbus_data);
     job->trash_dirs = g_list_prepend (job->trash_dirs,
                                       g_file_new_for_uri ("trash:"));
-    job->should_confirm = TRUE;
+
+    if (dbus_data != NULL)
+    {
+        job->should_confirm = nautilus_file_operations_dbus_data_get_ask_confirmation (dbus_data);
+    }
+    else
+    {
+        job->should_confirm = TRUE;
+    }
 
     inhibit_power_manager ((CommonJob *) job, _("Emptying Trash"));
 

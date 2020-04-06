@@ -338,11 +338,14 @@ handle_empty_trash (NautilusDBusFileOperations *object,
 static gboolean
 handle_empty_trash2 (NautilusDBusFileOperations2 *object,
                      GDBusMethodInvocation       *invocation,
+                     gboolean                     ask_confirmation,
                      GVariant                    *platform_data)
 {
     g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
 
     dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
+    nautilus_file_operations_dbus_data_set_ask_confirmation (dbus_data,
+                                                             ask_confirmation);
 
     handle_empty_trash_internal (dbus_data);
 
