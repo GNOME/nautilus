@@ -2133,6 +2133,13 @@ create_and_set_up_tree_view (NautilusListView *view)
     view->details->drag_dest =
         nautilus_tree_view_drag_dest_new (view->details->tree_view);
 
+    /* Stop the tree view from performing select-all actions.
+     * It is desireable that the action is disabled while directory
+     * is loading.
+     */
+    g_signal_connect (view->details->tree_view, "select-all",
+                      G_CALLBACK (g_signal_stop_emission_by_name), "select-all");
+
     g_signal_connect_object (view->details->drag_dest,
                              "get-root-uri",
                              G_CALLBACK (get_root_uri_callback),
