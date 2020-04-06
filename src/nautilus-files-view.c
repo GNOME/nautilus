@@ -7758,7 +7758,8 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "select-all");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
-                                 !nautilus_files_view_is_empty (view));
+                                 !nautilus_files_view_is_empty (view) &&
+                                 !priv->loading);
 
     /* Toolbar menu actions */
     g_action_group_change_action_state (view_action_group,
