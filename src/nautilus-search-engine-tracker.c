@@ -287,7 +287,7 @@ search_finished_idle (gpointer user_data)
 }
 
 /* This is used to compensate rank if fts:rank is not set (resp. fts:match is
- * not used). The value was determined experimentally. I am conviced that
+ * not used). The value was determined experimentally. I am convinced that
  * fts:rank is currently always set to 5.0 in case of filename match.
  */
 #define FILENAME_RANK 5.0
@@ -372,10 +372,9 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                             " {"
                             " ?urn nfo:fileName ?filename ."
                             " FILTER(fn:contains(fn:lower-case(?filename), '%s')) ."
-                            " BIND(%f AS ?rank2) ."
+                            " BIND(" FILENAME_RANK " AS ?rank2) ."
                             " }",
-                            search_text,
-                            FILENAME_RANK);
+                            search_text);
 
     g_string_append_printf (sparql, " . FILTER( ");
 
