@@ -287,7 +287,7 @@ search_finished_idle (gpointer user_data)
 }
 
 /* This is used to compensate rank if fts:rank is not set (resp. fts:match is
- * not used). The value was determined experimentally. I am conviced that
+ * not used). The value was determined experimentally. I am convinced that
  * fts:rank is currently always set to 5 in case of filename match.
  */
 #define FILENAME_RANK 5
