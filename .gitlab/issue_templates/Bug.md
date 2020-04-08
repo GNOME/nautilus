@@ -4,10 +4,10 @@
     You can install the Nightly version in parallel with the regular version with these instructions:
 
     1. Make sure that Flatpak is installed (see https://flatpak.org/setup )
-    2. Copy and run the following command in a Terminal:
+    2. Copy and run the following commands in a Terminal:
 
     flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.NautilusDevel.flatpakref
-
+    flatpak run org.gnome.NautilusDevel 
 -->
 
 # Affected version
