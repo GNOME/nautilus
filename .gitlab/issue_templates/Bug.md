@@ -8,6 +8,7 @@
 
     flatpak install --from https://nightly.gnome.org/repo/appstream/org.gnome.NautilusDevel.flatpakref
 
+    3) The Nightly version can now be launched from Activities, or with this command: flatpak run org.gnome.NautilusDevel
 -->
 
 # Affected version
