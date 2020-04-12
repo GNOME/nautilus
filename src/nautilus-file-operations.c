@@ -7590,6 +7590,7 @@ retry:
         job->created_file = g_object_ref (dest);
         nautilus_file_changes_queue_file_added (dest);
         dest_uri = g_file_get_uri (dest);
+        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
     }
     else
     {
