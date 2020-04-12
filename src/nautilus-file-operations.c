@@ -7587,9 +7587,17 @@ retry:
 
     if (res)
     {
+        gboolean add_recent_res;
+
         job->created_file = g_object_ref (dest);
         nautilus_file_changes_queue_file_added (dest);
         dest_uri = g_file_get_uri (dest);
+        add_recent_res = gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
+
+        if(!add_recent_res)
+        {
+            g_warning ("Failed to add file to recent files store: '%s'", dest_uri);
+        }
     }
     else
     {
