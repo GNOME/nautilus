@@ -124,6 +124,7 @@ typedef struct
     GFile *created_file;
     NautilusCreateCallback done_callback;
     gpointer done_callback_data;
+    gboolean add_to_recent;
 } CreateJob;
 
 
@@ -7592,11 +7593,15 @@ retry:
         job->created_file = g_object_ref (dest);
         nautilus_file_changes_queue_file_added (dest);
         dest_uri = g_file_get_uri (dest);
-        add_recent_res = gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
 
-        if(!add_recent_res)
+        if(job->add_to_recent)
         {
-            g_warning ("Failed to add file to recent files store: '%s'", dest_uri);
+            add_recent_res = gtk_recent_manager_add_item (gtk_recent_manager_get_default (), dest_uri);
+
+            if(!add_recent_res)
+            {
+                g_warning ("Failed to add file to recent files store: '%s'", dest_uri);
+            }
         }
     }
     else
@@ -7793,6 +7798,7 @@ nautilus_file_operations_new_folder (GtkWidget                      *parent_view
     job->dest_dir = g_file_new_for_uri (parent_dir);
     job->filename = g_strdup (folder_name);
     job->make_dir = TRUE;
+    job->add_to_recent = FALSE;
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
@@ -7827,6 +7833,7 @@ nautilus_file_operations_new_file_from_template (GtkWidget              *parent_
     job->done_callback_data = done_callback_data;
     job->dest_dir = g_file_new_for_uri (parent_dir);
     job->filename = g_strdup (target_filename);
+    job->add_to_recent = TRUE;
 
     if (template_uri)
     {
@@ -7869,6 +7876,7 @@ nautilus_file_operations_new_file (GtkWidget              *parent_view,
     job->src_data = g_memdup (initial_contents, length);
     job->length = length;
     job->filename = g_strdup (target_filename);
+    job->add_to_recent = FALSE;
 
     if (!nautilus_file_undo_manager_is_operating ())
     {
