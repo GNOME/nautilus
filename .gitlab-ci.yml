@@ -34,9 +34,9 @@ fedora rawhide:
         - cd _build
         - ninja test
     only:
-        - schedules
         - web
-        - tags
+        - master
+    allow_failure: true
 
 flatpak master:
     stage: cross environment
@@ -52,6 +52,7 @@ flatpak master:
         - schedules
         - web
         - tags
+    allow_failure: true
 
 triage:
     image: ruby:2.4
@@ -103,5 +104,8 @@ update image:
         - docker push $CI_REGISTRY_IMAGE
     when: manual
     only:
+        - web
+        - master
+    except:
         variables:
-            - $CI_PROJECT_NAMESPACE == "GNOME"
+            - $CI_PROJECT_NAMESPACE != "GNOME"
