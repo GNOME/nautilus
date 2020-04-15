@@ -36,6 +36,7 @@ fedora rawhide:
     only:
         - web
         - master
+    allow_failure: true
 
 flatpak master:
     stage: cross environment
@@ -51,6 +52,7 @@ flatpak master:
         - schedules
         - web
         - tags
+    allow_failure: true
 
 triage:
     image: ruby:2.4
