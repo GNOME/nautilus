@@ -34,9 +34,8 @@ fedora rawhide:
         - cd _build
         - ninja test
     only:
-        - schedules
         - web
-        - tags
+        - master
 
 flatpak master:
     stage: cross environment
