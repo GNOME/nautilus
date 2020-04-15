@@ -102,5 +102,8 @@ update image:
         - docker push $CI_REGISTRY_IMAGE
     when: manual
     only:
+        - web
+        - master
+    except:
         variables:
-            - $CI_PROJECT_NAMESPACE == "GNOME"
+            - $CI_PROJECT_NAMESPACE != "GNOME"
