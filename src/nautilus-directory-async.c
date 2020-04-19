@@ -896,8 +896,7 @@ show_hidden_files_changed_callback (gpointer callback_data)
 }
 
 static gboolean
-should_skip_file (NautilusDirectory *directory,
-                  GFileInfo         *info)
+should_skip_file (GFileInfo *info)
 {
     static gboolean show_hidden_files_changed_callback_installed = FALSE;
     gboolean is_hidden;
@@ -992,8 +991,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
          * moving this into the actual callback instead of
          * waiting for the idle function.
          */
-        if (dir_load_state &&
-            !should_skip_file (directory, file_info))
+        if (dir_load_state && !should_skip_file (file_info))
         {
             dir_load_state->load_file_count += 1;
 
@@ -2547,7 +2545,7 @@ count_non_skipped_files (GList *list)
     for (node = list; node != NULL; node = node->next)
     {
         info = node->data;
-        if (!should_skip_file (NULL, info))
+        if (!should_skip_file (info))
         {
             count += 1;
         }
@@ -3243,7 +3241,7 @@ mime_list_one (MimeListState *state,
 {
     const char *mime_type;
 
-    if (should_skip_file (NULL, info))
+    if (should_skip_file (info))
     {
         g_object_unref (info);
         return;
