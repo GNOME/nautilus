@@ -16,7 +16,6 @@ flatpak devel:
     image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:master
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.Nautilus.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://flathub.org/repo/flathub.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
@@ -43,7 +42,6 @@ flatpak master:
     dependencies: []
     variables:
         MANIFEST_PATH: "build-aux/flatpak/org.gnome.NautilusMaster.yml"
-        MESON_ARGS: "-Dprofile=Devel -Dtests=all"
         FLATPAK_MODULE: "nautilus"
         RUNTIME_REPO: "https://nightly.gnome.org/gnome-nightly.flatpakrepo"
         APP_ID: "org.gnome.NautilusDevel"
