@@ -1,5 +1,7 @@
 #include "test-utilities.h"
 
+TrackerSparqlConnection *connection;
+
 static void
 hits_added_cb (NautilusSearchEngine *engine,
                GSList               *hits)
@@ -16,14 +18,12 @@ finished_cb (NautilusSearchEngine         *engine,
              NautilusSearchProviderStatus  status,
              gpointer                      user_data)
 {
-    TrackerSparqlConnection *connection;
     g_autofree gchar *sparql_query = NULL;
 
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (engine));
 
     g_print ("\nNautilus search engine tracker finished!\n");
 
-    connection = tracker_sparql_connection_get (NULL, NULL);
     sparql_query = g_strdup_printf ("DELETE WHERE { <nautilus-test-tracker> ?p ?o }");
     tracker_sparql_connection_update (connection,
                                       sparql_query,
@@ -43,10 +43,18 @@ main (int   argc,
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
-    TrackerSparqlConnection *connection;
     g_autofree gchar *sparql_query = NULL;
+    TrackerSparqlConnectionFlags fts_flags;
+    GError *error = NULL;
 
-    connection = tracker_sparql_connection_get (NULL, NULL);
+    /* Keep these in sync with Tracker's default FTS settings:
+     * https://gitlab.gnome.org/GNOME/tracker-miners/-/blob/master/data/org.freedesktop.Tracker.FTS.gschema.xml */
+    fts_flags = TRACKER_SPARQL_CONNECTION_FLAGS_FTS_ENABLE_UNACCENT |
+            TRACKER_SPARQL_CONNECTION_FLAGS_FTS_ENABLE_STOP_WORDS |
+            TRACKER_SPARQL_CONNECTION_FLAGS_FTS_IGNORE_NUMBERS;
+
+    connection = tracker_sparql_connection_new (fts_flags, NULL, NULL, NULL, &error);
+    g_assert_no_error (error);
 
     loop = g_main_loop_new (NULL, FALSE);
 
