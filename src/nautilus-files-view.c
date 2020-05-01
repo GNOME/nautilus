@@ -7791,10 +7791,6 @@ real_update_actions_state (NautilusFilesView *view)
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action),
                                  !nautilus_files_view_is_empty (view));
 
-    /* FIXME: We are assuming tracker indexes XDG folders and ignore the search
-     * setting. This should be fixed in a better way for Nautilus 3.30.
-     * See https://gitlab.gnome.org/GNOME/nautilus/issues/243
-     */
     current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
     current_uri = g_file_get_uri (current_location);
     current_directory_tracked = nautilus_tracker_directory_is_tracked (current_location);
