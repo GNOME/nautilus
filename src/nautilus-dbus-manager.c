@@ -115,6 +115,43 @@ handle_redo2 (NautilusDBusFileOperations2 *object,
     return TRUE; /* invocation was handled */
 }
 
+static gboolean
+handle_compress2 (NautilusDBusFileOperations2 *object,
+                  GDBusMethodInvocation       *invocation,
+                  const gchar                **uris,
+                  const gchar                 *destination,
+                  const guint                  format,
+                  const guint                  filter,
+                  GVariant                    *platform_data)
+{
+    AutoarFormat format_i = (AutoarFormat) format;
+    AutoarFilter filter_i = (AutoarFilter) filter;
+    gint idx;
+    g_autolist (GFile) source_files = NULL;
+    g_autoptr (GFile) output = NULL;
+    g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
+
+    dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
+    
+    for (idx = 0; uris[idx] != NULL; idx++) 
+    {
+        source_files = g_list_prepend(source_files,
+                                      g_file_new_for_uri(uris[idx]));
+    }
+    
+    output = g_file_new_for_path(destination);
+    nautilus_file_operations_compress(source_files,
+                                      output,
+                                      format_i,
+                                      filter_i,
+                                      NULL,
+                                      dbus_data,
+                                      NULL,
+                                      NULL);
+    nautilus_dbus_file_operations2_complete_compress_uris (object, invocation);
+    return TRUE;
+}
+
 static void
 handle_undo_internal (NautilusFileOperationsDBusData *dbus_data)
 {
@@ -593,6 +630,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations2,
                       "handle-redo",
                       G_CALLBACK (handle_redo2),
+                      self);
+    g_signal_connect (self->file_operations2,
+                      "handle-compress-uris",
+                      G_CALLBACK (handle_compress2),
                       self);
 }
 
