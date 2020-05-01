@@ -27,8 +27,7 @@ libeel_2_deps = [
   config_h,
   glib,
   gtk,
-  libm,
-  x11
+  libm
 ]
 
 libeel_2 = static_library(
