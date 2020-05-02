@@ -35,9 +35,20 @@ tests = [
   ]]
 ]
 
+tracker_miner_proxy = gnome.gdbus_codegen(
+  'tracker-miner-proxy',
+  'org.freedesktop.Tracker3.Miner.xml',
+  interface_prefix: 'org.freedesktop.Tracker3.',
+  namespace: 'Tracker')
+
 tracker_tests = [
   ['test-nautilus-search-engine-tracker', [
     'test-nautilus-search-engine-tracker.c',
+  ]],
+  ['test-tag-manager', [
+    'test-tag-manager.c',
+    'test-utilities-tracker.c',
+    tracker_miner_proxy[0], tracker_miner_proxy[1],
   ]],
 ]
 
