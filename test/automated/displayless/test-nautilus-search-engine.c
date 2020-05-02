@@ -1,5 +1,7 @@
 #include "test-utilities.h"
 
+static guint total_hits = 0;
+
 static void
 hits_added_cb (NautilusSearchEngine *engine,
                GSList               *hits)
@@ -8,6 +10,7 @@ hits_added_cb (NautilusSearchEngine *engine,
     for (gint hit_number = 0; hits != NULL; hits = hits->next, hit_number++)
     {
         g_print ("Hit %i: %s\n", hit_number, nautilus_search_hit_get_uri (hits->data));
+        total_hits += 1;
     }
 }
 
@@ -64,5 +67,8 @@ main (int   argc,
     nautilus_search_provider_start (NAUTILUS_SEARCH_PROVIDER (engine));
 
     g_main_loop_run (loop);
+
+    g_assert_cmpint (total_hits, ==, 3);
+
     return 0;
 }
