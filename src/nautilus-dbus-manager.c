@@ -33,6 +33,21 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_DBUS
 #include "nautilus-debug.h"
 
+static struct CompressFormat
+{
+    const gchar *name;
+    const guint id;
+    const AutoarFormat format;
+    const AutoarFilter filter;
+} compress_formats[] =
+{
+    { ".zip", 0, AUTOAR_FORMAT_ZIP, AUTOAR_FILTER_NONE },
+    { ".tar.xz", 1, AUTOAR_FORMAT_TAR, AUTOAR_FILTER_XZ },
+    { ".7z", 2, AUTOAR_FORMAT_7ZIP, AUTOAR_FILTER_NONE },
+    { ".tar.bz2", 3, AUTOAR_FORMAT_TAR, AUTOAR_FILTER_BZIP2 },
+    { NULL, 0, 0, 0}
+};
+
 struct _NautilusDBusManager
 {
     GObject parent;
@@ -120,16 +135,42 @@ handle_compress2 (NautilusDBusFileOperations2  *object,
                   GDBusMethodInvocation        *invocation,
                   const gchar                 **uris,
                   const gchar                  *destination,
-                  const guint                   format,
-                  const guint                   filter,
+                  const guint                   method,
                   GVariant                     *platform_data)
 {
-    AutoarFormat format_i = (AutoarFormat) format;
-    AutoarFilter filter_i = (AutoarFilter) filter;
     gint idx;
     g_autolist (GFile) source_files = NULL;
     g_autoptr (GFile) output = NULL;
     g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
+    struct CompressFormat *format = NULL;
+
+    for (format = compress_formats; format->name != NULL; format++)
+    {
+        if (format->id == method)
+        {
+            break;
+        }
+    }
+
+    if (format->name == NULL)
+    {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_INVALID_ARGS,
+                                               "Invalid method value %d",
+                                               method);
+        return TRUE;
+    }
+    if ((!autoar_format_is_valid (format->format)) ||
+        (!autoar_filter_is_valid (format->filter)))
+    {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                               "Method value %d not supported",
+                                               method);
+        return TRUE;
+    }
 
     dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
 
@@ -142,13 +183,38 @@ handle_compress2 (NautilusDBusFileOperations2  *object,
     output = g_file_new_for_path (destination);
     nautilus_file_operations_compress (source_files,
                                        output,
-                                       format_i,
-                                       filter_i,
+                                       format->format,
+                                       format->filter,
                                        NULL,
                                        dbus_data,
                                        NULL,
                                        NULL);
     nautilus_dbus_file_operations2_complete_compress_uris (object, invocation);
+    return TRUE;
+}
+
+static gboolean
+handle_get_supported_compress_methods (NautilusDBusFileOperations2 *object,
+                                       GDBusMethodInvocation       *invocation)
+{
+    GVariantBuilder *builder = NULL;
+    GVariant *variant = NULL;
+    struct CompressFormat *format = NULL;
+
+    builder = g_variant_builder_new (G_VARIANT_TYPE ("a{su}"));
+
+    for (format = compress_formats; format->name != NULL; format++)
+    {
+        if ((autoar_format_is_valid (format->format)) &&
+            (autoar_filter_is_valid (format->filter)))
+        {
+            g_variant_builder_add (builder, "{su}", format->name, format->id);
+        }
+    }
+
+    variant = g_variant_new ("a{su}", builder);
+
+    nautilus_dbus_file_operations2_complete_get_supported_compress_methods (object, invocation, variant);
     return TRUE;
 }
 
@@ -634,6 +700,10 @@ nautilus_dbus_manager_init (NautilusDBusManager *self)
     g_signal_connect (self->file_operations2,
                       "handle-compress-uris",
                       G_CALLBACK (handle_compress2),
+                      self);
+    g_signal_connect (self->file_operations2,
+                      "handle-get-supported-compress-methods",
+                      G_CALLBACK (handle_get_supported_compress_methods),
                       self);
 }
 

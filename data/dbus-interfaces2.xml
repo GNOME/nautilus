@@ -77,12 +77,32 @@
     <method name='Redo'>
       <arg type='a{sv}' name='platform_data' direction='in'/>
     </method>
+    <!--
+      CompressURIs
+      @uris: a list of uris to compress in a single file
+      @destination: the full path and name of the compressed file to create
+      @method: the compression method to use. It must be one of the values
+               returned by @GetSupportedCompressMethods
+      @platfor_data: extra data.
+    -->
     <method name='CompressURIs'>
       <arg type='as' name='uris' direction='in'/>
       <arg type='s' name='destination' direction='in'/>
-      <arg type='u' name='format' direction='in'/>
-      <arg type='u' name='filter' direction='in'/>
+      <arg type='u' name='method' direction='in'/>
       <arg type='a{sv}' name='platform_data' direction='in'/>
+    </method>
+
+    <!--
+      GetSupportedCompressMethods
+      @methods: an array with the supported compression methods. The string is the
+                textual name of the compression method, and the number is the value
+                to pass to the @CompressURIs method. Currently, the following known
+                values are defined: 0 = .zip, 1 = .tar.xz, 2 = .7z, 3 = .tar.bz2
+                But that doesn't mean that all are supported in an specific
+                system (e.g. a system lacking the 7zip code won't support .7z)
+    -->
+    <method name='GetSupportedCompressMethods'>
+      <arg type='a{su}' name='methods' direction='out'/>
     </method>
 
     <property name="UndoStatus" type="i" access="read"/>
