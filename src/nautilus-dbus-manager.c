@@ -131,6 +131,26 @@ handle_compress2 (NautilusDBusFileOperations2  *object,
     g_autoptr (GFile) output = NULL;
     g_autoptr (NautilusFileOperationsDBusData) dbus_data = NULL;
 
+    if (!autoar_format_is_valid (format_i))
+    {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                               "AutoarFormat value %d not supported",
+                                               format);
+        return TRUE;
+    }
+
+    if (!autoar_filter_is_valid (filter_i))
+    {
+        g_dbus_method_invocation_return_error (invocation,
+                                               G_DBUS_ERROR,
+                                               G_DBUS_ERROR_NOT_SUPPORTED,
+                                               "AutoarFilter value %d not supported",
+                                               filter);
+        return TRUE;
+    }
+
     dbus_data = nautilus_file_operations_dbus_data_new (platform_data);
 
     for (idx = 0; uris[idx] != NULL; idx++)

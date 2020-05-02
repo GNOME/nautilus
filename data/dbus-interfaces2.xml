@@ -77,6 +77,14 @@
     <method name='Redo'>
       <arg type='a{sv}' name='platform_data' direction='in'/>
     </method>
+    <!--
+      CompressURIs
+      @uris: a list of uris to compress in a single file
+      @destination: the full path and name of the compressed file to create
+      @format: the libarchive format to use. An 'enum AutoarFormat' value must be passed.
+      @filter: the libarchive filter to use. An 'enum AutoarFilter' value must be passed.
+      @platfor_data: extra data.
+    -->
     <method name='CompressURIs'>
       <arg type='as' name='uris' direction='in'/>
       <arg type='s' name='destination' direction='in'/>
