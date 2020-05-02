@@ -63,6 +63,8 @@ enum
     ALBUM_NAME_INDEX,
 } QueryMetadata;
 
+#define TRACKER_MINER_FS_BUSNAME "org.freedesktop.Tracker3.Miner.Files"
+
 static void on_cursor_callback (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data);
@@ -1056,21 +1058,21 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
     query = g_string_new ("SELECT "
                           "nfo:fileName(?file) "
-                          "nie:contentCreated(?file) "
-                          "year(nie:contentCreated(?file)) "
-                          "month(nie:contentCreated(?file)) "
-                          "day(nie:contentCreated(?file)) "
-                          "hours(nie:contentCreated(?file)) "
-                          "minutes(nie:contentCreated(?file)) "
-                          "seconds(nie:contentCreated(?file)) "
-                          "nfo:model(nfo:equipment(?file)) "
-                          "nmm:season(?file) "
-                          "nmm:episodeNumber(?file) "
-                          "nmm:trackNumber(?file) "
-                          "nmm:artistName(nmm:performer(?file)) "
-                          "nie:title(?file) "
-                          "nmm:albumTitle(nmm:musicAlbum(?file)) "
-                          "WHERE { ?file a nfo:FileDataObject. ?file nie:url ?url. ");
+                          "nie:contentCreated(?content) "
+                          "year(nie:contentCreated(?content)) "
+                          "month(nie:contentCreated(?content)) "
+                          "day(nie:contentCreated(?content)) "
+                          "hours(nie:contentCreated(?content)) "
+                          "minutes(nie:contentCreated(?content)) "
+                          "seconds(nie:contentCreated(?content)) "
+                          "nfo:model(nfo:equipment(?content)) "
+                          "nmm:seasonNumber(?content) "
+                          "nmm:episodeNumber(?content) "
+                          "nmm:trackNumber(?content) "
+                          "nmm:artistName(nmm:performer(?content)) "
+                          "nie:title(?content) "
+                          "nie:title(nmm:musicAlbum(?content)) "
+                          "WHERE { ?file a nfo:FileDataObject. ?file nie:url ?url. ?content nie:isStoredAs ?file. ");
 
     parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
 
@@ -1115,9 +1117,9 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
     selection_metadata = g_list_reverse (selection_metadata);
 
-    g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?file))");
+    g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?content))");
 
-    connection = tracker_sparql_connection_get (NULL, &error);
+    connection = tracker_sparql_connection_bus_new (TRACKER_MINER_FS_BUSNAME, NULL, NULL, &error);
     if (!connection)
     {
         if (error)

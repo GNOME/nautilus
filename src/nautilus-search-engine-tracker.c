@@ -55,6 +55,8 @@ enum
     LAST_PROP
 };
 
+#define TRACKER_MINER_FS_BUSNAME "org.freedesktop.Tracker3.Miner.Files"
+
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineTracker,
@@ -334,43 +336,53 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     mimetypes = nautilus_query_get_mime_types (tracker->query);
 
     sparql = g_string_new ("SELECT DISTINCT"
-                           " nie:url(?urn)"
+                           " ?url"
                            " xsd:double(COALESCE(?rank2, ?rank1)) AS ?rank"
-                           " nfo:fileLastModified(?urn)"
-                           " nfo:fileLastAccessed(?urn)");
+                           " nfo:fileLastModified(?file)"
+                           " nfo:fileLastAccessed(?file)");
+
+    if (tracker->fts_enabled && *search_text)
+    {
+        g_string_append (sparql, " fts:snippet(?content)");
+    }
+
+    g_string_append (sparql, "FROM tracker:FileSystem ");
 
     if (tracker->fts_enabled)
     {
-        g_string_append (sparql, " fts:snippet(?urn)");
+        g_string_append (sparql, "FROM tracker:Documents ");
     }
 
     g_string_append (sparql,
                      "\nWHERE {"
-                     "  ?urn a nfo:FileDataObject;"
+                     "  ?file a nfo:FileDataObject;"
                      "  nfo:fileLastModified ?mtime;"
                      "  nfo:fileLastAccessed ?atime;"
-                     "  tracker:available true;"
-                     "  nie:url ?url");
+                     "  nie:dataSource/tracker:available true;"
+                     "  nie:url ?url.");
 
     if (mimetypes->len > 0)
     {
-        g_string_append (sparql, "; nie:mimeType ?mime");
+        g_string_append (sparql,
+                         "  ?content nie:isStoredAs ?file;"
+                         "    nie:mimeType ?mime");
     }
 
     if (tracker->fts_enabled)
     {
         /* Use fts:match only for content search to not lose some filename results due to stop words. */
         g_string_append_printf (sparql,
-                                " {"
-                                " ?urn fts:match '\"nie:plainTextContent\" : \"%s\"*' ."
-                                " BIND(fts:rank(?urn) AS ?rank1) ."
+                                " { "
+                                " ?content nie:isStoredAs ?file ."
+                                " ?content fts:match \"%s*\" ."
+                                " BIND(fts:rank(?content) AS ?rank1) ."
                                 " } UNION",
                                 search_text);
     }
 
     g_string_append_printf (sparql,
                             " {"
-                            " ?urn nfo:fileName ?filename ."
+                            " ?file nfo:fileName ?filename ."
                             " FILTER(fn:contains(fn:lower-case(?filename), '%s')) ."
                             " BIND(" FILENAME_RANK " AS ?rank2) ."
                             " }",
@@ -561,7 +573,7 @@ nautilus_search_engine_tracker_init (NautilusSearchEngineTracker *engine)
 
     engine->hits_pending = g_queue_new ();
 
-    engine->connection = tracker_sparql_connection_get (NULL, &error);
+    engine->connection = tracker_sparql_connection_bus_new (TRACKER_MINER_FS_BUSNAME, NULL, NULL, &error);
 
     if (error)
     {
