@@ -1,0 +1,14 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix nautilus: <https://gitlab.gnome.org/GNOME/nautilus#> .
+@prefix tracker: <http://tracker.api.gnome.org/ontology/v3/tracker#> .
+
+nautilus: a tracker:Namespace, tracker:Ontology ;
+    tracker:prefix "nautilus" ;
+    tracker:lastModified "2020-05-03T10:00:00Z" .
+
+nautilus:starred a rdf:Property ;
+    rdfs:comment "Marks resources that are starred in Nautilus." ;
+    rdfs:domain rdfs:Resource ;
+    rdfs:range xsd:boolean .
