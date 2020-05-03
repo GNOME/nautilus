@@ -264,8 +264,6 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     g_object_unref (builder);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self->buttons_box)),
-                                 GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "nautilus-path-bar");
 
@@ -531,7 +529,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 
         button_data = BUTTON_DATA (self->button_list->data);
 
-        gtk_box_remove (GTK_BOX (self->buttons_box), button_data->button);
+        gtk_box_remove (GTK_BOX (self->buttons_box), button_data->container);
 
         self->button_list = g_list_remove (self->button_list, button_data);
         button_data_free (button_data);
@@ -851,19 +849,12 @@ nautilus_path_bar_update_button_appearance (ButtonData *button_data,
     if (icon != NULL)
     {
         gtk_image_set_from_gicon (GTK_IMAGE (button_data->image), icon, GTK_ICON_SIZE_MENU);
-        gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
-                                     "image-button");
         gtk_widget_show (GTK_WIDGET (button_data->image));
         g_object_unref (icon);
     }
     else
     {
         gtk_widget_hide (GTK_WIDGET (button_data->image));
-        if (!current_dir)
-        {
-            gtk_style_context_remove_class (gtk_widget_get_style_context (button_data->button),
-                                            "image-button");
-        }
     }
 }
 
@@ -874,7 +865,6 @@ nautilus_path_bar_update_button_state (ButtonData *button_data,
     if (button_data->label != NULL)
     {
         gtk_label_set_label (GTK_LABEL (button_data->label), NULL);
-        gtk_label_set_use_markup (GTK_LABEL (button_data->label), current_dir);
     }
 
     nautilus_path_bar_update_button_appearance (button_data, current_dir);
@@ -1043,7 +1033,7 @@ button_data_file_changed (NautilusFile *file,
 
                     data = BUTTON_DATA (self->button_list->data);
 
-                    gtk_box_remove (GTK_BOX (self->buttons_box), data->button);
+                    gtk_box_remove (GTK_BOX (self->buttons_box), data->container);
                     self->button_list = g_list_remove (self->button_list, data);
                     button_data_free (data);
                 }
@@ -1078,8 +1068,8 @@ make_button_data (NautilusPathBar *self,
                   gboolean         current_dir)
 {
     GFile *path;
+    GtkWidget *child = NULL;
     ButtonData *button_data;
-    GtkStyleContext *style_context;
 
     path = nautilus_file_get_location (file);
 
@@ -1090,8 +1080,6 @@ make_button_data (NautilusPathBar *self,
     button_data->button = gtk_button_new ();
     gtk_widget_set_focus_on_click (button_data->button, FALSE);
 
-    style_context = gtk_widget_get_style_context (button_data->button);
-    gtk_style_context_add_class (style_context, "text-button");
     /* TODO update button type when xdg directories change */
 
     button_data->image = gtk_image_new ();
@@ -1110,13 +1098,13 @@ make_button_data (NautilusPathBar *self,
             button_data->label = gtk_label_new (NULL);
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
-            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_button_set_child (GTK_BUTTON (button_data->button), button_data->container);
+            gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->image, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_append (GTK_BOX (child), button_data->image);
+            gtk_box_append (GTK_BOX (child), button_data->label);
+            gtk_box_append (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
 
@@ -1124,15 +1112,20 @@ make_button_data (NautilusPathBar *self,
         /* Fall through */
         default:
         {
+            GtkWidget *separator_label;
+
+            separator_label = gtk_label_new (G_DIR_SEPARATOR_S);
+            gtk_style_context_add_class (gtk_widget_get_style_context (separator_label), "dim-label");
             button_data->label = gtk_label_new (NULL);
+            child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->disclosure_arrow = gtk_image_new_from_icon_name ("pan-down-symbolic",
                                                                           GTK_ICON_SIZE_MENU);
-            gtk_widget_set_margin_start (button_data->disclosure_arrow, 0);
-            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_button_set_child (GTK_BUTTON (button_data->button), button_data->container);
+            button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+            gtk_box_append (GTK_BOX (button_data->container), separator_label);
+            gtk_box_append (GTK_BOX (button_data->container), button_data->button);
 
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->disclosure_arrow, FALSE, FALSE, 0);
+            gtk_box_append (GTK_BOX (child), button_data->label);
+            gtk_box_append (GTK_BOX (child), button_data->disclosure_arrow);
         }
         break;
     }
@@ -1143,12 +1136,25 @@ make_button_data (NautilusPathBar *self,
         gtk_widget_show (button_data->disclosure_arrow);
         gtk_popover_set_relative_to (self->current_view_menu_popover, button_data->button);
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
-                                     "image-button");
+                                     "current-dir");
     }
 
     if (button_data->label != NULL)
     {
+        PangoAttrList *attrs;
+
         gtk_label_set_single_line_mode (GTK_LABEL (button_data->label), TRUE);
+
+        attrs = pango_attr_list_new ();
+        pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
+        gtk_label_set_attributes (GTK_LABEL (button_data->label), attrs);
+        pango_attr_list_unref (attrs);
+
+        if (!current_dir)
+        {
+            gtk_style_context_add_class (gtk_widget_get_style_context (button_data->label), "dim-label");
+            gtk_style_context_add_class (gtk_widget_get_style_context (button_data->image), "dim-label");
+        }
     }
 
     if (button_data->path == NULL)
@@ -1170,7 +1176,8 @@ make_button_data (NautilusPathBar *self,
                               button_data);
     }
 
-    gtk_widget_show_all (button_data->button);
+    gtk_button_set_child (GTK_BUTTON (button_data->button), child);
+    gtk_widget_show_all (button_data->container);
 
     nautilus_path_bar_update_button_state (button_data, current_dir);
 
@@ -1242,9 +1249,9 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
 
     for (l = self->button_list; l; l = l->next)
     {
-        GtkWidget *button;
-        button = BUTTON_DATA (l->data)->button;
-        gtk_box_append (GTK_BOX (self->buttons_box), button);
+        GtkWidget *container;
+        container = BUTTON_DATA (l->data)->container;
+        gtk_box_append (GTK_BOX (self->buttons_box), container);
     }
 }
 

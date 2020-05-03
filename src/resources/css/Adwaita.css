@@ -58,24 +58,25 @@
   border-radius: 5px;
   border: 1px @borders solid;
   background-color: @theme_bg_color;
-  padding-right: 6px;
 }
 
 .nautilus-path-bar button {
+  background-image: none;
+  box-shadow: none;
+  border-radius: 7px;
+  border-width: 0px;
   margin: 0px;
+  -gtk-icon-shadow: none;
 }
 
-.nautilus-path-bar button:first-child {
-  border-width: 0px 1px 0px 0px;
-  border-radius: 3.5px 0px 0px 3.5px;
+.nautilus-path-bar button:not(.current-dir):not(:backdrop):hover {
+  background: alpha(@theme_fg_color, 0.15);
+  box-shadow: inset 0 0 0 2px @theme_bg_color;
 }
 
-.nautilus-path-bar button:not(:first-child) {
-  border-width: 0px 1px 0px 1px;
-  border-radius: 0px 0px 0px 0px;
+.nautilus-path-bar button:not(.current-dir):not(:backdrop):hover * {
+  opacity: 1;
 }
-
-.nautilus-path-bar button:not(:checked) image { opacity: 0.8; } /* dim the icon when not checked */
 
 /* Make the tags fit into the box */
 entry.search > * {
