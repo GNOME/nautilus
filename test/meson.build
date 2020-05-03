@@ -15,6 +15,7 @@
 # the test sources are scattered.
 test_env = [
   'GSETTINGS_SCHEMA_DIR=@0@'.format(join_paths(meson.build_root(), 'data')),
+  'NAUTILUS_TEST_DATADIR=@0@'.format(join_paths(meson.source_root(), 'data')),
   'RUNNING_TESTS=@0@'.format('TRUE')
 ]
 

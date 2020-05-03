@@ -37,7 +37,7 @@ tests = [
 
 tracker_tests = [
   ['test-nautilus-search-engine-tracker', [
-    'test-nautilus-search-engine-tracker.c'
+    'test-nautilus-search-engine-tracker.c',
   ]],
 ]
 
@@ -54,13 +54,16 @@ foreach t: tests
   )
 endforeach
 
+
+
 # Tests that read and write from the Tracker index are run using 'tracker-sandbox'
 # script to use a temporary instance of tracker-miner-fs instead of the session one.
 foreach t: tracker_tests
+  test_exe = executable(t[0], t[1], files('test-utilities.c'), dependencies: libnautilus_dep)
   test(
     t[0],
     tracker_sandbox,
-    args: [executable(t[0], t[1], files('test-utilities.c'), dependencies: libnautilus_dep)],
+    args: ['--store-tmpdir', '--index-recursive-tmpdir', test_exe],
     env: [
       test_env,
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
