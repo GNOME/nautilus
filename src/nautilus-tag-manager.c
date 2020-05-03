@@ -246,7 +246,7 @@ on_update_callback (GObject      *object,
     tracker_sparql_connection_update_finish (connection, result, &error);
 
     if (error == NULL ||
-        (error != NULL && error->code != G_IO_ERROR_CANCELLED))
+        (error != NULL && error->code == G_IO_ERROR_CANCELLED))
     {
         for (l = data->selection; l != NULL; l = l->next)
         {
@@ -330,7 +330,7 @@ get_query_status (TrackerSparqlCursor *cursor,
         g_clear_object (&cursor);
 
         if (error == NULL ||
-            (error != NULL && error->code != G_IO_ERROR_CANCELLED))
+            (error != NULL && error->code == G_IO_ERROR_CANCELLED))
         {
             if (op_type == GET_IDS_FOR_URLS)
             {
