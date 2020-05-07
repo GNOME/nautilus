@@ -53,6 +53,7 @@ static GDebugKey keys[] =
     { "Window", NAUTILUS_DEBUG_WINDOW },
     { "Undo", NAUTILUS_DEBUG_UNDO },
     { "Thumbnails", NAUTILUS_DEBUG_THUMBNAILS },
+    { "TagManager", NAUTILUS_DEBUG_TAG_MANAGER },
     { 0, }
 };
 

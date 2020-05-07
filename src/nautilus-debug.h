@@ -47,6 +47,7 @@ typedef enum {
   NAUTILUS_DEBUG_SEARCH = 1 << 16,
   NAUTILUS_DEBUG_SEARCH_HIT = 1 << 17,
   NAUTILUS_DEBUG_THUMBNAILS = 1 << 18,
+  NAUTILUS_DEBUG_TAG_MANAGER = 1 << 19,
 } DebugFlags;
 
 void nautilus_debug_set_flags (DebugFlags flags);
