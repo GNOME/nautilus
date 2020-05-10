@@ -43,6 +43,25 @@ modules:
   sources:
   - type: git
     url: https://gitlab.gnome.org/GNOME/gexiv2.git
+- name: tracker-miners
+  buildsystem: meson
+  cleanup:
+  - "/etc"
+  - "/lib"
+  - "/libexec/tracker-3"
+  - "/share/dbus-1/services/org.freedesktop.Tracker3.Writeback.service"
+  config-opts:
+  - "-Dextract=true"
+  - "-Dgeneric_media_extractor=none"
+  - "-Dman=false"
+  - "-Dminer_fs=true"
+  - "-Dminer_rss=false"
+  - "-Dsystemd_user_services=false"
+  - "-Dwriteback=false"
+  sources:
+  - type: git
+    url: https://gitlab.gnome.org/GNOME/tracker-miners.git
+    branch: master
 - name: gnome-desktop
   buildsystem: meson
   config-opts:
