@@ -59,30 +59,51 @@
       ]
     },
     {
-      "name": "intltool",
-      "cleanup": [ "*" ],
+      "name": "tracker-miners",
+      "buildsystem": "meson",
+      "cleanup": [
+        "/etc",
+        "/lib",
+        "/libexec",
+        "/share/dbus-1/services/org.freedesktop.Tracker3.Miner.Extract.service",
+        "/share/dbus-1/services/org.freedesktop.Tracker3.Writeback.service",
+        "/share/tracker/miners/org.freedesktop.Tracker3.Miner.Extract.service",
+        "/share/tracker-miners",
+        "/share/glib-2.0/schemas/org.freedesktop.Tracker3.Extract.gschema.xml",
+        "/share/glib-2.0/schemas/org.freedesktop.Tracker3.Writeback.gschema.xml"
+      ],
+      "config-opts": [
+        "-Dextract=false",
+        "-Dgeneric_media_extractor=none",
+        "-Dman=false",
+        "-Dminer_apps=false",
+        "-Dminer_fs=true",
+        "-Dminer_rss=false",
+        "-Dsystemd_user_services=false",
+        "-Dwriteback=false"
+      ],
       "sources": [
         {
-          "type": "archive",
-          "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
-          "sha256": "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
+          "type": "git",
+          "url": "https://gitlab.gnome.org/GNOME/tracker-miners.git",
+          "branch": "master"
         }
       ]
     },
     {
-        "name": "gnome-desktop",
-        "buildsystem": "meson",
-        "config-opts": [
-          "-Ddebug_tools=false",
-          "-Ddesktop_docs=false",
-          "-Dudev=disabled"
-        ],
-        "sources": [
-          {
-            "type": "git",
-            "url": "https://gitlab.gnome.org/GNOME/gnome-desktop.git"
-          }
-        ]
+      "name": "gnome-desktop",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Ddebug_tools=false",
+        "-Ddesktop_docs=false",
+        "-Dudev=disabled"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://gitlab.gnome.org/GNOME/gnome-desktop.git"
+        }
+      ]
     },
     {
       "name": "gnome-autoar",
