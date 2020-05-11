@@ -2364,14 +2364,6 @@ nautilus_file_compare_location (NautilusFile *file_1,
     return (gint) res;
 }
 
-gboolean
-nautilus_file_is_local (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return nautilus_directory_is_local (file->details->directory);
-}
-
 /**
  * nautilus_file_has_local_path:
  *
@@ -6021,10 +6013,13 @@ nautilus_file_can_get_permissions (NautilusFile *file)
 gboolean
 nautilus_file_can_set_permissions (NautilusFile *file)
 {
+    g_autoptr (GFile) location = NULL;
     uid_t user_id;
 
+    location = nautilus_file_get_location (file);
+
     if (file->details->uid != -1 &&
-        nautilus_file_is_local (file))
+        g_file_is_native (location))
     {
         /* Check the user. */
         user_id = geteuid ();
