@@ -5236,12 +5236,8 @@ get_strings_for_environment_variables (NautilusFilesView  *view,
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    /* We need to check that the directory uri starts with "file:" since
-     * nautilus_directory_is_local returns FALSE for nfs.
-     */
     directory_uri = nautilus_directory_get_uri (priv->model);
-    if (g_str_has_prefix (directory_uri, "file:") ||
-        eel_uri_is_trash (directory_uri) ||
+    if (nautilus_directory_is_local_or_fuse (priv->model) ||
         eel_uri_is_search (directory_uri))
     {
         *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
