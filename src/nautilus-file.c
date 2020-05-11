@@ -4744,13 +4744,57 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
     return FALSE;
 }
 
+static gboolean
+get_speed_tradeoff_preference_for_file (NautilusFile               *file,
+                                        NautilusSpeedTradeoffValue  value)
+{
+    GFilesystemPreviewType use_preview;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    use_preview = nautilus_file_get_filesystem_use_preview (file);
+
+    if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+    {
+        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
+        {
+            return FALSE;
+        }
+        else
+        {
+            return TRUE;
+        }
+    }
+    else if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
+    {
+        return FALSE;
+    }
+    else if (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY)
+    {
+        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
+        {
+            /* file system says to never preview anything */
+            return FALSE;
+        }
+        else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
+        {
+            /* file system says we should treat file as if it's local */
+            return TRUE;
+        }
+        else
+        {
+            /* only local files */
+            return !nautilus_file_is_remote (file);
+        }
+    }
+
+    return FALSE;
+}
+
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
     const char *mime_type;
-    GFilesystemPreviewType use_preview;
-
-    use_preview = nautilus_file_get_filesystem_use_preview (file);
 
     mime_type = file->details->mime_type;
     if (mime_type == NULL)
@@ -4768,41 +4812,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
         return FALSE;
     }
 
-    if (show_file_thumbs == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-    else if (show_file_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER)
-    {
-        return FALSE;
-    }
-    else
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            /* file system says to never thumbnail anything */
-            return FALSE;
-        }
-        else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
-        {
-            /* file system says we should treat file as if it's local */
-            return TRUE;
-        }
-        else
-        {
-            /* only local files */
-            return !nautilus_file_is_remote (file);
-        }
-    }
-
-    return FALSE;
+    return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);
 }
 
 static gboolean
@@ -5658,52 +5668,6 @@ static void
 show_directory_item_count_changed_callback (gpointer callback_data)
 {
     show_directory_item_count = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
-}
-
-static gboolean
-get_speed_tradeoff_preference_for_file (NautilusFile               *file,
-                                        NautilusSpeedTradeoffValue  value)
-{
-    GFilesystemPreviewType use_preview;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    use_preview = nautilus_file_get_filesystem_use_preview (file);
-
-    if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-
-    if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
-    {
-        return FALSE;
-    }
-
-    g_assert (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-
-    if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-    {
-        /* file system says to never preview anything */
-        return FALSE;
-    }
-    else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
-    {
-        /* file system says we should treat file as if it's local */
-        return TRUE;
-    }
-    else
-    {
-        /* only local files */
-        return !nautilus_file_is_remote (file);
-    }
 }
 
 gboolean
