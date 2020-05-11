@@ -45,6 +45,13 @@ typedef struct
     GList *forward_list;
 } RestoreTabData;
 
+typedef struct
+{
+    GList *back_list;
+    GList *forward_list;
+    NautilusBookmark *current_location_bookmark;
+} NautilusNavigationState;
+
 struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
 
@@ -75,6 +82,14 @@ void nautilus_window_slot_open_location_full              (NautilusWindowSlot   
                                                            GFile                   *location,
                                                            NautilusWindowOpenFlags  flags,
                                                            GList                   *new_selection);
+
+void nautilus_window_slot_open_location_set_nav_state      (NautilusWindowSlot        *slot,
+                                                            GFile                     *location,
+                                                            NautilusWindowOpenFlags    flags,
+                                                            GList                     *new_selection,
+                                                            NautilusLocationChangeType change_type,
+                                                            NautilusNavigationState   *navigation_state,
+                                                            guint                      distance);
 
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
@@ -132,3 +147,8 @@ NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
+
+void nautilus_window_slot_back_or_forward                  (NautilusWindowSlot     *slot,
+                                                            gboolean                back,
+                                                            guint                   distance,
+                                                            NautilusWindowOpenFlags flags);
