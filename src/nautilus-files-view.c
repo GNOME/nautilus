@@ -5135,7 +5135,7 @@ get_file_names_as_parameter_array (GList             *selection,
     {
         file = NAUTILUS_FILE (node->data);
 
-        if (!nautilus_file_is_local (file))
+        if (!nautilus_file_is_local_or_fuse (file))
         {
             parameters[i] = NULL;
             g_strfreev (parameters);
