@@ -775,19 +775,6 @@ nautilus_directory_new (GFile *location)
  *          this directory. Otherwise, %FALSE.
  */
 gboolean
-nautilus_directory_is_local (NautilusDirectory *directory)
-{
-    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-    if (directory->details->location == NULL)
-    {
-        return TRUE;
-    }
-
-    return g_file_is_native (directory->details->location);
-}
-
-gboolean
 nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
 {
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);

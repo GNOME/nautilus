@@ -1356,7 +1356,7 @@ check_force_reload (GFile                      *location,
     }
     else
     {
-        force_reload = !nautilus_directory_is_local (directory);
+        force_reload = !g_file_is_native (location);
     }
 
     /* We need to invalidate file attributes as well due to how mounting works
