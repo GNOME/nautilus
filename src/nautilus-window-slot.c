@@ -226,6 +226,12 @@ nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
     data->forward_list = forward_list;
     data->file = nautilus_file_get (priv->location);
     data->view_before_search = priv->view_mode_before_search;
+    data->current_location_bookmark = priv->current_location_bookmark;
+
+    if (data->current_location_bookmark != NULL)
+    {
+        g_object_ref (data->current_location_bookmark);
+    }
 
     return data;
 }
@@ -2280,12 +2286,11 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 }
 
 void
-nautilus_window_back_or_forward (NautilusWindow          *window,
-                                 gboolean                 back,
-                                 guint                    distance,
-                                 NautilusWindowOpenFlags  flags)
+nautilus_window_slot_back_or_forward (NautilusWindowSlot      *self,
+                                      gboolean                 back,
+                                      guint                    distance,
+                                      NautilusWindowOpenFlags  flags)
 {
-    NautilusWindowSlot *self;
     GList *list;
     GFile *location;
     guint len;
@@ -2293,7 +2298,6 @@ nautilus_window_back_or_forward (NautilusWindow          *window,
     GFile *old_location;
     NautilusWindowSlotPrivate *priv;
 
-    self = nautilus_window_get_active_slot (window);
     priv = nautilus_window_slot_get_instance_private (self);
     list = back ? priv->back_list : priv->forward_list;
 
@@ -3727,4 +3731,41 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->query_editor;
+}
+
+void
+nautilus_window_slot_open_location_set_nav_state (NautilusWindowSlot         *slot,
+                                                  GFile                      *location,
+                                                  NautilusWindowOpenFlags     flags,
+                                                  GList                      *new_selection,
+                                                  NautilusLocationChangeType  change_type,
+                                                  RestoreTabData             *navigation_state,
+                                                  guint                       distance)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (slot);
+
+    if (priv->location != NULL)
+    {
+        g_object_unref (priv->location);
+    }
+
+    g_list_free_full (priv->back_list, g_object_unref);
+    g_list_free_full (priv->forward_list, g_object_unref);
+
+    if (priv->current_location_bookmark != NULL)
+    {
+        g_object_unref (priv->current_location_bookmark);
+    }
+
+    priv->location = g_object_ref (nautilus_file_get_location (navigation_state->file));
+    priv->back_list = g_list_copy_deep (navigation_state->back_list, (GCopyFunc) g_object_ref, NULL);
+    priv->forward_list = g_list_copy_deep (navigation_state->forward_list, (GCopyFunc) g_object_ref, NULL);
+    priv->current_location_bookmark = navigation_state->current_location_bookmark;
+    g_object_ref (priv->current_location_bookmark);
+    priv->view_mode_before_search = navigation_state->view_before_search;
+
+    begin_location_change (slot, location, NULL, new_selection,
+                           change_type, distance, NULL);
 }
