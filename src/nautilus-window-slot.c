@@ -2280,10 +2280,10 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 }
 
 void
-nautilus_window_back_or_forward (NautilusWindow          *window,
-                                 gboolean                 back,
-                                 guint                    distance,
-                                 NautilusWindowOpenFlags  flags)
+nautilus_window_slot_back_or_forward (NautilusWindow          *window,
+                                      gboolean                 back,
+                                      guint                    distance,
+                                      NautilusWindowOpenFlags  flags)
 {
     NautilusWindowSlot *self;
     GList *list;
@@ -3727,4 +3727,85 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->query_editor;
+}
+
+void
+nautilus_window_slot_open_location_set_nav_state (NautilusWindowSlot         *slot,
+                                                  GFile                      *location,
+                                                  NautilusWindowOpenFlags     flags,
+                                                  GList                      *new_selection,
+                                                  NautilusLocationChangeType  change_type,
+                                                  NautilusNavigationState    *navigation_state,
+                                                  guint                       distance)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (slot);
+
+    begin_location_change (slot, location, NULL, new_selection,
+                           NAUTILUS_LOCATION_CHANGE_STANDARD, 0, NULL);
+
+    g_list_free_full (priv->back_list, g_object_unref);
+    g_list_free_full (priv->forward_list, g_object_unref);
+
+    if (priv->current_location_bookmark != NULL)
+    {
+        g_object_unref (priv->current_location_bookmark);
+    }
+
+    if ((change_type == NAUTILUS_LOCATION_CHANGE_BACK) || (change_type == NAUTILUS_LOCATION_CHANGE_FORWARD))
+    {
+        GList **list_ptr, **other_list_ptr;
+        GList *list, *other_list, *link;
+        NautilusBookmark *bookmark;
+        gint i;
+        gboolean back;
+
+        back = (change_type == NAUTILUS_LOCATION_CHANGE_BACK) ? TRUE : FALSE;
+
+        priv->back_list = g_list_copy_deep (navigation_state->back_list, (GCopyFunc) g_object_ref, NULL);
+        priv->forward_list = g_list_copy_deep (navigation_state->forward_list, (GCopyFunc) g_object_ref, NULL);
+
+        list_ptr = back ? &priv->back_list : &priv->forward_list;
+        other_list_ptr = back ? &priv->forward_list : &priv->back_list;
+        list = *list_ptr;
+        other_list = *other_list_ptr;
+
+        other_list = g_list_prepend (other_list, navigation_state->current_location_bookmark);
+
+        g_object_ref (other_list->data);
+
+        g_assert (g_list_length (list) > distance);
+
+        for (i = 0; i < distance; ++i)
+        {
+            bookmark = NAUTILUS_BOOKMARK (list->data);
+            list = g_list_remove (list, bookmark);
+            other_list = g_list_prepend (other_list, bookmark);
+        }
+
+        /* One bookmark falls out of back/forward lists */
+        link = list;
+        list = g_list_remove_link (list, link);
+        g_object_unref (link->data);
+        g_list_free_1 (link);
+
+        *list_ptr = list;
+        *other_list_ptr = other_list;
+    }
+    else
+    {
+        g_assert (navigation_state->forward_list == NULL);
+
+        priv->back_list = g_list_copy_deep (navigation_state->back_list, (GCopyFunc) g_object_ref, NULL);
+        priv->forward_list = NULL;
+
+        priv->back_list = g_list_prepend (priv->back_list, navigation_state->current_location_bookmark);
+        g_object_ref (priv->back_list->data);
+    }
+
+    priv->current_location_bookmark = navigation_state->current_location_bookmark;
+    g_object_ref (priv->current_location_bookmark);
+
+    priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
