@@ -612,6 +612,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 {
     NautilusWindowSlot *active_slot;
     gboolean new_tab_at_end;
+    RestoreTabData *navigation_state = NULL;
 
     /* The location owner can be one of the slots requesting to handle an
      * unhandled location. But this slot can be destroyed when switching to
@@ -643,6 +644,8 @@ nautilus_window_open_location_full (NautilusWindow          *window,
     }
     else if (!nautilus_window_slot_handles_location (target_slot, location))
     {
+        navigation_state = nautilus_window_slot_get_restore_tab_data (active_slot);
+
         target_slot = replace_active_slot (window, location, flags);
     }
 
@@ -654,7 +657,17 @@ nautilus_window_open_location_full (NautilusWindow          *window,
         nautilus_window_set_active_slot (window, target_slot);
     }
 
-    nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
+    if (navigation_state != NULL)
+    {
+        nautilus_window_slot_open_location_set_nav_state (target_slot, location, flags, selection,
+                                                          NAUTILUS_LOCATION_CHANGE_STANDARD, navigation_state, 0);
+
+        free_restore_tab_data (navigation_state, NULL);
+    }
+    else
+    {
+        nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
+    }
 
     g_object_unref (location);
 }
@@ -2349,6 +2362,11 @@ free_restore_tab_data (gpointer data,
     g_list_free_full (tab_data->forward_list, g_object_unref);
     nautilus_file_unref (tab_data->file);
 
+    if (tab_data->current_location_bookmark != NULL)
+    {
+        g_object_unref (tab_data->current_location_bookmark);
+    }
+
     g_free (tab_data);
 }
 
@@ -3035,5 +3053,66 @@ nautilus_window_search (NautilusWindow *window,
     else
     {
         g_warning ("Trying search on a slot but no active slot present");
+    }
+}
+
+void
+nautilus_window_back_or_forward (NautilusWindow          *window,
+                                 gboolean                 back,
+                                 guint                    distance,
+                                 NautilusWindowOpenFlags  flags)
+{
+    NautilusWindowSlot *slot;
+    GList *next_location_list, *back_list, *forward_list;
+    GFile *next_location;
+    guint len;
+    NautilusBookmark *next_location_bookmark;
+    gboolean active_slot_handles_location;
+
+    slot = nautilus_window_get_active_slot (window);
+    back_list = nautilus_window_slot_get_back_history (slot);
+    forward_list = nautilus_window_slot_get_forward_history (slot);
+
+    next_location_list = back ? back_list : forward_list;
+
+    len = (guint) g_list_length (next_location_list);
+
+    /* If we can't move in the direction at all, just return. */
+    if (len == 0)
+    {
+        return;
+    }
+
+    /* If the distance to move is off the end of the list, go to the end
+     *  of the list. */
+    if (distance >= len)
+    {
+        distance = len - 1;
+    }
+
+    next_location_bookmark = g_list_nth_data (next_location_list, distance);
+    next_location = nautilus_bookmark_get_location (next_location_bookmark);
+
+    active_slot_handles_location = nautilus_window_slot_handles_location (slot, next_location);
+
+    if (!active_slot_handles_location)
+    {
+        RestoreTabData *navigation_state;
+        NautilusLocationChangeType location_change_type;
+
+        navigation_state = nautilus_window_slot_get_restore_tab_data (slot);
+
+        location_change_type = back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD;
+
+        slot = replace_active_slot (window, next_location, flags);
+
+        nautilus_window_slot_open_location_set_nav_state (slot, next_location, flags, NULL,
+                                                          location_change_type, navigation_state, distance);
+
+        free_restore_tab_data (navigation_state, NULL);
+    }
+    else
+    {
+        nautilus_window_slot_back_or_forward (slot, back, distance, flags);
     }
 }
