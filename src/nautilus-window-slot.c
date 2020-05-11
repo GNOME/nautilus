@@ -1356,7 +1356,7 @@ check_force_reload (GFile                      *location,
     }
     else
     {
-        force_reload = !nautilus_directory_is_local (directory);
+        force_reload = nautilus_file_is_remote (file);
     }
 
     /* We need to invalidate file attributes as well due to how mounting works
