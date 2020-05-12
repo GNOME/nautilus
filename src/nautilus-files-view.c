@@ -2445,8 +2445,6 @@ nautilus_files_view_new_file (NautilusFilesView *directory_view,
         return;
     }
 
-    g_return_if_fail (nautilus_file_is_local (source));
-
     data = setup_new_folder_data (directory_view);
 
     source_uri = nautilus_file_get_uri (source);
