@@ -176,6 +176,11 @@ static void real_set_templates_menu (NautilusWindowSlot *self,
                                      GMenuModel         *menu);
 static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
+static void update_history_lists_for_go_direction (gboolean          forward,
+                                                   guint             distance,
+                                                   NautilusBookmark *last_location_bookmark,
+                                                   GList           **back_list,
+                                                   GList           **forward_list);
 
 void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
@@ -2502,17 +2507,12 @@ handle_go_direction (NautilusWindowSlot *self,
                      GFile              *location,
                      gboolean            forward)
 {
-    GList **list_ptr, **other_list_ptr;
-    GList *list, *other_list, *link;
-    NautilusBookmark *bookmark;
-    gint i;
+    GList *list;
     NautilusWindowSlotPrivate *priv;
 
     priv = nautilus_window_slot_get_instance_private (self);
-    list_ptr = (forward) ? (&priv->forward_list) : (&priv->back_list);
-    other_list_ptr = (forward) ? (&priv->back_list) : (&priv->forward_list);
-    list = *list_ptr;
-    other_list = *other_list_ptr;
+
+    list = forward ? priv->forward_list : priv->back_list;
 
     /* Move items from the list to the other list. */
     g_assert (g_list_length (list) > priv->location_change_distance);
@@ -2523,26 +2523,8 @@ handle_go_direction (NautilusWindowSlot *self,
     /* Move current location to list */
     check_last_bookmark_location_matches_slot (self);
 
-    /* Use the first bookmark in the history list rather than creating a new one. */
-    other_list = g_list_prepend (other_list, priv->last_location_bookmark);
-    g_object_ref (other_list->data);
-
-    /* Move extra links from the list to the other list */
-    for (i = 0; i < priv->location_change_distance; ++i)
-    {
-        bookmark = NAUTILUS_BOOKMARK (list->data);
-        list = g_list_remove (list, bookmark);
-        other_list = g_list_prepend (other_list, bookmark);
-    }
-
-    /* One bookmark falls out of back/forward lists and becomes viewed location */
-    link = list;
-    list = g_list_remove_link (list, link);
-    g_object_unref (link->data);
-    g_list_free_1 (link);
-
-    *list_ptr = list;
-    *other_list_ptr = other_list;
+    update_history_lists_for_go_direction (forward, priv->location_change_distance, priv->last_location_bookmark,
+                                           &priv->back_list, &priv->forward_list);
 }
 
 static void
@@ -3753,43 +3735,15 @@ nautilus_window_slot_open_location_set_nav_state (NautilusWindowSlot         *sl
 
     if ((change_type == NAUTILUS_LOCATION_CHANGE_BACK) || (change_type == NAUTILUS_LOCATION_CHANGE_FORWARD))
     {
-        GList **list_ptr, **other_list_ptr;
-        GList *list, *other_list, *link;
-        NautilusBookmark *bookmark;
-        gint i;
-        gboolean back;
+        gboolean forward;
 
-        back = (change_type == NAUTILUS_LOCATION_CHANGE_BACK) ? TRUE : FALSE;
+        forward = (change_type == NAUTILUS_LOCATION_CHANGE_FORWARD) ? TRUE : FALSE;
 
         priv->back_list = g_list_copy_deep (navigation_state->back_list, (GCopyFunc) g_object_ref, NULL);
         priv->forward_list = g_list_copy_deep (navigation_state->forward_list, (GCopyFunc) g_object_ref, NULL);
 
-        list_ptr = back ? &priv->back_list : &priv->forward_list;
-        other_list_ptr = back ? &priv->forward_list : &priv->back_list;
-        list = *list_ptr;
-        other_list = *other_list_ptr;
-
-        other_list = g_list_prepend (other_list, navigation_state->current_location_bookmark);
-
-        g_object_ref (other_list->data);
-
-        g_assert (g_list_length (list) > distance);
-
-        for (i = 0; i < distance; ++i)
-        {
-            bookmark = NAUTILUS_BOOKMARK (list->data);
-            list = g_list_remove (list, bookmark);
-            other_list = g_list_prepend (other_list, bookmark);
-        }
-
-        /* One bookmark falls out of back/forward lists */
-        link = list;
-        list = g_list_remove_link (list, link);
-        g_object_unref (link->data);
-        g_list_free_1 (link);
-
-        *list_ptr = list;
-        *other_list_ptr = other_list;
+        update_history_lists_for_go_direction (forward, distance, navigation_state->current_location_bookmark,
+                                               &priv->back_list, &priv->forward_list);
     }
     else
     {
@@ -3806,4 +3760,44 @@ nautilus_window_slot_open_location_set_nav_state (NautilusWindowSlot         *sl
     g_object_ref (priv->current_location_bookmark);
 
     priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
+}
+
+static void
+update_history_lists_for_go_direction (gboolean           forward,
+                                       guint              distance,
+                                       NautilusBookmark  *current_location_bookmark,
+                                       GList            **back_list,
+                                       GList            **forward_list)
+{
+    GList **list_ptr, **other_list_ptr;
+    GList *list, *other_list, *link;
+    NautilusBookmark *bookmark;
+    gint i;
+
+    list_ptr = forward ? forward_list : back_list;
+    other_list_ptr = forward ? back_list : forward_list;
+    list = *list_ptr;
+    other_list = *other_list_ptr;
+
+    g_assert (g_list_length (list) > distance);
+
+    other_list = g_list_prepend (other_list, current_location_bookmark);
+
+    g_object_ref (other_list->data);
+
+    for (i = 0; i < distance; ++i)
+    {
+        bookmark = NAUTILUS_BOOKMARK (list->data);
+        list = g_list_remove (list, bookmark);
+        other_list = g_list_prepend (other_list, bookmark);
+    }
+
+    /* One bookmark falls out of back/forward lists */
+    link = list;
+    list = g_list_remove_link (list, link);
+    g_object_unref (link->data);
+    g_list_free_1 (link);
+
+    *list_ptr = list;
+    *other_list_ptr = other_list;
 }
