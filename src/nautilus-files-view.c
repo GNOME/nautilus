@@ -5171,7 +5171,6 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
                                                     gboolean           get_paths)
 {
     char *path;
-    char *uri;
     char *result;
     GString *expanding_string;
     GList *node;
@@ -5179,7 +5178,10 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
     expanding_string = g_string_new ("");
     for (node = selection; node != NULL; node = node->next)
     {
-        uri = nautilus_file_get_uri (NAUTILUS_FILE (node->data));
+        NautilusFile *file = NAUTILUS_FILE (node->data);
+        g_autofree gchar *uri = NULL;
+
+        uri = nautilus_file_get_uri (file);
         if (uri == NULL)
         {
             continue;
@@ -5187,6 +5189,12 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
 
         if (get_paths)
         {
+            if (!nautilus_file_is_local_or_fuse (file))
+            {
+                g_string_free (expanding_string, TRUE);
+                return g_strdup ("");
+            }
+
             path = g_filename_from_uri (uri, NULL, NULL);
             if (path != NULL)
             {
@@ -5200,7 +5208,6 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
             g_string_append (expanding_string, uri);
             g_string_append (expanding_string, "\n");
         }
-        g_free (uri);
     }
 
     result = expanding_string->str;
@@ -5232,21 +5239,10 @@ get_strings_for_environment_variables (NautilusFilesView  *view,
                                        char              **uri)
 {
     NautilusFilesViewPrivate *priv;
-    char *directory_uri;
 
     priv = nautilus_files_view_get_instance_private (view);
 
-    directory_uri = nautilus_directory_get_uri (priv->model);
-    if (nautilus_directory_is_local_or_fuse (priv->model) ||
-        eel_uri_is_search (directory_uri))
-    {
-        *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
-    }
-    else
-    {
-        *file_paths = g_strdup ("");
-    }
-    g_free (directory_uri);
+    *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
 
     *uris = get_file_uris_as_newline_delimited_string (view, selected_files);
 
