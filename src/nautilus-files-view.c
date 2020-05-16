@@ -5123,11 +5123,8 @@ static char **
 get_file_names_as_parameter_array (GList             *selection,
                                    NautilusDirectory *model)
 {
-    NautilusFile *file;
     char **parameters;
-    GList *node;
-    GFile *file_location;
-    GFile *model_location;
+    g_autoptr (GFile) model_location = NULL;
     int i;
 
     if (model == NULL)
@@ -5139,9 +5136,11 @@ get_file_names_as_parameter_array (GList             *selection,
 
     model_location = nautilus_directory_get_location (model);
 
-    for (node = selection, i = 0; node != NULL; node = node->next, i++)
+    i = 0;
+    for (GList *node = selection; node != NULL; node = node->next, i++)
     {
-        file = NAUTILUS_FILE (node->data);
+        g_autoptr (GFile) file_location = NULL;
+        NautilusFile *file = NAUTILUS_FILE (node->data);
 
         if (!nautilus_file_is_local_or_fuse (file))
         {
@@ -5150,33 +5149,26 @@ get_file_names_as_parameter_array (GList             *selection,
             return NULL;
         }
 
-        file_location = nautilus_file_get_location (NAUTILUS_FILE (node->data));
+        file_location = nautilus_file_get_location (file);
         parameters[i] = g_file_get_relative_path (model_location, file_location);
         if (parameters[i] == NULL)
         {
             parameters[i] = g_file_get_path (file_location);
         }
-        g_object_unref (file_location);
     }
-
-    g_object_unref (model_location);
 
     parameters[i] = NULL;
     return parameters;
 }
 
 static char *
-get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
-                                                    GList             *selection,
-                                                    gboolean           get_paths)
+get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
+                                                    gboolean  get_paths)
 {
-    char *path;
-    char *result;
     GString *expanding_string;
-    GList *node;
 
     expanding_string = g_string_new ("");
-    for (node = selection; node != NULL; node = node->next)
+    for (GList *node = selection; node != NULL; node = node->next)
     {
         NautilusFile *file = NAUTILUS_FILE (node->data);
         g_autofree gchar *uri = NULL;
@@ -5189,6 +5181,8 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
 
         if (get_paths)
         {
+            g_autofree gchar *path = NULL;
+
             if (!nautilus_file_is_local_or_fuse (file))
             {
                 g_string_free (expanding_string, TRUE);
@@ -5199,7 +5193,6 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
             if (path != NULL)
             {
                 g_string_append (expanding_string, path);
-                g_free (path);
                 g_string_append (expanding_string, "\n");
             }
         }
@@ -5210,43 +5203,19 @@ get_file_paths_or_uris_as_newline_delimited_string (NautilusFilesView *view,
         }
     }
 
-    result = expanding_string->str;
-    g_string_free (expanding_string, FALSE);
-
-    return result;
+    return g_string_free (expanding_string, FALSE);
 }
 
 static char *
-get_file_paths_as_newline_delimited_string (NautilusFilesView *view,
-                                            GList             *selection)
+get_file_paths_as_newline_delimited_string (GList *selection)
 {
-    return get_file_paths_or_uris_as_newline_delimited_string (view, selection, TRUE);
+    return get_file_paths_or_uris_as_newline_delimited_string (selection, TRUE);
 }
 
 static char *
-get_file_uris_as_newline_delimited_string (NautilusFilesView *view,
-                                           GList             *selection)
+get_file_uris_as_newline_delimited_string (GList *selection)
 {
-    return get_file_paths_or_uris_as_newline_delimited_string (view, selection, FALSE);
-}
-
-/* returns newly allocated strings for setting the environment variables */
-static void
-get_strings_for_environment_variables (NautilusFilesView  *view,
-                                       GList              *selected_files,
-                                       char              **file_paths,
-                                       char              **uris,
-                                       char              **uri)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    *file_paths = get_file_paths_as_newline_delimited_string (view, selected_files);
-
-    *uris = get_file_uris_as_newline_delimited_string (view, selected_files);
-
-    *uri = nautilus_directory_get_uri (priv->model);
+    return get_file_paths_or_uris_as_newline_delimited_string (selection, FALSE);
 }
 
 /*
@@ -5257,27 +5226,26 @@ static void
 set_script_environment_variables (NautilusFilesView *view,
                                   GList             *selected_files)
 {
-    char *file_paths;
-    char *uris;
-    char *uri;
-    char *geometry_string;
+    g_autofree gchar *file_paths = NULL;
+    g_autofree gchar *uris = NULL;
+    g_autofree gchar *uri = NULL;
+    g_autofree gchar *geometry_string = NULL;
+    NautilusFilesViewPrivate *priv;
 
-    get_strings_for_environment_variables (view, selected_files,
-                                           &file_paths, &uris, &uri);
+    priv = nautilus_files_view_get_instance_private (view);
 
+    file_paths = get_file_paths_as_newline_delimited_string (selected_files);
     g_setenv ("NAUTILUS_SCRIPT_SELECTED_FILE_PATHS", file_paths, TRUE);
-    g_free (file_paths);
 
+    uris = get_file_uris_as_newline_delimited_string (selected_files);
     g_setenv ("NAUTILUS_SCRIPT_SELECTED_URIS", uris, TRUE);
-    g_free (uris);
 
+    uri = nautilus_directory_get_uri (priv->model);
     g_setenv ("NAUTILUS_SCRIPT_CURRENT_URI", uri, TRUE);
-    g_free (uri);
 
     geometry_string = eel_gtk_window_get_geometry_string
                           (GTK_WINDOW (nautilus_files_view_get_containing_window (view)));
     g_setenv ("NAUTILUS_SCRIPT_WINDOW_GEOMETRY", geometry_string, TRUE);
-    g_free (geometry_string);
 }
 
 /* Unset all the special script environment variables. */
@@ -5295,15 +5263,15 @@ run_script (GSimpleAction *action,
             GVariant      *state,
             gpointer       user_data)
 {
-    NautilusFilesViewPrivate *priv;
     ScriptLaunchParameters *launch_parameters;
-    GdkScreen *screen;
+    NautilusFilesViewPrivate *priv;
+    g_autofree gchar *file_uri = NULL;
+    g_autofree gchar *local_file_path = NULL;
+    g_autofree gchar *quoted_path = NULL;
+    g_autofree gchar *old_working_dir = NULL;
     g_autolist (NautilusFile) selection = NULL;
-    char *file_uri;
-    g_autofree char *local_file_path = NULL;
-    char *quoted_path;
-    char *old_working_dir;
-    char **parameters;
+    g_auto (GStrv) parameters = NULL;
+    GdkScreen *screen;
 
     launch_parameters = (ScriptLaunchParameters *) user_data;
     priv = nautilus_files_view_get_instance_private (launch_parameters->directory_view);
@@ -5311,8 +5279,6 @@ run_script (GSimpleAction *action,
     file_uri = nautilus_file_get_uri (launch_parameters->file);
     local_file_path = g_filename_from_uri (file_uri, NULL, NULL);
     g_assert (local_file_path != NULL);
-    g_free (file_uri);
-
     quoted_path = g_shell_quote (local_file_path);
 
     old_working_dir = change_to_view_directory (launch_parameters->directory_view);
@@ -5320,8 +5286,7 @@ run_script (GSimpleAction *action,
     selection = nautilus_view_get_selection (NAUTILUS_VIEW (launch_parameters->directory_view));
     set_script_environment_variables (launch_parameters->directory_view, selection);
 
-    parameters = get_file_names_as_parameter_array (selection,
-                                                    priv->model);
+    parameters = get_file_names_as_parameter_array (selection, priv->model);
 
     screen = gtk_widget_get_screen (GTK_WIDGET (launch_parameters->directory_view));
 
@@ -5330,12 +5295,9 @@ run_script (GSimpleAction *action,
 
     nautilus_launch_application_from_command_array (screen, quoted_path, FALSE,
                                                     (const char * const *) parameters);
-    g_strfreev (parameters);
 
     unset_script_environment_variables ();
     g_chdir (old_working_dir);
-    g_free (old_working_dir);
-    g_free (quoted_path);
 }
 
 static void
