@@ -2372,8 +2372,20 @@ nautilus_file_is_local (NautilusFile *file)
     return nautilus_directory_is_local (file->details->directory);
 }
 
+/**
+ * nautilus_file_has_local_path:
+ *
+ * @file: a #NautilusFile
+ *
+ * Checks whether this file has an obtainable local paths. Usually, this means
+ * the local path can be obtained by calling g_file_get_path(); this includes
+ * native and FUSE files. As an exception, the local URI for files in recent://
+ * can only be obtained from the G_FILE_ATTRIBUTE_STANDARD_TARGET_URI attribute.
+ *
+ * Returns: %TRUE if a local path is known to be obtainable for this file.
+ */
 gboolean
-nautilus_file_is_local_or_fuse (NautilusFile *file)
+nautilus_file_has_local_path (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
