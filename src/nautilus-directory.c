@@ -780,11 +780,7 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
     g_autofree char *path = NULL;
 
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-    if (directory->details->location == NULL)
-    {
-        return TRUE;
-    }
+    g_return_val_if_fail (directory->details->location, FALSE);
 
     /* If the glib reports a path, then it can use FUSE to convert the uri
      * to a local path
