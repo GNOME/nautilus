@@ -791,8 +791,7 @@ nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
      */
     path = g_file_get_path (directory->details->location);
 
-    return nautilus_directory_is_in_trash (directory) ||
-           nautilus_directory_is_in_recent (directory) ||
+    return nautilus_directory_is_in_recent (directory) ||
            g_file_is_native (directory->details->location) ||
            path != NULL;
 }
