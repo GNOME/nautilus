@@ -4764,7 +4764,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
         else
         {
             /* only local files */
-            return nautilus_file_is_local (file);
+            return !nautilus_file_is_remote (file);
         }
     }
 
@@ -5667,7 +5667,7 @@ get_speed_tradeoff_preference_for_file (NautilusFile               *file,
     else
     {
         /* only local files */
-        return nautilus_file_is_local (file);
+        return !nautilus_file_is_remote (file);
     }
 }
 
