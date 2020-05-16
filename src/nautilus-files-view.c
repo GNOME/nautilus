@@ -5134,7 +5134,7 @@ get_file_names_as_parameter_array (GList             *selection,
         g_autoptr (GFile) file_location = NULL;
         NautilusFile *file = NAUTILUS_FILE (node->data);
 
-        if (!nautilus_file_is_local_or_fuse (file))
+        if (!nautilus_file_has_local_path (file))
         {
             parameters[i] = NULL;
             g_strfreev (parameters);
@@ -5175,7 +5175,7 @@ get_file_paths_or_uris_as_newline_delimited_string (GList    *selection,
         {
             g_autofree gchar *path = NULL;
 
-            if (!nautilus_file_is_local_or_fuse (file))
+            if (!nautilus_file_has_local_path (file))
             {
                 g_string_free (expanding_string, TRUE);
                 return g_strdup ("");
