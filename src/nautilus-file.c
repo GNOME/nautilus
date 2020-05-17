@@ -4665,7 +4665,6 @@ nautilus_file_get_filesystem_use_preview (NautilusFile *file)
 char *
 nautilus_file_get_filesystem_type (NautilusFile *file)
 {
-    NautilusFile *parent;
     char *filesystem_type = NULL;
 
     g_assert (NAUTILUS_IS_FILE (file));
@@ -4676,11 +4675,12 @@ nautilus_file_get_filesystem_type (NautilusFile *file)
     }
     else
     {
+        g_autoptr (NautilusFile) parent = NULL;
+
         parent = nautilus_file_get_parent (file);
         if (parent != NULL)
         {
             filesystem_type = g_strdup (parent->details->filesystem_type);
-            nautilus_file_unref (parent);
         }
     }
 
@@ -4690,8 +4690,6 @@ nautilus_file_get_filesystem_type (NautilusFile *file)
 gboolean
 nautilus_file_get_filesystem_remote (NautilusFile *file)
 {
-    NautilusFile *parent;
-
     g_assert (NAUTILUS_IS_FILE (file));
 
     if (nautilus_file_is_directory (file))
@@ -4700,6 +4698,8 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
     }
     else
     {
+        g_autoptr (NautilusFile) parent = NULL;
+
         parent = nautilus_file_get_parent (file);
         if (parent != NULL)
         {
