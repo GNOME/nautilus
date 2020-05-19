@@ -5049,17 +5049,20 @@ create_properties_window (StartupData *startup_data)
     GList *l;
     GtkBuilder *properties_window_builder;
 
-    window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
+    properties_window_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+
+    window = NAUTILUS_PROPERTIES_WINDOW (gtk_builder_get_object (properties_window_builder,"properties_window"));
+    /*window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
                                                          "use-header-bar", TRUE,
                                                          "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
                                                          "modal", TRUE,
-                                                         NULL));
+                                                         NULL));*/
 
     window->original_files = nautilus_file_list_copy (startup_data->original_files);
 
     window->target_files = nautilus_file_list_copy (startup_data->target_files);
 
-    properties_window_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+
 
     if (startup_data->parent_widget)
     {
@@ -5139,9 +5142,9 @@ create_properties_window (StartupData *startup_data)
     /* Create the notebook tabs. */
     window->notebook = GTK_NOTEBOOK (gtk_builder_get_object (properties_window_builder,"properties_notebook"));
     //window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
-    gtk_notebook_set_show_border (window->notebook, FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), 0);
-    gtk_widget_show (GTK_WIDGET (window->notebook));
+    //gtk_notebook_set_show_border (window->notebook, FALSE);
+    //gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), 0);
+    //gtk_widget_show (GTK_WIDGET (window->notebook));
     gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))),
                         GTK_WIDGET (window->notebook),
                         TRUE, TRUE, 0);
