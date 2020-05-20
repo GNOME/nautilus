@@ -35,6 +35,7 @@ struct _NautilusCompressDialogController
     GtkWidget *name_entry;
     GtkWidget *zip_radio_button;
     GtkWidget *tar_xz_radio_button;
+    GtkWidget *tar_gz_radio_button;
     GtkWidget *seven_zip_radio_button;
 
     const char *extension;
@@ -156,6 +157,14 @@ update_selected_format (NautilusCompressDialogController *self,
         }
         break;
 
+        case NAUTILUS_COMPRESSION_TAR_GZ:
+        {
+            extension = ".tar.gz";
+            description_label_name = "tar-gz-description-label";
+            active_button = self->tar_gz_radio_button;
+        }
+        break;
+
         case NAUTILUS_COMPRESSION_7ZIP:
         {
             extension = ".7z";
@@ -223,6 +232,23 @@ tar_xz_radio_button_on_toggled (GtkToggleButton *toggle_button,
 }
 
 static void
+tar_gz_radio_button_on_toggled (GtkToggleButton *toggle_button,
+                                gpointer         user_data)
+{
+    NautilusCompressDialogController *controller;
+
+    controller = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+
+    if (!gtk_toggle_button_get_active (toggle_button))
+    {
+        return;
+    }
+
+    update_selected_format (controller,
+                            NAUTILUS_COMPRESSION_TAR_GZ);
+}
+
+static void
 seven_zip_radio_button_on_toggled (GtkToggleButton *toggle_button,
                                    gpointer         user_data)
 {
@@ -254,6 +280,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *description_stack;
     GtkWidget *zip_radio_button;
     GtkWidget *tar_xz_radio_button;
+    GtkWidget *tar_gz_radio_button;
     GtkWidget *seven_zip_radio_button;
     NautilusCompressionFormat format;
 
@@ -265,6 +292,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     activate_button = GTK_WIDGET (gtk_builder_get_object (builder, "activate_button"));
     zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "zip_radio_button"));
     tar_xz_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_radio_button"));
+    tar_gz_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "tar_gz_radio_button"));
     seven_zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_radio_button"));
     description_stack = GTK_WIDGET (gtk_builder_get_object (builder, "description_stack"));
 
@@ -281,6 +309,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->compress_dialog = compress_dialog;
     self->zip_radio_button = zip_radio_button;
     self->tar_xz_radio_button = tar_xz_radio_button;
+    self->tar_gz_radio_button = tar_gz_radio_button;
     self->seven_zip_radio_button = seven_zip_radio_button;
     self->description_stack = description_stack;
     self->name_entry = name_entry;
@@ -295,6 +324,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       G_CALLBACK (zip_radio_button_on_toggled),
                                       "tar_xz_radio_button_on_toggled",
                                       G_CALLBACK (tar_xz_radio_button_on_toggled),
+                                      "tar_gz_radio_button_on_toggled",
+                                      G_CALLBACK (tar_gz_radio_button_on_toggled),
                                       "seven_zip_radio_button_on_toggled",
                                       G_CALLBACK (seven_zip_radio_button_on_toggled),
                                       NULL);

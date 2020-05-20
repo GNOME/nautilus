@@ -88,6 +88,19 @@
               </packing>
             </child>
             <child>
+              <object class="GtkRadioButton" id="tar_gz_radio_button">
+                <property name="label" translatable="no">.tar.gz</property>
+                <property name="group">zip_radio_button</property>
+                <property name="draw_indicator">True</property>
+                <signal name="toggled" handler="tar_gz_radio_button_on_toggled"/>
+              </object>
+              <packing>
+                <property name="expand">True</property>
+                <property name="fill">True</property>
+                <property name="position">2</property>
+              </packing>
+            </child>
+            <child>
               <object class="GtkRadioButton" id="seven_zip_radio_button">
                 <property name="label" translatable="no">.7z</property>
                 <property name="group">zip_radio_button</property>
@@ -97,7 +110,7 @@
               <packing>
                 <property name="expand">True</property>
                 <property name="fill">True</property>
-                <property name="position">2</property>
+                <property name="position">3</property>
               </packing>
             </child>
           </object>
@@ -136,6 +149,19 @@
               </object>
               <packing>
                 <property name="name">tar-xz-description-label</property>
+              </packing>
+            </child>
+            <child>
+              <object class="GtkLabel" id="tar_gz_description_label">
+                <property name="visible">True</property>
+                <property name="label" translatable="yes">Another common Linux and Mac only archive format.</property>
+                <property name="xalign">0</property>
+                <style>
+                  <class name="dim-label"/>
+                </style>
+              </object>
+              <packing>
+                <property name="name">tar-gz-description-label</property>
               </packing>
             </child>
             <child>

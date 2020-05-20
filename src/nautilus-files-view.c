@@ -2286,6 +2286,13 @@ compress_dialog_controller_on_name_accepted (NautilusFileNameWidgetController *c
         }
         break;
 
+        case NAUTILUS_COMPRESSION_TAR_GZ:
+        {
+            format = AUTOAR_FORMAT_TAR;
+            filter = AUTOAR_FILTER_GZIP;
+        }
+        break;
+
         case NAUTILUS_COMPRESSION_7ZIP:
         {
             format = AUTOAR_FORMAT_7ZIP;
