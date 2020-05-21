@@ -29,7 +29,7 @@
 
 G_DECLARE_FINAL_TYPE (NautilusPropertiesWindow, nautilus_properties_window,
                       NAUTILUS, PROPERTIES_WINDOW,
-                      GtkDialog)
+                      GtkWindow)
 
 typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
 
