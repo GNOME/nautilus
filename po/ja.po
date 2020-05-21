@@ -24,7 +24,7 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus master\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-03-18 07:30+0000\n"
+"POT-Creation-Date: 2020-04-28 19:06+0000\n"
 "PO-Revision-Date: 2020-03-18 22:33+0900\n"
 "Last-Translator: sicklylife <translation@sicklylife.jp>\n"
 "Language-Team: Japanese <gnome-translation@gnome.gr.jp>\n"
@@ -103,7 +103,7 @@ msgid "Search"
 msgstr "検索"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:54 src/nautilus-bookmark.c:111
-#: src/nautilus-file.c:4422 src/nautilus-file-utilities.c:323
+#: src/nautilus-file.c:4426 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:314
 msgid "Other Locations"
 msgstr "他の場所"
@@ -584,8 +584,8 @@ msgstr "Y"
 #. Add buttons
 #: eel/eel-stock-dialogs.c:204 src/nautilus-file-conflict-dialog.c:325
 #: src/nautilus-file-operations.c:219 src/nautilus-files-view.c:1203
-#: src/nautilus-files-view.c:1755 src/nautilus-files-view.c:6035
-#: src/nautilus-files-view.c:6493 src/nautilus-location-entry.c:282
+#: src/nautilus-files-view.c:1755 src/nautilus-files-view.c:6080
+#: src/nautilus-files-view.c:6538 src/nautilus-location-entry.c:282
 #: src/nautilus-mime-actions.c:566 src/nautilus-mime-actions.c:570
 #: src/nautilus-mime-actions.c:652 src/nautilus-mime-actions.c:953
 #: src/nautilus-mime-actions.c:1306 src/nautilus-properties-window.c:4638
@@ -768,13 +768,13 @@ msgstr "N/A"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
-#: src/nautilus-file.c:7470
+#: src/nautilus-file.c:7453
 msgid "Audio"
 msgstr "音声"
 
 #: extensions/audio-video-properties/totem-properties-view.c:279
 #: extensions/audio-video-properties/resources/ui/properties.ui:321
-#: src/nautilus-file.c:7478 src/nautilus-mime-actions.c:208
+#: src/nautilus-file.c:7461 src/nautilus-mime-actions.c:208
 msgid "Video"
 msgstr "動画"
 
@@ -948,7 +948,7 @@ msgid "Failed to load image information"
 msgstr "画像情報の読み込みに失敗しました"
 
 #: extensions/image-properties/nautilus-image-properties-page-provider.c:100
-#: src/nautilus-file.c:7472
+#: src/nautilus-file.c:7455
 msgid "Image"
 msgstr "画像"
 
@@ -1528,62 +1528,62 @@ msgstr "トップレベルのファイル名を変更できません"
 msgid "File not found"
 msgstr "ファイルが見つかりませんでした"
 
-#: src/nautilus-file.c:4426 src/nautilus-file-utilities.c:327
+#: src/nautilus-file.c:4430 src/nautilus-file-utilities.c:327
 #: src/nautilus-pathbar.c:319
 msgid "Starred"
 msgstr "星付き"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5499
+#: src/nautilus-file.c:5482
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5504
+#: src/nautilus-file.c:5487
 msgid "%l:%M %p"
 msgstr "%p %I:%M"
 
-#: src/nautilus-file.c:5513
+#: src/nautilus-file.c:5496
 #, no-c-format
 msgid "Yesterday"
 msgstr "昨日"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5522
+#: src/nautilus-file.c:5505
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "昨日 %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5529
+#: src/nautilus-file.c:5512
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "昨日 %p %I:%M"
 
-#: src/nautilus-file.c:5539
+#: src/nautilus-file.c:5522
 #, no-c-format
 msgid "%a"
 msgstr "%A"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5548
+#: src/nautilus-file.c:5531
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%A %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5555
+#: src/nautilus-file.c:5538
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%A %p %I:%M"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5566
+#: src/nautilus-file.c:5549
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-m月%-e日"
@@ -1591,7 +1591,7 @@ msgstr "%-m月%-e日"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5576
+#: src/nautilus-file.c:5559
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-m月%-e日 %H:%M"
@@ -1599,14 +1599,14 @@ msgstr "%-m月%-e日 %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5584
+#: src/nautilus-file.c:5567
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-m月%-e日 %p %I:%M"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5595
+#: src/nautilus-file.c:5578
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%Y年%-m月%-e日"
@@ -1614,7 +1614,7 @@ msgstr "%Y年%-m月%-e日"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5605
+#: src/nautilus-file.c:5588
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%Y年%-m月%-e日 %H:%M"
@@ -1622,139 +1622,139 @@ msgstr "%Y年%-m月%-e日 %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5613
+#: src/nautilus-file.c:5596
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%Y年%-m月%-e日 %p %I:%M"
 
-#: src/nautilus-file.c:5625
+#: src/nautilus-file.c:5608
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6088
+#: src/nautilus-file.c:6071
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "アクセス権は指定できません"
 
-#: src/nautilus-file.c:6411
+#: src/nautilus-file.c:6394
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "所有者は指定できません"
 
-#: src/nautilus-file.c:6430
+#: src/nautilus-file.c:6413
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "指定した“%s”という所有者は存在しません"
 
-#: src/nautilus-file.c:6715
+#: src/nautilus-file.c:6698
 #, c-format
 msgid "Not allowed to set group"
 msgstr "グループは指定できません"
 
-#: src/nautilus-file.c:6734
+#: src/nautilus-file.c:6717
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "指定した“%s”というグループは存在しません"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6876
+#: src/nautilus-file.c:6859
 msgid "Me"
 msgstr "自分"
 
-#: src/nautilus-file.c:6908
+#: src/nautilus-file.c:6891
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u 個のアイテム"
 
-#: src/nautilus-file.c:6909
+#: src/nautilus-file.c:6892
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u 個のフォルダー"
 
-#: src/nautilus-file.c:6910
+#: src/nautilus-file.c:6893
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
 msgstr[0] "%'u 個のファイル"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7387
+#: src/nautilus-file.c:7370
 msgid "? bytes"
 msgstr "? バイト"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7399
+#: src/nautilus-file.c:7382
 msgid "? items"
 msgstr "? 個のアイテム"
 
-#: src/nautilus-file.c:7407
+#: src/nautilus-file.c:7390
 msgid "Unknown"
 msgstr "不明"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7433 src/nautilus-properties-window.c:1292
+#: src/nautilus-file.c:7416 src/nautilus-properties-window.c:1292
 msgid "unknown"
 msgstr "不明"
 
-#: src/nautilus-file.c:7469 src/nautilus-file.c:7477 src/nautilus-file.c:7536
+#: src/nautilus-file.c:7452 src/nautilus-file.c:7460 src/nautilus-file.c:7519
 msgid "Program"
 msgstr "プログラム"
 
-#: src/nautilus-file.c:7471
+#: src/nautilus-file.c:7454
 msgid "Font"
 msgstr "フォント"
 
-#: src/nautilus-file.c:7473
+#: src/nautilus-file.c:7456
 msgid "Archive"
 msgstr "アーカイブ"
 
-#: src/nautilus-file.c:7474
+#: src/nautilus-file.c:7457
 msgid "Markup"
 msgstr "マークアップ"
 
-#: src/nautilus-file.c:7475 src/nautilus-file.c:7476
+#: src/nautilus-file.c:7458 src/nautilus-file.c:7459
 msgid "Text"
 msgstr "テキスト"
 
-#: src/nautilus-file.c:7479
+#: src/nautilus-file.c:7462
 msgid "Contacts"
 msgstr "連絡先"
 
-#: src/nautilus-file.c:7480
+#: src/nautilus-file.c:7463
 msgid "Calendar"
 msgstr "カレンダー"
 
-#: src/nautilus-file.c:7481
+#: src/nautilus-file.c:7464
 msgid "Document"
 msgstr "ドキュメント"
 
-#: src/nautilus-file.c:7482 src/nautilus-mime-actions.c:182
+#: src/nautilus-file.c:7465 src/nautilus-mime-actions.c:182
 msgid "Presentation"
 msgstr "プレゼンテーション"
 
-#: src/nautilus-file.c:7483 src/nautilus-mime-actions.c:190
+#: src/nautilus-file.c:7466 src/nautilus-mime-actions.c:190
 msgid "Spreadsheet"
 msgstr "表計算"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7510
+#: src/nautilus-file.c:7493
 msgid "Other"
 msgstr "その他"
 
-#: src/nautilus-file.c:7538
+#: src/nautilus-file.c:7521
 msgid "Binary"
 msgstr "バイナリ"
 
-#: src/nautilus-file.c:7543
+#: src/nautilus-file.c:7526
 msgid "Folder"
 msgstr "フォルダー"
 
-#: src/nautilus-file.c:7582
+#: src/nautilus-file.c:7565
 msgid "Link"
 msgstr "リンク"
 
@@ -1763,12 +1763,12 @@ msgstr "リンク"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7588 src/nautilus-file-operations.c:454
+#: src/nautilus-file.c:7571 src/nautilus-file-operations.c:454
 #, c-format
 msgid "Link to %s"
 msgstr "%sへのリンク"
 
-#: src/nautilus-file.c:7606 src/nautilus-file.c:7622 src/nautilus-file.c:7638
+#: src/nautilus-file.c:7589 src/nautilus-file.c:7605 src/nautilus-file.c:7621
 msgid "Link (broken)"
 msgstr "リンク切れ"
 
@@ -2199,7 +2199,7 @@ msgid "Do _not Empty Trash"
 msgstr "ゴミ箱を空にしない(_N)"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6715
+#: src/nautilus-file-operations.c:3003 src/nautilus-files-view.c:6760
 #, c-format
 msgid "Unable to access “%s”"
 msgstr "“%s”にアクセスできません"
@@ -2733,8 +2733,8 @@ msgstr "OK(_O)"
 msgid "Select Items Matching"
 msgstr "パターンを指定してアイテムを選択"
 
-#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6036
-#: src/nautilus-files-view.c:6494
+#: src/nautilus-files-view.c:1757 src/nautilus-files-view.c:6081
+#: src/nautilus-files-view.c:6539
 msgid "_Select"
 msgstr "選択(_S)"
 
@@ -2820,113 +2820,113 @@ msgstr "(%s)"
 msgid "%s %s, %s %s"
 msgstr "%s %s, %s %s"
 
-#: src/nautilus-files-view.c:6023
+#: src/nautilus-files-view.c:6068
 msgid "Select Move Destination"
 msgstr "移動する宛先を選択"
 
-#: src/nautilus-files-view.c:6027
+#: src/nautilus-files-view.c:6072
 msgid "Select Copy Destination"
 msgstr "コピーする宛先を選択"
 
-#: src/nautilus-files-view.c:6490
+#: src/nautilus-files-view.c:6535
 msgid "Select Extract Destination"
 msgstr "展開する宛先を選択"
 
-#: src/nautilus-files-view.c:6678
+#: src/nautilus-files-view.c:6723
 msgid "Wallpapers"
 msgstr "壁紙"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6745
+#: src/nautilus-files-view.c:6790
 #, c-format
 msgid "Unable to remove “%s”"
 msgstr "%s を取り外せません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6775
+#: src/nautilus-files-view.c:6820
 #, c-format
 msgid "Unable to eject “%s”"
 msgstr "“%s”を取り出せません"
 
-#: src/nautilus-files-view.c:6800
+#: src/nautilus-files-view.c:6845
 msgid "Unable to stop drive"
 msgstr "ドライブを停止できません"
 
 #. Translators: %s is a file name formatted for display
-#: src/nautilus-files-view.c:6913
+#: src/nautilus-files-view.c:6958
 #, c-format
 msgid "Unable to start “%s”"
 msgstr "“%s”を起動できません"
 
-#: src/nautilus-files-view.c:7834
+#: src/nautilus-files-view.c:7879
 #, c-format
 msgid "New Folder with Selection (%'d Item)"
 msgid_plural "New Folder with Selection (%'d Items)"
 msgstr[0] "選択アイテムを含む新しいフォルダーを作成 (%'d 個)"
 
-#: src/nautilus-files-view.c:7894
+#: src/nautilus-files-view.c:7939
 #, c-format
 msgid "Open With %s"
 msgstr "%sで開く"
 
-#: src/nautilus-files-view.c:7906
+#: src/nautilus-files-view.c:7951
 msgid "Run"
 msgstr "実行"
 
-#: src/nautilus-files-view.c:7911
+#: src/nautilus-files-view.c:7956
 msgid "Extract Here"
 msgstr "ここで展開"
 
-#: src/nautilus-files-view.c:7912
+#: src/nautilus-files-view.c:7957
 msgid "Extract to…"
 msgstr "展開先…"
 
-#: src/nautilus-files-view.c:7916
+#: src/nautilus-files-view.c:7961
 msgid "Open"
 msgstr "開く"
 
-#: src/nautilus-files-view.c:7974
+#: src/nautilus-files-view.c:8019
 #: src/resources/ui/nautilus-files-view-context-menus.ui:106
 msgid "_Start"
 msgstr "開始(_S)"
 
-#: src/nautilus-files-view.c:7980 src/gtk/nautilusgtkplacesview.c:1736
+#: src/nautilus-files-view.c:8025 src/gtk/nautilusgtkplacesview.c:1736
 msgid "_Connect"
 msgstr "接続(_C)"
 
-#: src/nautilus-files-view.c:7986
+#: src/nautilus-files-view.c:8031
 msgid "_Start Multi-disk Drive"
 msgstr "マルチディスクドライブを起動(_S)"
 
-#: src/nautilus-files-view.c:7992
+#: src/nautilus-files-view.c:8037
 msgid "U_nlock Drive"
 msgstr "ドライブをロック解除(_N)"
 
-#: src/nautilus-files-view.c:8012
+#: src/nautilus-files-view.c:8057
 msgid "Stop Drive"
 msgstr "ドライブを停止"
 
-#: src/nautilus-files-view.c:8018
+#: src/nautilus-files-view.c:8063
 msgid "_Safely Remove Drive"
 msgstr "ドライブを安全に取り出す(_S)"
 
-#: src/nautilus-files-view.c:8024 src/gtk/nautilusgtkplacesview.c:1726
+#: src/nautilus-files-view.c:8069 src/gtk/nautilusgtkplacesview.c:1726
 msgid "_Disconnect"
 msgstr "切断(_D)"
 
-#: src/nautilus-files-view.c:8030
+#: src/nautilus-files-view.c:8075
 msgid "_Stop Multi-disk Drive"
 msgstr "マルチディスクドライブを停止(_S)"
 
-#: src/nautilus-files-view.c:8036
+#: src/nautilus-files-view.c:8081
 msgid "_Lock Drive"
 msgstr "ドライブをロック(_L)"
 
-#: src/nautilus-files-view.c:9806
+#: src/nautilus-files-view.c:9871
 msgid "Content View"
 msgstr "内容表示"
 
-#: src/nautilus-files-view.c:9807
+#: src/nautilus-files-view.c:9872
 msgid "View of the current folder"
 msgstr "このフォルダーを表示します"
 
