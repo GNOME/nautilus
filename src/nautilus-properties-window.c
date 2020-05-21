@@ -5461,28 +5461,6 @@ nautilus_properties_window_present (GList                            *original_f
 }
 
 static void
-real_response (GtkDialog *dialog,
-               int        response)
-{
-    switch (response)
-    {
-        case GTK_RESPONSE_NONE:
-        case GTK_RESPONSE_CLOSE:
-        case GTK_RESPONSE_DELETE_EVENT:
-        {
-            gtk_widget_destroy (GTK_WIDGET (dialog));
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
-    }
-}
-
-static void
 real_destroy (GtkWidget *object)
 {
     NautilusPropertiesWindow *window;
@@ -5808,7 +5786,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
 
     G_OBJECT_CLASS (class)->finalize = real_finalize;
     GTK_WIDGET_CLASS (class)->destroy = real_destroy;
-    GTK_DIALOG_CLASS (class)->response = real_response;
 
     binding_set = gtk_binding_set_by_class (class);
     gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
