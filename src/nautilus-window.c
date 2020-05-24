@@ -84,7 +84,7 @@ static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window)
 static void close_slot (NautilusWindow     *window,
                         NautilusWindowSlot *slot,
                         gboolean            remove_from_notebook);
-static void free_restore_tab_data (gpointer data,
+static void free_navigation_state (gpointer data,
                                    gpointer user_data);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
@@ -612,7 +612,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 {
     NautilusWindowSlot *active_slot;
     gboolean new_tab_at_end;
-    RestoreTabData *navigation_state = NULL;
+    NautilusNavigationState *navigation_state = NULL;
 
     /* The location owner can be one of the slots requesting to handle an
      * unhandled location. But this slot can be destroyed when switching to
@@ -644,7 +644,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
     }
     else if (!nautilus_window_slot_handles_location (target_slot, location))
     {
-        navigation_state = nautilus_window_slot_get_restore_tab_data (active_slot);
+        navigation_state = nautilus_window_slot_get_navigation_state (active_slot);
 
         target_slot = replace_active_slot (window, location, flags);
     }
@@ -659,10 +659,12 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 
     if (navigation_state != NULL)
     {
-        nautilus_window_slot_open_location_set_nav_state (target_slot, location, flags, selection,
-                                                          NAUTILUS_LOCATION_CHANGE_STANDARD, navigation_state, 0);
+        nautilus_window_slot_open_location_set_navigation_state (target_slot,
+                                                                 location, flags, selection,
+                                                                 NAUTILUS_LOCATION_CHANGE_STANDARD,
+                                                                 navigation_state, 0);
 
-        free_restore_tab_data (navigation_state, NULL);
+        free_navigation_state (navigation_state, NULL);
     }
     else
     {
@@ -1231,7 +1233,7 @@ action_restore_tab (GSimpleAction *action,
     NautilusWindowOpenFlags flags;
     g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *slot;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
 
     if (g_queue_get_length (window->tab_data_queue) == 0)
     {
@@ -1247,9 +1249,9 @@ action_restore_tab (GSimpleAction *action,
     slot = nautilus_window_create_and_init_slot (window, location, flags);
 
     nautilus_window_slot_open_location_full (slot, location, flags, NULL);
-    nautilus_window_slot_restore_from_data (slot, data);
+    nautilus_window_slot_restore_navigation_state (slot, data);
 
-    free_restore_tab_data (data, NULL);
+    free_navigation_state (data, NULL);
 }
 
 static guint
@@ -1450,7 +1452,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
     NautilusWindowSlot *next_slot;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL)
@@ -1464,7 +1466,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
         nautilus_window_set_active_slot (window, next_slot);
     }
 
-    data = nautilus_window_slot_get_restore_tab_data (slot);
+    data = nautilus_window_slot_get_navigation_state (slot);
     if (data != NULL)
     {
         g_queue_push_head (window->tab_data_queue, data);
@@ -2353,21 +2355,21 @@ nautilus_window_dispose (GObject *object)
 }
 
 static void
-free_restore_tab_data (gpointer data,
+free_navigation_state (gpointer data,
                        gpointer user_data)
 {
-    RestoreTabData *tab_data = data;
+    NautilusNavigationState *navigation_state = data;
 
-    g_list_free_full (tab_data->back_list, g_object_unref);
-    g_list_free_full (tab_data->forward_list, g_object_unref);
-    nautilus_file_unref (tab_data->file);
+    g_list_free_full (navigation_state->back_list, g_object_unref);
+    g_list_free_full (navigation_state->forward_list, g_object_unref);
+    nautilus_file_unref (navigation_state->file);
 
-    if (tab_data->current_location_bookmark != NULL)
+    if (navigation_state->current_location_bookmark != NULL)
     {
-        g_object_unref (tab_data->current_location_bookmark);
+        g_object_unref (navigation_state->current_location_bookmark);
     }
 
-    g_free (tab_data);
+    g_free (navigation_state);
 }
 
 static void
@@ -2402,7 +2404,7 @@ nautilus_window_finalize (GObject *object)
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
 
-    g_queue_foreach (window->tab_data_queue, (GFunc) free_restore_tab_data, NULL);
+    g_queue_foreach (window->tab_data_queue, (GFunc) free_navigation_state, NULL);
     g_queue_free (window->tab_data_queue);
 
     g_object_unref (window->pad_controller);
@@ -3097,19 +3099,21 @@ nautilus_window_back_or_forward (NautilusWindow          *window,
 
     if (!active_slot_handles_location)
     {
-        RestoreTabData *navigation_state;
+        NautilusNavigationState *navigation_state;
         NautilusLocationChangeType location_change_type;
 
-        navigation_state = nautilus_window_slot_get_restore_tab_data (slot);
+        navigation_state = nautilus_window_slot_get_navigation_state (slot);
 
         location_change_type = back ? NAUTILUS_LOCATION_CHANGE_BACK : NAUTILUS_LOCATION_CHANGE_FORWARD;
 
         slot = replace_active_slot (window, next_location, flags);
 
-        nautilus_window_slot_open_location_set_nav_state (slot, next_location, flags, NULL,
-                                                          location_change_type, navigation_state, distance);
+        nautilus_window_slot_open_location_set_navigation_state (slot,
+                                                                 next_location, flags, NULL,
+                                                                 location_change_type,
+                                                                 navigation_state, distance);
 
-        free_restore_tab_data (navigation_state, NULL);
+        free_navigation_state (navigation_state, NULL);
     }
     else
     {
