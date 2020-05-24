@@ -1216,7 +1216,7 @@ action_restore_tab (GSimpleAction *action,
     NautilusWindowOpenFlags flags;
     g_autoptr (GFile) location = NULL;
     NautilusWindowSlot *slot;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
 
     if (g_queue_get_length (window->tab_data_queue) == 0)
     {
@@ -1232,9 +1232,9 @@ action_restore_tab (GSimpleAction *action,
     slot = nautilus_window_create_and_init_slot (window, location, flags);
 
     nautilus_window_slot_open_location_full (slot, location, flags, NULL);
-    nautilus_window_slot_restore_from_data (slot, data);
+    nautilus_window_slot_restore_navigation_state (slot, data);
 
-    free_restore_tab_data (data);
+    free_navigation_state (data);
 }
 
 static guint
@@ -1435,7 +1435,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
     NautilusWindowSlot *next_slot;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL)
@@ -1449,7 +1449,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
         nautilus_window_set_active_slot (window, next_slot);
     }
 
-    data = nautilus_window_slot_get_restore_tab_data (slot);
+    data = nautilus_window_slot_get_navigation_state (slot);
     if (data != NULL)
     {
         g_queue_push_head (window->tab_data_queue, data);
@@ -2369,7 +2369,7 @@ nautilus_window_finalize (GObject *object)
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
 
-    g_queue_free_full (window->tab_data_queue, free_restore_tab_data);
+    g_queue_free_full (window->tab_data_queue, free_navigation_state);
 
     g_object_unref (window->pad_controller);
 

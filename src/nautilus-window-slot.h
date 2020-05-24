@@ -43,7 +43,8 @@ typedef struct
     gint view_before_search;
     GList *back_list;
     GList *forward_list;
-} RestoreTabData;
+    NautilusBookmark *current_location_bookmark;
+} NautilusNavigationState;
 
 struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
@@ -123,14 +124,14 @@ void     nautilus_window_slot_search                       (NautilusWindowSlot *
 gboolean nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                                 GFile              *location);
 
-void nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                             RestoreTabData     *data);
+void nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                                    NautilusNavigationState *data);
 
-RestoreTabData* nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self);
+NautilusNavigationState* nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self);
 
 NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *self);
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
 
-void free_restore_tab_data                                 (gpointer data);
+void free_navigation_state                                 (gpointer data);

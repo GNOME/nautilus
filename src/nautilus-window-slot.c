@@ -178,20 +178,21 @@ static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
-free_restore_tab_data (gpointer data)
+free_navigation_state (gpointer data)
 {
-    RestoreTabData *tab_data = data;
+    NautilusNavigationState *navigation_state = data;
 
-    g_list_free_full (tab_data->back_list, g_object_unref);
-    g_list_free_full (tab_data->forward_list, g_object_unref);
-    nautilus_file_unref (tab_data->file);
+    g_list_free_full (navigation_state->back_list, g_object_unref);
+    g_list_free_full (navigation_state->forward_list, g_object_unref);
+    nautilus_file_unref (navigation_state->file);
+    g_clear_object (&navigation_state->current_location_bookmark);
 
-    g_free (tab_data);
+    g_free (navigation_state);
 }
 
 void
-nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                        RestoreTabData     *data)
+nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                               NautilusNavigationState *data)
 {
     NautilusWindowSlotPrivate *priv;
 
@@ -203,14 +204,16 @@ nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
 
     priv->view_mode_before_search = data->view_before_search;
 
+    g_set_object (&priv->current_location_bookmark, data->current_location_bookmark);
+
     priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
 
-RestoreTabData *
-nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
+NautilusNavigationState *
+nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
     GList *back_list;
     GList *forward_list;
 
@@ -233,11 +236,12 @@ nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
      * the view mode before search and a reference to the file.
      * A GFile isn't enough, as the NautilusFile also keeps a
      * reference to the search directory */
-    data = g_new0 (RestoreTabData, 1);
+    data = g_new0 (NautilusNavigationState, 1);
     data->back_list = back_list;
     data->forward_list = forward_list;
     data->file = nautilus_file_get (priv->location);
     data->view_before_search = priv->view_mode_before_search;
+    g_set_object (&data->current_location_bookmark, priv->current_location_bookmark);
 
     return data;
 }
