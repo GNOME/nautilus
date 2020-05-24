@@ -1,5 +1,5 @@
 
-/* fm-properties-window.h - interface for window that lets user modify 
+/* fm-properties-window.h - interface for window that lets user modify
                             icon properties
 
    Copyright (C) 2000 Eazel, Inc.
