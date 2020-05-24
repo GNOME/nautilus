@@ -5135,8 +5135,10 @@ create_properties_window (StartupData *startup_data)
 
     /* Create the notebook tabs. */
     content_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-    window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
-    gtk_notebook_set_show_border (window->notebook, FALSE);
+    g_critical ("%p",window->notebook);
+    g_on_error_query(g_get_prgname());
+    // window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
+    // gtk_notebook_set_show_border (window->notebook, FALSE);
     gtk_container_add (GTK_CONTAINER (window), content_box);
     gtk_widget_show (GTK_WIDGET (window->notebook));
     gtk_box_pack_start (GTK_BOX (content_box),
@@ -5778,19 +5780,33 @@ select_image_button_callback (GtkWidget                *widget,
 }
 
 static void
-nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
+nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 {
-    GtkBindingSet *binding_set;
+    NautilusPropertiesWindowClass *class = klass;   //convenience bridge
+    GtkWidgetClass *widget_class;
+    GObjectClass *oclass;
 
-    G_OBJECT_CLASS (class)->finalize = real_finalize;
-    GTK_WIDGET_CLASS (class)->destroy = real_destroy;
+    widget_class = GTK_WIDGET_CLASS (klass);
+    oclass = G_OBJECT_CLASS (klass);
+    oclass->finalize = real_finalize;
 
-    binding_set = gtk_binding_set_by_class (class);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
-                                  "close", 0);
+
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, notebook);
+
+    // GtkBindingSet *binding_set;
+
+    // G_OBJECT_CLASS (class)->finalize = real_finalize;
+    // GTK_WIDGET_CLASS (class)->destroy = real_destroy;
+
+    // binding_set = gtk_binding_set_by_class (class);
+    // gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
+    //                               "close", 0);
 }
 
 static void
 nautilus_properties_window_init (NautilusPropertiesWindow *window)
 {
+    gtk_widget_init_template(GTK_WIDGET (window));
 }
