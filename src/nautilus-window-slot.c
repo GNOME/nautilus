@@ -178,8 +178,8 @@ static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
-nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                        RestoreTabData     *data)
+nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                               NautilusNavigationState *data)
 {
     NautilusWindowSlotPrivate *priv;
 
@@ -194,11 +194,11 @@ nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
     priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
 
-RestoreTabData *
-nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
+NautilusNavigationState *
+nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
     GList *back_list;
     GList *forward_list;
 
@@ -221,7 +221,7 @@ nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
      * the view mode before search and a reference to the file.
      * A GFile isn't enough, as the NautilusFile also keeps a
      * reference to the search directory */
-    data = g_new0 (RestoreTabData, 1);
+    data = g_new0 (NautilusNavigationState, 1);
     data->back_list = back_list;
     data->forward_list = forward_list;
     data->file = nautilus_file_get (priv->location);
@@ -3734,13 +3734,13 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
 }
 
 void
-nautilus_window_slot_open_location_set_nav_state (NautilusWindowSlot         *slot,
-                                                  GFile                      *location,
-                                                  NautilusWindowOpenFlags     flags,
-                                                  GList                      *new_selection,
-                                                  NautilusLocationChangeType  change_type,
-                                                  RestoreTabData             *navigation_state,
-                                                  guint                       distance)
+nautilus_window_slot_open_location_set_navigation_state (NautilusWindowSlot         *slot,
+                                                         GFile                      *location,
+                                                         NautilusWindowOpenFlags     flags,
+                                                         GList                      *new_selection,
+                                                         NautilusLocationChangeType  change_type,
+                                                         NautilusNavigationState    *navigation_state,
+                                                         guint                       distance)
 {
     NautilusWindowSlotPrivate *priv;
 
