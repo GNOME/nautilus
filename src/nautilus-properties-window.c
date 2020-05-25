@@ -81,6 +81,7 @@ struct _NautilusPropertiesWindow
     GList *target_files;
 
     GtkNotebook *notebook;
+    GtkWidget *basic_box;
 
     GtkGrid *basic_grid;
 
@@ -3147,13 +3148,13 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *hbox, *vbox;
+    GtkWidget *vbox;
     GtkWidget *button;
 
-    hbox = create_page_with_box (window->notebook,
-                                 GTK_ORIENTATION_HORIZONTAL,
-                                 _("Basic"),
-                                 "help:gnome-help/nautilus-file-properties-basic");
+    // hbox = create_page_with_box (window->notebook,
+    //                              GTK_ORIENTATION_HORIZONTAL,
+    //                              _("Basic"),
+    //                              "help:gnome-help/nautilus-file-properties-basic");
 
     /* Icon pixmap */
 
@@ -3162,7 +3163,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
     gtk_widget_show (icon_pixmap_widget);
 
-    gtk_box_pack_start (GTK_BOX (hbox), icon_pixmap_widget, FALSE, FALSE, 0);
+    gtk_box_pack_start (GTK_BOX (window->basic_box), icon_pixmap_widget, FALSE, FALSE, 0);
 
     window->icon_chooser = NULL;
 
@@ -3170,7 +3171,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     vbox = gtk_box_new (GTK_ORIENTATION_VERTICAL, 0);
     gtk_widget_show (vbox);
-    gtk_container_add (GTK_CONTAINER (hbox), vbox);
+    gtk_container_add (GTK_CONTAINER (window->basic_box), vbox);
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (vbox), GTK_WIDGET (grid), FALSE, FALSE, 0);
@@ -5781,6 +5782,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, notebook);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_box);
 }
 
 static void
