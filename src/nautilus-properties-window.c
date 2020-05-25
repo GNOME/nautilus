@@ -75,7 +75,7 @@ typedef struct
 
 struct _NautilusPropertiesWindow
 {
-    GtkDialog parent_instance;
+    GtkWindow parent_instance;
 
     GList *original_files;
     GList *target_files;
@@ -214,7 +214,7 @@ static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
 
 static GtkWidget *create_pie_widget (NautilusPropertiesWindow *window);
 
-G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_DIALOG);
+G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_WINDOW);
 
 static gboolean
 is_multi_file_window (NautilusPropertiesWindow *window)
@@ -5049,9 +5049,6 @@ create_properties_window (StartupData *startup_data)
     GList *l;
 
     window = NAUTILUS_PROPERTIES_WINDOW (gtk_widget_new (NAUTILUS_TYPE_PROPERTIES_WINDOW,
-                                                         "use-header-bar", TRUE,
-                                                         "type-hint", GDK_WINDOW_TYPE_HINT_DIALOG,
-                                                         "modal", TRUE,
                                                          NULL));
 
     window->original_files = nautilus_file_list_copy (startup_data->original_files);
@@ -5132,15 +5129,6 @@ create_properties_window (StartupData *startup_data)
                                  G_OBJECT (window),
                                  0);
     }
-
-    /* Create the notebook tabs. */
-    window->notebook = GTK_NOTEBOOK (gtk_notebook_new ());
-    gtk_notebook_set_show_border (window->notebook, FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (window))), 0);
-    gtk_widget_show (GTK_WIDGET (window->notebook));
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (window))),
-                        GTK_WIDGET (window->notebook),
-                        TRUE, TRUE, 0);
 
     /* Create the pages. */
     create_basic_page (window);
@@ -5453,28 +5441,6 @@ nautilus_properties_window_present (GList                            *original_f
             NAUTILUS_FILE_ATTRIBUTE_INFO,
             is_directory_ready_callback,
             startup_data);
-    }
-}
-
-static void
-real_response (GtkDialog *dialog,
-               int        response)
-{
-    switch (response)
-    {
-        case GTK_RESPONSE_NONE:
-        case GTK_RESPONSE_CLOSE:
-        case GTK_RESPONSE_DELETE_EVENT:
-        {
-            gtk_widget_destroy (GTK_WIDGET (dialog));
-        }
-        break;
-
-        default:
-        {
-            g_assert_not_reached ();
-        }
-        break;
     }
 }
 
@@ -5798,20 +5764,27 @@ select_image_button_callback (GtkWidget                *widget,
 }
 
 static void
-nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
+nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 {
     GtkBindingSet *binding_set;
+    GtkWidgetClass *widget_class;
+    GObjectClass *oclass;
 
-    G_OBJECT_CLASS (class)->finalize = real_finalize;
-    GTK_WIDGET_CLASS (class)->destroy = real_destroy;
-    GTK_DIALOG_CLASS (class)->response = real_response;
+    widget_class = GTK_WIDGET_CLASS (klass);
+    oclass = G_OBJECT_CLASS (klass);
+    oclass->finalize = real_finalize;
+    widget_class->destroy = real_destroy;
 
-    binding_set = gtk_binding_set_by_class (class);
-    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
-                                  "close", 0);
+    binding_set = gtk_binding_set_by_class (klass);
+    gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0, "close", 0);
+
+    gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, notebook);
 }
 
 static void
 nautilus_properties_window_init (NautilusPropertiesWindow *window)
 {
+    gtk_widget_init_template (GTK_WIDGET (window));
 }
