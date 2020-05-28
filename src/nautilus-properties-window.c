@@ -84,7 +84,6 @@ struct _NautilusPropertiesWindow
     GtkWidget *basic_box;
     GtkWidget *image_box;
     GtkWidget *grid_box;
-
     GtkGrid *basic_grid;
 
     GtkWidget *icon_button;
@@ -3165,9 +3164,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     /* Grid */
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (window->grid_box), GTK_WIDGET (grid), FALSE, FALSE, 0);
-    window->basic_grid = grid;
+    grid = GTK_GRID (window->basic_grid);
 
     /* Name label.  The text will be determined in update_name_field */
     window->name_label = attach_title_field (grid, NULL);
@@ -5777,6 +5774,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, image_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, grid_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
 }
 
 static void
