@@ -290,7 +290,7 @@ search_finished_idle (gpointer user_data)
  * not used). The value was determined experimentally. I am convinced that
  * fts:rank is currently always set to 5.0 in case of filename match.
  */
-#define FILENAME_RANK 5.0
+#define FILENAME_RANK "5.0"
 
 static void
 nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
