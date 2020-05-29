@@ -56,6 +56,7 @@ desktop_autorun_software = i18n.merge_file(
 appdata_conf = configuration_data()
 
 appdata_conf.set('appid', application_id)
+appdata_conf.set('version', meson.project_version())
 
 appdata = i18n.merge_file(
   'appdata',
