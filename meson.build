@@ -1,5 +1,6 @@
 project('nautilus', 'c',
   default_options: ['c_std=c11'],
+  # Do not forget to update release version in appdata file when releasing
   version: '3.37.2',
   meson_version: '>= 0.47.0',
   license: 'GPL3+'
