@@ -3167,8 +3167,6 @@ create_basic_page (NautilusPropertiesWindow *window)
     grid = GTK_GRID (window->basic_grid);
 
     /* Name label.  The text will be determined in update_name_field */
-    window->name_label = attach_title_field (grid, NULL);
-
     /* Name field */
     window->name_field = NULL;
     update_name_field (window);
@@ -5775,6 +5773,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, image_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, grid_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_label);
 }
 
 static void
