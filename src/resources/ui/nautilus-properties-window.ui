@@ -75,28 +75,52 @@
                         <property name="row_spacing">6</property>
                         <property name="column_spacing">12</property>
                         <child>
-                          <placeholder/>
+                          <object class="GtkLabel" id="name_title_label">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">_Name:</property>
+                            <property name="use_underline">True</property>
+                            <property name="mnemonic_widget">name_field</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">0</property>
+                            <property name="top_attach">0</property>
+                          </packing>
                         </child>
                         <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
-                        </child>
-                        <child>
-                          <placeholder/>
+                          <object class="GtkStack" id="name_stack">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <child>
+                              <object class="GtkLabel" id="name_value_label">
+                                <property name="visible">True</property>
+                                <property name="can_focus">False</property>
+                                <property name="hexpand">True</property>
+                                <property name="selectable">True</property>
+                                <property name="ellipsize">end</property>
+                                <property name="max_width_chars">24</property>
+                                <property name="xalign">0</property>
+                              </object>
+                              <packing>
+                                <property name="name">name_value_label</property>
+                              </packing>
+                            </child>
+                            <child>
+                              <object class="GtkEntry" id="name_field">
+                                <property name="visible">True</property>
+                                <property name="can_focus">True</property>
+                              </object>
+                              <packing>
+                                <property name="name">name_value_entry</property>
+                                <property name="position">1</property>
+                              </packing>
+                            </child>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">0</property>
+                          </packing>
                         </child>
                         <child>
                           <placeholder/>
