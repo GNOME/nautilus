@@ -1156,6 +1156,7 @@ static void
 update_search_information (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
+    GFile *location;
 
     priv = nautilus_window_slot_get_instance_private (self);
 
@@ -1166,15 +1167,17 @@ update_search_information (NautilusWindowSlot *self)
         return;
     }
 
-    if (priv->location)
+    location = nautilus_window_slot_get_current_location (self);
+
+    if (location)
     {
         g_autoptr (NautilusFile) file = NULL;
         gchar *label;
         g_autofree gchar *uri = NULL;
 
-        file = nautilus_file_get (priv->location);
+        file = nautilus_file_get (location);
         label = NULL;
-        uri = g_file_get_uri (priv->location);
+        uri = g_file_get_uri (location);
 
         if (nautilus_file_is_other_locations (file))
         {
@@ -1185,11 +1188,11 @@ update_search_information (NautilusWindowSlot *self)
             label = _("Searching network locations only");
         }
         else if (nautilus_file_is_remote (file) &&
-                 location_settings_search_get_recursive_for_location (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
+                 location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Remote location — only searching the current folder");
         }
-        else if (location_settings_search_get_recursive_for_location (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
+        else if (location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Only searching the current folder");
         }
