@@ -86,7 +86,8 @@ enum
 #define QUERY_STARRED_FILES \
     "SELECT ?file_url ?content_id " \
     "{ " \
-    "    ?content_urn nautilus:starred true . " \
+    "    ?content_urn a nautilus:FileReference ; " \
+    "        nautilus:starred true . " \
     "    SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { " \
     "        ?content_urn nie:isStoredAs ?file_url . " \
     "        BIND (tracker:id (?content_urn) AS ?content_id) " \
@@ -434,7 +435,10 @@ nautilus_tag_manager_delete_tag (NautilusTagManager *self,
                                  GString            *query)
 {
     g_string_append (query,
-                     "DELETE { ?content_urn nautilus:starred true } "
+                     "DELETE { "
+                     "    ?content_urn a nautilus:FileReference ; "
+                     "        nautilus:starred true . "
+                     "} "
                      "WHERE { "
                      "  SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { "
                      "    ?content_urn nie:isStoredAs ?file_url . ");
@@ -453,8 +457,8 @@ nautilus_tag_manager_insert_tag (NautilusTagManager *self,
 {
     g_string_append (query,
                      "INSERT { "
-                     "    ?content_urn a rdfs:Resource . "
-                     "    ?content_urn nautilus:starred true . "
+                     "    ?content_urn a nautilus:FileReference . "
+                     "        ?content_urn nautilus:starred true . "
                      "} WHERE { "
                      "  SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { "
                      "    ?content_urn nie:isStoredAs ?file_url . ");
