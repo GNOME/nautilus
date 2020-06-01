@@ -86,6 +86,8 @@ struct _NautilusPropertiesWindow
     GtkWidget *grid_box;
     GtkGrid *basic_grid;
 
+    GtkLabel *type_label;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -5775,6 +5777,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_label);
 }
 
 static void
