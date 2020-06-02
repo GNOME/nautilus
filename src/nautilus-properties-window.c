@@ -87,6 +87,7 @@ struct _NautilusPropertiesWindow
     GtkGrid *basic_grid;
 
     GtkLabel *type_label;
+    GtkLabel *type_field_value;
 
     GtkWidget *icon_button;
     GtkWidget *icon_image;
@@ -3181,11 +3182,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_file_type (window))
     {
-        append_title_and_ellipsizing_value (window, grid,
-                                            _("Type:"),
-                                            "detailed_type",
-                                            INCONSISTENT_STATE_STRING,
-                                            FALSE);
+        g_object_set_data_full (G_OBJECT (window->type_field_value), "file_attribute",
+                                g_strdup ("detailed_type"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->type_field_value), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->type_field_value), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                            window->type_field_value);
     }
 
     if (should_show_link_target (window))
@@ -5778,6 +5784,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_field_value);
+
 }
 
 static void
