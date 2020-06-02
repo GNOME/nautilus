@@ -563,6 +563,8 @@ set_name_field (NautilusPropertiesWindow *window,
 {
     gboolean new_widget;
     gboolean use_label;
+    GtkWidget *stack_child_label, *stack_child_entry;
+    gchar *displayed_name;
 
     /* There are four cases here:
      * 1) Changing the text of a label
@@ -570,33 +572,42 @@ set_name_field (NautilusPropertiesWindow *window,
      * 3) Creating label (potentially replacing entry)
      * 4) Creating entry (potentially replacing label)
      */
+
+    stack_child_label = gtk_stack_get_child_by_name (GTK_STACK (window->name_field), "name_value_label");
+    stack_child_entry = gtk_stack_get_child_by_name (GTK_STACK (window->name_field), "name_value_entry");
+
     use_label = is_multi_file_window (window) || !nautilus_file_can_rename (get_original_file (window));
     new_widget = !window->name_field || (use_label ? GTK_IS_ENTRY (window->name_field) : GTK_IS_LABEL (window->name_field));
 
     if (new_widget)
     {
-        if (window->name_field)
-        {
-            gtk_widget_destroy (window->name_field);
-        }
+        // if (window->name_field)
+        // {
+        //     gtk_widget_destroy (window->name_field);
+        // }
 
         if (use_label)
         {
-            window->name_field = GTK_WIDGET
-                                     (attach_ellipsizing_value_label (window->basic_grid,
-                                                                      GTK_WIDGET (window->name_label),
-                                                                      name));
+            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_label);
+            gtk_label_set_text (GTK_LABEL (stack_child_label), name);
+
+            // window->name_field = GTK_WIDGET
+            //                          (attach_ellipsizing_value_label (window->basic_grid,
+            //                                                           GTK_WIDGET (window->name_label),
+            //                                                           name));
         }
         else
         {
-            window->name_field = gtk_entry_new ();
-            gtk_entry_set_text (GTK_ENTRY (window->name_field), name);
-            gtk_widget_show (window->name_field);
+            // window->name_field = gtk_entry_new ();
+            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_entry);
+            gtk_entry_set_text (GTK_ENTRY (stack_child_entry), name);
 
-            gtk_grid_attach_next_to (window->basic_grid, window->name_field,
-                                     GTK_WIDGET (window->name_label),
-                                     GTK_POS_RIGHT, 1, 1);
-            gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), window->name_field);
+            // gtk_widget_show (window->name_field);
+
+            // gtk_grid_attach_next_to (window->basic_grid, window->name_field,
+            //                          GTK_WIDGET (window->name_label),
+            //                          GTK_POS_RIGHT, 1, 1);
+            gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), GTK_WIDGET (window->name_field));
 
             g_signal_connect_object (window->name_field, "notify::has-focus",
                                      G_CALLBACK (name_field_focus_changed), window, 0);
@@ -604,25 +615,28 @@ set_name_field (NautilusPropertiesWindow *window,
                                      G_CALLBACK (name_field_activate), window, 0);
         }
 
-        gtk_widget_show (window->name_field);
+        // gtk_widget_show (window->name_field);
     }
     /* Only replace text if the file's name has changed. */
     else if (original_name == NULL || strcmp (original_name, name) != 0)
     {
         if (use_label)
         {
-            gtk_label_set_text (GTK_LABEL (window->name_field), name);
+            // gtk_label_set_text (GTK_LABEL (window->name_field), name);
+            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_label);
+            gtk_label_set_text (GTK_LABEL (stack_child_label), name);
         }
         else
         {
+            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_entry);
             /* Only reset the text if it's different from what is
              * currently showing. This causes minimal ripples (e.g.
              * selection change).
              */
-            gchar *displayed_name = gtk_editable_get_chars (GTK_EDITABLE (window->name_field), 0, -1);
+            displayed_name = gtk_editable_get_chars (GTK_EDITABLE ( GTK_ENTRY (stack_child_entry)), 0, -1);
             if (strcmp (displayed_name, name) != 0)
             {
-                gtk_entry_set_text (GTK_ENTRY (window->name_field), name);
+                gtk_entry_set_text (GTK_ENTRY (stack_child_entry), name);
             }
             g_free (displayed_name);
         }
@@ -745,8 +759,10 @@ rename_callback (NautilusFile *file,
                  gpointer      callback_data)
 {
     NautilusPropertiesWindow *window;
+    GtkWidget *name_field_entry;
 
     window = NAUTILUS_PROPERTIES_WINDOW (callback_data);
+    name_field_entry = gtk_stack_get_child_by_name(GTK_STACK (window->name_field), "name_value_entry");
 
     /* Complain to user if rename failed. */
     if (error != NULL)
@@ -755,9 +771,9 @@ rename_callback (NautilusFile *file,
                                              window->pending_name,
                                              error,
                                              GTK_WINDOW (window));
-        if (window->name_field != NULL)
+        if (name_field_entry != NULL)
         {
-            name_field_restore_original_name (window->name_field);
+            name_field_restore_original_name (name_field_entry);
         }
     }
 
@@ -5791,6 +5807,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_field);
+
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_field_value);
 
