@@ -3186,6 +3186,14 @@ create_basic_page (NautilusPropertiesWindow *window)
                                             "detailed_type",
                                             INCONSISTENT_STATE_STRING,
                                             FALSE);
+
+        attach_value_field_internal (window,
+                                    grid,
+                                    GTK_WIDGET (window->type_label),
+                                    "detailed_type",
+                                    INCONSISTENT_STATE_STRING,
+                                    FALSE,
+                                    TRUE);
     }
 
     if (should_show_link_target (window))
