@@ -3187,7 +3187,7 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     /* Name label.  The text will be determined in update_name_field */
     /* Name field */
-    window->name_field = NULL;
+    // window->name_field = NULL;
     update_name_field (window);
 
     /* Start with name field selected, if it's an entry. */
