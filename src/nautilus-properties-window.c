@@ -580,46 +580,46 @@ set_name_field (NautilusPropertiesWindow *window,
     use_label = is_multi_file_window (window) || !nautilus_file_can_rename (get_original_file (window));
     new_widget = !window->name_field || (use_label ? GTK_IS_ENTRY (window->name_field) : GTK_IS_LABEL (window->name_field));
 
-    if (new_widget)
-    {
-        // if (window->name_field)
-        // {
-        //     gtk_widget_destroy (window->name_field);
-        // }
+    // if (new_widget)
+    // {
+    //     // if (window->name_field)
+    //     // {
+    //     //     gtk_widget_destroy (window->name_field);
+    //     // }
 
-        if (use_label)
-        {
-            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_label);
-            gtk_label_set_text (GTK_LABEL (stack_child_label), name);
+    //     if (use_label)
+    //     {
+    //         gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_label);
+    //         gtk_label_set_text (GTK_LABEL (stack_child_label), name);
 
-            // window->name_field = GTK_WIDGET
-            //                          (attach_ellipsizing_value_label (window->basic_grid,
-            //                                                           GTK_WIDGET (window->name_label),
-            //                                                           name));
-        }
-        else
-        {
-            // window->name_field = gtk_entry_new ();
-            gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_entry);
-            gtk_entry_set_text (GTK_ENTRY (stack_child_entry), name);
+    //         // window->name_field = GTK_WIDGET
+    //         //                          (attach_ellipsizing_value_label (window->basic_grid,
+    //         //                                                           GTK_WIDGET (window->name_label),
+    //         //                                                           name));
+    //     }
+    //     else
+    //     {
+    //         // window->name_field = gtk_entry_new ();
+    //         gtk_stack_set_visible_child (GTK_STACK (window->name_field), stack_child_entry);
+    //         gtk_entry_set_text (GTK_ENTRY (stack_child_entry), name);
 
-            // gtk_widget_show (window->name_field);
+    //         // gtk_widget_show (window->name_field);
 
-            // gtk_grid_attach_next_to (window->basic_grid, window->name_field,
-            //                          GTK_WIDGET (window->name_label),
-            //                          GTK_POS_RIGHT, 1, 1);
-            gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), GTK_WIDGET (window->name_field));
+    //         // gtk_grid_attach_next_to (window->basic_grid, window->name_field,
+    //         //                          GTK_WIDGET (window->name_label),
+    //         //                          GTK_POS_RIGHT, 1, 1);
+    //         gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), GTK_WIDGET (window->name_field));
 
-            g_signal_connect_object (window->name_field, "notify::has-focus",
-                                     G_CALLBACK (name_field_focus_changed), window, 0);
-            g_signal_connect_object (window->name_field, "activate",
-                                     G_CALLBACK (name_field_activate), window, 0);
-        }
+    //         g_signal_connect_object (window->name_field, "notify::has-focus",
+    //                                  G_CALLBACK (name_field_focus_changed), window, 0);
+    //         g_signal_connect_object (window->name_field, "activate",
+    //                                  G_CALLBACK (name_field_activate), window, 0);
+    //     }
 
-        // gtk_widget_show (window->name_field);
-    }
+    //     // gtk_widget_show (window->name_field);
+    // }
     /* Only replace text if the file's name has changed. */
-    else if (original_name == NULL || strcmp (original_name, name) != 0)
+    if (original_name == NULL || strcmp (original_name, name) != 0)
     {
         if (use_label)
         {
@@ -634,6 +634,13 @@ set_name_field (NautilusPropertiesWindow *window,
              * currently showing. This causes minimal ripples (e.g.
              * selection change).
              */
+            gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), GTK_WIDGET (window->name_field));
+
+            g_signal_connect_object (stack_child_entry, "notify::has-focus",
+                                     G_CALLBACK (name_field_focus_changed), window, 0);
+            g_signal_connect_object (stack_child_entry, "activate",
+                                     G_CALLBACK (name_field_activate), window, 0);
+
             displayed_name = gtk_editable_get_chars (GTK_EDITABLE ( GTK_ENTRY (stack_child_entry)), 0, -1);
             if (strcmp (displayed_name, name) != 0)
             {
