@@ -575,6 +575,7 @@ set_name_field (NautilusPropertiesWindow *window,
 
     stack_child_label = gtk_stack_get_child_by_name (GTK_STACK (window->name_field), "name_value_label");
     stack_child_entry = gtk_stack_get_child_by_name (GTK_STACK (window->name_field), "name_value_entry");
+    gtk_widget_grab_focus (stack_child_entry);
 
     use_label = is_multi_file_window (window) || !nautilus_file_can_rename (get_original_file (window));
     new_widget = !window->name_field || (use_label ? GTK_IS_ENTRY (window->name_field) : GTK_IS_LABEL (window->name_field));
