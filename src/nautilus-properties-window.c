@@ -94,6 +94,9 @@ struct _NautilusPropertiesWindow
     GtkLabel *contents_field;
     GtkWidget *contents_spinner;
 
+    GtkLabel *size_field;
+    GtkLabel *size_label;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3152,10 +3155,17 @@ create_basic_page (NautilusPropertiesWindow *window)
     }
     else
     {
-        append_title_value_pair (window, grid, _("Size:"),
-                                 "size_detail",
-                                 INCONSISTENT_STATE_STRING,
-                                 FALSE);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->size_field), "file_attribute",
+                                g_strdup ("size_detail"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->size_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->size_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->size_field);
     }
 
     append_blank_row (grid);
@@ -5731,6 +5741,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_field);
 }
 
 static void
