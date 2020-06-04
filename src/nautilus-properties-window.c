@@ -92,6 +92,10 @@ struct _NautilusPropertiesWindow
     GtkLabel *link_target_label;
     GtkLabel *link_target_field;
 
+    GtkLabel *contents_label;
+    GtkLabel *contents_field;
+    GtkWidget *contents_spinner;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -103,9 +107,6 @@ struct _NautilusPropertiesWindow
 
     guint select_idle_id;
 
-    GtkLabel *directory_contents_title_field;
-    GtkLabel *directory_contents_value_field;
-    GtkWidget *directory_contents_spinner;
     guint update_directory_contents_timeout_id;
     guint update_files_timeout_id;
 
@@ -1001,8 +1002,8 @@ get_mime_list (NautilusPropertiesWindow *window)
 static gboolean
 start_spinner_callback (NautilusPropertiesWindow *window)
 {
-    gtk_widget_show (window->directory_contents_spinner);
-    gtk_spinner_start (GTK_SPINNER (window->directory_contents_spinner));
+    gtk_widget_show (window->contents_spinner);
+    gtk_spinner_start (GTK_SPINNER (window->contents_spinner));
     window->deep_count_spinner_timeout_id = 0;
 
     return FALSE;
@@ -1023,8 +1024,8 @@ schedule_start_spinner (NautilusPropertiesWindow *window)
 static void
 stop_spinner (NautilusPropertiesWindow *window)
 {
-    gtk_spinner_stop (GTK_SPINNER (window->directory_contents_spinner));
-    gtk_widget_hide (window->directory_contents_spinner);
+    gtk_spinner_stop (GTK_SPINNER (window->contents_spinner));
+    gtk_widget_hide (window->contents_spinner);
     if (window->deep_count_spinner_timeout_id > 0)
     {
         g_source_remove (window->deep_count_spinner_timeout_id);
@@ -2315,7 +2316,7 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
         }
     }
 
-    gtk_label_set_text (window->directory_contents_value_field,
+    gtk_label_set_text (window->contents_field,
                         text);
     g_free (text);
 
@@ -2332,7 +2333,7 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
         text = g_strconcat (temp, "\n ", NULL);
         g_free (temp);
     }
-    gtk_label_set_text (window->directory_contents_title_field,
+    gtk_label_set_text (window->contents_label,
                         text);
     g_free (text);
 
@@ -2368,23 +2369,6 @@ schedule_directory_contents_update (NautilusPropertiesWindow *window)
                              update_directory_contents_callback,
                              window);
     }
-}
-
-static GtkLabel *
-attach_directory_contents_value_field (NautilusPropertiesWindow *window,
-                                       GtkGrid                  *grid,
-                                       GtkWidget                *sibling)
-{
-    GtkLabel *value_field;
-
-    value_field = attach_value_label (grid, sibling, "");
-
-    g_assert (window->directory_contents_value_field == NULL);
-    window->directory_contents_value_field = value_field;
-
-    gtk_label_set_line_wrap (value_field, TRUE);
-
-    return value_field;
 }
 
 static GtkLabel *
@@ -2440,20 +2424,13 @@ static void
 append_directory_contents_fields (NautilusPropertiesWindow *window,
                                   GtkGrid                  *grid)
 {
-    GtkLabel *title_field, *value_field;
     GList *l;
 
-    title_field = attach_title_field (grid, "");
-    window->directory_contents_title_field = title_field;
-    gtk_label_set_line_wrap (title_field, TRUE);
-
-    value_field = attach_directory_contents_value_field (window, grid, GTK_WIDGET (title_field));
-
-    window->directory_contents_spinner = gtk_spinner_new ();
+    window->contents_spinner = gtk_spinner_new ();
 
     gtk_grid_attach_next_to (grid,
-                             window->directory_contents_spinner,
-                             GTK_WIDGET (value_field),
+                             window->contents_spinner,
+                             GTK_WIDGET (window->contents_field),
                              GTK_POS_RIGHT,
                              1, 1);
 
@@ -2467,8 +2444,6 @@ append_directory_contents_fields (NautilusPropertiesWindow *window,
 
     /* Fill in the initial value. */
     directory_contents_value_field_update (window);
-
-    gtk_label_set_mnemonic_widget (title_field, GTK_WIDGET (value_field));
 }
 
 static GtkWidget *
@@ -5761,6 +5736,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_field_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_field);
 }
 
 static void
