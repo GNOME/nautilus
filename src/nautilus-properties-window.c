@@ -97,6 +97,9 @@ struct _NautilusPropertiesWindow
     GtkLabel *size_field;
     GtkLabel *size_label;
 
+    GtkLabel *parent_folder_label;
+    GtkLabel *parent_folder_field;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3168,14 +3171,18 @@ create_basic_page (NautilusPropertiesWindow *window)
                                                window->size_field);
     }
 
-    append_blank_row (grid);
-
     if (should_show_location_info (window))
     {
-        append_title_and_ellipsizing_value (window, grid, _("Parent folder:"),
-                                            "where",
-                                            INCONSISTENT_STATE_STRING,
-                                            location_show_original (window));
+        g_object_set_data_full (G_OBJECT (window->parent_folder_field), "file_attribute",
+                                g_strdup ("where"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->parent_folder_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->parent_folder_field), "show_original", GINT_TO_POINTER (location_show_original (window)));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->parent_folder_field);
     }
 
     if (should_show_trash_orig_path (window))
@@ -5743,6 +5750,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, contents_spinner);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_field);
 }
 
 static void
