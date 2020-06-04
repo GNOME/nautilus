@@ -79,7 +79,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="content_label">
+                          <object class="GtkLabel" id="contents_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Contents:</property>
@@ -205,6 +205,44 @@
                             <property name="left_attach">1</property>
                             <property name="top_attach">2</property>
                           </packing>
+                        </child>
+                        <child>
+                          <object class="GtkLabel" id="contents_field">
+                            <property name="visible">True</property>
+                            <property name="can_focus">False</property>
+                            <property name="label" translatable="yes">-</property>
+                            <property name="selectable">True</property>
+                            <property name="max_width_chars">24</property>
+                            <property name="xalign">0</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">1</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <object class="GtkSpinner" id="contents_spinner">
+                            <property name="can_focus">False</property>
+                          </object>
+                          <packing>
+                            <property name="left_attach">2</property>
+                            <property name="top_attach">3</property>
+                          </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                         <child>
                           <placeholder/>
