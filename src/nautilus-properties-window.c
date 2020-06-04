@@ -89,6 +89,9 @@ struct _NautilusPropertiesWindow
     GtkLabel *type_label;
     GtkLabel *type_field_value;
 
+    GtkLabel *link_target_label;
+    GtkLabel *link_target_field;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3161,11 +3164,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_link_target (window))
     {
-        append_title_and_ellipsizing_value (window, grid,
-                                            _("Link target:"),
-                                            "link_target",
-                                            INCONSISTENT_STATE_STRING,
-                                            FALSE);
+        g_object_set_data_full (G_OBJECT (window->link_target_field), "file_attribute",
+                                g_strdup ("link_target"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->link_target_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->link_target_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->link_target_field);
     }
 
     if (is_multi_file_window (window) ||
@@ -5749,9 +5757,10 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, name_field);
-
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, type_field_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, link_target_field);
 }
 
 static void
