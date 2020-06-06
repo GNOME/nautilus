@@ -580,8 +580,6 @@ set_name_field (NautilusPropertiesWindow *window,
     gtk_label_set_text (GTK_LABEL (stack_child_label), name);
     gtk_entry_set_text (GTK_ENTRY (stack_child_entry), name);
 
-    gtk_label_set_mnemonic_widget (GTK_LABEL (window->name_label), GTK_WIDGET (stack_child_entry));
-
     g_signal_connect_object (stack_child_entry, "notify::has-focus",
                              G_CALLBACK (name_field_focus_changed), window, 0);
     g_signal_connect_object (stack_child_entry, "activate",
