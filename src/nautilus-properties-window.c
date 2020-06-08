@@ -109,9 +109,13 @@ struct _NautilusPropertiesWindow
     GtkLabel *trashed_on_label;
     GtkLabel *trashed_on_field;
 
+    GtkLabel *spacer_2;
+
     GtkLabel *accessed_label;
     GtkLabel *accessed_field;
-    GtkLabel *spacer_2;
+
+    GtkLabel *modified_label;
+    GtkLabel *modified_field;
 
     GtkWidget *icon_button;
     GtkWidget *icon_image;
@@ -3228,10 +3232,17 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_modified_date (window))
     {
-        append_title_value_pair (window, grid, _("Modified:"),
-                                 "date_modified_full",
-                                 INCONSISTENT_STATE_STRING,
-                                 FALSE);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->modified_field), "file_attribute",
+                                g_strdup ("date_modified_full"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->modified_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->modified_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->modified_field);
     }
 
     if (should_show_free_space (window)
@@ -5764,6 +5775,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_field);
 }
 
 static void
