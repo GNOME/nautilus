@@ -100,6 +100,9 @@ struct _NautilusPropertiesWindow
     GtkLabel *parent_folder_label;
     GtkLabel *parent_folder_field;
 
+    GtkLabel *original_folder_label;
+    GtkLabel *original_folder_field;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3188,10 +3191,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_trash_orig_path (window))
     {
-        append_title_and_ellipsizing_value (window, grid, _("Original folder:"),
-                                            "trash_orig_path",
-                                            INCONSISTENT_STATE_STRING,
-                                            FALSE);
+        g_object_set_data_full (G_OBJECT (window->original_folder_field), "file_attribute",
+                                g_strdup ("trash_orig_path"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->original_folder_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->original_folder_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->original_folder_field);
     }
 
     if (should_show_volume_info (window))
@@ -5754,6 +5763,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, size_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, parent_folder_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_field);
 }
 
 static void
