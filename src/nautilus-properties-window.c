@@ -109,6 +109,10 @@ struct _NautilusPropertiesWindow
     GtkLabel *trashed_on_label;
     GtkLabel *trashed_on_field;
 
+    GtkLabel *accessed_label;
+    GtkLabel *accessed_field;
+    GtkLabel *spacer_2;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -1470,22 +1474,6 @@ attach_value_field (NautilusPropertiesWindow *window,
                                         FALSE);
 }
 
-static GtkWidget *
-attach_ellipsizing_value_field (NautilusPropertiesWindow *window,
-                                GtkGrid                  *grid,
-                                GtkWidget                *sibling,
-                                const char               *file_attribute_name,
-                                const char               *inconsistent_string,
-                                gboolean                  show_original)
-{
-    return attach_value_field_internal (window,
-                                        grid, sibling,
-                                        file_attribute_name,
-                                        inconsistent_string,
-                                        show_original,
-                                        TRUE);
-}
-
 static void
 group_change_free (GroupChange *change)
 {
@@ -2415,26 +2403,6 @@ append_title_value_pair (NautilusPropertiesWindow *window,
 }
 
 static void
-append_title_and_ellipsizing_value (NautilusPropertiesWindow *window,
-                                    GtkGrid                  *grid,
-                                    const char               *title,
-                                    const char               *file_attribute_name,
-                                    const char               *inconsistent_state,
-                                    gboolean                  show_original)
-{
-    GtkLabel *title_label;
-    GtkWidget *value;
-
-    title_label = attach_title_field (grid, title);
-    value = attach_ellipsizing_value_field (window, grid,
-                                            GTK_WIDGET (title_label),
-                                            file_attribute_name,
-                                            inconsistent_state,
-                                            show_original);
-    gtk_label_set_mnemonic_widget (title_label, value);
-}
-
-static void
 setup_contents_field (NautilusPropertiesWindow *window,
                       GtkGrid                  *grid)
 {
@@ -3236,15 +3204,22 @@ create_basic_page (NautilusPropertiesWindow *window)
     if (should_show_accessed_date (window)
         || should_show_modified_date (window))
     {
-        append_blank_row (grid);
+        gtk_widget_show (GTK_WIDGET (window->spacer_2));
     }
 
     if (should_show_accessed_date (window))
     {
-        append_title_value_pair (window, grid, _("Accessed:"),
-                                 "date_accessed_full",
-                                 INCONSISTENT_STATE_STRING,
-                                 FALSE);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->accessed_field), "file_attribute",
+                                g_strdup ("date_accessed_full"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->accessed_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->accessed_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->accessed_field);
     }
 
     if (should_show_modified_date (window))
@@ -5781,6 +5756,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, accessed_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
 }
 
 static void
