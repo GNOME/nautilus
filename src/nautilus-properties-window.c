@@ -106,6 +106,9 @@ struct _NautilusPropertiesWindow
     GtkLabel *volume_label;
     GtkLabel *volume_field;
 
+    GtkLabel *trashed_on_label;
+    GtkLabel *trashed_on_field;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3218,10 +3221,16 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_trashed_on (window))
     {
-        append_title_and_ellipsizing_value (window, grid, _("Trashed on:"),
-                                            "trashed_on_full",
-                                            INCONSISTENT_STATE_STRING,
-                                            FALSE);
+        g_object_set_data_full (G_OBJECT (window->trashed_on_field), "file_attribute",
+                                g_strdup ("trashed_on_full"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->trashed_on_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->trashed_on_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->trashed_on_field);
     }
 
     if (should_show_accessed_date (window)
@@ -5770,6 +5779,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, original_folder_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, trashed_on_field);
 }
 
 static void
