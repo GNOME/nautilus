@@ -84,12 +84,13 @@ struct _NautilusPropertiesWindow
 
     /* Basic tab widgets */
 
-    GtkBox *image_box;
-    GtkGrid *basic_grid;
-
-    GtkWidget *icon_button;
+    GtkStack *icon_stack;
     GtkWidget *icon_image;
+    GtkWidget *icon_button;
+    GtkWidget *icon_button_image;
     GtkWidget *icon_chooser;
+
+    GtkGrid *basic_grid;
 
     GtkLabel *name_label;
     GtkWidget *name_field;
@@ -410,6 +411,7 @@ update_properties_window_icon (NautilusPropertiesWindow *window)
     surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, gtk_widget_get_scale_factor (GTK_WIDGET (window)),
                                                     gtk_widget_get_window (GTK_WIDGET (window)));
     gtk_image_set_from_surface (GTK_IMAGE (window->icon_image), surface);
+    gtk_image_set_from_surface (GTK_IMAGE (window->icon_button_image), surface);
 
     g_free (name);
     g_object_unref (pixbuf);
@@ -518,40 +520,30 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
     g_strfreev (uris);
 }
 
-static GtkWidget *
-create_image_widget (NautilusPropertiesWindow *window,
-                     gboolean                  is_customizable)
+static void
+setup_image_widget (NautilusPropertiesWindow *window,
+                    gboolean                  is_customizable)
 {
-    GtkWidget *button;
-    GtkWidget *image;
-
-    image = gtk_image_new ();
-    window->icon_image = image;
-
     update_properties_window_icon (window);
-    gtk_widget_show (image);
 
-    button = NULL;
     if (is_customizable)
     {
-        button = gtk_button_new ();
-        gtk_container_add (GTK_CONTAINER (button), image);
-
         /* prepare the image to receive dropped objects to assign custom images */
-        gtk_drag_dest_set (GTK_WIDGET (image),
+        gtk_drag_dest_set (window->icon_button_image,
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
                            target_table, G_N_ELEMENTS (target_table),
                            GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
-        g_signal_connect (image, "drag-data-received",
+        g_signal_connect (window->icon_button_image, "drag-data-received",
                           G_CALLBACK (nautilus_properties_window_drag_data_received), NULL);
-        g_signal_connect (button, "clicked",
+        g_signal_connect (window->icon_button, "clicked",
                           G_CALLBACK (select_image_button_callback), window);
+        gtk_stack_set_visible_child (window->icon_stack, window->icon_button);
     }
-
-    window->icon_button = button;
-
-    return button != NULL ? button : image;
+    else
+    {
+        gtk_stack_set_visible_child (window->icon_stack, window->icon_image);
+    }
 }
 
 static void
@@ -3148,18 +3140,12 @@ static void
 setup_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
-    GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
     GtkWidget *button;
 
     /* Icon pixmap */
 
-    icon_pixmap_widget = create_image_widget (
-        window, should_show_custom_icon_buttons (window));
-    gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
-    gtk_widget_show (icon_pixmap_widget);
-
-    gtk_box_pack_start (window->image_box, icon_pixmap_widget, FALSE, FALSE, 0);
+    setup_image_widget (window, should_show_custom_icon_buttons (window));
 
     window->icon_chooser = NULL;
 
@@ -5779,7 +5765,10 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class, "/org/gnome/nautilus/ui/nautilus-properties-window.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, notebook);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, image_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_image);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_button_image);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, basic_grid);
 }
 
