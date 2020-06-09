@@ -123,6 +123,7 @@ struct _NautilusPropertiesWindow
     GtkLabel *free_space_field;
 
     GtkWidget *volume_widget_box;
+    GtkButton *open_in_disks_button;
 
     GtkWidget *icon_button;
     GtkWidget *icon_image;
@@ -3278,12 +3279,7 @@ create_basic_page (NautilusPropertiesWindow *window)
         }
 
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
-        button = gtk_button_new_with_label (_("Open in Disks"));
-        g_signal_connect (button, "clicked", G_CALLBACK (open_in_disks), NULL);
-        gtk_container_add_with_properties (GTK_CONTAINER (grid),
-                                           button,
-                                           "width", 3,
-                                           NULL);
+        g_signal_connect (window->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), NULL);
         gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
@@ -5790,6 +5786,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button);
+
 }
 
 static void
