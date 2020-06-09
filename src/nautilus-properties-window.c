@@ -122,6 +122,8 @@ struct _NautilusPropertiesWindow
     GtkLabel *free_space_label;
     GtkLabel *free_space_field;
 
+    GtkWidget *volume_widget_box;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3272,10 +3274,7 @@ create_basic_page (NautilusPropertiesWindow *window)
         volume_usage = create_volume_usage_widget (window);
         if (volume_usage != NULL)
         {
-            gtk_container_add_with_properties (GTK_CONTAINER (grid),
-                                               volume_usage,
-                                               "width", 3,
-                                               NULL);
+            gtk_container_add (GTK_CONTAINER (window->volume_widget_box), volume_usage);
         }
 
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
@@ -5790,6 +5789,7 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_3);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
 }
 
 static void
