@@ -3080,11 +3080,9 @@ create_basic_page (NautilusPropertiesWindow *window)
     GtkGrid *grid;
     GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
-    GtkWidget *button;
     GtkWidget *stack_child_entry;
 
     /* Icon pixmap */
-
     icon_pixmap_widget = create_image_widget (
         window, should_show_custom_icon_buttons (window));
     gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
@@ -3114,6 +3112,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_file_type (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->type_label));
+        gtk_widget_show (GTK_WIDGET (window->type_field_value));
         g_object_set_data_full (G_OBJECT (window->type_field_value), "file_attribute",
                                 g_strdup ("detailed_type"), g_free);
 
@@ -3128,6 +3128,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_link_target (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->link_target_label));
+        gtk_widget_show (GTK_WIDGET (window->link_target_field));
         g_object_set_data_full (G_OBJECT (window->link_target_field), "file_attribute",
                                 g_strdup ("link_target"), g_free);
 
@@ -3143,10 +3145,15 @@ create_basic_page (NautilusPropertiesWindow *window)
     if (is_multi_file_window (window) ||
         nautilus_file_is_directory (get_target_file (window)))
     {
+        gtk_widget_show (GTK_WIDGET (window->contents_label));
+        gtk_widget_show (GTK_WIDGET (window->contents_field));
         setup_contents_field (window, grid);
     }
     else
     {
+        gtk_widget_show (GTK_WIDGET (window->size_label));
+        gtk_widget_show (GTK_WIDGET (window->size_field));
+
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->size_field), "file_attribute",
                                 g_strdup ("size_detail"), g_free);
@@ -3162,6 +3169,9 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_location_info (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->parent_folder_label));
+        gtk_widget_show (GTK_WIDGET (window->parent_folder_field));
+
         g_object_set_data_full (G_OBJECT (window->parent_folder_field), "file_attribute",
                                 g_strdup ("where"), g_free);
 
@@ -3176,6 +3186,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_trash_orig_path (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->original_folder_label));
+        gtk_widget_show (GTK_WIDGET (window->original_folder_field));
         g_object_set_data_full (G_OBJECT (window->original_folder_field), "file_attribute",
                                 g_strdup ("trash_orig_path"), g_free);
 
@@ -3190,6 +3202,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_volume_info (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->volume_label));
+        gtk_widget_show (GTK_WIDGET (window->volume_field));
         g_object_set_data_full (G_OBJECT (window->volume_field), "file_attribute",
                                 g_strdup ("volume"), g_free);
 
@@ -3204,6 +3218,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_trashed_on (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->trashed_on_label));
+        gtk_widget_show (GTK_WIDGET (window->trashed_on_field));
         g_object_set_data_full (G_OBJECT (window->trashed_on_field), "file_attribute",
                                 g_strdup ("trashed_on_full"), g_free);
 
@@ -3224,6 +3240,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_accessed_date (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->accessed_label));
+        gtk_widget_show (GTK_WIDGET (window->accessed_field));
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->accessed_field), "file_attribute",
                                 g_strdup ("date_accessed_full"), g_free);
@@ -3239,6 +3257,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_modified_date (window))
     {
+        gtk_widget_show (GTK_WIDGET (window->modified_label));
+        gtk_widget_show (GTK_WIDGET (window->modified_field));
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->modified_field), "file_attribute",
                                 g_strdup ("date_modified_full"), g_free);
@@ -3256,6 +3276,8 @@ create_basic_page (NautilusPropertiesWindow *window)
         && !should_show_volume_usage (window))
     {
         gtk_widget_show (GTK_WIDGET (window->spacer_3));
+        gtk_widget_show (GTK_WIDGET (window->free_space_label));
+        gtk_widget_show (GTK_WIDGET (window->free_space_field));
 
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->free_space_field), "file_attribute",
@@ -3272,6 +3294,8 @@ create_basic_page (NautilusPropertiesWindow *window)
 
     if (should_show_volume_usage (window))
     {
+        gtk_widget_show (window->volume_widget_box);
+        gtk_widget_show (GTK_WIDGET (window->open_in_disks_button));
         volume_usage = create_volume_usage_widget (window);
         if (volume_usage != NULL)
         {
@@ -3280,7 +3304,6 @@ create_basic_page (NautilusPropertiesWindow *window)
 
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
         g_signal_connect (window->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), NULL);
-        gtk_widget_show_all (GTK_WIDGET (grid));
     }
 }
 
@@ -5787,7 +5810,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button);
-
 }
 
 static void
