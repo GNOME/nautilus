@@ -125,6 +125,9 @@ struct _NautilusPropertiesWindow
     GtkWidget *volume_widget_box;
     GtkButton *open_in_disks_button;
 
+    GtkWidget *icon_stack;
+    GtkWidget *button_image;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -446,6 +449,7 @@ update_properties_window_icon (NautilusPropertiesWindow *window)
     surface = gdk_cairo_surface_create_from_pixbuf (pixbuf, gtk_widget_get_scale_factor (GTK_WIDGET (window)),
                                                     gtk_widget_get_window (GTK_WIDGET (window)));
     gtk_image_set_from_surface (GTK_IMAGE (window->icon_image), surface);
+    gtk_image_set_from_surface (GTK_IMAGE (window->button_image), surface);
 
     g_free (name);
     g_object_unref (pixbuf);
@@ -554,40 +558,37 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
     g_strfreev (uris);
 }
 
-static GtkWidget *
-create_image_widget (NautilusPropertiesWindow *window,
-                     gboolean                  is_customizable)
+static void
+setup_image_widget (NautilusPropertiesWindow *window,
+                    gboolean                  is_customizable)
 {
     GtkWidget *button;
     GtkWidget *image;
 
-    image = gtk_image_new ();
+    image = gtk_stack_get_child_by_name (GTK_STACK (window->icon_stack), "stack_child_image");
+    button = gtk_stack_get_child_by_name (GTK_STACK (window->icon_stack), "stack_child_button");
+
     window->icon_image = image;
-
     update_properties_window_icon (window);
-    gtk_widget_show (image);
 
-    button = NULL;
     if (is_customizable)
     {
-        button = gtk_button_new ();
-        gtk_container_add (GTK_CONTAINER (button), image);
-
         /* prepare the image to receive dropped objects to assign custom images */
-        gtk_drag_dest_set (GTK_WIDGET (image),
+        gtk_drag_dest_set (GTK_WIDGET (window->button_image),
                            GTK_DEST_DEFAULT_MOTION | GTK_DEST_DEFAULT_HIGHLIGHT | GTK_DEST_DEFAULT_DROP,
                            target_table, G_N_ELEMENTS (target_table),
                            GDK_ACTION_COPY | GDK_ACTION_MOVE);
 
-        g_signal_connect (image, "drag-data-received",
+        g_signal_connect (window->button_image, "drag-data-received",
                           G_CALLBACK (nautilus_properties_window_drag_data_received), NULL);
         g_signal_connect (button, "clicked",
                           G_CALLBACK (select_image_button_callback), window);
+        gtk_stack_set_visible_child (GTK_STACK (window->icon_stack), button);
     }
-
-    window->icon_button = button;
-
-    return button != NULL ? button : image;
+    else
+    {
+        gtk_stack_set_visible_child (GTK_STACK (window->icon_stack), image);
+    }
 }
 
 static void
@@ -3079,22 +3080,15 @@ static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
-    GtkWidget *icon_pixmap_widget;
     GtkWidget *volume_usage;
     GtkWidget *stack_child_entry;
 
     /* Icon pixmap */
-    icon_pixmap_widget = create_image_widget (
-        window, should_show_custom_icon_buttons (window));
-    gtk_widget_set_valign (icon_pixmap_widget, GTK_ALIGN_START);
-    gtk_widget_show (icon_pixmap_widget);
-
-    gtk_box_pack_start (GTK_BOX (window->image_box), icon_pixmap_widget, FALSE, FALSE, 0);
+    setup_image_widget (window, should_show_custom_icon_buttons (window));
 
     window->icon_chooser = NULL;
 
     /* Grid */
-
     grid = GTK_GRID (window->basic_grid);
     update_name_field (window);
 
@@ -5812,6 +5806,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_field);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, icon_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, button_image);
 }
 
 static void
