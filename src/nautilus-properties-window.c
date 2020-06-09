@@ -117,6 +117,11 @@ struct _NautilusPropertiesWindow
     GtkLabel *modified_label;
     GtkLabel *modified_field;
 
+    GtkLabel *spacer_3;
+
+    GtkLabel *free_space_label;
+    GtkLabel *free_space_field;
+
     GtkWidget *icon_button;
     GtkWidget *icon_image;
     GtkWidget *icon_chooser;
@@ -3248,12 +3253,19 @@ create_basic_page (NautilusPropertiesWindow *window)
     if (should_show_free_space (window)
         && !should_show_volume_usage (window))
     {
-        append_blank_row (grid);
+        gtk_widget_show (GTK_WIDGET (window->spacer_3));
 
-        append_title_value_pair (window, grid, _("Free space:"),
-                                 "free_space",
-                                 INCONSISTENT_STATE_STRING,
-                                 FALSE);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->free_space_field), "file_attribute",
+                                g_strdup ("free_space"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->free_space_field), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->free_space_field), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->free_space_field);
     }
 
     if (should_show_volume_usage (window))
@@ -5777,6 +5789,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_field);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_3);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_field);
 }
 
 static void
