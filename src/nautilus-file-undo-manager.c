@@ -109,12 +109,7 @@ nautilus_file_undo_manager_finalize (GObject *object)
 {
     NautilusFileUndoManager *self = NAUTILUS_FILE_UNDO_MANAGER (object);
 
-    if (self->trash_signal_id != 0)
-    {
-        g_signal_handler_disconnect (nautilus_trash_monitor_get (),
-                                     self->trash_signal_id);
-        self->trash_signal_id = 0;
-    }
+    g_clear_signal_handler (&self->trash_signal_id, nautilus_trash_monitor_get ());
 
     file_undo_manager_clear (self);
 

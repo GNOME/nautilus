@@ -675,9 +675,8 @@ egg_animation_stop (EggAnimation *animation)
       if (animation->frame_clock)
         {
           gdk_frame_clock_end_updating (animation->frame_clock);
-          g_signal_handler_disconnect (animation->frame_clock, animation->tween_handler);
-          g_signal_handler_disconnect (animation->frame_clock, animation->after_paint_handler);
-          animation->tween_handler = 0;
+          g_clear_signal_handler (&animation->tween_handler, animation->frame_clock);
+          g_clear_signal_handler (&animation->after_paint_handler, animation->frame_clock);
         }
       else
         {

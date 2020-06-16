@@ -146,7 +146,7 @@ struct _NautilusWindow
     gchar *export_handle;
 
     guint sidebar_width_handler_id;
-    guint bookmarks_id;
+    gulong bookmarks_id;
 
     GQueue *tab_data_queue;
 
@@ -2293,6 +2293,7 @@ nautilus_window_destroy (GtkWidget *object)
     GList *slots_copy;
 
     window = NAUTILUS_WINDOW (object);
+    application = NAUTILUS_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
 
     DEBUG ("Destroying window");
 
@@ -2312,13 +2313,7 @@ nautilus_window_destroy (GtkWidget *object)
 
     window->active_slot = NULL;
 
-    if (window->bookmarks_id != 0)
-    {
-        application = NAUTILUS_APPLICATION (gtk_window_get_application (GTK_WINDOW (window)));
-        g_signal_handler_disconnect (nautilus_application_get_bookmarks (application),
-                                     window->bookmarks_id);
-        window->bookmarks_id = 0;
-    }
+    g_clear_signal_handler (&window->bookmarks_id, nautilus_application_get_bookmarks (application));
 
     g_clear_handle_id (&window->in_app_notification_undo_timeout_id, g_source_remove);
 

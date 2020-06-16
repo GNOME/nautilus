@@ -40,7 +40,7 @@ struct _IdeBoxTheatric
   GdkRGBA          background_rgba;
   gdouble          alpha;
 
-  guint            draw_handler;
+  gulong           draw_handler;
 
   guint            background_set : 1;
   guint            pixbuf_failed : 1;
@@ -194,11 +194,8 @@ ide_box_theatric_dispose (GObject *object)
 
   if (self->target)
     {
-      if (self->draw_handler && self->toplevel)
-        {
-          g_signal_handler_disconnect (self->toplevel, self->draw_handler);
-          self->draw_handler = 0;
-        }
+      if (self->toplevel)
+        g_clear_signal_handler (&self->draw_handler, self->toplevel);
       g_object_remove_weak_pointer (G_OBJECT (self->target),
                                     (gpointer *) &self->target);
       self->target = NULL;

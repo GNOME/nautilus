@@ -355,7 +355,7 @@ struct _EelCanvas {
 	guint idle_id;
 
 	/* Signal handler ID for destruction of the root item */
-	guint root_destroy_id;
+	gulong root_destroy_id;
 
 	/* Internal pixel offsets when zoomed out */
 	int zoom_xofs, zoom_yofs;

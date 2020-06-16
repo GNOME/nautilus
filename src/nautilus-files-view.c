@@ -277,8 +277,8 @@ typedef struct
     GCancellable *starred_cancellable;
     NautilusTagManager *tag_manager;
 
-    gint name_accepted_handler_id;
-    gint cancelled_handler_id;
+    gulong name_accepted_handler_id;
+    gulong cancelled_handler_id;
 } NautilusFilesViewPrivate;
 
 /**
@@ -1969,18 +1969,8 @@ disconnect_rename_controller_signals (NautilusFilesView *self)
 
     priv = nautilus_files_view_get_instance_private (self);
 
-    if (priv->name_accepted_handler_id != 0)
-    {
-        g_signal_handler_disconnect (priv->rename_file_controller, priv->name_accepted_handler_id);
-        priv->name_accepted_handler_id = 0;
-    }
-
-    if (priv->cancelled_handler_id != 0)
-    {
-        g_signal_handler_disconnect (priv->rename_file_controller,
-                                     priv->cancelled_handler_id);
-        priv->cancelled_handler_id = 0;
-    }
+    g_clear_signal_handler (&priv->name_accepted_handler_id, priv->rename_file_controller);
+    g_clear_signal_handler (&priv->cancelled_handler_id, priv->rename_file_controller);
 }
 
 static void
