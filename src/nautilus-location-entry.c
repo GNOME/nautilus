@@ -362,8 +362,14 @@ try_to_expand_path (gpointer callback_data)
     NautilusLocationEntry *entry;
     NautilusLocationEntryPrivate *priv;
     GtkEditable *editable;
-    char *suffix, *user_location, *absolute_location, *uri_scheme;
+    gchar **completions = NULL;
     int user_location_length, pos;
+
+    g_autofree gchar *absolute_location = NULL;
+    g_autofree gchar *parsed_location = NULL;
+    g_autofree gchar *suffix = NULL;
+    g_autofree gchar *uri_scheme = NULL;
+    g_autofree gchar *user_location = NULL;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);
@@ -376,21 +382,40 @@ try_to_expand_path (gpointer callback_data)
 
     uri_scheme = g_uri_parse_scheme (user_location);
 
-    if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
+    /* parse special characters and uri schemes */
+    if (user_location[0] == '~')
     {
-        absolute_location = g_build_filename (priv->current_directory, user_location, NULL);
-        suffix = g_filename_completer_get_completion_suffix (priv->completer,
-                                                             absolute_location);
-        g_free (absolute_location);
+        parsed_location = g_strconcat (g_get_home_dir (), user_location + 1, NULL);
+    }
+    else if (uri_scheme != NULL && strcmp(uri_scheme, "file") == 0)
+    {
+        parsed_location = g_filename_from_uri (user_location, NULL, NULL);
+    }
+
+    if (parsed_location == NULL)
+    {
+        parsed_location = g_strdup (user_location);
+    }
+
+    /* if it's not already, make the path absolute */
+    if (!g_path_is_absolute (parsed_location))
+    {
+        absolute_location = g_build_filename (priv->current_directory, parsed_location, NULL);
     }
     else
     {
-        suffix = g_filename_completer_get_completion_suffix (priv->completer,
-                                                             user_location);
+        absolute_location = g_strdup (parsed_location);
     }
 
-    g_free (user_location);
-    g_free (uri_scheme);
+    completions = g_filename_completer_get_completions (priv->completer, absolute_location);
+
+    /* use the first suggestion if it exists */
+    if (completions != NULL && completions[0] != NULL)
+    {
+        suffix = g_strdup (completions[0] + strlen (absolute_location));
+    }
+
+    g_strfreev (completions);
 
     /* if we've got something, add it to the entry */
     if (suffix != NULL)
@@ -400,8 +425,6 @@ try_to_expand_path (gpointer callback_data)
                                   suffix, -1, &pos);
         pos = user_location_length;
         gtk_editable_select_region (editable, pos, -1);
-
-        g_free (suffix);
     }
 
     return FALSE;
