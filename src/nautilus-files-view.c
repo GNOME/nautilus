@@ -190,11 +190,11 @@ typedef struct
     guint update_interval;
     guint64 last_queued;
 
-    guint files_added_handler_id;
-    guint files_changed_handler_id;
-    guint load_error_handler_id;
-    guint done_loading_handler_id;
-    guint file_changed_handler_id;
+    gulong files_added_handler_id;
+    gulong files_changed_handler_id;
+    gulong load_error_handler_id;
+    gulong done_loading_handler_id;
+    gulong file_changed_handler_id;
 
     /* Containers with FileAndDirectory* elements */
     GList *new_added_files;
@@ -8714,39 +8714,6 @@ metadata_for_files_in_directory_ready_callback (NautilusDirectory *directory,
 }
 
 static void
-disconnect_handler (GObject *object,
-                    guint   *id)
-{
-    if (*id != 0)
-    {
-        g_signal_handler_disconnect (object, *id);
-        *id = 0;
-    }
-}
-
-static void
-disconnect_directory_handler (NautilusFilesView *view,
-                              guint             *id)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    disconnect_handler (G_OBJECT (priv->model), id);
-}
-
-static void
-disconnect_directory_as_file_handler (NautilusFilesView *view,
-                                      guint             *id)
-{
-    NautilusFilesViewPrivate *priv;
-
-    priv = nautilus_files_view_get_instance_private (view);
-
-    disconnect_handler (G_OBJECT (priv->directory_as_file), id);
-}
-
-static void
 disconnect_model_handlers (NautilusFilesView *view)
 {
     NautilusFilesViewPrivate *priv;
@@ -8757,11 +8724,11 @@ disconnect_model_handlers (NautilusFilesView *view)
     {
         return;
     }
-    disconnect_directory_handler (view, &priv->files_added_handler_id);
-    disconnect_directory_handler (view, &priv->files_changed_handler_id);
-    disconnect_directory_handler (view, &priv->done_loading_handler_id);
-    disconnect_directory_handler (view, &priv->load_error_handler_id);
-    disconnect_directory_as_file_handler (view, &priv->file_changed_handler_id);
+    g_clear_signal_handler (&priv->files_added_handler_id, priv->model);
+    g_clear_signal_handler (&priv->files_changed_handler_id, priv->model);
+    g_clear_signal_handler (&priv->done_loading_handler_id, priv->model);
+    g_clear_signal_handler (&priv->load_error_handler_id, priv->model);
+    g_clear_signal_handler (&priv->file_changed_handler_id, priv->directory_as_file);
     nautilus_file_cancel_call_when_ready (priv->directory_as_file,
                                           metadata_for_directory_as_file_ready_callback,
                                           view);
