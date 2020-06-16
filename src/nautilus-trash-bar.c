@@ -109,11 +109,7 @@ nautilus_trash_bar_dispose (GObject *obj)
 {
     NautilusTrashBar *bar = NAUTILUS_TRASH_BAR (obj);
 
-    if (bar->selection_handler_id)
-    {
-        g_signal_handler_disconnect (bar->view, bar->selection_handler_id);
-        bar->selection_handler_id = 0;
-    }
+    g_clear_signal_handler (&bar->selection_handler_id, bar->view);
 
     G_OBJECT_CLASS (nautilus_trash_bar_parent_class)->dispose (obj);
 }
