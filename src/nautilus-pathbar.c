@@ -93,7 +93,7 @@ struct _NautilusPathBar
     gpointer current_button_data;
 
     GList *button_list;
-    guint settings_signal_id;
+    gulong settings_signal_id;
 
     GActionGroup *action_group;
 
@@ -285,15 +285,11 @@ static void
 remove_settings_signal (NautilusPathBar *self,
                         GdkScreen       *screen)
 {
-    if (self->settings_signal_id != 0)
-    {
-        GtkSettings *settings;
+    GtkSettings *settings;
 
-        settings = gtk_settings_get_for_screen (screen);
-        g_signal_handler_disconnect (settings,
-                                     self->settings_signal_id);
-        self->settings_signal_id = 0;
-    }
+    settings = gtk_settings_get_for_screen (screen);
+
+    g_clear_signal_handler (&self->settings_signal_id, settings);
 }
 
 static void

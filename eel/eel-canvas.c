@@ -2248,11 +2248,7 @@ eel_canvas_destroy (GtkWidget *object)
 
     canvas = EEL_CANVAS (object);
 
-    if (canvas->root_destroy_id)
-    {
-        g_signal_handler_disconnect (G_OBJECT (canvas->root), canvas->root_destroy_id);
-        canvas->root_destroy_id = 0;
-    }
+    g_clear_signal_handler (&canvas->root_destroy_id, G_OBJECT (canvas->root));
     if (canvas->root)
     {
         EelCanvasItem *root = canvas->root;
