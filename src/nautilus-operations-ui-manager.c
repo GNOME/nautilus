@@ -442,17 +442,8 @@ run_file_conflict_dialog (gpointer user_data)
         nautilus_file_list_cancel_call_when_ready (data->handle);
     }
 
-    if (data->source_handler_id)
-    {
-        g_signal_handler_disconnect (data->source, data->source_handler_id);
-        nautilus_file_monitor_remove (data->source, data);
-    }
-
-    if (data->destination_handler_id)
-    {
-        g_signal_handler_disconnect (data->destination, data->destination_handler_id);
-        nautilus_file_monitor_remove (data->destination, data);
-    }
+    g_clear_signal_handler (&data->source_handler_id, data->source);
+    g_clear_signal_handler (&data->destination_handler_id, data->destination);
 
     if (response_id == CONFLICT_RESPONSE_RENAME)
     {

@@ -39,7 +39,7 @@ struct _NautilusCompressDialogController
 
     const char *extension;
 
-    gint response_handler_id;
+    gulong response_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusCompressDialogController, nautilus_compress_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER);
@@ -329,12 +329,7 @@ nautilus_compress_dialog_controller_finalize (GObject *object)
 
     if (self->compress_dialog != NULL)
     {
-        if (self->response_handler_id > 0)
-        {
-            g_signal_handler_disconnect (self->compress_dialog,
-                                         self->response_handler_id);
-            self->response_handler_id = 0;
-        }
+        g_clear_signal_handler (&self->response_handler_id, self->compress_dialog);
         gtk_widget_destroy (self->compress_dialog);
         self->compress_dialog = NULL;
     }

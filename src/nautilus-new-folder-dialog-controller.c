@@ -32,7 +32,7 @@ struct _NautilusNewFolderDialogController
 
     gboolean with_selection;
 
-    gint response_handler_id;
+    gulong response_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusNewFolderDialogController, nautilus_new_folder_dialog_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
@@ -171,12 +171,7 @@ nautilus_new_folder_dialog_controller_finalize (GObject *object)
 
     if (self->new_folder_dialog != NULL)
     {
-        if (self->response_handler_id)
-        {
-            g_signal_handler_disconnect (self->new_folder_dialog,
-                                         self->response_handler_id);
-            self->response_handler_id = 0;
-        }
+        g_clear_signal_handler (&self->response_handler_id, self->new_folder_dialog);
         gtk_widget_destroy (self->new_folder_dialog);
         self->new_folder_dialog = NULL;
     }

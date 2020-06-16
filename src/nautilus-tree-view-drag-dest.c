@@ -55,7 +55,7 @@ struct _NautilusTreeViewDragDestDetails
     GList *drag_list;
 
     guint hover_id;
-    guint highlight_id;
+    gulong highlight_id;
     guint scroll_id;
     guint expand_id;
 
@@ -216,11 +216,9 @@ static void
 set_widget_highlight (NautilusTreeViewDragDest *dest,
                       gboolean                  highlight)
 {
-    if (!highlight && dest->details->highlight_id)
+    if (!highlight)
     {
-        g_signal_handler_disconnect (dest->details->tree_view,
-                                     dest->details->highlight_id);
-        dest->details->highlight_id = 0;
+        g_clear_signal_handler (&dest->details->highlight_id, dest->details->tree_view);
         gtk_widget_queue_draw (GTK_WIDGET (dest->details->tree_view));
     }
 
