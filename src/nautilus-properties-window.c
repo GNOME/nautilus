@@ -143,6 +143,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *volume_widget_box;
     GtkWidget *open_in_disks_button;
 
+    /* Permissions tab Widgets */
+
+    GtkWidget *permissions_box;
+    GtkWidget *permissions_grid;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4682,15 +4687,9 @@ on_change_permissions_clicked (GtkWidget                *button,
 static void
 create_permissions_page (NautilusPropertiesWindow *window)
 {
-    GtkWidget *vbox, *button, *hbox;
-    GtkGrid *page_grid;
+    GtkWidget *button, *hbox;
     char *file_name, *prompt_text;
     GList *file_list;
-
-    vbox = create_page_with_box (window->notebook,
-                                 GTK_ORIENTATION_VERTICAL,
-                                 _("Permissions"),
-                                 "help:gnome-help/nautilus-file-properties-permissions");
 
     file_list = window->original_files;
 
@@ -4704,35 +4703,29 @@ create_permissions_page (NautilusPropertiesWindow *window)
         if (!all_can_set_permissions (file_list))
         {
             add_prompt_and_separator (
-                vbox,
+                window->permissions_box,
                 _("You are not the owner, so you cannot change these permissions."));
         }
 
-        page_grid = GTK_GRID (create_grid_with_standard_properties ());
-
-        gtk_widget_show (GTK_WIDGET (page_grid));
-        gtk_box_pack_start (GTK_BOX (vbox),
-                            GTK_WIDGET (page_grid),
-                            TRUE, TRUE, 0);
-
-        create_simple_permissions (window, page_grid);
+        gtk_widget_show (window->permissions_grid);
+        create_simple_permissions (window, GTK_GRID (window->permissions_grid));
 
 #ifdef HAVE_SELINUX
-        append_blank_slim_row (page_grid);
+        append_blank_slim_row (GTK_GRID (window->permissions_grid));
         append_title_value_pair
-            (window, page_grid, _("Security context:"),
+            (window, GTK_GRID (window->permissions_grid), _("Security context:"),
             "selinux_context", INCONSISTENT_STATE_STRING,
             FALSE);
 #endif
 
-        append_blank_row (page_grid);
+        append_blank_row (GTK_GRID (window->permissions_grid));
 
         if (window->has_recursive_apply)
         {
             hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_widget_show (hbox);
 
-            gtk_container_add_with_properties (GTK_CONTAINER (page_grid), hbox,
+            gtk_container_add_with_properties (GTK_CONTAINER (window->permissions_grid), hbox,
                                                "width", 2,
                                                NULL);
 
@@ -4757,7 +4750,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
             prompt_text = g_strdup (_("The permissions of the selected file could not be determined."));
         }
 
-        add_prompt (vbox, prompt_text, TRUE);
+        add_prompt (window->permissions_box, prompt_text, TRUE);
         g_free (prompt_text);
     }
 }
@@ -5798,6 +5791,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, volume_widget_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_in_disks_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_grid);
 }
 
 static void
