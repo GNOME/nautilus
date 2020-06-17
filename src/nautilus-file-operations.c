@@ -4185,6 +4185,8 @@ report_copy_progress (CopyMoveJob  *copy_job,
 
 #define FAT_FORBIDDEN_CHARACTERS "/:;*?\"<>\\|"
 
+#define NTFS_FORBIDDEN_CHARACTERS "/:*?\"<>\\|"
+
 static gboolean
 fat_str_replace (char *str,
                  char  replacement)
@@ -4207,11 +4209,33 @@ fat_str_replace (char *str,
 }
 
 static gboolean
+ntfs_str_replace (char *str,
+                  char  replacement)
+{
+    gboolean success;
+    int i;
+
+    success = FALSE;
+    for (i = 0; str[i] != '\0'; i++)
+    {
+        if (strchr (NTFS_FORBIDDEN_CHARACTERS, str[i]) ||
+            str[i] < 32)
+        {
+            success = TRUE;
+            str[i] = replacement;
+        }
+    }
+
+    return success;
+}
+
+static gboolean
 make_file_name_valid_for_dest_fs (char       *filename,
                                   const char *dest_fs_type)
 {
     if (dest_fs_type != NULL && filename != NULL)
     {
+        g_print("%s", dest_fs_type);
         if (!strcmp (dest_fs_type, "fat") ||
             !strcmp (dest_fs_type, "vfat") ||
             !strcmp (dest_fs_type, "msdos") ||
@@ -4221,6 +4245,26 @@ make_file_name_valid_for_dest_fs (char       *filename,
             int i, old_len;
 
             ret = fat_str_replace (filename, '_');
+
+            old_len = strlen (filename);
+            for (i = 0; i < old_len; i++)
+            {
+                if (filename[i] != ' ')
+                {
+                    g_strchomp (filename);
+                    ret |= (old_len != strlen (filename));
+                    break;
+                }
+            }
+
+            return ret;
+        }
+        if (!strcmp (dest_fs_type, "fuse"))
+        {
+            gboolean ret;
+            int i, old_len;
+
+            ret = ntfs_str_replace (filename, '_');
 
             old_len = strlen (filename);
             for (i = 0; i < old_len; i++)
