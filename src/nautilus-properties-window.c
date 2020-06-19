@@ -148,6 +148,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_box;
     GtkWidget *permissions_grid;
 
+    GtkWidget *bottom_prompt_seperator;
+    GtkWidget *not_the_owner_label;
+
+    GtkWidget *permission_indeterminable_label;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4702,9 +4707,8 @@ create_permissions_page (NautilusPropertiesWindow *window)
 
         if (!all_can_set_permissions (file_list))
         {
-            add_prompt_and_separator (
-                window->permissions_box,
-                _("You are not the owner, so you cannot change these permissions."));
+            gtk_widget_show (window->not_the_owner_label);
+            gtk_widget_show (window->bottom_prompt_seperator);
         }
 
         create_simple_permissions (window, GTK_GRID (window->permissions_grid));
@@ -4742,14 +4746,11 @@ create_permissions_page (NautilusPropertiesWindow *window)
         {
             file_name = nautilus_file_get_display_name (get_target_file (window));
             prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."), file_name);
+            gtk_label_set_text (GTK_LABEL (window->permission_indeterminable_label), prompt_text);
             g_free (file_name);
         }
-        else
-        {
-            prompt_text = g_strdup (_("The permissions of the selected file could not be determined."));
-        }
 
-        add_prompt (window->permissions_box, prompt_text, TRUE);
+        gtk_widget_show (window->permission_indeterminable_label);
         g_free (prompt_text);
     }
 }
@@ -5793,6 +5794,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_grid);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
 }
 
 static void
