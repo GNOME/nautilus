@@ -148,6 +148,9 @@ struct _NautilusPropertiesWindow
     GtkWidget *permissions_box;
     GtkWidget *permissions_grid;
 
+    GtkWidget *bottom_prompt_seperator;
+    GtkWidget *not_the_owner_label;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4702,9 +4705,8 @@ create_permissions_page (NautilusPropertiesWindow *window)
 
         if (!all_can_set_permissions (file_list))
         {
-            add_prompt_and_separator (
-                window->permissions_box,
-                _("You are not the owner, so you cannot change these permissions."));
+            gtk_widget_show (window ->not_the_owner_label);
+            gtk_widget_show (window ->bottom_prompt_seperator);
         }
 
         create_simple_permissions (window, GTK_GRID (window->permissions_grid));
@@ -5793,6 +5795,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
 
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_grid);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
 }
 
 static void
