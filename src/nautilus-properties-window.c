@@ -153,6 +153,9 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *permission_indeterminable_label;
 
+    GtkWidget *owner_label;
+    GtkWidget *owner_value_stack;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -2163,15 +2166,31 @@ synch_user_menu (GtkComboBox  *combo_box,
 }
 
 static GtkComboBox *
-attach_owner_combo_box (GtkGrid      *grid,
-                        GtkWidget    *sibling,
-                        NautilusFile *file)
+setup_owner_combo_box (NautilusPropertiesWindow *window,
+                       NautilusFile             *file)
 {
-    GtkComboBox *combo_box;
+    GtkWidget *combo_box;
+    GtkTreeModel *model;
+    GtkCellRenderer *renderer;
 
-    combo_box = attach_combo_box (grid, sibling, TRUE);
+    combo_box = gtk_stack_get_child_by_name (GTK_STACK (window->owner_value_stack), "combo_box");
+    gtk_stack_set_visible_child (GTK_STACK (window->owner_value_stack), combo_box);
 
-    synch_user_menu (combo_box, file);
+    model = GTK_TREE_MODEL (gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING));
+    gtk_combo_box_set_model (GTK_COMBO_BOX (combo_box), model);
+    g_object_unref (G_OBJECT (model));
+
+    renderer = gtk_cell_renderer_text_new ();
+    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo_box), renderer, TRUE);
+    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo_box), renderer,
+                                   "text", 0);
+
+    gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
+                                          combo_box_row_separator_func,
+                                          NULL,
+                                          NULL);
+
+    synch_user_menu (GTK_COMBO_BOX (combo_box), file);
 
     /* Connect to signal to update menu when file changes. */
     g_signal_connect_object (file, "changed",
@@ -2182,7 +2201,7 @@ attach_owner_combo_box (GtkGrid      *grid,
                            nautilus_file_ref (file),
                            (GClosureNotify) nautilus_file_unref, 0);
 
-    return combo_box;
+    return GTK_COMBO_BOX (combo_box);
 }
 
 static gboolean
@@ -4300,34 +4319,34 @@ create_simple_permissions (NautilusPropertiesWindow *window,
     gboolean has_directory;
     gboolean has_file;
     GtkLabel *group_label;
-    GtkLabel *owner_label;
     GtkWidget *value;
     GtkComboBox *group_combo_box;
-    GtkComboBox *owner_combo_box;
 
     has_directory = files_has_directory (window);
     has_file = files_has_file (window);
 
     if (!is_multi_file_window (window) && nautilus_file_can_set_owner (get_target_file (window)))
     {
-        owner_label = attach_title_field (page_grid, _("_Owner:"));
         /* Combo box in this case. */
-        owner_combo_box = attach_owner_combo_box (page_grid,
-                                                  GTK_WIDGET (owner_label),
-                                                  get_target_file (window));
-        gtk_label_set_mnemonic_widget (owner_label,
-                                       GTK_WIDGET (owner_combo_box));
+        owner_combo_box = setup_owner_combo_box (window, get_target_file (window));
     }
     else
     {
-        owner_label = attach_title_field (page_grid, _("Owner:"));
         /* Static text in this case. */
-        value = attach_value_field (window,
-                                    page_grid, GTK_WIDGET (owner_label),
-                                    "owner",
-                                    INCONSISTENT_STATE_STRING,
-                                    FALSE);
-        gtk_label_set_mnemonic_widget (owner_label, value);
+        value = gtk_stack_get_child_by_name (GTK_STACK (window->owner_value_stack), "owner_static_label");
+        gtk_stack_set_visible_child (GTK_STACK (window->owner_value_stack), value);
+
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (value), "file_attribute",
+                                g_strdup ("owner"), g_free);
+
+        g_object_set_data_full (G_OBJECT (value), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (value), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               value);
     }
     if (has_directory && has_file)
     {
@@ -5803,6 +5822,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
 }
 
 static void
