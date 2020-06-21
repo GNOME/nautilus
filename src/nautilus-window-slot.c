@@ -477,26 +477,10 @@ hide_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
     view = nautilus_window_slot_get_current_view (self);
 
-    if (priv->qe_changed_id > 0)
-    {
-        g_signal_handler_disconnect (priv->query_editor, priv->qe_changed_id);
-        priv->qe_changed_id = 0;
-    }
-    if (priv->qe_cancel_id > 0)
-    {
-        g_signal_handler_disconnect (priv->query_editor, priv->qe_cancel_id);
-        priv->qe_cancel_id = 0;
-    }
-    if (priv->qe_activated_id > 0)
-    {
-        g_signal_handler_disconnect (priv->query_editor, priv->qe_activated_id);
-        priv->qe_activated_id = 0;
-    }
-    if (priv->qe_focus_view_id > 0)
-    {
-        g_signal_handler_disconnect (priv->query_editor, priv->qe_focus_view_id);
-        priv->qe_focus_view_id = 0;
-    }
+    g_clear_signal_handler(&priv->qe_changed_id, priv->query_editor);
+    g_clear_signal_handler(&priv->qe_cancel_id, priv->query_editor);
+    g_clear_signal_handler(&priv->qe_activated_id, priv->query_editor);
+    g_clear_signal_handler(&priv->qe_focus_view_id, priv->query_editor);
 
     nautilus_query_editor_set_query (priv->query_editor, NULL);
 
