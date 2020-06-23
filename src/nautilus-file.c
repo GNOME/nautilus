@@ -6374,8 +6374,8 @@ nautilus_file_can_set_owner (NautilusFile *file)
         return FALSE;
     }
 
-    /* Only root is also allowed to set the owner. */
-    return geteuid () == 0;
+    /* Owner can be changed only in admin backend or by root */
+    return nautilus_file_is_in_admin (file) || geteuid () == 0;
 }
 
 /**
