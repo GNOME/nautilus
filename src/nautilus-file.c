@@ -6375,6 +6375,10 @@ nautilus_file_can_set_owner (NautilusFile *file)
     }
 
     /* Only root is also allowed to set the owner. */
+    if (nautilus_file_is_in_admin (file))
+    {
+        return TRUE;
+    }
     return geteuid () == 0;
 }
 
