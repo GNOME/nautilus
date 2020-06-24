@@ -162,6 +162,14 @@ struct _NautilusPropertiesWindow
     GtkWidget *owner_file_access_label;
     GtkWidget *owner_file_access_combo;
 
+    GtkWidget *group_value_stack;
+    GtkWidget *group_access_label;
+    GtkWidget *group_access_combo;
+    GtkWidget *group_folder_access_label;
+    GtkWidget *group_folder_access_combo;
+    GtkWidget *group_file_access_label;
+    GtkWidget *group_file_access_combo;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -1892,16 +1900,16 @@ attach_combo_box (GtkGrid   *grid,
     return GTK_COMBO_BOX (combo_box);
 }
 
-static GtkComboBox *
-attach_group_combo_box (GtkGrid      *grid,
-                        GtkWidget    *sibling,
-                        NautilusFile *file)
+static void
+setup_group_combo_box (GtkWidget    *combo_box,
+                       NautilusFile *file)
 {
-    GtkComboBox *combo_box;
+    gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
+                                          combo_box_row_separator_func,
+                                          NULL,
+                                          NULL);
 
-    combo_box = attach_combo_box (grid, sibling, FALSE);
-
-    synch_groups_combo_box (combo_box, file);
+    synch_groups_combo_box (GTK_COMBO_BOX (combo_box), file);
 
     /* Connect to signal to update menu when file changes. */
     g_signal_connect_object (file, "changed",
@@ -1911,8 +1919,6 @@ attach_group_combo_box (GtkGrid      *grid,
                            G_CALLBACK (changed_group_callback),
                            nautilus_file_ref (file),
                            (GClosureNotify) nautilus_file_unref, 0);
-
-    return combo_box;
 }
 
 static void
@@ -4405,9 +4411,8 @@ create_simple_permissions (NautilusPropertiesWindow *window,
 {
     gboolean has_directory;
     gboolean has_file;
-    GtkLabel *group_label;
     GtkWidget *value;
-    GtkComboBox *group_combo_box;
+    GtkWidget *group_combo_box, *group_static_label;
 
     has_directory = files_has_directory (window);
     has_file = files_has_file (window);
@@ -4464,41 +4469,58 @@ create_simple_permissions (NautilusPropertiesWindow *window,
         g_signal_connect (window->owner_access_combo, "changed", G_CALLBACK (permission_combo_changed), window);
     }
 
-    append_blank_slim_row (page_grid);
-
     if (!is_multi_file_window (window) && nautilus_file_can_set_group (get_target_file (window)))
     {
-        group_label = attach_title_field (page_grid, _("_Group:"));
-
         /* Combo box in this case. */
-        group_combo_box = attach_group_combo_box (page_grid, GTK_WIDGET (group_label),
-                                                  get_target_file (window));
-        gtk_label_set_mnemonic_widget (group_label,
-                                       GTK_WIDGET (group_combo_box));
+        group_combo_box = gtk_stack_get_child_by_name (GTK_STACK (window->group_value_stack), "group_combo_box");
+        gtk_stack_set_visible_child (GTK_STACK (window->group_value_stack), group_combo_box);
+        setup_group_combo_box (group_combo_box, get_target_file (window));
     }
     else
     {
-        group_label = attach_title_field (page_grid, _("Group:"));
+        group_static_label = gtk_stack_get_child_by_name (GTK_STACK (window->group_value_stack), "group_static_label");
+        gtk_stack_set_visible_child (GTK_STACK (window->group_value_stack), group_static_label);
 
-        /* Static text in this case. */
-        value = attach_value_field (window, page_grid,
-                                    GTK_WIDGET (group_label),
-                                    "group",
-                                    INCONSISTENT_STATE_STRING,
-                                    FALSE);
-        gtk_label_set_mnemonic_widget (group_label, value);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (group_static_label), "file_attribute",
+                                g_strdup ("group"), g_free);
+
+        g_object_set_data_full (G_OBJECT (group_static_label), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (group_static_label), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                           group_static_label);
     }
+
     if (has_directory && has_file)
     {
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_GROUP, TRUE, FALSE);
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_GROUP, FALSE, FALSE);
+        gtk_widget_show (window->group_folder_access_label);
+        gtk_widget_show (window->group_folder_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->group_folder_access_combo),
+                                     PERMISSION_GROUP, TRUE);
+        window->permission_combos = g_list_prepend (window->permission_combos,
+                                                    window->group_folder_access_combo);
+        g_signal_connect (window->group_folder_access_combo, "changed", G_CALLBACK (permission_combo_changed), window);
+
+        gtk_widget_show (window->group_file_access_label);
+        gtk_widget_show (window->group_file_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->group_file_access_combo),
+                                     PERMISSION_GROUP, FALSE);
+        window->permission_combos = g_list_prepend (window->permission_combos,
+                                                    window->group_file_access_combo);
+        g_signal_connect (window->group_file_access_combo, "changed", G_CALLBACK (permission_combo_changed), window);
     }
     else
     {
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_GROUP, has_directory, TRUE);
+        gtk_widget_show (window->group_access_label);
+        gtk_widget_show (window->group_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->group_access_combo),
+                                     PERMISSION_GROUP, has_directory);
+        window->permission_combos = g_list_prepend (window->permission_combos,
+                                                    window->group_access_combo);
+        g_signal_connect (window->group_access_combo, "changed", G_CALLBACK (permission_combo_changed), window);
     }
 
     append_blank_slim_row (page_grid);
@@ -5927,12 +5949,21 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
+
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_file_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_file_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_value_stack);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_folder_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_file_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_folder_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_file_access_combo);
+
 }
 
 static void
