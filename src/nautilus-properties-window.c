@@ -170,6 +170,13 @@ struct _NautilusPropertiesWindow
     GtkWidget *group_file_access;
     GtkWidget *group_file_access_combo_box;
 
+    GtkWidget *others_access_label;
+    GtkWidget *others_access_combo;
+    GtkWidget *others_folder_access_label;
+    GtkWidget *others_folder_access_combo;
+    GtkWidget *others_file_access_label;
+    GtkWidget *others_file_access_combo;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4508,19 +4515,23 @@ create_simple_permissions (NautilusPropertiesWindow *window,
                                      PERMISSION_GROUP, has_directory);
     }
 
-    append_blank_slim_row (page_grid);
-    attach_title_field (page_grid, _("Others"));
     if (has_directory && has_file)
     {
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_OTHER, TRUE, FALSE);
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_OTHER, FALSE, FALSE);
+        gtk_widget_show (window->others_folder_access_label);
+        gtk_widget_show (window->others_folder_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->others_folder_access_combo),
+                                     PERMISSION_OTHER, TRUE);
+        gtk_widget_show (window->others_file_access_label);
+        gtk_widget_show (window->others_file_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->others_file_access_combo),
+                                     PERMISSION_OTHER, FALSE);
     }
     else
     {
-        add_permissions_combo_box (window, page_grid,
-                                   PERMISSION_OTHER, has_directory, TRUE);
+        gtk_widget_show (window->others_access_label);
+        gtk_widget_show (window->others_access_combo);
+        setup_permissions_combo_box (window, GTK_COMBO_BOX (window->others_access_combo),
+                                     PERMISSION_OTHER, has_directory);
     }
 
     if (!has_directory)
@@ -5947,6 +5958,13 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_access_combo_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_folder_access_combo_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, group_file_access_combo_box);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_combo);
 }
 
 static void
