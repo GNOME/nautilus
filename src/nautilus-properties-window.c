@@ -177,6 +177,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *others_file_access_label;
     GtkWidget *others_file_access_combo;
 
+    GtkWidget *spacer_6;
+
+    GtkWidget *execute_label;
+    GtkWidget *execute_checkbox;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -3719,44 +3724,43 @@ set_up_permissions_checkbox (NautilusPropertiesWindow *window,
                              0);
 }
 
-static GtkWidget *
-add_execute_checkbox_with_label (NautilusPropertiesWindow *window,
-                                 GtkGrid                  *grid,
-                                 GtkWidget                *sibling,
-                                 const char               *label,
-                                 guint32                   permission_to_check,
-                                 GtkLabel                 *label_for,
-                                 gboolean                  is_folder)
+static void
+setup_execute_checkbox_with_label (NautilusPropertiesWindow *window,
+                                   guint32                   permission_to_check)
 {
-    GtkWidget *check_button;
     gboolean a11y_enabled;
+    GtkLabel *label_for;
 
-    check_button = gtk_check_button_new_with_mnemonic (label);
-    gtk_widget_show (check_button);
+    label_for = GTK_LABEL (window->execute_label);
+    gtk_widget_show (window->spacer_6);
+    gtk_widget_show (window->execute_label);
+    gtk_widget_show (window->execute_checkbox);
 
-    if (sibling)
-    {
-        gtk_grid_attach_next_to (grid, check_button, sibling,
-                                 GTK_POS_RIGHT, 1, 1);
-    }
-    else
-    {
-        gtk_container_add (GTK_CONTAINER (grid), check_button);
-    }
+    /* Load up the check_button with data we'll need when updating its state. */
+    g_object_set_data (G_OBJECT (window->execute_checkbox), "permission",
+                       GINT_TO_POINTER (permission_to_check));
+    g_object_set_data (G_OBJECT (window->execute_checkbox), "properties_window",
+                       window);
+    g_object_set_data (G_OBJECT (window->execute_checkbox), "is-folder",
+                       GINT_TO_POINTER (FALSE));
 
-    set_up_permissions_checkbox (window,
-                                 check_button,
-                                 permission_to_check,
-                                 is_folder);
+    window->permission_buttons =
+        g_list_prepend (window->permission_buttons,
+                        window->execute_checkbox);
 
-    a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (check_button));
+    g_signal_connect_object (window->execute_checkbox, "toggled",
+                             G_CALLBACK (permission_button_toggled),
+                             window,
+                             0);
+
+    a11y_enabled = GTK_IS_ACCESSIBLE (gtk_widget_get_accessible (window->execute_checkbox));
     if (a11y_enabled && label_for != NULL)
     {
         AtkObject *atk_widget;
         AtkObject *atk_label;
 
         atk_label = gtk_widget_get_accessible (GTK_WIDGET (label_for));
-        atk_widget = gtk_widget_get_accessible (check_button);
+        atk_widget = gtk_widget_get_accessible (window->execute_checkbox);
 
         /* Create the label -> widget relation */
         atk_object_add_relationship (atk_label, ATK_RELATION_LABEL_FOR, atk_widget);
@@ -3764,8 +3768,6 @@ add_execute_checkbox_with_label (NautilusPropertiesWindow *window,
         /* Create the widget -> label relation */
         atk_object_add_relationship (atk_widget, ATK_RELATION_LABELLED_BY, atk_label);
     }
-
-    return check_button;
 }
 
 enum
@@ -4561,15 +4563,8 @@ create_simple_permissions (NautilusPropertiesWindow *window,
 
     if (!has_directory)
     {
-        GtkLabel *execute_label;
-        append_blank_slim_row (page_grid);
-
-        execute_label = attach_title_field (page_grid, _("Execute:"));
-        add_execute_checkbox_with_label (window, page_grid,
-                                         GTK_WIDGET (execute_label),
-                                         _("Allow _executing file as program"),
-                                         UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC,
-                                         execute_label, FALSE);
+        setup_execute_checkbox_with_label (window,
+                                           UNIX_PERM_USER_EXEC | UNIX_PERM_GROUP_EXEC | UNIX_PERM_OTHER_EXEC);
     }
 }
 
@@ -5970,7 +5965,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
-
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_file_access_label);
@@ -5990,6 +5984,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_combo);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_6);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_checkbox);
 }
 
 static void
