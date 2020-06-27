@@ -4804,16 +4804,22 @@ on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *window)
 {
     GtkWidget *dialog;
+    GtkWidget *new_dialog;
     GtkWidget *label;
     GtkWidget *combo;
     GtkGrid *grid;
+    GtkBuilder *dialog_builder;
 
-    dialog = gtk_dialog_new_with_buttons (_("Change Permissions for Enclosed Files"),
-                                          GTK_WINDOW (window),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Change"), GTK_RESPONSE_OK,
-                                          NULL);
+    dialog_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-properties-window.ui");
+    dialog = GTK_WIDGET (gtk_builder_get_object (dialog_builder, "change_permissions_dialog"));
+    // gtk_widget_show_all (new_dialog);
+
+    // dialog = gtk_dialog_new_with_buttons (_("Change Permissions for Enclosed Files"),
+    //                                       GTK_WINDOW (window),
+    //                                       GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
+    //                                       _("_Cancel"), GTK_RESPONSE_CANCEL,
+    //                                       _("Change"), GTK_RESPONSE_OK,
+    //                                       NULL);
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
