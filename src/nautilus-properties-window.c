@@ -187,6 +187,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *security_context_title_label;
     GtkWidget *security_context_value_label;
 
+    GtkWidget *spacer_8;
+
+    GtkWidget *permissions_button_box;
+    GtkWidget *permissions_button;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4857,7 +4862,6 @@ on_change_permissions_clicked (GtkWidget                *button,
 static void
 create_permissions_page (NautilusPropertiesWindow *window)
 {
-    GtkWidget *button, *hbox;
     char *file_name, *prompt_text;
     GList *file_list;
 
@@ -4896,21 +4900,12 @@ create_permissions_page (NautilusPropertiesWindow *window)
                                                window->security_context_value_label);
 #endif
 
-        append_blank_row (GTK_GRID (window->permissions_grid));
+        gtk_widget_show (window->spacer_8);
 
         if (window->has_recursive_apply)
         {
-            hbox = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
-            gtk_widget_show (hbox);
-
-            gtk_container_add_with_properties (GTK_CONTAINER (window->permissions_grid), hbox,
-                                               "width", 2,
-                                               NULL);
-
-            button = gtk_button_new_with_mnemonic (_("Change Permissions for Enclosed Files…"));
-            gtk_widget_show (button);
-            gtk_box_pack_start (GTK_BOX (hbox), button, FALSE, FALSE, 0);
-            g_signal_connect (button, "clicked",
+            gtk_widget_show_all (window->permissions_button_box);
+            g_signal_connect (window->permissions_button, "clicked",
                               G_CALLBACK (on_change_permissions_clicked),
                               window);
         }
@@ -6005,6 +6000,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_7);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_8);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_button_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permissions_button);
 }
 
 static void
