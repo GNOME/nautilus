@@ -182,6 +182,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *execute_label;
     GtkWidget *execute_checkbox;
 
+    GtkWidget *spacer_7;
+
+    GtkWidget *security_context_title_label;
+    GtkWidget *security_context_value_label;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4875,11 +4880,21 @@ create_permissions_page (NautilusPropertiesWindow *window)
         create_simple_permissions (window, GTK_GRID (window->permissions_grid));
 
 #ifdef HAVE_SELINUX
-        append_blank_slim_row (GTK_GRID (window->permissions_grid));
-        append_title_value_pair
-            (window, GTK_GRID (window->permissions_grid), _("Security context:"),
-            "selinux_context", INCONSISTENT_STATE_STRING,
-            FALSE);
+        gtk_widget_show (window->spacer_7);
+        gtk_widget_show (window->security_context_title_label);
+        gtk_widget_show (window->security_context_value_label);
+
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->security_context_value_label), "file_attribute",
+                                g_strdup ("selinux_context"), g_free);
+
+        g_object_set_data_full (G_OBJECT (window->security_context_value_label), "inconsistent_string",
+                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
+
+        g_object_set_data (G_OBJECT (window->security_context_value_label), "show_original", GINT_TO_POINTER (FALSE));
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->security_context_value_label);
 #endif
 
         append_blank_row (GTK_GRID (window->permissions_grid));
@@ -5988,6 +6003,9 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_6);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_checkbox);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_7);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
 }
 
 static void
