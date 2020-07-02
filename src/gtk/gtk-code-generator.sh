@@ -34,6 +34,8 @@ update_file () {
         -e 's/GTK_IS_PLACES_VIEW/NAUTILUS_IS_GTK_PLACES_VIEW/g' \
         -e 's/_gtk_marshal_VOID__STRING_STRING/NULL/g' \
         -e '/gtkmarshalers.h/d' \
+        -e '/g_signal_set_va_marshaller/,+2d' \
+        -e 's/_gtk_marshal_VOID__OBJECT_FLAGS/NULL/g' \
         -e '/"config.h"/a #include <glib\/gi18n.h>' \
         -e "s/P_(\(.*\))/\1/" \
         -e "s/I_(\(.*\))/\1/" \

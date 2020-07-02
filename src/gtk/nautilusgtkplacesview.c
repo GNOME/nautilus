@@ -2283,7 +2283,8 @@ nautilus_gtk_places_view_class_init (NautilusGtkPlacesViewClass *klass)
                         G_OBJECT_CLASS_TYPE (object_class),
                         G_SIGNAL_RUN_FIRST,
                         G_STRUCT_OFFSET (NautilusGtkPlacesViewClass, open_location),
-                        NULL, NULL, NULL,
+                        NULL, NULL,
+                        NULL,
                         G_TYPE_NONE, 2,
                         G_TYPE_OBJECT,
                         GTK_TYPE_PLACES_OPEN_FLAGS);
