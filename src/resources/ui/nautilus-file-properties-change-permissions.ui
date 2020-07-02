@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<interface>
+  <requires lib="gtk+" version="3.22"/>
+  <object class="GtkDialog" id="change_permissions_dialog">
+    <property name="title" translatable="yes">Change Permissions for Enclosed Files</property>
+    <property name="modal">True</property>
+    <property name="destroy_with_parent">True</property>
+    <property name="type_hint">dialog</property>
+    <property name="use-header-bar">1</property>
+    <child type="action">
+      <object class="GtkButton" id="cancel">
+        <property name="visible">True</property>
+        <property name="label">Cancel</property>
+      </object>
+    </child>
+    <child type="action">
+      <object class="GtkButton" id="change">
+        <property name="visible">True</property>
+        <property name="label">Change</property>
+      </object>
+    </child>
+
+
+
+    <action-widgets>
+      <action-widget response="cancel">cancel</action-widget>
+      <action-widget response="ok" default="true">change</action-widget>
+    </action-widgets>
+  </object>
+</interface>

@@ -4723,13 +4723,12 @@ on_change_permissions_clicked (GtkWidget                *button,
     GtkWidget *label;
     GtkWidget *combo;
     GtkGrid *grid;
+    GtkBuilder *change_permissions_builder;
 
-    dialog = gtk_dialog_new_with_buttons (_("Change Permissions for Enclosed Files"),
-                                          GTK_WINDOW (window),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Change"), GTK_RESPONSE_OK,
-                                          NULL);
+    change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
+
+    dialog = GTK_WIDGET ( gtk_builder_get_object (change_permissions_builder, "change_permissions_dialog"));
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
     grid = GTK_GRID (create_grid_with_standard_properties ());
     gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
