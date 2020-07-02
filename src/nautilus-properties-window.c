@@ -4720,68 +4720,53 @@ on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *window)
 {
     GtkWidget *dialog;
-    GtkWidget *label;
     GtkWidget *combo;
-    GtkGrid *grid;
+    GtkBuilder *change_permissions_builder;
 
-    dialog = gtk_dialog_new_with_buttons (_("Change Permissions for Enclosed Files"),
-                                          GTK_WINDOW (window),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Change"), GTK_RESPONSE_OK,
-                                          NULL);
+    change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
-                        GTK_WIDGET (grid),
-                        TRUE, TRUE, 0);
+    dialog = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "change_permissions_dialog"));
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
-    label = gtk_label_new (_("Files"));
-    gtk_grid_attach (grid, label, 1, 0, 1, 1);
-    label = gtk_label_new (_("Folders"));
-    gtk_grid_attach (grid, label, 2, 0, 1, 1);
-
-    label = gtk_label_new (_("Owner:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 1, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_USER, FALSE);
+    /* Owner Permissions */
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "file_owner_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_USER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_USER, FALSE);
-    gtk_grid_attach (grid, combo, 1, 1, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_USER, TRUE);
+
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "folder_owner_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_USER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_USER, TRUE);
-    gtk_grid_attach (grid, combo, 2, 1, 1, 1);
 
-    label = gtk_label_new (_("Group:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 2, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_GROUP, FALSE);
+    /* Group Permissions */
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "file_group_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_GROUP, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_GROUP, FALSE);
-    gtk_grid_attach (grid, combo, 1, 2, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_GROUP, TRUE);
+
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "folder_group_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_GROUP, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_GROUP, TRUE);
-    gtk_grid_attach (grid, combo, 2, 2, 1, 1);
 
-    label = gtk_label_new (_("Others:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 3, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_OTHER, FALSE);
+    /* Others Permissions */
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "file_other_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_OTHER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_OTHER, FALSE);
-    gtk_grid_attach (grid, combo, 1, 3, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_OTHER, TRUE);
+
+    combo = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "folder_other_combo"));
+    setup_permissions_combo_box (GTK_COMBO_BOX (combo), PERMISSION_OTHER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
-    gtk_grid_attach (grid, combo, 2, 3, 1, 1);
+
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), window);
     gtk_widget_show_all (dialog);
