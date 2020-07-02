@@ -143,6 +143,14 @@ struct _NautilusPropertiesWindow
     GtkWidget *volume_widget_box;
     GtkWidget *open_in_disks_button;
 
+    GtkWidget *pie_chart;
+    GtkWidget *used_color;
+    GtkWidget *used_value;
+    GtkWidget *free_color;
+    GtkWidget *free_value;
+    GtkWidget *total_capacity_value;
+    GtkWidget *file_system_value;
+
     /* Permissions tab Widgets */
 
     GtkWidget *permissions_box;
@@ -303,7 +311,7 @@ static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
                                                  GtkWidget  *sibling,
                                                  const char *initial_text);
 
-static GtkWidget *create_pie_widget (NautilusPropertiesWindow *window);
+static void setup_pie_widget (NautilusPropertiesWindow *window);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_WINDOW);
 
@@ -2896,24 +2904,14 @@ paint_pie_chart (GtkWidget *widget,
                  free, used, "used");
 }
 
-static GtkWidget *
-create_pie_widget (NautilusPropertiesWindow *window)
+static void
+setup_pie_widget (NautilusPropertiesWindow *window)
 {
     NautilusFile *file;
-    GtkGrid *grid;
     GtkStyleContext *style;
     GtkWidget *pie_canvas;
     GtkWidget *used_canvas;
-    GtkWidget *used_label;
-    GtkWidget *used_type_label;
     GtkWidget *free_canvas;
-    GtkWidget *free_label;
-    GtkWidget *free_type_label;
-    GtkWidget *capacity_label;
-    GtkWidget *capacity_value_label;
-    GtkWidget *fstype_label;
-    GtkWidget *fstype_value_label;
-    GtkWidget *spacer_label;
     gchar *capacity;
     gchar *used;
     gchar *free;
@@ -2930,44 +2928,29 @@ create_pie_widget (NautilusPropertiesWindow *window)
 
     uri = nautilus_file_get_activation_uri (file);
 
-    grid = GTK_GRID (gtk_grid_new ());
-    gtk_widget_set_hexpand (GTK_WIDGET (grid), FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
-    gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
-    gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
-
-    pie_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (pie_canvas, 200, 200);
+    pie_canvas = window->pie_chart;
     style = gtk_widget_get_style_context (pie_canvas);
     gtk_style_context_add_class (style, "disk-space-display");
 
-    used_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (used_canvas, 20, 20);
+    used_canvas = window->used_color;
     style = gtk_widget_get_style_context (used_canvas);
     gtk_style_context_add_class (style, "disk-space-display");
     gtk_style_context_add_class (style, "used");
 
-    used_label = gtk_label_new (used);
     /* Translators: "used" refers to the capacity of the filesystem */
-    used_type_label = gtk_label_new (_("used"));
+    gtk_label_set_text (GTK_LABEL (window->used_value), used);
 
-    free_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (free_canvas, 20, 20);
+    free_canvas = window->free_color;
     style = gtk_widget_get_style_context (free_canvas);
     gtk_style_context_add_class (style, "disk-space-display");
     gtk_style_context_add_class (style, "free");
 
-    free_label = gtk_label_new (free);
     /* Translators: "free" refers to the capacity of the filesystem */
-    free_type_label = gtk_label_new (_("free"));
+    gtk_label_set_text (GTK_LABEL (window->free_value), free);
 
-    capacity_label = gtk_label_new (_("Total capacity:"));
-    capacity_value_label = gtk_label_new (capacity);
+    gtk_label_set_text (GTK_LABEL (window->total_capacity_value), capacity);
 
-    fstype_label = gtk_label_new (_("Filesystem type:"));
-    fstype_value_label = gtk_label_new (NULL);
-
-    spacer_label = gtk_label_new ("");
+    gtk_label_set_text (GTK_LABEL (window->file_system_value), NULL);
 
     location = g_file_new_for_uri (uri);
     info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
@@ -2977,7 +2960,7 @@ create_pie_widget (NautilusPropertiesWindow *window)
         fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
         if (fs_type != NULL)
         {
-            gtk_label_set_text (GTK_LABEL (fstype_value_label), fs_type);
+            gtk_label_set_text (GTK_LABEL (window->file_system_value), fs_type);
         }
 
         g_object_unref (info);
@@ -2989,72 +2972,17 @@ create_pie_widget (NautilusPropertiesWindow *window)
     g_free (used);
     g_free (free);
 
-    gtk_container_add_with_properties (GTK_CONTAINER (grid), pie_canvas,
-                                       "height", 5,
-                                       NULL);
-
-    gtk_widget_set_vexpand (spacer_label, TRUE);
-    gtk_grid_attach_next_to (grid, spacer_label, pie_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (used_canvas, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (used_canvas, FALSE);
-    gtk_grid_attach_next_to (grid, used_canvas, spacer_label,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (used_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (used_label, FALSE);
-    gtk_grid_attach_next_to (grid, used_label, used_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_widget_set_halign (used_type_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (used_type_label, FALSE);
-    gtk_grid_attach_next_to (grid, used_type_label, used_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (free_canvas, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (free_canvas, FALSE);
-    gtk_grid_attach_next_to (grid, free_canvas, used_canvas,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (free_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (free_label, FALSE);
-    gtk_grid_attach_next_to (grid, free_label, free_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_widget_set_halign (free_type_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (free_type_label, FALSE);
-    gtk_grid_attach_next_to (grid, free_type_label, free_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (capacity_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (capacity_label, FALSE);
-    gtk_grid_attach_next_to (grid, capacity_label, free_canvas,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (capacity_value_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (capacity_value_label, FALSE);
-    gtk_grid_attach_next_to (grid, capacity_value_label, capacity_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (fstype_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (fstype_label, FALSE);
-    gtk_grid_attach_next_to (grid, fstype_label, capacity_label,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (fstype_value_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (fstype_value_label, FALSE);
-    gtk_grid_attach_next_to (grid, fstype_value_label, fstype_label,
-                             GTK_POS_RIGHT, 1, 1);
-
     g_signal_connect (pie_canvas, "draw",
                       G_CALLBACK (paint_pie_chart), window);
     g_signal_connect (used_canvas, "draw",
                       G_CALLBACK (paint_legend), window);
     g_signal_connect (free_canvas, "draw",
                       G_CALLBACK (paint_legend), window);
-
-    return GTK_WIDGET (grid);
 }
 
-static GtkWidget *
-create_volume_usage_widget (NautilusPropertiesWindow *window)
+static void
+setup_volume_usage_widget (NautilusPropertiesWindow *window)
 {
-    GtkWidget *piewidget = NULL;
     gchar *uri;
     NautilusFile *file;
     GFile *location;
@@ -3093,11 +3021,8 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
 
     if (window->volume_capacity > 0)
     {
-        piewidget = create_pie_widget (window);
-        gtk_widget_show_all (piewidget);
+        setup_pie_widget (window);
     }
-
-    return piewidget;
 }
 
 static void
@@ -3129,7 +3054,6 @@ static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
-    GtkWidget *volume_usage;
 
     /* Icon pixmap */
 
@@ -3340,12 +3264,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     {
         gtk_widget_show (window->volume_widget_box);
         gtk_widget_show (window->open_in_disks_button);
-        volume_usage = create_volume_usage_widget (window);
-        if (volume_usage != NULL)
-        {
-            gtk_container_add (GTK_CONTAINER (window->volume_widget_box), volume_usage);
-        }
-
+        setup_volume_usage_widget (window);
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
         g_signal_connect (window->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), NULL);
     }
@@ -5922,6 +5841,14 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_8);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, pie_chart);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, used_color);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, used_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_color);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, total_capacity_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, file_system_value);
 }
 
 static void
