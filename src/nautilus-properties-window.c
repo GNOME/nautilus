@@ -143,6 +143,14 @@ struct _NautilusPropertiesWindow
     GtkWidget *volume_widget_box;
     GtkWidget *open_in_disks_button;
 
+    GtkWidget *pie_chart;
+    GtkWidget *used_color;
+    GtkWidget *used_value;
+    GtkWidget *free_color;
+    GtkWidget *free_value;
+    GtkWidget *total_capacity_value;
+    GtkWidget *file_system_value;
+
     /* Permissions tab Widgets */
 
     GtkWidget *permissions_box;
@@ -191,6 +199,10 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *change_permissions_button_box;
     GtkWidget *change_permissions_button;
+
+    /* Open With tab Widgets */
+
+    GtkWidget *open_with_box;
 
     GroupChange *group_change;
     OwnerChange *owner_change;
@@ -303,7 +315,7 @@ static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
                                                  GtkWidget  *sibling,
                                                  const char *initial_text);
 
-static GtkWidget *create_pie_widget (NautilusPropertiesWindow *window);
+static void setup_pie_widget (NautilusPropertiesWindow *window);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_WINDOW);
 
@@ -2896,24 +2908,10 @@ paint_pie_chart (GtkWidget *widget,
                  free, used, "used");
 }
 
-static GtkWidget *
-create_pie_widget (NautilusPropertiesWindow *window)
+static void
+setup_pie_widget (NautilusPropertiesWindow *window)
 {
     NautilusFile *file;
-    GtkGrid *grid;
-    GtkStyleContext *style;
-    GtkWidget *pie_canvas;
-    GtkWidget *used_canvas;
-    GtkWidget *used_label;
-    GtkWidget *used_type_label;
-    GtkWidget *free_canvas;
-    GtkWidget *free_label;
-    GtkWidget *free_type_label;
-    GtkWidget *capacity_label;
-    GtkWidget *capacity_value_label;
-    GtkWidget *fstype_label;
-    GtkWidget *fstype_value_label;
-    GtkWidget *spacer_label;
     gchar *capacity;
     gchar *used;
     gchar *free;
@@ -2930,44 +2928,15 @@ create_pie_widget (NautilusPropertiesWindow *window)
 
     uri = nautilus_file_get_activation_uri (file);
 
-    grid = GTK_GRID (gtk_grid_new ());
-    gtk_widget_set_hexpand (GTK_WIDGET (grid), FALSE);
-    gtk_container_set_border_width (GTK_CONTAINER (grid), 5);
-    gtk_grid_set_row_spacing (GTK_GRID (grid), 10);
-    gtk_grid_set_column_spacing (GTK_GRID (grid), 10);
-
-    pie_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (pie_canvas, 200, 200);
-    style = gtk_widget_get_style_context (pie_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
-
-    used_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (used_canvas, 20, 20);
-    style = gtk_widget_get_style_context (used_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
-    gtk_style_context_add_class (style, "used");
-
-    used_label = gtk_label_new (used);
     /* Translators: "used" refers to the capacity of the filesystem */
-    used_type_label = gtk_label_new (_("used"));
+    gtk_label_set_text (GTK_LABEL (window->used_value), used);
 
-    free_canvas = gtk_drawing_area_new ();
-    gtk_widget_set_size_request (free_canvas, 20, 20);
-    style = gtk_widget_get_style_context (free_canvas);
-    gtk_style_context_add_class (style, "disk-space-display");
-    gtk_style_context_add_class (style, "free");
-
-    free_label = gtk_label_new (free);
     /* Translators: "free" refers to the capacity of the filesystem */
-    free_type_label = gtk_label_new (_("free"));
+    gtk_label_set_text (GTK_LABEL (window->free_value), free);
 
-    capacity_label = gtk_label_new (_("Total capacity:"));
-    capacity_value_label = gtk_label_new (capacity);
+    gtk_label_set_text (GTK_LABEL (window->total_capacity_value), capacity);
 
-    fstype_label = gtk_label_new (_("Filesystem type:"));
-    fstype_value_label = gtk_label_new (NULL);
-
-    spacer_label = gtk_label_new ("");
+    gtk_label_set_text (GTK_LABEL (window->file_system_value), NULL);
 
     location = g_file_new_for_uri (uri);
     info = g_file_query_filesystem_info (location, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE,
@@ -2977,7 +2946,7 @@ create_pie_widget (NautilusPropertiesWindow *window)
         fs_type = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_FILESYSTEM_TYPE);
         if (fs_type != NULL)
         {
-            gtk_label_set_text (GTK_LABEL (fstype_value_label), fs_type);
+            gtk_label_set_text (GTK_LABEL (window->file_system_value), fs_type);
         }
 
         g_object_unref (info);
@@ -2989,72 +2958,17 @@ create_pie_widget (NautilusPropertiesWindow *window)
     g_free (used);
     g_free (free);
 
-    gtk_container_add_with_properties (GTK_CONTAINER (grid), pie_canvas,
-                                       "height", 5,
-                                       NULL);
-
-    gtk_widget_set_vexpand (spacer_label, TRUE);
-    gtk_grid_attach_next_to (grid, spacer_label, pie_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (used_canvas, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (used_canvas, FALSE);
-    gtk_grid_attach_next_to (grid, used_canvas, spacer_label,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (used_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (used_label, FALSE);
-    gtk_grid_attach_next_to (grid, used_label, used_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_widget_set_halign (used_type_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (used_type_label, FALSE);
-    gtk_grid_attach_next_to (grid, used_type_label, used_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (free_canvas, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (free_canvas, FALSE);
-    gtk_grid_attach_next_to (grid, free_canvas, used_canvas,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (free_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (free_label, FALSE);
-    gtk_grid_attach_next_to (grid, free_label, free_canvas,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_widget_set_halign (free_type_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (free_type_label, FALSE);
-    gtk_grid_attach_next_to (grid, free_type_label, free_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (capacity_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (capacity_label, FALSE);
-    gtk_grid_attach_next_to (grid, capacity_label, free_canvas,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (capacity_value_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (capacity_value_label, FALSE);
-    gtk_grid_attach_next_to (grid, capacity_value_label, capacity_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    gtk_widget_set_halign (fstype_label, GTK_ALIGN_END);
-    gtk_widget_set_vexpand (fstype_label, FALSE);
-    gtk_grid_attach_next_to (grid, fstype_label, capacity_label,
-                             GTK_POS_BOTTOM, 1, 1);
-    gtk_widget_set_halign (fstype_value_label, GTK_ALIGN_START);
-    gtk_widget_set_vexpand (fstype_value_label, FALSE);
-    gtk_grid_attach_next_to (grid, fstype_value_label, fstype_label,
-                             GTK_POS_RIGHT, 1, 1);
-
-    g_signal_connect (pie_canvas, "draw",
+    g_signal_connect (window->pie_chart, "draw",
                       G_CALLBACK (paint_pie_chart), window);
-    g_signal_connect (used_canvas, "draw",
+    g_signal_connect (window->used_color, "draw",
                       G_CALLBACK (paint_legend), window);
-    g_signal_connect (free_canvas, "draw",
+    g_signal_connect (window->free_color, "draw",
                       G_CALLBACK (paint_legend), window);
-
-    return GTK_WIDGET (grid);
 }
 
-static GtkWidget *
-create_volume_usage_widget (NautilusPropertiesWindow *window)
+static void
+setup_volume_usage_widget (NautilusPropertiesWindow *window)
 {
-    GtkWidget *piewidget = NULL;
     gchar *uri;
     NautilusFile *file;
     GFile *location;
@@ -3093,11 +3007,8 @@ create_volume_usage_widget (NautilusPropertiesWindow *window)
 
     if (window->volume_capacity > 0)
     {
-        piewidget = create_pie_widget (window);
-        gtk_widget_show_all (piewidget);
+        setup_pie_widget (window);
     }
-
-    return piewidget;
 }
 
 static void
@@ -3129,7 +3040,6 @@ static void
 create_basic_page (NautilusPropertiesWindow *window)
 {
     GtkGrid *grid;
-    GtkWidget *volume_usage;
 
     /* Icon pixmap */
 
@@ -3340,12 +3250,7 @@ create_basic_page (NautilusPropertiesWindow *window)
     {
         gtk_widget_show (window->volume_widget_box);
         gtk_widget_show (window->open_in_disks_button);
-        volume_usage = create_volume_usage_widget (window);
-        if (volume_usage != NULL)
-        {
-            gtk_container_add (GTK_CONTAINER (window->volume_widget_box), volume_usage);
-        }
-
+        setup_volume_usage_widget (window);
         /*Translators: Here Disks mean the name of application GNOME Disks.*/
         g_signal_connect (window->open_in_disks_button, "clicked", G_CALLBACK (open_in_disks), NULL);
     }
@@ -4536,6 +4441,7 @@ on_change_permissions_response (GtkDialog                *dialog,
 
     if (response != GTK_RESPONSE_OK)
     {
+        g_clear_pointer (&window->change_permission_combos, g_list_free);
         gtk_widget_destroy (GTK_WIDGET (dialog));
         return;
     }
@@ -4613,11 +4519,12 @@ on_change_permissions_response (GtkDialog                *dialog,
             g_free (uri);
         }
     }
+    g_clear_pointer (&window->change_permission_combos, g_list_free);
     gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
 static void
-set_active_from_umask (GtkWidget      *combo,
+set_active_from_umask (GtkComboBox    *combo,
                        PermissionType  type,
                        gboolean        is_folder)
 {
@@ -4712,7 +4619,7 @@ set_active_from_umask (GtkWidget      *combo,
         }
     }
 
-    gtk_combo_box_set_active_id (GTK_COMBO_BOX (combo), id);
+    gtk_combo_box_set_active_id (combo, id);
 }
 
 static void
@@ -4720,71 +4627,56 @@ on_change_permissions_clicked (GtkWidget                *button,
                                NautilusPropertiesWindow *window)
 {
     GtkWidget *dialog;
-    GtkWidget *label;
-    GtkWidget *combo;
-    GtkGrid *grid;
+    GtkComboBox *combo;
+    GtkBuilder *change_permissions_builder;
 
-    dialog = gtk_dialog_new_with_buttons (_("Change Permissions for Enclosed Files"),
-                                          GTK_WINDOW (window),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"), GTK_RESPONSE_CANCEL,
-                                          _("Change"), GTK_RESPONSE_OK,
-                                          NULL);
+    change_permissions_builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-file-properties-change-permissions.ui");
 
-    grid = GTK_GRID (create_grid_with_standard_properties ());
-    gtk_box_pack_start (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))),
-                        GTK_WIDGET (grid),
-                        TRUE, TRUE, 0);
+    dialog = GTK_WIDGET (gtk_builder_get_object (change_permissions_builder, "change_permissions_dialog"));
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
-    label = gtk_label_new (_("Files"));
-    gtk_grid_attach (grid, label, 1, 0, 1, 1);
-    label = gtk_label_new (_("Folders"));
-    gtk_grid_attach (grid, label, 2, 0, 1, 1);
-
-    label = gtk_label_new (_("Owner:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 1, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_USER, FALSE);
+    /* Owner Permissions */
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_owner_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_USER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_USER, FALSE);
-    gtk_grid_attach (grid, combo, 1, 1, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_USER, TRUE);
+
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_owner_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_USER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_USER, TRUE);
-    gtk_grid_attach (grid, combo, 2, 1, 1, 1);
 
-    label = gtk_label_new (_("Group:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 2, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_GROUP, FALSE);
+    /* Group Permissions */
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_group_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_GROUP, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_GROUP, FALSE);
-    gtk_grid_attach (grid, combo, 1, 2, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_GROUP, TRUE);
+
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_group_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_GROUP, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_GROUP, TRUE);
-    gtk_grid_attach (grid, combo, 2, 2, 1, 1);
 
-    label = gtk_label_new (_("Others:"));
-    gtk_label_set_xalign (GTK_LABEL (label), 0);
-    gtk_grid_attach (grid, label, 0, 3, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_OTHER, FALSE);
+    /* Others Permissions */
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "file_other_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_OTHER, FALSE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_OTHER, FALSE);
-    gtk_grid_attach (grid, combo, 1, 3, 1, 1);
-    combo = create_permissions_combo_box (PERMISSION_OTHER, TRUE);
+
+    combo = GTK_COMBO_BOX (gtk_builder_get_object (change_permissions_builder, "folder_other_combo"));
+    setup_permissions_combo_box (combo, PERMISSION_OTHER, TRUE);
     window->change_permission_combos = g_list_prepend (window->change_permission_combos,
                                                        combo);
     set_active_from_umask (combo, PERMISSION_OTHER, TRUE);
-    gtk_grid_attach (grid, combo, 2, 3, 1, 1);
 
     g_signal_connect (dialog, "response", G_CALLBACK (on_change_permissions_response), window);
     gtk_widget_show_all (dialog);
+    g_object_unref (change_permissions_builder);
 }
 
 static void
@@ -5109,18 +5001,12 @@ create_open_with_page (NautilusPropertiesWindow *window)
     }
 
     vbox = nautilus_mime_application_chooser_new (files, mime_type);
+    gtk_box_pack_start (GTK_BOX (window->open_with_box), vbox, TRUE, TRUE, 0);
 
-    gtk_widget_show (vbox);
+    gtk_widget_show_all (window->open_with_box);
     g_free (mime_type);
     g_list_free (files);
-
     g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
-    gtk_notebook_append_page (window->notebook,
-                              vbox, gtk_label_new (_("Open With")));
-    gtk_container_child_set (GTK_CONTAINER (window->notebook),
-                             vbox,
-                             "tab-expand", TRUE,
-                             NULL);
 }
 
 
@@ -5931,6 +5817,16 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_8);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, pie_chart);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, used_color);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, used_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_color);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, total_capacity_value);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, file_system_value);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_box);
 }
 
 static void
