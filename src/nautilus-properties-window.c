@@ -200,6 +200,10 @@ struct _NautilusPropertiesWindow
     GtkWidget *change_permissions_button_box;
     GtkWidget *change_permissions_button;
 
+    /* Open With tab Widgets */
+
+    GtkWidget *open_with_box;
+
     GroupChange *group_change;
     OwnerChange *owner_change;
 
@@ -4995,18 +4999,12 @@ create_open_with_page (NautilusPropertiesWindow *window)
     }
 
     vbox = nautilus_mime_application_chooser_new (files, mime_type);
+    gtk_box_pack_start (GTK_BOX (window->open_with_box), vbox, TRUE, TRUE, 0);
 
-    gtk_widget_show (vbox);
+    gtk_widget_show_all (window->open_with_box);
     g_free (mime_type);
     g_list_free (files);
-
     g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
-    gtk_notebook_append_page (window->notebook,
-                              vbox, gtk_label_new (_("Open With")));
-    gtk_container_child_set (GTK_CONTAINER (window->notebook),
-                             vbox,
-                             "tab-expand", TRUE,
-                             NULL);
 }
 
 
@@ -5825,6 +5823,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, total_capacity_value);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, file_system_value);
+
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_box);
 }
 
 static void
