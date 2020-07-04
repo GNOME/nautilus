@@ -4450,6 +4450,7 @@ on_change_permissions_response (GtkDialog                *dialog,
 
     if (response != GTK_RESPONSE_OK)
     {
+        g_clear_pointer (&window->change_permission_combos, g_list_free);
         gtk_widget_destroy (GTK_WIDGET (dialog));
         return;
     }
@@ -4527,6 +4528,7 @@ on_change_permissions_response (GtkDialog                *dialog,
             g_free (uri);
         }
     }
+    g_clear_pointer (&window->change_permission_combos, g_list_free);
     gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
