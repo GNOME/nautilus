@@ -114,7 +114,9 @@ struct DeepCountState
     GCancellable *cancellable;
     GFileEnumerator *enumerator;
     GFile *deep_count_location;
+    gboolean deep_size_only;
     GList *deep_count_subdirectories;
+    GList *deep_size_only_subdirectories;
     GArray *seen_deep_count_inodes;
     char *fs_id;
 };
@@ -902,8 +904,7 @@ show_hidden_files_changed_callback (gpointer callback_data)
 }
 
 static gboolean
-should_skip_file (NautilusDirectory *directory,
-                  GFileInfo         *info)
+should_skip_file (GFileInfo *info)
 {
     static gboolean show_hidden_files_changed_callback_installed = FALSE;
 
@@ -981,8 +982,7 @@ dequeue_pending_idle_callback (gpointer callback_data)
          * moving this into the actual callback instead of
          * waiting for the idle function.
          */
-        if (dir_load_state &&
-            !should_skip_file (directory, file_info))
+        if (dir_load_state && !should_skip_file (file_info))
         {
             dir_load_state->load_file_count += 1;
 
@@ -2533,7 +2533,7 @@ count_non_skipped_files (GList *list)
     for (node = list; node != NULL; node = node->next)
     {
         info = node->data;
-        if (!should_skip_file (NULL, info))
+        if (!should_skip_file (info))
         {
             count += 1;
         }
@@ -2808,45 +2808,54 @@ deep_count_one (DeepCountState *state,
                 GFileInfo      *info)
 {
     NautilusFile *file;
-    GFile *subdir;
     gboolean is_seen_inode;
-    const char *fs_id;
-
-    if (should_skip_file (NULL, info))
-    {
-        return;
-    }
+    gboolean skip_count;
 
     is_seen_inode = seen_inode (state, info);
     if (!is_seen_inode)
     {
         mark_inode_as_seen (state, info);
     }
+    /* Count item only if not skipped (because it's not user-visible) */
+    skip_count = should_skip_file (info) || state->deep_size_only;
 
     file = state->directory->details->deep_count_file;
 
     if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
     {
+        const char *fs_id;
+
         /* Count the directory. */
-        file->details->deep_directory_count += 1;
+        file->details->deep_directory_count += skip_count ? 0 : 1;
 
         /* Record the fact that we have to descend into this directory. */
         fs_id = g_file_info_get_attribute_string (info, G_FILE_ATTRIBUTE_ID_FILESYSTEM);
         if (g_strcmp0 (fs_id, state->fs_id) == 0)
         {
+            GFile *subdir;
+
             /* only if it is on the same filesystem */
             subdir = g_file_get_child (state->deep_count_location, g_file_info_get_name (info));
-            state->deep_count_subdirectories = g_list_prepend
-                                                   (state->deep_count_subdirectories, subdir);
+            if (skip_count)
+            {
+                /* Count the size, even if skipped (because it still takes space). */
+                state->deep_size_only_subdirectories = g_list_prepend
+                                                           (state->deep_size_only_subdirectories, subdir);
+            }
+            else
+            {
+                state->deep_count_subdirectories = g_list_prepend
+                                                       (state->deep_count_subdirectories, subdir);
+            }
         }
     }
     else
     {
         /* Even non-regular files count as files. */
-        file->details->deep_file_count += 1;
+        file->details->deep_file_count += skip_count ? 0 : 1;
     }
 
-    /* Count the size. */
+    /* Count the size, even if skipped (because it still takes space). */
     if (!is_seen_inode && g_file_info_has_attribute (info, G_FILE_ATTRIBUTE_STANDARD_SIZE))
     {
         file->details->deep_size += g_file_info_get_size (info);
@@ -2871,6 +2880,7 @@ deep_count_state_free (DeepCountState *state)
         g_object_unref (state->deep_count_location);
     }
     g_list_free_full (state->deep_count_subdirectories, g_object_unref);
+    g_list_free_full (state->deep_size_only_subdirectories, g_object_unref);
     g_array_free (state->seen_deep_count_inodes, TRUE);
     g_free (state->fs_id);
     g_free (state);
@@ -2898,6 +2908,16 @@ deep_count_next_dir (DeepCountState *state)
         location = state->deep_count_subdirectories->data;
         state->deep_count_subdirectories = g_list_remove
                                                (state->deep_count_subdirectories, location);
+        state->deep_size_only = FALSE;
+        deep_count_load (state, location);
+        g_object_unref (location);
+    }
+    else if (state->deep_size_only_subdirectories != NULL)
+    {
+        location = state->deep_size_only_subdirectories->data;
+        state->deep_size_only_subdirectories = g_list_remove
+                                                   (state->deep_size_only_subdirectories, location);
+        state->deep_size_only = TRUE;
         deep_count_load (state, location);
         g_object_unref (location);
     }
@@ -3131,6 +3151,7 @@ deep_count_start (NautilusDirectory *directory,
     state = g_new0 (DeepCountState, 1);
     state->directory = directory;
     state->cancellable = g_cancellable_new ();
+    state->deep_size_only = FALSE;
     state->seen_deep_count_inodes = g_array_new (FALSE, TRUE, sizeof (guint64));
     state->fs_id = NULL;
 
@@ -3234,7 +3255,7 @@ mime_list_one (MimeListState *state,
 {
     const char *mime_type;
 
-    if (should_skip_file (NULL, info))
+    if (should_skip_file (info))
     {
         g_object_unref (info);
         return;
