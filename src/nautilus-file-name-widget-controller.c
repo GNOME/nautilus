@@ -63,6 +63,12 @@ nautilus_file_name_widget_controller_get_new_name (NautilusFileNameWidgetControl
     return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_new_name (self);
 }
 
+NautilusDirectory *
+nautilus_file_name_widget_controller_get_target_directory (NautilusFileNameWidgetController *self)
+{
+    return NAUTILUS_FILE_NAME_WIDGET_CONTROLLER_GET_CLASS (self)->get_target_directory (self);
+}
+
 void
 nautilus_file_name_widget_controller_set_containing_directory (NautilusFileNameWidgetController *self,
                                                                NautilusDirectory                *directory)

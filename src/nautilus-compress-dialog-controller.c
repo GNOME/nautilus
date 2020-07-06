@@ -36,6 +36,7 @@ struct _NautilusCompressDialogController
     GtkWidget *zip_radio_button;
     GtkWidget *tar_xz_radio_button;
     GtkWidget *seven_zip_radio_button;
+    GtkWidget *target_directory_button;
 
     const char *extension;
 
@@ -113,6 +114,21 @@ nautilus_compress_dialog_controller_get_new_name (NautilusFileNameWidgetControll
     }
 
     return g_strconcat (basename, self->extension, NULL);
+}
+
+static NautilusDirectory *
+nautilus_compress_dialog_controller_get_target_directory (NautilusFileNameWidgetController *controller)
+{
+    NautilusCompressDialogController *self;
+    GFile *target_directory;
+    NautilusDirectory *containing_directory;
+
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (controller);
+
+    target_directory = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (self->target_directory_button));
+    containing_directory = nautilus_directory_get (target_directory);
+
+    return containing_directory;
 }
 
 static void
@@ -239,6 +255,26 @@ seven_zip_radio_button_on_toggled (GtkToggleButton *toggle_button,
                             NAUTILUS_COMPRESSION_7ZIP);
 }
 
+static void
+target_directory_button_on_set (GtkFileChooserButton *target_directory_button,
+                                gpointer              user_data)
+{
+    NautilusFileNameWidgetController *controller;
+    GFile *target_directory;
+    NautilusDirectory *containing_directory;
+    NautilusCompressDialogController *self;
+
+    self = NAUTILUS_COMPRESS_DIALOG_CONTROLLER (user_data);
+    controller = NAUTILUS_FILE_NAME_WIDGET_CONTROLLER (user_data);
+
+    target_directory = gtk_file_chooser_get_file (GTK_FILE_CHOOSER (target_directory_button));
+    containing_directory = nautilus_directory_get(target_directory);
+    nautilus_file_name_widget_controller_set_containing_directory(controller,
+                                                                  containing_directory);
+
+    g_signal_emit_by_name (self->name_entry, "changed");
+}
+
 NautilusCompressDialogController *
 nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                          NautilusDirectory *destination_directory,
@@ -255,6 +291,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     GtkWidget *zip_radio_button;
     GtkWidget *tar_xz_radio_button;
     GtkWidget *seven_zip_radio_button;
+    GtkWidget *target_directory_button;
     NautilusCompressionFormat format;
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-compress-dialog.ui");
@@ -266,6 +303,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "zip_radio_button"));
     tar_xz_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "tar_xz_radio_button"));
     seven_zip_radio_button = GTK_WIDGET (gtk_builder_get_object (builder, "seven_zip_radio_button"));
+    target_directory_button = GTK_WIDGET (gtk_builder_get_object (builder, "target_directory_button"));
     description_stack = GTK_WIDGET (gtk_builder_get_object (builder, "description_stack"));
 
     gtk_window_set_transient_for (GTK_WINDOW (compress_dialog),
@@ -284,6 +322,7 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     self->seven_zip_radio_button = seven_zip_radio_button;
     self->description_stack = description_stack;
     self->name_entry = name_entry;
+    self->target_directory_button = target_directory_button;
 
     self->response_handler_id = g_signal_connect (compress_dialog,
                                                   "response",
@@ -297,6 +336,8 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
                                       G_CALLBACK (tar_xz_radio_button_on_toggled),
                                       "seven_zip_radio_button_on_toggled",
                                       G_CALLBACK (seven_zip_radio_button_on_toggled),
+                                      "target_directory_button_on_set",
+                                      G_CALLBACK (target_directory_button_on_set),
                                       NULL);
     gtk_builder_connect_signals (builder, self);
 
@@ -309,6 +350,9 @@ nautilus_compress_dialog_controller_new (GtkWindow         *parent_window,
     {
         gtk_entry_set_text (GTK_ENTRY (name_entry), initial_name);
     }
+
+    gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (target_directory_button),
+                                         g_file_get_path (nautilus_directory_get_location (destination_directory)));
 
     gtk_widget_show_all (compress_dialog);
 
@@ -352,4 +396,5 @@ nautilus_compress_dialog_controller_class_init (NautilusCompressDialogController
 
     parent_class->get_new_name = nautilus_compress_dialog_controller_get_new_name;
     parent_class->name_is_valid = nautilus_compress_dialog_controller_name_is_valid;
+    parent_class->get_target_directory = nautilus_compress_dialog_controller_get_target_directory;
 }
