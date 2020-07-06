@@ -51,6 +51,8 @@ struct _NautilusBatchRenameDialog
     GtkWidget *replace_mode_button;
     GtkWidget *add_button;
     GtkWidget *add_popover;
+    GtkWidget *numbering_start_label;
+    GtkWidget *numbering_start_entry;
     GtkWidget *numbering_order_label;
     GtkWidget *numbering_label;
     GtkWidget *scrolled_window;
@@ -430,9 +432,11 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
     GList *text_chunks;
     g_autofree gchar *entry_text = NULL;
     g_autofree gchar *replace_text = NULL;
+    gint count;
 
     selection = dialog->selection;
     text_chunks = NULL;
+    count = gtk_spin_button_get_value_as_int (GTK_SPIN_BUTTON (dialog->numbering_start_entry));
 
     if (dialog->mode == NAUTILUS_BATCH_RENAME_DIALOG_REPLACE)
     {
@@ -452,7 +456,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
                                                          NULL,
                                                          NULL,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         1);
     }
     else
     {
@@ -463,7 +468,8 @@ batch_rename_dialog_get_new_names (NautilusBatchRenameDialog *dialog)
                                                          text_chunks,
                                                          dialog->selection_metadata,
                                                          entry_text,
-                                                         replace_text);
+                                                         replace_text,
+                                                         count);
         g_list_free_full (text_chunks, string_free);
     }
 
@@ -2122,6 +2128,8 @@ nautilus_batch_rename_dialog_class_init (NautilusBatchRenameDialogClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_popover);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_order_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_revealer);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_start_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, numbering_start_entry);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusBatchRenameDialog, conflict_up);

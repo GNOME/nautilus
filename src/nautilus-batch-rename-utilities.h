@@ -27,7 +27,8 @@ GList* batch_rename_dialog_get_new_names_list          (NautilusBatchRenameDialo
                                                         GList                         *tags_list,
                                                         GList                         *selection_metadata,
                                                         gchar                         *entry_text,
-                                                        gchar                         *replace_text);
+                                                        gchar                         *replace_text,
+                                                        gint                           count);
 
 GList* file_names_list_has_duplicates                      (NautilusBatchRenameDialog   *dialog,
                                                             NautilusDirectory           *model,

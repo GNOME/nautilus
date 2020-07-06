@@ -493,7 +493,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
                                         GList                         *text_chunks,
                                         GList                         *selection_metadata,
                                         gchar                         *entry_text,
-                                        gchar                         *replace_text)
+                                        gchar                         *replace_text,
+                                        gint                           count)
 {
     GList *l;
     GList *result;
@@ -501,10 +502,8 @@ batch_rename_dialog_get_new_names_list (NautilusBatchRenameDialogMode  mode,
     GString *new_name;
     NautilusFile *file;
     gchar *name;
-    gint count;
 
     result = NULL;
-    count = 1;
 
     for (l = selection; l != NULL; l = l->next)
     {

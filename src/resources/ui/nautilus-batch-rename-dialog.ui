@@ -161,38 +161,76 @@
                         <child>
                           <object class="GtkBox" id="numbering_box">
                             <property name="visible">True</property>
-                            <property name="orientation">horizontal</property>
+                            <property name="orientation">vertical</property>
                             <property name="spacing">10</property>
                             <child>
-                              <object class="GtkLabel" id="numbering_label">
+                              <object class="GtkBox" id="numbering_start_box">
                                 <property name="visible">True</property>
-                                <property name="label" translatable="yes">Automatic Numbering Order</property>
-                                <property name="can_focus">False</property>
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">10</property>
+                                <child>
+                                  <object class="GtkLabel" id="numbering_start_label">
+                                    <property name="visible">True</property>
+                                    <property name="label" translatable="yes">Automatic Numbering Starts At</property>
+                                    <property name="can_focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkAdjustment" id="numbering_start_adjustment">
+                                    <property name="upper">9999999</property>
+                                    <property name="value">1</property>
+                                    <property name="step_increment">1</property>
+                                    <property name="page_increment">10</property>
+                                  </object>
+                                  <object class="GtkSpinButton" id="numbering_start_entry">
+                                    <property name="visible">True</property>
+                                    <property name="can_focus">True</property>
+                                    <property name="adjustment">numbering_start_adjustment</property>
+                                    <property name="numeric">True</property>
+                                    <property name="climb_rate">1</property>
+                                    <property name="hexpand">True</property>
+                                    <signal name="value-changed" handler="file_names_widget_entry_on_changed" swapped="yes" />
+                                  </object>
+                                </child>
                               </object>
                             </child>
                             <child>
-                              <object class="GtkToggleButton" id="numbering_order_button">
+                              <object class="GtkBox" id="numbering_order_box">
                                 <property name="visible">True</property>
-                                <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
+                                <property name="orientation">horizontal</property>
+                                <property name="spacing">10</property>
                                 <child>
-                                  <object class="GtkBox">
+                                  <object class="GtkLabel" id="numbering_label">
                                     <property name="visible">True</property>
-                                    <property name="orientation">horizontal</property>
-                                    <property name="spacing">15</property>
+                                    <property name="label" translatable="yes">Automatic Numbering Order</property>
+                                    <property name="can_focus">False</property>
+                                  </object>
+                                </child>
+                                <child>
+                                  <object class="GtkToggleButton" id="numbering_order_button">
+                                    <property name="visible">True</property>
+                                    <signal name="toggled" handler="numbering_order_button_clicked" swapped="yes" />
                                     <child>
-                                      <object class="GtkLabel" id="numbering_order_label">
+                                      <object class="GtkBox">
                                         <property name="visible">True</property>
-                                        <property name="width-request">180</property>
-                                        <property name="xalign">0</property>
-                                        <property name="label" translatable="yes">Original Name (Ascending)</property>
-                                        <property name="can_focus">False</property>
-                                      </object>
-                                    </child>
-                                    <child>
-                                      <object class="GtkImage" id="action_icon">
-                                        <property name="visible">True</property>
-                                        <property name="icon-name">pan-down-symbolic</property>
-                                        <property name="icon-size">1</property>
+                                        <property name="orientation">horizontal</property>
+                                        <property name="spacing">15</property>
+                                        <child>
+                                          <object class="GtkLabel" id="numbering_order_label">
+                                            <property name="visible">True</property>
+                                            <property name="width-request">180</property>
+                                            <property name="xalign">0</property>
+                                            <property name="label" translatable="yes">Original Name (Ascending)</property>
+                                            <property name="can_focus">False</property>
+                                          </object>
+                                        </child>
+                                        <child>
+                                          <object class="GtkImage" id="action_icon">
+                                            <property name="visible">True</property>
+                                            <property name="icon-name">pan-down-symbolic</property>
+                                            <property name="icon-size">1</property>
+                                          </object>
+                                        </child>
                                       </object>
                                     </child>
                                   </object>
