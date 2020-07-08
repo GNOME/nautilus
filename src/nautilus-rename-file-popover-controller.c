@@ -41,9 +41,9 @@ struct _NautilusRenameFilePopoverController
     GtkWidget *name_entry;
     GtkWidget *name_label;
 
-    gint closed_handler_id;
-    gint file_changed_handler_id;
-    gint key_press_event_handler_id;
+    gulong closed_handler_id;
+    gulong file_changed_handler_id;
+    gulong key_press_event_handler_id;
 };
 
 G_DEFINE_TYPE (NautilusRenameFilePopoverController, nautilus_rename_file_popover_controller, NAUTILUS_TYPE_FILE_NAME_WIDGET_CONTROLLER)
@@ -53,23 +53,9 @@ disconnect_signal_handlers (NautilusRenameFilePopoverController *self)
 {
     g_assert (NAUTILUS_IS_RENAME_FILE_POPOVER_CONTROLLER (self));
 
-    if (self->closed_handler_id != 0)
-    {
-        g_signal_handler_disconnect (self->rename_file_popover, self->closed_handler_id);
-        self->closed_handler_id = 0;
-    }
-
-    if (self->file_changed_handler_id != 0)
-    {
-        g_signal_handler_disconnect (self->target_file, self->file_changed_handler_id);
-        self->file_changed_handler_id = 0;
-    }
-
-    if (self->key_press_event_handler_id != 0)
-    {
-        g_signal_handler_disconnect (self->name_entry, self->key_press_event_handler_id);
-        self->key_press_event_handler_id = 0;
-    }
+    g_clear_signal_handler (&self->closed_handler_id, self->rename_file_popover);
+    g_clear_signal_handler (&self->file_changed_handler_id, self->target_file);
+    g_clear_signal_handler (&self->key_press_event_handler_id, self->name_entry);
 }
 
 static void
