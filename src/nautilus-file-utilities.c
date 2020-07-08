@@ -1512,3 +1512,209 @@ nautilus_file_system_is_remote (const char *file_system)
 
     return file_system != NULL && g_strv_contains (remote_types, file_system);
 }
+
+static void
+nautilus_file_moved_update_recent (NautilusFile *file,
+                                   const gchar  *old_uri,
+                                   const gchar  *new_uri,
+                                   const gchar  *old_display_name,
+                                   const gchar  *new_display_name)
+{
+    GtkRecentManager *recent_manager = gtk_recent_manager_get_default ();
+
+    if (nautilus_file_is_directory (file))
+    {
+        g_autoptr (GFile) location = NULL;
+        GList *recent_items;
+        GList *l;
+
+        location = g_file_new_for_uri (old_uri);
+        recent_items = gtk_recent_manager_get_items (recent_manager);
+
+        for (l = recent_items; l; l = l->next)
+        {
+            GtkRecentInfo *info = l->data;
+            const gchar *item_uri = gtk_recent_info_get_uri (info);
+
+            if (g_str_has_prefix (item_uri, old_uri))
+            {
+                g_autoptr (GFile) item_file = NULL;
+                g_autofree gchar *relative_path = NULL;
+                g_autofree gchar *new_item_uri = NULL;
+
+                item_file = g_file_new_for_uri (item_uri);
+                relative_path = g_file_get_relative_path (location, item_file);
+                new_item_uri = g_build_filename (new_uri, relative_path, NULL);
+
+                gtk_recent_manager_move_item (recent_manager,
+                                              item_uri, new_item_uri, NULL);
+            }
+        }
+
+        g_list_free_full (recent_items, (GDestroyNotify) gtk_recent_info_unref);
+    }
+    else
+    {
+        GtkRecentInfo *old_recent;
+
+        old_recent = gtk_recent_manager_lookup_item (recent_manager,
+                                                     old_uri, NULL);
+        if (old_recent)
+        {
+            gboolean recreate_recent_item = FALSE;
+            gboolean recreated = FALSE;
+
+            if (new_display_name != NULL && old_display_name == NULL)
+            {
+                recreate_recent_item = TRUE;
+            }
+            else
+            {
+                gboolean name_changed;
+                gboolean was_same_name_in_recent;
+                const gchar *old_recent_name;
+
+                old_recent_name = gtk_recent_info_get_display_name (old_recent);
+
+                name_changed = g_strcmp0 (old_display_name, new_display_name) != 0;
+                was_same_name_in_recent = g_strcmp0 (old_display_name, old_recent_name) == 0;
+
+                recreate_recent_item = (name_changed && was_same_name_in_recent);
+            }
+
+            if (recreate_recent_item)
+            {
+                /* If old display name, matches the one in the recent file
+                 * We can't just move it, but we need to recreate the
+                 * GtkRecentInfo
+                 */
+                GtkRecentData recent_data =
+                {
+                    .display_name = (gchar *) new_display_name,
+                    .description = (gchar *) gtk_recent_info_get_description (old_recent),
+                    .mime_type = (gchar *) gtk_recent_info_get_mime_type (old_recent),
+                    .app_name = gtk_recent_info_last_application (old_recent),
+                    .groups = gtk_recent_info_get_groups (old_recent, NULL),
+                    .is_private = gtk_recent_info_get_private_hint (old_recent),
+                };
+
+                if (recent_data.app_name)
+                {
+                    gtk_recent_info_get_application_info (old_recent,
+                                                          recent_data.app_name,
+                                                          (const gchar **) &(recent_data.app_exec),
+                                                          NULL, NULL);
+                }
+
+                if (gtk_recent_manager_add_full (recent_manager,
+                                                 new_uri,
+                                                 &recent_data))
+                {
+                    recreated = gtk_recent_manager_remove_item (recent_manager,
+                                                                old_uri,
+                                                                NULL);
+                }
+            }
+
+            if (!recreated)
+            {
+                gtk_recent_manager_move_item (recent_manager,
+                                              old_uri, new_uri, NULL);
+            }
+        }
+        else
+        {
+            gtk_recent_manager_remove_item (recent_manager, old_uri, NULL);
+        }
+    }
+}
+
+typedef struct
+{
+    NautilusFileOperation *op;
+    gchar *old_uri;
+    gchar *new_uri;
+    gchar *old_display_name;
+    gchar *new_display_name;
+} RecentInfoUpdateData;
+
+static void
+file_moved_recent_info_callback (GObject      *source_object,
+                                 GAsyncResult *res,
+                                 gpointer      callback_data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GFileInfo) info = NULL;
+    GFile *location = G_FILE (source_object);
+    RecentInfoUpdateData *recent_data = callback_data;
+
+    info = g_file_query_info_finish (location, res, &error);
+
+    if (info != NULL)
+    {
+        g_autoptr (NautilusFile) file = nautilus_file_get (location);
+        nautilus_file_update_info (file, info);
+        nautilus_file_moved_update_recent (file,
+                                           recent_data->old_uri,
+                                           recent_data->new_uri,
+                                           recent_data->old_display_name,
+                                           recent_data->new_display_name);
+    }
+
+    nautilus_file_operation_complete (recent_data->op, NULL, error);
+
+    g_free (recent_data->old_uri);
+    g_free (recent_data->new_uri);
+    g_free (recent_data->old_display_name);
+    g_free (recent_data->new_display_name);
+    g_free (recent_data);
+}
+
+void
+nautilus_file_moved_update_recent_async (const gchar           *old_uri,
+                                         const gchar           *new_uri,
+                                         const gchar           *old_display_name,
+                                         const gchar           *new_display_name,
+                                         NautilusFileOperation *op)
+{
+    NautilusFile *existing_file;
+
+    if (new_uri == NULL || old_uri == NULL ||
+        (g_strcmp0 (old_uri, new_uri) == 0 &&
+         g_strcmp0 (old_display_name, new_display_name) == 0))
+    {
+        return;
+    }
+
+    existing_file = nautilus_file_get_existing_by_uri (new_uri);
+
+    if (existing_file)
+    {
+        nautilus_file_moved_update_recent (existing_file,
+                                           old_uri, new_uri,
+                                           old_display_name, new_display_name);
+
+        if (op != NULL)
+        {
+            nautilus_file_operation_complete (op, NULL, NULL);
+        }
+    }
+    else
+    {
+        g_autoptr (GFile) location = g_file_new_for_uri (new_uri);
+        RecentInfoUpdateData *recent_data = g_new0 (RecentInfoUpdateData, 1);
+        recent_data->op = op;
+        recent_data->old_uri = g_strdup (old_uri);
+        recent_data->new_uri = g_strdup (new_uri);
+        recent_data->old_display_name = g_strdup (old_display_name);
+        recent_data->new_display_name = g_strdup (new_display_name);
+
+        g_file_query_info_async (location,
+                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                 0,
+                                 G_PRIORITY_DEFAULT,
+                                 op ? op->cancellable : NULL,
+                                 file_moved_recent_info_callback,
+                                 recent_data);
+    }
+}

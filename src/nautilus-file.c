@@ -1838,14 +1838,12 @@ rename_get_info_callback (GObject      *source_object,
                           GAsyncResult *res,
                           gpointer      callback_data)
 {
+    g_autoptr (GFileInfo) new_info = NULL;
+    g_autoptr (GError) error = NULL;
     NautilusFileOperation *op;
     NautilusDirectory *directory;
     NautilusFile *existing_file;
-    char *old_uri;
-    char *new_uri;
     const char *new_name;
-    GFileInfo *new_info;
-    GError *error;
 
     op = callback_data;
 
@@ -1853,8 +1851,12 @@ rename_get_info_callback (GObject      *source_object,
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
-        directory = op->file->details->directory;
+        g_autofree char *old_uri = NULL;
+        g_autofree char *new_uri = NULL;
+        g_autofree char *new_display_name = NULL;
+        g_autofree char *old_display_name = NULL;
 
+        directory = op->file->details->directory;
         new_name = g_file_info_get_name (new_info);
 
         /* If there was another file by the same name in this
@@ -1869,21 +1871,21 @@ rename_get_info_callback (GObject      *source_object,
         }
 
         old_uri = nautilus_file_get_uri (op->file);
+        old_display_name = nautilus_file_get_display_name (op->file);
 
         update_info_and_name (op->file, new_info);
 
         new_uri = nautilus_file_get_uri (op->file);
-        nautilus_directory_moved (old_uri, new_uri);
-        g_free (new_uri);
-        g_free (old_uri);
+        new_display_name = nautilus_file_get_display_name (op->file);
 
-        g_object_unref (new_info);
+        nautilus_directory_moved (old_uri, new_uri);
+        nautilus_file_moved_update_recent_async (old_uri, new_uri,
+                                                 old_display_name,
+                                                 new_display_name,
+                                                 op);
+        return;
     }
     nautilus_file_operation_complete (op, NULL, error);
-    if (error)
-    {
-        g_error_free (error);
-    }
 }
 
 static void

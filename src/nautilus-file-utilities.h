@@ -27,6 +27,7 @@
 
 #include <config.h>
 
+#include "nautilus-file-private.h"
 #include "nautilus-query.h"
 
 #define NAUTILUS_DESKTOP_ID APPLICATION_ID ".desktop"
@@ -143,3 +144,9 @@ NautilusQueryRecursive location_settings_search_get_recursive (void);
 NautilusQueryRecursive location_settings_search_get_recursive_for_location (GFile *location);
 
 gboolean nautilus_file_system_is_remote (const char *file_system);
+
+void nautilus_file_moved_update_recent_async (const char            *old_uri,
+                                              const char            *new_uri,
+                                              const char            *old_display_name,
+                                              const char            *new_dispaly_name,
+                                              NautilusFileOperation *op);
