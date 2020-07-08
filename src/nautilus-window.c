@@ -84,8 +84,6 @@ static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window)
 static void close_slot (NautilusWindow     *window,
                         NautilusWindowSlot *slot,
                         gboolean            remove_from_notebook);
-static void free_restore_tab_data (gpointer data,
-                                   gpointer user_data);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -1236,7 +1234,7 @@ action_restore_tab (GSimpleAction *action,
     nautilus_window_slot_open_location_full (slot, location, flags, NULL);
     nautilus_window_slot_restore_from_data (slot, data);
 
-    free_restore_tab_data (data, NULL);
+    free_restore_tab_data (data);
 }
 
 static guint
@@ -2335,19 +2333,6 @@ nautilus_window_dispose (GObject *object)
 }
 
 static void
-free_restore_tab_data (gpointer data,
-                       gpointer user_data)
-{
-    RestoreTabData *tab_data = data;
-
-    g_list_free_full (tab_data->back_list, g_object_unref);
-    g_list_free_full (tab_data->forward_list, g_object_unref);
-    nautilus_file_unref (tab_data->file);
-
-    g_free (tab_data);
-}
-
-static void
 nautilus_window_finalize (GObject *object)
 {
     NautilusWindow *window;
@@ -2379,8 +2364,7 @@ nautilus_window_finalize (GObject *object)
                                           G_CALLBACK (nautilus_window_on_undo_changed),
                                           window);
 
-    g_queue_foreach (window->tab_data_queue, (GFunc) free_restore_tab_data, NULL);
-    g_queue_free (window->tab_data_queue);
+    g_queue_free_full (window->tab_data_queue, free_restore_tab_data);
 
     g_object_unref (window->pad_controller);
 

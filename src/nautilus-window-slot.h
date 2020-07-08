@@ -132,3 +132,5 @@ NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
+
+void free_restore_tab_data                                 (gpointer data);
