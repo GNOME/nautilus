@@ -178,6 +178,18 @@ static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
+free_restore_tab_data (gpointer data)
+{
+    RestoreTabData *tab_data = data;
+
+    g_list_free_full (tab_data->back_list, g_object_unref);
+    g_list_free_full (tab_data->forward_list, g_object_unref);
+    nautilus_file_unref (tab_data->file);
+
+    g_free (tab_data);
+}
+
+void
 nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
                                         RestoreTabData     *data)
 {
@@ -185,9 +197,9 @@ nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
 
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->back_list = g_list_copy_deep (data->back_list, (GCopyFunc) g_object_ref, NULL);
+    priv->back_list = g_steal_pointer (&data->back_list);
 
-    priv->forward_list = g_list_copy_deep (data->forward_list, (GCopyFunc) g_object_ref, NULL);
+    priv->forward_list = g_steal_pointer (&data->forward_list);
 
     priv->view_mode_before_search = data->view_before_search;
 
