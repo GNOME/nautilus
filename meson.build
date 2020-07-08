@@ -93,7 +93,7 @@ pkgconfig = import('pkgconfig')
 ################
 # Dependencies #
 ################
-glib_ver = '>= 2.58.1'
+glib_ver = '>= 2.61.1'
 
 libgd = subproject(
   'libgd',
