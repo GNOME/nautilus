@@ -2,7 +2,10 @@
 
 #include "nautilus-operations-ui-manager.h"
 
+#include "eel/eel-vfs-extensions.h"
+
 #include "nautilus-file.h"
+#include "nautilus-directory.h"
 #include "nautilus-file-operations.h"
 #include "nautilus-file-conflict-dialog.h"
 #include "nautilus-mime-actions.h"
@@ -94,7 +97,9 @@ typedef struct
 
     NautilusFile *source;
     NautilusFile *destination;
-    NautilusFile *destination_directory;
+    NautilusFile *destination_directory_file;
+
+    NautilusDirectory *destination_directory;
 
     NautilusFileConflictDialog *dialog;
 
@@ -129,7 +134,7 @@ set_copy_move_dialog_text (FileConflictDialogData *data)
     destination_mtime = nautilus_file_get_mtime (data->destination);
 
     destination_name = nautilus_file_get_display_name (data->destination);
-    destination_directory_name = nautilus_file_get_display_name (data->destination_directory);
+    destination_directory_name = nautilus_file_get_display_name (data->destination_directory_file);
 
     source_is_directory = nautilus_file_is_directory (data->source);
     destination_is_directory = nautilus_file_is_directory (data->destination);
@@ -370,6 +375,62 @@ file_icons_changed (NautilusFile           *file,
 }
 
 static void
+copy_move_conflict_on_directory_info_ready (NautilusDirectory *destination_directory,
+                                            GList             *file_list,
+                                            gpointer           user_data)
+{
+    FileConflictDialogData *data = user_data;
+    g_autolist (NautilusFile) files = NULL;
+    g_autofree gchar *destination_edit_name = NULL;
+    g_autofree gchar *filename_base = NULL;
+    g_autofree gchar *extension = NULL;
+    g_autofree gchar *suggested_name = NULL;
+    gint count;
+
+    files = nautilus_directory_get_file_list (destination_directory);
+    destination_edit_name = nautilus_file_get_edit_name (data->destination);
+    filename_base = eel_filename_strip_extension (destination_edit_name);
+    extension = g_strdup (destination_edit_name + strlen (filename_base));
+
+    count = 0;
+
+    while (count < G_MAXINT)
+    {
+        g_autofree gchar *count_string = NULL;
+        g_autofree gchar *test_name = NULL;
+        gboolean conflict_found;
+
+        count++;
+
+        count_string = g_strdup_printf (" (%d)", count);
+        test_name = g_strconcat (filename_base, count_string, extension, NULL);
+
+        conflict_found = FALSE;
+        for (GList *l = files; l != NULL; l = l->next)
+        {
+            g_autofree gchar *file_name = NULL;
+
+            file_name = nautilus_file_get_display_name (l->data);
+
+            if (g_strcmp0 (file_name, test_name) == 0)
+            {
+                conflict_found = TRUE;
+                break;
+            }
+        }
+
+        if (!conflict_found)
+        {
+            suggested_name = g_steal_pointer (&test_name);
+            break;
+        }
+    }
+
+    nautilus_file_conflict_dialog_set_suggested_name (data->dialog,
+                                                      suggested_name);
+}
+
+static void
 copy_move_conflict_on_file_list_ready (GList    *files,
                                        gpointer  user_data)
 {
@@ -410,6 +471,12 @@ copy_move_conflict_on_file_list_ready (GList    *files,
                                                 G_CALLBACK (file_icons_changed), data);
     data->destination_handler_id = g_signal_connect (data->destination, "changed",
                                                      G_CALLBACK (file_icons_changed), data);
+
+    nautilus_directory_call_when_ready (data->destination_directory,
+                                        NAUTILUS_FILE_ATTRIBUTES_FOR_ICON,
+                                        TRUE,
+                                        copy_move_conflict_on_directory_info_ready,
+                                        data);
 }
 
 static gboolean
@@ -421,13 +488,14 @@ run_file_conflict_dialog (gpointer user_data)
 
     data->source = nautilus_file_get (data->source_name);
     data->destination = nautilus_file_get (data->destination_name);
-    data->destination_directory = nautilus_file_get (data->destination_directory_name);
+    data->destination_directory_file = nautilus_file_get (data->destination_directory_name);
+    data->destination_directory = nautilus_directory_get (data->destination_directory_name);
 
     data->dialog = nautilus_file_conflict_dialog_new (data->parent);
 
     files = g_list_prepend (files, data->source);
     files = g_list_prepend (files, data->destination);
-    files = g_list_prepend (files, data->destination_directory);
+    files = g_list_prepend (files, data->destination_directory_file);
 
     nautilus_file_list_call_when_ready (files,
                                         NAUTILUS_FILE_ATTRIBUTES_FOR_ICON | NAUTILUS_FILE_ATTRIBUTE_DIRECTORY_ITEM_COUNT,
@@ -441,6 +509,11 @@ run_file_conflict_dialog (gpointer user_data)
     {
         nautilus_file_list_cancel_call_when_ready (data->handle);
     }
+
+    /* Cancel the callback added by on_file_list_ready() */
+    nautilus_directory_cancel_callback (data->destination_directory,
+                                        copy_move_conflict_on_directory_info_ready,
+                                        data);
 
     if (data->source_handler_id)
     {
@@ -472,7 +545,8 @@ run_file_conflict_dialog (gpointer user_data)
 
     nautilus_file_unref (data->source);
     nautilus_file_unref (data->destination);
-    nautilus_file_unref (data->destination_directory);
+    nautilus_file_unref (data->destination_directory_file);
+    nautilus_directory_unref (data->destination_directory);
     g_list_free (files);
 
     return G_SOURCE_REMOVE;
