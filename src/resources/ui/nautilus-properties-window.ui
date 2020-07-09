@@ -2,6 +2,44 @@
 <!-- Generated with glade 3.36.0 -->
 <interface>
   <requires lib="gtk+" version="3.20"/>
+  <object class="GtkListStore" id="folder_access">
+    <columns>
+      <!-- column-name COLUMN_NAME -->
+      <column type="gchararray"/>
+      <!-- column-name COLUMN_VALUE -->
+      <column type="gint"/>
+      <!-- column-name FOO -->
+      <column type="gboolean"/>
+      <!-- column-name COLUMN_ID -->
+      <column type="gchararray"/>
+    </columns>
+    <data>
+      <row>
+        <col id="0" translatable="yes">None</col>
+        <col id="1">0</col>
+        <col id="2">False</col>
+        <col id="3" translatable="yes">none</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">List files only</col>
+        <col id="1">4</col>
+        <col id="2">False</col>
+        <col id="3" translatable="yes">r</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Access files</col>
+        <col id="1">5</col>
+        <col id="2">False</col>
+        <col id="3" translatable="yes">rx</col>
+      </row>
+      <row>
+        <col id="0" translatable="yes">Create and delete files</col>
+        <col id="1">7</col>
+        <col id="2">False</col>
+        <col id="3" translatable="yes">rwx</col>
+      </row>
+    </data>
+  </object>
   <template class="NautilusPropertiesWindow" parent="GtkWindow">
     <property name="can_focus">False</property>
     <property name="modal">True</property>
@@ -642,6 +680,57 @@
                             <property name="width">3</property>
                           </packing>
                         </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
                       </object>
                       <packing>
                         <property name="expand">False</property>
@@ -802,15 +891,6 @@
                       <packing>
                         <property name="left_attach">0</property>
                         <property name="top_attach">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkComboBox" id="owner_access_combo">
-                        <property name="can_focus">False</property>
-                      </object>
-                      <packing>
-                        <property name="left_attach">1</property>
-                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>
@@ -1124,6 +1204,23 @@
                         <property name="left_attach">0</property>
                         <property name="top_attach">19</property>
                         <property name="width">2</property>
+                      </packing>
+                    </child>
+                    <child>
+                      <object class="GtkComboBox" id="owner_access_combo">
+                        <property name="can_focus">False</property>
+                        <property name="model">folder_access</property>
+                        <property name="id_column">3</property>
+                        <child>
+                          <object class="GtkCellRendererText"/>
+                          <attributes>
+                            <attribute name="text">0</attribute>
+                          </attributes>
+                        </child>
+                      </object>
+                      <packing>
+                        <property name="left_attach">1</property>
+                        <property name="top_attach">1</property>
                       </packing>
                     </child>
                     <child>

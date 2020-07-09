@@ -4067,7 +4067,7 @@ setup_permissions_combo_box (GtkComboBox    *combo,
     GtkListStore *store;
     GtkCellRenderer *cell;
     GtkTreeIter iter;
-
+                                //NUM_COLUMNS = 4
     store = gtk_list_store_new (NUM_COLUMNS, G_TYPE_STRING, G_TYPE_INT, G_TYPE_BOOLEAN, G_TYPE_STRING);
     gtk_combo_box_set_model (combo, GTK_TREE_MODEL (store));
     gtk_combo_box_set_id_column (GTK_COMBO_BOX (combo), COLUMN_ID);
@@ -4313,8 +4313,8 @@ create_simple_permissions (NautilusPropertiesWindow *window,
     {
         gtk_widget_show (window->owner_access_label);
         gtk_widget_show (window->owner_access_combo);
-        setup_permissions_combo_box (GTK_COMBO_BOX (window->owner_access_combo),
-                                     PERMISSION_USER, has_directory);
+        // setup_permissions_combo_box (GTK_COMBO_BOX (window->owner_access_combo),
+        //                              PERMISSION_USER, has_directory);
         window->permission_combos = g_list_prepend (window->permission_combos,
                                                     window->owner_access_combo);
         g_signal_connect (window->owner_access_combo, "changed", G_CALLBACK (permission_combo_changed), window);
