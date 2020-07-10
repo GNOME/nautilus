@@ -124,7 +124,7 @@ selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
 endif
-tracker_sparql = dependency('tracker-sparql-2.0')
+tracker_sparql = dependency('tracker-sparql-3.0')
 xml = dependency('libxml-2.0', version: '>= 2.7.8')
 
 ####################
@@ -149,7 +149,7 @@ conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
 conf.set_quoted('NAME_SUFFIX', name_suffix)
-conf.set_quoted('NAUTILUS_DATADIR', join_paths(datadir, 'nautilus'))
+conf.set_quoted('NAUTILUS_DATADIR', join_paths(prefix, datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)

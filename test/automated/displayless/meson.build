@@ -1,3 +1,7 @@
+trackertestutils = dependency('tracker-testutils-3.0')
+
+tracker_sandbox = find_program(trackertestutils.get_pkgconfig_variable('command'))
+
 tests = [
   ['test-file-utilities-get-common-filename-prefix', [
     'test-file-utilities-get-common-filename-prefix.c'
@@ -23,9 +27,6 @@ tests = [
   ['test-nautilus-search-engine-model', [
     'test-nautilus-search-engine-model.c'
   ]],
-  ['test-nautilus-search-engine-tracker', [
-    'test-nautilus-search-engine-tracker.c'
-  ]],
   ['test-file-operations-copy-files', [
     'test-file-operations-copy-files.c'
   ]],
@@ -34,10 +35,46 @@ tests = [
   ]]
 ]
 
+tracker_miner_proxy = gnome.gdbus_codegen(
+  'tracker-miner-proxy',
+  'org.freedesktop.Tracker3.Miner.xml',
+  interface_prefix: 'org.freedesktop.Tracker3.',
+  namespace: 'Tracker')
+
+tracker_tests = [
+  ['test-nautilus-search-engine-tracker', [
+    'test-nautilus-search-engine-tracker.c',
+  ]],
+  ['test-tag-manager', [
+    'test-tag-manager.c',
+    'test-utilities-tracker.c',
+    tracker_miner_proxy[0], tracker_miner_proxy[1],
+  ]],
+]
+
 foreach t: tests
   test(
     t[0],
     executable(t[0], t[1], files('test-utilities.c'), dependencies: libnautilus_dep),
+    env: [
+      test_env,
+      'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),
+      'G_TEST_SRCDIR=@0@'.format(meson.current_source_dir())
+    ],
+    timeout: 480
+  )
+endforeach
+
+
+
+# Tests that read and write from the Tracker index are run using 'tracker-sandbox'
+# script to use a temporary instance of tracker-miner-fs instead of the session one.
+foreach t: tracker_tests
+  test_exe = executable(t[0], t[1], files('test-utilities.c'), dependencies: libnautilus_dep)
+  test(
+    t[0],
+    tracker_sandbox,
+    args: ['--store-tmpdir', '--index-recursive-tmpdir', test_exe],
     env: [
       test_env,
       'G_TEST_BUILDDIR=@0@'.format(meson.current_build_dir()),

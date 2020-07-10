@@ -14,8 +14,8 @@
     "--socket=x11",
     "--socket=wayland",
     "--talk-name=org.gnome.OnlineAccounts",
-    "--talk-name=org.freedesktop.Tracker1",
-    "--talk-name=org.freedesktop.Tracker1.Miner.Extract",
+    "--talk-name=org.freedesktop.Tracker3.Miner.Files",
+    "--talk-name=org.freedesktop.Tracker3.Miner.Extract",
     "--filesystem=host",
     "--talk-name=org.gtk.vfs",
     "--talk-name=org.gtk.vfs.*",
@@ -59,89 +59,45 @@
       ]
     },
     {
-      "name": "tracker",
-      "cleanup": [
-        "/bin",
-        "/etc",
-        "/libexec"
-      ],
-      "buildsystem": "meson",
-      "builddir": true,
-      "config-opts": [
-        "-Ddocs=false",
-        "-Dfunctional_tests=false",
-        "-Djournal=false",
-        "-Dnetwork_manager=disabled",
-        "-Dstemmer=disabled",
-        "-Dbash_completion=no",
-        "-Dsystemd_user_services=no"
-      ],
-      "sources": [
-        {
-          "type": "git",
-          "url": "https://gitlab.gnome.org/GNOME/tracker.git",
-          "branch": "tracker-2.3"
-        }
-      ]
-    },
-    {
-      "name": "intltool",
-      "cleanup": [ "*" ],
-      "sources": [
-        {
-          "type": "archive",
-          "url": "https://launchpad.net/intltool/trunk/0.51.0/+download/intltool-0.51.0.tar.gz",
-          "sha256": "67c74d94196b153b774ab9f89b2fa6c6ba79352407037c8c14d5aeb334e959cd"
-        }
-      ]
-    },
-    {
       "name": "tracker-miners",
       "buildsystem": "meson",
       "cleanup": [
         "/etc",
         "/lib",
-        "/libexec",
-        "/share/dbus-1/services/org.freedesktop.Tracker1.Miner.Extract.service",
-        "/share/dbus-1/services/org.freedesktop.Tracker1.Writeback.service",
-        "/share/tracker/miners/org.freedesktop.Tracker1.Miner.Applications.service",
-        "/share/tracker/miners/org.freedesktop.Tracker1.Miner.Extract.service",
-        "/share/tracker/miners/org.freedesktop.Tracker1.Miner.RSS.service",
-        "/share/tracker-miners",
-        "/share/glib-2.0/schemas/org.freedesktop.Tracker.Extract.gschema.xml",
-        "/share/glib-2.0/schemas/org.freedesktop.Tracker.Writeback.gschema.xml"
+        "/libexec/tracker-3",
+        "/share/dbus-1/services/org.freedesktop.Tracker3.Writeback.service"
       ],
       "config-opts": [
-        "-Dextract=false",
+        "-Dextract=true",
         "-Dgeneric_media_extractor=none",
-        "-Dminer_apps=false",
+        "-Dman=false",
         "-Dminer_fs=true",
         "-Dminer_rss=false",
-        "-Dsystemd_user_services=no",
+        "-Dsystemd_user_services=false",
         "-Dwriteback=false"
       ],
       "sources": [
         {
           "type": "git",
           "url": "https://gitlab.gnome.org/GNOME/tracker-miners.git",
-          "branch": "tracker-miners-2.3"
+          "branch": "master"
         }
       ]
     },
     {
-        "name": "gnome-desktop",
-        "buildsystem": "meson",
-        "config-opts": [
-          "-Ddebug_tools=false",
-          "-Ddesktop_docs=false",
-          "-Dudev=disabled"
-        ],
-        "sources": [
-          {
-            "type": "git",
-            "url": "https://gitlab.gnome.org/GNOME/gnome-desktop.git"
-          }
-        ]
+      "name": "gnome-desktop",
+      "buildsystem": "meson",
+      "config-opts": [
+        "-Ddebug_tools=false",
+        "-Ddesktop_docs=false",
+        "-Dudev=disabled"
+      ],
+      "sources": [
+        {
+          "type": "git",
+          "url": "https://gitlab.gnome.org/GNOME/gnome-desktop.git"
+        }
+      ]
     },
     {
       "name": "gnome-autoar",

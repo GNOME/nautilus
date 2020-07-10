@@ -63,6 +63,8 @@ enum
     ALBUM_NAME_INDEX,
 } QueryMetadata;
 
+#define TRACKER_MINER_FS_BUSNAME "org.freedesktop.Tracker3.Miner.Files"
+
 static void on_cursor_callback (GObject      *object,
                                 GAsyncResult *result,
                                 gpointer      user_data);
@@ -1117,7 +1119,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
 
     g_string_append (query, "} ORDER BY ASC(nie:contentCreated(?file))");
 
-    connection = tracker_sparql_connection_get (NULL, &error);
+    connection = tracker_sparql_connection_bus_new (TRACKER_MINER_FS_BUSNAME, NULL, NULL, &error);
     if (!connection)
     {
         if (error)

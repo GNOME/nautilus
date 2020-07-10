@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<node name="/">
+  <interface name="org.freedesktop.Tracker3.Miner">
+    <annotation name="org.freedesktop.DBus.GLib.CSymbol" value="_tracker_miner_dbus"/>
+    <method name="Start">
+      <annotation name="org.freedesktop.DBus.GLib.Async"  value="true"/>
+    </method>
+    <method name="GetStatus">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value="true"/>
+      <arg type="s" name="status" direction="out" />
+    </method>
+    <method name="GetProgress">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value="true"/>
+      <arg type="d" name="progress" direction="out" />
+    </method>
+    <method name="GetRemainingTime">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value="true"/>
+      <arg type="i" name="remaining_time" direction="out" />
+    </method>
+    <method name="GetPauseDetails">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value="true"/>
+      <arg type="as" name="pause_applications" direction="out" />
+      <arg type="as" name="pause_reasons" direction="out" />
+    </method>
+    <method name="Pause">
+      <annotation name="org.freedesktop.DBus.GLib.Async"  value="true"/>
+      <arg type="s" name="application" direction="in" />
+      <arg type="s" name="reason" direction="in" />
+      <arg type="i" name="cookie" direction="out" />
+    </method>
+    <method name="PauseForProcess">
+      <annotation name="org.freedesktop.DBus.GLib.Async"  value="true"/>
+      <arg type="s" name="application" direction="in" />
+      <arg type="s" name="reason" direction="in" />
+      <arg type="i" name="cookie" direction="out" />
+    </method>
+    <method name="Resume">
+      <annotation name="org.freedesktop.DBus.GLib.Async" value="true"/>
+      <arg type="i" name="cookie" direction="in" />
+    </method>
+
+    <!-- Signals -->
+    <signal name="Started" />
+    <signal name="Stopped">
+      <arg type="b" name="interrupted" />
+    </signal>
+    <signal name="Paused" />
+    <signal name="Resumed" />
+    <signal name="Progress">
+      <arg type="s" name="status" />
+      <arg type="d" name="progress" />
+      <arg type="i" name="remaining_time" />
+    </signal>
+  </interface>
+</node>
