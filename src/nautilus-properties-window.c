@@ -1335,18 +1335,42 @@ file_list_all_directories (GList *file_list)
 #define INCONSISTENT_STATE_STRING \
     "\xE2\x80\x92"
 
-static void
-value_field_update_internal (GtkLabel *label,
-                             GList    *file_list)
+static gboolean
+location_show_original (NautilusPropertiesWindow *window)
 {
+    NautilusFile *file;
+
+    /* there is no way a recent item will be mixed with
+     *   other items so just pick the first file to check */
+    file = NAUTILUS_FILE (g_list_nth_data (window->original_files, 0));
+    return (file != NULL && !nautilus_file_is_in_recent (file));
+}
+
+static void
+value_field_update (NautilusPropertiesWindow *window,
+                    GtkLabel                 *label)
+{
+    GList *file_list;
     const char *attribute_name;
     char *attribute_value;
     char *inconsistent_string;
     char *mime_type, *tmp;
+    gboolean is_where;
 
     g_assert (GTK_IS_LABEL (label));
 
     attribute_name = g_object_get_data (G_OBJECT (label), "file_attribute");
+
+    is_where = (g_strcmp0 (attribute_name, "where") == 0);
+    if (is_where && location_show_original (window))
+    {
+        file_list = window->original_files;
+    }
+    else
+    {
+        file_list = window->target_files;
+    }
+
     inconsistent_string = INCONSISTENT_STATE_STRING;
     attribute_value = file_list_get_string_attribute (file_list,
                                                       attribute_name,
@@ -1367,20 +1391,6 @@ value_field_update_internal (GtkLabel *label,
 
     gtk_label_set_text (label, attribute_value);
     g_free (attribute_value);
-}
-
-static void
-value_field_update (NautilusPropertiesWindow *window,
-                    GtkLabel                 *label)
-{
-    gboolean use_original;
-
-    use_original = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "show_original"));
-
-    value_field_update_internal (label,
-                                 (use_original ?
-                                  window->original_files :
-                                  window->target_files));
 }
 
 static void
@@ -2420,17 +2430,6 @@ should_show_link_target (NautilusPropertiesWindow *window)
 }
 
 static gboolean
-location_show_original (NautilusPropertiesWindow *window)
-{
-    NautilusFile *file;
-
-    /* there is no way a recent item will be mixed with
-     *   other items so just pick the first file to check */
-    file = NAUTILUS_FILE (g_list_nth_data (window->original_files, 0));
-    return (file != NULL && !nautilus_file_is_in_recent (file));
-}
-
-static gboolean
 should_show_free_space (NautilusPropertiesWindow *window)
 {
     if (!is_multi_file_window (window)
@@ -2781,8 +2780,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->type_value_label), "file_attribute",
                                 g_strdup ("detailed_type"), g_free);
 
-        g_object_set_data (G_OBJECT (window->type_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->type_value_label);
     }
@@ -2793,8 +2790,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->link_target_value_label);
         g_object_set_data_full (G_OBJECT (window->link_target_value_label), "file_attribute",
                                 g_strdup ("link_target"), g_free);
-
-        g_object_set_data (G_OBJECT (window->link_target_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->link_target_value_label);
@@ -2816,8 +2811,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->size_value_label), "file_attribute",
                                 g_strdup ("size_detail"), g_free);
 
-        g_object_set_data (G_OBJECT (window->size_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->size_value_label);
     }
@@ -2830,8 +2823,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->parent_folder_value_label), "file_attribute",
                                 g_strdup ("where"), g_free);
 
-        g_object_set_data (G_OBJECT (window->parent_folder_value_label), "show_original", GINT_TO_POINTER (location_show_original (window)));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->parent_folder_value_label);
     }
@@ -2842,8 +2833,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->original_folder_value_label);
         g_object_set_data_full (G_OBJECT (window->original_folder_value_label), "file_attribute",
                                 g_strdup ("trash_orig_path"), g_free);
-
-        g_object_set_data (G_OBJECT (window->original_folder_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->original_folder_value_label);
@@ -2856,8 +2845,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->volume_value_label), "file_attribute",
                                 g_strdup ("volume"), g_free);
 
-        g_object_set_data (G_OBJECT (window->volume_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->volume_value_label);
     }
@@ -2868,8 +2855,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->trashed_on_value_label);
         g_object_set_data_full (G_OBJECT (window->trashed_on_value_label), "file_attribute",
                                 g_strdup ("trashed_on_full"), g_free);
-
-        g_object_set_data (G_OBJECT (window->trashed_on_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->trashed_on_value_label);
@@ -2889,8 +2874,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->accessed_value_label), "file_attribute",
                                 g_strdup ("date_accessed_full"), g_free);
 
-        g_object_set_data (G_OBJECT (window->accessed_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->accessed_value_label);
     }
@@ -2902,8 +2885,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->modified_value_label), "file_attribute",
                                 g_strdup ("date_modified_full"), g_free);
-
-        g_object_set_data (G_OBJECT (window->modified_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->modified_value_label);
@@ -2919,8 +2900,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->free_space_value_label), "file_attribute",
                                 g_strdup ("free_space"), g_free);
-
-        g_object_set_data (G_OBJECT (window->free_space_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->free_space_value_label);
@@ -3890,8 +3869,6 @@ create_simple_permissions (NautilusPropertiesWindow *window,
         g_object_set_data_full (G_OBJECT (owner_value_label), "file_attribute",
                                 g_strdup ("owner"), g_free);
 
-        g_object_set_data (G_OBJECT (owner_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                owner_value_label);
     }
@@ -3939,8 +3916,6 @@ create_simple_permissions (NautilusPropertiesWindow *window,
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (group_value_label), "file_attribute",
                                 g_strdup ("group"), g_free);
-
-        g_object_set_data (G_OBJECT (group_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                group_value_label);
@@ -4312,8 +4287,6 @@ create_permissions_page (NautilusPropertiesWindow *window)
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->security_context_value_label), "file_attribute",
                                 g_strdup ("selinux_context"), g_free);
-
-        g_object_set_data (G_OBJECT (window->security_context_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->security_context_value_label);
