@@ -4577,7 +4577,6 @@ create_open_with_page (NautilusPropertiesWindow *window)
     gtk_widget_show_all (window->open_with_box);
     g_free (mime_type);
     g_list_free (files);
-    g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
 }
 
 
