@@ -95,7 +95,6 @@ struct _NautilusPropertiesWindow
     GtkLabel *name_title_label;
     GtkStack *name_stack;
     GtkWidget *name_field;
-    unsigned int name_row;
     char *pending_name;
 
     guint select_idle_id;
@@ -161,7 +160,6 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *permission_indeterminable_label;
 
-    GtkWidget *owner_label;
     GtkWidget *owner_value_stack;
     GtkWidget *owner_access_label;
     GtkWidget *owner_access_combo;
@@ -311,10 +309,6 @@ static void name_field_focus_changed (GObject    *object,
                                       gpointer    user_data);
 static void name_field_activate (GtkWidget *name_field,
                                  gpointer   user_data);
-static GtkLabel *attach_ellipsizing_value_label (GtkGrid    *grid,
-                                                 GtkWidget  *sibling,
-                                                 const char *initial_text);
-
 static void setup_pie_widget (NautilusPropertiesWindow *window);
 
 G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_WINDOW);
@@ -392,40 +386,6 @@ static NautilusFile *
 get_target_file (NautilusPropertiesWindow *window)
 {
     return NAUTILUS_FILE (window->target_files->data);
-}
-
-static void
-add_prompt (GtkWidget  *vbox,
-            const char *prompt_text,
-            gboolean    pack_at_start)
-{
-    GtkWidget *prompt;
-
-    prompt = gtk_label_new (prompt_text);
-    gtk_label_set_justify (GTK_LABEL (prompt), GTK_JUSTIFY_LEFT);
-    gtk_label_set_line_wrap (GTK_LABEL (prompt), TRUE);
-    gtk_widget_show (prompt);
-    if (pack_at_start)
-    {
-        gtk_box_pack_start (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
-    }
-    else
-    {
-        gtk_box_pack_end (GTK_BOX (vbox), prompt, FALSE, FALSE, 0);
-    }
-}
-
-static void
-add_prompt_and_separator (GtkWidget  *vbox,
-                          const char *prompt_text)
-{
-    GtkWidget *separator_line;
-
-    add_prompt (vbox, prompt_text, FALSE);
-
-    separator_line = gtk_separator_new (GTK_ORIENTATION_HORIZONTAL);
-    gtk_widget_show (separator_line);
-    gtk_box_pack_end (GTK_BOX (vbox), separator_line, FALSE, TRUE, 2 * ROW_PAD);
 }
 
 static void
@@ -1370,19 +1330,46 @@ file_list_all_directories (GList *file_list)
     return TRUE;
 }
 
-static void
-value_field_update_internal (GtkLabel *label,
-                             GList    *file_list)
+#define INCONSISTENT_STATE_STRING \
+    "\xE2\x80\x92"
+
+static gboolean
+location_show_original (NautilusPropertiesWindow *window)
 {
+    NautilusFile *file;
+
+    /* there is no way a recent item will be mixed with
+     *   other items so just pick the first file to check */
+    file = NAUTILUS_FILE (g_list_nth_data (window->original_files, 0));
+    return (file != NULL && !nautilus_file_is_in_recent (file));
+}
+
+static void
+value_field_update (NautilusPropertiesWindow *window,
+                    GtkLabel                 *label)
+{
+    GList *file_list;
     const char *attribute_name;
     char *attribute_value;
     char *inconsistent_string;
     char *mime_type, *tmp;
+    gboolean is_where;
 
     g_assert (GTK_IS_LABEL (label));
 
     attribute_name = g_object_get_data (G_OBJECT (label), "file_attribute");
-    inconsistent_string = g_object_get_data (G_OBJECT (label), "inconsistent_string");
+
+    is_where = (g_strcmp0 (attribute_name, "where") == 0);
+    if (is_where && location_show_original (window))
+    {
+        file_list = window->original_files;
+    }
+    else
+    {
+        file_list = window->target_files;
+    }
+
+    inconsistent_string = INCONSISTENT_STATE_STRING;
     attribute_value = file_list_get_string_attribute (file_list,
                                                       attribute_name,
                                                       inconsistent_string);
@@ -1402,138 +1389,6 @@ value_field_update_internal (GtkLabel *label,
 
     gtk_label_set_text (label, attribute_value);
     g_free (attribute_value);
-}
-
-static void
-value_field_update (NautilusPropertiesWindow *window,
-                    GtkLabel                 *label)
-{
-    gboolean use_original;
-
-    use_original = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (label), "show_original"));
-
-    value_field_update_internal (label,
-                                 (use_original ?
-                                  window->original_files :
-                                  window->target_files));
-}
-
-static GtkLabel *
-attach_label (GtkGrid    *grid,
-              GtkWidget  *sibling,
-              const char *initial_text,
-              gboolean    ellipsize_text,
-              gboolean    selectable,
-              gboolean    mnemonic)
-{
-    GtkWidget *label_field;
-
-    if (ellipsize_text)
-    {
-        label_field = gtk_label_new (initial_text);
-        gtk_label_set_ellipsize (GTK_LABEL (label_field),
-                                 PANGO_ELLIPSIZE_END);
-    }
-    else if (mnemonic)
-    {
-        label_field = gtk_label_new_with_mnemonic (initial_text);
-    }
-    else
-    {
-        label_field = gtk_label_new (initial_text);
-    }
-
-    if (selectable)
-    {
-        gtk_label_set_selectable (GTK_LABEL (label_field), TRUE);
-    }
-
-    gtk_label_set_xalign (GTK_LABEL (label_field), 0);
-    gtk_widget_show (label_field);
-
-    if (ellipsize_text)
-    {
-        gtk_widget_set_hexpand (label_field, TRUE);
-        gtk_label_set_max_width_chars (GTK_LABEL (label_field), 24);
-    }
-
-    if (sibling != NULL)
-    {
-        gtk_grid_attach_next_to (grid, label_field, sibling,
-                                 GTK_POS_RIGHT, 1, 1);
-    }
-    else
-    {
-        gtk_container_add (GTK_CONTAINER (grid), label_field);
-    }
-
-    return GTK_LABEL (label_field);
-}
-
-static GtkLabel *
-attach_value_label (GtkGrid    *grid,
-                    GtkWidget  *sibling,
-                    const char *initial_text)
-{
-    return attach_label (grid, sibling, initial_text, FALSE, TRUE, FALSE);
-}
-
-static GtkLabel *
-attach_ellipsizing_value_label (GtkGrid    *grid,
-                                GtkWidget  *sibling,
-                                const char *initial_text)
-{
-    return attach_label (grid, sibling, initial_text, TRUE, TRUE, FALSE);
-}
-
-static GtkWidget *
-attach_value_field_internal (NautilusPropertiesWindow *window,
-                             GtkGrid                  *grid,
-                             GtkWidget                *sibling,
-                             const char               *file_attribute_name,
-                             const char               *inconsistent_string,
-                             gboolean                  show_original,
-                             gboolean                  ellipsize_text)
-{
-    GtkLabel *value_field;
-
-    if (ellipsize_text)
-    {
-        value_field = attach_ellipsizing_value_label (grid, sibling, "");
-    }
-    else
-    {
-        value_field = attach_value_label (grid, sibling, "");
-    }
-
-    /* Stash a copy of the file attribute name in this field for the callback's sake. */
-    g_object_set_data_full (G_OBJECT (value_field), "file_attribute",
-                            g_strdup (file_attribute_name), g_free);
-
-    g_object_set_data_full (G_OBJECT (value_field), "inconsistent_string",
-                            g_strdup (inconsistent_string), g_free);
-
-    g_object_set_data (G_OBJECT (value_field), "show_original", GINT_TO_POINTER (show_original));
-
-    window->value_fields = g_list_prepend (window->value_fields,
-                                           value_field);
-    return GTK_WIDGET (value_field);
-}
-
-static GtkWidget *
-attach_value_field (NautilusPropertiesWindow *window,
-                    GtkGrid                  *grid,
-                    GtkWidget                *sibling,
-                    const char               *file_attribute_name,
-                    const char               *inconsistent_string,
-                    gboolean                  show_original)
-{
-    return attach_value_field_internal (window,
-                                        grid, sibling,
-                                        file_attribute_name,
-                                        inconsistent_string,
-                                        show_original,
-                                        FALSE);
 }
 
 static void
@@ -1893,45 +1748,6 @@ combo_box_row_separator_func (GtkTreeModel *model,
 
     g_free (text);
     return ret;
-}
-
-static GtkComboBox *
-attach_combo_box (GtkGrid   *grid,
-                  GtkWidget *sibling,
-                  gboolean   three_columns)
-{
-    GtkWidget *combo_box;
-
-    if (!three_columns)
-    {
-        combo_box = gtk_combo_box_text_new ();
-    }
-    else
-    {
-        GtkTreeModel *model;
-        GtkCellRenderer *renderer;
-
-        model = GTK_TREE_MODEL (gtk_list_store_new (3, G_TYPE_STRING, G_TYPE_STRING, G_TYPE_STRING));
-        combo_box = gtk_combo_box_new_with_model (model);
-        g_object_unref (G_OBJECT (model));
-
-        renderer = gtk_cell_renderer_text_new ();
-        gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (combo_box), renderer, TRUE);
-        gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (combo_box), renderer,
-                                       "text", 0);
-    }
-    gtk_widget_set_halign (combo_box, GTK_ALIGN_START);
-    gtk_widget_show (combo_box);
-
-    gtk_combo_box_set_row_separator_func (GTK_COMBO_BOX (combo_box),
-                                          combo_box_row_separator_func,
-                                          NULL,
-                                          NULL);
-
-    gtk_grid_attach_next_to (grid, combo_box, sibling,
-                             GTK_POS_RIGHT, 1, 1);
-
-    return GTK_COMBO_BOX (combo_box);
 }
 
 static void
@@ -2443,35 +2259,6 @@ schedule_directory_contents_update (NautilusPropertiesWindow *window)
     }
 }
 
-static GtkLabel *
-attach_title_field (GtkGrid    *grid,
-                    const char *title)
-{
-    return attach_label (grid, NULL, title, FALSE, FALSE, TRUE);
-}
-
-#define INCONSISTENT_STATE_STRING \
-    "\xE2\x80\x92"
-
-static void
-append_title_value_pair (NautilusPropertiesWindow *window,
-                         GtkGrid                  *grid,
-                         const char               *title,
-                         const char               *file_attribute_name,
-                         const char               *inconsistent_state,
-                         gboolean                  show_original)
-{
-    GtkLabel *title_label;
-    GtkWidget *value;
-
-    title_label = attach_title_field (grid, title);
-    value = attach_value_field (window, grid, GTK_WIDGET (title_label),
-                                file_attribute_name,
-                                inconsistent_state,
-                                show_original);
-    gtk_label_set_mnemonic_widget (title_label, value);
-}
-
 static void
 setup_contents_field (NautilusPropertiesWindow *window,
                       GtkGrid                  *grid)
@@ -2488,75 +2275,6 @@ setup_contents_field (NautilusPropertiesWindow *window,
 
     /* Fill in the initial value. */
     directory_contents_value_field_update (window);
-}
-
-static GtkWidget *
-create_page_with_box (GtkNotebook    *notebook,
-                      GtkOrientation  orientation,
-                      const gchar    *title,
-                      const gchar    *help_uri)
-{
-    GtkWidget *box;
-
-    g_assert (GTK_IS_NOTEBOOK (notebook));
-    g_assert (title != NULL);
-
-    box = gtk_box_new (orientation, 0);
-    gtk_widget_show (box);
-    gtk_container_set_border_width (GTK_CONTAINER (box), 12);
-    if (orientation == GTK_ORIENTATION_HORIZONTAL)
-    {
-        gtk_box_set_spacing (GTK_BOX (box), 12);
-    }
-    gtk_notebook_append_page (notebook, box, gtk_label_new (title));
-    gtk_container_child_set (GTK_CONTAINER (notebook),
-                             box,
-                             "tab-expand", TRUE,
-                             NULL);
-    g_object_set_data_full (G_OBJECT (box), "help-uri", g_strdup (help_uri), g_free);
-
-    return box;
-}
-
-static GtkWidget *
-append_blank_row (GtkGrid *grid)
-{
-    return GTK_WIDGET (attach_title_field (grid, ""));
-}
-
-static void
-append_blank_slim_row (GtkGrid *grid)
-{
-    GtkWidget *w;
-    PangoAttribute *attribute;
-    PangoAttrList *attr_list;
-
-    attr_list = pango_attr_list_new ();
-    attribute = pango_attr_scale_new (0.30);
-    pango_attr_list_insert (attr_list, attribute);
-
-    w = gtk_label_new (NULL);
-    gtk_label_set_attributes (GTK_LABEL (w), attr_list);
-    gtk_widget_show (w);
-
-    pango_attr_list_unref (attr_list);
-
-    gtk_container_add (GTK_CONTAINER (grid), w);
-}
-
-static GtkWidget *
-create_grid_with_standard_properties (void)
-{
-    GtkWidget *grid;
-
-    grid = gtk_grid_new ();
-    gtk_container_set_border_width (GTK_CONTAINER (grid), 6);
-    gtk_grid_set_row_spacing (GTK_GRID (grid), ROW_PAD);
-    gtk_grid_set_column_spacing (GTK_GRID (grid), 12);
-    gtk_orientable_set_orientation (GTK_ORIENTABLE (grid), GTK_ORIENTATION_VERTICAL);
-    gtk_widget_show (grid);
-
-    return grid;
 }
 
 static gboolean
@@ -2707,17 +2425,6 @@ should_show_link_target (NautilusPropertiesWindow *window)
     }
 
     return FALSE;
-}
-
-static gboolean
-location_show_original (NautilusPropertiesWindow *window)
-{
-    NautilusFile *file;
-
-    /* there is no way a recent item will be mixed with
-     *   other items so just pick the first file to check */
-    file = NAUTILUS_FILE (g_list_nth_data (window->original_files, 0));
-    return (file != NULL && !nautilus_file_is_in_recent (file));
 }
 
 static gboolean
@@ -3071,11 +2778,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->type_value_label), "file_attribute",
                                 g_strdup ("detailed_type"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->type_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->type_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->type_value_label);
     }
@@ -3086,11 +2788,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->link_target_value_label);
         g_object_set_data_full (G_OBJECT (window->link_target_value_label), "file_attribute",
                                 g_strdup ("link_target"), g_free);
-
-        g_object_set_data_full (G_OBJECT (window->link_target_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->link_target_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->link_target_value_label);
@@ -3112,11 +2809,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->size_value_label), "file_attribute",
                                 g_strdup ("size_detail"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->size_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->size_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->size_value_label);
     }
@@ -3129,11 +2821,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->parent_folder_value_label), "file_attribute",
                                 g_strdup ("where"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->parent_folder_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->parent_folder_value_label), "show_original", GINT_TO_POINTER (location_show_original (window)));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->parent_folder_value_label);
     }
@@ -3144,11 +2831,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->original_folder_value_label);
         g_object_set_data_full (G_OBJECT (window->original_folder_value_label), "file_attribute",
                                 g_strdup ("trash_orig_path"), g_free);
-
-        g_object_set_data_full (G_OBJECT (window->original_folder_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->original_folder_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->original_folder_value_label);
@@ -3161,11 +2843,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->volume_value_label), "file_attribute",
                                 g_strdup ("volume"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->volume_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->volume_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->volume_value_label);
     }
@@ -3176,11 +2853,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         gtk_widget_show (window->trashed_on_value_label);
         g_object_set_data_full (G_OBJECT (window->trashed_on_value_label), "file_attribute",
                                 g_strdup ("trashed_on_full"), g_free);
-
-        g_object_set_data_full (G_OBJECT (window->trashed_on_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->trashed_on_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->trashed_on_value_label);
@@ -3200,11 +2872,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->accessed_value_label), "file_attribute",
                                 g_strdup ("date_accessed_full"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->accessed_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->accessed_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->accessed_value_label);
     }
@@ -3216,11 +2883,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->modified_value_label), "file_attribute",
                                 g_strdup ("date_modified_full"), g_free);
-
-        g_object_set_data_full (G_OBJECT (window->modified_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->modified_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->modified_value_label);
@@ -3236,11 +2898,6 @@ create_basic_page (NautilusPropertiesWindow *window)
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (window->free_space_value_label), "file_attribute",
                                 g_strdup ("free_space"), g_free);
-
-        g_object_set_data_full (G_OBJECT (window->free_space_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->free_space_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->free_space_value_label);
@@ -3613,30 +3270,6 @@ permission_button_update (NautilusPropertiesWindow *window,
     g_signal_handlers_unblock_by_func (G_OBJECT (button),
                                        G_CALLBACK (permission_button_toggled),
                                        window);
-}
-
-static void
-set_up_permissions_checkbox (NautilusPropertiesWindow *window,
-                             GtkWidget                *check_button,
-                             guint32                   permission,
-                             gboolean                  is_folder)
-{
-    /* Load up the check_button with data we'll need when updating its state. */
-    g_object_set_data (G_OBJECT (check_button), "permission",
-                       GINT_TO_POINTER (permission));
-    g_object_set_data (G_OBJECT (check_button), "properties_window",
-                       window);
-    g_object_set_data (G_OBJECT (check_button), "is-folder",
-                       GINT_TO_POINTER (is_folder));
-
-    window->permission_buttons =
-        g_list_prepend (window->permission_buttons,
-                        check_button);
-
-    g_signal_connect_object (check_button, "toggled",
-                             G_CALLBACK (permission_button_toggled),
-                             window,
-                             0);
 }
 
 static void
@@ -4141,55 +3774,6 @@ setup_permissions_combo_box (GtkComboBox    *combo,
                                     NULL);
 }
 
-static GtkWidget *
-create_permissions_combo_box (PermissionType type,
-                              gboolean       is_folder)
-{
-    GtkWidget *combo;
-
-    combo = gtk_combo_box_new ();
-    setup_permissions_combo_box (GTK_COMBO_BOX (combo), type, is_folder);
-
-    return combo;
-}
-
-static void
-add_permissions_combo_box (NautilusPropertiesWindow *window,
-                           GtkGrid                  *grid,
-                           PermissionType            type,
-                           gboolean                  is_folder,
-                           gboolean                  short_label)
-{
-    GtkWidget *combo;
-    GtkLabel *label;
-
-    if (short_label)
-    {
-        label = attach_title_field (grid, _("Access:"));
-    }
-    else if (is_folder)
-    {
-        label = attach_title_field (grid, _("Folder access:"));
-    }
-    else
-    {
-        label = attach_title_field (grid, _("File access:"));
-    }
-
-    combo = create_permissions_combo_box (type, is_folder);
-
-    window->permission_combos = g_list_prepend (window->permission_combos,
-                                                combo);
-
-    g_signal_connect (combo, "changed", G_CALLBACK (permission_combo_changed), window);
-
-    gtk_label_set_mnemonic_widget (label, combo);
-    gtk_widget_show (combo);
-
-    gtk_grid_attach_next_to (grid, combo, GTK_WIDGET (label),
-                             GTK_POS_RIGHT, 1, 1);
-}
-
 static gboolean
 all_can_get_permissions (GList *file_list)
 {
@@ -4283,11 +3867,6 @@ create_simple_permissions (NautilusPropertiesWindow *window,
         g_object_set_data_full (G_OBJECT (owner_value_label), "file_attribute",
                                 g_strdup ("owner"), g_free);
 
-        g_object_set_data_full (G_OBJECT (owner_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (owner_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                owner_value_label);
     }
@@ -4335,11 +3914,6 @@ create_simple_permissions (NautilusPropertiesWindow *window,
         /* Stash a copy of the file attribute name in this field for the callback's sake. */
         g_object_set_data_full (G_OBJECT (group_value_label), "file_attribute",
                                 g_strdup ("group"), g_free);
-
-        g_object_set_data_full (G_OBJECT (group_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (group_value_label), "show_original", GINT_TO_POINTER (FALSE));
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                group_value_label);
@@ -4712,11 +4286,6 @@ create_permissions_page (NautilusPropertiesWindow *window)
         g_object_set_data_full (G_OBJECT (window->security_context_value_label), "file_attribute",
                                 g_strdup ("selinux_context"), g_free);
 
-        g_object_set_data_full (G_OBJECT (window->security_context_value_label), "inconsistent_string",
-                                g_strdup (INCONSISTENT_STATE_STRING), g_free);
-
-        g_object_set_data (G_OBJECT (window->security_context_value_label), "show_original", GINT_TO_POINTER (FALSE));
-
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->security_context_value_label);
 #endif
@@ -5006,7 +4575,6 @@ create_open_with_page (NautilusPropertiesWindow *window)
     gtk_widget_show_all (window->open_with_box);
     g_free (mime_type);
     g_list_free (files);
-    g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
 }
 
 
@@ -5103,6 +4671,7 @@ create_properties_window (StartupData *startup_data)
 
     if (should_show_permissions (window))
     {
+        gtk_widget_show (window->permissions_box);
         create_permissions_page (window);
     }
 
@@ -5787,7 +5356,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_label);
