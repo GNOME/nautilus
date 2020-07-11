@@ -4673,6 +4673,7 @@ create_properties_window (StartupData *startup_data)
 
     if (should_show_permissions (window))
     {
+        gtk_widget_show (window->permissions_box);
         create_permissions_page (window);
     }
 
