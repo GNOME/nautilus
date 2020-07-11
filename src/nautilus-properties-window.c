@@ -95,7 +95,6 @@ struct _NautilusPropertiesWindow
     GtkLabel *name_title_label;
     GtkStack *name_stack;
     GtkWidget *name_field;
-    unsigned int name_row;
     char *pending_name;
 
     guint select_idle_id;
@@ -161,7 +160,6 @@ struct _NautilusPropertiesWindow
 
     GtkWidget *permission_indeterminable_label;
 
-    GtkWidget *owner_label;
     GtkWidget *owner_value_stack;
     GtkWidget *owner_access_label;
     GtkWidget *owner_access_combo;
@@ -5358,7 +5356,6 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, bottom_prompt_seperator);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, not_the_owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, permission_indeterminable_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_value_stack);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_access_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, owner_folder_access_label);
