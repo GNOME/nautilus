@@ -4276,7 +4276,7 @@ create_permissions_page (NautilusPropertiesWindow *window)
             gtk_widget_show (window->bottom_prompt_seperator);
         }
 
-        gtk_widget_show (window->permissions_grid);
+        gtk_widget_show (window->permissions_box);
         create_simple_permissions (window, GTK_GRID (window->permissions_grid));
 
 #ifdef HAVE_SELINUX
