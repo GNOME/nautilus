@@ -178,27 +178,45 @@ static GMenuModel *real_get_templates_menu (NautilusWindowSlot *self);
 static void nautilus_window_slot_setup_extra_location_widgets (NautilusWindowSlot *self);
 
 void
-nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                        RestoreTabData     *data)
+free_navigation_state (gpointer data)
+{
+    NautilusNavigationState *navigation_state = data;
+
+    g_list_free_full (navigation_state->back_list, g_object_unref);
+    g_list_free_full (navigation_state->forward_list, g_object_unref);
+    nautilus_file_unref (navigation_state->file);
+    g_clear_object (&navigation_state->current_location_bookmark);
+
+    g_free (navigation_state);
+}
+
+void
+nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                               NautilusNavigationState *data)
 {
     NautilusWindowSlotPrivate *priv;
 
     priv = nautilus_window_slot_get_instance_private (self);
 
-    priv->back_list = g_list_copy_deep (data->back_list, (GCopyFunc) g_object_ref, NULL);
+    /* We are restoring saved history to newly created slot with no history. */
+    g_warn_if_fail (priv->back_list == NULL && priv->forward_list == NULL);
 
-    priv->forward_list = g_list_copy_deep (data->forward_list, (GCopyFunc) g_object_ref, NULL);
+    priv->back_list = g_steal_pointer (&data->back_list);
+
+    priv->forward_list = g_steal_pointer (&data->forward_list);
 
     priv->view_mode_before_search = data->view_before_search;
+
+    g_set_object (&priv->current_location_bookmark, data->current_location_bookmark);
 
     priv->location_change_type = NAUTILUS_LOCATION_CHANGE_RELOAD;
 }
 
-RestoreTabData *
-nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
+NautilusNavigationState *
+nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
-    RestoreTabData *data;
+    NautilusNavigationState *data;
     GList *back_list;
     GList *forward_list;
 
@@ -221,11 +239,12 @@ nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self)
      * the view mode before search and a reference to the file.
      * A GFile isn't enough, as the NautilusFile also keeps a
      * reference to the search directory */
-    data = g_new0 (RestoreTabData, 1);
+    data = g_new0 (NautilusNavigationState, 1);
     data->back_list = back_list;
     data->forward_list = forward_list;
     data->file = nautilus_file_get (priv->location);
     data->view_before_search = priv->view_mode_before_search;
+    g_set_object (&data->current_location_bookmark, priv->current_location_bookmark);
 
     return data;
 }
@@ -1121,6 +1140,7 @@ static void
 update_search_information (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
+    GFile *location;
 
     priv = nautilus_window_slot_get_instance_private (self);
 
@@ -1131,15 +1151,17 @@ update_search_information (NautilusWindowSlot *self)
         return;
     }
 
-    if (priv->location)
+    location = nautilus_window_slot_get_current_location (self);
+
+    if (location)
     {
         g_autoptr (NautilusFile) file = NULL;
         gchar *label;
         g_autofree gchar *uri = NULL;
 
-        file = nautilus_file_get (priv->location);
+        file = nautilus_file_get (location);
         label = NULL;
-        uri = g_file_get_uri (priv->location);
+        uri = g_file_get_uri (location);
 
         if (nautilus_file_is_other_locations (file))
         {
@@ -1150,11 +1172,11 @@ update_search_information (NautilusWindowSlot *self)
             label = _("Searching network locations only");
         }
         else if (nautilus_file_is_remote (file) &&
-                 location_settings_search_get_recursive_for_location (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
+                 location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Remote location — only searching the current folder");
         }
-        else if (location_settings_search_get_recursive_for_location (priv->location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
+        else if (location_settings_search_get_recursive_for_location (location) == NAUTILUS_QUERY_RECURSIVE_NEVER)
         {
             label = _("Only searching the current folder");
         }
@@ -2264,12 +2286,11 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 }
 
 void
-nautilus_window_back_or_forward (NautilusWindow          *window,
-                                 gboolean                 back,
-                                 guint                    distance,
-                                 NautilusWindowOpenFlags  flags)
+nautilus_window_slot_back_or_forward (NautilusWindowSlot      *self,
+                                      gboolean                 back,
+                                      guint                    distance,
+                                      NautilusWindowOpenFlags  flags)
 {
-    NautilusWindowSlot *self;
     GList *list;
     GFile *location;
     guint len;
@@ -2277,7 +2298,6 @@ nautilus_window_back_or_forward (NautilusWindow          *window,
     GFile *old_location;
     NautilusWindowSlotPrivate *priv;
 
-    self = nautilus_window_get_active_slot (window);
     priv = nautilus_window_slot_get_instance_private (self);
     list = back ? priv->back_list : priv->forward_list;
 
@@ -3711,4 +3731,39 @@ nautilus_window_slot_get_query_editor (NautilusWindowSlot *self)
     priv = nautilus_window_slot_get_instance_private (self);
 
     return priv->query_editor;
+}
+
+/*
+ * Open the specified location and set up the navigation history including the
+ * back and forward lists. This function is intended to be called when switching
+ * between NautilusWindowSlot and NautilusOtherLocationsWindowSlot. It allows
+ * the navigation history accumulated in the slot being replaced to be loaded
+ * into the replacing slot.
+ *
+ * The 'location' member variable is set to the new location before calling
+ * begin_location_change() to ensure that it matches the
+ * 'current_location_bookmark' member as expected by the location change
+ * pipeline.
+ */
+void
+nautilus_window_slot_open_location_set_navigation_state (NautilusWindowSlot         *self,
+                                                         GFile                      *location,
+                                                         NautilusWindowOpenFlags     flags,
+                                                         GList                      *new_selection,
+                                                         NautilusLocationChangeType  change_type,
+                                                         NautilusNavigationState    *navigation_state,
+                                                         guint                       distance)
+{
+    NautilusWindowSlotPrivate *priv;
+
+    priv = nautilus_window_slot_get_instance_private (self);
+
+    nautilus_window_slot_restore_navigation_state (self, navigation_state);
+
+    g_clear_object (&priv->location);
+
+    priv->location = nautilus_file_get_location (navigation_state->file);
+
+    begin_location_change (self, location, NULL, new_selection,
+                           change_type, distance, NULL);
 }

@@ -43,7 +43,8 @@ typedef struct
     gint view_before_search;
     GList *back_list;
     GList *forward_list;
-} RestoreTabData;
+    NautilusBookmark *current_location_bookmark;
+} NautilusNavigationState;
 
 struct _NautilusWindowSlotClass {
 	GtkBoxClass parent_class;
@@ -75,6 +76,14 @@ void nautilus_window_slot_open_location_full              (NautilusWindowSlot   
                                                            GFile                   *location,
                                                            NautilusWindowOpenFlags  flags,
                                                            GList                   *new_selection);
+
+void nautilus_window_slot_open_location_set_navigation_state (NautilusWindowSlot         *slot,
+                                                              GFile                      *location,
+                                                              NautilusWindowOpenFlags     flags,
+                                                              GList                      *new_selection,
+                                                              NautilusLocationChangeType  change_type,
+                                                              NautilusNavigationState    *navigation_state,
+                                                              guint                       distance);
 
 GFile * nautilus_window_slot_get_location		   (NautilusWindowSlot *slot);
 GFile * nautilus_window_slot_get_pending_location          (NautilusWindowSlot *slot);
@@ -123,12 +132,19 @@ void     nautilus_window_slot_search                       (NautilusWindowSlot *
 gboolean nautilus_window_slot_handles_location (NautilusWindowSlot *self,
                                                 GFile              *location);
 
-void nautilus_window_slot_restore_from_data (NautilusWindowSlot *self,
-                                             RestoreTabData     *data);
+void nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
+                                                    NautilusNavigationState *data);
 
-RestoreTabData* nautilus_window_slot_get_restore_tab_data (NautilusWindowSlot *self);
+NautilusNavigationState* nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self);
 
 NautilusQueryEditor *nautilus_window_slot_get_query_editor (NautilusWindowSlot *self);
 
 /* Only used by slot-dnd */
 NautilusView*  nautilus_window_slot_get_current_view       (NautilusWindowSlot *slot);
+
+void nautilus_window_slot_back_or_forward                  (NautilusWindowSlot     *slot,
+                                                            gboolean                back,
+                                                            guint                   distance,
+                                                            NautilusWindowOpenFlags flags);
+
+void free_navigation_state                                 (gpointer data);
