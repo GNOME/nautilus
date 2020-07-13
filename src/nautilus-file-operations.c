@@ -4183,7 +4183,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
 }
 #pragma GCC diagnostic pop
 
-#define FAT_FORBIDDEN_CHARACTERS "/:;*?\"<>\\|"
+#define FAT_FORBIDDEN_CHARACTERS "/:*?\"<>\\|"
 
 static gboolean
 fat_str_replace (char *str,
