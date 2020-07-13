@@ -78,10 +78,13 @@
                           <object class="GtkLabel" id="name_title_label">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">_Name:</property>
+                            <property name="label" translatable="yes">_Name</property>
                             <property name="use_underline">True</property>
                             <property name="mnemonic_widget">name_field</property>
-                            <property name="xalign">0</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -125,8 +128,11 @@
                         <child>
                           <object class="GtkLabel" id="type_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Type:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Type</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -150,8 +156,11 @@
                         <child>
                           <object class="GtkLabel" id="link_target_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Link target:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Link target</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -175,8 +184,11 @@
                         <child>
                           <object class="GtkLabel" id="contents_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Contents:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Contents</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -208,8 +220,11 @@
                         <child>
                           <object class="GtkLabel" id="size_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Size:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Size</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -241,8 +256,11 @@
                         <child>
                           <object class="GtkLabel" id="parent_folder_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Parent folder:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Parent folder</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -266,8 +284,11 @@
                         <child>
                           <object class="GtkLabel" id="original_folder_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Original folder:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Original folder</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -291,8 +312,11 @@
                         <child>
                           <object class="GtkLabel" id="volume_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Volume:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Volume</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -316,8 +340,11 @@
                         <child>
                           <object class="GtkLabel" id="trashed_on_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Trashed on:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Trashed on</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -350,8 +377,11 @@
                         <child>
                           <object class="GtkLabel" id="accessed_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Accessed:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Accessed</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -373,8 +403,11 @@
                         <child>
                           <object class="GtkLabel" id="modified_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Modified:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Modified</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -405,8 +438,11 @@
                         <child>
                           <object class="GtkLabel" id="free_space_title_label">
                             <property name="can_focus">False</property>
-                            <property name="label" translatable="yes">Free space:</property>
-                            <property name="xalign">0</property>
+                            <property name="label" translatable="yes">Free space</property>
+                            <property name="xalign">1</property>
+                            <style>
+                              <class name="dim-label"/>
+                            </style>
                           </object>
                           <packing>
                             <property name="left_attach">0</property>
@@ -641,6 +677,57 @@
                             <property name="top_attach">16</property>
                             <property name="width">3</property>
                           </packing>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
+                        </child>
+                        <child>
+                          <placeholder/>
                         </child>
                       </object>
                       <packing>
@@ -1204,6 +1291,9 @@
             <property name="position">0</property>
           </packing>
         </child>
+        <style>
+          <class name="view"/>
+        </style>
       </object>
     </child>
     <child type="titlebar">
