@@ -417,13 +417,13 @@ get_image_for_properties_window (NautilusPropertiesWindow  *window,
 
         if (!icon)
         {
-            icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
+            icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_STANDARD, icon_scale,
                                            NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                            NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
         }
         else
         {
-            new_icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_SMALL, icon_scale,
+            new_icon = nautilus_file_get_icon (file, NAUTILUS_CANVAS_ICON_SIZE_STANDARD, icon_scale,
                                                NAUTILUS_FILE_ICON_FLAGS_USE_THUMBNAILS |
                                                NAUTILUS_FILE_ICON_FLAGS_IGNORE_VISITING);
             if (!new_icon || new_icon != icon)
@@ -451,7 +451,7 @@ get_image_for_properties_window (NautilusPropertiesWindow  *window,
 
     if (icon_pixbuf != NULL)
     {
-        *icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_CANVAS_ICON_SIZE_SMALL);
+        *icon_pixbuf = nautilus_icon_info_get_pixbuf_at_size (icon, NAUTILUS_CANVAS_ICON_SIZE_STANDARD);
     }
 
     g_object_unref (icon);
