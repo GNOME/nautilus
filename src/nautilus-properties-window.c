@@ -654,7 +654,7 @@ update_name_field (NautilusPropertiesWindow *window)
     NautilusFile *file;
 
     gtk_label_set_text_with_mnemonic (window->name_title_label,
-                                      ngettext ("_Name:", "_Names:",
+                                      ngettext ("_Name", "_Names",
                                                 get_not_gone_original_file_count (window)));
 
     if (is_multi_file_window (window))
