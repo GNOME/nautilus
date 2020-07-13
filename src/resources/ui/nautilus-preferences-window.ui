@@ -48,7 +48,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label17">
+                      <object class="GtkLabel" id="label_general">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">General</property>
@@ -83,7 +83,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label17"/>
+                      <relation type="labelled-by" target="label_general"/>
                     </accessibility>
                   </object>
                   <packing>
@@ -99,7 +99,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label6">
+                      <object class="GtkLabel" id="label_sort">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes" context="preferences" comments="Translators: a title in the preferences dialog with an option to sort folder before files &quot;Sort folders before files&quot;.">Sort</property>
@@ -134,7 +134,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label6"/>
+                      <relation type="labelled-by" target="label_sort"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox12-atkobject">
@@ -155,7 +155,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label7">
+                      <object class="GtkLabel" id="label_list_view">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">List View</property>
@@ -190,7 +190,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label7"/>
+                      <relation type="labelled-by" target="label_list_view"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="box1-atkobject">
@@ -211,7 +211,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label28">
+                      <object class="GtkLabel" id="label_icon_view_captions">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Icon View Captions</property>
@@ -230,7 +230,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label29">
+                      <object class="GtkLabel" id="label_add_info_under">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Add information to be displayed beneath file and folder names. More information will appear when zooming closer.</property>
@@ -276,8 +276,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <accessibility>
-                                  <relation type="labelled-by" target="label8"/>
-                                  <relation type="described-by" target="label29"/>
+                                  <relation type="labelled-by" target="label_first"/>
+                                  <relation type="described-by" target="label_add_info_under"/>
                                 </accessibility>
                               </object>
                               <packing>
@@ -312,8 +312,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <accessibility>
-                                  <relation type="labelled-by" target="label11"/>
-                                  <relation type="described-by" target="label29"/>
+                                  <relation type="labelled-by" target="label_third"/>
+                                  <relation type="described-by" target="label_add_info_under"/>
                                 </accessibility>
                               </object>
                               <packing>
@@ -348,8 +348,8 @@
                                 <property name="visible">True</property>
                                 <property name="can_focus">False</property>
                                 <accessibility>
-                                  <relation type="labelled-by" target="label9"/>
-                                  <relation type="described-by" target="label29"/>
+                                  <relation type="labelled-by" target="label_second"/>
+                                  <relation type="described-by" target="label_add_info_under"/>
                                 </accessibility>
                               </object>
                               <packing>
@@ -365,7 +365,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="label9">
+                          <object class="GtkLabel" id="label_second">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Second</property>
@@ -383,7 +383,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="label11">
+                          <object class="GtkLabel" id="label_third">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Third</property>
@@ -401,7 +401,7 @@
                           </packing>
                         </child>
                         <child>
-                          <object class="GtkLabel" id="label8">
+                          <object class="GtkLabel" id="label_first">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
@@ -426,7 +426,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label28"/>
+                      <relation type="labelled-by" target="label_icon_view_captions"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox27-atkobject">
@@ -446,7 +446,7 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label1">
+              <object class="GtkLabel" id="label_views">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Views</property>
@@ -469,7 +469,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label10">
+                      <object class="GtkLabel" id="label_open_action">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Open Action</property>
@@ -522,7 +522,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label10"/>
+                      <relation type="labelled-by" target="label_open_action"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox6-atkobject">
@@ -543,7 +543,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label13">
+                      <object class="GtkLabel" id="label_link_creation">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Link Creation</property>
@@ -578,7 +578,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label13"/>
+                      <relation type="labelled-by" target="label_link_creation"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox14-atkobject">
@@ -599,7 +599,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label12">
+                      <object class="GtkLabel" id="label_executable_text_files">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Executable Text Files</property>
@@ -669,7 +669,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label12"/>
+                      <relation type="labelled-by" target="label_executable_text_files"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox7-atkobject">
@@ -690,7 +690,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label14">
+                      <object class="GtkLabel" id="label_trash">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Trash</property>
@@ -741,7 +741,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label14"/>
+                      <relation type="labelled-by" target="label_trash"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox8-atkobject">
@@ -762,7 +762,7 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label2">
+              <object class="GtkLabel" id="label_behavior">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Behavior</property>
@@ -792,7 +792,7 @@
                         <property name="orientation">vertical</property>
                         <property name="spacing">6</property>
                         <child>
-                          <object class="GtkLabel" id="label33">
+                          <object class="GtkLabel" id="label_choose_order">
                             <property name="visible">True</property>
                             <property name="can_focus">False</property>
                             <property name="label" translatable="yes">Choose the order of information to appear in the list view.</property>
@@ -813,7 +813,7 @@
                           <placeholder/>
                         </child>
                         <accessibility>
-                          <relation type="labelled-by" target="label33"/>
+                          <relation type="labelled-by" target="label_choose_order"/>
                         </accessibility>
                         <child internal-child="accessible">
                           <object class="AtkObject" id="list_columns_vbox-atkobject">
@@ -841,7 +841,7 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label30">
+              <object class="GtkLabel" id="label_list_columns">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">List Columns</property>
@@ -865,7 +865,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label5">
+                      <object class="GtkLabel" id="label_search">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Search</property>
@@ -881,7 +881,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label4">
+                      <object class="GtkLabel" id="label_search_subfolders">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Search in subfolders:</property>
@@ -948,7 +948,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label4"/>
+                      <relation type="labelled-by" target="label_search_subfolders"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox3-atkobject">
@@ -969,7 +969,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label18">
+                      <object class="GtkLabel" id="label_thumbnails">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Thumbnails</property>
@@ -985,7 +985,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label15">
+                      <object class="GtkLabel" id="label_show_thumbnails">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Show thumbnails:</property>
@@ -1094,7 +1094,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label15"/>
+                      <relation type="labelled-by" target="label_show_thumbnails"/>
                     </accessibility>
                     <child internal-child="accessible">
                       <object class="AtkObject" id="vbox11-atkobject">
@@ -1115,7 +1115,7 @@
                     <property name="orientation">vertical</property>
                     <property name="spacing">6</property>
                     <child>
-                      <object class="GtkLabel" id="label22">
+                      <object class="GtkLabel" id="label_file_count">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">File count</property>
@@ -1131,7 +1131,7 @@
                       </packing>
                     </child>
                     <child>
-                      <object class="GtkLabel" id="label16">
+                      <object class="GtkLabel" id="label_count_files">
                         <property name="visible">True</property>
                         <property name="can_focus">False</property>
                         <property name="label" translatable="yes">Count number of files in folders:</property>
@@ -1198,7 +1198,7 @@
                       </packing>
                     </child>
                     <accessibility>
-                      <relation type="labelled-by" target="label16"/>
+                      <relation type="labelled-by" target="label_count_files"/>
                     </accessibility>
                   </object>
                   <packing>
@@ -1214,7 +1214,7 @@
               </packing>
             </child>
             <child type="tab">
-              <object class="GtkLabel" id="label3">
+              <object class="GtkLabel" id="label_search_preview">
                 <property name="visible">True</property>
                 <property name="can_focus">False</property>
                 <property name="label" translatable="yes">Search &amp; Preview</property>
