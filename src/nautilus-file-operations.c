@@ -4183,7 +4183,7 @@ report_copy_progress (CopyMoveJob  *copy_job,
 }
 #pragma GCC diagnostic pop
 
-#define FAT_FORBIDDEN_CHARACTERS "/:;*?\"<>\\|"
+#define FAT_FORBIDDEN_CHARACTERS "/:*?\"<>\\|"
 
 static gboolean
 fat_str_replace (char *str,
@@ -4214,6 +4214,12 @@ make_file_name_valid_for_dest_fs (char       *filename,
     {
         if (!strcmp (dest_fs_type, "fat") ||
             !strcmp (dest_fs_type, "vfat") ||
+            /* The fuseblk filesystem type could be of any type
+             * in theory, but in practice is usually NTFS or exFAT.
+             * This assumption is a pragmatic way to solve
+             * https://gitlab.gnome.org/GNOME/nautilus/-/issues/1343 */
+            !strcmp (dest_fs_type, "fuse") ||
+            !strcmp (dest_fs_type, "ntfs") ||
             !strcmp (dest_fs_type, "msdos") ||
             !strcmp (dest_fs_type, "msdosfs"))
         {
