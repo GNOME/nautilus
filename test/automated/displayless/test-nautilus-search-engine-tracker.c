@@ -1,5 +1,8 @@
 #include "test-utilities.h"
 
+TrackerSparqlConnection *connection;
+guint total_hits = 0;
+
 static void
 hits_added_cb (NautilusSearchEngine *engine,
                GSList               *hits)
@@ -8,6 +11,7 @@ hits_added_cb (NautilusSearchEngine *engine,
     for (gint hit_number = 0; hits != NULL; hits = hits->next, hit_number++)
     {
         g_print ("Hit %i: %s\n", hit_number, nautilus_search_hit_get_uri (hits->data));
+        total_hits += 1;
     }
 }
 
@@ -16,14 +20,12 @@ finished_cb (NautilusSearchEngine         *engine,
              NautilusSearchProviderStatus  status,
              gpointer                      user_data)
 {
-    TrackerSparqlConnection *connection;
     g_autofree gchar *sparql_query = NULL;
 
     nautilus_search_provider_stop (NAUTILUS_SEARCH_PROVIDER (engine));
 
     g_print ("\nNautilus search engine tracker finished!\n");
 
-    connection = tracker_sparql_connection_get (NULL, NULL);
     sparql_query = g_strdup_printf ("DELETE WHERE { <nautilus-test-tracker> ?p ?o }");
     tracker_sparql_connection_update (connection,
                                       sparql_query,
@@ -43,10 +45,15 @@ main (int   argc,
     g_autoptr (NautilusDirectory) directory = NULL;
     g_autoptr (NautilusQuery) query = NULL;
     g_autoptr (GFile) location = NULL;
-    TrackerSparqlConnection *connection;
     g_autofree gchar *sparql_query = NULL;
+    g_autoptr (GError) error = NULL;
 
-    connection = tracker_sparql_connection_get (NULL, NULL);
+    /* Make sure to run this test using the 'tracker-sandbox' script
+     * so it doesn't make changes to your real Tracker index.
+     */
+    connection = tracker_sparql_connection_bus_new ("org.freedesktop.Tracker3.Miner.Files", NULL, NULL, &error);
+
+    g_assert_no_error (error);
 
     loop = g_main_loop_new (NULL, FALSE);
 
@@ -102,5 +109,10 @@ main (int   argc,
                                             NAUTILUS_SEARCH_ENGINE_TRACKER_ENGINE);
 
     g_main_loop_run (loop);
+
+    g_assert_cmpint (total_hits, ==, 1);
+
+    g_object_unref (connection);
+
     return 0;
 }

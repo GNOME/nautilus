@@ -1,0 +1,18 @@
+@prefix rdf: <http://www.w3.org/1999/02/22-rdf-syntax-ns#> .
+@prefix rdfs: <http://www.w3.org/2000/01/rdf-schema#> .
+@prefix xsd: <http://www.w3.org/2001/XMLSchema#> .
+@prefix nautilus: <https://gitlab.gnome.org/GNOME/nautilus#> .
+@prefix tracker: <http://tracker.api.gnome.org/ontology/v3/tracker#> .
+
+nautilus: a tracker:Namespace, tracker:Ontology ;
+    tracker:prefix "nautilus" ;
+    tracker:lastModified "2020-05-01T10:00:00Z" .
+
+nautilus:FileReference a rdfs:Class ;
+    rdfs:comment "A unique ID for a file, corresponding with the nie:InformationElement created by tracker-miner-fs. We use a unique ID rather than the file URL so the star will follow renames." ;
+    rdfs:subClassOf rdfs:Resource .
+
+nautilus:starred a rdf:Property ;
+    rdfs:comment "Marks resources that are starred in Nautilus." ;
+    rdfs:domain nautilus:FileReference ;
+    rdfs:range xsd:boolean .
