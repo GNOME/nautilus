@@ -130,6 +130,7 @@ static GHashTable *symbolic_links;
 
 static guint64 cached_thumbnail_limit;
 static NautilusSpeedTradeoffValue show_file_thumbs;
+static gboolean show_video_filmstrip;
 
 static NautilusSpeedTradeoffValue show_directory_item_count;
 
@@ -5195,7 +5196,10 @@ nautilus_file_get_thumbnail_icon (NautilusFile          *file,
                 {
                     if (nautilus_is_video_file (file))
                     {
-                        nautilus_ui_frame_video (&pixbuf);
+                        if (show_video_filmstrip)
+                        {
+                            nautilus_ui_frame_video (&pixbuf);
+                        }
                     }
                     else
                     {
@@ -9093,6 +9097,14 @@ show_thumbnails_changed_callback (gpointer user_data)
 }
 
 static void
+show_filmstrip_changed_callback (gpointer user_data)
+{
+    show_video_filmstrip = g_settings_get_boolean (nautilus_preferences,
+                                                   NAUTILUS_PREFERENCES_SHOW_VIDEO_FILMSTRIP);
+
+}
+
+static void
 mime_type_data_changed_callback (GObject  *signaller,
                                  gpointer  user_data)
 {
@@ -9286,6 +9298,11 @@ nautilus_file_class_init (NautilusFileClass *class)
     g_signal_connect_swapped (nautilus_preferences,
                               "changed::" NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
                               G_CALLBACK (show_thumbnails_changed_callback),
+                              NULL);
+    show_filmstrip_changed_callback (NULL);
+    g_signal_connect_swapped (nautilus_preferences,
+                              "changed::" NAUTILUS_PREFERENCES_SHOW_VIDEO_FILMSTRIP,
+                              G_CALLBACK (show_filmstrip_changed_callback),
                               NULL);
 
     g_signal_connect (nautilus_signaller_get_current (),
