@@ -654,7 +654,7 @@ update_name_field (NautilusPropertiesWindow *window)
     NautilusFile *file;
 
     gtk_label_set_text_with_mnemonic (window->name_title_label,
-                                      ngettext ("_Name:", "_Names:",
+                                      ngettext ("_Name", "_Names",
                                                 get_not_gone_original_file_count (window)));
 
     if (is_multi_file_window (window))
@@ -2101,7 +2101,6 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
     guint total_count;
     guint unreadable_directory_count;
     goffset total_size;
-    gboolean used_two_lines;
     NautilusFile *file;
     GList *l;
     guint file_unreadable;
@@ -2163,7 +2162,6 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
     }
 
     text = NULL;
-    used_two_lines = FALSE;
 
     if (total_count == 0)
     {
@@ -2200,28 +2198,10 @@ directory_contents_value_field_update (NautilusPropertiesWindow *window)
                                 _("(some contents unreadable)"),
                                 NULL);
             g_free (temp);
-            used_two_lines = TRUE;
         }
     }
 
     gtk_label_set_text (GTK_LABEL (window->contents_value_label),
-                        text);
-    g_free (text);
-
-    /* Also set the title field here, with a trailing carriage return &
-     * space if the value field has two lines. This is a hack to get the
-     * "Contents:" title to line up with the first line of the
-     * 2-line value. Maybe there's a better way to do this, but I
-     * couldn't think of one.
-     */
-    text = g_strdup (_("Contents:"));
-    if (used_two_lines)
-    {
-        temp = text;
-        text = g_strconcat (temp, "\n ", NULL);
-        g_free (temp);
-    }
-    gtk_label_set_text (GTK_LABEL (window->contents_title_label),
                         text);
     g_free (text);
 
