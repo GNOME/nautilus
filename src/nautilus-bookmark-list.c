@@ -520,26 +520,72 @@ save_file_async (NautilusBookmarkList *self)
     {
         NautilusBookmark *bookmark;
 
+        g_autofree char *uri = NULL;
+        g_autofree char *volume_uuid = NULL;
+        g_autofree char *volume_name = NULL;
+        g_autoptr (GFile) location = NULL;
+        g_autoptr (NautilusFile) file = NULL;
+        g_autoptr (GMount) mount = NULL;
+        g_autoptr (GVolume) volume = NULL;
+        const char *label = NULL;
+
         bookmark = NAUTILUS_BOOKMARK (l->data);
 
-        /* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
-        if (nautilus_bookmark_get_has_custom_name (bookmark))
+        location = nautilus_bookmark_get_location (bookmark);
+
+        g_assert (location != NULL);
+
+        if(location != NULL)
         {
-            const char *label;
-            g_autofree char *uri = NULL;
+            file = nautilus_file_get_existing(location);
 
-            label = nautilus_bookmark_get_name (bookmark);
-            uri = nautilus_bookmark_get_uri (bookmark);
+            g_assert (file != NULL);
 
-            g_string_append_printf (bookmark_string,
-                                    "%s %s\n", uri, label);
+            if(file != NULL)
+            {
+                mount = nautilus_file_get_mount(file);
+
+                if(mount != NULL)
+                {
+                    volume = g_mount_get_volume(mount);
+
+                    if(volume != NULL)
+                    {
+                        volume_uuid = g_volume_get_identifier(volume, G_VOLUME_IDENTIFIER_KIND_UUID);
+
+                        if(volume_uuid != NULL)
+                        {
+                            uri = g_strdup_printf ("volume:///%s", volume_uuid);
+
+                            volume_name = g_volume_get_name(volume);
+
+                            g_assert (volume_name != NULL);
+
+                            label = volume_name;
+                        }
+                    }
+                }
+            }
+        }
+
+        if(uri == NULL)
+        {
+            uri = nautilus_bookmark_get_uri(bookmark);
+        }
+
+        if(label == NULL)
+        {
+            /* make sure we save label if it has one for compatibility with GTK 2.7 and 2.8 */
+            if (nautilus_bookmark_get_has_custom_name (bookmark))
+                label = nautilus_bookmark_get_name (bookmark);
+        }
+
+        if (label != NULL)
+        {
+            g_string_append_printf (bookmark_string, "%s %s\n", uri, label);
         }
         else
         {
-            g_autofree char *uri = NULL;
-
-            uri = nautilus_bookmark_get_uri (bookmark);
-
             g_string_append_printf (bookmark_string, "%s\n", uri);
         }
     }
