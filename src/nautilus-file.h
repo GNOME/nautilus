@@ -419,9 +419,7 @@ char *                  nautilus_file_get_string_attribute_with_default_q (Nauti
 gboolean                nautilus_file_matches_uri                       (NautilusFile                   *file,
 									 const char                     *uri);
 
-/* Is the file local? */
-gboolean                nautilus_file_is_local                          (NautilusFile                   *file);
-gboolean                nautilus_file_is_local_or_fuse                  (NautilusFile                   *file);
+gboolean                nautilus_file_has_local_path                    (NautilusFile                   *file);
 
 /* Comparing two file objects for sorting */
 NautilusFileSortType    nautilus_file_get_default_sort_type             (NautilusFile                   *file,

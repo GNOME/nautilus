@@ -2352,16 +2352,20 @@ nautilus_file_compare_location (NautilusFile *file_1,
     return (gint) res;
 }
 
+/**
+ * nautilus_file_has_local_path:
+ *
+ * @file: a #NautilusFile
+ *
+ * Checks whether this file has an obtainable local paths. Usually, this means
+ * the local path can be obtained by calling g_file_get_path(); this includes
+ * native and FUSE files. As an exception, the local URI for files in recent://
+ * can only be obtained from the G_FILE_ATTRIBUTE_STANDARD_TARGET_URI attribute.
+ *
+ * Returns: %TRUE if a local path is known to be obtainable for this file.
+ */
 gboolean
-nautilus_file_is_local (NautilusFile *file)
-{
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    return nautilus_directory_is_local (file->details->directory);
-}
-
-gboolean
-nautilus_file_is_local_or_fuse (NautilusFile *file)
+nautilus_file_has_local_path (NautilusFile *file)
 {
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
@@ -4709,13 +4713,57 @@ nautilus_file_get_filesystem_remote (NautilusFile *file)
     return FALSE;
 }
 
+static gboolean
+get_speed_tradeoff_preference_for_file (NautilusFile               *file,
+                                        NautilusSpeedTradeoffValue  value)
+{
+    GFilesystemPreviewType use_preview;
+
+    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
+
+    use_preview = nautilus_file_get_filesystem_use_preview (file);
+
+    if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
+    {
+        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
+        {
+            return FALSE;
+        }
+        else
+        {
+            return TRUE;
+        }
+    }
+    else if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
+    {
+        return FALSE;
+    }
+    else if (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY)
+    {
+        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
+        {
+            /* file system says to never preview anything */
+            return FALSE;
+        }
+        else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
+        {
+            /* file system says we should treat file as if it's local */
+            return TRUE;
+        }
+        else
+        {
+            /* only local files */
+            return !nautilus_file_is_remote (file);
+        }
+    }
+
+    return FALSE;
+}
+
 gboolean
 nautilus_file_should_show_thumbnail (NautilusFile *file)
 {
     const char *mime_type;
-    GFilesystemPreviewType use_preview;
-
-    use_preview = nautilus_file_get_filesystem_use_preview (file);
 
     mime_type = file->details->mime_type;
     if (mime_type == NULL)
@@ -4733,41 +4781,7 @@ nautilus_file_should_show_thumbnail (NautilusFile *file)
         return FALSE;
     }
 
-    if (show_file_thumbs == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-    else if (show_file_thumbs == NAUTILUS_SPEED_TRADEOFF_NEVER)
-    {
-        return FALSE;
-    }
-    else
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            /* file system says to never thumbnail anything */
-            return FALSE;
-        }
-        else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
-        {
-            /* file system says we should treat file as if it's local */
-            return TRUE;
-        }
-        else
-        {
-            /* only local files */
-            return nautilus_file_is_local (file);
-        }
-    }
-
-    return FALSE;
+    return get_speed_tradeoff_preference_for_file (file, show_file_thumbs);
 }
 
 static gboolean
@@ -5645,52 +5659,6 @@ show_directory_item_count_changed_callback (gpointer callback_data)
     show_directory_item_count = g_settings_get_enum (nautilus_preferences, NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS);
 }
 
-static gboolean
-get_speed_tradeoff_preference_for_file (NautilusFile               *file,
-                                        NautilusSpeedTradeoffValue  value)
-{
-    GFilesystemPreviewType use_preview;
-
-    g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
-
-    use_preview = nautilus_file_get_filesystem_use_preview (file);
-
-    if (value == NAUTILUS_SPEED_TRADEOFF_ALWAYS)
-    {
-        if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-        {
-            return FALSE;
-        }
-        else
-        {
-            return TRUE;
-        }
-    }
-
-    if (value == NAUTILUS_SPEED_TRADEOFF_NEVER)
-    {
-        return FALSE;
-    }
-
-    g_assert (value == NAUTILUS_SPEED_TRADEOFF_LOCAL_ONLY);
-
-    if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_NEVER)
-    {
-        /* file system says to never preview anything */
-        return FALSE;
-    }
-    else if (use_preview == G_FILESYSTEM_PREVIEW_TYPE_IF_LOCAL)
-    {
-        /* file system says we should treat file as if it's local */
-        return TRUE;
-    }
-    else
-    {
-        /* only local files */
-        return nautilus_file_is_local (file);
-    }
-}
-
 gboolean
 nautilus_file_should_show_directory_item_count (NautilusFile *file)
 {
@@ -6024,10 +5992,13 @@ nautilus_file_can_get_permissions (NautilusFile *file)
 gboolean
 nautilus_file_can_set_permissions (NautilusFile *file)
 {
+    g_autoptr (GFile) location = NULL;
     uid_t user_id;
 
+    location = nautilus_file_get_location (file);
+
     if (file->details->uid != -1 &&
-        nautilus_file_is_local (file))
+        g_file_is_native (location))
     {
         /* Check the user. */
         user_id = geteuid ();

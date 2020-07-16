@@ -761,42 +761,44 @@ nautilus_directory_new (GFile *location)
     return handling_instance;
 }
 
-gboolean
-nautilus_directory_is_local (NautilusDirectory *directory)
-{
-    g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
-
-    if (directory->details->location == NULL)
-    {
-        return TRUE;
-    }
-
-    return nautilus_directory_is_in_trash (directory) ||
-           nautilus_directory_is_in_recent (directory) ||
-           g_file_is_native (directory->details->location);
-}
-
+/**
+ * nautilus_directory_is_local_or_fuse:
+ *
+ * @directory: a #NautilusDirectory
+ *
+ * Checks whether this directory contains files with local paths. Usually, this
+ * means the local path can be obtained by calling g_file_get_path(). As an
+ * exception, the local URI for files in recent:// can only be obtained from the
+ * G_FILE_ATTRIBUTE_STANDARD_TARGET_URI attribute.
+ *
+ * Returns: %TRUE if a local path is known to be obtainable for all files in
+ *          this directory. Otherwise, %FALSE.
+ */
 gboolean
 nautilus_directory_is_local_or_fuse (NautilusDirectory *directory)
 {
-    g_autofree char *path = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_DIRECTORY (directory), FALSE);
+    g_return_val_if_fail (directory->details->location, FALSE);
 
-    if (directory->details->location == NULL)
+
+    if (nautilus_directory_is_in_recent (directory)
+        || g_file_is_native (directory->details->location))
     {
+        /* Native files have a local path by definition. The files in recent:/
+         * have a local URI stored in the standard::target-uri attribute. */
         return TRUE;
     }
+    else
+    {
+        g_autofree char *path = NULL;
 
-    /* If the glib reports a path, then it can use FUSE to convert the uri
-     * to a local path
-     */
-    path = g_file_get_path (directory->details->location);
+        /* Non-native files may have local paths in FUSE mounts. The only way to
+         * know if that's the case is to test if GIO reports a path.
+         */
+        path = g_file_get_path (directory->details->location);
 
-    return nautilus_directory_is_in_trash (directory) ||
-           nautilus_directory_is_in_recent (directory) ||
-           g_file_is_native (directory->details->location) ||
-           path != NULL;
+        return (path != NULL);
+    }
 }
 
 gboolean
