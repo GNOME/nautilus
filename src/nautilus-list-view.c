@@ -3845,9 +3845,9 @@ list_view_scroll_to_file (NautilusFilesView *view,
 }
 
 static void
-on_clipboard_contents_received (GtkClipboard *clipboard,
-                                const gchar  *selection_data,
-                                gpointer      user_data)
+on_clipboard_contents_received (GtkClipboard     *clipboard,
+                                GtkSelectionData *selection_data,
+                                gpointer          user_data)
 {
     NautilusListView *view = NAUTILUS_LIST_VIEW (user_data);
 
@@ -3882,9 +3882,10 @@ static void
 update_clipboard_status (NautilusListView *view)
 {
     g_object_ref (view);     /* Need to keep the object alive until we get the reply */
-    gtk_clipboard_request_text (nautilus_clipboard_get (GTK_WIDGET (view)),
-                                on_clipboard_contents_received,
-                                view);
+    gtk_clipboard_request_contents (nautilus_clipboard_get (GTK_WIDGET (view)),
+                                    nautilus_clipboard_get_atom (),
+                                    on_clipboard_contents_received,
+                                    view);
 }
 
 static void

@@ -27,10 +27,9 @@
 void nautilus_clipboard_clear_if_colliding_uris    (GtkWidget          *widget,
                                                     const GList        *item_uris);
 GtkClipboard* nautilus_clipboard_get               (GtkWidget          *widget);
-GList* nautilus_clipboard_get_uri_list_from_selection_data (const gchar *selection_data);
-gboolean nautilus_clipboard_is_cut_from_selection_data (const gchar *selection_data);
+GList* nautilus_clipboard_get_uri_list_from_selection_data (GtkSelectionData   *selection_data);
+gboolean nautilus_clipboard_is_cut_from_selection_data (GtkSelectionData *selection_data);
 void nautilus_clipboard_prepare_for_files (GtkClipboard *clipboard,
                                            GList        *files,
                                            gboolean      cut);
 GdkAtom nautilus_clipboard_get_atom (void);
-gboolean nautilus_clipboard_is_data_valid_from_selection_data (const gchar *selection_data);
