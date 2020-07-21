@@ -22,8 +22,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus 3.24\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-06-13 17:08+0000\n"
-"PO-Revision-Date: 2020-06-23 00:48-0400\n"
+"POT-Creation-Date: 2020-07-02 04:17+0000\n"
+"PO-Revision-Date: 2020-07-20 23:10-0400\n"
 "Last-Translator: Boyuan Yang <073plan@gmail.com>\n"
 "Language-Team: Chinese - China <i18n-zh@googlegroups.com>\n"
 "Language: zh_CN\n"
@@ -79,7 +79,7 @@ msgstr "GNOME 项目"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:38
 msgid "Tile View"
-msgstr "瓦片视图"
+msgstr "平铺视图"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2417
 #: src/resources/ui/nautilus-preferences-window.ui:161
@@ -590,35 +590,35 @@ msgstr "未知"
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:120
 msgctxt "Dimensions"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #. Video Codec
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:122
 msgctxt "Video codec"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:125
 msgctxt "Video bit rate"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:128
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:236
 msgctxt "Frame rate"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:132
 msgctxt "Audio bit rate"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #. Audio Codec
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:134
 msgctxt "Audio codec"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #. Sample rate
 #: extensions/audio-video-properties/bacon-video-widget-properties.c:136
@@ -680,12 +680,12 @@ msgstr "音视频"
 
 #: extensions/audio-video-properties/totem-properties-view.c:133
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/totem-properties-view.c:162
 msgctxt "Stream bit rate"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/totem-properties-view.c:165
 #, c-format
@@ -705,7 +705,7 @@ msgstr "%d Hz"
 #: extensions/audio-video-properties/totem-properties-view.c:222
 msgctxt "Sample rate"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/totem-properties-view.c:230
 msgid "Surround"
@@ -722,7 +722,7 @@ msgstr "立体声"
 #: extensions/audio-video-properties/totem-properties-view.c:245
 msgctxt "Number of audio channels"
 msgid "N/A"
-msgstr "未知"
+msgstr "不适用"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
@@ -1257,7 +1257,7 @@ msgstr "文件的位置。"
 
 #: src/nautilus-column-utilities.c:137
 msgid "Modified — Time"
-msgstr "修改时间—时间"
+msgstr "修改日期—时间"
 
 #: src/nautilus-column-utilities.c:146
 msgid "Recency"
@@ -1281,7 +1281,7 @@ msgstr "回收时间"
 
 #: src/nautilus-column-utilities.c:203
 msgid "Date when file was moved to the Trash"
-msgstr "文件回收时间"
+msgstr "文件移动到回收站的时间"
 
 #: src/nautilus-column-utilities.c:210
 msgid "Original Location"
@@ -1318,7 +1318,7 @@ msgstr "归档名过长。"
 #. We must warn about the side effect
 #: src/nautilus-compress-dialog-controller.c:83
 msgid "Archives with “.” at the beginning of their name are hidden."
-msgstr "归档名以“.”为首将被隐藏。"
+msgstr "名称以“.”起始的归档将被隐藏。"
 
 #. Translators: this is of the format "hostname (uri-scheme)"
 #: src/nautilus-directory.c:673
@@ -1328,15 +1328,15 @@ msgstr "%s (%s)"
 
 #: src/nautilus-dnd.c:794
 msgid "_Move Here"
-msgstr "移动到此(_M)"
+msgstr "移动到此处(_M)"
 
 #: src/nautilus-dnd.c:799
 msgid "_Copy Here"
-msgstr "复制到此(_C)"
+msgstr "复制到此处(_C)"
 
 #: src/nautilus-dnd.c:804
 msgid "_Link Here"
-msgstr "链接到此(_L)"
+msgstr "链接到此处(_L)"
 
 #: src/nautilus-dnd.c:811 src/resources/ui/nautilus-compress-dialog.ui:165
 #: src/resources/ui/nautilus-create-folder-dialog.ui:63
@@ -1686,16 +1686,16 @@ msgstr "文档"
 
 #: src/nautilus-file.c:7485 src/nautilus-mime-actions.c:179
 msgid "Presentation"
-msgstr "演示"
+msgstr "演示文稿"
 
 #: src/nautilus-file.c:7486 src/nautilus-mime-actions.c:187
 msgid "Spreadsheet"
-msgstr "表格"
+msgstr "电子表格"
 
 #. Refers to a file type which is known but not one of the basic types
 #: src/nautilus-file.c:7513
 msgid "Other"
-msgstr "其他"
+msgstr "其他类型"
 
 #: src/nautilus-file.c:7541
 msgid "Binary"
@@ -2434,7 +2434,7 @@ msgstr "无法移除源文件夹。"
 
 #: src/nautilus-file-operations.c:5195
 msgid "There was an error getting information about the source."
-msgstr "获得目标的信息时出错。"
+msgstr "获得关于源的信息时出错。"
 
 #. the run_warning() frees all strings passed in automatically
 #: src/nautilus-file-operations.c:5296 src/nautilus-file-operations.c:6109
@@ -2691,11 +2691,11 @@ msgstr "示例: "
 
 #: src/nautilus-files-view.c:2757
 msgid "Could not paste files"
-msgstr "无法粘贴"
+msgstr "无法粘贴文件"
 
 #: src/nautilus-files-view.c:2758
 msgid "Permissions do not allow pasting files in this directory"
-msgstr "无权在文件夹中粘贴文件"
+msgstr "没有在该文件夹中粘贴文件的权限"
 
 #: src/nautilus-files-view.c:2921
 msgid ""
@@ -3514,7 +3514,7 @@ msgstr[0] "这将打开 %d 个独立的标签页。"
 #: src/nautilus-mime-actions.c:1014
 #, c-format
 msgid "Could Not Display “%s”"
-msgstr "无法显示“%s”。"
+msgstr "无法显示“%s”"
 
 #: src/nautilus-mime-actions.c:1117
 msgid "The file is of an unknown type"
@@ -4516,7 +4516,7 @@ msgstr "无法找到请求的位置。请检查拼写或网络设置。"
 msgid ""
 "The server has refused the connection. Typically this means that the "
 "firewall is blocking access or that the remote service is not running."
-msgstr "服务器拒绝连接。防火墙可能阻止连接，或远程服务未运行。"
+msgstr "服务器拒绝连接。防火墙可能阻止了连接，或远程服务未运行。"
 
 #: src/nautilus-window-slot.c:1778
 #, c-format
