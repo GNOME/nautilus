@@ -184,17 +184,11 @@ struct _NautilusPropertiesWindow
     GtkWidget *others_file_access_label;
     GtkWidget *others_file_access_combo;
 
-    GtkWidget *spacer_6;
-
     GtkWidget *execute_label;
     GtkWidget *execute_checkbox;
 
-    GtkWidget *spacer_7;
-
     GtkWidget *security_context_title_label;
     GtkWidget *security_context_value_label;
-
-    GtkWidget *spacer_8;
 
     GtkWidget *change_permissions_button_box;
     GtkWidget *change_permissions_button;
@@ -3269,7 +3263,6 @@ setup_execute_checkbox_with_label (NautilusPropertiesWindow *window,
     GtkLabel *label_for;
 
     label_for = GTK_LABEL (window->execute_label);
-    gtk_widget_show (window->spacer_6);
     gtk_widget_show (window->execute_label);
     gtk_widget_show (window->execute_checkbox);
 
@@ -4267,7 +4260,6 @@ setup_permissions_page (NautilusPropertiesWindow *window)
         create_simple_permissions (window, GTK_GRID (window->permissions_grid));
 
 #ifdef HAVE_SELINUX
-        gtk_widget_show (window->spacer_7);
         gtk_widget_show (window->security_context_title_label);
         gtk_widget_show (window->security_context_value_label);
 
@@ -4278,8 +4270,6 @@ setup_permissions_page (NautilusPropertiesWindow *window)
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->security_context_value_label);
 #endif
-
-        gtk_widget_show (window->spacer_8);
 
         if (window->has_recursive_apply)
         {
@@ -4776,7 +4766,7 @@ setup_app_chooser_area (NautilusPropertiesWindow *window)
     GAppInfo *info;
 
     window->app_chooser_widget = gtk_app_chooser_widget_new (window->content_type);
-    gtk_box_pack_start (GTK_BOX (window->app_chooser_widget_box), window->app_chooser_widget, TRUE, TRUE, 6);
+    gtk_box_pack_start (GTK_BOX (window->app_chooser_widget_box), window->app_chooser_widget, TRUE, TRUE, 0);
 
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget), TRUE);
@@ -5655,13 +5645,10 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_folder_access_combo);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, others_file_access_combo);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_6);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, execute_checkbox);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_7);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, security_context_value_label);
-    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_8);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_box);
