@@ -44,9 +44,10 @@
 #include "nautilus-icon-info.h"
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
-#include "nautilus-mime-application-chooser.h"
 #include "nautilus-module.h"
+#include "nautilus-signaller.h"
 #include "nautilus-ui-utilities.h"
+#include "nautilus-signaller.h"
 
 #define PREVIEW_IMAGE_WIDTH 96
 
@@ -203,6 +204,14 @@ struct _NautilusPropertiesWindow
     /* Open With tab Widgets */
 
     GtkWidget *open_with_box;
+    GtkWidget *open_with_label;
+    GtkWidget *app_chooser_widget_box;
+    GtkWidget *app_chooser_widget;
+    GtkWidget *reset_button;
+    GtkWidget *add_button;
+    GtkWidget *set_as_default_button;
+    char *content_type;
+    GList *open_with_files;
 
     GroupChange *group_change;
     OwnerChange *owner_change;
@@ -4975,15 +4984,292 @@ should_show_open_with (NautilusPropertiesWindow *window)
 }
 
 static void
+add_clicked_cb (GtkButton *button,
+                gpointer   user_data)
+{
+    NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+    GAppInfo *info;
+    gchar *message;
+    GError *error = NULL;
+
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (window->app_chooser_widget));
+
+    if (info == NULL)
+    {
+        return;
+    }
+
+    g_app_info_set_as_last_used_for_type (info, window->content_type, &error);
+
+    if (error != NULL)
+    {
+        message = g_strdup_printf (_("Error while adding “%s”: %s"),
+                                   g_app_info_get_display_name (info), error->message);
+        show_dialog (_("Could not add application"),
+                     message,
+                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (window))),
+                     GTK_MESSAGE_ERROR);
+        g_error_free (error);
+        g_free (message);
+    }
+    else
+    {
+        gtk_app_chooser_refresh (GTK_APP_CHOOSER (window->app_chooser_widget));
+        g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
+    }
+
+    g_object_unref (info);
+}
+
+static void
+remove_clicked_cb (GtkMenuItem *item,
+                   gpointer     user_data)
+{
+    NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+    GError *error;
+    GAppInfo *info;
+
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (window->app_chooser_widget));
+
+    if (info)
+    {
+        error = NULL;
+        if (!g_app_info_remove_supports_type (info,
+                                              window->content_type,
+                                              &error))
+        {
+            show_dialog (_("Could not forget association"),
+                         error->message,
+                         GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (window))),
+                         GTK_MESSAGE_ERROR);
+            g_error_free (error);
+        }
+
+        gtk_app_chooser_refresh (GTK_APP_CHOOSER (window->app_chooser_widget));
+        g_object_unref (info);
+    }
+
+    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
+}
+
+static void
+populate_popup_cb (GtkAppChooserWidget *widget,
+                   GtkMenu             *menu,
+                   GAppInfo            *app,
+                   gpointer             user_data)
+{
+    GtkWidget *item;
+    NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+
+    if (g_app_info_can_remove_supports_type (app))
+    {
+        item = gtk_menu_item_new_with_label (_("Forget association"));
+        gtk_menu_shell_append (GTK_MENU_SHELL (menu), item);
+        gtk_widget_show (item);
+
+        g_signal_connect (item, "activate",
+                          G_CALLBACK (remove_clicked_cb), window);
+    }
+}
+
+static void
+reset_clicked_cb (GtkButton *button,
+                  gpointer   user_data)
+{
+    NautilusPropertiesWindow *window;
+
+    window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+
+    g_app_info_reset_type_associations (window->content_type);
+    gtk_app_chooser_refresh (GTK_APP_CHOOSER (window->app_chooser_widget));
+
+    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
+}
+
+static void
+set_as_default_clicked_cb (GtkButton *button,
+                           gpointer   user_data)
+{
+    NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+    GAppInfo *info;
+    GError *error = NULL;
+    gchar *message = NULL;
+
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (window->app_chooser_widget));
+
+    g_app_info_set_as_default_for_type (info, window->content_type,
+                                        &error);
+
+    if (error != NULL)
+    {
+        message = g_strdup_printf (_("Error while setting “%s” as default application: %s"),
+                                   g_app_info_get_display_name (info), error->message);
+        show_dialog (_("Could not set as default"),
+                     message,
+                     GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (window))),
+                     GTK_MESSAGE_ERROR);
+    }
+
+    g_object_unref (info);
+
+    gtk_app_chooser_refresh (GTK_APP_CHOOSER (window->app_chooser_widget));
+    g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
+}
+
+static gint
+app_compare (gconstpointer a,
+             gconstpointer b)
+{
+    return !g_app_info_equal (G_APP_INFO (a), G_APP_INFO (b));
+}
+
+static gboolean
+app_info_can_add (GAppInfo    *info,
+                  const gchar *content_type)
+{
+    GList *recommended, *fallback;
+    gboolean retval = FALSE;
+
+    recommended = g_app_info_get_recommended_for_type (content_type);
+    fallback = g_app_info_get_fallback_for_type (content_type);
+
+    if (g_list_find_custom (recommended, info, app_compare))
+    {
+        goto out;
+    }
+
+    if (g_list_find_custom (fallback, info, app_compare))
+    {
+        goto out;
+    }
+
+    retval = TRUE;
+
+out:
+    g_list_free_full (recommended, g_object_unref);
+    g_list_free_full (fallback, g_object_unref);
+
+    return retval;
+}
+
+static void
+application_selected_cb (GtkAppChooserWidget *widget,
+                         GAppInfo            *info,
+                         gpointer             user_data)
+{
+    NautilusPropertiesWindow *window = NAUTILUS_PROPERTIES_WINDOW (user_data);
+    GAppInfo *default_app;
+
+    default_app = g_app_info_get_default_for_type (window->content_type, FALSE);
+    if (default_app != NULL)
+    {
+        gtk_widget_set_sensitive (window->set_as_default_button,
+                                  !g_app_info_equal (info, default_app));
+        g_object_unref (default_app);
+    }
+    gtk_widget_set_sensitive (window->add_button,
+                              app_info_can_add (info, window->content_type));
+}
+
+static void
+application_chooser_apply_labels (NautilusPropertiesWindow *window)
+{
+    gchar *label, *extension = NULL, *description = NULL;
+    gint num_files;
+    NautilusFile *file;
+
+    num_files = g_list_length (window->open_with_files);
+    file = window->open_with_files->data;
+
+    /* here we assume all files are of the same content type */
+    if (g_content_type_is_unknown (window->content_type))
+    {
+        extension = nautilus_file_get_extension (file);
+
+        /* Translators: the %s here is a file extension */
+        description = g_strdup_printf (_("%s document"), extension);
+    }
+    else
+    {
+        description = g_content_type_get_description (window->content_type);
+    }
+
+    if (num_files > 1)
+    {
+        /* Translators; %s here is a mime-type description */
+        label = g_strdup_printf (_("Open all files of type “%s” with"),
+                                 description);
+    }
+    else
+    {
+        gchar *display_name;
+        display_name = nautilus_file_get_display_name (file);
+
+        /* Translators: first %s is filename, second %s is mime-type description */
+        label = g_strdup_printf (_("Select an application to open “%s” and other files of type “%s”"),
+                                 display_name, description);
+
+        g_free (display_name);
+    }
+
+    gtk_label_set_markup (GTK_LABEL (window->open_with_label), label);
+
+    g_free (label);
+    g_free (extension);
+    g_free (description);
+}
+
+static void
+setup_app_chooser_area (NautilusPropertiesWindow *window)
+{
+    GAppInfo *info;
+
+    window->app_chooser_widget = gtk_app_chooser_widget_new (window->content_type);
+    gtk_box_pack_start (GTK_BOX (window->app_chooser_widget_box), window->app_chooser_widget, TRUE, TRUE, 6);
+
+    gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget), TRUE);
+    gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget), TRUE);
+    gtk_app_chooser_widget_set_show_other (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget), TRUE);
+    gtk_widget_show (window->app_chooser_widget);
+    g_signal_connect (window->reset_button, "clicked",
+                      G_CALLBACK (reset_clicked_cb),
+                      window);
+    g_signal_connect (window->add_button, "clicked",
+                      G_CALLBACK (add_clicked_cb),
+                      window);
+    g_signal_connect (window->set_as_default_button, "clicked",
+                      G_CALLBACK (set_as_default_clicked_cb),
+                      window);
+
+    /* initialize sensitivity */
+    info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (window->app_chooser_widget));
+    if (info != NULL)
+    {
+        application_selected_cb (GTK_APP_CHOOSER_WIDGET (window->app_chooser_widget),
+                                 info, window);
+        g_object_unref (info);
+    }
+
+    g_signal_connect (window->app_chooser_widget,
+                      "application-selected",
+                      G_CALLBACK (application_selected_cb),
+                      window);
+    g_signal_connect (window->app_chooser_widget,
+                      "populate-popup",
+                      G_CALLBACK (populate_popup_cb),
+                      window);
+
+    application_chooser_apply_labels (window);
+}
+
+static void
 setup_open_with_page (NautilusPropertiesWindow *window)
 {
-    GtkWidget *vbox;
-    char *mime_type;
     GList *files = NULL;
     NautilusFile *target_file;
 
     target_file = get_target_file (window);
-    mime_type = nautilus_file_get_mime_type (target_file);
+    window->content_type = nautilus_file_get_mime_type (target_file);
 
     if (!is_multi_file_window (window))
     {
@@ -4998,12 +5284,8 @@ setup_open_with_page (NautilusPropertiesWindow *window)
         }
     }
 
-    vbox = nautilus_mime_application_chooser_new (files, mime_type);
-    gtk_box_pack_start (GTK_BOX (window->open_with_box), vbox, TRUE, TRUE, 0);
-
-    g_free (mime_type);
-    g_list_free (files);
-    g_object_set_data_full (G_OBJECT (vbox), "help-uri", g_strdup ("help:gnome-help/files-open"), g_free);
+    window->open_with_files = files;
+    setup_app_chooser_area (window);
 }
 
 
@@ -5494,6 +5776,8 @@ real_finalize (GObject *object)
     g_list_free_full (window->mime_list, g_free);
 
     g_free (window->pending_name);
+    g_free (window->content_type);
+    g_list_free (window->open_with_files);
 
     if (window->select_idle_id != 0)
     {
@@ -5831,6 +6115,11 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, change_permissions_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, open_with_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, app_chooser_widget_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, reset_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, add_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, set_as_default_button);
 }
 
 static void
