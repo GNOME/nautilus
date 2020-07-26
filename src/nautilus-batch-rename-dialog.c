@@ -422,8 +422,6 @@ static void
 begin_batch_rename (NautilusBatchRenameDialog *dialog,
                     GList                     *new_names)
 {
-    batch_rename_sort_lists_for_rename (&dialog->selection, &new_names, NULL, NULL, NULL, FALSE);
-
     /* do the actual rename here */
     nautilus_file_batch_rename (dialog->selection, new_names, NULL, NULL);
 

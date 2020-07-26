@@ -133,3 +133,9 @@ NautilusQueryRecursive location_settings_search_get_recursive (void);
 NautilusQueryRecursive location_settings_search_get_recursive_for_location (GFile *location);
 
 gboolean check_schema_available (const gchar *schema_id);
+
+GFile* rename_file_to_tmp (GFile        *file,
+                           gchar        *tmpl,
+                           GCancellable *cancellable,
+                           GError       **error);
+

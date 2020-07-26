@@ -173,6 +173,9 @@ static const char *nautilus_file_peek_display_name_collation_key (NautilusFile *
 static void file_mount_unmounted (GMount  *mount,
                                   gpointer data);
 static void metadata_hash_free (GHashTable *hash);
+static gboolean update_name_internal (NautilusFile *file,
+                                      const char   *name,
+                                      gboolean      in_directory);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFile, nautilus_file, G_TYPE_OBJECT,
                          G_IMPLEMENT_INTERFACE (NAUTILUS_TYPE_FILE_INFO,
@@ -2074,17 +2077,21 @@ batch_rename_get_info_callback (GObject      *source_object,
     }
 }
 
+
 static void
 real_batch_rename (GList                         *files,
                    GList                         *new_names,
                    NautilusFileOperationCallback  callback,
                    gpointer                       callback_data)
 {
-    GList *l1, *l2, *old_files, *new_files;
+    GList *l1, *l2, *l3, *old_files, *new_files;
+    GList *tmp_locations, *tmp_new_names, *tmp_files;
     NautilusFileOperation *op;
     GFile *location;
     GString *new_name;
     NautilusFile *file;
+    NautilusFile *file2;
+    NautilusFile *existing;
     GError *error;
     GFile *new_file;
     BatchRenameData *data;
@@ -2092,6 +2099,9 @@ real_batch_rename (GList                         *files,
     error = NULL;
     old_files = NULL;
     new_files = NULL;
+    tmp_locations = NULL;
+    tmp_new_names = NULL;
+    tmp_files = NULL;
 
     /* Set up a batch renaming operation. */
     op = nautilus_file_operation_new (files->data, callback, callback_data);
@@ -2129,23 +2139,67 @@ real_batch_rename (GList                         *files,
 
         g_assert (G_IS_FILE (location));
 
-        /* Do the renaming. */
-        new_file = g_file_set_display_name (location,
-                                            new_file_name,
-                                            op->cancellable,
-                                            &error);
+        /* Try to find an existing file with the same name. */
+        existing = NULL;
+        for (l3 = l1->next; l3 != NULL; l3 = l3->next)
+        {
+            g_autofree gchar *name2;
+            file2 = NAUTILUS_FILE (l3->data);
+            name2 = nautilus_file_get_name (file2);
+            if (g_strcmp0 (new_file_name, name2) == 0)
+            {
+                existing = file2;
+                break;
+            }
+        }
 
-        data = g_new0 (BatchRenameData, 1);
-        data->op = op;
-        data->file = file;
+        /* If the file would cause a conflict, rename it to a temp filename. */
+        if (existing)
+        {
+            GFile *tmp_file;
+            g_autofree gchar *template;
 
-        g_file_query_info_async (new_file,
-                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
-                                 0,
-                                 G_PRIORITY_DEFAULT,
-                                 op->cancellable,
-                                 batch_rename_get_info_callback,
-                                 data);
+            template = g_strdup ("nautilusXXXXXX");
+            tmp_file = rename_file_to_tmp (location,
+                                           template,
+                                           op->cancellable,
+                                           &error);
+            if (error == NULL)
+            {
+                nautilus_file_mark_gone (file);
+                nautilus_file_changed (file);
+                tmp_locations = g_list_append (tmp_locations, tmp_file);
+                tmp_new_names = g_list_append (tmp_new_names, new_file_name);
+                tmp_files = g_list_append (tmp_files, file);
+
+                new_file = nautilus_file_get_location (existing);
+            }
+        }
+        else
+        {
+            /* Do the renaming. */
+            new_file = g_file_set_display_name (location,
+                                                new_file_name,
+                                                op->cancellable,
+                                                &error);
+
+            if (error == NULL)
+            {
+                update_name_internal (file, new_file_name, TRUE);
+            }
+
+            data = g_new0 (BatchRenameData, 1);
+            data->op = op;
+            data->file = file;
+
+            g_file_query_info_async (new_file,
+                                     NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                     0,
+                                     G_PRIORITY_DEFAULT,
+                                     op->cancellable,
+                                     batch_rename_get_info_callback,
+                                     data);
+        }
 
         if (error != NULL)
         {
@@ -2160,6 +2214,46 @@ real_batch_rename (GList                         *files,
             old_files = g_list_append (old_files, location);
             new_files = g_list_append (new_files, new_file);
         }
+    }
+
+    /* Rename all the temp files to their intended names. */
+    for (l1 = tmp_locations, l2 = tmp_new_names, l3 = tmp_files;
+         l1 != NULL;
+         l1 = l1->next, l2 = l2->next, l3 = l3->next)
+    {
+        GFile *tmp_location;
+        gchar *new_file_name;
+        NautilusFile *tmp_file;
+
+        tmp_location = l1->data;
+        new_file_name = l2->data;
+        tmp_file = l3->data;
+
+        new_file = g_file_set_display_name (tmp_location,
+                                            new_file_name,
+                                            op->cancellable,
+                                            &error);
+        if (error != NULL)
+        {
+            g_warning ("Batch rename for file \"%s\" failed", nautilus_file_get_name (tmp_file));
+            g_error_free (error);
+            error = NULL;
+        }
+
+        data = g_new0 (BatchRenameData, 1);
+        data->op = op;
+        data->file = tmp_file;
+
+        g_file_query_info_async (new_file,
+                                 NAUTILUS_FILE_DEFAULT_ATTRIBUTES,
+                                 0,
+                                 G_PRIORITY_DEFAULT,
+                                 op->cancellable,
+                                 batch_rename_get_info_callback,
+                                 data);
+
+        g_object_unref (tmp_location);
+        g_free (new_file_name);
     }
 
     /* Tell the undo manager a batch rename is taking place if at least
@@ -2181,6 +2275,10 @@ real_batch_rename (GList                         *files,
     {
         nautilus_file_operation_complete (op, NULL, error);
     }
+
+    g_list_free (tmp_locations);
+    g_list_free (tmp_new_names);
+    g_list_free (tmp_files);
 }
 
 void

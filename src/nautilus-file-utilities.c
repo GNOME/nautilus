@@ -1161,3 +1161,70 @@ check_schema_available (const gchar *schema_id)
 
     return TRUE;
 }
+
+/*
+ * Based on gfileutils.c:get_tmp_file from GLib.
+ */
+GFile *
+rename_file_to_tmp (GFile         *file,
+                    gchar         *tmpl,
+                    GCancellable  *cancellable,
+                    GError       **error)
+{
+    char *XXXXXX;
+    GFile *new_file;
+    int count;
+    static const char letters[] =
+        "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+    static const int NLETTERS = sizeof (letters) - 1;
+    glong value;
+    gint64 now_us;
+    static int counter = 0;
+
+    g_return_val_if_fail (tmpl != NULL, NULL);
+
+    /* find the last occurrence of "XXXXXX" */
+    XXXXXX = g_strrstr (tmpl, "XXXXXX");
+
+    if (!XXXXXX || strncmp (XXXXXX, "XXXXXX", 6))
+    {
+        g_set_error_literal (error, G_IO_ERROR, G_IO_ERROR_NOT_SUPPORTED, _("Invalid template"));
+        return NULL;
+    }
+
+    /* Get some more or less random data.  */
+    now_us = g_get_real_time ();
+    value = ((now_us % G_USEC_PER_SEC) ^ (now_us / G_USEC_PER_SEC)) + counter++;
+
+    for (count = 0; count < 100; value += 7777, ++count)
+    {
+        glong v = value;
+
+        /* Fill in the random bits.  */
+        XXXXXX[0] = letters[v % NLETTERS];
+        v /= NLETTERS;
+        XXXXXX[1] = letters[v % NLETTERS];
+        v /= NLETTERS;
+        XXXXXX[2] = letters[v % NLETTERS];
+        v /= NLETTERS;
+        XXXXXX[3] = letters[v % NLETTERS];
+        v /= NLETTERS;
+        XXXXXX[4] = letters[v % NLETTERS];
+        v /= NLETTERS;
+        XXXXXX[5] = letters[v % NLETTERS];
+
+        new_file = g_file_set_display_name (file, tmpl, cancellable, error);
+
+        if (new_file != NULL)
+        {
+            return new_file;
+        }
+        if (!g_error_matches (*error, G_IO_ERROR, G_IO_ERROR_EXISTS))
+        {
+            break;
+        }
+        g_clear_error (error);
+    }
+
+    return NULL;
+}
