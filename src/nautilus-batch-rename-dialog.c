@@ -89,6 +89,7 @@ struct _NautilusBatchRenameDialog
     gint conflicts_number;
 
     GList *duplicates;
+    GList *distinct_parent_directories;
     GCancellable *conflict_cancellable;
     gboolean checking_conflicts;
 
@@ -1265,7 +1266,6 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
 {
     NautilusBatchRenameDialog *self;
     CheckConflictsData *task_data;
-    GList *directories;
     GList *l;
 
     self = g_task_get_source_object (task);
@@ -1275,13 +1275,11 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
     g_mutex_init (&task_data->wait_ready_mutex);
     g_cond_init (&task_data->wait_ready_condition);
 
-    directories = batch_rename_files_get_distinct_parents (self->selection);
     /* check if this is the last call of the callback */
-    for (l = directories; l != NULL; l = l->next)
+    for (l = self->distinct_parent_directories; l != NULL; l = l->next)
     {
         if (g_task_return_error_if_cancelled (task))
         {
-            nautilus_directory_list_free (directories);
             return;
         }
 
@@ -1307,7 +1305,6 @@ file_names_list_has_duplicates_async_thread (GTask        *task,
     }
 
     g_task_return_boolean (task, TRUE);
-    nautilus_directory_list_free (directories);
 }
 
 static void
@@ -2079,6 +2076,7 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
 
     nautilus_file_list_free (dialog->selection);
     nautilus_directory_unref (dialog->directory);
+    nautilus_directory_list_free (dialog->distinct_parent_directories);
 
     g_object_unref (dialog->size_group);
 
@@ -2212,6 +2210,8 @@ nautilus_batch_rename_dialog_new (GList             *selection,
 
     gtk_window_set_title (GTK_WINDOW (dialog), dialog_title->str);
 
+    dialog->distinct_parent_directories = batch_rename_files_get_distinct_parents (selection);
+
     add_tag (dialog, metadata_tags_constants[ORIGINAL_FILE_NAME]);
 
     nautilus_batch_rename_dialog_initialize_actions (dialog);
@@ -2267,6 +2267,7 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
     gtk_label_set_max_width_chars (GTK_LABEL (self->conflict_label), 1);
 
     self->duplicates = NULL;
+    self->distinct_parent_directories = NULL;
     self->new_names = NULL;
 
     self->checking_conflicts = FALSE;
