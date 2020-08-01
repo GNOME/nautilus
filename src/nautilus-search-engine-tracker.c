@@ -25,6 +25,7 @@
 #include "nautilus-search-engine-private.h"
 #include "nautilus-search-hit.h"
 #include "nautilus-search-provider.h"
+#include "nautilus-tracker-utilities.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH
 #include "nautilus-debug.h"
 
@@ -55,8 +56,6 @@ enum
     LAST_PROP
 };
 
-#define TRACKER_MINER_FS_BUSNAME "org.freedesktop.Tracker3.Miner.Files"
-
 static void nautilus_search_provider_init (NautilusSearchProviderInterface *iface);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusSearchEngineTracker,
@@ -79,8 +78,9 @@ finalize (GObject *object)
     }
 
     g_clear_object (&tracker->query);
-    g_clear_object (&tracker->connection);
     g_queue_free_full (tracker->hits_pending, g_object_unref);
+    /* This is a singleton, no need to unref. */
+    tracker->connection = NULL;
 
     G_OBJECT_CLASS (nautilus_search_engine_tracker_parent_class)->finalize (object);
 }
@@ -601,8 +601,7 @@ nautilus_search_engine_tracker_init (NautilusSearchEngineTracker *engine)
 
     engine->hits_pending = g_queue_new ();
 
-    engine->connection = tracker_sparql_connection_bus_new (TRACKER_MINER_FS_BUSNAME, NULL, NULL, &error);
-
+    engine->connection = nautilus_tracker_get_miner_fs_connection (&error);
     if (error)
     {
         g_warning ("Could not establish a connection to Tracker: %s", error->message);

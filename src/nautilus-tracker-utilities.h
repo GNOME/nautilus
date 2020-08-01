@@ -22,5 +22,9 @@
 #pragma once
 
 #include <gio/gio.h>
+#include <libtracker-sparql/tracker-sparql.h>
 
-gboolean nautilus_tracker_directory_is_tracked (GFile *directory);
+TrackerSparqlConnection * nautilus_tracker_get_miner_fs_connection (GError **error);
+const gchar *             nautilus_tracker_get_miner_fs_busname    (GError **error);
+
+gboolean  nautilus_tracker_directory_is_tracked (GFile *directory);
