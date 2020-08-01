@@ -5786,6 +5786,12 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
     GTK_WIDGET_CLASS (class)->destroy = real_destroy;
 
     binding_set = gtk_binding_set_by_class (class);
+    g_signal_new ("close",
+                  G_OBJECT_CLASS_TYPE (class),
+                  G_SIGNAL_RUN_LAST | G_SIGNAL_ACTION,
+                  0, NULL, NULL,
+                  g_cclosure_marshal_VOID__VOID,
+                  G_TYPE_NONE, 0);
     gtk_binding_entry_add_signal (binding_set, GDK_KEY_Escape, 0,
                                   "close", 0);
 }
@@ -5793,4 +5799,5 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *class)
 static void
 nautilus_properties_window_init (NautilusPropertiesWindow *window)
 {
+    g_signal_connect (window, "close", G_CALLBACK (gtk_window_close), NULL);
 }
