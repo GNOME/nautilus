@@ -21,6 +21,7 @@
 #include "nautilus-file.h"
 #include "nautilus-file-undo-operations.h"
 #include "nautilus-file-undo-manager.h"
+#include "nautilus-tracker-utilities.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_TAG_MANAGER
 #include "nautilus-debug.h"
 
@@ -35,6 +36,7 @@ struct _NautilusTagManager
     gboolean tracker_ok;
     TrackerSparqlConnection *local;
     TrackerSparqlConnection *miner_fs;
+    const gchar *miner_fs_busname;
     TrackerNotifier *notifier;
 
     TrackerSparqlStatement *query_starred_files;
@@ -81,14 +83,12 @@ enum
     LAST_SIGNAL
 };
 
-#define TRACKER_MINER_FS_BUSNAME "org.freedesktop.Tracker3.Miner.Files"
-
 #define QUERY_STARRED_FILES \
     "SELECT ?file_url ?content_id " \
     "{ " \
     "    ?content_urn a nautilus:FileReference ; " \
     "        nautilus:starred true . " \
-    "    SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { " \
+    "    SERVICE <dbus:%s> { " \
     "        ?content_urn nie:isStoredAs ?file_url . " \
     "        BIND (tracker:id (?content_urn) AS ?content_id) " \
     "    } " \
@@ -97,7 +97,7 @@ enum
 #define QUERY_UPDATED_FILE_URL \
     "SELECT ?file_url EXISTS { ?content_urn nautilus:starred true } AS ?starred" \
     "{ " \
-    "    SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { " \
+    "    SERVICE <dbus:%s> { " \
     "        ?content_urn nie:isStoredAs ?file_url . " \
     "        FILTER (tracker:id(?content_urn) = ~id) " \
     "    }" \
@@ -432,14 +432,15 @@ nautilus_tag_manager_delete_tag (NautilusTagManager *self,
                                  GList              *selection,
                                  GString            *query)
 {
-    g_string_append (query,
-                     "DELETE { "
-                     "    ?content_urn a nautilus:FileReference ; "
-                     "        nautilus:starred true . "
-                     "} "
-                     "WHERE { "
-                     "  SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { "
-                     "    ?content_urn nie:isStoredAs ?file_url . ");
+    g_string_append_printf (query,
+                            "DELETE { "
+                            "    ?content_urn a nautilus:FileReference ; "
+                            "        nautilus:starred true . "
+                            "} "
+                            "WHERE { "
+                            "  SERVICE <dbus:%s> { "
+                            "    ?content_urn nie:isStoredAs ?file_url . ",
+                            self->miner_fs_busname);
 
     query = add_selection_filter (selection, query);
 
@@ -453,13 +454,14 @@ nautilus_tag_manager_insert_tag (NautilusTagManager *self,
                                  GList              *selection,
                                  GString            *query)
 {
-    g_string_append (query,
-                     "INSERT { "
-                     "    ?content_urn a nautilus:FileReference . "
-                     "        ?content_urn nautilus:starred true . "
-                     "} WHERE { "
-                     "  SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { "
-                     "    ?content_urn nie:isStoredAs ?file_url . ");
+    g_string_append_printf (query,
+                            "INSERT { "
+                            "    ?content_urn a nautilus:FileReference . "
+                            "        ?content_urn nautilus:starred true . "
+                            "} WHERE { "
+                            "  SERVICE <dbus:%s> { "
+                            "    ?content_urn nie:isStoredAs ?file_url . ",
+                            self->miner_fs_busname);
 
     query = add_selection_filter (selection, query);
 
@@ -570,11 +572,13 @@ nautilus_tag_manager_get_file_ids_for_urls (NautilusTagManager *self,
 {
     GString *query;
 
-    query = g_string_new ("SELECT ?file_url ?content_id "
-                          "WHERE { "
-                          "  SERVICE <dbus:" TRACKER_MINER_FS_BUSNAME "> { "
-                          "    ?content_urn nie:isStoredAs ?file_url . "
-                          "    BIND (tracker:id (?content_urn) AS ?content_id) ");
+    query = g_string_new ("");
+    g_string_append_printf (query, "SELECT ?file_url ?content_id "
+                            "WHERE { "
+                            "  SERVICE <dbus:%s> { "
+                            "    ?content_urn nie:isStoredAs ?file_url . "
+                            "    BIND (tracker:id (?content_urn) AS ?content_id) ",
+                            self->miner_fs_busname);
 
     query = add_selection_filter (selection, query);
 
@@ -890,6 +894,7 @@ setup_tracker_connections (NautilusTagManager  *self,
                            GError             **error)
 {
     const gchar *datadir;
+    gchar *query_with_busname;
     g_autofree gchar *store_path = NULL;
     g_autofree gchar *ontology_path = NULL;
     g_autoptr (GFile) store = NULL;
@@ -917,31 +922,32 @@ setup_tracker_connections (NautilusTagManager  *self,
     }
 
     /* Connect to Tracker filesystem index to follow file renames. */
-    self->miner_fs = tracker_sparql_connection_bus_new (TRACKER_MINER_FS_BUSNAME,
-                                                        NULL,
-                                                        NULL,
-                                                        error);
-
+    self->miner_fs = nautilus_tracker_get_miner_fs_connection (error);
     if (*error)
     {
         return FALSE;
     }
+    self->miner_fs_busname = nautilus_tracker_get_miner_fs_busname (NULL);
 
     /* Prepare reusable queries. */
+    query_with_busname = g_strdup_printf (QUERY_UPDATED_FILE_URL, self->miner_fs_busname);
     self->query_updated_file_url = tracker_sparql_connection_query_statement (self->local,
-                                                                              QUERY_UPDATED_FILE_URL,
+                                                                              query_with_busname,
                                                                               cancellable,
                                                                               error);
+    g_free (query_with_busname);
 
     if (*error)
     {
         return FALSE;
     }
 
+    query_with_busname = g_strdup_printf (QUERY_STARRED_FILES, self->miner_fs_busname);
     self->query_starred_files = tracker_sparql_connection_query_statement (self->local,
-                                                                           QUERY_STARRED_FILES,
+                                                                           query_with_busname,
                                                                            cancellable,
                                                                            error);
+    g_free (query_with_busname);
 
     if (*error)
     {
