@@ -741,6 +741,7 @@
                   <object class="GtkLabel" id="not_the_owner_label">
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">You are not the owner, so you cannot change these permissions.</property>
+                    <property name="justify">center</property>
                     <property name="wrap">True</property>
                     <property name="max_width_chars">40</property>
                   </object>
@@ -767,6 +768,7 @@
                   <object class="GtkLabel" id="permission_indeterminable_label">
                     <property name="can_focus">False</property>
                     <property name="label" translatable="yes">The permissions of the selected file could not be determined.</property>
+                    <property name="justify">center</property>
                     <property name="wrap">True</property>
                     <property name="max_width_chars">40</property>
                   </object>
@@ -779,6 +781,7 @@
                 <child>
                   <object class="GtkGrid" id="permissions_grid">
                     <property name="can_focus">False</property>
+                    <property name="halign">center</property>
                     <property name="orientation">vertical</property>
                     <property name="row_spacing">6</property>
                     <property name="column_spacing">12</property>
