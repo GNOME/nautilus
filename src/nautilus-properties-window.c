@@ -51,8 +51,6 @@
 
 #define PREVIEW_IMAGE_WIDTH 96
 
-#define ROW_PAD 6
-
 static GHashTable *windows;
 static GHashTable *pending_lists;
 
