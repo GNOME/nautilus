@@ -4,7 +4,7 @@ project('nautilus', 'c',
   # Do not forget when releasing:
   #  * Update version in data/org.gnome.Nautilus.appdata.xml.in.in
   #  * Update GTK-based codes over src/gtk/gtk-code-generator.sh
-  version: '3.37.3',
+  version: '3.37.90',
 
   meson_version: '>= 0.47.0',
   license: 'GPL3+'
