@@ -68,8 +68,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-08-05 14:00+0000\n"
-"PO-Revision-Date: 2020-08-07 23:13+0300\n"
+"POT-Creation-Date: 2020-08-08 11:12+0000\n"
+"PO-Revision-Date: 2020-08-08 17:00+0300\n"
 "Last-Translator: Efstathios Iosifidis <eiosifidis@gnome.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -77,7 +77,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 1.8.7.1\n"
+"X-Generator: Poedit 2.3\n"
 "X-Project-Style: gnome\n"
 
 #
@@ -93,6 +93,7 @@ msgstr "Εκτέλεση λογισμικού"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
 #: src/nautilus-window.c:2997
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:42
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -1342,6 +1343,7 @@ msgstr "Το όνομα και το εικονίδιο του αρχείου."
 
 #
 #: src/nautilus-column-utilities.c:65
+#: src/resources/ui/nautilus-properties-window.ui:225
 msgid "Size"
 msgstr "Μέγεθος"
 
@@ -1351,6 +1353,7 @@ msgstr "Το μέγεθος του αρχείου."
 
 #
 #: src/nautilus-column-utilities.c:72
+#: src/resources/ui/nautilus-properties-window.ui:132
 msgid "Type"
 msgstr "Τύπος"
 
@@ -1359,6 +1362,7 @@ msgid "The type of the file."
 msgstr "Ο τύπος του αρχείου."
 
 #: src/nautilus-column-utilities.c:79
+#: src/resources/ui/nautilus-properties-window.ui:389
 msgid "Modified"
 msgstr "Τροποποιήθηκε"
 
@@ -1375,6 +1379,7 @@ msgid "The detailed type of the file."
 msgstr "Ο λεπτομερής τύπος του αρχείου."
 
 #: src/nautilus-column-utilities.c:95
+#: src/resources/ui/nautilus-properties-window.ui:363
 msgid "Accessed"
 msgstr "Προσπελάστηκε"
 
@@ -1383,6 +1388,7 @@ msgid "The date the file was accessed."
 msgstr "Η ημερομηνία που προσπελάστηκε το αρχείο."
 
 #: src/nautilus-column-utilities.c:105
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:70
 msgid "Owner"
 msgstr "Ιδιοκτήτης"
 
@@ -1391,6 +1397,7 @@ msgid "The owner of the file."
 msgstr "Ο ιδιοκτήτης του αρχείου."
 
 #: src/nautilus-column-utilities.c:113
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:105
 msgid "Group"
 msgstr "Ομάδα"
 
@@ -1399,6 +1406,7 @@ msgid "The group of the file."
 msgstr "Η ομάδα του αρχείου."
 
 #: src/nautilus-column-utilities.c:121
+#: src/resources/ui/nautilus-properties-window.ui:1245
 msgid "Permissions"
 msgstr "Δικαιώματα"
 
@@ -1908,6 +1916,7 @@ msgid "_Select a new name for the destination"
 msgstr "_Επιλέξτε νέο όνομα για τον προορισμό"
 
 #: src/nautilus-file-conflict-dialog.c:306
+#: src/resources/ui/nautilus-properties-window.ui:1296
 msgid "Reset"
 msgstr "Επαναφορά"
 
@@ -3735,6 +3744,7 @@ msgid "Anything"
 msgstr "Οτιδήποτε"
 
 #: src/nautilus-mime-actions.c:108
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:56
 msgid "Folders"
 msgstr "Φάκελοι"
 
@@ -4011,6 +4021,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "Υπάρχει ήδη ένα αρχείο με το ίδιο όνομα στο «%s»."
 
 #: src/nautilus-operations-ui-manager.c:274
+#: src/resources/ui/nautilus-properties-window.ui:279
 msgid "Original folder"
 msgstr "Αρχικός φάκελος"
 
@@ -4193,6 +4204,7 @@ msgstr "Το αρχείο που αποθέσατε δεν είναι αρχεί
 
 #
 #: src/nautilus-properties-window.c:660
+#: src/resources/ui/nautilus-properties-window.ui:82
 msgid "_Name"
 msgid_plural "_Names"
 msgstr[0] "Ό_νομα"
@@ -4542,7 +4554,7 @@ msgstr "Εμφάνιση λίστας"
 
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
-#: src/nautilus-window.c:192
+#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:251
 msgid "Parent folder"
 msgstr "Γονικός φάκελος"
 
@@ -5146,6 +5158,16 @@ msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr ""
 "Μικρότερα συμπιεσμένα αρχεία αλλά πρέπει να εγκατασταθούν σε Windows και Mac."
 
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
+msgid "Change Permissions for Enclosed Files"
+msgstr "Αλλαγή δικαιωμάτων στα περιεχόμενα αρχεία"
+
+#
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:160
+#: src/resources/ui/nautilus-properties-window.ui:1036
+msgid "Others"
+msgstr "Άλλοι"
+
 #: src/resources/ui/nautilus-files-view-context-menus.ui:5
 msgid "New _Folder"
 msgstr "Νέος _φάκελος"
@@ -5570,6 +5592,126 @@ msgstr "Κατά ημερομηνία πρόσβασης"
 msgid "By Trashed Date"
 msgstr "Κατά ημερομηνία απόρριψης"
 
+#: src/resources/ui/nautilus-properties-window.ui:160
+msgid "Link target"
+msgstr "Προορισμός συνδέσμου"
+
+#: src/resources/ui/nautilus-properties-window.ui:189
+msgid "Contents"
+msgstr "Περιεχόμενα"
+
+#: src/resources/ui/nautilus-properties-window.ui:307
+msgid "Volume"
+msgstr "Τόμος"
+
+#
+#: src/resources/ui/nautilus-properties-window.ui:335
+msgid "Trashed on"
+msgstr "Διαγράφηκε"
+
+#: src/resources/ui/nautilus-properties-window.ui:415
+msgid "Free space"
+msgstr "Ελεύθερος χώρος"
+
+#: src/resources/ui/nautilus-properties-window.ui:519
+msgid "Total capacity"
+msgstr "Συνολική χωρητικότητα"
+
+#: src/resources/ui/nautilus-properties-window.ui:536
+msgid "Filesystem type"
+msgstr "Τύπος συστήματος αρχείων"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:605
+msgid "used"
+msgstr "σε χρήση"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:618
+msgid "free"
+msgstr "ελεύθερα"
+
+#: src/resources/ui/nautilus-properties-window.ui:653
+msgid "Open in Disks"
+msgstr "Άνοιγμα με την εφαρμογή Δίσκοι"
+
+#: src/resources/ui/nautilus-properties-window.ui:729
+msgid "Basic"
+msgstr "Βασικές"
+
+#: src/resources/ui/nautilus-properties-window.ui:743
+msgid "You are not the owner, so you cannot change these permissions."
+msgstr ""
+"Δεν είστε ο ιδιοκτήτης, οπότε δεν μπορείτε να αλλάξετε τα δικαιώματα αυτά."
+
+#: src/resources/ui/nautilus-properties-window.ui:770
+msgid "The permissions of the selected file could not be determined."
+msgstr "Αδύνατη η εξακρίβωση των δικαιωμάτων του επιλεγμένου αρχείου."
+
+#: src/resources/ui/nautilus-properties-window.ui:792
+msgid "_Owner"
+msgstr "Ι_διοκτήτης"
+
+#: src/resources/ui/nautilus-properties-window.ui:817
+#: src/resources/ui/nautilus-properties-window.ui:829
+#: src/resources/ui/nautilus-properties-window.ui:939
+msgid "page0"
+msgstr "σελίδα0"
+
+#: src/resources/ui/nautilus-properties-window.ui:842
+#: src/resources/ui/nautilus-properties-window.ui:965
+#: src/resources/ui/nautilus-properties-window.ui:1050
+msgid "Access"
+msgstr "Πρόσβαση"
+
+#: src/resources/ui/nautilus-properties-window.ui:856
+#: src/resources/ui/nautilus-properties-window.ui:979
+#: src/resources/ui/nautilus-properties-window.ui:1064
+msgid "Folder access"
+msgstr "Πρόσβαση φακέλου"
+
+#: src/resources/ui/nautilus-properties-window.ui:870
+#: src/resources/ui/nautilus-properties-window.ui:993
+#: src/resources/ui/nautilus-properties-window.ui:1078
+msgid "File access"
+msgstr "Πρόσβαση αρχείου"
+
+#: src/resources/ui/nautilus-properties-window.ui:913
+msgid "_Group"
+msgstr "Ο_μάδα"
+
+#: src/resources/ui/nautilus-properties-window.ui:952
+msgid "page1"
+msgstr "σελίδα1"
+
+#: src/resources/ui/nautilus-properties-window.ui:1120
+msgid "Execute"
+msgstr "Εκτέλεση"
+
+#: src/resources/ui/nautilus-properties-window.ui:1135
+msgid "Security context"
+msgstr "Περιεχόμενο ασφαλείας"
+
+#: src/resources/ui/nautilus-properties-window.ui:1165
+msgid "Change Permissions for Enclosed Files…"
+msgstr "Αλλαγή δικαιωμάτων στα περιεχόμενα αρχεία…"
+
+#: src/resources/ui/nautilus-properties-window.ui:1184
+msgid "Allow _executing file as program"
+msgstr "Να επιτρέπεται η ε_κτέλεση του αρχείου ως πρόγραμμα"
+
+#: src/resources/ui/nautilus-properties-window.ui:1310
+msgid "_Add"
+msgstr "_Προσθήκη"
+
+#: src/resources/ui/nautilus-properties-window.ui:1324
+msgid "Set as default"
+msgstr "Ορισμός ως προεπιλογή"
+
+#: src/resources/ui/nautilus-properties-window.ui:1352
+msgid "Open With"
+msgstr "Άνοιγμα με"
+
 #: src/resources/ui/nautilus-search-popover.ui:18
 msgid "When"
 msgstr "Πότε"
@@ -5903,30 +6045,6 @@ msgstr "Σύνδεση σε _διακομιστή"
 msgid "Enter server address…"
 msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
 
-#~ msgid "_Add"
-#~ msgstr "_Προσθήκη"
-
-#~ msgid "Set as default"
-#~ msgstr "Ορισμός ως προεπιλογή"
-
-#~ msgid "used"
-#~ msgstr "σε χρήση"
-
-#~ msgid "free"
-#~ msgstr "ελεύθερα"
-
-#~ msgid "Total capacity:"
-#~ msgstr "Συνολική χωρητικότητα:"
-
-#~ msgid "Filesystem type:"
-#~ msgstr "Τύπος συστήματος αρχείων:"
-
-#~ msgid "Basic"
-#~ msgstr "Βασικές"
-
-#~ msgid "Link target:"
-#~ msgstr "Προορισμός συνδέσμου:"
-
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
 #~ msgid "Parent folder:"
@@ -5935,58 +6053,17 @@ msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
 #~ msgid "Original folder:"
 #~ msgstr "Αρχικός φάκελος:"
 
-#~ msgid "Volume:"
-#~ msgstr "Τόμος:"
-
-#
-#~ msgid "Trashed on:"
-#~ msgstr "Διαγράφηκε:"
-
 #~ msgid "Accessed:"
 #~ msgstr "Προσπελάστηκε:"
 
 #~ msgid "Modified:"
 #~ msgstr "Τροποποιήθηκε:"
 
-#~ msgid "Free space:"
-#~ msgstr "Ελεύθερος χώρος:"
-
-#~ msgid "Open in Disks"
-#~ msgstr "Άνοιγμα με την εφαρμογή Δίσκοι"
-
-#~ msgid "Access:"
-#~ msgstr "Πρόσβαση:"
-
-#~ msgid "Folder access:"
-#~ msgstr "Πρόσβαση φακέλων:"
-
-#~ msgid "File access:"
-#~ msgstr "Πρόσβαση αρχείων:"
-
-#~ msgid "_Owner:"
-#~ msgstr "Ι_διοκτήτης:"
-
 #~ msgid "Owner:"
 #~ msgstr "Ιδιοκτήτης:"
 
-#~ msgid "_Group:"
-#~ msgstr "Ο_μάδα:"
-
 #~ msgid "Group:"
 #~ msgstr "Ομάδα:"
-
-#
-#~ msgid "Others"
-#~ msgstr "Άλλοι"
-
-#~ msgid "Execute:"
-#~ msgstr "Εκτέλεση:"
-
-#~ msgid "Allow _executing file as program"
-#~ msgstr "Να επιτρέπεται η ε_κτέλεση του αρχείου ως πρόγραμμα"
-
-#~ msgid "Change Permissions for Enclosed Files"
-#~ msgstr "Αλλαγή δικαιωμάτων στα περιεχόμενα αρχεία"
 
 #~ msgid "Change"
 #~ msgstr "Αλλαγή"
@@ -5994,22 +6071,6 @@ msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
 #
 #~ msgid "Others:"
 #~ msgstr "Άλλοι:"
-
-#~ msgid "You are not the owner, so you cannot change these permissions."
-#~ msgstr ""
-#~ "Δεν είστε ο ιδιοκτήτης, οπότε δεν μπορείτε να αλλάξετε τα δικαιώματα αυτά."
-
-#~ msgid "Security context:"
-#~ msgstr "Περιεχόμενο ασφαλείας:"
-
-#~ msgid "Change Permissions for Enclosed Files…"
-#~ msgstr "Αλλαγή δικαιωμάτων στα περιεχόμενα αρχεία…"
-
-#~ msgid "The permissions of the selected file could not be determined."
-#~ msgstr "Αδύνατη η εξακρίβωση των δικαιωμάτων του επιλεγμένου αρχείου."
-
-#~ msgid "Open With"
-#~ msgstr "Άνοιγμα με"
 
 #~ msgid "New _Folder…"
 #~ msgstr "Νέος _φάκελος…"
