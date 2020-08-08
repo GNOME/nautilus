@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-08-08 11:12+0000\n"
-"PO-Revision-Date: 2020-08-08 17:52+0300\n"
+"POT-Creation-Date: 2020-08-08 17:14+0000\n"
+"PO-Revision-Date: 2020-08-08 21:26+0300\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -32,7 +32,7 @@ msgstr "Запустити програму"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
 #: src/nautilus-window.c:2997
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:42
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Файли"
 
@@ -588,6 +588,7 @@ msgstr "Y"
 #: src/nautilus-mime-actions.c:1291 src/nautilus-properties-window.c:5488
 #: src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_Скасувати"
 
@@ -1297,7 +1298,7 @@ msgid "The date the file was accessed."
 msgstr "Дата останнього доступу до файла."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:70
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
 msgid "Owner"
 msgstr "Власник"
 
@@ -1306,7 +1307,7 @@ msgid "The owner of the file."
 msgstr "Власник файла."
 
 #: src/nautilus-column-utilities.c:113
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:105
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:107
 msgid "Group"
 msgstr "Група"
 
@@ -3720,7 +3721,7 @@ msgid "Anything"
 msgstr "Будь-що"
 
 #: src/nautilus-mime-actions.c:108
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:56
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:58
 msgid "Folders"
 msgstr "Теки"
 
@@ -4171,8 +4172,6 @@ msgstr "Вказаний файл не є зображенням."
 
 #: src/nautilus-properties-window.c:660
 #: src/resources/ui/nautilus-properties-window.ui:82
-#| msgid "_Name:"
-#| msgid_plural "_Names:"
 msgid "_Name"
 msgid_plural "_Names"
 msgstr[0] "_Назви"
@@ -5116,7 +5115,12 @@ msgstr "Менші архіви, але треба встановити на Win
 msgid "Change Permissions for Enclosed Files"
 msgstr "Змінити права для вкладених файлів"
 
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:160
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:20
+#| msgid "Change"
+msgid "C_hange"
+msgstr "З_мінити"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:162
 #: src/resources/ui/nautilus-properties-window.ui:1036
 msgid "Others"
 msgstr "Інші"
@@ -5527,37 +5531,30 @@ msgid "By Trashed Date"
 msgstr "За датою викидання"
 
 #: src/resources/ui/nautilus-properties-window.ui:160
-#| msgid "Link target:"
 msgid "Link target"
 msgstr "Ціль посилання"
 
 #: src/resources/ui/nautilus-properties-window.ui:189
-#| msgid "Contents:"
 msgid "Contents"
 msgstr "Вміст"
 
 #: src/resources/ui/nautilus-properties-window.ui:307
-#| msgid "Volume:"
 msgid "Volume"
 msgstr "Том"
 
 #: src/resources/ui/nautilus-properties-window.ui:335
-#| msgid "Trashed on:"
 msgid "Trashed on"
 msgstr "Викинуто"
 
 #: src/resources/ui/nautilus-properties-window.ui:415
-#| msgid "Free space:"
 msgid "Free space"
 msgstr "Вільний простір"
 
 #: src/resources/ui/nautilus-properties-window.ui:519
-#| msgid "Total capacity:"
 msgid "Total capacity"
 msgstr "Загальна місткість"
 
 #: src/resources/ui/nautilus-properties-window.ui:536
-#| msgid "Filesystem type:"
 msgid "Filesystem type"
 msgstr "Тип файлової системи"
 
@@ -5588,53 +5585,36 @@ msgid "The permissions of the selected file could not be determined."
 msgstr "Не вдалось визначити визначити права доступу на вибраний файл."
 
 #: src/resources/ui/nautilus-properties-window.ui:792
-#| msgid "_Owner:"
 msgid "_Owner"
 msgstr "В_ласник"
-
-#: src/resources/ui/nautilus-properties-window.ui:817
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:939
-msgid "page0"
-msgstr "сторінка0"
 
 #: src/resources/ui/nautilus-properties-window.ui:842
 #: src/resources/ui/nautilus-properties-window.ui:965
 #: src/resources/ui/nautilus-properties-window.ui:1050
-#| msgid "Access:"
 msgid "Access"
 msgstr "Доступ"
 
 #: src/resources/ui/nautilus-properties-window.ui:856
 #: src/resources/ui/nautilus-properties-window.ui:979
 #: src/resources/ui/nautilus-properties-window.ui:1064
-#| msgid "Folder access:"
 msgid "Folder access"
 msgstr "Доступ до теки"
 
 #: src/resources/ui/nautilus-properties-window.ui:870
 #: src/resources/ui/nautilus-properties-window.ui:993
 #: src/resources/ui/nautilus-properties-window.ui:1078
-#| msgid "File access:"
 msgid "File access"
 msgstr "Доступ до файла"
 
 #: src/resources/ui/nautilus-properties-window.ui:913
-#| msgid "_Group:"
 msgid "_Group"
 msgstr "_Група"
 
-#: src/resources/ui/nautilus-properties-window.ui:952
-msgid "page1"
-msgstr "сторінка1"
-
 #: src/resources/ui/nautilus-properties-window.ui:1120
-#| msgid "Execute:"
 msgid "Execute"
 msgstr "Виконати"
 
 #: src/resources/ui/nautilus-properties-window.ui:1135
-#| msgid "Security context:"
 msgid "Security context"
 msgstr "Контекст безпеки"
 
@@ -5984,6 +5964,12 @@ msgstr "З'єднання з _сервером"
 msgid "Enter server address…"
 msgstr "Уведіть адресу сервера…"
 
+#~ msgid "page0"
+#~ msgstr "сторінка0"
+
+#~ msgid "page1"
+#~ msgstr "сторінка1"
+
 #~ msgid "Parent folder:"
 #~ msgstr "Батьківська тека:"
 
@@ -6001,9 +5987,6 @@ msgstr "Уведіть адресу сервера…"
 
 #~ msgid "Group:"
 #~ msgstr "Група:"
-
-#~ msgid "Change"
-#~ msgstr "Змінити"
 
 #~ msgid "Others:"
 #~ msgstr "Інші:"
