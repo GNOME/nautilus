@@ -17,7 +17,7 @@ to previous files.
 = Directory Ownership =
 Every file has a directory associated, that is usually the parent. However, when
 the file is a root and has no parent, the file is called self_owned, and the directory
-and the file are the same location, but diferent objects.
+and the file are the same location, but different objects.
 
 It's better to always deal with files instead of directories, and let the file handle
 the ownership of its associated directory.
