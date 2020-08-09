@@ -23,8 +23,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-08-05 14:00+0000\n"
-"PO-Revision-Date: 2020-08-07 17:37+0300\n"
+"POT-Creation-Date: 2020-08-08 17:14+0000\n"
+"PO-Revision-Date: 2020-08-09 11:09+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -47,6 +47,7 @@ msgstr "Yazılımı çalıştır"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
 #: src/nautilus-window.c:2997
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Dosyalar"
 
@@ -600,6 +601,7 @@ msgstr "Y"
 #: src/nautilus-mime-actions.c:1291 src/nautilus-properties-window.c:5488
 #: src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_İptal Et"
 
@@ -1240,6 +1242,7 @@ msgid "The name and icon of the file."
 msgstr "Dosyanın simgesi ve adı."
 
 #: src/nautilus-column-utilities.c:65
+#: src/resources/ui/nautilus-properties-window.ui:225
 msgid "Size"
 msgstr "Boyut"
 
@@ -1248,6 +1251,7 @@ msgid "The size of the file."
 msgstr "Dosyanın boyutu."
 
 #: src/nautilus-column-utilities.c:72
+#: src/resources/ui/nautilus-properties-window.ui:132
 msgid "Type"
 msgstr "Tür"
 
@@ -1256,6 +1260,7 @@ msgid "The type of the file."
 msgstr "Dosyanın türü."
 
 #: src/nautilus-column-utilities.c:79
+#: src/resources/ui/nautilus-properties-window.ui:389
 msgid "Modified"
 msgstr "Değiştirilme"
 
@@ -1272,6 +1277,7 @@ msgid "The detailed type of the file."
 msgstr "Dosyanın ayrıntılı türü."
 
 #: src/nautilus-column-utilities.c:95
+#: src/resources/ui/nautilus-properties-window.ui:363
 msgid "Accessed"
 msgstr "Erişim"
 
@@ -1280,6 +1286,7 @@ msgid "The date the file was accessed."
 msgstr "Dosyanın en son kullanıldığı tarih."
 
 #: src/nautilus-column-utilities.c:105
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
 msgid "Owner"
 msgstr "Sahibi"
 
@@ -1288,6 +1295,7 @@ msgid "The owner of the file."
 msgstr "Dosyanın sahibi."
 
 #: src/nautilus-column-utilities.c:113
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:107
 msgid "Group"
 msgstr "Küme"
 
@@ -1296,6 +1304,7 @@ msgid "The group of the file."
 msgstr "Dosyanın kümesi."
 
 #: src/nautilus-column-utilities.c:121
+#: src/resources/ui/nautilus-properties-window.ui:1245
 msgid "Permissions"
 msgstr "İzinler"
 
@@ -1787,6 +1796,7 @@ msgid "_Select a new name for the destination"
 msgstr "Hedef için yeni ad _seç"
 
 #: src/nautilus-file-conflict-dialog.c:306
+#: src/resources/ui/nautilus-properties-window.ui:1296
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -3501,6 +3511,7 @@ msgid "Anything"
 msgstr "Herhangi bir şey"
 
 #: src/nautilus-mime-actions.c:108
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:58
 msgid "Folders"
 msgstr "Klasörler"
 
@@ -3770,6 +3781,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "“%s” içinde aynı adda başka dosya var."
 
 #: src/nautilus-operations-ui-manager.c:274
+#: src/resources/ui/nautilus-properties-window.ui:279
 msgid "Original folder"
 msgstr "Özgün klasör"
 
@@ -3943,6 +3955,7 @@ msgid "The file that you dropped is not an image."
 msgstr "Bıraktığınız dosya resim dosyası değil."
 
 #: src/nautilus-properties-window.c:660
+#: src/resources/ui/nautilus-properties-window.ui:82
 msgid "_Name"
 msgid_plural "_Names"
 msgstr[0] "_Ad"
@@ -4271,7 +4284,7 @@ msgstr "Listeyi göster"
 msgid "Show List"
 msgstr "Listeyi Göster"
 
-#: src/nautilus-window.c:192
+#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:251
 msgid "Parent folder"
 msgstr "Üst Klasör"
 
@@ -4843,6 +4856,19 @@ msgstr "Daha küçük arşivler ama yalnızca Linux ve Mac."
 msgid "Smaller archives but must be installed on Windows and Mac."
 msgstr "Daha küçük arşivler ama Windows ve Mac üzerinde kurulmalıdır."
 
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
+msgid "Change Permissions for Enclosed Files"
+msgstr "İlişikteki Dosyalar için İzinleri Değiştir"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:20
+msgid "C_hange"
+msgstr "_Değiştir"
+
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:162
+#: src/resources/ui/nautilus-properties-window.ui:1036
+msgid "Others"
+msgstr "Diğerleri"
+
 #: src/resources/ui/nautilus-files-view-context-menus.ui:5
 msgid "New _Folder"
 msgstr "Yeni _Klasör"
@@ -5248,6 +5274,114 @@ msgstr "Erişim Tarihine Göre"
 msgid "By Trashed Date"
 msgstr "Çöpe Gönderilme Tarihine Göre"
 
+#: src/resources/ui/nautilus-properties-window.ui:160
+msgid "Link target"
+msgstr "Bağlantı hedefi"
+
+#: src/resources/ui/nautilus-properties-window.ui:189
+msgid "Contents"
+msgstr "İçerik"
+
+#: src/resources/ui/nautilus-properties-window.ui:307
+msgid "Volume"
+msgstr "Birim"
+
+#: src/resources/ui/nautilus-properties-window.ui:335
+msgid "Trashed on"
+msgstr "Çöpe atılma"
+
+#: src/resources/ui/nautilus-properties-window.ui:415
+msgid "Free space"
+msgstr "Boş alan"
+
+#: src/resources/ui/nautilus-properties-window.ui:519
+msgid "Total capacity"
+msgstr "Toplam kapasite"
+
+#: src/resources/ui/nautilus-properties-window.ui:536
+msgid "Filesystem type"
+msgstr "Dosya sistemi türü"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:605
+msgid "used"
+msgstr "kullanılan"
+
+#. Refers to the capacity of the filesystem
+#: src/resources/ui/nautilus-properties-window.ui:618
+msgid "free"
+msgstr "boş"
+
+#: src/resources/ui/nautilus-properties-window.ui:653
+msgid "Open in Disks"
+msgstr "Disklerʼde Aç"
+
+#: src/resources/ui/nautilus-properties-window.ui:729
+msgid "Basic"
+msgstr "Temel"
+
+#: src/resources/ui/nautilus-properties-window.ui:743
+msgid "You are not the owner, so you cannot change these permissions."
+msgstr "Sahibi olmadığınız için bu izinleri değiştiremezsiniz."
+
+#: src/resources/ui/nautilus-properties-window.ui:770
+msgid "The permissions of the selected file could not be determined."
+msgstr "Seçilen dosyanın izinleri belirlenemedi."
+
+#: src/resources/ui/nautilus-properties-window.ui:792
+msgid "_Owner"
+msgstr "_Sahip"
+
+#: src/resources/ui/nautilus-properties-window.ui:842
+#: src/resources/ui/nautilus-properties-window.ui:965
+#: src/resources/ui/nautilus-properties-window.ui:1050
+msgid "Access"
+msgstr "Erişim"
+
+#: src/resources/ui/nautilus-properties-window.ui:856
+#: src/resources/ui/nautilus-properties-window.ui:979
+#: src/resources/ui/nautilus-properties-window.ui:1064
+msgid "Folder access"
+msgstr "Klasör erişimi"
+
+#: src/resources/ui/nautilus-properties-window.ui:870
+#: src/resources/ui/nautilus-properties-window.ui:993
+#: src/resources/ui/nautilus-properties-window.ui:1078
+msgid "File access"
+msgstr "Dosya erişimi"
+
+#: src/resources/ui/nautilus-properties-window.ui:913
+msgid "_Group"
+msgstr "_Küme"
+
+#: src/resources/ui/nautilus-properties-window.ui:1120
+msgid "Execute"
+msgstr "Çalıştır"
+
+#: src/resources/ui/nautilus-properties-window.ui:1135
+msgid "Security context"
+msgstr "Güvenlik bağlamı"
+
+#: src/resources/ui/nautilus-properties-window.ui:1165
+msgid "Change Permissions for Enclosed Files…"
+msgstr "Ekli Doslayarın İzinlerini Değiştir…"
+
+#: src/resources/ui/nautilus-properties-window.ui:1184
+msgid "Allow _executing file as program"
+msgstr "Dosyayı program gibi _çalıştırmaya izin ver"
+
+#: src/resources/ui/nautilus-properties-window.ui:1310
+msgid "_Add"
+msgstr "_Ekle"
+
+#: src/resources/ui/nautilus-properties-window.ui:1324
+msgid "Set as default"
+msgstr "Öntanımlı olarak ayarla"
+
+#: src/resources/ui/nautilus-properties-window.ui:1352
+msgid "Open With"
+msgstr "Birlikte Aç"
+
 #: src/resources/ui/nautilus-search-popover.ui:18
 msgid "When"
 msgstr "Ne zamandan"
@@ -5572,33 +5706,9 @@ msgstr "_Sunucuya Bağlan"
 msgid "Enter server address…"
 msgstr "Sunucu adresini gir…"
 
-#~ msgid "_Add"
-#~ msgstr "_Ekle"
-
-#~ msgid "Set as default"
-#~ msgstr "Öntanımlı olarak ayarla"
-
 #~ msgid "_Name:"
 #~ msgid_plural "_Names:"
 #~ msgstr[0] "_Ad:"
-
-#~ msgid "used"
-#~ msgstr "kullanılan"
-
-#~ msgid "free"
-#~ msgstr "boş"
-
-#~ msgid "Total capacity:"
-#~ msgstr "Toplam kapasite:"
-
-#~ msgid "Filesystem type:"
-#~ msgstr "Dosya Sistemi türü:"
-
-#~ msgid "Basic"
-#~ msgstr "Temel"
-
-#~ msgid "Link target:"
-#~ msgstr "Bağlantı hedefi:"
 
 #~ msgid "Parent folder:"
 #~ msgstr "Üst klasör:"
@@ -5606,77 +5716,20 @@ msgstr "Sunucu adresini gir…"
 #~ msgid "Original folder:"
 #~ msgstr "Özgün klasör:"
 
-#~ msgid "Volume:"
-#~ msgstr "Birim:"
-
-#~ msgid "Trashed on:"
-#~ msgstr "Çöpe atılma:"
-
 #~ msgid "Accessed:"
 #~ msgstr "Erişim:"
 
 #~ msgid "Modified:"
 #~ msgstr "Değişim:"
 
-#~ msgid "Free space:"
-#~ msgstr "Boş alan:"
-
-#~ msgid "Open in Disks"
-#~ msgstr "Disklerʼde Aç"
-
-#~ msgid "Access:"
-#~ msgstr "Erişim:"
-
-#~ msgid "Folder access:"
-#~ msgstr "Klasör erişimi:"
-
-#~ msgid "File access:"
-#~ msgstr "Dosya erişimi:"
-
-#~ msgid "_Owner:"
-#~ msgstr "_Sahibi:"
-
 #~ msgid "Owner:"
 #~ msgstr "Sahibi:"
-
-#~ msgid "_Group:"
-#~ msgstr "_Kümesi:"
 
 #~ msgid "Group:"
 #~ msgstr "Kümesi:"
 
-#~ msgid "Others"
-#~ msgstr "Diğerleri"
-
-#~ msgid "Execute:"
-#~ msgstr "Çalıştırma:"
-
-#~ msgid "Allow _executing file as program"
-#~ msgstr "Dosyayı program gibi _çalıştırmaya izin ver"
-
-#~ msgid "Change Permissions for Enclosed Files"
-#~ msgstr "İlişikteki Dosyalar için İzinleri Değiştir"
-
-#~ msgid "Change"
-#~ msgstr "Değiştir"
-
 #~ msgid "Others:"
 #~ msgstr "Diğerleri:"
-
-#~ msgid "You are not the owner, so you cannot change these permissions."
-#~ msgstr "Sahibi olmadığınız için bu izinleri değiştiremezsiniz."
-
-#~ msgid "Security context:"
-#~ msgstr "Güvenlik bağlamı:"
-
-#~ msgid "Change Permissions for Enclosed Files…"
-#~ msgstr "Ekli Doslayarın İzinlerini Değiştir…"
-
-#~ msgid "The permissions of the selected file could not be determined."
-#~ msgstr "Seçilen dosyanın izinleri belirlenemedi."
-
-#~ msgid "Open With"
-#~ msgstr "Birlikte Aç"
 
 #~ msgid "New _Folder…"
 #~ msgstr "Yeni _Klasör…"
