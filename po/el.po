@@ -68,8 +68,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: el\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-08-08 11:12+0000\n"
-"PO-Revision-Date: 2020-08-08 17:00+0300\n"
+"POT-Creation-Date: 2020-08-09 20:58+0000\n"
+"PO-Revision-Date: 2020-08-10 21:46+0300\n"
 "Last-Translator: Efstathios Iosifidis <eiosifidis@gnome.org>\n"
 "Language-Team: Ελληνικά <>\n"
 "Language: el\n"
@@ -93,7 +93,7 @@ msgstr "Εκτέλεση λογισμικού"
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
 #: src/nautilus-window.c:2997
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:42
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Αρχεία"
 
@@ -675,6 +675,7 @@ msgstr "Y"
 #: src/nautilus-mime-actions.c:1291 src/nautilus-properties-window.c:5488
 #: src/nautilus-search-popover.c:583
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:12
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:13
 msgid "_Cancel"
 msgstr "_Ακύρωση"
 
@@ -1388,7 +1389,7 @@ msgid "The date the file was accessed."
 msgstr "Η ημερομηνία που προσπελάστηκε το αρχείο."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:70
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:72
 msgid "Owner"
 msgstr "Ιδιοκτήτης"
 
@@ -1397,7 +1398,7 @@ msgid "The owner of the file."
 msgstr "Ο ιδιοκτήτης του αρχείου."
 
 #: src/nautilus-column-utilities.c:113
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:105
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:107
 msgid "Group"
 msgstr "Ομάδα"
 
@@ -3744,7 +3745,7 @@ msgid "Anything"
 msgstr "Οτιδήποτε"
 
 #: src/nautilus-mime-actions.c:108
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:56
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:58
 msgid "Folders"
 msgstr "Φάκελοι"
 
@@ -5162,8 +5163,12 @@ msgstr ""
 msgid "Change Permissions for Enclosed Files"
 msgstr "Αλλαγή δικαιωμάτων στα περιεχόμενα αρχεία"
 
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:20
+msgid "C_hange"
+msgstr "Α_λλαγή"
+
 #
-#: src/resources/ui/nautilus-file-properties-change-permissions.ui:160
+#: src/resources/ui/nautilus-file-properties-change-permissions.ui:162
 #: src/resources/ui/nautilus-properties-window.ui:1036
 msgid "Others"
 msgstr "Άλλοι"
@@ -5652,12 +5657,6 @@ msgstr "Αδύνατη η εξακρίβωση των δικαιωμάτων τ�
 msgid "_Owner"
 msgstr "Ι_διοκτήτης"
 
-#: src/resources/ui/nautilus-properties-window.ui:817
-#: src/resources/ui/nautilus-properties-window.ui:829
-#: src/resources/ui/nautilus-properties-window.ui:939
-msgid "page0"
-msgstr "σελίδα0"
-
 #: src/resources/ui/nautilus-properties-window.ui:842
 #: src/resources/ui/nautilus-properties-window.ui:965
 #: src/resources/ui/nautilus-properties-window.ui:1050
@@ -5679,10 +5678,6 @@ msgstr "Πρόσβαση αρχείου"
 #: src/resources/ui/nautilus-properties-window.ui:913
 msgid "_Group"
 msgstr "Ο_μάδα"
-
-#: src/resources/ui/nautilus-properties-window.ui:952
-msgid "page1"
-msgstr "σελίδα1"
 
 #: src/resources/ui/nautilus-properties-window.ui:1120
 msgid "Execute"
@@ -6045,6 +6040,12 @@ msgstr "Σύνδεση σε _διακομιστή"
 msgid "Enter server address…"
 msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
 
+#~ msgid "page0"
+#~ msgstr "σελίδα0"
+
+#~ msgid "page1"
+#~ msgstr "σελίδα1"
+
 # # NOTE: Translation of "Create" as "New" to
 # #       keep msg length relatively short...
 #~ msgid "Parent folder:"
@@ -6064,9 +6065,6 @@ msgstr "Εισαγωγή διεύθυνσης διακομιστή…"
 
 #~ msgid "Group:"
 #~ msgstr "Ομάδα:"
-
-#~ msgid "Change"
-#~ msgstr "Αλλαγή"
 
 #
 #~ msgid "Others:"
