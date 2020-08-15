@@ -1075,7 +1075,7 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
     parent_uri = nautilus_file_get_parent_uri (NAUTILUS_FILE (selection->data));
 
     g_string_append_printf (query,
-                            "FILTER(tracker:uri-is-parent(<%s>, ?url)) ",
+                            "FILTER(tracker:uri-is-parent(\"%s\", ?url)) ",
                             parent_uri);
 
     for (l = selection; l != NULL; l = l->next)
