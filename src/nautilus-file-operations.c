@@ -4762,6 +4762,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
                      gboolean      *skipped_file,
                      gboolean       readonly_source_fs)
 {
+    g_autoptr (GFileInfo) src_info = NULL;
     GFileInfo *info;
     GError *error;
     GFile *src_file;
@@ -4778,6 +4779,8 @@ copy_move_directory (CopyMoveJob   *copy_job,
 
     if (create_dest)
     {
+        g_autofree char *attrs_to_read = NULL;
+
         switch (create_dest_dir (job, src, dest, same_fs, parent_dest_fs_type))
         {
             case CREATE_DEST_DIR_RETRY:
@@ -4805,6 +4808,23 @@ copy_move_directory (CopyMoveJob   *copy_job,
         if (debuting_files)
         {
             g_hash_table_replace (debuting_files, g_object_ref (*dest), GINT_TO_POINTER (TRUE));
+        }
+
+        flags = G_FILE_COPY_NOFOLLOW_SYMLINKS;
+        if (readonly_source_fs)
+        {
+            flags |= G_FILE_COPY_TARGET_DEFAULT_PERMS;
+        }
+        if (copy_job->is_move)
+        {
+            flags |= G_FILE_COPY_ALL_METADATA;
+        }
+
+        /* Ignore errors here. Failure to copy metadata is not a hard error */
+        attrs_to_read = g_file_build_attribute_list_for_copy (*dest, flags, job->cancellable, NULL);
+        if (attrs_to_read != NULL)
+        {
+            src_info = g_file_query_info (src, attrs_to_read, G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS, job->cancellable, NULL);
         }
     }
 
@@ -4971,14 +4991,14 @@ retry:
         }
     }
 
-    if (create_dest)
+    if (src_info != NULL)
     {
-        flags = (readonly_source_fs) ? G_FILE_COPY_NOFOLLOW_SYMLINKS | G_FILE_COPY_TARGET_DEFAULT_PERMS
-                : G_FILE_COPY_NOFOLLOW_SYMLINKS;
         /* Ignore errors here. Failure to copy metadata is not a hard error */
-        g_file_copy_attributes (src, *dest,
-                                flags,
-                                job->cancellable, NULL);
+        g_file_set_attributes_from_info (*dest,
+                                         src_info,
+                                         G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                         job->cancellable,
+                                         NULL);
     }
 
     if (!job_aborted (job) && copy_job->is_move &&
