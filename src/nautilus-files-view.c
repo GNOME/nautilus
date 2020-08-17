@@ -1778,63 +1778,32 @@ pattern_select_response_cb (GtkWidget *dialog,
 static void
 select_pattern (NautilusFilesView *view)
 {
+    g_autoptr (GtkBuilder) builder = NULL;
     GtkWidget *dialog;
-    GtkWidget *label;
+    NautilusWindow *window;
     GtkWidget *example;
-    GtkWidget *grid;
     GtkWidget *entry;
     char *example_pattern;
 
-    dialog = gtk_dialog_new_with_buttons (_("Select Items Matching"),
-                                          nautilus_files_view_get_containing_window (view),
-                                          GTK_DIALOG_MODAL | GTK_DIALOG_DESTROY_WITH_PARENT | GTK_DIALOG_USE_HEADER_BAR,
-                                          _("_Cancel"),
-                                          GTK_RESPONSE_CANCEL,
-                                          _("_Select"),
-                                          GTK_RESPONSE_OK,
-                                          NULL);
-    gtk_dialog_set_default_response (GTK_DIALOG (dialog),
-                                     GTK_RESPONSE_OK);
-    gtk_container_set_border_width (GTK_CONTAINER (dialog), 5);
-    gtk_box_set_spacing (GTK_BOX (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), 2);
+    window = nautilus_files_view_get_window (view);
+    builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/select-items.ui");
+    dialog = GTK_WIDGET (gtk_builder_get_object (builder, "select_items_dialog"));
 
-    label = gtk_label_new_with_mnemonic (_("_Pattern:"));
-    gtk_widget_set_halign (label, GTK_ALIGN_START);
-
-    example = gtk_label_new (NULL);
-    gtk_widget_set_halign (example, GTK_ALIGN_START);
+    example = GTK_WIDGET (gtk_builder_get_object (builder, "example"));
     example_pattern = g_strdup_printf ("%s<i>%s</i> ",
                                        _("Examples: "),
                                        "*.png, file\?\?.txt, pict*.\?\?\?");
     gtk_label_set_markup (GTK_LABEL (example), example_pattern);
     g_free (example_pattern);
+    gtk_window_set_transient_for (GTK_WINDOW (dialog), GTK_WINDOW (window));
 
-    entry = gtk_entry_new ();
-    gtk_entry_set_activates_default (GTK_ENTRY (entry), TRUE);
-    gtk_widget_set_hexpand (entry, TRUE);
+    entry = GTK_WIDGET (gtk_builder_get_object (builder, "pattern_entry"));
 
-    grid = gtk_grid_new ();
-    g_object_set (grid,
-                  "orientation", GTK_ORIENTATION_VERTICAL,
-                  "border-width", 6,
-                  "row-spacing", 6,
-                  "column-spacing", 12,
-                  NULL);
-
-    gtk_container_add (GTK_CONTAINER (grid), label);
-    gtk_grid_attach_next_to (GTK_GRID (grid), entry, label,
-                             GTK_POS_RIGHT, 1, 1);
-    gtk_grid_attach_next_to (GTK_GRID (grid), example, entry,
-                             GTK_POS_BOTTOM, 1, 1);
-
-    gtk_label_set_mnemonic_widget (GTK_LABEL (label), entry);
-    gtk_widget_show_all (grid);
-    gtk_container_add (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (dialog))), grid);
     g_object_set_data (G_OBJECT (dialog), "entry", entry);
     g_signal_connect (dialog, "response",
                       G_CALLBACK (pattern_select_response_cb),
                       view);
-    gtk_widget_show_all (dialog);
+    gtk_widget_show (dialog);
 }
 
 static void
