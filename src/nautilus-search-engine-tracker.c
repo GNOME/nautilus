@@ -384,7 +384,10 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     }
     else
     {
-        g_string_append_printf (sparql, "tracker:uri-is-descendant('%s', ?url)", location_uri);
+        /* STRSTARTS is faster than tracker:uri-is-descendant().
+         * See https://gitlab.gnome.org/GNOME/tracker/-/issues/243
+         */
+        g_string_append_printf (sparql, "STRSTARTS(?url, '%s/')", location_uri);
     }
 
     date_range = nautilus_query_get_date_range (tracker->query);
