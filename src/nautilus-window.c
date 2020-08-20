@@ -1427,41 +1427,16 @@ nautilus_window_show_sidebar (NautilusWindow *window)
     setup_side_pane_width (window);
 }
 
-static inline NautilusWindowSlot *
-get_first_inactive_slot (NautilusWindow *window)
-{
-    GList *l;
-    NautilusWindowSlot *slot;
-
-    for (l = window->slots; l != NULL; l = l->next)
-    {
-        slot = NAUTILUS_WINDOW_SLOT (l->data);
-        if (slot != window->active_slot)
-        {
-            return slot;
-        }
-    }
-
-    return NULL;
-}
-
 void
 nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
-    NautilusWindowSlot *next_slot;
     NautilusNavigationState *data;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL)
     {
         return;
-    }
-
-    if (window->active_slot == slot)
-    {
-        next_slot = get_first_inactive_slot (window);
-        nautilus_window_set_active_slot (window, next_slot);
     }
 
     data = nautilus_window_slot_get_navigation_state (slot);
@@ -2011,19 +1986,13 @@ notebook_page_removed_cb (GtkNotebook *notebook,
                           gpointer     user_data)
 {
     NautilusWindow *window = user_data;
-    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page), *next_slot;
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
     gboolean dnd_slot;
 
     dnd_slot = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (slot), "dnd-window-slot"));
     if (!dnd_slot)
     {
         return;
-    }
-
-    if (window->active_slot == slot)
-    {
-        next_slot = get_first_inactive_slot (window);
-        nautilus_window_set_active_slot (window, next_slot);
     }
 
     close_slot (window, slot, FALSE);
