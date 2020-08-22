@@ -523,7 +523,7 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
                                                guint             info,
                                                guint             time)
 {
-    char **uris;
+    g_auto (GStrv) uris = NULL;
     gboolean exactly_one;
     GtkImage *image;
     GtkWindow *window;
@@ -550,7 +550,7 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
         }
         else
         {
-            GFile *f;
+            g_autoptr (GFile) f = NULL;
 
             f = g_file_new_for_uri (uris[0]);
             if (!g_file_is_native (f))
@@ -567,10 +567,8 @@ nautilus_properties_window_drag_data_received (GtkWidget        *widget,
                              window,
                              GTK_MESSAGE_ERROR);
             }
-            g_object_unref (f);
         }
     }
-    g_strfreev (uris);
 }
 
 static void
@@ -653,8 +651,7 @@ update_name_field (NautilusPropertiesWindow *self)
     if (is_multi_file_window (self))
     {
         /* Multifile property dialog, show all names */
-        GString *str;
-        char *name;
+        g_autoptr (GString) str = NULL;
         gboolean first;
         GList *l;
 
@@ -664,6 +661,8 @@ update_name_field (NautilusPropertiesWindow *self)
 
         for (l = self->target_files; l != NULL; l = l->next)
         {
+            g_autofree gchar *name = NULL;
+
             file = NAUTILUS_FILE (l->data);
 
             if (!nautilus_file_is_gone (file))
@@ -676,16 +675,14 @@ update_name_field (NautilusPropertiesWindow *self)
 
                 name = nautilus_file_get_display_name (file);
                 g_string_append (str, name);
-                g_free (name);
             }
         }
         set_name_field (self, NULL, str->str);
-        g_string_free (str, TRUE);
     }
     else
     {
         const char *original_name = NULL;
-        char *current_name;
+        g_autofree char *current_name = NULL;
 
         file = get_original_file (self);
 
@@ -712,12 +709,8 @@ update_name_field (NautilusPropertiesWindow *self)
         {
             g_object_set_data_full (G_OBJECT (self->name_field),
                                     "original_name",
-                                    current_name,
+                                    g_steal_pointer (&current_name),
                                     g_free);
-        }
-        else
-        {
-            g_free (current_name);
         }
     }
 }
@@ -878,12 +871,10 @@ name_field_activate (GtkWidget *name_field,
 static void
 update_properties_window_title (NautilusPropertiesWindow *self)
 {
-    char *name, *title;
+    g_autofree gchar *title = NULL;
     NautilusFile *file;
 
     g_return_if_fail (GTK_IS_WINDOW (self));
-
-    title = g_strdup_printf (_("Properties"));
 
     if (!is_multi_file_window (self))
     {
@@ -891,7 +882,8 @@ update_properties_window_title (NautilusPropertiesWindow *self)
 
         if (file != NULL)
         {
-            g_free (title);
+            g_autofree gchar *name = NULL;
+
             name = nautilus_file_get_display_name (file);
             if (nautilus_file_is_directory (file))
             {
@@ -903,14 +895,15 @@ update_properties_window_title (NautilusPropertiesWindow *self)
                 /* To translators: %s is the name of the file. */
                 title = g_strdup_printf (C_("file", "%s Properties"), name);
             }
-
-            g_free (name);
         }
     }
 
-    gtk_window_set_title (GTK_WINDOW (self), title);
+    if (title == NULL)
+    {
+        title = g_strdup_printf (_("Properties"));
+    }
 
-    g_free (title);
+    gtk_window_set_title (GTK_WINDOW (self), title);
 }
 
 static void
@@ -952,8 +945,8 @@ remove_from_dialog (NautilusPropertiesWindow *self,
     int index;
     GList *original_link;
     GList *target_link;
-    NautilusFile *original_file;
-    NautilusFile *target_file;
+    g_autoptr (NautilusFile) original_file = NULL;
+    g_autoptr (NautilusFile) target_file = NULL;
 
     index = g_list_index (self->target_files, file);
     if (index == -1)
@@ -987,9 +980,6 @@ remove_from_dialog (NautilusPropertiesWindow *self,
 
     nautilus_file_monitor_remove (original_file, &self->original_files);
     nautilus_file_monitor_remove (target_file, &self->target_files);
-
-    nautilus_file_unref (original_file);
-    nautilus_file_unref (target_file);
 }
 
 static gboolean
@@ -1536,7 +1526,7 @@ tree_model_entries_equal (GtkTreeModel *model,
 
         do
         {
-            char *val;
+            g_autofree char *val = NULL;
 
             gtk_tree_model_get (model, &iter,
                                 column, &val,
@@ -1545,11 +1535,9 @@ tree_model_entries_equal (GtkTreeModel *model,
                 (val != NULL && l->data == NULL) ||
                 (val != NULL && strcmp (val, l->data)))
             {
-                g_free (val);
                 return FALSE;
             }
 
-            g_free (val);
             l = l->next;
         }
         while (gtk_tree_model_iter_next (model, &iter));
@@ -1610,18 +1598,16 @@ tree_model_get_entry_index (GtkTreeModel *model,
 
         do
         {
-            char *val;
+            g_autofree char *val = NULL;
 
             gtk_tree_model_get (model, &iter,
                                 column, &val,
                                 -1);
             if (val != NULL && !strcmp (val, entry))
             {
-                g_free (val);
                 return index;
             }
 
-            g_free (val);
             index++;
         }
         while (gtk_tree_model_iter_next (model, &iter));
@@ -2028,12 +2014,14 @@ file_has_prefix (NautilusFile *file,
                  GList        *prefix_candidates)
 {
     GList *p;
-    GFile *location, *candidate_location;
+    g_autoptr (GFile) location = NULL;
 
     location = nautilus_file_get_location (file);
 
     for (p = prefix_candidates; p != NULL; p = p->next)
     {
+        g_autoptr (GFile) candidate_location = NULL;
+
         if (file == p->data)
         {
             continue;
@@ -2042,14 +2030,9 @@ file_has_prefix (NautilusFile *file,
         candidate_location = nautilus_file_get_location (NAUTILUS_FILE (p->data));
         if (g_file_has_prefix (location, candidate_location))
         {
-            g_object_unref (location);
-            g_object_unref (candidate_location);
             return TRUE;
         }
-        g_object_unref (candidate_location);
     }
-
-    g_object_unref (location);
 
     return FALSE;
 }
@@ -2602,10 +2585,10 @@ setup_pie_widget (NautilusPropertiesWindow *self)
 static void
 setup_volume_usage_widget (NautilusPropertiesWindow *self)
 {
-    gchar *uri;
     NautilusFile *file;
+    g_autofree gchar *uri = NULL;
     g_autoptr (GFile) location = NULL;
-    GFileInfo *info;
+    g_autoptr (GFileInfo) info = NULL;
 
     file = get_original_file (self);
 
@@ -2626,8 +2609,6 @@ setup_volume_usage_widget (NautilusPropertiesWindow *self)
         {
             self->volume_used = self->volume_capacity - self->volume_free;
         }
-
-        g_object_unref (info);
     }
     else
     {
@@ -2906,12 +2887,11 @@ start_long_operation (NautilusPropertiesWindow *self)
     {
         /* start long operation */
         GdkDisplay *display;
-        GdkCursor *cursor;
+        g_autoptr (GdkCursor) cursor = NULL;
 
         display = gtk_widget_get_display (GTK_WIDGET (self));
         cursor = gdk_cursor_new_for_display (display, GDK_WATCH);
         gdk_window_set_cursor (gtk_widget_get_window (GTK_WIDGET (self)), cursor);
-        g_object_unref (cursor);
     }
     self->long_operation_underway++;
 }
@@ -3531,7 +3511,8 @@ permission_combo_update (NautilusPropertiesWindow *self,
 
         if (!found)
         {
-            GString *str;
+            g_autoptr (GString) str = NULL;
+
             str = g_string_new ("");
 
             if (!(all_perm & PERMISSION_READ))
@@ -3580,8 +3561,6 @@ permission_combo_update (NautilusPropertiesWindow *self,
             gtk_list_store_set (store, &iter,
                                 0, str->str,
                                 1, all_perm, -1);
-
-            g_string_free (str, TRUE);
         }
     }
     else
@@ -3988,13 +3967,14 @@ on_change_permissions_response (GtkDialog                *dialog,
     for (l = self->target_files; l != NULL; l = l->next)
     {
         NautilusFile *file;
-        char *uri;
 
         file = NAUTILUS_FILE (l->data);
 
         if (nautilus_file_is_directory (file) &&
             nautilus_file_can_set_permissions (file))
         {
+            g_autofree gchar *uri = NULL;
+
             uri = nautilus_file_get_uri (file);
             start_long_operation (self);
             g_object_ref (self);
@@ -4005,7 +3985,6 @@ on_change_permissions_response (GtkDialog                *dialog,
                                                      dir_permission_mask,
                                                      set_recursive_permissions_done,
                                                      self);
-            g_free (uri);
         }
     }
     g_clear_pointer (&self->change_permission_combos, g_list_free);
@@ -4170,7 +4149,6 @@ on_change_permissions_clicked (GtkWidget                *button,
 static void
 setup_permissions_page (NautilusPropertiesWindow *self)
 {
-    char *file_name, *prompt_text;
     GList *file_list;
 
     file_list = self->original_files;
@@ -4221,11 +4199,12 @@ setup_permissions_page (NautilusPropertiesWindow *self)
          */
         if (!is_multi_file_window (self))
         {
+            g_autofree gchar *file_name = NULL;
+            g_autofree gchar *prompt_text = NULL;
+
             file_name = nautilus_file_get_display_name (get_target_file (self));
             prompt_text = g_strdup_printf (_("The permissions of “%s” could not be determined."), file_name);
             gtk_label_set_text (GTK_LABEL (self->permission_indeterminable_label), prompt_text);
-            g_free (file_name);
-            g_free (prompt_text);
         }
 
         gtk_widget_show (self->permission_indeterminable_label);
@@ -4235,7 +4214,7 @@ setup_permissions_page (NautilusPropertiesWindow *self)
 static void
 append_extension_pages (NautilusPropertiesWindow *self)
 {
-    GList *providers;
+    g_autolist (GObject) providers = NULL;
     GList *p;
 
     providers = nautilus_module_get_extensions_for_type (NAUTILUS_TYPE_PROPERTY_PAGE_PROVIDER);
@@ -4243,7 +4222,7 @@ append_extension_pages (NautilusPropertiesWindow *self)
     for (p = providers; p != NULL; p = p->next)
     {
         NautilusPropertyPageProvider *provider;
-        GList *pages;
+        g_autolist (NautilusPropertyPage) pages = NULL;
         GList *l;
 
         provider = NAUTILUS_PROPERTY_PAGE_PROVIDER (p->data);
@@ -4254,8 +4233,8 @@ append_extension_pages (NautilusPropertiesWindow *self)
         for (l = pages; l != NULL; l = l->next)
         {
             NautilusPropertyPage *page;
-            GtkWidget *page_widget;
-            GtkWidget *label;
+            g_autoptr (GtkWidget) page_widget = NULL;
+            g_autoptr (GtkWidget) label = NULL;
 
             page = NAUTILUS_PROPERTY_PAGE (l->data);
 
@@ -4273,17 +4252,8 @@ append_extension_pages (NautilusPropertiesWindow *self)
             g_object_set_data (G_OBJECT (page_widget),
                                "is-extension-page",
                                GINT_TO_POINTER (TRUE));
-
-            g_object_unref (page_widget);
-            g_object_unref (label);
-
-            g_object_unref (page);
         }
-
-        g_list_free (pages);
     }
-
-    nautilus_module_extension_list_free (providers);
 }
 
 static gboolean
@@ -4400,8 +4370,8 @@ static gboolean
 should_show_open_with (NautilusPropertiesWindow *self)
 {
     NautilusFile *file;
-    char *mime_type;
-    char *extension;
+    g_autofree gchar *mime_type = NULL;
+    g_autofree gchar *extension = NULL;
     gboolean hide;
     g_autoptr (GAppInfo) app_info = NULL;
 
@@ -4450,8 +4420,6 @@ should_show_open_with (NautilusPropertiesWindow *self)
     mime_type = nautilus_file_get_mime_type (file);
     extension = nautilus_file_get_extension (file);
     hide = (g_content_type_is_unknown (mime_type) && extension == NULL);
-    g_free (mime_type);
-    g_free (extension);
 
     return !hide;
 }
@@ -4462,8 +4430,7 @@ add_clicked_cb (GtkButton *button,
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
     g_autoptr (GAppInfo) info = NULL;
-    gchar *message;
-    GError *error = NULL;
+    g_autoptr (GError) error = NULL;
 
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
 
@@ -4476,14 +4443,14 @@ add_clicked_cb (GtkButton *button,
 
     if (error != NULL)
     {
+        g_autofree gchar *message = NULL;
+
         message = g_strdup_printf (_("Error while adding “%s”: %s"),
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not add application"),
                      message,
                      GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
                      GTK_MESSAGE_ERROR);
-        g_error_free (error);
-        g_free (message);
     }
     else
     {
@@ -4497,14 +4464,14 @@ remove_clicked_cb (GtkMenuItem *item,
                    gpointer     user_data)
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
-    GError *error;
-    GAppInfo *info;
+    g_autoptr (GAppInfo) info = NULL;
 
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
 
     if (info)
     {
-        error = NULL;
+        g_autoptr (GError) error = NULL;
+
         if (!g_app_info_remove_supports_type (info,
                                               self->content_type,
                                               &error))
@@ -4513,11 +4480,9 @@ remove_clicked_cb (GtkMenuItem *item,
                          error->message,
                          GTK_WINDOW (gtk_widget_get_toplevel (GTK_WIDGET (self))),
                          GTK_MESSAGE_ERROR);
-            g_error_free (error);
         }
 
         gtk_app_chooser_refresh (GTK_APP_CHOOSER (self->app_chooser_widget));
-        g_object_unref (info);
     }
 
     g_signal_emit_by_name (nautilus_signaller_get_current (), "mime-data-changed");
@@ -4563,8 +4528,7 @@ set_as_default_clicked_cb (GtkButton *button,
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
     g_autoptr (GAppInfo) info = NULL;
-    GError *error = NULL;
-    gchar *message = NULL;
+    g_autoptr (GError) error = NULL;
 
     info = gtk_app_chooser_get_app_info (GTK_APP_CHOOSER (self->app_chooser_widget));
 
@@ -4573,6 +4537,8 @@ set_as_default_clicked_cb (GtkButton *button,
 
     if (error != NULL)
     {
+        g_autofree gchar *message = NULL;
+
         message = g_strdup_printf (_("Error while setting “%s” as default application: %s"),
                                    g_app_info_get_display_name (info), error->message);
         show_dialog (_("Could not set as default"),
@@ -4596,29 +4562,23 @@ static gboolean
 app_info_can_add (GAppInfo    *info,
                   const gchar *content_type)
 {
-    GList *recommended, *fallback;
-    gboolean retval = FALSE;
+    g_autolist (GAppInfo) recommended = NULL;
+    g_autolist (GAppInfo) fallback = NULL;
 
     recommended = g_app_info_get_recommended_for_type (content_type);
     fallback = g_app_info_get_fallback_for_type (content_type);
 
     if (g_list_find_custom (recommended, info, app_compare))
     {
-        goto out;
+        return FALSE;
     }
 
     if (g_list_find_custom (fallback, info, app_compare))
     {
-        goto out;
+        return FALSE;
     }
 
-    retval = TRUE;
-
-out:
-    g_list_free_full (recommended, g_object_unref);
-    g_list_free_full (fallback, g_object_unref);
-
-    return retval;
+    return TRUE;
 }
 
 static void
@@ -4627,14 +4587,13 @@ application_selected_cb (GtkAppChooserWidget *widget,
                          gpointer             user_data)
 {
     NautilusPropertiesWindow *self = NAUTILUS_PROPERTIES_WINDOW (user_data);
-    GAppInfo *default_app;
+    g_autoptr (GAppInfo) default_app = NULL;
 
     default_app = g_app_info_get_default_for_type (self->content_type, FALSE);
     if (default_app != NULL)
     {
         gtk_widget_set_sensitive (self->set_as_default_button,
                                   !g_app_info_equal (info, default_app));
-        g_object_unref (default_app);
     }
     gtk_widget_set_sensitive (self->add_button,
                               app_info_can_add (info, self->content_type));
@@ -4687,7 +4646,7 @@ application_chooser_apply_labels (NautilusPropertiesWindow *self)
 static void
 setup_app_chooser_area (NautilusPropertiesWindow *self)
 {
-    GAppInfo *info;
+    g_autoptr (GAppInfo) info = NULL;
 
     self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
     gtk_box_pack_start (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget, TRUE, TRUE, 0);
@@ -4712,7 +4671,6 @@ setup_app_chooser_area (NautilusPropertiesWindow *self)
     {
         application_selected_cb (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget),
                                  info, self);
-        g_object_unref (info);
     }
 
     g_signal_connect (self->app_chooser_widget,
@@ -5053,7 +5011,7 @@ nautilus_properties_window_present (GList                            *original_f
     GList *l, *next;
     GtkWindow *parent_window;
     StartupData *startup_data;
-    GList *target_files;
+    g_autolist (NautilusFile) target_files = NULL;
     NautilusPropertiesWindow *existing_window;
     g_autofree char *pending_key = NULL;
 
@@ -5126,8 +5084,6 @@ nautilus_properties_window_present (GList                            *original_f
                                      callback,
                                      callback_data,
                                      NULL);
-
-    nautilus_file_list_free (target_files);
 
     /* Wait until we can tell whether it's a directory before showing, since
      * some one-time layout decisions depend on that info.
@@ -5257,8 +5213,7 @@ set_icon (const char               *icon_uri,
           NautilusPropertiesWindow *self)
 {
     NautilusFile *file;
-    char *file_uri;
-    char *icon_path;
+    g_autofree gchar *icon_path = NULL;
 
     g_assert (icon_uri != NULL);
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
@@ -5271,6 +5226,7 @@ set_icon (const char               *icon_uri,
 
         for (l = self->original_files; l != NULL; l = l->next)
         {
+            g_autofree gchar *file_uri = NULL;
             g_autoptr (GFile) file_location = NULL;
             g_autoptr (GFile) icon_location = NULL;
             g_autofree gchar *real_icon_uri = NULL;
@@ -5290,11 +5246,7 @@ set_icon (const char               *icon_uri,
             }
 
             nautilus_file_set_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL, real_icon_uri);
-
-            g_free (file_uri);
         }
-
-        g_free (icon_path);
     }
 }
 
@@ -5303,11 +5255,8 @@ update_preview_callback (GtkFileChooser           *icon_chooser,
                          NautilusPropertiesWindow *self)
 {
     GtkWidget *preview_widget;
-    GdkPixbuf *pixbuf, *scaled_pixbuf;
+    g_autoptr (GdkPixbuf) pixbuf = NULL;
     g_autofree char *filename = NULL;
-    double scale;
-
-    pixbuf = NULL;
 
     filename = gtk_file_chooser_get_filename (icon_chooser);
     if (filename != NULL)
@@ -5322,6 +5271,9 @@ update_preview_callback (GtkFileChooser           *icon_chooser,
 
         if (gdk_pixbuf_get_width (pixbuf) > PREVIEW_IMAGE_WIDTH)
         {
+            double scale;
+            GdkPixbuf *scaled_pixbuf;
+
             scale = (double) gdk_pixbuf_get_height (pixbuf) /
                     gdk_pixbuf_get_width (pixbuf);
 
@@ -5339,11 +5291,6 @@ update_preview_callback (GtkFileChooser           *icon_chooser,
     {
         gtk_file_chooser_set_preview_widget_active (icon_chooser, FALSE);
     }
-
-    if (pixbuf != NULL)
-    {
-        g_object_unref (pixbuf);
-    }
 }
 
 static void
@@ -5351,8 +5298,6 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
                                       gint                      response,
                                       NautilusPropertiesWindow *self)
 {
-    char *uri;
-
     switch (response)
     {
         case GTK_RESPONSE_NO:
@@ -5363,6 +5308,8 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
 
         case GTK_RESPONSE_OK:
         {
+            g_autofree gchar *uri = NULL;
+
             uri = gtk_file_chooser_get_uri (GTK_FILE_CHOOSER (dialog));
             if (uri != NULL)
             {
@@ -5372,7 +5319,6 @@ custom_icon_file_chooser_response_cb (GtkDialog                *dialog,
             {
                 reset_icon (self);
             }
-            g_free (uri);
         }
         break;
 
@@ -5393,8 +5339,6 @@ select_image_button_callback (GtkWidget                *widget,
     GtkFileFilter *filter;
     GList *l;
     NautilusFile *file;
-    char *uri;
-    char *image_path;
     gboolean revert_is_sensitive;
 
     g_assert (NAUTILUS_IS_PROPERTIES_WINDOW (self));
@@ -5441,26 +5385,27 @@ select_image_button_callback (GtkWidget                *widget,
 
         if (nautilus_file_is_directory (file))
         {
+            g_autofree gchar *uri = NULL;
+            g_autofree gchar *image_path = NULL;
+
             uri = nautilus_file_get_uri (file);
 
             image_path = g_filename_from_uri (uri, NULL, NULL);
             if (image_path != NULL)
             {
                 gtk_file_chooser_set_current_folder (GTK_FILE_CHOOSER (dialog), image_path);
-                g_free (image_path);
             }
-
-            g_free (uri);
         }
     }
 
     revert_is_sensitive = FALSE;
     for (l = self->original_files; l != NULL; l = l->next)
     {
+        g_autofree gchar *image_path = NULL;
+
         file = NAUTILUS_FILE (l->data);
         image_path = nautilus_file_get_metadata (file, NAUTILUS_METADATA_KEY_CUSTOM_ICON, NULL);
         revert_is_sensitive = (image_path != NULL);
-        g_free (image_path);
 
         if (revert_is_sensitive)
         {
