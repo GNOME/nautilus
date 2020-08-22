@@ -133,6 +133,9 @@ struct _NautilusPropertiesWindow
     GtkWidget *modified_title_label;
     GtkWidget *modified_value_label;
 
+    GtkWidget *created_title_label;
+    GtkWidget *created_value_label;
+
     GtkWidget *spacer_3;
 
     GtkWidget *free_space_title_label;
@@ -2275,6 +2278,12 @@ should_show_modified_date (NautilusPropertiesWindow *self)
 }
 
 static gboolean
+should_show_created_date (NautilusPropertiesWindow *self)
+{
+    return !is_multi_file_window (self);
+}
+
+static gboolean
 should_show_trashed_on (NautilusPropertiesWindow *self)
 {
     GList *l;
@@ -2722,7 +2731,8 @@ setup_basic_page (NautilusPropertiesWindow *self)
     }
 
     if (should_show_accessed_date (self)
-        || should_show_modified_date (self))
+        || should_show_modified_date (self)
+        || should_show_created_date (self))
     {
         gtk_widget_show (self->spacer_2);
     }
@@ -2749,6 +2759,18 @@ setup_basic_page (NautilusPropertiesWindow *self)
 
         self->value_fields = g_list_prepend (self->value_fields,
                                              self->modified_value_label);
+    }
+
+    if (should_show_created_date (self))
+    {
+        gtk_widget_show (self->created_title_label);
+        gtk_widget_show (self->created_value_label);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (self->created_value_label), "file_attribute",
+                                g_strdup ("date_created_full"), g_free);
+
+        self->value_fields = g_list_prepend (self->value_fields,
+                                             self->created_value_label);
     }
 
     if (should_show_free_space (self)
@@ -5391,6 +5413,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_3);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
