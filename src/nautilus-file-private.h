@@ -67,6 +67,7 @@ struct NautilusFileDetails
 	
 	time_t atime; /* 0 is unknown */
 	time_t mtime; /* 0 is unknown */
+	time_t btime; /* 0 is unknown */
 	
 	char *symlink_name;
 	

@@ -225,11 +225,13 @@ vfs_file_get_date (NautilusFile     *file,
 {
     time_t atime;
     time_t mtime;
+    time_t btime;
     time_t recency;
     time_t trash_time;
 
     atime = nautilus_file_get_atime (file);
     mtime = nautilus_file_get_mtime (file);
+    btime = nautilus_file_get_btime (file);
     recency = nautilus_file_get_recency (file);
     trash_time = nautilus_file_get_trash_time (file);
 
@@ -259,6 +261,20 @@ vfs_file_get_date (NautilusFile     *file,
             if (date != NULL)
             {
                 *date = mtime;
+            }
+            return TRUE;
+        }
+
+        case NAUTILUS_DATE_TYPE_CREATED:
+        {
+            /* Before we have info on a file, the date is unknown. */
+            if (btime == 0)
+            {
+                return FALSE;
+            }
+            if (date != NULL)
+            {
+                *date = btime;
             }
             return TRUE;
         }
