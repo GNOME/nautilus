@@ -135,6 +135,9 @@ struct _NautilusPropertiesWindow
     GtkWidget *modified_title_label;
     GtkWidget *modified_value_label;
 
+    GtkWidget *created_title_label;
+    GtkWidget *created_value_label;
+
     GtkWidget *spacer_3;
 
     GtkWidget *free_space_title_label;
@@ -2383,6 +2386,21 @@ should_show_modified_date (NautilusPropertiesWindow *window)
 }
 
 static gboolean
+should_show_created_date (NautilusPropertiesWindow *window)
+{
+    if (!is_multi_file_window (window))
+    {
+        if (!nautilus_file_is_in_trash (get_original_file (window))
+             && !nautilus_file_is_in_recent (get_original_file (window)))
+        {
+            return TRUE;
+        }
+
+    }
+    return FALSE;
+}
+
+static gboolean
 should_show_trashed_on (NautilusPropertiesWindow *window)
 {
     GList *l;
@@ -2842,7 +2860,8 @@ setup_basic_page (NautilusPropertiesWindow *window)
     }
 
     if (should_show_accessed_date (window)
-        || should_show_modified_date (window))
+        || should_show_modified_date (window)
+        || should_show_created_date (window))
     {
         gtk_widget_show (window->spacer_2);
     }
@@ -2869,6 +2888,18 @@ setup_basic_page (NautilusPropertiesWindow *window)
 
         window->value_fields = g_list_prepend (window->value_fields,
                                                window->modified_value_label);
+    }
+
+    if (should_show_created_date (window))
+    {
+        gtk_widget_show (window->created_title_label);
+        gtk_widget_show (window->created_value_label);
+        /* Stash a copy of the file attribute name in this field for the callback's sake. */
+        g_object_set_data_full (G_OBJECT (window->created_value_label), "file_attribute",
+                                g_strdup ("date_created_full"), g_free);
+
+        window->value_fields = g_list_prepend (window->value_fields,
+                                               window->created_value_label);
     }
 
     if (should_show_free_space (window)
@@ -5608,6 +5639,8 @@ nautilus_properties_window_class_init (NautilusPropertiesWindowClass *klass)
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_2);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, modified_value_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_title_label);
+    gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, created_value_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, spacer_3);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_title_label);
     gtk_widget_class_bind_template_child (widget_class, NautilusPropertiesWindow, free_space_value_label);
