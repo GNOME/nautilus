@@ -67,7 +67,11 @@ typedef enum {
 	 */
 	NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
 	NAUTILUS_FILE_SORT_BY_SEARCH_RELEVANCE,
-	NAUTILUS_FILE_SORT_BY_RECENCY
+	NAUTILUS_FILE_SORT_BY_RECENCY,
+
+	/* The following is not used for sorting yet.
+	 */
+	NAUTILUS_FILE_SORT_BY_BTIME
 } NautilusFileSortType;	
 
 typedef enum {
@@ -196,6 +200,7 @@ gboolean                nautilus_file_can_get_size                      (Nautilu
 goffset                 nautilus_file_get_size                          (NautilusFile                   *file);
 time_t                  nautilus_file_get_mtime                         (NautilusFile                   *file);
 time_t                  nautilus_file_get_atime                         (NautilusFile                   *file);
+time_t                  nautilus_file_get_btime                         (NautilusFile                   *file);
 time_t                  nautilus_file_get_recency                       (NautilusFile                   *file);
 time_t                  nautilus_file_get_trash_time                    (NautilusFile                   *file);
 GFileType               nautilus_file_get_file_type                     (NautilusFile                   *file);
@@ -529,6 +534,7 @@ struct NautilusFile {
 typedef enum {
 	NAUTILUS_DATE_TYPE_MODIFIED,
 	NAUTILUS_DATE_TYPE_ACCESSED,
+	NAUTILUS_DATE_TYPE_CREATED,
 	NAUTILUS_DATE_TYPE_TRASHED,
 	NAUTILUS_DATE_TYPE_RECENCY
 } NautilusDateType;

@@ -146,6 +146,7 @@ get_default_sort_order (NautilusFile *file,
         "trashed_on",
         "search_relevance",
         "recency",
+        "date_created", /* Not used yet */
         NULL
     };
 

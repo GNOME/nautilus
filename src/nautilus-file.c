@@ -144,6 +144,9 @@ static GQuark attribute_name_q,
               attribute_accessed_date_q,
               attribute_date_accessed_q,
               attribute_date_accessed_full_q,
+              attribute_creation_date_q,
+              attribute_date_created_q,
+              attribute_date_created_full_q,
               attribute_mime_type_q,
               attribute_size_detail_q,
               attribute_deep_size_q,
@@ -554,6 +557,7 @@ nautilus_file_clear_info (NautilusFile *file)
     file->details->sort_order = 0;
     file->details->mtime = 0;
     file->details->atime = 0;
+    file->details->btime = 0;
     file->details->trash_time = 0;
     file->details->recency = 0;
     g_free (file->details->symlink_name);
@@ -2433,7 +2437,7 @@ update_info_internal (NautilusFile *file,
     int uid, gid;
     goffset size;
     int sort_order;
-    time_t atime, mtime;
+    time_t atime, mtime, btime;
     time_t trash_time;
     time_t recency;
     GTimeVal g_trash_time;
@@ -2765,6 +2769,7 @@ update_info_internal (NautilusFile *file,
 
     atime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_ACCESS);
     mtime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_MODIFIED);
+    btime = g_file_info_get_attribute_uint64 (info, G_FILE_ATTRIBUTE_TIME_CREATED);
     if (file->details->atime != atime ||
         file->details->mtime != mtime)
     {
@@ -2777,6 +2782,7 @@ update_info_internal (NautilusFile *file,
     }
     file->details->atime = atime;
     file->details->mtime = mtime;
+    file->details->btime = btime;
 
     if (file->details->thumbnail != NULL &&
         file->details->thumbnail_mtime != 0 &&
@@ -3151,6 +3157,12 @@ get_time (NautilusFile     *file,
         case NAUTILUS_DATE_TYPE_ACCESSED:
         {
             time = file->details->atime;
+        }
+        break;
+
+        case NAUTILUS_DATE_TYPE_CREATED:
+        {
+            time = file->details->btime;
         }
         break;
 
@@ -3729,6 +3741,16 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
+            case NAUTILUS_FILE_SORT_BY_BTIME:
+            {
+                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_CREATED);
+                if (result == 0)
+                {
+                    result = compare_by_full_path (file_1, file_2);
+                }
+            }
+            break;
+
             case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
             {
                 result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_TRASHED);
@@ -3831,6 +3853,13 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                NAUTILUS_FILE_SORT_BY_ATIME,
+                                               directories_first,
+                                               reversed);
+    }
+    else if (attribute == attribute_creation_date_q || attribute == attribute_date_created_q || attribute == attribute_date_created_full_q)
+    {
+        return nautilus_file_compare_for_sort (file_1, file_2,
+                                               NAUTILUS_FILE_SORT_BY_BTIME,
                                                directories_first,
                                                reversed);
     }
@@ -5398,6 +5427,7 @@ nautilus_file_get_date (NautilusFile     *file,
 
     g_return_val_if_fail (date_type == NAUTILUS_DATE_TYPE_ACCESSED
                           || date_type == NAUTILUS_DATE_TYPE_MODIFIED
+                          || date_type == NAUTILUS_DATE_TYPE_CREATED
                           || date_type == NAUTILUS_DATE_TYPE_TRASHED
                           || date_type == NAUTILUS_DATE_TYPE_RECENCY,
                           FALSE);
@@ -5871,6 +5901,12 @@ time_t
 nautilus_file_get_atime (NautilusFile *file)
 {
     return file->details->atime;
+}
+
+time_t
+nautilus_file_get_btime (NautilusFile *file)
+{
+    return file->details->btime;
 }
 
 time_t
@@ -7156,8 +7192,8 @@ nautilus_file_get_deep_directory_count_as_string (NautilusFile *file)
  * @file: NautilusFile representing the file in question.
  * @attribute_name: The name of the desired attribute. The currently supported
  * set includes "name", "type", "detailed_type", "mime_type", "size", "deep_size", "deep_directory_count",
- * "deep_file_count", "deep_total_count", "date_modified", "date_accessed",
- * "date_modified_full", "date_accessed_full",
+ * "deep_file_count", "deep_total_count", "date_modified", "date_accessed", "date_created",
+ * "date_modified_full", "date_accessed_full", "date_created_full",
  * "owner", "group", "permissions", "octal_permissions", "uri", "where",
  * "link_target", "volume", "free_space", "selinux_context", "trashed_on", "trashed_on_full", "trashed_orig_path",
  * "recency"
@@ -7244,6 +7280,18 @@ nautilus_file_get_string_attribute_q (NautilusFile *file,
     {
         return nautilus_file_get_date_as_string (file,
                                                  NAUTILUS_DATE_TYPE_ACCESSED,
+                                                 NAUTILUS_DATE_FORMAT_FULL);
+    }
+    if (attribute_q == attribute_date_created_q)
+    {
+        return nautilus_file_get_date_as_string (file,
+                                                 NAUTILUS_DATE_TYPE_CREATED,
+                                                 NAUTILUS_DATE_FORMAT_REGULAR);
+    }
+    if (attribute_q == attribute_date_created_full_q)
+    {
+        return nautilus_file_get_date_as_string (file,
+                                                 NAUTILUS_DATE_TYPE_CREATED,
                                                  NAUTILUS_DATE_FORMAT_FULL);
     }
     if (attribute_q == attribute_trashed_on_q)
@@ -7453,6 +7501,9 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
         attribute_q == attribute_accessed_date_q ||
         attribute_q == attribute_date_accessed_q ||
         attribute_q == attribute_date_accessed_full_q ||
+        attribute_q == attribute_creation_date_q ||
+        attribute_q == attribute_date_created_q ||
+        attribute_q == attribute_date_created_full_q ||
         attribute_q == attribute_trashed_on_q ||
         attribute_q == attribute_trashed_on_full_q ||
         attribute_q == attribute_recency_q)
@@ -9227,6 +9278,9 @@ nautilus_file_class_init (NautilusFileClass *class)
     attribute_accessed_date_q = g_quark_from_static_string ("accessed_date");
     attribute_date_accessed_q = g_quark_from_static_string ("date_accessed");
     attribute_date_accessed_full_q = g_quark_from_static_string ("date_accessed_full");
+    attribute_creation_date_q = g_quark_from_static_string ("creation_date");
+    attribute_date_created_q = g_quark_from_static_string ("date_created");
+    attribute_date_created_full_q = g_quark_from_static_string ("date_created_full");
     attribute_mime_type_q = g_quark_from_static_string ("mime_type");
     attribute_size_detail_q = g_quark_from_static_string ("size_detail");
     attribute_deep_size_q = g_quark_from_static_string ("deep_size");
