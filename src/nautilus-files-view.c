@@ -90,6 +90,11 @@
 #include "nautilus-window.h"
 #include "nautilus-tracker-utilities.h"
 
+#ifdef HAVE_LIBPORTAL
+#include <libportal/portal.h>
+#include <libportal/portal-gtk3.h>
+#endif
+
 /* Minimum starting update inverval */
 #define UPDATE_INTERVAL_MIN 100
 /* Maximum update interval */
@@ -6691,6 +6696,76 @@ can_set_wallpaper (GList *selection)
     return TRUE;
 }
 
+#ifdef HAVE_LIBPORTAL
+static void
+set_wallpaper_with_portal_cb (GObject      *source,
+                              GAsyncResult *result,
+                              gpointer      user_data)
+{
+    XdpPortal *portal = XDP_PORTAL (source);
+    g_autoptr (GError) error = NULL;
+
+    if (!xdp_portal_set_wallpaper_finish (portal, result, &error)
+        && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
+    {
+        g_warning ("Failed to set wallpaper via portal: %s", error->message);
+    }
+}
+
+static void
+set_wallpaper_with_portal (NautilusFile *file,
+                           gpointer      user_data)
+{
+    g_autoptr (XdpPortal) portal = NULL;
+    g_autofree gchar *uri = NULL;
+    XdpParent *parent = NULL;
+    GtkWidget *toplevel;
+
+    portal = xdp_portal_new ();
+    toplevel = gtk_widget_get_ancestor (GTK_WIDGET (user_data), GTK_TYPE_WINDOW);
+    parent = xdp_parent_new_gtk (GTK_WINDOW (toplevel));
+    uri = nautilus_file_get_uri (file);
+
+    xdp_portal_set_wallpaper (portal,
+                              parent,
+                              uri,
+                              XDP_WALLPAPER_FLAG_BACKGROUND | XDP_WALLPAPER_FLAG_PREVIEW,
+                              NULL,
+                              set_wallpaper_with_portal_cb,
+                              NULL);
+    xdp_parent_free (parent);
+}
+#endif /* HAVE_LIBPORTAL */
+
+static void
+set_wallpaper_fallback (NautilusFile *file,
+                        gpointer      user_data)
+{
+    char *target_uri;
+    GList *uris;
+    GFile *parent;
+    GFile *target;
+
+    /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
+     *  remote. Then set it as the current wallpaper. */
+    parent = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
+    target = g_file_get_child (parent, _("Wallpapers"));
+    g_object_unref (parent);
+    g_file_make_directory_with_parents (target, NULL, NULL);
+    target_uri = g_file_get_uri (target);
+    g_object_unref (target);
+    uris = g_list_prepend (NULL, nautilus_file_get_uri (file));
+    nautilus_file_operations_copy_move (uris,
+                                        target_uri,
+                                        GDK_ACTION_COPY,
+                                        GTK_WIDGET (user_data),
+                                        NULL,
+                                        wallpaper_copy_done_callback,
+                                        NULL);
+    g_free (target_uri);
+    g_list_free_full (uris, g_free);
+}
+
 static void
 action_set_as_wallpaper (GSimpleAction *action,
                          GVariant      *state,
@@ -6698,39 +6773,20 @@ action_set_as_wallpaper (GSimpleAction *action,
 {
     g_autolist (NautilusFile) selection = NULL;
 
-    /* Copy the item to Pictures/Wallpaper (internationalized) since it may be
-     *  remote. Then set it as the current wallpaper. */
-
     g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
 
     selection = nautilus_view_get_selection (user_data);
-
     if (can_set_wallpaper (selection))
     {
         NautilusFile *file;
-        char *target_uri;
-        GList *uris;
-        GFile *parent;
-        GFile *target;
 
         file = NAUTILUS_FILE (selection->data);
 
-        parent = g_file_new_for_path (g_get_user_special_dir (G_USER_DIRECTORY_PICTURES));
-        target = g_file_get_child (parent, _("Wallpapers"));
-        g_object_unref (parent);
-        g_file_make_directory_with_parents (target, NULL, NULL);
-        target_uri = g_file_get_uri (target);
-        g_object_unref (target);
-        uris = g_list_prepend (NULL, nautilus_file_get_uri (file));
-        nautilus_file_operations_copy_move (uris,
-                                            target_uri,
-                                            GDK_ACTION_COPY,
-                                            GTK_WIDGET (user_data),
-                                            NULL,
-                                            wallpaper_copy_done_callback,
-                                            NULL);
-        g_free (target_uri);
-        g_list_free_full (uris, g_free);
+#ifdef HAVE_LIBPORTAL
+        set_wallpaper_with_portal (file, user_data);
+#else
+        set_wallpaper_fallback (file, user_data);
+#endif
     }
 }
 
