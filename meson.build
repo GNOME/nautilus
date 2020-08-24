@@ -120,6 +120,10 @@ gmodule = dependency('gmodule-no-export-2.0', version: glib_ver)
 gnome_autoar = dependency('gnome-autoar-0', version: '>= 0.2.1')
 gnome_desktop = dependency('gnome-desktop-3.0', version: '>= 3.0.0')
 gtk = dependency('gtk+-3.0', version: '>= 3.22.27')
+libportal = []
+if get_option('libportal')
+  libportal = dependency('libportal', version: '>= 0.3')
+endif
 selinux = []
 if get_option('selinux')
   selinux = dependency('libselinux', version: '>= 2.0')
@@ -157,6 +161,7 @@ conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
+conf.set('HAVE_LIBPORTAL', get_option('libportal'))
 conf.set('HAVE_SELINUX', get_option('selinux'))
 
 #############################################################

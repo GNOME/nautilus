@@ -283,6 +283,7 @@ nautilus_deps = [
   gnome_autoar,
   gnome_desktop,
   libgd_dep,
+  libportal,
   nautilus_extension,
   selinux,
   tracker_sparql,

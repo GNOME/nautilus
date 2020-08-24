@@ -108,6 +108,21 @@
       ]
     },
     {
+      "name": "libportal",
+      "buildsystem": "meson",
+      "builddir": true,
+      "config-opts": [
+        "--libdir=/app/lib",
+        "--buildtype=debugoptimized"
+      ],
+      "sources" : [
+        {
+          "type": "git",
+          "url": "https://github.com/flatpak/libportal.git"
+        }
+      ]
+    },
+    {
       "buildsystem": "meson",
       "builddir": true,
       "name": "nautilus",
