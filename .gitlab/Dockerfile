@@ -1,6 +1,6 @@
 FROM fedora:rawhide
 
-RUN dnf install --nogpg -y dnf-plugins-core uncrustify findutils git \
+RUN dnf install --nogpg -y dnf-plugins-core uncrustify findutils git libportal-devel \
  && dnf builddep --nogpg -y nautilus \
  && dnf clean all
 
