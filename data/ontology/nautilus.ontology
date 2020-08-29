@@ -8,11 +8,12 @@ nautilus: a nrl:Namespace, nrl:Ontology ;
     nrl:prefix "nautilus" ;
     nrl:lastModified "2020-05-01T10:00:00Z" .
 
-nautilus:FileReference a rdfs:Class ;
-    rdfs:comment "A unique ID for a file, corresponding with the nie:InformationElement created by tracker-miner-fs. We use a unique ID rather than the file URL so the star will follow renames." ;
-    rdfs:subClassOf rdfs:Resource .
+nautilus:File a rdfs:Class ;
+    rdfs:comment "Represents a file on disk by its URL. Equivalent to http://tracker.api.gnome.org/ontology/v3/nfo#FileDataObject" ;
+    rdfs:subClassOf rdfs:Resource ;
+    nrl:notify true .
 
 nautilus:starred a rdf:Property ;
-    rdfs:comment "Marks resources that are starred in Nautilus." ;
-    rdfs:domain nautilus:FileReference ;
+    rdfs:comment "Marks files that are starred in Nautilus." ;
+    rdfs:domain nautilus:File ;
     rdfs:range xsd:boolean .
