@@ -83,6 +83,11 @@ enum
 
 static guint signals[LAST_SIGNAL];
 
+static const gchar *tracker_2_migrated_data_path (void)
+{
+    return g_build_filename (g_get_user_data_dir (), "nautilus", "tracker-2-starred-files", NULL);
+}
+
 static void
 start_query_or_update (TrackerSparqlConnection *db,
                        GString                 *query,
@@ -635,6 +640,97 @@ setup_database (NautilusTagManager  *self,
     return TRUE;
 }
 
+static void
+tracker_2_import_cb (GObject      *source_object,
+                     GAsyncResult *res,
+                     gpointer      user_data)
+{
+    g_autoptr (GError) error = NULL;
+    const gchar *path = tracker_2_migrated_data_path ();
+    TrackerSparqlConnection *connection = TRACKER_SPARQL_CONNECTION (source_object);
+
+    tracker_sparql_connection_update_finish (connection, res, &error);
+
+    if (!error)
+    {
+        g_autoptr (GFile) file = NULL;
+
+        DEBUG ("Data migration was successful. Removing %s", path);
+
+        file = g_file_new_for_path (path);
+        g_file_delete (file, NULL, &error);
+        if (error) {
+            g_warning ("Failed to remove %s after migration: %s", path, error->message);
+        }
+    }
+    else
+    {
+        g_warning ("Error during data migration: %s", error->message);
+    }
+}
+
+static void
+maybe_import_tracker_2_data (NautilusTagManager *self)
+{
+    g_autoptr (GKeyFile) key_file = NULL;
+    g_autoptr (GError) error = NULL;
+    const gchar *path = tracker_2_migrated_data_path ();
+    gchar **keys, **key;
+    GList *selection = NULL;
+    NautilusFile *file;
+
+    DEBUG ("Looking for Tracker 2 starred files data in %s", path);
+
+    key_file = g_key_file_new ();
+    g_key_file_load_from_file (key_file,
+                               path,
+                               G_KEY_FILE_NONE,
+                               &error);
+
+    if (error)
+    {
+        if (G_LIKELY (error->domain == G_FILE_ERROR && error->code == G_FILE_ERROR_NOENT))
+        {
+            DEBUG ("No Tracker 2 data to import.");
+            return;
+        }
+
+        g_warning ("Failed to read %s: %s", path, error->message);
+        return;
+    }
+
+    keys = g_key_file_get_keys (key_file, "Starred Files", NULL, &error);
+
+    if (error)
+    {
+        g_warning ("Failed to read %s: %s", path, error->message);
+        return;
+    }
+
+    for (key = keys; *key != NULL; key ++)
+    {
+        file = nautilus_file_get_by_uri (*key);
+
+        if (file)
+        {
+            DEBUG ("Tracker 2 migration: starring %s", *key);
+            selection = g_list_prepend (selection, file);
+        }
+        else
+        {
+            DEBUG ("Tracker 2 migration: couldn't get NautilusFile for %s", *key);
+        }
+    }
+
+    nautilus_tag_manager_star_files (self,
+                                     G_OBJECT (self),
+                                     selection,
+                                     tracker_2_import_cb,
+                                     self->cancellable);
+
+    g_free (keys);
+}
+
 /* Initialize the tag mananger. */
 void
 nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
@@ -651,6 +747,8 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
     }
 
     self->notifier = tracker_sparql_connection_create_notifier (self->db);
+
+    maybe_import_tracker_2_data (self);
 
     nautilus_tag_manager_query_starred_files (self, cancellable);
 
