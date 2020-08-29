@@ -1351,6 +1351,8 @@ nautilus_application_startup_common (NautilusApplication *self)
 
     nautilus_init_application_actions (self);
 
+    nautilus_tag_manager_maybe_migrate_tracker2_data (priv->tag_manager);
+
     nautilus_profile_end (NULL);
 
     g_signal_connect (self, "notify::active-window", G_CALLBACK (on_application_active_window_changed), NULL);

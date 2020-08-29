@@ -54,4 +54,6 @@ gboolean            nautilus_tag_manager_file_is_starred   (NautilusTagManager *
 gboolean            nautilus_tag_manager_can_star_contents (NautilusTagManager *self,
                                                             GFile              *directory);
 
+void                nautilus_tag_manager_maybe_migrate_tracker2_data (NautilusTagManager *self);
+
 G_END_DECLS

@@ -393,7 +393,7 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
                          "    nie:mimeType ?mime");
     }
 
-    if (tracker->fts_enabled)
+    if (tracker->fts_enabled && *search_text)
     {
         /* Use fts:match only for content search to not lose some filename results due to stop words. */
         g_autofree gchar *filtered_search_text;

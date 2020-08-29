@@ -25,6 +25,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_TAG_MANAGER
 #include "nautilus-debug.h"
 
+#include <gio/gunixinputstream.h>
 #include <tracker-sparql.h>
 
 #include "config.h"
@@ -83,6 +84,14 @@ enum
     "}"
 
 static guint signals[LAST_SIGNAL];
+
+/* Limit to 10MB output from Tracker -- surely, nobody has over a million starred files. */
+#define TRACKER2_MAX_IMPORT_BYTES 10 * 1024 * 1024
+
+static const gchar *tracker2_migration_stamp (void)
+{
+    return g_build_filename (g_get_user_data_dir (), "nautilus", "tracker2-migration-complete", NULL);
+}
 
 static void
 start_query_or_update (TrackerSparqlConnection *db,
@@ -689,4 +698,168 @@ nautilus_tag_manager_can_star_contents (NautilusTagManager *tag_manager,
      * See https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/553#note_903108
      */
     return g_file_has_prefix (directory, tag_manager->home) || g_file_equal (directory, tag_manager->home);
+}
+
+static void
+process_tracker2_data_cb (GObject      *source_object,
+                          GAsyncResult *res,
+                          gpointer      user_data)
+{
+    NautilusTagManager *self = NAUTILUS_TAG_MANAGER (source_object);
+    const gchar *path = tracker2_migration_stamp ();
+    g_autoptr (GError) error = NULL;
+
+    tracker_sparql_connection_update_finish (self->db, res, &error);
+
+    if (!error)
+    {
+        DEBUG ("Data migration was successful. Creating stamp %s", path);
+
+        g_file_set_contents (path, "", -1, &error);
+        if (error)
+        {
+            g_warning ("Failed to create %s after migration: %s", path, error->message);
+        }
+    }
+    else
+    {
+        g_warning ("Error during data migration: %s", error->message);
+    }
+}
+
+static void
+process_tracker2_data (NautilusTagManager *self,
+                       GBytes             *key_file_data)
+{
+    g_autoptr (GKeyFile) key_file = NULL;
+    g_autoptr (GError) error = NULL;
+    gchar **groups, **group;
+    GList *selection = NULL;
+    NautilusFile *file;
+
+    key_file = g_key_file_new ();
+    g_key_file_load_from_bytes (key_file,
+                                key_file_data,
+                                G_KEY_FILE_NONE,
+                                &error);
+    g_bytes_unref (key_file_data);
+
+    if (error)
+    {
+        g_warning ("Tracker 2 migration: Failed to parse key file data: %s", error->message);
+        return;
+    }
+
+    groups = g_key_file_get_groups (key_file, NULL);
+
+    for (group = groups; *group != NULL; group++)
+    {
+        file = nautilus_file_get_by_uri (*group);
+
+        if (file)
+        {
+            DEBUG ("Tracker 2 migration: starring %s", *group);
+            selection = g_list_prepend (selection, file);
+        }
+        else
+        {
+            DEBUG ("Tracker 2 migration: couldn't get NautilusFile for %s", *group);
+        }
+    }
+
+    nautilus_tag_manager_star_files (self,
+                                     G_OBJECT (self),
+                                     selection,
+                                     process_tracker2_data_cb,
+                                     self->cancellable);
+
+    g_free (groups);
+}
+
+static void
+export_tracker2_data_cb (GObject      *source_object,
+                         GAsyncResult *res,
+                         gpointer      user_data)
+{
+    GInputStream *stream = G_INPUT_STREAM (source_object);
+    NautilusTagManager *self = NAUTILUS_TAG_MANAGER (user_data);
+    g_autoptr (GError) error = NULL;
+    GBytes *key_file_data;
+
+    key_file_data = g_input_stream_read_bytes_finish (stream, res, &error);
+
+    if (key_file_data)
+    {
+        process_tracker2_data (self, key_file_data);
+    }
+    else
+    {
+        g_warning ("Tracker2 migration: Failed to read data from pipe: %s", error->message);
+    }
+}
+
+static void
+child_watch_cb (GPid     pid,
+                gint     status,
+                gpointer user_data)
+{
+    DEBUG ("Child %" G_PID_FORMAT " exited %s", pid,
+           g_spawn_check_exit_status (status, NULL) ? "normally" : "abnormally");
+    g_spawn_close_pid (pid);
+}
+
+static void
+export_tracker2_data (NautilusTagManager *self)
+{
+    gchar *argv[] = {"tracker3", "export", "--2to3", "files-starred", "--keyfile", NULL};
+    gint stdout_fd;
+    GPid child_pid;
+    g_autoptr (GError) error = NULL;
+    gboolean success;
+    g_autoptr (GInputStream) stream = NULL;
+    GSpawnFlags flags;
+
+    flags = G_SPAWN_DO_NOT_REAP_CHILD |
+            G_SPAWN_STDERR_TO_DEV_NULL |
+            G_SPAWN_SEARCH_PATH_FROM_ENVP;
+    success = g_spawn_async_with_pipes (NULL,
+                                        argv,
+                                        NULL,
+                                        flags,
+                                        NULL,
+                                        NULL,
+                                        &child_pid,
+                                        NULL,
+                                        &stdout_fd,
+                                        NULL,
+                                        &error);
+    if (!success)
+    {
+        g_warning ("Tracker 2 migration: Couldn't run `tracker3`: %s", error->message);
+        return;
+    }
+
+    g_child_watch_add (child_pid, child_watch_cb, NULL);
+
+    stream = g_unix_input_stream_new (stdout_fd, TRUE);
+    g_input_stream_read_bytes_async (stream,
+                                     TRACKER2_MAX_IMPORT_BYTES,
+                                     G_PRIORITY_LOW,
+                                     self->cancellable,
+                                     export_tracker2_data_cb,
+                                     self);
+}
+
+void
+nautilus_tag_manager_maybe_migrate_tracker2_data (NautilusTagManager *self)
+{
+    if (g_file_test (tracker2_migration_stamp (), G_FILE_TEST_EXISTS))
+    {
+        DEBUG ("Tracker 2 migration: already completed.");
+    }
+    else
+    {
+        DEBUG ("Tracker 2 migration: starting.");
+        export_tracker2_data (self);
+    }
 }
