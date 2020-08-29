@@ -33,19 +33,14 @@ struct _NautilusTagManager
 {
     GObject object;
 
-    gboolean tracker_ok;
-    TrackerSparqlConnection *local;
-    TrackerSparqlConnection *miner_fs;
-    const gchar *miner_fs_busname;
+    gboolean database_ok;
+    TrackerSparqlConnection *db;
     TrackerNotifier *notifier;
 
     TrackerSparqlStatement *query_starred_files;
-    TrackerSparqlStatement *query_updated_file_url;
+    TrackerSparqlStatement *query_file_is_starred;
 
-    /* Map of URI -> tracker ID */
     GHashTable *starred_file_uris;
-    /* Map of tracker ID -> URI */
-    GHashTable *starred_file_ids;
 
     GCancellable *cancellable;
 };
@@ -60,21 +55,10 @@ typedef enum
 
 typedef struct
 {
-    GTask *task;
-    GList *selection;
-    GHashTable *ids;
-    GObject *object;
-    GAsyncReadyCallback callback;
-    GCancellable *cancellable;
-} InsertTaskData;
-
-typedef struct
-{
     NautilusTagManager *tag_manager;
     GTask *task;
     GList *selection;
     gboolean star;
-    GHashTable *ids;
 } UpdateData;
 
 enum
@@ -84,71 +68,23 @@ enum
 };
 
 #define QUERY_STARRED_FILES \
-    "SELECT ?file_url ?content_id " \
+    "SELECT ?file " \
     "{ " \
-    "    ?content_urn a nautilus:FileReference ; " \
+    "    ?file a nautilus:File ; " \
     "        nautilus:starred true . " \
-    "    SERVICE <dbus:%s> { " \
-    "        ?content_urn nie:isStoredAs ?file_url . " \
-    "        BIND (tracker:id (?content_urn) AS ?content_id) " \
-    "    } " \
     "}"
 
-#define QUERY_UPDATED_FILE_URL \
-    "SELECT ?file_url EXISTS { ?content_urn nautilus:starred true } AS ?starred" \
+#define QUERY_FILE_IS_STARRED \
+    "ASK " \
     "{ " \
-    "    SERVICE <dbus:%s> { " \
-    "        ?content_urn nie:isStoredAs ?file_url . " \
-    "        FILTER (tracker:id(?content_urn) = ~id) " \
-    "    }" \
+    "    ~file a nautilus:File ; " \
+    "        nautilus:starred true . " \
     "}"
-
 
 static guint signals[LAST_SIGNAL];
 
 static void
-destroy_insert_task_data (gpointer data)
-{
-    InsertTaskData *task_data;
-
-    task_data = data;
-
-    nautilus_file_list_free (task_data->selection);
-    g_free (data);
-}
-
-static GString *
-add_selection_filter (GList   *selection,
-                      GString *query)
-{
-    NautilusFile *file;
-    GList *l;
-
-    g_string_append (query, " FILTER(?file_url IN (");
-
-    for (l = selection; l != NULL; l = l->next)
-    {
-        g_autofree gchar *uri = NULL;
-        g_autofree gchar *escaped_uri = NULL;
-
-        file = l->data;
-
-        uri = nautilus_file_get_uri (file);
-        g_string_append_printf (query, "<%s>", uri);
-
-        if (l->next != NULL)
-        {
-            g_string_append (query, ", ");
-        }
-    }
-
-    g_string_append (query, "))");
-
-    return query;
-}
-
-static void
-start_query_or_update (TrackerSparqlConnection *local,
+start_query_or_update (TrackerSparqlConnection *db,
                        GString                 *query,
                        GAsyncReadyCallback      callback,
                        gpointer                 user_data,
@@ -157,7 +93,7 @@ start_query_or_update (TrackerSparqlConnection *local,
 {
     g_autoptr (GError) error = NULL;
 
-    if (!local)
+    if (!db)
     {
         g_message ("nautilus-tag-manager: No Tracker connection");
         return;
@@ -165,7 +101,7 @@ start_query_or_update (TrackerSparqlConnection *local,
 
     if (is_query)
     {
-        tracker_sparql_connection_query_async (local,
+        tracker_sparql_connection_query_async (db,
                                                query->str,
                                                cancellable,
                                                callback,
@@ -173,7 +109,7 @@ start_query_or_update (TrackerSparqlConnection *local,
     }
     else
     {
-        tracker_sparql_connection_update_async (local,
+        tracker_sparql_connection_update_async (db,
                                                 query->str,
                                                 cancellable,
                                                 callback,
@@ -186,58 +122,21 @@ on_update_callback (GObject      *object,
                     GAsyncResult *result,
                     gpointer      user_data)
 {
-    TrackerSparqlConnection *local;
+    TrackerSparqlConnection *db;
     GError *error;
     UpdateData *data;
-    gint64 *new_id;
-    GList *l;
-    gchar *uri;
 
     data = user_data;
 
     error = NULL;
 
-    local = TRACKER_SPARQL_CONNECTION (object);
+    db = TRACKER_SPARQL_CONNECTION (object);
 
-    tracker_sparql_connection_update_finish (local, result, &error);
+    tracker_sparql_connection_update_finish (db, result, &error);
 
     if (error == NULL)
     {
-        for (l = data->selection; l != NULL; l = l->next)
-        {
-            uri = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
-
-            if (data->star)
-            {
-                if (g_hash_table_contains (data->ids, uri))
-                {
-                    new_id = g_new0 (gint64, 1);
-
-                    *new_id = GPOINTER_TO_INT (g_hash_table_lookup (data->ids, uri));
-                    g_hash_table_insert (data->tag_manager->starred_file_uris,
-                                         nautilus_file_get_uri (NAUTILUS_FILE (l->data)),
-                                         new_id);
-                    g_hash_table_insert (data->tag_manager->starred_file_ids,
-                                         new_id,
-                                         nautilus_file_get_uri (NAUTILUS_FILE (l->data)));
-                }
-                else
-                {
-                    g_message ("Ignoring star request for %s as we didn't get the resource ID from Tracker.", uri);
-                }
-            }
-            else
-            {
-                new_id = g_hash_table_lookup (data->tag_manager->starred_file_uris, uri);
-                if (new_id)
-                {
-                    g_hash_table_remove (data->tag_manager->starred_file_uris, uri);
-                    g_hash_table_remove (data->tag_manager->starred_file_ids, new_id);
-                }
-            }
-
-            g_free (uri);
-        }
+        /* FIXME: make sure data->tag_manager->starred_file_uris is up to date */
 
         if (!nautilus_file_undo_manager_is_operating ())
         {
@@ -265,10 +164,6 @@ on_update_callback (GObject      *object,
         g_object_unref (data->task);
     }
 
-    if (data->ids)
-    {
-        g_hash_table_destroy (data->ids);
-    }
     nautilus_file_list_free (data->selection);
     g_free (data);
 }
@@ -329,7 +224,6 @@ on_get_starred_files_cursor_callback (GObject      *object,
 {
     TrackerSparqlCursor *cursor;
     const gchar *url;
-    gint64 *id;
     gboolean success;
     NautilusTagManager *self;
     GList *changed_files;
@@ -345,20 +239,24 @@ on_get_starred_files_cursor_callback (GObject      *object,
         return;
     }
 
-    id = g_new0 (gint64, 1);
-
     url = tracker_sparql_cursor_get_string (cursor, 0, NULL);
-    *id = tracker_sparql_cursor_get_integer (cursor, 1);
 
-    g_hash_table_insert (self->starred_file_uris, g_strdup (url), id);
-    g_hash_table_insert (self->starred_file_ids, id, g_strdup (url));
+    g_hash_table_add (self->starred_file_uris, g_strdup (url));
 
     file = nautilus_file_get_by_uri (url);
-    changed_files = g_list_prepend (NULL, file);
 
-    g_signal_emit_by_name (self, "starred-changed", changed_files);
+    if (file)
+    {
+        changed_files = g_list_prepend (NULL, file);
 
-    nautilus_file_list_free (changed_files);
+        g_signal_emit_by_name (self, "starred-changed", changed_files);
+
+        nautilus_file_list_free (changed_files);
+    }
+    else
+    {
+        DEBUG ("File %s is starred but not found", url);
+    }
 
     tracker_sparql_cursor_next_async (cursor,
                                       self->cancellable,
@@ -403,7 +301,7 @@ static void
 nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
                                           GCancellable       *cancellable)
 {
-    if (!self->tracker_ok)
+    if (!self->database_ok)
     {
         g_message ("nautilus-tag-manager: No Tracker connection");
         return;
@@ -417,227 +315,67 @@ nautilus_tag_manager_query_starred_files (NautilusTagManager *self,
                                             self);
 }
 
-static gpointer
-nautilus_tag_manager_gpointer_task_finish (GObject       *source_object,
-                                           GAsyncResult  *res,
-                                           GError       **error)
-{
-    g_return_val_if_fail (g_task_is_valid (res, source_object), FALSE);
-
-    return g_task_propagate_pointer (G_TASK (res), error);
-}
-
 static GString *
 nautilus_tag_manager_delete_tag (NautilusTagManager *self,
-                                 GList              *selection,
-                                 GString            *query)
+                                 GList              *selection)
 {
-    g_string_append_printf (query,
-                            "DELETE { "
-                            "    ?content_urn a nautilus:FileReference ; "
-                            "        nautilus:starred true . "
-                            "} "
-                            "WHERE { "
-                            "  SERVICE <dbus:%s> { "
-                            "    ?content_urn nie:isStoredAs ?file_url . ",
-                            self->miner_fs_busname);
+    GString *query;
+    NautilusFile *file;
+    GList *l;
 
-    query = add_selection_filter (selection, query);
+    query = g_string_new ("DELETE DATA {");
 
-    g_string_append (query, " } }\n");
+    for (l = selection; l != NULL; l = l->next)
+    {
+        g_autofree gchar *uri = NULL;
+
+        file = l->data;
+
+        uri = nautilus_file_get_uri (file);
+        g_string_append_printf (query,
+                                "    <%s> a nautilus:File ; "
+                                "        nautilus:starred true . ",
+                                uri);
+    }
+
+    g_string_append (query, "}");
 
     return query;
 }
 
 static GString *
 nautilus_tag_manager_insert_tag (NautilusTagManager *self,
-                                 GList              *selection,
-                                 GString            *query)
+                                 GList              *selection)
 {
-    g_string_append_printf (query,
-                            "INSERT { "
-                            "    ?content_urn a nautilus:FileReference . "
-                            "        ?content_urn nautilus:starred true . "
-                            "} WHERE { "
-                            "  SERVICE <dbus:%s> { "
-                            "    ?content_urn nie:isStoredAs ?file_url . ",
-                            self->miner_fs_busname);
+    GString *query;
+    NautilusFile *file;
+    GList *l;
 
-    query = add_selection_filter (selection, query);
+    query = g_string_new ("INSERT DATA {");
 
-    g_string_append (query, "} }\n");
+    for (l = selection; l != NULL; l = l->next)
+    {
+        g_autofree gchar *uri = NULL;
+
+        file = l->data;
+
+        uri = nautilus_file_get_uri (file);
+        g_string_append_printf (query,
+                                "    <%s> a nautilus:File ; "
+                                "        nautilus:starred true . ",
+                                uri);
+    }
+
+    g_string_append (query, "}");
 
     return query;
 }
 
 gboolean
 nautilus_tag_manager_file_is_starred (NautilusTagManager *self,
-                                      const gchar        *file_name)
+                                      const gchar        *file_uri)
 {
-    return g_hash_table_contains (self->starred_file_uris, file_name);
-}
-
-static void
-on_get_file_ids_for_urls_cursor_callback (GObject      *object,
-                                          GAsyncResult *result,
-                                          gpointer      user_data)
-{
-    TrackerSparqlCursor *cursor;
-    GTask *task;
-    gint64 *id;
-    const gchar *url;
-    gboolean success;
-    GList *l;
-    gchar *file_url;
-    InsertTaskData *data;
-
-    task = user_data;
-    data = g_task_get_task_data (task);
-
-    cursor = TRACKER_SPARQL_CURSOR (object);
-
-    success = get_query_status (cursor, result, GET_IDS_FOR_URLS, task);
-    if (!success)
-    {
-        return;
-    }
-
-    id = g_new0 (gint64, 1);
-
-    url = tracker_sparql_cursor_get_string (cursor, 0, NULL);
-    *id = tracker_sparql_cursor_get_integer (cursor, 1);
-
-    for (l = data->selection; l != NULL; l = l->next)
-    {
-        file_url = nautilus_file_get_uri (NAUTILUS_FILE (l->data));
-
-        if (g_strcmp0 (file_url, url) == 0)
-        {
-            g_hash_table_insert (data->ids,
-                                 g_strdup (url),
-                                 id);
-
-            g_free (file_url);
-
-            break;
-        }
-
-        g_free (file_url);
-    }
-
-    tracker_sparql_cursor_next_async (cursor,
-                                      g_task_get_cancellable (task),
-                                      on_get_file_ids_for_urls_cursor_callback,
-                                      task);
-}
-
-
-static void
-on_get_file_ids_for_urls_query_callback (GObject      *object,
-                                         GAsyncResult *result,
-                                         gpointer      user_data)
-{
-    TrackerSparqlCursor *cursor;
-    g_autoptr (GError) error = NULL;
-    TrackerSparqlConnection *local;
-    GTask *task;
-
-    local = TRACKER_SPARQL_CONNECTION (object);
-    task = user_data;
-
-    cursor = tracker_sparql_connection_query_finish (local, result, &error);
-
-    if (error != NULL)
-    {
-        if (error->code != G_IO_ERROR_CANCELLED)
-        {
-            g_warning ("Error on getting id for url: %s", error->message);
-            g_task_return_pointer (task, g_task_get_task_data (task), NULL);
-            g_object_unref (task);
-        }
-    }
-    else
-    {
-        tracker_sparql_cursor_next_async (cursor,
-                                          g_task_get_cancellable (task),
-                                          on_get_file_ids_for_urls_cursor_callback,
-                                          user_data);
-    }
-}
-
-static void
-nautilus_tag_manager_get_file_ids_for_urls (NautilusTagManager *self,
-                                            GList              *selection,
-                                            GTask              *task)
-{
-    GString *query;
-
-    query = g_string_new ("");
-    g_string_append_printf (query, "SELECT ?file_url ?content_id "
-                            "WHERE { "
-                            "  SERVICE <dbus:%s> { "
-                            "    ?content_urn nie:isStoredAs ?file_url . "
-                            "    BIND (tracker:id (?content_urn) AS ?content_id) ",
-                            self->miner_fs_busname);
-
-    query = add_selection_filter (selection, query);
-
-    g_string_append (query, "} }\n");
-
-    start_query_or_update (self->local,
-                           query,
-                           on_get_file_ids_for_urls_query_callback,
-                           task,
-                           TRUE,
-                           g_task_get_cancellable (task));
-
-    g_string_free (query, TRUE);
-}
-
-static void
-on_star_files_callback (GObject      *object,
-                        GAsyncResult *res,
-                        gpointer      user_data)
-{
-    NautilusTagManager *self;
-    GString *query;
-    InsertTaskData *data;
-    g_autoptr (GError) error = NULL;
-    GTask *task;
-    UpdateData *update_data;
-
-    self = NAUTILUS_TAG_MANAGER (object);
-
-    data = nautilus_tag_manager_gpointer_task_finish (object, res, &error);
-
-    task = g_task_new (data->object, data->cancellable, data->callback, NULL);
-
-    query = g_string_new ("");
-
-    query = nautilus_tag_manager_insert_tag (self,
-                                             data->selection,
-                                             query);
-
-    update_data = g_new0 (UpdateData, 1);
-    update_data->task = task;
-    update_data->tag_manager = self;
-    update_data->selection = nautilus_file_list_copy (data->selection);
-    update_data->star = TRUE;
-    update_data->ids = data->ids;
-
-    /* the ids hash table is now owned by the update_data,
-     * so it will be freed by it.
-     */
-    destroy_insert_task_data (data);
-
-    start_query_or_update (self->local,
-                           query,
-                           on_update_callback,
-                           update_data,
-                           FALSE,
-                           g_task_get_cancellable (task));
-
-    g_string_free (query, TRUE);
+    return g_hash_table_contains (self->starred_file_uris, file_uri);
 }
 
 void
@@ -647,27 +385,31 @@ nautilus_tag_manager_star_files (NautilusTagManager  *self,
                                  GAsyncReadyCallback  callback,
                                  GCancellable        *cancellable)
 {
+    GString *query;
+    g_autoptr (GError) error = NULL;
     GTask *task;
-    InsertTaskData *data;
-
-    data = g_new0 (InsertTaskData, 1);
-    data->selection = nautilus_file_list_copy (selection);
-    data->ids = g_hash_table_new_full (g_str_hash,
-                                       g_str_equal,
-                                       (GDestroyNotify) g_free,
-                                       (GDestroyNotify) g_free);
-    data->callback = callback;
-    data->object = object;
-    data->cancellable = cancellable;
+    UpdateData *update_data;
 
     DEBUG ("Starring %i files", g_list_length (selection));
 
-    task = g_task_new (self, cancellable, on_star_files_callback, NULL);
-    g_task_set_task_data (task,
-                          data,
-                          NULL);
+    task = g_task_new (object, cancellable, callback, NULL);
 
-    nautilus_tag_manager_get_file_ids_for_urls (self, selection, task);
+    query = nautilus_tag_manager_insert_tag (self, selection);
+
+    update_data = g_new0 (UpdateData, 1);
+    update_data->task = task;
+    update_data->tag_manager = self;
+    update_data->selection = nautilus_file_list_copy (selection);
+    update_data->star = TRUE;
+
+    start_query_or_update (self->db,
+                           query,
+                           on_update_callback,
+                           update_data,
+                           FALSE,
+                           cancellable);
+
+    g_string_free (query, TRUE);
 }
 
 void
@@ -685,11 +427,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
 
     task = g_task_new (object, cancellable, callback, NULL);
 
-    query = g_string_new ("");
-
-    query = nautilus_tag_manager_delete_tag (self,
-                                             selection,
-                                             query);
+    query = nautilus_tag_manager_delete_tag (self, selection);
 
     update_data = g_new0 (UpdateData, 1);
     update_data->task = task;
@@ -697,7 +435,7 @@ nautilus_tag_manager_unstar_files (NautilusTagManager  *self,
     update_data->selection = nautilus_file_list_copy (selection);
     update_data->star = FALSE;
 
-    start_query_or_update (self->local,
+    start_query_or_update (self->db,
                            query,
                            on_update_callback,
                            update_data,
@@ -718,12 +456,10 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
     NautilusTagManager *self;
     int i;
     const gchar *file_url;
-    const gchar *new_file_url;
     GError *error = NULL;
     TrackerSparqlCursor *cursor;
     gboolean query_has_results = FALSE;
-    gboolean is_starred;
-    gint64 id, *new_id;
+    gboolean starred;
     GList *changed_files;
     NautilusFile *changed_file;
 
@@ -733,14 +469,13 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
     {
         event = g_ptr_array_index (events, i);
 
-        id = tracker_notifier_event_get_id (event);
-        file_url = g_hash_table_lookup (self->starred_file_ids, &id);
+        file_url = tracker_notifier_event_get_urn (event);
         changed_file = NULL;
 
-        DEBUG ("Got event for tracker resource id %" G_GINT64_FORMAT, id);
+        DEBUG ("Got event for file %s", file_url);
 
-        tracker_sparql_statement_bind_int (self->query_updated_file_url, "id", tracker_notifier_event_get_id (event));
-        cursor = tracker_sparql_statement_execute (self->query_updated_file_url,
+        tracker_sparql_statement_bind_string (self->query_file_is_starred, "file", file_url);
+        cursor = tracker_sparql_statement_execute (self->query_file_is_starred,
                                                    NULL,
                                                    &error);
 
@@ -749,66 +484,32 @@ on_tracker_notifier_events (TrackerNotifier *notifier,
             query_has_results = tracker_sparql_cursor_next (cursor, NULL, &error);
         }
 
-        if (error || !cursor)
+        if (error || !cursor || !query_has_results)
         {
-            g_warning ("Couldn't query the Tracker Store: '%s'", error ? error->message : "(null error)");
+            g_warning ("Couldn't query the starred files database: '%s'", error ? error->message : "(null error)");
             g_clear_error (&error);
             return;
         }
 
-        if (!query_has_results)
+        starred = tracker_sparql_cursor_get_boolean (cursor, 0);
+        if (starred)
         {
-            if (g_hash_table_contains (self->starred_file_ids, &id))
+            gboolean inserted = g_hash_table_add (self->starred_file_uris, g_strdup (file_url));
+
+            if (inserted)
             {
-                /* The file was deleted from the filesystem or is no longer indexed by Tracker. */
-                file_url = g_hash_table_lookup (self->starred_file_ids, &id);
-                DEBUG ("Removing %s from starred files list, as id %" G_GINT64_FORMAT " no longer present in Tracker index. ", file_url, id);
-
+                DEBUG ("Added %s to starred files list", file_url);
                 changed_file = nautilus_file_get_by_uri (file_url);
-
-                g_hash_table_remove (self->starred_file_ids, &id);
-                g_hash_table_remove (self->starred_file_uris, file_url);
             }
         }
         else
         {
-            new_file_url = tracker_sparql_cursor_get_string (cursor, 0, NULL);
-            is_starred = tracker_sparql_cursor_get_boolean (cursor, 1);
+            gboolean removed = g_hash_table_remove (self->starred_file_uris, file_url);
 
-            if (g_hash_table_contains (self->starred_file_ids, &id))
+            if (removed)
             {
-                if (is_starred && strcmp (file_url, new_file_url) != 0)
-                {
-                    new_id = g_new0 (gint64, 1);
-                    *new_id = id;
-
-                    DEBUG ("Starred file changed URI from %s to %s.", file_url, new_file_url);
-                    g_hash_table_remove (self->starred_file_uris, file_url);
-
-                    g_hash_table_insert (self->starred_file_ids, new_id, g_strdup (new_file_url));
-                    g_hash_table_insert (self->starred_file_uris, g_strdup (new_file_url), new_id);
-
-                    changed_file = nautilus_file_get_by_uri (new_file_url);
-                }
-                else if (!is_starred)
-                {
-                    DEBUG ("File is no longer starred: %s", file_url);
-                    g_hash_table_remove (self->starred_file_uris, file_url);
-                    g_hash_table_remove (self->starred_file_ids, &id);
-
-                    changed_file = nautilus_file_get_by_uri (new_file_url);
-                }
-            }
-            else if (is_starred)
-            {
-                DEBUG ("File is now starred: %s", new_file_url);
-                new_id = g_new0 (gint64, 1);
-                *new_id = id;
-
-                g_hash_table_insert (self->starred_file_ids, new_id, g_strdup (new_file_url));
-                g_hash_table_insert (self->starred_file_uris, g_strdup (new_file_url), new_id);
-
-                changed_file = nautilus_file_get_by_uri (new_file_url);
+                DEBUG ("Removed %s from starred files list", file_url);
+                changed_file = nautilus_file_get_by_uri (file_url);
             }
         }
 
@@ -840,12 +541,10 @@ nautilus_tag_manager_finalize (GObject *object)
     }
 
     g_clear_object (&self->notifier);
-    g_clear_object (&self->local);
-    g_clear_object (&self->miner_fs);
-    g_clear_object (&self->query_updated_file_url);
+    g_clear_object (&self->db);
+    g_clear_object (&self->query_file_is_starred);
     g_clear_object (&self->query_starred_files);
 
-    g_hash_table_destroy (self->starred_file_ids);
     g_hash_table_destroy (self->starred_file_uris);
 
     G_OBJECT_CLASS (nautilus_tag_manager_parent_class)->finalize (object);
@@ -889,18 +588,17 @@ nautilus_tag_manager_get (void)
 }
 
 static gboolean
-setup_tracker_connections (NautilusTagManager  *self,
-                           GCancellable        *cancellable,
-                           GError             **error)
+setup_database (NautilusTagManager  *self,
+                GCancellable        *cancellable,
+                GError             **error)
 {
     const gchar *datadir;
-    gchar *query_with_busname;
     g_autofree gchar *store_path = NULL;
     g_autofree gchar *ontology_path = NULL;
     g_autoptr (GFile) store = NULL;
     g_autoptr (GFile) ontology = NULL;
 
-    /* Connect to private database to store nautilus:starred property. */
+    /* Open private database to store nautilus:starred property. */
 
     datadir = NAUTILUS_DATADIR;
 
@@ -910,44 +608,32 @@ setup_tracker_connections (NautilusTagManager  *self,
     store = g_file_new_for_path (store_path);
     ontology = g_file_new_for_path (ontology_path);
 
-    self->local = tracker_sparql_connection_new (TRACKER_SPARQL_CONNECTION_FLAGS_NONE,
-                                                 store,
-                                                 ontology,
-                                                 cancellable,
-                                                 error);
+    self->db = tracker_sparql_connection_new (TRACKER_SPARQL_CONNECTION_FLAGS_NONE,
+                                              store,
+                                              ontology,
+                                              cancellable,
+                                              error);
 
     if (*error)
     {
         return FALSE;
     }
-
-    /* Connect to Tracker filesystem index to follow file renames. */
-    self->miner_fs = nautilus_tracker_get_miner_fs_connection (error);
-    if (*error)
-    {
-        return FALSE;
-    }
-    self->miner_fs_busname = nautilus_tracker_get_miner_fs_busname (NULL);
 
     /* Prepare reusable queries. */
-    query_with_busname = g_strdup_printf (QUERY_UPDATED_FILE_URL, self->miner_fs_busname);
-    self->query_updated_file_url = tracker_sparql_connection_query_statement (self->local,
-                                                                              query_with_busname,
-                                                                              cancellable,
-                                                                              error);
-    g_free (query_with_busname);
+    self->query_file_is_starred = tracker_sparql_connection_query_statement (self->db,
+                                                                             QUERY_FILE_IS_STARRED,
+                                                                             cancellable,
+                                                                             error);
 
     if (*error)
     {
         return FALSE;
     }
 
-    query_with_busname = g_strdup_printf (QUERY_STARRED_FILES, self->miner_fs_busname);
-    self->query_starred_files = tracker_sparql_connection_query_statement (self->local,
-                                                                           query_with_busname,
+    self->query_starred_files = tracker_sparql_connection_query_statement (self->db,
+                                                                           QUERY_STARRED_FILES,
                                                                            cancellable,
                                                                            error);
-    g_free (query_with_busname);
 
     if (*error)
     {
@@ -964,7 +650,7 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
 {
     g_autoptr (GError) error = NULL;
 
-    self->tracker_ok = setup_tracker_connections (self, cancellable, &error);
+    self->database_ok = setup_database (self, cancellable, &error);
 
     if (error)
     {
@@ -972,7 +658,7 @@ nautilus_tag_manager_set_cancellable (NautilusTagManager *self,
         return;
     }
 
-    self->notifier = tracker_sparql_connection_create_notifier (self->miner_fs);
+    self->notifier = tracker_sparql_connection_create_notifier (self->db);
 
     nautilus_tag_manager_query_starred_files (self, cancellable);
 
@@ -988,11 +674,6 @@ nautilus_tag_manager_init (NautilusTagManager *self)
     self->starred_file_uris = g_hash_table_new_full (g_str_hash,
                                                      g_str_equal,
                                                      (GDestroyNotify) g_free,
-                                                     /* values are keys in the other hash table
-                                                      * and are freed there */
+                                                     /* values are keys */
                                                      NULL);
-    self->starred_file_ids = g_hash_table_new_full (g_int_hash,
-                                                    g_int_equal,
-                                                    (GDestroyNotify) g_free,
-                                                    (GDestroyNotify) g_free);
 }

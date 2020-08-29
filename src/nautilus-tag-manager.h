@@ -49,6 +49,6 @@ void                nautilus_tag_manager_unstar_files       (NautilusTagManager 
 
 
 gboolean            nautilus_tag_manager_file_is_starred   (NautilusTagManager *self,
-                                                             const gchar        *file_name);
+                                                            const gchar        *file_uri);
 
 G_END_DECLS
