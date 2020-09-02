@@ -7450,7 +7450,7 @@ real_update_actions_state (NautilusFilesView *view)
     GDriveStartStopType start_stop_type;
     g_autoptr (GFile) current_location = NULL;
     g_autofree gchar *current_uri = NULL;
-    gboolean current_directory_tracked;
+    gboolean can_star_current_directory;
     gboolean show_star;
     gboolean show_unstar;
     gchar *uri;
@@ -7784,12 +7784,12 @@ real_update_actions_state (NautilusFilesView *view)
 
     current_location = nautilus_file_get_location (nautilus_files_view_get_directory_as_file (view));
     current_uri = g_file_get_uri (current_location);
-    current_directory_tracked = nautilus_tracker_directory_is_tracked (current_location);
+    can_star_current_directory = nautilus_tag_manager_can_star_contents (priv->tag_manager, current_location);
 
     show_star = (selection != NULL) &&
-                (current_directory_tracked || selection_contains_starred);
+                (can_star_current_directory || selection_contains_starred);
     show_unstar = (selection != NULL) &&
-                  (current_directory_tracked || selection_contains_starred);
+                  (can_star_current_directory || selection_contains_starred);
     for (l = selection; l != NULL; l = l->next)
     {
         NautilusFile *file;

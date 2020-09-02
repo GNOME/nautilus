@@ -2494,14 +2494,15 @@ get_visible_columns (NautilusListView *list_view)
     GPtrArray *res;
     GList *l;
     g_autofree gchar *uri = NULL;
-    gboolean in_tracked_dir;
+    gboolean can_star_current_directory;
     gboolean is_starred;
 
     file = nautilus_files_view_get_directory_as_file (NAUTILUS_FILES_VIEW (list_view));
     uri = nautilus_file_get_uri (file);
 
     location = g_file_new_for_uri (uri);
-    in_tracked_dir = nautilus_tracker_directory_is_tracked (location);
+    can_star_current_directory = nautilus_tag_manager_can_star_contents (list_view->details->tag_manager,
+                                                                         location);
     is_starred = eel_uri_is_starred (uri);
 
     visible_columns = nautilus_file_get_metadata_list (file,
@@ -2515,7 +2516,7 @@ get_visible_columns (NautilusListView *list_view)
     for (l = visible_columns; l != NULL; l = l->next)
     {
         if (g_strcmp0 (l->data, "starred") != 0 ||
-            (g_strcmp0 (l->data, "starred") == 0 && (in_tracked_dir || is_starred)))
+            (g_strcmp0 (l->data, "starred") == 0 && (can_star_current_directory || is_starred)))
         {
             g_ptr_array_add (res, l->data);
         }

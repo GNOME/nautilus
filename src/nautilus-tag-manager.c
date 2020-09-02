@@ -41,6 +41,7 @@ struct _NautilusTagManager
     TrackerSparqlStatement *query_file_is_starred;
 
     GHashTable *starred_file_uris;
+    GFile *home;
 
     GCancellable *cancellable;
 };
@@ -676,4 +677,16 @@ nautilus_tag_manager_init (NautilusTagManager *self)
                                                      (GDestroyNotify) g_free,
                                                      /* values are keys */
                                                      NULL);
+    self->home = g_file_new_for_path (g_get_home_dir ());
+}
+
+gboolean
+nautilus_tag_manager_can_star_contents (NautilusTagManager *tag_manager,
+                                        GFile              *directory)
+{
+    /* We only allow files to be starred inside the home directory for now.
+     * This avoids the starred files database growing too big.
+     * See https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/553#note_903108
+     */
+    return g_file_has_prefix (directory, tag_manager->home) || g_file_equal (directory, tag_manager->home);
 }
