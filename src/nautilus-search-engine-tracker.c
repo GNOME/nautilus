@@ -294,6 +294,31 @@ search_finished_idle (gpointer user_data)
  */
 #define FILENAME_RANK "5.0"
 
+static gchar *
+filter_alnum_strdup (gchar *string)
+{
+    GString *filtered;
+    gchar *c;
+
+    filtered = g_string_new ("");
+    for (c = string; *c; c = g_utf8_next_char (c))
+    {
+        gunichar uc;
+
+        uc = g_utf8_get_char (c);
+        if (g_unichar_isalnum (uc))
+        {
+            g_string_append_unichar (filtered, uc);
+        }
+        else
+        {
+            g_string_append_c (filtered, ' ');
+        }
+    }
+
+    return g_string_free (filtered, FALSE);
+}
+
 static void
 nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
 {
@@ -371,13 +396,16 @@ nautilus_search_engine_tracker_start (NautilusSearchProvider *provider)
     if (tracker->fts_enabled)
     {
         /* Use fts:match only for content search to not lose some filename results due to stop words. */
+        g_autofree gchar *filtered_search_text;
+
+        filtered_search_text = filter_alnum_strdup (search_text);
         g_string_append_printf (sparql,
                                 " { "
                                 " ?content nie:isStoredAs ?file ."
                                 " ?content fts:match \"%s*\" ."
                                 " BIND(fts:rank(?content) AS ?rank1) ."
                                 " } UNION",
-                                search_text);
+                                filtered_search_text);
     }
 
     g_string_append_printf (sparql,
