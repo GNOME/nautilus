@@ -136,6 +136,9 @@ static void
 append_basic_info (NautilusImagesPropertiesPage *page)
 {
     GdkPixbufFormat *format;
+    GExiv2Orientation orientation;
+    int width;
+    int height;
     g_autofree char *name = NULL;
     g_autofree char *desc = NULL;
     g_autofree char *value = NULL;
@@ -147,19 +150,35 @@ append_basic_info (NautilusImagesPropertiesPage *page)
 
     append_item (page, _("Image Type"), value);
 
+    orientation = gexiv2_metadata_get_orientation (page->md);
+
+    if (orientation == GEXIV2_ORIENTATION_ROT_90
+        || orientation == GEXIV2_ORIENTATION_ROT_270
+        || orientation == GEXIV2_ORIENTATION_ROT_90_HFLIP
+        || orientation == GEXIV2_ORIENTATION_ROT_90_VFLIP)
+    {
+        width = page->height;
+        height = page->width;
+    }
+    else
+    {
+        width = page->width;
+        height = page->height;
+    }
+
     g_free (value);
     value = g_strdup_printf (ngettext ("%d pixel",
                                        "%d pixels",
-                                       page->width),
-                             page->width);
+                                       width),
+                             width);
 
     append_item (page, _("Width"), value);
 
     g_free (value);
     value = g_strdup_printf (ngettext ("%d pixel",
                                        "%d pixels",
-                                       page->height),
-                             page->height);
+                                       height),
+                             height);
 
     append_item (page, _("Height"), value);
 }
