@@ -66,6 +66,7 @@ typedef struct _NautilusLocationEntryPrivate
     GFilenameCompleter *completer;
 
     guint idle_id;
+    gboolean idle_insert_completion;
 
     GFile *last_location;
 
@@ -73,6 +74,9 @@ typedef struct _NautilusLocationEntryPrivate
     gboolean setting_special_text;
     gchar *special_text;
     NautilusLocationEntryAction secondary_action;
+
+    GtkEntryCompletion *completion;
+    GtkListStore *completions_store;
 } NautilusLocationEntryPrivate;
 
 enum
@@ -214,6 +218,9 @@ nautilus_location_entry_set_location (NautilusLocationEntry *entry,
 
     nautilus_location_entry_update_action (entry);
 
+    /* invalidate the completions list */
+    gtk_list_store_clear (priv->completions_store);
+
     g_free (uri);
     g_free (formatted_uri);
 }
@@ -346,24 +353,35 @@ drag_data_get_callback (GtkWidget        *widget,
     g_object_unref (location);
 }
 
-/* routine that performs the tab expansion.  Extract the directory name and
- *  incomplete basename, then iterate through the directory trying to complete it.  If we
- *  find something, add it to the entry */
 
+/* Update the path completions list based on the current text of the entry. */
 static gboolean
-try_to_expand_path (gpointer callback_data)
+update_completions_store (gpointer callback_data)
 {
     NautilusLocationEntry *entry;
     NautilusLocationEntryPrivate *priv;
     GtkEditable *editable;
-    char *suffix, *user_location, *absolute_location, *uri_scheme;
-    int user_location_length, pos;
+    g_autofree char *absolute_location = NULL;
+    g_autofree char *user_location = NULL;
+    int start_sel;
+    g_autofree char *uri_scheme = NULL;
+    g_auto (GStrv) completions = NULL;
+    int i;
+    GtkTreeIter iter;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);
     editable = GTK_EDITABLE (entry);
-    user_location = gtk_editable_get_chars (editable, 0, -1);
-    user_location_length = g_utf8_strlen (user_location, -1);
+
+    if (gtk_editable_get_selection_bounds (editable, &start_sel, NULL))
+    {
+        user_location = gtk_editable_get_chars (editable, 0, start_sel);
+    }
+    else
+    {
+        user_location = gtk_editable_get_chars (editable, 0, -1);
+    }
+
     user_location = g_strchug (user_location);
     user_location = g_strchomp (user_location);
     priv->idle_id = 0;
@@ -373,29 +391,30 @@ try_to_expand_path (gpointer callback_data)
     if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
     {
         absolute_location = g_build_filename (priv->current_directory, user_location, NULL);
-        suffix = g_filename_completer_get_completion_suffix (priv->completer,
-                                                             absolute_location);
-        g_free (absolute_location);
     }
     else
     {
-        suffix = g_filename_completer_get_completion_suffix (priv->completer,
-                                                             user_location);
+        absolute_location = g_steal_pointer (&user_location);
     }
 
-    g_free (user_location);
-    g_free (uri_scheme);
+    completions = g_filename_completer_get_completions (priv->completer, absolute_location);
 
-    /* if we've got something, add it to the entry */
-    if (suffix != NULL)
+    /* populate the completions model */
+    gtk_list_store_clear (priv->completions_store);
+
+    for (i = 0; completions[i] != NULL; i++)
     {
-        pos = user_location_length;
-        gtk_editable_insert_text (editable,
-                                  suffix, -1, &pos);
-        pos = user_location_length;
-        gtk_editable_select_region (editable, pos, -1);
+        gtk_list_store_append (priv->completions_store, &iter);
+        gtk_list_store_set (priv->completions_store, &iter, 0, completions[i], -1);
+    }
 
-        g_free (suffix);
+    /* refilter the completions dropdown */
+    gtk_entry_completion_complete (priv->completion);
+
+    if (priv->idle_insert_completion)
+    {
+        /* insert the completion */
+        gtk_entry_completion_insert_prefix (priv->completion);
     }
 
     return FALSE;
@@ -491,7 +510,7 @@ got_completion_data_callback (GFilenameCompleter    *completer,
         g_source_remove (priv->idle_id);
         priv->idle_id = 0;
     }
-    try_to_expand_path (entry);
+    update_completions_store (entry);
 }
 
 static void
@@ -507,6 +526,8 @@ finalize (GObject *object)
     g_free (priv->special_text);
 
     g_clear_object (&priv->last_location);
+    g_clear_object (&priv->completion);
+    g_clear_object (&priv->completions_store);
 
     G_OBJECT_CLASS (nautilus_location_entry_parent_class)->finalize (object);
 }
@@ -680,19 +701,30 @@ nautilus_location_entry_on_event (GtkWidget *widget,
      */
     handled = parent_widget_class->key_press_event (widget, (GdkEventKey *) event);
 
-    /* Only do expanding when we are typing at the end of the
+
+    if (keyval == GDK_KEY_Down || keyval == GDK_KEY_Up)
+    {
+        /* Ignore up/down arrow keys. These are used by the entry completion,
+         * and if we modify the completion store, navigation through the list
+         * will be interrupted. */
+        return GDK_EVENT_PROPAGATE;
+    }
+
+    /* Only do completions when we are typing at the end of the
      * text. Do the expand at idle time to avoid slowing down
-     * typing when the directory is large. Only trigger the expand
+     * typing when the directory is large. Only insert an expansion
      * when we type a key that would have inserted characters.
      */
     if (position_and_selection_are_at_end (editable))
     {
-        if (entry_would_have_inserted_characters (event))
+        /* Only insert a completion if a character was typed. Otherwise,
+         * update the completions store (i.e. in case backspace was pressed)
+         * but don't insert the completion into the entry. */
+        priv->idle_insert_completion = entry_would_have_inserted_characters (event);
+
+        if (priv->idle_id == 0)
         {
-            if (priv->idle_id == 0)
-            {
-                priv->idle_id = g_idle_add (try_to_expand_path, widget);
-            }
+            priv->idle_id = g_idle_add (update_completions_store, widget);
         }
     }
     else
@@ -901,6 +933,19 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
                              G_CALLBACK (editable_activate_callback), entry, G_CONNECT_AFTER);
     g_signal_connect_object (entry, "changed",
                              G_CALLBACK (editable_changed_callback), entry, 0);
+
+    priv->completion = gtk_entry_completion_new ();
+    priv->completions_store = gtk_list_store_new (1, G_TYPE_STRING);
+    gtk_entry_completion_set_model (priv->completion, GTK_TREE_MODEL (priv->completions_store));
+
+    g_object_set (priv->completion,
+                  "text-column", 0,
+                  "inline-completion", TRUE,
+                  "inline-selection", TRUE,
+                  "popup-single-match", TRUE,
+                  NULL);
+
+    gtk_entry_set_completion (GTK_ENTRY (entry), priv->completion);
 }
 
 GtkWidget *
