@@ -49,12 +49,6 @@ struct _NautilusTagManager
 
 G_DEFINE_TYPE (NautilusTagManager, nautilus_tag_manager, G_TYPE_OBJECT);
 
-typedef enum
-{
-    GET_STARRED_FILES,
-    GET_IDS_FOR_URLS
-} OperationType;
-
 typedef struct
 {
     NautilusTagManager *tag_manager;
@@ -178,43 +172,6 @@ on_update_callback (GObject      *object,
     g_free (data);
 }
 
-static gboolean
-get_query_status (TrackerSparqlCursor *cursor,
-                  GAsyncResult        *result,
-                  OperationType        op_type,
-                  gpointer             user_data)
-{
-    gboolean success;
-    GTask *task;
-    g_autoptr (GError) error = NULL;
-
-    task = user_data;
-
-    success = tracker_sparql_cursor_next_finish (cursor, result, &error);
-
-    if (!success)
-    {
-        if (error)
-        {
-            g_warning ("Error on getting all tags cursor callback: %s", error->message);
-        }
-
-        g_clear_object (&cursor);
-
-        if (error == NULL ||
-            (error != NULL && error->code == G_IO_ERROR_CANCELLED))
-        {
-            if (op_type == GET_IDS_FOR_URLS)
-            {
-                g_task_return_pointer (task, g_task_get_task_data (task), NULL);
-                g_object_unref (task);
-            }
-        }
-    }
-
-    return success;
-}
-
 /**
  * nautilus_tag_manager_get_starred_files:
  * @self: The tag manager singleton
@@ -250,6 +207,7 @@ on_get_starred_files_cursor_callback (GObject      *object,
                                       gpointer      user_data)
 {
     TrackerSparqlCursor *cursor;
+    g_autoptr (GError) error = NULL;
     const gchar *url;
     gboolean success;
     NautilusTagManager *self;
@@ -260,9 +218,16 @@ on_get_starred_files_cursor_callback (GObject      *object,
 
     self = NAUTILUS_TAG_MANAGER (user_data);
 
-    success = get_query_status (cursor, result, GET_STARRED_FILES, NULL);
+    success = tracker_sparql_cursor_next_finish (cursor, result, &error);
+
     if (!success)
     {
+        if (error != NULL)
+        {
+            g_warning ("Error on getting all tags cursor callback: %s", error->message);
+        }
+
+        g_clear_object (&cursor);
         return;
     }
 
