@@ -276,13 +276,16 @@ icon_get_data_binder (NautilusCanvasIcon *icon,
     return TRUE;
 }
 
+typedef gboolean (*CanvasContainerEachFunc)(NautilusCanvasIcon *,
+                                            gpointer);
+
 /* Iterate over each selected icon in a NautilusCanvasContainer,
  * calling each_function on each.
  */
 static void
 nautilus_canvas_container_each_selected_icon (NautilusCanvasContainer *container,
-                                              gboolean (*each_function)(NautilusCanvasIcon *, gpointer),
-                                              gpointer data)
+                                              CanvasContainerEachFunc  each_function,
+                                              gpointer                 data)
 {
     GList *p;
     NautilusCanvasIcon *icon;
