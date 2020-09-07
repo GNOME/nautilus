@@ -72,7 +72,7 @@ triage:dry-run:
     when: manual
 
 style check:
-    image: registry.gitlab.gnome.org/gnome/nautilus:v642646
+    image: registry.gitlab.gnome.org/gnome/nautilus:latest
     stage: test
     artifacts:
         name: 'Style check artifacts'
