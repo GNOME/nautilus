@@ -101,8 +101,6 @@ libnautilus_sources = [
   'nautilus-mime-actions.h',
   'nautilus-name-cell.c',
   'nautilus-name-cell.h',
-  'nautilus-notebook.c',
-  'nautilus-notebook.h',
   'nautilus-pathbar.c',
   'nautilus-pathbar.h',
   'nautilus-places-view.c',

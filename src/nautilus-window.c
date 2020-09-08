@@ -61,7 +61,6 @@
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-module.h"
-#include "nautilus-notebook.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
 #include "nautilus-signaller.h"
@@ -97,7 +96,8 @@ struct _NautilusWindow
 {
     AdwApplicationWindow parent_instance;
 
-    GtkWidget *notebook;
+    AdwTabView *tab_view;
+    AdwTabPage *menu_page;
 
     GList *slots;
     NautilusWindowSlot *active_slot; /* weak reference */
@@ -124,8 +124,6 @@ struct _NautilusWindow
 
     guint sidebar_width_handler_id;
     gulong bookmarks_id;
-
-    GtkWidget *tab_menu;
 
     GQueue *tab_data_queue;
 };
@@ -156,13 +154,15 @@ action_close_current_view (GSimpleAction *action,
                            GVariant      *state,
                            gpointer       user_data)
 {
-    NautilusWindow *window;
-    NautilusWindowSlot *slot;
+    NautilusWindow *window = user_data;
+    AdwTabPage *page = window->menu_page;
 
-    window = NAUTILUS_WINDOW (user_data);
-    slot = nautilus_window_get_active_slot (window);
+    if (page == NULL)
+    {
+        page = adw_tab_view_get_selected_page (window->tab_view);
+    }
 
-    nautilus_window_slot_close (window, slot);
+    adw_tab_view_close_page (window->tab_view, page);
 }
 
 static void
@@ -315,33 +315,19 @@ action_enter_location (GSimpleAction *action,
 }
 
 static void
-action_tab_previous (GSimpleAction *action,
-                     GVariant      *state,
-                     gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-
-    nautilus_notebook_prev_page (GTK_NOTEBOOK (window->notebook));
-}
-
-static void
-action_tab_next (GSimpleAction *action,
-                 GVariant      *state,
-                 gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-
-    nautilus_notebook_next_page (GTK_NOTEBOOK (window->notebook));
-}
-
-static void
 action_tab_move_left (GSimpleAction *action,
                       GVariant      *state,
                       gpointer       user_data)
 {
     NautilusWindow *window = user_data;
+    AdwTabPage *page = window->menu_page;
 
-    nautilus_notebook_reorder_current_child_relative (GTK_NOTEBOOK (window->notebook), -1);
+    if (page == NULL)
+    {
+        page = adw_tab_view_get_selected_page (window->tab_view);
+    }
+
+    adw_tab_view_reorder_backward (window->tab_view, page);
 }
 
 static void
@@ -350,8 +336,14 @@ action_tab_move_right (GSimpleAction *action,
                        gpointer       user_data)
 {
     NautilusWindow *window = user_data;
+    AdwTabPage *page = window->menu_page;
 
-    nautilus_notebook_reorder_current_child_relative (GTK_NOTEBOOK (window->notebook), 1);
+    if (page == NULL)
+    {
+        page = adw_tab_view_get_selected_page (window->tab_view);
+    }
+
+    adw_tab_view_reorder_forward (window->tab_view, page);
 }
 
 static void
@@ -360,15 +352,14 @@ action_go_to_tab (GSimpleAction *action,
                   gpointer       user_data)
 {
     NautilusWindow *window = NAUTILUS_WINDOW (user_data);
-    GtkNotebook *notebook;
     gint16 num;
 
-    notebook = GTK_NOTEBOOK (window->notebook);
-
     num = g_variant_get_int32 (value);
-    if (num < gtk_notebook_get_n_pages (notebook))
+    if (num < adw_tab_view_get_n_pages (window->tab_view))
     {
-        gtk_notebook_set_current_page (notebook, num);
+        AdwTabPage *page = adw_tab_view_get_nth_page (window->tab_view, num);
+
+        adw_tab_view_set_selected_page (window->tab_view, page);
     }
 }
 
@@ -479,15 +470,45 @@ on_slot_location_changed (NautilusWindowSlot *slot,
 }
 
 static void
-notebook_switch_page_cb (GtkNotebook    *notebook,
-                         GtkWidget      *page,
-                         unsigned int    page_num,
-                         NautilusWindow *window)
+tab_view_setup_menu_cb (AdwTabView     *tab_view,
+                        AdwTabPage     *page,
+                        NautilusWindow *window)
 {
+    GAction *move_tab_left_action;
+    GAction *move_tab_right_action;
+    int position, n_pages;
+
+    if (page != NULL)
+    {
+        position = adw_tab_view_get_page_position (tab_view, page);
+        n_pages = adw_tab_view_get_n_pages (tab_view);
+    }
+
+    move_tab_left_action = g_action_map_lookup_action (G_ACTION_MAP (window),
+                                                       "tab-move-left");
+    move_tab_right_action = g_action_map_lookup_action (G_ACTION_MAP (window),
+                                                        "tab-move-right");
+
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_left_action),
+                                 page == NULL || position > 0);
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (move_tab_right_action),
+                                 page == NULL || position < n_pages - 1);
+
+    window->menu_page = page;
+}
+
+static void
+tab_view_notify_selected_page_cb (AdwTabView     *tab_view,
+                                  GParamSpec     *pspec,
+                                  NautilusWindow *window)
+{
+    AdwTabPage *page;
     NautilusWindowSlot *slot;
     GtkWidget *widget;
 
-    widget = gtk_notebook_get_nth_page (GTK_NOTEBOOK (window->notebook), page_num);
+    page = adw_tab_view_get_selected_page (tab_view);
+    widget = adw_tab_page_get_child (page);
+
     g_assert (widget != NULL);
 
     /* find slot corresponding to the target page */
@@ -525,26 +546,63 @@ nautilus_window_create_and_init_slot (NautilusWindow    *window,
     return slot;
 }
 
+static gboolean
+location_to_tooltip (GBinding           *binding,
+                     const GValue       *input,
+                     GValue             *output,
+                     NautilusWindowSlot *slot)
+{
+    GFile *location = g_value_get_object (input);
+    g_autofree gchar *location_name = NULL;
+
+    if (location == NULL)
+    {
+        return TRUE;
+    }
+
+    /* Set the tooltip on the label's parent (the tab label hbox),
+     * so it covers all of the tab label.
+     */
+    location_name = g_file_get_parse_name (location);
+
+    if (eel_uri_is_search (location_name))
+    {
+        g_value_set_string (output, nautilus_window_slot_get_title (slot));
+    }
+    else
+    {
+        g_value_set_string (output, location_name);
+    }
+
+    return TRUE;
+}
+
 void
 nautilus_window_initialize_slot (NautilusWindow     *window,
                                  NautilusWindowSlot *slot,
                                  NautilusOpenFlags   flags)
 {
+    AdwTabPage *page, *current;
+
     g_assert (NAUTILUS_IS_WINDOW (window));
     g_assert (NAUTILUS_IS_WINDOW_SLOT (slot));
 
     connect_slot (window, slot);
 
-    g_signal_handlers_block_by_func (window->notebook,
-                                     G_CALLBACK (notebook_switch_page_cb),
-                                     window);
-    nautilus_notebook_add_tab (GTK_NOTEBOOK (window->notebook),
-                               slot,
-                               -1,
-                               FALSE);
-    g_signal_handlers_unblock_by_func (window->notebook,
-                                       G_CALLBACK (notebook_switch_page_cb),
-                                       window);
+    current = adw_tab_view_get_selected_page (window->tab_view);
+    page = adw_tab_view_add_page (window->tab_view, GTK_WIDGET (slot), current);
+
+    g_object_bind_property (slot, "allow-stop",
+                            page, "loading",
+                            G_BINDING_SYNC_CREATE);
+    g_object_bind_property (slot, "title",
+                            page, "title",
+                            G_BINDING_SYNC_CREATE);
+    g_object_bind_property_full (slot, "location",
+                                 page, "tooltip",
+                                 G_BINDING_SYNC_CREATE,
+                                 (GBindingTransformFunc) location_to_tooltip,
+                                 NULL, slot, NULL);
 }
 
 void
@@ -751,22 +809,15 @@ nautilus_window_sync_allow_stop (NautilusWindow     *window,
         {
             update_cursor (window);
         }
-
-        /* Avoid updating the notebook if we are calling on dispose or
-         * on removal of a notebook tab */
-        if (nautilus_notebook_contains_slot (GTK_NOTEBOOK (window->notebook), slot))
-        {
-            nautilus_notebook_sync_loading (GTK_NOTEBOOK (window->notebook), slot);
-        }
     }
 }
 
-GtkWidget *
-nautilus_window_get_notebook (NautilusWindow *window)
+AdwTabView *
+nautilus_window_get_tab_view (NautilusWindow *window)
 {
     g_return_val_if_fail (NAUTILUS_IS_WINDOW (window), NULL);
 
-    return window->notebook;
+    return window->tab_view;
 }
 
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
@@ -989,8 +1040,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
                             NautilusWindowSlot *slot)
 {
     NautilusNavigationState *data;
-    GtkNotebook *notebook = GTK_NOTEBOOK (window->notebook);
-    int page_num;
+    AdwTabPage *page;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
     if (window == NULL || slot == NULL)
@@ -1006,10 +1056,9 @@ nautilus_window_slot_close (NautilusWindow     *window,
 
     remove_slot_from_window (slot, window);
 
-    page_num = gtk_notebook_page_num (notebook, GTK_WIDGET (slot));
-    g_assert (page_num >= 0);
+    page = adw_tab_view_get_page (window->tab_view, GTK_WIDGET (slot));
     /* this will destroy the slot */
-    gtk_notebook_remove_page (notebook, page_num);
+    adw_tab_view_close_page (window->tab_view, page);
 
     /* If that was the last slot in the window, close the window. */
     if (window->slots == NULL)
@@ -1272,70 +1321,6 @@ on_path_bar_open_location (NautilusWindow    *window,
     }
 }
 
-static void
-notebook_popup_menu_show (NautilusWindow *window,
-                          GtkWidget      *tab)
-{
-    GtkPopover *popover = GTK_POPOVER (window->tab_menu);
-    GtkAllocation allocation;
-    gdouble x, y;
-
-    gtk_widget_get_allocation (tab, &allocation);
-    gtk_widget_translate_coordinates (tab, GTK_WIDGET (window),
-                                      allocation.x, allocation.y, &x, &y);
-    allocation.x = x;
-    allocation.y = y;
-    gtk_popover_set_pointing_to (popover, (GdkRectangle *) &allocation);
-    gtk_popover_popup (popover);
-}
-
-static void
-notebook_button_press_cb (GtkGestureClick *gesture,
-                          gint             n_press,
-                          gdouble          x,
-                          gdouble          y,
-                          gpointer         user_data)
-{
-    NautilusWindow *window;
-    GtkNotebook *notebook;
-    gint tab_clicked;
-    GtkWidget *tab_widget;
-    guint button;
-    GdkModifierType state;
-
-    if (n_press != 1)
-    {
-        return;
-    }
-
-    window = NAUTILUS_WINDOW (user_data);
-    notebook = GTK_NOTEBOOK (window->notebook);
-
-    tab_widget = nautilus_notebook_get_tab_clicked (notebook, x, y, &tab_clicked);
-    if (tab_widget == NULL)
-    {
-        return;
-    }
-
-    button = gtk_gesture_single_get_current_button (GTK_GESTURE_SINGLE (gesture));
-    state = gtk_event_controller_get_current_event_state (GTK_EVENT_CONTROLLER (gesture));
-
-    if (button == GDK_BUTTON_SECONDARY &&
-        (state & gtk_accelerator_get_default_mod_mask ()) == 0)
-    {
-        /* switch to the page before opening the menu */
-        gtk_notebook_set_current_page (notebook, tab_clicked);
-        notebook_popup_menu_show (window, tab_widget);
-    }
-    else if (button == GDK_BUTTON_MIDDLE)
-    {
-        GtkWidget *slot;
-
-        slot = gtk_notebook_get_nth_page (notebook, tab_clicked);
-        nautilus_window_slot_close (window, NAUTILUS_WINDOW_SLOT (slot));
-    }
-}
-
 GtkWidget *
 nautilus_window_get_toolbar (NautilusWindow *window)
 {
@@ -1368,14 +1353,27 @@ setup_toolbar (NautilusWindow *window)
                              G_CALLBACK (location_entry_cancel_callback), window, 0);
 }
 
-static void
-notebook_page_removed_cb (GtkNotebook *notebook,
-                          GtkWidget   *page,
-                          guint        page_num,
-                          gpointer     user_data)
+static gboolean
+tab_view_close_page_cb (AdwTabView     *view,
+                        AdwTabPage     *page,
+                        NautilusWindow *window)
 {
-    NautilusWindow *window = user_data;
-    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
+    NautilusWindowSlot *slot;
+
+    slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
+
+    nautilus_window_slot_close (window, slot);
+
+    return GDK_EVENT_PROPAGATE;
+}
+
+static void
+tab_view_page_detached_cb (AdwTabView     *tab_view,
+                           AdwTabPage     *page,
+                           gint            position,
+                           NautilusWindow *window)
+{
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
     /* If the tab has been moved to another window, we need to remove the slot
      * from the current window here. Otherwise, if the tab has been closed, then
@@ -1387,66 +1385,56 @@ notebook_page_removed_cb (GtkNotebook *notebook,
 }
 
 static void
-notebook_page_added_cb (GtkNotebook *notebook,
-                        GtkWidget   *page,
-                        guint        page_num,
-                        gpointer     user_data)
+tab_view_page_attached_cb (AdwTabView     *tab_view,
+                           AdwTabPage     *page,
+                           gint            position,
+                           NautilusWindow *window)
 {
-    NautilusWindow *window = user_data;
-    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (page);
+    NautilusWindowSlot *slot = NAUTILUS_WINDOW_SLOT (adw_tab_page_get_child (page));
 
     nautilus_window_slot_set_window (slot, window);
     window->slots = g_list_append (window->slots, slot);
     g_signal_emit (window, signals[SLOT_ADDED], 0, slot);
 }
 
-static GtkNotebook *
-notebook_create_window_cb (GtkNotebook *notebook,
-                           GtkWidget   *page,
-                           gint         x,
-                           gint         y,
-                           gpointer     user_data)
+static AdwTabView *
+tab_view_create_window_cb (AdwTabView     *tab_view,
+                           NautilusWindow *window)
 {
     NautilusApplication *app;
     NautilusWindow *new_window;
 
-    if (!NAUTILUS_IS_WINDOW_SLOT (page))
-    {
-        return NULL;
-    }
-
     app = NAUTILUS_APPLICATION (g_application_get_default ());
     new_window = nautilus_application_create_window (app);
     gtk_window_set_display (GTK_WINDOW (new_window),
-                            gtk_widget_get_display (GTK_WIDGET (notebook)));
+                            gtk_widget_get_display (GTK_WIDGET (tab_view)));
 
-    return GTK_NOTEBOOK (new_window->notebook);
+    gtk_window_present (GTK_WINDOW (new_window));
+
+    return new_window->tab_view;
 }
 
 static void
-setup_notebook (NautilusWindow *window)
+setup_tab_view (NautilusWindow *window)
 {
-    GtkEventController *controller;
-
-    g_signal_connect (window->notebook, "switch-page",
-                      G_CALLBACK (notebook_switch_page_cb),
+    g_signal_connect (window->tab_view, "close-page",
+                      G_CALLBACK (tab_view_close_page_cb),
                       window);
-    g_signal_connect (window->notebook, "create-window",
-                      G_CALLBACK (notebook_create_window_cb),
+    g_signal_connect (window->tab_view, "setup-menu",
+                      G_CALLBACK (tab_view_setup_menu_cb),
                       window);
-    g_signal_connect (window->notebook, "page-added",
-                      G_CALLBACK (notebook_page_added_cb),
+    g_signal_connect (window->tab_view, "notify::selected-page",
+                      G_CALLBACK (tab_view_notify_selected_page_cb),
                       window);
-    g_signal_connect (window->notebook, "page-removed",
-                      G_CALLBACK (notebook_page_removed_cb),
+    g_signal_connect (window->tab_view, "create-window",
+                      G_CALLBACK (tab_view_create_window_cb),
                       window);
-
-    controller = GTK_EVENT_CONTROLLER (gtk_gesture_click_new ());
-    gtk_widget_add_controller (GTK_WIDGET (window->notebook), controller);
-    gtk_event_controller_set_propagation_phase (controller, GTK_PHASE_CAPTURE);
-    gtk_gesture_single_set_button (GTK_GESTURE_SINGLE (controller), 0);
-    g_signal_connect (controller, "pressed",
-                      G_CALLBACK (notebook_button_press_cb), window);
+    g_signal_connect (window->tab_view, "page-attached",
+                      G_CALLBACK (tab_view_page_attached_cb),
+                      window);
+    g_signal_connect (window->tab_view, "page-detached",
+                      G_CALLBACK (tab_view_page_detached_cb),
+                      window);
 }
 
 const GActionEntry win_entries[] =
@@ -1470,8 +1458,6 @@ const GActionEntry win_entries[] =
     { "close-current-view", action_close_current_view },
     { "go-home", action_go_home },
     { "go-starred", action_go_starred },
-    { "tab-previous", action_tab_previous },
-    { "tab-next", action_tab_next },
     { "tab-move-left", action_tab_move_left },
     { "tab-move-right", action_tab_move_right },
     { "prompt-root-location", action_prompt_for_location_root },
@@ -1514,8 +1500,6 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerator (app, "win.up", "<alt>Up");
     nautilus_application_set_accelerators (app, "win.go-home", ACCELS ("<alt>Home", "HomePage", "Start"));
     nautilus_application_set_accelerator (app, "win.go-starred", "Favorites");
-    nautilus_application_set_accelerator (app, "win.tab-previous", "<control>Page_Up");
-    nautilus_application_set_accelerator (app, "win.tab-next", "<control>Page_Down");
     nautilus_application_set_accelerator (app, "win.tab-move-left", "<shift><control>Page_Up");
     nautilus_application_set_accelerator (app, "win.tab-move-right", "<shift><control>Page_Down");
     nautilus_application_set_accelerators (app, "win.prompt-root-location", ACCELS ("slash", "KP_Divide"));
@@ -1562,7 +1546,7 @@ nautilus_window_constructed (GObject *self)
                                  NAUTILUS_WINDOW_DEFAULT_WIDTH,
                                  NAUTILUS_WINDOW_DEFAULT_HEIGHT);
 
-    setup_notebook (window);
+    setup_tab_view (window);
     nautilus_window_set_up_sidebar (window);
 
 
@@ -1594,8 +1578,6 @@ nautilus_window_dispose (GObject *object)
     application = gtk_window_get_application (GTK_WINDOW (window));
 
     DEBUG ("Destroying window");
-
-    g_clear_pointer (&window->tab_menu, gtk_widget_unparent);
 
     /* close all slots safely */
     slots_copy = g_list_copy (window->slots);
@@ -1781,8 +1763,6 @@ nautilus_window_sync_title (NautilusWindow     *window,
     {
         gtk_window_set_title (GTK_WINDOW (window), nautilus_window_slot_get_title (slot));
     }
-
-    nautilus_notebook_sync_tab_label (GTK_NOTEBOOK (window->notebook), slot);
 }
 
 #ifdef GDK_WINDOWING_WAYLAND
@@ -2065,7 +2045,6 @@ nautilus_window_init (NautilusWindow *window)
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_GTK_PLACES_SIDEBAR);
     gtk_widget_init_template (GTK_WIDGET (window));
-    nautilus_notebook_setup (GTK_NOTEBOOK (window->notebook));
 
     g_signal_connect_object (window->places_sidebar,
                              "show-other-locations-with-flags",
@@ -2077,8 +2056,6 @@ nautilus_window_init (NautilusWindow *window)
                              G_CALLBACK (places_sidebar_show_starred_location),
                              window,
                              G_CONNECT_SWAPPED);
-
-    gtk_widget_set_parent (window->tab_menu, GTK_WIDGET (window));
 
     g_signal_connect (window, "notify::is-maximized",
                       G_CALLBACK (on_is_maximized_changed), NULL);
@@ -2143,9 +2120,8 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_flap);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, notebook);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_menu);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toast_overlay);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, tab_view);
 
     signals[SLOT_ADDED] =
         g_signal_new ("slot-added",

@@ -25,7 +25,6 @@
 
 #include <config.h>
 
-#include "nautilus-notebook.h"
 #include "nautilus-application.h"
 #include "nautilus-files-view-dnd.h"
 #include "nautilus-window-slot-dnd.h"
@@ -36,34 +35,8 @@ typedef struct
     NautilusWindowSlot *target_slot;
     GtkWidget *widget;
 
-    gboolean is_notebook;
     guint switch_location_timer;
 } NautilusDragSlotProxyInfo;
-
-static void
-switch_tab (NautilusDragSlotProxyInfo *drag_info)
-{
-    GtkWidget *notebook, *slot;
-    gint idx, n_pages;
-
-    if (drag_info->target_slot == NULL)
-    {
-        return;
-    }
-
-    notebook = gtk_widget_get_ancestor (GTK_WIDGET (drag_info->target_slot), GTK_TYPE_NOTEBOOK);
-    n_pages = gtk_notebook_get_n_pages (GTK_NOTEBOOK (notebook));
-
-    for (idx = 0; idx < n_pages; idx++)
-    {
-        slot = gtk_notebook_get_nth_page (GTK_NOTEBOOK (notebook), idx);
-        if (NAUTILUS_WINDOW_SLOT (slot) == drag_info->target_slot)
-        {
-            gtk_notebook_set_current_page (GTK_NOTEBOOK (notebook), idx);
-            break;
-        }
-    }
-}
 
 static void
 switch_location (NautilusDragSlotProxyInfo *drag_info)
@@ -93,14 +66,7 @@ slot_proxy_switch_location_timer (gpointer user_data)
 
     drag_info->switch_location_timer = 0;
 
-    if (drag_info->is_notebook)
-    {
-        switch_tab (drag_info);
-    }
-    else
-    {
-        switch_location (drag_info);
-    }
+    switch_location (drag_info);
 
     return FALSE;
 }
@@ -326,8 +292,6 @@ nautilus_drag_slot_proxy_init (GtkWidget          *widget,
 
     g_object_set_data_full (G_OBJECT (widget), "drag-slot-proxy-data", drag_info,
                             drag_info_free);
-
-    drag_info->is_notebook = (g_object_get_data (G_OBJECT (widget), "nautilus-notebook-tab") != NULL);
 
     if (target_file != NULL)
     {

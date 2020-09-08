@@ -3392,14 +3392,15 @@ nautilus_window_slot_set_active (NautilusWindowSlot *self,
 
         if (active)
         {
-            int page_num;
+            AdwTabView *tab_view;
+            AdwTabPage *page;
 
             window = self->window;
-            page_num = gtk_notebook_page_num (GTK_NOTEBOOK (nautilus_window_get_notebook (window)),
-                                              GTK_WIDGET (self));
-            g_assert (page_num >= 0);
 
-            gtk_notebook_set_current_page (GTK_NOTEBOOK (nautilus_window_get_notebook (window)), page_num);
+            tab_view = nautilus_window_get_tab_view (window);
+            page = adw_tab_view_get_page (tab_view, GTK_WIDGET (self));
+
+            adw_tab_view_set_selected_page (tab_view, page);
 
             /* sync window to new slot */
             nautilus_window_sync_allow_stop (window, self);
