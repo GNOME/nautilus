@@ -1853,6 +1853,10 @@ rename_get_info_callback (GObject      *source_object,
     new_info = g_file_query_info_finish (G_FILE (source_object), res, &error);
     if (new_info != NULL)
     {
+        g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
+        g_autoptr (GFile) old_location = NULL;
+        g_autoptr (GFile) new_location = NULL;
+
         directory = op->file->details->directory;
 
         new_name = g_file_info_get_name (new_info);
@@ -1868,12 +1872,17 @@ rename_get_info_callback (GObject      *source_object,
             nautilus_file_changed (existing_file);
         }
 
-        old_uri = nautilus_file_get_uri (op->file);
+        old_location = nautilus_file_get_location (op->file);
+        old_uri = g_file_get_uri (old_location);
 
         update_info_and_name (op->file, new_info);
 
-        new_uri = nautilus_file_get_uri (op->file);
+        new_location = nautilus_file_get_location (op->file);
+        new_uri = g_file_get_uri (new_location);
+
         nautilus_directory_moved (old_uri, new_uri);
+        nautilus_tag_manager_update_moved_uris (tag_manager, old_location, new_location);
+
         g_free (new_uri);
         g_free (old_uri);
 

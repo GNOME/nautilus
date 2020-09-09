@@ -701,6 +701,140 @@ nautilus_tag_manager_can_star_contents (NautilusTagManager *tag_manager,
 }
 
 static void
+update_moved_uris_callback (GObject      *object,
+                            GAsyncResult *result,
+                            gpointer      user_data)
+{
+    g_autoptr (GError) error = NULL;
+    g_autoptr (GPtrArray) new_uris = user_data;
+
+    tracker_sparql_connection_update_finish (TRACKER_SPARQL_CONNECTION (object),
+                                             result,
+                                             &error);
+
+    if (error != NULL && error->code != G_IO_ERROR_CANCELLED)
+    {
+        g_warning ("Error updating moved uris: %s", error->message);
+    }
+    else
+    {
+        g_autolist (NautilusFile) updated_files = NULL;
+        g_autoptr (NautilusTagManager) tag_manager = NULL;
+
+        for (guint i = 0; i < new_uris->len; i++)
+        {
+            gchar *new_uri = g_ptr_array_index (new_uris, i);
+
+            updated_files = g_list_prepend (updated_files, nautilus_file_get_by_uri (new_uri));
+        }
+
+        tag_manager = nautilus_tag_manager_get ();
+        g_signal_emit_by_name (tag_manager, "starred-changed", updated_files);
+    }
+}
+
+/**
+ * nautilus_tag_manager_update_moved_uris:
+ * @self: The tag manager singleton
+ * @src: The original location as a #GFile
+ * @dest: The new location as a #GFile
+ *
+ * Checks whether the rename/move operation (@src to @dest) has modified
+ * the URIs of any starred files, and updates the database accordingly.
+ */
+void
+nautilus_tag_manager_update_moved_uris (NautilusTagManager *self,
+                                        GFile              *src,
+                                        GFile              *dest)
+{
+    GHashTableIter starred_iter;
+    gchar *starred_uri;
+    g_autoptr (GPtrArray) old_uris = NULL;
+    g_autoptr (GPtrArray) new_uris = NULL;
+    g_autoptr (GString) query = NULL;
+
+    if (!self->database_ok)
+    {
+        g_message ("nautilus-tag-manager: No Tracker connection");
+        return;
+    }
+
+    old_uris = g_ptr_array_new ();
+    new_uris = g_ptr_array_new_with_free_func (g_free);
+
+    g_hash_table_iter_init (&starred_iter, self->starred_file_uris);
+    while (g_hash_table_iter_next (&starred_iter, (gpointer *) &starred_uri, NULL))
+    {
+        g_autoptr (GFile) starred_location = NULL;
+        g_autofree gchar *relative_path = NULL;
+
+        starred_location = g_file_new_for_uri (starred_uri);
+
+        if (g_file_equal (starred_location, src))
+        {
+            /* The moved file/folder is starred */
+            g_ptr_array_add (old_uris, starred_uri);
+            g_ptr_array_add (new_uris, g_file_get_uri (dest));
+            continue;
+        }
+
+        relative_path = g_file_get_relative_path (src, starred_location);
+        if (relative_path != NULL)
+        {
+            /* The starred file/folder is descendant of the moved/renamed directory */
+            g_autoptr (GFile) new_location = NULL;
+
+            new_location = g_file_resolve_relative_path (dest, relative_path);
+
+            g_ptr_array_add (old_uris, starred_uri);
+            g_ptr_array_add (new_uris, g_file_get_uri (new_location));
+        }
+    }
+
+    if (new_uris->len == 0)
+    {
+        /* No starred files are affected by this move/rename */
+        return;
+    }
+
+    DEBUG ("Updating moved URI for %i starred files", new_uris->len);
+
+    query = g_string_new ("DELETE DATA {");
+
+    for (guint i = 0; i < old_uris->len; i++)
+    {
+        gchar *old_uri = g_ptr_array_index (old_uris, i);
+        g_string_append_printf (query,
+                                "    <%s> a nautilus:File ; "
+                                "        nautilus:starred true . ",
+                                old_uri);
+    }
+
+    g_string_append (query, "} ; INSERT DATA {");
+
+    for (guint i = 0; i < new_uris->len; i++)
+    {
+        gchar *new_uri = g_ptr_array_index (new_uris, i);
+        g_string_append_printf (query,
+                                "    <%s> a nautilus:File ; "
+                                "        nautilus:starred true . ",
+                                new_uri);
+    }
+
+    g_string_append (query, "}");
+
+    /* Forward the new_uris list to later pass in the ::files-changed signal.
+     * There is no need to pass the old_uris because the file model is updated
+     * independently; we need only inform the view where to display stars now.
+     */
+    tracker_sparql_connection_update_async (self->db,
+                                            query->str,
+                                            self->cancellable,
+                                            update_moved_uris_callback,
+                                            g_steal_pointer (&new_uris));
+}
+
+static void
 process_tracker2_data_cb (GObject      *source_object,
                           GAsyncResult *res,
                           gpointer      user_data)

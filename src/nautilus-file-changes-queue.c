@@ -21,6 +21,7 @@
 #include "nautilus-file-changes-queue.h"
 
 #include "nautilus-directory-notify.h"
+#include "nautilus-tag-manager.h"
 
 typedef enum
 {
@@ -206,6 +207,7 @@ pairs_list_free (GList *pairs)
 void
 nautilus_file_changes_consume_changes (gboolean consume_all)
 {
+    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
     NautilusFileChange *change;
     GList *additions, *changes, *deletions, *moves;
     GFilePair *pair;
@@ -321,6 +323,10 @@ nautilus_file_changes_consume_changes (gboolean consume_all)
 
             case CHANGE_FILE_MOVED:
             {
+                nautilus_tag_manager_update_moved_uris (tag_manager,
+                                                        change->from,
+                                                        change->to);
+
                 pair = g_new (GFilePair, 1);
                 pair->from = change->from;
                 pair->to = change->to;
