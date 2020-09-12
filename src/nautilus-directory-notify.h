@@ -26,11 +26,6 @@
 #include "nautilus-types.h"
 
 typedef struct {
-	char *from_uri;
-	char *to_uri;
-} URIPair;
-
-typedef struct {
 	GFile *from;
 	GFile *to;
 } GFilePair;
@@ -46,14 +41,6 @@ void nautilus_directory_notify_files_removed (GList *files);
  * to ensure that, when the file is notified as gone, it already knows it was
  * due to an unmount event. */
 void nautilus_directory_mark_files_unmounted (GList *files);
-
-void nautilus_directory_schedule_metadata_copy   (GList        *file_pairs);
-void nautilus_directory_schedule_metadata_move   (GList        *file_pairs);
-void nautilus_directory_schedule_metadata_remove (GList        *files);
-
-void nautilus_directory_schedule_metadata_copy_by_uri   (GList        *uri_pairs);
-void nautilus_directory_schedule_metadata_move_by_uri   (GList        *uri_pairs);
-void nautilus_directory_schedule_metadata_remove_by_uri (GList        *uris);
 
 /* Change notification hack.
  * This is called when code modifies the file and it needs to trigger
