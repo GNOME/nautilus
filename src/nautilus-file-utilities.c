@@ -818,9 +818,10 @@ ensure_dirs_task_ready_cb (GObject      *_source,
         files = g_hash_table_lookup (data->original_dirs_hash, original_dir);
         locations = locations_from_file_list (files);
 
-        nautilus_file_operations_move_sync
-            (locations,
-            original_dir_location);
+        nautilus_file_operations_move_async (locations,
+                                             original_dir_location,
+                                             data->parent_window,
+                                             NULL, NULL, NULL);
 
         g_list_free_full (locations, g_object_unref);
         g_object_unref (original_dir_location);
