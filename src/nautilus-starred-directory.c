@@ -223,12 +223,6 @@ real_is_editable (NautilusDirectory *directory)
 }
 
 static void
-real_force_reload (NautilusDirectory *directory)
-{
-    nautilus_starred_directory_update_files (NAUTILUS_STARRED_DIRECTORY (directory));
-}
-
-static void
 real_call_when_ready (NautilusDirectory         *directory,
                       NautilusFileAttributes     file_attributes,
                       gboolean                   wait_for_file_list,
@@ -475,6 +469,31 @@ nautilus_starred_directory_set_files (NautilusFavoriteDirectory *self)
     nautilus_directory_emit_files_added (NAUTILUS_DIRECTORY (self), file_list);
 
     self->files = file_list;
+}
+
+static void
+real_force_reload (NautilusDirectory *directory)
+{
+    NautilusFavoriteDirectory *self = NAUTILUS_STARRED_DIRECTORY (directory);
+
+    /* Unset current file list */
+    for (GList *l = self->files; l != NULL; l = l->next)
+    {
+        NautilusFile *file = l->data;
+
+        /* Disconnect change handler */
+        g_signal_handlers_disconnect_by_func (file, file_changed, self);
+
+        /* Remove monitors */
+        for (GList *m = self->monitor_list; m != NULL; m = m->next)
+        {
+            nautilus_file_monitor_remove (file, m->data);
+        }
+    }
+    g_clear_list (&self->files, g_object_unref);
+
+    /* Set a fresh file list  */
+    nautilus_starred_directory_set_files (self);
 }
 
 static void
