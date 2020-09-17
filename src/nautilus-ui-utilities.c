@@ -268,6 +268,36 @@ get_text_for_date_range (GPtrArray *date_range,
     return label;
 }
 
+#define TIME_ZONE_RATE_LIMIT 2000000
+
+GTimeZone *
+nautilus_get_time_zone (void)
+{
+    static GTimeZone *cached_time_zone = NULL;
+    static gint64 last_read_time = 0;
+    gint64 current_time;
+
+    current_time = g_get_monotonic_time ();
+
+    if (g_once_init_enter (&last_read_time))
+    {
+        cached_time_zone = g_time_zone_new_local ();
+        g_once_init_leave (&last_read_time, current_time);
+    }
+
+    if (current_time - last_read_time > TIME_ZONE_RATE_LIMIT)
+    {
+        GTimeZone *old_time_zone = cached_time_zone;
+
+        last_read_time = current_time;
+        cached_time_zone = g_time_zone_new_local ();
+
+        g_time_zone_unref (old_time_zone);
+    }
+
+    return g_time_zone_ref (cached_time_zone);
+}
+
 GtkDialog *
 show_dialog (const gchar    *primary_text,
              const gchar    *secondary_text,

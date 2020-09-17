@@ -5454,18 +5454,21 @@ nautilus_file_get_date_as_string (NautilusFile       *file,
     file_date_time = g_date_time_new_from_unix_local (file_time_raw);
     if (date_format != NAUTILUS_DATE_FORMAT_FULL)
     {
+        g_autoptr (GTimeZone) time_zone = nautilus_get_time_zone ();
         GDateTime *file_date;
 
-        now = g_date_time_new_now_local ();
-        today_midnight = g_date_time_new_local (g_date_time_get_year (now),
-                                                g_date_time_get_month (now),
-                                                g_date_time_get_day_of_month (now),
-                                                0, 0, 0);
+        now = g_date_time_new_now (time_zone);
+        today_midnight = g_date_time_new (time_zone,
+                                          g_date_time_get_year (now),
+                                          g_date_time_get_month (now),
+                                          g_date_time_get_day_of_month (now),
+                                          0, 0, 0);
 
-        file_date = g_date_time_new_local (g_date_time_get_year (file_date_time),
-                                           g_date_time_get_month (file_date_time),
-                                           g_date_time_get_day_of_month (file_date_time),
-                                           0, 0, 0);
+        file_date = g_date_time_new (time_zone,
+                                     g_date_time_get_year (file_date_time),
+                                     g_date_time_get_month (file_date_time),
+                                     g_date_time_get_day_of_month (file_date_time),
+                                     0, 0, 0);
 
         days_ago = g_date_time_difference (today_midnight, file_date) / G_TIME_SPAN_DAY;
 

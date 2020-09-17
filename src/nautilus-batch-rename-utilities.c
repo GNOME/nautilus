@@ -20,6 +20,7 @@
 #include "nautilus-batch-rename-utilities.h"
 #include "nautilus-file.h"
 #include "nautilus-tracker-utilities.h"
+#include "nautilus-ui-utilities.h"
 
 #include <glib.h>
 #include <gtk/gtk.h>
@@ -971,17 +972,20 @@ on_cursor_callback (GObject      *object,
             {
                 if (metadata_type == CREATION_DATE)
                 {
+                    g_autoptr (GTimeZone) time_zone = nautilus_get_time_zone ();
+
                     /* Add the sort order to the order hash table */
                     g_hash_table_insert (query_data->date_order_hash_table,
                                          g_strdup (tracker_sparql_cursor_get_string (cursor, 0, NULL)),
                                          GINT_TO_POINTER (g_hash_table_size (query_data->date_order_hash_table)));
 
-                    date_time = g_date_time_new_local (atoi (year),
-                                                       atoi (month),
-                                                       atoi (day),
-                                                       atoi (hours),
-                                                       atoi (minutes),
-                                                       atoi (seconds));
+                    date_time = g_date_time_new (time_zone,
+                                                 atoi (year),
+                                                 atoi (month),
+                                                 atoi (day),
+                                                 atoi (hours),
+                                                 atoi (minutes),
+                                                 atoi (seconds));
 
                     file_metadata->metadata[metadata_type] = format_date_time (date_time);
                 }

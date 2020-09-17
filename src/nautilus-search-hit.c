@@ -26,6 +26,7 @@
 #include "nautilus-query.h"
 #define DEBUG_FLAG NAUTILUS_DEBUG_SEARCH_HIT
 #include "nautilus-debug.h"
+#include "nautilus-ui-utilities.h"
 
 struct _NautilusSearchHit
 {
@@ -58,6 +59,7 @@ void
 nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
                                     NautilusQuery     *query)
 {
+    g_autoptr (GTimeZone) time_zone = nautilus_get_time_zone ();
     GDateTime *now;
     GFile *query_location;
     GFile *hit_location;
@@ -94,7 +96,7 @@ nautilus_search_hit_compute_scores (NautilusSearchHit *hit,
     }
     g_object_unref (hit_location);
 
-    now = g_date_time_new_now_local ();
+    now = g_date_time_new_now (time_zone);
     if (hit->modification_time != NULL)
     {
         m_diff = g_date_time_difference (now, hit->modification_time);

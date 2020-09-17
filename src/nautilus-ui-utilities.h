@@ -37,6 +37,8 @@ gboolean    nautilus_file_date_in_between           (guint64            file_uni
 gchar     * get_text_for_date_range                 (GPtrArray         *date_range,
                                                      gboolean           prefix_with_since);
 
+GTimeZone * nautilus_get_time_zone                  (void);
+
 GtkDialog * show_dialog                             (const gchar       *primary_text,
                                                      const gchar       *secondary_text,
                                                      GtkWindow         *parent,
