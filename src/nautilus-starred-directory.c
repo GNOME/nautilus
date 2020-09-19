@@ -80,6 +80,20 @@ file_changed (NautilusFile              *file,
 }
 
 static void
+disconnect_and_unmonitor_file (NautilusFile              *file,
+                               NautilusFavoriteDirectory *self)
+{
+    /* Disconnect change handler */
+    g_signal_handlers_disconnect_by_func (file, file_changed, self);
+
+    /* Remove monitors */
+    for (GList *m = self->monitor_list; m != NULL; m = m->next)
+    {
+        nautilus_file_monitor_remove (file, m->data);
+    }
+}
+
+static void
 nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
 {
     GList *l;
@@ -138,17 +152,7 @@ nautilus_starred_directory_update_files (NautilusFavoriteDirectory *self)
             files_removed = g_list_prepend (files_removed,
                                             nautilus_file_ref (NAUTILUS_FILE (l->data)));
 
-            g_signal_handlers_disconnect_by_func (NAUTILUS_FILE (l->data),
-                                                  file_changed,
-                                                  self);
-
-            /* Remove monitors */
-            for (monitor_list = self->monitor_list; monitor_list;
-                 monitor_list = monitor_list->next)
-            {
-                monitor = monitor_list->data;
-                nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), monitor);
-            }
+            disconnect_and_unmonitor_file (NAUTILUS_FILE (l->data), self);
 
             if (l == self->files)
             {
@@ -477,19 +481,7 @@ real_force_reload (NautilusDirectory *directory)
     NautilusFavoriteDirectory *self = NAUTILUS_STARRED_DIRECTORY (directory);
 
     /* Unset current file list */
-    for (GList *l = self->files; l != NULL; l = l->next)
-    {
-        NautilusFile *file = l->data;
-
-        /* Disconnect change handler */
-        g_signal_handlers_disconnect_by_func (file, file_changed, self);
-
-        /* Remove monitors */
-        for (GList *m = self->monitor_list; m != NULL; m = m->next)
-        {
-            nautilus_file_monitor_remove (file, m->data);
-        }
-    }
+    g_list_foreach (self->files, (GFunc) disconnect_and_unmonitor_file, self);
     g_clear_list (&self->files, g_object_unref);
 
     /* Set a fresh file list  */
@@ -518,28 +510,12 @@ nautilus_starred_directory_dispose (GObject *object)
 {
     NautilusFavoriteDirectory *starred;
     GList *l;
-    GList *monitor_list;
-    FavoriteMonitor *monitor;
     NautilusFile *file;
 
     starred = NAUTILUS_STARRED_DIRECTORY (object);
 
     /* Remove file connections */
-    for (l = starred->files; l != NULL; l = l->next)
-    {
-        file = l->data;
-
-        /* Disconnect change handler */
-        g_signal_handlers_disconnect_by_func (file, file_changed, starred);
-
-        /* Remove monitors */
-        for (monitor_list = starred->monitor_list; monitor_list;
-             monitor_list = monitor_list->next)
-        {
-            monitor = monitor_list->data;
-            nautilus_file_monitor_remove (file, monitor);
-        }
-    }
+    g_list_foreach (starred->files, (GFunc) disconnect_and_unmonitor_file, starred);
 
     /* Remove search monitors */
     if (starred->monitor_list)
