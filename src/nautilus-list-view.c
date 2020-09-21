@@ -586,9 +586,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
     {
         if (is_simple_click)
         {
-            g_clear_pointer (&view->details->double_click_path[1], gtk_tree_path_free);
-            view->details->double_click_path[1] = view->details->double_click_path[0];
-            view->details->double_click_path[0] = NULL;
+            g_clear_pointer (&view->details->first_click_path, gtk_tree_path_free);
         }
 
         gtk_tree_selection_unselect_all (gtk_tree_view_get_selection (tree_view));
@@ -632,9 +630,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
      * on the same item */
     if (is_simple_click)
     {
-        g_clear_pointer (&view->details->double_click_path[1], gtk_tree_path_free);
-        view->details->double_click_path[1] = view->details->double_click_path[0];
-        view->details->double_click_path[0] = gtk_tree_path_copy (path);
+        g_clear_pointer (&view->details->first_click_path, gtk_tree_path_free);
+        view->details->first_click_path = gtk_tree_path_copy (path);
     }
 
     on_star = (g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
@@ -657,8 +654,8 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
 
         /* NOTE: Activation can actually destroy the view if we're switching */
         if (!on_expander &&
-            view->details->double_click_path[1] &&
-            gtk_tree_path_compare (view->details->double_click_path[0], view->details->double_click_path[1]) == 0)
+            view->details->first_click_path &&
+            gtk_tree_path_compare (path, view->details->first_click_path) == 0)
         {
             if ((button == GDK_BUTTON_PRIMARY) && button_event_modifies_selection (event))
             {
@@ -3720,13 +3717,9 @@ nautilus_list_view_finalize (GObject *object)
     g_free (list_view->details->original_name);
     list_view->details->original_name = NULL;
 
-    if (list_view->details->double_click_path[0])
+    if (list_view->details->first_click_path)
     {
-        gtk_tree_path_free (list_view->details->double_click_path[0]);
-    }
-    if (list_view->details->double_click_path[1])
-    {
-        gtk_tree_path_free (list_view->details->double_click_path[1]);
+        gtk_tree_path_free (list_view->details->first_click_path);
     }
     if (list_view->details->new_selection_path)
     {
