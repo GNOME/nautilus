@@ -510,7 +510,6 @@ nautilus_starred_directory_dispose (GObject *object)
 {
     NautilusFavoriteDirectory *starred;
     GList *l;
-    NautilusFile *file;
 
     starred = NAUTILUS_STARRED_DIRECTORY (object);
 
