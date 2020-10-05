@@ -188,6 +188,15 @@ typedef struct
     OpKind op;
     guint64 last_report_time;
     int last_reported_files_left;
+
+    /*
+     * This is used when reporting progress for copy/move operations to not show
+     * the remaining time. This is needed because some GVfs backends doesn't
+     * report progress from those operations. Consequently it looks like that it
+     * is hanged when the remaining time is not updated regularly. See:
+     * https://gitlab.gnome.org/GNOME/nautilus/-/merge_requests/605
+     */
+    gboolean partial_progress;
 } TransferInfo;
 
 typedef struct
@@ -4152,7 +4161,8 @@ report_copy_progress (CopyMoveJob  *copy_job,
     }
 
     if (elapsed < SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE ||
-        transfer_rate == 0)
+        transfer_rate == 0 ||
+        !transfer_info->partial_progress)
     {
         if (source_info->num_files == 1)
         {
@@ -5183,6 +5193,12 @@ copy_file_progress_callback (goffset  current_num_bytes,
     goffset new_size;
 
     pdata = user_data;
+
+    if (current_num_bytes != 0 &&
+        current_num_bytes != total_num_bytes)
+    {
+        pdata->transfer_info->partial_progress = TRUE;
+    }
 
     new_size = current_num_bytes - pdata->last_size;
 
