@@ -12,16 +12,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-08-23 23:09+0000\n"
-"PO-Revision-Date: 2020-09-16 14:34-0300\n"
+"POT-Creation-Date: 2020-10-02 12:54+0000\n"
+"PO-Revision-Date: 2020-10-12 15:12+0100\n"
 "Last-Translator: Juliano de Souza Camargo <julianosc@protonmail.com>\n"
-"Language-Team: Portuguese <>\n"
+"Language-Team: Portuguese < >\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1)\n"
-"X-Generator: Gtranslator 3.36.0\n"
+"X-Generator: Gtranslator 3.38.0\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
 "X-Project-Style: gnome\n"
@@ -96,7 +96,7 @@ msgid "Search"
 msgstr "Procurar"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:50 src/nautilus-bookmark.c:111
-#: src/nautilus-file.c:4425 src/nautilus-file-utilities.c:323
+#: src/nautilus-file.c:4434 src/nautilus-file-utilities.c:323
 #: src/nautilus-pathbar.c:333
 msgid "Other Locations"
 msgstr "Outras localizações"
@@ -785,13 +785,13 @@ msgstr "N/D"
 
 #: extensions/audio-video-properties/totem-properties-view.c:277
 #: extensions/audio-video-properties/resources/ui/properties.ui:512
-#: src/nautilus-file.c:7473
+#: src/nautilus-file.c:7461
 msgid "Audio"
 msgstr "Áudio"
 
 #: extensions/audio-video-properties/totem-properties-view.c:279
 #: extensions/audio-video-properties/resources/ui/properties.ui:321
-#: src/nautilus-file.c:7481 src/nautilus-mime-actions.c:205
+#: src/nautilus-file.c:7469 src/nautilus-mime-actions.c:205
 msgid "Video"
 msgstr "Vídeo"
 
@@ -966,7 +966,7 @@ msgid "Failed to load image information"
 msgstr "Falha ao ler informação da imagem"
 
 #: extensions/image-properties/nautilus-image-properties-page-provider.c:100
-#: src/nautilus-file.c:7475
+#: src/nautilus-file.c:7463
 msgid "Image"
 msgstr "Imagem"
 
@@ -1548,77 +1548,77 @@ msgstr "Impossível iniciar este ficheiro"
 msgid "This file cannot be stopped"
 msgstr "Impossível parar este ficheiro"
 
-#: src/nautilus-file.c:1948
+#: src/nautilus-file.c:1957
 #, c-format
 msgid "Slashes are not allowed in filenames"
 msgstr "Não são permitidas barras nos nomes dos ficheiros"
 
-#: src/nautilus-file.c:1991
+#: src/nautilus-file.c:2000
 #, c-format
 msgid "Toplevel files cannot be renamed"
 msgstr "Impossível renomear os ficheiros de topo"
 
-#: src/nautilus-file.c:2075
+#: src/nautilus-file.c:2084
 #, c-format
 msgid "File not found"
 msgstr "Ficheiro não encontrado"
 
-#: src/nautilus-file.c:4429 src/nautilus-file-utilities.c:327
+#: src/nautilus-file.c:4438 src/nautilus-file-utilities.c:327
 #: src/nautilus-pathbar.c:338
 msgid "Starred"
 msgstr "Marcado com estrela"
 
 #. Translators: Time in 24h format
-#: src/nautilus-file.c:5502
+#: src/nautilus-file.c:5490
 msgid "%H:%M"
 msgstr "%H:%M"
 
 #. Translators: Time in 12h format
-#: src/nautilus-file.c:5507
+#: src/nautilus-file.c:5495
 msgid "%l:%M %p"
 msgstr "%l:%M %p"
 
-#: src/nautilus-file.c:5516
+#: src/nautilus-file.c:5504
 #, no-c-format
 msgid "Yesterday"
 msgstr "Ontem"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 24h format. i.e. "Yesterday 23:04"
-#: src/nautilus-file.c:5525
+#: src/nautilus-file.c:5513
 #, no-c-format
 msgid "Yesterday %H:%M"
 msgstr "Ontem %H:%M"
 
 #. Translators: this is the word Yesterday followed by
 #. * a time in 12h format. i.e. "Yesterday 9:04 PM"
-#: src/nautilus-file.c:5532
+#: src/nautilus-file.c:5520
 #, no-c-format
 msgid "Yesterday %l:%M %p"
 msgstr "Ontem %l:%M %p"
 
-#: src/nautilus-file.c:5542
+#: src/nautilus-file.c:5530
 #, no-c-format
 msgid "%a"
 msgstr "%a"
 
 #. Translators: this is the name of the week day followed by
 #. * a time in 24h format. i.e. "Monday 23:04"
-#: src/nautilus-file.c:5551
+#: src/nautilus-file.c:5539
 #, no-c-format
 msgid "%a %H:%M"
 msgstr "%a %H:%M"
 
 #. Translators: this is the week day name followed by
 #. * a time in 12h format. i.e. "Monday 9:04 PM"
-#: src/nautilus-file.c:5558
+#: src/nautilus-file.c:5546
 #, no-c-format
 msgid "%a %l:%M %p"
 msgstr "%a %l:%M %p"
 
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name i.e. "3 Feb"
-#: src/nautilus-file.c:5569
+#: src/nautilus-file.c:5557
 #, no-c-format
 msgid "%-e %b"
 msgstr "%-e %b"
@@ -1626,7 +1626,7 @@ msgstr "%-e %b"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 24h format i.e. "3 Feb 23:04"
-#: src/nautilus-file.c:5579
+#: src/nautilus-file.c:5567
 #, no-c-format
 msgid "%-e %b %H:%M"
 msgstr "%-e %b %H:%M"
@@ -1634,14 +1634,14 @@ msgstr "%-e %b %H:%M"
 #. Translators: this is the day of the month followed
 #. * by the abbreviated month name followed by a time in
 #. * 12h format i.e. "3 Feb 9:04"
-#: src/nautilus-file.c:5587
+#: src/nautilus-file.c:5575
 #, no-c-format
 msgid "%-e %b %l:%M %p"
 msgstr "%-e %b %l:%M %p"
 
 #. Translators: this is the day of the month followed by the abbreviated
 #. * month name followed by the year i.e. "3 Feb 2015"
-#: src/nautilus-file.c:5598
+#: src/nautilus-file.c:5586
 #, no-c-format
 msgid "%-e %b %Y"
 msgstr "%-e %b %Y"
@@ -1649,7 +1649,7 @@ msgstr "%-e %b %Y"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 24h format i.e. "3 Feb 2015 23:04"
-#: src/nautilus-file.c:5608
+#: src/nautilus-file.c:5596
 #, no-c-format
 msgid "%-e %b %Y %H:%M"
 msgstr "%-e %b %Y %H:%M"
@@ -1657,61 +1657,61 @@ msgstr "%-e %b %Y %H:%M"
 #. Translators: this is the day number followed
 #. * by the abbreviated month name followed by the year followed
 #. * by a time in 12h format i.e. "3 Feb 2015 9:04 PM"
-#: src/nautilus-file.c:5616
+#: src/nautilus-file.c:5604
 #, no-c-format
 msgid "%-e %b %Y %l:%M %p"
 msgstr "%-e %b %Y %l:%M %p"
 
-#: src/nautilus-file.c:5628
+#: src/nautilus-file.c:5616
 #, no-c-format
 msgid "%c"
 msgstr "%c"
 
-#: src/nautilus-file.c:6091
+#: src/nautilus-file.c:6079
 #, c-format
 msgid "Not allowed to set permissions"
 msgstr "Sem autorização para definir permissões"
 
-#: src/nautilus-file.c:6414
+#: src/nautilus-file.c:6402
 #, c-format
 msgid "Not allowed to set owner"
 msgstr "Sem autorização para definir o dono"
 
-#: src/nautilus-file.c:6433
+#: src/nautilus-file.c:6421
 #, c-format
 msgid "Specified owner “%s” doesn’t exist"
 msgstr "O dono “%s” especificado não existe"
 
-#: src/nautilus-file.c:6718
+#: src/nautilus-file.c:6706
 #, c-format
 msgid "Not allowed to set group"
 msgstr "Sem autorização para definir o grupo"
 
-#: src/nautilus-file.c:6737
+#: src/nautilus-file.c:6725
 #, c-format
 msgid "Specified group “%s” doesn’t exist"
 msgstr "O grupo “%s” especificado não existe"
 
 #. Translators: "Me" is used to indicate the file is owned by me (the current user)
-#: src/nautilus-file.c:6879
+#: src/nautilus-file.c:6867
 msgid "Me"
 msgstr "Eu"
 
-#: src/nautilus-file.c:6911
+#: src/nautilus-file.c:6899
 #, c-format
 msgid "%'u item"
 msgid_plural "%'u items"
 msgstr[0] "%'u item"
 msgstr[1] "%'u itens"
 
-#: src/nautilus-file.c:6912
+#: src/nautilus-file.c:6900
 #, c-format
 msgid "%'u folder"
 msgid_plural "%'u folders"
 msgstr[0] "%'u pasta"
 msgstr[1] "%'u pastas"
 
-#: src/nautilus-file.c:6913
+#: src/nautilus-file.c:6901
 #, c-format
 msgid "%'u file"
 msgid_plural "%'u files"
@@ -1719,80 +1719,80 @@ msgstr[0] "%'u ficheiro"
 msgstr[1] "%'u ficheiros"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7390
+#: src/nautilus-file.c:7378
 msgid "? bytes"
 msgstr "? bytes"
 
 #. This means no contents at all were readable
-#: src/nautilus-file.c:7402
+#: src/nautilus-file.c:7390
 msgid "? items"
 msgstr "? itens"
 
-#: src/nautilus-file.c:7410
+#: src/nautilus-file.c:7398
 msgid "Unknown"
 msgstr "Desconhecido"
 
 #. Fallback, use for both unknown attributes and attributes
 #. * for which we have no more appropriate default.
 #.
-#: src/nautilus-file.c:7436 src/nautilus-properties-window.c:1313
+#: src/nautilus-file.c:7424 src/nautilus-properties-window.c:1313
 msgid "unknown"
 msgstr "desconhecido"
 
-#: src/nautilus-file.c:7472 src/nautilus-file.c:7480 src/nautilus-file.c:7539
+#: src/nautilus-file.c:7460 src/nautilus-file.c:7468 src/nautilus-file.c:7527
 msgid "Program"
 msgstr "Aplicação"
 
-#: src/nautilus-file.c:7474
+#: src/nautilus-file.c:7462
 msgid "Font"
 msgstr "Letra"
 
-#: src/nautilus-file.c:7476
+#: src/nautilus-file.c:7464
 msgid "Archive"
 msgstr "Arquivo"
 
-#: src/nautilus-file.c:7477
+#: src/nautilus-file.c:7465
 msgid "Markup"
 msgstr "Marcado"
 
-#: src/nautilus-file.c:7478 src/nautilus-file.c:7479
+#: src/nautilus-file.c:7466 src/nautilus-file.c:7467
 msgid "Text"
 msgstr "Texto"
 
-#: src/nautilus-file.c:7482
+#: src/nautilus-file.c:7470
 msgid "Contacts"
 msgstr "Contactos"
 
-#: src/nautilus-file.c:7483
+#: src/nautilus-file.c:7471
 msgid "Calendar"
 msgstr "Calendário"
 
-#: src/nautilus-file.c:7484
+#: src/nautilus-file.c:7472
 msgid "Document"
 msgstr "Documento"
 
-#: src/nautilus-file.c:7485 src/nautilus-mime-actions.c:179
+#: src/nautilus-file.c:7473 src/nautilus-mime-actions.c:179
 msgid "Presentation"
 msgstr "Apresentação"
 
-#: src/nautilus-file.c:7486 src/nautilus-mime-actions.c:187
+#: src/nautilus-file.c:7474 src/nautilus-mime-actions.c:187
 msgid "Spreadsheet"
 msgstr "Folha de cálculo"
 
 #. Refers to a file type which is known but not one of the basic types
-#: src/nautilus-file.c:7513
+#: src/nautilus-file.c:7501
 msgid "Other"
 msgstr "Outros"
 
-#: src/nautilus-file.c:7541
+#: src/nautilus-file.c:7529
 msgid "Binary"
 msgstr "Binário"
 
-#: src/nautilus-file.c:7546
+#: src/nautilus-file.c:7534
 msgid "Folder"
 msgstr "Pasta"
 
-#: src/nautilus-file.c:7585
+#: src/nautilus-file.c:7573
 msgid "Link"
 msgstr "Atalho"
 
@@ -1801,12 +1801,12 @@ msgstr "Atalho"
 #. * to that kind of file (e.g. "link to folder").
 #.
 #. appended to new link file
-#: src/nautilus-file.c:7591 src/nautilus-file-operations.c:459
+#: src/nautilus-file.c:7579 src/nautilus-file-operations.c:459
 #, c-format
 msgid "Link to %s"
 msgstr "Atalho para %s"
 
-#: src/nautilus-file.c:7609 src/nautilus-file.c:7625 src/nautilus-file.c:7641
+#: src/nautilus-file.c:7597 src/nautilus-file.c:7613 src/nautilus-file.c:7629
 msgid "Link (broken)"
 msgstr "Atalho (inválido)"
 
@@ -2136,8 +2136,8 @@ msgstr[1] "A eliminar %d ficheiros"
 #: src/nautilus-file-operations.c:1887 src/nautilus-file-operations.c:2229
 #: src/nautilus-file-operations.c:2237 src/nautilus-file-operations.c:2277
 #: src/nautilus-file-operations.c:4087 src/nautilus-file-operations.c:4095
-#: src/nautilus-file-operations.c:4166 src/nautilus-file-operations.c:8566
-#: src/nautilus-file-operations.c:8634
+#: src/nautilus-file-operations.c:4166 src/nautilus-file-operations.c:8578
+#: src/nautilus-file-operations.c:8646
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d/%'d"
@@ -2470,8 +2470,8 @@ msgstr[1] "Duplicados %'d ficheiros em “%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:4077 src/nautilus-file-operations.c:4137
-#: src/nautilus-file-operations.c:8132 src/nautilus-file-operations.c:8306
-#: src/nautilus-file-operations.c:8561 src/nautilus-file-operations.c:8604
+#: src/nautilus-file-operations.c:8144 src/nautilus-file-operations.c:8318
+#: src/nautilus-file-operations.c:8573 src/nautilus-file-operations.c:8616
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2494,8 +2494,8 @@ msgstr "%s / %s"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4121 src/nautilus-file-operations.c:8150
-#: src/nautilus-file-operations.c:8593
+#: src/nautilus-file-operations.c:4121 src/nautilus-file-operations.c:8162
+#: src/nautilus-file-operations.c:8605
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2507,7 +2507,7 @@ msgstr[1] "%s / %s — %s restantes (%s/sec)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4155 src/nautilus-file-operations.c:8623
+#: src/nautilus-file-operations.c:4155 src/nautilus-file-operations.c:8635
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2687,95 +2687,95 @@ msgstr "Erro ao criar o ficheiro %s."
 msgid "There was an error creating the directory in %s."
 msgstr "Ocorreu um erro ao criar a pasta em %s."
 
-#: src/nautilus-file-operations.c:8004
+#: src/nautilus-file-operations.c:8016
 msgid "Emptying Trash"
 msgstr "A esvaziar o lixo"
 
-#: src/nautilus-file-operations.c:8046
+#: src/nautilus-file-operations.c:8058
 msgid "Verifying destination"
 msgstr "A verificar o destino"
 
-#: src/nautilus-file-operations.c:8090
+#: src/nautilus-file-operations.c:8102
 #, c-format
 msgid "Extracting “%s”"
 msgstr "A extrair “%s”"
 
-#: src/nautilus-file-operations.c:8194 src/nautilus-file-operations.c:8256
+#: src/nautilus-file-operations.c:8206 src/nautilus-file-operations.c:8268
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Erro ao extrair “%s”"
 
-#: src/nautilus-file-operations.c:8198
+#: src/nautilus-file-operations.c:8210
 #, c-format
 msgid "There was an error while extracting “%s”."
 msgstr "Ocorreu um erro ao extrair “%s”."
 
-#: src/nautilus-file-operations.c:8259
+#: src/nautilus-file-operations.c:8271
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "Não há espaço disponível para extrair %s"
 
-#: src/nautilus-file-operations.c:8289
+#: src/nautilus-file-operations.c:8301
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Movido “%s” para “%s”"
 
-#: src/nautilus-file-operations.c:8295
+#: src/nautilus-file-operations.c:8307
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "Extraído %'d ficheiro para “%s”"
 msgstr[1] "Extraído %'d ficheiros para “%s”"
 
-#: src/nautilus-file-operations.c:8329
+#: src/nautilus-file-operations.c:8341
 msgid "Preparing to extract"
 msgstr "A preparar para extrair"
 
-#: src/nautilus-file-operations.c:8458
+#: src/nautilus-file-operations.c:8470
 msgid "Extracting Files"
 msgstr "A extrair ficheiros"
 
-#: src/nautilus-file-operations.c:8517
+#: src/nautilus-file-operations.c:8529
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "A comprimir “%s” em “%s”"
 
-#: src/nautilus-file-operations.c:8523
+#: src/nautilus-file-operations.c:8535
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "A comprimir %'d ficheiro em “%s”"
 msgstr[1] "A comprimir %'d ficheiros em “%s”"
 
-#: src/nautilus-file-operations.c:8671
+#: src/nautilus-file-operations.c:8683
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Erro ao comprimir “%s” em “%s”"
 
-#: src/nautilus-file-operations.c:8677
+#: src/nautilus-file-operations.c:8689
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "Erro ao comprimir %'d ficheiro em “%s”"
 msgstr[1] "Erro ao comprimir %'d ficheiros em “%s”"
 
-#: src/nautilus-file-operations.c:8687
+#: src/nautilus-file-operations.c:8699
 msgid "There was an error while compressing files."
 msgstr "Ocorreu um erro ao comprimir o ficheiros."
 
-#: src/nautilus-file-operations.c:8712
+#: src/nautilus-file-operations.c:8724
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Comprimido “%s” em “%s”"
 
-#: src/nautilus-file-operations.c:8718
+#: src/nautilus-file-operations.c:8730
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Comprimido %'d ficheiro em “%s”"
 msgstr[1] "Comprimido %'d ficheiros em “%s”"
 
-#: src/nautilus-file-operations.c:8810
+#: src/nautilus-file-operations.c:8822
 msgid "Compressing Files"
 msgstr "A comprimir ficheiros"
 
@@ -2842,7 +2842,7 @@ msgstr ""
 #: src/nautilus-files-view.c:3408 src/nautilus-files-view.c:3455
 #, c-format
 msgid "“%s” selected"
-msgstr "“%s” selecionados"
+msgstr "“%s” selecionado"
 
 #: src/nautilus-files-view.c:3412
 #, c-format
@@ -3496,72 +3496,72 @@ msgstr "_Desfazer comprimir"
 msgid "_Redo Compress"
 msgstr "_Refazer comprimir"
 
-#: src/nautilus-file-utilities.c:891
+#: src/nautilus-file-utilities.c:892
 #, c-format
 msgid "Could not determine original location of “%s” "
 msgstr "Impossível determinar a localização original de “%s” "
 
-#: src/nautilus-file-utilities.c:895
+#: src/nautilus-file-utilities.c:896
 msgid "The item cannot be restored from trash"
 msgstr "Impossível recuperar o item do lixo"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:1010
+#: src/nautilus-file-utilities.c:1011
 msgid "Audio CD"
 msgstr "CD de áudio"
 
-#: src/nautilus-file-utilities.c:1014
+#: src/nautilus-file-utilities.c:1015
 msgid "Audio DVD"
 msgstr "DVD de áudio"
 
-#: src/nautilus-file-utilities.c:1018
+#: src/nautilus-file-utilities.c:1019
 msgid "Video DVD"
 msgstr "DVD de vídeo"
 
-#: src/nautilus-file-utilities.c:1022
+#: src/nautilus-file-utilities.c:1023
 msgid "Video CD"
 msgstr "CD de vídeo"
 
-#: src/nautilus-file-utilities.c:1026
+#: src/nautilus-file-utilities.c:1027
 msgid "Super Video CD"
 msgstr "CD de super vídeo"
 
-#: src/nautilus-file-utilities.c:1030
+#: src/nautilus-file-utilities.c:1031
 msgid "Photo CD"
 msgstr "CD de fotografias"
 
-#: src/nautilus-file-utilities.c:1034
+#: src/nautilus-file-utilities.c:1035
 msgid "Picture CD"
 msgstr "CD de imagens"
 
-#: src/nautilus-file-utilities.c:1038 src/nautilus-file-utilities.c:1086
+#: src/nautilus-file-utilities.c:1039 src/nautilus-file-utilities.c:1087
 msgid "Contains digital photos"
 msgstr "Contém fotografias digitais"
 
-#: src/nautilus-file-utilities.c:1042
+#: src/nautilus-file-utilities.c:1043
 msgid "Contains music"
 msgstr "Contém música"
 
-#: src/nautilus-file-utilities.c:1046
+#: src/nautilus-file-utilities.c:1047
 msgid "Contains software to run"
 msgstr "Contém aplicações para executar"
 
-#: src/nautilus-file-utilities.c:1050
+#: src/nautilus-file-utilities.c:1051
 msgid "Contains software to install"
 msgstr "Contém aplicações para instalar"
 
 #. fallback to generic greeting
-#: src/nautilus-file-utilities.c:1055
+#: src/nautilus-file-utilities.c:1056
 #, c-format
 msgid "Detected as “%s”"
 msgstr "Detetado como “%s”"
 
 #. translators: these describe the contents of removable media
-#: src/nautilus-file-utilities.c:1078
+#: src/nautilus-file-utilities.c:1079
 msgid "Contains music and photos"
 msgstr "Contém música e fotografias"
 
-#: src/nautilus-file-utilities.c:1082
+#: src/nautilus-file-utilities.c:1083
 msgid "Contains photos and music"
 msgstr "Contém fotografias e música"
 
@@ -3573,12 +3573,12 @@ msgstr "(vazio)"
 msgid "Use Default"
 msgstr "Usar predefinição"
 
-#: src/nautilus-list-view.c:3400
+#: src/nautilus-list-view.c:3401
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s colunas visíveis"
 
-#: src/nautilus-list-view.c:3420
+#: src/nautilus-list-view.c:3421
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Selecione a ordem da informação a ser apresentar nesta pasta:"
 
@@ -3616,7 +3616,7 @@ msgstr "Ilustração"
 
 #: src/nautilus-mime-actions.c:141
 msgid "Music"
-msgstr "Música"
+msgstr "Músicas"
 
 #: src/nautilus-mime-actions.c:154
 msgid "PDF / PostScript"
@@ -4989,7 +4989,7 @@ msgstr "Novo _documento"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:14
 msgid "Add to _Bookmarks"
-msgstr "Adicionar aos Marcadores"
+msgstr "Adicionar aos _marcadores"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
 #: src/resources/ui/nautilus-files-view-context-menus.ui:128
@@ -5005,7 +5005,7 @@ msgid "Select _All"
 msgstr "Selecion_ar tudo"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:38
-#: src/resources/ui/nautilus-files-view-context-menus.ui:232
+#: src/resources/ui/nautilus-files-view-context-menus.ui:234
 msgid "P_roperties"
 msgstr "P_ropriedades"
 
@@ -5112,18 +5112,18 @@ msgstr "E_xtrair para..."
 msgid "C_ompress…"
 msgstr "C_omprimir..."
 
-#: src/resources/ui/nautilus-files-view-context-menus.ui:215
+#: src/resources/ui/nautilus-files-view-context-menus.ui:217
 msgid "Tags"
 msgstr "Etiquetas"
 
 #. Marks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:220
+#: src/resources/ui/nautilus-files-view-context-menus.ui:222
 msgctxt "menu item"
 msgid "Star"
 msgstr "Marcar com estrela"
 
 #. Unmarks a file as starred (starred)
-#: src/resources/ui/nautilus-files-view-context-menus.ui:225
+#: src/resources/ui/nautilus-files-view-context-menus.ui:227
 msgctxt "menu item"
 msgid "Unstar"
 msgstr "Remover estrela"
