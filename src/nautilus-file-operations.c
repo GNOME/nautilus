@@ -6744,6 +6744,21 @@ nautilus_file_operations_move (GTask        *task,
         goto aborted;
     }
 
+    if (fallbacks == NULL)
+    {
+        gint total;
+
+        total = g_list_length (job->files);
+
+        memset (&source_info, 0, sizeof (source_info));
+        source_info.num_files = total;
+        memset (&transfer_info, 0, sizeof (transfer_info));
+        transfer_info.num_files = total;
+        report_copy_progress (job, &source_info, &transfer_info);
+
+        return;
+    }
+
     /* The rest we need to do deep copy + delete behind on,
      *  so scan for size */
 
