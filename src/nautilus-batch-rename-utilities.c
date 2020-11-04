@@ -1150,7 +1150,6 @@ check_metadata_for_selection (NautilusBatchRenameDialog *dialog,
                                            batch_rename_dialog_query_callback,
                                            query_data);
 
-    g_object_unref (connection);
     g_string_free (query, TRUE);
 }
 
