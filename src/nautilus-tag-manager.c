@@ -972,7 +972,7 @@ export_tracker2_data (NautilusTagManager *self)
 
     flags = G_SPAWN_DO_NOT_REAP_CHILD |
             G_SPAWN_STDERR_TO_DEV_NULL |
-            G_SPAWN_SEARCH_PATH_FROM_ENVP;
+            G_SPAWN_SEARCH_PATH;
     success = g_spawn_async_with_pipes (NULL,
                                         argv,
                                         NULL,
