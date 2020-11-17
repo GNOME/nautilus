@@ -3,6 +3,9 @@
   <template class="NautilusWindow" parent="GtkApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
+    <child type="titlebar">
+      <object class="NautilusToolbar" id="toolbar"/>
+    </child>
     <child>
       <object class="GtkGrid">
         <property name="visible">True</property>
