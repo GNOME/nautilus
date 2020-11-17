@@ -108,10 +108,9 @@ struct _NautilusWindow
     GList *slots;
     NautilusWindowSlot *active_slot;
 
-    GtkWidget *content_paned;
+    GtkWidget *content_flap;
 
     /* Side Pane */
-    int side_pane_width;
     GtkWidget *sidebar;            /* container for the GtkPlacesSidebar */
     GtkWidget *places_sidebar;     /* the actual GtkPlacesSidebar */
     GVolume *selected_volume;     /* the selected volume in the sidebar popup callback */
@@ -882,60 +881,6 @@ nautilus_window_get_notebook (NautilusWindow *window)
     return window->notebook;
 }
 
-static gboolean
-save_sidebar_width_cb (gpointer user_data)
-{
-    NautilusWindow *window = user_data;
-
-
-    window->sidebar_width_handler_id = 0;
-
-    DEBUG ("Saving sidebar width: %d", window->side_pane_width);
-
-    g_settings_set_int (nautilus_window_state,
-                        NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH,
-                        window->side_pane_width);
-
-    return FALSE;
-}
-
-/* side pane helpers */
-static void
-side_pane_size_allocate_callback (GtkWidget     *widget,
-                                  GtkAllocation *allocation,
-                                  gpointer       user_data)
-{
-    NautilusWindow *window = user_data;
-
-
-    if (window->sidebar_width_handler_id != 0)
-    {
-        g_source_remove (window->sidebar_width_handler_id);
-        window->sidebar_width_handler_id = 0;
-    }
-
-    if (allocation->width != window->side_pane_width &&
-        allocation->width > 1)
-    {
-        window->side_pane_width = allocation->width;
-
-        window->sidebar_width_handler_id =
-            g_idle_add (save_sidebar_width_cb, window);
-    }
-}
-
-static void
-setup_side_pane_width (NautilusWindow *window)
-{
-    g_return_if_fail (window->sidebar != NULL);
-
-    window->side_pane_width =
-        g_settings_get_int (nautilus_window_state,
-                            NAUTILUS_WINDOW_STATE_SIDEBAR_WIDTH);
-
-    gtk_paned_set_position (GTK_PANED (window->content_paned),
-                            window->side_pane_width);
-}
 
 /* Callback used when the places sidebar changes location; we need to change the displayed folder */
 static void
@@ -1379,12 +1324,6 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
 static void
 nautilus_window_set_up_sidebar (NautilusWindow *window)
 {
-    setup_side_pane_width (window);
-    g_signal_connect (window->sidebar,
-                      "size-allocate",
-                      G_CALLBACK (side_pane_size_allocate_callback),
-                      window);
-
     gtk_places_sidebar_set_open_flags (GTK_PLACES_SIDEBAR (window->places_sidebar),
                                        (GTK_PLACES_OPEN_NORMAL
                                         | GTK_PLACES_OPEN_NEW_TAB
@@ -1424,7 +1363,6 @@ nautilus_window_show_sidebar (NautilusWindow *window)
     g_return_if_fail (NAUTILUS_IS_WINDOW (window));
 
     gtk_widget_show (window->sidebar);
-    setup_side_pane_width (window);
 }
 
 void
@@ -2823,7 +2761,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
-    gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_paned);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_flap);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, main_view);

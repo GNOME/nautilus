@@ -11,15 +11,16 @@
           <object class="NautilusToolbar" id="toolbar"/>
         </child>
         <child>
-          <object class="GtkPaned" id="content_paned">
+          <object class="HdyFlap" id="content_flap">
             <property name="visible">True</property>
             <property name="vexpand">True</property>
             <property name="hexpand">True</property>
-            <child>
+            <child type="flap">
               <object class="GtkBox" id="sidebar">
                 <property name="visible">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
+                <property name="width_request">204</property>
                 <child>
                   <object class="GtkPlacesSidebar" id="places_sidebar">
                     <property name="visible">True</property>
@@ -36,14 +37,11 @@
                   </packing>
                 </child>
               </object>
-              <packing>
-               <property name="resize">False</property>
-               <property name="shrink">False</property>
-              </packing>
             </child>
             <child>
               <object class="GtkOverlay" id="main_view">
                 <property name="visible">True</property>
+                <property name="width_request">360</property>
                 <child>
                   <object class="NautilusNotebook" id="notebook">
                     <property name="visible">True</property>
@@ -189,9 +187,6 @@
                   </object>
                 </child>
               </object>
-              <packing>
-                <property name="shrink">False</property>
-              </packing>
             </child>
           </object>
         </child>
