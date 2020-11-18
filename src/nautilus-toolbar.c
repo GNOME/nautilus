@@ -73,7 +73,10 @@ struct _NautilusToolbar
     NautilusContainerMaxWidth *toolbar_switcher_container_max_width;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
+
     GtkWidget *fold_button;
+    GtkWidget *navigation_box;
+    GtkWidget *views_box;
 
     gboolean show_location_entry;
     gboolean show_fold_button;
@@ -1003,6 +1006,28 @@ nautilus_toolbar_on_window_constructed (NautilusToolbar *self)
     undo_manager_changed (self);
 }
 
+void
+nautilus_toolbar_set_adaptive_mode (NautilusToolbar      *self,
+                                    NautilusAdaptiveMode  adaptive_mode)
+{
+    switch (adaptive_mode)
+    {
+        case NAUTILUS_ADAPTIVE_MODE_NARROW:
+        {
+            gtk_widget_hide (self->navigation_box);
+            gtk_widget_hide (self->views_box);
+        }
+        break;
+
+        case NAUTILUS_ADAPTIVE_MODE_NORMAL:
+        {
+            gtk_widget_show (self->navigation_box);
+            gtk_widget_show (self->views_box);
+        }
+        break;
+    }
+}
+
 static void
 nautilus_toolbar_get_property (GObject    *object,
                                guint       property_id,
@@ -1271,6 +1296,8 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, fold_button);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, navigation_box);
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, views_box);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);

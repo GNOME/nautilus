@@ -47,6 +47,7 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
+#include "nautilus-adaptive-mode.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-clipboard.h"
@@ -711,6 +712,35 @@ nautilus_window_grab_focus (GtkWidget *widget)
     {
         gtk_widget_grab_focus (GTK_WIDGET (slot));
     }
+}
+
+static void
+update_adaptive_mode (NautilusWindow *window)
+{
+    NautilusToolbar *toolbar = NAUTILUS_TOOLBAR (window->toolbar);
+    gboolean is_narrow, is_mobile_landscape;
+    gint width, height;
+    NautilusAdaptiveMode adaptive_mode;
+
+    gtk_window_get_size (GTK_WINDOW (window), &width, &height);
+
+    is_narrow = width <= 600;
+    is_mobile_landscape = height <= 400;
+    adaptive_mode = (is_narrow || is_mobile_landscape) ?
+                    NAUTILUS_ADAPTIVE_MODE_NARROW :
+                    NAUTILUS_ADAPTIVE_MODE_NORMAL;
+    nautilus_toolbar_set_adaptive_mode (toolbar, adaptive_mode);
+}
+
+static void
+nautilus_window_size_allocate (GtkWidget     *widget,
+                               GtkAllocation *allocation)
+{
+    NautilusWindow *window = NAUTILUS_WINDOW (widget);
+
+    GTK_WIDGET_CLASS (nautilus_window_parent_class)->size_allocate (widget, allocation);
+
+    update_adaptive_mode (window);
 }
 
 static void
@@ -2757,6 +2787,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     wclass->key_press_event = nautilus_window_key_press_event;
     wclass->delete_event = nautilus_window_delete_event;
     wclass->grab_focus = nautilus_window_grab_focus;
+    wclass->size_allocate = nautilus_window_size_allocate;
 
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
