@@ -535,6 +535,17 @@
       </packing>
     </child>
     <child>
+      <object class="GtkToggleButton" id="fold_button">
+        <property name="no_show_all">True</property>
+        <child>
+          <object class="GtkImage">
+            <property name="visible">True</property>
+            <property name="icon_name">show-sidebar-symbolic</property>
+          </object>
+        </child>
+      </object>
+    </child>
+    <child>
       <object class="GtkBox" id="navigation_box">
         <property name="visible">True</property>
         <property name="can_focus">False</property>

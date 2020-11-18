@@ -73,8 +73,11 @@ struct _NautilusToolbar
     NautilusContainerMaxWidth *toolbar_switcher_container_max_width;
     GtkWidget *path_bar;
     GtkWidget *location_entry;
+    GtkWidget *fold_button;
 
     gboolean show_location_entry;
+    gboolean show_fold_button;
+    gboolean fold_button_active;
     gboolean location_entry_should_auto_hide;
 
     guint start_operations_timeout_id;
@@ -121,6 +124,8 @@ enum
 {
     PROP_WINDOW = 1,
     PROP_SHOW_LOCATION_ENTRY,
+    PROP_SHOW_FOLD_BUTTON,
+    PROP_FOLD_BUTTON_ACTIVE,
     PROP_WINDOW_SLOT,
     PROP_SEARCHING,
     NUM_PROPERTIES
@@ -966,6 +971,13 @@ nautilus_toolbar_constructed (GObject *object)
     g_signal_connect (self->location_entry, "notify::has-focus",
                       G_CALLBACK (on_location_entry_focus_changed), self);
 
+    g_object_bind_property (self, "show-fold-button",
+                            self->fold_button, "visible",
+                            G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+    g_object_bind_property (self, "fold-button-active",
+                            self->fold_button, "active",
+                            G_BINDING_SYNC_CREATE | G_BINDING_BIDIRECTIONAL);
+
     gtk_widget_show_all (GTK_WIDGET (self));
     toolbar_update_appearance (self);
 }
@@ -1004,6 +1016,18 @@ nautilus_toolbar_get_property (GObject    *object,
         case PROP_SHOW_LOCATION_ENTRY:
         {
             g_value_set_boolean (value, self->show_location_entry);
+        }
+        break;
+
+        case PROP_SHOW_FOLD_BUTTON:
+        {
+            g_value_set_boolean (value, self->show_fold_button);
+        }
+        break;
+
+        case PROP_FOLD_BUTTON_ACTIVE:
+        {
+            g_value_set_boolean (value, self->fold_button_active);
         }
         break;
 
@@ -1106,6 +1130,18 @@ nautilus_toolbar_set_property (GObject      *object,
         }
         break;
 
+        case PROP_SHOW_FOLD_BUTTON:
+        {
+            self->show_fold_button = g_value_get_boolean (value);
+        }
+        break;
+
+        case PROP_FOLD_BUTTON_ACTIVE:
+        {
+            self->fold_button_active = g_value_get_boolean (value);
+        }
+        break;
+
         case PROP_WINDOW_SLOT:
         {
             nautilus_toolbar_set_window_slot (self, g_value_get_object (value));
@@ -1201,6 +1237,18 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
                               "Whether to show the location entry instead of the pathbar",
                               FALSE,
                               G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_SHOW_FOLD_BUTTON] =
+        g_param_spec_boolean ("show-fold-button",
+                              "Whether to show the fold button",
+                              "Whether to show the fold button for the sidebar",
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
+    properties[PROP_FOLD_BUTTON_ACTIVE] =
+        g_param_spec_boolean ("fold-button-active",
+                              "Whether or not the fold button is toggled",
+                              "Whether or not the fold button is toggled for the sidebar",
+                              FALSE,
+                              G_PARAM_READWRITE | G_PARAM_STATIC_STRINGS);
 
     properties [PROP_WINDOW_SLOT] =
         g_param_spec_object ("window-slot",
@@ -1222,6 +1270,7 @@ nautilus_toolbar_class_init (NautilusToolbarClass *klass)
     gtk_widget_class_set_template_from_resource (widget_class,
                                                  "/org/gnome/nautilus/ui/nautilus-toolbar.ui");
 
+    gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, fold_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_button);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_icon);
     gtk_widget_class_bind_template_child (widget_class, NautilusToolbar, operations_popover);

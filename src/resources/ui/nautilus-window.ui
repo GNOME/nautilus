@@ -8,7 +8,10 @@
         <property name="visible">True</property>
         <property name="orientation">vertical</property>
         <child>
-          <object class="NautilusToolbar" id="toolbar"/>
+          <object class="NautilusToolbar" id="toolbar">
+            <property name="show_fold_button" bind-source="content_flap" bind-property="folded" bind-flags="sync-create"/>
+            <property name="fold_button_active" bind-source="content_flap" bind-property="reveal_flap" bind-flags="sync-create|bidirectional"/>
+          </object>
         </child>
         <child>
           <object class="HdyFlap" id="content_flap">
@@ -20,7 +23,7 @@
                 <property name="visible">False</property>
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
-                <property name="width_request">204</property>
+                <property name="width_request">240</property>
                 <child>
                   <object class="GtkPlacesSidebar" id="places_sidebar">
                     <property name="visible">True</property>
