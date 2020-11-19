@@ -5,7 +5,6 @@ variables:
     BUNDLE: "nautilus-dev.flatpak"
 
 stages:
-    - triage
     - image
     - test
     - cross environment
@@ -53,25 +52,6 @@ flatpak master:
         - web
         - tags
     allow_failure: true
-
-triage:
-    image: ruby:2.4
-    stage: triage
-    script:
-        - gem install gitlab-triage
-        - gitlab-triage --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
-    only:
-        - schedules
-
-triage:dry-run:
-    image: ruby:2.4
-    stage: triage
-    script:
-        - gem install gitlab-triage
-        - gitlab-triage --dry-run --token $TRIAGE_BOT_TOKEN --project-id $CI_PROJECT_PATH --host-url https://gitlab.gnome.org
-    only:
-        - schedules
-    when: manual
 
 style check:
     image: registry.gitlab.gnome.org/gnome/nautilus:latest
