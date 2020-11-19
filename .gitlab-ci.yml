@@ -26,7 +26,9 @@ nightly:
         - 'flatpak devel'
 
 fedora rawhide:
-    image: registry.gitlab.gnome.org/gnome/nautilus:latest
+    image:
+        name: registry.gitlab.gnome.org/gnome/nautilus:latest
+        entrypoint: ["/bin/sh", "-c"]
     stage: cross environment
     script:
         - meson _build .
@@ -88,18 +90,19 @@ style check:
 
 update image:
     variables:
-         DOCKER_TLS_CERTDIR: ""
-    image: docker:latest
+         STORAGE_DRIVER: vfs
+         BUILDAH_FORMAT: docker
+         BUILDAH_ISOLATION: chroot
+    image: registry.fedoraproject.org/fedora:33
     stage: image
-    tags:
-        - privileged
-    services:
-        - docker:dind
     script:
-        - docker build --tag $CI_REGISTRY_IMAGE .gitlab/
-        - docker tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
-        - docker login $CI_REGISTRY -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD
-        - docker push $CI_REGISTRY_IMAGE
+        - dnf install -y buildah runc
+        - sed -i '/^mountopt =.*/d' /etc/containers/storage.conf
+        - buildah bud --tag $CI_REGISTRY_IMAGE -f .gitlab/Dockerfile
+        - buildah tag $CI_REGISTRY_IMAGE "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
+        - buildah login -u $CI_REGISTRY_USER -p $CI_REGISTRY_PASSWORD $CI_REGISTRY
+        - buildah push $CI_REGISTRY_IMAGE
+        - buildah push "$CI_REGISTRY_IMAGE:v$CI_JOB_ID"
     when: manual
     only:
         - web
