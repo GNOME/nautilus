@@ -5011,6 +5011,7 @@ retry:
 
             if (job->skip_all_error)
             {
+                local_skipped_file = TRUE;
                 goto skip;
             }
             basename = get_basename (src);
