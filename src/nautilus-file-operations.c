@@ -4776,6 +4776,7 @@ copy_move_directory (CopyMoveJob   *copy_job,
     GFileCopyFlags flags;
 
     job = (CommonJob *) copy_job;
+    *skipped_file = FALSE;
 
     if (create_dest)
     {
@@ -4979,7 +4980,7 @@ retry:
         else if (response == 1)
         {
             /* Skip: Do Nothing  */
-            local_skipped_file = TRUE;
+            *skipped_file = TRUE;
         }
         else if (response == 2)
         {
@@ -5003,6 +5004,7 @@ retry:
 
     if (!job_aborted (job) && copy_job->is_move &&
         /* Don't delete source if there was a skipped file */
+        !*skipped_file &&
         !local_skipped_file)
     {
         if (!g_file_delete (src, job->cancellable, &error))
@@ -5011,7 +5013,7 @@ retry:
 
             if (job->skip_all_error)
             {
-                local_skipped_file = TRUE;
+                *skipped_file = TRUE;
                 goto skip;
             }
             basename = get_basename (src);
@@ -5033,11 +5035,11 @@ retry:
             else if (response == 1)                 /* skip all */
             {
                 job->skip_all_error = TRUE;
-                local_skipped_file = TRUE;
+                *skipped_file = TRUE;
             }
             else if (response == 2)                 /* skip */
             {
-                local_skipped_file = TRUE;
+                *skipped_file = TRUE;
             }
             else
             {
@@ -5047,11 +5049,6 @@ retry:
 skip:
             g_error_free (error);
         }
-    }
-
-    if (local_skipped_file)
-    {
-        *skipped_file = TRUE;
     }
 
     g_free (dest_fs_type);
