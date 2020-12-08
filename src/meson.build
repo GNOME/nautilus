@@ -283,6 +283,7 @@ nautilus_deps = [
   gnome_autoar,
   gnome_desktop,
   libgd_dep,
+  libhandy,
   libportal,
   nautilus_extension,
   selinux,
