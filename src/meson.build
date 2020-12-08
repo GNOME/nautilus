@@ -69,6 +69,8 @@ libnautilus_sources = [
   'nautilus-application.h',
   'nautilus-bookmark-list.c',
   'nautilus-bookmark-list.h',
+  'nautilus-bottom-toolbar.c',
+  'nautilus-bottom-toolbar.h',
   'nautilus-canvas-view.c',
   'nautilus-canvas-view.h',
   'nautilus-canvas-view-container.c',

@@ -50,6 +50,7 @@
 #include "nautilus-adaptive-mode.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
+#include "nautilus-bottom-toolbar.h"
 #include "nautilus-clipboard.h"
 #include "nautilus-dnd.h"
 #include "nautilus-enums.h"
@@ -135,6 +136,7 @@ struct _NautilusWindow
 
     /* Toolbar */
     GtkWidget *toolbar;
+    GtkWidget *bottom_toolbar;
     gboolean temporary_navigation_bar;
 
     /* focus widget before the location bar has been shown temporarily */
@@ -730,6 +732,15 @@ update_adaptive_mode (NautilusWindow *window)
                     NAUTILUS_ADAPTIVE_MODE_NARROW :
                     NAUTILUS_ADAPTIVE_MODE_NORMAL;
     nautilus_toolbar_set_adaptive_mode (toolbar, adaptive_mode);
+
+    if (adaptive_mode == NAUTILUS_ADAPTIVE_MODE_NARROW)
+    {
+        gtk_revealer_set_reveal_child (GTK_REVEALER (window->bottom_toolbar), TRUE);
+    }
+    else
+    {
+        gtk_revealer_set_reveal_child (GTK_REVEALER (window->bottom_toolbar), FALSE);
+    }
 }
 
 static void
@@ -2726,6 +2737,7 @@ nautilus_window_init (NautilusWindow *window)
 
     g_type_ensure (NAUTILUS_TYPE_TOOLBAR);
     g_type_ensure (NAUTILUS_TYPE_NOTEBOOK);
+    g_type_ensure (NAUTILUS_TYPE_BOTTOM_TOOLBAR);
     gtk_widget_init_template (GTK_WIDGET (window));
 
     g_signal_connect (window, "notify::is-maximized",
@@ -2792,6 +2804,7 @@ nautilus_window_class_init (NautilusWindowClass *class)
     gtk_widget_class_set_template_from_resource (wclass,
                                                  "/org/gnome/nautilus/ui/nautilus-window.ui");
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, toolbar);
+    gtk_widget_class_bind_template_child (wclass, NautilusWindow, bottom_toolbar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, content_flap);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, sidebar);
     gtk_widget_class_bind_template_child (wclass, NautilusWindow, places_sidebar);

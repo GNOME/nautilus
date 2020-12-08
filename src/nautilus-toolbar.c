@@ -34,6 +34,7 @@
 #include "nautilus-file-undo-manager.h"
 #include "nautilus-global-preferences.h"
 #include "nautilus-location-entry.h"
+#include "nautilus-navigation-direction.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-progress-info-manager.h"
 #include "nautilus-progress-info-widget.h"
@@ -51,13 +52,6 @@
 
 /* Just design, context at https://gitlab.gnome.org/GNOME/nautilus/issues/548#note_274131 */
 #define SWITCHER_MAX_WIDTH 840
-
-typedef enum
-{
-    NAUTILUS_NAVIGATION_DIRECTION_NONE,
-    NAUTILUS_NAVIGATION_DIRECTION_BACK,
-    NAUTILUS_NAVIGATION_DIRECTION_FORWARD
-} NautilusNavigationDirection;
 
 struct _NautilusToolbar
 {

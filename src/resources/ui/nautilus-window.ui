@@ -24,6 +24,7 @@
                 <property name="orientation">vertical</property>
                 <property name="spacing">6</property>
                 <property name="width_request">240</property>
+                <property name="hexpand_set">True</property>
                 <child>
                   <object class="GtkPlacesSidebar" id="places_sidebar">
                     <property name="visible">True</property>
@@ -46,10 +47,20 @@
                 <property name="visible">True</property>
                 <property name="width_request">360</property>
                 <child>
-                  <object class="NautilusNotebook" id="notebook">
+                  <object class="GtkBox">
                     <property name="visible">True</property>
-                    <property name="show-tabs">False</property>
-                    <property name="show-border">False</property>
+                    <property name="can_focus">False</property>
+                    <property name="orientation">vertical</property>
+                    <child>
+                      <object class="NautilusNotebook" id="notebook">
+                        <property name="visible">True</property>
+                        <property name="show-tabs">False</property>
+                        <property name="show-border">False</property>
+                      </object>
+                    </child>
+                    <child>
+                      <object class="NautilusBottomToolbar" id="bottom_toolbar"/>
+                    </child>
                   </object>
                 </child>
                 <child type="overlay">
