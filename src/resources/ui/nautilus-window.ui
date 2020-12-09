@@ -42,6 +42,15 @@
                 </child>
               </object>
             </child>
+            <child type="separator">
+              <object class="GtkSeparator">
+                <property name="visible">True</property>
+                <property name="orientation">vertical</property>
+                <style>
+                  <class name="sidebar"/>
+                </style>
+              </object>
+            </child>
             <child>
               <object class="GtkOverlay" id="main_view">
                 <property name="visible">True</property>
