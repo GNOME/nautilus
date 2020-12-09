@@ -27,6 +27,7 @@
 
 #include <gtk/gtk.h>
 #include <gio/gio.h>
+#include <libhandy-1/handy.h>
 
 #include <glib/gi18n.h>
 
@@ -37,13 +38,23 @@
 
 /* bool preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
-    "sort_folders_first_checkbutton"
+    "sort_folders_first_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
-    "show_delete_permanently_checkbutton"
+    "show_delete_permanently_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
-    "show_create_link_checkbutton"
+    "show_create_link_switch"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
-    "use_tree_view_checkbutton"
+    "use_tree_view_switch"
+
+/* combo preferences */
+#define NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO                          \
+    "open_action_row"
+#define NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW                       \
+    "search_recursive_row"
+#define NAUTILUS_PREFERENCES_DIALOG_THUMBNAILS_ROW                       \
+    "thumbnails_row"
+#define NAUTILUS_PREFERENCES_DIALOG_COUNT_ROW                       \
+    "count_row"
 
 static const char * const speed_tradeoff_values[] =
 {
@@ -51,34 +62,21 @@ static const char * const speed_tradeoff_values[] =
     NULL
 };
 
-static const char * const click_behavior_components[] =
-{
-    "single_click_radiobutton", "double_click_radiobutton", NULL
-};
-
 static const char * const click_behavior_values[] = {"single", "double", NULL};
-
-static const char * const recursive_search_components[] =
-{
-    "search_recursive_only_this_computer_radiobutton", "search_recursive_all_locations_radiobutton", "search_recursive_never_radiobutton", NULL
-};
-
-static const char * const thumbnails_components[] =
-{
-    "thumbnails_only_this_computer_radiobutton", "thumbnails_all_files_radiobutton", "thumbnails_never_radiobutton", NULL
-};
-
-static const char * const count_components[] =
-{
-    "count_only_this_computer_radiobutton", "count_all_files_radiobutton", "count_never_radiobutton", NULL
-};
 
 static const char * const icon_captions_components[] =
 {
-    "captions_0_combobox", "captions_1_combobox", "captions_2_combobox", NULL
+    "captions_0_comborow", "captions_1_comborow", "captions_2_comborow", NULL
 };
 
 static GtkWidget *preferences_window = NULL;
+
+static void list_store_append_string (GListStore  *list_store,
+                                      const gchar *string)
+{
+    g_autoptr (HdyValueObject) obj = hdy_value_object_new_string (string);
+    g_list_store_append (list_store, obj);
+}
 
 static void free_column_names_array(GPtrArray *column_names)
 {
@@ -86,16 +84,17 @@ static void free_column_names_array(GPtrArray *column_names)
     g_ptr_array_free (column_names, TRUE);
 }
 
-static void create_icon_caption_combo_box_items(GtkComboBoxText *combo_box,
-                                                GList           *columns)
+static void create_icon_caption_combo_row_items(HdyComboRow *combo_row,
+                                                GList       *columns)
 {
+    GListStore *list_store = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
     GList *l;
     GPtrArray *column_names;
 
     column_names = g_ptr_array_new ();
 
     /* Translators: this is referred to captions under icons. */
-    gtk_combo_box_text_append_text (combo_box, _("None"));
+    list_store_append_string (list_store, _("None"));
     g_ptr_array_add (column_names, g_strdup ("none"));
 
     for (l = columns; l != NULL; l = l->next)
@@ -116,16 +115,20 @@ static void create_icon_caption_combo_box_items(GtkComboBoxText *combo_box,
             continue;
         }
 
-        gtk_combo_box_text_append_text (combo_box, label);
+        list_store_append_string (list_store, label);
         g_ptr_array_add (column_names, name);
 
         g_free (label);
     }
-    g_object_set_data_full (G_OBJECT (combo_box), "column_names", column_names,
+    hdy_combo_row_bind_name_model (combo_row, G_LIST_MODEL (list_store),
+                                   (HdyComboRowGetNameFunc) hdy_value_object_dup_string,
+                                   NULL, NULL);
+    g_object_set_data_full (G_OBJECT (combo_row), "column_names", column_names,
                             (GDestroyNotify) free_column_names_array);
 }
 
-static void icon_captions_changed_callback(GtkComboBox *widget,
+static void icon_captions_changed_callback(HdyComboRow *widget,
+                                           GParamSpec  *pspec,
                                            gpointer     user_data)
 {
     GPtrArray *captions;
@@ -138,18 +141,18 @@ static void icon_captions_changed_callback(GtkComboBox *widget,
 
     for (i = 0; icon_captions_components[i] != NULL; i++)
     {
-        GtkWidget *combo_box;
-        int active;
+        GtkWidget *combo_row;
+        int selected_index;
         GPtrArray *column_names;
         char *name;
 
-        combo_box = GTK_WIDGET (
+        combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
-        active = gtk_combo_box_get_active (GTK_COMBO_BOX (combo_box));
+        selected_index = hdy_combo_row_get_selected_index (HDY_COMBO_ROW (combo_row));
 
-        column_names = g_object_get_data (G_OBJECT (combo_box), "column_names");
+        column_names = g_object_get_data (G_OBJECT (combo_row), "column_names");
 
-        name = g_ptr_array_index (column_names, active);
+        name = g_ptr_array_index (column_names, selected_index);
         g_ptr_array_add (captions, name);
     }
     g_ptr_array_add (captions, NULL);
@@ -160,32 +163,32 @@ static void icon_captions_changed_callback(GtkComboBox *widget,
     g_ptr_array_free (captions, TRUE);
 }
 
-static void update_caption_combo_box(GtkBuilder *builder,
-                                     const char *combo_box_name,
+static void update_caption_combo_row(GtkBuilder *builder,
+                                     const char *combo_row_name,
                                      const char *name)
 {
-    GtkWidget *combo_box;
+    GtkWidget *combo_row;
     int i;
     GPtrArray *column_names;
 
-    combo_box = GTK_WIDGET (gtk_builder_get_object (builder, combo_box_name));
+    combo_row = GTK_WIDGET (gtk_builder_get_object (builder, combo_row_name));
 
     g_signal_handlers_block_by_func (
-        combo_box, G_CALLBACK (icon_captions_changed_callback), builder);
+        combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
 
-    column_names = g_object_get_data (G_OBJECT (combo_box), "column_names");
+    column_names = g_object_get_data (G_OBJECT (combo_row), "column_names");
 
     for (i = 0; i < column_names->len; ++i)
     {
         if (!strcmp (name, g_ptr_array_index (column_names, i)))
         {
-            gtk_combo_box_set_active (GTK_COMBO_BOX (combo_box), i);
+            hdy_combo_row_set_selected_index (HDY_COMBO_ROW (combo_row), i);
             break;
         }
     }
 
     g_signal_handlers_unblock_by_func (
-        combo_box, G_CALLBACK (icon_captions_changed_callback), builder);
+        combo_row, G_CALLBACK (icon_captions_changed_callback), builder);
 }
 
 static void update_icon_captions_from_settings(GtkBuilder *builder)
@@ -214,7 +217,7 @@ static void update_icon_captions_from_settings(GtkBuilder *builder)
             data = "none";
         }
 
-        update_caption_combo_box (builder, icon_captions_components[i], data);
+        update_caption_combo_row (builder, icon_captions_components[i], data);
     }
 
     g_strfreev (captions);
@@ -234,16 +237,16 @@ nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
 
     for (i = 0; icon_captions_components[i] != NULL; i++)
     {
-        GtkWidget *combo_box;
+        GtkWidget *combo_row;
 
-        combo_box = GTK_WIDGET (
+        combo_row = GTK_WIDGET (
             gtk_builder_get_object (builder, icon_captions_components[i]));
 
-        create_icon_caption_combo_box_items (GTK_COMBO_BOX_TEXT (combo_box), columns);
-        gtk_widget_set_sensitive (combo_box, writable);
+        create_icon_caption_combo_row_items (HDY_COMBO_ROW (combo_row), columns);
+        gtk_widget_set_sensitive (combo_row, writable);
 
         g_signal_connect_data (
-            combo_box, "changed", G_CALLBACK (icon_captions_changed_callback),
+            combo_row, "notify::selected-index", G_CALLBACK (icon_captions_changed_callback),
             g_object_ref (builder), (GClosureNotify) g_object_unref, 0);
     }
 
@@ -261,65 +264,82 @@ static void bind_builder_bool(GtkBuilder *builder,
                      "active", G_SETTINGS_BIND_DEFAULT);
 }
 
-static GVariant *radio_mapping_set(const GValue       *gvalue,
-                                   const GVariantType *expected_type,
-                                   gpointer            user_data)
+static GVariant *combo_row_mapping_set(const GValue       *gvalue,
+                                       const GVariantType *expected_type,
+                                       gpointer            user_data)
 {
-    const gchar *widget_value = user_data;
-    GVariant *retval = NULL;
+    const gchar **values = user_data;
 
-    if (g_value_get_boolean (gvalue))
-    {
-        retval = g_variant_new_string (widget_value);
-    }
-
-    return retval;
+    return g_variant_new_string (values[g_value_get_int (gvalue)]);
 }
 
-static gboolean radio_mapping_get(GValue   *gvalue,
-                                  GVariant *variant,
-                                  gpointer  user_data)
+static gboolean combo_row_mapping_get(GValue   *gvalue,
+                                      GVariant *variant,
+                                      gpointer  user_data)
 {
-    const gchar *widget_value = user_data;
+    const gchar **values = user_data;
     const gchar *value;
 
     value = g_variant_get_string (variant, NULL);
 
-    if (g_strcmp0 (value, widget_value) == 0)
+    for (int i = 0; values[i]; i++)
     {
-        g_value_set_boolean (gvalue, TRUE);
-    }
-    else
-    {
-        g_value_set_boolean (gvalue, FALSE);
+        if (g_strcmp0 (value, values[i]) == 0)
+        {
+            g_value_set_int (gvalue, i);
+
+            return TRUE;
+        }
     }
 
-    return TRUE;
+    return FALSE;
 }
 
-static void bind_builder_radio(GtkBuilder  *builder,
-                               GSettings   *settings,
-                               const char **widget_names,
-                               const char  *prefs,
-                               const char **values)
+static void bind_builder_combo_row(GtkBuilder  *builder,
+                                   GSettings   *settings,
+                                   const char  *widget_name,
+                                   const char  *prefs,
+                                   const char **values)
 {
-    GtkWidget *button;
-    int i;
+    g_settings_bind_with_mapping (settings, prefs, gtk_builder_get_object (builder, widget_name),
+                                  "selected-index", G_SETTINGS_BIND_DEFAULT,
+                                  combo_row_mapping_get, combo_row_mapping_set,
+                                  (gpointer) values, NULL);
+}
 
-    for (i = 0; widget_names[i] != NULL; i++)
+static void setup_combo (GtkBuilder  *builder,
+                         const char  *widget_name,
+                         const char **strings)
+{
+    HdyComboRow *combo_row;
+    GListStore *list_store;
+
+    combo_row = (HdyComboRow *) gtk_builder_get_object (builder, widget_name);
+    g_assert (HDY_IS_COMBO_ROW (combo_row));
+
+    list_store = g_list_store_new (HDY_TYPE_VALUE_OBJECT);
+
+    for (gsize i = 0; strings[i]; i++)
     {
-        button = GTK_WIDGET (gtk_builder_get_object (builder, widget_names[i]));
-
-        g_settings_bind_with_mapping (settings, prefs, button, "active",
-                                      G_SETTINGS_BIND_DEFAULT, radio_mapping_get,
-                                      radio_mapping_set, (gpointer) values[i], NULL);
+        list_store_append_string (list_store, strings[i]);
     }
+
+    hdy_combo_row_bind_name_model (combo_row, G_LIST_MODEL (list_store), (HdyComboRowGetNameFunc) hdy_value_object_dup_string, NULL, NULL);
 }
 
 static void nautilus_preferences_window_setup(GtkBuilder *builder,
                                               GtkWindow  *parent_window)
 {
     GtkWidget *window;
+
+    setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
+                 (const char *[]) { _("Single click"), _("Double click"), NULL });
+    setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW,
+                 (const char *[]) { _("On this computer only"), _("All locations"), _("Never"), NULL });
+    setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_THUMBNAILS_ROW,
+                 (const char *[]) { _("On this computer only"), _("All files"), _("Never"), NULL });
+    setup_combo (builder, NAUTILUS_PREFERENCES_DIALOG_COUNT_ROW,
+                 (const char *[]) { _("On this computer only"), _("All folders"), _("Never"), NULL });
 
     /* setup preferences */
     bind_builder_bool (builder, gtk_filechooser_preferences,
@@ -335,21 +355,22 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
                        NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET,
                        NAUTILUS_PREFERENCES_SHOW_DELETE_PERMANENTLY);
 
-    bind_builder_radio (
-        builder, nautilus_preferences, (const char **) click_behavior_components,
-        NAUTILUS_PREFERENCES_CLICK_POLICY, (const char **) click_behavior_values);
-    bind_builder_radio (builder, nautilus_preferences,
-                        (const char **) recursive_search_components,
-                        NAUTILUS_PREFERENCES_RECURSIVE_SEARCH,
-                        (const char **) speed_tradeoff_values);
-    bind_builder_radio (builder, nautilus_preferences,
-                        (const char **) thumbnails_components,
-                        NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
-                        (const char **) speed_tradeoff_values);
-    bind_builder_radio (builder, nautilus_preferences,
-                        (const char **) count_components,
-                        NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
-                        (const char **) speed_tradeoff_values);
+    bind_builder_combo_row (builder, nautilus_preferences,
+                            NAUTILUS_PREFERENCES_DIALOG_OPEN_ACTION_COMBO,
+                            NAUTILUS_PREFERENCES_CLICK_POLICY,
+                            (const char **) click_behavior_values);
+    bind_builder_combo_row (builder, nautilus_preferences,
+                            NAUTILUS_PREFERENCES_DIALOG_SEARCH_RECURSIVE_ROW,
+                            NAUTILUS_PREFERENCES_RECURSIVE_SEARCH,
+                            (const char **) speed_tradeoff_values);
+    bind_builder_combo_row (builder, nautilus_preferences,
+                            NAUTILUS_PREFERENCES_DIALOG_THUMBNAILS_ROW,
+                            NAUTILUS_PREFERENCES_SHOW_FILE_THUMBNAILS,
+                            (const char **) speed_tradeoff_values);
+    bind_builder_combo_row (builder, nautilus_preferences,
+                            NAUTILUS_PREFERENCES_DIALOG_COUNT_ROW,
+                            NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
+                            (const char **) speed_tradeoff_values);
 
     nautilus_preferences_window_setup_icon_caption_page (builder);
 
@@ -362,12 +383,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     g_object_add_weak_pointer (G_OBJECT (window), (gpointer *) &preferences_window);
 
     gtk_window_set_transient_for (GTK_WINDOW (preferences_window), parent_window);
-
-    /* This statement is necessary because GtkDialog defaults to 2px. Will not
-     * be necessary in GTK+4.
-     */
-    gtk_container_set_border_width (GTK_CONTAINER (gtk_dialog_get_content_area (GTK_DIALOG (preferences_window))),
-                                    0);
 
     gtk_widget_show (preferences_window);
 }

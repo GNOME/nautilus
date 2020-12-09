@@ -2,954 +2,173 @@
 <!-- Generated with glade 3.22.0 -->
 <interface>
   <requires lib="gtk+" version="3.22"/>
-  <object class="GtkDialog" id="preferences_window">
-    <property name="can_focus">False</property>
-    <property name="title" translatable="yes">Preferences</property>
-    <property name="resizable">False</property>
-    <property name="modal">True</property>
-    <property name="destroy_with_parent">True</property>
-    <property name="type_hint">normal</property>
-    <child internal-child="vbox">
-      <object class="GtkBox" id="vbox">
-        <property name="can_focus">False</property>
-        <child internal-child="action_area">
-          <object class="GtkButtonBox">
-            <property name="can_focus">False</property>
+  <object class="HdyPreferencesWindow" id="preferences_window">
+    <property name="search_enabled">False</property>
+    <child>
+      <object class="HdyPreferencesPage">
+        <property name="title" translatable="yes">General</property>
+        <property name="visible">True</property>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="title" translatable="yes">General</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="HdyActionRow">
+                <property name="activatable_widget">sort_folders_first_switch</property>
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Sort _Folders Before Files</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkSwitch" id="sort_folders_first_switch">
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="valign">center</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyActionRow">
+                <property name="activatable_widget">use_tree_view_switch</property>
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">_Expandable Folders in List View</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+                <child>
+                  <object class="GtkSwitch" id="use_tree_view_switch">
+                    <property name="can_focus">False</property>
+                    <property name="receives_default">False</property>
+                    <property name="valign">center</property>
+                    <property name="visible">True</property>
+                  </object>
+                </child>
+              </object>
+            </child>
+            <child>
+              <object class="HdyComboRow" id="open_action_row">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Action to Open Items</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">False</property>
-            <property name="position">0</property>
-          </packing>
         </child>
         <child>
-          <object class="GtkNotebook" id="notebook1">
+          <object class="HdyPreferencesGroup">
+            <property name="title" translatable="yes">Context Menu</property>
             <property name="visible">True</property>
-            <property name="can_focus">True</property>
-            <property name="border_width">0</property>
-            <property name="show_border">False</property>
             <child>
-              <object class="GtkBox" id="vbox1">
+              <object class="HdyActionRow">
+                <property name="activatable_widget">show_create_link_switch</property>
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Action to Create Symbolic _Links</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="border_width">12</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">18</property>
                 <child>
-                  <object class="GtkBox" id="vbox12">
-                    <property name="visible">True</property>
+                  <object class="GtkSwitch" id="show_create_link_switch">
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_sort">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes" context="preferences" comments="Translators: a title in the preferences dialog with an option to sort folder before files &quot;Sort folders before files&quot;.">Sort</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="vbox12"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="sort_folders_first_checkbutton">
-                        <property name="label" translatable="yes">Sort _folders before files</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_sort"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox12-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="box1">
+                    <property name="receives_default">False</property>
+                    <property name="valign">center</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_list_view">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">List View</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="box1"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="use_tree_view_checkbutton">
-                        <property name="label" translatable="yes">Allow folders to be _expanded</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_list_view"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="box1-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox27">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_icon_view_captions">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Icon View Captions</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="vbox27"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_add_info_under">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Add information to be displayed beneath file and folder names. More information will appear when zooming closer.</property>
-                        <property name="wrap">True</property>
-                        <property name="max_width_chars">65</property>
-                        <property name="xalign">0</property>
-                        <accessibility>
-                          <relation type="description-for" target="captions_0_combobox"/>
-                          <relation type="description-for" target="captions_1_combobox"/>
-                          <relation type="description-for" target="captions_2_combobox"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkGrid" id="grid1">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="row_spacing">10</property>
-                        <property name="column_spacing">15</property>
-                        <child>
-                          <object class="GtkBox" id="hbox29">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_1">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <property name="use_underline">True</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_0_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label_first"/>
-                                  <relation type="described-by" target="label_add_info_under"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="hbox28">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_0">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_2_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label_third"/>
-                                  <relation type="described-by" target="label_add_info_under"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkBox" id="hbox30">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <child>
-                              <object class="GtkLabel" id="captions_label_2">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">0</property>
-                              </packing>
-                            </child>
-                            <child>
-                              <object class="GtkComboBoxText" id="captions_1_combobox">
-                                <property name="visible">True</property>
-                                <property name="can_focus">False</property>
-                                <accessibility>
-                                  <relation type="labelled-by" target="label_second"/>
-                                  <relation type="described-by" target="label_add_info_under"/>
-                                </accessibility>
-                              </object>
-                              <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">False</property>
-                                <property name="position">1</property>
-                              </packing>
-                            </child>
-                          </object>
-                          <packing>
-                            <property name="left_attach">1</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label_second">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Second</property>
-                            <property name="xalign">1</property>
-                            <accessibility>
-                              <relation type="label-for" target="captions_1_combobox"/>
-                            </accessibility>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">1</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label_third">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Third</property>
-                            <property name="xalign">1</property>
-                            <accessibility>
-                              <relation type="label-for" target="captions_2_combobox"/>
-                            </accessibility>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">2</property>
-                          </packing>
-                        </child>
-                        <child>
-                          <object class="GtkLabel" id="label_first">
-                            <property name="visible">True</property>
-                            <property name="can_focus">False</property>
-                            <property name="label" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
-                            <property name="xalign">1</property>
-                            <accessibility>
-                              <relation type="label-for" target="captions_0_combobox"/>
-                            </accessibility>
-                            <style>
-                              <class name="dim-label"/>
-                            </style>
-                          </object>
-                          <packing>
-                            <property name="left_attach">0</property>
-                            <property name="top_attach">0</property>
-                          </packing>
-                        </child>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_icon_view_captions"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox27-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">4</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="tab_expand">True</property>
-              </packing>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="label_views">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Views</property>
-              </object>
-              <packing>
-                <property name="tab_fill">False</property>
-              </packing>
             </child>
             <child>
-              <object class="GtkBox" id="vbox5">
+              <object class="HdyActionRow">
+                <property name="activatable_widget">show_delete_permanently_switch</property>
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Action to _Permanently Delete Files and Folders</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
                 <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="border_width">12</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">10</property>
                 <child>
-                  <object class="GtkBox" id="vbox6">
-                    <property name="visible">True</property>
+                  <object class="GtkSwitch" id="show_delete_permanently_switch">
                     <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_open_action">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Open Action</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="vbox6"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="single_click_radiobutton">
-                        <property name="label" translatable="yes">_Single click to open items</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="double_click_radiobutton">
-                        <property name="label" translatable="yes">_Double click to open items</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">single_click_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_open_action"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox6-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox14">
+                    <property name="receives_default">False</property>
+                    <property name="valign">center</property>
                     <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_link_creation">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Link Creation</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="vbox14"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="show_create_link_checkbutton">
-                        <property name="label" translatable="yes">Show action to create symbolic _links</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_link_creation"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox14-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
                   </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox8">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_trash">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Trash</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                        <accessibility>
-                          <relation type="label-for" target="vbox8"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkCheckButton" id="show_delete_permanently_checkbutton">
-                        <property name="label" translatable="yes">Show action to _permanently delete files and folders</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_trash"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox8-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
                 </child>
               </object>
-              <packing>
-                <property name="position">1</property>
-                <property name="tab_expand">True</property>
-              </packing>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="label_behavior">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Behavior</property>
-              </object>
-              <packing>
-                <property name="position">1</property>
-                <property name="tab_fill">False</property>
-              </packing>
-            </child>
-            <child>
-              <object class="GtkBox" id="vbox9">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="border_width">12</property>
-                <property name="orientation">vertical</property>
-                <property name="spacing">18</property>
-                <child>
-                  <object class="GtkBox" id="vbox3">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_search">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Search</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_search_subfolders">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Search in subfolders:</property>
-                        <property name="xalign">0</property>
-                        <accessibility>
-                          <relation type="label-for" target="vbox3"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="search_recursive_only_this_computer_radiobutton">
-                        <property name="label" translatable="yes">_On this computer only</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="search_recursive_all_locations_radiobutton">
-                        <property name="label" translatable="yes">_All locations</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">search_recursive_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="search_recursive_never_radiobutton">
-                        <property name="label" translatable="yes">_Never</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">search_recursive_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_search_subfolders"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox3-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">0</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox11">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_thumbnails">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Thumbnails</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_show_thumbnails">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Show thumbnails:</property>
-                        <property name="xalign">0</property>
-                        <accessibility>
-                          <relation type="label-for" target="vbox11"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="thumbnails_only_this_computer_radiobutton">
-                        <property name="label" translatable="yes">_Files on this computer only</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="thumbnails_all_files_radiobutton">
-                        <property name="label" translatable="yes">A_ll files</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">thumbnails_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="thumbnails_never_radiobutton">
-                        <property name="label" translatable="yes">N_ever</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">thumbnails_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_show_thumbnails"/>
-                    </accessibility>
-                    <child internal-child="accessible">
-                      <object class="AtkObject" id="vbox11-atkobject">
-                        <property name="AtkObject::accessible-role">panel</property>
-                      </object>
-                    </child>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">1</property>
-                  </packing>
-                </child>
-                <child>
-                  <object class="GtkBox" id="vbox13">
-                    <property name="visible">True</property>
-                    <property name="can_focus">False</property>
-                    <property name="orientation">vertical</property>
-                    <property name="spacing">6</property>
-                    <child>
-                      <object class="GtkLabel" id="label_file_count">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">File count</property>
-                        <property name="xalign">0</property>
-                        <attributes>
-                          <attribute name="weight" value="bold"/>
-                        </attributes>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
-                        <property name="position">0</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkLabel" id="label_count_files">
-                        <property name="visible">True</property>
-                        <property name="can_focus">False</property>
-                        <property name="label" translatable="yes">Count number of files in folders:</property>
-                        <property name="xalign">0</property>
-                        <accessibility>
-                          <relation type="label-for" target="vbox13"/>
-                        </accessibility>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">1</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="count_only_this_computer_radiobutton">
-                        <property name="label" translatable="yes">F_olders on this computer only</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="active">True</property>
-                        <property name="draw_indicator">True</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">2</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="count_all_files_radiobutton">
-                        <property name="label" translatable="yes">All folder_s</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">count_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">3</property>
-                      </packing>
-                    </child>
-                    <child>
-                      <object class="GtkRadioButton" id="count_never_radiobutton">
-                        <property name="label" translatable="yes">Ne_ver</property>
-                        <property name="visible">True</property>
-                        <property name="can_focus">True</property>
-                        <property name="receives_default">False</property>
-                        <property name="halign">start</property>
-                        <property name="use_underline">True</property>
-                        <property name="draw_indicator">True</property>
-                        <property name="group">count_only_this_computer_radiobutton</property>
-                      </object>
-                      <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
-                        <property name="position">4</property>
-                      </packing>
-                    </child>
-                    <accessibility>
-                      <relation type="labelled-by" target="label_count_files"/>
-                    </accessibility>
-                  </object>
-                  <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="position">2</property>
-                  </packing>
-                </child>
-              </object>
-              <packing>
-                <property name="position">3</property>
-                <property name="tab_expand">True</property>
-              </packing>
-            </child>
-            <child type="tab">
-              <object class="GtkLabel" id="label_search_preview">
-                <property name="visible">True</property>
-                <property name="can_focus">False</property>
-                <property name="label" translatable="yes">Search &amp; Preview</property>
-              </object>
-              <packing>
-                <property name="position">3</property>
-                <property name="tab_fill">False</property>
-              </packing>
             </child>
           </object>
-          <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
-            <property name="position">1</property>
-          </packing>
+        </child>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="title" translatable="yes">Performance</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="HdyComboRow" id="search_recursive_row">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Search in Subfolders</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="HdyComboRow" id="thumbnails_row">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Show Thumbnails</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="HdyComboRow" id="count_row">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes">Count Number of Files in Folders</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+          </object>
+        </child>
+        <child>
+          <object class="HdyPreferencesGroup">
+            <property name="description" translatable="yes">Add information to be displayed beneath file and folder names. More information will appear when zooming closer.</property>
+            <property name="title" translatable="yes">Icon View Captions</property>
+            <property name="visible">True</property>
+            <child>
+              <object class="HdyComboRow" id="captions_0_comborow">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">First</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="HdyComboRow" id="captions_1_comborow">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Second</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+            <child>
+              <object class="HdyComboRow" id="captions_2_comborow">
+                <property name="subtitle_lines">0</property>
+                <property name="title" translatable="yes" context="the n-th position of an icon caption" comments="Translators: This is an ordinal number">Third</property>
+                <property name="title_lines">0</property>
+                <property name="use_underline">True</property>
+                <property name="visible">True</property>
+              </object>
+            </child>
+          </object>
         </child>
       </object>
-    </child>
-    <child type="titlebar">
-      <placeholder/>
     </child>
   </object>
 </interface>
