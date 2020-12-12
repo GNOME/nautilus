@@ -8157,18 +8157,9 @@ nautilus_file_is_in_starred (NautilusFile *file)
 gboolean
 nautilus_file_is_remote (NautilusFile *file)
 {
-    g_autofree char *filesystem_type = NULL;
-
     g_return_val_if_fail (NAUTILUS_IS_FILE (file), FALSE);
 
-    if (nautilus_file_get_filesystem_remote (file))
-    {
-        return TRUE;
-    }
-
-    filesystem_type = nautilus_file_get_filesystem_type (file);
-
-    return nautilus_file_system_is_remote (filesystem_type);
+    return nautilus_file_get_filesystem_remote (file);
 }
 
 /**
