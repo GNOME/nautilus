@@ -284,12 +284,12 @@ static void schedule_directory_contents_update (NautilusPropertiesWindow *self);
 static void directory_contents_value_field_update (NautilusPropertiesWindow *self);
 static void file_changed_callback (NautilusFile *file,
                                    gpointer      user_data);
-static void permission_button_update (NautilusPropertiesWindow *self,
-                                      GtkToggleButton          *button);
-static void permission_combo_update (NautilusPropertiesWindow *self,
-                                     GtkComboBox              *combo);
-static void value_field_update (NautilusPropertiesWindow *self,
-                                GtkLabel                 *field);
+static void permission_button_update (GtkToggleButton          *button,
+                                      NautilusPropertiesWindow *self);
+static void permission_combo_update (GtkComboBox              *combo,
+                                     NautilusPropertiesWindow *self);
+static void value_field_update (GtkLabel                 *field,
+                                NautilusPropertiesWindow *self);
 static void properties_window_update (NautilusPropertiesWindow *self,
                                       GList                    *files);
 static void is_directory_ready_callback (NautilusFile *file,
@@ -963,11 +963,8 @@ remove_from_dialog (NautilusPropertiesWindow *self,
     original_file = NAUTILUS_FILE (original_link->data);
     target_file = NAUTILUS_FILE (target_link->data);
 
-    self->original_files = g_list_remove_link (self->original_files, original_link);
-    g_list_free (original_link);
-
-    self->target_files = g_list_remove_link (self->target_files, target_link);
-    g_list_free (target_link);
+    self->original_files = g_list_delete_link (self->original_files, original_link);
+    self->target_files = g_list_delete_link (self->target_files, target_link);
 
     g_hash_table_remove (self->initial_permissions, target_file);
 
@@ -1002,16 +999,9 @@ mime_list_equal (GList *a,
 static GList *
 get_mime_list (NautilusPropertiesWindow *self)
 {
-    GList *ret;
-    GList *l;
-
-    ret = NULL;
-    for (l = self->target_files; l != NULL; l = l->next)
-    {
-        ret = g_list_append (ret, nautilus_file_get_mime_type (NAUTILUS_FILE (l->data)));
-    }
-    ret = g_list_reverse (ret);
-    return ret;
+    return g_list_copy_deep (self->target_files,
+                             (GCopyFunc) nautilus_file_get_mime_type,
+                             NULL);
 }
 
 static gboolean
@@ -1063,8 +1053,8 @@ stop_deep_count_for_file (NautilusPropertiesWindow *self,
 }
 
 static void
-start_deep_count_for_file (NautilusPropertiesWindow *self,
-                           NautilusFile             *file)
+start_deep_count_for_file (NautilusFile             *file,
+                           NautilusPropertiesWindow *self)
 {
     if (!nautilus_file_is_directory (file))
     {
@@ -1092,9 +1082,7 @@ static void
 properties_window_update (NautilusPropertiesWindow *self,
                           GList                    *files)
 {
-    GList *l;
     GList *mime_list;
-    GList *tmp;
     NautilusFile *changed_file;
     gboolean dirty_original = FALSE;
     gboolean dirty_target = FALSE;
@@ -1105,7 +1093,7 @@ properties_window_update (NautilusPropertiesWindow *self,
         dirty_target = TRUE;
     }
 
-    for (tmp = files; tmp != NULL; tmp = tmp->next)
+    for (GList *tmp = files; tmp != NULL; tmp = tmp->next)
     {
         changed_file = NAUTILUS_FILE (tmp->data);
 
@@ -1144,25 +1132,20 @@ properties_window_update (NautilusPropertiesWindow *self,
 
     if (dirty_target)
     {
-        for (l = self->permission_buttons; l != NULL; l = l->next)
-        {
-            permission_button_update (self, GTK_TOGGLE_BUTTON (l->data));
-        }
-
-        for (l = self->permission_combos; l != NULL; l = l->next)
-        {
-            permission_combo_update (self, GTK_COMBO_BOX (l->data));
-        }
-
-        for (l = self->value_fields; l != NULL; l = l->next)
-        {
-            value_field_update (self, GTK_LABEL (l->data));
-        }
+        g_list_foreach (self->permission_buttons,
+                        (GFunc) permission_button_update,
+                        self);
+        g_list_foreach (self->permission_combos,
+                        (GFunc) permission_combo_update,
+                        self);
+        g_list_foreach (self->value_fields,
+                        (GFunc) value_field_update,
+                        self);
     }
 
     mime_list = get_mime_list (self);
 
-    if (!self->mime_list)
+    if (self->mime_list == NULL)
     {
         self->mime_list = mime_list;
     }
@@ -1286,21 +1269,6 @@ file_list_get_string_attribute (GList      *file_list,
     }
 }
 
-
-static gboolean
-file_list_all_directories (GList *file_list)
-{
-    GList *l;
-    for (l = file_list; l != NULL; l = l->next)
-    {
-        if (!nautilus_file_is_directory (NAUTILUS_FILE (l->data)))
-        {
-            return FALSE;
-        }
-    }
-    return TRUE;
-}
-
 #define INCONSISTENT_STATE_STRING \
     "\xE2\x80\x92"
 
@@ -1316,8 +1284,8 @@ location_show_original (NautilusPropertiesWindow *self)
 }
 
 static void
-value_field_update (NautilusPropertiesWindow *self,
-                    GtkLabel                 *label)
+value_field_update (GtkLabel                 *label,
+                    NautilusPropertiesWindow *self)
 {
     GList *file_list;
     const char *attribute_name;
@@ -1621,7 +1589,7 @@ static void
 synch_groups_combo_box (GtkComboBox  *combo_box,
                         NautilusFile *file)
 {
-    GList *groups;
+    GList *groups = NULL;
     GList *node;
     GtkTreeModel *model;
     GtkListStore *store;
@@ -1882,7 +1850,7 @@ static void
 synch_user_menu (GtkComboBox  *combo_box,
                  NautilusFile *file)
 {
-    GList *users;
+    GList *users = NULL;
     GList *node;
     GtkTreeModel *model;
     GtkListStore *store;
@@ -2187,15 +2155,9 @@ static void
 setup_contents_field (NautilusPropertiesWindow *self,
                       GtkGrid                  *grid)
 {
-    GList *l;
-
-    for (l = self->target_files; l; l = l->next)
-    {
-        NautilusFile *file;
-
-        file = NAUTILUS_FILE (l->data);
-        start_deep_count_for_file (self, file);
-    }
+    g_list_foreach (self->target_files,
+                    (GFunc) start_deep_count_for_file,
+                    self);
 
     /* Fill in the initial value. */
     directory_contents_value_field_update (self);
@@ -2301,7 +2263,7 @@ should_show_accessed_date (NautilusPropertiesWindow *self)
      * day decide that it is useful, we should separately
      * consider whether it's useful for "trash:".
      */
-    if (file_list_all_directories (self->target_files)
+    if (nautilus_file_list_are_all_folders (self->target_files)
         || is_multi_file_window (self))
     {
         return FALSE;
@@ -2356,7 +2318,7 @@ should_show_free_space (NautilusPropertiesWindow *self)
         return FALSE;
     }
 
-    if (file_list_all_directories (self->target_files))
+    if (nautilus_file_list_are_all_folders (self->target_files))
     {
         return TRUE;
     }
@@ -3088,8 +3050,8 @@ permission_button_toggled (GtkToggleButton          *button,
 }
 
 static void
-permission_button_update (NautilusPropertiesWindow *self,
-                          GtkToggleButton          *button)
+permission_button_update (GtkToggleButton          *button,
+                          NautilusPropertiesWindow *self)
 {
     GList *l;
     gboolean all_set;
@@ -3383,8 +3345,8 @@ permission_combo_add_multiple_choice (GtkComboBox *combo,
 }
 
 static void
-permission_combo_update (NautilusPropertiesWindow *self,
-                         GtkComboBox              *combo)
+permission_combo_update (GtkComboBox              *combo,
+                         NautilusPropertiesWindow *self)
 {
     PermissionType type;
     PermissionValue perm, all_dir_perm, all_file_perm, all_perm;
@@ -4279,8 +4241,8 @@ should_show_permissions (NautilusPropertiesWindow *self)
 static char *
 get_pending_key (GList *file_list)
 {
+    GList *uris = NULL;
     GList *l;
-    GList *uris;
     GString *key;
     char *ret;
 
@@ -4829,23 +4791,9 @@ create_properties_window (StartupData *startup_data)
 static GList *
 get_target_file_list (GList *original_files)
 {
-    GList *ret;
-    GList *l;
-
-    ret = NULL;
-
-    for (l = original_files; l != NULL; l = l->next)
-    {
-        NautilusFile *target;
-
-        target = get_target_file_for_original_file (NAUTILUS_FILE (l->data));
-
-        ret = g_list_prepend (ret, target);
-    }
-
-    ret = g_list_reverse (ret);
-
-    return ret;
+    return g_list_copy_deep (original_files,
+                             (GCopyFunc) get_target_file_for_original_file,
+                             NULL);
 }
 
 static void
@@ -5119,7 +5067,6 @@ static void
 real_destroy (GtkWidget *object)
 {
     NautilusPropertiesWindow *self;
-    GList *l;
 
     self = NAUTILUS_PROPERTIES_WINDOW (object);
 
@@ -5128,17 +5075,15 @@ real_destroy (GtkWidget *object)
     unschedule_or_cancel_group_change (self);
     unschedule_or_cancel_owner_change (self);
 
-    for (l = self->original_files; l != NULL; l = l->next)
-    {
-        nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), &self->original_files);
-    }
+    g_list_foreach (self->original_files,
+                    (GFunc) nautilus_file_monitor_remove,
+                    &self->original_files);
     nautilus_file_list_free (self->original_files);
     self->original_files = NULL;
 
-    for (l = self->target_files; l != NULL; l = l->next)
-    {
-        nautilus_file_monitor_remove (NAUTILUS_FILE (l->data), &self->target_files);
-    }
+    g_list_foreach (self->target_files,
+                    (GFunc) nautilus_file_monitor_remove,
+                    &self->target_files);
     nautilus_file_list_free (self->target_files);
     self->target_files = NULL;
 
