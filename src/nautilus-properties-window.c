@@ -1031,11 +1031,7 @@ stop_spinner (NautilusPropertiesWindow *self)
 {
     gtk_spinner_stop (GTK_SPINNER (self->contents_spinner));
     gtk_widget_hide (self->contents_spinner);
-    if (self->deep_count_spinner_timeout_id > 0)
-    {
-        g_source_remove (self->deep_count_spinner_timeout_id);
-        self->deep_count_spinner_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 }
 
 static void
@@ -5078,57 +5074,34 @@ real_destroy (GtkWidget *object)
     g_list_foreach (self->original_files,
                     (GFunc) nautilus_file_monitor_remove,
                     &self->original_files);
-    nautilus_file_list_free (self->original_files);
-    self->original_files = NULL;
+    g_clear_list (&self->original_files, (GDestroyNotify) nautilus_file_unref);
 
     g_list_foreach (self->target_files,
                     (GFunc) nautilus_file_monitor_remove,
                     &self->target_files);
-    nautilus_file_list_free (self->target_files);
-    self->target_files = NULL;
+    g_clear_list (&self->target_files, (GDestroyNotify) nautilus_file_unref);
 
-    nautilus_file_list_free (self->changed_files);
-    self->changed_files = NULL;
+    g_clear_list (&self->changed_files, (GDestroyNotify) nautilus_file_unref);
 
-    if (self->deep_count_spinner_timeout_id > 0)
-    {
-        g_source_remove (self->deep_count_spinner_timeout_id);
-    }
+    g_clear_handle_id (&self->deep_count_spinner_timeout_id, g_source_remove);
 
     while (self->deep_count_files)
     {
         stop_deep_count_for_file (self, self->deep_count_files->data);
     }
 
-    g_list_free (self->permission_buttons);
-    self->permission_buttons = NULL;
+    g_clear_list (&self->permission_buttons, NULL);
 
-    g_list_free (self->permission_combos);
-    self->permission_combos = NULL;
+    g_clear_list (&self->permission_combos, NULL);
 
-    g_list_free (self->change_permission_combos);
-    self->change_permission_combos = NULL;
+    g_clear_list (&self->change_permission_combos, NULL);
 
-    if (self->initial_permissions)
-    {
-        g_hash_table_destroy (self->initial_permissions);
-        self->initial_permissions = NULL;
-    }
+    g_clear_pointer (&self->initial_permissions, g_hash_table_destroy);
 
-    g_list_free (self->value_fields);
-    self->value_fields = NULL;
+    g_clear_list (&self->value_fields, NULL);
 
-    if (self->update_directory_contents_timeout_id != 0)
-    {
-        g_source_remove (self->update_directory_contents_timeout_id);
-        self->update_directory_contents_timeout_id = 0;
-    }
-
-    if (self->update_files_timeout_id != 0)
-    {
-        g_source_remove (self->update_files_timeout_id);
-        self->update_files_timeout_id = 0;
-    }
+    g_clear_handle_id (&self->update_directory_contents_timeout_id, g_source_remove);
+    g_clear_handle_id (&self->update_files_timeout_id, g_source_remove);
 
     GTK_WIDGET_CLASS (nautilus_properties_window_parent_class)->destroy (object);
 }
@@ -5146,10 +5119,7 @@ real_finalize (GObject *object)
     g_free (self->content_type);
     g_list_free (self->open_with_files);
 
-    if (self->select_idle_id != 0)
-    {
-        g_source_remove (self->select_idle_id);
-    }
+    g_clear_handle_id (&self->select_idle_id, g_source_remove);
 
     G_OBJECT_CLASS (nautilus_properties_window_parent_class)->finalize (object);
 }
