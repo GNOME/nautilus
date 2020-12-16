@@ -4373,7 +4373,6 @@ should_show_open_with (NautilusPropertiesWindow *self)
     g_autofree gchar *mime_type = NULL;
     g_autofree gchar *extension = NULL;
     gboolean hide;
-    g_autoptr (GAppInfo) app_info = NULL;
 
     /* Don't show open with tab for desktop special icons (trash, etc)
      * or desktop files. We don't get the open-with menu for these anyway.
@@ -4394,6 +4393,8 @@ should_show_open_with (NautilusPropertiesWindow *self)
 
         for (l = self->target_files; l; l = l->next)
         {
+            g_autoptr (GAppInfo) app_info = NULL;
+
             file = NAUTILUS_FILE (l->data);
             app_info = nautilus_mime_get_default_application_for_file (file);
             if (nautilus_file_is_directory (file) || !app_info || file == NULL)
@@ -4408,8 +4409,9 @@ should_show_open_with (NautilusPropertiesWindow *self)
     }
     else
     {
-        file = get_target_file (self);
+        g_autoptr (GAppInfo) app_info = NULL;
 
+        file = get_target_file (self);
         app_info = nautilus_mime_get_default_application_for_file (file);
         if (nautilus_file_is_directory (file) || !app_info || file == NULL)
         {
