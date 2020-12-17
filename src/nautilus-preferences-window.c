@@ -79,18 +79,6 @@ static const char * const click_behavior_components[] =
 
 static const char * const click_behavior_values[] = {"single", "double", NULL};
 
-static const char * const executable_text_components[] =
-{
-    "scripts_execute_radiobutton", "scripts_view_radiobutton",
-    NULL
-};
-
-static const char * const executable_text_values[] =
-{
-    "launch", "display",
-    NULL
-};
-
 static const char * const recursive_search_components[] =
 {
     "search_recursive_only_this_computer_radiobutton", "search_recursive_all_locations_radiobutton", "search_recursive_never_radiobutton", NULL
@@ -476,10 +464,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     bind_builder_radio (
         builder, nautilus_preferences, (const char **) click_behavior_components,
         NAUTILUS_PREFERENCES_CLICK_POLICY, (const char **) click_behavior_values);
-    bind_builder_radio (builder, nautilus_preferences,
-                        (const char **) executable_text_components,
-                        NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION,
-                        (const char **) executable_text_values);
     bind_builder_radio (builder, nautilus_preferences,
                         (const char **) recursive_search_components,
                         NAUTILUS_PREFERENCES_RECURSIVE_SEARCH,

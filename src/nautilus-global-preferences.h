@@ -48,9 +48,6 @@ typedef enum
 /* Drag and drop preferences */
 #define NAUTILUS_PREFERENCES_OPEN_FOLDER_ON_DND_HOVER   	"open-folder-on-dnd-hover"
 
-/* Activating executable text files */
-#define NAUTILUS_PREFERENCES_EXECUTABLE_TEXT_ACTIVATION		"executable-text-activation"
-
 /* Installing new packages when unknown mime type activated */
 #define NAUTILUS_PREFERENCES_INSTALL_MIME_ACTIVATION		"install-mime-activation"
 
@@ -105,12 +102,6 @@ enum
 {
 	NAUTILUS_CLICK_POLICY_SINGLE,
 	NAUTILUS_CLICK_POLICY_DOUBLE
-};
-
-enum
-{
-	NAUTILUS_EXECUTABLE_TEXT_LAUNCH,
-	NAUTILUS_EXECUTABLE_TEXT_DISPLAY,
 };
 
 typedef enum
