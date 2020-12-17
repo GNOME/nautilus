@@ -944,7 +944,7 @@ clear_extension_pages (NautilusPropertiesWindow *self)
         page = gtk_notebook_get_nth_page
                    (GTK_NOTEBOOK (self->notebook), i);
 
-        if (g_object_get_data (G_OBJECT (page), "is-extension-page"))
+        if (GPOINTER_TO_INT (g_object_get_data (G_OBJECT (page), "is-extension-page")))
         {
             gtk_notebook_remove_page
                 (GTK_NOTEBOOK (self->notebook), i);
@@ -4338,7 +4338,7 @@ append_extension_pages (NautilusPropertiesWindow *self)
 
             g_object_set_data (G_OBJECT (page_widget),
                                "is-extension-page",
-                               page);
+                               GINT_TO_POINTER (TRUE));
 
             g_object_unref (page_widget);
             g_object_unref (label);
