@@ -2401,12 +2401,23 @@ nautilus_window_save_geometry (NautilusWindow *window)
         gint width;
         gint height;
         GVariant *initial_size;
+        GdkWindowState window_state;
 
         gtk_window_get_size (GTK_WINDOW (window), &width, &height);
 
         initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
-        is_maximized = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)))
-                       & GDK_WINDOW_STATE_MAXIMIZED;
+
+        window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
+
+        /* Don't save the window state for tiled windows. This is a special case,
+         * where the geometry only makes sense in combination with other tiled
+         * windows, that we can't possibly restore. */
+        if (window_state & GDK_WINDOW_STATE_TILED)
+        {
+            return;
+        }
+
+        is_maximized = window_state & GDK_WINDOW_STATE_MAXIMIZED;
 
         if (!is_maximized)
         {
