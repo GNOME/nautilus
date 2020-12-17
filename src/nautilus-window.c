@@ -2392,44 +2392,51 @@ nautilus_window_finalize (GObject *object)
 static void
 nautilus_window_save_geometry (NautilusWindow *window)
 {
+    GdkWindow *gdk_window;
+    GdkWindowState window_state;
     gboolean is_maximized;
 
     g_assert (NAUTILUS_IS_WINDOW (window));
 
-    if (gtk_widget_get_window (GTK_WIDGET (window)))
+    gdk_window = gtk_widget_get_window (GTK_WIDGET (window));
+
+    if (!gdk_window)
+    {
+        return;
+    }
+
+    window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
+
+    /* Don't save the window state for tiled windows. This is a special case,
+     * where the geometry only makes sense in combination with other tiled
+     * windows, that we can't possibly restore. */
+    if (window_state & GDK_WINDOW_STATE_TILED)
+    {
+        return;
+    }
+
+    is_maximized = window_state & GDK_WINDOW_STATE_MAXIMIZED;
+
+    /* Only save the initial size when the window is not maximized. If the
+     * window is maximized, a previously stored initial size will be more
+     * appropriate when unmaximizing the window in the future. */
+    if (!is_maximized)
     {
         gint width;
         gint height;
         GVariant *initial_size;
-        GdkWindowState window_state;
 
         gtk_window_get_size (GTK_WINDOW (window), &width, &height);
-
         initial_size = g_variant_new_parsed ("(%i, %i)", width, height);
 
-        window_state = gdk_window_get_state (gtk_widget_get_window (GTK_WIDGET (window)));
-
-        /* Don't save the window state for tiled windows. This is a special case,
-         * where the geometry only makes sense in combination with other tiled
-         * windows, that we can't possibly restore. */
-        if (window_state & GDK_WINDOW_STATE_TILED)
-        {
-            return;
-        }
-
-        is_maximized = window_state & GDK_WINDOW_STATE_MAXIMIZED;
-
-        if (!is_maximized)
-        {
-            g_settings_set_value (nautilus_window_state,
-                                  NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
-                                  initial_size);
-        }
-
-        g_settings_set_boolean
-            (nautilus_window_state, NAUTILUS_WINDOW_STATE_MAXIMIZED,
-            is_maximized);
+        g_settings_set_value (nautilus_window_state,
+                              NAUTILUS_WINDOW_STATE_INITIAL_SIZE,
+                              initial_size);
     }
+
+    g_settings_set_boolean (nautilus_window_state,
+                            NAUTILUS_WINDOW_STATE_MAXIMIZED,
+                            is_maximized);
 }
 
 void
