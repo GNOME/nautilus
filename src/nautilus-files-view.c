@@ -6580,6 +6580,71 @@ action_compress (GSimpleAction *action,
     nautilus_files_view_compress_dialog_new (view);
 }
 
+static gboolean
+can_run_in_terminal (GList *selection)
+{
+    NautilusFile *file;
+
+    if (g_list_length (selection) != 1)
+    {
+        return FALSE;
+    }
+
+    file = NAUTILUS_FILE (selection->data);
+
+    if (nautilus_file_is_launchable (file) &&
+        nautilus_file_contains_text (file))
+    {
+        g_autofree gchar *activation_uri = NULL;
+        g_autofree gchar *executable_path = NULL;
+
+        activation_uri = nautilus_file_get_activation_uri (file);
+        executable_path = g_filename_from_uri (activation_uri, NULL, NULL);
+
+        if (executable_path != NULL)
+        {
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+static void
+action_run_in_terminal (GSimpleAction *action,
+                        GVariant      *state,
+                        gpointer       user_data)
+{
+    NautilusFilesView *view;
+    g_autolist (NautilusFile) selection = NULL;
+    g_autofree char *uri = NULL;
+    g_autofree char *executable_path = NULL;
+    g_autofree char *quoted_path = NULL;
+    GtkWindow *parent_window;
+    GdkScreen *screen;
+
+    g_assert (NAUTILUS_IS_FILES_VIEW (user_data));
+
+    view = NAUTILUS_FILES_VIEW (user_data);
+
+    selection = nautilus_view_get_selection (NAUTILUS_VIEW (view));
+
+    if (!can_run_in_terminal (selection))
+    {
+        return;
+    }
+
+    uri = nautilus_file_get_activation_uri (NAUTILUS_FILE (selection->data));
+    executable_path = g_filename_from_uri (uri, NULL, NULL);
+    quoted_path = g_shell_quote (executable_path);
+
+    parent_window = nautilus_files_view_get_containing_window (view);
+    screen = gtk_widget_get_screen (GTK_WIDGET (parent_window));
+
+    DEBUG ("Launching in terminal %s", quoted_path);
+
+    nautilus_launch_application_from_command (screen, quoted_path, TRUE, NULL);
+}
 
 #define BG_KEY_PRIMARY_COLOR      "primary-color"
 #define BG_KEY_SECONDARY_COLOR    "secondary-color"
@@ -7123,6 +7188,7 @@ const GActionEntry view_entries[] =
     { "compress", action_compress },
     { "properties", action_properties},
     { "current-directory-properties", action_current_dir_properties},
+    { "run-in-terminal", action_run_in_terminal },
     { "set-as-wallpaper", action_set_as_wallpaper },
     { "mount-volume", action_mount_volume },
     { "unmount-volume", action_unmount_volume },
@@ -7613,6 +7679,9 @@ real_update_actions_state (NautilusFilesView *view)
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "open-item-new-window");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), item_opens_in_view);
+    action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
+                                         "run-in-terminal");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_run_in_terminal (selection));
     action = g_action_map_lookup_action (G_ACTION_MAP (view_action_group),
                                          "set-as-wallpaper");
     g_simple_action_set_enabled (G_SIMPLE_ACTION (action), can_set_wallpaper (selection));
