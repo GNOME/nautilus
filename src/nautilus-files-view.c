@@ -353,6 +353,8 @@ static void     set_search_query_internal (NautilusFilesView *files_view,
                                            NautilusDirectory *base_model);
 
 static gboolean nautilus_files_view_is_read_only (NautilusFilesView *view);
+static void     set_wallpaper_fallback (NautilusFile *file,
+                                        gpointer      user_data);
 
 G_DEFINE_TYPE_WITH_CODE (NautilusFilesView,
                          nautilus_files_view,
@@ -6697,6 +6699,12 @@ can_set_wallpaper (GList *selection)
 }
 
 #ifdef HAVE_LIBPORTAL
+typedef struct
+{
+    NautilusFile *file;
+    NautilusFilesView *view;
+} WallpaperData;
+
 static void
 set_wallpaper_with_portal_cb (GObject      *source,
                               GAsyncResult *result,
@@ -6704,12 +6712,18 @@ set_wallpaper_with_portal_cb (GObject      *source,
 {
     XdpPortal *portal = XDP_PORTAL (source);
     g_autoptr (GError) error = NULL;
+    WallpaperData *data = user_data;
 
     if (!xdp_portal_set_wallpaper_finish (portal, result, &error)
         && !g_error_matches (error, G_IO_ERROR, G_IO_ERROR_CANCELLED))
     {
         g_warning ("Failed to set wallpaper via portal: %s", error->message);
+        set_wallpaper_fallback (data->file, data->view);
     }
+
+    nautilus_file_unref (data->file);
+    g_object_unref (data->view);
+    g_free (data);
 }
 
 static void
@@ -6720,6 +6734,11 @@ set_wallpaper_with_portal (NautilusFile *file,
     g_autofree gchar *uri = NULL;
     XdpParent *parent = NULL;
     GtkWidget *toplevel;
+    WallpaperData *data;
+
+    data = g_new0 (WallpaperData, 1);
+    data->file = nautilus_file_ref (file);
+    data->view = g_object_ref (user_data);
 
     portal = xdp_portal_new ();
     toplevel = gtk_widget_get_ancestor (GTK_WIDGET (user_data), GTK_TYPE_WINDOW);
@@ -6732,7 +6751,7 @@ set_wallpaper_with_portal (NautilusFile *file,
                               XDP_WALLPAPER_FLAG_BACKGROUND | XDP_WALLPAPER_FLAG_PREVIEW,
                               NULL,
                               set_wallpaper_with_portal_cb,
-                              NULL);
+                              data);
     xdp_parent_free (parent);
 }
 #endif /* HAVE_LIBPORTAL */
