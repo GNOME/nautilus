@@ -82,12 +82,12 @@ static const char * const click_behavior_values[] = {"single", "double", NULL};
 static const char * const executable_text_components[] =
 {
     "scripts_execute_radiobutton", "scripts_view_radiobutton",
-    "scripts_confirm_radiobutton", NULL
+    NULL
 };
 
 static const char * const executable_text_values[] =
 {
-    "launch", "display", "ask",
+    "launch", "display",
     NULL
 };
 
