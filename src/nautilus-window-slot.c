@@ -911,7 +911,7 @@ nautilus_window_slot_get_property (GObject    *object,
 
         case PROP_ICON:
         {
-            g_value_set_object (value, nautilus_window_slot_get_icon (self));
+            g_value_take_object (value, nautilus_window_slot_get_icon (self));
         }
         break;
 
