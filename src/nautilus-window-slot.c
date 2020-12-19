@@ -3118,6 +3118,9 @@ nautilus_window_slot_dispose (GObject *object)
     g_clear_pointer (&priv->extensions_background_menu_binding, g_binding_unbind);
     g_clear_pointer (&priv->templates_menu_binding, g_binding_unbind);
 
+    g_clear_object (&priv->templates_menu);
+    g_clear_object (&priv->extensions_background_menu);
+
     if (priv->content_view)
     {
         gtk_widget_destroy (GTK_WIDGET (priv->content_view));
