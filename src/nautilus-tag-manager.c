@@ -539,6 +539,7 @@ nautilus_tag_manager_finalize (GObject *object)
     g_clear_object (&self->query_starred_files);
 
     g_hash_table_destroy (self->starred_file_uris);
+    g_clear_object (&self->home);
 
     G_OBJECT_CLASS (nautilus_tag_manager_parent_class)->finalize (object);
 }
