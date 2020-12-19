@@ -2479,6 +2479,8 @@ default_column_array_as_list (gchar **array)
         i++;
     }
 
+    g_free (array);
+
     return res;
 }
 
