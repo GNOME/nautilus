@@ -938,7 +938,7 @@ nautilus_application_handle_file_args (NautilusApplication *self,
     GFile **files;
     GFile *file;
     gint idx, len;
-    const gchar * const *remaining = NULL;
+    g_autofree const gchar **remaining = NULL;
     GPtrArray *file_array;
 
     g_variant_dict_lookup (options, G_OPTION_REMAINING, "^a&s", &remaining);
