@@ -1297,8 +1297,11 @@ slot_on_extensions_background_menu_changed (NautilusToolbar    *self,
                                             GParamSpec         *param,
                                             NautilusWindowSlot *slot)
 {
+    g_autoptr (GMenuModel) menu = NULL;
+
+    menu = nautilus_window_slot_get_extensions_background_menu (slot);
     nautilus_path_bar_set_extensions_background_menu (NAUTILUS_PATH_BAR (self->path_bar),
-                                                      nautilus_window_slot_get_extensions_background_menu (slot));
+                                                      menu);
 }
 
 static void
@@ -1306,8 +1309,11 @@ slot_on_templates_menu_changed (NautilusToolbar    *self,
                                 GParamSpec         *param,
                                 NautilusWindowSlot *slot)
 {
+    g_autoptr (GMenuModel) menu = NULL;
+
+    menu = nautilus_window_slot_get_templates_menu (slot);
     nautilus_path_bar_set_templates_menu (NAUTILUS_PATH_BAR (self->path_bar),
-                                          nautilus_window_slot_get_templates_menu (slot));
+                                          menu);
 }
 
 static void
