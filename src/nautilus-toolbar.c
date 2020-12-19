@@ -892,7 +892,7 @@ on_location_entry_focus_changed (GObject    *object,
 static void
 nautilus_toolbar_constructed (GObject *object)
 {
-    GtkBuilder *builder;
+    g_autoptr (GtkBuilder) builder = NULL;
     NautilusToolbar *self = NAUTILUS_TOOLBAR (object);
 
     builder = gtk_builder_new_from_resource ("/org/gnome/nautilus/ui/nautilus-toolbar-switcher.ui");
