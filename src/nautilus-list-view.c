@@ -2468,16 +2468,21 @@ get_default_visible_columns (NautilusListView *list_view)
 }
 
 static GList *
-default_column_array_as_list (gchar **array)
+get_default_visible_columns_as_list (NautilusListView *list_view)
 {
     GList *res = NULL;
     gint i = 0;
+    gchar **array;
+
+    array = get_default_visible_columns (list_view);
 
     while (array[i] != NULL)
     {
         res = g_list_prepend (res, array[i]);
         i++;
     }
+
+    g_free (array);
 
     return res;
 }
@@ -2506,7 +2511,7 @@ get_visible_columns (NautilusListView *list_view)
                                                        NAUTILUS_METADATA_KEY_LIST_VIEW_VISIBLE_COLUMNS);
     if (visible_columns == NULL)
     {
-        visible_columns = default_column_array_as_list (get_default_visible_columns (list_view));
+        visible_columns = get_default_visible_columns_as_list (list_view);
     }
 
     res = g_ptr_array_new ();
