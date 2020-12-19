@@ -82,7 +82,8 @@ static guint signals[LAST_SIGNAL];
 /* Limit to 10MB output from Tracker -- surely, nobody has over a million starred files. */
 #define TRACKER2_MAX_IMPORT_BYTES 10 * 1024 * 1024
 
-static const gchar *tracker2_migration_stamp (void)
+static gchar *
+tracker2_migration_stamp (void)
 {
     return g_build_filename (g_get_user_data_dir (), "nautilus", "tracker2-migration-complete", NULL);
 }
@@ -831,7 +832,7 @@ process_tracker2_data_cb (GObject      *source_object,
                           gpointer      user_data)
 {
     NautilusTagManager *self = NAUTILUS_TAG_MANAGER (source_object);
-    const gchar *path = tracker2_migration_stamp ();
+    g_autofree gchar *path = tracker2_migration_stamp ();
     g_autoptr (GError) error = NULL;
 
     tracker_sparql_connection_update_finish (self->db, res, &error);
@@ -978,7 +979,9 @@ export_tracker2_data (NautilusTagManager *self)
 void
 nautilus_tag_manager_maybe_migrate_tracker2_data (NautilusTagManager *self)
 {
-    if (g_file_test (tracker2_migration_stamp (), G_FILE_TEST_EXISTS))
+    g_autofree gchar *path = tracker2_migration_stamp ();
+
+    if (g_file_test (path, G_FILE_TEST_EXISTS))
     {
         DEBUG ("Tracker 2 migration: already completed.");
     }
