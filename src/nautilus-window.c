@@ -3031,7 +3031,7 @@ nautilus_window_back_or_forward (NautilusWindow          *window,
 {
     NautilusWindowSlot *slot;
     GList *next_location_list, *back_list, *forward_list;
-    GFile *next_location;
+    g_autoptr (GFile) next_location = NULL;
     guint len;
     NautilusBookmark *next_location_bookmark;
     gboolean active_slot_handles_location;
