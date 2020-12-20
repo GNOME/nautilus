@@ -3302,8 +3302,7 @@ static void
 scan_dir (GFile      *dir,
           SourceInfo *source_info,
           CommonJob  *job,
-          GQueue     *dirs,
-          GHashTable *scanned)
+          GQueue     *dirs)
 {
     GFileInfo *info;
     GError *error;
@@ -3329,27 +3328,17 @@ retry:
         error = NULL;
         while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
         {
-            g_autoptr (GFile) file = NULL;
-            g_autofree char *file_uri = NULL;
+            count_file (info, job, source_info);
 
-            file = g_file_enumerator_get_child (enumerator, info);
-            file_uri = g_file_get_uri (file);
-
-            if (!g_hash_table_contains (scanned, file_uri))
+            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
             {
-                g_hash_table_add (scanned, g_strdup (file_uri));
+                subdir = g_file_get_child (dir,
+                                           g_file_info_get_name (info));
 
-                count_file (info, job, source_info);
-
-                if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
-                {
-                    subdir = g_file_get_child (dir,
-                                               g_file_info_get_name (info));
-
-                    /* Push to head, since we want depth-first */
-                    g_queue_push_head (dirs, subdir);
-                }
+                /* Push to head, since we want depth-first */
+                g_queue_push_head (dirs, subdir);
             }
+
             g_object_unref (info);
         }
         g_file_enumerator_close (enumerator, job->cancellable, NULL);
@@ -3476,8 +3465,7 @@ retry:
 static void
 scan_file (GFile      *file,
            SourceInfo *source_info,
-           CommonJob  *job,
-           GHashTable *scanned)
+           CommonJob  *job)
 {
     GFileInfo *info;
     GError *error;
@@ -3501,21 +3489,13 @@ retry:
 
     if (info)
     {
-        g_autofree char *file_uri = NULL;
+        count_file (info, job, source_info);
 
-        file_uri = g_file_get_uri (file);
-        if (!g_hash_table_contains (scanned, file_uri))
+        /* trashing operation doesn't recurse */
+        if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
+            source_info->op != OP_KIND_TRASH)
         {
-            g_hash_table_add (scanned, g_strdup (file_uri));
-
-            count_file (info, job, source_info);
-
-            /* trashing operation doesn't recurse */
-            if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
-                source_info->op != OP_KIND_TRASH)
-            {
-                g_queue_push_head (dirs, g_object_ref (file));
-            }
+            g_queue_push_head (dirs, g_object_ref (file));
         }
         g_object_unref (info);
     }
@@ -3585,7 +3565,7 @@ retry:
     while (!job_aborted (job) &&
            (dir = g_queue_pop_head (dirs)) != NULL)
     {
-        scan_dir (dir, source_info, job, dirs, scanned);
+        scan_dir (dir, source_info, job, dirs);
         g_object_unref (dir);
     }
 
@@ -3602,15 +3582,9 @@ scan_sources (GList      *files,
 {
     GList *l;
     GFile *file;
-    g_autoptr (GHashTable) scanned = NULL;
 
     memset (source_info, 0, sizeof (SourceInfo));
     source_info->op = kind;
-
-    scanned = g_hash_table_new_full (g_str_hash,
-                                     g_str_equal,
-                                     (GDestroyNotify) g_free,
-                                     NULL);
 
     report_preparing_count_progress (job, source_info);
 
@@ -3620,8 +3594,7 @@ scan_sources (GList      *files,
 
         scan_file (file,
                    source_info,
-                   job,
-                   scanned);
+                   job);
     }
 
     /* Make sure we report the final count */
