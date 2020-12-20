@@ -258,7 +258,6 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
                                            guint                *index)
 {
     GList *node;
-    g_autoptr (GFile) bookmark_location = NULL;
     NautilusBookmark *bookmark;
     guint idx;
 
@@ -269,6 +268,8 @@ nautilus_bookmark_list_item_with_location (NautilusBookmarkList *bookmarks,
 
     for (node = bookmarks->list; node != NULL; node = node->next)
     {
+        g_autoptr (GFile) bookmark_location = NULL;
+
         bookmark = node->data;
         bookmark_location = nautilus_bookmark_get_location (bookmark);
 
