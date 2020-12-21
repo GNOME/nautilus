@@ -21,10 +21,6 @@
 
 #include "config.h"
 #include "nautilus-tracker-utilities.h"
-#include "nautilus-global-preferences.h"
-
-#define TRACKER_KEY_RECURSIVE_DIRECTORIES "index-recursive-directories"
-#define TRACKER_KEY_SINGLE_DIRECTORIES "index-single-directories"
 
 /* Shared global connection to Tracker Miner FS */
 static const gchar *tracker_miner_fs_busname = NULL;

@@ -164,6 +164,5 @@ extern GSettings *gtk_filechooser_preferences;
 extern GSettings *gnome_lockdown_preferences;
 extern GSettings *gnome_background_preferences;
 extern GSettings *gnome_interface_preferences;
-extern GSettings *tracker_preferences;
 
 G_END_DECLS
