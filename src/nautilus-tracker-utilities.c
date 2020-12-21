@@ -1,6 +1,7 @@
 /* nautilus-tracker-utilities.c
  *
  * Copyright 2019 Carlos Soriano <csoriano@redhat.com>
+ * Copyright 2020 Sam Thursfield <sam@afuera.me.uk>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
