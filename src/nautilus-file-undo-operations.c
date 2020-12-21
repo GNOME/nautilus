@@ -1437,9 +1437,7 @@ starred_redo_func (NautilusFileUndoInfo           *info,
                    NautilusFileOperationsDBusData *dbus_data)
 {
     NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
-    NautilusTagManager *tag_manager;
-
-    tag_manager = nautilus_tag_manager_get ();
+    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
 
     if (self->starred)
     {
@@ -1465,9 +1463,7 @@ starred_undo_func (NautilusFileUndoInfo           *info,
                    NautilusFileOperationsDBusData *dbus_data)
 {
     NautilusFileUndoInfoStarred *self = NAUTILUS_FILE_UNDO_INFO_STARRED (info);
-    NautilusTagManager *tag_manager;
-
-    tag_manager = nautilus_tag_manager_get ();
+    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
 
     if (self->starred)
     {

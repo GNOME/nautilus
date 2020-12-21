@@ -3476,13 +3476,11 @@ static int
 compare_by_starred (NautilusFile *file_1,
                     NautilusFile *file_2)
 {
-    NautilusTagManager *tag_manager;
+    g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
     g_autofree gchar *uri_1 = NULL;
     g_autofree gchar *uri_2 = NULL;
     gboolean file_1_is_starred;
     gboolean file_2_is_starred;
-
-    tag_manager = nautilus_tag_manager_get ();
 
     uri_1 = nautilus_file_get_uri (file_1);
     uri_2 = nautilus_file_get_uri (file_2);

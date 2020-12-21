@@ -568,16 +568,12 @@ nautilus_starred_directory_new ()
 static void
 nautilus_starred_directory_init (NautilusFavoriteDirectory *self)
 {
-    NautilusTagManager *tag_manager;
+    self->tag_manager = nautilus_tag_manager_get ();
 
-    tag_manager = nautilus_tag_manager_get ();
-
-    g_signal_connect (tag_manager,
+    g_signal_connect (self->tag_manager,
                       "starred-changed",
                       (GCallback) on_starred_files_changed,
                       self);
-
-    self->tag_manager = tag_manager;
 
     nautilus_starred_directory_set_files (self);
 }

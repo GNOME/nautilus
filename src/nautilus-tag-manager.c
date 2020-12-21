@@ -563,6 +563,16 @@ nautilus_tag_manager_class_init (NautilusTagManagerClass *klass)
                                              G_TYPE_POINTER);
 }
 
+/**
+ * nautilus_tag_manager_get:
+ *
+ * Gets a reference to the tag manager.
+ *
+ * If used to initialize a struct field, make sure to release on finalization.
+ * If used to initialize a local variable, make sure to use g_autoptr().
+ *
+ * Returns: (transfer full): the #NautilusTagManager singleton object.
+ */
 NautilusTagManager *
 nautilus_tag_manager_get (void)
 {
@@ -701,7 +711,7 @@ update_moved_uris_callback (GObject      *object,
     else
     {
         g_autolist (NautilusFile) updated_files = NULL;
-        g_autoptr (NautilusTagManager) tag_manager = NULL;
+        g_autoptr (NautilusTagManager) tag_manager = nautilus_tag_manager_get ();
 
         for (guint i = 0; i < new_uris->len; i++)
         {
@@ -710,7 +720,6 @@ update_moved_uris_callback (GObject      *object,
             updated_files = g_list_prepend (updated_files, nautilus_file_get_by_uri (new_uri));
         }
 
-        tag_manager = nautilus_tag_manager_get ();
         g_signal_emit_by_name (tag_manager, "starred-changed", updated_files);
     }
 }

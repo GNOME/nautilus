@@ -3327,6 +3327,7 @@ nautilus_files_view_finalize (GObject *object)
 
     g_cancellable_cancel (priv->starred_cancellable);
     g_clear_object (&priv->starred_cancellable);
+    g_clear_object (&priv->tag_manager);
 
     G_OBJECT_CLASS (nautilus_files_view_parent_class)->finalize (object);
 }
