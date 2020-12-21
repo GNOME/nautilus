@@ -183,6 +183,7 @@ typedef struct
 
     GList *scripts_directory_list;
     GList *templates_directory_list;
+    gboolean templates_menu_updated;
 
     guint display_selection_idle_id;
     guint update_context_menus_timeout_id;
@@ -3048,6 +3049,7 @@ templates_added_or_changed_callback (NautilusDirectory *directory,
     view = NAUTILUS_FILES_VIEW (callback_data);
     priv = nautilus_files_view_get_instance_private (view);
 
+    priv->templates_menu_updated = FALSE;
     if (priv->active)
     {
         schedule_update_context_menus (view);
@@ -5917,12 +5919,6 @@ update_templates_menu (NautilusFilesView *view,
 
     directory = nautilus_directory_get_by_uri (templates_directory_uri);
     submenu = update_directory_in_templates_menu (view, directory);
-    if (submenu != NULL)
-    {
-        GObject *object;
-        object = gtk_builder_get_object (builder, "templates-submenu");
-        nautilus_gmenu_set_from_model (G_MENU (object), submenu);
-    }
 
     nautilus_view_set_templates_menu (NAUTILUS_VIEW (view), submenu);
 
@@ -8310,11 +8306,21 @@ static void
 update_background_menu (NautilusFilesView *view,
                         GtkBuilder        *builder)
 {
+    NautilusFilesViewPrivate *priv = nautilus_files_view_get_instance_private (view);
+    GObject *object;
+
     if (nautilus_files_view_supports_creating_files (view) &&
         !showing_recent_directory (view) &&
         !showing_starred_directory (view))
     {
-        update_templates_menu (view, builder);
+        if (!priv->templates_menu_updated)
+        {
+            update_templates_menu (view, builder);
+            priv->templates_menu_updated = TRUE;
+        }
+
+        object = gtk_builder_get_object (builder, "templates-submenu");
+        nautilus_gmenu_set_from_model (G_MENU (object), priv->templates_menu);
     }
 }
 
