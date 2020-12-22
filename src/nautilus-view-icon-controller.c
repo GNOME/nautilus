@@ -85,6 +85,18 @@ static const SortConstants sorts_constants[] =
         TRUE,
     },
     {
+        NAUTILUS_FILE_SORT_BY_BTIME,
+        "creation date",
+        "creation-date",
+        FALSE,
+    },
+    {
+        NAUTILUS_FILE_SORT_BY_BTIME,
+        "creation date",
+        "creation-date-desc",
+        TRUE,
+    },
+    {
         NAUTILUS_FILE_SORT_BY_TRASHED_TIME,
         "trashed",
         "trash-time",

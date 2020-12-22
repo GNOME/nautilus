@@ -60,7 +60,8 @@ typedef enum {
 	NAUTILUS_FILE_SORT_BY_TYPE = 2,
 	NAUTILUS_FILE_SORT_BY_MTIME = 3,
 	NAUTILUS_FILE_SORT_BY_ATIME = 4,
-	NAUTILUS_FILE_SORT_BY_STARRED = 5,
+	NAUTILUS_FILE_SORT_BY_BTIME = 5,
+	NAUTILUS_FILE_SORT_BY_STARRED = 6,
 
 	/* The following are specific to special locations and as such are not to be
 	 * included in the "org.gnome.nautilus.SortOrder" enum.

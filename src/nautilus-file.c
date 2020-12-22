@@ -3747,6 +3747,16 @@ nautilus_file_compare_for_sort (NautilusFile         *file_1,
             }
             break;
 
+            case NAUTILUS_FILE_SORT_BY_BTIME:
+            {
+                result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_CREATED);
+                if (result == 0)
+                {
+                    result = compare_by_full_path (file_1, file_2);
+                }
+            }
+            break;
+
             case NAUTILUS_FILE_SORT_BY_TRASHED_TIME:
             {
                 result = compare_by_time (file_1, file_2, NAUTILUS_DATE_TYPE_TRASHED);
@@ -3849,6 +3859,13 @@ nautilus_file_compare_for_sort_by_attribute_q   (NautilusFile *file_1,
     {
         return nautilus_file_compare_for_sort (file_1, file_2,
                                                NAUTILUS_FILE_SORT_BY_ATIME,
+                                               directories_first,
+                                               reversed);
+    }
+    else if (attribute == attribute_date_created_q || attribute == attribute_date_created_full_q)
+    {
+        return nautilus_file_compare_for_sort (file_1, file_2,
+                                               NAUTILUS_FILE_SORT_BY_BTIME,
                                                directories_first,
                                                reversed);
     }
@@ -7474,6 +7491,8 @@ nautilus_file_is_date_sort_attribute_q (GQuark attribute_q)
         attribute_q == attribute_accessed_date_q ||
         attribute_q == attribute_date_accessed_q ||
         attribute_q == attribute_date_accessed_full_q ||
+        attribute_q == attribute_date_created_q ||
+        attribute_q == attribute_date_created_full_q ||
         attribute_q == attribute_trashed_on_q ||
         attribute_q == attribute_trashed_on_full_q ||
         attribute_q == attribute_recency_q)
