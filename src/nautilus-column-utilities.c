@@ -41,6 +41,7 @@ static const char *default_column_order[] =
     "date_modified_with_time",
     "date_modified",
     "date_accessed",
+    "date_created",
     "recency",
     "starred",
     NULL
@@ -94,6 +95,15 @@ get_builtin_columns (void)
                                            "attribute", "date_accessed",
                                            "label", _("Accessed"),
                                            "description", _("The date the file was accessed."),
+                                           "default-sort-order", GTK_SORT_DESCENDING,
+                                           "xalign", 1.0,
+                                           NULL));
+    columns = g_list_append (columns,
+                             g_object_new (NAUTILUS_TYPE_COLUMN,
+                                           "name", "date_created",
+                                           "attribute", "date_created",
+                                           "label", _("Created"),
+                                           "description", _("The date the file was created."),
                                            "default-sort-order", GTK_SORT_DESCENDING,
                                            "xalign", 1.0,
                                            NULL));
