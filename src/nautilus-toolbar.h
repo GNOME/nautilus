@@ -26,7 +26,7 @@
 #include <gtk/gtk.h>
 #include <libhandy-1/handy.h>
 
-#include "nautilus-adaptive-mode.h"
+#include "nautilus-ui-utilities.h"
 #include "nautilus-window-slot.h"
 
 G_BEGIN_DECLS

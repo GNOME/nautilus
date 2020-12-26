@@ -47,7 +47,6 @@
 #define DEBUG_FLAG NAUTILUS_DEBUG_WINDOW
 #include "nautilus-debug.h"
 
-#include "nautilus-adaptive-mode.h"
 #include "nautilus-application.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-bottom-toolbar.h"

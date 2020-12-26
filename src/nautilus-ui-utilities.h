@@ -49,3 +49,13 @@ void        show_unmount_progress_cb                (GMountOperation   *op,
                                                      gpointer           user_data);
 void        show_unmount_progress_aborted_cb        (GMountOperation   *op,
                                                      gpointer           user_data);
+
+G_BEGIN_DECLS
+
+typedef enum
+{
+    NAUTILUS_ADAPTIVE_MODE_NARROW,
+    NAUTILUS_ADAPTIVE_MODE_NORMAL,
+} NautilusAdaptiveMode;
+
+G_END_DECLS
