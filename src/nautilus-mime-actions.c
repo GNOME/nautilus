@@ -1410,6 +1410,10 @@ launch_default_for_uris_callback (GObject      *source_object,
     uri = g_queue_pop_head (params->uris);
 
     nautilus_launch_default_for_uri_finish (res, &error);
+    if (error == NULL)
+    {
+        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
+    }
 
     if (!g_queue_is_empty (params->uris))
     {
@@ -1630,7 +1634,6 @@ activate_files (ActivateParameters *parameters)
         async_params->activation_params = parameters;
         async_params->uris = g_steal_pointer (&open_in_app_uris);
 
-        gtk_recent_manager_add_item (gtk_recent_manager_get_default (), uri);
         nautilus_launch_default_for_uri_async (uri,
                                                parameters->parent_window,
                                                parameters->cancellable,
