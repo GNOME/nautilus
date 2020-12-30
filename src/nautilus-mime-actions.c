@@ -89,7 +89,6 @@ typedef struct
 {
     ActivateParameters *activation_params;
     GQueue *uris;
-    GQueue *unhandled_uris;
 } ApplicationLaunchAsyncParameters;
 
 /* Microsoft mime types at https://blogs.msdn.microsoft.com/vsofficedeveloper/2008/05/08/office-2007-file-format-mime-types-for-http-content-streaming-2/ */
@@ -874,7 +873,6 @@ activation_parameters_free (ActivateParameters *parameters)
 static void
 application_launch_async_parameters_free (ApplicationLaunchAsyncParameters *parameters)
 {
-    g_queue_free (parameters->unhandled_uris);
     g_queue_free (parameters->uris);
     activation_parameters_free (parameters->activation_params);
 
@@ -1412,10 +1410,6 @@ launch_default_for_uris_callback (GObject      *source_object,
     uri = g_queue_pop_head (params->uris);
 
     nautilus_launch_default_for_uri_finish (res, &error);
-    if (!is_sandboxed () && error != NULL && error->code != G_IO_ERROR_CANCELLED)
-    {
-        g_queue_push_tail (params->unhandled_uris, uri);
-    }
 
     if (!g_queue_is_empty (params->uris))
     {
@@ -1427,11 +1421,6 @@ launch_default_for_uris_callback (GObject      *source_object,
     }
     else
     {
-        while ((uri = g_queue_pop_head (params->unhandled_uris)) != NULL)
-        {
-            application_unhandled_uri (activation_params, uri);
-        }
-
         application_launch_async_parameters_free (params);
     }
 }
