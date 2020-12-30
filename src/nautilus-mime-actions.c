@@ -245,6 +245,20 @@ static void activate_callback (GList   *files,
                                gpointer callback_data);
 static void activation_mount_not_mounted (ActivateParameters *parameters);
 
+static gboolean
+is_sandboxed (void)
+{
+    static gboolean ret;
+
+    static gsize init = 0;
+    if (g_once_init_enter (&init))
+    {
+        ret = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
+        g_once_init_leave (&init, 1);
+    }
+
+    return ret;
+}
 
 static void
 launch_location_free (LaunchLocation *location)
@@ -1391,16 +1405,14 @@ launch_default_for_uris_callback (GObject      *source_object,
     ApplicationLaunchAsyncParameters *params;
     ActivateParameters *activation_params;
     char *uri;
-    gboolean sandboxed;
     GError *error = NULL;
 
     params = user_data;
     activation_params = params->activation_params;
     uri = g_queue_pop_head (params->uris);
-    sandboxed = g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS);
 
     nautilus_launch_default_for_uri_finish (res, &error);
-    if (!sandboxed && error != NULL && error->code != G_IO_ERROR_CANCELLED)
+    if (!is_sandboxed () && error != NULL && error->code != G_IO_ERROR_CANCELLED)
     {
         g_queue_push_tail (params->unhandled_uris, uri);
     }
@@ -1618,8 +1630,7 @@ activate_files (ActivateParameters *parameters)
         }
     }
 
-    if (!g_queue_is_empty (open_in_app_uris) &&
-        g_file_test ("/.flatpak-info", G_FILE_TEST_EXISTS))
+    if (!g_queue_is_empty (open_in_app_uris) && is_sandboxed ())
     {
         const char *uri;
         ApplicationLaunchAsyncParameters *async_params;
