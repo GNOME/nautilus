@@ -168,10 +168,17 @@ typedef enum
 
 typedef struct
 {
+    int num_files_children;
+    goffset num_bytes_children;
+} SourceDirInfo;
+
+typedef struct
+{
     int num_files;
     goffset num_bytes;
     int num_files_since_progress;
     OpKind op;
+    GHashTable *scanned_dirs_info;
 } SourceInfo;
 
 typedef struct
@@ -217,6 +224,15 @@ typedef struct
     gpointer done_callback_data;
 } CompressJob;
 
+static void
+source_info_clear (SourceInfo *source_info)
+{
+    g_hash_table_unref (source_info->scanned_dirs_info);
+}
+
+G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
+
+#define SOURCE_INFO_INIT { 0 }
 #define SECONDS_NEEDED_FOR_RELIABLE_TRANSFER_RATE 8
 #define NSEC_PER_MICROSEC 1000
 #define PROGRESS_NOTIFY_INTERVAL 100 * NSEC_PER_MICROSEC
@@ -2082,7 +2098,7 @@ delete_files (CommonJob *job,
 {
     GList *l;
     GFile *file;
-    SourceInfo source_info;
+    g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     DeleteData data;
 
@@ -2399,11 +2415,40 @@ skip:
 }
 
 static void
+source_info_remove_descendent_files_from_count (GFile         *dir,
+                                                SourceDirInfo *dir_info,
+                                                SourceInfo    *source_info)
+{
+    GFile *other_dir;
+    SourceDirInfo *other_dir_info;
+    GHashTableIter dir_info_iter;
+
+    source_info->num_files -= dir_info->num_files_children;
+    source_info->num_bytes -= dir_info->num_bytes_children;
+
+    g_hash_table_iter_init (&dir_info_iter, source_info->scanned_dirs_info);
+    while (g_hash_table_iter_next (&dir_info_iter, (gpointer *) &other_dir, (gpointer *) &other_dir_info))
+    {
+        g_assert (other_dir != NULL);
+        g_assert (other_dir_info != NULL);
+
+        if (other_dir_info != dir_info &&
+            g_file_has_parent (other_dir, dir))
+        {
+            source_info_remove_descendent_files_from_count (other_dir,
+                                                            other_dir_info,
+                                                            source_info);
+        }
+    }
+}
+
+static void
 source_info_remove_file_from_count (GFile      *file,
                                     CommonJob  *job,
                                     SourceInfo *source_info)
 {
     g_autoptr (GFileInfo) file_info = NULL;
+    SourceDirInfo *dir_info;
 
     if (g_cancellable_is_cancelled (job->cancellable))
     {
@@ -2421,6 +2466,15 @@ source_info_remove_file_from_count (GFile      *file,
     {
         source_info->num_bytes -= g_file_info_get_size (file_info);
     }
+
+    dir_info = g_hash_table_lookup (source_info->scanned_dirs_info, file);
+
+    if (dir_info != NULL)
+    {
+        source_info_remove_descendent_files_from_count (file,
+                                                        dir_info,
+                                                        source_info);
+    }
 }
 
 static void
@@ -2431,7 +2485,7 @@ trash_files (CommonJob *job,
     GList *l;
     GFile *file;
     GList *to_delete;
-    SourceInfo source_info;
+    g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     gboolean skipped_file;
 
@@ -3253,12 +3307,21 @@ report_preparing_count_progress (CommonJob  *job,
 }
 
 static void
-count_file (GFileInfo  *info,
-            CommonJob  *job,
-            SourceInfo *source_info)
+count_file (GFileInfo     *info,
+            CommonJob     *job,
+            SourceInfo    *source_info,
+            SourceDirInfo *dir_info)
 {
+    goffset num_bytes = g_file_info_get_size (info);
+
     source_info->num_files += 1;
-    source_info->num_bytes += g_file_info_get_size (info);
+    source_info->num_bytes += num_bytes;
+
+    if (dir_info != NULL)
+    {
+        dir_info->num_files_children += 1;
+        dir_info->num_bytes_children += num_bytes;
+    }
 
     if (source_info->num_files_since_progress++ > 100)
     {
@@ -3311,10 +3374,38 @@ scan_dir (GFile      *dir,
     char *primary, *secondary, *details;
     int response;
     SourceInfo saved_info;
+    g_autolist (GFile) subdirs = NULL;
+    SourceDirInfo *dir_info = NULL;
+    gboolean skip_subdirs = FALSE;
 
+    /* It is possible for this function to be called multiple times for
+     * the same directory.
+     * We pass a NULL SourceDirInfo into count_file() if this directory has
+     * already been scanned once so that its children are not counted more
+     * than once in the SourceDirInfo corresponding to this directory.
+     */
+
+    if (!g_hash_table_contains (source_info->scanned_dirs_info, dir))
+    {
+        dir_info = g_new0 (SourceDirInfo, 1);
+
+        g_hash_table_insert (source_info->scanned_dirs_info,
+                             g_object_ref (dir),
+                             dir_info);
+    }
+
+    /* Stash a copy of the struct to restore state before goto retry. Note that
+     * this assumes the code below does not access any pointer member */
     saved_info = *source_info;
 
 retry:
+
+    if (dir_info != NULL)
+    {
+        dir_info->num_files_children = 0;
+        dir_info->num_bytes_children = 0;
+    }
+
     error = NULL;
     enumerator = g_file_enumerate_children (dir,
                                             G_FILE_ATTRIBUTE_STANDARD_NAME ","
@@ -3328,15 +3419,14 @@ retry:
         error = NULL;
         while ((info = g_file_enumerator_next_file (enumerator, job->cancellable, &error)) != NULL)
         {
-            count_file (info, job, source_info);
+            count_file (info, job, source_info, dir_info);
 
             if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY)
             {
                 subdir = g_file_get_child (dir,
                                            g_file_info_get_name (info));
 
-                /* Push to head, since we want depth-first */
-                g_queue_push_head (dirs, subdir);
+                subdirs = g_list_prepend (subdirs, subdir);
             }
 
             g_object_unref (info);
@@ -3382,9 +3472,11 @@ retry:
             if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
             {
                 abort_job (job);
+                skip_subdirs = TRUE;
             }
             else if (response == 1)
             {
+                g_clear_list (&subdirs, g_object_unref);
                 *source_info = saved_info;
                 goto retry;
             }
@@ -3402,6 +3494,7 @@ retry:
     {
         g_error_free (error);
         skip_file (job, dir);
+        skip_subdirs = TRUE;
     }
     else if (IS_IO_ERROR (error, CANCELLED))
     {
@@ -3442,6 +3535,7 @@ retry:
         if (response == 0 || response == GTK_RESPONSE_DELETE_EVENT)
         {
             abort_job (job);
+            skip_subdirs = TRUE;
         }
         else if (response == 1 || response == 2)
         {
@@ -3450,6 +3544,7 @@ retry:
                 job->skip_all_error = TRUE;
             }
             skip_file (job, dir);
+            skip_subdirs = TRUE;
         }
         else if (response == 3)
         {
@@ -3458,6 +3553,18 @@ retry:
         else
         {
             g_assert_not_reached ();
+        }
+    }
+
+    if (!skip_subdirs)
+    {
+        while (subdirs != NULL)
+        {
+            GList *l = subdirs;
+            subdirs = g_list_remove_link (subdirs, l);
+
+            /* Push to head, since we want depth-first */
+            g_queue_push_head_link (dirs, l);
         }
     }
 }
@@ -3489,7 +3596,7 @@ retry:
 
     if (info)
     {
-        count_file (info, job, source_info);
+        count_file (info, job, source_info, NULL);
 
         /* trashing operation doesn't recurse */
         if (g_file_info_get_file_type (info) == G_FILE_TYPE_DIRECTORY &&
@@ -3583,8 +3690,11 @@ scan_sources (GList      *files,
     GList *l;
     GFile *file;
 
-    memset (source_info, 0, sizeof (SourceInfo));
     source_info->op = kind;
+    source_info->scanned_dirs_info = g_hash_table_new_full (g_file_hash,
+                                                            (GEqualFunc) g_file_equal,
+                                                            (GDestroyNotify) g_object_unref,
+                                                            (GDestroyNotify) g_free);
 
     report_preparing_count_progress (job, source_info);
 
@@ -5875,7 +5985,7 @@ nautilus_file_operations_copy (GTask        *task,
 {
     CopyMoveJob *job;
     CommonJob *common;
-    SourceInfo source_info;
+    g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     g_autofree char *dest_fs_id = NULL;
     GFile *dest;
@@ -6536,7 +6646,7 @@ nautilus_file_operations_move (GTask        *task,
     CopyMoveJob *job;
     CommonJob *common;
     GList *fallbacks;
-    SourceInfo source_info;
+    g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     TransferInfo transfer_info;
     g_autofree char *dest_fs_id = NULL;
     g_autofree char *dest_fs_type = NULL;
@@ -8743,7 +8853,7 @@ compress_task_thread_func (GTask        *task,
                            GCancellable *cancellable)
 {
     CompressJob *compress_job = task_data;
-    SourceInfo source_info;
+    g_auto (SourceInfo) source_info = SOURCE_INFO_INIT;
     g_autoptr (AutoarCompressor) compressor = NULL;
 
     g_timer_start (compress_job->common.time);
