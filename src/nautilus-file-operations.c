@@ -5007,6 +5007,22 @@ retry:
 
         /* Count the copied directory as a file */
         transfer_info->num_files++;
+
+        info = g_file_query_info (src,
+                                  G_FILE_ATTRIBUTE_STANDARD_SIZE,
+                                  G_FILE_QUERY_INFO_NOFOLLOW_SYMLINKS,
+                                  job->cancellable,
+                                  NULL);
+
+        g_warn_if_fail (info != NULL);
+
+        if (info != NULL)
+        {
+            transfer_info->num_bytes += g_file_info_get_size (info);
+
+            g_object_unref (info);
+        }
+
         report_copy_progress (copy_job, source_info, transfer_info);
 
         if (debuting_files)
