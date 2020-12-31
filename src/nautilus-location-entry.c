@@ -54,12 +54,6 @@ enum
     NAUTILUS_DND_NTARGETS
 };
 
-static const GtkTargetEntry drag_types [] =
-{
-    { NAUTILUS_DND_URI_LIST_TYPE, 0, NAUTILUS_DND_URI_LIST },
-    { NAUTILUS_DND_TEXT_PLAIN_TYPE, 0, NAUTILUS_DND_TEXT_PLAIN },
-};
-
 static const GtkTargetEntry drop_types [] =
 {
     { NAUTILUS_DND_URI_LIST_TYPE, 0, NAUTILUS_DND_URI_LIST },
@@ -863,18 +857,11 @@ static void
 nautilus_location_entry_init (NautilusLocationEntry *entry)
 {
     NautilusLocationEntryPrivate *priv;
-    GtkTargetList *targetlist;
 
     priv = nautilus_location_entry_get_instance_private (entry);
 
     priv->completer = g_filename_completer_new ();
     g_filename_completer_set_dirs_only (priv->completer, TRUE);
-
-    gtk_entry_set_icon_from_icon_name (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, "folder-symbolic");
-    gtk_entry_set_icon_activatable (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, FALSE);
-    targetlist = gtk_target_list_new (drag_types, G_N_ELEMENTS (drag_types));
-    gtk_entry_set_icon_drag_source (GTK_ENTRY (entry), GTK_ENTRY_ICON_PRIMARY, targetlist, GDK_ACTION_COPY | GDK_ACTION_MOVE | GDK_ACTION_LINK);
-    gtk_target_list_unref (targetlist);
 
     nautilus_location_entry_set_secondary_action (entry,
                                                   NAUTILUS_LOCATION_ENTRY_ACTION_CLEAR);
