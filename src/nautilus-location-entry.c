@@ -363,11 +363,14 @@ update_completions_store (gpointer callback_data)
     GtkEditable *editable;
     g_autofree char *absolute_location = NULL;
     g_autofree char *user_location = NULL;
+    gboolean is_relative = FALSE;
     int start_sel;
     g_autofree char *uri_scheme = NULL;
     g_auto (GStrv) completions = NULL;
+    char *completion;
     int i;
     GtkTreeIter iter;
+    int current_dir_strlen;
 
     entry = NAUTILUS_LOCATION_ENTRY (callback_data);
     priv = nautilus_location_entry_get_instance_private (entry);
@@ -390,6 +393,7 @@ update_completions_store (gpointer callback_data)
 
     if (!g_path_is_absolute (user_location) && uri_scheme == NULL && user_location[0] != '~')
     {
+        is_relative = TRUE;
         absolute_location = g_build_filename (priv->current_directory, user_location, NULL);
     }
     else
@@ -402,10 +406,25 @@ update_completions_store (gpointer callback_data)
     /* populate the completions model */
     gtk_list_store_clear (priv->completions_store);
 
+    current_dir_strlen = strlen (priv->current_directory);
     for (i = 0; completions[i] != NULL; i++)
     {
+        completion = completions[i];
+
+        if (is_relative && strlen (completion) >= current_dir_strlen)
+        {
+            /* For relative paths, we need to strip the current directory
+             * (and the trailing slash) so the completions will match what's
+             * in the text entry */
+            completion += current_dir_strlen;
+            if (G_IS_DIR_SEPARATOR (completion[0]))
+            {
+                completion++;
+            }
+        }
+
         gtk_list_store_append (priv->completions_store, &iter);
-        gtk_list_store_set (priv->completions_store, &iter, 0, completions[i], -1);
+        gtk_list_store_set (priv->completions_store, &iter, 0, completion, -1);
     }
 
     /* refilter the completions dropdown */
