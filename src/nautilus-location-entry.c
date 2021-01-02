@@ -77,6 +77,7 @@ typedef struct _NautilusLocationEntryPrivate
 
     GtkEntryCompletion *completion;
     GtkListStore *completions_store;
+    GtkCellRenderer *completion_cell;
 } NautilusLocationEntryPrivate;
 
 enum
@@ -354,6 +355,35 @@ drag_data_get_callback (GtkWidget        *widget,
 }
 
 
+static void
+set_prefix_dimming (GtkCellRenderer *completion_cell,
+                    char            *user_location)
+{
+    g_autofree char *location_basename = NULL;
+    PangoAttrList *attrs;
+    PangoAttribute *attr;
+
+    /* Dim the prefixes of the completion rows, leaving the basenames
+     * highlighted. This makes it easier to find what you're looking for.
+     *
+     * Perhaps a better solution would be to *only* show the basenames, but
+     * it would take a reimplementation of GtkEntryCompletion to align the
+     * popover. */
+
+    location_basename = g_path_get_basename (user_location);
+
+    attrs = pango_attr_list_new ();
+
+    /* 55% opacity. This is the same as the dim-label style class in Adwaita. */
+    attr = pango_attr_foreground_alpha_new (36045);
+    attr->end_index = strlen (user_location) - strlen (location_basename);
+    pango_attr_list_insert (attrs, attr);
+
+    g_object_set (completion_cell, "attributes", attrs, NULL);
+    pango_attr_list_unref (attrs);
+}
+
+
 /* Update the path completions list based on the current text of the entry. */
 static gboolean
 update_completions_store (gpointer callback_data)
@@ -386,6 +416,7 @@ update_completions_store (gpointer callback_data)
     }
 
     g_strstrip (user_location);
+    set_prefix_dimming (priv->completion_cell, user_location);
 
     priv->idle_id = 0;
 
@@ -963,6 +994,12 @@ nautilus_location_entry_init (NautilusLocationEntry *entry)
                   "inline-selection", TRUE,
                   "popup-single-match", TRUE,
                   NULL);
+
+    priv->completion_cell = gtk_cell_renderer_text_new ();
+    g_object_set (priv->completion_cell, "xpad", 6, NULL);
+
+    gtk_cell_layout_pack_start (GTK_CELL_LAYOUT (priv->completion), priv->completion_cell, FALSE);
+    gtk_cell_layout_add_attribute (GTK_CELL_LAYOUT (priv->completion), priv->completion_cell, "text", 0);
 
     gtk_entry_set_completion (GTK_ENTRY (entry), priv->completion);
 }
