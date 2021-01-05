@@ -149,6 +149,14 @@ endif
 
 application_id = 'org.gnome.Nautilus' + profile
 
+if profile == ''
+  # Example: 40.0
+  version_string = meson.project_version()
+else
+  # Examples: 40.alpha-787a835f
+  version_string = '@0@-@VCS_TAG@'.format(meson.project_version())
+endif
+
 conf.set_quoted('APPLICATION_ID', application_id)
 conf.set_quoted('GETTEXT_PACKAGE', 'nautilus')
 conf.set_quoted('LOCALEDIR', join_paths(prefix, localedir))
@@ -157,7 +165,7 @@ conf.set_quoted('NAUTILUS_DATADIR', join_paths(prefix, datadir, 'nautilus'))
 conf.set_quoted('NAUTILUS_EXTENSIONDIR', join_paths(prefix, extensiondir))
 conf.set_quoted('PACKAGE_VERSION', meson.project_version())
 conf.set_quoted('PROFILE', profile)
-conf.set_quoted('VERSION', '@0@-@VCS_TAG@'.format(meson.project_version()))
+conf.set_quoted('VERSION', version_string)
 
 conf.set('ENABLE_PACKAGEKIT', get_option('packagekit'))
 conf.set('ENABLE_PROFILING', get_option('profiling'))
@@ -171,7 +179,7 @@ conf.set('HAVE_SELINUX', get_option('selinux'))
 config_h = declare_dependency(
   sources: vcs_tag(
     command: ['git', 'rev-parse', '--short', 'HEAD'],
-    fallback: profile != ''? 'devel' : 'stable',
+    fallback: profile != '' ? 'devel' : '',
     input: configure_file(
       output: 'config.h.in',
       configuration: conf
