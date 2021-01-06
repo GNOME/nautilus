@@ -886,17 +886,22 @@ update_properties_window_title (NautilusPropertiesWindow *self)
         if (file != NULL)
         {
             g_autofree gchar *name = NULL;
+            g_autofree gchar *truncated_name = NULL;
 
             name = nautilus_file_get_display_name (file);
+            truncated_name = eel_str_middle_truncate (name, 30);
+
             if (nautilus_file_is_directory (file))
             {
                 /* To translators: %s is the name of the folder. */
-                title = g_strdup_printf (C_("folder", "%s Properties"), name);
+                title = g_strdup_printf (C_("folder", "%s Properties"),
+                                         truncated_name);
             }
             else
             {
                 /* To translators: %s is the name of the file. */
-                title = g_strdup_printf (C_("file", "%s Properties"), name);
+                title = g_strdup_printf (C_("file", "%s Properties"),
+                                         truncated_name);
             }
         }
     }
