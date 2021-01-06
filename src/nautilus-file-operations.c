@@ -5299,6 +5299,7 @@ copy_move_file (CopyMoveJob   *copy_job,
         dest = get_target_file_from_source_display_name (copy_job, src, dest_dir);
         if (dest == NULL)
         {
+            *skipped_file = TRUE;
             return;
         }
     }
