@@ -55,6 +55,8 @@ struct _NautilusFileConflictDialog
 
 G_DEFINE_TYPE (NautilusFileConflictDialog, nautilus_file_conflict_dialog, GTK_TYPE_DIALOG);
 
+#define MAX_LABEL_WIDTH 50
+
 void
 nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
                                         gchar                      *primary_text,
@@ -67,6 +69,7 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
     gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+    gtk_label_set_max_width_chars (GTK_LABEL (label), MAX_LABEL_WIDTH);
     gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 
@@ -79,7 +82,9 @@ nautilus_file_conflict_dialog_set_text (NautilusFileConflictDialog *fcd,
 
     label = gtk_label_new (secondary_text);
     gtk_label_set_line_wrap (GTK_LABEL (label), TRUE);
+    gtk_label_set_line_wrap_mode (GTK_LABEL (label), PANGO_WRAP_WORD_CHAR);
     gtk_label_set_xalign (GTK_LABEL (label), 0.0);
+    gtk_label_set_max_width_chars (GTK_LABEL (label), MAX_LABEL_WIDTH);
     gtk_box_pack_start (GTK_BOX (fcd->titles_vbox), label, FALSE, FALSE, 0);
     gtk_widget_show (label);
 }
