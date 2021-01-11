@@ -3,7 +3,7 @@
 
 
 
-This is [Nautilus](https://wiki.gnome.org/Apps/Nautilus), the file manager for
+This is [Nautilus](https://wiki.gnome.org/Apps/Files), the file manager for
 GNOME.
 
 ## Supported version
