@@ -148,6 +148,7 @@ constructed (GObject *object)
     gtk_box_pack_start (container, GTK_WIDGET (self->icon), FALSE, FALSE, 0);
 
     label = GTK_LABEL (gtk_label_new (nautilus_file_get_display_name (file)));
+    gtk_widget_set_vexpand (GTK_WIDGET (label), TRUE);
     gtk_widget_show (GTK_WIDGET (label));
 
 #if PANGO_VERSION_CHECK (1, 44, 4)
@@ -165,7 +166,7 @@ constructed (GObject *object)
     gtk_label_set_lines (label, 3);
     gtk_label_set_justify (label, GTK_JUSTIFY_CENTER);
     gtk_widget_set_valign (GTK_WIDGET (label), GTK_ALIGN_START);
-    gtk_box_pack_end (container, GTK_WIDGET (label), TRUE, TRUE, 0);
+    gtk_box_pack_end (container, GTK_WIDGET (label), FALSE, TRUE, 0);
 
     style_context = gtk_widget_get_style_context (GTK_WIDGET (item_selection_background));
     gtk_style_context_add_class (style_context, "icon-item-background");

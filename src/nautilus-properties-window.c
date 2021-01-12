@@ -4635,7 +4635,8 @@ setup_app_chooser_area (NautilusPropertiesWindow *self)
     g_autoptr (GAppInfo) info = NULL;
 
     self->app_chooser_widget = gtk_app_chooser_widget_new (self->content_type);
-    gtk_box_pack_start (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget, TRUE, TRUE, 0);
+    gtk_widget_set_vexpand (self->app_chooser_widget, TRUE);
+    gtk_box_pack_start (GTK_BOX (self->app_chooser_widget_box), self->app_chooser_widget, FALSE, TRUE, 0);
 
     gtk_app_chooser_widget_set_show_default (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);
     gtk_app_chooser_widget_set_show_fallback (GTK_APP_CHOOSER_WIDGET (self->app_chooser_widget), TRUE);

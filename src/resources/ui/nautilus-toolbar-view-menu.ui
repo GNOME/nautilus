@@ -20,8 +20,6 @@
             <property name="margin_bottom">6</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
@@ -37,8 +35,6 @@
             </style>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -52,8 +48,6 @@
             <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name in the toolbar view menu">_A-Z</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -67,8 +61,6 @@
             <property name="text" translatable="yes" context="Sort Criterion" comments="This is used to sort by name, in descending order in the toolbar view menu">_Z-A</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -82,8 +74,6 @@
             <property name="text" translatable="yes">Last _Modified</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">4</property>
           </packing>
         </child>
@@ -97,8 +87,6 @@
             <property name="text" translatable="yes">_First Modified</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">5</property>
           </packing>
         </child>
@@ -112,8 +100,6 @@
             <property name="text" translatable="yes">_Size</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">6</property>
           </packing>
         </child>
@@ -127,8 +113,6 @@
             <property name="text" translatable="yes">_Type</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">7</property>
           </packing>
         </child>
@@ -141,15 +125,11 @@
             <property name="text" translatable="yes">Last _Trashed</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">8</property>
           </packing>
         </child>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
     </child>
@@ -161,8 +141,6 @@
         <property name="margin_bottom">6</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">1</property>
       </packing>
     </child>
@@ -174,8 +152,6 @@
         <property name="text" translatable="yes">_Visible Columns…</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">2</property>
       </packing>
     </child>
@@ -188,8 +164,6 @@
         <property name="text" translatable="yes">R_eload</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">4</property>
       </packing>
     </child>
@@ -201,8 +175,6 @@
         <property name="text" translatable="yes">St_op</property>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">5</property>
       </packing>
     </child>
@@ -219,6 +191,7 @@
         <property name="homogeneous">True</property>
         <child>
           <object class="GtkButton" id="zoom-out">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
@@ -234,13 +207,12 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">0</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-default">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
@@ -255,13 +227,12 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
         <child>
           <object class="GtkButton" id="zoom-in">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="can_focus">False</property>
             <property name="receives_default">False</property>
@@ -277,8 +248,6 @@
             </child>
           </object>
           <packing>
-            <property name="expand">True</property>
-            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -287,8 +256,6 @@
         </style>
       </object>
       <packing>
-        <property name="expand">False</property>
-        <property name="fill">True</property>
         <property name="position">0</property>
       </packing>
     </child>

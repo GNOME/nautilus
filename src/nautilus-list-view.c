@@ -3414,7 +3414,8 @@ create_column_editor (NautilusListView *view)
     box = GTK_WIDGET (gtk_builder_get_object (builder, "box"));
 
     column_chooser = nautilus_column_chooser_new (file);
-    gtk_box_pack_start (GTK_BOX (box), column_chooser, TRUE, TRUE, 0);
+    gtk_widget_set_vexpand (column_chooser, TRUE);
+    gtk_box_pack_start (GTK_BOX (box), column_chooser, FALSE, TRUE, 0);
 
     g_signal_connect (column_chooser, "changed",
                       G_CALLBACK (column_chooser_changed_callback),

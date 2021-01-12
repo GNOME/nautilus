@@ -411,8 +411,9 @@ nautilus_floating_bar_constructed (GObject *obj)
     gtk_widget_set_margin_start (w, 8);
 
     labels_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-    gtk_box_pack_start (GTK_BOX (box), labels_box, TRUE, TRUE, 0);
+    gtk_box_pack_start (GTK_BOX (box), labels_box, FALSE, TRUE, 0);
     g_object_set (labels_box,
+                  "hexpand", TRUE,
                   "margin-top", 2,
                   "margin-bottom", 2,
                   "margin-start", 12,

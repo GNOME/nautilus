@@ -21,6 +21,7 @@
         </child>
         <child>
           <object class="GtkNotebook" id="notebook">
+            <property name="hexpand">True</property>
             <property name="visible">True</property>
             <property name="can_focus">True</property>
             <property name="show_border">False</property>
@@ -67,8 +68,6 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
@@ -671,8 +670,6 @@
                                 </child>
                               </object>
                               <packing>
-                                <property name="expand">False</property>
-                                <property name="fill">True</property>
                                 <property name="position">0</property>
                               </packing>
                             </child>
@@ -740,15 +737,11 @@
                         </child>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">False</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -781,8 +774,6 @@
                     <property name="max_width_chars">40</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="pack_type">end</property>
                     <property name="position">0</property>
                   </packing>
@@ -790,11 +781,10 @@
                 <child>
                   <object class="GtkSeparator" id="bottom_prompt_seperator">
                     <property name="can_focus">False</property>
+                    <property name="margin-top">12</property>
+                    <property name="margin-bottom">12</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
-                    <property name="padding">12</property>
                     <property name="pack_type">end</property>
                     <property name="position">1</property>
                   </packing>
@@ -808,8 +798,6 @@
                     <property name="max_width_chars">40</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
                     <property name="position">2</property>
                   </packing>
                 </child>
@@ -817,6 +805,7 @@
                   <object class="GtkGrid" id="permissions_grid">
                     <property name="can_focus">False</property>
                     <property name="halign">center</property>
+                    <property name="vexpand">True</property>
                     <property name="orientation">vertical</property>
                     <property name="row_spacing">6</property>
                     <property name="column_spacing">12</property>
@@ -1202,8 +1191,6 @@
                             <property name="receives_default">True</property>
                           </object>
                           <packing>
-                            <property name="expand">False</property>
-                            <property name="fill">False</property>
                             <property name="position">0</property>
                           </packing>
                         </child>
@@ -1263,8 +1250,6 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
                     <property name="position">4</property>
                   </packing>
                 </child>
@@ -1301,13 +1286,12 @@
                     <property name="xalign">0</property>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">True</property>
                     <property name="position">0</property>
                   </packing>
                 </child>
                 <child>
                   <object class="GtkBox" id="app_chooser_widget_box">
+                    <property name="vexpand">True</property>
                     <property name="visible">True</property>
                     <property name="can_focus">False</property>
                     <property name="orientation">vertical</property>
@@ -1316,8 +1300,6 @@
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">True</property>
-                    <property name="fill">True</property>
                     <property name="position">1</property>
                   </packing>
                 </child>
@@ -1336,8 +1318,6 @@
                         <property name="halign">start</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
                         <property name="position">0</property>
                       </packing>
                     </child>
@@ -1350,8 +1330,6 @@
                         <property name="use_underline">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
                         <property name="position">1</property>
                       </packing>
                     </child>
@@ -1363,15 +1341,11 @@
                         <property name="receives_default">True</property>
                       </object>
                       <packing>
-                        <property name="expand">False</property>
-                        <property name="fill">True</property>
                         <property name="position">2</property>
                       </packing>
                     </child>
                   </object>
                   <packing>
-                    <property name="expand">False</property>
-                    <property name="fill">False</property>
                     <property name="position">2</property>
                   </packing>
                 </child>

@@ -116,8 +116,6 @@
             </attributes>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">1</property>
           </packing>
         </child>
@@ -129,11 +127,9 @@
               <object class="GtkEntry" id="name_entry">
                 <property name="visible">True</property>
                 <property name="can_focus">True</property>
+                <property name="hexpand">True</property>
                 <property name="width-chars">30</property>
               </object>
-              <packing>
-                <property name="expand">True</property>
-              </packing>
             </child>
             <child>
               <object class="GtkMenuButton" id="extension_button">
@@ -144,6 +140,7 @@
                     <property name="spacing">6</property>
                     <child>
                       <object class="GtkStack" id="extension_stack">
+                        <property name="hexpand">True</property>
                         <child>
                           <object class="GtkLabel" id="zip_label">
                             <property name="label" translatable="no">.zip</property>
@@ -172,9 +169,6 @@
                           </object>
                         </child>
                       </object>
-                      <packing>
-                        <property name="expand">True</property>
-                      </packing>
                     </child>
                     <child>
                       <object class="GtkImage">
@@ -187,8 +181,6 @@
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">2</property>
           </packing>
         </child>
@@ -204,8 +196,6 @@
             </child>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">3</property>
           </packing>
         </child>
@@ -216,8 +206,6 @@
             <property name="xalign">0</property>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">4</property>
           </packing>
         </child>
@@ -231,8 +219,6 @@
             <signal name="icon-press" handler="passphrase_entry_on_icon_press"/>
           </object>
           <packing>
-            <property name="expand">False</property>
-            <property name="fill">True</property>
             <property name="position">5</property>
           </packing>
         </child>
