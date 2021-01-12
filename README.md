@@ -1,17 +1,15 @@
-# Nautilus
+# nautilus
 [![Pipeline status](https://gitlab.gnome.org/GNOME/nautilus/badges/master/pipeline.svg)](https://gitlab.gnome.org/GNOME/nautilus/commits/master)
 
-
-
-This is [Nautilus](https://wiki.gnome.org/Apps/Files), the file manager for
-GNOME.
+This is the project of the [Files](https://wiki.gnome.org/Apps/Files) app, a file browser for
+GNOME, internally known by its historical name `nautilus`.
 
 ## Supported version
-Only latest Nautilus version as provided upstream is supported. Try out the [Flatpak nightly](https://wiki.gnome.org/Apps/Nightly) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannot reproduce in the nightly installation, don't hesitate to file an issue in your distribution. This is to ensure the issue is well triaged and reaches the proper people.
+Only latest version of Files as provided upstream is supported. Try out the [Flatpak nightly](https://wiki.gnome.org/Apps/Nightly) installation before filling issues to ensure the installation is reproducible and doesn't have downstream changes on it. In case you cannot reproduce in the nightly installation, don't hesitate to file an issue in your distribution. This is to ensure the issue is well triaged and reaches the proper people.
 
-## Hacking on Nautilus
+## Hacking on nautilus
 
-To build the development version of Nautilus and hack on the code
+To build the development version of the Files app and hack on the code
 see the [general guide](https://wiki.gnome.org/Newcomers/BuildProject)
 for building GNOME apps with Flatpak and GNOME Builder.
 
@@ -21,7 +19,7 @@ for building GNOME apps with Flatpak and GNOME Builder.
 
 ## Discourse
 
-For more informal discussion we use [GNOME Discourse](https://discourse.gnome.org/tags/nautilus) in the Applications category with the nautilus tag. Feel free to open a topic there.
+For more informal discussion we use [GNOME Discourse](https://discourse.gnome.org/tags/nautilus) in the Applications category with the `nautilus` tag. Feel free to open a topic there.
 
 ## How to report issues
 
