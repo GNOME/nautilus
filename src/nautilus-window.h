@@ -78,9 +78,6 @@ void                 nautilus_window_sync_location_widgets (NautilusWindow *wind
 
 void     nautilus_window_hide_sidebar         (NautilusWindow *window);
 void     nautilus_window_show_sidebar         (NautilusWindow *window);
-void     nautilus_window_back_or_forward      (NautilusWindow *window,
-                                               gboolean        back,
-                                               guint           distance);
 void nautilus_window_reset_menus (NautilusWindow *window);
 
 GtkWidget *         nautilus_window_get_notebook (NautilusWindow *window);

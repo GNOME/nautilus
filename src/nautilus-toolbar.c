@@ -161,9 +161,9 @@ toolbar_update_appearance (NautilusToolbar *self)
 }
 
 static void
-activate_back_or_forward_menu_item (GtkMenuItem    *menu_item,
-                                    NautilusWindow *window,
-                                    gboolean        back)
+activate_back_or_forward_menu_item (GtkMenuItem        *menu_item,
+                                    NautilusWindowSlot *window_slot,
+                                    gboolean            back)
 {
     int index;
 
@@ -171,21 +171,21 @@ activate_back_or_forward_menu_item (GtkMenuItem    *menu_item,
 
     index = GPOINTER_TO_INT (g_object_get_data (G_OBJECT (menu_item), "user_data"));
 
-    nautilus_window_back_or_forward (window, back, index);
+    nautilus_window_slot_back_or_forward (window_slot, back, index);
 }
 
 static void
 activate_back_menu_item_callback (GtkMenuItem     *menu_item,
                                   NautilusToolbar *self)
 {
-    activate_back_or_forward_menu_item (menu_item, self->window, TRUE);
+    activate_back_or_forward_menu_item (menu_item, self->window_slot, TRUE);
 }
 
 static void
 activate_forward_menu_item_callback (GtkMenuItem     *menu_item,
                                      NautilusToolbar *self)
 {
-    activate_back_or_forward_menu_item (menu_item, self->window, FALSE);
+    activate_back_or_forward_menu_item (menu_item, self->window_slot, FALSE);
 }
 
 static void

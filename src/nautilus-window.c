@@ -80,6 +80,9 @@ static void mouse_forward_button_changed (gpointer callback_data);
 static void use_extra_mouse_buttons_changed (gpointer callback_data);
 static void nautilus_window_initialize_actions (NautilusWindow *window);
 static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window);
+static void nautilus_window_back_or_forward (NautilusWindow *window,
+                                             gboolean        back,
+                                             guint           distance);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -2599,6 +2602,21 @@ nautilus_window_delete_event (GtkWidget   *widget,
 {
     nautilus_window_close (NAUTILUS_WINDOW (widget));
     return FALSE;
+}
+
+static void
+nautilus_window_back_or_forward (NautilusWindow *window,
+                                 gboolean        back,
+                                 guint           distance)
+{
+    NautilusWindowSlot *slot;
+
+    slot = nautilus_window_get_active_slot (window);
+
+    if (slot != NULL)
+    {
+        nautilus_window_slot_back_or_forward (slot, back, distance);
+    }
 }
 
 static void

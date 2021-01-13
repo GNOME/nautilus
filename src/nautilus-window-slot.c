@@ -2150,11 +2150,10 @@ nautilus_window_slot_set_content_view (NautilusWindowSlot *self,
 }
 
 void
-nautilus_window_back_or_forward (NautilusWindow *window,
-                                 gboolean        back,
-                                 guint           distance)
+nautilus_window_slot_back_or_forward (NautilusWindowSlot *self,
+                                      gboolean            back,
+                                      guint               distance)
 {
-    NautilusWindowSlot *self;
     GList *list;
     guint len;
     NautilusBookmark *bookmark;
@@ -2162,7 +2161,6 @@ nautilus_window_back_or_forward (NautilusWindow *window,
     GFile *old_location;
     g_autofree char *scroll_pos = NULL;
 
-    self = nautilus_window_get_active_slot (window);
     list = back ? self->back_list : self->forward_list;
     len = g_list_length (list);
 
