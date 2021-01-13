@@ -1,5 +1,28 @@
 #include "test-utilities.h"
 
+static gchar *nautilus_tmp_dir = NULL;
+
+const gchar *
+test_get_tmp_dir ()
+{
+    if (nautilus_tmp_dir == NULL)
+    {
+        nautilus_tmp_dir = g_dir_make_tmp ("nautilus.XXXXXX", NULL);
+    }
+
+    return nautilus_tmp_dir;
+}
+
+void
+test_clear_tmp_dir ()
+{
+    if (nautilus_tmp_dir != NULL)
+    {
+        rmdir (nautilus_tmp_dir);
+        g_clear_pointer (&nautilus_tmp_dir, g_free);
+    }
+}
+
 void
 empty_directory_by_prefix (GFile *parent,
                            gchar *prefix)
@@ -41,7 +64,7 @@ create_search_file_hierarchy (gchar *search_engine)
     GFileOutputStream *out;
     gchar *file_name;
 
-    location = g_file_new_for_path (g_get_tmp_dir ());
+    location = g_file_new_for_path (test_get_tmp_dir ());
 
     file_name = g_strdup_printf ("engine_%s", search_engine);
     file = g_file_get_child (location, file_name);
@@ -90,7 +113,7 @@ delete_search_file_hierarchy (gchar *search_engine)
     g_autoptr (GFile) file = NULL;
     gchar *file_name;
 
-    location = g_file_new_for_path (g_get_tmp_dir ());
+    location = g_file_new_for_path (test_get_tmp_dir ());
 
     file_name = g_strdup_printf ("engine_%s", search_engine);
     file = g_file_get_child (location, file_name);
@@ -215,7 +238,7 @@ create_one_file (gchar *prefix)
     GFileOutputStream *out;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -251,7 +274,7 @@ create_one_empty_directory (gchar *prefix)
     g_autoptr (GFile) file = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -285,7 +308,7 @@ create_multiple_files (gchar *prefix,
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < number_of_files; i++)
@@ -318,7 +341,7 @@ create_multiple_directories (gchar *prefix,
     g_autoptr (GFile) dir = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < number_of_directories; i++)
@@ -349,7 +372,7 @@ create_first_hierarchy (gchar *prefix)
     g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -390,7 +413,7 @@ create_second_hierarchy (gchar *prefix)
     g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -431,7 +454,7 @@ create_third_hierarchy (gchar *prefix)
     g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -488,7 +511,7 @@ create_fourth_hierarchy (gchar *prefix)
     g_autoptr (GFile) result_file = NULL;
     gchar *file_name;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     file_name = g_strdup_printf ("%s_first_dir", prefix);
@@ -533,7 +556,7 @@ create_multiple_full_directories (gchar *prefix,
 {
     g_autoptr (GFile) root = NULL;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < number_of_directories; i++)

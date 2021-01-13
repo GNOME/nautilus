@@ -10,6 +10,9 @@
 
 #pragma once
 
+const gchar *test_get_tmp_dir (void);
+void test_clear_tmp_dir (void);
+
 void empty_directory_by_prefix (GFile *parent,
                                 gchar *prefix);
 

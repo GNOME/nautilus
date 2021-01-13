@@ -7,6 +7,7 @@
 #include "src/nautilus-file-operations.c"
 #include <unistd.h>
 #include "eel/eel-string.h"
+#include "test-utilities.h"
 
 /* Tests the function for a simple file */
 static void
@@ -15,7 +16,7 @@ test_simple_file (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) file = NULL;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     file = g_file_get_child (root, "simple_file");
     g_file_create (file, G_FILE_CREATE_NONE, NULL, NULL);
     g_assert_false (dir_has_files (file));
@@ -29,7 +30,7 @@ test_empty_directory (void)
     g_autoptr (GFile) root = NULL;
     g_autoptr (GFile) child = NULL;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     child = g_file_get_child (root, "empty_dir");
 
     g_assert_true (child != NULL);
@@ -48,7 +49,7 @@ test_directory_one_file (void)
     g_autoptr (GFile) parent_dir = NULL;
     g_autoptr (GFile) child_file = NULL;
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     parent_dir = g_file_get_child (root, "parent_dir");
     g_assert_true (parent_dir != NULL);
     g_file_make_directory (parent_dir, NULL, NULL);
@@ -77,11 +78,17 @@ int
 main (int   argc,
       char *argv[])
 {
+    int ret;
+
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
     nautilus_ensure_extension_points ();
 
     setup_test_suite ();
 
-    return g_test_run ();
+    ret = g_test_run ();
+
+    test_clear_tmp_dir ();
+
+    return ret;
 }

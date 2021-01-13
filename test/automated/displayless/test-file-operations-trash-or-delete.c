@@ -10,7 +10,7 @@ test_trash_one_file (void)
 
     create_one_file ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -36,7 +36,7 @@ test_trash_more_files_func (gint files_to_trash)
 
     create_multiple_files ("trash_or_delete", files_to_trash);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < files_to_trash; i++)
@@ -81,7 +81,7 @@ test_delete_one_file (void)
 
     create_one_file ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -107,7 +107,7 @@ test_delete_more_files_func (gint files_to_delete)
 
     create_multiple_files ("trash_or_delete", files_to_delete);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < files_to_delete; i++)
@@ -152,7 +152,7 @@ test_trash_one_empty_directory (void)
 
     create_one_empty_directory ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -180,7 +180,7 @@ test_trash_more_empty_directories_func (gint directories_to_trash)
 
     create_multiple_directories ("trash_or_delete", directories_to_trash);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < directories_to_trash; i++)
@@ -226,7 +226,7 @@ test_delete_one_empty_directory (void)
 
     create_one_empty_directory ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -253,7 +253,7 @@ test_delete_more_empty_directories_func (gint directories_to_delete)
 
     create_multiple_directories ("trash_or_delete", directories_to_delete);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < directories_to_delete; i++)
@@ -304,7 +304,7 @@ test_trash_full_directory (void)
 
     create_one_file ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -338,7 +338,7 @@ test_trash_first_hierarchy (void)
 
     create_first_hierarchy ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -376,7 +376,7 @@ test_trash_third_hierarchy (void)
 
     create_multiple_full_directories ("trash_or_delete", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -425,7 +425,7 @@ test_delete_full_directory (void)
 
     create_one_file ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -459,7 +459,7 @@ test_delete_first_hierarchy (void)
 
     create_first_hierarchy ("trash_or_delete");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "trash_or_delete_first_dir");
@@ -497,7 +497,7 @@ test_delete_third_hierarchy (void)
 
     create_multiple_full_directories ("trash_or_delete", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -570,6 +570,7 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    int ret;
 
     g_test_init (&argc, &argv, NULL);
     g_test_set_nonfatal_assertions ();
@@ -578,5 +579,9 @@ main (int   argc,
 
     setup_test_suite ();
 
-    return g_test_run ();
+    ret = g_test_run ();
+
+    test_clear_tmp_dir ();
+
+    return ret;
 }

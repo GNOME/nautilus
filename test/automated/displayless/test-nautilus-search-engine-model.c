@@ -59,7 +59,7 @@ main (int   argc,
     nautilus_query_set_text (query, "engine_model");
     nautilus_search_provider_set_query (NAUTILUS_SEARCH_PROVIDER (engine), query);
 
-    location = g_file_new_for_path (g_get_tmp_dir ());
+    location = g_file_new_for_path (test_get_tmp_dir ());
     directory = nautilus_directory_get (location);
     model = nautilus_search_engine_get_model_provider (engine);
     nautilus_search_engine_model_set_model (model, directory);
@@ -74,6 +74,8 @@ main (int   argc,
     g_main_loop_run (loop);
 
     g_assert_cmpint (total_hits, ==, 3);
+
+    test_clear_tmp_dir ();
 
     return 0;
 }

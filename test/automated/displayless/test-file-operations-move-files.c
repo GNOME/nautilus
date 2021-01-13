@@ -12,7 +12,7 @@ test_move_one_file (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -48,7 +48,7 @@ test_move_one_file_undo (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -86,7 +86,7 @@ test_move_one_file_undo_redo (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -124,7 +124,7 @@ test_move_one_empty_directory (void)
 
     create_one_empty_directory ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -159,7 +159,7 @@ test_move_one_empty_directory_undo (void)
 
     create_one_empty_directory ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -196,7 +196,7 @@ test_move_one_empty_directory_undo_redo (void)
 
     create_one_empty_directory ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -232,7 +232,7 @@ test_move_files_small (void)
 
     create_multiple_files ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 10; i++)
@@ -274,7 +274,7 @@ test_move_files_small_undo (void)
 
     create_multiple_files ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 10; i++)
@@ -320,7 +320,7 @@ test_move_files_small_undo_redo (void)
 
     create_multiple_files ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 10; i++)
@@ -364,7 +364,7 @@ test_move_files_medium (void)
 
     create_multiple_files ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -406,7 +406,7 @@ test_move_files_medium_undo (void)
 
     create_multiple_files ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
 
     for (int i = 0; i < 50; i++)
     {
@@ -451,7 +451,7 @@ test_move_files_medium_undo_redo (void)
 
     create_multiple_files ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -495,7 +495,7 @@ test_move_files_large (void)
 
     create_multiple_files ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
 
     for (int i = 0; i < 500; i++)
     {
@@ -540,7 +540,7 @@ test_move_files_large_undo (void)
 
     create_multiple_files ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 500; i++)
@@ -583,7 +583,7 @@ test_move_files_large_undo_redo (void)
 
     create_multiple_files ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 500; i++)
@@ -627,7 +627,7 @@ test_move_directories_small (void)
 
     create_multiple_directories ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 10; i++)
@@ -669,7 +669,7 @@ test_move_directories_small_undo (void)
 
     create_multiple_directories ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
 
     for (int i = 0; i < 10; i++)
     {
@@ -714,7 +714,7 @@ test_move_directories_small_undo_redo (void)
 
     create_multiple_files ("move", 10);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 10; i++)
@@ -758,7 +758,7 @@ test_move_directories_medium (void)
 
     create_multiple_directories ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -800,7 +800,7 @@ test_move_directories_medium_undo (void)
 
     create_multiple_directories ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
 
     for (int i = 0; i < 50; i++)
     {
@@ -845,7 +845,7 @@ test_move_directories_medium_undo_redo (void)
 
     create_multiple_files ("move", 50);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 50; i++)
@@ -889,7 +889,7 @@ test_move_directories_large (void)
 
     create_multiple_directories ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 500; i++)
@@ -931,7 +931,7 @@ test_move_directories_large_undo (void)
 
     create_multiple_directories ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
 
     for (int i = 0; i < 500; i++)
     {
@@ -976,7 +976,7 @@ test_move_directories_large_undo_redo (void)
 
     create_multiple_directories ("move", 500);
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     for (int i = 0; i < 500; i++)
@@ -1026,7 +1026,7 @@ test_move_full_directory (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1066,7 +1066,7 @@ test_move_full_directory_undo (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1107,7 +1107,7 @@ test_move_full_directory_undo_redo (void)
 
     create_one_file ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1155,7 +1155,7 @@ test_move_first_hierarchy (void)
 
     create_first_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1204,7 +1204,7 @@ test_move_first_hierarchy_undo (void)
 
     create_first_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1255,7 +1255,7 @@ test_move_first_hierarchy_undo_redo (void)
 
     create_first_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1311,7 +1311,7 @@ test_move_second_hierarchy (void)
 
     create_second_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1362,7 +1362,7 @@ test_move_second_hierarchy_undo (void)
 
     create_second_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1414,7 +1414,7 @@ test_move_second_hierarchy_undo_redo (void)
 
     create_second_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1477,7 +1477,7 @@ test_move_third_hierarchy (void)
 
     create_third_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
@@ -1544,7 +1544,7 @@ test_move_third_hierarchy_undo (void)
 
     create_third_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1613,7 +1613,7 @@ test_move_third_hierarchy_undo_redo (void)
 
     create_third_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     g_assert_true (root != NULL);
 
     first_dir = g_file_get_child (root, "move_first_dir");
@@ -1691,7 +1691,7 @@ test_move_fourth_hierarchy (void)
 
     create_fourth_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
@@ -1746,7 +1746,7 @@ test_move_fourth_hierarchy_undo (void)
 
     create_fourth_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
@@ -1803,7 +1803,7 @@ test_move_fourth_hierarchy_undo_redo (void)
 
     create_fourth_hierarchy ("move");
 
-    root = g_file_new_for_path (g_get_tmp_dir ());
+    root = g_file_new_for_path (test_get_tmp_dir ());
     first_dir = g_file_get_child (root, "move_first_dir");
     files = g_list_prepend (files, g_object_ref (first_dir));
     g_assert_true (first_dir != NULL);
@@ -1935,6 +1935,7 @@ main (int   argc,
       char *argv[])
 {
     g_autoptr (NautilusFileUndoManager) undo_manager = NULL;
+    int ret;
 
     undo_manager = nautilus_file_undo_manager_new ();
     g_test_init (&argc, &argv, NULL);
@@ -1943,5 +1944,9 @@ main (int   argc,
 
     setup_test_suite ();
 
-    return g_test_run ();
+    ret = g_test_run ();
+
+    test_clear_tmp_dir ();
+
+    return ret;
 }
