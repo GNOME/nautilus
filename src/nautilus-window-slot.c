@@ -27,6 +27,7 @@
 #include "nautilus-bookmark.h"
 #include "nautilus-bookmark-list.h"
 #include "nautilus-mime-actions.h"
+#include "nautilus-places-view.h"
 #include "nautilus-query-editor.h"
 #include "nautilus-special-location-bar.h"
 #include "nautilus-toolbar.h"
@@ -127,6 +128,7 @@ typedef struct
     GError *mount_error;
     gboolean tried_mount;
     gint view_mode_before_search;
+    gint view_mode_before_places;
 
     /* Menus */
     GMenuModel *extensions_background_menu;
@@ -246,30 +248,6 @@ nautilus_window_slot_get_navigation_state (NautilusWindowSlot *self)
     return data;
 }
 
-gboolean
-nautilus_window_slot_handles_location (NautilusWindowSlot *self,
-                                       GFile              *location)
-{
-    return NAUTILUS_WINDOW_SLOT_CLASS (G_OBJECT_GET_CLASS (self))->handles_location (self, location);
-}
-
-static gboolean
-real_handles_location (NautilusWindowSlot *self,
-                       GFile              *location)
-{
-    NautilusFile *file;
-    gboolean handles_location;
-    g_autofree char *uri = NULL;
-
-    uri = g_file_get_uri (location);
-
-    file = nautilus_file_get (location);
-    handles_location = !nautilus_file_is_other_locations (file);
-    nautilus_file_unref (file);
-
-    return handles_location;
-}
-
 static NautilusView *
 nautilus_window_slot_get_view_for_location (NautilusWindowSlot *self,
                                             GFile              *location)
@@ -282,7 +260,7 @@ real_get_view_for_location (NautilusWindowSlot *self,
                             GFile              *location)
 {
     NautilusWindowSlotPrivate *priv;
-    NautilusFile *file;
+    g_autoptr (NautilusFile) file = NULL;
     NautilusView *view;
     guint view_id;
 
@@ -291,13 +269,27 @@ real_get_view_for_location (NautilusWindowSlot *self,
     view = NULL;
     view_id = NAUTILUS_VIEW_INVALID_ID;
 
+    if (nautilus_file_is_other_locations (file))
+    {
+        view = NAUTILUS_VIEW (nautilus_places_view_new ());
+
+        /* Save the current view, so we can go back after places view */
+        if (NAUTILUS_IS_FILES_VIEW (priv->content_view))
+        {
+            priv->view_mode_before_places = nautilus_files_view_get_view_id (priv->content_view);
+        }
+
+        return view;
+    }
+
     /* If we are in search, try to use by default list view. */
     if (nautilus_file_is_in_search (file))
     {
         /* If it's already set, is because we already made the change to search mode,
          * so the view mode of the current view will be the one search is using,
          * which is not the one we are interested in */
-        if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID && priv->content_view)
+        if (priv->view_mode_before_search == NAUTILUS_VIEW_INVALID_ID &&
+            NAUTILUS_IS_FILES_VIEW (priv->content_view))
         {
             priv->view_mode_before_search = nautilus_files_view_get_view_id (priv->content_view);
         }
@@ -312,6 +304,11 @@ real_get_view_for_location (NautilusWindowSlot *self,
         {
             view_id = priv->view_mode_before_search;
             priv->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
+        }
+        else if (NAUTILUS_IS_PLACES_VIEW (priv->content_view))
+        {
+            view_id = priv->view_mode_before_places;
+            priv->view_mode_before_places = NAUTILUS_VIEW_INVALID_ID;
         }
         else
         {
@@ -336,8 +333,6 @@ real_get_view_for_location (NautilusWindowSlot *self,
         view = NAUTILUS_VIEW (nautilus_files_view_new (view_id, self));
     }
 
-    nautilus_file_unref (file);
-
     return view;
 }
 
@@ -353,9 +348,9 @@ nautilus_window_slot_content_view_matches (NautilusWindowSlot *self,
         return FALSE;
     }
 
-    if (id != NAUTILUS_VIEW_INVALID_ID && NAUTILUS_IS_FILES_VIEW (priv->content_view))
+    if (id != NAUTILUS_VIEW_INVALID_ID)
     {
-        return nautilus_files_view_get_view_id (priv->content_view) == id;
+        return nautilus_view_get_view_id (priv->content_view) == id;
     }
     else
     {
@@ -406,6 +401,7 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
 {
     NautilusWindowSlotPrivate *priv;
 
+    NautilusView *view;
     GAction *action;
     GVariant *variant;
 
@@ -426,12 +422,16 @@ nautilus_window_slot_sync_actions (NautilusWindowSlot *self)
     update_search_visible (self);
 
     /* Files view mode */
+    view = nautilus_window_slot_get_current_view (self);
     action = g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group), "files-view-mode");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
     if (g_action_get_enabled (action))
     {
-        variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (nautilus_window_slot_get_current_view (self)));
+        variant = g_variant_new_uint32 (nautilus_files_view_get_view_id (view));
         g_action_change_state (action, variant);
     }
+    action = g_action_map_lookup_action (G_ACTION_MAP (priv->slot_action_group), "files-view-mode-toggle");
+    g_simple_action_set_enabled (G_SIMPLE_ACTION (action), NAUTILUS_IS_FILES_VIEW (view));
 }
 
 static void
@@ -1088,7 +1088,7 @@ action_files_view_mode_toggle (GSimpleAction *action,
 
     self = NAUTILUS_WINDOW_SLOT (user_data);
     priv = nautilus_window_slot_get_instance_private (self);
-    if (priv->content_view == NULL)
+    if (!NAUTILUS_IS_FILES_VIEW (priv->content_view))
     {
         return;
     }
@@ -2735,6 +2735,7 @@ nautilus_window_slot_show_trash_bar (NautilusWindowSlot *self)
     NautilusView *view;
 
     view = nautilus_window_slot_get_current_view (self);
+    g_return_if_fail (NAUTILUS_IS_FILES_VIEW (view));
     bar = nautilus_trash_bar_new (NAUTILUS_FILES_VIEW (view));
     gtk_widget_show (bar);
 
@@ -3188,7 +3189,6 @@ nautilus_window_slot_class_init (NautilusWindowSlotClass *klass)
     GtkWidgetClass *widget_class = GTK_WIDGET_CLASS (klass);
 
     klass->get_view_for_location = real_get_view_for_location;
-    klass->handles_location = real_handles_location;
 
     oclass->dispose = nautilus_window_slot_dispose;
     oclass->finalize = nautilus_window_slot_finalize;

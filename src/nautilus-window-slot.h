@@ -59,11 +59,6 @@ struct _NautilusWindowSlotClass {
          */
         NautilusView*  (* get_view_for_location) (NautilusWindowSlot *slot,
                                                   GFile              *location);
-        /* Whether this type of slot handles the location or not. This can be used
-         * for the special slots which handle special locations like the desktop
-         * or the other locations. */
-        gboolean (* handles_location) (NautilusWindowSlot *slot,
-                                       GFile              *location);
 };
 
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusWindow     *window);
@@ -120,9 +115,6 @@ GList* nautilus_window_slot_get_selection                  (NautilusWindowSlot *
 
 void     nautilus_window_slot_search                       (NautilusWindowSlot *slot,
                                                             NautilusQuery      *query);
-
-gboolean nautilus_window_slot_handles_location (NautilusWindowSlot *self,
-                                                GFile              *location);
 
 void nautilus_window_slot_restore_navigation_state (NautilusWindowSlot      *self,
                                                     NautilusNavigationState *data);

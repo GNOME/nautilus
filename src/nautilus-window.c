@@ -61,7 +61,6 @@
 #include "nautilus-metadata.h"
 #include "nautilus-mime-actions.h"
 #include "nautilus-notebook.h"
-#include "nautilus-other-locations-window-slot.h"
 #include "nautilus-pathbar.h"
 #include "nautilus-profile.h"
 #include "nautilus-properties-window.h"
@@ -81,9 +80,6 @@ static void mouse_forward_button_changed (gpointer callback_data);
 static void use_extra_mouse_buttons_changed (gpointer callback_data);
 static void nautilus_window_initialize_actions (NautilusWindow *window);
 static GtkWidget *nautilus_window_ensure_location_entry (NautilusWindow *window);
-static void close_slot (NautilusWindow     *window,
-                        NautilusWindowSlot *slot,
-                        gboolean            remove_from_notebook);
 
 /* Sanity check: highest mouse button value I could find was 14. 5 is our
  * lower threshold (well-documented to be the one of the button events for the
@@ -499,62 +495,15 @@ disconnect_slot (NautilusWindow     *window,
 }
 
 static NautilusWindowSlot *
-nautilus_window_create_slot (NautilusWindow *window,
-                             GFile          *location)
-{
-    NautilusFile *file = NULL;
-    NautilusWindowSlot *slot;
-
-    if (location)
-    {
-        file = nautilus_file_get (location);
-    }
-    /* If not file, assume we open the home directory. We will switch eventually
-     * to a different location if not.
-     */
-    if (file && nautilus_file_is_other_locations (file))
-    {
-        slot = NAUTILUS_WINDOW_SLOT (nautilus_other_locations_window_slot_new (window));
-    }
-    else
-    {
-        slot = nautilus_window_slot_new (window);
-    }
-
-    nautilus_file_unref (file);
-
-    return slot;
-}
-
-static NautilusWindowSlot *
 nautilus_window_create_and_init_slot (NautilusWindow          *window,
-                                      GFile                   *location,
                                       NautilusWindowOpenFlags  flags)
 {
     NautilusWindowSlot *slot;
 
-    slot = nautilus_window_create_slot (window, location);
+    slot = nautilus_window_slot_new (window);
     nautilus_window_initialize_slot (window, slot, flags);
 
     return slot;
-}
-
-static NautilusWindowSlot *
-replace_active_slot (NautilusWindow          *window,
-                     GFile                   *location,
-                     NautilusWindowOpenFlags  flags)
-{
-    NautilusWindowSlot *new_slot;
-    NautilusWindowSlot *active_slot;
-
-    new_slot = nautilus_window_create_and_init_slot (window, location, flags);
-    active_slot = nautilus_window_get_active_slot (window);
-    if (active_slot)
-    {
-        close_slot (window, active_slot, TRUE);
-    }
-
-    return new_slot;
 }
 
 void
@@ -594,12 +543,6 @@ nautilus_window_open_location_full (NautilusWindow          *window,
     NautilusWindowSlot *active_slot;
     gboolean new_tab_at_end;
 
-    /* The location owner can be one of the slots requesting to handle an
-     * unhandled location. But this slot can be destroyed when switching to
-     * a new slot. So keep the location alive.
-     */
-    g_object_ref (location);
-
     /* Assert that we are not managing new windows */
     g_assert (!(flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_WINDOW));
     /* if the flags say we want a new tab, open a slot in the current window */
@@ -620,11 +563,7 @@ nautilus_window_open_location_full (NautilusWindow          *window,
 
     if (target_slot == NULL || (flags & NAUTILUS_WINDOW_OPEN_FLAG_NEW_TAB) != 0)
     {
-        target_slot = nautilus_window_create_and_init_slot (window, location, flags);
-    }
-    else if (!nautilus_window_slot_handles_location (target_slot, location))
-    {
-        target_slot = replace_active_slot (window, location, flags);
+        target_slot = nautilus_window_create_and_init_slot (window, flags);
     }
 
     /* Make the opened location the one active if we weren't ask for the
@@ -636,8 +575,6 @@ nautilus_window_open_location_full (NautilusWindow          *window,
     }
 
     nautilus_window_slot_open_location_full (target_slot, location, flags, selection);
-
-    g_object_unref (location);
 }
 
 static void
@@ -1212,7 +1149,7 @@ action_restore_tab (GSimpleAction *action,
 
     location = nautilus_file_get_location (data->file);
 
-    slot = nautilus_window_create_and_init_slot (window, location, flags);
+    slot = nautilus_window_create_and_init_slot (window, flags);
 
     nautilus_window_slot_open_location_full (slot, location, flags, NULL);
     nautilus_window_slot_restore_navigation_state (slot, data);
@@ -2203,7 +2140,7 @@ nautilus_window_constructed (GObject *self)
      * some actions trigger UI widgets to show/hide. */
     nautilus_window_initialize_actions (window);
 
-    slot = nautilus_window_create_and_init_slot (window, NULL, 0);
+    slot = nautilus_window_create_and_init_slot (window, 0);
     nautilus_window_set_active_slot (window, slot);
 
     window->bookmarks_id =
