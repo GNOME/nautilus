@@ -35,7 +35,7 @@ typedef enum {
 } NautilusLocationChangeType;
 
 #define NAUTILUS_TYPE_WINDOW_SLOT (nautilus_window_slot_get_type ())
-G_DECLARE_DERIVABLE_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, GtkBox)
+G_DECLARE_FINAL_TYPE (NautilusWindowSlot, nautilus_window_slot, NAUTILUS, WINDOW_SLOT, GtkBox)
 
 typedef struct
 {
@@ -45,21 +45,6 @@ typedef struct
     GList *forward_list;
     NautilusBookmark *current_location_bookmark;
 } NautilusNavigationState;
-
-struct _NautilusWindowSlotClass {
-	GtkBoxClass parent_class;
-
-	/* wrapped NautilusWindowInfo signals, for overloading */
-	void (* active)   (NautilusWindowSlot *slot);
-	void (* inactive) (NautilusWindowSlot *slot);
-
-        /* Use this in case the subclassed slot has some special views differents
-         * that the ones supported here. You can return your nautilus view
-         * subclass in this function.
-         */
-        NautilusView*  (* get_view_for_location) (NautilusWindowSlot *slot,
-                                                  GFile              *location);
-};
 
 NautilusWindowSlot * nautilus_window_slot_new              (NautilusWindow     *window);
 
