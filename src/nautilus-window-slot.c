@@ -1039,8 +1039,7 @@ action_files_view_mode (GSimpleAction *action,
 
 const GActionEntry slot_entries[] =
 {
-    /* 4 is NAUTILUS_VIEW_INVALID_ID */
-    { "files-view-mode", NULL, "u", "uint32 4", action_files_view_mode },
+    { "files-view-mode", NULL, "u", "uint32 " G_STRINGIFY (NAUTILUS_VIEW_INVALID_ID), action_files_view_mode },
     { "files-view-mode-toggle", action_files_view_mode_toggle },
     { "search-visible", NULL, NULL, "false", action_search_visible },
 };
@@ -1149,8 +1148,13 @@ nautilus_window_slot_init (NautilusWindowSlot *self)
     gtk_widget_insert_action_group (GTK_WIDGET (self),
                                     "slot",
                                     G_ACTION_GROUP (self->slot_action_group));
-    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 1)", "<control>1");
-    nautilus_application_set_accelerator (app, "slot.files-view-mode(uint32 0)", "<control>2");
+
+    nautilus_application_set_accelerator (app,
+                                          "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_LIST_ID) ")",
+                                          "<control>1");
+    nautilus_application_set_accelerator (app,
+                                          "slot.files-view-mode(uint32 " G_STRINGIFY (NAUTILUS_VIEW_GRID_ID) ")",
+                                          "<control>2");
     nautilus_application_set_accelerator (app, "slot.search-visible", "<control>f");
 
     self->view_mode_before_search = NAUTILUS_VIEW_INVALID_ID;
