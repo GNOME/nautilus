@@ -13,7 +13,7 @@
 GType
 @enum_name@_get_type (void)
 {
-    static volatile GType type_once = 0;
+    static GType type_once = 0;
 
     if (g_once_init_enter (&type_once))
     {
