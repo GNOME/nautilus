@@ -90,8 +90,7 @@ struct _NautilusBatchRenameDialog
 
     GList *duplicates;
     GList *distinct_parent_directories;
-    GCancellable *conflict_cancellable;
-    gboolean checking_conflicts;
+    GList *directories_pending_conflict_check;
 
     /* this hash table has information about the status
      * of all tags: availability, if it's currently used
@@ -119,6 +118,7 @@ typedef struct
 
 
 static void     update_display_text (NautilusBatchRenameDialog *dialog);
+static void     cancel_conflict_check (NautilusBatchRenameDialog *self);
 
 G_DEFINE_TYPE (NautilusBatchRenameDialog, nautilus_batch_rename_dialog, GTK_TYPE_DIALOG);
 
@@ -667,7 +667,7 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
 
     /* wait for checking conflicts to finish, to be sure that
      * the rename can actually take place */
-    if (dialog->checking_conflicts)
+    if (dialog->directories_pending_conflict_check != NULL)
     {
         dialog->rename_clicked = TRUE;
         return;
@@ -693,12 +693,6 @@ prepare_batch_rename (NautilusBatchRenameDialog *dialog)
     gtk_widget_hide (GTK_WIDGET (dialog));
     begin_batch_rename (dialog, dialog->new_names);
 
-    if (dialog->conflict_cancellable)
-    {
-        g_cancellable_cancel (dialog->conflict_cancellable);
-        g_clear_object (&dialog->conflict_cancellable);
-    }
-
     gtk_widget_destroy (GTK_WIDGET (dialog));
 }
 
@@ -713,10 +707,9 @@ batch_rename_dialog_on_response (NautilusBatchRenameDialog *dialog,
     }
     else
     {
-        if (dialog->conflict_cancellable)
+        if (dialog->directories_pending_conflict_check != NULL)
         {
-            g_cancellable_cancel (dialog->conflict_cancellable);
-            g_clear_object (&dialog->conflict_cancellable);
+            cancel_conflict_check (dialog);
         }
 
         gtk_widget_destroy (GTK_WIDGET (dialog));
@@ -1177,174 +1170,70 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
     g_hash_table_destroy (names_conflicts_table);
 }
 
-static gboolean
-file_names_list_has_duplicates_finish (NautilusBatchRenameDialog  *self,
-                                       GAsyncResult               *res,
-                                       GError                    **error)
-{
-    g_return_val_if_fail (g_task_is_valid (res, self), FALSE);
-
-    return g_task_propagate_boolean (G_TASK (res), error);
-}
-
-static void
-on_file_names_list_has_duplicates (GObject      *object,
-                                   GAsyncResult *res,
-                                   gpointer      user_data)
-{
-    NautilusBatchRenameDialog *self;
-    GError *error = NULL;
-    gboolean success;
-
-    self = NAUTILUS_BATCH_RENAME_DIALOG (object);
-    success = file_names_list_has_duplicates_finish (self, res, &error);
-
-    if (!success)
-    {
-        g_clear_error (&error);
-        return;
-    }
-
-    self->duplicates = g_list_reverse (self->duplicates);
-    self->checking_conflicts = FALSE;
-    update_listbox (self);
-}
-
-typedef struct
-{
-    GList *directories;
-    NautilusDirectory *current_directory;
-    GMutex wait_ready_mutex;
-    GCond wait_ready_condition;
-    gboolean directory_conflicts_ready;
-} CheckConflictsData;
-
 static void
 on_directory_conflicts_ready (NautilusDirectory *conflict_directory,
                               GList             *files,
                               gpointer           callback_data)
 {
     NautilusBatchRenameDialog *self;
-    GTask *task;
-    CheckConflictsData *task_data;
-    GCancellable *cancellable;
 
-    task = G_TASK (callback_data);
-    task_data = g_task_get_task_data (task);
-    cancellable = g_task_get_cancellable (task);
-    self = NAUTILUS_BATCH_RENAME_DIALOG (g_task_get_source_object (task));
-    if (!g_cancellable_is_cancelled (cancellable))
+    self = NAUTILUS_BATCH_RENAME_DIALOG (callback_data);
+
+    check_conflict_for_files (self, conflict_directory, files);
+
+    g_assert (g_list_find (self->directories_pending_conflict_check, conflict_directory) != NULL);
+
+    self->directories_pending_conflict_check = g_list_remove (self->directories_pending_conflict_check, conflict_directory);
+
+    nautilus_directory_unref (conflict_directory);
+
+    if (self->directories_pending_conflict_check == NULL)
     {
-        check_conflict_for_files (self, conflict_directory, files);
+        self->duplicates = g_list_reverse (self->duplicates);
+
+        update_listbox (self);
     }
-
-    g_mutex_lock (&task_data->wait_ready_mutex);
-    task_data->directory_conflicts_ready = TRUE;
-    g_cond_signal (&task_data->wait_ready_condition);
-    g_mutex_unlock (&task_data->wait_ready_mutex);
-}
-
-static gboolean
-check_conflicts_on_main_thread (gpointer user_data)
-{
-    GTask *task = (GTask *) user_data;
-    CheckConflictsData *task_data = g_task_get_task_data (task);
-
-    nautilus_directory_call_when_ready (task_data->current_directory,
-                                        NAUTILUS_FILE_ATTRIBUTE_INFO,
-                                        TRUE,
-                                        on_directory_conflicts_ready,
-                                        task);
-    return FALSE;
 }
 
 static void
-file_names_list_has_duplicates_async_thread (GTask        *task,
-                                             gpointer      object,
-                                             gpointer      data,
-                                             GCancellable *cancellable)
+cancel_conflict_check (NautilusBatchRenameDialog *self)
 {
-    NautilusBatchRenameDialog *self;
-    CheckConflictsData *task_data;
+    GList *l;
+    NautilusDirectory *directory;
+
+    for (l = self->directories_pending_conflict_check; l != NULL; l = l->next)
+    {
+        directory = l->data;
+
+        nautilus_directory_cancel_callback (directory,
+                                            on_directory_conflicts_ready,
+                                            self);
+    }
+
+    g_clear_list (&self->directories_pending_conflict_check, g_object_unref);
+}
+
+static void
+file_names_list_has_duplicates_async (NautilusBatchRenameDialog *self)
+{
     GList *l;
 
-    self = g_task_get_source_object (task);
-    task_data = g_task_get_task_data (task);
+    if (self->directories_pending_conflict_check != NULL)
+    {
+        cancel_conflict_check (self);
+    }
+
+    self->directories_pending_conflict_check = nautilus_directory_list_copy (self->distinct_parent_directories);
     self->duplicates = NULL;
 
-    g_mutex_init (&task_data->wait_ready_mutex);
-    g_cond_init (&task_data->wait_ready_condition);
-
-    /* check if this is the last call of the callback */
     for (l = self->distinct_parent_directories; l != NULL; l = l->next)
     {
-        if (g_task_return_error_if_cancelled (task))
-        {
-            return;
-        }
-
-        g_mutex_lock (&task_data->wait_ready_mutex);
-        task_data->directory_conflicts_ready = FALSE;
-
-
-        task_data->current_directory = l->data;
-        /* NautilusDirectory and NautilusFile are not thread safe, we need to call
-         * them on the main thread.
-         */
-        g_main_context_invoke (NULL, check_conflicts_on_main_thread, task);
-
-        /* We need to block this thread until the call_when_ready call is done,
-         * if not the GTask would finalize. */
-        while (!task_data->directory_conflicts_ready)
-        {
-            g_cond_wait (&task_data->wait_ready_condition,
-                         &task_data->wait_ready_mutex);
-        }
-
-        g_mutex_unlock (&task_data->wait_ready_mutex);
+        nautilus_directory_call_when_ready (l->data,
+                                            NAUTILUS_FILE_ATTRIBUTE_INFO,
+                                            TRUE,
+                                            on_directory_conflicts_ready,
+                                            self);
     }
-
-    g_task_return_boolean (task, TRUE);
-}
-
-static void
-destroy_conflicts_task_data (gpointer data)
-{
-    CheckConflictsData *task_data = data;
-
-    if (task_data->directories)
-    {
-        g_list_free (task_data->directories);
-    }
-
-    g_mutex_clear (&task_data->wait_ready_mutex);
-    g_cond_clear (&task_data->wait_ready_condition);
-
-    g_free (task_data);
-}
-
-static void
-file_names_list_has_duplicates_async (NautilusBatchRenameDialog *dialog,
-                                      GAsyncReadyCallback        callback,
-                                      gpointer                   user_data)
-{
-    g_autoptr (GTask) task = NULL;
-    CheckConflictsData *task_data;
-
-    if (dialog->checking_conflicts == TRUE)
-    {
-        g_cancellable_cancel (dialog->conflict_cancellable);
-        g_clear_object (&dialog->conflict_cancellable);
-    }
-
-    dialog->conflict_cancellable = g_cancellable_new ();
-
-    dialog->checking_conflicts = TRUE;
-
-    task = g_task_new (dialog, dialog->conflict_cancellable, callback, user_data);
-    task_data = g_new0 (CheckConflictsData, 1);
-    g_task_set_task_data (task, task_data, destroy_conflicts_task_data);
-    g_task_run_in_thread (task, file_names_list_has_duplicates_async_thread);
 }
 
 static gboolean
@@ -1486,12 +1375,6 @@ numbering_tag_is_some_added (NautilusBatchRenameDialog *self)
 static void
 update_display_text (NautilusBatchRenameDialog *dialog)
 {
-    if (dialog->conflict_cancellable != NULL)
-    {
-        g_cancellable_cancel (dialog->conflict_cancellable);
-        g_clear_object (&dialog->conflict_cancellable);
-    }
-
     if(dialog->selection == NULL)
     {
         return;
@@ -1524,9 +1407,7 @@ update_display_text (NautilusBatchRenameDialog *dialog)
         return;
     }
 
-    file_names_list_has_duplicates_async (dialog,
-                                          on_file_names_list_has_duplicates,
-                                          NULL);
+    file_names_list_has_duplicates_async (dialog);
 }
 
 static void
@@ -2034,10 +1915,9 @@ nautilus_batch_rename_dialog_finalize (GObject *object)
 
     dialog = NAUTILUS_BATCH_RENAME_DIALOG (object);
 
-    if (dialog->checking_conflicts)
+    if (dialog->directories_pending_conflict_check != NULL)
     {
-        g_cancellable_cancel (dialog->conflict_cancellable);
-        g_clear_object (&dialog->conflict_cancellable);
+        cancel_conflict_check (dialog);
     }
 
     g_clear_object (&dialog->numbering_order_menu);
@@ -2268,12 +2148,9 @@ nautilus_batch_rename_dialog_init (NautilusBatchRenameDialog *self)
 
     self->duplicates = NULL;
     self->distinct_parent_directories = NULL;
+    self->directories_pending_conflict_check = NULL;
     self->new_names = NULL;
-
-    self->checking_conflicts = FALSE;
-
     self->rename_clicked = FALSE;
-
 
     self->tag_info_table = g_hash_table_new_full (g_str_hash,
                                                   g_str_equal,
