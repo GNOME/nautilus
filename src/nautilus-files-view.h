@@ -291,8 +291,6 @@ void                nautilus_files_view_remove_subdirectory             (Nautilu
 gboolean            nautilus_files_view_is_editable              (NautilusFilesView      *view);
 NautilusWindow *    nautilus_files_view_get_window               (NautilusFilesView      *view);
 
-guint               nautilus_files_view_get_view_id                (NautilusView      *view);
-
 /* file operations */
 char *            nautilus_files_view_get_backing_uri            (NautilusFilesView      *view);
 void              nautilus_files_view_move_copy_items            (NautilusFilesView      *view,
