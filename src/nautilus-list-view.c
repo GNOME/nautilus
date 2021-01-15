@@ -3749,11 +3749,11 @@ nautilus_list_view_finalize (GObject *object)
 
     g_cancellable_cancel (list_view->details->starred_cancellable);
     g_clear_object (&list_view->details->starred_cancellable);
-    g_clear_object (&list_view->details->tag_manager);
 
     g_signal_handlers_disconnect_by_func (list_view->details->tag_manager,
                                           on_starred_files_changed,
                                           list_view);
+    g_clear_object (&list_view->details->tag_manager);
 
     g_free (list_view->details);
 
