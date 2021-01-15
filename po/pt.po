@@ -13,16 +13,16 @@ msgid ""
 msgstr ""
 "Project-Id-Version: 3.12\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-01-08 12:44+0000\n"
-"PO-Revision-Date: 2021-01-08 15:20+0000\n"
+"POT-Creation-Date: 2021-01-08 15:22+0000\n"
+"PO-Revision-Date: 2021-01-15 12:19+0000\n"
 "Last-Translator: Hugo Carvalho <hugokarvalho@hotmail.com>\n"
 "Language-Team: Portuguese <>\n"
 "Language: pt\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=2; plural=(n != 1);\n"
-"X-Generator: Poedit 2.4.1\n"
+"Plural-Forms: nplurals=2; plural=(n > 1);\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-Language: pt_PT\n"
 "X-Source-Language: C\n"
 "X-Project-Style: gnome\n"
@@ -350,8 +350,8 @@ msgid ""
 "“name”, “size”, “type”, “mtime”, “atime” and “starred”."
 msgstr ""
 "A ordenação predefinida para itens na vista em ícones. Valores possíveis são "
-"\"nome\", \"tamanho\", \"tipo\", \"mtime\", \"atime\" e \"marcado com estrela"
-"\"."
+"\"nome\", \"tamanho\", \"tipo\", \"mtime\", \"atime\" e \"marcado como "
+"favorito\"."
 
 #: data/org.gnome.nautilus.gschema.xml:175
 msgid "Reverse sort order in new windows"
@@ -1357,11 +1357,11 @@ msgstr "A data em que o ficheiro foi acedido."
 
 #: src/nautilus-column-utilities.c:166
 msgid "Star"
-msgstr "Com estrela"
+msgstr "Favorito"
 
 #: src/nautilus-column-utilities.c:167
 msgid "Shows if file is starred."
-msgstr "Ver se ficheiro é marcado com estrela."
+msgstr "Ver se ficheiro é marcado com favorito."
 
 #: src/nautilus-column-utilities.c:212
 msgid "Trashed On"
@@ -1576,7 +1576,7 @@ msgstr "Ficheiro não encontrado"
 #: src/nautilus-file.c:4464 src/nautilus-file-utilities.c:327
 #: src/nautilus-pathbar.c:338
 msgid "Starred"
-msgstr "Marcado com estrela"
+msgstr "Marcado como favorito"
 
 #. Translators: Time in 24h format
 #: src/nautilus-file.c:5517
@@ -3341,32 +3341,32 @@ msgstr "_Refazer Mudança de Nome em Lote"
 #, c-format
 msgid "Unstar %d file"
 msgid_plural "Unstar %d files"
-msgstr[0] "Remover a estrela de %d ficheiro"
-msgstr[1] "Remover a estrela de %d ficheiros"
+msgstr[0] "Remover de favorito %d ficheiro"
+msgstr[1] "Remover de favorito %d ficheiros"
 
 #: src/nautilus-file-undo-operations.c:1396
 #: src/nautilus-file-undo-operations.c:1405
 #, c-format
 msgid "Star %d file"
 msgid_plural "Star %d files"
-msgstr[0] "Marcar com estrela %d ficheiros"
-msgstr[1] "Marcar com estrela %d ficheiros"
+msgstr[0] "Marcar como favorito %d ficheiro"
+msgstr[1] "Marcar como favorito %d ficheiros"
 
 #: src/nautilus-file-undo-operations.c:1400
 msgid "_Undo Starring"
-msgstr "_Desfazer marcação com estrela"
+msgstr "_Desfazer marcação como favorito"
 
 #: src/nautilus-file-undo-operations.c:1401
 msgid "_Redo Starring"
-msgstr "_Refazer marcação com estrela"
+msgstr "_Refazer marcação como favorito"
 
 #: src/nautilus-file-undo-operations.c:1413
 msgid "_Undo Unstarring"
-msgstr "_Desfazer remoção de estrela"
+msgstr "_Desfazer remoção de favorito"
 
 #: src/nautilus-file-undo-operations.c:1414
 msgid "_Redo Unstarring"
-msgstr "_Refazer remoção de estrela"
+msgstr "_Refazer remoção de favorito"
 
 #: src/nautilus-file-undo-operations.c:1613
 #, c-format
@@ -4444,7 +4444,7 @@ msgstr[1] "%'d ficheiros eliminados"
 #: src/nautilus-window.c:1642
 #, c-format
 msgid "“%s” unstarred"
-msgstr "Removida a estrela de “%s”"
+msgstr "“%s” removido dos favoritos"
 
 #. Translators: one or more items have been unstarred, and %d
 #. * is the count.
@@ -4452,8 +4452,8 @@ msgstr "Removida a estrela de “%s”"
 #, c-format
 msgid "%d file unstarred"
 msgid_plural "%d files unstarred"
-msgstr[0] "Removida a estrela de %d ficheiro"
-msgstr[1] "Removida a estrela de %d ficheiros"
+msgstr[0] "%d ficheiro removido dos favoritos"
+msgstr[1] "%d ficheiros removidos dos favoritos"
 
 #: src/nautilus-window.c:1786
 #, c-format
@@ -5131,13 +5131,13 @@ msgstr "Etiquetas"
 #: src/resources/ui/nautilus-files-view-context-menus.ui:222
 msgctxt "menu item"
 msgid "Star"
-msgstr "Marcar com estrela"
+msgstr "Favoritos"
 
 #. Unmarks a file as starred (starred)
 #: src/resources/ui/nautilus-files-view-context-menus.ui:227
 msgctxt "menu item"
 msgid "Unstar"
-msgstr "Remover estrela"
+msgstr "Remover dos favoritos"
 
 #: src/resources/ui/nautilus-folder-is-empty.ui:31
 msgid "Folder is Empty"
@@ -5553,7 +5553,7 @@ msgstr "Procurar apenas pelo nome do ficheiro"
 
 #: src/resources/ui/nautilus-starred-is-empty.ui:31
 msgid "Starred files will appear here"
-msgstr "Ficheiros marcados com estrela aparecerão aqui"
+msgstr "Ficheiros marcados como favoritos aparecerão aqui"
 
 #: src/resources/ui/nautilus-toolbar.ui:49
 msgid "New Tab"
