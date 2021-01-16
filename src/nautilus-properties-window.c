@@ -1320,7 +1320,7 @@ value_field_update (GtkLabel                 *label,
         g_autofree char *mime_type = file_list_get_string_attribute (file_list,
                                                                      "mime_type",
                                                                      inconsistent_string);
-        if (strcmp (mime_type, inconsistent_string))
+        if (strcmp (mime_type, inconsistent_string) && strcmp (mime_type, "inode/directory"))
         {
             g_autofree char *tmp = g_steal_pointer (&attribute_value);
             attribute_value = g_strdup_printf (C_("MIME type description (MIME type)", "%s (%s)"), tmp, mime_type);
