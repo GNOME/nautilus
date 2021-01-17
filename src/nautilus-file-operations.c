@@ -227,7 +227,10 @@ typedef struct
 static void
 source_info_clear (SourceInfo *source_info)
 {
-    g_hash_table_unref (source_info->scanned_dirs_info);
+    if (source_info->scanned_dirs_info != NULL)
+    {
+        g_hash_table_unref (source_info->scanned_dirs_info);
+    }
 }
 
 G_DEFINE_AUTO_CLEANUP_CLEAR_FUNC (SourceInfo, source_info_clear)
