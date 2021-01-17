@@ -1171,9 +1171,9 @@ check_conflict_for_files (NautilusBatchRenameDialog *dialog,
 }
 
 static void
-on_directory_conflicts_ready (NautilusDirectory *conflict_directory,
-                              GList             *files,
-                              gpointer           callback_data)
+on_directory_attributes_ready_for_conflicts_check (NautilusDirectory *conflict_directory,
+                                                   GList             *files,
+                                                   gpointer           callback_data)
 {
     NautilusBatchRenameDialog *self;
 
@@ -1206,7 +1206,7 @@ cancel_conflict_check (NautilusBatchRenameDialog *self)
         directory = l->data;
 
         nautilus_directory_cancel_callback (directory,
-                                            on_directory_conflicts_ready,
+                                            on_directory_attributes_ready_for_conflicts_check,
                                             self);
     }
 
@@ -1231,7 +1231,7 @@ file_names_list_has_duplicates_async (NautilusBatchRenameDialog *self)
         nautilus_directory_call_when_ready (l->data,
                                             NAUTILUS_FILE_ATTRIBUTE_INFO,
                                             TRUE,
-                                            on_directory_conflicts_ready,
+                                            on_directory_attributes_ready_for_conflicts_check,
                                             self);
     }
 }
