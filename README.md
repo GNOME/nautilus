@@ -13,7 +13,7 @@ To build the development version of the Files app and hack on the code
 see the [general guide](https://wiki.gnome.org/Newcomers/BuildProject)
 for building GNOME apps with Flatpak and GNOME Builder.
 
-# Runtime dependencies
+## Runtime dependencies
 - [Bubblewrap](https://github.com/projectatomic/bubblewrap) installed. Used for security reasons.
 - [Tracker (including tracker-miners)](https://gitlab.gnome.org/GNOME/tracker) properly set up and with all features enabled. Used for fast search and metadata extraction, starred files and batch renaming.
 
