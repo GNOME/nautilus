@@ -213,7 +213,7 @@ nautilus_trash_bar_init (NautilusTrashBar *bar)
 
     w = gtk_info_bar_add_button (GTK_INFO_BAR (bar),
                                  /* Translators: "Empty" is an action (for the trash) , not a state */
-                                 _("_Empty"),
+                                 _("_Empty…"),
                                  TRASH_BAR_RESPONSE_EMPTY);
     gtk_widget_set_tooltip_text (w,
                                  _("Delete all items in the Trash"));

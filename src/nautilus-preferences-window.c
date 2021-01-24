@@ -59,8 +59,6 @@
     "show_create_link_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
     "use_tree_view_checkbutton"
-#define NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET                       \
-    "trash_confirm_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET                       \
     "use_new_views_checkbutton"
 
@@ -465,9 +463,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     bind_builder_bool (builder, nautilus_window_state,
                        NAUTILUS_PREFERENCS_DIALOG_START_WITH_SIDEBAR,
                        NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR);
-    bind_builder_bool (builder, nautilus_preferences,
-                       NAUTILUS_PREFERENCES_DIALOG_TRASH_CONFIRM_WIDGET,
-                       NAUTILUS_PREFERENCES_CONFIRM_TRASH);
     bind_builder_bool (builder, nautilus_list_view_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET,
                        NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);

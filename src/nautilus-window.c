@@ -1328,7 +1328,7 @@ places_sidebar_populate_popup_cb (GtkPlacesSidebar *sidebar,
             menu_item = gtk_model_button_new ();
             gtk_actionable_set_action_name (GTK_ACTIONABLE (menu_item),
                                             "win.empty-trash");
-            g_object_set (menu_item, "text", _("Empty _Trash"), NULL);
+            g_object_set (menu_item, "text", _("Empty _Trash…"), NULL);
             gtk_container_add (GTK_CONTAINER (menu), menu_item);
             gtk_widget_show (menu_item);
 

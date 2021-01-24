@@ -54,7 +54,6 @@
 #include "nautilus-operations-ui-manager.h"
 #include "nautilus-file-changes-queue.h"
 #include "nautilus-file-private.h"
-#include "nautilus-global-preferences.h"
 #include "nautilus-trash-monitor.h"
 #include "nautilus-file-utilities.h"
 #include "nautilus-file-undo-operations.h"
@@ -1639,19 +1638,6 @@ job_aborted (CommonJob *job)
     return g_cancellable_is_cancelled (job->cancellable);
 }
 
-/* Since this happens on a thread we can't use the global prefs object */
-static gboolean
-should_confirm_trash (void)
-{
-    GSettings *prefs;
-    gboolean confirm_trash;
-
-    prefs = g_settings_new ("org.gnome.nautilus.preferences");
-    confirm_trash = g_settings_get_boolean (prefs, NAUTILUS_PREFERENCES_CONFIRM_TRASH);
-    g_object_unref (prefs);
-    return confirm_trash;
-}
-
 static gboolean
 confirm_delete_from_trash (CommonJob *job,
                            GList     *files)
@@ -1659,12 +1645,6 @@ confirm_delete_from_trash (CommonJob *job,
     char *prompt;
     int file_count;
     int response;
-
-    /* Just Say Yes if the preference says not to confirm. */
-    if (!should_confirm_trash ())
-    {
-        return TRUE;
-    }
 
     file_count = g_list_length (files);
     g_assert (file_count > 0);
@@ -1704,12 +1684,6 @@ confirm_empty_trash (CommonJob *job)
     char *prompt;
     int response;
 
-    /* Just Say Yes if the preference says not to confirm. */
-    if (!should_confirm_trash ())
-    {
-        return TRUE;
-    }
-
     prompt = g_strdup (_("Empty all items from Trash?"));
 
     response = run_warning (job,
@@ -1730,12 +1704,6 @@ confirm_delete_directly (CommonJob *job,
     char *prompt;
     int file_count;
     int response;
-
-    /* Just Say Yes if the preference says not to confirm. */
-    if (!should_confirm_trash ())
-    {
-        return TRUE;
-    }
 
     file_count = g_list_length (files);
     g_assert (file_count > 0);

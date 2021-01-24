@@ -28,9 +28,6 @@
 
 G_BEGIN_DECLS
 
-/* Trash options */
-#define NAUTILUS_PREFERENCES_CONFIRM_TRASH			"confirm-trash"
-
 /* Display  */
 #define NAUTILUS_PREFERENCES_SHOW_HIDDEN_FILES			"show-hidden"
 
