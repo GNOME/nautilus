@@ -27,13 +27,14 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include <libhandy-1/handy.h>
 
 #include "nautilus-types.h"
 
 G_BEGIN_DECLS
 
 #define NAUTILUS_TYPE_WINDOW (nautilus_window_get_type ())
-G_DECLARE_FINAL_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, GtkApplicationWindow);
+G_DECLARE_FINAL_TYPE (NautilusWindow, nautilus_window, NAUTILUS, WINDOW, HdyApplicationWindow);
 
 typedef gboolean (* NautilusWindowGoToCallback) (NautilusWindow *window,
                                                  GFile *location,

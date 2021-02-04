@@ -1,14 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <interface>
-  <template class="NautilusWindow" parent="GtkApplicationWindow">
+  <template class="NautilusWindow" parent="HdyApplicationWindow">
     <property name="show-menubar">False</property>
     <property name="title" translatable="yes">_Files</property>
-    <child type="titlebar">
-      <object class="NautilusToolbar" id="toolbar"/>
-    </child>
     <child>
-      <object class="GtkGrid">
+      <object class="GtkBox">
         <property name="visible">True</property>
+        <property name="orientation">vertical</property>
+        <child>
+          <object class="NautilusToolbar" id="toolbar"/>
+        </child>
         <child>
           <object class="GtkPaned" id="content_paned">
             <property name="visible">True</property>
