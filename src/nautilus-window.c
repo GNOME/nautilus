@@ -106,7 +106,7 @@ struct _NautilusWindow
      * Both of them may never be NULL.
      */
     GList *slots;
-    NautilusWindowSlot *active_slot;
+    NautilusWindowSlot *active_slot; /* weak reference */
 
     GtkWidget *content_paned;
 
@@ -2291,7 +2291,7 @@ nautilus_window_destroy (GtkWidget *object)
     /* the slots list should now be empty */
     g_assert (window->slots == NULL);
 
-    window->active_slot = NULL;
+    g_clear_weak_pointer (&window->active_slot);
 
     g_clear_signal_handler (&window->bookmarks_id, nautilus_application_get_bookmarks (application));
 
@@ -2447,7 +2447,7 @@ nautilus_window_set_active_slot (NautilusWindow     *window,
         nautilus_toolbar_set_window_slot (NAUTILUS_TOOLBAR (window->toolbar), NULL);
     }
 
-    window->active_slot = new_slot;
+    g_set_weak_pointer (&window->active_slot, new_slot);
 
     /* make new slot active, if it exists */
     if (new_slot)
