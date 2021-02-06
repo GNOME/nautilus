@@ -74,7 +74,7 @@ typedef struct
 
 struct _NautilusPropertiesWindow
 {
-    GtkWindow parent_instance;
+    HdyWindow parent_instance;
 
     GList *original_files;
     GList *target_files;
@@ -315,7 +315,7 @@ static void name_field_activate (GtkWidget *name_field,
                                  gpointer   user_data);
 static void setup_pie_widget (NautilusPropertiesWindow *self);
 
-G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, GTK_TYPE_WINDOW);
+G_DEFINE_TYPE (NautilusPropertiesWindow, nautilus_properties_window, HDY_TYPE_WINDOW);
 
 static gboolean
 is_multi_file_window (NautilusPropertiesWindow *self)

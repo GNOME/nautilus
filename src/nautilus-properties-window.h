@@ -24,12 +24,13 @@
 #pragma once
 
 #include <gtk/gtk.h>
+#include <libhandy-1/handy.h>
 
 #define NAUTILUS_TYPE_PROPERTIES_WINDOW (nautilus_properties_window_get_type ())
 
 G_DECLARE_FINAL_TYPE (NautilusPropertiesWindow, nautilus_properties_window,
                       NAUTILUS, PROPERTIES_WINDOW,
-                      GtkWindow)
+                      HdyWindow)
 
 typedef void (* NautilusPropertiesWindowCallback) (gpointer    callback_data);
 
