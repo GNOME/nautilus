@@ -63,8 +63,6 @@
     "use_new_views_checkbutton"
 
 /* int enums */
-#define NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET                     \
-    "preview_image_size_spinbutton"
 
 static const char * const speed_tradeoff_values[] =
 {
@@ -342,30 +340,6 @@ nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
     gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
 }
 
-static gboolean
-format_spin_button (GtkSpinButton *spin_button,
-                    gpointer       user_data)
-{
-    gint value;
-    gchar *text;
-
-    value = gtk_spin_button_get_value_as_int (spin_button);
-    text = g_strdup_printf (_("%d MB"), value);
-    gtk_entry_set_text (GTK_ENTRY (spin_button), text);
-
-    return TRUE;
-}
-
-static void nautilus_preferences_window_setup_thumbnail_limit_formatting (GtkBuilder *builder)
-{
-    GtkSpinButton *spin;
-
-    spin = GTK_SPIN_BUTTON (gtk_builder_get_object (builder, "preview_image_size_spinbutton"));
-
-    g_signal_connect (spin, "output", G_CALLBACK (format_spin_button),
-                      spin);
-}
-
 static void bind_builder_bool(GtkBuilder *builder,
                               GSettings  *settings,
                               const char *widget_name,
@@ -373,15 +347,6 @@ static void bind_builder_bool(GtkBuilder *builder,
 {
     g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
                      "active", G_SETTINGS_BIND_DEFAULT);
-}
-
-static void bind_builder_uint_spin(GtkBuilder *builder,
-                                   GSettings  *settings,
-                                   const char *widget_name,
-                                   const char *prefs)
-{
-    g_settings_bind (settings, prefs, gtk_builder_get_object (builder, widget_name),
-                     "value", G_SETTINGS_BIND_DEFAULT);
 }
 
 static GVariant *radio_mapping_set(const GValue       *gvalue,
@@ -477,11 +442,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
                         NAUTILUS_PREFERENCES_SHOW_DIRECTORY_ITEM_COUNTS,
                         (const char **) speed_tradeoff_values);
 
-    bind_builder_uint_spin (builder, nautilus_preferences,
-                            NAUTILUS_PREFERENCES_DIALOG_THUMBNAIL_LIMIT_WIDGET,
-                            NAUTILUS_PREFERENCES_FILE_THUMBNAIL_LIMIT);
-
-    nautilus_preferences_window_setup_thumbnail_limit_formatting (builder);
     nautilus_preferences_window_setup_icon_caption_page (builder);
     nautilus_preferences_window_setup_list_column_page (builder);
 
