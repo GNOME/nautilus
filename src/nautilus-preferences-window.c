@@ -97,26 +97,6 @@ static const char * const icon_captions_components[] =
 
 static GtkWidget *preferences_window = NULL;
 
-static void columns_changed_callback(NautilusColumnChooser *chooser,
-                                     gpointer               callback_data)
-{
-    char **visible_columns;
-    char **column_order;
-
-    nautilus_column_chooser_get_settings (NAUTILUS_COLUMN_CHOOSER (chooser),
-                                          &visible_columns, &column_order);
-
-    g_settings_set_strv (nautilus_list_view_preferences,
-                         NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS,
-                         (const char * const *) visible_columns);
-    g_settings_set_strv (nautilus_list_view_preferences,
-                         NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER,
-                         (const char * const *) column_order);
-
-    g_strfreev (visible_columns);
-    g_strfreev (column_order);
-}
-
 static void free_column_names_array(GPtrArray *column_names)
 {
     g_ptr_array_foreach (column_names, (GFunc) g_free, NULL);
@@ -289,55 +269,6 @@ nautilus_preferences_window_setup_icon_caption_page (GtkBuilder *builder)
     update_icon_captions_from_settings (builder);
 }
 
-static void set_columns_from_settings(NautilusColumnChooser *chooser)
-{
-    char **visible_columns;
-    char **column_order;
-
-    visible_columns = g_settings_get_strv (
-        nautilus_list_view_preferences,
-        NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
-    column_order =
-        g_settings_get_strv (nautilus_list_view_preferences,
-                             NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
-
-    nautilus_column_chooser_set_settings (NAUTILUS_COLUMN_CHOOSER (chooser),
-                                          visible_columns, column_order);
-
-    g_strfreev (visible_columns);
-    g_strfreev (column_order);
-}
-
-static void use_default_callback(NautilusColumnChooser *chooser,
-                                 gpointer               user_data)
-{
-    g_settings_reset (nautilus_list_view_preferences,
-                      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_VISIBLE_COLUMNS);
-    g_settings_reset (nautilus_list_view_preferences,
-                      NAUTILUS_PREFERENCES_LIST_VIEW_DEFAULT_COLUMN_ORDER);
-    set_columns_from_settings (chooser);
-}
-
-static void
-nautilus_preferences_window_setup_list_column_page (GtkBuilder *builder)
-{
-    GtkWidget *chooser;
-    GtkWidget *box;
-
-    chooser = nautilus_column_chooser_new (NULL);
-    g_signal_connect (chooser, "changed", G_CALLBACK (columns_changed_callback),
-                      chooser);
-    g_signal_connect (chooser, "use-default", G_CALLBACK (use_default_callback),
-                      chooser);
-
-    set_columns_from_settings (NAUTILUS_COLUMN_CHOOSER (chooser));
-
-    gtk_widget_show (chooser);
-    box = GTK_WIDGET (gtk_builder_get_object (builder, "list_columns_vbox"));
-
-    gtk_box_pack_start (GTK_BOX (box), chooser, TRUE, TRUE, 0);
-}
-
 static void bind_builder_bool(GtkBuilder *builder,
                               GSettings  *settings,
                               const char *widget_name,
@@ -438,7 +369,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
                         (const char **) speed_tradeoff_values);
 
     nautilus_preferences_window_setup_icon_caption_page (builder);
-    nautilus_preferences_window_setup_list_column_page (builder);
 
     /* UI callbacks */
     window = GTK_WIDGET (gtk_builder_get_object (builder, "preferences_window"));
