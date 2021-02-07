@@ -51,8 +51,6 @@
 /* bool preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
     "sort_folders_first_checkbutton"
-#define NAUTILUS_PREFERENCS_DIALOG_START_WITH_SIDEBAR                          \
-    "show_sidebar_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_DELETE_PERMANENTLY_WIDGET                  \
     "show_delete_permanently_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_CREATE_LINK_WIDGET                         \
@@ -413,9 +411,6 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
     bind_builder_bool (builder, gtk_filechooser_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET,
                        NAUTILUS_PREFERENCES_SORT_DIRECTORIES_FIRST);
-    bind_builder_bool (builder, nautilus_window_state,
-                       NAUTILUS_PREFERENCS_DIALOG_START_WITH_SIDEBAR,
-                       NAUTILUS_WINDOW_STATE_START_WITH_SIDEBAR);
     bind_builder_bool (builder, nautilus_list_view_preferences,
                        NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET,
                        NAUTILUS_PREFERENCES_LIST_VIEW_USE_TREE);
