@@ -61,13 +61,14 @@
         </child>
         <child>
           <object class="HdyPreferencesGroup">
-            <property name="title" translatable="yes">Context Menu</property>
+            <property name="title" translatable="yes">Optional Context Menu Actions</property>
+            <property name="description" translatable="yes">Show more actions in the menus. Keyboard shortcuts can be used even if the actions are not shown.</property>
             <property name="visible">True</property>
             <child>
               <object class="HdyActionRow">
                 <property name="activatable_widget">show_create_link_switch</property>
                 <property name="subtitle_lines">0</property>
-                <property name="title" translatable="yes">Action to Create Symbolic _Links</property>
+                <property name="title" translatable="yes">Create _Link</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
@@ -85,7 +86,7 @@
               <object class="HdyActionRow">
                 <property name="activatable_widget">show_delete_permanently_switch</property>
                 <property name="subtitle_lines">0</property>
-                <property name="title" translatable="yes">Action to _Permanently Delete Files and Folders</property>
+                <property name="title" translatable="yes">_Delete Permanently</property>
                 <property name="title_lines">0</property>
                 <property name="use_underline">True</property>
                 <property name="visible">True</property>
