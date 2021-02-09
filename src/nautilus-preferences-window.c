@@ -25,28 +25,15 @@
 
 #include "nautilus-preferences-window.h"
 
-#include <string.h>
-#include <time.h>
 #include <gtk/gtk.h>
 #include <gio/gio.h>
 
 #include <glib/gi18n.h>
 
-#include <eel/eel-glib-extensions.h>
-
 #include <nautilus-extension.h>
 
-#include "nautilus-column-chooser.h"
 #include "nautilus-column-utilities.h"
 #include "nautilus-global-preferences.h"
-#include "nautilus-module.h"
-
-/* string enum preferences */
-#define NAUTILUS_PREFERENCES_DIALOG_DEFAULT_VIEW_WIDGET "default_view_combobox"
-#define NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FILES_WIDGET                       \
-    "preview_image_combobox"
-#define NAUTILUS_PREFERENCES_DIALOG_PREVIEW_FOLDER_WIDGET                      \
-    "preview_folder_combobox"
 
 /* bool preferences */
 #define NAUTILUS_PREFERENCES_DIALOG_FOLDERS_FIRST_WIDGET                       \
@@ -57,10 +44,6 @@
     "show_create_link_checkbutton"
 #define NAUTILUS_PREFERENCES_DIALOG_LIST_VIEW_USE_TREE_WIDGET                  \
     "use_tree_view_checkbutton"
-#define NAUTILUS_PREFERENCES_DIALOG_USE_NEW_VIEWS_WIDGET                       \
-    "use_new_views_checkbutton"
-
-/* int enums */
 
 static const char * const speed_tradeoff_values[] =
 {
