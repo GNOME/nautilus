@@ -10,8 +10,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.HEAD.ro\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-02-06 18:41+0000\n"
-"PO-Revision-Date: 2021-02-07 15:10+0100\n"
+"POT-Creation-Date: 2021-02-10 12:59+0000\n"
+"PO-Revision-Date: 2021-02-10 17:54+0200\n"
 "Last-Translator: Florentina Mușat <florentina.musat.28@gmail.com>\n"
 "Language-Team: Gnome Romanian Translation Team <gnomero-list@lists."
 "sourceforge.net>\n"
@@ -35,7 +35,7 @@ msgstr "Rulează programe"
 #.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
-#: src/nautilus-window.c:2947
+#: src/nautilus-window.c:2944
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Fișiere"
@@ -79,8 +79,6 @@ msgid "Tile View"
 msgstr "Vizualizare titlu"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2415
-#: src/resources/ui/nautilus-preferences-window.ui:161
-#: src/resources/ui/nautilus-preferences-window.ui:1177
 msgid "List View"
 msgstr "Vizualizare listă"
 
@@ -88,7 +86,6 @@ msgstr "Vizualizare listă"
 #: src/nautilus-search-directory-file.c:175
 #: src/nautilus-search-directory-file.c:232
 #: src/nautilus-search-directory-file.c:272
-#: src/resources/ui/nautilus-preferences-window.ui:764
 #: src/resources/ui/nautilus-search-popover.ui:341
 #: src/resources/ui/nautilus-toolbar.ui:510
 msgid "Search"
@@ -773,7 +770,8 @@ msgid "Video"
 msgstr "Video"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:23
-#: src/resources/ui/nautilus-preferences-window.ui:54
+#: src/resources/ui/nautilus-preferences-window.ui:9
+#: src/resources/ui/nautilus-preferences-window.ui:13
 msgid "General"
 msgstr "Generale"
 
@@ -961,11 +959,11 @@ msgid "Send files by mail…"
 msgstr "Trimite fișiere prin email…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1698
+#: src/nautilus-application.c:183 src/nautilus-window-slot.c:1698
 msgid "Oops! Something went wrong."
 msgstr "Ups! Ceva nu a funcționat cum trebuie."
 
-#: src/nautilus-application.c:185
+#: src/nautilus-application.c:186
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -976,7 +974,7 @@ msgstr ""
 "permisiunile în așa fel încât acesta să poată fi creat:\n"
 "%s"
 
-#: src/nautilus-application.c:192
+#: src/nautilus-application.c:193
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -987,19 +985,19 @@ msgstr ""
 "configurați permisiunile în așa fel încât acestea să poată fi create:\n"
 "%s"
 
-#: src/nautilus-application.c:607
+#: src/nautilus-application.c:608
 msgid "--check cannot be used with other options."
 msgstr "--check nu poate fi folosită cu alte opțiuni."
 
-#: src/nautilus-application.c:615
+#: src/nautilus-application.c:616
 msgid "--quit cannot be used with URIs."
 msgstr "--quit nu poate fi folosită cu URIuri."
 
-#: src/nautilus-application.c:624
+#: src/nautilus-application.c:625
 msgid "--select must be used with at least an URI."
 msgstr "--select trebuie să fie folosită cu cel puțin un URI."
 
-#: src/nautilus-application.c:777
+#: src/nautilus-application.c:778
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -1008,7 +1006,7 @@ msgstr ""
 "A fost o eroare la afișarea ajutorului: \n"
 "%s"
 
-#: src/nautilus-application.c:969
+#: src/nautilus-application.c:970
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -1017,27 +1015,27 @@ msgstr ""
 "„%s” este un protocol intern. Deschiderea directă a acestei locații nu este "
 "suportată."
 
-#: src/nautilus-application.c:1069
+#: src/nautilus-application.c:1070
 msgid "Perform a quick set of self-check tests."
 msgstr "Efectuează o suită rapidă de testări interne."
 
-#: src/nautilus-application.c:1072
+#: src/nautilus-application.c:1073
 msgid "Show the version of the program."
 msgstr "Afișează versiunea programului."
 
-#: src/nautilus-application.c:1074
+#: src/nautilus-application.c:1075
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Deschide întotdeauna o fereastră pentru a naviga URIurile specificate"
 
-#: src/nautilus-application.c:1076
+#: src/nautilus-application.c:1077
 msgid "Quit Nautilus."
 msgstr "Închide Nautilus."
 
-#: src/nautilus-application.c:1078
+#: src/nautilus-application.c:1079
 msgid "Select specified URI in parent folder."
 msgstr "Selectați URI-ul specificat în dosarul superior."
 
-#: src/nautilus-application.c:1079
+#: src/nautilus-application.c:1080
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1210,7 +1208,6 @@ msgid "The selection rectangle"
 msgstr "Dreptunghiul de selecție"
 
 #: src/nautilus-canvas-view-container.c:366
-#: src/resources/ui/nautilus-preferences-window.ui:1174
 msgid "Icon View"
 msgstr "Vizualizare iconițe"
 
@@ -1234,7 +1231,7 @@ msgid "The name and icon of the file."
 msgstr "Numele și iconița fișierului."
 
 #: src/nautilus-column-utilities.c:66
-#: src/resources/ui/nautilus-properties-window.ui:225
+#: src/resources/ui/nautilus-properties-window.ui:234
 msgid "Size"
 msgstr "Dimensiune"
 
@@ -1243,7 +1240,7 @@ msgid "The size of the file."
 msgstr "Dimensiunea fișierului."
 
 #: src/nautilus-column-utilities.c:73
-#: src/resources/ui/nautilus-properties-window.ui:132
+#: src/resources/ui/nautilus-properties-window.ui:141
 msgid "Type"
 msgstr "Tip"
 
@@ -1252,7 +1249,7 @@ msgid "The type of the file."
 msgstr "Tipul fișierului."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:415
+#: src/resources/ui/nautilus-properties-window.ui:424
 msgid "Modified"
 msgstr "Modificat"
 
@@ -1269,7 +1266,7 @@ msgid "The detailed type of the file."
 msgstr "Tipul detaliat al fișierului."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:389
+#: src/resources/ui/nautilus-properties-window.ui:398
 msgid "Accessed"
 msgstr "Accesat"
 
@@ -1278,7 +1275,7 @@ msgid "The date the file was accessed."
 msgstr "Data la care fișierul a fost accesat."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:279
+#: src/resources/ui/nautilus-properties-window.ui:288
 msgid "Created"
 msgstr "Creat"
 
@@ -1305,7 +1302,7 @@ msgid "The group of the file."
 msgstr "Gupul de care aparține fișierul."
 
 #: src/nautilus-column-utilities.c:131
-#: src/resources/ui/nautilus-properties-window.ui:1272
+#: src/resources/ui/nautilus-properties-window.ui:1281
 msgid "Permissions"
 msgstr "Permisiuni"
 
@@ -1802,7 +1799,7 @@ msgid "_Select a new name for the destination"
 msgstr "Alegeți un nou nume pentru de_stinație"
 
 #: src/nautilus-file-conflict-dialog.c:311
-#: src/resources/ui/nautilus-properties-window.ui:1323
+#: src/resources/ui/nautilus-properties-window.ui:1332
 msgid "Reset"
 msgstr "Restabilește"
 
@@ -3067,7 +3064,7 @@ msgid "dropped data"
 msgstr "date plasate"
 
 #: src/nautilus-file-undo-operations.c:176
-#: src/resources/ui/nautilus-window.ui:78
+#: src/resources/ui/nautilus-window.ui:82
 msgid "Undo"
 msgstr "Anulează"
 
@@ -3911,7 +3908,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "Există deja un fișier cu același nume în „%s”."
 
 #: src/nautilus-operations-ui-manager.c:274
-#: src/resources/ui/nautilus-properties-window.ui:305
+#: src/resources/ui/nautilus-properties-window.ui:314
 msgid "Original folder"
 msgstr "Dosarul original"
 
@@ -3989,15 +3986,40 @@ msgstr "Dosarul rădăcină"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:139 src/nautilus-properties-window.c:3604
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3604
 #: src/nautilus-properties-window.c:3634
 msgid "None"
 msgstr "Nimic"
 
-#: src/nautilus-preferences-window.c:353
-#, c-format
-msgid "%d MB"
-msgstr "%d MB"
+#: src/nautilus-preferences-window.c:336
+msgid "Single click"
+msgstr "Un singur clic"
+
+#: src/nautilus-preferences-window.c:336
+msgid "Double click"
+msgstr "Clic dublu"
+
+#: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:342
+msgid "On this computer only"
+msgstr "Doar pe acest calculator"
+
+#: src/nautilus-preferences-window.c:338
+msgid "All locations"
+msgstr "Toate locațiile"
+
+#: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:342
+msgid "Never"
+msgstr "Niciodată"
+
+#: src/nautilus-preferences-window.c:340
+msgid "All files"
+msgstr "Toate fișierele"
+
+#: src/nautilus-preferences-window.c:342
+msgid "All folders"
+msgstr "Toate dosarele"
 
 #: src/nautilus-program-choosing.c:379
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -4089,7 +4111,7 @@ msgid "The file that you dropped is not an image."
 msgstr "Fișierul plasat nu este o imagine."
 
 #: src/nautilus-properties-window.c:651
-#: src/resources/ui/nautilus-properties-window.ui:82
+#: src/resources/ui/nautilus-properties-window.ui:91
 msgid "_Name"
 msgid_plural "_Names"
 msgstr[0] "_Nume"
@@ -4316,7 +4338,6 @@ msgstr "Selectați date…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
-#: src/resources/ui/nautilus-preferences-window.ui:605
 msgid "Trash"
 msgstr "Coș de gunoi"
 
@@ -4439,7 +4460,7 @@ msgstr "Arată lista"
 msgid "Show List"
 msgstr "Arată lista"
 
-#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:251
+#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:260
 msgid "Parent folder"
 msgstr "Dosar superior"
 
@@ -4525,7 +4546,7 @@ msgstr "Mută tabul în d_reapta"
 msgid "_Close Tab"
 msgstr "În_chide tabul"
 
-#: src/nautilus-window.c:2952
+#: src/nautilus-window.c:2949
 msgid "Access and organize your files"
 msgstr "Accesați și organizați fișierele"
 
@@ -4533,7 +4554,7 @@ msgstr "Accesați și organizați fișierele"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2963
+#: src/nautilus-window.c:2960
 msgid "translator-credits"
 msgstr ""
 "Marius Andreiana <marius galuna.ro>\n"
@@ -5042,7 +5063,7 @@ msgid "C_hange"
 msgstr "_Modifică"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:162
-#: src/resources/ui/nautilus-properties-window.ui:1062
+#: src/resources/ui/nautilus-properties-window.ui:1071
 msgid "Others"
 msgstr "Alții"
 
@@ -5060,6 +5081,7 @@ msgstr "Adaugă la _favorite"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
 #: src/resources/ui/nautilus-files-view-context-menus.ui:135
+#: src/resources/ui/nautilus-preferences-window.ui:71
 msgid "Create _Link"
 msgstr "Creează _legătură"
 
@@ -5222,33 +5244,60 @@ msgstr "Deschide într-o _Fereastră Nouă"
 msgid "Open in New _Tab"
 msgstr "Deschide într-un _Tab Nou"
 
-#: src/resources/ui/nautilus-preferences-window.ui:13
-msgid "Preferences"
-msgstr "Preferințe"
+#: src/resources/ui/nautilus-preferences-window.ui:19
+msgid "Sort _Folders Before Files"
+msgstr "Sortează _dosarele înainte de fișiere"
 
-#: src/resources/ui/nautilus-preferences-window.ui:71
-msgid "_Show sidebar"
-msgstr "_Arată bara laterală"
+#: src/resources/ui/nautilus-preferences-window.ui:37
+msgid "_Expandable Folders in List View"
+msgstr "Dosare _expandabile în vizualizarea listă"
 
-#. Translators: a title in the preferences dialog with an option to sort folder before files "Sort folders before files".
-#: src/resources/ui/nautilus-preferences-window.ui:105
-msgctxt "preferences"
-msgid "Sort"
-msgstr "Sortează"
+#: src/resources/ui/nautilus-preferences-window.ui:54
+msgid "Action to Open Items"
+msgstr "Acțiunea pentru a deschide elementele"
+
+#: src/resources/ui/nautilus-preferences-window.ui:64
+msgid "Optional Context Menu Actions"
+msgstr "Acțiuni opționale ale meniului contextual"
+
+#: src/resources/ui/nautilus-preferences-window.ui:65
+msgid ""
+"Show more actions in the menus. Keyboard shortcuts can be used even if the "
+"actions are not shown."
+msgstr ""
+"Arată mai multe acțiuni în meniuri. Scurtăturile de tastatură pot fi "
+"utilizate chiar dacă acțiunile nu sunt arătate."
+
+#: src/resources/ui/nautilus-preferences-window.ui:89
+msgid "_Delete Permanently"
+msgstr "Ș_terge permanent"
+
+#: src/resources/ui/nautilus-preferences-window.ui:107
+msgid "Performance"
+msgstr "Performanță"
+
+#: src/resources/ui/nautilus-preferences-window.ui:108
+msgid ""
+"These features may cause slowdowns and excess network usage, especially when "
+"browsing files outside this computer, such as on a remote server."
+msgstr ""
+"Aceste funcționalități pot cauza încetiniri și utilizarea rețelei în exces, "
+"în special când se navighează prin fișierele în afara acestui calculator, "
+"cum ar fi pe un server de la distanță."
+
+#: src/resources/ui/nautilus-preferences-window.ui:113
+msgid "Search in Subfolders"
+msgstr "Caută în subdosare"
 
 #: src/resources/ui/nautilus-preferences-window.ui:122
-msgid "Sort _folders before files"
-msgstr "Dosarele înaintea _fișierelor"
+msgid "Show Thumbnails"
+msgstr "Arată miniaturile"
 
-#: src/resources/ui/nautilus-preferences-window.ui:178
-msgid "Allow folders to be _expanded"
-msgstr "Afișează doar dosarele în modul _expandat"
+#: src/resources/ui/nautilus-preferences-window.ui:131
+msgid "Count Number of Files in Folders"
+msgstr "Numără numărul de fișiere din dosare"
 
-#: src/resources/ui/nautilus-preferences-window.ui:217
-msgid "Icon View Captions"
-msgstr "Descrieri pentru vizualizare iconițe"
-
-#: src/resources/ui/nautilus-preferences-window.ui:236
+#: src/resources/ui/nautilus-preferences-window.ui:141
 msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
@@ -5256,291 +5305,134 @@ msgstr ""
 "Adaugă informații de afișat sub numele fișierelor și al dosarelor. Mai multe "
 "informații vor apărea când faceți zoom."
 
+#: src/resources/ui/nautilus-preferences-window.ui:142
+msgid "Icon View Captions"
+msgstr "Descrieri pentru vizualizare iconițe"
+
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:371
+#: src/resources/ui/nautilus-preferences-window.ui:147
+msgctxt "the n-th position of an icon caption"
+msgid "First"
+msgstr "Primul"
+
+#. Translators: This is an ordinal number
+#: src/resources/ui/nautilus-preferences-window.ui:156
 msgctxt "the n-th position of an icon caption"
 msgid "Second"
 msgstr "Al doilea"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:389
+#: src/resources/ui/nautilus-preferences-window.ui:165
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
 msgstr "Al treilea"
 
-#. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:407
-msgctxt "the n-th position of an icon caption"
-msgid "First"
-msgstr "Primul"
-
-#: src/resources/ui/nautilus-preferences-window.ui:452
-msgid "Views"
-msgstr "Vizualizări"
-
-#: src/resources/ui/nautilus-preferences-window.ui:475
-msgid "Open Action"
-msgstr "Acțiuni de deschidere"
-
-#: src/resources/ui/nautilus-preferences-window.ui:492
-msgid "_Single click to open items"
-msgstr "Clic _simplu pentru a deschide elementele"
-
-#: src/resources/ui/nautilus-preferences-window.ui:509
-msgid "_Double click to open items"
-msgstr "Clic _dublu pentru a deschide elementele"
-
-#: src/resources/ui/nautilus-preferences-window.ui:549
-msgid "Link Creation"
-msgstr "Crearea de legături"
-
-#: src/resources/ui/nautilus-preferences-window.ui:566
-msgid "Show action to create symbolic _links"
-msgstr "Arată acțiunea pentru a creea _legături simbolice"
-
-#: src/resources/ui/nautilus-preferences-window.ui:622
-msgid "Show action to _permanently delete files and folders"
-msgstr "Arată acțiunea de ștergere _permanentă a fișierelor și dosarelor"
-
-#: src/resources/ui/nautilus-preferences-window.ui:661
-msgid "Behavior"
-msgstr "Comportament"
-
-#: src/resources/ui/nautilus-preferences-window.ui:691
-msgid "Choose the order of information to appear in the list view."
-msgstr "Alegeți ordinea în care apar informațiile în vizualizarea ca listă."
-
-#: src/resources/ui/nautilus-preferences-window.ui:740
-msgid "List Columns"
-msgstr "Coloane listă"
-
-#: src/resources/ui/nautilus-preferences-window.ui:780
-msgid "Search in subfolders:"
-msgstr "Caută în subdosare:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:794
-msgid "_On this computer only"
-msgstr "_Numai pe acest calculator"
-
-#: src/resources/ui/nautilus-preferences-window.ui:811
-msgid "_All locations"
-msgstr "To_ate locațiile"
-
-#: src/resources/ui/nautilus-preferences-window.ui:828
-msgid "_Never"
-msgstr "_Niciodată"
-
-#: src/resources/ui/nautilus-preferences-window.ui:868
-msgid "Thumbnails"
-msgstr "Miniaturi"
-
-#: src/resources/ui/nautilus-preferences-window.ui:884
-msgid "Show thumbnails:"
-msgstr "Arată miniaturi:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:898
-msgid "_Files on this computer only"
-msgstr "Numai _fișiere de pe acest calculator"
-
-#: src/resources/ui/nautilus-preferences-window.ui:915
-msgid "A_ll files"
-msgstr "Toate fișiere_le"
-
-#: src/resources/ui/nautilus-preferences-window.ui:932
-msgid "N_ever"
-msgstr "N_iciodată"
-
-#: src/resources/ui/nautilus-preferences-window.ui:956
-msgid "Onl_y for files smaller than:"
-msgstr "D_oar pentru fișiere mai mici de:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1014
-msgid "File count"
-msgstr "Număr de fișiere"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1030
-msgid "Count number of files in folders:"
-msgstr "Numără fișierele din dosare:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1044
-msgid "F_olders on this computer only"
-msgstr "Doar dosare de pe acest calculator"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1061
-msgid "All folder_s"
-msgstr "Toate do_sarele"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1078
-msgid "Ne_ver"
-msgstr "N_iciodată"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1113
-msgid "Search & Preview"
-msgstr "Căutare și previzualizare"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1140
-#: src/resources/ui/nautilus-preferences-window.ui:1188
-#: src/resources/ui/nautilus-preferences-window.ui:1248
-msgid "Always"
-msgstr "Întotdeauna"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1143
-#: src/resources/ui/nautilus-preferences-window.ui:1191
-#: src/resources/ui/nautilus-preferences-window.ui:1251
-msgid "Local Files Only"
-msgstr "Doar fișiere locale"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1146
-#: src/resources/ui/nautilus-preferences-window.ui:1194
-#: src/resources/ui/nautilus-preferences-window.ui:1254
-msgid "Never"
-msgstr "Niciodată"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1157
-#: src/resources/ui/nautilus-preferences-window.ui:1231
-msgid "Small"
-msgstr "Mic"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1160
-#: src/resources/ui/nautilus-preferences-window.ui:1234
-msgid "Standard"
-msgstr "Standard"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1163
-#: src/resources/ui/nautilus-preferences-window.ui:1237
-msgid "Large"
-msgstr "Mare"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1205
-msgid "By Name"
-msgstr "După nume"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1208
-msgid "By Size"
-msgstr "După dimensiune"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1211
-msgid "By Type"
-msgstr "După tip"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1214
-msgid "By Modification Date"
-msgstr "După data modificării"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1217
-msgid "By Access Date"
-msgstr "După data accesării"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1220
-msgid "By Trashed Date"
-msgstr "După data trimiterii la coșul de gunoi"
-
-#: src/resources/ui/nautilus-properties-window.ui:160
+#: src/resources/ui/nautilus-properties-window.ui:169
 msgid "Link target"
 msgstr "Țintă de legare"
 
-#: src/resources/ui/nautilus-properties-window.ui:189
+#: src/resources/ui/nautilus-properties-window.ui:198
 msgid "Contents"
 msgstr "Conținut"
 
-#: src/resources/ui/nautilus-properties-window.ui:333
+#: src/resources/ui/nautilus-properties-window.ui:342
 msgid "Volume"
 msgstr "Volum"
 
-#: src/resources/ui/nautilus-properties-window.ui:361
+#: src/resources/ui/nautilus-properties-window.ui:370
 msgid "Trashed on"
 msgstr "Mutat la coșul de gunoi la"
 
-#: src/resources/ui/nautilus-properties-window.ui:441
+#: src/resources/ui/nautilus-properties-window.ui:450
 msgid "Free space"
 msgstr "Spațiu liber"
 
-#: src/resources/ui/nautilus-properties-window.ui:545
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Total capacity"
 msgstr "Capacitate totală"
 
-#: src/resources/ui/nautilus-properties-window.ui:562
+#: src/resources/ui/nautilus-properties-window.ui:571
 msgid "Filesystem type"
 msgstr "Tip sistem fișiere"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:631
+#: src/resources/ui/nautilus-properties-window.ui:640
 msgid "used"
 msgstr "folosit"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:644
+#: src/resources/ui/nautilus-properties-window.ui:653
 msgid "free"
 msgstr "liber"
 
-#: src/resources/ui/nautilus-properties-window.ui:679
+#: src/resources/ui/nautilus-properties-window.ui:688
 msgid "Open in Disks"
 msgstr "Deschide în Discuri"
 
-#: src/resources/ui/nautilus-properties-window.ui:755
+#: src/resources/ui/nautilus-properties-window.ui:764
 msgid "Basic"
 msgstr "Simplu"
 
-#: src/resources/ui/nautilus-properties-window.ui:769
+#: src/resources/ui/nautilus-properties-window.ui:778
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr ""
 "Nu sunteți proprietarul, de aceea nu puteți modifica aceste permisiuni."
 
-#: src/resources/ui/nautilus-properties-window.ui:796
+#: src/resources/ui/nautilus-properties-window.ui:805
 msgid "The permissions of the selected file could not be determined."
 msgstr "Drepturile asupra fișierului selectat nu au putut fi determinate."
 
-#: src/resources/ui/nautilus-properties-window.ui:818
+#: src/resources/ui/nautilus-properties-window.ui:827
 msgid "_Owner"
 msgstr "_Deținător"
 
-#: src/resources/ui/nautilus-properties-window.ui:868
-#: src/resources/ui/nautilus-properties-window.ui:991
-#: src/resources/ui/nautilus-properties-window.ui:1076
+#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:1000
+#: src/resources/ui/nautilus-properties-window.ui:1085
 msgid "Access"
 msgstr "Acces"
 
-#: src/resources/ui/nautilus-properties-window.ui:882
-#: src/resources/ui/nautilus-properties-window.ui:1005
-#: src/resources/ui/nautilus-properties-window.ui:1090
+#: src/resources/ui/nautilus-properties-window.ui:891
+#: src/resources/ui/nautilus-properties-window.ui:1014
+#: src/resources/ui/nautilus-properties-window.ui:1099
 msgid "Folder access"
 msgstr "Acces dosar"
 
-#: src/resources/ui/nautilus-properties-window.ui:896
-#: src/resources/ui/nautilus-properties-window.ui:1019
-#: src/resources/ui/nautilus-properties-window.ui:1104
+#: src/resources/ui/nautilus-properties-window.ui:905
+#: src/resources/ui/nautilus-properties-window.ui:1028
+#: src/resources/ui/nautilus-properties-window.ui:1113
 msgid "File access"
 msgstr "Acces fișier"
 
-#: src/resources/ui/nautilus-properties-window.ui:939
+#: src/resources/ui/nautilus-properties-window.ui:948
 msgid "_Group"
 msgstr "_Grup"
 
-#: src/resources/ui/nautilus-properties-window.ui:1146
+#: src/resources/ui/nautilus-properties-window.ui:1155
 msgid "Execute"
 msgstr "Execută"
 
-#: src/resources/ui/nautilus-properties-window.ui:1161
+#: src/resources/ui/nautilus-properties-window.ui:1170
 msgid "Security context"
 msgstr "Context de securitate"
 
-#: src/resources/ui/nautilus-properties-window.ui:1191
+#: src/resources/ui/nautilus-properties-window.ui:1200
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Modifică permisiunile pentru fișierele conținute…"
 
-#: src/resources/ui/nautilus-properties-window.ui:1210
+#: src/resources/ui/nautilus-properties-window.ui:1219
 msgid "Allow _executing file as program"
 msgstr "Permite _execuția fișierului drept program"
 
-#: src/resources/ui/nautilus-properties-window.ui:1337
+#: src/resources/ui/nautilus-properties-window.ui:1346
 msgid "_Add"
 msgstr "_Adaugă"
 
-#: src/resources/ui/nautilus-properties-window.ui:1351
+#: src/resources/ui/nautilus-properties-window.ui:1360
 msgid "Set as default"
 msgstr "Definește ca implicit"
 
-#: src/resources/ui/nautilus-properties-window.ui:1379
+#: src/resources/ui/nautilus-properties-window.ui:1388
 msgid "Open With"
 msgstr "Deschide cu"
 
@@ -5870,6 +5762,109 @@ msgstr "Conectare la _Server"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Introduceți adresa serverului…"
+
+#~ msgid "%d MB"
+#~ msgstr "%d MB"
+
+#~ msgid "Preferences"
+#~ msgstr "Preferințe"
+
+#~ msgid "_Show sidebar"
+#~ msgstr "_Arată bara laterală"
+
+#~ msgctxt "preferences"
+#~ msgid "Sort"
+#~ msgstr "Sortează"
+
+#~ msgid "Allow folders to be _expanded"
+#~ msgstr "Afișează doar dosarele în modul _expandat"
+
+#~ msgid "Views"
+#~ msgstr "Vizualizări"
+
+#~ msgid "Open Action"
+#~ msgstr "Acțiuni de deschidere"
+
+#~ msgid "_Single click to open items"
+#~ msgstr "Clic _simplu pentru a deschide elementele"
+
+#~ msgid "Link Creation"
+#~ msgstr "Crearea de legături"
+
+#~ msgid "Show action to create symbolic _links"
+#~ msgstr "Arată acțiunea pentru a creea _legături simbolice"
+
+#~ msgid "Show action to _permanently delete files and folders"
+#~ msgstr "Arată acțiunea de ștergere _permanentă a fișierelor și dosarelor"
+
+#~ msgid "Behavior"
+#~ msgstr "Comportament"
+
+#~ msgid "Choose the order of information to appear in the list view."
+#~ msgstr "Alegeți ordinea în care apar informațiile în vizualizarea ca listă."
+
+#~ msgid "List Columns"
+#~ msgstr "Coloane listă"
+
+#~ msgid "_Never"
+#~ msgstr "_Niciodată"
+
+#~ msgid "Thumbnails"
+#~ msgstr "Miniaturi"
+
+#~ msgid "_Files on this computer only"
+#~ msgstr "Numai _fișiere de pe acest calculator"
+
+#~ msgid "N_ever"
+#~ msgstr "N_iciodată"
+
+#~ msgid "Onl_y for files smaller than:"
+#~ msgstr "D_oar pentru fișiere mai mici de:"
+
+#~ msgid "File count"
+#~ msgstr "Număr de fișiere"
+
+#~ msgid "F_olders on this computer only"
+#~ msgstr "Doar dosare de pe acest calculator"
+
+#~ msgid "Ne_ver"
+#~ msgstr "N_iciodată"
+
+#~ msgid "Search & Preview"
+#~ msgstr "Căutare și previzualizare"
+
+#~ msgid "Always"
+#~ msgstr "Întotdeauna"
+
+#~ msgid "Local Files Only"
+#~ msgstr "Doar fișiere locale"
+
+#~ msgid "Small"
+#~ msgstr "Mic"
+
+#~ msgid "Standard"
+#~ msgstr "Standard"
+
+#~ msgid "Large"
+#~ msgstr "Mare"
+
+#~ msgid "By Name"
+#~ msgstr "După nume"
+
+#~ msgid "By Size"
+#~ msgstr "După dimensiune"
+
+#~ msgid "By Type"
+#~ msgstr "După tip"
+
+#~ msgid "By Modification Date"
+#~ msgstr "După data modificării"
+
+#~ msgid "By Access Date"
+#~ msgstr "După data accesării"
+
+#~ msgid "By Trashed Date"
+#~ msgstr "După data trimiterii la coșul de gunoi"
 
 #~ msgid ""
 #~ "Whether to ask for confirmation when deleting files, or emptying the Trash"
