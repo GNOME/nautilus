@@ -649,12 +649,19 @@ nautilus_location_entry_on_event (GtkWidget *widget,
      * should position the insertion point at the end of
      * the selection.
      */
-    if (keyval == GDK_KEY_Tab && selected)
+    if (keyval == GDK_KEY_Tab && !(state & (GDK_CONTROL_MASK | GDK_SHIFT_MASK)))
     {
-        int position;
+        if (selected)
+        {
+            int position;
 
-        position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
-        gtk_editable_select_region (editable, position, position);
+            position = strlen (gtk_entry_get_text (GTK_ENTRY (editable)));
+            gtk_editable_select_region (editable, position, position);
+        }
+        else
+        {
+            gtk_widget_error_bell (GTK_WIDGET (entry));
+        }
 
         return GDK_EVENT_STOP;
     }
