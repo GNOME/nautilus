@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-02-06 18:41+0000\n"
-"PO-Revision-Date: 2021-02-08 01:09+0100\n"
+"POT-Creation-Date: 2021-02-11 09:12+0000\n"
+"PO-Revision-Date: 2021-02-11 19:17+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -35,7 +35,7 @@ msgstr "Kör program"
 #.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:101
-#: src/nautilus-window.c:2947
+#: src/nautilus-window.c:2944
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Filer"
@@ -79,8 +79,6 @@ msgid "Tile View"
 msgstr "Ikonvy"
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2415
-#: src/resources/ui/nautilus-preferences-window.ui:161
-#: src/resources/ui/nautilus-preferences-window.ui:1177
 msgid "List View"
 msgstr "Listvy"
 
@@ -88,7 +86,6 @@ msgstr "Listvy"
 #: src/nautilus-search-directory-file.c:175
 #: src/nautilus-search-directory-file.c:232
 #: src/nautilus-search-directory-file.c:272
-#: src/resources/ui/nautilus-preferences-window.ui:764
 #: src/resources/ui/nautilus-search-popover.ui:341
 #: src/resources/ui/nautilus-toolbar.ui:510
 msgid "Search"
@@ -756,7 +753,8 @@ msgid "Video"
 msgstr "Film"
 
 #: extensions/audio-video-properties/resources/ui/properties.ui:23
-#: src/resources/ui/nautilus-preferences-window.ui:54
+#: src/resources/ui/nautilus-preferences-window.ui:9
+#: src/resources/ui/nautilus-preferences-window.ui:13
 msgid "General"
 msgstr "Allmänt"
 
@@ -943,11 +941,11 @@ msgid "Send files by mail…"
 msgstr "Skicka filer via e-post…"
 
 #. Some sort of failure occurred. How 'bout we tell the user?
-#: src/nautilus-application.c:182 src/nautilus-window-slot.c:1698
+#: src/nautilus-application.c:183 src/nautilus-window-slot.c:1698
 msgid "Oops! Something went wrong."
 msgstr "Oops! Något gick fel."
 
-#: src/nautilus-application.c:185
+#: src/nautilus-application.c:186
 #, c-format
 msgid ""
 "Unable to create a required folder. Please create the following folder, or "
@@ -958,7 +956,7 @@ msgstr ""
 "så att den kan skapas:\n"
 "%s"
 
-#: src/nautilus-application.c:192
+#: src/nautilus-application.c:193
 #, c-format
 msgid ""
 "Unable to create required folders. Please create the following folders, or "
@@ -969,19 +967,19 @@ msgstr ""
 "rättigheter så att de kan skapas:\n"
 "%s"
 
-#: src/nautilus-application.c:607
+#: src/nautilus-application.c:608
 msgid "--check cannot be used with other options."
 msgstr "--check kan inte användas med andra flaggor."
 
-#: src/nautilus-application.c:615
+#: src/nautilus-application.c:616
 msgid "--quit cannot be used with URIs."
 msgstr "--quit kan inte användas med URI:er."
 
-#: src/nautilus-application.c:624
+#: src/nautilus-application.c:625
 msgid "--select must be used with at least an URI."
 msgstr "--select måste användas med minst en URI."
 
-#: src/nautilus-application.c:777
+#: src/nautilus-application.c:778
 #, c-format
 msgid ""
 "There was an error displaying help: \n"
@@ -990,7 +988,7 @@ msgstr ""
 "Det inträffade ett fel vid visande av hjälp: \n"
 "%s"
 
-#: src/nautilus-application.c:969
+#: src/nautilus-application.c:970
 #, c-format
 msgid ""
 "“%s” is an internal protocol. Opening this location directly is not "
@@ -998,27 +996,27 @@ msgid ""
 msgstr ""
 "”%s” är ett internt protokoll. Att öppna denna plats direkt stöds inte."
 
-#: src/nautilus-application.c:1069
+#: src/nautilus-application.c:1070
 msgid "Perform a quick set of self-check tests."
 msgstr "Utför ett antal snabba självtester."
 
-#: src/nautilus-application.c:1072
+#: src/nautilus-application.c:1073
 msgid "Show the version of the program."
 msgstr "Visa programmets version."
 
-#: src/nautilus-application.c:1074
+#: src/nautilus-application.c:1075
 msgid "Always open a new window for browsing specified URIs"
 msgstr "Öppna alltid ett nytt fönster för att visa angivna URI:er"
 
-#: src/nautilus-application.c:1076
+#: src/nautilus-application.c:1077
 msgid "Quit Nautilus."
 msgstr "Avsluta Nautilus."
 
-#: src/nautilus-application.c:1078
+#: src/nautilus-application.c:1079
 msgid "Select specified URI in parent folder."
 msgstr "Välj specificerad URI i överordnad mapp."
 
-#: src/nautilus-application.c:1079
+#: src/nautilus-application.c:1080
 msgid "[URI…]"
 msgstr "[URI…]"
 
@@ -1190,7 +1188,6 @@ msgid "The selection rectangle"
 msgstr "Markeringsrektangeln"
 
 #: src/nautilus-canvas-view-container.c:366
-#: src/resources/ui/nautilus-preferences-window.ui:1174
 msgid "Icon View"
 msgstr "Ikonvy"
 
@@ -1213,7 +1210,7 @@ msgid "The name and icon of the file."
 msgstr "Filens namn samt ikon."
 
 #: src/nautilus-column-utilities.c:66
-#: src/resources/ui/nautilus-properties-window.ui:225
+#: src/resources/ui/nautilus-properties-window.ui:234
 msgid "Size"
 msgstr "Storlek"
 
@@ -1222,7 +1219,7 @@ msgid "The size of the file."
 msgstr "Filens storlek."
 
 #: src/nautilus-column-utilities.c:73
-#: src/resources/ui/nautilus-properties-window.ui:132
+#: src/resources/ui/nautilus-properties-window.ui:141
 msgid "Type"
 msgstr "Typ"
 
@@ -1231,7 +1228,7 @@ msgid "The type of the file."
 msgstr "Filens typ."
 
 #: src/nautilus-column-utilities.c:80
-#: src/resources/ui/nautilus-properties-window.ui:415
+#: src/resources/ui/nautilus-properties-window.ui:424
 msgid "Modified"
 msgstr "Ändrad"
 
@@ -1248,7 +1245,7 @@ msgid "The detailed type of the file."
 msgstr "Filens detaljerade typ."
 
 #: src/nautilus-column-utilities.c:96
-#: src/resources/ui/nautilus-properties-window.ui:389
+#: src/resources/ui/nautilus-properties-window.ui:398
 msgid "Accessed"
 msgstr "Åtkommen"
 
@@ -1257,7 +1254,7 @@ msgid "The date the file was accessed."
 msgstr "Datum då filen senast användes."
 
 #: src/nautilus-column-utilities.c:105
-#: src/resources/ui/nautilus-properties-window.ui:279
+#: src/resources/ui/nautilus-properties-window.ui:288
 msgid "Created"
 msgstr "Skapad"
 
@@ -1284,7 +1281,7 @@ msgid "The group of the file."
 msgstr "Filens grupp."
 
 #: src/nautilus-column-utilities.c:131
-#: src/resources/ui/nautilus-properties-window.ui:1272
+#: src/resources/ui/nautilus-properties-window.ui:1281
 msgid "Permissions"
 msgstr "Rättigheter"
 
@@ -1781,7 +1778,7 @@ msgid "_Select a new name for the destination"
 msgstr "_Välj ett nytt namn för målet"
 
 #: src/nautilus-file-conflict-dialog.c:311
-#: src/resources/ui/nautilus-properties-window.ui:1323
+#: src/resources/ui/nautilus-properties-window.ui:1332
 msgid "Reset"
 msgstr "Återställ"
 
@@ -3008,7 +3005,7 @@ msgid "dropped data"
 msgstr "släppt data"
 
 #: src/nautilus-file-undo-operations.c:176
-#: src/resources/ui/nautilus-window.ui:78
+#: src/resources/ui/nautilus-window.ui:82
 msgid "Undo"
 msgstr "Ångra"
 
@@ -3822,7 +3819,7 @@ msgid "Another file with the same name already exists in “%s”."
 msgstr "Det finns redan en annan fil med samma namn i ”%s”."
 
 #: src/nautilus-operations-ui-manager.c:274
-#: src/resources/ui/nautilus-properties-window.ui:305
+#: src/resources/ui/nautilus-properties-window.ui:314
 msgid "Original folder"
 msgstr "Ursprunglig mapp"
 
@@ -3900,15 +3897,40 @@ msgstr "Administratörsrot"
 #. Translators: this is referred to the permissions
 #. * the user has in a directory.
 #.
-#: src/nautilus-preferences-window.c:139 src/nautilus-properties-window.c:3604
+#: src/nautilus-preferences-window.c:97 src/nautilus-properties-window.c:3604
 #: src/nautilus-properties-window.c:3634
 msgid "None"
 msgstr "Ingen"
 
-#: src/nautilus-preferences-window.c:353
-#, c-format
-msgid "%d MB"
-msgstr "%d MB"
+#: src/nautilus-preferences-window.c:336
+msgid "Single click"
+msgstr "Enkelklick"
+
+#: src/nautilus-preferences-window.c:336
+msgid "Double click"
+msgstr "Dubbelklick"
+
+#: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:342
+msgid "On this computer only"
+msgstr "Bara på denna dator"
+
+#: src/nautilus-preferences-window.c:338
+msgid "All locations"
+msgstr "Alla platser"
+
+#: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
+#: src/nautilus-preferences-window.c:342
+msgid "Never"
+msgstr "Aldrig"
+
+#: src/nautilus-preferences-window.c:340
+msgid "All files"
+msgstr "Alla filer"
+
+#: src/nautilus-preferences-window.c:342
+msgid "All folders"
+msgstr "Alla mappar"
 
 #: src/nautilus-program-choosing.c:379
 msgid "Sorry, but you cannot execute commands from a remote site."
@@ -3997,7 +4019,7 @@ msgid "The file that you dropped is not an image."
 msgstr "Filen som du släppte är inte en bild."
 
 #: src/nautilus-properties-window.c:651
-#: src/resources/ui/nautilus-properties-window.ui:82
+#: src/resources/ui/nautilus-properties-window.ui:91
 msgid "_Name"
 msgid_plural "_Names"
 msgstr[0] "_Namn"
@@ -4222,7 +4244,6 @@ msgstr "Välj datum…"
 
 #. trash
 #: src/nautilus-shell-search-provider.c:320 src/nautilus-trash-bar.c:201
-#: src/resources/ui/nautilus-preferences-window.ui:605
 msgid "Trash"
 msgstr "Papperskorg"
 
@@ -4337,7 +4358,7 @@ msgstr "Visa lista"
 msgid "Show List"
 msgstr "Visa lista"
 
-#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:251
+#: src/nautilus-window.c:192 src/resources/ui/nautilus-properties-window.ui:260
 msgid "Parent folder"
 msgstr "Överordnad mapp"
 
@@ -4421,7 +4442,7 @@ msgstr "Flytta flik åt _höger"
 msgid "_Close Tab"
 msgstr "S_täng flik"
 
-#: src/nautilus-window.c:2952
+#: src/nautilus-window.c:2949
 msgid "Access and organize your files"
 msgstr "Kom åt och organisera dina filer"
 
@@ -4429,7 +4450,7 @@ msgstr "Kom åt och organisera dina filer"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:2963
+#: src/nautilus-window.c:2960
 msgid "translator-credits"
 msgstr ""
 "Daniel Nylander <po@danielnylander.se>\n"
@@ -4935,7 +4956,7 @@ msgid "C_hange"
 msgstr "Ä_ndra"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:162
-#: src/resources/ui/nautilus-properties-window.ui:1062
+#: src/resources/ui/nautilus-properties-window.ui:1071
 msgid "Others"
 msgstr "Övriga"
 
@@ -4953,6 +4974,7 @@ msgstr "Lägg till i _bokmärken"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:19
 #: src/resources/ui/nautilus-files-view-context-menus.ui:135
+#: src/resources/ui/nautilus-preferences-window.ui:71
 msgid "Create _Link"
 msgstr "Skapa _länk"
 
@@ -5115,33 +5137,60 @@ msgstr "Öppna i nytt _fönster"
 msgid "Open in New _Tab"
 msgstr "Öppna i ny f_lik"
 
-#: src/resources/ui/nautilus-preferences-window.ui:13
-msgid "Preferences"
-msgstr "Inställningar"
-
-#: src/resources/ui/nautilus-preferences-window.ui:71
-msgid "_Show sidebar"
-msgstr "_Visa sidopanel"
-
-#. Translators: a title in the preferences dialog with an option to sort folder before files "Sort folders before files".
-#: src/resources/ui/nautilus-preferences-window.ui:105
-msgctxt "preferences"
-msgid "Sort"
-msgstr "Sortering"
-
-#: src/resources/ui/nautilus-preferences-window.ui:122
-msgid "Sort _folders before files"
+#: src/resources/ui/nautilus-preferences-window.ui:19
+msgid "Sort _Folders Before Files"
 msgstr "Sortera _mappar före filer"
 
-#: src/resources/ui/nautilus-preferences-window.ui:178
-msgid "Allow folders to be _expanded"
-msgstr "Tillåt mappar att _expanderas"
+#: src/resources/ui/nautilus-preferences-window.ui:37
+msgid "_Expandable Folders in List View"
+msgstr "_Expanderbara mappar i listvy"
 
-#: src/resources/ui/nautilus-preferences-window.ui:217
-msgid "Icon View Captions"
-msgstr "Ikonvyrubriker"
+#: src/resources/ui/nautilus-preferences-window.ui:54
+msgid "Action to Open Items"
+msgstr "Åtgärd för att öppna objekt"
 
-#: src/resources/ui/nautilus-preferences-window.ui:236
+#: src/resources/ui/nautilus-preferences-window.ui:64
+msgid "Optional Context Menu Actions"
+msgstr "Valfria snabbvalsmenyåtgärder"
+
+#: src/resources/ui/nautilus-preferences-window.ui:65
+msgid ""
+"Show more actions in the menus. Keyboard shortcuts can be used even if the "
+"actions are not shown."
+msgstr ""
+"Visa fler åtgärder i menyerna. Tangentbordsgenvägar kan användas även om "
+"åtgärderna inte visas."
+
+#: src/resources/ui/nautilus-preferences-window.ui:89
+msgid "_Delete Permanently"
+msgstr "_Ta bort permanent"
+
+#: src/resources/ui/nautilus-preferences-window.ui:107
+msgid "Performance"
+msgstr "Prestanda"
+
+#: src/resources/ui/nautilus-preferences-window.ui:108
+msgid ""
+"These features may cause slowdowns and excess network usage, especially when "
+"browsing files outside this computer, such as on a remote server."
+msgstr ""
+"Dessa funktioner kan orsaka nedsaktning och överdriven nätverksanvändning, "
+"speciellt vid bläddring bland filer utanför denna dator, så som på en "
+"fjärrserver."
+
+#: src/resources/ui/nautilus-preferences-window.ui:113
+msgid "Search in Subfolders"
+msgstr "Sök i undermappar"
+
+#: src/resources/ui/nautilus-preferences-window.ui:122
+msgid "Show Thumbnails"
+msgstr "Visa miniatyrbilder"
+
+#: src/resources/ui/nautilus-preferences-window.ui:131
+msgid "Count Number of Files in Folders"
+msgstr "Räkna antalet filer i mappar"
+
+#: src/resources/ui/nautilus-preferences-window.ui:141
 msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
@@ -5149,291 +5198,134 @@ msgstr ""
 "Lägg till information som ska visas under fil- och mappnamn. Mer information "
 "visas när du zoomar in närmare."
 
+#: src/resources/ui/nautilus-preferences-window.ui:142
+msgid "Icon View Captions"
+msgstr "Ikonvyrubriker"
+
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:371
+#: src/resources/ui/nautilus-preferences-window.ui:147
+msgctxt "the n-th position of an icon caption"
+msgid "First"
+msgstr "Första"
+
+#. Translators: This is an ordinal number
+#: src/resources/ui/nautilus-preferences-window.ui:156
 msgctxt "the n-th position of an icon caption"
 msgid "Second"
 msgstr "Andra"
 
 #. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:389
+#: src/resources/ui/nautilus-preferences-window.ui:165
 msgctxt "the n-th position of an icon caption"
 msgid "Third"
 msgstr "Tredje"
 
-#. Translators: This is an ordinal number
-#: src/resources/ui/nautilus-preferences-window.ui:407
-msgctxt "the n-th position of an icon caption"
-msgid "First"
-msgstr "Första"
-
-#: src/resources/ui/nautilus-preferences-window.ui:452
-msgid "Views"
-msgstr "Vyer"
-
-#: src/resources/ui/nautilus-preferences-window.ui:475
-msgid "Open Action"
-msgstr "Öppningsåtgärd"
-
-#: src/resources/ui/nautilus-preferences-window.ui:492
-msgid "_Single click to open items"
-msgstr "_Enkelklick för att öppna objekt"
-
-#: src/resources/ui/nautilus-preferences-window.ui:509
-msgid "_Double click to open items"
-msgstr "_Dubbelklick för att öppna objekt"
-
-#: src/resources/ui/nautilus-preferences-window.ui:549
-msgid "Link Creation"
-msgstr "Länkskapande"
-
-#: src/resources/ui/nautilus-preferences-window.ui:566
-msgid "Show action to create symbolic _links"
-msgstr "Visa åtgärd för att skapa symboliska _länkar"
-
-#: src/resources/ui/nautilus-preferences-window.ui:622
-msgid "Show action to _permanently delete files and folders"
-msgstr "Visa åtgärd för att _permanent ta bort filer och mappar"
-
-#: src/resources/ui/nautilus-preferences-window.ui:661
-msgid "Behavior"
-msgstr "Beteende"
-
-#: src/resources/ui/nautilus-preferences-window.ui:691
-msgid "Choose the order of information to appear in the list view."
-msgstr "Välj den sortering av information som ska användas i listvyn."
-
-#: src/resources/ui/nautilus-preferences-window.ui:740
-msgid "List Columns"
-msgstr "Listkolumner"
-
-#: src/resources/ui/nautilus-preferences-window.ui:780
-msgid "Search in subfolders:"
-msgstr "Sök i undermappar:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:794
-msgid "_On this computer only"
-msgstr "_Bara på denna dator"
-
-#: src/resources/ui/nautilus-preferences-window.ui:811
-msgid "_All locations"
-msgstr "_Alla platser"
-
-#: src/resources/ui/nautilus-preferences-window.ui:828
-msgid "_Never"
-msgstr "_Aldrig"
-
-#: src/resources/ui/nautilus-preferences-window.ui:868
-msgid "Thumbnails"
-msgstr "Miniatyrbilder"
-
-#: src/resources/ui/nautilus-preferences-window.ui:884
-msgid "Show thumbnails:"
-msgstr "Visa miniatyrbilder:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:898
-msgid "_Files on this computer only"
-msgstr "_Endast filer på denna dator"
-
-#: src/resources/ui/nautilus-preferences-window.ui:915
-msgid "A_ll files"
-msgstr "A_lla filer"
-
-#: src/resources/ui/nautilus-preferences-window.ui:932
-msgid "N_ever"
-msgstr "Al_drig"
-
-#: src/resources/ui/nautilus-preferences-window.ui:956
-msgid "Onl_y for files smaller than:"
-msgstr "Enda_st för filer mindre än:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1014
-msgid "File count"
-msgstr "Filantal"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1030
-msgid "Count number of files in folders:"
-msgstr "Räkna antalet filer i mappar:"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1044
-msgid "F_olders on this computer only"
-msgstr "Endast ma_ppar på den här datorn"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1061
-msgid "All folder_s"
-msgstr "Alla _mappar"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1078
-msgid "Ne_ver"
-msgstr "Al_drig"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1113
-msgid "Search & Preview"
-msgstr "Sök & förhandsgranska"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1140
-#: src/resources/ui/nautilus-preferences-window.ui:1188
-#: src/resources/ui/nautilus-preferences-window.ui:1248
-msgid "Always"
-msgstr "Alltid"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1143
-#: src/resources/ui/nautilus-preferences-window.ui:1191
-#: src/resources/ui/nautilus-preferences-window.ui:1251
-msgid "Local Files Only"
-msgstr "Endast lokala filer"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1146
-#: src/resources/ui/nautilus-preferences-window.ui:1194
-#: src/resources/ui/nautilus-preferences-window.ui:1254
-msgid "Never"
-msgstr "Aldrig"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1157
-#: src/resources/ui/nautilus-preferences-window.ui:1231
-msgid "Small"
-msgstr "Liten"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1160
-#: src/resources/ui/nautilus-preferences-window.ui:1234
-msgid "Standard"
-msgstr "Standard"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1163
-#: src/resources/ui/nautilus-preferences-window.ui:1237
-msgid "Large"
-msgstr "Stor"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1205
-msgid "By Name"
-msgstr "Efter namn"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1208
-msgid "By Size"
-msgstr "Efter storlek"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1211
-msgid "By Type"
-msgstr "Efter typ"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1214
-msgid "By Modification Date"
-msgstr "Efter ändringsdatum"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1217
-msgid "By Access Date"
-msgstr "Efter åtkomstdatum"
-
-#: src/resources/ui/nautilus-preferences-window.ui:1220
-msgid "By Trashed Date"
-msgstr "Efter borttagningsdatum"
-
-#: src/resources/ui/nautilus-properties-window.ui:160
+#: src/resources/ui/nautilus-properties-window.ui:169
 msgid "Link target"
 msgstr "Länkmål"
 
-#: src/resources/ui/nautilus-properties-window.ui:189
+#: src/resources/ui/nautilus-properties-window.ui:198
 msgid "Contents"
 msgstr "Innehåll"
 
-#: src/resources/ui/nautilus-properties-window.ui:333
+#: src/resources/ui/nautilus-properties-window.ui:342
 msgid "Volume"
 msgstr "Volym"
 
-#: src/resources/ui/nautilus-properties-window.ui:361
+#: src/resources/ui/nautilus-properties-window.ui:370
 msgid "Trashed on"
 msgstr "Togs bort den"
 
-#: src/resources/ui/nautilus-properties-window.ui:441
+#: src/resources/ui/nautilus-properties-window.ui:450
 msgid "Free space"
 msgstr "Ledigt utrymme"
 
-#: src/resources/ui/nautilus-properties-window.ui:545
+#: src/resources/ui/nautilus-properties-window.ui:554
 msgid "Total capacity"
 msgstr "Total kapacitet"
 
-#: src/resources/ui/nautilus-properties-window.ui:562
+#: src/resources/ui/nautilus-properties-window.ui:571
 msgid "Filesystem type"
 msgstr "Filsystemstyp"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:631
+#: src/resources/ui/nautilus-properties-window.ui:640
 msgid "used"
 msgstr "använt"
 
 #. Refers to the capacity of the filesystem
-#: src/resources/ui/nautilus-properties-window.ui:644
+#: src/resources/ui/nautilus-properties-window.ui:653
 msgid "free"
 msgstr "ledigt"
 
-#: src/resources/ui/nautilus-properties-window.ui:679
+#: src/resources/ui/nautilus-properties-window.ui:688
 msgid "Open in Disks"
 msgstr "Öppna med Diskar"
 
-#: src/resources/ui/nautilus-properties-window.ui:755
+#: src/resources/ui/nautilus-properties-window.ui:764
 msgid "Basic"
 msgstr "Grundläggande"
 
-#: src/resources/ui/nautilus-properties-window.ui:769
+#: src/resources/ui/nautilus-properties-window.ui:778
 msgid "You are not the owner, so you cannot change these permissions."
 msgstr "Du är inte ägaren så du kan inte ändra dessa rättigheter."
 
-#: src/resources/ui/nautilus-properties-window.ui:796
+#: src/resources/ui/nautilus-properties-window.ui:805
 msgid "The permissions of the selected file could not be determined."
 msgstr "Rättigheterna på den markerade filen kunde inte fastställas."
 
-#: src/resources/ui/nautilus-properties-window.ui:818
+#: src/resources/ui/nautilus-properties-window.ui:827
 msgid "_Owner"
 msgstr "_Ägare"
 
-#: src/resources/ui/nautilus-properties-window.ui:868
-#: src/resources/ui/nautilus-properties-window.ui:991
-#: src/resources/ui/nautilus-properties-window.ui:1076
+#: src/resources/ui/nautilus-properties-window.ui:877
+#: src/resources/ui/nautilus-properties-window.ui:1000
+#: src/resources/ui/nautilus-properties-window.ui:1085
 msgid "Access"
 msgstr "Åtkomst"
 
-#: src/resources/ui/nautilus-properties-window.ui:882
-#: src/resources/ui/nautilus-properties-window.ui:1005
-#: src/resources/ui/nautilus-properties-window.ui:1090
+#: src/resources/ui/nautilus-properties-window.ui:891
+#: src/resources/ui/nautilus-properties-window.ui:1014
+#: src/resources/ui/nautilus-properties-window.ui:1099
 msgid "Folder access"
 msgstr "Mappåtkomst"
 
-#: src/resources/ui/nautilus-properties-window.ui:896
-#: src/resources/ui/nautilus-properties-window.ui:1019
-#: src/resources/ui/nautilus-properties-window.ui:1104
+#: src/resources/ui/nautilus-properties-window.ui:905
+#: src/resources/ui/nautilus-properties-window.ui:1028
+#: src/resources/ui/nautilus-properties-window.ui:1113
 msgid "File access"
 msgstr "Filåtkomst"
 
-#: src/resources/ui/nautilus-properties-window.ui:939
+#: src/resources/ui/nautilus-properties-window.ui:948
 msgid "_Group"
 msgstr "_Grupp"
 
-#: src/resources/ui/nautilus-properties-window.ui:1146
+#: src/resources/ui/nautilus-properties-window.ui:1155
 msgid "Execute"
 msgstr "Kör"
 
-#: src/resources/ui/nautilus-properties-window.ui:1161
+#: src/resources/ui/nautilus-properties-window.ui:1170
 msgid "Security context"
 msgstr "Säkerhetskontext"
 
 # Är enclose rätt ord?
-#: src/resources/ui/nautilus-properties-window.ui:1191
+#: src/resources/ui/nautilus-properties-window.ui:1200
 msgid "Change Permissions for Enclosed Files…"
 msgstr "Ändra rättigheter på berörda filer…"
 
-#: src/resources/ui/nautilus-properties-window.ui:1210
+#: src/resources/ui/nautilus-properties-window.ui:1219
 msgid "Allow _executing file as program"
 msgstr "Tillåt _körning av filen som ett program"
 
-#: src/resources/ui/nautilus-properties-window.ui:1337
+#: src/resources/ui/nautilus-properties-window.ui:1346
 msgid "_Add"
 msgstr "_Lägg till"
 
-#: src/resources/ui/nautilus-properties-window.ui:1351
+#: src/resources/ui/nautilus-properties-window.ui:1360
 msgid "Set as default"
 msgstr "Ange som standard"
 
-#: src/resources/ui/nautilus-properties-window.ui:1379
+#: src/resources/ui/nautilus-properties-window.ui:1388
 msgid "Open With"
 msgstr "Öppna med"
 
@@ -5760,6 +5652,109 @@ msgstr "Anslut till _server"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Ange serveradress…"
+
+#~ msgid "%d MB"
+#~ msgstr "%d MB"
+
+#~ msgid "Preferences"
+#~ msgstr "Inställningar"
+
+#~ msgid "_Show sidebar"
+#~ msgstr "_Visa sidopanel"
+
+#~ msgctxt "preferences"
+#~ msgid "Sort"
+#~ msgstr "Sortering"
+
+#~ msgid "Allow folders to be _expanded"
+#~ msgstr "Tillåt mappar att _expanderas"
+
+#~ msgid "Views"
+#~ msgstr "Vyer"
+
+#~ msgid "Open Action"
+#~ msgstr "Öppningsåtgärd"
+
+#~ msgid "_Single click to open items"
+#~ msgstr "_Enkelklick för att öppna objekt"
+
+#~ msgid "Link Creation"
+#~ msgstr "Länkskapande"
+
+#~ msgid "Show action to create symbolic _links"
+#~ msgstr "Visa åtgärd för att skapa symboliska _länkar"
+
+#~ msgid "Show action to _permanently delete files and folders"
+#~ msgstr "Visa åtgärd för att _permanent ta bort filer och mappar"
+
+#~ msgid "Behavior"
+#~ msgstr "Beteende"
+
+#~ msgid "Choose the order of information to appear in the list view."
+#~ msgstr "Välj den sortering av information som ska användas i listvyn."
+
+#~ msgid "List Columns"
+#~ msgstr "Listkolumner"
+
+#~ msgid "_Never"
+#~ msgstr "_Aldrig"
+
+#~ msgid "Thumbnails"
+#~ msgstr "Miniatyrbilder"
+
+#~ msgid "_Files on this computer only"
+#~ msgstr "_Endast filer på denna dator"
+
+#~ msgid "N_ever"
+#~ msgstr "Al_drig"
+
+#~ msgid "Onl_y for files smaller than:"
+#~ msgstr "Enda_st för filer mindre än:"
+
+#~ msgid "File count"
+#~ msgstr "Filantal"
+
+#~ msgid "F_olders on this computer only"
+#~ msgstr "Endast ma_ppar på den här datorn"
+
+#~ msgid "Ne_ver"
+#~ msgstr "Al_drig"
+
+#~ msgid "Search & Preview"
+#~ msgstr "Sök & förhandsgranska"
+
+#~ msgid "Always"
+#~ msgstr "Alltid"
+
+#~ msgid "Local Files Only"
+#~ msgstr "Endast lokala filer"
+
+#~ msgid "Small"
+#~ msgstr "Liten"
+
+#~ msgid "Standard"
+#~ msgstr "Standard"
+
+#~ msgid "Large"
+#~ msgstr "Stor"
+
+#~ msgid "By Name"
+#~ msgstr "Efter namn"
+
+#~ msgid "By Size"
+#~ msgstr "Efter storlek"
+
+#~ msgid "By Type"
+#~ msgstr "Efter typ"
+
+#~ msgid "By Modification Date"
+#~ msgstr "Efter ändringsdatum"
+
+#~ msgid "By Access Date"
+#~ msgstr "Efter åtkomstdatum"
+
+#~ msgid "By Trashed Date"
+#~ msgstr "Efter borttagningsdatum"
 
 #~ msgid ""
 #~ "Whether to ask for confirmation when deleting files, or emptying the Trash"
