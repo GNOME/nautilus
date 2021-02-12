@@ -382,8 +382,8 @@ update_completions_store (gpointer callback_data)
         user_location = gtk_editable_get_chars (editable, 0, -1);
     }
 
-    user_location = g_strchug (user_location);
-    user_location = g_strchomp (user_location);
+    g_strstrip (user_location);
+
     priv->idle_id = 0;
 
     uri_scheme = g_uri_parse_scheme (user_location);
