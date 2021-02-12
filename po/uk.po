@@ -8,8 +8,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-02-10 12:59+0000\n"
-"PO-Revision-Date: 2021-02-10 16:08+0200\n"
+"POT-Creation-Date: 2021-02-12 16:15+0000\n"
+"PO-Revision-Date: 2021-02-12 19:59+0200\n"
 "Last-Translator: Yuri Chornoivan <yurchor@ukr.net>\n"
 "Language-Team: Ukrainian <trans-uk@lists.fedoraproject.org>\n"
 "Language: uk\n"
@@ -1388,7 +1388,8 @@ msgstr "_Копіювати сюди"
 msgid "_Link Here"
 msgstr "_Сполучити сюди"
 
-#: src/nautilus-dnd.c:811 src/resources/ui/nautilus-compress-dialog.ui:165
+#: src/nautilus-dnd.c:811 src/nautilus-file-operations.c:8407
+#: src/resources/ui/nautilus-compress-dialog.ui:165
 #: src/resources/ui/nautilus-create-folder-dialog.ui:63
 msgid "Cancel"
 msgstr "Скасувати"
@@ -2117,8 +2118,8 @@ msgstr[3] "Вилучення %'d файла"
 #: src/nautilus-file-operations.c:1884 src/nautilus-file-operations.c:2227
 #: src/nautilus-file-operations.c:2235 src/nautilus-file-operations.c:2275
 #: src/nautilus-file-operations.c:4153 src/nautilus-file-operations.c:4161
-#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8700
-#: src/nautilus-file-operations.c:8768
+#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8791
+#: src/nautilus-file-operations.c:8859
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2477,8 +2478,8 @@ msgstr[3] "Подвоєно %'d файл в «%s»"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:4143 src/nautilus-file-operations.c:4203
-#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8440
-#: src/nautilus-file-operations.c:8695 src/nautilus-file-operations.c:8738
+#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8528
+#: src/nautilus-file-operations.c:8786 src/nautilus-file-operations.c:8829
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2502,7 +2503,7 @@ msgstr "%s / %s"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
 #: src/nautilus-file-operations.c:4187 src/nautilus-file-operations.c:8284
-#: src/nautilus-file-operations.c:8727
+#: src/nautilus-file-operations.c:8818
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2516,7 +2517,7 @@ msgstr[3] "%s/ %s — залишилось %s (%s/с)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8757
+#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8848
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2715,7 +2716,7 @@ msgstr "Перевіряння призначення"
 msgid "Extracting “%s”"
 msgstr "Розпакування «%s»"
 
-#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8390
+#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8478
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Помилка розпакування «%s»."
@@ -2725,17 +2726,38 @@ msgstr "Помилка розпакування «%s»."
 msgid "There was an error while extracting “%s”."
 msgstr "Помилка розпакування «%s»."
 
-#: src/nautilus-file-operations.c:8393
+#: src/nautilus-file-operations.c:8404
+msgid "Password Required"
+msgstr ""
+"Потрібен пароль"
+
+#: src/nautilus-file-operations.c:8408
+#| msgid "Extract Here"
+msgid "Extract"
+msgstr "Видобути"
+
+#: src/nautilus-file-operations.c:8420
+#, c-format
+#| msgid "“%s” selected"
+msgid "“%s” is password-protected."
+msgstr "«%s» захищено паролем."
+
+#: src/nautilus-file-operations.c:8430
+#| msgid "Enter server address…"
+msgid "Enter password…"
+msgstr "Введіть пароль…"
+
+#: src/nautilus-file-operations.c:8481
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "Недостатньо вільного місця для видобування %s"
 
-#: src/nautilus-file-operations.c:8423
+#: src/nautilus-file-operations.c:8511
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Розпаковано «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8429
+#: src/nautilus-file-operations.c:8517
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2744,20 +2766,20 @@ msgstr[1] "Розпаковано %'d файли в «%s»"
 msgstr[2] "Розпаковано %'d файлів в «%s»"
 msgstr[3] "Розпаковано %'d файл в «%s»"
 
-#: src/nautilus-file-operations.c:8463
+#: src/nautilus-file-operations.c:8551
 msgid "Preparing to extract"
 msgstr "Підготовлення до розпакування"
 
-#: src/nautilus-file-operations.c:8592
+#: src/nautilus-file-operations.c:8683
 msgid "Extracting Files"
 msgstr "Розпакування файлів"
 
-#: src/nautilus-file-operations.c:8651
+#: src/nautilus-file-operations.c:8742
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Стиснення «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8657
+#: src/nautilus-file-operations.c:8748
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2766,12 +2788,12 @@ msgstr[1] "Стиснення %'d файлів в «%s»"
 msgstr[2] "Стиснення %'d файлів в «%s»"
 msgstr[3] "Стиснення %'d файла в «%s»"
 
-#: src/nautilus-file-operations.c:8805
+#: src/nautilus-file-operations.c:8896
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Помилка стиснення «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8811
+#: src/nautilus-file-operations.c:8902
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
@@ -2780,16 +2802,16 @@ msgstr[1] "Помилка стиснення %'d файлів в «%s»"
 msgstr[2] "Помилка стиснення %'d файлів в «%s»"
 msgstr[3] "Помилка стиснення %'d файла в «%s»"
 
-#: src/nautilus-file-operations.c:8821
+#: src/nautilus-file-operations.c:8912
 msgid "There was an error while compressing files."
 msgstr "Помилка стиснення файлів."
 
-#: src/nautilus-file-operations.c:8846
+#: src/nautilus-file-operations.c:8937
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Стиснено «%s» в «%s»"
 
-#: src/nautilus-file-operations.c:8852
+#: src/nautilus-file-operations.c:8943
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
@@ -2798,7 +2820,7 @@ msgstr[1] "Стиснено %'d файли в «%s»"
 msgstr[2] "Стиснено %'d файлів в «%s»"
 msgstr[3] "Стиснено %'d файл в «%s»"
 
-#: src/nautilus-file-operations.c:8944
+#: src/nautilus-file-operations.c:9035
 msgid "Compressing Files"
 msgstr "Стиснення файлів"
 
@@ -4031,23 +4053,19 @@ msgid "None"
 msgstr "Немає"
 
 #: src/nautilus-preferences-window.c:336
-#| msgid "File conflict"
 msgid "Single click"
 msgstr "Одинарне клацання"
 
 #: src/nautilus-preferences-window.c:336
-#| msgid "_Double click to open items"
 msgid "Double click"
 msgstr "Подвійне клацання"
 
 #: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
 #: src/nautilus-preferences-window.c:342
-#| msgid "_On this computer only"
 msgid "On this computer only"
 msgstr "Тільки на цьому комп'ютері"
 
 #: src/nautilus-preferences-window.c:338
-#| msgid "_All locations"
 msgid "All locations"
 msgstr "Усюди"
 
@@ -4057,12 +4075,10 @@ msgid "Never"
 msgstr "Ніколи"
 
 #: src/nautilus-preferences-window.c:340
-#| msgid "A_ll files"
 msgid "All files"
 msgstr "Усі файли"
 
 #: src/nautilus-preferences-window.c:342
-#| msgid "All folder_s"
 msgid "All folders"
 msgstr "Усі теки"
 
@@ -5289,61 +5305,55 @@ msgid "Open in New _Tab"
 msgstr "Відкрити у новій в_кладці"
 
 #: src/resources/ui/nautilus-preferences-window.ui:19
-#| msgid "Sort _folders before files"
 msgid "Sort _Folders Before Files"
 msgstr "Впорядковувати _теки перед файлами"
 
 #: src/resources/ui/nautilus-preferences-window.ui:37
 msgid "_Expandable Folders in List View"
-msgstr ""
-"П_ридатні до розгортання теки у перегляді списком"
+msgstr "П_ридатні до розгортання теки у перегляді списком"
 
 #: src/resources/ui/nautilus-preferences-window.ui:54
 msgid "Action to Open Items"
-msgstr ""
-"Дія для відкриття записів"
+msgstr "Дія для відкриття записів"
 
 #: src/resources/ui/nautilus-preferences-window.ui:64
 msgid "Optional Context Menu Actions"
-msgstr ""
-"Додаткові пункти контекстного меню"
+msgstr "Додаткові пункти контекстного меню"
 
 #: src/resources/ui/nautilus-preferences-window.ui:65
 msgid ""
 "Show more actions in the menus. Keyboard shortcuts can be used even if the "
 "actions are not shown."
 msgstr ""
-"Показувати додаткові пункти дій у меню. Клавіатурними скороченнями можна скористатися, навіть якщо пункти дій не показано."
+"Показувати додаткові пункти дій у меню. Клавіатурними скороченнями можна "
+"скористатися, навіть якщо пункти дій не показано."
 
 #: src/resources/ui/nautilus-preferences-window.ui:89
-#| msgid "_Delete Permanently…"
 msgid "_Delete Permanently"
 msgstr "В_илучити остаточно"
 
 #: src/resources/ui/nautilus-preferences-window.ui:107
 msgid "Performance"
-msgstr ""
-"Швидкодія"
+msgstr "Швидкодія"
 
 #: src/resources/ui/nautilus-preferences-window.ui:108
 msgid ""
 "These features may cause slowdowns and excess network usage, especially when "
 "browsing files outside this computer, such as on a remote server."
 msgstr ""
-"Ці можливості можуть спричиняти сповільнення системи та надмірне навантаження на мережу, особливо при навігації файловими системами поза цим комп'ютером, зокрема на віддалених серверах."
+"Ці можливості можуть спричиняти сповільнення системи та надмірне "
+"навантаження на мережу, особливо при навігації файловими системами поза цим "
+"комп'ютером, зокрема на віддалених серверах."
 
 #: src/resources/ui/nautilus-preferences-window.ui:113
-#| msgid "Search in subfolders:"
 msgid "Search in Subfolders"
 msgstr "Пошук у підтеках"
 
 #: src/resources/ui/nautilus-preferences-window.ui:122
-#| msgid "Show thumbnails:"
 msgid "Show Thumbnails"
 msgstr "Показувати мініатюри"
 
 #: src/resources/ui/nautilus-preferences-window.ui:131
-#| msgid "Count number of files in folders:"
 msgid "Count Number of Files in Folders"
 msgstr "Обчислювати кількість файлів у теках"
 
