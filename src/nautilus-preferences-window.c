@@ -390,6 +390,7 @@ static void nautilus_preferences_window_setup(GtkBuilder *builder,
 void nautilus_preferences_window_show(GtkWindow *window)
 {
     GtkBuilder *builder;
+    g_autoptr (GError) error = NULL;
 
     if (preferences_window != NULL)
     {
@@ -400,7 +401,11 @@ void nautilus_preferences_window_show(GtkWindow *window)
     builder = gtk_builder_new ();
 
     gtk_builder_add_from_resource (
-        builder, "/org/gnome/nautilus/ui/nautilus-preferences-window.ui", NULL);
+        builder, "/org/gnome/nautilus/ui/nautilus-preferences-window.ui", &error);
+    if (error != NULL)
+    {
+        g_error ("Failed to add nautilus-preferences-window.ui: %s", error->message);
+    }
 
     nautilus_preferences_window_setup (builder, window);
 
