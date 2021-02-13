@@ -69,6 +69,11 @@ struct SelectionForeachData
  */
 #define LIST_VIEW_MINIMUM_ROW_HEIGHT    28
 
+/* The star icon itself is 16px, which leaves an empty 16px gutter on each side,
+ * which is necessary to avoid the overlay scrollbar.
+ */
+#define STAR_COLUMN_WIDTH 48
+
 /* We wait two seconds after row is collapsed to unload the subdirectory */
 #define COLLAPSE_TO_UNLOAD_DELAY 2
 
@@ -2324,9 +2329,10 @@ create_and_set_up_tree_view (NautilusListView *view)
                               "mode", GTK_CELL_RENDERER_MODE_ACTIVATABLE,
                               NULL);
 
-                column = gtk_tree_view_column_new_with_attributes (label,
+                column = gtk_tree_view_column_new_with_attributes ("",
                                                                    cell,
                                                                    NULL);
+                gtk_tree_view_column_set_fixed_width (column, STAR_COLUMN_WIDTH);
             }
             else
             {
