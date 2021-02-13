@@ -14,8 +14,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-02-11 09:12+0000\n"
-"PO-Revision-Date: 2021-02-11 19:17+0100\n"
+"POT-Creation-Date: 2021-02-12 16:15+0000\n"
+"PO-Revision-Date: 2021-02-13 13:49+0100\n"
 "Last-Translator: Anders Jonsson <anders.jonsson@norsjovallen.se>\n"
 "Language-Team: Swedish <tp-sv@listor.tp-sv.se>\n"
 "Language: sv\n"
@@ -1380,7 +1380,8 @@ msgstr "_Kopiera hit"
 msgid "_Link Here"
 msgstr "_Länka hit"
 
-#: src/nautilus-dnd.c:811 src/resources/ui/nautilus-compress-dialog.ui:165
+#: src/nautilus-dnd.c:811 src/nautilus-file-operations.c:8407
+#: src/resources/ui/nautilus-compress-dialog.ui:165
 #: src/resources/ui/nautilus-create-folder-dialog.ui:63
 msgid "Cancel"
 msgstr "Avbryt"
@@ -2097,8 +2098,8 @@ msgstr[1] "Tar bort %'d filer"
 #: src/nautilus-file-operations.c:1884 src/nautilus-file-operations.c:2227
 #: src/nautilus-file-operations.c:2235 src/nautilus-file-operations.c:2275
 #: src/nautilus-file-operations.c:4153 src/nautilus-file-operations.c:4161
-#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8700
-#: src/nautilus-file-operations.c:8768
+#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8791
+#: src/nautilus-file-operations.c:8859
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2434,8 +2435,8 @@ msgstr[1] "Duplicerade %'d filer i ”%s”"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:4143 src/nautilus-file-operations.c:4203
-#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8440
-#: src/nautilus-file-operations.c:8695 src/nautilus-file-operations.c:8738
+#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8528
+#: src/nautilus-file-operations.c:8786 src/nautilus-file-operations.c:8829
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2459,7 +2460,7 @@ msgstr "%s / %s"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
 #: src/nautilus-file-operations.c:4187 src/nautilus-file-operations.c:8284
-#: src/nautilus-file-operations.c:8727
+#: src/nautilus-file-operations.c:8818
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2471,7 +2472,7 @@ msgstr[1] "%s / %s — %s återstår (%s/s)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8757
+#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8848
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2666,7 +2667,7 @@ msgstr "Bekräftar målplats"
 msgid "Extracting “%s”"
 msgstr "Extraherar ”%s”"
 
-#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8390
+#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8478
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Fel vid extrahering av ”%s”"
@@ -2676,72 +2677,89 @@ msgstr "Fel vid extrahering av ”%s”"
 msgid "There was an error while extracting “%s”."
 msgstr "Det inträffade ett fel vid extrahering av ”%s”."
 
-#: src/nautilus-file-operations.c:8393
+#: src/nautilus-file-operations.c:8404
+msgid "Password Required"
+msgstr "Lösenord krävs"
+
+#: src/nautilus-file-operations.c:8408
+msgid "Extract"
+msgstr "Extrahera"
+
+#: src/nautilus-file-operations.c:8420
+#, c-format
+msgid "“%s” is password-protected."
+msgstr "”%s” är lösenordsskyddad."
+
+#: src/nautilus-file-operations.c:8430
+msgid "Enter password…"
+msgstr "Ange lösenord…"
+
+#: src/nautilus-file-operations.c:8481
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "Inte tillräckligt mycket ledigt utrymme för att extrahera %s"
 
-#: src/nautilus-file-operations.c:8423
+#: src/nautilus-file-operations.c:8511
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Extraherade ”%s” till ”%s”"
 
-#: src/nautilus-file-operations.c:8429
+#: src/nautilus-file-operations.c:8517
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
 msgstr[0] "Extraherade %'d fil till ”%s”"
 msgstr[1] "Extraherade %'d filer till ”%s”"
 
-#: src/nautilus-file-operations.c:8463
+#: src/nautilus-file-operations.c:8551
 msgid "Preparing to extract"
 msgstr "Förbereder att extrahera"
 
-#: src/nautilus-file-operations.c:8592
+#: src/nautilus-file-operations.c:8683
 msgid "Extracting Files"
 msgstr "Extraherar filer"
 
-#: src/nautilus-file-operations.c:8651
+#: src/nautilus-file-operations.c:8742
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Komprimerar ”%s” till ”%s”"
 
-#: src/nautilus-file-operations.c:8657
+#: src/nautilus-file-operations.c:8748
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
 msgstr[0] "Komprimerar %'d fil till ”%s”"
 msgstr[1] "Komprimerar %'d filer till ”%s”"
 
-#: src/nautilus-file-operations.c:8805
+#: src/nautilus-file-operations.c:8896
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Fel vid komprimering av ”%s” till ”%s”"
 
-#: src/nautilus-file-operations.c:8811
+#: src/nautilus-file-operations.c:8902
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "Fel vid komprimering av %'d fil till ”%s”"
 msgstr[1] "Fel vid komprimering av %'d filer till ”%s”"
 
-#: src/nautilus-file-operations.c:8821
+#: src/nautilus-file-operations.c:8912
 msgid "There was an error while compressing files."
 msgstr "Det inträffade ett fel vid komprimering av filer."
 
-#: src/nautilus-file-operations.c:8846
+#: src/nautilus-file-operations.c:8937
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Komprimerade ”%s” till ”%s”"
 
-#: src/nautilus-file-operations.c:8852
+#: src/nautilus-file-operations.c:8943
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Komprimerade %'d fil till ”%s”"
 msgstr[1] "Komprimerade %'d filer till ”%s”"
 
-#: src/nautilus-file-operations.c:8944
+#: src/nautilus-file-operations.c:9035
 msgid "Compressing Files"
 msgstr "Komprimerar filer"
 
