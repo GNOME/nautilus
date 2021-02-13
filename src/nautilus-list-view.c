@@ -640,7 +640,7 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         view->details->first_click_path = gtk_tree_path_copy (path);
     }
 
-    on_star = (g_strcmp0 (gtk_tree_view_column_get_title (column), "Star") == 0 &&
+    on_star = (g_hash_table_lookup (view->details->columns, "starred") == column &&
                !gtk_tree_view_is_blank_at_pos (tree_view,
                                                bin_x,
                                                bin_y,
