@@ -2028,7 +2028,7 @@ nautilus_self_check_directory (void)
 
     nautilus_directory_unref (directory);
 
-    while (g_hash_table_size (directories) != 0)
+    for (guint i = 0; g_hash_table_size (directories) != 0 && i < 100000; i++)
     {
         gtk_main_iteration ();
     }
@@ -2045,10 +2045,12 @@ nautilus_self_check_directory (void)
                                         TRUE,
                                         got_files_callback, &data_dummy);
 
-    while (!got_files_flag)
+    for (guint i = 0; !got_files_flag && i < 100000; i++)
     {
         gtk_main_iteration ();
     }
+
+    EEL_CHECK_BOOLEAN_RESULT (got_files_flag, TRUE);
 
     EEL_CHECK_BOOLEAN_RESULT (directory->details->file_list == NULL, TRUE);
 
