@@ -8,15 +8,16 @@
     <property name="valign">center</property>
     <property name="hexpand">True</property>
     <property name="vexpand">True</property>
-    <property name="row_spacing">12</property>
+    <property name="row_spacing">36</property>
     <child>
       <object class="GtkImage">
         <property name="visible">True</property>
         <property name="can_focus">False</property>
-        <property name="pixel_size">80</property>
+        <property name="pixel_size">128</property>
         <property name="icon_name">starred-symbolic</property>
         <style>
           <class name="dim-label"/>
+          <class name="nautilus-empty-state-icon"/>
         </style>
       </object>
       <packing>
@@ -29,18 +30,14 @@
         <property name="visible">True</property>
         <property name="can_focus">False</property>
         <property name="label" translatable="yes">Starred files will appear here</property>
-        <attributes>
-          <attribute name="weight" value="bold"/>
-          <attribute name="scale" value="1.4399999999999999"/>
-        </attributes>
+        <style>
+          <class name="large-title"/>
+        </style>
       </object>
       <packing>
         <property name="left_attach">0</property>
         <property name="top_attach">1</property>
       </packing>
     </child>
-    <style>
-      <class name="dim-label"/>
-    </style>
   </object>
 </interface>
