@@ -24,8 +24,8 @@ msgid ""
 msgstr ""
 "Project-Id-Version: nautilus.master.es\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2021-02-10 12:59+0000\n"
-"PO-Revision-Date: 2021-02-11 09:56+0100\n"
+"POT-Creation-Date: 2021-02-12 16:15+0000\n"
+"PO-Revision-Date: 2021-02-15 10:43+0100\n"
 "Last-Translator: Daniel Mustieles <daniel.mustieles@gmail.com>\n"
 "Language-Team: Spanish - Spain <gnome-es-list@gnome.org>\n"
 "Language: es_ES\n"
@@ -1518,7 +1518,8 @@ msgstr "En_lazar aquí"
 
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # libnautilus-private/nautilus-program-chooser.c:1262
-#: src/nautilus-dnd.c:811 src/resources/ui/nautilus-compress-dialog.ui:165
+#: src/nautilus-dnd.c:811 src/nautilus-file-operations.c:8407
+#: src/resources/ui/nautilus-compress-dialog.ui:165
 #: src/resources/ui/nautilus-create-folder-dialog.ui:63
 msgid "Cancel"
 msgstr "Cancelar"
@@ -2316,8 +2317,8 @@ msgstr[1] "Eliminando %'d archivos"
 #: src/nautilus-file-operations.c:1884 src/nautilus-file-operations.c:2227
 #: src/nautilus-file-operations.c:2235 src/nautilus-file-operations.c:2275
 #: src/nautilus-file-operations.c:4153 src/nautilus-file-operations.c:4161
-#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8700
-#: src/nautilus-file-operations.c:8768
+#: src/nautilus-file-operations.c:4232 src/nautilus-file-operations.c:8791
+#: src/nautilus-file-operations.c:8859
 #, c-format
 msgid "%'d / %'d"
 msgstr "%'d / %'d"
@@ -2680,8 +2681,8 @@ msgstr[1] "Duplicados %'d archivos en «%s»"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB", so something like "4 kb / 4 MB"
 #. To translators: %s will expand to a size like "2 bytes" or "3 MB".
 #: src/nautilus-file-operations.c:4143 src/nautilus-file-operations.c:4203
-#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8440
-#: src/nautilus-file-operations.c:8695 src/nautilus-file-operations.c:8738
+#: src/nautilus-file-operations.c:8266 src/nautilus-file-operations.c:8528
+#: src/nautilus-file-operations.c:8786 src/nautilus-file-operations.c:8829
 #, c-format
 msgid "%s / %s"
 msgstr "%s / %s"
@@ -2705,7 +2706,7 @@ msgstr "%s / %s"
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
 #: src/nautilus-file-operations.c:4187 src/nautilus-file-operations.c:8284
-#: src/nautilus-file-operations.c:8727
+#: src/nautilus-file-operations.c:8818
 #, c-format
 msgid "%s / %s — %s left (%s/sec)"
 msgid_plural "%s / %s — %s left (%s/sec)"
@@ -2717,7 +2718,7 @@ msgstr[1] "%s / %s — quedan %s (%s/sg)"
 #. *
 #. * The singular/plural form will be used depending on the remaining time (i.e. the %s argument).
 #.
-#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8757
+#: src/nautilus-file-operations.c:4221 src/nautilus-file-operations.c:8848
 #, c-format
 msgid "%'d / %'d — %s left (%s/sec)"
 msgid_plural "%'d / %'d — %s left (%s/sec)"
@@ -2938,7 +2939,7 @@ msgid "Extracting “%s”"
 msgstr "Extrayendo «%s»"
 
 # src/file-manager/dfos-xfer.c:745
-#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8390
+#: src/nautilus-file-operations.c:8328 src/nautilus-file-operations.c:8478
 #, c-format
 msgid "Error extracting “%s”"
 msgstr "Error al extraer «%s»"
@@ -2948,19 +2949,41 @@ msgstr "Error al extraer «%s»"
 msgid "There was an error while extracting “%s”."
 msgstr "Hubo un error al extraer «%s»."
 
-#: src/nautilus-file-operations.c:8393
+#: src/nautilus-file-operations.c:8404
+msgid "Password Required"
+msgstr "Se requiere una contraseña"
+
+#: src/nautilus-file-operations.c:8408
+#| msgid "Extract Here"
+msgid "Extract"
+msgstr "Extraer"
+
+# src/file-manager/fm-directory-view.c:1015
+#: src/nautilus-file-operations.c:8420
+#, c-format
+#| msgid "“%s” selected"
+msgid "“%s” is password-protected."
+msgstr "«%s» está protegido con contraseña."
+
+# src/nautilus-location-bar.c:401
+#: src/nautilus-file-operations.c:8430
+#| msgid "Enter _Location…"
+msgid "Enter password…"
+msgstr "Introducir contraseña…"
+
+#: src/nautilus-file-operations.c:8481
 #, c-format
 msgid "Not enough free space to extract %s"
 msgstr "No hay espacio libre disponible para extraer %s"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8423
+#: src/nautilus-file-operations.c:8511
 #, c-format
 msgid "Extracted “%s” to “%s”"
 msgstr "Extraído «%s» a «%s»"
 
 # src/file-manager/dfos-xfer.c:700
-#: src/nautilus-file-operations.c:8429
+#: src/nautilus-file-operations.c:8517
 #, c-format
 msgid "Extracted %'d file to “%s”"
 msgid_plural "Extracted %'d files to “%s”"
@@ -2968,22 +2991,22 @@ msgstr[0] "Extraído %'d archivo a «%s»"
 msgstr[1] "Extraídos %'d archivos a «%s»"
 
 # src/file-manager/dfos-xfer.c:1009
-#: src/nautilus-file-operations.c:8463
+#: src/nautilus-file-operations.c:8551
 msgid "Preparing to extract"
 msgstr "Preparándose para extraer"
 
-#: src/nautilus-file-operations.c:8592
+#: src/nautilus-file-operations.c:8683
 msgid "Extracting Files"
 msgstr "Extrayendo archivos"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8651
+#: src/nautilus-file-operations.c:8742
 #, c-format
 msgid "Compressing “%s” into “%s”"
 msgstr "Comprimiendo «%s» en «%s»"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8657
+#: src/nautilus-file-operations.c:8748
 #, c-format
 msgid "Compressing %'d file into “%s”"
 msgid_plural "Compressing %'d files into “%s”"
@@ -2991,38 +3014,38 @@ msgstr[0] "Comprimiendo %'d archivo en «%s»"
 msgstr[1] "Comprimiendo %'d archivos en «%s»"
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8805
+#: src/nautilus-file-operations.c:8896
 #, c-format
 msgid "Error compressing “%s” into “%s”"
 msgstr "Error al comprimir «%s» en «%s»"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8811
+#: src/nautilus-file-operations.c:8902
 #, c-format
 msgid "Error compressing %'d file into “%s”"
 msgid_plural "Error compressing %'d files into “%s”"
 msgstr[0] "Error al comprimir %'d archivo en «%s»"
 msgstr[1] "Error al comprimir %'d archivos en «%s»"
 
-#: src/nautilus-file-operations.c:8821
+#: src/nautilus-file-operations.c:8912
 msgid "There was an error while compressing files."
 msgstr "Hubo un error al comprimir los archivos."
 
 # src/file-manager/fm-error-reporting.c:214
-#: src/nautilus-file-operations.c:8846
+#: src/nautilus-file-operations.c:8937
 #, c-format
 msgid "Compressed “%s” into “%s”"
 msgstr "Comprimido «%s» en «%s»"
 
 # src/file-manager/dfos-xfer.c:723
-#: src/nautilus-file-operations.c:8852
+#: src/nautilus-file-operations.c:8943
 #, c-format
 msgid "Compressed %'d file into “%s”"
 msgid_plural "Compressed %'d files into “%s”"
 msgstr[0] "Comprimido %'d archivo en «%s»"
 msgstr[1] "Comprimidos %'d archivos en «%s»"
 
-#: src/nautilus-file-operations.c:8944
+#: src/nautilus-file-operations.c:9035
 msgid "Compressing Files"
 msgstr "Comprimiendo archivos"
 
@@ -4302,24 +4325,20 @@ msgid "None"
 msgstr "Ninguno"
 
 #: src/nautilus-preferences-window.c:336
-#| msgid "File conflict"
 msgid "Single click"
 msgstr "Un sola pulsación"
 
 #: src/nautilus-preferences-window.c:336
-#| msgid "_Double click to open items"
 msgid "Double click"
 msgstr "Doble pulsación"
 
 #: src/nautilus-preferences-window.c:338 src/nautilus-preferences-window.c:340
 #: src/nautilus-preferences-window.c:342
-#| msgid "_On this computer only"
 msgid "On this computer only"
 msgstr "Sólo en este equipo"
 
 # src/nautilus-location-bar.c:401
 #: src/nautilus-preferences-window.c:338
-#| msgid "_All locations"
 msgid "All locations"
 msgstr "Todas las ubicaciones"
 
@@ -4332,14 +4351,12 @@ msgstr "Nunca"
 # #-#-#-#-#  nautilus-es.po (Nautilus)  #-#-#-#-#
 # components/music/nautilus-music-view.c:198
 #: src/nautilus-preferences-window.c:340
-#| msgid "A_ll files"
 msgid "All files"
 msgstr "Todos los archivos"
 
 # src/file-manager/fm-directory-view.c:2140
 # src/file-manager/fm-directory-view.c:2257
 #: src/nautilus-preferences-window.c:342
-#| msgid "All folder_s"
 msgid "All folders"
 msgstr "Todas las carpetas"
 
@@ -5707,7 +5724,6 @@ msgid "Open in New _Tab"
 msgstr "Abrir en una pe_staña nueva"
 
 #: src/resources/ui/nautilus-preferences-window.ui:19
-#| msgid "Sort _folders before files"
 msgid "Sort _Folders Before Files"
 msgstr "Colocar las carpetas antes que los archivos"
 
@@ -5733,7 +5749,6 @@ msgstr ""
 
 # src/file-manager/fm-directory-view.c:2678
 #: src/resources/ui/nautilus-preferences-window.ui:89
-#| msgid "_Delete Permanently…"
 msgid "_Delete Permanently"
 msgstr "Eliminar permanentemente"
 
@@ -5751,19 +5766,16 @@ msgstr ""
 "en un servidor remoto."
 
 #: src/resources/ui/nautilus-preferences-window.ui:113
-#| msgid "Search in subfolders:"
 msgid "Search in Subfolders"
 msgstr "Buscar en subcarpetas"
 
 # libnautilus-private/nautilus-global-preferences.c:256
 #: src/resources/ui/nautilus-preferences-window.ui:122
-#| msgid "Show thumbnails:"
 msgid "Show Thumbnails"
 msgstr "Mostrar miniaturas"
 
 # src/file-manager/dfos-xfer.c:763
 #: src/resources/ui/nautilus-preferences-window.ui:131
-#| msgid "Count number of files in folders:"
 msgid "Count Number of Files in Folders"
 msgstr "Contar el número de archivos en carpetas"
 
@@ -8186,10 +8198,6 @@ msgstr "Introduzca la dirección del servidor…"
 # src/nautilus-window-menus.c:670
 #~ msgid "Go to the next visited location"
 #~ msgstr "Ir al siguiente lugar visitado"
-
-# src/nautilus-location-bar.c:401
-#~ msgid "Enter _Location…"
-#~ msgstr "Introducir _lugar…"
 
 #~ msgid "Specify a location to open"
 #~ msgstr "Especifique un lugar para abrir"
