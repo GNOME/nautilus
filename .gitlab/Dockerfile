@@ -14,3 +14,13 @@ RUN dnf install --nogpg -y gnome-common \
  && make install \
  && cd .. \
  && rm -rf gnome-autoar
+
+RUN dnf builddep --nogpg -y libhandy \
+ && dnf clean all \
+ && git clone --depth 1 https://gitlab.gnome.org/GNOME/libhandy.git \
+ && cd libhandy \
+ && meson . _build --prefix=/usr \
+ && ninja -C _build \
+ && ninja -C _build install \
+ && cd .. \
+ && rm -rf libhandy
