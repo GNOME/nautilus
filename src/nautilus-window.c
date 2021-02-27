@@ -1434,7 +1434,7 @@ nautilus_window_slot_close (NautilusWindow     *window,
     NautilusNavigationState *data;
 
     DEBUG ("Requesting to remove slot %p from window %p", slot, window);
-    if (window == NULL)
+    if (window == NULL || slot == NULL)
     {
         return;
     }
@@ -1465,7 +1465,7 @@ nautilus_window_sync_bookmarks (NautilusWindow *window)
     GFile *location;
 
     slot = window->active_slot;
-    location = nautilus_window_slot_get_location (slot);
+    location = slot != NULL ? nautilus_window_slot_get_location (slot) : NULL;
 
     if (location != NULL)
     {
@@ -1487,6 +1487,9 @@ nautilus_window_sync_location_widgets (NautilusWindow *window)
     gboolean enabled;
 
     slot = window->active_slot;
+    /* This function is called by the active slot. */
+    g_assert (slot != NULL);
+
     location = nautilus_window_slot_get_location (slot);
 
     /* Change the location bar and path bar to match the current location. */
@@ -1765,6 +1768,11 @@ nautilus_window_show_operation_notification (NautilusWindow *window,
     gchar *folder_name;
     NautilusFile *folder;
     GFile *current_location;
+
+    if (window->active_slot == NULL)
+    {
+        return;
+    }
 
     current_location = nautilus_window_slot_get_location (window->active_slot);
     if (gtk_window_has_toplevel_focus (GTK_WINDOW (window)))
@@ -2520,7 +2528,8 @@ nautilus_window_key_press_event (GtkWidget   *widget,
         return GDK_EVENT_STOP;
     }
 
-    if (nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
+    if (window->active_slot != NULL &&
+        nautilus_window_slot_handle_event (window->active_slot, (GdkEvent *) event))
     {
         return GDK_EVENT_STOP;
     }
