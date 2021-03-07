@@ -17,14 +17,14 @@
 # Furkan Ahmet Kara <furkanahmetkara.fk@gmail.com>, 2017, 2018.
 # Furkan Tokaç <developmentft@gmail.com>, 2018.
 # Sabri Ünal <libreajans@gmail.com>, 2019-2020.
-# Emin Tufan Çetin <etcetin@gmail.com>, 2016-2020.
+# Emin Tufan Çetin <etcetin@gmail.com>, 2016-2021.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: nautilus\n"
 "Report-Msgid-Bugs-To: https://gitlab.gnome.org/GNOME/nautilus/issues\n"
-"POT-Creation-Date: 2020-10-02 12:54+0000\n"
-"PO-Revision-Date: 2020-11-11 19:39+0300\n"
+"POT-Creation-Date: 2021-01-08 13:26+0000\n"
+"PO-Revision-Date: 2021-03-07 22:45+0300\n"
 "Last-Translator: Emin Tufan Çetin <etcetin@gmail.com>\n"
 "Language-Team: Turkish <gnome-turk@gnome.org>\n"
 "Language: tr\n"
@@ -32,7 +32,7 @@ msgstr ""
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=1; plural=0;\n"
-"X-Generator: Poedit 2.4.1\n"
+"X-Generator: Poedit 2.4.2\n"
 "X-POOTLE-MTIME: 1433334275.000000\n"
 "X-Poedit-SourceCharset: UTF-8\n"
 
@@ -46,7 +46,7 @@ msgstr "Yazılımı çalıştır"
 #.
 #: data/org.gnome.Nautilus.appdata.xml.in.in:5
 #: data/org.gnome.Nautilus.desktop.in.in:3 src/nautilus-mime-actions.c:102
-#: src/nautilus-window.c:2997
+#: src/nautilus-window.c:3008
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:44
 msgid "Files"
 msgstr "Dosyalar"
@@ -79,7 +79,7 @@ msgstr ""
 "klasörlerinizi tarayabilir, çıkarılabilir ortamlara veri yazabilir ve "
 "okuyabilir, betik ve uygulamaları çalıştırabilir. Üç tür görünümü bulunur: "
 "Simge, Liste ve Ağaç. Nautilus’un işlevleri eklentiler ve betiklerle "
-"arttırılabilir."
+"genişletilebilir."
 
 #: data/org.gnome.Nautilus.appdata.xml.in.in:34
 msgid "The GNOME Project"
@@ -89,7 +89,7 @@ msgstr "GNOME Projesi"
 msgid "Tile View"
 msgstr "Döşeme Görünümü"
 
-#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2417
+#: data/org.gnome.Nautilus.appdata.xml.in.in:42 src/nautilus-list-view.c:2414
 #: src/resources/ui/nautilus-preferences-window.ui:161
 #: src/resources/ui/nautilus-preferences-window.ui:1284
 msgid "List View"
@@ -114,7 +114,9 @@ msgstr "Diğer Konumlar"
 #. Translators: Search terms to find this application. Do NOT translate or localize the semicolons! The list MUST also end with a semicolon!
 #: data/org.gnome.Nautilus.desktop.in.in:6
 msgid "folder;manager;explore;disk;filesystem;nautilus;"
-msgstr "klasör;dizin;yönetici;gezgin;keşfet;gözat;disk;dosya sistemi;nautilus;"
+msgstr ""
+"klasör;dizin;yönetici;gezgin;keşfet;keşif;gözat;göz at;disk;dosya sistemi;"
+"nautilus;"
 
 #: data/org.gnome.Nautilus.desktop.in.in:20
 #: src/resources/ui/nautilus-toolbar.ui:27
@@ -884,11 +886,11 @@ msgstr "Fotoğraf Makinesi Modeli"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:230
 msgid "Exposure Time"
-msgstr "Tab Etme Zamanı"
+msgstr "Pozlama Zamanı"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:231
 msgid "Exposure Program"
-msgstr "Tab Etme Programı"
+msgstr "Pozlama Programı"
 
 #: extensions/image-properties/nautilus-image-properties-page.c:232
 msgid "Aperture Value"
@@ -1175,7 +1177,7 @@ msgstr "Oluşturulma tarihi"
 
 #: src/nautilus-batch-rename-dialog.h:135
 msgid "Season number"
-msgstr "Mevsim numarası"
+msgstr "Sezon numarası"
 
 #: src/nautilus-batch-rename-dialog.h:142
 msgid "Episode number"
@@ -1210,14 +1212,14 @@ msgid "001, 002, 003"
 msgstr "001, 002, 003"
 
 #: src/nautilus-bookmark.c:115 src/nautilus-file-utilities.c:304
-#: src/nautilus-list-view.c:1940 src/nautilus-pathbar.c:328
+#: src/nautilus-list-view.c:1937 src/nautilus-pathbar.c:328
 #: src/nautilus-shell-search-provider.c:315 src/nautilus-window.c:193
 msgid "Home"
 msgstr "Başlangıç"
 
 #: src/nautilus-canvas-container.c:1772
 msgid "The selection rectangle"
-msgstr "Seçim dörgeni"
+msgstr "Seçim dörtgeni"
 
 #: src/nautilus-canvas-view-container.c:366
 #: src/resources/ui/nautilus-preferences-window.ui:1281
@@ -1232,7 +1234,7 @@ msgstr "_Öntanımlılara Sıfırla"
 msgid "Replace the current List Columns settings with the default settings"
 msgstr "Geçerli Liste Sütunları ayarlarını öntanımlı ayarlarla değiştir"
 
-#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2283
+#: src/nautilus-column-utilities.c:58 src/nautilus-list-view.c:2280
 #: src/resources/ui/nautilus-rename-file-popover.ui:23
 msgid "Name"
 msgstr "Ad"
@@ -1304,7 +1306,7 @@ msgid "The group of the file."
 msgstr "Dosyanın kümesi."
 
 #: src/nautilus-column-utilities.c:121
-#: src/resources/ui/nautilus-properties-window.ui:1245
+#: src/resources/ui/nautilus-properties-window.ui:1246
 msgid "Permissions"
 msgstr "İzinler"
 
@@ -1796,7 +1798,7 @@ msgid "_Select a new name for the destination"
 msgstr "Hedef için yeni ad _seç"
 
 #: src/nautilus-file-conflict-dialog.c:306
-#: src/resources/ui/nautilus-properties-window.ui:1296
+#: src/resources/ui/nautilus-properties-window.ui:1297
 msgid "Reset"
 msgstr "Sıfırla"
 
@@ -3300,12 +3302,12 @@ msgstr "Çöpü _Yinele"
 #: src/nautilus-file-undo-operations.c:1939
 #, c-format
 msgid "Restore original permissions of items enclosed in “%s”"
-msgstr "“%s” içesine konulu ögelerin özgün izinlerini geri yükle"
+msgstr "“%s” içine koyulu ögelerin özgün izinlerini geri yükle"
 
 #: src/nautilus-file-undo-operations.c:1940
 #, c-format
 msgid "Set permissions of items enclosed in “%s”"
-msgstr "“%s” içerisine konulu ögelerin izinlerini ayarla"
+msgstr "“%s” içine koyulu ögelerin izinlerini ayarla"
 
 #: src/nautilus-file-undo-operations.c:1942
 #: src/nautilus-file-undo-operations.c:2095
@@ -3480,16 +3482,16 @@ msgstr "Fotoğraf ve müzik içermektedir"
 msgid "(Empty)"
 msgstr "(Boş)"
 
-#: src/nautilus-list-view.c:1591
+#: src/nautilus-list-view.c:1588
 msgid "Use Default"
 msgstr "Öntanımlıyı Kullan"
 
-#: src/nautilus-list-view.c:3401
+#: src/nautilus-list-view.c:3398
 #, c-format
 msgid "%s Visible Columns"
 msgstr "%s Görünen Sütunları"
 
-#: src/nautilus-list-view.c:3421
+#: src/nautilus-list-view.c:3418
 msgid "Choose the order of information to appear in this folder:"
 msgstr "Bu klasörde görünecek bilgi sırasını seçin:"
 
@@ -4362,7 +4364,7 @@ msgstr "Sekmeyi _Sağa Taşı"
 msgid "_Close Tab"
 msgstr "Sekmeyi _Kapat"
 
-#: src/nautilus-window.c:3002
+#: src/nautilus-window.c:3013
 msgid "Access and organize your files"
 msgstr "Dosyalarınıza erişin ve düzenleyin"
 
@@ -4370,7 +4372,7 @@ msgstr "Dosyalarınıza erişin ve düzenleyin"
 #. * which will be displayed at the bottom of the about
 #. * box to give credit to the translator(s).
 #.
-#: src/nautilus-window.c:3013
+#: src/nautilus-window.c:3024
 msgid "translator-credits"
 msgstr ""
 "Barış ÇİÇEK <baris@teamforce.name.tr>\n"
@@ -4751,7 +4753,7 @@ msgstr "Öge özelliklerini göster"
 
 #: src/resources/ui/nautilus-batch-rename-dialog-menu.ui:6
 msgid "Automatic Numbers"
-msgstr "Otomatik Numaralar"
+msgstr "Kendiliğinden Numarala"
 
 #: src/resources/ui/nautilus-batch-rename-dialog-menu.ui:8
 msgid "1, 2, 3, 4"
@@ -4834,7 +4836,7 @@ msgstr "Şununla Yer Değiştir"
 #: src/resources/ui/nautilus-batch-rename-dialog.ui:287
 msgctxt "title"
 msgid "Replace"
-msgstr "Yer değiştir"
+msgstr "Yer Değiştir"
 
 #: src/resources/ui/nautilus-compress-dialog.ui:5
 msgid "Create Archive"
@@ -4858,7 +4860,7 @@ msgstr "Daha küçük arşivler ama Windows ve Mac üzerinde kurulmalıdır."
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:5
 msgid "Change Permissions for Enclosed Files"
-msgstr "İlişikteki Dosyalar için İzinleri Değiştir"
+msgstr "İçine Koyulu Dosyaların İzinlerini Değiştir"
 
 #: src/resources/ui/nautilus-file-properties-change-permissions.ui:20
 msgid "C_hange"
@@ -4905,7 +4907,7 @@ msgstr "_Betikler"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:55
 msgid "_Open Scripts Folder"
-msgstr "_Betikler Klasörünü Aç"
+msgstr "Betikler Klasörünü _Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:63
 msgid "_Open Item Location"
@@ -4921,7 +4923,7 @@ msgstr "Yeni _Pencerede Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:80
 msgid "Open With Other _Application"
-msgstr "B_aşka Uygulamayla Aç"
+msgstr "_Başka Uygulamayla Aç"
 
 #: src/resources/ui/nautilus-files-view-context-menus.ui:87
 #: src/gtk/nautilusgtkplacesview.c:1736
@@ -5024,7 +5026,7 @@ msgstr "Klasör Boş"
 
 #: src/resources/ui/nautilus-no-search-results.ui:31
 msgid "No Results Found"
-msgstr "Hiçbir Sonuç Bulunamadı"
+msgstr "Sonuç Bulunamadı"
 
 #: src/resources/ui/nautilus-no-search-results.ui:46
 #: src/gtk/nautilusgtkplacesview.ui:274
@@ -5072,8 +5074,8 @@ msgid ""
 "Add information to be displayed beneath file and folder names. More "
 "information will appear when zooming closer."
 msgstr ""
-"Dosya ve klasör adının altında gösterilecek bilgiler ekleyin. Yaklaştıkça "
-"daha çok bilgi gözükecektir."
+"Dosya ve klasör adının altında gösterilecek bilgiler ekle. Yaklaştıkça daha "
+"çok bilgi gözükecektir."
 
 #. Translators: This is an ordinal number
 #: src/resources/ui/nautilus-preferences-window.ui:371
@@ -5107,7 +5109,7 @@ msgstr "Ögeleri _açmak için tek tık"
 
 #: src/resources/ui/nautilus-preferences-window.ui:509
 msgid "_Double click to open items"
-msgstr "Ög_eleri açmak için çift tık"
+msgstr "Ögeleri açmak için ç_ift tık"
 
 #: src/resources/ui/nautilus-preferences-window.ui:549
 msgid "Link Creation"
@@ -5163,7 +5165,7 @@ msgstr "Yalnızca bu _bilgisayarda"
 
 #: src/resources/ui/nautilus-preferences-window.ui:918
 msgid "_All locations"
-msgstr "Tüm konuml_ar"
+msgstr "_Tüm konumlar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:935
 msgid "_Never"
@@ -5175,7 +5177,7 @@ msgstr "Örneklendirmeler"
 
 #: src/resources/ui/nautilus-preferences-window.ui:991
 msgid "Show thumbnails:"
-msgstr "Örneklendirmeleri göster:"
+msgstr "Örneklendirmeleri göster"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1005
 msgid "_Files on this computer only"
@@ -5183,7 +5185,7 @@ msgstr "Yalnızca bu bilgisayardaki _dosyalar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1022
 msgid "A_ll files"
-msgstr "Tüm dosya_lar"
+msgstr "_Tüm dosyalar"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1039
 msgid "N_ever"
@@ -5207,7 +5209,7 @@ msgstr "Yalnızca bu bilgisayardaki _klasörler"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1168
 msgid "All folder_s"
-msgstr "Tüm kla_sörler"
+msgstr "Tüm klasör_ler"
 
 #: src/resources/ui/nautilus-preferences-window.ui:1185
 msgid "Ne_ver"
@@ -5364,21 +5366,21 @@ msgstr "Güvenlik bağlamı"
 
 #: src/resources/ui/nautilus-properties-window.ui:1165
 msgid "Change Permissions for Enclosed Files…"
-msgstr "Ekli Doslayarın İzinlerini Değiştir…"
+msgstr "İçine Koyulu Dosyaların İzinlerini Değiştir…"
 
 #: src/resources/ui/nautilus-properties-window.ui:1184
 msgid "Allow _executing file as program"
 msgstr "Dosyayı program gibi ç_alıştırmaya izin ver"
 
-#: src/resources/ui/nautilus-properties-window.ui:1310
+#: src/resources/ui/nautilus-properties-window.ui:1311
 msgid "_Add"
 msgstr "_Ekle"
 
-#: src/resources/ui/nautilus-properties-window.ui:1324
+#: src/resources/ui/nautilus-properties-window.ui:1325
 msgid "Set as default"
 msgstr "Öntanımlı olarak ayarla"
 
-#: src/resources/ui/nautilus-properties-window.ui:1352
+#: src/resources/ui/nautilus-properties-window.ui:1353
 msgid "Open With"
 msgstr "Birlikte Aç"
 
@@ -5705,6 +5707,66 @@ msgstr "_Sunucuya Bağlan"
 #: src/gtk/nautilusgtkplacesview.ui:340
 msgid "Enter server address…"
 msgstr "Sunucu adresini gir…"
+
+#~ msgid "Created"
+#~ msgstr "Oluşturulma"
+
+#~ msgid "The date the file was created."
+#~ msgstr "Dosyanın oluşturuldu tarih."
+
+#~ msgid "Password Required"
+#~ msgstr "Parola Gerekli"
+
+#~ msgid "Extract"
+#~ msgstr "Çıkar"
+
+#, c-format
+#~ msgid "“%s” is password-protected."
+#~ msgstr "“%s” parola korumalıdır."
+
+#~ msgid "Enter password…"
+#~ msgstr "Parolayı gir…"
+
+#~ msgid "Single click"
+#~ msgstr "Tek tık"
+
+#~ msgid "Double click"
+#~ msgstr "Çift tık"
+
+#~ msgid "Empty _Trash…"
+#~ msgstr "Çöpü _Boşalt…"
+
+#~ msgid "_Run as a Program"
+#~ msgstr "_Program Olarak Çalıştır"
+
+#~ msgid "_Delete Permanently…"
+#~ msgstr "_Kalıcı Olarak Sil…"
+
+#~ msgid "_Expandable Folders in List View"
+#~ msgstr "Liste Görünümünde _Genişleyebilen Klasörler"
+
+#~ msgid "Action to Open Items"
+#~ msgstr "Ögeleri Açacak Eylem"
+
+#~ msgid "Optional Context Menu Actions"
+#~ msgstr "İsteğe Bağlı Bağlam Menüsü Eylemleri"
+
+#~ msgid ""
+#~ "Show more actions in the menus. Keyboard shortcuts can be used even if "
+#~ "the actions are not shown."
+#~ msgstr ""
+#~ "Menülerde daha çok eylem göster. Eylemler gösterilmese bile klavye "
+#~ "kısayolları kullanılabilecektir."
+
+#~ msgid "Performance"
+#~ msgstr "Başarım"
+
+#~ msgid ""
+#~ "These features may cause slowdowns and excess network usage, especially "
+#~ "when browsing files outside this computer, such as on a remote server."
+#~ msgstr ""
+#~ "Bu özellikler, bu bilgisayarın dışında uzak sunuculardaki dosyalara göz "
+#~ "atarken yavaşlığa ve aşırı ağ kullanımına neden olabilir."
 
 #~ msgid "_Name:"
 #~ msgid_plural "_Names:"
